@@ -40,7 +40,7 @@ export const POLYGON: ChainData = {
   },
 };
 
-const switchNetwork = (
+export const switchNetwork = (
   chaindata: ChainData,
   library: any,
   account: string | null | undefined

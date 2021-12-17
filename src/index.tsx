@@ -1,16 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {ChakraProvider} from "@chakra-ui/react";
-import {
-  Mainnet,
-  DAppProvider,
-  useEtherBalance,
-  useEthers,
-  Config,
-} from "@usedapp/core";
+import {ChakraProvider, ColorModeScript} from "@chakra-ui/react";
+import {Mainnet, DAppProvider, Config} from "@usedapp/core";
 
 import "./index.css";
 import App from "./App";
+import theme from "theme";
+import {MarketDataProvider} from "contexts/MarketData/MarketDataProvider";
 
 const config: Config = {
   readOnlyChainId: Mainnet.chainId,
@@ -20,11 +16,16 @@ const config: Config = {
   },
 };
 
+console.log("theme", theme.config);
+
 ReactDOM.render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <DAppProvider config={config}>
-        <App />
+        <MarketDataProvider>
+          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+          <App />
+        </MarketDataProvider>
       </DAppProvider>
     </ChakraProvider>
   </React.StrictMode>,

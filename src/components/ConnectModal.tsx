@@ -25,10 +25,12 @@ export default function ConnectModal({isOpen, onClose}: Props) {
   const {activateBrowserWallet, activate, account} = useEthers();
 
   const handleMetamask = () => {
+    console.log("handleMetamask", account);
     activateBrowserWallet();
   };
 
   const handleWalletConnect = () => {
+    console.log("handleWalletConnect", account);
     const wc = new WalletConnectConnector({
       rpc: {[POLYGON.chainId]: POLYGON.rpcUrl},
       chainId: POLYGON.chainId,
