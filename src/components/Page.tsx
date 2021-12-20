@@ -1,14 +1,13 @@
-import './App.css'
 import { Flex } from '@chakra-ui/layout'
-import Header from 'components/Header'
+import Header from './Header'
 
-const App = () => {
+const Page = (props: { children: any }) => {
   return (
     <Flex direction='column'>
       <Header />
-      app homepage
+      {props.children}
     </Flex>
   )
 }
 
-export default App
+export default Page

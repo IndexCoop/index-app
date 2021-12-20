@@ -20,7 +20,7 @@ const Header = () => {
   else logo = colorMode === "dark" ? indexLogoWhite : indexLogoBlack;
 
   return (
-    <Flex justifyContent="space-between" width="100vw" padding="20px">
+    <Flex width="100vw" padding="20px">
       <Image src={logo} alt="Index Coop Logo" minWidth="24px" height="24px" />
       <ConnectButton handleOpenModal={onOpen} />
     </Flex>

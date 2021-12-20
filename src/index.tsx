@@ -1,33 +1,42 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import {ChakraProvider, ColorModeScript} from "@chakra-ui/react";
-import {Mainnet, DAppProvider, Config} from "@usedapp/core";
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 
-import "./index.css";
-import App from "./App";
-import theme from "theme";
-import {MarketDataProvider} from "contexts/MarketData/MarketDataProvider";
+import './index.css'
+import App from './App'
+import theme from 'theme'
+import { Config, DAppProvider, Mainnet } from '@usedapp/core'
+import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 const config: Config = {
   readOnlyChainId: Mainnet.chainId,
   readOnlyUrls: {
     [Mainnet.chainId]:
-      "https://mainnet.infura.io/v3/62687d1a985d4508b2b7a24827551934",
+      'https://mainnet.infura.io/v3/62687d1a985d4508b2b7a24827551934',
   },
-};
+}
 
-console.log("theme", theme.config);
+const Providers = (props: { children: any }) => {
+  return (
+    <ChakraProvider theme={theme}>
+      <DAppProvider config={config}>
+        <MarketDataProvider>{props.children}</MarketDataProvider>
+      </DAppProvider>
+    </ChakraProvider>
+  )
+}
 
 ReactDOM.render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <DAppProvider config={config}>
-        <MarketDataProvider>
-          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-          <App />
-        </MarketDataProvider>
-      </DAppProvider>
-    </ChakraProvider>
+    <Providers>
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<App />} />
+        </Routes>
+      </BrowserRouter>
+    </Providers>
   </React.StrictMode>,
-  document.getElementById("root")
-);
+  document.getElementById('root')
+)
