@@ -1,135 +1,135 @@
-import bedBorderLogo from "assets/bed-border.png";
-import dataLogo from "assets/data-logo.png";
-import indexLogo from "assets/index-token.png";
-import * as tokenAddresses from "constants/ethContractAddresses";
+import bedBorderLogo from 'assets/bed-border.png'
+import dataLogo from 'assets/data-logo.png'
+import indexLogo from 'assets/index-token.png'
+import * as tokenAddresses from 'constants/ethContractAddresses'
 
 export const dpiTokenImage =
-  "https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg";
+  'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg'
 
 export interface ProductToken {
-  name: string;
-  symbol: string;
-  address: string | undefined;
-  polygonAddress: string | undefined;
-  image: string;
-  coingeckoId: string;
-  tokensetsId: string;
-  fees: {streamingFee: string; mintRedeemFee?: string} | undefined;
+  name: string
+  symbol: string
+  address: string | undefined
+  polygonAddress: string | undefined
+  image: string
+  coingeckoId: string
+  tokensetsId: string
+  fees: { streamingFee: string; mintRedeemFee?: string } | undefined
 }
 
 export const DefiPulseIndex: ProductToken = {
-  name: "DeFi Pulse Index",
-  symbol: "DPI",
+  name: 'DeFi Pulse Index',
+  symbol: 'DPI',
   address: tokenAddresses.dpiTokenAddress,
   image: dpiTokenImage,
   polygonAddress: tokenAddresses.dpiTokenPolygonAddress,
-  coingeckoId: "defipulse-index",
-  tokensetsId: "dpi",
+  coingeckoId: 'defipulse-index',
+  tokensetsId: 'dpi',
   fees: {
-    streamingFee: "0.95%",
+    streamingFee: '0.95%',
   },
-};
+}
 
 export const IndexToken: ProductToken = {
-  name: "Index Token",
-  symbol: "INDEX",
+  name: 'Index Token',
+  symbol: 'INDEX',
   address: tokenAddresses.indexTokenAddress,
   polygonAddress: tokenAddresses.indexTokenPolygonAddress,
   image: indexLogo,
-  coingeckoId: "index-cooperative",
-  tokensetsId: "index",
+  coingeckoId: 'index-cooperative',
+  tokensetsId: 'index',
   fees: undefined,
-};
+}
 
 export const Ethereum2xFlexibleLeverageIndex: ProductToken = {
-  name: "Ethereum 2x Flexible Leverage Index",
-  symbol: "ETH2x-FLI",
+  name: 'Ethereum 2x Flexible Leverage Index',
+  symbol: 'ETH2x-FLI',
   address: tokenAddresses.eth2xfliTokenAddress,
   polygonAddress: undefined,
-  image: "https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg",
-  coingeckoId: "eth-2x-flexible-leverage-index",
-  tokensetsId: "ethfli",
+  image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
+  coingeckoId: 'eth-2x-flexible-leverage-index',
+  tokensetsId: 'ethfli',
   fees: {
-    streamingFee: "1.95%",
+    streamingFee: '1.95%',
   },
-};
+}
 
 export const Ethereum2xFLIP: ProductToken = {
-  name: "Ethereum 2x FLI Polygon",
-  symbol: "ETH2X-FLI-P",
+  name: 'Ethereum 2x FLI Polygon',
+  symbol: 'ETH2X-FLI-P',
   address: undefined,
   polygonAddress: tokenAddresses.eth2xflipTokenAddress,
-  image: "https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg",
-  coingeckoId: "index-coop-eth-2x-flexible-leverage-index-polygon",
-  tokensetsId: "eth2x-fli-p",
+  image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
+  coingeckoId: 'index-coop-eth-2x-flexible-leverage-index-polygon',
+  tokensetsId: 'eth2x-fli-p',
   fees: {
-    streamingFee: "1.95%",
-    mintRedeemFee: "0.1%",
+    streamingFee: '1.95%',
+    mintRedeemFee: '0.1%',
   },
-};
+}
 
 export const MetaverseIndex: ProductToken = {
-  name: "Metaverse Index",
-  symbol: "MVI",
+  name: 'Metaverse Index',
+  symbol: 'MVI',
   address: tokenAddresses.mviTokenAddress,
   polygonAddress: tokenAddresses.mviTokenPolygonAddress,
-  image: "https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg",
-  coingeckoId: "metaverse-index",
-  tokensetsId: "mvi",
+  image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
+  coingeckoId: 'metaverse-index',
+  tokensetsId: 'mvi',
   fees: {
-    streamingFee: "0.95%",
+    streamingFee: '0.95%',
   },
-};
+}
 
 export const Bitcoin2xFlexibleLeverageIndex: ProductToken = {
-  name: "Bitcoin 2x Flexible Leverage Index",
-  symbol: "BTC2x-FLI",
+  name: 'Bitcoin 2x Flexible Leverage Index',
+  symbol: 'BTC2x-FLI',
   address: tokenAddresses.btc2xfliTokenAddress,
   polygonAddress: undefined,
-  image: "https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg",
-  coingeckoId: "btc-2x-flexible-leverage-index",
-  tokensetsId: "btcfli",
+  image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
+  coingeckoId: 'btc-2x-flexible-leverage-index',
+  tokensetsId: 'btcfli',
   fees: {
-    streamingFee: "1.95%",
+    streamingFee: '1.95%',
   },
-};
+}
 
 export const BedIndex: ProductToken = {
-  name: "Bankless BED Index",
-  symbol: "BED",
+  name: 'Bankless BED Index',
+  symbol: 'BED',
   address: tokenAddresses.bedTokenAddress,
   polygonAddress: undefined,
   image: bedBorderLogo,
-  coingeckoId: "bankless-bed-index",
-  tokensetsId: "bed",
+  coingeckoId: 'bankless-bed-index',
+  tokensetsId: 'bed',
   fees: {
-    streamingFee: "0.25%",
+    streamingFee: '0.25%',
   },
-};
+}
 
 export const DataIndex: ProductToken = {
-  name: "Data Economy Index",
-  symbol: "DATA",
+  name: 'Data Economy Index',
+  symbol: 'DATA',
   address: tokenAddresses.dataTokenAddress,
   polygonAddress: tokenAddresses.dataTokenPolygonAddress,
   image: dataLogo,
-  coingeckoId: "data-economy-index",
-  tokensetsId: "data",
+  coingeckoId: 'data-economy-index',
+  tokensetsId: 'data',
   fees: {
-    streamingFee: "0.95%",
+    streamingFee: '0.95%',
   },
-};
+}
 
 export const productTokensBySymbol = {
-  DPI: DefiPulseIndex,
-  MVI: MetaverseIndex,
-  "ETH2x-FLI": Ethereum2xFlexibleLeverageIndex,
-  "ETH2x-FLI-P": Ethereum2xFLIP,
-  INDEX: IndexToken,
-  "BTC2x-FLI": Bitcoin2xFlexibleLeverageIndex,
-  BED: BedIndex,
-  DATA: DataIndex,
-};
+  'DPI': DefiPulseIndex,
+  'MVI': MetaverseIndex,
+  'ETH2x-FLI': Ethereum2xFlexibleLeverageIndex,
+  'ETH2x-FLI-P': Ethereum2xFLIP,
+  'INDEX': IndexToken,
+  'BTC2x-FLI': Bitcoin2xFlexibleLeverageIndex,
+  'BED': BedIndex,
+  'DATA': DataIndex,
+}
 
 const ALL_INDEXES = [
   DefiPulseIndex,
@@ -140,6 +140,6 @@ const ALL_INDEXES = [
   Bitcoin2xFlexibleLeverageIndex,
   BedIndex,
   DataIndex,
-];
+]
 
-export default ALL_INDEXES;
+export default ALL_INDEXES

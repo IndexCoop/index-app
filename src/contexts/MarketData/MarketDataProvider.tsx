@@ -1,5 +1,14 @@
-import {useEthers} from "@usedapp/core";
-import {MAINNET} from "constants/chains";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+
+import { useEthers } from '@usedapp/core'
+
+import { MAINNET } from 'constants/chains'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -8,52 +17,45 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   MetaverseIndex,
-} from "constants/productTokens";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import {fetchHistoricalTokenMarketData} from "utils/coingeckoApi";
+} from 'constants/productTokens'
+import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
 
 interface TokenMarketDataValues {
-  prices?: number[][];
-  hourlyPrices?: number[][];
-  marketcaps?: number[][];
-  volumes?: number[][];
+  prices?: number[][]
+  hourlyPrices?: number[][]
+  marketcaps?: number[][]
+  volumes?: number[][]
 }
 
 interface TokenContext {
-  dpi?: TokenMarketDataValues;
-  mvi?: TokenMarketDataValues;
-  bed?: TokenMarketDataValues;
-  data?: TokenMarketDataValues;
-  ethfli?: TokenMarketDataValues;
-  btcfli?: TokenMarketDataValues;
-  ethflip?: TokenMarketDataValues;
-  selectLatestMarketData: (...args: any) => number;
+  dpi?: TokenMarketDataValues
+  mvi?: TokenMarketDataValues
+  bed?: TokenMarketDataValues
+  data?: TokenMarketDataValues
+  ethfli?: TokenMarketDataValues
+  btcfli?: TokenMarketDataValues
+  ethflip?: TokenMarketDataValues
+  selectLatestMarketData: (...args: any) => number
 }
 
 export const MarketDataContext = createContext<TokenContext>({
   selectLatestMarketData: () => 0,
-});
+})
 
-export const useMarketData = () => useContext(MarketDataContext);
+export const useMarketData = () => useContext(MarketDataContext)
 
-export const MarketDataProvider = (props: {children: any}) => {
-  const {chainId} = useEthers();
-  const [dpiMarketData, setDpiMarketData] = useState<any>({});
-  const [mviMarketData, setMviMarketData] = useState<any>({});
-  const [bedMarketData, setBedMarketData] = useState<any>({});
-  const [dataMarketData, setDataMarketData] = useState<any>({});
-  const [ethFliMarketData, setEthFliMarketData] = useState<any>({});
-  const [btcFliMarketData, setBtcFliMarketData] = useState<any>({});
-  const [ethFlipMarketData, setEthFlipMarketData] = useState<any>({});
+export const MarketDataProvider = (props: { children: any }) => {
+  const { chainId } = useEthers()
+  const [dpiMarketData, setDpiMarketData] = useState<any>({})
+  const [mviMarketData, setMviMarketData] = useState<any>({})
+  const [bedMarketData, setBedMarketData] = useState<any>({})
+  const [dataMarketData, setDataMarketData] = useState<any>({})
+  const [ethFliMarketData, setEthFliMarketData] = useState<any>({})
+  const [btcFliMarketData, setBtcFliMarketData] = useState<any>({})
+  const [ethFlipMarketData, setEthFlipMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
-    marketData?.[marketData.length - 1]?.[1] || 0;
+    marketData?.[marketData.length - 1]?.[1] || 0
 
   const fetchMarketData = useCallback(async () => {
     if (chainId === MAINNET.chainId) {
@@ -69,21 +71,21 @@ export const MarketDataProvider = (props: {children: any}) => {
           Bitcoin2xFlexibleLeverageIndex.coingeckoId
         ),
         fetchHistoricalTokenMarketData(Ethereum2xFLIP.coingeckoId),
-      ]);
+      ])
 
-      setDpiMarketData(marketData[0]);
-      setMviMarketData(marketData[1]);
-      setBedMarketData(marketData[2]);
-      setDataMarketData(marketData[3]);
-      setEthFliMarketData(marketData[4]);
-      setBtcFliMarketData(marketData[5]);
-      setEthFlipMarketData(marketData[6]);
+      setDpiMarketData(marketData[0])
+      setMviMarketData(marketData[1])
+      setBedMarketData(marketData[2])
+      setDataMarketData(marketData[3])
+      setEthFliMarketData(marketData[4])
+      setBtcFliMarketData(marketData[5])
+      setEthFlipMarketData(marketData[6])
     }
-  }, [chainId]);
+  }, [chainId])
 
   useEffect(() => {
-    fetchMarketData();
-  }, [fetchMarketData]);
+    fetchMarketData()
+  }, [fetchMarketData])
 
   return (
     <MarketDataContext.Provider
@@ -100,5 +102,5 @@ export const MarketDataProvider = (props: {children: any}) => {
     >
       {props.children}
     </MarketDataContext.Provider>
-  );
-};
+  )
+}

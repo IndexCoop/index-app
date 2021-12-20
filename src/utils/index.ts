@@ -1,2 +1,2 @@
 export const selectLatestMarketData = (marketData?: number[][]) =>
-  marketData?.[marketData.length - 1]?.[1] || 0;
+  marketData?.[marketData.length - 1]?.[1] || 0

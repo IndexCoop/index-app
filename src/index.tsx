@@ -1,13 +1,18 @@
 import React from 'react'
+
 import ReactDOM from 'react-dom'
+import { BrowserRouter, Route,Routes } from 'react-router-dom'
+
+import theme from 'theme'
+
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
+import { Config, DAppProvider, Mainnet } from '@usedapp/core'
+
+import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
+
+import App from './App'
 
 import './index.css'
-import App from './App'
-import theme from 'theme'
-import { Config, DAppProvider, Mainnet } from '@usedapp/core'
-import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 const config: Config = {
   readOnlyChainId: Mainnet.chainId,

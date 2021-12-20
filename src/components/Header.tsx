@@ -1,13 +1,14 @@
 import { useDisclosure } from '@chakra-ui/hooks'
 import { Image } from '@chakra-ui/image'
 import { Flex } from '@chakra-ui/layout'
-import ConnectButton from './ConnectButton'
+import { useColorMode } from '@chakra-ui/system'
 
+import indexLogoBlack from 'assets/index-logo-black.png'
 import indexLogoFullBlack from 'assets/index-logo-full-black.png'
 import indexLogoFullWhite from 'assets/index-logo-full-white.png'
-import indexLogoBlack from 'assets/index-logo-black.png'
 import indexLogoWhite from 'assets/index-logo-white.png'
-import { useColorMode } from '@chakra-ui/system'
+
+import ConnectButton from './ConnectButton'
 
 const Header = () => {
   const { onOpen } = useDisclosure()
