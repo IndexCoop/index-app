@@ -20,7 +20,7 @@ import {
 } from 'constants/productTokens'
 import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
 
-interface TokenMarketDataValues {
+export interface TokenMarketDataValues {
   prices?: number[][]
   hourlyPrices?: number[][]
   marketcaps?: number[][]
