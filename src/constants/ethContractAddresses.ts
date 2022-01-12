@@ -44,6 +44,8 @@ export const streamingFeeModuleAddress =
   process.env.REACT_APP_SETJS_STREAMING_FEE_MODULE
 export const tradeModuleAddress = process.env.REACT_APP_SETJS_TRADE_MODULE
 export const protocolViewerAddress = process.env.REACT_APP_SETJS_PROTOCOL_VIEWER
+export const slippageIssuanceModuleAddress =
+  process.env.REACT_APP_SLIPPAGE_ISSUANCE_MODULE_ADDRESS
 
 // Contributor Reward Addresses
 export const november2020RewardsAddress =
@@ -114,3 +116,5 @@ export const dataTokenPolygonAddress =
   process.env.REACT_APP_POLYGON_DATA_TOKEN_ADDRESS
 export const gmiTokenPolygonAddress =
   process.env.REACT_APP_POLYGON_GMI_TOKEN_ADDRESS
+export const slippageIssuanceModulePolygonAddress =
+  process.env.REACT_APP_POLYGON_SLIPPAGE_ISSUANCE_MODULE_ADDRESS

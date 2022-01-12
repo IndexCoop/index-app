@@ -1,46 +1,135 @@
-# Getting Started with Create React App
+# Index UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![License](https://img.shields.io/:license-mit-blue.svg)](https://opensource.org/licenses/MIT)
 
-## Available Scripts
+Index UI is a simple front-end used to interact with Index. This front-end describes Index and consolidates relevant links to onboard users onto the protocol's basic functionalities. It also allows users to stake, unstake, and claim INDEX tokens during the initial distribution + liquidity mining phase of the protocol's launch.
 
-In the project directory, you can run:
+## Local development
 
-### `yarn start`
+This project was created with [create-react-app](https://create-react-app.dev/). Refer to their docs for advanced usage.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Prerequisites
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. Install [Node](https://nodejs.org/en/) 14+
+1. Install [yarn](https://yarnpkg.com/getting-started/install)
+1. Fork this repo
+1. Clone your fork locally
 
-### `yarn test`
+### Steps
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Make a copy of the prod env file
+   ```bash
+   cp .env.prod .env
+   ```
+1. Install all the dependencies
+   ```bash
+   yarn install
+   ```
+1. Start the app in development mode on localhost:3000
+   ```bash
+   yarn start
+   ```
+1. Navigate to [http://localhost:3000/](http://localhost:3000/). The changes you make locally should live-reload in the app.
 
-### `yarn build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Testing
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Unit tests
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Run unit tests in watch mode
 
-### `yarn eject`
+```bash
+yarn test
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Run E2E Tests with Cypress
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To run e2e test with Cypress, first you must serve a local instance
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+yarn start
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Once that is served, in another terminal, navigate to the repo and run
 
-## Learn More
+```bash
+yarn run e2e
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+This will kick off Cypress to run headlessly.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Writing and Debugging Cypress Tests
+
+If you wish to write a test, or debug yours, you can do so with the help of the Cypress tool by running
+
+```bash
+yarn run cypress:open
+```
+
+This will allow you to see and select items on page, more easily obtaining their IDs, selectors, etc. More information on this can be found on the [Cypress docs](https://docs.cypress.io/)
+
+### Helpful Commands
+
+Build the app for production in the `build` folder.
+
+```
+yarn build
+```
+
+Eject the app from `create-react-app` rails.
+
+```
+yarn eject
+```
+
+This project uses [browserslist](https://github.com/browserslist/browserslist). We need to [regularly update browser data](https://github.com/browserslist/browserslist#browsers-data-updating) via
+
+```bash
+npx browserslist --update-db
+```
+
+## Contributing
+
+The main purpose of this repository is to continually serve the needs of Index, making it faster, simpler, and easier to use. As new proposals are submitted and the scope of Index's governance evolves, we anticipate this tool will change as well.
+
+We greatly encourage any community contribution that may help Index reach more users and promote greater adoption, so be sure to check out our [Contribution Guidelines](https://github.com/SetProtocol/index-ui/blob/master/CONTRIBUTING.md) for ways to get involved with our project.
+
+## Style Guide
+
+### Absolute imports
+
+Prefer absolute imports over relative imports because this is a loose codebase convention. Refer to [Configuring React Absolute Imports For TypeScript](https://justinnoel.dev/2019/06/18/configuring-react-absolute-imports-for-typescript/) if your editor isn't picking up absolute imports.
+
+```typescript
+// Good
+import Page from 'components/Page'
+
+// Bad
+import Page from '../../components/Page'
+```
+
+### Import ordering
+
+Order library imports at the top of the file, then a newline separator, then imports for exported members that are defined in this package.
+
+```typescript
+// Good
+import React, { useEffect } from 'react'
+import { Container, Spacer } from 'react-neu'
+
+import Page from 'components/Page'
+import Explanation from 'components/Explanation'
+```
+
+```typescript
+// Bad
+import React, { useEffect } from 'react'
+import Page from 'components/Page'
+import { Container, Spacer } from 'react-neu'
+import Explanation from 'components/Explanation'
+```
+
+## License
+
+Index UI is MIT licensed.
