@@ -16,6 +16,7 @@ import {
   DefiPulseIndex,
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
+  GmiIndex,
   MetaverseIndex,
 } from 'constants/productTokens'
 import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
@@ -35,6 +36,7 @@ interface TokenContext {
   ethfli?: TokenMarketDataValues
   btcfli?: TokenMarketDataValues
   ethflip?: TokenMarketDataValues
+  gmi?: TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
 }
 
@@ -53,6 +55,7 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [ethFliMarketData, setEthFliMarketData] = useState<any>({})
   const [btcFliMarketData, setBtcFliMarketData] = useState<any>({})
   const [ethFlipMarketData, setEthFlipMarketData] = useState<any>({})
+  const [gmiMarketData, setGmiMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
@@ -71,6 +74,7 @@ export const MarketDataProvider = (props: { children: any }) => {
           Bitcoin2xFlexibleLeverageIndex.coingeckoId
         ),
         fetchHistoricalTokenMarketData(Ethereum2xFLIP.coingeckoId),
+        fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
       ])
 
       setDpiMarketData(marketData[0])
@@ -80,6 +84,7 @@ export const MarketDataProvider = (props: { children: any }) => {
       setEthFliMarketData(marketData[4])
       setBtcFliMarketData(marketData[5])
       setEthFlipMarketData(marketData[6])
+      setGmiMarketData(marketData[7])
     }
   }, [chainId])
 
@@ -98,6 +103,7 @@ export const MarketDataProvider = (props: { children: any }) => {
         ethfli: ethFliMarketData,
         btcfli: btcFliMarketData,
         ethflip: ethFlipMarketData,
+        gmi: gmiMarketData,
       }}
     >
       {props.children}
