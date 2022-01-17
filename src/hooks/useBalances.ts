@@ -4,6 +4,12 @@ import {
   useEthers,
   useTokenBalance,
 } from '@usedapp/core'
+import {
+  daiTokenAddress,
+  daiTokenPolygonAddress,
+  usdcTokenAddress,
+  usdcTokenPolygonAddress,
+} from 'constants/ethContractAddresses'
 
 import {
   BedIndex,
@@ -26,17 +32,20 @@ const getChainAddress = (
   return token.address
 }
 
+const getDaiAddress = (chainId: ChainId = MAINNET_CHAIN_DATA.chainId) => {
+  if (chainId === POLYGON_CHAIN_DATA.chainId) return daiTokenPolygonAddress
+  return daiTokenAddress
+}
+const getUsdcAddress = (chainId: ChainId = MAINNET_CHAIN_DATA.chainId) => {
+  if (chainId === POLYGON_CHAIN_DATA.chainId) return usdcTokenPolygonAddress
+  return usdcTokenAddress
+}
+
 export const useBalances = () => {
   const { account, chainId } = useEthers()
 
-  const daiBalance = useTokenBalance(
-    getChainAddress(DefiPulseIndex, chainId),
-    account
-  )
-  const usdcBalance = useTokenBalance(
-    getChainAddress(DefiPulseIndex, chainId),
-    account
-  )
+  const daiBalance = useTokenBalance(getDaiAddress(chainId), account)
+  const usdcBalance = useTokenBalance(getUsdcAddress(chainId), account)
   const dpiBalance = useTokenBalance(
     getChainAddress(DefiPulseIndex, chainId),
     account
