@@ -1,8 +1,9 @@
-import { Box, StackDivider, VStack } from '@chakra-ui/layout'
+import { Box, Flex, Spacer, StackDivider, VStack } from '@chakra-ui/layout'
 import { Heading } from '@chakra-ui/react'
 
 interface SectionTitleProps {
   title: string
+  itemRight?: JSX.Element
 }
 
 const SectionTitle = (props: SectionTitleProps) => {
@@ -13,9 +14,13 @@ const SectionTitle = (props: SectionTitleProps) => {
         spacing={2}
         align='flex-start'
       >
-        <Heading as='h3' size='md'>
-          {props.title}
-        </Heading>
+        <Flex w='100%'>
+          <Heading as='h3' size='md'>
+            {props.title}
+          </Heading>
+          <Spacer />
+          {props.itemRight}
+        </Flex>
         <Box />
       </VStack>
     </Box>

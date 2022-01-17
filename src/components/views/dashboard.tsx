@@ -1,10 +1,18 @@
-import { Box, Button, Flex, VStack } from '@chakra-ui/react'
+import { Box, Button, Flex, Link, Text, VStack } from '@chakra-ui/react'
 
 import TransactionHistoryItem from 'components/dashboard/TransactionHistoryItem'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import SectionTitle from 'components/SectionTitle'
 import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
+
+const DownloadCsvView = () => {
+  return (
+    <Link href={''} isExternal>
+      <Text style={{ color: '#B9B6FC' }}>Download CSV</Text>
+    </Link>
+  )
+}
 
 const Dashboard = () => {
   const { dpi } = useMarketData()
@@ -29,7 +37,10 @@ const Dashboard = () => {
           </Flex>
         </Box>
         <Box>
-          <SectionTitle title='Transaction History' />
+          <SectionTitle
+            title='Transaction History'
+            itemRight={<DownloadCsvView />}
+          />
           {historyItems.map((item) => (
             <TransactionHistoryItem key={item.title} item={item} my='3.5' />
           ))}
