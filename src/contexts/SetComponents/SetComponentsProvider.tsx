@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
 import {
   CoinGeckoCoinPrices,
@@ -29,7 +29,11 @@ import { getTokenList, TokenData as Token } from 'utils/tokenlists'
 const ASSET_PLATFORM = 'ethereum'
 const VS_CURRENCY = 'usd'
 
-const SetComponentsProvider: React.FC = ({ children }) => {
+export function useSetComponents() {
+  return { ...useContext(SetComponentsContext) }
+}
+
+const SetComponentsProvider = (props: { children: any }) => {
   const {
     selectLatestMarketData,
     dpi,
@@ -63,7 +67,7 @@ const SetComponentsProvider: React.FC = ({ children }) => {
     if (
       chainId &&
       chainId === MAINNET_CHAIN_DATA.chainId &&
-      library?.getSigner() &&
+      library &&
       dpiTokenAddress &&
       mviTokenAddress &&
       bedTokenAddress &&
@@ -82,7 +86,7 @@ const SetComponentsProvider: React.FC = ({ children }) => {
       btcfli
     ) {
       getSetDetails(
-        library?.getSigner(),
+        library,
         [
           dpiTokenAddress,
           mviTokenAddress,
@@ -234,7 +238,7 @@ const SetComponentsProvider: React.FC = ({ children }) => {
       })
     }
   }, [
-    library?.getSigner(),
+    library,
     tokenList,
     dpi,
     mvi,
@@ -251,14 +255,14 @@ const SetComponentsProvider: React.FC = ({ children }) => {
     if (
       chainId &&
       chainId === POLYGON_CHAIN_DATA.chainId &&
-      library?.getSigner() &&
+      library &&
       dpiTokenPolygonAddress &&
       mviTokenPolygonAddress &&
       eth2xflipTokenAddress &&
       tokenList &&
       ethflip
     ) {
-      getSetDetails(library?.getSigner(), [eth2xflipTokenAddress], chainId)
+      getSetDetails(library, [eth2xflipTokenAddress], chainId)
         .then(async (result) => {
           const ethflipSet = result[0]
           const ethFlipComponentPrices = await getPositionPrices(
@@ -287,13 +291,7 @@ const SetComponentsProvider: React.FC = ({ children }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [
-    chainId,
-    library?.getSigner(),
-    tokenList,
-    ethflip,
-    selectLatestMarketData(),
-  ])
+  }, [chainId, library, tokenList, ethflip, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider
@@ -308,7 +306,7 @@ const SetComponentsProvider: React.FC = ({ children }) => {
         dataComponents: dataComponents,
       }}
     >
-      {children}
+      {props.children}
     </SetComponentsContext.Provider>
   )
 }

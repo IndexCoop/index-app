@@ -140,7 +140,6 @@ const MarketChart = (props: {
   const maxY = Math.max(...manualPrices.map<number>(([x, y]) => y))
   const minimumYAxisLabel = minY - 5 > 0 ? minY - 5 : 0
 
-  console.log('prices', prices)
   return (
     <Flex
       direction='column'

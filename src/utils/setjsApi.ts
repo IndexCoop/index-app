@@ -150,7 +150,7 @@ function getSet(ethersProvider: any, chainId: number): Set {
   }
   if (chainId === POLYGON_CHAIN_DATA.chainId) {
     return new Set({
-      web3Provider: ethersProvider,
+      ethersProvider: ethersProvider,
       basicIssuanceModuleAddress: basicIssuanceModulePolygonAddress,
       controllerAddress: controllerAddress,
       masterOracleAddress: masterOracleAddress,
@@ -166,7 +166,7 @@ function getSet(ethersProvider: any, chainId: number): Set {
     })
   }
   return new Set({
-    web3Provider: ethersProvider,
+    ethersProvider: ethersProvider,
     basicIssuanceModuleAddress: basicIssuanceModuleAddress,
     controllerAddress: controllerAddress,
     masterOracleAddress: masterOracleAddress,
