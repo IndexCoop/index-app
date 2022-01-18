@@ -1,9 +1,4 @@
-import {
-  ChainId,
-  useEtherBalance,
-  useEthers,
-  useTokenBalance,
-} from '@usedapp/core'
+import { ChainId, useEthers, useTokenBalance } from '@usedapp/core'
 
 import {
   daiTokenAddress,
