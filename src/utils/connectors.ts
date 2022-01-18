@@ -1,9 +1,6 @@
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-import { WalletLinkConnector } from '@web3-react/walletlink-connector'
-
-import { LedgerConnector } from './ledgerConnector'
 
 const WS_URL = process.env.REACT_APP_ETHEREUM_WS_URL
 
@@ -47,22 +44,8 @@ export const walletconnect = new WalletConnectConnector({
   },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
-  pollingInterval: 15000,
   supportedChainIds: [1, 137],
 })
-
-export const walletlink = new WalletLinkConnector({
-  url: MAINNET_CHAIN_DATA.rpcUrl,
-  appName: 'Index',
-  appLogoUrl: 'https://index-dao.s3.amazonaws.com/index_owl.png',
-  supportedChainIds: [1, 137],
-})
-
-export const ledgerwallet = new LedgerConnector(
-  MAINNET_CHAIN_DATA.chainId,
-  MAINNET_CHAIN_DATA.rpcUrl,
-  WS_URL
-)
 
 export const networkConnector = new NetworkConnector({
   urls: { 1: process.env.REACT_APP_ALCHEMY_API || MAINNET_CHAIN_DATA.rpcUrl },

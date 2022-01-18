@@ -4,13 +4,13 @@ import {
   useEthers,
   useTokenBalance,
 } from '@usedapp/core'
+
 import {
   daiTokenAddress,
   daiTokenPolygonAddress,
   usdcTokenAddress,
   usdcTokenPolygonAddress,
 } from 'constants/ethContractAddresses'
-
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
