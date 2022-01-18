@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Link, Text, VStack } from '@chakra-ui/react'
 
+import AllocationChart from 'components/dashboard/AllocationChart'
 import TransactionHistoryItem from 'components/dashboard/TransactionHistoryItem'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
@@ -31,7 +32,10 @@ const Dashboard = () => {
         />
         <Box my={12}>
           <Flex direction='row'>
-            <SectionTitle title='Total Value' />
+            <Flex direction='column' justifyContent='space-around' w='40%'>
+              <SectionTitle title='Total Value' />
+              <AllocationChart />
+            </Flex>
             <Box w='120px' />
             <SectionTitle title='Rewards' />
           </Flex>

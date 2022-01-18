@@ -12,10 +12,10 @@ const TransactionHistoryItem = (props: {
   item: TransactionHistoryItem
   my: string
 }) => {
-  const { item } = props
+  const { item, my } = props
   return (
     <Link href={item.url} isExternal>
-      <Flex my={props.my}>
+      <Flex my={my}>
         <Text>{item.title}</Text>
         <Box px='2.5' py='1.5'>
           <Image src={historyLinkIcon} alt='link icon' />
