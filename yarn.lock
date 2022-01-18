@@ -2375,10 +2375,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@indexcoop/tokenlists@^1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.10.0.tgz#40b70384c8aa971d83f51798491e2ce77bdb6fcb"
-  integrity sha512-BsrSQrTizKaLeIhqDMmmw1qkwZ1YoBFVPGVTClB232l2ju/i6i0spjp8k1WTdhjgt0VonggpDlWHqdUZapVMGg==
+"@indexcoop/tokenlists@^1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.12.0.tgz#f779e57642f8c379a670a6ac881ded0ca35c86d0"
+  integrity sha512-LgAeF/FgikHCNWnArVrRp5VErprpklrZ4uOdqBlhA/PuzpJ16fnkmFVF20PAwJYRncZ5tDdVVJnIVNYBlAn9Yw==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
