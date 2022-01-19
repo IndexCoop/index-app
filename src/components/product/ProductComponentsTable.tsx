@@ -31,7 +31,6 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
     return <Text onClick={showDefaultComponents}>Show Less</Text>
   }
 
-  console.log('comps', props.components)
   if (
     chainId &&
     chainId === POLYGON_CHAIN_DATA.chainId &&
@@ -46,7 +45,12 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
     return <Text title='Allocations'>Connect wallet to view allocations</Text>
   }
   return (
-    <Flex title='Allocations'>
+    <Flex
+      title='Allocations'
+      direction='column'
+      alignItems='center'
+      width='40vw'
+    >
       <Table variant='simple'>
         <Thead>
           <Tr>

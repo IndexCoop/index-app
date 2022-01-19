@@ -101,7 +101,6 @@ const MarketChart = (props: {
         }
       }
     }, 0)
-    console.log('hourlyData', prices)
   }, [durationSelector])
 
   const handleDailyButton = () => {

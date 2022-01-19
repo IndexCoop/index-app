@@ -7,7 +7,6 @@ import { useSetComponents } from 'contexts/SetComponents/SetComponentsProvider'
 const DPI = () => {
   const { dpi } = useMarketData()
   const { dpiComponents } = useSetComponents()
-  console.log('dpiComponents', dpiComponents)
   return (
     <ProductPage
       tokenData={DefiPulseIndex}

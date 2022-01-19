@@ -22,6 +22,7 @@ import {
   mviTokenPolygonAddress,
 } from 'constants/ethContractAddresses'
 import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
+import { fromWei, preciseDiv, preciseMul, toWei } from 'utils'
 import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 import { getSetDetails } from 'utils/setjsApi'
 import { getTokenList, TokenData as Token } from 'utils/tokenlists'
@@ -60,13 +61,14 @@ const SetComponentsProvider = (props: { children: any }) => {
   )
   const [dataComponents, setDataComponents] = useState<SetComponent[]>([])
 
-  const { chainId, library } = useEthers()
+  const { account, chainId, library } = useEthers()
   const tokenList = getTokenList(chainId)
 
   useEffect(() => {
     if (
       chainId &&
       chainId === MAINNET_CHAIN_DATA.chainId &&
+      account &&
       library &&
       dpiTokenAddress &&
       mviTokenAddress &&
@@ -334,9 +336,29 @@ async function convertPositionToSetComponent(
     }
   }
 
+  const valuePerToken = preciseMul(position.unit, toWei(componentPriceUsd)) // per 1e18  ---- valuePerToken 350172275 62840000000000000000 22004825761
+  const percentOfSet2 = preciseDiv(valuePerToken, toWei(setPriceUsd)) // valuePerToken / set price ----- percentOfSet2 22004825761 8 102801534272785670000
+
+  console.log(
+    'valuePerToken',
+    position.unit.toString(),
+    toWei(componentPriceUsd).toString(),
+    valuePerToken.toString()
+  )
+  console.log(
+    'percentOfSet2',
+    valuePerToken.toString(),
+    token.decimals,
+    toWei(setPriceUsd).toString()
+  )
+
   const quantity = position.unit.div(BigNumber.from(10).pow(token.decimals))
-  const totalPriceUsd = quantity.mul(componentPriceUsd)
-  const percentOfSet = totalPriceUsd.div(setPriceUsd).mul(100)
+  const totalPriceUsd = quantity.mul(
+    BigNumber.from(componentPriceUsd).mul(BigNumber.from(10).pow(18))
+  )
+  const percentOfSet = totalPriceUsd
+    .div(BigNumber.from(setPriceUsd).mul(BigNumber.from(10).pow(18)))
+    .mul(100)
 
   return {
     address: position.component,
