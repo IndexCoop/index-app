@@ -1,26 +1,30 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
 
-const NumberBox = () => {
+const white = '#F6F1E4'
+const gray = '#848484'
+
+const NumberBox = (props: { isActive: boolean }) => {
+  const { isActive } = props
+
   return (
     <Flex direction='column'>
       <Flex align='end'>
-        <Text fontSize='4xl' fontWeight='200'>
+        <Text color={isActive ? white : gray} fontSize='4xl' fontWeight='200'>
           10.2
         </Text>
-        <Text fontSize='sm' ml='2' pb='9px'>
+        <Text color={isActive ? white : gray} fontSize='sm' ml='2' pb='9px'>
           ETH/DPI
         </Text>
       </Flex>
-      <Text fontSize='xs' mt='6px'>
+      <Text color={white} fontSize='xs' mt='6px'>
         Staked ETH/DPI Uniswap LP Tokens
       </Text>
     </Flex>
   )
 }
 
-// TODO: state active|disabled
-
-const MiningProgram = () => {
+const MiningProgram = (props: { isActive: boolean }) => {
+  const { isActive } = props
   const numbers = ['', '', '']
 
   return (
@@ -32,15 +36,19 @@ const MiningProgram = () => {
         {numbers.map((num, index) => {
           return (
             <Box key={index} mr='16'>
-              <NumberBox />
+              <NumberBox isActive={isActive} />
             </Box>
           )
         })}
       </Flex>
       <Flex mt='8'>
-        <Button mr='6'>Approve Staking</Button>
-        <Button mr='6'>Claim</Button>
-        <Button>Unstake & Claim</Button>
+        <Button mr='6' isDisabled={!isActive}>
+          Approve Staking
+        </Button>
+        <Button mr='6' isDisabled={!isActive}>
+          Claim
+        </Button>
+        <Button isDisabled={!isActive}>Unstake & Claim</Button>
       </Flex>
     </Flex>
   )

@@ -1,4 +1,4 @@
-import { Box, Flex, Link, Text } from '@chakra-ui/react'
+import { Box, Flex } from '@chakra-ui/react'
 
 import MiningProgram from 'components/mining/MiningProgram'
 import Page from 'components/Page'
@@ -7,7 +7,7 @@ import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
 
 const LiquidityMining = () => {
   const { dpi } = useMarketData()
-  const programs = ['', '']
+  const programs = [{ isActive: true }, { isActive: false }]
 
   return (
     <Page>
@@ -20,7 +20,7 @@ const LiquidityMining = () => {
           {programs.map((program, index) => {
             return (
               <Box key={index} my='30'>
-                <MiningProgram />
+                <MiningProgram isActive={program.isActive} />
               </Box>
             )
           })}
