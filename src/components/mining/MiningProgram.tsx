@@ -19,14 +19,15 @@ export interface Program {
 
 const NumberBox = (props: { isActive: boolean; component: ProgramComp }) => {
   const { isActive, component } = props
+  const textColor = isActive ? white : gray
 
   return (
     <Flex direction='column'>
       <Flex align='end'>
-        <Text color={isActive ? white : gray} fontSize='4xl' fontWeight='200'>
+        <Text color={textColor} fontSize='4xl' fontWeight='200'>
           {component.value}
         </Text>
-        <Text color={isActive ? white : gray} fontSize='sm' ml='2' pb='9px'>
+        <Text color={textColor} fontSize='sm' ml='2' pb='9px'>
           {component.valueExtra ?? ''}
         </Text>
       </Flex>

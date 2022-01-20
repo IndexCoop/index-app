@@ -6,7 +6,7 @@ export const Button = {
     px: 6,
     py: 4,
     _disabled: {
-      backgroundColor: 'rgba(132, 132, 132, 0,12)',
+      backgroundColor: 'rgba(132, 132, 132, 0.12)',
       borderColor: '#555555',
       color: '#555555',
     },
@@ -14,7 +14,7 @@ export const Button = {
   // TODO: update variants with correct imported colors
   variants: {
     green: {
-      backgroundColor: 'rgba(9, 170, 116, 0,12)',
+      backgroundColor: 'rgba(9, 170, 116, 0.12)',
       borderColor: '#09AA74',
       color: '#09AA74',
     },
