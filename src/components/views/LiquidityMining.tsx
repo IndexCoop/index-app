@@ -1,5 +1,6 @@
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Flex, Spacer } from '@chakra-ui/react'
 
+import AllAssets from 'components/mining/AllAssets'
 import MiningProgram, { Program } from 'components/mining/MiningProgram'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
@@ -54,14 +55,24 @@ const LiquidityMining = () => {
           title='Liquidity Mining Programs'
           subtitle='Earn rewards for supplying liquidity for Index Coop products'
         />
-        <Flex direction='column' w='50%'>
-          {programs.map((program, index) => {
-            return (
-              <Box key={index} my='10'>
-                <MiningProgram program={program} />
-              </Box>
-            )
-          })}
+        <Flex>
+          <Flex direction='column' w='50%'>
+            {programs.map((program, index) => {
+              return (
+                <Box key={index} my='10'>
+                  <MiningProgram program={program} />
+                </Box>
+              )
+            })}
+          </Flex>
+          <Spacer />
+          <Flex minW='420px' my='10'>
+            <AllAssets
+              isActive={true}
+              capitalInFarms='$1.24bln'
+              indexPrice='$645.90'
+            />
+          </Flex>
         </Flex>
       </Box>
     </Page>
