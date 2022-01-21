@@ -5,18 +5,18 @@ export const Button = {
     fontWeight: 'bold',
     px: 6,
     py: 4,
+    _disabled: {
+      backgroundColor: 'rgba(132, 132, 132, 0.12)',
+      borderColor: '#555555',
+      color: '#555555',
+    },
   },
   // TODO: update variants with correct imported colors
   variants: {
-    gray: {
-      backgroundColor: 'rgba(128, 128, 128, 0.2)',
-      borderColor: 'gray',
-      color: 'gray',
-    },
     green: {
-      backgroundColor: 'rgba(0, 128, 0, 0.2)',
-      borderColor: 'green',
-      color: 'green',
+      backgroundColor: 'rgba(9, 170, 116, 0.12)',
+      borderColor: '#09AA74',
+      color: '#09AA74',
     },
     purple: {
       backgroundColor: 'rgba(128, 0, 128, 0.2)',
