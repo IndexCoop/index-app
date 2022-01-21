@@ -1,13 +1,20 @@
+import { useState } from 'react'
+
 import { Box, Flex, Spacer } from '@chakra-ui/react'
 
 import AllAssets from 'components/mining/AllAssets'
 import MiningProgram, { Program } from 'components/mining/MiningProgram'
+import WarningMessage from 'components/mining/WarningMessage'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
 
 const LiquidityMining = () => {
   const { dpi } = useMarketData()
+
+  const [warning, setWarning] = useState<string | null>(
+    'Metaverse Index Liquidity Mining Rewards go live April 8th, 12pm PST.'
+  )
 
   const programs: Program[] = [
     {
@@ -48,6 +55,10 @@ const LiquidityMining = () => {
     },
   ]
 
+  const closeWarningMessage = () => {
+    setWarning(null)
+  }
+
   return (
     <Page>
       <Box minW='1280px' mx='auto'>
@@ -55,6 +66,9 @@ const LiquidityMining = () => {
           title='Liquidity Mining Programs'
           subtitle='Earn rewards for supplying liquidity for Index Coop products'
         />
+        {warning && (
+          <WarningMessage message={warning} closeAction={closeWarningMessage} />
+        )}
         <Flex>
           <Flex direction='column' w='50%'>
             {programs.map((program, index) => {
