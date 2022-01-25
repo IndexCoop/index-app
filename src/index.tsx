@@ -8,10 +8,10 @@ import theme from 'theme'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { Config, DAppProvider, Mainnet } from '@usedapp/core'
 
+import Dashboard from 'components/views/Dashboard'
 import DPI from 'components/views/DPI'
+import LiquidityMining from 'components/views/LiquidityMining'
 import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
-
-import App from './App'
 
 import './index.css'
 
@@ -38,7 +38,8 @@ ReactDOM.render(
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<App />} />
+          <Route path='/' element={<Dashboard />} />
+          <Route path='/lm' element={<LiquidityMining />} />
           <Route path='/dpi' element={<DPI />} />
         </Routes>
       </BrowserRouter>
