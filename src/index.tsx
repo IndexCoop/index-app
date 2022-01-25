@@ -8,7 +8,7 @@ import theme from 'theme'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { Config, DAppProvider, Mainnet } from '@usedapp/core'
 
-import Dashboard from 'components/views/Dashboard'
+import Dashboard from 'components/views/dashboard'
 import DPI from 'components/views/DPI'
 import LiquidityMining from 'components/views/LiquidityMining'
 import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
