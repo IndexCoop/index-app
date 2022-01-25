@@ -23,6 +23,7 @@ import {
   mviTokenPolygonAddress,
 } from 'constants/ethContractAddresses'
 import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
+import { preciseDiv, preciseMul } from 'utils'
 import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 import { getSetDetails } from 'utils/setjsApi'
 import { getTokenList, TokenData as Token } from 'utils/tokenlists'
@@ -336,30 +337,23 @@ async function convertPositionToSetComponent(
     }
   }
 
-  const quantity = position.unit.div(BigNumber.from(10).pow(token.decimals))
-  const totalPriceUsd = quantity.mul(
+  const totalPriceUsd = preciseMul(
+    position.unit,
     ethers.utils.parseEther(componentPriceUsd.toString())
   )
-  const percentOfSet = totalPriceUsd
-    .div(ethers.utils.parseEther(setPriceUsd.toString()))
-    .mul(100)
-
-  console.log(
-    'numbers working?',
-    position.unit.toString(),
-    quantity.toString(),
-    totalPriceUsd.toString(),
-    percentOfSet.toString()
+  const percentOfSet = preciseMul(
+    preciseDiv(totalPriceUsd, ethers.utils.parseEther(setPriceUsd.toString())),
+    ethers.utils.parseEther('100')
   )
 
   return {
     address: position.component,
     id: token.name.toLowerCase(),
-    quantity: quantity.toString(),
+    quantity: ethers.utils.formatEther(position.unit),
     symbol: token.symbol,
     name: token.name,
     image: token.logoURI,
-    totalPriceUsd: totalPriceUsd.toString(),
+    totalPriceUsd: ethers.utils.formatEther(totalPriceUsd.toString()),
     dailyPercentChange: componentPriceChangeUsd.toString(),
     percentOfSet: percentOfSet.toString(),
     percentOfSetNumber: percentOfSet,

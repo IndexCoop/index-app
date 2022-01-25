@@ -11,7 +11,7 @@ export const selectLatestMarketData = (marketData?: number[][]) =>
  * @returns
  */
 export const toWei = (number: number, power: number = 18): BigNumber => {
-  return parseEther(number.toString()).mul(BigNumber.from(10).pow(18 -  power))
+  return parseEther(number.toString()).mul(BigNumber.from(10).pow(18 - power))
 }
 
 /**
@@ -29,5 +29,6 @@ export const preciseMul = (a: BigNumber, b: BigNumber): BigNumber => {
 }
 
 export const preciseDiv = (a: BigNumber, b: BigNumber): BigNumber => {
+  if (b.isZero()) return BigNumber.from(0)
   return a.mul(toWei(1)).div(b)
 }

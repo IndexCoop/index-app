@@ -60,7 +60,7 @@ export const Ethereum2xFLIP: ProductToken = {
   address: undefined,
   polygonAddress: tokenAddresses.eth2xflipTokenAddress,
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
-  coingeckoId: 'index-coop-eth-2x-flexible-leverage-index-polygon',
+  coingeckoId: 'index-coop-eth-2x-flexible-leverage-index',
   tokensetsId: 'eth2x-fli-p',
   fees: {
     streamingFee: '1.95%',
@@ -124,7 +124,7 @@ export const GmiIndex: ProductToken = {
   name: 'Bankless DeFi Innovation Index',
   symbol: 'GMI',
   address: tokenAddresses.gmiTokenAddress,
-  polygonAddress: undefined, //tokenAddresses.gmiTokenPolygonAddress,
+  polygonAddress: tokenAddresses.gmiTokenPolygonAddress,
   image: gmiLogo,
   coingeckoId: 'bankless-defi-innovation-index',
   tokensetsId: 'gmi',
