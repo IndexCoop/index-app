@@ -8,19 +8,18 @@ import theme from 'theme'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { Config, DAppProvider, Mainnet } from '@usedapp/core'
 
+import Dashboard from 'components/views/dashboard'
 import DPI from 'components/views/DPI'
+import LiquidityMining from 'components/views/LiquidityMining'
 import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
 import SetComponentsProvider from 'contexts/SetComponents/SetComponentsProvider'
-
-import App from './App'
 
 import './index.css'
 
 const config: Config = {
   readOnlyChainId: Mainnet.chainId,
   readOnlyUrls: {
-    [Mainnet.chainId]:
-      'https://mainnet.infura.io/v3/62687d1a985d4508b2b7a24827551934',
+    [Mainnet.chainId]: process.env.REACT_APP_MAINNET_INFURA_API ?? '',
   },
 }
 
@@ -42,7 +41,8 @@ ReactDOM.render(
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<App />} />
+          <Route path='/' element={<Dashboard />} />
+          <Route path='/lm' element={<LiquidityMining />} />
           <Route path='/dpi' element={<DPI />} />
         </Routes>
       </BrowserRouter>
