@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
+import { ethers } from 'ethers'
 import {
   CoinGeckoCoinPrices,
   Position,
@@ -22,7 +23,6 @@ import {
   mviTokenPolygonAddress,
 } from 'constants/ethContractAddresses'
 import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
-import { fromWei, preciseDiv, preciseMul, toWei } from 'utils'
 import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 import { getSetDetails } from 'utils/setjsApi'
 import { getTokenList, TokenData as Token } from 'utils/tokenlists'
@@ -336,29 +336,21 @@ async function convertPositionToSetComponent(
     }
   }
 
-  const valuePerToken = preciseMul(position.unit, toWei(componentPriceUsd)) // per 1e18  ---- valuePerToken 350172275 62840000000000000000 22004825761
-  const percentOfSet2 = preciseDiv(valuePerToken, toWei(setPriceUsd)) // valuePerToken / set price ----- percentOfSet2 22004825761 8 102801534272785670000
-
-  console.log(
-    'valuePerToken',
-    position.unit.toString(),
-    toWei(componentPriceUsd).toString(),
-    valuePerToken.toString()
-  )
-  console.log(
-    'percentOfSet2',
-    valuePerToken.toString(),
-    token.decimals,
-    toWei(setPriceUsd).toString()
-  )
-
   const quantity = position.unit.div(BigNumber.from(10).pow(token.decimals))
   const totalPriceUsd = quantity.mul(
-    BigNumber.from(componentPriceUsd).mul(BigNumber.from(10).pow(18))
+    ethers.utils.parseEther(componentPriceUsd.toString())
   )
   const percentOfSet = totalPriceUsd
-    .div(BigNumber.from(setPriceUsd).mul(BigNumber.from(10).pow(18)))
+    .div(ethers.utils.parseEther(setPriceUsd.toString()))
     .mul(100)
+
+  console.log(
+    'numbers working?',
+    position.unit.toString(),
+    quantity.toString(),
+    totalPriceUsd.toString(),
+    percentOfSet.toString()
+  )
 
   return {
     address: position.component,
