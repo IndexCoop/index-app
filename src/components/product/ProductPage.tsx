@@ -19,13 +19,13 @@ const ProductPage = (props: {
     <Page>
       <Flex direction='column'>
         <ProductHeader tokenData={props.tokenData} />
-        <Flex direction='column' justifyContent='space-around'>
+        <Flex direction='column' justifyContent='space-around' width='70vw'>
           <MarketChart
             productToken={props.tokenData}
             marketData={props.marketData}
           />
           <ProductComponentsTable components={props.components} />
-          <Flex width='40vw'>{props.children}</Flex>
+          <Flex>{props.children}</Flex>
         </Flex>
       </Flex>
     </Page>
