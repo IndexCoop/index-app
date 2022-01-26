@@ -8,10 +8,11 @@ import theme from 'theme'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { Config, DAppProvider, Mainnet } from '@usedapp/core'
 
-import Dashboard from 'components/views/dashboard'
 import DPI from 'components/views/DPI'
+import Dashboard from 'components/views/Homepage'
 import LiquidityMining from 'components/views/LiquidityMining'
 import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
+import SetComponentsProvider from 'contexts/SetComponents/SetComponentsProvider'
 
 import './index.css'
 
@@ -26,7 +27,9 @@ const Providers = (props: { children: any }) => {
   return (
     <ChakraProvider theme={theme}>
       <DAppProvider config={config}>
-        <MarketDataProvider>{props.children}</MarketDataProvider>
+        <MarketDataProvider>
+          <SetComponentsProvider>{props.children}</SetComponentsProvider>
+        </MarketDataProvider>
       </DAppProvider>
     </ChakraProvider>
   )

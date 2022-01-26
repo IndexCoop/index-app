@@ -22,7 +22,7 @@ const Header = () => {
   return (
     <Flex
       justifyContent='space-between'
-      width='100vw'
+      width='100%'
       padding='20px'
       alignItems='center'
     >
