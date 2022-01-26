@@ -12,9 +12,7 @@ const DPI = () => {
       tokenData={DefiPulseIndex}
       marketData={dpi || {}}
       components={dpiComponents || []}
-    >
-      <div>DPI Test Test</div>
-    </ProductPage>
+    ></ProductPage>
   )
 }
 

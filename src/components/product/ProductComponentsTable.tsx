@@ -61,7 +61,7 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
     return <Text title='Allocations'>Connect wallet to view allocations</Text>
   }
   return (
-    <Flex title='Allocations' direction='row' alignItems='start' width='40vw'>
+    <Flex title='Allocations' direction='row' alignItems='start' width='60vw'>
       <Chart data={props.components.map(mapSetComponentToPosition)} />
       <Flex direction='column' alignItems='center'>
         <Table variant='simple'>
@@ -120,8 +120,6 @@ const ComponentRow = (props: { component: SetComponent }) => {
 }
 
 const Chart = (props: { data: Position[] }) => {
-  console.log('data', props.data)
-
   return (
     <Box margin='70px 30px 0 30px'>
       <PieChart width={300} height={300}>

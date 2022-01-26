@@ -17,7 +17,7 @@ const ProductPage = (props: {
 }) => {
   return (
     <Page>
-      <Flex direction='column'>
+      <Flex direction='column' width='100vw'>
         <ProductHeader tokenData={props.tokenData} />
         <Flex direction='column' justifyContent='space-around' width='70vw'>
           <MarketChart
