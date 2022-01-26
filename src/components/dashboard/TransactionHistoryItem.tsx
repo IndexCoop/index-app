@@ -2,21 +2,24 @@ import { Box, Flex, Image, Link, Spacer, Text } from '@chakra-ui/react'
 
 import historyLinkIcon from 'assets/history-link-icon.svg'
 
-interface TransactionHistoryItem {
-  title: string
+export interface TransactionHistoryItem {
+  type: 'Send' | 'Receive'
   date: string
-  url: string
+  from?: string
+  to?: string
+  value: number
+  explorerUrl: string
 }
 
-const TransactionHistoryItem = (props: {
+const TransactionHistoryItemView = (props: {
   item: TransactionHistoryItem
   my: string
 }) => {
   const { item, my } = props
   return (
-    <Link href={item.url} isExternal>
+    <Link href={item.explorerUrl} isExternal>
       <Flex my={my}>
-        <Text>{item.title}</Text>
+        <Text>{item.type}</Text>
         <Box px='2.5' py='1.5'>
           <Image src={historyLinkIcon} alt='link icon' />
         </Box>
@@ -27,4 +30,4 @@ const TransactionHistoryItem = (props: {
   )
 }
 
-export default TransactionHistoryItem
+export default TransactionHistoryItemView
