@@ -1,12 +1,18 @@
+import { useEffect, useState } from 'react'
+
 import { Box, Flex, Link, Text } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
+import { useEthers } from '@usedapp/core'
 
 import AllocationChart, { Position } from 'components/dashboard/AllocationChart'
-import TransactionHistoryItem from 'components/dashboard/TransactionHistoryItem'
+import TransactionHistoryItemView, {
+  TransactionHistoryItem,
+} from 'components/dashboard/TransactionHistoryItem'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import SectionTitle from 'components/SectionTitle'
 import { useBalances } from 'hooks/useBalances'
+import { AlchemyApiTransaction, getTransactionHistory } from 'utils/alchemyApi'
 
 function getNumber(balance: BigNumber | undefined): number {
   if (balance === undefined) return -1
@@ -40,7 +46,43 @@ const DownloadCsvView = () => {
   )
 }
 
+function createHistoryItems(
+  transactions: AlchemyApiTransaction[]
+): TransactionHistoryItem[] {
+  const items: TransactionHistoryItem[] = transactions.map((tx) => {
+    const blockNum = tx.blockNum
+    // TODO: get timestamp from block number
+    // TODO: convert timestamp to date
+    const date = ''
+    // TODO: determine type
+    // 'Send' | 'Receive'
+    const type = 'Receive'
+    return {
+      type,
+      date,
+      from: tx.from,
+      to: tx.to,
+      value: tx.value,
+      explorerUrl: `https://etherscan.io/tx/${tx.hash}`,
+    }
+  })
+  return items
+}
+
 const Dashboard = () => {
+  const { account } = useEthers()
+  const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
+
+  useEffect(() => {
+    if (account === null || account === undefined) return
+    const fetchHistory = async () => {
+      const transactions = await getTransactionHistory(account)
+      const historyItems = createHistoryItems(transactions)
+      setHistoryItems(historyItems)
+    }
+    fetchHistory()
+  }, [account])
+
   const {
     dpiBalance,
     mviBalance,
@@ -51,12 +93,6 @@ const Dashboard = () => {
     btcFliBalance,
     ethFliPBalance,
   } = useBalances()
-
-  const historyItems = [
-    { title: 'hello1', date: '1217837268098', url: 'https://etherscan.io/' },
-    { title: 'hello2', date: '1217837268098', url: 'https://etherscan.io/' },
-    { title: 'hello3', date: '1217837268098', url: 'https://etherscan.io/' },
-  ]
 
   const tempPositions = [
     { title: 'DPI', value: dpiBalance },
@@ -99,8 +135,8 @@ const Dashboard = () => {
             title='Transaction History'
             itemRight={<DownloadCsvView />}
           />
-          {historyItems.map((item) => (
-            <TransactionHistoryItem key={item.title} item={item} my='3.5' />
+          {historyItems.map((item, index) => (
+            <TransactionHistoryItemView key={index} item={item} my='3.5' />
           ))}
         </Box>
       </Box>
