@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, Link } from '@chakra-ui/react'
+import { Grid, GridItem, Image, Link, Text } from '@chakra-ui/react'
 
 import { ProductsTableProduct } from 'components/views/Products'
 
@@ -6,19 +6,29 @@ type TickerCellProps = {
   product: ProductsTableProduct
 }
 
-const mockImage = () => (
-  <Box width={'50px'} height={'50px'} bgColor={'purple.500'} />
-)
-
 const TickerCell = ({ product }: TickerCellProps) => {
   return (
-    <Link href={'/' + product.symbol}>
-      <Grid column={2} row={1} width={'250px'}>
+    <Link href={'/' + product.symbol.toLowerCase()}>
+      <Grid
+        width='320px'
+        templateRows='repeat(2, 1fr)'
+        templateColumns='70px auto'
+      >
         <GridItem colStart={1} rowSpan={2}>
-          {mockImage()}
+          <Image
+            src={product.image}
+            fallbackSrc='https://app.indexcoop.com/static/media/index-token.c853e1be.png'
+            boxSize={50}
+          />
         </GridItem>
-        <GridItem colStart={2}>{product.name}</GridItem>
-        <GridItem colStart={2}>{product.symbol}</GridItem>
+        <GridItem colStart={2}>
+          <Text fontSize='sm' variant='secondary' align='left'>
+            {product.name}
+          </Text>
+        </GridItem>
+        <GridItem colStart={2}>
+          <Text fontSize='xl'>{product.symbol}</Text>
+        </GridItem>
       </Grid>
     </Link>
   )

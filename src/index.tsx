@@ -10,8 +10,8 @@ import { Config, DAppProvider, Mainnet } from '@usedapp/core'
 
 import DPI from 'components/views/DPI'
 import Dashboard from 'components/views/Homepage'
-import Products from 'components/views/Products'
 import LiquidityMining from 'components/views/LiquidityMining'
+import Products from 'components/views/Products'
 import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
 import SetComponentsProvider from 'contexts/SetComponents/SetComponentsProvider'
 
