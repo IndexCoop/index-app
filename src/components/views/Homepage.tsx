@@ -5,6 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import AllocationChart, { Position } from 'components/dashboard/AllocationChart'
+import QuickTrade from 'components/dashboard/QuickTrade'
 import TransactionHistoryItemView, {
   TransactionHistoryItem,
 } from 'components/dashboard/TransactionHistoryItem'
@@ -182,11 +183,13 @@ const Dashboard = () => {
         <Box my={12}>
           <MarketChart productToken={MetaverseIndex} marketData={mvi || {}} />
           <Flex direction='row'>
-            <Flex direction='column' justifyContent='space-around' w='40%'>
+            <Flex direction='column' grow='1' flexBasis='0'>
               <AllocationChart positions={positions} />
             </Flex>
-            <Box w='120px' />
-            <SectionTitle title='Rewards' />
+            <Box w='24px' />
+            <Flex direction='column' grow='1' flexBasis='0'>
+              <QuickTrade />
+            </Flex>
           </Flex>
         </Box>
         <Box>
