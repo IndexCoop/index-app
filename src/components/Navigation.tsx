@@ -19,7 +19,7 @@ const Navigation = () => {
       marginBottom='20px'
     >
       <NavLink href='/' linkText='Dashboard' />
-      <NavLink href='/dpi' linkText='Products' />
+      <NavLink href='/products' linkText='Products' />
       <NavLink href='/lm' linkText='Liquidity Mining' />
     </Flex>
   )

@@ -28,7 +28,7 @@ export interface TokenMarketDataValues {
   volumes?: number[][]
 }
 
-interface TokenContext {
+export interface TokenContext {
   dpi?: TokenMarketDataValues
   mvi?: TokenMarketDataValues
   bed?: TokenMarketDataValues
