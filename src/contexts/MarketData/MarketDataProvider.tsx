@@ -40,6 +40,8 @@ export interface TokenContext {
   selectLatestMarketData: (...args: any) => number
 }
 
+export type TokenContextKeys = keyof TokenContext
+
 export const MarketDataContext = createContext<TokenContext>({
   selectLatestMarketData: () => 0,
 })

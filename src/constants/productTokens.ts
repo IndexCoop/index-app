@@ -3,6 +3,7 @@ import dataLogo from 'assets/data-logo.png'
 import gmiLogo from 'assets/gmilogo.png'
 import indexLogo from 'assets/index-token.png'
 import * as tokenAddresses from 'constants/ethContractAddresses'
+import { TokenContextKeys } from 'contexts/MarketData/MarketDataProvider'
 
 export const dpiTokenImage =
   'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg'
@@ -14,7 +15,7 @@ export interface ProductToken {
   image: string
   coingeckoId: string
   tokensetsId: string
-  tokenContextKey: string
+  tokenContextKey?: TokenContextKeys
   fees: { streamingFee: string; mintRedeemFee?: string } | undefined
 }
 
@@ -40,7 +41,6 @@ export const IndexToken: ProductToken = {
   image: indexLogo,
   coingeckoId: 'index-cooperative',
   tokensetsId: 'index',
-  tokenContextKey: 'index',
   fees: undefined,
 }
 

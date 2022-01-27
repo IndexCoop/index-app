@@ -5,7 +5,7 @@ import PageTitle from 'components/PageTitle'
 import ProductsTable from 'components/products/ProductsTable'
 import Indices, { IndexToken, ProductToken } from 'constants/productTokens'
 import {
-  TokenContext,
+  TokenContextKeys,
   useMarketData,
 } from 'contexts/MarketData/MarketDataProvider'
 
@@ -29,8 +29,6 @@ export const PriceChangeIntervals: [
   ['3M', 90],
   ['1Y', 365],
 ]
-
-type TokenContextKeys = keyof TokenContext
 
 type PriceChangesProps = {
   daysOfComparison: number
@@ -90,8 +88,8 @@ const appendProductPerformance = ({
 const Products = () => {
   const marketData = useMarketData()
 
-  const getTokenMarketData = (tokenContextKey: TokenContextKeys) => {
-    if (tokenContextKey !== 'selectLatestMarketData') {
+  const getTokenMarketData = (tokenContextKey?: TokenContextKeys) => {
+    if (tokenContextKey && tokenContextKey !== 'selectLatestMarketData') {
       return {
         hourlyPrices: marketData[tokenContextKey]?.hourlyPrices,
         prices: marketData[tokenContextKey]?.prices,
@@ -104,7 +102,7 @@ const Products = () => {
   ).map((product) => {
     return appendProductPerformance({
       product,
-      ...getTokenMarketData(product.tokenContextKey as TokenContextKeys),
+      ...getTokenMarketData(product.tokenContextKey),
     })
   })
 
