@@ -11,6 +11,7 @@ import { Config, DAppProvider, Mainnet } from '@usedapp/core'
 import DPI from 'components/views/DPI'
 import Dashboard from 'components/views/Homepage'
 import LiquidityMining from 'components/views/LiquidityMining'
+import Products from 'components/views/Products'
 import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
 import SetComponentsProvider from 'contexts/SetComponents/SetComponentsProvider'
 
@@ -44,6 +45,7 @@ ReactDOM.render(
           <Route path='/' element={<Dashboard />} />
           <Route path='/lm' element={<LiquidityMining />} />
           <Route path='/dpi' element={<DPI />} />
+          <Route path='/products' element={<Products />} />
         </Routes>
       </BrowserRouter>
     </Providers>
