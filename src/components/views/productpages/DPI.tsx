@@ -1,4 +1,3 @@
-import Page from 'components/Page'
 import ProductPage from 'components/product/ProductPage'
 import { DefiPulseIndex } from 'constants/productTokens'
 import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
