@@ -67,11 +67,12 @@ const AllocationChart = (props: { positions: Position[] }) => (
     border='2px solid #F7F1E4'
     borderRadius='16px'
     direction='column'
-    fontWeight='700'
     py='20px'
     px='40px'
   >
-    <Text fontSize='24px'>Distribution of Products</Text>
+    <Text fontSize='24px' fontWeight='700'>
+      Distribution of Products
+    </Text>
     <Flex w='100%' minH='240'>
       <Box my='40px' mr='48px'>
         <Chart data={props.positions} />
