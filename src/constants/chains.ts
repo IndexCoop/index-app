@@ -1,6 +1,7 @@
 export type ChainData = {
   name: string
   chainId: number
+  chainId0x: string
   rpcUrl: string
   icon: string
   coingeckoId: string
@@ -15,6 +16,7 @@ export type ChainData = {
 export const MAINNET: ChainData = {
   name: 'Ethereum',
   chainId: 1,
+  chainId0x: '0x1',
   rpcUrl: 'https://mainnet.eth.aragon.network/',
   icon: 'https://raw.githubusercontent.com/sushiswap/icons/master/network/mainnet.jpg',
   coingeckoId: 'ethereum',
@@ -29,6 +31,7 @@ export const MAINNET: ChainData = {
 export const POLYGON: ChainData = {
   name: 'Polygon',
   chainId: 137,
+  chainId0x: '0x89',
   rpcUrl: 'https://rpc-mainnet.maticvigil.com/',
   icon: 'https://raw.githubusercontent.com/sushiswap/icons/master/network/polygon.jpg',
   coingeckoId: 'polygon-pos',
@@ -47,13 +50,13 @@ export const switchNetwork = (
 ) => {
   if (chaindata.chainId === MAINNET.chainId) {
     library?.send('wallet_switchEthereumChain', [
-      { chainId: MAINNET.chainId },
+      { chainId: MAINNET.chainId0x },
       account,
     ])
   } else {
     library?.send('wallet_addEthereumChain', [
       {
-        chainId: chaindata.chainId,
+        chainId: chaindata.chainId0x,
         chainName: chaindata.name,
         nativeCurrency: chaindata.nativeCurrency,
         rpcUrls: [chaindata.rpcUrl],
@@ -62,4 +65,14 @@ export const switchNetwork = (
       account,
     ])
   }
+}
+
+export const setMainnet = (
+  library: any,
+  account: string | null | undefined
+) => {
+  library?.send('wallet_switchEthereumChain', [
+    { chainId: MAINNET.chainId0x },
+    account,
+  ])
 }
