@@ -36,17 +36,17 @@ const Providers = (props: { children: any }) => {
 
 const App = () => {
   return (
-    <Providers>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <BrowserRouter>
+    <BrowserRouter>
+      <Providers>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
           <Route path='/' element={<Dashboard />} />
           <Route path='/lm' element={<LiquidityMining />} />
           <Route path='/dpi' element={<DPI />} />
           <Route path='/products' element={<Products />} />
         </Routes>
-      </BrowserRouter>
-    </Providers>
+      </Providers>
+    </BrowserRouter>
   )
 }
 
