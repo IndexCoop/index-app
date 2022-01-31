@@ -48,6 +48,14 @@ ReactDOM.render(
             <Route path='lm' element={<LiquidityMining />} />
             <Route path='dpi' element={<DPI />} />
             <Route path='products' element={<Products />} />
+            <Route
+              path='*'
+              element={
+                <main style={{ padding: '1rem' }}>
+                  <p>There's nothing here!</p>
+                </main>
+              }
+            />
           </Route>
         </Routes>
       </Providers>
