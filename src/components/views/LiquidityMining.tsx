@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import { Box, Button, Flex, Spacer } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
@@ -55,6 +56,10 @@ const LiquidityMining = () => {
   const [showFarms, setShowFarms] = useState(true)
   const [warning, setWarning] = useState<string | null>(null)
 
+  const closeWarningMessage = () => {
+    setWarning(null)
+  }
+
   useEffect(() => {
     if (chainId !== MAINNET_CHAIN_DATA.chainId) {
       setWarning('Liquidity Mining is only available on Mainnet')
@@ -64,10 +69,6 @@ const LiquidityMining = () => {
       setShowFarms(true)
     }
   }, [chainId])
-
-  const closeWarningMessage = () => {
-    setWarning(null)
-  }
 
   return (
     <Page>
