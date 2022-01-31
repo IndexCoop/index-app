@@ -19,7 +19,7 @@ This project was created with [create-react-app](https://create-react-app.dev/).
 
 1. Make a copy of the prod env file
    ```bash
-   cp .env.prod .env
+   cp .env.default .env
    ```
 1. Install all the dependencies
    ```bash

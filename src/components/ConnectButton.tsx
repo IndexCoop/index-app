@@ -1,6 +1,6 @@
 import { Button, Flex, Text, useDisclosure } from '@chakra-ui/react'
 import { useEthers, useLookupAddress } from '@usedapp/core'
-
+import * as Sentry from "@sentry/react"
 import ConnectModal from './ConnectModal'
 
 const ConnectButton = (props: { handleOpenModal: any }) => {
@@ -17,7 +17,20 @@ const ConnectButton = (props: { handleOpenModal: any }) => {
     onClose()
   }
 
-  const getAccountName = () => {
+  const sendWalletConnectionEvent = () => {
+    Sentry.captureMessage('successfulWalletConnection!!!', {
+      user: {
+        name: account
+      }
+    })
+  }
+
+  const handleAccount = () => {
+    sendWalletConnectionEvent()
+    return formatAccountName()
+  }
+
+  const formatAccountName = () => {
     if (ens) return `${ens}`
     return (
       account &&
@@ -59,7 +72,7 @@ const ConnectButton = (props: { handleOpenModal: any }) => {
     return (
       <Flex direction='row' alignItems='center'>
         <Text fontSize='lg' paddingRight='10px'>
-          {getAccountName()}
+          {handleAccount()}
         </Text>
         <Button
           onClick={handleDisconnect}
