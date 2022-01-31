@@ -18,7 +18,7 @@ const ConnectButton = (props: { handleOpenModal: any }) => {
   }
 
   const sendWalletConnectionEvent = () => {
-    Sentry.captureMessage('successfulWalletConnection!!!', {
+    Sentry.captureMessage('Successful Wallet Connection', {
       user: {
         name: account
       }
