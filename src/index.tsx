@@ -43,12 +43,11 @@ ReactDOM.render(
       <Providers>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
-          <Route path='/' element={<App />}>
-            <Route path='' element={<Dashboard />} />
-            <Route path='lm' element={<LiquidityMining />} />
-            <Route path='dpi' element={<DPI />} />
-            <Route path='products' element={<Products />} />
-          </Route>
+          <Route path='/' element={<App />}></Route>
+          <Route path='/' element={<Dashboard />} />
+          <Route path='/lm' element={<LiquidityMining />} />
+          <Route path='/dpi' element={<DPI />} />
+          <Route path='/products' element={<Products />} />
         </Routes>
       </Providers>
     </BrowserRouter>
