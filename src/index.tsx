@@ -3,6 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
+import App from 'App'
 import theme from 'theme'
 
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
@@ -38,17 +39,19 @@ const Providers = (props: { children: any }) => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <Providers>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <BrowserRouter>
+    <BrowserRouter>
+      <Providers>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
-          <Route path='/' element={<Dashboard />} />
-          <Route path='/lm' element={<LiquidityMining />} />
-          <Route path='/dpi' element={<DPI />} />
-          <Route path='/products' element={<Products />} />
+          <Route path='/' element={<App />}>
+            <Route path='' element={<Dashboard />} />
+            <Route path='lm' element={<LiquidityMining />} />
+            <Route path='dpi' element={<DPI />} />
+            <Route path='products' element={<Products />} />
+          </Route>
         </Routes>
-      </BrowserRouter>
-    </Providers>
+      </Providers>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 )
