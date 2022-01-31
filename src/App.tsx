@@ -40,10 +40,11 @@ const App = () => {
       <Providers>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
-          <Route path='/' element={<Dashboard />} />
-          <Route path='/lm' element={<LiquidityMining />} />
-          <Route path='/dpi' element={<DPI />} />
-          <Route path='/products' element={<Products />} />
+          <Route path='/' element={<Dashboard />}>
+            <Route path='lm' element={<LiquidityMining />} />
+            <Route path='dpi' element={<DPI />} />
+            <Route path='products' element={<Products />} />
+          </Route>
         </Routes>
       </Providers>
     </BrowserRouter>
