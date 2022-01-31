@@ -19,8 +19,8 @@ const Navigation = () => {
       marginBottom='20px'
     >
       <NavLink href='/' linkText='Dashboard' />
-      <NavLink href='/products' linkText='Products' />
-      <NavLink href='/lm' linkText='Liquidity Mining' />
+      <NavLink href='/#/products' linkText='Products' />
+      <NavLink href='/#/lm' linkText='Liquidity Mining' />
     </Flex>
   )
 }

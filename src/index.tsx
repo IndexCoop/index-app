@@ -1,7 +1,7 @@
 import React from 'react'
 
 import ReactDOM from 'react-dom'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom'
 
 import App from 'App'
 import theme from 'theme'
@@ -39,7 +39,7 @@ const Providers = (props: { children: any }) => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <Providers>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
@@ -48,18 +48,10 @@ ReactDOM.render(
             <Route path='lm' element={<LiquidityMining />} />
             <Route path='dpi' element={<DPI />} />
             <Route path='products' element={<Products />} />
-            <Route
-              path='*'
-              element={
-                <main style={{ padding: '1rem' }}>
-                  <p>There's nothing here!</p>
-                </main>
-              }
-            />
           </Route>
         </Routes>
       </Providers>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>,
   document.getElementById('root')
 )
