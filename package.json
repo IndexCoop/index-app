@@ -6,7 +6,7 @@
     "@chakra-ui/react": "^1.7.3",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@indexcoop/tokenlists": "^1.12.0",
+    "@indexcoop/tokenlists": "^1.13.0",
     "@sentry/react": "^6.16.1",
     "@sentry/tracing": "^6.16.1",
     "@testing-library/jest-dom": "^5.11.4",

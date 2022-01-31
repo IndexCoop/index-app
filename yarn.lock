@@ -2375,10 +2375,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@indexcoop/tokenlists@^1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.12.0.tgz#f779e57642f8c379a670a6ac881ded0ca35c86d0"
-  integrity sha512-LgAeF/FgikHCNWnArVrRp5VErprpklrZ4uOdqBlhA/PuzpJ16fnkmFVF20PAwJYRncZ5tDdVVJnIVNYBlAn9Yw==
+"@indexcoop/tokenlists@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.13.0.tgz#68038c8dd8392a3062644b0e1ed2e28afa69e64b"
+  integrity sha512-rcncIlFqPEDx4773Ogppu6PTftj8I/pr4sCi1+YzKS9JjeoVPSXKZwbCqPEaNSkeZ/FGuTjYpvtJm8RFbxawLg==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -5394,9 +5394,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001181:
-  version "1.0.30001191"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001191.tgz#bacb432b6701f690c8c5f7c680166b9a9f0843d9"
-  integrity sha512-xJJqzyd+7GCJXkcoBiQ1GuxEiOBCLQ0aVW9HMekifZsAVGdj5eJ4mFB9fEhSHipq9IOk/QXFJUiIr9lZT+EsGw==
+  version "1.0.30001301"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001301.tgz"
+  integrity sha512-csfD/GpHMqgEL3V3uIgosvh+SVIQvCh43SNu9HRbP1lnxkKm1kjDG4f32PP571JplkLjfS+mg2p1gxR7MYrrIA==
 
 capture-exit@^2.0.0:
   version "2.0.0"

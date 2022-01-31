@@ -3,6 +3,7 @@ import dataLogo from 'assets/data-logo.png'
 import gmiLogo from 'assets/gmilogo.png'
 import indexLogo from 'assets/index-token.png'
 import * as tokenAddresses from 'constants/ethContractAddresses'
+import { TokenContextKeys } from 'contexts/MarketData/MarketDataProvider'
 
 export const dpiTokenImage =
   'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg'
@@ -14,6 +15,7 @@ export interface ProductToken {
   image: string
   coingeckoId: string
   tokensetsId: string
+  tokenContextKey?: TokenContextKeys
   fees: { streamingFee: string; mintRedeemFee?: string } | undefined
 }
 
@@ -25,6 +27,7 @@ export const DefiPulseIndex: ProductToken = {
   polygonAddress: tokenAddresses.dpiTokenPolygonAddress,
   coingeckoId: 'defipulse-index',
   tokensetsId: 'dpi',
+  tokenContextKey: 'dpi',
   fees: {
     streamingFee: '0.95%',
   },
@@ -49,6 +52,7 @@ export const Ethereum2xFlexibleLeverageIndex: ProductToken = {
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
   coingeckoId: 'eth-2x-flexible-leverage-index',
   tokensetsId: 'ethfli',
+  tokenContextKey: 'ethfli',
   fees: {
     streamingFee: '1.95%',
   },
@@ -60,8 +64,9 @@ export const Ethereum2xFLIP: ProductToken = {
   address: undefined,
   polygonAddress: tokenAddresses.eth2xflipTokenAddress,
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
-  coingeckoId: 'index-coop-eth-2x-flexible-leverage-index-polygon',
+  coingeckoId: 'index-coop-eth-2x-flexible-leverage-index',
   tokensetsId: 'eth2x-fli-p',
+  tokenContextKey: 'ethflip',
   fees: {
     streamingFee: '1.95%',
     mintRedeemFee: '0.1%',
@@ -76,6 +81,7 @@ export const MetaverseIndex: ProductToken = {
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
   coingeckoId: 'metaverse-index',
   tokensetsId: 'mvi',
+  tokenContextKey: 'mvi',
   fees: {
     streamingFee: '0.95%',
   },
@@ -89,6 +95,7 @@ export const Bitcoin2xFlexibleLeverageIndex: ProductToken = {
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
   coingeckoId: 'btc-2x-flexible-leverage-index',
   tokensetsId: 'btcfli',
+  tokenContextKey: 'btcfli',
   fees: {
     streamingFee: '1.95%',
   },
@@ -102,6 +109,7 @@ export const BedIndex: ProductToken = {
   image: bedBorderLogo,
   coingeckoId: 'bankless-bed-index',
   tokensetsId: 'bed',
+  tokenContextKey: 'bed',
   fees: {
     streamingFee: '0.25%',
   },
@@ -115,6 +123,7 @@ export const DataIndex: ProductToken = {
   image: dataLogo,
   coingeckoId: 'data-economy-index',
   tokensetsId: 'data',
+  tokenContextKey: 'data',
   fees: {
     streamingFee: '0.95%',
   },
@@ -124,10 +133,11 @@ export const GmiIndex: ProductToken = {
   name: 'Bankless DeFi Innovation Index',
   symbol: 'GMI',
   address: tokenAddresses.gmiTokenAddress,
-  polygonAddress: undefined, //tokenAddresses.gmiTokenPolygonAddress,
+  polygonAddress: tokenAddresses.gmiTokenPolygonAddress,
   image: gmiLogo,
   coingeckoId: 'bankless-defi-innovation-index',
   tokensetsId: 'gmi',
+  tokenContextKey: 'gmi',
   fees: {
     streamingFee: '1.95%',
   },

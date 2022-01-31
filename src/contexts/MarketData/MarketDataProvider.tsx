@@ -28,7 +28,7 @@ export interface TokenMarketDataValues {
   volumes?: number[][]
 }
 
-interface TokenContext {
+export interface TokenContext {
   dpi?: TokenMarketDataValues
   mvi?: TokenMarketDataValues
   bed?: TokenMarketDataValues
@@ -39,6 +39,8 @@ interface TokenContext {
   gmi?: TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
 }
+
+export type TokenContextKeys = keyof TokenContext
 
 export const MarketDataContext = createContext<TokenContext>({
   selectLatestMarketData: () => 0,

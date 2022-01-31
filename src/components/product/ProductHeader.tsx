@@ -16,13 +16,12 @@ const ProductPageHeader = (props: {
       borderColor='white'
       margin='20px 40px'
       padding='10px'
-      width='80vw'
     >
-      <Text fontSize='4xl' alignSelf='flex-start'>
+      <Text fontSize='4xl' alignSelf='flex-start' fontWeight='bold'>
         {props.tokenData.name}
       </Text>
       <Spacer />
-      <Text fontSize='4xl' marginRight='20px'>
+      <Text fontSize='4xl' marginRight='20px' fontWeight='extrabold'>
         {props.tokenData.symbol}
       </Text>
       <Image src={props.tokenData.image} alt={props.tokenData.name + ' logo'} />

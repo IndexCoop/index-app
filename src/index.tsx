@@ -9,7 +9,11 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { Config, DAppProvider, Mainnet } from '@usedapp/core'
 
 import DPI from 'components/views/DPI'
+import Dashboard from 'components/views/Homepage'
+import LiquidityMining from 'components/views/LiquidityMining'
+import Products from 'components/views/Products'
 import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
+import SetComponentsProvider from 'contexts/SetComponents/SetComponentsProvider'
 
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
@@ -29,7 +33,9 @@ const Providers = (props: { children: any }) => {
   return (
     <ChakraProvider theme={theme}>
       <DAppProvider config={config}>
-        <MarketDataProvider>{props.children}</MarketDataProvider>
+        <MarketDataProvider>
+          <SetComponentsProvider>{props.children}</SetComponentsProvider>
+        </MarketDataProvider>
       </DAppProvider>
     </ChakraProvider>
   )
@@ -51,8 +57,10 @@ ReactDOM.render(
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<App />} />
+          <Route path='/' element={<Dashboard />} />
+          <Route path='/lm' element={<LiquidityMining />} />
           <Route path='/dpi' element={<DPI />} />
+          <Route path='/products' element={<Products />} />
         </Routes>
       </BrowserRouter>
     </Providers>
