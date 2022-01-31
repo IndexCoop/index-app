@@ -1,14 +1,16 @@
 // Index Coop Contract Addresses
 export const airdropAddress = process.env.REACT_APP_INDEX_AIRDROP_ADDRESS
-export const stakingRewardsAddress =
-  process.env.REACT_APP_INDEX_STAKING_REWARDS_ADDRESS
-export const farmTwoAddress = process.env.REACT_APP_FARM_TWO_ADDRESS
-export const mviStakingRewardsAddress =
-  process.env.REACT_APP_MVI_STAKING_REWARDS_ADDRESS
 export const eth2xfliSuppyCapAddress =
   process.env.REACT_APP_ETH2X_FLI_SUPPLY_CAP_ADDRESS
 export const btc2xfliSuppyCapAddress =
   process.env.REACT_APP_BTC2X_FLI_SUPPLY_CAP_ADDRESS
+// Index Coop Contracts - Liquidity Mining
+export const dpi2020StakingRewardsAddress =
+  process.env.REACT_APP_INDEX_STAKING_REWARDS_ADDRESS
+export const dpi2021StakingRewardsAddress =
+  process.env.REACT_APP_FARM_TWO_ADDRESS
+export const mviStakingRewardsAddress =
+  process.env.REACT_APP_MVI_STAKING_REWARDS_ADDRESS
 export const gmiStakingRewardsAddress =
   process.env.REACT_APP_GMI_STAKING_ADDRESS
 
