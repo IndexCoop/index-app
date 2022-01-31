@@ -1,7 +1,7 @@
 import React from 'react'
 
 import ReactDOM from 'react-dom'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 import App from 'App'
 import theme from 'theme'
@@ -39,17 +39,19 @@ const Providers = (props: { children: any }) => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <Router>
       <Providers>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
-          <Route path='/' element={<Dashboard />} />
-          <Route path='/lm' element={<LiquidityMining />} />
-          <Route path='/dpi' element={<DPI />} />
-          <Route path='/products' element={<Products />} />
+          <Route path='/' element={<App />}>
+            <Route path='' element={<Dashboard />} />
+            <Route path='lm' element={<LiquidityMining />} />
+            <Route path='dpi' element={<DPI />} />
+            <Route path='products' element={<Products />} />
+          </Route>
         </Routes>
       </Providers>
-    </BrowserRouter>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 )
