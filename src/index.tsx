@@ -35,16 +35,14 @@ const config: Config = {
 }
 
 const Providers = (props: { children: any }) => {
-  return (
-    <ChakraProvider theme={theme}>
-      <DAppProvider config={config}>
-        <MarketDataProvider>
-          <SetComponentsProvider>{props.children}</SetComponentsProvider>
-        </MarketDataProvider>
-      </DAppProvider>
-    </ChakraProvider>
-  )
+  return <ChakraProvider theme={theme}>{props.children}</ChakraProvider>
 }
+
+// <DAppProvider config={config}>
+//   <MarketDataProvider>
+//     <SetComponentsProvider>{props.children}</SetComponentsProvider>
+//   </MarketDataProvider>
+// </DAppProvider>
 
 Sentry.init({
   dsn: 'https://c0ccb3dd6abf4178b3894c7f834da09d@o1122170.ingest.sentry.io/6159535',
@@ -81,12 +79,14 @@ export function App2(props: { text: string }) {
 const rootElement = document.getElementById('root')
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <Routes>
-        <Route path='/' element={<Dashboard />} />
-        <Route path='test' element={<App2 text={'2'} />} />
-      </Routes>
-    </Router>
+    <Providers>
+      <Router>
+        <Routes>
+          <Route path='/' element={<Dashboard />} />
+          <Route path='test' element={<App2 text={'2'} />} />
+        </Routes>
+      </Router>
+    </Providers>
   </React.StrictMode>,
   rootElement
 )
