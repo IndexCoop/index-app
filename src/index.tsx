@@ -35,7 +35,13 @@ const config: Config = {
 }
 
 const Providers = (props: { children: any }) => {
-  return <ChakraProvider theme={theme}>{props.children}</ChakraProvider>
+  return (
+    <ChakraProvider theme={theme}>
+      <DAppProvider config={config}>
+        <MarketDataProvider>{props.children}</MarketDataProvider>
+      </DAppProvider>
+    </ChakraProvider>
+  )
 }
 
 // <DAppProvider config={config}>
@@ -83,6 +89,7 @@ ReactDOM.render(
       <Router>
         <Routes>
           <Route path='/' element={<Dashboard />} />
+          <Route path='products' element={<Products />} />
           <Route path='test' element={<App2 text={'2'} />} />
         </Routes>
       </Router>
