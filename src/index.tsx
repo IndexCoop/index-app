@@ -82,8 +82,8 @@ const rootElement = document.getElementById('root')
 ReactDOM.render(
   <Router>
     <Routes>
-      <Route path='/' element={<App2 text={''} />} />
-      <Route path='index' element={<App2 text={'Token'} />} />
+      <Route path='/' element={<App2 text={'1'} />} />
+      <Route path='test' element={<App2 text={'2'} />} />
     </Routes>
   </Router>,
   rootElement
