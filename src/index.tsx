@@ -34,11 +34,13 @@ const config: Config = {
   },
 }
 
+console.log(process.env.REACT_APP_MAINNET_INFURA_API, config.readOnlyUrls)
+
 const Providers = (props: { children: any }) => {
   return (
     <ChakraProvider theme={theme}>
       <DAppProvider config={config}>
-        <MarketDataProvider>{props.children}</MarketDataProvider>
+        <SetComponentsProvider>{props.children}</SetComponentsProvider>
       </DAppProvider>
     </ChakraProvider>
   )
