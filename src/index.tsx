@@ -82,13 +82,10 @@ const rootElement = document.getElementById('root')
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <Providers>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <Routes>
-          <Route path='/' element={<Dashboard />} />
-          <Route path='test' element={<App2 text={'2'} />} />
-        </Routes>
-      </Providers>
+      <Routes>
+        <Route path='/' element={<Dashboard />} />
+        <Route path='test' element={<App2 text={'2'} />} />
+      </Routes>
     </Router>
   </React.StrictMode>,
   rootElement
