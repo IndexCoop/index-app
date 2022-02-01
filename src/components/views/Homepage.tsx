@@ -13,11 +13,36 @@ import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import MarketChart from 'components/product/MarketChart'
 import SectionTitle from 'components/SectionTitle'
-import { MetaverseIndex } from 'constants/productTokens'
+import {
+  BedIndex,
+  Bitcoin2xFlexibleLeverageIndex,
+  DataIndex,
+  DefiPulseIndex,
+  Ethereum2xFlexibleLeverageIndex,
+  GmiIndex,
+  IndexToken,
+  MetaverseIndex,
+} from 'constants/productTokens'
 import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
 import { useSetComponents } from 'contexts/SetComponents/SetComponentsProvider'
 import { useBalances } from 'hooks/useBalances'
 import { AlchemyApiTransaction, getTransactionHistory } from 'utils/alchemyApi'
+
+const tokenList1 = [
+  { symbol: 'ETH', icon: '' },
+  { symbol: 'DAI', icon: '' },
+  { symbol: 'USDC', icon: '' },
+]
+const tokenList2 = [
+  { symbol: 'DPI', icon: DefiPulseIndex.image },
+  { symbol: 'MVI', icon: MetaverseIndex.image },
+  { symbol: 'BED', icon: BedIndex.image },
+  { symbol: 'DATA', icon: DataIndex.image },
+  { symbol: 'GMI', icon: GmiIndex.image },
+  { symbol: 'ETHFLI', icon: Ethereum2xFlexibleLeverageIndex.image },
+  { symbol: 'BTCFLI', icon: Bitcoin2xFlexibleLeverageIndex.image },
+  { symbol: 'INDEX', icon: IndexToken.image },
+]
 
 function getNumber(balance: BigNumber | undefined): number {
   if (balance === undefined) return -1
@@ -188,7 +213,7 @@ const Dashboard = () => {
             </Flex>
             <Box w='24px' />
             <Flex direction='column' grow='1' flexBasis='0'>
-              <QuickTrade />
+              <QuickTrade tokenList1={tokenList1} tokenList2={tokenList2} />
             </Flex>
           </Flex>
         </Box>
