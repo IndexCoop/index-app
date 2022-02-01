@@ -56,26 +56,35 @@ Sentry.init({
   tracesSampleRate: 1.0,
 })
 
+export function App2(props: { text: string }) {
+  return (
+    <div>
+      <h1>INDEX {props.text}</h1>
+    </div>
+  )
+}
+
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <Router>
+//       <Providers>
+//         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+//         <Routes>
+//           <Route path='/' element={<Dashboard />} />
+//         </Routes>
+//       </Providers>
+//     </Router>
+//   </React.StrictMode>,
+//   document.getElementById('root')
+// )
+
+const rootElement = document.getElementById('root')
 ReactDOM.render(
-  <React.StrictMode>
-    <Router>
-      <Providers>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <Routes>
-          <Route path='/' element={<Dashboard />} />
-          <Route path='/lm' element={<LiquidityMining />} />
-          <Route path='/products' element={<Products />} />
-          <Route path='/dpi' element={<DPI />} />
-          <Route path='/mvi' element={<MVI />} />
-          <Route path='/eth2x-fli' element={<ETH2xFLI />} />
-          <Route path='/eth2x-fli-p' element={<ETH2xFLIP />} />
-          <Route path='/btc2x-fli' element={<BTC2xFLI />} />
-          <Route path='/bed' element={<BED />} />
-          <Route path='/data' element={<DATA />} />
-          <Route path='/gmi' element={<GMI />} />
-        </Routes>
-      </Providers>
-    </Router>
-  </React.StrictMode>,
-  document.getElementById('root')
+  <Router>
+    <Routes>
+      <Route path='/' element={<App2 text={''} />} />
+      <Route path='index' element={<App2 text={'Token'} />} />
+    </Routes>
+  </Router>,
+  rootElement
 )
