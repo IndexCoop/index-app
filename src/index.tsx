@@ -62,19 +62,17 @@ ReactDOM.render(
       <Providers>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
-          <Route path='/' element={<App />}>
-            <Route path='' element={<Dashboard />} />
-            <Route path='lm' element={<LiquidityMining />} />
-            <Route path='products' element={<Products />} />
-            <Route path='dpi' element={<DPI />} />
-            <Route path='mvi' element={<MVI />} />
-            <Route path='eth2x-fli' element={<ETH2xFLI />} />
-            <Route path='eth2x-fli-p' element={<ETH2xFLIP />} />
-            <Route path='btc2x-fli' element={<BTC2xFLI />} />
-            <Route path='bed' element={<BED />} />
-            <Route path='data' element={<DATA />} />
-            <Route path='gmi' element={<GMI />} />
-          </Route>
+          <Route path='/' element={<Dashboard />} />
+          <Route path='lm' element={<LiquidityMining />} />
+          <Route path='products' element={<Products />} />
+          <Route path='dpi' element={<DPI />} />
+          <Route path='mvi' element={<MVI />} />
+          <Route path='eth2x-fli' element={<ETH2xFLI />} />
+          <Route path='eth2x-fli-p' element={<ETH2xFLIP />} />
+          <Route path='btc2x-fli' element={<BTC2xFLI />} />
+          <Route path='bed' element={<BED />} />
+          <Route path='data' element={<DATA />} />
+          <Route path='gmi' element={<GMI />} />
         </Routes>
       </Providers>
     </Router>
