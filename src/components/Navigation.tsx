@@ -2,7 +2,7 @@ import { Flex, Link, Text } from '@chakra-ui/layout'
 
 const NavLink = (props: { href: string; linkText: string }) => {
   return (
-    <Link paddingRight='20px' href={'/#' + props.href}>
+    <Link paddingRight='20px' href={props.href}>
       <Text fontSize='xl'>{props.linkText}</Text>
     </Link>
   )

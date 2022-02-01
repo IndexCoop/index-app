@@ -1,7 +1,7 @@
 import React from 'react'
 
 import ReactDOM from 'react-dom'
-import { HashRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 import App from 'App'
 import theme from 'theme'
@@ -65,15 +65,8 @@ ReactDOM.render(
           <Route path='/' element={<App />}>
             <Route path='' element={<Dashboard />} />
             <Route path='lm' element={<LiquidityMining />} />
-            <Route path='products' element={<Products />} />
             <Route path='dpi' element={<DPI />} />
-            <Route path='mvi' element={<MVI />} />
-            <Route path='eth2x-fli' element={<ETH2xFLI />} />
-            <Route path='eth2x-fli-p' element={<ETH2xFLIP />} />
-            <Route path='btc2x-fli' element={<BTC2xFLI />} />
-            <Route path='bed' element={<BED />} />
-            <Route path='data' element={<DATA />} />
-            <Route path='gmi' element={<GMI />} />
+            <Route path='products' element={<Products />} />
           </Route>
         </Routes>
       </Providers>
