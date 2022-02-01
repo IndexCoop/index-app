@@ -80,11 +80,13 @@ export function App2(props: { text: string }) {
 
 const rootElement = document.getElementById('root')
 ReactDOM.render(
-  <Router>
-    <Routes>
-      <Route path='/' element={<App2 text={'1'} />} />
-      <Route path='test' element={<App2 text={'2'} />} />
-    </Routes>
-  </Router>,
+  <React.StrictMode>
+    <Router>
+      <Routes>
+        <Route path='/' element={<App2 text={'1'} />} />
+        <Route path='test' element={<App2 text={'2'} />} />
+      </Routes>
+    </Router>
+  </React.StrictMode>,
   rootElement
 )
