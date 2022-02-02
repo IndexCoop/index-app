@@ -63,7 +63,7 @@ ReactDOM.render(
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
           <Route path='/' element={<App />}>
-            <Route path='' element={<Dashboard />} />
+            <Route index element={<Dashboard />} />
             <Route path='lm' element={<LiquidityMining />} />
             <Route path='products' element={<Products />} />
             <Route path='dpi' element={<DPI />} />
@@ -81,4 +81,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 )
-
