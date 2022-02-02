@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Box, Button, Flex, Spacer } from '@chakra-ui/react'
+import { Box, Button, Flex } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
-import AllAssets from 'components/mining/AllAssets'
 import MiningProgram, { Program } from 'components/mining/MiningProgram'
 import WarningMessage from 'components/mining/WarningMessage'
 import Page from 'components/Page'
@@ -81,7 +80,7 @@ const LiquidityMining = () => {
           <WarningMessage message={warning} closeAction={closeWarningMessage} />
         )}
         <Flex>
-          <Flex direction='column' w='50%'>
+          <Flex direction='column' w='100%' maxWidth={800} mx='auto'>
             {showFarms &&
               programs.map((program, index) => {
                 return (
@@ -100,14 +99,6 @@ const LiquidityMining = () => {
                 </Button>
               </Box>
             )}
-          </Flex>
-          <Spacer />
-          <Flex minW='420px' my='10'>
-            <AllAssets
-              isActive={showFarms}
-              capitalInFarms='$1.24bln'
-              indexPrice='$645.90'
-            />
           </Flex>
         </Flex>
       </Box>
