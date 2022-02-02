@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Link, Td, Tr } from '@chakra-ui/react'
+import { Box, Flex, Image, Link, Td, Text, Tr } from '@chakra-ui/react'
 
 import historyLinkIcon from 'assets/history-link-icon.svg'
 
@@ -10,7 +10,12 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
     <Tr>
       <Td>{item.to}</Td>
       <Td>{item.from}</Td>
-      <Td>{item.date}</Td>
+      <Td>
+        <Flex direction='column'>
+          <Text color='gray'>{item.hash}</Text>
+          <Text>Block {item.date}</Text>
+        </Flex>
+      </Td>
       <Td></Td>
       <Td>
         <Link href={item.explorerUrl} isExternal>

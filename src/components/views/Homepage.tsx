@@ -96,16 +96,15 @@ function createHistoryItems(
 ): TransactionHistoryItem[] {
   const items: TransactionHistoryItem[] = transactions.map((tx) => {
     const blockNum = tx.blockNum
-    // TODO: get timestamp from block number
-    // TODO: convert timestamp to date
-    const date = ''
+    const date = Number(blockNum).toString()
     // TODO: determine type
     // 'Send' | 'Receive'
+    const hash = tx.hash.substring(0, 12) + '...'
     const from = truncateAddress(tx.from)
     const to = truncateAddress(tx.to)
     const type = 'Receive'
     return {
-      hash: tx.hash,
+      hash,
       type,
       date,
       from,
