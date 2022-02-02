@@ -6,9 +6,9 @@ import { useEthers } from '@usedapp/core'
 
 import AllocationChart, { Position } from 'components/dashboard/AllocationChart'
 import QuickTrade from 'components/dashboard/QuickTrade'
-import TransactionHistoryItemView, {
+import TransactionHistoryTable, {
   TransactionHistoryItem,
-} from 'components/dashboard/TransactionHistoryItem'
+} from 'components/dashboard/TransactionHistoryTable'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import MarketChart from 'components/product/MarketChart'
@@ -97,6 +97,7 @@ function createHistoryItems(
     // 'Send' | 'Receive'
     const type = 'Receive'
     return {
+      hash: tx.hash,
       type,
       date,
       from: tx.from,
@@ -222,9 +223,7 @@ const Dashboard = () => {
             title='Transaction History'
             itemRight={<DownloadCsvView />}
           />
-          {historyItems.map((item, index) => (
-            <TransactionHistoryItemView key={index} item={item} my='3.5' />
-          ))}
+          <TransactionHistoryTable items={historyItems} />
         </Box>
       </Box>
     </Page>
