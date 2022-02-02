@@ -85,6 +85,12 @@ const DownloadCsvView = () => {
   )
 }
 
+function truncateAddress(address: string): string {
+  return address.length < 12
+    ? address
+    : `${address.substring(0, 5)}...${address.substring(address.length - 3)}`
+}
+
 function createHistoryItems(
   transactions: AlchemyApiTransaction[]
 ): TransactionHistoryItem[] {
@@ -95,13 +101,15 @@ function createHistoryItems(
     const date = ''
     // TODO: determine type
     // 'Send' | 'Receive'
+    const from = truncateAddress(tx.from)
+    const to = truncateAddress(tx.to)
     const type = 'Receive'
     return {
       hash: tx.hash,
       type,
       date,
-      from: tx.from,
-      to: tx.to,
+      from,
+      to,
       value: tx.value,
       explorerUrl: `https://etherscan.io/tx/${tx.hash}`,
     }
