@@ -5,14 +5,44 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import AllocationChart, { Position } from 'components/dashboard/AllocationChart'
+import QuickTrade from 'components/dashboard/QuickTrade'
 import TransactionHistoryItemView, {
   TransactionHistoryItem,
 } from 'components/dashboard/TransactionHistoryItem'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
+import MarketChart from 'components/product/MarketChart'
 import SectionTitle from 'components/SectionTitle'
+import {
+  BedIndex,
+  Bitcoin2xFlexibleLeverageIndex,
+  DataIndex,
+  DefiPulseIndex,
+  Ethereum2xFlexibleLeverageIndex,
+  GmiIndex,
+  IndexToken,
+  MetaverseIndex,
+} from 'constants/productTokens'
+import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
+import { useSetComponents } from 'contexts/SetComponents/SetComponentsProvider'
 import { useBalances } from 'hooks/useBalances'
 import { AlchemyApiTransaction, getTransactionHistory } from 'utils/alchemyApi'
+
+const tokenList1 = [
+  { symbol: 'ETH', icon: '' },
+  { symbol: 'DAI', icon: '' },
+  { symbol: 'USDC', icon: '' },
+]
+const tokenList2 = [
+  { symbol: 'DPI', icon: DefiPulseIndex.image },
+  { symbol: 'MVI', icon: MetaverseIndex.image },
+  { symbol: 'BED', icon: BedIndex.image },
+  { symbol: 'DATA', icon: DataIndex.image },
+  { symbol: 'GMI', icon: GmiIndex.image },
+  { symbol: 'ETHFLI', icon: Ethereum2xFlexibleLeverageIndex.image },
+  { symbol: 'BTCFLI', icon: Bitcoin2xFlexibleLeverageIndex.image },
+  { symbol: 'INDEX', icon: IndexToken.image },
+]
 
 function getNumber(balance: BigNumber | undefined): number {
   if (balance === undefined) return -1
@@ -21,19 +51,28 @@ function getNumber(balance: BigNumber | undefined): number {
 
 function getPosition(
   title: string,
-  bigNumber: BigNumber | undefined
+  bigNumber: BigNumber | undefined,
+  total: BigNumber,
+  backgroundColor: string
 ): Position | null {
-  const value = getNumber(bigNumber)
-  if (value <= 0) {
+  if (
+    bigNumber === undefined ||
+    bigNumber.isZero() ||
+    bigNumber.isNegative() ||
+    total.isZero() ||
+    total.isNegative()
+  ) {
     return null
   }
 
+  const value = getNumber(bigNumber)
+  const percent = `${bigNumber.div(total).div(18).toString()}%`
+
   return {
     title,
-    // TODO: how should colors be assigned? randomly?
-    // TODO: which colors to use?
-    backgroundColor: 'whiteAlpha.400',
-    color: 'white',
+    backgroundColor,
+    color: '',
+    percent,
     value,
   }
 }
@@ -70,7 +109,20 @@ function createHistoryItems(
 }
 
 const Dashboard = () => {
+  const {
+    dpiBalance,
+    mviBalance,
+    bedBalance,
+    dataBalance,
+    gmiBalance,
+    ethFliBalance,
+    btcFliBalance,
+    ethFliPBalance,
+  } = useBalances()
   const { account } = useEthers()
+  const { mvi } = useMarketData()
+  const { dpiComponents } = useSetComponents()
+
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
 
   useEffect(() => {
@@ -83,51 +135,86 @@ const Dashboard = () => {
     fetchHistory()
   }, [account])
 
-  const {
-    dpiBalance,
-    mviBalance,
-    bedBalance,
-    dataBalance,
-    gmiBalance,
-    ethFliBalance,
-    btcFliBalance,
-    ethFliPBalance,
-  } = useBalances()
-
   const tempPositions = [
-    { title: 'DPI', value: dpiBalance },
-    { title: 'MVI', value: mviBalance },
-    { title: 'DATA', value: dataBalance },
-    { title: 'BED', value: bedBalance },
-    { title: 'GMI', value: gmiBalance },
-    { title: 'ETH2x-FLI', value: ethFliBalance },
-    { title: 'ETH2x-FLI-P', value: ethFliPBalance },
-    { title: 'BTC2x-FLI', value: btcFliBalance },
+    { title: 'DPI', value: dpiBalance, color: '#8150E6' },
+    { title: 'MVI', value: mviBalance, color: '#f165dd' },
+    { title: 'DATA', value: dataBalance, color: '#fb002b' },
+    { title: 'BED', value: bedBalance, color: '#ED1C24' },
+    { title: 'GMI', value: gmiBalance, color: '#fc0006' },
+    { title: 'ETH2x-FLI', value: ethFliBalance, color: '#44007f' },
+    { title: 'ETH2x-FLI-P', value: ethFliPBalance, color: '#44007f' },
+    { title: 'BTC2x-FLI', value: btcFliBalance, color: 'yellow' },
   ]
 
-  const positions = tempPositions.flatMap((tempPosition) => {
-    const position = getPosition(tempPosition.title, tempPosition.value)
-    if (position === null) {
-      return []
-    }
-    return [position]
-  })
+  const totalBalance: BigNumber = tempPositions
+    .map((pos) => {
+      return pos.value ?? BigNumber.from('0')
+    })
+    .reduce((prev, curr) => {
+      return prev.add(curr)
+    })
+
+  // const positions = tempPositions.flatMap((tempPosition) => {
+  //   const position = getPosition(
+  //     tempPosition.title,
+  //     tempPosition.value,
+  //     totalBalance,
+  //     tempPosition.color
+  //   )
+  //   if (position === null || tempPosition.value === undefined) {
+  //     return []
+  //   }
+  //   return [position]
+  // })
+
+  const positions: Position[] = [
+    getPosition(
+      'BED',
+      BigNumber.from('35'),
+      BigNumber.from('100'),
+      tempPositions[0].color
+    )!,
+    getPosition(
+      'MVI',
+      BigNumber.from('30'),
+      BigNumber.from('100'),
+      tempPositions[1].color
+    )!,
+    getPosition(
+      'DATA',
+      BigNumber.from('16'),
+      BigNumber.from('100'),
+      tempPositions[2].color
+    )!,
+    getPosition(
+      'DPI',
+      BigNumber.from('12'),
+      BigNumber.from('100'),
+      tempPositions[3].color
+    )!,
+    getPosition(
+      'OTHERS',
+      BigNumber.from('5'),
+      BigNumber.from('100'),
+      tempPositions[4].color
+    )!,
+  ]
+  console.log(positions)
 
   return (
     <Page>
       <Box minW='1280px' mx='auto'>
-        <PageTitle
-          title='My Page'
-          subtitle='Short overview of your Index Coop Tokens'
-        />
+        <PageTitle title='My Dashboard' subtitle='' />
         <Box my={12}>
+          <MarketChart productToken={MetaverseIndex} marketData={mvi || {}} />
           <Flex direction='row'>
-            <Flex direction='column' justifyContent='space-around' w='40%'>
-              <SectionTitle title='Total Value' />
+            <Flex direction='column' grow='1' flexBasis='0'>
               <AllocationChart positions={positions} />
             </Flex>
-            <Box w='120px' />
-            <SectionTitle title='Rewards' />
+            <Box w='24px' />
+            <Flex direction='column' grow='1' flexBasis='0'>
+              <QuickTrade tokenList1={tokenList1} tokenList2={tokenList2} />
+            </Flex>
           </Flex>
         </Box>
         <Box>

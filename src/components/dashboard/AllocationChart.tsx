@@ -9,6 +9,7 @@ export interface Position {
   backgroundColor: string
   color: string
   value: number
+  percent?: string
 }
 
 class Chart extends PureComponent<{ data: Position[] }> {
@@ -21,17 +22,14 @@ class Chart extends PureComponent<{ data: Position[] }> {
           dataKey='value'
           cx='50%'
           cy='50%'
-          innerRadius={60}
-          outerRadius={90}
+          innerRadius={48}
+          outerRadius={100}
           startAngle={-270}
           endAngle={90}
+          stroke='white'
         >
           {data.map((item, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={item.backgroundColor}
-              stroke={item.color}
-            />
+            <Cell key={`cell-${index}`} fill={item.backgroundColor} />
           ))}
         </Pie>
       </PieChart>
@@ -42,29 +40,48 @@ class Chart extends PureComponent<{ data: Position[] }> {
 const PositionItem = (props: { position: Position }) => {
   const { position } = props
   return (
-    <Flex alignItems='center' my='6px'>
-      <Box
-        w='12px'
-        h='12px'
-        mr='20px'
-        backgroundColor={position.backgroundColor}
-        borderColor={position.color}
-        borderWidth='thin'
-      />
-      <Text>{position.title}</Text>
+    <Flex direction='column' my='6px' w='45%' mr='9px'>
+      <Flex alignItems='center'>
+        <Box
+          w='16px'
+          h='16px'
+          mr='8px'
+          backgroundColor={position.backgroundColor}
+          borderColor={position.color}
+          borderWidth='thin'
+        />
+        <Text fontSize='18px' fontWeight='600'>
+          {position.title}
+        </Text>
+      </Flex>
+      <Text fontSize='18px' fontWeight='600'>
+        {position.percent ?? ''}
+      </Text>
     </Flex>
   )
 }
 
 const AllocationChart = (props: { positions: Position[] }) => (
-  <Flex w='100%' minH='240'>
-    <Box my='20px' mr='80px'>
-      <Chart data={props.positions} />
-    </Box>
-    <Flex direction='column' my='32px' w='100%'>
-      {props.positions.map((position) => (
-        <PositionItem key={position.title} position={position} />
-      ))}
+  <Flex
+    backgroundColor='#292929'
+    border='2px solid #F7F1E4'
+    borderRadius='16px'
+    direction='column'
+    py='20px'
+    px='40px'
+  >
+    <Text fontSize='24px' fontWeight='700'>
+      Distribution of Products
+    </Text>
+    <Flex w='100%' minH='240'>
+      <Box my='40px' mr='48px'>
+        <Chart data={props.positions} />
+      </Box>
+      <Flex my='32px' w='100%' flexWrap='wrap'>
+        {props.positions.map((position) => (
+          <PositionItem key={position.title} position={position} />
+        ))}
+      </Flex>
     </Flex>
   </Flex>
 )
