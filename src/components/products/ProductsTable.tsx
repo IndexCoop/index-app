@@ -15,10 +15,12 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
   return (
     <Table colorScheme='whiteAlpha'>
       <Thead>
-        <Th>Ticker</Th>
-        {PriceChangeIntervals.map((interval) => (
-          <Th key={interval[0]}>{interval[0]}</Th>
-        ))}
+        <Tr>
+          <Th>Ticker</Th>
+          {PriceChangeIntervals.map((interval) => (
+            <Th key={interval[0]}>{interval[0]}</Th>
+          ))}
+        </Tr>
       </Thead>
       <Tbody>
         {products.map((product) => (
