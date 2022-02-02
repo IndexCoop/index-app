@@ -14,7 +14,7 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
       <Td></Td>
       <Td>
         <Link href={item.explorerUrl} isExternal>
-          <Flex align='center' direction='row'>
+          <Flex align='center' direction='row' justify='end'>
             View More{' '}
             <Box px='2.5' py='1.5'>
               <Image src={historyLinkIcon} alt='link icon' />
