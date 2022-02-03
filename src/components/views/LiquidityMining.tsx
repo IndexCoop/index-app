@@ -12,42 +12,94 @@ import { MAINNET_CHAIN_DATA } from 'utils/connectors'
 
 const programs: Program[] = [
   {
-    title: 'DPI Liquidity Program',
+    title: 'GMI Staking',
+    subtitle: 'Active January 10th, 2022 to March 10th, 2022',
     isActive: true,
     staked: {
-      caption: 'Staked ETH/DPI Uniswap LP Tokens',
-      value: '10.2 ',
-      valueExtra: 'ETH / DPI',
+      caption: 'Staked GMI Tokens',
+      value: '', // '10.2 ',
+      valueExtra: 'GMI',
+      stakedBalanceKey: 'stakedGmi2022Balance',
+      underlyingBalanceKey: 'gmiBalance',
     },
     apy: {
       caption: '(volatile)',
-      value: '40.2%',
+      value: '', // '40.2%',
     },
     unclaimed: {
       caption: 'Unclaimed INDEX in pool',
-      value: '421.23',
+      value: '', // '421.23',
       valueExtra: 'INDEX',
     },
+    liquidityMiningKey: 'gmi2022',
   },
   {
     title: 'MVI Liquidity Program',
+    subtitle: 'Active August 20th, 2021 to September 19th, 2021',
     isActive: false,
     staked: {
       caption: 'Staked ETH/MVI Uniswap LP Tokens',
-      value: '0.0',
+      value: '', // '0.0',
       valueExtra: 'ETH / MVI',
     },
     apy: {
       caption: '(volatile)',
-      value: '0.0%',
+      value: '', // '0.0%',
     },
     unclaimed: {
       caption: 'Unclaimed INDEX in pool',
-      value: '0.0',
+      value: '', // '0.0',
       valueExtra: 'INDEX',
     },
+    liquidityMiningKey: 'uniswapEthMvi2021',
+  },
+  // Uniswap V3 DPI-ETH Liquidity Program
+  // Active August 20th, 2021 - September 4th, 2021
+  {
+    title: 'DPI Liquidity Program',
+    subtitle: 'Active July 13th, 2021 to August 12th, 2021',
+    isActive: false,
+    staked: {
+      caption: 'Staked ETH/DPI Uniswap LP Tokens',
+      value: '', // '10.2 ',
+      valueExtra: 'ETH / DPI',
+    },
+    apy: {
+      caption: '(volatile)',
+      value: '', // '40.2%',
+    },
+    unclaimed: {
+      caption: 'Unclaimed INDEX in pool',
+      value: '', // '421.23',
+      valueExtra: 'INDEX',
+    },
+    liquidityMiningKey: 'uniswapEthDpi2021',
+  },
+  {
+    title: 'DPI Liquidity Program',
+    subtitle: 'Active October 7th, 2020 to December 6th, 2020',
+    isActive: false,
+    staked: {
+      caption: 'Staked ETH/DPI Uniswap LP Tokens',
+      value: '', // '10.2 ',
+      valueExtra: 'ETH / DPI',
+    },
+    apy: {
+      caption: '(volatile)',
+      value: '', // '40.2%',
+    },
+    unclaimed: {
+      caption: 'Unclaimed INDEX in pool',
+      value: '', // '421.23',
+      valueExtra: 'INDEX',
+    },
+    liquidityMiningKey: 'uniswapEthDpi2020',
   },
 ]
+// uniswapEthDpi2020?: LiquidityMiningValues
+// uniswapEthDpi2021?: LiquidityMiningValues
+// uniswapEthMvi2021?: LiquidityMiningValues
+// gmi2022?: LiquidityMiningValues
 
 const LiquidityMining = () => {
   const { account, chainId, library } = useEthers()
