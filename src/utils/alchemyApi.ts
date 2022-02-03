@@ -59,10 +59,10 @@ const fetchTransactionHistory = async (
 
   const params: AlchemyApiParams[] = [
     {
-      fromBlock: '0x99A8E9',
+      fromBlock: '0xB82D69',
       toBlock: 'latest',
       contractAddresses,
-      maxCount: '0x15',
+      maxCount: '0x20',
       excludeZeroValue: true,
       category: ['erc20'],
     },
@@ -97,5 +97,5 @@ const fetchTransactionHistory = async (
 export const getTransactionHistory = async (address: string) => {
   const fromTransactions = await fetchTransactionHistory(address, null)
   const toTransactions = await fetchTransactionHistory(null, address)
-  return [...fromTransactions, ...toTransactions]
+  return { from: fromTransactions, to: toTransactions }
 }

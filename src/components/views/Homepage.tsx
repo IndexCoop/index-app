@@ -6,9 +6,10 @@ import { useEthers } from '@usedapp/core'
 
 import AllocationChart, { Position } from 'components/dashboard/AllocationChart'
 import QuickTrade from 'components/dashboard/QuickTrade'
-import TransactionHistoryItemView, {
+import { assembleHistoryItems } from 'components/dashboard/TransactionHistoryItems'
+import TransactionHistoryTable, {
   TransactionHistoryItem,
-} from 'components/dashboard/TransactionHistoryItem'
+} from 'components/dashboard/TransactionHistoryTable'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import MarketChart from 'components/product/MarketChart'
@@ -26,7 +27,7 @@ import {
 import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
 import { useSetComponents } from 'contexts/SetComponents/SetComponentsProvider'
 import { useBalances } from 'hooks/useBalances'
-import { AlchemyApiTransaction, getTransactionHistory } from 'utils/alchemyApi'
+import { getTransactionHistory } from 'utils/alchemyApi'
 
 const tokenList1 = [
   { symbol: 'ETH', icon: '' },
@@ -85,29 +86,6 @@ const DownloadCsvView = () => {
   )
 }
 
-function createHistoryItems(
-  transactions: AlchemyApiTransaction[]
-): TransactionHistoryItem[] {
-  const items: TransactionHistoryItem[] = transactions.map((tx) => {
-    const blockNum = tx.blockNum
-    // TODO: get timestamp from block number
-    // TODO: convert timestamp to date
-    const date = ''
-    // TODO: determine type
-    // 'Send' | 'Receive'
-    const type = 'Receive'
-    return {
-      type,
-      date,
-      from: tx.from,
-      to: tx.to,
-      value: tx.value,
-      explorerUrl: `https://etherscan.io/tx/${tx.hash}`,
-    }
-  })
-  return items
-}
-
 const Dashboard = () => {
   const {
     dpiBalance,
@@ -129,7 +107,7 @@ const Dashboard = () => {
     if (account === null || account === undefined) return
     const fetchHistory = async () => {
       const transactions = await getTransactionHistory(account)
-      const historyItems = createHistoryItems(transactions)
+      const historyItems = assembleHistoryItems(transactions)
       setHistoryItems(historyItems)
     }
     fetchHistory()
@@ -146,13 +124,13 @@ const Dashboard = () => {
     { title: 'BTC2x-FLI', value: btcFliBalance, color: 'yellow' },
   ]
 
-  const totalBalance: BigNumber = tempPositions
-    .map((pos) => {
-      return pos.value ?? BigNumber.from('0')
-    })
-    .reduce((prev, curr) => {
-      return prev.add(curr)
-    })
+  // const totalBalance: BigNumber = tempPositions
+  //   .map((pos) => {
+  //     return pos.value ?? BigNumber.from('0')
+  //   })
+  //   .reduce((prev, curr) => {
+  //     return prev.add(curr)
+  //   })
 
   // const positions = tempPositions.flatMap((tempPosition) => {
   //   const position = getPosition(
@@ -199,7 +177,7 @@ const Dashboard = () => {
       tempPositions[4].color
     )!,
   ]
-  console.log(positions)
+  // console.log(positions)
 
   return (
     <Page>
@@ -222,9 +200,7 @@ const Dashboard = () => {
             title='Transaction History'
             itemRight={<DownloadCsvView />}
           />
-          {historyItems.map((item, index) => (
-            <TransactionHistoryItemView key={index} item={item} my='3.5' />
-          ))}
+          <TransactionHistoryTable items={historyItems} />
         </Box>
       </Box>
     </Page>
