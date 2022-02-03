@@ -5,6 +5,7 @@ import TransactionHistoryRow from './TransactionHistoryRow'
 export interface TransactionHistoryItem {
   hash: string
   type: 'Send' | 'Receive'
+  asset: string
   date: string
   from?: string
   to?: string
@@ -32,10 +33,12 @@ const TransactionHistoryTable = ({ items }: TransactionHistoryTableProps) => {
 const TableHeader = () => (
   <Thead>
     <Tr>
+      <Th>Action</Th>
+      <Th></Th>
       <Th>From</Th>
+      <Th></Th>
       <Th>To</Th>
       <Th>Transaction</Th>
-      <Th>Action</Th>
       <Th></Th>
     </Tr>
   </Thead>

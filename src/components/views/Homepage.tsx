@@ -6,6 +6,7 @@ import { useEthers } from '@usedapp/core'
 
 import AllocationChart, { Position } from 'components/dashboard/AllocationChart'
 import QuickTrade from 'components/dashboard/QuickTrade'
+import { assembleHistoryItems } from 'components/dashboard/TransactionHistoryItems'
 import TransactionHistoryTable, {
   TransactionHistoryItem,
 } from 'components/dashboard/TransactionHistoryTable'
@@ -26,7 +27,7 @@ import {
 import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
 import { useSetComponents } from 'contexts/SetComponents/SetComponentsProvider'
 import { useBalances } from 'hooks/useBalances'
-import { AlchemyApiTransaction, getTransactionHistory } from 'utils/alchemyApi'
+import { getTransactionHistory } from 'utils/alchemyApi'
 
 const tokenList1 = [
   { symbol: 'ETH', icon: '' },
@@ -85,37 +86,6 @@ const DownloadCsvView = () => {
   )
 }
 
-function truncateAddress(address: string): string {
-  return address.length < 12
-    ? address
-    : `${address.substring(0, 5)}...${address.substring(address.length - 3)}`
-}
-
-function createHistoryItems(
-  transactions: AlchemyApiTransaction[]
-): TransactionHistoryItem[] {
-  const items: TransactionHistoryItem[] = transactions.map((tx) => {
-    const blockNum = tx.blockNum
-    const date = Number(blockNum).toString()
-    // TODO: determine type
-    // 'Send' | 'Receive'
-    const hash = tx.hash.substring(0, 12) + '...'
-    const from = truncateAddress(tx.from)
-    const to = truncateAddress(tx.to)
-    const type = 'Receive'
-    return {
-      hash,
-      type,
-      date,
-      from,
-      to,
-      value: tx.value,
-      explorerUrl: `https://etherscan.io/tx/${tx.hash}`,
-    }
-  })
-  return items
-}
-
 const Dashboard = () => {
   const {
     dpiBalance,
@@ -137,7 +107,7 @@ const Dashboard = () => {
     if (account === null || account === undefined) return
     const fetchHistory = async () => {
       const transactions = await getTransactionHistory(account)
-      const historyItems = createHistoryItems(transactions)
+      const historyItems = assembleHistoryItems(transactions)
       setHistoryItems(historyItems)
     }
     fetchHistory()
@@ -154,13 +124,13 @@ const Dashboard = () => {
     { title: 'BTC2x-FLI', value: btcFliBalance, color: 'yellow' },
   ]
 
-  const totalBalance: BigNumber = tempPositions
-    .map((pos) => {
-      return pos.value ?? BigNumber.from('0')
-    })
-    .reduce((prev, curr) => {
-      return prev.add(curr)
-    })
+  // const totalBalance: BigNumber = tempPositions
+  //   .map((pos) => {
+  //     return pos.value ?? BigNumber.from('0')
+  //   })
+  //   .reduce((prev, curr) => {
+  //     return prev.add(curr)
+  //   })
 
   // const positions = tempPositions.flatMap((tempPosition) => {
   //   const position = getPosition(
@@ -207,7 +177,7 @@ const Dashboard = () => {
       tempPositions[4].color
     )!,
   ]
-  console.log(positions)
+  // console.log(positions)
 
   return (
     <Page>

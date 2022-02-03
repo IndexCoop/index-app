@@ -97,5 +97,5 @@ const fetchTransactionHistory = async (
 export const getTransactionHistory = async (address: string) => {
   const fromTransactions = await fetchTransactionHistory(address, null)
   const toTransactions = await fetchTransactionHistory(null, address)
-  return [...fromTransactions, ...toTransactions]
+  return { from: fromTransactions, to: toTransactions }
 }
