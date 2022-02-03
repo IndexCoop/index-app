@@ -59,10 +59,10 @@ const fetchTransactionHistory = async (
 
   const params: AlchemyApiParams[] = [
     {
-      fromBlock: '0x99A8E9',
+      fromBlock: '0xB82D69',
       toBlock: 'latest',
       contractAddresses,
-      maxCount: '0x15',
+      maxCount: '0x20',
       excludeZeroValue: true,
       category: ['erc20'],
     },
