@@ -41,6 +41,8 @@ const programs: Program[] = [
       caption: 'Staked ETH/MVI Uniswap LP Tokens',
       value: '', // '0.0',
       valueExtra: 'ETH / MVI',
+      stakedBalanceKey: 'stakedUniswapEthMvi2021LpBalance',
+      underlyingBalanceKey: 'uniswapEthMviLpBalance',
     },
     apy: {
       caption: '(volatile)',
@@ -63,6 +65,8 @@ const programs: Program[] = [
       caption: 'Staked ETH/DPI Uniswap LP Tokens',
       value: '', // '10.2 ',
       valueExtra: 'ETH / DPI',
+      stakedBalanceKey: 'stakedUniswapEthDpi2021LpBalance',
+      underlyingBalanceKey: 'uniswapEthDpiLpBalance',
     },
     apy: {
       caption: '(volatile)',
@@ -83,6 +87,8 @@ const programs: Program[] = [
       caption: 'Staked ETH/DPI Uniswap LP Tokens',
       value: '', // '10.2 ',
       valueExtra: 'ETH / DPI',
+      stakedBalanceKey: 'stakedUniswapEthDpi2020LpBalance',
+      underlyingBalanceKey: 'uniswapEthDpiLpBalance',
     },
     apy: {
       caption: '(volatile)',
