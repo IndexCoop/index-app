@@ -22,8 +22,8 @@ const TransactionHistoryTable = ({ items }: TransactionHistoryTableProps) => {
     <Table colorScheme='whiteAlpha'>
       <TableHeader />
       <Tbody>
-        {items.map((item) => (
-          <TransactionHistoryRow key={item.hash} item={item} />
+        {items.map((item, index) => (
+          <TransactionHistoryRow key={index} item={item} />
         ))}
       </Tbody>
     </Table>
