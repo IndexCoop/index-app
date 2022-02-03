@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, useEthers, useTokenBalance } from '@usedapp/core'
 
 import {
@@ -25,6 +26,25 @@ import {
 } from 'constants/productTokens'
 import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 
+export type Balances = {
+  daiBalance?: BigNumber
+  usdcBalance?: BigNumber
+  dpiBalance?: BigNumber
+  mviBalance?: BigNumber
+  bedBalance?: BigNumber
+  dataBalance?: BigNumber
+  gmiBalance?: BigNumber
+  ethFliBalance?: BigNumber
+  btcFliBalance?: BigNumber
+  ethFliPBalance?: BigNumber
+  stakedGmi2022Balance?: BigNumber
+  stakedUniswapEthDpi2020LpBalance?: BigNumber
+  stakedUniswapEthDpi2021LpBalance?: BigNumber
+  stakedUniswapEthMvi2021LpBalance?: BigNumber
+  uniswapEthDpiLpBalance?: BigNumber
+  uniswapEthMviLpBalance?: BigNumber
+}
+
 const getChainAddress = (
   token: ProductToken,
   chainId: ChainId = MAINNET_CHAIN_DATA.chainId
@@ -42,7 +62,7 @@ const getUsdcAddress = (chainId: ChainId = MAINNET_CHAIN_DATA.chainId) => {
   return usdcTokenAddress
 }
 
-export const useBalances = () => {
+export const useBalances = (): Balances => {
   const { account, chainId } = useEthers()
 
   const daiBalance = useTokenBalance(getDaiAddress(chainId), account)

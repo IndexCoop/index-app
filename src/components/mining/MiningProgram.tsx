@@ -12,31 +12,38 @@ import {
   LiquidityMiningProps,
   useLiquidityMining,
 } from 'contexts/LiquidityMining/LiquidityMiningProvider'
-import { useBalances } from 'hooks/useBalances'
+import { Balances, useBalances } from 'hooks/useBalances'
 import { displayFromWei } from 'utils'
 
 const white = '#F6F1E4'
 const gray = '#848484'
 
-interface ProgramComp {
+interface ProgramBase {
   caption: string
   value: string
-  valueExtra?: string
-  stakedBalanceKey?: string
-  underlyingBalanceKey?: string
+}
+interface ProgramValueExtra extends ProgramBase {
+  valueExtra: string
+}
+interface ProgramBalance extends ProgramValueExtra {
+  stakedBalanceKey: keyof Balances
+  underlyingBalanceKey: keyof Balances
 }
 
 export interface Program {
   title: string
   subtitle?: string
   isActive: boolean
-  staked: ProgramComp
-  apy: ProgramComp
-  unclaimed: ProgramComp
+  staked: ProgramBalance
+  apy: ProgramBase
+  unclaimed: ProgramValueExtra
   liquidityMiningKey: keyof LiquidityMiningProps
 }
 
-const NumberBox = (props: { isActive: boolean; component: ProgramComp }) => {
+const NumberBox = (props: {
+  isActive: boolean
+  component: Partial<ProgramBalance>
+}) => {
   const { isActive, component } = props
   const textColor = isActive ? white : gray
 
@@ -47,7 +54,7 @@ const NumberBox = (props: { isActive: boolean; component: ProgramComp }) => {
           {component.value}
         </Text>
         <Text color={textColor} fontSize='sm' ml='2' pb='9px'>
-          {component.valueExtra ?? ''}
+          {component?.valueExtra ?? ''}
         </Text>
       </Flex>
       <Text color={white} fontSize='xs' mt='6px'>
@@ -58,17 +65,28 @@ const NumberBox = (props: { isActive: boolean; component: ProgramComp }) => {
 }
 
 const MiningProgram = (props: { program: Program }) => {
-  const { isActive, title, subtitle, apy, staked, unclaimed } = props.program
+  const {
+    isActive,
+    title,
+    subtitle,
+    apy,
+    staked,
+    liquidityMiningKey,
+    unclaimed,
+  } = props.program
   const { isOpen, onClose } = useDisclosure()
+  const balances = useBalances()
+  const liquidityMining = useLiquidityMining()
 
-  // dynamic via keys in program for staking modal?
-  const { gmiBalance, stakedGmi2022Balance } = useBalances()
-
-  const { gmi2022 } = useLiquidityMining()
+  const program = liquidityMining[liquidityMiningKey]
 
   // const { gmiRewardsApy } = usePrices() // maybe here ????
 
-  staked.value = displayFromWei(stakedGmi2022Balance, 5)
+  // get underlying balance here for staking modal?
+
+  if (staked.stakedBalanceKey) {
+    staked.value = displayFromWei(balances[staked.stakedBalanceKey], 5)
+  }
   // unclaimed.value = 'TODO'
   const comps = [staked, apy, unclaimed]
 
@@ -92,22 +110,23 @@ const MiningProgram = (props: { program: Program }) => {
           })}
         </Flex>
         <Flex mt='8'>
-          <Button mr='6' onClick={() => gmi2022?.onStake('23.32')}>
+          <Button mr='6' onClick={() => program?.onStake('23.32')}>
             TEST Stake
           </Button>
+          {/* TODO */}
           <Button mr='6' isDisabled={!isActive}>
             Approve Staking
           </Button>
           <Button
             mr='6'
-            isDisabled={!isActive}
-            onClick={() => gmi2022?.onHarvest()}
+            isDisabled={Number(staked.value) <= 0}
+            onClick={() => program?.onHarvest()}
           >
             Claim
           </Button>
           <Button
-            isDisabled={!isActive}
-            onClick={() => gmi2022?.onUnstakeAndHarvest()}
+            isDisabled={Number(staked.value) <= 0}
+            onClick={() => program?.onUnstakeAndHarvest()}
           >
             Unstake & Claim
           </Button>
@@ -117,7 +136,7 @@ const MiningProgram = (props: { program: Program }) => {
       {/* <StakingModal
         isOpen={isOpen}
         onClose={onClose}
-        onStake={gmi2022.onStake}
+        onStake={program.onStake}
       /> */}
     </>
   )
