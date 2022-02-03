@@ -82,5 +82,5 @@ export function assembleHistoryItems(transactions: {
       return 0
     }
   )
-  return items
+  return items.length <= 20 ? items : items.slice(0, 20)
 }
