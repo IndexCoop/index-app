@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import { Flex } from '@chakra-ui/layout'
-import { Button, Text, theme } from '@chakra-ui/react'
+import { Tab, TabList, Tabs, Text, theme } from '@chakra-ui/react'
 
 import { ProductToken } from 'constants/productTokens'
 import {
@@ -26,6 +26,37 @@ enum Durations {
   QUARTERLY = 3,
   YEARLY = 4,
 }
+
+const PriceDisplay = ({ price, change }: { price: string; change: string }) => (
+  <Flex align='baseline'>
+    <Text fontSize='5xl' color='#FABF00' fontWeight='700'>
+      {price}
+    </Text>
+    <Text fontSize='xl' color='#09AA74 ' fontWeight='700' ml='24px'>
+      {change}
+    </Text>
+  </Flex>
+)
+
+const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
+  <Tabs
+    background='#1D1B16'
+    borderRadius='8px'
+    fontSize='16px'
+    fontWeight='500'
+    color={white}
+    height='45px'
+    outline='0'
+    variant='unstyle'
+    onChange={onChange}
+  >
+    <TabList>
+      <Tab _selected={selectedTabStyle}>1D</Tab>
+      <Tab _selected={selectedTabStyle}>1W</Tab>
+      <Tab _selected={selectedTabStyle}>1M</Tab>
+    </TabList>
+  </Tabs>
+)
 
 const MarketChart = (props: {
   productToken: ProductToken
@@ -125,9 +156,23 @@ const MarketChart = (props: {
     setChartRange(PriceChartRangeOption.YEARLY_PRICE_RANGE)
   }
 
+  const onChangeDuration = (index: number) => {
+    console.log(index)
+    switch (index) {
+      case 0:
+        handleDailyButton()
+        break
+      case 1:
+        handleWeeklyButton()
+        break
+      case 2:
+        handleMonthlyButton()
+        break
+    }
+  }
+
   const xAxisTickFormatter = (val: any) => {
-    const date = new Date(val).toLocaleString('%b %d')
-    return date
+    return new Date(val).toLocaleString('%b %d')
   }
 
   const mappedPriceData = () => prices.map(([x, y]) => ({ x, y }))
@@ -137,61 +182,18 @@ const MarketChart = (props: {
   const minimumYAxisLabel = minY - 5 > 0 ? minY - 5 : 0
 
   return (
-    <Flex
-      direction='column'
-      alignItems='center'
-      margin='20px 40px'
-      padding='10px'
-      width='60vw'
-    >
+    <Flex direction='column' alignItems='center' padding='10px' width='100%'>
       <Flex
         direction='row'
         width='100%'
         alignItems='center'
         justifyContent='space-between'
       >
-        <Flex>
-          <Text fontSize='5xl' color='#FABF00' fontWeight='extrabold'>
-            ${selectLatestMarketData(prices).toFixed()}
-          </Text>
-        </Flex>
-        <Flex>
-          <Button
-            full
-            size={'sm'}
-            text='1D'
-            variant={
-              durationSelector === Durations.DAILY ? 'default' : 'secondary'
-            }
-            onClick={handleDailyButton}
-          >
-            1D
-          </Button>
-          <Button
-            marginLeft='5px'
-            full
-            size={'sm'}
-            text='1W'
-            variant={
-              durationSelector === Durations.WEEKLY ? 'default' : 'secondary'
-            }
-            onClick={handleWeeklyButton}
-          >
-            1W
-          </Button>
-          <Button
-            marginLeft='5px'
-            full
-            size={'sm'}
-            text='1M'
-            variant={
-              durationSelector === Durations.MONTHLY ? 'default' : 'secondary'
-            }
-            onClick={handleMonthlyButton}
-          >
-            1M
-          </Button>
-        </Flex>
+        <PriceDisplay
+          price={`${selectLatestMarketData(prices).toFixed()}`}
+          change='+10.53 ( +5.89% )'
+        />
+        <RangeSelector onChange={onChangeDuration} />
       </Flex>
 
       <LineChart width={900} height={600} data={mappedPriceData()}>
@@ -216,6 +218,14 @@ const MarketChart = (props: {
       </LineChart>
     </Flex>
   )
+}
+
+const white = '#F6F1E4'
+const selectedTabStyle = {
+  bg: white,
+  borderRadius: '4px',
+  color: 'black',
+  outline: 0,
 }
 
 export default MarketChart
