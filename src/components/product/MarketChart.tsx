@@ -63,6 +63,7 @@ const MarketChart = (props: {
   marketData: TokenMarketDataValues
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
+  width?: number
 }) => {
   const { selectLatestMarketData } = useMarketData()
   const formatFloats = (n: number) => n.toFixed(2)
@@ -182,7 +183,7 @@ const MarketChart = (props: {
   const minimumYAxisLabel = minY - 5 > 0 ? minY - 5 : 0
 
   return (
-    <Flex direction='column' alignItems='center' padding='10px' width='100%'>
+    <Flex direction='column' alignItems='center' width='100%'>
       <Flex
         direction='row'
         width='100%'
@@ -190,16 +191,19 @@ const MarketChart = (props: {
         justifyContent='space-between'
       >
         <PriceDisplay
-          price={`${selectLatestMarketData(prices).toFixed()}`}
+          price={`$${selectLatestMarketData(prices).toFixed()}`}
           change='+10.53 ( +5.89% )'
         />
         <RangeSelector onChange={onChangeDuration} />
       </Flex>
-
-      <LineChart width={900} height={600} data={mappedPriceData()}>
+      <LineChart
+        width={props.width ?? 900}
+        height={600}
+        data={mappedPriceData()}
+      >
         <Line type='monotone' dataKey='y' stroke='#FABF00' />
         <YAxis
-          stroke={theme.colors.gray[500]}
+          stroke={strokeColor}
           axisLine={false}
           tickLine={false}
           mirror={true}
@@ -212,14 +216,15 @@ const MarketChart = (props: {
         />
         <XAxis
           dataKey='y'
-          stroke={theme.colors.gray[500]}
-          tickFormatter={xAxisTickFormatter}
+          stroke={strokeColor}
+          // tickFormatter={xAxisTickFormatter}
         />
       </LineChart>
     </Flex>
   )
 }
 
+const strokeColor = theme.colors.gray[500]
 const white = '#F6F1E4'
 const selectedTabStyle = {
   bg: white,

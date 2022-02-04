@@ -179,12 +179,20 @@ const Dashboard = () => {
   ]
   // console.log(positions)
 
+  // TODO: width should be dynamic
+  // TODO: what's min width?
+  const width = 1280
+
   return (
     <Page>
-      <Box minW='1280px' mx='auto'>
+      <Box minW={width} mx='auto'>
         <PageTitle title='My Dashboard' subtitle='' />
         <Box my={12}>
-          <MarketChart productToken={MetaverseIndex} marketData={mvi || {}} />
+          <MarketChart
+            productToken={MetaverseIndex}
+            marketData={mvi || {}}
+            width={width}
+          />
           <Flex direction='row'>
             <Flex direction='column' grow='1' flexBasis='0'>
               <AllocationChart positions={positions} />
