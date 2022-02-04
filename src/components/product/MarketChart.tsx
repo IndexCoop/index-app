@@ -98,7 +98,7 @@ const MarketChart = (props: {
         }
       }
     }, 0)
-  }, [durationSelector])
+  }, [durationSelector, props.marketData])
 
   const handleDailyButton = () => {
     setDurationSelector(Durations.DAILY)
