@@ -30,6 +30,7 @@ const programs: Program[] = [
       caption: 'Unclaimed INDEX in pool',
       value: '', // '421.23',
       valueExtra: 'INDEX',
+      unclaimedBalanceKey: 'unclaimedGmi2022Balance',
     },
     liquidityMiningKey: 'gmi2022',
   },
@@ -52,9 +53,11 @@ const programs: Program[] = [
       caption: 'Unclaimed INDEX in pool',
       value: '', // '0.0',
       valueExtra: 'INDEX',
+      unclaimedBalanceKey: 'unclaimedUniswapEthMvi2021LpBalance',
     },
     liquidityMiningKey: 'uniswapEthMvi2021',
   },
+  // TODO need to be able to onUnstakeAndHarvest
   // Uniswap V3 DPI-ETH Liquidity Program
   // Active August 20th, 2021 - September 4th, 2021
   {
@@ -76,6 +79,7 @@ const programs: Program[] = [
       caption: 'Unclaimed INDEX in pool',
       value: '', // '421.23',
       valueExtra: 'INDEX',
+      unclaimedBalanceKey: 'unclaimedUniswapEthDpi2021LpBalance',
     },
     liquidityMiningKey: 'uniswapEthDpi2021',
   },
@@ -98,6 +102,7 @@ const programs: Program[] = [
       caption: 'Unclaimed INDEX in pool',
       value: '', // '421.23',
       valueExtra: 'INDEX',
+      unclaimedBalanceKey: 'unclaimedUniswapEthDpi2020LpBalance',
     },
     liquidityMiningKey: 'uniswapEthDpi2020',
   },

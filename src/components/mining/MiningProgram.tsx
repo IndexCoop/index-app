@@ -22,10 +22,12 @@ interface ProgramBase {
   caption: string
   value: string
 }
-interface ProgramValueExtra extends ProgramBase {
+interface ProgramUnclaimed extends ProgramBase {
   valueExtra: string
+  unclaimedBalanceKey: keyof Balances
 }
-interface ProgramBalance extends ProgramValueExtra {
+interface ProgramStaked extends ProgramBase {
+  valueExtra: string
   stakedBalanceKey: keyof Balances
   underlyingBalanceKey: keyof Balances
 }
@@ -34,15 +36,15 @@ export interface Program {
   title: string
   subtitle?: string
   isActive: boolean
-  staked: ProgramBalance
+  staked: ProgramStaked
   apy: ProgramBase
-  unclaimed: ProgramValueExtra
+  unclaimed: ProgramUnclaimed
   liquidityMiningKey: keyof LiquidityMiningProps
 }
 
 const NumberBox = (props: {
   isActive: boolean
-  component: Partial<ProgramBalance>
+  component: Partial<ProgramStaked>
 }) => {
   const { isActive, component } = props
   const textColor = isActive ? white : gray
@@ -95,7 +97,10 @@ const MiningProgram = (props: { program: Program }) => {
   if (staked.stakedBalanceKey) {
     staked.value = displayFromWei(balances[staked.stakedBalanceKey], 5)
   }
-  // unclaimed.value = 'TODO'
+  if (unclaimed.unclaimedBalanceKey) {
+    unclaimed.value = displayFromWei(balances[unclaimed.unclaimedBalanceKey], 5)
+  }
+
   const comps = [staked, apy, unclaimed]
 
   const StakeButton = () => {
