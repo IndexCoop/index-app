@@ -26,21 +26,28 @@ export const toWei = (
  * @param power default = 18
  * @returns
  */
-export const fromWei = (number: BigNumber, power: number = 18): BigNumber => {
+export const fromWei = (number?: BigNumber, power: number = 18): BigNumber => {
+  if (!number) return BigNumber.from(0)
   return number.div(BigNumber.from(10).pow(power))
 }
 
 /**
- * Formats a BigNumber to 2 decimals from Wei
- * @param number
- * @returns
+ * Formats a BigNumber from Wei
+ * @param decimals round to decimals is NOT precise
+ * @param power default to 18 covers most token decimals
  */
 export const displayFromWei = (
   number: BigNumber | undefined,
-  decimals: number = 2
+  decimals: number = 0,
+  power: number = 18
 ): string => {
   if (!number) return ''
-  return Number(formatUnits(number)).toFixed(decimals)
+
+  if (decimals) {
+    return Number(formatUnits(number)).toFixed(decimals)
+  }
+
+  return formatUnits(number, power)
 }
 
 export const preciseMul = (a: BigNumber, b: BigNumber): BigNumber => {

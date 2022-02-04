@@ -16,11 +16,6 @@ interface TokenInputProps extends InputProps {
   onSelectMax?: () => void
 }
 
-/**
- * TODO
- * - fix styles
- */
-
 const TokenInput: React.FC<TokenInputProps> = ({
   max,
   symbol,
@@ -33,7 +28,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
       <Text>
         {max.toLocaleString()} {symbol} Available
       </Text>
-      <Flex>
+      <Flex pt={2}>
         <InputGroup>
           <Input
             placeholder={String(max) ?? '0'}
@@ -41,7 +36,7 @@ const TokenInput: React.FC<TokenInputProps> = ({
             value={value}
           />
         </InputGroup>
-        <Button onClick={onSelectMax} size='sm' variant='secondary'>
+        <Button onClick={onSelectMax} ml={2} variant='secondary'>
           Max
         </Button>
       </Flex>

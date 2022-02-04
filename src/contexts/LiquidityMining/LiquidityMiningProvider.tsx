@@ -31,6 +31,8 @@ export type LiquidityMiningProps = {
   // TODO add v3 here? or is the interface too different ?
 }
 
+const stakingInterface = new utils.Interface(StakeRewardsABI)
+
 const LiquidityMiningContext = createContext<LiquidityMiningProps>({})
 
 export const useLiquidityMining = () => useContext(LiquidityMiningContext)
@@ -63,6 +65,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   })
 
   if (
+    !stakingInterface ||
     !dpi2020StakingRewardsAddress ||
     !dpi2021StakingRewardsAddress ||
     !gmiStakingRewardsAddress ||
@@ -72,8 +75,6 @@ const LiquidityMiningProvider = (props: { children: any }) => {
       'A token address is not defined. Please check your .env to confirm all token addresses are defined.'
     )
   }
-
-  const stakingInterface = new utils.Interface(StakeRewardsABI)
 
   /**
    * DPI 2020
