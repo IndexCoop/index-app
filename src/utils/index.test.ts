@@ -3,9 +3,11 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { displayFromWei, toWei } from '.'
 
 describe('displayFromWei', () => {
-  it('should convert to token value, default decimals', () => {
+  it('should convert to token value, default full value', () => {
     const displayValue = displayFromWei(BigNumber.from('180313000000000000000'))
-    expect(displayValue).toBe('180.31')
+    expect(displayValue).toBe('180.313')
+    const displayValue2 = displayFromWei(BigNumber.from('1'))
+    expect(displayValue2).toBe('0.000000000000000001')
   })
   it('should convert to token value, given decimals', () => {
     const displayValue = displayFromWei(
@@ -13,6 +15,17 @@ describe('displayFromWei', () => {
       5
     )
     expect(displayValue).toBe('180.31300')
+  })
+  it('should convert to token value, given large decimals', () => {
+    const displayValue2 = displayFromWei(BigNumber.from('1'))
+    expect(displayValue2).toBe('0.000000000000000001')
+  })
+  it('should convert to token value, given large decimals. Not precise.', () => {
+    const displayValue = displayFromWei(
+      BigNumber.from('157097183810163372336'),
+      18
+    )
+    expect(displayValue).toBe('157.097183810163386397')
   })
 })
 

@@ -7,7 +7,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 
-// import StakingModal from 'components/mining/StakingModal'
+import StakingModal from 'components/mining/StakingModal'
 import {
   LiquidityMiningProps,
   useLiquidityMining,
@@ -74,21 +74,59 @@ const MiningProgram = (props: { program: Program }) => {
     liquidityMiningKey,
     unclaimed,
   } = props.program
-  const { isOpen, onClose } = useDisclosure()
+  const { isOpen, onClose, onOpen } = useDisclosure()
   const balances = useBalances()
   const liquidityMining = useLiquidityMining()
+  // const { status } = useWallet()
 
   const program = liquidityMining[liquidityMiningKey]
+  if (!program) return <></> // better
+  const {
+    isApproved = true,
+    isApproving = false,
+    onApprove,
+    onStake,
+    onHarvest,
+    onUnstakeAndHarvest,
+  } = program
 
   // const { gmiRewardsApy } = usePrices() // maybe here ????
-
-  // get underlying balance here for staking modal?
 
   if (staked.stakedBalanceKey) {
     staked.value = displayFromWei(balances[staked.stakedBalanceKey], 5)
   }
   // unclaimed.value = 'TODO'
   const comps = [staked, apy, unclaimed]
+
+  const StakeButton = () => {
+    // if (status !== 'connected') {
+    //   return <Button disabled mr='6' variant='secondary'>Stake</Button>
+    // }
+
+    if (!isApproved) {
+      return (
+        <Button
+          disabled={isApproving || !isActive}
+          mr='6'
+          onClick={onApprove}
+          variant={
+            isApproving ? 'secondary' : 'default'
+            // isApproving || status !== 'connected' ? 'secondary' : 'default'
+          }
+        >
+          {!isApproving ? 'Approve staking' : 'Approving staking...'}
+        </Button>
+      )
+    }
+
+    if (isApproved) {
+      return (
+        <Button mr='6' isDisabled={!isActive} onClick={() => onOpen()}>
+          Stake
+        </Button>
+      )
+    }
+  }
 
   return (
     <>
@@ -110,34 +148,29 @@ const MiningProgram = (props: { program: Program }) => {
           })}
         </Flex>
         <Flex mt='8'>
-          <Button mr='6' onClick={() => program?.onStake('23.32')}>
-            TEST Stake
-          </Button>
-          {/* TODO */}
-          <Button mr='6' isDisabled={!isActive}>
-            Approve Staking
-          </Button>
+          {StakeButton()}
           <Button
             mr='6'
             isDisabled={Number(staked.value) <= 0}
-            onClick={() => program?.onHarvest()}
+            onClick={() => onHarvest()}
           >
             Claim
           </Button>
           <Button
             isDisabled={Number(staked.value) <= 0}
-            onClick={() => program?.onUnstakeAndHarvest()}
+            onClick={() => onUnstakeAndHarvest()}
           >
             Unstake & Claim
           </Button>
         </Flex>
       </Flex>
-      {/* stakeable balance */}
-      {/* <StakingModal
+      <StakingModal
         isOpen={isOpen}
         onClose={onClose}
-        onStake={program.onStake}
-      /> */}
+        onStake={onStake}
+        stakeAbleBalance={balances[staked.underlyingBalanceKey]}
+        stakeSymbol={staked.valueExtra}
+      />
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import {
   Box,
@@ -13,36 +13,26 @@ import {
 import { BigNumber } from '@ethersproject/bignumber'
 
 import TokenInput from 'components/TokenInput'
+import { displayFromWei } from 'utils'
 
 type StakeModalProps = {
   isOpen: boolean
   onClose: () => void
   onStake: (amount: string) => void
+  stakeAbleBalance?: BigNumber
+  stakeSymbol?: string
 }
 
-export const getFullDisplayBalance = (balance: BigNumber, decimals = 18) => {
-  return balance.div(BigNumber.from(10).pow(decimals)).toNumber().toFixed()
-}
-
-/**
- * TODO
- * - get token symbol and balance
- * - fix styles
- * - check all values
- */
-
-const StakingModal = ({ isOpen, onClose, onStake }: StakeModalProps) => {
+const StakingModal = ({
+  isOpen,
+  onClose,
+  onStake,
+  stakeAbleBalance,
+  stakeSymbol,
+}: StakeModalProps) => {
   const [val, setVal] = useState('')
-  //   const { gmiBalance } = useBalances()
 
-  const fullBalance = useMemo(() => {
-    return getFullDisplayBalance(
-      //   fromWei(BigNumber.from(41851906)),
-      BigNumber.from(41851906),
-      0
-    )
-  }, [])
-  //   }, [gmiBalance])
+  const fullTokenBalance = displayFromWei(stakeAbleBalance)
 
   const handleChange = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
@@ -52,29 +42,45 @@ const StakingModal = ({ isOpen, onClose, onStake }: StakeModalProps) => {
   )
 
   const handleSelectMax = useCallback(() => {
-    setVal(fullBalance)
-  }, [fullBalance, setVal])
+    setVal(fullTokenBalance)
+  }, [fullTokenBalance, setVal])
 
   const handleStakeClick = useCallback(() => {
     onStake(val)
-  }, [onStake, val])
+    onClose()
+    setVal('')
+  }, [onStake, onClose, val])
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader color='white' px={4} fontSize='lg' fontWeight='medium'>
-          Stake
+        <ModalHeader
+          color='white'
+          px={6}
+          pb={0}
+          fontSize='lg'
+          fontWeight='medium'
+        >
+          Stake to earn rewards
         </ModalHeader>
         <ModalBody pt={0} px={4}>
           <TokenInput
             value={val}
             onSelectMax={handleSelectMax}
             onChange={handleChange}
-            max={fullBalance}
-            symbol='GMI Tokens'
+            max={fullTokenBalance}
+            symbol={`${stakeSymbol} Tokens`}
           />
           <Box>
+            <Button
+              margin={[2, 0, 0, 2]}
+              disabled={!val || !Number(val)}
+              onClick={handleStakeClick}
+              variant={!val || !Number(val) ? 'secondary' : 'default'}
+            >
+              Stake
+            </Button>
             <ModalCloseButton
               color='white'
               fontSize='sm'
@@ -82,13 +88,6 @@ const StakingModal = ({ isOpen, onClose, onStake }: StakeModalProps) => {
                 color: 'whiteAlpha.700',
               }}
             />
-            <Button
-              disabled={!val || !Number(val)}
-              onClick={handleStakeClick}
-              variant={!val || !Number(val) ? 'secondary' : 'default'}
-            >
-              Stake
-            </Button>
           </Box>
         </ModalBody>
       </ModalContent>
