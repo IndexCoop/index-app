@@ -1,5 +1,12 @@
+import { utils } from 'ethers'
+
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, useEthers, useTokenBalance } from '@usedapp/core'
+import {
+  ChainId,
+  useContractCall,
+  useEthers,
+  useTokenBalance,
+} from '@usedapp/core'
 
 import {
   daiTokenAddress,
@@ -24,6 +31,7 @@ import {
   MetaverseIndex,
   ProductToken,
 } from 'constants/productTokens'
+import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 
 export type Balances = {
@@ -43,6 +51,10 @@ export type Balances = {
   stakedUniswapEthMvi2021LpBalance?: BigNumber
   uniswapEthDpiLpBalance?: BigNumber
   uniswapEthMviLpBalance?: BigNumber
+  unclaimedGmi2022Balance?: BigNumber
+  unclaimedUniswapEthMvi2021LpBalance?: BigNumber
+  unclaimedUniswapEthDpi2020LpBalance?: BigNumber
+  unclaimedUniswapEthDpi2021LpBalance?: BigNumber
 }
 
 const getChainAddress = (
@@ -60,6 +72,25 @@ const getDaiAddress = (chainId: ChainId = MAINNET_CHAIN_DATA.chainId) => {
 const getUsdcAddress = (chainId: ChainId = MAINNET_CHAIN_DATA.chainId) => {
   if (chainId === POLYGON_CHAIN_DATA.chainId) return usdcTokenPolygonAddress
   return usdcTokenAddress
+}
+
+const stakingInterface = new utils.Interface(StakeRewardsABI)
+
+const useStakingUnclaimedRewards = (
+  stakingAddress?: string,
+  account?: string | null
+): BigNumber | undefined => {
+  const [unclaimedRewards] =
+    useContractCall(
+      stakingAddress &&
+        account && {
+          abi: stakingInterface,
+          address: stakingAddress,
+          method: 'earned',
+          args: [account],
+        }
+    ) ?? []
+  return unclaimedRewards
 }
 
 export const useBalances = (): Balances => {
@@ -115,8 +146,16 @@ export const useBalances = (): Balances => {
     dpi2020StakingRewardsAddress,
     account
   )
+  const unclaimedUniswapEthDpi2020LpBalance = useStakingUnclaimedRewards(
+    dpi2020StakingRewardsAddress,
+    account
+  )
   // DPI LM Program ( July 13th, 2021 - August 12th, 2021)
   const stakedUniswapEthDpi2021LpBalance = useTokenBalance(
+    dpi2021StakingRewardsAddress,
+    account
+  )
+  const unclaimedUniswapEthDpi2021LpBalance = useStakingUnclaimedRewards(
     dpi2021StakingRewardsAddress,
     account
   )
@@ -125,8 +164,16 @@ export const useBalances = (): Balances => {
     mviStakingRewardsAddress,
     account
   )
+  const unclaimedUniswapEthMvi2021LpBalance = useStakingUnclaimedRewards(
+    mviStakingRewardsAddress,
+    account
+  )
   // GMI LM Program (Jan. 10th, 2022 - Mar. 10th, 2022)
   const stakedGmi2022Balance = useTokenBalance(
+    gmiStakingRewardsAddress,
+    account
+  )
+  const unclaimedGmi2022Balance = useStakingUnclaimedRewards(
     gmiStakingRewardsAddress,
     account
   )
@@ -148,5 +195,9 @@ export const useBalances = (): Balances => {
     stakedUniswapEthMvi2021LpBalance,
     uniswapEthDpiLpBalance,
     uniswapEthMviLpBalance,
+    unclaimedGmi2022Balance,
+    unclaimedUniswapEthMvi2021LpBalance,
+    unclaimedUniswapEthDpi2020LpBalance,
+    unclaimedUniswapEthDpi2021LpBalance,
   }
 }
