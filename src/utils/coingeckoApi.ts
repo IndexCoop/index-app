@@ -3,7 +3,7 @@ import { ethTokenAddress } from 'constants/ethContractAddresses'
 
 const baseURL = 'https://api.coingecko.com/api/v3'
 
-export const fetchHistoricalTokenMarketData = (
+export const fetchHistoricalTokenMarketData = async (
   id: string,
   baseCurrency = 'usd'
 ) => {
@@ -28,7 +28,10 @@ export const fetchHistoricalTokenMarketData = (
 
       return { prices, hourlyPrices, marketcaps, volumes }
     })
-    .catch((error) => console.log(error))
+    .catch((error) => {
+      console.log(error)
+      return { prices: [], hourly: [], marketcaps: [], volumes: [] }
+    })
 }
 
 export const fetchHistoricalTokenMarketDataOnPolygon = (
