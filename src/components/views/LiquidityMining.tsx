@@ -14,21 +14,21 @@ const programs: Program[] = [
   {
     title: 'GMI Staking',
     subtitle: 'Active January 10th, 2022 to March 10th, 2022',
-    isActive: true,
+    isActive: true, // false by default - TODO
     staked: {
       caption: 'Staked GMI Tokens',
-      value: '', // '10.2 ',
+      value: '0.00000',
       valueExtra: 'GMI',
       stakedBalanceKey: 'stakedGmi2022Balance',
       underlyingBalanceKey: 'gmiBalance',
     },
     apy: {
       caption: '(volatile)',
-      value: '', // '40.2%',
+      value: '0.0%',
     },
     unclaimed: {
       caption: 'Unclaimed INDEX in pool',
-      value: '', // '421.23',
+      value: '0.00000',
       valueExtra: 'INDEX',
       unclaimedBalanceKey: 'unclaimedGmi2022Balance',
     },
@@ -40,18 +40,18 @@ const programs: Program[] = [
     isActive: false,
     staked: {
       caption: 'Staked ETH/MVI Uniswap LP Tokens',
-      value: '', // '0.0',
+      value: '0.00000',
       valueExtra: 'ETH / MVI',
       stakedBalanceKey: 'stakedUniswapEthMvi2021LpBalance',
       underlyingBalanceKey: 'uniswapEthMviLpBalance',
     },
     apy: {
       caption: '(volatile)',
-      value: '', // '0.0%',
+      value: '0.0%',
     },
     unclaimed: {
       caption: 'Unclaimed INDEX in pool',
-      value: '', // '0.0',
+      value: '0.00000',
       valueExtra: 'INDEX',
       unclaimedBalanceKey: 'unclaimedUniswapEthMvi2021LpBalance',
     },
@@ -66,18 +66,18 @@ const programs: Program[] = [
     isActive: false,
     staked: {
       caption: 'Staked ETH/DPI Uniswap LP Tokens',
-      value: '', // '10.2 ',
+      value: '0.00000',
       valueExtra: 'ETH / DPI',
       stakedBalanceKey: 'stakedUniswapEthDpi2021LpBalance',
       underlyingBalanceKey: 'uniswapEthDpiLpBalance',
     },
     apy: {
       caption: '(volatile)',
-      value: '', // '40.2%',
+      value: '0.0%',
     },
     unclaimed: {
       caption: 'Unclaimed INDEX in pool',
-      value: '', // '421.23',
+      value: '0.00000',
       valueExtra: 'INDEX',
       unclaimedBalanceKey: 'unclaimedUniswapEthDpi2021LpBalance',
     },
@@ -89,28 +89,24 @@ const programs: Program[] = [
     isActive: false,
     staked: {
       caption: 'Staked ETH/DPI Uniswap LP Tokens',
-      value: '', // '10.2 ',
+      value: '0.00000',
       valueExtra: 'ETH / DPI',
       stakedBalanceKey: 'stakedUniswapEthDpi2020LpBalance',
       underlyingBalanceKey: 'uniswapEthDpiLpBalance',
     },
     apy: {
       caption: '(volatile)',
-      value: '', // '40.2%',
+      value: '0.0%',
     },
     unclaimed: {
       caption: 'Unclaimed INDEX in pool',
-      value: '', // '421.23',
+      value: '0.00000',
       valueExtra: 'INDEX',
       unclaimedBalanceKey: 'unclaimedUniswapEthDpi2020LpBalance',
     },
     liquidityMiningKey: 'uniswapEthDpi2020',
   },
 ]
-// uniswapEthDpi2020?: LiquidityMiningValues
-// uniswapEthDpi2021?: LiquidityMiningValues
-// uniswapEthMvi2021?: LiquidityMiningValues
-// gmi2022?: LiquidityMiningValues
 
 const LiquidityMining = () => {
   const { account, chainId, library } = useEthers()
