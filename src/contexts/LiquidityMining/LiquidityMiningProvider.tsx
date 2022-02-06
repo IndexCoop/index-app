@@ -2,8 +2,9 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 import { utils } from 'ethers'
 
+import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { useContractFunction, useEthers } from '@usedapp/core'
+import { useContractCall, useContractFunction, useEthers } from '@usedapp/core'
 
 import {
   dpi2020StakingRewardsAddress,
@@ -12,11 +13,13 @@ import {
   gmiTokenAddress,
   mviStakingRewardsAddress,
 } from 'constants/ethContractAddresses'
+import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
 import { useApproval } from 'hooks/useApproval'
 import { toWei } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 
 type LiquidityMiningValues = {
+  apy?: string
   isApproved?: boolean
   isApproving?: boolean
   isPoolActive?: boolean // TODO
@@ -36,10 +39,82 @@ const stakingInterface = new utils.Interface(StakeRewardsABI)
 
 const LiquidityMiningContext = createContext<LiquidityMiningProps>({})
 
+/**
+ * getRewardForDuration for StakingRewardsV2 contracts
+ */
+const useGetRewardForDuration = (
+  stakingAddress?: string
+): BigNumber | undefined => {
+  const [rewardsForDuration] =
+    useContractCall(
+      stakingAddress && {
+        abi: stakingInterface,
+        address: stakingAddress,
+        method: 'getRewardForDuration',
+        args: [],
+      }
+    ) ?? []
+  return rewardsForDuration
+}
+
+/**
+ * totalSupply for StakingRewardsV2 contracts
+ */
+const useTotalSupply = (stakingAddress?: string): BigNumber | undefined => {
+  const [totalSupply] =
+    useContractCall(
+      stakingAddress && {
+        abi: stakingInterface,
+        address: stakingAddress,
+        method: 'totalSupply',
+        args: [],
+      }
+    ) ?? []
+  return totalSupply
+}
+
+/**
+ * Calculate APY for StakingRewardsV2 contracts
+ * @returns percent to one decimals places (ex. 94.5)
+ */
+export const calculateApyStakingRewardV2 = ({
+  rewardsForDuration,
+  rewardsPrice,
+  stakedTotalSupply,
+  stakedPrice,
+}: {
+  rewardsForDuration?: BigNumber
+  rewardsPrice?: number
+  stakedTotalSupply?: BigNumber
+  stakedPrice?: number
+}): string => {
+  if (
+    !rewardsForDuration ||
+    !rewardsPrice ||
+    !stakedTotalSupply ||
+    !stakedPrice
+  ) {
+    return '0.0'
+  }
+
+  const dollarToCents = (dollar: number) => Math.floor(dollar * 100)
+
+  const rewards = rewardsForDuration.mul(
+    BigNumber.from(dollarToCents(rewardsPrice))
+  )
+  const staked = stakedTotalSupply.mul(
+    BigNumber.from(dollarToCents(stakedPrice))
+  )
+
+  const apy = rewards.mul(BigNumber.from(12000)).div(staked)
+  return (apy.toNumber() / 10).toString()
+}
+
 export const useLiquidityMining = () => useContext(LiquidityMiningContext)
 
 const LiquidityMiningProvider = (props: { children: any }) => {
   const { account, library } = useEthers()
+  const { index, gmi, selectLatestMarketData } = useMarketData()
 
   const [uniswapEthDpi2020, setUniswapEthDpi2020] =
     useState<LiquidityMiningValues>({
@@ -127,9 +202,24 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   }, [isApprovedGmi, isApprovingGmi])
 
   const gmiContract = new Contract(gmiStakingRewardsAddress, stakingInterface)
+
   const { send: stakeGmi } = useContractFunction(gmiContract, 'stake')
   const { send: claimGmi } = useContractFunction(gmiContract, 'getReward')
   const { send: exitGmi } = useContractFunction(gmiContract, 'exit')
+
+  const apyGmi = calculateApyStakingRewardV2({
+    rewardsForDuration: useGetRewardForDuration(gmiStakingRewardsAddress),
+    rewardsPrice: selectLatestMarketData(index?.hourlyPrices),
+    stakedTotalSupply: useTotalSupply(gmiStakingRewardsAddress),
+    stakedPrice: selectLatestMarketData(gmi?.hourlyPrices),
+  })
+
+  useEffect(() => {
+    setGmi2022((prev) => ({
+      ...prev,
+      apy: apyGmi,
+    }))
+  }, [apyGmi])
 
   useEffect(() => {
     if (
@@ -159,6 +249,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
         onUnstakeAndHarvest: exitMvi2021,
       })
       setGmi2022({
+        apy: apyGmi,
         isApproved: isApprovedGmi,
         isApproving: isApprovingGmi,
         onApprove: onApproveGmi,

@@ -83,9 +83,10 @@ const MiningProgram = (props: { program: Program }) => {
   const liquidityMining = useLiquidityMining()
 
   const program = liquidityMining[liquidityMiningKey]
-  if (!program) return <></> // FIXME probably a better way?
+  if (!program) return <></>
 
   const {
+    apy: stakingApy,
     isApproved,
     isApproving,
     onApprove,
@@ -94,11 +95,12 @@ const MiningProgram = (props: { program: Program }) => {
     onUnstakeAndHarvest,
   } = program
 
-  // const { gmiRewardsApy } = // maybe here ???? usePrices()
-
   if (staked.stakedBalanceKey) {
     staked.value = displayFromWei(balances[staked.stakedBalanceKey], 5) ?? '0.0'
   }
+
+  apy.value = `${stakingApy ?? '0.0'}%`
+
   if (unclaimed.unclaimedBalanceKey) {
     unclaimed.value =
       displayFromWei(balances[unclaimed.unclaimedBalanceKey], 5) ?? '0.0'

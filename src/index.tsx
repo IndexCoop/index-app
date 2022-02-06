@@ -39,11 +39,11 @@ const Providers = (props: { children: any }) => {
   return (
     <ChakraProvider theme={theme}>
       <DAppProvider config={config}>
-        <LiquidityMiningProvider>
-          <MarketDataProvider>
+        <MarketDataProvider>
+          <LiquidityMiningProvider>
             <SetComponentsProvider>{props.children}</SetComponentsProvider>
-          </MarketDataProvider>
-        </LiquidityMiningProvider>
+          </LiquidityMiningProvider>
+        </MarketDataProvider>
       </DAppProvider>
     </ChakraProvider>
   )

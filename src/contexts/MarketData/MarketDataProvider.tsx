@@ -17,6 +17,7 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   GmiIndex,
+  IndexToken,
   MetaverseIndex,
 } from 'constants/productTokens'
 import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
@@ -29,6 +30,7 @@ export interface TokenMarketDataValues {
 }
 
 export interface TokenContext {
+  index?: TokenMarketDataValues
   dpi?: TokenMarketDataValues
   mvi?: TokenMarketDataValues
   bed?: TokenMarketDataValues
@@ -50,6 +52,7 @@ export const useMarketData = () => useContext(MarketDataContext)
 
 export const MarketDataProvider = (props: { children: any }) => {
   const { chainId } = useEthers()
+  const [indexMarketData, setIndexMarketData] = useState<any>({})
   const [dpiMarketData, setDpiMarketData] = useState<any>({})
   const [mviMarketData, setMviMarketData] = useState<any>({})
   const [bedMarketData, setBedMarketData] = useState<any>({})
@@ -65,6 +68,7 @@ export const MarketDataProvider = (props: { children: any }) => {
   const fetchMarketData = useCallback(async () => {
     if (chainId === MAINNET.chainId) {
       const marketData = await Promise.all([
+        fetchHistoricalTokenMarketData(IndexToken.coingeckoId),
         fetchHistoricalTokenMarketData(DefiPulseIndex.coingeckoId),
         fetchHistoricalTokenMarketData(MetaverseIndex.coingeckoId),
         fetchHistoricalTokenMarketData(BedIndex.coingeckoId),
@@ -79,14 +83,15 @@ export const MarketDataProvider = (props: { children: any }) => {
         fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
       ])
 
-      setDpiMarketData(marketData[0])
-      setMviMarketData(marketData[1])
-      setBedMarketData(marketData[2])
-      setDataMarketData(marketData[3])
-      setEthFliMarketData(marketData[4])
-      setBtcFliMarketData(marketData[5])
-      setEthFlipMarketData(marketData[6])
-      setGmiMarketData(marketData[7])
+      setIndexMarketData(marketData[0])
+      setDpiMarketData(marketData[1])
+      setMviMarketData(marketData[2])
+      setBedMarketData(marketData[3])
+      setDataMarketData(marketData[4])
+      setEthFliMarketData(marketData[5])
+      setBtcFliMarketData(marketData[6])
+      setEthFlipMarketData(marketData[7])
+      setGmiMarketData(marketData[8])
     }
   }, [chainId])
 
@@ -98,6 +103,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     <MarketDataContext.Provider
       value={{
         selectLatestMarketData,
+        index: indexMarketData,
         dpi: dpiMarketData,
         mvi: mviMarketData,
         bed: bedMarketData,
