@@ -6,6 +6,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react'
+import { useEthers } from '@usedapp/core'
 
 import StakingModal from 'components/mining/StakingModal'
 import {
@@ -76,48 +77,50 @@ const MiningProgram = (props: { program: Program }) => {
     liquidityMiningKey,
     unclaimed,
   } = props.program
-  const { isOpen, onClose, onOpen } = useDisclosure()
   const balances = useBalances()
+  const { isOpen, onClose, onOpen } = useDisclosure()
+  const { account } = useEthers()
   const liquidityMining = useLiquidityMining()
-  // const { status } = useWallet()
 
   const program = liquidityMining[liquidityMiningKey]
-  if (!program) return <></> // better
+  if (!program) return <></> // FIXME probably a better way?
+
   const {
-    isApproved = true,
-    isApproving = false,
+    isApproved,
+    isApproving,
     onApprove,
     onStake,
     onHarvest,
     onUnstakeAndHarvest,
   } = program
 
-  // const { gmiRewardsApy } = usePrices() // maybe here ????
+  // const { gmiRewardsApy } = // maybe here ???? usePrices()
 
   if (staked.stakedBalanceKey) {
-    staked.value = displayFromWei(balances[staked.stakedBalanceKey], 5)
+    staked.value = displayFromWei(balances[staked.stakedBalanceKey], 5) ?? '0.0'
   }
   if (unclaimed.unclaimedBalanceKey) {
-    unclaimed.value = displayFromWei(balances[unclaimed.unclaimedBalanceKey], 5)
+    unclaimed.value =
+      displayFromWei(balances[unclaimed.unclaimedBalanceKey], 5) ?? '0.0'
   }
 
   const comps = [staked, apy, unclaimed]
 
   const StakeButton = () => {
-    // if (status !== 'connected') {
-    //   return <Button disabled mr='6' variant='secondary'>Stake</Button>
-    // }
+    if (!account) {
+      return (
+        <Button disabled mr='6' variant='secondary'>
+          Stake
+        </Button>
+      )
+    }
 
     if (!isApproved) {
       return (
         <Button
           disabled={isApproving || !isActive}
           mr='6'
-          onClick={onApprove}
-          variant={
-            isApproving ? 'secondary' : 'default'
-            // isApproving || status !== 'connected' ? 'secondary' : 'default'
-          }
+          onClick={() => onApprove()}
         >
           {!isApproving ? 'Approve staking' : 'Approving staking...'}
         </Button>
@@ -153,16 +156,20 @@ const MiningProgram = (props: { program: Program }) => {
           })}
         </Flex>
         <Flex mt='8'>
-          {StakeButton()}
+          {isActive && (
+            <>
+              {StakeButton()}
+              <Button
+                mr='6'
+                isDisabled={!account || Number(staked.value) <= 0}
+                onClick={() => onHarvest()}
+              >
+                Claim
+              </Button>
+            </>
+          )}
           <Button
-            mr='6'
-            isDisabled={Number(staked.value) <= 0}
-            onClick={() => onHarvest()}
-          >
-            Claim
-          </Button>
-          <Button
-            isDisabled={Number(staked.value) <= 0}
+            isDisabled={!account || Number(staked.value) <= 0}
             onClick={() => onUnstakeAndHarvest()}
           >
             Unstake & Claim

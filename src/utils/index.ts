@@ -40,8 +40,8 @@ export const displayFromWei = (
   number: BigNumber | undefined,
   decimals: number = 0,
   power: number = 18
-): string => {
-  if (!number) return ''
+): string | null => {
+  if (!number) return null
 
   if (decimals) {
     return Number(formatUnits(number)).toFixed(decimals)

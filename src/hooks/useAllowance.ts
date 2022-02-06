@@ -9,9 +9,6 @@ const ERC20Interface = new utils.Interface(ERC20ABI)
 
 /**
  * Get the approved allowance/spending for an ERC20
- * @param tokenAddress
- * @param spenderAddress
- * @returns
  */
 export const useAllowance = (
   tokenAddress?: string,

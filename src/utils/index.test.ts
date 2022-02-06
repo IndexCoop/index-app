@@ -3,6 +3,10 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { displayFromWei, toWei } from '.'
 
 describe('displayFromWei', () => {
+  it('should return null with no number provided', () => {
+    const displayValue = displayFromWei(undefined)
+    expect(displayValue).toBe(null)
+  })
   it('should convert to token value, default full value', () => {
     const displayValue = displayFromWei(BigNumber.from('180313000000000000000'))
     expect(displayValue).toBe('180.313')

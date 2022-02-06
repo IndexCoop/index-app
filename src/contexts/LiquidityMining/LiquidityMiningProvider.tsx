@@ -9,16 +9,18 @@ import {
   dpi2020StakingRewardsAddress,
   dpi2021StakingRewardsAddress,
   gmiStakingRewardsAddress,
+  gmiTokenAddress,
   mviStakingRewardsAddress,
 } from 'constants/ethContractAddresses'
+import { useApproval } from 'hooks/useApproval'
 import { toWei } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 
 type LiquidityMiningValues = {
   isApproved?: boolean
   isApproving?: boolean
-  isPoolActive?: boolean
-  onApprove?: () => void
+  isPoolActive?: boolean // TODO
+  onApprove: () => void
   onStake: (amount: string) => void
   onHarvest: () => void
   onUnstakeAndHarvest: () => void
@@ -28,7 +30,6 @@ export type LiquidityMiningProps = {
   uniswapEthDpi2021?: LiquidityMiningValues
   uniswapEthMvi2021?: LiquidityMiningValues
   gmi2022?: LiquidityMiningValues
-  // TODO add v3 here? or is the interface too different ?
 }
 
 const stakingInterface = new utils.Interface(StakeRewardsABI)
@@ -42,29 +43,34 @@ const LiquidityMiningProvider = (props: { children: any }) => {
 
   const [uniswapEthDpi2020, setUniswapEthDpi2020] =
     useState<LiquidityMiningValues>({
+      onApprove: () => {},
       onStake: () => {},
       onHarvest: () => {},
       onUnstakeAndHarvest: () => {},
     })
   const [uniswapEthDpi2021, setUniswapEthDpi2021] =
     useState<LiquidityMiningValues>({
+      onApprove: () => {},
       onStake: () => {},
       onHarvest: () => {},
       onUnstakeAndHarvest: () => {},
     })
   const [uniswapEthMvi2021, setUniswapEthMvi2021] =
     useState<LiquidityMiningValues>({
+      onApprove: () => {},
       onStake: () => {},
       onHarvest: () => {},
       onUnstakeAndHarvest: () => {},
     })
   const [gmi2022, setGmi2022] = useState<LiquidityMiningValues>({
+    onApprove: () => {},
     onStake: () => {},
     onHarvest: () => {},
     onUnstakeAndHarvest: () => {},
   })
 
   if (
+    !gmiTokenAddress ||
     !stakingInterface ||
     !dpi2020StakingRewardsAddress ||
     !dpi2021StakingRewardsAddress ||
@@ -79,37 +85,51 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   /**
    * DPI 2020
    */
-  const dpi2020Contact = new Contract(
+  const dpi2020Contract = new Contract(
     dpi2020StakingRewardsAddress,
     stakingInterface
   )
-  const { send: exitDpi2020 } = useContractFunction(dpi2020Contact, 'exit')
+  const { send: exitDpi2020 } = useContractFunction(dpi2020Contract, 'exit')
 
   /**
    * DPI 2021
    */
-  const dpi2021Contact = new Contract(
+  const dpi2021Contract = new Contract(
     dpi2021StakingRewardsAddress,
     stakingInterface
   )
-  const { send: exitDpi2021 } = useContractFunction(dpi2021Contact, 'exit')
+  const { send: exitDpi2021 } = useContractFunction(dpi2021Contract, 'exit')
 
   /**
    * MVI 2021
    */
-  const mvi2021Contact = new Contract(
+  const mvi2021Contract = new Contract(
     mviStakingRewardsAddress,
     stakingInterface
   )
-  const { send: exitMvi2021 } = useContractFunction(mvi2021Contact, 'exit')
+  const { send: exitMvi2021 } = useContractFunction(mvi2021Contract, 'exit')
 
   /**
    * GMI 2022
    */
-  const gmiContact = new Contract(gmiStakingRewardsAddress, stakingInterface)
-  const { send: stakeGmi } = useContractFunction(gmiContact, 'stake')
-  const { send: claimGmi } = useContractFunction(gmiContact, 'getReward')
-  const { send: exitGmi } = useContractFunction(gmiContact, 'exit')
+  const {
+    isApproved: isApprovedGmi,
+    isApproving: isApprovingGmi,
+    onApprove: onApproveGmi,
+  } = useApproval(gmiTokenAddress, gmiStakingRewardsAddress)
+
+  useEffect(() => {
+    setGmi2022((prev) => ({
+      ...prev,
+      isApproved: isApprovedGmi,
+      isApproving: isApprovingGmi,
+    }))
+  }, [isApprovedGmi, isApprovingGmi])
+
+  const gmiContract = new Contract(gmiStakingRewardsAddress, stakingInterface)
+  const { send: stakeGmi } = useContractFunction(gmiContract, 'stake')
+  const { send: claimGmi } = useContractFunction(gmiContract, 'getReward')
+  const { send: exitGmi } = useContractFunction(gmiContract, 'exit')
 
   useEffect(() => {
     if (
@@ -139,7 +159,9 @@ const LiquidityMiningProvider = (props: { children: any }) => {
         onUnstakeAndHarvest: exitMvi2021,
       })
       setGmi2022({
-        onApprove: () => {},
+        isApproved: isApprovedGmi,
+        isApproving: isApprovingGmi,
+        onApprove: onApproveGmi,
         onStake: async (token: string) => {
           await stakeGmi(toWei(token))
         },

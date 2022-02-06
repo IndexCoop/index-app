@@ -32,7 +32,7 @@ const StakingModal = ({
 }: StakeModalProps) => {
   const [val, setVal] = useState('')
 
-  const fullTokenBalance = displayFromWei(stakeAbleBalance)
+  const fullTokenBalance = displayFromWei(stakeAbleBalance) ?? ''
 
   const handleChange = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
