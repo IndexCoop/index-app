@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import {
-  AreaChart,
-  CartesianGrid,
-  Line,
-  LineChart,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { Area, AreaChart, CartesianGrid, Line, XAxis, YAxis } from 'recharts'
 
 import { Flex } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, theme } from '@chakra-ui/react'
@@ -35,6 +28,8 @@ enum Durations {
 }
 
 interface MarketChartOptions {
+  areaColor: string
+  areaStrokeColor: string
   width?: number
   hideYAxis?: boolean
 }
@@ -208,7 +203,7 @@ const MarketChart = (props: {
         />
         <RangeSelector onChange={onChangeDuration} />
       </Flex>
-      <LineChart
+      <AreaChart
         width={props.options.width ?? 900}
         height={400}
         data={mappedPriceData()}
@@ -235,7 +230,13 @@ const MarketChart = (props: {
           tickFormatter={xAxisTickFormatter}
           tickLine={false}
         />
-      </LineChart>
+        <Area
+          type='monotone'
+          dataKey='y'
+          stroke={props.options.areaStrokeColor}
+          fill={props.options.areaStrokeColor}
+        />
+      </AreaChart>
     </Flex>
   )
 }

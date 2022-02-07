@@ -191,7 +191,12 @@ const Dashboard = () => {
           <MarketChart
             productToken={MetaverseIndex}
             marketData={mvi || {}}
-            options={{ width, hideYAxis: false }}
+            options={{
+              areaColor: 'rgba(9, 170, 116, 0.2)',
+              areaStrokeColor: '#09AA74',
+              width,
+              hideYAxis: false,
+            }}
           />
           <Flex direction='row' mt='64px'>
             <Flex direction='column' grow='1' flexBasis='0'>
