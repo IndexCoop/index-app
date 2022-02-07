@@ -68,7 +68,6 @@ const MarketChart = (props: {
 
   useEffect(() => {
     setTimeout(() => {
-      console.log('//SELECT', props.marketData, durationSelector)
       const hourlyDataInterval = 24
       if (props.marketData.hourlyPrices) {
         if (durationSelector === Durations.DAILY) {
