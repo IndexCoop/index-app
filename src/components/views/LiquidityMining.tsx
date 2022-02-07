@@ -14,7 +14,7 @@ const programs: Program[] = [
   {
     title: 'GMI Staking',
     subtitle: 'Active January 10th, 2022 to March 10th, 2022',
-    isActive: true, // false by default - TODO
+    isActive: false,
     staked: {
       caption: 'Staked GMI Tokens',
       value: '0.00000',

@@ -22,7 +22,7 @@ type LiquidityMiningValues = {
   apy?: string
   isApproved?: boolean
   isApproving?: boolean
-  isPoolActive?: boolean // TODO
+  isPoolActive?: boolean
   onApprove: () => void
   onStake: (amount: string) => void
   onHarvest: () => void
@@ -187,6 +187,10 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   /**
    * GMI 2022
    */
+  // March 06, 2022 05:00:00 UTC (timestamp copied from index-ui)
+  const gmi2022minigEndTime = 1646542800 * 1000
+  const isPoolActiveGmi = gmi2022minigEndTime > Date.now()
+
   const {
     isApproved: isApprovedGmi,
     isApproving: isApprovingGmi,
@@ -252,6 +256,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
         apy: apyGmi,
         isApproved: isApprovedGmi,
         isApproving: isApprovingGmi,
+        isPoolActive: isPoolActiveGmi,
         onApprove: onApproveGmi,
         onStake: async (token: string) => {
           await stakeGmi(toWei(token))

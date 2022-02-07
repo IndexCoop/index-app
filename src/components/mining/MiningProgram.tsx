@@ -89,11 +89,14 @@ const MiningProgram = (props: { program: Program }) => {
     apy: stakingApy,
     isApproved,
     isApproving,
+    isPoolActive,
     onApprove,
     onStake,
     onHarvest,
     onUnstakeAndHarvest,
   } = program
+
+  props.program.isActive = Boolean(isPoolActive)
 
   if (staked.stakedBalanceKey) {
     staked.value = displayFromWei(balances[staked.stakedBalanceKey], 5) ?? '0.0'
