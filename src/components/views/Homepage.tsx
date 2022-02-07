@@ -103,15 +103,16 @@ const Dashboard = () => {
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
 
-  useEffect(() => {
-    if (account === null || account === undefined) return
-    const fetchHistory = async () => {
-      const transactions = await getTransactionHistory(account)
-      const historyItems = assembleHistoryItems(transactions)
-      setHistoryItems(historyItems)
-    }
-    fetchHistory()
-  }, [account])
+  // FIXME: re-add once app is going live
+  // useEffect(() => {
+  //   if (account === null || account === undefined) return
+  //   const fetchHistory = async () => {
+  //     const transactions = await getTransactionHistory(account)
+  //     const historyItems = assembleHistoryItems(transactions)
+  //     setHistoryItems(historyItems)
+  //   }
+  //   fetchHistory()
+  // }, [account])
 
   const tempPositions = [
     { title: 'DPI', value: dpiBalance, color: '#8150E6' },
@@ -179,13 +180,26 @@ const Dashboard = () => {
   ]
   // console.log(positions)
 
+  // TODO: width should be dynamic
+  // TODO: what's min width?
+  const width = 1280
+
   return (
     <Page>
-      <Box minW='1280px' mx='auto'>
+      <Box w={width} mx='auto'>
         <PageTitle title='My Dashboard' subtitle='' />
         <Box my={12}>
-          <MarketChart productToken={MetaverseIndex} marketData={mvi || {}} />
-          <Flex direction='row'>
+          <MarketChart
+            productToken={MetaverseIndex}
+            marketData={mvi || {}}
+            options={{
+              areaColor: 'rgba(9, 170, 116, 0.2)',
+              areaStrokeColor: '#09AA74',
+              width,
+              hideYAxis: false,
+            }}
+          />
+          <Flex direction='row' mt='64px'>
             <Flex direction='column' grow='1' flexBasis='0'>
               <AllocationChart positions={positions} />
             </Flex>

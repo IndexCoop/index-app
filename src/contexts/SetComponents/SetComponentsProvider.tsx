@@ -112,132 +112,154 @@ const SetComponentsProvider = (props: { children: any }) => {
         ] = result
 
         const dpiComponentPrices = await getPositionPrices(dpiSet)
-        const dpiPositions = dpiSet.positions.map(async (position) => {
-          return await convertPositionToSetComponent(
-            position,
-            tokenList,
-            dpiComponentPrices[position.component.toLowerCase()]?.[VS_CURRENCY],
-            dpiComponentPrices[position.component.toLowerCase()]?.[
-              `${VS_CURRENCY}_24h_change`
-            ],
-            selectLatestMarketData(dpi.hourlyPrices)
-          )
-        })
-        Promise.all(dpiPositions)
-          .then(sortPositionsByPercentOfSet)
-          .then(setDpiComponents)
+        if (dpiComponentPrices != null) {
+          const dpiPositions = dpiSet.positions.map(async (position) => {
+            return await convertPositionToSetComponent(
+              position,
+              tokenList,
+              dpiComponentPrices[position.component.toLowerCase()]?.[
+                VS_CURRENCY
+              ],
+              dpiComponentPrices[position.component.toLowerCase()]?.[
+                `${VS_CURRENCY}_24h_change`
+              ],
+              selectLatestMarketData(dpi.hourlyPrices)
+            )
+          })
+          Promise.all(dpiPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setDpiComponents)
+        }
 
         const mviComponentPrices = await getPositionPrices(mviSet)
-        const mviPositions = mviSet.positions.map(async (position) => {
-          return await convertPositionToSetComponent(
-            position,
-            tokenList,
-            mviComponentPrices[position.component.toLowerCase()]?.[VS_CURRENCY],
-            mviComponentPrices[position.component.toLowerCase()]?.[
-              `${VS_CURRENCY}_24h_change`
-            ],
+        if (mviComponentPrices != null) {
+          const mviPositions = mviSet.positions.map(async (position) => {
+            return await convertPositionToSetComponent(
+              position,
+              tokenList,
+              mviComponentPrices[position.component.toLowerCase()]?.[
+                VS_CURRENCY
+              ],
+              mviComponentPrices[position.component.toLowerCase()]?.[
+                `${VS_CURRENCY}_24h_change`
+              ],
 
-            selectLatestMarketData(mvi.hourlyPrices)
-          )
-        })
-        Promise.all(mviPositions)
-          .then(sortPositionsByPercentOfSet)
-          .then(setMviComponents)
+              selectLatestMarketData(mvi.hourlyPrices)
+            )
+          })
+          Promise.all(mviPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setMviComponents)
+        }
 
         const bedComponentPrices = await getPositionPrices(bedSet)
-        const bedPositions = bedSet.positions.map(async (position) => {
-          return await convertPositionToSetComponent(
-            position,
-            tokenList,
-            bedComponentPrices[position.component.toLowerCase()]?.[VS_CURRENCY],
-            bedComponentPrices[position.component.toLowerCase()]?.[
-              `${VS_CURRENCY}_24h_change`
-            ],
+        if (bedComponentPrices != null) {
+          const bedPositions = bedSet.positions.map(async (position) => {
+            return await convertPositionToSetComponent(
+              position,
+              tokenList,
+              bedComponentPrices[position.component.toLowerCase()]?.[
+                VS_CURRENCY
+              ],
+              bedComponentPrices[position.component.toLowerCase()]?.[
+                `${VS_CURRENCY}_24h_change`
+              ],
 
-            selectLatestMarketData(bed.hourlyPrices)
-          )
-        })
-        Promise.all(bedPositions)
-          .then(sortPositionsByPercentOfSet)
-          .then(setBedComponents)
+              selectLatestMarketData(bed.hourlyPrices)
+            )
+          })
+          Promise.all(bedPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setBedComponents)
+        }
 
         const gmiComponentPrices = await getPositionPrices(gmiSet)
-        const gmiPositions = gmiSet.positions.map(async (position) => {
-          return await convertPositionToSetComponent(
-            position,
-            tokenList,
-            gmiComponentPrices[position.component.toLowerCase()]?.[VS_CURRENCY],
-            gmiComponentPrices[position.component.toLowerCase()]?.[
-              `${VS_CURRENCY}_24h_change`
-            ],
+        if (gmiComponentPrices != null) {
+          const gmiPositions = gmiSet.positions.map(async (position) => {
+            return await convertPositionToSetComponent(
+              position,
+              tokenList,
+              gmiComponentPrices[position.component.toLowerCase()]?.[
+                VS_CURRENCY
+              ],
+              gmiComponentPrices[position.component.toLowerCase()]?.[
+                `${VS_CURRENCY}_24h_change`
+              ],
 
-            selectLatestMarketData(gmi.hourlyPrices)
-          )
-        })
-        Promise.all(gmiPositions)
-          .then(sortPositionsByPercentOfSet)
-          .then(setGmiComponents)
+              selectLatestMarketData(gmi.hourlyPrices)
+            )
+          })
+          Promise.all(gmiPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setGmiComponents)
+        }
 
         const eth2xfliComponentPrices = await getPositionPrices(eth2xfliSet)
-        const eth2xfliPositions = eth2xfliSet.positions.map(
-          async (position) => {
-            return await convertPositionToSetComponent(
-              position,
-              tokenList,
-              eth2xfliComponentPrices[position.component.toLowerCase()]?.[
-                VS_CURRENCY
-              ],
-              eth2xfliComponentPrices[position.component.toLowerCase()]?.[
-                `${VS_CURRENCY}_24h_change`
-              ],
+        if (eth2xfliComponentPrices != null) {
+          const eth2xfliPositions = eth2xfliSet.positions.map(
+            async (position) => {
+              return await convertPositionToSetComponent(
+                position,
+                tokenList,
+                eth2xfliComponentPrices[position.component.toLowerCase()]?.[
+                  VS_CURRENCY
+                ],
+                eth2xfliComponentPrices[position.component.toLowerCase()]?.[
+                  `${VS_CURRENCY}_24h_change`
+                ],
 
-              selectLatestMarketData(ethfli.hourlyPrices)
-            )
-          }
-        )
-        Promise.all(eth2xfliPositions)
-          .then(sortPositionsByPercentOfSet)
-          .then(setEth2xfliComponents)
+                selectLatestMarketData(ethfli.hourlyPrices)
+              )
+            }
+          )
+          Promise.all(eth2xfliPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setEth2xfliComponents)
+        }
 
         const btc2xfliComponentPrices = await getPositionPrices(btc2xfliSet)
-        const btc2xfliPositions = btc2xfliSet.positions.map(
-          async (position) => {
+        if (btc2xfliComponentPrices != null) {
+          const btc2xfliPositions = btc2xfliSet.positions.map(
+            async (position) => {
+              return await convertPositionToSetComponent(
+                position,
+                tokenList,
+                btc2xfliComponentPrices[position.component.toLowerCase()]?.[
+                  VS_CURRENCY
+                ],
+                btc2xfliComponentPrices[position.component.toLowerCase()]?.[
+                  `${VS_CURRENCY}_24h_change`
+                ],
+
+                selectLatestMarketData(btcfli.hourlyPrices)
+              )
+            }
+          )
+          Promise.all(btc2xfliPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setBtc2xfliComponents)
+        }
+
+        const dataComponentPrices = await getPositionPrices(dataSet)
+        if (dataComponentPrices != null) {
+          const dataPositions = dataSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
               tokenList,
-              btc2xfliComponentPrices[position.component.toLowerCase()]?.[
+              dataComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
-              btc2xfliComponentPrices[position.component.toLowerCase()]?.[
+              dataComponentPrices[position.component.toLowerCase()]?.[
                 `${VS_CURRENCY}_24h_change`
               ],
 
-              selectLatestMarketData(btcfli.hourlyPrices)
+              selectLatestMarketData(data.hourlyPrices)
             )
-          }
-        )
-        Promise.all(btc2xfliPositions)
-          .then(sortPositionsByPercentOfSet)
-          .then(setBtc2xfliComponents)
-
-        const dataComponentPrices = await getPositionPrices(dataSet)
-        const dataPositions = dataSet.positions.map(async (position) => {
-          return await convertPositionToSetComponent(
-            position,
-            tokenList,
-            dataComponentPrices[position.component.toLowerCase()]?.[
-              VS_CURRENCY
-            ],
-            dataComponentPrices[position.component.toLowerCase()]?.[
-              `${VS_CURRENCY}_24h_change`
-            ],
-
-            selectLatestMarketData(data.hourlyPrices)
-          )
-        })
-        Promise.all(dataPositions)
-          .then(sortPositionsByPercentOfSet)
-          .then(setDataComponents)
+          })
+          Promise.all(dataPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setDataComponents)
+        }
       })
     }
   }, [
@@ -395,7 +417,10 @@ async function getPositionPrices(
     `https://api.coingecko.com/api/v3/simple/token_price/${assetPlatform}?vs_currencies=${VS_CURRENCY}&contract_addresses=${componentAddresses}&include_24hr_change=true`
   )
     .then((response) => response.json())
-    .catch((e) => console.error(e))
+    .catch((e) => {
+      console.error(e)
+      return null
+    })
 }
 
 export default SetComponentsProvider

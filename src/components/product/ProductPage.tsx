@@ -23,6 +23,11 @@ const ProductPage = (props: {
           <MarketChart
             productToken={props.tokenData}
             marketData={props.marketData}
+            options={{
+              areaColor:
+                'linear-gradient(180deg, #FABF00 18.17%, rgba(196, 196, 196, 0) 100.16%)',
+              areaStrokeColor: '#FABF00',
+            }}
           />
           <ProductComponentsTable components={props.components} />
           <Flex>{props.children}</Flex>
