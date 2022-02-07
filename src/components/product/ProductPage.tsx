@@ -23,6 +23,7 @@ const ProductPage = (props: {
           <MarketChart
             productToken={props.tokenData}
             marketData={props.marketData}
+            options={{}}
           />
           <ProductComponentsTable components={props.components} />
           <Flex>{props.children}</Flex>

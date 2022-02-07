@@ -185,15 +185,15 @@ const Dashboard = () => {
 
   return (
     <Page>
-      <Box minW={width} mx='auto'>
+      <Box w={width} mx='auto'>
         <PageTitle title='My Dashboard' subtitle='' />
         <Box my={12}>
           <MarketChart
             productToken={MetaverseIndex}
             marketData={mvi || {}}
-            width={width}
+            options={{ width, hideYAxis: false }}
           />
-          <Flex direction='row'>
+          <Flex direction='row' mt='64px'>
             <Flex direction='column' grow='1' flexBasis='0'>
               <AllocationChart positions={positions} />
             </Flex>

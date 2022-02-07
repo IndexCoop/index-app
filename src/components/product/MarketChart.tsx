@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { Line, LineChart, XAxis, YAxis } from 'recharts'
+import {
+  AreaChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 import { Flex } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, theme } from '@chakra-ui/react'
@@ -27,43 +34,17 @@ enum Durations {
   YEARLY = 4,
 }
 
-const PriceDisplay = ({ price, change }: { price: string; change: string }) => (
-  <Flex align='baseline'>
-    <Text fontSize='5xl' color='#FABF00' fontWeight='700'>
-      {price}
-    </Text>
-    <Text fontSize='xl' color='#09AA74 ' fontWeight='700' ml='24px'>
-      {change}
-    </Text>
-  </Flex>
-)
-
-const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
-  <Tabs
-    background='#1D1B16'
-    borderRadius='8px'
-    fontSize='16px'
-    fontWeight='500'
-    color={white}
-    height='45px'
-    outline='0'
-    variant='unstyle'
-    onChange={onChange}
-  >
-    <TabList>
-      <Tab _selected={selectedTabStyle}>1D</Tab>
-      <Tab _selected={selectedTabStyle}>1W</Tab>
-      <Tab _selected={selectedTabStyle}>1M</Tab>
-    </TabList>
-  </Tabs>
-)
+interface MarketChartOptions {
+  width?: number
+  hideYAxis?: boolean
+}
 
 const MarketChart = (props: {
   productToken: ProductToken
   marketData: TokenMarketDataValues
+  options: MarketChartOptions
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
-  width?: number
 }) => {
   const { selectLatestMarketData } = useMarketData()
   const formatFloats = (n: number) => n.toFixed(2)
@@ -92,6 +73,7 @@ const MarketChart = (props: {
 
   useEffect(() => {
     setTimeout(() => {
+      console.log('//SELECT', props.marketData, durationSelector)
       const hourlyDataInterval = 24
       if (props.marketData.hourlyPrices) {
         if (durationSelector === Durations.DAILY) {
@@ -169,18 +151,46 @@ const MarketChart = (props: {
       case 2:
         handleMonthlyButton()
         break
+      case 3:
+        handleQuarterlyButton()
+        break
+      case 4:
+        handleYearlyButton()
+        break
     }
   }
 
-  const xAxisTickFormatter = (val: any) => {
-    return new Date(val).toLocaleString('%b %d')
+  const dateFormatterOptions = (
+    duration: Durations
+  ): Intl.DateTimeFormatOptions => {
+    switch (duration) {
+      case Durations.DAILY:
+        return {
+          hour: '2-digit',
+        }
+      default:
+        return {
+          month: 'short',
+          day: '2-digit',
+        }
+    }
+  }
+
+  const xAxisTickFormatter = (val: any | null | undefined) => {
+    var options = dateFormatterOptions(durationSelector)
+    return new Date(val).toLocaleString(undefined, options)
+  }
+
+  const yAxisTickFormatter = (val: any | null | undefined) => {
+    if (val === undefined || val === null) {
+      return ''
+    }
+    return `$${parseInt(val)}`
   }
 
   const mappedPriceData = () => prices.map(([x, y]) => ({ x, y }))
-
   const minY = Math.min(...prices.map<number>(([x, y]) => y))
   const maxY = Math.max(...prices.map<number>(([x, y]) => y))
-  const minimumYAxisLabel = minY - 5 > 0 ? minY - 5 : 0
 
   return (
     <Flex direction='column' alignItems='center' width='100%'>
@@ -189,40 +199,77 @@ const MarketChart = (props: {
         width='100%'
         alignItems='center'
         justifyContent='space-between'
+        mb='24px'
       >
         <PriceDisplay
           price={`$${selectLatestMarketData(prices).toFixed()}`}
+          // TODO: add price change
           change='+10.53 ( +5.89% )'
         />
         <RangeSelector onChange={onChangeDuration} />
       </Flex>
       <LineChart
-        width={props.width ?? 900}
-        height={600}
+        width={props.options.width ?? 900}
+        height={400}
         data={mappedPriceData()}
       >
         <Line type='monotone' dataKey='y' stroke='#FABF00' />
+        <CartesianGrid stroke={white} strokeOpacity={0.2} />
         <YAxis
-          stroke={strokeColor}
           axisLine={false}
-          tickLine={false}
-          mirror={true}
           domain={[minY - 5, maxY + 5]}
-          orientation='right'
-          width={100}
-          dy={7}
-          dx={1}
-          hide={true}
+          stroke={strokeColor}
+          tickCount={10}
+          tickFormatter={yAxisTickFormatter}
+          tickLine={false}
+          hide={props.options.hideYAxis ?? true}
         />
         <XAxis
-          dataKey='y'
+          axisLine={false}
+          dataKey='x'
+          dy={10}
+          interval='preserveStart'
+          minTickGap={100}
           stroke={strokeColor}
-          // tickFormatter={xAxisTickFormatter}
+          tickCount={6}
+          tickFormatter={xAxisTickFormatter}
+          tickLine={false}
         />
       </LineChart>
     </Flex>
   )
 }
+
+const PriceDisplay = ({ price, change }: { price: string; change: string }) => (
+  <Flex align='baseline'>
+    <Text fontSize='5xl' color='#FABF00' fontWeight='700'>
+      {price}
+    </Text>
+    <Text fontSize='xl' color='#09AA74 ' fontWeight='700' ml='24px'>
+      {change}
+    </Text>
+  </Flex>
+)
+
+const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
+  <Tabs
+    background='#1D1B16'
+    borderRadius='8px'
+    fontSize='16px'
+    fontWeight='500'
+    color={white}
+    height='45px'
+    outline='0'
+    variant='unstyle'
+    onChange={onChange}
+  >
+    <TabList>
+      <Tab _selected={selectedTabStyle}>1D</Tab>
+      <Tab _selected={selectedTabStyle}>1W</Tab>
+      <Tab _selected={selectedTabStyle}>1M</Tab>
+    </TabList>
+  </Tabs>
+)
 
 const strokeColor = theme.colors.gray[500]
 const white = '#F6F1E4'
