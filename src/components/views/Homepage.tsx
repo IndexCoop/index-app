@@ -103,15 +103,16 @@ const Dashboard = () => {
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
 
-  useEffect(() => {
-    if (account === null || account === undefined) return
-    const fetchHistory = async () => {
-      const transactions = await getTransactionHistory(account)
-      const historyItems = assembleHistoryItems(transactions)
-      setHistoryItems(historyItems)
-    }
-    fetchHistory()
-  }, [account])
+  // FIXME: re-add once app is going live
+  // useEffect(() => {
+  //   if (account === null || account === undefined) return
+  //   const fetchHistory = async () => {
+  //     const transactions = await getTransactionHistory(account)
+  //     const historyItems = assembleHistoryItems(transactions)
+  //     setHistoryItems(historyItems)
+  //   }
+  //   fetchHistory()
+  // }, [account])
 
   const tempPositions = [
     { title: 'DPI', value: dpiBalance, color: '#8150E6' },
