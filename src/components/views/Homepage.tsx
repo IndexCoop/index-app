@@ -24,7 +24,10 @@ import {
   IndexToken,
   MetaverseIndex,
 } from 'constants/productTokens'
-import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
+import {
+  TokenMarketDataValues,
+  useMarketData,
+} from 'contexts/MarketData/MarketDataProvider'
 import { useSetComponents } from 'contexts/SetComponents/SetComponentsProvider'
 import { useBalances } from 'hooks/useBalances'
 import { getTransactionHistory } from 'utils/alchemyApi'
@@ -184,6 +187,10 @@ const Dashboard = () => {
   // TODO: what's min width?
   const width = 1280
 
+  const marketData: TokenMarketDataValues[] = [mvi].filter(
+    (tokenData): tokenData is TokenMarketDataValues => !!tokenData
+  )
+
   return (
     <Page>
       <Box w={width} mx='auto'>
@@ -191,7 +198,7 @@ const Dashboard = () => {
         <Box my={12}>
           <MarketChart
             productToken={MetaverseIndex}
-            marketData={mvi || {}}
+            marketData={marketData}
             options={{
               areaColor: 'rgba(9, 170, 116, 0.2)',
               areaStrokeColor: '#09AA74',

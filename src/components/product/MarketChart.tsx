@@ -35,8 +35,10 @@ interface MarketChartOptions {
 }
 
 const MarketChart = (props: {
+  // TODO: might not need this?
   productToken: ProductToken
-  marketData: TokenMarketDataValues
+  // TODO: convert to array
+  marketData: TokenMarketDataValues[]
   options: MarketChartOptions
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
@@ -46,7 +48,7 @@ const MarketChart = (props: {
   const [chartRange, setChartRange] = useState<number>(
     PriceChartRangeOption.MONTHLY_PRICE_RANGE
   )
-  const [prices, setPrices] = useState(props.marketData.prices || [[]])
+  const [prices, setPrices] = useState(props.marketData[0].prices || [[]])
   const [durationSelector, setDurationSelector] = useState<number>(
     Durations.MONTHLY
   )
@@ -69,37 +71,37 @@ const MarketChart = (props: {
   useEffect(() => {
     setTimeout(() => {
       const hourlyDataInterval = 24
-      if (props.marketData.hourlyPrices) {
+      if (props.marketData[0].hourlyPrices) {
         if (durationSelector === Durations.DAILY) {
           setPrices(
-            props.marketData.hourlyPrices.slice(
+            props.marketData[0].hourlyPrices.slice(
               -PriceChartRangeOption.DAILY_PRICE_RANGE * hourlyDataInterval
             )
           ) //last day, hourly
         } else if (durationSelector === Durations.WEEKLY) {
           setPrices(
-            props.marketData.hourlyPrices.slice(
+            props.marketData[0].hourlyPrices.slice(
               -PriceChartRangeOption.WEEKLY_PRICE_RANGE * hourlyDataInterval
             )
           ) //last 7 days, hourly
         } else if (durationSelector === Durations.MONTHLY) {
           setPrices(
-            props.marketData.hourlyPrices.slice(
+            props.marketData[0].hourlyPrices.slice(
               -PriceChartRangeOption.MONTHLY_PRICE_RANGE * hourlyDataInterval
             )
           ) //last 30 days, hourly
         } else if (durationSelector === Durations.QUARTERLY) {
           setPrices(
-            props.marketData.hourlyPrices.slice(
+            props.marketData[0].hourlyPrices.slice(
               -PriceChartRangeOption.QUARTERLY_PRICE_RANGE * hourlyDataInterval
             )
           ) //last 90 days, hourly
         } else if (
           durationSelector === Durations.YEARLY &&
-          props.marketData.prices
+          props.marketData[0].prices
         ) {
           setPrices(
-            props.marketData.prices.slice(
+            props.marketData[0].prices.slice(
               -PriceChartRangeOption.YEARLY_PRICE_RANGE
             )
           ) //last year, daily

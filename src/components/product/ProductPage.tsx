@@ -22,7 +22,7 @@ const ProductPage = (props: {
         <Flex direction='column' justifyContent='space-around' width='70vw'>
           <MarketChart
             productToken={props.tokenData}
-            marketData={props.marketData}
+            marketData={[props.marketData]}
             options={{
               areaColor:
                 'linear-gradient(180deg, #FABF00 18.17%, rgba(196, 196, 196, 0) 100.16%)',
