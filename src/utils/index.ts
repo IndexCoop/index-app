@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { parseEther } from '@ethersproject/units'
+import { formatUnits, parseEther } from '@ethersproject/units'
 
 export const selectLatestMarketData = (marketData?: number[][]) =>
   marketData?.[marketData.length - 1]?.[1] || 0
@@ -10,8 +10,14 @@ export const selectLatestMarketData = (marketData?: number[][]) =>
  * @param power default = 18
  * @returns
  */
-export const toWei = (number: number, power: number = 18): BigNumber => {
-  return parseEther(number.toString()).mul(BigNumber.from(10).pow(18 - power))
+export const toWei = (
+  value: number | string,
+  power: number = 18
+): BigNumber => {
+  if (typeof value === 'number') {
+    return parseEther(value.toString()).mul(BigNumber.from(10).pow(18 - power))
+  }
+  return parseEther(value).mul(BigNumber.from(10).pow(18 - power))
 }
 
 /**
@@ -20,8 +26,28 @@ export const toWei = (number: number, power: number = 18): BigNumber => {
  * @param power default = 18
  * @returns
  */
-export const fromWei = (number: BigNumber, power: number = 18): BigNumber => {
+export const fromWei = (number?: BigNumber, power: number = 18): BigNumber => {
+  if (!number) return BigNumber.from(0)
   return number.div(BigNumber.from(10).pow(power))
+}
+
+/**
+ * Formats a BigNumber from Wei
+ * @param decimals round to decimals is NOT precise
+ * @param power default to 18 covers most token decimals
+ */
+export const displayFromWei = (
+  number: BigNumber | undefined,
+  decimals: number = 0,
+  power: number = 18
+): string | null => {
+  if (!number) return null
+
+  if (decimals) {
+    return Number(formatUnits(number)).toFixed(decimals)
+  }
+
+  return formatUnits(number, power)
 }
 
 export const preciseMul = (a: BigNumber, b: BigNumber): BigNumber => {

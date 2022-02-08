@@ -1,63 +1,132 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Box, Flex, Spacer } from '@chakra-ui/react'
+import { Box, Button, Flex } from '@chakra-ui/react'
+import { useEthers } from '@usedapp/core'
 
-import AllAssets from 'components/mining/AllAssets'
 import MiningProgram, { Program } from 'components/mining/MiningProgram'
 import WarningMessage from 'components/mining/WarningMessage'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
-import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
+import { setMainnet } from 'constants/chains'
+import { MAINNET_CHAIN_DATA } from 'utils/connectors'
+
+const programs: Program[] = [
+  {
+    title: 'GMI Staking',
+    subtitle: 'Active January 10th, 2022 to March 10th, 2022',
+    isActive: false,
+    staked: {
+      caption: 'Staked GMI Tokens',
+      value: '0.00000',
+      valueExtra: 'GMI',
+      stakedBalanceKey: 'stakedGmi2022Balance',
+      underlyingBalanceKey: 'gmiBalance',
+    },
+    apy: {
+      caption: '(volatile)',
+      value: '0.0%',
+    },
+    unclaimed: {
+      caption: 'Unclaimed INDEX in pool',
+      value: '0.00000',
+      valueExtra: 'INDEX',
+      unclaimedBalanceKey: 'unclaimedGmi2022Balance',
+    },
+    liquidityMiningKey: 'gmi2022',
+  },
+  {
+    title: 'MVI Liquidity Program',
+    subtitle: 'Active August 20th, 2021 to September 19th, 2021',
+    isActive: false,
+    staked: {
+      caption: 'Staked ETH/MVI Uniswap LP Tokens',
+      value: '0.00000',
+      valueExtra: 'ETH / MVI',
+      stakedBalanceKey: 'stakedUniswapEthMvi2021LpBalance',
+      underlyingBalanceKey: 'uniswapEthMviLpBalance',
+    },
+    apy: {
+      caption: '(volatile)',
+      value: '0.0%',
+    },
+    unclaimed: {
+      caption: 'Unclaimed INDEX in pool',
+      value: '0.00000',
+      valueExtra: 'INDEX',
+      unclaimedBalanceKey: 'unclaimedUniswapEthMvi2021LpBalance',
+    },
+    liquidityMiningKey: 'uniswapEthMvi2021',
+  },
+  // TODO need to be able to onUnstakeAndHarvest
+  // Uniswap V3 DPI-ETH Liquidity Program
+  // Active August 20th, 2021 - September 4th, 2021
+  {
+    title: 'DPI Liquidity Program',
+    subtitle: 'Active July 13th, 2021 to August 12th, 2021',
+    isActive: false,
+    staked: {
+      caption: 'Staked ETH/DPI Uniswap LP Tokens',
+      value: '0.00000',
+      valueExtra: 'ETH / DPI',
+      stakedBalanceKey: 'stakedUniswapEthDpi2021LpBalance',
+      underlyingBalanceKey: 'uniswapEthDpiLpBalance',
+    },
+    apy: {
+      caption: '(volatile)',
+      value: '0.0%',
+    },
+    unclaimed: {
+      caption: 'Unclaimed INDEX in pool',
+      value: '0.00000',
+      valueExtra: 'INDEX',
+      unclaimedBalanceKey: 'unclaimedUniswapEthDpi2021LpBalance',
+    },
+    liquidityMiningKey: 'uniswapEthDpi2021',
+  },
+  {
+    title: 'DPI Liquidity Program',
+    subtitle: 'Active October 7th, 2020 to December 6th, 2020',
+    isActive: false,
+    staked: {
+      caption: 'Staked ETH/DPI Uniswap LP Tokens',
+      value: '0.00000',
+      valueExtra: 'ETH / DPI',
+      stakedBalanceKey: 'stakedUniswapEthDpi2020LpBalance',
+      underlyingBalanceKey: 'uniswapEthDpiLpBalance',
+    },
+    apy: {
+      caption: '(volatile)',
+      value: '0.0%',
+    },
+    unclaimed: {
+      caption: 'Unclaimed INDEX in pool',
+      value: '0.00000',
+      valueExtra: 'INDEX',
+      unclaimedBalanceKey: 'unclaimedUniswapEthDpi2020LpBalance',
+    },
+    liquidityMiningKey: 'uniswapEthDpi2020',
+  },
+]
 
 const LiquidityMining = () => {
-  const { dpi } = useMarketData()
+  const { account, chainId, library } = useEthers()
 
-  const [warning, setWarning] = useState<string | null>(
-    'Metaverse Index Liquidity Mining Rewards go live April 8th, 12pm PST.'
-  )
-
-  const programs: Program[] = [
-    {
-      title: 'DPI Liquidity Program',
-      isActive: true,
-      staked: {
-        caption: 'Staked ETH/DPI Uniswap LP Tokens',
-        value: '10.2 ',
-        valueExtra: 'ETH / DPI',
-      },
-      apy: {
-        caption: '(volatile)',
-        value: '40.2%',
-      },
-      unclaimed: {
-        caption: 'Unclaimed INDEX in pool',
-        value: '421.23',
-        valueExtra: 'INDEX',
-      },
-    },
-    {
-      title: 'MVI Liquidity Program',
-      isActive: false,
-      staked: {
-        caption: 'Staked ETH/MVI Uniswap LP Tokens',
-        value: '0.0',
-        valueExtra: 'ETH / MVI',
-      },
-      apy: {
-        caption: '(volatile)',
-        value: '0.0%',
-      },
-      unclaimed: {
-        caption: 'Unclaimed INDEX in pool',
-        value: '0.0',
-        valueExtra: 'INDEX',
-      },
-    },
-  ]
+  const [showFarms, setShowFarms] = useState(true)
+  const [warning, setWarning] = useState<string | null>(null)
 
   const closeWarningMessage = () => {
     setWarning(null)
   }
+
+  useEffect(() => {
+    if (chainId !== MAINNET_CHAIN_DATA.chainId) {
+      setWarning('Liquidity Mining is only available on Mainnet')
+      setShowFarms(false)
+    } else {
+      setWarning(null)
+      setShowFarms(true)
+    }
+  }, [chainId])
 
   return (
     <Page>
@@ -70,22 +139,25 @@ const LiquidityMining = () => {
           <WarningMessage message={warning} closeAction={closeWarningMessage} />
         )}
         <Flex>
-          <Flex direction='column' w='50%'>
-            {programs.map((program, index) => {
-              return (
-                <Box key={index} my='10'>
-                  <MiningProgram program={program} />
-                </Box>
-              )
-            })}
-          </Flex>
-          <Spacer />
-          <Flex minW='420px' my='10'>
-            <AllAssets
-              isActive={true}
-              capitalInFarms='$1.24bln'
-              indexPrice='$645.90'
-            />
+          <Flex direction='column' w='100%' maxWidth={800} mx='auto'>
+            {showFarms &&
+              programs.map((program, index) => {
+                return (
+                  <Box key={index} my='10'>
+                    <MiningProgram program={program} />
+                  </Box>
+                )
+              })}
+            {!showFarms && (
+              <Box my='10'>
+                <Button
+                  isFullWidth
+                  onClick={() => setMainnet(library, account)}
+                >
+                  Switch to Mainnet
+                </Button>
+              </Box>
+            )}
           </Flex>
         </Flex>
       </Box>

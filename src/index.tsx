@@ -22,6 +22,7 @@ import ETH2xFLIP from 'components/views/productpages/ETH2xFLIP'
 import GMI from 'components/views/productpages/GMI'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
+import LiquidityMiningProvider from 'contexts/LiquidityMining/LiquidityMiningProvider'
 import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
 import SetComponentsProvider from 'contexts/SetComponents/SetComponentsProvider'
 
@@ -39,7 +40,9 @@ const Providers = (props: { children: any }) => {
     <ChakraProvider theme={theme}>
       <DAppProvider config={config}>
         <MarketDataProvider>
-          <SetComponentsProvider>{props.children}</SetComponentsProvider>
+          <LiquidityMiningProvider>
+            <SetComponentsProvider>{props.children}</SetComponentsProvider>
+          </LiquidityMiningProvider>
         </MarketDataProvider>
       </DAppProvider>
     </ChakraProvider>
