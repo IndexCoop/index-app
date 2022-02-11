@@ -1,14 +1,12 @@
-import { Colors, theme } from '@chakra-ui/react'
+import { theme } from '@chakra-ui/react'
 
-interface IndexCoopColors extends Colors {
-  icApricot: string
-}
-
-export const colors: IndexCoopColors = {
+export const colors = {
   ...theme.colors,
   icApricot: '#FF8A7D',
   icBlue: '#327EE8',
   icLazurite: '#433BCE',
+  icMalachite: '#09AA74',
   icPeriwinkle: '#B9B6FC',
   icYellow: '#FABF00',
+  icWhite: '#F6F1E4',
 }

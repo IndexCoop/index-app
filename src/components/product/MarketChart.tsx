@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { Area, AreaChart, CartesianGrid, Line, XAxis, YAxis } from 'recharts'
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { colors } from 'styles/colors'
 
 import { Flex } from '@chakra-ui/layout'
-import { Tab, TabList, Tabs, Text, theme, useTheme } from '@chakra-ui/react'
+import { Tab, TabList, Tabs, Text, useTheme } from '@chakra-ui/react'
 
 export enum Durations {
   DAILY = 0,
@@ -165,8 +166,7 @@ const MarketChart = (props: {
         height={400}
         data={chartData}
       >
-        <Line type='monotone' dataKey='y' stroke='#FABF00' />
-        <CartesianGrid stroke={white} strokeOpacity={0.2} />
+        <CartesianGrid stroke={colors.icWhite} strokeOpacity={0.2} />
         <YAxis
           axisLine={false}
           domain={yAxisDomain}
@@ -224,10 +224,10 @@ const MarketChart = (props: {
 
 const PriceDisplay = ({ price, change }: { price: string; change: string }) => (
   <Flex align='baseline'>
-    <Text fontSize='5xl' color='#FABF00' fontWeight='700'>
+    <Text fontSize='5xl' color={colors.icYellow} fontWeight='700'>
       {price}
     </Text>
-    <Text fontSize='xl' color='#09AA74 ' fontWeight='700' ml='24px'>
+    <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='24px'>
       {change}
     </Text>
   </Flex>
@@ -239,7 +239,7 @@ const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
     borderRadius='8px'
     fontSize='16px'
     fontWeight='500'
-    color={white}
+    color={colors.icWhite}
     height='45px'
     outline='0'
     variant='unstyle'
@@ -253,12 +253,11 @@ const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
   </Tabs>
 )
 
-const strokeColor = theme.colors.gray[500]
-const white = '#F6F1E4'
+const strokeColor = colors.gray[500]
 const selectedTabStyle = {
-  bg: white,
+  bg: colors.icWhite,
   borderRadius: '4px',
-  color: 'black',
+  color: colors.black,
   outline: 0,
 }
 
