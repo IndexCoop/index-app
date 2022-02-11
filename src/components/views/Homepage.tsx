@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { Box, Flex, Link, Text } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
 import QuickTrade from 'components/dashboard/QuickTrade'
@@ -59,17 +58,16 @@ const DownloadCsvView = () => {
 
 const Dashboard = () => {
   const {
-    dpiBalance,
-    mviBalance,
     bedBalance,
     dataBalance,
+    dpiBalance,
+    mviBalance,
     gmiBalance,
     ethFliBalance,
     btcFliBalance,
     ethFliPBalance,
   } = useBalances()
-  const { account } = useEthers()
-  const { dpi, mvi, gmi, ethfli, bed } = useMarketData()
+  const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
 
@@ -96,18 +94,39 @@ const Dashboard = () => {
   ]
 
   const pieChartPositions = getPieChartPositions(balances)
-  console.log(pieChartPositions)
-  // Remove undefined
-  // TODO: insert positions of user
-  const tokenMarketData: TokenMarketDataValues[] = [
-    dpi,
-    mvi,
-    ethfli,
-    bed,
-    gmi,
-  ].filter((tokenData): tokenData is TokenMarketDataValues => !!tokenData)
+  const top4Positions = pieChartPositions
+    .filter((pos) => pos.title !== 'OTHERS')
+    .flatMap((pos) => pos.title)
+    .slice(0, 4)
+
+  const tokenMarketData: TokenMarketDataValues[] = top4Positions
+    .map((positionTitle) => {
+      switch (positionTitle) {
+        case 'DPI':
+          return dpi
+        case 'MVI':
+          return mvi
+        case 'DATA':
+          return data
+        case 'BED':
+          return bed
+        case 'GMI':
+          return gmi
+        case 'ETH2x-FLI':
+          return ethfli
+        case 'ETH2x-FLI-P':
+          return ethflip
+        case 'BTC2x-FLI':
+          return btcfli
+        default:
+          return undefined
+      }
+    })
+    // Remove undefined
+    .filter((tokenData): tokenData is TokenMarketDataValues => !!tokenData)
   const marketData = getMarketChartData(tokenMarketData)
 
+  // TODO: get prices and priceChanges
   const prices = ['$200', '200']
   const priceChanges = ['+10.53 ( +5.89% )', '+10.53 ( +5.89% )', '', '', '']
 
