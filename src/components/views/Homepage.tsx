@@ -13,6 +13,7 @@ import TransactionHistoryTable, {
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import MarketChart from 'components/product/MarketChart'
+import { getMarketChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
 import {
   BedIndex,
@@ -101,7 +102,7 @@ const Dashboard = () => {
     ethFliPBalance,
   } = useBalances()
   const { account } = useEthers()
-  const { dpi, mvi } = useMarketData()
+  const { dpi, mvi, gmi, ethfli, bed } = useMarketData()
   const { dpiComponents } = useSetComponents()
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
@@ -189,9 +190,14 @@ const Dashboard = () => {
 
   // Remove undefined
   // TODO: insert positions of user
-  const marketData: TokenMarketDataValues[] = [dpi, mvi].filter(
-    (tokenData): tokenData is TokenMarketDataValues => !!tokenData
-  )
+  const tokenMarketData: TokenMarketDataValues[] = [
+    dpi,
+    mvi,
+    ethfli,
+    bed,
+    gmi,
+  ].filter((tokenData): tokenData is TokenMarketDataValues => !!tokenData)
+  const marketData = getMarketChartData(tokenMarketData)
 
   return (
     <Page>
@@ -199,7 +205,6 @@ const Dashboard = () => {
         <PageTitle title='My Dashboard' subtitle='' />
         <Box my={12}>
           <MarketChart
-            productToken={MetaverseIndex}
             marketData={marketData}
             options={{
               areaColor: 'rgba(9, 170, 116, 0.2)',

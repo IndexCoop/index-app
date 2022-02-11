@@ -1,6 +1,7 @@
 import { Flex } from '@chakra-ui/react'
 
 import Page from 'components/Page'
+import { getMarketChartData } from 'components/product/PriceChartData'
 import { ProductToken } from 'constants/productTokens'
 import { TokenMarketDataValues } from 'contexts/MarketData/MarketDataProvider'
 import { SetComponent } from 'contexts/SetComponents/SetComponentsProvider'
@@ -15,14 +16,14 @@ const ProductPage = (props: {
   components: SetComponent[]
   children?: JSX.Element
 }) => {
+  const marketData = getMarketChartData([props.marketData])
   return (
     <Page>
       <Flex direction='column' width='100vw'>
         <ProductHeader tokenData={props.tokenData} />
         <Flex direction='column' justifyContent='space-around' width='70vw'>
           <MarketChart
-            productToken={props.tokenData}
-            marketData={[props.marketData]}
+            marketData={marketData}
             options={{
               areaColor:
                 'linear-gradient(180deg, #FABF00 18.17%, rgba(196, 196, 196, 0) 100.16%)',

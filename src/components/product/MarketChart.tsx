@@ -5,14 +5,9 @@ import { Area, AreaChart, CartesianGrid, Line, XAxis, YAxis } from 'recharts'
 import { Flex } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, theme, useTheme } from '@chakra-ui/react'
 
-import { ProductToken } from 'constants/productTokens'
-import {
-  TokenMarketDataValues,
-  useMarketData,
-} from 'contexts/MarketData/MarketDataProvider'
-import { getChartData } from './PriceChartData'
+import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
 
-enum Durations {
+export enum Durations {
   DAILY = 0,
   WEEKLY = 1,
   MONTHLY = 2,
@@ -45,10 +40,7 @@ export interface PriceChartData {
 }
 
 const MarketChart = (props: {
-  // TODO: might not need this?
-  productToken: ProductToken
-  // TODO: convert to array
-  marketData: TokenMarketDataValues[]
+  marketData: PriceChartData[][]
   options: MarketChartOptions
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
@@ -60,28 +52,10 @@ const MarketChart = (props: {
     Durations.MONTHLY
   )
 
-  const getRangeForSelectedDuration = () => {
-    switch (durationSelector) {
-      case Durations.WEEKLY:
-        return PriceChartRangeOption.WEEKLY_PRICE_RANGE
-      case Durations.MONTHLY:
-        return PriceChartRangeOption.MONTHLY_PRICE_RANGE
-      case Durations.QUARTERLY:
-        return PriceChartRangeOption.QUARTERLY_PRICE_RANGE
-      case Durations.YEARLY:
-        return PriceChartRangeOption.YEARLY_PRICE_RANGE
-      default:
-        return PriceChartRangeOption.DAILY_PRICE_RANGE
-    }
-  }
-
   useEffect(() => {
-    setTimeout(() => {
-      const range = getRangeForSelectedDuration()
-      const prices = props.marketData.map((data) => data.hourlyPrices ?? [])
-      const chartData = getChartData(range, prices)
-      setChartData(chartData)
-    })
+    const index = durationSelector
+    const chartData = props.marketData[index]
+    setChartData(chartData)
   }, [durationSelector, props.marketData])
 
   const onChangeDuration = (index: number) => {
