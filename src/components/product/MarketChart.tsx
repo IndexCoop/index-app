@@ -3,21 +3,14 @@ import { useEffect, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, Line, XAxis, YAxis } from 'recharts'
 
 import { Flex } from '@chakra-ui/layout'
-import { Tab, TabList, Tabs, Text, theme } from '@chakra-ui/react'
+import { Tab, TabList, Tabs, Text, theme, useTheme } from '@chakra-ui/react'
 
 import { ProductToken } from 'constants/productTokens'
 import {
   TokenMarketDataValues,
   useMarketData,
 } from 'contexts/MarketData/MarketDataProvider'
-
-enum PriceChartRangeOption {
-  DAILY_PRICE_RANGE = 1,
-  WEEKLY_PRICE_RANGE = 7,
-  MONTHLY_PRICE_RANGE = 30,
-  QUARTERLY_PRICE_RANGE = 90,
-  YEARLY_PRICE_RANGE = 365,
-}
+import { getChartData } from './PriceChartData'
 
 enum Durations {
   DAILY = 0,
@@ -27,11 +20,28 @@ enum Durations {
   YEARLY = 4,
 }
 
+export enum PriceChartRangeOption {
+  DAILY_PRICE_RANGE = 1,
+  WEEKLY_PRICE_RANGE = 7,
+  MONTHLY_PRICE_RANGE = 30,
+  QUARTERLY_PRICE_RANGE = 90,
+  YEARLY_PRICE_RANGE = 365,
+}
+
 interface MarketChartOptions {
   areaColor: string
   areaStrokeColor: string
   width?: number
   hideYAxis?: boolean
+}
+
+export interface PriceChartData {
+  x: number
+  y1: number
+  y2?: number
+  y3?: number
+  y4?: number
+  y5?: number
 }
 
 const MarketChart = (props: {
@@ -45,113 +55,51 @@ const MarketChart = (props: {
 }) => {
   const { selectLatestMarketData } = useMarketData()
   const formatFloats = (n: number) => n.toFixed(2)
-  const [chartRange, setChartRange] = useState<number>(
-    PriceChartRangeOption.MONTHLY_PRICE_RANGE
-  )
-  const [prices, setPrices] = useState(props.marketData[0].prices || [[]])
+  const [chartData, setChartData] = useState<PriceChartData[]>([])
   const [durationSelector, setDurationSelector] = useState<number>(
     Durations.MONTHLY
   )
 
-  const formatToolTip = (chartData: any) => {
-    if (!chartData) return ['--', 'No Data Available']
-    const {
-      payload: { x, y },
-    } = chartData
-    let timeString = new Date(x).toLocaleDateString()
-    if (durationSelector === Durations.DAILY) {
-      timeString = new Date(x).toLocaleTimeString([], {
-        hour: 'numeric',
-        minute: 'numeric',
-      })
+  const getRangeForSelectedDuration = () => {
+    switch (durationSelector) {
+      case Durations.WEEKLY:
+        return PriceChartRangeOption.WEEKLY_PRICE_RANGE
+      case Durations.MONTHLY:
+        return PriceChartRangeOption.MONTHLY_PRICE_RANGE
+      case Durations.QUARTERLY:
+        return PriceChartRangeOption.QUARTERLY_PRICE_RANGE
+      case Durations.YEARLY:
+        return PriceChartRangeOption.YEARLY_PRICE_RANGE
+      default:
+        return PriceChartRangeOption.DAILY_PRICE_RANGE
     }
-    return [timeString, '$' + formatFloats(y)]
   }
 
   useEffect(() => {
     setTimeout(() => {
-      const hourlyDataInterval = 24
-      if (props.marketData[0].hourlyPrices) {
-        if (durationSelector === Durations.DAILY) {
-          setPrices(
-            props.marketData[0].hourlyPrices.slice(
-              -PriceChartRangeOption.DAILY_PRICE_RANGE * hourlyDataInterval
-            )
-          ) //last day, hourly
-        } else if (durationSelector === Durations.WEEKLY) {
-          setPrices(
-            props.marketData[0].hourlyPrices.slice(
-              -PriceChartRangeOption.WEEKLY_PRICE_RANGE * hourlyDataInterval
-            )
-          ) //last 7 days, hourly
-        } else if (durationSelector === Durations.MONTHLY) {
-          setPrices(
-            props.marketData[0].hourlyPrices.slice(
-              -PriceChartRangeOption.MONTHLY_PRICE_RANGE * hourlyDataInterval
-            )
-          ) //last 30 days, hourly
-        } else if (durationSelector === Durations.QUARTERLY) {
-          setPrices(
-            props.marketData[0].hourlyPrices.slice(
-              -PriceChartRangeOption.QUARTERLY_PRICE_RANGE * hourlyDataInterval
-            )
-          ) //last 90 days, hourly
-        } else if (
-          durationSelector === Durations.YEARLY &&
-          props.marketData[0].prices
-        ) {
-          setPrices(
-            props.marketData[0].prices.slice(
-              -PriceChartRangeOption.YEARLY_PRICE_RANGE
-            )
-          ) //last year, daily
-        }
-      }
-    }, 0)
+      const range = getRangeForSelectedDuration()
+      const prices = props.marketData.map((data) => data.hourlyPrices ?? [])
+      const chartData = getChartData(range, prices)
+      setChartData(chartData)
+    })
   }, [durationSelector, props.marketData])
 
-  const handleDailyButton = () => {
-    setDurationSelector(Durations.DAILY)
-    setChartRange(PriceChartRangeOption.DAILY_PRICE_RANGE)
-  }
-
-  const handleWeeklyButton = () => {
-    setDurationSelector(Durations.WEEKLY)
-    setChartRange(PriceChartRangeOption.WEEKLY_PRICE_RANGE)
-  }
-
-  const handleMonthlyButton = () => {
-    setDurationSelector(Durations.MONTHLY)
-    setChartRange(PriceChartRangeOption.MONTHLY_PRICE_RANGE)
-  }
-
-  const handleQuarterlyButton = () => {
-    setDurationSelector(Durations.QUARTERLY)
-    setChartRange(PriceChartRangeOption.QUARTERLY_PRICE_RANGE)
-  }
-
-  const handleYearlyButton = () => {
-    setDurationSelector(Durations.YEARLY)
-    setChartRange(PriceChartRangeOption.YEARLY_PRICE_RANGE)
-  }
-
   const onChangeDuration = (index: number) => {
-    console.log(index)
     switch (index) {
       case 0:
-        handleDailyButton()
+        setDurationSelector(Durations.DAILY)
         break
       case 1:
-        handleWeeklyButton()
+        setDurationSelector(Durations.WEEKLY)
         break
       case 2:
-        handleMonthlyButton()
+        setDurationSelector(Durations.MONTHLY)
         break
       case 3:
-        handleQuarterlyButton()
+        setDurationSelector(Durations.QUARTERLY)
         break
       case 4:
-        handleYearlyButton()
+        setDurationSelector(Durations.YEARLY)
         break
     }
   }
@@ -172,6 +120,22 @@ const MarketChart = (props: {
     }
   }
 
+  // TODO: ?
+  const formatToolTip = (chartData: any) => {
+    if (!chartData) return ['--', 'No Data Available']
+    const {
+      payload: { x, y },
+    } = chartData
+    let timeString = new Date(x).toLocaleDateString()
+    if (durationSelector === Durations.DAILY) {
+      timeString = new Date(x).toLocaleTimeString([], {
+        hour: 'numeric',
+        minute: 'numeric',
+      })
+    }
+    return [timeString, '$' + formatFloats(y)]
+  }
+
   const xAxisTickFormatter = (val: any | null | undefined) => {
     var options = dateFormatterOptions(durationSelector)
     return new Date(val).toLocaleString(undefined, options)
@@ -184,7 +148,7 @@ const MarketChart = (props: {
     return `$${parseInt(val)}`
   }
 
-  const mappedPriceData = () => prices.map(([x, y]) => ({ x, y }))
+  // TODO: calc from all y's
   const minY = Math.min(...prices.map<number>(([x, y]) => y))
   const maxY = Math.max(...prices.map<number>(([x, y]) => y))
 
@@ -207,7 +171,7 @@ const MarketChart = (props: {
       <AreaChart
         width={props.options.width ?? 900}
         height={400}
-        data={mappedPriceData()}
+        data={chartData}
       >
         <Line type='monotone' dataKey='y' stroke='#FABF00' />
         <CartesianGrid stroke={white} strokeOpacity={0.2} />
@@ -233,10 +197,14 @@ const MarketChart = (props: {
         />
         <Area
           type='monotone'
-          dataKey='y'
+          dataKey='y1'
           stroke={props.options.areaStrokeColor}
           fill={props.options.areaStrokeColor}
         />
+        <Area type='monotone' dataKey='y2' stroke={'yellow'} fill={'blue'} />
+        <Area type='monotone' dataKey='y3' stroke={'yellow'} fill={'blue'} />
+        <Area type='monotone' dataKey='y4' stroke={'yellow'} fill={'blue'} />
+        <Area type='monotone' dataKey='y5' stroke={'yellow'} fill={'blue'} />
       </AreaChart>
     </Flex>
   )

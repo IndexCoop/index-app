@@ -101,7 +101,7 @@ const Dashboard = () => {
     ethFliPBalance,
   } = useBalances()
   const { account } = useEthers()
-  const { mvi } = useMarketData()
+  const { dpi, mvi } = useMarketData()
   const { dpiComponents } = useSetComponents()
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
@@ -187,7 +187,9 @@ const Dashboard = () => {
   // TODO: what's min width?
   const width = 1280
 
-  const marketData: TokenMarketDataValues[] = [mvi].filter(
+  // Remove undefined
+  // TODO: insert positions of user
+  const marketData: TokenMarketDataValues[] = [dpi, mvi].filter(
     (tokenData): tokenData is TokenMarketDataValues => !!tokenData
   )
 
