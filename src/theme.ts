@@ -1,4 +1,5 @@
 import { Button } from 'styles/button'
+import { colors } from 'styles/colors'
 import { Heading } from 'styles/heading'
 import { Text } from 'styles/text'
 
@@ -15,6 +16,10 @@ const components = {
   Text,
 }
 
-const theme = extendTheme({ config, components })
+const theme = extendTheme({
+  config,
+  colors,
+  components,
+})
 
 export default theme

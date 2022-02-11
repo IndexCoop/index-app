@@ -22,8 +22,6 @@ export enum PriceChartRangeOption {
 }
 
 interface MarketChartOptions {
-  areaColor: string
-  areaStrokeColor: string
   width?: number
   hideYAxis?: boolean
 }
@@ -45,6 +43,7 @@ const MarketChart = (props: {
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
 }) => {
+  const theme = useTheme()
   const formatFloats = (n: number) => n.toFixed(2)
   const [chartData, setChartData] = useState<PriceChartData[]>([])
   const [durationSelector, setDurationSelector] = useState<number>(
@@ -191,13 +190,33 @@ const MarketChart = (props: {
         <Area
           type='monotone'
           dataKey='y1'
-          stroke={props.options.areaStrokeColor}
-          fill={props.options.areaStrokeColor}
+          stroke={theme.colors.icApricot}
+          fill={theme.colors.icApricot}
         />
-        <Area type='monotone' dataKey='y2' stroke={'yellow'} fill={'blue'} />
-        <Area type='monotone' dataKey='y3' stroke={'yellow'} fill={'blue'} />
-        <Area type='monotone' dataKey='y4' stroke={'yellow'} fill={'blue'} />
-        <Area type='monotone' dataKey='y5' stroke={'yellow'} fill={'blue'} />
+        <Area
+          type='monotone'
+          dataKey='y2'
+          stroke={theme.colors.icBlue}
+          fill={theme.colors.icBlue}
+        />
+        <Area
+          type='monotone'
+          dataKey='y3'
+          stroke={theme.colors.icPeriwinkle}
+          fill={theme.colors.icPeriwinkle}
+        />
+        <Area
+          type='monotone'
+          dataKey='y4'
+          stroke={theme.colors.icLazurite}
+          fill={theme.colors.icLazurite}
+        />
+        <Area
+          type='monotone'
+          dataKey='y5'
+          stroke={theme.colors.icYellow}
+          fill={theme.colors.icYellow}
+        />
       </AreaChart>
     </Flex>
   )
