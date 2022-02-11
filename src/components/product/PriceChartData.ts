@@ -26,7 +26,7 @@ function getChartData(
     }
 
     const data: PriceChartData = {
-      x: pricesFromRange[0][0][0],
+      x: pricesFromRange[0][i][0],
       y1: y[0],
       y2: y[1],
       y3: y[2],
