@@ -199,6 +199,9 @@ const Dashboard = () => {
   ].filter((tokenData): tokenData is TokenMarketDataValues => !!tokenData)
   const marketData = getMarketChartData(tokenMarketData)
 
+  const prices = ['$200', '200']
+  const priceChanges = ['+10.53 ( +5.89% )', '+10.53 ( +5.89% )', '', '', '']
+
   return (
     <Page>
       <Box w={width} mx='auto'>
@@ -206,9 +209,9 @@ const Dashboard = () => {
         <Box my={12}>
           <MarketChart
             marketData={marketData}
+            prices={prices}
+            priceChanges={priceChanges}
             options={{
-              areaColor: 'rgba(9, 170, 116, 0.2)',
-              areaStrokeColor: '#09AA74',
               width,
               hideYAxis: false,
             }}

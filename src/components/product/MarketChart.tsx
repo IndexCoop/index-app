@@ -5,8 +5,6 @@ import { Area, AreaChart, CartesianGrid, Line, XAxis, YAxis } from 'recharts'
 import { Flex } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, theme, useTheme } from '@chakra-ui/react'
 
-import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
-
 export enum Durations {
   DAILY = 0,
   WEEKLY = 1,
@@ -41,11 +39,12 @@ export interface PriceChartData {
 
 const MarketChart = (props: {
   marketData: PriceChartData[][]
+  prices: string[]
+  priceChanges: string[]
   options: MarketChartOptions
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
 }) => {
-  const { selectLatestMarketData } = useMarketData()
   const formatFloats = (n: number) => n.toFixed(2)
   const [chartData, setChartData] = useState<PriceChartData[]>([])
   const [durationSelector, setDurationSelector] = useState<number>(
@@ -157,9 +156,8 @@ const MarketChart = (props: {
         mb='24px'
       >
         <PriceDisplay
-          price={`$${selectLatestMarketData(prices).toFixed()}`}
-          // TODO: add price change
-          change='+10.53 ( +5.89% )'
+          price={props.prices[durationSelector]}
+          change={props.priceChanges[durationSelector]}
         />
         <RangeSelector onChange={onChangeDuration} />
       </Flex>
