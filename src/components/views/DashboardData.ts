@@ -3,6 +3,16 @@ import { colors } from 'styles/colors'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Position } from 'components/dashboard/AllocationChart'
+import {
+  BedIndex,
+  Bitcoin2xFlexibleLeverageIndex,
+  DataIndex,
+  DefiPulseIndex,
+  Ethereum2xFlexibleLeverageIndex,
+  GmiIndex,
+  IndexToken,
+  MetaverseIndex,
+} from 'constants/productTokens'
 
 const chartColors = [
   colors.icApricot,
@@ -11,6 +21,24 @@ const chartColors = [
   colors.icLazurite,
   colors.icYellow,
 ]
+
+export const QuickTradeData = {
+  tokenList1: [
+    { symbol: 'ETH', icon: '' },
+    { symbol: 'DAI', icon: '' },
+    { symbol: 'USDC', icon: '' },
+  ],
+  tokenList2: [
+    { symbol: 'DPI', icon: DefiPulseIndex.image },
+    { symbol: 'MVI', icon: MetaverseIndex.image },
+    { symbol: 'BED', icon: BedIndex.image },
+    { symbol: 'DATA', icon: DataIndex.image },
+    { symbol: 'GMI', icon: GmiIndex.image },
+    { symbol: 'ETHFLI', icon: Ethereum2xFlexibleLeverageIndex.image },
+    { symbol: 'BTCFLI', icon: Bitcoin2xFlexibleLeverageIndex.image },
+    { symbol: 'INDEX', icon: IndexToken.image },
+  ],
+}
 
 function getNumber(balance: BigNumber | undefined): number {
   if (balance === undefined) return -1

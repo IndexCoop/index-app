@@ -14,39 +14,13 @@ import MarketChart from 'components/product/MarketChart'
 import { getMarketChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
 import {
-  BedIndex,
-  Bitcoin2xFlexibleLeverageIndex,
-  DataIndex,
-  DefiPulseIndex,
-  Ethereum2xFlexibleLeverageIndex,
-  GmiIndex,
-  IndexToken,
-  MetaverseIndex,
-} from 'constants/productTokens'
-import {
   TokenMarketDataValues,
   useMarketData,
 } from 'contexts/MarketData/MarketDataProvider'
 import { useBalances } from 'hooks/useBalances'
 import { getTransactionHistory } from 'utils/alchemyApi'
 
-import { getPieChartPositions } from './DashboardData'
-
-const tokenList1 = [
-  { symbol: 'ETH', icon: '' },
-  { symbol: 'DAI', icon: '' },
-  { symbol: 'USDC', icon: '' },
-]
-const tokenList2 = [
-  { symbol: 'DPI', icon: DefiPulseIndex.image },
-  { symbol: 'MVI', icon: MetaverseIndex.image },
-  { symbol: 'BED', icon: BedIndex.image },
-  { symbol: 'DATA', icon: DataIndex.image },
-  { symbol: 'GMI', icon: GmiIndex.image },
-  { symbol: 'ETHFLI', icon: Ethereum2xFlexibleLeverageIndex.image },
-  { symbol: 'BTCFLI', icon: Bitcoin2xFlexibleLeverageIndex.image },
-  { symbol: 'INDEX', icon: IndexToken.image },
-]
+import { getPieChartPositions, QuickTradeData } from './DashboardData'
 
 const DownloadCsvView = () => {
   return (
@@ -94,6 +68,7 @@ const Dashboard = () => {
   ]
 
   const pieChartPositions = getPieChartPositions(balances)
+
   const top4Positions = pieChartPositions
     .filter((pos) => pos.title !== 'OTHERS')
     .flatMap((pos) => pos.title)
@@ -154,7 +129,10 @@ const Dashboard = () => {
             </Flex>
             <Box w='24px' />
             <Flex direction='column' grow='1' flexBasis='0'>
-              <QuickTrade tokenList1={tokenList1} tokenList2={tokenList2} />
+              <QuickTrade
+                tokenList1={QuickTradeData.tokenList1}
+                tokenList2={QuickTradeData.tokenList2}
+              />
             </Flex>
           </Flex>
         </Box>
