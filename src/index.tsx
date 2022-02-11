@@ -10,7 +10,7 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { Config, DAppProvider, Mainnet } from '@usedapp/core'
-
+import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import Dashboard from 'components/views/Homepage'
 import LiquidityMining from 'components/views/LiquidityMining'
 import BED from 'components/views/productpages/BED'
@@ -36,12 +36,20 @@ const config: Config = {
 }
 
 const Providers = (props: { children: any }) => {
+  const gtmParams = {
+    id: 'GTM-WNPZF4R'
+  }
+
   return (
     <ChakraProvider theme={theme}>
       <DAppProvider config={config}>
         <MarketDataProvider>
           <LiquidityMiningProvider>
-            <SetComponentsProvider>{props.children}</SetComponentsProvider>
+            <SetComponentsProvider>
+              <GTMProvider state={gtmParams}>
+                {props.children}
+              </GTMProvider>
+            </SetComponentsProvider>
           </LiquidityMiningProvider>
         </MarketDataProvider>
       </DAppProvider>

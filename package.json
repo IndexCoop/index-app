@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^1.7.3",
+    "@elgorditosalsero/react-gtm-hook": "^2.3.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@indexcoop/tokenlists": "^1.13.0",
