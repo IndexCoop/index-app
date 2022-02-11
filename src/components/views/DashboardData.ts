@@ -34,7 +34,7 @@ function getPosition(
   }
 
   const value = getNumber(bigNumber)
-  const percent = `${bigNumber.div(total).mul(100).toString()}%`
+  const percent = `${bigNumber.mul(100).div(total).toString()}%`
 
   return {
     title,
