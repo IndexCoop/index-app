@@ -1,8 +1,12 @@
 import { Flex } from '@chakra-ui/react'
 
 import Page from 'components/Page'
+import { getMarketChartData } from 'components/product/PriceChartData'
 import { ProductToken } from 'constants/productTokens'
-import { TokenMarketDataValues } from 'contexts/MarketData/MarketDataProvider'
+import {
+  TokenMarketDataValues,
+  useMarketData,
+} from 'contexts/MarketData/MarketDataProvider'
 import { SetComponent } from 'contexts/SetComponents/SetComponentsProvider'
 
 import MarketChart from './MarketChart'
@@ -15,19 +19,27 @@ const ProductPage = (props: {
   components: SetComponent[]
   children?: JSX.Element
 }) => {
+  const { selectLatestMarketData } = useMarketData()
+
+  const price = `$${selectLatestMarketData(
+    props.marketData.hourlyPrices
+  ).toFixed()}`
+  const prices = [price]
+
+  const priceChange = ''
+  const priceChanges = [priceChange]
+
+  const marketData = getMarketChartData([props.marketData])
   return (
     <Page>
       <Flex direction='column' width='100vw'>
         <ProductHeader tokenData={props.tokenData} />
         <Flex direction='column' justifyContent='space-around' width='70vw'>
           <MarketChart
-            productToken={props.tokenData}
-            marketData={props.marketData}
-            options={{
-              areaColor:
-                'linear-gradient(180deg, #FABF00 18.17%, rgba(196, 196, 196, 0) 100.16%)',
-              areaStrokeColor: '#FABF00',
-            }}
+            marketData={marketData}
+            prices={prices}
+            priceChanges={priceChanges}
+            options={{}}
           />
           <ProductComponentsTable components={props.components} />
           <Flex>{props.children}</Flex>

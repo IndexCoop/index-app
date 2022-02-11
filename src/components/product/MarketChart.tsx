@@ -1,25 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Area, AreaChart, CartesianGrid, Line, XAxis, YAxis } from 'recharts'
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { colors } from 'styles/colors'
 
 import { Flex } from '@chakra-ui/layout'
-import { Tab, TabList, Tabs, Text, theme } from '@chakra-ui/react'
+import { Tab, TabList, Tabs, Text, useTheme } from '@chakra-ui/react'
 
-import { ProductToken } from 'constants/productTokens'
-import {
-  TokenMarketDataValues,
-  useMarketData,
-} from 'contexts/MarketData/MarketDataProvider'
-
-enum PriceChartRangeOption {
-  DAILY_PRICE_RANGE = 1,
-  WEEKLY_PRICE_RANGE = 7,
-  MONTHLY_PRICE_RANGE = 30,
-  QUARTERLY_PRICE_RANGE = 90,
-  YEARLY_PRICE_RANGE = 365,
-}
-
-enum Durations {
+export enum Durations {
   DAILY = 0,
   WEEKLY = 1,
   MONTHLY = 2,
@@ -27,129 +14,65 @@ enum Durations {
   YEARLY = 4,
 }
 
+export enum PriceChartRangeOption {
+  DAILY_PRICE_RANGE = 1,
+  WEEKLY_PRICE_RANGE = 7,
+  MONTHLY_PRICE_RANGE = 30,
+  QUARTERLY_PRICE_RANGE = 90,
+  YEARLY_PRICE_RANGE = 365,
+}
+
 interface MarketChartOptions {
-  areaColor: string
-  areaStrokeColor: string
   width?: number
   hideYAxis?: boolean
 }
 
+export interface PriceChartData {
+  x: number
+  y1: number
+  y2?: number
+  y3?: number
+  y4?: number
+  y5?: number
+}
+
 const MarketChart = (props: {
-  productToken: ProductToken
-  marketData: TokenMarketDataValues
+  marketData: PriceChartData[][]
+  prices: string[]
+  priceChanges: string[]
   options: MarketChartOptions
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
 }) => {
-  const { selectLatestMarketData } = useMarketData()
+  const theme = useTheme()
   const formatFloats = (n: number) => n.toFixed(2)
-  const [chartRange, setChartRange] = useState<number>(
-    PriceChartRangeOption.MONTHLY_PRICE_RANGE
-  )
-  const [prices, setPrices] = useState(props.marketData.prices || [[]])
+  const [chartData, setChartData] = useState<PriceChartData[]>([])
   const [durationSelector, setDurationSelector] = useState<number>(
-    Durations.MONTHLY
+    Durations.DAILY
   )
-
-  const formatToolTip = (chartData: any) => {
-    if (!chartData) return ['--', 'No Data Available']
-    const {
-      payload: { x, y },
-    } = chartData
-    let timeString = new Date(x).toLocaleDateString()
-    if (durationSelector === Durations.DAILY) {
-      timeString = new Date(x).toLocaleTimeString([], {
-        hour: 'numeric',
-        minute: 'numeric',
-      })
-    }
-    return [timeString, '$' + formatFloats(y)]
-  }
 
   useEffect(() => {
-    setTimeout(() => {
-      const hourlyDataInterval = 24
-      if (props.marketData.hourlyPrices) {
-        if (durationSelector === Durations.DAILY) {
-          setPrices(
-            props.marketData.hourlyPrices.slice(
-              -PriceChartRangeOption.DAILY_PRICE_RANGE * hourlyDataInterval
-            )
-          ) //last day, hourly
-        } else if (durationSelector === Durations.WEEKLY) {
-          setPrices(
-            props.marketData.hourlyPrices.slice(
-              -PriceChartRangeOption.WEEKLY_PRICE_RANGE * hourlyDataInterval
-            )
-          ) //last 7 days, hourly
-        } else if (durationSelector === Durations.MONTHLY) {
-          setPrices(
-            props.marketData.hourlyPrices.slice(
-              -PriceChartRangeOption.MONTHLY_PRICE_RANGE * hourlyDataInterval
-            )
-          ) //last 30 days, hourly
-        } else if (durationSelector === Durations.QUARTERLY) {
-          setPrices(
-            props.marketData.hourlyPrices.slice(
-              -PriceChartRangeOption.QUARTERLY_PRICE_RANGE * hourlyDataInterval
-            )
-          ) //last 90 days, hourly
-        } else if (
-          durationSelector === Durations.YEARLY &&
-          props.marketData.prices
-        ) {
-          setPrices(
-            props.marketData.prices.slice(
-              -PriceChartRangeOption.YEARLY_PRICE_RANGE
-            )
-          ) //last year, daily
-        }
-      }
-    }, 0)
+    const index = durationSelector
+    const chartData = props.marketData[index]
+    setChartData(chartData)
   }, [durationSelector, props.marketData])
 
-  const handleDailyButton = () => {
-    setDurationSelector(Durations.DAILY)
-    setChartRange(PriceChartRangeOption.DAILY_PRICE_RANGE)
-  }
-
-  const handleWeeklyButton = () => {
-    setDurationSelector(Durations.WEEKLY)
-    setChartRange(PriceChartRangeOption.WEEKLY_PRICE_RANGE)
-  }
-
-  const handleMonthlyButton = () => {
-    setDurationSelector(Durations.MONTHLY)
-    setChartRange(PriceChartRangeOption.MONTHLY_PRICE_RANGE)
-  }
-
-  const handleQuarterlyButton = () => {
-    setDurationSelector(Durations.QUARTERLY)
-    setChartRange(PriceChartRangeOption.QUARTERLY_PRICE_RANGE)
-  }
-
-  const handleYearlyButton = () => {
-    setDurationSelector(Durations.YEARLY)
-    setChartRange(PriceChartRangeOption.YEARLY_PRICE_RANGE)
-  }
-
   const onChangeDuration = (index: number) => {
-    console.log(index)
     switch (index) {
       case 0:
-        handleDailyButton()
+        setDurationSelector(Durations.DAILY)
         break
       case 1:
-        handleWeeklyButton()
+        setDurationSelector(Durations.WEEKLY)
         break
       case 2:
-        handleMonthlyButton()
+        setDurationSelector(Durations.MONTHLY)
         break
       case 3:
-        handleQuarterlyButton()
+        setDurationSelector(Durations.QUARTERLY)
         break
       case 4:
-        handleYearlyButton()
+        setDurationSelector(Durations.YEARLY)
         break
     }
   }
@@ -170,6 +93,22 @@ const MarketChart = (props: {
     }
   }
 
+  // TODO: ?
+  const formatToolTip = (chartData: any) => {
+    if (!chartData) return ['--', 'No Data Available']
+    const {
+      payload: { x, y },
+    } = chartData
+    let timeString = new Date(x).toLocaleDateString()
+    if (durationSelector === Durations.DAILY) {
+      timeString = new Date(x).toLocaleTimeString([], {
+        hour: 'numeric',
+        minute: 'numeric',
+      })
+    }
+    return [timeString, '$' + formatFloats(y)]
+  }
+
   const xAxisTickFormatter = (val: any | null | undefined) => {
     var options = dateFormatterOptions(durationSelector)
     return new Date(val).toLocaleString(undefined, options)
@@ -182,9 +121,30 @@ const MarketChart = (props: {
     return `$${parseInt(val)}`
   }
 
-  const mappedPriceData = () => prices.map(([x, y]) => ({ x, y }))
-  const minY = Math.min(...prices.map<number>(([x, y]) => y))
-  const maxY = Math.max(...prices.map<number>(([x, y]) => y))
+  const minY = Math.min(
+    ...chartData.map<number>((data) =>
+      Math.min(
+        data.y1,
+        data.y2 ?? data.y1,
+        data.y3 ?? data.y1,
+        data.y4 ?? data.y1,
+        data.y5 ?? data.y1
+      )
+    )
+  )
+  const maxY = Math.max(
+    ...chartData.map<number>((data) =>
+      Math.max(
+        data.y1,
+        data.y2 ?? data.y1,
+        data.y3 ?? data.y1,
+        data.y4 ?? data.y1,
+        data.y5 ?? data.y1
+      )
+    )
+  )
+  const minYAdjusted = minY > 4 ? minY - 5 : 0
+  const yAxisDomain = [minYAdjusted, maxY + 5]
 
   return (
     <Flex direction='column' alignItems='center' width='100%'>
@@ -196,22 +156,20 @@ const MarketChart = (props: {
         mb='24px'
       >
         <PriceDisplay
-          price={`$${selectLatestMarketData(prices).toFixed()}`}
-          // TODO: add price change
-          change='+10.53 ( +5.89% )'
+          price={props.prices[durationSelector]}
+          change={props.priceChanges[durationSelector]}
         />
         <RangeSelector onChange={onChangeDuration} />
       </Flex>
       <AreaChart
         width={props.options.width ?? 900}
         height={400}
-        data={mappedPriceData()}
+        data={chartData}
       >
-        <Line type='monotone' dataKey='y' stroke='#FABF00' />
-        <CartesianGrid stroke={white} strokeOpacity={0.2} />
+        <CartesianGrid stroke={colors.icWhite} strokeOpacity={0.2} />
         <YAxis
           axisLine={false}
-          domain={[minY - 5, maxY + 5]}
+          domain={yAxisDomain}
           stroke={strokeColor}
           tickCount={10}
           tickFormatter={yAxisTickFormatter}
@@ -231,9 +189,33 @@ const MarketChart = (props: {
         />
         <Area
           type='monotone'
-          dataKey='y'
-          stroke={props.options.areaStrokeColor}
-          fill={props.options.areaStrokeColor}
+          dataKey='y1'
+          stroke={theme.colors.icApricot}
+          fill={theme.colors.icApricot}
+        />
+        <Area
+          type='monotone'
+          dataKey='y2'
+          stroke={theme.colors.icBlue}
+          fill={theme.colors.icBlue}
+        />
+        <Area
+          type='monotone'
+          dataKey='y3'
+          stroke={theme.colors.icPeriwinkle}
+          fill={theme.colors.icPeriwinkle}
+        />
+        <Area
+          type='monotone'
+          dataKey='y4'
+          stroke={theme.colors.icLazurite}
+          fill={theme.colors.icLazurite}
+        />
+        <Area
+          type='monotone'
+          dataKey='y5'
+          stroke={theme.colors.icYellow}
+          fill={theme.colors.icYellow}
         />
       </AreaChart>
     </Flex>
@@ -242,10 +224,10 @@ const MarketChart = (props: {
 
 const PriceDisplay = ({ price, change }: { price: string; change: string }) => (
   <Flex align='baseline'>
-    <Text fontSize='5xl' color='#FABF00' fontWeight='700'>
+    <Text fontSize='5xl' color={colors.icYellow} fontWeight='700'>
       {price}
     </Text>
-    <Text fontSize='xl' color='#09AA74 ' fontWeight='700' ml='24px'>
+    <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='24px'>
       {change}
     </Text>
   </Flex>
@@ -257,7 +239,7 @@ const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
     borderRadius='8px'
     fontSize='16px'
     fontWeight='500'
-    color={white}
+    color={colors.icWhite}
     height='45px'
     outline='0'
     variant='unstyle'
@@ -271,12 +253,11 @@ const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
   </Tabs>
 )
 
-const strokeColor = theme.colors.gray[500]
-const white = '#F6F1E4'
+const strokeColor = colors.gray[500]
 const selectedTabStyle = {
-  bg: white,
+  bg: colors.icWhite,
   borderRadius: '4px',
-  color: 'black',
+  color: colors.black,
   outline: 0,
 }
 
