@@ -49,7 +49,7 @@ const MarketChart = (props: {
   const formatFloats = (n: number) => n.toFixed(2)
   const [chartData, setChartData] = useState<PriceChartData[]>([])
   const [durationSelector, setDurationSelector] = useState<number>(
-    Durations.MONTHLY
+    Durations.DAILY
   )
 
   useEffect(() => {
@@ -122,9 +122,30 @@ const MarketChart = (props: {
     return `$${parseInt(val)}`
   }
 
-  // TODO: calc from all y's
-  const minY = Math.min(...prices.map<number>(([x, y]) => y))
-  const maxY = Math.max(...prices.map<number>(([x, y]) => y))
+  const minY = Math.min(
+    ...chartData.map<number>((data) =>
+      Math.min(
+        data.y1,
+        data.y2 ?? data.y1,
+        data.y3 ?? data.y1,
+        data.y4 ?? data.y1,
+        data.y5 ?? data.y1
+      )
+    )
+  )
+  const maxY = Math.max(
+    ...chartData.map<number>((data) =>
+      Math.max(
+        data.y1,
+        data.y2 ?? data.y1,
+        data.y3 ?? data.y1,
+        data.y4 ?? data.y1,
+        data.y5 ?? data.y1
+      )
+    )
+  )
+  const minYAdjusted = minY > 4 ? minY - 5 : 0
+  const yAxisDomain = [minYAdjusted, maxY + 5]
 
   return (
     <Flex direction='column' alignItems='center' width='100%'>
@@ -151,7 +172,7 @@ const MarketChart = (props: {
         <CartesianGrid stroke={white} strokeOpacity={0.2} />
         <YAxis
           axisLine={false}
-          domain={[minY - 5, maxY + 5]}
+          domain={yAxisDomain}
           stroke={strokeColor}
           tickCount={10}
           tickFormatter={yAxisTickFormatter}
