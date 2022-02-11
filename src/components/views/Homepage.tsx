@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 
 import { Box, Flex, Link, Text } from '@chakra-ui/react'
-import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
-import AllocationChart, { Position } from 'components/dashboard/AllocationChart'
+import AllocationChart from 'components/dashboard/AllocationChart'
 import QuickTrade from 'components/dashboard/QuickTrade'
 import { assembleHistoryItems } from 'components/dashboard/TransactionHistoryItems'
 import TransactionHistoryTable, {
@@ -29,9 +28,10 @@ import {
   TokenMarketDataValues,
   useMarketData,
 } from 'contexts/MarketData/MarketDataProvider'
-import { useSetComponents } from 'contexts/SetComponents/SetComponentsProvider'
 import { useBalances } from 'hooks/useBalances'
 import { getTransactionHistory } from 'utils/alchemyApi'
+
+import { getPieChartPositions } from './DashboardData'
 
 const tokenList1 = [
   { symbol: 'ETH', icon: '' },
@@ -48,39 +48,6 @@ const tokenList2 = [
   { symbol: 'BTCFLI', icon: Bitcoin2xFlexibleLeverageIndex.image },
   { symbol: 'INDEX', icon: IndexToken.image },
 ]
-
-function getNumber(balance: BigNumber | undefined): number {
-  if (balance === undefined) return -1
-  return parseInt(balance.toString())
-}
-
-function getPosition(
-  title: string,
-  bigNumber: BigNumber | undefined,
-  total: BigNumber,
-  backgroundColor: string
-): Position | null {
-  if (
-    bigNumber === undefined ||
-    bigNumber.isZero() ||
-    bigNumber.isNegative() ||
-    total.isZero() ||
-    total.isNegative()
-  ) {
-    return null
-  }
-
-  const value = getNumber(bigNumber)
-  const percent = `${bigNumber.div(total).div(18).toString()}%`
-
-  return {
-    title,
-    backgroundColor,
-    color: '',
-    percent,
-    value,
-  }
-}
 
 const DownloadCsvView = () => {
   return (
@@ -103,7 +70,6 @@ const Dashboard = () => {
   } = useBalances()
   const { account } = useEthers()
   const { dpi, mvi, gmi, ethfli, bed } = useMarketData()
-  const { dpiComponents } = useSetComponents()
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
 
@@ -118,76 +84,19 @@ const Dashboard = () => {
   //   fetchHistory()
   // }, [account])
 
-  const tempPositions = [
-    { title: 'DPI', value: dpiBalance, color: '#8150E6' },
-    { title: 'MVI', value: mviBalance, color: '#f165dd' },
-    { title: 'DATA', value: dataBalance, color: '#fb002b' },
-    { title: 'BED', value: bedBalance, color: '#ED1C24' },
-    { title: 'GMI', value: gmiBalance, color: '#fc0006' },
-    { title: 'ETH2x-FLI', value: ethFliBalance, color: '#44007f' },
-    { title: 'ETH2x-FLI-P', value: ethFliPBalance, color: '#44007f' },
-    { title: 'BTC2x-FLI', value: btcFliBalance, color: 'yellow' },
+  const balances = [
+    { title: 'DPI', value: dpiBalance },
+    { title: 'MVI', value: mviBalance },
+    { title: 'DATA', value: dataBalance },
+    { title: 'BED', value: bedBalance },
+    { title: 'GMI', value: gmiBalance },
+    { title: 'ETH2x-FLI', value: ethFliBalance },
+    { title: 'ETH2x-FLI-P', value: ethFliPBalance },
+    { title: 'BTC2x-FLI', value: btcFliBalance },
   ]
 
-  // const totalBalance: BigNumber = tempPositions
-  //   .map((pos) => {
-  //     return pos.value ?? BigNumber.from('0')
-  //   })
-  //   .reduce((prev, curr) => {
-  //     return prev.add(curr)
-  //   })
-
-  // const positions = tempPositions.flatMap((tempPosition) => {
-  //   const position = getPosition(
-  //     tempPosition.title,
-  //     tempPosition.value,
-  //     totalBalance,
-  //     tempPosition.color
-  //   )
-  //   if (position === null || tempPosition.value === undefined) {
-  //     return []
-  //   }
-  //   return [position]
-  // })
-
-  const positions: Position[] = [
-    getPosition(
-      'BED',
-      BigNumber.from('35'),
-      BigNumber.from('100'),
-      tempPositions[0].color
-    )!,
-    getPosition(
-      'MVI',
-      BigNumber.from('30'),
-      BigNumber.from('100'),
-      tempPositions[1].color
-    )!,
-    getPosition(
-      'DATA',
-      BigNumber.from('16'),
-      BigNumber.from('100'),
-      tempPositions[2].color
-    )!,
-    getPosition(
-      'DPI',
-      BigNumber.from('12'),
-      BigNumber.from('100'),
-      tempPositions[3].color
-    )!,
-    getPosition(
-      'OTHERS',
-      BigNumber.from('5'),
-      BigNumber.from('100'),
-      tempPositions[4].color
-    )!,
-  ]
-  // console.log(positions)
-
-  // TODO: width should be dynamic
-  // TODO: what's min width?
-  const width = 1280
-
+  const pieChartPositions = getPieChartPositions(balances)
+  console.log(pieChartPositions)
   // Remove undefined
   // TODO: insert positions of user
   const tokenMarketData: TokenMarketDataValues[] = [
@@ -201,6 +110,10 @@ const Dashboard = () => {
 
   const prices = ['$200', '200']
   const priceChanges = ['+10.53 ( +5.89% )', '+10.53 ( +5.89% )', '', '', '']
+
+  // TODO: width should be dynamic
+  // TODO: what's min width?
+  const width = 1280
 
   return (
     <Page>
@@ -218,7 +131,7 @@ const Dashboard = () => {
           />
           <Flex direction='row' mt='64px'>
             <Flex direction='column' grow='1' flexBasis='0'>
-              <AllocationChart positions={positions} />
+              <AllocationChart positions={pieChartPositions} />
             </Flex>
             <Box w='24px' />
             <Flex direction='column' grow='1' flexBasis='0'>
