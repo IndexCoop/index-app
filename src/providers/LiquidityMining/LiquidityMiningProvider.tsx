@@ -13,7 +13,7 @@ import {
   gmiTokenAddress,
   mviStakingRewardsAddress,
 } from 'constants/ethContractAddresses'
-import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
+import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { useApproval } from 'hooks/useApproval'
 import { toWei } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'

@@ -13,11 +13,11 @@ import PageTitle from 'components/PageTitle'
 import MarketChart from 'components/product/MarketChart'
 import { getMarketChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
+import { useBalances } from 'hooks/useBalances'
 import {
   TokenMarketDataValues,
   useMarketData,
-} from 'contexts/MarketData/MarketDataProvider'
-import { useBalances } from 'hooks/useBalances'
+} from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
 
 import { getPieChartPositions, QuickTradeData } from './DashboardData'

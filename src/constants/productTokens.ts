@@ -3,7 +3,7 @@ import dataLogo from 'assets/data-logo.png'
 import gmiLogo from 'assets/gmilogo.png'
 import indexLogo from 'assets/index-token.png'
 import * as tokenAddresses from 'constants/ethContractAddresses'
-import { TokenContextKeys } from 'contexts/MarketData/MarketDataProvider'
+import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
 
 export const dpiTokenImage =
   'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg'

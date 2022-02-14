@@ -9,11 +9,11 @@ import {
 import { useEthers } from '@usedapp/core'
 
 import StakingModal from 'components/mining/StakingModal'
+import { Balances, useBalances } from 'hooks/useBalances'
 import {
   LiquidityMiningProps,
   useLiquidityMining,
-} from 'contexts/LiquidityMining/LiquidityMiningProvider'
-import { Balances, useBalances } from 'hooks/useBalances'
+} from 'providers/LiquidityMining/LiquidityMiningProvider'
 import { displayFromWei } from 'utils'
 
 const white = '#F6F1E4'

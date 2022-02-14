@@ -6,8 +6,8 @@ import { ProductToken } from 'constants/productTokens'
 import {
   TokenMarketDataValues,
   useMarketData,
-} from 'contexts/MarketData/MarketDataProvider'
-import { SetComponent } from 'contexts/SetComponents/SetComponentsProvider'
+} from 'providers/MarketData/MarketDataProvider'
+import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 
 import MarketChart from './MarketChart'
 import ProductComponentsTable from './ProductComponentsTable'

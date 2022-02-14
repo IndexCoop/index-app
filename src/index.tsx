@@ -22,9 +22,9 @@ import ETH2xFLIP from 'components/views/productpages/ETH2xFLIP'
 import GMI from 'components/views/productpages/GMI'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
-import LiquidityMiningProvider from 'contexts/LiquidityMining/LiquidityMiningProvider'
-import { MarketDataProvider } from 'contexts/MarketData/MarketDataProvider'
-import SetComponentsProvider from 'contexts/SetComponents/SetComponentsProvider'
+import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
+import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
+import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
 
 import './index.css'
 
