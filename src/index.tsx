@@ -36,8 +36,8 @@ const config: Config = {
 }
 
 const Providers = (props: { children: any }) => {
-  const gtmParams = {
-    id: 'GTM-WNPZF4R'
+  const gtmParams = { 
+    id: process.env.REACT_APP_GOOGLE_TAG_MANAGER_CONTAINER_ID ?? ''
   }
 
   return (
