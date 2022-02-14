@@ -13,11 +13,11 @@ import PageTitle from 'components/PageTitle'
 import MarketChart from 'components/product/MarketChart'
 import { getMarketChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
+import { useBalances } from 'hooks/useBalances'
 import {
   TokenMarketDataValues,
   useMarketData,
-} from 'contexts/MarketData/MarketDataProvider'
-import { useBalances } from 'hooks/useBalances'
+} from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
 
 import { getPieChartPositions, QuickTradeData } from './DashboardData'
@@ -106,7 +106,7 @@ const Dashboard = () => {
   const priceChanges = ['+10.53 ( +5.89% )', '+10.53 ( +5.89% )', '', '', '']
 
   // TODO: width should be dynamic
-  // TODO: what's min width?
+  // TODO: what's min width? 800px
   const width = 1280
 
   return (

@@ -18,7 +18,7 @@ import {
 import { useEthers } from '@usedapp/core'
 
 import { Position } from 'components/dashboard/AllocationChart'
-import { SetComponent } from 'contexts/SetComponents/SetComponentsProvider'
+import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 import { POLYGON_CHAIN_DATA } from 'utils/connectors'
 
 const ProductComponentsTable = (props: { components?: SetComponent[] }) => {

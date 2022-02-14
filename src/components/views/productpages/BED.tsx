@@ -1,7 +1,7 @@
 import ProductPage from 'components/product/ProductPage'
 import { BedIndex } from 'constants/productTokens'
-import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
-import { useSetComponents } from 'contexts/SetComponents/SetComponentsProvider'
+import { useMarketData } from 'providers/MarketData/MarketDataProvider'
+import { useSetComponents } from 'providers/SetComponents/SetComponentsProvider'
 
 const BED = () => {
   const { bed } = useMarketData()
