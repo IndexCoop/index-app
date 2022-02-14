@@ -376,7 +376,9 @@ async function convertPositionToSetComponent(
     name: token.name,
     image: token.logoURI,
     totalPriceUsd: ethers.utils.formatEther(totalPriceUsd.toString()),
-    dailyPercentChange: componentPriceChangeUsd.toString(),
+    dailyPercentChange: componentPriceChangeUsd
+      ? componentPriceChangeUsd.toString()
+      : '0',
     percentOfSet: percentOfSet.toString(),
     percentOfSetNumber: percentOfSet,
   }

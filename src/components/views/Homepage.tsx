@@ -106,7 +106,7 @@ const Dashboard = () => {
   const priceChanges = ['+10.53 ( +5.89% )', '+10.53 ( +5.89% )', '', '', '']
 
   // TODO: width should be dynamic
-  // TODO: what's min width?
+  // TODO: what's min width? 800px
   const width = 1280
 
   return (
