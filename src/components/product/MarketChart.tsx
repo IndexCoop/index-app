@@ -54,6 +54,9 @@ const MarketChart = (props: {
   )
 
   useEffect(() => {
+    if (props.marketData.length < 1) {
+      return
+    }
     const index = durationSelector
     const chartData = props.marketData[index]
     setChartData(chartData)
