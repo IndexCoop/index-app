@@ -33,7 +33,8 @@ const DownloadCsvView = () => {
 
 const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
-  const { userBalances, totalHourlyPrices } = useUserBalances()
+  const { userBalances, totalBalanceInUSD, totalHourlyPrices } =
+    useUserBalances()
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
   const [priceChartData, setPriceChartData] = useState<PriceChartData[][]>([])
@@ -56,11 +57,6 @@ const Dashboard = () => {
   //   }
   //   fetchHistory()
   // }, [account])
-
-  // TODO: compress prices to one price
-  // TODO: selected latest price from daily range
-
-  // TODO: get price change
 
   const balancesPieChart = userBalances.map((userTokenBalance) => ({
     title: userTokenBalance.symbol,
@@ -118,7 +114,8 @@ const Dashboard = () => {
   }
 
   // TODO: get prices and priceChanges
-  const prices = ['$200', '200']
+  const formattedPrice = `$${totalBalanceInUSD.toFixed(2).toString()}`
+  const prices = [formattedPrice]
   const priceChanges = ['+10.53 ( +5.89% )', '+10.53 ( +5.89% )', '', '', '']
   const width = 1096
 

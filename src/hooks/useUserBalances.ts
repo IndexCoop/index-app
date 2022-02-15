@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { PriceChartRangeOption } from 'components/product/MarketChart'
 import { useBalances } from 'hooks/useBalances'
 import {
   TokenMarketDataValues,
@@ -105,6 +106,11 @@ export const useUserBalances = () => {
     .filter((tokenData): tokenData is UserTokenBalance => !!tokenData)
 
   const totalHourlyPrices = getTotalHourlyPrices(userBalances)
+  const hourlyDataInterval = 24
+  var totalBalanceInUSD =
+    totalHourlyPrices
+      .slice(-PriceChartRangeOption.DAILY_PRICE_RANGE * hourlyDataInterval)
+      ?.slice(-1)[0][1] ?? 0
 
-  return { userBalances, totalHourlyPrices }
+  return { userBalances, totalBalanceInUSD, totalHourlyPrices }
 }

@@ -151,6 +151,9 @@ const MarketChart = (props: {
   const minYAdjusted = minY > 4 ? minY - 5 : 0
   const yAxisDomain = [minYAdjusted, maxY + 5]
 
+  const price =
+    props.prices.length === 1 ? props.prices[0] : props.prices[durationSelector]
+
   return (
     <Flex direction='column' alignItems='center' width='100%'>
       <Flex
@@ -161,7 +164,7 @@ const MarketChart = (props: {
         mb='24px'
       >
         <PriceDisplay
-          price={props.prices[durationSelector]}
+          price={price}
           change={props.priceChanges[durationSelector]}
           customSelector={props.customSelector}
         />
