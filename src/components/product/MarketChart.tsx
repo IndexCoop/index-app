@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { colors } from 'styles/colors'
+import { selectedTabStyle } from 'styles/tabs'
 
-import { Flex } from '@chakra-ui/layout'
+import { Box, Flex } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, useTheme } from '@chakra-ui/react'
 
 export enum Durations {
@@ -41,6 +42,7 @@ const MarketChart = (props: {
   prices: string[]
   priceChanges: string[]
   options: MarketChartOptions
+  customSelector?: any
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
 }) => {
@@ -158,6 +160,7 @@ const MarketChart = (props: {
         <PriceDisplay
           price={props.prices[durationSelector]}
           change={props.priceChanges[durationSelector]}
+          customSelector={props.customSelector}
         />
         <RangeSelector onChange={onChangeDuration} />
       </Flex>
@@ -222,14 +225,27 @@ const MarketChart = (props: {
   )
 }
 
-const PriceDisplay = ({ price, change }: { price: string; change: string }) => (
-  <Flex align='baseline'>
-    <Text fontSize='5xl' color={colors.icYellow} fontWeight='700'>
-      {price}
-    </Text>
-    <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='24px'>
-      {change}
-    </Text>
+const PriceDisplay = ({
+  price,
+  change,
+  customSelector,
+}: {
+  price: string
+  change: string
+  customSelector: any
+}) => (
+  <Flex align='center'>
+    <Flex align='baseline'>
+      <Text fontSize='5xl' color={colors.icYellow} fontWeight='700'>
+        {price}
+      </Text>
+      <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='24px'>
+        {change}
+      </Text>
+    </Flex>
+    <Box ml='24px' mt='8px'>
+      {customSelector !== null && customSelector}
+    </Box>
   </Flex>
 )
 
@@ -254,11 +270,5 @@ const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
 )
 
 const strokeColor = colors.gray[500]
-const selectedTabStyle = {
-  bg: colors.icWhite,
-  borderRadius: '4px',
-  color: colors.black,
-  outline: 0,
-}
 
 export default MarketChart
