@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { TokenMarketDataValues } from 'contexts/MarketData/MarketDataProvider'
+import { TokenMarketDataValues } from 'providers/MarketData/MarketDataProvider'
 
 import { PriceChartData, PriceChartRangeOption } from './MarketChart'
 
