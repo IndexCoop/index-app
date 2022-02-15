@@ -90,3 +90,19 @@ export function getTokenMarketDataValuesOrNull(
 
   return { balance, marketData: { hourlyPrices: hourlyData } }
 }
+
+export function getTotalHourlyPrices(marketData: MarketDataAndBalance[]) {
+  const hourlyPricesOnly = marketData.map(
+    (data) => data.marketData.hourlyPrices ?? []
+  )
+  let totalHourlyPrices: number[][] = []
+  if (hourlyPricesOnly.length > 0) {
+    totalHourlyPrices = hourlyPricesOnly[0]
+    for (let i = 1; i < hourlyPricesOnly.length; i += 1) {
+      for (let k = 0; k < totalHourlyPrices[0].length; k += 1) {
+        totalHourlyPrices[k][1] += hourlyPricesOnly[i][k][1]
+      }
+    }
+  }
+  return totalHourlyPrices
+}
