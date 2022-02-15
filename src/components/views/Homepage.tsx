@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Box, Flex, Link, Text } from '@chakra-ui/react'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
-import { ChartStyleSelector } from 'components/dashboard/ChartStyleSelector'
+import { ChartTypeSelector } from 'components/dashboard/ChartTypeSelector'
 import QuickTrade from 'components/dashboard/QuickTrade'
 import { assembleHistoryItems } from 'components/dashboard/TransactionHistoryItems'
 import TransactionHistoryTable, {
@@ -132,7 +132,7 @@ const Dashboard = () => {
               width,
               hideYAxis: false,
             }}
-            customSelector={<ChartStyleSelector onChange={onChangeChartType} />}
+            customSelector={<ChartTypeSelector onChange={onChangeChartType} />}
           />
           <Flex direction='row' mt='64px'>
             <Flex direction='column' grow='1' flexBasis='0'>

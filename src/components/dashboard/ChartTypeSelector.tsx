@@ -3,7 +3,7 @@ import { selectedTabStyle } from 'styles/tabs'
 
 import { Tab, TabList, Tabs } from '@chakra-ui/react'
 
-export const ChartStyleSelector = ({
+export const ChartTypeSelector = ({
   onChange,
 }: {
   onChange: (index: number) => void

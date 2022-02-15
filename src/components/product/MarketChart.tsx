@@ -4,7 +4,7 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { colors } from 'styles/colors'
 import { selectedTabStyle } from 'styles/tabs'
 
-import { Box, Flex } from '@chakra-ui/layout'
+import { Box, Flex, Spacer } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, useTheme } from '@chakra-ui/react'
 
 export enum Durations {
@@ -156,18 +156,15 @@ const MarketChart = (props: {
 
   return (
     <Flex direction='column' alignItems='center' width='100%'>
-      <Flex
-        direction='row'
-        width='100%'
-        alignItems='center'
-        justifyContent='space-between'
-        mb='24px'
-      >
+      <Flex direction='row' width='100%' alignItems='center' mb='24px'>
         <PriceDisplay
           price={price}
           change={props.priceChanges[durationSelector]}
-          customSelector={props.customSelector}
         />
+        <Spacer />
+        {props.customSelector !== null && (
+          <Box mr='24px'>{props.customSelector}</Box>
+        )}
         <RangeSelector onChange={onChangeDuration} />
       </Flex>
       <AreaChart
@@ -238,7 +235,7 @@ const PriceDisplay = ({
 }: {
   price: string
   change: string
-  customSelector: any
+  customSelector?: any
 }) => (
   <Flex align='center'>
     <Flex align='baseline'>
