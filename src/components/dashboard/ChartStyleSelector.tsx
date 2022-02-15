@@ -1,7 +1,7 @@
-import { Tab, TabList, Tabs } from '@chakra-ui/react'
-
 import { colors } from 'styles/colors'
 import { selectedTabStyle } from 'styles/tabs'
+
+import { Tab, TabList, Tabs } from '@chakra-ui/react'
 
 export const ChartStyleSelector = ({
   onChange,
