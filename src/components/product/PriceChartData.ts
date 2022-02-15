@@ -1,6 +1,13 @@
-import { TokenMarketDataValues } from 'providers/MarketData/MarketDataProvider'
+import { BigNumber } from '@ethersproject/bignumber'
+
+import { TokenMarketDataValues } from 'contexts/MarketData/MarketDataProvider'
 
 import { PriceChartData, PriceChartRangeOption } from './MarketChart'
+
+export interface MarketDataAndBalance {
+  balance: BigNumber
+  marketData: TokenMarketDataValues
+}
 
 function getChartData(
   range: PriceChartRangeOption,
@@ -57,4 +64,29 @@ export function getMarketChartData(marketData: TokenMarketDataValues[]) {
   })
 
   return marketChartData
+}
+
+export function getTokenMarketDataValuesOrNull(
+  marketDataValues: TokenMarketDataValues | undefined,
+  balance: BigNumber | undefined
+): MarketDataAndBalance | undefined {
+  if (
+    marketDataValues === undefined ||
+    marketDataValues.hourlyPrices === undefined
+  ) {
+    return undefined
+  }
+
+  if (balance === undefined || balance.isZero() || balance.isNegative()) {
+    return undefined
+  }
+
+  const e18 = BigNumber.from('1000000000000000000')
+  const balanceNum = parseFloat(balance.div(e18).toString())
+  const hourlyData = marketDataValues.hourlyPrices.map(([date, price]) => [
+    date,
+    price * balanceNum,
+  ])
+
+  return { balance, marketData: { hourlyPrices: hourlyData } }
 }

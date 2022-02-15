@@ -11,7 +11,11 @@ import TransactionHistoryTable, {
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import MarketChart from 'components/product/MarketChart'
-import { getMarketChartData } from 'components/product/PriceChartData'
+import {
+  getMarketChartData,
+  getTokenMarketDataValuesOrNull,
+  MarketDataAndBalance,
+} from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
 import { useBalances } from 'hooks/useBalances'
 import {
@@ -66,6 +70,33 @@ const Dashboard = () => {
     { title: 'ETH2x-FLI-P', value: ethFliPBalance },
     { title: 'BTC2x-FLI', value: btcFliBalance },
   ]
+
+  const tokenMarketDataOwnedByUser: MarketDataAndBalance[] = balances
+    .map((pos) => {
+      switch (pos.title) {
+        case 'DPI':
+          return getTokenMarketDataValuesOrNull(dpi, pos.value)
+        case 'MVI':
+          return getTokenMarketDataValuesOrNull(mvi, pos.value)
+        case 'DATA':
+          return getTokenMarketDataValuesOrNull(data, pos.value)
+        case 'BED':
+          return getTokenMarketDataValuesOrNull(bed, pos.value)
+        case 'GMI':
+          return getTokenMarketDataValuesOrNull(gmi, pos.value)
+        case 'ETH2x-FLI':
+          return getTokenMarketDataValuesOrNull(ethfli, pos.value)
+        case 'ETH2x-FLI-P':
+          return getTokenMarketDataValuesOrNull(ethflip, pos.value)
+        case 'BTC2x-FLI':
+          return getTokenMarketDataValuesOrNull(btcfli, pos.value)
+        default:
+          return undefined
+      }
+    })
+    // Remove undefined
+    .filter((tokenData): tokenData is MarketDataAndBalance => !!tokenData)
+  console.log(tokenMarketDataOwnedByUser)
 
   const pieChartPositions = getPieChartPositions(balances)
 
