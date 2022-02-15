@@ -1,13 +1,6 @@
-import { BigNumber } from '@ethersproject/bignumber'
-
 import { TokenMarketDataValues } from 'providers/MarketData/MarketDataProvider'
 
 import { PriceChartData, PriceChartRangeOption } from './MarketChart'
-
-export interface MarketDataAndBalance {
-  balance: BigNumber
-  marketData: TokenMarketDataValues
-}
 
 function getChartData(
   range: PriceChartRangeOption,
@@ -47,7 +40,7 @@ function getChartData(
   return chartData
 }
 
-export function getMarketChartData(marketData: TokenMarketDataValues[]) {
+export function getPriceChartData(marketData: TokenMarketDataValues[]) {
   let ranges = [
     PriceChartRangeOption.DAILY_PRICE_RANGE,
     PriceChartRangeOption.WEEKLY_PRICE_RANGE,
@@ -64,45 +57,4 @@ export function getMarketChartData(marketData: TokenMarketDataValues[]) {
   })
 
   return marketChartData
-}
-
-export function getTokenMarketDataValuesOrNull(
-  marketDataValues: TokenMarketDataValues | undefined,
-  balance: BigNumber | undefined
-): MarketDataAndBalance | undefined {
-  if (
-    marketDataValues === undefined ||
-    marketDataValues.hourlyPrices === undefined
-  ) {
-    return undefined
-  }
-
-  if (balance === undefined || balance.isZero() || balance.isNegative()) {
-    return undefined
-  }
-
-  const e18 = BigNumber.from('1000000000000000000')
-  const balanceNum = parseFloat(balance.div(e18).toString())
-  const hourlyData = marketDataValues.hourlyPrices.map(([date, price]) => [
-    date,
-    price * balanceNum,
-  ])
-
-  return { balance, marketData: { hourlyPrices: hourlyData } }
-}
-
-export function getTotalHourlyPrices(marketData: MarketDataAndBalance[]) {
-  const hourlyPricesOnly = marketData.map(
-    (data) => data.marketData.hourlyPrices ?? []
-  )
-  let totalHourlyPrices: number[][] = []
-  if (hourlyPricesOnly.length > 0) {
-    totalHourlyPrices = hourlyPricesOnly[0]
-    for (let i = 1; i < hourlyPricesOnly.length; i += 1) {
-      for (let k = 0; k < totalHourlyPrices[0].length; k += 1) {
-        totalHourlyPrices[k][1] += hourlyPricesOnly[i][k][1]
-      }
-    }
-  }
-  return totalHourlyPrices
 }

@@ -12,14 +12,9 @@ import TransactionHistoryTable, {
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import MarketChart, { PriceChartData } from 'components/product/MarketChart'
-import {
-  getMarketChartData,
-  getTokenMarketDataValuesOrNull,
-  getTotalHourlyPrices,
-  MarketDataAndBalance,
-} from 'components/product/PriceChartData'
+import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
-import { useBalances } from 'hooks/useBalances'
+import { useUserBalances } from 'hooks/useUserBalances'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -37,19 +32,19 @@ const DownloadCsvView = () => {
 }
 
 const Dashboard = () => {
-  const {
-    bedBalance,
-    dataBalance,
-    dpiBalance,
-    mviBalance,
-    gmiBalance,
-    ethFliBalance,
-    btcFliBalance,
-    ethFliPBalance,
-  } = useBalances()
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
+  const { userBalances, totalHourlyPrices } = useUserBalances()
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
+  const [priceChartData, setPriceChartData] = useState<PriceChartData[][]>([])
+
+  useEffect(() => {
+    if (totalHourlyPrices.length < 1 || priceChartData.length > 0) {
+      return
+    }
+    const balanceData = getPriceChartData([{ hourlyPrices: totalHourlyPrices }])
+    setPriceChartData(balanceData)
+  }, [totalHourlyPrices])
 
   // FIXME: re-add once app is going live
   // useEffect(() => {
@@ -62,58 +57,23 @@ const Dashboard = () => {
   //   fetchHistory()
   // }, [account])
 
-  const balances = [
-    { title: 'DPI', value: dpiBalance },
-    { title: 'MVI', value: mviBalance },
-    { title: 'DATA', value: dataBalance },
-    { title: 'BED', value: bedBalance },
-    { title: 'GMI', value: gmiBalance },
-    { title: 'ETH2x-FLI', value: ethFliBalance },
-    { title: 'ETH2x-FLI-P', value: ethFliPBalance },
-    { title: 'BTC2x-FLI', value: btcFliBalance },
-  ]
+  // TODO: compress prices to one price
+  // TODO: selected latest price from daily range
 
-  const tokenMarketDataOwnedByUser: MarketDataAndBalance[] = balances
-    .map((pos) => {
-      switch (pos.title) {
-        case 'DPI':
-          return getTokenMarketDataValuesOrNull(dpi, pos.value)
-        case 'MVI':
-          return getTokenMarketDataValuesOrNull(mvi, pos.value)
-        case 'DATA':
-          return getTokenMarketDataValuesOrNull(data, pos.value)
-        case 'BED':
-          return getTokenMarketDataValuesOrNull(bed, pos.value)
-        case 'GMI':
-          return getTokenMarketDataValuesOrNull(gmi, pos.value)
-        case 'ETH2x-FLI':
-          return getTokenMarketDataValuesOrNull(ethfli, pos.value)
-        case 'ETH2x-FLI-P':
-          return getTokenMarketDataValuesOrNull(ethflip, pos.value)
-        case 'BTC2x-FLI':
-          return getTokenMarketDataValuesOrNull(btcfli, pos.value)
-        default:
-          return undefined
-      }
-    })
-    // Remove undefined
-    .filter((tokenData): tokenData is MarketDataAndBalance => !!tokenData)
+  // TODO: get price change
 
-  let totalHourlyPrices: number[][] = getTotalHourlyPrices(
-    tokenMarketDataOwnedByUser
-  )
-  const balanceData = getMarketChartData([{ hourlyPrices: totalHourlyPrices }])
-  const [priceChartData, setPriceChartData] =
-    useState<PriceChartData[][]>(balanceData)
-
-  const pieChartPositions = getPieChartPositions(balances)
+  const balancesPieChart = userBalances.map((userTokenBalance) => ({
+    title: userTokenBalance.symbol,
+    value: userTokenBalance.balance,
+  }))
+  const pieChartPositions = getPieChartPositions(balancesPieChart)
 
   const top4Positions = pieChartPositions
     .filter((pos) => pos.title !== 'OTHERS')
     .flatMap((pos) => pos.title)
     .slice(0, 4)
 
-  const tokenMarketData: TokenMarketDataValues[] = top4Positions
+  const allocationsChartData: TokenMarketDataValues[] = top4Positions
     .map((positionTitle) => {
       switch (positionTitle) {
         case 'DPI':
@@ -122,6 +82,7 @@ const Dashboard = () => {
           return mvi
         case 'DATA':
           return data
+
         case 'BED':
           return bed
         case 'GMI':
@@ -142,14 +103,14 @@ const Dashboard = () => {
   const onChangeChartType = (type: number) => {
     switch (type) {
       case 0: {
-        const balanceData = getMarketChartData([
+        const balanceData = getPriceChartData([
           { hourlyPrices: totalHourlyPrices },
         ])
         setPriceChartData(balanceData)
         break
       }
       case 1: {
-        const allocationsData = getMarketChartData(tokenMarketData)
+        const allocationsData = getPriceChartData(allocationsChartData)
         setPriceChartData(allocationsData)
         break
       }
