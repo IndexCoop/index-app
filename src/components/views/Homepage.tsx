@@ -11,10 +11,11 @@ import TransactionHistoryTable, {
 } from 'components/dashboard/TransactionHistoryTable'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
-import MarketChart from 'components/product/MarketChart'
+import MarketChart, { PriceChartData } from 'components/product/MarketChart'
 import {
   getMarketChartData,
   getTokenMarketDataValuesOrNull,
+  getTotalHourlyPrices,
   MarketDataAndBalance,
 } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
@@ -97,7 +98,13 @@ const Dashboard = () => {
     })
     // Remove undefined
     .filter((tokenData): tokenData is MarketDataAndBalance => !!tokenData)
-  console.log(tokenMarketDataOwnedByUser)
+
+  let totalHourlyPrices: number[][] = getTotalHourlyPrices(
+    tokenMarketDataOwnedByUser
+  )
+  const balanceData = getMarketChartData([{ hourlyPrices: totalHourlyPrices }])
+  const [priceChartData, setPriceChartData] =
+    useState<PriceChartData[][]>(balanceData)
 
   const pieChartPositions = getPieChartPositions(balances)
 
@@ -131,7 +138,23 @@ const Dashboard = () => {
     })
     // Remove undefined
     .filter((tokenData): tokenData is TokenMarketDataValues => !!tokenData)
-  const marketData = getMarketChartData(tokenMarketData)
+
+  const onChangeChartType = (type: number) => {
+    switch (type) {
+      case 0: {
+        const balanceData = getMarketChartData([
+          { hourlyPrices: totalHourlyPrices },
+        ])
+        setPriceChartData(balanceData)
+        break
+      }
+      case 1: {
+        const allocationsData = getMarketChartData(tokenMarketData)
+        setPriceChartData(allocationsData)
+        break
+      }
+    }
+  }
 
   // TODO: get prices and priceChanges
   const prices = ['$200', '200']
@@ -147,16 +170,14 @@ const Dashboard = () => {
         <PageTitle title='My Dashboard' subtitle='' />
         <Box my={12}>
           <MarketChart
-            marketData={marketData}
+            marketData={priceChartData}
             prices={prices}
             priceChanges={priceChanges}
             options={{
               width,
               hideYAxis: false,
             }}
-            customSelector={
-              <ChartStyleSelector onChange={(num) => console.log(num)} />
-            }
+            customSelector={<ChartStyleSelector onChange={onChangeChartType} />}
           />
           <Flex direction='row' mt='64px'>
             <Flex direction='column' grow='1' flexBasis='0'>
