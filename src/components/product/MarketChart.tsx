@@ -242,7 +242,7 @@ const PriceDisplay = ({
       <Text fontSize='5xl' color={colors.icYellow} fontWeight='700'>
         {price}
       </Text>
-      <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='24px'>
+      <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='16px'>
         {change}
       </Text>
     </Flex>
