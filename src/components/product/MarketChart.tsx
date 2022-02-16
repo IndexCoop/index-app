@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { colors } from 'styles/colors'
+import { selectedTabStyle } from 'styles/tabs'
 
-import { Flex } from '@chakra-ui/layout'
+import { Box, Flex, Spacer } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, useTheme } from '@chakra-ui/react'
 
 export enum Durations {
@@ -41,6 +42,7 @@ const MarketChart = (props: {
   prices: string[]
   priceChanges: string[]
   options: MarketChartOptions
+  customSelector?: any
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
 }) => {
@@ -52,6 +54,9 @@ const MarketChart = (props: {
   )
 
   useEffect(() => {
+    if (props.marketData.length < 1) {
+      return
+    }
     const index = durationSelector
     const chartData = props.marketData[index]
     setChartData(chartData)
@@ -146,19 +151,20 @@ const MarketChart = (props: {
   const minYAdjusted = minY > 4 ? minY - 5 : 0
   const yAxisDomain = [minYAdjusted, maxY + 5]
 
+  const price =
+    props.prices.length === 1 ? props.prices[0] : props.prices[durationSelector]
+
   return (
     <Flex direction='column' alignItems='center' width='100%'>
-      <Flex
-        direction='row'
-        width='100%'
-        alignItems='center'
-        justifyContent='space-between'
-        mb='24px'
-      >
+      <Flex direction='row' width='100%' alignItems='center' mb='24px'>
         <PriceDisplay
-          price={props.prices[durationSelector]}
+          price={price}
           change={props.priceChanges[durationSelector]}
         />
+        <Spacer />
+        {props.customSelector !== null && (
+          <Box mr='24px'>{props.customSelector}</Box>
+        )}
         <RangeSelector onChange={onChangeDuration} />
       </Flex>
       <AreaChart
@@ -222,14 +228,27 @@ const MarketChart = (props: {
   )
 }
 
-const PriceDisplay = ({ price, change }: { price: string; change: string }) => (
-  <Flex align='baseline'>
-    <Text fontSize='5xl' color={colors.icYellow} fontWeight='700'>
-      {price}
-    </Text>
-    <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='24px'>
-      {change}
-    </Text>
+const PriceDisplay = ({
+  price,
+  change,
+  customSelector,
+}: {
+  price: string
+  change: string
+  customSelector?: any
+}) => (
+  <Flex align='center'>
+    <Flex align='baseline'>
+      <Text fontSize='5xl' color={colors.icYellow} fontWeight='700'>
+        {price}
+      </Text>
+      <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='16px'>
+        {change}
+      </Text>
+    </Flex>
+    <Box ml='24px' mt='8px'>
+      {customSelector !== null && customSelector}
+    </Box>
   </Flex>
 )
 
@@ -254,11 +273,5 @@ const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
 )
 
 const strokeColor = colors.gray[500]
-const selectedTabStyle = {
-  bg: colors.icWhite,
-  borderRadius: '4px',
-  color: colors.black,
-  outline: 0,
-}
 
 export default MarketChart

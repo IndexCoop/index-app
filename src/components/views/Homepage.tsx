@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Box, Flex, Link, Text } from '@chakra-ui/react'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
+import { ChartTypeSelector } from 'components/dashboard/ChartTypeSelector'
 import QuickTrade from 'components/dashboard/QuickTrade'
 import { assembleHistoryItems } from 'components/dashboard/TransactionHistoryItems'
 import TransactionHistoryTable, {
@@ -10,10 +11,10 @@ import TransactionHistoryTable, {
 } from 'components/dashboard/TransactionHistoryTable'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
-import MarketChart from 'components/product/MarketChart'
-import { getMarketChartData } from 'components/product/PriceChartData'
+import MarketChart, { PriceChartData } from 'components/product/MarketChart'
+import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
-import { useBalances } from 'hooks/useBalances'
+import { useUserBalances } from 'hooks/useUserBalances'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -31,19 +32,21 @@ const DownloadCsvView = () => {
 }
 
 const Dashboard = () => {
-  const {
-    bedBalance,
-    dataBalance,
-    dpiBalance,
-    mviBalance,
-    gmiBalance,
-    ethFliBalance,
-    btcFliBalance,
-    ethFliPBalance,
-  } = useBalances()
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
+  const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
+    useUserBalances()
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
+  const [priceChartData, setPriceChartData] = useState<PriceChartData[][]>([])
+
+  useEffect(() => {
+    // Set only if chart data wasn't set yet e.g. by using chart type selector
+    if (totalHourlyPrices.length < 1 || priceChartData.length > 0) {
+      return
+    }
+    const balanceData = getPriceChartData([{ hourlyPrices: totalHourlyPrices }])
+    setPriceChartData(balanceData)
+  }, [totalHourlyPrices])
 
   // FIXME: re-add once app is going live
   // useEffect(() => {
@@ -56,25 +59,18 @@ const Dashboard = () => {
   //   fetchHistory()
   // }, [account])
 
-  const balances = [
-    { title: 'DPI', value: dpiBalance },
-    { title: 'MVI', value: mviBalance },
-    { title: 'DATA', value: dataBalance },
-    { title: 'BED', value: bedBalance },
-    { title: 'GMI', value: gmiBalance },
-    { title: 'ETH2x-FLI', value: ethFliBalance },
-    { title: 'ETH2x-FLI-P', value: ethFliPBalance },
-    { title: 'BTC2x-FLI', value: btcFliBalance },
-  ]
-
-  const pieChartPositions = getPieChartPositions(balances)
+  const balancesPieChart = userBalances.map((userTokenBalance) => ({
+    title: userTokenBalance.symbol,
+    value: userTokenBalance.balance,
+  }))
+  const pieChartPositions = getPieChartPositions(balancesPieChart)
 
   const top4Positions = pieChartPositions
     .filter((pos) => pos.title !== 'OTHERS')
     .flatMap((pos) => pos.title)
     .slice(0, 4)
 
-  const tokenMarketData: TokenMarketDataValues[] = top4Positions
+  const allocationsChartData: TokenMarketDataValues[] = top4Positions
     .map((positionTitle) => {
       switch (positionTitle) {
         case 'DPI':
@@ -83,6 +79,7 @@ const Dashboard = () => {
           return mvi
         case 'DATA':
           return data
+
         case 'BED':
           return bed
         case 'GMI':
@@ -99,15 +96,35 @@ const Dashboard = () => {
     })
     // Remove undefined
     .filter((tokenData): tokenData is TokenMarketDataValues => !!tokenData)
-  const marketData = getMarketChartData(tokenMarketData)
 
-  // TODO: get prices and priceChanges
-  const prices = ['$200', '200']
-  const priceChanges = ['+10.53 ( +5.89% )', '+10.53 ( +5.89% )', '', '', '']
+  const onChangeChartType = (type: number) => {
+    switch (type) {
+      case 0: {
+        const balanceData = getPriceChartData([
+          { hourlyPrices: totalHourlyPrices },
+        ])
+        setPriceChartData(balanceData)
+        break
+      }
+      case 1: {
+        const allocationsData = getPriceChartData(allocationsChartData)
+        setPriceChartData(allocationsData)
+        break
+      }
+    }
+  }
 
-  // TODO: width should be dynamic
-  // TODO: what's min width? 800px
-  const width = 1280
+  const formattedPrice = `$${totalBalanceInUSD.toFixed(2).toString()}`
+  const prices = [formattedPrice]
+  // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
+  const priceChangesFormatted = priceChanges.map((change) => {
+    const plusOrMinus = change.isPositive ? '+' : '-'
+    return `${plusOrMinus}$${change.abs.toFixed(
+      2
+    )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
+  })
+
+  const width = 1096
 
   return (
     <Page>
@@ -115,13 +132,14 @@ const Dashboard = () => {
         <PageTitle title='My Dashboard' subtitle='' />
         <Box my={12}>
           <MarketChart
-            marketData={marketData}
+            marketData={priceChartData}
             prices={prices}
-            priceChanges={priceChanges}
+            priceChanges={priceChangesFormatted}
             options={{
               width,
               hideYAxis: false,
             }}
+            customSelector={<ChartTypeSelector onChange={onChangeChartType} />}
           />
           <Flex direction='row' mt='64px'>
             <Flex direction='column' grow='1' flexBasis='0'>

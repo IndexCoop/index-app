@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/react'
 
 import Page from 'components/Page'
-import { getMarketChartData } from 'components/product/PriceChartData'
+import { getPriceChartData } from 'components/product/PriceChartData'
 import { ProductToken } from 'constants/productTokens'
 import {
   TokenMarketDataValues,
@@ -29,7 +29,7 @@ const ProductPage = (props: {
   const priceChange = ''
   const priceChanges = [priceChange]
 
-  const marketData = getMarketChartData([props.marketData])
+  const marketData = getPriceChartData([props.marketData])
   return (
     <Page>
       <Flex direction='column' width='100vw'>
