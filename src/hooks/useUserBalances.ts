@@ -96,8 +96,12 @@ function getTotalHourlyPrices(marketData: UserTokenBalance[]) {
   let totalHourlyPrices: number[][] = []
   if (hourlyPricesOnly.length > 0) {
     totalHourlyPrices = hourlyPricesOnly[0]
+    const length = hourlyPricesOnly[0].length
     for (let i = 1; i < hourlyPricesOnly.length; i += 1) {
-      for (let k = 0; k < totalHourlyPrices[0].length; k += 1) {
+      for (let k = 0; k < length; k += 1) {
+        if (k >= hourlyPricesOnly[i].length) {
+          continue
+        }
         totalHourlyPrices[k][1] += hourlyPricesOnly[i][k][1]
       }
     }
