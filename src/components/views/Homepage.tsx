@@ -33,13 +33,14 @@ const DownloadCsvView = () => {
 
 const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
-  const { userBalances, totalBalanceInUSD, totalHourlyPrices } =
+  const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
     useUserBalances()
 
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
   const [priceChartData, setPriceChartData] = useState<PriceChartData[][]>([])
 
   useEffect(() => {
+    // Set only if chart data wasn't set yet e.g. by using chart type selector
     if (totalHourlyPrices.length < 1 || priceChartData.length > 0) {
       return
     }
@@ -113,10 +114,16 @@ const Dashboard = () => {
     }
   }
 
-  // TODO: get prices and priceChanges
   const formattedPrice = `$${totalBalanceInUSD.toFixed(2).toString()}`
   const prices = [formattedPrice]
-  const priceChanges = ['+10.53 ( +5.89% )', '+10.53 ( +5.89% )', '', '', '']
+  // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
+  const priceChangesFormatted = priceChanges.map((change) => {
+    const plusOrMinus = change.isPositive ? '+' : '-'
+    return `${plusOrMinus}$${change.abs.toFixed(
+      2
+    )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
+  })
+
   const width = 1096
 
   return (
@@ -127,7 +134,7 @@ const Dashboard = () => {
           <MarketChart
             marketData={priceChartData}
             prices={prices}
-            priceChanges={priceChanges}
+            priceChanges={priceChangesFormatted}
             options={{
               width,
               hideYAxis: false,

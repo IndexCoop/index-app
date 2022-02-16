@@ -13,6 +13,56 @@ export interface UserTokenBalance {
   marketData: TokenMarketDataValues
 }
 
+interface PriceChange {
+  abs: number
+  rel: number
+  isPositive: boolean
+}
+
+function getChangeInPrice(priceData: number[][]): PriceChange {
+  if (priceData[0] === undefined) {
+    return {
+      abs: 0,
+      rel: 0,
+      isPositive: true,
+    }
+  }
+
+  const firstPrice = priceData[0][1]
+  const lastPrice = priceData.slice(-1)[0][1]
+  const diff = lastPrice - firstPrice
+
+  const abs = Math.abs(diff)
+  const isPositive = diff >= 0
+  const rel = (abs / firstPrice) * 100
+
+  return {
+    abs,
+    rel,
+    isPositive,
+  }
+}
+
+function getPricesChanges(priceData: number[][]): PriceChange[] {
+  const hourlyDataInterval = 24
+  let ranges = [
+    PriceChartRangeOption.DAILY_PRICE_RANGE,
+    PriceChartRangeOption.WEEKLY_PRICE_RANGE,
+    PriceChartRangeOption.MONTHLY_PRICE_RANGE,
+    PriceChartRangeOption.QUARTERLY_PRICE_RANGE,
+    PriceChartRangeOption.YEARLY_PRICE_RANGE,
+  ]
+
+  const changes: PriceChange[] = []
+  ranges.forEach((range) => {
+    const prices = priceData.slice(-range * hourlyDataInterval)
+    const change = getChangeInPrice(prices)
+    changes.push(change)
+  })
+
+  return changes
+}
+
 function getTokenMarketDataValuesOrNull(
   symbol: string,
   marketDataValues: TokenMarketDataValues | undefined,
@@ -106,11 +156,15 @@ export const useUserBalances = () => {
     .filter((tokenData): tokenData is UserTokenBalance => !!tokenData)
 
   const totalHourlyPrices = getTotalHourlyPrices(userBalances)
+
   const hourlyDataInterval = 24
   var totalBalanceInUSD =
     totalHourlyPrices
       .slice(-PriceChartRangeOption.DAILY_PRICE_RANGE * hourlyDataInterval)
-      ?.slice(-1)[0][1] ?? 0
+      ?.slice(-1)[0]
+      ?.slice(-1)[0] ?? 0
 
-  return { userBalances, totalBalanceInUSD, totalHourlyPrices }
+  const priceChanges = getPricesChanges(totalHourlyPrices)
+
+  return { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges }
 }
