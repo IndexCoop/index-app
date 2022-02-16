@@ -7,7 +7,7 @@ import {
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
 
-export interface UserTokenBalance {
+interface UserTokenBalance {
   symbol: string
   balance: BigNumber
   marketData: TokenMarketDataValues
