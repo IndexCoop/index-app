@@ -9,27 +9,27 @@ import {
 } from '@usedapp/core'
 
 import {
-  daiTokenAddress,
-  daiTokenPolygonAddress,
   dpi2020StakingRewardsAddress,
   dpi2021StakingRewardsAddress,
   gmiStakingRewardsAddress,
   mviStakingRewardsAddress,
   uniswapEthDpiLpTokenAddress,
   uniswapEthMviLpTokenAddress,
-  usdcTokenAddress,
-  usdcTokenPolygonAddress,
 } from 'constants/ethContractAddresses'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
+  DAI,
   DataIndex,
   DefiPulseIndex,
+  ETH,
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   GmiIndex,
+  MATIC,
   MetaverseIndex,
   Token,
+  USDC,
 } from 'constants/tokens'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
@@ -37,6 +37,8 @@ import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 export type Balances = {
   daiBalance?: BigNumber
   usdcBalance?: BigNumber
+  maticBalance?: BigNumber
+  wethBalance?: BigNumber
   dpiBalance?: BigNumber
   mviBalance?: BigNumber
   bedBalance?: BigNumber
@@ -65,15 +67,6 @@ const getChainAddress = (
   return token.address
 }
 
-const getDaiAddress = (chainId: ChainId = MAINNET_CHAIN_DATA.chainId) => {
-  if (chainId === POLYGON_CHAIN_DATA.chainId) return daiTokenPolygonAddress
-  return daiTokenAddress
-}
-const getUsdcAddress = (chainId: ChainId = MAINNET_CHAIN_DATA.chainId) => {
-  if (chainId === POLYGON_CHAIN_DATA.chainId) return usdcTokenPolygonAddress
-  return usdcTokenAddress
-}
-
 const stakingInterface = new utils.Interface(StakeRewardsABI)
 
 const useStakingUnclaimedRewards = (
@@ -96,8 +89,10 @@ const useStakingUnclaimedRewards = (
 export const useBalances = (): Balances => {
   const { account, chainId } = useEthers()
 
-  const daiBalance = useTokenBalance(getDaiAddress(chainId), account)
-  const usdcBalance = useTokenBalance(getUsdcAddress(chainId), account)
+  const daiBalance = useTokenBalance(getChainAddress(DAI, chainId), account)
+  const usdcBalance = useTokenBalance(getChainAddress(USDC, chainId), account)
+  const maticBalance = useTokenBalance(getChainAddress(MATIC, chainId), account)
+  const wethBalance = useTokenBalance(ETH.polygonAddress, account)
   const dpiBalance = useTokenBalance(
     getChainAddress(DefiPulseIndex, chainId),
     account
@@ -181,6 +176,8 @@ export const useBalances = (): Balances => {
   return {
     daiBalance,
     usdcBalance,
+    maticBalance,
+    wethBalance,
     dpiBalance,
     mviBalance,
     bedBalance,
