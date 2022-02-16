@@ -47,7 +47,7 @@ const MarketChart = (props: {
   onMouseLeave?: (...args: any[]) => any
 }) => {
   const theme = useTheme()
-  const formatFloats = (n: number) => n.toFixed(2)
+
   const [chartData, setChartData] = useState<PriceChartData[]>([])
   const [durationSelector, setDurationSelector] = useState<number>(
     Durations.DAILY
@@ -96,22 +96,6 @@ const MarketChart = (props: {
           day: '2-digit',
         }
     }
-  }
-
-  // TODO: ?
-  const formatToolTip = (chartData: any) => {
-    if (!chartData) return ['--', 'No Data Available']
-    const {
-      payload: { x, y },
-    } = chartData
-    let timeString = new Date(x).toLocaleDateString()
-    if (durationSelector === Durations.DAILY) {
-      timeString = new Date(x).toLocaleTimeString([], {
-        hour: 'numeric',
-        minute: 'numeric',
-      })
-    }
-    return [timeString, '$' + formatFloats(y)]
   }
 
   const xAxisTickFormatter = (val: any | null | undefined) => {

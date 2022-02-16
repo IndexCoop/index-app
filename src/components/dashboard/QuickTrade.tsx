@@ -139,7 +139,6 @@ const QuickTrade = ({ tokenList1, tokenList2 }: QuickTradeProps) => {
 
   return (
     <Flex
-      backgroundColor='#292929'
       border='2px solid #F7F1E4'
       borderRadius='16px'
       direction='column'

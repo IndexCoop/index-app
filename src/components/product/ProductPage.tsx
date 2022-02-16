@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react'
+import { Box, Flex } from '@chakra-ui/react'
 
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
@@ -8,6 +8,7 @@ import {
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
+import { getPricesChanges } from 'utils/priceChange'
 
 import MarketChart from './MarketChart'
 import ProductComponentsTable from './ProductComponentsTable'
@@ -17,32 +18,41 @@ const ProductPage = (props: {
   tokenData: ProductToken
   marketData: TokenMarketDataValues
   components: SetComponent[]
-  children?: JSX.Element
 }) => {
   const { selectLatestMarketData } = useMarketData()
 
+  const marketData = getPriceChartData([props.marketData])
+
   const price = `$${selectLatestMarketData(
     props.marketData.hourlyPrices
-  ).toFixed()}`
-  const prices = [price]
+  ).toFixed(2)}`
 
-  const priceChange = ''
-  const priceChanges = [priceChange]
+  const priceChanges = getPricesChanges(props.marketData.hourlyPrices ?? [])
+  // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
+  const priceChangesFormatted = priceChanges.map((change) => {
+    const plusOrMinus = change.isPositive ? '+' : '-'
+    return `${plusOrMinus}$${change.abs.toFixed(
+      2
+    )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
+  })
 
-  const marketData = getPriceChartData([props.marketData])
+  // TODO: find a way to dynamically capture the page's width so it can be passed
+  // to the chart (which does not take dynamic values) - same on dashboard
+
   return (
     <Page>
-      <Flex direction='column' width='100vw'>
-        <ProductHeader tokenData={props.tokenData} />
-        <Flex direction='column' justifyContent='space-around' width='70vw'>
+      <Flex direction='column' w='80vw' m='0 auto'>
+        <Box my='48px'>
+          <ProductHeader tokenData={props.tokenData} />
+        </Box>
+        <Flex direction='column'>
           <MarketChart
             marketData={marketData}
-            prices={prices}
-            priceChanges={priceChanges}
-            options={{}}
+            prices={[price]}
+            priceChanges={priceChangesFormatted}
+            options={{ width: 1048, hideYAxis: false }}
           />
           <ProductComponentsTable components={props.components} />
-          <Flex>{props.children}</Flex>
         </Flex>
       </Flex>
     </Page>

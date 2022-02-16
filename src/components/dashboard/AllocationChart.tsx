@@ -63,7 +63,6 @@ const PositionItem = (props: { position: Position }) => {
 
 const AllocationChart = (props: { positions: Position[] }) => (
   <Flex
-    backgroundColor='#292929'
     border='2px solid #F7F1E4'
     borderRadius='16px'
     direction='column'

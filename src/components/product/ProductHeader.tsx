@@ -3,10 +3,7 @@ import { Image } from '@chakra-ui/react'
 
 import { ProductToken } from 'constants/productTokens'
 
-const ProductPageHeader = (props: {
-  tokenData: ProductToken
-  children?: JSX.Element
-}) => {
+const ProductPageHeader = (props: { tokenData: ProductToken }) => {
   return (
     <Flex
       direction='row'
@@ -14,17 +11,21 @@ const ProductPageHeader = (props: {
       alignItems='center'
       borderBottom='1px'
       borderColor='white'
-      margin='20px 40px'
-      padding='10px'
+      padding='10px 0'
     >
-      <Text fontSize='4xl' alignSelf='flex-start' fontWeight='bold'>
+      <Text fontSize='4xl' fontWeight='700'>
         {props.tokenData.name}
       </Text>
       <Spacer />
-      <Text fontSize='4xl' marginRight='20px' fontWeight='extrabold'>
+      <Text fontSize='4xl' fontWeight='500' mr='24px'>
         {props.tokenData.symbol}
       </Text>
-      <Image src={props.tokenData.image} alt={props.tokenData.name + ' logo'} />
+      <Image
+        src={props.tokenData.image}
+        alt={props.tokenData.name + ' logo'}
+        w='48px'
+        h='48px'
+      />
     </Flex>
   )
 }
