@@ -47,7 +47,7 @@ const MarketChart = (props: {
   onMouseLeave?: (...args: any[]) => any
 }) => {
   const theme = useTheme()
-  const formatFloats = (n: number) => n.toFixed(2)
+
   const [chartData, setChartData] = useState<PriceChartData[]>([])
   const [durationSelector, setDurationSelector] = useState<number>(
     Durations.DAILY

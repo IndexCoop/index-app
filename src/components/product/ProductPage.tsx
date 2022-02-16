@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react'
+import { Box, Flex } from '@chakra-ui/react'
 
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
@@ -17,32 +17,36 @@ const ProductPage = (props: {
   tokenData: ProductToken
   marketData: TokenMarketDataValues
   components: SetComponent[]
-  children?: JSX.Element
 }) => {
   const { selectLatestMarketData } = useMarketData()
 
   const price = `$${selectLatestMarketData(
     props.marketData.hourlyPrices
-  ).toFixed()}`
+  ).toFixed(2)}`
   const prices = [price]
 
   const priceChange = ''
   const priceChanges = [priceChange]
 
   const marketData = getPriceChartData([props.marketData])
+
+  // TODO: find a way to dynamically capture the page's width so it can be passed
+  // to the chart (which does not take dynamic values)
+
   return (
     <Page>
-      <Flex direction='column' width='100vw'>
-        <ProductHeader tokenData={props.tokenData} />
-        <Flex direction='column' justifyContent='space-around' width='70vw'>
+      <Flex direction='column' w='80vw' m='0 auto'>
+        <Box my='48px'>
+          <ProductHeader tokenData={props.tokenData} />
+        </Box>
+        <Flex direction='column'>
           <MarketChart
             marketData={marketData}
             prices={prices}
             priceChanges={priceChanges}
-            options={{}}
+            options={{ width: 1048, hideYAxis: false }}
           />
           <ProductComponentsTable components={props.components} />
-          <Flex>{props.children}</Flex>
         </Flex>
       </Flex>
     </Page>
