@@ -7,6 +7,7 @@ import App from 'App'
 import theme from 'theme'
 
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
+import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { Config, DAppProvider, Mainnet } from '@usedapp/core'
@@ -36,12 +37,18 @@ const config: Config = {
 }
 
 const Providers = (props: { children: any }) => {
+  const gtmParams = {
+    id: process.env.REACT_APP_GOOGLE_TAG_MANAGER_CONTAINER_ID ?? '',
+  }
+
   return (
     <ChakraProvider theme={theme}>
       <DAppProvider config={config}>
         <MarketDataProvider>
           <LiquidityMiningProvider>
-            <SetComponentsProvider>{props.children}</SetComponentsProvider>
+            <SetComponentsProvider>
+              <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+            </SetComponentsProvider>
           </LiquidityMiningProvider>
         </MarketDataProvider>
       </DAppProvider>

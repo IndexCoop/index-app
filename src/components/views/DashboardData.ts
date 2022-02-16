@@ -73,12 +73,17 @@ function getPosition(
   }
 }
 
+// Gets 4 top positions and reduces rest to others
 export function getPieChartPositions(
   balances: {
     title: string
     value: BigNumber | undefined
   }[]
 ) {
+  if (balances.length < 1) {
+    return []
+  }
+
   const totalBalance: BigNumber = balances
     .map((pos) => {
       return pos.value ?? BigNumber.from('0')

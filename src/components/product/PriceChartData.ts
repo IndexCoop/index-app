@@ -40,7 +40,7 @@ function getChartData(
   return chartData
 }
 
-export function getMarketChartData(marketData: TokenMarketDataValues[]) {
+export function getPriceChartData(marketData: TokenMarketDataValues[]) {
   let ranges = [
     PriceChartRangeOption.DAILY_PRICE_RANGE,
     PriceChartRangeOption.WEEKLY_PRICE_RANGE,
