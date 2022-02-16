@@ -98,22 +98,6 @@ const MarketChart = (props: {
     }
   }
 
-  // TODO: ?
-  const formatToolTip = (chartData: any) => {
-    if (!chartData) return ['--', 'No Data Available']
-    const {
-      payload: { x, y },
-    } = chartData
-    let timeString = new Date(x).toLocaleDateString()
-    if (durationSelector === Durations.DAILY) {
-      timeString = new Date(x).toLocaleTimeString([], {
-        hour: 'numeric',
-        minute: 'numeric',
-      })
-    }
-    return [timeString, '$' + formatFloats(y)]
-  }
-
   const xAxisTickFormatter = (val: any | null | undefined) => {
     var options = dateFormatterOptions(durationSelector)
     return new Date(val).toLocaleString(undefined, options)
