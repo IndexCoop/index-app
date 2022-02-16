@@ -1,7 +1,8 @@
-// TODO: add colors from central place
+import { colors } from 'styles/colors'
+
 export const Text = {
   baseStyle: {
-    color: '#F6F1E4',
+    color: colors.icWhite,
   },
   variants: {
     secondary: {
