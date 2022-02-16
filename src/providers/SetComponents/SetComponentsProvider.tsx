@@ -22,7 +22,7 @@ import {
   mviTokenAddress,
   mviTokenPolygonAddress,
 } from 'constants/ethContractAddresses'
-import { useMarketData } from 'contexts/MarketData/MarketDataProvider'
+import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { preciseDiv, preciseMul } from 'utils'
 import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 import { getSetDetails } from 'utils/setjsApi'
@@ -376,7 +376,9 @@ async function convertPositionToSetComponent(
     name: token.name,
     image: token.logoURI,
     totalPriceUsd: ethers.utils.formatEther(totalPriceUsd.toString()),
-    dailyPercentChange: componentPriceChangeUsd.toString(),
+    dailyPercentChange: componentPriceChangeUsd
+      ? componentPriceChangeUsd.toString()
+      : '0',
     percentOfSet: percentOfSet.toString(),
     percentOfSetNumber: percentOfSet,
   }

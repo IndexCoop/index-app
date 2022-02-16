@@ -7,7 +7,7 @@ import Indices, { IndexToken, ProductToken } from 'constants/productTokens'
 import {
   TokenContextKeys,
   useMarketData,
-} from 'contexts/MarketData/MarketDataProvider'
+} from 'providers/MarketData/MarketDataProvider'
 
 export interface ProductsTableProduct extends ProductToken {
   performance: {

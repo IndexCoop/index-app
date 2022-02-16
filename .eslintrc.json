@@ -100,7 +100,7 @@
               ["@"],
               // // Imports from the /src folder are specified to occur after all others.
               [
-                "^(assets|components|constants|contexts|fonts|hooks|index-sdk|utils|views)"
+                "^(assets|components|constants|contexts|providers|fonts|hooks|index-sdk|utils|views)"
               ],
               // // Parent imports. Put `..` last.
               ["^\\.\\.(?!/?$)", "^\\.\\./?$"],

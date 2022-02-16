@@ -1,3 +1,5 @@
+import { colors } from 'styles/colors'
+
 export const Button = {
   baseStyle: {
     border: '2px solid',
@@ -11,12 +13,11 @@ export const Button = {
       color: '#555555',
     },
   },
-  // TODO: update variants with correct imported colors
   variants: {
     green: {
       backgroundColor: 'rgba(9, 170, 116, 0.12)',
-      borderColor: '#09AA74',
-      color: '#09AA74',
+      borderColor: colors.icMalachite,
+      color: colors.icMalachite,
     },
     purple: {
       backgroundColor: 'rgba(128, 0, 128, 0.2)',
