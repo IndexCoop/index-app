@@ -2375,10 +2375,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@indexcoop/tokenlists@^1.13.0":
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.13.0.tgz#68038c8dd8392a3062644b0e1ed2e28afa69e64b"
-  integrity sha512-rcncIlFqPEDx4773Ogppu6PTftj8I/pr4sCi1+YzKS9JjeoVPSXKZwbCqPEaNSkeZ/FGuTjYpvtJm8RFbxawLg==
+"@indexcoop/tokenlists@^1.16.0":
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.16.0.tgz#291554a4ae445e6f517460306b6d416b7b2c375c"
+  integrity sha512-jzn1pvGjG3QlnLjPDiBBLi7pLiXOhdKqmaEkivqvhu0/2+s718Ih0sY+5UnyyVTY5cSLwMSBxB/uaU1sC4nybw==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -12952,7 +12952,7 @@ querystring@0.2.0:
   resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
   integrity sha1-sgmEkgO7Jd+CDadW50cAWHhSFiA=
 
-querystring@^0.2.0:
+querystring@^0.2.0, querystring@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.1.tgz#40d77615bb09d16902a85c3e38aa8b5ed761c2dd"
   integrity sha512-wkvS7mL/JMugcup3/rMitHmd9ecIGd2lhFhK9N3UUQ450h66d1r3Y9nvXzQAW1Lq+wyx61k/1pfKS5KuKiyEbg==

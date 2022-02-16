@@ -3,13 +3,13 @@ import { Box } from '@chakra-ui/react'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import ProductsTable from 'components/products/ProductsTable'
-import Indices, { IndexToken, ProductToken } from 'constants/productTokens'
+import Indices, { IndexToken, Token } from 'constants/tokens'
 import {
   TokenContextKeys,
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
 
-export interface ProductsTableProduct extends ProductToken {
+export interface ProductsTableProduct extends Token {
   performance: {
     '1D'?: number
     '1W'?: number
@@ -61,7 +61,7 @@ const appendProductPerformance = ({
   hourlyPrices,
   prices,
 }: {
-  product: ProductToken
+  product: Token
   hourlyPrices?: number[][]
   prices?: number[][]
 }): ProductsTableProduct => {

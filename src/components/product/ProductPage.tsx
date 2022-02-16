@@ -2,7 +2,7 @@ import { Flex } from '@chakra-ui/react'
 
 import Page from 'components/Page'
 import { getMarketChartData } from 'components/product/PriceChartData'
-import { ProductToken } from 'constants/productTokens'
+import { Token } from 'constants/tokens'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -14,7 +14,7 @@ import ProductComponentsTable from './ProductComponentsTable'
 import ProductHeader from './ProductHeader'
 
 const ProductPage = (props: {
-  tokenData: ProductToken
+  tokenData: Token
   marketData: TokenMarketDataValues
   components: SetComponent[]
   children?: JSX.Element

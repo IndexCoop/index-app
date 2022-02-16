@@ -29,8 +29,8 @@ import {
   Ethereum2xFLIP,
   GmiIndex,
   MetaverseIndex,
-  ProductToken,
-} from 'constants/productTokens'
+  Token,
+} from 'constants/tokens'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 
@@ -58,7 +58,7 @@ export type Balances = {
 }
 
 const getChainAddress = (
-  token: ProductToken,
+  token: Token,
   chainId: ChainId = MAINNET_CHAIN_DATA.chainId
 ) => {
   if (chainId === POLYGON_CHAIN_DATA.chainId) return token.polygonAddress

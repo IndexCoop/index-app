@@ -1,5 +1,5 @@
 import ProductPage from 'components/product/ProductPage'
-import { Bitcoin2xFlexibleLeverageIndex } from 'constants/productTokens'
+import { Bitcoin2xFlexibleLeverageIndex } from 'constants/tokens'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { useSetComponents } from 'providers/SetComponents/SetComponentsProvider'
 

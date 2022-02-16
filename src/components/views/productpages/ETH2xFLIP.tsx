@@ -1,5 +1,5 @@
 import ProductPage from 'components/product/ProductPage'
-import { Ethereum2xFLIP } from 'constants/productTokens'
+import { Ethereum2xFLIP } from 'constants/tokens'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { useSetComponents } from 'providers/SetComponents/SetComponentsProvider'
 
