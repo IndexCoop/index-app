@@ -14,6 +14,7 @@ import MarketChart from './MarketChart'
 import ProductComponentsTable from './ProductComponentsTable'
 import ProductHeader from './ProductHeader'
 import ProductPageSectionHeader from './ProductPageSectionHeader'
+import ProductStats from './ProductStats'
 
 const ProductPage = (props: {
   tokenData: ProductToken
@@ -37,6 +38,13 @@ const ProductPage = (props: {
     )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
   })
 
+  const stats = [
+    { title: 'Market Cap', value: '$111.38M' },
+    { title: 'Market Cap', value: '$111.38M' },
+    { title: 'Market Cap', value: '$111.38M' },
+    { title: 'Market Cap', value: '$111.38M' },
+  ]
+
   // TODO: find a way to dynamically capture the page's width so it can be passed
   // to the chart (which does not take dynamic values) - same on dashboard
 
@@ -53,7 +61,8 @@ const ProductPage = (props: {
             priceChanges={priceChangesFormatted}
             options={{ width: 1048, hideYAxis: false }}
           />
-          <ProductPageSectionHeader title='Stats' />
+          <ProductPageSectionHeader title='Stats' topMargin='120px' />
+          <ProductStats stats={stats} />
           <ProductPageSectionHeader title='Allocations' />
           <ProductComponentsTable components={props.components} />
         </Flex>
