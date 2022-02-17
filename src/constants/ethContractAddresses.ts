@@ -1,124 +1,78 @@
 // Index Coop Contract Addresses
-export const airdropAddress = process.env.REACT_APP_INDEX_AIRDROP_ADDRESS
-export const eth2xfliSuppyCapAddress =
-  process.env.REACT_APP_ETH2X_FLI_SUPPLY_CAP_ADDRESS
-export const btc2xfliSuppyCapAddress =
-  process.env.REACT_APP_BTC2X_FLI_SUPPLY_CAP_ADDRESS
-// Index Coop Contracts - Liquidity Mining
 export const dpi2020StakingRewardsAddress =
-  process.env.REACT_APP_INDEX_STAKING_REWARDS_ADDRESS
+  '0x8f06FBA4684B5E0988F215a47775Bb611Af0F986'
 export const dpi2021StakingRewardsAddress =
-  process.env.REACT_APP_FARM_TWO_ADDRESS
+  '0xB93b505Ed567982E2b6756177ddD23ab5745f309'
 export const mviStakingRewardsAddress =
-  process.env.REACT_APP_MVI_STAKING_REWARDS_ADDRESS
+  '0x5bc4249641b4bf4e37ef513f3fa5c63ecab34881'
 export const gmiStakingRewardsAddress =
-  process.env.REACT_APP_GMI_STAKING_ADDRESS
+  '0xc3cC57579138f33A987E0333DF3d59B0Bbc59Fed'
 
 // Uniswap V2 Addresses
 export const uniswapEthDpiLpTokenAddress =
-  process.env.REACT_APP_UNISWAP_ETH_DPI_LP_TOKEN_ADDRESS
+  '0x4d5ef58aac27d99935e5b6b4a6778ff292059991'
 export const uniswapEthMviLpTokenAddress =
-  process.env.REACT_APP_UNISWAP_ETH_MVI_LP_TOKEN_ADDRESS
-export const uniswapRouterAddress = process.env.REACT_APP_UNISWAP_ROUTER_ADDRESS
-export const zeroExRouterAddress = process.env.REACT_APP_ZERO_EX_ROUTER_ADDRESS
+  '0x4d3C5dB2C68f6859e0Cd05D080979f597DD64bff'
+export const uniswapRouterAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
+export const zeroExRouterAddress = '0xDef1C0ded9bec7F1a1670819833240f027b25EfF'
 
 // Uniswap V3 Addresses
 export const nftPositionManagerAddress =
-  process.env.REACT_APP_NFT_POSITION_MANAGER
-export const uniswapV3FactoryAddress = process.env.REACT_APP_UNI_V3_FACTORY
-export const uniswapV3StakerAddress = process.env.REACT_APP_UNI_V3_STAKER
+  '0xC36442b4a4522E871399CD717aBDD847Ab11FE88'
+export const uniswapV3FactoryAddress =
+  '0x1F98431c8aD98523631AE4a59f267346ea31F984'
+export const uniswapV3StakerAddress =
+  '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d'
 
 // Sushiswap Addresses
 export const sushiswapRouterAddress =
-  process.env.REACT_APP_SUSHISWAP_ROUTER_ADDRESS
+  '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F'
 
 // Set JS Contract Addresses
-export const controllerAddress = process.env.REACT_APP_SETJS_CONTROLLER
+export const controllerAddress = '0xa4c8d221d8BB851f83aadd0223a8900A6921A349'
 export const setTokenCreatorAddress =
-  process.env.REACT_APP_SETJS_SET_TOKEN_CREATOR_ADDRESS
+  '0xeF72D3278dC3Eba6Dc2614965308d1435FFd748a'
 export const basicIssuanceModuleAddress =
-  process.env.REACT_APP_SETJS_BASIC_ISSUANCE_MODULE
+  '0xd8EF3cACe8b4907117a45B0b125c68560532F94D'
 export const debtIssuanceModuleAddress =
-  process.env.REACT_APP_SETJS_DEBT_ISSUANCE_MODULE
+  '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
 export const debtIssuanceModuleV2Address =
-  process.env.REACT_APP_SETJS_DEBT_ISSUANCE_MODULE_V2
+  '0x69a592D2129415a4A1d1b1E309C17051B7F28d57'
 export const streamingFeeModuleAddress =
-  process.env.REACT_APP_SETJS_STREAMING_FEE_MODULE
-export const tradeModuleAddress = process.env.REACT_APP_SETJS_TRADE_MODULE
-export const protocolViewerAddress = process.env.REACT_APP_SETJS_PROTOCOL_VIEWER
-export const slippageIssuanceModuleAddress =
-  process.env.REACT_APP_SLIPPAGE_ISSUANCE_MODULE_ADDRESS
-
-// Contributor Reward Addresses
-export const november2020RewardsAddress =
-  process.env.REACT_APP_NOVEMBER_REWARDS_ADDRESS
-export const december2020RewardsAddress =
-  process.env.REACT_APP_DECEMBER_REWARDS_ADDRESS
-export const january2021RewardsAddress =
-  process.env.REACT_APP_JANUARY_2021_REWARDS_ADDRESS
-export const february2021RewardsAddress =
-  process.env.REACT_APP_FEBRUARY_2021_REWARDS_ADDRESS
-export const march2021RewardsAddress =
-  process.env.REACT_APP_MARCH_2021_REWARDS_ADDRESS
-export const april2021RewardsAddress =
-  process.env.REACT_APP_APRIL_2021_REWARDS_ADDRESS
-export const may2021RewardsAddress =
-  process.env.REACT_APP_MAY_2021_REWARDS_ADDRESS
+  '0x08f866c74205617B6F3903EF481798EcED10cDEC'
+export const tradeModuleAddress = '0x90F765F63E7DC5aE97d6c576BF693FB6AF41C129'
+export const protocolViewerAddress =
+  '0x74391125304f1e4ce11bDb8aaAAABcF3A3Ae2f41'
+export const slippageIssuanceModuleAddress = 'asdf'
+export const protocolViewerPolygonAddress =
+  '0x8D5CF870354ffFaE0586B639da6D4E4F6C659c69'
+export const tradeModulePolygonAddress =
+  '0xd04AabadEd11e92Fefcd92eEdbBC81b184CdAc82'
+export const streamingFeeModulePolygonAddress =
+  '0x8440f6a2c42118bed0D6E6A89Bf170ffd13e21c0'
+export const debtIssuanceModuleV2PolygonAddress =
+  '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
+export const basicIssuanceModulePolygonAddress =
+  '0x38E5462BBE6A72F79606c1A0007468aA4334A92b'
+export const slippageIssuanceModulePolygonAddress = 'asdf'
+export const navIssuanceModuleAddress =
+  '0xaB9a964c6b95fA529CA7F27DAc1E7175821f2334'
+export const masterOracleAddress = '0xA60f9e1641747762aDE7FD5F881b90B691E92B0a'
+export const governanceModuleAddress =
+  '0x5C87b042494cDcebA44C541fbB3BC8bFF179d500'
 
 // Mainnet Addresses
-export const indexTokenAddress = process.env.REACT_APP_INDEX_TOKEN_ADDRESS
-export const dpiTokenAddress = process.env.REACT_APP_DPI_TOKEN_ADDRESS
-export const eth2xfliTokenAddress =
-  process.env.REACT_APP_ETH2X_FLI_TOKEN_ADDRESS
-export const mviTokenAddress = process.env.REACT_APP_MVI_TOKEN_ADDRESS
-export const daiTokenAddress = process.env.REACT_APP_DAI_TOKEN_ADDRESS
-export const usdcTokenAddress = process.env.REACT_APP_USDC_TOKEN_ADDRESS
-export const btc2xfliTokenAddress =
-  process.env.REACT_APP_BTC2X_FLI_TOKEN_ADDRESS
-export const ethTokenAddress = process.env.REACT_APP_ETH_TOKEN_ADDRESS
-export const bedTokenAddress = process.env.REACT_APP_BED_TOKEN_ADDRESS
-export const gmiTokenAddress = process.env.REACT_APP_GMI_TOKEN_ADDRESS
-export const dataTokenAddress = process.env.REACT_APP_DATA_TOKEN_ADDRESS
-
-export const navIssuanceModuleAddress =
-  process.env.REACT_APP_SETJS_NAV_ISSUANCE_MODULE
-export const masterOracleAddress =
-  process.env.REACT_APP_SETJS_MASTER_ORACLE_ADDRESS
-export const governanceModuleAddress =
-  process.env.REACT_APP_SETJS_GOVERNANCE_MODULE
+export const eth2xfliSuppyCapAddress =
+  '0x0F1171C24B06ADed18d2d23178019A3B256401D3'
+export const btc2xfliSuppyCapAddress =
+  '0x6c8137f2f552f569cc43bc4642afbe052a12441c'
 
 // Polygon Addresses
-export const indexTokenPolygonAddress =
-  process.env.REACT_APP_POLYGON_INDEX_TOKEN_ADDRESS
-export const dpiTokenPolygonAddress =
-  process.env.REACT_APP_POLYGON_DPI_TOKEN_ADDRESS
-export const mviTokenPolygonAddress =
-  process.env.REACT_APP_POLYGON_MVI_TOKEN_ADDRESS
-export const daiTokenPolygonAddress =
-  process.env.REACT_APP_POLYGON_DAI_TOKEN_ADDRESS
-export const usdcTokenPolygonAddress =
-  process.env.REACT_APP_POLYGON_USDC_TOKEN_ADDRESS
-export const wethTokenPolygonAddress =
-  process.env.REACT_APP_POLYGON_WETH_TOKEN_ADDRESS
-export const eth2xflipTokenAddress =
-  process.env.REACT_APP_POLYGON_ETH2X_FLI_P_TOKEN_ADDRESS
 export const eth2xFLIPSuppyCapAddress =
-  process.env.REACT_APP_POLYGON_ETH2X_FLI_P_SUPPLY_CAP_ADDRESS
-export const protocolViewerPolygonAddress =
-  process.env.REACT_APP_POLYGON_SETJS_PROTOCOL_VIEWER
-export const tradeModulePolygonAddress =
-  process.env.REACT_APP_POLYGON_SETJS_TRADE_MODULE
-export const streamingFeeModulePolygonAddress =
-  process.env.REACT_APP_POLYGON_SETJS_STREAMING_FEE_MODULE
-export const debtIssuanceModuleV2PolygonAddress =
-  process.env.REACT_APP_POLYGON_SETJS_DEBT_ISSUANCE_MODULE_V2
-export const basicIssuanceModulePolygonAddress =
-  process.env.REACT_APP_POLYGON_SETJS_BASIC_ISSUANCE_MODULE
-export const dataTokenPolygonAddress =
-  process.env.REACT_APP_POLYGON_DATA_TOKEN_ADDRESS
-export const gmiTokenPolygonAddress =
-  process.env.REACT_APP_POLYGON_GMI_TOKEN_ADDRESS
-export const slippageIssuanceModulePolygonAddress =
-  process.env.REACT_APP_POLYGON_SLIPPAGE_ISSUANCE_MODULE_ADDRESS
-export const maticTokenPolygonAddress =
-  process.env.REACT_APP_MATIC_TOKEN_ADDRESS
+  '0x2B26553224BBdb0F156fcA360f44d0a9D2644B7F'
+export const matic2xFLIPSuppyCapAddress =
+  '0x721C2D8936F3ca38DCA8281cc224be8d81CB0BE1'
+export const imaticFLIPSuppyCapAddress =
+  '0x82b227cAec950a807c7ca456e2E48E52633F7Be5'
+export const iethFLIPSuppyCapAddress =
+  '0x8173Bd491a27aF4DDe0a4dE48a54Daf6705c75F1'

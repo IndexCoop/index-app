@@ -2,8 +2,6 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
-const WS_URL = process.env.REACT_APP_ETHEREUM_WS_URL
-
 export type ChainData = {
   name: string
   chainId: number
@@ -25,12 +23,6 @@ export const POLYGON_CHAIN_DATA: ChainData = {
   rpcUrl: 'https://rpc-mainnet.maticvigil.com/',
   icon: 'https://raw.githubusercontent.com/sushiswap/icons/master/network/polygon.jpg',
   coingeckoId: 'polygon-pos',
-}
-
-if (!WS_URL) {
-  throw new Error(
-    `REACT_APP_ETHEREUM_WS_URL must be a defined environment variable`
-  )
 }
 
 export const injected = new InjectedConnector({
