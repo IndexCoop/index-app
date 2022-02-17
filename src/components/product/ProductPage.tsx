@@ -14,22 +14,33 @@ import MarketChart from './MarketChart'
 import ProductComponentsTable from './ProductComponentsTable'
 import ProductHeader from './ProductHeader'
 import ProductPageSectionHeader from './ProductPageSectionHeader'
-import ProductStats from './ProductStats'
+import ProductStats, { ProductStat } from './ProductStats'
+
+function getStatsForToken(
+  tokenData: ProductToken,
+  marketData: TokenMarketDataValues
+): ProductStat[] {
+  return [
+    { title: 'Market Cap', value: '' },
+    { title: 'Volume', value: '' },
+    { title: 'Current Supply', value: '' },
+    { title: 'Streaming Fee', value: tokenData.fees?.streamingFee ?? 'n/a' },
+  ]
+}
 
 const ProductPage = (props: {
   tokenData: ProductToken
   marketData: TokenMarketDataValues
   components: SetComponent[]
 }) => {
+  const { marketData, tokenData } = props
   const { selectLatestMarketData } = useMarketData()
 
-  const marketData = getPriceChartData([props.marketData])
+  const priceChartData = getPriceChartData([marketData])
 
-  const price = `$${selectLatestMarketData(
-    props.marketData.hourlyPrices
-  ).toFixed(2)}`
+  const price = `$${selectLatestMarketData(marketData.hourlyPrices).toFixed(2)}`
 
-  const priceChanges = getPricesChanges(props.marketData.hourlyPrices ?? [])
+  const priceChanges = getPricesChanges(marketData.hourlyPrices ?? [])
   // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
   const priceChangesFormatted = priceChanges.map((change) => {
     const plusOrMinus = change.isPositive ? '+' : '-'
@@ -38,12 +49,7 @@ const ProductPage = (props: {
     )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
   })
 
-  const stats = [
-    { title: 'Market Cap', value: '$111.38M' },
-    { title: 'Market Cap', value: '$111.38M' },
-    { title: 'Market Cap', value: '$111.38M' },
-    { title: 'Market Cap', value: '$111.38M' },
-  ]
+  const stats = getStatsForToken(tokenData, marketData)
 
   // TODO: find a way to dynamically capture the page's width so it can be passed
   // to the chart (which does not take dynamic values) - same on dashboard
@@ -56,7 +62,7 @@ const ProductPage = (props: {
         </Box>
         <Flex direction='column'>
           <MarketChart
-            marketData={marketData}
+            marketData={priceChartData}
             prices={[price]}
             priceChanges={priceChangesFormatted}
             options={{ width: 1048, hideYAxis: false }}

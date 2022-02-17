@@ -1,6 +1,6 @@
 import { Flex, Text } from '@chakra-ui/layout'
 
-interface ProductStat {
+export interface ProductStat {
   title: string
   value: string
 }
