@@ -13,6 +13,7 @@ import { getPricesChanges } from 'utils/priceChange'
 import MarketChart from './MarketChart'
 import ProductComponentsTable from './ProductComponentsTable'
 import ProductHeader from './ProductHeader'
+import ProductPageSectionHeader from './ProductPageSectionHeader'
 
 const ProductPage = (props: {
   tokenData: ProductToken
@@ -52,6 +53,8 @@ const ProductPage = (props: {
             priceChanges={priceChangesFormatted}
             options={{ width: 1048, hideYAxis: false }}
           />
+          <ProductPageSectionHeader title='Stats' />
+          <ProductPageSectionHeader title='Allocations' />
           <ProductComponentsTable components={props.components} />
         </Flex>
       </Flex>
