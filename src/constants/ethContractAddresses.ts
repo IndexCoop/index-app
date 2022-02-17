@@ -120,4 +120,5 @@ export const gmiTokenPolygonAddress =
   process.env.REACT_APP_POLYGON_GMI_TOKEN_ADDRESS
 export const slippageIssuanceModulePolygonAddress =
   process.env.REACT_APP_POLYGON_SLIPPAGE_ISSUANCE_MODULE_ADDRESS
-export const maticTokenPolygonAddress = process.env.REACT_APP_MATIC_TOKEN_ADDRESS
+export const maticTokenPolygonAddress =
+  process.env.REACT_APP_MATIC_TOKEN_ADDRESS

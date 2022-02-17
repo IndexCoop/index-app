@@ -30,8 +30,7 @@ export const DAI: Token = {
   polygonAddress: tokenAddresses.daiTokenPolygonAddress,
   decimals: 18,
   coingeckoId: 'dai',
-  tokensetsId: 'dpi',
-  tokenContextKey: 'dpi',
+  tokensetsId: 'dai',
   fees: undefined,
 }
 
