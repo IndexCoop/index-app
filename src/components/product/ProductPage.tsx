@@ -15,7 +15,7 @@ import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 import { getPricesChanges } from 'utils/priceChange'
 import { getTokenSupply } from 'utils/setjsApi'
 
-import MarketChart from './MarketChart'
+import MarketChart, { PriceChartRangeOption } from './MarketChart'
 import ProductComponentsTable from './ProductComponentsTable'
 import ProductHeader from './ProductHeader'
 import ProductPageSectionHeader from './ProductPageSectionHeader'
@@ -24,12 +24,40 @@ import ProductStats, { ProductStat } from './ProductStats'
 function getStatsForToken(
   tokenData: ProductToken,
   marketData: TokenMarketDataValues,
-  currentSupply: string
+  currentSupply: number
 ): ProductStat[] {
+  const dailyPriceRange = PriceChartRangeOption.DAILY_PRICE_RANGE
+  const hourlyDataInterval = 24
+
+  let formatter = Intl.NumberFormat('en', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 2,
+    notation: 'compact',
+  })
+
+  let supplyFormatter = Intl.NumberFormat('en')
+
+  const marketCap =
+    marketData.marketcaps
+      ?.slice(-dailyPriceRange * hourlyDataInterval)
+      ?.slice(-1)[0]
+      ?.slice(-1)[0] ?? 0
+  const marketCapFormatted = formatter.format(marketCap)
+
+  const supplyFormatted = supplyFormatter.format(currentSupply)
+
+  const volume =
+    marketData.volumes
+      ?.slice(-dailyPriceRange * hourlyDataInterval)
+      ?.slice(-1)[0]
+      ?.slice(-1)[0] ?? 0
+  const volumeFormatted = formatter.format(volume)
+
   return [
-    { title: 'Market Cap', value: '' },
-    { title: 'Volume', value: '' },
-    { title: 'Current Supply', value: currentSupply },
+    { title: 'Market Cap', value: marketCapFormatted },
+    { title: 'Volume', value: volumeFormatted },
+    { title: 'Current Supply', value: supplyFormatted },
     { title: 'Streaming Fee', value: tokenData.fees?.streamingFee ?? 'n/a' },
   ]
 }
@@ -44,7 +72,7 @@ const ProductPage = (props: {
   const { chainId, library } = useEthers()
   const { selectLatestMarketData } = useMarketData()
 
-  const [currentTokenSupply, setCurrentTokenSupply] = useState('...')
+  const [currentTokenSupply, setCurrentTokenSupply] = useState(0)
 
   useEffect(() => {
     const tokenAddress = tokenData.address
@@ -54,14 +82,13 @@ const ProductPage = (props: {
       library === undefined ||
       chainId === undefined
     ) {
-      setCurrentTokenSupply('n/a')
       return
     }
 
     const fetchSupply = async () => {
       const setDetails = await getTokenSupply(library, [tokenAddress], chainId)
       const e18 = BigNumber.from('1000000000000000000')
-      const supply = setDetails[0].totalSupply.div(e18).toLocaleString()
+      const supply = setDetails[0].totalSupply.div(e18).toNumber()
       setCurrentTokenSupply(supply)
     }
 
