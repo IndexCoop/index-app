@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import numeral from 'numeral'
 import { Cell, Pie, PieChart } from 'recharts'
@@ -15,18 +15,15 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
 
 import { Position } from 'components/dashboard/AllocationChart'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
-import { POLYGON_CHAIN_DATA } from 'utils/connectors'
 
 const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
   const showAllComponents = () =>
     setAmountToDisplay(props.components?.length || amountToDisplay)
   const showDefaultComponents = () => setAmountToDisplay(5)
-  const { chainId } = useEthers()
 
   const mapSetComponentToPosition = (component: SetComponent) => {
     const position: Position = {
@@ -47,19 +44,10 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
     return <Text onClick={showDefaultComponents}>Show Less</Text>
   }
 
-  if (
-    chainId &&
-    chainId === POLYGON_CHAIN_DATA.chainId &&
-    (props.components === undefined || props.components.length === 0)
-  ) {
-    return (
-      <Text title='Allocations'>
-        Connect wallet to Mainnet to view allocations
-      </Text>
-    )
-  } else if (props.components === undefined || props.components.length === 0) {
+  if (props.components === undefined || props.components.length === 0) {
     return <Text title='Allocations'>Connect wallet to view allocations</Text>
   }
+
   return (
     <Flex title='Allocations' direction='row' alignItems='start' width='60vw'>
       <Chart data={props.components.map(mapSetComponentToPosition)} />
