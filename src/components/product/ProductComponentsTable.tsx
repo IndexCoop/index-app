@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import numeral from 'numeral'
 import { Cell, Pie, PieChart } from 'recharts'
+import { colors } from 'styles/colors'
 
 import {
   Box,
@@ -15,25 +16,23 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
 
 import { Position } from 'components/dashboard/AllocationChart'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
-import { POLYGON_CHAIN_DATA } from 'utils/connectors'
 
 const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
   const showAllComponents = () =>
     setAmountToDisplay(props.components?.length || amountToDisplay)
   const showDefaultComponents = () => setAmountToDisplay(5)
-  const { chainId } = useEthers()
 
   const mapSetComponentToPosition = (component: SetComponent) => {
+    const randomColor = '#' + (((1 << 24) * Math.random()) | 0).toString(16)
     const position: Position = {
       title: component.symbol,
       value: +component.percentOfSet,
-      color: '#008099',
-      backgroundColor: '#8884d8',
+      color: randomColor,
+      backgroundColor: randomColor,
     }
     return position
   }
@@ -41,32 +40,34 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
   const renderTableDisplayControls = () => {
     if (!props.components || props.components.length < 5) return null
 
-    if (amountToDisplay < props.components.length)
-      return <Text onClick={showAllComponents}>Show Complete List</Text>
-
-    return <Text onClick={showDefaultComponents}>Show Less</Text>
+    return (
+      <Box my='20px'>
+        {amountToDisplay < props.components.length ? (
+          <Text cursor='pointer' onClick={showAllComponents}>
+            Show Complete List
+          </Text>
+        ) : (
+          <Text cursor='pointer' onClick={showDefaultComponents}>
+            Show Less
+          </Text>
+        )}
+      </Box>
+    )
   }
 
-  if (
-    chainId &&
-    chainId === POLYGON_CHAIN_DATA.chainId &&
-    (props.components === undefined || props.components.length === 0)
-  ) {
-    return (
-      <Text title='Allocations'>
-        Connect wallet to Mainnet to view allocations
-      </Text>
-    )
-  } else if (props.components === undefined || props.components.length === 0) {
+  if (props.components === undefined || props.components.length === 0) {
     return <Text title='Allocations'>Connect wallet to view allocations</Text>
   }
+
   return (
-    <Flex title='Allocations' direction='row' alignItems='start' width='60vw'>
-      <Chart data={props.components.map(mapSetComponentToPosition)} />
+    <Flex direction='row' alignItems='start'>
+      <Box margin='0 64px 0 0'>
+        <Chart data={props.components.map(mapSetComponentToPosition)} />
+      </Box>
       <Flex direction='column' alignItems='center'>
         <Table variant='simple'>
           <Thead>
-            <Tr borderBottom='2px'>
+            <Tr borderBottom='1px'>
               <Th>Token</Th>
               <Th isNumeric>Value Per Token</Th>
               <Th isNumeric>24hr Change</Th>
@@ -78,7 +79,6 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
             ))}
           </Tbody>
         </Table>
-
         {renderTableDisplayControls()}
       </Flex>
     </Flex>
@@ -95,12 +95,16 @@ const ComponentRow = (props: { component: SetComponent }) => {
     '$0,0.00'
   )
 
-  const absPercentChange = numeral(
-    Math.abs(parseFloat(props.component.dailyPercentChange))
-  ).format('0.00')
+  const percentChange = parseFloat(props.component.dailyPercentChange)
+  const absPercentChange = numeral(Math.abs(percentChange)).format('0.00')
+  const percentChangeIsPositive = percentChange >= 0
+  const percentChangeTextColor = percentChangeIsPositive
+    ? colors.icMalachite
+    : colors.icRed
+  const percentChangeSign = percentChangeIsPositive ? '+' : '-'
 
   return (
-    <Tr borderBottom='2px'>
+    <Tr borderBottom='1px'>
       <Td>
         <Flex alignItems='center'>
           <Image
@@ -110,40 +114,41 @@ const ComponentRow = (props: { component: SetComponent }) => {
             alt={props.component.name}
             marginRight='10px'
           />
-          {props.component.name}
+          <Text fontWeight='500'>{props.component.name}</Text>
         </Flex>
       </Td>
       <Td isNumeric>{formattedPriceUSD}</Td>
-      <Td isNumeric>{absPercentChange}</Td>
+      <Td isNumeric color={percentChangeTextColor}>
+        {percentChangeSign}
+        {absPercentChange}%
+      </Td>
     </Tr>
   )
 }
 
 const Chart = (props: { data: Position[] }) => {
   return (
-    <Box margin='70px 30px 0 30px'>
-      <PieChart width={300} height={300}>
-        <Pie
-          data={props.data}
-          dataKey='value'
-          cx='50%'
-          cy='50%'
-          innerRadius={80}
-          outerRadius={140}
-          startAngle={90}
-          endAngle={-360}
-          legendType='line'
-        >
-          {props.data.map((item, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={item.backgroundColor}
-              stroke={item.color}
-            />
-          ))}
-        </Pie>
-      </PieChart>
-    </Box>
+    <PieChart width={300} height={300}>
+      <Pie
+        data={props.data}
+        dataKey='value'
+        cx='50%'
+        cy='50%'
+        innerRadius={80}
+        outerRadius={140}
+        startAngle={90}
+        endAngle={-360}
+        legendType='line'
+      >
+        {props.data.map((item, index) => (
+          <Cell
+            key={`cell-${index}`}
+            fill={item.backgroundColor}
+            stroke={item.color}
+          />
+        ))}
+      </Pie>
+    </PieChart>
   )
 }
 

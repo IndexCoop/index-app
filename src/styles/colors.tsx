@@ -8,6 +8,7 @@ export const colors = {
   icLazurite: '#433BCE',
   icMalachite: '#09AA74',
   icPeriwinkle: '#B9B6FC',
+  icRed: '#C32238',
   icYellow: '#FABF00',
   icWhite: '#F6F1E4',
 }
