@@ -204,7 +204,7 @@ const Dashboard = () => {
             title='Transaction History'
             itemRight={renderCsvDownloadButton}
           />
-          <TransactionHistoryTable items={historyItems} />
+          <TransactionHistoryTable items={historyItems.slice(0, 20)} />
         </Box>
       </Box>
     </Page>
