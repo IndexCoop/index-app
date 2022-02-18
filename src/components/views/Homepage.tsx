@@ -150,6 +150,15 @@ const Dashboard = () => {
     setCsvDownloadUrl(fileDownloadUrl)
   }
 
+  const renderCsvDownloadButton =
+    historyItems.length > 0 ? (
+      <DownloadCsvView
+        ref={csvDownloadRef}
+        downloadUrl={csvDownloadUrl}
+        onClickDownload={onClickDownloadCsv}
+      />
+    ) : undefined
+
   const formattedPrice = `$${totalBalanceInUSD.toFixed(2).toString()}`
   const prices = [formattedPrice]
   // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
@@ -193,13 +202,7 @@ const Dashboard = () => {
         <Box>
           <SectionTitle
             title='Transaction History'
-            itemRight={
-              <DownloadCsvView
-                ref={csvDownloadRef}
-                downloadUrl={csvDownloadUrl}
-                onClickDownload={onClickDownloadCsv}
-              />
-            }
+            itemRight={renderCsvDownloadButton}
           />
           <TransactionHistoryTable items={historyItems} />
         </Box>
