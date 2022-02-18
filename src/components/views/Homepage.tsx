@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-import { Box, Flex, Link, Text } from '@chakra-ui/react'
+import { colors } from 'styles/colors'
+
+import { Box, Flex, Text } from '@chakra-ui/react'
+import { useEthers } from '@usedapp/core'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
 import { ChartTypeSelector } from 'components/dashboard/ChartTypeSelector'
@@ -20,24 +23,44 @@ import {
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
+import { exportCsv } from 'utils/exportToCsv'
 
 import { getPieChartPositions, QuickTradeData } from './DashboardData'
 
-const DownloadCsvView = () => {
-  return (
-    <Link href={''} isExternal>
-      <Text style={{ color: '#B9B6FC' }}>Download CSV</Text>
-    </Link>
-  )
+interface DownloadCsvViewProps {
+  onClickDownload: () => void
+  downloadUrl: string
 }
+
+const DownloadCsvView = React.forwardRef<
+  HTMLAnchorElement,
+  DownloadCsvViewProps
+>((props, ref) => (
+  <>
+    <Text
+      cursor='pointer'
+      style={{ color: colors.icPeriwinkle }}
+      onClick={props.onClickDownload}
+    >
+      Download CSV
+    </Text>
+    <a hidden={true} download='index.csv' href={props.downloadUrl} ref={ref}>
+      download
+    </a>
+  </>
+))
 
 const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
   const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
     useUserBalances()
+  const { account } = useEthers()
 
+  const [csvDownloadUrl, setCsvDownloadUrl] = useState('')
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
   const [priceChartData, setPriceChartData] = useState<PriceChartData[][]>([])
+
+  const csvDownloadRef = useRef<HTMLAnchorElement>(null)
 
   useEffect(() => {
     // Set only if chart data wasn't set yet e.g. by using chart type selector
@@ -48,16 +71,22 @@ const Dashboard = () => {
     setPriceChartData(balanceData)
   }, [totalHourlyPrices])
 
-  // FIXME: re-add once app is going live
-  // useEffect(() => {
-  //   if (account === null || account === undefined) return
-  //   const fetchHistory = async () => {
-  //     const transactions = await getTransactionHistory(account)
-  //     const historyItems = assembleHistoryItems(transactions)
-  //     setHistoryItems(historyItems)
-  //   }
-  //   fetchHistory()
-  // }, [account])
+  useEffect(() => {
+    if (account === null || account === undefined) return
+    const fetchHistory = async () => {
+      const transactions = await getTransactionHistory(account)
+      const historyItems = assembleHistoryItems(transactions)
+      setHistoryItems(historyItems)
+    }
+    fetchHistory()
+  }, [account])
+
+  useEffect(() => {
+    if (csvDownloadUrl === '') return
+    csvDownloadRef.current?.click()
+    URL.revokeObjectURL(csvDownloadUrl)
+    setCsvDownloadUrl('')
+  }, [csvDownloadUrl])
 
   const balancesPieChart = userBalances.map((userTokenBalance) => ({
     title: userTokenBalance.symbol,
@@ -114,6 +143,13 @@ const Dashboard = () => {
     }
   }
 
+  const onClickDownloadCsv = () => {
+    const csv = exportCsv(historyItems, 'index')
+    const blob = new Blob([csv])
+    const fileDownloadUrl = URL.createObjectURL(blob)
+    setCsvDownloadUrl(fileDownloadUrl)
+  }
+
   const formattedPrice = `$${totalBalanceInUSD.toFixed(2).toString()}`
   const prices = [formattedPrice]
   // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
@@ -157,7 +193,13 @@ const Dashboard = () => {
         <Box>
           <SectionTitle
             title='Transaction History'
-            itemRight={<DownloadCsvView />}
+            itemRight={
+              <DownloadCsvView
+                ref={csvDownloadRef}
+                downloadUrl={csvDownloadUrl}
+                onClickDownload={onClickDownloadCsv}
+              />
+            }
           />
           <TransactionHistoryTable items={historyItems} />
         </Box>
