@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import numeral from 'numeral'
 import { Cell, Pie, PieChart } from 'recharts'
+import { colors } from 'styles/colors'
 
 import {
   Box,
@@ -18,7 +19,6 @@ import {
 
 import { Position } from 'components/dashboard/AllocationChart'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
-import { colors } from 'styles/colors'
 
 const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
