@@ -45,7 +45,6 @@
   ],
 
   "rules": {
-    "react/display-name": "off",
     // // Activates normal rules for sorting imports with simple-import-sort.
     "simple-import-sort/imports": "warn",
 

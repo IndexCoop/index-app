@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { colors } from 'styles/colors'
-
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
 import { ChartTypeSelector } from 'components/dashboard/ChartTypeSelector'
+import DownloadCsvView from 'components/dashboard/DownloadCsvView'
 import QuickTrade from 'components/dashboard/QuickTrade'
 import { assembleHistoryItems } from 'components/dashboard/TransactionHistoryItems'
 import TransactionHistoryTable, {
@@ -26,29 +25,6 @@ import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
 
 import { getPieChartPositions, QuickTradeData } from './DashboardData'
-
-interface DownloadCsvViewProps {
-  onClickDownload: () => void
-  downloadUrl: string
-}
-
-const DownloadCsvView = React.forwardRef<
-  HTMLAnchorElement,
-  DownloadCsvViewProps
->((props, ref) => (
-  <>
-    <Text
-      cursor='pointer'
-      style={{ color: colors.icPeriwinkle }}
-      onClick={props.onClickDownload}
-    >
-      Download CSV
-    </Text>
-    <a hidden={true} download='index.csv' href={props.downloadUrl} ref={ref}>
-      download
-    </a>
-  </>
-))
 
 const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
