@@ -18,6 +18,7 @@ import {
 
 import { Position } from 'components/dashboard/AllocationChart'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
+import { colors } from 'styles/colors'
 
 const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
@@ -93,9 +94,13 @@ const ComponentRow = (props: { component: SetComponent }) => {
     '$0,0.00'
   )
 
-  const absPercentChange = numeral(
-    Math.abs(parseFloat(props.component.dailyPercentChange))
-  ).format('0.00')
+  const percentChange = parseFloat(props.component.dailyPercentChange)
+  const absPercentChange = numeral(Math.abs(percentChange)).format('0.00')
+  const percentChangeIsPositive = percentChange >= 0
+  const percentChangeTextColor = percentChangeIsPositive
+    ? colors.icMalachite
+    : colors.icRed
+  const percentChangeSign = percentChangeIsPositive ? '+' : '-'
 
   return (
     <Tr borderBottom='1px'>
@@ -112,7 +117,10 @@ const ComponentRow = (props: { component: SetComponent }) => {
         </Flex>
       </Td>
       <Td isNumeric>{formattedPriceUSD}</Td>
-      <Td isNumeric>{absPercentChange}</Td>
+      <Td isNumeric color={percentChangeTextColor}>
+        {percentChangeSign}
+        {absPercentChange}%
+      </Td>
     </Tr>
   )
 }
