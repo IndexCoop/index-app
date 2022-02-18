@@ -27,11 +27,12 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
   const showDefaultComponents = () => setAmountToDisplay(5)
 
   const mapSetComponentToPosition = (component: SetComponent) => {
+    const randomColor = '#' + (((1 << 24) * Math.random()) | 0).toString(16)
     const position: Position = {
       title: component.symbol,
       value: +component.percentOfSet,
-      color: '#008099',
-      backgroundColor: '#8884d8',
+      color: randomColor,
+      backgroundColor: randomColor,
     }
     return position
   }
