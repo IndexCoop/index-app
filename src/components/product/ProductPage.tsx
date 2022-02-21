@@ -6,7 +6,7 @@ import { useEthers } from '@usedapp/core'
 
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
-import { ProductToken } from 'constants/productTokens'
+import { Token } from 'constants/tokens'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -22,7 +22,7 @@ import ProductPageSectionHeader from './ProductPageSectionHeader'
 import ProductStats, { ProductStat } from './ProductStats'
 
 function getStatsForToken(
-  tokenData: ProductToken,
+  tokenData: Token,
   marketData: TokenMarketDataValues,
   currentSupply: number
 ): ProductStat[] {
@@ -63,7 +63,7 @@ function getStatsForToken(
 }
 
 const ProductPage = (props: {
-  tokenData: ProductToken
+  tokenData: Token
   marketData: TokenMarketDataValues
   components: SetComponent[]
 }) => {

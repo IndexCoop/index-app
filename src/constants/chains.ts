@@ -43,36 +43,4 @@ export const POLYGON: ChainData = {
   },
 }
 
-export const switchNetwork = (
-  chaindata: ChainData,
-  library: any,
-  account: string | null | undefined
-) => {
-  if (chaindata.chainId === MAINNET.chainId) {
-    library?.send('wallet_switchEthereumChain', [
-      { chainId: MAINNET.chainId0x },
-      account,
-    ])
-  } else {
-    library?.send('wallet_addEthereumChain', [
-      {
-        chainId: chaindata.chainId0x,
-        chainName: chaindata.name,
-        nativeCurrency: chaindata.nativeCurrency,
-        rpcUrls: [chaindata.rpcUrl],
-        blockExplorerUrls: [chaindata.blockExplorerUrl],
-      },
-      account,
-    ])
-  }
-}
-
-export const setMainnet = (
-  library: any,
-  account: string | null | undefined
-) => {
-  library?.send('wallet_switchEthereumChain', [
-    { chainId: MAINNET.chainId0x },
-    account,
-  ])
-}
+export const SUPPORTED_CHAINS = [MAINNET, POLYGON]

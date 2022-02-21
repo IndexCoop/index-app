@@ -10,19 +10,20 @@ import {
 import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
+import { MAINNET, POLYGON } from 'constants/chains'
 import {
-  bedTokenAddress,
-  btc2xfliTokenAddress,
-  dataTokenAddress,
-  dpiTokenAddress,
-  dpiTokenPolygonAddress,
-  eth2xflipTokenAddress,
-  eth2xfliTokenAddress,
-  gmiTokenAddress,
-  mviTokenAddress,
-  mviTokenPolygonAddress,
-} from 'constants/ethContractAddresses'
-import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'hooks/useNetwork'
+  BedIndex,
+  Bitcoin2xFlexibleLeverageIndex,
+  DataIndex,
+  DefiPulseIndex,
+  Ethereum2xFlexibleLeverageIndex,
+  Ethereum2xFLIP,
+  GmiIndex,
+  IEthereumFLIP,
+  IMaticFLIP,
+  Matic2xFLIP,
+  MetaverseIndex,
+} from 'constants/tokens'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { preciseDiv, preciseMul } from 'utils'
 import { getSetDetails } from 'utils/setjsApi'
@@ -68,16 +69,9 @@ const SetComponentsProvider = (props: { children: any }) => {
   useEffect(() => {
     if (
       chainId &&
-      chainId === MAINNET_CHAIN_DATA.chainId &&
+      chainId === MAINNET.chainId &&
       account &&
       library &&
-      dpiTokenAddress &&
-      mviTokenAddress &&
-      bedTokenAddress &&
-      gmiTokenAddress &&
-      eth2xfliTokenAddress &&
-      btc2xfliTokenAddress &&
-      dataTokenAddress &&
       tokenList &&
       dpi &&
       mvi &&
@@ -86,18 +80,25 @@ const SetComponentsProvider = (props: { children: any }) => {
       gmi &&
       ethfli &&
       ethflip &&
-      btcfli
+      btcfli &&
+      DefiPulseIndex.address &&
+      MetaverseIndex.address &&
+      BedIndex.address &&
+      GmiIndex.address &&
+      Ethereum2xFlexibleLeverageIndex.address &&
+      Bitcoin2xFlexibleLeverageIndex.address &&
+      DataIndex.address
     ) {
       getSetDetails(
         library,
         [
-          dpiTokenAddress,
-          mviTokenAddress,
-          bedTokenAddress,
-          gmiTokenAddress,
-          eth2xfliTokenAddress,
-          btc2xfliTokenAddress,
-          dataTokenAddress,
+          DefiPulseIndex.address,
+          MetaverseIndex.address,
+          BedIndex.address,
+          GmiIndex.address,
+          Ethereum2xFlexibleLeverageIndex.address,
+          Bitcoin2xFlexibleLeverageIndex.address,
+          DataIndex.address,
         ],
         chainId
       ).then(async (result) => {
@@ -279,15 +280,25 @@ const SetComponentsProvider = (props: { children: any }) => {
   useEffect(() => {
     if (
       chainId &&
-      chainId === POLYGON_CHAIN_DATA.chainId &&
+      chainId === POLYGON.chainId &&
       library &&
-      dpiTokenPolygonAddress &&
-      mviTokenPolygonAddress &&
-      eth2xflipTokenAddress &&
       tokenList &&
-      ethflip
+      ethflip &&
+      Ethereum2xFLIP.polygonAddress &&
+      IEthereumFLIP.polygonAddress &&
+      Matic2xFLIP.polygonAddress &&
+      IMaticFLIP.polygonAddress
     ) {
-      getSetDetails(library, [eth2xflipTokenAddress], chainId)
+      getSetDetails(
+        library,
+        [
+          Ethereum2xFLIP.polygonAddress,
+          IEthereumFLIP.polygonAddress,
+          Matic2xFLIP.polygonAddress,
+          IMaticFLIP.polygonAddress,
+        ],
+        chainId
+      )
         .then(async (result) => {
           const ethflipSet = result[0]
           const ethFlipComponentPrices = await getPositionPrices(

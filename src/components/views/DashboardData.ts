@@ -12,7 +12,7 @@ import {
   GmiIndex,
   IndexToken,
   MetaverseIndex,
-} from 'constants/productTokens'
+} from 'constants/tokens'
 
 const chartColors = [
   colors.icApricot,

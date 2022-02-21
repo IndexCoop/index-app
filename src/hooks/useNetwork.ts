@@ -1,29 +1,6 @@
 import { useEthers } from '@usedapp/core'
 
-export type ChainData = {
-  name: string
-  chainId: number
-  rpcUrl: string
-  icon: string
-  coingeckoId: string
-}
-
-export const MAINNET_CHAIN_DATA: ChainData = {
-  name: 'Ethereum',
-  chainId: 1,
-  rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  icon: 'https://raw.githubusercontent.com/sushiswap/icons/master/network/mainnet.jpg',
-  coingeckoId: 'ethereum',
-}
-export const POLYGON_CHAIN_DATA: ChainData = {
-  name: 'Polygon',
-  chainId: 137,
-  rpcUrl: 'https://rpc-mainnet.maticvigil.com/',
-  icon: 'https://raw.githubusercontent.com/sushiswap/icons/master/network/polygon.jpg',
-  coingeckoId: 'polygon-pos',
-}
-
-export const SUPPORTED_CHAINS = [MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA]
+import { MAINNET, POLYGON } from 'constants/chains'
 
 export const useNetwork = () => {
   const { library, account } = useEthers()
@@ -44,13 +21,13 @@ export const useNetwork = () => {
       library?.send('wallet_addEthereumChain', [
         {
           chainId: '0x89',
-          chainName: POLYGON_CHAIN_DATA.name,
+          chainName: POLYGON.name,
           nativeCurrency: {
             name: 'Matic',
             symbol: 'MATIC',
             decimals: 18,
           },
-          rpcUrls: [POLYGON_CHAIN_DATA.rpcUrl],
+          rpcUrls: [POLYGON.rpcUrl],
           blockExplorerUrls: ['https://polygonscan.com/'],
         },
         account,
@@ -60,10 +37,10 @@ export const useNetwork = () => {
   const changeNetwork = (chainId: string) => {
     const chainNumber = parseInt(chainId)
     switch (chainNumber) {
-      case MAINNET_CHAIN_DATA.chainId:
+      case MAINNET.chainId:
         setMainnet()
         break
-      case POLYGON_CHAIN_DATA.chainId:
+      case POLYGON.chainId:
         setPolygon()
         break
       default:

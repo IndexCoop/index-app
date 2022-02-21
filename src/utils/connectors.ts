@@ -2,7 +2,7 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
-import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'hooks/useNetwork'
+import { MAINNET, POLYGON } from 'constants/chains'
 
 const WS_URL = process.env.REACT_APP_ETHEREUM_WS_URL
 
@@ -18,8 +18,8 @@ export const injected = new InjectedConnector({
 
 export const walletconnect = new WalletConnectConnector({
   rpc: {
-    [MAINNET_CHAIN_DATA.chainId]: MAINNET_CHAIN_DATA.rpcUrl,
-    [POLYGON_CHAIN_DATA.chainId]: POLYGON_CHAIN_DATA.rpcUrl,
+    [MAINNET.chainId]: MAINNET.rpcUrl,
+    [POLYGON.chainId]: POLYGON.rpcUrl,
   },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
@@ -27,6 +27,6 @@ export const walletconnect = new WalletConnectConnector({
 })
 
 export const networkConnector = new NetworkConnector({
-  urls: { 1: process.env.REACT_APP_ALCHEMY_API || MAINNET_CHAIN_DATA.rpcUrl },
+  urls: { 1: process.env.REACT_APP_ALCHEMY_API || MAINNET.rpcUrl },
   defaultChainId: 1,
 })
