@@ -1,10 +1,14 @@
+import { colors } from 'styles/colors'
+
 import { Button, Flex, Text, useDisclosure } from '@chakra-ui/react'
 import * as Sentry from '@sentry/react'
 import { useEthers, useLookupAddress } from '@usedapp/core'
 
 import ConnectModal from './ConnectModal'
 
-const ConnectButton = (props: { handleOpenModal: any }) => {
+const buttonYellow = '#EEB03D'
+
+const ConnectButton = () => {
   const { account, deactivate } = useEthers()
   const { isOpen, onOpen, onClose } = useDisclosure()
   let ens = useLookupAddress()
@@ -47,19 +51,17 @@ const ConnectButton = (props: { handleOpenModal: any }) => {
       <div>
         <Button
           onClick={handleConnectWallet}
-          bg='black'
-          color='gray.300'
+          bg={buttonYellow}
+          border='0'
+          borderRadius='8'
+          color='#000'
           fontSize='lg'
-          fontWeight='medium'
-          border='1px solid white'
-          borderRadius='0'
+          fontWeight='700'
+          padding='6px 30px'
           _hover={{
-            borderColor: 'gray.700',
-            color: 'gray.400',
-          }}
-          _active={{
-            backgroundColor: 'gray.800',
-            borderColor: 'gray.700',
+            transform:
+              'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
+            transformStyle: 'preserve-3d',
           }}
         >
           Connect
@@ -72,24 +74,22 @@ const ConnectButton = (props: { handleOpenModal: any }) => {
   const disconnectButton = () => {
     return (
       <Flex direction='row' alignItems='center'>
-        <Text fontSize='lg' paddingRight='10px'>
+        <Text fontSize='lg' pr='24px'>
           {handleAccount()}
         </Text>
         <Button
           onClick={handleDisconnect}
-          bg='black'
-          color='gray.300'
+          bg={colors.background}
+          borderColor={buttonYellow}
+          borderRadius='8'
+          color={buttonYellow}
           fontSize='lg'
-          fontWeight='medium'
-          border='1px solid white'
-          borderRadius='0'
+          fontWeight='700'
+          padding='6px 30px'
           _hover={{
-            borderColor: 'gray.700',
-            color: 'gray.400',
-          }}
-          _active={{
-            backgroundColor: 'gray.800',
-            borderColor: 'gray.700',
+            transform:
+              'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
+            transformStyle: 'preserve-3d',
           }}
         >
           Disconnect
