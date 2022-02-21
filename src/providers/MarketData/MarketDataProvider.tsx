@@ -45,6 +45,9 @@ export interface TokenContext {
   btcfli?: TokenMarketDataValues
   ethflip?: TokenMarketDataValues
   gmi?: TokenMarketDataValues
+  maticflip?: TokenMarketDataValues
+  imaticflip?: TokenMarketDataValues
+  iethflip?: TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
 }
 
@@ -66,7 +69,7 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [ethFliMarketData, setEthFliMarketData] = useState<any>({})
   const [btcFliMarketData, setBtcFliMarketData] = useState<any>({})
   const [ethFlipMarketData, setEthFlipMarketData] = useState<any>({})
-  const [iethFliPMarketData, setIEthFliPMarketData] = useState<any>({})
+  const [iEthFliPMarketData, setIEthFliPMarketData] = useState<any>({})
   const [gmiMarketData, setGmiMarketData] = useState<any>({})
   const [maticFliPMarketData, setMaticFliPMarketData] = useState<any>({})
   const [iMaticFliPMarketData, setIMaticFliPMarketData] = useState<any>({})
@@ -127,6 +130,9 @@ export const MarketDataProvider = (props: { children: any }) => {
         btcfli: btcFliMarketData,
         ethflip: ethFlipMarketData,
         gmi: gmiMarketData,
+        maticflip: maticFliPMarketData,
+        imaticflip: iMaticFliPMarketData,
+        iethflip: iEthFliPMarketData,
       }}
     >
       {props.children}

@@ -47,6 +47,9 @@ const SetComponentsProvider = (props: { children: any }) => {
     ethflip,
     btcfli,
     gmi,
+    iethflip,
+    maticflip,
+    imaticflip,
   } = useMarketData()
   const [dpiComponents, setDpiComponents] = useState<SetComponent[]>([])
   const [mviComponents, setMviComponents] = useState<SetComponent[]>([])
@@ -62,6 +65,18 @@ const SetComponentsProvider = (props: { children: any }) => {
     []
   )
   const [dataComponents, setDataComponents] = useState<SetComponent[]>([])
+
+  const [iethflipComponents, setIEthflipComponents] = useState<SetComponent[]>(
+    []
+  )
+
+  const [matic2xflipComponents, setMatic2xflipComponents] = useState<
+    SetComponent[]
+  >([])
+
+  const [imaticflipComponents, setIMaticflipComponents] = useState<
+    SetComponent[]
+  >([])
 
   const { account, chainId, library } = useEthers()
   const tokenList = getTokenList(chainId)
@@ -284,6 +299,9 @@ const SetComponentsProvider = (props: { children: any }) => {
       library &&
       tokenList &&
       ethflip &&
+      iethflip &&
+      maticflip &&
+      imaticflip &&
       Ethereum2xFLIP.polygonAddress &&
       IEthereumFLIP.polygonAddress &&
       Matic2xFLIP.polygonAddress &&
@@ -300,7 +318,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         chainId
       )
         .then(async (result) => {
-          const ethflipSet = result[0]
+          const [ethflipSet, iethflipSet, maticflipSet, imaticflipSet] = result
           const ethFlipComponentPrices = await getPositionPrices(
             ethflipSet,
             'polygon-pos'
@@ -324,6 +342,78 @@ const SetComponentsProvider = (props: { children: any }) => {
           Promise.all(ethFlipPositions)
             .then(sortPositionsByPercentOfSet)
             .then(setEth2xflipComponents)
+
+          const iethFlipComponentPrices = await getPositionPrices(
+            iethflipSet,
+            'polygon-pos'
+          )
+          const iethFlipPositions = iethflipSet.positions.map(
+            async (position) => {
+              return await convertPositionToSetComponent(
+                position,
+                tokenList,
+                iethFlipComponentPrices[position.component.toLowerCase()]?.[
+                  VS_CURRENCY
+                ],
+                iethFlipComponentPrices[position.component.toLowerCase()]?.[
+                  `${VS_CURRENCY}_24h_change`
+                ],
+
+                selectLatestMarketData(iethflip.hourlyPrices)
+              )
+            }
+          )
+          Promise.all(iethFlipPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setIEthflipComponents)
+
+          const maticFlipComponentPrices = await getPositionPrices(
+            maticflipSet,
+            'polygon-pos'
+          )
+          const maticFlipPositions = maticflipSet.positions.map(
+            async (position) => {
+              return await convertPositionToSetComponent(
+                position,
+                tokenList,
+                maticFlipComponentPrices[position.component.toLowerCase()]?.[
+                  VS_CURRENCY
+                ],
+                maticFlipComponentPrices[position.component.toLowerCase()]?.[
+                  `${VS_CURRENCY}_24h_change`
+                ],
+
+                selectLatestMarketData(maticflip.hourlyPrices)
+              )
+            }
+          )
+          Promise.all(maticFlipPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setMatic2xflipComponents)
+
+          const imaticFlipComponentPrices = await getPositionPrices(
+            imaticflipSet,
+            'polygon-pos'
+          )
+          const imaticFlipPositions = imaticflipSet.positions.map(
+            async (position) => {
+              return await convertPositionToSetComponent(
+                position,
+                tokenList,
+                imaticFlipComponentPrices[position.component.toLowerCase()]?.[
+                  VS_CURRENCY
+                ],
+                imaticFlipComponentPrices[position.component.toLowerCase()]?.[
+                  `${VS_CURRENCY}_24h_change`
+                ],
+
+                selectLatestMarketData(imaticflip.hourlyPrices)
+              )
+            }
+          )
+          Promise.all(imaticFlipPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setIMaticflipComponents)
         })
         .catch((err) => console.log('err', err))
     }
