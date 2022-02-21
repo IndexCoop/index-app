@@ -22,7 +22,7 @@ import ProductPageSectionHeader from './ProductPageSectionHeader'
 import ProductStats, { ProductStat } from './ProductStats'
 
 function getStatsForToken(
-  tokenData: ProductToken,
+  tokenData: Token,
   marketData: TokenMarketDataValues,
   currentSupply: number
 ): ProductStat[] {
