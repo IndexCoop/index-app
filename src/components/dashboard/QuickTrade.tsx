@@ -1,9 +1,11 @@
 import { useState } from 'react'
 
+import { UpDownIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
   Flex,
+  IconButton,
   Image,
   Input,
   Select,
@@ -13,36 +15,30 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react'
+import { useEthers } from '@usedapp/core'
 
-interface QuickTradeToken {
-  symbol: string
-  icon: string
-  balance?: string
-}
+import { MAINNET, POLYGON } from 'constants/chains'
+import indexNames, {
+  DefiPulseIndex,
+  ETH,
+  mainnetCurrencyTokens,
+  polygonCurrencyTokens,
+  Token,
+} from 'constants/tokens'
 
-interface InputSelectorProps {
+const InputSelector = (props: {
   title: string
-  selectedToken: QuickTradeToken
-  tokenList: QuickTradeToken[]
+  selectedToken: Token
+  tokenList: Token[]
   onChange: (symbol: string) => void
-}
-
-interface QuickTradeProps {
-  tokenList1: QuickTradeToken[]
-  tokenList2: QuickTradeToken[]
-}
-
-const InputSelector = ({
-  selectedToken,
-  tokenList,
-  title,
-  onChange,
-}: InputSelectorProps) => {
-  const { balance, symbol, icon } = selectedToken
+}) => {
+  const { chainId, account } = useEthers()
+  // TODO: Make balance real
+  const balance = 2
   return (
     <Flex direction='column'>
       <Text fontSize='20px' fontWeight='700'>
-        {title}
+        {props.title}
       </Text>
       <Flex mt='10px' h='54px'>
         <Flex
@@ -55,7 +51,7 @@ const InputSelector = ({
           <Input placeholder='0' type='number' variant='unstyled' />
           <Spacer />
           <Text align='right' fontSize='12px' fontWeight='400' w='100%'>
-            Balance: {balance} {symbol}
+            Balance: {balance} {props.selectedToken.symbol}
           </Text>
         </Flex>
         <Flex
@@ -65,7 +61,6 @@ const InputSelector = ({
           minWidth='125px'
           px='24px'
         >
-          <Image src={icon} width='24px' height='24px' />
           <Select
             border='0'
             w='100%'
@@ -73,14 +68,14 @@ const InputSelector = ({
             h='54px'
             onChange={(event) => {
               console.log(event.target.value)
-              onChange(event.target.value)
+              props.onChange(event.target.value)
             }}
           >
-            {tokenList.map((token) => {
-              const { symbol } = token
+            {props.tokenList.map((token) => {
               return (
-                <option key={symbol} value={symbol}>
-                  {symbol}
+                <option key={token.symbol} value={token.symbol}>
+                  <Image src={token.image} width='24px' height='24px' />
+                  {token.symbol}
                 </option>
               )
             })}
@@ -91,50 +86,59 @@ const InputSelector = ({
   )
 }
 
-const QuickTrade = ({ tokenList1, tokenList2 }: QuickTradeProps) => {
-  const [selectedToken1, setSelectedToken1] = useState<{
-    symbol: string
-    icon: string
-    balance: string
-  }>({
-    symbol: tokenList1[0].symbol,
-    icon: tokenList1[0].icon,
-    balance: '1.263',
-  })
-  const [selectedToken2, setSelectedToken2] = useState<{
-    symbol: string
-    icon: string
-    balance: string
-  }>({
-    symbol: tokenList2[0].symbol,
-    icon: tokenList2[0].icon,
-    balance: '0.000',
-  })
+const QuickTrade = () => {
+  const { chainId } = useEthers()
+  const [isBuying, setIsBuying] = useState<boolean>(true)
+  const [sellToken, setSellToken] = useState<Token>(ETH)
+  const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
+  const [sellTokenList, setSellTokenList] = useState<Token[]>(
+    chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
+  )
+  const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
 
-  const onChangeSelect1 = (symbol: string) => {
-    const filteredList = tokenList1.filter((token) => token.symbol === symbol)
-    if (filteredList.length < 0) {
-      return
-    }
-    const selectedToken = filteredList[0]
-    setSelectedToken1({
-      ...selectedToken1,
-      symbol: selectedToken.symbol,
-      icon: selectedToken.icon,
-    })
+  /**
+   * Get the list of currency tokens for the selected chain
+   * @returns {Token[]} list of tokens
+   */
+  const getCurrencyTokensByChain = () => {
+    if (chainId === POLYGON.chainId) return polygonCurrencyTokens
+    return mainnetCurrencyTokens
   }
 
-  const onChangeSelect2 = (symbol: string) => {
-    const filteredList = tokenList2.filter((token) => token.symbol === symbol)
+  /**
+   * Sets the list of tokens based on if the user is buying or selling
+   */
+  const swapTokenLists = () => {
+    let buyTemp = buyToken
+    let sellTemp = sellToken
+    if (isBuying) {
+      setSellTokenList(getCurrencyTokensByChain())
+      setBuyTokenList(indexNames)
+    } else {
+      setSellTokenList(indexNames)
+      setBuyTokenList(getCurrencyTokensByChain())
+    }
+    setBuyToken(sellTemp)
+    setSellToken(buyTemp)
+    setIsBuying(!isBuying)
+  }
+
+  const onChangeSellToken = (symbol: string) => {
+    const filteredList = sellTokenList.filter(
+      (token) => token.symbol === symbol
+    )
     if (filteredList.length < 0) {
       return
     }
-    const selectedToken = filteredList[0]
-    setSelectedToken2({
-      ...selectedToken2,
-      symbol: selectedToken.symbol,
-      icon: selectedToken.icon,
-    })
+    setSellToken(filteredList[0])
+  }
+
+  const onChangeBuyToken = (symbol: string) => {
+    const filteredList = buyTokenList.filter((token) => token.symbol === symbol)
+    if (filteredList.length < 0) {
+      return
+    }
+    setBuyToken(filteredList[0])
   }
 
   return (
@@ -169,16 +173,22 @@ const QuickTrade = ({ tokenList1, tokenList2 }: QuickTradeProps) => {
       <Flex direction='column' my='20px'>
         <InputSelector
           title='From'
-          selectedToken={selectedToken1}
-          tokenList={tokenList1}
-          onChange={onChangeSelect1}
+          selectedToken={sellToken}
+          tokenList={sellTokenList}
+          onChange={onChangeSellToken}
         />
-        <Box h='12px' />
+        <Box h='12px'>
+          <IconButton
+            aria-label='Search database'
+            icon={<UpDownIcon />}
+            onClick={swapTokenLists}
+          />
+        </Box>
         <InputSelector
           title='To'
-          selectedToken={selectedToken2}
-          tokenList={tokenList2}
-          onChange={onChangeSelect2}
+          selectedToken={buyToken}
+          tokenList={buyTokenList}
+          onChange={onChangeBuyToken}
         />
       </Flex>
       <Flex>
@@ -192,7 +202,7 @@ const QuickTrade = ({ tokenList1, tokenList2 }: QuickTradeProps) => {
           height='54px'
           w='100%'
         >
-          Buy
+          Trade
         </Button>
       </Flex>
     </Flex>

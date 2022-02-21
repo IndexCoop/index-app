@@ -88,6 +88,13 @@ const SetComponentsProvider = (props: { children: any }) => {
       account &&
       library &&
       tokenList &&
+      DefiPulseIndex.address &&
+      MetaverseIndex.address &&
+      BedIndex.address &&
+      GmiIndex.address &&
+      Ethereum2xFlexibleLeverageIndex.address &&
+      Bitcoin2xFlexibleLeverageIndex.address &&
+      DataIndex.address &&
       dpi &&
       mvi &&
       bed &&

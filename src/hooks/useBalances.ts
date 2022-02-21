@@ -40,6 +40,8 @@ import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 export type Balances = {
   daiBalance?: BigNumber
   usdcBalance?: BigNumber
+  maticBalance?: BigNumber
+  wethBalance?: BigNumber
   dpiBalance?: BigNumber
   mviBalance?: BigNumber
   bedBalance?: BigNumber
@@ -176,6 +178,8 @@ export const useBalances = (): Balances => {
   return {
     daiBalance,
     usdcBalance,
+    maticBalance,
+    wethBalance,
     dpiBalance,
     mviBalance,
     bedBalance,

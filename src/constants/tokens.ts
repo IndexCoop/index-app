@@ -285,6 +285,10 @@ export const productTokensBySymbol = {
   'iETH-FLI-P': IEthereumFLIP,
 }
 
+export const mainnetCurrencyTokens = [ETH, DAI, USDC]
+
+export const polygonCurrencyTokens = [MATIC, DAI, USDC]
+
 const indexNames = [
   DefiPulseIndex,
   MetaverseIndex,

@@ -4,14 +4,6 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
 import { MAINNET, POLYGON } from 'constants/chains'
 
-const WS_URL = process.env.REACT_APP_ETHEREUM_WS_URL
-
-if (!WS_URL) {
-  throw new Error(
-    `REACT_APP_ETHEREUM_WS_URL must be a defined environment variable`
-  )
-}
-
 export const injected = new InjectedConnector({
   supportedChainIds: [1, 3, 4, 5, 42, 137],
 })
