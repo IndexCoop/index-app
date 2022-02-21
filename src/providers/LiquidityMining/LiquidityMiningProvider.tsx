@@ -10,9 +10,9 @@ import {
   dpi2020StakingRewardsAddress,
   dpi2021StakingRewardsAddress,
   gmiStakingRewardsAddress,
-  gmiTokenAddress,
   mviStakingRewardsAddress,
 } from 'constants/ethContractAddresses'
+import { GmiIndex } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { toWei } from 'utils'
@@ -145,7 +145,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   })
 
   if (
-    !gmiTokenAddress ||
+    !GmiIndex.address ||
     !stakingInterface ||
     !dpi2020StakingRewardsAddress ||
     !dpi2021StakingRewardsAddress ||
@@ -195,7 +195,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
     isApproved: isApprovedGmi,
     isApproving: isApprovingGmi,
     onApprove: onApproveGmi,
-  } = useApproval(gmiTokenAddress, gmiStakingRewardsAddress)
+  } = useApproval(GmiIndex.address, gmiStakingRewardsAddress)
 
   useEffect(() => {
     setGmi2022((prev) => ({

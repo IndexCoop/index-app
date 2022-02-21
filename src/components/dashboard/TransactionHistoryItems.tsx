@@ -8,7 +8,7 @@ import {
   GmiIndex,
   IndexToken,
   MetaverseIndex,
-} from 'constants/productTokens'
+} from 'constants/tokens'
 import { AlchemyApiTransaction } from 'utils/alchemyApi'
 
 function resolveAddressToSymbol(address: string): string {

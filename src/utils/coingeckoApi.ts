@@ -1,5 +1,5 @@
 import { POLYGON } from 'constants/chains'
-import { ethTokenAddress } from 'constants/ethContractAddresses'
+import { ETH } from 'constants/tokens'
 
 const baseURL = 'https://api.coingecko.com/api/v3'
 
@@ -52,7 +52,7 @@ export const fetchCoingeckoTokenPrice = async (
   chainId: number,
   baseCurrency = 'usd'
 ): Promise<number> => {
-  if (address === ethTokenAddress) {
+  if (address === ETH.address) {
     const getPriceUrl =
       baseURL + `/simple/price/?ids=ethereum&vs_currencies=${baseCurrency}`
 

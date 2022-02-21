@@ -11,17 +11,15 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import {
-  bedTokenAddress,
-  btc2xfliTokenAddress,
-  dataTokenAddress,
-  dpiTokenAddress,
-  dpiTokenPolygonAddress,
-  eth2xflipTokenAddress,
-  eth2xfliTokenAddress,
-  gmiTokenAddress,
-  mviTokenAddress,
-  mviTokenPolygonAddress,
-} from 'constants/ethContractAddresses'
+  BedIndex,
+  Bitcoin2xFlexibleLeverageIndex,
+  DataIndex,
+  DefiPulseIndex,
+  Ethereum2xFlexibleLeverageIndex,
+  Ethereum2xFLIP,
+  GmiIndex,
+  MetaverseIndex,
+} from 'constants/tokens'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { preciseDiv, preciseMul } from 'utils'
 import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
@@ -71,14 +69,14 @@ const SetComponentsProvider = (props: { children: any }) => {
       chainId === MAINNET_CHAIN_DATA.chainId &&
       account &&
       library &&
-      dpiTokenAddress &&
-      mviTokenAddress &&
-      bedTokenAddress &&
-      gmiTokenAddress &&
-      eth2xfliTokenAddress &&
-      btc2xfliTokenAddress &&
-      dataTokenAddress &&
       tokenList &&
+      DefiPulseIndex.address &&
+      MetaverseIndex.address &&
+      BedIndex.address &&
+      GmiIndex.address &&
+      Ethereum2xFlexibleLeverageIndex.address &&
+      Bitcoin2xFlexibleLeverageIndex.address &&
+      DataIndex.address &&
       dpi &&
       mvi &&
       bed &&
@@ -91,13 +89,13 @@ const SetComponentsProvider = (props: { children: any }) => {
       getSetDetails(
         library,
         [
-          dpiTokenAddress,
-          mviTokenAddress,
-          bedTokenAddress,
-          gmiTokenAddress,
-          eth2xfliTokenAddress,
-          btc2xfliTokenAddress,
-          dataTokenAddress,
+          DefiPulseIndex.address,
+          MetaverseIndex.address,
+          BedIndex.address,
+          GmiIndex.address,
+          Ethereum2xFlexibleLeverageIndex.address,
+          Bitcoin2xFlexibleLeverageIndex.address,
+          DataIndex.address,
         ],
         chainId
       ).then(async (result) => {
@@ -281,13 +279,15 @@ const SetComponentsProvider = (props: { children: any }) => {
       chainId &&
       chainId === POLYGON_CHAIN_DATA.chainId &&
       library &&
-      dpiTokenPolygonAddress &&
-      mviTokenPolygonAddress &&
-      eth2xflipTokenAddress &&
+      DefiPulseIndex.polygonAddress &&
+      MetaverseIndex.polygonAddress &&
+      BedIndex.polygonAddress &&
+      GmiIndex.polygonAddress &&
+      Ethereum2xFLIP.polygonAddress &&
       tokenList &&
       ethflip
     ) {
-      getSetDetails(library, [eth2xflipTokenAddress], chainId)
+      getSetDetails(library, [Ethereum2xFLIP.polygonAddress], chainId)
         .then(async (result) => {
           const ethflipSet = result[0]
           const ethFlipComponentPrices = await getPositionPrices(

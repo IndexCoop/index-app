@@ -19,7 +19,7 @@ import {
   GmiIndex,
   IndexToken,
   MetaverseIndex,
-} from 'constants/productTokens'
+} from 'constants/tokens'
 import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
 
 export interface TokenMarketDataValues {

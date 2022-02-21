@@ -7,7 +7,7 @@ import {
   GmiIndex,
   IndexToken,
   MetaverseIndex,
-} from 'constants/productTokens'
+} from 'constants/tokens'
 
 const alchemyApiUrl = process.env.REACT_APP_ALCHEMY_API
 

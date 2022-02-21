@@ -1,9 +1,9 @@
 import { Flex, Spacer, Text } from '@chakra-ui/layout'
 import { Image } from '@chakra-ui/react'
 
-import { ProductToken } from 'constants/productTokens'
+import { Token } from 'constants/tokens'
 
-const ProductPageHeader = (props: { tokenData: ProductToken }) => {
+const ProductPageHeader = (props: { tokenData: Token }) => {
   return (
     <Flex
       direction='row'

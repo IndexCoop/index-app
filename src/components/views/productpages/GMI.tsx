@@ -1,5 +1,5 @@
 import ProductPage from 'components/product/ProductPage'
-import { GmiIndex } from 'constants/productTokens'
+import { GmiIndex } from 'constants/tokens'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { useSetComponents } from 'providers/SetComponents/SetComponentsProvider'
 

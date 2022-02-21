@@ -168,10 +168,7 @@ const Dashboard = () => {
             </Flex>
             <Box w='24px' />
             <Flex direction='column' grow='1' flexBasis='0'>
-              <QuickTrade
-                tokenList1={QuickTradeData.tokenList1}
-                tokenList2={QuickTradeData.tokenList2}
-              />
+              <QuickTrade />
             </Flex>
           </Flex>
         </Box>
