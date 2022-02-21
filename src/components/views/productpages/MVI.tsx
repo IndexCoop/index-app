@@ -11,7 +11,7 @@ const MVI = () => {
       tokenData={MetaverseIndex}
       marketData={mvi || {}}
       components={mviComponents || []}
-    ></ProductPage>
+    />
   )
 }
 

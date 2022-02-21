@@ -11,7 +11,7 @@ const GMI = () => {
       tokenData={GmiIndex}
       marketData={gmi || {}}
       components={gmiComponents || []}
-    ></ProductPage>
+    />
   )
 }
 

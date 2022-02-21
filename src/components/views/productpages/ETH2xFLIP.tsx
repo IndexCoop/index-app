@@ -11,7 +11,7 @@ const ETH2xFLIP = () => {
       tokenData={Ethereum2xFLIP}
       marketData={ethflip || {}}
       components={eth2xflipComponents || []}
-    ></ProductPage>
+    />
   )
 }
 
