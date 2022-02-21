@@ -34,5 +34,5 @@
 
 - I have reviewed the [Contribution Guidelines](https://github.com/SetProtocol/index-ui/blob/master/CONTRIBUTING.md).
 - I have performed a self-review of my own code.
-- I have updated my repository to match the master at `SetProtocol/index-ui`.
+- I have updated my repository to match the master at `IndexCoop/index-app`.
 - I have included test data or screenshots that prove my fix is effective or that my feature works.
