@@ -44,7 +44,7 @@ const Navigation = () => {
     <Flex>
       <NavLink href='/' linkText='My Dashboard' />
       <NavLink href='/products' linkText='Products' />
-      <NavLink href='/lm' linkText='Liquidity Mining' />
+      <NavLink href='/liquidity-mining' linkText='Liquidity Mining' />
     </Flex>
   )
 }
