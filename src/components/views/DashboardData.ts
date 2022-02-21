@@ -73,6 +73,37 @@ function getPosition(
   }
 }
 
+function getOthersPosition(
+  remainingPositions: Position[],
+  totalBalance: BigNumber
+) {
+  let othersPosition: Position | null = null
+
+  if (remainingPositions.length < 1) {
+    return othersPosition
+  }
+
+  const lastColor = chartColors.slice(-1)[0]
+  if (remainingPositions.length === 1) {
+    othersPosition = remainingPositions[0]
+    othersPosition.backgroundColor = lastColor
+  } else {
+    const initialVal = BigNumber.from(0)
+    const sumOthers = remainingPositions.reduce(
+      (prevValue, pos) => prevValue.add(BigNumber.from(pos.value)),
+      initialVal
+    )
+    othersPosition = getPosition(
+      'OTHERS',
+      BigNumber.from(sumOthers),
+      totalBalance,
+      lastColor
+    )
+  }
+
+  return othersPosition
+}
+
 // Gets 4 top positions and reduces rest to others
 export function getPieChartPositions(
   balances: {
@@ -118,12 +149,10 @@ export function getPieChartPositions(
     return positionWithColor
   })
 
-  // TODO: take all other balances and reduce to 'Others' position
-  const othersPosition = getPosition(
-    'OTHERS',
-    BigNumber.from(100),
-    totalBalance,
-    chartColors.slice(-1)[0]
+  const remainingPositions = sortedPositions.slice(4)
+  let othersPosition: Position | null = getOthersPosition(
+    remainingPositions,
+    totalBalance
   )
 
   const pieChartPositions = [...top4PositionsWithColors]

@@ -8,7 +8,7 @@ type TickerCellProps = {
 
 const TickerCell = ({ product }: TickerCellProps) => {
   return (
-    <Link href={'/' + product.symbol.toLowerCase()}>
+    <Link href={'/products/' + product.symbol.toLowerCase()}>
       <Grid
         width='320px'
         templateRows='repeat(2, 1fr)'
