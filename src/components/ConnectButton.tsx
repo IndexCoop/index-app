@@ -5,8 +5,7 @@ import * as Sentry from '@sentry/react'
 import { useEthers, useLookupAddress } from '@usedapp/core'
 
 import ConnectModal from './ConnectModal'
-
-const buttonYellow = '#EEB03D'
+import NetworkSelector from './NetworkSelector'
 
 const ConnectButton = () => {
   const { account, deactivate } = useEthers()
@@ -51,7 +50,7 @@ const ConnectButton = () => {
       <div>
         <Button
           onClick={handleConnectWallet}
-          bg={buttonYellow}
+          bg={colors.buttonYellow}
           border='0'
           borderRadius='8'
           color='#000'
@@ -80,9 +79,9 @@ const ConnectButton = () => {
         <Button
           onClick={handleDisconnect}
           bg={colors.background}
-          borderColor={buttonYellow}
+          borderColor={colors.buttonYellow}
           borderRadius='8'
-          color={buttonYellow}
+          color={colors.buttonYellow}
           fontSize='lg'
           fontWeight='700'
           padding='6px 30px'
@@ -94,6 +93,7 @@ const ConnectButton = () => {
         >
           Disconnect
         </Button>
+        <NetworkSelector />
       </Flex>
     )
   }

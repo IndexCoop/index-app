@@ -23,6 +23,8 @@ export const POLYGON_CHAIN_DATA: ChainData = {
   coingeckoId: 'polygon-pos',
 }
 
+export const SUPPORTED_CHAINS = [MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA]
+
 export const useNetwork = () => {
   const { library, account } = useEthers()
 
@@ -55,8 +57,9 @@ export const useNetwork = () => {
       ])
   }
 
-  const changeNetwork = (chain: ChainData) => {
-    switch (chain.chainId) {
+  const changeNetwork = (chainId: string) => {
+    const chainNumber = parseInt(chainId)
+    switch (chainNumber) {
       case MAINNET_CHAIN_DATA.chainId:
         setMainnet()
         break
