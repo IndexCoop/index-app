@@ -1,6 +1,5 @@
-import { useDisclosure } from '@chakra-ui/hooks'
-import { Image } from '@chakra-ui/image'
 import { Flex } from '@chakra-ui/layout'
+import { Image, Text } from '@chakra-ui/react'
 import { useColorMode } from '@chakra-ui/system'
 
 import indexLogoBlack from 'assets/index-logo-black.png'
@@ -9,25 +8,37 @@ import indexLogoFullWhite from 'assets/index-logo-full-white.png'
 import indexLogoWhite from 'assets/index-logo-white.png'
 
 import ConnectButton from './ConnectButton'
+import Navigation from './Navigation'
 
 const Header = () => {
-  const { onOpen } = useDisclosure()
   const { colorMode } = useColorMode()
-  let logo
-
-  if (window.innerWidth > 450)
-    logo = colorMode === 'dark' ? indexLogoFullWhite : indexLogoFullBlack
-  else logo = colorMode === 'dark' ? indexLogoWhite : indexLogoBlack
 
   return (
     <Flex
       justifyContent='space-between'
-      width='100%'
-      padding='20px'
+      m='64px 80px 80px 80px'
       alignItems='center'
     >
-      <Image src={logo} alt='Index Coop Logo' minWidth='24px' height='24px' />
-      <ConnectButton handleOpenModal={onOpen} />
+      <Logo isDarkMode={colorMode === 'dark'} />
+      <Navigation />
+      <ConnectButton />
+    </Flex>
+  )
+}
+
+const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
+  let logo = isDarkMode ? indexLogoWhite : indexLogoBlack
+
+  if (window.innerWidth > 450) {
+    logo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
+  }
+
+  return (
+    <Flex align='flex-end'>
+      <Image src={logo} alt='Index Coop Logo' minWidth='24px' height='40px' />
+      <Text color='#fff' fontSize='22' fontWeight='700' mb='-5px' ml='12px'>
+        App
+      </Text>
     </Flex>
   )
 }

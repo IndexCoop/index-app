@@ -2,23 +2,18 @@ import { Flex, Link, Text } from '@chakra-ui/layout'
 
 const NavLink = (props: { href: string; linkText: string }) => {
   return (
-    <Link paddingRight='20px' href={props.href}>
-      <Text fontSize='xl'>{props.linkText}</Text>
+    <Link pr='48px' href={props.href}>
+      <Text fontSize='xl' fontWeight='700'>
+        {props.linkText}
+      </Text>
     </Link>
   )
 }
 
 const Navigation = () => {
   return (
-    <Flex
-      width='100vw'
-      padding='20px 40px'
-      borderBottom='1px'
-      borderTop='1px'
-      borderColor='gray.200'
-      marginBottom='20px'
-    >
-      <NavLink href='/' linkText='Dashboard' />
+    <Flex>
+      <NavLink href='/' linkText='My Dashboard' />
       <NavLink href='/products' linkText='Products' />
       <NavLink href='/lm' linkText='Liquidity Mining' />
     </Flex>
