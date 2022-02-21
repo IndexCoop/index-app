@@ -21,8 +21,7 @@ import {
   tradeModuleAddress,
   tradeModulePolygonAddress,
 } from 'constants/ethContractAddresses'
-
-import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from './connectors'
+import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'hooks/useNetwork'
 
 export async function getTokenSupply(
   ethersProvider: any,

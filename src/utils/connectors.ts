@@ -2,30 +2,9 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
+import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'hooks/useNetwork'
+
 const WS_URL = process.env.REACT_APP_ETHEREUM_WS_URL
-
-export type ChainData = {
-  name: string
-  chainId: number
-  rpcUrl: string
-  icon: string
-  coingeckoId: string
-}
-
-export const MAINNET_CHAIN_DATA: ChainData = {
-  name: 'Ethereum',
-  chainId: 1,
-  rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  icon: 'https://raw.githubusercontent.com/sushiswap/icons/master/network/mainnet.jpg',
-  coingeckoId: 'ethereum',
-}
-export const POLYGON_CHAIN_DATA: ChainData = {
-  name: 'Polygon',
-  chainId: 137,
-  rpcUrl: 'https://rpc-mainnet.maticvigil.com/',
-  icon: 'https://raw.githubusercontent.com/sushiswap/icons/master/network/polygon.jpg',
-  coingeckoId: 'polygon-pos',
-}
 
 if (!WS_URL) {
   throw new Error(

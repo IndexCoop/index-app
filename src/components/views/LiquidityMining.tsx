@@ -8,7 +8,7 @@ import WarningMessage from 'components/mining/WarningMessage'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { setMainnet } from 'constants/chains'
-import { MAINNET_CHAIN_DATA } from 'utils/connectors'
+import { MAINNET_CHAIN_DATA } from 'hooks/useNetwork'
 
 const programs: Program[] = [
   {

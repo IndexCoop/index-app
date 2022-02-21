@@ -32,7 +32,8 @@ import {
   ProductToken,
 } from 'constants/productTokens'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
-import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
+
+import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from './useNetwork'
 
 export type Balances = {
   daiBalance?: BigNumber
