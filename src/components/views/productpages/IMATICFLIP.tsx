@@ -5,7 +5,7 @@ import { useSetComponents } from 'providers/SetComponents/SetComponentsProvider'
 
 const IMATICFLIP = () => {
   const { imaticflip } = useMarketData()
-  const { imaticFlipComponents } = useSetComponents()
+  const { imaticflipComponents: imaticFlipComponents } = useSetComponents()
   return (
     <ProductPage
       tokenData={IMaticFLIP}
