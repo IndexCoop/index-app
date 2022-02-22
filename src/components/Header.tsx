@@ -28,6 +28,7 @@ const Header = () => {
 
 const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
   let logo = isDarkMode ? indexLogoWhite : indexLogoBlack
+  const textColor = isDarkMode ? '#fff' : '#000'
 
   if (window.innerWidth > 450) {
     logo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
@@ -36,7 +37,13 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
   return (
     <Flex align='flex-end'>
       <Image src={logo} alt='Index Coop Logo' minWidth='24px' height='40px' />
-      <Text color='#fff' fontSize='22' fontWeight='700' mb='-5px' ml='12px'>
+      <Text
+        color={textColor}
+        fontSize='22'
+        fontWeight='700'
+        mb='-5px'
+        ml='12px'
+      >
         App
       </Text>
     </Flex>

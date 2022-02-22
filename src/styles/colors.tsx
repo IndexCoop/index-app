@@ -11,5 +11,4 @@ export const colors = {
   icRed: '#C32238',
   icYellow: '#FABF00',
   icWhite: '#F6F1E4',
-  buttonYellow: '#EEB03D',
 }

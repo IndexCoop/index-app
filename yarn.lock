@@ -2361,6 +2361,11 @@
     "@ethersproject/properties" "^5.5.0"
     "@ethersproject/strings" "^5.5.0"
 
+"@fontsource/ibm-plex-sans@^4.5.4":
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/@fontsource/ibm-plex-sans/-/ibm-plex-sans-4.5.4.tgz#7ff18d9f0869df4348c633d963c6fc1b5ba6515d"
+  integrity sha512-S6jpTF1m7A4xfWqKU1gYlFKZ9akr+LxVIRBXGZUcrF4a8b2Ps2aKBCdVHwcBwbBiYOz0TN5GjX9Qdso/oxNZRg==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"

@@ -1,3 +1,5 @@
+import { colors } from 'styles/colors'
+
 import {
   Box,
   Button,
@@ -16,7 +18,6 @@ import {
 } from 'providers/LiquidityMining/LiquidityMiningProvider'
 import { displayFromWei } from 'utils'
 
-const white = '#F6F1E4'
 const gray = '#848484'
 
 interface ProgramBase {
@@ -48,7 +49,7 @@ const NumberBox = (props: {
   component: Partial<ProgramStaked>
 }) => {
   const { isActive, component } = props
-  const textColor = isActive ? white : gray
+  const textColor = isActive ? colors.white : gray
 
   return (
     <Flex direction='column'>
@@ -60,7 +61,7 @@ const NumberBox = (props: {
           {component?.valueExtra ?? ''}
         </Text>
       </Flex>
-      <Text color={white} fontSize='xs' mt='6px'>
+      <Text color={colors.white} fontSize='xs' mt='6px'>
         {component.caption}
       </Text>
     </Flex>
