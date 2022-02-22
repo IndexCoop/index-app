@@ -1,3 +1,5 @@
+import { colors } from 'styles/colors'
+
 import { Box, Button, Flex, Image, Spacer, Text } from '@chakra-ui/react'
 
 import closeIcon from 'assets/warning-close-button.svg'
@@ -9,10 +11,11 @@ const WarningMessage = (props: {
   return (
     <Flex
       background='rgba(250, 191, 0, 0.2)'
-      border='1px solid #FABF00'
+      borderColor={colors.icYellow}
+      borderWidth='1'
       my='20px'
     >
-      <Box background='#FABF00' w='6px' />
+      <Box background={colors.icYellow} w='6px' />
       <Text fontSize='sm' fontWeight='600' px='16px' py='10px'>
         {props.message}
       </Text>

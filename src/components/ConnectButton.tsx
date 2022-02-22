@@ -53,7 +53,7 @@ const ConnectButton = () => {
           bg={colors.buttonYellow}
           border='0'
           borderRadius='8'
-          color='#000'
+          color={colors.black}
           fontSize='lg'
           fontWeight='700'
           padding='6px 30px'

@@ -1,3 +1,5 @@
+import { colors } from 'styles/colors'
+
 import { Box, Flex, Image, Link, Td, Text, Tr } from '@chakra-ui/react'
 
 import historyLinkIcon from 'assets/history-link-icon.svg'
@@ -13,7 +15,7 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
         <Flex align='center'>
           <Flex
             align='center'
-            backgroundColor='#B9B6FC'
+            backgroundColor={colors.icPeriwinkle}
             borderRadius='8px'
             justify='center'
             padding='4px 8px'
@@ -27,7 +29,7 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
       <Td>
         <Flex direction='column'>
           <Text>${item.asset}</Text>
-          <Text color='#B9B6FC'>{item.value}</Text>
+          <Text color={colors.icPeriwinkle}>{item.value}</Text>
         </Flex>
       </Td>
       <Td>{item.to}</Td>
