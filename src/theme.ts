@@ -1,5 +1,6 @@
 import { Button } from 'styles/button'
 import { colors } from 'styles/colors'
+import { fonts } from 'styles/fonts'
 import { global } from 'styles/global'
 import { Heading } from 'styles/heading'
 import { Text } from 'styles/text'
@@ -21,6 +22,7 @@ const theme = extendTheme({
   config,
   colors,
   components,
+  fonts,
   styles: { global },
 })
 
