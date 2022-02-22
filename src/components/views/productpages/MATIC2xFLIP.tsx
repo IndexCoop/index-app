@@ -5,7 +5,7 @@ import { useSetComponents } from 'providers/SetComponents/SetComponentsProvider'
 
 const MATIC2xFLIP = () => {
   const { maticflip } = useMarketData()
-  const { matic2xFlipComponents } = useSetComponents()
+  const { matic2xflipComponents: matic2xFlipComponents } = useSetComponents()
   return (
     <ProductPage
       tokenData={Matic2xFLIP}

@@ -5,7 +5,7 @@ import { useSetComponents } from 'providers/SetComponents/SetComponentsProvider'
 
 const IETHFLIP = () => {
   const { iethflip } = useMarketData()
-  const { iethFlipComponents } = useSetComponents()
+  const { iethflipComponents: iethFlipComponents } = useSetComponents()
   return (
     <ProductPage
       tokenData={IEthereumFLIP}

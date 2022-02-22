@@ -437,9 +437,9 @@ const SetComponentsProvider = (props: { children: any }) => {
         eth2xflipComponents: eth2xflipComponents,
         btc2xfliComponents: btc2xfliComponents,
         dataComponents: dataComponents,
-        iethFlipComponents: iethflipComponents,
-        imaticFlipComponents: imaticflipComponents,
-        matic2xFlipComponents: matic2xflipComponents,
+        iethflipComponents: iethflipComponents,
+        imaticflipComponents: imaticflipComponents,
+        matic2xflipComponents: matic2xflipComponents,
       }}
     >
       {props.children}
@@ -547,9 +547,9 @@ interface SetComponentsProps {
   eth2xflipComponents?: SetComponent[]
   btc2xfliComponents?: SetComponent[]
   dataComponents?: SetComponent[]
-  iethFlipComponents?: SetComponent[]
-  imaticFlipComponents?: SetComponent[]
-  matic2xFlipComponents?: SetComponent[]
+  iethflipComponents?: SetComponent[]
+  imaticflipComponents?: SetComponent[]
+  matic2xflipComponents?: SetComponent[]
 }
 
 export const SetComponentsContext = createContext<SetComponentsProps>({})
