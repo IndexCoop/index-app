@@ -4,11 +4,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@chakra-ui/react": "^1.8.5",
     "@chakra-ui/icons": "^1.1.5",
+    "@chakra-ui/react": "^1.8.5",
     "@elgorditosalsero/react-gtm-hook": "^2.3.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@fontsource/ibm-plex-sans": "^4.5.4",
     "@indexcoop/tokenlists": "^1.16.0",
     "@sentry/react": "^6.16.1",
     "@sentry/tracing": "^6.16.1",
