@@ -11,7 +11,7 @@ const DATA = () => {
       tokenData={DataIndex}
       marketData={data || {}}
       components={dataComponents || []}
-    ></ProductPage>
+    />
   )
 }
 

@@ -15,8 +15,9 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react'
-import { useEthers, useTokenBalance } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 
+import { MAINNET, POLYGON } from 'constants/chains'
 import indexNames, {
   DefiPulseIndex,
   ETH,
@@ -24,8 +25,6 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
-import { getChainAddress } from 'hooks/useBalances'
-import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 
 const InputSelector = (props: {
   title: string
@@ -93,9 +92,7 @@ const QuickTrade = () => {
   const [sellToken, setSellToken] = useState<Token>(ETH)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
-    chainId === MAINNET_CHAIN_DATA.chainId
-      ? mainnetCurrencyTokens
-      : polygonCurrencyTokens
+    chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
   )
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
 
@@ -104,7 +101,7 @@ const QuickTrade = () => {
    * @returns {Token[]} list of tokens
    */
   const getCurrencyTokensByChain = () => {
-    if (chainId === POLYGON_CHAIN_DATA.chainId) return polygonCurrencyTokens
+    if (chainId === POLYGON.chainId) return polygonCurrencyTokens
     return mainnetCurrencyTokens
   }
 

@@ -3,10 +3,10 @@ import querystring from 'querystring'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { MAINNET, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 
 import { fetchCoingeckoTokenPrice } from './coingeckoApi'
-import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from './connectors'
 
 export type ZeroExData = {
   price: string
@@ -44,7 +44,7 @@ export const getZeroExTradeData = async (
     chainId
   )
   let resp
-  if (chainId === MAINNET_CHAIN_DATA.chainId)
+  if (chainId === MAINNET.chainId)
     resp = await axios.get(
       `https://api.0x.org/swap/v1/quote?${querystring.stringify(params)}`
     )
@@ -67,7 +67,7 @@ export const getZeroExTradeData = async (
 }
 
 const getChainTokenAddress = (token: Token, chainId: number) => {
-  if (chainId === POLYGON_CHAIN_DATA.chainId) return token.polygonAddress
+  if (chainId === POLYGON.chainId) return token.polygonAddress
   return token.address
 }
 

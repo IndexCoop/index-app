@@ -8,6 +8,7 @@ import {
   useTokenBalance,
 } from '@usedapp/core'
 
+import { MAINNET, POLYGON } from 'constants/chains'
 import {
   dpi2020StakingRewardsAddress,
   dpi2021StakingRewardsAddress,
@@ -26,13 +27,15 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   GmiIndex,
+  IEthereumFLIP,
+  IMaticFLIP,
   MATIC,
+  Matic2xFLIP,
   MetaverseIndex,
   Token,
   USDC,
 } from 'constants/tokens'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
-import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from 'utils/connectors'
 
 export type Balances = {
   daiBalance?: BigNumber
@@ -59,11 +62,8 @@ export type Balances = {
   unclaimedUniswapEthDpi2021LpBalance?: BigNumber
 }
 
-export const getChainAddress = (
-  token: Token,
-  chainId: ChainId = MAINNET_CHAIN_DATA.chainId
-) => {
-  if (chainId === POLYGON_CHAIN_DATA.chainId) return token.polygonAddress
+const getChainAddress = (token: Token, chainId: ChainId = MAINNET.chainId) => {
+  if (chainId === POLYGON.chainId) return token.polygonAddress
   return token.address
 }
 
@@ -121,6 +121,8 @@ export const useBalances = (): Balances => {
     getChainAddress(Bitcoin2xFlexibleLeverageIndex, chainId),
     account
   )
+
+  // TODO: Segregate into separate networks, add iETH, iMatic, iMatic2x
   const ethFliPBalance = useTokenBalance(
     getChainAddress(Ethereum2xFLIP, chainId),
     account

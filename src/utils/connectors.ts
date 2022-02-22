@@ -2,28 +2,7 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
-export type ChainData = {
-  name: string
-  chainId: number
-  rpcUrl: string
-  icon: string
-  coingeckoId: string
-}
-
-export const MAINNET_CHAIN_DATA: ChainData = {
-  name: 'Ethereum',
-  chainId: 1,
-  rpcUrl: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  icon: 'https://raw.githubusercontent.com/sushiswap/icons/master/network/mainnet.jpg',
-  coingeckoId: 'ethereum',
-}
-export const POLYGON_CHAIN_DATA: ChainData = {
-  name: 'Polygon',
-  chainId: 137,
-  rpcUrl: 'https://rpc-mainnet.maticvigil.com/',
-  icon: 'https://raw.githubusercontent.com/sushiswap/icons/master/network/polygon.jpg',
-  coingeckoId: 'polygon-pos',
-}
+import { MAINNET, POLYGON } from 'constants/chains'
 
 export const injected = new InjectedConnector({
   supportedChainIds: [1, 3, 4, 5, 42, 137],
@@ -31,8 +10,8 @@ export const injected = new InjectedConnector({
 
 export const walletconnect = new WalletConnectConnector({
   rpc: {
-    [MAINNET_CHAIN_DATA.chainId]: MAINNET_CHAIN_DATA.rpcUrl,
-    [POLYGON_CHAIN_DATA.chainId]: POLYGON_CHAIN_DATA.rpcUrl,
+    [MAINNET.chainId]: MAINNET.rpcUrl,
+    [POLYGON.chainId]: POLYGON.rpcUrl,
   },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
@@ -40,6 +19,6 @@ export const walletconnect = new WalletConnectConnector({
 })
 
 export const networkConnector = new NetworkConnector({
-  urls: { 1: process.env.REACT_APP_ALCHEMY_API || MAINNET_CHAIN_DATA.rpcUrl },
+  urls: { 1: process.env.REACT_APP_ALCHEMY_API || MAINNET.rpcUrl },
   defaultChainId: 1,
 })

@@ -7,8 +7,8 @@ import MiningProgram, { Program } from 'components/mining/MiningProgram'
 import WarningMessage from 'components/mining/WarningMessage'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
-import { setMainnet } from 'constants/chains'
-import { MAINNET_CHAIN_DATA } from 'utils/connectors'
+import { MAINNET } from 'constants/chains'
+import { useNetwork } from 'hooks/useNetwork'
 
 const programs: Program[] = [
   {
@@ -109,7 +109,8 @@ const programs: Program[] = [
 ]
 
 const LiquidityMining = () => {
-  const { account, chainId, library } = useEthers()
+  const { chainId } = useEthers()
+  const { setMainnet } = useNetwork()
 
   const [showFarms, setShowFarms] = useState(true)
   const [warning, setWarning] = useState<string | null>(null)
@@ -119,7 +120,7 @@ const LiquidityMining = () => {
   }
 
   useEffect(() => {
-    if (chainId !== MAINNET_CHAIN_DATA.chainId) {
+    if (chainId !== MAINNET.chainId) {
       setWarning('Liquidity Mining is only available on Mainnet')
       setShowFarms(false)
     } else {
@@ -150,10 +151,7 @@ const LiquidityMining = () => {
               })}
             {!showFarms && (
               <Box my='10'>
-                <Button
-                  isFullWidth
-                  onClick={() => setMainnet(library, account)}
-                >
+                <Button isFullWidth onClick={() => setMainnet()}>
                   Switch to Mainnet
                 </Button>
               </Box>

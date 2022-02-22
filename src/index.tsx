@@ -21,6 +21,9 @@ import DPI from 'components/views/productpages/DPI'
 import ETH2xFLI from 'components/views/productpages/ETH2xFLI'
 import ETH2xFLIP from 'components/views/productpages/ETH2xFLIP'
 import GMI from 'components/views/productpages/GMI'
+import IETHFLIP from 'components/views/productpages/IETHFLIP'
+import IMATICFLIP from 'components/views/productpages/IMATICFLIP'
+import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
 import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
@@ -84,6 +87,9 @@ ReactDOM.render(
             <Route path='products/bed' element={<BED />} />
             <Route path='products/data' element={<DATA />} />
             <Route path='products/gmi' element={<GMI />} />
+            <Route path='products/ieth' element={<IETHFLIP />} />
+            <Route path='products/matic2x' element={<MATIC2xFLIP />} />
+            <Route path='products/imatic' element={<IMATICFLIP />} />
           </Route>
         </Routes>
       </Providers>

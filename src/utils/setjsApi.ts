@@ -1,6 +1,7 @@
 import Set from 'set.js'
 import { SetDetails, StreamingFeeInfo } from 'set.js/dist/types/src/types'
 
+import { MAINNET, POLYGON } from 'constants/chains'
 import {
   basicIssuanceModuleAddress,
   basicIssuanceModulePolygonAddress,
@@ -21,8 +22,6 @@ import {
   tradeModuleAddress,
   tradeModulePolygonAddress,
 } from 'constants/ethContractAddresses'
-
-import { MAINNET_CHAIN_DATA, POLYGON_CHAIN_DATA } from './connectors'
 
 export async function getTokenSupply(
   ethersProvider: any,
@@ -47,7 +46,7 @@ export async function getTokenSupply(
 
   const set = getSet(ethersProvider, chainId)
   let moduleAddresses
-  if (chainId === MAINNET_CHAIN_DATA.chainId) {
+  if (chainId === MAINNET.chainId) {
     moduleAddresses = [
       basicIssuanceModuleAddress,
       streamingFeeModuleAddress,
@@ -100,7 +99,7 @@ export async function getSetDetails(
 
   const set = getSet(ethersProvider, chainId)
   let moduleAddresses: string[] = []
-  if (chainId === MAINNET_CHAIN_DATA.chainId) {
+  if (chainId === MAINNET.chainId) {
     moduleAddresses = [
       basicIssuanceModuleAddress,
       streamingFeeModuleAddress,
@@ -108,7 +107,7 @@ export async function getSetDetails(
       debtIssuanceModuleAddress,
       debtIssuanceModuleV2Address,
     ]
-  } else if (chainId === POLYGON_CHAIN_DATA.chainId) {
+  } else if (chainId === POLYGON.chainId) {
     moduleAddresses = [
       basicIssuanceModulePolygonAddress,
       streamingFeeModulePolygonAddress,
@@ -148,7 +147,7 @@ function getSet(ethersProvider: any, chainId: number): Set {
       'A set JS address is not defined. Please check your .env file'
     )
   }
-  if (chainId === POLYGON_CHAIN_DATA.chainId) {
+  if (chainId === POLYGON.chainId) {
     return new Set({
       ethersProvider: ethersProvider,
       basicIssuanceModuleAddress: basicIssuanceModulePolygonAddress,

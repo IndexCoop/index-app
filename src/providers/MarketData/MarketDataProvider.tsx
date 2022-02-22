@@ -17,10 +17,16 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   GmiIndex,
+  IEthereumFLIP,
+  IMaticFLIP,
   IndexToken,
+  Matic2xFLIP,
   MetaverseIndex,
 } from 'constants/tokens'
-import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
+import {
+  fetchHistoricalTokenMarketData,
+  fetchHistoricalTokenMarketDataOnPolygon,
+} from 'utils/coingeckoApi'
 
 export interface TokenMarketDataValues {
   prices?: number[][]
@@ -39,6 +45,9 @@ export interface TokenContext {
   btcfli?: TokenMarketDataValues
   ethflip?: TokenMarketDataValues
   gmi?: TokenMarketDataValues
+  maticflip?: TokenMarketDataValues
+  imaticflip?: TokenMarketDataValues
+  iethflip?: TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
 }
 
@@ -60,40 +69,49 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [ethFliMarketData, setEthFliMarketData] = useState<any>({})
   const [btcFliMarketData, setBtcFliMarketData] = useState<any>({})
   const [ethFlipMarketData, setEthFlipMarketData] = useState<any>({})
+  const [iEthFliPMarketData, setIEthFliPMarketData] = useState<any>({})
   const [gmiMarketData, setGmiMarketData] = useState<any>({})
+  const [maticFliPMarketData, setMaticFliPMarketData] = useState<any>({})
+  const [iMaticFliPMarketData, setIMaticFliPMarketData] = useState<any>({})
+  const [btcFliPMarketData, setBtcFliPMarketData] = useState<any>({})
+  const [iBtcFliMarketData, setIBtcFliPMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
 
   const fetchMarketData = useCallback(async () => {
-    if (chainId === MAINNET.chainId) {
-      const marketData = await Promise.all([
-        fetchHistoricalTokenMarketData(IndexToken.coingeckoId),
-        fetchHistoricalTokenMarketData(DefiPulseIndex.coingeckoId),
-        fetchHistoricalTokenMarketData(MetaverseIndex.coingeckoId),
-        fetchHistoricalTokenMarketData(BedIndex.coingeckoId),
-        fetchHistoricalTokenMarketData(DataIndex.coingeckoId),
-        fetchHistoricalTokenMarketData(
-          Ethereum2xFlexibleLeverageIndex.coingeckoId
-        ),
-        fetchHistoricalTokenMarketData(
-          Bitcoin2xFlexibleLeverageIndex.coingeckoId
-        ),
-        fetchHistoricalTokenMarketData(Ethereum2xFLIP.coingeckoId),
-        fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
-      ])
+    const marketData = await Promise.all([
+      fetchHistoricalTokenMarketData(IndexToken.coingeckoId),
+      fetchHistoricalTokenMarketData(DefiPulseIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(MetaverseIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(BedIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(DataIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(
+        Ethereum2xFlexibleLeverageIndex.coingeckoId
+      ),
+      fetchHistoricalTokenMarketData(
+        Bitcoin2xFlexibleLeverageIndex.coingeckoId
+      ),
+      fetchHistoricalTokenMarketDataOnPolygon(Ethereum2xFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
+      fetchHistoricalTokenMarketDataOnPolygon(IEthereumFLIP.coingeckoId),
+      fetchHistoricalTokenMarketDataOnPolygon(Matic2xFLIP.coingeckoId),
+      fetchHistoricalTokenMarketDataOnPolygon(IMaticFLIP.coingeckoId),
+    ])
 
-      setIndexMarketData(marketData[0])
-      setDpiMarketData(marketData[1])
-      setMviMarketData(marketData[2])
-      setBedMarketData(marketData[3])
-      setDataMarketData(marketData[4])
-      setEthFliMarketData(marketData[5])
-      setBtcFliMarketData(marketData[6])
-      setEthFlipMarketData(marketData[7])
-      setGmiMarketData(marketData[8])
-    }
-  }, [chainId])
+    setIndexMarketData(marketData[0])
+    setDpiMarketData(marketData[1])
+    setMviMarketData(marketData[2])
+    setBedMarketData(marketData[3])
+    setDataMarketData(marketData[4])
+    setEthFliMarketData(marketData[5])
+    setBtcFliMarketData(marketData[6])
+    setEthFlipMarketData(marketData[7])
+    setGmiMarketData(marketData[8])
+    setIEthFliPMarketData(marketData[9])
+    setMaticFliPMarketData(marketData[10])
+    setIMaticFliPMarketData(marketData[11])
+  }, [])
 
   useEffect(() => {
     fetchMarketData()
@@ -112,6 +130,9 @@ export const MarketDataProvider = (props: { children: any }) => {
         btcfli: btcFliMarketData,
         ethflip: ethFlipMarketData,
         gmi: gmiMarketData,
+        maticflip: maticFliPMarketData,
+        imaticflip: iMaticFliPMarketData,
+        iethflip: iEthFliPMarketData,
       }}
     >
       {props.children}

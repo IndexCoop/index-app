@@ -11,7 +11,7 @@ const BED = () => {
       tokenData={BedIndex}
       marketData={bed || {}}
       components={bedComponents || []}
-    ></ProductPage>
+    />
   )
 }
 
