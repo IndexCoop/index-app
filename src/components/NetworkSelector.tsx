@@ -14,9 +14,9 @@ const NetworkSelector = () => {
     <Select
       marginLeft={4}
       border='2px solid'
-      borderColor={colors.buttonYellow}
+      borderColor={colors.icYellow}
       borderRadius='8'
-      color={colors.buttonYellow}
+      color={colors.icYellow}
       fontSize='md'
       fontWeight='bold'
       minWidth='50px'
