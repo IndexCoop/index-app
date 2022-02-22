@@ -270,6 +270,38 @@ export const IEthereumFLIP: Token = {
   },
 }
 
+export const Bitcoin2xFLIP: Token = {
+  name: 'BTC 2x Flexible Leverage Index',
+  symbol: 'BTC2x-FLI-P',
+  address: undefined,
+  polygonAddress: '0xf287D97B6345bad3D88856b26Fb7c0ab3F2C7976',
+  decimals: 18,
+  url: 'btc2x',
+  image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
+  coingeckoId: 'index-coop-btc-2x-flexible-leverage-index',
+  tokensetsId: 'btc2x-fli-p',
+  fees: {
+    streamingFee: '1.95%',
+    mintRedeemFee: '0.1%',
+  },
+}
+
+export const IBitcoinFLIP: Token = {
+  name: 'Inverse BTC Flexible Leverage Index',
+  symbol: 'iBTC-FLI-P',
+  address: undefined,
+  polygonAddress: '0x4f025829C4B13dF652f38Abd2AB901185fF1e609',
+  decimals: 18,
+  url: 'ibtc',
+  image: iethflipLogo,
+  coingeckoId: 'index-coop-inverse-btc-flexible-leverage-index',
+  tokensetsId: 'ibtc-fli-p',
+  fees: {
+    streamingFee: '1.95%',
+    mintRedeemFee: '0.1%',
+  },
+}
+
 export const productTokensBySymbol = {
   'DPI': DefiPulseIndex,
   'MVI': MetaverseIndex,
@@ -283,6 +315,8 @@ export const productTokensBySymbol = {
   'MATIC2x-FLI-P': Matic2xFLIP,
   'iMATIC-FLI-P': IMaticFLIP,
   'iETH-FLI-P': IEthereumFLIP,
+  'iBTC-FLI-P': IBitcoinFLIP,
+  'BTC2x-FLI-P': Bitcoin2xFLIP,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC]
@@ -302,6 +336,8 @@ const indexNames = [
   Matic2xFLIP,
   IMaticFLIP,
   IEthereumFLIP,
+  IBitcoinFLIP,
+  Bitcoin2xFLIP,
 ]
 
 export default indexNames

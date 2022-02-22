@@ -14,11 +14,13 @@ import { MAINNET, POLYGON } from 'constants/chains'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
+  Bitcoin2xFLIP,
   DataIndex,
   DefiPulseIndex,
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   GmiIndex,
+  IBitcoinFLIP,
   IEthereumFLIP,
   IMaticFLIP,
   Matic2xFLIP,
@@ -50,6 +52,8 @@ const SetComponentsProvider = (props: { children: any }) => {
     iethflip,
     maticflip,
     imaticflip,
+    btcflip,
+    ibtcflip,
   } = useMarketData()
   const [dpiComponents, setDpiComponents] = useState<SetComponent[]>([])
   const [mviComponents, setMviComponents] = useState<SetComponent[]>([])
@@ -77,6 +81,13 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [imaticflipComponents, setIMaticflipComponents] = useState<
     SetComponent[]
   >([])
+
+  const [btc2xflipComponents, setBtc2xflipComponents] = useState<
+    SetComponent[]
+  >([])
+  const [ibtcflipComponents, setIBtcflipComponents] = useState<SetComponent[]>(
+    []
+  )
 
   const { account, chainId, library } = useEthers()
   const tokenList = getTokenList(chainId)
@@ -309,10 +320,14 @@ const SetComponentsProvider = (props: { children: any }) => {
       iethflip &&
       maticflip &&
       imaticflip &&
+      btcflip &&
+      ibtcflip &&
       Ethereum2xFLIP.polygonAddress &&
       IEthereumFLIP.polygonAddress &&
       Matic2xFLIP.polygonAddress &&
-      IMaticFLIP.polygonAddress
+      IMaticFLIP.polygonAddress &&
+      Bitcoin2xFLIP.polygonAddress &&
+      IBitcoinFLIP.polygonAddress
     ) {
       getSetDetails(
         library,
@@ -321,11 +336,20 @@ const SetComponentsProvider = (props: { children: any }) => {
           IEthereumFLIP.polygonAddress,
           Matic2xFLIP.polygonAddress,
           IMaticFLIP.polygonAddress,
+          Bitcoin2xFLIP.polygonAddress,
+          IBitcoinFLIP.polygonAddress,
         ],
         chainId
       )
         .then(async (result) => {
-          const [ethflipSet, iethflipSet, maticflipSet, imaticflipSet] = result
+          const [
+            ethflipSet,
+            iethflipSet,
+            maticflipSet,
+            imaticflipSet,
+            btcflipSet,
+            ibtcflipSet,
+          ] = result
           const ethFlipComponentPrices = await getPositionPrices(
             ethflipSet,
             'polygon-pos'
@@ -421,6 +445,55 @@ const SetComponentsProvider = (props: { children: any }) => {
           Promise.all(imaticFlipPositions)
             .then(sortPositionsByPercentOfSet)
             .then(setIMaticflipComponents)
+
+          const btcflipComponentPrices = await getPositionPrices(
+            btcflipSet,
+            'polygon-pos'
+          )
+          const btcflipPositions = btcflipSet.positions.map(
+            async (position) => {
+              return await convertPositionToSetComponent(
+                position,
+                tokenList,
+                btcflipComponentPrices[position.component.toLowerCase()]?.[
+                  VS_CURRENCY
+                ],
+                btcflipComponentPrices[position.component.toLowerCase()]?.[
+                  `${VS_CURRENCY}_24h_change`
+                ],
+
+                selectLatestMarketData(btcflip.hourlyPrices)
+              )
+            }
+          )
+          Promise.all(btcflipPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setBtc2xflipComponents)
+          ///
+
+          const ibtcFlipComponentPrices = await getPositionPrices(
+            ibtcflipSet,
+            'polygon-pos'
+          )
+          const ibtcFlipPositions = ibtcflipSet.positions.map(
+            async (position) => {
+              return await convertPositionToSetComponent(
+                position,
+                tokenList,
+                ibtcFlipComponentPrices[position.component.toLowerCase()]?.[
+                  VS_CURRENCY
+                ],
+                ibtcFlipComponentPrices[position.component.toLowerCase()]?.[
+                  `${VS_CURRENCY}_24h_change`
+                ],
+
+                selectLatestMarketData(ibtcflip.hourlyPrices)
+              )
+            }
+          )
+          Promise.all(ibtcFlipPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setIBtcflipComponents)
         })
         .catch((err) => console.log('err', err))
     }
@@ -440,6 +513,8 @@ const SetComponentsProvider = (props: { children: any }) => {
         iethflipComponents: iethflipComponents,
         imaticflipComponents: imaticflipComponents,
         matic2xflipComponents: matic2xflipComponents,
+        ibtcflipComponents: ibtcflipComponents,
+        btc2xflipComponents: btc2xflipComponents,
       }}
     >
       {props.children}
@@ -550,6 +625,8 @@ interface SetComponentsProps {
   iethflipComponents?: SetComponent[]
   imaticflipComponents?: SetComponent[]
   matic2xflipComponents?: SetComponent[]
+  btc2xflipComponents?: SetComponent[]
+  ibtcflipComponents?: SetComponent[]
 }
 
 export const SetComponentsContext = createContext<SetComponentsProps>({})
