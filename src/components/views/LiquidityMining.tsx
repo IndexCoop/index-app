@@ -131,7 +131,7 @@ const LiquidityMining = () => {
 
   return (
     <Page>
-      <Box minW='1280px' mx='auto'>
+      <Box w='100%'>
         <PageTitle
           title='Liquidity Mining Programs'
           subtitle='Earn rewards for supplying liquidity for Index Coop products'

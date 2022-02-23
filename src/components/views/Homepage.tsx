@@ -145,7 +145,7 @@ const Dashboard = () => {
     )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
   })
 
-  const width = 1096
+  const width = 1024
 
   return (
     <Page>

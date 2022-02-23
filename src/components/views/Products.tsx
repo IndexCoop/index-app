@@ -108,14 +108,12 @@ const Products = () => {
 
   return (
     <Page>
-      <Box minW='1280px' mx='auto'>
+      <Box w='100%'>
         <PageTitle
           title='Discover Index Coop Indices'
           subtitle='simple yet powerful crypto investment themes'
         />
-        <Box>
-          <ProductsTable products={productsWithMarketData} />
-        </Box>
+        <ProductsTable products={productsWithMarketData} />
       </Box>
     </Page>
   )

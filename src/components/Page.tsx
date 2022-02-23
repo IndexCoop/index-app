@@ -6,7 +6,9 @@ const Page = (props: { children?: JSX.Element }) => {
   return (
     <Flex direction='column' paddingBottom='50px'>
       <Header />
-      <Flex>{props.children}</Flex>
+      <Flex w='1024px' m='0 auto'>
+        {props.children}
+      </Flex>
     </Flex>
   )
 }
