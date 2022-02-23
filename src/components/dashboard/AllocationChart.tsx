@@ -40,7 +40,7 @@ class Chart extends PureComponent<{ data: Position[] }> {
 const PositionItem = (props: { position: Position }) => {
   const { position } = props
   return (
-    <Flex direction='column' my='6px' w='100%' mr='9px'>
+    <Flex direction='column' my='6px' mx='12px'>
       <Flex alignItems='center'>
         <Box
           w='16px'
@@ -63,24 +63,23 @@ const PositionItem = (props: { position: Position }) => {
 
 const AllocationChart = (props: { positions: Position[] }) => (
   <Flex
+    align='center'
     border='2px solid #F7F1E4'
     borderRadius='16px'
     direction='column'
-    py='20px'
+    pt='20px'
     px='40px'
   >
     <Text fontSize='24px' fontWeight='700'>
       Distribution of Products
     </Text>
-    <Flex w='100%' minH='240'>
-      <Box my='40px' mr='48px'>
-        <Chart data={props.positions} />
-      </Box>
-      <Flex my='32px' w='100%' flexWrap='wrap'>
-        {props.positions.map((position) => (
-          <PositionItem key={position.title} position={position} />
-        ))}
-      </Flex>
+    <Box mt='40px' mb='8px'>
+      <Chart data={props.positions} />
+    </Box>
+    <Flex my='32px' flexWrap='wrap'>
+      {props.positions.map((position) => (
+        <PositionItem key={position.title} position={position} />
+      ))}
     </Flex>
   </Flex>
 )
