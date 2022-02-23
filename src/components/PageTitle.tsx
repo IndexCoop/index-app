@@ -12,6 +12,7 @@ const PageTitle = (props: PageTitleProps) => {
       divider={<StackDivider borderColor='white' />}
       spacing={0}
       align='flex-start'
+      mb='48px'
     >
       <Heading as='h2' size='lg'>
         {props.title}

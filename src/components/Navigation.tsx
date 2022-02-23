@@ -4,7 +4,7 @@ import { Box, Flex, Link, Text } from '@chakra-ui/layout'
 
 const NavLink = (props: { href: string; linkText: string }) => {
   return (
-    <Box pr='48px'>
+    <Box pr='2.5vw'>
       <Link
         display='block'
         position='relative'

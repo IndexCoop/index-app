@@ -40,7 +40,7 @@ class Chart extends PureComponent<{ data: Position[] }> {
 const PositionItem = (props: { position: Position }) => {
   const { position } = props
   return (
-    <Flex direction='column' my='6px' w='45%' mr='9px'>
+    <Flex direction='column' my='6px' w='100%' mr='9px'>
       <Flex alignItems='center'>
         <Box
           w='16px'

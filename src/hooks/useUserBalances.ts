@@ -6,6 +6,7 @@ import {
   TokenMarketDataValues,
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
+import { displayFromWei } from 'utils'
 import { getPricesChanges } from 'utils/priceChange'
 
 interface UserTokenBalance {
@@ -30,8 +31,8 @@ function getTokenMarketDataValuesOrNull(
     return undefined
   }
 
-  const e18 = BigNumber.from('1000000000000000000')
-  const balanceNum = parseFloat(balance.div(e18).toString())
+  const convertedBalance = displayFromWei(balance)
+  const balanceNum = parseFloat(convertedBalance ?? '0')
   const hourlyData = marketDataValues.hourlyPrices.map(([date, price]) => [
     date,
     price * balanceNum,

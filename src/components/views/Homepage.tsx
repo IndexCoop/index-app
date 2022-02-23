@@ -84,7 +84,6 @@ const Dashboard = () => {
           return mvi
         case 'DATA':
           return data
-
         case 'BED':
           return bed
         case 'GMI':
@@ -145,7 +144,7 @@ const Dashboard = () => {
     )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
   })
 
-  const width = 1096
+  const width = 1024
 
   return (
     <Page>
