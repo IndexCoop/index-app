@@ -1,8 +1,8 @@
-# Index UI
+# Index App
 
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://opensource.org/licenses/MIT)
 
-Index UI is a simple front-end used to interact with Index. This front-end describes Index and consolidates relevant links to onboard users onto the protocol's basic functionalities. It also allows users to stake, unstake, and claim INDEX tokens during the initial distribution + liquidity mining phase of the protocol's launch.
+Index App is a simple front-end used to interact with Index. This front-end describes Index and consolidates relevant links to onboard users onto the protocol's basic functionalities. It also allows users to stake, unstake, and claim INDEX tokens during the initial distribution + liquidity mining phase of the protocol's launch.
 
 ## Local development
 
@@ -11,9 +11,8 @@ This project was created with [create-react-app](https://create-react-app.dev/).
 ### Prerequisites
 
 1. Install [Node](https://nodejs.org/en/) 14+
-1. Install [yarn](https://yarnpkg.com/getting-started/install)
-1. Fork this repo
-1. Clone your fork locally
+2. Install [yarn](https://yarnpkg.com/getting-started/install)
+3. Clone this repo
 
 ### Steps
 
@@ -42,32 +41,6 @@ Run unit tests in watch mode
 ```bash
 yarn test
 ```
-
-### Run E2E Tests with Cypress
-
-To run e2e test with Cypress, first you must serve a local instance
-
-```bash
-yarn start
-```
-
-Once that is served, in another terminal, navigate to the repo and run
-
-```bash
-yarn run e2e
-```
-
-This will kick off Cypress to run headlessly.
-
-### Writing and Debugging Cypress Tests
-
-If you wish to write a test, or debug yours, you can do so with the help of the Cypress tool by running
-
-```bash
-yarn run cypress:open
-```
-
-This will allow you to see and select items on page, more easily obtaining their IDs, selectors, etc. More information on this can be found on the [Cypress docs](https://docs.cypress.io/)
 
 ### Helpful Commands
 
@@ -132,4 +105,4 @@ import Explanation from 'components/Explanation'
 
 ## License
 
-Index UI is MIT licensed.
+Index App is MIT licensed.
