@@ -84,7 +84,6 @@ const Dashboard = () => {
           return mvi
         case 'DATA':
           return data
-
         case 'BED':
           return bed
         case 'GMI':
