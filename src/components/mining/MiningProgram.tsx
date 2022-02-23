@@ -124,7 +124,11 @@ const MiningProgram = (props: { program: Program }) => {
     if (!isApproved) {
       return (
         <Button
-          disabled={isApproving || !isActive}
+          disabled={
+            balances[staked.underlyingBalanceKey]?.toNumber() === 0 ||
+            isApproving ||
+            !isActive
+          }
           mr='6'
           onClick={() => onApprove()}
         >
