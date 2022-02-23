@@ -111,7 +111,7 @@ const Products = () => {
       <Box w='100%'>
         <PageTitle
           title='Discover Index Coop Indices'
-          subtitle='simple yet powerful crypto investment themes'
+          subtitle='Simple yet powerful crypto investment themes'
         />
         <ProductsTable products={productsWithMarketData} />
       </Box>
