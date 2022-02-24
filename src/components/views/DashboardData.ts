@@ -13,6 +13,7 @@ import {
   IndexToken,
   MetaverseIndex,
 } from 'constants/tokens'
+import { displayFromWei } from 'utils'
 
 const chartColors = [
   colors.icApricot,
@@ -61,6 +62,7 @@ function getPosition(
     return null
   }
 
+  const valueDisplay = displayFromWei(bigNumber, 3) ?? ''
   const value = getNumber(bigNumber)
   const percent = `${bigNumber.mul(100).div(total).toString()}%`
 
@@ -70,6 +72,7 @@ function getPosition(
     color: '',
     percent,
     value,
+    valueDisplay,
   }
 }
 
