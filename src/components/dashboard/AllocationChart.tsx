@@ -1,8 +1,10 @@
 import { PureComponent } from 'react'
 
-import { Cell, Pie, PieChart } from 'recharts'
+import { Cell, Pie, PieChart, Tooltip } from 'recharts'
 
 import { Box, Flex, Text } from '@chakra-ui/react'
+
+import PieChartTooltip from './PieChartTooltip'
 
 export interface Position {
   title: string
@@ -32,6 +34,7 @@ class Chart extends PureComponent<{ data: Position[] }> {
             <Cell key={`cell-${index}`} fill={item.backgroundColor} />
           ))}
         </Pie>
+        <Tooltip content={<PieChartTooltip />} position={{ x: 150, y: -25 }} />
       </PieChart>
     )
   }
