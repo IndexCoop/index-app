@@ -11,6 +11,7 @@ export interface Position {
   backgroundColor: string
   color: string
   value: number
+  valueDisplay?: string
   percent?: string
 }
 

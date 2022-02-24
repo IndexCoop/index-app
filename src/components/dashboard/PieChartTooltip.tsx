@@ -1,8 +1,6 @@
 import { colors } from 'styles/colors'
-import { Box, Flex, Text } from '@chakra-ui/react'
-import { BigNumber } from '@ethersproject/bignumber'
 
-import { displayFromWei } from 'utils'
+import { Box, Flex, Text } from '@chakra-ui/react'
 
 const DataRow = ({ title, value }: { title: string; value: string }) => {
   return (
@@ -23,12 +21,13 @@ const Dot = ({ color }: { color: string }) => {
 
 const PieChartTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    const { backgroundColor, title, percent, value } = payload[0].payload
+    const { backgroundColor, title, percent, valueDisplay } = payload[0].payload
     return (
       <Flex
         background={colors.white}
         borderRadius='8px'
         direction='column'
+        minW='160px'
         p='16px'
       >
         <Flex align='center' justify='space-between'>
@@ -40,7 +39,7 @@ const PieChartTooltip = ({ active, payload }: any) => {
         <Box my='8px'>
           <DataRow title='Allocation' value={percent} />
         </Box>
-        <DataRow title='Quantity Per Token' value={value ?? ''} />
+        <DataRow title='Quantity Per Token' value={valueDisplay ?? ''} />
       </Flex>
     )
   }
