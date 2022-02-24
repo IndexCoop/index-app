@@ -39,7 +39,9 @@ const PieChartTooltip = ({ active, payload }: any) => {
         <Box my='8px'>
           <DataRow title='Allocation' value={percent} />
         </Box>
-        <DataRow title='Quantity Per Token' value={valueDisplay ?? ''} />
+        {valueDisplay && (
+          <DataRow title='Quantity Per Token' value={valueDisplay ?? ''} />
+        )}
       </Flex>
     )
   }
