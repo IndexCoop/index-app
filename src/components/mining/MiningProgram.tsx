@@ -6,6 +6,7 @@ import {
   Flex,
   Heading,
   Text,
+  useColorMode,
   useDisclosure,
 } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
@@ -83,6 +84,9 @@ const MiningProgram = (props: { program: Program }) => {
   const { account } = useEthers()
   const liquidityMining = useLiquidityMining()
 
+  const { colorMode } = useColorMode()
+  const dividerColor = colorMode === 'dark' ? 'white' : 'black'
+
   const program = liquidityMining[liquidityMiningKey]
   if (!program) return <></>
 
@@ -152,7 +156,7 @@ const MiningProgram = (props: { program: Program }) => {
         <Heading as='h3' size='md'>
           {title}
         </Heading>
-        <Box border='1px solid #F7F1E4' mt='6px' />
+        <Box border='1px solid #fff' borderColor={dividerColor} mt='6px' />
         <Heading as='h5' size='xs' mt='6px' fontWeight='normal'>
           {subtitle}
         </Heading>
