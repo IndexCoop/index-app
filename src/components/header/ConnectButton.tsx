@@ -78,7 +78,7 @@ const ConnectButton = () => {
         </Text>
         <Button
           onClick={handleDisconnect}
-          bg={colors.background}
+          background='transparent'
           borderColor={colors.icYellow}
           borderRadius='8'
           color={colors.icYellow}
