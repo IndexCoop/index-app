@@ -1,3 +1,5 @@
+import { useICColorMode } from 'styles/colors'
+
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 
 import PerformanceCell from 'components/products/PerformanceCell'
@@ -12,8 +14,10 @@ type ProductsTableProps = {
 }
 
 const ProductsTable = ({ products }: ProductsTableProps) => {
+  const { isDarkMode } = useICColorMode()
+  const colorScheme = isDarkMode ? 'whiteAlpha' : 'blackAlpha'
   return (
-    <Table colorScheme='whiteAlpha'>
+    <Table colorScheme={colorScheme}>
       <Thead>
         <Tr>
           <Th>Ticker</Th>

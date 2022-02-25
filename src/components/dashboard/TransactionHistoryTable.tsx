@@ -1,3 +1,5 @@
+import { useICColorMode } from 'styles/colors'
+
 import { Table, Tbody, Th, Thead, Tr } from '@chakra-ui/react'
 
 import TransactionHistoryRow from './TransactionHistoryRow'
@@ -18,8 +20,10 @@ interface TransactionHistoryTableProps {
 }
 
 const TransactionHistoryTable = ({ items }: TransactionHistoryTableProps) => {
+  const { isDarkMode } = useICColorMode()
+  const colorScheme = isDarkMode ? 'whiteAlpha' : 'blackAlpha'
   return (
-    <Table colorScheme='whiteAlpha'>
+    <Table colorScheme={colorScheme}>
       <TableHeader />
       <Tbody>
         {items.map((item, index) => (
