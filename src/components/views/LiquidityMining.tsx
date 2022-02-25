@@ -57,9 +57,6 @@ const programs: Program[] = [
     },
     liquidityMiningKey: 'uniswapEthMvi2021',
   },
-  // TODO need to be able to onUnstakeAndHarvest
-  // Uniswap V3 DPI-ETH Liquidity Program
-  // Active August 20th, 2021 - September 4th, 2021
   {
     title: 'DPI Liquidity Program',
     subtitle: 'Active July 13th, 2021 to August 12th, 2021',
@@ -131,7 +128,7 @@ const LiquidityMining = () => {
 
   return (
     <Page>
-      <Box minW='1280px' mx='auto'>
+      <Box w='100%'>
         <PageTitle
           title='Liquidity Mining Programs'
           subtitle='Earn rewards for supplying liquidity for Index Coop products'

@@ -1,10 +1,16 @@
 import { colors } from 'styles/colors'
 
-import { Box, Flex, Link, Text } from '@chakra-ui/layout'
+import { Box, Flex, Link, Text, useColorMode } from '@chakra-ui/react'
 
-const NavLink = (props: { href: string; linkText: string }) => {
+import ColorThemeIcon from 'components/header/ColorThemeIcon'
+
+const NavLink = (props: {
+  href: string
+  linkText: string
+  textColor: string
+}) => {
   return (
-    <Box pr='48px'>
+    <Box pr='2.5vw'>
       <Link
         display='block'
         position='relative'
@@ -33,7 +39,7 @@ const NavLink = (props: { href: string; linkText: string }) => {
           },
         }}
       >
-        <Text color={colors.white} fontSize='xl' fontWeight='700'>
+        <Text color={props.textColor} fontSize='xl' fontWeight='700'>
           {props.linkText}
         </Text>
       </Link>
@@ -42,11 +48,21 @@ const NavLink = (props: { href: string; linkText: string }) => {
 }
 
 const Navigation = () => {
+  const { colorMode, toggleColorMode } = useColorMode()
+  const textColor = colorMode === 'light' ? 'black' : 'white'
+
   return (
     <Flex>
-      <NavLink href='/' linkText='My Dashboard' />
-      <NavLink href='/products' linkText='Products' />
-      <NavLink href='/liquidity-mining' linkText='Liquidity Mining' />
+      <NavLink href='/' linkText='My Dashboard' textColor='textColor' />
+      <NavLink href='/products' linkText='Products' textColor='textColor' />
+      <NavLink
+        href='/liquidity-mining'
+        linkText='Liquidity Mining'
+        textColor='textColor'
+      />
+      <Box height='32px' onClick={toggleColorMode}>
+        <ColorThemeIcon color={textColor} />
+      </Box>
     </Flex>
   )
 }

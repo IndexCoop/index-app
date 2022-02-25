@@ -1,4 +1,4 @@
-import { theme } from '@chakra-ui/react'
+import { theme, useColorMode } from '@chakra-ui/react'
 
 export const colors = {
   ...theme.colors,
@@ -11,4 +11,11 @@ export const colors = {
   icRed: '#C32238',
   icYellow: '#FABF00',
   icWhite: '#F6F1E4',
+}
+
+export const useICColorMode = () => {
+  const { colorMode } = useColorMode()
+  const isDarkMode = colorMode === 'dark'
+  const dividerColor = isDarkMode ? colors.icWhite : colors.black
+  return { isDarkMode, dividerColor }
 }

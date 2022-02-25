@@ -1,4 +1,4 @@
-import { colors } from 'styles/colors'
+import { colors, useICColorMode } from 'styles/colors'
 
 import {
   Box,
@@ -6,6 +6,7 @@ import {
   Flex,
   Heading,
   Text,
+  useColorMode,
   useDisclosure,
 } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
@@ -47,9 +48,11 @@ export interface Program {
 const NumberBox = (props: {
   isActive: boolean
   component: Partial<ProgramStaked>
+  isDarkMode: boolean
 }) => {
   const { isActive, component } = props
-  const textColor = isActive ? colors.white : gray
+  const activeTextColor = props.isDarkMode ? colors.white : colors.black
+  const textColor = isActive ? activeTextColor : gray
 
   return (
     <Flex direction='column'>
@@ -61,7 +64,7 @@ const NumberBox = (props: {
           {component?.valueExtra ?? ''}
         </Text>
       </Flex>
-      <Text color={colors.white} fontSize='xs' mt='6px'>
+      <Text color={textColor} fontSize='xs' mt='6px'>
         {component.caption}
       </Text>
     </Flex>
@@ -82,6 +85,7 @@ const MiningProgram = (props: { program: Program }) => {
   const { isOpen, onClose, onOpen } = useDisclosure()
   const { account } = useEthers()
   const liquidityMining = useLiquidityMining()
+  const { dividerColor, isDarkMode } = useICColorMode()
 
   const program = liquidityMining[liquidityMiningKey]
   if (!program) return <></>
@@ -124,7 +128,11 @@ const MiningProgram = (props: { program: Program }) => {
     if (!isApproved) {
       return (
         <Button
-          disabled={isApproving || !isActive}
+          disabled={
+            balances[staked.underlyingBalanceKey]?.toNumber() === 0 ||
+            isApproving ||
+            !isActive
+          }
           mr='6'
           onClick={() => onApprove()}
         >
@@ -148,7 +156,7 @@ const MiningProgram = (props: { program: Program }) => {
         <Heading as='h3' size='md'>
           {title}
         </Heading>
-        <Box border='1px solid #F7F1E4' mt='6px' />
+        <Box border='1px solid #fff' borderColor={dividerColor} mt='6px' />
         <Heading as='h5' size='xs' mt='6px' fontWeight='normal'>
           {subtitle}
         </Heading>
@@ -156,7 +164,11 @@ const MiningProgram = (props: { program: Program }) => {
           {comps.map((comp, index) => {
             return (
               <Box key={index} mr='16'>
-                <NumberBox isActive={isActive} component={comp} />
+                <NumberBox
+                  isActive={isActive}
+                  isDarkMode={isDarkMode}
+                  component={comp}
+                />
               </Box>
             )
           })}
