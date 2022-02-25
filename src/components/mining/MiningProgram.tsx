@@ -1,4 +1,4 @@
-import { colors } from 'styles/colors'
+import { colors, useICColorMode } from 'styles/colors'
 
 import {
   Box,
@@ -85,10 +85,7 @@ const MiningProgram = (props: { program: Program }) => {
   const { isOpen, onClose, onOpen } = useDisclosure()
   const { account } = useEthers()
   const liquidityMining = useLiquidityMining()
-
-  const { colorMode } = useColorMode()
-  const isDarkMode = colorMode === 'dark'
-  const dividerColor = isDarkMode ? 'white' : 'black'
+  const { dividerColor, isDarkMode } = useICColorMode()
 
   const program = liquidityMining[liquidityMiningKey]
   if (!program) return <></>

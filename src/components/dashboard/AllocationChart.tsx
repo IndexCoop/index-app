@@ -1,3 +1,5 @@
+import { useICColorMode } from 'styles/colors'
+
 import { PureComponent } from 'react'
 
 import { Cell, Pie, PieChart, Tooltip } from 'recharts'
@@ -65,27 +67,32 @@ const PositionItem = (props: { position: Position }) => {
   )
 }
 
-const AllocationChart = (props: { positions: Position[] }) => (
-  <Flex
-    align='center'
-    border='2px solid #F7F1E4'
-    borderRadius='16px'
-    direction='column'
-    pt='20px'
-    px='40px'
-  >
-    <Text fontSize='24px' fontWeight='700'>
-      Distribution of Products
-    </Text>
-    <Box mt='40px' mb='8px'>
-      <Chart data={props.positions} />
-    </Box>
-    <Flex my='32px' flexWrap='wrap'>
-      {props.positions.map((position) => (
-        <PositionItem key={position.title} position={position} />
-      ))}
+const AllocationChart = (props: { positions: Position[] }) => {
+  const { dividerColor } = useICColorMode()
+
+  return (
+    <Flex
+      align='center'
+      border='2px solid #fff'
+      borderColor={dividerColor}
+      borderRadius='16px'
+      direction='column'
+      pt='20px'
+      px='40px'
+    >
+      <Text fontSize='24px' fontWeight='700'>
+        Distribution of Products
+      </Text>
+      <Box mt='40px' mb='8px'>
+        <Chart data={props.positions} />
+      </Box>
+      <Flex my='32px' flexWrap='wrap'>
+        {props.positions.map((position) => (
+          <PositionItem key={position.title} position={position} />
+        ))}
+      </Flex>
     </Flex>
-  </Flex>
-)
+  )
+}
 
 export default AllocationChart
