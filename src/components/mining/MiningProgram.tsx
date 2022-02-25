@@ -48,9 +48,11 @@ export interface Program {
 const NumberBox = (props: {
   isActive: boolean
   component: Partial<ProgramStaked>
+  isDarkMode: boolean
 }) => {
   const { isActive, component } = props
-  const textColor = isActive ? colors.white : gray
+  const activeTextColor = props.isDarkMode ? colors.white : colors.black
+  const textColor = isActive ? activeTextColor : gray
 
   return (
     <Flex direction='column'>
@@ -62,7 +64,7 @@ const NumberBox = (props: {
           {component?.valueExtra ?? ''}
         </Text>
       </Flex>
-      <Text color={colors.white} fontSize='xs' mt='6px'>
+      <Text color={textColor} fontSize='xs' mt='6px'>
         {component.caption}
       </Text>
     </Flex>
@@ -85,7 +87,8 @@ const MiningProgram = (props: { program: Program }) => {
   const liquidityMining = useLiquidityMining()
 
   const { colorMode } = useColorMode()
-  const dividerColor = colorMode === 'dark' ? 'white' : 'black'
+  const isDarkMode = colorMode === 'dark'
+  const dividerColor = isDarkMode ? 'white' : 'black'
 
   const program = liquidityMining[liquidityMiningKey]
   if (!program) return <></>
@@ -164,7 +167,11 @@ const MiningProgram = (props: { program: Program }) => {
           {comps.map((comp, index) => {
             return (
               <Box key={index} mr='16'>
-                <NumberBox isActive={isActive} component={comp} />
+                <NumberBox
+                  isActive={isActive}
+                  isDarkMode={isDarkMode}
+                  component={comp}
+                />
               </Box>
             )
           })}
