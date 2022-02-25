@@ -1,11 +1,12 @@
 import bedBorderLogo from 'assets/bed-border.png'
+import btcflipLogo from 'assets/btcflip.svg'
 import dataLogo from 'assets/data-logo.png'
 import gmiLogo from 'assets/gmilogo.png'
+import ibtcflipLogo from 'assets/ibtcflip.svg'
 import iethflipLogo from 'assets/iethfliplogo.svg'
 import imaticflipLogo from 'assets/imaticflilogo.svg'
 import indexLogo from 'assets/index-token.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
-import * as tokenAddresses from 'constants/ethContractAddresses'
 import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
 
 export const dpiTokenImage =
@@ -277,7 +278,7 @@ export const Bitcoin2xFLIP: Token = {
   polygonAddress: '0xf287D97B6345bad3D88856b26Fb7c0ab3F2C7976',
   decimals: 18,
   url: 'btc2x',
-  image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
+  image: btcflipLogo,
   coingeckoId: 'index-coop-btc-2x-flexible-leverage-index',
   tokensetsId: 'btc2x-fli-p',
   fees: {
@@ -293,7 +294,7 @@ export const IBitcoinFLIP: Token = {
   polygonAddress: '0x4f025829C4B13dF652f38Abd2AB901185fF1e609',
   decimals: 18,
   url: 'ibtc',
-  image: iethflipLogo,
+  image: ibtcflipLogo,
   coingeckoId: 'index-coop-inverse-btc-flexible-leverage-index',
   tokensetsId: 'ibtc-fli-p',
   fees: {
