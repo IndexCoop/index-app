@@ -7,7 +7,7 @@ import indexLogoFullBlack from 'assets/index-logo-full-black.png'
 import indexLogoFullWhite from 'assets/index-logo-full-white.png'
 import indexLogoWhite from 'assets/index-logo-white.png'
 
-import ConnectButton from './ConnectButton'
+import ConnectButton from './header/ConnectButton'
 import Navigation from './Navigation'
 
 const Header = () => {

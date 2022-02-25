@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import numeral from 'numeral'
-import { Cell, Pie, PieChart } from 'recharts'
+import { Cell, Pie, PieChart, Tooltip } from 'recharts'
 import { colors } from 'styles/colors'
 
 import {
@@ -18,7 +18,9 @@ import {
 } from '@chakra-ui/react'
 
 import { Position } from 'components/dashboard/AllocationChart'
+import PieChartTooltip from 'components/dashboard/PieChartTooltip'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
+import { displayFromWei } from 'utils'
 
 const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
@@ -31,6 +33,7 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
     const position: Position = {
       title: component.symbol,
       value: +component.percentOfSet,
+      percent: `${displayFromWei(component.percentOfSetNumber, 2)}%` ?? '',
       color: randomColor,
       backgroundColor: randomColor,
     }
@@ -148,6 +151,7 @@ const Chart = (props: { data: Position[] }) => {
           />
         ))}
       </Pie>
+      <Tooltip content={<PieChartTooltip />} position={{ x: 150, y: -25 }} />
     </PieChart>
   )
 }
