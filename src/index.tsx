@@ -61,7 +61,7 @@ const Providers = (props: { children: any }) => {
 }
 
 Sentry.init({
-  dsn: 'https://c0ccb3dd6abf4178b3894c7f834da09d@o1122170.ingest.sentry.io/6159535',
+  dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
   integrations: [new Integrations.BrowserTracing()],
 
   // Set tracesSampleRate to 1.0 to capture 100%
