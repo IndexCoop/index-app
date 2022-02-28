@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { colors, useICColorMode } from 'styles/colors'
+
 import { UpDownIcon } from '@chakra-ui/icons'
 import {
   Box,
@@ -17,7 +19,6 @@ import {
 } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
-import { colors, useICColorMode } from 'styles/colors'
 import { MAINNET, POLYGON } from 'constants/chains'
 import indexNames, {
   DefiPulseIndex,
