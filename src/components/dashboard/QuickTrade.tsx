@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { colors } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
 import {
@@ -6,7 +8,6 @@ import {
   Button,
   Flex,
   IconButton,
-  Image,
   Input,
   Select,
   Spacer,
@@ -15,7 +16,7 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
+import { useEtherBalance, useEthers } from '@usedapp/core'
 
 import { MAINNET, POLYGON } from 'constants/chains'
 import indexNames, {
@@ -25,6 +26,8 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
+import { useFormattedBalance } from 'hooks/useFormattedBalance'
+import { displayFromWei } from 'utils'
 
 const InputSelector = (props: {
   title: string
@@ -34,7 +37,20 @@ const InputSelector = (props: {
 }) => {
   const { chainId, account } = useEthers()
   // TODO: Make balance real
-  const balance = 2
+  const [balance, setBalance] = useState<string>('0')
+  const etherBalance = displayFromWei(useEtherBalance(account), 2, 18) || '0.00'
+  const balanceString = useFormattedBalance(props.selectedToken)
+
+  useEffect(() => {
+    console.log('balanceString', props.selectedToken.symbol, balanceString)
+    if (props.selectedToken.symbol === ETH.symbol) {
+      setBalance(etherBalance)
+    } else {
+      setBalance(balanceString)
+    }
+    console.log(props.selectedToken.symbol, balance)
+  }, [chainId])
+
   return (
     <Flex direction='column'>
       <Text fontSize='20px' fontWeight='700'>
@@ -51,30 +67,28 @@ const InputSelector = (props: {
           <Input placeholder='0' type='number' variant='unstyled' />
           <Spacer />
           <Text align='right' fontSize='12px' fontWeight='400' w='100%'>
-            Balance: {balance} {props.selectedToken.symbol}
+            Balance: {balance}
           </Text>
         </Flex>
         <Flex
           align='center'
           h='54px'
           border='1px solid #F6F1E4'
-          minWidth='125px'
-          px='24px'
+          minWidth='100px'
         >
           <Select
             border='0'
-            w='100%'
+            w='100px'
             minWidth='100px'
             h='54px'
             onChange={(event) => {
-              console.log(event.target.value)
+              console.log('event', event.target.value, balanceString)
               props.onChange(event.target.value)
             }}
           >
             {props.tokenList.map((token) => {
               return (
                 <option key={token.symbol} value={token.symbol}>
-                  <Image src={token.image} width='24px' height='24px' />
                   {token.symbol}
                 </option>
               )
@@ -95,6 +109,17 @@ const QuickTrade = () => {
     chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
   )
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
+
+  /**
+   * Switches sell token lists between mainnet and polygon
+   */
+  useEffect(() => {
+    if (chainId === MAINNET.chainId) {
+      setSellTokenList(mainnetCurrencyTokens)
+    } else {
+      setSellTokenList(polygonCurrencyTokens)
+    }
+  }, [chainId])
 
   /**
    * Get the list of currency tokens for the selected chain
@@ -177,9 +202,12 @@ const QuickTrade = () => {
           tokenList={sellTokenList}
           onChange={onChangeSellToken}
         />
-        <Box h='12px'>
+        <Box h='12px' alignSelf={'flex-end'}>
           <IconButton
+            margin={'6px 0'}
             aria-label='Search database'
+            borderColor={colors.icWhite}
+            color={colors.icWhite}
             icon={<UpDownIcon />}
             onClick={swapTokenLists}
           />
