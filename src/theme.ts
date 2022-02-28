@@ -3,6 +3,7 @@ import { colors } from 'styles/colors'
 import { fonts } from 'styles/fonts'
 import { global } from 'styles/global'
 import { Heading } from 'styles/heading'
+import { Tabs } from 'styles/tabs'
 import { Text } from 'styles/text'
 
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
@@ -15,6 +16,7 @@ const config: ThemeConfig = {
 const components = {
   Button,
   Heading,
+  Tabs,
   Text,
 }
 

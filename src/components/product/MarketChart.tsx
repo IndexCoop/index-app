@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { colors, useICColorMode } from 'styles/colors'
-import { selectedTabStyle } from 'styles/tabs'
 
 import { Box, Flex, Spacer } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, useTheme } from '@chakra-ui/react'
@@ -239,21 +238,11 @@ const PriceDisplay = ({
 )
 
 const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
-  <Tabs
-    background='#1D1B16'
-    borderRadius='8px'
-    fontSize='16px'
-    fontWeight='500'
-    color={colors.icWhite}
-    height='45px'
-    outline='0'
-    variant='unstyle'
-    onChange={onChange}
-  >
+  <Tabs variant='unstyled' onChange={onChange}>
     <TabList>
-      <Tab _selected={selectedTabStyle}>1D</Tab>
-      <Tab _selected={selectedTabStyle}>1W</Tab>
-      <Tab _selected={selectedTabStyle}>1M</Tab>
+      <Tab>1D</Tab>
+      <Tab>1W</Tab>
+      <Tab>1M</Tab>
     </TabList>
   </Tabs>
 )

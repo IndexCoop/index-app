@@ -154,19 +154,10 @@ const QuickTrade = () => {
           Quick Trade
         </Text>
         <Spacer />
-        <Tabs
-          background='#1D1B16'
-          borderRadius='8px'
-          fontSize='16px'
-          fontWeight='500'
-          height='45px'
-          color={white}
-          outline='0'
-          variant='unstyle'
-        >
+        <Tabs variant='unstyled'>
           <TabList>
-            <Tab _selected={selectedTabStyle}>DEX Swap</Tab>
-            <Tab _selected={selectedTabStyle}>Index Issuance</Tab>
+            <Tab>DEX Swap</Tab>
+            <Tab>Index Issuance</Tab>
           </TabList>
         </Tabs>
       </Flex>
@@ -207,14 +198,6 @@ const QuickTrade = () => {
       </Flex>
     </Flex>
   )
-}
-
-const white = '#F6F1E4'
-const selectedTabStyle = {
-  bg: white,
-  borderRadius: '4px',
-  color: 'black',
-  outline: 0,
 }
 
 export default QuickTrade
