@@ -119,7 +119,12 @@ const MiningProgram = (props: { program: Program }) => {
   const StakeButton = () => {
     if (!account) {
       return (
-        <Button disabled mr='6' variant='secondary'>
+        <Button
+          disabled
+          mr={['0', '6']}
+          variant='secondary'
+          w={['100%', 'inherit']}
+        >
           Stake
         </Button>
       )
@@ -133,8 +138,9 @@ const MiningProgram = (props: { program: Program }) => {
             isApproving ||
             !isActive
           }
-          mr='6'
+          mr={['0', '6']}
           onClick={() => onApprove()}
+          w={['100%', 'inherit']}
         >
           {!isApproving ? 'Approve staking' : 'Approving staking...'}
         </Button>
@@ -143,7 +149,12 @@ const MiningProgram = (props: { program: Program }) => {
 
     if (isApproved) {
       return (
-        <Button mr='6' isDisabled={!isActive} onClick={() => onOpen()}>
+        <Button
+          mr={['0', '6']}
+          isDisabled={!isActive}
+          onClick={() => onOpen()}
+          w={['100%', 'inherit']}
+        >
           Stake
         </Button>
       )
@@ -160,10 +171,10 @@ const MiningProgram = (props: { program: Program }) => {
         <Heading as='h5' size='xs' mt='6px' fontWeight='normal'>
           {subtitle}
         </Heading>
-        <Flex w='100%' mt='3'>
+        <Flex mt='3' flexWrap='wrap' w='100%'>
           {comps.map((comp, index) => {
             return (
-              <Box key={index} mr='16'>
+              <Box key={index} mr='16' mb={['16px', '0']}>
                 <NumberBox
                   isActive={isActive}
                   isDarkMode={isDarkMode}
@@ -173,22 +184,26 @@ const MiningProgram = (props: { program: Program }) => {
             )
           })}
         </Flex>
-        <Flex mt='8'>
+        <Flex mt={['4', '8']} flexWrap={['wrap', 'inherit']}>
           {isActive && (
-            <>
+            <Flex flexWrap={['wrap', 'inherit']} w='100%'>
               {StakeButton()}
               <Button
-                mr='6'
+                mt={['4', '0']}
+                mr={['0', '6']}
                 isDisabled={!account || Number(staked.value) <= 0}
                 onClick={() => onHarvest()}
+                w={['100%', 'inherit']}
               >
                 Claim
               </Button>
-            </>
+            </Flex>
           )}
           <Button
             isDisabled={!account || Number(staked.value) <= 0}
             onClick={() => onUnstakeAndHarvest()}
+            mt={['4', '0']}
+            w={['100%', 'inherit']}
           >
             Unstake & Claim
           </Button>
