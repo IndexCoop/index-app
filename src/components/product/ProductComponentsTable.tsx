@@ -22,14 +22,21 @@ import PieChartTooltip from 'components/dashboard/PieChartTooltip'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 import { displayFromWei } from 'utils'
 
+const randomColors = new Array(50)
+  .fill('')
+  .map((_) => '#' + (((1 << 24) * Math.random()) | 0).toString(16))
+
 const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
   const showAllComponents = () =>
     setAmountToDisplay(props.components?.length || amountToDisplay)
   const showDefaultComponents = () => setAmountToDisplay(5)
 
-  const mapSetComponentToPosition = (component: SetComponent) => {
-    const randomColor = '#' + (((1 << 24) * Math.random()) | 0).toString(16)
+  const mapSetComponentToPosition = (
+    component: SetComponent,
+    index: number
+  ) => {
+    const randomColor = randomColors[index]
     const position: Position = {
       title: component.symbol,
       value: +component.percentOfSet,
