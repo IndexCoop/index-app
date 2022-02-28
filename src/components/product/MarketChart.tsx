@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
-import { colors } from 'styles/colors'
+import { colors, useICColorMode } from 'styles/colors'
 import { selectedTabStyle } from 'styles/tabs'
 
 import { Box, Flex, Spacer } from '@chakra-ui/layout'
@@ -47,6 +47,8 @@ const MarketChart = (props: {
   onMouseLeave?: (...args: any[]) => any
 }) => {
   const theme = useTheme()
+  const { isDarkMode } = useICColorMode()
+  const strokeColor = isDarkMode ? colors.gray[500] : colors.gray[400]
 
   const [chartData, setChartData] = useState<PriceChartData[]>([])
   const [durationSelector, setDurationSelector] = useState<number>(
@@ -156,7 +158,7 @@ const MarketChart = (props: {
         height={400}
         data={chartData}
       >
-        <CartesianGrid stroke={colors.icWhite} strokeOpacity={0.2} />
+        <CartesianGrid stroke={strokeColor} strokeOpacity={0.2} />
         <YAxis
           axisLine={false}
           domain={yAxisDomain}
@@ -255,7 +257,5 @@ const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
     </TabList>
   </Tabs>
 )
-
-const strokeColor = colors.gray[500]
 
 export default MarketChart
