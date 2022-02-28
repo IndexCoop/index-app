@@ -79,6 +79,7 @@ const NavContent = () => {
         onClick={toggleColorMode}
         border='0'
         background={'transparent'}
+        mr={'24px'}
         icon={<ColorThemeIcon color={textColor} />}
         size='sm'
       />
