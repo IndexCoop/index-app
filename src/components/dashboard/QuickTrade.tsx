@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
+import { colors, useICColorMode } from 'styles/colors'
 import { MAINNET, POLYGON } from 'constants/chains'
 import indexNames, {
   DefiPulseIndex,
@@ -87,6 +88,7 @@ const InputSelector = (props: {
 }
 
 const QuickTrade = () => {
+  const { isDarkMode } = useICColorMode()
   const { chainId } = useEthers()
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [sellToken, setSellToken] = useState<Token>(ETH)
@@ -144,6 +146,7 @@ const QuickTrade = () => {
   return (
     <Flex
       border='2px solid #F7F1E4'
+      borderColor={isDarkMode ? colors.icWhite : colors.black}
       borderRadius='16px'
       direction='column'
       py='20px'
@@ -184,7 +187,7 @@ const QuickTrade = () => {
       </Flex>
       <Flex>
         <Button
-          background='#F7F1E4'
+          background={isDarkMode ? colors.icWhite : colors.icYellow}
           border='0'
           borderRadius='12px'
           color='#000'
