@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { colors } from 'styles/colors'
+
 import { UpDownIcon } from '@chakra-ui/icons'
 import {
   Box,
@@ -200,9 +202,12 @@ const QuickTrade = () => {
           tokenList={sellTokenList}
           onChange={onChangeSellToken}
         />
-        <Box h='12px'>
+        <Box h='12px' alignSelf={'flex-end'}>
           <IconButton
+            margin={'6px 0'}
             aria-label='Search database'
+            borderColor={colors.icWhite}
+            color={colors.icWhite}
             icon={<UpDownIcon />}
             onClick={swapTokenLists}
           />
