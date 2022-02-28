@@ -74,9 +74,14 @@ const NavContent = () => {
         linkText='Liquidity Mining'
         textColor='textColor'
       />
-      <Box height='32px' onClick={toggleColorMode} mt={['10', '10', '0', '0']}>
-        <ColorThemeIcon color={textColor} />
-      </Box>
+      <IconButton
+        aria-label='Color Theme Switch'
+        onClick={toggleColorMode}
+        border='0'
+        background={'transparent'}
+        icon={<ColorThemeIcon color={textColor} />}
+        size='sm'
+      />
     </Flex>
   )
 }
