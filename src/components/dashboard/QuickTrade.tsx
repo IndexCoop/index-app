@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { colors } from 'styles/colors'
 
+import { colors, useICColorMode } from 'styles/colors'
+
 import { UpDownIcon } from '@chakra-ui/icons'
 import {
   Box,
@@ -101,6 +103,7 @@ const InputSelector = (props: {
 }
 
 const QuickTrade = () => {
+  const { isDarkMode } = useICColorMode()
   const { chainId } = useEthers()
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [sellToken, setSellToken] = useState<Token>(ETH)
@@ -169,6 +172,7 @@ const QuickTrade = () => {
   return (
     <Flex
       border='2px solid #F7F1E4'
+      borderColor={isDarkMode ? colors.icWhite : colors.black}
       borderRadius='16px'
       direction='column'
       py='20px'
@@ -179,19 +183,10 @@ const QuickTrade = () => {
           Quick Trade
         </Text>
         <Spacer />
-        <Tabs
-          background='#1D1B16'
-          borderRadius='8px'
-          fontSize='16px'
-          fontWeight='500'
-          height='45px'
-          color={white}
-          outline='0'
-          variant='unstyle'
-        >
+        <Tabs variant='unstyled'>
           <TabList>
-            <Tab _selected={selectedTabStyle}>DEX Swap</Tab>
-            <Tab _selected={selectedTabStyle}>Index Issuance</Tab>
+            <Tab>DEX Swap</Tab>
+            <Tab>Index Issuance</Tab>
           </TabList>
         </Tabs>
       </Flex>
@@ -221,7 +216,7 @@ const QuickTrade = () => {
       </Flex>
       <Flex>
         <Button
-          background='#F7F1E4'
+          background={isDarkMode ? colors.icWhite : colors.icYellow}
           border='0'
           borderRadius='12px'
           color='#000'
@@ -235,14 +230,6 @@ const QuickTrade = () => {
       </Flex>
     </Flex>
   )
-}
-
-const white = '#F6F1E4'
-const selectedTabStyle = {
-  bg: white,
-  borderRadius: '4px',
-  color: 'black',
-  outline: 0,
 }
 
 export default QuickTrade
