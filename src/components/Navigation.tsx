@@ -1,8 +1,20 @@
+import { useState } from 'react'
+
 import { colors } from 'styles/colors'
 
-import { Box, Flex, Link, Text, useColorMode } from '@chakra-ui/react'
+import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
+import {
+  Box,
+  Flex,
+  IconButton,
+  Link,
+  Text,
+  useColorMode,
+} from '@chakra-ui/react'
 
 import ColorThemeIcon from 'components/header/ColorThemeIcon'
+
+import ConnectButton from './header/ConnectButton'
 
 const NavLink = (props: {
   href: string
@@ -10,7 +22,7 @@ const NavLink = (props: {
   textColor: string
 }) => {
   return (
-    <Box pr='2.5vw'>
+    <Box pr='2.5vw' mt={['30px', '30px', '0', '0']}>
       <Link
         display='block'
         position='relative'
@@ -47,12 +59,14 @@ const NavLink = (props: {
   )
 }
 
-const Navigation = () => {
+const NavContent = () => {
   const { colorMode, toggleColorMode } = useColorMode()
   const textColor = colorMode === 'light' ? 'black' : 'white'
-
   return (
-    <Flex>
+    <Flex
+      flexDirection={['column', 'column', 'row', 'row']}
+      alignItems={'center'}
+    >
       <NavLink href='/' linkText='My Dashboard' textColor='textColor' />
       <NavLink href='/products' linkText='Products' textColor='textColor' />
       <NavLink
@@ -60,9 +74,59 @@ const Navigation = () => {
         linkText='Liquidity Mining'
         textColor='textColor'
       />
-      <Box height='32px' onClick={toggleColorMode}>
+      <Box height='32px' onClick={toggleColorMode} mt={['10', '10', '0', '0']}>
         <ColorThemeIcon color={textColor} />
       </Box>
+    </Flex>
+  )
+}
+
+const Navigation = () => {
+  const [displayMenu, setDisplayMenu] = useState('none')
+  return (
+    <Flex>
+      {/* Desktop Menu */}
+      <Flex display={['none', 'none', 'flex', 'flex']} flexDirection={'row'}>
+        <NavContent />
+
+        <ConnectButton />
+      </Flex>
+      <Flex display={['flex', 'flex', 'none', 'none']} flexDirection={'column'}>
+        <IconButton
+          mr={2}
+          aria-label='Open Menu'
+          icon={<HamburgerIcon />}
+          display={['flex', 'flex', 'none', 'none']}
+          onClick={() => setDisplayMenu('flex')}
+        />
+
+        {/* Mobile Menu */}
+        <Flex
+          flexDir={'column'}
+          align={'center'}
+          w='100vw'
+          h='100vh'
+          position='fixed'
+          top='0'
+          left='0'
+          overflowY={'auto'}
+          bgColor={colors.background}
+          zIndex={30}
+          display={displayMenu}
+        >
+          <IconButton
+            m={'6px 24px 30px 0'}
+            aria-label='Close Menu'
+            alignSelf={'flex-end'}
+            size={'lg'}
+            icon={<CloseIcon />}
+            onClick={() => setDisplayMenu('none')}
+            display={['flex', 'flex', 'none', 'none']}
+          />
+          <ConnectButton />
+          <NavContent />
+        </Flex>
+      </Flex>
     </Flex>
   )
 }
