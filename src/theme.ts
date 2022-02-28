@@ -9,8 +9,8 @@ import { Text } from 'styles/text'
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
 
 const config: ThemeConfig = {
-  initialColorMode: 'dark',
-  useSystemColorMode: true,
+  initialColorMode: 'system',
+  useSystemColorMode: false,
 }
 
 const components = {
