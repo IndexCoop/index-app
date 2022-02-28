@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { colors } from 'styles/colors'
-
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
