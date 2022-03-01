@@ -10,6 +10,7 @@ import {
   Link,
   Text,
   useColorMode,
+  useColorModeValue,
 } from '@chakra-ui/react'
 
 import ColorThemeIcon from 'components/header/ColorThemeIcon'
@@ -22,7 +23,7 @@ const NavLink = (props: {
   textColor: string
 }) => {
   return (
-    <Box pr='2.5vw' mt={['30px', '30px', '0', '0']}>
+    <Box mr={['0', '0', '24px', '24px']} mt={['30px', '30px', '0', '0']}>
       <Link
         display='block'
         position='relative'
@@ -79,7 +80,7 @@ const NavContent = () => {
         onClick={toggleColorMode}
         border='0'
         background={'transparent'}
-        mr={'24px'}
+        mt={['30px', '30px', '0', '0']}
         icon={<ColorThemeIcon color={textColor} />}
         size='sm'
       />
@@ -89,6 +90,7 @@ const NavContent = () => {
 
 const Navigation = () => {
   const [displayMenu, setDisplayMenu] = useState('none')
+  const bgColor = useColorModeValue(colors.icWhite, colors.background)
   return (
     <Flex>
       {/* Desktop Menu */}
@@ -116,7 +118,7 @@ const Navigation = () => {
           top='0'
           left='0'
           overflowY={'auto'}
-          bgColor={colors.background}
+          bgColor={bgColor}
           zIndex={30}
           display={displayMenu}
         >
