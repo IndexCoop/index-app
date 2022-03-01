@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
@@ -67,6 +67,7 @@ const ProductPage = (props: {
   marketData: TokenMarketDataValues
   components: SetComponent[]
 }) => {
+  const isMobile = useBreakpointValue({ base: true, lg: false })
   const { marketData, tokenData } = props
 
   const { chainId, library } = useEthers()
@@ -110,21 +111,28 @@ const ProductPage = (props: {
 
   const stats = getStatsForToken(tokenData, marketData, currentTokenSupply)
 
-  // TODO: find a way to dynamically capture the page's width so it can be passed
-  // to the chart (which does not take dynamic values) - same on dashboard
+  const chartWidth = window.outerWidth < 400 ? window.outerWidth : 1048
+  const chartHeight = window.outerWidth < 400 ? 300 : 400
 
   return (
     <Page>
-      <Flex direction='column' w='80vw' m='0 auto'>
-        <Box my='48px'>
-          <ProductHeader tokenData={props.tokenData} />
+      <Flex direction='column' w={['100%', '80vw']} m='0 auto'>
+        <Box my={['16px', '48px']}>
+          <ProductHeader
+            isMobile={isMobile ?? false}
+            tokenData={props.tokenData}
+          />
         </Box>
         <Flex direction='column'>
           <MarketChart
             marketData={priceChartData}
             prices={[price]}
             priceChanges={priceChangesFormatted}
-            options={{ width: 1048, hideYAxis: false }}
+            options={{
+              width: chartWidth,
+              height: chartHeight,
+              hideYAxis: false,
+            }}
           />
           <ProductPageSectionHeader title='Stats' topMargin='120px' />
           <ProductStats stats={stats} />

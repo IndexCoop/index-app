@@ -10,12 +10,14 @@ const ProductPageSectionHeader = ({
   topMargin?: string
 }) => {
   const { dividerColor } = useICColorMode()
+  const topMarginHeader = topMargin ?? ['64px', '80px']
+
   return (
     <Flex
       direction='row'
       alignItems='center'
       w='100%'
-      mt={topMargin ?? '80px'}
+      mt={topMarginHeader}
       mb='24px'
     >
       <Text fontSize='2xl' fontWeight='700'>

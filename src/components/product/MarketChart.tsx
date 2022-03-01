@@ -24,6 +24,7 @@ export enum PriceChartRangeOption {
 
 interface MarketChartOptions {
   width?: number
+  height?: number
   hideYAxis?: boolean
 }
 
@@ -141,20 +142,27 @@ const MarketChart = (props: {
 
   return (
     <Flex direction='column' alignItems='center' width='100%'>
-      <Flex direction='row' width='100%' alignItems='center' mb='24px'>
+      <Flex
+        direction={['column', 'row']}
+        alignItems={['left', 'center']}
+        mb='24px'
+        w='100%'
+      >
         <PriceDisplay
           price={price}
           change={props.priceChanges[durationSelector]}
         />
         <Spacer />
         {props.customSelector !== null && (
-          <Box mr='24px'>{props.customSelector}</Box>
+          <Box mr={['auto', '24px']}>{props.customSelector}</Box>
         )}
-        <RangeSelector onChange={onChangeDuration} />
+        <Box mt={['8px', '0']} mr='auto'>
+          <RangeSelector onChange={onChangeDuration} />
+        </Box>
       </Flex>
       <AreaChart
         width={props.options.width ?? 900}
-        height={400}
+        height={props.options.height ?? 400}
         data={chartData}
       >
         <CartesianGrid stroke={strokeColor} strokeOpacity={0.2} />
@@ -224,10 +232,15 @@ const PriceDisplay = ({
 }) => (
   <Flex align='center'>
     <Flex align='baseline'>
-      <Text fontSize='5xl' color={colors.icYellow} fontWeight='700'>
+      <Text fontSize={['3xl', '5xl']} color={colors.icYellow} fontWeight='700'>
         {price}
       </Text>
-      <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='16px'>
+      <Text
+        fontSize={['md', 'xl']}
+        color={colors.icMalachite}
+        fontWeight='700'
+        ml='16px'
+      >
         {change}
       </Text>
     </Flex>

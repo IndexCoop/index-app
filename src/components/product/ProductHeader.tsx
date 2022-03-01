@@ -3,7 +3,32 @@ import { Image } from '@chakra-ui/react'
 
 import { Token } from 'constants/tokens'
 
-const ProductPageHeader = (props: { tokenData: Token }) => {
+const ProductPageHeaderMobile = (props: { tokenData: Token }) => {
+  return (
+    <Flex direction='column' justifyContent='flex-end' alignItems='left'>
+      <Flex>
+        <Image
+          src={props.tokenData.image}
+          alt={props.tokenData.name + ' logo'}
+          w='32px'
+          h='32px'
+        />
+        <Text fontSize='2xl' fontWeight='500' ml='8px'>
+          {props.tokenData.symbol}
+        </Text>
+      </Flex>
+      <Text fontSize='xl' fontWeight='700'>
+        {props.tokenData.name}
+      </Text>
+    </Flex>
+  )
+}
+
+const ProductPageHeader = (props: { isMobile: boolean; tokenData: Token }) => {
+  if (props.isMobile) {
+    return <ProductPageHeaderMobile tokenData={props.tokenData} />
+  }
+
   return (
     <Flex
       direction='row'
