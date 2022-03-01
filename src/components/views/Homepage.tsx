@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
@@ -24,13 +24,19 @@ import {
 import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
 
-import { getPieChartPositions, QuickTradeData } from './DashboardData'
+import { getPieChartPositions } from './DashboardData'
 
 const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
   const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
     useUserBalances()
   const { account } = useEthers()
+  const isWeb = useBreakpointValue({
+    base: false,
+    md: true,
+    lg: true,
+    xl: true,
+  })
 
   const [csvDownloadUrl, setCsvDownloadUrl] = useState('')
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
@@ -144,7 +150,7 @@ const Dashboard = () => {
     )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
   })
 
-  const width = 1024
+  const width = isWeb ? 1024 : 340
 
   return (
     <Page>
@@ -161,11 +167,17 @@ const Dashboard = () => {
             }}
             customSelector={<ChartTypeSelector onChange={onChangeChartType} />}
           />
-          <Flex direction='row' mt='64px'>
+          <Flex
+            direction={['column', 'row']}
+            mt='64px'
+            w={width}
+            h={['auto', 'auto']}
+            justifyContent={'center'}
+          >
             <Flex direction='column' grow='1' flexBasis='0'>
               <AllocationChart positions={pieChartPositions} />
             </Flex>
-            <Box w='24px' />
+            <Box w='24px' h={['10px', '0px']} />
             <Flex direction='column' grow='1' flexBasis='0'>
               <QuickTrade />
             </Flex>
@@ -176,7 +188,10 @@ const Dashboard = () => {
             title='Transaction History'
             itemRight={renderCsvDownloadButton}
           />
-          <TransactionHistoryTable items={historyItems.slice(0, 20)} />
+          <TransactionHistoryTable
+            items={historyItems.slice(0, 20)}
+            width={width}
+          />
         </Box>
       </Box>
     </Page>
