@@ -110,12 +110,9 @@ const ProductPage = (props: {
 
   const stats = getStatsForToken(tokenData, marketData, currentTokenSupply)
 
-  // TODO: find a way to dynamically capture the page's width so it can be passed
-  // to the chart (which does not take dynamic values) - same on dashboard
-
   return (
     <Page>
-      <Flex direction='column' w='80vw' m='0 auto'>
+      <Flex direction='column' w={['100%', '80vw']} m='0 auto'>
         <Box my='48px'>
           <ProductHeader tokenData={props.tokenData} />
         </Box>

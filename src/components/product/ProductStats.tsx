@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/layout'
+import { Box, Flex, Text } from '@chakra-ui/layout'
 
 export interface ProductStat {
   title: string
@@ -19,18 +19,20 @@ const ProductStatView = ({ title, value }: ProductStat) => (
 const ProductStats = ({ stats }: { stats: ProductStat[] }) => {
   return (
     <Flex
-      alignItems='center'
+      alignItems={['flex-start', 'center']}
       direction='row'
-      justify='space-between'
+      justify={['left', 'space-between']}
       w='100%'
-      pr='48px'
+      pr={['0', '48px']}
+      flexWrap='wrap'
     >
       {stats.map((productStat, index) => (
-        <ProductStatView
-          key={index}
-          title={productStat.title}
-          value={productStat.value}
-        />
+        <Box key={index} mr={['32px', '0']} mb={['48px', '0']}>
+          <ProductStatView
+            title={productStat.title}
+            value={productStat.value}
+          />
+        </Box>
       ))}
     </Flex>
   )
