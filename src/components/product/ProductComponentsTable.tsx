@@ -70,17 +70,21 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
   }
 
   return (
-    <Flex direction='row' alignItems='start'>
-      <Box margin='0 64px 0 0'>
+    <Flex direction={['column', 'column', 'row']} alignItems='start'>
+      <Box margin={['0 auto', '0 auto', '0 64px 0 0']}>
         <Chart data={props.components.map(mapSetComponentToPosition)} />
       </Box>
-      <Flex direction='column' alignItems='center'>
+      <Flex direction='column' alignItems='center' mt={['32px', '32px', '0']}>
         <Table variant='simple'>
           <Thead>
             <Tr borderBottom='1px'>
-              <Th>Token</Th>
-              <Th isNumeric>Value Per Token</Th>
-              <Th isNumeric>24hr Change</Th>
+              <Th p={['8px 8px', '8px 8px', '12px 24px']}>Token</Th>
+              <Th isNumeric p={['8px 8px', '8px 8px', '12px 24px']}>
+                Value Per Token
+              </Th>
+              <Th isNumeric p={['8px 8px', '8px 8px', '12px 24px']}>
+                24hr Change
+              </Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -115,7 +119,7 @@ const ComponentRow = (props: { component: SetComponent }) => {
 
   return (
     <Tr borderBottom='1px'>
-      <Td>
+      <Td p={['16px 8px', '16px 8px', '16px 24px']}>
         <Flex alignItems='center'>
           <Image
             borderRadius='full'
@@ -127,8 +131,14 @@ const ComponentRow = (props: { component: SetComponent }) => {
           <Text fontWeight='500'>{props.component.name}</Text>
         </Flex>
       </Td>
-      <Td isNumeric>{formattedPriceUSD}</Td>
-      <Td isNumeric color={percentChangeTextColor}>
+      <Td isNumeric p={['16px 8px', '16px 8px', '16px 24px']}>
+        {formattedPriceUSD}
+      </Td>
+      <Td
+        isNumeric
+        color={percentChangeTextColor}
+        p={['16px 8px', '16px 8px', '16px 24px']}
+      >
         {percentChangeSign}
         {absPercentChange}%
       </Td>
