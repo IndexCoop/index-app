@@ -110,6 +110,9 @@ const ProductPage = (props: {
 
   const stats = getStatsForToken(tokenData, marketData, currentTokenSupply)
 
+  const chartWidth = window.outerWidth < 400 ? window.outerWidth : 1048
+  const chartHeight = window.outerWidth < 400 ? 300 : 400
+
   return (
     <Page>
       <Flex direction='column' w={['100%', '80vw']} m='0 auto'>
@@ -121,7 +124,11 @@ const ProductPage = (props: {
             marketData={priceChartData}
             prices={[price]}
             priceChanges={priceChangesFormatted}
-            options={{ width: 1048, hideYAxis: false }}
+            options={{
+              width: chartWidth,
+              height: chartHeight,
+              hideYAxis: false,
+            }}
           />
           <ProductPageSectionHeader title='Stats' topMargin='120px' />
           <ProductStats stats={stats} />
