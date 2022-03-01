@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
@@ -67,6 +67,7 @@ const ProductPage = (props: {
   marketData: TokenMarketDataValues
   components: SetComponent[]
 }) => {
+  const isMobile = useBreakpointValue({ base: true, lg: false })
   const { marketData, tokenData } = props
 
   const { chainId, library } = useEthers()
@@ -116,8 +117,11 @@ const ProductPage = (props: {
   return (
     <Page>
       <Flex direction='column' w={['100%', '80vw']} m='0 auto'>
-        <Box my='48px'>
-          <ProductHeader tokenData={props.tokenData} />
+        <Box my={['16px', '48px']}>
+          <ProductHeader
+            isMobile={isMobile ?? false}
+            tokenData={props.tokenData}
+          />
         </Box>
         <Flex direction='column'>
           <MarketChart
