@@ -12,7 +12,8 @@ const NetworkSelector = () => {
 
   return (
     <Select
-      marginLeft={4}
+      ml={[0, 0, 4, 4]}
+      mt={[4, 4, 0, 0]}
       border='2px solid'
       borderColor={colors.icYellow}
       borderRadius='8'

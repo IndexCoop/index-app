@@ -72,8 +72,12 @@ const ConnectButton = () => {
 
   const disconnectButton = () => {
     return (
-      <Flex direction='row' alignItems='center'>
-        <Text fontSize='lg' pr='24px'>
+      <Flex direction={['column', 'column', 'row', 'row']} alignItems='center'>
+        <Text
+          fontSize='lg'
+          m={'0 24px'}
+          display={['none', 'none', 'flex', 'flex']}
+        >
           {handleAccount()}
         </Text>
         <Button

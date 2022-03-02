@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
-import { colors } from 'styles/colors'
-import { selectedTabStyle } from 'styles/tabs'
+import { colors, useICColorMode } from 'styles/colors'
 
 import { Box, Flex, Spacer } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, useTheme } from '@chakra-ui/react'
@@ -25,6 +24,7 @@ export enum PriceChartRangeOption {
 
 interface MarketChartOptions {
   width?: number
+  height?: number
   hideYAxis?: boolean
 }
 
@@ -47,6 +47,8 @@ const MarketChart = (props: {
   onMouseLeave?: (...args: any[]) => any
 }) => {
   const theme = useTheme()
+  const { isDarkMode } = useICColorMode()
+  const strokeColor = isDarkMode ? colors.gray[500] : colors.gray[400]
 
   const [chartData, setChartData] = useState<PriceChartData[]>([])
   const [durationSelector, setDurationSelector] = useState<number>(
@@ -140,23 +142,30 @@ const MarketChart = (props: {
 
   return (
     <Flex direction='column' alignItems='center' width='100%'>
-      <Flex direction='row' width='100%' alignItems='center' mb='24px'>
+      <Flex
+        direction={['column', 'row']}
+        alignItems={['left', 'center']}
+        mb='24px'
+        w='100%'
+      >
         <PriceDisplay
           price={price}
           change={props.priceChanges[durationSelector]}
         />
         <Spacer />
         {props.customSelector !== null && (
-          <Box mr='24px'>{props.customSelector}</Box>
+          <Box mr={['auto', '24px']}>{props.customSelector}</Box>
         )}
-        <RangeSelector onChange={onChangeDuration} />
+        <Box mt={['8px', '0']} mr='auto'>
+          <RangeSelector onChange={onChangeDuration} />
+        </Box>
       </Flex>
       <AreaChart
         width={props.options.width ?? 900}
-        height={400}
+        height={props.options.height ?? 400}
         data={chartData}
       >
-        <CartesianGrid stroke={colors.icWhite} strokeOpacity={0.2} />
+        <CartesianGrid stroke={strokeColor} strokeOpacity={0.2} />
         <YAxis
           axisLine={false}
           domain={yAxisDomain}
@@ -223,10 +232,15 @@ const PriceDisplay = ({
 }) => (
   <Flex align='center'>
     <Flex align='baseline'>
-      <Text fontSize='5xl' color={colors.icYellow} fontWeight='700'>
+      <Text fontSize={['3xl', '5xl']} color={colors.icYellow} fontWeight='700'>
         {price}
       </Text>
-      <Text fontSize='xl' color={colors.icMalachite} fontWeight='700' ml='16px'>
+      <Text
+        fontSize={['md', 'xl']}
+        color={colors.icMalachite}
+        fontWeight='700'
+        ml='16px'
+      >
         {change}
       </Text>
     </Flex>
@@ -237,25 +251,13 @@ const PriceDisplay = ({
 )
 
 const RangeSelector = ({ onChange }: { onChange: (index: number) => void }) => (
-  <Tabs
-    background='#1D1B16'
-    borderRadius='8px'
-    fontSize='16px'
-    fontWeight='500'
-    color={colors.icWhite}
-    height='45px'
-    outline='0'
-    variant='unstyle'
-    onChange={onChange}
-  >
+  <Tabs variant='unstyled' onChange={onChange}>
     <TabList>
-      <Tab _selected={selectedTabStyle}>1D</Tab>
-      <Tab _selected={selectedTabStyle}>1W</Tab>
-      <Tab _selected={selectedTabStyle}>1M</Tab>
+      <Tab>1D</Tab>
+      <Tab>1W</Tab>
+      <Tab>1M</Tab>
     </TabList>
   </Tabs>
 )
-
-const strokeColor = colors.gray[500]
 
 export default MarketChart

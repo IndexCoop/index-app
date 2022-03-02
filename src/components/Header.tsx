@@ -16,12 +16,11 @@ const Header = () => {
   return (
     <Flex
       justifyContent='space-between'
-      m='64px 80px 80px 80px'
+      m={['16px 8px 8px 24px', '64px 80px 80px 80px']}
       alignItems='center'
     >
       <Logo isDarkMode={colorMode === 'dark'} />
       <Navigation />
-      <ConnectButton />
     </Flex>
   )
 }
@@ -30,7 +29,7 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
   let logo = isDarkMode ? indexLogoWhite : indexLogoBlack
   const textColor = isDarkMode ? '#fff' : '#000'
 
-  if (window.innerWidth > 450) {
+  if (window.innerWidth > 480) {
     logo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
   }
 
@@ -43,6 +42,7 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
         fontWeight='700'
         mb='-5px'
         ml='12px'
+        display={['none', 'none', 'flex', 'flex']}
       >
         App
       </Text>
