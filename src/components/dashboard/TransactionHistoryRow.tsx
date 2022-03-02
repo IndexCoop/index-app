@@ -1,6 +1,15 @@
 import { colors } from 'styles/colors'
 
-import { Box, Flex, Image, Link, Td, Text, Tr } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Image,
+  Link,
+  Td,
+  Text,
+  Tr,
+  useBreakpointValue,
+} from '@chakra-ui/react'
 
 import historyLinkIcon from 'assets/history-link-icon.svg'
 import arrowAsset from 'assets/ic_arrow_right_24.svg'
@@ -8,6 +17,12 @@ import arrowAsset from 'assets/ic_arrow_right_24.svg'
 import { TransactionHistoryItem } from './TransactionHistoryTable'
 
 const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
+  const isWeb = useBreakpointValue({
+    base: false,
+    md: true,
+    lg: true,
+    xl: true,
+  })
   const { item } = props
   return (
     <Tr>
@@ -29,20 +44,25 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
       <Td>
         <Flex direction='column'>
           <Text>${item.asset}</Text>
-          <Text color={colors.icPeriwinkle}>{item.value}</Text>
+          {isWeb && <Text color={colors.icPeriwinkle}>{item.value}</Text>}
         </Flex>
       </Td>
-      <Td>{item.to}</Td>
-      <Td>
-        <Image src={arrowAsset} alt='arrow pointing right' />
-      </Td>
-      <Td>{item.from}</Td>
-      <Td>
-        <Flex direction='column'>
-          <Text color='gray'>{item.hash}</Text>
-          <Text>Block {item.date}</Text>
-        </Flex>
-      </Td>
+      {isWeb && (
+        <>
+          <Td>{item.from}</Td>
+          <Td>
+            <Image src={arrowAsset} alt='arrow pointing right' />
+          </Td>
+          <Td>{item.to}</Td>
+          <Td>
+            <Flex direction='column'>
+              <Text color='gray'>{item.hash}</Text>
+              <Text>Block {item.date}</Text>
+            </Flex>
+          </Td>
+        </>
+      )}
+
       <Td>
         <Link href={item.explorerUrl} isExternal>
           <Flex align='center' direction='row' justify='end'>
