@@ -80,17 +80,17 @@ ReactDOM.render(
             <Route index element={<Dashboard />} />
             <Route path='liquidity-mining' element={<LiquidityMining />} />
             <Route path='products' element={<Products />} />
-            <Route path='products/dpi' element={<DPI />} />
-            <Route path='products/mvi' element={<MVI />} />
-            <Route path='products/eth2x-fli' element={<ETH2xFLI />} />
-            <Route path='products/eth2x-fli-p' element={<ETH2xFLIP />} />
-            <Route path='products/btc2x-fli' element={<BTC2xFLI />} />
-            <Route path='products/bed' element={<BED />} />
-            <Route path='products/data' element={<DATA />} />
-            <Route path='products/gmi' element={<GMI />} />
-            <Route path='products/ieth' element={<IETHFLIP />} />
-            <Route path='products/matic2x' element={<MATIC2xFLIP />} />
-            <Route path='products/imatic' element={<IMATICFLIP />} />
+            <Route path='dpi' element={<DPI />} />
+            <Route path='mvi' element={<MVI />} />
+            <Route path='eth2x-fli' element={<ETH2xFLI />} />
+            <Route path='eth2x-fli-p' element={<ETH2xFLIP />} />
+            <Route path='btc2x-fli' element={<BTC2xFLI />} />
+            <Route path='bed' element={<BED />} />
+            <Route path='data' element={<DATA />} />
+            <Route path='gmi' element={<GMI />} />
+            <Route path='ieth' element={<IETHFLIP />} />
+            <Route path='matic2x' element={<MATIC2xFLIP />} />
+            <Route path='imatic' element={<IMATICFLIP />} />
           </Route>
         </Routes>
       </Providers>
