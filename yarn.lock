@@ -1772,10 +1772,10 @@
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.4.0.tgz#c3c5ae543c897caa9c2a68630bed355be5f9990f"
   integrity sha512-JZButFdZ1+/xAfpguQHoabIXkcqRRKpMrWKBkpEZZyxfY9C1DpADFB8PEqGSTeFr135SaTRfKqGKx5xSCLI7ZQ==
 
-"@elgorditosalsero/react-gtm-hook@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@elgorditosalsero/react-gtm-hook/-/react-gtm-hook-2.3.0.tgz#55b220d39b488e60dcf7d3b60a9df3e5b1e04794"
-  integrity sha512-mYg/jNL3sUkcuNEWAoUwYMmkmWDvTRvh1i9IewxVIPHJjDSmcBCeZ/GYzksoBFAq1G0hv+U0h5ddWq9IzQD2zA==
+"@elgorditosalsero/react-gtm-hook@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@elgorditosalsero/react-gtm-hook/-/react-gtm-hook-2.3.1.tgz#b685bebb711d9edb9b8ab414c41c302073f844c0"
+  integrity sha512-TgbYUGwBcjx61XGXoZqnPKNvkT7TdzMmsulxoSTpsojjfofP7/ScLB6okYkQQgwfLRPvsdSiOmeM8BbXxZCBmg==
 
 "@emotion/babel-plugin@^11.7.1":
   version "11.7.2"
