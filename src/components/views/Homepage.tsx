@@ -151,6 +151,7 @@ const Dashboard = () => {
   })
 
   const width = isWeb ? 1024 : 340
+  const chartHeight = isWeb ? 400 : 300
 
   return (
     <Page>
@@ -163,6 +164,7 @@ const Dashboard = () => {
             priceChanges={priceChangesFormatted}
             options={{
               width,
+              height: chartHeight,
               hideYAxis: false,
             }}
             customSelector={<ChartTypeSelector onChange={onChangeChartType} />}
