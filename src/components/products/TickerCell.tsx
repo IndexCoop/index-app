@@ -22,7 +22,7 @@ const TickerCell = ({ product }: TickerCellProps) => {
   })
 
   return (
-    <Link href={'/products/' + product.url}>
+    <Link href={'/' + product.url}>
       <Grid
         width={['inherit', 'inherit', '320px']}
         templateRows={['', '', 'repeat(2, 1fr)']}
