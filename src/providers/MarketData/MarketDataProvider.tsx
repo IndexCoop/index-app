@@ -6,9 +6,6 @@ import {
   useState,
 } from 'react'
 
-import { useEthers } from '@usedapp/core'
-
-import { MAINNET } from 'constants/chains'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -57,7 +54,6 @@ export const MarketDataContext = createContext<TokenContext>({
 export const useMarketData = () => useContext(MarketDataContext)
 
 export const MarketDataProvider = (props: { children: any }) => {
-  const { chainId } = useEthers()
   const [indexMarketData, setIndexMarketData] = useState<any>({})
   const [dpiMarketData, setDpiMarketData] = useState<any>({})
   const [mviMarketData, setMviMarketData] = useState<any>({})
