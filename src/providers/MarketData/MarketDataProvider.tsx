@@ -23,10 +23,7 @@ import {
   Matic2xFLIP,
   MetaverseIndex,
 } from 'constants/tokens'
-import {
-  fetchHistoricalTokenMarketData,
-  fetchHistoricalTokenMarketDataOnPolygon,
-} from 'utils/coingeckoApi'
+import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
 
 export interface TokenMarketDataValues {
   prices?: number[][]
@@ -92,11 +89,11 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(
         Bitcoin2xFlexibleLeverageIndex.coingeckoId
       ),
-      fetchHistoricalTokenMarketDataOnPolygon(Ethereum2xFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(Ethereum2xFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
-      fetchHistoricalTokenMarketDataOnPolygon(IEthereumFLIP.coingeckoId),
-      fetchHistoricalTokenMarketDataOnPolygon(Matic2xFLIP.coingeckoId),
-      fetchHistoricalTokenMarketDataOnPolygon(IMaticFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(IEthereumFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(Matic2xFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(IMaticFLIP.coingeckoId),
     ])
 
     setIndexMarketData(marketData[0])
