@@ -37,8 +37,8 @@ export const fetchHistoricalTokenMarketData = async (
 export const fetchHistoricalTokenMarketDataOnPolygon = (
   polygonTokenAddress?: string
 ) => {
-  const coingeckoTokenIdentifier = `${POLYGON.coingeckoId}/contract/${polygonTokenAddress}`
-
+  // const coingeckoTokenIdentifier = `${POLYGON.coingeckoId}/contract/${polygonTokenAddress}`
+  const coingeckoTokenIdentifier = `${polygonTokenAddress}`
   return fetchHistoricalTokenMarketData(coingeckoTokenIdentifier)
 }
 
