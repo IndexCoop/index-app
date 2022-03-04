@@ -51,6 +51,16 @@ const QuickTrade = () => {
     }
   }, [chainId])
 
+  useEffect(() => {
+    if (isBuying) {
+      setSellTokenList(getCurrencyTokensByChain())
+      setBuyTokenList(indexNames)
+    } else {
+      setSellTokenList(indexNames)
+      setBuyTokenList(getCurrencyTokensByChain())
+    }
+  }, [isBuying])
+
   /**
    * Get the list of currency tokens for the selected chain
    * @returns {Token[]} list of tokens
@@ -64,18 +74,16 @@ const QuickTrade = () => {
    * Sets the list of tokens based on if the user is buying or selling
    */
   const swapTokenLists = () => {
-    let buyTemp = buyToken
-    let sellTemp = sellToken
-    if (isBuying) {
-      setSellTokenList(getCurrencyTokensByChain())
-      setBuyTokenList(indexNames)
-    } else {
-      setSellTokenList(indexNames)
-      setBuyTokenList(getCurrencyTokensByChain())
-    }
-    setBuyToken(sellTemp)
-    setSellToken(buyTemp)
+    setBuyToken(sellToken)
+    setSellToken(buyToken)
     setIsBuying(!isBuying)
+  }
+
+  const onChangeSellTokenAmount = (input: string) => {
+    console.log(input)
+    // TODO: set loading state
+    // TODO: fetch best price/amount
+    // TODO: update ui
   }
 
   const onChangeSellToken = (symbol: string) => {
@@ -122,7 +130,8 @@ const QuickTrade = () => {
           config={{ isDarkMode, isDisabled }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
-          onChange={onChangeSellToken}
+          onChangeInput={onChangeSellTokenAmount}
+          onSelectedToken={onChangeSellToken}
         />
         <Box h='12px' alignSelf={'flex-end'}>
           <IconButton
@@ -140,7 +149,8 @@ const QuickTrade = () => {
           config={{ isDarkMode, isDisabled, isReadOnly: true }}
           selectedToken={buyToken}
           tokenList={buyTokenList}
-          onChange={onChangeBuyToken}
+          onChangeInput={(_) => {}}
+          onSelectedToken={onChangeBuyToken}
         />
       </Flex>
       <Flex>

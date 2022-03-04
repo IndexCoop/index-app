@@ -19,8 +19,10 @@ const QuickTradeSelector = (props: {
   title: string
   config: InputSelectorConfig
   selectedToken: Token
+  selectedTokenAmount?: string
   tokenList: Token[]
-  onChange: (symbol: string) => void
+  onChangeInput: (input: string) => void
+  onSelectedToken: (symbol: string) => void
 }) => {
   const { config, selectedToken } = props
   const { chainId, account } = useEthers()
@@ -60,6 +62,12 @@ const QuickTradeSelector = (props: {
             variant='unstyled'
             disabled={config.isDisabled}
             isReadOnly={config.isReadOnly ?? false}
+            value={props.selectedTokenAmount}
+            onChange={(event) =>
+              props.onChangeInput !== undefined
+                ? props.onChangeInput(event.target.value)
+                : undefined
+            }
           />
           <Spacer />
           <Text align='right' fontSize='12px' fontWeight='400' w='100%'>
@@ -86,10 +94,7 @@ const QuickTradeSelector = (props: {
             disabled={config.isDisabled}
             w='100%'
             h='54px'
-            onChange={(event) => {
-              console.log('event', event.target.value, balanceString)
-              props.onChange(event.target.value)
-            }}
+            onChange={(event) => props.onSelectedToken(event.target.value)}
           >
             {props.tokenList.map((token) => {
               return (
