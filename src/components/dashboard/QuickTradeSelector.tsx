@@ -52,7 +52,7 @@ const QuickTradeSelector = (props: {
           border='1px solid #000'
           borderColor={borderColor}
           borderLeftRadius={borderRadius}
-          px='40px'
+          px={['16px', '40px']}
         >
           <Input
             placeholder='0'
@@ -72,7 +72,7 @@ const QuickTradeSelector = (props: {
           border='1px solid #000'
           borderColor={borderColor}
           borderRightRadius={borderRadius}
-          minWidth='150px'
+          minWidth={['120px', '150px']}
         >
           <Box pl='12px' pr='0px'>
             <Image
