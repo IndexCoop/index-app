@@ -6,7 +6,6 @@ import {
   Flex,
   Heading,
   Text,
-  useColorMode,
   useDisclosure,
 } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
