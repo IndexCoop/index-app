@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { colors } from 'styles/colors'
 
-import { Flex, Input, Select, Spacer, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, Input, Select, Spacer, Text } from '@chakra-ui/react'
 import { useEtherBalance, useEthers } from '@usedapp/core'
 
 import { ETH, Token } from 'constants/tokens'
@@ -22,19 +22,19 @@ const QuickTradeSelector = (props: {
   tokenList: Token[]
   onChange: (symbol: string) => void
 }) => {
-  const { config } = props
+  const { config, selectedToken } = props
   const { chainId, account } = useEthers()
   const [balance, setBalance] = useState<string>('0')
   const etherBalance = displayFromWei(useEtherBalance(account), 2, 18) || '0.00'
-  const balanceString = useFormattedBalance(props.selectedToken)
+  const balanceString = useFormattedBalance(selectedToken)
 
   useEffect(() => {
-    if (props.selectedToken.symbol === ETH.symbol) {
+    if (selectedToken.symbol === ETH.symbol) {
       setBalance(etherBalance)
     } else {
       setBalance(balanceString)
     }
-  }, [chainId, props.selectedToken, etherBalance, balanceString])
+  }, [chainId, selectedToken, etherBalance, balanceString])
 
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
@@ -72,8 +72,15 @@ const QuickTradeSelector = (props: {
           border='1px solid #000'
           borderColor={borderColor}
           borderRightRadius={borderRadius}
-          minWidth='120px'
+          minWidth='150px'
         >
+          <Box pl='12px' pr='0px'>
+            <Image
+              src={selectedToken.image}
+              alt={`${selectedToken.symbol} logo`}
+              w='24px'
+            />
+          </Box>
           <Select
             border='0'
             disabled={config.isDisabled}
