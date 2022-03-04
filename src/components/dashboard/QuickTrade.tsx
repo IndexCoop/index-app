@@ -29,6 +29,7 @@ const QuickTrade = () => {
 
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
+  const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
   const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
@@ -81,9 +82,13 @@ const QuickTrade = () => {
 
   const onChangeSellTokenAmount = (input: string) => {
     console.log(input)
-    // TODO: set loading state
+    setCompState(QuickTradeState.loading)
     // TODO: fetch best price/amount
     // TODO: update ui
+    setTimeout(() => {
+      setCompState(QuickTradeState.default)
+      setBuyTokenAmount(input === '0' || input.length < 1 ? '0' : '200')
+    }, 2000)
   }
 
   const onChangeSellToken = (symbol: string) => {
@@ -108,7 +113,7 @@ const QuickTrade = () => {
     compState === QuickTradeState.loading ||
     compState === QuickTradeState.executing
   const isLoading = compState === QuickTradeState.loading
-  const isButtonDisabled = compState === QuickTradeState.default
+  const isButtonDisabled = buyTokenAmount === '0'
 
   return (
     <Flex
@@ -148,6 +153,7 @@ const QuickTrade = () => {
           title='To'
           config={{ isDarkMode, isDisabled, isReadOnly: true }}
           selectedToken={buyToken}
+          selectedTokenAmount={buyTokenAmount}
           tokenList={buyTokenList}
           onChangeInput={(_) => {}}
           onSelectedToken={onChangeBuyToken}
