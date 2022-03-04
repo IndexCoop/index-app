@@ -29,13 +29,19 @@ import indexNames, {
 import { useFormattedBalance } from 'hooks/useFormattedBalance'
 import { displayFromWei } from 'utils'
 
+interface InputSelectorConfig {
+  isDarkMode: boolean
+  isReadOnly?: boolean
+}
+
 const InputSelector = (props: {
   title: string
+  config: InputSelectorConfig
   selectedToken: Token
   tokenList: Token[]
-  isDarkMode: boolean
   onChange: (symbol: string) => void
 }) => {
+  const { config } = props
   const { chainId, account } = useEthers()
   // TODO: Make balance real
   const [balance, setBalance] = useState<string>('0')
@@ -52,7 +58,7 @@ const InputSelector = (props: {
     console.log(props.selectedToken.symbol, balance)
   }, [chainId])
 
-  const borderColor = props.isDarkMode ? colors.icWhite : colors.black
+  const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
 
   return (
@@ -70,7 +76,12 @@ const InputSelector = (props: {
           borderLeftRadius={borderRadius}
           px='40px'
         >
-          <Input placeholder='0' type='number' variant='unstyled' />
+          <Input
+            placeholder='0'
+            type='number'
+            variant='unstyled'
+            isReadOnly={config.isReadOnly ?? false}
+          />
           <Spacer />
           <Text align='right' fontSize='12px' fontWeight='400' w='100%'>
             Balance: {balance}
@@ -192,8 +203,8 @@ const QuickTrade = () => {
       <Flex direction='column' my='20px'>
         <InputSelector
           title='From'
+          config={{ isDarkMode }}
           selectedToken={sellToken}
-          isDarkMode={isDarkMode}
           tokenList={sellTokenList}
           onChange={onChangeSellToken}
         />
@@ -210,8 +221,8 @@ const QuickTrade = () => {
         </Box>
         <InputSelector
           title='To'
+          config={{ isDarkMode, isReadOnly: true }}
           selectedToken={buyToken}
-          isDarkMode={isDarkMode}
           tokenList={buyTokenList}
           onChange={onChangeBuyToken}
         />
