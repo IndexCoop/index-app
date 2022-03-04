@@ -44,7 +44,7 @@ export const displayFromWei = (
   if (!number) return null
 
   if (decimals) {
-    return Number(formatUnits(number)).toFixed(decimals)
+    return Number(formatUnits(number, power)).toFixed(decimals)
   }
 
   return formatUnits(number, power)

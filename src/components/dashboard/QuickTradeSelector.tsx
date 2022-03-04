@@ -24,20 +24,17 @@ const QuickTradeSelector = (props: {
 }) => {
   const { config } = props
   const { chainId, account } = useEthers()
-  // TODO: Make balance real
   const [balance, setBalance] = useState<string>('0')
   const etherBalance = displayFromWei(useEtherBalance(account), 2, 18) || '0.00'
   const balanceString = useFormattedBalance(props.selectedToken)
 
   useEffect(() => {
-    console.log('balanceString', props.selectedToken.symbol, balanceString)
     if (props.selectedToken.symbol === ETH.symbol) {
       setBalance(etherBalance)
     } else {
       setBalance(balanceString)
     }
-    console.log(props.selectedToken.symbol, balance)
-  }, [chainId])
+  }, [chainId, props.selectedToken, etherBalance, balanceString])
 
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
@@ -75,13 +72,12 @@ const QuickTradeSelector = (props: {
           border='1px solid #000'
           borderColor={borderColor}
           borderRightRadius={borderRadius}
-          minWidth='100px'
+          minWidth='120px'
         >
           <Select
             border='0'
             disabled={config.isDisabled}
-            w='100px'
-            minWidth='100px'
+            w='100%'
             h='54px'
             onChange={(event) => {
               console.log('event', event.target.value, balanceString)

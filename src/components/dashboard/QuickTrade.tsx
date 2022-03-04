@@ -4,7 +4,7 @@ import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Button, Flex, IconButton, Text } from '@chakra-ui/react'
-import { useEtherBalance, useEthers } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 
 import { MAINNET, POLYGON } from 'constants/chains'
 import indexNames, {
@@ -14,8 +14,6 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
-import { useFormattedBalance } from 'hooks/useFormattedBalance'
-import { displayFromWei } from 'utils'
 
 import QuickTradeSelector from './QuickTradeSelector'
 
@@ -111,7 +109,7 @@ const QuickTrade = () => {
       borderRadius='16px'
       direction='column'
       py='20px'
-      px='40px'
+      px={['16px', '40px']}
     >
       <Flex>
         <Text fontSize='24px' fontWeight='700'>
