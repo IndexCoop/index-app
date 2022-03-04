@@ -3,19 +3,7 @@ import { useEffect, useState } from 'react'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
-import {
-  Box,
-  Button,
-  Flex,
-  IconButton,
-  Input,
-  Select,
-  Spacer,
-  Tab,
-  TabList,
-  Tabs,
-  Text,
-} from '@chakra-ui/react'
+import { Box, Button, Flex, IconButton, Text } from '@chakra-ui/react'
 import { useEtherBalance, useEthers } from '@usedapp/core'
 
 import { MAINNET, POLYGON } from 'constants/chains'
@@ -29,114 +17,38 @@ import indexNames, {
 import { useFormattedBalance } from 'hooks/useFormattedBalance'
 import { displayFromWei } from 'utils'
 
-interface InputSelectorConfig {
-  isDarkMode: boolean
-  isReadOnly?: boolean
-}
+import QuickTradeSelector from './QuickTradeSelector'
 
-const InputSelector = (props: {
-  title: string
-  config: InputSelectorConfig
-  selectedToken: Token
-  tokenList: Token[]
-  onChange: (symbol: string) => void
-}) => {
-  const { config } = props
-  const { chainId, account } = useEthers()
-  // TODO: Make balance real
-  const [balance, setBalance] = useState<string>('0')
-  const etherBalance = displayFromWei(useEtherBalance(account), 2, 18) || '0.00'
-  const balanceString = useFormattedBalance(props.selectedToken)
-
-  useEffect(() => {
-    console.log('balanceString', props.selectedToken.symbol, balanceString)
-    if (props.selectedToken.symbol === ETH.symbol) {
-      setBalance(etherBalance)
-    } else {
-      setBalance(balanceString)
-    }
-    console.log(props.selectedToken.symbol, balance)
-  }, [chainId])
-
-  const borderColor = config.isDarkMode ? colors.icWhite : colors.black
-  const borderRadius = 16
-
-  return (
-    <Flex direction='column'>
-      <Text fontSize='20px' fontWeight='700'>
-        {props.title}
-      </Text>
-      <Flex mt='10px' h='54px'>
-        <Flex
-          align='center'
-          justify='center'
-          grow='1'
-          border='1px solid #000'
-          borderColor={borderColor}
-          borderLeftRadius={borderRadius}
-          px='40px'
-        >
-          <Input
-            placeholder='0'
-            type='number'
-            variant='unstyled'
-            isReadOnly={config.isReadOnly ?? false}
-          />
-          <Spacer />
-          <Text align='right' fontSize='12px' fontWeight='400' w='100%'>
-            Balance: {balance}
-          </Text>
-        </Flex>
-        <Flex
-          align='center'
-          h='54px'
-          border='1px solid #000'
-          borderColor={borderColor}
-          borderRightRadius={borderRadius}
-          minWidth='100px'
-        >
-          <Select
-            border='0'
-            w='100px'
-            minWidth='100px'
-            h='54px'
-            onChange={(event) => {
-              console.log('event', event.target.value, balanceString)
-              props.onChange(event.target.value)
-            }}
-          >
-            {props.tokenList.map((token) => {
-              return (
-                <option key={token.symbol} value={token.symbol}>
-                  {token.symbol}
-                </option>
-              )
-            })}
-          </Select>
-        </Flex>
-      </Flex>
-    </Flex>
-  )
+enum QuickTradeState {
+  default,
+  executing,
+  loading,
 }
 
 const QuickTrade = () => {
   const { isDarkMode } = useICColorMode()
   const { chainId } = useEthers()
+
   const [isBuying, setIsBuying] = useState<boolean>(true)
-  const [sellToken, setSellToken] = useState<Token>(ETH)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
+  const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
+  const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
   )
-  const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
+  const [compState, setCompState] = useState<QuickTradeState>(
+    QuickTradeState.default
+  )
 
   /**
    * Switches sell token lists between mainnet and polygon
    */
   useEffect(() => {
     if (chainId === MAINNET.chainId) {
+      setBuyTokenList(indexNames)
       setSellTokenList(mainnetCurrencyTokens)
     } else {
+      setBuyTokenList(indexNames)
       setSellTokenList(polygonCurrencyTokens)
     }
   }, [chainId])
@@ -186,6 +98,12 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
+  const isDisabled =
+    compState === QuickTradeState.loading ||
+    compState === QuickTradeState.executing
+  const isLoading = compState === QuickTradeState.loading
+  const isButtonDisabled = compState === QuickTradeState.default
+
   return (
     <Flex
       border='2px solid #F7F1E4'
@@ -201,9 +119,9 @@ const QuickTrade = () => {
         </Text>
       </Flex>
       <Flex direction='column' my='20px'>
-        <InputSelector
+        <QuickTradeSelector
           title='From'
-          config={{ isDarkMode }}
+          config={{ isDarkMode, isDisabled }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
           onChange={onChangeSellToken}
@@ -219,9 +137,9 @@ const QuickTrade = () => {
             onClick={swapTokenLists}
           />
         </Box>
-        <InputSelector
+        <QuickTradeSelector
           title='To'
-          config={{ isDarkMode, isReadOnly: true }}
+          config={{ isDarkMode, isDisabled, isReadOnly: true }}
           selectedToken={buyToken}
           tokenList={buyTokenList}
           onChange={onChangeBuyToken}
@@ -233,8 +151,10 @@ const QuickTrade = () => {
           border='0'
           borderRadius='12px'
           color='#000'
+          disabled={isButtonDisabled}
           fontSize='24px'
           fontWeight='600'
+          isLoading={isLoading}
           height='54px'
           w='100%'
         >
