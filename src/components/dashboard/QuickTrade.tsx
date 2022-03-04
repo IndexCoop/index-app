@@ -33,6 +33,7 @@ const InputSelector = (props: {
   title: string
   selectedToken: Token
   tokenList: Token[]
+  isDarkMode: boolean
   onChange: (symbol: string) => void
 }) => {
   const { chainId, account } = useEthers()
@@ -51,6 +52,9 @@ const InputSelector = (props: {
     console.log(props.selectedToken.symbol, balance)
   }, [chainId])
 
+  const borderColor = props.isDarkMode ? colors.icWhite : colors.black
+  const borderRadius = 16
+
   return (
     <Flex direction='column'>
       <Text fontSize='20px' fontWeight='700'>
@@ -61,7 +65,9 @@ const InputSelector = (props: {
           align='center'
           justify='center'
           grow='1'
-          border='1px solid #F6F1E4'
+          border='1px solid #000'
+          borderColor={borderColor}
+          borderLeftRadius={borderRadius}
           px='40px'
         >
           <Input placeholder='0' type='number' variant='unstyled' />
@@ -73,7 +79,9 @@ const InputSelector = (props: {
         <Flex
           align='center'
           h='54px'
-          border='1px solid #F6F1E4'
+          border='1px solid #000'
+          borderColor={borderColor}
+          borderRightRadius={borderRadius}
           minWidth='100px'
         >
           <Select
@@ -180,27 +188,22 @@ const QuickTrade = () => {
         <Text fontSize='24px' fontWeight='700'>
           Quick Trade
         </Text>
-        <Spacer />
-        <Tabs variant='unstyled'>
-          <TabList>
-            <Tab>DEX Swap</Tab>
-            <Tab>Index Issuance</Tab>
-          </TabList>
-        </Tabs>
       </Flex>
       <Flex direction='column' my='20px'>
         <InputSelector
           title='From'
           selectedToken={sellToken}
+          isDarkMode={isDarkMode}
           tokenList={sellTokenList}
           onChange={onChangeSellToken}
         />
         <Box h='12px' alignSelf={'flex-end'}>
           <IconButton
+            background='transparent'
             margin={'6px 0'}
             aria-label='Search database'
-            borderColor={colors.icWhite}
-            color={colors.icWhite}
+            borderColor={isDarkMode ? colors.icWhite : colors.black}
+            color={isDarkMode ? colors.icWhite : colors.black}
             icon={<UpDownIcon />}
             onClick={swapTokenLists}
           />
@@ -208,6 +211,7 @@ const QuickTrade = () => {
         <InputSelector
           title='To'
           selectedToken={buyToken}
+          isDarkMode={isDarkMode}
           tokenList={buyTokenList}
           onChange={onChangeBuyToken}
         />
