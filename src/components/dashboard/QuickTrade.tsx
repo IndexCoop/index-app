@@ -75,7 +75,7 @@ const QuickTrade = () => {
 
   /**
    * Get the list of currency tokens for the selected chain
-   * @returns {Token[]} list of tokens
+   * @returns Token[] list of tokens
    */
   const getCurrencyTokensByChain = () => {
     if (chainId === POLYGON.chainId) return polygonCurrencyTokens
