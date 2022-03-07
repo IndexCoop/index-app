@@ -6,9 +6,6 @@ import {
   useState,
 } from 'react'
 
-import { useEthers } from '@usedapp/core'
-
-import { MAINNET } from 'constants/chains'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -25,10 +22,7 @@ import {
   Matic2xFLIP,
   MetaverseIndex,
 } from 'constants/tokens'
-import {
-  fetchHistoricalTokenMarketData,
-  fetchHistoricalTokenMarketDataOnPolygon,
-} from 'utils/coingeckoApi'
+import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
 
 export interface TokenMarketDataValues {
   prices?: number[][]
@@ -64,7 +58,6 @@ export const MarketDataContext = createContext<TokenContext>({
 export const useMarketData = () => useContext(MarketDataContext)
 
 export const MarketDataProvider = (props: { children: any }) => {
-  const { chainId } = useEthers()
   const [indexMarketData, setIndexMarketData] = useState<any>({})
   const [dpiMarketData, setDpiMarketData] = useState<any>({})
   const [mviMarketData, setMviMarketData] = useState<any>({})
@@ -96,13 +89,13 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(
         Bitcoin2xFlexibleLeverageIndex.coingeckoId
       ),
-      fetchHistoricalTokenMarketDataOnPolygon(Ethereum2xFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(Ethereum2xFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
-      fetchHistoricalTokenMarketDataOnPolygon(IEthereumFLIP.coingeckoId),
-      fetchHistoricalTokenMarketDataOnPolygon(Matic2xFLIP.coingeckoId),
-      fetchHistoricalTokenMarketDataOnPolygon(IMaticFLIP.coingeckoId),
-      fetchHistoricalTokenMarketDataOnPolygon(Bitcoin2xFLIP.coingeckoId),
-      fetchHistoricalTokenMarketDataOnPolygon(IBitcoinFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(IEthereumFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(Matic2xFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(IMaticFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(Bitcoin2xFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(IBitcoinFLIP.coingeckoId),
     ])
 
     setIndexMarketData(marketData[0])

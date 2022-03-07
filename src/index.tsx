@@ -84,9 +84,9 @@ ReactDOM.render(
             <Route path='products' element={<Products />} />
             <Route path='dpi' element={<DPI />} />
             <Route path='mvi' element={<MVI />} />
-            <Route path='eth2x-fli' element={<ETH2xFLI />} />
-            <Route path='eth2x-fli-p' element={<ETH2xFLIP />} />
-            <Route path='btc2x-fli' element={<BTC2xFLI />} />
+            <Route path='ethfli' element={<ETH2xFLI />} />
+            <Route path='ethflip' element={<ETH2xFLIP />} />
+            <Route path='btcfli' element={<BTC2xFLI />} />
             <Route path='bed' element={<BED />} />
             <Route path='data' element={<DATA />} />
             <Route path='gmi' element={<GMI />} />

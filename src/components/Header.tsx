@@ -1,5 +1,4 @@
-import { Flex } from '@chakra-ui/layout'
-import { Image, Text } from '@chakra-ui/react'
+import { Flex, Image, Link, Text } from '@chakra-ui/react'
 import { useColorMode } from '@chakra-ui/system'
 
 import indexLogoBlack from 'assets/index-logo-black.png'
@@ -7,7 +6,6 @@ import indexLogoFullBlack from 'assets/index-logo-full-black.png'
 import indexLogoFullWhite from 'assets/index-logo-full-white.png'
 import indexLogoWhite from 'assets/index-logo-white.png'
 
-import ConnectButton from './header/ConnectButton'
 import Navigation from './Navigation'
 
 const Header = () => {
@@ -19,7 +17,14 @@ const Header = () => {
       m={['16px 8px 8px 24px', '64px 80px 80px 80px']}
       alignItems='center'
     >
-      <Logo isDarkMode={colorMode === 'dark'} />
+      <Link
+        href='https://indexcoop.com/'
+        _hover={{
+          textDecoration: 'none',
+        }}
+      >
+        <Logo isDarkMode={colorMode === 'dark'} />
+      </Link>
       <Navigation />
     </Flex>
   )

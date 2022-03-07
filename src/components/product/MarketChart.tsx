@@ -28,6 +28,11 @@ interface MarketChartOptions {
   hideYAxis?: boolean
 }
 
+interface MarketChartPriceChange {
+  label: string
+  isPositive: boolean
+}
+
 export interface PriceChartData {
   x: number
   y1: number
@@ -40,7 +45,7 @@ export interface PriceChartData {
 const MarketChart = (props: {
   marketData: PriceChartData[][]
   prices: string[]
-  priceChanges: string[]
+  priceChanges: MarketChartPriceChange[]
   options: MarketChartOptions
   customSelector?: any
   onMouseMove?: (...args: any[]) => any
@@ -139,6 +144,10 @@ const MarketChart = (props: {
 
   const price =
     props.prices.length === 1 ? props.prices[0] : props.prices[durationSelector]
+  const priceChange = props.priceChanges[durationSelector]
+  const priceChangeColor = priceChange.isPositive
+    ? colors.icMalachite
+    : colors.icRed
 
   return (
     <Flex direction='column' alignItems='center' width='100%'>
@@ -150,7 +159,8 @@ const MarketChart = (props: {
       >
         <PriceDisplay
           price={price}
-          change={props.priceChanges[durationSelector]}
+          change={priceChange.label}
+          color={priceChangeColor}
         />
         <Spacer />
         {props.customSelector !== null && (
@@ -224,10 +234,12 @@ const MarketChart = (props: {
 const PriceDisplay = ({
   price,
   change,
+  color,
   customSelector,
 }: {
   price: string
   change: string
+  color: string
   customSelector?: any
 }) => (
   <Flex align='center'>
@@ -235,12 +247,7 @@ const PriceDisplay = ({
       <Text fontSize={['3xl', '5xl']} color={colors.icYellow} fontWeight='700'>
         {price}
       </Text>
-      <Text
-        fontSize={['md', 'xl']}
-        color={colors.icMalachite}
-        fontWeight='700'
-        ml='16px'
-      >
+      <Text fontSize={['md', 'xl']} color={color} fontWeight='700' ml='16px'>
         {change}
       </Text>
     </Flex>

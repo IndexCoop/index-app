@@ -12,7 +12,10 @@ import {
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
-import { getPricesChanges } from 'utils/priceChange'
+import {
+  getFormattedChartPriceChanges,
+  getPricesChanges,
+} from 'utils/priceChange'
 import { getTokenSupply } from 'utils/setjsApi'
 
 import MarketChart, { PriceChartRangeOption } from './MarketChart'
@@ -99,15 +102,8 @@ const ProductPage = (props: {
   const priceChartData = getPriceChartData([marketData])
 
   const price = `$${selectLatestMarketData(marketData.hourlyPrices).toFixed(2)}`
-
   const priceChanges = getPricesChanges(marketData.hourlyPrices ?? [])
-  // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
-  const priceChangesFormatted = priceChanges.map((change) => {
-    const plusOrMinus = change.isPositive ? '+' : '-'
-    return `${plusOrMinus}$${change.abs.toFixed(
-      2
-    )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
-  })
+  const priceChangesFormatted = getFormattedChartPriceChanges(priceChanges)
 
   const stats = getStatsForToken(tokenData, marketData, currentTokenSupply)
 
