@@ -23,6 +23,7 @@ import {
 } from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
+import { getFormattedChartPriceChanges } from 'utils/priceChange'
 
 import { getPieChartPositions } from './DashboardData'
 
@@ -142,13 +143,7 @@ const Dashboard = () => {
 
   const formattedPrice = `$${totalBalanceInUSD.toFixed(2).toString()}`
   const prices = [formattedPrice]
-  // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
-  const priceChangesFormatted = priceChanges.map((change) => {
-    const plusOrMinus = change.isPositive ? '+' : '-'
-    return `${plusOrMinus}$${change.abs.toFixed(
-      2
-    )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
-  })
+  const priceChangesFormatted = getFormattedChartPriceChanges(priceChanges)
 
   const width = isWeb ? 1024 : 340
   const chartHeight = isWeb ? 400 : 300
