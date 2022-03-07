@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { ethers } from 'ethers'
 import { colors } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Select, Spacer, Text } from '@chakra-ui/react'
@@ -32,8 +31,7 @@ const QuickTradeSelector = (props: {
   const balanceString = useFormattedBalance(selectedToken)
 
   useEffect(() => {
-    const accountIsConnected = ethers.utils.isAddress(account ?? '')
-    if (!accountIsConnected) {
+    if (!account) {
       setBalance('0')
       return
     }

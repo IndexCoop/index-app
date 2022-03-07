@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { ethers } from 'ethers'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
@@ -131,22 +130,26 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
-  const accountIsConnected = ethers.utils.isAddress(account ?? '')
+  const accountIsDisconnected = !account
 
   const onClickTradeButton = () => {
-    if (accountIsConnected) {
-      // TODO: trade
+    if (accountIsDisconnected) {
+      // Open connect wallet modal
+      onOpen()
       return
     }
-    // Open connect wallet modal
-    onOpen()
+    // TODO: trade
   }
 
   const isDisabled =
     compState === QuickTradeState.loading ||
     compState === QuickTradeState.executing
   const isLoading = compState === QuickTradeState.loading
-  const isButtonDisabled = accountIsConnected ? buyTokenAmount === '0' : false
+
+  const buttonLabel = accountIsDisconnected ? 'Connect Wallet' : 'Trade'
+  const isButtonDisabled = accountIsDisconnected
+    ? false
+    : buyTokenAmount === '0'
 
   return (
     <Flex
@@ -207,7 +210,7 @@ const QuickTrade = () => {
           w='100%'
           onClick={onClickTradeButton}
         >
-          {accountIsConnected ? 'Trade' : 'Connect Wallet'}
+          {buttonLabel}
         </Button>
       </Flex>
       <ConnectModal isOpen={isOpen} onClose={onClose} />
