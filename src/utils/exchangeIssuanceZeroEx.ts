@@ -3,7 +3,7 @@ import { BigNumber, Contract, ethers, Signer } from 'ethers'
 import { Provider } from '@ethersproject/abstract-provider'
 
 import { zeroExExchangeIssuanceAddress } from 'constants/ethContractAddresses'
-import { getERC20Contract, preciseMul, toWei } from 'utils'
+import { getERC20Contract } from 'utils'
 
 import { EI0X_ABI } from './abi/EI0X'
 
@@ -31,7 +31,9 @@ export const issueExactSetFromETH = async (
 ): Promise<any> => {
   console.log('issueExactSetFromETH')
   try {
-    const eiContract = await getExchangeIssuanceContract(library.getSigner())
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
     const issueSetTx = await eiContract.issueExactSetFromETH(
       setToken,
       amountSetToken,
@@ -70,7 +72,9 @@ export const redeemExactSetForETH = async (
 ): Promise<any> => {
   console.log('redeemExactSetForETH')
   try {
-    const eiContract = await getExchangeIssuanceContract(library.getSigner())
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
     const redeemSetTx = await eiContract.issueExactSetFromETH(
       setToken,
       minEthReceive,
@@ -104,10 +108,12 @@ export const getRequiredIssuanceComponents = async (
   setToken: string,
   amountSetToken: BigNumber
 ): Promise<any> => {
-  console.log('issueExactSetFromToken')
+  console.log('getRequiredIssuanceComponents')
   // TODO: Make match 0x methods from chirstians contracts
   try {
-    const eiContract = await getExchangeIssuanceContract(library.getSigner())
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
     const issueQuoteTx = await eiContract.getRequiredIssuanceComponents(
       issuanceModule,
       isDebtIssuance,
@@ -150,7 +156,9 @@ export const issueExactSetFromToken = async (
   console.log('issueExactSetFromToken')
   // TODO: Make match 0x methods from chirstians contracts
   try {
-    const eiContract = await getExchangeIssuanceContract(library.getSigner())
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
     const issueSetTx = await eiContract.issueExactSetFromToken(
       setToken,
       inputToken,
@@ -193,10 +201,12 @@ export const redeemExactSetForToken = async (
   issuanceModule: string,
   isDebtIssuance: boolean
 ): Promise<any> => {
-  console.log('issueExactSetFromToken')
+  console.log('redeemExactSetForToken')
   // TODO: Make match 0x methods from chirstians contracts
   try {
-    const eiContract = await getExchangeIssuanceContract(library.getSigner())
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
     const redeemSetTx = await eiContract.issueExactSetFromToken(
       setToken,
       outputToken,
@@ -232,10 +242,12 @@ export const getRequiredRedemptionComponents = async (
   setToken: string,
   amountSetToken: BigNumber
 ): Promise<any> => {
-  console.log('issueExactSetFromToken')
+  console.log('getRequiredRedemptionComponents')
   // TODO: Make match 0x methods from chirstians contracts
   try {
-    const eiContract = await getExchangeIssuanceContract(library.getSigner())
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
     const redeemQuoteTx = await eiContract.getRequiredRedemptionComponents(
       issuanceModule,
       isDebtIssuance,
@@ -249,17 +261,83 @@ export const getRequiredRedemptionComponents = async (
   }
 }
 
-export const approveTokenForEI = async (library: any, tokenAddress: string) => {
+/**
+ * Runs all the necessary approval functions required before issuing or redeeming a SetToken.
+ * This function need to be called only once before the first time this smart contract is used on any particular SetToken.
+ *
+ * @param library                library from logged in user
+ * @param setToken               Address of the SetToken being initialized
+ * @param issuanceModule         Address of the issuance module which will be approved to spend component tokens.
+ *
+ */
+export const approveSetToken = async (
+  library: any,
+  setToken: string,
+  issuanceModule: string
+): Promise<any> => {
+  console.log('approveSetToken')
   try {
-    const tokenContract = await getERC20Contract(
-      library.getSigner(),
-      tokenAddress
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
     )
-    const approvalTx = await tokenContract.approve(
-      zeroExExchangeIssuanceAddress,
-      ethers.constants.MaxUint256
+    const approveSetTokenTx = await eiContract.approveSetToken(
+      setToken,
+      issuanceModule
     )
-    return approvalTx
+    return approveSetTokenTx
+  } catch (err) {
+    console.log('error', err)
+    return err
+  }
+}
+
+/**
+ * Runs all the necessary approval functions required for a given ERC20 token.
+ * This function can be called when a new token is added to a SetToken during a rebalance.
+ *
+ * @param library                library from logged in user
+ * @param token                  Address of the token which needs approval
+ * @param spender                Address of the spender which will be approved to spend token. (Must be a whitlisted issuance module)
+ *
+ */
+export const approveToken = async (
+  library: any,
+  token: string,
+  spender: string
+): Promise<any> => {
+  console.log('approveToken')
+  try {
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
+    const approveTokenTx = await eiContract.approveToken(token, spender)
+    return approveTokenTx
+  } catch (err) {
+    console.log('error', err)
+    return err
+  }
+}
+
+/**
+ * Runs all the necessary approval functions required for a list of ERC20 tokens.
+ *
+ * @param library                library from logged in user
+ * @param tokens                 Addresses of the tokens which needs approval
+ * @param spender                Address of the spender which will be approved to spend token. (Must be a whitlisted issuance module)
+ *
+ */
+export const approveTokens = async (
+  library: any,
+  tokens: string[],
+  spender: string
+): Promise<any> => {
+  console.log('approveTokens')
+  try {
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
+    const approveTokensTx = await eiContract.approveTokens(tokens, spender)
+    return approveTokensTx
   } catch (err) {
     console.log('error', err)
     return err
@@ -287,45 +365,12 @@ export const tokenAllowance = async (
   }
 }
 
-export const getMaxIn = async (
-  library: any,
-  amountOut: BigNumber,
-  buyTokenAddress: string,
-  sellTokenAddress: string
-): Promise<BigNumber> => {
-  const exchangeIssuance = await getExchangeIssuanceContract(
-    library.getSigner()
-  )
-  const value = await exchangeIssuance.getAmountInToIssueExactSet(
-    buyTokenAddress,
-    sellTokenAddress,
-    amountOut
-  )
-  return preciseMul(value, toWei(1.05))
-}
-
-export const getSetValue = async (
-  library: any,
-  buyTokenAddress: string,
-  sellTokenAddress: string
-): Promise<BigNumber> => {
-  const exchangeIssuance = await getExchangeIssuanceContract(
-    library.getSigner()
-  )
-  const value = await exchangeIssuance.getAmountInToIssueExactSet(
-    buyTokenAddress,
-    sellTokenAddress,
-    toWei(1)
-  )
-  return value
-}
-
 /**
- * returns instance of Exchange Issuance Contract
+ * returns instance of ExchangeIssuanceZeroEx Contract
  * @param providerSigner
- * @returns
+ * @returns EI contract
  */
-export const getExchangeIssuanceContract = async (
+export const getExchangeIssuanceZeroExContract = async (
   providerSigner: Signer | Provider | undefined
 ): Promise<Contract> => {
   return await new Contract(
