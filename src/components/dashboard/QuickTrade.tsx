@@ -3,9 +3,17 @@ import { useEffect, useState } from 'react'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, IconButton, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
+import ConnectModal from 'components/header/ConnectModal'
 import { MAINNET, POLYGON } from 'constants/chains'
 import indexNames, {
   DefiPulseIndex,
@@ -16,6 +24,7 @@ import indexNames, {
 } from 'constants/tokens'
 
 import QuickTradeSelector from './QuickTradeSelector'
+import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
 enum QuickTradeState {
   default,
@@ -25,7 +34,8 @@ enum QuickTradeState {
 
 const QuickTrade = () => {
   const { isDarkMode } = useICColorMode()
-  const { chainId } = useEthers()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { account, chainId } = useEthers()
 
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
@@ -35,6 +45,7 @@ const QuickTrade = () => {
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
   )
+  const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [compState, setCompState] = useState<QuickTradeState>(
     QuickTradeState.default
   )
@@ -64,7 +75,7 @@ const QuickTrade = () => {
 
   /**
    * Get the list of currency tokens for the selected chain
-   * @returns {Token[]} list of tokens
+   * @returns Token[] list of tokens
    */
   const getCurrencyTokensByChain = () => {
     if (chainId === POLYGON.chainId) return polygonCurrencyTokens
@@ -87,7 +98,17 @@ const QuickTrade = () => {
     // TODO: update ui
     setTimeout(() => {
       setCompState(QuickTradeState.default)
-      setBuyTokenAmount(input === '0' || input.length < 1 ? '0' : '200')
+      const isZero = input === '0' || input.length < 1
+      setBuyTokenAmount(isZero ? '0' : '200')
+      setTradeInfoData(
+        isZero
+          ? []
+          : [
+              { title: 'Minimum Receive', value: '17.879440' },
+              { title: 'Network Fee', value: '0.003672 ETH' },
+              { title: 'Offered From', value: 'SushiSwap' },
+            ]
+      )
     }, 2000)
   }
 
@@ -109,11 +130,26 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
+  const accountIsDisconnected = !account
+
+  const onClickTradeButton = () => {
+    if (accountIsDisconnected) {
+      // Open connect wallet modal
+      onOpen()
+      return
+    }
+    // TODO: trade
+  }
+
   const isDisabled =
     compState === QuickTradeState.loading ||
     compState === QuickTradeState.executing
   const isLoading = compState === QuickTradeState.loading
-  const isButtonDisabled = buyTokenAmount === '0'
+
+  const buttonLabel = accountIsDisconnected ? 'Connect Wallet' : 'Trade'
+  const isButtonDisabled = accountIsDisconnected
+    ? false
+    : buyTokenAmount === '0'
 
   return (
     <Flex
@@ -159,7 +195,8 @@ const QuickTrade = () => {
           onSelectedToken={onChangeBuyToken}
         />
       </Flex>
-      <Flex>
+      <Flex direction='column'>
+        {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
         <Button
           background={isDarkMode ? colors.icWhite : colors.icYellow}
           border='0'
@@ -171,10 +208,12 @@ const QuickTrade = () => {
           isLoading={isLoading}
           height='54px'
           w='100%'
+          onClick={onClickTradeButton}
         >
-          Trade
+          {buttonLabel}
         </Button>
       </Flex>
+      <ConnectModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   )
 }
