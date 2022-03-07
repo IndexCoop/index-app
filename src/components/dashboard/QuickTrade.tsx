@@ -3,9 +3,17 @@ import { useEffect, useState } from 'react'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, IconButton, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
+import ConnectModal from 'components/header/ConnectModal'
 import { MAINNET, POLYGON } from 'constants/chains'
 import indexNames, {
   DefiPulseIndex,
@@ -26,7 +34,8 @@ enum QuickTradeState {
 
 const QuickTrade = () => {
   const { isDarkMode } = useICColorMode()
-  const { chainId } = useEthers()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { account, chainId } = useEthers()
 
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
@@ -66,7 +75,7 @@ const QuickTrade = () => {
 
   /**
    * Get the list of currency tokens for the selected chain
-   * @returns {Token[]} list of tokens
+   * @returns Token[] list of tokens
    */
   const getCurrencyTokensByChain = () => {
     if (chainId === POLYGON.chainId) return polygonCurrencyTokens
@@ -121,11 +130,26 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
+  const accountIsDisconnected = !account
+
+  const onClickTradeButton = () => {
+    if (accountIsDisconnected) {
+      // Open connect wallet modal
+      onOpen()
+      return
+    }
+    // TODO: trade
+  }
+
   const isDisabled =
     compState === QuickTradeState.loading ||
     compState === QuickTradeState.executing
   const isLoading = compState === QuickTradeState.loading
-  const isButtonDisabled = buyTokenAmount === '0'
+
+  const buttonLabel = accountIsDisconnected ? 'Connect Wallet' : 'Trade'
+  const isButtonDisabled = accountIsDisconnected
+    ? false
+    : buyTokenAmount === '0'
 
   return (
     <Flex
@@ -184,10 +208,12 @@ const QuickTrade = () => {
           isLoading={isLoading}
           height='54px'
           w='100%'
+          onClick={onClickTradeButton}
         >
-          Trade
+          {buttonLabel}
         </Button>
       </Flex>
+      <ConnectModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   )
 }

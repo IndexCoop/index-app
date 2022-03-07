@@ -31,12 +31,17 @@ const QuickTradeSelector = (props: {
   const balanceString = useFormattedBalance(selectedToken)
 
   useEffect(() => {
+    if (!account) {
+      setBalance('0')
+      return
+    }
+
     if (selectedToken.symbol === ETH.symbol) {
       setBalance(etherBalance)
     } else {
       setBalance(balanceString)
     }
-  }, [chainId, selectedToken, etherBalance, balanceString])
+  }, [account, chainId, selectedToken, etherBalance, balanceString])
 
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
