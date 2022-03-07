@@ -9,7 +9,7 @@ import { EI0X_ABI } from 'utils/abi/EI0X'
 /**
  * Get the 0x Trade Data for
  */
-export const useGetTradeData = () => {
+export const useExchangeIssuanceZeroEx = () => {
   /**
    * Returns transaction for the following:
    * Issues an exact amount of SetTokens for given amount of ETH.
