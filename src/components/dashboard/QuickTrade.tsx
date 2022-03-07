@@ -16,6 +16,7 @@ import indexNames, {
 } from 'constants/tokens'
 
 import QuickTradeSelector from './QuickTradeSelector'
+import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
 enum QuickTradeState {
   default,
@@ -35,6 +36,7 @@ const QuickTrade = () => {
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
   )
+  const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [compState, setCompState] = useState<QuickTradeState>(
     QuickTradeState.default
   )
@@ -87,7 +89,17 @@ const QuickTrade = () => {
     // TODO: update ui
     setTimeout(() => {
       setCompState(QuickTradeState.default)
-      setBuyTokenAmount(input === '0' || input.length < 1 ? '0' : '200')
+      const isZero = input === '0' || input.length < 1
+      setBuyTokenAmount(isZero ? '0' : '200')
+      setTradeInfoData(
+        isZero
+          ? []
+          : [
+              { title: 'Minimum Receive', value: '17.879440' },
+              { title: 'Network Fee', value: '0.003672 ETH' },
+              { title: 'Offered From', value: 'SushiSwap' },
+            ]
+      )
     }, 2000)
   }
 
@@ -159,7 +171,8 @@ const QuickTrade = () => {
           onSelectedToken={onChangeBuyToken}
         />
       </Flex>
-      <Flex>
+      <Flex direction='column'>
+        {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
         <Button
           background={isDarkMode ? colors.icWhite : colors.icYellow}
           border='0'
