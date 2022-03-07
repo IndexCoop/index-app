@@ -21,9 +21,9 @@ import {
   TokenMarketDataValues,
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
-import { getFormattedChartPriceChanges } from 'utils/priceChange'
 import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
+import { getFormattedChartPriceChanges } from 'utils/priceChange'
 
 import { getPieChartPositions } from './DashboardData'
 

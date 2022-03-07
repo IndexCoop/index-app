@@ -13,8 +13,8 @@ import {
 } from 'providers/MarketData/MarketDataProvider'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 import {
-  getPricesChanges,
   getFormattedChartPriceChanges,
+  getPricesChanges,
 } from 'utils/priceChange'
 import { getTokenSupply } from 'utils/setjsApi'
 
