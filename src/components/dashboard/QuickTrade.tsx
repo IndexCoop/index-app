@@ -38,8 +38,6 @@ const QuickTrade = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
 
-  console.log(account)
-
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
   const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
