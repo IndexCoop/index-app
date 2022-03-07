@@ -1,11 +1,20 @@
 import { useEffect, useState } from 'react'
 
+import { ethers } from 'ethers'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, IconButton, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
+import ConnectModal from 'components/header/ConnectModal'
 import { MAINNET, POLYGON } from 'constants/chains'
 import indexNames, {
   DefiPulseIndex,
@@ -26,7 +35,10 @@ enum QuickTradeState {
 
 const QuickTrade = () => {
   const { isDarkMode } = useICColorMode()
-  const { chainId } = useEthers()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { account, chainId } = useEthers()
+
+  console.log(account)
 
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
@@ -121,11 +133,22 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
+  const accountIsConnected = ethers.utils.isAddress(account ?? '')
+
+  const onClickTradeButton = () => {
+    if (accountIsConnected) {
+      // TODO: trade
+      return
+    }
+    // Open connect wallet modal
+    onOpen()
+  }
+
   const isDisabled =
     compState === QuickTradeState.loading ||
     compState === QuickTradeState.executing
   const isLoading = compState === QuickTradeState.loading
-  const isButtonDisabled = buyTokenAmount === '0'
+  const isButtonDisabled = accountIsConnected ? buyTokenAmount === '0' : false
 
   return (
     <Flex
@@ -184,10 +207,12 @@ const QuickTrade = () => {
           isLoading={isLoading}
           height='54px'
           w='100%'
+          onClick={onClickTradeButton}
         >
-          Trade
+          {accountIsConnected ? 'Trade' : 'Connect Wallet'}
         </Button>
       </Flex>
+      <ConnectModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   )
 }
