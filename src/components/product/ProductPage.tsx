@@ -12,7 +12,11 @@ import {
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
-import { getPricesChanges } from 'utils/priceChange'
+import { displayFromWei } from 'utils'
+import {
+  getFormattedChartPriceChanges,
+  getPricesChanges,
+} from 'utils/priceChange'
 import { getTokenSupply } from 'utils/setjsApi'
 
 import MarketChart, { PriceChartRangeOption } from './MarketChart'
@@ -36,7 +40,7 @@ function getStatsForToken(
     notation: 'compact',
   })
 
-  let supplyFormatter = Intl.NumberFormat('en')
+  let supplyFormatter = Intl.NumberFormat('en', { maximumFractionDigits: 2 })
 
   const marketCap =
     marketData.marketcaps
@@ -87,27 +91,30 @@ const ProductPage = (props: {
     }
 
     const fetchSupply = async () => {
-      const setDetails = await getTokenSupply(library, [tokenAddress], chainId)
-      const e18 = BigNumber.from('1000000000000000000')
-      const supply = setDetails[0].totalSupply.div(e18).toNumber()
-      setCurrentTokenSupply(supply)
+      try {
+        const setDetails = await getTokenSupply(
+          library,
+          [tokenAddress],
+          chainId
+        )
+        if (setDetails.length < 1) return
+        const supply = parseFloat(
+          displayFromWei(setDetails[0].totalSupply) ?? '0'
+        )
+        setCurrentTokenSupply(supply)
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     fetchSupply()
-  }, [tokenData])
+  }, [chainId, library, tokenData])
 
   const priceChartData = getPriceChartData([marketData])
 
   const price = `$${selectLatestMarketData(marketData.hourlyPrices).toFixed(2)}`
-
   const priceChanges = getPricesChanges(marketData.hourlyPrices ?? [])
-  // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
-  const priceChangesFormatted = priceChanges.map((change) => {
-    const plusOrMinus = change.isPositive ? '+' : '-'
-    return `${plusOrMinus}$${change.abs.toFixed(
-      2
-    )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`
-  })
+  const priceChangesFormatted = getFormattedChartPriceChanges(priceChanges)
 
   const stats = getStatsForToken(tokenData, marketData, currentTokenSupply)
 

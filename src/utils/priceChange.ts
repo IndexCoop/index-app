@@ -30,6 +30,20 @@ function getChangeInPrice(priceData: number[][]): PriceChange {
   }
 }
 
+export function getFormattedChartPriceChanges(priceChanges: PriceChange[]) {
+  // ['+10.53 ( +5.89% )', '+6.53 ( +2.89% )', ...]
+  const priceChangesFormatted = priceChanges.map((change) => {
+    const plusOrMinus = change.isPositive ? '+' : '-'
+    return {
+      label: `${plusOrMinus}$${change.abs.toFixed(
+        2
+      )} ( ${plusOrMinus} ${change.rel.toFixed(2)}% )`,
+      isPositive: change.isPositive,
+    }
+  })
+  return priceChangesFormatted
+}
+
 export function getPricesChanges(priceData: number[][]): PriceChange[] {
   const hourlyDataInterval = 24
   let ranges = [
