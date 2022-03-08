@@ -3,9 +3,9 @@ import { utils } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useContractCall, useEthers } from '@usedapp/core'
 
-import ERC20ABI from 'utils/abi/ERC20.json'
+import { ERC20_ABI } from 'utils/abi/ERC20'
 
-const ERC20Interface = new utils.Interface(ERC20ABI)
+const ERC20Interface = new utils.Interface(ERC20_ABI)
 
 /**
  * Get the approved allowance/spending for an ERC20
