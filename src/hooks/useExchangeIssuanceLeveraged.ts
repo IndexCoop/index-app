@@ -11,26 +11,22 @@ import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
  */
 export const useExchangeIssuanceLeveraged = () => {
   /**
-   * Returns transaction for the following:
-   * Issues an exact amount of SetTokens for given amount of ETH.
-   * The excess amount of tokens is returned in an equivalent amount of ether.
+   * Trigger issuance of set token paying with any arbitrary ERC20 token
    *
-   * @param library                library from logged in user
-   * @param setToken               Address of the SetToken to be issued
-   * @param amountSetToken         Amount of SetTokens to issue
-   * @param componentQuotes        The encoded 0x transactions to execute
-   * @param issuanceModule         Address of issuance Module to use
-   * @param isDebtIssuance         Flag indicating wether given issuance module is a debt issuance module
-   *
-   * @return amountEthReturn       Amount of ether returned to the caller
+   * @param library                       library from logged in user
+   * @param _setToken                     Set token to issue
+   * @param _setAmount                    Amount to issue
+   * @param _exchange                     Exchange to use in swap from debt to collateral token
+   * @param _swapDataDebtForCollateral    Data (token addresses and fee levels) to describe the swap path from Debt to collateral token
+   * @param _swapDataInputToken           Data (token addresses and fee levels) to describe the swap path from eth to collateral token
    */
   const issueExactSetFromETH = async (
     library: any,
-    setToken: string,
-    amountSetToken: BigNumber,
-    componentQuotes: any[],
-    issuanceModule: string,
-    isDebtIssuance: boolean
+    _setToken: string,
+    _setAmount: BigNumber,
+    _exchange: string,
+    _swapDataDebtForCollateral: any,
+    _swapDataInputToken: any
   ): Promise<any> => {
     console.log('issueExactSetFromETH')
     try {
@@ -38,11 +34,11 @@ export const useExchangeIssuanceLeveraged = () => {
         library.getSigner()
       )
       const issueSetTx = await eiContract.issueExactSetFromETH(
-        setToken,
-        amountSetToken,
-        componentQuotes,
-        issuanceModule,
-        isDebtIssuance
+        _setToken,
+        _setAmount,
+        _exchange,
+        _swapDataDebtForCollateral,
+        _swapDataInputToken
       )
       return issueSetTx
     } catch (err) {
@@ -52,38 +48,34 @@ export const useExchangeIssuanceLeveraged = () => {
   }
 
   /**
-   * Returns transaction for the following:
-   * Redeems an exact amount of SetTokens for ETH.
-   * The SetToken must be approved by the sender to this contract.
+   * Trigger redemption of set token to pay the user with Eth
    *
-   * @param library                library from logged in user
-   * @param setToken               Address of the SetToken to be issued
-   * @param minEthReceive          Minimum amount of Eth to receive
-   * @param componentQuotes        The encoded 0x transactions to execute
-   * @param issuanceModule         Address of issuance Module to use
-   * @param isDebtIssuance         Flag indicating wether given issuance module is a debt issuance module
-   *
-   * @return outputAmount          Amount of output tokens sent to the caller
+   * @param library                     library from logged in user
+   * @param _setAmount                  Amount to redeem
+   * @param _minAmountOutputToken       Minimum amount of ETH to send to the user
+   * @param _exchange                   Exchange to use in swap from debt to collateral token
+   * @param _swapDataCollateralForDebt  Data (token path and fee levels) describing the swap from Collateral Token to Debt Token
+   * @param _swapDataOutputToken        Data (token path and fee levels) describing the swap from Collateral Token to Eth
    */
   const redeemExactSetForETH = async (
     library: any,
-    setToken: string,
-    minEthReceive: BigNumber,
-    componentQuotes: any[],
-    issuanceModule: string,
-    isDebtIssuance: boolean
+    _setAmount: BigNumber,
+    _minAmountOutputToken: BigNumber,
+    _exchange: string,
+    _swapDataCollateralForDebt: any,
+    _swapDataOutputToken: any
   ): Promise<any> => {
     console.log('redeemExactSetForETH')
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-      const redeemSetTx = await eiContract.issueExactSetFromETH(
-        setToken,
-        minEthReceive,
-        componentQuotes,
-        issuanceModule,
-        isDebtIssuance
+      const redeemSetTx = await eiContract.redeemExactSetForETH(
+        _setAmount,
+        _minAmountOutputToken,
+        _exchange,
+        _swapDataCollateralForDebt,
+        _swapDataOutputToken
       )
       return redeemSetTx
     } catch (err) {
@@ -93,82 +85,41 @@ export const useExchangeIssuanceLeveraged = () => {
   }
 
   /**
-   * Returns transaction to get component & position quotes for token issuance
+   * Trigger issuance of set token paying with any arbitrary ERC20 token
    *
-   * @param library                library from logged in user
-   * @param issuanceModule         Address of issuance Module to use
-   * @param isDebtIssuance         Flag indicating wether given issuance module is a debt issuance module
-   * @param setToken               Address of the SetToken to be issued
-   * @param amountSetToken         Amount of SetTokens to issue
-   *
-   * @return componenets           Array of component addresses
-   * @return positions             Array of component positions
+   * @param library                       library from logged in user
+   * @param _setToken                     Set token to issue
+   * @param _setAmount                    Amount to issue
+   * @param _inputToken                   Input token to pay with
+   * @param _maxAmountInputToken          Maximum amount of input token to spend
+   * @param _exchange                     Exchange to use in swap from debt to collateral token
+   * @param _swapDataDebtForCollateral    Data (token addresses and fee levels) to describe the swap path from Debt to collateral token
+   * @param _swapDataInputToken           Data (token addresses and fee levels) to describe the swap path from input to collateral token
    */
-  const getRequiredIssuanceComponents = async (
+  const issueExactSetFromERC20 = async (
     library: any,
-    issuanceModule: string,
-    isDebtIssuance: boolean,
-    setToken: string,
-    amountSetToken: BigNumber
+    _setToken: string,
+    _setAmount: BigNumber,
+    _inputToken: string,
+    _maxAmountInputToken: BigNumber,
+    _exchange: string,
+    _swapDataDebtForCollateral: any,
+    _swapDataInputToken: any
   ): Promise<any> => {
-    console.log('getRequiredIssuanceComponents')
+    console.log('issueExactSetFromERC20')
     // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-      const issueQuoteTx = await eiContract.getRequiredIssuanceComponents(
-        issuanceModule,
-        isDebtIssuance,
-        setToken,
-        amountSetToken
-      )
-      return issueQuoteTx
-    } catch (err) {
-      console.log('error', err)
-      return err
-    }
-  }
-  /**
-   * Returns transaction for the following:
-   * Issues an exact amount of SetTokens for given amount of input ERC20 tokens.
-   * The excess amount of tokens is returned in an equivalent amount of ether.
-   *
-   * @param library                library from logged in user
-   * @param setToken               Address of the SetToken to be issued
-   * @param inputToken             Address of the input token
-   * @param amountSetToken         Amount of SetTokens to issue
-   * @param maxAmountInputToken    Maximum amount of input tokens to be used to issue SetTokens.
-   * @param componentQuotes        The encoded 0x transactions to execute
-   * @param issuanceModule         Address of issuance Module to use
-   * @param isDebtIssuance         Flag indicating wether given issuance module is a debt issuance module
-   *
-   * @return totalInputTokenSold   Amount of input token spent for issuance
-   */
-  const issueExactSetFromToken = async (
-    library: any,
-    setToken: string,
-    inputToken: string,
-    amountSetToken: BigNumber,
-    maxAmountInputToken: BigNumber,
-    componentQuotes: any[],
-    issuanceModule: string,
-    isDebtIssuance: boolean
-  ): Promise<any> => {
-    console.log('issueExactSetFromToken')
-    // TODO: Make match 0x methods from chirstians contracts
-    try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
-        library.getSigner()
-      )
-      const issueSetTx = await eiContract.issueExactSetFromToken(
-        setToken,
-        inputToken,
-        amountSetToken,
-        maxAmountInputToken,
-        componentQuotes,
-        issuanceModule,
-        isDebtIssuance
+      const issueSetTx = await eiContract.issueExactSetFromERC20(
+        _setToken,
+        _setAmount,
+        _inputToken,
+        _maxAmountInputToken,
+        _exchange,
+        _swapDataDebtForCollateral,
+        _swapDataInputToken
       )
       return issueSetTx
     } catch (err) {
@@ -178,45 +129,41 @@ export const useExchangeIssuanceLeveraged = () => {
   }
 
   /**
-   * Returns transaction for the following:
-   * Issues an exact amount of SetTokens for given amount of input ERC20 tokens.
-   * The excess amount of tokens is returned in an equivalent amount of ether.
+   * Trigger redemption of set token to pay the user with an arbitrary ERC20
    *
-   * @param library                library from logged in user
-   * @param setToken               Address of the SetToken to be issued
-   * @param outputToken            Address of the input token
-   * @param amountSetToken         Amount of SetTokens to issue
-   * @param minOutputReceive       Minimum amount of output token to receive
-   * @param componentQuotes        The encoded 0x transactions to execute
-   * @param issuanceModule         Address of issuance Module to use
-   * @param isDebtIssuance         Flag indicating wether given issuance module is a debt issuance module
-   *
-   * @return outputAmount          Amount of output tokens sent to the caller
+   * @param library                     library from logged in user
+   * @param _setToken                   Set token to redeem
+   * @param _setAmount                  Amount to redeem
+   * @param _outputToken                Address of the ERC20 token to send to the user
+   * @param _minAmountOutputToken       Minimum amount of output token to send to the user
+   * @param _exchange                   Exchange to use in swap from debt to collateral token
+   * @param _swapDataCollateralForDebt  Data (token path and fee levels) describing the swap from Collateral Token to Debt Token
+   * @param _swapDataOutputToken        Data (token path and fee levels) describing the swap from Collateral Token to Output token
    */
-  const redeemExactSetForToken = async (
+  const redeemExactSetForERC20 = async (
     library: any,
-    setToken: string,
-    outputToken: string,
-    amountSetToken: BigNumber,
-    minOutputReceive: BigNumber,
-    componentQuotes: any[],
-    issuanceModule: string,
-    isDebtIssuance: boolean
+    _setToken: string,
+    _setAmount: BigNumber,
+    _outputToken: string,
+    _minAmountOutputToken: BigNumber,
+    _exchange: string,
+    _swapDataCollateralForDebt: string,
+    _swapDataOutputToken: string
   ): Promise<any> => {
-    console.log('redeemExactSetForToken')
+    console.log('redeemExactSetForERC20')
     // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-      const redeemSetTx = await eiContract.issueExactSetFromToken(
-        setToken,
-        outputToken,
-        amountSetToken,
-        minOutputReceive,
-        componentQuotes,
-        issuanceModule,
-        isDebtIssuance
+      const redeemSetTx = await eiContract.redeemExactSetForERC20(
+        _setToken,
+        _setAmount,
+        _outputToken,
+        _minAmountOutputToken,
+        _exchange,
+        _swapDataCollateralForDebt,
+        _swapDataOutputToken
       )
       return redeemSetTx
     } catch (err) {
@@ -224,36 +171,33 @@ export const useExchangeIssuanceLeveraged = () => {
       return err
     }
   }
+
   /**
-   * Returns transaction to get component & position quotes for token redemption
+   * Returns the collateral / debt token addresses and amounts for a leveraged index
    *
-   * @param library                library from logged in user
-   * @param issuanceModule         Address of issuance Module to use
-   * @param isDebtIssuance         Flag indicating wether given issuance module is a debt issuance module
-   * @param setToken               Address of the SetToken to be issued
-   * @param amountSetToken         Amount of SetTokens to issue
+   * @param library               library from logged in user
+   * @param setToken              Address of the SetToken to be issued / redeemed
+   * @param setAmount             Amount of SetTokens to issue / redeem
+   * @param isIssuance            Boolean indicating if the SetToken is to be issued or redeemed
    *
-   * @return componenets           Array of component addresses
-   * @return positions             Array of component positions
+   * @return Struct containing the collateral / debt token addresses and amounts
    */
-  const getRequiredRedemptionComponents = async (
+  const getLeveragedTokenData = async (
     library: any,
-    issuanceModule: string,
-    isDebtIssuance: boolean,
     setToken: string,
-    amountSetToken: BigNumber
+    setAmount: BigNumber,
+    isIssuance: boolean
   ): Promise<any> => {
-    console.log('getRequiredRedemptionComponents')
+    console.log('getLeveragedTokenData')
     // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-      const redeemQuoteTx = await eiContract.getRequiredRedemptionComponents(
-        issuanceModule,
-        isDebtIssuance,
+      const redeemQuoteTx = await eiContract.getLeveragedTokenData(
         setToken,
-        amountSetToken
+        setAmount,
+        isIssuance
       )
       return redeemQuoteTx
     } catch (err) {
@@ -268,23 +212,18 @@ export const useExchangeIssuanceLeveraged = () => {
    *
    * @param library                library from logged in user
    * @param setToken               Address of the SetToken being initialized
-   * @param issuanceModule         Address of the issuance module which will be approved to spend component tokens.
    *
    */
   const approveSetToken = async (
     library: any,
-    setToken: string,
-    issuanceModule: string
+    setToken: string
   ): Promise<any> => {
     console.log('approveSetToken')
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-      const approveSetTokenTx = await eiContract.approveSetToken(
-        setToken,
-        issuanceModule
-      )
+      const approveSetTokenTx = await eiContract.approveSetToken(setToken)
       return approveSetTokenTx
     } catch (err) {
       console.log('error', err)
@@ -298,20 +237,15 @@ export const useExchangeIssuanceLeveraged = () => {
    *
    * @param library                library from logged in user
    * @param token                  Address of the token which needs approval
-   * @param spender                Address of the spender which will be approved to spend token. (Must be a whitlisted issuance module)
    *
    */
-  const approveToken = async (
-    library: any,
-    token: string,
-    spender: string
-  ): Promise<any> => {
+  const approveToken = async (library: any, token: string): Promise<any> => {
     console.log('approveToken')
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-      const approveTokenTx = await eiContract.approveToken(token, spender)
+      const approveTokenTx = await eiContract.approveToken(token)
       return approveTokenTx
     } catch (err) {
       console.log('error', err)
@@ -324,20 +258,18 @@ export const useExchangeIssuanceLeveraged = () => {
    *
    * @param library                library from logged in user
    * @param tokens                 Addresses of the tokens which needs approval
-   * @param spender                Address of the spender which will be approved to spend token. (Must be a whitlisted issuance module)
    *
    */
   const approveTokens = async (
     library: any,
-    tokens: string[],
-    spender: string
+    tokens: string[]
   ): Promise<any> => {
     console.log('approveTokens')
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-      const approveTokensTx = await eiContract.approveTokens(tokens, spender)
+      const approveTokensTx = await eiContract.approveTokens(tokens)
       return approveTokensTx
     } catch (err) {
       console.log('error', err)
@@ -391,11 +323,8 @@ export const useExchangeIssuanceLeveraged = () => {
 
   return {
     issueExactSetFromETH,
-    redeemExactSetForETH,
-    getRequiredIssuanceComponents,
-    issueExactSetFromToken,
-    redeemExactSetForToken,
-    getRequiredRedemptionComponents,
+    redeemExactSetForERC20,
+    getLeveragedTokenData,
     approveSetToken,
     approveToken,
     approveTokens,

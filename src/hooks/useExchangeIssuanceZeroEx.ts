@@ -78,7 +78,7 @@ export const useExchangeIssuanceZeroEx = () => {
       const eiContract = await getExchangeIssuanceZeroExContract(
         library.getSigner()
       )
-      const redeemSetTx = await eiContract.issueExactSetFromETH(
+      const redeemSetTx = await eiContract.redeemExactSetForETH(
         setToken,
         minEthReceive,
         componentQuotes,
@@ -129,6 +129,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return err
     }
   }
+
   /**
    * Returns transaction for the following:
    * Issues an exact amount of SetTokens for given amount of input ERC20 tokens.
@@ -209,7 +210,7 @@ export const useExchangeIssuanceZeroEx = () => {
       const eiContract = await getExchangeIssuanceZeroExContract(
         library.getSigner()
       )
-      const redeemSetTx = await eiContract.issueExactSetFromToken(
+      const redeemSetTx = await eiContract.redeemExactSetForToken(
         setToken,
         outputToken,
         amountSetToken,
@@ -224,6 +225,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return err
     }
   }
+
   /**
    * Returns transaction to get component & position quotes for token redemption
    *
