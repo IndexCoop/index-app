@@ -67,8 +67,9 @@ export const getZeroExTradeData = async (
 }
 
 const getChainTokenAddress = (token: Token, chainId: number) => {
-  if (chainId === POLYGON.chainId) return token.polygonAddress
-  return token.address
+  if (chainId === POLYGON.chainId)
+    return token.symbol === 'MATIC' ? 'MATIC' : token.polygonAddress
+  return token.symbol === 'ETH' ? 'ETH' : token.address
 }
 
 const getApiParams = (
