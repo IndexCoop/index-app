@@ -12,6 +12,7 @@ import {
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
+import { displayFromWei } from 'utils'
 import {
   getFormattedChartPriceChanges,
   getPricesChanges,
@@ -39,7 +40,7 @@ function getStatsForToken(
     notation: 'compact',
   })
 
-  let supplyFormatter = Intl.NumberFormat('en')
+  let supplyFormatter = Intl.NumberFormat('en', { maximumFractionDigits: 2 })
 
   const marketCap =
     marketData.marketcaps
@@ -90,14 +91,24 @@ const ProductPage = (props: {
     }
 
     const fetchSupply = async () => {
-      const setDetails = await getTokenSupply(library, [tokenAddress], chainId)
-      const e18 = BigNumber.from('1000000000000000000')
-      const supply = setDetails[0].totalSupply.div(e18).toNumber()
-      setCurrentTokenSupply(supply)
+      try {
+        const setDetails = await getTokenSupply(
+          library,
+          [tokenAddress],
+          chainId
+        )
+        if (setDetails.length < 1) return
+        const supply = parseFloat(
+          displayFromWei(setDetails[0].totalSupply) ?? '0'
+        )
+        setCurrentTokenSupply(supply)
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     fetchSupply()
-  }, [tokenData])
+  }, [chainId, library, tokenData])
 
   const priceChartData = getPriceChartData([marketData])
 
