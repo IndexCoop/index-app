@@ -44,17 +44,13 @@ export const getZeroExTradeData = async (
     amount,
     chainId
   )
+  const query = querystring.stringify(params)
+
   let resp
   if (chainId === MAINNET.chainId)
-    resp = await axios.get(
-      `https://api.0x.org/swap/v1/quote?${querystring.stringify(params)}`
-    )
+    resp = await axios.get(`https://api.0x.org/swap/v1/quote?${query}`)
   else
-    resp = await axios.get(
-      `https://polygon.api.0x.org/swap/v1/quote?${querystring.stringify(
-        params
-      )}`
-    )
+    resp = await axios.get(`https://polygon.api.0x.org/swap/v1/quote?${query}`)
 
   const zeroExData: ZeroExData = resp.data
   return await processApiResult(
