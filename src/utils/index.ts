@@ -1,5 +1,9 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import { BigNumber, Contract, Signer } from 'ethers'
+
+import { Provider } from '@ethersproject/abstract-provider'
 import { formatUnits, parseEther } from '@ethersproject/units'
+
+import { ERC20_ABI } from './abi/ERC20'
 
 export const selectLatestMarketData = (marketData?: number[][]) =>
   marketData?.[marketData.length - 1]?.[1] || 0
@@ -57,4 +61,11 @@ export const preciseMul = (a: BigNumber, b: BigNumber): BigNumber => {
 export const preciseDiv = (a: BigNumber, b: BigNumber): BigNumber => {
   if (b.isZero()) return BigNumber.from(0)
   return a.mul(toWei(1)).div(b)
+}
+
+export const getERC20Contract = async (
+  provider: Signer | Provider | undefined,
+  address: string
+): Promise<Contract> => {
+  return await new Contract(address, ERC20_ABI, provider)
 }

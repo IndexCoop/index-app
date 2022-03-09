@@ -7,9 +7,9 @@ import { useContractFunction, useEthers } from '@usedapp/core'
 
 import { minimumRequiredApprovalQuantity } from 'constants/index'
 import { useAllowance } from 'hooks/useAllowance'
-import ERC20ABI from 'utils/abi/ERC20.json'
+import { ERC20_ABI } from 'utils/abi/ERC20'
 
-const ERC20Interface = new utils.Interface(ERC20ABI)
+const ERC20Interface = new utils.Interface(ERC20_ABI)
 
 /**
  * Approve the spending of an ERC20

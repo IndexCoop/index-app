@@ -11,7 +11,13 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
+import { BigNumber } from '@ethersproject/bignumber'
+import {
+  ChainId,
+  useEtherBalance,
+  useEthers,
+  useTokenBalance,
+} from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
 import { MAINNET, POLYGON } from 'constants/chains'
@@ -22,6 +28,9 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
+import { getChainAddress } from 'hooks/useBalances'
+import { displayFromWei, toWei } from 'utils'
+import { getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
 
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
@@ -37,17 +46,25 @@ const QuickTrade = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
 
+  const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
   const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
   const [sellToken, setSellToken] = useState<Token>(ETH)
+  const [sellTokenAmount, setSellTokenAmount] = useState<string>('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
   )
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [compState, setCompState] = useState<QuickTradeState>(
     QuickTradeState.default
+  )
+
+  const etherBalance = useEtherBalance(account)
+  const sellTokenBalance = useTokenBalance(
+    getChainAddress(sellToken, chainId),
+    account
   )
 
   /**
@@ -73,6 +90,21 @@ const QuickTrade = () => {
     }
   }, [isBuying])
 
+  useEffect(() => {
+    const sellAmount = toWei(sellTokenAmount)
+    const sellBalance =
+      sellToken.symbol === 'ETH' ? etherBalance : sellTokenBalance
+
+    if (
+      sellAmount.isZero() ||
+      sellAmount.isNegative() ||
+      sellBalance === undefined
+    )
+      return
+    const hasInsufficientFunds = sellAmount.gt(sellBalance)
+    setHasInsufficientFunds(hasInsufficientFunds)
+  }, [sellTokenAmount, sellToken, etherBalance, sellTokenBalance])
+
   /**
    * Get the list of currency tokens for the selected chain
    * @returns Token[] list of tokens
@@ -91,25 +123,35 @@ const QuickTrade = () => {
     setIsBuying(!isBuying)
   }
 
-  const onChangeSellTokenAmount = (input: string) => {
-    console.log(input)
+  useEffect(() => {
+    if (sellTokenAmount.length < 1 || sellTokenAmount === '0') return
     setCompState(QuickTradeState.loading)
-    // TODO: fetch best price/amount
-    // TODO: update ui
-    setTimeout(() => {
-      setCompState(QuickTradeState.default)
-      const isZero = input === '0' || input.length < 1
-      setBuyTokenAmount(isZero ? '0' : '200')
-      setTradeInfoData(
-        isZero
-          ? []
-          : [
-              { title: 'Minimum Receive', value: '17.879440' },
-              { title: 'Network Fee', value: '0.003672 ETH' },
-              { title: 'Offered From', value: 'SushiSwap' },
-            ]
-      )
-    }, 2000)
+    getZeroExTradeData(true, sellToken, buyToken, sellTokenAmount, chainId || 1)
+      .catch((_) => {
+        setCompState(QuickTradeState.default)
+      })
+      .then((data) => {
+        setCompState(QuickTradeState.default)
+
+        if (data === undefined) {
+          setBuyTokenAmount('0')
+          setTradeInfoData([])
+          return
+        }
+
+        const tradeInfoData: TradeInfoItem[] = getTradeInfoData(data, chainId)
+        setTradeInfoData(tradeInfoData)
+        if (tradeInfoData.length > 0) {
+          setBuyTokenAmount(tradeInfoData[0].value)
+        }
+      })
+  }, [sellTokenAmount, sellToken, buyToken])
+
+  const onChangeSellTokenAmount = (input: string) => {
+    const inputNumber = Number(input)
+    if (input === sellTokenAmount || input.slice(-1) === '.') return
+    if (isNaN(inputNumber) || inputNumber < 0) return
+    setSellTokenAmount(inputNumber.toString())
   }
 
   const onChangeSellToken = (symbol: string) => {
@@ -146,10 +188,14 @@ const QuickTrade = () => {
     compState === QuickTradeState.executing
   const isLoading = compState === QuickTradeState.loading
 
-  const buttonLabel = accountIsDisconnected ? 'Connect Wallet' : 'Trade'
+  const buttonLabel = accountIsDisconnected
+    ? 'Connect Wallet'
+    : hasInsufficientFunds
+    ? 'Insufficient funds'
+    : 'Trade'
   const isButtonDisabled = accountIsDisconnected
     ? false
-    : buyTokenAmount === '0'
+    : buyTokenAmount === '0' || hasInsufficientFunds
 
   return (
     <Flex
@@ -216,6 +262,31 @@ const QuickTrade = () => {
       <ConnectModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   )
+}
+
+function getTradeInfoData(
+  zeroExTradeData: ZeroExData | undefined,
+  chainId: ChainId = ChainId.Mainnet
+): TradeInfoItem[] {
+  if (zeroExTradeData === undefined) return []
+
+  const e18 = BigNumber.from(10).pow(18)
+  const minReceive =
+    displayFromWei(zeroExTradeData.minOutput.div(e18), 10) ?? '-'
+
+  const networkFee =
+    displayFromWei(BigNumber.from(zeroExTradeData.gasPrice)) ?? '-'
+  const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
+
+  const sources = zeroExTradeData.sources
+    .filter((source) => Number(source.proportion) > 0)
+    .map((source) => source.name)
+
+  return [
+    { title: 'Minimum Receive', value: minReceive },
+    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
+    { title: 'Offered From', value: sources.toString() },
+  ]
 }
 
 export default QuickTrade

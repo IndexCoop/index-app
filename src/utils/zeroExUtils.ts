@@ -5,6 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { MAINNET, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
+import { toWei } from 'utils'
 
 import { fetchCoingeckoTokenPrice } from './coingeckoApi'
 
@@ -43,17 +44,13 @@ export const getZeroExTradeData = async (
     amount,
     chainId
   )
+  const query = querystring.stringify(params)
+
   let resp
   if (chainId === MAINNET.chainId)
-    resp = await axios.get(
-      `https://api.0x.org/swap/v1/quote?${querystring.stringify(params)}`
-    )
+    resp = await axios.get(`https://api.0x.org/swap/v1/quote?${query}`)
   else
-    resp = await axios.get(
-      `https://polygon.api.0x.org/swap/v1/quote?${querystring.stringify(
-        params
-      )}`
-    )
+    resp = await axios.get(`https://polygon.api.0x.org/swap/v1/quote?${query}`)
 
   const zeroExData: ZeroExData = resp.data
   return await processApiResult(
@@ -67,8 +64,9 @@ export const getZeroExTradeData = async (
 }
 
 const getChainTokenAddress = (token: Token, chainId: number) => {
-  if (chainId === POLYGON.chainId) return token.polygonAddress
-  return token.address
+  if (chainId === POLYGON.chainId)
+    return token.symbol === 'MATIC' ? 'MATIC' : token.polygonAddress
+  return token.symbol === 'ETH' ? 'ETH' : token.address
 }
 
 const getApiParams = (
@@ -117,17 +115,24 @@ const processApiResult = async (
     buyToken.decimals
   )
 
-  const guaranteedPrice = BigNumber.from(zeroExData.guaranteedPrice)
+  const amountInWei = toWei(
+    amount,
+    isExactInput ? sellToken.decimals : buyToken.decimals
+  )
+  const priceInWei = toWei(zeroExData.guaranteedPrice)
+  const buyAmountInWei = toWei(zeroExData.buyAmount, buyToken.decimals)
+  const sellAmountInWei = toWei(zeroExData.sellAmount, sellToken.decimals)
+  const guaranteedPrice = BigNumber.from(priceInWei)
   zeroExData.minOutput = isExactInput
     ? guaranteedPrice
-        .mul(BigNumber.from(zeroExData.sellAmount))
-        .div(BigNumber.from('1e' + sellToken.decimals))
-    : BigNumber.from(amount)
+        .mul(BigNumber.from(sellAmountInWei))
+        .div(BigNumber.from(10).pow(sellToken.decimals))
+    : BigNumber.from(amountInWei)
   zeroExData.maxInput = isExactInput
-    ? BigNumber.from(amount)
+    ? BigNumber.from(amountInWei)
     : guaranteedPrice
-        .mul(BigNumber.from(zeroExData.buyAmount))
-        .div(BigNumber.from('1e' + buyToken.decimals))
+        .mul(BigNumber.from(buyAmountInWei))
+        .div(BigNumber.from(10).pow(buyToken.decimals))
 
   zeroExData.formattedSources = formatSources(zeroExData.sources)
 
@@ -154,9 +159,8 @@ export const getDisplayAdjustedAmount = (
   amount: string,
   decimals: number
 ): number => {
-  return BigNumber.from(amount)
-    .div(BigNumber.from('1e' + decimals))
-    .toNumber()
+  const e18 = BigNumber.from(10).pow(decimals)
+  return BigNumber.from(amount).div(e18).toNumber()
 }
 
 const formatSources = (
@@ -177,7 +181,6 @@ const formatSources = (
 }
 
 const getDecimalAdjustedAmount = (amount: string, decimals: number): string => {
-  return BigNumber.from(amount)
-    .mul(BigNumber.from('1e' + decimals))
-    .toString()
+  const amountInWei = toWei(amount, decimals)
+  return BigNumber.from(amountInWei).toString()
 }

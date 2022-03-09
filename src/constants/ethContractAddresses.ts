@@ -1,4 +1,4 @@
-// Index Coop Contract Addresses
+// Index Coop Mainnet Contract Addresses
 export const dpi2020StakingRewardsAddress =
   '0x8f06FBA4684B5E0988F215a47775Bb611Af0F986'
 export const dpi2021StakingRewardsAddress =
@@ -7,6 +7,24 @@ export const mviStakingRewardsAddress =
   '0x5bc4249641b4bf4e37ef513f3fa5c63ecab34881'
 export const gmiStakingRewardsAddress =
   '0xc3cC57579138f33A987E0333DF3d59B0Bbc59Fed'
+export const eth2xfliSuppyCapAddress =
+  '0x0F1171C24B06ADed18d2d23178019A3B256401D3'
+export const btc2xfliSuppyCapAddress =
+  '0x6c8137f2f552f569cc43bc4642afbe052a12441c'
+export const ExchangeIssuanceZeroExAddress =
+  '0x0dC65c883fccC9CAcb34650588C196CcC6D4e762'
+
+// Index Coop Polygon Contract Addresses
+export const eth2xFLIPSuppyCapAddress =
+  '0x2B26553224BBdb0F156fcA360f44d0a9D2644B7F'
+export const matic2xFLIPSuppyCapAddress =
+  '0x721C2D8936F3ca38DCA8281cc224be8d81CB0BE1'
+export const imaticFLIPSuppyCapAddress =
+  '0x82b227cAec950a807c7ca456e2E48E52633F7Be5'
+export const iethFLIPSuppyCapAddress =
+  '0x8173Bd491a27aF4DDe0a4dE48a54Daf6705c75F1'
+export const ExchangeIssuanceLeveragedAddress =
+  '0x600d9950c6ecAef98Cc42fa207E92397A6c43416'
 
 // Uniswap V2 Addresses
 export const uniswapEthDpiLpTokenAddress =
@@ -60,19 +78,3 @@ export const navIssuanceModuleAddress =
 export const masterOracleAddress = '0xA60f9e1641747762aDE7FD5F881b90B691E92B0a'
 export const governanceModuleAddress =
   '0x5C87b042494cDcebA44C541fbB3BC8bFF179d500'
-
-// Mainnet Addresses
-export const eth2xfliSuppyCapAddress =
-  '0x0F1171C24B06ADed18d2d23178019A3B256401D3'
-export const btc2xfliSuppyCapAddress =
-  '0x6c8137f2f552f569cc43bc4642afbe052a12441c'
-
-// Polygon Addresses
-export const eth2xFLIPSuppyCapAddress =
-  '0x2B26553224BBdb0F156fcA360f44d0a9D2644B7F'
-export const matic2xFLIPSuppyCapAddress =
-  '0x721C2D8936F3ca38DCA8281cc224be8d81CB0BE1'
-export const imaticFLIPSuppyCapAddress =
-  '0x82b227cAec950a807c7ca456e2E48E52633F7Be5'
-export const iethFLIPSuppyCapAddress =
-  '0x8173Bd491a27aF4DDe0a4dE48a54Daf6705c75F1'
