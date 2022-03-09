@@ -16,10 +16,12 @@ export const useGetTradeData = (
   const { chainId } = useEthers()
   const [zeroExTradeData, setZeroExTradeData] = useState<ZeroExData>()
 
-  getZeroExTradeData(false, sellToken, buyToken, amount, chainId || 1).then(
-    (data) => {
+  if (amount.length < 1 || amount === '0') return undefined
+  getZeroExTradeData(true, sellToken, buyToken, amount, chainId || 1)
+    .catch((error) => console.log(error))
+    .then((data) => {
+      if (data === undefined) return
       setZeroExTradeData(data)
-    }
-  )
+    })
   return zeroExTradeData
 }
