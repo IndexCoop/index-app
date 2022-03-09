@@ -1,4 +1,4 @@
-export const EI0X_ABI = [
+export const EI_LEVERAGED_ABI = [
   {
     inputs: [
       { internalType: 'address', name: '_weth', type: 'address' },

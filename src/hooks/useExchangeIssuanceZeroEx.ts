@@ -2,9 +2,9 @@ import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
 
-import { zeroExExchangeIssuanceAddress } from 'constants/ethContractAddresses'
+import { ExchangeIssuanceZeroExAddress } from 'constants/ethContractAddresses'
 import { getERC20Contract } from 'utils'
-import { EI0X_ABI } from 'utils/abi/EI0X'
+import { EI_ZEROEX_ABI } from 'utils/abi/EIZeroEx'
 
 /**
  * Get the 0x Trade Data for
@@ -78,7 +78,7 @@ export const useExchangeIssuanceZeroEx = () => {
       const eiContract = await getExchangeIssuanceZeroExContract(
         library.getSigner()
       )
-      const redeemSetTx = await eiContract.issueExactSetFromETH(
+      const redeemSetTx = await eiContract.redeemExactSetForETH(
         setToken,
         minEthReceive,
         componentQuotes,
@@ -129,6 +129,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return err
     }
   }
+
   /**
    * Returns transaction for the following:
    * Issues an exact amount of SetTokens for given amount of input ERC20 tokens.
@@ -209,7 +210,7 @@ export const useExchangeIssuanceZeroEx = () => {
       const eiContract = await getExchangeIssuanceZeroExContract(
         library.getSigner()
       )
-      const redeemSetTx = await eiContract.issueExactSetFromToken(
+      const redeemSetTx = await eiContract.redeemExactSetForToken(
         setToken,
         outputToken,
         amountSetToken,
@@ -224,6 +225,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return err
     }
   }
+
   /**
    * Returns transaction to get component & position quotes for token redemption
    *
@@ -365,7 +367,7 @@ export const useExchangeIssuanceZeroEx = () => {
       )
       const allowance = await tokenContract.allowance(
         account,
-        zeroExExchangeIssuanceAddress
+        ExchangeIssuanceZeroExAddress
       )
       return BigNumber.from(allowance)
     } catch (err) {
@@ -383,8 +385,8 @@ export const useExchangeIssuanceZeroEx = () => {
     providerSigner: Signer | Provider | undefined
   ): Promise<Contract> => {
     return await new Contract(
-      zeroExExchangeIssuanceAddress,
-      EI0X_ABI,
+      ExchangeIssuanceZeroExAddress,
+      EI_ZEROEX_ABI,
       providerSigner
     )
   }
