@@ -62,7 +62,10 @@ export type Balances = {
   unclaimedUniswapEthDpi2021LpBalance?: BigNumber
 }
 
-const getChainAddress = (token: Token, chainId: ChainId = MAINNET.chainId) => {
+export const getChainAddress = (
+  token: Token,
+  chainId: ChainId = MAINNET.chainId
+) => {
   if (chainId === POLYGON.chainId) return token.polygonAddress
   return token.address
 }

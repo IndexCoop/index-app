@@ -12,7 +12,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, useEthers } from '@usedapp/core'
+import {
+  ChainId,
+  useEtherBalance,
+  useEthers,
+  useTokenBalance,
+} from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
 import { MAINNET, POLYGON } from 'constants/chains'
@@ -23,7 +28,8 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
-import { displayFromWei } from 'utils'
+import { getChainAddress } from 'hooks/useBalances'
+import { displayFromWei, toWei } from 'utils'
 import { getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
 
 import QuickTradeSelector from './QuickTradeSelector'
@@ -40,6 +46,7 @@ const QuickTrade = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
 
+  const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
   const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
@@ -52,6 +59,12 @@ const QuickTrade = () => {
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [compState, setCompState] = useState<QuickTradeState>(
     QuickTradeState.default
+  )
+
+  const etherBalance = useEtherBalance(account)
+  const sellTokenBalance = useTokenBalance(
+    getChainAddress(sellToken, chainId),
+    account
   )
 
   /**
@@ -76,6 +89,21 @@ const QuickTrade = () => {
       setBuyTokenList(getCurrencyTokensByChain())
     }
   }, [isBuying])
+
+  useEffect(() => {
+    const sellAmount = toWei(sellTokenAmount)
+    const sellBalance =
+      sellToken.symbol === 'ETH' ? etherBalance : sellTokenBalance
+
+    if (
+      sellAmount.isZero() ||
+      sellAmount.isNegative() ||
+      sellBalance === undefined
+    )
+      return
+    const hasInsufficientFunds = sellAmount.gt(sellBalance)
+    setHasInsufficientFunds(hasInsufficientFunds)
+  }, [sellTokenAmount, sellToken, etherBalance, sellTokenBalance])
 
   /**
    * Get the list of currency tokens for the selected chain
@@ -160,10 +188,14 @@ const QuickTrade = () => {
     compState === QuickTradeState.executing
   const isLoading = compState === QuickTradeState.loading
 
-  const buttonLabel = accountIsDisconnected ? 'Connect Wallet' : 'Trade'
+  const buttonLabel = accountIsDisconnected
+    ? 'Connect Wallet'
+    : hasInsufficientFunds
+    ? 'Insufficient funds'
+    : 'Trade'
   const isButtonDisabled = accountIsDisconnected
     ? false
-    : buyTokenAmount === '0'
+    : buyTokenAmount === '0' || hasInsufficientFunds
 
   return (
     <Flex
