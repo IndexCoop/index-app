@@ -279,7 +279,7 @@ export const Bitcoin2xFLIP: Token = {
   decimals: 18,
   url: 'btc2x',
   image: btcflipLogo,
-  coingeckoId: 'index-coop-btc-2x-flexible-leverage-index',
+  coingeckoId: 'btc-2x-flexible-leverage-index-polygon',
   tokensetsId: 'btc2x-fli-p',
   fees: {
     streamingFee: '1.95%',
@@ -295,7 +295,7 @@ export const IBitcoinFLIP: Token = {
   decimals: 18,
   url: 'ibtc',
   image: ibtcflipLogo,
-  coingeckoId: 'index-coop-inverse-btc-flexible-leverage-index',
+  coingeckoId: 'inverse-btc-flexible-leverage-index',
   tokensetsId: 'ibtc-fli-p',
   fees: {
     streamingFee: '1.95%',
