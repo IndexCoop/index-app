@@ -9,11 +9,13 @@ import {
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
+  Bitcoin2xFLIP,
   DataIndex,
   DefiPulseIndex,
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   GmiIndex,
+  IBitcoinFLIP,
   IEthereumFLIP,
   IMaticFLIP,
   IndexToken,
@@ -42,6 +44,8 @@ export interface TokenContext {
   maticflip?: TokenMarketDataValues
   imaticflip?: TokenMarketDataValues
   iethflip?: TokenMarketDataValues
+  btcflip?: TokenMarketDataValues
+  ibtcflip?: TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
 }
 
@@ -67,7 +71,7 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [maticFliPMarketData, setMaticFliPMarketData] = useState<any>({})
   const [iMaticFliPMarketData, setIMaticFliPMarketData] = useState<any>({})
   const [btcFliPMarketData, setBtcFliPMarketData] = useState<any>({})
-  const [iBtcFliMarketData, setIBtcFliPMarketData] = useState<any>({})
+  const [iBtcFliPMarketData, setIBtcFliPMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
@@ -90,6 +94,8 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(IEthereumFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(Matic2xFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(IMaticFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(Bitcoin2xFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(IBitcoinFLIP.coingeckoId),
     ])
 
     setIndexMarketData(marketData[0])
@@ -104,6 +110,8 @@ export const MarketDataProvider = (props: { children: any }) => {
     setIEthFliPMarketData(marketData[9])
     setMaticFliPMarketData(marketData[10])
     setIMaticFliPMarketData(marketData[11])
+    setBtcFliPMarketData(marketData[12])
+    setIBtcFliPMarketData(marketData[13])
   }, [])
 
   useEffect(() => {
@@ -126,6 +134,8 @@ export const MarketDataProvider = (props: { children: any }) => {
         maticflip: maticFliPMarketData,
         imaticflip: iMaticFliPMarketData,
         iethflip: iEthFliPMarketData,
+        btcflip: btcFliPMarketData,
+        ibtcflip: iBtcFliPMarketData,
       }}
     >
       {props.children}

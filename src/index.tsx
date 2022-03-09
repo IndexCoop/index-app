@@ -17,11 +17,13 @@ import Dashboard from 'components/views/Homepage'
 import LiquidityMining from 'components/views/LiquidityMining'
 import BED from 'components/views/productpages/BED'
 import BTC2xFLI from 'components/views/productpages/BTC2xFLI'
+import BTC2xFLIP from 'components/views/productpages/BTC2xFLIP'
 import DATA from 'components/views/productpages/DATA'
 import DPI from 'components/views/productpages/DPI'
 import ETH2xFLI from 'components/views/productpages/ETH2xFLI'
 import ETH2xFLIP from 'components/views/productpages/ETH2xFLIP'
 import GMI from 'components/views/productpages/GMI'
+import IBTCFLIP from 'components/views/productpages/IBTCFLIP'
 import IETHFLIP from 'components/views/productpages/IETHFLIP'
 import IMATICFLIP from 'components/views/productpages/IMATICFLIP'
 import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
@@ -91,6 +93,8 @@ ReactDOM.render(
             <Route path='ieth' element={<IETHFLIP />} />
             <Route path='matic2x' element={<MATIC2xFLIP />} />
             <Route path='imatic' element={<IMATICFLIP />} />
+            <Route path='btc2x' element={<BTC2xFLIP />} />
+            <Route path='ibtc' element={<IBTCFLIP />} />
           </Route>
         </Routes>
       </Providers>

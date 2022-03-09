@@ -1,11 +1,12 @@
 import bedBorderLogo from 'assets/bed-border.png'
+import btcflipLogo from 'assets/btcflip.svg'
 import dataLogo from 'assets/data-logo.png'
 import gmiLogo from 'assets/gmilogo.png'
+import ibtcflipLogo from 'assets/ibtcflip.svg'
 import iethflipLogo from 'assets/iethfliplogo.svg'
 import imaticflipLogo from 'assets/imaticflilogo.svg'
 import indexLogo from 'assets/index-token.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
-import * as tokenAddresses from 'constants/ethContractAddresses'
 import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
 
 export const dpiTokenImage =
@@ -270,6 +271,38 @@ export const IEthereumFLIP: Token = {
   },
 }
 
+export const Bitcoin2xFLIP: Token = {
+  name: 'BTC 2x Flexible Leverage Index',
+  symbol: 'BTC2x-FLI-P',
+  address: undefined,
+  polygonAddress: '0xd6ca869a4ec9ed2c7e618062cdc45306d8dbbc14',
+  decimals: 18,
+  url: 'btc2x',
+  image: btcflipLogo,
+  coingeckoId: 'btc-2x-flexible-leverage-index-polygon',
+  tokensetsId: 'btc2x-fli-p',
+  fees: {
+    streamingFee: '1.95%',
+    mintRedeemFee: '0.1%',
+  },
+}
+
+export const IBitcoinFLIP: Token = {
+  name: 'Inverse BTC Flexible Leverage Index',
+  symbol: 'iBTC-FLI-P',
+  address: undefined,
+  polygonAddress: '0x130cE4E4F76c2265f94a961D70618562de0bb8d2',
+  decimals: 18,
+  url: 'ibtc',
+  image: ibtcflipLogo,
+  coingeckoId: 'inverse-btc-flexible-leverage-index',
+  tokensetsId: 'ibtc-fli-p',
+  fees: {
+    streamingFee: '1.95%',
+    mintRedeemFee: '0.1%',
+  },
+}
+
 export const productTokensBySymbol = {
   'DPI': DefiPulseIndex,
   'MVI': MetaverseIndex,
@@ -283,6 +316,8 @@ export const productTokensBySymbol = {
   'MATIC2x-FLI-P': Matic2xFLIP,
   'iMATIC-FLI-P': IMaticFLIP,
   'iETH-FLI-P': IEthereumFLIP,
+  'iBTC-FLI-P': IBitcoinFLIP,
+  'BTC2x-FLI-P': Bitcoin2xFLIP,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC]
@@ -302,6 +337,8 @@ const indexNames = [
   Matic2xFLIP,
   IMaticFLIP,
   IEthereumFLIP,
+  IBitcoinFLIP,
+  Bitcoin2xFLIP,
 ]
 
 export default indexNames
