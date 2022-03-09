@@ -28,8 +28,7 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
-import { getChainAddress } from 'hooks/useBalances'
-import { displayFromWei, toWei } from 'utils'
+import { displayFromGwei, displayFromWei, getChainAddress, toWei } from 'utils'
 import { getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
 
 import QuickTradeSelector from './QuickTradeSelector'
@@ -172,10 +171,8 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
-  const accountIsDisconnected = !account
-
   const onClickTradeButton = () => {
-    if (accountIsDisconnected) {
+    if (!account) {
       // Open connect wallet modal
       onOpen()
       return
@@ -188,12 +185,12 @@ const QuickTrade = () => {
     compState === QuickTradeState.executing
   const isLoading = compState === QuickTradeState.loading
 
-  const buttonLabel = accountIsDisconnected
+  const buttonLabel = !account
     ? 'Connect Wallet'
     : hasInsufficientFunds
     ? 'Insufficient funds'
     : 'Trade'
-  const isButtonDisabled = accountIsDisconnected
+  const isButtonDisabled = !account
     ? false
     : buyTokenAmount === '0' || hasInsufficientFunds
 
@@ -275,7 +272,7 @@ function getTradeInfoData(
     displayFromWei(zeroExTradeData.minOutput.div(e18), 10) ?? '-'
 
   const networkFee =
-    displayFromWei(BigNumber.from(zeroExTradeData.gasPrice)) ?? '-'
+    displayFromGwei(BigNumber.from(zeroExTradeData.gasPrice)) ?? '-'
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
 
   const sources = zeroExTradeData.sources

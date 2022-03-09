@@ -1,7 +1,6 @@
-import { Flex, useBreakpointValue } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 
 import Header from './Header'
-import MobileDisclaimer from './MobileDisclaimer'
 
 const Page = (props: { children?: JSX.Element }) => {
   return (

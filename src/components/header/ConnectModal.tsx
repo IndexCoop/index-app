@@ -15,7 +15,7 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
 import metamaskIcon from 'assets/metamask.png'
 import walletconnectIcon from 'assets/walletconnect.svg'
-import { POLYGON } from 'constants/chains'
+import { MAINNET, POLYGON } from 'constants/chains'
 
 type Props = {
   isOpen: any
@@ -33,8 +33,8 @@ export default function ConnectModal({ isOpen, onClose }: Props) {
   const handleWalletConnect = () => {
     console.log('handleWalletConnect', account)
     const wc = new WalletConnectConnector({
-      rpc: { [POLYGON.chainId]: POLYGON.rpcUrl },
-      chainId: POLYGON.chainId,
+      rpc: { [MAINNET.chainId]: MAINNET.rpcUrl },
+      chainId: MAINNET.chainId,
     })
     activate(wc, (err) => {
       console.error(err)
