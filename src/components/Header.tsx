@@ -22,6 +22,7 @@ const Header = () => {
         _hover={{
           textDecoration: 'none',
         }}
+        flexGrow='1'
       >
         <Logo isDarkMode={colorMode === 'dark'} />
       </Link>
@@ -32,26 +33,19 @@ const Header = () => {
 
 const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
   let logo = isDarkMode ? indexLogoWhite : indexLogoBlack
-  const textColor = isDarkMode ? '#fff' : '#000'
 
-  if (window.innerWidth > 480) {
+  if (window.innerWidth > 1400) {
     logo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
   }
 
   return (
-    <Flex align='flex-end'>
-      <Image src={logo} alt='Index Coop Logo' minWidth='24px' height='40px' />
-      <Text
-        color={textColor}
-        fontSize='22'
-        fontWeight='700'
-        mb='-5px'
-        ml='12px'
-        display={['none', 'none', 'flex', 'flex']}
-      >
-        App
-      </Text>
-    </Flex>
+    <Image
+      src={logo}
+      alt='Index Coop Logo'
+      minWidth='24px'
+      height='40px'
+      mr={['', '20px']}
+    />
   )
 }
 
