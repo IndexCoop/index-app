@@ -30,6 +30,21 @@ export type ZeroExData = {
   sellTokenCost: string
 }
 
+// Temporarily adding this because we need to support more tokens than the once
+// we have defined as type Token in `tokens.ts`. Probably going to rewrite this
+// into one function later.
+const API_QUOTE_URL = 'https://api.0x.org/swap/v1/quote'
+export async function getQuote(params: any) {
+  params.buyAmount = BigNumber.from(params.buyAmount).toString()
+  const query = querystring.stringify(params)
+  console.log(query)
+  const url = `${API_QUOTE_URL}?${query}`
+  // logVerbose(`Getting quote from ${params.sellToken} to ${params.buyToken}`)
+  // logVerbose('Sending quote request to:', url)
+  const response = await axios(url)
+  return response.data
+}
+
 export const getZeroExTradeData = async (
   isExactInput: boolean,
   sellToken: Token,
