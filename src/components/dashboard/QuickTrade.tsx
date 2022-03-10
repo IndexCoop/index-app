@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { ethers } from 'ethers'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
@@ -28,8 +29,11 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
+import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
 import { displayFromGwei, displayFromWei, getChainAddress, toWei } from 'utils'
-import { getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
+import { useBestTradeOption } from 'utils/bestTradeOption'
+import { getIssuanceModule } from 'utils/issuanceModule'
+import { getQuote, getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
 
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
@@ -43,21 +47,16 @@ enum QuickTradeState {
 const QuickTrade = () => {
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { account, chainId } = useEthers()
+  const { account, chainId, library } = useEthers()
 
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
-  const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
   const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenAmount, setSellTokenAmount] = useState<string>('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
-  )
-  const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
-  const [compState, setCompState] = useState<QuickTradeState>(
-    QuickTradeState.default
   )
 
   const etherBalance = useEtherBalance(account)
@@ -65,6 +64,20 @@ const QuickTrade = () => {
     getChainAddress(sellToken, chainId),
     account
   )
+
+  const { bestTradeOption0xData, isFetchingTradeData } = useBestTradeOption(
+    buyToken,
+    sellToken,
+    sellTokenAmount
+  )
+  const tradeInfoData: TradeInfoItem[] = getTradeInfoData(
+    bestTradeOption0xData,
+    chainId
+  )
+  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
+  const compState = isFetchingTradeData
+    ? QuickTradeState.loading
+    : QuickTradeState.default
 
   /**
    * Switches sell token lists between mainnet and polygon
@@ -122,30 +135,6 @@ const QuickTrade = () => {
     setIsBuying(!isBuying)
   }
 
-  useEffect(() => {
-    if (sellTokenAmount.length < 1 || sellTokenAmount === '0') return
-    setCompState(QuickTradeState.loading)
-    getZeroExTradeData(true, sellToken, buyToken, sellTokenAmount, chainId || 1)
-      .catch((_) => {
-        setCompState(QuickTradeState.default)
-      })
-      .then((data) => {
-        setCompState(QuickTradeState.default)
-
-        if (data === undefined) {
-          setBuyTokenAmount('0')
-          setTradeInfoData([])
-          return
-        }
-
-        const tradeInfoData: TradeInfoItem[] = getTradeInfoData(data, chainId)
-        setTradeInfoData(tradeInfoData)
-        if (tradeInfoData.length > 0) {
-          setBuyTokenAmount(tradeInfoData[0].value)
-        }
-      })
-  }, [sellTokenAmount, sellToken, buyToken])
-
   const onChangeSellTokenAmount = (input: string) => {
     const inputNumber = Number(input)
     if (input === sellTokenAmount || input.slice(-1) === '.') return
@@ -180,9 +169,7 @@ const QuickTrade = () => {
     // TODO: trade
   }
 
-  const isDisabled =
-    compState === QuickTradeState.loading ||
-    compState === QuickTradeState.executing
+  const isDisabled = compState === QuickTradeState.loading
   const isLoading = compState === QuickTradeState.loading
 
   const buttonLabel = !account
@@ -262,17 +249,21 @@ const QuickTrade = () => {
 }
 
 function getTradeInfoData(
-  zeroExTradeData: ZeroExData | undefined,
+  zeroExTradeData: ZeroExData | undefined | null,
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
-  if (zeroExTradeData === undefined) return []
+  if (zeroExTradeData === undefined || zeroExTradeData === null) return []
 
   const e18 = BigNumber.from(10).pow(18)
   const minReceive =
     displayFromWei(zeroExTradeData.minOutput.div(e18), 10) ?? '-'
 
   const networkFee =
-    displayFromGwei(BigNumber.from(zeroExTradeData.gasPrice)) ?? '-'
+    displayFromWei(
+      BigNumber.from(zeroExTradeData.gasPrice).mul(
+        BigNumber.from(zeroExTradeData.gas)
+      )
+    ) ?? '-'
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
 
   const sources = zeroExTradeData.sources
