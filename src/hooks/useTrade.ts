@@ -9,7 +9,7 @@ import { ZeroExData } from 'utils/zeroExUtils'
 
 import { useBalances } from './useBalances'
 
-export const useTrade = (tradeData: ZeroExData) => {
+export const useTrade = (tradeData?: ZeroExData | null) => {
   const { account } = useEthers()
   const { sendTransaction, state } = useSendTransaction({
     transactionName: 'Trade',
@@ -18,7 +18,7 @@ export const useTrade = (tradeData: ZeroExData) => {
   const etherBalance = useEtherBalance(account)
 
   const executeTrade = useCallback(async () => {
-    if (!account || !tradeData?.sellAmount) return
+    if (!account || !tradeData || !tradeData?.sellAmount) return
 
     const isSellingUSDC =
       tradeData.sellTokenAddress === USDC.address ||
@@ -55,6 +55,7 @@ export const useTrade = (tradeData: ZeroExData) => {
     } catch (error) {
       console.log(error)
     }
-  }, [account])
-  return executeTrade
+  }, [account, tradeData])
+
+  return { executeTrade }
 }

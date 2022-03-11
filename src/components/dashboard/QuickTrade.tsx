@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { ethers } from 'ethers'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
@@ -29,25 +28,19 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
-import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
-import { displayFromGwei, displayFromWei, getChainAddress, toWei } from 'utils'
+import { useApproval } from 'hooks/useApproval'
+import { useTrade } from 'hooks/useTrade'
+import { displayFromWei, getChainAddress, toWei } from 'utils'
 import { useBestTradeOption } from 'utils/bestTradeOption'
-import { getIssuanceModule } from 'utils/issuanceModule'
-import { getQuote, getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
+import { ZeroExData } from 'utils/zeroExUtils'
 
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
-enum QuickTradeState {
-  default,
-  executing,
-  loading,
-}
-
 const QuickTrade = () => {
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { account, chainId, library } = useEthers()
+  const { account, chainId } = useEthers()
 
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
@@ -75,9 +68,12 @@ const QuickTrade = () => {
     chainId
   )
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
-  const compState = isFetchingTradeData
-    ? QuickTradeState.loading
-    : QuickTradeState.default
+
+  const { isApproved, isApproving, onApprove } = useApproval(
+    bestTradeOption0xData?.sellTokenAddress,
+    account ?? undefined
+  )
+  const { executeTrade } = useTrade(bestTradeOption0xData)
 
   /**
    * Switches sell token lists between mainnet and polygon
@@ -127,6 +123,30 @@ const QuickTrade = () => {
   }
 
   /**
+   * Get the correct trade button label according to different states
+   * @returns string label for trade button
+   */
+  const getTradeButtonLabel = () => {
+    if (!account) {
+      return 'Connect Wallet'
+    }
+
+    if (buyTokenAmount === '0') {
+      return 'Enter an amount'
+    }
+
+    if (hasInsufficientFunds) {
+      return 'Insufficient funds'
+    }
+
+    if (!isApproved) {
+      return 'Approve Tokens'
+    }
+
+    return 'Trade'
+  }
+
+  /**
    * Sets the list of tokens based on if the user is buying or selling
    */
   const swapTokenLists = () => {
@@ -160,26 +180,29 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
-  const onClickTradeButton = () => {
+  const onClickTradeButton = async () => {
     if (!account) {
       // Open connect wallet modal
       onOpen()
       return
     }
-    // TODO: trade
+
+    if (hasInsufficientFunds) return
+
+    if (!isApproved) {
+      await onApprove()
+    }
+
+    executeTrade()
   }
 
-  const isDisabled = compState === QuickTradeState.loading
-  const isLoading = compState === QuickTradeState.loading
+  const isDisabled = isFetchingTradeData
+  const isLoading = isApproving || isFetchingTradeData
 
-  const buttonLabel = !account
-    ? 'Connect Wallet'
-    : hasInsufficientFunds
-    ? 'Insufficient funds'
-    : 'Trade'
+  const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = !account
     ? false
-    : buyTokenAmount === '0' || hasInsufficientFunds
+    : buyTokenAmount === '0' || hasInsufficientFunds || isApproving
 
   return (
     <Flex
@@ -227,26 +250,44 @@ const QuickTrade = () => {
       </Flex>
       <Flex direction='column'>
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
-        <Button
+        <TradeButton
+          label={buttonLabel}
           background={isDarkMode ? colors.icWhite : colors.icYellow}
-          border='0'
-          borderRadius='12px'
-          color='#000'
-          disabled={isButtonDisabled}
-          fontSize='24px'
-          fontWeight='600'
+          isDisabled={isButtonDisabled}
           isLoading={isLoading}
-          height='54px'
-          w='100%'
           onClick={onClickTradeButton}
-        >
-          {buttonLabel}
-        </Button>
+        />
       </Flex>
       <ConnectModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   )
 }
+
+interface TradeButtonProps {
+  label: string
+  background: string
+  isDisabled: boolean
+  isLoading: boolean
+  onClick: () => void
+}
+
+const TradeButton = (props: TradeButtonProps) => (
+  <Button
+    background={props.background}
+    border='0'
+    borderRadius='12px'
+    color='#000'
+    disabled={props.isDisabled}
+    fontSize='24px'
+    fontWeight='600'
+    isLoading={props.isLoading}
+    height='54px'
+    w='100%'
+    onClick={props.onClick}
+  >
+    {props.label}
+  </Button>
+)
 
 function getTradeInfoData(
   zeroExTradeData: ZeroExData | undefined | null,
