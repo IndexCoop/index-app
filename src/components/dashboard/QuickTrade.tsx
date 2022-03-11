@@ -180,7 +180,7 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
-  const onClickTradeButton = () => {
+  const onClickTradeButton = async () => {
     if (!account) {
       // Open connect wallet modal
       onOpen()
@@ -190,7 +190,7 @@ const QuickTrade = () => {
     if (hasInsufficientFunds) return
 
     if (!isApproved) {
-      onApprove()
+      await onApprove()
     }
 
     executeTrade()
