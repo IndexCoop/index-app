@@ -130,6 +130,30 @@ const QuickTrade = () => {
   }
 
   /**
+   * Get the correct trade button label according to different states
+   * @returns string label for trade button
+   */
+  const getTradeButtonLabel = () => {
+    if (!account) {
+      return 'Connect Wallet'
+    }
+
+    if (buyTokenAmount === '0') {
+      return 'Enter an amount'
+    }
+
+    if (hasInsufficientFunds) {
+      return 'Insufficient funds'
+    }
+
+    if (!isApproved) {
+      return 'Approve Tokens'
+    }
+
+    return 'Trade'
+  }
+
+  /**
    * Sets the list of tokens based on if the user is buying or selling
    */
   const swapTokenLists = () => {
@@ -182,11 +206,7 @@ const QuickTrade = () => {
   const isDisabled = compState === QuickTradeState.loading
   const isLoading = isApproving || compState === QuickTradeState.loading
 
-  const buttonLabel = !account
-    ? 'Connect Wallet'
-    : hasInsufficientFunds
-    ? 'Insufficient funds'
-    : 'Trade'
+  const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = !account
     ? false
     : buyTokenAmount === '0' || hasInsufficientFunds || isApproving
