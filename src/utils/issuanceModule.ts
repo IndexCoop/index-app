@@ -6,11 +6,20 @@ import {
   debtIssuanceModuleAddress,
   debtIssuanceModuleV2PolygonAddress,
 } from 'constants/ethContractAddresses'
-import { GmiIndex } from 'constants/tokens'
+import {
+  Bitcoin2xFlexibleLeverageIndex,
+  Ethereum2xFlexibleLeverageIndex,
+  Ethereum2xFLIP,
+  GmiIndex,
+  IEthereumFLIP,
+  IMaticFLIP,
+  Matic2xFLIP,
+} from 'constants/tokens'
 
-// FIXME: add all cases
 function getEthIssuanceModuleAddress(tokenSymbol: string) {
   switch (tokenSymbol) {
+    case Bitcoin2xFlexibleLeverageIndex.symbol:
+    case Ethereum2xFlexibleLeverageIndex.symbol:
     case GmiIndex.symbol:
       return debtIssuanceModuleAddress
     default:
@@ -18,10 +27,13 @@ function getEthIssuanceModuleAddress(tokenSymbol: string) {
   }
 }
 
-// FIXME: add all cases
 function getPolygonIssuanceModuleAddress(tokenSymbol: string) {
   switch (tokenSymbol) {
+    case Ethereum2xFLIP.symbol:
+    case IEthereumFLIP.symbol:
+    case IMaticFLIP.symbol:
     case GmiIndex.symbol:
+    case Matic2xFLIP.symbol:
       return debtIssuanceModuleV2PolygonAddress
     default:
       return basicIssuanceModulePolygonAddress
