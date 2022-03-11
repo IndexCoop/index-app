@@ -6,6 +6,11 @@ import { ExchangeIssuanceZeroExAddress } from 'constants/ethContractAddresses'
 import { getERC20Contract } from 'utils'
 import { EI_ZEROEX_ABI } from 'utils/abi/EIZeroEx'
 
+interface RequiredComponentsResponse {
+  components: string[]
+  positions: BigNumber[]
+}
+
 /**
  * Get the 0x Trade Data for
  */
@@ -110,8 +115,7 @@ export const useExchangeIssuanceZeroEx = () => {
     isDebtIssuance: boolean,
     setToken: string,
     amountSetToken: BigNumber
-  ): Promise<any> => {
-    console.log('getRequiredIssuanceComponents')
+  ): Promise<RequiredComponentsResponse> => {
     // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await getExchangeIssuanceZeroExContract(
@@ -126,7 +130,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return issueQuoteTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return { components: [], positions: [] }
     }
   }
 
@@ -244,7 +248,7 @@ export const useExchangeIssuanceZeroEx = () => {
     isDebtIssuance: boolean,
     setToken: string,
     amountSetToken: BigNumber
-  ): Promise<any> => {
+  ): Promise<RequiredComponentsResponse> => {
     console.log('getRequiredRedemptionComponents')
     // TODO: Make match 0x methods from chirstians contracts
     try {
@@ -260,7 +264,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return redeemQuoteTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return { components: [], positions: [] }
     }
   }
 
@@ -384,7 +388,7 @@ export const useExchangeIssuanceZeroEx = () => {
   const getExchangeIssuanceZeroExContract = async (
     providerSigner: Signer | Provider | undefined
   ): Promise<Contract> => {
-    return await new Contract(
+    return new Contract(
       ExchangeIssuanceZeroExAddress,
       EI_ZEROEX_ABI,
       providerSigner

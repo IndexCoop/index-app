@@ -35,6 +35,7 @@ import {
   Token,
   USDC,
 } from 'constants/tokens'
+import { getChainAddress } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 
 export type Balances = {
@@ -60,14 +61,6 @@ export type Balances = {
   unclaimedUniswapEthMvi2021LpBalance?: BigNumber
   unclaimedUniswapEthDpi2020LpBalance?: BigNumber
   unclaimedUniswapEthDpi2021LpBalance?: BigNumber
-}
-
-export const getChainAddress = (
-  token: Token,
-  chainId: ChainId = MAINNET.chainId
-) => {
-  if (chainId === POLYGON.chainId) return token.polygonAddress
-  return token.address
 }
 
 const stakingInterface = new utils.Interface(StakeRewardsABI)

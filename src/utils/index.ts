@@ -2,6 +2,10 @@ import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
 import { formatUnits, parseEther } from '@ethersproject/units'
+import { ChainId } from '@usedapp/core'
+
+import { MAINNET, POLYGON } from 'constants/chains'
+import { Token } from 'constants/tokens'
 
 import { ERC20_ABI } from './abi/ERC20'
 
@@ -68,4 +72,37 @@ export const getERC20Contract = async (
   address: string
 ): Promise<Contract> => {
   return await new Contract(address, ERC20_ABI, provider)
+}
+
+/**
+ * Formats a BigNumber from Gwei
+ * @param decimals round to decimals is NOT precise
+ * @param power default to 9 covers most token decimals
+ */
+export const displayFromGwei = (
+  number: BigNumber | undefined,
+  decimals: number = 0,
+  power: number = 9
+): string | null => {
+  if (!number) return null
+
+  if (decimals) {
+    return Number(formatUnits(number, power)).toFixed(decimals)
+  }
+
+  return formatUnits(number, power)
+}
+
+/**
+ * Returns chain-appropriate token address
+ * @param token
+ * @param chainId
+ * @returns
+ */
+export const getChainAddress = (
+  token: Token,
+  chainId: ChainId = MAINNET.chainId
+) => {
+  if (chainId === POLYGON.chainId) return token.polygonAddress
+  return token.address
 }

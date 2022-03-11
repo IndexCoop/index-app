@@ -9,6 +9,7 @@ import {
   IconButton,
   Link,
   Text,
+  useBreakpointValue,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react'
@@ -81,6 +82,7 @@ const NavContent = () => {
         border='0'
         background={'transparent'}
         mt={['30px', '30px', '0', '0']}
+        mr={['0', '0', '24px', '24px']}
         icon={<ColorThemeIcon color={textColor} />}
         size='sm'
       />
@@ -91,14 +93,28 @@ const NavContent = () => {
 const Navigation = () => {
   const [displayMenu, setDisplayMenu] = useState('none')
   const bgColor = useColorModeValue(colors.icWhite, colors.background)
+  const isWeb = useBreakpointValue({
+    base: false,
+    md: true,
+    lg: true,
+    xl: true,
+  })
+  const width = isWeb ? 1024 : 340
   return (
-    <Flex>
+    <Flex w={['auto', 'width']} flexGrow={['0', '2']}>
       {/* Desktop Menu */}
-      <Flex display={['none', 'none', 'flex', 'flex']} flexDirection={'row'}>
+      <Flex
+        display={['none', 'none', 'flex', 'flex']}
+        flexDirection={'row'}
+        w='100%'
+        justifyContent={'space-between'}
+      >
         <NavContent />
 
         <ConnectButton />
       </Flex>
+
+      {/* Mobile Menu */}
       <Flex display={['flex', 'flex', 'none', 'none']} flexDirection={'column'}>
         <IconButton
           mr={2}
@@ -107,8 +123,6 @@ const Navigation = () => {
           display={['flex', 'flex', 'none', 'none']}
           onClick={() => setDisplayMenu('flex')}
         />
-
-        {/* Mobile Menu */}
         <Flex
           flexDir={'column'}
           align={'center'}
@@ -123,10 +137,10 @@ const Navigation = () => {
           display={displayMenu}
         >
           <IconButton
-            m={'6px 24px 30px 0'}
+            m={'16px 32px 30px 0'}
             aria-label='Close Menu'
             alignSelf={'flex-end'}
-            size={'lg'}
+            size={'md'}
             icon={<CloseIcon />}
             onClick={() => setDisplayMenu('none')}
             display={['flex', 'flex', 'none', 'none']}
