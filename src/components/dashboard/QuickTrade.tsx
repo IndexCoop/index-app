@@ -36,12 +36,6 @@ import { ZeroExData } from 'utils/zeroExUtils'
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
-enum QuickTradeState {
-  default,
-  executing,
-  loading,
-}
-
 const QuickTrade = () => {
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -73,9 +67,6 @@ const QuickTrade = () => {
     chainId
   )
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
-  const compState = isFetchingTradeData
-    ? QuickTradeState.loading
-    : QuickTradeState.default
 
   const { isApproved, isApproving, onApprove } = useApproval(
     bestTradeOption0xData?.sellTokenAddress,
@@ -203,8 +194,8 @@ const QuickTrade = () => {
     // TODO: trade
   }
 
-  const isDisabled = compState === QuickTradeState.loading
-  const isLoading = isApproving || compState === QuickTradeState.loading
+  const isDisabled = isFetchingTradeData
+  const isLoading = isApproving || isFetchingTradeData
 
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = !account
