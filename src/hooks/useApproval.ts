@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ethers, utils } from 'ethers'
 
 import { Contract } from '@ethersproject/contracts'
-import { useContractFunction, useEthers } from '@usedapp/core'
+import { useEthers, useSendTransaction } from '@usedapp/core'
 
 import { minimumRequiredApprovalQuantity } from 'constants/index'
 import { useAllowance } from 'hooks/useAllowance'
@@ -17,20 +17,10 @@ const ERC20Interface = new utils.Interface(ERC20_ABI)
 export const useApproval = (tokenAddress?: string, spenderAddress?: string) => {
   const { account, library } = useEthers()
   const allowance = useAllowance(tokenAddress, spenderAddress)
+  const { sendTransaction, state } = useSendTransaction()
 
   const [isApproving, setIsApproving] = useState(false)
   const [isApproved, setIsApproved] = useState(false)
-
-  // TODO: needs betters solution
-  const contractAddress =
-    tokenAddress && tokenAddress.length > 0
-      ? tokenAddress
-      : '0x6B175474E89094C44Da98b954EedeAC495271d0F'
-  const tokenContract = new Contract(contractAddress, ERC20Interface)
-  const { state, send: approveSpend } = useContractFunction(
-    tokenContract,
-    'approve'
-  )
 
   const handleApprove = useCallback(async () => {
     if (!library || !account || !tokenAddress || !spenderAddress) {
@@ -38,10 +28,18 @@ export const useApproval = (tokenAddress?: string, spenderAddress?: string) => {
     }
     try {
       setIsApproving(true)
-      await approveSpend(spenderAddress, ethers.constants.MaxUint256)
-      setIsApproved(state.status === 'Success')
-      setIsApproving(false)
+      const tokenContract = new Contract(
+        tokenAddress,
+        ERC20Interface,
+        library.getSigner()
+      )
+      const tx = await tokenContract.approve(
+        spenderAddress,
+        ethers.constants.MaxUint256
+      )
+      await sendTransaction(tx)
     } catch (e) {
+      console.log('Error approving token', tokenAddress, e)
       setIsApproving(false)
       return false
     }
@@ -58,6 +56,11 @@ export const useApproval = (tokenAddress?: string, spenderAddress?: string) => {
     const isApproved = allowance?.gte(minimumRequiredApprovalQuantity) ?? false
     setIsApproved(isApproved)
   }, [allowance])
+
+  useEffect(() => {
+    setIsApproving(false)
+    setIsApproved(state.status === 'Success')
+  }, [state])
 
   return {
     isApproved,

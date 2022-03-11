@@ -29,6 +29,7 @@ import indexNames, {
   Token,
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
+import { useTrade } from 'hooks/useTrade'
 import { displayFromWei, getChainAddress, toWei } from 'utils'
 import { useBestTradeOption } from 'utils/bestTradeOption'
 import { ZeroExData } from 'utils/zeroExUtils'
@@ -72,6 +73,7 @@ const QuickTrade = () => {
     bestTradeOption0xData?.sellTokenAddress,
     account ?? undefined
   )
+  const { executeTrade } = useTrade(bestTradeOption0xData)
 
   /**
    * Switches sell token lists between mainnet and polygon
@@ -178,7 +180,7 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
-  const onClickTradeButton = () => {
+  const onClickTradeButton = async () => {
     if (!account) {
       // Open connect wallet modal
       onOpen()
@@ -188,10 +190,10 @@ const QuickTrade = () => {
     if (hasInsufficientFunds) return
 
     if (!isApproved) {
-      onApprove()
+      await onApprove()
     }
 
-    // TODO: trade
+    executeTrade()
   }
 
   const isDisabled = isFetchingTradeData
