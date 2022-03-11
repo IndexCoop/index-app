@@ -227,26 +227,44 @@ const QuickTrade = () => {
       </Flex>
       <Flex direction='column'>
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
-        <Button
+        <TradeButton
+          label={buttonLabel}
           background={isDarkMode ? colors.icWhite : colors.icYellow}
-          border='0'
-          borderRadius='12px'
-          color='#000'
-          disabled={isButtonDisabled}
-          fontSize='24px'
-          fontWeight='600'
+          isDisabled={isButtonDisabled}
           isLoading={isLoading}
-          height='54px'
-          w='100%'
           onClick={onClickTradeButton}
-        >
-          {buttonLabel}
-        </Button>
+        />
       </Flex>
       <ConnectModal isOpen={isOpen} onClose={onClose} />
     </Flex>
   )
 }
+
+interface TradeButtonProps {
+  label: string
+  background: string
+  isDisabled: boolean
+  isLoading: boolean
+  onClick: () => void
+}
+
+const TradeButton = (props: TradeButtonProps) => (
+  <Button
+    background={props.background}
+    border='0'
+    borderRadius='12px'
+    color='#000'
+    disabled={props.isDisabled}
+    fontSize='24px'
+    fontWeight='600'
+    isLoading={props.isLoading}
+    height='54px'
+    w='100%'
+    onClick={props.onClick}
+  >
+    {props.label}
+  </Button>
+)
 
 function getTradeInfoData(
   zeroExTradeData: ZeroExData | undefined | null,
