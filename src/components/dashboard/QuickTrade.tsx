@@ -28,6 +28,7 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
+import { useApproval } from 'hooks/useApproval'
 import { displayFromWei, getChainAddress, toWei } from 'utils'
 import { useBestTradeOption } from 'utils/bestTradeOption'
 import { ZeroExData } from 'utils/zeroExUtils'
@@ -75,6 +76,11 @@ const QuickTrade = () => {
   const compState = isFetchingTradeData
     ? QuickTradeState.loading
     : QuickTradeState.default
+
+  const { isApproved, isApproving, onApprove } = useApproval(
+    bestTradeOption0xData?.sellTokenAddress,
+    account ?? undefined
+  )
 
   /**
    * Switches sell token lists between mainnet and polygon
@@ -163,11 +169,18 @@ const QuickTrade = () => {
       onOpen()
       return
     }
+
+    if (hasInsufficientFunds) return
+
+    if (!isApproved) {
+      onApprove()
+    }
+
     // TODO: trade
   }
 
   const isDisabled = compState === QuickTradeState.loading
-  const isLoading = compState === QuickTradeState.loading
+  const isLoading = isApproving || compState === QuickTradeState.loading
 
   const buttonLabel = !account
     ? 'Connect Wallet'
@@ -176,7 +189,7 @@ const QuickTrade = () => {
     : 'Trade'
   const isButtonDisabled = !account
     ? false
-    : buyTokenAmount === '0' || hasInsufficientFunds
+    : buyTokenAmount === '0' || hasInsufficientFunds || isApproving
 
   return (
     <Flex
