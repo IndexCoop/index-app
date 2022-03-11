@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { ethers } from 'ethers'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
@@ -29,11 +28,9 @@ import indexNames, {
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
-import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
-import { displayFromGwei, displayFromWei, getChainAddress, toWei } from 'utils'
+import { displayFromWei, getChainAddress, toWei } from 'utils'
 import { useBestTradeOption } from 'utils/bestTradeOption'
-import { getIssuanceModule } from 'utils/issuanceModule'
-import { getQuote, getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
+import { ZeroExData } from 'utils/zeroExUtils'
 
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
@@ -47,7 +44,7 @@ enum QuickTradeState {
 const QuickTrade = () => {
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { account, chainId, library } = useEthers()
+  const { account, chainId } = useEthers()
 
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
