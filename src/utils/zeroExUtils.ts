@@ -79,6 +79,7 @@ export const getZeroExTradeData = async (
 
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
+  console.log(url)
   const resp = await axios.get(url, { headers })
   const zeroExData: ZeroExData = resp.data
 

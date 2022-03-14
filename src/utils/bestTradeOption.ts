@@ -98,6 +98,8 @@ export const useBestTradeOption = (
       console.log(inputTokenAmount.toString())
       console.log(displayFromWei(inputTokenAmount))
     })
+
+    return { tradeData: positionQuotes, inputTokenAmount }
   }
 
   const fetchAndCompareOptions = async () => {
@@ -111,9 +113,9 @@ export const useBestTradeOption = (
       chainId || 1
     )
     const buyTokenAmount = option1Data.minOutput
-    // TODO: turn back on when having 0x API key
+    console.log('buy option2', buyTokenAmount.toString())
     // Checking via exchange issuance
-    // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
+    const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
     // TODO: compare and return best option
     setBestTradeOption0xData(option1Data)
     setIsFetching(false)
