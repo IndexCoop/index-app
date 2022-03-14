@@ -107,8 +107,7 @@ export const useBestTradeOption = (
       sellTokenAmount,
       chainId || 1
     )
-    // TODO: somewhere this minOutput is going wrong (1e18 too big)
-    const buyTokenAmount = option1Data.minOutput.div(BigNumber.from(10).pow(18))
+    const buyTokenAmount = option1Data.minOutput
     // TODO: turn back on when having 0x API key
     // Checking via exchange issuance
     // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)

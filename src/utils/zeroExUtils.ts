@@ -33,15 +33,15 @@ export type ZeroExData = {
 // Temporarily adding this because we need to support more tokens than the once
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
+const API_GATED_URL = 'https://gated.api.0x.org/swap/v1/quote'
 const API_QUOTE_URL = 'https://api.0x.org/swap/v1/quote'
 export async function getQuote(params: any) {
   params.buyAmount = BigNumber.from(params.buyAmount).toString()
   const query = querystring.stringify(params)
   console.log(query)
-  const url = `${API_QUOTE_URL}?${query}`
-  // logVerbose(`Getting quote from ${params.sellToken} to ${params.buyToken}`)
-  // logVerbose('Sending quote request to:', url)
-  const response = await axios(url)
+  const url = `${API_GATED_URL}?${query}`
+  const headers = { '0x-api-key': process.env.REACT_APP_0X_API_KEY }
+  const response = await axios(url, { headers })
   return response.data
 }
 
@@ -52,6 +52,8 @@ export const getZeroExTradeData = async (
   amount: string,
   chainId: number
 ): Promise<ZeroExData> => {
+  const headers = { '0x-api-key': process.env.REACT_APP_0X_API_KEY }
+
   const params = getApiParams(
     isExactInput,
     sellToken,
@@ -59,15 +61,16 @@ export const getZeroExTradeData = async (
     amount,
     chainId
   )
+
   const query = querystring.stringify(params)
+  const url =
+    chainId === MAINNET.chainId
+      ? `${API_QUOTE_URL}?${query}`
+      : `https://gated.polygon.api.0x.org/swap/v1/quote?${query}`
 
-  let resp
-  if (chainId === MAINNET.chainId)
-    resp = await axios.get(`https://api.0x.org/swap/v1/quote?${query}`)
-  else
-    resp = await axios.get(`https://polygon.api.0x.org/swap/v1/quote?${query}`)
-
+  const resp = await axios.get(url, { headers })
   const zeroExData: ZeroExData = resp.data
+
   return await processApiResult(
     zeroExData,
     isExactInput,
@@ -135,18 +138,16 @@ const processApiResult = async (
     isExactInput ? sellToken.decimals : buyToken.decimals
   )
   const priceInWei = toWei(zeroExData.guaranteedPrice)
-  const buyAmountInWei = toWei(zeroExData.buyAmount, buyToken.decimals)
-  const sellAmountInWei = toWei(zeroExData.sellAmount, sellToken.decimals)
   const guaranteedPrice = BigNumber.from(priceInWei)
   zeroExData.minOutput = isExactInput
     ? guaranteedPrice
-        .mul(BigNumber.from(sellAmountInWei))
+        .mul(BigNumber.from(zeroExData.sellAmount))
         .div(BigNumber.from(10).pow(sellToken.decimals))
     : BigNumber.from(amountInWei)
   zeroExData.maxInput = isExactInput
     ? BigNumber.from(amountInWei)
     : guaranteedPrice
-        .mul(BigNumber.from(buyAmountInWei))
+        .mul(BigNumber.from(zeroExData.buyAmount))
         .div(BigNumber.from(10).pow(buyToken.decimals))
 
   zeroExData.formattedSources = formatSources(zeroExData.sources)
