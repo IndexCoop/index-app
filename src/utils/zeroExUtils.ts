@@ -138,18 +138,16 @@ const processApiResult = async (
     isExactInput ? sellToken.decimals : buyToken.decimals
   )
   const priceInWei = toWei(zeroExData.guaranteedPrice)
-  const buyAmountInWei = toWei(zeroExData.buyAmount, buyToken.decimals)
-  const sellAmountInWei = toWei(zeroExData.sellAmount, sellToken.decimals)
   const guaranteedPrice = BigNumber.from(priceInWei)
   zeroExData.minOutput = isExactInput
     ? guaranteedPrice
-        .mul(BigNumber.from(sellAmountInWei))
+        .mul(BigNumber.from(zeroExData.sellAmount))
         .div(BigNumber.from(10).pow(sellToken.decimals))
     : BigNumber.from(amountInWei)
   zeroExData.maxInput = isExactInput
     ? BigNumber.from(amountInWei)
     : guaranteedPrice
-        .mul(BigNumber.from(buyAmountInWei))
+        .mul(BigNumber.from(zeroExData.buyAmount))
         .div(BigNumber.from(10).pow(buyToken.decimals))
 
   zeroExData.formattedSources = formatSources(zeroExData.sources)
