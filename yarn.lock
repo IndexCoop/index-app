@@ -2812,10 +2812,10 @@
     "@sentry/types" "6.16.1"
     tslib "^1.9.3"
 
-"@setprotocol/set-protocol-v2@^0.1.8":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@setprotocol/set-protocol-v2/-/set-protocol-v2-0.1.9.tgz#1b0eef8667d01405f0b259bc5129986e5db7b53b"
-  integrity sha512-sPbCD6ngw4yIosXyOT+ytFZbFeMyHNOgDA6hdhrXkllsSKoJ2thc9Y6SqzF5kCPkK+bKmVhNF+cMTDMX0lemZg==
+"@setprotocol/set-protocol-v2@^0.1.10":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@setprotocol/set-protocol-v2/-/set-protocol-v2-0.1.15.tgz#d4c4ce5fe35ba136d045919635ea6abdf95489ba"
+  integrity sha512-XZxHXgGqKSk1SMlSeT7lA14nrfvjQ24xc+D+RpiZ/Qj6OAvuceFJ1rDGH234cTg3j3c7gUdAAe2XZ7hgVUenFA==
   dependencies:
     "@uniswap/v3-sdk" "^3.5.1"
     ethers "^5.5.2"
@@ -14171,15 +14171,15 @@ set-value@^3.0.0:
   dependencies:
     is-plain-object "^2.0.4"
 
-set.js@^0.4.8:
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/set.js/-/set.js-0.4.8.tgz#31b899db40b65836164960c465006b98bfd2f2be"
-  integrity sha512-w+ZSfhBr6AakRIgnatjnIQ0AbgQ9R2eBb4d8K/c7u1pAR3BaUSJ5Pbz5Jg4PxbMFCN9bJKPM4pQsJDBckOfFIw==
+set.js@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/set.js/-/set.js-0.5.0.tgz#3cfb78f184caf37ee30598995dcac6858b89a446"
+  integrity sha512-xxo6MEhAaIfjQi+d2b4HHs1e75pzXP4HChVJmkSIkXBXl3FM7Sqf2VS9Bst+DYMIX98WI9fZY0Kz0x+Avzdlvg==
   dependencies:
     "@0xproject/types" "^1.1.4"
     "@0xproject/typescript-typings" "^3.0.2"
     "@0xproject/utils" "^2.0.2"
-    "@setprotocol/set-protocol-v2" "^0.1.8"
+    "@setprotocol/set-protocol-v2" "^0.1.10"
     "@types/chai-as-promised" "^7.1.3"
     "@types/jest" "^26.0.5"
     "@types/web3" "^1.2.2"
