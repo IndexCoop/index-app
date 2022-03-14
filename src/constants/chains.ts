@@ -23,7 +23,7 @@ export const MAINNET: ChainData = {
   blockExplorerUrl: 'https://etherscan.io/',
   nativeCurrency: {
     name: 'Ether',
-    symbol: 'ETHER',
+    symbol: 'ETH',
     decimals: 18,
   },
 }
@@ -39,6 +39,21 @@ export const POLYGON: ChainData = {
   nativeCurrency: {
     name: 'Matic',
     symbol: 'MATIC',
+    decimals: 18,
+  },
+}
+
+export const OPTIMISM: ChainData = {
+  name: 'Polygon',
+  chainId: 10,
+  chainId0x: '0xA',
+  rpcUrl: 'https://mainnet.optimism.io/',
+  icon: 'https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/images/Profile-Logo.png',
+  coingeckoId: 'optimistic-ethereum',
+  blockExplorerUrl: 'https://optimistic.etherscan.io/',
+  nativeCurrency: {
+    name: 'Ether',
+    symbol: 'ETH',
     decimals: 18,
   },
 }
