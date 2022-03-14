@@ -69,14 +69,17 @@ export const useBestTradeOption = (
         positionQuotes.push(ethers.utils.formatBytes32String('FOOBAR'))
         inputTokenAmount = inputTokenAmount.add(buyAmount)
       } else {
-        const quotePromise = getQuote({
-          buyToken: buyTokenAddress,
-          sellToken: sellTokenAddress,
-          buyAmount: buyAmount.toString(),
-          // TODO: ?
-          // excludedSources: '',
-          // slippagePercentage,
-        })
+        const quotePromise = getQuote(
+          {
+            buyToken: buyTokenAddress,
+            sellToken: sellTokenAddress,
+            buyAmount: buyAmount.toString(),
+            // TODO: ?
+            // excludedSources: '',
+            // slippagePercentage,
+          },
+          chainId ?? 1
+        )
         quotePromises.push(quotePromise)
       }
     })

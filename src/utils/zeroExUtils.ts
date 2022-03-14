@@ -3,11 +3,15 @@ import querystring from 'querystring'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { MAINNET, POLYGON } from 'constants/chains'
+import { POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { toWei } from 'utils'
 
 import { fetchCoingeckoTokenPrice } from './coingeckoApi'
+
+const API_GATED_URL = 'https://gated.api.0x.org/swap/v1/quote'
+const API_GATED_URL_POLYGON = 'https://gated.polygon.api.0x.org/swap/v1/quote'
+const API_TEST_URL = 'https://api.0x.org/swap/v1/quote'
 
 export type ZeroExData = {
   price: string
@@ -30,16 +34,27 @@ export type ZeroExData = {
   sellTokenCost: string
 }
 
+function getApiUrl(query: string, chainId: number): string {
+  let baseUrl = ''
+  switch (chainId) {
+    case POLYGON.chainId:
+      baseUrl = API_GATED_URL_POLYGON
+      break
+    default:
+      baseUrl = API_GATED_URL
+  }
+
+  return `${baseUrl}?${query}`
+}
+
 // Temporarily adding this because we need to support more tokens than the once
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
-const API_GATED_URL = 'https://gated.api.0x.org/swap/v1/quote'
-const API_QUOTE_URL = 'https://api.0x.org/swap/v1/quote'
-export async function getQuote(params: any) {
+export async function getQuote(params: any, chainId: number) {
   params.buyAmount = BigNumber.from(params.buyAmount).toString()
   const query = querystring.stringify(params)
   console.log(query)
-  const url = `${API_GATED_URL}?${query}`
+  const url = getApiUrl(query, chainId)
   const headers = { '0x-api-key': process.env.REACT_APP_0X_API_KEY }
   const response = await axios(url, { headers })
   return response.data
@@ -63,11 +78,7 @@ export const getZeroExTradeData = async (
   )
 
   const query = querystring.stringify(params)
-  const url =
-    chainId === MAINNET.chainId
-      ? `${API_QUOTE_URL}?${query}`
-      : `https://gated.polygon.api.0x.org/swap/v1/quote?${query}`
-
+  const url = getApiUrl(query, chainId)
   const resp = await axios.get(url, { headers })
   const zeroExData: ZeroExData = resp.data
 
