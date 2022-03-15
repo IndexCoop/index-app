@@ -32,7 +32,7 @@ const QuickTradeSelector = (props: {
 
   useEffect(() => {
     if (!account) {
-      setBalance('0')
+      setBalance('0.00')
       return
     }
 
@@ -62,7 +62,7 @@ const QuickTradeSelector = (props: {
           px={['16px', '40px']}
         >
           <Input
-            placeholder='0'
+            placeholder='0.0'
             type='number'
             variant='unstyled'
             disabled={config.isDisabled}

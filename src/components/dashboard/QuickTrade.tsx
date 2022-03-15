@@ -295,7 +295,7 @@ function getTradeInfoData(
 ): TradeInfoItem[] {
   if (zeroExTradeData === undefined || zeroExTradeData === null) return []
 
-  const minReceive = displayFromWei(zeroExTradeData.minOutput) ?? '-'
+  const minReceive = displayFromWei(zeroExTradeData.minOutput) ?? '0.0'
 
   const networkFee =
     displayFromWei(
