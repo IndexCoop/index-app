@@ -191,6 +191,7 @@ const QuickTrade = () => {
 
     if (!isApproved) {
       await onApprove()
+      return
     }
 
     executeTrade()
