@@ -15,26 +15,22 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
 import metamaskIcon from 'assets/metamask.png'
 import walletconnectIcon from 'assets/walletconnect.svg'
-import { MAINNET, POLYGON } from 'constants/chains'
 
-type Props = {
-  isOpen: any
-  onClose: any
-}
-
-export default function ConnectModal({ isOpen, onClose }: Props) {
+export default function ConnectModal(props: { isOpen: any; onClose: any }) {
   const { activateBrowserWallet, activate, account } = useEthers()
 
   const handleMetamask = () => {
-    console.log('handleMetamask', account)
     activateBrowserWallet()
   }
 
   const handleWalletConnect = () => {
-    console.log('handleWalletConnect', account)
     const wc = new WalletConnectConnector({
-      rpc: { [MAINNET.chainId]: MAINNET.rpcUrl },
-      chainId: MAINNET.chainId,
+      rpc: {
+        1:
+          process.env.REACT_APP_MAINNET_ALCHEMY_API ||
+          'https://eth-mainnet.alchemyapi.io/v2/Z3DZk23EsAFNouAbUzuw9Y-TvfW9Bo1S',
+      },
+      chainId: 1,
     })
     activate(wc, (err) => {
       console.error(err)
@@ -44,7 +40,7 @@ export default function ConnectModal({ isOpen, onClose }: Props) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered size='md'>
+    <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered size='md'>
       <ModalOverlay />
       <ModalContent
         background='gray.900'

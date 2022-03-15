@@ -151,7 +151,6 @@ export const useExchangeIssuanceLeveraged = () => {
     _swapDataOutputToken: string
   ): Promise<any> => {
     console.log('redeemExactSetForERC20')
-    // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()

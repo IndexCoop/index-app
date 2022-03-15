@@ -11,7 +11,7 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import { Config, DAppProvider, Mainnet } from '@usedapp/core'
+import { Config, DAppProvider, Mainnet, Polygon } from '@usedapp/core'
 
 import Dashboard from 'components/views/Homepage'
 import LiquidityMining from 'components/views/LiquidityMining'
@@ -38,7 +38,12 @@ import './index.css'
 const config: Config = {
   readOnlyChainId: Mainnet.chainId,
   readOnlyUrls: {
-    [Mainnet.chainId]: process.env.REACT_APP_MAINNET_INFURA_API ?? '',
+    [Mainnet.chainId]:
+      process.env.REACT_APP_MAINNET_ALCHEMY_API ??
+      'https://eth-mainnet.alchemyapi.io/v2/Z3DZk23EsAFNouAbUzuw9Y-TvfW9Bo1S',
+    [Polygon.chainId]:
+      process.env.REACT_APP_POLYGON_ALCHEMY_API ??
+      'https://polygon-mainnet.g.alchemy.com/v2/r-z7OCwLoHZKz45NCFqlR0G8vgOXAp5t',
   },
 }
 
