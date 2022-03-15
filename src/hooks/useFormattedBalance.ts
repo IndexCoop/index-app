@@ -6,7 +6,10 @@ import { OPTIMISM, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { displayFromWei } from 'utils'
 
-export const useFormattedBalance = (token: Token): string => {
+export const useFormattedBalance = (
+  token: Token,
+  formatToDecimals: number = 2
+): string => {
   const { account, chainId } = useEthers()
   const mainnetBalance =
     useTokenBalance(token.address, account) || BigNumber.from(0)
@@ -16,10 +19,16 @@ export const useFormattedBalance = (token: Token): string => {
     useTokenBalance(token.optimismAddress, account) || BigNumber.from(0)
   switch (chainId) {
     case POLYGON.chainId:
-      return displayFromWei(polygonBalance, token.decimals) || '0'
+      return (
+        displayFromWei(polygonBalance, formatToDecimals, token.decimals) || '0'
+      )
     case OPTIMISM.chainId:
-      return displayFromWei(optimismBalance, token.decimals) || '0'
+      return (
+        displayFromWei(optimismBalance, formatToDecimals, token.decimals) || '0'
+      )
     default:
-      return displayFromWei(mainnetBalance, token.decimals) || '0'
+      return (
+        displayFromWei(mainnetBalance, formatToDecimals, token.decimals) || '0'
+      )
   }
 }
