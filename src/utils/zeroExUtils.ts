@@ -164,21 +164,22 @@ const processApiResult = async (
 
   zeroExData.formattedSources = formatSources(zeroExData.sources)
 
-  const buyTokenPrice = await fetchCoingeckoTokenPrice(
-    zeroExData.buyTokenAddress,
-    chainId
-  )
-  zeroExData.buyTokenCost = (
-    buyTokenPrice * zeroExData.displayBuyAmount
-  ).toFixed(2)
-
-  const sellTokenPrice: number = await fetchCoingeckoTokenPrice(
-    zeroExData.sellTokenAddress,
-    chainId
-  )
-  zeroExData.sellTokenCost = (
-    sellTokenPrice * zeroExData.displaySellAmount
-  ).toFixed(2)
+  // Not used right now - and an issue as it would cause too many fetches from EI
+  // const buyTokenPrice = await fetchCoingeckoTokenPrice(
+  //   zeroExData.buyTokenAddress,
+  //   chainId
+  // )
+  // zeroExData.buyTokenCost = (
+  //   buyTokenPrice * zeroExData.displayBuyAmount
+  // ).toFixed(2)
+  //
+  // const sellTokenPrice: number = await fetchCoingeckoTokenPrice(
+  //   zeroExData.sellTokenAddress,
+  //   chainId
+  // )
+  // zeroExData.sellTokenCost = (
+  //   sellTokenPrice * zeroExData.displaySellAmount
+  // ).toFixed(2)
 
   return zeroExData
 }
