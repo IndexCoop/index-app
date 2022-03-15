@@ -107,7 +107,6 @@ export const useExchangeIssuanceLeveraged = () => {
     _swapDataInputToken: any
   ): Promise<any> => {
     console.log('issueExactSetFromERC20')
-    // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()
@@ -188,7 +187,6 @@ export const useExchangeIssuanceLeveraged = () => {
     isIssuance: boolean
   ): Promise<any> => {
     console.log('getLeveragedTokenData')
-    // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await geExchangeIssuanceLeveragedContract(
         library.getSigner()

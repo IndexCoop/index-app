@@ -3,11 +3,15 @@ import querystring from 'querystring'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { MAINNET, POLYGON } from 'constants/chains'
+import { POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { toWei } from 'utils'
 
 import { fetchCoingeckoTokenPrice } from './coingeckoApi'
+
+const API_GATED_URL = 'https://gated.api.0x.org/swap/v1/quote'
+const API_GATED_URL_POLYGON = 'https://gated.polygon.api.0x.org/swap/v1/quote'
+const API_TEST_URL = 'https://api.0x.org/swap/v1/quote'
 
 export type ZeroExData = {
   price: string
@@ -30,18 +34,31 @@ export type ZeroExData = {
   sellTokenCost: string
 }
 
+const headers = {
+  '0x-api-key': process.env.REACT_APP_0X_API_KEY,
+}
+
+function getApiUrl(query: string, chainId: number): string {
+  let baseUrl = ''
+  switch (chainId) {
+    case POLYGON.chainId:
+      baseUrl = API_GATED_URL_POLYGON
+      break
+    default:
+      baseUrl = API_GATED_URL
+  }
+
+  return `${baseUrl}?${query}`
+}
+
 // Temporarily adding this because we need to support more tokens than the once
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
-const API_GATED_URL = 'https://gated.api.0x.org/swap/v1/quote'
-const API_QUOTE_URL = 'https://api.0x.org/swap/v1/quote'
-export async function getQuote(params: any) {
+export async function getQuote(params: any, chainId: number) {
   params.buyAmount = BigNumber.from(params.buyAmount).toString()
   const query = querystring.stringify(params)
-  console.log(query)
-  const url = `${API_GATED_URL}?${query}`
-  const headers = { '0x-api-key': process.env.REACT_APP_0X_API_KEY }
-  const response = await axios(url, { headers })
+  const url = getApiUrl(query, chainId)
+  const response = await axios.get(url, { headers })
   return response.data
 }
 
@@ -52,8 +69,6 @@ export const getZeroExTradeData = async (
   amount: string,
   chainId: number
 ): Promise<ZeroExData> => {
-  const headers = { '0x-api-key': process.env.REACT_APP_0X_API_KEY }
-
   const params = getApiParams(
     isExactInput,
     sellToken,
@@ -63,11 +78,7 @@ export const getZeroExTradeData = async (
   )
 
   const query = querystring.stringify(params)
-  const url =
-    chainId === MAINNET.chainId
-      ? `${API_QUOTE_URL}?${query}`
-      : `https://gated.polygon.api.0x.org/swap/v1/quote?${query}`
-
+  const url = getApiUrl(query, chainId)
   const resp = await axios.get(url, { headers })
   const zeroExData: ZeroExData = resp.data
 
@@ -152,21 +163,22 @@ const processApiResult = async (
 
   zeroExData.formattedSources = formatSources(zeroExData.sources)
 
-  const buyTokenPrice = await fetchCoingeckoTokenPrice(
-    zeroExData.buyTokenAddress,
-    chainId
-  )
-  zeroExData.buyTokenCost = (
-    buyTokenPrice * zeroExData.displayBuyAmount
-  ).toFixed(2)
-
-  const sellTokenPrice: number = await fetchCoingeckoTokenPrice(
-    zeroExData.sellTokenAddress,
-    chainId
-  )
-  zeroExData.sellTokenCost = (
-    sellTokenPrice * zeroExData.displaySellAmount
-  ).toFixed(2)
+  // Not used right now - and an issue as it would cause too many fetches from EI
+  // const buyTokenPrice = await fetchCoingeckoTokenPrice(
+  //   zeroExData.buyTokenAddress,
+  //   chainId
+  // )
+  // zeroExData.buyTokenCost = (
+  //   buyTokenPrice * zeroExData.displayBuyAmount
+  // ).toFixed(2)
+  //
+  // const sellTokenPrice: number = await fetchCoingeckoTokenPrice(
+  //   zeroExData.sellTokenAddress,
+  //   chainId
+  // )
+  // zeroExData.sellTokenCost = (
+  //   sellTokenPrice * zeroExData.displaySellAmount
+  // ).toFixed(2)
 
   return zeroExData
 }
