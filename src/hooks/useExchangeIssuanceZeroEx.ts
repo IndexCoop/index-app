@@ -116,7 +116,6 @@ export const useExchangeIssuanceZeroEx = () => {
     setToken: string,
     amountSetToken: BigNumber
   ): Promise<RequiredComponentsResponse> => {
-    // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await getExchangeIssuanceZeroExContract(
         library.getSigner()
@@ -161,7 +160,6 @@ export const useExchangeIssuanceZeroEx = () => {
     isDebtIssuance: boolean
   ): Promise<any> => {
     console.log('issueExactSetFromToken')
-    // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await getExchangeIssuanceZeroExContract(
         library.getSigner()
@@ -209,7 +207,6 @@ export const useExchangeIssuanceZeroEx = () => {
     isDebtIssuance: boolean
   ): Promise<any> => {
     console.log('redeemExactSetForToken')
-    // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await getExchangeIssuanceZeroExContract(
         library.getSigner()
@@ -250,7 +247,6 @@ export const useExchangeIssuanceZeroEx = () => {
     amountSetToken: BigNumber
   ): Promise<RequiredComponentsResponse> => {
     console.log('getRequiredRedemptionComponents')
-    // TODO: Make match 0x methods from chirstians contracts
     try {
       const eiContract = await getExchangeIssuanceZeroExContract(
         library.getSigner()

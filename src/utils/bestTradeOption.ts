@@ -46,7 +46,6 @@ export const useBestTradeOption = (
 
     let positionQuotes: string[] = []
     let inputTokenAmount = BigNumber.from(0)
-    // TODO: ?
     const slippagePercents = 3
     // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
     const slippagePercentage = slippagePercents / 100
@@ -69,14 +68,16 @@ export const useBestTradeOption = (
         positionQuotes.push(ethers.utils.formatBytes32String('FOOBAR'))
         inputTokenAmount = inputTokenAmount.add(buyAmount)
       } else {
-        const quotePromise = getQuote({
-          buyToken: buyTokenAddress,
-          sellToken: sellTokenAddress,
-          buyAmount: buyAmount.toString(),
-          // TODO: ?
-          // excludedSources: '',
-          // slippagePercentage,
-        })
+        const quotePromise = getQuote(
+          {
+            buyToken: buyTokenAddress,
+            sellToken: sellTokenAddress,
+            buyAmount: buyAmount.toString(),
+            // excludedSources: '',
+            // slippagePercentage,
+          },
+          chainId ?? 1
+        )
         quotePromises.push(quotePromise)
       }
     })
@@ -95,6 +96,8 @@ export const useBestTradeOption = (
       console.log(inputTokenAmount.toString())
       console.log(displayFromWei(inputTokenAmount))
     })
+
+    return { tradeData: positionQuotes, inputTokenAmount }
   }
 
   const fetchAndCompareOptions = async () => {
@@ -107,9 +110,8 @@ export const useBestTradeOption = (
       sellTokenAmount,
       chainId || 1
     )
-    const buyTokenAmount = option1Data.minOutput
-    // TODO: turn back on when having 0x API key
     // Checking via exchange issuance
+    // const buyTokenAmount = option1Data.minOutput
     // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
     // TODO: compare and return best option
     setBestTradeOption0xData(option1Data)
