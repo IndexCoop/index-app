@@ -34,6 +34,10 @@ export type ZeroExData = {
   sellTokenCost: string
 }
 
+const headers = {
+  '0x-api-key': process.env.REACT_APP_0X_API_KEY,
+}
+
 function getApiUrl(query: string, chainId: number): string {
   let baseUrl = ''
   switch (chainId) {
@@ -55,8 +59,7 @@ export async function getQuote(params: any, chainId: number) {
   const query = querystring.stringify(params)
   console.log(query)
   const url = getApiUrl(query, chainId)
-  const headers = { '0x-api-key': process.env.REACT_APP_0X_API_KEY }
-  const response = await axios(url, { headers })
+  const response = await axios.get(url, { headers })
   return response.data
 }
 
@@ -67,8 +70,6 @@ export const getZeroExTradeData = async (
   amount: string,
   chainId: number
 ): Promise<ZeroExData> => {
-  const headers = { '0x-api-key': process.env.REACT_APP_0X_API_KEY }
-
   const params = getApiParams(
     isExactInput,
     sellToken,
