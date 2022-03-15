@@ -1,6 +1,6 @@
 import { useEthers } from '@usedapp/core'
 
-import { MAINNET, POLYGON } from 'constants/chains'
+import { ChainData, MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 
 export const useNetwork = () => {
   const { library, account } = useEthers()
@@ -10,25 +10,28 @@ export const useNetwork = () => {
    */
   const setMainnet = () => {
     if (library)
-      library.send('wallet_switchEthereumChain', [{ chainId: '0x1' }, account])
+      library.send('wallet_switchEthereumChain', [
+        { chainId: MAINNET.chainId0x },
+        account,
+      ])
   }
 
   /**
-   * Changes to Polygon
+   * Changes to CHAIN
    */
-  const setPolygon = () => {
+  const setOtherNetwork = (CHAIN: ChainData) => {
     if (library)
       library?.send('wallet_addEthereumChain', [
         {
-          chainId: '0x89',
-          chainName: POLYGON.name,
+          chainId: CHAIN.chainId0x,
+          chainName: CHAIN.name,
           nativeCurrency: {
-            name: 'Matic',
-            symbol: 'MATIC',
-            decimals: 18,
+            name: CHAIN.nativeCurrency.name,
+            symbol: CHAIN.nativeCurrency.symbol,
+            decimals: CHAIN.nativeCurrency.decimals,
           },
-          rpcUrls: [POLYGON.rpcUrl],
-          blockExplorerUrls: ['https://polygonscan.com/'],
+          rpcUrls: [CHAIN.rpcUrl],
+          blockExplorerUrls: [CHAIN.blockExplorerUrl],
         },
         account,
       ])
@@ -41,7 +44,10 @@ export const useNetwork = () => {
         setMainnet()
         break
       case POLYGON.chainId:
-        setPolygon()
+        setOtherNetwork(POLYGON)
+        break
+      case OPTIMISM.chainId:
+        setOtherNetwork(OPTIMISM)
         break
       default:
         break
@@ -51,6 +57,6 @@ export const useNetwork = () => {
   return {
     changeNetwork,
     setMainnet,
-    setPolygon,
+    setOtherNetwork,
   }
 }

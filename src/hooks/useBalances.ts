@@ -88,7 +88,7 @@ export const useBalances = (): Balances => {
   const daiBalance = useTokenBalance(getChainAddress(DAI, chainId), account)
   const usdcBalance = useTokenBalance(getChainAddress(USDC, chainId), account)
   const maticBalance = useTokenBalance(getChainAddress(MATIC, chainId), account)
-  const wethBalance = useTokenBalance(ETH.polygonAddress, account)
+  const wethBalance = useTokenBalance(getChainAddress(ETH, chainId), account)
   const dpiBalance = useTokenBalance(
     getChainAddress(DefiPulseIndex, chainId),
     account
