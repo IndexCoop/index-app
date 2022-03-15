@@ -57,7 +57,6 @@ function getApiUrl(query: string, chainId: number): string {
 export async function getQuote(params: any, chainId: number) {
   params.buyAmount = BigNumber.from(params.buyAmount).toString()
   const query = querystring.stringify(params)
-  console.log(query)
   const url = getApiUrl(query, chainId)
   const response = await axios.get(url, { headers })
   return response.data
@@ -80,7 +79,6 @@ export const getZeroExTradeData = async (
 
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  console.log(url)
   const resp = await axios.get(url, { headers })
   const zeroExData: ZeroExData = resp.data
 
