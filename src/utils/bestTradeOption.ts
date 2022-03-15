@@ -46,7 +46,6 @@ export const useBestTradeOption = (
 
     let positionQuotes: string[] = []
     let inputTokenAmount = BigNumber.from(0)
-    // TODO: ?
     const slippagePercents = 3
     // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
     const slippagePercentage = slippagePercents / 100
@@ -74,7 +73,6 @@ export const useBestTradeOption = (
             buyToken: buyTokenAddress,
             sellToken: sellTokenAddress,
             buyAmount: buyAmount.toString(),
-            // TODO: ?
             // excludedSources: '',
             // slippagePercentage,
           },
@@ -112,10 +110,9 @@ export const useBestTradeOption = (
       sellTokenAmount,
       chainId || 1
     )
-    const buyTokenAmount = option1Data.minOutput
-    console.log('buy option2', buyTokenAmount.toString())
     // Checking via exchange issuance
-    const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
+    // const buyTokenAmount = option1Data.minOutput
+    // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
     // TODO: compare and return best option
     setBestTradeOption0xData(option1Data)
     setIsFetching(false)
