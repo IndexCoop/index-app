@@ -196,7 +196,6 @@ const QuickTrade = () => {
     executeTrade()
   }
 
-  const isDisabled = isFetchingTradeData
   const isLoading = isApproving || isFetchingTradeData
 
   const buttonLabel = getTradeButtonLabel()
@@ -221,7 +220,7 @@ const QuickTrade = () => {
       <Flex direction='column' my='20px'>
         <QuickTradeSelector
           title='From'
-          config={{ isDarkMode, isDisabled }}
+          config={{ isDarkMode, isDisabled: false }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
           onChangeInput={onChangeSellTokenAmount}
@@ -240,7 +239,7 @@ const QuickTrade = () => {
         </Box>
         <QuickTradeSelector
           title='To'
-          config={{ isDarkMode, isDisabled, isReadOnly: true }}
+          config={{ isDarkMode, isDisabled: false, isReadOnly: true }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmount}
           tokenList={buyTokenList}
