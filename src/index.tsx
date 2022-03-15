@@ -11,7 +11,7 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import { Config, DAppProvider, Mainnet, Polygon } from '@usedapp/core'
+import { Config, DAppProvider } from '@usedapp/core'
 
 import Dashboard from 'components/views/Homepage'
 import LiquidityMining from 'components/views/LiquidityMining'
@@ -29,6 +29,7 @@ import IMATICFLIP from 'components/views/productpages/IMATICFLIP'
 import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
+import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
 import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
@@ -36,14 +37,17 @@ import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider
 import './index.css'
 
 const config: Config = {
-  readOnlyChainId: Mainnet.chainId,
+  readOnlyChainId: MAINNET.chainId,
   readOnlyUrls: {
-    [Mainnet.chainId]:
+    [MAINNET.chainId]:
       process.env.REACT_APP_MAINNET_ALCHEMY_API ??
       'https://eth-mainnet.alchemyapi.io/v2/Z3DZk23EsAFNouAbUzuw9Y-TvfW9Bo1S',
-    [Polygon.chainId]:
+    [POLYGON.chainId]:
       process.env.REACT_APP_POLYGON_ALCHEMY_API ??
       'https://polygon-mainnet.g.alchemy.com/v2/r-z7OCwLoHZKz45NCFqlR0G8vgOXAp5t',
+    [OPTIMISM.chainId]:
+      process.env.REACT_APP_OPTIMISM_ALCHEMY_API ??
+      'https://op-mainnet.g.alchemy.com/v2/r-z7OCwLoHZKz45NCFqlR0G8vgOXAp5t',
   },
 }
 

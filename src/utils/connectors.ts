@@ -2,7 +2,7 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
-import { MAINNET, POLYGON } from 'constants/chains'
+import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 
 export const injected = new InjectedConnector({
   supportedChainIds: [1, 3, 4, 5, 42, 137],
@@ -12,10 +12,11 @@ export const walletconnect = new WalletConnectConnector({
   rpc: {
     [MAINNET.chainId]: MAINNET.rpcUrl,
     [POLYGON.chainId]: POLYGON.rpcUrl,
+    [OPTIMISM.chainId]: OPTIMISM.rpcUrl,
   },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
-  supportedChainIds: [1, 137],
+  supportedChainIds: [MAINNET.chainId, POLYGON.chainId, OPTIMISM.chainId],
 })
 
 export const networkConnector = new NetworkConnector({

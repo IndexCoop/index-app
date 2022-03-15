@@ -4,7 +4,7 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { formatUnits, parseEther } from '@ethersproject/units'
 import { ChainId } from '@usedapp/core'
 
-import { MAINNET, POLYGON } from 'constants/chains'
+import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 
 import { ERC20_ABI } from './abi/ERC20'
@@ -103,6 +103,12 @@ export const getChainAddress = (
   token: Token,
   chainId: ChainId = MAINNET.chainId
 ) => {
-  if (chainId === POLYGON.chainId) return token.polygonAddress
-  return token.address
+  switch (chainId) {
+    case OPTIMISM.chainId:
+      return token.optimismAddress
+    case POLYGON.chainId:
+      return token.polygonAddress
+    default:
+      return token.address
+  }
 }
