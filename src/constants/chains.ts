@@ -44,7 +44,7 @@ export const POLYGON: ChainData = {
 }
 
 export const OPTIMISM: ChainData = {
-  name: 'Polygon',
+  name: 'Optimism',
   chainId: 10,
   chainId0x: '0xA',
   rpcUrl: 'https://mainnet.optimism.io/',
