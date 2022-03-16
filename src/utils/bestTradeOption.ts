@@ -3,10 +3,20 @@ import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
+import { Token as UniswapToken } from '@uniswap/sdk-core'
 import { useEthers } from '@usedapp/core'
 
-import { ETH, Token } from 'constants/tokens'
-import { useExchangeIssuanceLeveraged } from 'hooks/useExchangeIssuanceLeveraged'
+import {
+  Bitcoin2xFLIP,
+  eligibleLeveragedExchangeIssuanceTokens,
+  ETH,
+  IBitcoinFLIP,
+  Token,
+} from 'constants/tokens'
+import {
+  Exchange,
+  useExchangeIssuanceLeveraged,
+} from 'hooks/useExchangeIssuanceLeveraged'
 import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
 import { displayFromWei, getChainAddress } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
@@ -24,6 +34,10 @@ export const useBestTradeOption = () => {
 
   const [bestOption, setBestOption] = useState<ZeroExData | null>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
+
+  /* Determines if the token is eligible for Leveraged Exchange Issuance */
+  const isEligibleLeveragedToken = (token: Token) =>
+    eligibleLeveragedExchangeIssuanceTokens.includes(token)
 
   console.log('inside useBestTradeOption')
   const fetchAndCompareOptions = async (
@@ -48,49 +62,52 @@ export const useBestTradeOption = () => {
     const tokenAmount = isIssuance ? dexSwapOption.buyAmount : sellTokenAmount
     const isSellingETH = sellToken.symbol === ETH.symbol
     const isBuyingETH = buyToken.symbol === ETH.symbol
+    const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
+    const isSellingTokenEligible = isEligibleLeveragedToken(sellToken)
     let exchangeIssueLeveragedOption = undefined
     // TODO: These are not correct, need to understand how exchange issuance works here
-    if (isSellingETH && isIssuance)
+    if (isSellingETH && isIssuance && isBuyingTokenEligible)
       exchangeIssueLeveragedOption = await issueExactSetFromETH(
         library,
         getChainAddress(buyToken, chainId) || '',
         BigNumber.from(buyTokenAmount),
-        'uniswap-v3', //wrong?
+        Exchange.UniV3,
         buyToken, //wrong
         buyTokenAmount // wrong
       )
-    else if (!isSellingETH && isIssuance)
+    else if (!isSellingETH && isIssuance && isBuyingTokenEligible)
       exchangeIssueLeveragedOption = await issueExactSetFromERC20(
         library,
         getChainAddress(buyToken, chainId) || '',
         BigNumber.from(buyTokenAmount),
         getChainAddress(sellToken, chainId) || '',
         BigNumber.from(sellTokenAmount),
-        'uniswap-v3', //wrong?
+        Exchange.UniV3,
         sellToken, //wrong
         buyToken //wrong
       )
-    else if (isBuyingETH && !isIssuance)
+    else if (isBuyingETH && !isIssuance && isSellingTokenEligible)
       exchangeIssueLeveragedOption = await redeemExactSetForETH(
         library,
         BigNumber.from(sellTokenAmount),
         BigNumber.from(buyTokenAmount),
-        'uniswap-v3', //wrong?
+        Exchange.UniV3,
         sellToken, //wrong
         buyToken //wrong
       )
-    else if (!isBuyingETH && !isIssuance)
+    else if (!isBuyingETH && !isIssuance && isSellingTokenEligible)
       exchangeIssueLeveragedOption = await redeemExactSetForERC20(
         library,
         getChainAddress(sellToken, chainId) || '',
         BigNumber.from(sellTokenAmount),
         getChainAddress(buyToken, chainId) || '',
         BigNumber.from(buyTokenAmount),
-        'uniswap-v3', //wrong?
+        Exchange.UniV3,
         'sellToken', //wrong
         'buyToken' //wrong
       )
 
+    console.log('exchangeIssueLeveragedOption', exchangeIssueLeveragedOption)
     /* NOW COMPARE */
     // Checking via exchange issuance
     // const buyTokenAmount = option1Data.minOutput

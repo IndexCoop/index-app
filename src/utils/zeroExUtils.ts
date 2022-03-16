@@ -4,14 +4,11 @@ import querystring from 'querystring'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { POLYGON } from 'constants/chains'
-import { Token } from 'constants/tokens'
+import { DefiPulseIndex, ETH, Token } from 'constants/tokens'
 import { toWei } from 'utils'
-
-import { fetchCoingeckoTokenPrice } from './coingeckoApi'
 
 const API_GATED_URL = 'https://gated.api.0x.org/swap/v1/quote'
 const API_GATED_URL_POLYGON = 'https://gated.polygon.api.0x.org/swap/v1/quote'
-const API_TEST_URL = 'https://api.0x.org/swap/v1/quote'
 
 export type ZeroExData = {
   price: string
@@ -79,7 +76,28 @@ export const getZeroExTradeData = async (
 
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  const resp = await axios.get(url, { headers })
+  const resp = {
+    data: {
+      price: 'string',
+      guaranteedPrice: '0',
+      buyTokenAddress: DefiPulseIndex.address || '',
+      sellTokenAddress: ETH.address || '',
+      buyAmount: '1',
+      sellAmount: '1',
+      to: 'string',
+      from: 'string',
+      sources: [{ name: 'yo mama', proportion: '1' }],
+      displayBuyAmount: 9,
+      displaySellAmount: 9,
+      minOutput: BigNumber.from(0),
+      maxInput: BigNumber.from(0),
+      gas: '1',
+      gasPrice: '1',
+      formattedSources: 'string',
+      buyTokenCost: '1',
+      sellTokenCost: '1',
+    },
+  } //await axios.get(url, { headers })
   const zeroExData: ZeroExData = resp.data
 
   return await processApiResult(
