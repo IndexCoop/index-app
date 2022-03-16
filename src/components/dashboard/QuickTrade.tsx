@@ -60,22 +60,15 @@ const QuickTrade = () => {
     account
   )
 
-  const { bestTradeOption0xData, isFetchingTradeData } = useBestTradeOption(
-    buyToken,
-    sellToken,
-    sellTokenAmount,
-    isIssuance
-  )
-  const tradeInfoData: TradeInfoItem[] = getTradeInfoData(
-    bestTradeOption0xData,
-    chainId
-  )
+  const { bestOption, isFetchingTradeData, fetchAndCompareOptions } =
+    useBestTradeOption()
+  const tradeInfoData: TradeInfoItem[] = getTradeInfoData(bestOption, chainId)
 
   const { isApproved, isApproving, onApprove } = useApproval(
-    bestTradeOption0xData?.sellTokenAddress,
+    bestOption?.sellTokenAddress,
     account ?? undefined
   )
-  const { executeTrade } = useTrade(bestTradeOption0xData)
+  const { executeTrade } = useTrade(bestOption)
 
   /**
    * Switches sell token lists between mainnet and polygon
@@ -108,7 +101,7 @@ const QuickTrade = () => {
       sellToken.symbol === 'ETH' ? etherBalance : sellTokenBalance
 
     if (
-      bestTradeOption0xData === undefined ||
+      bestOption === undefined ||
       sellAmount.isZero() ||
       sellAmount.isNegative() ||
       sellBalance === undefined
@@ -118,12 +111,28 @@ const QuickTrade = () => {
     const hasInsufficientFunds = sellAmount.gt(sellBalance)
     setHasInsufficientFunds(hasInsufficientFunds)
   }, [
-    bestTradeOption0xData,
+    bestOption,
     sellTokenAmount,
     sellToken,
+    buyToken,
+    buyTokenAmount,
     etherBalance,
     sellTokenBalance,
   ])
+
+  useEffect(() => {
+    if (
+      BigNumber.from(buyTokenAmount).isZero() &&
+      BigNumber.from(sellTokenAmount).isZero()
+    )
+      fetchAndCompareOptions(
+        sellToken,
+        sellTokenAmount,
+        buyToken,
+        buyTokenAmount,
+        isIssuance
+      )
+  }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
 
   /**
    * Get the list of currency tokens for the selected chain
@@ -194,6 +203,13 @@ const QuickTrade = () => {
     setBuyToken(filteredList[0])
   }
 
+  const onChangeBuyTokenAmount = (input: string) => {
+    const inputNumber = Number(input)
+    if (input === buyTokenAmount || input.slice(-1) === '.') return
+    if (isNaN(inputNumber) || inputNumber < 0) return
+    setBuyTokenAmount(inputNumber.toString())
+  }
+
   const onClickTradeButton = async () => {
     if (!account) {
       // Open connect wallet modal
@@ -260,7 +276,7 @@ const QuickTrade = () => {
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmount}
           tokenList={buyTokenList}
-          onChangeInput={setBuyTokenAmount}
+          onChangeInput={onChangeBuyTokenAmount}
           onSelectedToken={onChangeBuyToken}
         />
       </Flex>

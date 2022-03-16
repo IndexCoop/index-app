@@ -5,109 +5,37 @@ import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
-import { Token } from 'constants/tokens'
+import { ETH, Token } from 'constants/tokens'
 import { useExchangeIssuanceLeveraged } from 'hooks/useExchangeIssuanceLeveraged'
 import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
 import { displayFromWei, getChainAddress } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { getQuote, getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
 
-export const useBestTradeOption = (
-  buyToken: Token,
-  sellToken: Token,
-  sellTokenAmount: string,
-  isIssuance: boolean
-) => {
+export const useBestTradeOption = () => {
   const { getRequiredIssuanceComponents } = useExchangeIssuanceZeroEx()
-  const { getLeveragedTokenData } = useExchangeIssuanceLeveraged()
+  const {
+    issueExactSetFromERC20,
+    issueExactSetFromETH,
+    redeemExactSetForERC20,
+    redeemExactSetForETH,
+  } = useExchangeIssuanceLeveraged()
   const { chainId, library } = useEthers()
 
-  const [bestTradeOption0xData, setBestTradeOption0xData] =
-    useState<ZeroExData | null>(null)
+  const [bestOption, setBestOption] = useState<ZeroExData | null>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
 
   console.log('inside useBestTradeOption')
-  // @param buyTokenAmount make sure this
-  const getTradeDataFromExchangeIssuance = async (
-    buyTokenAmount: BigNumber
+  const fetchAndCompareOptions = async (
+    sellToken: Token,
+    sellTokenAmount: string,
+    buyToken: Token,
+    buyTokenAmount: string,
+    isIssuance: boolean
   ) => {
-    const issuanceModule = getIssuanceModule(buyToken.symbol, chainId)
-    console.log(
-      'fetching...',
-      buyTokenAmount.toString(),
-      buyToken.symbol,
-      buyToken.address,
-      issuanceModule
-    )
-    const quotes = await getRequiredIssuanceComponents(
-      library,
-      issuanceModule,
-      false,
-      buyToken.address!,
-      buyTokenAmount
-    )
-    const { components, positions } = quotes
-
-    let positionQuotes: string[] = []
-    let inputTokenAmount = BigNumber.from(0)
-    const slippagePercents = 3
-    // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
-    const slippagePercentage = slippagePercents / 100
-
-    const quotePromises: Promise<any>[] = []
-    components.forEach((component, index) => {
-      console.log('\n\n###################COMPONENT QUOTE##################')
-      const buyAmount = positions[index]
-      const buyTokenAddress = component
-      const sellTokenAddress =
-        sellToken.symbol === 'ETH' ? 'ETH' : sellToken.address
-      console.log('buyToken:', buyTokenAddress, sellTokenAddress)
-      console.log(
-        'buyAmount:',
-        buyAmount.toString(),
-        buyAmount.div(BigNumber.from(10).pow(18)).toString()
-      )
-      if (buyTokenAddress === sellTokenAddress) {
-        console.log('Component equal to input token skipping zero ex api call')
-        positionQuotes.push(ethers.utils.formatBytes32String('FOOBAR'))
-        inputTokenAmount = inputTokenAmount.add(buyAmount)
-      } else {
-        const quotePromise = getQuote(
-          {
-            buyToken: buyTokenAddress,
-            sellToken: sellTokenAddress,
-            buyAmount: buyAmount.toString(),
-            // excludedSources: '',
-            // slippagePercentage,
-          },
-          chainId ?? 1
-        )
-        quotePromises.push(quotePromise)
-      }
-    })
-
-    Promise.all(quotePromises).then((results) => {
-      if (results.length < 1) return
-      positionQuotes = results
-      inputTokenAmount = results
-        .map((result) => BigNumber.from(result.sellAmount))
-        .reduce((prevValue, currValue) => {
-          return currValue.add(prevValue)
-        })
-
-      console.log('//////////')
-      console.log('quotes', positionQuotes)
-      console.log(inputTokenAmount.toString())
-      console.log(displayFromWei(inputTokenAmount))
-    })
-
-    return { tradeData: positionQuotes, inputTokenAmount }
-  }
-
-  const fetchAndCompareOptions = async () => {
     setIsFetching(true)
-    // Checking all exchanges
-    const option1Data = await getZeroExTradeData(
+    /* Check 0x for DEX Swap option*/
+    const dexSwapOption = await getZeroExTradeData(
       true,
       sellToken,
       buyToken,
@@ -115,34 +43,65 @@ export const useBestTradeOption = (
       chainId || 1
     )
 
-    /* EI Leveraged */
-    /* NEEDS TO BE DONE AFTER 0X CALL */
-    const tokenAmount = isIssuance ? option1Data.buyAmount : sellTokenAmount
-    const eiLeveragedData = await getLeveragedTokenData(
-      library,
-      getChainAddress(buyToken, chainId) || '',
-      BigNumber.from(tokenAmount),
-      isIssuance
-    )
-    console.log('eiLeveragedData', eiLeveragedData)
+    /* Check ExchangeIssuanceLeveraged option */
+    // If the user is issuing a token, then it compares the amount based on the buy amount from the dex swap option, otherwise will redeem all the sell amount
+    const tokenAmount = isIssuance ? dexSwapOption.buyAmount : sellTokenAmount
+    const isSellingETH = sellToken.symbol === ETH.symbol
+    const isBuyingETH = buyToken.symbol === ETH.symbol
+    let exchangeIssueLeveragedOption = undefined
+    // TODO: These are not correct, need to understand how exchange issuance works here
+    if (isSellingETH && isIssuance)
+      exchangeIssueLeveragedOption = await issueExactSetFromETH(
+        library,
+        getChainAddress(buyToken, chainId) || '',
+        BigNumber.from(buyTokenAmount),
+        'uniswap-v3', //wrong?
+        buyToken, //wrong
+        buyTokenAmount // wrong
+      )
+    else if (!isSellingETH && isIssuance)
+      exchangeIssueLeveragedOption = await issueExactSetFromERC20(
+        library,
+        getChainAddress(buyToken, chainId) || '',
+        BigNumber.from(buyTokenAmount),
+        getChainAddress(sellToken, chainId) || '',
+        BigNumber.from(sellTokenAmount),
+        'uniswap-v3', //wrong?
+        sellToken, //wrong
+        buyToken //wrong
+      )
+    else if (isBuyingETH && !isIssuance)
+      exchangeIssueLeveragedOption = await redeemExactSetForETH(
+        library,
+        BigNumber.from(sellTokenAmount),
+        BigNumber.from(buyTokenAmount),
+        'uniswap-v3', //wrong?
+        sellToken, //wrong
+        buyToken //wrong
+      )
+    else if (!isBuyingETH && !isIssuance)
+      exchangeIssueLeveragedOption = await redeemExactSetForERC20(
+        library,
+        getChainAddress(sellToken, chainId) || '',
+        BigNumber.from(sellTokenAmount),
+        getChainAddress(buyToken, chainId) || '',
+        BigNumber.from(buyTokenAmount),
+        'uniswap-v3', //wrong?
+        'sellToken', //wrong
+        'buyToken' //wrong
+      )
 
     /* NOW COMPARE */
     // Checking via exchange issuance
     // const buyTokenAmount = option1Data.minOutput
     // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
     // TODO: compare and return best option
-    setBestTradeOption0xData(option1Data)
+    setBestOption(dexSwapOption)
     setIsFetching(false)
   }
 
-  useEffect(() => {
-    if (buyToken === undefined || sellToken === undefined) return
-    if (sellTokenAmount.length < 1 || sellTokenAmount === '0') return
-    fetchAndCompareOptions()
-  }, [buyToken, sellToken, sellTokenAmount])
-
   return {
-    bestTradeOption0xData,
+    bestOption,
     isFetchingTradeData: isFetching,
     fetchAndCompareOptions,
   }
