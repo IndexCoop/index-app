@@ -6,23 +6,27 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
+import { useExchangeIssuanceLeveraged } from 'hooks/useExchangeIssuanceLeveraged'
 import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
-import { displayFromWei } from 'utils'
+import { displayFromWei, getChainAddress } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { getQuote, getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
 
 export const useBestTradeOption = (
   buyToken: Token,
   sellToken: Token,
-  sellTokenAmount: string
+  sellTokenAmount: string,
+  isIssuance: boolean
 ) => {
   const { getRequiredIssuanceComponents } = useExchangeIssuanceZeroEx()
+  const { getLeveragedTokenData } = useExchangeIssuanceLeveraged()
   const { chainId, library } = useEthers()
 
   const [bestTradeOption0xData, setBestTradeOption0xData] =
     useState<ZeroExData | null>(null)
   const [isFetching, setIsFetching] = useState<boolean>(false)
 
+  console.log('inside useBestTradeOption')
   // @param buyTokenAmount make sure this
   const getTradeDataFromExchangeIssuance = async (
     buyTokenAmount: BigNumber
@@ -110,6 +114,19 @@ export const useBestTradeOption = (
       sellTokenAmount,
       chainId || 1
     )
+
+    /* EI Leveraged */
+    /* NEEDS TO BE DONE AFTER 0X CALL */
+    const tokenAmount = isIssuance ? option1Data.buyAmount : sellTokenAmount
+    const eiLeveragedData = await getLeveragedTokenData(
+      library,
+      getChainAddress(buyToken, chainId) || '',
+      BigNumber.from(tokenAmount),
+      isIssuance
+    )
+    console.log('eiLeveragedData', eiLeveragedData)
+
+    /* NOW COMPARE */
     // Checking via exchange issuance
     // const buyTokenAmount = option1Data.minOutput
     // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
@@ -124,5 +141,9 @@ export const useBestTradeOption = (
     fetchAndCompareOptions()
   }, [buyToken, sellToken, sellTokenAmount])
 
-  return { bestTradeOption0xData, isFetchingTradeData: isFetching }
+  return {
+    bestTradeOption0xData,
+    isFetchingTradeData: isFetching,
+    fetchAndCompareOptions,
+  }
 }

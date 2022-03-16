@@ -48,9 +48,11 @@ const QuickTrade = () => {
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
   const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenAmount, setSellTokenAmount] = useState<string>('0')
+  const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
   )
+  const [isIssuance, setIsIssuance] = useState<boolean>(true)
 
   const etherBalance = useEtherBalance(account)
   const sellTokenBalance = useTokenBalance(
@@ -61,13 +63,13 @@ const QuickTrade = () => {
   const { bestTradeOption0xData, isFetchingTradeData } = useBestTradeOption(
     buyToken,
     sellToken,
-    sellTokenAmount
+    sellTokenAmount,
+    isIssuance
   )
   const tradeInfoData: TradeInfoItem[] = getTradeInfoData(
     bestTradeOption0xData,
     chainId
   )
-  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
 
   const { isApproved, isApproving, onApprove } = useApproval(
     bestTradeOption0xData?.sellTokenAddress,
@@ -92,9 +94,11 @@ const QuickTrade = () => {
     if (isBuying) {
       setSellTokenList(getCurrencyTokensByChain())
       setBuyTokenList(indexNames)
+      setIsIssuance(true)
     } else {
       setSellTokenList(indexNames)
       setBuyTokenList(getCurrencyTokensByChain())
+      setIsIssuance(false)
     }
   }, [isBuying])
 
@@ -233,7 +237,7 @@ const QuickTrade = () => {
       <Flex direction='column' my='20px'>
         <QuickTradeSelector
           title='From'
-          config={{ isDarkMode, isDisabled: false }}
+          config={{ isDarkMode, isDisabled: true, isReadOnly: true }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
           onChangeInput={onChangeSellTokenAmount}
@@ -252,11 +256,11 @@ const QuickTrade = () => {
         </Box>
         <QuickTradeSelector
           title='To'
-          config={{ isDarkMode, isDisabled: false, isReadOnly: true }}
+          config={{ isDarkMode, isDisabled: false }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmount}
           tokenList={buyTokenList}
-          onChangeInput={(_) => {}}
+          onChangeInput={setBuyTokenAmount}
           onSelectedToken={onChangeBuyToken}
         />
       </Flex>

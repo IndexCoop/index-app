@@ -320,6 +320,8 @@ export const useExchangeIssuanceLeveraged = () => {
 
   return {
     issueExactSetFromETH,
+    redeemExactSetForETH,
+    issueExactSetFromERC20,
     redeemExactSetForERC20,
     getLeveragedTokenData,
     approveSetToken,

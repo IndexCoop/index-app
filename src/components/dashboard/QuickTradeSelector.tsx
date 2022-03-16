@@ -28,7 +28,9 @@ const QuickTradeSelector = (props: {
   const { chainId, account } = useEthers()
   const [balance, setBalance] = useState<string>('0')
   const etherBalance = displayFromWei(useEtherBalance(account), 2, 18) || '0.00'
-  const balanceString = useFormattedBalance(selectedToken)
+  const balanceString = Number.parseFloat(
+    useFormattedBalance(selectedToken)
+  ).toFixed(4)
 
   useEffect(() => {
     if (!account) {
@@ -55,14 +57,14 @@ const QuickTradeSelector = (props: {
         <Flex
           align='center'
           justify='center'
-          grow='1'
+          grow='2'
           border='1px solid #000'
           borderColor={borderColor}
           borderLeftRadius={borderRadius}
-          px={['16px', '40px']}
+          px={['16px', '30px']}
         >
           <Input
-            placeholder='0.0'
+            placeholder='0.00'
             type='number'
             variant='unstyled'
             disabled={config.isDisabled}
@@ -74,7 +76,6 @@ const QuickTradeSelector = (props: {
                 : undefined
             }
           />
-          <Spacer />
           <Text align='right' fontSize='12px' fontWeight='400' w='100%'>
             Balance: {balance}
           </Text>
@@ -87,7 +88,7 @@ const QuickTradeSelector = (props: {
           borderRightRadius={borderRadius}
           minWidth={['120px', '150px']}
         >
-          <Box pl='12px' pr='0px'>
+          <Box pl='10px' pr='0px'>
             <Image
               src={selectedToken.image}
               alt={`${selectedToken.symbol} logo`}
