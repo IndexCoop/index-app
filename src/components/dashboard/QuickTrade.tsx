@@ -147,7 +147,9 @@ const QuickTrade = () => {
       return 'Insufficient funds'
     }
 
-    if (!isApproved) {
+    const isNativeToken =
+      sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
+    if (!isApproved && !isNativeToken) {
       return 'Approve Tokens'
     }
 
@@ -197,7 +199,9 @@ const QuickTrade = () => {
 
     if (hasInsufficientFunds) return
 
-    if (!isApproved) {
+    const isNativeToken =
+      sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
+    if (!isApproved && !isNativeToken) {
       await onApprove()
       return
     }
