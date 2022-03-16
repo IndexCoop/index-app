@@ -104,14 +104,22 @@ const QuickTrade = () => {
       sellToken.symbol === 'ETH' ? etherBalance : sellTokenBalance
 
     if (
+      bestTradeOption0xData === undefined ||
       sellAmount.isZero() ||
       sellAmount.isNegative() ||
       sellBalance === undefined
     )
       return
+
     const hasInsufficientFunds = sellAmount.gt(sellBalance)
     setHasInsufficientFunds(hasInsufficientFunds)
-  }, [sellTokenAmount, sellToken, etherBalance, sellTokenBalance])
+  }, [
+    bestTradeOption0xData,
+    sellTokenAmount,
+    sellToken,
+    etherBalance,
+    sellTokenBalance,
+  ])
 
   /**
    * Get the list of currency tokens for the selected chain
@@ -139,7 +147,9 @@ const QuickTrade = () => {
       return 'Insufficient funds'
     }
 
-    if (!isApproved) {
+    const isNativeToken =
+      sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
+    if (!isApproved && !isNativeToken) {
       return 'Approve Tokens'
     }
 
@@ -189,12 +199,14 @@ const QuickTrade = () => {
 
     if (hasInsufficientFunds) return
 
-    if (!isApproved) {
+    const isNativeToken =
+      sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
+    if (!isApproved && !isNativeToken) {
       await onApprove()
       return
     }
 
-    executeTrade()
+    await executeTrade()
   }
 
   const isLoading = isApproving || isFetchingTradeData
@@ -295,7 +307,7 @@ function getTradeInfoData(
 ): TradeInfoItem[] {
   if (zeroExTradeData === undefined || zeroExTradeData === null) return []
 
-  const minReceive = displayFromWei(zeroExTradeData.minOutput) ?? '-'
+  const minReceive = displayFromWei(zeroExTradeData.minOutput) ?? '0.0'
 
   const networkFee =
     displayFromWei(

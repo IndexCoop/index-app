@@ -209,6 +209,5 @@ const formatSources = (
 }
 
 const getDecimalAdjustedAmount = (amount: string, decimals: number): string => {
-  const amountInWei = toWei(amount, decimals)
-  return BigNumber.from(amountInWei).toString()
+  return BigNumber.from(amount).mul(BigNumber.from(10).pow(decimals)).toString()
 }
