@@ -104,14 +104,22 @@ const QuickTrade = () => {
       sellToken.symbol === 'ETH' ? etherBalance : sellTokenBalance
 
     if (
+      bestTradeOption0xData === undefined ||
       sellAmount.isZero() ||
       sellAmount.isNegative() ||
       sellBalance === undefined
     )
       return
+
     const hasInsufficientFunds = sellAmount.gt(sellBalance)
     setHasInsufficientFunds(hasInsufficientFunds)
-  }, [sellTokenAmount, sellToken, etherBalance, sellTokenBalance])
+  }, [
+    bestTradeOption0xData,
+    sellTokenAmount,
+    sellToken,
+    etherBalance,
+    sellTokenBalance,
+  ])
 
   /**
    * Get the list of currency tokens for the selected chain
@@ -194,7 +202,7 @@ const QuickTrade = () => {
       return
     }
 
-    executeTrade()
+    await executeTrade()
   }
 
   const isLoading = isApproving || isFetchingTradeData

@@ -17,6 +17,26 @@ export const useTrade = (tradeData?: ZeroExData | null) => {
   const { usdcBalance, daiBalance, maticBalance, wethBalance } = useBalances()
   const etherBalance = useEtherBalance(account)
 
+  let spendingTokenBalance = BigNumber.from(0)
+  switch (tradeData?.sellTokenAddress) {
+    case USDC.address || USDC.polygonAddress:
+      spendingTokenBalance = usdcBalance || BigNumber.from(0)
+      break
+    case DAI.address || DAI.polygonAddress:
+      spendingTokenBalance = daiBalance || BigNumber.from(0)
+      break
+    case MATIC.address || MATIC.polygonAddress:
+      spendingTokenBalance = maticBalance || BigNumber.from(0)
+      break
+    case ETH.polygonAddress:
+      spendingTokenBalance = wethBalance || BigNumber.from(0)
+      break
+    default:
+      spendingTokenBalance = etherBalance || BigNumber.from(0)
+  }
+
+  console.log('here')
+
   const executeTrade = useCallback(async () => {
     if (!account || !tradeData || !tradeData?.sellAmount) return
 
@@ -27,32 +47,20 @@ export const useTrade = (tradeData?: ZeroExData | null) => {
       ? fromWei(BigNumber.from(tradeData.sellAmount), 6)
       : fromWei(BigNumber.from(tradeData.sellAmount))
 
-    let spendingTokenBalance = BigNumber.from(0)
-    switch (tradeData.sellTokenAddress) {
-      case USDC.address || USDC.polygonAddress:
-        spendingTokenBalance = usdcBalance || BigNumber.from(0)
-        break
-      case DAI.address || DAI.polygonAddress:
-        spendingTokenBalance = daiBalance || BigNumber.from(0)
-        break
-      case MATIC.address || MATIC.polygonAddress:
-        spendingTokenBalance = maticBalance || BigNumber.from(0)
-        break
-      case ETH.polygonAddress:
-        spendingTokenBalance = wethBalance || BigNumber.from(0)
-        break
-      default:
-        spendingTokenBalance = etherBalance || BigNumber.from(0)
-    }
+    console.log('isSellingUSDC', isSellingUSDC)
+    console.log(requiredBalance.toString(), tradeData.sellAmount)
+
     if (spendingTokenBalance.lt(requiredBalance)) return
 
     tradeData.from = account
     tradeData.gas = undefined // use metamask estimated gas limit
+
     try {
       sendTransaction(tradeData).then((data) => {
         console.log('trade executed', data)
       })
     } catch (error) {
+      // TODO:
       console.log(error)
     }
   }, [account, tradeData])
