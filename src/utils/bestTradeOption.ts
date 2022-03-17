@@ -55,6 +55,7 @@ export const useBestTradeOption = () => {
       sellTokenAmount,
       chainId || 1
     )
+    console.log('dexSwapOption', dexSwapOption)
 
     /* Check ExchangeIssuanceLeveraged option */
     // If the user is issuing a token, then it compares the amount based on the buy amount from the dex swap option, otherwise will redeem all the sell amount

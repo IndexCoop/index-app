@@ -76,6 +76,7 @@ export const getZeroExTradeData = async (
 
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
+  console.log('here', url)
   const resp = await axios.get(url, { headers }) /*{
     data: {
       price: 'string',
@@ -98,6 +99,7 @@ export const getZeroExTradeData = async (
       sellTokenCost: '1',
     },
   } */
+  console.log('resp', resp)
   const zeroExData: ZeroExData = resp.data
 
   return await processApiResult(
