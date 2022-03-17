@@ -48,7 +48,7 @@ const QuickTrade = () => {
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
   const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenAmount, setSellTokenAmount] = useState<string>('0')
-  const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
+  // const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
   )
@@ -69,6 +69,8 @@ const QuickTrade = () => {
     account ?? undefined
   )
   const { executeTrade } = useTrade(bestOption)
+
+  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
 
   /**
    * Switches sell token lists between mainnet and polygon
@@ -123,7 +125,7 @@ const QuickTrade = () => {
   useEffect(() => {
     // TODO: recheck logic later
     if (
-      BigNumber.from(buyTokenAmount).isZero() &&
+      // BigNumber.from(buyTokenAmount).isZero() &&
       BigNumber.from(sellTokenAmount).isZero()
     )
       return
@@ -206,10 +208,10 @@ const QuickTrade = () => {
   }
 
   const onChangeBuyTokenAmount = (input: string) => {
-    const inputNumber = Number(input)
-    if (input === buyTokenAmount || input.slice(-1) === '.') return
-    if (isNaN(inputNumber) || inputNumber < 0) return
-    setBuyTokenAmount(inputNumber.toString())
+    // const inputNumber = Number(input)
+    // if (input === buyTokenAmount || input.slice(-1) === '.') return
+    // if (isNaN(inputNumber) || inputNumber < 0) return
+    // setBuyTokenAmount(inputNumber.toString())
   }
 
   const onClickTradeButton = async () => {
@@ -257,9 +259,9 @@ const QuickTrade = () => {
           title='From'
           config={{
             isDarkMode,
-            isInputDisabled: true,
+            isInputDisabled: false,
             isSelectorDisabled: false,
-            isReadOnly: true,
+            isReadOnly: false,
           }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
@@ -279,7 +281,12 @@ const QuickTrade = () => {
         </Box>
         <QuickTradeSelector
           title='To'
-          config={{ isDarkMode }}
+          config={{
+            isDarkMode,
+            isInputDisabled: true,
+            isSelectorDisabled: false,
+            isReadOnly: true,
+          }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmount}
           tokenList={buyTokenList}
