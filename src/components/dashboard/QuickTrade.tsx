@@ -121,17 +121,19 @@ const QuickTrade = () => {
   ])
 
   useEffect(() => {
+    // TODO: recheck logic later
     if (
       BigNumber.from(buyTokenAmount).isZero() &&
       BigNumber.from(sellTokenAmount).isZero()
     )
-      fetchAndCompareOptions(
-        sellToken,
-        sellTokenAmount,
-        buyToken,
-        buyTokenAmount,
-        isIssuance
-      )
+      return
+    fetchAndCompareOptions(
+      sellToken,
+      sellTokenAmount,
+      buyToken,
+      buyTokenAmount,
+      isIssuance
+    )
   }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
 
   /**
