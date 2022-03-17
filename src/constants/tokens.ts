@@ -345,6 +345,11 @@ export const polygonCurrencyTokens = [MATIC, DAI, USDC]
 
 export const optimismCurrencyTokens = [ETH, DAI, USDC]
 
+export const eligibleLeveragedExchangeIssuanceTokens = [
+  Bitcoin2xFLIP,
+  IBitcoinFLIP,
+]
+
 const indexNames = [
   DefiPulseIndex,
   MetaverseIndex,

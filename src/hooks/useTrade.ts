@@ -35,8 +35,6 @@ export const useTrade = (tradeData?: ZeroExData | null) => {
       spendingTokenBalance = etherBalance || BigNumber.from(0)
   }
 
-  console.log('here')
-
   const executeTrade = useCallback(async () => {
     if (!account || !tradeData || !tradeData?.sellAmount) return
 

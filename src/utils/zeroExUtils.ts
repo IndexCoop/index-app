@@ -7,11 +7,7 @@ import { POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { toWei } from 'utils'
 
-import { fetchCoingeckoTokenPrice } from './coingeckoApi'
-
-const API_GATED_URL = 'https://gated.api.0x.org/swap/v1/quote'
-const API_GATED_URL_POLYGON = 'https://gated.polygon.api.0x.org/swap/v1/quote'
-const API_TEST_URL = 'https://api.0x.org/swap/v1/quote'
+const API_0X_INDEX_URL = 'https://api.indexcoop.com/0x'
 
 export type ZeroExData = {
   price: string
@@ -34,23 +30,22 @@ export type ZeroExData = {
   sellTokenCost: string
 }
 
-const headers = {
-  '0x-api-key': process.env.REACT_APP_0X_API_KEY,
-}
-
 function getApiUrl(query: string, chainId: number): string {
-  let baseUrl = ''
+  const quotePath = '/swap/v1/quote'
+  let networkKey = ''
   switch (chainId) {
     case POLYGON.chainId:
-      baseUrl = API_GATED_URL_POLYGON
+      networkKey = 'polygon'
       break
     default:
-      baseUrl = API_GATED_URL
+      networkKey = 'mainnet'
   }
 
-  return `${baseUrl}?${query}`
+  // example: https://api.indexcoop.com/0x/mainnet/swap/v1/quote?sellToken=ETH&buyToken=0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b&sellAmount=10000000000000000000
+  return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}`
 }
 
+// TODO: remove?
 // Temporarily adding this because we need to support more tokens than the once
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
@@ -58,7 +53,7 @@ export async function getQuote(params: any, chainId: number) {
   params.buyAmount = BigNumber.from(params.buyAmount).toString()
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  const response = await axios.get(url, { headers })
+  const response = await axios.get(url)
   return response.data
 }
 
@@ -79,7 +74,7 @@ export const getZeroExTradeData = async (
 
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  const resp = await axios.get(url, { headers })
+  const resp = await axios.get(url)
   const zeroExData: ZeroExData = resp.data
 
   return await processApiResult(

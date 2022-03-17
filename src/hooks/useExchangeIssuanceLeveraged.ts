@@ -6,6 +6,13 @@ import { ExchangeIssuanceLeveragedAddress } from 'constants/ethContractAddresses
 import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
 
+export enum Exchange {
+  None,
+  Quickswap,
+  Sushiswap,
+  UniV3,
+}
+
 /**
  * Get the 0x Trade Data for
  */
@@ -24,7 +31,7 @@ export const useExchangeIssuanceLeveraged = () => {
     library: any,
     _setToken: string,
     _setAmount: BigNumber,
-    _exchange: string,
+    _exchange: Exchange,
     _swapDataDebtForCollateral: any,
     _swapDataInputToken: any
   ): Promise<any> => {
@@ -61,7 +68,7 @@ export const useExchangeIssuanceLeveraged = () => {
     library: any,
     _setAmount: BigNumber,
     _minAmountOutputToken: BigNumber,
-    _exchange: string,
+    _exchange: Exchange,
     _swapDataCollateralForDebt: any,
     _swapDataOutputToken: any
   ): Promise<any> => {
@@ -102,7 +109,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _setAmount: BigNumber,
     _inputToken: string,
     _maxAmountInputToken: BigNumber,
-    _exchange: string,
+    _exchange: Exchange,
     _swapDataDebtForCollateral: any,
     _swapDataInputToken: any
   ): Promise<any> => {
@@ -145,7 +152,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _setAmount: BigNumber,
     _outputToken: string,
     _minAmountOutputToken: BigNumber,
-    _exchange: string,
+    _exchange: Exchange,
     _swapDataCollateralForDebt: string,
     _swapDataOutputToken: string
   ): Promise<any> => {
@@ -320,6 +327,8 @@ export const useExchangeIssuanceLeveraged = () => {
 
   return {
     issueExactSetFromETH,
+    redeemExactSetForETH,
+    issueExactSetFromERC20,
     redeemExactSetForERC20,
     getLeveragedTokenData,
     approveSetToken,
