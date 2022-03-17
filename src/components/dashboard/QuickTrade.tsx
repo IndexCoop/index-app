@@ -255,7 +255,12 @@ const QuickTrade = () => {
       <Flex direction='column' my='20px'>
         <QuickTradeSelector
           title='From'
-          config={{ isDarkMode, isDisabled: true, isReadOnly: true }}
+          config={{
+            isDarkMode,
+            isInputDisabled: true,
+            isSelectorDisabled: false,
+            isReadOnly: true,
+          }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
           onChangeInput={onChangeSellTokenAmount}
@@ -274,7 +279,7 @@ const QuickTrade = () => {
         </Box>
         <QuickTradeSelector
           title='To'
-          config={{ isDarkMode, isDisabled: false }}
+          config={{ isDarkMode }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmount}
           tokenList={buyTokenList}

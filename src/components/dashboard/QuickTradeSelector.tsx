@@ -11,7 +11,8 @@ import { displayFromWei } from 'utils'
 
 interface InputSelectorConfig {
   isDarkMode: boolean
-  isDisabled: boolean
+  isInputDisabled?: boolean
+  isSelectorDisabled?: boolean
   isReadOnly?: boolean
 }
 
@@ -67,7 +68,7 @@ const QuickTradeSelector = (props: {
             placeholder='0.00'
             type='number'
             variant='unstyled'
-            disabled={config.isDisabled}
+            disabled={config.isInputDisabled ?? false}
             isReadOnly={config.isReadOnly ?? false}
             value={props.selectedTokenAmount}
             onChange={(event) =>
@@ -97,7 +98,7 @@ const QuickTradeSelector = (props: {
           </Box>
           <Select
             border='0'
-            disabled={config.isDisabled}
+            disabled={config.isSelectorDisabled ?? false}
             w='100%'
             h='54px'
             onChange={(event) => props.onSelectedToken(event.target.value)}
