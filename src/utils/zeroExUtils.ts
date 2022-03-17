@@ -7,7 +7,7 @@ import { POLYGON } from 'constants/chains'
 import { DefiPulseIndex, ETH, Token } from 'constants/tokens'
 import { toWei } from 'utils'
 
-const API_GATED_URL = 'https://gated.api.0x.org/swap/v1/quote'
+const API_GATED_URL = 'https://api.indexcoop.com/0x/mainnet/swap/v1/quote'
 const API_GATED_URL_POLYGON = 'https://gated.polygon.api.0x.org/swap/v1/quote'
 
 export type ZeroExData = {
@@ -76,7 +76,7 @@ export const getZeroExTradeData = async (
 
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  const resp = {
+  const resp = await axios.get(url, { headers }) /*{
     data: {
       price: 'string',
       guaranteedPrice: '0',
@@ -97,7 +97,7 @@ export const getZeroExTradeData = async (
       buyTokenCost: '1',
       sellTokenCost: '1',
     },
-  } //await axios.get(url, { headers })
+  } */
   const zeroExData: ZeroExData = resp.data
 
   return await processApiResult(

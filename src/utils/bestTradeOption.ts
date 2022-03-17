@@ -39,7 +39,6 @@ export const useBestTradeOption = () => {
   const isEligibleLeveragedToken = (token: Token) =>
     eligibleLeveragedExchangeIssuanceTokens.includes(token)
 
-  console.log('inside useBestTradeOption')
   const fetchAndCompareOptions = async (
     sellToken: Token,
     sellTokenAmount: string,
