@@ -37,7 +37,7 @@ import { ZeroExData } from 'utils/zeroExUtils'
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
-const QuickTrade = () => {
+const QuickTrade = (props: { isNarrowVersion?: boolean }) => {
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
@@ -240,6 +240,9 @@ const QuickTrade = () => {
     ? false
     : buyTokenAmount === '0' || hasInsufficientFunds || isApproving
 
+  const isNarrow = props.isNarrowVersion ?? false
+  const paddingX = isNarrow ? '16px' : '40px'
+
   return (
     <Flex
       border='2px solid #F7F1E4'
@@ -247,7 +250,7 @@ const QuickTrade = () => {
       borderRadius='16px'
       direction='column'
       py='20px'
-      px={['16px', '40px']}
+      px={['16px', paddingX]}
     >
       <Flex>
         <Text fontSize='24px' fontWeight='700'>

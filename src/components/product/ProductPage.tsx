@@ -4,6 +4,7 @@ import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
+import QuickTrade from 'components/dashboard/QuickTrade'
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import { Token } from 'constants/tokens'
@@ -118,7 +119,7 @@ const ProductPage = (props: {
 
   const stats = getStatsForToken(tokenData, marketData, currentTokenSupply)
 
-  const chartWidth = window.outerWidth < 400 ? window.outerWidth : 1048
+  const chartWidth = window.outerWidth < 400 ? window.outerWidth : 648
   const chartHeight = window.outerWidth < 400 ? 300 : 400
 
   return (
@@ -131,16 +132,21 @@ const ProductPage = (props: {
           />
         </Box>
         <Flex direction='column'>
-          <MarketChart
-            marketData={priceChartData}
-            prices={[price]}
-            priceChanges={priceChangesFormatted}
-            options={{
-              width: chartWidth,
-              height: chartHeight,
-              hideYAxis: false,
-            }}
-          />
+          <Flex wrap={['wrap', 'nowrap']}>
+            <MarketChart
+              marketData={priceChartData}
+              prices={[price]}
+              priceChanges={priceChangesFormatted}
+              options={{
+                width: chartWidth,
+                height: chartHeight,
+                hideYAxis: false,
+              }}
+            />
+            <Flex mt={['48px', '0']} ml={['0', '36px']}>
+              <QuickTrade isNarrowVersion={true} />
+            </Flex>
+          </Flex>
           <ProductPageSectionHeader title='Stats' topMargin='120px' />
           <ProductStats stats={stats} />
           <ProductPageSectionHeader title='Allocations' />
