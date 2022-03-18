@@ -1,7 +1,7 @@
 import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
-import { formatUnits, parseEther } from '@ethersproject/units'
+import { formatUnits, parseUnits } from '@ethersproject/units'
 import { ChainId } from '@usedapp/core'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
@@ -23,9 +23,9 @@ export const toWei = (
   power: number = 18
 ): BigNumber => {
   if (typeof value === 'number') {
-    return parseEther(value.toString()).mul(BigNumber.from(10).pow(18 - power))
+    return parseUnits(value.toString(), power)
   }
-  return parseEther(value).mul(BigNumber.from(10).pow(18 - power))
+  return parseUnits(value, power)
 }
 
 /**

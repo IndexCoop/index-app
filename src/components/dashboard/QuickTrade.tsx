@@ -146,10 +146,11 @@ const QuickTrade = (props: {
   ])
 
   useEffect(() => {
+    const sellTokenInWei = toWei(sellTokenAmount)
     // TODO: recheck logic later
     if (
       // BigNumber.from(buyTokenAmount).isZero() &&
-      BigNumber.from(sellTokenAmount).isZero()
+      sellTokenInWei.isZero()
     )
       return
     fetchAndCompareOptions(
