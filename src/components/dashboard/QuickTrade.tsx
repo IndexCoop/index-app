@@ -39,7 +39,10 @@ import { ZeroExData } from 'utils/zeroExUtils'
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
-const QuickTrade = (props: { isNarrowVersion?: boolean }) => {
+const QuickTrade = (props: {
+  isNarrowVersion?: boolean
+  singleToken?: Token
+}) => {
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
@@ -58,6 +61,9 @@ const QuickTrade = (props: { isNarrowVersion?: boolean }) => {
    * @returns Token[] list of tokens
    */
   const getTokenListByChain = () => {
+    const { singleToken } = props
+    if (singleToken) return [singleToken]
+
     if (chainId === POLYGON.chainId) return indexNamesPolygon
     return indexNamesMainnet
   }

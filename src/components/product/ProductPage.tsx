@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
-import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import QuickTrade from 'components/dashboard/QuickTrade'
@@ -144,7 +143,7 @@ const ProductPage = (props: {
               }}
             />
             <Flex mt={['48px', '0']} ml={['0', '36px']}>
-              <QuickTrade isNarrowVersion={true} />
+              <QuickTrade isNarrowVersion={true} singleToken={tokenData} />
             </Flex>
           </Flex>
           <ProductPageSectionHeader title='Stats' topMargin='120px' />
