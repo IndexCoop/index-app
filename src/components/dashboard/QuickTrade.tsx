@@ -20,10 +20,12 @@ import {
 } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
-import { MAINNET, POLYGON } from 'constants/chains'
-import indexNames, {
+import { POLYGON } from 'constants/chains'
+import {
   DefiPulseIndex,
   ETH,
+  indexNamesMainnet,
+  indexNamesPolygon,
   mainnetCurrencyTokens,
   polygonCurrencyTokens,
   Token,
@@ -42,15 +44,35 @@ const QuickTrade = (props: { isNarrowVersion?: boolean }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
 
+  /**
+   * Get the list of currency tokens for the selected chain
+   * @returns Token[] list of tokens
+   */
+  const getCurrencyTokensByChain = () => {
+    if (chainId === POLYGON.chainId) return polygonCurrencyTokens
+    return mainnetCurrencyTokens
+  }
+
+  /**
+   * Get the list of currency tokens for the selected chain
+   * @returns Token[] list of tokens
+   */
+  const getTokenListByChain = () => {
+    if (chainId === POLYGON.chainId) return indexNamesPolygon
+    return indexNamesMainnet
+  }
+
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
-  const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
+  const [buyTokenList, setBuyTokenList] = useState<Token[]>(
+    getTokenListByChain()
+  )
   const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenAmount, setSellTokenAmount] = useState<string>('0')
   // const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
-    chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
+    getCurrencyTokensByChain()
   )
   const [isIssuance, setIsIssuance] = useState<boolean>(true)
 
@@ -76,22 +98,17 @@ const QuickTrade = (props: { isNarrowVersion?: boolean }) => {
    * Switches sell token lists between mainnet and polygon
    */
   useEffect(() => {
-    if (chainId === MAINNET.chainId) {
-      setBuyTokenList(indexNames)
-      setSellTokenList(mainnetCurrencyTokens)
-    } else {
-      setBuyTokenList(indexNames)
-      setSellTokenList(polygonCurrencyTokens)
-    }
+    setSellTokenList(getCurrencyTokensByChain())
+    setBuyTokenList(getTokenListByChain())
   }, [chainId])
 
   useEffect(() => {
     if (isBuying) {
       setSellTokenList(getCurrencyTokensByChain())
-      setBuyTokenList(indexNames)
+      setBuyTokenList(getTokenListByChain())
       setIsIssuance(true)
     } else {
-      setSellTokenList(indexNames)
+      setSellTokenList(getTokenListByChain())
       setBuyTokenList(getCurrencyTokensByChain())
       setIsIssuance(false)
     }
@@ -137,15 +154,6 @@ const QuickTrade = (props: { isNarrowVersion?: boolean }) => {
       isIssuance
     )
   }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
-
-  /**
-   * Get the list of currency tokens for the selected chain
-   * @returns Token[] list of tokens
-   */
-  const getCurrencyTokensByChain = () => {
-    if (chainId === POLYGON.chainId) return polygonCurrencyTokens
-    return mainnetCurrencyTokens
-  }
 
   /**
    * Get the correct trade button label according to different states

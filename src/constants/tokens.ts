@@ -121,7 +121,7 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   name: 'Ethereum 2x Flexible Leverage Index',
   symbol: 'ETH2x-FLI',
   address: '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
-  polygonAddress: '0x66d7FDCc7403f18cAE9b0e2e8385649D2AcBC12A',
+  polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
   url: 'ethfli',
@@ -366,5 +366,12 @@ const indexNames = [
   IBitcoinFLIP,
   Bitcoin2xFLIP,
 ]
+
+export const indexNamesMainnet = indexNames.filter(
+  (index) => index.address !== undefined
+)
+export const indexNamesPolygon = indexNames.filter(
+  (index) => index.polygonAddress !== undefined
+)
 
 export default indexNames
