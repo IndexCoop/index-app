@@ -1,8 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { get0xApiParams, get0xQuote } from 'utils/zeroExUtils'
-
 import { displayFromWei, getChainAddress, toWei } from 'utils'
+import { get0xApiParams, get0xQuote } from 'utils/zeroExUtils'
 
 export async function getTokenPathAndFees(
   amount: BigNumber,
