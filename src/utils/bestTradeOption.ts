@@ -21,7 +21,8 @@ import {
 import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
 import { displayFromWei, getChainAddress } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
-import { getQuote, getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
+import { getTokenPathAndFees } from 'utils/pathsAndFees'
+import { getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
 
 export const useBestTradeOption = () => {
   // TODO: is this needed, probably not?
@@ -65,9 +66,7 @@ export const useBestTradeOption = () => {
     /* Check ExchangeIssuanceLeveraged option */
     let exchangeIssueLeveragedOption = undefined
     // Currently only relevant for polygon network
-    // TODO: skip (work in progress)
-    // if (chainId === 137) {
-    if (chainId === 3) {
+    if (chainId === 137) {
       // If the user is issuing a token, then it compares the amount based on the
       // buy amount from the dex swap option, otherwise will redeem all the sell amount
       const tokenAmount = isIssuance ? dexSwapOption.buyAmount : sellTokenAmount
@@ -75,10 +74,10 @@ export const useBestTradeOption = () => {
       const isBuyingETH = buyToken.symbol === MATIC.symbol
       const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
       const isSellingTokenEligible = isEligibleLeveragedToken(sellToken)
-      // TODO: These are not correct, need to understand how exchange issuance works here
+
       if (isSellingETH && isIssuance && isBuyingTokenEligible) {
         const setToken = getChainAddress(buyToken, chainId) || ''
-        const setTokenAmount = BigNumber.from(buyTokenAmount)
+        const setTokenAmount = BigNumber.from(tokenAmount)
         const tx = await getLeveragedTokenData(
           library,
           setToken,
@@ -86,6 +85,11 @@ export const useBestTradeOption = () => {
           isIssuance
         )
         const { debtAmount, debtToken, collateralAmount, collateralToken } = tx
+        const { path, fees } = await getTokenPathAndFees(
+          debtAmount,
+          debtToken,
+          collateralToken
+        )
         console.log(
           'levtokendata',
           tx,
@@ -94,14 +98,14 @@ export const useBestTradeOption = () => {
           collateralToken,
           collateralAmount.toString()
         )
-        exchangeIssueLeveragedOption = await issueExactSetFromETH(
-          library,
-          setToken,
-          setTokenAmount,
-          Exchange.UniV3,
-          [[debtToken], [debtAmount]],
-          [[collateralToken], [collateralAmount]]
-        )
+        // exchangeIssueLeveragedOption = await issueExactSetFromETH(
+        //   library,
+        //   setToken,
+        //   setTokenAmount,
+        //   Exchange.UniV3,
+        //   [[debtToken], [debtAmount]],
+        //   [[collateralToken], [collateralAmount]]
+        // )
       } else if (!isSellingETH && isIssuance && isBuyingTokenEligible)
         exchangeIssueLeveragedOption = await issueExactSetFromERC20(
           library,
