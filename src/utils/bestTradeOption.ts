@@ -106,37 +106,38 @@ export const useBestTradeOption = () => {
         //   [[debtToken], [debtAmount]],
         //   [[collateralToken], [collateralAmount]]
         // )
-      } else if (!isSellingETH && isIssuance && isBuyingTokenEligible)
-        exchangeIssueLeveragedOption = await issueExactSetFromERC20(
-          library,
-          getChainAddress(buyToken, chainId) || '',
-          BigNumber.from(buyTokenAmount),
-          getChainAddress(sellToken, chainId) || '',
-          BigNumber.from(sellTokenAmount),
-          Exchange.UniV3,
-          sellToken, //wrong
-          buyToken //wrong
-        )
-      else if (isBuyingETH && !isIssuance && isSellingTokenEligible)
-        exchangeIssueLeveragedOption = await redeemExactSetForETH(
-          library,
-          BigNumber.from(sellTokenAmount),
-          BigNumber.from(buyTokenAmount),
-          Exchange.UniV3,
-          sellToken, //wrong
-          buyToken //wrong
-        )
-      else if (!isBuyingETH && !isIssuance && isSellingTokenEligible)
-        exchangeIssueLeveragedOption = await redeemExactSetForERC20(
-          library,
-          getChainAddress(sellToken, chainId) || '',
-          BigNumber.from(sellTokenAmount),
-          getChainAddress(buyToken, chainId) || '',
-          BigNumber.from(buyTokenAmount),
-          Exchange.UniV3,
-          'sellToken', //wrong
-          'buyToken' //wrong
-        )
+      } else if (!isSellingETH && isIssuance && isBuyingTokenEligible) {
+        // exchangeIssueLeveragedOption = await issueExactSetFromERC20(
+        //   library,
+        //   getChainAddress(buyToken, chainId) || '',
+        //   BigNumber.from(buyTokenAmount),
+        //   getChainAddress(sellToken, chainId) || '',
+        //   BigNumber.from(sellTokenAmount),
+        //   Exchange.UniV3,
+        //   sellToken, //wrong
+        //   buyToken //wrong
+        // )
+      } else if (isBuyingETH && !isIssuance && isSellingTokenEligible) {
+        // exchangeIssueLeveragedOption = await redeemExactSetForETH(
+        //   library,
+        //   BigNumber.from(sellTokenAmount),
+        //   BigNumber.from(buyTokenAmount),
+        //   Exchange.UniV3,
+        //   sellToken, //wrong
+        //   buyToken //wrong
+        // )
+      } else if (!isBuyingETH && !isIssuance && isSellingTokenEligible) {
+        // exchangeIssueLeveragedOption = await redeemExactSetForERC20(
+        //   library,
+        //   getChainAddress(sellToken, chainId) || '',
+        //   BigNumber.from(sellTokenAmount),
+        //   getChainAddress(buyToken, chainId) || '',
+        //   BigNumber.from(buyTokenAmount),
+        //   Exchange.UniV3,
+        //   'sellToken', //wrong
+        //   'buyToken' //wrong
+        // )
+      }
     }
 
     console.log('exchangeIssueLeveragedOption', exchangeIssueLeveragedOption)
