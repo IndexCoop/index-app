@@ -121,7 +121,7 @@ const QuickTrade = (props: {
   }, [isBuying])
 
   useEffect(() => {
-    const sellAmount = toWei(sellTokenAmount)
+    const sellAmount = toWei(sellTokenAmount, sellToken.decimals)
     const sellBalance =
       sellToken.symbol === 'ETH' ? etherBalance : sellTokenBalance
 
