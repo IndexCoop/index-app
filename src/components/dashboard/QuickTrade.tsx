@@ -359,24 +359,24 @@ function getTradeInfoData(
 ): TradeInfoItem[] {
   if (zeroExTradeData === undefined || zeroExTradeData === null) return []
 
+  const { gas, gasPrice, sources } = zeroExTradeData
+  if (gasPrice === undefined || gas === undefined || sources === undefined)
+    return []
+
   const minReceive = displayFromWei(zeroExTradeData.minOutput) ?? '0.0'
 
   const networkFee =
-    displayFromWei(
-      BigNumber.from(zeroExTradeData.gasPrice).mul(
-        BigNumber.from(zeroExTradeData.gas)
-      )
-    ) ?? '-'
+    displayFromWei(BigNumber.from(gasPrice).mul(BigNumber.from(gas))) ?? '-'
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
 
-  const sources = zeroExTradeData.sources
+  const offeredFromSources = zeroExTradeData.sources
     .filter((source) => Number(source.proportion) > 0)
     .map((source) => source.name)
 
   return [
     { title: 'Minimum Receive', value: minReceive },
     { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
-    { title: 'Offered From', value: sources.toString() },
+    { title: 'Offered From', value: offeredFromSources.toString() },
   ]
 }
 
