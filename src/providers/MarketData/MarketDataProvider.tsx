@@ -7,6 +7,7 @@ import {
 } from 'react'
 
 import {
+  ETH,
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   Bitcoin2xFLIP,
@@ -32,6 +33,7 @@ export interface TokenMarketDataValues {
 }
 
 export interface TokenContext {
+  eth?: TokenMarketDataValues
   index?: TokenMarketDataValues
   dpi?: TokenMarketDataValues
   mvi?: TokenMarketDataValues
@@ -58,6 +60,7 @@ export const MarketDataContext = createContext<TokenContext>({
 export const useMarketData = () => useContext(MarketDataContext)
 
 export const MarketDataProvider = (props: { children: any }) => {
+  const [ethMarketData, setEthMarketData] = useState<any>({})
   const [indexMarketData, setIndexMarketData] = useState<any>({})
   const [dpiMarketData, setDpiMarketData] = useState<any>({})
   const [mviMarketData, setMviMarketData] = useState<any>({})
@@ -78,6 +81,7 @@ export const MarketDataProvider = (props: { children: any }) => {
 
   const fetchMarketData = useCallback(async () => {
     const marketData = await Promise.all([
+      fetchHistoricalTokenMarketData(ETH.coingeckoId),
       fetchHistoricalTokenMarketData(IndexToken.coingeckoId),
       fetchHistoricalTokenMarketData(DefiPulseIndex.coingeckoId),
       fetchHistoricalTokenMarketData(MetaverseIndex.coingeckoId),
@@ -98,6 +102,7 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(IBitcoinFLIP.coingeckoId),
     ])
 
+    setEthMarketData(marketData[0])
     setIndexMarketData(marketData[0])
     setDpiMarketData(marketData[1])
     setMviMarketData(marketData[2])
@@ -122,6 +127,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     <MarketDataContext.Provider
       value={{
         selectLatestMarketData,
+        eth: ethMarketData,
         index: indexMarketData,
         dpi: dpiMarketData,
         mvi: mviMarketData,

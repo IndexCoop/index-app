@@ -4,6 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import {
   ChainId,
   useContractCall,
+  useEtherBalance,
   useEthers,
   useTokenBalance,
 } from '@usedapp/core'
@@ -39,6 +40,7 @@ import { getChainAddress } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 
 export type Balances = {
+  ethBalance?: BigNumber
   daiBalance?: BigNumber
   usdcBalance?: BigNumber
   maticBalance?: BigNumber
@@ -85,6 +87,7 @@ const useStakingUnclaimedRewards = (
 export const useBalances = (): Balances => {
   const { account, chainId } = useEthers()
 
+  const ethBalance = useEtherBalance(account)
   const daiBalance = useTokenBalance(getChainAddress(DAI, chainId), account)
   const usdcBalance = useTokenBalance(getChainAddress(USDC, chainId), account)
   const maticBalance = useTokenBalance(getChainAddress(MATIC, chainId), account)
@@ -172,6 +175,7 @@ export const useBalances = (): Balances => {
   )
 
   return {
+    ethBalance,
     daiBalance,
     usdcBalance,
     maticBalance,

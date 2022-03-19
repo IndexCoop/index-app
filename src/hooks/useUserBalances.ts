@@ -28,7 +28,7 @@ function getTokenMarketDataValuesOrNull(
   }
 
   if (balance === undefined || balance.isZero() || balance.isNegative()) {
-    return undefined
+    balance = BigNumber.from(0)
   }
 
   const convertedBalance = displayFromWei(balance)
@@ -63,6 +63,7 @@ function getTotalHourlyPrices(marketData: UserTokenBalance[]) {
 
 export const useUserBalances = () => {
   const {
+    ethBalance,
     bedBalance,
     dataBalance,
     dpiBalance,
@@ -72,9 +73,10 @@ export const useUserBalances = () => {
     btcFliBalance,
     ethFliPBalance,
   } = useBalances()
-  const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
-
+  const { eth, bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
+  
   const balances = [
+    { title: 'ETH', value: ethBalance },
     { title: 'DPI', value: dpiBalance },
     { title: 'MVI', value: mviBalance },
     { title: 'DATA', value: dataBalance },
@@ -88,6 +90,8 @@ export const useUserBalances = () => {
   const userBalances: UserTokenBalance[] = balances
     .map((pos) => {
       switch (pos.title) {
+        case 'ETH':
+          return getTokenMarketDataValuesOrNull(pos.title, eth, pos.value)
         case 'DPI':
           return getTokenMarketDataValuesOrNull(pos.title, dpi, pos.value)
         case 'MVI':

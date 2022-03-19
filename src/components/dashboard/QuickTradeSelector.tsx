@@ -7,6 +7,7 @@ import { useEtherBalance, useEthers } from '@usedapp/core'
 
 import { ETH, Token } from 'constants/tokens'
 import { useFormattedBalance } from 'hooks/useFormattedBalance'
+import { useUserBalances } from 'hooks/useUserBalances'
 import { displayFromWei } from 'utils'
 
 interface InputSelectorConfig {
@@ -27,6 +28,8 @@ const QuickTradeSelector = (props: {
 }) => {
   const { config, selectedToken } = props
   const { chainId, account } = useEthers()
+  const userBalances = useUserBalances().userBalances
+
   const [balance, setBalance] = useState<string>('0')
   const etherBalance = displayFromWei(useEtherBalance(account), 2, 18) || '0.00'
   const balanceString = Number.parseFloat(
