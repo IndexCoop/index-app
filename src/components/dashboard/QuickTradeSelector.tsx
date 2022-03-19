@@ -105,11 +105,9 @@ const QuickTradeSelector = (props: {
             value={props.selectedToken.symbol}
           >
             {props.tokenList.map((token) => {
-              console.log(token)
               return (
                 <option
                   key={token.symbol}
-                  // selected={token.symbol === selectedToken.symbol}
                   value={token.symbol}
                 >
                   {token.symbol}

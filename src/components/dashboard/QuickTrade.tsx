@@ -47,8 +47,6 @@ const QuickTrade = (props: {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
 
-  console.log('chain', chainId)
-
   /**
    * Get the list of currency tokens for the selected chain
    * @returns Token[] list of tokens
@@ -258,7 +256,6 @@ const QuickTrade = (props: {
 
   const isNarrow = props.isNarrowVersion ?? false
   const paddingX = isNarrow ? '16px' : '40px'
-  console.log('sell token ', sellToken)
 
   return (
     <Flex
