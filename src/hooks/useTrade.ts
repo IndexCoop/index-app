@@ -54,12 +54,12 @@ export const useTrade = (tradeData?: ZeroExData | null) => {
     tradeData.gas = undefined // use metamask estimated gas limit
 
     try {
-      sendTransaction({to: account, value: spendingTokenBalance}).then((data) => {
+      sendTransaction(tradeData).then((data) => {
         console.log('trade executed', data)
       })
     } catch (error) {
       // TODO:
-      console.log('hello', error)
+      console.log(error)
     }
   }, [account, tradeData])
 
