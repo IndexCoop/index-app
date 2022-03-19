@@ -20,10 +20,12 @@ import {
 } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
-import { MAINNET, POLYGON } from 'constants/chains'
-import indexNames, {
+import { POLYGON } from 'constants/chains'
+import {
   DefiPulseIndex,
   ETH,
+  indexNamesMainnet,
+  indexNamesPolygon,
   mainnetCurrencyTokens,
   polygonCurrencyTokens,
   Token,
@@ -37,20 +39,45 @@ import { ZeroExData } from 'utils/zeroExUtils'
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
-const QuickTrade = () => {
+const QuickTrade = (props: {
+  isNarrowVersion?: boolean
+  singleToken?: Token
+}) => {
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
 
+  /**
+   * Get the list of currency tokens for the selected chain
+   * @returns Token[] list of tokens
+   */
+  const getCurrencyTokensByChain = () => {
+    if (chainId === POLYGON.chainId) return polygonCurrencyTokens
+    return mainnetCurrencyTokens
+  }
+
+  /**
+   * Get the list of currency tokens for the selected chain
+   * @returns Token[] list of tokens
+   */
+  const getTokenListByChain = () => {
+    const { singleToken } = props
+    if (singleToken) return [singleToken]
+    if (chainId === POLYGON.chainId) return indexNamesPolygon
+    return indexNamesMainnet
+  }
+
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
-  const [buyTokenList, setBuyTokenList] = useState<Token[]>(indexNames)
+  const [buyTokenList, setBuyTokenList] = useState<Token[]>(
+    getTokenListByChain()
+  )
   const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenAmount, setSellTokenAmount] = useState<string>('0')
-  const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
+  // const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
-    chainId === MAINNET.chainId ? mainnetCurrencyTokens : polygonCurrencyTokens
+    getCurrencyTokensByChain()
   )
   const [isIssuance, setIsIssuance] = useState<boolean>(true)
 
@@ -70,33 +97,30 @@ const QuickTrade = () => {
   )
   const { executeTrade } = useTrade(bestOption)
 
+  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
+
   /**
    * Switches sell token lists between mainnet and polygon
    */
   useEffect(() => {
-    if (chainId === MAINNET.chainId) {
-      setBuyTokenList(indexNames)
-      setSellTokenList(mainnetCurrencyTokens)
-    } else {
-      setBuyTokenList(indexNames)
-      setSellTokenList(polygonCurrencyTokens)
-    }
+    setSellTokenList(getCurrencyTokensByChain())
+    setBuyTokenList(getTokenListByChain())
   }, [chainId])
 
   useEffect(() => {
     if (isBuying) {
       setSellTokenList(getCurrencyTokensByChain())
-      setBuyTokenList(indexNames)
+      setBuyTokenList(getTokenListByChain())
       setIsIssuance(true)
     } else {
-      setSellTokenList(indexNames)
+      setSellTokenList(getTokenListByChain())
       setBuyTokenList(getCurrencyTokensByChain())
       setIsIssuance(false)
     }
   }, [isBuying])
 
   useEffect(() => {
-    const sellAmount = toWei(sellTokenAmount)
+    const sellAmount = toWei(sellTokenAmount, sellToken.decimals)
     const sellBalance =
       sellToken.symbol === 'ETH' ? etherBalance : sellTokenBalance
 
@@ -121,10 +145,11 @@ const QuickTrade = () => {
   ])
 
   useEffect(() => {
+    const sellTokenInWei = toWei(sellTokenAmount)
     // TODO: recheck logic later
     if (
-      BigNumber.from(buyTokenAmount).isZero() &&
-      BigNumber.from(sellTokenAmount).isZero()
+      // BigNumber.from(buyTokenAmount).isZero() &&
+      sellTokenInWei.isZero()
     )
       return
     fetchAndCompareOptions(
@@ -135,15 +160,6 @@ const QuickTrade = () => {
       isIssuance
     )
   }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
-
-  /**
-   * Get the list of currency tokens for the selected chain
-   * @returns Token[] list of tokens
-   */
-  const getCurrencyTokensByChain = () => {
-    if (chainId === POLYGON.chainId) return polygonCurrencyTokens
-    return mainnetCurrencyTokens
-  }
 
   /**
    * Get the correct trade button label according to different states
@@ -206,10 +222,10 @@ const QuickTrade = () => {
   }
 
   const onChangeBuyTokenAmount = (input: string) => {
-    const inputNumber = Number(input)
-    if (input === buyTokenAmount || input.slice(-1) === '.') return
-    if (isNaN(inputNumber) || inputNumber < 0) return
-    setBuyTokenAmount(inputNumber.toString())
+    // const inputNumber = Number(input)
+    // if (input === buyTokenAmount || input.slice(-1) === '.') return
+    // if (isNaN(inputNumber) || inputNumber < 0) return
+    // setBuyTokenAmount(inputNumber.toString())
   }
 
   const onClickTradeButton = async () => {
@@ -238,6 +254,9 @@ const QuickTrade = () => {
     ? false
     : buyTokenAmount === '0' || hasInsufficientFunds || isApproving
 
+  const isNarrow = props.isNarrowVersion ?? false
+  const paddingX = isNarrow ? '16px' : '40px'
+
   return (
     <Flex
       border='2px solid #F7F1E4'
@@ -245,7 +264,7 @@ const QuickTrade = () => {
       borderRadius='16px'
       direction='column'
       py='20px'
-      px={['16px', '40px']}
+      px={['16px', paddingX]}
     >
       <Flex>
         <Text fontSize='24px' fontWeight='700'>
@@ -257,9 +276,9 @@ const QuickTrade = () => {
           title='From'
           config={{
             isDarkMode,
-            isInputDisabled: true,
+            isInputDisabled: false,
             isSelectorDisabled: false,
-            isReadOnly: true,
+            isReadOnly: false,
           }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
@@ -279,7 +298,12 @@ const QuickTrade = () => {
         </Box>
         <QuickTradeSelector
           title='To'
-          config={{ isDarkMode }}
+          config={{
+            isDarkMode,
+            isInputDisabled: true,
+            isSelectorDisabled: false,
+            isReadOnly: true,
+          }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmount}
           tokenList={buyTokenList}
@@ -334,24 +358,24 @@ function getTradeInfoData(
 ): TradeInfoItem[] {
   if (zeroExTradeData === undefined || zeroExTradeData === null) return []
 
+  const { gas, gasPrice, sources } = zeroExTradeData
+  if (gasPrice === undefined || gas === undefined || sources === undefined)
+    return []
+
   const minReceive = displayFromWei(zeroExTradeData.minOutput) ?? '0.0'
 
   const networkFee =
-    displayFromWei(
-      BigNumber.from(zeroExTradeData.gasPrice).mul(
-        BigNumber.from(zeroExTradeData.gas)
-      )
-    ) ?? '-'
+    displayFromWei(BigNumber.from(gasPrice).mul(BigNumber.from(gas))) ?? '-'
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
 
-  const sources = zeroExTradeData.sources
+  const offeredFromSources = zeroExTradeData.sources
     .filter((source) => Number(source.proportion) > 0)
     .map((source) => source.name)
 
   return [
     { title: 'Minimum Receive', value: minReceive },
     { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
-    { title: 'Offered From', value: sources.toString() },
+    { title: 'Offered From', value: offeredFromSources.toString() },
   ]
 }
 

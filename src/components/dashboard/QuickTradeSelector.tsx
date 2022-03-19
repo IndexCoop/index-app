@@ -102,12 +102,12 @@ const QuickTradeSelector = (props: {
             w='100%'
             h='54px'
             onChange={(event) => props.onSelectedToken(event.target.value)}
+            value={props.selectedToken.symbol}
           >
             {props.tokenList.map((token) => {
               return (
                 <option
                   key={token.symbol}
-                  selected={token.symbol === selectedToken.symbol}
                   value={token.symbol}
                 >
                   {token.symbol}

@@ -367,4 +367,11 @@ const indexNames = [
   Bitcoin2xFLIP,
 ]
 
+export const indexNamesMainnet = indexNames.filter(
+  (index) => index.address !== undefined
+)
+export const indexNamesPolygon = indexNames.filter(
+  (index) => index.polygonAddress !== undefined
+)
+
 export default indexNames

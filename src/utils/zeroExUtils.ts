@@ -49,10 +49,10 @@ function getApiUrl(query: string, chainId: number): string {
 // Temporarily adding this because we need to support more tokens than the once
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
-export async function getQuote(params: any, chainId: number) {
-  params.buyAmount = BigNumber.from(params.buyAmount).toString()
+export async function get0xQuote(params: any, chainId: number) {
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
+  console.log('get0xQuote', url)
   const response = await axios.get(url)
   return response.data
 }
@@ -64,7 +64,7 @@ export const getZeroExTradeData = async (
   amount: string,
   chainId: number
 ): Promise<ZeroExData> => {
-  const params = getApiParams(
+  const params = getApiParamsForTokens(
     isExactInput,
     sellToken,
     buyToken,
@@ -74,6 +74,7 @@ export const getZeroExTradeData = async (
 
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
+  console.log(url)
   const resp = await axios.get(url)
   const zeroExData: ZeroExData = resp.data
 
@@ -87,37 +88,54 @@ export const getZeroExTradeData = async (
   )
 }
 
+export const get0xApiParams = (
+  isExactInput: boolean,
+  sellToken: string,
+  sellTokenDecimals: number,
+  buyToken: string,
+  buyTokenDecimals: number,
+  buySellAmount: string
+): any => {
+  let params: any
+  params = {
+    sellToken,
+    buyToken,
+  }
+
+  if (isExactInput) {
+    params.sellAmount = getDecimalAdjustedAmount(
+      buySellAmount,
+      sellTokenDecimals
+    )
+  } else {
+    params.buyAmount = getDecimalAdjustedAmount(buySellAmount, buyTokenDecimals)
+  }
+
+  return params
+}
+
 const getChainTokenAddress = (token: Token, chainId: number) => {
   if (chainId === POLYGON.chainId)
     return token.symbol === 'MATIC' ? 'MATIC' : token.polygonAddress
   return token.symbol === 'ETH' ? 'ETH' : token.address
 }
 
-const getApiParams = (
+/* Convenience function for Token's */
+const getApiParamsForTokens = (
   isExactInput: boolean,
   sellToken: Token,
   buyToken: Token,
   buySellAmount: string,
   chainId: number
 ): any => {
-  let params: any
-  params = {
-    sellToken: getChainTokenAddress(sellToken, chainId),
-    buyToken: getChainTokenAddress(buyToken, chainId),
-  }
-  if (isExactInput) {
-    params.sellAmount = getDecimalAdjustedAmount(
-      buySellAmount,
-      sellToken.decimals
-    )
-  } else {
-    params.buyAmount = getDecimalAdjustedAmount(
-      buySellAmount,
-      buyToken.decimals
-    )
-  }
-
-  return params
+  return get0xApiParams(
+    isExactInput,
+    getChainTokenAddress(sellToken, chainId) ?? '',
+    sellToken.decimals,
+    getChainTokenAddress(buyToken, chainId) ?? '',
+    buyToken.decimals,
+    buySellAmount
+  )
 }
 
 // Adds some additional information to the ZeroExData return object. This extra information is only used for display purposes, and
@@ -204,5 +222,6 @@ const formatSources = (
 }
 
 const getDecimalAdjustedAmount = (amount: string, decimals: number): string => {
-  return BigNumber.from(amount).mul(BigNumber.from(10).pow(decimals)).toString()
+  const amountInWei = toWei(amount, decimals)
+  return amountInWei.toString()
 }
