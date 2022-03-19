@@ -32,6 +32,7 @@ import {
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useTrade } from 'hooks/useTrade'
+import { useUserBalances } from 'hooks/useUserBalances'
 import { displayFromWei, getChainAddress, toWei } from 'utils'
 import { useBestTradeOption } from 'utils/bestTradeOption'
 import { ZeroExData } from 'utils/zeroExUtils'
@@ -70,11 +71,14 @@ const QuickTrade = (props: {
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
+  const [buyTokenBalance, setBuyTokenBalance] = useState<string>('0')
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(
     getTokenListByChain()
   )
   const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenAmount, setSellTokenAmount] = useState<string>('0')
+  const [sellTokenBalance, setSellTokenBalance] = useState<string>('0')
+  
   // const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     getCurrencyTokensByChain()
@@ -82,10 +86,11 @@ const QuickTrade = (props: {
   const [isIssuance, setIsIssuance] = useState<boolean>(true)
 
   const etherBalance = useEtherBalance(account)
-  const sellTokenBalance = useTokenBalance(
-    getChainAddress(sellToken, chainId),
-    account
-  )
+  // const sellTokenBalance = useTokenBalance(
+  //   getChainAddress(sellToken, chainId),
+  //   account
+  // )
+  const userBalances = useUserBalances().userBalances
 
   const { bestOption, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -121,18 +126,27 @@ const QuickTrade = (props: {
 
   useEffect(() => {
     const sellAmount = toWei(sellTokenAmount, sellToken.decimals)
-    const sellBalance =
-      sellToken.symbol === 'ETH' ? etherBalance : sellTokenBalance
+    const userSellTokenData = userBalances.find(token => token.symbol === sellToken.symbol)
+    const userBuyTokenData = userBalances.find(token => token.symbol === buyToken.symbol)
+
+    if (userSellTokenData) {
+      setSellTokenBalance(displayFromWei(userSellTokenData.balance, 2, 18) || '0.00')
+    } else {
+      setSellTokenBalance('0.00')
+    }
+    if (userBuyTokenData) {
+      setBuyTokenBalance(displayFromWei(userBuyTokenData.balance, 2, 18) || '0.00')
+    } else {
+      setBuyTokenBalance('0.00')
+    }
 
     if (
       bestOption === undefined ||
       sellAmount.isZero() ||
-      sellAmount.isNegative() ||
-      sellBalance === undefined
-    )
-      return
+      sellAmount.isNegative()
+    ) return
 
-    const hasInsufficientFunds = sellAmount.gt(sellBalance)
+    const hasInsufficientFunds = sellAmount.gt(sellTokenBalance)
     setHasInsufficientFunds(hasInsufficientFunds)
   }, [
     bestOption,
@@ -282,6 +296,7 @@ const QuickTrade = (props: {
           }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
+          selectedTokenBalance={sellTokenBalance}
           onChangeInput={onChangeSellTokenAmount}
           onSelectedToken={onChangeSellToken}
         />
@@ -306,6 +321,7 @@ const QuickTrade = (props: {
           }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmount}
+          selectedTokenBalance={buyTokenBalance}
           tokenList={buyTokenList}
           onChangeInput={onChangeBuyTokenAmount}
           onSelectedToken={onChangeBuyToken}
