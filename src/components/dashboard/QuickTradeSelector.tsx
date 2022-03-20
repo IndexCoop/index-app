@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react'
-
 import { colors } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Select, Spacer, Text } from '@chakra-ui/react'
-import { useEtherBalance, useEthers } from '@usedapp/core'
 
-import { ETH, Token } from 'constants/tokens'
-import { useFormattedBalance } from 'hooks/useFormattedBalance'
-import { useUserBalances } from 'hooks/useUserBalances'
-import { displayFromWei } from 'utils'
+import { Token } from 'constants/tokens'
 
 interface InputSelectorConfig {
   isDarkMode: boolean

@@ -35,6 +35,7 @@ import {
   MetaverseIndex,
   Token,
   USDC,
+  WETH,
 } from 'constants/tokens'
 import { getChainAddress } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
@@ -91,7 +92,7 @@ export const useBalances = (): Balances => {
   const daiBalance = useTokenBalance(getChainAddress(DAI, chainId), account)
   const usdcBalance = useTokenBalance(getChainAddress(USDC, chainId), account)
   const maticBalance = useTokenBalance(getChainAddress(MATIC, chainId), account)
-  const wethBalance = useTokenBalance(getChainAddress(ETH, chainId), account)
+  const wethBalance = useTokenBalance(getChainAddress(WETH, chainId), account)
   const dpiBalance = useTokenBalance(
     getChainAddress(DefiPulseIndex, chainId),
     account
