@@ -139,10 +139,11 @@ const QuickTrade = (props: {
     if (
       bestOption === undefined ||
       sellAmount.isZero() ||
-      sellAmount.isNegative()
+      sellAmount.isNegative() ||
+      userSellTokenData === undefined
     ) return
 
-    const hasInsufficientFunds = sellAmount.gt(sellTokenBalance)
+    const hasInsufficientFunds = sellAmount.gt(userSellTokenData.balance)
     setHasInsufficientFunds(hasInsufficientFunds)
   }, [
     bestOption,
