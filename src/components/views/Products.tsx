@@ -9,11 +9,9 @@ import {
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
 
-/* Disabling longer time periods because
-   1) Change in price over 3+ months is real bad
-   2) We can save a lot of Coingecko API calls
-  
-   To enable, add Max History call in coingeckoApi.ts
+/*  Disabling for 1Y time period because it saves
+  us a lot of Coingecko API calls.
+  To enable, add Max History call in coingeckoApi.ts
 */
 export interface ProductsTableProduct extends Token {
   performance: {
