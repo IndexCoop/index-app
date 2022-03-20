@@ -74,7 +74,7 @@ export const useUserBalances = () => {
     ethFliPBalance,
   } = useBalances()
   const { eth, bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
-  
+
   const balances = [
     { title: 'ETH', value: ethBalance },
     { title: 'DPI', value: dpiBalance },
