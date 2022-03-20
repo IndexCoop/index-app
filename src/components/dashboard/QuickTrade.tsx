@@ -86,10 +86,6 @@ const QuickTrade = (props: {
   const [isIssuance, setIsIssuance] = useState<boolean>(true)
 
   const etherBalance = useEtherBalance(account)
-  // const sellTokenBalance = useTokenBalance(
-  //   getChainAddress(sellToken, chainId),
-  //   account
-  // )
   const userBalances = useUserBalances().userBalances
 
   const { bestOption, isFetchingTradeData, fetchAndCompareOptions } =
