@@ -20,7 +20,7 @@ export interface ProductsTableProduct extends Token {
     '1D'?: number
     '1W'?: number
     '1M'?: number
-    // '3M'?: number
+    '3M'?: number
     // '1Y'?: number
   }
 }
@@ -32,7 +32,7 @@ export const PriceChangeIntervals: [
   ['1D', 1],
   ['1W', 7],
   ['1M', 30],
-  // ['3M', 90],
+  ['3M', 90],
   // ['1Y', 365],
 ]
 
@@ -47,7 +47,7 @@ export const calculatePriceChange = ({
   hourlyPrices,
   prices,
 }: PriceChangesProps) => {
-  if (daysOfComparison <= 30) {
+  if (daysOfComparison <= 90) {
     const startPrice = hourlyPrices
       ? hourlyPrices.slice(-24 * daysOfComparison)[0][1]
       : 1
