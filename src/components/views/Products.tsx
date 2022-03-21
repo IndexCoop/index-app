@@ -9,13 +9,17 @@ import {
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
 
+/*  Disabling for 1Y time period because it saves
+  us a lot of Coingecko API calls.
+  To enable, add Max History call in coingeckoApi.ts
+*/
 export interface ProductsTableProduct extends Token {
   performance: {
     '1D'?: number
     '1W'?: number
     '1M'?: number
     '3M'?: number
-    '1Y'?: number
+    // '1Y'?: number
   }
 }
 
@@ -27,7 +31,7 @@ export const PriceChangeIntervals: [
   ['1W', 7],
   ['1M', 30],
   ['3M', 90],
-  ['1Y', 365],
+  // ['1Y', 365],
 ]
 
 type PriceChangesProps = {
@@ -41,7 +45,7 @@ export const calculatePriceChange = ({
   hourlyPrices,
   prices,
 }: PriceChangesProps) => {
-  if (daysOfComparison <= 30) {
+  if (daysOfComparison <= 90) {
     const startPrice = hourlyPrices
       ? hourlyPrices.slice(-24 * daysOfComparison)[0][1]
       : 1
