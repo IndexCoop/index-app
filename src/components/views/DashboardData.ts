@@ -10,6 +10,7 @@ import {
   DefiPulseIndex,
   Ethereum2xFlexibleLeverageIndex,
   GmiIndex,
+  icETHIndex,
   IndexToken,
   MetaverseIndex,
 } from 'constants/tokens'
@@ -38,6 +39,7 @@ export const QuickTradeData = {
     { symbol: 'ETHFLI', icon: Ethereum2xFlexibleLeverageIndex.image },
     { symbol: 'BTCFLI', icon: Bitcoin2xFlexibleLeverageIndex.image },
     { symbol: 'INDEX', icon: IndexToken.image },
+    { symbol: 'icETH', icon: icETHIndex.image },
   ],
 }
 

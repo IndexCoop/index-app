@@ -27,6 +27,7 @@ import {
   Ethereum2xFLIP,
   GmiIndex,
   IBitcoinFLIP,
+  icETHIndex,
   IEthereumFLIP,
   IMaticFLIP,
   IndexToken,
@@ -69,6 +70,7 @@ export type Balances = {
   unclaimedUniswapEthMvi2021LpBalance?: BigNumber
   unclaimedUniswapEthDpi2020LpBalance?: BigNumber
   unclaimedUniswapEthDpi2021LpBalance?: BigNumber
+  icEthBalance?: BigNumber
 }
 
 const stakingInterface = new utils.Interface(StakeRewardsABI)
@@ -208,6 +210,10 @@ export const useBalances = (): Balances => {
     gmiStakingRewardsAddress,
     account
   )
+  const icEthBalance = useTokenBalance(
+    getChainAddress(icETHIndex, chainId),
+    account
+  )
 
   return {
     ethBalance,
@@ -239,5 +245,6 @@ export const useBalances = (): Balances => {
     unclaimedUniswapEthMvi2021LpBalance,
     unclaimedUniswapEthDpi2020LpBalance,
     unclaimedUniswapEthDpi2021LpBalance,
+    icEthBalance,
   }
 }

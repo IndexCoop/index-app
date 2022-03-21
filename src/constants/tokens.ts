@@ -3,6 +3,7 @@ import btcflipLogo from 'assets/btcflip.svg'
 import dataLogo from 'assets/data-logo.png'
 import gmiLogo from 'assets/gmilogo.png'
 import ibtcflipLogo from 'assets/ibtcflip.svg'
+import icethLogo from 'assets/icethlogo.png'
 import iethflipLogo from 'assets/iethfliplogo.svg'
 import imaticflipLogo from 'assets/imaticflilogo.svg'
 import indexLogo from 'assets/index-token.png'
@@ -337,6 +338,23 @@ export const IBitcoinFLIP: Token = {
   },
 }
 
+export const icETHIndex: Token = {
+  name: 'Interest Compounding ETH Index',
+  symbol: 'icETH',
+  address: '0x7c07f7abe10ce8e33dc6c5ad68fe033085256a84',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'iceth',
+  image: icethLogo,
+  coingeckoId: 'interest-compounding-eth-index',
+  tokensetsId: 'iceth',
+  fees: {
+    streamingFee: '0.9%',
+    mintRedeemFee: '0.35%',
+  },
+}
+
 export const productTokensBySymbol = {
   'DPI': DefiPulseIndex,
   'MVI': MetaverseIndex,
@@ -352,6 +370,7 @@ export const productTokensBySymbol = {
   'iETH-FLI-P': IEthereumFLIP,
   'iBTC-FLI-P': IBitcoinFLIP,
   'BTC2x-FLI-P': Bitcoin2xFLIP,
+  'icETH': icETHIndex,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC]
@@ -380,6 +399,7 @@ const indexNames = [
   IEthereumFLIP,
   IBitcoinFLIP,
   Bitcoin2xFLIP,
+  icETHIndex,
 ]
 
 export const indexNamesMainnet = indexNames.filter(

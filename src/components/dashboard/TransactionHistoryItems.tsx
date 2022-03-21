@@ -6,6 +6,7 @@ import {
   DefiPulseIndex,
   Ethereum2xFlexibleLeverageIndex,
   GmiIndex,
+  icETHIndex,
   IndexToken,
   MetaverseIndex,
 } from 'constants/tokens'
@@ -29,6 +30,8 @@ function resolveAddressToSymbol(address: string): string {
       return IndexToken.symbol
     case MetaverseIndex.address!:
       return MetaverseIndex.symbol
+    case icETHIndex.address!:
+      return icETHIndex.symbol
     default:
       return truncateAddress(address)
   }
