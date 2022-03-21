@@ -7,12 +7,12 @@ import {
 } from 'react'
 
 import {
-  ETH,
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   Bitcoin2xFLIP,
   DataIndex,
   DefiPulseIndex,
+  ETH,
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   GmiIndex,
