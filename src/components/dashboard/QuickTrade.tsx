@@ -12,12 +12,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import {
-  ChainId,
-  useEtherBalance,
-  useEthers,
-  useTokenBalance,
-} from '@usedapp/core'
+import { ChainId, useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
 import { POLYGON } from 'constants/chains'
@@ -31,8 +26,9 @@ import {
   Token,
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
+import { useTokenBalance } from 'hooks/useTokenBalance'
 import { useTrade } from 'hooks/useTrade'
-import { displayFromWei, getChainAddress, toWei } from 'utils'
+import { displayFromWei, toWei } from 'utils'
 import { useBestTradeOption } from 'utils/bestTradeOption'
 import { ZeroExData } from 'utils/zeroExUtils'
 
@@ -70,22 +66,23 @@ const QuickTrade = (props: {
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
+  const [buyTokenBalanceFormatted, setBuyTokenBalanceFormatted] = useState('0')
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(
     getTokenListByChain()
   )
   const [sellToken, setSellToken] = useState<Token>(ETH)
-  const [sellTokenAmount, setSellTokenAmount] = useState<string>('0')
+  const [sellTokenAmount, setSellTokenAmount] = useState('0')
+  const [sellTokenBalanceFormatted, setSellTokenBalanceFormatted] =
+    useState('0')
+
   // const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     getCurrencyTokensByChain()
   )
   const [isIssuance, setIsIssuance] = useState<boolean>(true)
 
-  const etherBalance = useEtherBalance(account)
-  const sellTokenBalance = useTokenBalance(
-    getChainAddress(sellToken, chainId),
-    account
-  )
+  const sellTokenBalance = useTokenBalance(sellToken)
+  const buyTokenBalance = useTokenBalance(buyToken)
 
   const { bestOption, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -120,19 +117,35 @@ const QuickTrade = (props: {
   }, [isBuying])
 
   useEffect(() => {
+    const isUSDC = buyToken.symbol === 'USDC'
+    const decimals = isUSDC ? 6 : 18
+    const formattedBalance = buyTokenBalance
+      ? displayFromWei(buyTokenBalance, 2, decimals) || '0.00'
+      : '0.00'
+    setBuyTokenBalanceFormatted(formattedBalance)
+  }, [buyToken, buyTokenBalance])
+
+  useEffect(() => {
+    const isUSDC = sellToken.symbol === 'USDC'
+    const decimals = isUSDC ? 6 : 18
+    const formattedBalance = sellTokenBalance
+      ? displayFromWei(sellTokenBalance, 2, decimals) || '0.00'
+      : '0.00'
+    setSellTokenBalanceFormatted(formattedBalance)
+  }, [sellToken, sellTokenBalance])
+
+  useEffect(() => {
     const sellAmount = toWei(sellTokenAmount, sellToken.decimals)
-    const sellBalance =
-      sellToken.symbol === 'ETH' ? etherBalance : sellTokenBalance
 
     if (
       bestOption === undefined ||
       sellAmount.isZero() ||
       sellAmount.isNegative() ||
-      sellBalance === undefined
+      sellTokenBalance === undefined
     )
       return
 
-    const hasInsufficientFunds = sellAmount.gt(sellBalance)
+    const hasInsufficientFunds = sellAmount.gt(sellTokenBalance)
     setHasInsufficientFunds(hasInsufficientFunds)
   }, [
     bestOption,
@@ -140,7 +153,6 @@ const QuickTrade = (props: {
     sellToken,
     buyToken,
     buyTokenAmount,
-    etherBalance,
     sellTokenBalance,
   ])
 
@@ -282,6 +294,7 @@ const QuickTrade = (props: {
           }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
+          selectedTokenBalance={sellTokenBalanceFormatted}
           onChangeInput={onChangeSellTokenAmount}
           onSelectedToken={onChangeSellToken}
         />
@@ -306,6 +319,7 @@ const QuickTrade = (props: {
           }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmount}
+          selectedTokenBalance={buyTokenBalanceFormatted}
           tokenList={buyTokenList}
           onChangeInput={onChangeBuyTokenAmount}
           onSelectedToken={onChangeBuyToken}

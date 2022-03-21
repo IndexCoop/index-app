@@ -61,13 +61,28 @@ export const ETH: Token = {
   symbol: 'ETH',
   image:
     'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
-  address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-  polygonAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-  optimismAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  address: '',
+  polygonAddress: '',
+  optimismAddress: '',
   decimals: 18,
   url: '',
   coingeckoId: 'ethereum',
   tokensetsId: 'eth',
+  fees: undefined,
+}
+
+export const WETH: Token = {
+  name: 'Wrapped Ether',
+  symbol: 'ETH',
+  image:
+    'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
+  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  polygonAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
+  optimismAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  decimals: 18,
+  url: '',
+  coingeckoId: 'weth',
+  tokensetsId: 'weth',
   fees: undefined,
 }
 
