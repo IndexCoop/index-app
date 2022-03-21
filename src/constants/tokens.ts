@@ -323,7 +323,7 @@ export const IBitcoinFLIP: Token = {
   },
 }
 
-export const ICETH: Token = {
+export const icETHIndex: Token = {
   name: 'Interest Compounding ETH Index',
   symbol: 'icETH',
   address: '0x7c07f7abe10ce8e33dc6c5ad68fe033085256a84',
@@ -355,7 +355,7 @@ export const productTokensBySymbol = {
   'iETH-FLI-P': IEthereumFLIP,
   'iBTC-FLI-P': IBitcoinFLIP,
   'BTC2x-FLI-P': Bitcoin2xFLIP,
-  'icETH': ICETH,
+  'icETH': icETHIndex,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC]
@@ -384,7 +384,7 @@ const indexNames = [
   IEthereumFLIP,
   IBitcoinFLIP,
   Bitcoin2xFLIP,
-  ICETH,
+  icETHIndex,
 ]
 
 export const indexNamesMainnet = indexNames.filter(

@@ -16,6 +16,7 @@ import {
   Ethereum2xFLIP,
   GmiIndex,
   IBitcoinFLIP,
+  icETHIndex,
   IEthereumFLIP,
   IMaticFLIP,
   IndexToken,
@@ -46,6 +47,7 @@ export interface TokenContext {
   iethflip?: TokenMarketDataValues
   btcflip?: TokenMarketDataValues
   ibtcflip?: TokenMarketDataValues
+  iceth?: TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
 }
 
@@ -72,6 +74,7 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [iMaticFliPMarketData, setIMaticFliPMarketData] = useState<any>({})
   const [btcFliPMarketData, setBtcFliPMarketData] = useState<any>({})
   const [iBtcFliPMarketData, setIBtcFliPMarketData] = useState<any>({})
+  const [icEthMarketData, setIcEthMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
@@ -96,6 +99,7 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(IMaticFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(Bitcoin2xFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(IBitcoinFLIP.coingeckoId),
+      fetchHistoricalTokenMarketData(icETHIndex.coingeckoId),
     ])
 
     setIndexMarketData(marketData[0])
@@ -112,6 +116,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     setIMaticFliPMarketData(marketData[11])
     setBtcFliPMarketData(marketData[12])
     setIBtcFliPMarketData(marketData[13])
+    setIcEthMarketData(marketData[14])
   }, [])
 
   useEffect(() => {
@@ -136,6 +141,7 @@ export const MarketDataProvider = (props: { children: any }) => {
         iethflip: iEthFliPMarketData,
         btcflip: btcFliPMarketData,
         ibtcflip: iBtcFliPMarketData,
+        iceth: icEthMarketData,
       }}
     >
       {props.children}

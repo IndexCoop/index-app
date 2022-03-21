@@ -34,6 +34,7 @@ import {
   MetaverseIndex,
   Token,
   USDC,
+  icETHIndex,
 } from 'constants/tokens'
 import { getChainAddress } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
@@ -61,6 +62,7 @@ export type Balances = {
   unclaimedUniswapEthMvi2021LpBalance?: BigNumber
   unclaimedUniswapEthDpi2020LpBalance?: BigNumber
   unclaimedUniswapEthDpi2021LpBalance?: BigNumber
+  icEthBalance?: BigNumber
 }
 
 const stakingInterface = new utils.Interface(StakeRewardsABI)
@@ -170,6 +172,10 @@ export const useBalances = (): Balances => {
     gmiStakingRewardsAddress,
     account
   )
+  const icEthBalance = useTokenBalance(
+    getChainAddress(icETHIndex, chainId),
+    account
+  )
 
   return {
     daiBalance,
@@ -194,5 +200,6 @@ export const useBalances = (): Balances => {
     unclaimedUniswapEthMvi2021LpBalance,
     unclaimedUniswapEthDpi2020LpBalance,
     unclaimedUniswapEthDpi2021LpBalance,
+    icEthBalance,
   }
 }

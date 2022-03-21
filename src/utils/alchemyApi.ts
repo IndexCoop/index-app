@@ -5,6 +5,7 @@ import {
   DefiPulseIndex,
   Ethereum2xFlexibleLeverageIndex,
   GmiIndex,
+  icETHIndex,
   IndexToken,
   MetaverseIndex,
 } from 'constants/tokens'
@@ -20,6 +21,7 @@ const contractAddresses: string[] = [
   GmiIndex.address!,
   IndexToken.address!,
   MetaverseIndex.address!,
+  icETHIndex.address!,
 ]
 
 interface AlchemyApiParams {

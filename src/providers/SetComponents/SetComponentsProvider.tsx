@@ -21,6 +21,7 @@ import {
   Ethereum2xFLIP,
   GmiIndex,
   IBitcoinFLIP,
+  icETHIndex,
   IEthereumFLIP,
   IMaticFLIP,
   Matic2xFLIP,
@@ -54,6 +55,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     imaticflip,
     btcflip,
     ibtcflip,
+    iceth,
   } = useMarketData()
   const [dpiComponents, setDpiComponents] = useState<SetComponent[]>([])
   const [mviComponents, setMviComponents] = useState<SetComponent[]>([])
@@ -88,6 +90,7 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [ibtcflipComponents, setIBtcflipComponents] = useState<SetComponent[]>(
     []
   )
+  const [icethComponents, setIcethComponents] = useState<SetComponent[]>([])
 
   const { account, chainId, library } = useEthers()
   const tokenList = getTokenList(chainId)
@@ -114,13 +117,8 @@ const SetComponentsProvider = (props: { children: any }) => {
       ethfli &&
       ethflip &&
       btcfli &&
-      DefiPulseIndex.address &&
-      MetaverseIndex.address &&
-      BedIndex.address &&
-      GmiIndex.address &&
-      Ethereum2xFlexibleLeverageIndex.address &&
-      Bitcoin2xFlexibleLeverageIndex.address &&
-      DataIndex.address
+      iceth &&
+      icETHIndex.address
     ) {
       getSetDetails(
         library,
@@ -132,6 +130,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           Ethereum2xFlexibleLeverageIndex.address,
           Bitcoin2xFlexibleLeverageIndex.address,
           DataIndex.address,
+          icETHIndex.address,
         ],
         chainId
       ).then(async (result) => {
@@ -143,6 +142,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           eth2xfliSet,
           btc2xfliSet,
           dataSet,
+          icethSet,
         ] = result
 
         const dpiComponentPrices = await getPositionPrices(dpiSet)
@@ -294,6 +294,27 @@ const SetComponentsProvider = (props: { children: any }) => {
             .then(sortPositionsByPercentOfSet)
             .then(setDataComponents)
         }
+
+        const icethComponentPrices = await getPositionPrices(icethSet)
+        if (icethComponentPrices != null) {
+          const icethPositions = icethSet.positions.map(async (position) => {
+            return await convertPositionToSetComponent(
+              position,
+              tokenList,
+              icethComponentPrices[position.component.toLowerCase()]?.[
+                VS_CURRENCY
+              ],
+              icethComponentPrices[position.component.toLowerCase()]?.[
+                `${VS_CURRENCY}_24h_change`
+              ],
+
+              selectLatestMarketData(data.hourlyPrices)
+            )
+          })
+          Promise.all(icethPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setIcethComponents)
+        }
       })
     }
   }, [
@@ -307,6 +328,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     ethfli,
     btcfli,
     data,
+    iceth,
     selectLatestMarketData(),
   ])
 
@@ -515,6 +537,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         matic2xflipComponents: matic2xflipComponents,
         ibtcflipComponents: ibtcflipComponents,
         btc2xflipComponents: btc2xflipComponents,
+        icethComponents: icethComponents,
       }}
     >
       {props.children}
@@ -627,6 +650,7 @@ interface SetComponentsProps {
   matic2xflipComponents?: SetComponent[]
   btc2xflipComponents?: SetComponent[]
   ibtcflipComponents?: SetComponent[]
+  icethComponents?: SetComponent[]
 }
 
 export const SetComponentsContext = createContext<SetComponentsProps>({})
