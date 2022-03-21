@@ -22,6 +22,10 @@ import {
 import ConnectModal from 'components/header/ConnectModal'
 import { POLYGON } from 'constants/chains'
 import {
+  ExchangeIssuanceLeveragedAddress,
+  zeroExRouterAddress,
+} from 'constants/ethContractAddresses'
+import {
   DefiPulseIndex,
   ETH,
   indexNamesMainnet,
@@ -91,9 +95,18 @@ const QuickTrade = (props: {
     useBestTradeOption()
   const tradeInfoData: TradeInfoItem[] = getTradeInfoData(bestOption, chainId)
 
-  const { isApproved, isApproving, onApprove } = useApproval(
+  const {
+    isApproved: isApproveForSwap,
+    isApproving: isApprovingForSwap,
+    onApprove: onApproveForSwap,
+  } = useApproval(bestOption?.sellTokenAddress, zeroExRouterAddress)
+  const {
+    isApproved: isApprovedForEIL,
+    isApproving: isApprovingForEIL,
+    onApprove: onApproveForEIL,
+  } = useApproval(
     bestOption?.sellTokenAddress,
-    account ?? undefined
+    ExchangeIssuanceLeveragedAddress
   )
   const { executeTrade } = useTrade(bestOption)
 
@@ -180,7 +193,7 @@ const QuickTrade = (props: {
 
     const isNativeToken =
       sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
-    if (!isApproved && !isNativeToken) {
+    if (!isApproveForSwap && !isNativeToken) {
       return 'Approve Tokens'
     }
 
@@ -239,20 +252,20 @@ const QuickTrade = (props: {
 
     const isNativeToken =
       sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
-    if (!isApproved && !isNativeToken) {
-      await onApprove()
+    if (!isApproveForSwap && !isNativeToken) {
+      await onApproveForSwap()
       return
     }
 
     await executeTrade()
   }
 
-  const isLoading = isApproving || isFetchingTradeData
+  const isLoading = isApprovingForSwap || isFetchingTradeData
 
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = !account
     ? false
-    : buyTokenAmount === '0' || hasInsufficientFunds || isApproving
+    : buyTokenAmount === '0' || hasInsufficientFunds || isApprovingForSwap
 
   const isNarrow = props.isNarrowVersion ?? false
   const paddingX = isNarrow ? '16px' : '40px'
