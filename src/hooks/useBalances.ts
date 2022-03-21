@@ -2,14 +2,12 @@ import { utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import {
-  ChainId,
   useContractCall,
   useEtherBalance,
   useEthers,
   useTokenBalance,
 } from '@usedapp/core'
 
-import { MAINNET, POLYGON } from 'constants/chains'
 import {
   dpi2020StakingRewardsAddress,
   dpi2021StakingRewardsAddress,
@@ -30,6 +28,7 @@ import {
   GmiIndex,
   IEthereumFLIP,
   IMaticFLIP,
+  IndexToken,
   MATIC,
   Matic2xFLIP,
   MetaverseIndex,
@@ -54,6 +53,7 @@ export type Balances = {
   ethFliBalance?: BigNumber
   btcFliBalance?: BigNumber
   ethFliPBalance?: BigNumber
+  indexBalance?: BigNumber
   stakedGmi2022Balance?: BigNumber
   stakedUniswapEthDpi2020LpBalance?: BigNumber
   stakedUniswapEthDpi2021LpBalance?: BigNumber
@@ -87,6 +87,8 @@ const useStakingUnclaimedRewards = (
 
 export const useBalances = (): Balances => {
   const { account, chainId } = useEthers()
+
+  const indexBalance = useTokenBalance(getChainAddress(DAI, chainId), account)
 
   const ethBalance = useEtherBalance(account)
   const daiBalance = useTokenBalance(getChainAddress(DAI, chainId), account)
@@ -186,6 +188,7 @@ export const useBalances = (): Balances => {
     bedBalance,
     dataBalance,
     gmiBalance,
+    indexBalance,
     ethFliBalance,
     btcFliBalance,
     ethFliPBalance,
