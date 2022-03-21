@@ -3,7 +3,9 @@ import { PureComponent } from 'react'
 import { Cell, Pie, PieChart, Tooltip } from 'recharts'
 import { useICColorMode } from 'styles/colors'
 
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, Text } from '@chakra-ui/react'
+
+import piePlaceholder from 'assets/undraw_pie_graph_re_fvol.svg'
 
 import PieChartTooltip from './PieChartTooltip'
 
@@ -67,7 +69,7 @@ const PositionItem = (props: { position: Position }) => {
 }
 
 const AllocationChart = (props: { positions: Position[] }) => {
-  const { dividerColor } = useICColorMode()
+  const { dividerColor, isDarkMode } = useICColorMode()
 
   return (
     <Flex
@@ -83,12 +85,23 @@ const AllocationChart = (props: { positions: Position[] }) => {
         Distribution of Products
       </Text>
       <Box mt='40px' mb='8px'>
-        <Chart data={props.positions} />
+        {props.positions.length === 0 && (
+          <Image
+            height={178}
+            opacity={isDarkMode ? '80%' : '60%'}
+            src={piePlaceholder}
+            alt='pie chart placeholder'
+          />
+        )}
+        {props.positions.length > 0 && <Chart data={props.positions} />}
       </Box>
       <Flex my='32px' flexWrap='wrap'>
         {props.positions.map((position) => (
           <PositionItem key={position.title} position={position} />
         ))}
+        {props.positions.length === 0 && (
+          <span>Purchase Index Coop products to see them here</span>
+        )}
       </Flex>
     </Flex>
   )

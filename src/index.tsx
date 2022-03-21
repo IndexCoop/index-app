@@ -49,7 +49,6 @@ const config: Config = {
       process.env.REACT_APP_OPTIMISM_ALCHEMY_API ??
       'https://op-mainnet.g.alchemy.com/v2/r-z7OCwLoHZKz45NCFqlR0G8vgOXAp5t',
   },
-  autoConnect: false,
 }
 
 const Providers = (props: { children: any }) => {
