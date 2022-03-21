@@ -264,6 +264,7 @@ export const Matic2xFLIP: Token = {
   image: maticflipLogo,
   coingeckoId: 'index-coop-matic-2x-flexible-leverage-index',
   tokensetsId: 'matic2x-fli-p',
+  tokenContextKey: 'maticflip',
   fees: {
     streamingFee: '1.95%',
     mintRedeemFee: '0.1%',
@@ -281,6 +282,7 @@ export const IMaticFLIP: Token = {
   image: imaticflipLogo,
   coingeckoId: 'index-coop-inverse-matic-flexible-leverage-index',
   tokensetsId: 'imatic-fli-p',
+  tokenContextKey: 'imaticflip',
   fees: {
     streamingFee: '1.95%',
     mintRedeemFee: '0.1%',
@@ -298,6 +300,7 @@ export const IEthereumFLIP: Token = {
   image: iethflipLogo,
   coingeckoId: 'index-coop-inverse-eth-flexible-leverage-index',
   tokensetsId: 'ieth-fli-p',
+  tokenContextKey: 'iethflip',
   fees: {
     streamingFee: '1.95%',
     mintRedeemFee: '0.1%',
@@ -315,6 +318,7 @@ export const Bitcoin2xFLIP: Token = {
   image: btcflipLogo,
   coingeckoId: 'btc-2x-flexible-leverage-index-polygon',
   tokensetsId: 'btc2x-fli-p',
+  tokenContextKey: 'btcflip',
   fees: {
     streamingFee: '1.95%',
     mintRedeemFee: '0.1%',
@@ -332,6 +336,7 @@ export const IBitcoinFLIP: Token = {
   image: ibtcflipLogo,
   coingeckoId: 'inverse-btc-flexible-leverage-index',
   tokensetsId: 'ibtc-fli-p',
+  tokenContextKey: 'ibtcflip',
   fees: {
     streamingFee: '1.95%',
     mintRedeemFee: '0.1%',
@@ -349,6 +354,7 @@ export const icETHIndex: Token = {
   image: icethLogo,
   coingeckoId: 'interest-compounding-eth-index',
   tokensetsId: 'iceth',
+  tokenContextKey: 'iceth',
   fees: {
     streamingFee: '0.9%',
     mintRedeemFee: '0.35%',
