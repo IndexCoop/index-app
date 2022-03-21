@@ -113,8 +113,14 @@ const QuickTrade = (props: {
    * Switches sell token lists between mainnet and polygon
    */
   useEffect(() => {
-    setSellTokenList(getCurrencyTokensByChain())
-    setBuyTokenList(getTokenListByChain())
+    const sellTokenList = getCurrencyTokensByChain()
+    const buyTokenList = getTokenListByChain()
+    const sellToken = sellTokenList[0]
+    const buyToken = buyTokenList[0]
+    setSellTokenList(sellTokenList)
+    setBuyTokenList(buyTokenList)
+    setSellToken(sellToken)
+    setBuyToken(buyToken)
   }, [chainId])
 
   useEffect(() => {

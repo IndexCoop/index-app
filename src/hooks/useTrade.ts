@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useEtherBalance, useEthers, useSendTransaction } from '@usedapp/core'
 
@@ -10,12 +11,12 @@ import { ZeroExData } from 'utils/zeroExUtils'
 import { useBalances } from './useBalances'
 
 export const useTrade = (tradeData?: ZeroExData | null) => {
-  const { account } = useEthers()
-  const { sendTransaction, state } = useSendTransaction({
-    transactionName: 'Trade',
-  })
+  const { account, library } = useEthers()
   const { usdcBalance, daiBalance, maticBalance, wethBalance } = useBalances()
   const etherBalance = useEtherBalance(account)
+  const { sendTransaction } = useSendTransaction({
+    transactionName: 'trade',
+  })
 
   let spendingTokenBalance = BigNumber.from(0)
   switch (tradeData?.sellTokenAddress) {
@@ -45,21 +46,22 @@ export const useTrade = (tradeData?: ZeroExData | null) => {
       ? fromWei(BigNumber.from(tradeData.sellAmount), 6)
       : fromWei(BigNumber.from(tradeData.sellAmount))
 
-    console.log('isSellingUSDC', isSellingUSDC)
-    console.log(requiredBalance.toString(), tradeData.sellAmount)
-
     if (spendingTokenBalance.lt(requiredBalance)) return
 
-    tradeData.from = account
-    tradeData.gas = undefined // use metamask estimated gas limit
+    const txRequest: TransactionRequest = {
+      chainId: Number(tradeData.chainId) ?? undefined,
+      from: account,
+      to: tradeData.to,
+      data: tradeData.data,
+      value: BigNumber.from(tradeData.value),
+      // gas: undefined, use metamask estimated gas limit
+    }
 
     try {
-      sendTransaction(tradeData).then((data) => {
-        console.log('trade executed', data)
-      })
+      // const tx = await library?.getSigner().sendTransaction(txRequest)
+      await sendTransaction(txRequest)
     } catch (error) {
-      // TODO:
-      console.log(error)
+      console.log('Error sending transaction', error)
     }
   }, [account, tradeData])
 

@@ -10,6 +10,8 @@ import { toWei } from 'utils'
 const API_0X_INDEX_URL = 'https://api.indexcoop.com/0x'
 
 export type ZeroExData = {
+  chainId: string
+  data: string
   price: string
   guaranteedPrice: string
   buyTokenAddress: string
@@ -28,6 +30,7 @@ export type ZeroExData = {
   formattedSources: string
   buyTokenCost: string
   sellTokenCost: string
+  value: string
 }
 
 function getApiUrl(query: string, chainId: number): string {
