@@ -116,6 +116,9 @@ export function getPieChartPositions(
     value: BigNumber | undefined
   }[]
 ) {
+  // Remove ETH from the pie chart
+  balances = balances.filter((pos) => pos.title !== 'ETH')
+
   if (balances.length < 1) {
     return []
   }

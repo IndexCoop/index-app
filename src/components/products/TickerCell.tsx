@@ -1,4 +1,5 @@
 import {
+  Button,
   Grid,
   GridItem,
   Image,
@@ -22,7 +23,7 @@ const TickerCell = ({ product }: TickerCellProps) => {
   })
 
   return (
-    <Link href={'/' + product.url}>
+    <Link href={'/' + product.url} _focus={{ boxShadow: 'none' }}>
       <Grid
         width={['inherit', 'inherit', '320px']}
         templateRows={['', '', 'repeat(2, 1fr)']}
