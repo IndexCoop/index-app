@@ -88,7 +88,7 @@ const useStakingUnclaimedRewards = (
 export const useBalances = (): Balances => {
   const { account, chainId } = useEthers()
 
-  const indexBalance = useTokenBalance(getChainAddress(DAI, chainId), account)
+  const indexBalance = useTokenBalance(getChainAddress(IndexToken, chainId), account)
 
   const ethBalance = useEtherBalance(account)
   const daiBalance = useTokenBalance(getChainAddress(DAI, chainId), account)
