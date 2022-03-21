@@ -106,7 +106,7 @@ const MiningProgram = (props: { program: Program }) => {
     staked.value = displayFromWei(balances[staked.stakedBalanceKey], 5) ?? '0.0'
   }
 
-  apy.value = `${stakingApy ?? '0.0'}%`
+  apy.value = `${(isPoolActive && stakingApy) || '0.0'}%`
 
   if (unclaimed.unclaimedBalanceKey) {
     unclaimed.value =
