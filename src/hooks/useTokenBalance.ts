@@ -3,6 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
+  Bitcoin2xFLIP,
   DAI,
   DataIndex,
   DefiPulseIndex,
@@ -10,6 +11,7 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   GmiIndex,
+  IBitcoinFLIP,
   IEthereumFLIP,
   IMaticFLIP,
   IndexToken,
@@ -29,23 +31,29 @@ export const useTokenBalance = (token: Token): BigNumber | undefined => {
     ethFliPBalance,
     bedBalance,
     btcFliBalance,
+    btc2xFLIPBalance,
     daiBalance,
     dataBalance,
     dpiBalance,
     gmiBalance,
+    iEthFLIPbalance,
+    iMaticFLIPbalance,
     indexBalance,
+    iBtcFLIPBalance,
+    matic2xFLIPbalance,
     maticBalance,
     mviBalance,
     usdcBalance,
     wethBalance,
   } = useBalances()
 
-  // TODO: add missing tokens
   switch (token.symbol) {
     case BedIndex.symbol:
       return bedBalance
     case Bitcoin2xFlexibleLeverageIndex.symbol:
       return btcFliBalance
+    case Bitcoin2xFLIP.symbol:
+      return btc2xFLIPBalance
     case DAI.symbol:
       return daiBalance
     case DataIndex.symbol:
@@ -60,10 +68,18 @@ export const useTokenBalance = (token: Token): BigNumber | undefined => {
       return ethFliPBalance
     case GmiIndex.symbol:
       return gmiBalance
+    case IBitcoinFLIP.symbol:
+      return iBtcFLIPBalance
+    case IEthereumFLIP.symbol:
+      return iEthFLIPbalance
+    case IMaticFLIP.symbol:
+      return iMaticFLIPbalance
     case IndexToken.symbol:
       return indexBalance
     case MATIC.symbol:
       return maticBalance
+    case Matic2xFLIP.symbol:
+      return matic2xFLIPbalance
     case MetaverseIndex.symbol:
       return mviBalance
     case USDC.symbol:
