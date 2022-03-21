@@ -2,13 +2,12 @@ import { utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import {
-  ChainId,
   useContractCall,
+  useEtherBalance,
   useEthers,
   useTokenBalance,
 } from '@usedapp/core'
 
-import { MAINNET, POLYGON } from 'constants/chains'
 import {
   dpi2020StakingRewardsAddress,
   dpi2021StakingRewardsAddress,
@@ -20,25 +19,28 @@ import {
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
+  Bitcoin2xFLIP,
   DAI,
   DataIndex,
   DefiPulseIndex,
-  ETH,
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   GmiIndex,
+  IBitcoinFLIP,
   IEthereumFLIP,
   IMaticFLIP,
+  IndexToken,
   MATIC,
   Matic2xFLIP,
   MetaverseIndex,
-  Token,
   USDC,
+  WETH,
 } from 'constants/tokens'
 import { getChainAddress } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 
 export type Balances = {
+  ethBalance?: BigNumber
   daiBalance?: BigNumber
   usdcBalance?: BigNumber
   maticBalance?: BigNumber
@@ -46,11 +48,17 @@ export type Balances = {
   dpiBalance?: BigNumber
   mviBalance?: BigNumber
   bedBalance?: BigNumber
+  btc2xFLIPBalance?: BigNumber
   dataBalance?: BigNumber
   gmiBalance?: BigNumber
+  iBtcFLIPBalance?: BigNumber
+  iEthFLIPbalance?: BigNumber
+  iMaticFLIPbalance?: BigNumber
   ethFliBalance?: BigNumber
   btcFliBalance?: BigNumber
   ethFliPBalance?: BigNumber
+  indexBalance?: BigNumber
+  matic2xFLIPbalance?: BigNumber
   stakedGmi2022Balance?: BigNumber
   stakedUniswapEthDpi2020LpBalance?: BigNumber
   stakedUniswapEthDpi2021LpBalance?: BigNumber
@@ -85,10 +93,16 @@ const useStakingUnclaimedRewards = (
 export const useBalances = (): Balances => {
   const { account, chainId } = useEthers()
 
+  const indexBalance = useTokenBalance(
+    getChainAddress(IndexToken, chainId),
+    account
+  )
+
+  const ethBalance = useEtherBalance(account)
   const daiBalance = useTokenBalance(getChainAddress(DAI, chainId), account)
   const usdcBalance = useTokenBalance(getChainAddress(USDC, chainId), account)
   const maticBalance = useTokenBalance(getChainAddress(MATIC, chainId), account)
-  const wethBalance = useTokenBalance(getChainAddress(ETH, chainId), account)
+  const wethBalance = useTokenBalance(getChainAddress(WETH, chainId), account)
   const dpiBalance = useTokenBalance(
     getChainAddress(DefiPulseIndex, chainId),
     account
@@ -118,9 +132,33 @@ export const useBalances = (): Balances => {
     account
   )
 
-  // TODO: Segregate into separate networks, add iETH, iMatic, iMatic2x
+  const btc2xFLIPBalance = useTokenBalance(
+    getChainAddress(Bitcoin2xFLIP, chainId),
+    account
+  )
+
   const ethFliPBalance = useTokenBalance(
     getChainAddress(Ethereum2xFLIP, chainId),
+    account
+  )
+
+  const iBtcFLIPBalance = useTokenBalance(
+    getChainAddress(IBitcoinFLIP, chainId),
+    account
+  )
+
+  const iEthFLIPbalance = useTokenBalance(
+    getChainAddress(IEthereumFLIP, chainId),
+    account
+  )
+
+  const iMaticFLIPbalance = useTokenBalance(
+    getChainAddress(IMaticFLIP, chainId),
+    account
+  )
+
+  const matic2xFLIPbalance = useTokenBalance(
+    getChainAddress(Matic2xFLIP, chainId),
     account
   )
 
@@ -172,6 +210,7 @@ export const useBalances = (): Balances => {
   )
 
   return {
+    ethBalance,
     daiBalance,
     usdcBalance,
     maticBalance,
@@ -179,11 +218,17 @@ export const useBalances = (): Balances => {
     dpiBalance,
     mviBalance,
     bedBalance,
+    btc2xFLIPBalance,
     dataBalance,
     gmiBalance,
+    iBtcFLIPBalance,
+    iEthFLIPbalance,
+    iMaticFLIPbalance,
+    indexBalance,
     ethFliBalance,
     btcFliBalance,
     ethFliPBalance,
+    matic2xFLIPbalance,
     stakedGmi2022Balance,
     stakedUniswapEthDpi2020LpBalance,
     stakedUniswapEthDpi2021LpBalance,

@@ -1,13 +1,8 @@
-import { useEffect, useState } from 'react'
-
 import { colors } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Select, Spacer, Text } from '@chakra-ui/react'
-import { useEtherBalance, useEthers } from '@usedapp/core'
 
-import { ETH, Token } from 'constants/tokens'
-import { useFormattedBalance } from 'hooks/useFormattedBalance'
-import { displayFromWei } from 'utils'
+import { Token } from 'constants/tokens'
 
 interface InputSelectorConfig {
   isDarkMode: boolean
@@ -21,31 +16,12 @@ const QuickTradeSelector = (props: {
   config: InputSelectorConfig
   selectedToken: Token
   selectedTokenAmount?: string
+  selectedTokenBalance?: string
   tokenList: Token[]
   onChangeInput: (input: string) => void
   onSelectedToken: (symbol: string) => void
 }) => {
   const { config, selectedToken } = props
-  const { chainId, account } = useEthers()
-  const [balance, setBalance] = useState<string>('0')
-  const etherBalance = displayFromWei(useEtherBalance(account), 2, 18) || '0.00'
-  const balanceString = Number.parseFloat(
-    useFormattedBalance(selectedToken)
-  ).toFixed(4)
-
-  useEffect(() => {
-    if (!account) {
-      setBalance('0.00')
-      return
-    }
-
-    if (selectedToken.symbol === ETH.symbol) {
-      setBalance(etherBalance)
-    } else {
-      setBalance(balanceString)
-    }
-  }, [account, chainId, selectedToken, etherBalance, balanceString])
-
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
 
@@ -78,7 +54,7 @@ const QuickTradeSelector = (props: {
             }
           />
           <Text align='right' fontSize='12px' fontWeight='400' w='100%'>
-            Balance: {balance}
+            Balance: {props.selectedTokenBalance}
           </Text>
         </Flex>
         <Flex
@@ -106,10 +82,7 @@ const QuickTradeSelector = (props: {
           >
             {props.tokenList.map((token) => {
               return (
-                <option
-                  key={token.symbol}
-                  value={token.symbol}
-                >
+                <option key={token.symbol} value={token.symbol}>
                   {token.symbol}
                 </option>
               )
