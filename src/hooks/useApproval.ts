@@ -58,8 +58,8 @@ export const useApproval = (tokenAddress?: string, spenderAddress?: string) => {
   }, [allowance])
 
   useEffect(() => {
-    setIsApproving(false)
     setIsApproved(state.status === 'Success')
+    if (isApproved) setIsApproving(false)
   }, [state])
 
   return {
