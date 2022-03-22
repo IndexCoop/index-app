@@ -53,9 +53,6 @@ const QuickTradeSelector = (props: {
                 : undefined
             }
           />
-          <Text align='right' fontSize='12px' fontWeight='400' w='100%'>
-            Balance: {props.selectedTokenBalance}
-          </Text>
         </Flex>
         <Flex
           align='center'
@@ -90,6 +87,9 @@ const QuickTradeSelector = (props: {
           </Select>
         </Flex>
       </Flex>
+      <Text align='left' fontSize='12px' fontWeight='400' m='5px 0 0 30px'>
+        Balance: {props.selectedTokenBalance}
+      </Text>
     </Flex>
   )
 }
