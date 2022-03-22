@@ -116,7 +116,8 @@ const QuickTrade = (props: {
     isApproving: isApprovingForEIZX,
     onApprove: onApproveForEIZX,
   } = useApproval(bestOption?.sellTokenAddress, ExchangeIssuanceZeroExAddress)
-  const { executeTrade } = useTrade(bestOption)
+
+  const { executeTrade, isTransacting } = useTrade(bestOption)
 
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
 
@@ -248,6 +249,8 @@ const QuickTrade = (props: {
     if (!isNativeToken && !getIsApproved()) {
       return 'Approve Tokens'
     }
+
+    if (isTransacting) return 'Trading...'
 
     return 'Trade'
   }

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -14,9 +14,10 @@ export const useTrade = (tradeData?: ZeroExData | null) => {
   const { account, library } = useEthers()
   const { usdcBalance, daiBalance, maticBalance, wethBalance } = useBalances()
   const etherBalance = useEtherBalance(account)
-  const { sendTransaction } = useSendTransaction({
+  const { sendTransaction, state } = useSendTransaction({
     transactionName: 'trade',
   })
+  const [isTransacting, setIsTransacting] = useState(false)
 
   let spendingTokenBalance = BigNumber.from(0)
   switch (tradeData?.sellTokenAddress) {
@@ -58,12 +59,18 @@ export const useTrade = (tradeData?: ZeroExData | null) => {
     }
 
     try {
+      setIsTransacting(true)
       // const tx = await library?.getSigner().sendTransaction(txRequest)
       await sendTransaction(txRequest)
     } catch (error) {
+      setIsTransacting(false)
       console.log('Error sending transaction', error)
     }
   }, [account, tradeData])
 
-  return { executeTrade }
+  useEffect(() => {
+    if (state.status !== 'Mining') setIsTransacting(false)
+  }, [state])
+
+  return { executeTrade, isTransacting }
 }
