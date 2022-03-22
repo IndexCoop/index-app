@@ -14,9 +14,9 @@ import {
 import { useEthers } from '@usedapp/core'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 
-import { metaMaskLink } from 'constants/externalLinks'
 import metamaskIcon from 'assets/metamask.png'
 import walletconnectIcon from 'assets/walletconnect.svg'
+import { metaMaskLink } from 'constants/externalLinks'
 
 export default function ConnectModal(props: { isOpen: any; onClose: any }) {
   const { activateBrowserWallet, activate, account } = useEthers()
