@@ -21,6 +21,7 @@ import { useEthers } from '@usedapp/core'
 import { Position } from 'components/dashboard/AllocationChart'
 import PieChartTooltip from 'components/dashboard/PieChartTooltip'
 import { MAINNET, POLYGON } from 'constants/chains'
+import { Token } from 'constants/tokens'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 import { displayFromWei } from 'utils'
 
@@ -28,19 +29,32 @@ const randomColors = new Array(50)
   .fill('')
   .map((_) => '#' + (((1 << 24) * Math.random()) | 0).toString(16))
 
-const allocationEmptyMsg = (account?: string | null, chainId?: number) => {
+const allocationEmptyMsg = (
+  tokenData: Token,
+  account?: string | null,
+  chainId?: number
+) => {
   if (!account || !chainId) return 'Connect wallet to view allocations'
   switch (chainId) {
     case MAINNET.chainId:
-      return 'Switch wallet to Polygon to view allocations'
+      if (!tokenData.address && tokenData.polygonAddress) {
+        return 'Switch wallet to Polygon to view allocations'
+      }
+      return 'Connect wallet to view allocations'
     case POLYGON.chainId:
-      return 'Switch wallet to Ethereum Mainnet to view allocations'
+      if (!tokenData.polygonAddress && tokenData.address) {
+        return 'Switch wallet to Ethereum Mainnet to view allocations'
+      }
+      return 'Connect wallet to view allocations'
     default:
       return 'Connect wallet to view allocations'
   }
 }
 
-const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
+const ProductComponentsTable = (props: {
+  components?: SetComponent[]
+  tokenData: Token
+}) => {
   const { account, chainId } = useEthers()
 
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
@@ -83,7 +97,9 @@ const ProductComponentsTable = (props: { components?: SetComponent[] }) => {
 
   if (props.components === undefined || props.components.length === 0) {
     return (
-      <Text title='Allocations'>{allocationEmptyMsg(account, chainId)}</Text>
+      <Text title='Allocations'>
+        {allocationEmptyMsg(props.tokenData, account, chainId)}
+      </Text>
     )
   }
 
