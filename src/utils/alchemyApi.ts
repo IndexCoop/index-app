@@ -1,3 +1,4 @@
+import { MAINNET, POLYGON } from 'constants/chains'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -9,8 +10,6 @@ import {
   IndexToken,
   MetaverseIndex,
 } from 'constants/tokens'
-
-import { MAINNET, POLYGON } from 'constants/chains'
 
 const alchemyApiUrl = (chainId: number) => {
   switch (chainId) {
