@@ -320,7 +320,7 @@ const QuickTrade = (props: {
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = !account
     ? false
-    : buyTokenAmount === '0' || hasInsufficientFunds || getIsApproving()
+    : buyTokenAmount === '0' || hasInsufficientFunds || isTransacting
 
   const isNarrow = props.isNarrowVersion ?? false
   const paddingX = isNarrow ? '16px' : '40px'
