@@ -18,6 +18,7 @@ import ConnectModal from 'components/header/ConnectModal'
 import { POLYGON } from 'constants/chains'
 import {
   ExchangeIssuanceLeveragedAddress,
+  ExchangeIssuanceZeroExAddress,
   zeroExRouterAddress,
 } from 'constants/ethContractAddresses'
 import {
@@ -88,12 +89,17 @@ const QuickTrade = (props: {
   const sellTokenBalance = useTokenBalance(sellToken)
   const buyTokenBalance = useTokenBalance(buyToken)
 
-  const { bestOption, isFetchingTradeData, fetchAndCompareOptions } =
-    useBestTradeOption()
+  const {
+    bestOption,
+    isFetchingTradeData,
+    fetchAndCompareOptions,
+    isLeveragedEI,
+    isZeroExEI,
+  } = useBestTradeOption()
   const tradeInfoData: TradeInfoItem[] = getTradeInfoData(bestOption, chainId)
 
   const {
-    isApproved: isApproveForSwap,
+    isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
   } = useApproval(bestOption?.sellTokenAddress, zeroExRouterAddress)
@@ -105,7 +111,13 @@ const QuickTrade = (props: {
     bestOption?.sellTokenAddress,
     ExchangeIssuanceLeveragedAddress
   )
-  const { executeTrade } = useTrade(bestOption)
+  const {
+    isApproved: isApprovedForEIZX,
+    isApproving: isApprovingForEIZX,
+    onApprove: onApproveForEIZX,
+  } = useApproval(bestOption?.sellTokenAddress, ExchangeIssuanceZeroExAddress)
+
+  const { executeTrade, isTransacting } = useTrade(bestOption)
 
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
 
@@ -192,6 +204,24 @@ const QuickTrade = (props: {
     )
   }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
 
+  const getIsApproved = () => {
+    if (isLeveragedEI) return isApprovedForEIL
+    if (isZeroExEI) return isApprovedForEIZX
+    return isApprovedForSwap
+  }
+
+  const getIsApproving = () => {
+    if (isLeveragedEI) return isApprovingForEIL
+    if (isZeroExEI) return isApprovingForEIZX
+    return isApprovingForSwap
+  }
+
+  const getOnApprove = () => {
+    if (isLeveragedEI) return onApproveForEIL()
+    if (isZeroExEI) return onApproveForEIZX()
+    return onApproveForSwap()
+  }
+
   /**
    * Get the correct trade button label according to different states
    * @returns string label for trade button
@@ -211,9 +241,16 @@ const QuickTrade = (props: {
 
     const isNativeToken =
       sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
-    if (!isApproveForSwap && !isNativeToken) {
+
+    if (!isNativeToken && getIsApproving()) {
+      return 'Approving...'
+    }
+
+    if (!isNativeToken && !getIsApproved()) {
       return 'Approve Tokens'
     }
+
+    if (isTransacting) return 'Trading...'
 
     return 'Trade'
   }
@@ -270,20 +307,20 @@ const QuickTrade = (props: {
 
     const isNativeToken =
       sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
-    if (!isApproveForSwap && !isNativeToken) {
-      await onApproveForSwap()
+    if (!getIsApproved() && !isNativeToken) {
+      await getOnApprove()
       return
     }
 
     await executeTrade()
   }
 
-  const isLoading = isApprovingForSwap || isFetchingTradeData
+  const isLoading = getIsApproving() || isFetchingTradeData
 
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = !account
     ? false
-    : buyTokenAmount === '0' || hasInsufficientFunds || isApprovingForSwap
+    : buyTokenAmount === '0' || hasInsufficientFunds || isTransacting
 
   const isNarrow = props.isNarrowVersion ?? false
   const paddingX = isNarrow ? '16px' : '40px'
