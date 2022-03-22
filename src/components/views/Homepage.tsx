@@ -31,7 +31,7 @@ const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
   const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
     useUserBalances()
-  const { account } = useEthers()
+  const { account, chainId } = useEthers()
   const isWeb = useBreakpointValue({
     base: false,
     md: true,
@@ -57,12 +57,13 @@ const Dashboard = () => {
   useEffect(() => {
     if (account === null || account === undefined) return
     const fetchHistory = async () => {
-      const transactions = await getTransactionHistory(account)
+      const chainIdNum = Number(chainId) ?? -1
+      const transactions = await getTransactionHistory(account, chainIdNum)
       const historyItems = assembleHistoryItems(transactions)
       setHistoryItems(historyItems)
     }
     fetchHistory()
-  }, [account])
+  }, [account, chainId])
 
   useEffect(() => {
     if (csvDownloadUrl === '') return

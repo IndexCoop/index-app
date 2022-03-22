@@ -1,3 +1,4 @@
+import { MAINNET, POLYGON } from 'constants/chains'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -10,7 +11,16 @@ import {
   MetaverseIndex,
 } from 'constants/tokens'
 
-const alchemyApiUrl = process.env.REACT_APP_ALCHEMY_API
+const alchemyApiUrl = (chainId: number) => {
+  switch (chainId) {
+    case MAINNET.chainId:
+      return process.env.REACT_APP_MAINNET_ALCHEMY_API
+    case POLYGON.chainId:
+      return process.env.REACT_APP_POLYGON_ALCHEMY_API
+    default:
+      return null
+  }
+}
 
 const contractAddresses: string[] = [
   BedIndex.address!,
@@ -54,6 +64,7 @@ export interface AlchemyApiTransaction {
 }
 
 const fetchTransactionHistory = async (
+  alchemyApiUrl: string,
   fromAddress: string | null = null,
   toAddress: string | null = null
 ): Promise<AlchemyApiTransaction[]> => {
@@ -96,8 +107,13 @@ const fetchTransactionHistory = async (
   return data['result']['transfers']
 }
 
-export const getTransactionHistory = async (address: string) => {
-  const fromTransactions = await fetchTransactionHistory(address, null)
-  const toTransactions = await fetchTransactionHistory(null, address)
+export const getTransactionHistory = async (
+  address: string,
+  chainId: number
+) => {
+  const url = alchemyApiUrl(chainId)
+  if (!url) return { from: [], to: [] }
+  const fromTransactions = await fetchTransactionHistory(url, address, null)
+  const toTransactions = await fetchTransactionHistory(url, null, address)
   return { from: fromTransactions, to: toTransactions }
 }
