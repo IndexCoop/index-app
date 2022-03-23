@@ -239,7 +239,7 @@ const QuickTrade = (props: {
       return 'Connect Wallet'
     }
 
-    if (buyTokenAmount === '0') {
+    if (sellTokenAmount === '0') {
       return 'Enter an amount'
     }
 
