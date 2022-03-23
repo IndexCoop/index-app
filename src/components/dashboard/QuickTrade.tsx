@@ -196,7 +196,7 @@ const QuickTrade = (props: {
   }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
 
   const fetchOptions = () => {
-    const sellTokenInWei = toWei(sellTokenAmount)
+    const sellTokenInWei = toWei(sellTokenAmount, sellToken.decimals)
     // TODO: recheck logic later
     if (
       // BigNumber.from(buyTokenAmount).isZero() &&
