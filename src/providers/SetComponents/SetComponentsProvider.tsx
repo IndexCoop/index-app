@@ -1,13 +1,12 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
-import { ethers } from 'ethers'
+import BigNumberJs from 'bignumber.js'
 import {
   CoinGeckoCoinPrices,
   Position,
   SetDetails,
 } from 'set.js/dist/types/src/types'
 
-import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import { MAINNET, POLYGON } from 'constants/chains'
@@ -28,7 +27,6 @@ import {
   MetaverseIndex,
 } from 'constants/tokens'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
-import { preciseDiv, preciseMul } from 'utils'
 import { getSetDetails } from 'utils/setjsApi'
 import { getTokenList, TokenData as Token } from 'utils/tokenlists'
 
@@ -564,32 +562,27 @@ async function convertPositionToSetComponent(
       totalPriceUsd: '0',
       dailyPercentChange: '0',
       percentOfSet: '0',
-      percentOfSetNumber: BigNumber.from(0),
+      percentOfSetNumber: 0,
     }
   }
 
-  const totalPriceUsd = preciseMul(
-    position.unit,
-    ethers.utils.parseEther(componentPriceUsd.toString())
+  const quantity = new BigNumberJs(position.unit.toString()).div(
+    new BigNumberJs(10).pow(token.decimals)
   )
-  const percentOfSet = preciseMul(
-    preciseDiv(totalPriceUsd, ethers.utils.parseEther(setPriceUsd.toString())),
-    ethers.utils.parseEther('100')
-  )
+  const totalPriceUsd = quantity.multipliedBy(componentPriceUsd)
+  const percentOfSet = totalPriceUsd.dividedBy(setPriceUsd).multipliedBy(100)
 
   return {
     address: position.component,
     id: token.name.toLowerCase(),
-    quantity: ethers.utils.formatEther(position.unit),
+    quantity: quantity.toString(),
     symbol: token.symbol,
     name: token.name,
     image: token.logoURI,
-    totalPriceUsd: ethers.utils.formatEther(totalPriceUsd.toString()),
-    dailyPercentChange: componentPriceChangeUsd
-      ? componentPriceChangeUsd.toString()
-      : '0',
-    percentOfSet: percentOfSet.toString(),
-    percentOfSetNumber: percentOfSet,
+    totalPriceUsd: totalPriceUsd.toString(),
+    dailyPercentChange: componentPriceChangeUsd.toString(),
+    percentOfSet: percentOfSet.toPrecision(4).toString(),
+    percentOfSetNumber: Number(percentOfSet.toPrecision(4)),
   }
 }
 
@@ -613,8 +606,8 @@ function sortPositionsByPercentOfSet(
   components: SetComponent[]
 ): SetComponent[] {
   return components.sort((a, b) => {
-    if (b.percentOfSetNumber.gt(a.percentOfSetNumber)) return 1
-    if (b.percentOfSetNumber.lt(a.percentOfSetNumber)) return -1
+    if (b.percentOfSetNumber > a.percentOfSetNumber) return 1
+    if (b.percentOfSetNumber < a.percentOfSetNumber) return -1
     return 0
   })
 }
@@ -690,7 +683,7 @@ export interface SetComponent {
    * The percent of USD this component makes up in the Set.
    * Equivalant to totalPriceUsd / total price of set in USD
    */
-  percentOfSetNumber: BigNumber
+  percentOfSetNumber: number
 
   /**
    * Quantity of component in the Set

@@ -23,7 +23,6 @@ import PieChartTooltip from 'components/dashboard/PieChartTooltip'
 import { MAINNET, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
-import { displayFromWei } from 'utils'
 
 const randomColors = new Array(50)
   .fill('')
@@ -70,7 +69,7 @@ const ProductComponentsTable = (props: {
     const position: Position = {
       title: component.symbol,
       value: +component.percentOfSet,
-      percent: `${displayFromWei(component.percentOfSetNumber, 2)}%` ?? '',
+      percent: `${component.percentOfSetNumber.toFixed(1)}%` ?? '',
       color: randomColor,
       backgroundColor: randomColor,
     }
