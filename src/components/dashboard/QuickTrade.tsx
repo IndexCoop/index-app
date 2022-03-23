@@ -137,18 +137,21 @@ const QuickTrade = (props: {
     setBuyTokenList(buyTokenList)
     setSellToken(sellToken)
     setBuyToken(buyToken)
+    setIsBuying(true)
   }, [chainId])
 
   useEffect(() => {
-    if (isBuying) {
-      setSellTokenList(getCurrencyTokensByChain())
-      setBuyTokenList(getTokenListByChain())
-      setIsIssuance(true)
-    } else {
-      setSellTokenList(getTokenListByChain())
-      setBuyTokenList(getCurrencyTokensByChain())
-      setIsIssuance(false)
-    }
+    const currencyTokensList = getCurrencyTokensByChain()
+    const tokenList = getTokenListByChain()
+    const sellTokenList = isBuying ? currencyTokensList : tokenList
+    const buyTokenList = isBuying ? tokenList : currencyTokensList
+    const sellToken = sellTokenList[0]
+    const buyToken = buyTokenList[0]
+    setSellTokenList(sellTokenList)
+    setBuyTokenList(buyTokenList)
+    setSellToken(sellToken)
+    setBuyToken(buyToken)
+    setIsIssuance(isBuying)
   }, [isBuying])
 
   useEffect(() => {
@@ -267,15 +270,6 @@ const QuickTrade = (props: {
     return 'Trade'
   }
 
-  /**
-   * Sets the list of tokens based on if the user is buying or selling
-   */
-  const swapTokenLists = () => {
-    setBuyToken(sellToken)
-    setSellToken(buyToken)
-    setIsBuying(!isBuying)
-  }
-
   const onChangeSellTokenAmount = (input: string) => {
     const inputNumber = Number(input)
     if (input === sellTokenAmount || input.slice(-1) === '.') return
@@ -332,6 +326,12 @@ const QuickTrade = (props: {
     await executeTrade()
   }
 
+  const onSwapTokenLists = () => {
+    // It's only necessary to change isBuying - since effect hooks
+    // will do the rest listening to this change
+    setIsBuying(!isBuying)
+  }
+
   const isLoading = getIsApproving() || isFetchingTradeData
 
   const getButtonDisabledState = () => {
@@ -383,7 +383,7 @@ const QuickTrade = (props: {
             borderColor={isDarkMode ? colors.icWhite : colors.black}
             color={isDarkMode ? colors.icWhite : colors.black}
             icon={<UpDownIcon />}
-            onClick={swapTokenLists}
+            onClick={onSwapTokenLists}
           />
         </Box>
         <QuickTradeSelector
