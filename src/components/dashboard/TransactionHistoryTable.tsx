@@ -34,7 +34,7 @@ const TransactionHistoryTable = ({
   const { isDarkMode } = useICColorMode()
   const colorScheme = isDarkMode ? 'whiteAlpha' : 'blackAlpha'
   return (
-    <Table colorScheme={colorScheme} w={width}>
+    <Table colorScheme={colorScheme}>
       <TableHeader />
       <Tbody>
         {items.map((item, index) => (
