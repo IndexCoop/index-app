@@ -20,6 +20,7 @@ import {
 } from 'hooks/useExchangeIssuanceLeveraged'
 import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
 import { displayFromWei, getChainAddress } from 'utils'
+import { getExchangeIssuanceQuotes } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { getTokenPathAndFees } from 'utils/pathsAndFees'
 import { getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
@@ -29,8 +30,6 @@ type Result<T, E = Error> =
   | { success: false; error: E }
 
 export const useBestTradeOption = () => {
-  // TODO: is this needed, probably not?
-  const { getRequiredIssuanceComponents } = useExchangeIssuanceZeroEx()
   const {
     getLeveragedTokenData,
     issueExactSetFromERC20,
@@ -71,6 +70,20 @@ export const useBestTradeOption = () => {
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
+    const tokenAmount =
+      isIssuance && dexSwapOption ? dexSwapOption.buyAmount : sellTokenAmount
+    const setTokenAmount = BigNumber.from(tokenAmount)
+    // TODO: get issuance module here and pass it to function?
+    // TODO: only run if not isEligibleLeveragedToken?
+    const resultExchangeIssuance = await getExchangeIssuanceQuotes(
+      buyToken,
+      setTokenAmount,
+      sellToken,
+      chainId,
+      library
+    )
+    console.log(resultExchangeIssuance)
+
     /* Check ExchangeIssuanceLeveraged option */
     let exchangeIssueLeveragedOption = undefined
     // Currently only relevant for polygon network
@@ -78,8 +91,6 @@ export const useBestTradeOption = () => {
       // If the user is issuing a token, then it compares the amount based on the
       // buy amount from the dex swap option, otherwise will redeem all the sell amount
       // TODO: check this
-      const tokenAmount =
-        isIssuance && dexSwapOption ? dexSwapOption.buyAmount : sellTokenAmount
       const isSellingETH = sellToken.symbol === MATIC.symbol
       const isBuyingETH = buyToken.symbol === MATIC.symbol
       const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
@@ -157,8 +168,10 @@ export const useBestTradeOption = () => {
     // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
     // TODO: Set isZeroExEI to true if is zeroExEI otherwise false
     // TODO: Set isLeveragedEI to true if is leveragedEI otherwise false
+
     // TODO: compare and return best option
 
+    // TODO: extend result for success to either hold dexOption, exchangeIssuanceOption, levExchangeIssuanceOption
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }
       : { success: true, data: dexSwapOption }
