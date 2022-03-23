@@ -90,12 +90,15 @@ const QuickTrade = (props: {
   const buyTokenBalance = useTokenBalance(buyToken)
 
   const {
-    bestOption,
+    bestOptionResult,
     isFetchingTradeData,
-    fetchAndCompareOptions,
     isLeveragedEI,
     isZeroExEI,
+    fetchAndCompareOptions,
   } = useBestTradeOption()
+  const bestOption = bestOptionResult?.success ? bestOptionResult.data : null
+  const hasFetchingError =
+    bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
   const tradeInfoData: TradeInfoItem[] = getTradeInfoData(bestOption, chainId)
 
   const {
@@ -117,8 +120,9 @@ const QuickTrade = (props: {
     onApprove: onApproveForEIZX,
   } = useApproval(bestOption?.sellTokenAddress, ExchangeIssuanceZeroExAddress)
 
-  const { executeTrade, isTransacting } = useTrade(bestOption)
-
+  const { executeTrade, isTransacting } = useTrade(
+    bestOptionResult?.success ? bestOptionResult.data : null
+  )
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
 
   /**
@@ -169,7 +173,7 @@ const QuickTrade = (props: {
     const sellAmount = toWei(sellTokenAmount, sellToken.decimals)
 
     if (
-      bestOption === undefined ||
+      bestOption === null ||
       sellAmount.isZero() ||
       sellAmount.isNegative() ||
       sellTokenBalance === undefined
@@ -188,6 +192,10 @@ const QuickTrade = (props: {
   ])
 
   useEffect(() => {
+    fetchOptions()
+  }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
+
+  const fetchOptions = () => {
     const sellTokenInWei = toWei(sellTokenAmount)
     // TODO: recheck logic later
     if (
@@ -202,7 +210,7 @@ const QuickTrade = (props: {
       buyTokenAmount,
       isIssuance
     )
-  }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
+  }
 
   const getIsApproved = () => {
     if (isLeveragedEI) return isApprovedForEIL
@@ -231,12 +239,16 @@ const QuickTrade = (props: {
       return 'Connect Wallet'
     }
 
-    if (buyTokenAmount === '0') {
+    if (sellTokenAmount === '0') {
       return 'Enter an amount'
     }
 
     if (hasInsufficientFunds) {
       return 'Insufficient funds'
+    }
+
+    if (hasFetchingError) {
+      return 'Try again'
     }
 
     const isNativeToken =
@@ -305,6 +317,11 @@ const QuickTrade = (props: {
 
     if (hasInsufficientFunds) return
 
+    if (hasFetchingError) {
+      fetchOptions()
+      return
+    }
+
     const isNativeToken =
       sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
     if (!getIsApproved() && !isNativeToken) {
@@ -317,10 +334,14 @@ const QuickTrade = (props: {
 
   const isLoading = getIsApproving() || isFetchingTradeData
 
+  const getButtonDisabledState = () => {
+    if (!account) return false
+    if (hasFetchingError) return false
+    return buyTokenAmount === '0' || hasInsufficientFunds || isTransacting
+  }
+
   const buttonLabel = getTradeButtonLabel()
-  const isButtonDisabled = !account
-    ? false
-    : buyTokenAmount === '0' || hasInsufficientFunds || isTransacting
+  const isButtonDisabled = getButtonDisabledState()
 
   const isNarrow = props.isNarrowVersion ?? false
   const paddingX = isNarrow ? '16px' : '40px'
@@ -383,6 +404,11 @@ const QuickTrade = (props: {
       </Flex>
       <Flex direction='column'>
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
+        {hasFetchingError && (
+          <Text align='center' color={colors.icRed} p='16px'>
+            Error fetching a quote.
+          </Text>
+        )}
         <TradeButton
           label={buttonLabel}
           background={isDarkMode ? colors.icWhite : colors.icYellow}
