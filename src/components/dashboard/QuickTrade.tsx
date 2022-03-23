@@ -191,7 +191,11 @@ const QuickTrade = (props: {
     sellTokenBalance,
   ])
 
-  const fetch = () => {
+  useEffect(() => {
+    fetchOptions()
+  }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
+
+  const fetchOptions = () => {
     const sellTokenInWei = toWei(sellTokenAmount)
     // TODO: recheck logic later
     if (
@@ -207,10 +211,6 @@ const QuickTrade = (props: {
       isIssuance
     )
   }
-
-  useEffect(() => {
-    fetch()
-  }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
 
   const getIsApproved = () => {
     if (isLeveragedEI) return isApprovedForEIL
@@ -318,7 +318,7 @@ const QuickTrade = (props: {
     if (hasInsufficientFunds) return
 
     if (hasFetchingError) {
-      fetch()
+      fetchOptions()
       return
     }
 
