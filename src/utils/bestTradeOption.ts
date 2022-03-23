@@ -73,7 +73,9 @@ export const useBestTradeOption = () => {
     const tokenAmount =
       isIssuance && dexSwapOption ? dexSwapOption.buyAmount : sellTokenAmount
     const setTokenAmount = BigNumber.from(tokenAmount)
-    const resultExchangeIssuance = getExchangeIssuanceQuotes(
+    // TODO: get issuance module here and pass it to function?
+    // TODO: only run if not isEligibleLeveragedToken?
+    const resultExchangeIssuance = await getExchangeIssuanceQuotes(
       buyToken,
       setTokenAmount,
       sellToken,
@@ -166,8 +168,10 @@ export const useBestTradeOption = () => {
     // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
     // TODO: Set isZeroExEI to true if is zeroExEI otherwise false
     // TODO: Set isLeveragedEI to true if is leveragedEI otherwise false
+
     // TODO: compare and return best option
 
+    // TODO: extend result for success to either hold dexOption, exchangeIssuanceOption, levExchangeIssuanceOption
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }
       : { success: true, data: dexSwapOption }
