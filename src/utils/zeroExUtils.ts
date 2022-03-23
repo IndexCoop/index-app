@@ -68,7 +68,8 @@ export const getZeroExTradeData = async (
   sellToken: Token,
   buyToken: Token,
   amount: string,
-  chainId: number
+  chainId: number,
+  rawData: boolean = false
 ): Promise<Result<ZeroExData, Error>> => {
   const params = getApiParamsForTokens(
     isExactInput,
@@ -83,14 +84,16 @@ export const getZeroExTradeData = async (
   try {
     const resp = await axios.get(url)
     const zeroExData: ZeroExData = resp.data
-    const apiResult = await processApiResult(
-      zeroExData,
-      isExactInput,
-      sellToken,
-      buyToken,
-      amount,
-      chainId
-    )
+    const apiResult = rawData
+      ? resp.data
+      : await processApiResult(
+          zeroExData,
+          isExactInput,
+          sellToken,
+          buyToken,
+          amount,
+          chainId
+        )
     return { success: true, value: apiResult }
   } catch (e) {
     console.log(e)
