@@ -24,6 +24,10 @@ import { getIssuanceModule } from 'utils/issuanceModule'
 import { getTokenPathAndFees } from 'utils/pathsAndFees'
 import { getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
 
+type Result<T, E = Error> =
+  | { success: true; data: T | null }
+  | { success: false; error: E }
+
 export const useBestTradeOption = () => {
   // TODO: is this needed, probably not?
   const { getRequiredIssuanceComponents } = useExchangeIssuanceZeroEx()
@@ -36,10 +40,10 @@ export const useBestTradeOption = () => {
   } = useExchangeIssuanceLeveraged()
   const { chainId, library } = useEthers()
 
-  const [bestOption, setBestOption] = useState<ZeroExData | null>(null)
-  const [isZeroExEI, setIsZeroExEI] = useState<boolean>(false)
-  const [isLeveragedEI, setIsLeveragedEI] = useState<boolean>(false)
   const [isFetching, setIsFetching] = useState<boolean>(false)
+  const [isLeveragedEI, setIsLeveragedEI] = useState<boolean>(false)
+  const [isZeroExEI, setIsZeroExEI] = useState<boolean>(false)
+  const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
 
   /* Determines if the token is eligible for Leveraged Exchange Issuance */
   const isEligibleLeveragedToken = (token: Token) =>
@@ -54,7 +58,7 @@ export const useBestTradeOption = () => {
   ) => {
     setIsFetching(true)
     /* Check 0x for DEX Swap option*/
-    const dexSwapOption = await getZeroExTradeData(
+    const zeroExResult = await getZeroExTradeData(
       // TODO: isExact input should be isIssuance?
       true,
       sellToken,
@@ -63,6 +67,8 @@ export const useBestTradeOption = () => {
       sellTokenAmount,
       chainId || 1
     )
+    const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
+    const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
     /* Check ExchangeIssuanceLeveraged option */
@@ -71,7 +77,9 @@ export const useBestTradeOption = () => {
     if (chainId === 137) {
       // If the user is issuing a token, then it compares the amount based on the
       // buy amount from the dex swap option, otherwise will redeem all the sell amount
-      const tokenAmount = isIssuance ? dexSwapOption.buyAmount : sellTokenAmount
+      // TODO: check this
+      const tokenAmount =
+        isIssuance && dexSwapOption ? dexSwapOption.buyAmount : sellTokenAmount
       const isSellingETH = sellToken.symbol === MATIC.symbol
       const isBuyingETH = buyToken.symbol === MATIC.symbol
       const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
@@ -150,12 +158,16 @@ export const useBestTradeOption = () => {
     // TODO: Set isZeroExEI to true if is zeroExEI otherwise false
     // TODO: Set isLeveragedEI to true if is leveragedEI otherwise false
     // TODO: compare and return best option
-    setBestOption(dexSwapOption)
+
+    const result: Result<ZeroExData, Error> = dexSwapError
+      ? { success: false, error: dexSwapError }
+      : { success: true, data: dexSwapOption }
+    setResult(result)
     setIsFetching(false)
   }
 
   return {
-    bestOption,
+    bestOptionResult: result,
     isFetchingTradeData: isFetching,
     fetchAndCompareOptions,
     isZeroExEI,

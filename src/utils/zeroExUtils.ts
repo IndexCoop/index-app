@@ -9,6 +9,10 @@ import { toWei } from 'utils'
 
 const API_0X_INDEX_URL = 'https://api.indexcoop.com/0x'
 
+type Result<T, E = Error> =
+  | { success: true; value: T }
+  | { success: false; error: E }
+
 export type ZeroExData = {
   chainId: string
   data: string
@@ -55,7 +59,6 @@ function getApiUrl(query: string, chainId: number): string {
 export async function get0xQuote(params: any, chainId: number) {
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  console.log('get0xQuote', url)
   const response = await axios.get(url)
   return response.data
 }
@@ -66,7 +69,7 @@ export const getZeroExTradeData = async (
   buyToken: Token,
   amount: string,
   chainId: number
-): Promise<ZeroExData> => {
+): Promise<Result<ZeroExData, Error>> => {
   const params = getApiParamsForTokens(
     isExactInput,
     sellToken,
@@ -77,18 +80,22 @@ export const getZeroExTradeData = async (
 
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  console.log(url)
-  const resp = await axios.get(url)
-  const zeroExData: ZeroExData = resp.data
-
-  return await processApiResult(
-    zeroExData,
-    isExactInput,
-    sellToken,
-    buyToken,
-    amount,
-    chainId
-  )
+  try {
+    const resp = await axios.get(url)
+    const zeroExData: ZeroExData = resp.data
+    const apiResult = await processApiResult(
+      zeroExData,
+      isExactInput,
+      sellToken,
+      buyToken,
+      amount,
+      chainId
+    )
+    return { success: true, value: apiResult }
+  } catch (e) {
+    console.log(e)
+    return { success: false, error: new Error('Error retrieving 0x API data') }
+  }
 }
 
 export const get0xApiParams = (
