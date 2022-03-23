@@ -4,7 +4,7 @@ import { ChainId } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
 import { getRequiredIssuanceComponents } from 'hooks/useExchangeIssuanceZeroEx'
-import { displayFromWei } from 'utils'
+import { displayFromWei, toWei } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { get0xQuote, ZeroExData } from 'utils/zeroExUtils'
 
@@ -46,8 +46,8 @@ export const getExchangeIssuanceQuotes = async (
 
   let positionQuotes: ZeroExData[] = []
   let inputTokenAmount = BigNumber.from(0)
-  // TODO:
-  const slippagePercents = 3
+  // Slippage hard coded to .5% (will be increased if there are revert issues)
+  const slippagePercents = 0.5
   // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
   const slippagePercentage = slippagePercents / 100
 
@@ -73,8 +73,9 @@ export const getExchangeIssuanceQuotes = async (
           buyToken: buyTokenAddress,
           sellToken: sellTokenAddress,
           buyAmount: buyAmount.toString(),
+          // TODO: ?
           // excludedSources: '',
-          // slippagePercentage,
+          slippagePercentage,
         },
         chainId ?? 1
       )
@@ -95,6 +96,17 @@ export const getExchangeIssuanceQuotes = async (
   console.log('//////////')
   console.log('quotes', positionQuotes)
   console.log(inputTokenAmount.toString())
+  console.log(
+    displayFromWei(inputTokenAmount, 2, sellToken.decimals),
+    sellToken.decimals
+  )
+
+  // I assume that this is the correct math to make sure we have enough weth to cover the slippage
+  // based on the fact that the slippagePercentage is limited between 0.0 and 1.0 on the 0xApi
+  // TODO: Review if correct (comment in christn's code)
+  inputTokenAmount = inputTokenAmount
+    .mul(toWei(100, sellToken.decimals))
+    .div(toWei(100 - slippagePercents, sellToken.decimals))
   console.log(
     displayFromWei(inputTokenAmount, 2, sellToken.decimals),
     sellToken.decimals
