@@ -43,8 +43,8 @@ export const getExchangeIssuanceQuotes = async (
   )
   const { components, positions } = await getRequiredIssuanceComponents(
     library,
-    issuanceModule,
-    false,
+    issuanceModule.address,
+    issuanceModule.isDebtIssuance,
     buyToken.address!,
     buyTokenAmount
   )
