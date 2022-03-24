@@ -35,10 +35,17 @@ import { useTokenBalance } from 'hooks/useTokenBalance'
 import { useTrade } from 'hooks/useTrade'
 import { displayFromWei, toWei } from 'utils'
 import { useBestTradeOption } from 'utils/bestTradeOption'
+import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { ZeroExData } from 'utils/zeroExUtils'
 
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
+
+enum QuickTradeBestOption {
+  zeroEx,
+  exchangeIssuance,
+  leveragedExchangeIssuance,
+}
 
 const QuickTrade = (props: {
   isNarrowVersion?: boolean
@@ -68,9 +75,13 @@ const QuickTrade = (props: {
     return indexNamesMainnet
   }
 
+  const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
+    null
+  )
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
+  // const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [buyTokenBalanceFormatted, setBuyTokenBalanceFormatted] = useState('0')
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(
     getTokenListByChain()
@@ -79,51 +90,84 @@ const QuickTrade = (props: {
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [sellTokenBalanceFormatted, setSellTokenBalanceFormatted] =
     useState('0')
-
-  // const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     getCurrencyTokensByChain()
   )
-  const [isIssuance, setIsIssuance] = useState<boolean>(true)
+  const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+
+  // FIXME: remove later, just for testing
+  const [tradeInfoDataEI, setTradeInfoDataEI] = useState<TradeInfoItem[]>([])
 
   const sellTokenBalance = useTokenBalance(sellToken)
   const buyTokenBalance = useTokenBalance(buyToken)
 
-  const {
-    bestOptionResult,
-    isFetchingTradeData,
-    isLeveragedEI,
-    isZeroExEI,
-    fetchAndCompareOptions,
-  } = useBestTradeOption()
-  const bestOption = bestOptionResult?.success ? bestOptionResult.data : null
+  const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
+    useBestTradeOption()
+
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
-  const tradeInfoData: TradeInfoItem[] = getTradeInfoData(bestOption, chainId)
 
   const {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
-  } = useApproval(bestOption?.sellTokenAddress, zeroExRouterAddress)
+  } = useApproval(sellToken.address, zeroExRouterAddress)
   const {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(
-    bestOption?.sellTokenAddress,
-    ExchangeIssuanceLeveragedAddress
-  )
+  } = useApproval(sellToken.address, ExchangeIssuanceLeveragedAddress)
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
     onApprove: onApproveForEIZX,
-  } = useApproval(bestOption?.sellTokenAddress, ExchangeIssuanceZeroExAddress)
+  } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
 
   const { executeTrade, isTransacting } = useTrade(
-    bestOptionResult?.success ? bestOptionResult.data : null
+    bestOptionResult?.success ? bestOptionResult.dexData : null
   )
+
+  // TODO: set from best option hook?
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
+
+  /**
+   * Determine the best trade option.
+   */
+  useEffect(() => {
+    if (bestOptionResult === null || !bestOptionResult.success) {
+      setTradeInfoData([])
+      return
+    }
+
+    const bestOptionIs0x =
+      !bestOptionResult.exchangeIssuanceData ||
+      toWei(sellTokenAmount, sellToken.decimals).lt(
+        bestOptionResult.exchangeIssuanceData.inputTokenAmount
+      )
+    console.log('0xISBESTOPTION', bestOptionIs0x)
+
+    const buyTokenDecimals = buyToken.decimals
+
+    const dexTradeInfoData = getTradeInfoData0x(
+      bestOptionResult.dexData,
+      buyTokenDecimals,
+      chainId
+    )
+    setTradeInfoData(dexTradeInfoData)
+
+    const eiTradeInfoData = getTradeInfoDataFromEI(
+      bestOptionResult.exchangeIssuanceData,
+      sellToken.decimals,
+      chainId
+    )
+    setTradeInfoDataEI(eiTradeInfoData)
+
+    setBestOption(
+      bestOptionIs0x
+        ? QuickTradeBestOption.zeroEx
+        : QuickTradeBestOption.exchangeIssuance
+    )
+  }, [bestOptionResult])
 
   /**
    * Switches sell token lists between mainnet and polygon
@@ -151,7 +195,6 @@ const QuickTrade = (props: {
     setBuyTokenList(buyTokenList)
     setSellToken(sellToken)
     setBuyToken(buyToken)
-    setIsIssuance(isBuying)
   }, [isBuying])
 
   useEffect(() => {
@@ -211,26 +254,41 @@ const QuickTrade = (props: {
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
-      isIssuance
+      isBuying
     )
   }
 
   const getIsApproved = () => {
-    if (isLeveragedEI) return isApprovedForEIL
-    if (isZeroExEI) return isApprovedForEIZX
-    return isApprovedForSwap
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return isApprovedForEIZX
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return isApprovedForEIL
+      default:
+        return isApprovedForSwap
+    }
   }
 
   const getIsApproving = () => {
-    if (isLeveragedEI) return isApprovingForEIL
-    if (isZeroExEI) return isApprovingForEIZX
-    return isApprovingForSwap
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return isApprovingForEIZX
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return isApprovingForEIL
+      default:
+        return isApprovingForSwap
+    }
   }
 
   const getOnApprove = () => {
-    if (isLeveragedEI) return onApproveForEIL()
-    if (isZeroExEI) return onApproveForEIZX()
-    return onApproveForSwap()
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return onApproveForEIZX()
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return onApproveForEIL()
+      default:
+        return onApproveForSwap()
+    }
   }
 
   /**
@@ -323,7 +381,16 @@ const QuickTrade = (props: {
       return
     }
 
-    await executeTrade()
+    switch (bestOption) {
+      case QuickTradeBestOption.zeroEx:
+        await executeTrade()
+        break
+      case QuickTradeBestOption.exchangeIssuance:
+        // TODO: call EI
+        break
+      default:
+      // Nothing
+    }
   }
 
   const onSwapTokenLists = () => {
@@ -404,6 +471,7 @@ const QuickTrade = (props: {
       </Flex>
       <Flex direction='column'>
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
+        {tradeInfoDataEI.length > 0 && <TradeInfo data={tradeInfoDataEI} />}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
             Error fetching a quote.
@@ -448,8 +516,29 @@ const TradeButton = (props: TradeButtonProps) => (
   </Button>
 )
 
-function getTradeInfoData(
+function getTradeInfoDataFromEI(
+  data: ExchangeIssuanceQuote | null | undefined,
+  tokenDecimals: number,
+  chainId: ChainId = ChainId.Mainnet
+): TradeInfoItem[] {
+  if (data === undefined || data === null) return []
+  // TODO: fix to show minium receive not input token amount!
+  const minReceive =
+    displayFromWei(data.inputTokenAmount, undefined, tokenDecimals) ?? '0.0'
+  // TODO:
+  const networkFee = ''
+  const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
+  const offeredFrom = 'Index - Exchange Issuance'
+  return [
+    { title: 'Minimum Receive', value: minReceive },
+    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
+    { title: 'Offered From', value: offeredFrom },
+  ]
+}
+
+function getTradeInfoData0x(
   zeroExTradeData: ZeroExData | undefined | null,
+  tokenDecimals: number,
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (zeroExTradeData === undefined || zeroExTradeData === null) return []
@@ -458,7 +547,8 @@ function getTradeInfoData(
   if (gasPrice === undefined || gas === undefined || sources === undefined)
     return []
 
-  const minReceive = displayFromWei(zeroExTradeData.minOutput) ?? '0.0'
+  const minReceive =
+    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
 
   const networkFee =
     displayFromWei(BigNumber.from(gasPrice).mul(BigNumber.from(gas))) ?? '-'
