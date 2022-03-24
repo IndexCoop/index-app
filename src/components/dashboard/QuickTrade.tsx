@@ -332,7 +332,7 @@ const QuickTrade = (props: {
       return 'Approve Tokens'
     }
 
-    if (isTransacting) return 'Trading...'
+    if (isTransacting || isTransactingEI) return 'Trading...'
 
     return 'Trade'
   }
@@ -413,7 +413,12 @@ const QuickTrade = (props: {
   const getButtonDisabledState = () => {
     if (!account) return false
     if (hasFetchingError) return false
-    return buyTokenAmount === '0' || hasInsufficientFunds || isTransacting
+    return (
+      buyTokenAmount === '0' ||
+      hasInsufficientFunds ||
+      isTransacting ||
+      isTransactingEI
+    )
   }
 
   const buttonLabel = getTradeButtonLabel()

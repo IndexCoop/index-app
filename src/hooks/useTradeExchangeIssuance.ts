@@ -50,8 +50,8 @@ export const useTradeExchangeIssuance = (
     if (spendingTokenBalance.lt(requiredBalance)) return
 
     try {
+      setIsTransacting(true)
       if (isSellingNativeChainToken) {
-        setIsTransacting(true)
         await issueExactSetFromETH(
           library,
           buyToken.address!,
@@ -61,6 +61,7 @@ export const useTradeExchangeIssuance = (
           issuanceModule.isDebtIssuance
         )
       }
+      setIsTransacting(false)
     } catch (error) {
       setIsTransacting(false)
       console.log('Error sending transaction', error)
