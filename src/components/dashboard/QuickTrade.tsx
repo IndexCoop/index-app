@@ -33,6 +33,7 @@ import {
 import { useApproval } from 'hooks/useApproval'
 import { useTokenBalance } from 'hooks/useTokenBalance'
 import { useTrade } from 'hooks/useTrade'
+import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { displayFromWei, toWei } from 'utils'
 import { useBestTradeOption } from 'utils/bestTradeOption'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
@@ -125,6 +126,13 @@ const QuickTrade = (props: {
 
   const { executeTrade, isTransacting } = useTrade(
     bestOptionResult?.success ? bestOptionResult.dexData : null
+  )
+  const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance(
+    isBuying,
+    sellToken,
+    buyToken,
+    toWei(sellTokenAmount, sellToken.decimals),
+    bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
 
   // TODO: set from best option hook?
@@ -386,7 +394,7 @@ const QuickTrade = (props: {
         await executeTrade()
         break
       case QuickTradeBestOption.exchangeIssuance:
-        // TODO: call EI
+        await executeEITrade()
         break
       default:
       // Nothing
