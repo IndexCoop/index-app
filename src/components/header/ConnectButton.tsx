@@ -12,7 +12,6 @@ const ConnectButton = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   let ens = useLookupAddress()
 
-  console.log('zz proc',process.env.NODE_ENV)
 
   const handleConnectWallet = () => {
     onOpen()

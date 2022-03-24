@@ -72,15 +72,34 @@ const Providers = (props: { children: any }) => {
   )
 }
 
-Sentry.init({
-  dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
-  integrations: [new Integrations.BrowserTracing()],
+const setSentryEventTracking = () => {
+  let environment = ''
+  const isStaging = process.env.REACT_APP_SENTRY_ENV
+  const isProduction = process.env.NODE_ENV === 'production'
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const initSentryEventTracking = () => {
+    Sentry.init({
+      dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
+      environment,
+      integrations: [new Integrations.BrowserTracing()],
 
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
-})
+      // Set tracesSampleRate to 1.0 to capture 100%
+      // of transactions for performance monitoring.
+      // We recommend adjusting this value in production
+      tracesSampleRate: 1.0,
+    })  
+  }
+  if (isStaging) {
+    environment = 'staging'
+  } else if (isProduction) {
+    environment = process.env.NODE_ENV
+  } else if (isDevelopment) {
+    environment = process.env.NODE_ENV
+  }
+  initSentryEventTracking()
+}
+
+setSentryEventTracking()
 
 ReactDOM.render(
   <React.StrictMode>
