@@ -63,6 +63,43 @@ export const getRequiredIssuanceComponents = async (
 }
 
 /**
+ * Returns transaction to get component & position quotes for token redemption
+ *
+ * @param library                library from logged in user
+ * @param issuanceModule         Address of issuance Module to use
+ * @param isDebtIssuance         Flag indicating wether given issuance module is a debt issuance module
+ * @param setToken               Address of the SetToken to be redeemed
+ * @param amountSetToken         Amount of SetTokens to redeem
+ *
+ * @return componenets           Array of component addresses
+ * @return positions             Array of component positions
+ */
+export const getRequiredRedemptionComponents = async (
+  library: any,
+  issuanceModule: string,
+  isDebtIssuance: boolean,
+  setToken: string,
+  amountSetToken: BigNumber
+): Promise<RequiredComponentsResponse> => {
+  console.log('getRequiredRedemptionComponents')
+  try {
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
+    const redeemQuoteTx = await eiContract.getRequiredRedemptionComponents(
+      issuanceModule,
+      isDebtIssuance,
+      setToken,
+      amountSetToken
+    )
+    return redeemQuoteTx
+  } catch (err) {
+    console.log('error', err)
+    return { components: [], positions: [] }
+  }
+}
+
+/**
  * Get the 0x Trade Data for
  */
 export const useExchangeIssuanceZeroEx = () => {

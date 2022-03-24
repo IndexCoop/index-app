@@ -3,7 +3,10 @@ import { BigNumber, ethers } from 'ethers'
 import { ChainId } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
-import { getRequiredIssuanceComponents } from 'hooks/useExchangeIssuanceZeroEx'
+import {
+  getRequiredIssuanceComponents,
+  getRequiredRedemptionComponents,
+} from 'hooks/useExchangeIssuanceZeroEx'
 import { displayFromWei, toWei } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { get0xQuote, ZeroExData } from 'utils/zeroExUtils'
@@ -29,10 +32,12 @@ export const getExchangeIssuanceQuotes = async (
   buyToken: Token,
   buyTokenAmount: BigNumber,
   sellToken: Token,
+  isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
   library: ethers.providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
-  const issuanceModule = getIssuanceModule(buyToken.symbol, chainId)
+  const tokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
+  const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
   console.log('Getting issuance quotes')
   console.log(
     'fetching...',
@@ -41,13 +46,22 @@ export const getExchangeIssuanceQuotes = async (
     buyToken.address,
     issuanceModule
   )
-  const { components, positions } = await getRequiredIssuanceComponents(
-    library,
-    issuanceModule.address,
-    issuanceModule.isDebtIssuance,
-    buyToken.address!,
-    buyTokenAmount
-  )
+
+  const { components, positions } = isIssuance
+    ? await getRequiredIssuanceComponents(
+        library,
+        issuanceModule.address,
+        issuanceModule.isDebtIssuance,
+        buyToken.address!,
+        buyTokenAmount
+      )
+    : await getRequiredRedemptionComponents(
+        library,
+        issuanceModule.address,
+        issuanceModule.isDebtIssuance,
+        sellToken.address!,
+        buyTokenAmount
+      )
 
   let positionQuotes: ZeroExData[] = []
   let inputTokenAmount = BigNumber.from(0)

@@ -83,6 +83,7 @@ export const useBestTradeOption = () => {
         buyToken,
         tokenAmount,
         sellToken,
+        isIssuance,
         chainId,
         library
       )
