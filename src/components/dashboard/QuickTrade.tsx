@@ -94,7 +94,6 @@ const QuickTrade = (props: {
     getCurrencyTokensByChain()
   )
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
-  const [isIssuance, setIsIssuance] = useState<boolean>(true)
 
   // FIXME: remove later, just for testing
   const [tradeInfoDataEI, setTradeInfoDataEI] = useState<TradeInfoItem[]>([])
@@ -196,7 +195,6 @@ const QuickTrade = (props: {
     setBuyTokenList(buyTokenList)
     setSellToken(sellToken)
     setBuyToken(buyToken)
-    setIsIssuance(isBuying)
   }, [isBuying])
 
   useEffect(() => {
@@ -256,7 +254,7 @@ const QuickTrade = (props: {
       sellTokenAmount,
       buyToken,
       buyTokenAmount,
-      isIssuance
+      isBuying
     )
   }
 
