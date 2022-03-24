@@ -10,6 +10,7 @@ import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
 
 import { useBalances } from './useBalances'
+import { useTokenBalance } from './useTokenBalance'
 
 export const useTradeExchangeIssuance = (
   isIssuance: boolean,
@@ -27,31 +28,13 @@ export const useTradeExchangeIssuance = (
     redeemExactSetForETH,
     redeemExactSetForToken,
   } = useExchangeIssuanceZeroEx()
+  const spendingTokenBalance = useTokenBalance(sellToken) || BigNumber.from(0)
 
   const [isTransactingEI, setIsTransacting] = useState(false)
 
   const tokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
   const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
   const sellTokenAddress = getChainAddress(sellToken, chainId)
-
-  // TODO: replace with utility function?
-  let spendingTokenBalance = BigNumber.from(0)
-  switch (sellTokenAddress) {
-    case USDC.address || USDC.polygonAddress:
-      spendingTokenBalance = usdcBalance || BigNumber.from(0)
-      break
-    case DAI.address || DAI.polygonAddress:
-      spendingTokenBalance = daiBalance || BigNumber.from(0)
-      break
-    case MATIC.address || MATIC.polygonAddress:
-      spendingTokenBalance = maticBalance || BigNumber.from(0)
-      break
-    case ETH.polygonAddress:
-      spendingTokenBalance = wethBalance || BigNumber.from(0)
-      break
-    default:
-      spendingTokenBalance = etherBalance || BigNumber.from(0)
-  }
 
   const executeEITrade = useCallback(async () => {
     if (!account || !quoteData) return

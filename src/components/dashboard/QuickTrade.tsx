@@ -125,6 +125,7 @@ const QuickTrade = (props: {
   } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
 
   const { executeTrade, isTransacting } = useTrade(
+    sellToken,
     bestOptionResult?.success ? bestOptionResult.dexData : null
   )
   const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance(
