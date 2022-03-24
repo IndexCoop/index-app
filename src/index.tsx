@@ -72,15 +72,37 @@ const Providers = (props: { children: any }) => {
   )
 }
 
-Sentry.init({
-  dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
-  integrations: [new Integrations.BrowserTracing()],
+const initSentryEventTracking = () => {
+  const ENVIRONMENTS = {
+    development: 'index-app-development',
+    production: 'index-app-prod',
+    staging: 'index-app-staging'
+  }
+  const isStaging = process.env.REACT_APP_SENTRY_ENV
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const isProduction = process.env.NODE_ENV === 'production'
+  
+  let environment = 'undefined'
+  if (isStaging) {
+    environment = ENVIRONMENTS.staging
+  } else if (isDevelopment) {
+    environment = ENVIRONMENTS.development
+  } else if (isProduction) {
+    environment = ENVIRONMENTS.production
+  }
+    
+  Sentry.init({
+    environment,
+    dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
+    integrations: [new Integrations.BrowserTracing()],
 
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
-})
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0,
+  })  
+}
+initSentryEventTracking()
 
 ReactDOM.render(
   <React.StrictMode>
