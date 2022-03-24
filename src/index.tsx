@@ -73,10 +73,23 @@ const Providers = (props: { children: any }) => {
 }
 
 const initSentryEventTracking = () => {
+  const ENVIRONMENTS = {
+    development: 'index-app-development',
+    production: 'index-app-prod',
+    staging: 'index-app-staging'
+  }
   const isStaging = process.env.REACT_APP_SENTRY_ENV
-  let environment = isStaging
-    ? process.env.REACT_APP_SENTRY_ENV!
-    : process.env.NODE_ENV
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const isProduction = process.env.NODE_ENV === 'production'
+  
+  let environment = ''
+  if (isStaging) {
+    environment = ENVIRONMENTS.staging
+  } else if (isDevelopment) {
+    environment = ENVIRONMENTS.development
+  } else if (isProduction) {
+    environment = ENVIRONMENTS.production
+  }
     
   Sentry.init({
     dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
@@ -88,9 +101,6 @@ const initSentryEventTracking = () => {
     // We recommend adjusting this value in production
     tracesSampleRate: 1.0,
   })  
-
-  console.log('zz env:', environment)
-  console.log('zz proc:', process.env.REACT_APP_SENTRY_ENV, '+', process.env.NODE_ENV)
 }
 initSentryEventTracking()
 
