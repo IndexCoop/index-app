@@ -124,8 +124,9 @@ const QuickTrade = (props: {
     onApprove: onApproveForEIZX,
   } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
 
-  // TODO:
-  const { executeTrade, isTransacting } = useTrade(null)
+  const { executeTrade, isTransacting } = useTrade(
+    bestOptionResult?.success ? bestOptionResult.dexData : null
+  )
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
 
   /**
