@@ -127,6 +127,8 @@ const QuickTrade = (props: {
   const { executeTrade, isTransacting } = useTrade(
     bestOptionResult?.success ? bestOptionResult.dexData : null
   )
+
+  // TODO: set from best option hook?
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
 
   /**
@@ -381,7 +383,16 @@ const QuickTrade = (props: {
       return
     }
 
-    await executeTrade()
+    switch (bestOption) {
+      case QuickTradeBestOption.zeroEx:
+        await executeTrade()
+        break
+      case QuickTradeBestOption.exchangeIssuance:
+        // TODO: call EI
+        break
+      default:
+      // Nothing
+    }
   }
 
   const onSwapTokenLists = () => {
