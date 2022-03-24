@@ -12,7 +12,6 @@ const ConnectButton = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   let ens = useLookupAddress()
 
-
   const handleConnectWallet = () => {
     onOpen()
   }
