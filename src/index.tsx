@@ -74,14 +74,10 @@ const Providers = (props: { children: any }) => {
 
 const initSentryEventTracking = () => {
   const isStaging = process.env.REACT_APP_SENTRY_ENV
-  let environment = ''
+  let environment = isStaging
+    ? process.env.REACT_APP_SENTRY_ENV!
+    : process.env.NODE_ENV
     
-  if (isStaging) {
-    environment = process.env.REACT_APP_SENTRY_ENV!
-  } else {
-    environment = process.env.NODE_ENV
-  }
-
   Sentry.init({
     dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
     environment,
