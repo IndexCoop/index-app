@@ -40,7 +40,6 @@ export const useBestTradeOption = () => {
   const { chainId, library } = useEthers()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
-  const [isLeveragedEI, setIsLeveragedEI] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
 
   /* Determines if the token is eligible for Leveraged Exchange Issuance */
@@ -167,10 +166,6 @@ export const useBestTradeOption = () => {
 
     console.log('exchangeIssueOption', exchangeIssuanceOption)
     console.log('exchangeIssueLeveragedOption', exchangeIssueLeveragedOption)
-    // Checking via exchange issuance
-    // const buyTokenAmount = option1Data.minOutput
-    // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
-    // TODO: Set isLeveragedEI to true if is leveragedEI otherwise false
 
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }
@@ -187,6 +182,5 @@ export const useBestTradeOption = () => {
     bestOptionResult: result,
     isFetchingTradeData: isFetching,
     fetchAndCompareOptions,
-    isLeveragedEI,
   }
 }

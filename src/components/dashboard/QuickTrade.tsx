@@ -41,6 +41,12 @@ import { ZeroExData } from 'utils/zeroExUtils'
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
+enum QuickTradeBestOption {
+  zeroEx,
+  exchangeIssuance,
+  leveragedExchangeIssuance,
+}
+
 const QuickTrade = (props: {
   isNarrowVersion?: boolean
   singleToken?: Token
@@ -69,6 +75,9 @@ const QuickTrade = (props: {
     return indexNamesMainnet
   }
 
+  const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
+    null
+  )
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
@@ -93,24 +102,9 @@ const QuickTrade = (props: {
   const sellTokenBalance = useTokenBalance(sellToken)
   const buyTokenBalance = useTokenBalance(buyToken)
 
-  const {
-    bestOptionResult,
-    isFetchingTradeData,
-    isLeveragedEI,
-    fetchAndCompareOptions,
-  } = useBestTradeOption()
+  const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
+    useBestTradeOption()
 
-  const getBestOption = () => {
-    if (bestOptionResult === null || !bestOptionResult.success) {
-      return null
-    }
-
-    if (bestOptionResult.dexData) return bestOptionResult.dexData
-    if (bestOptionResult.exchangeIssuanceData)
-      return bestOptionResult.exchangeIssuanceData
-  }
-
-  const bestOption = getBestOption()
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
@@ -139,12 +133,16 @@ const QuickTrade = (props: {
    */
   useEffect(() => {
     if (bestOptionResult === null || !bestOptionResult.success) {
-      // TODO: set trade info data -> null
       setTradeInfoData([])
       return
     }
 
-    // TODO: compare here
+    const bestOptionIs0x =
+      !bestOptionResult.exchangeIssuanceData ||
+      toWei(sellTokenAmount, sellToken.decimals).lt(
+        bestOptionResult.exchangeIssuanceData.inputTokenAmount
+      )
+    console.log('0xISBESTOPTION', bestOptionIs0x)
 
     const buyTokenDecimals = buyToken.decimals
 
@@ -161,6 +159,12 @@ const QuickTrade = (props: {
       chainId
     )
     setTradeInfoDataEI(eiTradeInfoData)
+
+    setBestOption(
+      bestOptionIs0x
+        ? QuickTradeBestOption.zeroEx
+        : QuickTradeBestOption.exchangeIssuance
+    )
   }, [bestOptionResult])
 
   /**
@@ -254,24 +258,36 @@ const QuickTrade = (props: {
   }
 
   const getIsApproved = () => {
-    if (isLeveragedEI) return isApprovedForEIL
-    // TODO:
-    // if (isZeroExEI) return isApprovedForEIZX
-    return isApprovedForSwap
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return isApprovedForEIZX
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return isApprovedForEIL
+      default:
+        return isApprovedForSwap
+    }
   }
 
   const getIsApproving = () => {
-    if (isLeveragedEI) return isApprovingForEIL
-    // TODO:
-    // if (isZeroExEI) return isApprovingForEIZX
-    return isApprovingForSwap
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return isApprovingForEIZX
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return isApprovingForEIL
+      default:
+        return isApprovingForSwap
+    }
   }
 
   const getOnApprove = () => {
-    if (isLeveragedEI) return onApproveForEIL()
-    // TODO:
-    // if (isZeroExEI) return onApproveForEIZX()
-    return onApproveForSwap()
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return onApproveForEIZX()
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return onApproveForEIL()
+      default:
+        return onApproveForSwap()
+    }
   }
 
   /**
