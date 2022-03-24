@@ -8,14 +8,19 @@ import { displayFromWei, toWei } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { get0xQuote, ZeroExData } from 'utils/zeroExUtils'
 
+export interface ExchangeIssuanceQuote {
+  tradeData: ZeroExData[]
+  inputTokenAmount: BigNumber
+}
+
 /**
  * Returns exchange issuance quotes (incl. 0x trade data) or null
  *
- * @param buyToken                      The token to buy
- * @param buyTokenAmount                The amount of buy token that should be acquired
- * @param sellToken                     The sell token
- * @param chainId                       ID for current chain
- * @param library                       Web3Provider instance
+ * @param buyToken            The token to buy
+ * @param buyTokenAmount      The amount of buy token that should be acquired
+ * @param sellToken           The sell token
+ * @param chainId             ID for current chain
+ * @param library             Web3Provider instance
  *
  * @return tradeData           Array of 0x trade data for the individual positions
  * @return inputTokenAmount    Needed input token amount for trade
@@ -26,7 +31,7 @@ export const getExchangeIssuanceQuotes = async (
   sellToken: Token,
   chainId: ChainId = ChainId.Mainnet,
   library: ethers.providers.Web3Provider | undefined
-) => {
+): Promise<ExchangeIssuanceQuote | null> => {
   const issuanceModule = getIssuanceModule(buyToken.symbol, chainId)
   console.log('Getting issuance quotes')
   console.log(

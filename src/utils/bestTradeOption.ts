@@ -1,16 +1,11 @@
-import { useEffect, useState } from 'react'
-
-import { ethers } from 'ethers'
+import { useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { Token as UniswapToken } from '@uniswap/sdk-core'
 import { useEthers } from '@usedapp/core'
 
 import {
-  Bitcoin2xFLIP,
   eligibleLeveragedExchangeIssuanceTokens,
   ETH,
-  IBitcoinFLIP,
   MATIC,
   Token,
 } from 'constants/tokens'
@@ -18,15 +13,20 @@ import {
   Exchange,
   useExchangeIssuanceLeveraged,
 } from 'hooks/useExchangeIssuanceLeveraged'
-import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
-import { displayFromWei, getChainAddress, toWei } from 'utils'
-import { getExchangeIssuanceQuotes } from 'utils/exchangeIssuanceQuotes'
-import { getIssuanceModule } from 'utils/issuanceModule'
+import { getChainAddress, toWei } from 'utils'
+import {
+  ExchangeIssuanceQuote,
+  getExchangeIssuanceQuotes,
+} from 'utils/exchangeIssuanceQuotes'
 import { getTokenPathAndFees } from 'utils/pathsAndFees'
 import { getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
 
-type Result<T, E = Error> =
-  | { success: true; data: T | null }
+type Result<_, E = Error> =
+  | {
+      success: true
+      dexData: ZeroExData | null
+      exchangeIssuanceData: ExchangeIssuanceQuote | null | undefined
+    }
   | { success: false; error: E }
 
 export const useBestTradeOption = () => {
@@ -40,8 +40,6 @@ export const useBestTradeOption = () => {
   const { chainId, library } = useEthers()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
-  const [isLeveragedEI, setIsLeveragedEI] = useState<boolean>(false)
-  const [isZeroExEI, setIsZeroExEI] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
 
   /* Determines if the token is eligible for Leveraged Exchange Issuance */
@@ -70,20 +68,25 @@ export const useBestTradeOption = () => {
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
+    const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
+
     const tokenAmount =
       isIssuance && dexSwapOption
         ? BigNumber.from(dexSwapOption.buyAmount)
         : toWei(sellTokenAmount, sellToken.decimals)
-    // TODO: get issuance module here and pass it to function?
-    // TODO: only run if not isEligibleLeveragedToken?
-    const resultExchangeIssuance = await getExchangeIssuanceQuotes(
-      buyToken,
-      tokenAmount,
-      sellToken,
-      chainId,
-      library
-    )
-    console.log(resultExchangeIssuance)
+
+    /* Check for Exchange Issuance option*/
+    let exchangeIssuanceOption: ExchangeIssuanceQuote | null | undefined =
+      undefined
+    if (!isBuyingTokenEligible) {
+      exchangeIssuanceOption = await getExchangeIssuanceQuotes(
+        buyToken,
+        tokenAmount,
+        sellToken,
+        chainId,
+        library
+      )
+    }
 
     /* Check ExchangeIssuanceLeveraged option */
     let exchangeIssueLeveragedOption = undefined
@@ -94,7 +97,6 @@ export const useBestTradeOption = () => {
       // TODO: check this
       const isSellingETH = sellToken.symbol === MATIC.symbol
       const isBuyingETH = buyToken.symbol === MATIC.symbol
-      const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
       const isSellingTokenEligible = isEligibleLeveragedToken(sellToken)
 
       if (isSellingETH && isIssuance && isBuyingTokenEligible) {
@@ -162,20 +164,16 @@ export const useBestTradeOption = () => {
       }
     }
 
+    console.log('exchangeIssueOption', exchangeIssuanceOption)
     console.log('exchangeIssueLeveragedOption', exchangeIssueLeveragedOption)
-    /* NOW COMPARE */
-    // Checking via exchange issuance
-    // const buyTokenAmount = option1Data.minOutput
-    // const option2Data = await getTradeDataFromExchangeIssuance(buyTokenAmount)
-    // TODO: Set isZeroExEI to true if is zeroExEI otherwise false
-    // TODO: Set isLeveragedEI to true if is leveragedEI otherwise false
 
-    // TODO: compare and return best option
-
-    // TODO: extend result for success to either hold dexOption, exchangeIssuanceOption, levExchangeIssuanceOption
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }
-      : { success: true, data: dexSwapOption }
+      : {
+          success: true,
+          dexData: dexSwapOption,
+          exchangeIssuanceData: exchangeIssuanceOption,
+        }
     setResult(result)
     setIsFetching(false)
   }
@@ -184,7 +182,5 @@ export const useBestTradeOption = () => {
     bestOptionResult: result,
     isFetchingTradeData: isFetching,
     fetchAndCompareOptions,
-    isZeroExEI,
-    isLeveragedEI,
   }
 }
