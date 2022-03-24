@@ -1,15 +1,14 @@
 import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEtherBalance, useEthers } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 
-import { DAI, ETH, MATIC, Token, USDC } from 'constants/tokens'
-import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
-import { fromWei, getChainAddress } from 'utils'
+import { ETH, MATIC, Token } from 'constants/tokens'
+import { fromWei } from 'utils'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
 
-import { useBalances } from './useBalances'
+import { useExchangeIssuanceZeroEx } from './useExchangeIssuanceZeroEx'
 import { useTokenBalance } from './useTokenBalance'
 
 export const useTradeExchangeIssuance = (
@@ -20,8 +19,6 @@ export const useTradeExchangeIssuance = (
   quoteData?: ExchangeIssuanceQuote | null
 ) => {
   const { account, chainId, library } = useEthers()
-  const { usdcBalance, daiBalance, maticBalance, wethBalance } = useBalances()
-  const etherBalance = useEtherBalance(account)
   const {
     issueExactSetFromETH,
     issueExactSetFromToken,
@@ -34,7 +31,6 @@ export const useTradeExchangeIssuance = (
 
   const tokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
   const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
-  const sellTokenAddress = getChainAddress(sellToken, chainId)
 
   const executeEITrade = useCallback(async () => {
     if (!account || !quoteData) return
