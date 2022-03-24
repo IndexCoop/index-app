@@ -88,6 +88,9 @@ const initSentryEventTracking = () => {
     // We recommend adjusting this value in production
     tracesSampleRate: 1.0,
   })  
+
+  console.log('zz env:', environment)
+  console.log('zz proc:', process.env.REACT_APP_SENTRY_ENV, '+', process.env.NODE_ENV)
 }
 initSentryEventTracking()
 
