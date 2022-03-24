@@ -82,7 +82,7 @@ const initSentryEventTracking = () => {
   const isDevelopment = process.env.NODE_ENV === 'development'
   const isProduction = process.env.NODE_ENV === 'production'
   
-  let environment = ''
+  let environment = 'undefined'
   if (isStaging) {
     environment = ENVIRONMENTS.staging
   } else if (isDevelopment) {
