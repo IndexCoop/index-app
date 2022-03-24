@@ -101,9 +101,8 @@ export const getExchangeIssuanceQuotes = async (
     sellToken.decimals
   )
 
-  // I assume that this is the correct math to make sure we have enough weth to cover the slippage
+  // Christn: I assume that this is the correct math to make sure we have enough weth to cover the slippage
   // based on the fact that the slippagePercentage is limited between 0.0 and 1.0 on the 0xApi
-  // TODO: Review if correct (comment in christn's code)
   inputTokenAmount = inputTokenAmount
     .mul(toWei(100, sellToken.decimals))
     .div(toWei(100 - slippagePercents, sellToken.decimals))

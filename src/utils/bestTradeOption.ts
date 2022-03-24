@@ -19,7 +19,7 @@ import {
   useExchangeIssuanceLeveraged,
 } from 'hooks/useExchangeIssuanceLeveraged'
 import { useExchangeIssuanceZeroEx } from 'hooks/useExchangeIssuanceZeroEx'
-import { displayFromWei, getChainAddress } from 'utils'
+import { displayFromWei, getChainAddress, toWei } from 'utils'
 import { getExchangeIssuanceQuotes } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { getTokenPathAndFees } from 'utils/pathsAndFees'
@@ -71,13 +71,14 @@ export const useBestTradeOption = () => {
     console.log('dexSwapOption', dexSwapOption)
 
     const tokenAmount =
-      isIssuance && dexSwapOption ? dexSwapOption.buyAmount : sellTokenAmount
-    const setTokenAmount = BigNumber.from(tokenAmount)
+      isIssuance && dexSwapOption
+        ? BigNumber.from(dexSwapOption.buyAmount)
+        : toWei(sellTokenAmount, sellToken.decimals)
     // TODO: get issuance module here and pass it to function?
     // TODO: only run if not isEligibleLeveragedToken?
     const resultExchangeIssuance = await getExchangeIssuanceQuotes(
       buyToken,
-      setTokenAmount,
+      tokenAmount,
       sellToken,
       chainId,
       library
@@ -98,7 +99,7 @@ export const useBestTradeOption = () => {
 
       if (isSellingETH && isIssuance && isBuyingTokenEligible) {
         const setToken = getChainAddress(buyToken, chainId) || ''
-        const setTokenAmount = BigNumber.from(tokenAmount)
+        const setTokenAmount = tokenAmount
         const tx = await getLeveragedTokenData(
           library,
           setToken,
