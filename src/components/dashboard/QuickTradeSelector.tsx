@@ -1,6 +1,8 @@
+import { useState } from 'react'
+
 import { colors } from 'styles/colors'
 
-import { Box, Flex, Image, Input, Select, Spacer, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
 
 import { Token } from 'constants/tokens'
 
@@ -21,9 +23,24 @@ const QuickTradeSelector = (props: {
   onChangeInput: (input: string) => void
   onSelectedToken: (symbol: string) => void
 }) => {
+  const [inputString, setInputString] = useState<string>(
+    props.selectedTokenAmount || '0.00'
+  )
   const { config, selectedToken } = props
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
+
+  const onChangeInput = (amount: string) => {
+    if (
+      props.onChangeInput === undefined ||
+      config.isInputDisabled ||
+      config.isSelectorDisabled ||
+      config.isReadOnly
+    )
+      return
+    setInputString(amount)
+    props.onChangeInput(amount)
+  }
 
   return (
     <Flex direction='column'>
@@ -46,12 +63,8 @@ const QuickTradeSelector = (props: {
             variant='unstyled'
             disabled={config.isInputDisabled ?? false}
             isReadOnly={config.isReadOnly ?? false}
-            value={props.selectedTokenAmount}
-            onChange={(event) =>
-              props.onChangeInput !== undefined
-                ? props.onChangeInput(event.target.value)
-                : undefined
-            }
+            value={inputString}
+            onChange={(event) => onChangeInput(event.target.value)}
           />
         </Flex>
         <Flex
@@ -87,7 +100,16 @@ const QuickTradeSelector = (props: {
           </Select>
         </Flex>
       </Flex>
-      <Text align='left' fontSize='12px' fontWeight='400' m='5px 0 0 30px'>
+      <Text
+        align='left'
+        fontSize='12px'
+        fontWeight='400'
+        mt='5px'
+        onClick={() => {
+          if (props.selectedTokenBalance)
+            onChangeInput(props.selectedTokenBalance)
+        }}
+      >
         Balance: {props.selectedTokenBalance}
       </Text>
     </Flex>
