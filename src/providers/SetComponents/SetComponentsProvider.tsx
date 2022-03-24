@@ -543,7 +543,7 @@ const SetComponentsProvider = (props: { children: any }) => {
   )
 }
 
-async function convertPositionToSetComponent(
+export async function convertPositionToSetComponent(
   position: Position,
   tokenList: Token[],
   componentPriceUsd: number,
