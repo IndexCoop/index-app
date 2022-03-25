@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { displayFromWei, toWei } from '.'
+import { displayFromWei, safeDiv, toWei } from '.'
 
 describe('displayFromWei', () => {
   it('should return null with no number provided', () => {
@@ -30,6 +30,25 @@ describe('displayFromWei', () => {
       18
     )
     expect(displayValue).toBe('157.097183810163386397')
+  })
+})
+
+describe('safeDiv', () => {
+  it('should div - two positive numbers', () => {
+    const quotient = safeDiv(BigNumber.from('100'), BigNumber.from('5'))
+    expect(quotient.toNumber()).toBe(20)
+  })
+  it('should div - positive and negative', () => {
+    const quotient = safeDiv(BigNumber.from('-100'), BigNumber.from('5'))
+    expect(quotient.toNumber()).toBe(-20)
+  })
+  it('should div - negative and negative', () => {
+    const quotient = safeDiv(BigNumber.from('-100'), BigNumber.from('-5'))
+    expect(quotient.toNumber()).toBe(20)
+  })
+  it('should div - safe with 0 divisor', () => {
+    const quotient = safeDiv(BigNumber.from('-100'), BigNumber.from('0'))
+    expect(quotient.toNumber()).toBe(0)
   })
 })
 
