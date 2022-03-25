@@ -13,8 +13,9 @@ import { useTokenBalance } from './useTokenBalance'
 
 export const useTradeExchangeIssuance = (
   isIssuance: boolean,
-  sellToken: Token,
-  buyToken: Token,
+  inputToken: Token,
+  outputToken: Token,
+  // buy token amount
   tokenAmout: BigNumber,
   quoteData?: ExchangeIssuanceQuote | null
 ) => {
@@ -25,37 +26,80 @@ export const useTradeExchangeIssuance = (
     redeemExactSetForETH,
     redeemExactSetForToken,
   } = useExchangeIssuanceZeroEx()
-  const spendingTokenBalance = useTokenBalance(sellToken) || BigNumber.from(0)
+
+  const tokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
+  const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
+  const spendingTokenBalance = useTokenBalance(inputToken) || BigNumber.from(0)
 
   const [isTransactingEI, setIsTransacting] = useState(false)
-
-  const tokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
-  const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
 
   const executeEITrade = useCallback(async () => {
     if (!account || !quoteData) return
 
-    const isSellingNativeChainToken =
-      sellToken.symbol === ETH.symbol || sellToken.symbol === MATIC.symbol
-
-    let requiredBalance = fromWei(
-      tokenAmout,
-      issuanceModule ? sellToken.decimals : buyToken.decimals
-    )
-
+    const balanceDecimals = issuanceModule
+      ? inputToken.decimals
+      : outputToken.decimals
+    let requiredBalance = fromWei(quoteData.inputTokenAmount, balanceDecimals)
     if (spendingTokenBalance.lt(requiredBalance)) return
+
+    console.log(quoteData.tradeData)
+    console.log(quoteData.inputTokenAmount.toString())
 
     try {
       setIsTransacting(true)
-      if (isSellingNativeChainToken) {
-        await issueExactSetFromETH(
-          library,
-          buyToken.address!,
-          tokenAmout,
-          quoteData.tradeData,
-          issuanceModule.address,
-          issuanceModule.isDebtIssuance
-        )
+      if (isIssuance) {
+        const amountOfSetToken = tokenAmout
+        const isSellingNativeChainToken =
+          inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
+
+        if (isSellingNativeChainToken) {
+          await issueExactSetFromETH(
+            library,
+            outputToken.address!,
+            amountOfSetToken,
+            quoteData.tradeData,
+            issuanceModule.address,
+            issuanceModule.isDebtIssuance
+          )
+        } else {
+          const maxAmountInputToken = quoteData.inputTokenAmount
+          await issueExactSetFromToken(
+            library,
+            outputToken.address!,
+            inputToken.address!,
+            amountOfSetToken,
+            maxAmountInputToken,
+            quoteData.tradeData,
+            issuanceModule.address,
+            issuanceModule.isDebtIssuance
+          )
+        }
+      } else {
+        const isRedeemingNativeChainToken =
+          inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
+        const minAmountToReceive = tokenAmout
+
+        if (isRedeemingNativeChainToken) {
+          await redeemExactSetForETH(
+            library,
+            inputToken.address!,
+            minAmountToReceive,
+            quoteData.tradeData,
+            issuanceModule.address,
+            issuanceModule.isDebtIssuance
+          )
+        } else {
+          await redeemExactSetForToken(
+            library,
+            inputToken.address!,
+            outputToken.address!,
+            requiredBalance,
+            minAmountToReceive,
+            quoteData.tradeData,
+            issuanceModule.address,
+            issuanceModule.isDebtIssuance
+          )
+        }
       }
       setIsTransacting(false)
     } catch (error) {
