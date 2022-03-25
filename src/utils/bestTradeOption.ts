@@ -54,13 +54,14 @@ export const useBestTradeOption = () => {
     isIssuance: boolean
   ) => {
     setIsFetching(true)
+
     /* Check 0x for DEX Swap option*/
     const zeroExResult = await getZeroExTradeData(
-      // TODO: isExact input should be isIssuance?
+      // for now we only allow selling
       true,
       sellToken,
       buyToken,
-      // TODO: buy/sell token amount needs to switch depending on state?
+      // for now we only allow selling, so sell token amount will always be correct
       sellTokenAmount,
       chainId || 1
     )
@@ -94,7 +95,6 @@ export const useBestTradeOption = () => {
     if (isBuyingTokenEligible) {
       // // If the user is issuing a token, then it compares the amount based on the
       // // buy amount from the dex swap option, otherwise will redeem all the sell amount
-      // // TODO: check this
       // const isSellingETH = sellToken.symbol === MATIC.symbol
       // const isBuyingETH = buyToken.symbol === MATIC.symbol
       // const isSellingTokenEligible = isEligibleLeveragedToken(sellToken)
