@@ -92,8 +92,6 @@ export const getExchangeIssuanceQuotes = async (
           buyToken: buyTokenAddress,
           sellToken: sellTokenAddress,
           buyAmount: buyAmount.toString(),
-          // TODO: ?
-          // excludedSources: '',
           slippagePercentage,
         },
         chainId ?? 1
