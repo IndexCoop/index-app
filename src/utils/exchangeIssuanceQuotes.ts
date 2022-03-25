@@ -9,10 +9,10 @@ import {
 } from 'hooks/useExchangeIssuanceZeroEx'
 import { displayFromWei, toWei } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
-import { get0xQuote, ZeroExData } from 'utils/zeroExUtils'
+import { get0xQuote } from 'utils/zeroExUtils'
 
 export interface ExchangeIssuanceQuote {
-  tradeData: ZeroExData[]
+  tradeData: string[]
   inputTokenAmount: BigNumber
 }
 
@@ -63,7 +63,7 @@ export const getExchangeIssuanceQuotes = async (
         buyTokenAmount
       )
 
-  let positionQuotes: ZeroExData[] = []
+  let positionQuotes: string[] = []
   let inputTokenAmount = BigNumber.from(0)
   // Slippage hard coded to .5% (will be increased if there are revert issues)
   const slippagePercents = 0.5
@@ -103,7 +103,7 @@ export const getExchangeIssuanceQuotes = async (
   const results = await Promise.all(quotePromises)
   if (results.length < 1) return null
 
-  positionQuotes = results
+  positionQuotes = results.map((result) => result.data)
   inputTokenAmount = results
     .map((result) => BigNumber.from(result.sellAmount))
     .reduce((prevValue, currValue) => {
