@@ -37,7 +37,7 @@ export const useBestTradeOption = () => {
     redeemExactSetForERC20,
     redeemExactSetForETH,
   } = useExchangeIssuanceLeveraged()
-  const { chainId, library } = useEthers()
+  const { account, chainId, library } = useEthers()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
@@ -79,7 +79,7 @@ export const useBestTradeOption = () => {
     /* Check for Exchange Issuance option */
     let exchangeIssuanceOption: ExchangeIssuanceQuote | null | undefined =
       undefined
-    if (!isBuyingTokenEligible) {
+    if (account && !isBuyingTokenEligible) {
       exchangeIssuanceOption = await getExchangeIssuanceQuotes(
         buyToken,
         tokenAmount,
@@ -92,7 +92,7 @@ export const useBestTradeOption = () => {
 
     /* Check ExchangeIssuanceLeveraged option */
     let exchangeIssueLeveragedOption = undefined
-    if (isBuyingTokenEligible) {
+    if (account && isBuyingTokenEligible) {
       // // If the user is issuing a token, then it compares the amount based on the
       // // buy amount from the dex swap option, otherwise will redeem all the sell amount
       // const isSellingETH = sellToken.symbol === MATIC.symbol
