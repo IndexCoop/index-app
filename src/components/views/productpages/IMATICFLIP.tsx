@@ -11,6 +11,7 @@ const IMATICFLIP = () => {
       tokenData={IMaticFLIP}
       marketData={imaticflip || {}}
       components={imaticFlipComponents || []}
+      isLeveragedToken={true}
     />
   )
 }

@@ -70,6 +70,7 @@ const ProductPage = (props: {
   tokenData: Token
   marketData: TokenMarketDataValues
   components: SetComponent[]
+  isLeveragedToken?: boolean
 }) => {
   const isMobile = useBreakpointValue({ base: true, lg: false })
   const { marketData, tokenData } = props
@@ -152,6 +153,7 @@ const ProductPage = (props: {
           <ProductComponentsTable
             components={props.components}
             tokenData={props.tokenData}
+            isLeveragedToken={props.isLeveragedToken}
           />
         </Flex>
       </Flex>
