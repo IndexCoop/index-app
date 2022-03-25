@@ -52,7 +52,6 @@ function getApiUrl(query: string, chainId: number): string {
   return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}`
 }
 
-// TODO: remove?
 // Temporarily adding this because we need to support more tokens than the once
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
