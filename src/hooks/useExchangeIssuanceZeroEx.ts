@@ -274,9 +274,9 @@ export const useExchangeIssuanceZeroEx = () => {
    * The excess amount of tokens is returned in an equivalent amount of ether.
    *
    * @param library                library from logged in user
-   * @param setToken               Address of the SetToken to be issued
-   * @param outputToken            Address of the input token
-   * @param amountSetToken         Amount of SetTokens to issue
+   * @param setToken               Address of the SetToken to be redeemed
+   * @param outputToken            Address of the output token
+   * @param amountSetToken         Amount of output token to redeem
    * @param minOutputReceive       Minimum amount of output token to receive
    * @param componentQuotes        The encoded 0x transactions to execute
    * @param issuanceModule         Address of issuance Module to use
