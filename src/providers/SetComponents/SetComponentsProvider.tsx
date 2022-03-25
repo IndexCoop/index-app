@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import BigNumberJs from 'bignumber.js'
+import { ethers } from 'ethers'
 import {
   CoinGeckoCoinPrices,
   Position,
   SetDetails,
 } from 'set.js/dist/types/src/types'
 
+import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import { MAINNET, POLYGON } from 'constants/chains'
@@ -27,6 +28,7 @@ import {
   MetaverseIndex,
 } from 'constants/tokens'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
+import { displayFromWei, safeDiv } from 'utils'
 import { getSetDetails } from 'utils/setjsApi'
 import { getTokenList, TokenData as Token } from 'utils/tokenlists'
 
@@ -566,23 +568,42 @@ export async function convertPositionToSetComponent(
     }
   }
 
-  const quantity = new BigNumberJs(position.unit.toString()).div(
-    new BigNumberJs(10).pow(token.decimals)
+  const commonDecimals = 18
+  const decimalsDiff = commonDecimals - token.decimals
+
+  const tokenPriceUsdDecimal = ethers.utils.parseUnits(
+    componentPriceUsd.toString()
   )
-  const totalPriceUsd = quantity.multipliedBy(componentPriceUsd)
-  const percentOfSet = totalPriceUsd.dividedBy(setPriceUsd).multipliedBy(100)
+  const setPriceUsdDecimal = ethers.utils.parseUnits(setPriceUsd.toString())
+
+  const tokenValueUsd = ethers.utils
+    .parseUnits(position.unit.toString(), decimalsDiff)
+    .mul(tokenPriceUsdDecimal)
+
+  const percentOfSet = safeDiv(tokenValueUsd, setPriceUsdDecimal)
+  const displayPercentOfSet = displayFromWei(
+    percentOfSet.mul(BigNumber.from(100)),
+    2
+  )
 
   return {
     address: position.component,
     id: token.name.toLowerCase(),
-    quantity: quantity.toString(),
+    quantity: ethers.utils.formatUnits(
+      ethers.utils.parseUnits(position.unit.toString(), decimalsDiff)
+    ),
     symbol: token.symbol,
     name: token.name,
     image: token.logoURI,
-    totalPriceUsd: totalPriceUsd.toString(),
-    dailyPercentChange: componentPriceChangeUsd.toString(),
-    percentOfSet: percentOfSet.toPrecision(4).toString(),
-    percentOfSetNumber: Number(percentOfSet.toPrecision(4)),
+    totalPriceUsd: ethers.utils.formatUnits(
+      tokenValueUsd,
+      commonDecimals + decimalsDiff + token.decimals
+    ),
+    dailyPercentChange: componentPriceChangeUsd
+      ? componentPriceChangeUsd.toString()
+      : '0',
+    percentOfSet: displayPercentOfSet ?? '0',
+    percentOfSetNumber: Number(displayPercentOfSet ?? '0'),
   }
 }
 

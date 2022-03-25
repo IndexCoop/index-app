@@ -30,6 +30,15 @@ const tokenList = [
     logoURI:
       'https://raw.githubusercontent.com/sushiswap/icons/master/token/usdc.jpg',
   },
+  {
+    address: '0x9355372396e3f6daf13359b7b607a3374cc638e0',
+    chainId: 1,
+    name: 'Whale',
+    symbol: 'WHALE',
+    decimals: 4,
+    logoURI:
+      'https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/ethereum/assets/0x9355372396e3F6daF13359B7b607a3374cc638e0/logo.png',
+  },
 ]
 
 describe('convertPositionToSetComponent()', () => {
@@ -103,7 +112,7 @@ describe('convertPositionToSetComponent()', () => {
     })
   })
 
-  test('should convert debt positions', async () => {
+  test('should convert debt positions - negative unit', async () => {
     const position = {
       component: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       module: '0x8d5174eD1dd217e240fDEAa52Eb7f4540b04F419',
@@ -135,6 +144,43 @@ describe('convertPositionToSetComponent()', () => {
       dailyPercentChange: '-0.22628548528702983',
       percentOfSet: '-81.98',
       percentOfSetNumber: -81.98,
+    })
+  })
+
+  test('should convert position with low token decimal without BigNumber error', async () => {
+    // parseUnits(6.04, 4) would error with
+    // => Error: fractional component exceeds decimals (fault="underflow", operation="parseFixed", code=NUMERIC_FAULT, version=bignumber/5.5.0)
+    const position = {
+      component: '0x9355372396e3F6daF13359B7b607a3374cc638e0',
+      module: '0x0000000000000000000000000000000000000000',
+      unit: BigNumber.from('0x0d59'),
+      positionState: 0,
+      data: '0x',
+    }
+    const componentPriceUsd = 6.04
+    const componentPriceChangeUsd = 2.719890787239803
+    const setPriceUsd = 149.7125720107031
+
+    const converted = await convertPositionToSetComponent(
+      position,
+      tokenList,
+      componentPriceUsd,
+      componentPriceChangeUsd,
+      setPriceUsd
+    )
+
+    expect(converted).toStrictEqual({
+      address: '0x9355372396e3F6daF13359B7b607a3374cc638e0',
+      id: 'whale',
+      quantity: '0.3417',
+      symbol: 'WHALE',
+      name: 'Whale',
+      image:
+        'https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/ethereum/assets/0x9355372396e3F6daF13359B7b607a3374cc638e0/logo.png',
+      totalPriceUsd: '2.063868',
+      dailyPercentChange: '2.719890787239803',
+      percentOfSet: '1.38',
+      percentOfSetNumber: 1.38,
     })
   })
 })
