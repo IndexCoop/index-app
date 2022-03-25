@@ -186,6 +186,7 @@ const QuickTrade = (props: {
     const buyTokenList = getTokenListByChain()
     const sellToken = sellTokenList[0]
     const buyToken = buyTokenList[0]
+    setSellTokenAmount('0')
     setSellTokenList(sellTokenList)
     setBuyTokenList(buyTokenList)
     setSellToken(sellToken)
