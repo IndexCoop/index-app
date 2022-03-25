@@ -125,7 +125,11 @@ const QuickTrade = (props: {
   } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
 
   // TODO: set from best option hook?
-  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
+  // FIXME: change back to just ` = tradeInfoData[0]?.value ?? '0'` for production
+  const buyTokenAmount =
+    (bestOption === QuickTradeBestOption.zeroEx
+      ? tradeInfoData[0]?.value
+      : tradeInfoDataEI[0].value) ?? '0'
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
