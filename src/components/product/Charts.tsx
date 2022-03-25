@@ -8,7 +8,6 @@ import {
   Tooltip,
   YAxis,
 } from 'recharts'
-import { colors } from 'styles/colors'
 
 import { Position } from 'components/dashboard/AllocationChart'
 import PieChartTooltip from 'components/dashboard/PieChartTooltip'
@@ -49,14 +48,10 @@ const LeveragedChart = (props: { data: Position[] }) => {
   if (props.data.length !== 2) {
     return <CompositeChart data={props.data} />
   }
-  let negativeValue =
-    props.data[0].value < 0 ? props.data[0].value : props.data[1].value
-  let positiveValue =
-    props.data[0].value >= 0 ? props.data[0].value : props.data[1].value
   const data = [
     {
-      uv: negativeValue,
-      pv: positiveValue,
+      data0: props.data[0].value,
+      data1: props.data[1].value,
     },
   ]
   return (
@@ -71,8 +66,8 @@ const LeveragedChart = (props: { data: Position[] }) => {
     >
       <YAxis />
       <ReferenceLine y={0} />
-      <Bar dataKey='pv' fill={colors.icMalachite} />
-      <Bar dataKey='uv' fill={colors.icApricot} />
+      <Bar dataKey='data0' fill={props.data[0].color} />
+      <Bar dataKey='data1' fill={props.data[1].color} />
     </BarChart>
   )
 }
