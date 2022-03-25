@@ -129,7 +129,7 @@ const QuickTrade = (props: {
   const buyTokenAmount =
     (bestOption === QuickTradeBestOption.zeroEx
       ? tradeInfoData[0]?.value
-      : tradeInfoDataEI[0].value) ?? '0'
+      : tradeInfoDataEI[0]?.value) ?? '0'
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
