@@ -35,6 +35,7 @@ import { useBestTradeOption } from 'hooks/useBestTradeOption'
 import { useTokenBalance } from 'hooks/useTokenBalance'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
+import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { displayFromWei, toWei } from 'utils'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { ZeroExData } from 'utils/zeroExUtils'
@@ -142,6 +143,16 @@ const QuickTrade = (props: {
     toWei(buyTokenAmount, buyToken.decimals),
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
+  const { executeLevEITrade, isTransactingLevEI } =
+    useTradeLeveragedExchangeIssuance(
+      isBuying,
+      sellToken,
+      buyToken,
+      toWei(buyTokenAmount, buyToken.decimals),
+      bestOptionResult?.success
+        ? bestOptionResult.leveragedExchangeIssuanceData
+        : null
+    )
 
   /**
    * Determine the best trade option.
@@ -334,7 +345,8 @@ const QuickTrade = (props: {
       return 'Approve Tokens'
     }
 
-    if (isTransacting || isTransactingEI) return 'Trading...'
+    if (isTransacting || isTransactingEI || isTransactingLevEI)
+      return 'Trading...'
 
     return 'Trade'
   }
@@ -399,6 +411,9 @@ const QuickTrade = (props: {
       case QuickTradeBestOption.exchangeIssuance:
         await executeEITrade()
         break
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        await executeLevEITrade()
+        break
       default:
       // Nothing
     }
@@ -419,7 +434,8 @@ const QuickTrade = (props: {
       buyTokenAmount === '0' ||
       hasInsufficientFunds ||
       isTransacting ||
-      isTransactingEI
+      isTransactingEI ||
+      isTransactingLevEI
     )
   }
 
