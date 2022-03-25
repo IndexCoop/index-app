@@ -109,6 +109,7 @@ const QuickTradeSelector = (props: {
           if (props.selectedTokenBalance)
             onChangeInput(props.selectedTokenBalance)
         }}
+        cursor='pointer'
       >
         Balance: {props.selectedTokenBalance}
       </Text>

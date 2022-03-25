@@ -40,7 +40,7 @@ const Logo = () => {
   const isDarkMode = colorMode === 'dark'
   let logo = isDarkMode ? indexLogoWhite : indexLogoBlack
 
-  if (window.innerWidth > 800) {
+  if (window.innerWidth > 1350) {
     logo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
   }
 
