@@ -31,10 +31,12 @@ import {
   Token,
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
+import { useBestTradeOption } from 'hooks/useBestTradeOption'
 import { useTokenBalance } from 'hooks/useTokenBalance'
 import { useTrade } from 'hooks/useTrade'
+import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
+import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { displayFromWei, toWei } from 'utils'
-import { useBestTradeOption } from 'utils/bestTradeOption'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { ZeroExData } from 'utils/zeroExUtils'
 
@@ -123,12 +125,34 @@ const QuickTrade = (props: {
     onApprove: onApproveForEIZX,
   } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
 
+  // TODO: set from best option hook?
+  // FIXME: change back to just ` = tradeInfoData[0]?.value ?? '0'` for production
+  const buyTokenAmount =
+    (bestOption === QuickTradeBestOption.zeroEx
+      ? tradeInfoData[0]?.value
+      : tradeInfoDataEI[0]?.value) ?? '0'
+
   const { executeTrade, isTransacting } = useTrade(
+    sellToken,
     bestOptionResult?.success ? bestOptionResult.dexData : null
   )
-
-  // TODO: set from best option hook?
-  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
+  const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance(
+    isBuying,
+    sellToken,
+    buyToken,
+    toWei(buyTokenAmount, buyToken.decimals),
+    bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
+  )
+  const { executeLevEITrade, isTransactingLevEI } =
+    useTradeLeveragedExchangeIssuance(
+      isBuying,
+      sellToken,
+      buyToken,
+      toWei(buyTokenAmount, buyToken.decimals),
+      bestOptionResult?.success
+        ? bestOptionResult.leveragedExchangeIssuanceData
+        : null
+    )
 
   /**
    * Determine the best trade option.
@@ -177,6 +201,7 @@ const QuickTrade = (props: {
     const buyTokenList = getTokenListByChain()
     const sellToken = sellTokenList[0]
     const buyToken = buyTokenList[0]
+    setSellTokenAmount('0')
     setSellTokenList(sellTokenList)
     setBuyTokenList(buyTokenList)
     setSellToken(sellToken)
@@ -242,13 +267,10 @@ const QuickTrade = (props: {
   }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
 
   const fetchOptions = () => {
+    // Right now we only allow setting the sell amount, so no need to check
+    // buy token amount here
     const sellTokenInWei = toWei(sellTokenAmount, sellToken.decimals)
-    // TODO: recheck logic later
-    if (
-      // BigNumber.from(buyTokenAmount).isZero() &&
-      sellTokenInWei.isZero()
-    )
-      return
+    if (sellTokenInWei.isZero() || sellTokenInWei.isNegative()) return
     fetchAndCompareOptions(
       sellToken,
       sellTokenAmount,
@@ -323,7 +345,8 @@ const QuickTrade = (props: {
       return 'Approve Tokens'
     }
 
-    if (isTransacting) return 'Trading...'
+    if (isTransacting || isTransactingEI || isTransactingLevEI)
+      return 'Trading...'
 
     return 'Trade'
   }
@@ -386,7 +409,10 @@ const QuickTrade = (props: {
         await executeTrade()
         break
       case QuickTradeBestOption.exchangeIssuance:
-        // TODO: call EI
+        await executeEITrade()
+        break
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        await executeLevEITrade()
         break
       default:
       // Nothing
@@ -404,7 +430,13 @@ const QuickTrade = (props: {
   const getButtonDisabledState = () => {
     if (!account) return false
     if (hasFetchingError) return false
-    return buyTokenAmount === '0' || hasInsufficientFunds || isTransacting
+    return (
+      buyTokenAmount === '0' ||
+      hasInsufficientFunds ||
+      isTransacting ||
+      isTransactingEI ||
+      isTransactingLevEI
+    )
   }
 
   const buttonLabel = getTradeButtonLabel()

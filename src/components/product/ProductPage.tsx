@@ -153,7 +153,10 @@ const ProductPage = (props: {
           <ProductPageSectionHeader title='Stats' topMargin='120px' />
           <ProductStats stats={stats} />
           <ProductPageSectionHeader title='Allocations' />
-          <ProductComponentsTable components={props.components} />
+          <ProductComponentsTable
+            components={props.components}
+            tokenData={props.tokenData}
+          />
         </Flex>
       </Flex>
     </Page>

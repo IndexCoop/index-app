@@ -16,34 +16,45 @@ import {
   Matic2xFLIP,
 } from 'constants/tokens'
 
-function getEthIssuanceModuleAddress(tokenSymbol: string) {
+interface IssuanceModule {
+  address: string
+  isDebtIssuance: boolean
+}
+
+function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
     case Bitcoin2xFlexibleLeverageIndex.symbol:
     case Ethereum2xFlexibleLeverageIndex.symbol:
     case GmiIndex.symbol:
-      return debtIssuanceModuleAddress
+      return { address: debtIssuanceModuleAddress, isDebtIssuance: true }
     default:
-      return basicIssuanceModuleAddress
+      return { address: basicIssuanceModuleAddress, isDebtIssuance: false }
   }
 }
 
-function getPolygonIssuanceModuleAddress(tokenSymbol: string) {
+function getPolygonIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
     case Ethereum2xFLIP.symbol:
     case IEthereumFLIP.symbol:
     case IMaticFLIP.symbol:
     case GmiIndex.symbol:
     case Matic2xFLIP.symbol:
-      return debtIssuanceModuleV2PolygonAddress
+      return {
+        address: debtIssuanceModuleV2PolygonAddress,
+        isDebtIssuance: true,
+      }
     default:
-      return basicIssuanceModulePolygonAddress
+      return {
+        address: basicIssuanceModulePolygonAddress,
+        isDebtIssuance: false,
+      }
   }
 }
 
 export function getIssuanceModule(
   tokenSymbol: string,
   chainId: ChainId = ChainId.Mainnet
-) {
+): IssuanceModule {
   return chainId === ChainId.Polygon
     ? getPolygonIssuanceModuleAddress(tokenSymbol)
     : getEthIssuanceModuleAddress(tokenSymbol)

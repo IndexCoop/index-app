@@ -58,13 +58,9 @@ export const displayFromWei = (
   return formatUnits(number, power)
 }
 
-export const preciseMul = (a: BigNumber, b: BigNumber): BigNumber => {
-  return a.mul(b).div(toWei(1))
-}
-
-export const preciseDiv = (a: BigNumber, b: BigNumber): BigNumber => {
-  if (b.isZero()) return BigNumber.from(0)
-  return a.mul(toWei(1)).div(b)
+export const safeDiv = (dividend: BigNumber, divisor: BigNumber): BigNumber => {
+  if (divisor.isZero()) return BigNumber.from(0)
+  return dividend.div(divisor)
 }
 
 export const getERC20Contract = async (
