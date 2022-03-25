@@ -251,13 +251,10 @@ const QuickTrade = (props: {
   }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
 
   const fetchOptions = () => {
+    // Right now we only allow setting the sell amount, so no need to check
+    // buy token amount here
     const sellTokenInWei = toWei(sellTokenAmount, sellToken.decimals)
-    // TODO: recheck logic later
-    if (
-      // BigNumber.from(buyTokenAmount).isZero() &&
-      sellTokenInWei.isZero()
-    )
-      return
+    if (sellTokenInWei.isZero() || sellTokenInWei.isNegative()) return
     fetchAndCompareOptions(
       sellToken,
       sellTokenAmount,
