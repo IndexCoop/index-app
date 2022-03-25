@@ -12,6 +12,57 @@ interface RequiredComponentsResponse {
 }
 
 /**
+ * returns instance of ExchangeIssuanceZeroEx Contract
+ * @param providerSigner
+ * @returns EI contract
+ */
+const getExchangeIssuanceZeroExContract = async (
+  providerSigner: Signer | Provider | undefined
+): Promise<Contract> => {
+  return new Contract(
+    ExchangeIssuanceZeroExAddress,
+    EI_ZEROEX_ABI,
+    providerSigner
+  )
+}
+
+/**
+ * Returns transaction to get component & position quotes for token issuance
+ *
+ * @param library                library from logged in user
+ * @param issuanceModule         Address of issuance Module to use
+ * @param isDebtIssuance         Flag indicating wether given issuance module is a debt issuance module
+ * @param setToken               Address of the SetToken to be issued
+ * @param amountSetToken         Amount of SetTokens to issue
+ *
+ * @return componenets           Array of component addresses
+ * @return positions             Array of component positions
+ */
+export const getRequiredIssuanceComponents = async (
+  library: any,
+  issuanceModule: string,
+  isDebtIssuance: boolean,
+  setToken: string,
+  amountSetToken: BigNumber
+): Promise<RequiredComponentsResponse> => {
+  try {
+    const eiContract = await getExchangeIssuanceZeroExContract(
+      library.getSigner()
+    )
+    const issueQuoteTx = await eiContract.getRequiredIssuanceComponents(
+      issuanceModule,
+      isDebtIssuance,
+      setToken,
+      amountSetToken
+    )
+    return issueQuoteTx
+  } catch (err) {
+    console.log('Error getting required issuance components/positions', err)
+    return { components: [], positions: [] }
+  }
+}
+
+/**
  * Get the 0x Trade Data for
  */
 export const useExchangeIssuanceZeroEx = () => {
@@ -374,21 +425,6 @@ export const useExchangeIssuanceZeroEx = () => {
       console.log('error', err)
       return BigNumber.from(0)
     }
-  }
-
-  /**
-   * returns instance of ExchangeIssuanceZeroEx Contract
-   * @param providerSigner
-   * @returns EI contract
-   */
-  const getExchangeIssuanceZeroExContract = async (
-    providerSigner: Signer | Provider | undefined
-  ): Promise<Contract> => {
-    return new Contract(
-      ExchangeIssuanceZeroExAddress,
-      EI_ZEROEX_ABI,
-      providerSigner
-    )
   }
 
   return {
