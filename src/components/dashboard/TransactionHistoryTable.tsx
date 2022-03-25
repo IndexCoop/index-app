@@ -24,17 +24,16 @@ export interface TransactionHistoryItem {
 
 interface TransactionHistoryTableProps {
   items: TransactionHistoryItem[]
-  width?: number
 }
 
-const TransactionHistoryTable = ({
-  items,
-  width,
-}: TransactionHistoryTableProps) => {
+const TransactionHistoryTable = ({ items }: TransactionHistoryTableProps) => {
   const { isDarkMode } = useICColorMode()
   const colorScheme = isDarkMode ? 'whiteAlpha' : 'blackAlpha'
   return (
-    <Table colorScheme={colorScheme}>
+    <Table
+      colorScheme={colorScheme}
+      width={['340px', '400px', '800px', '1024px']}
+    >
       <TableHeader />
       <Tbody>
         {items.map((item, index) => (
@@ -52,6 +51,12 @@ const TableHeader = () => {
     lg: true,
     xl: true,
   })
+  const isTablet = useBreakpointValue({
+    base: false,
+    md: true,
+    lg: true,
+    xl: false,
+  })
   return (
     <Thead>
       <Tr>
@@ -60,12 +65,11 @@ const TableHeader = () => {
         {isWeb && (
           <>
             <Th>From</Th>
-            <Th></Th>
+            {!isTablet && <Th></Th>}
             <Th>To</Th>
-            <Th>Transaction</Th>
+            {!isTablet && <Th>Transaction</Th>}{' '}
           </>
         )}
-
         <Th></Th>
       </Tr>
     </Thead>
