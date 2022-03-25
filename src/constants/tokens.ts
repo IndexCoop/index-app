@@ -62,7 +62,7 @@ export const ETH: Token = {
   symbol: 'ETH',
   image:
     'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
-  address: '',
+  address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   polygonAddress: '',
   optimismAddress: '',
   decimals: 18,
@@ -386,8 +386,16 @@ export const polygonCurrencyTokens = [MATIC, DAI, USDC]
 export const optimismCurrencyTokens = [ETH, DAI, USDC]
 
 export const eligibleLeveragedExchangeIssuanceTokens = [
+  Bitcoin2xFlexibleLeverageIndex,
   Bitcoin2xFLIP,
+  Ethereum2xFlexibleLeverageIndex,
+  Ethereum2xFLIP,
   IBitcoinFLIP,
+  IBitcoinFLIP,
+  icETHIndex,
+  IEthereumFLIP,
+  IMaticFLIP,
+  Matic2xFLIP,
 ]
 
 const indexNames = [

@@ -3,13 +3,16 @@ import { BigNumber, ethers } from 'ethers'
 import { ChainId } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
-import { getRequiredIssuanceComponents } from 'hooks/useExchangeIssuanceZeroEx'
+import {
+  getRequiredIssuanceComponents,
+  getRequiredRedemptionComponents,
+} from 'hooks/useExchangeIssuanceZeroEx'
 import { displayFromWei, toWei } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
-import { get0xQuote, ZeroExData } from 'utils/zeroExUtils'
+import { get0xQuote } from 'utils/zeroExUtils'
 
 export interface ExchangeIssuanceQuote {
-  tradeData: ZeroExData[]
+  tradeData: string[]
   inputTokenAmount: BigNumber
 }
 
@@ -29,10 +32,12 @@ export const getExchangeIssuanceQuotes = async (
   buyToken: Token,
   buyTokenAmount: BigNumber,
   sellToken: Token,
+  isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
   library: ethers.providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
-  const issuanceModule = getIssuanceModule(buyToken.symbol, chainId)
+  const tokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
+  const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
   console.log('Getting issuance quotes')
   console.log(
     'fetching...',
@@ -41,15 +46,24 @@ export const getExchangeIssuanceQuotes = async (
     buyToken.address,
     issuanceModule
   )
-  const { components, positions } = await getRequiredIssuanceComponents(
-    library,
-    issuanceModule,
-    false,
-    buyToken.address!,
-    buyTokenAmount
-  )
 
-  let positionQuotes: ZeroExData[] = []
+  const { components, positions } = isIssuance
+    ? await getRequiredIssuanceComponents(
+        library,
+        issuanceModule.address,
+        issuanceModule.isDebtIssuance,
+        buyToken.address!,
+        buyTokenAmount
+      )
+    : await getRequiredRedemptionComponents(
+        library,
+        issuanceModule.address,
+        issuanceModule.isDebtIssuance,
+        sellToken.address!,
+        buyTokenAmount
+      )
+
+  let positionQuotes: string[] = []
   let inputTokenAmount = BigNumber.from(0)
   // Slippage hard coded to .5% (will be increased if there are revert issues)
   const slippagePercents = 0.5
@@ -78,8 +92,6 @@ export const getExchangeIssuanceQuotes = async (
           buyToken: buyTokenAddress,
           sellToken: sellTokenAddress,
           buyAmount: buyAmount.toString(),
-          // TODO: ?
-          // excludedSources: '',
           slippagePercentage,
         },
         chainId ?? 1
@@ -91,7 +103,7 @@ export const getExchangeIssuanceQuotes = async (
   const results = await Promise.all(quotePromises)
   if (results.length < 1) return null
 
-  positionQuotes = results
+  positionQuotes = results.map((result) => result.data)
   inputTokenAmount = results
     .map((result) => BigNumber.from(result.sellAmount))
     .reduce((prevValue, currValue) => {
