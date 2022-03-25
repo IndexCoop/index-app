@@ -8,6 +8,7 @@ import {
   Tooltip,
   YAxis,
 } from 'recharts'
+import { colors } from 'styles/colors'
 
 import { Position } from 'components/dashboard/AllocationChart'
 import PieChartTooltip from 'components/dashboard/PieChartTooltip'
@@ -66,8 +67,8 @@ const LeveragedChart = (props: { data: Position[] }) => {
     >
       <YAxis />
       <ReferenceLine y={0} />
-      <Bar dataKey='data0' fill={props.data[0].color} />
-      <Bar dataKey='data1' fill={props.data[1].color} />
+      <Bar dataKey='data0' fill={colors.icMalachite} />
+      <Bar dataKey='data1' fill={colors.icApricot} />
     </BarChart>
   )
 }
