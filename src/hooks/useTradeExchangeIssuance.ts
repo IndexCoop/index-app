@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
+import { ChainId, useEthers } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
@@ -36,10 +36,20 @@ export const useTradeExchangeIssuance = (
   const executeEITrade = useCallback(async () => {
     if (!account || !quoteData) return
 
-    const balanceDecimals = issuanceModule
-      ? inputToken.decimals
-      : outputToken.decimals
-    let requiredBalance = fromWei(quoteData.inputTokenAmount, balanceDecimals)
+    const outputTokenAddress =
+      chainId === ChainId.Polygon
+        ? outputToken.polygonAddress
+        : outputToken.address
+    const inputTokenAddress =
+      chainId === ChainId.Polygon
+        ? inputToken.polygonAddress
+        : inputToken.address
+    if (!outputTokenAddress || !inputTokenAddress) return
+
+    let requiredBalance = fromWei(
+      quoteData.inputTokenAmount,
+      inputToken.decimals
+    )
     if (spendingTokenBalance.lt(requiredBalance)) return
 
     console.log(quoteData.tradeData)
@@ -55,7 +65,7 @@ export const useTradeExchangeIssuance = (
         if (isSellingNativeChainToken) {
           await issueExactSetFromETH(
             library,
-            outputToken.address!,
+            outputTokenAddress,
             amountOfSetToken,
             quoteData.tradeData,
             issuanceModule.address,
@@ -65,8 +75,8 @@ export const useTradeExchangeIssuance = (
           const maxAmountInputToken = quoteData.inputTokenAmount
           await issueExactSetFromToken(
             library,
-            outputToken.address!,
-            inputToken.address!,
+            outputTokenAddress,
+            inputTokenAddress,
             amountOfSetToken,
             maxAmountInputToken,
             quoteData.tradeData,
@@ -82,7 +92,7 @@ export const useTradeExchangeIssuance = (
         if (isRedeemingNativeChainToken) {
           await redeemExactSetForETH(
             library,
-            inputToken.address!,
+            inputTokenAddress,
             minAmountToReceive,
             quoteData.tradeData,
             issuanceModule.address,
@@ -91,8 +101,8 @@ export const useTradeExchangeIssuance = (
         } else {
           await redeemExactSetForToken(
             library,
-            inputToken.address!,
-            outputToken.address!,
+            inputTokenAddress,
+            outputTokenAddress,
             requiredBalance,
             minAmountToReceive,
             quoteData.tradeData,

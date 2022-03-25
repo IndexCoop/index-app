@@ -62,7 +62,7 @@ export const ETH: Token = {
   symbol: 'ETH',
   image:
     'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
-  address: '',
+  address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   polygonAddress: '',
   optimismAddress: '',
   decimals: 18,
