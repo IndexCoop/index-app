@@ -79,6 +79,8 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [iBtcFliPMarketData, setIBtcFliPMarketData] = useState<any>({})
   const [icEthMarketData, setIcEthMarketData] = useState<any>({})
 
+  const [hasFetchedData, setHasFetchedData] = useState(false)
+
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
 
@@ -122,10 +124,12 @@ export const MarketDataProvider = (props: { children: any }) => {
     setBtcFliPMarketData(marketData[13])
     setIBtcFliPMarketData(marketData[14])
     setIcEthMarketData(marketData[15])
+
+    setHasFetchedData(true)
   }, [])
 
   useEffect(() => {
-    fetchMarketData()
+    if (!hasFetchedData) fetchMarketData()
   }, [fetchMarketData])
 
   return (
