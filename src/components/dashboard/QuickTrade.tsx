@@ -31,11 +31,11 @@ import {
   Token,
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
+import { useBestTradeOption } from 'hooks/useBestTradeOption'
 import { useTokenBalance } from 'hooks/useTokenBalance'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { displayFromWei, toWei } from 'utils'
-import { useBestTradeOption } from 'utils/bestTradeOption'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { ZeroExData } from 'utils/zeroExUtils'
 
