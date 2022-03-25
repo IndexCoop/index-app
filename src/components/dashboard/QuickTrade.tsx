@@ -441,6 +441,7 @@ const QuickTrade = (props: {
           selectedTokenBalance={sellTokenBalanceFormatted}
           onChangeInput={onChangeSellTokenAmount}
           onSelectedToken={onChangeSellToken}
+          isNarrowVersion={isNarrow}
         />
         <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
           <IconButton
@@ -467,6 +468,7 @@ const QuickTrade = (props: {
           tokenList={buyTokenList}
           onChangeInput={onChangeBuyTokenAmount}
           onSelectedToken={onChangeBuyToken}
+          isNarrowVersion={isNarrow}
         />
       </Flex>
       <Flex direction='column'>

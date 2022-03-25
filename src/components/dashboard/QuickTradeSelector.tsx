@@ -22,6 +22,7 @@ const QuickTradeSelector = (props: {
   tokenList: Token[]
   onChangeInput: (input: string) => void
   onSelectedToken: (symbol: string) => void
+  isNarrowVersion: boolean
 }) => {
   const [inputString, setInputString] = useState<string>(
     props.selectedTokenAmount || '0.00'
@@ -29,6 +30,10 @@ const QuickTradeSelector = (props: {
   const { config, selectedToken } = props
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
+
+  const wideWidths = ['250px', '180px']
+  const narrowWidths = ['250px']
+  const widths = props.isNarrowVersion ? narrowWidths : wideWidths
 
   const onChangeInput = (amount: string) => {
     if (
@@ -73,15 +78,17 @@ const QuickTradeSelector = (props: {
           border='1px solid #000'
           borderColor={borderColor}
           borderRightRadius={borderRadius}
-          w={['250px', '180px']}
+          w={widths}
         >
-          <Box pl='10px' pr='0px'>
-            <Image
-              src={selectedToken.image}
-              alt={`${selectedToken.symbol} logo`}
-              w='24px'
-            />
-          </Box>
+          {!props.isNarrowVersion && (
+            <Box pl='10px' pr='0px'>
+              <Image
+                src={selectedToken.image}
+                alt={`${selectedToken.symbol} logo`}
+                w='24px'
+              />
+            </Box>
+          )}
           <Select
             border='0'
             disabled={config.isSelectorDisabled ?? false}
