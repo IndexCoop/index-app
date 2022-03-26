@@ -9,7 +9,6 @@ import {
   IconButton,
   Link,
   Text,
-  useBreakpointValue,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react'
@@ -36,7 +35,7 @@ const NavLink = (props: {
           left: '0',
           width: ' 100%',
           height: '0.1em',
-          backgroundColor: colors.white,
+          backgroundColor: props.textColor,
           opacity: 0,
           transition: 'opacity 300ms, transform 300ms',
         }}
@@ -53,7 +52,7 @@ const NavLink = (props: {
           },
         }}
       >
-        <Text color={props.textColor} fontSize='xl' fontWeight='700'>
+        <Text fontSize='xl' fontWeight='700'>
           {props.linkText}
         </Text>
       </Link>
@@ -69,12 +68,12 @@ const NavContent = () => {
       flexDirection={['column', 'column', 'row', 'row']}
       alignItems={'center'}
     >
-      <NavLink href='/' linkText='My Dashboard' textColor='textColor' />
-      <NavLink href='/products' linkText='Products' textColor='textColor' />
+      <NavLink href='/' linkText='My Dashboard' textColor={textColor} />
+      <NavLink href='/products' linkText='Products' textColor={textColor} />
       <NavLink
         href='/liquidity-mining'
         linkText='Liquidity Mining'
-        textColor='textColor'
+        textColor={textColor}
       />
       <IconButton
         aria-label='Color Theme Switch'
@@ -93,13 +92,6 @@ const NavContent = () => {
 const Navigation = () => {
   const [displayMenu, setDisplayMenu] = useState('none')
   const bgColor = useColorModeValue(colors.icWhite, colors.background)
-  const isWeb = useBreakpointValue({
-    base: false,
-    md: true,
-    lg: true,
-    xl: true,
-  })
-  const width = isWeb ? 1024 : 340
   return (
     <Flex w={['auto', 'width']} flexGrow={['0', '2']}>
       {/* Desktop Menu */}
