@@ -82,7 +82,27 @@ export const useBestTradeOption = () => {
     /* Check ExchangeIssuanceLeveraged option */
     let exchangeIssueLeveragedOption = undefined
     if (account && isBuyingTokenEligible) {
+      // TODO:
+      //   const tx = await getLeveragedTokenData(
+      //     library,
+      //     setToken,
+      //     setTokenAmount,
+      //     isIssuance
+      //   )
+      //   const { debtAmount, debtToken, collateralAmount, collateralToken } = tx
+      //   const { path, fees } = await getTokenPathAndFees(
+      //     debtAmount,
+      //     debtToken,
+      //     collateralToken
+      //   )
+      // TODO: for correct format of swap data, check discord #fli-exchange-issuance
+      //       {
+      //   path: string[]
+      //   fees: BigNumber[]
+      // }
       // TODO: get leveraged exchange issue  quote
+      // TODO: depending on isIssuance getIssueExactSet or getRedeemExactSet
+      // TODO: probably just create a utility function here as well (like getExchangeIssuanceQuotes)
     }
 
     console.log('exchangeIssueOption', exchangeIssuanceOption)
