@@ -211,6 +211,87 @@ export const useExchangeIssuanceLeveraged = () => {
   }
 
   /**
+   * Gets the input cost of issuing a given amount of a set token. This
+   * function is not marked view, but should be static called from frontends.
+   * This constraint is due to the need to interact with the Uniswap V3 quoter
+   * contract and call sync on AaveLeverageModule. Note: If the two SwapData
+   * paths contain the same tokens, there will be a slight error introduced
+   * in the result.
+   *
+   * @param setToken                     the set token to issue
+   * @param setAmount                    amount of set tokens
+   * @param _swapDataDebtForCollateral   swap data for the debt to collateral swap
+   * @param _swapDataInputToken          swap data for the input token to collateral swap
+   *
+   * @return                             the amount of input tokens required to perfrom the issuance
+   */
+  const getIssueExactSet = async (
+    library: any,
+    setToken: string,
+    setAmount: BigNumber,
+    _swapDataCollateralForDebt: string,
+    _swapDataOutputToken: string
+  ): Promise<any> => {
+    console.log('getIssueExactSet')
+    try {
+      const eiContract = await geExchangeIssuanceLeveragedContract(
+        library.getSigner()
+      )
+      const redeemQuoteTx = await eiContract.getRedeemExactSet(
+        setToken,
+        setAmount,
+        _swapDataCollateralForDebt,
+        _swapDataOutputToken
+      )
+      return redeemQuoteTx
+    } catch (err) {
+      console.log('error', err)
+      return err
+    }
+  }
+
+  /**
+   * Gets the proceeds of a redemption of a given amount of a set token. This
+   * function is not marked view, but should be static called from frontends.
+   * This constraint is due to the need to interact with the Uniswap V3 quoter
+   * contract and call sync on AaveLeverageModule. Note: If the two SwapData
+   * paths contain the same tokens, there will be a slight error introduced
+   * in the result.
+   *
+   * @param library                      library from logged in user
+   * @param setToken                     the set token to issue
+   * @param setAmount                    amount of set tokens
+   * @param _swapDataCollateralForDebt   swap data for the collateral to debt swap
+   * @param _swapDataOutputToken         swap data for the collateral token to the output token
+   *
+   * @return                             amount of _outputToken that would be obtained from the redemption
+   */
+  const getRedeemExactSet = async (
+    library: any,
+    setToken: string,
+    setAmount: BigNumber,
+    _swapDataCollateralForDebt: string,
+    _swapDataOutputToken: string
+  ): Promise<any> => {
+    console.log('getRedeemExactSet')
+    try {
+      const eiContract = await geExchangeIssuanceLeveragedContract(
+        library.getSigner()
+      )
+      const redeemQuoteTx = await eiContract.getRedeemExactSet(
+        setToken,
+        setAmount,
+        _swapDataCollateralForDebt,
+        _swapDataOutputToken
+      )
+      return redeemQuoteTx
+    } catch (err) {
+      console.log('error', err)
+      return err
+    }
+  }
+
+  /**
    * Runs all the necessary approval functions required before issuing or redeeming a SetToken.
    * This function need to be called only once before the first time this smart contract is used on any particular SetToken.
    *
@@ -318,7 +399,7 @@ export const useExchangeIssuanceLeveraged = () => {
   const geExchangeIssuanceLeveragedContract = async (
     providerSigner: Signer | Provider | undefined
   ): Promise<Contract> => {
-    return await new Contract(
+    return new Contract(
       ExchangeIssuanceLeveragedAddress,
       EI_LEVERAGED_ABI,
       providerSigner
@@ -331,6 +412,8 @@ export const useExchangeIssuanceLeveraged = () => {
     issueExactSetFromERC20,
     redeemExactSetForERC20,
     getLeveragedTokenData,
+    getIssueExactSet,
+    getRedeemExactSet,
     approveSetToken,
     approveToken,
     approveTokens,
