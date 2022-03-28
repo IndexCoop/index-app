@@ -11,6 +11,7 @@ const ETH2xFLI = () => {
       tokenData={Ethereum2xFlexibleLeverageIndex}
       marketData={ethfli || {}}
       components={eth2xfliComponents || []}
+      isLeveragedToken={true}
     />
   )
 }

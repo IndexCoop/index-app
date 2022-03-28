@@ -70,6 +70,7 @@ const ProductPage = (props: {
   tokenData: Token
   marketData: TokenMarketDataValues
   components: SetComponent[]
+  isLeveragedToken?: boolean
 }) => {
   const isMobile = useBreakpointValue({ base: true, lg: false })
   const { marketData, tokenData } = props
@@ -131,7 +132,7 @@ const ProductPage = (props: {
           />
         </Box>
         <Flex direction='column'>
-          <Flex wrap={['wrap', 'nowrap']}>
+          <Flex direction={['column', 'column', 'column', 'row']}>
             <MarketChart
               marketData={priceChartData}
               prices={[price]}
@@ -142,7 +143,11 @@ const ProductPage = (props: {
                 hideYAxis: false,
               }}
             />
-            <Flex mt={['48px', '0']} ml={['0', '36px']}>
+            <Flex
+              mt={['48px', '48px', '48px', '0']}
+              ml={['0', '0', '0', '36px']}
+              justifyContent={['center', 'center', 'center', 'flex-start']}
+            >
               <QuickTrade isNarrowVersion={true} singleToken={tokenData} />
             </Flex>
           </Flex>
@@ -152,6 +157,7 @@ const ProductPage = (props: {
           <ProductComponentsTable
             components={props.components}
             tokenData={props.tokenData}
+            isLeveragedToken={props.isLeveragedToken}
           />
         </Flex>
       </Flex>

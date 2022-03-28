@@ -1,4 +1,4 @@
-import { Flex, Image, Link, Text } from '@chakra-ui/react'
+import { Flex, Image, Link } from '@chakra-ui/react'
 import { useColorMode } from '@chakra-ui/system'
 
 import indexLogoBlack from 'assets/index-logo-black.png'
@@ -9,12 +9,16 @@ import indexLogoWhite from 'assets/index-logo-white.png'
 import Navigation from './Navigation'
 
 const Header = () => {
-  const { colorMode } = useColorMode()
-
   return (
     <Flex
       justifyContent='space-between'
-      m={['16px 8px 8px 24px', '64px 80px 80px 80px']}
+      p={[
+        '16px 8px 8px 24px',
+        null,
+        '42px 60px 60px 60px',
+        '64px 80px 80px 80px',
+      ]}
+      w='100vw'
       alignItems='center'
     >
       <Link
@@ -24,17 +28,19 @@ const Header = () => {
         }}
         flexGrow='1'
       >
-        <Logo isDarkMode={colorMode === 'dark'} />
+        <Logo />
       </Link>
       <Navigation />
     </Flex>
   )
 }
 
-const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
+const Logo = () => {
+  const { colorMode } = useColorMode()
+  const isDarkMode = colorMode === 'dark'
   let logo = isDarkMode ? indexLogoWhite : indexLogoBlack
 
-  if (window.innerWidth > 1400) {
+  if (window.innerWidth > 1350) {
     logo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
   }
 
@@ -44,7 +50,7 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
       alt='Index Coop Logo'
       minWidth='24px'
       height='40px'
-      mr={['', '20px']}
+      mr={['', '', '', '20px']}
     />
   )
 }

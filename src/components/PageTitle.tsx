@@ -12,15 +12,17 @@ const PageTitle = (props: PageTitleProps) => {
   const { dividerColor } = useICColorMode()
   return (
     <VStack
-      divider={<StackDivider borderColor={dividerColor} />}
+      divider={
+        <StackDivider mx={[0, '20px', '20px', 0]} borderColor={dividerColor} />
+      }
       spacing={0}
       align='flex-start'
-      mb={['16px', '48px']}
+      mb={['16px', '24px', '36px', '48px']}
     >
-      <Heading as='h2' size='lg'>
+      <Heading as='h2' size='lg' px={[0, '20px', '20px', 0]}>
         {props.title}
       </Heading>
-      <Text>{props.subtitle}</Text>
+      <Text mx={[0, '20px', '20px', 0]}>{props.subtitle}</Text>
     </VStack>
   )
 }
