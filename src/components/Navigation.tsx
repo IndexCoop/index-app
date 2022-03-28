@@ -9,6 +9,7 @@ import {
   IconButton,
   Link,
   Text,
+  useBreakpointValue,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react'
@@ -62,7 +63,7 @@ const NavLink = (props: {
 
 const NavContent = () => {
   const { colorMode, toggleColorMode } = useColorMode()
-  const textColor = colorMode === 'light' ? 'black' : 'white'
+  const textColor = colorMode === 'light' ? colors.black : colors.icWhite
   return (
     <Flex
       flexDirection={['column', 'column', 'column', 'row']}
