@@ -14,7 +14,7 @@ const Header = () => {
       justifyContent='space-between'
       p={[
         '16px 8px 8px 24px',
-        '16px 8px 8px 24px',
+        null,
         '42px 60px 60px 60px',
         '64px 80px 80px 80px',
       ]}

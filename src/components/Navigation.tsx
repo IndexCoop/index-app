@@ -100,7 +100,6 @@ const Navigation = () => {
     xl: true,
   })
   const width = isWeb ? 1024 : 340
-  console.log('isWeb', isWeb)
 
   return (
     <Flex w={['auto', 'auto', 'auto', width]} flexGrow={['0', '0', '0', '2']}>
