@@ -11,6 +11,7 @@ const IETHFLIP = () => {
       tokenData={IEthereumFLIP}
       marketData={iethflip || {}}
       components={iethFlipComponents || []}
+      isLeveragedToken={true}
     />
   )
 }

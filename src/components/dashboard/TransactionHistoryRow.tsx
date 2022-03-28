@@ -23,9 +23,15 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
     lg: true,
     xl: true,
   })
+  const isTablet = useBreakpointValue({
+    base: false,
+    md: true,
+    lg: true,
+    xl: false,
+  })
   const { item } = props
   return (
-    <Tr>
+    <Tr width={['340px', '400px', '800px', '1024px']}>
       <Td>
         <Flex align='center'>
           <Flex
@@ -50,16 +56,21 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
       {isWeb && (
         <>
           <Td>{item.from}</Td>
-          <Td>
-            <Image src={arrowAsset} alt='arrow pointing right' />
-          </Td>
+
+          {!isTablet && (
+            <Td>
+              <Image src={arrowAsset} alt='arrow pointing right' />
+            </Td>
+          )}
           <Td>{item.to}</Td>
-          <Td>
-            <Flex direction='column'>
-              <Text color='gray'>{item.hash}</Text>
-              <Text>Block {item.date}</Text>
-            </Flex>
-          </Td>
+          {!isTablet && (
+            <Td>
+              <Flex direction='column'>
+                <Text color='gray'>{item.hash}</Text>
+                <Text>Block {item.date}</Text>
+              </Flex>
+            </Td>
+          )}
         </>
       )}
 

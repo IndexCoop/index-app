@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import numeral from 'numeral'
-import { Cell, Pie, PieChart, Tooltip } from 'recharts'
 import { colors } from 'styles/colors'
 
 import {
@@ -19,10 +18,11 @@ import {
 import { useEthers } from '@usedapp/core'
 
 import { Position } from 'components/dashboard/AllocationChart'
-import PieChartTooltip from 'components/dashboard/PieChartTooltip'
 import { MAINNET, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
+
+import Chart from './Charts'
 
 const randomColors = new Array(50)
   .fill('')
@@ -53,6 +53,7 @@ const allocationEmptyMsg = (
 const ProductComponentsTable = (props: {
   components?: SetComponent[]
   tokenData: Token
+  isLeveragedToken?: boolean
 }) => {
   const { account, chainId } = useEthers()
 
@@ -105,7 +106,10 @@ const ProductComponentsTable = (props: {
   return (
     <Flex direction={['column', 'column', 'row']} alignItems='start'>
       <Box margin={['0 auto', '0 auto', '0 64px 0 0']}>
-        <Chart data={props.components.map(mapSetComponentToPosition)} />
+        <Chart
+          data={props.components.map(mapSetComponentToPosition)}
+          isLeveragedToken={props.isLeveragedToken}
+        />
       </Box>
       <Flex direction='column' alignItems='center' mt={['32px', '32px', '0']}>
         <Table variant='simple'>
@@ -176,33 +180,6 @@ const ComponentRow = (props: { component: SetComponent }) => {
         {absPercentChange}%
       </Td>
     </Tr>
-  )
-}
-
-const Chart = (props: { data: Position[] }) => {
-  return (
-    <PieChart width={300} height={300}>
-      <Pie
-        data={props.data}
-        dataKey='value'
-        cx='50%'
-        cy='50%'
-        innerRadius={80}
-        outerRadius={140}
-        startAngle={90}
-        endAngle={-360}
-        legendType='line'
-      >
-        {props.data.map((item, index) => (
-          <Cell
-            key={`cell-${index}`}
-            fill={item.backgroundColor}
-            stroke={item.color}
-          />
-        ))}
-      </Pie>
-      <Tooltip content={<PieChartTooltip />} position={{ x: 150, y: -25 }} />
-    </PieChart>
   )
 }
 

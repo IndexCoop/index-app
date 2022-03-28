@@ -11,6 +11,7 @@ const BTC2xFLI = () => {
       tokenData={IBitcoinFLIP}
       marketData={ibtcflip || {}}
       components={ibtcflipComponents || []}
+      isLeveragedToken={true}
     />
   )
 }
