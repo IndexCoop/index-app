@@ -11,6 +11,7 @@ const MATIC2xFLIP = () => {
       tokenData={Matic2xFLIP}
       marketData={maticflip || {}}
       components={matic2xFlipComponents || []}
+      isLeveragedToken={true}
     />
   )
 }

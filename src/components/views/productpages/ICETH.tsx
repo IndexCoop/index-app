@@ -11,6 +11,7 @@ const ICETH = () => {
       tokenData={icETHIndex}
       marketData={iceth || {}}
       components={icethComponents || []}
+      isLeveragedToken={true}
     />
   )
 }
