@@ -10,7 +10,7 @@ const ERC20Interface = new utils.Interface(ERC20_ABI)
 /**
  * Get's the current APY on icETH
  */
-export const useIcEthApy = () => {
+export const useIcEthApy = (): string => {
   const { account } = useEthers()
 
   // icETH contract address 0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84
@@ -24,5 +24,5 @@ export const useIcEthApy = () => {
   // [1] stETH yield: https://docs.lido.fi/contracts/lido-oracle/#getlastcompletedreportdelta
   // can be used to calculate stETH yield (APR) over time period
   // [2] ethBorrowRate: [currentVariableBorrowRate] = LendingPool.getReserveData(asset.address) <- aave v2 mainnet lendingpool contract https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
-  return
+  return '25.32%'
 }
