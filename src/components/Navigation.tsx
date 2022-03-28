@@ -36,7 +36,7 @@ const NavLink = (props: {
           left: '0',
           width: ' 100%',
           height: '0.1em',
-          backgroundColor: colors.white,
+          backgroundColor: props.textColor,
           opacity: 0,
           transition: 'opacity 300ms, transform 300ms',
         }}
@@ -53,7 +53,7 @@ const NavLink = (props: {
           },
         }}
       >
-        <Text color={props.textColor} fontSize='xl' fontWeight='700'>
+        <Text fontSize='xl' fontWeight='700'>
           {props.linkText}
         </Text>
       </Link>
@@ -63,18 +63,18 @@ const NavLink = (props: {
 
 const NavContent = () => {
   const { colorMode, toggleColorMode } = useColorMode()
-  const textColor = colorMode === 'light' ? 'black' : 'white'
+  const textColor = colorMode === 'light' ? colors.black : colors.icWhite
   return (
     <Flex
       flexDirection={['column', 'column', 'column', 'row']}
       alignItems={'center'}
     >
-      <NavLink href='/' linkText='My Dashboard' textColor='textColor' />
-      <NavLink href='/products' linkText='Products' textColor='textColor' />
+      <NavLink href='/' linkText='My Dashboard' textColor={textColor} />
+      <NavLink href='/products' linkText='Products' textColor={textColor} />
       <NavLink
         href='/liquidity-mining'
         linkText='Liquidity Mining'
-        textColor='textColor'
+        textColor={textColor}
       />
       <IconButton
         aria-label='Color Theme Switch'
