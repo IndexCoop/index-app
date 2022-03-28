@@ -146,41 +146,41 @@ const Dashboard = () => {
   // const prices = [formattedPrice]
   // const priceChangesFormatted = getFormattedChartPriceChanges(priceChanges)
 
-  const width = isWeb ? 1024 : 340
-  // const chartHeight = isWeb ? 400 : 300
-
   return (
     <Page>
-      <Box w={width} mx='auto'>
+      <Flex
+        w={['340px', '500px', '820px', '1024px']}
+        mx='auto'
+        flexDir={'column'}
+        justifyContent={'center'}
+      >
         <PageTitle title='My Dashboard' subtitle='' />
         <Box my={12}>
           <Flex
-            direction={['column', 'row']}
+            direction={['column', 'column', 'column', 'row']}
             mt='64px'
-            w={width}
+            px={[0, 0, '20px', 0]}
+            w={['340px', '500px', '820px', '1024px']}
             h={['auto', 'auto']}
             justifyContent={'center'}
           >
             <Flex direction='column' grow='1' flexBasis='0'>
               <AllocationChart positions={pieChartPositions} />
             </Flex>
-            <Box w='24px' h={['10px', '0px']} />
+            <Box w='24px' h={['10px', '10px', '10px', '0px']} />
             <Flex direction='column' grow='1' flexBasis='0'>
               <QuickTrade />
             </Flex>
           </Flex>
         </Box>
-        <Box>
+        <Box w={['340px', '500px', '820px', '1024px']} px={[0, 0, '20px', 0]}>
           <SectionTitle
             title='Transaction History'
             itemRight={renderCsvDownloadButton}
           />
-          <TransactionHistoryTable
-            items={historyItems.slice(0, 20)}
-            width={width}
-          />
+          <TransactionHistoryTable items={historyItems.slice(0, 20)} />
         </Box>
-      </Box>
+      </Flex>
     </Page>
   )
 }

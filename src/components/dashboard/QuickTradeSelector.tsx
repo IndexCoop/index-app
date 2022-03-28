@@ -1,6 +1,8 @@
+import { useState } from 'react'
+
 import { colors } from 'styles/colors'
 
-import { Box, Flex, Image, Input, Select, Spacer, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
 
 import { Token } from 'constants/tokens'
 
@@ -20,10 +22,30 @@ const QuickTradeSelector = (props: {
   tokenList: Token[]
   onChangeInput: (input: string) => void
   onSelectedToken: (symbol: string) => void
+  isNarrowVersion: boolean
 }) => {
+  const [inputString, setInputString] = useState<string>(
+    props.selectedTokenAmount || '0.00'
+  )
   const { config, selectedToken } = props
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
+
+  const wideWidths = ['250px', '180px']
+  const narrowWidths = ['250px']
+  const widths = props.isNarrowVersion ? narrowWidths : wideWidths
+
+  const onChangeInput = (amount: string) => {
+    if (
+      props.onChangeInput === undefined ||
+      config.isInputDisabled ||
+      config.isSelectorDisabled ||
+      config.isReadOnly
+    )
+      return
+    setInputString(amount)
+    props.onChangeInput(amount)
+  }
 
   return (
     <Flex direction='column'>
@@ -46,12 +68,8 @@ const QuickTradeSelector = (props: {
             variant='unstyled'
             disabled={config.isInputDisabled ?? false}
             isReadOnly={config.isReadOnly ?? false}
-            value={props.selectedTokenAmount}
-            onChange={(event) =>
-              props.onChangeInput !== undefined
-                ? props.onChangeInput(event.target.value)
-                : undefined
-            }
+            value={inputString}
+            onChange={(event) => onChangeInput(event.target.value)}
           />
         </Flex>
         <Flex
@@ -60,15 +78,17 @@ const QuickTradeSelector = (props: {
           border='1px solid #000'
           borderColor={borderColor}
           borderRightRadius={borderRadius}
-          minWidth={['120px', '150px']}
+          w={widths}
         >
-          <Box pl='10px' pr='0px'>
-            <Image
-              src={selectedToken.image}
-              alt={`${selectedToken.symbol} logo`}
-              w='24px'
-            />
-          </Box>
+          {!props.isNarrowVersion && (
+            <Box pl='10px' pr='0px'>
+              <Image
+                src={selectedToken.image}
+                alt={`${selectedToken.symbol} logo`}
+                w='24px'
+              />
+            </Box>
+          )}
           <Select
             border='0'
             disabled={config.isSelectorDisabled ?? false}
@@ -87,7 +107,17 @@ const QuickTradeSelector = (props: {
           </Select>
         </Flex>
       </Flex>
-      <Text align='left' fontSize='12px' fontWeight='400' m='5px 0 0 30px'>
+      <Text
+        align='left'
+        fontSize='12px'
+        fontWeight='400'
+        mt='5px'
+        onClick={() => {
+          if (props.selectedTokenBalance)
+            onChangeInput(props.selectedTokenBalance)
+        }}
+        cursor='pointer'
+      >
         Balance: {props.selectedTokenBalance}
       </Text>
     </Flex>
