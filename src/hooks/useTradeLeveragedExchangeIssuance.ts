@@ -5,13 +5,13 @@ import { ChainId, useEthers } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
-import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
-import { getIssuanceModule } from 'utils/issuanceModule'
-
 import {
   Exchange,
-  useExchangeIssuanceLeveraged,
-} from './useExchangeIssuanceLeveraged'
+  LeveragedExchangeIssuanceQuote,
+} from 'utils/exchangeIssuanceQuotes'
+import { getIssuanceModule } from 'utils/issuanceModule'
+
+import { useExchangeIssuanceLeveraged } from './useExchangeIssuanceLeveraged'
 import { useTokenBalance } from './useTokenBalance'
 
 export const useTradeLeveragedExchangeIssuance = (
@@ -20,7 +20,7 @@ export const useTradeLeveragedExchangeIssuance = (
   outputToken: Token,
   // buy token amount
   tokenAmout: BigNumber,
-  quoteData?: ExchangeIssuanceQuote | null
+  quoteData?: LeveragedExchangeIssuanceQuote | null
 ) => {
   const { account, chainId, library } = useEthers()
   const {
@@ -55,7 +55,6 @@ export const useTradeLeveragedExchangeIssuance = (
     )
     if (spendingTokenBalance.lt(requiredBalance)) return
 
-    console.log(quoteData.tradeData)
     console.log(quoteData.inputTokenAmount.toString())
 
     try {
