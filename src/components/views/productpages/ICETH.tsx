@@ -8,7 +8,7 @@ import { displayFromWei } from 'utils'
 const ICETH = () => {
   const { iceth } = useMarketData()
   const { icethComponents } = useSetComponents()
-  const { apy } = useIcEthApy() // TODO: Need to get this from hook and convert to a displayable string
+  const { apy } = useIcEthApy()
   const formattedApy = displayFromWei(apy, 2) ?? undefined
 
   return (

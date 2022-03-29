@@ -3,7 +3,7 @@ import { utils } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useContractCall, useTokenBalance } from '@usedapp/core'
 
-import { displayFromWei, fromWei, safeDiv, toWei } from 'utils'
+import { fromWei, safeDiv, toWei } from 'utils'
 import { AAVE_LENDING_POOL_ABI } from 'utils/abi/AaveLendingPool'
 import { LIDO_ORACLE_ABI } from 'utils/abi/LidoOracle'
 
@@ -18,7 +18,14 @@ const aaveLendingPoolInterface = new utils.Interface(AAVE_LENDING_POOL_ABI)
 const lidoOracleInterface = new utils.Interface(LIDO_ORACLE_ABI)
 
 /**
- * Get's the current APY on icETH
+ * Get's the current APY on icETH based on math below
+ *
+ * stETHRate = (postTotalPooledEther - preTotalPooledEther) * secondsInYear / (preTotalPooledEther * timeElapsed)
+ * ethBorrowRate = reserveData.currentVariableBorrowRate [e27 value, e25 gives us the rate in %, later multiplied by 100 to balance out]
+ * t0 = aSTETH balance of icETH
+ * t1 = avdWETH balance of icETH
+ * leverageRatio = t0 / (t0-t1)
+ * apy = (leverageRatio - 1) * (stETHRate - ethBorrowRate) + stETHRate - 0.009
  */
 export const useIcEthApy = (): { apy: BigNumber } => {
   const aSTETHBalance =
@@ -59,7 +66,7 @@ export const useIcEthApy = (): { apy: BigNumber } => {
     return { apy: BigNumber.from(0) }
   }
 
-  // stETH APR = (postTotalPooledEther - preTotalPooledEther) * secondsInYear / (preTotalPooledEther * timeElapsed)
+  /* stETHRate = (postTotalPooledEther - preTotalPooledEther) * secondsInYear / (preTotalPooledEther * timeElapsed) */
   const secondsInYear = toWei('31556952', 18)
   const stEthAPR = safeDiv(
     BigNumber.from(postTotalPooledEther)
@@ -69,24 +76,18 @@ export const useIcEthApy = (): { apy: BigNumber } => {
     preTotalPooledEther.mul(timeElapsed)
   )
 
-  console.log(stEthAPR.toString(), displayFromWei(stEthAPR))
-  console.log('BAL', aSTETHBalance.toString(), avdWETHBalance.toString())
   const e18 = BigNumber.from(10).pow(18)
-
   const ethBorrowRate = fromWei(reserveData.currentVariableBorrowRate, 25).mul(
     e18
   )
 
-  // t0 = gets balance of aSTETH (0x1982b2F5814301d4e9a8b0201555376e62F82428) balance of icETH token contract
-  // t1 = gets avdWETH (0xF63B34710400CAd3e044cFfDcAb00a0f32E33eCf) balance of icETH token contract
-  // levRatio = t0 / (t0-t1)
+  /* leverageRatio = t0 / (t0-t1) */
   const leverageRatio = safeDiv(
     aSTETHBalance,
     aSTETHBalance.sub(avdWETHBalance)
   ).mul(e18)
 
-  // netYield = (levRatio - 1) * (stETH yield [1] - ethBorrowRate [2]) + stETH yield - 0.009
-  // const yieldBorrowRate =
+  /* apy = (levRatio - 1) * (stETH yield [1] - ethBorrowRate [2]) + stETH yield - 0.009 */
   const apy = leverageRatio
     .sub(1)
     .mul(stEthAPR.sub(ethBorrowRate))
@@ -94,10 +95,5 @@ export const useIcEthApy = (): { apy: BigNumber } => {
     .div(e18)
     .abs()
 
-  // [1] stETH yield: https://docs.lido.fi/contracts/lido-oracle/#getlastcompletedreportdelta
-  // can be used to calculate stETH yield (APR) over time period
-  // [2] ethBorrowRate: [currentVariableBorrowRate] = LendingPool.getReserveData(asset.address) <- aave v2 mainnet lendingpool contract https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
-
-  console.log(apy.toString())
   return { apy }
 }
