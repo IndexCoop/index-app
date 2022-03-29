@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { BigNumber, Contract, ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 import { ChainId } from '@usedapp/core'
 
