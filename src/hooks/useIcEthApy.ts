@@ -46,7 +46,7 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
     preTotalPooledEther === undefined ||
     timeElapsed === undefined
   )
-    return 'n/a'
+    return { apy: BigNumber.from(0), apyFormatted: 'n/a' }
 
   const ethBorrowRate = reserveData.currentVariableBorrowRate
 
@@ -59,7 +59,7 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
 
   console.log('BAL', aSTETHBalance.toString(), avdWETHBalance.toString())
   if (aSTETHBalance.isZero() || avdWETHBalance.isZero()) {
-    return 'n/a'
+    return { apy: BigNumber.from(0), apyFormatted: 'n/a' }
   }
 
   // t0 = gets balance of aSTETH (0x1982b2F5814301d4e9a8b0201555376e62F82428) balance of icETH token contract
