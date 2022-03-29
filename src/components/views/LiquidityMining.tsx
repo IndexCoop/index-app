@@ -128,7 +128,7 @@ const LiquidityMining = () => {
 
   return (
     <Page>
-      <Box w='100%'>
+      <Box w='100vw'>
         <PageTitle
           title='Liquidity Mining Programs'
           subtitle='Earn rewards for supplying liquidity for Index Coop products'
@@ -136,7 +136,7 @@ const LiquidityMining = () => {
         {warning && (
           <WarningMessage message={warning} closeAction={closeWarningMessage} />
         )}
-        <Flex>
+        <Flex px={['20px', '20px', '20px', '0']}>
           <Flex direction='column' w='100%' maxWidth={800} mx='auto'>
             {showFarms &&
               programs.map((program, index) => {

@@ -9,6 +9,10 @@ import { toWei } from 'utils'
 
 const API_0X_INDEX_URL = 'https://api.indexcoop.com/0x'
 
+type Result<T, E = Error> =
+  | { success: true; value: T }
+  | { success: false; error: E }
+
 export type ZeroExData = {
   chainId: string
   data: string
@@ -48,14 +52,12 @@ function getApiUrl(query: string, chainId: number): string {
   return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}`
 }
 
-// TODO: remove?
 // Temporarily adding this because we need to support more tokens than the once
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
 export async function get0xQuote(params: any, chainId: number) {
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  console.log('get0xQuote', url)
   const response = await axios.get(url)
   return response.data
 }
@@ -65,8 +67,9 @@ export const getZeroExTradeData = async (
   sellToken: Token,
   buyToken: Token,
   amount: string,
-  chainId: number
-): Promise<ZeroExData> => {
+  chainId: number,
+  rawData: boolean = false
+): Promise<Result<ZeroExData, Error>> => {
   const params = getApiParamsForTokens(
     isExactInput,
     sellToken,
@@ -77,18 +80,24 @@ export const getZeroExTradeData = async (
 
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  console.log(url)
-  const resp = await axios.get(url)
-  const zeroExData: ZeroExData = resp.data
-
-  return await processApiResult(
-    zeroExData,
-    isExactInput,
-    sellToken,
-    buyToken,
-    amount,
-    chainId
-  )
+  try {
+    const resp = await axios.get(url)
+    const zeroExData: ZeroExData = resp.data
+    const apiResult = rawData
+      ? resp.data
+      : await processApiResult(
+          zeroExData,
+          isExactInput,
+          sellToken,
+          buyToken,
+          amount,
+          chainId
+        )
+    return { success: true, value: apiResult }
+  } catch (e) {
+    console.log(e)
+    return { success: false, error: new Error('Error retrieving 0x API data') }
+  }
 }
 
 export const get0xApiParams = (

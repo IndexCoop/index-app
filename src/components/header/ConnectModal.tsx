@@ -24,6 +24,7 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
 
   const handleMetamask = () => {
     activateBrowserWallet()
+    props.onClose()
   }
 
   const handleWalletConnect = () => {
@@ -36,6 +37,7 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
       chainId: 1,
     })
     activate(wc, (err) => {
+      props.onClose()
       console.error(err)
     })
 

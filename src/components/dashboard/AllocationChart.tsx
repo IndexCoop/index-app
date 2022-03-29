@@ -87,7 +87,7 @@ const AllocationChart = (props: { positions: Position[] }) => {
       <Box mt='40px' mb='8px'>
         {props.positions.length === 0 && (
           <Image
-            height={178}
+            height={['150', '225']}
             opacity={isDarkMode ? '80%' : '60%'}
             src={piePlaceholder}
             alt='pie chart placeholder'

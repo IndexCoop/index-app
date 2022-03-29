@@ -11,6 +11,7 @@ const BTC2xFLI = () => {
       tokenData={Bitcoin2xFlexibleLeverageIndex}
       marketData={btcfli || {}}
       components={btc2xfliComponents || []}
+      isLeveragedToken={true}
     />
   )
 }

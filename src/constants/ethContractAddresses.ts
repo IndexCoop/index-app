@@ -24,7 +24,7 @@ export const imaticFLIPSuppyCapAddress =
 export const iethFLIPSuppyCapAddress =
   '0x8173Bd491a27aF4DDe0a4dE48a54Daf6705c75F1'
 export const ExchangeIssuanceLeveragedAddress =
-  '0x783f299588Ae89E9f44B230D6cd8E349FD01b16e'
+  '0x2e785f33540b5fb6A820Ca4baE975D6279fa8BB6'
 
 // Uniswap V2 Addresses
 export const uniswapEthDpiLpTokenAddress =

@@ -24,7 +24,7 @@ const NavLink = (props: {
   textColor: string
 }) => {
   return (
-    <Box mr={['0', '0', '24px', '24px']} mt={['30px', '30px', '0', '0']}>
+    <Box mr={['0', '0', '0', '24px']} mt={['30px', '30px', '30px', '0']}>
       <Link
         display='block'
         position='relative'
@@ -36,7 +36,7 @@ const NavLink = (props: {
           left: '0',
           width: ' 100%',
           height: '0.1em',
-          backgroundColor: colors.white,
+          backgroundColor: props.textColor,
           opacity: 0,
           transition: 'opacity 300ms, transform 300ms',
         }}
@@ -53,7 +53,7 @@ const NavLink = (props: {
           },
         }}
       >
-        <Text color={props.textColor} fontSize='xl' fontWeight='700'>
+        <Text fontSize='xl' fontWeight='700'>
           {props.linkText}
         </Text>
       </Link>
@@ -63,26 +63,26 @@ const NavLink = (props: {
 
 const NavContent = () => {
   const { colorMode, toggleColorMode } = useColorMode()
-  const textColor = colorMode === 'light' ? 'black' : 'white'
+  const textColor = colorMode === 'light' ? colors.black : colors.icWhite
   return (
     <Flex
-      flexDirection={['column', 'column', 'row', 'row']}
+      flexDirection={['column', 'column', 'column', 'row']}
       alignItems={'center'}
     >
-      <NavLink href='/' linkText='My Dashboard' textColor='textColor' />
-      <NavLink href='/products' linkText='Products' textColor='textColor' />
+      <NavLink href='/' linkText='My Dashboard' textColor={textColor} />
+      <NavLink href='/products' linkText='Products' textColor={textColor} />
       <NavLink
         href='/liquidity-mining'
         linkText='Liquidity Mining'
-        textColor='textColor'
+        textColor={textColor}
       />
       <IconButton
         aria-label='Color Theme Switch'
         onClick={toggleColorMode}
         border='0'
         background={'transparent'}
-        mt={['30px', '30px', '0', '0']}
-        mr={['0', '0', '24px', '24px']}
+        mt={['30px', '30px', '30px', '0']}
+        mr={['0', '0', '0', '24px']}
         icon={<ColorThemeIcon color={textColor} />}
         size='sm'
       />
@@ -100,11 +100,12 @@ const Navigation = () => {
     xl: true,
   })
   const width = isWeb ? 1024 : 340
+
   return (
-    <Flex w={['auto', 'width']} flexGrow={['0', '2']}>
+    <Flex w={['auto', 'auto', 'auto', width]} flexGrow={['0', '0', '0', '2']}>
       {/* Desktop Menu */}
       <Flex
-        display={['none', 'none', 'flex', 'flex']}
+        display={['none', 'none', 'none', 'flex']}
         flexDirection={'row'}
         w='100%'
         justifyContent={'space-between'}
@@ -115,12 +116,11 @@ const Navigation = () => {
       </Flex>
 
       {/* Mobile Menu */}
-      <Flex display={['flex', 'flex', 'none', 'none']} flexDirection={'column'}>
+      <Flex display={['flex', 'flex', 'flex', 'none']} flexDirection={'column'}>
         <IconButton
-          mr={2}
           aria-label='Open Menu'
           icon={<HamburgerIcon />}
-          display={['flex', 'flex', 'none', 'none']}
+          display={['flex', 'flex', 'flex', 'none']}
           onClick={() => setDisplayMenu('flex')}
         />
         <Flex
@@ -135,15 +135,20 @@ const Navigation = () => {
           bgColor={bgColor}
           zIndex={30}
           display={displayMenu}
+          p={[
+            '16px 8px 8px 24px',
+            '16px 8px 8px 24px',
+            '42px 60px 60px 60px',
+            '64px 80px 80px 80px',
+          ]}
         >
           <IconButton
-            m={'16px 32px 30px 0'}
             aria-label='Close Menu'
             alignSelf={'flex-end'}
             size={'md'}
             icon={<CloseIcon />}
             onClick={() => setDisplayMenu('none')}
-            display={['flex', 'flex', 'none', 'none']}
+            display={['flex', 'flex', 'flex', 'none']}
           />
           <ConnectButton />
           <NavContent />
