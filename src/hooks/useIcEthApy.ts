@@ -3,7 +3,7 @@ import { utils } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useContractCall, useTokenBalance } from '@usedapp/core'
 
-import { displayFromWei, safeDiv, toWei } from 'utils'
+import { displayFromWei, fromWei, safeDiv, toWei } from 'utils'
 import { AAVE_LENDING_POOL_ABI } from 'utils/abi/AaveLendingPool'
 import { LIDO_ORACLE_ABI } from 'utils/abi/LidoOracle'
 
@@ -20,11 +20,11 @@ const lidoOracleInterface = new utils.Interface(LIDO_ORACLE_ABI)
 /**
  * Get's the current APY on icETH
  */
-export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
+export const useIcEthApy = (): { apy: BigNumber } => {
   const aSTETHBalance =
     useTokenBalance(aSTETHAddress, icETHAddress) ?? BigNumber.from(0)
   const avdWETHBalance =
-    useTokenBalance(WETHAddress, icETHAddress) ?? BigNumber.from(0)
+    useTokenBalance(avdWETHAddress, icETHAddress) ?? BigNumber.from(0)
 
   const [reserveData] =
     useContractCall({
@@ -42,36 +42,40 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
       args: [],
     }) ?? []
 
-  console.log(
-    'reserveData',
-    reserveData.currentVariableBorrowRate.toString(),
-    reserveData
-  )
-  console.log('postTotalPooledEther', postTotalPooledEther.toString())
-  console.log('preTotalPooledEther', preTotalPooledEther.toString())
-  console.log('timeElapsed', timeElapsed)
-
   if (
     reserveData === undefined ||
     postTotalPooledEther === undefined ||
     preTotalPooledEther === undefined ||
     timeElapsed === undefined
   )
-    return { apy: BigNumber.from(0), apyFormatted: 'n/a' }
+    return { apy: BigNumber.from(0) }
 
-  const ethBorrowRate = reserveData.currentVariableBorrowRate
+  if (
+    aSTETHBalance.isZero() ||
+    aSTETHBalance.isNegative() ||
+    avdWETHBalance.isZero() ||
+    avdWETHBalance.isNegative()
+  ) {
+    return { apy: BigNumber.from(0) }
+  }
 
   // stETH APR = (postTotalPooledEther - preTotalPooledEther) * secondsInYear / (preTotalPooledEther * timeElapsed)
-  const secondsInYear = BigNumber.from('31556952').mul(100)
+  const secondsInYear = toWei('31556952', 18)
   const stEthAPR = safeDiv(
-    postTotalPooledEther.sub(preTotalPooledEther).mul(secondsInYear),
+    BigNumber.from(postTotalPooledEther)
+      .sub(BigNumber.from(preTotalPooledEther))
+      .mul(BigNumber.from(secondsInYear))
+      .mul(100),
     preTotalPooledEther.mul(timeElapsed)
   )
 
+  console.log(stEthAPR.toString(), displayFromWei(stEthAPR))
   console.log('BAL', aSTETHBalance.toString(), avdWETHBalance.toString())
-  if (aSTETHBalance.isZero() || avdWETHBalance.isZero()) {
-    return { apy: BigNumber.from(0), apyFormatted: 'n/a' }
-  }
+  const e18 = BigNumber.from(10).pow(18)
+
+  const ethBorrowRate = fromWei(reserveData.currentVariableBorrowRate, 25).mul(
+    e18
+  )
 
   // t0 = gets balance of aSTETH (0x1982b2F5814301d4e9a8b0201555376e62F82428) balance of icETH token contract
   // t1 = gets avdWETH (0xF63B34710400CAd3e044cFfDcAb00a0f32E33eCf) balance of icETH token contract
@@ -79,25 +83,21 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
   const leverageRatio = safeDiv(
     aSTETHBalance,
     aSTETHBalance.sub(avdWETHBalance)
-  )
-  console.log(leverageRatio.toString(), 'leverageRatio')
-  console.log(stEthAPR.toString(), 'stEthAPR')
-  console.log(ethBorrowRate.toString(), 'ethBorrowRate')
-
-  // (i.leverage_ratio - 1) * (r.steth_yield - r.eth_borrow_rate) + r.steth_yield - .009 as iceth_yield_net,
+  ).mul(e18)
 
   // netYield = (levRatio - 1) * (stETH yield [1] - ethBorrowRate [2]) + stETH yield - 0.009
   // const yieldBorrowRate =
-  const netYield = leverageRatio
+  const apy = leverageRatio
     .sub(1)
     .mul(stEthAPR.sub(ethBorrowRate))
     .add(stEthAPR.sub(toWei('0.009')))
+    .div(e18)
     .abs()
 
   // [1] stETH yield: https://docs.lido.fi/contracts/lido-oracle/#getlastcompletedreportdelta
   // can be used to calculate stETH yield (APR) over time period
   // [2] ethBorrowRate: [currentVariableBorrowRate] = LendingPool.getReserveData(asset.address) <- aave v2 mainnet lendingpool contract https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
 
-  const formattedNetYield = displayFromWei(netYield) ?? '0.00'
-  return { apy: netYield, apyFormatted: `${formattedNetYield}%` }
+  console.log(apy.toString())
+  return { apy }
 }
