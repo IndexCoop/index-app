@@ -12,6 +12,7 @@ const aSTETHAddress = '0x1982b2F5814301d4e9a8b0201555376e62F82428'
 const avdWETHAddress = '0xF63B34710400CAd3e044cFfDcAb00a0f32E33eCf'
 const aaveLendingPoolAddress = '0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9'
 const lidoOracleAddress = '0x442af784A788A5bd6F42A01Ebe9F287a871243fb'
+const WETHAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 
 const aaveLendingPoolInterface = new utils.Interface(AAVE_LENDING_POOL_ABI)
 const lidoOracleInterface = new utils.Interface(LIDO_ORACLE_ABI)
@@ -30,7 +31,7 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
       abi: aaveLendingPoolInterface,
       address: aaveLendingPoolAddress,
       method: 'getReserveData',
-      args: [avdWETHAddress],
+      args: [WETHAddress],
     }) ?? []
 
   const [postTotalPooledEther, preTotalPooledEther, timeElapsed] =
