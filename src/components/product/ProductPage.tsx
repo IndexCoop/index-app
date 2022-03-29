@@ -71,6 +71,7 @@ const ProductPage = (props: {
   marketData: TokenMarketDataValues
   components: SetComponent[]
   isLeveragedToken?: boolean
+  apy?: string
 }) => {
   const isMobile = useBreakpointValue({ base: true, lg: false })
   const { marketData, tokenData } = props
@@ -142,6 +143,7 @@ const ProductPage = (props: {
                 height: chartHeight,
                 hideYAxis: false,
               }}
+              apy={props.apy}
             />
             <Flex
               mt={['48px', '48px', '48px', '0']}

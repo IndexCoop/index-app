@@ -50,6 +50,7 @@ const MarketChart = (props: {
   customSelector?: any
   onMouseMove?: (...args: any[]) => any
   onMouseLeave?: (...args: any[]) => any
+  apy?: string
 }) => {
   const theme = useTheme()
   const { isDarkMode } = useICColorMode()
@@ -153,7 +154,7 @@ const MarketChart = (props: {
     <Flex direction='column' alignItems='center' width='100%'>
       <Flex
         direction={['column', 'row']}
-        alignItems={['left', 'center']}
+        alignItems={['left', 'flex-end']}
         mb='24px'
         w='100%'
       >
@@ -161,12 +162,12 @@ const MarketChart = (props: {
           price={price}
           change={priceChange.label}
           color={priceChangeColor}
+          apy={props.apy}
         />
-        <Spacer />
-        {props.customSelector !== null && (
+        {props.customSelector && (
           <Box mr={['auto', '24px']}>{props.customSelector}</Box>
         )}
-        <Box mt={['8px', '0']} mr='auto'>
+        <Box mt={['8px', '0']} mr='auto' ml={['0', '15px']}>
           <RangeSelector onChange={onChangeDuration} />
         </Box>
       </Flex>
@@ -236,24 +237,49 @@ const PriceDisplay = ({
   change,
   color,
   customSelector,
+  apy,
 }: {
   price: string
   change: string
   color: string
   customSelector?: any
+  apy?: string
 }) => (
-  <Flex align='center'>
-    <Flex align='baseline'>
-      <Text fontSize={['3xl', '5xl']} color={colors.icYellow} fontWeight='700'>
-        {price}
-      </Text>
-      <Text fontSize={['md', 'xl']} color={color} fontWeight='700' ml='16px'>
-        {change}
-      </Text>
+  <Flex align='center' width='100%' alignItems={['', 'flex-end']}>
+    <Flex align='baseline' flexDir={['column', 'column', 'column', 'row']}>
+      <Flex flexDirection={'column'}>
+        <Text
+          fontSize={['3xl', '3xl', '3xl', '4xl']}
+          color={colors.icYellow}
+          fontWeight='700'
+        >
+          {price}
+        </Text>
+        <Flex
+          flexDirection={['column', 'column', 'column', 'row']}
+          alignItems={['flex-start', 'flex-start', 'flex-start', 'flex-end']}
+        >
+          {apy && (
+            <Text
+              fontSize={['md', 'md', 'xl', '2xl']}
+              color={colors.icWhite}
+              fontWeight='700'
+              mr={['0', '0', '0', '16px']}
+            >
+              {apy}% APY
+            </Text>
+          )}
+          <Text
+            fontSize={['md', 'md', 'xl', '2xl']}
+            color={color}
+            fontWeight='700'
+          >
+            {change}
+          </Text>
+        </Flex>
+      </Flex>
     </Flex>
-    <Box ml='24px' mt='8px'>
-      {customSelector !== null && customSelector}
-    </Box>
+    {customSelector && <Box mt='8px'>{customSelector}</Box>}
   </Flex>
 )
 
