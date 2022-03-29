@@ -5,12 +5,53 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { ExchangeIssuanceLeveragedAddress } from 'constants/ethContractAddresses'
 import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
+import { Exchange } from 'utils/exchangeIssuanceQuotes'
 
-export enum Exchange {
-  None,
-  Quickswap,
-  Sushiswap,
-  UniV3,
+/**
+ * returns instance of ExchangeIssuanceLeveraged Contract
+ * @param providerSigner
+ * @returns EI contract
+ */
+const getExchangeIssuanceLeveragedContract = async (
+  providerSigner: Signer | Provider | undefined
+): Promise<Contract> => {
+  return new Contract(
+    ExchangeIssuanceLeveragedAddress,
+    EI_LEVERAGED_ABI,
+    providerSigner
+  )
+}
+
+/**
+ * Returns the collateral / debt token addresses and amounts for a leveraged index
+ *
+ * @param library               library from logged in user
+ * @param setToken              Address of the SetToken to be issued / redeemed
+ * @param setAmount             Amount of SetTokens to issue / redeem
+ * @param isIssuance            Boolean indicating if the SetToken is to be issued or redeemed
+ *
+ * @return Struct containing the collateral / debt token addresses and amounts
+ */
+export const getLeveragedTokenData = async (
+  library: any,
+  setToken: string,
+  setAmount: BigNumber,
+  isIssuance: boolean
+): Promise<any> => {
+  console.log('getLeveragedTokenData')
+  try {
+    const eiContract = await getExchangeIssuanceLeveragedContract(
+      library.getSigner()
+    )
+    console.log('calling ei contract', { setToken, setAmount, isIssuance })
+    return await eiContract.getLeveragedTokenData(
+      setToken,
+      setAmount,
+      isIssuance
+    )
+  } catch (err) {
+    console.error('Error getting leveraged token data', err)
+  }
 }
 
 /**
@@ -37,7 +78,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('issueExactSetFromETH')
     try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
+      const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
       const issueSetTx = await eiContract.issueExactSetFromETH(
@@ -74,7 +115,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForETH')
     try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
+      const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
       const redeemSetTx = await eiContract.redeemExactSetForETH(
@@ -115,7 +156,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('issueExactSetFromERC20')
     try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
+      const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
       const issueSetTx = await eiContract.issueExactSetFromERC20(
@@ -158,7 +199,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForERC20')
     try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
+      const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
       const redeemSetTx = await eiContract.redeemExactSetForERC20(
@@ -171,39 +212,6 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataOutputToken
       )
       return redeemSetTx
-    } catch (err) {
-      console.log('error', err)
-      return err
-    }
-  }
-
-  /**
-   * Returns the collateral / debt token addresses and amounts for a leveraged index
-   *
-   * @param library               library from logged in user
-   * @param setToken              Address of the SetToken to be issued / redeemed
-   * @param setAmount             Amount of SetTokens to issue / redeem
-   * @param isIssuance            Boolean indicating if the SetToken is to be issued or redeemed
-   *
-   * @return Struct containing the collateral / debt token addresses and amounts
-   */
-  const getLeveragedTokenData = async (
-    library: any,
-    setToken: string,
-    setAmount: BigNumber,
-    isIssuance: boolean
-  ): Promise<any> => {
-    console.log('getLeveragedTokenData')
-    try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
-        library.getSigner()
-      )
-      const redeemQuoteTx = await eiContract.getLeveragedTokenData(
-        setToken,
-        setAmount,
-        isIssuance
-      )
-      return redeemQuoteTx
     } catch (err) {
       console.log('error', err)
       return err
@@ -234,7 +242,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('getIssueExactSet')
     try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
+      const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
       const redeemQuoteTx = await eiContract.getRedeemExactSet(
@@ -275,7 +283,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('getRedeemExactSet')
     try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
+      const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
       const redeemQuoteTx = await eiContract.getRedeemExactSet(
@@ -305,7 +313,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('approveSetToken')
     try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
+      const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
       const approveSetTokenTx = await eiContract.approveSetToken(setToken)
@@ -327,7 +335,7 @@ export const useExchangeIssuanceLeveraged = () => {
   const approveToken = async (library: any, token: string): Promise<any> => {
     console.log('approveToken')
     try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
+      const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
       const approveTokenTx = await eiContract.approveToken(token)
@@ -351,7 +359,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('approveTokens')
     try {
-      const eiContract = await geExchangeIssuanceLeveragedContract(
+      const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
       const approveTokensTx = await eiContract.approveTokens(tokens)
@@ -389,21 +397,6 @@ export const useExchangeIssuanceLeveraged = () => {
       console.log('error', err)
       return BigNumber.from(0)
     }
-  }
-
-  /**
-   * returns instance of ExchangeIssuanceLeveraged Contract
-   * @param providerSigner
-   * @returns EI contract
-   */
-  const geExchangeIssuanceLeveragedContract = async (
-    providerSigner: Signer | Provider | undefined
-  ): Promise<Contract> => {
-    return new Contract(
-      ExchangeIssuanceLeveragedAddress,
-      EI_LEVERAGED_ABI,
-      providerSigner
-    )
   }
 
   return {
