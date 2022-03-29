@@ -36,7 +36,7 @@ import { useTokenBalance } from 'hooks/useTokenBalance'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
-import { displayFromWei, toWei } from 'utils'
+import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import {
   ExchangeIssuanceQuote,
   LeveragedExchangeIssuanceQuote,
@@ -357,11 +357,9 @@ const QuickTrade = (props: {
     return 'Trade'
   }
 
-  const onChangeSellTokenAmount = (input: string) => {
-    const inputNumber = Number(input)
-    if (input === sellTokenAmount || input.slice(-1) === '.') return
-    if (isNaN(inputNumber) || inputNumber < 0) return
-    setSellTokenAmount(inputNumber.toString())
+  const onChangeSellTokenAmount = (token: Token) => (input: string) => {
+    if (!isValidTokenInput(input, token.decimals)) return
+    setSellTokenAmount(input || '0')
   }
 
   const onChangeSellToken = (symbol: string) => {
@@ -477,7 +475,7 @@ const QuickTrade = (props: {
           selectedToken={sellToken}
           tokenList={sellTokenList}
           selectedTokenBalance={sellTokenBalanceFormatted}
-          onChangeInput={onChangeSellTokenAmount}
+          onChangeInput={onChangeSellTokenAmount(sellToken)}
           onSelectedToken={onChangeSellToken}
           isNarrowVersion={isNarrow}
         />
