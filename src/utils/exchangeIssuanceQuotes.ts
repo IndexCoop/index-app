@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BigNumber, Contract,ethers  } from 'ethers'
+import { BigNumber, Contract, ethers } from 'ethers'
 
 import { ChainId } from '@usedapp/core'
 
@@ -198,7 +198,9 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   console.log('PAYMENT TOKEN', paymentToken)
   const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
   const paymentTokenAddress =
-    paymentToken.symbol === 'MATIC' ? WMATIC_ADDRESS : paymentToken.address
+    paymentToken.symbol === 'MATIC'
+      ? WMATIC_ADDRESS
+      : paymentToken.polygonAddress
   const { swapData: swapDataPaymentToken, zeroExQuote } = await getSwapData({
     buyToken: leveragedTokenData.collateralToken,
     buyAmount: collateralShortfall.toString(),
@@ -227,11 +229,11 @@ const getSwapData = async (params: any, chainId: number = 137) => {
     {
       ...params,
       slippagePercentage: 0.5,
+      //TODO: Allow Quickswap and UniV3
       includedSources: 'SushiSwap',
     },
     chainId
   )
-  console.log('0x Quote', zeroExQuote)
   const swapData = {
     exchange: Exchange.Sushiswap,
     path: zeroExQuote.orders[0].fillData.tokenAddressPath,
