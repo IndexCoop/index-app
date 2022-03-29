@@ -3,7 +3,7 @@ import { utils } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useContractCall, useTokenBalance } from '@usedapp/core'
 
-import { displayFromWei, preciseDiv, toWei } from 'utils'
+import { displayFromWei, safeDiv, toWei } from 'utils'
 import { AAVE_LENDING_POOL_ABI } from 'utils/abi/AaveLendingPool'
 import { LIDO_ORACLE_ABI } from 'utils/abi/LidoOracle'
 
@@ -52,6 +52,7 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
   console.log('timeElapsed', timeElapsed)
 
   if (
+    reserveData === undefined ||
     postTotalPooledEther === undefined ||
     preTotalPooledEther === undefined ||
     timeElapsed === undefined
@@ -61,8 +62,8 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
   const ethBorrowRate = reserveData.currentVariableBorrowRate
 
   // stETH APR = (postTotalPooledEther - preTotalPooledEther) * secondsInYear / (preTotalPooledEther * timeElapsed)
-  const secondsInYear = BigNumber.from('31556952')
-  const stEthAPR = preciseDiv(
+  const secondsInYear = BigNumber.from('31556952').mul(100)
+  const stEthAPR = safeDiv(
     postTotalPooledEther.sub(preTotalPooledEther).mul(secondsInYear),
     preTotalPooledEther.mul(timeElapsed)
   )
@@ -75,23 +76,28 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
   // t0 = gets balance of aSTETH (0x1982b2F5814301d4e9a8b0201555376e62F82428) balance of icETH token contract
   // t1 = gets avdWETH (0xF63B34710400CAd3e044cFfDcAb00a0f32E33eCf) balance of icETH token contract
   // levRatio = t0 / (t0-t1)
-  const leverageRatio = preciseDiv(
+  const leverageRatio = safeDiv(
     aSTETHBalance,
     aSTETHBalance.sub(avdWETHBalance)
   )
   console.log(leverageRatio.toString(), 'leverageRatio')
+  console.log(stEthAPR.toString(), 'stEthAPR')
+  console.log(ethBorrowRate.toString(), 'ethBorrowRate')
+
+  // (i.leverage_ratio - 1) * (r.steth_yield - r.eth_borrow_rate) + r.steth_yield - .009 as iceth_yield_net,
 
   // netYield = (levRatio - 1) * (stETH yield [1] - ethBorrowRate [2]) + stETH yield - 0.009
-  const yieldBorrowRate = stEthAPR
-    .sub(ethBorrowRate)
+  // const yieldBorrowRate =
+  const netYield = leverageRatio
+    .sub(1)
+    .mul(stEthAPR.sub(ethBorrowRate))
     .add(stEthAPR.sub(toWei('0.009')))
-  const netYield = leverageRatio.sub(1).mul(yieldBorrowRate)
+    .abs()
 
   // [1] stETH yield: https://docs.lido.fi/contracts/lido-oracle/#getlastcompletedreportdelta
   // can be used to calculate stETH yield (APR) over time period
   // [2] ethBorrowRate: [currentVariableBorrowRate] = LendingPool.getReserveData(asset.address) <- aave v2 mainnet lendingpool contract https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool
 
-  const formattedNetYield = displayFromWei(netYield, 2, 18) ?? '0.00'
-  console.log(`${formattedNetYield}%`)
+  const formattedNetYield = displayFromWei(netYield) ?? '0.00'
   return { apy: netYield, apyFormatted: `${formattedNetYield}%` }
 }
