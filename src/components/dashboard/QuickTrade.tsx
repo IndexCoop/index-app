@@ -182,20 +182,21 @@ const QuickTrade = (props: {
     )
     setTradeInfoData(dexTradeInfoData)
 
-    const eiTradeInfoData = getTradeInfoDataFromEI(
-      isBuying ? buyTokenAmount : sellTokenAmount,
-      bestOptionResult.exchangeIssuanceData ??
-        bestOptionResult.leveragedExchangeIssuanceData,
-      sellToken.decimals,
-      chainId
-    )
-    setTradeInfoDataEI(eiTradeInfoData)
+    // const eiTradeInfoData = getTradeInfoDataFromEI(
+    //   isBuying ? buyTokenAmount : sellTokenAmount,
+    //   bestOptionResult.exchangeIssuanceData ??
+    //     bestOptionResult.leveragedExchangeIssuanceData,
+    //   sellToken.decimals,
+    //   chainId
+    // )
+    // setTradeInfoDataEI(eiTradeInfoData)
 
-    setBestOption(
-      bestOptionIs0x
-        ? QuickTradeBestOption.zeroEx
-        : QuickTradeBestOption.exchangeIssuance
-    )
+    // setBestOption(
+    //   bestOptionIs0x
+    //     ? QuickTradeBestOption.zeroEx
+    //     : QuickTradeBestOption.exchangeIssuance
+    // )
+    setBestOption(QuickTradeBestOption.zeroEx)
   }, [bestOptionResult])
 
   /**

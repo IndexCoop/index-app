@@ -21,7 +21,6 @@ type Result<_, E = Error> =
       success: true
       dexData: ZeroExData | null
       exchangeIssuanceData: ExchangeIssuanceQuote | null | undefined
-      // TODO: add quote type if it differs
       leveragedExchangeIssuanceData:
         | LeveragedExchangeIssuanceQuote
         | null
@@ -63,56 +62,56 @@ export const useBestTradeOption = () => {
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
-    const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
-    console.log('buyToken', buyToken)
-    console.log('isBuyingTokenEligible', isBuyingTokenEligible)
+    // const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
+    // console.log('buyToken', buyToken)
+    // console.log('isBuyingTokenEligible', isBuyingTokenEligible)
 
-    const tokenAmount =
-      isIssuance && dexSwapOption
-        ? BigNumber.from(dexSwapOption.buyAmount)
-        : toWei(sellTokenAmount, sellToken.decimals)
+    // const tokenAmount =
+    //   isIssuance && dexSwapOption
+    //     ? BigNumber.from(dexSwapOption.buyAmount)
+    //     : toWei(sellTokenAmount, sellToken.decimals)
 
     /* Check for Exchange Issuance option */
     let exchangeIssuanceOption: ExchangeIssuanceQuote | null | undefined =
       undefined
-    if (account && !isBuyingTokenEligible) {
-      console.log('Getting zeroex ei option')
-      try {
-        exchangeIssuanceOption = await getExchangeIssuanceQuotes(
-          buyToken,
-          tokenAmount,
-          sellToken,
-          isIssuance,
-          chainId,
-          library
-        )
-      } catch (e) {
-        console.warn('error when generating zeroexei option', e)
-      }
-    }
+    // if (account && !isBuyingTokenEligible) {
+    //   console.log('Getting zeroex ei option')
+    //   try {
+    //     exchangeIssuanceOption = await getExchangeIssuanceQuotes(
+    //       buyToken,
+    //       tokenAmount,
+    //       sellToken,
+    //       isIssuance,
+    //       chainId,
+    //       library
+    //     )
+    //   } catch (e) {
+    //     console.warn('error when generating zeroexei option', e)
+    //   }
+    // }
 
     /* Check ExchangeIssuanceLeveraged option */
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
-    if (account && isBuyingTokenEligible) {
-      console.log('Getting leveraged ei option')
-      const setToken = isIssuance ? buyToken : sellToken
-      const setAmount = isIssuance ? buyTokenAmount : sellTokenAmount
-      const paymentToken = isIssuance ? sellToken : buyToken
-      try {
-        leveragedExchangeIssuanceOption =
-          await getLeveragedExchangeIssuanceQuotes(
-            setToken,
-            setAmount,
-            paymentToken,
-            isIssuance,
-            chainId,
-            library
-          )
-      } catch (e) {
-        console.warn('error when generating leveraged ei option', e)
-      }
-    }
+    // if (account && isBuyingTokenEligible) {
+    //   console.log('Getting leveraged ei option')
+    //   const setToken = isIssuance ? buyToken : sellToken
+    //   const setAmount = isIssuance ? buyTokenAmount : sellTokenAmount
+    //   const paymentToken = isIssuance ? sellToken : buyToken
+    //   try {
+    //     leveragedExchangeIssuanceOption =
+    //       await getLeveragedExchangeIssuanceQuotes(
+    //         setToken,
+    //         setAmount,
+    //         paymentToken,
+    //         isIssuance,
+    //         chainId,
+    //         library
+    //       )
+    //   } catch (e) {
+    //     console.warn('error when generating leveraged ei option', e)
+    //   }
+    // }
 
     console.log('exchangeIssueOption', exchangeIssuanceOption)
     console.log('exchangeIssueLeveragedOption', leveragedExchangeIssuanceOption)
