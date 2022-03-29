@@ -24,7 +24,7 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
   const aSTETHBalance =
     useTokenBalance(aSTETHAddress, icETHAddress) ?? BigNumber.from(0)
   const avdWETHBalance =
-    useTokenBalance(avdWETHAddress, icETHAddress) ?? BigNumber.from(0)
+    useTokenBalance(WETHAddress, icETHAddress) ?? BigNumber.from(0)
 
   const [reserveData] =
     useContractCall({
@@ -41,6 +41,15 @@ export const useIcEthApy = (): { apy: BigNumber; apyFormatted: string } => {
       method: 'getLastCompletedReportDelta',
       args: [],
     }) ?? []
+
+  console.log(
+    'reserveData',
+    reserveData.currentVariableBorrowRate.toString(),
+    reserveData
+  )
+  console.log('postTotalPooledEther', postTotalPooledEther.toString())
+  console.log('preTotalPooledEther', preTotalPooledEther.toString())
+  console.log('timeElapsed', timeElapsed)
 
   if (
     postTotalPooledEther === undefined ||
