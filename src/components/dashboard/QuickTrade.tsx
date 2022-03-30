@@ -37,7 +37,10 @@ import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { displayFromWei, toWei } from 'utils'
-import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
+import {
+  ExchangeIssuanceQuote,
+  LeveragedExchangeIssuanceQuote,
+} from 'utils/exchangeIssuanceQuotes'
 import { ZeroExData } from 'utils/zeroExUtils'
 
 import QuickTradeSelector from './QuickTradeSelector'
@@ -179,18 +182,21 @@ const QuickTrade = (props: {
     )
     setTradeInfoData(dexTradeInfoData)
 
-    const eiTradeInfoData = getTradeInfoDataFromEI(
-      bestOptionResult.exchangeIssuanceData,
-      sellToken.decimals,
-      chainId
-    )
-    setTradeInfoDataEI(eiTradeInfoData)
+    // const eiTradeInfoData = getTradeInfoDataFromEI(
+    //   isBuying ? buyTokenAmount : sellTokenAmount,
+    //   bestOptionResult.exchangeIssuanceData ??
+    //     bestOptionResult.leveragedExchangeIssuanceData,
+    //   sellToken.decimals,
+    //   chainId
+    // )
+    // setTradeInfoDataEI(eiTradeInfoData)
 
-    setBestOption(
-      bestOptionIs0x
-        ? QuickTradeBestOption.zeroEx
-        : QuickTradeBestOption.exchangeIssuance
-    )
+    // setBestOption(
+    //   bestOptionIs0x
+    //     ? QuickTradeBestOption.zeroEx
+    //     : QuickTradeBestOption.exchangeIssuance
+    // )
+    setBestOption(QuickTradeBestOption.zeroEx)
   }, [bestOptionResult])
 
   /**
@@ -551,22 +557,28 @@ const TradeButton = (props: TradeButtonProps) => (
 )
 
 function getTradeInfoDataFromEI(
-  data: ExchangeIssuanceQuote | null | undefined,
+  setAmount: string,
+  data:
+    | ExchangeIssuanceQuote
+    | LeveragedExchangeIssuanceQuote
+    | null
+    | undefined,
   tokenDecimals: number,
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
   // TODO: fix to show minium receive not input token amount!
-  const minReceive =
+  const maxPayment =
     displayFromWei(data.inputTokenAmount, undefined, tokenDecimals) ?? '0.0'
   // TODO:
   const networkFee = ''
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: 'Minimum Receive', value: minReceive },
-    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
     { title: 'Offered From', value: offeredFrom },
+    { title: 'Exact Set amount', value: setAmount },
+    { title: 'Maximum payment amount', value: maxPayment },
+    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
   ]
 }
 
