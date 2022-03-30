@@ -5,6 +5,9 @@ export interface TradeInfoItem {
   value: string
 }
 
+const excludePriceItem = (tradeInfoItem: TradeInfoItem): boolean =>
+  tradeInfoItem.title !== 'Price'
+
 const TradeInfoItemRow = (props: { title: string; value: string }) => {
   const parsedValue = parseFloat(props.value)
   const value = isNaN(parsedValue) ? props.value : parsedValue.toFixed(3)
@@ -23,7 +26,7 @@ const TradeInfoItemRow = (props: { title: string; value: string }) => {
 const TradeInfo = (props: { data: TradeInfoItem[] }) => {
   return (
     <Flex direction='column'>
-      {props.data.map((item, index) => (
+      {props.data.filter(excludePriceItem).map((item, index) => (
         <Box key={index} mb='16px'>
           <TradeInfoItemRow title={item.title} value={item.value} />
         </Box>

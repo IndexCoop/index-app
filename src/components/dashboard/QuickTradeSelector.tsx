@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { colors } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
 
 import { Token } from 'constants/tokens'
+import { isValidTokenInput } from 'utils'
 
 interface InputSelectorConfig {
   isDarkMode: boolean
@@ -25,8 +26,15 @@ const QuickTradeSelector = (props: {
   isNarrowVersion: boolean
 }) => {
   const [inputString, setInputString] = useState<string>(
-    props.selectedTokenAmount || '0.00'
+    props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
   )
+
+  useEffect(() => {
+    setInputString(
+      props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
+    )
+  }, [props.selectedTokenAmount])
+
   const { config, selectedToken } = props
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
@@ -36,13 +44,20 @@ const QuickTradeSelector = (props: {
   const widths = props.isNarrowVersion ? narrowWidths : wideWidths
 
   const onChangeInput = (amount: string) => {
+    if (!amount) {
+      setInputString('')
+      props.onChangeInput('')
+    }
+
     if (
       props.onChangeInput === undefined ||
       config.isInputDisabled ||
       config.isSelectorDisabled ||
-      config.isReadOnly
+      config.isReadOnly ||
+      !isValidTokenInput(amount, selectedToken.decimals)
     )
       return
+
     setInputString(amount)
     props.onChangeInput(amount)
   }
@@ -63,7 +78,7 @@ const QuickTradeSelector = (props: {
           px={['16px', '30px']}
         >
           <Input
-            placeholder='0.00'
+            placeholder='0.0'
             type='number'
             variant='unstyled'
             disabled={config.isInputDisabled ?? false}
