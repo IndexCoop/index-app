@@ -1,8 +1,12 @@
 import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
+import { ChainId } from '@usedapp/core'
 
-import { ExchangeIssuanceLeveragedAddress } from 'constants/ethContractAddresses'
+import {
+  ExchangeIssuanceLeveragedAddress,
+  ExchangeIssuanceLeveragedMainnetAddress,
+} from 'constants/ethContractAddresses'
 import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
 import { Exchange } from 'utils/exchangeIssuanceQuotes'
@@ -10,16 +14,20 @@ import { Exchange } from 'utils/exchangeIssuanceQuotes'
 /**
  * returns instance of ExchangeIssuanceLeveraged Contract
  * @param providerSigner
+ * @param chainId         chainId for contract (default Polygon since this where
+ *                        the contract is mostly used)
  * @returns EI contract
  */
-const getExchangeIssuanceLeveragedContract = async (
-  providerSigner: Signer | Provider | undefined
+export const getExchangeIssuanceLeveragedContract = async (
+  providerSigner: Signer | Provider | undefined,
+  chainId: ChainId = ChainId.Polygon
 ): Promise<Contract> => {
-  return new Contract(
-    ExchangeIssuanceLeveragedAddress,
-    EI_LEVERAGED_ABI,
-    providerSigner
-  )
+  const contractAddress =
+    chainId === ChainId.Polygon
+      ? ExchangeIssuanceLeveragedAddress
+      : ExchangeIssuanceLeveragedMainnetAddress
+  console.log('getExchangeIssuanceLeveragedContract', contractAddress)
+  return new Contract(contractAddress, EI_LEVERAGED_ABI, providerSigner)
 }
 
 /**
@@ -33,22 +41,15 @@ const getExchangeIssuanceLeveragedContract = async (
  * @return Struct containing the collateral / debt token addresses and amounts
  */
 export const getLeveragedTokenData = async (
-  library: any,
+  contract: Contract,
   setToken: string,
   setAmount: BigNumber,
   isIssuance: boolean
 ): Promise<any> => {
   console.log('getLeveragedTokenData')
   try {
-    const eiContract = await getExchangeIssuanceLeveragedContract(
-      library.getSigner()
-    )
     console.log('calling ei contract', { setToken, setAmount, isIssuance })
-    return await eiContract.getLeveragedTokenData(
-      setToken,
-      setAmount,
-      isIssuance
-    )
+    return await contract.getLeveragedTokenData(setToken, setAmount, isIssuance)
   } catch (err) {
     console.error('Error getting leveraged token data', err)
   }

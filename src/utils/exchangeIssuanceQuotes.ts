@@ -3,7 +3,10 @@ import { BigNumber, ethers } from 'ethers'
 import { ChainId } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
-import { getLeveragedTokenData } from 'hooks/useExchangeIssuanceLeveraged'
+import {
+  getExchangeIssuanceLeveragedContract,
+  getLeveragedTokenData,
+} from 'hooks/useExchangeIssuanceLeveraged'
 import {
   getRequiredIssuanceComponents,
   getRequiredRedemptionComponents,
@@ -180,9 +183,15 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     issuanceModule
   )
 
+  const setTokenAddress =
+    chainId === ChainId.Polygon ? setToken.polygonAddress : setToken.address
+  const contract = await getExchangeIssuanceLeveragedContract(
+    library?.getSigner(),
+    chainId
+  )
   const leveragedTokenData: LeveragedTokenData = await getLeveragedTokenData(
-    library,
-    setToken.polygonAddress ?? '',
+    contract,
+    setTokenAddress ?? '',
     setTokenAmountWei,
     isIssuance
   )
