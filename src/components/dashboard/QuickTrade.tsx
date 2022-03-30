@@ -603,6 +603,7 @@ function getTradeInfoData0x(
     .map((source) => source.name)
 
   return [
+    { title: 'Price', value: zeroExTradeData.price },
     { title: 'Minimum Receive', value: minReceive },
     { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
     { title: 'Offered From', value: offeredFromSources.toString() },
