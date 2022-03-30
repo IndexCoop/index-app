@@ -87,12 +87,12 @@ export const useIcEthApy = (): { apy: BigNumber } => {
     aSTETHBalance.sub(avdWETHBalance)
   ).mul(e18)
 
-  /* apy = (levRatio - 1) * (stETH yield [1] - ethBorrowRate [2]) + stETH yield - 0.009 */
+  /* apy = (levRatio - 1) * (stETH yield [1] - ethBorrowRate [2]) + stETH yield - 0.9 % */
   const apy = leverageRatio
-    .sub(1)
+    .sub(toWei(1))
     .mul(stEthAPR.sub(ethBorrowRate))
-    .add(stEthAPR.sub(toWei('0.009')))
     .div(e18)
+    .add(stEthAPR.sub(toWei(0.9)))
     .abs()
 
   return { apy }
