@@ -5,16 +5,20 @@ export interface TradeInfoItem {
   value: string
 }
 
-const TradeInfoItemRow = ({ title, value }: TradeInfoItem) => (
-  <Flex direction='column'>
-    <Text fontSize='14px' fontWeight='500'>
-      {title}
-    </Text>
-    <Text fontSize='20px' fontWeight='700'>
-      {value}
-    </Text>
-  </Flex>
-)
+const TradeInfoItemRow = (props: { title: string; value: string }) => {
+  const parsedValue = parseFloat(props.value)
+  const value = isNaN(parsedValue) ? props.value : parsedValue.toFixed(3)
+  return (
+    <Flex direction='column'>
+      <Text fontSize='14px' fontWeight='500'>
+        {props.title}
+      </Text>
+      <Text fontSize='20px' fontWeight='700'>
+        {value}
+      </Text>
+    </Flex>
+  )
+}
 
 const TradeInfo = (props: { data: TradeInfoItem[] }) => {
   return (
