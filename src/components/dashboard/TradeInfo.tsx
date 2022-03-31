@@ -8,13 +8,27 @@ export interface TradeInfoItem {
 const excludePriceItem = (tradeInfoItem: TradeInfoItem): boolean =>
   tradeInfoItem.title !== 'Price'
 
-const TradeInfoItemRow = (props: { title: string; value: string }) => {
-  const parsedValue = parseFloat(props.value)
-  const value = isNaN(parsedValue) ? props.value : parsedValue.toFixed(3)
+const TradeInfoItemRow = ({ title, value }: TradeInfoItem) => {
+  if (title === 'Offered From') {
+    const vals = value.split(',')
+
+    return (
+      <Flex direction='column'>
+        <Text fontSize='14px' fontWeight='500'>
+          {title}
+        </Text>
+        {vals.map((dex, index) => (
+          <Text key={index} fontSize='20px' fontWeight='700'>
+            {dex}
+          </Text>
+        ))}
+      </Flex>
+    )
+  }
   return (
     <Flex direction='column'>
       <Text fontSize='14px' fontWeight='500'>
-        {props.title}
+        {title}
       </Text>
       <Text fontSize='20px' fontWeight='700'>
         {value}
