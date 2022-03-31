@@ -11,7 +11,7 @@ import {
   getRequiredIssuanceComponents,
   getRequiredRedemptionComponents,
 } from 'hooks/useExchangeIssuanceZeroEx'
-import { displayFromWei, fromWei, toWei } from 'utils'
+import { displayFromWei, toWei } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { get0xQuote } from 'utils/zeroExUtils'
 
@@ -256,6 +256,7 @@ const getSwapData = async (params: any, chainId: number = 137) => {
     },
     chainId
   )
+  // TODO: ?
   const swapData = {
     exchange: Exchange.Sushiswap,
     path: zeroExQuote.orders[0].fillData.tokenAddressPath,
