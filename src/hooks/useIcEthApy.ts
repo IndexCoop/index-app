@@ -3,7 +3,7 @@ import { utils } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useContractCall, useTokenBalance } from '@usedapp/core'
 
-import { fromWei, safeDiv, toWei } from 'utils'
+import { safeDiv, toWei } from 'utils'
 import { AAVE_LENDING_POOL_ABI } from 'utils/abi/AaveLendingPool'
 import { LIDO_ORACLE_ABI } from 'utils/abi/LidoOracle'
 
@@ -76,24 +76,24 @@ export const useIcEthApy = (): { apy: BigNumber } => {
     preTotalPooledEther.mul(timeElapsed)
   )
 
-  const e18 = BigNumber.from(10).pow(18)
-  const ethBorrowRate = fromWei(reserveData.currentVariableBorrowRate, 25).mul(
-    e18
+  const borrowRate = utils.formatUnits(
+    reserveData.currentVariableBorrowRate,
+    27
   )
 
   /* leverageRatio = t0 / (t0-t1) */
   const leverageRatio = safeDiv(
     aSTETHBalance,
     aSTETHBalance.sub(avdWETHBalance)
-  ).mul(e18)
+  )
+
+  const borrowRateNum = parseFloat(borrowRate) * 100
+  const stEthAprNum = parseFloat(utils.formatUnits(stEthAPR, 18))
+  const leverageRatioNum = parseFloat(leverageRatio.toString())
 
   /* apy = (levRatio - 1) * (stETH yield [1] - ethBorrowRate [2]) + stETH yield - 0.9 % */
-  const apy = leverageRatio
-    .sub(toWei(1))
-    .mul(stEthAPR.sub(ethBorrowRate))
-    .div(e18)
-    .add(stEthAPR.sub(toWei(0.9)))
-    .abs()
-
+  const apyNumber =
+    (leverageRatioNum - 1) * (stEthAprNum - borrowRateNum) + stEthAprNum - 0.9
+  const apy = toWei(apyNumber)
   return { apy }
 }
