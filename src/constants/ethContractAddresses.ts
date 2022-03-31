@@ -13,6 +13,8 @@ export const btc2xfliSuppyCapAddress =
   '0x6c8137f2f552f569cc43bc4642afbe052a12441c'
 export const ExchangeIssuanceZeroExAddress =
   '0xf42eCDC112365fF79a745B4cf7D4C266bd6E4b25'
+export const ExchangeIssuanceLeveragedMainnetAddress =
+  '0xB7cc88A13586D862B97a677990de14A122b74598'
 
 // Index Coop Polygon Contract Addresses
 export const eth2xFLIPSuppyCapAddress =
@@ -24,7 +26,7 @@ export const imaticFLIPSuppyCapAddress =
 export const iethFLIPSuppyCapAddress =
   '0x8173Bd491a27aF4DDe0a4dE48a54Daf6705c75F1'
 export const ExchangeIssuanceLeveragedAddress =
-  '0x2e785f33540b5fb6A820Ca4baE975D6279fa8BB6'
+  '0x5631271895Bc53F77eA8d3fa016d1c880cD690C7'
 
 // Uniswap V2 Addresses
 export const uniswapEthDpiLpTokenAddress =
