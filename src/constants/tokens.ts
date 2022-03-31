@@ -24,7 +24,9 @@ export interface Token {
   coingeckoId: string
   tokensetsId: string
   tokenContextKey?: TokenContextKeys
-  fees: { streamingFee: string; mintRedeemFee?: string } | undefined
+  fees:
+    | { streamingFee: string; mintFee?: string; redeemFee?: string }
+    | undefined
 }
 
 export const DAI: Token = {
@@ -164,7 +166,8 @@ export const Ethereum2xFLIP: Token = {
   tokenContextKey: 'ethflip',
   fees: {
     streamingFee: '1.95%',
-    mintRedeemFee: '0.1%',
+    mintFee: '0.1%',
+    redeemFee: '0.1%',
   },
 }
 
@@ -267,7 +270,8 @@ export const Matic2xFLIP: Token = {
   tokenContextKey: 'maticflip',
   fees: {
     streamingFee: '1.95%',
-    mintRedeemFee: '0.1%',
+    mintFee: '0.1%',
+    redeemFee: '0.1%',
   },
 }
 
@@ -285,7 +289,8 @@ export const IMaticFLIP: Token = {
   tokenContextKey: 'imaticflip',
   fees: {
     streamingFee: '1.95%',
-    mintRedeemFee: '0.1%',
+    mintFee: '0.1%',
+    redeemFee: '0.1%',
   },
 }
 
@@ -303,7 +308,8 @@ export const IEthereumFLIP: Token = {
   tokenContextKey: 'iethflip',
   fees: {
     streamingFee: '1.95%',
-    mintRedeemFee: '0.1%',
+    mintFee: '0.1%',
+    redeemFee: '0.1%',
   },
 }
 
@@ -321,7 +327,8 @@ export const Bitcoin2xFLIP: Token = {
   tokenContextKey: 'btcflip',
   fees: {
     streamingFee: '1.95%',
-    mintRedeemFee: '0.1%',
+    mintFee: '0.1%',
+    redeemFee: '0.1%',
   },
 }
 
@@ -339,7 +346,8 @@ export const IBitcoinFLIP: Token = {
   tokenContextKey: 'ibtcflip',
   fees: {
     streamingFee: '1.95%',
-    mintRedeemFee: '0.1%',
+    mintFee: '0.1%',
+    redeemFee: '0.1%',
   },
 }
 
@@ -356,8 +364,9 @@ export const icETHIndex: Token = {
   tokensetsId: 'iceth',
   tokenContextKey: 'iceth',
   fees: {
-    streamingFee: '0.9%',
-    mintRedeemFee: '0.35%',
+    streamingFee: '0.75%',
+    mintFee: '0.0%',
+    redeemFee: '0.25%',
   },
 }
 
