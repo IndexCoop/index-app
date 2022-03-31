@@ -3,12 +3,17 @@ import { useCallback, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, useEthers } from '@usedapp/core'
 
+import {
+  collateralDebtSwapData,
+  debtCollateralSwapData,
+  inputSwapData,
+  outputSwapData,
+} from 'constants/exchangeIssuanceLeveragedData'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
 
 import { useExchangeIssuanceLeveraged } from './useExchangeIssuanceLeveraged'
 import { useTokenBalance } from './useTokenBalance'
-import { collateralDebtSwapData, debtCollateralSwapData, inputSwapData, outputSwapData } from 'constants/exchangeIssuanceLeveragedData'
 
 export const useTradeLeveragedExchangeIssuance = (
   isIssuance: boolean,
@@ -44,10 +49,7 @@ export const useTradeLeveragedExchangeIssuance = (
         : inputToken.address
     if (!outputTokenAddress || !inputTokenAddress) return
 
-    let requiredBalance = fromWei(
-      inputOutputLimit,
-      inputToken.decimals
-    )
+    let requiredBalance = fromWei(inputOutputLimit, inputToken.decimals)
     if (spendingTokenBalance.lt(requiredBalance)) return
 
     try {
@@ -57,8 +59,12 @@ export const useTradeLeveragedExchangeIssuance = (
         const isSellingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
-        const debtCollateralSwap = debtCollateralSwapData[outputToken.symbol as keyof Object];
-        const inputSwap = inputSwapData[outputToken.symbol as keyof Object][inputToken.symbol as keyof object];
+        const debtCollateralSwap =
+          debtCollateralSwapData[outputToken.symbol as keyof Object]
+        const inputSwap =
+          inputSwapData[outputToken.symbol as keyof Object][
+            inputToken.symbol as keyof object
+          ]
 
         if (isSellingNativeChainToken) {
           await issueExactSetFromETH(
@@ -67,7 +73,7 @@ export const useTradeLeveragedExchangeIssuance = (
             amountOfSetToken,
             debtCollateralSwap,
             inputSwap,
-            inputOutputLimit,            
+            inputOutputLimit
           )
         } else {
           await issueExactSetFromERC20(
@@ -83,9 +89,13 @@ export const useTradeLeveragedExchangeIssuance = (
       } else {
         const isRedeemingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
-        
-        const collateralDebtSwap = collateralDebtSwapData[inputToken.symbol as keyof Object];
-        const outputSwap = outputSwapData[inputToken.symbol as keyof Object][outputToken.symbol as keyof object];
+
+        const collateralDebtSwap =
+          collateralDebtSwapData[inputToken.symbol as keyof Object]
+        const outputSwap =
+          outputSwapData[inputToken.symbol as keyof Object][
+            outputToken.symbol as keyof object
+          ]
 
         if (isRedeemingNativeChainToken) {
           await redeemExactSetForETH(
@@ -105,7 +115,7 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputLimit,
             collateralDebtSwap,
             outputSwap
-          );
+          )
         }
       }
       setIsTransacting(false)
