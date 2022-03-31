@@ -11,7 +11,7 @@ import {
   getRequiredIssuanceComponents,
   getRequiredRedemptionComponents,
 } from 'hooks/useExchangeIssuanceZeroEx'
-import { displayFromWei, toWei } from 'utils'
+import { displayFromWei, fromWei, toWei } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { get0xQuote } from 'utils/zeroExUtils'
 
@@ -198,22 +198,31 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   console.log('Leveraged Token Data', leveragedTokenData)
 
   const { swapDataDebtCollateral, collateralObtained } =
-    await getSwapDataDebtCollateral(leveragedTokenData)
+    await getSwapDataDebtCollateral(leveragedTokenData, chainId)
 
   const collateralShortfall =
     leveragedTokenData.collateralAmount.sub(collateralObtained)
 
   console.log('PAYMENT TOKEN', paymentToken)
   const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
-  const paymentTokenAddress =
-    paymentToken.symbol === 'MATIC'
+  let paymentTokenAddress =
+    chainId === ChainId.Polygon && paymentToken.symbol === 'MATIC'
       ? WMATIC_ADDRESS
-      : paymentToken.polygonAddress
-  const { swapData: swapDataPaymentToken, zeroExQuote } = await getSwapData({
-    buyToken: leveragedTokenData.collateralToken,
-    buyAmount: collateralShortfall.toString(),
-    sellToken: paymentTokenAddress,
-  })
+      : chainId === ChainId.Polygon
+      ? paymentToken.polygonAddress
+      : paymentToken.address
+  if (paymentToken.symbol === 'ETH') {
+    paymentTokenAddress = 'ETH'
+  }
+
+  const { swapData: swapDataPaymentToken, zeroExQuote } = await getSwapData(
+    {
+      buyToken: leveragedTokenData.collateralToken,
+      buyAmount: collateralShortfall.toString(),
+      sellToken: paymentTokenAddress,
+    },
+    chainId
+  )
 
   const inputTokenAmount = BigNumber.from(zeroExQuote.sellAmount)
 
@@ -221,18 +230,23 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 }
 
 const getSwapDataDebtCollateral = async (
-  leveragedTokenData: LeveragedTokenData
+  leveragedTokenData: LeveragedTokenData,
+  chainId: ChainId = ChainId.Polygon
 ) => {
-  const { swapData: swapDataDebtCollateral, zeroExQuote } = await getSwapData({
-    buyToken: leveragedTokenData.collateralToken,
-    sellToken: leveragedTokenData.debtToken,
-    sellAmount: leveragedTokenData.debtAmount.toString(),
-  })
+  const { swapData: swapDataDebtCollateral, zeroExQuote } = await getSwapData(
+    {
+      buyToken: leveragedTokenData.collateralToken,
+      sellToken: leveragedTokenData.debtToken,
+      sellAmount: leveragedTokenData.debtAmount.toString(),
+    },
+    chainId
+  )
   const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
   return { swapDataDebtCollateral, collateralObtained }
 }
 
 const getSwapData = async (params: any, chainId: number = 137) => {
+  // TODO: error handling (for INSUFFICIENT_ASSET_LIQUIDITY)
   const zeroExQuote = await get0xQuote(
     {
       ...params,
