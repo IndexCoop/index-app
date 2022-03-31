@@ -64,7 +64,6 @@ export const useExchangeIssuanceLeveraged = () => {
    * @param library                       library from logged in user
    * @param _setToken                     Set token to issue
    * @param _setAmount                    Amount to issue
-   * @param _exchange                     Exchange to use in swap from debt to collateral token
    * @param _swapDataDebtForCollateral    Data (token addresses and fee levels) to describe the swap path from Debt to collateral token
    * @param _swapDataInputToken           Data (token addresses and fee levels) to describe the swap path from eth to collateral token
    */
@@ -72,9 +71,9 @@ export const useExchangeIssuanceLeveraged = () => {
     library: any,
     _setToken: string,
     _setAmount: BigNumber,
-    _exchange: Exchange,
     _swapDataDebtForCollateral: any,
-    _swapDataInputToken: any
+    _swapDataInputToken: any,
+    _maxInput: BigNumber
   ): Promise<any> => {
     console.log('issueExactSetFromETH')
     try {
@@ -84,9 +83,9 @@ export const useExchangeIssuanceLeveraged = () => {
       const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
         _setAmount,
-        _exchange,
         _swapDataDebtForCollateral,
-        _swapDataInputToken
+        _swapDataInputToken,
+        { value: _maxInput }
       )
       return issueSetTx
     } catch (err) {
@@ -101,15 +100,14 @@ export const useExchangeIssuanceLeveraged = () => {
    * @param library                     library from logged in user
    * @param _setAmount                  Amount to redeem
    * @param _minAmountOutputToken       Minimum amount of ETH to send to the user
-   * @param _exchange                   Exchange to use in swap from debt to collateral token
    * @param _swapDataCollateralForDebt  Data (token path and fee levels) describing the swap from Collateral Token to Debt Token
    * @param _swapDataOutputToken        Data (token path and fee levels) describing the swap from Collateral Token to Eth
    */
   const redeemExactSetForETH = async (
     library: any,
+    _setToken: string,
     _setAmount: BigNumber,
     _minAmountOutputToken: BigNumber,
-    _exchange: Exchange,
     _swapDataCollateralForDebt: any,
     _swapDataOutputToken: any
   ): Promise<any> => {
@@ -119,9 +117,9 @@ export const useExchangeIssuanceLeveraged = () => {
         library.getSigner()
       )
       const redeemSetTx = await eiContract.redeemExactSetForETH(
+        _setToken,
         _setAmount,
         _minAmountOutputToken,
-        _exchange,
         _swapDataCollateralForDebt,
         _swapDataOutputToken
       )
@@ -140,7 +138,6 @@ export const useExchangeIssuanceLeveraged = () => {
    * @param _setAmount                    Amount to issue
    * @param _inputToken                   Input token to pay with
    * @param _maxAmountInputToken          Maximum amount of input token to spend
-   * @param _exchange                     Exchange to use in swap from debt to collateral token
    * @param _swapDataDebtForCollateral    Data (token addresses and fee levels) to describe the swap path from Debt to collateral token
    * @param _swapDataInputToken           Data (token addresses and fee levels) to describe the swap path from input to collateral token
    */
@@ -150,7 +147,6 @@ export const useExchangeIssuanceLeveraged = () => {
     _setAmount: BigNumber,
     _inputToken: string,
     _maxAmountInputToken: BigNumber,
-    _exchange: Exchange,
     _swapDataDebtForCollateral: any,
     _swapDataInputToken: any
   ): Promise<any> => {
@@ -164,7 +160,6 @@ export const useExchangeIssuanceLeveraged = () => {
         _setAmount,
         _inputToken,
         _maxAmountInputToken,
-        _exchange,
         _swapDataDebtForCollateral,
         _swapDataInputToken
       )
@@ -183,7 +178,6 @@ export const useExchangeIssuanceLeveraged = () => {
    * @param _setAmount                  Amount to redeem
    * @param _outputToken                Address of the ERC20 token to send to the user
    * @param _minAmountOutputToken       Minimum amount of output token to send to the user
-   * @param _exchange                   Exchange to use in swap from debt to collateral token
    * @param _swapDataCollateralForDebt  Data (token path and fee levels) describing the swap from Collateral Token to Debt Token
    * @param _swapDataOutputToken        Data (token path and fee levels) describing the swap from Collateral Token to Output token
    */
@@ -193,9 +187,8 @@ export const useExchangeIssuanceLeveraged = () => {
     _setAmount: BigNumber,
     _outputToken: string,
     _minAmountOutputToken: BigNumber,
-    _exchange: Exchange,
-    _swapDataCollateralForDebt: string,
-    _swapDataOutputToken: string
+    _swapDataCollateralForDebt: any,
+    _swapDataOutputToken: any
   ): Promise<any> => {
     console.log('redeemExactSetForERC20')
     try {
@@ -207,7 +200,6 @@ export const useExchangeIssuanceLeveraged = () => {
         _setAmount,
         _outputToken,
         _minAmountOutputToken,
-        _exchange,
         _swapDataCollateralForDebt,
         _swapDataOutputToken
       )
@@ -228,8 +220,8 @@ export const useExchangeIssuanceLeveraged = () => {
    *
    * @param setToken                     the set token to issue
    * @param setAmount                    amount of set tokens
-   * @param _swapDataDebtForCollateral   swap data for the debt to collateral swap
-   * @param _swapDataInputToken          swap data for the input token to collateral swap
+   * @param _swapDataCollateralForDebt   swap data for the debt to collateral swap
+   * @param _swapDataOutputToken         swap data for the input token to collateral swap
    *
    * @return                             the amount of input tokens required to perfrom the issuance
    */
@@ -237,8 +229,8 @@ export const useExchangeIssuanceLeveraged = () => {
     library: any,
     setToken: string,
     setAmount: BigNumber,
-    _swapDataCollateralForDebt: string,
-    _swapDataOutputToken: string
+    _swapDataCollateralForDebt: any,
+    _swapDataOutputToken: any
   ): Promise<any> => {
     console.log('getIssueExactSet')
     try {
@@ -278,8 +270,8 @@ export const useExchangeIssuanceLeveraged = () => {
     library: any,
     setToken: string,
     setAmount: BigNumber,
-    _swapDataCollateralForDebt: string,
-    _swapDataOutputToken: string
+    _swapDataCollateralForDebt: any,
+    _swapDataOutputToken: any
   ): Promise<any> => {
     console.log('getRedeemExactSet')
     try {
