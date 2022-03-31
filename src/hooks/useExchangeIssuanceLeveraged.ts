@@ -85,7 +85,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _setAmount,
         _swapDataDebtForCollateral,
         _swapDataInputToken,
-        { value: _maxInput } 
+        { value: _maxInput }
       )
       return issueSetTx
     } catch (err) {
@@ -109,7 +109,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _setAmount: BigNumber,
     _minAmountOutputToken: BigNumber,
     _swapDataCollateralForDebt: any,
-    _swapDataOutputToken: any,
+    _swapDataOutputToken: any
   ): Promise<any> => {
     console.log('redeemExactSetForETH')
     try {
@@ -121,7 +121,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _setAmount,
         _minAmountOutputToken,
         _swapDataCollateralForDebt,
-        _swapDataOutputToken,
+        _swapDataOutputToken
       )
       return redeemSetTx
     } catch (err) {
