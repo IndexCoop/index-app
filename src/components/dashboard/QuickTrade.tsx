@@ -152,9 +152,11 @@ const QuickTrade = (props: {
       sellToken,
       buyToken,
       toWei(buyTokenAmount, buyToken.decimals),
+      // TODO: check input/ouput amount set correctly?
       bestOptionResult?.success
-        ? bestOptionResult.leveragedExchangeIssuanceData
-        : null
+        ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
+            BigNumber.from(0)
+        : BigNumber.from(0)
     )
 
   /**
