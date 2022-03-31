@@ -593,6 +593,13 @@ function getTradeInfoData0x(
   if (gasPrice === undefined || gas === undefined || sources === undefined)
     return []
 
+  const buyAmount =
+    displayFromWei(
+      BigNumber.from(zeroExTradeData.buyAmount),
+      undefined,
+      tokenDecimals
+    ) ?? '0.0'
+
   const minReceive =
     displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
 
@@ -605,7 +612,7 @@ function getTradeInfoData0x(
     .map((source) => source.name)
 
   return [
-    { title: 'Price', value: zeroExTradeData.price },
+    { title: 'Buy Amount', value: buyAmount },
     { title: 'Minimum Receive', value: minReceive },
     { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
     { title: 'Offered From', value: offeredFromSources.toString() },

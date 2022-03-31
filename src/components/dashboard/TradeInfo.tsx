@@ -5,8 +5,8 @@ export interface TradeInfoItem {
   value: string
 }
 
-const excludePriceItem = (tradeInfoItem: TradeInfoItem): boolean =>
-  tradeInfoItem.title !== 'Price'
+const excludeBuyAmountItem = (tradeInfoItem: TradeInfoItem): boolean =>
+  tradeInfoItem.title !== 'Buy Amount'
 
 const TradeInfoItemRow = ({ title, value }: TradeInfoItem) => {
   if (title === 'Offered From') {
@@ -40,7 +40,7 @@ const TradeInfoItemRow = ({ title, value }: TradeInfoItem) => {
 const TradeInfo = (props: { data: TradeInfoItem[] }) => {
   return (
     <Flex direction='column'>
-      {props.data.filter(excludePriceItem).map((item, index) => (
+      {props.data.filter(excludeBuyAmountItem).map((item, index) => (
         <Box key={index} mb='16px'>
           <TradeInfoItemRow title={item.title} value={item.value} />
         </Box>

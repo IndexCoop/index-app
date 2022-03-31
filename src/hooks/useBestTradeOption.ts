@@ -62,7 +62,7 @@ export const useBestTradeOption = () => {
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
-    // const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
+    const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
     // console.log('buyToken', buyToken)
     // console.log('isBuyingTokenEligible', isBuyingTokenEligible)
 
@@ -93,25 +93,25 @@ export const useBestTradeOption = () => {
     /* Check ExchangeIssuanceLeveraged option */
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
-    // if (account && isBuyingTokenEligible) {
-    //   console.log('Getting leveraged ei option')
-    //   const setToken = isIssuance ? buyToken : sellToken
-    //   const setAmount = isIssuance ? buyTokenAmount : sellTokenAmount
-    //   const paymentToken = isIssuance ? sellToken : buyToken
-    //   try {
-    //     leveragedExchangeIssuanceOption =
-    //       await getLeveragedExchangeIssuanceQuotes(
-    //         setToken,
-    //         setAmount,
-    //         paymentToken,
-    //         isIssuance,
-    //         chainId,
-    //         library
-    //       )
-    //   } catch (e) {
-    //     console.warn('error when generating leveraged ei option', e)
-    //   }
-    // }
+    if (account && isBuyingTokenEligible) {
+      console.log('Getting leveraged ei option')
+      const setToken = isIssuance ? buyToken : sellToken
+      const setAmount = isIssuance ? buyTokenAmount : sellTokenAmount
+      const paymentToken = isIssuance ? sellToken : buyToken
+      try {
+        leveragedExchangeIssuanceOption =
+          await getLeveragedExchangeIssuanceQuotes(
+            setToken,
+            setAmount,
+            paymentToken,
+            isIssuance,
+            chainId,
+            library
+          )
+      } catch (e) {
+        console.warn('error when generating leveraged ei option', e)
+      }
+    }
 
     console.log('exchangeIssueOption', exchangeIssuanceOption)
     console.log('exchangeIssueLeveragedOption', leveragedExchangeIssuanceOption)
