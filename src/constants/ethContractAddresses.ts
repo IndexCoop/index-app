@@ -14,7 +14,7 @@ export const btc2xfliSuppyCapAddress =
 export const ExchangeIssuanceZeroExAddress =
   '0xf42eCDC112365fF79a745B4cf7D4C266bd6E4b25'
 export const ExchangeIssuanceLeveragedMainnetAddress =
-  '0x2F2C59212d1D0468eFA456fe51F49ED4A5538D64'
+  '0xB7cc88A13586D862B97a677990de14A122b74598'
 
 // Index Coop Polygon Contract Addresses
 export const eth2xFLIPSuppyCapAddress =
