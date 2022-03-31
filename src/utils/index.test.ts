@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { displayFromWei, safeDiv, toWei } from '.'
+import { displayFromWei, isValidTokenInput, safeDiv, toWei } from '.'
 
 describe('displayFromWei', () => {
   it('should return null with no number provided', () => {
@@ -30,6 +30,31 @@ describe('displayFromWei', () => {
       18
     )
     expect(displayValue).toBe('157.097183810163386397')
+  })
+})
+
+describe('isValidTokenInput()', () => {
+  describe('should return true when valid input', () => {
+    it('zero', () => {
+      expect(isValidTokenInput('0')).toBe(true)
+    })
+    it('positive number', () => {
+      expect(isValidTokenInput('12')).toBe(true)
+    })
+    it('positive float', () => {
+      expect(isValidTokenInput('3.4')).toBe(true)
+    })
+  })
+  describe('should return false when invalid input', () => {
+    it('empty string', () => {
+      expect(isValidTokenInput('')).toBe(false)
+    })
+    it('input unless than zero', () => {
+      expect(isValidTokenInput('-1')).toBe(false)
+    })
+    it('input has more decimals then token actual does (underflow)', () => {
+      expect(isValidTokenInput('0.01', 1)).toBe(false)
+    })
   })
 })
 

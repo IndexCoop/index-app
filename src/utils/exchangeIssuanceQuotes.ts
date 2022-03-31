@@ -4,6 +4,10 @@ import { ChainId } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
 import {
+  getExchangeIssuanceLeveragedContract,
+  getLeveragedTokenData,
+} from 'hooks/useExchangeIssuanceLeveraged'
+import {
   getRequiredIssuanceComponents,
   getRequiredRedemptionComponents,
 } from 'hooks/useExchangeIssuanceZeroEx'
@@ -14,6 +18,34 @@ import { get0xQuote } from 'utils/zeroExUtils'
 export interface ExchangeIssuanceQuote {
   tradeData: string[]
   inputTokenAmount: BigNumber
+}
+
+export interface LeveragedExchangeIssuanceQuote {
+  swapDataDebtCollateral: SwapData
+  swapDataPaymentToken: SwapData
+  inputTokenAmount: BigNumber
+}
+
+export enum Exchange {
+  None,
+  Quickswap,
+  Sushiswap,
+  UniV3,
+  Curve,
+}
+export interface SwapData {
+  exchange: Exchange
+  path: string[]
+  fees: number[]
+  pool: string
+}
+
+export interface LeveragedTokenData {
+  collateralAToken: Token
+  collateralToken: Token
+  debtToken: Token
+  collateralAmount: BigNumber
+  debtAmount: BigNumber
 }
 
 /**
@@ -129,4 +161,107 @@ export const getExchangeIssuanceQuotes = async (
   )
 
   return { tradeData: positionQuotes, inputTokenAmount }
+}
+
+export const getLeveragedExchangeIssuanceQuotes = async (
+  setToken: Token,
+  setTokenAmount: string,
+  paymentToken: Token,
+  isIssuance: boolean,
+  chainId: ChainId = ChainId.Mainnet,
+  library: ethers.providers.Web3Provider | undefined
+): Promise<LeveragedExchangeIssuanceQuote | null> => {
+  const tokenSymbol = setToken.symbol
+  const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
+  const setTokenAmountWei = toWei(setTokenAmount, setToken.decimals)
+  console.log('Getting issuance quotes')
+  console.log(
+    'fetching...',
+    setTokenAmount.toString(),
+    setToken.symbol,
+    setToken.address,
+    issuanceModule
+  )
+
+  const setTokenAddress =
+    chainId === ChainId.Polygon ? setToken.polygonAddress : setToken.address
+  const contract = await getExchangeIssuanceLeveragedContract(
+    library?.getSigner(),
+    chainId
+  )
+  const leveragedTokenData: LeveragedTokenData = await getLeveragedTokenData(
+    contract,
+    setTokenAddress ?? '',
+    setTokenAmountWei,
+    isIssuance
+  )
+  console.log('Leveraged Token Data', leveragedTokenData)
+
+  const { swapDataDebtCollateral, collateralObtained } =
+    await getSwapDataDebtCollateral(leveragedTokenData, chainId)
+
+  const collateralShortfall =
+    leveragedTokenData.collateralAmount.sub(collateralObtained)
+
+  console.log('PAYMENT TOKEN', paymentToken)
+  const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
+  let paymentTokenAddress =
+    chainId === ChainId.Polygon && paymentToken.symbol === 'MATIC'
+      ? WMATIC_ADDRESS
+      : chainId === ChainId.Polygon
+      ? paymentToken.polygonAddress
+      : paymentToken.address
+  if (paymentToken.symbol === 'ETH') {
+    paymentTokenAddress = 'ETH'
+  }
+
+  const { swapData: swapDataPaymentToken, zeroExQuote } = await getSwapData(
+    {
+      buyToken: leveragedTokenData.collateralToken,
+      buyAmount: collateralShortfall.toString(),
+      sellToken: paymentTokenAddress,
+    },
+    chainId
+  )
+
+  const inputTokenAmount = BigNumber.from(zeroExQuote.sellAmount)
+
+  return { swapDataDebtCollateral, swapDataPaymentToken, inputTokenAmount }
+}
+
+const getSwapDataDebtCollateral = async (
+  leveragedTokenData: LeveragedTokenData,
+  chainId: ChainId = ChainId.Polygon
+) => {
+  const { swapData: swapDataDebtCollateral, zeroExQuote } = await getSwapData(
+    {
+      buyToken: leveragedTokenData.collateralToken,
+      sellToken: leveragedTokenData.debtToken,
+      sellAmount: leveragedTokenData.debtAmount.toString(),
+    },
+    chainId
+  )
+  const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
+  return { swapDataDebtCollateral, collateralObtained }
+}
+
+const getSwapData = async (params: any, chainId: number = 137) => {
+  // TODO: error handling (for INSUFFICIENT_ASSET_LIQUIDITY)
+  const zeroExQuote = await get0xQuote(
+    {
+      ...params,
+      slippagePercentage: 0.5,
+      //TODO: Allow Quickswap and UniV3
+      includedSources: 'SushiSwap',
+    },
+    chainId
+  )
+  // TODO: ?
+  const swapData = {
+    exchange: Exchange.Sushiswap,
+    path: zeroExQuote.orders[0].fillData.tokenAddressPath,
+    fees: [],
+    pool: '0x0000000000000000000000000000000000000000',
+  }
+  return { swapData, zeroExQuote }
 }

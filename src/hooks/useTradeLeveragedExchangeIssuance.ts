@@ -3,24 +3,26 @@ import { useCallback, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, useEthers } from '@usedapp/core'
 
+import {
+  collateralDebtSwapData,
+  debtCollateralSwapData,
+  inputSwapData,
+  outputSwapData,
+} from 'constants/exchangeIssuanceLeveragedData'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
-import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
-import { getIssuanceModule } from 'utils/issuanceModule'
 
-import {
-  Exchange,
-  useExchangeIssuanceLeveraged,
-} from './useExchangeIssuanceLeveraged'
+import { useExchangeIssuanceLeveraged } from './useExchangeIssuanceLeveraged'
 import { useTokenBalance } from './useTokenBalance'
 
 export const useTradeLeveragedExchangeIssuance = (
   isIssuance: boolean,
   inputToken: Token,
   outputToken: Token,
-  // buy token amount
+  // buy / sell token amount
   tokenAmout: BigNumber,
-  quoteData?: ExchangeIssuanceQuote | null
+  // max input / min output
+  inputOutputLimit: BigNumber
 ) => {
   const { account, chainId, library } = useEthers()
   const {
@@ -30,14 +32,12 @@ export const useTradeLeveragedExchangeIssuance = (
     redeemExactSetForERC20,
   } = useExchangeIssuanceLeveraged()
 
-  const tokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
-  const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
   const spendingTokenBalance = useTokenBalance(inputToken) || BigNumber.from(0)
 
   const [isTransactingLevEI, setIsTransacting] = useState(false)
 
   const executeLevEITrade = useCallback(async () => {
-    if (!account || !quoteData) return
+    if (!account || !inputOutputLimit) return
 
     const outputTokenAddress =
       chainId === ChainId.Polygon
@@ -49,14 +49,8 @@ export const useTradeLeveragedExchangeIssuance = (
         : inputToken.address
     if (!outputTokenAddress || !inputTokenAddress) return
 
-    let requiredBalance = fromWei(
-      quoteData.inputTokenAmount,
-      inputToken.decimals
-    )
+    let requiredBalance = fromWei(inputOutputLimit, inputToken.decimals)
     if (spendingTokenBalance.lt(requiredBalance)) return
-
-    console.log(quoteData.tradeData)
-    console.log(quoteData.inputTokenAmount.toString())
 
     try {
       setIsTransacting(true)
@@ -65,59 +59,63 @@ export const useTradeLeveragedExchangeIssuance = (
         const isSellingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
+        const debtCollateralSwap =
+          debtCollateralSwapData[outputToken.symbol as keyof Object]
+        const inputSwap =
+          inputSwapData[outputToken.symbol as keyof Object][
+            inputToken.symbol as keyof object
+          ]
+
         if (isSellingNativeChainToken) {
           await issueExactSetFromETH(
             library,
             outputTokenAddress,
             amountOfSetToken,
-            // TODO: add best exhange
-            Exchange.UniV3,
-            // TODO: add swap data debt collertal
-            issuanceModule.address,
-            // TODO: add swap data input token
-            issuanceModule.isDebtIssuance
+            debtCollateralSwap,
+            inputSwap,
+            inputOutputLimit
           )
         } else {
-          const maxAmountInputToken = quoteData.inputTokenAmount
-          // TODO: pass correct params
-          // await issueExactSetFromToken(
-          //   library,
-          //   outputTokenAddress,
-          //   inputTokenAddress,
-          //   amountOfSetToken,
-          //   maxAmountInputToken,
-          //   quoteData.tradeData,
-          //   issuanceModule.address,
-          //   issuanceModule.isDebtIssuance
-          // )
+          await issueExactSetFromERC20(
+            library,
+            outputTokenAddress,
+            amountOfSetToken,
+            inputTokenAddress,
+            inputOutputLimit,
+            debtCollateralSwap,
+            inputSwap
+          )
         }
       } else {
         const isRedeemingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
-        const minAmountToReceive = tokenAmout
+
+        const collateralDebtSwap =
+          collateralDebtSwapData[inputToken.symbol as keyof Object]
+        const outputSwap =
+          outputSwapData[inputToken.symbol as keyof Object][
+            outputToken.symbol as keyof object
+          ]
 
         if (isRedeemingNativeChainToken) {
-          // TODO: pass correct params
-          // await redeemExactSetForETH(
-          //   library,
-          //   inputTokenAddress,
-          //   minAmountToReceive,
-          //   quoteData.tradeData,
-          //   issuanceModule.address,
-          //   issuanceModule.isDebtIssuance
-          // )
+          await redeemExactSetForETH(
+            library,
+            inputTokenAddress,
+            tokenAmout,
+            inputOutputLimit,
+            collateralDebtSwap,
+            outputSwap
+          )
         } else {
-          // TODO: pass correct params
-          // await redeemExactSetForToken(
-          //   library,
-          //   inputTokenAddress,
-          //   outputTokenAddress,
-          //   requiredBalance,
-          //   minAmountToReceive,
-          //   quoteData.tradeData,
-          //   issuanceModule.address,
-          //   issuanceModule.isDebtIssuance
-          // )
+          await redeemExactSetForERC20(
+            library,
+            inputTokenAddress,
+            tokenAmout,
+            outputTokenAddress,
+            inputOutputLimit,
+            collateralDebtSwap,
+            outputSwap
+          )
         }
       }
       setIsTransacting(false)
@@ -125,7 +123,7 @@ export const useTradeLeveragedExchangeIssuance = (
       setIsTransacting(false)
       console.log('Error sending transaction', error)
     }
-  }, [account, quoteData])
+  }, [account, inputOutputLimit])
 
   return { executeLevEITrade, isTransactingLevEI }
 }

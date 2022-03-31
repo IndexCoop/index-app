@@ -58,6 +58,21 @@ export const displayFromWei = (
   return formatUnits(number, power)
 }
 
+/**
+ * Validate that the input amount is valid (positive, not excessive decimals)
+ */
+export const isValidTokenInput = (
+  tokenAmount: string,
+  tokenDecimals: number = 18
+) => {
+  try {
+    const parsedBn = parseUnits(tokenAmount, tokenDecimals)
+    return !parsedBn.isNegative()
+  } catch {
+    return false
+  }
+}
+
 export const safeDiv = (dividend: BigNumber, divisor: BigNumber): BigNumber => {
   if (divisor.isZero()) return BigNumber.from(0)
   return dividend.div(divisor)

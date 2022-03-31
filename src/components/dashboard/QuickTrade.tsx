@@ -36,8 +36,11 @@ import { useTokenBalance } from 'hooks/useTokenBalance'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
-import { displayFromWei, toWei } from 'utils'
-import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
+import { displayFromWei, isValidTokenInput, toWei } from 'utils'
+import {
+  ExchangeIssuanceQuote,
+  LeveragedExchangeIssuanceQuote,
+} from 'utils/exchangeIssuanceQuotes'
 import { ZeroExData } from 'utils/zeroExUtils'
 
 import QuickTradeSelector from './QuickTradeSelector'
@@ -149,9 +152,11 @@ const QuickTrade = (props: {
       sellToken,
       buyToken,
       toWei(buyTokenAmount, buyToken.decimals),
+      // TODO: check input/ouput amount set correctly?
       bestOptionResult?.success
-        ? bestOptionResult.leveragedExchangeIssuanceData
-        : null
+        ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
+            BigNumber.from(0)
+        : BigNumber.from(0)
     )
 
   /**
@@ -179,18 +184,21 @@ const QuickTrade = (props: {
     )
     setTradeInfoData(dexTradeInfoData)
 
-    const eiTradeInfoData = getTradeInfoDataFromEI(
-      bestOptionResult.exchangeIssuanceData,
-      sellToken.decimals,
-      chainId
-    )
-    setTradeInfoDataEI(eiTradeInfoData)
+    // const eiTradeInfoData = getTradeInfoDataFromEI(
+    //   isBuying ? buyTokenAmount : sellTokenAmount,
+    //   bestOptionResult.exchangeIssuanceData ??
+    //     bestOptionResult.leveragedExchangeIssuanceData,
+    //   sellToken.decimals,
+    //   chainId
+    // )
+    // setTradeInfoDataEI(eiTradeInfoData)
 
-    setBestOption(
-      bestOptionIs0x
-        ? QuickTradeBestOption.zeroEx
-        : QuickTradeBestOption.exchangeIssuance
-    )
+    // setBestOption(
+    //   bestOptionIs0x
+    //     ? QuickTradeBestOption.zeroEx
+    //     : QuickTradeBestOption.exchangeIssuance
+    // )
+    setBestOption(QuickTradeBestOption.zeroEx)
   }, [bestOptionResult])
 
   /**
@@ -351,11 +359,9 @@ const QuickTrade = (props: {
     return 'Trade'
   }
 
-  const onChangeSellTokenAmount = (input: string) => {
-    const inputNumber = Number(input)
-    if (input === sellTokenAmount || input.slice(-1) === '.') return
-    if (isNaN(inputNumber) || inputNumber < 0) return
-    setSellTokenAmount(inputNumber.toString())
+  const onChangeSellTokenAmount = (token: Token) => (input: string) => {
+    if (!isValidTokenInput(input, token.decimals)) return
+    setSellTokenAmount(input || '0')
   }
 
   const onChangeSellToken = (symbol: string) => {
@@ -471,7 +477,7 @@ const QuickTrade = (props: {
           selectedToken={sellToken}
           tokenList={sellTokenList}
           selectedTokenBalance={sellTokenBalanceFormatted}
-          onChangeInput={onChangeSellTokenAmount}
+          onChangeInput={onChangeSellTokenAmount(sellToken)}
           onSelectedToken={onChangeSellToken}
           isNarrowVersion={isNarrow}
         />
@@ -551,22 +557,28 @@ const TradeButton = (props: TradeButtonProps) => (
 )
 
 function getTradeInfoDataFromEI(
-  data: ExchangeIssuanceQuote | null | undefined,
+  setAmount: string,
+  data:
+    | ExchangeIssuanceQuote
+    | LeveragedExchangeIssuanceQuote
+    | null
+    | undefined,
   tokenDecimals: number,
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
   // TODO: fix to show minium receive not input token amount!
-  const minReceive =
+  const maxPayment =
     displayFromWei(data.inputTokenAmount, undefined, tokenDecimals) ?? '0.0'
   // TODO:
   const networkFee = ''
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: 'Minimum Receive', value: minReceive },
-    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
     { title: 'Offered From', value: offeredFrom },
+    { title: 'Exact Set amount', value: setAmount },
+    { title: 'Maximum payment amount', value: maxPayment },
+    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
   ]
 }
 
@@ -581,6 +593,13 @@ function getTradeInfoData0x(
   if (gasPrice === undefined || gas === undefined || sources === undefined)
     return []
 
+  const buyAmount =
+    displayFromWei(
+      BigNumber.from(zeroExTradeData.buyAmount),
+      undefined,
+      tokenDecimals
+    ) ?? '0.0'
+
   const minReceive =
     displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
 
@@ -593,6 +612,7 @@ function getTradeInfoData0x(
     .map((source) => source.name)
 
   return [
+    { title: 'Buy Amount', value: buyAmount },
     { title: 'Minimum Receive', value: minReceive },
     { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
     { title: 'Offered From', value: offeredFromSources.toString() },
