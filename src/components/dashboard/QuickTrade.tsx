@@ -218,16 +218,16 @@ const QuickTrade = (props: {
   }, [chainId])
 
   useEffect(() => {
+    const prevSellToken = sellToken
+    const prevBuyToken = buyToken
     const currencyTokensList = getCurrencyTokensByChain()
     const tokenList = getTokenListByChain()
     const sellTokenList = isBuying ? currencyTokensList : tokenList
     const buyTokenList = isBuying ? tokenList : currencyTokensList
-    const sellToken = sellTokenList[0]
-    const buyToken = buyTokenList[0]
     setSellTokenList(sellTokenList)
     setBuyTokenList(buyTokenList)
-    setSellToken(sellToken)
-    setBuyToken(buyToken)
+    setSellToken(prevBuyToken)
+    setBuyToken(prevSellToken)
   }, [isBuying])
 
   useEffect(() => {
