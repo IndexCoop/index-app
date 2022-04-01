@@ -100,9 +100,6 @@ const QuickTrade = (props: {
   )
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
-  // FIXME: remove later, just for testing
-  const [tradeInfoDataEI, setTradeInfoDataEI] = useState<TradeInfoItem[]>([])
-
   const sellTokenBalance = useTokenBalance(sellToken)
   const buyTokenBalance = useTokenBalance(buyToken)
 
@@ -129,11 +126,7 @@ const QuickTrade = (props: {
   } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
 
   // TODO: set from best option hook?
-  // FIXME: change back to just ` = tradeInfoData[0]?.value ?? '0'` for production
-  const buyTokenAmount =
-    (bestOption === QuickTradeBestOption.zeroEx
-      ? tradeInfoData[0]?.value
-      : tradeInfoDataEI[0]?.value) ?? '0'
+  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
@@ -168,37 +161,30 @@ const QuickTrade = (props: {
       return
     }
 
+    // TODO: factor in gas for both options
     const bestOptionIs0x =
-      !bestOptionResult.exchangeIssuanceData ||
+      !bestOptionResult.leveragedExchangeIssuanceData ||
       toWei(sellTokenAmount, sellToken.decimals).lt(
-        bestOptionResult.exchangeIssuanceData.inputTokenAmount
+        bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount
       )
-    console.log('0xISBESTOPTION', bestOptionIs0x)
 
     const buyTokenDecimals = buyToken.decimals
 
-    const dexTradeInfoData = getTradeInfoData0x(
-      bestOptionResult.dexData,
-      buyTokenDecimals,
-      chainId
-    )
+    const dexTradeInfoData = bestOptionIs0x
+      ? getTradeInfoData0x(bestOptionResult.dexData, buyTokenDecimals, chainId)
+      : getTradeInfoDataFromEI(
+          isBuying ? buyTokenAmount : sellTokenAmount,
+          bestOptionResult.leveragedExchangeIssuanceData,
+          isBuying ? buyToken.decimals : sellToken.decimals,
+          chainId
+        )
     setTradeInfoData(dexTradeInfoData)
 
-    // const eiTradeInfoData = getTradeInfoDataFromEI(
-    //   isBuying ? buyTokenAmount : sellTokenAmount,
-    //   bestOptionResult.exchangeIssuanceData ??
-    //     bestOptionResult.leveragedExchangeIssuanceData,
-    //   sellToken.decimals,
-    //   chainId
-    // )
-    // setTradeInfoDataEI(eiTradeInfoData)
-
-    // setBestOption(
-    //   bestOptionIs0x
-    //     ? QuickTradeBestOption.zeroEx
-    //     : QuickTradeBestOption.exchangeIssuance
-    // )
-    setBestOption(QuickTradeBestOption.zeroEx)
+    setBestOption(
+      bestOptionIs0x
+        ? QuickTradeBestOption.zeroEx
+        : QuickTradeBestOption.leveragedExchangeIssuance
+    )
   }, [bestOptionResult])
 
   /**
@@ -511,7 +497,6 @@ const QuickTrade = (props: {
       </Flex>
       <Flex direction='column'>
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
-        {tradeInfoDataEI.length > 0 && <TradeInfo data={tradeInfoDataEI} />}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
             Error fetching a quote.
