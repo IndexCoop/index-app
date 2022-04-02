@@ -180,6 +180,7 @@ const QuickTrade = (props: {
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
         )
+    console.log('dex trade infooooo', dexTradeInfoData)
     setTradeInfoData(dexTradeInfoData)
 
     setBestOption(

@@ -59,13 +59,15 @@ export const useTradeLeveragedExchangeIssuance = (
         const isSellingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
-        const debtCollateralSwap =
-          debtCollateralSwapData[outputToken.symbol as keyof Object]
-        const inputSwap =
-          inputSwapData[outputToken.symbol as keyof Object][
-            inputToken.symbol as keyof object
-          ]
+          console.log('inputToken', inputToken, 'output', outputToken, 'debt', debtCollateralSwapData, 'input', inputSwapData)
 
+        const debtCollateralSwap =
+          debtCollateralSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84']
+        const inputSwap =
+          inputSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'][
+            inputToken.address as keyof object
+          ]
+        console.log('debt swap', debtCollateralSwap)
         if (isSellingNativeChainToken) {
           await issueExactSetFromETH(
             library,
