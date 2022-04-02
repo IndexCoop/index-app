@@ -259,6 +259,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     swapDataPaymentToken.path = []
   }
 
+  console.log('swap data', { swapDataDebtCollateral, swapDataPaymentToken, inputTokenAmount })
   return { swapDataDebtCollateral, swapDataPaymentToken, inputTokenAmount }
 }
 

@@ -81,7 +81,7 @@ export const useExchangeIssuanceLeveraged = () => {
       const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-      console.log('params', _setAmount, _swapDataInputToken, 'debt' , _swapDataDebtForCollateral, 'contract', eiContract)
+
       const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
         _setAmount,
@@ -89,12 +89,12 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataInputToken,
         { value: _maxInput }
       )
-      console.log("issue set", issueSetTx)
-      return issueSetTx
-    } catch (err) {
-      console.log('error', err)
-      return err
-    }
+    console.log("issue set", issueSetTx)
+    return issueSetTx
+  } catch (err) {
+    console.log('error', err)
+    return err
+  }
   }
 
   /**

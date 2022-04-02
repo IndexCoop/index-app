@@ -307,40 +307,153 @@ export const EI_LEVERAGED_ABI = [
   {
     inputs: [
       {
-        internalType: 'contract ISetToken',
-        name: '_setToken',
-        type: 'address',
-      },
-      { internalType: 'uint256', name: '_setAmount', type: 'uint256' },
-      {
-        internalType: 'enum DEXAdapter.Exchange',
-        name: '_exchange',
-        type: 'uint8',
+        internalType: "contract ISetToken",
+        name: "_setToken",
+        type: "address"
       },
       {
-        components: [
-          { internalType: 'address[]', name: 'path', type: 'address[]' },
-          { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+        internalType: "uint256",
+        name: "_setAmount",
+        type: "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint24[]",
+            "name": "fees",
+            "type": "uint24[]"
+          },
+          {
+            "internalType": "address",
+            "name": "pool",
+            "type": "address"
+          },
+          {
+            "internalType": "enum DEXAdapter.Exchange",
+            "name": "exchange",
+            "type": "uint8"
+          }
         ],
-        internalType: 'struct DEXAdapter.SwapData',
-        name: '_swapDataDebtForCollateral',
-        type: 'tuple',
+        "internalType": "struct DEXAdapter.SwapData",
+        "name": "_swapDataDebtForCollateral",
+        "type": "tuple"
       },
       {
-        components: [
-          { internalType: 'address[]', name: 'path', type: 'address[]' },
-          { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+        "components": [
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint24[]",
+            "name": "fees",
+            "type": "uint24[]"
+          },
+          {
+            "internalType": "address",
+            "name": "pool",
+            "type": "address"
+          },
+          {
+            "internalType": "enum DEXAdapter.Exchange",
+            "name": "exchange",
+            "type": "uint8"
+          }
         ],
-        internalType: 'struct DEXAdapter.SwapData',
-        name: '_swapDataInputToken',
-        type: 'tuple',
-      },
+        "internalType": "struct DEXAdapter.SwapData",
+        "name": "_swapDataInputToken",
+        "type": "tuple"
+      }
     ],
-    name: 'issueExactSetFromETH',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    name: "issueExactSetFromETH",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
+  {
+    inputs: [
+        {
+            internalType: "contract ISetToken",
+            name: "_setToken",
+            type: "address"
+        },
+        {
+            internalType: "uint256",
+            name: "_setAmount",
+            type: "uint256"
+        },
+        {
+            components: [
+                {
+                    "internalType": "address[]",
+                    "name": "path",
+                    "type": "address[]"
+                },
+                {
+                    "internalType": "uint24[]",
+                    "name": "fees",
+                    "type": "uint24[]"
+                },
+                {
+                    "internalType": "address",
+                    "name": "pool",
+                    "type": "address"
+                },
+                {
+                    "internalType": "enum DEXAdapter.Exchange",
+                    "name": "exchange",
+                    "type": "uint8"
+                }
+            ],
+            internalType: "struct DEXAdapter.SwapData",
+            name: "_swapDataDebtForCollateral",
+            type: "tuple"
+        },
+        {
+            components: [
+                {
+                    "internalType": "address[]",
+                    "name": "path",
+                    "type": "address[]"
+                },
+                {
+                    "internalType": "uint24[]",
+                    "name": "fees",
+                    "type": "uint24[]"
+                },
+                {
+                    "internalType": "address",
+                    "name": "pool",
+                    "type": "address"
+                },
+                {
+                    "internalType": "enum DEXAdapter.Exchange",
+                    "name": "exchange",
+                    "type": "uint8"
+                }
+            ],
+            internalType: "struct DEXAdapter.SwapData",
+            name: "_swapDataInputToken",
+            type: "tuple"
+        }
+    ],
+    name: "getIssueExactSet",
+    "outputs": [
+        {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+},  
   {
     inputs: [],
     name: 'quickRouter',
