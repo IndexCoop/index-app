@@ -98,7 +98,7 @@ export const useBestTradeOption = () => {
     if (account && !dexSwapError && isBuyingTokenEligible && isIcEth) {
       console.log('Getting leveraged ei option')
       const setToken = isIssuance ? buyToken : sellToken
-      const setAmount = tokenAmount.toString()
+      const setAmount = tokenAmount
       const paymentToken = isIssuance ? sellToken : buyToken
       try {
         leveragedExchangeIssuanceOption =

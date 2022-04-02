@@ -182,14 +182,13 @@ export const getExchangeIssuanceQuotes = async (
 
 export const getLeveragedExchangeIssuanceQuotes = async (
   setToken: Token,
-  setTokenAmount: string,
+  setTokenAmount: BigNumber,
   paymentToken: Token,
   isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
   library: ethers.providers.Web3Provider | undefined
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const tokenSymbol = setToken.symbol
-  const setTokenAmountWei = toWei(setTokenAmount, setToken.decimals)
   const isIcEth = tokenSymbol === 'icETH'
   console.log('Getting issuance quotes')
 
@@ -202,7 +201,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   const leveragedTokenData: LeveragedTokenData = await getLeveragedTokenData(
     contract,
     setTokenAddress ?? '',
-    setTokenAmountWei,
+    setTokenAmount,
     isIssuance
   )
   console.log('Leveraged Token Data', leveragedTokenData)
