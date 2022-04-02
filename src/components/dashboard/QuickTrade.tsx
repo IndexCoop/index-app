@@ -144,8 +144,10 @@ const QuickTrade = (props: {
       isBuying,
       sellToken,
       buyToken,
-      toWei(buyTokenAmount, buyToken.decimals),
-      // TODO: check input/ouput amount set correctly?
+      bestOptionResult?.success
+        ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
+            BigNumber.from(0)
+        : BigNumber.from(0),
       bestOptionResult?.success
         ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
             BigNumber.from(0)
@@ -173,7 +175,8 @@ const QuickTrade = (props: {
     const dexTradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(bestOptionResult.dexData, buyTokenDecimals, chainId)
       : getTradeInfoDataFromEI(
-          isBuying ? buyTokenAmount : sellTokenAmount,
+          bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
+            BigNumber.from(0),
           bestOptionResult.leveragedExchangeIssuanceData,
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
@@ -258,7 +261,7 @@ const QuickTrade = (props: {
 
   useEffect(() => {
     fetchOptions()
-  }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
+  }, [buyToken, sellToken, sellTokenAmount])
 
   const fetchOptions = () => {
     // Right now we only allow setting the sell amount, so no need to check
@@ -269,7 +272,7 @@ const QuickTrade = (props: {
       sellToken,
       sellTokenAmount,
       buyToken,
-      buyTokenAmount,
+      // buyTokenAmount,
       isBuying
     )
   }
@@ -423,7 +426,7 @@ const QuickTrade = (props: {
     if (!account) return false
     if (hasFetchingError) return false
     return (
-      buyTokenAmount === '0' ||
+      sellTokenAmount === '0' ||
       hasInsufficientFunds ||
       isTransacting ||
       isTransactingEI ||
@@ -542,7 +545,7 @@ const TradeButton = (props: TradeButtonProps) => (
 )
 
 function getTradeInfoDataFromEI(
-  setAmount: string,
+  setAmount: BigNumber,
   data:
     | ExchangeIssuanceQuote
     | LeveragedExchangeIssuanceQuote
@@ -552,7 +555,7 @@ function getTradeInfoDataFromEI(
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
-  // TODO: fix to show minium receive not input token amount!
+  const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
   const maxPayment =
     displayFromWei(data.inputTokenAmount, undefined, tokenDecimals) ?? '0.0'
   // TODO:
@@ -560,10 +563,10 @@ function getTradeInfoDataFromEI(
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: 'Offered From', value: offeredFrom },
-    { title: 'Exact Set amount', value: setAmount },
+    { title: 'Exact Set amount', value: exactSetAmount },
     { title: 'Maximum payment amount', value: maxPayment },
     { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
+    { title: 'Offered From', value: offeredFrom },
   ]
 }
 

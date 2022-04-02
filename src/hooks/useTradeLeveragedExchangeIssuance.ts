@@ -37,7 +37,7 @@ export const useTradeLeveragedExchangeIssuance = (
   const [isTransactingLevEI, setIsTransacting] = useState(false)
 
   const executeLevEITrade = useCallback(async () => {
-    if (!account || !inputOutputLimit) return
+    if (!account || inputOutputLimit.isZero() || tokenAmout.isZero()) return
 
     const outputTokenAddress =
       chainId === ChainId.Polygon
@@ -59,11 +59,12 @@ export const useTradeLeveragedExchangeIssuance = (
         const isSellingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
+        // TODO: make address selection dynamic
         const debtCollateralSwap =
-          debtCollateralSwapData[outputToken.symbol as keyof Object]
+          debtCollateralSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84']
         const inputSwap =
-          inputSwapData[outputToken.symbol as keyof Object][
-            inputToken.symbol as keyof object
+          inputSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'][
+            inputToken.address as keyof object
           ]
 
         if (isSellingNativeChainToken) {
@@ -90,11 +91,12 @@ export const useTradeLeveragedExchangeIssuance = (
         const isRedeemingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
+        // TODO: make address selection dynamic
         const collateralDebtSwap =
-          collateralDebtSwapData[inputToken.symbol as keyof Object]
+          collateralDebtSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84']
         const outputSwap =
-          outputSwapData[inputToken.symbol as keyof Object][
-            outputToken.symbol as keyof object
+          outputSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'][
+            outputToken.address as keyof object
           ]
 
         if (isRedeemingNativeChainToken) {
