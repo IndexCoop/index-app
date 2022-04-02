@@ -269,7 +269,7 @@ const QuickTrade = (props: {
       sellToken,
       sellTokenAmount,
       buyToken,
-      buyTokenAmount,
+      // buyTokenAmount,
       isBuying
     )
   }
