@@ -37,7 +37,7 @@ export const useTradeLeveragedExchangeIssuance = (
   const [isTransactingLevEI, setIsTransacting] = useState(false)
 
   const executeLevEITrade = useCallback(async () => {
-    if (!account || !inputOutputLimit) return
+    if (!account || inputOutputLimit.isZero() || tokenAmout.isZero()) return
 
     const outputTokenAddress =
       chainId === ChainId.Polygon
