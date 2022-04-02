@@ -162,7 +162,9 @@ const QuickTrade = (props: {
     }
 
     // TODO: factor in gas for both options
-    const bestOptionIs0x =
+
+    console.log("best option result", bestOptionResult)
+    const bestOptionIs0x = 
       !bestOptionResult.leveragedExchangeIssuanceData ||
       toWei(sellTokenAmount, sellToken.decimals).lt(
         bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount
@@ -560,9 +562,9 @@ function getTradeInfoDataFromEI(
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: 'Offered From', value: offeredFrom },
     { title: 'Exact Set amount', value: setAmount },
     { title: 'Maximum payment amount', value: maxPayment },
+    { title: 'Offered From', value: offeredFrom },
     { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
   ]
 }
