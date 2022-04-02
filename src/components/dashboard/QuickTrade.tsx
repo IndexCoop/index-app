@@ -258,7 +258,7 @@ const QuickTrade = (props: {
 
   useEffect(() => {
     fetchOptions()
-  }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
+  }, [buyToken, sellToken, sellTokenAmount])
 
   const fetchOptions = () => {
     // Right now we only allow setting the sell amount, so no need to check
