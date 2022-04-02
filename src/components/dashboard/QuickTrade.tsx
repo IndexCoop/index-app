@@ -162,9 +162,7 @@ const QuickTrade = (props: {
     }
 
     // TODO: factor in gas for both options
-
-    console.log("best option result", bestOptionResult)
-    const bestOptionIs0x = 
+    const bestOptionIs0x =
       !bestOptionResult.leveragedExchangeIssuanceData ||
       toWei(sellTokenAmount, sellToken.decimals).lt(
         bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount
@@ -180,7 +178,6 @@ const QuickTrade = (props: {
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
         )
-    console.log('dex trade infooooo', dexTradeInfoData)
     setTradeInfoData(dexTradeInfoData)
 
     setBestOption(

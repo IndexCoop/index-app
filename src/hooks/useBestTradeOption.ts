@@ -95,7 +95,6 @@ export const useBestTradeOption = () => {
       null
     // temporary just allowing icETH until all tokens tested
     const isIcEth = buyToken.symbol === 'icETH'
-    console.log('is iceth', isIcEth)
     if (account && isBuyingTokenEligible && isIcEth) {
       console.log('Getting leveraged ei option')
       const setToken = isIssuance ? buyToken : sellToken
@@ -114,9 +113,10 @@ export const useBestTradeOption = () => {
       } catch (e) {
         console.warn('error when generating leveraged ei option', e)
       }
-      console.log('exchangeIssueOption', exchangeIssuanceOption)
-      console.log('exchangeIssueLeveragedOption', leveragedExchangeIssuanceOption)
     }
+
+    console.log('exchangeIssueOption', exchangeIssuanceOption)
+    console.log('exchangeIssueLeveragedOption', leveragedExchangeIssuanceOption)
 
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }

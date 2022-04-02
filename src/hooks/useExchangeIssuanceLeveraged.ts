@@ -24,7 +24,7 @@ export const getExchangeIssuanceLeveragedContract = async (
 ): Promise<Contract> => {
   const contractAddress =
     chainId === ChainId.Polygon
-      ? ExchangeIssuanceLeveragedMainnetAddress
+      ? ExchangeIssuanceLeveragedMainnetAddress // TODO: change based on user's chain
       : ExchangeIssuanceLeveragedMainnetAddress
   console.log('getExchangeIssuanceLeveragedContract', contractAddress)
   return new Contract(contractAddress, EI_LEVERAGED_ABI, providerSigner)
@@ -81,7 +81,6 @@ export const useExchangeIssuanceLeveraged = () => {
       const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-
       const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
         _setAmount,
@@ -89,12 +88,11 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataInputToken,
         { value: _maxInput }
       )
-    console.log("issue set", issueSetTx)
-    return issueSetTx
-  } catch (err) {
-    console.log('error', err)
-    return err
-  }
+      return issueSetTx
+    } catch (err) {
+      console.log('error', err)
+      return err
+    }
   }
 
   /**
