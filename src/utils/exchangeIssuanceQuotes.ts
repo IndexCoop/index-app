@@ -24,6 +24,7 @@ export interface LeveragedExchangeIssuanceQuote {
   swapDataDebtCollateral: SwapData
   swapDataPaymentToken: SwapData
   inputTokenAmount: BigNumber
+  setTokenAmount: BigNumber
 }
 
 export enum Exchange {
@@ -258,7 +259,12 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     swapDataPaymentToken.path = []
   }
 
-  return { swapDataDebtCollateral, swapDataPaymentToken, inputTokenAmount }
+  return {
+    swapDataDebtCollateral,
+    swapDataPaymentToken,
+    inputTokenAmount,
+    setTokenAmount,
+  }
 }
 
 const getSwapDataDebtCollateral = async (
