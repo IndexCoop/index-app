@@ -59,18 +59,19 @@ export const useTradeLeveragedExchangeIssuance = (
         const isSellingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
-        console.log('inputswap', inputSwapData, 'token', inputToken)
+        console.log('inputswap', inputSwapData, 'token', inputTokenAddress)
         // TODO: make address selection dynamic
         const debtCollateralSwap =
           debtCollateralSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473']
         const inputSwap =
           inputSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473'][
-            '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+            inputTokenAddress as keyof object
           ]
 
         if (isSellingNativeChainToken) {
           await issueExactSetFromETH(
             library,
+            chainId,
             outputTokenAddress,
             amountOfSetToken,
             debtCollateralSwap,
@@ -80,6 +81,7 @@ export const useTradeLeveragedExchangeIssuance = (
         } else {
           await issueExactSetFromERC20(
             library,
+            chainId,
             outputTokenAddress,
             amountOfSetToken,
             inputTokenAddress,

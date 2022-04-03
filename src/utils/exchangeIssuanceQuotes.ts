@@ -191,7 +191,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const tokenSymbol = setToken.symbol
   const isIcEth = tokenSymbol === 'icETH'
-  console.log('Getting issuance quotes')
+  console.log('Getting issuance quotes', chainId)
 
   const setTokenAddress =
     chainId === ChainId.Polygon ? setToken.polygonAddress : setToken.address

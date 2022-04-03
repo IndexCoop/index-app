@@ -58,6 +58,13 @@ export const inputSwapData = {
       fees: [],
       pool: ADDRESS_ZERO,
     },
+    // MATIC
+    '0x0000000000000000000000000000000000001010': {
+      exchange: Exchange.None,
+      path: [],
+      fees: [],
+      pool: ADDRESS_ZERO,
+    },
   },
 }
 
