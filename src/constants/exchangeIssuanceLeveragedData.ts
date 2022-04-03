@@ -31,8 +31,8 @@ export const debtCollateralSwapData = {
   },
   // ETH2x-FLI-P
   '0x3Ad707dA309f3845cd602059901E39C4dcd66473': {
-    path: ['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'],
     exchange: Exchange.Sushiswap,
+    path: ['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'],
     fees: [],
     pool: '0x34965ba0ac2451a34a0471f04cca3f990b8dea27',
   },

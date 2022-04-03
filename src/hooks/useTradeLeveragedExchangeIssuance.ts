@@ -64,9 +64,7 @@ export const useTradeLeveragedExchangeIssuance = (
         const debtCollateralSwap =
           debtCollateralSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473']
         const inputSwap =
-          inputSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473'][
-            inputTokenAddress as keyof object
-          ]
+          inputSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473']['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174']
 
         if (isSellingNativeChainToken) {
           await issueExactSetFromETH(

@@ -189,7 +189,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataDebtForCollateral,
         _swapDataInputToken
       })
-      const issueSetTx = await eiContract.staticCall.issueExactSetFromERC20(
+      const issueSetTx = await eiContract.issueExactSetFromERC20(
         _setToken,
         _setAmount,
         _inputToken,
