@@ -31,10 +31,10 @@ export const debtCollateralSwapData = {
   },
   // ETH2x-FLI-P
   '0x3Ad707dA309f3845cd602059901E39C4dcd66473': {
-    exchange: Exchange.Sushiswap,
     path: ['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'],
     fees: [],
-    pool: '0x34965ba0ac2451a34a0471f04cca3f990b8dea27',
+    pool: ADDRESS_ZERO,
+    exchange: Exchange.Sushiswap,
   },
 }
 
@@ -53,13 +53,13 @@ export const inputSwapData = {
   '0x3Ad707dA309f3845cd602059901E39C4dcd66473': {
     // ETHX-FLI-P only supports USDC as the input token
     '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174': {
-      exchange: Exchange.None,
-      path: [],
+      path: ['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'],
       fees: [],
       pool: ADDRESS_ZERO,
+      exchange: Exchange.Sushiswap,
     },
     // MATIC
-    '0x0000000000000000000000000000000000001010': {
+    '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270': {
       exchange: Exchange.None,
       path: [],
       fees: [],

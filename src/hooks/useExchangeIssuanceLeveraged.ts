@@ -10,6 +10,7 @@ import {
 import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
 import { Exchange } from 'utils/exchangeIssuanceQuotes'
+import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 
 /**
  * returns instance of ExchangeIssuanceLeveraged Contract
@@ -93,7 +94,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataInputToken,
         _maxInput
       })
-      const issueSetTx = await eiContract.issueExactSetFromETH(
+      const issueSetTx = await eiContract.callStatic.issueExactSetFromETH(
         _setToken,
         _setAmount,
         _swapDataDebtForCollateral,
@@ -178,7 +179,8 @@ export const useExchangeIssuanceLeveraged = () => {
     console.log('issueExactSetFromERC20', chainId)
     try {
       const eiContract = await getExchangeIssuanceLeveragedContract(
-        library.getSigner()
+        library.getSigner(),
+        chainId
       )
 
       console.log('erc20', {
@@ -196,7 +198,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _maxAmountInputToken,
         _swapDataDebtForCollateral,
         _swapDataInputToken,
-        { gasLimit: 2000000, maxPriorityFeePerGas: 20 }
+        { gasLimit: 2000000, maxFeePerGas:100000000000, maxPriorityFeePerGas: 2000000000 }
       )
       return issueSetTx
     } catch (err) {

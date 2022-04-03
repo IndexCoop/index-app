@@ -307,5 +307,7 @@ const getSwapData = async (params: any, chainId: number = 137) => {
     fees: [],
     pool: '0x0000000000000000000000000000000000000000',
   }
+
+  console.log('swapdata', swapData)
   return { swapData, zeroExQuote }
 }
