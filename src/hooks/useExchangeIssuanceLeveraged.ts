@@ -183,11 +183,12 @@ export const useExchangeIssuanceLeveraged = () => {
         chainId
       )
 
+      const num = BigNumber.from(_maxAmountInputToken).mul(BigNumber.from(2))
       console.log('erc20', {
         _setToken,
         _setAmount,
         _inputToken,
-        _maxAmountInputToken,
+        num,
         _swapDataDebtForCollateral,
         _swapDataInputToken
       })
@@ -195,7 +196,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _setToken,
         _setAmount,
         _inputToken,
-        _maxAmountInputToken,
+        num,
         _swapDataDebtForCollateral,
         _swapDataInputToken,
         { gasLimit: 2000000, maxFeePerGas:100000000000, maxPriorityFeePerGas: 2000000000 }

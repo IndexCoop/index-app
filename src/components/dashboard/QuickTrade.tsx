@@ -120,7 +120,7 @@ const QuickTrade = (props: {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(sellToken.address, ExchangeIssuanceLeveragedAddress)
+  } = useApproval(sellToken.polygonAddress, ExchangeIssuanceLeveragedAddress)
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
