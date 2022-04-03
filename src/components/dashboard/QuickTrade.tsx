@@ -109,21 +109,24 @@ const QuickTrade = (props: {
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
+  const sellTokenAddress = 
+    (chainId === POLYGON.chainId) ? sellToken.polygonAddress : sellToken.address
+
   const {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
-  } = useApproval(sellToken.address, zeroExRouterAddress)
+  } = useApproval(sellTokenAddress, zeroExRouterAddress)
   const {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(sellToken.address, ExchangeIssuanceLeveragedAddress)
+  } = useApproval(sellTokenAddress, ExchangeIssuanceLeveragedAddress)
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
     onApprove: onApproveForEIZX,
-  } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
+  } = useApproval(sellTokenAddress, ExchangeIssuanceZeroExAddress)
 
   // TODO: set from best option hook?
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'

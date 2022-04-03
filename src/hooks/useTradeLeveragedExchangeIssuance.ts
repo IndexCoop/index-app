@@ -59,12 +59,13 @@ export const useTradeLeveragedExchangeIssuance = (
         const isSellingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
+        console.log('inputswap', inputSwapData, 'token', inputToken)
         // TODO: make address selection dynamic
         const debtCollateralSwap =
-          debtCollateralSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84']
+          debtCollateralSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473']
         const inputSwap =
-          inputSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'][
-            inputToken.address as keyof object
+          inputSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473'][
+            '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
           ]
 
         if (isSellingNativeChainToken) {

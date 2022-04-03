@@ -81,13 +81,21 @@ export const useExchangeIssuanceLeveraged = () => {
       const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
+      console.log('params', {
+        _setToken,
+        _setAmount,
+        _swapDataDebtForCollateral,
+        _swapDataInputToken,
+        _maxInput
+      })
       const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
         _setAmount,
         _swapDataDebtForCollateral,
         _swapDataInputToken,
-        { value: _maxInput }
+        { value: _maxInput, gasLimit: 2000000, maxFeePerGas:100000000000, maxPriorityFeePerGas: 20 }
       )
+      console.log('finished',issueSetTx)
       return issueSetTx
     } catch (err) {
       console.log('error', err)
@@ -156,13 +164,23 @@ export const useExchangeIssuanceLeveraged = () => {
       const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner()
       )
-      const issueSetTx = await eiContract.issueExactSetFromERC20(
+
+      console.log('erc20', {
         _setToken,
         _setAmount,
         _inputToken,
         _maxAmountInputToken,
         _swapDataDebtForCollateral,
         _swapDataInputToken
+      })
+      const issueSetTx = await eiContract.staticCall.issueExactSetFromERC20(
+        _setToken,
+        _setAmount,
+        _inputToken,
+        _maxAmountInputToken,
+        _swapDataDebtForCollateral,
+        _swapDataInputToken,
+        { gasLimit: 2000000, maxPriorityFeePerGas: 20 }
       )
       return issueSetTx
     } catch (err) {
