@@ -42,7 +42,7 @@ export const inputSwapData = {
   // icETH
   '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84': {
     // icETH only supports ETH as the input token
-    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': {
+    '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE': {
       exchange: Exchange.None,
       path: [],
       fees: [],
@@ -51,9 +51,16 @@ export const inputSwapData = {
   },
   // ETH2x-FLI-P
   '0x3Ad707dA309f3845cd602059901E39C4dcd66473': {
-    // ETHX-FLI-P only supports USDC as the input token
+    // USDC
     '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174': {
       path: ['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'],
+      fees: [],
+      pool: ADDRESS_ZERO,
+      exchange: Exchange.Sushiswap,
+    },
+    // DAI
+    '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063': {
+      path: ['0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'],
       fees: [],
       pool: ADDRESS_ZERO,
       exchange: Exchange.Sushiswap,

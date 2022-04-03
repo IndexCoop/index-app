@@ -94,7 +94,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataInputToken,
         _maxInput
       })
-      const issueSetTx = await eiContract.callStatic.issueExactSetFromETH(
+      const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
         _setAmount,
         _swapDataDebtForCollateral,
