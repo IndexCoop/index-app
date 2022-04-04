@@ -138,6 +138,8 @@ const QuickTrade = (props: {
     isBuying,
     sellToken,
     buyToken,
+    // TODO: use from best option result like with other trade hooks
+    // TODO: is buyTokenAmount really needed after changing this?
     toWei(buyTokenAmount, buyToken.decimals),
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
@@ -165,12 +167,37 @@ const QuickTrade = (props: {
       return
     }
 
-    // TODO: factor in gas for both options
+    const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
+    const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
+    const gasPriceLevEI =
+      bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
+      BigNumber.from(0)
+    const gasLimit = 1800000 // TODO: Make gasLimit dynamic
+
+    const gas0x = gasPrice0x.mul(gasLimit0x)
+    const gasLevEI = gasPriceLevEI.mul(gasLimit)
+
+    console.log(gas0x.toString(), gasLevEI.toString(), 'GAS')
+
+    const fullCosts0x = toWei(sellTokenAmount, sellToken.decimals).add(gas0x)
+    const fullCostsLevEI = bestOptionResult.leveragedExchangeIssuanceData
+      ? bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount.add(
+          gasLevEI
+        )
+      : null
+
+    console.log(
+      toWei(sellTokenAmount, sellToken.decimals).toString(),
+      fullCosts0x.toString(),
+      fullCostsLevEI?.toString(),
+      bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount.toString()
+    )
+
     const bestOptionIs0x =
-      !bestOptionResult.leveragedExchangeIssuanceData ||
-      toWei(sellTokenAmount, sellToken.decimals).lt(
+      !fullCostsLevEI ||
+      fullCosts0x.lt(
         //NOTE: Change to .gt if you wanna pay up to taste EI
-        bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount
+        fullCostsLevEI
       )
 
     const buyTokenDecimals = buyToken.decimals
@@ -180,8 +207,7 @@ const QuickTrade = (props: {
       : getTradeInfoDataFromEI(
           bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0),
-          bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
-            BigNumber.from(0),
+          gasPriceLevEI,
           bestOptionResult.leveragedExchangeIssuanceData,
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
