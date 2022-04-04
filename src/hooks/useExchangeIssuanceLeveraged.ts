@@ -94,21 +94,16 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataInputToken,
         _maxInput
       })
+      
+      const higherMax = BigNumber.from(_maxInput).add(BigNumber.from('5000000000000000'))
+      console.log('amounts', _maxInput, higherMax)
       const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
         _setAmount,
         _swapDataDebtForCollateral,
         _swapDataInputToken,
-        { value: _maxInput, gasLimit: 2000000, maxFeePerGas:100000000000, maxPriorityFeePerGas: 2000000000 }
+        { value: higherMax, gasLimit: 1800000, maxFeePerGas:100000000000, maxPriorityFeePerGas: 2000000000 }
       )
-
-      // const issueSetTx = await eiContract.callStatic.getIssueExactSet(
-      //   _setToken,
-      //   _setAmount,
-      //   _swapDataDebtForCollateral,
-      //   _swapDataInputToken,
-      //   // { value: _maxInput, gasLimit: 2000000, maxFeePerGas:100000000000, maxPriorityFeePerGas: 20 }
-      // )
 
       console.log('finished',issueSetTx)
       return issueSetTx
@@ -182,13 +177,13 @@ export const useExchangeIssuanceLeveraged = () => {
         library.getSigner(),
         chainId
       )
-
-      const num = BigNumber.from(_maxAmountInputToken).mul(BigNumber.from(2))
+      // TODO: calculate a slightly higher _maxAmountInputToken so it doesn't revert
+      const higherMax = BigNumber.from(_maxAmountInputToken).mul(BigNumber.from(2))
       console.log('erc20', {
         _setToken,
         _setAmount,
         _inputToken,
-        num,
+        _maxAmountInputToken,
         _swapDataDebtForCollateral,
         _swapDataInputToken
       })
@@ -196,7 +191,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _setToken,
         _setAmount,
         _inputToken,
-        num,
+        higherMax, // TODO: Replace this with the proper _maxAmountInputToken
         _swapDataDebtForCollateral,
         _swapDataInputToken,
         { gasLimit: 2000000, maxFeePerGas:100000000000, maxPriorityFeePerGas: 2000000000 }

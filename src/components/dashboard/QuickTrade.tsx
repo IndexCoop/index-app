@@ -168,7 +168,7 @@ const QuickTrade = (props: {
     // TODO: factor in gas for both options
     const bestOptionIs0x =
       !bestOptionResult.leveragedExchangeIssuanceData ||
-      toWei(sellTokenAmount, sellToken.decimals).gt( //TODO: Change back to lt
+      toWei(sellTokenAmount, sellToken.decimals).lt( //NOTE: Change to .gt if you wanna pay up to taste EI
         bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount
       )
 
