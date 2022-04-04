@@ -42,7 +42,7 @@ export const useBestTradeOption = () => {
     sellToken: Token,
     sellTokenAmount: string,
     buyToken: Token,
-    buyTokenAmount: string,
+    // buyTokenAmount: string,
     isIssuance: boolean
   ) => {
     setIsFetching(true)
@@ -62,14 +62,15 @@ export const useBestTradeOption = () => {
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
-    const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
+    const tokenEligible = isIssuance ? isEligibleLeveragedToken(buyToken) : isEligibleLeveragedToken(sellToken)
+
     // console.log('buyToken', buyToken)
     // console.log('isBuyingTokenEligible', isBuyingTokenEligible)
 
-    // const tokenAmount =
-    //   isIssuance && dexSwapOption
-    //     ? BigNumber.from(dexSwapOption.buyAmount)
-    //     : toWei(sellTokenAmount, sellToken.decimals)
+    const tokenAmount =
+      isIssuance && dexSwapOption
+        ? BigNumber.from(dexSwapOption.buyAmount)
+        : toWei(sellTokenAmount, sellToken.decimals)
 
     /* Check for Exchange Issuance option */
     let exchangeIssuanceOption: ExchangeIssuanceQuote | null | undefined =
@@ -93,17 +94,18 @@ export const useBestTradeOption = () => {
     /* Check ExchangeIssuanceLeveraged option */
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
-    if (account && isBuyingTokenEligible) {
+    // temporary just allowing icETH until all tokens tested
+    if (account && !dexSwapError && tokenEligible) {
       console.log('Getting leveraged ei option')
       const setToken = isIssuance ? buyToken : sellToken
-      const setAmount = isIssuance ? buyTokenAmount : sellTokenAmount
-      const paymentToken = isIssuance ? sellToken : buyToken
+      const setAmount = tokenAmount
+      // const paymentToken = isIssuance ? sellToken : buyToken
       try {
         leveragedExchangeIssuanceOption =
           await getLeveragedExchangeIssuanceQuotes(
             setToken,
             setAmount,
-            paymentToken,
+            sellToken,
             isIssuance,
             chainId,
             library

@@ -100,9 +100,6 @@ const QuickTrade = (props: {
   )
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
-  // FIXME: remove later, just for testing
-  const [tradeInfoDataEI, setTradeInfoDataEI] = useState<TradeInfoItem[]>([])
-
   const sellTokenBalance = useTokenBalance(sellToken)
   const buyTokenBalance = useTokenBalance(buyToken)
 
@@ -117,11 +114,13 @@ const QuickTrade = (props: {
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
   } = useApproval(sellToken.address, zeroExRouterAddress)
+
+  //TODO: Make this dynamic otherwise token approvals don't work on Polygon
   const {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(sellToken.address, ExchangeIssuanceLeveragedAddress)
+  } = useApproval(sellToken.polygonAddress, ExchangeIssuanceLeveragedAddress)
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
@@ -129,11 +128,7 @@ const QuickTrade = (props: {
   } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
 
   // TODO: set from best option hook?
-  // FIXME: change back to just ` = tradeInfoData[0]?.value ?? '0'` for production
-  const buyTokenAmount =
-    (bestOption === QuickTradeBestOption.zeroEx
-      ? tradeInfoData[0]?.value
-      : tradeInfoDataEI[0]?.value) ?? '0'
+  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
@@ -151,8 +146,10 @@ const QuickTrade = (props: {
       isBuying,
       sellToken,
       buyToken,
-      toWei(buyTokenAmount, buyToken.decimals),
-      // TODO: check input/ouput amount set correctly?
+      bestOptionResult?.success
+        ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
+            BigNumber.from(0)
+        : BigNumber.from(0),
       bestOptionResult?.success
         ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
             BigNumber.from(0)
@@ -168,37 +165,32 @@ const QuickTrade = (props: {
       return
     }
 
+    // TODO: factor in gas for both options
     const bestOptionIs0x =
-      !bestOptionResult.exchangeIssuanceData ||
-      toWei(sellTokenAmount, sellToken.decimals).lt(
-        bestOptionResult.exchangeIssuanceData.inputTokenAmount
+      !bestOptionResult.leveragedExchangeIssuanceData ||
+      toWei(sellTokenAmount, sellToken.decimals).lt( //NOTE: Change to .gt if you wanna pay up to taste EI
+        bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount
       )
-    console.log('0xISBESTOPTION', bestOptionIs0x)
 
     const buyTokenDecimals = buyToken.decimals
 
-    const dexTradeInfoData = getTradeInfoData0x(
-      bestOptionResult.dexData,
-      buyTokenDecimals,
-      chainId
-    )
+    const dexTradeInfoData = bestOptionIs0x
+      ? getTradeInfoData0x(bestOptionResult.dexData, buyTokenDecimals, chainId)
+      : getTradeInfoDataFromEI(
+          bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
+            BigNumber.from(0),
+          bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ?? BigNumber.from(0),
+          bestOptionResult.leveragedExchangeIssuanceData,
+          isBuying ? buyToken.decimals : sellToken.decimals,
+          chainId
+        )
     setTradeInfoData(dexTradeInfoData)
 
-    // const eiTradeInfoData = getTradeInfoDataFromEI(
-    //   isBuying ? buyTokenAmount : sellTokenAmount,
-    //   bestOptionResult.exchangeIssuanceData ??
-    //     bestOptionResult.leveragedExchangeIssuanceData,
-    //   sellToken.decimals,
-    //   chainId
-    // )
-    // setTradeInfoDataEI(eiTradeInfoData)
-
-    // setBestOption(
-    //   bestOptionIs0x
-    //     ? QuickTradeBestOption.zeroEx
-    //     : QuickTradeBestOption.exchangeIssuance
-    // )
-    setBestOption(QuickTradeBestOption.zeroEx)
+    setBestOption(
+      bestOptionIs0x
+        ? QuickTradeBestOption.zeroEx
+        : QuickTradeBestOption.leveragedExchangeIssuance
+    )
   }, [bestOptionResult])
 
   /**
@@ -218,16 +210,16 @@ const QuickTrade = (props: {
   }, [chainId])
 
   useEffect(() => {
+    const prevSellToken = sellToken
+    const prevBuyToken = buyToken
     const currencyTokensList = getCurrencyTokensByChain()
     const tokenList = getTokenListByChain()
     const sellTokenList = isBuying ? currencyTokensList : tokenList
     const buyTokenList = isBuying ? tokenList : currencyTokensList
-    const sellToken = sellTokenList[0]
-    const buyToken = buyTokenList[0]
     setSellTokenList(sellTokenList)
     setBuyTokenList(buyTokenList)
-    setSellToken(sellToken)
-    setBuyToken(buyToken)
+    setSellToken(prevBuyToken)
+    setBuyToken(prevSellToken)
   }, [isBuying])
 
   useEffect(() => {
@@ -272,7 +264,7 @@ const QuickTrade = (props: {
 
   useEffect(() => {
     fetchOptions()
-  }, [buyToken, buyTokenAmount, sellToken, sellTokenAmount])
+  }, [buyToken, sellToken, sellTokenAmount])
 
   const fetchOptions = () => {
     // Right now we only allow setting the sell amount, so no need to check
@@ -283,7 +275,7 @@ const QuickTrade = (props: {
       sellToken,
       sellTokenAmount,
       buyToken,
-      buyTokenAmount,
+      // buyTokenAmount,
       isBuying
     )
   }
@@ -437,7 +429,7 @@ const QuickTrade = (props: {
     if (!account) return false
     if (hasFetchingError) return false
     return (
-      buyTokenAmount === '0' ||
+      sellTokenAmount === '0' ||
       hasInsufficientFunds ||
       isTransacting ||
       isTransactingEI ||
@@ -511,7 +503,6 @@ const QuickTrade = (props: {
       </Flex>
       <Flex direction='column'>
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
-        {tradeInfoDataEI.length > 0 && <TradeInfo data={tradeInfoDataEI} />}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
             Error fetching a quote.
@@ -557,7 +548,8 @@ const TradeButton = (props: TradeButtonProps) => (
 )
 
 function getTradeInfoDataFromEI(
-  setAmount: string,
+  setAmount: BigNumber,
+  gasPrice: BigNumber,
   data:
     | ExchangeIssuanceQuote
     | LeveragedExchangeIssuanceQuote
@@ -567,18 +559,19 @@ function getTradeInfoDataFromEI(
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
-  // TODO: fix to show minium receive not input token amount!
+  const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
   const maxPayment =
     displayFromWei(data.inputTokenAmount, undefined, tokenDecimals) ?? '0.0'
-  // TODO:
-  const networkFee = ''
+  const gasLimit = 1800000 // TODO: Make gasLimit dynamic
+  const networkFee = displayFromWei(gasPrice.mul(gasLimit))
+  const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: 'Offered From', value: offeredFrom },
-    { title: 'Exact Set amount', value: setAmount },
+    { title: 'Exact Set amount', value: exactSetAmount },
     { title: 'Maximum payment amount', value: maxPayment },
-    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
+    { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
+    { title: 'Offered From', value: offeredFrom },
   ]
 }
 
@@ -604,7 +597,8 @@ function getTradeInfoData0x(
     displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
 
   const networkFee =
-    displayFromWei(BigNumber.from(gasPrice).mul(BigNumber.from(gas))) ?? '-'
+    displayFromWei(BigNumber.from(gasPrice).mul(BigNumber.from(gas)))
+  const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
 
   const offeredFromSources = zeroExTradeData.sources
@@ -614,7 +608,7 @@ function getTradeInfoData0x(
   return [
     { title: 'Buy Amount', value: buyAmount },
     { title: 'Minimum Receive', value: minReceive },
-    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
+    { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFromSources.toString() },
   ]
 }

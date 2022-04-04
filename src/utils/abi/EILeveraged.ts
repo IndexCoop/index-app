@@ -1,23 +1,11 @@
-// TODO: update ABI to reflect changes
 export const EI_LEVERAGED_ABI = [
   {
     inputs: [
       { internalType: 'address', name: '_weth', type: 'address' },
-      {
-        internalType: 'contract IUniswapV2Router02',
-        name: '_quickRouter',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IUniswapV2Router02',
-        name: '_sushiRouter',
-        type: 'address',
-      },
-      {
-        internalType: 'contract ISwapRouter',
-        name: '_uniV3Router',
-        type: 'address',
-      },
+      { internalType: 'address', name: '_quickRouter', type: 'address' },
+      { internalType: 'address', name: '_sushiRouter', type: 'address' },
+      { internalType: 'address', name: '_uniV3Router', type: 'address' },
+      { internalType: 'address', name: '_uniV3Quoter', type: 'address' },
       {
         internalType: 'contract IController',
         name: '_setController',
@@ -33,7 +21,17 @@ export const EI_LEVERAGED_ABI = [
         name: '_aaveLeverageModule',
         type: 'address',
       },
-      { internalType: 'address', name: '_addressProvider', type: 'address' },
+      {
+        internalType: 'address',
+        name: '_aaveAddressProvider',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_curveAddressProvider',
+        type: 'address',
+      },
+      { internalType: 'address', name: '_curveCalculator', type: 'address' },
     ],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -127,13 +125,6 @@ export const EI_LEVERAGED_ABI = [
   },
   {
     inputs: [],
-    name: 'ETH_ADDRESS',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'LENDING_POOL',
     outputs: [
       { internalType: 'contract ILendingPoolV2', name: '', type: 'address' },
@@ -143,15 +134,8 @@ export const EI_LEVERAGED_ABI = [
   },
   {
     inputs: [],
-    name: 'POOL_FEE',
-    outputs: [{ internalType: 'uint24', name: '', type: 'uint24' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'WETH',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    name: 'ROUNDING_ERROR_MARGIN',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -164,6 +148,25 @@ export const EI_LEVERAGED_ABI = [
         name: '',
         type: 'address',
       },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'addresses',
+    outputs: [
+      { internalType: 'address', name: 'quickRouter', type: 'address' },
+      { internalType: 'address', name: 'sushiRouter', type: 'address' },
+      { internalType: 'address', name: 'uniV3Router', type: 'address' },
+      { internalType: 'address', name: 'uniV3Quoter', type: 'address' },
+      {
+        internalType: 'address',
+        name: 'curveAddressProvider',
+        type: 'address',
+      },
+      { internalType: 'address', name: 'curveCalculator', type: 'address' },
+      { internalType: 'address', name: 'weth', type: 'address' },
     ],
     stateMutability: 'view',
     type: 'function',
@@ -233,6 +236,50 @@ export const EI_LEVERAGED_ABI = [
         type: 'address',
       },
       { internalType: 'uint256', name: '_setAmount', type: 'uint256' },
+      {
+        components: [
+          { internalType: 'address[]', name: 'path', type: 'address[]' },
+          { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct DEXAdapter.SwapData',
+        name: '_swapDataDebtForCollateral',
+        type: 'tuple',
+      },
+      {
+        components: [
+          { internalType: 'address[]', name: 'path', type: 'address[]' },
+          { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct DEXAdapter.SwapData',
+        name: '_swapDataInputToken',
+        type: 'tuple',
+      },
+    ],
+    name: 'getIssueExactSet',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ISetToken',
+        name: '_setToken',
+        type: 'address',
+      },
+      { internalType: 'uint256', name: '_setAmount', type: 'uint256' },
       { internalType: 'bool', name: '_isIssuance', type: 'bool' },
     ],
     name: 'getLeveragedTokenData',
@@ -269,6 +316,50 @@ export const EI_LEVERAGED_ABI = [
         type: 'address',
       },
       { internalType: 'uint256', name: '_setAmount', type: 'uint256' },
+      {
+        components: [
+          { internalType: 'address[]', name: 'path', type: 'address[]' },
+          { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct DEXAdapter.SwapData',
+        name: '_swapDataCollateralForDebt',
+        type: 'tuple',
+      },
+      {
+        components: [
+          { internalType: 'address[]', name: 'path', type: 'address[]' },
+          { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct DEXAdapter.SwapData',
+        name: '_swapDataOutputToken',
+        type: 'tuple',
+      },
+    ],
+    name: 'getRedeemExactSet',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ISetToken',
+        name: '_setToken',
+        type: 'address',
+      },
+      { internalType: 'uint256', name: '_setAmount', type: 'uint256' },
       { internalType: 'address', name: '_inputToken', type: 'address' },
       {
         internalType: 'uint256',
@@ -276,14 +367,15 @@ export const EI_LEVERAGED_ABI = [
         type: 'uint256',
       },
       {
-        internalType: 'enum DEXAdapter.Exchange',
-        name: '_exchange',
-        type: 'uint8',
-      },
-      {
         components: [
           { internalType: 'address[]', name: 'path', type: 'address[]' },
           { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
         ],
         internalType: 'struct DEXAdapter.SwapData',
         name: '_swapDataDebtForCollateral',
@@ -293,6 +385,12 @@ export const EI_LEVERAGED_ABI = [
         components: [
           { internalType: 'address[]', name: 'path', type: 'address[]' },
           { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
         ],
         internalType: 'struct DEXAdapter.SwapData',
         name: '_swapDataInputToken',
@@ -313,14 +411,15 @@ export const EI_LEVERAGED_ABI = [
       },
       { internalType: 'uint256', name: '_setAmount', type: 'uint256' },
       {
-        internalType: 'enum DEXAdapter.Exchange',
-        name: '_exchange',
-        type: 'uint8',
-      },
-      {
         components: [
           { internalType: 'address[]', name: 'path', type: 'address[]' },
           { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
         ],
         internalType: 'struct DEXAdapter.SwapData',
         name: '_swapDataDebtForCollateral',
@@ -330,6 +429,12 @@ export const EI_LEVERAGED_ABI = [
         components: [
           { internalType: 'address[]', name: 'path', type: 'address[]' },
           { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
         ],
         internalType: 'struct DEXAdapter.SwapData',
         name: '_swapDataInputToken',
@@ -339,19 +444,6 @@ export const EI_LEVERAGED_ABI = [
     name: 'issueExactSetFromETH',
     outputs: [],
     stateMutability: 'payable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'quickRouter',
-    outputs: [
-      {
-        internalType: 'contract IUniswapV2Router02',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -369,14 +461,15 @@ export const EI_LEVERAGED_ABI = [
         type: 'uint256',
       },
       {
-        internalType: 'enum DEXAdapter.Exchange',
-        name: '_exchange',
-        type: 'uint8',
-      },
-      {
         components: [
           { internalType: 'address[]', name: 'path', type: 'address[]' },
           { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
         ],
         internalType: 'struct DEXAdapter.SwapData',
         name: '_swapDataCollateralForDebt',
@@ -386,6 +479,12 @@ export const EI_LEVERAGED_ABI = [
         components: [
           { internalType: 'address[]', name: 'path', type: 'address[]' },
           { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
         ],
         internalType: 'struct DEXAdapter.SwapData',
         name: '_swapDataOutputToken',
@@ -411,14 +510,15 @@ export const EI_LEVERAGED_ABI = [
         type: 'uint256',
       },
       {
-        internalType: 'enum DEXAdapter.Exchange',
-        name: '_exchange',
-        type: 'uint8',
-      },
-      {
         components: [
           { internalType: 'address[]', name: 'path', type: 'address[]' },
           { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
         ],
         internalType: 'struct DEXAdapter.SwapData',
         name: '_swapDataCollateralForDebt',
@@ -428,6 +528,12 @@ export const EI_LEVERAGED_ABI = [
         components: [
           { internalType: 'address[]', name: 'path', type: 'address[]' },
           { internalType: 'uint24[]', name: 'fees', type: 'uint24[]' },
+          { internalType: 'address', name: 'pool', type: 'address' },
+          {
+            internalType: 'enum DEXAdapter.Exchange',
+            name: 'exchange',
+            type: 'uint8',
+          },
         ],
         internalType: 'struct DEXAdapter.SwapData',
         name: '_swapDataOutputToken',
@@ -444,28 +550,6 @@ export const EI_LEVERAGED_ABI = [
     name: 'setController',
     outputs: [
       { internalType: 'contract IController', name: '', type: 'address' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'sushiRouter',
-    outputs: [
-      {
-        internalType: 'contract IUniswapV2Router02',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'uniV3Router',
-    outputs: [
-      { internalType: 'contract ISwapRouter', name: '', type: 'address' },
     ],
     stateMutability: 'view',
     type: 'function',

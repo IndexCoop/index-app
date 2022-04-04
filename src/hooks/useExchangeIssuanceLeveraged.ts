@@ -10,6 +10,7 @@ import {
 import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
 import { Exchange } from 'utils/exchangeIssuanceQuotes'
+import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 
 /**
  * returns instance of ExchangeIssuanceLeveraged Contract
@@ -18,6 +19,7 @@ import { Exchange } from 'utils/exchangeIssuanceQuotes'
  *                        the contract is mostly used)
  * @returns EI contract
  */
+// TODO: make this work for both chains
 export const getExchangeIssuanceLeveragedContract = async (
   providerSigner: Signer | Provider | undefined,
   chainId: ChainId = ChainId.Polygon
@@ -63,31 +65,48 @@ export const useExchangeIssuanceLeveraged = () => {
    * Trigger issuance of set token paying with any arbitrary ERC20 token
    *
    * @param library                       library from logged in user
+   * @param chainId                       chain ID of current network | Mainnet
    * @param _setToken                     Set token to issue
    * @param _setAmount                    Amount to issue
    * @param _swapDataDebtForCollateral    Data (token addresses and fee levels) to describe the swap path from Debt to collateral token
    * @param _swapDataInputToken           Data (token addresses and fee levels) to describe the swap path from eth to collateral token
    */
+
   const issueExactSetFromETH = async (
     library: any,
+    chainId: ChainId = ChainId.Mainnet,
     _setToken: string,
     _setAmount: BigNumber,
     _swapDataDebtForCollateral: any,
     _swapDataInputToken: any,
     _maxInput: BigNumber
   ): Promise<any> => {
-    console.log('issueExactSetFromETH')
+    console.log('issueExactSetFromETH', chainId)
     try {
       const eiContract = await getExchangeIssuanceLeveragedContract(
-        library.getSigner()
+        library.getSigner(),
+        chainId
       )
+      console.log('params', {
+        _setToken,
+        _setAmount,
+        _swapDataDebtForCollateral,
+        _swapDataInputToken,
+        _maxInput
+      })
+      
+      //TODO: Estimate better _maxInput. For now hardcode addtional 0.05 ETH
+      const higherMax = BigNumber.from(_maxInput).add(BigNumber.from('5000000000000000'))
+      console.log('amounts', _maxInput, higherMax)
       const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
         _setAmount,
         _swapDataDebtForCollateral,
         _swapDataInputToken,
-        { value: _maxInput }
+        { value: higherMax, gasLimit: 1800000 }
       )
+
+      console.log('finished',issueSetTx)
       return issueSetTx
     } catch (err) {
       console.log('error', err)
@@ -135,6 +154,7 @@ export const useExchangeIssuanceLeveraged = () => {
    * Trigger issuance of set token paying with any arbitrary ERC20 token
    *
    * @param library                       library from logged in user
+   * @param chainId                       chain ID of current network | Mainnet
    * @param _setToken                     Set token to issue
    * @param _setAmount                    Amount to issue
    * @param _inputToken                   Input token to pay with
@@ -144,6 +164,7 @@ export const useExchangeIssuanceLeveraged = () => {
    */
   const issueExactSetFromERC20 = async (
     library: any,
+    chainId: ChainId = ChainId.Mainnet,
     _setToken: string,
     _setAmount: BigNumber,
     _inputToken: string,
@@ -151,18 +172,30 @@ export const useExchangeIssuanceLeveraged = () => {
     _swapDataDebtForCollateral: any,
     _swapDataInputToken: any
   ): Promise<any> => {
-    console.log('issueExactSetFromERC20')
+    console.log('issueExactSetFromERC20', chainId)
     try {
       const eiContract = await getExchangeIssuanceLeveragedContract(
-        library.getSigner()
+        library.getSigner(),
+        chainId
       )
-      const issueSetTx = await eiContract.issueExactSetFromERC20(
+      // TODO: calculate a slightly higher _maxAmountInputToken so it doesn't revert
+      const higherMax = BigNumber.from(_maxAmountInputToken).mul(BigNumber.from(2))
+      console.log('erc20', {
         _setToken,
         _setAmount,
         _inputToken,
         _maxAmountInputToken,
         _swapDataDebtForCollateral,
         _swapDataInputToken
+      })
+      const issueSetTx = await eiContract.issueExactSetFromERC20(
+        _setToken,
+        _setAmount,
+        _inputToken,
+        higherMax, // TODO: Replace this with the proper _maxAmountInputToken
+        _swapDataDebtForCollateral,
+        _swapDataInputToken,
+        { gasLimit: 2000000, maxFeePerGas:100000000000, maxPriorityFeePerGas: 2000000000 }
       )
       return issueSetTx
     } catch (err) {
