@@ -95,6 +95,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _maxInput
       })
       
+      //TODO: Estimate better _maxInput. For now hardcode addtional 0.05 ETH
       const higherMax = BigNumber.from(_maxInput).add(BigNumber.from('5000000000000000'))
       console.log('amounts', _maxInput, higherMax)
       const issueSetTx = await eiContract.issueExactSetFromETH(
@@ -102,7 +103,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _setAmount,
         _swapDataDebtForCollateral,
         _swapDataInputToken,
-        { value: higherMax, gasLimit: 1800000, maxFeePerGas:100000000000, maxPriorityFeePerGas: 2000000000 }
+        { value: higherMax, gasLimit: 1800000 }
       )
 
       console.log('finished',issueSetTx)

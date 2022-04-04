@@ -179,6 +179,7 @@ const QuickTrade = (props: {
       : getTradeInfoDataFromEI(
           bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0),
+          bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ?? BigNumber.from(0),
           bestOptionResult.leveragedExchangeIssuanceData,
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
@@ -548,6 +549,7 @@ const TradeButton = (props: TradeButtonProps) => (
 
 function getTradeInfoDataFromEI(
   setAmount: BigNumber,
+  gasPrice: BigNumber,
   data:
     | ExchangeIssuanceQuote
     | LeveragedExchangeIssuanceQuote
@@ -560,14 +562,15 @@ function getTradeInfoDataFromEI(
   const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
   const maxPayment =
     displayFromWei(data.inputTokenAmount, undefined, tokenDecimals) ?? '0.0'
-  // TODO:
-  const networkFee = ''
+  const gasLimit = 1800000 // TODO: Make gasLimit dynamic
+  const networkFee = displayFromWei(gasPrice.mul(gasLimit))
+  const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
     { title: 'Exact Set amount', value: exactSetAmount },
     { title: 'Maximum payment amount', value: maxPayment },
-    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
+    { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFrom },
   ]
 }
@@ -594,7 +597,8 @@ function getTradeInfoData0x(
     displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
 
   const networkFee =
-    displayFromWei(BigNumber.from(gasPrice).mul(BigNumber.from(gas))) ?? '-'
+    displayFromWei(BigNumber.from(gasPrice).mul(BigNumber.from(gas)))
+  const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
 
   const offeredFromSources = zeroExTradeData.sources
@@ -604,7 +608,7 @@ function getTradeInfoData0x(
   return [
     { title: 'Buy Amount', value: buyAmount },
     { title: 'Minimum Receive', value: minReceive },
-    { title: 'Network Fee', value: `${networkFee} ${networkToken}` },
+    { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFromSources.toString() },
   ]
 }
