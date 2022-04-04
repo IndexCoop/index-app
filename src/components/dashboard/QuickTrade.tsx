@@ -523,7 +523,7 @@ const QuickTrade = (props: {
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
-            Error fetching a quote.
+            {bestOptionResult.error.message}
           </Text>
         )}
         <TradeButton
