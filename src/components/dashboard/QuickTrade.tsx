@@ -86,7 +86,6 @@ const QuickTrade = (props: {
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
-  // const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [buyTokenBalanceFormatted, setBuyTokenBalanceFormatted] = useState('0')
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(
     getTokenListByChain()
@@ -125,8 +124,7 @@ const QuickTrade = (props: {
     onApprove: onApproveForEIZX,
   } = useApproval(sellToken, ExchangeIssuanceZeroExAddress)
 
-  // TODO: set from best option hook?
-  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
+  const buyTokenAmountFormatted = tradeInfoData[0]?.value ?? '0'
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
@@ -136,9 +134,10 @@ const QuickTrade = (props: {
     isBuying,
     sellToken,
     buyToken,
-    // TODO: use from best option result like with other trade hooks
-    // TODO: is buyTokenAmount really needed after changing this?
-    toWei(buyTokenAmount, buyToken.decimals),
+    bestOptionResult?.success
+      ? bestOptionResult.exchangeIssuanceData?.inputTokenAmount ??
+          BigNumber.from(0)
+      : BigNumber.from(0),
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
   const { executeLevEITrade, isTransactingLevEI } =
@@ -279,14 +278,7 @@ const QuickTrade = (props: {
 
     const hasInsufficientFunds = sellAmount.gt(sellTokenBalance)
     setHasInsufficientFunds(hasInsufficientFunds)
-  }, [
-    bestOption,
-    sellTokenAmount,
-    sellToken,
-    buyToken,
-    buyTokenAmount,
-    sellTokenBalance,
-  ])
+  }, [bestOption, buyToken, sellTokenAmount, sellTokenBalance, sellToken])
 
   useEffect(() => {
     fetchOptions()
@@ -519,7 +511,7 @@ const QuickTrade = (props: {
             isReadOnly: true,
           }}
           selectedToken={buyToken}
-          selectedTokenAmount={buyTokenAmount}
+          selectedTokenAmount={buyTokenAmountFormatted}
           selectedTokenBalance={buyTokenBalanceFormatted}
           tokenList={buyTokenList}
           onChangeInput={onChangeBuyTokenAmount}
