@@ -191,7 +191,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const tokenSymbol = setToken.symbol
   const isIcEth = tokenSymbol === 'icETH'
-  console.log('Getting issuance quotes')
+  console.log('Getting issuance quotes', chainId)
 
   const setTokenAddress =
     chainId === ChainId.Polygon ? setToken.polygonAddress : setToken.address
@@ -223,22 +223,27 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   const collateralShortfall =
     leveragedTokenData.collateralAmount.sub(collateralObtained)
 
-  console.log('PAYMENT TOKEN', paymentToken)
-  const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
-  let paymentTokenAddress =
+    const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
+    let paymentTokenAddress =
     chainId === ChainId.Polygon && paymentToken.symbol === 'MATIC'
-      ? WMATIC_ADDRESS
-      : chainId === ChainId.Polygon
-      ? paymentToken.polygonAddress
-      : paymentToken.address
-  if (paymentToken.symbol === 'ETH') {
-    paymentTokenAddress = 'ETH'
-  }
+    ? WMATIC_ADDRESS
+    : chainId === ChainId.Polygon
+    ? paymentToken.polygonAddress
+    : paymentToken.address
+    if (paymentToken.symbol === 'ETH') {
+      paymentTokenAddress = 'ETH'
+    }
+    
+    console.log('PAYMENT TOKEN', paymentToken, paymentTokenAddress)
 
   if (isIcEth) {
     swapDataDebtCollateral.exchange = Exchange.Curve
     swapDataDebtCollateral.path = []
     swapDataDebtCollateral.pool = '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022'
+  } else {
+    swapDataDebtCollateral.exchange = Exchange.Sushiswap
+    swapDataDebtCollateral.path = []
+    swapDataDebtCollateral.pool = '0x34965ba0ac2451a34a0471f04cca3f990b8dea27'
   }
 
   const { swapData: swapDataPaymentToken, zeroExQuote } = await getSwapData(
@@ -302,5 +307,7 @@ const getSwapData = async (params: any, chainId: number = 137) => {
     fees: [],
     pool: '0x0000000000000000000000000000000000000000',
   }
+
+  console.log('swapdata', swapData)
   return { swapData, zeroExQuote }
 }

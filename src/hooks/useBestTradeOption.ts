@@ -94,7 +94,8 @@ export const useBestTradeOption = () => {
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
     // temporary just allowing icETH until all tokens tested
-    const isIcEth = buyToken.symbol === 'icETH'
+    // const isIcEth = buyToken.symbol === 'icETH'
+    const isIcEth = true
     if (account && !dexSwapError && isBuyingTokenEligible && isIcEth) {
       console.log('Getting leveraged ei option')
       const setToken = isIssuance ? buyToken : sellToken

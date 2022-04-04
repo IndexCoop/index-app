@@ -114,11 +114,13 @@ const QuickTrade = (props: {
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
   } = useApproval(sellToken.address, zeroExRouterAddress)
+
+  //TODO: Make this dynamic otherwise token approvals don't work on Polygon
   const {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(sellToken.address, ExchangeIssuanceLeveragedAddress)
+  } = useApproval(sellToken.polygonAddress, ExchangeIssuanceLeveragedAddress)
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
@@ -166,7 +168,7 @@ const QuickTrade = (props: {
     // TODO: factor in gas for both options
     const bestOptionIs0x =
       !bestOptionResult.leveragedExchangeIssuanceData ||
-      toWei(sellTokenAmount, sellToken.decimals).lt(
+      toWei(sellTokenAmount, sellToken.decimals).lt( //NOTE: Change to .gt if you wanna pay up to taste EI
         bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount
       )
 

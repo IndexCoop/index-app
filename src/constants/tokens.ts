@@ -33,7 +33,7 @@ export const DAI: Token = {
   image:
     'https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734',
   address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-  polygonAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+  polygonAddress: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
   optimismAddress: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
   decimals: 18,
   url: '',
@@ -48,7 +48,7 @@ export const USDC: Token = {
   image:
     'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-  polygonAddress: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+  polygonAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   optimismAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
   decimals: 6,
   url: '',
@@ -62,7 +62,7 @@ export const ETH: Token = {
   symbol: 'ETH',
   image:
     'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
-  address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
   polygonAddress: '',
   optimismAddress: '',
   decimals: 18,
@@ -79,7 +79,7 @@ export const WETH: Token = {
     'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   polygonAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-  optimismAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  optimismAddress: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
   decimals: 18,
   url: '',
   coingeckoId: 'weth',
