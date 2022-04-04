@@ -94,8 +94,17 @@ export const getZeroExTradeData = async (
           chainId
         )
     return { success: true, value: apiResult }
-  } catch (e) {
-    console.log('Error retrieving 0x API data', e)
+  } catch (e: any) {
+    if (
+      e.response.status === 400 &&
+      e.response.data.validationErrors[0].reason ===
+        'INSUFFICIENT_ASSET_LIQUIDITY'
+    ) {
+      return {
+        success: false,
+        error: new Error('Insufficient Asset Liquidity'),
+      }
+    }
     return { success: false, error: new Error('Error retrieving 0x API data') }
   }
 }
