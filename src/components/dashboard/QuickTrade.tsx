@@ -113,19 +113,17 @@ const QuickTrade = (props: {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
-  } = useApproval(sellToken.address, zeroExRouterAddress)
-
-  //TODO: Make this dynamic otherwise token approvals don't work on Polygon
+  } = useApproval(sellToken, zeroExRouterAddress)
   const {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(sellToken.polygonAddress, ExchangeIssuanceLeveragedAddress)
+  } = useApproval(sellToken, ExchangeIssuanceLeveragedAddress)
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
     onApprove: onApproveForEIZX,
-  } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
+  } = useApproval(sellToken, ExchangeIssuanceZeroExAddress)
 
   // TODO: set from best option hook?
   const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
