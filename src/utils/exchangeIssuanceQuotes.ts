@@ -224,18 +224,18 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   const collateralShortfall =
     leveragedTokenData.collateralAmount.sub(collateralObtained)
 
-    const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
-    let paymentTokenAddress =
+  const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
+  let paymentTokenAddress =
     chainId === ChainId.Polygon && paymentToken.symbol === 'MATIC'
-    ? WMATIC_ADDRESS
-    : chainId === ChainId.Polygon
-    ? paymentToken.polygonAddress
-    : paymentToken.address
-    if (paymentToken.symbol === 'ETH') {
-      paymentTokenAddress = 'ETH'
-    }
-    
-    console.log('PAYMENT TOKEN', paymentToken, paymentTokenAddress)
+      ? WMATIC_ADDRESS
+      : chainId === ChainId.Polygon
+      ? paymentToken.polygonAddress
+      : paymentToken.address
+  if (paymentToken.symbol === 'ETH') {
+    paymentTokenAddress = 'ETH'
+  }
+
+  console.log('PAYMENT TOKEN', paymentToken, paymentTokenAddress)
 
   if (isIcEth) {
     swapDataDebtCollateral.exchange = Exchange.Curve
@@ -265,14 +265,14 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     swapDataPaymentToken.path = []
   }
 
-  const gasPrice = await library?.getGasPrice() ?? BigNumber.from(0)
+  const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
 
   return {
     swapDataDebtCollateral,
     swapDataPaymentToken,
     inputTokenAmount,
     setTokenAmount,
-    gasPrice
+    gasPrice,
   }
 }
 

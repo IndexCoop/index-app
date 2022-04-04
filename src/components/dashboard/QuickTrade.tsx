@@ -168,7 +168,8 @@ const QuickTrade = (props: {
     // TODO: factor in gas for both options
     const bestOptionIs0x =
       !bestOptionResult.leveragedExchangeIssuanceData ||
-      toWei(sellTokenAmount, sellToken.decimals).lt( //NOTE: Change to .gt if you wanna pay up to taste EI
+      toWei(sellTokenAmount, sellToken.decimals).lt(
+        //NOTE: Change to .gt if you wanna pay up to taste EI
         bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount
       )
 
@@ -179,7 +180,8 @@ const QuickTrade = (props: {
       : getTradeInfoDataFromEI(
           bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0),
-          bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ?? BigNumber.from(0),
+          bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
+            BigNumber.from(0),
           bestOptionResult.leveragedExchangeIssuanceData,
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
@@ -596,8 +598,9 @@ function getTradeInfoData0x(
   const minReceive =
     displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
 
-  const networkFee =
-    displayFromWei(BigNumber.from(gasPrice).mul(BigNumber.from(gas)))
+  const networkFee = displayFromWei(
+    BigNumber.from(gasPrice).mul(BigNumber.from(gas))
+  )
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
 
