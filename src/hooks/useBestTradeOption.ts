@@ -62,7 +62,8 @@ export const useBestTradeOption = () => {
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
-    const isBuyingTokenEligible = isEligibleLeveragedToken(buyToken)
+    const tokenEligible = isIssuance ? isEligibleLeveragedToken(buyToken) : isEligibleLeveragedToken(sellToken)
+
     // console.log('buyToken', buyToken)
     // console.log('isBuyingTokenEligible', isBuyingTokenEligible)
 
@@ -94,19 +95,17 @@ export const useBestTradeOption = () => {
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
     // temporary just allowing icETH until all tokens tested
-    // const isIcEth = buyToken.symbol === 'icETH'
-    const isIcEth = true
-    if (account && !dexSwapError && isBuyingTokenEligible && isIcEth) {
+    if (account && !dexSwapError && tokenEligible) {
       console.log('Getting leveraged ei option')
       const setToken = isIssuance ? buyToken : sellToken
       const setAmount = tokenAmount
-      const paymentToken = isIssuance ? sellToken : buyToken
+      // const paymentToken = isIssuance ? sellToken : buyToken
       try {
         leveragedExchangeIssuanceOption =
           await getLeveragedExchangeIssuanceQuotes(
             setToken,
             setAmount,
-            paymentToken,
+            sellToken,
             isIssuance,
             chainId,
             library
