@@ -195,7 +195,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
     isApproved: isApprovedGmi,
     isApproving: isApprovingGmi,
     onApprove: onApproveGmi,
-  } = useApproval(GmiIndex.address, gmiStakingRewardsAddress)
+  } = useApproval(GmiIndex, gmiStakingRewardsAddress)
 
   useEffect(() => {
     setGmi2022((prev) => ({

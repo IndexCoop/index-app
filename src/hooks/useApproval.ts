@@ -3,9 +3,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { ethers, utils } from 'ethers'
 
 import { Contract } from '@ethersproject/contracts'
-import { useEthers, useSendTransaction } from '@usedapp/core'
+import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 
 import { minimumRequiredApprovalQuantity } from 'constants/index'
+import { Token } from 'constants/tokens'
 import { useAllowance } from 'hooks/useAllowance'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 
@@ -14,8 +15,10 @@ const ERC20Interface = new utils.Interface(ERC20_ABI)
 /**
  * Approve the spending of an ERC20
  */
-export const useApproval = (tokenAddress?: string, spenderAddress?: string) => {
-  const { account, library } = useEthers()
+export const useApproval = (token?: Token, spenderAddress?: string) => {
+  const { account, chainId, library } = useEthers()
+  const tokenAddress =
+    chainId === ChainId.Polygon ? token?.polygonAddress : token?.address
   const allowance = useAllowance(tokenAddress, spenderAddress)
   const { sendTransaction, state } = useSendTransaction()
 
