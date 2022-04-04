@@ -7,9 +7,8 @@ import {
   ExchangeIssuanceLeveragedAddress,
   ExchangeIssuanceLeveragedMainnetAddress,
 } from 'constants/ethContractAddresses'
-import { displayFromWei, getERC20Contract , isValidTokenInput, toWei } from 'utils'
+import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
-import { Exchange } from 'utils/exchangeIssuanceQuotes'
 
 /**
  * returns instance of ExchangeIssuanceLeveraged Contract
@@ -125,7 +124,7 @@ export const useExchangeIssuanceLeveraged = () => {
    * @param _swapDataOutputToken        Data (token path and fee levels) describing the swap from Collateral Token to Eth
    */
   const redeemExactSetForETH = async (
-    library: any,
+    contract: Contract,
     _setToken: string,
     _setAmount: BigNumber,
     _minAmountOutputToken: BigNumber,
@@ -134,10 +133,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForETH')
     try {
-      const eiContract = await getExchangeIssuanceLeveragedContract(
-        library.getSigner()
-      )
-      const redeemSetTx = await eiContract.redeemExactSetForETH(
+      const redeemSetTx = await contract.redeemExactSetForETH(
         _setToken,
         _setAmount,
         _minAmountOutputToken,
@@ -223,7 +219,7 @@ export const useExchangeIssuanceLeveraged = () => {
    * @param _swapDataOutputToken        Data (token path and fee levels) describing the swap from Collateral Token to Output token
    */
   const redeemExactSetForERC20 = async (
-    library: any,
+    contract: Contract,
     _setToken: string,
     _setAmount: BigNumber,
     _outputToken: string,
@@ -233,10 +229,7 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForERC20')
     try {
-      const eiContract = await getExchangeIssuanceLeveragedContract(
-        library.getSigner()
-      )
-      const redeemSetTx = await eiContract.redeemExactSetForERC20(
+      const redeemSetTx = await contract.redeemExactSetForERC20(
         _setToken,
         _setAmount,
         _outputToken,
