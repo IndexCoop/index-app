@@ -626,7 +626,7 @@ function getTradeInfoData0x(
 
   return [
     { title: 'Buy Amount', value: buyAmount },
-    { title: 'Minimum Receive', value: minReceive },
+    { title: 'Minimum Received', value: minReceive },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFromSources.toString() },
   ]

@@ -72,9 +72,6 @@
     "prettier": "^2.5.1"
   },
   "lint-staged": {
-    "*.ts": "yarn run lint:fix",
-    "*.tsx": "yarn lint:fix",
-    "*.json": "yarn lint:fix",
-    "*.css": "yarn lint:fix"
+    "*": "yarn run lint:fix"
   }
 }
