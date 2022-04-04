@@ -12,6 +12,7 @@ import {
   Ethereum2xFLIP,
   GmiIndex,
   IBitcoinFLIP,
+  icETHIndex,
   IEthereumFLIP,
   IMaticFLIP,
   IndexToken,
@@ -45,6 +46,7 @@ export const useTokenBalance = (token: Token): BigNumber | undefined => {
     mviBalance,
     usdcBalance,
     wethBalance,
+    icEthBalance,
   } = useBalances()
 
   switch (token.symbol) {
@@ -86,6 +88,8 @@ export const useTokenBalance = (token: Token): BigNumber | undefined => {
       return usdcBalance
     case WETH.symbol:
       return wethBalance
+    case icETHIndex.symbol:
+      return icEthBalance
     default:
       return undefined
   }

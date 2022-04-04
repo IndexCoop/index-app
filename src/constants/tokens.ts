@@ -354,7 +354,7 @@ export const IBitcoinFLIP: Token = {
 export const icETHIndex: Token = {
   name: 'Interest Compounding ETH Index',
   symbol: 'icETH',
-  address: '0x7c07f7abe10ce8e33dc6c5ad68fe033085256a84',
+  address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
