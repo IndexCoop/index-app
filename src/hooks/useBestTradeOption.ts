@@ -62,7 +62,9 @@ export const useBestTradeOption = () => {
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
-    const tokenEligible = isIssuance ? isEligibleLeveragedToken(buyToken) : isEligibleLeveragedToken(sellToken)
+    const tokenEligible = isIssuance
+      ? isEligibleLeveragedToken(buyToken)
+      : isEligibleLeveragedToken(sellToken)
 
     // console.log('buyToken', buyToken)
     // console.log('isBuyingTokenEligible', isBuyingTokenEligible)

@@ -23,11 +23,10 @@ const ProductStats = ({ stats }: { stats: ProductStat[] }) => {
       direction='row'
       justify={['left', 'space-between']}
       w='100%'
-      pr={['0', '48px']}
       flexWrap='wrap'
     >
       {stats.map((productStat, index) => (
-        <Box key={index} mr={['32px', '0']} mb={['48px', '0']}>
+        <Box key={index} flexBasis={['50%', 'auto']}>
           <ProductStatView
             title={productStat.title}
             value={productStat.value}

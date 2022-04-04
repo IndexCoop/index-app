@@ -64,17 +64,26 @@ export const useTradeLeveragedExchangeIssuance = (
           case 'icETH':
             addressKey = '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'
             break
-            case 'ETH2X-FLI-P':
-              addressKey = '0x3Ad707dA309f3845cd602059901E39C4dcd66473'
-              break
-            default:
-              addressKey = '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'
+          case 'ETH2X-FLI-P':
+            addressKey = '0x3Ad707dA309f3845cd602059901E39C4dcd66473'
+            break
+          default:
+            addressKey = '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'
         }
-        console.log('symbo;', outputToken.symbol, inputSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473']['0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'], inputTokenAddress)
+        console.log(
+          'symbo;',
+          outputToken.symbol,
+          inputSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473'][
+            '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'
+          ],
+          inputTokenAddress
+        )
         const debtCollateralSwap =
           debtCollateralSwapData[addressKey as keyof object]
         const inputSwap =
-          inputSwapData[addressKey as keyof object][inputTokenAddress as keyof object]
+          inputSwapData[addressKey as keyof object][
+            inputTokenAddress as keyof object
+          ]
 
         if (isSellingNativeChainToken) {
           await issueExactSetFromETH(

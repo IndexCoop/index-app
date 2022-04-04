@@ -63,6 +63,8 @@ function getStatsForToken(
     { title: 'Volume', value: volumeFormatted },
     { title: 'Current Supply', value: supplyFormatted },
     { title: 'Streaming Fee', value: tokenData.fees?.streamingFee ?? 'n/a' },
+    { title: 'Mint Fee', value: tokenData.fees?.mintFee ?? 'n/a' },
+    { title: 'Redeem Fee', value: tokenData.fees?.redeemFee ?? 'n/a' },
   ]
 }
 
