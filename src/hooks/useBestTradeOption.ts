@@ -5,6 +5,8 @@ import { useEthers } from '@usedapp/core'
 
 import {
   eligibleLeveragedExchangeIssuanceTokens,
+  ETH,
+  icETHIndex,
   Token,
 } from 'constants/tokens'
 import { toWei } from 'utils'
@@ -28,15 +30,42 @@ type Result<_, E = Error> =
     }
   | { success: false; error: E }
 
+/* Determines if the token is eligible for Leveraged Exchange Issuance */
+const isEligibleLeveragedToken = (token: Token) =>
+  eligibleLeveragedExchangeIssuanceTokens.includes(token)
+
+/* Determines if the token pair is eligible for Leveraged Exchange Issuance */
+const isEligibleTradePair = (
+  inputToken: Token,
+  outputToken: Token,
+  isIssuance: boolean
+) => {
+  const tokenEligible = isIssuance
+    ? isEligibleLeveragedToken(outputToken)
+    : isEligibleLeveragedToken(inputToken)
+
+  const isIcEth =
+    inputToken.symbol === icETHIndex.symbol ||
+    outputToken.symbol === icETHIndex.symbol
+
+  if (tokenEligible && isIcEth && isIssuance) {
+    // Only ETH is allowed as input for icETH issuance at the moment
+    return inputToken.symbol === ETH.symbol
+  }
+
+  if (tokenEligible && isIcEth && !isIssuance) {
+    // Only ETH is allowed as output for icETH redeeming at the moment
+    return outputToken.symbol === ETH.symbol
+  }
+
+  return tokenEligible
+}
+
 export const useBestTradeOption = () => {
   const { account, chainId, library } = useEthers()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
-
-  /* Determines if the token is eligible for Leveraged Exchange Issuance */
-  const isEligibleLeveragedToken = (token: Token) =>
-    eligibleLeveragedExchangeIssuanceTokens.includes(token)
 
   const fetchAndCompareOptions = async (
     sellToken: Token,
@@ -62,12 +91,10 @@ export const useBestTradeOption = () => {
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
-    const tokenEligible = isIssuance
-      ? isEligibleLeveragedToken(buyToken)
-      : isEligibleLeveragedToken(sellToken)
+    const tokenEligible = isEligibleTradePair(sellToken, buyToken, isIssuance)
 
-    // console.log('buyToken', buyToken)
-    // console.log('isBuyingTokenEligible', isBuyingTokenEligible)
+    console.log('buyToken', buyToken)
+    console.log('isBuyingTokenEligible', tokenEligible)
 
     const tokenAmount =
       isIssuance && dexSwapOption

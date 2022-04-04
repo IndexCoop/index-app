@@ -12,7 +12,10 @@ import {
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
 
-import { useExchangeIssuanceLeveraged } from './useExchangeIssuanceLeveraged'
+import {
+  getExchangeIssuanceLeveragedContract,
+  useExchangeIssuanceLeveraged,
+} from './useExchangeIssuanceLeveraged'
 import { useTokenBalance } from './useTokenBalance'
 
 export const useTradeLeveragedExchangeIssuance = (
@@ -108,20 +111,22 @@ export const useTradeLeveragedExchangeIssuance = (
           )
         }
       } else {
-        const isRedeemingNativeChainToken =
-          inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
+        const isRedeemingToNativeChainToken =
+          outputToken.symbol === ETH.symbol ||
+          outputToken.symbol === MATIC.symbol
 
-        // TODO: make address selection dynamic
-        const collateralDebtSwap =
-          collateralDebtSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84']
+        const collateralDebtSwap = collateralDebtSwapData[inputToken.symbol]
         const outputSwap =
-          outputSwapData['0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'][
-            outputToken.address as keyof object
-          ]
+          outputSwapData[inputToken.symbol][outputToken.symbol as keyof object]
 
-        if (isRedeemingNativeChainToken) {
+        const contract = await getExchangeIssuanceLeveragedContract(
+          library?.getSigner(),
+          chainId
+        )
+
+        if (isRedeemingToNativeChainToken) {
           await redeemExactSetForETH(
-            library,
+            contract,
             inputTokenAddress,
             tokenAmout,
             inputOutputLimit,
@@ -130,7 +135,7 @@ export const useTradeLeveragedExchangeIssuance = (
           )
         } else {
           await redeemExactSetForERC20(
-            library,
+            contract,
             inputTokenAddress,
             tokenAmout,
             outputTokenAddress,

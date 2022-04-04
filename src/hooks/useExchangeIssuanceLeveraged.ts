@@ -17,7 +17,6 @@ import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
  *                        the contract is mostly used)
  * @returns EI contract
  */
-// TODO: make this work for both chains
 export const getExchangeIssuanceLeveragedContract = async (
   providerSigner: Signer | Provider | undefined,
   chainId: ChainId = ChainId.Polygon
@@ -124,7 +123,7 @@ export const useExchangeIssuanceLeveraged = () => {
    * @param _swapDataOutputToken        Data (token path and fee levels) describing the swap from Collateral Token to Eth
    */
   const redeemExactSetForETH = async (
-    library: any,
+    contract: Contract,
     _setToken: string,
     _setAmount: BigNumber,
     _minAmountOutputToken: BigNumber,
@@ -133,15 +132,19 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForETH')
     try {
-      const eiContract = await getExchangeIssuanceLeveragedContract(
-        library.getSigner()
+      // TODO: is this correct?
+      //TODO: Estimate better _maxInput. For now hardcode addtional 0.05 ETH
+      const higherMax = BigNumber.from(_setAmount).add(
+        BigNumber.from('5000000000000000')
       )
-      const redeemSetTx = await eiContract.redeemExactSetForETH(
+
+      const redeemSetTx = await contract.redeemExactSetForETH(
         _setToken,
         _setAmount,
         _minAmountOutputToken,
         _swapDataCollateralForDebt,
-        _swapDataOutputToken
+        _swapDataOutputToken,
+        { value: higherMax, gasLimit: 1800000 }
       )
       return redeemSetTx
     } catch (err) {
@@ -222,7 +225,7 @@ export const useExchangeIssuanceLeveraged = () => {
    * @param _swapDataOutputToken        Data (token path and fee levels) describing the swap from Collateral Token to Output token
    */
   const redeemExactSetForERC20 = async (
-    library: any,
+    contract: Contract,
     _setToken: string,
     _setAmount: BigNumber,
     _outputToken: string,
@@ -232,16 +235,21 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForERC20')
     try {
-      const eiContract = await getExchangeIssuanceLeveragedContract(
-        library.getSigner()
-      )
-      const redeemSetTx = await eiContract.redeemExactSetForERC20(
+      // TODO: calculate a slightly higher _maxAmountInputToken so it doesn't revert
+      const higherMax = BigNumber.from(_setAmount).mul(BigNumber.from(2))
+
+      const redeemSetTx = await contract.redeemExactSetForERC20(
         _setToken,
-        _setAmount,
+        higherMax, // TODO: Replace this with the proper setAmount
         _outputToken,
         _minAmountOutputToken,
         _swapDataCollateralForDebt,
-        _swapDataOutputToken
+        _swapDataOutputToken,
+        {
+          gasLimit: 2000000,
+          maxFeePerGas: 100000000000,
+          maxPriorityFeePerGas: 2000000000,
+        }
       )
       return redeemSetTx
     } catch (err) {

@@ -95,7 +95,7 @@ export const getZeroExTradeData = async (
         )
     return { success: true, value: apiResult }
   } catch (e) {
-    console.log(e)
+    console.log('Error retrieving 0x API data', e)
     return { success: false, error: new Error('Error retrieving 0x API data') }
   }
 }

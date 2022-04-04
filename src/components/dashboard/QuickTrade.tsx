@@ -86,7 +86,6 @@ const QuickTrade = (props: {
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
-  // const [buyTokenAmount, setBuyTokenAmount] = useState<string>('0')
   const [buyTokenBalanceFormatted, setBuyTokenBalanceFormatted] = useState('0')
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(
     getTokenListByChain()
@@ -113,22 +112,19 @@ const QuickTrade = (props: {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
-  } = useApproval(sellToken.address, zeroExRouterAddress)
-
-  //TODO: Make this dynamic otherwise token approvals don't work on Polygon
+  } = useApproval(sellToken, zeroExRouterAddress)
   const {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(sellToken.polygonAddress, ExchangeIssuanceLeveragedAddress)
+  } = useApproval(sellToken, ExchangeIssuanceLeveragedAddress)
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
     onApprove: onApproveForEIZX,
-  } = useApproval(sellToken.address, ExchangeIssuanceZeroExAddress)
+  } = useApproval(sellToken, ExchangeIssuanceZeroExAddress)
 
-  // TODO: set from best option hook?
-  const buyTokenAmount = tradeInfoData[0]?.value ?? '0'
+  const buyTokenAmountFormatted = tradeInfoData[0]?.value ?? '0'
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
@@ -138,7 +134,10 @@ const QuickTrade = (props: {
     isBuying,
     sellToken,
     buyToken,
-    toWei(buyTokenAmount, buyToken.decimals),
+    bestOptionResult?.success
+      ? bestOptionResult.exchangeIssuanceData?.inputTokenAmount ??
+          BigNumber.from(0)
+      : BigNumber.from(0),
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
   const { executeLevEITrade, isTransactingLevEI } =
@@ -165,12 +164,37 @@ const QuickTrade = (props: {
       return
     }
 
-    // TODO: factor in gas for both options
+    const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
+    const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
+    const gasPriceLevEI =
+      bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
+      BigNumber.from(0)
+    const gasLimit = 1800000 // TODO: Make gasLimit dynamic
+
+    const gas0x = gasPrice0x.mul(gasLimit0x)
+    const gasLevEI = gasPriceLevEI.mul(gasLimit)
+
+    console.log(gas0x.toString(), gasLevEI.toString(), 'GAS')
+
+    const fullCosts0x = toWei(sellTokenAmount, sellToken.decimals).add(gas0x)
+    const fullCostsLevEI = bestOptionResult.leveragedExchangeIssuanceData
+      ? bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount.add(
+          gasLevEI
+        )
+      : null
+
+    console.log(
+      toWei(sellTokenAmount, sellToken.decimals).toString(),
+      fullCosts0x.toString(),
+      fullCostsLevEI?.toString(),
+      bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount.toString()
+    )
+
     const bestOptionIs0x =
-      !bestOptionResult.leveragedExchangeIssuanceData ||
-      toWei(sellTokenAmount, sellToken.decimals).lt(
+      !fullCostsLevEI ||
+      fullCosts0x.lt(
         //NOTE: Change to .gt if you wanna pay up to taste EI
-        bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount
+        fullCostsLevEI
       )
 
     const buyTokenDecimals = buyToken.decimals
@@ -180,8 +204,7 @@ const QuickTrade = (props: {
       : getTradeInfoDataFromEI(
           bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0),
-          bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
-            BigNumber.from(0),
+          gasPriceLevEI,
           bestOptionResult.leveragedExchangeIssuanceData,
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
@@ -255,14 +278,7 @@ const QuickTrade = (props: {
 
     const hasInsufficientFunds = sellAmount.gt(sellTokenBalance)
     setHasInsufficientFunds(hasInsufficientFunds)
-  }, [
-    bestOption,
-    sellTokenAmount,
-    sellToken,
-    buyToken,
-    buyTokenAmount,
-    sellTokenBalance,
-  ])
+  }, [bestOption, buyToken, sellTokenAmount, sellTokenBalance, sellToken])
 
   useEffect(() => {
     fetchOptions()
@@ -495,7 +511,7 @@ const QuickTrade = (props: {
             isReadOnly: true,
           }}
           selectedToken={buyToken}
-          selectedTokenAmount={buyTokenAmount}
+          selectedTokenAmount={buyTokenAmountFormatted}
           selectedTokenBalance={buyTokenBalanceFormatted}
           tokenList={buyTokenList}
           onChangeInput={onChangeBuyTokenAmount}
