@@ -5,6 +5,8 @@ import { useEthers } from '@usedapp/core'
 
 import {
   eligibleLeveragedExchangeIssuanceTokens,
+  ETH,
+  icETHIndex,
   Token,
 } from 'constants/tokens'
 import { toWei } from 'utils'
@@ -38,6 +40,33 @@ export const useBestTradeOption = () => {
   const isEligibleLeveragedToken = (token: Token) =>
     eligibleLeveragedExchangeIssuanceTokens.includes(token)
 
+  /* Determines if the token pair is eligible for Leveraged Exchange Issuance */
+  const isEligibleTradePair = (
+    inputToken: Token,
+    outputToken: Token,
+    isIssuance: boolean
+  ) => {
+    const tokenEligible = isIssuance
+      ? isEligibleLeveragedToken(outputToken)
+      : isEligibleLeveragedToken(inputToken)
+
+    const isIcEth =
+      inputToken.symbol === icETHIndex.symbol ||
+      outputToken.symbol === icETHIndex.symbol
+
+    if (tokenEligible && isIcEth && isIssuance) {
+      // Only ETH is allowed as input for icETH issuance at the moment
+      return inputToken.symbol === ETH.symbol
+    }
+
+    if (tokenEligible && isIcEth && !isIssuance) {
+      // Only ETH is allowed as output for icETH redeeming at the moment
+      return outputToken.symbol === ETH.symbol
+    }
+
+    return tokenEligible
+  }
+
   const fetchAndCompareOptions = async (
     sellToken: Token,
     sellTokenAmount: string,
@@ -62,12 +91,10 @@ export const useBestTradeOption = () => {
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     console.log('dexSwapOption', dexSwapOption)
 
-    const tokenEligible = isIssuance
-      ? isEligibleLeveragedToken(buyToken)
-      : isEligibleLeveragedToken(sellToken)
+    const tokenEligible = isEligibleTradePair(sellToken, buyToken, isIssuance)
 
-    // console.log('buyToken', buyToken)
-    // console.log('isBuyingTokenEligible', isBuyingTokenEligible)
+    console.log('buyToken', buyToken)
+    console.log('isBuyingTokenEligible', tokenEligible)
 
     const tokenAmount =
       isIssuance && dexSwapOption
