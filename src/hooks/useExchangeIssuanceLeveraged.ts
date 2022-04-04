@@ -7,8 +7,9 @@ import {
   ExchangeIssuanceLeveragedAddress,
   ExchangeIssuanceLeveragedMainnetAddress,
 } from 'constants/ethContractAddresses'
-import { getERC20Contract } from 'utils'
+import { displayFromWei, getERC20Contract , isValidTokenInput, toWei } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
+import { Exchange } from 'utils/exchangeIssuanceQuotes'
 
 /**
  * returns instance of ExchangeIssuanceLeveraged Contract
