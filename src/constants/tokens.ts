@@ -76,7 +76,7 @@ export const ETH: Token = {
 
 export const WETH: Token = {
   name: 'Wrapped Ether',
-  symbol: 'ETH',
+  symbol: 'WETH',
   image:
     'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
@@ -390,7 +390,7 @@ export const productTokensBySymbol = {
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC]
 
-export const polygonCurrencyTokens = [MATIC, DAI, USDC]
+export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
 
 export const optimismCurrencyTokens = [ETH, DAI, USDC]
 
