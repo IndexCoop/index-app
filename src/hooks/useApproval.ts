@@ -10,11 +10,6 @@ import { Token } from 'constants/tokens'
 import { useAllowance } from 'hooks/useAllowance'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 
-import {
-  ExchangeIssuanceLeveragedPolygonAddress,
-  ExchangeIssuanceLeveragedMainnetAddress,
-} from 'constants/ethContractAddresses'
-
 const ERC20Interface = new utils.Interface(ERC20_ABI)
 
 /**
@@ -25,10 +20,6 @@ export const useApproval = (token?: Token, spenderAddress?: string) => {
   const tokenAddress =
     chainId === ChainId.Polygon ? token?.polygonAddress : token?.address
 
-  if (spenderAddress === ExchangeIssuanceLeveragedMainnetAddress &&
-  chainId === ChainId.Polygon) {
-    spenderAddress = ExchangeIssuanceLeveragedPolygonAddress
-  }
   const allowance = useAllowance(tokenAddress, spenderAddress)
   const { sendTransaction, state } = useSendTransaction()
 
