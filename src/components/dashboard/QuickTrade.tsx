@@ -241,19 +241,6 @@ const QuickTrade = (props: {
   }, [chainId])
 
   useEffect(() => {
-    const prevSellToken = sellToken
-    const prevBuyToken = buyToken
-    const currencyTokensList = getCurrencyTokensByChain()
-    const tokenList = getTokenListByChain()
-    const sellTokenList = isBuying ? currencyTokensList : tokenList
-    const buyTokenList = isBuying ? tokenList : currencyTokensList
-    setSellTokenList(sellTokenList)
-    setBuyTokenList(buyTokenList)
-    setSellToken(prevBuyToken)
-    setBuyToken(prevSellToken)
-  }, [isBuying])
-
-  useEffect(() => {
     const isUSDC = buyToken.symbol === 'USDC'
     const decimals = isUSDC ? 6 : 18
     const formattedBalance = buyTokenBalance
@@ -442,9 +429,18 @@ const QuickTrade = (props: {
   }
 
   const onSwapTokenLists = () => {
-    // It's only necessary to change isBuying - since effect hooks
-    // will do the rest listening to this change
-    setIsBuying(!isBuying)
+    const isBuyingNew = !isBuying
+    const prevSellToken = sellToken
+    const prevBuyToken = buyToken
+    const currencyTokensList = getCurrencyTokensByChain()
+    const tokenList = getTokenListByChain()
+    const sellTokenList = isBuyingNew ? currencyTokensList : tokenList
+    const buyTokenList = isBuyingNew ? tokenList : currencyTokensList
+    setSellTokenList(sellTokenList)
+    setBuyTokenList(buyTokenList)
+    setSellToken(prevBuyToken)
+    setBuyToken(prevSellToken)
+    setIsBuying(isBuyingNew)
   }
 
   const isLoading = getIsApproving() || isFetchingTradeData
