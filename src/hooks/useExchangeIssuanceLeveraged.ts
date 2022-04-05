@@ -4,8 +4,8 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { ChainId } from '@usedapp/core'
 
 import {
-  ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceLeveragedMainnetAddress,
+  ExchangeIssuanceLeveragedPolygonAddress,
 } from 'constants/ethContractAddresses'
 import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
@@ -132,14 +132,13 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForETH')
     try {
-      
       //TODO: Estimate better _minAmountOutputToken. For now hardcode addtional 0.05 ETH
       console.log('redeeming', {
         _setToken,
         _setAmount,
         _minAmountOutputToken,
         _swapDataCollateralForDebt,
-        _swapDataOutputToken
+        _swapDataOutputToken,
       })
       const redeemSetTx = await contract.redeemExactSetForETH(
         _setToken,
