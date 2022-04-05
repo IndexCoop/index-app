@@ -128,7 +128,14 @@ export const useBestTradeOption = () => {
     if (account && !dexSwapError && tokenEligible) {
       const setToken = isIssuance ? buyToken : sellToken
       const setAmount = tokenAmount
-      console.log('Getting leveraged ei option', isIssuance, setToken, setAmount, 'sell token', sellToken)
+      console.log(
+        'Getting leveraged ei option',
+        isIssuance,
+        setToken,
+        setAmount,
+        'sell token',
+        sellToken
+      )
 
       try {
         leveragedExchangeIssuanceOption =
@@ -146,7 +153,12 @@ export const useBestTradeOption = () => {
     }
 
     console.log('exchangeIssueOption', exchangeIssuanceOption)
-    console.log('exchangeIssueLeveragedOption', leveragedExchangeIssuanceOption, 'dex swap', dexSwapOption)
+    console.log(
+      'exchangeIssueLeveragedOption',
+      leveragedExchangeIssuanceOption,
+      'dex swap',
+      dexSwapOption
+    )
 
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }

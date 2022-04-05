@@ -61,7 +61,7 @@ export async function get0xQuote(params: any, chainId: number) {
   try {
     const response = await axios.get(url)
     return response.data
-  } catch(err:any) {
+  } catch (err: any) {
     console.log('response', err.response)
   }
 }
