@@ -17,7 +17,7 @@ import { ChainId, useEthers } from '@usedapp/core'
 import ConnectModal from 'components/header/ConnectModal'
 import { POLYGON } from 'constants/chains'
 import {
-  ExchangeIssuanceLeveragedAddress,
+  ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceZeroExAddress,
   zeroExRouterAddress,
 } from 'constants/ethContractAddresses'
@@ -117,7 +117,7 @@ const QuickTrade = (props: {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(sellToken, ExchangeIssuanceLeveragedAddress)
+  } = useApproval(sellToken, ExchangeIssuanceLeveragedMainnetAddress)
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,

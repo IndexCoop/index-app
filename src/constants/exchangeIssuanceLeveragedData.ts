@@ -89,10 +89,10 @@ export const outputSwapData = {
   [icETHIndex.symbol]: {
     // icETH only supports ETH as the output token
     [ETH.symbol]: {
-      exchange: Exchange.None,
-      path: [],
+      exchange: Exchange.Curve,
+      path: ['0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', ETH.address],
       fees: [],
-      pool: ADDRESS_ZERO,
+      pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
     },
   },
 }

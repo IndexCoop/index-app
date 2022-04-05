@@ -88,6 +88,7 @@ export const useTradeExchangeIssuance = (
         const isRedeemingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
         const minAmountToReceive = tokenAmout
+        console.log('minamount to receive', tokenAmout)
 
         if (isRedeemingNativeChainToken) {
           await redeemExactSetForETH(
