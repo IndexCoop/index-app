@@ -25,6 +25,7 @@ import {
 import {
   DefiPulseIndex,
   ETH,
+  icETHIndex,
   indexNamesMainnet,
   indexNamesPolygon,
   mainnetCurrencyTokens,
@@ -99,6 +100,8 @@ const QuickTrade = (props: {
     getCurrencyTokensByChain()
   )
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+
+  const [icEthErrorMessage, setIcEthErrorMessage] = useState<boolean>(false)
 
   const sellTokenBalance = useTokenBalance(sellToken)
   const buyTokenBalance = useTokenBalance(buyToken)
@@ -180,21 +183,12 @@ const QuickTrade = (props: {
     const gas0x = gasPrice0x.mul(gasLimit0x)
     const gasLevEI = gasPriceLevEI.mul(gasLimit)
 
-    console.log(gas0x.toString(), gasLevEI.toString(), 'GAS')
-
     const fullCosts0x = toWei(sellTokenAmount, sellToken.decimals).add(gas0x)
     const fullCostsLevEI = bestOptionResult.leveragedExchangeIssuanceData
       ? bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount.add(
           gasLevEI
         )
       : null
-
-    console.log(
-      toWei(sellTokenAmount, sellToken.decimals).toString(),
-      fullCosts0x.toString(),
-      fullCostsLevEI?.toString(),
-      bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount.toString()
-    )
 
     const bestOptionIs0x =
       !fullCostsLevEI ||
@@ -222,6 +216,14 @@ const QuickTrade = (props: {
         ? QuickTradeBestOption.zeroEx
         : QuickTradeBestOption.leveragedExchangeIssuance
     )
+
+    // Temporary needed as icETH EI can't provide more than 34 icETH
+    const shouldShowicEthErrorMessage =
+      !bestOptionIs0x &&
+      sellToken.symbol === ETH.symbol &&
+      buyToken.symbol === icETHIndex.symbol &&
+      toWei(sellTokenAmount, sellToken.decimals).gt(toWei(34))
+    setIcEthErrorMessage(shouldShowicEthErrorMessage)
   }, [bestOptionResult])
 
   /**
@@ -526,6 +528,12 @@ const QuickTrade = (props: {
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
             {bestOptionResult.error.message}
+          </Text>
+        )}
+        {icEthErrorMessage && (
+          <Text align='center' color={colors.icYellow} p='16px'>
+            You can only issue the displayed amout of icETH at a time (you'll
+            pay this amount of ETH, instead of the quantity you want to spend).
           </Text>
         )}
         <TradeButton
