@@ -249,8 +249,8 @@ const QuickTrade = (props: {
     setBuyTokenList(newBuyTokenList)
     setSellToken(newSellTokenList[0])
     setBuyToken(newBuyTokenList[0])
-    onChangeSellTokenAmount(newSellTokenList[0], '0')
     setIsBuying(true)
+    setTradeInfoData([])
   }, [chainId])
 
   useEffect(() => {

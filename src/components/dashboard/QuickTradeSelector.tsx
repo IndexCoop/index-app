@@ -6,6 +6,7 @@ import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
 
 import { Token } from 'constants/tokens'
 import { isValidTokenInput } from 'utils'
+import { useEthers } from '@usedapp/core'
 
 interface InputSelectorConfig {
   isDarkMode: boolean
@@ -25,6 +26,7 @@ const QuickTradeSelector = (props: {
   onSelectedToken: (symbol: string) => void
   isNarrowVersion: boolean
 }) => {
+  const { chainId } = useEthers()
   const [inputString, setInputString] = useState<string>(
     props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
   )
@@ -34,6 +36,10 @@ const QuickTradeSelector = (props: {
       props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
     )
   }, [props.selectedTokenAmount])
+
+  useEffect(() => {
+    onChangeInput('0')
+  }, [chainId])
 
   const { config, selectedToken } = props
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
