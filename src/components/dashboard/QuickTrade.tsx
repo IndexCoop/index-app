@@ -217,6 +217,7 @@ const QuickTrade = (props: {
           bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0),
           gasPriceLevEI,
+          buyToken,
           bestOptionResult.leveragedExchangeIssuanceData,
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
@@ -229,12 +230,12 @@ const QuickTrade = (props: {
         : QuickTradeBestOption.leveragedExchangeIssuance
     )
 
-    // Temporary needed as icETH EI can't provide more than 34 icETH
+    // Temporary needed as icETH EI can't provide more than 120 icETH
     const shouldShowicEthErrorMessage =
       !bestOptionIs0x &&
       sellToken.symbol === ETH.symbol &&
       buyToken.symbol === icETHIndex.symbol &&
-      toWei(sellTokenAmount, sellToken.decimals).gt(toWei(34))
+      toWei(sellTokenAmount, sellToken.decimals).gt(toWei(120))
     setIcEthErrorMessage(shouldShowicEthErrorMessage)
   }, [bestOptionResult])
 
@@ -589,6 +590,7 @@ const TradeButton = (props: TradeButtonProps) => (
 function getTradeInfoDataFromEI(
   setAmount: BigNumber,
   gasPrice: BigNumber,
+  buyToken: Token,
   data:
     | ExchangeIssuanceQuote
     | LeveragedExchangeIssuanceQuote
@@ -598,6 +600,7 @@ function getTradeInfoDataFromEI(
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
+  console.log('data', data)
   const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
   const maxPayment =
     displayFromWei(data.inputTokenAmount, undefined, tokenDecimals) ?? '0.0'
@@ -607,8 +610,8 @@ function getTradeInfoDataFromEI(
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: 'Exact Set amount', value: exactSetAmount },
-    { title: 'Maximum payment amount', value: maxPayment },
+    { title: `Exact Amount of ${buyToken.symbol} Received`, value: exactSetAmount },
+    { title: 'Maximum Payment Amount', value: maxPayment },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFrom },
   ]
