@@ -212,11 +212,12 @@ const QuickTrade = (props: {
     const buyTokenDecimals = buyToken.decimals
 
     const dexTradeInfoData = bestOptionIs0x
-      ? getTradeInfoData0x(bestOptionResult.dexData, buyTokenDecimals, chainId)
+      ? getTradeInfoData0x(bestOptionResult.dexData, buyTokenDecimals, buyToken, chainId)
       : getTradeInfoDataFromEI(
           bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0),
           gasPriceLevEI,
+          buyToken,
           bestOptionResult.leveragedExchangeIssuanceData,
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
@@ -229,12 +230,12 @@ const QuickTrade = (props: {
         : QuickTradeBestOption.leveragedExchangeIssuance
     )
 
-    // Temporary needed as icETH EI can't provide more than 34 icETH
+    // Temporary needed as icETH EI can't provide more than 120 icETH
     const shouldShowicEthErrorMessage =
       !bestOptionIs0x &&
       sellToken.symbol === ETH.symbol &&
       buyToken.symbol === icETHIndex.symbol &&
-      toWei(sellTokenAmount, sellToken.decimals).gt(toWei(34))
+      toWei(sellTokenAmount, sellToken.decimals).gt(toWei(120))
     setIcEthErrorMessage(shouldShowicEthErrorMessage)
   }, [bestOptionResult])
 
@@ -589,6 +590,7 @@ const TradeButton = (props: TradeButtonProps) => (
 function getTradeInfoDataFromEI(
   setAmount: BigNumber,
   gasPrice: BigNumber,
+  buyToken: Token,
   data:
     | ExchangeIssuanceQuote
     | LeveragedExchangeIssuanceQuote
@@ -598,7 +600,9 @@ function getTradeInfoDataFromEI(
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
-  const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
+  console.log('data', data)
+  const exactSetAmount =
+    displayFromWei(setAmount) + ' ' + buyToken.symbol ?? '0.0'
   const maxPayment =
     displayFromWei(data.inputTokenAmount, undefined, tokenDecimals) ?? '0.0'
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic
@@ -607,8 +611,8 @@ function getTradeInfoDataFromEI(
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: 'Exact Set amount', value: exactSetAmount },
-    { title: 'Maximum payment amount', value: maxPayment },
+    { title: `Exact Amount of Received`, value: exactSetAmount },
+    { title: 'Maximum Payment Amount', value: maxPayment },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFrom },
   ]
@@ -617,6 +621,7 @@ function getTradeInfoDataFromEI(
 function getTradeInfoData0x(
   zeroExTradeData: ZeroExData | undefined | null,
   tokenDecimals: number,
+  buyToken: Token,
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (zeroExTradeData === undefined || zeroExTradeData === null) return []
@@ -633,7 +638,7 @@ function getTradeInfoData0x(
     ) ?? '0.0'
 
   const minReceive =
-    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
+    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) + ' ' + buyToken.symbol ?? '0.0'
 
   const networkFee = displayFromWei(
     BigNumber.from(gasPrice).mul(BigNumber.from(gas))
