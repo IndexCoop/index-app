@@ -242,15 +242,13 @@ const QuickTrade = (props: {
    * Switches sell token lists between mainnet and polygon
    */
   useEffect(() => {
-    const sellTokenList = getCurrencyTokensByChain()
-    const buyTokenList = getTokenListByChain()
-    const sellToken = sellTokenList[0]
-    const buyToken = buyTokenList[0]
-    setSellTokenAmount('0')
-    setSellTokenList(sellTokenList)
-    setBuyTokenList(buyTokenList)
-    setSellToken(sellToken)
-    setBuyToken(buyToken)
+    const newSellTokenList = getCurrencyTokensByChain()
+    const newBuyTokenList = getTokenListByChain()
+    setSellTokenList(newSellTokenList)
+    setBuyTokenList(newBuyTokenList)
+    setSellToken(newSellTokenList[0])
+    setBuyToken(newBuyTokenList[0])
+    onChangeSellTokenAmount(newSellTokenList[0], '0')
     setIsBuying(true)
   }, [chainId])
 
@@ -376,7 +374,7 @@ const QuickTrade = (props: {
     return 'Trade'
   }
 
-  const onChangeSellTokenAmount = (token: Token) => (input: string) => {
+  const onChangeSellTokenAmount = (token: Token, input: string) => {
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '0')
   }
@@ -399,7 +397,7 @@ const QuickTrade = (props: {
     setBuyToken(filteredList[0])
   }
 
-  const onChangeBuyTokenAmount = (input: string) => {
+  const onChangeBuyTokenAmount = (token: Token, input: string) => {
     // const inputNumber = Number(input)
     // if (input === buyTokenAmount || input.slice(-1) === '.') return
     // if (isNaN(inputNumber) || inputNumber < 0) return
@@ -485,6 +483,7 @@ const QuickTrade = (props: {
       direction='column'
       py='20px'
       px={['16px', paddingX]}
+      height={'100%'}
     >
       <Flex>
         <Text fontSize='24px' fontWeight='700'>
@@ -503,7 +502,7 @@ const QuickTrade = (props: {
           selectedToken={sellToken}
           tokenList={sellTokenList}
           selectedTokenBalance={sellTokenBalanceFormatted}
-          onChangeInput={onChangeSellTokenAmount(sellToken)}
+          onChangeInput={onChangeSellTokenAmount}
           onSelectedToken={onChangeSellToken}
           isNarrowVersion={isNarrow}
         />

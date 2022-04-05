@@ -155,10 +155,9 @@ const Dashboard = () => {
         justifyContent={'center'}
       >
         <PageTitle title='My Dashboard' subtitle='' />
-        <Box my={12}>
+        <Box mb={12}>
           <Flex
             direction={['column', 'column', 'column', 'row']}
-            mt='64px'
             px={[0, 0, '20px', 0]}
             w={['340px', '500px', '820px', '1024px']}
             h={['auto', 'auto']}

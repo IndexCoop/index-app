@@ -21,7 +21,7 @@ const QuickTradeSelector = (props: {
   selectedTokenAmount?: string
   selectedTokenBalance?: string
   tokenList: Token[]
-  onChangeInput: (input: string) => void
+  onChangeInput: (token: Token, input: string) => void
   onSelectedToken: (symbol: string) => void
   isNarrowVersion: boolean
 }) => {
@@ -46,7 +46,7 @@ const QuickTradeSelector = (props: {
   const onChangeInput = (amount: string) => {
     if (!amount) {
       setInputString('')
-      props.onChangeInput('')
+      props.onChangeInput(props.selectedToken, '')
     }
 
     if (
@@ -59,7 +59,7 @@ const QuickTradeSelector = (props: {
       return
 
     setInputString(amount)
-    props.onChangeInput(amount)
+    props.onChangeInput(props.selectedToken, amount)
   }
 
   return (
