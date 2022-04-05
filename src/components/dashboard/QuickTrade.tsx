@@ -121,17 +121,29 @@ const QuickTrade = (props: {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
-  } = useApproval(sellToken, zeroExRouterAddress)
+  } = useApproval(
+    sellToken,
+    zeroExRouterAddress,
+    toWei(sellTokenAmount, sellToken.decimals)
+  )
   const {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(sellToken, spenderAddressLevEIL)
+  } = useApproval(
+    sellToken,
+    spenderAddressLevEIL,
+    toWei(sellTokenAmount, sellToken.decimals)
+  )
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
     onApprove: onApproveForEIZX,
-  } = useApproval(sellToken, ExchangeIssuanceZeroExAddress)
+  } = useApproval(
+    sellToken,
+    ExchangeIssuanceZeroExAddress,
+    toWei(sellTokenAmount, sellToken.decimals)
+  )
 
   const buyTokenAmountFormatted = tradeInfoData[0]?.value ?? '0'
 
