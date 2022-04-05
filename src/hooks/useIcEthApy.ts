@@ -92,8 +92,9 @@ export const useIcEthApy = (): { apy: BigNumber } => {
   const leverageRatioNum = parseFloat(leverageRatio.toString())
 
   /* apy = (levRatio - 1) * (stETH yield [1] - ethBorrowRate [2]) + stETH yield - 0.9 % */
+  // changed temporarily to .75 to account for launch fee reduction
   const apyNumber =
-    (leverageRatioNum - 1) * (stEthAprNum - borrowRateNum) + stEthAprNum - 0.9
+    (leverageRatioNum - 1) * (stEthAprNum - borrowRateNum) + stEthAprNum - 0.75
   const apy = toWei(apyNumber)
   return { apy }
 }
