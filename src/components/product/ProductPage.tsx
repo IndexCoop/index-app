@@ -128,7 +128,7 @@ const ProductPage = (props: {
   return (
     <Page>
       <Flex direction='column' w={['100%', '80vw']} m='0 auto'>
-        <Box my={['16px', '48px']}>
+        <Box mb={['16px', '48px']}>
           <ProductHeader
             isMobile={isMobile ?? false}
             tokenData={props.tokenData}
