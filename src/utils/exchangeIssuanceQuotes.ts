@@ -276,7 +276,6 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     },
     chainId
   )
-  console.log('did stuff')
   const inputTokenAmount = BigNumber.from(zeroExQuote.sellAmount)
   console.log('input token amount', inputTokenAmount.toString())
 
