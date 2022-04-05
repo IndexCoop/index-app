@@ -77,8 +77,11 @@ export const inputSwapData = {
     },
     // MATIC
     '0x0000000000000000000000000000000000001010': {
-      exchange: Exchange.None,
-      path: [],
+      exchange: Exchange.Sushiswap,
+      path: [
+        '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+        '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+      ],
       fees: [],
       pool: ADDRESS_ZERO,
     },
@@ -89,10 +92,10 @@ export const outputSwapData = {
   [icETHIndex.symbol]: {
     // icETH only supports ETH as the output token
     [ETH.symbol]: {
-      exchange: Exchange.None,
-      path: [],
+      exchange: Exchange.Curve,
+      path: ['0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84', ETH.address],
       fees: [],
-      pool: ADDRESS_ZERO,
+      pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
     },
   },
 }

@@ -4,8 +4,8 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { ChainId } from '@usedapp/core'
 
 import {
-  ExchangeIssuanceLeveragedAddress,
   ExchangeIssuanceLeveragedMainnetAddress,
+  ExchangeIssuanceLeveragedPolygonAddress,
 } from 'constants/ethContractAddresses'
 import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
@@ -23,7 +23,7 @@ export const getExchangeIssuanceLeveragedContract = async (
 ): Promise<Contract> => {
   const contractAddress =
     chainId === ChainId.Polygon
-      ? ExchangeIssuanceLeveragedAddress
+      ? ExchangeIssuanceLeveragedPolygonAddress
       : ExchangeIssuanceLeveragedMainnetAddress
   console.log('getExchangeIssuanceLeveragedContract', contractAddress)
   return new Contract(contractAddress, EI_LEVERAGED_ABI, providerSigner)
@@ -92,10 +92,9 @@ export const useExchangeIssuanceLeveraged = () => {
         _maxInput,
       })
 
-      //TODO: Estimate better _maxInput. For now hardcode addtional 0.05 ETH
-      const higherMax = BigNumber.from(_maxInput).add(
-        BigNumber.from('5000000000000000')
-      )
+      //TODO: Estimate better _maxInput.
+      //For now hardcode addtional 0.25% so it doesn't revert
+      const higherMax = BigNumber.from(_maxInput).mul(10025).div(10000)
       console.log('amounts', _maxInput, higherMax)
       const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
@@ -105,7 +104,6 @@ export const useExchangeIssuanceLeveraged = () => {
         { value: higherMax, gasLimit: 1800000 }
       )
 
-      console.log('finished', issueSetTx)
       return issueSetTx
     } catch (err) {
       console.log('error', err)
@@ -132,19 +130,21 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForETH')
     try {
-      // TODO: is this correct?
-      //TODO: Estimate better _maxInput. For now hardcode addtional 0.05 ETH
-      const higherMax = BigNumber.from(_setAmount).add(
-        BigNumber.from('5000000000000000')
-      )
-
+      //TODO: Estimate better _minAmountOutputToken. For now hardcode addtional 0.05 ETH
+      console.log('redeeming', {
+        _setToken,
+        _setAmount,
+        _minAmountOutputToken,
+        _swapDataCollateralForDebt,
+        _swapDataOutputToken,
+      })
       const redeemSetTx = await contract.redeemExactSetForETH(
         _setToken,
         _setAmount,
         _minAmountOutputToken,
         _swapDataCollateralForDebt,
         _swapDataOutputToken,
-        { value: higherMax, gasLimit: 1800000 }
+        { gasLimit: 1800000 }
       )
       return redeemSetTx
     } catch (err) {
@@ -181,10 +181,8 @@ export const useExchangeIssuanceLeveraged = () => {
         library.getSigner(),
         chainId
       )
-      // TODO: calculate a slightly higher _maxAmountInputToken so it doesn't revert
-      const higherMax = BigNumber.from(_maxAmountInputToken).mul(
-        BigNumber.from(2)
-      )
+      // TODO: calculate more accurate _maxAmountInputToken so it doesn't revert
+      const higherMax = BigNumber.from(_maxAmountInputToken).mul(10025).div(10000) // Extra 0.25%
       console.log('erc20', {
         _setToken,
         _setAmount,
@@ -201,9 +199,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataDebtForCollateral,
         _swapDataInputToken,
         {
-          gasLimit: 2000000,
-          maxFeePerGas: 100000000000,
-          maxPriorityFeePerGas: 2000000000,
+          gasLimit: 1800000
         }
       )
       return issueSetTx
@@ -430,7 +426,7 @@ export const useExchangeIssuanceLeveraged = () => {
       )
       const allowance = await tokenContract.allowance(
         account,
-        ExchangeIssuanceLeveragedAddress
+        ExchangeIssuanceLeveragedPolygonAddress
       )
       return BigNumber.from(allowance)
     } catch (err) {

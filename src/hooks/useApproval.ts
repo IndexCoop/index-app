@@ -19,6 +19,7 @@ export const useApproval = (token?: Token, spenderAddress?: string) => {
   const { account, chainId, library } = useEthers()
   const tokenAddress =
     chainId === ChainId.Polygon ? token?.polygonAddress : token?.address
+
   const allowance = useAllowance(tokenAddress, spenderAddress)
   const { sendTransaction, state } = useSendTransaction()
 

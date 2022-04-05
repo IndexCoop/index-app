@@ -58,8 +58,12 @@ function getApiUrl(query: string, chainId: number): string {
 export async function get0xQuote(params: any, chainId: number) {
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  const response = await axios.get(url)
-  return response.data
+  try {
+    const response = await axios.get(url)
+    return response.data
+  } catch (err: any) {
+    console.log('response', err.response)
+  }
 }
 
 export const getZeroExTradeData = async (
@@ -78,6 +82,10 @@ export const getZeroExTradeData = async (
     chainId
   )
 
+  console.log('getting zero ex traddata', params)
+  if (params.sellToken === '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84') {
+    params.sellToken = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84'
+  }
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
   try {
