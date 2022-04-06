@@ -51,7 +51,7 @@ const QuickTradeSelector = (props: {
   useEffect(() => {
     const tokenBal = getBalance(props.selectedToken)
     setTokenBalance(formattedBalance(props.selectedToken, tokenBal))
-  }, [props.selectedToken, getBalance])
+  }, [props.selectedToken, getBalance, chainId])
 
   const { config, selectedToken } = props
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black

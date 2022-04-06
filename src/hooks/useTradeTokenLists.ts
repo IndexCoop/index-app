@@ -14,7 +14,10 @@ import {
   Token,
 } from 'constants/tokens'
 
-export const useTradeTokenLists = (chainId: ChainId | undefined) => {
+export const useTradeTokenLists = (
+  chainId: ChainId | undefined,
+  singleToken?: Token
+) => {
   const isPolygon = chainId === ChainId.Polygon
 
   const [isBuying, setIsBuying] = useState<boolean>(true)
@@ -34,9 +37,11 @@ export const useTradeTokenLists = (chainId: ChainId | undefined) => {
     const newSellTokenList = getCurrencyTokensByChain(chainId)
     const newBuyTokenList = getTokenListByChain(chainId)
     setSellTokenList(newSellTokenList)
-    setBuyTokenList(newBuyTokenList)
+    singleToken
+      ? setBuyTokenList([singleToken])
+      : setBuyTokenList(newBuyTokenList)
     setSellToken(newSellTokenList[0])
-    setBuyToken(newBuyTokenList[0])
+    singleToken ? setBuyToken(singleToken) : setBuyToken(newBuyTokenList[0])
     setIsBuying(true)
   }, [chainId])
 
@@ -63,7 +68,7 @@ export const useTradeTokenLists = (chainId: ChainId | undefined) => {
     const prevSellToken = sellToken
     const prevBuyToken = buyToken
     const currencyTokensList = getCurrencyTokensByChain(chainId)
-    const tokenList = getTokenListByChain(chainId)
+    const tokenList = singleToken ? [singleToken] : getTokenListByChain(chainId)
     const sellTokenList = isBuyingNew ? currencyTokensList : tokenList
     const buyTokenList = isBuyingNew ? tokenList : currencyTokensList
     setSellTokenList(sellTokenList)

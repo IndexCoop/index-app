@@ -63,7 +63,7 @@ const QuickTrade = (props: {
     changeBuyToken,
     changeSellToken,
     swapTokenLists,
-  } = useTradeTokenLists(chainId)
+  } = useTradeTokenLists(chainId, props.singleToken)
   const { getBalance } = useTokenBalance()
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
