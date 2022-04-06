@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import { colors } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
+import { useEthers } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
 import { isValidTokenInput } from 'utils'
-import { useEthers } from '@usedapp/core'
 
 interface InputSelectorConfig {
   isDarkMode: boolean

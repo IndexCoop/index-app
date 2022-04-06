@@ -182,7 +182,9 @@ export const useExchangeIssuanceLeveraged = () => {
         chainId
       )
       // TODO: calculate more accurate _maxAmountInputToken so it doesn't revert
-      const higherMax = BigNumber.from(_maxAmountInputToken).mul(10025).div(10000) // Extra 0.25%
+      const higherMax = BigNumber.from(_maxAmountInputToken)
+        .mul(10025)
+        .div(10000) // Extra 0.25%
       console.log('erc20', {
         _setToken,
         _setAmount,
@@ -199,7 +201,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataDebtForCollateral,
         _swapDataInputToken,
         {
-          gasLimit: 1800000
+          gasLimit: 1800000,
         }
       )
       return issueSetTx
