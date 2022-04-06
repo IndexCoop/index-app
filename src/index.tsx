@@ -27,6 +27,7 @@ import IBTCFLIP from 'components/views/productpages/IBTCFLIP'
 import ICETH from 'components/views/productpages/ICETH'
 import IETHFLIP from 'components/views/productpages/IETHFLIP'
 import IMATICFLIP from 'components/views/productpages/IMATICFLIP'
+import INDEX from 'components/views/productpages/INDEX'
 import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
@@ -128,6 +129,7 @@ ReactDOM.render(
             <Route path='btc2x' element={<BTC2xFLIP />} />
             <Route path='ibtc' element={<IBTCFLIP />} />
             <Route path='iceth' element={<ICETH />} />
+            <Route path='index' element={<INDEX />} />
           </Route>
         </Routes>
       </Providers>

@@ -6,7 +6,7 @@ import { useEthers } from '@usedapp/core'
 import QuickTrade from 'components/dashboard/QuickTrade'
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
-import { Token } from 'constants/tokens'
+import { IndexToken,Token  } from 'constants/tokens'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -157,12 +157,16 @@ const ProductPage = (props: {
           </Flex>
           <ProductPageSectionHeader title='Stats' topMargin='120px' />
           <ProductStats stats={stats} />
-          <ProductPageSectionHeader title='Allocations' />
-          <ProductComponentsTable
-            components={props.components}
-            tokenData={props.tokenData}
-            isLeveragedToken={props.isLeveragedToken}
-          />
+          {props.tokenData.symbol !== IndexToken.symbol && (
+            <>
+              <ProductPageSectionHeader title='Allocations' />
+              <ProductComponentsTable
+                components={props.components}
+                tokenData={props.tokenData}
+                isLeveragedToken={props.isLeveragedToken}
+              />
+            </>
+          )}
         </Flex>
       </Flex>
     </Page>

@@ -406,21 +406,20 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
 ]
 
 const indexNames = [
+  icETHIndex,
   DefiPulseIndex,
   MetaverseIndex,
-  Ethereum2xFlexibleLeverageIndex,
+  GmiIndex,
   Ethereum2xFLIP,
-  IndexToken,
+  IEthereumFLIP,
+  Bitcoin2xFLIP,
+  IBitcoinFLIP,
+  Matic2xFLIP,
+  IMaticFLIP,
+  Ethereum2xFlexibleLeverageIndex,
   Bitcoin2xFlexibleLeverageIndex,
   BedIndex,
   DataIndex,
-  GmiIndex,
-  Matic2xFLIP,
-  IMaticFLIP,
-  IEthereumFLIP,
-  IBitcoinFLIP,
-  Bitcoin2xFLIP,
-  icETHIndex,
 ]
 
 export const indexNamesMainnet = indexNames.filter(
