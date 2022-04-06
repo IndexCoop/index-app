@@ -33,6 +33,7 @@ import { isValidTokenInput, toWei } from 'utils'
 
 import {
   formattedBalance,
+  getHasInsufficientFunds,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
@@ -67,7 +68,6 @@ const QuickTrade = (props: {
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
   )
-  const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
@@ -87,24 +87,19 @@ const QuickTrade = (props: {
       ? ExchangeIssuanceLeveragedPolygonAddress
       : ExchangeIssuanceLeveragedMainnetAddress
 
+  const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
+  const buyTokenAmountFormatted = tradeInfoData[0]?.value ?? '0'
+
   const {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
-  } = useApproval(
-    sellToken,
-    zeroExRouterAddress,
-    toWei(sellTokenAmount, sellToken.decimals)
-  )
+  } = useApproval(sellToken, zeroExRouterAddress, sellTokenAmountInWei)
   const {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
     onApprove: onApproveForEIL,
-  } = useApproval(
-    sellToken,
-    spenderAddressLevEIL,
-    toWei(sellTokenAmount, sellToken.decimals)
-  )
+  } = useApproval(sellToken, spenderAddressLevEIL, sellTokenAmountInWei)
   const {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
@@ -112,10 +107,8 @@ const QuickTrade = (props: {
   } = useApproval(
     sellToken,
     ExchangeIssuanceZeroExAddress,
-    toWei(sellTokenAmount, sellToken.decimals)
+    sellTokenAmountInWei
   )
-
-  const buyTokenAmountFormatted = tradeInfoData[0]?.value ?? '0'
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
@@ -145,6 +138,12 @@ const QuickTrade = (props: {
             BigNumber.from(0)
         : BigNumber.from(0)
     )
+
+  const hasInsufficientFunds = getHasInsufficientFunds(
+    bestOption === null,
+    sellTokenAmountInWei,
+    sellTokenBalance
+  )
 
   /**
    * Determine the best trade option.
@@ -217,21 +216,6 @@ const QuickTrade = (props: {
   useEffect(() => {
     setTradeInfoData([])
   }, [chainId])
-
-  useEffect(() => {
-    const sellAmount = toWei(sellTokenAmount, sellToken.decimals)
-
-    if (
-      bestOption === null ||
-      sellAmount.isZero() ||
-      sellAmount.isNegative() ||
-      sellTokenBalance === undefined
-    )
-      return
-
-    const hasInsufficientFunds = sellAmount.gt(sellTokenBalance)
-    setHasInsufficientFunds(hasInsufficientFunds)
-  }, [bestOption, buyToken, sellTokenAmount, sellTokenBalance, sellToken])
 
   useEffect(() => {
     fetchOptions()

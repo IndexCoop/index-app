@@ -21,6 +21,23 @@ export function formattedBalance(
     : zero
 }
 
+export const getHasInsufficientFunds = (
+  bestOptionUnavailable: boolean,
+  sellAmount: BigNumber,
+  sellTokenBalance: BigNumber | undefined
+): boolean => {
+  if (
+    bestOptionUnavailable ||
+    sellAmount.isZero() ||
+    sellAmount.isNegative() ||
+    sellTokenBalance === undefined
+  )
+    return false
+
+  const hasInsufficientFunds = sellAmount.gt(sellTokenBalance)
+  return hasInsufficientFunds
+}
+
 export function getTradeInfoDataFromEI(
   setAmount: BigNumber,
   gasPrice: BigNumber,
