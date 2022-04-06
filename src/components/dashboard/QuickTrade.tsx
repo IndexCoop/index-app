@@ -39,12 +39,11 @@ import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
-import {
-  ExchangeIssuanceQuote,
-  LeveragedExchangeIssuanceQuote,
-} from 'utils/exchangeIssuanceQuotes'
-import { ZeroExData } from 'utils/zeroExUtils'
 
+import {
+  getTradeInfoData0x,
+  getTradeInfoDataFromEI,
+} from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
@@ -212,7 +211,12 @@ const QuickTrade = (props: {
     const buyTokenDecimals = buyToken.decimals
 
     const dexTradeInfoData = bestOptionIs0x
-      ? getTradeInfoData0x(bestOptionResult.dexData, buyTokenDecimals, buyToken, chainId)
+      ? getTradeInfoData0x(
+          bestOptionResult.dexData,
+          buyTokenDecimals,
+          buyToken,
+          chainId
+        )
       : getTradeInfoDataFromEI(
           bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0),
@@ -586,76 +590,5 @@ const TradeButton = (props: TradeButtonProps) => (
     {props.label}
   </Button>
 )
-
-function getTradeInfoDataFromEI(
-  setAmount: BigNumber,
-  gasPrice: BigNumber,
-  buyToken: Token,
-  data:
-    | ExchangeIssuanceQuote
-    | LeveragedExchangeIssuanceQuote
-    | null
-    | undefined,
-  tokenDecimals: number,
-  chainId: ChainId = ChainId.Mainnet
-): TradeInfoItem[] {
-  if (data === undefined || data === null) return []
-  console.log('data', data)
-  const exactSetAmount =
-    displayFromWei(setAmount) + ' ' + buyToken.symbol ?? '0.0'
-  const maxPayment =
-    displayFromWei(data.inputTokenAmount, undefined, tokenDecimals) ?? '0.0'
-  const gasLimit = 1800000 // TODO: Make gasLimit dynamic
-  const networkFee = displayFromWei(gasPrice.mul(gasLimit))
-  const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
-  const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
-  const offeredFrom = 'Index - Exchange Issuance'
-  return [
-    { title: `Exact Amount of Received`, value: exactSetAmount },
-    { title: 'Maximum Payment Amount', value: maxPayment },
-    { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
-    { title: 'Offered From', value: offeredFrom },
-  ]
-}
-
-function getTradeInfoData0x(
-  zeroExTradeData: ZeroExData | undefined | null,
-  tokenDecimals: number,
-  buyToken: Token,
-  chainId: ChainId = ChainId.Mainnet
-): TradeInfoItem[] {
-  if (zeroExTradeData === undefined || zeroExTradeData === null) return []
-
-  const { gas, gasPrice, sources } = zeroExTradeData
-  if (gasPrice === undefined || gas === undefined || sources === undefined)
-    return []
-
-  const buyAmount =
-    displayFromWei(
-      BigNumber.from(zeroExTradeData.buyAmount),
-      undefined,
-      tokenDecimals
-    ) ?? '0.0'
-
-  const minReceive =
-    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) + ' ' + buyToken.symbol ?? '0.0'
-
-  const networkFee = displayFromWei(
-    BigNumber.from(gasPrice).mul(BigNumber.from(gas))
-  )
-  const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
-  const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
-
-  const offeredFromSources = zeroExTradeData.sources
-    .filter((source) => Number(source.proportion) > 0)
-    .map((source) => source.name)
-
-  return [
-    { title: 'Buy Amount', value: buyAmount },
-    { title: 'Minimum Received', value: minReceive },
-    { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
-    { title: 'Offered From', value: offeredFromSources.toString() },
-  ]
-}
 
 export default QuickTrade
