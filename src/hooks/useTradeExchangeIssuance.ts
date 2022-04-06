@@ -52,9 +52,6 @@ export const useTradeExchangeIssuance = (
     )
     if (spendingTokenBalance.lt(requiredBalance)) return
 
-    console.log(quoteData.tradeData)
-    console.log(quoteData.inputTokenAmount.toString())
-
     try {
       setIsTransacting(true)
       if (isIssuance) {
@@ -88,7 +85,6 @@ export const useTradeExchangeIssuance = (
         const isRedeemingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
         const minAmountToReceive = tokenAmout
-        console.log('minamount to receive', tokenAmout)
 
         if (isRedeemingNativeChainToken) {
           await redeemExactSetForETH(

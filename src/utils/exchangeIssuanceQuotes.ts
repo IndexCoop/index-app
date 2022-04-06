@@ -89,14 +89,6 @@ export const getExchangeIssuanceQuotes = async (
 ): Promise<ExchangeIssuanceQuote | null> => {
   const tokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
   const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
-  console.log('Getting issuance quotes')
-  console.log(
-    'fetching...',
-    buyTokenAmount.toString(),
-    buyToken.symbol,
-    buyToken.address,
-    issuanceModule
-  )
 
   const { components, positions } = isIssuance
     ? await getRequiredIssuanceComponents(
@@ -123,19 +115,12 @@ export const getExchangeIssuanceQuotes = async (
 
   const quotePromises: Promise<any>[] = []
   components.forEach((component, index) => {
-    console.log('\n\n###################COMPONENT QUOTE##################')
     const buyAmount = positions[index]
     const buyTokenAddress = component
     const sellTokenAddress =
       sellToken.symbol === 'ETH' ? 'ETH' : sellToken.address
-    console.log('buyToken:', buyTokenAddress, 'sellToken:', sellTokenAddress)
-    console.log(
-      'buyAmount:',
-      buyAmount.toString(),
-      buyAmount.div(BigNumber.from(10).pow(18)).toString()
-    )
+
     if (buyTokenAddress === sellTokenAddress) {
-      console.log('Component equal to input token skipping zero ex api call')
       inputTokenAmount = inputTokenAmount.add(buyAmount)
     } else {
       const quotePromise = get0xQuote(
@@ -161,23 +146,11 @@ export const getExchangeIssuanceQuotes = async (
       return currValue.add(prevValue)
     })
 
-  console.log('//////////')
-  console.log('quotes', positionQuotes)
-  console.log(inputTokenAmount.toString())
-  console.log(
-    displayFromWei(inputTokenAmount, 2, sellToken.decimals),
-    sellToken.decimals
-  )
-
   // Christn: I assume that this is the correct math to make sure we have enough weth to cover the slippage
   // based on the fact that the slippagePercentage is limited between 0.0 and 1.0 on the 0xApi
   inputTokenAmount = inputTokenAmount
     .mul(toWei(100, sellToken.decimals))
     .div(toWei(100 - slippagePercents, sellToken.decimals))
-  console.log(
-    displayFromWei(inputTokenAmount, 2, sellToken.decimals),
-    sellToken.decimals
-  )
 
   return { tradeData: positionQuotes, inputTokenAmount }
 }
@@ -192,7 +165,6 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const tokenSymbol = setToken.symbol
   const isIcEth = tokenSymbol === 'icETH'
-  console.log('Getting issuance quotes', chainId)
 
   const setTokenAddress =
     chainId === ChainId.Polygon ? setToken.polygonAddress : setToken.address
@@ -206,7 +178,6 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     setTokenAmount,
     isIssuance
   )
-  console.log('Leveraged Token Data', leveragedTokenData)
 
   // TODO: multi sources?
   //TODO: Allow Quickswap and UniV3
@@ -239,8 +210,6 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   if (paymentToken.symbol === 'ETH') {
     paymentTokenAddress = 'ETH'
   }
-
-  console.log('PAYMENT TOKEN', paymentToken, paymentTokenAddress)
 
   if (isIssuance) {
     if (isIcEth) {
@@ -277,7 +246,6 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     chainId
   )
   const inputTokenAmount = BigNumber.from(zeroExQuote.sellAmount)
-  console.log('input token amount', inputTokenAmount.toString())
 
   if (isIcEth) {
     swapDataPaymentToken.exchange = Exchange.None
@@ -349,6 +317,5 @@ const getSwapData = async (params: any, chainId: number = 137) => {
     pool: '0x0000000000000000000000000000000000000000',
   }
 
-  console.log('swapdata', swapData)
   return { swapData, zeroExQuote }
 }

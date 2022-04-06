@@ -25,7 +25,6 @@ export const getExchangeIssuanceLeveragedContract = async (
     chainId === ChainId.Polygon
       ? ExchangeIssuanceLeveragedPolygonAddress
       : ExchangeIssuanceLeveragedMainnetAddress
-  console.log('getExchangeIssuanceLeveragedContract', contractAddress)
   return new Contract(contractAddress, EI_LEVERAGED_ABI, providerSigner)
 }
 
@@ -47,7 +46,6 @@ export const getLeveragedTokenData = async (
 ): Promise<any> => {
   console.log('getLeveragedTokenData')
   try {
-    console.log('calling ei contract', { setToken, setAmount, isIssuance })
     return await contract.getLeveragedTokenData(setToken, setAmount, isIssuance)
   } catch (err) {
     console.error('Error getting leveraged token data', err)
@@ -78,7 +76,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _swapDataInputToken: any,
     _maxInput: BigNumber
   ): Promise<any> => {
-    console.log('issueExactSetFromETH', chainId)
+    console.log('issueExactSetFromETH')
     try {
       const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner(),
@@ -182,7 +180,9 @@ export const useExchangeIssuanceLeveraged = () => {
         chainId
       )
       // TODO: calculate more accurate _maxAmountInputToken so it doesn't revert
-      const higherMax = BigNumber.from(_maxAmountInputToken).mul(10025).div(10000) // Extra 0.25%
+      const higherMax = BigNumber.from(_maxAmountInputToken)
+        .mul(10025)
+        .div(10000) // Extra 0.25%
       console.log('erc20', {
         _setToken,
         _setAmount,
@@ -199,7 +199,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _swapDataDebtForCollateral,
         _swapDataInputToken,
         {
-          gasLimit: 1800000
+          gasLimit: 1800000,
         }
       )
       return issueSetTx
