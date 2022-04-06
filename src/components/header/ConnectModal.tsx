@@ -40,8 +40,6 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
       props.onClose()
       console.error(err)
     })
-
-    console.log(account)
   }
 
   return (

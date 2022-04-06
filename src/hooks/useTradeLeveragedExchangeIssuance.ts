@@ -73,14 +73,7 @@ export const useTradeLeveragedExchangeIssuance = (
           default:
             addressKey = '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'
         }
-        console.log(
-          'symbo;',
-          outputToken.symbol,
-          inputSwapData['0x3Ad707dA309f3845cd602059901E39C4dcd66473'][
-            '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'
-          ],
-          inputTokenAddress
-        )
+
         const debtCollateralSwap =
           debtCollateralSwapData[addressKey as keyof object]
         const inputSwap =

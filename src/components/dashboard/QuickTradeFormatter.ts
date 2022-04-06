@@ -34,7 +34,6 @@ export function getTradeInfoDataFromEI(
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
-  console.log('data', data)
   const exactSetAmount =
     displayFromWei(setAmount) + ' ' + buyToken.symbol ?? '0.0'
   const maxPayment =

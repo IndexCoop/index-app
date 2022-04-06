@@ -89,12 +89,8 @@ export const useBestTradeOption = () => {
     )
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
-    console.log('dexSwapOption', dexSwapOption)
 
     const tokenEligible = isEligibleTradePair(sellToken, buyToken, isIssuance)
-
-    console.log('buyToken', buyToken)
-    console.log('isBuyingTokenEligible', tokenEligible)
 
     const tokenAmount =
       isIssuance && dexSwapOption
@@ -105,7 +101,6 @@ export const useBestTradeOption = () => {
     let exchangeIssuanceOption: ExchangeIssuanceQuote | null | undefined =
       undefined
     // if (account && !isBuyingTokenEligible) {
-    //   console.log('Getting zeroex ei option')
     //   try {
     //     exchangeIssuanceOption = await getExchangeIssuanceQuotes(
     //       buyToken,
@@ -128,14 +123,6 @@ export const useBestTradeOption = () => {
     if (account && !dexSwapError && tokenEligible) {
       const setToken = isIssuance ? buyToken : sellToken
       const setAmount = tokenAmount
-      console.log(
-        'Getting leveraged ei option',
-        isIssuance,
-        setToken,
-        setAmount,
-        'sell token',
-        sellToken
-      )
 
       try {
         leveragedExchangeIssuanceOption =
@@ -151,14 +138,6 @@ export const useBestTradeOption = () => {
         console.warn('error when generating leveraged ei option', e)
       }
     }
-
-    console.log('exchangeIssueOption', exchangeIssuanceOption)
-    console.log(
-      'exchangeIssueLeveragedOption',
-      leveragedExchangeIssuanceOption,
-      'dex swap',
-      dexSwapOption
-    )
 
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }

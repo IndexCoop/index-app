@@ -25,7 +25,6 @@ export const getExchangeIssuanceLeveragedContract = async (
     chainId === ChainId.Polygon
       ? ExchangeIssuanceLeveragedPolygonAddress
       : ExchangeIssuanceLeveragedMainnetAddress
-  console.log('getExchangeIssuanceLeveragedContract', contractAddress)
   return new Contract(contractAddress, EI_LEVERAGED_ABI, providerSigner)
 }
 
@@ -47,7 +46,6 @@ export const getLeveragedTokenData = async (
 ): Promise<any> => {
   console.log('getLeveragedTokenData')
   try {
-    console.log('calling ei contract', { setToken, setAmount, isIssuance })
     return await contract.getLeveragedTokenData(setToken, setAmount, isIssuance)
   } catch (err) {
     console.error('Error getting leveraged token data', err)
@@ -78,7 +76,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _swapDataInputToken: any,
     _maxInput: BigNumber
   ): Promise<any> => {
-    console.log('issueExactSetFromETH', chainId)
+    console.log('issueExactSetFromETH')
     try {
       const eiContract = await getExchangeIssuanceLeveragedContract(
         library.getSigner(),
