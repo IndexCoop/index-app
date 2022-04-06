@@ -15,7 +15,8 @@ export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
   const { sendTransaction, state } = useSendTransaction({
     transactionName: 'trade',
   })
-  const spendingTokenBalance = useTokenBalance(sellToken) || BigNumber.from(0)
+  const { getBalance } = useTokenBalance()
+  const spendingTokenBalance = getBalance(sellToken) || BigNumber.from(0)
 
   const [isTransacting, setIsTransacting] = useState(false)
 

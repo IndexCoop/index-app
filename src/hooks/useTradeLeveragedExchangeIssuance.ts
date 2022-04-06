@@ -34,8 +34,9 @@ export const useTradeLeveragedExchangeIssuance = (
     redeemExactSetForETH,
     redeemExactSetForERC20,
   } = useExchangeIssuanceLeveraged()
+  const { getBalance } = useTokenBalance()
 
-  const spendingTokenBalance = useTokenBalance(inputToken) || BigNumber.from(0)
+  const spendingTokenBalance = getBalance(inputToken) || BigNumber.from(0)
 
   const [isTransactingLevEI, setIsTransacting] = useState(false)
 
