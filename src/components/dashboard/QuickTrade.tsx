@@ -41,6 +41,7 @@ import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchan
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 
 import {
+  formattedBalance,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
@@ -87,14 +88,11 @@ const QuickTrade = (props: {
   const [hasInsufficientFunds, setHasInsufficientFunds] = useState(false)
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
-  const [buyTokenBalanceFormatted, setBuyTokenBalanceFormatted] = useState('0')
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(
     getTokenListByChain()
   )
   const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
-  const [sellTokenBalanceFormatted, setSellTokenBalanceFormatted] =
-    useState('0')
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     getCurrencyTokensByChain()
   )
@@ -256,24 +254,6 @@ const QuickTrade = (props: {
     setIsBuying(true)
     setTradeInfoData([])
   }, [chainId])
-
-  useEffect(() => {
-    const isUSDC = buyToken.symbol === 'USDC'
-    const decimals = isUSDC ? 6 : 18
-    const formattedBalance = buyTokenBalance
-      ? displayFromWei(buyTokenBalance, 2, decimals) || '0.00'
-      : '0.00'
-    setBuyTokenBalanceFormatted(formattedBalance)
-  }, [buyToken, buyTokenBalance])
-
-  useEffect(() => {
-    const isUSDC = sellToken.symbol === 'USDC'
-    const decimals = isUSDC ? 6 : 18
-    const formattedBalance = sellTokenBalance
-      ? displayFromWei(sellTokenBalance, 2, decimals) || '0.00'
-      : '0.00'
-    setSellTokenBalanceFormatted(formattedBalance)
-  }, [sellToken, sellTokenBalance])
 
   useEffect(() => {
     const sellAmount = toWei(sellTokenAmount, sellToken.decimals)
@@ -476,6 +456,12 @@ const QuickTrade = (props: {
 
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = getButtonDisabledState()
+
+  const sellTokenBalanceFormatted = formattedBalance(
+    sellToken,
+    sellTokenBalance
+  )
+  const buyTokenBalanceFormatted = formattedBalance(buyToken, buyTokenBalance)
 
   const isNarrow = props.isNarrowVersion ?? false
   const paddingX = isNarrow ? '16px' : '40px'

@@ -11,6 +11,16 @@ import { ZeroExData } from 'utils/zeroExUtils'
 
 import { TradeInfoItem } from './TradeInfo'
 
+export function formattedBalance(
+  token: Token,
+  tokenBalance: BigNumber | undefined
+) {
+  const zero = '0.00'
+  return tokenBalance
+    ? displayFromWei(tokenBalance, 2, token.decimals) || zero
+    : zero
+}
+
 export function getTradeInfoDataFromEI(
   setAmount: BigNumber,
   gasPrice: BigNumber,
