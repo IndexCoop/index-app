@@ -294,5 +294,28 @@ export const useBalance = () => {
     ]
   )
 
-  return { getBalance }
+  const balances = {
+    bedBalance,
+    btc2xFLIPBalance,
+    btcFliBalance,
+    daiBalance,
+    dataBalance,
+    dpiBalance,
+    ethBalance,
+    ethFliBalance,
+    ethFliPBalance,
+    gmiBalance,
+    iBtcFLIPBalance,
+    icEthBalance,
+    iEthFLIPbalance,
+    iMaticFLIPbalance,
+    indexBalance,
+    matic2xFLIPbalance,
+    maticBalance,
+    mviBalance,
+    usdcBalance,
+    wethBalance,
+  }
+
+  return { balances, getBalance }
 }
