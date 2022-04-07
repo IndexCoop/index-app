@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { ChainId, useEthers } from '@usedapp/core'
+import { ChainId } from '@usedapp/core'
 
 import { POLYGON } from 'constants/chains'
 import {
@@ -37,6 +37,7 @@ export const useTradeTokenLists = (
     const newSellTokenList = getCurrencyTokensByChain(chainId)
     const newBuyTokenList = getTokenListByChain(chainId, singleToken)
     setSellTokenList(newSellTokenList)
+    setBuyTokenList(newBuyTokenList)
     setSellToken(newSellTokenList[0])
     setBuyToken(newBuyTokenList[0])
     setIsBuying(true)
