@@ -23,8 +23,8 @@ import {
 } from 'constants/ethContractAddresses'
 import { ETH, icETHIndex, Token } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
+import { useBalance } from 'hooks/useBalance'
 import { useBestTradeOption } from 'hooks/useBestTradeOption'
-import { useTokenBalance } from 'hooks/useTokenBalance'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
@@ -63,7 +63,7 @@ const QuickTrade = (props: {
     changeSellToken,
     swapTokenLists,
   } = useTradeTokenLists(chainId, props.singleToken)
-  const { getBalance } = useTokenBalance()
+  const { getBalance } = useBalance()
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
