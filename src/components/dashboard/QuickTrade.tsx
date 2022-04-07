@@ -32,7 +32,6 @@ import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { isValidTokenInput, toWei } from 'utils'
 
 import {
-  formattedBalance,
   getHasInsufficientFunds,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,

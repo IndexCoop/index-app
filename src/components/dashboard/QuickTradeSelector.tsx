@@ -7,7 +7,7 @@ import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
-import { useTokenBalance } from 'hooks/useTokenBalance'
+import { useBalance } from 'providers/BalanceProvider'
 import { isValidTokenInput } from 'utils'
 
 import { formattedBalance } from './QuickTradeFormatter'
@@ -30,7 +30,9 @@ const QuickTradeSelector = (props: {
   isNarrowVersion: boolean
 }) => {
   const { chainId } = useEthers()
-  const { getBalance } = useTokenBalance()
+
+  const { getBalance } = useBalance()
+
   const [inputString, setInputString] = useState<string>(
     props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
   )

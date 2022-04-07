@@ -32,6 +32,7 @@ import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { BalanceProvider } from 'providers/BalanceProvider/'
 import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
 import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
@@ -61,13 +62,15 @@ const Providers = (props: { children: any }) => {
   return (
     <ChakraProvider theme={theme}>
       <DAppProvider config={config}>
-        <MarketDataProvider>
-          <LiquidityMiningProvider>
-            <SetComponentsProvider>
-              <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
-            </SetComponentsProvider>
-          </LiquidityMiningProvider>
-        </MarketDataProvider>
+        <BalanceProvider>
+          <MarketDataProvider>
+            <LiquidityMiningProvider>
+              <SetComponentsProvider>
+                <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+              </SetComponentsProvider>
+            </LiquidityMiningProvider>
+          </MarketDataProvider>
+        </BalanceProvider>
       </DAppProvider>
     </ChakraProvider>
   )
