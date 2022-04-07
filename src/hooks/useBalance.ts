@@ -180,7 +180,6 @@ export const useBalance = () => {
     if (!account || !chainId) return
 
     const fetchAllBalances = async () => {
-      console.log('fetching...')
       const bedBalance = await balanceOf(BedIndex, chainId, account, library)
       const btc2xFLIPBalance = await balanceOf(
         Bitcoin2xFLIP,
