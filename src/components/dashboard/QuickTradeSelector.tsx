@@ -7,7 +7,7 @@ import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
-import { useBalance } from 'providers/BalanceProvider'
+import { useBalance } from 'hooks/useBalance'
 import { isValidTokenInput } from 'utils'
 
 import { formattedBalance } from './QuickTradeFormatter'

@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { BigNumber, ethers } from 'ethers'
 
@@ -71,16 +65,6 @@ export interface Balances {
   unclaimedUniswapEthDpi2021LpBalance?: BigNumber
 }
 
-interface GetBalance {
-  getBalance: (token: Token) => Balance
-}
-
-export const BalanceContext = createContext<GetBalance & Balances>({
-  getBalance: () => BigNumber.from(0),
-})
-
-export const useBalance = () => useContext(BalanceContext)
-
 /* Returns balance of ERC20 token */
 async function balanceOf(
   token: Token,
@@ -95,32 +79,41 @@ async function balanceOf(
   return balance
 }
 
-export const BalanceProvider = (props: { children: any }) => {
+export const useBalance = () => {
   const { account, chainId, library } = useEthers()
   const ethBalance = useEtherBalance(account)
 
   const [bedBalance, setBedBalance] = useState<Balance>(BigNumber.from(0))
+  const [btc2xFLIPBalance, setBtc2xFLIPBalance] = useState<Balance>(
+    BigNumber.from(0)
+  )
+  const [btcFliBalance, setBtcFliBalance] = useState<Balance>(BigNumber.from(0))
   const [daiBalance, setDaiBalance] = useState<Balance>(BigNumber.from(0))
   const [dataBalance, setDataBalance] = useState<Balance>(BigNumber.from(0))
   const [dpiBalance, setDpiBalance] = useState<Balance>(BigNumber.from(0))
+  const [ethFliBalance, setEthFliBalance] = useState<Balance>(BigNumber.from(0))
+  const [ethFliPBalance, setEthFliPBalance] = useState<Balance>(
+    BigNumber.from(0)
+  )
   const [gmiBalance, setGmiBalance] = useState<Balance>(BigNumber.from(0))
+  const [iBtcFLIPBalance, setIBtcFLIPBalance] = useState<Balance>(
+    BigNumber.from(0)
+  )
   const [icEthBalance, setIcEthBalance] = useState<Balance>(BigNumber.from(0))
+  const [iEthFLIPbalance, setIEthFLIPbalance] = useState<Balance>(
+    BigNumber.from(0)
+  )
+  const [iMaticFLIPbalance, setIMaticFLIPbalance] = useState<Balance>(
+    BigNumber.from(0)
+  )
   const [indexBalance, setIndexBalance] = useState<Balance>(BigNumber.from(0))
   const [maticBalance, setMaticBalance] = useState<Balance>(BigNumber.from(0))
+  const [matic2xFLIPbalance, setMatic2xFLIPbalance] = useState<Balance>(
+    BigNumber.from(0)
+  )
   const [mviBalance, setMviBalance] = useState<Balance>(BigNumber.from(0))
   const [usdcBalance, setUsdcBalance] = useState<Balance>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<Balance>(BigNumber.from(0))
-
-  // btc2xFLIPBalance?: BigNumber
-  // iBtcFLIPBalance?: BigNumber
-  // icEthBalance?: BigNumber
-  // iEthFLIPbalance?: BigNumber
-  // iMaticFLIPbalance?: BigNumber
-  // ethFliBalance?: BigNumber
-  // btcFliBalance?: BigNumber
-  // ethFliPBalance?: BigNumber
-  // matic2xFLIPbalance?: BigNumber
-  // stakedGmi2022Balance?: BigNumber
 
   useEffect(() => {
     if (!account || !chainId) return
@@ -128,6 +121,18 @@ export const BalanceProvider = (props: { children: any }) => {
     const fetchAllBalances = async () => {
       console.log('fetching...')
       const bedBalance = await balanceOf(BedIndex, chainId, account, library)
+      const btc2xFLIPBalance = await balanceOf(
+        Bitcoin2xFLIP,
+        chainId,
+        account,
+        library
+      )
+      const btcFliBalance = await balanceOf(
+        Bitcoin2xFlexibleLeverageIndex,
+        chainId,
+        account,
+        library
+      )
       const daiBalance = await balanceOf(DAI, chainId, account, library)
       const dataBalance = await balanceOf(DataIndex, chainId, account, library)
       const dpiBalance = await balanceOf(
@@ -136,9 +141,39 @@ export const BalanceProvider = (props: { children: any }) => {
         account,
         library
       )
+      const ethFliBalance = await balanceOf(
+        Ethereum2xFlexibleLeverageIndex,
+        chainId,
+        account,
+        library
+      )
+      const ethFliPBalance = await balanceOf(
+        Ethereum2xFLIP,
+        chainId,
+        account,
+        library
+      )
       const gmiBalance = await balanceOf(GmiIndex, chainId, account, library)
+      const iBtcFLIPBalance = await balanceOf(
+        IBitcoinFLIP,
+        chainId,
+        account,
+        library
+      )
       const icEthBalance = await balanceOf(
         icETHIndex,
+        chainId,
+        account,
+        library
+      )
+      const iEthFLIPbalance = await balanceOf(
+        IEthereumFLIP,
+        chainId,
+        account,
+        library
+      )
+      const iMaticFLIPbalance = await balanceOf(
+        IMaticFLIP,
         chainId,
         account,
         library
@@ -150,6 +185,12 @@ export const BalanceProvider = (props: { children: any }) => {
         library
       )
       const maticBalance = await balanceOf(MATIC, chainId, account, library)
+      const matic2xFLIPbalance = await balanceOf(
+        Matic2xFLIP,
+        chainId,
+        account,
+        library
+      )
       const mviBalance = await balanceOf(
         MetaverseIndex,
         chainId,
@@ -159,13 +200,21 @@ export const BalanceProvider = (props: { children: any }) => {
       const usdcBalance = await balanceOf(USDC, chainId, account, library)
       const wethBalance = await balanceOf(WETH, chainId, account, library)
       setBedBalance(bedBalance)
+      setBtc2xFLIPBalance(btc2xFLIPBalance)
+      setBtcFliBalance(btcFliBalance)
       setDaiBalance(daiBalance)
       setDataBalance(dataBalance)
       setDpiBalance(dpiBalance)
+      setEthFliBalance(ethFliBalance)
+      setEthFliPBalance(ethFliPBalance)
       setGmiBalance(gmiBalance)
+      setIBtcFLIPBalance(iBtcFLIPBalance)
       setIcEthBalance(icEthBalance)
+      setIEthFLIPbalance(iEthFLIPbalance)
+      setIMaticFLIPbalance(iMaticFLIPbalance)
       setIndexBalance(indexBalance)
       setMaticBalance(maticBalance)
+      setMatic2xFLIPbalance(matic2xFLIPbalance)
       setMviBalance(mviBalance)
       setUsdcBalance(usdcBalance)
       setWethBalance(wethBalance)
@@ -179,10 +228,10 @@ export const BalanceProvider = (props: { children: any }) => {
       switch (token.symbol) {
         case BedIndex.symbol:
           return bedBalance
-        // case Bitcoin2xFlexibleLeverageIndex.symbol:
-        //   return btcFliBalance
-        // case Bitcoin2xFLIP.symbol:
-        //   return btc2xFLIPBalance
+        case Bitcoin2xFlexibleLeverageIndex.symbol:
+          return btcFliBalance
+        case Bitcoin2xFLIP.symbol:
+          return btc2xFLIPBalance
         case DAI.symbol:
           return daiBalance
         case DataIndex.symbol:
@@ -191,53 +240,53 @@ export const BalanceProvider = (props: { children: any }) => {
           return dpiBalance
         case ETH.symbol:
           return ethBalance
-        // case Ethereum2xFlexibleLeverageIndex.symbol:
-        //   return ethFliBalance
-        // case Ethereum2xFLIP.symbol:
-        //   return ethFliPBalance
+        case Ethereum2xFlexibleLeverageIndex.symbol:
+          return ethFliBalance
+        case Ethereum2xFLIP.symbol:
+          return ethFliPBalance
         case GmiIndex.symbol:
           return gmiBalance
-        // case IBitcoinFLIP.symbol:
-        //   return iBtcFLIPBalance
-        // case IEthereumFLIP.symbol:
-        //   return iEthFLIPbalance
-        // case IMaticFLIP.symbol:
-        //   return iMaticFLIPbalance
+        case IBitcoinFLIP.symbol:
+          return iBtcFLIPBalance
+        case icETHIndex.symbol:
+          return icEthBalance
+        case IEthereumFLIP.symbol:
+          return iEthFLIPbalance
+        case IMaticFLIP.symbol:
+          return iMaticFLIPbalance
         case IndexToken.symbol:
           return indexBalance
         case MATIC.symbol:
           return maticBalance
-        // case Matic2xFLIP.symbol:
-        //   return matic2xFLIPbalance
+        case Matic2xFLIP.symbol:
+          return matic2xFLIPbalance
         case MetaverseIndex.symbol:
           return mviBalance
         case USDC.symbol:
           return usdcBalance
         case WETH.symbol:
           return wethBalance
-        case icETHIndex.symbol:
-          return icEthBalance
         default:
           return undefined
       }
     },
     [
-      ethBalance,
-      // ethFliBalance,
-      // ethFliPBalance,
       bedBalance,
-      // btcFliBalance,
-      // btc2xFLIPBalance,
+      btc2xFLIPBalance,
+      btcFliBalance,
       daiBalance,
       dataBalance,
       dpiBalance,
+      ethBalance,
+      ethFliBalance,
+      ethFliPBalance,
       gmiBalance,
+      iBtcFLIPBalance,
       icEthBalance,
-      // iEthFLIPbalance,
-      // iMaticFLIPbalance,
+      iEthFLIPbalance,
+      iMaticFLIPbalance,
       indexBalance,
-      // iBtcFLIPBalance,
-      // matic2xFLIPbalance,
+      matic2xFLIPbalance,
       maticBalance,
       mviBalance,
       usdcBalance,
@@ -245,24 +294,5 @@ export const BalanceProvider = (props: { children: any }) => {
     ]
   )
 
-  return (
-    <BalanceContext.Provider
-      value={{
-        getBalance,
-        // bedBalance,
-        // daiBalance,
-        // dataBalance,
-        // dpiBalance,
-        // ethBalance,
-        // gmiBalance,
-        // indexBalance,
-        // maticBalance,
-        // mviBalance,
-        // usdcBalance,
-        // wethBalance,
-      }}
-    >
-      {props.children}
-    </BalanceContext.Provider>
-  )
+  return { getBalance }
 }
