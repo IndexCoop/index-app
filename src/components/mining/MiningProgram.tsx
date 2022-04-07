@@ -11,7 +11,7 @@ import {
 import { useEthers } from '@usedapp/core'
 
 import StakingModal from 'components/mining/StakingModal'
-import { Balances, useBalances } from 'hooks/useBalances'
+import { Balances, useBalance } from 'hooks/useBalance'
 import {
   LiquidityMiningProps,
   useLiquidityMining,
@@ -80,7 +80,7 @@ const MiningProgram = (props: { program: Program }) => {
     liquidityMiningKey,
     unclaimed,
   } = props.program
-  const balances = useBalances()
+  const { balances } = useBalance()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const { account } = useEthers()
   const liquidityMining = useLiquidityMining()

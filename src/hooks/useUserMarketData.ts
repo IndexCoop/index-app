@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { PriceChartRangeOption } from 'components/product/MarketChart'
-import { useBalances } from 'hooks/useBalances'
+import { useBalance } from 'hooks/useBalance'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -61,18 +61,20 @@ function getTotalHourlyPrices(marketData: UserTokenBalance[]) {
   return totalHourlyPrices
 }
 
-export const useUserBalances = () => {
+export const useUserMarketData = () => {
   const {
-    ethBalance,
-    bedBalance,
-    dataBalance,
-    dpiBalance,
-    mviBalance,
-    gmiBalance,
-    ethFliBalance,
-    btcFliBalance,
-    ethFliPBalance,
-  } = useBalances()
+    balances: {
+      ethBalance,
+      bedBalance,
+      dataBalance,
+      dpiBalance,
+      mviBalance,
+      gmiBalance,
+      ethFliBalance,
+      btcFliBalance,
+      ethFliPBalance,
+    },
+  } = useBalance()
   const { eth, bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } =
     useMarketData()
 

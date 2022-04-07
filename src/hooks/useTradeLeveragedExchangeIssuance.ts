@@ -12,11 +12,11 @@ import {
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
 
+import { useBalance } from './useBalance'
 import {
   getExchangeIssuanceLeveragedContract,
   useExchangeIssuanceLeveraged,
 } from './useExchangeIssuanceLeveraged'
-import { useTokenBalance } from './useTokenBalance'
 
 export const useTradeLeveragedExchangeIssuance = (
   isIssuance: boolean,
@@ -34,7 +34,7 @@ export const useTradeLeveragedExchangeIssuance = (
     redeemExactSetForETH,
     redeemExactSetForERC20,
   } = useExchangeIssuanceLeveraged()
-  const { getBalance } = useTokenBalance()
+  const { getBalance } = useBalance()
 
   const spendingTokenBalance = getBalance(inputToken) || BigNumber.from(0)
 

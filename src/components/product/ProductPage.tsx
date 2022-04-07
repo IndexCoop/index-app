@@ -6,7 +6,7 @@ import { useEthers } from '@usedapp/core'
 import QuickTrade from 'components/dashboard/QuickTrade'
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
-import { IndexToken,Token  } from 'constants/tokens'
+import { IndexToken, Token } from 'constants/tokens'
 import {
   TokenMarketDataValues,
   useMarketData,

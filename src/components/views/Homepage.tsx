@@ -16,7 +16,7 @@ import PageTitle from 'components/PageTitle'
 import MarketChart, { PriceChartData } from 'components/product/MarketChart'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
-import { useUserBalances } from 'hooks/useUserBalances'
+import { useUserMarketData } from 'hooks/useUserMarketData'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -30,7 +30,7 @@ import { getPieChartPositions } from './DashboardData'
 const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
   const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
-    useUserBalances()
+    useUserMarketData()
   const { account, chainId } = useEthers()
   const isWeb = useBreakpointValue({
     base: false,
