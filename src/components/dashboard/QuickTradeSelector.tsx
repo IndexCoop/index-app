@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
 
+import { BigNumber } from 'set.js'
 import { colors } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
+import { useTokenBalance } from 'hooks/useTokenBalance'
 import { isValidTokenInput } from 'utils'
+
+import { formattedBalance } from './QuickTradeFormatter'
 
 interface InputSelectorConfig {
   isDarkMode: boolean
@@ -20,15 +24,18 @@ const QuickTradeSelector = (props: {
   config: InputSelectorConfig
   selectedToken: Token
   selectedTokenAmount?: string
-  selectedTokenBalance?: string
   tokenList: Token[]
   onChangeInput: (token: Token, input: string) => void
   onSelectedToken: (symbol: string) => void
   isNarrowVersion: boolean
 }) => {
   const { chainId } = useEthers()
+  const { getBalance } = useTokenBalance()
   const [inputString, setInputString] = useState<string>(
     props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
+  )
+  const [tokenBalance, setTokenBalance] = useState<string>(
+    BigNumber.from(0).toString()
   )
 
   useEffect(() => {
@@ -40,6 +47,11 @@ const QuickTradeSelector = (props: {
   useEffect(() => {
     onChangeInput('0')
   }, [chainId])
+
+  useEffect(() => {
+    const tokenBal = getBalance(props.selectedToken)
+    setTokenBalance(formattedBalance(props.selectedToken, tokenBal))
+  }, [props.selectedToken, getBalance, chainId])
 
   const { config, selectedToken } = props
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
@@ -134,12 +146,11 @@ const QuickTradeSelector = (props: {
         fontWeight='400'
         mt='5px'
         onClick={() => {
-          if (props.selectedTokenBalance)
-            onChangeInput(props.selectedTokenBalance)
+          if (tokenBalance) onChangeInput(tokenBalance)
         }}
         cursor='pointer'
       >
-        Balance: {props.selectedTokenBalance}
+        Balance: {tokenBalance}
       </Text>
     </Flex>
   )

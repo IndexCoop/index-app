@@ -63,7 +63,8 @@ const QuickTrade = (props: {
     changeBuyToken,
     changeSellToken,
     swapTokenLists,
-  } = useTradeTokenLists(chainId)
+  } = useTradeTokenLists(chainId, props.singleToken)
+  const { getBalance } = useTokenBalance()
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
@@ -72,9 +73,6 @@ const QuickTrade = (props: {
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
   const [icEthErrorMessage, setIcEthErrorMessage] = useState<boolean>(false)
-
-  const sellTokenBalance = useTokenBalance(sellToken)
-  const buyTokenBalance = useTokenBalance(buyToken)
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -142,7 +140,7 @@ const QuickTrade = (props: {
   const hasInsufficientFunds = getHasInsufficientFunds(
     bestOption === null,
     sellTokenAmountInWei,
-    sellTokenBalance
+    getBalance(sellToken)
   )
 
   /**
@@ -371,12 +369,6 @@ const QuickTrade = (props: {
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = getButtonDisabledState()
 
-  const sellTokenBalanceFormatted = formattedBalance(
-    sellToken,
-    sellTokenBalance
-  )
-  const buyTokenBalanceFormatted = formattedBalance(buyToken, buyTokenBalance)
-
   const isNarrow = props.isNarrowVersion ?? false
   const paddingX = isNarrow ? '16px' : '40px'
 
@@ -406,7 +398,6 @@ const QuickTrade = (props: {
           }}
           selectedToken={sellToken}
           tokenList={sellTokenList}
-          selectedTokenBalance={sellTokenBalanceFormatted}
           onChangeInput={onChangeSellTokenAmount}
           onSelectedToken={(tokenSymbol) => changeSellToken(tokenSymbol)}
           isNarrowVersion={isNarrow}
@@ -432,7 +423,6 @@ const QuickTrade = (props: {
           }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmountFormatted}
-          selectedTokenBalance={buyTokenBalanceFormatted}
           tokenList={buyTokenList}
           onChangeInput={onChangeBuyTokenAmount}
           onSelectedToken={(tokenSymbol) => changeBuyToken(tokenSymbol)}

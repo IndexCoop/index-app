@@ -26,10 +26,11 @@ export const useTradeExchangeIssuance = (
     redeemExactSetForETH,
     redeemExactSetForToken,
   } = useExchangeIssuanceZeroEx()
+  const { getBalance } = useTokenBalance()
 
   const tokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
   const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
-  const spendingTokenBalance = useTokenBalance(inputToken) || BigNumber.from(0)
+  const spendingTokenBalance = getBalance(inputToken) || BigNumber.from(0)
 
   const [isTransactingEI, setIsTransacting] = useState(false)
 

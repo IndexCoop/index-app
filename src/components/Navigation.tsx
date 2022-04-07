@@ -71,6 +71,7 @@ const NavContent = () => {
     >
       <NavLink href='/' linkText='My Dashboard' textColor={textColor} />
       <NavLink href='/products' linkText='Products' textColor={textColor} />
+      <NavLink href='/index' linkText='$INDEX' textColor={textColor} />
       <NavLink
         href='/liquidity-mining'
         linkText='Liquidity Mining'

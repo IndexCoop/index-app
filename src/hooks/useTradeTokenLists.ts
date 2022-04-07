@@ -14,13 +14,16 @@ import {
   Token,
 } from 'constants/tokens'
 
-export const useTradeTokenLists = (chainId: ChainId | undefined) => {
+export const useTradeTokenLists = (
+  chainId: ChainId | undefined,
+  singleToken?: Token
+) => {
   const isPolygon = chainId === ChainId.Polygon
 
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(
-    getTokenListByChain(chainId)
+    getTokenListByChain(chainId, singleToken)
   )
   const [sellToken, setSellToken] = useState<Token>(isPolygon ? MATIC : ETH)
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
@@ -32,9 +35,8 @@ export const useTradeTokenLists = (chainId: ChainId | undefined) => {
    */
   useEffect(() => {
     const newSellTokenList = getCurrencyTokensByChain(chainId)
-    const newBuyTokenList = getTokenListByChain(chainId)
+    const newBuyTokenList = getTokenListByChain(chainId, singleToken)
     setSellTokenList(newSellTokenList)
-    setBuyTokenList(newBuyTokenList)
     setSellToken(newSellTokenList[0])
     setBuyToken(newBuyTokenList[0])
     setIsBuying(true)
@@ -63,9 +65,12 @@ export const useTradeTokenLists = (chainId: ChainId | undefined) => {
     const prevSellToken = sellToken
     const prevBuyToken = buyToken
     const currencyTokensList = getCurrencyTokensByChain(chainId)
-    const tokenList = getTokenListByChain(chainId)
-    const sellTokenList = isBuyingNew ? currencyTokensList : tokenList
-    const buyTokenList = isBuyingNew ? tokenList : currencyTokensList
+    const sellTokenList = isBuyingNew
+      ? currencyTokensList
+      : getTokenListByChain(chainId, singleToken)
+    const buyTokenList = isBuyingNew
+      ? getTokenListByChain(chainId, singleToken)
+      : currencyTokensList
     setSellTokenList(sellTokenList)
     setBuyTokenList(buyTokenList)
     setSellToken(prevBuyToken)
@@ -101,11 +106,10 @@ const getCurrencyTokensByChain = (
  * @returns Token[] list of tokens
  */
 const getTokenListByChain = (
-  chainId: ChainId | undefined = ChainId.Mainnet
+  chainId: ChainId | undefined = ChainId.Mainnet,
+  singleToken: Token | undefined
 ) => {
-  // TODO:
-  // const { singleToken } = props
-  // if (singleToken) return [singleToken]
+  if (singleToken) return [singleToken]
   if (chainId === POLYGON.chainId) return indexNamesPolygon
   return indexNamesMainnet
 }
