@@ -2,8 +2,21 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { BigNumber, ethers } from 'ethers'
 
-import { ChainId, useEtherBalance, useEthers } from '@usedapp/core'
+import {
+  ChainId,
+  useEtherBalance,
+  useEthers,
+  useTokenBalance,
+} from '@usedapp/core'
 
+import {
+  dpi2020StakingRewardsAddress,
+  dpi2021StakingRewardsAddress,
+  gmiStakingRewardsAddress,
+  mviStakingRewardsAddress,
+  uniswapEthDpiLpTokenAddress,
+  uniswapEthMviLpTokenAddress,
+} from 'constants/ethContractAddresses'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -29,6 +42,7 @@ import {
 } from 'constants/tokens'
 import { getChainAddress } from 'utils'
 import { ERC20_ABI } from 'utils/abi/ERC20'
+import { useStakingUnclaimedRewards } from 'utils/stakingRewards'
 
 type Balance = BigNumber
 
@@ -114,6 +128,53 @@ export const useBalance = () => {
   const [mviBalance, setMviBalance] = useState<Balance>(BigNumber.from(0))
   const [usdcBalance, setUsdcBalance] = useState<Balance>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<Balance>(BigNumber.from(0))
+
+  // LP Tokens
+  const uniswapEthDpiLpBalance = useTokenBalance(
+    uniswapEthDpiLpTokenAddress,
+    account
+  )
+  const uniswapEthMviLpBalance = useTokenBalance(
+    uniswapEthMviLpTokenAddress,
+    account
+  )
+
+  // DPI LM Program (Oct. 7th, 2020 - Dec. 6th, 2020)
+  const stakedUniswapEthDpi2020LpBalance = useTokenBalance(
+    dpi2020StakingRewardsAddress,
+    account
+  )
+  const unclaimedUniswapEthDpi2020LpBalance = useStakingUnclaimedRewards(
+    dpi2020StakingRewardsAddress,
+    account
+  )
+  // DPI LM Program ( July 13th, 2021 - August 12th, 2021)
+  const stakedUniswapEthDpi2021LpBalance = useTokenBalance(
+    dpi2021StakingRewardsAddress,
+    account
+  )
+  const unclaimedUniswapEthDpi2021LpBalance = useStakingUnclaimedRewards(
+    dpi2021StakingRewardsAddress,
+    account
+  )
+  // MVI LM Program (August 20th, 2021 - September 19th, 2021)
+  const stakedUniswapEthMvi2021LpBalance = useTokenBalance(
+    mviStakingRewardsAddress,
+    account
+  )
+  const unclaimedUniswapEthMvi2021LpBalance = useStakingUnclaimedRewards(
+    mviStakingRewardsAddress,
+    account
+  )
+  // GMI LM Program (Jan. 10th, 2022 - Mar. 10th, 2022)
+  const stakedGmi2022Balance = useTokenBalance(
+    gmiStakingRewardsAddress,
+    account
+  )
+  const unclaimedGmi2022Balance = useStakingUnclaimedRewards(
+    gmiStakingRewardsAddress,
+    account
+  )
 
   useEffect(() => {
     if (!account || !chainId) return
@@ -315,6 +376,16 @@ export const useBalance = () => {
     mviBalance,
     usdcBalance,
     wethBalance,
+    stakedGmi2022Balance,
+    stakedUniswapEthDpi2020LpBalance,
+    stakedUniswapEthDpi2021LpBalance,
+    stakedUniswapEthMvi2021LpBalance,
+    uniswapEthDpiLpBalance,
+    uniswapEthMviLpBalance,
+    unclaimedGmi2022Balance,
+    unclaimedUniswapEthMvi2021LpBalance,
+    unclaimedUniswapEthDpi2020LpBalance,
+    unclaimedUniswapEthDpi2021LpBalance,
   }
 
   return { balances, getBalance }

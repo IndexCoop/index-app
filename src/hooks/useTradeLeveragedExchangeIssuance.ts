@@ -12,11 +12,11 @@ import {
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
 
+import { useBalance } from './useBalance'
 import {
   getExchangeIssuanceLeveragedContract,
   useExchangeIssuanceLeveraged,
 } from './useExchangeIssuanceLeveraged'
-import { useBalance } from './useBalance'
 
 export const useTradeLeveragedExchangeIssuance = (
   isIssuance: boolean,

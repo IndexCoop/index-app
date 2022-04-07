@@ -8,8 +8,8 @@ import { fromWei } from 'utils'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
 
-import { useExchangeIssuanceZeroEx } from './useExchangeIssuanceZeroEx'
 import { useBalance } from './useBalance'
+import { useExchangeIssuanceZeroEx } from './useExchangeIssuanceZeroEx'
 
 export const useTradeExchangeIssuance = (
   isIssuance: boolean,
