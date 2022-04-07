@@ -9,7 +9,7 @@ import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
 
 import { useExchangeIssuanceZeroEx } from './useExchangeIssuanceZeroEx'
-import { useTokenBalance } from './useTokenBalance'
+import { useBalance } from './useBalance'
 
 export const useTradeExchangeIssuance = (
   isIssuance: boolean,
@@ -26,7 +26,7 @@ export const useTradeExchangeIssuance = (
     redeemExactSetForETH,
     redeemExactSetForToken,
   } = useExchangeIssuanceZeroEx()
-  const { getBalance } = useTokenBalance()
+  const { getBalance } = useBalance()
 
   const tokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
   const issuanceModule = getIssuanceModule(tokenSymbol, chainId)

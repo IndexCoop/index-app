@@ -30,12 +30,12 @@ import {
 import { getChainAddress } from 'utils'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 
-type Balance = BigNumber | undefined
+type Balance = BigNumber
 
 export interface Balances {
-  ethBalance?: Balance
+  ethBalance?: BigNumber
   daiBalance?: BigNumber
-  maticBalance?: Balance
+  maticBalance?: BigNumber
   usdcBalance?: BigNumber
   wethBalance?: BigNumber
   dataBalance?: BigNumber

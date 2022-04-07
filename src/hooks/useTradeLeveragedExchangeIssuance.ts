@@ -16,7 +16,7 @@ import {
   getExchangeIssuanceLeveragedContract,
   useExchangeIssuanceLeveraged,
 } from './useExchangeIssuanceLeveraged'
-import { useTokenBalance } from './useTokenBalance'
+import { useBalance } from './useBalance'
 
 export const useTradeLeveragedExchangeIssuance = (
   isIssuance: boolean,
@@ -34,7 +34,7 @@ export const useTradeLeveragedExchangeIssuance = (
     redeemExactSetForETH,
     redeemExactSetForERC20,
   } = useExchangeIssuanceLeveraged()
-  const { getBalance } = useTokenBalance()
+  const { getBalance } = useBalance()
 
   const spendingTokenBalance = getBalance(inputToken) || BigNumber.from(0)
 

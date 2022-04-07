@@ -8,14 +8,14 @@ import { Token } from 'constants/tokens'
 import { fromWei } from 'utils'
 import { ZeroExData } from 'utils/zeroExUtils'
 
-import { useTokenBalance } from './useTokenBalance'
+import { useBalance } from './useBalance'
 
 export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
   const { account, library } = useEthers()
   const { sendTransaction, state } = useSendTransaction({
     transactionName: 'trade',
   })
-  const { getBalance } = useTokenBalance()
+  const { getBalance } = useBalance()
   const spendingTokenBalance = getBalance(sellToken) || BigNumber.from(0)
 
   const [isTransacting, setIsTransacting] = useState(false)
