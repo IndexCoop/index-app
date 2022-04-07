@@ -15,21 +15,30 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
+import { POLYGON } from 'constants/chains'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceZeroExAddress,
   zeroExRouterAddress,
 } from 'constants/ethContractAddresses'
-import { ETH, icETHIndex, Token } from 'constants/tokens'
+import {
+  DefiPulseIndex,
+  ETH,
+  icETHIndex,
+  indexNamesMainnet,
+  indexNamesPolygon,
+  mainnetCurrencyTokens,
+  polygonCurrencyTokens,
+  Token,
+} from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useBalance } from 'hooks/useBalance'
 import { useBestTradeOption } from 'hooks/useBestTradeOption'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
-import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
-import { isValidTokenInput, toWei } from 'utils'
+import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 
 import {
   getHasInsufficientFunds,
@@ -53,22 +62,41 @@ const QuickTrade = (props: {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
 
-  const {
-    isBuying,
-    buyToken,
-    buyTokenList,
-    sellToken,
-    sellTokenList,
-    changeBuyToken,
-    changeSellToken,
-    swapTokenLists,
-  } = useTradeTokenLists(chainId, props.singleToken)
+  /**
+   * Get the list of currency tokens for the selected chain
+   * @returns Token[] list of tokens
+   */
+  const getCurrencyTokensByChain = () => {
+    if (chainId === POLYGON.chainId) return polygonCurrencyTokens
+    return mainnetCurrencyTokens
+  }
+
+  /**
+   * Get the list of currency tokens for the selected chain
+   * @returns Token[] list of tokens
+   */
+  const getTokenListByChain = () => {
+    const { singleToken } = props
+    if (singleToken) return [singleToken]
+    if (chainId === POLYGON.chainId) return indexNamesPolygon
+    return indexNamesMainnet
+  }
+
   const { getBalance } = useBalance()
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
   )
+  const [isBuying, setIsBuying] = useState<boolean>(true)
+  const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
+  const [buyTokenList, setBuyTokenList] = useState<Token[]>(
+    getTokenListByChain()
+  )
+  const [sellToken, setSellToken] = useState<Token>(ETH)
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
+  const [sellTokenList, setSellTokenList] = useState<Token[]>(
+    getCurrencyTokensByChain()
+  )
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
   const [icEthErrorMessage, setIcEthErrorMessage] = useState<boolean>(false)
@@ -211,6 +239,13 @@ const QuickTrade = (props: {
   }, [bestOptionResult])
 
   useEffect(() => {
+    const newSellTokenList = getCurrencyTokensByChain()
+    const newBuyTokenList = getTokenListByChain()
+    setSellTokenList(newSellTokenList)
+    setBuyTokenList(newBuyTokenList)
+    setSellToken(newSellTokenList[0])
+    setBuyToken(newBuyTokenList[0])
+    setIsBuying(true)
     setTradeInfoData([])
   }, [chainId])
 
@@ -303,6 +338,24 @@ const QuickTrade = (props: {
     return 'Trade'
   }
 
+  const onChangeSellToken = (symbol: string) => {
+    const filteredList = sellTokenList.filter(
+      (token) => token.symbol === symbol
+    )
+    if (filteredList.length < 0) {
+      return
+    }
+    setSellToken(filteredList[0])
+  }
+
+  const onChangeBuyToken = (symbol: string) => {
+    const filteredList = buyTokenList.filter((token) => token.symbol === symbol)
+    if (filteredList.length < 0) {
+      return
+    }
+    setBuyToken(filteredList[0])
+  }
+
   const onChangeBuyTokenAmount = (token: Token, input: string) => {
     // const inputNumber = Number(input)
     // if (input === buyTokenAmount || input.slice(-1) === '.') return
@@ -349,6 +402,21 @@ const QuickTrade = (props: {
       default:
       // Nothing
     }
+  }
+
+  const onSwapTokenLists = () => {
+    const isBuyingNew = !isBuying
+    const prevSellToken = sellToken
+    const prevBuyToken = buyToken
+    const currencyTokensList = getCurrencyTokensByChain()
+    const tokenList = getTokenListByChain()
+    const sellTokenList = isBuyingNew ? currencyTokensList : tokenList
+    const buyTokenList = isBuyingNew ? tokenList : currencyTokensList
+    setSellTokenList(sellTokenList)
+    setBuyTokenList(buyTokenList)
+    setSellToken(prevBuyToken)
+    setBuyToken(prevSellToken)
+    setIsBuying(isBuyingNew)
   }
 
   const isLoading = getIsApproving() || isFetchingTradeData
@@ -398,7 +466,7 @@ const QuickTrade = (props: {
           selectedToken={sellToken}
           tokenList={sellTokenList}
           onChangeInput={onChangeSellTokenAmount}
-          onSelectedToken={(tokenSymbol) => changeSellToken(tokenSymbol)}
+          onSelectedToken={(tokenSymbol) => onChangeSellToken(tokenSymbol)}
           isNarrowVersion={isNarrow}
         />
         <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
@@ -409,7 +477,7 @@ const QuickTrade = (props: {
             borderColor={isDarkMode ? colors.icWhite : colors.black}
             color={isDarkMode ? colors.icWhite : colors.black}
             icon={<UpDownIcon />}
-            onClick={() => swapTokenLists()}
+            onClick={() => onSwapTokenLists()}
           />
         </Box>
         <QuickTradeSelector
@@ -424,7 +492,7 @@ const QuickTrade = (props: {
           selectedTokenAmount={buyTokenAmountFormatted}
           tokenList={buyTokenList}
           onChangeInput={onChangeBuyTokenAmount}
-          onSelectedToken={(tokenSymbol) => changeBuyToken(tokenSymbol)}
+          onSelectedToken={(tokenSymbol) => onChangeBuyToken(tokenSymbol)}
           isNarrowVersion={isNarrow}
         />
       </Flex>
