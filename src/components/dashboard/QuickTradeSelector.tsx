@@ -47,7 +47,7 @@ const QuickTradeSelector = (props: {
   }, [props.selectedTokenAmount])
 
   useEffect(() => {
-    onChangeInput('0')
+    onChangeInput('')
   }, [chainId])
 
   useEffect(() => {
