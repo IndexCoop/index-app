@@ -90,7 +90,7 @@ export const useExchangeIssuanceLeveraged = () => {
         _maxInput,
       })
 
-      //TODO: Estimate better _maxInput. 
+      //TODO: Estimate better _maxInput.
       //For now hardcode addtional 0.50% so it doesn't revert
       //Previously 0.25% was tried and was not enough
       //Ex. https://etherscan.io/tx/0x23d28156d8564dd775013241b27745a43e0923fe2e00c784349fff404fc043ac
