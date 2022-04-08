@@ -183,8 +183,8 @@ export const useExchangeIssuanceLeveraged = () => {
       )
       // TODO: calculate more accurate _maxAmountInputToken so it doesn't revert
       const higherMax = BigNumber.from(_maxAmountInputToken)
-        .mul(10025)
-        .div(10000) // Extra 0.25%
+        .mul(10050)
+        .div(10000) // Extra 0.50%
       console.log('erc20', {
         _setToken,
         _setAmount,

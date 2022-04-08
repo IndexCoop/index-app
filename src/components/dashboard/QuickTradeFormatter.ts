@@ -66,7 +66,7 @@ export function getTradeInfoDataFromEI(
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: `Exact Amount of Received`, value: exactSetAmount },
+    { title: `Exact Amount Received`, value: exactSetAmount },
     { title: 'Maximum Payment Amount', value: maxPayment },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFrom },
