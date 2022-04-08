@@ -90,9 +90,11 @@ export const useExchangeIssuanceLeveraged = () => {
         _maxInput,
       })
 
-      //TODO: Estimate better _maxInput.
-      //For now hardcode addtional 0.25% so it doesn't revert
-      const higherMax = BigNumber.from(_maxInput).mul(10025).div(10000)
+      //TODO: Estimate better _maxInput. 
+      //For now hardcode addtional 0.50% so it doesn't revert
+      //Previously 0.25% was tried and was not enough
+      //Ex. https://etherscan.io/tx/0x23d28156d8564dd775013241b27745a43e0923fe2e00c784349fff404fc043ac
+      const higherMax = BigNumber.from(_maxInput).mul(10050).div(10000)
       console.log('amounts', _maxInput, higherMax)
       const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
