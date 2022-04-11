@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers'
 
 import { ChainId } from '@usedapp/core'
 
-import { Token } from 'constants/tokens'
+import { ETH, Token } from 'constants/tokens'
 import {
   getExchangeIssuanceLeveragedContract,
   getLeveragedTokenData,
@@ -13,9 +13,14 @@ import {
 } from 'hooks/useExchangeIssuanceZeroEx'
 import { toWei } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
+import {
+  getSwapData,
+  getSwapDataCollateralDebt,
+  getSwapDataDebtCollateral,
+} from 'utils/swapData'
 import { get0xQuote } from 'utils/zeroExUtils'
 
-const slippagePercentage = 0.5
+export const slippagePercentage = 0.5
 
 export enum Exchange {
   None,
@@ -39,9 +44,9 @@ export interface LeveragedExchangeIssuanceQuote {
 }
 
 export interface LeveragedTokenData {
-  collateralAToken: Token
-  collateralToken: Token
-  debtToken: Token
+  collateralAToken: string
+  collateralToken: string
+  debtToken: string
   collateralAmount: BigNumber
   debtAmount: BigNumber
 }
@@ -66,21 +71,6 @@ function get0xEchangeKey(exchange: Exchange): string {
       return 'Uniswap_V3'
     default:
       return ''
-  }
-}
-
-function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
-  switch (key) {
-    case 'Curve':
-      return Exchange.Curve
-    case 'QuickSwap':
-      return Exchange.Quickswap
-    case 'SushiSwap':
-      return Exchange.Sushiswap
-    case 'Uniswap_V3':
-      return Exchange.UniV3
-    default:
-      return null
   }
 }
 
@@ -198,10 +188,13 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 
   // TODO: multi sources?
   //TODO: Allow Quickswap and UniV3
+  const curve = get0xEchangeKey(Exchange.Curve)
+  const sushi = get0xEchangeKey(Exchange.Sushiswap)
   let includedSources: string = isIcEth
-    ? [get0xEchangeKey(Exchange.Curve)].toString()
-    : [get0xEchangeKey(Exchange.Sushiswap)].toString()
+    ? [curve].toString()
+    : [sushi].toString()
 
+  console.log('isIssuance', isIssuance)
   let debtCollateralResult = isIssuance
     ? await getSwapDataDebtCollateral(
         leveragedTokenData,
@@ -231,40 +224,40 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     paymentTokenAddress = 'ETH'
   }
 
-  if (isIssuance) {
-    // if (isIcEth) {
-    //   // swapDataDebtCollateral.exchange = Exchange.Curve
-    //   // swapDataDebtCollateral.path = []
-    //   // swapDataDebtCollateral.pool = '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022'
-    // } else {
-    //   swapDataDebtCollateral.exchange = Exchange.Sushiswap
-    //   swapDataDebtCollateral.path = []
-    //   // pool should be zero address
-    // }
-  } else {
-    if (isIcEth) {
-      paymentTokenAddress = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
-      swapDataDebtCollateral.exchange = Exchange.Curve
-      swapDataDebtCollateral.path = []
-      swapDataDebtCollateral.pool = '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022'
+  if (isIcEth) {
+    if (isIssuance) {
+      // swap data call from 0x is returning WETH, so need to set ETH manually here
+      swapDataDebtCollateral.path = [
+        ETH.address!,
+        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+      ]
+      // pool should come out correct now
+      // swapDataDebtCollateral.pool = '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022'
     } else {
-      swapDataDebtCollateral.exchange = Exchange.Sushiswap
+      // TODO: should this always be the collateralToken?
+      // paymentTokenAddress = leveragedTokenData.collateralToken
+      paymentTokenAddress = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
       swapDataDebtCollateral.path = []
-      swapDataDebtCollateral.pool = '0x34965ba0ac2451a34a0471f04cca3f990b8dea27'
+      // pool should come out correct now
+      //   swapDataDebtCollateral.pool = '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022'
     }
   }
 
-  const result = await getSwapData(
-    {
-      buyToken: isIssuance
-        ? leveragedTokenData.collateralToken
-        : leveragedTokenData.debtToken,
-      buyAmount: collateralShortfall.toString(),
-      sellToken: paymentTokenAddress,
-      includedSources,
-    },
-    chainId
-  )
+  const issuanceParams = {
+    buyToken: leveragedTokenData.collateralToken,
+    buyAmount: collateralShortfall.toString(),
+    sellToken: paymentTokenAddress,
+    includedSources,
+  }
+
+  // const redeemingParams = {
+  //   buyToken: leveragedTokenData.debtToken,
+  //   sellAmount: collateralShortfall.toString(),
+  //   sellToken: paymentTokenAddress,
+  //   includedSources,
+  // }
+
+  const result = await getSwapData(issuanceParams, chainId)
 
   if (!result) return null
 
@@ -272,7 +265,6 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   const inputTokenAmount = BigNumber.from(zeroExQuote.sellAmount)
 
   if (isIcEth) {
-    swapDataPaymentToken.exchange = Exchange.None
     swapDataPaymentToken.path = []
   }
 
@@ -284,92 +276,5 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     inputTokenAmount,
     setTokenAmount,
     gasPrice,
-  }
-}
-
-const getSwapDataCollateralDebt = async (
-  leveragedTokenData: LeveragedTokenData,
-  includedSources: string,
-  chainId: ChainId = ChainId.Polygon
-) => {
-  let result = await getSwapData(
-    {
-      buyToken: leveragedTokenData.debtToken,
-      sellToken: leveragedTokenData.collateralToken,
-      sellAmount: leveragedTokenData.collateralAmount.toString(),
-      includedSources,
-    },
-    chainId
-  )
-  if (!result) return null
-  const { swapData: swapDataDebtCollateral, zeroExQuote } = result
-  const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
-  return { swapDataDebtCollateral, collateralObtained }
-}
-
-const getSwapDataDebtCollateral = async (
-  leveragedTokenData: LeveragedTokenData,
-  includedSources: string,
-  chainId: ChainId = ChainId.Polygon
-) => {
-  let result = await getSwapData(
-    {
-      buyToken: leveragedTokenData.collateralToken,
-      sellToken: leveragedTokenData.debtToken,
-      sellAmount: leveragedTokenData.debtAmount.toString(),
-      includedSources,
-    },
-    chainId
-  )
-  if (!result) return null
-  const { swapData: swapDataDebtCollateral, zeroExQuote } = result
-  const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
-  return { swapDataDebtCollateral, collateralObtained }
-}
-
-const getSwapData = async (params: any, chainId: number = 137) => {
-  // TODO: error handling (for INSUFFICIENT_ASSET_LIQUIDITY)
-  const zeroExQuote = await get0xQuote(
-    {
-      ...params,
-      slippagePercentage,
-    },
-    chainId
-  )
-  const swapData = swapDataFrom0xQuote(zeroExQuote)
-  if (swapData) return { swapData, zeroExQuote }
-  return null
-}
-
-function swapDataFrom0xQuote(zeroExQuote: any): SwapData | null {
-  if (zeroExQuote.orders.length < 1) return null
-
-  const order = zeroExQuote.orders[0]
-  const fillData = order.fillData
-  const exchange = getEchangeFrom0xKey(order.source)
-
-  if (!fillData || !exchange) return null
-
-  if (exchange === Exchange.Curve) {
-    return swapDataFromCurve(order)
-  }
-
-  // Currently this works for Sushi, needs to be checked with additional exchanges
-  return {
-    exchange,
-    path: fillData.tokenAddressPath,
-    fees: [],
-    pool: '0x0000000000000000000000000000000000000000',
-  }
-}
-
-function swapDataFromCurve(order: any): SwapData | null {
-  const fillData = order.fillData
-  if (!fillData) return null
-  return {
-    exchange: Exchange.Curve,
-    path: fillData.pool.tokens,
-    fees: [],
-    pool: fillData.pool.poolAddress,
   }
 }

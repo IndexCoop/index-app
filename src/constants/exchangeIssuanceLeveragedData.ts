@@ -14,7 +14,7 @@ export const collateralDebtSwapData = {
   [Ethereum2xFLIP.symbol]: {
     exchange: Exchange.Sushiswap,
     path: [
-      '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+      '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
       '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
     ],
     fees: [],
