@@ -47,19 +47,22 @@ export function getTradeInfoDataFromEI(
     | LeveragedExchangeIssuanceQuote
     | null
     | undefined,
-  tokenDecimals: number,
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
   const exactSetAmount =
     displayFromWei(setAmount) + ' ' + buyToken.symbol ?? '0.0'
 
-  // TODO: connect this amount to the value from 
+  // TODO: connect this amount to the value from
   // useExchangeIssuanceLeveraged: issueExactSetFromETH()
   const inputTokenMax = data.inputTokenAmount.mul(10050).div(10000)
-  console.log('input token max', inputTokenMax, 'input amount', data.inputTokenAmount)
-  const maxPayment =
-    displayFromWei(inputTokenMax, undefined, tokenDecimals) ?? '0.0'
+  console.log(
+    'input token max',
+    inputTokenMax,
+    'input amount',
+    data.inputTokenAmount
+  )
+  const maxPayment = displayFromWei(inputTokenMax) ?? '0.0'
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic
   const networkFee = displayFromWei(gasPrice.mul(gasLimit))
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
@@ -75,7 +78,6 @@ export function getTradeInfoDataFromEI(
 
 export function getTradeInfoData0x(
   zeroExTradeData: ZeroExData | undefined | null,
-  tokenDecimals: number,
   buyToken: Token,
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
@@ -86,16 +88,10 @@ export function getTradeInfoData0x(
     return []
 
   const buyAmount =
-    displayFromWei(
-      BigNumber.from(zeroExTradeData.buyAmount),
-      undefined,
-      tokenDecimals
-    ) ?? '0.0'
+    displayFromWei(BigNumber.from(zeroExTradeData.buyAmount)) ?? '0.0'
 
   const minReceive =
-    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) +
-      ' ' +
-      buyToken.symbol ?? '0.0'
+    displayFromWei(zeroExTradeData.minOutput) + ' ' + buyToken.symbol ?? '0.0'
 
   const networkFee = displayFromWei(
     BigNumber.from(gasPrice).mul(BigNumber.from(gas))
