@@ -86,6 +86,7 @@ const QuickTrade = (props: {
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
   const buyTokenAmountFormatted = tradeInfoData[0]?.value ?? '0'
+  let TIMEOUT: NodeJS.Timeout
 
   const {
     isApproved: isApprovedForSwap,
@@ -311,8 +312,11 @@ const QuickTrade = (props: {
   }
 
   const onChangeSellTokenAmount = (token: Token, input: string) => {
+    clearTimeout(TIMEOUT)
     if (!isValidTokenInput(input, token.decimals)) return
-    setSellTokenAmount(input || '0')
+    TIMEOUT = setTimeout(() => {
+      setSellTokenAmount(input || '0')
+    }, 1000)
   }
 
   const onClickTradeButton = async () => {
