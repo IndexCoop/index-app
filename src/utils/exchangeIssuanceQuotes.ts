@@ -237,7 +237,10 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       // TODO: should this always be the collateralToken?
       // paymentTokenAddress = leveragedTokenData.collateralToken
       paymentTokenAddress = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
-      swapDataDebtCollateral.path = []
+      swapDataDebtCollateral.path = [
+        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+        ETH.address!,
+      ]
       // pool should come out correct now
       //   swapDataDebtCollateral.pool = '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022'
     }
