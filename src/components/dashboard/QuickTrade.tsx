@@ -316,7 +316,7 @@ const QuickTrade = (props: {
     if (!isValidTokenInput(input, token.decimals)) return
     TIMEOUT = setTimeout(() => {
       setSellTokenAmount(input || '0')
-    }, 1000)
+    }, 500)
   }
 
   const onClickTradeButton = async () => {
