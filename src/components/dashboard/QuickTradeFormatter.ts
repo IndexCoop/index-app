@@ -48,16 +48,22 @@ export function getTradeInfoDataFromEI(
     | null
     | undefined,
   tokenDecimals: number,
-  chainId: ChainId = ChainId.Mainnet
+  chainId: ChainId = ChainId.Mainnet,
+  isBuying: boolean
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
   const exactSetAmount =
     displayFromWei(setAmount) + ' ' + buyToken.symbol ?? '0.0'
 
-  // TODO: connect this amount to the value from 
+  // TODO: connect this amount to the value from
   // useExchangeIssuanceLeveraged: issueExactSetFromETH()
   const inputTokenMax = data.inputTokenAmount.mul(10050).div(10000)
-  console.log('input token max', inputTokenMax, 'input amount', data.inputTokenAmount)
+  console.log(
+    'input token max',
+    inputTokenMax,
+    'input amount',
+    data.inputTokenAmount
+  )
   const maxPayment =
     displayFromWei(inputTokenMax, undefined, tokenDecimals) ?? '0.0'
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic
@@ -67,10 +73,15 @@ export function getTradeInfoDataFromEI(
   const offeredFrom = 'Index - Exchange Issuance'
   return [
     { title: `Exact Amount Received`, value: exactSetAmount },
-    { title: 'Maximum Payment Amount', value: maxPayment },
+    { title: getReceiveAmount(isBuying), value: maxPayment },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFrom },
   ]
+}
+
+const getReceiveAmount = (isBuying: boolean) => {
+  if (isBuying) return 'Maximum Payment Amount'
+  return 'Minimum ETH Received'
 }
 
 export function getTradeInfoData0x(

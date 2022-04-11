@@ -191,7 +191,8 @@ const QuickTrade = (props: {
           buyToken,
           bestOptionResult.leveragedExchangeIssuanceData,
           isBuying ? buyToken.decimals : sellToken.decimals,
-          chainId
+          chainId,
+          isBuying
         )
     setTradeInfoData(dexTradeInfoData)
 
