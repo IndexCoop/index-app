@@ -42,13 +42,15 @@ export function getTradeInfoDataFromEI(
   setAmount: BigNumber,
   gasPrice: BigNumber,
   buyToken: Token,
+  sellToken: Token,
   data:
     | ExchangeIssuanceQuote
     | LeveragedExchangeIssuanceQuote
     | null
     | undefined,
   tokenDecimals: number,
-  chainId: ChainId = ChainId.Mainnet
+  chainId: ChainId = ChainId.Mainnet,
+  isBuying: boolean
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
   const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
@@ -64,11 +66,26 @@ export function getTradeInfoDataFromEI(
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: `Exact Amount Received`, value: exactSetAmount },
-    { title: 'Maximum Payment Amount', value: maxPayment },
+    {
+      title: getReceivedAmount(isBuying, buyToken.symbol),
+      value: exactSetAmount,
+    },
+    {
+      title: getTransactionAmount(isBuying, sellToken.symbol),
+      value: maxPayment,
+    },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFrom },
   ]
+}
+
+const getTransactionAmount = (isBuying: boolean, token: string) => {
+  if (isBuying) return 'Maximum ' + token + ' Payment'
+  return 'Minimum ' + token + ' Received'
+}
+
+const getReceivedAmount = (isBuying: boolean, token: string) => {
+  return 'Exact ' + token + ' Received'
 }
 
 export function getTradeInfoData0x(
