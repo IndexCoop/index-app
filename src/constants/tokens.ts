@@ -226,7 +226,7 @@ export const DataIndex: Token = {
   name: 'Data Economy Index',
   symbol: 'DATA',
   address: '0x33d63Ba1E57E54779F7dDAeaA7109349344cf5F1',
-  polygonAddress: undefined, // temporarily removed due to liquidity concerns '0x1D607Faa0A51518a7728580C238d912747e71F7a',
+  polygonAddress: '0x1D607Faa0A51518a7728580C238d912747e71F7a',
   optimismAddress: undefined,
   decimals: 18,
   url: 'data',
@@ -243,7 +243,7 @@ export const GmiIndex: Token = {
   name: 'Bankless DeFi Innovation Index',
   symbol: 'GMI',
   address: '0x47110d43175f7f2C2425E7d15792acC5817EB44f',
-  polygonAddress: undefined, // temporarily removed due to liquidity concerns '0x7fb27ee135db455de5ab1ccec66a24cbc82e712d',
+  polygonAddress: '0x7fb27ee135db455de5ab1ccec66a24cbc82e712d',
   optimismAddress: undefined,
   decimals: 18,
   url: 'gmi',
@@ -426,7 +426,10 @@ export const indexNamesMainnet = indexNames.filter(
   (index) => index.address !== undefined
 )
 export const indexNamesPolygon = indexNames.filter(
-  (index) => index.polygonAddress !== undefined
+  (index) =>
+    index.polygonAddress !== undefined &&
+    index.symbol !== GmiIndex.symbol && // temporarily removed due to liquidity concerns
+    index.symbol !== DataIndex.symbol // temporarily removed due to liquidity concerns
 )
 
 export default indexNames
