@@ -111,6 +111,7 @@ ReactDOM.render(
             <Route path='btc2x' element={<BTC2xFLIP />} />
             <Route path='ibtc' element={<IBTCFLIP />} />
             <Route path='iceth' element={<ICETH />} />
+            <Route path='index' element={<INDEX />} />
           </Route>
         </Routes>
       </Providers>
