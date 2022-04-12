@@ -41,7 +41,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:staging": "REACT_APP_SENTRY_ENV=staging react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint:fix": "yarn prettier --write . && yarn eslint ./src --fix"

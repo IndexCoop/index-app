@@ -80,10 +80,7 @@ const initSentryEventTracking = () => {
     staging: 'index-app-staging'
   }
   console.log('zz the answer',process.env.REACT_APP_VERCEL_ENV)
-  const isDevelopment = process.env.NODE_ENV === 'development'
-  const isProduction = process.env.NODE_ENV === 'production'
   
-  let environment = 'undefined'
   // if (isStaging) {
     // environment = ENVIRONMENTS.staging
   // } else if (isDevelopment) {
@@ -92,16 +89,16 @@ const initSentryEventTracking = () => {
   //   environment = ENVIRONMENTS.production
   // }
     
-  Sentry.init({
-    environment,
-    dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
-    integrations: [new Integrations.BrowserTracing()],
+  // Sentry.init({
+  //   // environment,
+  //   dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
+  //   integrations: [new Integrations.BrowserTracing()],
 
-    // Set tracesSampleRate to 1.0 to capture 100%
-    // of transactions for performance monitoring.
-    // We recommend adjusting this value in production
-    tracesSampleRate: 1.0,
-  })  
+  //   // Set tracesSampleRate to 1.0 to capture 100%
+  //   // of transactions for performance monitoring.
+  //   // We recommend adjusting this value in production
+  //   tracesSampleRate: 1.0,
+  // })  
 }
 initSentryEventTracking()
 
