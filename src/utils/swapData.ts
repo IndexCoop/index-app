@@ -11,32 +11,30 @@ import {
   SwapData,
 } from './exchangeIssuanceQuotes'
 
-// Used for redeeming
+// Used for redeeming (buy debt, sell collateral)
+// Returns collateral amount needed to be sold
 export const getSwapDataCollateralDebt = async (
   leveragedTokenData: LeveragedTokenData,
   includedSources: string,
   chainId: ChainId = ChainId.Polygon
 ) => {
-  console.log('HEERE')
   let result = await getSwapData(
     {
       buyToken: leveragedTokenData.debtToken,
+      buyAmount: leveragedTokenData.debtAmount.toString(),
       sellToken: leveragedTokenData.collateralToken,
-      sellAmount: leveragedTokenData.collateralAmount.toString(),
       includedSources,
     },
     chainId
   )
-  console.log('///')
-  console.log(leveragedTokenData.debtToken, leveragedTokenData.collateralToken)
-  console.log(leveragedTokenData)
   if (!result) return null
   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
-  const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
-  return { swapDataDebtCollateral, collateralObtained }
+  const collateralSold = BigNumber.from(zeroExQuote.sellAmount)
+  return { swapDataDebtCollateral, collateralObtainedOrSold: collateralSold }
 }
 
-// Used for issuance
+// Used for issuance (buy collateral, sell debt)
+// Returns collateral amount bought
 export const getSwapDataDebtCollateral = async (
   leveragedTokenData: LeveragedTokenData,
   includedSources: string,
@@ -54,7 +52,10 @@ export const getSwapDataDebtCollateral = async (
   if (!result) return null
   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
   const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
-  return { swapDataDebtCollateral, collateralObtained }
+  return {
+    swapDataDebtCollateral,
+    collateralObtainedOrSold: collateralObtained,
+  }
 }
 
 export const getSwapData = async (params: any, chainId: number = 137) => {

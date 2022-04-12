@@ -208,7 +208,8 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       )
 
   if (!debtCollateralResult) return null
-  const { swapDataDebtCollateral, collateralObtained } = debtCollateralResult
+  const { swapDataDebtCollateral, collateralObtainedOrSold } =
+    debtCollateralResult
 
   const collateralShortfall =
     leveragedTokenData.collateralAmount.sub(collateralObtained)
