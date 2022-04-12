@@ -74,31 +74,16 @@ const Providers = (props: { children: any }) => {
 }
 
 const initSentryEventTracking = () => {
-  const ENVIRONMENTS = {
-    development: 'index-app-development',
-    production: 'index-app-prod',
-    staging: 'index-app-staging'
-  }
-  console.log('zz the answer',process.env.REACT_APP_VERCEL_ENV)
-  
-  // if (isStaging) {
-    // environment = ENVIRONMENTS.staging
-  // } else if (isDevelopment) {
-  //   environment = ENVIRONMENTS.development
-  // } else if (isProduction) {
-  //   environment = ENVIRONMENTS.production
-  // }
-    
-  // Sentry.init({
-  //   // environment,
-  //   dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
-  //   integrations: [new Integrations.BrowserTracing()],
+  Sentry.init({
+    environment: process.env.REACT_APP_VERCEL_ENV,
+    dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
+    integrations: [new Integrations.BrowserTracing()],
 
-  //   // Set tracesSampleRate to 1.0 to capture 100%
-  //   // of transactions for performance monitoring.
-  //   // We recommend adjusting this value in production
-  //   tracesSampleRate: 1.0,
-  // })  
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0,
+  })  
 }
 initSentryEventTracking()
 
