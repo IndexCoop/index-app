@@ -26,6 +26,8 @@ export const useTradeLeveragedExchangeIssuance = (
   tokenAmout: BigNumber,
   // max input / min output
   inputOutputLimit: BigNumber
+  // TODO: add collateral debt swap data
+  // TODO: add input/output swap data
 ) => {
   const { account, chainId, library } = useEthers()
   const {

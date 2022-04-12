@@ -211,8 +211,20 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   const { swapDataDebtCollateral, collateralObtainedOrSold } =
     debtCollateralResult
 
-  const collateralShortfall =
-    leveragedTokenData.collateralAmount.sub(collateralObtained)
+  console.log('collateralObtained', collateralObtainedOrSold.toString())
+  const collateralShortfall = leveragedTokenData.collateralAmount.sub(
+    collateralObtainedOrSold
+  )
+  const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
+    collateralObtainedOrSold
+  )
+
+  console.log(
+    '->',
+    leveragedTokenData.collateralAmount.toString(),
+    collateralObtainedOrSold.toString(),
+    leftoverCollateral.toString()
+  )
 
   const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
   let paymentTokenAddress =
@@ -254,19 +266,41 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     includedSources,
   }
 
-  // const redeemingParams = {
-  //   buyToken: leveragedTokenData.debtToken,
-  //   sellAmount: collateralShortfall.toString(),
-  //   sellToken: paymentTokenAddress,
-  //   includedSources,
-  // }
+  console.log(
+    'isSame',
+    paymentTokenAddress?.toLowerCase() ===
+      leveragedTokenData.collateralToken.toLowerCase()
+  )
 
-  const result = await getSwapData(issuanceParams, chainId)
+  const redeemingParams = {
+    buyToken: paymentTokenAddress,
+    sellAmount: leftoverCollateral.toString(),
+    sellToken: leveragedTokenData.collateralToken,
+    includedSources,
+  }
 
-  if (!result) return null
+  let swapDataPaymentToken: SwapData = {
+    exchange: Exchange.None,
+    path: [],
+    fees: [],
+    pool: '0x0000000000000000000000000000000000000000',
+  }
+  let inputTokenAmount = isIssuance ? collateralShortfall : leftoverCollateral
 
-  const { swapData: swapDataPaymentToken, zeroExQuote } = result
-  const inputTokenAmount = BigNumber.from(zeroExQuote.sellAmount)
+  // only fetch input/output swap data if collateral token is not the same as payment token
+  if (leveragedTokenData.collateralToken !== paymentTokenAddress) {
+    const result = await getSwapData(
+      isIssuance ? issuanceParams : redeemingParams,
+      chainId
+    )
+    if (result) {
+      const { swapData, zeroExQuote } = result
+      swapDataPaymentToken = swapData
+      inputTokenAmount = isIssuance
+        ? BigNumber.from(zeroExQuote.sellAmount)
+        : BigNumber.from(zeroExQuote.buyAmount)
+    }
+  }
 
   if (isIcEth) {
     swapDataPaymentToken.path = []
@@ -274,6 +308,9 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 
   const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
 
+  console.log('swapDataDebtCollateral', swapDataDebtCollateral)
+  console.log('swapDataPaymentToken', swapDataPaymentToken)
+  console.log('inputTokenAmount', inputTokenAmount.toString())
   return {
     swapDataDebtCollateral,
     swapDataPaymentToken,

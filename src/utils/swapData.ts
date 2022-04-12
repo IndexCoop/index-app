@@ -43,8 +43,8 @@ export const getSwapDataDebtCollateral = async (
   let result = await getSwapData(
     {
       buyToken: leveragedTokenData.collateralToken,
-      sellToken: leveragedTokenData.debtToken,
       sellAmount: leveragedTokenData.debtAmount.toString(),
+      sellToken: leveragedTokenData.debtToken,
       includedSources,
     },
     chainId
