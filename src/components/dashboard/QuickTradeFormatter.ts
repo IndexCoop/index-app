@@ -51,13 +51,11 @@ export function getTradeInfoDataFromEI(
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
-  const exactSetAmount =
-    displayFromWei(setAmount) + ' ' + buyToken.symbol ?? '0.0'
+  const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
 
-  // TODO: connect this amount to the value from 
+  // TODO: connect this amount to the value from
   // useExchangeIssuanceLeveraged: issueExactSetFromETH()
   const inputTokenMax = data.inputTokenAmount.mul(10050).div(10000)
-  console.log('input token max', inputTokenMax, 'input amount', data.inputTokenAmount)
   const maxPayment =
     displayFromWei(inputTokenMax, undefined, tokenDecimals) ?? '0.0'
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic

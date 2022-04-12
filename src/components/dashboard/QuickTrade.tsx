@@ -177,7 +177,7 @@ const QuickTrade = (props: {
 
     const buyTokenDecimals = buyToken.decimals
 
-    const dexTradeInfoData = bestOptionIs0x
+    const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(
           bestOptionResult.dexData,
           buyTokenDecimals,
@@ -193,7 +193,7 @@ const QuickTrade = (props: {
           isBuying ? buyToken.decimals : sellToken.decimals,
           chainId
         )
-    setTradeInfoData(dexTradeInfoData)
+    setTradeInfoData(tradeInfoData)
 
     setBestOption(
       bestOptionIs0x
