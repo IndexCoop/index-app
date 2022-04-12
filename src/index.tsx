@@ -77,21 +77,21 @@ const initSentryEventTracking = () => {
   const ENVIRONMENTS = {
     development: 'index-app-development',
     production: 'index-app-prod',
-    staging: 'index-app-staging',
+    staging: 'index-app-staging'
   }
-  const isStaging = process.env.REACT_APP_SENTRY_ENV
+  console.log('zz the answer',process.env.REACT_APP_VERCEL_ENV)
   const isDevelopment = process.env.NODE_ENV === 'development'
   const isProduction = process.env.NODE_ENV === 'production'
-
+  
   let environment = 'undefined'
-  if (isStaging) {
-    environment = ENVIRONMENTS.staging
-  } else if (isDevelopment) {
-    environment = ENVIRONMENTS.development
-  } else if (isProduction) {
-    environment = ENVIRONMENTS.production
-  }
-
+  // if (isStaging) {
+    // environment = ENVIRONMENTS.staging
+  // } else if (isDevelopment) {
+  //   environment = ENVIRONMENTS.development
+  // } else if (isProduction) {
+  //   environment = ENVIRONMENTS.production
+  // }
+    
   Sentry.init({
     environment,
     dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
@@ -101,7 +101,7 @@ const initSentryEventTracking = () => {
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
     tracesSampleRate: 1.0,
-  })
+  })  
 }
 initSentryEventTracking()
 
@@ -129,7 +129,6 @@ ReactDOM.render(
             <Route path='btc2x' element={<BTC2xFLIP />} />
             <Route path='ibtc' element={<IBTCFLIP />} />
             <Route path='iceth' element={<ICETH />} />
-            <Route path='index' element={<INDEX />} />
           </Route>
         </Routes>
       </Providers>
