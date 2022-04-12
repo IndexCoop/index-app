@@ -67,11 +67,11 @@ export function getTradeInfoDataFromEI(
   const offeredFrom = 'Index - Exchange Issuance'
   return [
     {
-      title: getReceivedAmount(isBuying, buyToken.symbol),
+      title: getReceivedAmount(isBuying, buyToken, sellToken),
       value: exactSetAmount,
     },
     {
-      title: getTransactionAmount(isBuying, sellToken.symbol),
+      title: getTransactionAmount(isBuying, buyToken, sellToken),
       value: maxPayment,
     },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
@@ -79,13 +79,22 @@ export function getTradeInfoDataFromEI(
   ]
 }
 
-const getTransactionAmount = (isBuying: boolean, token: string) => {
-  if (isBuying) return 'Maximum ' + token + ' Payment'
-  return 'Minimum ' + token + ' Received'
+const getTransactionAmount = (
+  isBuying: boolean,
+  buyToken: Token,
+  sellToken: Token
+) => {
+  if (isBuying) return 'Maximum ' + sellToken.symbol + ' Payment'
+  return 'Minimum ' + buyToken.symbol + ' Received'
 }
 
-const getReceivedAmount = (isBuying: boolean, token: string) => {
-  return 'Exact ' + token + ' Received'
+const getReceivedAmount = (
+  isBuying: boolean,
+  buyToken: Token,
+  sellToken: Token
+) => {
+  if (isBuying) return 'Exact ' + buyToken.symbol + ' Received'
+  return 'Exact ' + sellToken.symbol + ' Paid'
 }
 
 export function getTradeInfoData0x(
@@ -108,9 +117,7 @@ export function getTradeInfoData0x(
     ) ?? '0.0'
 
   const minReceive =
-    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) +
-      ' ' +
-      buyToken.symbol ?? '0.0'
+    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
 
   const networkFee = displayFromWei(
     BigNumber.from(gasPrice).mul(BigNumber.from(gas))
@@ -124,7 +131,7 @@ export function getTradeInfoData0x(
 
   return [
     { title: 'Buy Amount', value: buyAmount },
-    { title: 'Minimum Received', value: minReceive },
+    { title: 'Minimum ' + buyToken.symbol + ' Received', value: minReceive },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFromSources.toString() },
   ]
