@@ -5,14 +5,13 @@ import { ChainId, useEthers } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
+import { SwapData } from 'utils/exchangeIssuanceQuotes'
 
 import { useBalance } from './useBalance'
 import {
   getExchangeIssuanceLeveragedContract,
   useExchangeIssuanceLeveraged,
 } from './useExchangeIssuanceLeveraged'
-
-import { SwapData } from 'utils/exchangeIssuanceQuotes'
 
 export const useTradeLeveragedExchangeIssuance = (
   isIssuance: boolean,
