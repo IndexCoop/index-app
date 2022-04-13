@@ -103,6 +103,7 @@ const QuickTrade = (props: {
     onApprove: onApproveForEIZX,
   } = useApproval(
     sellToken,
+    // TODO: add check for mainnet/polgon address
     ExchangeIssuanceZeroExAddress,
     sellTokenAmountInWei
   )
