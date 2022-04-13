@@ -2,6 +2,12 @@ import { BigNumber, ethers } from 'ethers'
 
 import { ChainId } from '@usedapp/core'
 
+import {
+  collateralDebtSwapData,
+  debtCollateralSwapData,
+  inputSwapData,
+  outputSwapData,
+} from 'constants/exchangeIssuanceLeveragedData'
 import { ETH, Token } from 'constants/tokens'
 import {
   getExchangeIssuanceLeveragedContract,
@@ -208,7 +214,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       )
 
   if (!debtCollateralResult) return null
-  const { swapDataDebtCollateral, collateralObtainedOrSold } =
+  let { swapDataDebtCollateral, collateralObtainedOrSold } =
     debtCollateralResult
 
   console.log('collateralObtained', collateralObtainedOrSold.toString())
@@ -238,32 +244,16 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   }
 
   if (isIcEth) {
-    if (isIssuance) {
-      // swap data call from 0x is returning WETH, so need to set ETH manually here
-      swapDataDebtCollateral.path = [
-        ETH.address!,
-        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
-      ]
-      // pool should come out correct now
-      // swapDataDebtCollateral.pool = '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022'
-    } else {
+    // just using the static versions
+    swapDataDebtCollateral = isIssuance
+      ? debtCollateralSwapData[tokenSymbol]
+      : collateralDebtSwapData[tokenSymbol]
+
+    if (!isIssuance) {
       // TODO: should this always be the collateralToken?
       // paymentTokenAddress = leveragedTokenData.collateralToken
       paymentTokenAddress = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
-      swapDataDebtCollateral.path = [
-        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
-        ETH.address!,
-      ]
-      // pool should come out correct now
-      //   swapDataDebtCollateral.pool = '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022'
     }
-  }
-
-  const issuanceParams = {
-    buyToken: leveragedTokenData.collateralToken,
-    buyAmount: collateralShortfall.toString(),
-    sellToken: paymentTokenAddress,
-    includedSources,
   }
 
   console.log(
@@ -272,6 +262,13 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       leveragedTokenData.collateralToken.toLowerCase()
   )
 
+  const issuanceParams = {
+    buyToken: leveragedTokenData.collateralToken,
+    buyAmount: collateralShortfall.toString(),
+    sellToken: paymentTokenAddress,
+    includedSources,
+  }
+
   const redeemingParams = {
     buyToken: paymentTokenAddress,
     sellAmount: leftoverCollateral.toString(),
@@ -279,6 +276,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     includedSources,
   }
 
+  // By default the input/output swap data can be empty (as it will be ignored)
   let swapDataPaymentToken: SwapData = {
     exchange: Exchange.None,
     path: [],
@@ -287,7 +285,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   }
   let inputTokenAmount = isIssuance ? collateralShortfall : leftoverCollateral
 
-  // only fetch input/output swap data if collateral token is not the same as payment token
+  // Only fetch input/output swap data if collateral token is not the same as payment token
   if (leveragedTokenData.collateralToken !== paymentTokenAddress) {
     const result = await getSwapData(
       isIssuance ? issuanceParams : redeemingParams,
@@ -303,7 +301,10 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   }
 
   if (isIcEth) {
-    swapDataPaymentToken.path = []
+    // just use the static versions here
+    swapDataPaymentToken = isIssuance
+      ? inputSwapData[tokenSymbol][ETH.symbol]
+      : outputSwapData[tokenSymbol][ETH.symbol]
   }
 
   const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
