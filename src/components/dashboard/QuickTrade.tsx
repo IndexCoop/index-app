@@ -118,12 +118,13 @@ const QuickTrade = (props: {
     buyToken,
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
+
   const { executeLevEITrade, isTransactingLevEI } =
     useTradeLeveragedExchangeIssuance(
       isBuying,
       sellToken,
       buyToken,
-      // TODO: simplify by just passing leveragedExchangeIssuanceData || null
+      // TODO: simplify by just passing leveragedExchangeIssuanceData || null
       // TODO: test inside to only exectue trade when data !== null
       bestOptionResult?.success
         ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
