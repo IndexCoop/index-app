@@ -87,8 +87,8 @@ function get0xEchangeKey(exchange: Exchange): string {
  * Returns exchange issuance quotes (incl. 0x trade data) or null
  *
  * @param buyToken            The token to buy
- * @param buyTokenAmount      The amount of buy token that should be acquired
- * @param sellToken           The sell token
+ * @param buySellTokenAmount  The amount of buy/sell token that should be acquired/sold
+ * @param sellToken           The token to sell
  * @param chainId             ID for current chain
  * @param library             Web3Provider instance
  *

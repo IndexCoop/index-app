@@ -116,10 +116,6 @@ const QuickTrade = (props: {
     isBuying,
     sellToken,
     buyToken,
-    bestOptionResult?.success
-      ? bestOptionResult.exchangeIssuanceData?.inputTokenAmount ??
-          BigNumber.from(0)
-      : BigNumber.from(0),
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
   const { executeLevEITrade, isTransactingLevEI } =
@@ -127,6 +123,8 @@ const QuickTrade = (props: {
       isBuying,
       sellToken,
       buyToken,
+      // TODO: simplify by just passing leveragedExchangeIssuanceData || null
+      // TODO: test inside to only exectue trade when data !== null
       bestOptionResult?.success
         ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0)
@@ -234,6 +232,7 @@ const QuickTrade = (props: {
           isBuying
         )
 
+    console.log('BESTOPTION', bestOption)
     setTradeInfoData(tradeInfoData)
     setBestOption(bestOption)
 

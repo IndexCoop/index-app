@@ -137,6 +137,12 @@ export const useBestTradeOption = () => {
       }
     }
 
+    console.log(
+      'exchangeIssuanceOption',
+      exchangeIssuanceOption,
+      exchangeIssuanceOption?.inputTokenAmount.toString()
+    )
+
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }
       : {

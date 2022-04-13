@@ -150,7 +150,8 @@ export const useExchangeIssuanceZeroEx = () => {
    * The SetToken must be approved by the sender to this contract.
    *
    * @param library                library from logged in user
-   * @param setToken               Address of the SetToken to be issued
+   * @param setToken               Address of the SetToken to be redeemed
+   * @param amountSetToken         Amount of set token to redeem
    * @param minEthReceive          Minimum amount of Eth to receive
    * @param componentQuotes        The encoded 0x transactions to execute
    * @param issuanceModule         Address of issuance Module to use
@@ -161,6 +162,7 @@ export const useExchangeIssuanceZeroEx = () => {
   const redeemExactSetForETH = async (
     library: any,
     setToken: string,
+    amountSetToken: BigNumber,
     minEthReceive: BigNumber,
     componentQuotes: any[],
     issuanceModule: string,
@@ -173,6 +175,7 @@ export const useExchangeIssuanceZeroEx = () => {
       )
       const redeemSetTx = await eiContract.redeemExactSetForETH(
         setToken,
+        amountSetToken,
         minEthReceive,
         componentQuotes,
         issuanceModule,
