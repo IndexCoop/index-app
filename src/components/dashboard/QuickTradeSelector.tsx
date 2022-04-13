@@ -100,6 +100,7 @@ const QuickTradeSelector = (props: {
           <Input
             placeholder='0.0'
             type='number'
+            step='any'
             variant='unstyled'
             disabled={config.isInputDisabled ?? false}
             isReadOnly={config.isReadOnly ?? false}
