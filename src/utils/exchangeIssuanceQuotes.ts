@@ -97,7 +97,7 @@ function get0xEchangeKey(exchange: Exchange): string {
  */
 export const getExchangeIssuanceQuotes = async (
   buyToken: Token,
-  buyTokenAmount: BigNumber,
+  buySellTokenAmount: BigNumber,
   sellToken: Token,
   isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
@@ -112,7 +112,7 @@ export const getExchangeIssuanceQuotes = async (
     ? sellToken.polygonAddress
     : sellToken.address
 
-  console.log(tokenSymbol, issuanceModule, buyTokenAmount.toString())
+  console.log(tokenSymbol, issuanceModule, buySellTokenAmount.toString())
 
   const { components, positions } = isIssuance
     ? await getRequiredIssuanceComponents(
@@ -120,14 +120,14 @@ export const getExchangeIssuanceQuotes = async (
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
         buyTokenAddress ?? '',
-        buyTokenAmount
+        buySellTokenAmount
       )
     : await getRequiredRedemptionComponents(
         library,
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
         sellTokenAddress ?? '',
-        buyTokenAmount
+        buySellTokenAmount
       )
 
   let positionQuotes: string[] = []
@@ -179,7 +179,7 @@ export const getExchangeIssuanceQuotes = async (
   return {
     tradeData: positionQuotes,
     inputTokenAmount,
-    setTokenAmount: buyTokenAmount,
+    setTokenAmount: buySellTokenAmount,
     gasPrice,
   }
 }
