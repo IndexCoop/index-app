@@ -11,6 +11,9 @@ import { ZeroExData } from 'utils/zeroExUtils'
 
 import { TradeInfoItem } from './TradeInfo'
 
+/**
+ * Rounds to 2 decimal places. NOT precise, should only be used for display
+ */
 export function formattedBalance(
   token: Token,
   tokenBalance: BigNumber | undefined
