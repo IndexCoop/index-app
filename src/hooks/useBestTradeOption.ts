@@ -97,26 +97,27 @@ export const useBestTradeOption = () => {
     /* Check for Exchange Issuance option */
     let exchangeIssuanceOption: ExchangeIssuanceQuote | null | undefined =
       undefined
-    // if (account && !isBuyingTokenEligible) {
-    //   try {
-    //     exchangeIssuanceOption = await getExchangeIssuanceQuotes(
-    //       buyToken,
-    //       tokenAmount,
-    //       sellToken,
-    //       isIssuance,
-    //       chainId,
-    //       library
-    //     )
-    //   } catch (e) {
-    //     console.warn('error when generating zeroexei option', e)
-    //   }
-    // }
+    // TODO: eligible?
+    // TODO: no icETH?
+    if (account && !dexSwapError) {
+      try {
+        exchangeIssuanceOption = await getExchangeIssuanceQuotes(
+          buyToken,
+          tokenAmount,
+          sellToken,
+          isIssuance,
+          chainId,
+          library
+        )
+      } catch (e) {
+        console.warn('error when generating zeroexei option', e)
+      }
+    }
 
     /* Check ExchangeIssuanceLeveraged option */
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
     // TODO: Recalculate the exchange issue/redeem quotes if not enough DEX liquidity on icETH/ETH
-    // if (account && !dexSwapError && tokenEligible) {
     if (account && !dexSwapError && tokenEligible) {
       const setToken = isIssuance ? buyToken : sellToken
       const setAmount = tokenAmount

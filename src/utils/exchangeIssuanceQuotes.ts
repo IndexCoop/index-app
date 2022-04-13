@@ -40,6 +40,8 @@ export enum Exchange {
 export interface ExchangeIssuanceQuote {
   tradeData: string[]
   inputTokenAmount: BigNumber
+  setTokenAmount: BigNumber
+  gasPrice: BigNumber
 }
 
 export interface LeveragedExchangeIssuanceQuote {
@@ -101,22 +103,30 @@ export const getExchangeIssuanceQuotes = async (
   chainId: ChainId = ChainId.Mainnet,
   library: ethers.providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
+  const isPolygon = chainId === ChainId.Polygon
   const tokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
   const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
+
+  const buyTokenAddress = isPolygon ? buyToken.polygonAddress : buyToken.address
+  const sellTokenAddress = isPolygon
+    ? sellToken.polygonAddress
+    : sellToken.address
+
+  console.log(tokenSymbol, issuanceModule, buyTokenAmount.toString())
 
   const { components, positions } = isIssuance
     ? await getRequiredIssuanceComponents(
         library,
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
-        buyToken.address!,
+        buyTokenAddress ?? '',
         buyTokenAmount
       )
     : await getRequiredRedemptionComponents(
         library,
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
-        sellToken.address!,
+        sellTokenAddress ?? '',
         buyTokenAmount
       )
 
@@ -164,7 +174,14 @@ export const getExchangeIssuanceQuotes = async (
     .mul(toWei(100, sellToken.decimals))
     .div(toWei(100 - slippagePercentage, sellToken.decimals))
 
-  return { tradeData: positionQuotes, inputTokenAmount }
+  const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
+
+  return {
+    tradeData: positionQuotes,
+    inputTokenAmount,
+    setTokenAmount: buyTokenAmount,
+    gasPrice,
+  }
 }
 
 export const getLeveragedExchangeIssuanceQuotes = async (
