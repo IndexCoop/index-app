@@ -177,7 +177,7 @@ const QuickTrade = (props: {
 
     const buyTokenDecimals = buyToken.decimals
 
-    const dexTradeInfoData = bestOptionIs0x
+    const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(
           bestOptionResult.dexData,
           buyTokenDecimals,
@@ -189,11 +189,13 @@ const QuickTrade = (props: {
             BigNumber.from(0),
           gasPriceLevEI,
           buyToken,
+          sellToken,
           bestOptionResult.leveragedExchangeIssuanceData,
           isBuying ? buyToken.decimals : sellToken.decimals,
-          chainId
+          chainId,
+          isBuying
         )
-    setTradeInfoData(dexTradeInfoData)
+    setTradeInfoData(tradeInfoData)
 
     setBestOption(
       bestOptionIs0x

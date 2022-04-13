@@ -42,22 +42,22 @@ export function getTradeInfoDataFromEI(
   setAmount: BigNumber,
   gasPrice: BigNumber,
   buyToken: Token,
+  sellToken: Token,
   data:
     | ExchangeIssuanceQuote
     | LeveragedExchangeIssuanceQuote
     | null
     | undefined,
   tokenDecimals: number,
-  chainId: ChainId = ChainId.Mainnet
+  chainId: ChainId = ChainId.Mainnet,
+  isBuying: boolean
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
-  const exactSetAmount =
-    displayFromWei(setAmount) + ' ' + buyToken.symbol ?? '0.0'
+  const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
 
-  // TODO: connect this amount to the value from 
+  // TODO: connect this amount to the value from
   // useExchangeIssuanceLeveraged: issueExactSetFromETH()
   const inputTokenMax = data.inputTokenAmount.mul(10050).div(10000)
-  console.log('input token max', inputTokenMax, 'input amount', data.inputTokenAmount)
   const maxPayment =
     displayFromWei(inputTokenMax, undefined, tokenDecimals) ?? '0.0'
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic
@@ -66,11 +66,35 @@ export function getTradeInfoDataFromEI(
   const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
   const offeredFrom = 'Index - Exchange Issuance'
   return [
-    { title: `Exact Amount Received`, value: exactSetAmount },
-    { title: 'Maximum Payment Amount', value: maxPayment },
+    {
+      title: getReceivedAmount(isBuying, buyToken, sellToken),
+      value: exactSetAmount,
+    },
+    {
+      title: getTransactionAmount(isBuying, buyToken, sellToken),
+      value: maxPayment,
+    },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFrom },
   ]
+}
+
+const getTransactionAmount = (
+  isBuying: boolean,
+  buyToken: Token,
+  sellToken: Token
+) => {
+  if (isBuying) return 'Maximum ' + sellToken.symbol + ' Payment'
+  return 'Minimum ' + buyToken.symbol + ' Received'
+}
+
+const getReceivedAmount = (
+  isBuying: boolean,
+  buyToken: Token,
+  sellToken: Token
+) => {
+  if (isBuying) return 'Exact ' + buyToken.symbol + ' Received'
+  return 'Exact ' + sellToken.symbol + ' Paid'
 }
 
 export function getTradeInfoData0x(
@@ -93,9 +117,7 @@ export function getTradeInfoData0x(
     ) ?? '0.0'
 
   const minReceive =
-    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) +
-      ' ' +
-      buyToken.symbol ?? '0.0'
+    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
 
   const networkFee = displayFromWei(
     BigNumber.from(gasPrice).mul(BigNumber.from(gas))
@@ -109,7 +131,7 @@ export function getTradeInfoData0x(
 
   return [
     { title: 'Buy Amount', value: buyAmount },
-    { title: 'Minimum Received', value: minReceive },
+    { title: 'Minimum ' + buyToken.symbol + ' Received', value: minReceive },
     { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
     { title: 'Offered From', value: offeredFromSources.toString() },
   ]
