@@ -182,8 +182,6 @@ const QuickTrade = (props: {
         fullCostsLevEI
       )
 
-    const buyTokenDecimals = buyToken.decimals
-
     const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(bestOptionResult.dexData, buyToken, chainId)
       : getTradeInfoDataFromEI(

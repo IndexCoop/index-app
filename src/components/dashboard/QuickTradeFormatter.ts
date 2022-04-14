@@ -110,7 +110,11 @@ export function getTradeInfoData0x(
     return []
 
   const buyAmount =
-    displayFromWei(BigNumber.from(zeroExTradeData.buyAmount)) ?? '0.0'
+    displayFromWei(
+      BigNumber.from(zeroExTradeData.buyAmount),
+      undefined,
+      buyToken.decimals
+    ) ?? '0.0'
 
   const minReceive =
     displayFromWei(zeroExTradeData.minOutput) + ' ' + buyToken.symbol ?? '0.0'
