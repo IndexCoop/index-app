@@ -18,7 +18,8 @@ import ConnectModal from 'components/header/ConnectModal'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
-  ExchangeIssuanceZeroExAddress,
+  ExchangeIssuanceZeroExMainnetAddress,
+  ExchangeIssuanceZeroExPolygonAddress,
   zeroExRouterAddress,
 } from 'constants/ethContractAddresses'
 import { ETH, icETHIndex, Token } from 'constants/tokens'
@@ -79,6 +80,10 @@ const QuickTrade = (props: {
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
+  const spenderAddress0x =
+    chainId === ChainId.Polygon
+      ? ExchangeIssuanceZeroExMainnetAddress
+      : ExchangeIssuanceZeroExPolygonAddress
   const spenderAddressLevEIL =
     chainId === ChainId.Polygon
       ? ExchangeIssuanceLeveragedPolygonAddress
@@ -101,12 +106,7 @@ const QuickTrade = (props: {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
     onApprove: onApproveForEIZX,
-  } = useApproval(
-    sellToken,
-    // TODO: add check for mainnet/polgon address
-    ExchangeIssuanceZeroExAddress,
-    sellTokenAmountInWei
-  )
+  } = useApproval(sellToken, spenderAddress0x, sellTokenAmountInWei)
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
