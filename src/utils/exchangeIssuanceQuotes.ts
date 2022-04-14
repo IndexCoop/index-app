@@ -283,7 +283,8 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     fees: [],
     pool: '0x0000000000000000000000000000000000000000',
   }
-  let inputTokenAmount = isIssuance ? collateralShortfall : leftoverCollateral
+  // Default if collateral token should be equal to payment token
+  let paymentTokenAmount = isIssuance ? collateralShortfall : leftoverCollateral
 
   // Only fetch input/output swap data if collateral token is not the same as payment token
   if (leveragedTokenData.collateralToken !== paymentTokenAddress) {
@@ -294,7 +295,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     if (result) {
       const { swapData, zeroExQuote } = result
       swapDataPaymentToken = swapData
-      inputTokenAmount = isIssuance
+      paymentTokenAmount = isIssuance
         ? BigNumber.from(zeroExQuote.sellAmount)
         : BigNumber.from(zeroExQuote.buyAmount)
     }
@@ -311,11 +312,11 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 
   console.log('swapDataDebtCollateral', swapDataDebtCollateral)
   console.log('swapDataPaymentToken', swapDataPaymentToken)
-  console.log('inputTokenAmount', inputTokenAmount.toString())
+  console.log('inputTokenAmount', paymentTokenAmount.toString())
   return {
     swapDataDebtCollateral,
     swapDataPaymentToken,
-    inputTokenAmount,
+    inputTokenAmount: paymentTokenAmount,
     setTokenAmount,
     gasPrice,
   }
