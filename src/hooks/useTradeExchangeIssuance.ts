@@ -9,7 +9,10 @@ import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
 
 import { useBalance } from './useBalance'
-import { useExchangeIssuanceZeroEx } from './useExchangeIssuanceZeroEx'
+import {
+  getExchangeIssuanceZeroExContract,
+  useExchangeIssuanceZeroEx,
+} from './useExchangeIssuanceZeroEx'
 
 export const useTradeExchangeIssuance = (
   isIssuance: boolean,
@@ -54,13 +57,19 @@ export const useTradeExchangeIssuance = (
 
     try {
       setIsTransacting(true)
+
+      const contract = await getExchangeIssuanceZeroExContract(
+        library?.getSigner(),
+        chainId ?? ChainId.Mainnet
+      )
+
       if (isIssuance) {
         const isSellingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
         if (isSellingNativeChainToken) {
           await issueExactSetFromETH(
-            library,
+            contract,
             outputTokenAddress,
             setTokenAmount,
             quoteData.tradeData,
@@ -70,7 +79,7 @@ export const useTradeExchangeIssuance = (
         } else {
           const maxAmountInputToken = quoteData.inputTokenAmount
           await issueExactSetFromToken(
-            library,
+            contract,
             outputTokenAddress,
             inputTokenAddress,
             setTokenAmount,
@@ -87,7 +96,7 @@ export const useTradeExchangeIssuance = (
 
         if (isRedeemingNativeChainToken) {
           await redeemExactSetForETH(
-            library,
+            contract,
             inputTokenAddress,
             setTokenAmount,
             minOutputReceive,
@@ -97,7 +106,7 @@ export const useTradeExchangeIssuance = (
           )
         } else {
           await redeemExactSetForToken(
-            library,
+            contract,
             inputTokenAddress,
             outputTokenAddress,
             setTokenAmount,

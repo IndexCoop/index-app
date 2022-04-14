@@ -1,8 +1,12 @@
 import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
+import { ChainId } from '@usedapp/core'
 
-import { ExchangeIssuanceZeroExAddress } from 'constants/ethContractAddresses'
+import {
+  ExchangeIssuanceZeroExMainnetAddress,
+  ExchangeIssuanceZeroExPolygonAddress,
+} from 'constants/ethContractAddresses'
 import { getERC20Contract } from 'utils'
 import { EI_ZEROEX_ABI } from 'utils/abi/EIZeroEx'
 
@@ -13,17 +17,19 @@ interface RequiredComponentsResponse {
 
 /**
  * returns instance of ExchangeIssuanceZeroEx Contract
- * @param providerSigner
- * @returns EI contract
+ * @param providerSigner  web3 provider or signer
+ * @param chainId         chain ID for current connected network
+ * @returns instance of 0x exchange issuance contract
  */
-const getExchangeIssuanceZeroExContract = async (
-  providerSigner: Signer | Provider | undefined
+export const getExchangeIssuanceZeroExContract = async (
+  providerSigner: Signer | Provider | undefined,
+  chainId: ChainId
 ): Promise<Contract> => {
-  return new Contract(
-    ExchangeIssuanceZeroExAddress,
-    EI_ZEROEX_ABI,
-    providerSigner
-  )
+  const contractAddress =
+    chainId === ChainId.Polygon
+      ? ExchangeIssuanceZeroExPolygonAddress
+      : ExchangeIssuanceZeroExMainnetAddress
+  return new Contract(contractAddress, EI_ZEROEX_ABI, providerSigner)
 }
 
 /**
@@ -39,17 +45,14 @@ const getExchangeIssuanceZeroExContract = async (
  * @return positions             Array of component positions
  */
 export const getRequiredIssuanceComponents = async (
-  library: any,
+  contract: Contract,
   issuanceModule: string,
   isDebtIssuance: boolean,
   setToken: string,
   amountSetToken: BigNumber
 ): Promise<RequiredComponentsResponse> => {
   try {
-    const eiContract = await getExchangeIssuanceZeroExContract(
-      library.getSigner()
-    )
-    const issueQuoteTx = await eiContract.getRequiredIssuanceComponents(
+    const issueQuoteTx = await contract.getRequiredIssuanceComponents(
       issuanceModule,
       isDebtIssuance,
       setToken,
@@ -75,7 +78,7 @@ export const getRequiredIssuanceComponents = async (
  * @return positions             Array of component positions
  */
 export const getRequiredRedemptionComponents = async (
-  library: any,
+  contract: Contract,
   issuanceModule: string,
   isDebtIssuance: boolean,
   setToken: string,
@@ -83,10 +86,7 @@ export const getRequiredRedemptionComponents = async (
 ): Promise<RequiredComponentsResponse> => {
   console.log('getRequiredRedemptionComponents')
   try {
-    const eiContract = await getExchangeIssuanceZeroExContract(
-      library.getSigner()
-    )
-    const redeemQuoteTx = await eiContract.getRequiredRedemptionComponents(
+    const redeemQuoteTx = await contract.getRequiredRedemptionComponents(
       issuanceModule,
       isDebtIssuance,
       setToken,
@@ -118,7 +118,7 @@ export const useExchangeIssuanceZeroEx = () => {
    * @return amountEthReturn       Amount of ether returned to the caller
    */
   const issueExactSetFromETH = async (
-    library: any,
+    contract: Contract,
     setToken: string,
     amountSetToken: BigNumber,
     componentQuotes: any[],
@@ -127,10 +127,7 @@ export const useExchangeIssuanceZeroEx = () => {
   ): Promise<any> => {
     console.log('issueExactSetFromETH')
     try {
-      const eiContract = await getExchangeIssuanceZeroExContract(
-        library.getSigner()
-      )
-      const issueSetTx = await eiContract.issueExactSetFromETH(
+      const issueSetTx = await contract.issueExactSetFromETH(
         setToken,
         amountSetToken,
         componentQuotes,
@@ -160,7 +157,7 @@ export const useExchangeIssuanceZeroEx = () => {
    * @return outputAmount          Amount of output tokens sent to the caller
    */
   const redeemExactSetForETH = async (
-    library: any,
+    contract: Contract,
     setToken: string,
     amountSetToken: BigNumber,
     minEthReceive: BigNumber,
@@ -170,10 +167,7 @@ export const useExchangeIssuanceZeroEx = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForETH')
     try {
-      const eiContract = await getExchangeIssuanceZeroExContract(
-        library.getSigner()
-      )
-      const redeemSetTx = await eiContract.redeemExactSetForETH(
+      const redeemSetTx = await contract.redeemExactSetForETH(
         setToken,
         amountSetToken,
         minEthReceive,
@@ -201,17 +195,14 @@ export const useExchangeIssuanceZeroEx = () => {
    * @return positions             Array of component positions
    */
   const getRequiredIssuanceComponents = async (
-    library: any,
+    contract: Contract,
     issuanceModule: string,
     isDebtIssuance: boolean,
     setToken: string,
     amountSetToken: BigNumber
   ): Promise<RequiredComponentsResponse> => {
     try {
-      const eiContract = await getExchangeIssuanceZeroExContract(
-        library.getSigner()
-      )
-      const issueQuoteTx = await eiContract.getRequiredIssuanceComponents(
+      const issueQuoteTx = await contract.getRequiredIssuanceComponents(
         issuanceModule,
         isDebtIssuance,
         setToken,
@@ -241,7 +232,7 @@ export const useExchangeIssuanceZeroEx = () => {
    * @return totalInputTokenSold   Amount of input token spent for issuance
    */
   const issueExactSetFromToken = async (
-    library: any,
+    contract: Contract,
     setToken: string,
     inputToken: string,
     amountSetToken: BigNumber,
@@ -252,10 +243,7 @@ export const useExchangeIssuanceZeroEx = () => {
   ): Promise<any> => {
     console.log('issueExactSetFromToken')
     try {
-      const eiContract = await getExchangeIssuanceZeroExContract(
-        library.getSigner()
-      )
-      const issueSetTx = await eiContract.issueExactSetFromToken(
+      const issueSetTx = await contract.issueExactSetFromToken(
         setToken,
         inputToken,
         amountSetToken,
@@ -288,7 +276,7 @@ export const useExchangeIssuanceZeroEx = () => {
    * @return outputAmount          Amount of output tokens sent to the caller
    */
   const redeemExactSetForToken = async (
-    library: any,
+    contract: Contract,
     setToken: string,
     outputToken: string,
     amountSetToken: BigNumber,
@@ -299,10 +287,7 @@ export const useExchangeIssuanceZeroEx = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForToken')
     try {
-      const eiContract = await getExchangeIssuanceZeroExContract(
-        library.getSigner()
-      )
-      const redeemSetTx = await eiContract.redeemExactSetForToken(
+      const redeemSetTx = await contract.redeemExactSetForToken(
         setToken,
         outputToken,
         amountSetToken,
@@ -331,7 +316,7 @@ export const useExchangeIssuanceZeroEx = () => {
    * @return positions             Array of component positions
    */
   const getRequiredRedemptionComponents = async (
-    library: any,
+    contract: Contract,
     issuanceModule: string,
     isDebtIssuance: boolean,
     setToken: string,
@@ -339,10 +324,7 @@ export const useExchangeIssuanceZeroEx = () => {
   ): Promise<RequiredComponentsResponse> => {
     console.log('getRequiredRedemptionComponents')
     try {
-      const eiContract = await getExchangeIssuanceZeroExContract(
-        library.getSigner()
-      )
-      const redeemQuoteTx = await eiContract.getRequiredRedemptionComponents(
+      const redeemQuoteTx = await contract.getRequiredRedemptionComponents(
         issuanceModule,
         isDebtIssuance,
         setToken,
@@ -365,16 +347,13 @@ export const useExchangeIssuanceZeroEx = () => {
    *
    */
   const approveSetToken = async (
-    library: any,
+    contract: Contract,
     setToken: string,
     issuanceModule: string
   ): Promise<any> => {
     console.log('approveSetToken')
     try {
-      const eiContract = await getExchangeIssuanceZeroExContract(
-        library.getSigner()
-      )
-      const approveSetTokenTx = await eiContract.approveSetToken(
+      const approveSetTokenTx = await contract.approveSetToken(
         setToken,
         issuanceModule
       )
@@ -395,16 +374,13 @@ export const useExchangeIssuanceZeroEx = () => {
    *
    */
   const approveToken = async (
-    library: any,
+    contract: Contract,
     token: string,
     spender: string
   ): Promise<any> => {
     console.log('approveToken')
     try {
-      const eiContract = await getExchangeIssuanceZeroExContract(
-        library.getSigner()
-      )
-      const approveTokenTx = await eiContract.approveToken(token, spender)
+      const approveTokenTx = await contract.approveToken(token, spender)
       return approveTokenTx
     } catch (err) {
       console.log('error', err)
@@ -421,16 +397,13 @@ export const useExchangeIssuanceZeroEx = () => {
    *
    */
   const approveTokens = async (
-    library: any,
+    contract: Contract,
     tokens: string[],
     spender: string
   ): Promise<any> => {
     console.log('approveTokens')
     try {
-      const eiContract = await getExchangeIssuanceZeroExContract(
-        library.getSigner()
-      )
-      const approveTokensTx = await eiContract.approveTokens(tokens, spender)
+      const approveTokensTx = await contract.approveTokens(tokens, spender)
       return approveTokensTx
     } catch (err) {
       console.log('error', err)
@@ -449,17 +422,19 @@ export const useExchangeIssuanceZeroEx = () => {
   const tokenAllowance = async (
     account: any,
     library: any,
+    chainId: ChainId,
     tokenAddress: string
   ): Promise<BigNumber> => {
     try {
+      const contractAddress =
+        chainId === ChainId.Polygon
+          ? ExchangeIssuanceZeroExPolygonAddress
+          : ExchangeIssuanceZeroExMainnetAddress
       const tokenContract = await getERC20Contract(
         library.getSigner(),
         tokenAddress
       )
-      const allowance = await tokenContract.allowance(
-        account,
-        ExchangeIssuanceZeroExAddress
-      )
+      const allowance = await tokenContract.allowance(account, contractAddress)
       return BigNumber.from(allowance)
     } catch (err) {
       console.log('error', err)

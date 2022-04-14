@@ -14,6 +14,7 @@ import {
   getLeveragedTokenData,
 } from 'hooks/useExchangeIssuanceLeveraged'
 import {
+  getExchangeIssuanceZeroExContract,
   getRequiredIssuanceComponents,
   getRequiredRedemptionComponents,
 } from 'hooks/useExchangeIssuanceZeroEx'
@@ -114,16 +115,21 @@ export const getExchangeIssuanceQuotes = async (
 
   console.log(tokenSymbol, issuanceModule, buySellTokenAmount.toString())
 
+  const contract = await getExchangeIssuanceZeroExContract(
+    library?.getSigner(),
+    chainId ?? ChainId.Mainnet
+  )
+
   const { components, positions } = isIssuance
     ? await getRequiredIssuanceComponents(
-        library,
+        contract,
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
         buyTokenAddress ?? '',
         buySellTokenAmount
       )
     : await getRequiredRedemptionComponents(
-        library,
+        contract,
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
         sellTokenAddress ?? '',
