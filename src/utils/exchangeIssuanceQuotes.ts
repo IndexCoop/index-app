@@ -26,6 +26,7 @@ import {
 } from 'utils/swapData'
 import { get0xQuote } from 'utils/zeroExUtils'
 
+// Slippage hard coded to .5% (will be increased if there are revert issues)
 export const slippagePercentage = 0.5
 
 export enum Exchange {
@@ -121,10 +122,8 @@ export const getExchangeIssuanceQuotes = async (
 
   let positionQuotes: string[] = []
   let inputTokenAmount = BigNumber.from(0)
-  // Slippage hard coded to .5% (will be increased if there are revert issues)
-  const slippagePercents = slippagePercentage
   // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
-  const slippage = slippagePercents / 100
+  const slippage = slippagePercentage / 100
 
   const quotePromises: Promise<any>[] = []
   components.forEach((component, index) => {
@@ -163,7 +162,7 @@ export const getExchangeIssuanceQuotes = async (
   // based on the fact that the slippagePercentage is limited between 0.0 and 1.0 on the 0xApi
   inputTokenAmount = inputTokenAmount
     .mul(toWei(100, sellToken.decimals))
-    .div(toWei(100 - slippagePercents, sellToken.decimals))
+    .div(toWei(100 - slippagePercentage, sellToken.decimals))
 
   return { tradeData: positionQuotes, inputTokenAmount }
 }
