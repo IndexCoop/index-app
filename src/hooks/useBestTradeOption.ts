@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
+import { ChainId, useEthers } from '@usedapp/core'
 
 import {
   eligibleLeveragedExchangeIssuanceTokens,
@@ -123,18 +123,24 @@ export const useBestTradeOption = () => {
           console.warn('error when generating leveraged ei option', e)
         }
       } else {
-        try {
-          exchangeIssuanceOption = await getExchangeIssuanceQuotes(
-            buyToken,
-            tokenAmount,
-            sellToken,
-            isIssuance,
-            chainId,
-            library
-          )
-        } catch (e) {
-          console.warn('error when generating zeroexei option', e)
-        }
+        const isIcEth =
+          sellToken.symbol === icETHIndex.symbol ||
+          buyToken.symbol === icETHIndex.symbol
+        // For now only run on mainnet and if not icETH
+        // icETH token pair (with non ETH token) could not be eligible and land here
+        if (chainId === ChainId.Mainnet && !isIcEth)
+          try {
+            exchangeIssuanceOption = await getExchangeIssuanceQuotes(
+              buyToken,
+              tokenAmount,
+              sellToken,
+              isIssuance,
+              chainId,
+              library
+            )
+          } catch (e) {
+            console.warn('error when generating zeroexei option', e)
+          }
       }
     }
 
