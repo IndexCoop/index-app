@@ -87,7 +87,11 @@ export const useBestTradeOption = () => {
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
 
-    const tokenEligible = isEligibleTradePair(sellToken, buyToken, isIssuance)
+    const tokenEligibleForLeveragedEI = isEligibleTradePair(
+      sellToken,
+      buyToken,
+      isIssuance
+    )
 
     const tokenAmount =
       isIssuance && dexSwapOption
@@ -95,45 +99,42 @@ export const useBestTradeOption = () => {
         : toWei(sellTokenAmount, sellToken.decimals)
 
     /* Check for Exchange Issuance option */
-    let exchangeIssuanceOption: ExchangeIssuanceQuote | null | undefined =
-      undefined
-    // TODO: eligible?
-    // TODO: no icETH?
-    if (account && !dexSwapError) {
-      try {
-        exchangeIssuanceOption = await getExchangeIssuanceQuotes(
-          buyToken,
-          tokenAmount,
-          sellToken,
-          isIssuance,
-          chainId,
-          library
-        )
-      } catch (e) {
-        console.warn('error when generating zeroexei option', e)
-      }
-    }
-
-    /* Check ExchangeIssuanceLeveraged option */
+    let exchangeIssuanceOption: ExchangeIssuanceQuote | null = null
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
-    // TODO: Recalculate the exchange issue/redeem quotes if not enough DEX liquidity on icETH/ETH
-    if (account && !dexSwapError && tokenEligible) {
-      const setToken = isIssuance ? buyToken : sellToken
-      const setAmount = tokenAmount
 
-      try {
-        leveragedExchangeIssuanceOption =
-          await getLeveragedExchangeIssuanceQuotes(
-            setToken,
-            setAmount,
+    // TODO: Recalculate the exchange issue/redeem quotes if not enough DEX liquidity on icETH/ETH
+    if (account && !dexSwapError) {
+      if (tokenEligibleForLeveragedEI) {
+        const setToken = isIssuance ? buyToken : sellToken
+        const setAmount = tokenAmount
+
+        try {
+          leveragedExchangeIssuanceOption =
+            await getLeveragedExchangeIssuanceQuotes(
+              setToken,
+              setAmount,
+              sellToken,
+              isIssuance,
+              chainId,
+              library
+            )
+        } catch (e) {
+          console.warn('error when generating leveraged ei option', e)
+        }
+      } else {
+        try {
+          exchangeIssuanceOption = await getExchangeIssuanceQuotes(
+            buyToken,
+            tokenAmount,
             sellToken,
             isIssuance,
             chainId,
             library
           )
-      } catch (e) {
-        console.warn('error when generating leveraged ei option', e)
+        } catch (e) {
+          console.warn('error when generating zeroexei option', e)
+        }
       }
     }
 
@@ -141,6 +142,11 @@ export const useBestTradeOption = () => {
       'exchangeIssuanceOption',
       exchangeIssuanceOption,
       exchangeIssuanceOption?.inputTokenAmount.toString()
+    )
+    console.log(
+      'levExchangeIssuanceOption',
+      leveragedExchangeIssuanceOption,
+      leveragedExchangeIssuanceOption?.inputTokenAmount.toString()
     )
 
     const result: Result<ZeroExData, Error> = dexSwapError
