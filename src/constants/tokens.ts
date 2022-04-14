@@ -420,6 +420,7 @@ const indexNames = [
   Bitcoin2xFlexibleLeverageIndex,
   BedIndex,
   DataIndex,
+  IndexToken,
 ]
 
 export const indexNamesMainnet = indexNames.filter(
@@ -429,7 +430,8 @@ export const indexNamesPolygon = indexNames.filter(
   (index) =>
     index.polygonAddress !== undefined &&
     index.symbol !== GmiIndex.symbol && // temporarily removed due to liquidity concerns
-    index.symbol !== DataIndex.symbol // temporarily removed due to liquidity concerns
+    index.symbol !== DataIndex.symbol && // temporarily removed due to liquidity concerns
+    index.symbol !== IndexToken.symbol // temporarily removed due to liquidity concerns
 )
 
 export default indexNames
