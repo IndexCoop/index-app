@@ -443,12 +443,12 @@ export const useExchangeIssuanceZeroEx = () => {
   }
 
   return {
-    issueExactSetFromETH,
-    redeemExactSetForETH,
     getRequiredIssuanceComponents,
-    issueExactSetFromToken,
-    redeemExactSetForToken,
     getRequiredRedemptionComponents,
+    issueExactSetFromETH,
+    issueExactSetFromToken,
+    redeemExactSetForETH,
+    redeemExactSetForToken,
     approveSetToken,
     approveToken,
     approveTokens,

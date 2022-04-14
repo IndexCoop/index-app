@@ -19,6 +19,7 @@ import {
   getRequiredRedemptionComponents,
 } from 'hooks/useExchangeIssuanceZeroEx'
 import { toWei } from 'utils'
+import { getExchangeIssuanceGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import {
   getSwapData,
@@ -181,6 +182,21 @@ export const getExchangeIssuanceQuotes = async (
     .div(toWei(100 - slippagePercentage, sellToken.decimals))
 
   const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
+
+  // TODO: get balance and check if inputAmount exceeds balance
+  // TODO: only fetch gasEstimate if inputAmount <= balance
+  // TODO: otherwise skip, to still return a quote
+  const gasEstimate = await getExchangeIssuanceGasEstimate(
+    library,
+    chainId,
+    isIssuance,
+    sellToken,
+    buyToken,
+    buySellTokenAmount,
+    inputTokenAmount,
+    positionQuotes
+  )
+  console.log('GAS', gasEstimate.toString())
 
   return {
     tradeData: positionQuotes,
