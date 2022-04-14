@@ -2,9 +2,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
-import { getIssuanceModule } from 'utils/issuanceModule'
-
 import { getExchangeIssuanceZeroExContract } from 'hooks/useExchangeIssuanceZeroEx'
+import { getIssuanceModule } from 'utils/issuanceModule'
 
 export async function getExchangeIssuanceGasEstimate(
   library: any,
