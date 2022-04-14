@@ -51,7 +51,6 @@ export function getTradeInfoDataFromEI(
     | LeveragedExchangeIssuanceQuote
     | null
     | undefined,
-  tokenDecimals: number,
   chainId: ChainId = ChainId.Mainnet,
   isBuying: boolean
 ): TradeInfoItem[] {
@@ -61,8 +60,7 @@ export function getTradeInfoDataFromEI(
   // TODO: connect this amount to the value from
   // useExchangeIssuanceLeveraged: issueExactSetFromETH()
   const inputTokenMax = data.inputTokenAmount.mul(10050).div(10000)
-  const maxPayment =
-    displayFromWei(inputTokenMax, undefined, tokenDecimals) ?? '0.0'
+  const maxPayment = displayFromWei(inputTokenMax) ?? '0.0'
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic
   const networkFee = displayFromWei(gasPrice.mul(gasLimit))
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
@@ -102,7 +100,6 @@ const getReceivedAmount = (
 
 export function getTradeInfoData0x(
   zeroExTradeData: ZeroExData | undefined | null,
-  tokenDecimals: number,
   buyToken: Token,
   chainId: ChainId = ChainId.Mainnet
 ): TradeInfoItem[] {
@@ -116,11 +113,11 @@ export function getTradeInfoData0x(
     displayFromWei(
       BigNumber.from(zeroExTradeData.buyAmount),
       undefined,
-      tokenDecimals
+      buyToken.decimals
     ) ?? '0.0'
 
   const minReceive =
-    displayFromWei(zeroExTradeData.minOutput, undefined, tokenDecimals) ?? '0.0'
+    displayFromWei(zeroExTradeData.minOutput) + ' ' + buyToken.symbol ?? '0.0'
 
   const networkFee = displayFromWei(
     BigNumber.from(gasPrice).mul(BigNumber.from(gas))

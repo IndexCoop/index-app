@@ -182,15 +182,8 @@ const QuickTrade = (props: {
         fullCostsLevEI
       )
 
-    const buyTokenDecimals = buyToken.decimals
-
     const tradeInfoData = bestOptionIs0x
-      ? getTradeInfoData0x(
-          bestOptionResult.dexData,
-          buyTokenDecimals,
-          buyToken,
-          chainId
-        )
+      ? getTradeInfoData0x(bestOptionResult.dexData, buyToken, chainId)
       : getTradeInfoDataFromEI(
           bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0),
@@ -198,7 +191,6 @@ const QuickTrade = (props: {
           buyToken,
           sellToken,
           bestOptionResult.leveragedExchangeIssuanceData,
-          isBuying ? buyToken.decimals : sellToken.decimals,
           chainId,
           isBuying
         )
