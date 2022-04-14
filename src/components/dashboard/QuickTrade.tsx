@@ -133,7 +133,14 @@ const QuickTrade = (props: {
       bestOptionResult?.success
         ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
             BigNumber.from(0)
-        : BigNumber.from(0)
+        : BigNumber.from(0),
+      bestOptionResult?.success
+        ? bestOptionResult?.leveragedExchangeIssuanceData
+            ?.swapDataDebtCollateral
+        : undefined,
+      bestOptionResult?.success
+        ? bestOptionResult?.leveragedExchangeIssuanceData?.swapDataPaymentToken
+        : undefined
     )
 
   const hasInsufficientFunds = getHasInsufficientFunds(
