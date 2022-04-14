@@ -74,7 +74,9 @@ export const useTradeExchangeIssuance = (
             setTokenAmount,
             quoteData.tradeData,
             issuanceModule.address,
-            issuanceModule.isDebtIssuance
+            issuanceModule.isDebtIssuance,
+            quoteData.inputTokenAmount,
+            quoteData.gas
           )
         } else {
           const maxAmountInputToken = quoteData.inputTokenAmount
@@ -86,7 +88,8 @@ export const useTradeExchangeIssuance = (
             maxAmountInputToken,
             quoteData.tradeData,
             issuanceModule.address,
-            issuanceModule.isDebtIssuance
+            issuanceModule.isDebtIssuance,
+            quoteData.gas
           )
         }
       } else {
@@ -102,7 +105,8 @@ export const useTradeExchangeIssuance = (
             minOutputReceive,
             quoteData.tradeData,
             issuanceModule.address,
-            issuanceModule.isDebtIssuance
+            issuanceModule.isDebtIssuance,
+            quoteData.gas
           )
         } else {
           await redeemExactSetForToken(
@@ -113,7 +117,8 @@ export const useTradeExchangeIssuance = (
             minOutputReceive,
             quoteData.tradeData,
             issuanceModule.address,
-            issuanceModule.isDebtIssuance
+            issuanceModule.isDebtIssuance,
+            quoteData.gas
           )
         }
       }

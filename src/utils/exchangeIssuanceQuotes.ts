@@ -43,6 +43,7 @@ export interface ExchangeIssuanceQuote {
   tradeData: string[]
   inputTokenAmount: BigNumber
   setTokenAmount: BigNumber
+  gas: BigNumber
   gasPrice: BigNumber
 }
 
@@ -202,6 +203,7 @@ export const getExchangeIssuanceQuotes = async (
     tradeData: positionQuotes,
     inputTokenAmount,
     setTokenAmount: buySellTokenAmount,
+    gas: gasEstimate,
     gasPrice,
   }
 }
