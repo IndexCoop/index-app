@@ -4,6 +4,7 @@ import { BigNumber } from 'set.js'
 import { colors } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
+import { formatUnits } from '@ethersproject/units'
 import { useEthers } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
@@ -100,6 +101,7 @@ const QuickTradeSelector = (props: {
           <Input
             placeholder='0.0'
             type='number'
+            step='any'
             variant='unstyled'
             disabled={config.isInputDisabled ?? false}
             isReadOnly={config.isReadOnly ?? false}
@@ -148,7 +150,13 @@ const QuickTradeSelector = (props: {
         fontWeight='400'
         mt='5px'
         onClick={() => {
-          if (tokenBalance) onChangeInput(tokenBalance)
+          if (tokenBalance) {
+            const fullTokenBalance = formatUnits(
+              getBalance(props.selectedToken) ?? '0',
+              props.selectedToken.decimals
+            )
+            onChangeInput(fullTokenBalance)
+          }
         }}
         cursor='pointer'
       >

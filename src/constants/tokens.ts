@@ -426,7 +426,10 @@ export const indexNamesMainnet = indexNames.filter(
   (index) => index.address !== undefined
 )
 export const indexNamesPolygon = indexNames.filter(
-  (index) => index.polygonAddress !== undefined
+  (index) =>
+    index.polygonAddress !== undefined &&
+    index.symbol !== GmiIndex.symbol && // temporarily removed due to liquidity concerns
+    index.symbol !== DataIndex.symbol // temporarily removed due to liquidity concerns
 )
 
 export default indexNames

@@ -23,10 +23,7 @@ type Result<_, E = Error> =
       success: true
       dexData: ZeroExData | null
       exchangeIssuanceData: ExchangeIssuanceQuote | null | undefined
-      leveragedExchangeIssuanceData:
-        | LeveragedExchangeIssuanceQuote
-        | null
-        | undefined
+      leveragedExchangeIssuanceData: LeveragedExchangeIssuanceQuote | null
     }
   | { success: false; error: E }
 

@@ -51,6 +51,7 @@ export const useApproval = (
     }
   }, [
     account,
+    amount,
     library,
     setIsApproved,
     setIsApproving,

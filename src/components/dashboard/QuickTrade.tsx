@@ -133,7 +133,14 @@ const QuickTrade = (props: {
       bestOptionResult?.success
         ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
             BigNumber.from(0)
-        : BigNumber.from(0)
+        : BigNumber.from(0),
+      bestOptionResult?.success
+        ? bestOptionResult?.leveragedExchangeIssuanceData
+            ?.swapDataDebtCollateral
+        : undefined,
+      bestOptionResult?.success
+        ? bestOptionResult?.leveragedExchangeIssuanceData?.swapDataPaymentToken
+        : undefined
     )
 
   const hasInsufficientFunds = getHasInsufficientFunds(
@@ -177,17 +184,19 @@ const QuickTrade = (props: {
 
     const buyTokenDecimals = buyToken.decimals
 
-    const dexTradeInfoData = bestOptionIs0x
+    const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(bestOptionResult.dexData, buyToken, chainId)
       : getTradeInfoDataFromEI(
           bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0),
           gasPriceLevEI,
           buyToken,
+          sellToken,
           bestOptionResult.leveragedExchangeIssuanceData,
-          chainId
+          chainId,
+          isBuying
         )
-    setTradeInfoData(dexTradeInfoData)
+    setTradeInfoData(tradeInfoData)
 
     setBestOption(
       bestOptionIs0x

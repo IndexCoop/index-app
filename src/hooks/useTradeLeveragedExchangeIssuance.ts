@@ -3,14 +3,9 @@ import { useCallback, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, useEthers } from '@usedapp/core'
 
-import {
-  collateralDebtSwapData,
-  debtCollateralSwapData,
-  inputSwapData,
-  outputSwapData,
-} from 'constants/exchangeIssuanceLeveragedData'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
+import { SwapData } from 'utils/exchangeIssuanceQuotes'
 
 import { useBalance } from './useBalance'
 import {
@@ -25,7 +20,9 @@ export const useTradeLeveragedExchangeIssuance = (
   // buy / sell token amount
   tokenAmout: BigNumber,
   // max input / min output
-  inputOutputLimit: BigNumber
+  inputOutputLimit: BigNumber,
+  debtCollateralSwapData?: SwapData,
+  inputOutputSwapData?: SwapData
 ) => {
   const { account, chainId, library } = useEthers()
   const {
@@ -41,7 +38,14 @@ export const useTradeLeveragedExchangeIssuance = (
   const [isTransactingLevEI, setIsTransacting] = useState(false)
 
   const executeLevEITrade = useCallback(async () => {
-    if (!account || inputOutputLimit.isZero() || tokenAmout.isZero()) return
+    if (
+      !account ||
+      inputOutputLimit.isZero() ||
+      tokenAmout.isZero() ||
+      debtCollateralSwapData === undefined ||
+      inputOutputSwapData === undefined
+    )
+      return
 
     const outputTokenAddress =
       chainId === ChainId.Polygon
@@ -63,33 +67,14 @@ export const useTradeLeveragedExchangeIssuance = (
         const isSellingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
-        let addressKey
-        switch (outputToken.symbol) {
-          case 'icETH':
-            addressKey = '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'
-            break
-          case 'ETH2X-FLI-P':
-            addressKey = '0x3Ad707dA309f3845cd602059901E39C4dcd66473'
-            break
-          default:
-            addressKey = '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84'
-        }
-
-        const debtCollateralSwap =
-          debtCollateralSwapData[addressKey as keyof object]
-        const inputSwap =
-          inputSwapData[addressKey as keyof object][
-            inputTokenAddress as keyof object
-          ]
-
         if (isSellingNativeChainToken) {
           await issueExactSetFromETH(
             library,
             chainId,
             outputTokenAddress,
             amountOfSetToken,
-            debtCollateralSwap,
-            inputSwap,
+            debtCollateralSwapData,
+            inputOutputSwapData,
             inputOutputLimit
           )
         } else {
@@ -100,18 +85,14 @@ export const useTradeLeveragedExchangeIssuance = (
             amountOfSetToken,
             inputTokenAddress,
             inputOutputLimit,
-            debtCollateralSwap,
-            inputSwap
+            debtCollateralSwapData,
+            inputOutputSwapData
           )
         }
       } else {
         const isRedeemingToNativeChainToken =
           outputToken.symbol === ETH.symbol ||
           outputToken.symbol === MATIC.symbol
-
-        const collateralDebtSwap = collateralDebtSwapData[inputToken.symbol]
-        const outputSwap =
-          outputSwapData[inputToken.symbol][outputToken.symbol as keyof object]
 
         const contract = await getExchangeIssuanceLeveragedContract(
           library?.getSigner(),
@@ -124,8 +105,8 @@ export const useTradeLeveragedExchangeIssuance = (
             inputTokenAddress,
             tokenAmout,
             inputOutputLimit,
-            collateralDebtSwap,
-            outputSwap
+            debtCollateralSwapData,
+            inputOutputSwapData
           )
         } else {
           await redeemExactSetForERC20(
@@ -134,8 +115,8 @@ export const useTradeLeveragedExchangeIssuance = (
             tokenAmout,
             outputTokenAddress,
             inputOutputLimit,
-            collateralDebtSwap,
-            outputSwap
+            debtCollateralSwapData,
+            inputOutputSwapData
           )
         }
       }
