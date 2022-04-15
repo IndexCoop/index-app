@@ -73,6 +73,7 @@ export const useUserMarketData = () => {
       ethFliBalance,
       btcFliBalance,
       ethFliPBalance,
+      icEthBalance,
     },
   } = useBalance()
   const { eth, bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } =
@@ -88,6 +89,7 @@ export const useUserMarketData = () => {
     { title: 'ETH2x-FLI', value: ethFliBalance },
     { title: 'ETH2x-FLI-P', value: ethFliPBalance },
     { title: 'BTC2x-FLI', value: btcFliBalance },
+    { title: 'icETH', value: icEthBalance },
   ]
 
   const userBalances: UserTokenBalance[] = balances
@@ -110,6 +112,8 @@ export const useUserMarketData = () => {
         case 'ETH2x-FLI-P':
           return getTokenMarketDataValuesOrNull(pos.title, ethflip, pos.value)
         case 'BTC2x-FLI':
+          return getTokenMarketDataValuesOrNull(pos.title, btcfli, pos.value)
+        case 'icETH':
           return getTokenMarketDataValuesOrNull(pos.title, btcfli, pos.value)
         default:
           return undefined

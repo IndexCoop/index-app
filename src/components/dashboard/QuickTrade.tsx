@@ -22,7 +22,13 @@ import {
   ExchangeIssuanceZeroExPolygonAddress,
   zeroExRouterAddress,
 } from 'constants/ethContractAddresses'
-import { ETH, icETHIndex, Token } from 'constants/tokens'
+import {
+  ETH,
+  icETHIndex,
+  indexNamesMainnet,
+  indexNamesPolygon,
+  Token,
+} from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useBalance } from 'hooks/useBalance'
 import { useBestTradeOption } from 'hooks/useBestTradeOption'
@@ -294,6 +300,18 @@ const QuickTrade = (props: {
     }
   }
 
+  const isNotTradable = (token: Token | undefined) => {
+    if (token && chainId === ChainId.Mainnet)
+      return (
+        indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
+      )
+    if (token && chainId === ChainId.Polygon)
+      return (
+        indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
+      )
+    return false
+  }
+
   /**
    * Get the correct trade button label according to different states
    * @returns string label for trade button
@@ -301,6 +319,11 @@ const QuickTrade = (props: {
   const getTradeButtonLabel = () => {
     if (!account) {
       return 'Connect Wallet'
+    }
+
+    if (isNotTradable(props.singleToken)) {
+      let chainName = chainId === ChainId.Mainnet ? 'Mainnet' : 'Polygon'
+      return `Not Available on ${chainName}`
     }
 
     if (sellTokenAmount === '0') {
@@ -390,7 +413,8 @@ const QuickTrade = (props: {
       hasInsufficientFunds ||
       isTransacting ||
       isTransactingEI ||
-      isTransactingLevEI
+      isTransactingLevEI ||
+      isNotTradable(props.singleToken)
     )
   }
 
@@ -420,7 +444,7 @@ const QuickTrade = (props: {
           title='From'
           config={{
             isDarkMode,
-            isInputDisabled: false,
+            isInputDisabled: isNotTradable(props.singleToken),
             isSelectorDisabled: false,
             isReadOnly: false,
           }}
