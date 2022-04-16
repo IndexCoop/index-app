@@ -15,10 +15,13 @@ export async function getExchangeIssuanceGasEstimate(
   inputTokenAmount: BigNumber,
   quoteData: string[]
 ): Promise<BigNumber> {
+  // TODO: check scaling based on component counts (quoteData)
+  // Hard-coded as issuance module isn't friendly for `.estimateGas`
   let gasEstimate = BigNumber.from(1800000)
   // lower for BED since it's a small index
-  if (outputToken.symbol === BedIndex.symbol)
+  if (outputToken.symbol === BedIndex.symbol) {
     gasEstimate = BigNumber.from(800000)
+  }
 
   const setTokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
