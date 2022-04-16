@@ -8,7 +8,7 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/exchangeIssuanceLeveragedData'
-import { ETH, Token } from 'constants/tokens'
+import { ETH, Token, WETH } from 'constants/tokens'
 import {
   getExchangeIssuanceLeveragedContract,
   getLeveragedTokenData,
@@ -114,6 +114,7 @@ export const getExchangeIssuanceQuotes = async (
   const sellTokenAddress = isPolygon
     ? sellToken.polygonAddress
     : sellToken.address
+  const wethAddress = isPolygon ? WETH.polygonAddress : WETH.address
 
   console.log(tokenSymbol, issuanceModule, buySellTokenAmount.toString())
 
@@ -148,7 +149,7 @@ export const getExchangeIssuanceQuotes = async (
     const buyAmount = positions[index]
     const buyTokenAddress = component
     const sellTokenAddress =
-      sellToken.symbol === 'ETH' ? 'ETH' : sellToken.address
+      sellToken.symbol === 'ETH' ? wethAddress : sellToken.address
 
     if (buyTokenAddress === sellTokenAddress) {
       inputTokenAmount = inputTokenAmount.add(buyAmount)
