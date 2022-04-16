@@ -15,7 +15,10 @@ export async function getExchangeIssuanceGasEstimate(
   inputTokenAmount: BigNumber,
   quoteData: string[]
 ): Promise<BigNumber> {
-  let gasEstimate = BigNumber.from(0)
+  let gasEstimate = BigNumber.from(1800000)
+  // lower for BED since it's a small index
+  if (outputToken.symbol === BedIndex.symbol)
+    gasEstimate = BigNumber.from(800000)
 
   const setTokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
@@ -72,7 +75,7 @@ export async function getExchangeIssuanceGasEstimate(
           quoteData,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
-          { gasLimit: 1800000 }
+          { gasLimit: gasEstimate }
         )
       } else {
         gasEstimate = await contract.estimateGas.redeemExactSetForToken(
@@ -84,7 +87,7 @@ export async function getExchangeIssuanceGasEstimate(
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
           {
-            gasLimit: 2000000,
+            gasLimit: gasEstimate,
             maxFeePerGas: 100000000000,
             maxPriorityFeePerGas: 2000000000,
           }

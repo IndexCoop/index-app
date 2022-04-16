@@ -182,7 +182,7 @@ export const getExchangeIssuanceQuotes = async (
     .mul(toWei(100, sellToken.decimals))
     .div(toWei(100 - slippagePercentage, sellToken.decimals))
 
-  const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
+  const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(1800000)
 
   // TODO: get balance and check if inputAmount exceeds balance
   // TODO: only fetch gasEstimate if inputAmount <= balance
