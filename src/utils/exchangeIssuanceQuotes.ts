@@ -8,16 +8,18 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/exchangeIssuanceLeveragedData'
-import { ETH, Token } from 'constants/tokens'
+import { ETH, Token, WETH } from 'constants/tokens'
 import {
   getExchangeIssuanceLeveragedContract,
   getLeveragedTokenData,
 } from 'hooks/useExchangeIssuanceLeveraged'
 import {
+  getExchangeIssuanceZeroExContract,
   getRequiredIssuanceComponents,
   getRequiredRedemptionComponents,
 } from 'hooks/useExchangeIssuanceZeroEx'
 import { toWei } from 'utils'
+import { getExchangeIssuanceGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import {
   getSwapData,
@@ -40,6 +42,9 @@ export enum Exchange {
 export interface ExchangeIssuanceQuote {
   tradeData: string[]
   inputTokenAmount: BigNumber
+  setTokenAmount: BigNumber
+  gas: BigNumber
+  gasPrice: BigNumber
 }
 
 export interface LeveragedExchangeIssuanceQuote {
@@ -85,8 +90,8 @@ function get0xEchangeKey(exchange: Exchange): string {
  * Returns exchange issuance quotes (incl. 0x trade data) or null
  *
  * @param buyToken            The token to buy
- * @param buyTokenAmount      The amount of buy token that should be acquired
- * @param sellToken           The sell token
+ * @param buySellTokenAmount  The amount of buy/sell token that should be acquired/sold
+ * @param sellToken           The token to sell
  * @param chainId             ID for current chain
  * @param library             Web3Provider instance
  *
@@ -95,29 +100,43 @@ function get0xEchangeKey(exchange: Exchange): string {
  */
 export const getExchangeIssuanceQuotes = async (
   buyToken: Token,
-  buyTokenAmount: BigNumber,
+  buySellTokenAmount: BigNumber,
   sellToken: Token,
   isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
   library: ethers.providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
+  const isPolygon = chainId === ChainId.Polygon
   const tokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
   const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
 
+  const buyTokenAddress = isPolygon ? buyToken.polygonAddress : buyToken.address
+  const sellTokenAddress = isPolygon
+    ? sellToken.polygonAddress
+    : sellToken.address
+  const wethAddress = isPolygon ? WETH.polygonAddress : WETH.address
+
+  console.log(tokenSymbol, issuanceModule, buySellTokenAmount.toString())
+
+  const contract = await getExchangeIssuanceZeroExContract(
+    library?.getSigner(),
+    chainId ?? ChainId.Mainnet
+  )
+
   const { components, positions } = isIssuance
     ? await getRequiredIssuanceComponents(
-        library,
+        contract,
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
-        buyToken.address!,
-        buyTokenAmount
+        buyTokenAddress ?? '',
+        buySellTokenAmount
       )
     : await getRequiredRedemptionComponents(
-        library,
+        contract,
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
-        sellToken.address!,
-        buyTokenAmount
+        sellTokenAddress ?? '',
+        buySellTokenAmount
       )
 
   let positionQuotes: string[] = []
@@ -130,7 +149,7 @@ export const getExchangeIssuanceQuotes = async (
     const buyAmount = positions[index]
     const buyTokenAddress = component
     const sellTokenAddress =
-      sellToken.symbol === 'ETH' ? 'ETH' : sellToken.address
+      sellToken.symbol === 'ETH' ? wethAddress : sellToken.address
 
     if (buyTokenAddress === sellTokenAddress) {
       inputTokenAmount = inputTokenAmount.add(buyAmount)
@@ -164,7 +183,30 @@ export const getExchangeIssuanceQuotes = async (
     .mul(toWei(100, sellToken.decimals))
     .div(toWei(100 - slippagePercentage, sellToken.decimals))
 
-  return { tradeData: positionQuotes, inputTokenAmount }
+  const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(1800000)
+
+  // TODO: get balance and check if inputAmount exceeds balance
+  // TODO: only fetch gasEstimate if inputAmount <= balance
+  // TODO: otherwise skip, to still return a quote
+  const gasEstimate = await getExchangeIssuanceGasEstimate(
+    library,
+    chainId,
+    isIssuance,
+    sellToken,
+    buyToken,
+    buySellTokenAmount,
+    inputTokenAmount,
+    positionQuotes
+  )
+  console.log('GAS', gasEstimate.toString())
+
+  return {
+    tradeData: positionQuotes,
+    inputTokenAmount,
+    setTokenAmount: buySellTokenAmount,
+    gas: gasEstimate,
+    gasPrice,
+  }
 }
 
 export const getLeveragedExchangeIssuanceQuotes = async (

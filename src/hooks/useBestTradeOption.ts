@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
+import { ChainId, useEthers } from '@usedapp/core'
 
 import {
   eligibleLeveragedExchangeIssuanceTokens,
@@ -87,7 +87,11 @@ export const useBestTradeOption = () => {
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
 
-    const tokenEligible = isEligibleTradePair(sellToken, buyToken, isIssuance)
+    const tokenEligibleForLeveragedEI = isEligibleTradePair(
+      sellToken,
+      buyToken,
+      isIssuance
+    )
 
     const tokenAmount =
       isIssuance && dexSwapOption
@@ -95,46 +99,61 @@ export const useBestTradeOption = () => {
         : toWei(sellTokenAmount, sellToken.decimals)
 
     /* Check for Exchange Issuance option */
-    let exchangeIssuanceOption: ExchangeIssuanceQuote | null | undefined =
-      undefined
-    // if (account && !isBuyingTokenEligible) {
-    //   try {
-    //     exchangeIssuanceOption = await getExchangeIssuanceQuotes(
-    //       buyToken,
-    //       tokenAmount,
-    //       sellToken,
-    //       isIssuance,
-    //       chainId,
-    //       library
-    //     )
-    //   } catch (e) {
-    //     console.warn('error when generating zeroexei option', e)
-    //   }
-    // }
-
-    /* Check ExchangeIssuanceLeveraged option */
+    let exchangeIssuanceOption: ExchangeIssuanceQuote | null = null
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
-    // TODO: Recalculate the exchange issue/redeem quotes if not enough DEX liquidity on icETH/ETH
-    // if (account && !dexSwapError && tokenEligible) {
-    if (account && !dexSwapError && tokenEligible) {
-      const setToken = isIssuance ? buyToken : sellToken
-      const setAmount = tokenAmount
 
-      try {
-        leveragedExchangeIssuanceOption =
-          await getLeveragedExchangeIssuanceQuotes(
-            setToken,
-            setAmount,
-            sellToken,
-            isIssuance,
-            chainId,
-            library
-          )
-      } catch (e) {
-        console.warn('error when generating leveraged ei option', e)
+    // TODO: Recalculate the exchange issue/redeem quotes if not enough DEX liquidity on icETH/ETH
+    if (account && !dexSwapError) {
+      if (tokenEligibleForLeveragedEI) {
+        const setToken = isIssuance ? buyToken : sellToken
+        const setAmount = tokenAmount
+
+        try {
+          leveragedExchangeIssuanceOption =
+            await getLeveragedExchangeIssuanceQuotes(
+              setToken,
+              setAmount,
+              sellToken,
+              isIssuance,
+              chainId,
+              library
+            )
+        } catch (e) {
+          console.warn('error when generating leveraged ei option', e)
+        }
+      } else {
+        const isIcEth =
+          sellToken.symbol === icETHIndex.symbol ||
+          buyToken.symbol === icETHIndex.symbol
+        // For now only run on mainnet and if not icETH
+        // icETH token pair (with non ETH token) could not be eligible and land here
+        if (chainId === ChainId.Mainnet && !isIcEth)
+          try {
+            exchangeIssuanceOption = await getExchangeIssuanceQuotes(
+              buyToken,
+              tokenAmount,
+              sellToken,
+              isIssuance,
+              chainId,
+              library
+            )
+          } catch (e) {
+            console.warn('error when generating zeroexei option', e)
+          }
       }
     }
+
+    console.log(
+      'exchangeIssuanceOption',
+      exchangeIssuanceOption,
+      exchangeIssuanceOption?.inputTokenAmount.toString()
+    )
+    console.log(
+      'levExchangeIssuanceOption',
+      leveragedExchangeIssuanceOption,
+      leveragedExchangeIssuanceOption?.inputTokenAmount.toString()
+    )
 
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }
