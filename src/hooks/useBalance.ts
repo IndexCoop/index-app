@@ -33,6 +33,7 @@ import {
   IEthereumFLIP,
   IMaticFLIP,
   IndexToken,
+  JPGIndex,
   MATIC,
   Matic2xFLIP,
   MetaverseIndex,
@@ -128,6 +129,7 @@ export const useBalance = () => {
   const [mviBalance, setMviBalance] = useState<Balance>(BigNumber.from(0))
   const [usdcBalance, setUsdcBalance] = useState<Balance>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<Balance>(BigNumber.from(0))
+  const [jpgBalance, setJpgBalance] = useState<Balance>(BigNumber.from(0))
 
   // LP Tokens
   const uniswapEthDpiLpBalance = useTokenBalance(
@@ -259,6 +261,7 @@ export const useBalance = () => {
       )
       const usdcBalance = await balanceOf(USDC, chainId, account, library)
       const wethBalance = await balanceOf(WETH, chainId, account, library)
+      const jpgBalance = await balanceOf(JPGIndex, chainId, account, library)
       setBedBalance(bedBalance)
       setBtc2xFLIPBalance(btc2xFLIPBalance)
       setBtcFliBalance(btcFliBalance)
@@ -278,6 +281,7 @@ export const useBalance = () => {
       setMviBalance(mviBalance)
       setUsdcBalance(usdcBalance)
       setWethBalance(wethBalance)
+      setJpgBalance(jpgBalance)
     }
 
     fetchAllBalances()
@@ -326,6 +330,8 @@ export const useBalance = () => {
           return usdcBalance
         case WETH.symbol:
           return wethBalance
+        case JPGIndex.symbol:
+          return jpgBalance
         default:
           return undefined
       }
@@ -351,6 +357,7 @@ export const useBalance = () => {
       mviBalance,
       usdcBalance,
       wethBalance,
+      jpgBalance,
     ]
   )
 
@@ -375,6 +382,7 @@ export const useBalance = () => {
     mviBalance,
     usdcBalance,
     wethBalance,
+    jpgBalance,
     stakedGmi2022Balance,
     stakedUniswapEthDpi2020LpBalance,
     stakedUniswapEthDpi2021LpBalance,

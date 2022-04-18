@@ -370,6 +370,23 @@ export const icETHIndex: Token = {
   },
 }
 
+export const JPGIndex: Token = {
+  name: 'JPG NFT Index',
+  symbol: 'JPG',
+  address: '0x02e7ac540409d32c90bfb51114003a9e1ff0249c',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'jpg',
+  image: icethLogo,
+  coingeckoId: 'jpg-nft-index',
+  tokensetsId: 'jpg',
+  tokenContextKey: 'jpg',
+  fees: {
+    streamingFee: '5.95%',
+  },
+}
+
 export const productTokensBySymbol = {
   'DPI': DefiPulseIndex,
   'MVI': MetaverseIndex,
@@ -386,6 +403,7 @@ export const productTokensBySymbol = {
   'iBTC-FLI-P': IBitcoinFLIP,
   'BTC2x-FLI-P': Bitcoin2xFLIP,
   'icETH': icETHIndex,
+  'JPG': JPGIndex,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC]
@@ -421,6 +439,7 @@ const indexNames = [
   BedIndex,
   DataIndex,
   IndexToken,
+  JPGIndex,
 ]
 
 export const indexNamesMainnet = indexNames.filter(
