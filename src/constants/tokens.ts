@@ -7,6 +7,7 @@ import icethLogo from 'assets/icethlogo.png'
 import iethflipLogo from 'assets/iethfliplogo.svg'
 import imaticflipLogo from 'assets/imaticflilogo.svg'
 import indexLogo from 'assets/index-token.png'
+import jpgLogo from 'assets/jpgLogo.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
 import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
 
@@ -378,12 +379,14 @@ export const JPGIndex: Token = {
   optimismAddress: undefined,
   decimals: 18,
   url: 'jpg',
-  image: icethLogo,
+  image: jpgLogo,
   coingeckoId: 'jpg-nft-index',
   tokensetsId: 'jpg',
   tokenContextKey: 'jpg',
   fees: {
     streamingFee: '5.95%',
+    mintFee: '0.5%',
+    redeemFee: '0.5%',
   },
 }
 
