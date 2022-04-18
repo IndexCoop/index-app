@@ -11,7 +11,7 @@ export const eth2xfliSuppyCapAddress =
   '0x0F1171C24B06ADed18d2d23178019A3B256401D3'
 export const btc2xfliSuppyCapAddress =
   '0x6c8137f2f552f569cc43bc4642afbe052a12441c'
-export const ExchangeIssuanceZeroExAddress =
+export const ExchangeIssuanceZeroExMainnetAddress =
   '0xf42eCDC112365fF79a745B4cf7D4C266bd6E4b25'
 export const ExchangeIssuanceLeveragedMainnetAddress =
   '0xB7cc88A13586D862B97a677990de14A122b74598'
@@ -25,6 +25,8 @@ export const imaticFLIPSuppyCapAddress =
   '0x82b227cAec950a807c7ca456e2E48E52633F7Be5'
 export const iethFLIPSuppyCapAddress =
   '0x8173Bd491a27aF4DDe0a4dE48a54Daf6705c75F1'
+export const ExchangeIssuanceZeroExPolygonAddress =
+  '0x0F5C21d4929f6F17119f43b0c51E665f12367A19'
 export const ExchangeIssuanceLeveragedPolygonAddress =
   '0xE86636f23B502B8746A72A1Ed87d65F096E419Db'
 

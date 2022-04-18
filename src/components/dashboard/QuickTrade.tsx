@@ -18,7 +18,8 @@ import ConnectModal from 'components/header/ConnectModal'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
-  ExchangeIssuanceZeroExAddress,
+  ExchangeIssuanceZeroExMainnetAddress,
+  ExchangeIssuanceZeroExPolygonAddress,
   zeroExRouterAddress,
 } from 'constants/ethContractAddresses'
 import {
@@ -85,6 +86,10 @@ const QuickTrade = (props: {
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
+  const spenderAddress0x =
+    chainId === ChainId.Polygon
+      ? ExchangeIssuanceZeroExMainnetAddress
+      : ExchangeIssuanceZeroExPolygonAddress
   const spenderAddressLevEIL =
     chainId === ChainId.Polygon
       ? ExchangeIssuanceLeveragedPolygonAddress
@@ -107,11 +112,7 @@ const QuickTrade = (props: {
     isApproved: isApprovedForEIZX,
     isApproving: isApprovingForEIZX,
     onApprove: onApproveForEIZX,
-  } = useApproval(
-    sellToken,
-    ExchangeIssuanceZeroExAddress,
-    sellTokenAmountInWei
-  )
+  } = useApproval(sellToken, spenderAddress0x, sellTokenAmountInWei)
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
@@ -121,17 +122,16 @@ const QuickTrade = (props: {
     isBuying,
     sellToken,
     buyToken,
-    bestOptionResult?.success
-      ? bestOptionResult.exchangeIssuanceData?.inputTokenAmount ??
-          BigNumber.from(0)
-      : BigNumber.from(0),
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
+
   const { executeLevEITrade, isTransactingLevEI } =
     useTradeLeveragedExchangeIssuance(
       isBuying,
       sellToken,
       buyToken,
+      // TODO: simplify by just passing leveragedExchangeIssuanceData || null
+      // TODO: test inside to only exectue trade when data !== null
       bestOptionResult?.success
         ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
             BigNumber.from(0)
@@ -166,47 +166,75 @@ const QuickTrade = (props: {
 
     const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
     const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
+    const gasPriceEI = BigNumber.from(
+      bestOptionResult.exchangeIssuanceData?.gasPrice ?? '0'
+    )
     const gasPriceLevEI =
       bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
       BigNumber.from(0)
     const gasLimit = 1800000 // TODO: Make gasLimit dynamic
 
     const gas0x = gasPrice0x.mul(gasLimit0x)
+    const gasEI = gasPriceEI.mul(gasLimit)
     const gasLevEI = gasPriceLevEI.mul(gasLimit)
 
     const fullCosts0x = toWei(sellTokenAmount, sellToken.decimals).add(gas0x)
+    const fullCostsEI = bestOptionResult.exchangeIssuanceData
+      ? bestOptionResult.exchangeIssuanceData.inputTokenAmount.add(gasEI)
+      : null
     const fullCostsLevEI = bestOptionResult.leveragedExchangeIssuanceData
       ? bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount.add(
           gasLevEI
         )
       : null
 
-    const bestOptionIs0x =
+    let bestOption = QuickTradeBestOption.zeroEx
+    let bestOptionIs0x =
       !fullCostsLevEI ||
       fullCosts0x.lt(
         //NOTE: Change to .gt if you wanna pay up to taste EI
         fullCostsLevEI
       )
 
+    if (bestOptionIs0x) {
+      bestOptionIs0x = !fullCostsEI || fullCosts0x.lt(fullCostsEI)
+      bestOption = bestOptionIs0x
+        ? QuickTradeBestOption.zeroEx
+        : QuickTradeBestOption.exchangeIssuance
+    } else {
+      const bestOptionIsLevEI = !fullCostsEI || fullCostsLevEI!.lt(fullCostsEI)
+      bestOption = bestOptionIsLevEI
+        ? QuickTradeBestOption.leveragedExchangeIssuance
+        : QuickTradeBestOption.exchangeIssuance
+    }
+
+    const bestOptionIsLevEI =
+      bestOption === QuickTradeBestOption.leveragedExchangeIssuance
+    const tradeDataEI = bestOptionIsLevEI
+      ? bestOptionResult.leveragedExchangeIssuanceData
+      : bestOptionResult.exchangeIssuanceData
+    const tradeDataGasPriceEI = bestOptionIsLevEI ? gasPriceLevEI : gasPriceEI
+    const tradeDataSetAmountEI = bestOptionIsLevEI
+      ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
+        BigNumber.from(0)
+      : bestOptionResult.exchangeIssuanceData?.setTokenAmount ??
+        BigNumber.from(0)
+
     const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(bestOptionResult.dexData, buyToken, chainId)
       : getTradeInfoDataFromEI(
-          bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
-            BigNumber.from(0),
-          gasPriceLevEI,
+          tradeDataSetAmountEI,
+          tradeDataGasPriceEI,
           buyToken,
           sellToken,
-          bestOptionResult.leveragedExchangeIssuanceData,
+          tradeDataEI,
           chainId,
           isBuying
         )
-    setTradeInfoData(tradeInfoData)
 
-    setBestOption(
-      bestOptionIs0x
-        ? QuickTradeBestOption.zeroEx
-        : QuickTradeBestOption.leveragedExchangeIssuance
-    )
+    console.log('BESTOPTION', bestOption)
+    setTradeInfoData(tradeInfoData)
+    setBestOption(bestOption)
 
     // Temporary needed as icETH EI can't provide more than 120 icETH
     const shouldShowicEthErrorMessage =
