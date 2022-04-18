@@ -83,9 +83,6 @@ export const getZeroExTradeData = async (
     chainId
   )
 
-  if (params.sellToken === '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84') {
-    params.sellToken = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84'
-  }
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
   try {
