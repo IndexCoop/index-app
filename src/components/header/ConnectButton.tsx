@@ -3,13 +3,17 @@ import { colors } from 'styles/colors'
 import { Button, Flex, Text, useDisclosure } from '@chakra-ui/react'
 import { useEthers, useLookupAddress } from '@usedapp/core'
 
+import { isSupportedNetwork } from 'utils'
+
 import ConnectModal from './ConnectModal'
 import NetworkSelector from './NetworkSelector'
 
 const ConnectButton = () => {
-  const { account, deactivate } = useEthers()
+  const { account, chainId, deactivate } = useEthers()
   const { isOpen, onOpen, onClose } = useDisclosure()
   let ens = useLookupAddress()
+
+  const supportedNetwork = isSupportedNetwork(chainId ?? -1)
 
   const handleConnectWallet = () => {
     onOpen()
@@ -22,6 +26,10 @@ const ConnectButton = () => {
 
   const handleAccount = () => {
     return formatAccountName()
+  }
+
+  const onWrongNetworkButtonClicked = () => {
+    alert('Please switch to a supported network')
   }
 
   const formatAccountName = () => {
@@ -92,6 +100,35 @@ const ConnectButton = () => {
     )
   }
 
-  return account ? disconnectButton() : connectButton()
+  const wrongNetworkButton = () => {
+    return (
+      <div>
+        <Button
+          onClick={onWrongNetworkButtonClicked}
+          bg={colors.icRed}
+          border='0'
+          borderRadius='8'
+          color={colors.white}
+          fontSize='lg'
+          fontWeight='700'
+          padding='6px 30px'
+          _hover={{
+            transform:
+              'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          Wrong Network
+        </Button>
+        <ConnectModal isOpen={isOpen} onClose={onClose} />
+      </div>
+    )
+  }
+
+  if (supportedNetwork) {
+    return account ? disconnectButton() : connectButton()
+  }
+
+  return wrongNetworkButton()
 }
 export default ConnectButton
