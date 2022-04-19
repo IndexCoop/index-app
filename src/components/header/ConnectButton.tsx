@@ -1,7 +1,6 @@
 import { colors } from 'styles/colors'
 
 import { Button, Flex, Text, useDisclosure } from '@chakra-ui/react'
-import * as Sentry from '@sentry/react'
 import { useEthers, useLookupAddress } from '@usedapp/core'
 
 import ConnectModal from './ConnectModal'
@@ -21,16 +20,7 @@ const ConnectButton = () => {
     onClose()
   }
 
-  const sendWalletConnectionEvent = () => {
-    Sentry.captureMessage('Successful Wallet Connection', {
-      user: {
-        name: account,
-      },
-    })
-  }
-
   const handleAccount = () => {
-    sendWalletConnectionEvent()
     return formatAccountName()
   }
 
