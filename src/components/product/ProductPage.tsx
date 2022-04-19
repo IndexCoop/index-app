@@ -116,7 +116,11 @@ const ProductPage = (props: {
 
   const priceChartData = getPriceChartData([marketData])
 
-  const price = `$${selectLatestMarketData(marketData.hourlyPrices).toFixed(2)}`
+  const price = selectLatestMarketData(marketData.hourlyPrices).toLocaleString(
+    'en-US',
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+  )
+  const priceFormatted = `$${price}`
   const priceChanges = getPricesChanges(marketData.hourlyPrices ?? [])
   const priceChangesFormatted = getFormattedChartPriceChanges(priceChanges)
 
@@ -138,7 +142,7 @@ const ProductPage = (props: {
           <Flex direction={['column', 'column', 'column', 'row']}>
             <MarketChart
               marketData={priceChartData}
-              prices={[price]}
+              prices={[priceFormatted]}
               priceChanges={priceChangesFormatted}
               options={{
                 width: chartWidth,
