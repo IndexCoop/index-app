@@ -114,6 +114,8 @@ export const getChainAddress = (
   token: Token,
   chainId: ChainId = MAINNET.chainId
 ) => {
+  const supportedChain = isSupportedNetwork(chainId)
+  if (!supportedChain) return undefined
   switch (chainId) {
     case OPTIMISM.chainId:
       return token.optimismAddress
