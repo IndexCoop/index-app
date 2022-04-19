@@ -135,6 +135,5 @@ export function isSupportedNetwork(chainId: number): boolean {
   const supportedNetwork = SUPPORTED_CHAINS.filter(
     (chain) => chain.chainId === chainId
   )
-  console.log('supportedNetwork', supportedNetwork)
   return supportedNetwork.length > 0
 }
