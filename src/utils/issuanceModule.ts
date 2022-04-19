@@ -13,6 +13,7 @@ import {
   GmiIndex,
   IEthereumFLIP,
   IMaticFLIP,
+  JPGIndex,
   Matic2xFLIP,
 } from 'constants/tokens'
 
@@ -26,6 +27,7 @@ function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
     case Bitcoin2xFlexibleLeverageIndex.symbol:
     case Ethereum2xFlexibleLeverageIndex.symbol:
     case GmiIndex.symbol:
+    case JPGIndex.symbol:
       return { address: debtIssuanceModuleAddress, isDebtIssuance: true }
     default:
       return { address: basicIssuanceModuleAddress, isDebtIssuance: false }

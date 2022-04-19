@@ -21,7 +21,7 @@ import {
   Ethereum2xFLIP,
   GmiIndex,
   IBitcoinFLIP,
-  Index,
+  icETHIndex,
   IEthereumFLIP,
   IMaticFLIP,
   JPGIndex,
