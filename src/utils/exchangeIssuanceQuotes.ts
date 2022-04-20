@@ -143,7 +143,7 @@ export const getExchangeIssuanceQuotes = async (
   let inputTokenAmount = BigNumber.from(0)
   // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
   const isJPG = tokenSymbol === JPGIndex.symbol
-  const slippage = isJPG ? 0.01 : slippagePercentage / 100
+  const slippage = isJPG ? 0.08 : slippagePercentage / 100
 
   const quotePromises: Promise<any>[] = []
   components.forEach((component, index) => {
