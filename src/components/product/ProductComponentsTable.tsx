@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import numeral from 'numeral'
-import { colors } from 'styles/colors'
+import { colors, pieChartColors } from 'styles/colors'
 
 import {
   Box,
@@ -23,10 +23,6 @@ import { Token } from 'constants/tokens'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 
 import Chart from './Charts'
-
-const randomColors = new Array(50)
-  .fill('')
-  .map((_) => '#' + (((1 << 24) * Math.random()) | 0).toString(16))
 
 const allocationEmptyMsg = (
   tokenData: Token,
@@ -66,13 +62,13 @@ const ProductComponentsTable = (props: {
     component: SetComponent,
     index: number
   ) => {
-    const randomColor = randomColors[index]
+    const sliceColor = pieChartColors[index]
     const position: Position = {
       title: component.symbol,
       value: +component.percentOfSet,
       percent: `${component.percentOfSetNumber.toFixed(1)}%` ?? '',
-      color: randomColor,
-      backgroundColor: randomColor,
+      color: sliceColor,
+      backgroundColor: sliceColor,
     }
     return position
   }
