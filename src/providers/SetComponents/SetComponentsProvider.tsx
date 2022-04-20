@@ -567,6 +567,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         ibtcflipComponents: ibtcflipComponents,
         btc2xflipComponents: btc2xflipComponents,
         icethComponents: icethComponents,
+        jpgComponents: jpgComponents,
       }}
     >
       {props.children}
