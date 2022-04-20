@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { colors, useICColorMode } from 'styles/colors'
 
-import { Box, Flex, Spacer } from '@chakra-ui/layout'
+import { Box, Flex } from '@chakra-ui/layout'
 import { Tab, TabList, Tabs, Text, useTheme } from '@chakra-ui/react'
 
 export enum Durations {
