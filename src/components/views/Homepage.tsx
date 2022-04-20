@@ -4,7 +4,7 @@ import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 import { useEthers } from '@usedapp/core'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
-import { ChartTypeSelector } from 'components/dashboard/ChartTypeSelector'
+import { getPieChartPositions } from 'components/dashboard/DashboardData'
 import DownloadCsvView from 'components/dashboard/DownloadCsvView'
 import QuickTrade from 'components/dashboard/QuickTrade'
 import { assembleHistoryItems } from 'components/dashboard/TransactionHistoryItems'
@@ -13,19 +13,13 @@ import TransactionHistoryTable, {
 } from 'components/dashboard/TransactionHistoryTable'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
-import MarketChart, { PriceChartData } from 'components/product/MarketChart'
+import { PriceChartData } from 'components/product/MarketChart'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
 import { useUserMarketData } from 'hooks/useUserMarketData'
-import {
-  TokenMarketDataValues,
-  useMarketData,
-} from 'providers/MarketData/MarketDataProvider'
+import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
-import { getFormattedChartPriceChanges } from 'utils/priceChange'
-
-import { getPieChartPositions } from './DashboardData'
 
 const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()

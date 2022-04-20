@@ -24,6 +24,7 @@ import {
   icETHIndex,
   IEthereumFLIP,
   IMaticFLIP,
+  JPGIndex,
   Matic2xFLIP,
   MetaverseIndex,
 } from 'constants/tokens'
@@ -56,6 +57,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     btcflip,
     ibtcflip,
     iceth,
+    jpg,
   } = useMarketData()
   const [dpiComponents, setDpiComponents] = useState<SetComponent[]>([])
   const [mviComponents, setMviComponents] = useState<SetComponent[]>([])
@@ -91,6 +93,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     []
   )
   const [icethComponents, setIcethComponents] = useState<SetComponent[]>([])
+  const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
 
   const { account, chainId, library } = useEthers()
   const tokenList = getTokenList(chainId)
@@ -109,6 +112,8 @@ const SetComponentsProvider = (props: { children: any }) => {
       Ethereum2xFlexibleLeverageIndex.address &&
       Bitcoin2xFlexibleLeverageIndex.address &&
       DataIndex.address &&
+      icETHIndex.address &&
+      JPGIndex.address &&
       dpi &&
       mvi &&
       bed &&
@@ -118,7 +123,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       ethflip &&
       btcfli &&
       iceth &&
-      icETHIndex.address
+      jpg
     ) {
       getSetDetails(
         library,
@@ -131,6 +136,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           Bitcoin2xFlexibleLeverageIndex.address,
           DataIndex.address,
           icETHIndex.address,
+          JPGIndex.address,
         ],
         chainId
       ).then(async (result) => {
@@ -143,6 +149,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           btc2xfliSet,
           dataSet,
           icethSet,
+          jpgSet,
         ] = result
 
         const dpiComponentPrices = await getPositionPrices(dpiSet)
@@ -315,6 +322,27 @@ const SetComponentsProvider = (props: { children: any }) => {
             .then(sortPositionsByPercentOfSet)
             .then(setIcethComponents)
         }
+
+        const jpgComponentPrices = await getPositionPrices(jpgSet)
+        if (jpgComponentPrices != null) {
+          const jpgPositions = jpgSet.positions.map(async (position) => {
+            return await convertPositionToSetComponent(
+              position,
+              tokenList,
+              jpgComponentPrices[position.component.toLowerCase()]?.[
+                VS_CURRENCY
+              ],
+              jpgComponentPrices[position.component.toLowerCase()]?.[
+                `${VS_CURRENCY}_24h_change`
+              ],
+
+              selectLatestMarketData(data.hourlyPrices)
+            )
+          })
+          Promise.all(jpgPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setJpgComponents)
+        }
       })
     }
   }, [
@@ -329,6 +357,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     btcfli,
     data,
     iceth,
+    jpg,
     selectLatestMarketData(),
   ])
 
@@ -665,6 +694,7 @@ interface SetComponentsProps {
   btc2xflipComponents?: SetComponent[]
   ibtcflipComponents?: SetComponent[]
   icethComponents?: SetComponent[]
+  jpgComponents?: SetComponent[]
 }
 
 export const SetComponentsContext = createContext<SetComponentsProps>({})

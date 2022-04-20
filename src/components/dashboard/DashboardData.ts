@@ -12,6 +12,7 @@ import {
   GmiIndex,
   icETHIndex,
   IndexToken,
+  JPGIndex,
   MetaverseIndex,
 } from 'constants/tokens'
 import { displayFromWei } from 'utils'
@@ -40,6 +41,7 @@ export const QuickTradeData = {
     { symbol: 'BTCFLI', icon: Bitcoin2xFlexibleLeverageIndex.image },
     { symbol: 'INDEX', icon: IndexToken.image },
     { symbol: 'icETH', icon: icETHIndex.image },
+    { symbol: 'JPG', icon: JPGIndex.image },
   ],
 }
 
