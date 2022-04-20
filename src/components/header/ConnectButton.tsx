@@ -3,6 +3,7 @@ import { colors } from 'styles/colors'
 import { Button, Flex, Text, useDisclosure } from '@chakra-ui/react'
 import { useEthers, useLookupAddress } from '@usedapp/core'
 
+import { useNetwork } from 'hooks/useNetwork'
 import { isSupportedNetwork } from 'utils'
 
 import ConnectModal from './ConnectModal'
@@ -11,6 +12,7 @@ import NetworkSelector from './NetworkSelector'
 const ConnectButton = () => {
   const { account, chainId, deactivate } = useEthers()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { changeNetwork } = useNetwork()
   let ens = useLookupAddress()
 
   const supportedNetwork = isSupportedNetwork(chainId ?? -1)
@@ -29,7 +31,7 @@ const ConnectButton = () => {
   }
 
   const onWrongNetworkButtonClicked = () => {
-    alert('Please switch to a supported network')
+    changeNetwork('1')
   }
 
   const formatAccountName = () => {
