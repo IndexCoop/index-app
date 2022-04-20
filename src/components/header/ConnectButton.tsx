@@ -129,6 +129,10 @@ const ConnectButton = () => {
     return account ? disconnectButton() : connectButton()
   }
 
-  return wrongNetworkButton()
+  if (chainId) {
+    return wrongNetworkButton()
+  }
+
+  return <div></div>
 }
 export default ConnectButton
