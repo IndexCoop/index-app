@@ -4,6 +4,7 @@ import {
   basicIssuanceModuleAddress,
   basicIssuanceModulePolygonAddress,
   debtIssuanceModuleAddress,
+  debtIssuanceModuleV2Address,
   debtIssuanceModuleV2PolygonAddress,
 } from 'constants/ethContractAddresses'
 import {
@@ -27,8 +28,9 @@ function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
     case Bitcoin2xFlexibleLeverageIndex.symbol:
     case Ethereum2xFlexibleLeverageIndex.symbol:
     case GmiIndex.symbol:
-    case JPGIndex.symbol:
       return { address: debtIssuanceModuleAddress, isDebtIssuance: true }
+    case JPGIndex.symbol:
+      return { address: debtIssuanceModuleV2Address, isDebtIssuance: true }
     default:
       return { address: basicIssuanceModuleAddress, isDebtIssuance: false }
   }
