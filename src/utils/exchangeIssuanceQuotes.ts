@@ -8,7 +8,7 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/exchangeIssuanceLeveragedData'
-import { ETH, Token, WETH } from 'constants/tokens'
+import { ETH, JPGIndex, Token, WETH } from 'constants/tokens'
 import {
   getExchangeIssuanceLeveragedContract,
   getLeveragedTokenData,
@@ -142,7 +142,8 @@ export const getExchangeIssuanceQuotes = async (
   let positionQuotes: string[] = []
   let inputTokenAmount = BigNumber.from(0)
   // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
-  const slippage = slippagePercentage / 100
+  const isJPG = tokenSymbol === JPGIndex.symbol
+  const slippage = isJPG ? 0.01 : slippagePercentage / 100
 
   const quotePromises: Promise<any>[] = []
   components.forEach((component, index) => {
