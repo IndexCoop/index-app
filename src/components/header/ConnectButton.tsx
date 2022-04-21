@@ -132,11 +132,7 @@ const ConnectButton = () => {
     return account ? disconnectButton() : connectButton()
   }
 
-  if (chainId) {
-    console.log('showing wront network button')
-    return wrongNetworkButton()
-  }
-
-  return <div></div>
+  console.log('showing wrong network button')
+  return wrongNetworkButton()
 }
 export default ConnectButton
