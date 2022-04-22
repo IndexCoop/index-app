@@ -60,7 +60,7 @@ export const useApproval = (
   ])
 
   useEffect(() => {
-    const isApproved = allowance?.gte(minimumRequiredApprovalQuantity) ?? false
+    const isApproved = allowance?.gte(amount) ?? false
     setIsApproved(isApproved)
   }, [allowance])
 
