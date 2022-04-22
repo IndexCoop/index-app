@@ -7,6 +7,7 @@ import {
   eligibleLeveragedExchangeIssuanceTokens,
   ETH,
   icETHIndex,
+  JPGIndex,
   Token,
 } from 'constants/tokens'
 import { toWei } from 'utils'
@@ -126,9 +127,13 @@ export const useBestTradeOption = () => {
         const isIcEth =
           sellToken.symbol === icETHIndex.symbol ||
           buyToken.symbol === icETHIndex.symbol
+        const isJpg =
+          sellToken.symbol === JPGIndex.symbol ||
+          buyToken.symbol === JPGIndex.symbol
         // For now only run on mainnet and if not icETH
         // icETH token pair (with non ETH token) could not be eligible and land here
-        if (chainId === ChainId.Mainnet && !isIcEth)
+        // temporarily - disabled JPG for EI
+        if (chainId === ChainId.Mainnet && !isIcEth && !isJpg)
           try {
             exchangeIssuanceOption = await getExchangeIssuanceQuotes(
               buyToken,
