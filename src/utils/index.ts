@@ -4,7 +4,7 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { ChainId } from '@usedapp/core'
 
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { MAINNET, OPTIMISM, POLYGON, SUPPORTED_CHAINS } from 'constants/chains'
 import { Token } from 'constants/tokens'
 
 import { ERC20_ABI } from './abi/ERC20'
@@ -114,6 +114,8 @@ export const getChainAddress = (
   token: Token,
   chainId: ChainId = MAINNET.chainId
 ) => {
+  const supportedChain = isSupportedNetwork(chainId)
+  if (!supportedChain) return undefined
   switch (chainId) {
     case OPTIMISM.chainId:
       return token.optimismAddress
@@ -122,4 +124,16 @@ export const getChainAddress = (
     default:
       return token.address
   }
+}
+
+/**
+ * Returns whether the chain(id) is supported
+ * @param chainId
+ * @returns boolean if chain with given id is supported.
+ */
+export function isSupportedNetwork(chainId: number): boolean {
+  const supportedNetwork = SUPPORTED_CHAINS.filter(
+    (chain) => chain.chainId === chainId
+  )
+  return supportedNetwork.length > 0
 }

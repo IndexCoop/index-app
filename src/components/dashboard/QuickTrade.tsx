@@ -36,7 +36,7 @@ import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
-import { isValidTokenInput, toWei } from 'utils'
+import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 
 import {
   getHasInsufficientFunds,
@@ -59,6 +59,8 @@ const QuickTrade = (props: {
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { account, chainId } = useEthers()
+
+  const supportedNetwork = isSupportedNetwork(chainId ?? -1)
 
   const {
     isBuying,
@@ -317,6 +319,8 @@ const QuickTrade = (props: {
    * @returns string label for trade button
    */
   const getTradeButtonLabel = () => {
+    if (!supportedNetwork) return 'Wrong Network'
+
     if (!account) {
       return 'Connect Wallet'
     }
@@ -406,6 +410,7 @@ const QuickTrade = (props: {
   const isLoading = getIsApproving() || isFetchingTradeData
 
   const getButtonDisabledState = () => {
+    if (!supportedNetwork) return true
     if (!account) return false
     if (hasFetchingError) return false
     return (
