@@ -127,12 +127,10 @@ const ConnectButton = () => {
     )
   }
 
-  console.log(chainId, 'isSupported', supportedNetwork)
   if (supportedNetwork) {
     return account ? disconnectButton() : connectButton()
   }
 
-  console.log('showing wrong network button')
   return wrongNetworkButton()
 }
 export default ConnectButton
