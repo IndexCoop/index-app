@@ -4282,10 +4282,10 @@
     "@uniswap/v3-core" "1.0.0"
     "@uniswap/v3-periphery" "^1.0.1"
 
-"@usedapp/core@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-0.7.0.tgz#f642837d2f53f76f120f99e5972499111890ed4f"
-  integrity sha512-qOUNx9bj+0eBurCdpG7kLhSKfimKRMq5T7abI9J+jikkCFj2cAuda2TSoPuGZ9eytewK1NBacAVGzUCsnc1ieA==
+"@usedapp/core@0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-0.8.0.tgz#a7062a9cf03ace2f9e1c5e5b3a4e1d3c0de8f0b4"
+  integrity sha512-N3PU3fKw2OhyY8U/xJ3JPJ/ZXZ3VUhtYalhLBYLInDiXFtPcL3RO8hSJt/hj07G8Cb7Qxp/Y5cATqTpd/qxLPg==
   dependencies:
     "@types/react" "17.0.1"
     "@uniswap/token-lists" "^1.0.0-beta.27"
