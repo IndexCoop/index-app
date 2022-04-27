@@ -15,6 +15,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
+import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
@@ -26,6 +27,7 @@ import {
   ETH,
   icETHIndex,
   indexNamesMainnet,
+  indexNamesOptimism,
   indexNamesPolygon,
   Token,
 } from 'constants/tokens'
@@ -301,13 +303,17 @@ const QuickTrade = (props: {
   }
 
   const isNotTradable = (token: Token | undefined) => {
-    if (token && chainId === ChainId.Mainnet)
+    if (token && chainId === MAINNET.chainId)
       return (
         indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
       )
-    if (token && chainId === ChainId.Polygon)
+    if (token && chainId === POLYGON.chainId)
       return (
         indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
+      )
+    if (token && chainId === OPTIMISM.chainId)
+      return (
+        indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
       )
     return false
   }
