@@ -66,8 +66,10 @@ const QuickTrade = (props: {
     isBuying,
     buyToken,
     buyTokenList,
+    buyTokenPrice,
     sellToken,
     sellTokenList,
+    sellTokenPrice,
     changeBuyToken,
     changeSellToken,
     swapTokenLists,
@@ -263,8 +265,10 @@ const QuickTrade = (props: {
     fetchAndCompareOptions(
       sellToken,
       sellTokenAmount,
+      sellTokenPrice,
       buyToken,
       // buyTokenAmount,
+      buyTokenPrice,
       isBuying
     )
   }
