@@ -2,25 +2,23 @@ import { useEffect, useState } from 'react'
 
 import { ChainId } from '@usedapp/core'
 
-import { POLYGON } from 'constants/chains'
 import {
   DefiPulseIndex,
   ETH,
   indexNamesMainnet,
   indexNamesPolygon,
   mainnetCurrencyTokens,
-  MATIC,
   polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
 import { fetchCoingeckoTokenPrice } from 'utils/coingeckoApi'
-import { getAddressForToken } from 'utils/tokens'
+import { getAddressForToken, getNativeToken } from 'utils/tokens'
 
 export const useTradeTokenLists = (
   chainId: ChainId | undefined,
   singleToken?: Token
 ) => {
-  const isPolygon = chainId === ChainId.Polygon
+  const nativeToken = getNativeToken(chainId) ?? ETH
 
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
@@ -28,7 +26,7 @@ export const useTradeTokenLists = (
     getTokenListByChain(chainId, singleToken)
   )
   const [buyTokenPrice, setBuyTokenPrice] = useState<number>(0)
-  const [sellToken, setSellToken] = useState<Token>(isPolygon ? MATIC : ETH)
+  const [sellToken, setSellToken] = useState<Token>(nativeToken)
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     getCurrencyTokensByChain(chainId)
   )
@@ -122,7 +120,7 @@ export const useTradeTokenLists = (
 const getCurrencyTokensByChain = (
   chainId: ChainId | undefined = ChainId.Mainnet
 ) => {
-  if (chainId === POLYGON.chainId) return polygonCurrencyTokens
+  if (chainId === ChainId.Polygon) return polygonCurrencyTokens
   return mainnetCurrencyTokens
 }
 
@@ -135,7 +133,7 @@ const getTokenListByChain = (
   singleToken: Token | undefined
 ) => {
   if (singleToken) return [singleToken]
-  if (chainId === POLYGON.chainId) return indexNamesPolygon
+  if (chainId === ChainId.Polygon) return indexNamesPolygon
   return indexNamesMainnet
 }
 

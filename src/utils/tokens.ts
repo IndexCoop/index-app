@@ -1,6 +1,6 @@
 import { ChainId } from '@usedapp/core'
 
-import { Token } from 'constants/tokens'
+import { ETH, MATIC, Token } from 'constants/tokens'
 
 export function getAddressForToken(
   token: Token,
@@ -15,5 +15,18 @@ export function getAddressForToken(
       return token.polygonAddress
     default:
       return undefined
+  }
+}
+
+export function getNativeToken(chainId: ChainId | undefined): Token | null {
+  switch (chainId) {
+    case ChainId.Mainnet:
+      return ETH
+    case ChainId.Optimism:
+      return ETH
+    case ChainId.Polygon:
+      return MATIC
+    default:
+      return null
   }
 }
