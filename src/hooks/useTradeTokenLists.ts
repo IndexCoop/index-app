@@ -14,6 +14,7 @@ import {
   Token,
 } from 'constants/tokens'
 import { fetchCoingeckoTokenPrice } from 'utils/coingeckoApi'
+import { getAddressForToken } from 'utils/tokens'
 
 export const useTradeTokenLists = (
   chainId: ChainId | undefined,
@@ -146,9 +147,8 @@ const getTokenPrice = async (
   token: Token,
   chainId: ChainId | undefined
 ): Promise<number> => {
-  const isPolygon = chainId === ChainId.Polygon
-  const buyTokenAddress = isPolygon ? token.polygonAddress : token.address
-  if (!buyTokenAddress || !chainId) return 0
-  const tokenPrice = await fetchCoingeckoTokenPrice(buyTokenAddress, chainId)
+  const tokenAddress = getAddressForToken(token, chainId)
+  if (!tokenAddress || !chainId) return 0
+  const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
   return tokenPrice
 }
