@@ -50,7 +50,7 @@ export const fetchCoingeckoTokenPrice = async (
 
     const resp = await fetch(getPriceUrl)
 
-    const data = await resp.json().catch((err) => {
+    const data = await resp.json().catch((_) => {
       return 0
     })
 
@@ -67,7 +67,7 @@ export const fetchCoingeckoTokenPrice = async (
 
   const resp = await fetch(getPriceUrl)
 
-  const data = await resp.json().catch((err) => {
+  const data = await resp.json().catch((_) => {
     return 0
   })
 

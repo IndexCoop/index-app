@@ -16,6 +16,7 @@ type Result<T, E = Error> =
 export type ZeroExData = {
   chainId: string
   data: string
+  estimatedPriceImpact: string
   price: string
   guaranteedPrice: string
   buyTokenAddress: string
