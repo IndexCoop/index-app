@@ -68,7 +68,6 @@ export const getSwapData = async (params: any, chainId: number = 137) => {
     chainId
   )
   const swapData = swapDataFrom0xQuote(zeroExQuote)
-  console.log(swapData)
   if (swapData) return { swapData, zeroExQuote }
   return null
 }
@@ -94,8 +93,6 @@ function swapDataFrom0xQuote(zeroExQuote: any): SwapData | null {
   const order = zeroExQuote.orders[0]
   const fillData = order.fillData
   const exchange = getEchangeFrom0xKey(order.source)
-
-  console.log(order, fillData, exchange)
 
   if (!fillData || !exchange) return null
 
