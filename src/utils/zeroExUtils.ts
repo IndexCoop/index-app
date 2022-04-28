@@ -59,7 +59,6 @@ function getApiUrl(query: string, chainId: number): string {
 export async function get0xQuote(params: any, chainId: number) {
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
-  console.log(url)
   try {
     const response = await axios.get(url)
     return response.data
@@ -96,8 +95,7 @@ export const getZeroExTradeData = async (
           isExactInput,
           sellToken,
           buyToken,
-          amount,
-          chainId
+          amount
         )
     return { success: true, value: apiResult }
   } catch (e: any) {
@@ -172,8 +170,7 @@ const processApiResult = async (
   isExactInput: boolean,
   sellToken: Token,
   buyToken: Token,
-  amount: string,
-  chainId: number
+  amount: string
 ): Promise<ZeroExData> => {
   zeroExData.displaySellAmount = getDisplayAdjustedAmount(
     zeroExData.sellAmount,
@@ -202,23 +199,6 @@ const processApiResult = async (
         .div(BigNumber.from(10).pow(buyToken.decimals))
 
   zeroExData.formattedSources = formatSources(zeroExData.sources)
-
-  // Not used right now - and an issue as it would cause too many fetches from EI
-  // const buyTokenPrice = await fetchCoingeckoTokenPrice(
-  //   zeroExData.buyTokenAddress,
-  //   chainId
-  // )
-  // zeroExData.buyTokenCost = (
-  //   buyTokenPrice * zeroExData.displayBuyAmount
-  // ).toFixed(2)
-  //
-  // const sellTokenPrice: number = await fetchCoingeckoTokenPrice(
-  //   zeroExData.sellTokenAddress,
-  //   chainId
-  // )
-  // zeroExData.sellTokenCost = (
-  //   sellTokenPrice * zeroExData.displaySellAmount
-  // ).toFixed(2)
 
   return zeroExData
 }
