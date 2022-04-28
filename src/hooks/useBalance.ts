@@ -37,6 +37,7 @@ import {
   MATIC,
   Matic2xFLIP,
   MetaverseIndex,
+  MNYeIndex,
   Token,
   USDC,
   WETH,
@@ -78,6 +79,8 @@ export interface Balances {
   unclaimedUniswapEthMvi2021LpBalance?: BigNumber
   unclaimedUniswapEthDpi2020LpBalance?: BigNumber
   unclaimedUniswapEthDpi2021LpBalance?: BigNumber
+  jpgBalance?: BigNumber
+  mnyeBalance?: BigNumber
 }
 
 /* Returns balance of ERC20 token */
@@ -87,7 +90,11 @@ async function balanceOf(
   account: string,
   library: ethers.providers.Web3Provider | undefined
 ): Promise<BigNumber> {
+  if (token.symbol === MNYeIndex.symbol || token.symbol === WETH.symbol)
+    console.log('getBalanceOf', chainId, token.symbol)
   const tokenAddress = getChainAddress(token, chainId)
+  if (token.symbol === MNYeIndex.symbol || token.symbol === WETH.symbol)
+    console.log('tokenAddress', tokenAddress)
   if (!tokenAddress) return BigNumber.from(0)
   const erc20 = new ethers.Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)
@@ -130,6 +137,7 @@ export const useBalance = () => {
   const [usdcBalance, setUsdcBalance] = useState<Balance>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<Balance>(BigNumber.from(0))
   const [jpgBalance, setJpgBalance] = useState<Balance>(BigNumber.from(0))
+  const [mnyeBalance, setMnyeBalance] = useState<Balance>(BigNumber.from(0))
 
   // LP Tokens
   const uniswapEthDpiLpBalance = useTokenBalance(
@@ -260,8 +268,12 @@ export const useBalance = () => {
         library
       )
       const usdcBalance = await balanceOf(USDC, chainId, account, library)
+      console.log('here')
       const wethBalance = await balanceOf(WETH, chainId, account, library)
+      console.log('jpg Balance Of')
       const jpgBalance = await balanceOf(JPGIndex, chainId, account, library)
+      console.log('mnye Balance Of')
+      const mnyeBalance = await balanceOf(MNYeIndex, chainId, account, library)
       setBedBalance(bedBalance)
       setBtc2xFLIPBalance(btc2xFLIPBalance)
       setBtcFliBalance(btcFliBalance)
@@ -282,6 +294,7 @@ export const useBalance = () => {
       setUsdcBalance(usdcBalance)
       setWethBalance(wethBalance)
       setJpgBalance(jpgBalance)
+      setMnyeBalance(mnyeBalance)
     }
 
     fetchAllBalances()
@@ -332,6 +345,8 @@ export const useBalance = () => {
           return wethBalance
         case JPGIndex.symbol:
           return jpgBalance
+        case MNYeIndex.symbol:
+          return mnyeBalance
         default:
           return undefined
       }
@@ -358,6 +373,7 @@ export const useBalance = () => {
       usdcBalance,
       wethBalance,
       jpgBalance,
+      mnyeBalance,
     ]
   )
 
@@ -383,6 +399,7 @@ export const useBalance = () => {
     usdcBalance,
     wethBalance,
     jpgBalance,
+    mnyeBalance,
     stakedGmi2022Balance,
     stakedUniswapEthDpi2020LpBalance,
     stakedUniswapEthDpi2021LpBalance,
