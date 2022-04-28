@@ -28,6 +28,9 @@ type Result<_, E = Error> =
     }
   | { success: false; error: E }
 
+// To determine if price impact for DEX is smaller 5%
+export const maxPriceImpact = 5
+
 /* Determines if the token is eligible for Leveraged Exchange Issuance */
 const isEligibleLeveragedToken = (token: Token) =>
   eligibleLeveragedExchangeIssuanceTokens.includes(token)
@@ -110,7 +113,8 @@ export const useBestTradeOption = () => {
       dexSwapOption && dexSwapOption.estimatedPriceImpact
         ? parseFloat(dexSwapOption.estimatedPriceImpact)
         : 0
-    if (dexSwapError || priceImpact > 50) {
+
+    if (dexSwapError || priceImpact >= maxPriceImpact) {
       // Recalculate the exchange issue/redeem quotes if not enough DEX liquidity
       const sellTokenTotal = parseFloat(sellTokenAmount) * sellTokenPrice
       const approxOutputAmount =
