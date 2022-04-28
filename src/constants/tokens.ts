@@ -83,7 +83,7 @@ export const WETH: Token = {
     'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   polygonAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-  optimismAddress: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+  optimismAddress: '0x4200000000000000000000000000000000000006',
   decimals: 18,
   url: '',
   coingeckoId: 'weth',
