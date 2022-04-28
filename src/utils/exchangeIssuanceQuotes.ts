@@ -116,8 +116,6 @@ export const getExchangeIssuanceQuotes = async (
     : sellToken.address
   const wethAddress = isPolygon ? WETH.polygonAddress : WETH.address
 
-  console.log(tokenSymbol, issuanceModule, buySellTokenAmount.toString())
-
   const contract = await getExchangeIssuanceZeroExContract(
     library?.getSigner(),
     chainId ?? ChainId.Mainnet
@@ -199,7 +197,6 @@ export const getExchangeIssuanceQuotes = async (
     inputTokenAmount,
     positionQuotes
   )
-  console.log('GAS', gasEstimate.toString())
 
   return {
     tradeData: positionQuotes,
@@ -242,7 +239,6 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     ? [curve].toString()
     : [sushi].toString()
 
-  console.log('isIssuance', isIssuance)
   let debtCollateralResult = isIssuance
     ? await getSwapDataDebtCollateral(
         leveragedTokenData,
@@ -259,19 +255,11 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   let { swapDataDebtCollateral, collateralObtainedOrSold } =
     debtCollateralResult
 
-  console.log('collateralObtained', collateralObtainedOrSold.toString())
   const collateralShortfall = leveragedTokenData.collateralAmount.sub(
     collateralObtainedOrSold
   )
   const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
     collateralObtainedOrSold
-  )
-
-  console.log(
-    '->',
-    leveragedTokenData.collateralAmount.toString(),
-    collateralObtainedOrSold.toString(),
-    leftoverCollateral.toString()
   )
 
   const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
@@ -297,12 +285,6 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       paymentTokenAddress = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
     }
   }
-
-  console.log(
-    'isSame',
-    paymentTokenAddress?.toLowerCase() ===
-      leveragedTokenData.collateralToken.toLowerCase()
-  )
 
   const issuanceParams = {
     buyToken: leveragedTokenData.collateralToken,
@@ -352,9 +334,6 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 
   const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
 
-  console.log('swapDataDebtCollateral', swapDataDebtCollateral)
-  console.log('swapDataPaymentToken', swapDataPaymentToken)
-  console.log('inputTokenAmount', paymentTokenAmount.toString())
   return {
     swapDataDebtCollateral,
     swapDataPaymentToken,

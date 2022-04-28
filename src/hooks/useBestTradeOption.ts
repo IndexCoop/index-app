@@ -28,6 +28,9 @@ type Result<_, E = Error> =
     }
   | { success: false; error: E }
 
+// To determine if price impact for DEX is smaller 5%
+export const maxPriceImpact = 5
+
 /* Determines if the token is eligible for Leveraged Exchange Issuance */
 const isEligibleLeveragedToken = (token: Token) =>
   eligibleLeveragedExchangeIssuanceTokens.includes(token)
@@ -68,8 +71,10 @@ export const useBestTradeOption = () => {
   const fetchAndCompareOptions = async (
     sellToken: Token,
     sellTokenAmount: string,
+    sellTokenPrice: number,
     buyToken: Token,
     // buyTokenAmount: string,
+    buyTokenPrice: number,
     isIssuance: boolean
   ) => {
     setIsFetching(true)
@@ -94,7 +99,7 @@ export const useBestTradeOption = () => {
       isIssuance
     )
 
-    const tokenAmount =
+    let tokenAmount =
       isIssuance && dexSwapOption
         ? BigNumber.from(dexSwapOption.buyAmount)
         : toWei(sellTokenAmount, sellToken.decimals)
@@ -104,8 +109,20 @@ export const useBestTradeOption = () => {
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
 
-    // TODO: Recalculate the exchange issue/redeem quotes if not enough DEX liquidity on icETH/ETH
-    if (account && !dexSwapError) {
+    const priceImpact =
+      dexSwapOption && dexSwapOption.estimatedPriceImpact
+        ? parseFloat(dexSwapOption.estimatedPriceImpact)
+        : 0
+
+    if (dexSwapError || priceImpact >= maxPriceImpact) {
+      // Recalculate the exchange issue/redeem quotes if not enough DEX liquidity
+      const sellTokenTotal = parseFloat(sellTokenAmount) * sellTokenPrice
+      const approxOutputAmount =
+        buyTokenPrice === 0 ? 0 : Math.floor(sellTokenTotal / buyTokenPrice)
+      tokenAmount = toWei(approxOutputAmount, sellToken.decimals)
+    }
+
+    if (account) {
       if (tokenEligibleForLeveragedEI) {
         const setToken = isIssuance ? buyToken : sellToken
         const setAmount = tokenAmount

@@ -4,11 +4,14 @@ import { ethers, utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
+import {
+  ChainId,
+  useEthers,
+  useSendTransaction,
+  useTokenAllowance,
+} from '@usedapp/core'
 
-import { minimumRequiredApprovalQuantity } from 'constants/index'
 import { Token } from 'constants/tokens'
-import { useAllowance } from 'hooks/useAllowance'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 
 const ERC20Interface = new utils.Interface(ERC20_ABI)
@@ -25,7 +28,7 @@ export const useApproval = (
   const tokenAddress =
     chainId === ChainId.Polygon ? token?.polygonAddress : token?.address
 
-  const allowance = useAllowance(tokenAddress, spenderAddress)
+  const allowance = useTokenAllowance(tokenAddress, account, spenderAddress)
   const { sendTransaction, state } = useSendTransaction()
 
   const [isApproving, setIsApproving] = useState(false)
@@ -60,13 +63,19 @@ export const useApproval = (
   ])
 
   useEffect(() => {
-    const isApproved = allowance?.gte(minimumRequiredApprovalQuantity) ?? false
+    const isApproved = allowance?.gte(amount) ?? false
     setIsApproved(isApproved)
   }, [allowance])
 
   useEffect(() => {
-    setIsApproved(state.status === 'Success')
-    if (isApproved) setIsApproving(false)
+    const txIsFinished =
+      state.status === 'Success' ||
+      state.status === 'Fail' ||
+      state.status === 'Exception'
+    if (txIsFinished) {
+      setIsApproved(state.status !== 'Fail')
+      setIsApproving(false)
+    }
   }, [state])
 
   return {
