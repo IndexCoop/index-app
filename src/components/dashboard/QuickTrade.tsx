@@ -31,7 +31,7 @@ import {
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useBalance } from 'hooks/useBalance'
-import { useBestTradeOption } from 'hooks/useBestTradeOption'
+import { maxPriceImpact, useBestTradeOption } from 'hooks/useBestTradeOption'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
@@ -192,16 +192,18 @@ const QuickTrade = (props: {
         )
       : null
 
+    const priceImpactDex = parseFloat(
+      bestOptionResult?.dexData?.estimatedPriceImpact ?? '5'
+    )
     let bestOption = QuickTradeBestOption.zeroEx
     let bestOptionIs0x =
       !fullCostsLevEI ||
-      fullCosts0x.lt(
-        //NOTE: Change to .gt if you wanna pay up to taste EI
-        fullCostsLevEI
-      )
+      (fullCosts0x.lt(fullCostsLevEI) && priceImpactDex < maxPriceImpact)
 
     if (bestOptionIs0x) {
-      bestOptionIs0x = !fullCostsEI || fullCosts0x.lt(fullCostsEI)
+      bestOptionIs0x =
+        !fullCostsEI ||
+        (fullCosts0x.lt(fullCostsEI) && priceImpactDex < maxPriceImpact)
       bestOption = bestOptionIs0x
         ? QuickTradeBestOption.zeroEx
         : QuickTradeBestOption.exchangeIssuance
