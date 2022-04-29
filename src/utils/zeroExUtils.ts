@@ -145,6 +145,8 @@ export const get0xApiParams = (
 const getChainTokenAddress = (token: Token, chainId: number) => {
   if (chainId === POLYGON.chainId)
     return token.symbol === 'MATIC' ? 'MATIC' : token.polygonAddress
+  if (chainId === OPTIMISM.chainId)
+    return token.symbol === 'ETH' ? 'ETH' : token.optimismAddress
   return token.symbol === 'ETH' ? 'ETH' : token.address
 }
 

@@ -90,11 +90,7 @@ async function balanceOf(
   account: string,
   library: ethers.providers.Web3Provider | undefined
 ): Promise<BigNumber> {
-  if (token.symbol === MNYeIndex.symbol || token.symbol === WETH.symbol)
-    console.log('getBalanceOf', chainId, token.symbol)
   const tokenAddress = getChainAddress(token, chainId)
-  if (token.symbol === MNYeIndex.symbol || token.symbol === WETH.symbol)
-    console.log('tokenAddress', tokenAddress)
   if (!tokenAddress) return BigNumber.from(0)
   const erc20 = new ethers.Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)
@@ -268,11 +264,8 @@ export const useBalance = () => {
         library
       )
       const usdcBalance = await balanceOf(USDC, chainId, account, library)
-      console.log('here')
       const wethBalance = await balanceOf(WETH, chainId, account, library)
-      console.log('jpg Balance Of')
       const jpgBalance = await balanceOf(JPGIndex, chainId, account, library)
-      console.log('mnye Balance Of')
       const mnyeBalance = await balanceOf(MNYeIndex, chainId, account, library)
       setBedBalance(bedBalance)
       setBtc2xFLIPBalance(btc2xFLIPBalance)
