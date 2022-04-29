@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, useEthers } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
@@ -93,11 +93,11 @@ const QuickTrade = (props: {
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
   const spenderAddress0x =
-    chainId === ChainId.Polygon
+    chainId === POLYGON.chainId
       ? ExchangeIssuanceZeroExMainnetAddress
       : ExchangeIssuanceZeroExPolygonAddress
   const spenderAddressLevEIL =
-    chainId === ChainId.Polygon
+    chainId === POLYGON.chainId
       ? ExchangeIssuanceLeveragedPolygonAddress
       : ExchangeIssuanceLeveragedMainnetAddress
 
