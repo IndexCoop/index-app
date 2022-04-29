@@ -338,7 +338,19 @@ const QuickTrade = (props: {
     }
 
     if (isNotTradable(props.singleToken)) {
-      let chainName = chainId === ChainId.Mainnet ? 'Mainnet' : 'Polygon'
+      let chainName = 'This Network'
+      switch (chainId) {
+        case MAINNET.chainId:
+          chainName = 'Mainnet'
+          break
+        case POLYGON.chainId:
+          chainName = 'Polygon'
+          break
+        case OPTIMISM.chainId:
+          chainName = 'Optimism'
+          break
+      }
+
       return `Not Available on ${chainName}`
     }
 
