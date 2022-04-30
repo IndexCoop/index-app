@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { BigNumber } from 'set.js'
-import { colors } from 'styles/colors'
+import { colors, useICColorMode } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
@@ -32,8 +32,8 @@ const QuickTradeSelector = (props: {
   onSelectedToken: (symbol: string) => void
 }) => {
   const { chainId } = useEthers()
-
   const { getBalance } = useBalance()
+  const { isDarkMode } = useICColorMode()
 
   const [inputString, setInputString] = useState<string>(
     props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
@@ -111,7 +111,7 @@ const QuickTradeSelector = (props: {
             value={inputString}
             onChange={(event) => onChangeInput(event.target.value)}
           />
-          <Text fontSize='12px' textColor='#777'>
+          <Text fontSize='12px' textColor={isDarkMode ? '#aaa' : '#777'}>
             {props.formattedFiat}
           </Text>
         </Flex>
