@@ -68,7 +68,8 @@ const Dashboard = () => {
 
   const balancesPieChart = userBalances.map((userTokenBalance) => ({
     title: userTokenBalance.symbol,
-    value: userTokenBalance.balance,
+    balance: userTokenBalance.balance,
+    fiat: userTokenBalance.fiat,
   }))
   const pieChartPositions = getPieChartPositions(balancesPieChart)
 

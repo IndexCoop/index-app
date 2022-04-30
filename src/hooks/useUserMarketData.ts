@@ -12,6 +12,7 @@ import { getPricesChanges } from 'utils/priceChange'
 interface UserTokenBalance {
   symbol: string
   balance: BigNumber
+  fiat: number
   marketData: TokenMarketDataValues
 }
 
@@ -37,8 +38,9 @@ function getTokenMarketDataValuesOrNull(
     date,
     price * balanceNum,
   ])
+  const fiat = hourlyData[0][1]
 
-  return { symbol, balance, marketData: { hourlyPrices: hourlyData } }
+  return { symbol, balance, fiat, marketData: { hourlyPrices: hourlyData } }
 }
 
 function getTotalHourlyPrices(marketData: UserTokenBalance[]) {
