@@ -118,7 +118,7 @@ export const useUserMarketData = () => {
         case 'BTC2x-FLI':
           return getTokenMarketDataValuesOrNull(pos.title, btcfli, pos.value)
         case 'icETH':
-          return getTokenMarketDataValuesOrNull(pos.title, btcfli, pos.value)
+          return getTokenMarketDataValuesOrNull(pos.title, iceth, pos.value)
         case 'JPG':
           return getTokenMarketDataValuesOrNull(pos.title, jpg, pos.value)
         default:
