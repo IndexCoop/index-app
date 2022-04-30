@@ -24,6 +24,14 @@ export function formattedBalance(
     : zero
 }
 
+export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
+  const price = (tokenAmount * tokenPrice).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+  return `$${price}`
+}
+
 export const getHasInsufficientFunds = (
   bestOptionUnavailable: boolean,
   sellAmount: BigNumber,
