@@ -1,8 +1,9 @@
 import { useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, useEthers } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 
+import { MAINNET } from 'constants/chains'
 import {
   eligibleLeveragedExchangeIssuanceTokens,
   ETH,
@@ -150,7 +151,7 @@ export const useBestTradeOption = () => {
         // For now only run on mainnet and if not icETH
         // icETH token pair (with non ETH token) could not be eligible and land here
         // temporarily - disabled JPG for EI
-        if (chainId === ChainId.Mainnet && !isIcEth && !isJpg)
+        if (chainId === MAINNET.chainId && !isIcEth && !isJpg)
           try {
             exchangeIssuanceOption = await getExchangeIssuanceQuotes(
               buyToken,

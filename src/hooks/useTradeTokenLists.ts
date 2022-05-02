@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { ChainId } from '@usedapp/core'
 
+import { OPTIMISM, POLYGON } from 'constants/chains'
 import {
   DefiPulseIndex,
   ETH,
   indexNamesMainnet,
+  indexNamesOptimism,
   indexNamesPolygon,
   mainnetCurrencyTokens,
   polygonCurrencyTokens,
@@ -133,7 +135,8 @@ const getTokenListByChain = (
   singleToken: Token | undefined
 ) => {
   if (singleToken) return [singleToken]
-  if (chainId === ChainId.Polygon) return indexNamesPolygon
+  if (chainId === POLYGON.chainId) return indexNamesPolygon
+  if (chainId === OPTIMISM.chainId) return indexNamesOptimism
   return indexNamesMainnet
 }
 

@@ -1,11 +1,19 @@
-import { MainnetTokens, MaticTokens } from '@indexcoop/tokenlists'
+import {
+  MainnetTokens,
+  MaticTokens,
+  OptimismTokens,
+} from '@indexcoop/tokenlists'
+
+import { OPTIMISM, POLYGON } from 'constants/chains'
 
 export type { TokenData } from '@indexcoop/tokenlists'
 
 export function getTokenList(chainId: number = 1) {
   switch (chainId) {
-    case 137:
+    case POLYGON.chainId:
       return MaticTokens
+    case OPTIMISM.chainId:
+      return OptimismTokens
     default:
       return MainnetTokens
   }

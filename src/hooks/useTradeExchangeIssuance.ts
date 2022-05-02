@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, useEthers } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 
+import { MAINNET, POLYGON } from 'constants/chains'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
@@ -40,11 +41,11 @@ export const useTradeExchangeIssuance = (
     if (!account || !quoteData || !setTokenAmount) return
 
     const outputTokenAddress =
-      chainId === ChainId.Polygon
+      chainId === POLYGON.chainId
         ? outputToken.polygonAddress
         : outputToken.address
     const inputTokenAddress =
-      chainId === ChainId.Polygon
+      chainId === POLYGON.chainId
         ? inputToken.polygonAddress
         : inputToken.address
     if (!outputTokenAddress || !inputTokenAddress) return
@@ -60,7 +61,7 @@ export const useTradeExchangeIssuance = (
 
       const contract = await getExchangeIssuanceZeroExContract(
         library?.getSigner(),
-        chainId ?? ChainId.Mainnet
+        chainId ?? MAINNET.chainId
       )
 
       if (isIssuance) {

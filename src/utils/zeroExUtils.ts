@@ -3,7 +3,7 @@ import querystring from 'querystring'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { POLYGON } from 'constants/chains'
+import { OPTIMISM, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { toWei } from 'utils'
 
@@ -44,6 +44,9 @@ function getApiUrl(query: string, chainId: number): string {
   switch (chainId) {
     case POLYGON.chainId:
       networkKey = 'polygon'
+      break
+    case OPTIMISM.chainId:
+      networkKey = 'optimism'
       break
     default:
       networkKey = 'mainnet'
@@ -142,6 +145,8 @@ export const get0xApiParams = (
 const getChainTokenAddress = (token: Token, chainId: number) => {
   if (chainId === POLYGON.chainId)
     return token.symbol === 'MATIC' ? 'MATIC' : token.polygonAddress
+  if (chainId === OPTIMISM.chainId)
+    return token.symbol === 'ETH' ? 'ETH' : token.optimismAddress
   return token.symbol === 'ETH' ? 'ETH' : token.address
 }
 

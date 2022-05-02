@@ -9,6 +9,7 @@ import imaticflipLogo from 'assets/imaticflilogo.svg'
 import indexLogo from 'assets/index-token.png'
 import jpgLogo from 'assets/jpgLogo.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
+import mnyeLogo from 'assets/mnyeLogo.png'
 import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
 
 export const dpiTokenImage =
@@ -82,7 +83,7 @@ export const WETH: Token = {
     'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   polygonAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-  optimismAddress: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+  optimismAddress: '0x4200000000000000000000000000000000000006',
   decimals: 18,
   url: '',
   coingeckoId: 'weth',
@@ -389,6 +390,22 @@ export const JPGIndex: Token = {
     redeemFee: '0.5%',
   },
 }
+export const MNYeIndex: Token = {
+  name: 'Market Neutral Yield ETH Index',
+  symbol: 'MNYe',
+  address: undefined,
+  polygonAddress: undefined,
+  optimismAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607', // <- USDC    real token address -> '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93',
+  decimals: 18,
+  url: 'mnye',
+  image: mnyeLogo,
+  coingeckoId: 'usd-coin',
+  tokensetsId: 'mnye',
+  tokenContextKey: 'mnye',
+  fees: {
+    streamingFee: '0.95%',
+  },
+}
 
 export const productTokensBySymbol = {
   'DPI': DefiPulseIndex,
@@ -407,6 +424,7 @@ export const productTokensBySymbol = {
   'BTC2x-FLI-P': Bitcoin2xFLIP,
   'icETH': icETHIndex,
   'JPG': JPGIndex,
+  'MNYe': MNYeIndex,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC]
@@ -428,6 +446,7 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
 
 const indexNames = [
   icETHIndex,
+  // TODO: MNYeIndex,
   DefiPulseIndex,
   MetaverseIndex,
   GmiIndex,
@@ -454,6 +473,9 @@ export const indexNamesPolygon = indexNames.filter(
     index.symbol !== GmiIndex.symbol && // temporarily removed due to liquidity concerns
     index.symbol !== DataIndex.symbol && // temporarily removed due to liquidity concerns
     index.symbol !== IndexToken.symbol // temporarily removed due to liquidity concerns
+)
+export const indexNamesOptimism = indexNames.filter(
+  (index) => index.optimismAddress !== undefined
 )
 
 export default indexNames
