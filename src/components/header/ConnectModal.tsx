@@ -48,8 +48,12 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
   }, [isDarkMode])
 
   const handleMetamask = () => {
-    activateBrowserWallet()
-    props.onClose()
+    if (isMetaMaskInstalled) {
+      activateBrowserWallet()
+      props.onClose()
+    } else {
+      window.open(metaMaskLink, '_blank')
+    }
   }
 
   const handleWalletConnect = () => {
@@ -106,109 +110,65 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
           }}
         />
         <ModalBody pt={0} px={4} color={borderColor}>
-          {isMetaMaskInstalled && (
-            <Box
-              border='1px'
-              borderStyle='solid'
-              borderColor={borderColor}
-              onClick={handleMetamask}
-              _hover={{ borderColor: borderColor }}
-              px={5}
-              pt={4}
-              pb={2}
-              mb={3}
-            >
-              <Flex justifyContent='space-between' alignItems='center' mb={3}>
-                <Text fontSize='lg'>MetaMask</Text>
-                <Image src={metamaskIcon} width={'10%'} />
-              </Flex>
-            </Box>
-          )}
-          {!isMetaMaskInstalled && (
-            <Link href={metaMaskLink} target='_blank'>
-              <Box
-                border='1px'
-                borderStyle='solid'
-                borderColor={borderColor}
-                _hover={{ borderColor: borderColor }}
-                px={5}
-                pt={4}
-                pb={2}
-                mb={3}
-              >
-                <Flex justifyContent='space-between' alignItems='center' mb={3}>
-                  <Text fontSize='lg'>Install MetaMask</Text>
-                  <Image src={metamaskIcon} width={'10%'} />
-                </Flex>
-              </Box>
-            </Link>
-          )}
-          <Box
-            border='1px'
-            borderStyle='solid'
+          <WalletButton
+            buttonIcon={metamaskIcon}
+            buttonText={isMetaMaskInstalled ? 'MetaMask' : 'Install MetaMask'}
             borderColor={borderColor}
-            onClick={handleWalletConnect}
-            _hover={{ borderColor: borderColor }}
-            px={5}
-            pt={4}
-            pb={2}
-            mb={3}
-          >
-            <Flex justifyContent='space-between' alignItems='center' mb={3}>
-              <Text fontSize='lg'>Argent</Text>
-              <Image src={argentIcon} width={'10%'} />
-            </Flex>
-          </Box>
-          <Box
-            border='1px'
-            borderStyle='solid'
+            handleConnection={handleMetamask}
+          />
+          <WalletButton
+            buttonIcon={argentIcon}
+            buttonText='Argent'
             borderColor={borderColor}
-            onClick={handleWalletConnect}
-            _hover={{ borderColor: borderColor }}
-            px={5}
-            pt={4}
-            pb={2}
-            mb={3}
-          >
-            <Flex justifyContent='space-between' alignItems='center' mb={3}>
-              <Text fontSize='lg'>Rainbow Wallet</Text>
-              <Image src={rainbowIcon} width={'10%'} />
-            </Flex>
-          </Box>
-          <Box
-            border='1px'
-            borderStyle='solid'
+            handleConnection={handleWalletConnect}
+          />
+          <WalletButton
+            buttonIcon={rainbowIcon}
+            buttonText='Rainbow Wallet'
             borderColor={borderColor}
-            onClick={handleCoinbaseWallet}
-            _hover={{ borderColor: borderColor }}
-            px={5}
-            pt={4}
-            pb={2}
-            mb={3}
-          >
-            <Flex justifyContent='space-between' alignItems='center' mb={3}>
-              <Text fontSize='lg'>Coinbase Wallet</Text>
-              <Image src={coinbaseWalletIcon} width={'10%'} />
-            </Flex>
-          </Box>
-          <Box
-            border='1px'
-            borderStyle='solid'
+            handleConnection={handleWalletConnect}
+          />
+          <WalletButton
+            buttonIcon={coinbaseWalletIcon}
+            buttonText='Coinbase Wallet'
             borderColor={borderColor}
-            onClick={handleWalletConnect}
-            _hover={{ borderColor: borderColor }}
-            px={5}
-            pt={4}
-            pb={2}
-            mb={3}
-          >
-            <Flex justifyContent='space-between' alignItems='center' mb={3}>
-              <Text fontSize='lg'>WalletConnect</Text>
-              <Image src={walletconnectIcon} width={'10%'} />
-            </Flex>
-          </Box>
+            handleConnection={handleCoinbaseWallet}
+          />
+          <WalletButton
+            buttonIcon={walletconnectIcon}
+            buttonText='WalletConnect'
+            borderColor={borderColor}
+            handleConnection={handleWalletConnect}
+          />
         </ModalBody>
       </ModalContent>
     </Modal>
+  )
+}
+
+const WalletButton = (props: {
+  buttonText: string
+  buttonIcon: string
+  borderColor: string
+  handleConnection: () => void
+}) => {
+  return (
+    <Box
+      border='1px'
+      borderStyle='solid'
+      borderRadius={10}
+      borderColor={props.borderColor}
+      onClick={props.handleConnection}
+      _hover={{ borderColor: props.borderColor }}
+      px={5}
+      pt={4}
+      pb={2}
+      mb={3}
+    >
+      <Flex justifyContent='space-between' alignItems='center' mb={3}>
+        <Text fontSize='lg'>{props.buttonText}</Text>
+        <Image src={props.buttonIcon} width={'10%'} />
+      </Flex>
+    </Box>
   )
 }
