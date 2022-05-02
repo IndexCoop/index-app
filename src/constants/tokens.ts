@@ -446,7 +446,7 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
 
 const indexNames = [
   icETHIndex,
-  MNYeIndex,
+  // TODO: MNYeIndex,
   DefiPulseIndex,
   MetaverseIndex,
   GmiIndex,
