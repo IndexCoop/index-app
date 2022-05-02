@@ -121,7 +121,8 @@ const QuickTrade = (props: {
         parseFloat(sellTokenAmount),
         sellTokenPrice,
         parseFloat(buyTokenAmountFormatted),
-        buyTokenPrice
+        buyTokenPrice,
+        isDarkMode
       )
   console.log(priceImpact)
 

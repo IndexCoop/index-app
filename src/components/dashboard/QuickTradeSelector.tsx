@@ -113,7 +113,12 @@ const QuickTradeSelector = (props: {
             onChange={(event) => onChangeInput(event.target.value)}
           />
           <Flex>
-            <Text fontSize='12px' textColor={isDarkMode ? '#aaa' : '#777'}>
+            <Text
+              fontSize='12px'
+              textColor={
+                isDarkMode ? colors.icGrayDarkMode : colors.icGrayLightMode
+              }
+            >
               {props.formattedFiat}
             </Text>
             {props.priceImpact && (

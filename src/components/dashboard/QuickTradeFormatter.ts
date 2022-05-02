@@ -1,3 +1,5 @@
+import { colors } from 'styles/colors'
+
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId } from '@usedapp/core'
 
@@ -11,19 +13,19 @@ import { ZeroExData } from 'utils/zeroExUtils'
 
 import { TradeInfoItem } from './TradeInfo'
 
-function getPriceImpaceColorCoding(priceImpact: number): string {
-  // TODO: colors
+function getPriceImpaceColorCoding(
+  priceImpact: number,
+  isDarkMode: boolean
+): string {
   if (priceImpact < -5) {
-    return '#ff0000'
+    return colors.icRed
   }
 
   if (priceImpact < -3) {
-    return '#ffff00'
+    return colors.icYellow
   }
 
-  // TODO: gray
-  // TODO: add gray's to colors
-  return '#777'
+  return isDarkMode ? colors.icGrayDarkMode : colors.icGrayLightMode
 }
 
 /**
@@ -82,7 +84,8 @@ export function getFormattedPriceImpact(
   inputTokenAmount: number,
   inputTokenPrice: number,
   outputokenAmount: number,
-  outputTokenPrice: number
+  outputTokenPrice: number,
+  isDarkMode: boolean
 ): { priceImpact: string; colorCoding: string } | null {
   const priceImpact = getPriceImpact(
     inputTokenAmount,
@@ -95,7 +98,7 @@ export function getFormattedPriceImpact(
     return null
   }
 
-  const colorCoding = getPriceImpaceColorCoding(priceImpact)
+  const colorCoding = getPriceImpaceColorCoding(priceImpact, isDarkMode)
   return { priceImpact: `(${priceImpact.toFixed(2)}%)`, colorCoding }
 }
 
