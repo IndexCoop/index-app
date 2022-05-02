@@ -395,11 +395,11 @@ export const MNYeIndex: Token = {
   symbol: 'MNYe',
   address: undefined,
   polygonAddress: undefined,
-  optimismAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607', // <- USDC    real token address -> '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93',
+  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93',
   decimals: 18,
   url: 'mnye',
   image: mnyeLogo,
-  coingeckoId: 'usd-coin',
+  coingeckoId: 'usd-coin', // TODO: update coingecko id
   tokensetsId: 'mnye',
   tokenContextKey: 'mnye',
   fees: {
@@ -446,7 +446,7 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
 
 const indexNames = [
   icETHIndex,
-  // TODO: MNYeIndex,
+  MNYeIndex,
   DefiPulseIndex,
   MetaverseIndex,
   GmiIndex,
