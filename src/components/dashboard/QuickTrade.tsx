@@ -115,12 +115,14 @@ const QuickTrade = (props: {
     buyTokenPrice
   )
 
-  const priceImpact = getFormattedPriceImpact(
-    parseFloat(sellTokenAmount),
-    sellTokenPrice,
-    parseFloat(buyTokenAmountFormatted),
-    buyTokenPrice
-  )
+  const priceImpact = isFetchingTradeData
+    ? null
+    : getFormattedPriceImpact(
+        parseFloat(sellTokenAmount),
+        sellTokenPrice,
+        parseFloat(buyTokenAmountFormatted),
+        buyTokenPrice
+      )
   console.log(priceImpact)
 
   const {
