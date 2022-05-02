@@ -41,6 +41,7 @@ import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 
 import {
+  formattedFiat,
   getHasInsufficientFunds,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
@@ -103,6 +104,15 @@ const QuickTrade = (props: {
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
   const buyTokenAmountFormatted = tradeInfoData[0]?.value ?? '0'
+
+  const sellTokenFiat = formattedFiat(
+    parseFloat(sellTokenAmount),
+    sellTokenPrice
+  )
+  const buyTokenFiat = formattedFiat(
+    parseFloat(buyTokenAmountFormatted),
+    buyTokenPrice
+  )
 
   const {
     isApproved: isApprovedForSwap,
@@ -474,14 +484,15 @@ const QuickTrade = (props: {
           config={{
             isDarkMode,
             isInputDisabled: isNotTradable(props.singleToken),
+            isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
             isReadOnly: false,
           }}
           selectedToken={sellToken}
+          formattedFiat={sellTokenFiat}
           tokenList={sellTokenList}
           onChangeInput={onChangeSellTokenAmount}
           onSelectedToken={(tokenSymbol) => changeSellToken(tokenSymbol)}
-          isNarrowVersion={isNarrow}
         />
         <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
           <IconButton
@@ -499,15 +510,16 @@ const QuickTrade = (props: {
           config={{
             isDarkMode,
             isInputDisabled: true,
+            isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
             isReadOnly: true,
           }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmountFormatted}
+          formattedFiat={buyTokenFiat}
           tokenList={buyTokenList}
           onChangeInput={onChangeBuyTokenAmount}
           onSelectedToken={(tokenSymbol) => changeBuyToken(tokenSymbol)}
-          isNarrowVersion={isNarrow}
         />
       </Flex>
       <Flex direction='column'>

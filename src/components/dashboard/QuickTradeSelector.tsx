@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { BigNumber } from 'set.js'
-import { colors } from 'styles/colors'
+import { colors, useICColorMode } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
@@ -15,6 +15,7 @@ import { formattedBalance } from './QuickTradeFormatter'
 
 interface InputSelectorConfig {
   isDarkMode: boolean
+  isNarrowVersion: boolean
   isInputDisabled?: boolean
   isSelectorDisabled?: boolean
   isReadOnly?: boolean
@@ -25,14 +26,14 @@ const QuickTradeSelector = (props: {
   config: InputSelectorConfig
   selectedToken: Token
   selectedTokenAmount?: string
+  formattedFiat: string
   tokenList: Token[]
   onChangeInput: (token: Token, input: string) => void
   onSelectedToken: (symbol: string) => void
-  isNarrowVersion: boolean
 }) => {
   const { chainId } = useEthers()
-
   const { getBalance } = useBalance()
+  const { isDarkMode } = useICColorMode()
 
   const [inputString, setInputString] = useState<string>(
     props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
@@ -60,9 +61,10 @@ const QuickTradeSelector = (props: {
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
 
+  const height = '64px'
   const wideWidths = ['250px', '180px']
   const narrowWidths = ['250px']
-  const widths = props.isNarrowVersion ? narrowWidths : wideWidths
+  const widths = config.isNarrowVersion ? narrowWidths : wideWidths
 
   const onChangeInput = (amount: string) => {
     if (!amount) {
@@ -88,17 +90,18 @@ const QuickTradeSelector = (props: {
       <Text fontSize='20px' fontWeight='700'>
         {props.title}
       </Text>
-      <Flex mt='10px' h='54px'>
+      <Flex mt='10px' h={height}>
         <Flex
-          align='center'
+          align='flex-start'
+          direction='column'
           justify='center'
-          grow='2'
           border='1px solid #000'
           borderColor={borderColor}
           borderLeftRadius={borderRadius}
           px={['16px', '30px']}
         >
           <Input
+            fontSize='20px'
             placeholder='0.0'
             type='number'
             step='any'
@@ -108,16 +111,19 @@ const QuickTradeSelector = (props: {
             value={inputString}
             onChange={(event) => onChangeInput(event.target.value)}
           />
+          <Text fontSize='12px' textColor={isDarkMode ? '#aaa' : '#777'}>
+            {props.formattedFiat}
+          </Text>
         </Flex>
         <Flex
           align='center'
-          h='54px'
+          h={height}
           border='1px solid #000'
           borderColor={borderColor}
           borderRightRadius={borderRadius}
           w={widths}
         >
-          {!props.isNarrowVersion && (
+          {!config.isNarrowVersion && (
             <Box pl='10px' pr='0px'>
               <Image
                 src={selectedToken.image}

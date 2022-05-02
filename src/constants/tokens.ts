@@ -225,7 +225,7 @@ export const BedIndex: Token = {
 }
 
 export const DataIndex: Token = {
-  name: 'Data Economy Index',
+  name: 'Web3 Data Economy Index',
   symbol: 'DATA',
   address: '0x33d63Ba1E57E54779F7dDAeaA7109349344cf5F1',
   polygonAddress: '0x1D607Faa0A51518a7728580C238d912747e71F7a',
