@@ -1,3 +1,5 @@
+import { colors } from 'styles/colors'
+
 import {
   Box,
   Flex,
@@ -46,10 +48,11 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
     <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered size='md'>
       <ModalOverlay />
       <ModalContent
-        background='gray.900'
-        border='1px'
+        background={colors.background}
+        border='2px'
         borderStyle='solid'
-        borderColor='gray.700'
+        borderRadius={10}
+        borderColor={colors.icWhite}
       >
         <ModalHeader color='white' px={4} fontSize='lg' fontWeight='medium'>
           Connect to wallet
@@ -59,6 +62,10 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
           fontSize='sm'
           _hover={{
             color: 'whiteAlpha.700',
+            borderColor: colors.icWhite,
+          }}
+          _focus={{
+            borderColor: colors.icWhite,
           }}
         />
         <ModalBody pt={0} px={4}>
@@ -66,10 +73,9 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
             <Box
               border='1px'
               borderStyle='solid'
-              borderColor='gray.600'
-              backgroundColor='gray.700'
+              borderColor={colors.icWhite}
               onClick={handleMetamask}
-              _hover={{ borderColor: 'blue.600' }}
+              _hover={{ borderColor: colors.icWhite }}
               px={5}
               pt={4}
               pb={2}
@@ -88,9 +94,8 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
               <Box
                 border='1px'
                 borderStyle='solid'
-                borderColor='gray.600'
-                backgroundColor='gray.700'
-                _hover={{ borderColor: 'blue.600' }}
+                borderColor={colors.icWhite}
+                _hover={{ borderColor: colors.icWhite }}
                 px={5}
                 pt={4}
                 pb={2}
@@ -108,10 +113,9 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
           <Box
             border='1px'
             borderStyle='solid'
-            borderColor='gray.600'
-            backgroundColor='gray.700'
+            borderColor={colors.icWhite}
             onClick={handleWalletConnect}
-            _hover={{ borderColor: 'blue.600' }}
+            _hover={{ borderColor: colors.icWhite }}
             px={5}
             pt={4}
             pb={2}
