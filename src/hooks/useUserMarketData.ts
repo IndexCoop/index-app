@@ -38,7 +38,8 @@ function getTokenMarketDataValuesOrNull(
     date,
     price * balanceNum,
   ])
-  const fiat = hourlyData[0][1]
+  const hourlyPricesLength = hourlyData ? hourlyData.length - 1 : 0
+  const fiat = hourlyData ? hourlyData[hourlyPricesLength][1] : 0
 
   return { symbol, balance, fiat, marketData: { hourlyPrices: hourlyData } }
 }
