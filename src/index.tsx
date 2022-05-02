@@ -30,6 +30,7 @@ import IMATICFLIP from 'components/views/productpages/IMATICFLIP'
 import INDEX from 'components/views/productpages/INDEX'
 import JPG from 'components/views/productpages/JPG'
 import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
+import MNYe from 'components/views/productpages/MNYe'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
@@ -114,6 +115,7 @@ ReactDOM.render(
             <Route path='iceth' element={<ICETH />} />
             <Route path='index' element={<INDEX />} />
             <Route path='jpg' element={<JPG />} />
+            <Route path='mnye' element={<MNYe />} />
           </Route>
         </Routes>
       </Providers>

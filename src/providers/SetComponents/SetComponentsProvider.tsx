@@ -10,7 +10,7 @@ import {
 import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
-import { MAINNET, POLYGON } from 'constants/chains'
+import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -27,6 +27,7 @@ import {
   JPGIndex,
   Matic2xFLIP,
   MetaverseIndex,
+  MNYeIndex,
 } from 'constants/tokens'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { displayFromWei, safeDiv } from 'utils'
@@ -58,6 +59,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     ibtcflip,
     iceth,
     jpg,
+    mnye,
   } = useMarketData()
   const [dpiComponents, setDpiComponents] = useState<SetComponent[]>([])
   const [mviComponents, setMviComponents] = useState<SetComponent[]>([])
@@ -94,6 +96,7 @@ const SetComponentsProvider = (props: { children: any }) => {
   )
   const [icethComponents, setIcethComponents] = useState<SetComponent[]>([])
   const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
+  const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
   const { account, chainId, library } = useEthers()
   const tokenList = getTokenList(chainId)
@@ -550,6 +553,45 @@ const SetComponentsProvider = (props: { children: any }) => {
     }
   }, [chainId, library, tokenList, ethflip, selectLatestMarketData()])
 
+  useEffect(() => {
+    if (
+      chainId &&
+      chainId === OPTIMISM.chainId &&
+      library &&
+      tokenList &&
+      mnye &&
+      MNYeIndex.optimismAddress
+    ) {
+      getSetDetails(library, [MNYeIndex.optimismAddress], chainId)
+        .then(async (result) => {
+          const [mnySet] = result
+          const mnyComponentPrices = await getPositionPrices(
+            mnySet,
+            'optimistic-ethereum'
+          )
+          const mnyPositions = mnySet.positions.map(async (position) => {
+            return await convertPositionToSetComponent(
+              position,
+              tokenList,
+              mnyComponentPrices[position.component.toLowerCase()]?.[
+                VS_CURRENCY
+              ],
+              mnyComponentPrices[position.component.toLowerCase()]?.[
+                `${VS_CURRENCY}_24h_change`
+              ],
+
+              selectLatestMarketData(mnye.hourlyPrices)
+            )
+          })
+          Promise.all(mnyPositions)
+            .then(sortPositionsByPercentOfSet)
+            .then(setMnyeComponents)
+          ///
+        })
+        .catch((err) => console.log('err', err))
+    }
+  }, [chainId, library, tokenList, mnye, selectLatestMarketData()])
+
   return (
     <SetComponentsContext.Provider
       value={{
@@ -568,6 +610,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         btc2xflipComponents: btc2xflipComponents,
         icethComponents: icethComponents,
         jpgComponents: jpgComponents,
+        mnyeComponents: mnyeComponents,
       }}
     >
       {props.children}
@@ -696,6 +739,7 @@ interface SetComponentsProps {
   ibtcflipComponents?: SetComponent[]
   icethComponents?: SetComponent[]
   jpgComponents?: SetComponent[]
+  mnyeComponents?: SetComponent[]
 }
 
 export const SetComponentsContext = createContext<SetComponentsProps>({})

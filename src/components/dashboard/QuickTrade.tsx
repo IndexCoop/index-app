@@ -12,9 +12,10 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, useEthers } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
+import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
@@ -26,6 +27,7 @@ import {
   ETH,
   icETHIndex,
   indexNamesMainnet,
+  indexNamesOptimism,
   indexNamesPolygon,
   Token,
 } from 'constants/tokens'
@@ -92,11 +94,11 @@ const QuickTrade = (props: {
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
   const spenderAddress0x =
-    chainId === ChainId.Polygon
+    chainId === POLYGON.chainId
       ? ExchangeIssuanceZeroExMainnetAddress
       : ExchangeIssuanceZeroExPolygonAddress
   const spenderAddressLevEIL =
-    chainId === ChainId.Polygon
+    chainId === POLYGON.chainId
       ? ExchangeIssuanceLeveragedPolygonAddress
       : ExchangeIssuanceLeveragedMainnetAddress
 
@@ -319,13 +321,17 @@ const QuickTrade = (props: {
   }
 
   const isNotTradable = (token: Token | undefined) => {
-    if (token && chainId === ChainId.Mainnet)
+    if (token && chainId === MAINNET.chainId)
       return (
         indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
       )
-    if (token && chainId === ChainId.Polygon)
+    if (token && chainId === POLYGON.chainId)
       return (
         indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
+      )
+    if (token && chainId === OPTIMISM.chainId)
+      return (
+        indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
       )
     return false
   }
@@ -342,7 +348,19 @@ const QuickTrade = (props: {
     }
 
     if (isNotTradable(props.singleToken)) {
-      let chainName = chainId === ChainId.Mainnet ? 'Mainnet' : 'Polygon'
+      let chainName = 'This Network'
+      switch (chainId) {
+        case MAINNET.chainId:
+          chainName = 'Mainnet'
+          break
+        case POLYGON.chainId:
+          chainName = 'Polygon'
+          break
+        case OPTIMISM.chainId:
+          chainName = 'Optimism'
+          break
+      }
+
       return `Not Available on ${chainName}`
     }
 
