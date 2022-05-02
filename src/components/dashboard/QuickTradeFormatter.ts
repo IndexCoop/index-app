@@ -37,22 +37,16 @@ export function getPriceImpact(
   outputokenAmount: number,
   outputTokenPrice: number
 ): number | null {
-  console.log(
-    inputTokenAmount,
-    inputTokenPrice,
-    outputokenAmount,
-    outputTokenPrice
-  )
   if (inputTokenAmount <= 0 || outputokenAmount <= 0) {
     return null
   }
+
   const inputTotal = inputTokenAmount * inputTokenPrice
   const outputTotal = outputokenAmount * outputTokenPrice
 
   const diff = inputTotal - outputTotal
   const priceImpact = (diff / inputTotal) * -100
 
-  console.log('priceImpact', priceImpact)
   return priceImpact
 }
 

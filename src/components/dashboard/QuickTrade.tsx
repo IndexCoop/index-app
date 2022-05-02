@@ -124,7 +124,6 @@ const QuickTrade = (props: {
         buyTokenPrice,
         isDarkMode
       )
-  console.log(priceImpact)
 
   const {
     isApproved: isApprovedForSwap,
