@@ -28,7 +28,7 @@ export const fetchHistoricalTokenMarketData = async (
       return { hourlyPrices, marketcaps, volumes }
     })
     .catch((error) => {
-      console.log('Error fetching historical token market data', error)
+      console.error('Error fetching historical token market data', error)
       return { hourly: [], marketcaps: [], volumes: [] }
     })
 }
