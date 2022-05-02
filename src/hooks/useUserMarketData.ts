@@ -12,6 +12,7 @@ import { getPricesChanges } from 'utils/priceChange'
 interface UserTokenBalance {
   symbol: string
   balance: BigNumber
+  fiat: number
   marketData: TokenMarketDataValues
 }
 
@@ -37,8 +38,10 @@ function getTokenMarketDataValuesOrNull(
     date,
     price * balanceNum,
   ])
+  const hourlyPricesLength = hourlyData ? hourlyData.length - 1 : 0
+  const fiat = hourlyData ? hourlyData[hourlyPricesLength][1] : 0
 
-  return { symbol, balance, marketData: { hourlyPrices: hourlyData } }
+  return { symbol, balance, fiat, marketData: { hourlyPrices: hourlyData } }
 }
 
 function getTotalHourlyPrices(marketData: UserTokenBalance[]) {
@@ -118,7 +121,7 @@ export const useUserMarketData = () => {
         case 'BTC2x-FLI':
           return getTokenMarketDataValuesOrNull(pos.title, btcfli, pos.value)
         case 'icETH':
-          return getTokenMarketDataValuesOrNull(pos.title, btcfli, pos.value)
+          return getTokenMarketDataValuesOrNull(pos.title, iceth, pos.value)
         case 'JPG':
           return getTokenMarketDataValuesOrNull(pos.title, jpg, pos.value)
         // case 'MNYE':
