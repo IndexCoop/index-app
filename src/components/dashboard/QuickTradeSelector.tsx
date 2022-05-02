@@ -26,6 +26,7 @@ const QuickTradeSelector = (props: {
   config: InputSelectorConfig
   selectedToken: Token
   selectedTokenAmount?: string
+  priceImpact?: { priceImpact: string; colorCoding: string }
   formattedFiat: string
   tokenList: Token[]
   onChangeInput: (token: Token, input: string) => void
@@ -111,9 +112,16 @@ const QuickTradeSelector = (props: {
             value={inputString}
             onChange={(event) => onChangeInput(event.target.value)}
           />
-          <Text fontSize='12px' textColor={isDarkMode ? '#aaa' : '#777'}>
-            {props.formattedFiat}
-          </Text>
+          <Flex>
+            <Text fontSize='12px' textColor={isDarkMode ? '#aaa' : '#777'}>
+              {props.formattedFiat}
+            </Text>
+            {props.priceImpact && (
+              <Text fontSize='12px' textColor={props.priceImpact.colorCoding}>
+                &nbsp;{props.priceImpact.priceImpact}
+              </Text>
+            )}
+          </Flex>
         </Flex>
         <Flex
           align='center'

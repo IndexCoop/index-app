@@ -11,6 +11,21 @@ import { ZeroExData } from 'utils/zeroExUtils'
 
 import { TradeInfoItem } from './TradeInfo'
 
+function getPriceImpaceColorCoding(priceImpact: number): string {
+  // TODO: colors
+  if (priceImpact < -5) {
+    return '#ff0000'
+  }
+
+  if (priceImpact < -3) {
+    return '#ffff00'
+  }
+
+  // TODO: gray
+  // TODO: add gray's to colors
+  return '#777'
+}
+
 /**
  * Returns price impact as percent
  */
@@ -68,7 +83,7 @@ export function getFormattedPriceImpact(
   inputTokenPrice: number,
   outputokenAmount: number,
   outputTokenPrice: number
-): string {
+): { priceImpact: string; colorCoding: string } | null {
   const priceImpact = getPriceImpact(
     inputTokenAmount,
     inputTokenPrice,
@@ -77,10 +92,11 @@ export function getFormattedPriceImpact(
   )
 
   if (!priceImpact) {
-    return ''
+    return null
   }
-  // TODO: return color coding?
-  return `(${priceImpact}%)`
+
+  const colorCoding = getPriceImpaceColorCoding(priceImpact)
+  return { priceImpact: `(${priceImpact.toFixed(2)}%)`, colorCoding }
 }
 
 export const getHasInsufficientFunds = (
