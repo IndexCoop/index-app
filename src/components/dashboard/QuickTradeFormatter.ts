@@ -12,6 +12,34 @@ import { ZeroExData } from 'utils/zeroExUtils'
 import { TradeInfoItem } from './TradeInfo'
 
 /**
+ * Returns price impact as percent
+ */
+export function getPriceImpact(
+  inputTokenAmount: number,
+  inputTokenPrice: number,
+  outputokenAmount: number,
+  outputTokenPrice: number
+): number | null {
+  console.log(
+    inputTokenAmount,
+    inputTokenPrice,
+    outputokenAmount,
+    outputTokenPrice
+  )
+  if (inputTokenAmount <= 0 || outputokenAmount <= 0) {
+    return null
+  }
+  const inputTotal = inputTokenAmount * inputTokenPrice
+  const outputTotal = outputokenAmount * outputTokenPrice
+
+  const diff = inputTotal - outputTotal
+  const priceImpact = (diff / inputTotal) * -100
+
+  console.log('priceImpact', priceImpact)
+  return priceImpact
+}
+
+/**
  * Rounds to 2 decimal places. NOT precise, should only be used for display
  */
 export function formattedBalance(
@@ -30,6 +58,29 @@ export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
     maximumFractionDigits: 2,
   })
   return `$${price}`
+}
+
+/**
+ * Returns price impact in the format (x.yy%)
+ */
+export function getFormattedPriceImpact(
+  inputTokenAmount: number,
+  inputTokenPrice: number,
+  outputokenAmount: number,
+  outputTokenPrice: number
+): string {
+  const priceImpact = getPriceImpact(
+    inputTokenAmount,
+    inputTokenPrice,
+    outputokenAmount,
+    outputTokenPrice
+  )
+
+  if (!priceImpact) {
+    return ''
+  }
+  // TODO: return color coding?
+  return `(${priceImpact}%)`
 }
 
 export const getHasInsufficientFunds = (
