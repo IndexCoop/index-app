@@ -11,6 +11,9 @@ export const colors = {
   icRed: '#C32238',
   icYellow: '#FABF00',
   icWhite: '#F6F1E4',
+  // not verified with designer
+  icGrayLightMode: '#aaa',
+  icGrayDarkMode: '#777',
 }
 
 export const useICColorMode = () => {

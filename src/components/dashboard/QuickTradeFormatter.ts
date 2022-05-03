@@ -1,3 +1,5 @@
+import { colors } from 'styles/colors'
+
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId } from '@usedapp/core'
 
@@ -10,6 +12,43 @@ import {
 import { ZeroExData } from 'utils/zeroExUtils'
 
 import { TradeInfoItem } from './TradeInfo'
+
+function getPriceImpaceColorCoding(
+  priceImpact: number,
+  isDarkMode: boolean
+): string {
+  if (priceImpact < -5) {
+    return colors.icRed
+  }
+
+  if (priceImpact < -3) {
+    return colors.icYellow
+  }
+
+  return isDarkMode ? colors.icGrayDarkMode : colors.icGrayLightMode
+}
+
+/**
+ * Returns price impact as percent
+ */
+export function getPriceImpact(
+  inputTokenAmount: number,
+  inputTokenPrice: number,
+  outputokenAmount: number,
+  outputTokenPrice: number
+): number | null {
+  if (inputTokenAmount <= 0 || outputokenAmount <= 0) {
+    return null
+  }
+
+  const inputTotal = inputTokenAmount * inputTokenPrice
+  const outputTotal = outputokenAmount * outputTokenPrice
+
+  const diff = inputTotal - outputTotal
+  const priceImpact = (diff / inputTotal) * -100
+
+  return priceImpact
+}
 
 /**
  * Rounds to 2 decimal places. NOT precise, should only be used for display
@@ -30,6 +69,31 @@ export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
     maximumFractionDigits: 2,
   })
   return `$${price}`
+}
+
+/**
+ * Returns price impact in the format (x.yy%)
+ */
+export function getFormattedPriceImpact(
+  inputTokenAmount: number,
+  inputTokenPrice: number,
+  outputokenAmount: number,
+  outputTokenPrice: number,
+  isDarkMode: boolean
+): { priceImpact: string; colorCoding: string } | null {
+  const priceImpact = getPriceImpact(
+    inputTokenAmount,
+    inputTokenPrice,
+    outputokenAmount,
+    outputTokenPrice
+  )
+
+  if (!priceImpact) {
+    return null
+  }
+
+  const colorCoding = getPriceImpaceColorCoding(priceImpact, isDarkMode)
+  return { priceImpact: `(${priceImpact.toFixed(2)}%)`, colorCoding }
 }
 
 export const getHasInsufficientFunds = (

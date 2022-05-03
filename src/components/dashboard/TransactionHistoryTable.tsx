@@ -67,7 +67,7 @@ const TableHeader = () => {
             <Th>From</Th>
             {!isTablet && <Th></Th>}
             <Th>To</Th>
-            {!isTablet && <Th>Transaction</Th>}{' '}
+            {!isTablet && <Th>Transaction</Th>}
           </>
         )}
         <Th></Th>

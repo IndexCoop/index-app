@@ -13,9 +13,8 @@ export const fetchHistoricalTokenMarketData = async (
   const coingeckoHourlyTokenDataUrl =
     baseURL + `/coins/${id}/market_chart?vs_currency=${baseCurrency}&days=90`
 
-  // TODO: Re-enable > 3M price history when we get paid CG API Key
   return Promise.all([
-    // fetch(coingeckoMaxTokenDataUrl),
+    fetch(coingeckoMaxTokenDataUrl),
     fetch(coingeckoHourlyTokenDataUrl),
   ])
     .then((responses) =>
@@ -29,6 +28,7 @@ export const fetchHistoricalTokenMarketData = async (
       return { hourlyPrices, marketcaps, volumes }
     })
     .catch((error) => {
+      console.error('Error fetching historical token market data', error)
       return { hourly: [], marketcaps: [], volumes: [] }
     })
 }

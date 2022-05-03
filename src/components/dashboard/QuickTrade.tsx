@@ -42,6 +42,7 @@ import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 
 import {
   formattedFiat,
+  getFormattedPriceImpact,
   getHasInsufficientFunds,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
@@ -113,6 +114,16 @@ const QuickTrade = (props: {
     parseFloat(buyTokenAmountFormatted),
     buyTokenPrice
   )
+
+  const priceImpact = isFetchingTradeData
+    ? null
+    : getFormattedPriceImpact(
+        parseFloat(sellTokenAmount),
+        sellTokenPrice,
+        parseFloat(buyTokenAmountFormatted),
+        buyTokenPrice,
+        isDarkMode
+      )
 
   const {
     isApproved: isApprovedForSwap,
@@ -517,6 +528,7 @@ const QuickTrade = (props: {
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmountFormatted}
           formattedFiat={buyTokenFiat}
+          priceImpact={priceImpact ?? undefined}
           tokenList={buyTokenList}
           onChangeInput={onChangeBuyTokenAmount}
           onSelectedToken={(tokenSymbol) => changeBuyToken(tokenSymbol)}
