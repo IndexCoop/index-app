@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react'
-
 import { colors, useICColorMode } from 'styles/colors'
 
 import {
   Box,
   Flex,
   Image,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -31,21 +28,8 @@ export default function ConnectModal(props: { isOpen: any; onClose: any }) {
   const { activateBrowserWallet, activate } = useEthers()
   const { isDarkMode } = useICColorMode()
   const isMetaMaskInstalled = window.ethereum?.isMetaMask
-
-  const [backgroundColor, setBackgroundColor] = useState<string>(
-    colors.background
-  )
-  const [borderColor, setBorderColor] = useState<string>(colors.icWhite)
-
-  useEffect(() => {
-    if (isDarkMode) {
-      setBackgroundColor(colors.background)
-      setBorderColor(colors.icWhite)
-    } else {
-      setBackgroundColor(colors.white)
-      setBorderColor(colors.background)
-    }
-  }, [isDarkMode])
+  const backgroundColor = isDarkMode ? colors.background : colors.white
+  const borderColor = isDarkMode ? colors.icWhite : colors.background
 
   const handleMetamask = () => {
     if (isMetaMaskInstalled) {
