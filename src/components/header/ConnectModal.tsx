@@ -142,6 +142,7 @@ const WalletButton = (props: {
       borderStyle='solid'
       borderRadius={10}
       borderColor={props.borderColor}
+      cursor='pointer'
       onClick={props.handleConnection}
       _hover={{ borderColor: props.borderColor }}
       px={5}
