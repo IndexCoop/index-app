@@ -90,7 +90,7 @@ function get0xEchangeKey(exchange: Exchange): string {
  * Returns exchange issuance quotes (incl. 0x trade data) or null
  *
  * @param buyToken            The token to buy
- * @param buySellTokenAmount  The amount of buy/sell token that should be acquired/sold
+ * @param setTokenAmount      The amount of set token that should be acquired/sold
  * @param sellToken           The token to sell
  * @param chainId             ID for current chain
  * @param library             Web3Provider instance
@@ -100,7 +100,7 @@ function get0xEchangeKey(exchange: Exchange): string {
  */
 export const getExchangeIssuanceQuotes = async (
   buyToken: Token,
-  buySellTokenAmount: BigNumber,
+  setTokenAmount: BigNumber,
   sellToken: Token,
   isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
@@ -193,7 +193,7 @@ export const getExchangeIssuanceQuotes = async (
     isIssuance,
     sellToken,
     buyToken,
-    buySellTokenAmount,
+    setTokenAmount,
     inputTokenAmount,
     positionQuotes
   )
@@ -201,7 +201,7 @@ export const getExchangeIssuanceQuotes = async (
   return {
     tradeData: positionQuotes,
     inputTokenAmount,
-    setTokenAmount: buySellTokenAmount,
+    setTokenAmount,
     gas: gasEstimate,
     gasPrice,
   }
