@@ -1,6 +1,7 @@
 import { BigNumber, ethers } from 'ethers'
 
 import { GmiIndex } from 'constants/tokens'
+
 import { getRequiredComponents } from './exchangeIssuanceQuotes'
 
 const provider = new ethers.providers.JsonRpcProvider(
