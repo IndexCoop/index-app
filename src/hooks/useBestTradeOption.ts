@@ -63,6 +63,36 @@ const isEligibleTradePair = (
   return tokenEligible
 }
 
+export const getSetTokenAmount = (
+  isIssuance: boolean,
+  sellTokenAmount: string,
+  sellTokenDecimals: number,
+  sellTokenPrice: number,
+  buyTokenPrice: number,
+  dexSwapOption: ZeroExData | null
+): BigNumber => {
+  if (!isIssuance) {
+    return toWei(sellTokenAmount, sellTokenDecimals)
+  }
+
+  let setTokenAmount = BigNumber.from(dexSwapOption?.buyAmount ?? '0')
+
+  const priceImpact =
+    dexSwapOption && dexSwapOption.estimatedPriceImpact
+      ? parseFloat(dexSwapOption.estimatedPriceImpact)
+      : 0
+
+  if (!dexSwapOption || priceImpact >= maxPriceImpact) {
+    // Recalculate the exchange issue/redeem quotes if not enough DEX liquidity
+    const sellTokenTotal = parseFloat(sellTokenAmount) * sellTokenPrice
+    const approxOutputAmount =
+      buyTokenPrice === 0 ? 0 : Math.floor(sellTokenTotal / buyTokenPrice)
+    setTokenAmount = toWei(approxOutputAmount, sellTokenDecimals)
+  }
+
+  return setTokenAmount
+}
+
 export const useBestTradeOption = () => {
   const { account, chainId, library } = useEthers()
 
@@ -94,45 +124,35 @@ export const useBestTradeOption = () => {
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
 
-    const tokenEligibleForLeveragedEI = isEligibleTradePair(
-      sellToken,
-      buyToken,
-      isIssuance
+    /* Determine set token amount based on different factors */
+    let setTokenAmount = getSetTokenAmount(
+      isIssuance,
+      sellTokenAmount,
+      sellToken.decimals,
+      sellTokenPrice,
+      buyTokenPrice,
+      dexSwapOption
     )
-
-    let tokenAmount =
-      isIssuance && dexSwapOption
-        ? BigNumber.from(dexSwapOption.buyAmount)
-        : toWei(sellTokenAmount, sellToken.decimals)
 
     /* Check for Exchange Issuance option */
     let exchangeIssuanceOption: ExchangeIssuanceQuote | null = null
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
 
-    const priceImpact =
-      dexSwapOption && dexSwapOption.estimatedPriceImpact
-        ? parseFloat(dexSwapOption.estimatedPriceImpact)
-        : 0
-
-    if (dexSwapError || priceImpact >= maxPriceImpact) {
-      // Recalculate the exchange issue/redeem quotes if not enough DEX liquidity
-      const sellTokenTotal = parseFloat(sellTokenAmount) * sellTokenPrice
-      const approxOutputAmount =
-        buyTokenPrice === 0 ? 0 : Math.floor(sellTokenTotal / buyTokenPrice)
-      tokenAmount = toWei(approxOutputAmount, sellToken.decimals)
-    }
-
     if (account) {
+      const tokenEligibleForLeveragedEI = isEligibleTradePair(
+        sellToken,
+        buyToken,
+        isIssuance
+      )
       if (tokenEligibleForLeveragedEI) {
         const setToken = isIssuance ? buyToken : sellToken
-        const setAmount = tokenAmount
 
         try {
           leveragedExchangeIssuanceOption =
             await getLeveragedExchangeIssuanceQuotes(
               setToken,
-              setAmount,
+              setTokenAmount,
               sellToken,
               isIssuance,
               chainId,
@@ -155,7 +175,7 @@ export const useBestTradeOption = () => {
           try {
             exchangeIssuanceOption = await getExchangeIssuanceQuotes(
               buyToken,
-              tokenAmount,
+              setTokenAmount,
               sellToken,
               isIssuance,
               chainId,

@@ -95,7 +95,8 @@ export const useTradeExchangeIssuance = (
         }
       } else {
         const isRedeemingNativeChainToken =
-          inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
+          outputToken.symbol === ETH.symbol ||
+          outputToken.symbol === MATIC.symbol
         const minOutputReceive = quoteData.inputTokenAmount
 
         if (isRedeemingNativeChainToken) {
