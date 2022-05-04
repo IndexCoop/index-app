@@ -147,7 +147,6 @@ export const getExchangeIssuanceQuotes = async (
     : sellToken.address
   const wethAddress = isPolygon ? WETH.polygonAddress : WETH.address
 
-
   const setTokenAddress = isIssuance ? buyTokenAddress : sellTokenAddress
   const setTokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
 
