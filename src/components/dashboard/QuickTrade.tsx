@@ -104,7 +104,10 @@ const QuickTrade = (props: {
       : ExchangeIssuanceLeveragedMainnetAddress
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
-  const buyTokenAmountFormatted = tradeInfoData[0]?.value ?? '0'
+  const buyTokenAmountFormatted =
+    (bestOption === QuickTradeBestOption.zeroEx
+      ? tradeInfoData[0]?.value
+      : tradeInfoData[1]?.value) ?? '0'
 
   const sellTokenFiat = formattedFiat(
     parseFloat(sellTokenAmount),
