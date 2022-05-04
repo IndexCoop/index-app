@@ -399,7 +399,7 @@ export const MNYeIndex: Token = {
   decimals: 18,
   url: 'mnye',
   image: mnyeLogo,
-  coingeckoId: 'usd-coin', // TODO: update coingecko id
+  coingeckoId: 'eth-market-neutral-yield',
   tokensetsId: 'mnye',
   tokenContextKey: 'mnye',
   fees: {
