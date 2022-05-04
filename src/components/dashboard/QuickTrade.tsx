@@ -24,8 +24,6 @@ import {
   zeroExRouterAddress,
 } from 'constants/ethContractAddresses'
 import {
-  ETH,
-  icETHIndex,
   indexNamesMainnet,
   indexNamesOptimism,
   indexNamesPolygon,
@@ -85,8 +83,6 @@ const QuickTrade = (props: {
   )
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
-
-  const [icEthErrorMessage, setIcEthErrorMessage] = useState<boolean>(false)
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -267,14 +263,6 @@ const QuickTrade = (props: {
     console.log('BESTOPTION', bestOption)
     setTradeInfoData(tradeInfoData)
     setBestOption(bestOption)
-
-    // Temporary needed as icETH EI can't provide more than 120 icETH
-    const shouldShowicEthErrorMessage =
-      !bestOptionIs0x &&
-      sellToken.symbol === ETH.symbol &&
-      buyToken.symbol === icETHIndex.symbol &&
-      toWei(sellTokenAmount, sellToken.decimals).gt(toWei(120))
-    setIcEthErrorMessage(shouldShowicEthErrorMessage)
   }, [bestOptionResult])
 
   useEffect(() => {
@@ -542,12 +530,6 @@ const QuickTrade = (props: {
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
             {bestOptionResult.error.message}
-          </Text>
-        )}
-        {icEthErrorMessage && (
-          <Text align='center' color={colors.icYellow} p='16px'>
-            You can only issue the displayed amout of icETH at a time (you'll
-            pay this amount of ETH, instead of the quantity you want to spend).
           </Text>
         )}
         <TradeButton
