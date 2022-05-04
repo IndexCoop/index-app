@@ -9,8 +9,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Copy .env vars
-        run: cp .env.prod .env
-      - name: Run unit tests
+      - name: Node version
+        uses: actions/setup-node@v1
         with:
-          test: yarn test
+          node-version: 14
+      - name: Copy .env vars
+        run: cp .env.default .env
+      - name: Install
+        run: yarn
+      - name: Run unit tests
+        run: yarn test
