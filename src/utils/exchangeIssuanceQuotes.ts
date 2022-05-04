@@ -160,30 +160,53 @@ export const getExchangeIssuanceQuotes = async (
   )
 
   let positionQuotes: string[] = []
-  let inputTokenAmount = BigNumber.from(0)
+  // Input for issuing / output for redeeming
+  let inputOutputTokenAmount = BigNumber.from(0)
+  // TODO: do we wannt .5% or 5% slippage?
   // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
   const isJPG = setTokenSymbol === JPGIndex.symbol
   const slippage = isJPG ? 0.08 : slippagePercentage / 100
 
   const quotePromises: Promise<any>[] = []
   components.forEach((component, index) => {
+    const sellAmount = positions[index]
     const buyAmount = positions[index]
-    const buyTokenAddress = component
-    const sellTokenAddress =
-      sellToken.symbol === 'ETH' ? wethAddress : sellToken.address
+    // TODO: check again if .address is correcct
+    const buyTokenAddress = isIssuance
+      ? component
+      : buyToken.symbol === 'ETH'
+      ? wethAddress
+      : buyToken.address
+    const sellTokenAddress = isIssuance
+      ? sellToken.symbol === 'ETH'
+        ? wethAddress
+        : sellToken.address
+      : component
 
     if (buyTokenAddress === sellTokenAddress) {
-      inputTokenAmount = inputTokenAmount.add(buyAmount)
+      inputOutputTokenAmount = isIssuance
+        ? inputOutputTokenAmount.add(buyAmount)
+        : inputOutputTokenAmount.add(sellAmount)
     } else {
-      const quotePromise = get0xQuote(
-        {
-          buyToken: buyTokenAddress,
-          sellToken: sellTokenAddress,
-          buyAmount: buyAmount.toString(),
-          slippagePercentage: slippage,
-        },
-        chainId ?? 1
-      )
+      const quotePromise = isIssuance
+        ? get0xQuote(
+            {
+              buyToken: buyTokenAddress,
+              sellToken: sellTokenAddress,
+              buyAmount: buyAmount.toString(),
+              slippagePercentage: slippage,
+            },
+            chainId ?? 1
+          )
+        : get0xQuote(
+            {
+              buyToken: buyTokenAddress,
+              sellToken: sellTokenAddress,
+              sellAmount: sellAmount.toString(),
+              slippagePercentage: slippage,
+            },
+            chainId ?? 1
+          )
       quotePromises.push(quotePromise)
     }
   })
@@ -192,17 +215,24 @@ export const getExchangeIssuanceQuotes = async (
   if (results.length < 1) return null
 
   positionQuotes = results.map((result) => result.data)
-  inputTokenAmount = results
-    .map((result) => BigNumber.from(result.sellAmount))
+  inputOutputTokenAmount = results
+    .map((result) =>
+      BigNumber.from(isIssuance ? result.sellAmount : result.buyAmount)
+    )
     .reduce((prevValue, currValue) => {
       return currValue.add(prevValue)
     })
 
   // Christn: I assume that this is the correct math to make sure we have enough weth to cover the slippage
   // based on the fact that the slippagePercentage is limited between 0.0 and 1.0 on the 0xApi
-  inputTokenAmount = inputTokenAmount
-    .mul(toWei(100, sellToken.decimals))
-    .div(toWei(100 - slippagePercentage, sellToken.decimals))
+  inputOutputTokenAmount = inputOutputTokenAmount
+    .mul(toWei(100, isIssuance ? sellToken.decimals : buyToken.decimals))
+    .div(
+      toWei(
+        100 - slippagePercentage,
+        isIssuance ? sellToken.decimals : buyToken.decimals
+      )
+    )
 
   const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(1800000)
 
@@ -216,13 +246,13 @@ export const getExchangeIssuanceQuotes = async (
     sellToken,
     buyToken,
     setTokenAmount,
-    inputTokenAmount,
+    inputOutputTokenAmount,
     positionQuotes
   )
 
   return {
     tradeData: positionQuotes,
-    inputTokenAmount,
+    inputTokenAmount: inputOutputTokenAmount,
     setTokenAmount,
     gas: gasEstimate,
     gasPrice,

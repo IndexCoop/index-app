@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 
 import { toWei } from 'utils'
 
-import { getSetTokenAmount,maxPriceImpact } from './useBestTradeOption'
+import { getSetTokenAmount, maxPriceImpact } from './useBestTradeOption'
 
 describe('getSetTokenAmount()', () => {
   test('should return correct set token amount if issuing - with dex option', async () => {
