@@ -86,6 +86,40 @@ function get0xEchangeKey(exchange: Exchange): string {
   }
 }
 
+export async function getRequiredComponents(
+  isIssuance: boolean,
+  setToken: string | undefined,
+  setTokenSymbol: string,
+  setTokenAmount: BigNumber,
+  chainId: ChainId | undefined,
+  signer: ethers.Signer | undefined
+) {
+  const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
+
+  const contract = await getExchangeIssuanceZeroExContract(
+    signer,
+    chainId ?? ChainId.Mainnet
+  )
+
+  const { components, positions } = isIssuance
+    ? await getRequiredIssuanceComponents(
+        contract,
+        issuanceModule.address,
+        issuanceModule.isDebtIssuance,
+        setToken ?? '',
+        setTokenAmount
+      )
+    : await getRequiredRedemptionComponents(
+        contract,
+        issuanceModule.address,
+        issuanceModule.isDebtIssuance,
+        setToken ?? '',
+        setTokenAmount
+      )
+
+  return { components, positions }
+}
+
 /**
  * Returns exchange issuance quotes (incl. 0x trade data) or null
  *
@@ -107,40 +141,29 @@ export const getExchangeIssuanceQuotes = async (
   library: ethers.providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
   const isPolygon = chainId === ChainId.Polygon
-  const tokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
-  const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
-
   const buyTokenAddress = isPolygon ? buyToken.polygonAddress : buyToken.address
   const sellTokenAddress = isPolygon
     ? sellToken.polygonAddress
     : sellToken.address
   const wethAddress = isPolygon ? WETH.polygonAddress : WETH.address
 
-  const contract = await getExchangeIssuanceZeroExContract(
-    library?.getSigner(),
-    chainId ?? ChainId.Mainnet
-  )
 
-  const { components, positions } = isIssuance
-    ? await getRequiredIssuanceComponents(
-        contract,
-        issuanceModule.address,
-        issuanceModule.isDebtIssuance,
-        buyTokenAddress ?? '',
-        buySellTokenAmount
-      )
-    : await getRequiredRedemptionComponents(
-        contract,
-        issuanceModule.address,
-        issuanceModule.isDebtIssuance,
-        sellTokenAddress ?? '',
-        buySellTokenAmount
-      )
+  const setTokenAddress = isIssuance ? buyTokenAddress : sellTokenAddress
+  const setTokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
+
+  const { components, positions } = await getRequiredComponents(
+    isIssuance,
+    setTokenAddress,
+    setTokenSymbol,
+    setTokenAmount,
+    chainId,
+    library?.getSigner()
+  )
 
   let positionQuotes: string[] = []
   let inputTokenAmount = BigNumber.from(0)
   // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
-  const isJPG = tokenSymbol === JPGIndex.symbol
+  const isJPG = setTokenSymbol === JPGIndex.symbol
   const slippage = isJPG ? 0.08 : slippagePercentage / 100
 
   const quotePromises: Promise<any>[] = []
