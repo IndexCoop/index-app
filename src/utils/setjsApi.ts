@@ -11,18 +11,27 @@ import {
   debtIssuanceModuleV2Address,
   debtIssuanceModuleV2OptimismAddress,
   debtIssuanceModuleV2PolygonAddress,
+  delegatedManagerFactoryOptimismAddress,
   governanceModuleAddress,
+  issuanceExtensionOptimismAddress,
   masterOracleAddress,
   navIssuanceModuleAddress,
+  perpV2BasisTradingModuleOptimismAddress,
+  perpV2BasisTradingModuleViewerOptimismAddress,
+  perpV2LeverageModuleOptimismAddress,
+  perpV2LeverageModuleViewerOptimismAddress,
   protocolViewerAddress,
   protocolViewerOptimismAddress,
   protocolViewerPolygonAddress,
   setTokenCreatorAddress,
   slippageIssuanceModuleAddress,
+  slippageIssuanceModuleOptimismAddress,
   slippageIssuanceModulePolygonAddress,
+  streamingFeeExtensionOptimismAddress,
   streamingFeeModuleAddress,
   streamingFeeModuleOptimismAddress,
   streamingFeeModulePolygonAddress,
+  tradeExtensionOptimismAddress,
   tradeModuleAddress,
   tradeModuleOptimismAddress,
   tradeModulePolygonAddress,
@@ -33,22 +42,6 @@ export async function getTokenSupply(
   productAddresses: string[],
   chainId: number
 ): Promise<SetDetails[]> {
-  if (
-    basicIssuanceModuleAddress === undefined ||
-    basicIssuanceModulePolygonAddress === undefined ||
-    streamingFeeModuleAddress === undefined ||
-    streamingFeeModulePolygonAddress === undefined ||
-    tradeModuleAddress === undefined ||
-    tradeModulePolygonAddress === undefined ||
-    debtIssuanceModuleAddress === undefined ||
-    debtIssuanceModuleV2Address === undefined ||
-    debtIssuanceModuleV2PolygonAddress === undefined
-  ) {
-    throw new Error(
-      'A set JS module address is not defined. Please check your .env file'
-    )
-  }
-
   const set = getSet(ethersProvider, chainId)
   let moduleAddresses
   if (chainId === MAINNET.chainId) {
@@ -86,27 +79,8 @@ export async function getSetDetails(
   productAddresses: string[],
   chainId: number
 ): Promise<SetDetails[]> {
-  if (
-    basicIssuanceModuleAddress === undefined ||
-    basicIssuanceModulePolygonAddress === undefined ||
-    streamingFeeModuleAddress === undefined ||
-    streamingFeeModulePolygonAddress === undefined ||
-    tradeModuleAddress === undefined ||
-    tradeModulePolygonAddress === undefined ||
-    debtIssuanceModuleAddress === undefined ||
-    debtIssuanceModuleV2Address === undefined ||
-    debtIssuanceModuleV2PolygonAddress === undefined ||
-    basicIssuanceModuleOptimismAddress === undefined ||
-    debtIssuanceModuleV2OptimismAddress === undefined ||
-    streamingFeeModuleOptimismAddress === undefined ||
-    tradeModuleOptimismAddress === undefined
-  ) {
-    throw new Error(
-      'A set JS module address is not defined. Please check your .env file'
-    )
-  }
-
   const set = getSet(ethersProvider, chainId)
+  console.log('set', set)
   let moduleAddresses: string[] = []
   switch (chainId) {
     case OPTIMISM.chainId:
@@ -115,7 +89,11 @@ export async function getSetDetails(
         streamingFeeModuleOptimismAddress,
         tradeModuleOptimismAddress,
         debtIssuanceModuleV2OptimismAddress,
+        slippageIssuanceModuleOptimismAddress,
+        perpV2BasisTradingModuleOptimismAddress,
+        perpV2LeverageModuleOptimismAddress,
       ]
+      console.log('OPTIMISM', moduleAddresses)
       break
     case POLYGON.chainId:
       moduleAddresses = [
@@ -141,36 +119,6 @@ export async function getSetDetails(
 }
 
 function getSet(ethersProvider: any, chainId: number): Set {
-  if (
-    !chainId ||
-    basicIssuanceModuleAddress === undefined ||
-    basicIssuanceModulePolygonAddress === undefined ||
-    controllerAddress === undefined ||
-    masterOracleAddress === undefined ||
-    navIssuanceModuleAddress === undefined ||
-    protocolViewerAddress === undefined ||
-    protocolViewerPolygonAddress === undefined ||
-    setTokenCreatorAddress === undefined ||
-    streamingFeeModuleAddress === undefined ||
-    streamingFeeModulePolygonAddress === undefined ||
-    tradeModuleAddress === undefined ||
-    tradeModulePolygonAddress === undefined ||
-    governanceModuleAddress === undefined ||
-    debtIssuanceModuleAddress === undefined ||
-    debtIssuanceModuleV2Address === undefined ||
-    debtIssuanceModuleV2PolygonAddress === undefined ||
-    slippageIssuanceModuleAddress === undefined ||
-    slippageIssuanceModulePolygonAddress === undefined ||
-    basicIssuanceModuleOptimismAddress === undefined ||
-    debtIssuanceModuleV2OptimismAddress === undefined ||
-    streamingFeeModuleOptimismAddress === undefined ||
-    tradeModuleOptimismAddress === undefined ||
-    protocolViewerOptimismAddress === undefined
-  ) {
-    throw new Error(
-      'A set JS address is not defined. Please check your .env file'
-    )
-  }
   let set
   switch (chainId) {
     case OPTIMISM.chainId:
@@ -187,7 +135,18 @@ function getSet(ethersProvider: any, chainId: number): Set {
         governanceModuleAddress: governanceModuleAddress,
         debtIssuanceModuleAddress: debtIssuanceModuleAddress,
         debtIssuanceModuleV2Address: debtIssuanceModuleV2OptimismAddress,
-        slippageIssuanceModuleAddress: slippageIssuanceModuleAddress,
+        slippageIssuanceModuleAddress: slippageIssuanceModuleOptimismAddress,
+        perpV2BasisTradingModuleAddress:
+          perpV2BasisTradingModuleOptimismAddress,
+        perpV2BasisTradingModuleViewerAddress:
+          perpV2BasisTradingModuleViewerOptimismAddress,
+        perpV2LeverageModuleAddress: perpV2BasisTradingModuleOptimismAddress,
+        perpV2LeverageModuleViewerAddress:
+          perpV2LeverageModuleViewerOptimismAddress,
+        delegatedManagerFactoryAddress: delegatedManagerFactoryOptimismAddress,
+        issuanceExtensionAddress: issuanceExtensionOptimismAddress,
+        streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
+        tradeExtensionAddress: tradeExtensionOptimismAddress,
       })
       break
     case POLYGON.chainId:
@@ -205,6 +164,17 @@ function getSet(ethersProvider: any, chainId: number): Set {
         debtIssuanceModuleAddress: debtIssuanceModuleAddress,
         debtIssuanceModuleV2Address: debtIssuanceModuleV2PolygonAddress,
         slippageIssuanceModuleAddress: slippageIssuanceModuleAddress,
+        perpV2BasisTradingModuleAddress:
+          perpV2BasisTradingModuleOptimismAddress,
+        perpV2BasisTradingModuleViewerAddress:
+          perpV2BasisTradingModuleViewerOptimismAddress,
+        perpV2LeverageModuleAddress: perpV2BasisTradingModuleOptimismAddress,
+        perpV2LeverageModuleViewerAddress:
+          perpV2LeverageModuleViewerOptimismAddress,
+        delegatedManagerFactoryAddress: delegatedManagerFactoryOptimismAddress,
+        issuanceExtensionAddress: issuanceExtensionOptimismAddress,
+        streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
+        tradeExtensionAddress: tradeExtensionOptimismAddress,
       })
       break
     default:
@@ -222,6 +192,17 @@ function getSet(ethersProvider: any, chainId: number): Set {
         debtIssuanceModuleAddress: debtIssuanceModuleAddress,
         debtIssuanceModuleV2Address: debtIssuanceModuleAddress,
         slippageIssuanceModuleAddress: slippageIssuanceModulePolygonAddress,
+        perpV2BasisTradingModuleAddress:
+          perpV2BasisTradingModuleOptimismAddress,
+        perpV2BasisTradingModuleViewerAddress:
+          perpV2BasisTradingModuleViewerOptimismAddress,
+        perpV2LeverageModuleAddress: perpV2BasisTradingModuleOptimismAddress,
+        perpV2LeverageModuleViewerAddress:
+          perpV2LeverageModuleViewerOptimismAddress,
+        delegatedManagerFactoryAddress: delegatedManagerFactoryOptimismAddress,
+        issuanceExtensionAddress: issuanceExtensionOptimismAddress,
+        streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
+        tradeExtensionAddress: tradeExtensionOptimismAddress,
       })
   }
   return set

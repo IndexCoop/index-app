@@ -96,3 +96,21 @@ export const tradeModuleOptimismAddress =
   '0x7215f38011C3e4058Ca3cF7d2b99033016EeFBD8'
 export const protocolViewerOptimismAddress =
   '0x4E05073560B9377E5561B559c9cADBbe7112e38f'
+export const slippageIssuanceModuleOptimismAddress =
+  '0x1db929398958082d2080AA1B501e460503f60467'
+export const perpV2BasisTradingModuleOptimismAddress =
+  '0x2C229EE3aD3fdC0e581d51BaA6b6f45CC9A6Ca39'
+export const perpV2BasisTradingModuleViewerOptimismAddress =
+  '0x3EBEe70505d799ddc6A92Af32A83925EEc4fA8B6'
+export const perpV2LeverageModuleOptimismAddress =
+  '0x659641F71525b02bFe7203F3e5113c48E6736540'
+export const perpV2LeverageModuleViewerOptimismAddress =
+  '0xea1bD0ae3Ec45e32a6090eDb445dACFc083A8db6'
+export const delegatedManagerFactoryOptimismAddress =
+  '0xB0051e20A2eD91AF525A2eDc54AEd6735e7fe892'
+export const issuanceExtensionOptimismAddress =
+  '0x3138293423c06D81Cc9Ae78FbCD3F7DB6323B83a'
+export const streamingFeeExtensionOptimismAddress =
+  '0x6a7aE5124677314dc32C5ba3004CbFC9c7Febff0'
+export const tradeExtensionOptimismAddress =
+  '0x7215f38011C3e4058Ca3cF7d2b99033016EeFBD8'
