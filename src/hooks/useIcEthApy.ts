@@ -9,7 +9,11 @@ export const useIcEthApy = (): { apy: BigNumber } => {
 
   const fetchApy = useCallback(async () => {
     try {
-      const resp = await fetch('https://api.indexcoop.com/iceth/apy')
+      const resp = await fetch('https://api.indexcoop.com/iceth/apy', {
+        headers: {
+          Origin: 'https://app.indexcoop.com',
+        },
+      })
       const { apy } = await resp.json()
       setApy(toWei(apy))
       console.log(apy)
