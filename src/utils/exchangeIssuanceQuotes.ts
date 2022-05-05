@@ -313,6 +313,70 @@ export function getLevEIPaymentTokenAddress(
   return paymentTokenAddress ?? ''
 }
 
+export async function getSwapDataAndPaymentTokenAmount(
+  setToken: Token,
+  collateralToken: string,
+  collateralShortfall: BigNumber,
+  leftoverCollateral: BigNumber,
+  paymentTokenAddress: string,
+  includedSources: string,
+  isIssuance: boolean,
+  chainId: number
+): Promise<{
+  swapDataPaymentToken: SwapData
+  paymentTokenAmount: BigNumber
+}> {
+  const tokenSymbol = setToken.symbol
+  // By default the input/output swap data can be empty (as it will be ignored)
+  let swapDataPaymentToken: SwapData = {
+    exchange: Exchange.None,
+    path: [],
+    fees: [],
+    pool: '0x0000000000000000000000000000000000000000',
+  }
+
+  const issuanceParams = {
+    buyToken: collateralToken,
+    buyAmount: collateralShortfall.toString(),
+    sellToken: paymentTokenAddress,
+    includedSources,
+  }
+
+  const redeemingParams = {
+    buyToken: paymentTokenAddress,
+    sellAmount: leftoverCollateral.toString(),
+    sellToken: collateralToken,
+    includedSources,
+  }
+
+  // Default if collateral token should be equal to payment token
+  let paymentTokenAmount = isIssuance ? collateralShortfall : leftoverCollateral
+
+  // Only fetch input/output swap data if collateral token is not the same as payment token
+  if (collateralToken !== paymentTokenAddress) {
+    const result = await getSwapData(
+      isIssuance ? issuanceParams : redeemingParams,
+      chainId
+    )
+    if (result) {
+      const { swapData, zeroExQuote } = result
+      swapDataPaymentToken = swapData
+      paymentTokenAmount = isIssuance
+        ? BigNumber.from(zeroExQuote.sellAmount)
+        : BigNumber.from(zeroExQuote.buyAmount)
+    }
+  }
+
+  if (tokenSymbol === icETHIndex.symbol) {
+    // just use the static versions here
+    swapDataPaymentToken = isIssuance
+      ? inputSwapData[tokenSymbol][ETH.symbol]
+      : outputSwapData[tokenSymbol][ETH.symbol]
+  }
+
+  return { swapDataPaymentToken, paymentTokenAmount }
+}
+
 export const getLeveragedExchangeIssuanceQuotes = async (
   setToken: Token,
   setTokenAmount: BigNumber,
@@ -369,51 +433,17 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     chainId
   )
 
-  const issuanceParams = {
-    buyToken: leveragedTokenData.collateralToken,
-    buyAmount: collateralShortfall.toString(),
-    sellToken: paymentTokenAddress,
-    includedSources,
-  }
-
-  const redeemingParams = {
-    buyToken: paymentTokenAddress,
-    sellAmount: leftoverCollateral.toString(),
-    sellToken: leveragedTokenData.collateralToken,
-    includedSources,
-  }
-
-  // By default the input/output swap data can be empty (as it will be ignored)
-  let swapDataPaymentToken: SwapData = {
-    exchange: Exchange.None,
-    path: [],
-    fees: [],
-    pool: '0x0000000000000000000000000000000000000000',
-  }
-  // Default if collateral token should be equal to payment token
-  let paymentTokenAmount = isIssuance ? collateralShortfall : leftoverCollateral
-
-  // Only fetch input/output swap data if collateral token is not the same as payment token
-  if (leveragedTokenData.collateralToken !== paymentTokenAddress) {
-    const result = await getSwapData(
-      isIssuance ? issuanceParams : redeemingParams,
+  const { swapDataPaymentToken, paymentTokenAmount } =
+    await getSwapDataAndPaymentTokenAmount(
+      setToken,
+      leveragedTokenData.collateralToken,
+      collateralShortfall,
+      leftoverCollateral,
+      paymentTokenAddress,
+      includedSources,
+      isIssuance,
       chainId
     )
-    if (result) {
-      const { swapData, zeroExQuote } = result
-      swapDataPaymentToken = swapData
-      paymentTokenAmount = isIssuance
-        ? BigNumber.from(zeroExQuote.sellAmount)
-        : BigNumber.from(zeroExQuote.buyAmount)
-    }
-  }
-
-  if (isIcEth) {
-    // just use the static versions here
-    swapDataPaymentToken = isIssuance
-      ? inputSwapData[tokenSymbol][ETH.symbol]
-      : outputSwapData[tokenSymbol][ETH.symbol]
-  }
 
   const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
 

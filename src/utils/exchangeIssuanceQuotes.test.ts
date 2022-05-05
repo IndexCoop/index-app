@@ -1,11 +1,20 @@
 import { BigNumber, ethers } from 'ethers'
 
-import { ETH, GmiIndex, icETHIndex, MATIC } from 'constants/tokens'
+import {
+  ETH,
+  GmiIndex,
+  icETHIndex,
+  IEthereumFLIP,
+  MATIC,
+} from 'constants/tokens'
 
 import {
+  Exchange,
   getIncloudedSources,
   getLevEIPaymentTokenAddress,
   getRequiredComponents,
+  getSwapDataAndPaymentTokenAmount,
+  SwapData,
 } from './exchangeIssuanceQuotes'
 
 const provider = new ethers.providers.JsonRpcProvider(
@@ -116,5 +125,55 @@ describe('getRequiredComponents()', () => {
     expect(positions.length).toBeGreaterThan(0)
     expect(components.length).toBeGreaterThan(0)
     expect(positions.length).toEqual(components.length)
+  })
+})
+
+describe('getSwapDataAndPaymentTokenAmount()', () => {
+  test('should return default swap data when collateral token is payment token - and collateral shortfall as payment token amount when issuing', async () => {
+    const defaultSwapData: SwapData = {
+      exchange: Exchange.None,
+      path: [],
+      fees: [],
+      pool: '0x0000000000000000000000000000000000000000',
+    }
+    const collateralShortfall = BigNumber.from(1)
+
+    const { swapDataPaymentToken, paymentTokenAmount } =
+      await getSwapDataAndPaymentTokenAmount(
+        IEthereumFLIP,
+        MATIC.polygonAddress!,
+        collateralShortfall,
+        BigNumber.from(0),
+        MATIC.polygonAddress!,
+        '',
+        true,
+        137
+      )
+    expect(swapDataPaymentToken).toEqual(defaultSwapData)
+    expect(paymentTokenAmount).toEqual(collateralShortfall)
+  })
+
+  test('should return default swap data when collateral token is payment token - and left over collateral as payment token amount when redeemig', async () => {
+    const defaultSwapData: SwapData = {
+      exchange: Exchange.None,
+      path: [],
+      fees: [],
+      pool: '0x0000000000000000000000000000000000000000',
+    }
+    const leftoverCollateral = BigNumber.from(1)
+
+    const { swapDataPaymentToken, paymentTokenAmount } =
+      await getSwapDataAndPaymentTokenAmount(
+        IEthereumFLIP,
+        MATIC.polygonAddress!,
+        BigNumber.from(0),
+        leftoverCollateral,
+        MATIC.polygonAddress!,
+        '',
+        false,
+        137
+      )
+    expect(swapDataPaymentToken).toEqual(defaultSwapData)
+    expect(paymentTokenAmount).toEqual(leftoverCollateral)
   })
 })
