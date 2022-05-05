@@ -474,6 +474,7 @@ const QuickTrade = (props: {
       py='20px'
       px={['16px', paddingX]}
       height={'100%'}
+      zIndex='-1'
     >
       <Flex>
         <Text fontSize='24px' fontWeight='700'>

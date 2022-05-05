@@ -141,7 +141,7 @@ const LiquidityMining = () => {
             {showFarms &&
               programs.map((program, index) => {
                 return (
-                  <Box key={index} my='10'>
+                  <Box key={index} my='10' zIndex='-1'>
                     <MiningProgram program={program} />
                   </Box>
                 )

@@ -138,7 +138,7 @@ const ProductPage = (props: {
             tokenData={props.tokenData}
           />
         </Box>
-        <Flex direction='column'>
+        <Flex direction='column' zIndex='-1'>
           <Flex direction={['column', 'column', 'column', 'row']}>
             <MarketChart
               marketData={priceChartData}

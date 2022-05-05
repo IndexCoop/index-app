@@ -80,6 +80,7 @@ const AllocationChart = (props: { positions: Position[] }) => {
       direction='column'
       pt='20px'
       px='40px'
+      zIndex='-1'
     >
       <Text fontSize='24px' fontWeight='700'>
         Distribution of Products
