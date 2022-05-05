@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { toWei } from 'utils'
-
 export const useIcEthApy = (): { apy: BigNumber } => {
   const [apy, setApy] = useState(BigNumber.from(0))
 
@@ -15,7 +13,7 @@ export const useIcEthApy = (): { apy: BigNumber } => {
         },
       })
       const { apy } = await resp.json()
-      setApy(toWei(apy))
+      setApy(BigNumber.from(apy))
       console.log(apy)
     } catch (err) {
       console.log(err)
