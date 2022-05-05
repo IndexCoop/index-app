@@ -1,3 +1,5 @@
+import { useICColorMode } from 'styles/colors'
+
 import { Flex, Image, Link } from '@chakra-ui/react'
 import { useColorMode } from '@chakra-ui/system'
 
@@ -9,28 +11,38 @@ import indexLogoWhite from 'assets/index-logo-white.png'
 import Navigation from './Navigation'
 
 const Header = () => {
+  const { isDarkMode } = useICColorMode()
+  const backgroundColor = isDarkMode
+    ? 'rgba(0, 0, 0, 0.6)'
+    : 'rgba(255, 255, 255, 0.82)'
+
   return (
     <Flex
-      justifyContent='space-between'
+      as='header'
+      backgroundColor={backgroundColor}
+      backdropFilter='saturate(180%) blur(5px)'
       p={[
-        '16px 8px 8px 24px',
+        '16px 16px 16px 24px',
         null,
-        '42px 60px 60px 60px',
-        '64px 80px 80px 80px',
+        '32px 60px 32px 60px',
+        '32px 80px 32px 80px',
       ]}
+      position='fixed'
+      top='0px'
       w='100vw'
-      alignItems='center'
     >
-      <Link
-        href='https://indexcoop.com/'
-        _hover={{
-          textDecoration: 'none',
-        }}
-        flexGrow='1'
-      >
-        <Logo />
-      </Link>
-      <Navigation />
+      <Flex align='center' justifyContent='space-between' w='100%'>
+        <Link
+          href='https://indexcoop.com/'
+          _hover={{
+            textDecoration: 'none',
+          }}
+          flexGrow='1'
+        >
+          <Logo />
+        </Link>
+        <Navigation />
+      </Flex>
     </Flex>
   )
 }
