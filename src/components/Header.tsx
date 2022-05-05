@@ -30,6 +30,7 @@ const Header = () => {
       position='fixed'
       top='0px'
       w='100vw'
+      zIndex='2'
     >
       <Flex align='center' justifyContent='space-between' w='100%'>
         <Link
