@@ -4,6 +4,6 @@ import App from './App'
 
 test('renders Connect link', () => {
   render(<App />)
-  const linkElement = screen.getAllByText(/Connect/i)
+  const linkElement = screen.getAllByText(/Wrong Network/i)
   expect(linkElement.length).toBe(2)
 })
