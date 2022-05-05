@@ -8,7 +8,7 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/exchangeIssuanceLeveragedData'
-import { ETH, JPGIndex, Token, WETH } from 'constants/tokens'
+import { ETH, icETHIndex, JPGIndex, MATIC, Token, WETH } from 'constants/tokens'
 import {
   getExchangeIssuanceLeveragedContract,
   getLeveragedTokenData,
@@ -289,6 +289,30 @@ async function getLevTokenData(
   )
 }
 
+export function getLevEIPaymentTokenAddress(
+  paymentToken: Token,
+  isIssuance: boolean,
+  chainId: number
+): string {
+  if (paymentToken.symbol === ETH.symbol) {
+    return 'ETH'
+  }
+
+  if (paymentToken.symbol === icETHIndex.symbol && !isIssuance) {
+    // TODO: should this always be the collateralToken?
+    // paymentTokenAddress = leveragedTokenData.collateralToken
+    return '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
+  }
+
+  if (chainId === ChainId.Polygon && paymentToken.symbol === MATIC.symbol) {
+    const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
+    return WMATIC_ADDRESS
+  }
+
+  const paymentTokenAddress = getAddressForToken(paymentToken, chainId)
+  return paymentTokenAddress ?? ''
+}
+
 export const getLeveragedExchangeIssuanceQuotes = async (
   setToken: Token,
   setTokenAmount: BigNumber,
@@ -332,28 +356,17 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     collateralObtainedOrSold
   )
 
-  const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
-  let paymentTokenAddress =
-    chainId === ChainId.Polygon && paymentToken.symbol === 'MATIC'
-      ? WMATIC_ADDRESS
-      : chainId === ChainId.Polygon
-      ? paymentToken.polygonAddress
-      : paymentToken.address
-  if (paymentToken.symbol === 'ETH') {
-    paymentTokenAddress = 'ETH'
-  }
+  let paymentTokenAddress = getLevEIPaymentTokenAddress(
+    paymentToken,
+    isIssuance,
+    chainId
+  )
 
   if (isIcEth) {
     // just using the static versions
     swapDataDebtCollateral = isIssuance
       ? debtCollateralSwapData[tokenSymbol]
       : collateralDebtSwapData[tokenSymbol]
-
-    if (!isIssuance) {
-      // TODO: should this always be the collateralToken?
-      // paymentTokenAddress = leveragedTokenData.collateralToken
-      paymentTokenAddress = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
-    }
   }
 
   const issuanceParams = {
