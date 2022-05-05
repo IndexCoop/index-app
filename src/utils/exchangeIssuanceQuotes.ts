@@ -26,6 +26,7 @@ import {
   getSwapDataCollateralDebt,
   getSwapDataDebtCollateral,
 } from 'utils/swapData'
+import { getAddressForToken } from 'utils/tokens'
 import { get0xQuote } from 'utils/zeroExUtils'
 
 // Slippage hard coded to .5% (will be increased if there are revert issues)
@@ -259,6 +260,35 @@ export const getExchangeIssuanceQuotes = async (
   }
 }
 
+// Returns a comma separated string of sources to be included for 0x API calls
+export function getIncloudedSources(isIcEth: boolean): string {
+  // TODO: multi sources?
+  //TODO: Allow Quickswap and UniV3
+  const curve = get0xEchangeKey(Exchange.Curve)
+  const sushi = get0xEchangeKey(Exchange.Sushiswap)
+  let includedSources: string = isIcEth
+    ? [curve].toString()
+    : [sushi].toString()
+  return includedSources
+}
+
+async function getLevTokenData(
+  setToken: Token,
+  setTokenAmount: BigNumber,
+  isIssuance: boolean,
+  chainId: number,
+  signer: ethers.providers.JsonRpcSigner | undefined
+): Promise<LeveragedTokenData> {
+  const contract = await getExchangeIssuanceLeveragedContract(signer, chainId)
+  const setTokenAddress = getAddressForToken(setToken, chainId)
+  return await getLeveragedTokenData(
+    contract,
+    setTokenAddress ?? '',
+    setTokenAmount,
+    isIssuance
+  )
+}
+
 export const getLeveragedExchangeIssuanceQuotes = async (
   setToken: Token,
   setTokenAmount: BigNumber,
@@ -269,27 +299,15 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const tokenSymbol = setToken.symbol
   const isIcEth = tokenSymbol === 'icETH'
+  const includedSources = getIncloudedSources(isIcEth)
 
-  const setTokenAddress =
-    chainId === ChainId.Polygon ? setToken.polygonAddress : setToken.address
-  const contract = await getExchangeIssuanceLeveragedContract(
-    library?.getSigner(),
-    chainId
-  )
-  const leveragedTokenData: LeveragedTokenData = await getLeveragedTokenData(
-    contract,
-    setTokenAddress ?? '',
+  const leveragedTokenData = await getLevTokenData(
+    setToken,
     setTokenAmount,
-    isIssuance
+    isIssuance,
+    chainId,
+    library?.getSigner()
   )
-
-  // TODO: multi sources?
-  //TODO: Allow Quickswap and UniV3
-  const curve = get0xEchangeKey(Exchange.Curve)
-  const sushi = get0xEchangeKey(Exchange.Sushiswap)
-  let includedSources: string = isIcEth
-    ? [curve].toString()
-    : [sushi].toString()
 
   let debtCollateralResult = isIssuance
     ? await getSwapDataDebtCollateral(

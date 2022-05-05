@@ -2,13 +2,32 @@ import { BigNumber, ethers } from 'ethers'
 
 import { GmiIndex } from 'constants/tokens'
 
-import { getRequiredComponents } from './exchangeIssuanceQuotes'
+import {
+  getIncloudedSources,
+  getRequiredComponents,
+} from './exchangeIssuanceQuotes'
 
 const provider = new ethers.providers.JsonRpcProvider(
   process.env.REACT_APP_MAINNET_ALCHEMY_API,
   1
 )
 const signer = provider.getSigner('0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045')
+
+describe('getIncloudedSources()', () => {
+  test('should return Curve only for icETH', async () => {
+    const isIcEth = true
+    const includedSources = getIncloudedSources(isIcEth)
+    expect(includedSources).toBeDefined()
+    expect(includedSources).toEqual('Curve')
+  })
+
+  test('should return all valid exchanges for any other token', async () => {
+    const isIcEth = false
+    const includedSources = getIncloudedSources(isIcEth)
+    expect(includedSources).toBeDefined()
+    expect(includedSources).toEqual('SushiSwap')
+  })
+})
 
 describe('getRequiredComponents()', () => {
   test('should return components and positions for issuance', async () => {
