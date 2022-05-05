@@ -356,18 +356,18 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     collateralObtainedOrSold
   )
 
-  let paymentTokenAddress = getLevEIPaymentTokenAddress(
-    paymentToken,
-    isIssuance,
-    chainId
-  )
-
   if (isIcEth) {
     // just using the static versions
     swapDataDebtCollateral = isIssuance
       ? debtCollateralSwapData[tokenSymbol]
       : collateralDebtSwapData[tokenSymbol]
   }
+
+  let paymentTokenAddress = getLevEIPaymentTokenAddress(
+    paymentToken,
+    isIssuance,
+    chainId
+  )
 
   const issuanceParams = {
     buyToken: leveragedTokenData.collateralToken,
