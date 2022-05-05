@@ -8,7 +8,7 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/exchangeIssuanceLeveragedData'
-import { ETH, JPGIndex, Token, WETH } from 'constants/tokens'
+import { ETH, icETHIndex, JPGIndex, MATIC, Token, WETH } from 'constants/tokens'
 import {
   getExchangeIssuanceLeveragedContract,
   getLeveragedTokenData,
@@ -26,6 +26,7 @@ import {
   getSwapDataCollateralDebt,
   getSwapDataDebtCollateral,
 } from 'utils/swapData'
+import { getAddressForToken } from 'utils/tokens'
 import { get0xQuote } from 'utils/zeroExUtils'
 
 // Slippage hard coded to .5% (will be increased if there are revert issues)
@@ -259,6 +260,123 @@ export const getExchangeIssuanceQuotes = async (
   }
 }
 
+// Returns a comma separated string of sources to be included for 0x API calls
+export function getIncloudedSources(isIcEth: boolean): string {
+  // TODO: multi sources?
+  //TODO: Allow Quickswap and UniV3
+  const curve = get0xEchangeKey(Exchange.Curve)
+  const sushi = get0xEchangeKey(Exchange.Sushiswap)
+  let includedSources: string = isIcEth
+    ? [curve].toString()
+    : [sushi].toString()
+  return includedSources
+}
+
+async function getLevTokenData(
+  setToken: Token,
+  setTokenAmount: BigNumber,
+  isIssuance: boolean,
+  chainId: number,
+  signer: ethers.providers.JsonRpcSigner | undefined
+): Promise<LeveragedTokenData> {
+  const contract = await getExchangeIssuanceLeveragedContract(signer, chainId)
+  const setTokenAddress = getAddressForToken(setToken, chainId)
+  return await getLeveragedTokenData(
+    contract,
+    setTokenAddress ?? '',
+    setTokenAmount,
+    isIssuance
+  )
+}
+
+export function getLevEIPaymentTokenAddress(
+  paymentToken: Token,
+  isIssuance: boolean,
+  chainId: number
+): string {
+  if (paymentToken.symbol === ETH.symbol) {
+    return 'ETH'
+  }
+
+  if (paymentToken.symbol === icETHIndex.symbol && !isIssuance) {
+    // TODO: should this always be the collateralToken?
+    // paymentTokenAddress = leveragedTokenData.collateralToken
+    return '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
+  }
+
+  if (chainId === ChainId.Polygon && paymentToken.symbol === MATIC.symbol) {
+    const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
+    return WMATIC_ADDRESS
+  }
+
+  const paymentTokenAddress = getAddressForToken(paymentToken, chainId)
+  return paymentTokenAddress ?? ''
+}
+
+export async function getSwapDataAndPaymentTokenAmount(
+  setToken: Token,
+  collateralToken: string,
+  collateralShortfall: BigNumber,
+  leftoverCollateral: BigNumber,
+  paymentTokenAddress: string,
+  includedSources: string,
+  isIssuance: boolean,
+  chainId: number
+): Promise<{
+  swapDataPaymentToken: SwapData
+  paymentTokenAmount: BigNumber
+}> {
+  const tokenSymbol = setToken.symbol
+  // By default the input/output swap data can be empty (as it will be ignored)
+  let swapDataPaymentToken: SwapData = {
+    exchange: Exchange.None,
+    path: [],
+    fees: [],
+    pool: '0x0000000000000000000000000000000000000000',
+  }
+
+  const issuanceParams = {
+    buyToken: collateralToken,
+    buyAmount: collateralShortfall.toString(),
+    sellToken: paymentTokenAddress,
+    includedSources,
+  }
+
+  const redeemingParams = {
+    buyToken: paymentTokenAddress,
+    sellAmount: leftoverCollateral.toString(),
+    sellToken: collateralToken,
+    includedSources,
+  }
+
+  // Default if collateral token should be equal to payment token
+  let paymentTokenAmount = isIssuance ? collateralShortfall : leftoverCollateral
+
+  // Only fetch input/output swap data if collateral token is not the same as payment token
+  if (collateralToken !== paymentTokenAddress) {
+    const result = await getSwapData(
+      isIssuance ? issuanceParams : redeemingParams,
+      chainId
+    )
+    if (result) {
+      const { swapData, zeroExQuote } = result
+      swapDataPaymentToken = swapData
+      paymentTokenAmount = isIssuance
+        ? BigNumber.from(zeroExQuote.sellAmount)
+        : BigNumber.from(zeroExQuote.buyAmount)
+    }
+  }
+
+  if (tokenSymbol === icETHIndex.symbol) {
+    // just use the static versions here
+    swapDataPaymentToken = isIssuance
+      ? inputSwapData[tokenSymbol][ETH.symbol]
+      : outputSwapData[tokenSymbol][ETH.symbol]
+  }
+
+  return { swapDataPaymentToken, paymentTokenAmount }
+}
+
 export const getLeveragedExchangeIssuanceQuotes = async (
   setToken: Token,
   setTokenAmount: BigNumber,
@@ -269,27 +387,15 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const tokenSymbol = setToken.symbol
   const isIcEth = tokenSymbol === 'icETH'
+  const includedSources = getIncloudedSources(isIcEth)
 
-  const setTokenAddress =
-    chainId === ChainId.Polygon ? setToken.polygonAddress : setToken.address
-  const contract = await getExchangeIssuanceLeveragedContract(
-    library?.getSigner(),
-    chainId
-  )
-  const leveragedTokenData: LeveragedTokenData = await getLeveragedTokenData(
-    contract,
-    setTokenAddress ?? '',
+  const leveragedTokenData = await getLevTokenData(
+    setToken,
     setTokenAmount,
-    isIssuance
+    isIssuance,
+    chainId,
+    library?.getSigner()
   )
-
-  // TODO: multi sources?
-  //TODO: Allow Quickswap and UniV3
-  const curve = get0xEchangeKey(Exchange.Curve)
-  const sushi = get0xEchangeKey(Exchange.Sushiswap)
-  let includedSources: string = isIcEth
-    ? [curve].toString()
-    : [sushi].toString()
 
   let debtCollateralResult = isIssuance
     ? await getSwapDataDebtCollateral(
@@ -314,75 +420,30 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     collateralObtainedOrSold
   )
 
-  const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
-  let paymentTokenAddress =
-    chainId === ChainId.Polygon && paymentToken.symbol === 'MATIC'
-      ? WMATIC_ADDRESS
-      : chainId === ChainId.Polygon
-      ? paymentToken.polygonAddress
-      : paymentToken.address
-  if (paymentToken.symbol === 'ETH') {
-    paymentTokenAddress = 'ETH'
-  }
-
   if (isIcEth) {
     // just using the static versions
     swapDataDebtCollateral = isIssuance
       ? debtCollateralSwapData[tokenSymbol]
       : collateralDebtSwapData[tokenSymbol]
-
-    if (!isIssuance) {
-      // TODO: should this always be the collateralToken?
-      // paymentTokenAddress = leveragedTokenData.collateralToken
-      paymentTokenAddress = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
-    }
   }
 
-  const issuanceParams = {
-    buyToken: leveragedTokenData.collateralToken,
-    buyAmount: collateralShortfall.toString(),
-    sellToken: paymentTokenAddress,
-    includedSources,
-  }
+  let paymentTokenAddress = getLevEIPaymentTokenAddress(
+    paymentToken,
+    isIssuance,
+    chainId
+  )
 
-  const redeemingParams = {
-    buyToken: paymentTokenAddress,
-    sellAmount: leftoverCollateral.toString(),
-    sellToken: leveragedTokenData.collateralToken,
-    includedSources,
-  }
-
-  // By default the input/output swap data can be empty (as it will be ignored)
-  let swapDataPaymentToken: SwapData = {
-    exchange: Exchange.None,
-    path: [],
-    fees: [],
-    pool: '0x0000000000000000000000000000000000000000',
-  }
-  // Default if collateral token should be equal to payment token
-  let paymentTokenAmount = isIssuance ? collateralShortfall : leftoverCollateral
-
-  // Only fetch input/output swap data if collateral token is not the same as payment token
-  if (leveragedTokenData.collateralToken !== paymentTokenAddress) {
-    const result = await getSwapData(
-      isIssuance ? issuanceParams : redeemingParams,
+  const { swapDataPaymentToken, paymentTokenAmount } =
+    await getSwapDataAndPaymentTokenAmount(
+      setToken,
+      leveragedTokenData.collateralToken,
+      collateralShortfall,
+      leftoverCollateral,
+      paymentTokenAddress,
+      includedSources,
+      isIssuance,
       chainId
     )
-    if (result) {
-      const { swapData, zeroExQuote } = result
-      swapDataPaymentToken = swapData
-      paymentTokenAmount = isIssuance
-        ? BigNumber.from(zeroExQuote.sellAmount)
-        : BigNumber.from(zeroExQuote.buyAmount)
-    }
-  }
-
-  if (isIcEth) {
-    // just use the static versions here
-    swapDataPaymentToken = isIssuance
-      ? inputSwapData[tokenSymbol][ETH.symbol]
-      : outputSwapData[tokenSymbol][ETH.symbol]
-  }
 
   const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
 

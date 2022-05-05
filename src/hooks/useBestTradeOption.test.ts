@@ -55,7 +55,6 @@ describe('getSetTokenAmount()', () => {
       dexSwapOption
     )
 
-    console.log(expectedSetTokenAmount.toString())
     expect(setTokenAmount.toString()).toEqual(expectedSetTokenAmount.toString())
   })
 
