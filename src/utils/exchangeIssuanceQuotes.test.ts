@@ -29,6 +29,7 @@ describe('getRequiredComponents()', () => {
 
     expect(positions.length).toBeGreaterThan(0)
     expect(components.length).toBeGreaterThan(0)
+    expect(positions.length).toEqual(components.length)
   })
 
   test('should return components and positions for redeeming', async () => {
@@ -49,5 +50,6 @@ describe('getRequiredComponents()', () => {
 
     expect(positions.length).toBeGreaterThan(0)
     expect(components.length).toBeGreaterThan(0)
+    expect(positions.length).toEqual(components.length)
   })
 })
