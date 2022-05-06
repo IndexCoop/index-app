@@ -410,15 +410,9 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       )
 
   if (!debtCollateralResult) return null
+
   let { swapDataDebtCollateral, collateralObtainedOrSold } =
     debtCollateralResult
-
-  const collateralShortfall = leveragedTokenData.collateralAmount.sub(
-    collateralObtainedOrSold
-  )
-  const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
-    collateralObtainedOrSold
-  )
 
   if (isIcEth) {
     // just using the static versions
@@ -426,6 +420,15 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       ? debtCollateralSwapData[tokenSymbol]
       : collateralDebtSwapData[tokenSymbol]
   }
+
+  // Relevant when issuing
+  const collateralShortfall = leveragedTokenData.collateralAmount.sub(
+    collateralObtainedOrSold
+  )
+  // Relevant when redeeming
+  const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
+    collateralObtainedOrSold
+  )
 
   let paymentTokenAddress = getLevEIPaymentTokenAddress(
     paymentToken,
