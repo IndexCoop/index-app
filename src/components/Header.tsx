@@ -62,7 +62,7 @@ const Logo = () => {
       src={logo}
       alt='Index Coop Logo'
       minWidth='24px'
-      height='40px'
+      height='30px'
       mr={['', '', '', '20px']}
     />
   )
