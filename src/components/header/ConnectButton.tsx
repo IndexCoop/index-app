@@ -1,6 +1,12 @@
 import { colors } from 'styles/colors'
 
-import { Button, Flex, Text, useDisclosure } from '@chakra-ui/react'
+import {
+  Button,
+  Flex,
+  Text,
+  useColorModeValue,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { useEthers, useLookupAddress } from '@usedapp/core'
 
 import { useNetwork } from 'hooks/useNetwork'
@@ -15,6 +21,11 @@ const ConnectButton = () => {
   const { changeNetwork } = useNetwork()
   let ens = useLookupAddress()
 
+  const backgroundColor = useColorModeValue(colors.black, colors.white)
+  const textColor = useColorModeValue(colors.white, colors.black)
+  const fontSize = 'md'
+  const fontWeight = 700
+
   const supportedNetwork = isSupportedNetwork(chainId ?? -1)
 
   const handleConnectWallet = () => {
@@ -24,10 +35,6 @@ const ConnectButton = () => {
   const handleDisconnect = () => {
     deactivate()
     onClose()
-  }
-
-  const handleAccount = () => {
-    return formatAccountName()
   }
 
   const onWrongNetworkButtonClicked = () => {
@@ -50,12 +57,12 @@ const ConnectButton = () => {
       <div>
         <Button
           onClick={handleConnectWallet}
-          bg={colors.icYellow}
+          bg={backgroundColor}
           border='0'
           borderRadius='8'
-          color={colors.black}
-          fontSize='lg'
-          fontWeight='700'
+          color={textColor}
+          fontSize={fontSize}
+          fontWeight={fontWeight}
           padding='6px 30px'
           _hover={{
             transform:
@@ -74,20 +81,20 @@ const ConnectButton = () => {
     return (
       <Flex direction={['column', 'column', 'row', 'row']} alignItems='center'>
         <Text
-          fontSize='lg'
+          fontSize={fontSize}
           m={'0 24px'}
           display={['none', 'none', 'flex', 'flex']}
         >
-          {handleAccount()}
+          {formatAccountName()}
         </Text>
         <Button
           onClick={handleDisconnect}
-          background='transparent'
-          borderColor={colors.icYellow}
+          background={textColor}
+          borderColor={backgroundColor}
           borderRadius='8'
-          color={colors.icYellow}
-          fontSize='lg'
-          fontWeight='700'
+          color={backgroundColor}
+          fontSize={fontSize}
+          fontWeight={fontWeight}
           padding='6px 30px'
           _hover={{
             transform:
@@ -111,8 +118,8 @@ const ConnectButton = () => {
           border='0'
           borderRadius='8'
           color={colors.white}
-          fontSize='lg'
-          fontWeight='700'
+          fontSize={fontSize}
+          fontWeight={fontWeight}
           padding='6px 30px'
           _hover={{
             transform:
