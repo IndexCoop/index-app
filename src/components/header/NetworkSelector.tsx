@@ -19,7 +19,7 @@ const NetworkSelector = () => {
       mt={[4, 4, 0, 0]}
       backgroundColor={backgroundColor}
       border='2px solid'
-      borderColor={textColor}
+      borderColor={backgroundColor}
       borderRadius='8'
       color={textColor}
       fontSize='md'
