@@ -31,6 +31,7 @@ const Navigation = () => {
     <Flex w={['auto', 'auto', 'auto', width]} flexGrow={['0', '0', '0', '2']}>
       {/* Desktop Menu */}
       <Flex
+        align='center'
         display={['none', 'none', 'none', 'flex']}
         flexDirection={'row'}
         w='100%'
