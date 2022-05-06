@@ -1,17 +1,12 @@
-import { useState } from 'react'
-
 import { colors } from 'styles/colors'
 
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 import {
   Box,
   Flex,
   IconButton,
   Link,
   Text,
-  useBreakpointValue,
   useColorMode,
-  useColorModeValue,
 } from '@chakra-ui/react'
 
 import ColorThemeIcon from 'components/header/ColorThemeIcon'

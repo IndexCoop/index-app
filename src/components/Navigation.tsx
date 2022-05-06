@@ -15,7 +15,10 @@ import NavContent from './header/NavContent'
 
 const Navigation = () => {
   const [displayMenu, setDisplayMenu] = useState('none')
-  const bgColor = useColorModeValue(colors.icWhite, colors.background)
+  const backgroundColorMobile = useColorModeValue(
+    colors.white,
+    colors.background
+  )
   const isWeb = useBreakpointValue({
     base: false,
     md: true,
@@ -54,7 +57,7 @@ const Navigation = () => {
           top='0'
           left='0'
           overflowY={'auto'}
-          bgColor={bgColor}
+          bgColor={backgroundColorMobile}
           zIndex={30}
           display={displayMenu}
           p={[
