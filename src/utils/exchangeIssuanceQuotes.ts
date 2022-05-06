@@ -261,14 +261,14 @@ export const getExchangeIssuanceQuotes = async (
 }
 
 // Returns a comma separated string of sources to be included for 0x API calls
-export function getIncloudedSources(isIcEth: boolean): string {
-  // TODO: multi sources?
-  //TODO: Allow Quickswap and UniV3
+export function getIncludedSources(isIcEth: boolean): string {
   const curve = get0xEchangeKey(Exchange.Curve)
+  const quickswap = get0xEchangeKey(Exchange.Quickswap)
   const sushi = get0xEchangeKey(Exchange.Sushiswap)
+  const uniswap = get0xEchangeKey(Exchange.UniV3)
   let includedSources: string = isIcEth
     ? [curve].toString()
-    : [sushi].toString()
+    : [quickswap, sushi, uniswap].toString()
   return includedSources
 }
 
@@ -387,7 +387,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const tokenSymbol = setToken.symbol
   const isIcEth = tokenSymbol === 'icETH'
-  const includedSources = getIncloudedSources(isIcEth)
+  const includedSources = getIncludedSources(isIcEth)
 
   const leveragedTokenData = await getLevTokenData(
     setToken,
