@@ -62,6 +62,7 @@ function getApiUrl(query: string, chainId: number): string {
 export async function get0xQuote(params: any, chainId: number) {
   const query = querystring.stringify(params)
   const url = getApiUrl(query, chainId)
+  console.log(url)
   try {
     const response = await axios.get(url)
     return response.data

@@ -67,6 +67,7 @@ export const getSwapData = async (params: any, chainId: number = 137) => {
     },
     chainId
   )
+  console.log(zeroExQuote)
   const swapData = swapDataFrom0xQuote(zeroExQuote)
   if (swapData) return { swapData, zeroExQuote }
   return null
@@ -90,15 +91,25 @@ function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
 function swapDataFrom0xQuote(zeroExQuote: any): SwapData | null {
   if (zeroExQuote.orders.length < 1) return null
 
+  console.log(zeroExQuote.orders, zeroExQuote.orders.length)
+  const sources = zeroExQuote.sources.filter(
+    (source: any) => Number(source.proportion) > 0
+  )
+  // .map((source) => source.name)
+  console.log(sources)
+
   const order = zeroExQuote.orders[0]
   const fillData = order.fillData
   const exchange = getEchangeFrom0xKey(order.source)
+  console.log('SOURCE', exchange)
 
   if (!fillData || !exchange) return null
 
   if (exchange === Exchange.Curve) {
     return swapDataFromCurve(order)
   }
+
+  console.log(fillData.tokenAddressPath, exchange)
 
   // Currently this works for Sushi, needs to be checked with additional exchanges
   return {
