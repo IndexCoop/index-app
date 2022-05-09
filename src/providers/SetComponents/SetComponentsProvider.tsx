@@ -562,28 +562,28 @@ const SetComponentsProvider = (props: { children: any }) => {
       mnye &&
       MNYeIndex.optimismAddress
     ) {
-      getSetDetails(library, [MNYeIndex.optimismAddress], chainId)
+      getSetDetails(library, [MNYeIndex.optimismAddress], chainId, true)
         .then(async (result) => {
-          const [mnySet] = result
-          const mnyComponentPrices = await getPositionPrices(
-            mnySet,
+          const [mnyeSet] = result
+          const mnyeComponentPrices = await getPositionPrices(
+            mnyeSet,
             'optimistic-ethereum'
           )
-          const mnyPositions = mnySet.positions.map(async (position) => {
+          const mnyePositions = mnyeSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
               tokenList,
-              mnyComponentPrices[position.component.toLowerCase()]?.[
+              mnyeComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
-              mnyComponentPrices[position.component.toLowerCase()]?.[
+              mnyeComponentPrices[position.component.toLowerCase()]?.[
                 `${VS_CURRENCY}_24h_change`
               ],
 
               selectLatestMarketData(mnye.hourlyPrices)
             )
           })
-          Promise.all(mnyPositions)
+          Promise.all(mnyePositions)
             .then(sortPositionsByPercentOfSet)
             .then(setMnyeComponents)
           ///

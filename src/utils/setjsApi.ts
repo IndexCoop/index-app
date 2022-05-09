@@ -36,6 +36,7 @@ import {
   tradeModuleOptimismAddress,
   tradeModulePolygonAddress,
 } from 'constants/ethContractAddresses'
+import { MNYeIndex } from 'constants/tokens'
 
 export async function getTokenSupply(
   ethersProvider: any,
@@ -77,7 +78,8 @@ export async function getStreamingFees(
 export async function getSetDetails(
   ethersProvider: any,
   productAddresses: string[],
-  chainId: number
+  chainId: number,
+  isPerp: boolean = false
 ): Promise<SetDetails[]> {
   const set = getSet(ethersProvider, chainId)
   console.log('set', set)
@@ -92,6 +94,8 @@ export async function getSetDetails(
         slippageIssuanceModuleOptimismAddress,
         perpV2BasisTradingModuleOptimismAddress,
         perpV2LeverageModuleOptimismAddress,
+        perpV2BasisTradingModuleViewerOptimismAddress,
+        perpV2LeverageModuleViewerOptimismAddress,
       ]
       console.log('OPTIMISM', moduleAddresses)
       break
@@ -111,6 +115,32 @@ export async function getSetDetails(
         debtIssuanceModuleAddress,
         debtIssuanceModuleV2Address,
       ]
+  }
+
+  /**
+   * TODO: This isn't needed for the short term, but long term we need to account for all positions in NAV calcs + when showing positions on the allocations page.
+   * This is how you get Perpetual Protocol products to show their full positions. For now will just log them, but they need to be added to the allocations list.
+   */
+  if (isPerp) {
+    try {
+      const address = MNYeIndex.optimismAddress || ''
+      const arr =
+        await set.perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
+          address,
+          ethersProvider.address
+        )
+
+      console.log('perpV2BasisTradingViewer', arr)
+      const arr2 =
+        await set.perpV2LeverageViewer.getVirtualAssetsDisplayInfoAsync(
+          address,
+          ethersProvider.address
+        )
+
+      console.log('perpV2LeverageViewer', arr2)
+    } catch (e) {
+      console.log('PERP error', e)
+    }
   }
   return set.setToken.batchFetchSetDetailsAsync(
     productAddresses,
