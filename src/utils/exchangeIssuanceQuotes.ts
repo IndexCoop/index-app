@@ -261,14 +261,14 @@ export const getExchangeIssuanceQuotes = async (
 }
 
 // Returns a comma separated string of sources to be included for 0x API calls
-export function getIncloudedSources(isIcEth: boolean): string {
-  // TODO: multi sources?
-  //TODO: Allow Quickswap and UniV3
+export function getIncludedSources(isIcEth: boolean): string {
   const curve = get0xEchangeKey(Exchange.Curve)
+  const quickswap = get0xEchangeKey(Exchange.Quickswap)
   const sushi = get0xEchangeKey(Exchange.Sushiswap)
+  const uniswap = get0xEchangeKey(Exchange.UniV3)
   let includedSources: string = isIcEth
     ? [curve].toString()
-    : [sushi].toString()
+    : [quickswap, sushi, uniswap].toString()
   return includedSources
 }
 
@@ -387,7 +387,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const tokenSymbol = setToken.symbol
   const isIcEth = tokenSymbol === 'icETH'
-  const includedSources = getIncloudedSources(isIcEth)
+  const includedSources = getIncludedSources(isIcEth)
 
   const leveragedTokenData = await getLevTokenData(
     setToken,
@@ -410,15 +410,9 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       )
 
   if (!debtCollateralResult) return null
+
   let { swapDataDebtCollateral, collateralObtainedOrSold } =
     debtCollateralResult
-
-  const collateralShortfall = leveragedTokenData.collateralAmount.sub(
-    collateralObtainedOrSold
-  )
-  const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
-    collateralObtainedOrSold
-  )
 
   if (isIcEth) {
     // just using the static versions
@@ -426,6 +420,15 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       ? debtCollateralSwapData[tokenSymbol]
       : collateralDebtSwapData[tokenSymbol]
   }
+
+  // Relevant when issuing
+  const collateralShortfall = leveragedTokenData.collateralAmount.sub(
+    collateralObtainedOrSold
+  )
+  // Relevant when redeeming
+  const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
+    collateralObtainedOrSold
+  )
 
   let paymentTokenAddress = getLevEIPaymentTokenAddress(
     paymentToken,
