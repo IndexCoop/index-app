@@ -35,6 +35,7 @@ describe('getIncludedSources()', () => {
     const isIcEth = false
     const includedSources = getIncludedSources(isIcEth)
     expect(includedSources).toBeDefined()
+    // These are the only supported exchanges for the leveraged exchange issuance
     expect(includedSources).toEqual('QuickSwap,SushiSwap,Uniswap_V3')
   })
 })
