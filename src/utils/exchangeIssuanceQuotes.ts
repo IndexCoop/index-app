@@ -93,12 +93,12 @@ export async function getRequiredComponents(
   setTokenSymbol: string,
   setTokenAmount: BigNumber,
   chainId: ChainId | undefined,
-  signer: ethers.Signer | undefined
+  provider: ethers.providers.Web3Provider | undefined
 ) {
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
 
   const contract = await getExchangeIssuanceZeroExContract(
-    signer,
+    provider,
     chainId ?? ChainId.Mainnet
   )
 
@@ -139,7 +139,7 @@ export const getExchangeIssuanceQuotes = async (
   sellToken: Token,
   isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
-  library: ethers.providers.Web3Provider | undefined
+  provider: ethers.providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
   const isPolygon = chainId === ChainId.Polygon
   const buyTokenAddress = isPolygon ? buyToken.polygonAddress : buyToken.address
@@ -157,7 +157,7 @@ export const getExchangeIssuanceQuotes = async (
     setTokenSymbol,
     setTokenAmount,
     chainId,
-    library?.getSigner()
+    provider
   )
 
   let positionQuotes: string[] = []
@@ -235,13 +235,13 @@ export const getExchangeIssuanceQuotes = async (
       )
     )
 
-  const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(1800000)
+  const gasPrice = (await provider?.getGasPrice()) ?? BigNumber.from(1800000)
 
   // TODO: get balance and check if inputAmount exceeds balance
   // TODO: only fetch gasEstimate if inputAmount <= balance
   // TODO: otherwise skip, to still return a quote
   const gasEstimate = await getExchangeIssuanceGasEstimate(
-    library,
+    provider,
     chainId,
     isIssuance,
     sellToken,
@@ -261,14 +261,14 @@ export const getExchangeIssuanceQuotes = async (
 }
 
 // Returns a comma separated string of sources to be included for 0x API calls
-export function getIncloudedSources(isIcEth: boolean): string {
-  // TODO: multi sources?
-  //TODO: Allow Quickswap and UniV3
+export function getIncludedSources(isIcEth: boolean): string {
   const curve = get0xEchangeKey(Exchange.Curve)
+  const quickswap = get0xEchangeKey(Exchange.Quickswap)
   const sushi = get0xEchangeKey(Exchange.Sushiswap)
+  const uniswap = get0xEchangeKey(Exchange.UniV3)
   let includedSources: string = isIcEth
     ? [curve].toString()
-    : [sushi].toString()
+    : [quickswap, sushi, uniswap].toString()
   return includedSources
 }
 
@@ -277,7 +277,7 @@ async function getLevTokenData(
   setTokenAmount: BigNumber,
   isIssuance: boolean,
   chainId: number,
-  signer: ethers.providers.JsonRpcSigner | undefined
+  signer: ethers.providers.Web3Provider | undefined
 ): Promise<LeveragedTokenData> {
   const contract = await getExchangeIssuanceLeveragedContract(signer, chainId)
   const setTokenAddress = getAddressForToken(setToken, chainId)
@@ -383,18 +383,18 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   paymentToken: Token,
   isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
-  library: ethers.providers.Web3Provider | undefined
+  provider: ethers.providers.Web3Provider | undefined
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const tokenSymbol = setToken.symbol
   const isIcEth = tokenSymbol === 'icETH'
-  const includedSources = getIncloudedSources(isIcEth)
+  const includedSources = getIncludedSources(isIcEth)
 
   const leveragedTokenData = await getLevTokenData(
     setToken,
     setTokenAmount,
     isIssuance,
     chainId,
-    library?.getSigner()
+    provider
   )
 
   let debtCollateralResult = isIssuance
@@ -410,15 +410,9 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       )
 
   if (!debtCollateralResult) return null
+
   let { swapDataDebtCollateral, collateralObtainedOrSold } =
     debtCollateralResult
-
-  const collateralShortfall = leveragedTokenData.collateralAmount.sub(
-    collateralObtainedOrSold
-  )
-  const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
-    collateralObtainedOrSold
-  )
 
   if (isIcEth) {
     // just using the static versions
@@ -426,6 +420,15 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       ? debtCollateralSwapData[tokenSymbol]
       : collateralDebtSwapData[tokenSymbol]
   }
+
+  // Relevant when issuing
+  const collateralShortfall = leveragedTokenData.collateralAmount.sub(
+    collateralObtainedOrSold
+  )
+  // Relevant when redeeming
+  const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
+    collateralObtainedOrSold
+  )
 
   let paymentTokenAddress = getLevEIPaymentTokenAddress(
     paymentToken,
@@ -445,7 +448,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       chainId
     )
 
-  const gasPrice = (await library?.getGasPrice()) ?? BigNumber.from(0)
+  const gasPrice = (await provider?.getGasPrice()) ?? BigNumber.from(0)
 
   return {
     swapDataDebtCollateral,

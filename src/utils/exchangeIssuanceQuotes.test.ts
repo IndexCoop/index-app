@@ -10,7 +10,7 @@ import {
 
 import {
   Exchange,
-  getIncloudedSources,
+  getIncludedSources,
   getLevEIPaymentTokenAddress,
   getRequiredComponents,
   getSwapDataAndPaymentTokenAmount,
@@ -23,19 +23,20 @@ const provider = new ethers.providers.JsonRpcProvider(
 )
 const signer = provider.getSigner('0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045')
 
-describe('getIncloudedSources()', () => {
+describe('getIncludedSources()', () => {
   test('should return Curve only for icETH', async () => {
     const isIcEth = true
-    const includedSources = getIncloudedSources(isIcEth)
+    const includedSources = getIncludedSources(isIcEth)
     expect(includedSources).toBeDefined()
     expect(includedSources).toEqual('Curve')
   })
 
   test('should return all valid exchanges for any other token', async () => {
     const isIcEth = false
-    const includedSources = getIncloudedSources(isIcEth)
+    const includedSources = getIncludedSources(isIcEth)
     expect(includedSources).toBeDefined()
-    expect(includedSources).toEqual('SushiSwap')
+    // These are the only supported exchanges for the leveraged exchange issuance
+    expect(includedSources).toEqual('QuickSwap,SushiSwap,Uniswap_V3')
   })
 })
 
