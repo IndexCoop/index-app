@@ -24,7 +24,10 @@ import walletconnectIcon from 'assets/walletconnect.svg'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { metaMaskLink } from 'constants/externalLinks'
 
-export default function ConnectModal(props: { isOpen: any; onClose: any }) {
+export default function ConnectModal(props: {
+  isOpen: boolean
+  onClose: () => void
+}) {
   const { activateBrowserWallet, activate } = useEthers()
   const { isDarkMode } = useICColorMode()
   const isMetaMaskInstalled = window.ethereum?.isMetaMask
