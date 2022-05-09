@@ -36,7 +36,7 @@ export async function getExchangeIssuanceGasEstimate(
 
   try {
     const contract = await getExchangeIssuanceZeroExContract(
-      library?.getSigner(),
+      library,
       chainId ?? ChainId.Mainnet
     )
 
