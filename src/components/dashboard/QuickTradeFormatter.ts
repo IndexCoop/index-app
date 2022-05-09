@@ -63,6 +63,32 @@ export function formattedBalance(
     : zero
 }
 
+export function getFormattedOuputTokenAmount(
+  bestOptionIsTypeEI: boolean,
+  ouputTokenDecimals: number,
+  zeroExTradeDataOutputAmount: BigNumber | undefined,
+  exchangeIssuanceOutputAmount: BigNumber | undefined
+): string {
+  if (
+    (bestOptionIsTypeEI && !exchangeIssuanceOutputAmount) ||
+    (!bestOptionIsTypeEI && !zeroExTradeDataOutputAmount)
+  ) {
+    return '0.0'
+  }
+
+  if (bestOptionIsTypeEI) {
+    return (
+      displayFromWei(
+        exchangeIssuanceOutputAmount,
+        undefined,
+        ouputTokenDecimals
+      ) ?? '0.0'
+    )
+  }
+
+  return displayFromWei(zeroExTradeDataOutputAmount) ?? '0.0'
+}
+
 export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
   const price = (tokenAmount * tokenPrice).toLocaleString('en-US', {
     minimumFractionDigits: 2,
@@ -128,9 +154,6 @@ export function getTradeInfoDataFromEI(
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
   const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
-
-  // TODO: connect this amount to the value from
-  // useExchangeIssuanceLeveraged: issueExactSetFromETH()
   const inputTokenMax = data.inputTokenAmount.mul(10050).div(10000)
   const maxPayment = displayFromWei(inputTokenMax) ?? '0.0'
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic

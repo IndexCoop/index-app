@@ -40,6 +40,7 @@ import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 
 import {
   formattedFiat,
+  getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
   getHasInsufficientFunds,
   getTradeInfoData0x,
@@ -81,6 +82,7 @@ const QuickTrade = (props: {
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
   )
+  const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
@@ -100,10 +102,6 @@ const QuickTrade = (props: {
       : ExchangeIssuanceLeveragedMainnetAddress
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
-  const buyTokenAmountFormatted =
-    (bestOption === QuickTradeBestOption.zeroEx
-      ? tradeInfoData[0]?.value
-      : tradeInfoData[1]?.value) ?? '0'
 
   const sellTokenFiat = formattedFiat(
     parseFloat(sellTokenAmount),
@@ -260,9 +258,19 @@ const QuickTrade = (props: {
           isBuying
         )
 
+    const buyTokenAmountFormatted = getFormattedOuputTokenAmount(
+      bestOption !== QuickTradeBestOption.zeroEx,
+      buyToken.decimals,
+      bestOptionResult?.success
+        ? bestOptionResult.dexData?.minOutput
+        : undefined,
+      isBuying ? tradeDataEI?.setTokenAmount : tradeDataEI?.inputTokenAmount
+    )
+
     console.log('BESTOPTION', bestOption)
     setTradeInfoData(tradeInfoData)
     setBestOption(bestOption)
+    setBuyTokenAmountFormatted(buyTokenAmountFormatted)
   }, [bestOptionResult])
 
   useEffect(() => {
