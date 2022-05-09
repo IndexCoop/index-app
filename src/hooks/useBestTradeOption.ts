@@ -139,52 +139,50 @@ export const useBestTradeOption = () => {
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
 
-    if (account) {
-      const tokenEligibleForLeveragedEI = isEligibleTradePair(
-        sellToken,
-        buyToken,
-        isIssuance
-      )
-      if (tokenEligibleForLeveragedEI) {
-        const setToken = isIssuance ? buyToken : sellToken
+    const tokenEligibleForLeveragedEI = isEligibleTradePair(
+      sellToken,
+      buyToken,
+      isIssuance
+    )
+    if (tokenEligibleForLeveragedEI) {
+      const setToken = isIssuance ? buyToken : sellToken
 
-        try {
-          leveragedExchangeIssuanceOption =
-            await getLeveragedExchangeIssuanceQuotes(
-              setToken,
-              setTokenAmount,
-              sellToken,
-              isIssuance,
-              chainId,
-              library
-            )
-        } catch (e) {
-          console.warn('error when generating leveraged ei option', e)
-        }
-      } else {
-        const isIcEth =
-          sellToken.symbol === icETHIndex.symbol ||
-          buyToken.symbol === icETHIndex.symbol
-        const isJpg =
-          sellToken.symbol === JPGIndex.symbol ||
-          buyToken.symbol === JPGIndex.symbol
-        // For now only run on mainnet and if not icETH
-        // icETH token pair (with non ETH token) could not be eligible and land here
-        // temporarily - disabled JPG for EI
-        if (chainId === MAINNET.chainId && !isIcEth && !isJpg)
-          try {
-            exchangeIssuanceOption = await getExchangeIssuanceQuotes(
-              buyToken,
-              setTokenAmount,
-              sellToken,
-              isIssuance,
-              chainId,
-              library
-            )
-          } catch (e) {
-            console.warn('error when generating zeroexei option', e)
-          }
+      try {
+        leveragedExchangeIssuanceOption =
+          await getLeveragedExchangeIssuanceQuotes(
+            setToken,
+            setTokenAmount,
+            sellToken,
+            isIssuance,
+            chainId,
+            library
+          )
+      } catch (e) {
+        console.warn('error when generating leveraged ei option', e)
       }
+    } else {
+      const isIcEth =
+        sellToken.symbol === icETHIndex.symbol ||
+        buyToken.symbol === icETHIndex.symbol
+      const isJpg =
+        sellToken.symbol === JPGIndex.symbol ||
+        buyToken.symbol === JPGIndex.symbol
+      // For now only run on mainnet and if not icETH
+      // icETH token pair (with non ETH token) could not be eligible and land here
+      // temporarily - disabled JPG for EI
+      if (chainId === MAINNET.chainId && !isIcEth && !isJpg)
+        try {
+          exchangeIssuanceOption = await getExchangeIssuanceQuotes(
+            buyToken,
+            setTokenAmount,
+            sellToken,
+            isIssuance,
+            chainId,
+            library
+          )
+        } catch (e) {
+          console.warn('error when generating zeroexei option', e)
+        }
     }
 
     console.log(
