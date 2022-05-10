@@ -17,7 +17,7 @@ import {
   SwapData,
 } from './exchangeIssuanceQuotes'
 
-const provider = new ethers.providers.StaticJsonRpcProvider(
+const provider = new ethers.providers.JsonRpcProvider(
   process.env.REACT_APP_MAINNET_ALCHEMY_API,
   1
 )
@@ -98,7 +98,7 @@ describe('getRequiredComponents()', () => {
       setTokenSymbol,
       setTokenAmount,
       chainId,
-      provider
+      provider as ethers.providers.Web3Provider
     )
 
     expect(positions.length).toBeGreaterThan(0)
@@ -119,7 +119,7 @@ describe('getRequiredComponents()', () => {
       setTokenSymbol,
       setTokenAmount,
       chainId,
-      provider
+      provider as ethers.providers.Web3Provider
     )
 
     expect(positions.length).toBeGreaterThan(0)
