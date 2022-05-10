@@ -17,11 +17,10 @@ import {
   SwapData,
 } from './exchangeIssuanceQuotes'
 
-const provider = new ethers.providers.JsonRpcProvider(
+const provider = new ethers.providers.StaticJsonRpcProvider(
   process.env.REACT_APP_MAINNET_ALCHEMY_API,
   1
 )
-const signer = provider.getSigner('0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045')
 
 describe('getIncludedSources()', () => {
   test('should return Curve only for icETH', async () => {
@@ -59,7 +58,7 @@ describe('getLevEIPaymentTokenAddress()', () => {
       false,
       1
     )
-    const stETH = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84'
+    const stETH = '0xae7ab96520de3a18e5e111b5eaab095312d7fe84'
     expect(paymentTokenAddress).toEqual(stETH)
   })
 
@@ -99,7 +98,7 @@ describe('getRequiredComponents()', () => {
       setTokenSymbol,
       setTokenAmount,
       chainId,
-      signer
+      provider
     )
 
     expect(positions.length).toBeGreaterThan(0)
@@ -120,7 +119,7 @@ describe('getRequiredComponents()', () => {
       setTokenSymbol,
       setTokenAmount,
       chainId,
-      signer
+      provider
     )
 
     expect(positions.length).toBeGreaterThan(0)

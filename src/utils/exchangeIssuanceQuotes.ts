@@ -8,7 +8,15 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/exchangeIssuanceLeveragedData'
-import { ETH, icETHIndex, JPGIndex, MATIC, Token, WETH } from 'constants/tokens'
+import {
+  ETH,
+  icETHIndex,
+  JPGIndex,
+  MATIC,
+  STETH,
+  Token,
+  WETH,
+} from 'constants/tokens'
 import {
   getExchangeIssuanceLeveragedContract,
   getLeveragedTokenData,
@@ -301,7 +309,7 @@ export function getLevEIPaymentTokenAddress(
   if (paymentToken.symbol === icETHIndex.symbol && !isIssuance) {
     // TODO: should this always be the collateralToken?
     // paymentTokenAddress = leveragedTokenData.collateralToken
-    return '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84' // stETH
+    return STETH.address!
   }
 
   if (chainId === ChainId.Polygon && paymentToken.symbol === MATIC.symbol) {
@@ -326,7 +334,7 @@ export async function getSwapDataAndPaymentTokenAmount(
   swapDataPaymentToken: SwapData
   paymentTokenAmount: BigNumber
 }> {
-  const tokenSymbol = setToken.symbol
+  const setTokenSymbol = setToken.symbol
   // By default the input/output swap data can be empty (as it will be ignored)
   let swapDataPaymentToken: SwapData = {
     exchange: Exchange.None,
@@ -353,7 +361,10 @@ export async function getSwapDataAndPaymentTokenAmount(
   let paymentTokenAmount = isIssuance ? collateralShortfall : leftoverCollateral
 
   // Only fetch input/output swap data if collateral token is not the same as payment token
-  if (collateralToken !== paymentTokenAddress) {
+  if (
+    collateralToken !== paymentTokenAddress &&
+    setTokenSymbol !== icETHIndex.symbol
+  ) {
     const result = await getSwapData(
       isIssuance ? issuanceParams : redeemingParams,
       chainId
@@ -367,11 +378,13 @@ export async function getSwapDataAndPaymentTokenAmount(
     }
   }
 
-  if (tokenSymbol === icETHIndex.symbol) {
+  if (setTokenSymbol === icETHIndex.symbol) {
+    const outputTokenSymbol =
+      paymentTokenAddress === STETH.address ? STETH.symbol : ETH.symbol
     // just use the static versions here
     swapDataPaymentToken = isIssuance
-      ? inputSwapData[tokenSymbol][ETH.symbol]
-      : outputSwapData[tokenSymbol][ETH.symbol]
+      ? inputSwapData[setTokenSymbol][outputTokenSymbol]
+      : outputSwapData[setTokenSymbol][ETH.symbol]
   }
 
   return { swapDataPaymentToken, paymentTokenAmount }
