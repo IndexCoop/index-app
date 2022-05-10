@@ -95,7 +95,7 @@ const TokenItem = ({
   </Flex>
 )
 
-export function getSelectTokenList(
+export function getSelectTokenListItems(
   tokens: Token[],
   balances: BigNumber[]
 ): SelectTokenModalItem[] {

@@ -40,7 +40,7 @@ import {
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
-import { getSelectTokenList, SelectTokenModal } from './SelectTokenModal'
+import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
@@ -476,8 +476,8 @@ const QuickTrade = (props: {
   const outputTokenBalances = buyTokenList.map(
     (buyToken) => getBalance(buyToken.symbol) ?? BigNumber.from(0)
   )
-  const inputTokenItems = getSelectTokenList(sellTokenList, inputTokenBalances)
-  const outputTokenItems = getSelectTokenList(buyTokenList, outputTokenBalances)
+  const inputTokenItems = getSelectTokenListItems(sellTokenList, inputTokenBalances)
+  const outputTokenItems = getSelectTokenListItems(buyTokenList, outputTokenBalances)
 
   return (
     <Flex
