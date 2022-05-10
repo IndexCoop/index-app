@@ -1,6 +1,6 @@
 // import { Exchange } from 'utils/exchangeIssuanceQuotes'
 
-import { ETH, Ethereum2xFLIP, icETHIndex } from './tokens'
+import { ETH, Ethereum2xFLIP, icETHIndex, STETH } from './tokens'
 
 const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 
@@ -55,7 +55,13 @@ export const inputSwapData = {
     // icETH only supports ETH as the input token
     [ETH.symbol]: {
       exchange: Exchange.Curve,
-      path: [ETH.address!, '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84'],
+      path: [ETH.address!, STETH.address!],
+      fees: [],
+      pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
+    },
+    [STETH.symbol]: {
+      exchange: Exchange.Curve,
+      path: [STETH.address!],
       fees: [],
       pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
     },
