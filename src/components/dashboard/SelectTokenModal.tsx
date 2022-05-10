@@ -9,13 +9,16 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react'
+import { BigNumber } from 'ethers'
 
 import { Token } from 'constants/tokens'
+import { displayFromWei } from 'utils'
 
 type SelectTokenModalItem = {
   symbol: string
   logo: string
   tokenName: string
+  balance: string
 }
 
 type SelectTokenModalProps = {
@@ -24,9 +27,6 @@ type SelectTokenModalProps = {
   onSelectedToken: (tokenSymbol: string) => void
   items: SelectTokenModalItem[]
 }
-
-// TODO: styling dark/light
-// TODO: add balances (amount tokens, usd value)
 
 export const SelectTokenModal = ({
   isOpen,
@@ -68,28 +68,41 @@ const TokenItem = ({
 }) => (
   <Flex
     align='center'
+    justify='space-between'
     cursor='pointer'
     h='60px'
     m='4px'
     onClick={() => onClick(item.symbol)}
   >
-    <Image alt={`${item.symbol} logo`} src={item.logo} w='40px' h='40px' />
-    <Flex direction='column' ml='16px'>
-      <Text fontSize='md' fontWeight='500'>
-        {item.symbol}
+    <Flex align='center'>
+      <Image alt={`${item.symbol} logo`} src={item.logo} w='40px' h='40px' />
+      <Flex direction='column' ml='16px'>
+        <Text fontSize='md' fontWeight='500'>
+          {item.symbol}
+        </Text>
+        <Text fontSize='sm' fontWeight='500'>
+          {item.tokenName}
+        </Text>
+      </Flex>
+    </Flex>
+    <Flex align='flex-end' direction='column' ml='16px'>
+      <Text fontSize='md' fontWeight='700'>
+        {item.balance}
       </Text>
-      <Text fontSize='sm' fontWeight='500'>
-        {item.tokenName}
-      </Text>
+      <Text fontSize='sm' fontWeight='500'></Text>
     </Flex>
   </Flex>
 )
 
-export function getSelectTokenList(tokens: Token[]): SelectTokenModalItem[] {
-  const tokenList: SelectTokenModalItem[] = tokens.map((token) => ({
+export function getSelectTokenList(
+  tokens: Token[],
+  balances: BigNumber[]
+): SelectTokenModalItem[] {
+  const tokenList: SelectTokenModalItem[] = tokens.map((token, index) => ({
     symbol: token.symbol,
     logo: token.image,
     tokenName: token.name,
+    balance: displayFromWei(balances[index], 3, token.decimals) ?? '0',
   }))
   return tokenList
 }

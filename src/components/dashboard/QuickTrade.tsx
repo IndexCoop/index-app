@@ -181,7 +181,7 @@ const QuickTrade = (props: {
   const hasInsufficientFunds = getHasInsufficientFunds(
     bestOption === null,
     sellTokenAmountInWei,
-    getBalance(sellToken)
+    getBalance(sellToken.symbol)
   )
 
   /**
@@ -470,8 +470,14 @@ const QuickTrade = (props: {
   const isNarrow = props.isNarrowVersion ?? false
   const paddingX = isNarrow ? '16px' : '40px'
 
-  const inputTokenItems = getSelectTokenList(sellTokenList)
-  const outputTokenItems = getSelectTokenList(buyTokenList)
+  const inputTokenBalances = sellTokenList.map(
+    (sellToken) => getBalance(sellToken.symbol) ?? BigNumber.from(0)
+  )
+  const outputTokenBalances = buyTokenList.map(
+    (buyToken) => getBalance(buyToken.symbol) ?? BigNumber.from(0)
+  )
+  const inputTokenItems = getSelectTokenList(sellTokenList, inputTokenBalances)
+  const outputTokenItems = getSelectTokenList(buyTokenList, outputTokenBalances)
 
   return (
     <Flex

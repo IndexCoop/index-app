@@ -299,8 +299,8 @@ export const useBalance = () => {
   }, [account, chainId])
 
   const getBalance = useCallback(
-    (token: Token): BigNumber | undefined => {
-      switch (token.symbol) {
+    (tokenSymbol: string): BigNumber | undefined => {
+      switch (tokenSymbol) {
         case BedIndex.symbol:
           return bedBalance
         case Bitcoin2xFlexibleLeverageIndex.symbol:

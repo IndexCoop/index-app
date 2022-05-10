@@ -33,7 +33,8 @@ export const useTradeExchangeIssuance = (
   const setTokenAmount = quoteData?.setTokenAmount
   const setTokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
-  const spendingTokenBalance = getBalance(inputToken) || BigNumber.from(0)
+  const spendingTokenBalance =
+    getBalance(inputToken.symbol) || BigNumber.from(0)
 
   const [isTransactingEI, setIsTransacting] = useState(false)
 
