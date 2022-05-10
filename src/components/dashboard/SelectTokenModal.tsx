@@ -1,3 +1,5 @@
+import { BigNumber } from 'ethers'
+
 import {
   Flex,
   Image,
@@ -9,7 +11,6 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react'
-import { BigNumber } from 'ethers'
 
 import { Token } from 'constants/tokens'
 import { displayFromWei } from 'utils'
