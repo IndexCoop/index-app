@@ -67,13 +67,12 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
   )
 }
 
-const TokenItem = ({
-  item,
-  onClick,
-}: {
+type TokenItemProps = {
   item: SelectTokenModalItem
   onClick: (tokenSymbol: string) => void
-}) => (
+}
+
+const TokenItem = ({ item, onClick }: TokenItemProps) => (
   <Flex
     align='center'
     justify='space-between'
