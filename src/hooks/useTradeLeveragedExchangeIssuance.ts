@@ -34,7 +34,8 @@ export const useTradeLeveragedExchangeIssuance = (
   } = useExchangeIssuanceLeveraged()
   const { getBalance } = useBalance()
 
-  const spendingTokenBalance = getBalance(inputToken) || BigNumber.from(0)
+  const spendingTokenBalance =
+    getBalance(inputToken.symbol) || BigNumber.from(0)
 
   const [isTransactingLevEI, setIsTransacting] = useState(false)
 
