@@ -476,8 +476,14 @@ const QuickTrade = (props: {
   const outputTokenBalances = buyTokenList.map(
     (buyToken) => getBalance(buyToken.symbol) ?? BigNumber.from(0)
   )
-  const inputTokenItems = getSelectTokenListItems(sellTokenList, inputTokenBalances)
-  const outputTokenItems = getSelectTokenListItems(buyTokenList, outputTokenBalances)
+  const inputTokenItems = getSelectTokenListItems(
+    sellTokenList,
+    inputTokenBalances
+  )
+  const outputTokenItems = getSelectTokenListItems(
+    buyTokenList,
+    outputTokenBalances
+  )
 
   return (
     <Flex
