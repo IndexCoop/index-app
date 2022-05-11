@@ -514,7 +514,9 @@ const QuickTrade = (props: {
           formattedFiat={sellTokenFiat}
           tokenList={sellTokenList}
           onChangeInput={onChangeSellTokenAmount}
-          onSelectedToken={(_) => onOpenSelectInputToken()}
+          onSelectedToken={(_) => {
+            if (inputTokenItems.length > 1) onOpenSelectInputToken()
+          }}
         />
         <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
           <IconButton
@@ -542,7 +544,9 @@ const QuickTrade = (props: {
           priceImpact={priceImpact ?? undefined}
           tokenList={buyTokenList}
           onChangeInput={(token: Token, input: string) => {}}
-          onSelectedToken={(_) => onOpenSelectOutputToken()}
+          onSelectedToken={(_) => {
+            if (outputTokenItems.length > 1) onOpenSelectOutputToken()
+          }}
         />
       </Flex>
       <Flex direction='column'>
