@@ -1,7 +1,5 @@
 import { Flex, Link, Text } from '@chakra-ui/layout'
 
-import { colors } from 'styles/colors'
-
 const FlashbotsRpcMessage = () => (
   <Link
     href='https://docs.flashbots.net/flashbots-protect/rpc/quick-start/#how-to-use-flashbots-protect-rpc-in-metamask'
