@@ -407,14 +407,14 @@ export const JPGIndex: Token = {
 }
 export const MNYeIndex: Token = {
   name: 'Market Neutral Yield ETH Index',
-  symbol: 'MNYe',
+  symbol: 'icETH', // TODO: 'MNYe',
   address: undefined,
   polygonAddress: undefined,
-  optimismAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607', // <- USDC    real token address -> '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93',
+  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93', // TODO: Get final address
   decimals: 18,
   url: 'mnye',
-  image: mnyeLogo,
-  coingeckoId: 'usd-coin',
+  image: icethLogo, // TODO: mnyeLogo,
+  coingeckoId: 'eth-market-neutral-yield',
   tokensetsId: 'mnye',
   tokenContextKey: 'mnye',
   fees: {
@@ -489,8 +489,12 @@ export const indexNamesPolygon = indexNames.filter(
     index.symbol !== DataIndex.symbol && // temporarily removed due to liquidity concerns
     index.symbol !== IndexToken.symbol // temporarily removed due to liquidity concerns
 )
-export const indexNamesOptimism = indexNames.filter(
+
+// TODO: swap these vvv
+/**export const indexNamesOptimism = indexNames.filter(
   (index) => index.optimismAddress !== undefined
-)
+)*/
+
+export const indexNamesOptimism = [MNYeIndex]
 
 export default indexNames

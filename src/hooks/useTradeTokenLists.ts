@@ -21,12 +21,11 @@ export const useTradeTokenLists = (
   singleToken?: Token
 ) => {
   const nativeToken = getNativeToken(chainId) ?? ETH
+  const tokenList = getTokenListByChain(chainId, singleToken)
 
   const [isBuying, setIsBuying] = useState<boolean>(true)
-  const [buyToken, setBuyToken] = useState<Token>(DefiPulseIndex)
-  const [buyTokenList, setBuyTokenList] = useState<Token[]>(
-    getTokenListByChain(chainId, singleToken)
-  )
+  const [buyToken, setBuyToken] = useState<Token>(tokenList[0])
+  const [buyTokenList, setBuyTokenList] = useState<Token[]>(tokenList)
   const [buyTokenPrice, setBuyTokenPrice] = useState<number>(0)
   const [sellToken, setSellToken] = useState<Token>(nativeToken)
   const [sellTokenList, setSellTokenList] = useState<Token[]>(

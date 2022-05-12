@@ -66,6 +66,13 @@ export const tradeModuleAddress = '0x90F765F63E7DC5aE97d6c576BF693FB6AF41C129'
 export const protocolViewerAddress =
   '0x74391125304f1e4ce11bDb8aaAAABcF3A3Ae2f41'
 export const slippageIssuanceModuleAddress = 'asdf'
+export const navIssuanceModuleAddress =
+  '0xaB9a964c6b95fA529CA7F27DAc1E7175821f2334'
+export const masterOracleAddress = '0xA60f9e1641747762aDE7FD5F881b90B691E92B0a'
+export const governanceModuleAddress =
+  '0x5C87b042494cDcebA44C541fbB3BC8bFF179d500'
+
+// Polygon Contract Addresses
 export const protocolViewerPolygonAddress =
   '0x8D5CF870354ffFaE0586B639da6D4E4F6C659c69'
 export const tradeModulePolygonAddress =
@@ -77,8 +84,33 @@ export const debtIssuanceModuleV2PolygonAddress =
 export const basicIssuanceModulePolygonAddress =
   '0x38E5462BBE6A72F79606c1A0007468aA4334A92b'
 export const slippageIssuanceModulePolygonAddress = 'asdf'
-export const navIssuanceModuleAddress =
-  '0xaB9a964c6b95fA529CA7F27DAc1E7175821f2334'
-export const masterOracleAddress = '0xA60f9e1641747762aDE7FD5F881b90B691E92B0a'
-export const governanceModuleAddress =
-  '0x5C87b042494cDcebA44C541fbB3BC8bFF179d500'
+
+// Optimism Contract Addresses
+export const basicIssuanceModuleOptimismAddress =
+  '0xe1B7e8D3B385A19173ECd7dEAeDD1368f8706263'
+export const debtIssuanceModuleV2OptimismAddress =
+  '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
+export const streamingFeeModuleOptimismAddress =
+  '0x6a7aE5124677314dc32C5ba3004CbFC9c7Febff0'
+export const tradeModuleOptimismAddress =
+  '0x7215f38011C3e4058Ca3cF7d2b99033016EeFBD8'
+export const protocolViewerOptimismAddress =
+  '0x4E05073560B9377E5561B559c9cADBbe7112e38f'
+export const slippageIssuanceModuleOptimismAddress =
+  '0x1db929398958082d2080AA1B501e460503f60467'
+export const perpV2BasisTradingModuleOptimismAddress =
+  '0x2C229EE3aD3fdC0e581d51BaA6b6f45CC9A6Ca39'
+export const perpV2BasisTradingModuleViewerOptimismAddress =
+  '0x3EBEe70505d799ddc6A92Af32A83925EEc4fA8B6'
+export const perpV2LeverageModuleOptimismAddress =
+  '0x659641F71525b02bFe7203F3e5113c48E6736540'
+export const perpV2LeverageModuleViewerOptimismAddress =
+  '0xea1bD0ae3Ec45e32a6090eDb445dACFc083A8db6'
+export const delegatedManagerFactoryOptimismAddress =
+  '0xB0051e20A2eD91AF525A2eDc54AEd6735e7fe892'
+export const issuanceExtensionOptimismAddress =
+  '0x3138293423c06D81Cc9Ae78FbCD3F7DB6323B83a'
+export const streamingFeeExtensionOptimismAddress =
+  '0x6a7aE5124677314dc32C5ba3004CbFC9c7Febff0'
+export const tradeExtensionOptimismAddress =
+  '0x7215f38011C3e4058Ca3cF7d2b99033016EeFBD8'
