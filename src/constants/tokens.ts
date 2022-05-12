@@ -410,7 +410,7 @@ export const MNYeIndex: Token = {
   symbol: 'MNYe',
   address: undefined,
   polygonAddress: undefined,
-  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93',
+  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93', // TODO: Get final address
   decimals: 18,
   url: 'mnye',
   image: mnyeLogo,
@@ -461,7 +461,7 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
 
 const indexNames = [
   icETHIndex,
-  MNYeIndex,
+  // TODO: MNYeIndex,
   DefiPulseIndex,
   MetaverseIndex,
   GmiIndex,
