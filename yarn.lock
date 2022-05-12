@@ -2971,10 +2971,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@indexcoop/tokenlists@^1.21.1":
-  version "1.21.1"
-  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.21.1.tgz#de0785478cf76eae2c893fa728dde82d575e0b7d"
-  integrity sha512-3qy7i6JmTyjbXE5wOOZBc3YdBs9bdlSVHokZfiZSJtkSwUDACbQz9vwuaXBtovSdxvs9GrOWQdT3Gxsj1DXo/A==
+"@indexcoop/tokenlists@^1.22.0":
+  version "1.22.0"
+  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.22.0.tgz#1ae3ae5ac6a3cd7704e4578a6a91fc10192faea3"
+  integrity sha512-0RoZ/EHjoWdw4WrjRDMbkp/HEDkuM2qk96S+vedGmaw2+uUmGdvBQcDpFLV5LU1KJH0qtFcU99xWQKA9acayaA==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -3485,13 +3485,26 @@
     "@sentry/types" "6.16.1"
     tslib "^1.9.3"
 
-"@setprotocol/set-protocol-v2@^0.1.8":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@setprotocol/set-protocol-v2/-/set-protocol-v2-0.1.9.tgz#1b0eef8667d01405f0b259bc5129986e5db7b53b"
-  integrity sha512-sPbCD6ngw4yIosXyOT+ytFZbFeMyHNOgDA6hdhrXkllsSKoJ2thc9Y6SqzF5kCPkK+bKmVhNF+cMTDMX0lemZg==
+"@setprotocol/set-protocol-v2@^0.1.11-hardhat.0", "@setprotocol/set-protocol-v2@^0.1.15":
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/@setprotocol/set-protocol-v2/-/set-protocol-v2-0.1.16.tgz#10d6e2667168643704e1297cd97164c8416f0dd8"
+  integrity sha512-84/rvT7b2k5SFaF5C/vh2SKV/DS4F+9i7E/5rkQBlU+XnNRnGjG/xROsbYYLkkMaz5YPQVDnDZI5tbZ+JsZYhg==
   dependencies:
     "@uniswap/v3-sdk" "^3.5.1"
     ethers "^5.5.2"
+    fs-extra "^5.0.0"
+    jsbi "^3.2.5"
+    module-alias "^2.2.2"
+    replace-in-file "^6.1.0"
+
+"@setprotocol/set-v2-strategies@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@setprotocol/set-v2-strategies/-/set-v2-strategies-0.0.7.tgz#dca84f40c31b7118b6ff527f372d7fe2906f53ad"
+  integrity sha512-YfA1obWvj2v/lsNnwrCHf2wRud+mdUZutHJggZyziqMokFi6dsej9StczSt8ftWUsWQqQnnGshVcBAjSL0T1sQ==
+  dependencies:
+    "@setprotocol/set-protocol-v2" "^0.1.11-hardhat.0"
+    "@uniswap/v3-sdk" "^3.5.1"
+    ethers "5.5.2"
     fs-extra "^5.0.0"
     jsbi "^3.2.5"
     module-alias "^2.2.2"
@@ -15864,15 +15877,16 @@ set-value@^3.0.0:
   dependencies:
     is-plain-object "^2.0.4"
 
-set.js@^0.4.8:
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/set.js/-/set.js-0.4.8.tgz#31b899db40b65836164960c465006b98bfd2f2be"
-  integrity sha512-w+ZSfhBr6AakRIgnatjnIQ0AbgQ9R2eBb4d8K/c7u1pAR3BaUSJ5Pbz5Jg4PxbMFCN9bJKPM4pQsJDBckOfFIw==
+set.js@^0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/set.js/-/set.js-0.5.4.tgz#eaa5d0674e9c2d21efd25d0cd22efed6dc8b8ef0"
+  integrity sha512-zlXBM+jIti7eMVxqweQAX/L2kKvdOp1PDzy045qoheDJVz3LCKrwtE/ksq6fq4cbOjwd85EnzvzzX6azHPepRQ==
   dependencies:
     "@0xproject/types" "^1.1.4"
     "@0xproject/typescript-typings" "^3.0.2"
     "@0xproject/utils" "^2.0.2"
-    "@setprotocol/set-protocol-v2" "^0.1.8"
+    "@setprotocol/set-protocol-v2" "^0.1.15"
+    "@setprotocol/set-v2-strategies" "^0.0.7"
     "@types/chai-as-promised" "^7.1.3"
     "@types/jest" "^26.0.5"
     "@types/web3" "^1.2.2"
@@ -17210,10 +17224,10 @@ typescript@^2.4.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
   integrity sha512-Gr4p6nFNaoufRIY4NMdpQRNmgxVIGMs4Fcu/ujdYk3nAZqk7supzBE9idmvfZIlH/Cuj//dvi+019qEue9lV0w==
 
-typescript@^4.1.2:
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.3.tgz#afaa858e68c7103317d89eb90c5d8906268d353c"
-  integrity sha512-eVYaEHALSt+s9LbvgEv4Ef+Tdq7hBiIZgii12xXJnukryt3pMgJf6aKhoCZ3FWQsu6sydEnkg11fYXLzhLBjeQ==
+typescript@^4.6.4:
+  version "4.6.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.4.tgz#caa78bbc3a59e6a5c510d35703f6a09877ce45e9"
+  integrity sha512-9ia/jWHIEbo49HfjrLGfKbZSuWo9iTMwXO+Ca3pRsSpbsMbc7/IU8NKdCZVRRBafVPGnoJeFL76ZOAA84I9fEg==
 
 typical@^4.0.0:
   version "4.0.0"
