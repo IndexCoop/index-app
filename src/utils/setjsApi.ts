@@ -82,7 +82,6 @@ export async function getSetDetails(
   isPerp: boolean = false
 ): Promise<SetDetails[]> {
   const set = getSet(ethersProvider, chainId)
-  console.log('set', set)
   let moduleAddresses: string[] = []
   switch (chainId) {
     case OPTIMISM.chainId:
@@ -97,7 +96,6 @@ export async function getSetDetails(
         perpV2BasisTradingModuleViewerOptimismAddress,
         perpV2LeverageModuleViewerOptimismAddress,
       ]
-      console.log('OPTIMISM', moduleAddresses)
       break
     case POLYGON.chainId:
       moduleAddresses = [
@@ -130,14 +128,11 @@ export async function getSetDetails(
           ethersProvider.address
         )
 
-      console.log('perpV2BasisTradingViewer', arr)
       const arr2 =
         await set.perpV2LeverageViewer.getVirtualAssetsDisplayInfoAsync(
           address,
           ethersProvider.address
         )
-
-      console.log('perpV2LeverageViewer', arr2)
     } catch (e) {
       console.log('PERP error', e)
     }

@@ -58,4 +58,4 @@ export const OPTIMISM: ChainData = {
   },
 }
 
-export const SUPPORTED_CHAINS = [MAINNET, POLYGON] // TODO: , OPTIMISM]
+export const SUPPORTED_CHAINS = [MAINNET, POLYGON, OPTIMISM]
