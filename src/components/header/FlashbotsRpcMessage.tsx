@@ -5,7 +5,7 @@ const FlashbotsRpcMessage = () => (
     href='https://docs.flashbots.net/flashbots-protect/rpc/quick-start/#how-to-use-flashbots-protect-rpc-in-metamask'
     isExternal
   >
-    <Flex background='#FEF2CC' borderRadius='10' mt='16px' p='16px'>
+    <Flex background='#FEF2CC' borderRadius='10' mt='16px' p='16px' color="#000000">
       <Text>
         To avoid failed transactions - with the current volatile market
         situations or - in general we recommend to use the Flashbot RPC. Learn
