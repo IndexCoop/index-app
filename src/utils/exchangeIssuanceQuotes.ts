@@ -478,11 +478,13 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       chainId
     )
 
+  const slip = !isIssuance && isIcEth ? 5 : slippagePercentage
+
   // Need to add some slippage similar to EI quote - as there were failed tx
   paymentTokenAmount = getSlippageAdjustedTokenAmount(
     paymentTokenAmount,
     paymentToken.decimals,
-    slippagePercentage,
+    slip,
     isIssuance
   )
 

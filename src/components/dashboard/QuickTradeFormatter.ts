@@ -154,7 +154,7 @@ export function getTradeInfoDataFromEI(
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
   const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
-  const inputTokenMax = data.inputTokenAmount.mul(10050).div(10000)
+  const inputTokenMax = data.inputTokenAmount
   const maxPayment = displayFromWei(inputTokenMax) ?? '0.0'
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic
   const networkFee = displayFromWei(gasPrice.mul(gasLimit))
