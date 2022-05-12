@@ -7,12 +7,14 @@ import {
   IEthereumFLIP,
   MATIC,
 } from 'constants/tokens'
+import { displayFromWei, toWei } from 'utils'
 
 import {
   Exchange,
   getIncludedSources,
   getLevEIPaymentTokenAddress,
   getRequiredComponents,
+  getSlippageAdjustedTokenAmount,
   getSwapDataAndPaymentTokenAmount,
   SwapData,
 } from './exchangeIssuanceQuotes'
@@ -175,5 +177,31 @@ describe('getSwapDataAndPaymentTokenAmount()', () => {
       )
     expect(swapDataPaymentToken).toEqual(defaultSwapData)
     expect(paymentTokenAmount).toEqual(leftoverCollateral)
+  })
+})
+
+describe('getSlippageAdjustedTokenAmount()', () => {
+  test('should return correctly adjusted value for issuing', async () => {
+    const isIssuance = true
+    const slippagePercentage = 0.5
+    const adjustedAmount = getSlippageAdjustedTokenAmount(
+      toWei(100),
+      18,
+      slippagePercentage,
+      isIssuance
+    )
+    expect(displayFromWei(adjustedAmount, 1)).toEqual('100.5')
+  })
+
+  test('should return correctly adjusted value for redeeming', async () => {
+    const isIssuance = false
+    const slippagePercentage = 0.5
+    const adjustedAmount = getSlippageAdjustedTokenAmount(
+      toWei(100),
+      18,
+      slippagePercentage,
+      isIssuance
+    )
+    expect(displayFromWei(adjustedAmount, 1)).toEqual('99.5')
   })
 })

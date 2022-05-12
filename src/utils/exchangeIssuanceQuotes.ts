@@ -390,6 +390,23 @@ export async function getSwapDataAndPaymentTokenAmount(
   return { swapDataPaymentToken, paymentTokenAmount }
 }
 
+export function getSlippageAdjustedTokenAmount(
+  tokenAmount: BigNumber,
+  tokenDecimals: number,
+  slippagePercentage: number,
+  isIssuance: boolean
+): BigNumber {
+  if (isIssuance) {
+    return tokenAmount
+      .mul(toWei(100, tokenDecimals))
+      .div(toWei(100 - slippagePercentage, tokenDecimals))
+  }
+
+  return tokenAmount
+    .mul(toWei(100, tokenDecimals))
+    .div(toWei(100 + slippagePercentage, tokenDecimals))
+}
+
 export const getLeveragedExchangeIssuanceQuotes = async (
   setToken: Token,
   setTokenAmount: BigNumber,
@@ -462,9 +479,12 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     )
 
   // Need to add some slippage similar to EI quote - as there were failed tx
-  paymentTokenAmount = paymentTokenAmount
-    .mul(toWei(100, paymentToken.decimals))
-    .div(toWei(100 - slippagePercentage, paymentToken.decimals))
+  paymentTokenAmount = getSlippageAdjustedTokenAmount(
+    paymentTokenAmount,
+    paymentToken.decimals,
+    slippagePercentage,
+    isIssuance
+  )
 
   const gasPrice = (await provider?.getGasPrice()) ?? BigNumber.from(0)
 
