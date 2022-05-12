@@ -9,6 +9,7 @@ import {
   ETH,
   icETHIndex,
   JPGIndex,
+  STETH,
   Token,
 } from 'constants/tokens'
 import { toWei } from 'utils'
@@ -51,8 +52,10 @@ const isEligibleTradePair = (
     outputToken.symbol === icETHIndex.symbol
 
   if (tokenEligible && isIcEth && isIssuance) {
-    // Only ETH is allowed as input for icETH issuance at the moment
-    return inputToken.symbol === ETH.symbol
+    // Only ETH or stETH is allowed as input for icETH issuance at the moment
+    return (
+      inputToken.symbol === ETH.symbol || inputToken.symbol === STETH.symbol
+    )
   }
 
   if (tokenEligible && isIcEth && !isIssuance) {
@@ -94,7 +97,7 @@ export const getSetTokenAmount = (
 }
 
 export const useBestTradeOption = () => {
-  const { account, chainId, library } = useEthers()
+  const { chainId, library } = useEthers()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)

@@ -3,18 +3,12 @@ import { useEffect, useState } from 'react'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
-import {
-  Box,
-  Button,
-  Flex,
-  IconButton,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react'
+import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
+import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
@@ -47,6 +41,8 @@ import {
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
+import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
+import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
 enum QuickTradeBestOption {
@@ -61,6 +57,16 @@ const QuickTrade = (props: {
 }) => {
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isSelectInputTokenOpen,
+    onOpen: onOpenSelectInputToken,
+    onClose: onCloseSelectInputToken,
+  } = useDisclosure()
+  const {
+    isOpen: isSelectOutputTokenOpen,
+    onOpen: onOpenSelectOutputToken,
+    onClose: onCloseSelectOutputToken,
+  } = useDisclosure()
   const { account, chainId } = useEthers()
 
   const supportedNetwork = isSupportedNetwork(chainId ?? -1)
@@ -176,7 +182,7 @@ const QuickTrade = (props: {
   const hasInsufficientFunds = getHasInsufficientFunds(
     bestOption === null,
     sellTokenAmountInWei,
-    getBalance(sellToken)
+    getBalance(sellToken.symbol)
   )
 
   /**
@@ -403,13 +409,6 @@ const QuickTrade = (props: {
     return 'Trade'
   }
 
-  const onChangeBuyTokenAmount = (token: Token, input: string) => {
-    // const inputNumber = Number(input)
-    // if (input === buyTokenAmount || input.slice(-1) === '.') return
-    // if (isNaN(inputNumber) || inputNumber < 0) return
-    // setBuyTokenAmount(inputNumber.toString())
-  }
-
   const onChangeSellTokenAmount = (token: Token, input: string) => {
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '0')
@@ -451,8 +450,6 @@ const QuickTrade = (props: {
     }
   }
 
-  const isLoading = getIsApproving() || isFetchingTradeData
-
   const getButtonDisabledState = () => {
     if (!supportedNetwork) return true
     if (!account) return false
@@ -469,9 +466,25 @@ const QuickTrade = (props: {
 
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = getButtonDisabledState()
+  const isLoading = getIsApproving() || isFetchingTradeData
 
   const isNarrow = props.isNarrowVersion ?? false
   const paddingX = isNarrow ? '16px' : '40px'
+
+  const inputTokenBalances = sellTokenList.map(
+    (sellToken) => getBalance(sellToken.symbol) ?? BigNumber.from(0)
+  )
+  const outputTokenBalances = buyTokenList.map(
+    (buyToken) => getBalance(buyToken.symbol) ?? BigNumber.from(0)
+  )
+  const inputTokenItems = getSelectTokenListItems(
+    sellTokenList,
+    inputTokenBalances
+  )
+  const outputTokenItems = getSelectTokenListItems(
+    buyTokenList,
+    outputTokenBalances
+  )
 
   return (
     <Flex
@@ -502,7 +515,9 @@ const QuickTrade = (props: {
           formattedFiat={sellTokenFiat}
           tokenList={sellTokenList}
           onChangeInput={onChangeSellTokenAmount}
-          onSelectedToken={(tokenSymbol) => changeSellToken(tokenSymbol)}
+          onSelectedToken={(_) => {
+            if (inputTokenItems.length > 1) onOpenSelectInputToken()
+          }}
         />
         <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
           <IconButton
@@ -529,8 +544,10 @@ const QuickTrade = (props: {
           formattedFiat={buyTokenFiat}
           priceImpact={priceImpact ?? undefined}
           tokenList={buyTokenList}
-          onChangeInput={onChangeBuyTokenAmount}
-          onSelectedToken={(tokenSymbol) => changeBuyToken(tokenSymbol)}
+          onChangeInput={(token: Token, input: string) => {}}
+          onSelectedToken={(_) => {
+            if (outputTokenItems.length > 1) onOpenSelectOutputToken()
+          }}
         />
       </Flex>
       <Flex direction='column'>
@@ -547,36 +564,29 @@ const QuickTrade = (props: {
           isLoading={isLoading}
           onClick={onClickTradeButton}
         />
+        <FlashbotsRpcMessage />
       </Flex>
       <ConnectModal isOpen={isOpen} onClose={onClose} />
+      <SelectTokenModal
+        isOpen={isSelectInputTokenOpen}
+        onClose={onCloseSelectInputToken}
+        onSelectedToken={(tokenSymbol) => {
+          changeSellToken(tokenSymbol)
+          onCloseSelectInputToken()
+        }}
+        items={inputTokenItems}
+      />
+      <SelectTokenModal
+        isOpen={isSelectOutputTokenOpen}
+        onClose={onCloseSelectOutputToken}
+        onSelectedToken={(tokenSymbol) => {
+          changeBuyToken(tokenSymbol)
+          onCloseSelectOutputToken()
+        }}
+        items={outputTokenItems}
+      />
     </Flex>
   )
 }
-
-interface TradeButtonProps {
-  label: string
-  background: string
-  isDisabled: boolean
-  isLoading: boolean
-  onClick: () => void
-}
-
-const TradeButton = (props: TradeButtonProps) => (
-  <Button
-    background={props.background}
-    border='0'
-    borderRadius='12px'
-    color='#000'
-    disabled={props.isDisabled}
-    fontSize='24px'
-    fontWeight='600'
-    isLoading={props.isLoading}
-    height='54px'
-    w='100%'
-    onClick={props.onClick}
-  >
-    {props.label}
-  </Button>
-)
 
 export default QuickTrade

@@ -38,6 +38,7 @@ import {
   Matic2xFLIP,
   MetaverseIndex,
   MNYeIndex,
+  STETH,
   Token,
   USDC,
   WETH,
@@ -81,6 +82,7 @@ export interface Balances {
   unclaimedUniswapEthDpi2021LpBalance?: BigNumber
   jpgBalance?: BigNumber
   mnyeBalance?: BigNumber
+  stETHBalance?: BigNumber
 }
 
 /* Returns balance of ERC20 token */
@@ -134,6 +136,7 @@ export const useBalance = () => {
   const [wethBalance, setWethBalance] = useState<Balance>(BigNumber.from(0))
   const [jpgBalance, setJpgBalance] = useState<Balance>(BigNumber.from(0))
   const [mnyeBalance, setMnyeBalance] = useState<Balance>(BigNumber.from(0))
+  const [stETHBalance, setstETHBalance] = useState<Balance>(BigNumber.from(0))
 
   // LP Tokens
   const uniswapEthDpiLpBalance = useTokenBalance(
@@ -267,6 +270,7 @@ export const useBalance = () => {
       const wethBalance = await balanceOf(WETH, chainId, account, library)
       const jpgBalance = await balanceOf(JPGIndex, chainId, account, library)
       const mnyeBalance = await balanceOf(MNYeIndex, chainId, account, library)
+      const stETHBalance = await balanceOf(STETH, chainId, account, library)
       setBedBalance(bedBalance)
       setBtc2xFLIPBalance(btc2xFLIPBalance)
       setBtcFliBalance(btcFliBalance)
@@ -288,14 +292,15 @@ export const useBalance = () => {
       setWethBalance(wethBalance)
       setJpgBalance(jpgBalance)
       setMnyeBalance(mnyeBalance)
+      setstETHBalance(stETHBalance)
     }
 
     fetchAllBalances()
   }, [account, chainId])
 
   const getBalance = useCallback(
-    (token: Token): BigNumber | undefined => {
-      switch (token.symbol) {
+    (tokenSymbol: string): BigNumber | undefined => {
+      switch (tokenSymbol) {
         case BedIndex.symbol:
           return bedBalance
         case Bitcoin2xFlexibleLeverageIndex.symbol:
@@ -340,6 +345,8 @@ export const useBalance = () => {
           return jpgBalance
         case MNYeIndex.symbol:
           return mnyeBalance
+        case STETH.symbol:
+          return stETHBalance
         default:
           return undefined
       }
@@ -367,6 +374,7 @@ export const useBalance = () => {
       wethBalance,
       jpgBalance,
       mnyeBalance,
+      stETHBalance,
     ]
   )
 
@@ -393,6 +401,7 @@ export const useBalance = () => {
     wethBalance,
     jpgBalance,
     mnyeBalance,
+    stETHBalance,
     stakedGmi2022Balance,
     stakedUniswapEthDpi2020LpBalance,
     stakedUniswapEthDpi2021LpBalance,

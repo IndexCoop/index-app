@@ -106,6 +106,21 @@ export const MATIC: Token = {
   fees: undefined,
 }
 
+export const STETH: Token = {
+  name: 'stETH',
+  symbol: 'stETH',
+  image:
+    'https://assets.coingecko.com/coins/images/13442/small/steth_logo.png?1608607546',
+  address: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: 'staked-ether',
+  tokensetsId: 'staked-ether',
+  fees: undefined,
+}
+
 export const DefiPulseIndex: Token = {
   name: 'DeFi Pulse Index',
   symbol: 'DPI',
@@ -427,7 +442,7 @@ export const productTokensBySymbol = {
   'MNYe': MNYeIndex,
 }
 
-export const mainnetCurrencyTokens = [ETH, DAI, USDC]
+export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH]
 
 export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
 
