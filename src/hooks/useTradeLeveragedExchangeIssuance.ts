@@ -106,7 +106,7 @@ export const useTradeLeveragedExchangeIssuance = (
             contract,
             inputTokenAddress,
             tokenAmout,
-            BigNumber.from(0), // temp: inputOutputLimit,
+            inputOutputLimit,
             debtCollateralSwapData,
             inputOutputSwapData
           )
@@ -116,7 +116,7 @@ export const useTradeLeveragedExchangeIssuance = (
             inputTokenAddress,
             tokenAmout,
             outputTokenAddress,
-            BigNumber.from(0), // temp: inputOutputLimit,inputOutputLimit,
+            inputOutputLimit,
             debtCollateralSwapData,
             inputOutputSwapData
           )
