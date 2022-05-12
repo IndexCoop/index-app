@@ -449,7 +449,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     chainId
   )
 
-  const { swapDataPaymentToken, paymentTokenAmount } =
+  let { swapDataPaymentToken, paymentTokenAmount } =
     await getSwapDataAndPaymentTokenAmount(
       setToken,
       leveragedTokenData.collateralToken,
@@ -460,6 +460,11 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       isIssuance,
       chainId
     )
+
+  // Need to add some slippage similar to EI quote - as there were failed tx
+  paymentTokenAmount = paymentTokenAmount
+    .mul(toWei(100, paymentToken.decimals))
+    .div(toWei(100 - slippagePercentage, paymentToken.decimals))
 
   const gasPrice = (await provider?.getGasPrice()) ?? BigNumber.from(0)
 
