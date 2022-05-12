@@ -13,7 +13,7 @@ import { ZeroExData } from 'utils/zeroExUtils'
 
 import { TradeInfoItem } from './TradeInfo'
 
-function getPriceImpaceColorCoding(
+export function getPriceImpaceColorCoding(
   priceImpact: number,
   isDarkMode: boolean
 ): string {
