@@ -410,7 +410,8 @@ export function getSlippageAdjustedTokenAmount(
 export const getLeveragedExchangeIssuanceQuotes = async (
   setToken: Token,
   setTokenAmount: BigNumber,
-  paymentToken: Token,
+  inputToken: Token,
+  outputToken: Token,
   isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
   provider: ethers.providers.Web3Provider | undefined
@@ -460,8 +461,8 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     collateralObtainedOrSold
   )
 
-  let paymentTokenAddress = getLevEIPaymentTokenAddress(
-    paymentToken,
+  let inputOutputTokenAddress = getLevEIPaymentTokenAddress(
+    isIssuance ? inputToken : outputToken,
     isIssuance,
     chainId
   )
@@ -472,18 +473,20 @@ export const getLeveragedExchangeIssuanceQuotes = async (
       leveragedTokenData.collateralToken,
       collateralShortfall,
       leftoverCollateral,
-      paymentTokenAddress,
+      inputOutputTokenAddress,
       includedSources,
       isIssuance,
       chainId
     )
 
+  const inputOuputTokenDecimals = isIssuance
+    ? inputToken.decimals
+    : outputToken.decimals
   const slip = !isIssuance && isIcEth ? 5 : slippagePercentage
-
   // Need to add some slippage similar to EI quote - as there were failed tx
   paymentTokenAmount = getSlippageAdjustedTokenAmount(
     paymentTokenAmount,
-    paymentToken.decimals,
+    inputOuputTokenDecimals,
     slip,
     isIssuance
   )
