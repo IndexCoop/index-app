@@ -149,12 +149,9 @@ export const getExchangeIssuanceQuotes = async (
   chainId: ChainId = ChainId.Mainnet,
   provider: ethers.providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
-  const isPolygon = chainId === ChainId.Polygon
-  const buyTokenAddress = isPolygon ? buyToken.polygonAddress : buyToken.address
-  const sellTokenAddress = isPolygon
-    ? sellToken.polygonAddress
-    : sellToken.address
-  const wethAddress = isPolygon ? WETH.polygonAddress : WETH.address
+  const buyTokenAddress = getAddressForToken(buyToken, chainId)
+  const sellTokenAddress = getAddressForToken(sellToken, chainId)
+  const wethAddress = getAddressForToken(WETH, chainId)
 
   const setTokenAddress = isIssuance ? buyTokenAddress : sellTokenAddress
   const setTokenSymbol = isIssuance ? buyToken.symbol : sellToken.symbol
@@ -171,28 +168,24 @@ export const getExchangeIssuanceQuotes = async (
   let positionQuotes: string[] = []
   // Input for issuing / output for redeeming
   let inputOutputTokenAmount = BigNumber.from(0)
-  // TODO: do we wannt .5% or 5% slippage?
   // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
   const isJPG = setTokenSymbol === JPGIndex.symbol
   const slippage = isJPG ? 0.08 : slippagePercentage / 100
+
+  const buyTokenIsEth = buyToken.symbol === 'ETH'
+  const sellTokenIsEth = sellToken.symbol === 'ETH'
+  const buyTokenAddressOrWeth = buyTokenIsEth ? wethAddress : buyTokenAddress
+  const sellTokenAddressOrWeth = sellTokenIsEth ? wethAddress : sellTokenAddress
 
   const quotePromises: Promise<any>[] = []
   components.forEach((component, index) => {
     const sellAmount = positions[index]
     const buyAmount = positions[index]
-    // TODO: check again if .address is correcct
-    const buyTokenAddress = isIssuance
-      ? component
-      : buyToken.symbol === 'ETH'
-      ? wethAddress
-      : buyToken.address
-    const sellTokenAddress = isIssuance
-      ? sellToken.symbol === 'ETH'
-        ? wethAddress
-        : sellToken.address
-      : component
 
-    if (buyTokenAddress === sellTokenAddress) {
+    const buyToken = isIssuance ? component : buyTokenAddressOrWeth
+    const sellToken = isIssuance ? sellTokenAddressOrWeth : component
+
+    if (buyToken === sellToken) {
       inputOutputTokenAmount = isIssuance
         ? inputOutputTokenAmount.add(buyAmount)
         : inputOutputTokenAmount.add(sellAmount)
@@ -200,8 +193,8 @@ export const getExchangeIssuanceQuotes = async (
       const quotePromise = isIssuance
         ? get0xQuote(
             {
-              buyToken: buyTokenAddress,
-              sellToken: sellTokenAddress,
+              buyToken,
+              sellToken,
               buyAmount: buyAmount.toString(),
               slippagePercentage: slippage,
             },
@@ -209,8 +202,8 @@ export const getExchangeIssuanceQuotes = async (
           )
         : get0xQuote(
             {
-              buyToken: buyTokenAddress,
-              sellToken: sellTokenAddress,
+              buyToken,
+              sellToken,
               sellAmount: sellAmount.toString(),
               slippagePercentage: slippage,
             },
@@ -234,14 +227,15 @@ export const getExchangeIssuanceQuotes = async (
 
   // Christn: I assume that this is the correct math to make sure we have enough weth to cover the slippage
   // based on the fact that the slippagePercentage is limited between 0.0 and 1.0 on the 0xApi
-  inputOutputTokenAmount = inputOutputTokenAmount
-    .mul(toWei(100, isIssuance ? sellToken.decimals : buyToken.decimals))
-    .div(
-      toWei(
-        100 - slippagePercentage,
-        isIssuance ? sellToken.decimals : buyToken.decimals
-      )
-    )
+  const inputOuputTokenDecimals = isIssuance
+    ? sellToken.decimals
+    : buyToken.decimals
+  inputOutputTokenAmount = getSlippageAdjustedTokenAmount(
+    inputOutputTokenAmount,
+    inputOuputTokenDecimals,
+    slippagePercentage,
+    isIssuance
+  )
 
   const gasPrice = (await provider?.getGasPrice()) ?? BigNumber.from(1800000)
 

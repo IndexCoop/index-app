@@ -1,9 +1,9 @@
-import {
-  getPriceImpact,
-  getPriceImpaceColorCoding,
-} from './QuickTradeFormatter'
-
 import { colors } from 'styles/colors'
+
+import {
+  getPriceImpaceColorCoding,
+  getPriceImpact,
+} from './QuickTradeFormatter'
 
 describe('getPriceImpact()', () => {
   test('should return null if input/output token amount smaller or equal 0', async () => {
