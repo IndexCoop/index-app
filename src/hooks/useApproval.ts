@@ -26,12 +26,6 @@ function useApprovalState(
 ): ApprovalState {
   const { account } = useEthers()
   const allowance = useTokenAllowance(tokenAddress, account, spenderAddress)
-  console.log(
-    'allowance',
-    spenderAddress,
-    amountToApprove.toString(),
-    allowance?.toString()
-  )
 
   if (!tokenAddress || !spenderAddress || !allowance) {
     return ApprovalState.Unknown
@@ -56,7 +50,6 @@ export const useApproval = (
 
   const tokenAddress = token && getAddressForToken(token, chainId)
   const approvalState = useApprovalState(amount, tokenAddress, spenderAddress)
-  console.log('approvalState', approvalState, token?.symbol)
 
   const [isApproving, setIsApproving] = useState(false)
   const [isApproved, setIsApproved] = useState(false)
@@ -90,7 +83,6 @@ export const useApproval = (
   ])
 
   useEffect(() => {
-    console.log(approvalState)
     setIsApproved(approvalState === ApprovalState.Approved)
   }, [approvalState])
 
