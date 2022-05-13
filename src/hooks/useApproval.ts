@@ -4,17 +4,44 @@ import { ethers, utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import {
-  ChainId,
-  useEthers,
-  useSendTransaction,
-  useTokenAllowance,
-} from '@usedapp/core'
+import { useEthers, useSendTransaction, useTokenAllowance } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
 import { ERC20_ABI } from 'utils/abi/ERC20'
+import { getAddressForToken } from 'utils/tokens'
 
 const ERC20Interface = new utils.Interface(ERC20_ABI)
+
+enum ApprovalState {
+  Approved,
+  // Pending
+  NotApproved,
+  Unknown,
+}
+
+function useApprovalState(
+  amountToApprove: BigNumber,
+  tokenAddress?: string,
+  spenderAddress?: string
+): ApprovalState {
+  const { account } = useEthers()
+  const allowance = useTokenAllowance(tokenAddress, account, spenderAddress)
+  console.log(
+    'allowance',
+    spenderAddress,
+    amountToApprove.toString(),
+    allowance?.toString()
+  )
+
+  if (!tokenAddress || !spenderAddress || !allowance) {
+    return ApprovalState.Unknown
+  }
+
+  const isApproved = allowance.gte(amountToApprove) ?? false
+
+  // TODO: we'd actually have to test for pending approval as well here
+  return isApproved ? ApprovalState.Approved : ApprovalState.NotApproved
+}
 
 /**
  * Approve the spending of an ERC20
@@ -25,11 +52,11 @@ export const useApproval = (
   amount: BigNumber = ethers.constants.MaxUint256
 ) => {
   const { account, chainId, library } = useEthers()
-  const tokenAddress =
-    chainId === ChainId.Polygon ? token?.polygonAddress : token?.address
-
-  const allowance = useTokenAllowance(tokenAddress, account, spenderAddress)
   const { sendTransaction, state } = useSendTransaction()
+
+  const tokenAddress = token && getAddressForToken(token, chainId)
+  const approvalState = useApprovalState(amount, tokenAddress, spenderAddress)
+  console.log('approvalState', approvalState, token?.symbol)
 
   const [isApproving, setIsApproving] = useState(false)
   const [isApproved, setIsApproved] = useState(false)
@@ -63,9 +90,9 @@ export const useApproval = (
   ])
 
   useEffect(() => {
-    const isApproved = allowance?.gte(amount) ?? false
-    setIsApproved(isApproved)
-  }, [allowance])
+    console.log(approvalState)
+    setIsApproved(approvalState === ApprovalState.Approved)
+  }, [approvalState])
 
   useEffect(() => {
     const txIsFinished =
