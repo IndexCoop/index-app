@@ -234,14 +234,15 @@ export const getExchangeIssuanceQuotes = async (
 
   // Christn: I assume that this is the correct math to make sure we have enough weth to cover the slippage
   // based on the fact that the slippagePercentage is limited between 0.0 and 1.0 on the 0xApi
-  inputOutputTokenAmount = inputOutputTokenAmount
-    .mul(toWei(100, isIssuance ? sellToken.decimals : buyToken.decimals))
-    .div(
-      toWei(
-        100 - slippagePercentage,
-        isIssuance ? sellToken.decimals : buyToken.decimals
-      )
-    )
+  const inputOuputTokenDecimals = isIssuance
+    ? sellToken.decimals
+    : buyToken.decimals
+  inputOutputTokenAmount = getSlippageAdjustedTokenAmount(
+    inputOutputTokenAmount,
+    inputOuputTokenDecimals,
+    slippagePercentage,
+    isIssuance
+  )
 
   const gasPrice = (await provider?.getGasPrice()) ?? BigNumber.from(1800000)
 
