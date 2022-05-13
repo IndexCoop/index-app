@@ -171,7 +171,6 @@ export const getExchangeIssuanceQuotes = async (
   let positionQuotes: string[] = []
   // Input for issuing / output for redeeming
   let inputOutputTokenAmount = BigNumber.from(0)
-  // TODO: do we wannt .5% or 5% slippage?
   // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
   const isJPG = setTokenSymbol === JPGIndex.symbol
   const slippage = isJPG ? 0.08 : slippagePercentage / 100
