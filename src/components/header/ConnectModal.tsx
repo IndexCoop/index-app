@@ -21,7 +21,7 @@ import coinbaseWalletIcon from 'assets/coinbaseWalletIcon.png'
 import metamaskIcon from 'assets/metamask.png'
 import rainbowIcon from 'assets/rainbow-wallet.png'
 import walletconnectIcon from 'assets/walletconnect.svg'
-import zengoIcon from 'assets/zengo.jpeg'
+import zengoIcon from 'assets/zengo.png'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { metaMaskLink } from 'constants/externalLinks'
 
