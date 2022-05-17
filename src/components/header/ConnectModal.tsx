@@ -21,6 +21,7 @@ import coinbaseWalletIcon from 'assets/coinbaseWalletIcon.png'
 import metamaskIcon from 'assets/metamask.png'
 import rainbowIcon from 'assets/rainbow-wallet.png'
 import walletconnectIcon from 'assets/walletconnect.svg'
+import zengoIcon from 'assets/zengo.png'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { metaMaskLink } from 'constants/externalLinks'
 
@@ -120,6 +121,12 @@ export default function ConnectModal(props: {
             buttonText='Coinbase Wallet'
             borderColor={borderColor}
             handleConnection={handleCoinbaseWallet}
+          />
+          <WalletButton
+            buttonIcon={zengoIcon}
+            buttonText='ZenGo'
+            borderColor={borderColor}
+            handleConnection={handleWalletConnect}
           />
           <WalletButton
             buttonIcon={walletconnectIcon}
