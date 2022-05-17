@@ -13,8 +13,13 @@ import { colors } from 'styles/colors'
 import { Position } from 'components/dashboard/AllocationChart'
 import PieChartTooltip from 'components/dashboard/PieChartTooltip'
 
-const Chart = (props: { data: Position[]; isLeveragedToken?: boolean }) => {
-  if (props.isLeveragedToken) return <LeveragedChart data={props.data} />
+const Chart = (props: {
+  data: Position[]
+  isLeveragedToken?: boolean
+  vAssets?: Position[]
+}) => {
+  if (props.isLeveragedToken)
+    return <LeveragedChart data={props.data} vAssets={props.vAssets} />
   return <CompositeChart data={props.data} />
 }
 
@@ -45,16 +50,30 @@ const CompositeChart = (props: { data: Position[] }) => {
   )
 }
 
-const LeveragedChart = (props: { data: Position[] }) => {
-  if (props.data.length !== 2) {
-    return <CompositeChart data={props.data} />
+const LeveragedChart = (props: {
+  data: Position[]
+  vAssets: Position[] | undefined
+}) => {
+  let data
+  if (props.vAssets) {
+    data = [
+      {
+        data0: props.data[0].value,
+        data1: props.data[1].value,
+      },
+      {
+        data0: props.vAssets[1].value,
+        data1: props.vAssets[0].value,
+      },
+    ]
+  } else {
+    data = [
+      {
+        data0: props.data[0].value,
+        data1: props.data[1].value,
+      },
+    ]
   }
-  const data = [
-    {
-      data0: props.data[0].value,
-      data1: props.data[1].value,
-    },
-  ]
   return (
     <BarChart
       width={400}

@@ -1,5 +1,9 @@
 import Set from 'set.js'
-import { SetDetails, StreamingFeeInfo } from 'set.js/dist/types/src/types'
+import {
+  SetDetails,
+  StreamingFeeInfo,
+  VAssetDisplayInfo,
+} from 'set.js/dist/types/src/types'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
@@ -36,7 +40,6 @@ import {
   tradeModuleOptimismAddress,
   tradeModulePolygonAddress,
 } from 'constants/ethContractAddresses'
-import { MNYeIndex } from 'constants/tokens'
 
 export async function getTokenSupply(
   ethersProvider: any,
@@ -78,8 +81,7 @@ export async function getStreamingFees(
 export async function getSetDetails(
   ethersProvider: any,
   productAddresses: string[],
-  chainId: number,
-  isPerp: boolean = false
+  chainId: number
 ): Promise<SetDetails[]> {
   const set = getSet(ethersProvider, chainId)
   let moduleAddresses: string[] = []
@@ -114,32 +116,21 @@ export async function getSetDetails(
         debtIssuanceModuleV2Address,
       ]
   }
-
-  /**
-   * TODO: This isn't needed for the short term, but long term we need to account for all positions in NAV calcs + when showing positions on the allocations page.
-   * This is how you get Perpetual Protocol products to show their full positions. For now will just log them, but they need to be added to the allocations list.
-   */
-  if (isPerp) {
-    try {
-      const address = MNYeIndex.optimismAddress || ''
-      const arr =
-        await set.perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
-          address,
-          ethersProvider.address
-        )
-
-      const arr2 =
-        await set.perpV2LeverageViewer.getVirtualAssetsDisplayInfoAsync(
-          address,
-          ethersProvider.address
-        )
-    } catch (e) {
-      console.log('PERP error', e)
-    }
-  }
   return set.setToken.batchFetchSetDetailsAsync(
     productAddresses,
     moduleAddresses
+  )
+}
+
+export async function getSetPerps(
+  ethersProvider: any,
+  setTokenAddress: string,
+  chainId: number
+): Promise<VAssetDisplayInfo[]> {
+  const set = getSet(ethersProvider, chainId)
+  return await set.perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
+    setTokenAddress,
+    ethersProvider.address
   )
 }
 

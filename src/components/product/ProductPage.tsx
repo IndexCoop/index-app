@@ -74,6 +74,7 @@ const ProductPage = (props: {
   components: SetComponent[]
   isLeveragedToken?: boolean
   apy?: string
+  vAssets?: SetComponent[]
 }) => {
   const isMobile = useBreakpointValue({ base: true, lg: false })
   const { marketData, tokenData } = props
@@ -168,6 +169,7 @@ const ProductPage = (props: {
                 components={props.components}
                 tokenData={props.tokenData}
                 isLeveragedToken={props.isLeveragedToken}
+                vAssets={props.vAssets}
               />
             </>
           )}

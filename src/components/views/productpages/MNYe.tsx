@@ -5,13 +5,15 @@ import { useSetComponents } from 'providers/SetComponents/SetComponentsProvider'
 
 const MNY = () => {
   const { mnye } = useMarketData()
-  const { mnyeComponents: mnyComponents } = useSetComponents()
+  const { mnyeComponents, mnyeVAssets } = useSetComponents()
 
   return (
     <ProductPage
       tokenData={MNYeIndex}
       marketData={mnye || {}}
-      components={mnyComponents || []}
+      isLeveragedToken={true}
+      components={mnyeComponents || []}
+      vAssets={mnyeVAssets || []}
     />
   )
 }

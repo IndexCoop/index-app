@@ -30,8 +30,8 @@ import {
   MNYeIndex,
 } from 'constants/tokens'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
-import { displayFromWei, safeDiv } from 'utils'
-import { getSetDetails } from 'utils/setjsApi'
+import { displayFromWei, fromWei, safeDiv } from 'utils'
+import { getSetDetails, getSetPerps } from 'utils/setjsApi'
 import { getTokenList, TokenData as Token } from 'utils/tokenlists'
 
 const ASSET_PLATFORM = 'ethereum'
@@ -97,6 +97,7 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [icethComponents, setIcethComponents] = useState<SetComponent[]>([])
   const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
+  const [mnyeVAssets, setMnyeVAssets] = useState<SetComponent[]>([])
 
   const { account, chainId, library } = useEthers()
   const tokenList = getTokenList(chainId)
@@ -562,7 +563,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       mnye &&
       MNYeIndex.optimismAddress
     ) {
-      getSetDetails(library, [MNYeIndex.optimismAddress], chainId, true)
+      getSetDetails(library, [MNYeIndex.optimismAddress], chainId)
         .then(async (result) => {
           const [mnyeSet] = result
           const mnyeComponentPrices = await getPositionPrices(
@@ -589,6 +590,33 @@ const SetComponentsProvider = (props: { children: any }) => {
           ///
         })
         .catch((err) => console.log('err', err))
+      getSetPerps(library, MNYeIndex.optimismAddress, chainId).then(
+        async (result) => {
+          const tokenList = getTokenList(chainId)
+          const vTokens: SetComponent[] = result.map((perp) => {
+            const token = tokenList.find(
+              (t) => t.address === perp.vAssetAddress
+            )
+            const vAsset: SetComponent = {
+              id: token?.name || perp.symbol,
+              name: token?.name || perp.symbol,
+              symbol: perp.symbol,
+              address: perp.vAssetAddress,
+              quantity: perp.positionUnit.toString(),
+              image: token?.logoURI || '',
+              totalPriceUsd: fromWei(
+                perp.indexPrice.mul(perp.positionUnit),
+                36
+              ).toString(),
+              dailyPercentChange: '0',
+              percentOfSet: '0',
+              percentOfSetNumber: 0,
+            }
+            return vAsset
+          })
+          setMnyeVAssets(vTokens)
+        }
+      )
     }
   }, [chainId, library, tokenList, mnye, selectLatestMarketData()])
 
@@ -611,6 +639,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         icethComponents: icethComponents,
         jpgComponents: jpgComponents,
         mnyeComponents: mnyeComponents,
+        mnyeVAssets: mnyeVAssets,
       }}
     >
       {props.children}
@@ -740,6 +769,7 @@ interface SetComponentsProps {
   icethComponents?: SetComponent[]
   jpgComponents?: SetComponent[]
   mnyeComponents?: SetComponent[]
+  mnyeVAssets?: SetComponent[]
 }
 
 export const SetComponentsContext = createContext<SetComponentsProps>({})
