@@ -151,8 +151,10 @@ describe('getSwapDataAndPaymentTokenAmount()', () => {
         true,
         137
       )
-    expect(swapDataPaymentToken).toEqual(defaultSwapData)
-    expect(paymentTokenAmount).toEqual(collateralShortfall)
+    expect(swapDataPaymentToken).toStrictEqual(defaultSwapData)
+    expect(paymentTokenAmount.toString()).toEqual(
+      collateralShortfall.toString()
+    )
   })
 
   test('should return default swap data when collateral token is payment token - and left over collateral as payment token amount when redeemig', async () => {
@@ -175,8 +177,10 @@ describe('getSwapDataAndPaymentTokenAmount()', () => {
         false,
         137
       )
-    expect(swapDataPaymentToken).toEqual(defaultSwapData)
-    expect(paymentTokenAmount).toEqual(leftoverCollateral)
+    expect(swapDataPaymentToken).toStrictEqual(defaultSwapData)
+    expect(paymentTokenAmount.toString()).toStrictEqual(
+      leftoverCollateral.toString()
+    )
   })
 })
 
