@@ -78,15 +78,14 @@ export function getFormattedOuputTokenAmount(
 
   if (bestOptionIsTypeEI) {
     return (
-      displayFromWei(
-        exchangeIssuanceOutputAmount,
-        undefined,
-        ouputTokenDecimals
-      ) ?? '0.0'
+      displayFromWei(exchangeIssuanceOutputAmount, 4, ouputTokenDecimals) ??
+      '0.0'
     )
   }
 
-  return displayFromWei(zeroExTradeDataOutputAmount) ?? '0.0'
+  return (
+    displayFromWei(zeroExTradeDataOutputAmount, 4, ouputTokenDecimals) ?? '0.0'
+  )
 }
 
 export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
@@ -153,9 +152,12 @@ export function getTradeInfoDataFromEI(
   isBuying: boolean
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
-  const exactSetAmount = displayFromWei(setAmount) ?? '0.0'
+  const setTokenDecimals = isBuying ? buyToken.decimals : sellToken.decimals
+  const inputTokenDecimals = sellToken.decimals
+  const exactSetAmount = displayFromWei(setAmount, 4, setTokenDecimals) ?? '0.0'
   const inputTokenMax = data.inputTokenAmount
-  const maxPayment = displayFromWei(inputTokenMax) ?? '0.0'
+  const maxPayment =
+    displayFromWei(inputTokenMax, 4, inputTokenDecimals) ?? '0.0'
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic
   const networkFee = displayFromWei(gasPrice.mul(gasLimit))
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
@@ -207,12 +209,14 @@ export function getTradeInfoData0x(
   const buyAmount =
     displayFromWei(
       BigNumber.from(zeroExTradeData.buyAmount),
-      undefined,
+      4,
       buyToken.decimals
     ) ?? '0.0'
 
   const minReceive =
-    displayFromWei(zeroExTradeData.minOutput) + ' ' + buyToken.symbol ?? '0.0'
+    displayFromWei(zeroExTradeData.minOutput, 4, buyToken.decimals) +
+      ' ' +
+      buyToken.symbol ?? '0.0'
 
   const networkFee = displayFromWei(
     BigNumber.from(gasPrice).mul(BigNumber.from(gas))

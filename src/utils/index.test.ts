@@ -29,7 +29,21 @@ describe('displayFromWei', () => {
       BigNumber.from('157097183810163372336'),
       18
     )
-    expect(displayValue).toBe('157.097183810163386397')
+    expect(displayValue).toBe('157.097183810163400000')
+  })
+  it('should convert to token value showing commas for thousands', () => {
+    const displayValue = displayFromWei(
+      BigNumber.from('1570971838101633723360'),
+      4
+    )
+    expect(displayValue).toBe('1,570.9718')
+  })
+  it('should convert to token value showing commas for thousands w/ large amounts', () => {
+    const displayValue = displayFromWei(
+      BigNumber.from('507731000000000000000000'),
+      4
+    )
+    expect(displayValue).toBe('507,731.0000')
   })
 })
 
