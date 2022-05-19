@@ -89,7 +89,12 @@ function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
 }
 
 export function swapDataFrom0xQuote(zeroExQuote: any): SwapData | null {
-  if (zeroExQuote.orders === undefined || zeroExQuote.orders.length < 1)
+  if (
+    zeroExQuote === undefined ||
+    zeroExQuote === null ||
+    zeroExQuote.orders === undefined ||
+    zeroExQuote.orders.length < 1
+  )
     return null
 
   const order = zeroExQuote.orders[0]

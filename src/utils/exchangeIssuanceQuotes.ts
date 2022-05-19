@@ -410,8 +410,8 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   chainId: ChainId = ChainId.Mainnet,
   provider: ethers.providers.Web3Provider | undefined
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
-  const tokenSymbol = setToken.symbol
-  const isIcEth = tokenSymbol === 'icETH'
+  const setTokenSymbol = setToken.symbol
+  const isIcEth = setTokenSymbol === 'icETH'
   const includedSources = getIncludedSources(isIcEth)
 
   const leveragedTokenData = await getLevTokenData(
@@ -442,8 +442,8 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   if (isIcEth) {
     // just using the static versions
     swapDataDebtCollateral = isIssuance
-      ? debtCollateralSwapData[tokenSymbol]
-      : collateralDebtSwapData[tokenSymbol]
+      ? debtCollateralSwapData[setTokenSymbol]
+      : collateralDebtSwapData[setTokenSymbol]
   }
 
   // Relevant when issuing

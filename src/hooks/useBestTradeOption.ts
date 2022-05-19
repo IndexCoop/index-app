@@ -38,7 +38,7 @@ const isEligibleLeveragedToken = (token: Token) =>
   eligibleLeveragedExchangeIssuanceTokens.includes(token)
 
 /* Determines if the token pair is eligible for Leveraged Exchange Issuance */
-const isEligibleTradePair = (
+export const isEligibleTradePair = (
   inputToken: Token,
   outputToken: Token,
   isIssuance: boolean
