@@ -89,25 +89,6 @@ export const getERC20Contract = async (
 }
 
 /**
- * Formats a BigNumber from Gwei
- * @param decimals round to decimals is NOT precise
- * @param power default to 9 covers most token decimals
- */
-export const displayFromGwei = (
-  number: BigNumber | undefined,
-  decimals: number = 0,
-  power: number = 9
-): string | null => {
-  if (!number) return null
-
-  if (decimals) {
-    return Number(formatUnits(number, power)).toFixed(decimals)
-  }
-
-  return formatUnits(number, power)
-}
-
-/**
  * Returns chain-appropriate token address
  * @param token
  * @param chainId
