@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { BigNumber } from 'set.js'
 import { colors, useICColorMode } from 'styles/colors'
 
-import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 import { useEthers } from '@usedapp/core'
 
