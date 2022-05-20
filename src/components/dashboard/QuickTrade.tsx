@@ -544,7 +544,6 @@ const QuickTrade = (props: {
           formattedFiat={buyTokenFiat}
           priceImpact={priceImpact ?? undefined}
           tokenList={buyTokenList}
-          onChangeInput={(token: Token, input: string) => {}}
           onSelectedToken={(_) => {
             if (outputTokenItems.length > 1) onOpenSelectOutputToken()
           }}
