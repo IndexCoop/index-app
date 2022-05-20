@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { ethers, utils } from 'ethers'
+import { constants, utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
@@ -43,7 +43,7 @@ function useApprovalState(
 export const useApproval = (
   token?: Token,
   spenderAddress?: string,
-  amount: BigNumber = ethers.constants.MaxUint256
+  amount: BigNumber = constants.MaxUint256
 ) => {
   const { account, chainId, library } = useEthers()
 

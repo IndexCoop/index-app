@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { BigNumber } from 'set.js'
+import { BigNumber } from 'ethers'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'

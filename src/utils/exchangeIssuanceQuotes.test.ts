@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, providers } from 'ethers'
 
 import {
   debtCollateralSwapData,
@@ -26,7 +26,7 @@ import {
   SwapData,
 } from './exchangeIssuanceQuotes'
 
-const provider = new ethers.providers.JsonRpcProvider(
+const provider = new providers.JsonRpcProvider(
   process.env.REACT_APP_MAINNET_ALCHEMY_API,
   1
 )
@@ -103,7 +103,7 @@ describe('getLeveragedExchangeIssuanceQuotes()', () => {
       icETHIndex,
       true,
       1,
-      provider as ethers.providers.Web3Provider
+      provider as providers.Web3Provider
     )
     expect(quote).toBeDefined()
     expect(quote?.setTokenAmount).toEqual(setTokenAmount)
@@ -127,7 +127,7 @@ describe('getRequiredComponents()', () => {
       setTokenSymbol,
       setTokenAmount,
       chainId,
-      provider as ethers.providers.Web3Provider
+      provider as providers.Web3Provider
     )
 
     expect(positions.length).toBeGreaterThan(0)
@@ -148,7 +148,7 @@ describe('getRequiredComponents()', () => {
       setTokenSymbol,
       setTokenAmount,
       chainId,
-      provider as ethers.providers.Web3Provider
+      provider as providers.Web3Provider
     )
 
     expect(positions.length).toBeGreaterThan(0)
