@@ -9,7 +9,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
-import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
@@ -564,7 +563,6 @@ const QuickTrade = (props: {
           isLoading={isLoading}
           onClick={onClickTradeButton}
         />
-        <FlashbotsRpcMessage />
       </Flex>
       <ConnectModal isOpen={isOpen} onClose={onClose} />
       <SelectTokenModal
