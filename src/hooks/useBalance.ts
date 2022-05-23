@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, Contract, providers } from 'ethers'
 
 import {
   ChainId,
@@ -90,11 +90,11 @@ async function balanceOf(
   token: Token,
   chainId: ChainId,
   account: string,
-  library: ethers.providers.Web3Provider | undefined
+  library: providers.Web3Provider | undefined
 ): Promise<BigNumber> {
   const tokenAddress = getChainAddress(token, chainId)
   if (!tokenAddress) return BigNumber.from(0)
-  const erc20 = new ethers.Contract(tokenAddress, ERC20_ABI, library)
+  const erc20 = new Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)
   return balance
 }
