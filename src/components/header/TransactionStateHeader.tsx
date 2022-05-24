@@ -1,3 +1,4 @@
+import { headerButtonHover } from 'styles/button'
 import { colors } from 'styles/colors'
 
 import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
@@ -31,11 +32,7 @@ const TransactionStateHeader = ({
       fontSize='md'
       fontWeight='700'
       padding='6px 16px'
-      _hover={{
-        transform:
-          'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-        transformStyle: 'preserve-3d',
-      }}
+      _hover={headerButtonHover}
     >
       <TransactionStateView isDarkMode={isDarkMode} state={state} />
     </Button>

@@ -1,4 +1,5 @@
-import { colors } from 'styles/colors'
+import { headerButtonHover } from 'styles/button'
+import { colors, useICColorMode } from 'styles/colors'
 
 import {
   Button,
@@ -64,11 +65,7 @@ const ConnectButton = () => {
           fontSize={fontSize}
           fontWeight={fontWeight}
           padding='6px 30px'
-          _hover={{
-            transform:
-              'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-            transformStyle: 'preserve-3d',
-          }}
+          _hover={headerButtonHover}
         >
           Connect
         </Button>
@@ -96,11 +93,7 @@ const ConnectButton = () => {
           fontSize={fontSize}
           fontWeight={fontWeight}
           padding='6px 30px'
-          _hover={{
-            transform:
-              'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-            transformStyle: 'preserve-3d',
-          }}
+          _hover={headerButtonHover}
         >
           Disconnect
         </Button>
@@ -121,11 +114,7 @@ const ConnectButton = () => {
           fontSize={fontSize}
           fontWeight={fontWeight}
           padding='6px 30px'
-          _hover={{
-            transform:
-              'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-            transformStyle: 'preserve-3d',
-          }}
+          _hover={headerButtonHover}
         >
           Wrong Network
         </Button>
