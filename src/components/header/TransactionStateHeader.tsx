@@ -1,14 +1,20 @@
-import { Button, Flex, Link, Spinner, Text } from '@chakra-ui/react'
+import { Button, Flex, Spinner, Text } from '@chakra-ui/react'
 
 const backgroundColor = '#000'
 const textColor = '#fff'
 const fontSize = 'md'
 const fontWeight = 700
 
-const TransactionStateHeader = () => (
+// TODO: add states (pending, success, failed)
+
+type TransactionStateHeaderProps = {
+  onClick: () => void
+}
+
+const TransactionStateHeader = ({ onClick }: TransactionStateHeaderProps) => (
   <Flex>
     <Button
-      onClick={() => console.log('click')}
+      onClick={onClick}
       background={textColor}
       borderColor={backgroundColor}
       borderRadius='32'
