@@ -226,7 +226,9 @@ const QuickTrade = (props: {
         ? QuickTradeBestOption.zeroEx
         : QuickTradeBestOption.exchangeIssuance
     } else {
-      const bestOptionIsLevEI = !fullCostsEI || fullCostsLevEI!.lt(fullCostsEI)
+      const bestOptionIsLevEI =
+        !fullCostsEI ||
+        ((fullCostsLevEI && fullCostsLevEI.lt(fullCostsEI)) ?? false)
       bestOption = bestOptionIsLevEI
         ? QuickTradeBestOption.leveragedExchangeIssuance
         : QuickTradeBestOption.exchangeIssuance
