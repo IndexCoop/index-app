@@ -43,9 +43,9 @@ import {
   USDC,
   WETH,
 } from 'constants/tokens'
-import { getChainAddress } from 'utils'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import { useStakingUnclaimedRewards } from 'utils/stakingRewards'
+import { getAddressForToken } from 'utils/tokens'
 
 type Balance = BigNumber
 
@@ -92,7 +92,7 @@ async function balanceOf(
   account: string,
   library: providers.Web3Provider | undefined
 ): Promise<BigNumber> {
-  const tokenAddress = getChainAddress(token, chainId)
+  const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress) return BigNumber.from(0)
   const erc20 = new Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)

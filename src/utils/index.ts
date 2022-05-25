@@ -2,10 +2,8 @@ import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId } from '@usedapp/core'
 
-import { MAINNET, OPTIMISM, POLYGON, SUPPORTED_CHAINS } from 'constants/chains'
-import { Token } from 'constants/tokens'
+import { SUPPORTED_CHAINS } from 'constants/chains'
 
 import { ERC20_ABI } from './abi/ERC20'
 
@@ -86,28 +84,6 @@ export const getERC20Contract = async (
   address: string
 ): Promise<Contract> => {
   return await new Contract(address, ERC20_ABI, provider)
-}
-
-/**
- * Returns chain-appropriate token address
- * @param token
- * @param chainId
- * @returns
- */
-export const getChainAddress = (
-  token: Token,
-  chainId: ChainId = MAINNET.chainId
-) => {
-  const supportedChain = isSupportedNetwork(chainId)
-  if (!supportedChain) return undefined
-  switch (chainId) {
-    case OPTIMISM.chainId:
-      return token.optimismAddress
-    case POLYGON.chainId:
-      return token.polygonAddress
-    default:
-      return token.address
-  }
 }
 
 /**
