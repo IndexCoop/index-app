@@ -1,6 +1,6 @@
 import { BigNumber, Contract, Signer } from 'ethers'
 
-import { Provider } from '@ethersproject/abstract-provider'
+import { Provider, TransactionResponse } from '@ethersproject/providers'
 import { ChainId } from '@usedapp/core'
 
 import {
@@ -126,7 +126,7 @@ export const useExchangeIssuanceZeroEx = () => {
     isDebtIssuance: boolean,
     maxInput: BigNumber,
     gasLimit: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('issueExactSetFromETH')
     try {
       //TODO: Estimate better _maxInput.
@@ -145,7 +145,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return issueSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -173,7 +173,7 @@ export const useExchangeIssuanceZeroEx = () => {
     issuanceModule: string,
     isDebtIssuance: boolean,
     gasLimit: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('redeemExactSetForETH')
     try {
       const redeemSetTx = await contract.redeemExactSetForETH(
@@ -188,7 +188,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return redeemSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -251,7 +251,7 @@ export const useExchangeIssuanceZeroEx = () => {
     issuanceModule: string,
     isDebtIssuance: boolean,
     gasLimit: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('issueExactSetFromToken')
     try {
       // TODO: calculate more accurate _maxAmountInputToken so it doesn't revert
@@ -273,7 +273,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return issueSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -303,7 +303,7 @@ export const useExchangeIssuanceZeroEx = () => {
     issuanceModule: string,
     isDebtIssuance: boolean,
     gasLimit: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('redeemExactSetForToken')
     try {
       // TODO: calculate a slightly higher _maxAmountInputToken so it doesn't revert
@@ -326,7 +326,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return redeemSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
