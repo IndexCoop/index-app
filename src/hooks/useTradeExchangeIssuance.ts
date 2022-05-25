@@ -3,12 +3,13 @@ import { useCallback, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers, useTransactions } from '@usedapp/core'
 
-import { MAINNET, POLYGON } from 'constants/chains'
+import { MAINNET } from 'constants/chains'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { getStoredTransaction } from 'utils/storedTransaction'
+import { getAddressForToken } from 'utils/tokens'
 
 import { useBalance } from './useBalance'
 import {
@@ -43,14 +44,8 @@ export const useTradeExchangeIssuance = (
   const executeEITrade = useCallback(async () => {
     if (!account || !quoteData || !setTokenAmount) return
 
-    const outputTokenAddress =
-      chainId === POLYGON.chainId
-        ? outputToken.polygonAddress
-        : outputToken.address
-    const inputTokenAddress =
-      chainId === POLYGON.chainId
-        ? inputToken.polygonAddress
-        : inputToken.address
+    const outputTokenAddress = getAddressForToken(outputToken, chainId)
+    const inputTokenAddress = getAddressForToken(inputToken, chainId)
     if (!outputTokenAddress || !inputTokenAddress) return
 
     let requiredBalance = fromWei(
