@@ -1,6 +1,7 @@
 import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
+import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId } from '@usedapp/core'
 
 import {
@@ -75,7 +76,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _swapDataDebtForCollateral: any,
     _swapDataInputToken: any,
     _maxInput: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('issueExactSetFromETH')
     try {
       const eiContract = await getExchangeIssuanceLeveragedContract(
@@ -107,7 +108,7 @@ export const useExchangeIssuanceLeveraged = () => {
       return issueSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -127,7 +128,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _minAmountOutputToken: BigNumber,
     _swapDataCollateralForDebt: any,
     _swapDataOutputToken: any
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('redeemExactSetForETH')
     try {
       //TODO: Estimate better _minAmountOutputToken. For now hardcode addtional 0.05 ETH
@@ -149,7 +150,7 @@ export const useExchangeIssuanceLeveraged = () => {
       return redeemSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -174,7 +175,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _maxAmountInputToken: BigNumber,
     _swapDataDebtForCollateral: any,
     _swapDataInputToken: any
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('issueExactSetFromERC20', chainId)
     try {
       const eiContract = await getExchangeIssuanceLeveragedContract(
@@ -205,7 +206,7 @@ export const useExchangeIssuanceLeveraged = () => {
       return issueSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -228,7 +229,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _minAmountOutputToken: BigNumber,
     _swapDataCollateralForDebt: any,
     _swapDataOutputToken: any
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('redeemExactSetForERC20')
     try {
       // TODO: calculate a slightly higher _maxAmountInputToken so it doesn't revert
@@ -250,7 +251,7 @@ export const useExchangeIssuanceLeveraged = () => {
       return redeemSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 

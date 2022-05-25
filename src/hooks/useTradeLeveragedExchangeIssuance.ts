@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
+import { useEthers, useTransactions } from '@usedapp/core'
 
 import { POLYGON } from 'constants/chains'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
 import { SwapData } from 'utils/exchangeIssuanceQuotes'
+import { getStoredTransaction } from 'utils/storedTransaction'
 
 import { useBalance } from './useBalance'
 import {
@@ -33,6 +34,7 @@ export const useTradeLeveragedExchangeIssuance = (
     redeemExactSetForERC20,
   } = useExchangeIssuanceLeveraged()
   const { getBalance } = useBalance()
+  const { addTransaction } = useTransactions()
 
   const spendingTokenBalance =
     getBalance(inputToken.symbol) || BigNumber.from(0)
@@ -49,6 +51,7 @@ export const useTradeLeveragedExchangeIssuance = (
     )
       return
 
+    // TODO: use helper func
     const outputTokenAddress =
       chainId === POLYGON.chainId
         ? outputToken.polygonAddress
@@ -70,7 +73,7 @@ export const useTradeLeveragedExchangeIssuance = (
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
         if (isSellingNativeChainToken) {
-          await issueExactSetFromETH(
+          const issueTx = await issueExactSetFromETH(
             library,
             chainId,
             outputTokenAddress,
@@ -79,8 +82,13 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputSwapData,
             inputOutputLimit
           )
+          console.log('HERE', issueTx)
+          if (issueTx) {
+            const storedTx = getStoredTransaction(issueTx)
+            addTransaction(storedTx)
+          }
         } else {
-          await issueExactSetFromERC20(
+          const issueTx = await issueExactSetFromERC20(
             library,
             chainId,
             outputTokenAddress,
@@ -90,6 +98,10 @@ export const useTradeLeveragedExchangeIssuance = (
             debtCollateralSwapData,
             inputOutputSwapData
           )
+          if (issueTx) {
+            const storedTx = getStoredTransaction(issueTx)
+            addTransaction(storedTx)
+          }
         }
       } else {
         const isRedeemingToNativeChainToken =
@@ -102,7 +114,7 @@ export const useTradeLeveragedExchangeIssuance = (
         )
 
         if (isRedeemingToNativeChainToken) {
-          await redeemExactSetForETH(
+          const redeemTx = await redeemExactSetForETH(
             contract,
             inputTokenAddress,
             tokenAmout,
@@ -110,8 +122,12 @@ export const useTradeLeveragedExchangeIssuance = (
             debtCollateralSwapData,
             inputOutputSwapData
           )
+          if (redeemTx) {
+            const storedTx = getStoredTransaction(redeemTx)
+            addTransaction(storedTx)
+          }
         } else {
-          await redeemExactSetForERC20(
+          const redeemTx = await redeemExactSetForERC20(
             contract,
             inputTokenAddress,
             tokenAmout,
@@ -120,6 +136,10 @@ export const useTradeLeveragedExchangeIssuance = (
             debtCollateralSwapData,
             inputOutputSwapData
           )
+          if (redeemTx) {
+            const storedTx = getStoredTransaction(redeemTx)
+            addTransaction(storedTx)
+          }
         }
       }
       setIsTransacting(false)

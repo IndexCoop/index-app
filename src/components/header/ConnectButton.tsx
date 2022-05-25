@@ -11,16 +11,29 @@ import {
 import { useEthers, useLookupAddress } from '@usedapp/core'
 
 import { useNetwork } from 'hooks/useNetwork'
+import {
+  PendingTransactionState,
+  useWaitForTransaction,
+} from 'hooks/useWaitForTransaction'
 import { isSupportedNetwork } from 'utils'
+import { getBlockExplorerUrl } from 'utils/blockExplorer'
 
 import ConnectModal from './ConnectModal'
 import NetworkSelector from './NetworkSelector'
+import TransactionStateHeader, {
+  TransactionStateHeaderState,
+} from './TransactionStateHeader'
 
 const ConnectButton = () => {
   const { account, chainId, deactivate } = useEthers()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isDarkMode } = useICColorMode()
   const { changeNetwork } = useNetwork()
   let ens = useLookupAddress()
+  const { pendingTxHash, pendingTxState } = useWaitForTransaction()
+  console.log('PENTXST', pendingTxState)
+  console.log(pendingTxHash && getBlockExplorerUrl(pendingTxHash, chainId))
+  const txStateHeaderState = getHeaderState(pendingTxState)
 
   const backgroundColor = useColorModeValue(colors.black, colors.white)
   const textColor = useColorModeValue(colors.white, colors.black)
@@ -82,7 +95,15 @@ const ConnectButton = () => {
           m={'0 24px'}
           display={['none', 'none', 'flex', 'flex']}
         >
-          {formatAccountName()}
+          {pendingTxState === PendingTransactionState.none ? (
+            formatAccountName()
+          ) : (
+            <TransactionStateHeader
+              isDarkMode={isDarkMode}
+              onClick={() => console.log('click')}
+              state={txStateHeaderState}
+            />
+          )}
         </Text>
         <Button
           onClick={handleDisconnect}
@@ -129,4 +150,20 @@ const ConnectButton = () => {
 
   return wrongNetworkButton()
 }
+
+const getHeaderState = (
+  pendingTxState: PendingTransactionState
+): TransactionStateHeaderState => {
+  switch (pendingTxState) {
+    case PendingTransactionState.failed:
+      return TransactionStateHeaderState.failed
+    case PendingTransactionState.none:
+      return TransactionStateHeaderState.none
+    case PendingTransactionState.pending:
+      return TransactionStateHeaderState.pending
+    case PendingTransactionState.success:
+      return TransactionStateHeaderState.success
+  }
+}
+
 export default ConnectButton

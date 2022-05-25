@@ -11,7 +11,7 @@ import { ZeroExData } from 'utils/zeroExUtils'
 import { useBalance } from './useBalance'
 
 export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
-  const { account, library } = useEthers()
+  const { account } = useEthers()
   const { sendTransaction, state } = useSendTransaction({
     transactionName: 'trade',
   })
@@ -41,7 +41,6 @@ export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
 
     try {
       setIsTransacting(true)
-      // const tx = await library?.getSigner().sendTransaction(txRequest)
       await sendTransaction(txRequest)
     } catch (error) {
       setIsTransacting(false)
