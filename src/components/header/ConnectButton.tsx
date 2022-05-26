@@ -51,6 +51,14 @@ const ConnectButton = () => {
     onClose()
   }
 
+  const onClickTransactionState = () => {
+    if (!pendingTxHash || pendingTxState === PendingTransactionState.none)
+      return
+    const explorerUrl = getBlockExplorerUrl(pendingTxHash, chainId)
+    const newWindow = window.open(explorerUrl, '_blank')
+    newWindow?.focus()
+  }
+
   const onWrongNetworkButtonClicked = () => {
     changeNetwork('1')
   }
@@ -100,7 +108,7 @@ const ConnectButton = () => {
           ) : (
             <TransactionStateHeader
               isDarkMode={isDarkMode}
-              onClick={() => console.log('click')}
+              onClick={onClickTransactionState}
               state={txStateHeaderState}
             />
           )}
