@@ -22,7 +22,7 @@ import metamaskIcon from 'assets/metamask.png'
 import rainbowIcon from 'assets/rainbow-wallet.png'
 import walletconnectIcon from 'assets/walletconnect.svg'
 import zengoIcon from 'assets/zengo.png'
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { SUPPORTED_CHAINS } from 'constants/chains'
 import { metaMaskLink } from 'constants/externalLinks'
 
 export default function ConnectModal(props: {
@@ -65,7 +65,7 @@ export default function ConnectModal(props: {
         process.env.REACT_APP_MAINNET_ALCHEMY_API ||
         'https://eth-mainnet.alchemyapi.io/v2/Z3DZk23EsAFNouAbUzuw9Y-TvfW9Bo1S',
       appName: 'Index Coop',
-      supportedChainIds: [MAINNET.chainId, POLYGON.chainId, OPTIMISM.chainId],
+      supportedChainIds: SUPPORTED_CHAINS.map((chain) => chain.chainId),
     })
     activate(cornbase, (err) => {
       props.onClose()
