@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers'
 
-import { ChainId } from '@usedapp/core'
-
+import { POLYGON } from 'constants/chains'
 import { extractPoolFees } from 'utils/UniswapPath'
 import { get0xQuote } from 'utils/zeroExUtils'
 
@@ -17,7 +16,7 @@ import {
 export const getSwapDataCollateralDebt = async (
   leveragedTokenData: LeveragedTokenData,
   includedSources: string,
-  chainId: ChainId = ChainId.Polygon
+  chainId: number = POLYGON.chainId
 ) => {
   let result = await getSwapData(
     {
@@ -39,7 +38,7 @@ export const getSwapDataCollateralDebt = async (
 export const getSwapDataDebtCollateral = async (
   leveragedTokenData: LeveragedTokenData,
   includedSources: string,
-  chainId: ChainId = ChainId.Polygon
+  chainId: number = POLYGON.chainId
 ) => {
   let result = await getSwapData(
     {
