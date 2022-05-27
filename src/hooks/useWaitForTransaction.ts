@@ -24,7 +24,7 @@ export const useWaitForTransaction = () => {
     const latestTransactions = transactions
       // TODO: simulate states via manipulating here?
       .filter((tx) => {
-        const txDate = new Date(tx.submittedAt * 1000)
+        const txDate = new Date(tx.submittedAt)
         console.log(txDate.getDate(), txDate.getMonth(), txDate.getFullYear())
         return (
           txDate.getDate() === today.getDate() &&
