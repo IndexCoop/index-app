@@ -7,7 +7,8 @@ export function getStoredTransaction(
   tx: TransactionResponse,
   chainId: number = 1
 ): StoredTransaction {
-  const timestamp = Math.floor(Date.now() / 1000)
+  // Timestamp in milliseconds which usedapp uses internally with `sendTransaction`
+  const timestamp = Date.now()
   tx.chainId = chainId
   console.log('getting stored tx', tx.chainId, timestamp)
   return { transaction: tx, submittedAt: timestamp }
