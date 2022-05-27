@@ -77,7 +77,7 @@ export const useTradeLeveragedExchangeIssuance = (
           )
           console.log('HERE', issueTx)
           if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx)
+            const storedTx = getStoredTransaction(issueTx, chainId)
             addTransaction(storedTx)
           }
         } else {
@@ -92,7 +92,7 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputSwapData
           )
           if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx)
+            const storedTx = getStoredTransaction(issueTx, chainId)
             addTransaction(storedTx)
           }
         }
@@ -116,7 +116,7 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputSwapData
           )
           if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx)
+            const storedTx = getStoredTransaction(redeemTx, chainId)
             addTransaction(storedTx)
           }
         } else {
@@ -130,7 +130,7 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputSwapData
           )
           if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx)
+            const storedTx = getStoredTransaction(redeemTx, chainId)
             addTransaction(storedTx)
           }
         }

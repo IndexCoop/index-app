@@ -78,7 +78,7 @@ export const useTradeExchangeIssuance = (
             quoteData.gas
           )
           if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx)
+            const storedTx = getStoredTransaction(issueTx, chainId)
             addTransaction(storedTx)
           }
         } else {
@@ -95,7 +95,7 @@ export const useTradeExchangeIssuance = (
             quoteData.gas
           )
           if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx)
+            const storedTx = getStoredTransaction(issueTx, chainId)
             addTransaction(storedTx)
           }
         }
@@ -117,7 +117,7 @@ export const useTradeExchangeIssuance = (
             quoteData.gas
           )
           if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx)
+            const storedTx = getStoredTransaction(redeemTx, chainId)
             addTransaction(storedTx)
           }
         } else {
@@ -133,7 +133,7 @@ export const useTradeExchangeIssuance = (
             quoteData.gas
           )
           if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx)
+            const storedTx = getStoredTransaction(redeemTx, chainId)
             addTransaction(storedTx)
           }
         }

@@ -69,7 +69,7 @@ export const useApproval = (
       const tx = await tokenContract.approve(spenderAddress, amount)
       if (tx) {
         console.log('storing approval tx...', tx)
-        const storedTx = getStoredTransaction(tx)
+        const storedTx = getStoredTransaction(tx, chainId)
         addTransaction(storedTx)
       }
       const receipt = await tx.wait()
