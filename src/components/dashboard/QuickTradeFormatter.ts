@@ -1,7 +1,6 @@
 import { colors } from 'styles/colors'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
 import { displayFromWei } from 'utils'
@@ -9,6 +8,7 @@ import {
   ExchangeIssuanceQuote,
   LeveragedExchangeIssuanceQuote,
 } from 'utils/exchangeIssuanceQuotes'
+import { getNativeToken } from 'utils/tokens'
 import { ZeroExData } from 'utils/zeroExUtils'
 
 import { TradeInfoItem } from './TradeInfo'
@@ -148,7 +148,7 @@ export function getTradeInfoDataFromEI(
     | LeveragedExchangeIssuanceQuote
     | null
     | undefined,
-  chainId: ChainId = ChainId.Mainnet,
+  chainId: number = 1,
   isBuying: boolean
 ): TradeInfoItem[] {
   if (data === undefined || data === null) return []
@@ -161,7 +161,7 @@ export function getTradeInfoDataFromEI(
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic
   const networkFee = displayFromWei(gasPrice.mul(gasLimit))
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
-  const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
+  const networkToken = getNativeToken(chainId)?.symbol ?? ''
   const offeredFrom = 'Index - Exchange Issuance'
   return [
     {
@@ -198,7 +198,7 @@ const getReceivedAmount = (
 export function getTradeInfoData0x(
   zeroExTradeData: ZeroExData | undefined | null,
   buyToken: Token,
-  chainId: ChainId = ChainId.Mainnet
+  chainId: number = 1
 ): TradeInfoItem[] {
   if (zeroExTradeData === undefined || zeroExTradeData === null) return []
 
@@ -222,7 +222,7 @@ export function getTradeInfoData0x(
     BigNumber.from(gasPrice).mul(BigNumber.from(gas))
   )
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
-  const networkToken = chainId === ChainId.Polygon ? 'MATIC' : 'ETH'
+  const networkToken = getNativeToken(chainId)?.symbol ?? ''
 
   const offeredFromSources = zeroExTradeData.sources
     .filter((source) => Number(source.proportion) > 0)
