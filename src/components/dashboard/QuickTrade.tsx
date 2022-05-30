@@ -10,13 +10,7 @@ import { useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import {
-  ExchangeIssuanceLeveragedMainnetAddress,
-  ExchangeIssuanceLeveragedPolygonAddress,
-  ExchangeIssuanceZeroExMainnetAddress,
-  ExchangeIssuanceZeroExPolygonAddress,
-  zeroExRouterAddress,
-} from 'constants/ethContractAddresses'
+import { zeroExRouterAddress } from 'constants/ethContractAddresses'
 import {
   indexNamesMainnet,
   indexNamesOptimism,
@@ -31,6 +25,10 @@ import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
+import {
+  get0xExchangeIssuanceContract,
+  getLeveragedExchangeIssuanceContract,
+} from 'utils/contracts'
 
 import {
   formattedFiat,
@@ -98,14 +96,8 @@ const QuickTrade = (props: {
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
-  const spenderAddress0x =
-    chainId === POLYGON.chainId
-      ? ExchangeIssuanceZeroExMainnetAddress
-      : ExchangeIssuanceZeroExPolygonAddress
-  const spenderAddressLevEIL =
-    chainId === POLYGON.chainId
-      ? ExchangeIssuanceLeveragedPolygonAddress
-      : ExchangeIssuanceLeveragedMainnetAddress
+  const spenderAddress0x = get0xExchangeIssuanceContract(chainId)
+  const spenderAddressLevEIL = getLeveragedExchangeIssuanceContract(chainId)
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
 
