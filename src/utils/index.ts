@@ -1,11 +1,8 @@
-import { BigNumber, Contract, Signer } from 'ethers'
+import { BigNumber } from 'ethers'
 
-import { Provider } from '@ethersproject/abstract-provider'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 
 import { SUPPORTED_CHAINS } from 'constants/chains'
-
-import { ERC20_ABI } from './abi/ERC20'
 
 export const selectLatestMarketData = (marketData?: number[][]) =>
   marketData?.[marketData.length - 1]?.[1] || 0

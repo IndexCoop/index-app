@@ -2,12 +2,8 @@ import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider, TransactionResponse } from '@ethersproject/providers'
 
-import { POLYGON } from 'constants/chains'
-import {
-  ExchangeIssuanceZeroExMainnetAddress,
-  ExchangeIssuanceZeroExPolygonAddress,
-} from 'constants/ethContractAddresses'
 import { EI_ZEROEX_ABI } from 'utils/abi/EIZeroEx'
+import { get0xExchangeIssuanceContract } from 'utils/contracts'
 
 interface RequiredComponentsResponse {
   components: string[]
@@ -24,10 +20,7 @@ export const getExchangeIssuanceZeroExContract = async (
   providerSigner: Signer | Provider | undefined,
   chainId: number
 ): Promise<Contract> => {
-  const contractAddress =
-    chainId === POLYGON.chainId
-      ? ExchangeIssuanceZeroExPolygonAddress
-      : ExchangeIssuanceZeroExMainnetAddress
+  const contractAddress = get0xExchangeIssuanceContract(chainId)
   return new Contract(contractAddress, EI_ZEROEX_ABI, providerSigner)
 }
 
