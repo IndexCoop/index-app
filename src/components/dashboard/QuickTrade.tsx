@@ -13,8 +13,6 @@ import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
-  ExchangeIssuanceZeroExMainnetAddress,
-  ExchangeIssuanceZeroExPolygonAddress,
   zeroExRouterAddress,
 } from 'constants/ethContractAddresses'
 import {
@@ -31,6 +29,7 @@ import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
+import { get0xExchangeIssuanceContract } from 'utils/contracts'
 
 import {
   formattedFiat,
@@ -98,10 +97,7 @@ const QuickTrade = (props: {
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
-  const spenderAddress0x =
-    chainId === POLYGON.chainId
-      ? ExchangeIssuanceZeroExMainnetAddress
-      : ExchangeIssuanceZeroExPolygonAddress
+  const spenderAddress0x = get0xExchangeIssuanceContract(chainId)
   const spenderAddressLevEIL =
     chainId === POLYGON.chainId
       ? ExchangeIssuanceLeveragedPolygonAddress
