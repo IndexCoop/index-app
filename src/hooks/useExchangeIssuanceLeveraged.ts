@@ -4,12 +4,10 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { TransactionResponse } from '@ethersproject/providers'
 
 import { MAINNET, POLYGON } from 'constants/chains'
-import {
-  ExchangeIssuanceLeveragedMainnetAddress,
-  ExchangeIssuanceLeveragedPolygonAddress,
-} from 'constants/ethContractAddresses'
+import { ExchangeIssuanceLeveragedPolygonAddress } from 'constants/ethContractAddresses'
 import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
+import { getLeveragedExchangeIssuanceContract } from 'utils/contracts'
 
 /**
  * returns instance of ExchangeIssuanceLeveraged Contract
@@ -22,10 +20,7 @@ export const getExchangeIssuanceLeveragedContract = async (
   providerSigner: Signer | Provider | undefined,
   chainId: number = POLYGON.chainId
 ): Promise<Contract> => {
-  const contractAddress =
-    chainId === POLYGON.chainId
-      ? ExchangeIssuanceLeveragedPolygonAddress
-      : ExchangeIssuanceLeveragedMainnetAddress
+  const contractAddress = getLeveragedExchangeIssuanceContract(chainId)
   return new Contract(contractAddress, EI_LEVERAGED_ABI, providerSigner)
 }
 
