@@ -4,8 +4,6 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { TransactionResponse } from '@ethersproject/providers'
 
 import { MAINNET, POLYGON } from 'constants/chains'
-import { ExchangeIssuanceLeveragedPolygonAddress } from 'constants/ethContractAddresses'
-import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
 import { getLeveragedExchangeIssuanceContract } from 'utils/contracts'
 
@@ -402,35 +400,6 @@ export const useExchangeIssuanceLeveraged = () => {
     }
   }
 
-  /**
-   * Returns the tokenAllowance of a given token for a ExchangeIssuanceZeroEx contract.
-   * @param account                Address of the account
-   * @param library                library from logged in user
-   * @param tokenAddress           Address of the token
-   *
-   * @return tokenAllowance        Token allowance of the account
-   */
-  const tokenAllowance = async (
-    account: any,
-    library: any,
-    tokenAddress: string
-  ): Promise<BigNumber> => {
-    try {
-      const tokenContract = await getERC20Contract(
-        library.getSigner(),
-        tokenAddress
-      )
-      const allowance = await tokenContract.allowance(
-        account,
-        ExchangeIssuanceLeveragedPolygonAddress
-      )
-      return BigNumber.from(allowance)
-    } catch (err) {
-      console.log('error', err)
-      return BigNumber.from(0)
-    }
-  }
-
   return {
     issueExactSetFromETH,
     redeemExactSetForETH,
@@ -442,6 +411,5 @@ export const useExchangeIssuanceLeveraged = () => {
     approveSetToken,
     approveToken,
     approveTokens,
-    tokenAllowance,
   }
 }
