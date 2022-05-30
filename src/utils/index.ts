@@ -79,13 +79,6 @@ export const safeDiv = (dividend: BigNumber, divisor: BigNumber): BigNumber => {
   return dividend.div(divisor)
 }
 
-export const getERC20Contract = async (
-  provider: Signer | Provider | undefined,
-  address: string
-): Promise<Contract> => {
-  return await new Contract(address, ERC20_ABI, provider)
-}
-
 /**
  * Returns whether the chain(id) is supported
  * @param chainId
