@@ -129,18 +129,13 @@ export const useExchangeIssuanceZeroEx = () => {
   ): Promise<any> => {
     console.log('issueExactSetFromETH')
     try {
-      //TODO: Estimate better _maxInput.
-      //For now hardcode addtional 0.50% so it doesn't revert
-      //Previously 0.25% was tried and was not enough
-      //Ex. https://etherscan.io/tx/0x23d28156d8564dd775013241b27745a43e0923fe2e00c784349fff404fc043ac
-      const higherMax = BigNumber.from(maxInput).mul(10050).div(10000)
       const issueSetTx = await contract.issueExactSetFromETH(
         setToken,
         amountSetToken,
         componentQuotes,
         issuanceModule,
         isDebtIssuance,
-        { value: higherMax, gasLimit }
+        { value: maxInput, gasLimit }
       )
       return issueSetTx
     } catch (err) {
@@ -254,15 +249,11 @@ export const useExchangeIssuanceZeroEx = () => {
   ): Promise<any> => {
     console.log('issueExactSetFromToken')
     try {
-      // TODO: calculate more accurate _maxAmountInputToken so it doesn't revert
-      const higherMax = BigNumber.from(maxAmountInputToken)
-        .mul(10050)
-        .div(10000) // Extra 0.50%
       const issueSetTx = await contract.issueExactSetFromToken(
         setToken,
         inputToken,
         amountSetToken,
-        higherMax, // TODO: Replace this with the proper _maxAmountInputToken
+        maxAmountInputToken,
         componentQuotes,
         issuanceModule,
         isDebtIssuance,
@@ -306,9 +297,8 @@ export const useExchangeIssuanceZeroEx = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForToken')
     try {
-      // TODO: calculate a slightly higher _maxAmountInputToken so it doesn't revert
+      // Calculate a slightly higher _maxAmountInputToken so it doesn't revert
       const higherMax = BigNumber.from(amountSetToken).mul(BigNumber.from(2))
-
       const redeemSetTx = await contract.redeemExactSetForToken(
         setToken,
         outputToken,
