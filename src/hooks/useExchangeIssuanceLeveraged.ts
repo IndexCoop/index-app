@@ -82,28 +82,13 @@ export const useExchangeIssuanceLeveraged = () => {
         library.getSigner(),
         chainId
       )
-      console.log('params', {
-        _setToken,
-        _setAmount,
-        _swapDataDebtForCollateral,
-        _swapDataInputToken,
-        _maxInput,
-      })
-
-      //TODO: Estimate better _maxInput.
-      //For now hardcode addtional 0.50% so it doesn't revert
-      //Previously 0.25% was tried and was not enough
-      //Ex. https://etherscan.io/tx/0x23d28156d8564dd775013241b27745a43e0923fe2e00c784349fff404fc043ac
-      const higherMax = BigNumber.from(_maxInput)
-      console.log('amounts', _maxInput, higherMax)
       const issueSetTx = await eiContract.issueExactSetFromETH(
         _setToken,
         _setAmount,
         _swapDataDebtForCollateral,
         _swapDataInputToken,
-        { value: higherMax, gasLimit: 1800000 }
+        { value: _maxInput, gasLimit: 1800000 }
       )
-
       return issueSetTx
     } catch (err) {
       console.log('error', err)
@@ -130,14 +115,6 @@ export const useExchangeIssuanceLeveraged = () => {
   ): Promise<any> => {
     console.log('redeemExactSetForETH')
     try {
-      //TODO: Estimate better _minAmountOutputToken. For now hardcode addtional 0.05 ETH
-      console.log('redeeming', {
-        _setToken,
-        _setAmount,
-        _minAmountOutputToken,
-        _swapDataCollateralForDebt,
-        _swapDataOutputToken,
-      })
       const redeemSetTx = await contract.redeemExactSetForETH(
         _setToken,
         _setAmount,
@@ -181,21 +158,11 @@ export const useExchangeIssuanceLeveraged = () => {
         library.getSigner(),
         chainId
       )
-      // TODO: calculate more accurate _maxAmountInputToken so it doesn't revert
-      const higherMax = BigNumber.from(_maxAmountInputToken)
-      console.log('erc20', {
-        _setToken,
-        _setAmount,
-        _inputToken,
-        _maxAmountInputToken,
-        _swapDataDebtForCollateral,
-        _swapDataInputToken,
-      })
       const issueSetTx = await eiContract.issueExactSetFromERC20(
         _setToken,
         _setAmount,
         _inputToken,
-        higherMax, // TODO: Replace this with the proper _maxAmountInputToken
+        _maxAmountInputToken,
         _swapDataDebtForCollateral,
         _swapDataInputToken,
         {
@@ -233,7 +200,6 @@ export const useExchangeIssuanceLeveraged = () => {
     try {
       // TODO: calculate a slightly higher _maxAmountInputToken so it doesn't revert
       const higherMax = BigNumber.from(_setAmount).mul(BigNumber.from(2))
-
       const redeemSetTx = await contract.redeemExactSetForERC20(
         _setToken,
         higherMax, // TODO: Replace this with the proper setAmount
