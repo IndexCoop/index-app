@@ -52,10 +52,13 @@ export const displayFromWei = (
   if (!number) return null
 
   if (decimals) {
-    return Number(formatUnits(number, power)).toFixed(decimals)
+    return Number(formatUnits(number, power)).toLocaleString('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    })
   }
 
-  return formatUnits(number, power)
+  return formatUnits(number, power).toLocaleString()
 }
 
 /**
@@ -83,25 +86,6 @@ export const getERC20Contract = async (
   address: string
 ): Promise<Contract> => {
   return await new Contract(address, ERC20_ABI, provider)
-}
-
-/**
- * Formats a BigNumber from Gwei
- * @param decimals round to decimals is NOT precise
- * @param power default to 9 covers most token decimals
- */
-export const displayFromGwei = (
-  number: BigNumber | undefined,
-  decimals: number = 0,
-  power: number = 9
-): string | null => {
-  if (!number) return null
-
-  if (decimals) {
-    return Number(formatUnits(number, power)).toFixed(decimals)
-  }
-
-  return formatUnits(number, power)
 }
 
 /**

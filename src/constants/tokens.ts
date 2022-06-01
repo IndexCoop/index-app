@@ -452,7 +452,6 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
   Bitcoin2xFLIP,
   Ethereum2xFLIP,
   IBitcoinFLIP,
-  IBitcoinFLIP,
   icETHIndex,
   IEthereumFLIP,
   IMaticFLIP,

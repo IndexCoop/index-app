@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { ethers } from 'ethers'
+import { utils } from 'ethers'
 import {
   CoinGeckoCoinPrices,
   Position,
@@ -673,12 +673,10 @@ export async function convertPositionToSetComponent(
   const commonDecimals = 18
   const decimalsDiff = commonDecimals - token.decimals
 
-  const tokenPriceUsdDecimal = ethers.utils.parseUnits(
-    componentPriceUsd.toString()
-  )
-  const setPriceUsdDecimal = ethers.utils.parseUnits(setPriceUsd.toString())
+  const tokenPriceUsdDecimal = utils.parseUnits(componentPriceUsd.toString())
+  const setPriceUsdDecimal = utils.parseUnits(setPriceUsd.toString())
 
-  const tokenValueUsd = ethers.utils
+  const tokenValueUsd = utils
     .parseUnits(position.unit.toString(), decimalsDiff)
     .mul(tokenPriceUsdDecimal)
 
@@ -691,13 +689,13 @@ export async function convertPositionToSetComponent(
   return {
     address: position.component,
     id: token.name.toLowerCase(),
-    quantity: ethers.utils.formatUnits(
-      ethers.utils.parseUnits(position.unit.toString(), decimalsDiff)
+    quantity: utils.formatUnits(
+      utils.parseUnits(position.unit.toString(), decimalsDiff)
     ),
     symbol: token.symbol,
     name: token.name,
     image: token.logoURI,
-    totalPriceUsd: ethers.utils.formatUnits(
+    totalPriceUsd: utils.formatUnits(
       tokenValueUsd,
       commonDecimals + decimalsDiff + token.decimals
     ),

@@ -52,11 +52,12 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
       >
         <ModalHeader>Select a token</ModalHeader>
         <ModalCloseButton />
-        <ModalBody p='16px'>
+        <ModalBody p='16px 0'>
           {items.length > 0 &&
             items.map((item) => (
               <TokenItem
                 key={item.symbol}
+                isDarkMode={isDarkMode}
                 item={item}
                 onClick={() => onSelectedToken(item.symbol)}
               />
@@ -68,18 +69,23 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
 }
 
 type TokenItemProps = {
+  isDarkMode: boolean
   item: SelectTokenModalItem
   onClick: (tokenSymbol: string) => void
 }
 
-const TokenItem = ({ item, onClick }: TokenItemProps) => (
+const TokenItem = ({ isDarkMode, item, onClick }: TokenItemProps) => (
   <Flex
     align='center'
     justify='space-between'
     cursor='pointer'
     h='60px'
-    m='4px'
+    my='4px'
+    px='16px'
     onClick={() => onClick(item.symbol)}
+    _hover={{
+      backgroundColor: isDarkMode ? colors.gray[900] : colors.gray[100],
+    }}
   >
     <Flex align='center'>
       <Image alt={`${item.symbol} logo`} src={item.logo} w='40px' h='40px' />

@@ -1,11 +1,17 @@
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, providers } from 'ethers'
 
+import {
+  debtCollateralSwapData,
+  inputSwapData,
+  outputSwapData,
+} from 'constants/exchangeIssuanceLeveragedData'
 import {
   ETH,
   GmiIndex,
   icETHIndex,
   IEthereumFLIP,
   MATIC,
+  STETH,
 } from 'constants/tokens'
 import { displayFromWei, toWei } from 'utils'
 
@@ -13,13 +19,14 @@ import {
   Exchange,
   getIncludedSources,
   getLevEIPaymentTokenAddress,
+  getLeveragedExchangeIssuanceQuotes,
   getRequiredComponents,
   getSlippageAdjustedTokenAmount,
   getSwapDataAndPaymentTokenAmount,
   SwapData,
 } from './exchangeIssuanceQuotes'
 
-const provider = new ethers.providers.JsonRpcProvider(
+const provider = new providers.JsonRpcProvider(
   process.env.REACT_APP_MAINNET_ALCHEMY_API,
   1
 )
@@ -86,6 +93,26 @@ describe('getLevEIPaymentTokenAddress()', () => {
   })
 })
 
+describe('getLeveragedExchangeIssuanceQuotes()', () => {
+  test('should return static swap data for 🧊ETH - issuing', async () => {
+    const setTokenAmount = BigNumber.from('100')
+    const quote = await getLeveragedExchangeIssuanceQuotes(
+      icETHIndex,
+      setTokenAmount,
+      ETH,
+      icETHIndex,
+      true,
+      1,
+      provider as providers.Web3Provider
+    )
+    expect(quote).toBeDefined()
+    expect(quote?.setTokenAmount).toEqual(setTokenAmount)
+    expect(quote?.swapDataDebtCollateral).toStrictEqual(
+      debtCollateralSwapData[icETHIndex.symbol]
+    )
+  })
+})
+
 describe('getRequiredComponents()', () => {
   test('should return components and positions for issuance', async () => {
     const isIssuance = true
@@ -100,7 +127,7 @@ describe('getRequiredComponents()', () => {
       setTokenSymbol,
       setTokenAmount,
       chainId,
-      provider as ethers.providers.Web3Provider
+      provider as providers.Web3Provider
     )
 
     expect(positions.length).toBeGreaterThan(0)
@@ -121,7 +148,7 @@ describe('getRequiredComponents()', () => {
       setTokenSymbol,
       setTokenAmount,
       chainId,
-      provider as ethers.providers.Web3Provider
+      provider as providers.Web3Provider
     )
 
     expect(positions.length).toBeGreaterThan(0)
@@ -178,6 +205,72 @@ describe('getSwapDataAndPaymentTokenAmount()', () => {
         137
       )
     expect(swapDataPaymentToken).toStrictEqual(defaultSwapData)
+    expect(paymentTokenAmount.toString()).toStrictEqual(
+      leftoverCollateral.toString()
+    )
+  })
+
+  test('should return static swap data for 🧊ETH - issuing', async () => {
+    const swapData: SwapData = inputSwapData[icETHIndex.symbol][ETH.symbol]
+
+    const collateralShortfall = BigNumber.from(1)
+
+    const { swapDataPaymentToken, paymentTokenAmount } =
+      await getSwapDataAndPaymentTokenAmount(
+        icETHIndex,
+        ETH.address!,
+        collateralShortfall,
+        BigNumber.from(0),
+        ETH.address!,
+        '',
+        true,
+        1
+      )
+    expect(swapDataPaymentToken).toStrictEqual(swapData)
+    expect(paymentTokenAmount.toString()).toStrictEqual(
+      collateralShortfall.toString()
+    )
+  })
+
+  test('should return static swap data for 🧊ETH - issuing (stETH)', async () => {
+    const swapData: SwapData = inputSwapData[icETHIndex.symbol][STETH.symbol]
+
+    const collateralShortfall = BigNumber.from(1)
+
+    const { swapDataPaymentToken, paymentTokenAmount } =
+      await getSwapDataAndPaymentTokenAmount(
+        icETHIndex,
+        STETH.address!,
+        collateralShortfall,
+        BigNumber.from(0),
+        STETH.address!,
+        '',
+        true,
+        1
+      )
+    expect(swapDataPaymentToken).toStrictEqual(swapData)
+    expect(paymentTokenAmount.toString()).toStrictEqual(
+      collateralShortfall.toString()
+    )
+  })
+
+  test('should return static swap data for 🧊ETH - redeeming', async () => {
+    const swapData: SwapData = outputSwapData[icETHIndex.symbol][ETH.symbol]
+
+    const leftoverCollateral = BigNumber.from(1)
+
+    const { swapDataPaymentToken, paymentTokenAmount } =
+      await getSwapDataAndPaymentTokenAmount(
+        icETHIndex,
+        ETH.address!,
+        BigNumber.from(0),
+        leftoverCollateral,
+        ETH.address!,
+        '',
+        false,
+        1
+      )
+    expect(swapDataPaymentToken).toStrictEqual(swapData)
     expect(paymentTokenAmount.toString()).toStrictEqual(
       leftoverCollateral.toString()
     )
