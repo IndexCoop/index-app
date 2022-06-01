@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { BigNumber } from 'set.js'
+import { BigNumber } from 'ethers'
 import { colors, useICColorMode } from 'styles/colors'
 
-import { Box, Flex, Image, Input, Select, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 import { useEthers } from '@usedapp/core'
 
@@ -29,7 +29,7 @@ const QuickTradeSelector = (props: {
   priceImpact?: { priceImpact: string; colorCoding: string }
   formattedFiat: string
   tokenList: Token[]
-  onChangeInput: (token: Token, input: string) => void
+  onChangeInput?: (token: Token, input: string) => void
   onSelectedToken: (symbol: string) => void
 }) => {
   const { chainId } = useEthers()
@@ -70,7 +70,9 @@ const QuickTradeSelector = (props: {
   const onChangeInput = (amount: string) => {
     if (!amount) {
       setInputString('')
-      props.onChangeInput(props.selectedToken, '')
+      if (props.onChangeInput) {
+        props.onChangeInput(props.selectedToken, '')
+      }
     }
 
     if (

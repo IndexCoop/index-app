@@ -5,6 +5,12 @@ import { Exchange } from 'utils/exchangeIssuanceQuotes'
 import { swapDataFrom0xQuote } from './swapData'
 
 describe('swapDataFrom0xQuote()', () => {
+  test('should return null if no data present', async () => {
+    const zeroExQuote = undefined
+    const swapData = swapDataFrom0xQuote(zeroExQuote)
+    expect(swapData).toBeNull()
+  })
+
   test('should return null if no orders are present', async () => {
     const zeroExQuote = zeroExQuoteMock
     const swapData = swapDataFrom0xQuote(zeroExQuote)

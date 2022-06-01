@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
@@ -8,15 +9,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
-import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import {
-  ExchangeIssuanceLeveragedMainnetAddress,
-  ExchangeIssuanceLeveragedPolygonAddress,
-  ExchangeIssuanceZeroExMainnetAddress,
-  ExchangeIssuanceZeroExPolygonAddress,
-  zeroExRouterAddress,
-} from 'constants/ethContractAddresses'
+import { zeroExRouterAddress } from 'constants/ethContractAddresses'
 import {
   indexNamesMainnet,
   indexNamesOptimism,
@@ -31,6 +25,10 @@ import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
+import {
+  get0xExchangeIssuanceContract,
+  getLeveragedExchangeIssuanceContract,
+} from 'utils/contracts'
 
 import {
   formattedFiat,
@@ -98,14 +96,8 @@ const QuickTrade = (props: {
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
-  const spenderAddress0x =
-    chainId === POLYGON.chainId
-      ? ExchangeIssuanceZeroExMainnetAddress
-      : ExchangeIssuanceZeroExPolygonAddress
-  const spenderAddressLevEIL =
-    chainId === POLYGON.chainId
-      ? ExchangeIssuanceLeveragedPolygonAddress
-      : ExchangeIssuanceLeveragedMainnetAddress
+  const spenderAddress0x = get0xExchangeIssuanceContract(chainId)
+  const spenderAddressLevEIL = getLeveragedExchangeIssuanceContract(chainId)
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
 
@@ -409,10 +401,10 @@ const QuickTrade = (props: {
     return 'Trade'
   }
 
-  const onChangeSellTokenAmount = (token: Token, input: string) => {
+  const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '0')
-  }
+  }, 1000)
 
   const onClickTradeButton = async () => {
     if (!account) {
@@ -544,7 +536,6 @@ const QuickTrade = (props: {
           formattedFiat={buyTokenFiat}
           priceImpact={priceImpact ?? undefined}
           tokenList={buyTokenList}
-          onChangeInput={(token: Token, input: string) => {}}
           onSelectedToken={(_) => {
             if (outputTokenItems.length > 1) onOpenSelectOutputToken()
           }}
@@ -564,7 +555,6 @@ const QuickTrade = (props: {
           isLoading={isLoading}
           onClick={onClickTradeButton}
         />
-        <FlashbotsRpcMessage />
       </Flex>
       <ConnectModal isOpen={isOpen} onClose={onClose} />
       <SelectTokenModal

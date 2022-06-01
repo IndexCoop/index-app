@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber, providers } from 'ethers'
 
 import { ChainId } from '@usedapp/core'
 
@@ -101,7 +101,7 @@ export async function getRequiredComponents(
   setTokenSymbol: string,
   setTokenAmount: BigNumber,
   chainId: ChainId | undefined,
-  provider: ethers.providers.Web3Provider | undefined
+  provider: providers.Web3Provider | undefined
 ) {
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
 
@@ -147,7 +147,7 @@ export const getExchangeIssuanceQuotes = async (
   sellToken: Token,
   isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
-  provider: ethers.providers.Web3Provider | undefined
+  provider: providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
   const buyTokenAddress = getAddressForToken(buyToken, chainId)
   const sellTokenAddress = getAddressForToken(sellToken, chainId)
@@ -279,7 +279,7 @@ async function getLevTokenData(
   setTokenAmount: BigNumber,
   isIssuance: boolean,
   chainId: number,
-  signer: ethers.providers.Web3Provider | undefined
+  signer: providers.Web3Provider | undefined
 ): Promise<LeveragedTokenData> {
   const contract = await getExchangeIssuanceLeveragedContract(signer, chainId)
   const setTokenAddress = getAddressForToken(setToken, chainId)
@@ -408,10 +408,10 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   outputToken: Token,
   isIssuance: boolean,
   chainId: ChainId = ChainId.Mainnet,
-  provider: ethers.providers.Web3Provider | undefined
+  provider: providers.Web3Provider | undefined
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
-  const tokenSymbol = setToken.symbol
-  const isIcEth = tokenSymbol === 'icETH'
+  const setTokenSymbol = setToken.symbol
+  const isIcEth = setTokenSymbol === 'icETH'
   const includedSources = getIncludedSources(isIcEth)
 
   const leveragedTokenData = await getLevTokenData(
@@ -442,8 +442,8 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   if (isIcEth) {
     // just using the static versions
     swapDataDebtCollateral = isIssuance
-      ? debtCollateralSwapData[tokenSymbol]
-      : collateralDebtSwapData[tokenSymbol]
+      ? debtCollateralSwapData[setTokenSymbol]
+      : collateralDebtSwapData[setTokenSymbol]
   }
 
   // Relevant when issuing

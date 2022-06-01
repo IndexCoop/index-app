@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { ethers, utils } from 'ethers'
+import { constants, utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { useEthers, useSendTransaction, useTokenAllowance } from '@usedapp/core'
+import { useEthers, useTokenAllowance } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
 import { ERC20_ABI } from 'utils/abi/ERC20'
@@ -43,10 +43,9 @@ function useApprovalState(
 export const useApproval = (
   token?: Token,
   spenderAddress?: string,
-  amount: BigNumber = ethers.constants.MaxUint256
+  amount: BigNumber = constants.MaxUint256
 ) => {
   const { account, chainId, library } = useEthers()
-  const { sendTransaction, state } = useSendTransaction()
 
   const tokenAddress = token && getAddressForToken(token, chainId)
   const approvalState = useApprovalState(amount, tokenAddress, spenderAddress)
@@ -66,11 +65,12 @@ export const useApproval = (
         library.getSigner()
       )
       const tx = await tokenContract.approve(spenderAddress, amount)
-      await sendTransaction(tx)
-    } catch (e) {
-      console.log('Error approving token', tokenAddress, e)
+      const receipt = await tx.wait()
+      setIsApproved(receipt.status === 1)
       setIsApproving(false)
-      return false
+    } catch (e) {
+      setIsApproving(false)
+      console.error('Error approving token', tokenAddress, e)
     }
   }, [
     account,
@@ -85,17 +85,6 @@ export const useApproval = (
   useEffect(() => {
     setIsApproved(approvalState === ApprovalState.Approved)
   }, [approvalState])
-
-  useEffect(() => {
-    const txIsFinished =
-      state.status === 'Success' ||
-      state.status === 'Fail' ||
-      state.status === 'Exception'
-    if (txIsFinished) {
-      setIsApproved(state.status !== 'Fail')
-      setIsApproving(false)
-    }
-  }, [state])
 
   return {
     isApproved,
