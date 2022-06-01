@@ -1,11 +1,8 @@
-import { BigNumber, Contract, Signer } from 'ethers'
+import { BigNumber } from 'ethers'
 
-import { Provider } from '@ethersproject/abstract-provider'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 
 import { SUPPORTED_CHAINS } from 'constants/chains'
-
-import { ERC20_ABI } from './abi/ERC20'
 
 export const selectLatestMarketData = (marketData?: number[][]) =>
   marketData?.[marketData.length - 1]?.[1] || 0
@@ -77,13 +74,6 @@ export const isValidTokenInput = (
 export const safeDiv = (dividend: BigNumber, divisor: BigNumber): BigNumber => {
   if (divisor.isZero()) return BigNumber.from(0)
   return dividend.div(divisor)
-}
-
-export const getERC20Contract = async (
-  provider: Signer | Provider | undefined,
-  address: string
-): Promise<Contract> => {
-  return await new Contract(address, ERC20_ABI, provider)
 }
 
 /**

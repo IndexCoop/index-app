@@ -38,8 +38,6 @@ import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningPr
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
 import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
 
-import './index.css'
-
 const config: Config = {
   readOnlyChainId: MAINNET.chainId,
   readOnlyUrls: {

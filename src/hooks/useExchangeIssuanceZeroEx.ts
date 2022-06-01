@@ -2,13 +2,8 @@ import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider, TransactionResponse } from '@ethersproject/providers'
 
-import { POLYGON } from 'constants/chains'
-import {
-  ExchangeIssuanceZeroExMainnetAddress,
-  ExchangeIssuanceZeroExPolygonAddress,
-} from 'constants/ethContractAddresses'
-import { getERC20Contract } from 'utils'
 import { EI_ZEROEX_ABI } from 'utils/abi/EIZeroEx'
+import { get0xExchangeIssuanceContract } from 'utils/contracts'
 
 interface RequiredComponentsResponse {
   components: string[]
@@ -25,10 +20,7 @@ export const getExchangeIssuanceZeroExContract = async (
   providerSigner: Signer | Provider | undefined,
   chainId: number
 ): Promise<Contract> => {
-  const contractAddress =
-    chainId === POLYGON.chainId
-      ? ExchangeIssuanceZeroExPolygonAddress
-      : ExchangeIssuanceZeroExMainnetAddress
+  const contractAddress = get0xExchangeIssuanceContract(chainId)
   return new Contract(contractAddress, EI_ZEROEX_ABI, providerSigner)
 }
 
@@ -438,37 +430,6 @@ export const useExchangeIssuanceZeroEx = () => {
     }
   }
 
-  /**
-   * Returns the tokenAllowance of a given token for a ExchangeIssuanceZeroEx contract.
-   * @param account                Address of the account
-   * @param library                library from logged in user
-   * @param tokenAddress           Address of the token
-   *
-   * @return tokenAllowance        Token allowance of the account
-   */
-  const tokenAllowance = async (
-    account: any,
-    library: any,
-    chainId: number,
-    tokenAddress: string
-  ): Promise<BigNumber> => {
-    try {
-      const contractAddress =
-        chainId === POLYGON.chainId
-          ? ExchangeIssuanceZeroExPolygonAddress
-          : ExchangeIssuanceZeroExMainnetAddress
-      const tokenContract = await getERC20Contract(
-        library.getSigner(),
-        tokenAddress
-      )
-      const allowance = await tokenContract.allowance(account, contractAddress)
-      return BigNumber.from(allowance)
-    } catch (err) {
-      console.log('error', err)
-      return BigNumber.from(0)
-    }
-  }
-
   return {
     getRequiredIssuanceComponents,
     getRequiredRedemptionComponents,
@@ -479,6 +440,5 @@ export const useExchangeIssuanceZeroEx = () => {
     approveSetToken,
     approveToken,
     approveTokens,
-    tokenAllowance,
   }
 }

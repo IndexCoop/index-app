@@ -4,12 +4,8 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { TransactionResponse } from '@ethersproject/providers'
 
 import { MAINNET, POLYGON } from 'constants/chains'
-import {
-  ExchangeIssuanceLeveragedMainnetAddress,
-  ExchangeIssuanceLeveragedPolygonAddress,
-} from 'constants/ethContractAddresses'
-import { getERC20Contract } from 'utils'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
+import { getLeveragedExchangeIssuanceContract } from 'utils/contracts'
 
 /**
  * returns instance of ExchangeIssuanceLeveraged Contract
@@ -22,10 +18,7 @@ export const getExchangeIssuanceLeveragedContract = async (
   providerSigner: Signer | Provider | undefined,
   chainId: number = POLYGON.chainId
 ): Promise<Contract> => {
-  const contractAddress =
-    chainId === POLYGON.chainId
-      ? ExchangeIssuanceLeveragedPolygonAddress
-      : ExchangeIssuanceLeveragedMainnetAddress
+  const contractAddress = getLeveragedExchangeIssuanceContract(chainId)
   return new Contract(contractAddress, EI_LEVERAGED_ABI, providerSigner)
 }
 
@@ -407,35 +400,6 @@ export const useExchangeIssuanceLeveraged = () => {
     }
   }
 
-  /**
-   * Returns the tokenAllowance of a given token for a ExchangeIssuanceZeroEx contract.
-   * @param account                Address of the account
-   * @param library                library from logged in user
-   * @param tokenAddress           Address of the token
-   *
-   * @return tokenAllowance        Token allowance of the account
-   */
-  const tokenAllowance = async (
-    account: any,
-    library: any,
-    tokenAddress: string
-  ): Promise<BigNumber> => {
-    try {
-      const tokenContract = await getERC20Contract(
-        library.getSigner(),
-        tokenAddress
-      )
-      const allowance = await tokenContract.allowance(
-        account,
-        ExchangeIssuanceLeveragedPolygonAddress
-      )
-      return BigNumber.from(allowance)
-    } catch (err) {
-      console.log('error', err)
-      return BigNumber.from(0)
-    }
-  }
-
   return {
     issueExactSetFromETH,
     redeemExactSetForETH,
@@ -447,6 +411,5 @@ export const useExchangeIssuanceLeveraged = () => {
     approveSetToken,
     approveToken,
     approveTokens,
-    tokenAllowance,
   }
 }
