@@ -2,8 +2,8 @@ import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
 import { TransactionResponse } from '@ethersproject/providers'
-import { ChainId } from '@usedapp/core'
 
+import { MAINNET, POLYGON } from 'constants/chains'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
@@ -20,10 +20,10 @@ import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
  */
 export const getExchangeIssuanceLeveragedContract = async (
   providerSigner: Signer | Provider | undefined,
-  chainId: ChainId = ChainId.Polygon
+  chainId: number = POLYGON.chainId
 ): Promise<Contract> => {
   const contractAddress =
-    chainId === ChainId.Polygon
+    chainId === POLYGON.chainId
       ? ExchangeIssuanceLeveragedPolygonAddress
       : ExchangeIssuanceLeveragedMainnetAddress
   return new Contract(contractAddress, EI_LEVERAGED_ABI, providerSigner)
@@ -70,7 +70,7 @@ export const useExchangeIssuanceLeveraged = () => {
 
   const issueExactSetFromETH = async (
     library: any,
-    chainId: ChainId = ChainId.Mainnet,
+    chainId: number = MAINNET.chainId,
     _setToken: string,
     _setAmount: BigNumber,
     _swapDataDebtForCollateral: any,
@@ -168,7 +168,7 @@ export const useExchangeIssuanceLeveraged = () => {
    */
   const issueExactSetFromERC20 = async (
     library: any,
-    chainId: ChainId = ChainId.Mainnet,
+    chainId: number = MAINNET.chainId,
     _setToken: string,
     _setAmount: BigNumber,
     _inputToken: string,

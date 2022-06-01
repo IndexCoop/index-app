@@ -1,7 +1,6 @@
 import { BigNumber, providers } from 'ethers'
 
-import { ChainId } from '@usedapp/core'
-
+import { POLYGON } from 'constants/chains'
 import {
   collateralDebtSwapData,
   debtCollateralSwapData,
@@ -100,14 +99,14 @@ export async function getRequiredComponents(
   setToken: string | undefined,
   setTokenSymbol: string,
   setTokenAmount: BigNumber,
-  chainId: ChainId | undefined,
+  chainId: number | undefined,
   provider: providers.Web3Provider | undefined
 ) {
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
 
   const contract = await getExchangeIssuanceZeroExContract(
     provider,
-    chainId ?? ChainId.Mainnet
+    chainId ?? 1
   )
 
   const { components, positions } = isIssuance
@@ -146,7 +145,7 @@ export const getExchangeIssuanceQuotes = async (
   setTokenAmount: BigNumber,
   sellToken: Token,
   isIssuance: boolean,
-  chainId: ChainId = ChainId.Mainnet,
+  chainId: number = 1,
   provider: providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
   const buyTokenAddress = getAddressForToken(buyToken, chainId)
@@ -306,7 +305,7 @@ export function getLevEIPaymentTokenAddress(
     return STETH.address!
   }
 
-  if (chainId === ChainId.Polygon && paymentToken.symbol === MATIC.symbol) {
+  if (chainId === POLYGON.chainId && paymentToken.symbol === MATIC.symbol) {
     const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
     return WMATIC_ADDRESS
   }
@@ -407,7 +406,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   inputToken: Token,
   outputToken: Token,
   isIssuance: boolean,
-  chainId: ChainId = ChainId.Mainnet,
+  chainId: number = 1,
   provider: providers.Web3Provider | undefined
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const setTokenSymbol = setToken.symbol

@@ -1,8 +1,8 @@
 import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider, TransactionResponse } from '@ethersproject/providers'
-import { ChainId } from '@usedapp/core'
 
+import { POLYGON } from 'constants/chains'
 import {
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
@@ -23,10 +23,10 @@ interface RequiredComponentsResponse {
  */
 export const getExchangeIssuanceZeroExContract = async (
   providerSigner: Signer | Provider | undefined,
-  chainId: ChainId
+  chainId: number
 ): Promise<Contract> => {
   const contractAddress =
-    chainId === ChainId.Polygon
+    chainId === POLYGON.chainId
       ? ExchangeIssuanceZeroExPolygonAddress
       : ExchangeIssuanceZeroExMainnetAddress
   return new Contract(contractAddress, EI_ZEROEX_ABI, providerSigner)
@@ -449,12 +449,12 @@ export const useExchangeIssuanceZeroEx = () => {
   const tokenAllowance = async (
     account: any,
     library: any,
-    chainId: ChainId,
+    chainId: number,
     tokenAddress: string
   ): Promise<BigNumber> => {
     try {
       const contractAddress =
-        chainId === ChainId.Polygon
+        chainId === POLYGON.chainId
           ? ExchangeIssuanceZeroExPolygonAddress
           : ExchangeIssuanceZeroExMainnetAddress
       const tokenContract = await getERC20Contract(

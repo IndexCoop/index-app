@@ -2,12 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { BigNumber, Contract, providers } from 'ethers'
 
-import {
-  ChainId,
-  useEtherBalance,
-  useEthers,
-  useTokenBalance,
-} from '@usedapp/core'
+import { useEtherBalance, useEthers, useTokenBalance } from '@usedapp/core'
 
 import {
   dpi2020StakingRewardsAddress,
@@ -88,7 +83,7 @@ export interface Balances {
 /* Returns balance of ERC20 token */
 async function balanceOf(
   token: Token,
-  chainId: ChainId,
+  chainId: number,
   account: string,
   library: providers.Web3Provider | undefined
 ): Promise<BigNumber> {

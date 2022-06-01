@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { ChainId } from '@usedapp/core'
-
-import { OPTIMISM, POLYGON } from 'constants/chains'
+import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
-  DefiPulseIndex,
   ETH,
   indexNamesMainnet,
   indexNamesOptimism,
@@ -17,7 +14,7 @@ import { fetchCoingeckoTokenPrice } from 'utils/coingeckoApi'
 import { getAddressForToken, getNativeToken } from 'utils/tokens'
 
 export const useTradeTokenLists = (
-  chainId: ChainId | undefined,
+  chainId: number | undefined,
   singleToken?: Token
 ) => {
   const nativeToken = getNativeToken(chainId) ?? ETH
@@ -119,9 +116,9 @@ export const useTradeTokenLists = (
  * @returns Token[] list of tokens
  */
 const getCurrencyTokensByChain = (
-  chainId: ChainId | undefined = ChainId.Mainnet
+  chainId: number | undefined = MAINNET.chainId
 ) => {
-  if (chainId === ChainId.Polygon) return polygonCurrencyTokens
+  if (chainId === POLYGON.chainId) return polygonCurrencyTokens
   return mainnetCurrencyTokens
 }
 
@@ -130,7 +127,7 @@ const getCurrencyTokensByChain = (
  * @returns Token[] list of tokens
  */
 const getTokenListByChain = (
-  chainId: ChainId | undefined = ChainId.Mainnet,
+  chainId: number | undefined = MAINNET.chainId,
   singleToken: Token | undefined
 ) => {
   if (singleToken) return [singleToken]
@@ -145,7 +142,7 @@ const getTokenListByChain = (
  */
 const getTokenPrice = async (
   token: Token,
-  chainId: ChainId | undefined
+  chainId: number | undefined
 ): Promise<number> => {
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress || !chainId) return 0
