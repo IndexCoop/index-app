@@ -4,10 +4,11 @@ import { constants, utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { useEthers, useTokenAllowance } from '@usedapp/core'
+import { useEthers, useTokenAllowance, useTransactions } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
 import { ERC20_ABI } from 'utils/abi/ERC20'
+import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
 const ERC20Interface = new utils.Interface(ERC20_ABI)
@@ -46,6 +47,7 @@ export const useApproval = (
   amount: BigNumber = constants.MaxUint256
 ) => {
   const { account, chainId, library } = useEthers()
+  const { addTransaction } = useTransactions()
 
   const tokenAddress = token && getAddressForToken(token, chainId)
   const approvalState = useApprovalState(amount, tokenAddress, spenderAddress)
@@ -65,6 +67,11 @@ export const useApproval = (
         library.getSigner()
       )
       const tx = await tokenContract.approve(spenderAddress, amount)
+      if (tx) {
+        console.log('storing approval tx...', tx)
+        const storedTx = getStoredTransaction(tx, chainId)
+        addTransaction(storedTx)
+      }
       const receipt = await tx.wait()
       setIsApproved(receipt.status === 1)
       setIsApproving(false)

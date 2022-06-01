@@ -2,12 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { BigNumber, Contract, providers } from 'ethers'
 
-import {
-  ChainId,
-  useEtherBalance,
-  useEthers,
-  useTokenBalance,
-} from '@usedapp/core'
+import { useEtherBalance, useEthers, useTokenBalance } from '@usedapp/core'
 
 import {
   dpi2020StakingRewardsAddress,
@@ -43,9 +38,9 @@ import {
   USDC,
   WETH,
 } from 'constants/tokens'
-import { getChainAddress } from 'utils'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import { useStakingUnclaimedRewards } from 'utils/stakingRewards'
+import { getAddressForToken } from 'utils/tokens'
 
 type Balance = BigNumber
 
@@ -88,11 +83,11 @@ export interface Balances {
 /* Returns balance of ERC20 token */
 async function balanceOf(
   token: Token,
-  chainId: ChainId,
+  chainId: number,
   account: string,
   library: providers.Web3Provider | undefined
 ): Promise<BigNumber> {
-  const tokenAddress = getChainAddress(token, chainId)
+  const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress) return BigNumber.from(0)
   const erc20 = new Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)

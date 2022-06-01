@@ -1,13 +1,15 @@
 import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
+import { useEthers, useTransactions } from '@usedapp/core'
 
-import { MAINNET, POLYGON } from 'constants/chains'
+import { MAINNET } from 'constants/chains'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { fromWei } from 'utils'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
+import { getStoredTransaction } from 'utils/storedTransaction'
+import { getAddressForToken } from 'utils/tokens'
 
 import { useBalance } from './useBalance'
 import {
@@ -29,6 +31,7 @@ export const useTradeExchangeIssuance = (
     redeemExactSetForToken,
   } = useExchangeIssuanceZeroEx()
   const { getBalance } = useBalance()
+  const { addTransaction } = useTransactions()
 
   const setTokenAmount = quoteData?.setTokenAmount
   const setTokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
@@ -41,14 +44,8 @@ export const useTradeExchangeIssuance = (
   const executeEITrade = useCallback(async () => {
     if (!account || !quoteData || !setTokenAmount) return
 
-    const outputTokenAddress =
-      chainId === POLYGON.chainId
-        ? outputToken.polygonAddress
-        : outputToken.address
-    const inputTokenAddress =
-      chainId === POLYGON.chainId
-        ? inputToken.polygonAddress
-        : inputToken.address
+    const outputTokenAddress = getAddressForToken(outputToken, chainId)
+    const inputTokenAddress = getAddressForToken(inputToken, chainId)
     if (!outputTokenAddress || !inputTokenAddress) return
 
     let requiredBalance = fromWei(
@@ -70,7 +67,7 @@ export const useTradeExchangeIssuance = (
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
         if (isSellingNativeChainToken) {
-          await issueExactSetFromETH(
+          const issueTx = await issueExactSetFromETH(
             contract,
             outputTokenAddress,
             setTokenAmount,
@@ -80,9 +77,13 @@ export const useTradeExchangeIssuance = (
             quoteData.inputTokenAmount,
             quoteData.gas
           )
+          if (issueTx) {
+            const storedTx = getStoredTransaction(issueTx, chainId)
+            addTransaction(storedTx)
+          }
         } else {
           const maxAmountInputToken = quoteData.inputTokenAmount
-          await issueExactSetFromToken(
+          const issueTx = await issueExactSetFromToken(
             contract,
             outputTokenAddress,
             inputTokenAddress,
@@ -93,6 +94,10 @@ export const useTradeExchangeIssuance = (
             issuanceModule.isDebtIssuance,
             quoteData.gas
           )
+          if (issueTx) {
+            const storedTx = getStoredTransaction(issueTx, chainId)
+            addTransaction(storedTx)
+          }
         }
       } else {
         const isRedeemingNativeChainToken =
@@ -101,7 +106,7 @@ export const useTradeExchangeIssuance = (
         const minOutputReceive = quoteData.inputTokenAmount
 
         if (isRedeemingNativeChainToken) {
-          await redeemExactSetForETH(
+          const redeemTx = await redeemExactSetForETH(
             contract,
             inputTokenAddress,
             setTokenAmount,
@@ -111,8 +116,12 @@ export const useTradeExchangeIssuance = (
             issuanceModule.isDebtIssuance,
             quoteData.gas
           )
+          if (redeemTx) {
+            const storedTx = getStoredTransaction(redeemTx, chainId)
+            addTransaction(storedTx)
+          }
         } else {
-          await redeemExactSetForToken(
+          const redeemTx = await redeemExactSetForToken(
             contract,
             inputTokenAddress,
             outputTokenAddress,
@@ -123,6 +132,10 @@ export const useTradeExchangeIssuance = (
             issuanceModule.isDebtIssuance,
             quoteData.gas
           )
+          if (redeemTx) {
+            const storedTx = getStoredTransaction(redeemTx, chainId)
+            addTransaction(storedTx)
+          }
         }
       }
       setIsTransacting(false)

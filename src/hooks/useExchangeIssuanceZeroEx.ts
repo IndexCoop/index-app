@@ -1,14 +1,9 @@
 import { BigNumber, Contract, Signer } from 'ethers'
 
-import { Provider } from '@ethersproject/abstract-provider'
-import { ChainId } from '@usedapp/core'
+import { Provider, TransactionResponse } from '@ethersproject/providers'
 
-import {
-  ExchangeIssuanceZeroExMainnetAddress,
-  ExchangeIssuanceZeroExPolygonAddress,
-} from 'constants/ethContractAddresses'
-import { getERC20Contract } from 'utils'
 import { EI_ZEROEX_ABI } from 'utils/abi/EIZeroEx'
+import { get0xExchangeIssuanceContract } from 'utils/contracts'
 
 interface RequiredComponentsResponse {
   components: string[]
@@ -23,12 +18,9 @@ interface RequiredComponentsResponse {
  */
 export const getExchangeIssuanceZeroExContract = async (
   providerSigner: Signer | Provider | undefined,
-  chainId: ChainId
+  chainId: number
 ): Promise<Contract> => {
-  const contractAddress =
-    chainId === ChainId.Polygon
-      ? ExchangeIssuanceZeroExPolygonAddress
-      : ExchangeIssuanceZeroExMainnetAddress
+  const contractAddress = get0xExchangeIssuanceContract(chainId)
   return new Contract(contractAddress, EI_ZEROEX_ABI, providerSigner)
 }
 
@@ -126,7 +118,7 @@ export const useExchangeIssuanceZeroEx = () => {
     isDebtIssuance: boolean,
     maxInput: BigNumber,
     gasLimit: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('issueExactSetFromETH')
     try {
       const issueSetTx = await contract.issueExactSetFromETH(
@@ -140,7 +132,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return issueSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -168,7 +160,7 @@ export const useExchangeIssuanceZeroEx = () => {
     issuanceModule: string,
     isDebtIssuance: boolean,
     gasLimit: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('redeemExactSetForETH')
     try {
       const redeemSetTx = await contract.redeemExactSetForETH(
@@ -183,7 +175,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return redeemSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -246,7 +238,7 @@ export const useExchangeIssuanceZeroEx = () => {
     issuanceModule: string,
     isDebtIssuance: boolean,
     gasLimit: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('issueExactSetFromToken')
     try {
       const issueSetTx = await contract.issueExactSetFromToken(
@@ -264,7 +256,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return issueSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -294,7 +286,7 @@ export const useExchangeIssuanceZeroEx = () => {
     issuanceModule: string,
     isDebtIssuance: boolean,
     gasLimit: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('redeemExactSetForToken')
     try {
       // Calculate a slightly higher _maxAmountInputToken so it doesn't revert
@@ -316,7 +308,7 @@ export const useExchangeIssuanceZeroEx = () => {
       return redeemSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -428,37 +420,6 @@ export const useExchangeIssuanceZeroEx = () => {
     }
   }
 
-  /**
-   * Returns the tokenAllowance of a given token for a ExchangeIssuanceZeroEx contract.
-   * @param account                Address of the account
-   * @param library                library from logged in user
-   * @param tokenAddress           Address of the token
-   *
-   * @return tokenAllowance        Token allowance of the account
-   */
-  const tokenAllowance = async (
-    account: any,
-    library: any,
-    chainId: ChainId,
-    tokenAddress: string
-  ): Promise<BigNumber> => {
-    try {
-      const contractAddress =
-        chainId === ChainId.Polygon
-          ? ExchangeIssuanceZeroExPolygonAddress
-          : ExchangeIssuanceZeroExMainnetAddress
-      const tokenContract = await getERC20Contract(
-        library.getSigner(),
-        tokenAddress
-      )
-      const allowance = await tokenContract.allowance(account, contractAddress)
-      return BigNumber.from(allowance)
-    } catch (err) {
-      console.log('error', err)
-      return BigNumber.from(0)
-    }
-  }
-
   return {
     getRequiredIssuanceComponents,
     getRequiredRedemptionComponents,
@@ -469,6 +430,5 @@ export const useExchangeIssuanceZeroEx = () => {
     approveSetToken,
     approveToken,
     approveTokens,
-    tokenAllowance,
   }
 }

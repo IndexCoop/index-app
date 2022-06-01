@@ -1,5 +1,4 @@
-import { ChainId } from '@usedapp/core'
-
+import { MAINNET, POLYGON } from 'constants/chains'
 import {
   basicIssuanceModuleAddress,
   basicIssuanceModulePolygonAddress,
@@ -57,9 +56,9 @@ function getPolygonIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
 
 export function getIssuanceModule(
   tokenSymbol: string,
-  chainId: ChainId = ChainId.Mainnet
+  chainId: number = MAINNET.chainId
 ): IssuanceModule {
-  return chainId === ChainId.Polygon
+  return chainId === POLYGON.chainId
     ? getPolygonIssuanceModuleAddress(tokenSymbol)
     : getEthIssuanceModuleAddress(tokenSymbol)
 }

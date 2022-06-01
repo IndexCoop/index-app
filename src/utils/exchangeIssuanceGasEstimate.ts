@@ -1,13 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId } from '@usedapp/core'
 
 import { BedIndex, ETH, MATIC, Token } from 'constants/tokens'
 import { getExchangeIssuanceZeroExContract } from 'hooks/useExchangeIssuanceZeroEx'
 import { getIssuanceModule } from 'utils/issuanceModule'
+import { getAddressForToken } from 'utils/tokens'
 
 export async function getExchangeIssuanceGasEstimate(
   library: any,
-  chainId: ChainId,
+  chainId: number,
   isIssuance: boolean,
   inputToken: Token,
   outputToken: Token,
@@ -26,18 +26,14 @@ export async function getExchangeIssuanceGasEstimate(
   const setTokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
 
-  const outputTokenAddress =
-    chainId === ChainId.Polygon
-      ? outputToken.polygonAddress
-      : outputToken.address
-  const inputTokenAddress =
-    chainId === ChainId.Polygon ? inputToken.polygonAddress : inputToken.address
+  const outputTokenAddress = getAddressForToken(outputToken, chainId)
+  const inputTokenAddress = getAddressForToken(inputToken, chainId)
   if (!outputTokenAddress || !inputTokenAddress) return gasEstimate
 
   try {
     const contract = await getExchangeIssuanceZeroExContract(
       library,
-      chainId ?? ChainId.Mainnet
+      chainId ?? 1
     )
 
     if (isIssuance) {

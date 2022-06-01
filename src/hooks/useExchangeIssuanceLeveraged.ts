@@ -1,14 +1,11 @@
 import { BigNumber, Contract, Signer } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
-import { ChainId } from '@usedapp/core'
+import { TransactionResponse } from '@ethersproject/providers'
 
-import {
-  ExchangeIssuanceLeveragedMainnetAddress,
-  ExchangeIssuanceLeveragedPolygonAddress,
-} from 'constants/ethContractAddresses'
-import { getERC20Contract } from 'utils'
+import { MAINNET, POLYGON } from 'constants/chains'
 import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
+import { getLeveragedExchangeIssuanceContract } from 'utils/contracts'
 
 /**
  * returns instance of ExchangeIssuanceLeveraged Contract
@@ -19,12 +16,9 @@ import { EI_LEVERAGED_ABI } from 'utils/abi/EILeveraged'
  */
 export const getExchangeIssuanceLeveragedContract = async (
   providerSigner: Signer | Provider | undefined,
-  chainId: ChainId = ChainId.Polygon
+  chainId: number = POLYGON.chainId
 ): Promise<Contract> => {
-  const contractAddress =
-    chainId === ChainId.Polygon
-      ? ExchangeIssuanceLeveragedPolygonAddress
-      : ExchangeIssuanceLeveragedMainnetAddress
+  const contractAddress = getLeveragedExchangeIssuanceContract(chainId)
   return new Contract(contractAddress, EI_LEVERAGED_ABI, providerSigner)
 }
 
@@ -69,13 +63,13 @@ export const useExchangeIssuanceLeveraged = () => {
 
   const issueExactSetFromETH = async (
     library: any,
-    chainId: ChainId = ChainId.Mainnet,
+    chainId: number = MAINNET.chainId,
     _setToken: string,
     _setAmount: BigNumber,
     _swapDataDebtForCollateral: any,
     _swapDataInputToken: any,
     _maxInput: BigNumber
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('issueExactSetFromETH')
     try {
       const eiContract = await getExchangeIssuanceLeveragedContract(
@@ -92,7 +86,7 @@ export const useExchangeIssuanceLeveraged = () => {
       return issueSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -112,7 +106,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _minAmountOutputToken: BigNumber,
     _swapDataCollateralForDebt: any,
     _swapDataOutputToken: any
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('redeemExactSetForETH')
     try {
       const redeemSetTx = await contract.redeemExactSetForETH(
@@ -126,7 +120,7 @@ export const useExchangeIssuanceLeveraged = () => {
       return redeemSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -144,14 +138,14 @@ export const useExchangeIssuanceLeveraged = () => {
    */
   const issueExactSetFromERC20 = async (
     library: any,
-    chainId: ChainId = ChainId.Mainnet,
+    chainId: number = MAINNET.chainId,
     _setToken: string,
     _setAmount: BigNumber,
     _inputToken: string,
     _maxAmountInputToken: BigNumber,
     _swapDataDebtForCollateral: any,
     _swapDataInputToken: any
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('issueExactSetFromERC20', chainId)
     try {
       const eiContract = await getExchangeIssuanceLeveragedContract(
@@ -172,7 +166,7 @@ export const useExchangeIssuanceLeveraged = () => {
       return issueSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -195,7 +189,7 @@ export const useExchangeIssuanceLeveraged = () => {
     _minAmountOutputToken: BigNumber,
     _swapDataCollateralForDebt: any,
     _swapDataOutputToken: any
-  ): Promise<any> => {
+  ): Promise<TransactionResponse | null> => {
     console.log('redeemExactSetForERC20')
     try {
       // TODO: calculate a slightly higher _maxAmountInputToken so it doesn't revert
@@ -216,7 +210,7 @@ export const useExchangeIssuanceLeveraged = () => {
       return redeemSetTx
     } catch (err) {
       console.log('error', err)
-      return err
+      return null
     }
   }
 
@@ -372,35 +366,6 @@ export const useExchangeIssuanceLeveraged = () => {
     }
   }
 
-  /**
-   * Returns the tokenAllowance of a given token for a ExchangeIssuanceZeroEx contract.
-   * @param account                Address of the account
-   * @param library                library from logged in user
-   * @param tokenAddress           Address of the token
-   *
-   * @return tokenAllowance        Token allowance of the account
-   */
-  const tokenAllowance = async (
-    account: any,
-    library: any,
-    tokenAddress: string
-  ): Promise<BigNumber> => {
-    try {
-      const tokenContract = await getERC20Contract(
-        library.getSigner(),
-        tokenAddress
-      )
-      const allowance = await tokenContract.allowance(
-        account,
-        ExchangeIssuanceLeveragedPolygonAddress
-      )
-      return BigNumber.from(allowance)
-    } catch (err) {
-      console.log('error', err)
-      return BigNumber.from(0)
-    }
-  }
-
   return {
     issueExactSetFromETH,
     redeemExactSetForETH,
@@ -412,6 +377,5 @@ export const useExchangeIssuanceLeveraged = () => {
     approveSetToken,
     approveToken,
     approveTokens,
-    tokenAllowance,
   }
 }
