@@ -44,7 +44,7 @@ import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
-enum QuickTradeBestOption {
+export enum QuickTradeBestOption {
   zeroEx,
   exchangeIssuance,
   leveragedExchangeIssuance,
@@ -231,33 +231,16 @@ const QuickTrade = (props: {
     const priceImpactDex = parseFloat(
       bestOptionResult?.dexData?.estimatedPriceImpact ?? '5'
     )
-    let bestOption = QuickTradeBestOption.zeroEx
-    let bestOptionIs0x: boolean =
-      !fullCostsLevEI ||
-      (fullCosts0x !== null &&
-        fullCosts0x < fullCostsLevEI &&
-        priceImpactDex < maxPriceImpact)
-
-    if (bestOptionIs0x) {
-      bestOptionIs0x =
-        !fullCostsEI ||
-        (fullCosts0x !== null &&
-          fullCosts0x < fullCostsEI &&
-          priceImpactDex < maxPriceImpact)
-      bestOption = bestOptionIs0x
-        ? QuickTradeBestOption.zeroEx
-        : QuickTradeBestOption.exchangeIssuance
-    } else {
-      const bestOptionIsLevEI =
-        !fullCostsEI ||
-        (fullCostsLevEI !== null && fullCostsLevEI < fullCostsEI)
-      bestOption = bestOptionIsLevEI
-        ? QuickTradeBestOption.leveragedExchangeIssuance
-        : QuickTradeBestOption.exchangeIssuance
-    }
-
+    const bestOption = getBestTradeOption(
+      fullCosts0x,
+      fullCostsEI,
+      fullCostsLevEI,
+      priceImpactDex
+    )
+    const bestOptionIs0x = bestOption === QuickTradeBestOption.zeroEx
     const bestOptionIsLevEI =
       bestOption === QuickTradeBestOption.leveragedExchangeIssuance
+
     const tradeDataEI = bestOptionIsLevEI
       ? bestOptionResult.leveragedExchangeIssuanceData
       : bestOptionResult.exchangeIssuanceData
@@ -601,6 +584,55 @@ const QuickTrade = (props: {
       />
     </Flex>
   )
+}
+
+export function getBestTradeOption(
+  fullCosts0x: number | null,
+  fullCostsEI: number | null,
+  fullCostsLevEI: number | null,
+  priceImpactDex: number
+): QuickTradeBestOption {
+  if (fullCostsEI === null && fullCostsLevEI === null) {
+    return QuickTradeBestOption.zeroEx
+  }
+
+  const quotes: number[][] = []
+  if (fullCosts0x) {
+    quotes.push([QuickTradeBestOption.zeroEx, fullCosts0x])
+  }
+  if (fullCostsEI) {
+    quotes.push([QuickTradeBestOption.exchangeIssuance, fullCostsEI])
+  }
+  if (fullCostsLevEI) {
+    quotes.push([
+      QuickTradeBestOption.leveragedExchangeIssuance,
+      fullCostsLevEI,
+    ])
+  }
+  const cheapestQuotes = quotes.sort((q1, q2) => q1[1] - q2[1])
+
+  if (cheapestQuotes.length <= 0) {
+    return QuickTradeBestOption.zeroEx
+  }
+
+  const cheapestQuote = cheapestQuotes[0]
+  const bestOption = cheapestQuote[0]
+
+  // If only one quote, return best option immediately
+  if (cheapestQuotes.length === 1) {
+    return bestOption
+  }
+
+  // If multiple quotes, check price impact of 0x option
+  if (
+    bestOption === QuickTradeBestOption.zeroEx &&
+    priceImpactDex >= maxPriceImpact
+  ) {
+    // In case price impact is too high, return cheapest exchange issuance
+    return cheapestQuotes[1][0]
+  }
+
+  return bestOption
 }
 
 export default QuickTrade
