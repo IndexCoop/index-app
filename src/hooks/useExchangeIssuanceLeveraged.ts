@@ -38,7 +38,6 @@ export const getLeveragedTokenData = async (
   setAmount: BigNumber,
   isIssuance: boolean
 ): Promise<any> => {
-  console.log('getLeveragedTokenData')
   try {
     return await contract.getLeveragedTokenData(setToken, setAmount, isIssuance)
   } catch (err) {

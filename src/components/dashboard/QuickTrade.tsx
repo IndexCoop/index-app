@@ -85,8 +85,6 @@ const QuickTrade = (props: {
   } = useTradeTokenLists(chainId, props.singleToken)
   const { getBalance } = useBalance()
 
-  console.log('nativeTokenPrice', nativeTokenPrice)
-
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
   )
