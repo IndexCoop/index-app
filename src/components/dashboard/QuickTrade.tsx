@@ -24,11 +24,12 @@ import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
-import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
+import { fromWei, isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 import {
   get0xExchangeIssuanceContract,
   getLeveragedExchangeIssuanceContract,
 } from 'utils/contracts'
+import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
 
 import {
   formattedFiat,
@@ -74,6 +75,7 @@ const QuickTrade = (props: {
     buyToken,
     buyTokenList,
     buyTokenPrice,
+    nativeTokenPrice,
     sellToken,
     sellTokenList,
     sellTokenPrice,
@@ -82,6 +84,8 @@ const QuickTrade = (props: {
     swapTokenLists,
   } = useTradeTokenLists(chainId, props.singleToken)
   const { getBalance } = useBalance()
+
+  console.log('nativeTokenPrice', nativeTokenPrice)
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
@@ -200,35 +204,53 @@ const QuickTrade = (props: {
     const gasEI = gasPriceEI.mul(gasLimit)
     const gasLevEI = gasPriceLevEI.mul(gasLimit)
 
-    const fullCosts0x = toWei(sellTokenAmount, sellToken.decimals).add(gas0x)
-    const fullCostsEI = bestOptionResult.exchangeIssuanceData
-      ? bestOptionResult.exchangeIssuanceData.inputTokenAmount.add(gasEI)
-      : null
-    const fullCostsLevEI = bestOptionResult.leveragedExchangeIssuanceData
-      ? bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount.add(
-          gasLevEI
-        )
-      : null
+    const fullCosts0x = getFullCostsInUsd(
+      toWei(sellTokenAmount, sellToken.decimals),
+      gas0x,
+      sellToken.decimals,
+      sellTokenPrice,
+      nativeTokenPrice
+    )
+    const fullCostsEI = getFullCostsInUsd(
+      bestOptionResult.exchangeIssuanceData?.inputTokenAmount,
+      gasEI,
+      sellToken.decimals,
+      sellTokenPrice,
+      nativeTokenPrice
+    )
+    const fullCostsLevEI = getFullCostsInUsd(
+      bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount,
+      gasLevEI,
+      sellToken.decimals,
+      sellTokenPrice,
+      nativeTokenPrice
+    )
+
+    console.log(fullCosts0x, fullCostsEI, fullCostsLevEI, 'FC')
 
     const priceImpactDex = parseFloat(
       bestOptionResult?.dexData?.estimatedPriceImpact ?? '5'
     )
     let bestOption = QuickTradeBestOption.zeroEx
-    let bestOptionIs0x =
+    let bestOptionIs0x: boolean =
       !fullCostsLevEI ||
-      (fullCosts0x.lt(fullCostsLevEI) && priceImpactDex < maxPriceImpact)
+      (fullCosts0x !== null &&
+        fullCosts0x < fullCostsLevEI &&
+        priceImpactDex < maxPriceImpact)
 
     if (bestOptionIs0x) {
       bestOptionIs0x =
         !fullCostsEI ||
-        (fullCosts0x.lt(fullCostsEI) && priceImpactDex < maxPriceImpact)
+        (fullCosts0x !== null &&
+          fullCosts0x < fullCostsEI &&
+          priceImpactDex < maxPriceImpact)
       bestOption = bestOptionIs0x
         ? QuickTradeBestOption.zeroEx
         : QuickTradeBestOption.exchangeIssuance
     } else {
       const bestOptionIsLevEI =
         !fullCostsEI ||
-        ((fullCostsLevEI && fullCostsLevEI.lt(fullCostsEI)) ?? false)
+        (fullCostsLevEI !== null && fullCostsLevEI < fullCostsEI)
       bestOption = bestOptionIsLevEI
         ? QuickTradeBestOption.leveragedExchangeIssuance
         : QuickTradeBestOption.exchangeIssuance
