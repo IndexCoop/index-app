@@ -75,7 +75,6 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputSwapData,
             inputOutputLimit
           )
-          console.log('HERE', issueTx)
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
             addTransaction(storedTx)

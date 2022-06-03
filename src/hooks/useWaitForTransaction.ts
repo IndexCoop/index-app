@@ -22,10 +22,8 @@ export const useWaitForTransaction = () => {
   useEffect(() => {
     const today = new Date()
     const latestTransactions = transactions
-      // TODO: simulate states via manipulating here?
       .filter((tx) => {
         const txDate = new Date(tx.submittedAt)
-        console.log(txDate.getDate(), txDate.getMonth(), txDate.getFullYear())
         return (
           txDate.getDate() === today.getDate() &&
           txDate.getMonth() === today.getMonth() &&
@@ -35,9 +33,6 @@ export const useWaitForTransaction = () => {
       .sort((tx1, tx2) => tx1.submittedAt - tx2.submittedAt)
       .reverse()
     const latestTx = latestTransactions[0]
-    console.log('///', transactions.length, latestTransactions.length)
-    console.log(latestTx)
-    console.log(transactions)
 
     if (!latestTx) {
       setPendingTxHash(null)

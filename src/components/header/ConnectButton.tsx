@@ -31,8 +31,6 @@ const ConnectButton = () => {
   const { changeNetwork } = useNetwork()
   let ens = useLookupAddress()
   const { pendingTxHash, pendingTxState } = useWaitForTransaction()
-  console.log('PENTXST', pendingTxState)
-  console.log(pendingTxHash && getBlockExplorerUrl(pendingTxHash, chainId))
   const txStateHeaderState = getHeaderState(pendingTxState)
 
   const backgroundColor = useColorModeValue(colors.black, colors.white)

@@ -25,7 +25,7 @@ import {
   getRequiredIssuanceComponents,
   getRequiredRedemptionComponents,
 } from 'hooks/useExchangeIssuanceZeroEx'
-import { toWei } from 'utils'
+import { displayFromWei, toWei } from 'utils'
 import { getExchangeIssuanceGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import {
@@ -92,6 +92,22 @@ function get0xEchangeKey(exchange: Exchange): string {
     default:
       return ''
   }
+}
+
+export function getFullCostsInUsd(
+  quote: BigNumber | null | undefined,
+  gas: BigNumber,
+  inputTokenDecimals: number,
+  inputTokenPrice: number,
+  nativeTokenPrice: number
+): number | null {
+  if (quote === null || quote === undefined) return null
+  const g = displayFromWei(gas)?.toString() ?? '0'
+  const q =
+    displayFromWei(quote, undefined, inputTokenDecimals)?.toString() ?? '0'
+  const quotePrice = parseFloat(q) * inputTokenPrice
+  const gasPrice = parseFloat(g) * nativeTokenPrice
+  return quotePrice + gasPrice
 }
 
 export async function getRequiredComponents(

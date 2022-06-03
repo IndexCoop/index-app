@@ -24,6 +24,7 @@ export const useTradeTokenLists = (
   const [buyToken, setBuyToken] = useState<Token>(tokenList[0])
   const [buyTokenList, setBuyTokenList] = useState<Token[]>(tokenList)
   const [buyTokenPrice, setBuyTokenPrice] = useState<number>(0)
+  const [nativeTokenPrice, setNativeTokenPrice] = useState<number>(0)
   const [sellToken, setSellToken] = useState<Token>(nativeToken)
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
     getCurrencyTokensByChain(chainId)
@@ -34,6 +35,7 @@ export const useTradeTokenLists = (
    * Switches sell token lists between mainnet and polygon
    */
   useEffect(() => {
+    if (chainId === undefined) return
     const newSellTokenList = getCurrencyTokensByChain(chainId)
     const newBuyTokenList = getTokenListByChain(chainId, singleToken)
     setSellTokenList(newSellTokenList)
@@ -44,18 +46,24 @@ export const useTradeTokenLists = (
   }, [chainId])
 
   useEffect(() => {
+    if (chainId === undefined) return
     const fetchBuyTokenPrice = async () => {
       const buyTokenPrice = await getTokenPrice(buyToken, chainId)
+      const nativeTokenPrice = await getTokenPrice(nativeToken, chainId)
       setBuyTokenPrice(buyTokenPrice)
+      setNativeTokenPrice(nativeTokenPrice)
     }
 
     fetchBuyTokenPrice()
   }, [buyToken, chainId])
 
   useEffect(() => {
+    if (chainId === undefined) return
     const fetchSellTokenPrice = async () => {
       const sellTokenPrice = await getTokenPrice(sellToken, chainId)
+      const nativeTokenPrice = await getTokenPrice(nativeToken, chainId)
       setSellTokenPrice(sellTokenPrice)
+      setNativeTokenPrice(nativeTokenPrice)
     }
 
     fetchSellTokenPrice()
@@ -102,6 +110,7 @@ export const useTradeTokenLists = (
     buyToken,
     buyTokenList,
     buyTokenPrice,
+    nativeTokenPrice,
     sellToken,
     sellTokenList,
     sellTokenPrice,
