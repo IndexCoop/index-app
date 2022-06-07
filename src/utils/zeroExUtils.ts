@@ -52,8 +52,8 @@ function getApiUrl(query: string, chainId: number): string {
       networkKey = 'mainnet'
   }
 
-  // example: https://api.indexcoop.com/0x/mainnet/swap/v1/quote?sellToken=ETH&buyToken=0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b&sellAmount=10000000000000000000
-  return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}`
+  // example: https://api.indexcoop.com/0x/mainnet/swap/v1/quote?sellToken=ETH&buyToken=0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b&sellAmount=10000000000000000000&affilliateAddress=0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF
+  return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}&affilliateAddress=0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF`
 }
 
 // Temporarily adding this because we need to support more tokens than the once
