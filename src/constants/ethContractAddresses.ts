@@ -97,7 +97,7 @@ export const tradeModuleOptimismAddress =
 export const protocolViewerOptimismAddress =
   '0x4E05073560B9377E5561B559c9cADBbe7112e38f'
 export const slippageIssuanceModuleOptimismAddress =
-  '0x1db929398958082d2080AA1B501e460503f60467'
+  '0x2B67D4F9407F772374CaE8B010dB36A770C2c3ae'
 export const perpV2BasisTradingModuleOptimismAddress =
   '0x2C229EE3aD3fdC0e581d51BaA6b6f45CC9A6Ca39'
 export const perpV2BasisTradingModuleViewerOptimismAddress =
@@ -114,3 +114,5 @@ export const streamingFeeExtensionOptimismAddress =
   '0x6a7aE5124677314dc32C5ba3004CbFC9c7Febff0'
 export const tradeExtensionOptimismAddress =
   '0x7215f38011C3e4058Ca3cF7d2b99033016EeFBD8'
+export const deltaNeutralBasisTradingStrategyExtension =
+  '0x95e24048AB1A9086b2F06107dF7ec5e61961951A'
