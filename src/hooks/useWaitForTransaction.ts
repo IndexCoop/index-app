@@ -55,6 +55,10 @@ export const useWaitForTransaction = () => {
         : PendingTransactionState.failed
     setPendingTxHash(txHash)
     setPendingTxState(state)
+    setTimeout(() => {
+      setPendingTxHash(null)
+      setPendingTxState(PendingTransactionState.none)
+    }, 15000)
   }, [transactions])
 
   return { pendingTxHash, pendingTxState }
