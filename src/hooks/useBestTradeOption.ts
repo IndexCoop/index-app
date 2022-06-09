@@ -161,7 +161,7 @@ export const useBestTradeOption = () => {
             buyToken,
             isIssuance,
             chainId,
-            library
+            provider
           )
       } catch (e) {
         console.warn('error when generating leveraged ei option', e)
@@ -184,7 +184,7 @@ export const useBestTradeOption = () => {
             sellToken,
             isIssuance,
             chainId,
-            library
+            provider
           )
         } catch (e) {
           console.warn('error when generating zeroexei option', e)
