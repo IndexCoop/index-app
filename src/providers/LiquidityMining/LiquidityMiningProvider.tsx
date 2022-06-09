@@ -4,7 +4,7 @@ import { utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { useContractCall, useContractFunction, useEthers } from '@usedapp/core'
+import { useContractCall, useContractFunction } from '@usedapp/core'
 
 import {
   dpi2020StakingRewardsAddress,
@@ -13,6 +13,7 @@ import {
   mviStakingRewardsAddress,
 } from 'constants/ethContractAddresses'
 import { GmiIndex } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { toWei } from 'utils'
@@ -113,7 +114,7 @@ export const calculateApyStakingRewardV2 = ({
 export const useLiquidityMining = () => useContext(LiquidityMiningContext)
 
 const LiquidityMiningProvider = (props: { children: any }) => {
-  const { account, library } = useEthers()
+  const { account, provider } = useAccount()
   const { index, gmi, selectLatestMarketData } = useMarketData()
 
   const [uniswapEthDpi2020, setUniswapEthDpi2020] =
@@ -228,7 +229,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   useEffect(() => {
     if (
       account &&
-      library &&
+      provider &&
       dpi2020StakingRewardsAddress &&
       dpi2021StakingRewardsAddress &&
       gmiStakingRewardsAddress &&
@@ -265,7 +266,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
         onUnstakeAndHarvest: exitGmi,
       })
     }
-  }, [account, library])
+  }, [account, provider])
 
   return (
     <LiquidityMiningContext.Provider

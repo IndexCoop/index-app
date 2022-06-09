@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers, useTransactions } from '@usedapp/core'
+import { useTransactions } from '@usedapp/core'
 
 import { MAINNET } from 'constants/chains'
 import { ETH, MATIC, Token } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
+import { useNetwork } from 'hooks/useNetwork'
 import { fromWei } from 'utils'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
@@ -23,7 +25,8 @@ export const useTradeExchangeIssuance = (
   outputToken: Token,
   quoteData?: ExchangeIssuanceQuote | null
 ) => {
-  const { account, chainId, library } = useEthers()
+  const { account, provider } = useAccount()
+  const { chainId } = useNetwork()
   const {
     issueExactSetFromETH,
     issueExactSetFromToken,
@@ -58,7 +61,7 @@ export const useTradeExchangeIssuance = (
       setIsTransacting(true)
 
       const contract = await getExchangeIssuanceZeroExContract(
-        library?.getSigner(),
+        provider?.getSigner(),
         chainId ?? MAINNET.chainId
       )
 

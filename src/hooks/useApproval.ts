@@ -4,9 +4,11 @@ import { constants, utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { useEthers, useTokenAllowance, useTransactions } from '@usedapp/core'
+import { useTokenAllowance, useTransactions } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
+import { useNetwork } from 'hooks/useNetwork'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
@@ -25,7 +27,7 @@ function useApprovalState(
   tokenAddress?: string,
   spenderAddress?: string
 ): ApprovalState {
-  const { account } = useEthers()
+  const { account } = useAccount()
   const allowance = useTokenAllowance(tokenAddress, account, spenderAddress)
 
   if (!tokenAddress || !spenderAddress || !allowance) {
@@ -46,7 +48,8 @@ export const useApproval = (
   spenderAddress?: string,
   amount: BigNumber = constants.MaxUint256
 ) => {
-  const { account, chainId, library } = useEthers()
+  const { account, provider } = useAccount()
+  const { chainId } = useNetwork()
   const { addTransaction } = useTransactions()
 
   const tokenAddress = token && getAddressForToken(token, chainId)
@@ -56,7 +59,7 @@ export const useApproval = (
   const [isApproved, setIsApproved] = useState(false)
 
   const handleApprove = useCallback(async () => {
-    if (!library || !account || !tokenAddress || !spenderAddress) {
+    if (!provider || !account || !tokenAddress || !spenderAddress) {
       return
     }
     try {
@@ -64,7 +67,7 @@ export const useApproval = (
       const tokenContract = new Contract(
         tokenAddress,
         ERC20Interface,
-        library.getSigner()
+        provider.getSigner()
       )
       const tx = await tokenContract.approve(spenderAddress, amount)
       if (tx) {
@@ -81,7 +84,7 @@ export const useApproval = (
   }, [
     account,
     amount,
-    library,
+    provider,
     setIsApproved,
     setIsApproving,
     spenderAddress,

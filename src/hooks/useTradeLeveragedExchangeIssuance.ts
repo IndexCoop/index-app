@@ -1,9 +1,11 @@
 import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers, useTransactions } from '@usedapp/core'
+import { useTransactions } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
+import { useNetwork } from 'hooks/useNetwork'
 import { fromWei } from 'utils'
 import { SwapData } from 'utils/exchangeIssuanceQuotes'
 import { getStoredTransaction } from 'utils/storedTransaction'
@@ -26,7 +28,8 @@ export const useTradeLeveragedExchangeIssuance = (
   debtCollateralSwapData?: SwapData,
   inputOutputSwapData?: SwapData
 ) => {
-  const { account, chainId, library } = useEthers()
+  const { account, provider } = useAccount()
+  const { chainId } = useNetwork()
   const {
     issueExactSetFromETH,
     issueExactSetFromERC20,
@@ -67,7 +70,7 @@ export const useTradeLeveragedExchangeIssuance = (
 
         if (isSellingNativeChainToken) {
           const issueTx = await issueExactSetFromETH(
-            library,
+            provider,
             chainId,
             outputTokenAddress,
             amountOfSetToken,
@@ -81,7 +84,7 @@ export const useTradeLeveragedExchangeIssuance = (
           }
         } else {
           const issueTx = await issueExactSetFromERC20(
-            library,
+            provider,
             chainId,
             outputTokenAddress,
             amountOfSetToken,
@@ -101,7 +104,7 @@ export const useTradeLeveragedExchangeIssuance = (
           outputToken.symbol === MATIC.symbol
 
         const contract = await getExchangeIssuanceLeveragedContract(
-          library?.getSigner(),
+          provider?.getSigner(),
           chainId
         )
 

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
 
 import { MAINNET } from 'constants/chains'
 import {
@@ -12,6 +11,8 @@ import {
   STETH,
   Token,
 } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
+import { useNetwork } from 'hooks/useNetwork'
 import { toWei } from 'utils'
 import {
   ExchangeIssuanceQuote,
@@ -97,7 +98,8 @@ export const getSetTokenAmount = (
 }
 
 export const useBestTradeOption = () => {
-  const { chainId, library } = useEthers()
+  const { provider } = useAccount()
+  const { chainId } = useNetwork()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
@@ -159,7 +161,7 @@ export const useBestTradeOption = () => {
             buyToken,
             isIssuance,
             chainId,
-            library
+            provider
           )
       } catch (e) {
         console.warn('error when generating leveraged ei option', e)
@@ -182,7 +184,7 @@ export const useBestTradeOption = () => {
             sellToken,
             isIssuance,
             chainId,
-            library
+            provider
           )
         } catch (e) {
           console.warn('error when generating zeroexei option', e)

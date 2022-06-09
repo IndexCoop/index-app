@@ -5,10 +5,10 @@ import { colors, useICColorMode } from 'styles/colors'
 
 import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
-import { useEthers } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
 import { useBalance } from 'hooks/useBalance'
+import { useNetwork } from 'hooks/useNetwork'
 import { isValidTokenInput } from 'utils'
 
 import { formattedBalance } from './QuickTradeFormatter'
@@ -32,7 +32,7 @@ const QuickTradeSelector = (props: {
   onChangeInput?: (token: Token, input: string) => void
   onSelectedToken: (symbol: string) => void
 }) => {
-  const { chainId } = useEthers()
+  const { chainId } = useNetwork()
   const { getBalance } = useBalance()
   const { isDarkMode } = useICColorMode()
 

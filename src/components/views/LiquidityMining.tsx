@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { Box, Button, Flex } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
 
 import MiningProgram, { Program } from 'components/mining/MiningProgram'
 import WarningMessage from 'components/mining/WarningMessage'
@@ -106,8 +105,7 @@ const programs: Program[] = [
 ]
 
 const LiquidityMining = () => {
-  const { chainId } = useEthers()
-  const { setMainnet } = useNetwork()
+  const { chainId, setMainnet } = useNetwork()
 
   const [showFarms, setShowFarms] = useState(true)
   const [warning, setWarning] = useState<string | null>(null)
