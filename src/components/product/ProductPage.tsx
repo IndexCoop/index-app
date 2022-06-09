@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
 
 import QuickTrade from 'components/dashboard/QuickTrade'
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import { IndexToken, Token } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
+import { useNetwork } from 'hooks/useNetwork'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -78,7 +79,8 @@ const ProductPage = (props: {
   const isMobile = useBreakpointValue({ base: true, lg: false })
   const { marketData, tokenData } = props
 
-  const { chainId, library } = useEthers()
+  const { chainId } = useNetwork()
+  const { provider } = useAccount()
   const { selectLatestMarketData } = useMarketData()
 
   const [currentTokenSupply, setCurrentTokenSupply] = useState(0)
@@ -88,7 +90,7 @@ const ProductPage = (props: {
 
     if (
       tokenAddress === undefined ||
-      library === undefined ||
+      provider === undefined ||
       chainId === undefined
     ) {
       return
@@ -97,7 +99,7 @@ const ProductPage = (props: {
     const fetchSupply = async () => {
       try {
         const setDetails = await getTokenSupply(
-          library,
+          provider,
           [tokenAddress],
           chainId
         )
@@ -112,7 +114,7 @@ const ProductPage = (props: {
     }
 
     fetchSupply()
-  }, [chainId, library, tokenData])
+  }, [chainId, provider, tokenData])
 
   const priceChartData = getPriceChartData([marketData])
 

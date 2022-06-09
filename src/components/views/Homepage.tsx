@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
 import { getPieChartPositions } from 'components/dashboard/DashboardData'
@@ -16,6 +15,8 @@ import PageTitle from 'components/PageTitle'
 import { PriceChartData } from 'components/product/MarketChart'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
+import { useAccount } from 'hooks/useAccount'
+import { useNetwork } from 'hooks/useNetwork'
 import { useUserMarketData } from 'hooks/useUserMarketData'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
@@ -25,7 +26,8 @@ const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
   const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
     useUserMarketData()
-  const { account, chainId } = useEthers()
+  const { account } = useAccount()
+  const { chainId } = useNetwork()
   const isWeb = useBreakpointValue({
     base: false,
     md: true,
