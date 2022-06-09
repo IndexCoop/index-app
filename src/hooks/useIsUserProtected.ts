@@ -6,13 +6,13 @@ import { useState } from 'react'
  * Also I didn't want to call him Gary the Snail but Copilot wrote that for me and it sounded funny,
  * so I'm just going to call him that.
  */
-export const useIsUserProtected = (): boolean => {
-  const [isProtected, setIsProtected] = useState(false)
+export const useIsUserProtectable = (): boolean => {
+  const [isProtectable, setIsProtectable] = useState(false)
   const API_KEY = process.env.REACT_APP_IP_LOOKUP_KEY ?? ''
   fetch('https://extreme-ip-lookup.com/json/?key=' + API_KEY)
     .then((res) => res.json())
     .then((response) => {
-      if (response.country === 'United States') setIsProtected(true)
+      if (response.country === 'United States') setIsProtectable(true)
     })
     .catch((error) => {
       console.log(
@@ -20,5 +20,5 @@ export const useIsUserProtected = (): boolean => {
         error
       )
     })
-  return isProtected
+  return isProtectable
 }
