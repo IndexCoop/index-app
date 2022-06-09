@@ -6,7 +6,6 @@ import { colors, useICColorMode } from 'styles/colors'
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
 
 import ConnectModal from 'components/header/ConnectModal'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
@@ -17,14 +16,16 @@ import {
   indexNamesPolygon,
   Token,
 } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
 import { useBalance } from 'hooks/useBalance'
 import { maxPriceImpact, useBestTradeOption } from 'hooks/useBestTradeOption'
+import { useNetwork } from 'hooks/useNetwork'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
-import { fromWei, isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
+import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 import {
   get0xExchangeIssuanceContract,
   getLeveragedExchangeIssuanceContract,
@@ -54,6 +55,8 @@ const QuickTrade = (props: {
   isNarrowVersion?: boolean
   singleToken?: Token
 }) => {
+  const { account } = useAccount()
+  const { chainId } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const {
@@ -66,7 +69,6 @@ const QuickTrade = (props: {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const { account, chainId } = useEthers()
 
   const supportedNetwork = isSupportedNetwork(chainId ?? -1)
 

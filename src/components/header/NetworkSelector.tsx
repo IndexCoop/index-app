@@ -1,14 +1,12 @@
 import { colors } from 'styles/colors'
 
 import { Select, useColorModeValue } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
 
 import { SUPPORTED_CHAINS } from 'constants/chains'
 import { useNetwork } from 'hooks/useNetwork'
 
 const NetworkSelector = () => {
-  const { chainId } = useEthers()
-  const { changeNetwork } = useNetwork()
+  const { chainId, changeNetwork } = useNetwork()
 
   const backgroundColor = useColorModeValue(colors.black, colors.white)
   const textColor = useColorModeValue(colors.white, colors.black)
