@@ -3,8 +3,16 @@ import { useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
 
-import { UpDownIcon } from '@chakra-ui/icons'
-import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
+import { InfoOutlineIcon, UpDownIcon } from '@chakra-ui/icons'
+import {
+  Box,
+  Flex,
+  IconButton,
+  Spacer,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import ConnectModal from 'components/header/ConnectModal'
@@ -20,6 +28,7 @@ import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
 import { useBalance } from 'hooks/useBalance'
 import { maxPriceImpact, useBestTradeOption } from 'hooks/useBestTradeOption'
+import { useIsUserProtectable } from 'hooks/useIsUserProtected'
 import { useNetwork } from 'hooks/useNetwork'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
@@ -69,6 +78,8 @@ const QuickTrade = (props: {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
+
+  const isProtectable = useIsUserProtectable()
 
   const supportedNetwork = isSupportedNetwork(chainId ?? -1)
 
@@ -285,6 +296,16 @@ const QuickTrade = (props: {
   useEffect(() => {
     fetchOptions()
   }, [buyToken, sellToken, sellTokenAmount])
+
+  // Does user need protecting from productive assets?
+  const [requiresProtection, setRequiresProtection] = useState(false)
+  useEffect(() => {
+    if (isProtectable && (sellToken.isDangerous || buyToken.isDangerous)) {
+      setRequiresProtection(true)
+    } else {
+      setRequiresProtection(false)
+    }
+  }, [isProtectable, sellToken, buyToken])
 
   const fetchOptions = () => {
     // Right now we only allow setting the sell amount, so no need to check
@@ -549,19 +570,22 @@ const QuickTrade = (props: {
         />
       </Flex>
       <Flex direction='column'>
+        {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
             {bestOptionResult.error.message}
           </Text>
         )}
-        <TradeButton
-          label={buttonLabel}
-          background={isDarkMode ? colors.icWhite : colors.icYellow}
-          isDisabled={isButtonDisabled}
-          isLoading={isLoading}
-          onClick={onClickTradeButton}
-        />
+        {!requiresProtection && (
+          <TradeButton
+            label={buttonLabel}
+            background={isDarkMode ? colors.icWhite : colors.icYellow}
+            isDisabled={isButtonDisabled}
+            isLoading={isLoading}
+            onClick={onClickTradeButton}
+          />
+        )}
       </Flex>
       <ConnectModal isOpen={isOpen} onClose={onClose} />
       <SelectTokenModal
@@ -582,6 +606,34 @@ const QuickTrade = (props: {
         }}
         items={outputTokenItems}
       />
+    </Flex>
+  )
+}
+
+const ProtectionWarning = (props: { isDarkMode: boolean }) => {
+  const borderColor = props.isDarkMode ? colors.icWhite : colors.black
+  return (
+    <Flex
+      background={colors.icYellow}
+      border='1px solid #000'
+      borderColor={borderColor}
+      borderRadius={10}
+      mb={'16px'}
+      direction='row'
+      textAlign={'center'}
+    >
+      <Spacer flexGrow={3} />
+      <Text p={4} justifySelf={'center'} flexGrow={6} color={colors.black}>
+        Not available in your region
+      </Text>
+      <Tooltip label='Some of our contracts are unavailable to persons or entities who: are citizens of, reside in, located in, incorporated in, or operate a registered office in the U.S.A.'>
+        <InfoOutlineIcon
+          alignSelf={'flex-end'}
+          my={'auto'}
+          flexGrow={2}
+          color={colors.black}
+        />
+      </Tooltip>
     </Flex>
   )
 }

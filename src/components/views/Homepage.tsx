@@ -75,54 +75,6 @@ const Dashboard = () => {
   }))
   const pieChartPositions = getPieChartPositions(balancesPieChart)
 
-  // const top4Positions = pieChartPositions
-  //   .filter((pos) => pos.title !== 'OTHERS')
-  //   .flatMap((pos) => pos.title)
-  //   .slice(0, 4)
-
-  // const allocationsChartData: TokenMarketDataValues[] = top4Positions
-  //   .map((positionTitle) => {
-  //     switch (positionTitle) {
-  //       case 'DPI':
-  //         return dpi
-  //       case 'MVI':
-  //         return mvi
-  //       case 'DATA':
-  //         return data
-  //       case 'BED':
-  //         return bed
-  //       case 'GMI':
-  //         return gmi
-  //       case 'ETH2x-FLI':
-  //         return ethfli
-  //       case 'ETH2x-FLI-P':
-  //         return ethflip
-  //       case 'BTC2x-FLI':
-  //         return btcfli
-  //       default:
-  //         return undefined
-  //     }
-  //   })
-  //   // Remove undefined
-  //   .filter((tokenData): tokenData is TokenMarketDataValues => !!tokenData)
-
-  // const onChangeChartType = (type: number) => {
-  //   switch (type) {
-  //     case 0: {
-  //       const balanceData = getPriceChartData([
-  //         { hourlyPrices: totalHourlyPrices },
-  //       ])
-  //       setPriceChartData(balanceData)
-  //       break
-  //     }
-  //     case 1: {
-  //       const allocationsData = getPriceChartData(allocationsChartData)
-  //       setPriceChartData(allocationsData)
-  //       break
-  //     }
-  //   }
-  // }
-
   const onClickDownloadCsv = () => {
     const csv = exportCsv(historyItems, 'index')
     const blob = new Blob([csv])
@@ -138,10 +90,6 @@ const Dashboard = () => {
         onClickDownload={onClickDownloadCsv}
       />
     ) : undefined
-
-  // const formattedPrice = `$${totalBalanceInUSD.toFixed(2).toString()}`
-  // const prices = [formattedPrice]
-  // const priceChangesFormatted = getFormattedChartPriceChanges(priceChanges)
 
   return (
     <Page>
@@ -180,17 +128,5 @@ const Dashboard = () => {
     </Page>
   )
 }
-
-// <MarketChart
-//   marketData={priceChartData}
-//   prices={prices}
-//   priceChanges={priceChangesFormatted}
-//   options={{
-//     width,
-//     height: chartHeight,
-//     hideYAxis: false,
-//   }}
-//   customSelector={<ChartTypeSelector onChange={onChangeChartType} />}
-// />
 
 export default Dashboard
