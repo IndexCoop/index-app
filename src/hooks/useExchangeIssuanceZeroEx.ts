@@ -423,12 +423,5 @@ export const useExchangeIssuanceZeroEx = () => {
   return {
     getRequiredIssuanceComponents,
     getRequiredRedemptionComponents,
-    issueExactSetFromETH,
-    issueExactSetFromToken,
-    redeemExactSetForETH,
-    redeemExactSetForToken,
-    approveSetToken,
-    approveToken,
-    approveTokens,
   }
 }

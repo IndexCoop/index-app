@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
+import {
+  ExchangeIssuanceLeveraged,
+  getExchangeIssuanceLeveragedContract,
+} from '@indexcoop/index-exchange-issuance-sdk'
 import { useTransactions } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
@@ -8,14 +12,15 @@ import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
 import { fromWei } from 'utils'
 import { SwapData } from 'utils/exchangeIssuanceQuotes'
+import {
+  CaptureExchangeIssuanceFunctionKey,
+  CaptureExchangeIssuanceKey,
+  captureTransaction,
+} from 'utils/sentry'
 import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalance } from './useBalance'
-import {
-  getExchangeIssuanceLeveragedContract,
-  useExchangeIssuanceLeveraged,
-} from './useExchangeIssuanceLeveraged'
 
 export const useTradeLeveragedExchangeIssuance = (
   isIssuance: boolean,
@@ -30,19 +35,13 @@ export const useTradeLeveragedExchangeIssuance = (
 ) => {
   const { account, provider } = useAccount()
   const { chainId } = useNetwork()
-  const {
-    issueExactSetFromETH,
-    issueExactSetFromERC20,
-    redeemExactSetForETH,
-    redeemExactSetForERC20,
-  } = useExchangeIssuanceLeveraged()
   const { getBalance } = useBalance()
   const { addTransaction } = useTransactions()
 
+  const [isTransactingLevEI, setIsTransacting] = useState(false)
+
   const spendingTokenBalance =
     getBalance(inputToken.symbol) || BigNumber.from(0)
-
-  const [isTransactingLevEI, setIsTransacting] = useState(false)
 
   const executeLevEITrade = useCallback(async () => {
     if (
@@ -54,12 +53,18 @@ export const useTradeLeveragedExchangeIssuance = (
     )
       return
 
-    const outputTokenAddress = getAddressForToken(outputToken, chainId)
     const inputTokenAddress = getAddressForToken(inputToken, chainId)
+    const outputTokenAddress = getAddressForToken(outputToken, chainId)
     if (!outputTokenAddress || !inputTokenAddress) return
 
     let requiredBalance = fromWei(inputOutputLimit, inputToken.decimals)
     if (spendingTokenBalance.lt(requiredBalance)) return
+
+    const contract = getExchangeIssuanceLeveragedContract(
+      provider?.getSigner(),
+      chainId
+    )
+    const exchangeIssuance = new ExchangeIssuanceLeveraged(contract)
 
     try {
       setIsTransacting(true)
@@ -69,29 +74,41 @@ export const useTradeLeveragedExchangeIssuance = (
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
         if (isSellingNativeChainToken) {
-          const issueTx = await issueExactSetFromETH(
-            provider,
-            chainId,
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
+            function: CaptureExchangeIssuanceFunctionKey.issueEth,
+            setToken: outputTokenAddress,
+            setAmount: amountOfSetToken.toString(),
+            gasLimit: BigNumber.from(1800000).toString(),
+          })
+          const issueTx = await exchangeIssuance.issueExactSetFromETH(
             outputTokenAddress,
             amountOfSetToken,
             debtCollateralSwapData,
             inputOutputSwapData,
-            inputOutputLimit
+            inputOutputLimit,
+            { gasLimit: BigNumber.from(1800000) }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
             addTransaction(storedTx)
           }
         } else {
-          const issueTx = await issueExactSetFromERC20(
-            provider,
-            chainId,
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
+            function: CaptureExchangeIssuanceFunctionKey.issueErc20,
+            setToken: outputTokenAddress,
+            setAmount: amountOfSetToken.toString(),
+            gasLimit: BigNumber.from(1800000).toString(),
+          })
+          const issueTx = await exchangeIssuance.issueExactSetFromERC20(
             outputTokenAddress,
             amountOfSetToken,
             inputTokenAddress,
             inputOutputLimit,
             debtCollateralSwapData,
-            inputOutputSwapData
+            inputOutputSwapData,
+            { gasLimit: BigNumber.from(1800000) }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
@@ -103,33 +120,46 @@ export const useTradeLeveragedExchangeIssuance = (
           outputToken.symbol === ETH.symbol ||
           outputToken.symbol === MATIC.symbol
 
-        const contract = await getExchangeIssuanceLeveragedContract(
-          provider?.getSigner(),
-          chainId
-        )
-
         if (isRedeemingToNativeChainToken) {
-          const redeemTx = await redeemExactSetForETH(
-            contract,
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
+            function: CaptureExchangeIssuanceFunctionKey.redeemEth,
+            setToken: inputTokenAddress,
+            setAmount: tokenAmout.toString(),
+            gasLimit: BigNumber.from(1800000).toString(),
+          })
+          const redeemTx = await exchangeIssuance.redeemExactSetForETH(
             inputTokenAddress,
             tokenAmout,
             inputOutputLimit,
             debtCollateralSwapData,
-            inputOutputSwapData
+            inputOutputSwapData,
+            { gasLimit: BigNumber.from(1800000) }
           )
           if (redeemTx) {
             const storedTx = getStoredTransaction(redeemTx, chainId)
             addTransaction(storedTx)
           }
         } else {
-          const redeemTx = await redeemExactSetForERC20(
-            contract,
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
+            function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
+            setToken: inputTokenAddress,
+            setAmount: tokenAmout.toString(),
+            gasLimit: BigNumber.from(1800000).toString(),
+          })
+          const redeemTx = await exchangeIssuance.redeemExactSetForERC20(
             inputTokenAddress,
             tokenAmout,
             outputTokenAddress,
             inputOutputLimit,
             debtCollateralSwapData,
-            inputOutputSwapData
+            inputOutputSwapData,
+            {
+              gasLimit: BigNumber.from(2000000),
+              maxFeePerGas: BigNumber.from(100000000000),
+              maxPriorityFeePerGas: BigNumber.from(2000000000),
+            }
           )
           if (redeemTx) {
             const storedTx = getStoredTransaction(redeemTx, chainId)
