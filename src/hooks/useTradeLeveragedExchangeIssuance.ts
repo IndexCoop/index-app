@@ -12,6 +12,11 @@ import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
 import { fromWei } from 'utils'
 import { SwapData } from 'utils/exchangeIssuanceQuotes'
+import {
+  CaptureExchangeIssuanceFunctionKey,
+  CaptureExchangeIssuanceKey,
+  captureTransaction,
+} from 'utils/sentry'
 import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
@@ -69,6 +74,13 @@ export const useTradeLeveragedExchangeIssuance = (
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
         if (isSellingNativeChainToken) {
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
+            function: CaptureExchangeIssuanceFunctionKey.issueEth,
+            setToken: outputTokenAddress,
+            setAmount: amountOfSetToken.toString(),
+            gasLimit: BigNumber.from(1800000).toString(),
+          })
           const issueTx = await exchangeIssuance.issueExactSetFromETH(
             outputTokenAddress,
             amountOfSetToken,
@@ -82,6 +94,13 @@ export const useTradeLeveragedExchangeIssuance = (
             addTransaction(storedTx)
           }
         } else {
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
+            function: CaptureExchangeIssuanceFunctionKey.issueErc20,
+            setToken: outputTokenAddress,
+            setAmount: amountOfSetToken.toString(),
+            gasLimit: BigNumber.from(1800000).toString(),
+          })
           const issueTx = await exchangeIssuance.issueExactSetFromERC20(
             outputTokenAddress,
             amountOfSetToken,
@@ -102,6 +121,13 @@ export const useTradeLeveragedExchangeIssuance = (
           outputToken.symbol === MATIC.symbol
 
         if (isRedeemingToNativeChainToken) {
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
+            function: CaptureExchangeIssuanceFunctionKey.redeemEth,
+            setToken: inputTokenAddress,
+            setAmount: tokenAmout.toString(),
+            gasLimit: BigNumber.from(1800000).toString(),
+          })
           const redeemTx = await exchangeIssuance.redeemExactSetForETH(
             inputTokenAddress,
             tokenAmout,
@@ -115,6 +141,13 @@ export const useTradeLeveragedExchangeIssuance = (
             addTransaction(storedTx)
           }
         } else {
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
+            function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
+            setToken: inputTokenAddress,
+            setAmount: tokenAmout.toString(),
+            gasLimit: BigNumber.from(1800000).toString(),
+          })
           const redeemTx = await exchangeIssuance.redeemExactSetForERC20(
             inputTokenAddress,
             tokenAmout,

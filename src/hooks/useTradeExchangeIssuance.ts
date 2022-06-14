@@ -13,6 +13,11 @@ import { useNetwork } from 'hooks/useNetwork'
 import { fromWei } from 'utils'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
+import {
+  CaptureExchangeIssuanceFunctionKey,
+  CaptureExchangeIssuanceKey,
+  captureTransaction,
+} from 'utils/sentry'
 import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
@@ -64,6 +69,13 @@ export const useTradeExchangeIssuance = (
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
         if (isSellingNativeChainToken) {
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
+            function: CaptureExchangeIssuanceFunctionKey.issueEth,
+            setToken: outputTokenAddress,
+            setAmount: setTokenAmount.toString(),
+            gasLimit: quoteData.gas.toString(),
+          })
           const issueTx = await exchangeIssuance.issueExactSetFromETH(
             outputTokenAddress,
             setTokenAmount,
@@ -79,6 +91,13 @@ export const useTradeExchangeIssuance = (
           }
         } else {
           const maxAmountInputToken = quoteData.inputTokenAmount
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
+            function: CaptureExchangeIssuanceFunctionKey.issueErc20,
+            setToken: outputTokenAddress,
+            setAmount: setTokenAmount.toString(),
+            gasLimit: quoteData.gas.toString(),
+          })
           const issueTx = await exchangeIssuance.issueExactSetFromToken(
             outputTokenAddress,
             inputTokenAddress,
@@ -99,6 +118,13 @@ export const useTradeExchangeIssuance = (
           outputToken.symbol === ETH.symbol ||
           outputToken.symbol === MATIC.symbol
         const minOutputReceive = quoteData.inputTokenAmount
+        captureTransaction({
+          exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
+          function: CaptureExchangeIssuanceFunctionKey.redeemEth,
+          setToken: inputTokenAddress,
+          setAmount: setTokenAmount.toString(),
+          gasLimit: quoteData.gas.toString(),
+        })
 
         if (isRedeemingNativeChainToken) {
           const redeemTx = await exchangeIssuance.redeemExactSetForETH(
@@ -115,6 +141,13 @@ export const useTradeExchangeIssuance = (
             addTransaction(storedTx)
           }
         } else {
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
+            function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
+            setToken: inputTokenAddress,
+            setAmount: setTokenAmount.toString(),
+            gasLimit: quoteData.gas.toString(),
+          })
           const redeemTx = await exchangeIssuance.redeemExactSetForToken(
             inputTokenAddress,
             outputTokenAddress,
