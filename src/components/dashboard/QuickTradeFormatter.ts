@@ -214,9 +214,8 @@ export function getTradeInfoData0x(
     ) ?? '0.0'
 
   const minReceive =
-    displayFromWei(zeroExTradeData.minOutput, 4, buyToken.decimals) +
-      ' ' +
-      buyToken.symbol ?? '0.0'
+    displayFromWei(zeroExTradeData.minOutput, 4) + ' ' + buyToken.symbol ??
+    '0.0'
 
   const networkFee = displayFromWei(
     BigNumber.from(gasPrice).mul(BigNumber.from(gas))
