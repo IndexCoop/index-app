@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 
-import { ExchangeIssuanceLeveraged } from 'index-exchange-issuance-sdk/build/exchangeIssuance/leveraged'
-import { getExchangeIssuanceLeveragedContract } from 'index-exchange-issuance-sdk/build/utils/contracts'
-
 import { BigNumber } from '@ethersproject/bignumber'
+import {
+  ExchangeIssuanceLeveraged,
+  getExchangeIssuanceLeveragedContract,
+} from '@indexcoop/index-exchange-issuance-sdk'
 import { useTransactions } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
@@ -54,7 +55,10 @@ export const useTradeLeveragedExchangeIssuance = (
     let requiredBalance = fromWei(inputOutputLimit, inputToken.decimals)
     if (spendingTokenBalance.lt(requiredBalance)) return
 
-    const contract = getExchangeIssuanceLeveragedContract(provider, chainId)
+    const contract = getExchangeIssuanceLeveragedContract(
+      provider?.getSigner(),
+      chainId
+    )
     const exchangeIssuance = new ExchangeIssuanceLeveraged(contract)
 
     try {
@@ -71,7 +75,7 @@ export const useTradeLeveragedExchangeIssuance = (
             debtCollateralSwapData,
             inputOutputSwapData,
             inputOutputLimit,
-            { gasLimit: 1800000 }
+            { gasLimit: BigNumber.from(1800000) }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
@@ -85,9 +89,7 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputLimit,
             debtCollateralSwapData,
             inputOutputSwapData,
-            {
-              gasLimit: 1800000,
-            }
+            { gasLimit: BigNumber.from(1800000) }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
@@ -106,7 +108,7 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputLimit,
             debtCollateralSwapData,
             inputOutputSwapData,
-            { gasLimit: 1800000 }
+            { gasLimit: BigNumber.from(1800000) }
           )
           if (redeemTx) {
             const storedTx = getStoredTransaction(redeemTx, chainId)
@@ -121,9 +123,9 @@ export const useTradeLeveragedExchangeIssuance = (
             debtCollateralSwapData,
             inputOutputSwapData,
             {
-              gasLimit: 2000000,
-              maxFeePerGas: 100000000000,
-              maxPriorityFeePerGas: 2000000000,
+              gasLimit: BigNumber.from(2000000),
+              maxFeePerGas: BigNumber.from(100000000000),
+              maxPriorityFeePerGas: BigNumber.from(2000000000),
             }
           )
           if (redeemTx) {
