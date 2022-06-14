@@ -12,7 +12,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@fontsource/ibm-plex-sans": "^4.5.4",
-    "@indexcoop/index-exchange-issuance-sdk": "github:IndexCoop/index-exchange-issuance-sdk",
+    "@indexcoop/index-exchange-issuance-sdk": "^1.0.3",
     "@indexcoop/tokenlists": "^1.22.0",
     "@sentry/react": "^6.16.1",
     "@sentry/tracing": "^6.16.1",
@@ -74,5 +74,10 @@
   },
   "lint-staged": {
     "*": "yarn run lint:fix"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/@indexcoop/(?!index-exchange-issuance-sdk)"
+    ]
   }
 }
