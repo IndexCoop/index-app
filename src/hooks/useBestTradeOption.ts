@@ -7,6 +7,7 @@ import {
   eligibleLeveragedExchangeIssuanceTokens,
   ETH,
   icETHIndex,
+  IndexToken,
   JPGIndex,
   STETH,
   Token,
@@ -37,6 +38,32 @@ export const maxPriceImpact = 5
 /* Determines if the token is eligible for Leveraged Exchange Issuance */
 const isEligibleLeveragedToken = (token: Token) =>
   eligibleLeveragedExchangeIssuanceTokens.includes(token)
+
+export function isEligibleTradePairZeroEx(
+  inputToken: Token,
+  outputToken: Token
+): boolean {
+  if (
+    inputToken.symbol === icETHIndex.symbol ||
+    outputToken.symbol === icETHIndex.symbol
+  )
+    return false
+
+  if (
+    inputToken.symbol === IndexToken.symbol ||
+    outputToken.symbol === IndexToken.symbol
+  )
+    return false
+
+  if (
+    inputToken.symbol === JPGIndex.symbol ||
+    outputToken.symbol === JPGIndex.symbol
+  )
+    // temporarily - disabled JPG for EI0x
+    return false
+
+  return true
+}
 
 /* Determines if the token pair is eligible for Leveraged Exchange Issuance */
 export const isEligibleTradePair = (
@@ -167,16 +194,9 @@ export const useBestTradeOption = () => {
         console.warn('error when generating leveraged ei option', e)
       }
     } else {
-      const isIcEth =
-        sellToken.symbol === icETHIndex.symbol ||
-        buyToken.symbol === icETHIndex.symbol
-      const isJpg =
-        sellToken.symbol === JPGIndex.symbol ||
-        buyToken.symbol === JPGIndex.symbol
-      // For now only run on mainnet and if not icETH
-      // icETH token pair (with non ETH token) could not be eligible and land here
-      // temporarily - disabled JPG for EI
-      if (chainId === MAINNET.chainId && !isIcEth && !isJpg)
+      // For now only allow trade on mainnet, some tokens are disabled
+      const isEligibleTradePair = isEligibleTradePairZeroEx(sellToken, buyToken)
+      if (chainId === MAINNET.chainId && isEligibleTradePair)
         try {
           exchangeIssuanceOption = await getExchangeIssuanceQuotes(
             buyToken,
