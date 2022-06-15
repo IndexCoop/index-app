@@ -162,6 +162,7 @@ export const getExchangeIssuanceQuotes = async (
   setTokenAmount: BigNumber,
   sellToken: Token,
   isIssuance: boolean,
+  inputTokenBalance: BigNumber,
   chainId: number = 1,
   provider: providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
@@ -259,9 +260,6 @@ export const getExchangeIssuanceQuotes = async (
     gasPrice = await gasStation.getGasPrice()
   }
 
-  // TODO: get balance and check if inputAmount exceeds balance
-  // TODO: only fetch gasEstimate if inputAmount <= balance
-  // TODO: otherwise skip, to still return a quote
   const gasEstimate = await getExchangeIssuanceGasEstimate(
     provider,
     chainId,
@@ -270,6 +268,7 @@ export const getExchangeIssuanceQuotes = async (
     buyToken,
     setTokenAmount,
     inputOutputTokenAmount,
+    inputTokenBalance,
     positionQuotes
   )
 

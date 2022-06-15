@@ -13,6 +13,7 @@ import {
   Token,
 } from 'constants/tokens'
 import { useAccount } from 'hooks/useAccount'
+import { useBalance } from 'hooks/useBalance'
 import { useNetwork } from 'hooks/useNetwork'
 import { toWei } from 'utils'
 import {
@@ -127,6 +128,7 @@ export const getSetTokenAmount = (
 export const useBestTradeOption = () => {
   const { provider } = useAccount()
   const { chainId } = useNetwork()
+  const { getBalance } = useBalance()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
@@ -198,11 +200,14 @@ export const useBestTradeOption = () => {
       const isEligibleTradePair = isEligibleTradePairZeroEx(sellToken, buyToken)
       if (chainId === MAINNET.chainId && isEligibleTradePair)
         try {
+          const spendingTokenBalance: BigNumber =
+            getBalance(sellToken.symbol) || BigNumber.from(0)
           exchangeIssuanceOption = await getExchangeIssuanceQuotes(
             buyToken,
             setTokenAmount,
             sellToken,
             isIssuance,
+            spendingTokenBalance,
             chainId,
             provider
           )
