@@ -36,14 +36,14 @@ describe('displayFromWei', () => {
       BigNumber.from('1570971838101633723360'),
       4
     )
-    expect(displayValue).toBe('1,570.9718')
+    expect(displayValue).toBe('1570.9718')
   })
   it('should convert to token value showing commas for thousands w/ large amounts', () => {
     const displayValue = displayFromWei(
       BigNumber.from('507731000000000000000000'),
       4
     )
-    expect(displayValue).toBe('507,731.0000')
+    expect(displayValue).toBe('507731.0000')
   })
 })
 
