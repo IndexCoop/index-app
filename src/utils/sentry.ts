@@ -1,15 +1,15 @@
 import * as Sentry from '@sentry/react'
 
 export enum CaptureExchangeIssuanceKey {
-  'leveraged',
-  'zeroEx',
+  leveraged = 'leveraged',
+  zeroEx = 'zeroEx',
 }
 
 export enum CaptureExchangeIssuanceFunctionKey {
-  'issueEth',
-  'issueErc20',
-  'redeemEth',
-  'redeemErc20',
+  issueEth = 'issueEth',
+  issueErc20 = 'issueErc20',
+  redeemEth = 'redeemEth',
+  redeemErc20 = 'redeemErc20',
 }
 
 type CaptureTradeRequest = {

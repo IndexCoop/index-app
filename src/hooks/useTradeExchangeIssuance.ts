@@ -23,8 +23,6 @@ import { getAddressForToken } from 'utils/tokens'
 
 import { useBalance } from './useBalance'
 
-const gasLimit = BigNumber.from(2500000)
-
 export const useTradeExchangeIssuance = (
   isIssuance: boolean,
   inputToken: Token,
@@ -85,7 +83,7 @@ export const useTradeExchangeIssuance = (
             issuanceModule.address,
             issuanceModule.isDebtIssuance,
             quoteData.inputTokenAmount,
-            { gasLimit }
+            { gasLimit: quoteData.gas }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
@@ -108,7 +106,7 @@ export const useTradeExchangeIssuance = (
             quoteData.tradeData,
             issuanceModule.address,
             issuanceModule.isDebtIssuance,
-            { gasLimit }
+            { gasLimit: quoteData.gas }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
@@ -136,7 +134,7 @@ export const useTradeExchangeIssuance = (
             quoteData.tradeData,
             issuanceModule.address,
             issuanceModule.isDebtIssuance,
-            { gasLimit }
+            { gasLimit: quoteData.gas }
           )
           if (redeemTx) {
             const storedTx = getStoredTransaction(redeemTx, chainId)
@@ -158,7 +156,7 @@ export const useTradeExchangeIssuance = (
             quoteData.tradeData,
             issuanceModule.address,
             issuanceModule.isDebtIssuance,
-            { gasLimit }
+            { gasLimit: quoteData.gas }
           )
           if (redeemTx) {
             const storedTx = getStoredTransaction(redeemTx, chainId)
