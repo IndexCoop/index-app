@@ -13,7 +13,7 @@ import { ZeroExData } from 'utils/zeroExUtils'
 
 import { TradeInfoItem } from './TradeInfo'
 
-export function getPriceImpaceColorCoding(
+export function getPriceImpactColorCoding(
   priceImpact: number,
   isDarkMode: boolean
 ): string {
@@ -117,7 +117,7 @@ export function getFormattedPriceImpact(
     return null
   }
 
-  const colorCoding = getPriceImpaceColorCoding(priceImpact, isDarkMode)
+  const colorCoding = getPriceImpactColorCoding(priceImpact, isDarkMode)
   return { priceImpact: `(${priceImpact.toFixed(2)}%)`, colorCoding }
 }
 

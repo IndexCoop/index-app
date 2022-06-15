@@ -50,6 +50,7 @@ export const displayFromWei = (
     return Number(formatUnits(number, power)).toLocaleString('en-US', {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
+      useGrouping: false,
     })
   }
 
