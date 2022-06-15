@@ -1,23 +1,29 @@
 import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
+import {
+  ExchangeIssuanceZeroEx,
+  getExchangeIssuanceZeroExContract,
+} from '@indexcoop/index-exchange-issuance-sdk'
 import { useTransactions } from '@usedapp/core'
 
-import { MAINNET } from 'constants/chains'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
 import { fromWei } from 'utils'
 import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
 import { getIssuanceModule } from 'utils/issuanceModule'
+import {
+  CaptureExchangeIssuanceFunctionKey,
+  CaptureExchangeIssuanceKey,
+  captureTransaction,
+} from 'utils/sentry'
 import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalance } from './useBalance'
-import {
-  getExchangeIssuanceZeroExContract,
-  useExchangeIssuanceZeroEx,
-} from './useExchangeIssuanceZeroEx'
+
+const gasLimit = BigNumber.from(2500000)
 
 export const useTradeExchangeIssuance = (
   isIssuance: boolean,
@@ -27,12 +33,6 @@ export const useTradeExchangeIssuance = (
 ) => {
   const { account, provider } = useAccount()
   const { chainId } = useNetwork()
-  const {
-    issueExactSetFromETH,
-    issueExactSetFromToken,
-    redeemExactSetForETH,
-    redeemExactSetForToken,
-  } = useExchangeIssuanceZeroEx()
   const { getBalance } = useBalance()
   const { addTransaction } = useTransactions()
 
@@ -57,28 +57,35 @@ export const useTradeExchangeIssuance = (
     )
     if (spendingTokenBalance.lt(requiredBalance)) return
 
+    const contract = getExchangeIssuanceZeroExContract(
+      provider?.getSigner(),
+      chainId
+    )
+    const exchangeIssuance = new ExchangeIssuanceZeroEx(contract)
+
     try {
       setIsTransacting(true)
-
-      const contract = await getExchangeIssuanceZeroExContract(
-        provider?.getSigner(),
-        chainId ?? MAINNET.chainId
-      )
 
       if (isIssuance) {
         const isSellingNativeChainToken =
           inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
 
         if (isSellingNativeChainToken) {
-          const issueTx = await issueExactSetFromETH(
-            contract,
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
+            function: CaptureExchangeIssuanceFunctionKey.issueEth,
+            setToken: outputTokenAddress,
+            setAmount: setTokenAmount.toString(),
+            gasLimit: quoteData.gas.toString(),
+          })
+          const issueTx = await exchangeIssuance.issueExactSetFromETH(
             outputTokenAddress,
             setTokenAmount,
             quoteData.tradeData,
             issuanceModule.address,
             issuanceModule.isDebtIssuance,
             quoteData.inputTokenAmount,
-            quoteData.gas
+            { gasLimit }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
@@ -86,8 +93,14 @@ export const useTradeExchangeIssuance = (
           }
         } else {
           const maxAmountInputToken = quoteData.inputTokenAmount
-          const issueTx = await issueExactSetFromToken(
-            contract,
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
+            function: CaptureExchangeIssuanceFunctionKey.issueErc20,
+            setToken: outputTokenAddress,
+            setAmount: setTokenAmount.toString(),
+            gasLimit: quoteData.gas.toString(),
+          })
+          const issueTx = await exchangeIssuance.issueExactSetFromToken(
             outputTokenAddress,
             inputTokenAddress,
             setTokenAmount,
@@ -95,7 +108,7 @@ export const useTradeExchangeIssuance = (
             quoteData.tradeData,
             issuanceModule.address,
             issuanceModule.isDebtIssuance,
-            quoteData.gas
+            { gasLimit }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
@@ -107,25 +120,37 @@ export const useTradeExchangeIssuance = (
           outputToken.symbol === ETH.symbol ||
           outputToken.symbol === MATIC.symbol
         const minOutputReceive = quoteData.inputTokenAmount
+        captureTransaction({
+          exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
+          function: CaptureExchangeIssuanceFunctionKey.redeemEth,
+          setToken: inputTokenAddress,
+          setAmount: setTokenAmount.toString(),
+          gasLimit: quoteData.gas.toString(),
+        })
 
         if (isRedeemingNativeChainToken) {
-          const redeemTx = await redeemExactSetForETH(
-            contract,
+          const redeemTx = await exchangeIssuance.redeemExactSetForETH(
             inputTokenAddress,
             setTokenAmount,
             minOutputReceive,
             quoteData.tradeData,
             issuanceModule.address,
             issuanceModule.isDebtIssuance,
-            quoteData.gas
+            { gasLimit }
           )
           if (redeemTx) {
             const storedTx = getStoredTransaction(redeemTx, chainId)
             addTransaction(storedTx)
           }
         } else {
-          const redeemTx = await redeemExactSetForToken(
-            contract,
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
+            function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
+            setToken: inputTokenAddress,
+            setAmount: setTokenAmount.toString(),
+            gasLimit: quoteData.gas.toString(),
+          })
+          const redeemTx = await exchangeIssuance.redeemExactSetForToken(
             inputTokenAddress,
             outputTokenAddress,
             setTokenAmount,
@@ -133,7 +158,7 @@ export const useTradeExchangeIssuance = (
             quoteData.tradeData,
             issuanceModule.address,
             issuanceModule.isDebtIssuance,
-            quoteData.gas
+            { gasLimit }
           )
           if (redeemTx) {
             const storedTx = getStoredTransaction(redeemTx, chainId)
