@@ -1,8 +1,8 @@
 import { colors } from 'styles/colors'
 
 import {
-  getPriceImpaceColorCoding,
   getPriceImpact,
+  getPriceImpactColorCoding,
 } from './QuickTradeFormatter'
 
 describe('getPriceImpact()', () => {
@@ -48,19 +48,19 @@ describe('getPriceImpact()', () => {
 
 describe('getPriceImpaceColorCoding()', () => {
   test('should return correct color for > 5% price impact', async () => {
-    const colorCoding = getPriceImpaceColorCoding(-5.1, true)
+    const colorCoding = getPriceImpactColorCoding(-5.1, true)
     expect(colorCoding).toEqual(colors.icRed)
   })
 
   test('should return correct color for price impact > 3% < 5%', async () => {
-    const colorCoding = getPriceImpaceColorCoding(-3.1, true)
+    const colorCoding = getPriceImpactColorCoding(-3.1, true)
     expect(colorCoding).toEqual(colors.icYellow)
   })
 
   test('should return correct color for price impact < 3%', async () => {
-    const colorCodingDarkMode = getPriceImpaceColorCoding(2, true)
+    const colorCodingDarkMode = getPriceImpactColorCoding(2, true)
     expect(colorCodingDarkMode).toEqual(colors.icGrayDarkMode)
-    const colorCodingLightMode = getPriceImpaceColorCoding(2, false)
+    const colorCodingLightMode = getPriceImpactColorCoding(2, false)
     expect(colorCodingLightMode).toEqual(colors.icGrayLightMode)
   })
 })
