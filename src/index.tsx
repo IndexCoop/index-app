@@ -10,7 +10,7 @@ import '@fontsource/ibm-plex-sans'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import * as Sentry from '@sentry/react'
-import { Integrations } from '@sentry/tracing'
+import { BrowserTracing } from '@sentry/tracing'
 import { Config, DAppProvider } from '@usedapp/core'
 
 import Dashboard from 'components/views/Homepage'
@@ -77,7 +77,7 @@ const initSentryEventTracking = () => {
   Sentry.init({
     environment: process.env.REACT_APP_VERCEL_ENV,
     dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
-    integrations: [new Integrations.BrowserTracing()],
+    integrations: [new BrowserTracing()],
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
