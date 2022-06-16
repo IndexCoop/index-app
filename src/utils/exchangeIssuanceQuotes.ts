@@ -1,4 +1,6 @@
-import { BigNumber, providers } from 'ethers'
+import { BigNumber } from 'ethers'
+
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { POLYGON } from 'constants/chains'
 import {
@@ -117,7 +119,7 @@ export async function getRequiredComponents(
   setTokenSymbol: string,
   setTokenAmount: BigNumber,
   chainId: number | undefined,
-  provider: providers.Web3Provider | undefined
+  provider: JsonRpcProvider | undefined
 ) {
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
 
@@ -164,7 +166,7 @@ export const getExchangeIssuanceQuotes = async (
   isIssuance: boolean,
   inputTokenBalance: BigNumber,
   chainId: number = 1,
-  provider: providers.Web3Provider | undefined
+  provider: JsonRpcProvider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
   const buyTokenAddress = getAddressForToken(buyToken, chainId)
   const sellTokenAddress = getAddressForToken(sellToken, chainId)
@@ -298,7 +300,7 @@ async function getLevTokenData(
   setTokenAmount: BigNumber,
   isIssuance: boolean,
   chainId: number,
-  signer: providers.Web3Provider | undefined
+  signer: JsonRpcProvider | undefined
 ): Promise<LeveragedTokenData> {
   const contract = await getExchangeIssuanceLeveragedContract(signer, chainId)
   const setTokenAddress = getAddressForToken(setToken, chainId)
@@ -427,7 +429,7 @@ export const getLeveragedExchangeIssuanceQuotes = async (
   outputToken: Token,
   isIssuance: boolean,
   chainId: number = 1,
-  provider: providers.Web3Provider | undefined
+  provider: JsonRpcProvider | undefined
 ): Promise<LeveragedExchangeIssuanceQuote | null> => {
   const setTokenSymbol = setToken.symbol
   const isIcEth = setTokenSymbol === 'icETH'
