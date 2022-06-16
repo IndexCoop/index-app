@@ -27,6 +27,7 @@ import {
 } from 'hooks/useExchangeIssuanceZeroEx'
 import { displayFromWei, toWei } from 'utils'
 import { getExchangeIssuanceGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
+import { GasStation } from 'utils/gasStation'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import {
   getSwapData,
@@ -161,6 +162,7 @@ export const getExchangeIssuanceQuotes = async (
   setTokenAmount: BigNumber,
   sellToken: Token,
   isIssuance: boolean,
+  inputTokenBalance: BigNumber,
   chainId: number = 1,
   provider: providers.Web3Provider | undefined
 ): Promise<ExchangeIssuanceQuote | null> => {
@@ -252,11 +254,12 @@ export const getExchangeIssuanceQuotes = async (
     isIssuance
   )
 
-  const gasPrice = (await provider?.getGasPrice()) ?? BigNumber.from(1800000)
+  let gasPrice = BigNumber.from(0)
+  if (provider !== undefined) {
+    const gasStation = new GasStation(provider)
+    gasPrice = await gasStation.getGasPrice()
+  }
 
-  // TODO: get balance and check if inputAmount exceeds balance
-  // TODO: only fetch gasEstimate if inputAmount <= balance
-  // TODO: otherwise skip, to still return a quote
   const gasEstimate = await getExchangeIssuanceGasEstimate(
     provider,
     chainId,
@@ -265,6 +268,7 @@ export const getExchangeIssuanceQuotes = async (
     buyToken,
     setTokenAmount,
     inputOutputTokenAmount,
+    inputTokenBalance,
     positionQuotes
   )
 
@@ -500,7 +504,11 @@ export const getLeveragedExchangeIssuanceQuotes = async (
     isIssuance
   )
 
-  const gasPrice = (await provider?.getGasPrice()) ?? BigNumber.from(0)
+  let gasPrice = BigNumber.from(0)
+  if (provider !== undefined) {
+    const gasStation = new GasStation(provider)
+    gasPrice = await gasStation.getGasPrice()
+  }
 
   return {
     swapDataDebtCollateral,

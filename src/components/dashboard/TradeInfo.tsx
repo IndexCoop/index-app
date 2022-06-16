@@ -9,6 +9,14 @@ const excludeBuyAmountItem = (tradeInfoItem: TradeInfoItem): boolean =>
   tradeInfoItem.title !== 'Buy Amount'
 
 const TradeInfoItemRow = ({ title, value }: TradeInfoItem) => {
+  const formatIfNumber = (value: string) => {
+    if (/[a-z]/i.test(value)) return value
+
+    return Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
+    })
+  }
   if (title === 'Offered From') {
     const vals = value.split(',')
 
@@ -31,7 +39,7 @@ const TradeInfoItemRow = ({ title, value }: TradeInfoItem) => {
         {title}
       </Text>
       <Text fontSize='20px' fontWeight='700'>
-        {value}
+        {formatIfNumber(value)}
       </Text>
     </Flex>
   )

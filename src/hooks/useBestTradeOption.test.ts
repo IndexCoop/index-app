@@ -5,7 +5,9 @@ import {
   ETH,
   Ethereum2xFLIP,
   icETHIndex,
+  IndexToken,
   IMaticFLIP,
+  JPGIndex,
   MATIC,
   MetaverseIndex,
   STETH,
@@ -17,6 +19,7 @@ import { toWei } from 'utils'
 import {
   getSetTokenAmount,
   isEligibleTradePair,
+  isEligibleTradePairZeroEx,
   maxPriceImpact,
 } from './useBestTradeOption'
 
@@ -217,6 +220,21 @@ describe('isEligibleTradePair()', () => {
       isIssuance
     )
     expect(isNotEligible).toEqual(false)
+  })
+})
+
+describe('isEligibleTradePairZeroEx()', () => {
+  test('should return correct eligible status for zeroEx', async () => {
+    const inputToken = ETH
+    // icEth works with EILeveraged only
+    const isEligible = isEligibleTradePairZeroEx(inputToken, icETHIndex)
+    expect(isEligible).toEqual(false)
+    // not eligible - as not approved in contract
+    const isEligibleIndex = isEligibleTradePairZeroEx(inputToken, IndexToken)
+    expect(isEligibleIndex).toEqual(false)
+    // temporarily - disabled JPG for EI0x
+    const isEligibleJpg = isEligibleTradePairZeroEx(inputToken, JPGIndex)
+    expect(isEligibleJpg).toEqual(false)
   })
 })
 

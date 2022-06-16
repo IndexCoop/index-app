@@ -1,27 +1,34 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { BedIndex, ETH, MATIC, Token } from 'constants/tokens'
+import { ETH, MATIC, Token } from 'constants/tokens'
 import { getExchangeIssuanceZeroExContract } from 'hooks/useExchangeIssuanceZeroEx'
+import { toWei } from 'utils'
 import { getIssuanceModule } from 'utils/issuanceModule'
 import { getAddressForToken } from 'utils/tokens'
 
+// TODO: check scaling based on component counts (quoteData)
+const defaultGasEstimate = BigNumber.from(5000000)
+
 export async function getExchangeIssuanceGasEstimate(
-  library: any,
+  provider: any,
   chainId: number,
   isIssuance: boolean,
   inputToken: Token,
   outputToken: Token,
   setTokenAmount: BigNumber,
   inputTokenAmount: BigNumber,
+  inputTokenBalance: BigNumber,
   quoteData: string[]
 ): Promise<BigNumber> {
-  // TODO: check scaling based on component counts (quoteData)
-  // Hard-coded as issuance module isn't friendly for `.estimateGas`
-  let gasEstimate = BigNumber.from(1800000)
-  // lower for BED since it's a small index
-  if (outputToken.symbol === BedIndex.symbol) {
-    gasEstimate = BigNumber.from(800000)
-  }
+  const signer = provider?.getSigner()
+
+  // Return default - as we can't fetch an estimate without a signer
+  if (!signer) return defaultGasEstimate
+
+  // Return default - as this would otherwise throw an error
+  if (inputTokenAmount.gt(inputTokenBalance)) return defaultGasEstimate
+
+  let gasEstimate = defaultGasEstimate
 
   const setTokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
@@ -32,7 +39,7 @@ export async function getExchangeIssuanceGasEstimate(
 
   try {
     const contract = await getExchangeIssuanceZeroExContract(
-      library,
+      signer,
       chainId ?? 1
     )
 
@@ -47,7 +54,7 @@ export async function getExchangeIssuanceGasEstimate(
           quoteData,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
-          { value: inputTokenAmount }
+          { value: inputTokenAmount, gasLimit: gasEstimate }
         )
       } else {
         const maxAmountInputToken = inputTokenAmount
@@ -58,7 +65,8 @@ export async function getExchangeIssuanceGasEstimate(
           maxAmountInputToken,
           quoteData,
           issuanceModule.address,
-          issuanceModule.isDebtIssuance
+          issuanceModule.isDebtIssuance,
+          { gasLimit: gasEstimate }
         )
       }
     } else {
@@ -94,8 +102,12 @@ export async function getExchangeIssuanceGasEstimate(
       }
     }
   } catch (error) {
-    console.log('Error estimating gas for 0x exchange issuance', error)
+    console.log('Error estimating gas for 0x exchange issuance:', error)
+    return defaultGasEstimate
   }
+
+  // Adjust gas estiamte for complexity of 0x contract
+  gasEstimate = gasEstimate.mul(toWei(2.2, 1))
 
   return gasEstimate
 }
