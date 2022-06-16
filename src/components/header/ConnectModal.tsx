@@ -53,10 +53,7 @@ export default function ConnectModal(props: {
       },
       chainId: 1,
     })
-    activate(wc, (err) => {
-      props.onClose()
-      console.error(err)
-    })
+    activate(wc)
   }
 
   const handleCoinbaseWallet = () => {
@@ -67,10 +64,7 @@ export default function ConnectModal(props: {
       appName: 'Index Coop',
       supportedChainIds: SUPPORTED_CHAINS.map((chain) => chain.chainId),
     })
-    activate(cornbase, (err) => {
-      props.onClose()
-      console.error(err)
-    })
+    activate(cornbase)
   }
 
   return (

@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { Web3Provider } from '@ethersproject/providers'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
 export class GasStation {
-  provider: Web3Provider
-  constructor(provider: Web3Provider) {
+  provider: JsonRpcProvider
+  constructor(provider: JsonRpcProvider) {
     this.provider = provider
   }
 

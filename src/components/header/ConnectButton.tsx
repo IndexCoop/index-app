@@ -29,7 +29,7 @@ const ConnectButton = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isDarkMode } = useICColorMode()
   const { changeNetwork } = useNetwork()
-  let ens = useLookupAddress()
+  const { ens } = useLookupAddress(account)
   const { pendingTxHash, pendingTxState } = useWaitForTransaction()
   const txStateHeaderState = getHeaderState(pendingTxState)
 
