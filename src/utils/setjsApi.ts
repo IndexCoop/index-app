@@ -172,6 +172,7 @@ function getSet(ethersProvider: any, chainId: number): Set {
         issuanceExtensionAddress: issuanceExtensionOptimismAddress,
         streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
         tradeExtensionAddress: tradeExtensionOptimismAddress,
+        batchTradeExtensionAddress: basicIssuanceModuleOptimismAddress,
       })
       break
     case POLYGON.chainId:
@@ -200,6 +201,7 @@ function getSet(ethersProvider: any, chainId: number): Set {
         issuanceExtensionAddress: issuanceExtensionOptimismAddress,
         streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
         tradeExtensionAddress: tradeExtensionOptimismAddress,
+        batchTradeExtensionAddress: basicIssuanceModulePolygonAddress,
       })
       break
     default:
@@ -228,6 +230,7 @@ function getSet(ethersProvider: any, chainId: number): Set {
         issuanceExtensionAddress: issuanceExtensionOptimismAddress,
         streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
         tradeExtensionAddress: tradeExtensionOptimismAddress,
+        batchTradeExtensionAddress: basicIssuanceModuleAddress,
       })
   }
   return set
