@@ -146,9 +146,7 @@ const LiquidityMining = () => {
               })}
             {!showFarms && (
               <Box my='10'>
-                <Button isFullWidth onClick={() => setMainnet()}>
-                  Switch to Mainnet
-                </Button>
+                <Button onClick={() => setMainnet()}>Switch to Mainnet</Button>
               </Box>
             )}
           </Flex>
