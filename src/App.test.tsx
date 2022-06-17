@@ -9,5 +9,7 @@ test('renders Connect link', () => {
   // root.render(<App />)
   // const linkElement = screen.getAllByText(/Wrong Network/i)
   // expect(linkElement.length).toBe(2)
-  expect(true).toBe(true) // TODO: i dont know how to test this, react changed the render api but this test never did anything anyway
+  const thisTest = true
+  const broken = true
+  expect(thisTest).toBe(broken) // TODO: i dont know how to test this, react changed the render api but this test never did anything anyway
 })
