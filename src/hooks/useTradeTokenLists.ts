@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
@@ -36,13 +36,7 @@ export const useTradeTokenLists = (
    */
   useEffect(() => {
     if (chainId === undefined) return
-    const newSellTokenList = getCurrencyTokensByChain(chainId)
-    const newBuyTokenList = getTokenListByChain(chainId, singleToken)
-    setSellTokenList(newSellTokenList)
-    setBuyTokenList(newBuyTokenList)
-    setSellToken(newSellTokenList[0])
-    setBuyToken(newBuyTokenList[0])
-    setIsBuying(true)
+    reset()
   }, [chainId])
 
   useEffect(() => {
@@ -87,6 +81,17 @@ export const useTradeTokenLists = (
     setSellToken(filteredList[0])
   }
 
+  const reset = useCallback(() => {
+    if (chainId === undefined) return
+    const sellTokenList = getCurrencyTokensByChain(chainId)
+    const buyTokenList = getTokenListByChain(chainId, singleToken)
+    setSellTokenList(sellTokenList)
+    setBuyTokenList(buyTokenList)
+    setSellToken(sellTokenList[0])
+    setBuyToken(buyTokenList[0])
+    setIsBuying(true)
+  }, [chainId, singleToken])
+
   const swapTokenLists = () => {
     const isBuyingNew = !isBuying
     const prevSellToken = sellToken
@@ -116,6 +121,7 @@ export const useTradeTokenLists = (
     sellTokenPrice,
     changeBuyToken,
     changeSellToken,
+    resetTokenLists: reset,
     swapTokenLists,
   }
 }
