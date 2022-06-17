@@ -7,7 +7,6 @@ import { get0xQuote } from 'utils/zeroExUtils'
 import {
   Exchange,
   LeveragedTokenData,
-  slippagePercentage,
   SwapData,
 } from './exchangeIssuanceQuotes'
 
@@ -16,6 +15,7 @@ import {
 export const getSwapDataCollateralDebt = async (
   leveragedTokenData: LeveragedTokenData,
   includedSources: string,
+  slippagePercentage = 0.5,
   chainId: number = POLYGON.chainId
 ) => {
   let result = await getSwapData(
@@ -25,7 +25,8 @@ export const getSwapDataCollateralDebt = async (
       sellToken: leveragedTokenData.collateralToken,
       includedSources,
     },
-    chainId
+    chainId,
+    slippagePercentage
   )
   if (!result) return null
   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
@@ -38,6 +39,7 @@ export const getSwapDataCollateralDebt = async (
 export const getSwapDataDebtCollateral = async (
   leveragedTokenData: LeveragedTokenData,
   includedSources: string,
+  slippagePercentage = 0.5,
   chainId: number = POLYGON.chainId
 ) => {
   let result = await getSwapData(
@@ -47,7 +49,8 @@ export const getSwapDataDebtCollateral = async (
       sellToken: leveragedTokenData.debtToken,
       includedSources,
     },
-    chainId
+    chainId,
+    slippagePercentage
   )
   if (!result) return null
   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
@@ -58,7 +61,11 @@ export const getSwapDataDebtCollateral = async (
   }
 }
 
-export const getSwapData = async (params: any, chainId: number = 137) => {
+export const getSwapData = async (
+  params: any,
+  chainId: number = 137,
+  slippagePercentage: number
+) => {
   // TODO: error handling (for INSUFFICIENT_ASSET_LIQUIDITY)
   const zeroExQuote = await get0xQuote(
     {
