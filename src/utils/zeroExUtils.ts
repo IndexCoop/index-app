@@ -1,5 +1,4 @@
 import axios from 'axios'
-import querystring from 'querystring'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -60,7 +59,7 @@ function getApiUrl(query: string, chainId: number): string {
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
 export async function get0xQuote(params: any, chainId: number) {
-  const query = querystring.stringify(params)
+  const query = new URLSearchParams(params).toString()
   const url = getApiUrl(query, chainId)
   try {
     const response = await axios.get(url)
@@ -86,7 +85,7 @@ export const getZeroExTradeData = async (
     chainId
   )
 
-  const query = querystring.stringify(params)
+  const query = new URLSearchParams(params).toString()
   const url = getApiUrl(query, chainId)
   try {
     const resp = await axios.get(url)
