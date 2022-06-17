@@ -168,9 +168,13 @@ export const useTradeLeveragedExchangeIssuance = (
         }
       }
       setIsTransacting(false)
-    } catch (error) {
+    } catch (error: any) {
       setIsTransacting(false)
       console.log('Error sending transaction', error)
+      if (error.code && error.code === 4001) {
+        // user rejected
+        return
+      }
       throw new Error('ExchangeIssuanceLeveragedTradeError')
     }
   }, [account, inputOutputLimit])
