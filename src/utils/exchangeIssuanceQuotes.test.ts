@@ -151,8 +151,9 @@ describe('getLeveragedExchangeIssuanceQuotes()', () => {
       ETH,
       icETHIndex,
       true,
+      0.5,
       1,
-      provider as providers.Web3Provider
+      provider as providers.JsonRpcProvider
     )
     expect(quote).toBeDefined()
     expect(quote?.setTokenAmount).toEqual(setTokenAmount)

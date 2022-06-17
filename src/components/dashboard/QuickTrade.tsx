@@ -54,6 +54,9 @@ import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
+// Slippage hard coded to .5%
+export const slippagePercentage = 0.5
+
 export enum QuickTradeBestOption {
   zeroEx,
   exchangeIssuance,
@@ -319,7 +322,8 @@ const QuickTrade = (props: {
       buyToken,
       // buyTokenAmount,
       buyTokenPrice,
-      isBuying
+      isBuying,
+      slippagePercentage
     )
   }
 
