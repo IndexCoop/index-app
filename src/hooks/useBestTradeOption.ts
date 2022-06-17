@@ -140,7 +140,8 @@ export const useBestTradeOption = () => {
     buyToken: Token,
     // buyTokenAmount: string,
     buyTokenPrice: number,
-    isIssuance: boolean
+    isIssuance: boolean,
+    slippagePercentage: number
   ) => {
     setIsFetching(true)
 
@@ -189,6 +190,7 @@ export const useBestTradeOption = () => {
             sellToken,
             buyToken,
             isIssuance,
+            slippagePercentage,
             chainId,
             provider
           )
@@ -208,6 +210,7 @@ export const useBestTradeOption = () => {
             sellToken,
             isIssuance,
             spendingTokenBalance,
+            slippagePercentage,
             chainId,
             provider
           )
