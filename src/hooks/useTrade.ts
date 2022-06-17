@@ -43,9 +43,11 @@ export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
     try {
       setIsTransacting(true)
       await sendTransaction(txRequest)
+      setIsTransacting(false)
     } catch (error) {
       setIsTransacting(false)
       console.log('Error sending transaction', error)
+      throw new Error('0xTradeError')
     }
   }, [account, tradeData])
 

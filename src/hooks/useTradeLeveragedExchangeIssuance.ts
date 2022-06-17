@@ -171,6 +171,7 @@ export const useTradeLeveragedExchangeIssuance = (
     } catch (error) {
       setIsTransacting(false)
       console.log('Error sending transaction', error)
+      throw new Error('ExchangeIssuanceLeveragedTradeError')
     }
   }, [account, inputOutputLimit])
 

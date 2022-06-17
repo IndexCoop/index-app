@@ -97,6 +97,7 @@ const QuickTrade = (props: {
     sellTokenPrice,
     changeBuyToken,
     changeSellToken,
+    resetTokenLists,
     swapTokenLists,
   } = useTradeTokenLists(chainId, props.singleToken)
   const { getBalance } = useBalance()
@@ -106,6 +107,7 @@ const QuickTrade = (props: {
   )
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
+  const [sellTokenAmountFormatted, setSellTokenAmountFormatted] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
@@ -435,8 +437,17 @@ const QuickTrade = (props: {
 
   const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
     if (!isValidTokenInput(input, token.decimals)) return
-    setSellTokenAmount(input || '0')
+    setSellTokenAmount(input || '')
+    setSellTokenAmountFormatted(input || '')
   }, 1000)
+
+  const resetInputsAfterTrade = () => {
+    resetTokenLists()
+    setBestOption(null)
+    setBuyTokenAmountFormatted('')
+    setSellTokenAmountFormatted('')
+    setTradeInfoData([])
+  }
 
   const onClickTradeButton = async () => {
     if (!account) {
@@ -459,18 +470,23 @@ const QuickTrade = (props: {
       return
     }
 
-    switch (bestOption) {
-      case QuickTradeBestOption.zeroEx:
-        await executeTrade()
-        break
-      case QuickTradeBestOption.exchangeIssuance:
-        await executeEITrade()
-        break
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        await executeLevEITrade()
-        break
-      default:
-      // Nothing
+    try {
+      switch (bestOption) {
+        case QuickTradeBestOption.zeroEx:
+          await executeTrade()
+          break
+        case QuickTradeBestOption.exchangeIssuance:
+          await executeEITrade()
+          break
+        case QuickTradeBestOption.leveragedExchangeIssuance:
+          await executeLevEITrade()
+          break
+        default:
+        // Nothing
+      }
+      resetInputsAfterTrade()
+    } catch (error) {
+      console.log('Error executing trade', error)
     }
   }
 
@@ -536,6 +552,7 @@ const QuickTrade = (props: {
             isReadOnly: false,
           }}
           selectedToken={sellToken}
+          selectedTokenAmount={sellTokenAmountFormatted}
           formattedFiat={sellTokenFiat}
           tokenList={sellTokenList}
           onChangeInput={onChangeSellTokenAmount}

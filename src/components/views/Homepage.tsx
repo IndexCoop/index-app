@@ -112,7 +112,7 @@ const Dashboard = () => {
               <AllocationChart positions={pieChartPositions} />
             </Flex>
             <Box w='24px' h={['10px', '10px', '10px', '0px']} />
-            <Flex direction='column' grow={ 1} flexBasis='0'>
+            <Flex direction='column' grow={1} flexBasis='0'>
               <QuickTrade />
             </Flex>
           </Flex>

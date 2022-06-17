@@ -168,6 +168,7 @@ export const useTradeExchangeIssuance = (
     } catch (error) {
       setIsTransacting(false)
       console.log('Error sending transaction', error)
+      throw new Error('ExchangeIssuanceZeroExTradeError')
     }
   }, [account, quoteData])
 
