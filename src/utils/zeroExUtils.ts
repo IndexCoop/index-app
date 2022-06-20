@@ -69,21 +69,27 @@ export async function get0xQuote(params: any, chainId: number) {
   }
 }
 
+/**
+ *
+ * @param slippagePercentage  The maximum acceptable slippage buy/sell amount. Slippage percentage: 0.03 for 3% slippage allowed.
+ */
 export const getZeroExTradeData = async (
   isExactInput: boolean,
   sellToken: Token,
   buyToken: Token,
   amount: string,
+  slippagePercentage: number,
   chainId: number,
   rawData: boolean = false
 ): Promise<Result<ZeroExData, Error>> => {
-  const params = getApiParamsForTokens(
+  let params = getApiParamsForTokens(
     isExactInput,
     sellToken,
     buyToken,
     amount,
     chainId
   )
+  params.slippagePercentage = slippagePercentage
 
   const query = new URLSearchParams(params).toString()
   const url = getApiUrl(query, chainId)
