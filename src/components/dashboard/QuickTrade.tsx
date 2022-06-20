@@ -272,13 +272,19 @@ const QuickTrade = (props: {
         BigNumber.from(0)
 
     const tradeInfoData = bestOptionIs0x
-      ? getTradeInfoData0x(bestOptionResult.dexData, buyToken, chainId)
+      ? getTradeInfoData0x(
+          bestOptionResult.dexData,
+          buyToken,
+          slippage,
+          chainId
+        )
       : getTradeInfoDataFromEI(
           tradeDataSetAmountEI,
           tradeDataGasPriceEI,
           buyToken,
           sellToken,
           tradeDataEI,
+          slippage,
           chainId,
           isBuying
         )
