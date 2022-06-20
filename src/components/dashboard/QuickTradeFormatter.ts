@@ -138,6 +138,15 @@ export const getHasInsufficientFunds = (
   return hasInsufficientFunds
 }
 
+const formatIfNumber = (value: string) => {
+  if (/[a-z]/i.test(value)) return value
+
+  return Number(value).toLocaleString('en-US', {
+    minimumFractionDigits: 4,
+    maximumFractionDigits: 4,
+  })
+}
+
 export function getTradeInfoDataFromEI(
   setAmount: BigNumber,
   gasPrice: BigNumber,
@@ -148,6 +157,7 @@ export function getTradeInfoDataFromEI(
     | LeveragedExchangeIssuanceQuote
     | null
     | undefined,
+  slippage: number,
   chainId: number = 1,
   isBuying: boolean
 ): TradeInfoItem[] {
@@ -155,9 +165,11 @@ export function getTradeInfoDataFromEI(
   const setTokenDecimals = isBuying ? buyToken.decimals : sellToken.decimals
   const inputTokenDecimals = sellToken.decimals
   const exactSetAmount = displayFromWei(setAmount, 4, setTokenDecimals) ?? '0.0'
+  const exactSetAmountFormatted = formatIfNumber(exactSetAmount)
   const inputTokenMax = data.inputTokenAmount
   const maxPayment =
     displayFromWei(inputTokenMax, 4, inputTokenDecimals) ?? '0.0'
+  const maxPaymentFormatted = formatIfNumber(maxPayment)
   const gasLimit = 1800000 // TODO: Make gasLimit dynamic
   const networkFee = displayFromWei(gasPrice.mul(gasLimit))
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
@@ -166,14 +178,15 @@ export function getTradeInfoDataFromEI(
   return [
     {
       title: getReceivedAmount(isBuying, buyToken, sellToken),
-      value: exactSetAmount,
+      values: [exactSetAmountFormatted],
     },
     {
       title: getTransactionAmount(isBuying, buyToken, sellToken),
-      value: maxPayment,
+      values: [maxPaymentFormatted],
     },
-    { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
-    { title: 'Offered From', value: offeredFrom },
+    { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
+    { title: 'Slippage Tolerance', values: [`${slippage.toString()}%`] },
+    { title: 'Offered From', values: [offeredFrom] },
   ]
 }
 
@@ -198,6 +211,7 @@ const getReceivedAmount = (
 export function getTradeInfoData0x(
   zeroExTradeData: ZeroExData | undefined | null,
   buyToken: Token,
+  slippage: number,
   chainId: number = 1
 ): TradeInfoItem[] {
   if (zeroExTradeData === undefined || zeroExTradeData === null) return []
@@ -206,16 +220,10 @@ export function getTradeInfoData0x(
   if (gasPrice === undefined || gas === undefined || sources === undefined)
     return []
 
-  const buyAmount =
-    displayFromWei(
-      BigNumber.from(zeroExTradeData.buyAmount),
-      4,
-      buyToken.decimals
-    ) ?? '0.0'
-
   const minReceive =
     displayFromWei(zeroExTradeData.minOutput, 4) + ' ' + buyToken.symbol ??
     '0.0'
+  const minReceiveFormatted = formatIfNumber(minReceive)
 
   const networkFee = displayFromWei(
     BigNumber.from(gasPrice).mul(BigNumber.from(gas))
@@ -226,11 +234,13 @@ export function getTradeInfoData0x(
   const offeredFromSources = zeroExTradeData.sources
     .filter((source) => Number(source.proportion) > 0)
     .map((source) => source.name)
-
   return [
-    { title: 'Buy Amount', value: buyAmount },
-    { title: 'Minimum ' + buyToken.symbol + ' Received', value: minReceive },
-    { title: 'Network Fee', value: `${networkFeeDisplay} ${networkToken}` },
-    { title: 'Offered From', value: offeredFromSources.toString() },
+    {
+      title: 'Minimum ' + buyToken.symbol + ' Received',
+      values: [minReceiveFormatted],
+    },
+    { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
+    { title: 'Slippage Tolerance', values: [`${slippage.toString()}%`] },
+    { title: 'Offered From', values: offeredFromSources },
   ]
 }

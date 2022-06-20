@@ -1,5 +1,4 @@
 import axios from 'axios'
-import querystring from 'querystring'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -60,7 +59,7 @@ function getApiUrl(query: string, chainId: number): string {
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
 export async function get0xQuote(params: any, chainId: number) {
-  const query = querystring.stringify(params)
+  const query = new URLSearchParams(params).toString()
   const url = getApiUrl(query, chainId)
   try {
     const response = await axios.get(url)
@@ -70,23 +69,29 @@ export async function get0xQuote(params: any, chainId: number) {
   }
 }
 
+/**
+ *
+ * @param slippagePercentage  The maximum acceptable slippage buy/sell amount. Slippage percentage: 0.03 for 3% slippage allowed.
+ */
 export const getZeroExTradeData = async (
   isExactInput: boolean,
   sellToken: Token,
   buyToken: Token,
   amount: string,
+  slippagePercentage: number,
   chainId: number,
   rawData: boolean = false
 ): Promise<Result<ZeroExData, Error>> => {
-  const params = getApiParamsForTokens(
+  let params = getApiParamsForTokens(
     isExactInput,
     sellToken,
     buyToken,
     amount,
     chainId
   )
+  params.slippagePercentage = slippagePercentage
 
-  const query = querystring.stringify(params)
+  const query = new URLSearchParams(params).toString()
   const url = getApiUrl(query, chainId)
   try {
     const resp = await axios.get(url)
