@@ -14,11 +14,15 @@ import {
 } from '@chakra-ui/react'
 
 type PopoverProps = {
+  isAuto: boolean
   isDarkMode: boolean
+  onChangeSlippage: (slippage: number) => void
+  onClickAuto: () => void
+  slippage: number
 }
 
-export const QuickTradeSettingsPopover = ({ isDarkMode }: PopoverProps) => {
-  const autoIsActive = true
+export const QuickTradeSettingsPopover = (props: PopoverProps) => {
+  const { isAuto, isDarkMode, slippage, onChangeSlippage, onClickAuto } = props
   const backgroundColor = isDarkMode ? colors.background : colors.white
   return (
     <Popover placement='bottom-end'>
@@ -37,7 +41,11 @@ export const QuickTradeSettingsPopover = ({ isDarkMode }: PopoverProps) => {
             Slippage Settings
           </Text>
           <Flex align='center' my='4'>
-            <AutoButton isActive={autoIsActive} isDarkMode={isDarkMode} />
+            <AutoButton
+              isActive={isAuto}
+              isDarkMode={isDarkMode}
+              onClickAuto={onClickAuto}
+            />
             <Flex
               align='center'
               border='1px solid gray'
@@ -47,13 +55,23 @@ export const QuickTradeSettingsPopover = ({ isDarkMode }: PopoverProps) => {
             >
               <Input
                 fontSize='md'
+                placeholder={`${slippage}`}
                 p='8px'
                 pr='4px'
                 textAlign='right'
                 type='number'
                 variant='unstyled'
-                value={'0.5'}
-                // onChange={(event) => onChangeInput(event.target.value)}
+                value={isAuto ? '' : slippage}
+                onChange={(event) => {
+                  const value = event.target.value
+                  let updatedSlippage = parseFloat(value)
+                  if (value === '') {
+                    onClickAuto()
+                    return
+                  }
+                  if (Number.isNaN(updatedSlippage)) return
+                  onChangeSlippage(updatedSlippage)
+                }}
               />
               <Text>%</Text>
             </Flex>
@@ -71,16 +89,23 @@ export const QuickTradeSettingsPopover = ({ isDarkMode }: PopoverProps) => {
 type AutoButtonProps = {
   isActive: boolean
   isDarkMode: boolean
+  onClickAuto: () => void
 }
 
-const AutoButton = ({ isActive, isDarkMode }: AutoButtonProps) => {
+const AutoButton = ({ isActive, isDarkMode, onClickAuto }: AutoButtonProps) => {
   const backgroundColor = isDarkMode ? colors.white : colors.background
   const background = isActive ? backgroundColor : 'transparent'
   const activeColor = isDarkMode ? colors.black : colors.white
   const inactiveColor = isDarkMode ? colors.white : colors.black
   const color = isActive ? activeColor : inactiveColor
   return (
-    <Button background={background} border='0' borderRadius={10} color={color}>
+    <Button
+      background={background}
+      border='0'
+      borderRadius={10}
+      color={color}
+      onClick={onClickAuto}
+    >
       Auto
     </Button>
   )

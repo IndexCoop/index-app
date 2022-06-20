@@ -30,6 +30,7 @@ import { useBalance } from 'hooks/useBalance'
 import { maxPriceImpact, useBestTradeOption } from 'hooks/useBestTradeOption'
 import { useIsUserProtectable } from 'hooks/useIsUserProtected'
 import { useNetwork } from 'hooks/useNetwork'
+import { useSlippage } from 'hooks/useSlippage'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
@@ -54,9 +55,6 @@ import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
-
-// Slippage hard coded to .5%
-export const slippagePercentage = 0.5
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -86,6 +84,13 @@ const QuickTrade = (props: {
   const isProtectable = useIsUserProtectable()
 
   const supportedNetwork = isSupportedNetwork(chainId ?? -1)
+
+  const {
+    auto: autoSlippage,
+    isAuto: isAutoSlippage,
+    set: setSlippage,
+    slippage,
+  } = useSlippage()
 
   const {
     isBuying,
@@ -324,7 +329,7 @@ const QuickTrade = (props: {
       // buyTokenAmount,
       buyTokenPrice,
       isBuying,
-      slippagePercentage
+      slippage
     )
   }
 
@@ -525,7 +530,13 @@ const QuickTrade = (props: {
         <Text fontSize='24px' fontWeight='700'>
           Quick Trade
         </Text>
-        <QuickTradeSettingsPopover isDarkMode={isDarkMode} />
+        <QuickTradeSettingsPopover
+          isAuto={isAutoSlippage}
+          isDarkMode={isDarkMode}
+          onChangeSlippage={setSlippage}
+          onClickAuto={autoSlippage}
+          slippage={slippage}
+        />
       </Flex>
       <Flex direction='column' my='20px'>
         <QuickTradeSelector
