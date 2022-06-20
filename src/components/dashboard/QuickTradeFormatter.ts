@@ -221,14 +221,6 @@ export function getTradeInfoData0x(
   if (gasPrice === undefined || gas === undefined || sources === undefined)
     return []
 
-  const buyAmount =
-    displayFromWei(
-      BigNumber.from(zeroExTradeData.buyAmount),
-      4,
-      buyToken.decimals
-    ) ?? '0.0'
-  const buyAmountFormatted = formatIfNumber(buyAmount)
-
   const minReceive =
     displayFromWei(zeroExTradeData.minOutput, 4) + ' ' + buyToken.symbol ??
     '0.0'
@@ -245,7 +237,6 @@ export function getTradeInfoData0x(
     .map((source) => source.name)
   console.log(slippage.toString(), 'slippage')
   return [
-    { title: 'Buy Amount', values: [buyAmountFormatted] },
     {
       title: 'Minimum ' + buyToken.symbol + ' Received',
       values: [minReceiveFormatted],
