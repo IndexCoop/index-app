@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
 
-import { InfoOutlineIcon, SettingsIcon, UpDownIcon } from '@chakra-ui/icons'
+import { InfoOutlineIcon, UpDownIcon } from '@chakra-ui/icons'
 import {
   Box,
   Flex,
@@ -50,6 +50,7 @@ import {
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
+import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
@@ -474,10 +475,6 @@ const QuickTrade = (props: {
     }
   }
 
-  const onClickSettingsButton = () => {
-    console.log('open settings')
-  }
-
   const getButtonDisabledState = () => {
     if (!supportedNetwork) return true
     if (!account) return false
@@ -528,14 +525,7 @@ const QuickTrade = (props: {
         <Text fontSize='24px' fontWeight='700'>
           Quick Trade
         </Text>
-        <IconButton
-          aria-label='Trade Settings'
-          icon={<SettingsIcon />}
-          onClick={onClickSettingsButton}
-          size='lg'
-          style={{ border: 0 }}
-          variant='unstyled'
-        />
+        <QuickTradeSettingsPopover isDarkMode={isDarkMode} />
       </Flex>
       <Flex direction='column' my='20px'>
         <QuickTradeSelector
