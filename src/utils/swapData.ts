@@ -70,7 +70,7 @@ export const getSwapData = async (
   const zeroExQuote = await get0xQuote(
     {
       ...params,
-      slippagePercentage,
+      slippagePercentage: slippagePercentage / 100,
     },
     chainId
   )

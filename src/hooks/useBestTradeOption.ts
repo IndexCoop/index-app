@@ -133,6 +133,10 @@ export const useBestTradeOption = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
 
+  /**
+   *
+   * @param slippage   The max acceptable slippage, e.g. 3 for 3 %
+   */
   const fetchAndCompareOptions = async (
     sellToken: Token,
     sellTokenAmount: string,
@@ -141,10 +145,11 @@ export const useBestTradeOption = () => {
     // buyTokenAmount: string,
     buyTokenPrice: number,
     isIssuance: boolean,
-    slippagePercentage: number
+    slippage: number
   ) => {
     setIsFetching(true)
 
+    const slippagePercentage = slippage / 100
     /* Check 0x for DEX Swap option*/
     const zeroExResult = await getZeroExTradeData(
       // for now we only allow selling
@@ -154,6 +159,7 @@ export const useBestTradeOption = () => {
       // for now we only allow specifing selling amount,
       // so sell token amount will always be correct
       sellTokenAmount,
+      slippagePercentage,
       chainId || 1
     )
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
@@ -190,7 +196,7 @@ export const useBestTradeOption = () => {
             sellToken,
             buyToken,
             isIssuance,
-            slippagePercentage,
+            slippage,
             chainId,
             provider
           )
@@ -210,7 +216,7 @@ export const useBestTradeOption = () => {
             sellToken,
             isIssuance,
             spendingTokenBalance,
-            slippagePercentage,
+            slippage,
             chainId,
             provider
           )
