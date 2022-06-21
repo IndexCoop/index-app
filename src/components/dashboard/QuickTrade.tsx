@@ -16,6 +16,7 @@ import {
 import { BigNumber } from '@ethersproject/bignumber'
 
 import ConnectModal from 'components/header/ConnectModal'
+import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { zeroExRouterAddress } from 'constants/ethContractAddresses'
 import {
@@ -604,6 +605,9 @@ const QuickTrade = (props: {
             {bestOptionResult.error.message}
           </Text>
         )}
+        <Flex my='8px'>
+          <FlashbotsRpcMessage />
+        </Flex>
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}
