@@ -3,16 +3,18 @@ import { Box, Flex, Text } from '@chakra-ui/react'
 export interface TradeInfoItem {
   title: string
   values: string[]
+  valuesColor?: string
 }
 
-const TradeInfoItemRow = ({ title, values }: TradeInfoItem) => {
+const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
+  const { title, values, valuesColor } = item
   return (
     <Flex direction='column'>
       <Text fontSize='14px' fontWeight='500'>
         {title}
       </Text>
       {values.map((value, index) => (
-        <Text key={index} fontSize='20px' fontWeight='700'>
+        <Text key={index} fontSize='20px' fontWeight='700' color={valuesColor}>
           {value}
         </Text>
       ))}
@@ -25,7 +27,7 @@ const TradeInfo = ({ data }: { data: TradeInfoItem[] }) => {
     <Flex direction='column'>
       {data.map((item, index) => (
         <Box key={index} mb='16px'>
-          <TradeInfoItemRow title={item.title} values={item.values} />
+          <TradeInfoItemRow item={item} />
         </Box>
       ))}
     </Flex>

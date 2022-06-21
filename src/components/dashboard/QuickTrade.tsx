@@ -16,6 +16,7 @@ import {
 import { BigNumber } from '@ethersproject/bignumber'
 
 import ConnectModal from 'components/header/ConnectModal'
+import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { zeroExRouterAddress } from 'constants/ethContractAddresses'
 import {
@@ -47,6 +48,7 @@ import {
   getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
   getHasInsufficientFunds,
+  getSlippageColorCoding,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
@@ -271,11 +273,13 @@ const QuickTrade = (props: {
       : bestOptionResult.exchangeIssuanceData?.setTokenAmount ??
         BigNumber.from(0)
 
+    const slippageColorCoding = getSlippageColorCoding(slippage, isDarkMode)
     const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(
           bestOptionResult.dexData,
           buyToken,
           slippage,
+          slippageColorCoding,
           chainId
         )
       : getTradeInfoDataFromEI(
@@ -285,6 +289,7 @@ const QuickTrade = (props: {
           sellToken,
           tradeDataEI,
           slippage,
+          slippageColorCoding,
           chainId,
           isBuying
         )
@@ -600,6 +605,9 @@ const QuickTrade = (props: {
             {bestOptionResult.error.message}
           </Text>
         )}
+        <Flex my='8px'>
+          <FlashbotsRpcMessage />
+        </Flex>
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}

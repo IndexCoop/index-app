@@ -13,6 +13,21 @@ import { ZeroExData } from 'utils/zeroExUtils'
 
 import { TradeInfoItem } from './TradeInfo'
 
+export function getSlippageColorCoding(
+  slippage: number,
+  isDarkMode: boolean
+): string {
+  if (slippage > 5) {
+    return colors.icRed
+  }
+
+  if (slippage > 1) {
+    return colors.icYellow
+  }
+
+  return isDarkMode ? colors.icWhite : colors.black
+}
+
 export function getPriceImpactColorCoding(
   priceImpact: number,
   isDarkMode: boolean
@@ -158,6 +173,7 @@ export function getTradeInfoDataFromEI(
     | null
     | undefined,
   slippage: number,
+  slippageColorCoding: string,
   chainId: number = 1,
   isBuying: boolean
 ): TradeInfoItem[] {
@@ -185,7 +201,11 @@ export function getTradeInfoDataFromEI(
       values: [maxPaymentFormatted],
     },
     { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
-    { title: 'Slippage Tolerance', values: [`${slippage.toString()}%`] },
+    {
+      title: 'Slippage Tolerance',
+      values: [`${slippage.toString()}%`],
+      valuesColor: slippageColorCoding,
+    },
     { title: 'Offered From', values: [offeredFrom] },
   ]
 }
@@ -212,6 +232,7 @@ export function getTradeInfoData0x(
   zeroExTradeData: ZeroExData | undefined | null,
   buyToken: Token,
   slippage: number,
+  slippageColorCoding: string,
   chainId: number = 1
 ): TradeInfoItem[] {
   if (zeroExTradeData === undefined || zeroExTradeData === null) return []
@@ -240,7 +261,11 @@ export function getTradeInfoData0x(
       values: [minReceiveFormatted],
     },
     { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
-    { title: 'Slippage Tolerance', values: [`${slippage.toString()}%`] },
+    {
+      title: 'Slippage Tolerance',
+      values: [`${slippage.toString()}%`],
+      valuesColor: slippageColorCoding,
+    },
     { title: 'Offered From', values: offeredFromSources },
   ]
 }
