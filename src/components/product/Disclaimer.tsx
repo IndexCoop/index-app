@@ -9,7 +9,7 @@ const Disclaimer = (props: { tokenData?: Token }) => {
       : 'FLI Tokens'
 
   return (
-    <Flex direction='column' w={['100%', '80vw']} m='0 auto' pt={'50px'}>
+    <Flex direction='column' w={'100%'} m='0 auto' pt={'50px'}>
       {props.tokenData?.isDangerous && (
         <Text fontSize={'10px'}>
           You shall not purchase or otherwise acquire the {token} if you are a
