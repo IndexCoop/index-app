@@ -10,7 +10,7 @@ const Disclaimer = (props: { tokenData?: Token }) => {
 
   return (
     <Flex direction='column' w={'100%'} m='0 auto' pt={'50px'}>
-      {props.tokenData?.isDangerous && (
+      {(props.tokenData?.isDangerous || !props.tokenData) && (
         <Text fontSize={'10px'}>
           You shall not purchase or otherwise acquire the {token} if you are a
           citizen, resident (tax or otherwise), and/or green card holder of the
