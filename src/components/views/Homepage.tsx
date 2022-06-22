@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
+import { useEthers } from '@usedapp/core'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
 import { getPieChartPositions } from 'components/dashboard/DashboardData'
@@ -41,6 +42,12 @@ const Dashboard = () => {
   const [priceChartData, setPriceChartData] = useState<PriceChartData[][]>([])
 
   const csvDownloadRef = useRef<HTMLAnchorElement>(null)
+
+  const { error } = useEthers()
+
+  useEffect(() => {
+    console.log('ERROR', error)
+  }, [error])
 
   useEffect(() => {
     // Set only if chart data wasn't set yet e.g. by using chart type selector
