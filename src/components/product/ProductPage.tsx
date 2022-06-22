@@ -20,6 +20,7 @@ import {
 } from 'utils/priceChange'
 import { getTokenSupply } from 'utils/setjsApi'
 
+import Disclaimer from './Disclaimer'
 import MarketChart, { PriceChartRangeOption } from './MarketChart'
 import ProductComponentsTable from './ProductComponentsTable'
 import ProductHeader from './ProductHeader'
@@ -174,6 +175,7 @@ const ProductPage = (props: {
             </>
           )}
         </Flex>
+        <Disclaimer tokenData={props.tokenData} />
       </Flex>
     </Page>
   )

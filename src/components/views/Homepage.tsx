@@ -12,6 +12,7 @@ import TransactionHistoryTable, {
 } from 'components/dashboard/TransactionHistoryTable'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
+import Disclaimer from 'components/product/Disclaimer'
 import { PriceChartData } from 'components/product/MarketChart'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
@@ -112,7 +113,7 @@ const Dashboard = () => {
               <AllocationChart positions={pieChartPositions} />
             </Flex>
             <Box w='24px' h={['10px', '10px', '10px', '0px']} />
-            <Flex direction='column' grow={ 1} flexBasis='0'>
+            <Flex direction='column' grow={1} flexBasis='0'>
               <QuickTrade />
             </Flex>
           </Flex>
@@ -124,6 +125,7 @@ const Dashboard = () => {
           />
           <TransactionHistoryTable items={historyItems.slice(0, 20)} />
         </Box>
+        <Disclaimer />
       </Flex>
     </Page>
   )
