@@ -605,9 +605,7 @@ const QuickTrade = (props: {
             {bestOptionResult.error.message}
           </Text>
         )}
-        <Flex my='8px'>
-          <FlashbotsRpcMessage />
-        </Flex>
+        <Flex my='8px'>{chainId === 1 && <FlashbotsRpcMessage />}</Flex>
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}
