@@ -30,6 +30,7 @@ export const useTradeLeveragedExchangeIssuance = (
   tokenAmout: BigNumber,
   // max input / min output
   inputOutputLimit: BigNumber,
+  slippage: number,
   debtCollateralSwapData?: SwapData,
   inputOutputSwapData?: SwapData
 ) => {
@@ -80,6 +81,7 @@ export const useTradeLeveragedExchangeIssuance = (
             setToken: outputTokenAddress,
             setAmount: amountOfSetToken.toString(),
             gasLimit: BigNumber.from(1800000).toString(),
+            slippage: slippage.toString(),
           })
           const issueTx = await exchangeIssuance.issueExactSetFromETH(
             outputTokenAddress,
@@ -100,6 +102,7 @@ export const useTradeLeveragedExchangeIssuance = (
             setToken: outputTokenAddress,
             setAmount: amountOfSetToken.toString(),
             gasLimit: BigNumber.from(1800000).toString(),
+            slippage: slippage.toString(),
           })
           const issueTx = await exchangeIssuance.issueExactSetFromERC20(
             outputTokenAddress,
@@ -127,6 +130,7 @@ export const useTradeLeveragedExchangeIssuance = (
             setToken: inputTokenAddress,
             setAmount: tokenAmout.toString(),
             gasLimit: BigNumber.from(1800000).toString(),
+            slippage: slippage.toString(),
           })
           const redeemTx = await exchangeIssuance.redeemExactSetForETH(
             inputTokenAddress,
@@ -147,6 +151,7 @@ export const useTradeLeveragedExchangeIssuance = (
             setToken: inputTokenAddress,
             setAmount: tokenAmout.toString(),
             gasLimit: BigNumber.from(1800000).toString(),
+            slippage: slippage.toString(),
           })
           const redeemTx = await exchangeIssuance.redeemExactSetForERC20(
             inputTokenAddress,

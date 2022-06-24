@@ -170,6 +170,7 @@ const QuickTrade = (props: {
     isBuying,
     sellToken,
     buyToken,
+    slippage,
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
 
@@ -188,6 +189,7 @@ const QuickTrade = (props: {
         ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
             BigNumber.from(0)
         : BigNumber.from(0),
+      slippage,
       bestOptionResult?.success
         ? bestOptionResult?.leveragedExchangeIssuanceData
             ?.swapDataDebtCollateral
