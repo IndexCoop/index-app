@@ -18,10 +18,11 @@ type CaptureTradeRequest = {
   setToken: string
   setAmount: string
   gasLimit: string
+  slippage: string
 }
 
 export const captureTransaction = (request: CaptureTradeRequest) => {
-  Sentry.captureException('exchangeIssuanceTrade', {
+  Sentry.captureException(`exchangeIssuanceTrade.${request.exchangeIssuance}`, {
     extra: request,
   })
 }
