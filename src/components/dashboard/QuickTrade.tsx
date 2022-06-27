@@ -42,6 +42,7 @@ import {
   getLeveragedExchangeIssuanceContract,
 } from 'utils/contracts'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { getGasApiUrl } from 'utils/gasStation'
 
 import {
   formattedFiat,
@@ -115,6 +116,7 @@ const QuickTrade = (props: {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+  const [gasFee, setGasFee] = useState<BigNumber>(BigNumber.from(0))
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -212,6 +214,17 @@ const QuickTrade = (props: {
       return
     }
 
+    console.log('fetching gas fee')
+    fetch(getGasApiUrl(chainId))
+      .then((res) => res.json())
+      .then((response) => {
+        console.log('GAS PRICE: ', response['fast']['maxFeePerGas'])
+        setGasFee(BigNumber.from(response.fast.maxFeePerGas))
+      })
+      .catch((error) => {
+        console.log('Couldnt fetch gas price', error)
+      })
+
     const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
     const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
     const gasPriceEI = BigNumber.from(
@@ -220,11 +233,21 @@ const QuickTrade = (props: {
     const gasPriceLevEI =
       bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
       BigNumber.from(0)
-    const gasLimit = 1800000 // TODO: Make gasLimit dynamic
 
     const gas0x = gasPrice0x.mul(gasLimit0x)
-    const gasEI = gasPriceEI.mul(gasLimit)
-    const gasLevEI = gasPriceLevEI.mul(gasLimit)
+    const gasEI = gasPriceEI.mul(gasFee)
+    const gasLevEI = gasPriceLevEI.mul(gasFee)
+    console.log(
+      'GAS',
+      gasFee.toString(),
+      gasLimit0x.toString(),
+      gasPrice0x.toString(),
+      gasPriceEI.toString(),
+      gasPriceLevEI.toString(),
+      gas0x.toString(),
+      gasEI.toString(),
+      gasLevEI.toString()
+    )
 
     const fullCosts0x = getFullCostsInUsd(
       toWei(sellTokenAmount, sellToken.decimals),
