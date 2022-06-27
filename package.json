@@ -14,7 +14,7 @@
     "@fontsource/ibm-plex-sans": "^4.5.11",
     "@indexcoop/index-exchange-issuance-sdk": "^1.0.3",
     "@indexcoop/tokenlists": "^1.22.0",
-    "@sentry/react": "7.2.0",
+    "@sentry/react": "7.3.0",
     "@sentry/tracing": "7.2.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^13.3.0",
