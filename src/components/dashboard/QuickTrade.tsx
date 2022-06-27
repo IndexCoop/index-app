@@ -37,12 +37,14 @@ import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
+import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import {
   get0xExchangeIssuanceContract,
   getLeveragedExchangeIssuanceContract,
 } from 'utils/contracts'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
 
+import { ContractExecutionView } from './ContractExecutionView'
 import {
   formattedFiat,
   getFormattedOuputTokenAmount,
@@ -203,6 +205,24 @@ const QuickTrade = (props: {
     bestOption === null,
     sellTokenAmountInWei,
     getBalance(sellToken.symbol)
+  )
+
+  const getContractForBestOption = (
+    bestOption: QuickTradeBestOption | null
+  ): string => {
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return spenderAddress0x
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return spenderAddressLevEIL
+      default:
+        return zeroExRouterAddress
+    }
+  }
+  const contractBestOption = getContractForBestOption(bestOption)
+  const contractBlockExplorerUrl = getBlockExplorerContractUrl(
+    contractBestOption,
+    chainId
   )
 
   /**
@@ -615,6 +635,13 @@ const QuickTrade = (props: {
             isDisabled={isButtonDisabled}
             isLoading={isLoading}
             onClick={onClickTradeButton}
+          />
+        )}
+        {bestOption !== null && (
+          <ContractExecutionView
+            blockExplorerUrl={contractBlockExplorerUrl}
+            contractAddress={contractBestOption}
+            name=''
           />
         )}
       </Flex>
