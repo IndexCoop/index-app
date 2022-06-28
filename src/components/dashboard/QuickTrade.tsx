@@ -37,6 +37,7 @@ import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
+import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import {
   get0xExchangeIssuanceContract,
   getLeveragedExchangeIssuanceContract,
@@ -44,6 +45,7 @@ import {
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
 import { getGasApiUrl } from 'utils/gasStation'
 
+import { ContractExecutionView } from './ContractExecutionView'
 import {
   formattedFiat,
   getFormattedOuputTokenAmount,
@@ -172,6 +174,7 @@ const QuickTrade = (props: {
     isBuying,
     sellToken,
     buyToken,
+    slippage,
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
 
@@ -190,6 +193,7 @@ const QuickTrade = (props: {
         ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
             BigNumber.from(0)
         : BigNumber.from(0),
+      slippage,
       bestOptionResult?.success
         ? bestOptionResult?.leveragedExchangeIssuanceData
             ?.swapDataDebtCollateral
@@ -203,6 +207,24 @@ const QuickTrade = (props: {
     bestOption === null,
     sellTokenAmountInWei,
     getBalance(sellToken.symbol)
+  )
+
+  const getContractForBestOption = (
+    bestOption: QuickTradeBestOption | null
+  ): string => {
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return spenderAddress0x
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return spenderAddressLevEIL
+      default:
+        return zeroExRouterAddress
+    }
+  }
+  const contractBestOption = getContractForBestOption(bestOption)
+  const contractBlockExplorerUrl = getBlockExplorerContractUrl(
+    contractBestOption,
+    chainId
   )
 
   /**
@@ -628,9 +650,7 @@ const QuickTrade = (props: {
             {bestOptionResult.error.message}
           </Text>
         )}
-        <Flex my='8px'>
-          <FlashbotsRpcMessage />
-        </Flex>
+        <Flex my='8px'>{chainId === 1 && <FlashbotsRpcMessage />}</Flex>
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}
@@ -638,6 +658,13 @@ const QuickTrade = (props: {
             isDisabled={isButtonDisabled}
             isLoading={isLoading}
             onClick={onClickTradeButton}
+          />
+        )}
+        {bestOption !== null && (
+          <ContractExecutionView
+            blockExplorerUrl={contractBlockExplorerUrl}
+            contractAddress={contractBestOption}
+            name=''
           />
         )}
       </Flex>

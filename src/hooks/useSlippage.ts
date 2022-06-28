@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-// Slippage default hard coded to .5%
-export const slippageDefault = 0.5
+// Slippage default hard coded to 1%
+export const slippageDefault = 1
 
 export const useSlippage = () => {
   const [isAuto, setIsAuto] = useState(true)

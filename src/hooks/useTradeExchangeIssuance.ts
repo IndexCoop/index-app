@@ -27,6 +27,7 @@ export const useTradeExchangeIssuance = (
   isIssuance: boolean,
   inputToken: Token,
   outputToken: Token,
+  slippage: number,
   quoteData?: ExchangeIssuanceQuote | null
 ) => {
   const { account, provider } = useAccount()
@@ -75,6 +76,7 @@ export const useTradeExchangeIssuance = (
             setToken: outputTokenAddress,
             setAmount: setTokenAmount.toString(),
             gasLimit: quoteData.gas.toString(),
+            slippage: slippage.toString(),
           })
           const issueTx = await exchangeIssuance.issueExactSetFromETH(
             outputTokenAddress,
@@ -97,6 +99,7 @@ export const useTradeExchangeIssuance = (
             setToken: outputTokenAddress,
             setAmount: setTokenAmount.toString(),
             gasLimit: quoteData.gas.toString(),
+            slippage: slippage.toString(),
           })
           const issueTx = await exchangeIssuance.issueExactSetFromToken(
             outputTokenAddress,
@@ -124,6 +127,7 @@ export const useTradeExchangeIssuance = (
           setToken: inputTokenAddress,
           setAmount: setTokenAmount.toString(),
           gasLimit: quoteData.gas.toString(),
+          slippage: slippage.toString(),
         })
 
         if (isRedeemingNativeChainToken) {
@@ -147,6 +151,7 @@ export const useTradeExchangeIssuance = (
             setToken: inputTokenAddress,
             setAmount: setTokenAmount.toString(),
             gasLimit: quoteData.gas.toString(),
+            slippage: slippage.toString(),
           })
           const redeemTx = await exchangeIssuance.redeemExactSetForToken(
             inputTokenAddress,
