@@ -4112,17 +4112,17 @@
     "@uniswap/v3-core" "1.0.0"
     "@uniswap/v3-periphery" "^1.0.1"
 
-"@usedapp/core@1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-1.0.12.tgz#8aca87c56460e02038e366168fc4d10929b003ef"
-  integrity sha512-cyuXNHs67h4jBAd0zUmpWCMXiVa4Di0iZE7Jsy8byzObIOpK6sGVEauvHLx80YJ+S1tMEYaBRR+UvA/mdAB+gQ==
+"@usedapp/core@1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-1.0.15.tgz#66c982c13cf9aeb061b74fa6ad1f8ef6f7cd4fd2"
+  integrity sha512-dvjLiYVyutM25BiwiFlPjyhPVlLQA4Dg/WnN0Q8XPnWtyasM0mytxerGQMl0Um1WCtqQynV2R8SU5iQY723cCA==
   dependencies:
     "@metamask/detect-provider" "^1.2.0"
     "@uniswap/token-lists" "^1.0.0-beta.27"
     fetch-mock "^9.11.0"
     lodash.merge "^4.6.2"
     lodash.pickby "^4.6.0"
-    nanoid "3.1.22"
+    nanoid "3.3.4"
 
 "@walletconnect/browser-utils@^1.7.8":
   version "1.7.8"
@@ -12409,12 +12409,7 @@ nano-json-stream-parser@^0.1.2:
   resolved "https://registry.yarnpkg.com/nano-json-stream-parser/-/nano-json-stream-parser-0.1.2.tgz#0cc8f6d0e2b622b479c40d499c46d64b755c6f5f"
   integrity sha512-9MqxMH/BSJC7dnLsEMPyfN5Dvoo49IsPFYMcHw3Bcfc2kN0lpHRBSzlMSVx4HGyJ7s9B31CyBTVehWJoQ8Ctew==
 
-nanoid@3.1.22:
-  version "3.1.22"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.22.tgz#b35f8fb7d151990a8aebd5aa5015c03cf726f844"
-  integrity sha512-/2ZUaJX2ANuLtTvqTlgqBQNJoQO398KyJgZloL0PZkC0dpysjncRUPsFe3DUPzz/y3h+u7C46np8RMuvF3jsSQ==
-
-nanoid@^3.3.4:
+nanoid@3.3.4, nanoid@^3.3.4:
   version "3.3.4"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
