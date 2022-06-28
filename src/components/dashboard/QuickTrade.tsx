@@ -236,7 +236,6 @@ const QuickTrade = (props: {
       return
     }
 
-    console.log('fetching gas fee')
     fetch(getGasApiUrl(chainId))
       .then((res) => res.json())
       .then((response) => {
