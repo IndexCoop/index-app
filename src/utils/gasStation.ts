@@ -35,3 +35,8 @@ export const getGasApiUrl = (chainId?: number): string => {
 
   return `https://api.indexcoop.com/gas/${networkKey}`
 }
+
+export const getMaxFeePerGas = async (chainId?: number) => {
+  const result = await fetch(getGasApiUrl(chainId)).then((res) => res.json())
+  return BigNumber.from(result.fast.maxFeePerGas)
+}

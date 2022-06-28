@@ -118,7 +118,7 @@ const QuickTrade = (props: {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
-  const [gasFee, setGasFee] = useState<BigNumber>(BigNumber.from(0))
+  const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -240,8 +240,7 @@ const QuickTrade = (props: {
     fetch(getGasApiUrl(chainId))
       .then((res) => res.json())
       .then((response) => {
-        console.log('GAS PRICE: ', response['fast']['maxFeePerGas'])
-        setGasFee(BigNumber.from(response.fast.maxFeePerGas))
+        setMaxFeePerGas(BigNumber.from(response.fast.maxFeePerGas))
       })
       .catch((error) => {
         console.log('Couldnt fetch gas price', error)
@@ -255,21 +254,11 @@ const QuickTrade = (props: {
     const gasPriceLevEI =
       bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
       BigNumber.from(0)
+    const gasLimit = 1800000 // TODO: Make gasLimit dynamic
 
     const gas0x = gasPrice0x.mul(gasLimit0x)
-    const gasEI = gasPriceEI.mul(gasFee)
-    const gasLevEI = gasPriceLevEI.mul(gasFee)
-    console.log(
-      'GAS',
-      gasFee.toString(),
-      gasLimit0x.toString(),
-      gasPrice0x.toString(),
-      gasPriceEI.toString(),
-      gasPriceLevEI.toString(),
-      gas0x.toString(),
-      gasEI.toString(),
-      gasLevEI.toString()
-    )
+    const gasEI = maxFeePerGas.mul(gasLimit)
+    const gasLevEI = maxFeePerGas.mul(gasLimit)
 
     const fullCosts0x = getFullCostsInUsd(
       toWei(sellTokenAmount, sellToken.decimals),
