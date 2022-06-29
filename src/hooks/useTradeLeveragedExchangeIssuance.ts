@@ -4,6 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import {
   ExchangeIssuanceLeveraged,
   getExchangeIssuanceLeveragedContract,
+  SwapData,
 } from '@indexcoop/index-exchange-issuance-sdk'
 import { useTransactions } from '@usedapp/core'
 
@@ -11,7 +12,6 @@ import { ETH, MATIC, Token } from 'constants/tokens'
 import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
 import { fromWei } from 'utils'
-import { SwapData } from 'utils/exchangeIssuanceQuotes'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,

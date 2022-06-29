@@ -4,15 +4,15 @@ import { BigNumber } from '@ethersproject/bignumber'
 import {
   ExchangeIssuanceZeroEx,
   getExchangeIssuanceZeroExContract,
+  getIssuanceModule,
 } from '@indexcoop/index-exchange-issuance-sdk'
 import { useTransactions } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { useAccount } from 'hooks/useAccount'
+import { ExchangeIssuanceQuote } from 'hooks/useBestTradeOption'
 import { useNetwork } from 'hooks/useNetwork'
 import { fromWei } from 'utils'
-import { ExchangeIssuanceQuote } from 'utils/exchangeIssuanceQuotes'
-import { getIssuanceModule } from 'utils/issuanceModule'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,
@@ -43,6 +43,7 @@ export const useTradeExchangeIssuance = (
 
   const [isTransactingEI, setIsTransacting] = useState(false)
 
+  // TODO: add params here?
   const executeEITrade = useCallback(async () => {
     if (!account || !quoteData || !setTokenAmount) return
 

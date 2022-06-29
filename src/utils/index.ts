@@ -9,7 +9,7 @@ export const selectLatestMarketData = (marketData?: number[][]) =>
 
 /**
  * Converts a number to Wei to another denomination of Eth
- * @param number
+ * @param value
  * @param power default = 18
  * @returns
  */

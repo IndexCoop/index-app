@@ -37,20 +37,20 @@ export type ZeroExData = {
   value: string
 }
 
-function getApiUrl(query: string, chainId: number): string {
-  const quotePath = '/swap/v1/quote'
-  let networkKey = ''
+export function getNetworkKey(chainId: number): string {
   switch (chainId) {
     case POLYGON.chainId:
-      networkKey = 'polygon'
-      break
+      return 'polygon'
     case OPTIMISM.chainId:
-      networkKey = 'optimism'
-      break
+      return 'optimism'
     default:
-      networkKey = 'mainnet'
+      return 'mainnet'
   }
+}
 
+function getApiUrl(query: string, chainId: number): string {
+  const quotePath = '/swap/v1/quote'
+  const networkKey = getNetworkKey(chainId)
   // example: https://api.indexcoop.com/0x/mainnet/swap/v1/quote?sellToken=ETH&buyToken=0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b&sellAmount=10000000000000000000&affilliateAddress=0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF
   return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}&affilliateAddress=0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF`
 }
@@ -93,6 +93,7 @@ export const getZeroExTradeData = async (
 
   const query = new URLSearchParams(params).toString()
   const url = getApiUrl(query, chainId)
+  console.log('0x', url)
   try {
     const resp = await axios.get(url)
     const zeroExData: ZeroExData = resp.data

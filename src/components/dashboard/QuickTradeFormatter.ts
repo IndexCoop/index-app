@@ -3,11 +3,11 @@ import { colors } from 'styles/colors'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from 'constants/tokens'
-import { displayFromWei } from 'utils'
 import {
   ExchangeIssuanceQuote,
   LeveragedExchangeIssuanceQuote,
-} from 'utils/exchangeIssuanceQuotes'
+} from 'hooks/useBestTradeOption'
+import { displayFromWei } from 'utils'
 import { getNativeToken } from 'utils/tokens'
 import { ZeroExData } from 'utils/zeroExUtils'
 
