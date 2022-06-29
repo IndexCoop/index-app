@@ -23,7 +23,7 @@
     "@types/node": "^18.0.0",
     "@types/react-dom": "^18.0.5",
     "@uniswap/smart-order-router": "^2.5.30",
-    "@usedapp/core": "1.0.12",
+    "@usedapp/core": "1.0.15",
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "^6.2.14",
     "export-to-csv": "^0.2.1",
