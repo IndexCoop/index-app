@@ -14,6 +14,10 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
+import {
+  getExchangeIssuanceLeveragedContractAddress,
+  getExchangeIssuanceZeroExContractAddress,
+} from '@indexcoop/index-exchange-issuance-sdk'
 
 import ConnectModal from 'components/header/ConnectModal'
 import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
@@ -38,10 +42,6 @@ import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchan
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
-import {
-  get0xExchangeIssuanceContract,
-  getLeveragedExchangeIssuanceContract,
-} from 'utils/contracts'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
 import { GasStation, getGasApiUrl } from 'utils/gasStation'
 
@@ -126,8 +126,9 @@ const QuickTrade = (props: {
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
-  const spenderAddress0x = get0xExchangeIssuanceContract(chainId)
-  const spenderAddressLevEIL = getLeveragedExchangeIssuanceContract(chainId)
+  const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chainId)
+  const spenderAddressLevEIL =
+    getExchangeIssuanceLeveragedContractAddress(chainId)
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
 

@@ -1,9 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import {
+  getExchangeIssuanceZeroExContract,
+  getIssuanceModule,
+} from '@indexcoop/index-exchange-issuance-sdk'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
-import { getExchangeIssuanceZeroExContract } from 'hooks/useExchangeIssuanceZeroEx'
 import { toWei } from 'utils'
-import { getIssuanceModule } from 'utils/issuanceModule'
 import { getAddressForToken } from 'utils/tokens'
 
 // TODO: check scaling based on component counts (quoteData)
@@ -38,10 +40,7 @@ export async function getExchangeIssuanceGasEstimate(
   if (!outputTokenAddress || !inputTokenAddress) return gasEstimate
 
   try {
-    const contract = await getExchangeIssuanceZeroExContract(
-      signer,
-      chainId ?? 1
-    )
+    const contract = getExchangeIssuanceZeroExContract(signer, chainId ?? 1)
 
     if (isIssuance) {
       const isSellingNativeChainToken =
