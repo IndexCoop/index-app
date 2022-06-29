@@ -43,6 +43,7 @@ import {
   getLeveragedExchangeIssuanceContract,
 } from 'utils/contracts'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { GasStation, getGasApiUrl } from 'utils/gasStation'
 
 import { ContractExecutionView } from './ContractExecutionView'
 import {
@@ -70,7 +71,7 @@ const QuickTrade = (props: {
   isNarrowVersion?: boolean
   singleToken?: Token
 }) => {
-  const { account } = useAccount()
+  const { account, provider } = useAccount()
   const { chainId } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -117,6 +118,7 @@ const QuickTrade = (props: {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+  const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -225,28 +227,37 @@ const QuickTrade = (props: {
     chainId
   )
 
-  /**
-   * Determine the best trade option.
-   */
-  useEffect(() => {
+  const determineBestOption = async () => {
+    if (!provider) return
+
     if (bestOptionResult === null || !bestOptionResult.success) {
       setTradeInfoData([])
       return
     }
 
+    fetch(getGasApiUrl(chainId), {
+      headers: {
+        Origin: 'https://app.indexcoop.com',
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        setMaxFeePerGas(BigNumber.from(response.fast.maxFeePerGas))
+      })
+      .catch((error) => {
+        console.log('Couldnt fetch gas price', error)
+      })
+
+    const gasStation = new GasStation(provider)
+    const gasPrice = await gasStation.getGasPrice()
+
     const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
     const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
-    const gasPriceEI = BigNumber.from(
-      bestOptionResult.exchangeIssuanceData?.gasPrice ?? '0'
-    )
-    const gasPriceLevEI =
-      bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
-      BigNumber.from(0)
     const gasLimit = 1800000 // TODO: Make gasLimit dynamic
 
     const gas0x = gasPrice0x.mul(gasLimit0x)
-    const gasEI = gasPriceEI.mul(gasLimit)
-    const gasLevEI = gasPriceLevEI.mul(gasLimit)
+    const gasEI = gasPrice.mul(gasLimit)
+    const gasLevEI = gasPrice.mul(gasLimit)
 
     const fullCosts0x = getFullCostsInUsd(
       toWei(sellTokenAmount, sellToken.decimals),
@@ -288,7 +299,6 @@ const QuickTrade = (props: {
     const tradeDataEI = bestOptionIsLevEI
       ? bestOptionResult.leveragedExchangeIssuanceData
       : bestOptionResult.exchangeIssuanceData
-    const tradeDataGasPriceEI = bestOptionIsLevEI ? gasPriceLevEI : gasPriceEI
     const tradeDataSetAmountEI = bestOptionIsLevEI
       ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
         BigNumber.from(0)
@@ -306,7 +316,7 @@ const QuickTrade = (props: {
         )
       : getTradeInfoDataFromEI(
           tradeDataSetAmountEI,
-          tradeDataGasPriceEI,
+          gasPrice,
           buyToken,
           sellToken,
           tradeDataEI,
@@ -329,6 +339,13 @@ const QuickTrade = (props: {
     setTradeInfoData(tradeInfoData)
     setBestOption(bestOption)
     setBuyTokenAmountFormatted(buyTokenAmountFormatted)
+  }
+
+  /**
+   * Determine the best trade option.
+   */
+  useEffect(() => {
+    determineBestOption()
   }, [bestOptionResult])
 
   useEffect(() => {
