@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
@@ -33,13 +33,13 @@ import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
 import { useBalance } from 'hooks/useBalance'
 import { maxPriceImpact, useBestTradeOption } from 'hooks/useBestTradeOption'
-import { useIsUserProtectable } from 'hooks/useIsUserProtected'
 import { useNetwork } from 'hooks/useNetwork'
 import { useSlippage } from 'hooks/useSlippage'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
+import { useProtection } from 'providers/Protection/ProtectionProvider'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
@@ -86,7 +86,7 @@ const QuickTrade = (props: {
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
-  const isProtectable = useIsUserProtectable()
+  const protection = useProtection()
 
   const supportedNetwork = isSupportedNetwork(chainId ?? -1)
 
@@ -378,12 +378,15 @@ const QuickTrade = (props: {
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
   useEffect(() => {
-    if (isProtectable && (sellToken.isDangerous || buyToken.isDangerous)) {
+    if (
+      protection.isProtectable &&
+      (sellToken.isDangerous || buyToken.isDangerous)
+    ) {
       setRequiresProtection(true)
     } else {
       setRequiresProtection(false)
     }
-  }, [isProtectable, sellToken, buyToken])
+  }, [protection, sellToken, buyToken])
 
   const fetchOptions = () => {
     // Right now we only allow setting the sell amount, so no need to check
