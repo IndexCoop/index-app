@@ -260,6 +260,20 @@ const QuickTrade = (props: {
     const gasEI = gasPrice.mul(gasLimit)
     const gasLevEI = gasPrice.mul(gasLimit)
 
+    const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
+    let shouldUseEI0x = true
+    const inputTokenAmountEI0x =
+      bestOptionResult.exchangeIssuanceData?.inputTokenAmount
+    if (inputTokenAmountEI0x && inputTokenAmountEI0x.gt(inputBalance)) {
+      shouldUseEI0x = false
+    }
+    let shouldUseEILev = true
+    const inputTokenAmountEILev =
+      bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount
+    if (inputTokenAmountEILev && inputTokenAmountEILev.gt(inputBalance)) {
+      shouldUseEILev = false
+    }
+
     const fullCosts0x = getFullCostsInUsd(
       toWei(sellTokenAmount, sellToken.decimals),
       gas0x,
@@ -267,20 +281,24 @@ const QuickTrade = (props: {
       sellTokenPrice,
       nativeTokenPrice
     )
-    const fullCostsEI = getFullCostsInUsd(
-      bestOptionResult.exchangeIssuanceData?.inputTokenAmount,
-      gasEI,
-      sellToken.decimals,
-      sellTokenPrice,
-      nativeTokenPrice
-    )
-    const fullCostsLevEI = getFullCostsInUsd(
-      bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount,
-      gasLevEI,
-      sellToken.decimals,
-      sellTokenPrice,
-      nativeTokenPrice
-    )
+    const fullCostsEI = shouldUseEI0x
+      ? getFullCostsInUsd(
+          bestOptionResult.exchangeIssuanceData?.inputTokenAmount,
+          gasEI,
+          sellToken.decimals,
+          sellTokenPrice,
+          nativeTokenPrice
+        )
+      : null
+    const fullCostsLevEI = shouldUseEILev
+      ? getFullCostsInUsd(
+          bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount,
+          gasLevEI,
+          sellToken.decimals,
+          sellTokenPrice,
+          nativeTokenPrice
+        )
+      : null
 
     console.log(fullCosts0x, fullCostsEI, fullCostsLevEI, 'FC')
 
