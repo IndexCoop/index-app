@@ -7,8 +7,8 @@ import { Contract } from '@ethersproject/contracts'
 import { useTokenAllowance, useTransactions } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
+import { useWallet } from 'hooks/useWallet'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
@@ -27,8 +27,8 @@ function useApprovalState(
   tokenAddress?: string,
   spenderAddress?: string
 ): ApprovalState {
-  const { account } = useAccount()
-  const allowance = useTokenAllowance(tokenAddress, account, spenderAddress)
+  const { address } = useWallet()
+  const allowance = useTokenAllowance(tokenAddress, address, spenderAddress)
 
   if (!tokenAddress || !spenderAddress || !allowance) {
     return ApprovalState.Unknown
@@ -48,7 +48,7 @@ export const useApproval = (
   spenderAddress?: string,
   amount: BigNumber = constants.MaxUint256
 ) => {
-  const { account, provider } = useAccount()
+  const { address, provider } = useWallet()
   const { chainId } = useNetwork()
   const { addTransaction } = useTransactions()
 
@@ -59,7 +59,7 @@ export const useApproval = (
   const [isApproved, setIsApproved] = useState(false)
 
   const handleApprove = useCallback(async () => {
-    if (!provider || !account || !tokenAddress || !spenderAddress) {
+    if (!provider || !address || !tokenAddress || !spenderAddress) {
       return
     }
     try {
@@ -82,7 +82,7 @@ export const useApproval = (
       console.error('Error approving token', tokenAddress, e)
     }
   }, [
-    account,
+    address,
     amount,
     provider,
     setIsApproved,

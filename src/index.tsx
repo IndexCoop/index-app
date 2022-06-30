@@ -4,11 +4,21 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import App from 'App'
-import theme from 'theme'
+import { colors } from 'styles/colors'
+import theme, { rainbowkitTheme } from 'theme'
+import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { publicProvider } from 'wagmi/providers/public'
 
 import '@fontsource/ibm-plex-sans'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
+import {
+  darkTheme,
+  getDefaultWallets,
+  midnightTheme,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 import { Config, DAppProvider } from '@usedapp/core'
@@ -38,6 +48,24 @@ import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningPr
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
 import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
 
+import '@rainbow-me/rainbowkit/dist/index.css'
+
+const { chains, provider } = configureChains(
+  [chain.mainnet, chain.polygon, chain.optimism],
+  [alchemyProvider({ alchemyId: process.env.ALCHEMY_ID }), publicProvider()]
+)
+
+const { connectors } = getDefaultWallets({
+  appName: 'My RainbowKit App',
+  chains,
+})
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+})
+
 const config: Config = {
   readOnlyChainId: MAINNET.chainId,
   readOnlyUrls: {
@@ -60,15 +88,26 @@ const Providers = (props: { children: any }) => {
 
   return (
     <ChakraProvider theme={theme}>
-      <DAppProvider config={config}>
-        <MarketDataProvider>
-          <LiquidityMiningProvider>
-            <SetComponentsProvider>
-              <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
-            </SetComponentsProvider>
-          </LiquidityMiningProvider>
-        </MarketDataProvider>
-      </DAppProvider>
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider
+          chains={chains}
+          theme={rainbowkitTheme}
+          appInfo={{
+            appName: 'Index Coop',
+            learnMoreUrl: 'https://indexcoop.com',
+          }}
+        >
+          <DAppProvider config={config}>
+            <MarketDataProvider>
+              <LiquidityMiningProvider>
+                <SetComponentsProvider>
+                  <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+                </SetComponentsProvider>
+              </LiquidityMiningProvider>
+            </MarketDataProvider>
+          </DAppProvider>
+        </RainbowKitProvider>
+      </WagmiConfig>
     </ChakraProvider>
   )
 }

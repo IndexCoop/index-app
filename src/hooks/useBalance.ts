@@ -38,11 +38,12 @@ import {
   USDC,
   WETH,
 } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import { useStakingUnclaimedRewards } from 'utils/stakingRewards'
 import { getAddressForToken } from 'utils/tokens'
+
+import { useWallet } from './useWallet'
 
 type Balance = BigNumber
 
@@ -97,9 +98,9 @@ async function balanceOf(
 }
 
 export const useBalance = () => {
-  const { account, provider } = useAccount()
+  const { address, provider } = useWallet()
   const { chainId } = useNetwork()
-  const ethBalance = useEtherBalance(account)
+  const ethBalance = useEtherBalance(address)
 
   const [bedBalance, setBedBalance] = useState<Balance>(BigNumber.from(0))
   const [btc2xFLIPBalance, setBtc2xFLIPBalance] = useState<Balance>(
@@ -139,136 +140,136 @@ export const useBalance = () => {
   // LP Tokens
   const uniswapEthDpiLpBalance = useTokenBalance(
     uniswapEthDpiLpTokenAddress,
-    account
+    address
   )
   const uniswapEthMviLpBalance = useTokenBalance(
     uniswapEthMviLpTokenAddress,
-    account
+    address
   )
 
   // DPI LM Program (Oct. 7th, 2020 - Dec. 6th, 2020)
   const stakedUniswapEthDpi2020LpBalance = useTokenBalance(
     dpi2020StakingRewardsAddress,
-    account
+    address
   )
   const unclaimedUniswapEthDpi2020LpBalance = useStakingUnclaimedRewards(
     dpi2020StakingRewardsAddress,
-    account
+    address
   )
   // DPI LM Program ( July 13th, 2021 - August 12th, 2021)
   const stakedUniswapEthDpi2021LpBalance = useTokenBalance(
     dpi2021StakingRewardsAddress,
-    account
+    address
   )
   const unclaimedUniswapEthDpi2021LpBalance = useStakingUnclaimedRewards(
     dpi2021StakingRewardsAddress,
-    account
+    address
   )
   // MVI LM Program (August 20th, 2021 - September 19th, 2021)
   const stakedUniswapEthMvi2021LpBalance = useTokenBalance(
     mviStakingRewardsAddress,
-    account
+    address
   )
   const unclaimedUniswapEthMvi2021LpBalance = useStakingUnclaimedRewards(
     mviStakingRewardsAddress,
-    account
+    address
   )
   // GMI LM Program (Jan. 10th, 2022 - Mar. 10th, 2022)
   const stakedGmi2022Balance = useTokenBalance(
     gmiStakingRewardsAddress,
-    account
+    address
   )
   const unclaimedGmi2022Balance = useStakingUnclaimedRewards(
     gmiStakingRewardsAddress,
-    account
+    address
   )
 
   useEffect(() => {
-    if (!account || !chainId) return
+    if (!address || !chainId) return
 
     const fetchAllBalances = async () => {
-      const bedBalance = await balanceOf(BedIndex, chainId, account, provider)
+      const bedBalance = await balanceOf(BedIndex, chainId, address, provider)
       const btc2xFLIPBalance = await balanceOf(
         Bitcoin2xFLIP,
         chainId,
-        account,
+        address,
         provider
       )
       const btcFliBalance = await balanceOf(
         Bitcoin2xFlexibleLeverageIndex,
         chainId,
-        account,
+        address,
         provider
       )
-      const daiBalance = await balanceOf(DAI, chainId, account, provider)
-      const dataBalance = await balanceOf(DataIndex, chainId, account, provider)
+      const daiBalance = await balanceOf(DAI, chainId, address, provider)
+      const dataBalance = await balanceOf(DataIndex, chainId, address, provider)
       const dpiBalance = await balanceOf(
         DefiPulseIndex,
         chainId,
-        account,
+        address,
         provider
       )
       const ethFliBalance = await balanceOf(
         Ethereum2xFlexibleLeverageIndex,
         chainId,
-        account,
+        address,
         provider
       )
       const ethFliPBalance = await balanceOf(
         Ethereum2xFLIP,
         chainId,
-        account,
+        address,
         provider
       )
-      const gmiBalance = await balanceOf(GmiIndex, chainId, account, provider)
+      const gmiBalance = await balanceOf(GmiIndex, chainId, address, provider)
       const iBtcFLIPBalance = await balanceOf(
         IBitcoinFLIP,
         chainId,
-        account,
+        address,
         provider
       )
       const icEthBalance = await balanceOf(
         icETHIndex,
         chainId,
-        account,
+        address,
         provider
       )
       const iEthFLIPbalance = await balanceOf(
         IEthereumFLIP,
         chainId,
-        account,
+        address,
         provider
       )
       const iMaticFLIPbalance = await balanceOf(
         IMaticFLIP,
         chainId,
-        account,
+        address,
         provider
       )
       const indexBalance = await balanceOf(
         IndexToken,
         chainId,
-        account,
+        address,
         provider
       )
-      const maticBalance = await balanceOf(MATIC, chainId, account, provider)
+      const maticBalance = await balanceOf(MATIC, chainId, address, provider)
       const matic2xFLIPbalance = await balanceOf(
         Matic2xFLIP,
         chainId,
-        account,
+        address,
         provider
       )
       const mviBalance = await balanceOf(
         MetaverseIndex,
         chainId,
-        account,
+        address,
         provider
       )
-      const usdcBalance = await balanceOf(USDC, chainId, account, provider)
-      const wethBalance = await balanceOf(WETH, chainId, account, provider)
-      const jpgBalance = await balanceOf(JPGIndex, chainId, account, provider)
-      const mnyeBalance = await balanceOf(MNYeIndex, chainId, account, provider)
-      const stETHBalance = await balanceOf(STETH, chainId, account, provider)
+      const usdcBalance = await balanceOf(USDC, chainId, address, provider)
+      const wethBalance = await balanceOf(WETH, chainId, address, provider)
+      const jpgBalance = await balanceOf(JPGIndex, chainId, address, provider)
+      const mnyeBalance = await balanceOf(MNYeIndex, chainId, address, provider)
+      const stETHBalance = await balanceOf(STETH, chainId, address, provider)
       setBedBalance(bedBalance)
       setBtc2xFLIPBalance(btc2xFLIPBalance)
       setBtcFliBalance(btcFliBalance)
@@ -294,7 +295,7 @@ export const useBalance = () => {
     }
 
     fetchAllBalances()
-  }, [account, chainId])
+  }, [address, chainId])
 
   const getBalance = useCallback(
     (tokenSymbol: string): BigNumber | undefined => {

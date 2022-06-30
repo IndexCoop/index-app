@@ -1,4 +1,5 @@
 import { colors, useICColorMode } from 'styles/colors'
+import { useAccount } from 'wagmi'
 
 import {
   Box,
@@ -10,7 +11,6 @@ import {
 } from '@chakra-ui/react'
 
 import StakingModal from 'components/mining/StakingModal'
-import { useAccount } from 'hooks/useAccount'
 import { Balances, useBalance } from 'hooks/useBalance'
 import {
   LiquidityMiningProps,
@@ -80,7 +80,7 @@ const MiningProgram = (props: { program: Program }) => {
     liquidityMiningKey,
     unclaimed,
   } = props.program
-  const { account } = useAccount()
+  const { address } = useAccount()
   const { balances } = useBalance()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const liquidityMining = useLiquidityMining()
@@ -116,7 +116,7 @@ const MiningProgram = (props: { program: Program }) => {
   const comps = [staked, apy, unclaimed]
 
   const StakeButton = () => {
-    if (!account) {
+    if (!address) {
       return (
         <Button
           disabled
@@ -190,7 +190,7 @@ const MiningProgram = (props: { program: Program }) => {
               <Button
                 mt={['4', '0']}
                 mr={['0', '6']}
-                isDisabled={!account || Number(staked.value) <= 0}
+                isDisabled={!address || Number(staked.value) <= 0}
                 onClick={() => onHarvest()}
                 w={['100%', 'inherit']}
               >
@@ -199,7 +199,7 @@ const MiningProgram = (props: { program: Program }) => {
             </Flex>
           )}
           <Button
-            isDisabled={!account || Number(staked.value) <= 0}
+            isDisabled={!address || Number(staked.value) <= 0}
             onClick={() => onUnstakeAndHarvest()}
             mt={['4', '0']}
             w={['100%', 'inherit']}

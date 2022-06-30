@@ -9,9 +9,9 @@ import {
 import { useTransactions } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { ExchangeIssuanceQuote } from 'hooks/useBestTradeOption'
 import { useNetwork } from 'hooks/useNetwork'
+import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import {
   CaptureExchangeIssuanceFunctionKey,
@@ -30,7 +30,7 @@ export const useTradeExchangeIssuance = (
   slippage: number,
   quoteData?: ExchangeIssuanceQuote | null
 ) => {
-  const { account, provider } = useAccount()
+  const { address, provider } = useWallet()
   const { chainId } = useNetwork()
   const { getBalance } = useBalance()
   const { addTransaction } = useTransactions()
@@ -45,7 +45,7 @@ export const useTradeExchangeIssuance = (
 
   // TODO: add params here?
   const executeEITrade = useCallback(async () => {
-    if (!account || !quoteData || !setTokenAmount) return
+    if (!address || !quoteData || !setTokenAmount) return
 
     const outputTokenAddress = getAddressForToken(outputToken, chainId)
     const inputTokenAddress = getAddressForToken(inputToken, chainId)
@@ -175,7 +175,7 @@ export const useTradeExchangeIssuance = (
       setIsTransacting(false)
       console.log('Error sending transaction', error)
     }
-  }, [account, quoteData])
+  }, [address, quoteData])
 
   return { executeEITrade, isTransactingEI }
 }

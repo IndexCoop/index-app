@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import numeral from 'numeral'
 import { colors, pieChartColors } from 'styles/colors'
+import { useAccount } from 'wagmi'
 
 import {
   Box,
@@ -19,7 +20,6 @@ import {
 import { Position } from 'components/dashboard/AllocationChart'
 import { MAINNET, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 
@@ -52,7 +52,7 @@ const ProductComponentsTable = (props: {
   tokenData: Token
   isLeveragedToken?: boolean
 }) => {
-  const { account } = useAccount()
+  const { address } = useAccount()
   const { chainId } = useNetwork()
 
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
@@ -96,7 +96,7 @@ const ProductComponentsTable = (props: {
   if (props.components === undefined || props.components.length === 0) {
     return (
       <Text title='Allocations'>
-        {allocationEmptyMsg(props.tokenData, account, chainId)}
+        {allocationEmptyMsg(props.tokenData, address, chainId)}
       </Text>
     )
   }

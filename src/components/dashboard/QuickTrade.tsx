@@ -14,12 +14,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import {
   getExchangeIssuanceLeveragedContractAddress,
   getExchangeIssuanceZeroExContractAddress,
 } from '@indexcoop/index-exchange-issuance-sdk'
 
-import ConnectModal from 'components/header/ConnectModal'
 import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { zeroExRouterAddress } from 'constants/ethContractAddresses'
@@ -29,7 +29,6 @@ import {
   indexNamesPolygon,
   Token,
 } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
 import { useBalance } from 'hooks/useBalance'
 import { maxPriceImpact, useBestTradeOption } from 'hooks/useBestTradeOption'
@@ -40,6 +39,7 @@ import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
+import { useWallet } from 'hooks/useWallet'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
@@ -71,10 +71,9 @@ const QuickTrade = (props: {
   isNarrowVersion?: boolean
   singleToken?: Token
 }) => {
-  const { account, provider } = useAccount()
+  const { address, provider } = useWallet()
   const { chainId } = useNetwork()
   const { isDarkMode } = useICColorMode()
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const {
     isOpen: isSelectInputTokenOpen,
     onOpen: onOpenSelectInputToken,
@@ -458,7 +457,7 @@ const QuickTrade = (props: {
   const getTradeButtonLabel = () => {
     if (!supportedNetwork) return 'Wrong Network'
 
-    if (!account) {
+    if (!address) {
       return 'Connect Wallet'
     }
 
@@ -514,9 +513,9 @@ const QuickTrade = (props: {
   }, 1000)
 
   const onClickTradeButton = async () => {
-    if (!account) {
+    if (!address) {
       // Open connect wallet modal
-      onOpen()
+      //openConnectModal()
       return
     }
 
@@ -551,7 +550,7 @@ const QuickTrade = (props: {
 
   const getButtonDisabledState = () => {
     if (!supportedNetwork) return true
-    if (!account) return false
+    if (!address) return true
     if (hasFetchingError) return false
     return (
       sellTokenAmount === '0' ||
@@ -681,7 +680,6 @@ const QuickTrade = (props: {
           />
         )}
       </Flex>
-      <ConnectModal isOpen={isOpen} onClose={onClose} />
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
         onClose={onCloseSelectInputToken}

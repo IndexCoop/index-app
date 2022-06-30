@@ -28,8 +28,8 @@ import {
   MetaverseIndex,
   MNYeIndex,
 } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
+import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { displayFromWei, safeDiv } from 'utils'
 import { getSetDetails } from 'utils/setjsApi'
@@ -99,7 +99,7 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
-  const { account, provider } = useAccount()
+  const { address, provider } = useWallet()
   const { chainId } = useNetwork()
   const tokenList = getTokenList(chainId)
 
@@ -107,7 +107,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     if (
       chainId &&
       chainId === MAINNET.chainId &&
-      account &&
+      address &&
       provider &&
       tokenList &&
       DefiPulseIndex.address &&

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { useAccount } from 'wagmi'
+
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
@@ -16,7 +18,6 @@ import Disclaimer from 'components/product/Disclaimer'
 import { PriceChartData } from 'components/product/MarketChart'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
-import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
 import { useUserMarketData } from 'hooks/useUserMarketData'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
@@ -27,7 +28,7 @@ const Dashboard = () => {
   const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
   const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
     useUserMarketData()
-  const { account } = useAccount()
+  const { address } = useAccount()
   const { chainId } = useNetwork()
   const isWeb = useBreakpointValue({
     base: false,
@@ -52,15 +53,15 @@ const Dashboard = () => {
   }, [totalHourlyPrices])
 
   useEffect(() => {
-    if (account === null || account === undefined) return
+    if (address === null || address === undefined) return
     const fetchHistory = async () => {
       const chainIdNum = Number(chainId) ?? -1
-      const transactions = await getTransactionHistory(account, chainIdNum)
+      const transactions = await getTransactionHistory(address, chainIdNum)
       const historyItems = assembleHistoryItems(transactions)
       setHistoryItems(historyItems)
     }
     fetchHistory()
-  }, [account, chainId])
+  }, [address, chainId])
 
   useEffect(() => {
     if (csvDownloadUrl === '') return

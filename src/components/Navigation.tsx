@@ -9,8 +9,8 @@ import {
   useBreakpointValue,
   useColorModeValue,
 } from '@chakra-ui/react'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-import ConnectButton from './header/ConnectButton'
 import NavContent from './header/NavContent'
 
 const Navigation = () => {
@@ -38,7 +38,17 @@ const Navigation = () => {
         justifyContent={'space-between'}
       >
         <NavContent />
-        <ConnectButton />
+        <ConnectButton
+          label='Connect'
+          showBalance={{
+            smallScreen: false,
+            largeScreen: true,
+          }}
+          accountStatus={{
+            smallScreen: 'avatar',
+            largeScreen: 'full',
+          }}
+        />
       </Flex>
 
       {/* Mobile Menu */}

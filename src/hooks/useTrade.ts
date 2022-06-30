@@ -5,14 +5,14 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useSendTransaction } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
+import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import { ZeroExData } from 'utils/zeroExUtils'
 
 import { useBalance } from './useBalance'
 
 export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
-  const { account } = useAccount()
+  const { address } = useWallet()
   const { sendTransaction, state } = useSendTransaction({
     transactionName: 'trade',
   })
@@ -22,7 +22,7 @@ export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
   const [isTransacting, setIsTransacting] = useState(false)
 
   const executeTrade = useCallback(async () => {
-    if (!account || !tradeData || !tradeData?.sellAmount) return
+    if (!address || !tradeData || !tradeData?.sellAmount) return
 
     let requiredBalance = fromWei(
       BigNumber.from(tradeData.sellAmount),
@@ -33,7 +33,7 @@ export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
 
     const txRequest: TransactionRequest = {
       chainId: Number(tradeData.chainId) ?? undefined,
-      from: account,
+      from: address,
       to: tradeData.to,
       data: tradeData.data,
       value: BigNumber.from(tradeData.value),
@@ -47,7 +47,7 @@ export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
       setIsTransacting(false)
       console.log('Error sending transaction', error)
     }
-  }, [account, tradeData])
+  }, [address, tradeData])
 
   useEffect(() => {
     if (state.status !== 'Mining') setIsTransacting(false)

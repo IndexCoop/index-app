@@ -13,8 +13,8 @@ import {
   mviStakingRewardsAddress,
 } from 'constants/ethContractAddresses'
 import { GmiIndex } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
+import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { toWei } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
@@ -114,7 +114,7 @@ export const calculateApyStakingRewardV2 = ({
 export const useLiquidityMining = () => useContext(LiquidityMiningContext)
 
 const LiquidityMiningProvider = (props: { children: any }) => {
-  const { account, provider } = useAccount()
+  const { address, provider } = useWallet()
   const { index, gmi, selectLatestMarketData } = useMarketData()
 
   const [uniswapEthDpi2020, setUniswapEthDpi2020] =
@@ -228,7 +228,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
 
   useEffect(() => {
     if (
-      account &&
+      address &&
       provider &&
       dpi2020StakingRewardsAddress &&
       dpi2021StakingRewardsAddress &&
@@ -266,7 +266,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
         onUnstakeAndHarvest: exitGmi,
       })
     }
-  }, [account, provider])
+  }, [address, provider])
 
   return (
     <LiquidityMiningContext.Provider

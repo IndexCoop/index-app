@@ -18,7 +18,6 @@ import {
   STETH,
   Token,
 } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useBalance } from 'hooks/useBalance'
 import { useNetwork } from 'hooks/useNetwork'
 import { toWei } from 'utils'
@@ -29,6 +28,8 @@ import {
   getZeroExTradeData,
   ZeroExData,
 } from 'utils/zeroExUtils'
+
+import { useWallet } from './useWallet'
 
 export interface ExchangeIssuanceQuote {
   tradeData: string[]
@@ -146,7 +147,7 @@ export const getSetTokenAmount = (
 }
 
 export const useBestTradeOption = () => {
-  const { provider } = useAccount()
+  const { provider } = useWallet()
   const { chainId } = useNetwork()
   const { getBalance } = useBalance()
 

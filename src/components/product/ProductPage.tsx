@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
+import { useProvider } from 'wagmi'
+
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
 import QuickTrade from 'components/dashboard/QuickTrade'
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import { IndexToken, Token } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
 import {
   TokenMarketDataValues,
@@ -81,7 +82,7 @@ const ProductPage = (props: {
   const { marketData, tokenData } = props
 
   const { chainId } = useNetwork()
-  const { provider } = useAccount()
+  const provider = useProvider()
   const { selectLatestMarketData } = useMarketData()
 
   const [currentTokenSupply, setCurrentTokenSupply] = useState(0)

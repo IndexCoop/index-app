@@ -9,8 +9,8 @@ import {
 import { useTransactions } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
+import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import {
   CaptureExchangeIssuanceFunctionKey,
@@ -34,7 +34,7 @@ export const useTradeLeveragedExchangeIssuance = (
   debtCollateralSwapData?: SwapData,
   inputOutputSwapData?: SwapData
 ) => {
-  const { account, provider } = useAccount()
+  const { address, provider } = useWallet()
   const { chainId } = useNetwork()
   const { getBalance } = useBalance()
   const { addTransaction } = useTransactions()
@@ -46,7 +46,7 @@ export const useTradeLeveragedExchangeIssuance = (
 
   const executeLevEITrade = useCallback(async () => {
     if (
-      !account ||
+      !address ||
       inputOutputLimit.isZero() ||
       tokenAmout.isZero() ||
       debtCollateralSwapData === undefined ||
@@ -177,7 +177,7 @@ export const useTradeLeveragedExchangeIssuance = (
       setIsTransacting(false)
       console.log('Error sending transaction', error)
     }
-  }, [account, inputOutputLimit])
+  }, [address, inputOutputLimit])
 
   return { executeLevEITrade, isTransactingLevEI }
 }
