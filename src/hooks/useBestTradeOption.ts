@@ -242,7 +242,6 @@ export const useBestTradeOption = () => {
     )
     if (tokenEligibleForLeveragedEI) {
       try {
-        // TODO: works with icETH
         const quoteLeveraged = await getExchangeIssuanceLeveragedQuote(
           inputToken,
           outputToken,
