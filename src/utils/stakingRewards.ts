@@ -1,7 +1,7 @@
 import { utils } from 'ethers'
+import { useContractRead } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useContractCall } from '@usedapp/core'
 
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 
@@ -11,15 +11,13 @@ export const useStakingUnclaimedRewards = (
   stakingAddress?: string,
   account?: string | null
 ): BigNumber | undefined => {
-  const [unclaimedRewards] =
-    useContractCall(
-      stakingAddress &&
-        account && {
-          abi: stakingInterface,
-          address: stakingAddress,
-          method: 'earned',
-          args: [account],
-        }
-    ) ?? []
-  return unclaimedRewards
+  const { data, isError, isLoading } = useContractRead({
+    addressOrName: stakingAddress || '',
+    contractInterface: stakingInterface,
+    functionName: 'earned',
+    args: [account || ''],
+  })
+
+  console.log('useStakingUnclaimedRewards  data', data)
+  return undefined
 }

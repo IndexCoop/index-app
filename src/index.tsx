@@ -21,7 +21,6 @@ import {
 } from '@rainbow-me/rainbowkit'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
-import { Config, DAppProvider } from '@usedapp/core'
 
 import Dashboard from 'components/views/Homepage'
 import LiquidityMining from 'components/views/LiquidityMining'
@@ -66,21 +65,6 @@ const wagmiClient = createClient({
   provider,
 })
 
-const config: Config = {
-  readOnlyChainId: MAINNET.chainId,
-  readOnlyUrls: {
-    [MAINNET.chainId]:
-      process.env.REACT_APP_MAINNET_ALCHEMY_API ??
-      'https://eth-mainnet.alchemyapi.io/v2/Z3DZk23EsAFNouAbUzuw9Y-TvfW9Bo1S',
-    [POLYGON.chainId]:
-      process.env.REACT_APP_POLYGON_ALCHEMY_API ??
-      'https://polygon-mainnet.g.alchemy.com/v2/r-z7OCwLoHZKz45NCFqlR0G8vgOXAp5t',
-    [OPTIMISM.chainId]:
-      process.env.REACT_APP_OPTIMISM_ALCHEMY_API ??
-      'https://op-mainnet.g.alchemy.com/v2/r-z7OCwLoHZKz45NCFqlR0G8vgOXAp5t',
-  },
-}
-
 const Providers = (props: { children: any }) => {
   const gtmParams = {
     id: process.env.REACT_APP_GOOGLE_TAG_MANAGER_CONTAINER_ID ?? '',
@@ -97,15 +81,13 @@ const Providers = (props: { children: any }) => {
             learnMoreUrl: 'https://indexcoop.com',
           }}
         >
-          <DAppProvider config={config}>
-            <MarketDataProvider>
-              <LiquidityMiningProvider>
-                <SetComponentsProvider>
-                  <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
-                </SetComponentsProvider>
-              </LiquidityMiningProvider>
-            </MarketDataProvider>
-          </DAppProvider>
+          <MarketDataProvider>
+            <LiquidityMiningProvider>
+              <SetComponentsProvider>
+                <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+              </SetComponentsProvider>
+            </LiquidityMiningProvider>
+          </MarketDataProvider>
         </RainbowKitProvider>
       </WagmiConfig>
     </ChakraProvider>
