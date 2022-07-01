@@ -36,6 +36,7 @@ import Products from 'components/views/Products'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
+import { ProtectionProvider } from 'providers/Protection/ProtectionProvider'
 import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
 
 const config: Config = {
@@ -64,7 +65,9 @@ const Providers = (props: { children: any }) => {
         <MarketDataProvider>
           <LiquidityMiningProvider>
             <SetComponentsProvider>
-              <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+              <ProtectionProvider>
+                <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+              </ProtectionProvider>
             </SetComponentsProvider>
           </LiquidityMiningProvider>
         </MarketDataProvider>
