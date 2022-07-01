@@ -16,10 +16,12 @@ export const ProtectionProvider = (props: { children: any }) => {
   const [isProtectable, setIsProtectable] = useState<boolean>()
 
   const checkIfProtectable = useCallback(async () => {
-    fetch('http://ip-api.com/json/?fields=countryCode')
+    const API_KEY =
+      process.env.REACT_APP_IP_LOOKUP_KEY ?? 'vN8S4cMfz4KPoq5eLx3X'
+    fetch('https://extreme-ip-lookup.com/json/?key=' + API_KEY)
       .then((res) => res.json())
       .then((response) => {
-        if (response.countryCode === 'US') setIsProtectable(true)
+        if (response.country === 'United States') setIsProtectable(true)
       })
       .catch((error) => {
         console.log(
