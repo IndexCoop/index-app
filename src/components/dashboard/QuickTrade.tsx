@@ -246,7 +246,8 @@ const QuickTrade = (props: {
         setMaxFeePerGas(BigNumber.from(response.fast.maxFeePerGas))
       })
       .catch((error) => {
-        console.log('Couldnt fetch gas price', error)
+        // TODO:
+        // console.log('Couldnt fetch gas price', error)
       })
 
     const gasStation = new GasStation(provider)
@@ -358,6 +359,12 @@ const QuickTrade = (props: {
     setTradeInfoData(tradeInfoData)
     setBestOption(bestOption)
     setBuyTokenAmountFormatted(buyTokenAmountFormatted)
+  }
+
+  const resetTradeData = () => {
+    setBestOption(null)
+    setBuyTokenAmountFormatted('0.0')
+    setTradeInfoData([])
   }
 
   /**
@@ -512,6 +519,10 @@ const QuickTrade = (props: {
   }
 
   const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
+    if (input === '') {
+      resetTradeData()
+      return
+    }
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '0')
   }, 1000)
