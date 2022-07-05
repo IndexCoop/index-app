@@ -1,25 +1,48 @@
 import { useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
+import {
+  getExchangeIssuanceLeveragedQuote,
+  getExchangeIssuanceZeroExQuote,
+  SwapData,
+  ZeroExApi,
+} from '@indexcoop/index-exchange-issuance-sdk'
 
 import { MAINNET } from 'constants/chains'
 import {
   eligibleLeveragedExchangeIssuanceTokens,
   ETH,
   icETHIndex,
+  IndexToken,
   JPGIndex,
   STETH,
   Token,
 } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
+import { useBalance } from 'hooks/useBalance'
+import { useNetwork } from 'hooks/useNetwork'
 import { toWei } from 'utils'
+import { getExchangeIssuanceGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
+import { getAddressForToken } from 'utils/tokens'
 import {
-  ExchangeIssuanceQuote,
-  getExchangeIssuanceQuotes,
-  getLeveragedExchangeIssuanceQuotes,
-  LeveragedExchangeIssuanceQuote,
-} from 'utils/exchangeIssuanceQuotes'
-import { getZeroExTradeData, ZeroExData } from 'utils/zeroExUtils'
+  getNetworkKey,
+  getZeroExTradeData,
+  ZeroExData,
+} from 'utils/zeroExUtils'
+
+export interface ExchangeIssuanceQuote {
+  tradeData: string[]
+  inputTokenAmount: BigNumber
+  setTokenAmount: BigNumber
+  gas: BigNumber
+}
+
+export type LeveragedExchangeIssuanceQuote = {
+  swapDataDebtCollateral: SwapData
+  swapDataPaymentToken: SwapData
+  inputTokenAmount: BigNumber
+  setTokenAmount: BigNumber
+}
 
 type Result<_, E = Error> =
   | {
@@ -36,6 +59,32 @@ export const maxPriceImpact = 5
 /* Determines if the token is eligible for Leveraged Exchange Issuance */
 const isEligibleLeveragedToken = (token: Token) =>
   eligibleLeveragedExchangeIssuanceTokens.includes(token)
+
+export function isEligibleTradePairZeroEx(
+  inputToken: Token,
+  outputToken: Token
+): boolean {
+  if (
+    inputToken.symbol === icETHIndex.symbol ||
+    outputToken.symbol === icETHIndex.symbol
+  )
+    return false
+
+  if (
+    inputToken.symbol === IndexToken.symbol ||
+    outputToken.symbol === IndexToken.symbol
+  )
+    return false
+
+  if (
+    inputToken.symbol === JPGIndex.symbol ||
+    outputToken.symbol === JPGIndex.symbol
+  )
+    // temporarily - disabled JPG for EI0x
+    return false
+
+  return true
+}
 
 /* Determines if the token pair is eligible for Leveraged Exchange Issuance */
 export const isEligibleTradePair = (
@@ -97,11 +146,17 @@ export const getSetTokenAmount = (
 }
 
 export const useBestTradeOption = () => {
-  const { chainId, library } = useEthers()
+  const { provider } = useAccount()
+  const { chainId } = useNetwork()
+  const { getBalance } = useBalance()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
 
+  /**
+   *
+   * @param slippage   The max acceptable slippage, e.g. 3 for 3 %
+   */
   const fetchAndCompareOptions = async (
     sellToken: Token,
     sellTokenAmount: string,
@@ -109,10 +164,26 @@ export const useBestTradeOption = () => {
     buyToken: Token,
     // buyTokenAmount: string,
     buyTokenPrice: number,
-    isIssuance: boolean
+    isIssuance: boolean,
+    slippage: number
   ) => {
+    const inputTokenAddress = getAddressForToken(sellToken, chainId)
+    const outputTokenAddress = getAddressForToken(buyToken, chainId)
+
+    if (!provider || !chainId) {
+      console.error('Error - no provider or chain id present')
+      return
+    }
+
+    if (!inputTokenAddress || !outputTokenAddress) {
+      console.log(inputTokenAddress, outputTokenAddress)
+      console.error('Error can not determine input/ouput token address')
+      return
+    }
+
     setIsFetching(true)
 
+    const slippagePercentage = slippage / 100
     /* Check 0x for DEX Swap option*/
     const zeroExResult = await getZeroExTradeData(
       // for now we only allow selling
@@ -122,7 +193,8 @@ export const useBestTradeOption = () => {
       // for now we only allow specifing selling amount,
       // so sell token amount will always be correct
       sellTokenAmount,
-      chainId || 1
+      slippagePercentage,
+      chainId
     )
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
@@ -142,48 +214,92 @@ export const useBestTradeOption = () => {
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
       null
 
+    // Create an instance of ZeroExApi (to pass to quote functions)
+    const affilliateAddress = '0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF'
+    const networkKey = getNetworkKey(chainId)
+    const swapPathOverride = `/${networkKey}/swap/v1/quote`
+    const zeroExApi = new ZeroExApi(
+      'https://api.indexcoop.com/0x',
+      affilliateAddress,
+      swapPathOverride
+    )
+
+    const inputToken = {
+      symbol: sellToken.symbol,
+      decimals: sellToken.decimals,
+      address: inputTokenAddress,
+    }
+    const outputToken = {
+      symbol: buyToken.symbol,
+      decimals: buyToken.decimals,
+      address: outputTokenAddress,
+    }
+
     const tokenEligibleForLeveragedEI = isEligibleTradePair(
       sellToken,
       buyToken,
       isIssuance
     )
     if (tokenEligibleForLeveragedEI) {
-      const setToken = isIssuance ? buyToken : sellToken
-
       try {
-        leveragedExchangeIssuanceOption =
-          await getLeveragedExchangeIssuanceQuotes(
-            setToken,
-            setTokenAmount,
-            sellToken,
-            buyToken,
-            isIssuance,
-            chainId,
-            library
-          )
+        const quoteLeveraged = await getExchangeIssuanceLeveragedQuote(
+          inputToken,
+          outputToken,
+          setTokenAmount,
+          isIssuance,
+          slippage,
+          zeroExApi,
+          provider,
+          chainId ?? 1
+        )
+        if (quoteLeveraged) {
+          leveragedExchangeIssuanceOption = {
+            swapDataDebtCollateral: quoteLeveraged.swapDataDebtCollateral,
+            swapDataPaymentToken: quoteLeveraged.swapDataPaymentToken,
+            inputTokenAmount: quoteLeveraged.inputOutputTokenAmount,
+            setTokenAmount: quoteLeveraged.setTokenAmount,
+          }
+        }
+        console.log(slippage, slippagePercentage, quoteLeveraged)
       } catch (e) {
         console.warn('error when generating leveraged ei option', e)
       }
     } else {
-      const isIcEth =
-        sellToken.symbol === icETHIndex.symbol ||
-        buyToken.symbol === icETHIndex.symbol
-      const isJpg =
-        sellToken.symbol === JPGIndex.symbol ||
-        buyToken.symbol === JPGIndex.symbol
-      // For now only run on mainnet and if not icETH
-      // icETH token pair (with non ETH token) could not be eligible and land here
-      // temporarily - disabled JPG for EI
-      if (chainId === MAINNET.chainId && !isIcEth && !isJpg)
+      // For now only allow trade on mainnet, some tokens are disabled
+      const isEligibleTradePair = isEligibleTradePairZeroEx(sellToken, buyToken)
+      if (chainId === MAINNET.chainId && isEligibleTradePair)
         try {
-          exchangeIssuanceOption = await getExchangeIssuanceQuotes(
-            buyToken,
+          const spendingTokenBalance: BigNumber =
+            getBalance(sellToken.symbol) || BigNumber.from(0)
+          const quote0x = await getExchangeIssuanceZeroExQuote(
+            inputToken,
+            outputToken,
             setTokenAmount,
-            sellToken,
             isIssuance,
-            chainId,
-            library
+            slippage,
+            zeroExApi,
+            provider,
+            chainId
           )
+          if (quote0x) {
+            const gasEstimate = await getExchangeIssuanceGasEstimate(
+              provider,
+              chainId,
+              isIssuance,
+              sellToken,
+              buyToken,
+              setTokenAmount,
+              quote0x.inputOutputTokenAmount,
+              spendingTokenBalance,
+              quote0x.componentQuotes
+            )
+            exchangeIssuanceOption = {
+              tradeData: quote0x.componentQuotes,
+              inputTokenAmount: quote0x.inputOutputTokenAmount,
+              setTokenAmount: quote0x.setTokenAmount,
+              gas: gasEstimate,
+            }
+          }
         } catch (e) {
           console.warn('error when generating zeroexei option', e)
         }

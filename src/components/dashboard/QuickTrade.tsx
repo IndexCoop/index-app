@@ -1,14 +1,26 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
 
-import { UpDownIcon } from '@chakra-ui/icons'
-import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
+import { InfoOutlineIcon, UpDownIcon } from '@chakra-ui/icons'
+import {
+  Box,
+  Flex,
+  IconButton,
+  Spacer,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
+import {
+  getExchangeIssuanceLeveragedContractAddress,
+  getExchangeIssuanceZeroExContractAddress,
+} from '@indexcoop/index-exchange-issuance-sdk'
 
 import ConnectModal from 'components/header/ConnectModal'
+import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { zeroExRouterAddress } from 'constants/ethContractAddresses'
 import {
@@ -17,33 +29,39 @@ import {
   indexNamesPolygon,
   Token,
 } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
 import { useBalance } from 'hooks/useBalance'
 import { maxPriceImpact, useBestTradeOption } from 'hooks/useBestTradeOption'
+import { useNetwork } from 'hooks/useNetwork'
+import { useSlippage } from 'hooks/useSlippage'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
+import { useProtection } from 'providers/Protection/ProtectionProvider'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
-import {
-  get0xExchangeIssuanceContract,
-  getLeveragedExchangeIssuanceContract,
-} from 'utils/contracts'
+import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
+import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { GasStation, getGasApiUrl } from 'utils/gasStation'
 
+import { ContractExecutionView } from './ContractExecutionView'
 import {
   formattedFiat,
   getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
   getHasInsufficientFunds,
+  getSlippageColorCoding,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
+import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
-enum QuickTradeBestOption {
+export enum QuickTradeBestOption {
   zeroEx,
   exchangeIssuance,
   leveragedExchangeIssuance,
@@ -53,6 +71,8 @@ const QuickTrade = (props: {
   isNarrowVersion?: boolean
   singleToken?: Token
 }) => {
+  const { account, provider } = useAccount()
+  const { chainId } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const {
@@ -65,15 +85,24 @@ const QuickTrade = (props: {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const { account, chainId } = useEthers()
+
+  const protection = useProtection()
 
   const supportedNetwork = isSupportedNetwork(chainId ?? -1)
+
+  const {
+    auto: autoSlippage,
+    isAuto: isAutoSlippage,
+    set: setSlippage,
+    slippage,
+  } = useSlippage()
 
   const {
     isBuying,
     buyToken,
     buyTokenList,
     buyTokenPrice,
+    nativeTokenPrice,
     sellToken,
     sellTokenList,
     sellTokenPrice,
@@ -89,6 +118,7 @@ const QuickTrade = (props: {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+  const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -96,8 +126,9 @@ const QuickTrade = (props: {
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
-  const spenderAddress0x = get0xExchangeIssuanceContract(chainId)
-  const spenderAddressLevEIL = getLeveragedExchangeIssuanceContract(chainId)
+  const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chainId)
+  const spenderAddressLevEIL =
+    getExchangeIssuanceLeveragedContractAddress(chainId)
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
 
@@ -144,6 +175,7 @@ const QuickTrade = (props: {
     isBuying,
     sellToken,
     buyToken,
+    slippage,
     bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
   )
 
@@ -162,6 +194,7 @@ const QuickTrade = (props: {
         ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
             BigNumber.from(0)
         : BigNumber.from(0),
+      slippage,
       bestOptionResult?.success
         ? bestOptionResult?.leveragedExchangeIssuanceData
             ?.swapDataDebtCollateral
@@ -177,81 +210,138 @@ const QuickTrade = (props: {
     getBalance(sellToken.symbol)
   )
 
-  /**
-   * Determine the best trade option.
-   */
-  useEffect(() => {
+  const getContractForBestOption = (
+    bestOption: QuickTradeBestOption | null
+  ): string => {
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return spenderAddress0x
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return spenderAddressLevEIL
+      default:
+        return zeroExRouterAddress
+    }
+  }
+  const contractBestOption = getContractForBestOption(bestOption)
+  const contractBlockExplorerUrl = getBlockExplorerContractUrl(
+    contractBestOption,
+    chainId
+  )
+
+  const determineBestOption = async () => {
+    if (!provider) return
+
     if (bestOptionResult === null || !bestOptionResult.success) {
       setTradeInfoData([])
       return
     }
 
+    fetch(getGasApiUrl(chainId), {
+      headers: {
+        Origin: 'https://app.indexcoop.com',
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        setMaxFeePerGas(BigNumber.from(response.fast.maxFeePerGas))
+      })
+      .catch((error) => {
+        // TODO:
+        // console.log('Couldnt fetch gas price', error)
+      })
+
+    const gasStation = new GasStation(provider)
+    const gasPrice = await gasStation.getGasPrice()
+
     const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
     const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
-    const gasPriceEI = BigNumber.from(
-      bestOptionResult.exchangeIssuanceData?.gasPrice ?? '0'
-    )
-    const gasPriceLevEI =
-      bestOptionResult.leveragedExchangeIssuanceData?.gasPrice ??
-      BigNumber.from(0)
     const gasLimit = 1800000 // TODO: Make gasLimit dynamic
 
     const gas0x = gasPrice0x.mul(gasLimit0x)
-    const gasEI = gasPriceEI.mul(gasLimit)
-    const gasLevEI = gasPriceLevEI.mul(gasLimit)
+    const gasEI = gasPrice.mul(gasLimit)
+    const gasLevEI = gasPrice.mul(gasLimit)
 
-    const fullCosts0x = toWei(sellTokenAmount, sellToken.decimals).add(gas0x)
-    const fullCostsEI = bestOptionResult.exchangeIssuanceData
-      ? bestOptionResult.exchangeIssuanceData.inputTokenAmount.add(gasEI)
-      : null
-    const fullCostsLevEI = bestOptionResult.leveragedExchangeIssuanceData
-      ? bestOptionResult.leveragedExchangeIssuanceData.inputTokenAmount.add(
-          gasLevEI
+    const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
+    let shouldUseEI0x = true
+    const inputTokenAmountEI0x =
+      bestOptionResult.exchangeIssuanceData?.inputTokenAmount
+    if (inputTokenAmountEI0x && inputTokenAmountEI0x.gt(inputBalance)) {
+      shouldUseEI0x = false
+    }
+    let shouldUseEILev = true
+    const inputTokenAmountEILev =
+      bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount
+    if (inputTokenAmountEILev && inputTokenAmountEILev.gt(inputBalance)) {
+      shouldUseEILev = false
+    }
+
+    const fullCosts0x = getFullCostsInUsd(
+      toWei(sellTokenAmount, sellToken.decimals),
+      gas0x,
+      sellToken.decimals,
+      sellTokenPrice,
+      nativeTokenPrice
+    )
+    const fullCostsEI = shouldUseEI0x
+      ? getFullCostsInUsd(
+          bestOptionResult.exchangeIssuanceData?.inputTokenAmount,
+          gasEI,
+          sellToken.decimals,
+          sellTokenPrice,
+          nativeTokenPrice
         )
       : null
+    const fullCostsLevEI = shouldUseEILev
+      ? getFullCostsInUsd(
+          bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount,
+          gasLevEI,
+          sellToken.decimals,
+          sellTokenPrice,
+          nativeTokenPrice
+        )
+      : null
+
+    console.log(fullCosts0x, fullCostsEI, fullCostsLevEI, 'FC')
 
     const priceImpactDex = parseFloat(
       bestOptionResult?.dexData?.estimatedPriceImpact ?? '5'
     )
-    let bestOption = QuickTradeBestOption.zeroEx
-    let bestOptionIs0x =
-      !fullCostsLevEI ||
-      (fullCosts0x.lt(fullCostsLevEI) && priceImpactDex < maxPriceImpact)
-
-    if (bestOptionIs0x) {
-      bestOptionIs0x =
-        !fullCostsEI ||
-        (fullCosts0x.lt(fullCostsEI) && priceImpactDex < maxPriceImpact)
-      bestOption = bestOptionIs0x
-        ? QuickTradeBestOption.zeroEx
-        : QuickTradeBestOption.exchangeIssuance
-    } else {
-      const bestOptionIsLevEI = !fullCostsEI || fullCostsLevEI!.lt(fullCostsEI)
-      bestOption = bestOptionIsLevEI
-        ? QuickTradeBestOption.leveragedExchangeIssuance
-        : QuickTradeBestOption.exchangeIssuance
-    }
-
+    const bestOption = getBestTradeOption(
+      fullCosts0x,
+      fullCostsEI,
+      fullCostsLevEI,
+      priceImpactDex
+    )
+    const bestOptionIs0x = bestOption === QuickTradeBestOption.zeroEx
     const bestOptionIsLevEI =
       bestOption === QuickTradeBestOption.leveragedExchangeIssuance
+
     const tradeDataEI = bestOptionIsLevEI
       ? bestOptionResult.leveragedExchangeIssuanceData
       : bestOptionResult.exchangeIssuanceData
-    const tradeDataGasPriceEI = bestOptionIsLevEI ? gasPriceLevEI : gasPriceEI
     const tradeDataSetAmountEI = bestOptionIsLevEI
       ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
         BigNumber.from(0)
       : bestOptionResult.exchangeIssuanceData?.setTokenAmount ??
         BigNumber.from(0)
 
+    const slippageColorCoding = getSlippageColorCoding(slippage, isDarkMode)
     const tradeInfoData = bestOptionIs0x
-      ? getTradeInfoData0x(bestOptionResult.dexData, buyToken, chainId)
+      ? getTradeInfoData0x(
+          bestOptionResult.dexData,
+          buyToken,
+          slippage,
+          slippageColorCoding,
+          chainId
+        )
       : getTradeInfoDataFromEI(
           tradeDataSetAmountEI,
-          tradeDataGasPriceEI,
+          gasPrice,
           buyToken,
           sellToken,
           tradeDataEI,
+          slippage,
+          slippageColorCoding,
           chainId,
           isBuying
         )
@@ -269,6 +359,19 @@ const QuickTrade = (props: {
     setTradeInfoData(tradeInfoData)
     setBestOption(bestOption)
     setBuyTokenAmountFormatted(buyTokenAmountFormatted)
+  }
+
+  const resetTradeData = () => {
+    setBestOption(null)
+    setBuyTokenAmountFormatted('0.0')
+    setTradeInfoData([])
+  }
+
+  /**
+   * Determine the best trade option.
+   */
+  useEffect(() => {
+    determineBestOption()
   }, [bestOptionResult])
 
   useEffect(() => {
@@ -278,6 +381,19 @@ const QuickTrade = (props: {
   useEffect(() => {
     fetchOptions()
   }, [buyToken, sellToken, sellTokenAmount])
+
+  // Does user need protecting from productive assets?
+  const [requiresProtection, setRequiresProtection] = useState(false)
+  useEffect(() => {
+    if (
+      protection.isProtectable &&
+      (sellToken.isDangerous || buyToken.isDangerous)
+    ) {
+      setRequiresProtection(true)
+    } else {
+      setRequiresProtection(false)
+    }
+  }, [protection, sellToken, buyToken])
 
   const fetchOptions = () => {
     // Right now we only allow setting the sell amount, so no need to check
@@ -291,7 +407,8 @@ const QuickTrade = (props: {
       buyToken,
       // buyTokenAmount,
       buyTokenPrice,
-      isBuying
+      isBuying,
+      slippage
     )
   }
 
@@ -402,6 +519,10 @@ const QuickTrade = (props: {
   }
 
   const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
+    if (input === '') {
+      resetTradeData()
+      return
+    }
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '0')
   }, 1000)
@@ -488,10 +609,17 @@ const QuickTrade = (props: {
       px={['16px', paddingX]}
       height={'100%'}
     >
-      <Flex>
+      <Flex align='center' justify='space-between'>
         <Text fontSize='24px' fontWeight='700'>
           Quick Trade
         </Text>
+        <QuickTradeSettingsPopover
+          isAuto={isAutoSlippage}
+          isDarkMode={isDarkMode}
+          onChangeSlippage={setSlippage}
+          onClickAuto={autoSlippage}
+          slippage={slippage}
+        />
       </Flex>
       <Flex direction='column' my='20px'>
         <QuickTradeSelector
@@ -542,19 +670,30 @@ const QuickTrade = (props: {
         />
       </Flex>
       <Flex direction='column'>
+        {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
             {bestOptionResult.error.message}
           </Text>
         )}
-        <TradeButton
-          label={buttonLabel}
-          background={isDarkMode ? colors.icWhite : colors.icYellow}
-          isDisabled={isButtonDisabled}
-          isLoading={isLoading}
-          onClick={onClickTradeButton}
-        />
+        <Flex my='8px'>{chainId === 1 && <FlashbotsRpcMessage />}</Flex>
+        {!requiresProtection && (
+          <TradeButton
+            label={buttonLabel}
+            background={isDarkMode ? colors.icWhite : colors.icYellow}
+            isDisabled={isButtonDisabled}
+            isLoading={isLoading}
+            onClick={onClickTradeButton}
+          />
+        )}
+        {bestOption !== null && (
+          <ContractExecutionView
+            blockExplorerUrl={contractBlockExplorerUrl}
+            contractAddress={contractBestOption}
+            name=''
+          />
+        )}
       </Flex>
       <ConnectModal isOpen={isOpen} onClose={onClose} />
       <SelectTokenModal
@@ -577,6 +716,83 @@ const QuickTrade = (props: {
       />
     </Flex>
   )
+}
+
+const ProtectionWarning = (props: { isDarkMode: boolean }) => {
+  const borderColor = props.isDarkMode ? colors.icWhite : colors.black
+  return (
+    <Flex
+      background={colors.icYellow}
+      border='1px solid #000'
+      borderColor={borderColor}
+      borderRadius={10}
+      mb={'16px'}
+      direction='row'
+      textAlign={'center'}
+    >
+      <Spacer flexGrow={3} />
+      <Text p={4} justifySelf={'center'} flexGrow={6} color={colors.black}>
+        Not available in your region
+      </Text>
+      <Tooltip label='Some of our contracts are unavailable to persons or entities who: are citizens of, reside in, located in, incorporated in, or operate a registered office in the U.S.A.'>
+        <InfoOutlineIcon
+          alignSelf={'flex-end'}
+          my={'auto'}
+          flexGrow={2}
+          color={colors.black}
+        />
+      </Tooltip>
+    </Flex>
+  )
+}
+
+export function getBestTradeOption(
+  fullCosts0x: number | null,
+  fullCostsEI: number | null,
+  fullCostsLevEI: number | null,
+  priceImpactDex: number
+): QuickTradeBestOption {
+  if (fullCostsEI === null && fullCostsLevEI === null) {
+    return QuickTradeBestOption.zeroEx
+  }
+
+  const quotes: number[][] = []
+  if (fullCosts0x) {
+    quotes.push([QuickTradeBestOption.zeroEx, fullCosts0x])
+  }
+  if (fullCostsEI) {
+    quotes.push([QuickTradeBestOption.exchangeIssuance, fullCostsEI])
+  }
+  if (fullCostsLevEI) {
+    quotes.push([
+      QuickTradeBestOption.leveragedExchangeIssuance,
+      fullCostsLevEI,
+    ])
+  }
+  const cheapestQuotes = quotes.sort((q1, q2) => q1[1] - q2[1])
+
+  if (cheapestQuotes.length <= 0) {
+    return QuickTradeBestOption.zeroEx
+  }
+
+  const cheapestQuote = cheapestQuotes[0]
+  const bestOption = cheapestQuote[0]
+
+  // If only one quote, return best option immediately
+  if (cheapestQuotes.length === 1) {
+    return bestOption
+  }
+
+  // If multiple quotes, check price impact of 0x option
+  if (
+    bestOption === QuickTradeBestOption.zeroEx &&
+    priceImpactDex >= maxPriceImpact
+  ) {
+    // In case price impact is too high, return cheapest exchange issuance
+    return cheapestQuotes[1][0]
+  }
+
+  return bestOption
 }
 
 export default QuickTrade

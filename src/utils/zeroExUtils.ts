@@ -1,5 +1,4 @@
 import axios from 'axios'
-import querystring from 'querystring'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -38,29 +37,29 @@ export type ZeroExData = {
   value: string
 }
 
-function getApiUrl(query: string, chainId: number): string {
-  const quotePath = '/swap/v1/quote'
-  let networkKey = ''
+export function getNetworkKey(chainId: number): string {
   switch (chainId) {
     case POLYGON.chainId:
-      networkKey = 'polygon'
-      break
+      return 'polygon'
     case OPTIMISM.chainId:
-      networkKey = 'optimism'
-      break
+      return 'optimism'
     default:
-      networkKey = 'mainnet'
+      return 'mainnet'
   }
+}
 
-  // example: https://api.indexcoop.com/0x/mainnet/swap/v1/quote?sellToken=ETH&buyToken=0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b&sellAmount=10000000000000000000
-  return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}`
+function getApiUrl(query: string, chainId: number): string {
+  const quotePath = '/swap/v1/quote'
+  const networkKey = getNetworkKey(chainId)
+  // example: https://api.indexcoop.com/0x/mainnet/swap/v1/quote?sellToken=ETH&buyToken=0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b&sellAmount=10000000000000000000&affilliateAddress=0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF
+  return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}&affilliateAddress=0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF`
 }
 
 // Temporarily adding this because we need to support more tokens than the once
 // we have defined as type Token in `tokens.ts`. Probably going to rewrite this
 // into one function later.
 export async function get0xQuote(params: any, chainId: number) {
-  const query = querystring.stringify(params)
+  const query = new URLSearchParams(params).toString()
   const url = getApiUrl(query, chainId)
   try {
     const response = await axios.get(url)
@@ -70,24 +69,31 @@ export async function get0xQuote(params: any, chainId: number) {
   }
 }
 
+/**
+ *
+ * @param slippagePercentage  The maximum acceptable slippage buy/sell amount. Slippage percentage: 0.03 for 3% slippage allowed.
+ */
 export const getZeroExTradeData = async (
   isExactInput: boolean,
   sellToken: Token,
   buyToken: Token,
   amount: string,
+  slippagePercentage: number,
   chainId: number,
   rawData: boolean = false
 ): Promise<Result<ZeroExData, Error>> => {
-  const params = getApiParamsForTokens(
+  let params = getApiParamsForTokens(
     isExactInput,
     sellToken,
     buyToken,
     amount,
     chainId
   )
+  params.slippagePercentage = slippagePercentage
 
-  const query = querystring.stringify(params)
+  const query = new URLSearchParams(params).toString()
   const url = getApiUrl(query, chainId)
+  console.log('0x', url)
   try {
     const resp = await axios.get(url)
     const zeroExData: ZeroExData = resp.data

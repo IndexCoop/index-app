@@ -11,10 +11,6 @@ export const eth2xfliSuppyCapAddress =
   '0x0F1171C24B06ADed18d2d23178019A3B256401D3'
 export const btc2xfliSuppyCapAddress =
   '0x6c8137f2f552f569cc43bc4642afbe052a12441c'
-export const ExchangeIssuanceZeroExMainnetAddress =
-  '0xf42eCDC112365fF79a745B4cf7D4C266bd6E4b25'
-export const ExchangeIssuanceLeveragedMainnetAddress =
-  '0xB7cc88A13586D862B97a677990de14A122b74598'
 
 // Index Coop Polygon Contract Addresses
 export const eth2xFLIPSuppyCapAddress =
@@ -25,10 +21,6 @@ export const imaticFLIPSuppyCapAddress =
   '0x82b227cAec950a807c7ca456e2E48E52633F7Be5'
 export const iethFLIPSuppyCapAddress =
   '0x8173Bd491a27aF4DDe0a4dE48a54Daf6705c75F1'
-export const ExchangeIssuanceZeroExPolygonAddress =
-  '0x0F5C21d4929f6F17119f43b0c51E665f12367A19'
-export const ExchangeIssuanceLeveragedPolygonAddress =
-  '0xE86636f23B502B8746A72A1Ed87d65F096E419Db'
 
 // Uniswap V2 Addresses
 export const uniswapEthDpiLpTokenAddress =
@@ -97,7 +89,7 @@ export const tradeModuleOptimismAddress =
 export const protocolViewerOptimismAddress =
   '0x4E05073560B9377E5561B559c9cADBbe7112e38f'
 export const slippageIssuanceModuleOptimismAddress =
-  '0x1db929398958082d2080AA1B501e460503f60467'
+  '0x2B67D4F9407F772374CaE8B010dB36A770C2c3ae'
 export const perpV2BasisTradingModuleOptimismAddress =
   '0x2C229EE3aD3fdC0e581d51BaA6b6f45CC9A6Ca39'
 export const perpV2BasisTradingModuleViewerOptimismAddress =
@@ -114,3 +106,5 @@ export const streamingFeeExtensionOptimismAddress =
   '0x6a7aE5124677314dc32C5ba3004CbFC9c7Febff0'
 export const tradeExtensionOptimismAddress =
   '0x7215f38011C3e4058Ca3cF7d2b99033016EeFBD8'
+export const deltaNeutralBasisTradingStrategyExtension =
+  '0x95e24048AB1A9086b2F06107dF7ec5e61961951A'

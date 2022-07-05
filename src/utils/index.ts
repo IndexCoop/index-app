@@ -1,20 +1,15 @@
-import { BigNumber, Contract, Signer } from 'ethers'
+import { BigNumber } from 'ethers'
 
-import { Provider } from '@ethersproject/abstract-provider'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId } from '@usedapp/core'
 
-import { MAINNET, OPTIMISM, POLYGON, SUPPORTED_CHAINS } from 'constants/chains'
-import { Token } from 'constants/tokens'
-
-import { ERC20_ABI } from './abi/ERC20'
+import { SUPPORTED_CHAINS } from 'constants/chains'
 
 export const selectLatestMarketData = (marketData?: number[][]) =>
   marketData?.[marketData.length - 1]?.[1] || 0
 
 /**
  * Converts a number to Wei to another denomination of Eth
- * @param number
+ * @param value
  * @param power default = 18
  * @returns
  */
@@ -55,6 +50,7 @@ export const displayFromWei = (
     return Number(formatUnits(number, power)).toLocaleString('en-US', {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
+      useGrouping: false,
     })
   }
 
@@ -79,35 +75,6 @@ export const isValidTokenInput = (
 export const safeDiv = (dividend: BigNumber, divisor: BigNumber): BigNumber => {
   if (divisor.isZero()) return BigNumber.from(0)
   return dividend.div(divisor)
-}
-
-export const getERC20Contract = async (
-  provider: Signer | Provider | undefined,
-  address: string
-): Promise<Contract> => {
-  return await new Contract(address, ERC20_ABI, provider)
-}
-
-/**
- * Returns chain-appropriate token address
- * @param token
- * @param chainId
- * @returns
- */
-export const getChainAddress = (
-  token: Token,
-  chainId: ChainId = MAINNET.chainId
-) => {
-  const supportedChain = isSupportedNetwork(chainId)
-  if (!supportedChain) return undefined
-  switch (chainId) {
-    case OPTIMISM.chainId:
-      return token.optimismAddress
-    case POLYGON.chainId:
-      return token.polygonAddress
-    default:
-      return token.address
-  }
 }
 
 /**

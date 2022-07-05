@@ -1,4 +1,5 @@
-import { colors } from 'styles/colors'
+import { headerButtonHover } from 'styles/button'
+import { colors, useICColorMode } from 'styles/colors'
 
 import {
   Button,
@@ -10,16 +11,27 @@ import {
 import { useEthers, useLookupAddress } from '@usedapp/core'
 
 import { useNetwork } from 'hooks/useNetwork'
+import {
+  PendingTransactionState,
+  useWaitForTransaction,
+} from 'hooks/useWaitForTransaction'
 import { isSupportedNetwork } from 'utils'
+import { getBlockExplorerUrl } from 'utils/blockExplorer'
 
 import ConnectModal from './ConnectModal'
 import NetworkSelector from './NetworkSelector'
+import TransactionStateHeader, {
+  TransactionStateHeaderState,
+} from './TransactionStateHeader'
 
 const ConnectButton = () => {
   const { account, chainId, deactivate } = useEthers()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isDarkMode } = useICColorMode()
   const { changeNetwork } = useNetwork()
-  let ens = useLookupAddress()
+  const { ens } = useLookupAddress(account)
+  const { pendingTxHash, pendingTxState } = useWaitForTransaction()
+  const txStateHeaderState = getHeaderState(pendingTxState)
 
   const backgroundColor = useColorModeValue(colors.black, colors.white)
   const textColor = useColorModeValue(colors.white, colors.black)
@@ -35,6 +47,14 @@ const ConnectButton = () => {
   const handleDisconnect = () => {
     deactivate()
     onClose()
+  }
+
+  const onClickTransactionState = () => {
+    if (!pendingTxHash || pendingTxState === PendingTransactionState.none)
+      return
+    const explorerUrl = getBlockExplorerUrl(pendingTxHash, chainId)
+    const newWindow = window.open(explorerUrl, '_blank')
+    newWindow?.focus()
   }
 
   const onWrongNetworkButtonClicked = () => {
@@ -64,11 +84,7 @@ const ConnectButton = () => {
           fontSize={fontSize}
           fontWeight={fontWeight}
           padding='6px 30px'
-          _hover={{
-            transform:
-              'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-            transformStyle: 'preserve-3d',
-          }}
+          _hover={headerButtonHover}
         >
           Connect
         </Button>
@@ -85,7 +101,15 @@ const ConnectButton = () => {
           m={'0 24px'}
           display={['none', 'none', 'flex', 'flex']}
         >
-          {formatAccountName()}
+          {pendingTxState === PendingTransactionState.none ? (
+            formatAccountName()
+          ) : (
+            <TransactionStateHeader
+              isDarkMode={isDarkMode}
+              onClick={onClickTransactionState}
+              state={txStateHeaderState}
+            />
+          )}
         </Text>
         <Button
           onClick={handleDisconnect}
@@ -96,11 +120,7 @@ const ConnectButton = () => {
           fontSize={fontSize}
           fontWeight={fontWeight}
           padding='6px 30px'
-          _hover={{
-            transform:
-              'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-            transformStyle: 'preserve-3d',
-          }}
+          _hover={headerButtonHover}
         >
           Disconnect
         </Button>
@@ -121,11 +141,7 @@ const ConnectButton = () => {
           fontSize={fontSize}
           fontWeight={fontWeight}
           padding='6px 30px'
-          _hover={{
-            transform:
-              'translate3d(0px, 2px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg)',
-            transformStyle: 'preserve-3d',
-          }}
+          _hover={headerButtonHover}
         >
           Wrong Network
         </Button>
@@ -140,4 +156,20 @@ const ConnectButton = () => {
 
   return wrongNetworkButton()
 }
+
+const getHeaderState = (
+  pendingTxState: PendingTransactionState
+): TransactionStateHeaderState => {
+  switch (pendingTxState) {
+    case PendingTransactionState.failed:
+      return TransactionStateHeaderState.failed
+    case PendingTransactionState.none:
+      return TransactionStateHeaderState.none
+    case PendingTransactionState.pending:
+      return TransactionStateHeaderState.pending
+    case PendingTransactionState.success:
+      return TransactionStateHeaderState.success
+  }
+}
+
 export default ConnectButton

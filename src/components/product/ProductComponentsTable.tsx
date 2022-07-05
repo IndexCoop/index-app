@@ -15,11 +15,12 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
-import { useEthers } from '@usedapp/core'
 
 import { Position } from 'components/dashboard/AllocationChart'
 import { MAINNET, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
+import { useNetwork } from 'hooks/useNetwork'
 import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 
 import Chart from './Charts'
@@ -52,7 +53,8 @@ const ProductComponentsTable = (props: {
   isLeveragedToken?: boolean
   vAssets?: SetComponent[]
 }) => {
-  const { account, chainId } = useEthers()
+  const { account } = useAccount()
+  const { chainId } = useNetwork()
 
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
   const showAllComponents = () =>

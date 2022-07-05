@@ -38,7 +38,7 @@ const Header = () => {
           _hover={{
             textDecoration: 'none',
           }}
-          flexGrow='1'
+          flexGrow={1}
         >
           <Logo />
         </Link>
