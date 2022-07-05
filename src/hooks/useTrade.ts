@@ -2,21 +2,20 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { useSendTransaction } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import { ZeroExData } from 'utils/zeroExUtils'
 
-import { useBalance } from './useBalance'
+import { useBalances } from './useBalance'
 
 export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
   const { address } = useWallet()
   const { sendTransaction, state } = useSendTransaction({
     transactionName: 'trade',
   })
-  const { getBalance } = useBalance()
+  const { getBalance } = useBalances()
   const spendingTokenBalance = getBalance(sellToken.symbol) || BigNumber.from(0)
 
   const [isTransacting, setIsTransacting] = useState(false)

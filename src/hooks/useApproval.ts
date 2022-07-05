@@ -1,16 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { constants, utils } from 'ethers'
+import { useContractRead, useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { useTokenAllowance, useTransactions } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
-import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { ERC20_ABI } from 'utils/abi/ERC20'
-import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
 const ERC20Interface = new utils.Interface(ERC20_ABI)
@@ -28,13 +26,19 @@ function useApprovalState(
   spenderAddress?: string
 ): ApprovalState {
   const { address } = useWallet()
-  const allowance = useTokenAllowance(tokenAddress, address, spenderAddress)
+  const { data, isError, isLoading } = useContractRead({
+    addressOrName: 'tokenAddress',
+    contractInterface: ERC20Interface,
+    functionName: 'allowance',
+    args: [address, spenderAddress],
+  })
+  console.log('data', data)
 
-  if (!tokenAddress || !spenderAddress || !allowance) {
+  if (!tokenAddress || !spenderAddress || !data) {
     return ApprovalState.Unknown
   }
 
-  const isApproved = allowance.gte(amountToApprove) ?? false
+  const isApproved = data.gte(amountToApprove) ?? false
 
   // TODO: we'd actually have to test for pending approval as well here
   return isApproved ? ApprovalState.Approved : ApprovalState.NotApproved
@@ -49,10 +53,9 @@ export const useApproval = (
   amount: BigNumber = constants.MaxUint256
 ) => {
   const { address, provider } = useWallet()
-  const { chainId } = useNetwork()
-  const { addTransaction } = useTransactions()
+  const { chain } = useNetwork()
 
-  const tokenAddress = token && getAddressForToken(token, chainId)
+  const tokenAddress = token && getAddressForToken(token, chain?.id)
   const approvalState = useApprovalState(amount, tokenAddress, spenderAddress)
 
   const [isApproving, setIsApproving] = useState(false)
@@ -71,7 +74,7 @@ export const useApproval = (
       )
       const tx = await tokenContract.approve(spenderAddress, amount)
       if (tx) {
-        const storedTx = getStoredTransaction(tx, chainId)
+        const storedTx = getStoredTransaction(tx, chain?.id)
         addTransaction(storedTx)
       }
       const receipt = await tx.wait()

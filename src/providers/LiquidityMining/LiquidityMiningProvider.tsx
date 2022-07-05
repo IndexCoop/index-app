@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { utils } from 'ethers'
+import { useContractRead } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { useContractCall, useContractFunction } from '@usedapp/core'
 
 import {
   dpi2020StakingRewardsAddress,
@@ -46,32 +46,30 @@ const LiquidityMiningContext = createContext<LiquidityMiningProps>({})
 const useGetRewardForDuration = (
   stakingAddress?: string
 ): BigNumber | undefined => {
-  const [rewardsForDuration] =
-    useContractCall(
-      stakingAddress && {
-        abi: stakingInterface,
-        address: stakingAddress,
-        method: 'getRewardForDuration',
-        args: [],
-      }
-    ) ?? []
-  return rewardsForDuration
+  const { data, isError, isLoading } = useContractRead({
+    addressOrName: stakingAddress || '',
+    contractInterface: stakingInterface,
+    functionName: 'getRewardForDuration',
+    args: [],
+  })
+
+  console.log('useGetRewardForDuration  data', data)
+  return undefined
 }
 
 /**
  * totalSupply for StakingRewardsV2 contracts
  */
 const useTotalSupply = (stakingAddress?: string): BigNumber | undefined => {
-  const [totalSupply] =
-    useContractCall(
-      stakingAddress && {
-        abi: stakingInterface,
-        address: stakingAddress,
-        method: 'totalSupply',
-        args: [],
-      }
-    ) ?? []
-  return totalSupply
+  const { data, isError, isLoading } = useContractRead({
+    addressOrName: stakingAddress || '',
+    contractInterface: stakingInterface,
+    functionName: 'totalSupply',
+    args: [],
+  })
+
+  console.log('useTotalSupply  data', data)
+  return undefined
 }
 
 /**

@@ -1,15 +1,15 @@
 import { useCallback, useState } from 'react'
 
+import { useNetwork } from 'wagmi'
+
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   ExchangeIssuanceLeveraged,
   getExchangeIssuanceLeveragedContract,
   SwapData,
 } from '@indexcoop/index-exchange-issuance-sdk'
-import { useTransactions } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
-import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import {
@@ -17,10 +17,9 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/sentry'
-import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
-import { useBalance } from './useBalance'
+import { useBalances } from './useBalance'
 
 export const useTradeLeveragedExchangeIssuance = (
   isIssuance: boolean,
@@ -35,9 +34,8 @@ export const useTradeLeveragedExchangeIssuance = (
   inputOutputSwapData?: SwapData
 ) => {
   const { address, provider } = useWallet()
-  const { chainId } = useNetwork()
-  const { getBalance } = useBalance()
-  const { addTransaction } = useTransactions()
+  const { chain } = useNetwork()
+  const { getBalance } = useBalances()
 
   const [isTransactingLevEI, setIsTransacting] = useState(false)
 
@@ -54,8 +52,8 @@ export const useTradeLeveragedExchangeIssuance = (
     )
       return
 
-    const inputTokenAddress = getAddressForToken(inputToken, chainId)
-    const outputTokenAddress = getAddressForToken(outputToken, chainId)
+    const inputTokenAddress = getAddressForToken(inputToken, chain?.id)
+    const outputTokenAddress = getAddressForToken(outputToken, chain?.id)
     if (!outputTokenAddress || !inputTokenAddress) return
 
     let requiredBalance = fromWei(inputOutputLimit, inputToken.decimals)
@@ -63,7 +61,7 @@ export const useTradeLeveragedExchangeIssuance = (
 
     const contract = getExchangeIssuanceLeveragedContract(
       provider?.getSigner(),
-      chainId
+      chain?.id
     )
     const exchangeIssuance = new ExchangeIssuanceLeveraged(contract)
 
@@ -92,7 +90,7 @@ export const useTradeLeveragedExchangeIssuance = (
             { gasLimit: BigNumber.from(1800000) }
           )
           if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx, chainId)
+            const storedTx = getStoredTransaction(issueTx, chain?.id)
             addTransaction(storedTx)
           }
         } else {
@@ -114,7 +112,7 @@ export const useTradeLeveragedExchangeIssuance = (
             { gasLimit: BigNumber.from(1800000) }
           )
           if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx, chainId)
+            const storedTx = getStoredTransaction(issueTx, chain?.id)
             addTransaction(storedTx)
           }
         }
@@ -141,7 +139,7 @@ export const useTradeLeveragedExchangeIssuance = (
             { gasLimit: BigNumber.from(1800000) }
           )
           if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx, chainId)
+            const storedTx = getStoredTransaction(redeemTx, chain?.id)
             addTransaction(storedTx)
           }
         } else {
@@ -167,7 +165,7 @@ export const useTradeLeveragedExchangeIssuance = (
             }
           )
           if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx, chainId)
+            const storedTx = getStoredTransaction(redeemTx, chain?.id)
             addTransaction(storedTx)
           }
         }
