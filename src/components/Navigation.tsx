@@ -28,7 +28,7 @@ const Navigation = () => {
   const width = isWeb ? 1024 : 340
 
   return (
-    <Flex w={['auto', 'auto', 'auto', width]} flexGrow={['0', '0', '0', '2']}>
+    <Flex w={['auto', 'auto', 'auto', width]} flexGrow={[0, 0, 0, 2]}>
       {/* Desktop Menu */}
       <Flex
         align='center'

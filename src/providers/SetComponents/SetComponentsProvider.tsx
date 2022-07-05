@@ -8,7 +8,6 @@ import {
 } from 'set.js/dist/types/src/types'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers } from '@usedapp/core'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
@@ -29,6 +28,8 @@ import {
   MetaverseIndex,
   MNYeIndex,
 } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
+import { useNetwork } from 'hooks/useNetwork'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { displayFromWei, fromWei, safeDiv } from 'utils'
 import { getSetDetails, getSetPerps } from 'utils/setjsApi'
@@ -99,7 +100,8 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
   const [mnyeVAssets, setMnyeVAssets] = useState<SetComponent[]>([])
 
-  const { account, chainId, library } = useEthers()
+  const { account, provider } = useAccount()
+  const { chainId } = useNetwork()
   const tokenList = getTokenList(chainId)
 
   useEffect(() => {
@@ -107,7 +109,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       chainId &&
       chainId === MAINNET.chainId &&
       account &&
-      library &&
+      provider &&
       tokenList &&
       DefiPulseIndex.address &&
       MetaverseIndex.address &&
@@ -130,7 +132,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       jpg
     ) {
       getSetDetails(
-        library,
+        provider,
         [
           DefiPulseIndex.address,
           MetaverseIndex.address,
@@ -350,7 +352,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       })
     }
   }, [
-    library,
+    provider,
     tokenList,
     dpi,
     mvi,
@@ -369,7 +371,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     if (
       chainId &&
       chainId === POLYGON.chainId &&
-      library &&
+      provider &&
       tokenList &&
       ethflip &&
       iethflip &&
@@ -385,7 +387,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       IBitcoinFLIP.polygonAddress
     ) {
       getSetDetails(
-        library,
+        provider,
         [
           Ethereum2xFLIP.polygonAddress,
           IEthereumFLIP.polygonAddress,
@@ -552,18 +554,18 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [chainId, library, tokenList, ethflip, selectLatestMarketData()])
+  }, [chainId, provider, tokenList, ethflip, selectLatestMarketData()])
 
   useEffect(() => {
     if (
       chainId &&
       chainId === OPTIMISM.chainId &&
-      library &&
+      provider &&
       tokenList &&
       mnye &&
       MNYeIndex.optimismAddress
     ) {
-      getSetDetails(library, [MNYeIndex.optimismAddress], chainId)
+      getSetDetails(provider, [MNYeIndex.optimismAddress], chainId, true)
         .then(async (result) => {
           const [mnyeSet] = result
           const mnyeComponentPrices = await getPositionPrices(
@@ -618,7 +620,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         }
       )
     }
-  }, [chainId, library, tokenList, mnye, selectLatestMarketData()])
+  }, [chainId, provider, tokenList, mnye, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider

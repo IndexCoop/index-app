@@ -2,12 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { BigNumber, Contract, providers } from 'ethers'
 
-import {
-  ChainId,
-  useEtherBalance,
-  useEthers,
-  useTokenBalance,
-} from '@usedapp/core'
+import { useEtherBalance, useTokenBalance } from '@usedapp/core'
 
 import {
   dpi2020StakingRewardsAddress,
@@ -43,9 +38,11 @@ import {
   USDC,
   WETH,
 } from 'constants/tokens'
-import { getChainAddress } from 'utils'
+import { useAccount } from 'hooks/useAccount'
+import { useNetwork } from 'hooks/useNetwork'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import { useStakingUnclaimedRewards } from 'utils/stakingRewards'
+import { getAddressForToken } from 'utils/tokens'
 
 type Balance = BigNumber
 
@@ -88,11 +85,11 @@ export interface Balances {
 /* Returns balance of ERC20 token */
 async function balanceOf(
   token: Token,
-  chainId: ChainId,
+  chainId: number,
   account: string,
-  library: providers.Web3Provider | undefined
+  library: providers.JsonRpcProvider | undefined
 ): Promise<BigNumber> {
-  const tokenAddress = getChainAddress(token, chainId)
+  const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress) return BigNumber.from(0)
   const erc20 = new Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)
@@ -100,7 +97,8 @@ async function balanceOf(
 }
 
 export const useBalance = () => {
-  const { account, chainId, library } = useEthers()
+  const { account, provider } = useAccount()
+  const { chainId } = useNetwork()
   const ethBalance = useEtherBalance(account)
 
   const [bedBalance, setBedBalance] = useState<Balance>(BigNumber.from(0))
@@ -189,88 +187,88 @@ export const useBalance = () => {
     if (!account || !chainId) return
 
     const fetchAllBalances = async () => {
-      const bedBalance = await balanceOf(BedIndex, chainId, account, library)
+      const bedBalance = await balanceOf(BedIndex, chainId, account, provider)
       const btc2xFLIPBalance = await balanceOf(
         Bitcoin2xFLIP,
         chainId,
         account,
-        library
+        provider
       )
       const btcFliBalance = await balanceOf(
         Bitcoin2xFlexibleLeverageIndex,
         chainId,
         account,
-        library
+        provider
       )
-      const daiBalance = await balanceOf(DAI, chainId, account, library)
-      const dataBalance = await balanceOf(DataIndex, chainId, account, library)
+      const daiBalance = await balanceOf(DAI, chainId, account, provider)
+      const dataBalance = await balanceOf(DataIndex, chainId, account, provider)
       const dpiBalance = await balanceOf(
         DefiPulseIndex,
         chainId,
         account,
-        library
+        provider
       )
       const ethFliBalance = await balanceOf(
         Ethereum2xFlexibleLeverageIndex,
         chainId,
         account,
-        library
+        provider
       )
       const ethFliPBalance = await balanceOf(
         Ethereum2xFLIP,
         chainId,
         account,
-        library
+        provider
       )
-      const gmiBalance = await balanceOf(GmiIndex, chainId, account, library)
+      const gmiBalance = await balanceOf(GmiIndex, chainId, account, provider)
       const iBtcFLIPBalance = await balanceOf(
         IBitcoinFLIP,
         chainId,
         account,
-        library
+        provider
       )
       const icEthBalance = await balanceOf(
         icETHIndex,
         chainId,
         account,
-        library
+        provider
       )
       const iEthFLIPbalance = await balanceOf(
         IEthereumFLIP,
         chainId,
         account,
-        library
+        provider
       )
       const iMaticFLIPbalance = await balanceOf(
         IMaticFLIP,
         chainId,
         account,
-        library
+        provider
       )
       const indexBalance = await balanceOf(
         IndexToken,
         chainId,
         account,
-        library
+        provider
       )
-      const maticBalance = await balanceOf(MATIC, chainId, account, library)
+      const maticBalance = await balanceOf(MATIC, chainId, account, provider)
       const matic2xFLIPbalance = await balanceOf(
         Matic2xFLIP,
         chainId,
         account,
-        library
+        provider
       )
       const mviBalance = await balanceOf(
         MetaverseIndex,
         chainId,
         account,
-        library
+        provider
       )
-      const usdcBalance = await balanceOf(USDC, chainId, account, library)
-      const wethBalance = await balanceOf(WETH, chainId, account, library)
-      const jpgBalance = await balanceOf(JPGIndex, chainId, account, library)
-      const mnyeBalance = await balanceOf(MNYeIndex, chainId, account, library)
-      const stETHBalance = await balanceOf(STETH, chainId, account, library)
+      const usdcBalance = await balanceOf(USDC, chainId, account, provider)
+      const wethBalance = await balanceOf(WETH, chainId, account, provider)
+      const jpgBalance = await balanceOf(JPGIndex, chainId, account, provider)
+      const mnyeBalance = await balanceOf(MNYeIndex, chainId, account, provider)
+      const stETHBalance = await balanceOf(STETH, chainId, account, provider)
       setBedBalance(bedBalance)
       setBtc2xFLIPBalance(btc2xFLIPBalance)
       setBtcFliBalance(btcFliBalance)

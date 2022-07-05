@@ -29,6 +29,7 @@ export interface Token {
   fees:
     | { streamingFee: string; mintFee?: string; redeemFee?: string }
     | undefined
+  isDangerous: boolean
 }
 
 export const DAI: Token = {
@@ -44,6 +45,7 @@ export const DAI: Token = {
   coingeckoId: 'dai',
   tokensetsId: 'dai',
   fees: undefined,
+  isDangerous: false,
 }
 
 export const USDC: Token = {
@@ -59,6 +61,7 @@ export const USDC: Token = {
   coingeckoId: 'usd-coin',
   tokensetsId: 'usdc',
   fees: undefined,
+  isDangerous: false,
 }
 
 export const ETH: Token = {
@@ -74,6 +77,7 @@ export const ETH: Token = {
   coingeckoId: 'ethereum',
   tokensetsId: 'eth',
   fees: undefined,
+  isDangerous: false,
 }
 
 export const WETH: Token = {
@@ -89,6 +93,7 @@ export const WETH: Token = {
   coingeckoId: 'weth',
   tokensetsId: 'weth',
   fees: undefined,
+  isDangerous: false,
 }
 
 export const MATIC: Token = {
@@ -104,6 +109,7 @@ export const MATIC: Token = {
   coingeckoId: 'matic-network',
   tokensetsId: 'matic',
   fees: undefined,
+  isDangerous: false,
 }
 
 export const STETH: Token = {
@@ -119,6 +125,7 @@ export const STETH: Token = {
   coingeckoId: 'staked-ether',
   tokensetsId: 'staked-ether',
   fees: undefined,
+  isDangerous: false,
 }
 
 export const DefiPulseIndex: Token = {
@@ -136,6 +143,7 @@ export const DefiPulseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
+  isDangerous: false,
 }
 
 export const IndexToken: Token = {
@@ -150,6 +158,7 @@ export const IndexToken: Token = {
   coingeckoId: 'index-cooperative',
   tokensetsId: 'index',
   fees: undefined,
+  isDangerous: false,
 }
 
 export const Ethereum2xFlexibleLeverageIndex: Token = {
@@ -167,6 +176,7 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   fees: {
     streamingFee: '1.95%',
   },
+  isDangerous: true,
 }
 
 export const Ethereum2xFLIP: Token = {
@@ -186,6 +196,7 @@ export const Ethereum2xFLIP: Token = {
     mintFee: '0.1%',
     redeemFee: '0.1%',
   },
+  isDangerous: true,
 }
 
 export const MetaverseIndex: Token = {
@@ -203,6 +214,7 @@ export const MetaverseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
+  isDangerous: false,
 }
 
 export const Bitcoin2xFlexibleLeverageIndex: Token = {
@@ -220,6 +232,7 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
   fees: {
     streamingFee: '1.95%',
   },
+  isDangerous: true,
 }
 
 export const BedIndex: Token = {
@@ -237,6 +250,7 @@ export const BedIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
+  isDangerous: false,
 }
 
 export const DataIndex: Token = {
@@ -254,6 +268,7 @@ export const DataIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
+  isDangerous: false,
 }
 
 export const GmiIndex: Token = {
@@ -271,6 +286,7 @@ export const GmiIndex: Token = {
   fees: {
     streamingFee: '1.95%',
   },
+  isDangerous: false,
 }
 
 export const Matic2xFLIP: Token = {
@@ -290,6 +306,7 @@ export const Matic2xFLIP: Token = {
     mintFee: '0.1%',
     redeemFee: '0.1%',
   },
+  isDangerous: true,
 }
 
 export const IMaticFLIP: Token = {
@@ -309,6 +326,7 @@ export const IMaticFLIP: Token = {
     mintFee: '0.1%',
     redeemFee: '0.1%',
   },
+  isDangerous: true,
 }
 
 export const IEthereumFLIP: Token = {
@@ -328,6 +346,7 @@ export const IEthereumFLIP: Token = {
     mintFee: '0.1%',
     redeemFee: '0.1%',
   },
+  isDangerous: true,
 }
 
 export const Bitcoin2xFLIP: Token = {
@@ -347,6 +366,7 @@ export const Bitcoin2xFLIP: Token = {
     mintFee: '0.1%',
     redeemFee: '0.1%',
   },
+  isDangerous: true,
 }
 
 export const IBitcoinFLIP: Token = {
@@ -366,6 +386,7 @@ export const IBitcoinFLIP: Token = {
     mintFee: '0.1%',
     redeemFee: '0.1%',
   },
+  isDangerous: true,
 }
 
 export const icETHIndex: Token = {
@@ -385,6 +406,7 @@ export const icETHIndex: Token = {
     mintFee: '0.0%',
     redeemFee: '0.25%',
   },
+  isDangerous: false,
 }
 
 export const JPGIndex: Token = {
@@ -404,6 +426,7 @@ export const JPGIndex: Token = {
     mintFee: '0.5%',
     redeemFee: '0.5%',
   },
+  isDangerous: false,
 }
 export const MNYeIndex: Token = {
   name: 'Market Neutral Yield ETH Index',
@@ -420,6 +443,7 @@ export const MNYeIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
+  isDangerous: false,
 }
 
 export const productTokensBySymbol = {

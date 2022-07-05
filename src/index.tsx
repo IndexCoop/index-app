@@ -1,6 +1,6 @@
 import React from 'react'
 
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import App from 'App'
@@ -10,7 +10,7 @@ import '@fontsource/ibm-plex-sans'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import * as Sentry from '@sentry/react'
-import { Integrations } from '@sentry/tracing'
+import { BrowserTracing } from '@sentry/tracing'
 import { Config, DAppProvider } from '@usedapp/core'
 
 import Dashboard from 'components/views/Homepage'
@@ -36,9 +36,8 @@ import Products from 'components/views/Products'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
+import { ProtectionProvider } from 'providers/Protection/ProtectionProvider'
 import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
-
-import './index.css'
 
 const config: Config = {
   readOnlyChainId: MAINNET.chainId,
@@ -66,7 +65,9 @@ const Providers = (props: { children: any }) => {
         <MarketDataProvider>
           <LiquidityMiningProvider>
             <SetComponentsProvider>
-              <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+              <ProtectionProvider>
+                <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+              </ProtectionProvider>
             </SetComponentsProvider>
           </LiquidityMiningProvider>
         </MarketDataProvider>
@@ -79,7 +80,7 @@ const initSentryEventTracking = () => {
   Sentry.init({
     environment: process.env.REACT_APP_VERCEL_ENV,
     dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
-    integrations: [new Integrations.BrowserTracing()],
+    integrations: [new BrowserTracing()],
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
@@ -89,7 +90,9 @@ const initSentryEventTracking = () => {
 }
 initSentryEventTracking()
 
-ReactDOM.render(
+const container = document.getElementById('root')
+const root = createRoot(container!)
+root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Providers>
@@ -120,6 +123,5 @@ ReactDOM.render(
         </Routes>
       </Providers>
     </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 )

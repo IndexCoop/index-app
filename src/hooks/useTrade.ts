@@ -2,16 +2,17 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { useEthers, useSendTransaction } from '@usedapp/core'
+import { useSendTransaction } from '@usedapp/core'
 
 import { Token } from 'constants/tokens'
+import { useAccount } from 'hooks/useAccount'
 import { fromWei } from 'utils'
 import { ZeroExData } from 'utils/zeroExUtils'
 
 import { useBalance } from './useBalance'
 
 export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
-  const { account, library } = useEthers()
+  const { account } = useAccount()
   const { sendTransaction, state } = useSendTransaction({
     transactionName: 'trade',
   })
@@ -41,7 +42,6 @@ export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
 
     try {
       setIsTransacting(true)
-      // const tx = await library?.getSigner().sendTransaction(txRequest)
       await sendTransaction(txRequest)
     } catch (error) {
       setIsTransacting(false)

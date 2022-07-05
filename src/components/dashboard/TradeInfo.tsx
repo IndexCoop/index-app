@@ -2,47 +2,32 @@ import { Box, Flex, Text } from '@chakra-ui/react'
 
 export interface TradeInfoItem {
   title: string
-  value: string
+  values: string[]
+  valuesColor?: string
 }
 
-const excludeBuyAmountItem = (tradeInfoItem: TradeInfoItem): boolean =>
-  tradeInfoItem.title !== 'Buy Amount'
-
-const TradeInfoItemRow = ({ title, value }: TradeInfoItem) => {
-  if (title === 'Offered From') {
-    const vals = value.split(',')
-
-    return (
-      <Flex direction='column'>
-        <Text fontSize='14px' fontWeight='500'>
-          {title}
-        </Text>
-        {vals.map((dex, index) => (
-          <Text key={index} fontSize='20px' fontWeight='700'>
-            {dex}
-          </Text>
-        ))}
-      </Flex>
-    )
-  }
+const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
+  const { title, values, valuesColor } = item
   return (
     <Flex direction='column'>
       <Text fontSize='14px' fontWeight='500'>
         {title}
       </Text>
-      <Text fontSize='20px' fontWeight='700'>
-        {value}
-      </Text>
+      {values.map((value, index) => (
+        <Text key={index} fontSize='20px' fontWeight='700' color={valuesColor}>
+          {value}
+        </Text>
+      ))}
     </Flex>
   )
 }
 
-const TradeInfo = (props: { data: TradeInfoItem[] }) => {
+const TradeInfo = ({ data }: { data: TradeInfoItem[] }) => {
   return (
     <Flex direction='column'>
-      {props.data.filter(excludeBuyAmountItem).map((item, index) => (
+      {data.map((item, index) => (
         <Box key={index} mb='16px'>
-          <TradeInfoItemRow title={item.title} value={item.value} />
+          <TradeInfoItemRow item={item} />
         </Box>
       ))}
     </Flex>
