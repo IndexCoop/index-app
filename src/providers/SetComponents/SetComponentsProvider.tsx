@@ -565,7 +565,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       mnye &&
       MNYeIndex.optimismAddress
     ) {
-      getSetDetails(provider, [MNYeIndex.optimismAddress], chainId, true)
+      getSetDetails(provider, [MNYeIndex.optimismAddress], chainId)
         .then(async (result) => {
           const [mnyeSet] = result
           const mnyeComponentPrices = await getPositionPrices(
@@ -592,7 +592,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           ///
         })
         .catch((err) => console.log('err', err))
-      getSetPerps(library, MNYeIndex.optimismAddress, chainId).then(
+      getSetPerps(provider, MNYeIndex.optimismAddress, chainId).then(
         async (result) => {
           const tokenList = getTokenList(chainId)
           const vTokens: SetComponent[] = result.map((perp) => {
