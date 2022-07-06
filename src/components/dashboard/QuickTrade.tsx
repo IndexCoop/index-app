@@ -122,7 +122,7 @@ const QuickTrade = (props: {
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
-  const [isToggle, setToggle] = useState(false)
+  const [isToggle, setToggle] = useState(true)
   const [isIssue, setIssue] = useState(true)
   const [usdcBalance, setUSDCBalance] = useState<string>(
     BigNumber.from(0).toString()
