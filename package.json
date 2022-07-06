@@ -65,9 +65,12 @@
     ]
   },
   "devDependencies": {
+    "@types/express": "^4.17.13",
     "@types/numeral": "^2.0.2",
     "@types/react": "^18.0.14",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "express": "^4.18.1",
+    "http-proxy-middleware": "^2.0.6",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1"
   },
@@ -78,5 +81,6 @@
     "transformIgnorePatterns": [
       "/node_modules/@indexcoop/(?!index-exchange-issuance-sdk)"
     ]
-  }
+  },
+  "proxy": "https://api.indexcoop.com"
 }

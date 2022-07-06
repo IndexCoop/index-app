@@ -6,7 +6,7 @@ import { OPTIMISM, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { toWei } from 'utils'
 
-const API_0X_INDEX_URL = 'https://api.indexcoop.com/0x'
+const API_0X_INDEX_URL = '/0x'
 
 type Result<T, E = Error> =
   | { success: true; value: T }

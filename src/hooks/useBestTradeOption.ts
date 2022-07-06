@@ -218,11 +218,7 @@ export const useBestTradeOption = () => {
     const affilliateAddress = '0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF'
     const networkKey = getNetworkKey(chainId)
     const swapPathOverride = `/${networkKey}/swap/v1/quote`
-    const zeroExApi = new ZeroExApi(
-      'https://api.indexcoop.com/0x',
-      affilliateAddress,
-      swapPathOverride
-    )
+    const zeroExApi = new ZeroExApi('/0x', affilliateAddress, swapPathOverride)
 
     const inputToken = {
       symbol: sellToken.symbol,
