@@ -56,20 +56,6 @@ function getApiUrl(query: string, chainId: number): string {
   return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}&affilliateAddress=0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF`
 }
 
-// Temporarily adding this because we need to support more tokens than the once
-// we have defined as type Token in `tokens.ts`. Probably going to rewrite this
-// into one function later.
-export async function get0xQuote(params: any, chainId: number) {
-  const query = new URLSearchParams(params).toString()
-  const url = getApiUrl(query, chainId)
-  try {
-    const response = await axios.get(url)
-    return response.data
-  } catch (err: any) {
-    console.log('response', err.response)
-  }
-}
-
 /**
  *
  * @param slippagePercentage  The maximum acceptable slippage buy/sell amount. Slippage percentage: 0.03 for 3% slippage allowed.
