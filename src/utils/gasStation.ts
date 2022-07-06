@@ -1,7 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { OPTIMISM, POLYGON } from 'constants/chains'
+import { POLYGON } from 'constants/chains'
+import { IndexApiBaseUrl } from 'constants/server'
 
 export class GasStation {
   provider: JsonRpcProvider
@@ -16,8 +17,9 @@ export class GasStation {
 }
 
 /**
- *
- * @param chainId
+ * Returns the URL for the Index Gas API.
+ * Supports Polygon and Mainet only.
+ * @param chainId   Chain ID (default mainnet)
  * @returns gas api URL
  */
 export const getGasApiUrl = (chainId?: number): string => {
@@ -26,14 +28,11 @@ export const getGasApiUrl = (chainId?: number): string => {
     case POLYGON.chainId:
       networkKey = 'polygon'
       break
-    case OPTIMISM.chainId:
-      networkKey = 'optimism'
-      break
     default:
       networkKey = 'mainnet'
   }
 
-  return `https://api.indexcoop.com/gas/${networkKey}`
+  return `${IndexApiBaseUrl}/gas/${networkKey}`
 }
 
 export const getMaxFeePerGas = async (chainId?: number) => {
