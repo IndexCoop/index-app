@@ -3,10 +3,11 @@ import axios from 'axios'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { OPTIMISM, POLYGON } from 'constants/chains'
+import { IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
 import { toWei } from 'utils'
 
-const API_0X_INDEX_URL = '/0x'
+const API_0X_INDEX_URL = `${IndexApiBaseUrl}/0x`
 
 type Result<T, E = Error> =
   | { success: true; value: T }

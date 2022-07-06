@@ -10,6 +10,7 @@ import {
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { IndexApiBaseUrl } from 'constants/server'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -712,7 +713,7 @@ async function getPositionPrices(
 ): Promise<CoinGeckoCoinPrices> {
   const componentAddresses = setDetails.positions.map((p) => p.component)
   return fetch(
-    `/coingecko/simple/token_price/${assetPlatform}?vs_currencies=${VS_CURRENCY}&contract_addresses=${componentAddresses}&include_24hr_change=true`
+    `${IndexApiBaseUrl}/coingecko/simple/token_price/${assetPlatform}?vs_currencies=${VS_CURRENCY}&contract_addresses=${componentAddresses}&include_24hr_change=true`
   )
     .then((response) => response.json())
     .catch((e) => {
