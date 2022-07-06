@@ -243,11 +243,11 @@ const QuickTrade = (props: {
     })
       .then((res) => res.json())
       .then((response) => {
+        console.log('res!', response)
         setMaxFeePerGas(BigNumber.from(response.fast.maxFeePerGas))
       })
       .catch((error) => {
-        // TODO:
-        // console.log('Couldnt fetch gas price', error)
+        console.log('Couldnt fetch gas price', error)
       })
 
     const gasStation = new GasStation(provider)
