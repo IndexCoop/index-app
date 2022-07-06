@@ -12,6 +12,7 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  Image,
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import {
@@ -28,6 +29,7 @@ import {
   indexNamesOptimism,
   indexNamesPolygon,
   Token,
+  USDC,
 } from 'constants/tokens'
 import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
@@ -54,6 +56,7 @@ import {
   getSlippageColorCoding,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
+  formattedBalance,
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
 import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
@@ -119,6 +122,11 @@ const QuickTrade = (props: {
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
+  const [isToggle, setToggle] = useState(false)
+  const [isIssue, setIssue] = useState(true)
+  const [usdcBalance, setUSDCBalance] = useState<string>(
+    BigNumber.from(0).toString()
+  )
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -382,6 +390,11 @@ const QuickTrade = (props: {
     fetchOptions()
   }, [buyToken, sellToken, sellTokenAmount])
 
+  useEffect(() => {
+    const usdcBal = getBalance(USDC.symbol)
+    setUSDCBalance(formattedBalance(USDC, usdcBal))
+  }, [])
+
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
   useEffect(() => {
@@ -621,54 +634,188 @@ const QuickTrade = (props: {
           slippage={slippage}
         />
       </Flex>
-      <Flex direction='column' my='20px'>
-        <QuickTradeSelector
-          title='From'
-          config={{
-            isDarkMode,
-            isInputDisabled: isNotTradable(props.singleToken),
-            isNarrowVersion: isNarrow,
-            isSelectorDisabled: false,
-            isReadOnly: false,
-          }}
-          selectedToken={sellToken}
-          formattedFiat={sellTokenFiat}
-          tokenList={sellTokenList}
-          onChangeInput={onChangeSellTokenAmount}
-          onSelectedToken={(_) => {
-            if (inputTokenItems.length > 1) onOpenSelectInputToken()
-          }}
-        />
-        <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
-          <IconButton
-            background='transparent'
-            margin={'6px 0'}
-            aria-label='Search database'
-            borderColor={isDarkMode ? colors.icWhite : colors.black}
-            color={isDarkMode ? colors.icWhite : colors.black}
-            icon={<UpDownIcon />}
-            onClick={() => swapTokenLists()}
+      {props.singleToken !== undefined && (
+        <>
+          {isToggle ? (
+            <>
+              <Flex
+                borderTop='1px solid #F7F1E4'
+                borderColor={isDarkMode ? colors.icWhite : colors.black}
+                fontSize='14px'
+                pt='10px'
+                alignItems='center'
+              >
+                <Text marginRight='12px'>Large Buyer? </Text>
+                <Box
+                  py='4px'
+                  px='12px'
+                  border='1px solid  #F7F1E4'
+                  borderColor={isDarkMode ? colors.icWhite : colors.black}
+                  borderRadius='16px'
+                  cursor='pointer'
+                  _hover={{
+                    backgroundColor: isDarkMode
+                      ? colors.icGrayLightMode
+                      : colors.icGrayDarkMode,
+                  }}
+                  onClick={() => setToggle(false)}
+                >
+                  Toggle Flash Issuance
+                </Box>
+              </Flex>
+            </>
+          ) : (
+            <>
+              <Flex
+                borderTop='1px solid #F7F1E4'
+                borderColor={isDarkMode ? colors.icWhite : colors.black}
+                fontSize='14px'
+                py='10px'
+                alignItems='center'
+              >
+                <Box
+                  py='4px'
+                  px='12px'
+                  border='1px solid  #F7F1E4'
+                  borderColor={isDarkMode ? colors.icWhite : colors.black}
+                  borderRadius='16px'
+                  cursor='pointer'
+                  _hover={{
+                    backgroundColor: isDarkMode
+                      ? colors.icGrayLightMode
+                      : colors.icGrayDarkMode,
+                  }}
+                  onClick={() => setToggle(true)}
+                >
+                  Toogle Dex Swap
+                </Box>
+              </Flex>
+            </>
+          )}
+        </>
+      )}
+      {isToggle ? (
+        <Flex direction='column' my='20px'>
+          <QuickTradeSelector
+            title='From'
+            config={{
+              isDarkMode,
+              isInputDisabled: isNotTradable(props.singleToken),
+              isNarrowVersion: isNarrow,
+              isSelectorDisabled: false,
+              isReadOnly: false,
+            }}
+            selectedToken={sellToken}
+            formattedFiat={sellTokenFiat}
+            tokenList={sellTokenList}
+            onChangeInput={onChangeSellTokenAmount}
+            onSelectedToken={(_) => {
+              if (inputTokenItems.length > 1) onOpenSelectInputToken()
+            }}
           />
-        </Box>
-        <QuickTradeSelector
-          title='To'
-          config={{
-            isDarkMode,
-            isInputDisabled: true,
-            isNarrowVersion: isNarrow,
-            isSelectorDisabled: false,
-            isReadOnly: true,
-          }}
-          selectedToken={buyToken}
-          selectedTokenAmount={buyTokenAmountFormatted}
-          formattedFiat={buyTokenFiat}
-          priceImpact={priceImpact ?? undefined}
-          tokenList={buyTokenList}
-          onSelectedToken={(_) => {
-            if (outputTokenItems.length > 1) onOpenSelectOutputToken()
-          }}
-        />
-      </Flex>
+          <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
+            <IconButton
+              background='transparent'
+              margin={'6px 0'}
+              aria-label='Search database'
+              borderColor={isDarkMode ? colors.icWhite : colors.black}
+              color={isDarkMode ? colors.icWhite : colors.black}
+              icon={<UpDownIcon />}
+              onClick={() => swapTokenLists()}
+            />
+          </Box>
+          <QuickTradeSelector
+            title='To'
+            config={{
+              isDarkMode,
+              isInputDisabled: true,
+              isNarrowVersion: isNarrow,
+              isSelectorDisabled: false,
+              isReadOnly: true,
+            }}
+            selectedToken={buyToken}
+            selectedTokenAmount={buyTokenAmountFormatted}
+            formattedFiat={buyTokenFiat}
+            priceImpact={priceImpact ?? undefined}
+            tokenList={buyTokenList}
+            onSelectedToken={(_) => {
+              if (outputTokenItems.length > 1) onOpenSelectOutputToken()
+            }}
+          />
+        </Flex>
+      ) : (
+        <>
+          <Flex>
+            <Box
+              borderTopLeftRadius='16px'
+              border='1px solid black'
+              borderColor={isDarkMode ? colors.icWhite : colors.black}
+              padding='8px'
+              _hover={{ fontWeight: 700 }}
+              cursor='pointer'
+              onClick={() => setIssue(true)}
+              fontWeight={isIssue ? 700 : 400}
+            >
+              Flash Issue
+            </Box>
+            <Box
+              borderTopRightRadius='16px'
+              borderBottomRightRadius='16px'
+              border='1px solid black'
+              borderColor={isDarkMode ? colors.icWhite : colors.black}
+              padding='8px'
+              _hover={{ fontWeight: 700 }}
+              cursor='pointer'
+              fontWeight={!isIssue ? 700 : 400}
+              onClick={() => setIssue(false)}
+            >
+              Flash Redeem
+            </Box>
+          </Flex>
+          <Box
+            borderLeft='1px solid black'
+            borderColor={isDarkMode ? colors.icWhite : colors.black}
+            paddingLeft='16px'
+            paddingTop='16px'
+          >
+            <Text marginBottom='8px'>USDC Balance: {usdcBalance}</Text>
+            <QuickTradeSelector
+              title={isIssue ? 'Issue' : 'Issue'}
+              config={{
+                isDarkMode,
+                isInputDisabled: false,
+                isNarrowVersion: isNarrow,
+                isSelectorDisabled: true,
+                isReadOnly: false,
+              }}
+              selectedToken={buyToken}
+              selectedTokenAmount={buyTokenAmountFormatted}
+              formattedFiat={buyTokenFiat}
+              priceImpact={priceImpact ?? undefined}
+              tokenList={buyTokenList}
+              onChangeInput={() => {}}
+              onSelectedToken={(_) => {}}
+            />
+            <Text marginTop='16px'>
+              {isIssue
+                ? 'Estimated USDC required for issuance (inc. slippage)'
+                : 'Estimated USDC output for redemption (inc. slippage)'}
+            </Text>
+            <Flex alignItems='center' marginTop='8px'>
+              <Image
+                src={USDC.image}
+                alt={USDC.name + ' logo'}
+                w='48px'
+                h='48px'
+              />
+              <Text fontWeight='600' marginLeft='16px'>
+                99.999999
+              </Text>
+            </Flex>
+          </Box>
+        </>
+      )}
+
       <Flex direction='column'>
         {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
