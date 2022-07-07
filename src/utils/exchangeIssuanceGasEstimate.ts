@@ -4,12 +4,13 @@ import {
   getIssuanceModule,
 } from '@indexcoop/index-exchange-issuance-sdk'
 
+import { DefaultGasLimitExchangeIssuanceZeroEx } from 'constants/gas'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { toWei } from 'utils'
 import { getAddressForToken } from 'utils/tokens'
 
 // TODO: check scaling based on component counts (quoteData)
-const defaultGasEstimate = BigNumber.from(5000000)
+const defaultGasEstimate = BigNumber.from(DefaultGasLimitExchangeIssuanceZeroEx)
 
 export async function getExchangeIssuanceGasEstimate(
   provider: any,

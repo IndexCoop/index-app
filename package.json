@@ -14,15 +14,15 @@
     "@fontsource/ibm-plex-sans": "^4.5.11",
     "@indexcoop/index-exchange-issuance-sdk": "^1.0.7",
     "@indexcoop/tokenlists": "^1.22.0",
-    "@sentry/react": "7.2.0",
-    "@sentry/tracing": "7.2.0",
+    "@sentry/react": "7.5.1",
+    "@sentry/tracing": "7.5.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.1",
     "@types/jest": "^28.1.3",
-    "@types/node": "^18.0.1",
-    "@types/react-dom": "^18.0.5",
-    "@uniswap/smart-order-router": "^2.5.30",
+    "@types/node": "^18.0.3",
+    "@types/react-dom": "^18.0.6",
+    "@uniswap/smart-order-router": "^2.5.32",
     "@usedapp/core": "1.0.12",
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "^6.2.14",
@@ -66,7 +66,7 @@
   },
   "devDependencies": {
     "@types/numeral": "^2.0.2",
-    "@types/react": "^18.0.14",
+    "@types/react": "^18.0.15",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1"
@@ -78,5 +78,6 @@
     "transformIgnorePatterns": [
       "/node_modules/@indexcoop/(?!index-exchange-issuance-sdk)"
     ]
-  }
+  },
+  "proxy": "https://api.indexcoop.com"
 }
