@@ -165,6 +165,7 @@ const formatIfNumber = (value: string) => {
 export function getTradeInfoDataFromEI(
   setAmount: BigNumber,
   gasPrice: BigNumber,
+  gasLimit: BigNumber,
   buyToken: Token,
   sellToken: Token,
   data:
@@ -186,7 +187,6 @@ export function getTradeInfoDataFromEI(
   const maxPayment =
     displayFromWei(inputTokenMax, 4, inputTokenDecimals) ?? '0.0'
   const maxPaymentFormatted = formatIfNumber(maxPayment)
-  const gasLimit = 1800000 // TODO: Make gasLimit dynamic
   const networkFee = displayFromWei(gasPrice.mul(gasLimit))
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = getNativeToken(chainId)?.symbol ?? ''

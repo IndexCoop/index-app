@@ -243,7 +243,7 @@ const QuickTrade = (props: {
     const gasLimitEI = BigNumber.from(
       bestOptionResult.exchangeIssuanceData?.gas ?? '0'
     )
-    const gasLimitLevEI = 1800000
+    const gasLimitLevEI = BigNumber.from(1800000)
 
     const gas0x = gasPrice0x.mul(gasLimit0x)
     const gasEI = gasPrice.mul(gasLimitEI)
@@ -325,6 +325,7 @@ const QuickTrade = (props: {
       : getTradeInfoDataFromEI(
           tradeDataSetAmountEI,
           gasPrice,
+          bestOptionIsLevEI ? gasLimitLevEI : gasLimitEI,
           buyToken,
           sellToken,
           tradeDataEI,
