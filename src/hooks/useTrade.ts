@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { useSendTransaction } from 'wagmi'
+
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -12,9 +14,7 @@ import { useBalances } from './useBalance'
 
 export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
   const { address } = useWallet()
-  const { sendTransaction, state } = useSendTransaction({
-    transactionName: 'trade',
-  })
+  const { sendTransaction, status } = useSendTransaction()
   const { getBalance } = useBalances()
   const spendingTokenBalance = getBalance(sellToken.symbol) || BigNumber.from(0)
 
@@ -41,7 +41,7 @@ export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
 
     try {
       setIsTransacting(true)
-      await sendTransaction(txRequest)
+      sendTransaction({ request: txRequest })
     } catch (error) {
       setIsTransacting(false)
       console.log('Error sending transaction', error)
@@ -49,8 +49,8 @@ export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
   }, [address, tradeData])
 
   useEffect(() => {
-    if (state.status !== 'Mining') setIsTransacting(false)
-  }, [state])
+    if (status !== 'idle' && status) setIsTransacting(false)
+  }, [status])
 
   return { executeTrade, isTransacting }
 }
