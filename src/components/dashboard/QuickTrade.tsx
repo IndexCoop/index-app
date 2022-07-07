@@ -255,11 +255,14 @@ const QuickTrade = (props: {
 
     const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
     const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
-    const gasLimit = 1800000 // TODO: Make gasLimit dynamic
+    const gasLimitEI = BigNumber.from(
+      bestOptionResult.exchangeIssuanceData?.gas ?? '0'
+    )
+    const gasLimitLevEI = 1800000
 
     const gas0x = gasPrice0x.mul(gasLimit0x)
-    const gasEI = gasPrice.mul(gasLimit)
-    const gasLevEI = gasPrice.mul(gasLimit)
+    const gasEI = gasPrice.mul(gasLimitEI)
+    const gasLevEI = gasPrice.mul(gasLimitLevEI)
 
     const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
     let shouldUseEI0x = true
