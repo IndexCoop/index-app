@@ -1,12 +1,31 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { FeeData, JsonRpcProvider } from '@ethersproject/providers'
 
-import { OPTIMISM, POLYGON } from 'constants/chains'
+import { POLYGON } from 'constants/chains'
+import { IndexApiBaseUrl } from 'constants/server'
+
+// TODO: calc gas for 0x API (from 0x vs estimateGas) // https://docs.0x.org/0x-api-swap/api-references/get-swap-v1-quote
+
+type MaxGas = {
+  maxFeePerGas: string
+  maxPriorityFeePerGas: string
+}
+
+type IndexGasApiResponse = {
+  fastest: MaxGas
+  fast: MaxGas
+  standard: MaxGas
+}
 
 export class GasStation {
   provider: JsonRpcProvider
   constructor(provider: JsonRpcProvider) {
     this.provider = provider
+  }
+
+  async getGasFees(): Promise<FeeData> {
+    const feeData = await this.provider.getFeeData()
+    return feeData
   }
 
   async getGasPrice(): Promise<BigNumber> {
@@ -16,8 +35,9 @@ export class GasStation {
 }
 
 /**
- *
- * @param chainId
+ * Returns the URL for the Index Gas API.
+ * Supports Polygon and Mainet only.
+ * @param chainId   Chain ID (default mainnet)
  * @returns gas api URL
  */
 export const getGasApiUrl = (chainId?: number): string => {
@@ -26,22 +46,15 @@ export const getGasApiUrl = (chainId?: number): string => {
     case POLYGON.chainId:
       networkKey = 'polygon'
       break
-    case OPTIMISM.chainId:
-      networkKey = 'optimism'
-      break
     default:
       networkKey = 'mainnet'
   }
 
-  return `https://api.indexcoop.com/gas/${networkKey}`
+  return `${IndexApiBaseUrl}/gas/${networkKey}`
 }
 
 export const getMaxFeePerGas = async (chainId?: number) => {
   const url = getGasApiUrl(chainId)
-  const result = await fetch(url, {
-    headers: {
-      Origin: 'https://app.indexcoop.com',
-    },
-  }).then((res) => res.json())
+  const result: IndexGasApiResponse = await fetch(url).then((res) => res.json())
   return BigNumber.from(result.fast.maxFeePerGas)
 }

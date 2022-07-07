@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
@@ -118,7 +118,6 @@ const QuickTrade = (props: {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
-  const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -236,30 +235,19 @@ const QuickTrade = (props: {
       return
     }
 
-    fetch(getGasApiUrl(chainId), {
-      headers: {
-        Origin: 'https://app.indexcoop.com',
-      },
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        console.log('res!', response)
-        setMaxFeePerGas(BigNumber.from(response.fast.maxFeePerGas))
-      })
-      .catch((error) => {
-        console.log('Couldnt fetch gas price', error)
-      })
-
     const gasStation = new GasStation(provider)
     const gasPrice = await gasStation.getGasPrice()
 
     const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
     const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
-    const gasLimit = 1800000 // TODO: Make gasLimit dynamic
+    const gasLimitEI = BigNumber.from(
+      bestOptionResult.exchangeIssuanceData?.gas ?? '0'
+    )
+    const gasLimitLevEI = BigNumber.from(1800000)
 
     const gas0x = gasPrice0x.mul(gasLimit0x)
-    const gasEI = gasPrice.mul(gasLimit)
-    const gasLevEI = gasPrice.mul(gasLimit)
+    const gasEI = gasPrice.mul(gasLimitEI)
+    const gasLevEI = gasPrice.mul(gasLimitLevEI)
 
     const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
     let shouldUseEI0x = true
@@ -337,6 +325,7 @@ const QuickTrade = (props: {
       : getTradeInfoDataFromEI(
           tradeDataSetAmountEI,
           gasPrice,
+          bestOptionIsLevEI ? gasLimitLevEI : gasLimitEI,
           buyToken,
           sellToken,
           tradeDataEI,
