@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
@@ -118,7 +118,6 @@ const QuickTrade = (props: {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
-  const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -235,20 +234,6 @@ const QuickTrade = (props: {
       setTradeInfoData([])
       return
     }
-
-    fetch(getGasApiUrl(chainId), {
-      headers: {
-        Origin: 'https://app.indexcoop.com',
-      },
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        console.log('res!', response)
-        setMaxFeePerGas(BigNumber.from(response.fast.maxFeePerGas))
-      })
-      .catch((error) => {
-        console.log('Couldnt fetch gas price', error)
-      })
 
     const gasStation = new GasStation(provider)
     const gasPrice = await gasStation.getGasPrice()
