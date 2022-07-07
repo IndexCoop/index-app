@@ -10,6 +10,7 @@ import indexLogo from 'assets/index-token.png'
 import jpgLogo from 'assets/jpgLogo.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
 import mnyeLogo from 'assets/mnyeLogo.png'
+import byeLogo from 'assets/BYE.webp'
 import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
 
 export const dpiTokenImage =
@@ -430,19 +431,35 @@ export const JPGIndex: Token = {
 }
 export const MNYeIndex: Token = {
   name: 'Market Neutral Yield ETH Index',
-  symbol: 'icETH', // TODO: 'MNYe',
+  symbol: 'MNYe', // TODO: 'MNYe',
   address: undefined,
   polygonAddress: undefined,
   optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93', // TODO: Get final address
   decimals: 18,
   url: 'mnye',
-  image: icethLogo, // TODO: mnyeLogo,
+  image: mnyeLogo, // TODO: mnyeLogo,
   coingeckoId: 'eth-market-neutral-yield',
   tokensetsId: 'mnye',
   tokenContextKey: 'mnye',
   fees: {
     streamingFee: '0.95%',
   },
+  isDangerous: false,
+}
+
+export const BYEIndex: Token = {
+  name: 'Basis Yield ETH Index',
+  symbol: 'BYE',
+  address: undefined,
+  polygonAddress: undefined,
+  optimismAddress: '0x927Eb0dBC5c3FD172Fdfa72D563f71612eCB6122',
+  decimals: 18,
+  url: 'bye',
+  image: byeLogo,
+  coingeckoId: 'basis-yield-eth-index',
+  tokensetsId: 'bye',
+  tokenContextKey: 'bye',
+  fees : undefined,
   isDangerous: false,
 }
 
@@ -464,6 +481,7 @@ export const productTokensBySymbol = {
   'icETH': icETHIndex,
   'JPG': JPGIndex,
   'MNYe': MNYeIndex,
+  'BYE': BYEIndex,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH]
@@ -484,7 +502,7 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
 
 const indexNames = [
   icETHIndex,
-  // TODO: MNYeIndex,
+  MNYeIndex,// TODO: MNYeIndex,
   DefiPulseIndex,
   MetaverseIndex,
   GmiIndex,
@@ -500,6 +518,7 @@ const indexNames = [
   DataIndex,
   IndexToken,
   JPGIndex,
+  BYEIndex,
 ]
 
 export const indexNamesMainnet = indexNames.filter(
@@ -514,10 +533,10 @@ export const indexNamesPolygon = indexNames.filter(
 )
 
 // TODO: swap these vvv
-/**export const indexNamesOptimism = indexNames.filter(
+export const indexNamesOptimism = indexNames.filter(
   (index) => index.optimismAddress !== undefined
-)*/
+)
 
-export const indexNamesOptimism = [MNYeIndex]
+// export const indexNamesOptimism = [MNYeIndex, BYEIndex]
 
 export default indexNames

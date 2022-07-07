@@ -54,6 +54,7 @@ export interface TokenContext {
   iceth?: TokenMarketDataValues
   jpg?: TokenMarketDataValues
   mnye?: TokenMarketDataValues
+  bye? :TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
 }
 
