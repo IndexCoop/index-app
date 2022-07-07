@@ -6,6 +6,7 @@ import {
   Position,
   SetDetails,
 } from 'set.js/dist/types/src/types'
+import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -28,7 +29,6 @@ import {
   MetaverseIndex,
   MNYeIndex,
 } from 'constants/tokens'
-import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { displayFromWei, safeDiv } from 'utils'
@@ -100,13 +100,13 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
   const { address, provider } = useWallet()
-  const { chainId } = useNetwork()
-  const tokenList = getTokenList(chainId)
+  const { chain } = useNetwork()
+  const tokenList = getTokenList(chain?.id)
 
   useEffect(() => {
     if (
-      chainId &&
-      chainId === MAINNET.chainId &&
+      chain?.id &&
+      chain?.id === MAINNET.chainId &&
       address &&
       provider &&
       tokenList &&
@@ -143,7 +143,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           icETHIndex.address,
           JPGIndex.address,
         ],
-        chainId
+        chain?.id
       ).then(async (result) => {
         const [
           dpiSet,
@@ -355,7 +355,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     tokenList,
     dpi,
     mvi,
-    chainId,
+    chain,
     bed,
     gmi,
     ethfli,
@@ -368,8 +368,8 @@ const SetComponentsProvider = (props: { children: any }) => {
 
   useEffect(() => {
     if (
-      chainId &&
-      chainId === POLYGON.chainId &&
+      chain?.id &&
+      chain?.id === POLYGON.chainId &&
       provider &&
       tokenList &&
       ethflip &&
@@ -395,7 +395,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           Bitcoin2xFLIP.polygonAddress,
           IBitcoinFLIP.polygonAddress,
         ],
-        chainId
+        chain?.id
       )
         .then(async (result) => {
           const [
@@ -553,18 +553,18 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [chainId, provider, tokenList, ethflip, selectLatestMarketData()])
+  }, [chain, provider, tokenList, ethflip, selectLatestMarketData()])
 
   useEffect(() => {
     if (
-      chainId &&
-      chainId === OPTIMISM.chainId &&
+      chain?.id &&
+      chain?.id === OPTIMISM.chainId &&
       provider &&
       tokenList &&
       mnye &&
       MNYeIndex.optimismAddress
     ) {
-      getSetDetails(provider, [MNYeIndex.optimismAddress], chainId, true)
+      getSetDetails(provider, [MNYeIndex.optimismAddress], chain?.id, true)
         .then(async (result) => {
           const [mnyeSet] = result
           const mnyeComponentPrices = await getPositionPrices(
@@ -592,7 +592,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [chainId, provider, tokenList, mnye, selectLatestMarketData()])
+  }, [chain, provider, tokenList, mnye, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider
