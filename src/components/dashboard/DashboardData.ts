@@ -3,18 +3,6 @@ import { colors } from 'styles/colors'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Position } from 'components/dashboard/AllocationChart'
-import {
-  BedIndex,
-  Bitcoin2xFlexibleLeverageIndex,
-  DataIndex,
-  DefiPulseIndex,
-  Ethereum2xFlexibleLeverageIndex,
-  GmiIndex,
-  icETHIndex,
-  IndexToken,
-  JPGIndex,
-  MetaverseIndex,
-} from 'constants/tokens'
 import { displayFromWei, toWei } from 'utils'
 
 const chartColors = [

@@ -98,9 +98,8 @@ export function getFormattedOuputTokenAmount(
     )
   }
 
-  return (
-    displayFromWei(zeroExTradeDataOutputAmount, 4, ouputTokenDecimals) ?? '0.0'
-  )
+  // 0x quotes are always in wei (18 decimals)
+  return displayFromWei(zeroExTradeDataOutputAmount, 4, 18) ?? '0.0'
 }
 
 export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
