@@ -1,16 +1,17 @@
 import { useCallback, useState } from 'react'
 
+// import { useTransactions } from '@usedapp/core'
+import { useNetwork } from 'wagmi'
+
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   ExchangeIssuanceZeroEx,
   getExchangeIssuanceZeroExContract,
   getIssuanceModule,
 } from '@indexcoop/index-exchange-issuance-sdk'
-import { useTransactions } from '@usedapp/core'
 
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { ExchangeIssuanceQuote } from 'hooks/useBestTradeOption'
-import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import {
@@ -18,10 +19,11 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/sentry'
-import { getStoredTransaction } from 'utils/storedTransaction'
+// TODO:
+// import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
-import { useBalance } from './useBalance'
+import { useBalances } from './useBalance'
 
 export const useTradeExchangeIssuance = (
   isIssuance: boolean,
@@ -31,9 +33,10 @@ export const useTradeExchangeIssuance = (
   quoteData?: ExchangeIssuanceQuote | null
 ) => {
   const { address, provider } = useWallet()
-  const { chainId } = useNetwork()
-  const { getBalance } = useBalance()
-  const { addTransaction } = useTransactions()
+  const { chain } = useNetwork()
+  const { getBalance } = useBalances()
+  // const { addTransaction } = useTransactions()
+  const chainId = chain?.id
 
   const setTokenAmount = quoteData?.setTokenAmount
   const setTokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
@@ -88,10 +91,10 @@ export const useTradeExchangeIssuance = (
             quoteData.inputTokenAmount,
             { gasLimit: quoteData.gas }
           )
-          if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx, chainId)
-            addTransaction(storedTx)
-          }
+          // if (issueTx) {
+          //   const storedTx = getStoredTransaction(issueTx, chainId)
+          //   addTransaction(storedTx)
+          // }
         } else {
           const maxAmountInputToken = quoteData.inputTokenAmount
           captureTransaction({
@@ -112,10 +115,10 @@ export const useTradeExchangeIssuance = (
             issuanceModule.isDebtIssuance,
             { gasLimit: quoteData.gas }
           )
-          if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx, chainId)
-            addTransaction(storedTx)
-          }
+          // if (issueTx) {
+          //   const storedTx = getStoredTransaction(issueTx, chainId)
+          //   addTransaction(storedTx)
+          // }
         }
       } else {
         const isRedeemingNativeChainToken =
@@ -141,10 +144,10 @@ export const useTradeExchangeIssuance = (
             issuanceModule.isDebtIssuance,
             { gasLimit: quoteData.gas }
           )
-          if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx, chainId)
-            addTransaction(storedTx)
-          }
+          // if (redeemTx) {
+          //   const storedTx = getStoredTransaction(redeemTx, chainId)
+          //   addTransaction(storedTx)
+          // }
         } else {
           captureTransaction({
             exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
@@ -164,10 +167,10 @@ export const useTradeExchangeIssuance = (
             issuanceModule.isDebtIssuance,
             { gasLimit: quoteData.gas }
           )
-          if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx, chainId)
-            addTransaction(storedTx)
-          }
+          // if (redeemTx) {
+          //   const storedTx = getStoredTransaction(redeemTx, chainId)
+          //   addTransaction(storedTx)
+          // }
         }
       }
       setIsTransacting(false)

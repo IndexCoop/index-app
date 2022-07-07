@@ -36,6 +36,7 @@ export const useTradeLeveragedExchangeIssuance = (
   const { address, provider } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
+  const chainId = chain?.id
 
   const [isTransactingLevEI, setIsTransacting] = useState(false)
 
@@ -52,8 +53,8 @@ export const useTradeLeveragedExchangeIssuance = (
     )
       return
 
-    const inputTokenAddress = getAddressForToken(inputToken, chain?.id)
-    const outputTokenAddress = getAddressForToken(outputToken, chain?.id)
+    const inputTokenAddress = getAddressForToken(inputToken, chainId)
+    const outputTokenAddress = getAddressForToken(outputToken, chainId)
     if (!outputTokenAddress || !inputTokenAddress) return
 
     let requiredBalance = fromWei(inputOutputLimit, inputToken.decimals)
@@ -89,10 +90,10 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputLimit,
             { gasLimit: BigNumber.from(1800000) }
           )
-          if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx, chain?.id)
-            addTransaction(storedTx)
-          }
+          // if (issueTx) {
+          //   const storedTx = getStoredTransaction(issueTx, chain?.id)
+          //   addTransaction(storedTx)
+          // }
         } else {
           captureTransaction({
             exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
@@ -111,10 +112,10 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputSwapData,
             { gasLimit: BigNumber.from(1800000) }
           )
-          if (issueTx) {
-            const storedTx = getStoredTransaction(issueTx, chain?.id)
-            addTransaction(storedTx)
-          }
+          // if (issueTx) {
+          //   const storedTx = getStoredTransaction(issueTx, chain?.id)
+          //   addTransaction(storedTx)
+          // }
         }
       } else {
         const isRedeemingToNativeChainToken =
@@ -138,10 +139,10 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputSwapData,
             { gasLimit: BigNumber.from(1800000) }
           )
-          if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx, chain?.id)
-            addTransaction(storedTx)
-          }
+          // if (redeemTx) {
+          //   const storedTx = getStoredTransaction(redeemTx, chain?.id)
+          //   addTransaction(storedTx)
+          // }
         } else {
           captureTransaction({
             exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
@@ -164,10 +165,10 @@ export const useTradeLeveragedExchangeIssuance = (
               maxPriorityFeePerGas: BigNumber.from(2000000000),
             }
           )
-          if (redeemTx) {
-            const storedTx = getStoredTransaction(redeemTx, chain?.id)
-            addTransaction(storedTx)
-          }
+          // if (redeemTx) {
+          //   const storedTx = getStoredTransaction(redeemTx, chain?.id)
+          //   addTransaction(storedTx)
+          // }
         }
       }
       setIsTransacting(false)
