@@ -30,16 +30,15 @@ import {
   Token,
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
-import { useBalance } from 'hooks/useBalance'
+import { useBalances } from 'hooks/useBalance'
 import { maxPriceImpact, useBestTradeOption } from 'hooks/useBestTradeOption'
-import { useIsUserProtectable } from 'hooks/useIsUserProtected'
-import { useNetwork } from 'hooks/useNetwork'
 import { useSlippage } from 'hooks/useSlippage'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
+import { useProtection } from 'providers/Protection/ProtectionProvider'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
@@ -60,6 +59,7 @@ import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
+import { useNetwork } from 'wagmi'
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -72,7 +72,7 @@ const QuickTrade = (props: {
   singleToken?: Token
 }) => {
   const { address, provider } = useWallet()
-  const { chainId } = useNetwork()
+  const { chain } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
     isOpen: isSelectInputTokenOpen,
@@ -85,9 +85,9 @@ const QuickTrade = (props: {
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
-  const isProtectable = useIsUserProtectable()
+  const protection = useProtection()
 
-  const supportedNetwork = isSupportedNetwork(chainId ?? -1)
+  const supportedNetwork = isSupportedNetwork(chain?.id ?? -1)
 
   const {
     auto: autoSlippage,
@@ -108,8 +108,8 @@ const QuickTrade = (props: {
     changeBuyToken,
     changeSellToken,
     swapTokenLists,
-  } = useTradeTokenLists(chainId, props.singleToken)
-  const { getBalance } = useBalance()
+  } = useTradeTokenLists(chain?.id, props.singleToken)
+  const { getBalance } = useBalances()
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
@@ -117,7 +117,6 @@ const QuickTrade = (props: {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
-  const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -125,9 +124,9 @@ const QuickTrade = (props: {
   const hasFetchingError =
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
-  const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chainId)
+  const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chain?.id)
   const spenderAddressLevEIL =
-    getExchangeIssuanceLeveragedContractAddress(chainId)
+    getExchangeIssuanceLeveragedContractAddress(chain?.id)
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
 
@@ -224,7 +223,7 @@ const QuickTrade = (props: {
   const contractBestOption = getContractForBestOption(bestOption)
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
     contractBestOption,
-    chainId
+    chain?.id
   )
 
   const determineBestOption = async () => {
@@ -235,29 +234,19 @@ const QuickTrade = (props: {
       return
     }
 
-    fetch(getGasApiUrl(chainId), {
-      headers: {
-        Origin: 'https://app.indexcoop.com',
-      },
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        setMaxFeePerGas(BigNumber.from(response.fast.maxFeePerGas))
-      })
-      .catch((error) => {
-        console.log('Couldnt fetch gas price', error)
-      })
-
     const gasStation = new GasStation(provider)
     const gasPrice = await gasStation.getGasPrice()
 
     const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
     const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
-    const gasLimit = 1800000 // TODO: Make gasLimit dynamic
+    const gasLimitEI = BigNumber.from(
+      bestOptionResult.exchangeIssuanceData?.gas ?? '0'
+    )
+    const gasLimitLevEI = BigNumber.from(1800000)
 
     const gas0x = gasPrice0x.mul(gasLimit0x)
-    const gasEI = gasPrice.mul(gasLimit)
-    const gasLevEI = gasPrice.mul(gasLimit)
+    const gasEI = gasPrice.mul(gasLimitEI)
+    const gasLevEI = gasPrice.mul(gasLimitLevEI)
 
     const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
     let shouldUseEI0x = true
@@ -330,17 +319,18 @@ const QuickTrade = (props: {
           buyToken,
           slippage,
           slippageColorCoding,
-          chainId
+          chain?.id
         )
       : getTradeInfoDataFromEI(
           tradeDataSetAmountEI,
           gasPrice,
+          bestOptionIsLevEI ? gasLimitLevEI : gasLimitEI,
           buyToken,
           sellToken,
           tradeDataEI,
           slippage,
           slippageColorCoding,
-          chainId,
+          chain?.id,
           isBuying
         )
 
@@ -359,6 +349,12 @@ const QuickTrade = (props: {
     setBuyTokenAmountFormatted(buyTokenAmountFormatted)
   }
 
+  const resetTradeData = () => {
+    setBestOption(null)
+    setBuyTokenAmountFormatted('0.0')
+    setTradeInfoData([])
+  }
+
   /**
    * Determine the best trade option.
    */
@@ -368,7 +364,7 @@ const QuickTrade = (props: {
 
   useEffect(() => {
     setTradeInfoData([])
-  }, [chainId])
+  }, [chain])
 
   useEffect(() => {
     fetchOptions()
@@ -377,12 +373,15 @@ const QuickTrade = (props: {
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
   useEffect(() => {
-    if (isProtectable && (sellToken.isDangerous || buyToken.isDangerous)) {
+    if (
+      protection.isProtectable &&
+      (sellToken.isDangerous || buyToken.isDangerous)
+    ) {
       setRequiresProtection(true)
     } else {
       setRequiresProtection(false)
     }
-  }, [isProtectable, sellToken, buyToken])
+  }, [protection, sellToken, buyToken])
 
   const fetchOptions = () => {
     // Right now we only allow setting the sell amount, so no need to check
@@ -435,15 +434,15 @@ const QuickTrade = (props: {
   }
 
   const isNotTradable = (token: Token | undefined) => {
-    if (token && chainId === MAINNET.chainId)
+    if (token && chain?.id === MAINNET.chainId)
       return (
         indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
       )
-    if (token && chainId === POLYGON.chainId)
+    if (token && chain?.id === POLYGON.chainId)
       return (
         indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
       )
-    if (token && chainId === OPTIMISM.chainId)
+    if (token && chain?.id === OPTIMISM.chainId)
       return (
         indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
       )
@@ -463,7 +462,7 @@ const QuickTrade = (props: {
 
     if (isNotTradable(props.singleToken)) {
       let chainName = 'This Network'
-      switch (chainId) {
+      switch (chain?.id) {
         case MAINNET.chainId:
           chainName = 'Mainnet'
           break
@@ -508,6 +507,10 @@ const QuickTrade = (props: {
   }
 
   const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
+    if (input === '') {
+      resetTradeData()
+      return
+    }
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '0')
   }, 1000)
@@ -662,7 +665,7 @@ const QuickTrade = (props: {
             {bestOptionResult.error.message}
           </Text>
         )}
-        <Flex my='8px'>{chainId === 1 && <FlashbotsRpcMessage />}</Flex>
+        <Flex my='8px'>{chain?.id === 1 && <FlashbotsRpcMessage />}</Flex>
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}

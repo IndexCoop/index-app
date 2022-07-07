@@ -1,7 +1,8 @@
 import { POLYGON } from 'constants/chains'
+import { IndexApiBaseUrl } from 'constants/server'
 import { ETH } from 'constants/tokens'
 
-const baseURL = 'https://api.indexcoop.com/coingecko'
+const baseURL = `${IndexApiBaseUrl}/coingecko`
 
 export const fetchHistoricalTokenMarketData = async (
   id: string,

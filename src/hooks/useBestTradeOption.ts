@@ -9,6 +9,7 @@ import {
 } from '@indexcoop/index-exchange-issuance-sdk'
 
 import { MAINNET } from 'constants/chains'
+import { IndexApiBaseUrl } from 'constants/server'
 import {
   eligibleLeveragedExchangeIssuanceTokens,
   ETH,
@@ -220,7 +221,7 @@ export const useBestTradeOption = () => {
     const networkKey = getNetworkKey(chainId)
     const swapPathOverride = `/${networkKey}/swap/v1/quote`
     const zeroExApi = new ZeroExApi(
-      'https://api.indexcoop.com/0x',
+      `${IndexApiBaseUrl}/0x`,
       affilliateAddress,
       swapPathOverride
     )

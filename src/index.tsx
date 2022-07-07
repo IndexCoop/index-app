@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import App from 'App'
-import { colors } from 'styles/colors'
 import theme, { rainbowkitTheme } from 'theme'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
@@ -14,10 +13,8 @@ import '@fontsource/ibm-plex-sans'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import {
-  darkTheme,
-  getDefaultWallets,
-  midnightTheme,
-  RainbowKitProvider,
+    getDefaultWallets,
+    RainbowKitProvider,
 } from '@rainbow-me/rainbowkit'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
@@ -42,9 +39,9 @@ import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
 import MNYe from 'components/views/productpages/MNYe'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
+import { ProtectionProvider } from 'providers/Protection/ProtectionProvider'
 import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
 
 import '@rainbow-me/rainbowkit/dist/index.css'
@@ -84,7 +81,9 @@ const Providers = (props: { children: any }) => {
           <MarketDataProvider>
             <LiquidityMiningProvider>
               <SetComponentsProvider>
-                <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+                <ProtectionProvider>
+                  <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+                </ProtectionProvider>
               </SetComponentsProvider>
             </LiquidityMiningProvider>
           </MarketDataProvider>

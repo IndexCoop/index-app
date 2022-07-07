@@ -98,9 +98,8 @@ export function getFormattedOuputTokenAmount(
     )
   }
 
-  return (
-    displayFromWei(zeroExTradeDataOutputAmount, 4, ouputTokenDecimals) ?? '0.0'
-  )
+  // 0x quotes are always in wei (18 decimals)
+  return displayFromWei(zeroExTradeDataOutputAmount, 4, 18) ?? '0.0'
 }
 
 export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
@@ -165,6 +164,7 @@ const formatIfNumber = (value: string) => {
 export function getTradeInfoDataFromEI(
   setAmount: BigNumber,
   gasPrice: BigNumber,
+  gasLimit: BigNumber,
   buyToken: Token,
   sellToken: Token,
   data:
@@ -186,7 +186,6 @@ export function getTradeInfoDataFromEI(
   const maxPayment =
     displayFromWei(inputTokenMax, 4, inputTokenDecimals) ?? '0.0'
   const maxPaymentFormatted = formatIfNumber(maxPayment)
-  const gasLimit = 1800000 // TODO: Make gasLimit dynamic
   const networkFee = displayFromWei(gasPrice.mul(gasLimit))
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = getNativeToken(chainId)?.symbol ?? ''
