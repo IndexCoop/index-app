@@ -5,48 +5,55 @@ import { useSendTransaction } from 'wagmi'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { Token } from 'constants/tokens'
+import { ZeroExQuote } from 'hooks/useBestTradeOption'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
-import { ZeroExData } from 'utils/zeroExUtils'
 
 import { useBalances } from './useBalance'
 
-export const useTrade = (sellToken: Token, tradeData?: ZeroExData | null) => {
+export const useTrade = () => {
   const { address } = useWallet()
   const { sendTransaction, status } = useSendTransaction()
   const { getBalance } = useBalances()
-  const spendingTokenBalance = getBalance(sellToken.symbol) || BigNumber.from(0)
 
   const [isTransacting, setIsTransacting] = useState(false)
 
-  const executeTrade = useCallback(async () => {
-    if (!address || !tradeData || !tradeData?.sellAmount) return
+  const executeTrade = useCallback(
+    async (quote: ZeroExQuote | null) => {
+      if (!address || !quote) return
 
-    let requiredBalance = fromWei(
-      BigNumber.from(tradeData.sellAmount),
-      sellToken.decimals
-    )
+      const inputToken = quote.inputToken
+      const inputTokenAmount = quote.isIssuance
+        ? quote.inputOutputTokenAmount
+        : quote.setTokenAmount
 
-    if (spendingTokenBalance.lt(requiredBalance)) return
+      let requiredBalance = fromWei(
+        BigNumber.from(inputTokenAmount),
+        inputToken.decimals
+      )
+      const spendingTokenBalance =
+        getBalance(inputToken.symbol) || BigNumber.from(0)
+      if (spendingTokenBalance.lt(requiredBalance)) return
 
-    const txRequest: TransactionRequest = {
-      chainId: Number(tradeData.chainId) ?? undefined,
-      from: address,
-      to: tradeData.to,
-      data: tradeData.data,
-      value: BigNumber.from(tradeData.value),
-      // gas: undefined, use metamask estimated gas limit
-    }
+      const txRequest: TransactionRequest = {
+        chainId: Number(quote.chainId) ?? undefined,
+        from: address,
+        to: quote.to,
+        data: quote.data,
+        value: BigNumber.from(quote.value),
+        // gas: undefined, use metamask estimated gas limit
+      }
 
-    try {
-      setIsTransacting(true)
-      sendTransaction({ request: txRequest })
-    } catch (error) {
-      setIsTransacting(false)
-      console.log('Error sending transaction', error)
-    }
-  }, [address, tradeData])
+      try {
+        setIsTransacting(true)
+        sendTransaction({ request: txRequest })
+      } catch (error) {
+        setIsTransacting(false)
+        console.log('Error sending transaction', error)
+      }
+    },
+    [address]
+  )
 
   useEffect(() => {
     if (status !== 'idle' && status) setIsTransacting(false)

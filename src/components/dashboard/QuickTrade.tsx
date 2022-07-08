@@ -166,10 +166,7 @@ const QuickTrade = (props: {
     onApprove: onApproveForEIZX,
   } = useApproval(sellToken, spenderAddress0x, sellTokenAmountInWei)
 
-  const { executeTrade, isTransacting } = useTrade(
-    sellToken,
-    bestOptionResult?.success ? bestOptionResult.dexData : null
-  )
+  const { executeTrade, isTransacting } = useTrade()
   const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance()
   const { executeLevEITrade, isTransactingLevEI } =
     useTradeLeveragedExchangeIssuance()
@@ -462,7 +459,7 @@ const QuickTrade = (props: {
 
     switch (bestOption) {
       case QuickTradeBestOption.zeroEx:
-        await executeTrade()
+        await executeTrade(quoteResult.quotes.zeroEx)
         break
       case QuickTradeBestOption.exchangeIssuance:
         await executeEITrade(

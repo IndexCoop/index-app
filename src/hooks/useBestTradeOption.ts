@@ -65,9 +65,13 @@ export interface ExchangeIssuanceZeroExQuote extends Quote {
   componentQuotes: string[]
 }
 
-interface ZeroExQuote extends Quote {
+export interface ZeroExQuote extends Quote {
+  chainId: string
+  data: string
   minOutput: BigNumber
   sources: { name: string; proportion: string }[]
+  to: string
+  value: string
 }
 
 type QuoteResult = {
@@ -332,8 +336,12 @@ export const useBestTradeOption = () => {
             isIssuance ? sellTokenAmount : dexSwapOption.buyAmount
           ),
           // type specific properties
+          chainId: dexSwapOption.chainId,
+          data: dexSwapOption.data,
           minOutput: dexSwapOption.minOutput,
           sources: dexSwapOption.sources,
+          to: dexSwapOption.to,
+          value: dexSwapOption.value,
         }
       : null
 
