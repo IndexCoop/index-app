@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { constants, utils } from 'ethers'
 import { useContractRead, useNetwork } from 'wagmi'
@@ -32,16 +32,22 @@ function useApprovalState(
     functionName: 'allowance',
     args: [address, spenderAddress],
   })
-  // console.log('data', data)
 
-  if (!tokenAddress || !spenderAddress || !data) {
-    return ApprovalState.Unknown
+  let isApproved = false
+  if (data) {
+    isApproved = data.gte(amountToApprove)
   }
 
-  const isApproved = data.gte(amountToApprove) ?? false
-
   // TODO: we'd actually have to test for pending approval as well here
-  return isApproved ? ApprovalState.Approved : ApprovalState.NotApproved
+  return useMemo(
+    () =>
+      tokenAddress && spenderAddress && isError && isLoading && !data
+        ? isApproved
+          ? ApprovalState.Approved
+          : ApprovalState.NotApproved
+        : ApprovalState.Unknown,
+    [tokenAddress, spenderAddress]
+  )
 }
 
 /**
