@@ -12,10 +12,7 @@ import { publicProvider } from 'wagmi/providers/public'
 import '@fontsource/ibm-plex-sans'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
-import {
-    getDefaultWallets,
-    RainbowKitProvider,
-} from '@rainbow-me/rainbowkit'
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 

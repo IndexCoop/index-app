@@ -1,5 +1,4 @@
 import { colors } from 'styles/colors'
-
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 
 import { Select, useColorModeValue } from '@chakra-ui/react'
