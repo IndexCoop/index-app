@@ -167,22 +167,17 @@ export function getTradeInfoDataFromEI(
   gasLimit: BigNumber,
   buyToken: Token,
   sellToken: Token,
-  data:
-    | ExchangeIssuanceQuote
-    | LeveragedExchangeIssuanceQuote
-    | null
-    | undefined,
+  inputOutputTokenAmount: BigNumber,
   slippage: number,
   slippageColorCoding: string,
   chainId: number = 1,
   isBuying: boolean
 ): TradeInfoItem[] {
-  if (data === undefined || data === null) return []
   const setTokenDecimals = isBuying ? buyToken.decimals : sellToken.decimals
   const inputTokenDecimals = sellToken.decimals
   const exactSetAmount = displayFromWei(setAmount, 4, setTokenDecimals) ?? '0.0'
   const exactSetAmountFormatted = formatIfNumber(exactSetAmount)
-  const inputTokenMax = data.inputTokenAmount
+  const inputTokenMax = inputOutputTokenAmount
   const maxPayment =
     displayFromWei(inputTokenMax, 4, inputTokenDecimals) ?? '0.0'
   const maxPaymentFormatted = formatIfNumber(maxPayment)
@@ -228,30 +223,23 @@ const getReceivedAmount = (
 }
 
 export function getTradeInfoData0x(
-  zeroExTradeData: ZeroExData | undefined | null,
   buyToken: Token,
+  gasCosts: BigNumber,
+  minOutput: BigNumber,
+  sources: { name: string; proportion: string }[],
   slippage: number,
   slippageColorCoding: string,
   chainId: number = 1
 ): TradeInfoItem[] {
-  if (zeroExTradeData === undefined || zeroExTradeData === null) return []
-
-  const { gas, gasPrice, sources } = zeroExTradeData
-  if (gasPrice === undefined || gas === undefined || sources === undefined)
-    return []
-
   const minReceive =
-    displayFromWei(zeroExTradeData.minOutput, 4) + ' ' + buyToken.symbol ??
-    '0.0'
+    displayFromWei(minOutput, 4) + ' ' + buyToken.symbol ?? '0.0'
   const minReceiveFormatted = formatIfNumber(minReceive)
 
-  const networkFee = displayFromWei(
-    BigNumber.from(gasPrice).mul(BigNumber.from(gas))
-  )
+  const networkFee = displayFromWei(gasCosts)
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = getNativeToken(chainId)?.symbol ?? ''
 
-  const offeredFromSources = zeroExTradeData.sources
+  const offeredFromSources = sources
     .filter((source) => Number(source.proportion) > 0)
     .map((source) => source.name)
   return [

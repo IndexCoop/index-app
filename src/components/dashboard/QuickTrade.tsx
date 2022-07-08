@@ -32,7 +32,7 @@ import {
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
-import { maxPriceImpact, useBestTradeOption } from 'hooks/useBestTradeOption'
+import { QuoteType, useBestTradeOption } from 'hooks/useBestTradeOption'
 import { useSlippage } from 'hooks/useSlippage'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
@@ -42,8 +42,6 @@ import { useWallet } from 'hooks/useWallet'
 import { useProtection } from 'providers/Protection/ProtectionProvider'
 import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
-import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
-import { GasStation, getGasApiUrl } from 'utils/gasStation'
 
 import { ContractExecutionView } from './ContractExecutionView'
 import {
@@ -118,11 +116,14 @@ const QuickTrade = (props: {
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
-  const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
-    useBestTradeOption()
+  const {
+    bestOptionResult,
+    isFetchingTradeData,
+    fetchAndCompareOptions,
+    quoteResult,
+  } = useBestTradeOption()
 
-  const hasFetchingError =
-    bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
+  const hasFetchingError = !quoteResult.success && !isFetchingTradeData
 
   const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chain?.id)
   const spenderAddressLevEIL = getExchangeIssuanceLeveragedContractAddress(
@@ -230,105 +231,59 @@ const QuickTrade = (props: {
   const determineBestOption = async () => {
     if (!provider) return
 
-    if (bestOptionResult === null || !bestOptionResult.success) {
+    if (
+      quoteResult.bestQuote === QuoteType.notAvailable ||
+      !quoteResult.success
+    ) {
       setTradeInfoData([])
       return
     }
 
-    const gasStation = new GasStation(provider)
-    const gasPrice = await gasStation.getGasPrice()
+    console.log(quoteResult)
 
-    const gasLimit0x = BigNumber.from(bestOptionResult.dexData?.gas ?? '0')
-    const gasPrice0x = BigNumber.from(bestOptionResult.dexData?.gasPrice ?? '0')
-    const gasLimitEI = BigNumber.from(
-      bestOptionResult.exchangeIssuanceData?.gas ?? '0'
-    )
-    const gasLimitLevEI = BigNumber.from(1800000)
+    // todo: need this?
+    // const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
+    // let shouldUseEI0x = true
+    // const inputTokenAmountEI0x =
+    //   bestOptionResult.exchangeIssuanceData?.inputTokenAmount
+    // if (inputTokenAmountEI0x && inputTokenAmountEI0x.gt(inputBalance)) {
+    //   shouldUseEI0x = false
+    // }
+    // let shouldUseEILev = true
+    // const inputTokenAmountEILev =
+    //   bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount
+    // if (inputTokenAmountEILev && inputTokenAmountEILev.gt(inputBalance)) {
+    //   shouldUseEILev = false
+    // }
 
-    const gas0x = gasPrice0x.mul(gasLimit0x)
-    const gasEI = gasPrice.mul(gasLimitEI)
-    const gasLevEI = gasPrice.mul(gasLimitLevEI)
-
-    const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
-    let shouldUseEI0x = true
-    const inputTokenAmountEI0x =
-      bestOptionResult.exchangeIssuanceData?.inputTokenAmount
-    if (inputTokenAmountEI0x && inputTokenAmountEI0x.gt(inputBalance)) {
-      shouldUseEI0x = false
-    }
-    let shouldUseEILev = true
-    const inputTokenAmountEILev =
-      bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount
-    if (inputTokenAmountEILev && inputTokenAmountEILev.gt(inputBalance)) {
-      shouldUseEILev = false
-    }
-
-    const fullCosts0x = getFullCostsInUsd(
-      toWei(sellTokenAmount, sellToken.decimals),
-      gas0x,
-      sellToken.decimals,
-      sellTokenPrice,
-      nativeTokenPrice
-    )
-    const fullCostsEI = shouldUseEI0x
-      ? getFullCostsInUsd(
-          bestOptionResult.exchangeIssuanceData?.inputTokenAmount,
-          gasEI,
-          sellToken.decimals,
-          sellTokenPrice,
-          nativeTokenPrice
-        )
-      : null
-    const fullCostsLevEI = shouldUseEILev
-      ? getFullCostsInUsd(
-          bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount,
-          gasLevEI,
-          sellToken.decimals,
-          sellTokenPrice,
-          nativeTokenPrice
-        )
-      : null
-
-    console.log(fullCosts0x, fullCostsEI, fullCostsLevEI, 'FC')
-
-    const priceImpactDex = parseFloat(
-      bestOptionResult?.dexData?.estimatedPriceImpact ?? '5'
-    )
-    const bestOption = getBestTradeOption(
-      fullCosts0x,
-      fullCostsEI,
-      fullCostsLevEI,
-      priceImpactDex
-    )
+    const bestOption = getBestOptionFromQuoteType(quoteResult.bestQuote)
     const bestOptionIs0x = bestOption === QuickTradeBestOption.zeroEx
     const bestOptionIsLevEI =
       bestOption === QuickTradeBestOption.leveragedExchangeIssuance
 
+    const quoteZeroEx = quoteResult.quotes.zeroEx
     const tradeDataEI = bestOptionIsLevEI
-      ? bestOptionResult.leveragedExchangeIssuanceData
-      : bestOptionResult.exchangeIssuanceData
-    const tradeDataSetAmountEI = bestOptionIsLevEI
-      ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
-        BigNumber.from(0)
-      : bestOptionResult.exchangeIssuanceData?.setTokenAmount ??
-        BigNumber.from(0)
+      ? quoteResult.quotes.exchangeIssuanceLeveraged
+      : quoteResult.quotes.exchangeIssuanceZeroEx
 
     const slippageColorCoding = getSlippageColorCoding(slippage, isDarkMode)
     const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(
-          bestOptionResult.dexData,
           buyToken,
+          quoteZeroEx?.gasCosts ?? BigNumber.from(0),
+          quoteZeroEx?.minOutput ?? BigNumber.from(0),
+          quoteZeroEx?.sources ?? [],
           slippage,
           slippageColorCoding,
           chain?.id
         )
       : getTradeInfoDataFromEI(
-          tradeDataSetAmountEI,
-          gasPrice,
-          bestOptionIsLevEI ? gasLimitLevEI : gasLimitEI,
+          tradeDataEI?.setTokenAmount ?? BigNumber.from(0),
+          tradeDataEI?.gasPrice ?? BigNumber.from(0),
+          tradeDataEI?.gas ?? BigNumber.from(0),
           buyToken,
           sellToken,
-          tradeDataEI,
+          tradeDataEI?.inputOutputTokenAmount ?? BigNumber.from(0),
           slippage,
           slippageColorCoding,
           chain?.id,
@@ -338,10 +293,10 @@ const QuickTrade = (props: {
     const buyTokenAmountFormatted = getFormattedOuputTokenAmount(
       bestOption !== QuickTradeBestOption.zeroEx,
       buyToken.decimals,
-      bestOptionResult?.success
-        ? bestOptionResult.dexData?.minOutput
-        : undefined,
-      isBuying ? tradeDataEI?.setTokenAmount : tradeDataEI?.inputTokenAmount
+      quoteZeroEx?.minOutput ?? BigNumber.from(0),
+      isBuying
+        ? tradeDataEI?.setTokenAmount
+        : tradeDataEI?.inputOutputTokenAmount
     )
 
     console.log('BESTOPTION', bestOption)
@@ -361,7 +316,7 @@ const QuickTrade = (props: {
    */
   useEffect(() => {
     determineBestOption()
-  }, [bestOptionResult])
+  }, [quoteResult])
 
   useEffect(() => {
     setTradeInfoData([])
@@ -396,6 +351,7 @@ const QuickTrade = (props: {
       buyToken,
       // buyTokenAmount,
       buyTokenPrice,
+      nativeTokenPrice,
       isBuying,
       slippage
     )
@@ -663,7 +619,7 @@ const QuickTrade = (props: {
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
-            {bestOptionResult.error.message}
+            {}
           </Text>
         )}
         <Flex my='8px'>{chain?.id === 1 && <FlashbotsRpcMessage />}</Flex>
@@ -705,6 +661,7 @@ const QuickTrade = (props: {
     </Flex>
   )
 }
+// TODO: fetching error
 
 const ProtectionWarning = (props: { isDarkMode: boolean }) => {
   const borderColor = props.isDarkMode ? colors.icWhite : colors.black
@@ -734,53 +691,17 @@ const ProtectionWarning = (props: { isDarkMode: boolean }) => {
   )
 }
 
-export function getBestTradeOption(
-  fullCosts0x: number | null,
-  fullCostsEI: number | null,
-  fullCostsLevEI: number | null,
-  priceImpactDex: number
+function getBestOptionFromQuoteType(
+  quoteType: QuoteType
 ): QuickTradeBestOption {
-  if (fullCostsEI === null && fullCostsLevEI === null) {
-    return QuickTradeBestOption.zeroEx
+  switch (quoteType) {
+    case QuoteType.exchangeIssuanceLeveraged:
+      return QuickTradeBestOption.leveragedExchangeIssuance
+    case QuoteType.exchangeIssuanceZeroEx:
+      return QuickTradeBestOption.exchangeIssuance
+    default:
+      return QuickTradeBestOption.zeroEx
   }
-
-  const quotes: number[][] = []
-  if (fullCosts0x) {
-    quotes.push([QuickTradeBestOption.zeroEx, fullCosts0x])
-  }
-  if (fullCostsEI) {
-    quotes.push([QuickTradeBestOption.exchangeIssuance, fullCostsEI])
-  }
-  if (fullCostsLevEI) {
-    quotes.push([
-      QuickTradeBestOption.leveragedExchangeIssuance,
-      fullCostsLevEI,
-    ])
-  }
-  const cheapestQuotes = quotes.sort((q1, q2) => q1[1] - q2[1])
-
-  if (cheapestQuotes.length <= 0) {
-    return QuickTradeBestOption.zeroEx
-  }
-
-  const cheapestQuote = cheapestQuotes[0]
-  const bestOption = cheapestQuote[0]
-
-  // If only one quote, return best option immediately
-  if (cheapestQuotes.length === 1) {
-    return bestOption
-  }
-
-  // If multiple quotes, check price impact of 0x option
-  if (
-    bestOption === QuickTradeBestOption.zeroEx &&
-    priceImpactDex >= maxPriceImpact
-  ) {
-    // In case price impact is too high, return cheapest exchange issuance
-    return cheapestQuotes[1][0]
-  }
-
-  return bestOption
 }
 
 export default QuickTrade
