@@ -41,7 +41,7 @@ function useApprovalState(
   // TODO: we'd actually have to test for pending approval as well here
   return useMemo(
     () =>
-      tokenAddress && spenderAddress && isError && isLoading && !data
+      tokenAddress && spenderAddress && data && !isError && !isLoading
         ? isApproved
           ? ApprovalState.Approved
           : ApprovalState.NotApproved
