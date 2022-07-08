@@ -27,12 +27,12 @@ function useApprovalState(
 ): ApprovalState {
   const { address } = useWallet()
   const { data, isError, isLoading } = useContractRead({
-    addressOrName: 'tokenAddress',
+    addressOrName: tokenAddress ?? '',
     contractInterface: ERC20Interface,
     functionName: 'allowance',
     args: [address, spenderAddress],
   })
-  console.log('data', data)
+  // console.log('data', data)
 
   if (!tokenAddress || !spenderAddress || !data) {
     return ApprovalState.Unknown
