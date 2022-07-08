@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { useNetwork } from 'wagmi'
+
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   getExchangeIssuanceLeveragedQuote,
@@ -19,8 +21,7 @@ import {
   STETH,
   Token,
 } from 'constants/tokens'
-import { useBalance } from 'hooks/useBalance'
-import { useNetwork } from 'hooks/useNetwork'
+import { useBalances } from 'hooks/useBalance'
 import { toWei } from 'utils'
 import { getExchangeIssuanceGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
@@ -149,8 +150,9 @@ export const getSetTokenAmount = (
 
 export const useBestTradeOption = () => {
   const { provider } = useWallet()
-  const { chainId } = useNetwork()
-  const { getBalance } = useBalance()
+  const { chain } = useNetwork()
+  const { getBalance } = useBalances()
+  const chainId = chain?.id
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)

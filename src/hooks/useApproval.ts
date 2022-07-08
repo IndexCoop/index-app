@@ -73,10 +73,11 @@ export const useApproval = (
         provider.getSigner()
       )
       const tx = await tokenContract.approve(spenderAddress, amount)
-      if (tx) {
-        const storedTx = getStoredTransaction(tx, chain?.id)
-        addTransaction(storedTx)
-      }
+      // TODO:
+      // if (tx) {
+      //   const storedTx = getStoredTransaction(tx, chain?.id)
+      //   addTransaction(storedTx)
+      // }
       const receipt = await tx.wait()
       setIsApproved(receipt.status === 1)
       setIsApproving(false)
