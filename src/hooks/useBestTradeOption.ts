@@ -377,7 +377,6 @@ export const useBestTradeOption = () => {
           chainId ?? 1
         )
         if (quoteLeveraged) {
-          // Will replace above
           const gasLimit = BigNumber.from(1800000)
           exchangeIssuanceLeveragedQuote = {
             type: QuoteType.exchangeIssuanceLeveraged,
@@ -435,7 +434,6 @@ export const useBestTradeOption = () => {
               spendingTokenBalance,
               quote0x.componentQuotes
             )
-            // Will replace above
             exchangeIssuanceZeroExQuote = {
               type: QuoteType.exchangeIssuanceZeroEx,
               isIssuance,
