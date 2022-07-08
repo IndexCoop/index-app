@@ -1,12 +1,15 @@
 import { colors } from 'styles/colors'
 
+import { useNetwork, useSwitchNetwork } from 'wagmi'
+
 import { Select, useColorModeValue } from '@chakra-ui/react'
 
 import { SUPPORTED_CHAINS } from 'constants/chains'
-import { useNetwork } from 'hooks/useNetwork'
 
 const NetworkSelector = () => {
-  const { chainId, changeNetwork } = useNetwork()
+  const { chain } = useNetwork()
+  const { switchNetwork } = useSwitchNetwork()
+  const chainId = chain?.id
 
   const backgroundColor = useColorModeValue(colors.black, colors.white)
   const textColor = useColorModeValue(colors.white, colors.black)
@@ -25,7 +28,8 @@ const NetworkSelector = () => {
       minWidth='50px'
       w='130px'
       onChange={(event) => {
-        changeNetwork(event.target.value)
+        const chainId = Number(event.target.value)
+        switchNetwork?.(chainId)
       }}
       value={chainId}
     >
