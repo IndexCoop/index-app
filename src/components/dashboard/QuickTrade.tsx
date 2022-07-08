@@ -15,7 +15,6 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
 import {
   getExchangeIssuanceLeveragedContractAddress,
   getExchangeIssuanceZeroExContractAddress,
@@ -69,7 +68,7 @@ const QuickTrade = (props: {
   isNarrowVersion?: boolean
   singleToken?: Token
 }) => {
-  const { address, provider } = useWallet()
+  const { address } = useWallet()
   const { chain } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
@@ -171,13 +170,7 @@ const QuickTrade = (props: {
     sellToken,
     bestOptionResult?.success ? bestOptionResult.dexData : null
   )
-  const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance(
-    isBuying,
-    sellToken,
-    buyToken,
-    slippage,
-    bestOptionResult?.success ? bestOptionResult.exchangeIssuanceData : null
-  )
+  const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance()
 
   const { executeLevEITrade, isTransactingLevEI } =
     useTradeLeveragedExchangeIssuance(
@@ -229,12 +222,9 @@ const QuickTrade = (props: {
   )
 
   const determineBestOption = async () => {
-    if (!provider) return
-
-    if (
-      quoteResult.bestQuote === QuoteType.notAvailable ||
-      !quoteResult.success
-    ) {
+    const quoteNotAvailable =
+      quoteResult.bestQuote === QuoteType.notAvailable || !quoteResult.success
+    if (quoteNotAvailable) {
       setTradeInfoData([])
       return
     }
@@ -300,9 +290,9 @@ const QuickTrade = (props: {
     )
 
     console.log('BESTOPTION', bestOption)
-    setTradeInfoData(tradeInfoData)
     setBestOption(bestOption)
     setBuyTokenAmountFormatted(buyTokenAmountFormatted)
+    setTradeInfoData(tradeInfoData)
   }
 
   const resetTradeData = () => {
@@ -498,7 +488,10 @@ const QuickTrade = (props: {
         await executeTrade()
         break
       case QuickTradeBestOption.exchangeIssuance:
-        await executeEITrade()
+        await executeEITrade(
+          quoteResult.quotes.exchangeIssuanceZeroEx,
+          slippage
+        )
         break
       case QuickTradeBestOption.leveragedExchangeIssuance:
         await executeLevEITrade()

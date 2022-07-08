@@ -56,12 +56,12 @@ interface Quote {
   inputOutputTokenAmount: BigNumber
 }
 
-interface ExchangeIssuanceLeveragedQuote extends Quote {
+export interface ExchangeIssuanceLeveragedQuote extends Quote {
   swapDataDebtCollateral: SwapData
   swapDataPaymentToken: SwapData
 }
 
-interface ExchangeIssuanceZeroExQuote extends Quote {
+export interface ExchangeIssuanceZeroExQuote extends Quote {
   componentQuotes: string[]
 }
 
