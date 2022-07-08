@@ -163,7 +163,9 @@ const LiquidityMiningProvider = (props: { children: any }) => {
     dpi2020StakingRewardsAddress,
     stakingInterface
   )
-  const { send: exitDpi2020 } = useContractFunction(dpi2020Contract, 'exit')
+  // TODO: all writing? functions
+  // const { send: exitDpi2020 } = useContractFunction(dpi2020Contract, 'exit')
+  const exitDpi2020 = () => {}
 
   /**
    * DPI 2021
@@ -172,7 +174,8 @@ const LiquidityMiningProvider = (props: { children: any }) => {
     dpi2021StakingRewardsAddress,
     stakingInterface
   )
-  const { send: exitDpi2021 } = useContractFunction(dpi2021Contract, 'exit')
+  // const { send: exitDpi2021 } = useContractFunction(dpi2021Contract, 'exit')
+  const exitDpi2021 = () => {}
 
   /**
    * MVI 2021
@@ -181,7 +184,8 @@ const LiquidityMiningProvider = (props: { children: any }) => {
     mviStakingRewardsAddress,
     stakingInterface
   )
-  const { send: exitMvi2021 } = useContractFunction(mvi2021Contract, 'exit')
+  // const { send: exitMvi2021 } = useContractFunction(mvi2021Contract, 'exit')
+  const exitMvi2021 = () => {}
 
   /**
    * GMI 2022
@@ -206,65 +210,68 @@ const LiquidityMiningProvider = (props: { children: any }) => {
 
   const gmiContract = new Contract(gmiStakingRewardsAddress, stakingInterface)
 
-  const { send: stakeGmi } = useContractFunction(gmiContract, 'stake')
-  const { send: claimGmi } = useContractFunction(gmiContract, 'getReward')
-  const { send: exitGmi } = useContractFunction(gmiContract, 'exit')
+  // const { send: stakeGmi } = useContractFunction(gmiContract, 'stake')
+  // const { send: claimGmi } = useContractFunction(gmiContract, 'getReward')
+  // const { send: exitGmi } = useContractFunction(gmiContract, 'exit')
+  const stakeGmi = (num: BigNumber) => {}
+  const claimGmi = () => {}
+  const exitGmi = () => {}
 
-  const apyGmi = calculateApyStakingRewardV2({
-    rewardsForDuration: useGetRewardForDuration(gmiStakingRewardsAddress),
-    rewardsPrice: selectLatestMarketData(index?.hourlyPrices),
-    stakedTotalSupply: useTotalSupply(gmiStakingRewardsAddress),
-    stakedPrice: selectLatestMarketData(gmi?.hourlyPrices),
-  })
-
-  useEffect(() => {
-    setGmi2022((prev) => ({
-      ...prev,
-      apy: apyGmi,
-    }))
-  }, [apyGmi])
-
-  useEffect(() => {
-    if (
-      address &&
-      provider &&
-      dpi2020StakingRewardsAddress &&
-      dpi2021StakingRewardsAddress &&
-      gmiStakingRewardsAddress &&
-      mviStakingRewardsAddress
-    ) {
-      setUniswapEthDpi2020({
-        onApprove: () => {},
-        onStake: () => {},
-        onHarvest: () => {},
-        onUnstakeAndHarvest: exitDpi2020,
-      })
-      setUniswapEthDpi2021({
-        onApprove: () => {},
-        onStake: () => {},
-        onHarvest: () => {},
-        onUnstakeAndHarvest: exitDpi2021,
-      })
-      setUniswapEthMvi2021({
-        onApprove: () => {},
-        onStake: () => {},
-        onHarvest: () => {},
-        onUnstakeAndHarvest: exitMvi2021,
-      })
-      setGmi2022({
-        apy: apyGmi,
-        isApproved: isApprovedGmi,
-        isApproving: isApprovingGmi,
-        isPoolActive: isPoolActiveGmi,
-        onApprove: onApproveGmi,
-        onStake: async (token: string) => {
-          await stakeGmi(toWei(token))
-        },
-        onHarvest: claimGmi,
-        onUnstakeAndHarvest: exitGmi,
-      })
-    }
-  }, [address, provider])
+  // const apyGmi = calculateApyStakingRewardV2({
+  //   rewardsForDuration: useGetRewardForDuration(gmiStakingRewardsAddress),
+  //   rewardsPrice: selectLatestMarketData(index?.hourlyPrices),
+  //   stakedTotalSupply: useTotalSupply(gmiStakingRewardsAddress),
+  //   stakedPrice: selectLatestMarketData(gmi?.hourlyPrices),
+  // })
+  //
+  // useEffect(() => {
+  //   setGmi2022((prev) => ({
+  //     ...prev,
+  //     apy: apyGmi,
+  //   }))
+  // }, [apyGmi])
+  //
+  // useEffect(() => {
+  //   if (
+  //     address &&
+  //     provider &&
+  //     dpi2020StakingRewardsAddress &&
+  //     dpi2021StakingRewardsAddress &&
+  //     gmiStakingRewardsAddress &&
+  //     mviStakingRewardsAddress
+  //   ) {
+  //     setUniswapEthDpi2020({
+  //       onApprove: () => {},
+  //       onStake: () => {},
+  //       onHarvest: () => {},
+  //       onUnstakeAndHarvest: exitDpi2020,
+  //     })
+  //     setUniswapEthDpi2021({
+  //       onApprove: () => {},
+  //       onStake: () => {},
+  //       onHarvest: () => {},
+  //       onUnstakeAndHarvest: exitDpi2021,
+  //     })
+  //     setUniswapEthMvi2021({
+  //       onApprove: () => {},
+  //       onStake: () => {},
+  //       onHarvest: () => {},
+  //       onUnstakeAndHarvest: exitMvi2021,
+  //     })
+  //     setGmi2022({
+  //       apy: apyGmi,
+  //       isApproved: isApprovedGmi,
+  //       isApproving: isApprovingGmi,
+  //       isPoolActive: isPoolActiveGmi,
+  //       onApprove: onApproveGmi,
+  //       onStake: async (token: string) => {
+  //         await stakeGmi(toWei(token))
+  //       },
+  //       onHarvest: claimGmi,
+  //       onUnstakeAndHarvest: exitGmi,
+  //     })
+  //   }
+  // }, [address, provider])
 
   return (
     <LiquidityMiningContext.Provider

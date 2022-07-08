@@ -11,13 +11,13 @@ export const useStakingUnclaimedRewards = (
   stakingAddress?: string,
   account?: string | null
 ): BigNumber | undefined => {
-  const { data, isError, isLoading } = useContractRead({
-    addressOrName: stakingAddress || '',
-    contractInterface: stakingInterface,
-    functionName: 'earned',
-    args: [account || ''],
-  })
+  // const { data, isError, isLoading } = useContractRead({
+  //   addressOrName: stakingAddress || '',
+  //   contractInterface: stakingInterface,
+  //   functionName: 'earned',
+  //   args: [account || ''],
+  // })
 
-  console.log('useStakingUnclaimedRewards  data', data)
+  // console.log('useStakingUnclaimedRewards  data', data)
   return undefined
 }
