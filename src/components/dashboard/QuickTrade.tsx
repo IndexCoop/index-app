@@ -171,31 +171,8 @@ const QuickTrade = (props: {
     bestOptionResult?.success ? bestOptionResult.dexData : null
   )
   const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance()
-
   const { executeLevEITrade, isTransactingLevEI } =
-    useTradeLeveragedExchangeIssuance(
-      isBuying,
-      sellToken,
-      buyToken,
-      // TODO: simplify by just passing leveragedExchangeIssuanceData || null
-      // TODO: test inside to only exectue trade when data !== null
-      bestOptionResult?.success
-        ? bestOptionResult.leveragedExchangeIssuanceData?.setTokenAmount ??
-            BigNumber.from(0)
-        : BigNumber.from(0),
-      bestOptionResult?.success
-        ? bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount ??
-            BigNumber.from(0)
-        : BigNumber.from(0),
-      slippage,
-      bestOptionResult?.success
-        ? bestOptionResult?.leveragedExchangeIssuanceData
-            ?.swapDataDebtCollateral
-        : undefined,
-      bestOptionResult?.success
-        ? bestOptionResult?.leveragedExchangeIssuanceData?.swapDataPaymentToken
-        : undefined
-    )
+    useTradeLeveragedExchangeIssuance()
 
   const hasInsufficientFunds = getHasInsufficientFunds(
     bestOption === null,
@@ -494,7 +471,10 @@ const QuickTrade = (props: {
         )
         break
       case QuickTradeBestOption.leveragedExchangeIssuance:
-        await executeLevEITrade()
+        await executeLevEITrade(
+          quoteResult.quotes.exchangeIssuanceLeveraged,
+          slippage
+        )
         break
       default:
       // Nothing
