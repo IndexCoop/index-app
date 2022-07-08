@@ -84,29 +84,6 @@ type QuoteResult = {
   success: boolean
 }
 
-export interface ExchangeIssuanceQuote {
-  tradeData: string[]
-  inputTokenAmount: BigNumber
-  setTokenAmount: BigNumber
-  gas: BigNumber
-}
-
-export type LeveragedExchangeIssuanceQuote = {
-  swapDataDebtCollateral: SwapData
-  swapDataPaymentToken: SwapData
-  inputTokenAmount: BigNumber
-  setTokenAmount: BigNumber
-}
-
-type Result<_, E = Error> =
-  | {
-      success: true
-      dexData: ZeroExData | null
-      exchangeIssuanceData: ExchangeIssuanceQuote | null | undefined
-      leveragedExchangeIssuanceData: LeveragedExchangeIssuanceQuote | null
-    }
-  | { success: false; error: E }
-
 // To determine if price impact for DEX is smaller 5%
 export const maxPriceImpact = 5
 
@@ -261,7 +238,6 @@ export const useBestTradeOption = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [quoteResult, setQuoteResult] =
     useState<QuoteResult>(defaultQuoteResult)
-  const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
 
   /**
    *
@@ -308,7 +284,6 @@ export const useBestTradeOption = () => {
       chainId
     )
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
-    const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     const gasLimit0x = BigNumber.from(dexSwapOption?.gas ?? '0')
     const gasPrice0x = BigNumber.from(dexSwapOption?.gasPrice ?? '0')
     const gas0x = gasPrice0x.mul(gasLimit0x)
@@ -359,10 +334,7 @@ export const useBestTradeOption = () => {
     const gasPrice = await gasStation.getGasPrice()
 
     /* Check for Exchange Issuance option */
-    let exchangeIssuanceOption: ExchangeIssuanceQuote | null = null
     let exchangeIssuanceZeroExQuote: ExchangeIssuanceZeroExQuote | null = null
-    let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
-      null
     let exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
       null
 
@@ -405,12 +377,6 @@ export const useBestTradeOption = () => {
           chainId ?? 1
         )
         if (quoteLeveraged) {
-          leveragedExchangeIssuanceOption = {
-            swapDataDebtCollateral: quoteLeveraged.swapDataDebtCollateral,
-            swapDataPaymentToken: quoteLeveraged.swapDataPaymentToken,
-            inputTokenAmount: quoteLeveraged.inputOutputTokenAmount,
-            setTokenAmount: quoteLeveraged.setTokenAmount,
-          }
           // Will replace above
           const gasLimit = BigNumber.from(1800000)
           exchangeIssuanceLeveragedQuote = {
@@ -469,12 +435,6 @@ export const useBestTradeOption = () => {
               spendingTokenBalance,
               quote0x.componentQuotes
             )
-            exchangeIssuanceOption = {
-              tradeData: quote0x.componentQuotes,
-              inputTokenAmount: quote0x.inputOutputTokenAmount,
-              setTokenAmount: quote0x.setTokenAmount,
-              gas: gasEstimate,
-            }
             // Will replace above
             exchangeIssuanceZeroExQuote = {
               type: QuoteType.exchangeIssuanceZeroEx,
@@ -503,18 +463,8 @@ export const useBestTradeOption = () => {
         }
     }
 
-    console.log(
-      'exchangeIssuanceOption',
-      exchangeIssuanceOption,
-      exchangeIssuanceOption?.inputTokenAmount.toString()
-    )
-    console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
     console.log('////////')
-    console.log(
-      'levExchangeIssuanceOption',
-      leveragedExchangeIssuanceOption,
-      leveragedExchangeIssuanceOption?.inputTokenAmount.toString()
-    )
+    console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
     console.log(
       'exchangeIssuanceLeveragedQuote',
       exchangeIssuanceLeveragedQuote
@@ -550,23 +500,12 @@ export const useBestTradeOption = () => {
         zeroEx: zeroExQuote,
       },
     }
-    // console.log(quoteResult)
 
-    const result: Result<ZeroExData, Error> = dexSwapError
-      ? { success: false, error: dexSwapError }
-      : {
-          success: true,
-          dexData: dexSwapOption,
-          exchangeIssuanceData: exchangeIssuanceOption,
-          leveragedExchangeIssuanceData: leveragedExchangeIssuanceOption,
-        }
-    setResult(result)
     setQuoteResult(quoteResult)
     setIsFetching(false)
   }
 
   return {
-    bestOptionResult: result,
     fetchAndCompareOptions,
     isFetchingTradeData: isFetching,
     quoteResult,

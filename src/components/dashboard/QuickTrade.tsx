@@ -115,12 +115,8 @@ const QuickTrade = (props: {
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
-  const {
-    bestOptionResult,
-    isFetchingTradeData,
-    fetchAndCompareOptions,
-    quoteResult,
-  } = useBestTradeOption()
+  const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
+    useBestTradeOption()
 
   const hasFetchingError = !quoteResult.success && !isFetchingTradeData
 
