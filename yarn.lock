@@ -4192,10 +4192,10 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@uniswap/smart-order-router@^2.5.32":
-  version "2.5.32"
-  resolved "https://registry.yarnpkg.com/@uniswap/smart-order-router/-/smart-order-router-2.5.32.tgz#c927b108338af42d45e409aaab787eb58074bc58"
-  integrity sha512-O9K+3kvuSNzdmrAtWBqMV2ADNrEo/F4pwS4TohykbCVeQQ2tPd5jhIPgPUPb1m5dYrCAZwDReibEzIHRf+Kwxw==
+"@uniswap/smart-order-router@^2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@uniswap/smart-order-router/-/smart-order-router-2.6.0.tgz#9dff3effe1a33ff738e6e1b79d45df3d2056adf8"
+  integrity sha512-4SvzVLJXB8/cJEKY8XicPkUPTRx7ojGLcJcqNwS+gSh3uIk+xYRjC1Vh2BKYC7Q5gjfcAFW+Z7mPL00DKrGgQQ==
   dependencies:
     "@nomiclabs/hardhat-ethers" "^2.0.6"
     "@types/async-retry" "^1.4.2"
