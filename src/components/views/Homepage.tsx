@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { useAccount } from 'wagmi'
+import { useAccount, useNetwork } from 'wagmi'
 
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
@@ -18,7 +18,6 @@ import Disclaimer from 'components/product/Disclaimer'
 import { PriceChartData } from 'components/product/MarketChart'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
-import { useNetwork } from 'hooks/useNetwork'
 import { useUserMarketData } from 'hooks/useUserMarketData'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
@@ -29,7 +28,8 @@ const Dashboard = () => {
   const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
     useUserMarketData()
   const { address } = useAccount()
-  const { chainId } = useNetwork()
+  const { chain } = useNetwork()
+  const chainId = chain?.id
   const isWeb = useBreakpointValue({
     base: false,
     md: true,

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
+import { useNetwork } from 'wagmi'
 
 import { InfoOutlineIcon, UpDownIcon } from '@chakra-ui/icons'
 import {
@@ -59,7 +60,6 @@ import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
-import { useNetwork } from 'wagmi'
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -125,8 +125,9 @@ const QuickTrade = (props: {
     bestOptionResult && !bestOptionResult.success && !isFetchingTradeData
 
   const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chain?.id)
-  const spenderAddressLevEIL =
-    getExchangeIssuanceLeveragedContractAddress(chain?.id)
+  const spenderAddressLevEIL = getExchangeIssuanceLeveragedContractAddress(
+    chain?.id
+  )
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
 

@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { BigNumber } from 'ethers'
 import { colors, useICColorMode } from 'styles/colors'
+import { useNetwork } from 'wagmi'
 
 import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 
 import { Token } from 'constants/tokens'
-import { useBalance } from 'hooks/useBalance'
-import { useNetwork } from 'hooks/useNetwork'
+import { useBalances } from 'hooks/useBalance'
 import { isValidTokenInput } from 'utils'
 
 import { formattedBalance } from './QuickTradeFormatter'
@@ -32,9 +32,10 @@ const QuickTradeSelector = (props: {
   onChangeInput?: (token: Token, input: string) => void
   onSelectedToken: (symbol: string) => void
 }) => {
-  const { chainId } = useNetwork()
-  const { getBalance } = useBalance()
+  const { chain } = useNetwork()
+  const { getBalance } = useBalances()
   const { isDarkMode } = useICColorMode()
+  const chainId = chain?.id
 
   const [inputString, setInputString] = useState<string>(
     props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''

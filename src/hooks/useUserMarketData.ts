@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { PriceChartRangeOption } from 'components/product/MarketChart'
-import { useBalance } from 'hooks/useBalance'
+import { useBalances } from 'hooks/useBalance'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -80,7 +80,7 @@ export const useUserMarketData = () => {
       jpgBalance,
       mnyeBalance,
     },
-  } = useBalance()
+  } = useBalances()
   const {
     eth,
     bed,

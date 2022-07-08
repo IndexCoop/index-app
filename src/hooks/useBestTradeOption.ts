@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { useNetwork } from 'wagmi'
+
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   getExchangeIssuanceLeveragedQuote,
@@ -19,10 +21,10 @@ import {
   STETH,
   Token,
 } from 'constants/tokens'
-import { useBalance } from 'hooks/useBalance'
-import { useNetwork } from 'hooks/useNetwork'
+import { useBalances } from 'hooks/useBalance'
 import { toWei } from 'utils'
 import { getExchangeIssuanceGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
+import { GasStation } from 'utils/gasStation'
 import { getAddressForToken } from 'utils/tokens'
 import {
   getNetworkKey,
@@ -31,6 +33,46 @@ import {
 } from 'utils/zeroExUtils'
 
 import { useWallet } from './useWallet'
+
+enum QuoteType {
+  notAvailable = 'notAvailable',
+  exchangeIssuanceLeveraged = 'exchangeIssuanceLeveraged',
+  exchangeIssuanceZeroEx = 'exchangeIssuanceZeroEx',
+  zeroEx = 'zeroEx',
+}
+
+interface Quote {
+  type: QuoteType
+  isIssuance: boolean
+  inputToken: Token
+  outputToken: Token
+  gas: BigNumber
+  gasPrice: BigNumber
+  gasCosts: BigNumber
+  fullCostsInUsd: number
+  priceImpact: number
+  setTokenAmount: BigNumber
+  inputOutputTokenAmount: BigNumber
+}
+
+interface ExchangeIssuanceLeveragedQuote extends Quote {
+  swapDataDebtCollateral: SwapData
+  swapDataPaymentToken: SwapData
+}
+
+interface ExchangeIssuanceZeroExQuote extends Quote {
+  componentQuotes: string[]
+}
+
+type QuoteResult = {
+  bestQuote: QuoteType
+  quotes: {
+    exchangeIssuanceLeveraged: ExchangeIssuanceLeveragedQuote | null
+    exchangeIssuanceZeroEx: ExchangeIssuanceZeroExQuote | null
+    zeroEx: Quote | null
+  }
+  success: boolean
+}
 
 export interface ExchangeIssuanceQuote {
   tradeData: string[]
@@ -147,12 +189,25 @@ export const getSetTokenAmount = (
   return setTokenAmount
 }
 
+const defaultQuoteResult: QuoteResult = {
+  bestQuote: QuoteType.notAvailable,
+  quotes: {
+    exchangeIssuanceLeveraged: null,
+    exchangeIssuanceZeroEx: null,
+    zeroEx: null,
+  },
+  success: false,
+}
+
 export const useBestTradeOption = () => {
   const { provider } = useWallet()
-  const { chainId } = useNetwork()
-  const { getBalance } = useBalance()
+  const { chain } = useNetwork()
+  const { getBalance } = useBalances()
+  const chainId = chain?.id
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
+  const [quoteResult, setQuoteResult] =
+    useState<QuoteResult>(defaultQuoteResult)
   const [result, setResult] = useState<Result<ZeroExData, Error> | null>(null)
 
   /**
@@ -200,6 +255,27 @@ export const useBestTradeOption = () => {
     )
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
     const dexSwapError = zeroExResult.success ? null : zeroExResult.error
+    const zeroExQuote: Quote | null = dexSwapOption
+      ? {
+          type: QuoteType.zeroEx,
+          isIssuance,
+          inputToken: sellToken,
+          outputToken: buyToken,
+          // TODO:
+          gas: BigNumber.from(dexSwapOption.gas),
+          gasPrice: BigNumber.from(dexSwapOption.gasPrice),
+          // TODO:
+          gasCosts: BigNumber.from(0),
+          fullCostsInUsd: 0,
+          priceImpact: 0,
+          setTokenAmount: BigNumber.from(
+            isIssuance ? dexSwapOption.buyAmount : sellTokenAmount
+          ),
+          inputOutputTokenAmount: BigNumber.from(
+            isIssuance ? sellTokenAmount : dexSwapOption.buyAmount
+          ),
+        }
+      : null
 
     /* Determine set token amount based on different factors */
     let setTokenAmount = getSetTokenAmount(
@@ -211,9 +287,15 @@ export const useBestTradeOption = () => {
       dexSwapOption
     )
 
+    const gasStation = new GasStation(provider)
+    const gasPrice = await gasStation.getGasPrice()
+
     /* Check for Exchange Issuance option */
     let exchangeIssuanceOption: ExchangeIssuanceQuote | null = null
+    let exchangeIssuanceZeroExQuote: ExchangeIssuanceZeroExQuote | null = null
     let leveragedExchangeIssuanceOption: LeveragedExchangeIssuanceQuote | null =
+      null
+    let exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
       null
 
     // Create an instance of ZeroExApi (to pass to quote functions)
@@ -261,6 +343,22 @@ export const useBestTradeOption = () => {
             inputTokenAmount: quoteLeveraged.inputOutputTokenAmount,
             setTokenAmount: quoteLeveraged.setTokenAmount,
           }
+          // Will replace above
+          exchangeIssuanceLeveragedQuote = {
+            type: QuoteType.exchangeIssuanceLeveraged,
+            isIssuance,
+            inputToken: sellToken,
+            outputToken: buyToken,
+            gas: BigNumber.from(1800000),
+            gasPrice,
+            gasCosts: BigNumber.from(1800000).mul(gasPrice),
+            fullCostsInUsd: 0,
+            priceImpact: 0,
+            setTokenAmount,
+            inputOutputTokenAmount: quoteLeveraged.inputOutputTokenAmount,
+            swapDataDebtCollateral: quoteLeveraged.swapDataDebtCollateral,
+            swapDataPaymentToken: quoteLeveraged.swapDataPaymentToken,
+          }
         }
         console.log(slippage, slippagePercentage, quoteLeveraged)
       } catch (e) {
@@ -301,6 +399,21 @@ export const useBestTradeOption = () => {
               setTokenAmount: quote0x.setTokenAmount,
               gas: gasEstimate,
             }
+            // Will replace above
+            exchangeIssuanceZeroExQuote = {
+              type: QuoteType.exchangeIssuanceZeroEx,
+              isIssuance,
+              inputToken: sellToken,
+              outputToken: buyToken,
+              gas: gasEstimate,
+              gasPrice,
+              gasCosts: gasEstimate.mul(gasPrice),
+              fullCostsInUsd: 0,
+              priceImpact: 0,
+              setTokenAmount,
+              inputOutputTokenAmount: quote0x.inputOutputTokenAmount,
+              componentQuotes: quote0x.componentQuotes,
+            }
           }
         } catch (e) {
           console.warn('error when generating zeroexei option', e)
@@ -312,11 +425,36 @@ export const useBestTradeOption = () => {
       exchangeIssuanceOption,
       exchangeIssuanceOption?.inputTokenAmount.toString()
     )
+    console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
+    console.log('////////')
     console.log(
       'levExchangeIssuanceOption',
       leveragedExchangeIssuanceOption,
       leveragedExchangeIssuanceOption?.inputTokenAmount.toString()
     )
+    console.log(
+      'exchangeIssuanceLeveragedQuote',
+      exchangeIssuanceLeveragedQuote
+    )
+
+    const success =
+      exchangeIssuanceLeveragedQuote !== null ||
+      exchangeIssuanceZeroExQuote !== null ||
+      zeroExQuote !== null
+    console.log('success', success)
+
+    // TODO: determine best option
+
+    const quoteResult: QuoteResult = {
+      success,
+      bestQuote: QuoteType.zeroEx,
+      quotes: {
+        exchangeIssuanceLeveraged: exchangeIssuanceLeveragedQuote,
+        exchangeIssuanceZeroEx: exchangeIssuanceZeroExQuote,
+        zeroEx: zeroExQuote,
+      },
+    }
+    console.log(quoteResult)
 
     const result: Result<ZeroExData, Error> = dexSwapError
       ? { success: false, error: dexSwapError }
@@ -327,12 +465,14 @@ export const useBestTradeOption = () => {
           leveragedExchangeIssuanceData: leveragedExchangeIssuanceOption,
         }
     setResult(result)
+    setQuoteResult(quoteResult)
     setIsFetching(false)
   }
 
   return {
     bestOptionResult: result,
-    isFetchingTradeData: isFetching,
     fetchAndCompareOptions,
+    isFetchingTradeData: isFetching,
+    quoteResult,
   }
 }

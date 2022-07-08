@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 
 import StakingModal from 'components/mining/StakingModal'
-import { Balances, useBalance } from 'hooks/useBalance'
+import { Balances, useBalances } from 'hooks/useBalance'
 import {
   LiquidityMiningProps,
   useLiquidityMining,
@@ -81,7 +81,7 @@ const MiningProgram = (props: { program: Program }) => {
     unclaimed,
   } = props.program
   const { address } = useAccount()
-  const { balances } = useBalance()
+  const { balances } = useBalances()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const liquidityMining = useLiquidityMining()
   const { dividerColor, isDarkMode } = useICColorMode()

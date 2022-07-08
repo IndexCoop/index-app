@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { useNetwork, useSwitchNetwork } from 'wagmi'
+
 import { Box, Button, Flex } from '@chakra-ui/react'
 
 import MiningProgram, { Program } from 'components/mining/MiningProgram'
@@ -7,7 +9,6 @@ import WarningMessage from 'components/mining/WarningMessage'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { MAINNET } from 'constants/chains'
-import { useNetwork } from 'hooks/useNetwork'
 
 const programs: Program[] = [
   {
@@ -105,7 +106,9 @@ const programs: Program[] = [
 ]
 
 const LiquidityMining = () => {
-  const { chainId, setMainnet } = useNetwork()
+  const { chain } = useNetwork()
+  const { switchNetwork } = useSwitchNetwork()
+  const chainId = chain?.id
 
   const [showFarms, setShowFarms] = useState(true)
   const [warning, setWarning] = useState<string | null>(null)
@@ -146,7 +149,9 @@ const LiquidityMining = () => {
               })}
             {!showFarms && (
               <Box my='10'>
-                <Button onClick={() => setMainnet()}>Switch to Mainnet</Button>
+                <Button onClick={() => switchNetwork?.(MAINNET.chainId)}>
+                  Switch to Mainnet
+                </Button>
               </Box>
             )}
           </Flex>
