@@ -130,8 +130,8 @@ const QuickTrade = (props: {
   const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
   const [isToggle, setToggle] = useState(true)
   const [isIssue, setIssue] = useState(true)
-  const [estimatedUSDC, setEStimatedUSDC] = useState<string>(
-    BigNumber.from(0).toString()
+  const [estimatedUSDC, setEStimatedUSDC] = useState<BigNumber>(
+    BigNumber.from(0)
   )
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
@@ -181,6 +181,24 @@ const QuickTrade = (props: {
     isApproving: isApprovingForEIZX,
     onApprove: onApproveForEIZX,
   } = useApproval(sellToken, spenderAddress0x, sellTokenAmountInWei)
+  const {
+    isApproved: isApprovedForBye,
+    isApproving: isApprovingForBye,
+    onApprove: onApproveForBye,
+  } = useApproval(
+    buyToken,
+    IssuanceContractAddress,
+    buyTokenAmountInWei.mul(BigNumber.from('2'))
+  )
+  const {
+    isApproved: isAppovedForUSDC,
+    isApproving: isApprovingForUSDC,
+    onApprove: onApproveForUSDC,
+  } = useApproval(
+    USDC,
+    IssuanceContractAddress,
+    estimatedUSDC.mul(BigNumber.from('2'))
+  )
 
   const { executeTrade, isTransacting } = useTrade(
     sellToken,
@@ -226,13 +244,13 @@ const QuickTrade = (props: {
   )
 
   const hasInsufficientUSDC = getHasInsufficientFunds(
-    bestOption === null,
+    bestOption !== null,
     BigNumber.from(estimatedUSDC),
     getBalance(USDC.symbol)
   )
 
   const hasInsufficientBye = getHasInsufficientFunds(
-    bestOption === null,
+    bestOption !== null,
     buyTokenAmountInWei,
     getBalance(buyToken.symbol)
   )
@@ -388,45 +406,22 @@ const QuickTrade = (props: {
    * Issuance Contract
    */
   const getEstimatedBalance = async () => {
+    if (isToggle) return
     const USDCISSUE = BigNumber.from('101781434')
     const USDCREDEEM = BigNumber.from('99556496')
     const buyTokenInWei = toWei(buyTokenAmount, buyToken.decimals)
     const Wei = BigNumber.from('1000000000000000000')
     if (buyTokenInWei.gte(Wei)) {
       if (isIssue) {
-        setEStimatedUSDC(
-          formattedBalance(
-            USDC,
-            USDCISSUE.mul(buyTokenInWei.div(Wei)),
-            USDC.decimals
-          )
-        )
+        setEStimatedUSDC(USDCISSUE.mul(buyTokenInWei.div(Wei)))
       } else {
-        setEStimatedUSDC(
-          formattedBalance(
-            USDC,
-            USDCREDEEM.mul(buyTokenInWei.div(Wei)),
-            USDC.decimals
-          )
-        )
+        setEStimatedUSDC(USDCREDEEM.mul(buyTokenInWei.div(Wei)))
       }
     } else {
       if (isIssue) {
-        setEStimatedUSDC(
-          formattedBalance(
-            USDC,
-            USDCISSUE.div(Wei.div(buyTokenInWei)),
-            USDC.decimals
-          )
-        )
+        setEStimatedUSDC(USDCISSUE.div(Wei.div(buyTokenInWei)))
       } else {
-        setEStimatedUSDC(
-          formattedBalance(
-            USDC,
-            USDCREDEEM.div(Wei.div(buyTokenInWei)),
-            USDC.decimals
-          )
-        )
+        setEStimatedUSDC(USDCREDEEM.div(Wei.div(buyTokenInWei)))
       }
     }
   }
@@ -480,35 +475,50 @@ const QuickTrade = (props: {
   }
 
   const getIsApproved = () => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return isApprovedForEIZX
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return isApprovedForEIL
-      default:
-        return isApprovedForSwap
+    if (isToggle) {
+      switch (bestOption) {
+        case QuickTradeBestOption.exchangeIssuance:
+          return isApprovedForEIZX
+        case QuickTradeBestOption.leveragedExchangeIssuance:
+          return isApprovedForEIL
+        default:
+          return isApprovedForSwap
+      }
+    } else {
+      if (isIssue) return isAppovedForUSDC
+      return isApprovedForBye
     }
   }
 
   const getIsApproving = () => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return isApprovingForEIZX
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return isApprovingForEIL
-      default:
-        return isApprovingForSwap
+    if (isToggle) {
+      switch (bestOption) {
+        case QuickTradeBestOption.exchangeIssuance:
+          return isApprovingForEIZX
+        case QuickTradeBestOption.leveragedExchangeIssuance:
+          return isApprovingForEIL
+        default:
+          return isApprovingForSwap
+      }
+    } else {
+      if (isIssue) return isApprovingForUSDC
+      return isApprovingForBye
     }
   }
 
   const getOnApprove = () => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return onApproveForEIZX()
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return onApproveForEIL()
-      default:
-        return onApproveForSwap()
+    if (isToggle) {
+      switch (bestOption) {
+        case QuickTradeBestOption.exchangeIssuance:
+          return onApproveForEIZX()
+        case QuickTradeBestOption.leveragedExchangeIssuance:
+          return onApproveForEIL()
+        default:
+          return onApproveForSwap()
+      }
+    } else {
+      if (isIssue) return onApproveForUSDC()
+      return onApproveForBye()
     }
   }
 
@@ -580,20 +590,29 @@ const QuickTrade = (props: {
       return 'Try again'
     }
 
-    const isNativeToken =
-      sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
+    if (isToggle) {
+      const isNativeToken =
+        sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
 
-    if (!isNativeToken && getIsApproving()) {
-      return 'Approving...'
+      if (!isNativeToken && getIsApproving()) {
+        return 'Approving...'
+      }
+
+      if (!isNativeToken && !getIsApproved()) {
+        return 'Approve Tokens'
+      }
+
+      if (isTransacting || isTransactingEI || isTransactingLevEI)
+        return 'Trading...'
+    } else {
+      if (getIsApproving()) {
+        return 'Approving...'
+      }
+
+      if (!getIsApproved()) {
+        return 'Approve Tokens'
+      }
     }
-
-    if (!isNativeToken && !getIsApproved()) {
-      return 'Approve Tokens'
-    }
-
-    if (isTransacting || isTransactingEI || isTransactingLevEI)
-      return 'Trading...'
-
     return 'Trade'
   }
 
@@ -622,7 +641,9 @@ const QuickTrade = (props: {
       return
     }
 
-    if (hasInsufficientFunds) return
+    if (hasInsufficientFunds && isToggle) return
+    if (!isToggle && isIssue && hasInsufficientUSDC) return
+    if (!isToggle && !isIssue && hasInsufficientBye) return
 
     if (hasFetchingError) {
       fetchOptions()
@@ -631,23 +652,29 @@ const QuickTrade = (props: {
 
     const isNativeToken =
       sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
-    if (!getIsApproved() && !isNativeToken) {
-      await getOnApprove()
-      return
-    }
-
-    switch (bestOption) {
-      case QuickTradeBestOption.zeroEx:
-        await executeTrade()
-        break
-      case QuickTradeBestOption.exchangeIssuance:
-        await executeEITrade()
-        break
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        await executeLevEITrade()
-        break
-      default:
-      // Nothing
+    if (isToggle) {
+      if (!getIsApproved() && !isNativeToken) {
+        await getOnApprove()
+        return
+      }
+      switch (bestOption) {
+        case QuickTradeBestOption.zeroEx:
+          await executeTrade()
+          break
+        case QuickTradeBestOption.exchangeIssuance:
+          await executeEITrade()
+          break
+        case QuickTradeBestOption.leveragedExchangeIssuance:
+          await executeLevEITrade()
+          break
+        default:
+        // Nothing
+      }
+    } else {
+      if (!getIsApproved()) {
+        await getOnApprove()
+        return
+      }
     }
   }
 
@@ -655,14 +682,21 @@ const QuickTrade = (props: {
     if (!supportedNetwork) return true
     if (!account) return false
     if (hasFetchingError) return false
-    return (
-      sellTokenAmount === '0' ||
-      hasInsufficientFunds ||
-      isTransacting ||
-      isTransactingEI ||
-      isTransactingLevEI ||
-      isNotTradable(props.singleToken)
-    )
+    if (isToggle)
+      return (
+        sellTokenAmount === '0' ||
+        hasInsufficientFunds ||
+        isTransacting ||
+        isTransactingEI ||
+        isTransactingLevEI ||
+        isNotTradable(props.singleToken)
+      )
+    else
+      return (
+        buyTokenAmount === '0' ||
+        (isIssue && hasInsufficientUSDC) ||
+        (!isIssue && hasInsufficientBye)
+      )
   }
 
   const buttonLabel = getTradeButtonLabel()
@@ -886,7 +920,7 @@ const QuickTrade = (props: {
                 h='48px'
               />
               <Text fontWeight='600' marginLeft='16px'>
-                {estimatedUSDC}
+                {formattedBalance(USDC, estimatedUSDC, USDC.decimals)}
               </Text>
             </Flex>
           </Box>

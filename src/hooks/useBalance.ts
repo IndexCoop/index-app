@@ -16,6 +16,7 @@ import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   Bitcoin2xFLIP,
+  BYEIndex,
   DAI,
   DataIndex,
   DefiPulseIndex,
@@ -80,6 +81,7 @@ export interface Balances {
   jpgBalance?: BigNumber
   mnyeBalance?: BigNumber
   stETHBalance?: BigNumber
+  byeBalance?: BigNumber
 }
 
 /* Returns balance of ERC20 token */
@@ -135,6 +137,7 @@ export const useBalance = () => {
   const [jpgBalance, setJpgBalance] = useState<Balance>(BigNumber.from(0))
   const [mnyeBalance, setMnyeBalance] = useState<Balance>(BigNumber.from(0))
   const [stETHBalance, setstETHBalance] = useState<Balance>(BigNumber.from(0))
+  const [byeBalance, setByeBalance] = useState<Balance>(BigNumber.from(0))
 
   // LP Tokens
   const uniswapEthDpiLpBalance = useTokenBalance(
@@ -269,6 +272,7 @@ export const useBalance = () => {
       const jpgBalance = await balanceOf(JPGIndex, chainId, account, provider)
       const mnyeBalance = await balanceOf(MNYeIndex, chainId, account, provider)
       const stETHBalance = await balanceOf(STETH, chainId, account, provider)
+      const byeBalance = await balanceOf(BYEIndex, chainId, account, provider)
       setBedBalance(bedBalance)
       setBtc2xFLIPBalance(btc2xFLIPBalance)
       setBtcFliBalance(btcFliBalance)
@@ -291,6 +295,7 @@ export const useBalance = () => {
       setJpgBalance(jpgBalance)
       setMnyeBalance(mnyeBalance)
       setstETHBalance(stETHBalance)
+      setByeBalance(byeBalance)
     }
 
     fetchAllBalances()
@@ -345,6 +350,8 @@ export const useBalance = () => {
           return mnyeBalance
         case STETH.symbol:
           return stETHBalance
+        case BYEIndex.symbol:
+          return byeBalance
         default:
           return undefined
       }
@@ -373,6 +380,7 @@ export const useBalance = () => {
       jpgBalance,
       mnyeBalance,
       stETHBalance,
+      byeBalance,
     ]
   )
 
@@ -400,6 +408,7 @@ export const useBalance = () => {
     jpgBalance,
     mnyeBalance,
     stETHBalance,
+    byeBalance,
     stakedGmi2022Balance,
     stakedUniswapEthDpi2020LpBalance,
     stakedUniswapEthDpi2021LpBalance,
