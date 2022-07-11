@@ -52,7 +52,8 @@ export async function getEIZeroExQuote(
   slippage: number,
   chainId: number,
   provider: JsonRpcProvider,
-  zeroExApi: ZeroExApi
+  zeroExApi: ZeroExApi, 
+  signer: any
 ): Promise<ExchangeIssuanceZeroExQuote | null> {
   if (chainId !== MAINNET.chainId) return null
   // For now only allow trade on mainnet, some tokens are disabled
@@ -92,7 +93,8 @@ export async function getEIZeroExQuote(
         setTokenAmount,
         quote0x.inputOutputTokenAmount,
         spendingTokenBalance,
-        quote0x.componentQuotes
+        quote0x.componentQuotes, 
+        signer
       )
       return {
         type: QuoteType.exchangeIssuanceZeroEx,

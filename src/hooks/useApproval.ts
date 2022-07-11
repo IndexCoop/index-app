@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { constants, utils } from 'ethers'
-import { useContractRead, useNetwork } from 'wagmi'
+import { useContract, useContractRead, useNetwork, useSigner } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
@@ -60,12 +60,19 @@ export const useApproval = (
 ) => {
   const { address, provider } = useWallet()
   const { chain } = useNetwork()
+  const { data: signer } = useSigner()
 
-  const tokenAddress = token && getAddressForToken(token, chain?.id)
+  const tokenAddress = (token && getAddressForToken(token, chain?.id)) || ''
   const approvalState = useApprovalState(amount, tokenAddress, spenderAddress)
 
   const [isApproving, setIsApproving] = useState(false)
   const [isApproved, setIsApproved] = useState(false)
+
+  const tokenContract = useContract({
+    addressOrName: tokenAddress,
+    contractInterface: ERC20Interface,
+    signerOrProvider: signer,
+  })
 
   const handleApprove = useCallback(async () => {
     if (!provider || !address || !tokenAddress || !spenderAddress) {
@@ -73,17 +80,8 @@ export const useApproval = (
     }
     try {
       setIsApproving(true)
-      const tokenContract = new Contract(
-        tokenAddress,
-        ERC20Interface,
-        provider.getSigner()
-      )
+
       const tx = await tokenContract.approve(spenderAddress, amount)
-      // TODO:
-      // if (tx) {
-      //   const storedTx = getStoredTransaction(tx, chain?.id)
-      //   addTransaction(storedTx)
-      // }
       const receipt = await tx.wait()
       setIsApproved(receipt.status === 1)
       setIsApproving(false)
