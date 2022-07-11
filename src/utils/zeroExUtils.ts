@@ -95,9 +95,11 @@ export const getZeroExTradeData = async (
         )
     return { success: true, value: apiResult }
   } catch (e: any) {
+    const errorResponse = e.response
     if (
-      e.response.status === 400 &&
-      e.response.data.validationErrors[0].reason ===
+      errorResponse &&
+      errorResponse.status === 400 &&
+      errorResponse.data.validationErrors[0].reason ===
         'INSUFFICIENT_ASSET_LIQUIDITY'
     ) {
       return {
