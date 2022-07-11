@@ -70,11 +70,12 @@ export function getPriceImpact(
  */
 export function formattedBalance(
   token: Token,
-  tokenBalance: BigNumber | undefined
+  tokenBalance: BigNumber | undefined,
+  decimal: number = 2,
 ) {
   const zero = '0.00'
   return tokenBalance
-    ? displayFromWei(tokenBalance, 2, token.decimals) || zero
+    ? displayFromWei(tokenBalance, decimal, token.decimals) || zero
     : zero
 }
 

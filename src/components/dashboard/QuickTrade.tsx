@@ -31,6 +31,7 @@ import {
   Token,
   USDC,
 } from 'constants/tokens'
+import { IssuanceContractAddress } from 'constants/ethContractAddresses'
 import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
 import { useBalance } from 'hooks/useBalance'
@@ -63,6 +64,9 @@ import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
+
+import { Contract } from '@ethersproject/contracts'
+import { ISSUANCE_ABI } from 'utils/abi/ISSUANCE'
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -126,7 +130,7 @@ const QuickTrade = (props: {
   const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
   const [isToggle, setToggle] = useState(true)
   const [isIssue, setIssue] = useState(true)
-  const [usdcBalance, setUSDCBalance] = useState<string>(
+  const [estimatedUSDC, setEStimatedUSDC] = useState<string>(
     BigNumber.from(0).toString()
   )
 
@@ -141,6 +145,7 @@ const QuickTrade = (props: {
     getExchangeIssuanceLeveragedContractAddress(chainId)
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
+  const buyTokenAmountInWei = toWei(buyTokenAmount, buyToken.decimals)
 
   const sellTokenFiat = formattedFiat(
     parseFloat(sellTokenAmount),
@@ -218,6 +223,18 @@ const QuickTrade = (props: {
     bestOption === null,
     sellTokenAmountInWei,
     getBalance(sellToken.symbol)
+  )
+
+  const hasInsufficientUSDC = getHasInsufficientFunds(
+    bestOption === null,
+    BigNumber.from(estimatedUSDC),
+    getBalance(USDC.symbol)
+  )
+
+  const hasInsufficientBye = getHasInsufficientFunds(
+    bestOption === null,
+    buyTokenAmountInWei,
+    getBalance(buyToken.symbol)
   )
 
   const getContractForBestOption = (
@@ -368,6 +385,52 @@ const QuickTrade = (props: {
   }
 
   /**
+   * Issuance Contract
+   */
+  const getEstimatedBalance = async () => {
+    const USDCISSUE = BigNumber.from('101781434')
+    const USDCREDEEM = BigNumber.from('99556496')
+    const buyTokenInWei = toWei(buyTokenAmount, buyToken.decimals)
+    const Wei = BigNumber.from('1000000000000000000')
+    if (buyTokenInWei.gte(Wei)) {
+      if (isIssue) {
+        setEStimatedUSDC(
+          formattedBalance(
+            USDC,
+            USDCISSUE.mul(buyTokenInWei.div(Wei)),
+            USDC.decimals
+          )
+        )
+      } else {
+        setEStimatedUSDC(
+          formattedBalance(
+            USDC,
+            USDCREDEEM.mul(buyTokenInWei.div(Wei)),
+            USDC.decimals
+          )
+        )
+      }
+    } else {
+      if (isIssue) {
+        setEStimatedUSDC(
+          formattedBalance(
+            USDC,
+            USDCISSUE.div(Wei.div(buyTokenInWei)),
+            USDC.decimals
+          )
+        )
+      } else {
+        setEStimatedUSDC(
+          formattedBalance(
+            USDC,
+            USDCREDEEM.div(Wei.div(buyTokenInWei)),
+            USDC.decimals
+          )
+        )
+      }
+    }
+  }
+  /**
    * Determine the best trade option.
    */
   useEffect(() => {
@@ -383,14 +446,8 @@ const QuickTrade = (props: {
   }, [buyToken, sellToken, sellTokenAmount])
 
   useEffect(() => {
-    console.log('BuyToken Amount: ', buyTokenAmount)
-  }, [buyTokenAmount])
-
-  useEffect(() => {
-    const usdcBal = getBalance(USDC.symbol)
-    console.log('USDC Balance')
-    setUSDCBalance(formattedBalance(USDC, usdcBal))
-  }, [])
+    getEstimatedBalance()
+  }, [buyTokenAmount, isIssue])
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
@@ -499,11 +556,23 @@ const QuickTrade = (props: {
       return `Not Available on ${chainName}`
     }
 
-    if (sellTokenAmount === '0') {
+    if (sellTokenAmount === '0' && isToggle) {
       return 'Enter an amount'
     }
 
-    if (hasInsufficientFunds) {
+    if (buyTokenAmount === '0' && !isToggle) {
+      return 'Enter an amount'
+    }
+
+    if (hasInsufficientFunds && isToggle) {
+      return 'Insufficient funds'
+    }
+
+    if (!isToggle && isIssue && hasInsufficientUSDC) {
+      return 'Insufficient funds'
+    }
+
+    if (!isToggle && !isIssue && hasInsufficientBye) {
       return 'Insufficient funds'
     }
 
@@ -784,19 +853,21 @@ const QuickTrade = (props: {
             paddingLeft='16px'
             paddingTop='16px'
           >
-            <Text marginBottom='8px'>USDC Balance: {usdcBalance}</Text>
+            <Text marginBottom='8px'>
+              USDC Balance: {formattedBalance(USDC, getBalance(USDC.symbol))}
+            </Text>
             <QuickTradeSelector
-              title={isIssue ? 'Issue' : 'Issue'}
+              title={isIssue ? 'Issue' : 'Redeem'}
               config={{
                 isDarkMode,
                 isInputDisabled: false,
                 isNarrowVersion: isNarrow,
-                isSelectorDisabled: true,
+                isSelectorDisabled: false,
                 isReadOnly: false,
               }}
               selectedToken={buyToken}
               selectedTokenAmount={buyTokenAmountFormatted}
-              formattedFiat={buyTokenFiat}
+              formattedFiat=''
               priceImpact={priceImpact ?? undefined}
               tokenList={buyTokenList}
               onChangeInput={onChangeBuyTokenAmount}
@@ -815,7 +886,7 @@ const QuickTrade = (props: {
                 h='48px'
               />
               <Text fontWeight='600' marginLeft='16px'>
-                99.999999
+                {estimatedUSDC}
               </Text>
             </Flex>
           </Box>

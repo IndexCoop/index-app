@@ -265,7 +265,6 @@ export const useBalance = () => {
         provider
       )
       const usdcBalance = await balanceOf(USDC, chainId, account, provider)
-      console.log("usdcBalance", usdcBalance);
       const wethBalance = await balanceOf(WETH, chainId, account, provider)
       const jpgBalance = await balanceOf(JPGIndex, chainId, account, provider)
       const mnyeBalance = await balanceOf(MNYeIndex, chainId, account, provider)
