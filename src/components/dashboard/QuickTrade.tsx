@@ -64,9 +64,7 @@ import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
-
-import { Contract } from '@ethersproject/contracts'
-import { ISSUANCE_ABI } from 'utils/abi/ISSUANCE'
+import { useIssuance } from 'hooks/useIssuance'
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -198,6 +196,13 @@ const QuickTrade = (props: {
     USDC,
     IssuanceContractAddress,
     estimatedUSDC.mul(BigNumber.from('2'))
+  )
+
+  const { handleTrade, isTrading } = useIssuance(
+    buyToken,
+    buyTokenAmountInWei,
+    estimatedUSDC,
+    isIssue
   )
 
   const { executeTrade, isTransacting } = useTrade(
@@ -400,6 +405,7 @@ const QuickTrade = (props: {
     setBestOption(null)
     setBuyTokenAmountFormatted('0.0')
     setTradeInfoData([])
+    setEStimatedUSDC(BigNumber.from('0'))
   }
 
   /**
@@ -612,6 +618,9 @@ const QuickTrade = (props: {
       if (!getIsApproved()) {
         return 'Approve Tokens'
       }
+      if (isTrading) {
+        return 'Trading...'
+      }
     }
     return 'Trade'
   }
@@ -675,6 +684,7 @@ const QuickTrade = (props: {
         await getOnApprove()
         return
       }
+      await handleTrade()
     }
   }
 
@@ -695,7 +705,9 @@ const QuickTrade = (props: {
       return (
         buyTokenAmount === '0' ||
         (isIssue && hasInsufficientUSDC) ||
-        (!isIssue && hasInsufficientBye)
+        (!isIssue && hasInsufficientBye) ||
+        isTrading ||
+        isNotTradable(props.singleToken)
       )
   }
 
