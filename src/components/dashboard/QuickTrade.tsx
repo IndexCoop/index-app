@@ -31,7 +31,7 @@ import {
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
-import { QuoteType, useBestTradeOption } from 'hooks/useBestTradeOption'
+import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
 import { useSlippage } from 'hooks/useSlippage'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
@@ -116,11 +116,10 @@ const QuickTrade = (props: {
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
-    useBestTradeOption()
+    useBestQuote()
 
   const hasFetchingError =
     quoteResult.error !== null && !quoteResult.success && !isFetchingTradeData
-  console.log(hasFetchingError, !quoteResult.success, !isFetchingTradeData)
 
   const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chain?.id)
   const spenderAddressLevEIL = getExchangeIssuanceLeveragedContractAddress(

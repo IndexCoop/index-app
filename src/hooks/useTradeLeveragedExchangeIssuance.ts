@@ -11,7 +11,7 @@ import {
 
 import { DefaultGasLimitExchangeIssuanceLeveraged } from 'constants/gas'
 import { ETH, MATIC } from 'constants/tokens'
-import { ExchangeIssuanceLeveragedQuote } from 'hooks/useBestTradeOption'
+import { ExchangeIssuanceLeveragedQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import {

@@ -5,7 +5,7 @@ import { useSendTransaction } from 'wagmi'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ZeroExQuote } from 'hooks/useBestTradeOption'
+import { ZeroExQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 
