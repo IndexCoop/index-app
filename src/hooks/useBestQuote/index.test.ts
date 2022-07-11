@@ -16,14 +16,9 @@ import {
 } from 'constants/tokens'
 import { toWei } from 'utils'
 
-import {
-  getBestQuote,
-  getSetTokenAmount,
-  isEligibleTradePair,
-  isEligibleTradePairZeroEx,
-  maxPriceImpact,
-  QuoteType,
-} from './useBestTradeOption'
+import { isEligibleTradePair } from './exchangeIssuanceLeveraged'
+import { isEligibleTradePairZeroEx } from './exchangeIssuanceZeroEx'
+import { getBestQuote, getSetTokenAmount, maxPriceImpact, QuoteType } from './'
 
 describe('getBestQuote()', () => {
   test('should return 0x as best trade option', async () => {

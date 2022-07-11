@@ -12,7 +12,7 @@ import {
 } from '@indexcoop/index-exchange-issuance-sdk'
 
 import { ETH, MATIC } from 'constants/tokens'
-import { ExchangeIssuanceZeroExQuote } from 'hooks/useBestTradeOption'
+import { ExchangeIssuanceZeroExQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import {
