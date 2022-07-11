@@ -86,7 +86,7 @@ async function balanceOf(
   token: Token,
   chainId: number,
   account: string,
-  library: providers.JsonRpcProvider | undefined
+  library: any | undefined
 ): Promise<BigNumber> {
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress) return BigNumber.from(0)

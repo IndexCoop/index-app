@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { constants, utils } from 'ethers'
-import { useContract, useContractRead, useNetwork, useSigner } from 'wagmi'
+import { useContract, useContractRead, useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { Contract } from '@ethersproject/contracts'
 
 import { Token } from 'constants/tokens'
 import { useWallet } from 'hooks/useWallet'
@@ -58,9 +57,8 @@ export const useApproval = (
   spenderAddress?: string,
   amount: BigNumber = constants.MaxUint256
 ) => {
-  const { address, provider } = useWallet()
+  const { address, signer } = useWallet()
   const { chain } = useNetwork()
-  const { data: signer } = useSigner()
 
   const tokenAddress = (token && getAddressForToken(token, chain?.id)) || ''
   const approvalState = useApprovalState(amount, tokenAddress, spenderAddress)
@@ -75,7 +73,7 @@ export const useApproval = (
   })
 
   const handleApprove = useCallback(async () => {
-    if (!provider || !address || !tokenAddress || !spenderAddress) {
+    if (!signer || !address || !tokenAddress || !spenderAddress) {
       return
     }
     try {
@@ -92,7 +90,7 @@ export const useApproval = (
   }, [
     address,
     amount,
-    provider,
+    signer,
     setIsApproved,
     setIsApproving,
     spenderAddress,

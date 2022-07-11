@@ -160,8 +160,8 @@ const defaultQuoteResult: QuoteResult = {
   success: false,
 }
 
-export const useBestQuote = (signer: any) => {
-  const { provider } = useWallet()
+export const useBestQuote = () => {
+  const { provider, signer } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
   const chainId = chain?.id

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 
 import { Signer } from 'ethers'
 // import { useTransactions } from '@usedapp/core'
-import { useNetwork, useSigner } from 'wagmi'
+import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import {
@@ -27,10 +27,9 @@ import { getAddressForToken } from 'utils/tokens'
 import { useBalances } from './useBalance'
 
 export const useTradeExchangeIssuance = () => {
-  const { address } = useWallet()
+  const { address, signer } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
-  const { data: signer } = useSigner()
   // const { addTransaction } = useTransactions()
   const chainId = chain?.id
 

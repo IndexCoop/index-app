@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 
 import { Signer } from 'ethers'
-import { useNetwork, useSigner } from 'wagmi'
+import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import {
@@ -26,10 +26,9 @@ import { useBalances } from './useBalance'
 const gasLimit = BigNumber.from(DefaultGasLimitExchangeIssuanceLeveraged)
 
 export const useTradeLeveragedExchangeIssuance = () => {
-  const { address } = useWallet()
+  const { address, signer } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
-  const { data: signer } = useSigner()
   const chainId = chain?.id
 
   const [isTransactingLevEI, setIsTransacting] = useState(false)

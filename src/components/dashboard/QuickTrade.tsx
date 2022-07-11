@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
-import { useNetwork, useSigner } from 'wagmi'
+import { useNetwork } from 'wagmi'
 
 import { InfoOutlineIcon, UpDownIcon } from '@chakra-ui/icons'
 import {
@@ -107,7 +107,6 @@ const QuickTrade = (props: {
     swapTokenLists,
   } = useTradeTokenLists(chain?.id, props.singleToken)
   const { getBalance } = useBalances()
-  const { data: signer } = useSigner()
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
@@ -117,7 +116,7 @@ const QuickTrade = (props: {
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
-    useBestQuote(signer)
+    useBestQuote()
 
   const hasFetchingError =
     quoteResult.error !== null && !quoteResult.success && !isFetchingTradeData
