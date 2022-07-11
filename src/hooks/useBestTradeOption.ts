@@ -76,6 +76,7 @@ export interface ZeroExQuote extends Quote {
 
 type QuoteResult = {
   bestQuote: QuoteType
+  error: Error | null
   quotes: {
     exchangeIssuanceLeveraged: ExchangeIssuanceLeveragedQuote | null
     exchangeIssuanceZeroEx: ExchangeIssuanceZeroExQuote | null
@@ -221,6 +222,7 @@ export const getSetTokenAmount = (
 
 const defaultQuoteResult: QuoteResult = {
   bestQuote: QuoteType.notAvailable,
+  error: null,
   quotes: {
     exchangeIssuanceLeveraged: null,
     exchangeIssuanceZeroEx: null,
@@ -284,6 +286,7 @@ export const useBestTradeOption = () => {
       chainId
     )
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
+    const dexSwapError = zeroExResult.success ? null : zeroExResult.error
     const gasLimit0x = BigNumber.from(dexSwapOption?.gas ?? '0')
     const gasPrice0x = BigNumber.from(dexSwapOption?.gasPrice ?? '0')
     const gas0x = gasPrice0x.mul(gasLimit0x)
@@ -491,6 +494,7 @@ export const useBestTradeOption = () => {
 
     const quoteResult: QuoteResult = {
       success,
+      error: dexSwapError,
       bestQuote,
       quotes: {
         exchangeIssuanceLeveraged: exchangeIssuanceLeveragedQuote,

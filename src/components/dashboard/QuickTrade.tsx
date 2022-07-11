@@ -118,7 +118,9 @@ const QuickTrade = (props: {
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
     useBestTradeOption()
 
-  const hasFetchingError = !quoteResult.success && !isFetchingTradeData
+  const hasFetchingError =
+    quoteResult.error !== null && !quoteResult.success && !isFetchingTradeData
+  console.log(hasFetchingError, !quoteResult.success, !isFetchingTradeData)
 
   const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chain?.id)
   const spenderAddressLevEIL = getExchangeIssuanceLeveragedContractAddress(
@@ -585,7 +587,7 @@ const QuickTrade = (props: {
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
-            {}
+            {quoteResult.error?.message ?? 'Error fetching quote'}
           </Text>
         )}
         <Flex my='8px'>{chain?.id === 1 && <FlashbotsRpcMessage />}</Flex>
