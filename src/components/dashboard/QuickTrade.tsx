@@ -120,6 +120,7 @@ const QuickTrade = (props: {
   )
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
+  const [buyTokenAmount, setBuyTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
   const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
@@ -382,8 +383,12 @@ const QuickTrade = (props: {
   }, [buyToken, sellToken, sellTokenAmount])
 
   useEffect(() => {
+    console.log('BuyToken Amount: ', buyTokenAmount)
+  }, [buyTokenAmount])
+
+  useEffect(() => {
     const usdcBal = getBalance(USDC.symbol)
-    console.log("USDC Balance");
+    console.log('USDC Balance')
     setUSDCBalance(formattedBalance(USDC, usdcBal))
   }, [])
 
@@ -530,6 +535,15 @@ const QuickTrade = (props: {
     }
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '0')
+  }, 1000)
+
+  const onChangeBuyTokenAmount = debounce((token: Token, input: string) => {
+    if (input === '') {
+      resetTradeData()
+      return
+    }
+    if (!isValidTokenInput(input, token.decimals)) return
+    setBuyTokenAmount(input || '0')
   }, 1000)
 
   const onClickTradeButton = async () => {
@@ -785,7 +799,7 @@ const QuickTrade = (props: {
               formattedFiat={buyTokenFiat}
               priceImpact={priceImpact ?? undefined}
               tokenList={buyTokenList}
-              onChangeInput={() => {}}
+              onChangeInput={onChangeBuyTokenAmount}
               onSelectedToken={(_) => {}}
             />
             <Text marginTop='16px'>
