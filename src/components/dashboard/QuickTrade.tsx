@@ -383,6 +383,7 @@ const QuickTrade = (props: {
 
   useEffect(() => {
     const usdcBal = getBalance(USDC.symbol)
+    console.log("USDC Balance");
     setUSDCBalance(formattedBalance(USDC, usdcBal))
   }, [])
 
