@@ -1,7 +1,10 @@
+import { Contract } from 'ethers'
 import Set from 'set.js'
 import { SetDetails, StreamingFeeInfo } from 'set.js/dist/types/src/types'
 
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { JsonRpcProvider } from '@ethersproject/providers'
+
+import { OPTIMISM, POLYGON } from 'constants/chains'
 import {
   basicIssuanceModuleAddress,
   basicIssuanceModuleOptimismAddress,
@@ -38,33 +41,292 @@ import {
 } from 'constants/ethContractAddresses'
 import { MNYeIndex } from 'constants/tokens'
 
-export async function getTokenSupply(
-  ethersProvider: any,
-  productAddresses: string[],
-  chainId: number
-): Promise<SetDetails[]> {
-  const set = getSet(ethersProvider, chainId)
-  let moduleAddresses
-  if (chainId === MAINNET.chainId) {
-    moduleAddresses = [
-      basicIssuanceModuleAddress,
-      streamingFeeModuleAddress,
-      tradeModuleAddress,
-      debtIssuanceModuleAddress,
-    ]
-  } else {
-    moduleAddresses = [
-      basicIssuanceModulePolygonAddress,
-      streamingFeeModulePolygonAddress,
-      tradeModulePolygonAddress,
-      debtIssuanceModuleV2PolygonAddress,
-    ]
+const ABI = [
+  {
+    inputs: [
+      {
+        internalType: 'contract ISetToken[]',
+        name: '_setTokens',
+        type: 'address[]',
+      },
+      {
+        internalType: 'address[]',
+        name: '_moduleList',
+        type: 'address[]',
+      },
+    ],
+    name: 'batchFetchDetails',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'symbol',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'manager',
+            type: 'address',
+          },
+          {
+            internalType: 'address[]',
+            name: 'modules',
+            type: 'address[]',
+          },
+          {
+            internalType: 'enum ISetToken.ModuleState[]',
+            name: 'moduleStatuses',
+            type: 'uint8[]',
+          },
+          {
+            components: [
+              {
+                internalType: 'address',
+                name: 'component',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: 'module',
+                type: 'address',
+              },
+              {
+                internalType: 'int256',
+                name: 'unit',
+                type: 'int256',
+              },
+              {
+                internalType: 'uint8',
+                name: 'positionState',
+                type: 'uint8',
+              },
+              {
+                internalType: 'bytes',
+                name: 'data',
+                type: 'bytes',
+              },
+            ],
+            internalType: 'struct ISetToken.Position[]',
+            name: 'positions',
+            type: 'tuple[]',
+          },
+          {
+            internalType: 'uint256',
+            name: 'totalSupply',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct SetTokenViewer.SetDetails[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ISetToken[]',
+        name: '_setTokens',
+        type: 'address[]',
+      },
+    ],
+    name: 'batchFetchManagers',
+    outputs: [
+      {
+        internalType: 'address[]',
+        name: '',
+        type: 'address[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ISetToken[]',
+        name: '_setTokens',
+        type: 'address[]',
+      },
+      {
+        internalType: 'address[]',
+        name: '_modules',
+        type: 'address[]',
+      },
+    ],
+    name: 'batchFetchModuleStates',
+    outputs: [
+      {
+        internalType: 'enum ISetToken.ModuleState[][]',
+        name: '',
+        type: 'uint8[][]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ISetToken',
+        name: '_setToken',
+        type: 'address',
+      },
+      {
+        internalType: 'address[]',
+        name: '_moduleList',
+        type: 'address[]',
+      },
+    ],
+    name: 'getSetDetails',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'symbol',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'manager',
+            type: 'address',
+          },
+          {
+            internalType: 'address[]',
+            name: 'modules',
+            type: 'address[]',
+          },
+          {
+            internalType: 'enum ISetToken.ModuleState[]',
+            name: 'moduleStatuses',
+            type: 'uint8[]',
+          },
+          {
+            components: [
+              {
+                internalType: 'address',
+                name: 'component',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: 'module',
+                type: 'address',
+              },
+              {
+                internalType: 'int256',
+                name: 'unit',
+                type: 'int256',
+              },
+              {
+                internalType: 'uint8',
+                name: 'positionState',
+                type: 'uint8',
+              },
+              {
+                internalType: 'bytes',
+                name: 'data',
+                type: 'bytes',
+              },
+            ],
+            internalType: 'struct ISetToken.Position[]',
+            name: 'positions',
+            type: 'tuple[]',
+          },
+          {
+            internalType: 'uint256',
+            name: 'totalSupply',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct SetTokenViewer.SetDetails',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+]
+
+function getModuleAddresses(chainId: number): string[] {
+  switch (chainId) {
+    case POLYGON.chainId:
+      return [
+        basicIssuanceModulePolygonAddress,
+        streamingFeeModulePolygonAddress,
+        tradeModulePolygonAddress,
+        debtIssuanceModuleV2PolygonAddress,
+      ]
+    default:
+      return [
+        basicIssuanceModuleAddress,
+        streamingFeeModuleAddress,
+        tradeModuleAddress,
+        debtIssuanceModuleAddress,
+      ]
   }
-  return await set.setToken.batchFetchSetDetailsAsync(
-    productAddresses,
+}
+
+export async function getTokenSupply(
+  setTokenAddress: string,
+  provider: JsonRpcProvider,
+  chainId: number
+) {
+  const address = protocolViewerAddress
+  const contract = new Contract(address, ABI, provider)
+  const moduleAddresses = getModuleAddresses(chainId)
+  const setDetails: SetDetails = await contract.getSetDetails(
+    setTokenAddress,
     moduleAddresses
   )
+  console.log(setDetails)
+  return setDetails.totalSupply
 }
+
+// export async function getTokenSupply(
+//   ethersProvider: any,
+//   productAddresses: string[],
+//   chainId: number
+// ): Promise<SetDetails[]> {
+//   const set = getSet(ethersProvider, chainId)
+//   console.log(set)
+//   let moduleAddresses
+//   if (chainId === MAINNET.chainId) {
+//     moduleAddresses = [
+//       basicIssuanceModuleAddress,
+//       streamingFeeModuleAddress,
+//       tradeModuleAddress,
+//       debtIssuanceModuleAddress,
+//     ]
+//   } else {
+//     moduleAddresses = [
+//       basicIssuanceModulePolygonAddress,
+//       streamingFeeModulePolygonAddress,
+//       tradeModulePolygonAddress,
+//       debtIssuanceModuleV2PolygonAddress,
+//     ]
+//   }
+//   console.log(moduleAddresses, productAddresses)
+//   return await set.setToken.batchFetchSetDetailsAsync(
+//     productAddresses,
+//     moduleAddresses
+//   )
+// }
 
 export async function getStreamingFees(
   ethersProvider: any,
