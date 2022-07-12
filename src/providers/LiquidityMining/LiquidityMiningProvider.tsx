@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { utils } from 'ethers'
-import { useContractRead } from 'wagmi'
+import { useContractRead, useContractWrite } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
@@ -210,68 +210,93 @@ const LiquidityMiningProvider = (props: { children: any }) => {
 
   const gmiContract = new Contract(gmiStakingRewardsAddress, stakingInterface)
 
-  // const { send: stakeGmi } = useContractFunction(gmiContract, 'stake')
-  // const { send: claimGmi } = useContractFunction(gmiContract, 'getReward')
-  // const { send: exitGmi } = useContractFunction(gmiContract, 'exit')
-  const stakeGmi = (num: BigNumber) => {}
-  const claimGmi = () => {}
-  const exitGmi = () => {}
+  const {
+    data: stakeGmiData,
+    isError: isStakeGmiError,
+    isLoading: isStakeGmiLoading,
+    writeAsync: stakeGmi,
+  } = useContractWrite({
+    addressOrName: gmiStakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'stake',
+    args: [BigNumber],
+  })
+  const {
+    data: getRewardData,
+    isError: isGetRewardError,
+    isLoading: isGetRewardLoading,
+    writeAsync: claimGmi,
+  } = useContractWrite({
+    addressOrName: gmiStakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'getReward',
+  })
+  const {
+    data: exitGmiData,
+    isError: isExitGmiError,
+    isLoading: isExitGmiLoading,
+    writeAsync: exitGmi,
+  } = useContractWrite({
+    addressOrName: gmiStakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'exit',
+  })
 
-  // const apyGmi = calculateApyStakingRewardV2({
-  //   rewardsForDuration: useGetRewardForDuration(gmiStakingRewardsAddress),
-  //   rewardsPrice: selectLatestMarketData(index?.hourlyPrices),
-  //   stakedTotalSupply: useTotalSupply(gmiStakingRewardsAddress),
-  //   stakedPrice: selectLatestMarketData(gmi?.hourlyPrices),
-  // })
-  //
-  // useEffect(() => {
-  //   setGmi2022((prev) => ({
-  //     ...prev,
-  //     apy: apyGmi,
-  //   }))
-  // }, [apyGmi])
-  //
-  // useEffect(() => {
-  //   if (
-  //     address &&
-  //     provider &&
-  //     dpi2020StakingRewardsAddress &&
-  //     dpi2021StakingRewardsAddress &&
-  //     gmiStakingRewardsAddress &&
-  //     mviStakingRewardsAddress
-  //   ) {
-  //     setUniswapEthDpi2020({
-  //       onApprove: () => {},
-  //       onStake: () => {},
-  //       onHarvest: () => {},
-  //       onUnstakeAndHarvest: exitDpi2020,
-  //     })
-  //     setUniswapEthDpi2021({
-  //       onApprove: () => {},
-  //       onStake: () => {},
-  //       onHarvest: () => {},
-  //       onUnstakeAndHarvest: exitDpi2021,
-  //     })
-  //     setUniswapEthMvi2021({
-  //       onApprove: () => {},
-  //       onStake: () => {},
-  //       onHarvest: () => {},
-  //       onUnstakeAndHarvest: exitMvi2021,
-  //     })
-  //     setGmi2022({
-  //       apy: apyGmi,
-  //       isApproved: isApprovedGmi,
-  //       isApproving: isApprovingGmi,
-  //       isPoolActive: isPoolActiveGmi,
-  //       onApprove: onApproveGmi,
-  //       onStake: async (token: string) => {
-  //         await stakeGmi(toWei(token))
-  //       },
-  //       onHarvest: claimGmi,
-  //       onUnstakeAndHarvest: exitGmi,
-  //     })
-  //   }
-  // }, [address, provider])
+  const apyGmi = calculateApyStakingRewardV2({
+    rewardsForDuration: useGetRewardForDuration(gmiStakingRewardsAddress),
+    rewardsPrice: selectLatestMarketData(index?.hourlyPrices),
+    stakedTotalSupply: useTotalSupply(gmiStakingRewardsAddress),
+    stakedPrice: selectLatestMarketData(gmi?.hourlyPrices),
+  })
+
+  useEffect(() => {
+    setGmi2022((prev) => ({
+      ...prev,
+      apy: apyGmi,
+    }))
+  }, [apyGmi])
+
+  useEffect(() => {
+    if (
+      address &&
+      provider &&
+      dpi2020StakingRewardsAddress &&
+      dpi2021StakingRewardsAddress &&
+      gmiStakingRewardsAddress &&
+      mviStakingRewardsAddress
+    ) {
+      setUniswapEthDpi2020({
+        onApprove: () => {},
+        onStake: () => {},
+        onHarvest: () => {},
+        onUnstakeAndHarvest: exitDpi2020,
+      })
+      setUniswapEthDpi2021({
+        onApprove: () => {},
+        onStake: () => {},
+        onHarvest: () => {},
+        onUnstakeAndHarvest: exitDpi2021,
+      })
+      setUniswapEthMvi2021({
+        onApprove: () => {},
+        onStake: () => {},
+        onHarvest: () => {},
+        onUnstakeAndHarvest: exitMvi2021,
+      })
+      setGmi2022({
+        apy: apyGmi,
+        isApproved: isApprovedGmi,
+        isApproving: isApprovingGmi,
+        isPoolActive: isPoolActiveGmi,
+        onApprove: onApproveGmi,
+        onStake: async (token: string) => {
+          await stakeGmi(toWei(token))
+        },
+        onHarvest: claimGmi,
+        onUnstakeAndHarvest: exitGmi,
+      })
+    }
+  }, [address, provider])
 
   return (
     <LiquidityMiningContext.Provider
