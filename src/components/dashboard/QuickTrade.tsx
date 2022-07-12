@@ -897,7 +897,6 @@ const QuickTrade = (props: {
           </Flex>
           <Box
             borderColor={isDarkMode ? colors.icWhite : colors.black}
-            paddingLeft='16px'
             paddingTop='16px'
           >
             <QuickTradeSelector
