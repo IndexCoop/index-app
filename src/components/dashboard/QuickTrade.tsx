@@ -902,9 +902,6 @@ const QuickTrade = (props: {
             paddingLeft='16px'
             paddingTop='16px'
           >
-            <Text marginBottom='8px'>
-              USDC Balance: {formattedBalance(USDC, getBalance(USDC.symbol))}
-            </Text>
             <QuickTradeSelector
               title={isIssue ? 'Issue' : 'Redeem'}
               config={{
@@ -938,6 +935,9 @@ const QuickTrade = (props: {
                 {formattedBalance(USDC, estimatedUSDC, USDC.decimals)}
               </Text>
             </Flex>
+            <Text marginTop='8px' fontSize='12px' fontWeight='400'>
+              USDC Balance: {formattedBalance(USDC, getBalance(USDC.symbol))}
+            </Text>
           </Box>
         </>
       )}
