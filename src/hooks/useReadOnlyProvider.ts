@@ -1,15 +1,22 @@
 import { useMemo } from 'react'
 
-import { useNetwork } from 'wagmi'
+import { Chain, useNetwork } from 'wagmi'
 
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 export const useReadOnlyProvider = () => {
-  const { chain } = useNetwork()
+  const { chain, chains } = useNetwork()
   const chainId = chain?.id ?? 1
-  // tODO: add api url based on chain id
+
   return useMemo(
-    () => new JsonRpcProvider(process.env.REACT_APP_MAINNET_ALCHEMY_API),
+    () => new JsonRpcProvider(getJsonRpcUrl(chainId, chains)),
     [chainId]
+  )
+}
+
+const getJsonRpcUrl = (chainId: number, chains: Chain[]) => {
+  const defaultUrl = process.env.REACT_APP_MAINNET_ALCHEMY_API || ''
+  return (
+    chains.find((chain) => chain.id === chainId)?.rpcUrls.default ?? defaultUrl
   )
 }

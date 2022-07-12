@@ -30,6 +30,7 @@ import {
   MetaverseIndex,
   MNYeIndex,
 } from 'constants/tokens'
+import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
 import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { displayFromWei, safeDiv } from 'utils'
@@ -100,7 +101,8 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
-  const { address, provider } = useWallet()
+  const { address } = useWallet()
+  const readOnlyProvider = useReadOnlyProvider()
   const { chain } = useNetwork()
   const tokenList = getTokenList(chain?.id)
 
@@ -109,7 +111,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       chain?.id &&
       chain?.id === MAINNET.chainId &&
       address &&
-      provider &&
+      readOnlyProvider &&
       tokenList &&
       DefiPulseIndex.address &&
       MetaverseIndex.address &&
@@ -132,7 +134,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       jpg
     ) {
       getSetDetails(
-        provider,
+        readOnlyProvider,
         [
           DefiPulseIndex.address,
           MetaverseIndex.address,
@@ -352,7 +354,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       })
     }
   }, [
-    provider,
+    readOnlyProvider,
     tokenList,
     dpi,
     mvi,
@@ -371,7 +373,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     if (
       chain?.id &&
       chain?.id === POLYGON.chainId &&
-      provider &&
+      readOnlyProvider &&
       tokenList &&
       ethflip &&
       iethflip &&
@@ -387,7 +389,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       IBitcoinFLIP.polygonAddress
     ) {
       getSetDetails(
-        provider,
+        readOnlyProvider,
         [
           Ethereum2xFLIP.polygonAddress,
           IEthereumFLIP.polygonAddress,
@@ -554,18 +556,23 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [chain, provider, tokenList, ethflip, selectLatestMarketData()])
+  }, [chain, readOnlyProvider, tokenList, ethflip, selectLatestMarketData()])
 
   useEffect(() => {
     if (
       chain?.id &&
       chain?.id === OPTIMISM.chainId &&
-      provider &&
+      readOnlyProvider &&
       tokenList &&
       mnye &&
       MNYeIndex.optimismAddress
     ) {
-      getSetDetails(provider, [MNYeIndex.optimismAddress], chain?.id, true)
+      getSetDetails(
+        readOnlyProvider,
+        [MNYeIndex.optimismAddress],
+        chain?.id,
+        true
+      )
         .then(async (result) => {
           const [mnyeSet] = result
           const mnyeComponentPrices = await getPositionPrices(
@@ -593,7 +600,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [chain, provider, tokenList, mnye, selectLatestMarketData()])
+  }, [chain, readOnlyProvider, tokenList, mnye, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider
