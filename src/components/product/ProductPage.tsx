@@ -1,12 +1,12 @@
 import { useNetwork } from 'wagmi'
 
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import QuickTrade from 'components/dashboard/QuickTrade'
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import { IndexToken, Token } from 'constants/tokens'
+import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
 import { useTokenSupply } from 'hooks/useTokenSupply'
 import {
   TokenMarketDataValues,
@@ -83,10 +83,8 @@ const ProductPage = (props: {
   const { chain } = useNetwork()
   const chainId = chain?.id ?? 1
   const { selectLatestMarketData } = useMarketData()
+  const provider = useReadOnlyProvider()
 
-  const provider = new JsonRpcProvider(
-    process.env.REACT_APP_MAINNET_ALCHEMY_API
-  )
   const tokenAddress = getAddressForToken(tokenData, chainId) ?? ''
   const tokenSupply = useTokenSupply(tokenAddress, provider, chainId)
   const currentSupplyFormatted = parseFloat(displayFromWei(tokenSupply) ?? '0')
