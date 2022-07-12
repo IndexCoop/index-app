@@ -872,6 +872,7 @@ const QuickTrade = (props: {
           <Flex>
             <Box
               borderTopLeftRadius='16px'
+              borderBottomLeftRadius='16px'
               border='1px solid black'
               borderColor={isDarkMode ? colors.icWhite : colors.black}
               padding='8px'
@@ -884,6 +885,7 @@ const QuickTrade = (props: {
             </Box>
             <Box
               borderTopRightRadius='16px'
+              borderBottomRightRadius='16px'
               border='1px solid black'
               borderColor={isDarkMode ? colors.icWhite : colors.black}
               padding='8px'
