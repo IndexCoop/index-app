@@ -742,6 +742,7 @@ const QuickTrade = (props: {
       py='20px'
       px={['16px', paddingX]}
       height={'100%'}
+      minWidth='380px'
     >
       <Flex align='center' justify='space-between'>
         <Text fontSize='24px' fontWeight='700'>
@@ -765,8 +766,9 @@ const QuickTrade = (props: {
                 fontSize='14px'
                 pt='10px'
                 alignItems='center'
+                justifyContent='space-between'
               >
-                <Text marginRight='12px'>Large Buyer? </Text>
+                <Text marginRight='12px'>Large Transaction? </Text>
                 <Box
                   py='4px'
                   px='12px'
@@ -793,6 +795,7 @@ const QuickTrade = (props: {
                 fontSize='14px'
                 py='10px'
                 alignItems='center'
+                justifyContent='right'
               >
                 <Box
                   py='4px'
@@ -808,7 +811,7 @@ const QuickTrade = (props: {
                   }}
                   onClick={() => setToggle(true)}
                 >
-                  Toogle Dex Swap
+                  Toggle Dex Swap
                 </Box>
               </Flex>
             </>
