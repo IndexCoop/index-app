@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react'
-
-import { useNetwork, useProvider } from 'wagmi'
+import { useNetwork } from 'wagmi'
 
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
@@ -8,6 +6,8 @@ import QuickTrade from 'components/dashboard/QuickTrade'
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import { IndexToken, Token } from 'constants/tokens'
+import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
+import { useTokenSupply } from 'hooks/useTokenSupply'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -18,7 +18,7 @@ import {
   getFormattedChartPriceChanges,
   getPricesChanges,
 } from 'utils/priceChange'
-import { getTokenSupply } from 'utils/setjsApi'
+import { getAddressForToken } from 'utils/tokens'
 
 import Disclaimer from './Disclaimer'
 import MarketChart, { PriceChartRangeOption } from './MarketChart'
@@ -81,42 +81,13 @@ const ProductPage = (props: {
   const { marketData, tokenData } = props
 
   const { chain } = useNetwork()
-  const chainId = chain?.id
-  const provider = useProvider()
+  const chainId = chain?.id ?? 1
   const { selectLatestMarketData } = useMarketData()
+  const provider = useReadOnlyProvider()
 
-  const [currentTokenSupply, setCurrentTokenSupply] = useState(0)
-
-  useEffect(() => {
-    const tokenAddress = tokenData.address
-
-    if (
-      tokenAddress === undefined ||
-      provider === undefined ||
-      chainId === undefined
-    ) {
-      return
-    }
-
-    const fetchSupply = async () => {
-      try {
-        const setDetails = await getTokenSupply(
-          provider,
-          [tokenAddress],
-          chainId
-        )
-        if (setDetails.length < 1) return
-        const supply = parseFloat(
-          displayFromWei(setDetails[0].totalSupply) ?? '0'
-        )
-        setCurrentTokenSupply(supply)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    fetchSupply()
-  }, [chainId, provider, tokenData])
+  const tokenAddress = getAddressForToken(tokenData, chainId) ?? ''
+  const tokenSupply = useTokenSupply(tokenAddress, provider, chainId)
+  const currentSupplyFormatted = parseFloat(displayFromWei(tokenSupply) ?? '0')
 
   const priceChartData = getPriceChartData([marketData])
 
@@ -128,7 +99,7 @@ const ProductPage = (props: {
   const priceChanges = getPricesChanges(marketData.hourlyPrices ?? [])
   const priceChangesFormatted = getFormattedChartPriceChanges(priceChanges)
 
-  const stats = getStatsForToken(tokenData, marketData, currentTokenSupply)
+  const stats = getStatsForToken(tokenData, marketData, currentSupplyFormatted)
 
   const chartWidth = window.outerWidth < 400 ? window.outerWidth : 648
   const chartHeight = window.outerWidth < 400 ? 300 : 400
