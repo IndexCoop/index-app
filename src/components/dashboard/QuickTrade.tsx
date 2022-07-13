@@ -767,7 +767,7 @@ const QuickTrade = (props: {
                   }}
                   onClick={() => setToggle(false)}
                 >
-                  Toggle Flash Issuance
+                  Toggle Token Minting
                 </Box>
               </Flex>
             </>
@@ -865,7 +865,7 @@ const QuickTrade = (props: {
               onClick={() => setIssue(true)}
               fontWeight={isIssue ? 700 : 400}
             >
-              Flash Issue
+              Mint Tokens
             </Box>
             <Box
               borderTopRightRadius='16px'
@@ -878,7 +878,7 @@ const QuickTrade = (props: {
               fontWeight={!isIssue ? 700 : 400}
               onClick={() => setIssue(false)}
             >
-              Flash Redeem
+              Redeem Tokens
             </Box>
           </Flex>
           <Box
@@ -886,7 +886,7 @@ const QuickTrade = (props: {
             paddingTop='16px'
           >
             <QuickTradeSelector
-              title={isIssue ? 'Issue' : 'Redeem'}
+              title={isIssue ? 'Mint' : 'Redeem'}
               config={{
                 isDarkMode,
                 isInputDisabled: false,
