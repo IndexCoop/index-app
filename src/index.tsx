@@ -45,7 +45,10 @@ import '@rainbow-me/rainbowkit/dist/index.css'
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism],
-  [alchemyProvider({ alchemyId: process.env.ALCHEMY_ID }), publicProvider()]
+  [
+    alchemyProvider({ alchemyId: process.env.REACT_APP_ALCHEMY_ID }),
+    publicProvider(),
+  ]
 )
 
 const { connectors } = getDefaultWallets({
