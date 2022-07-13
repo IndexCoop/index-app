@@ -65,6 +65,7 @@ import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 import { useIssuance } from 'hooks/useIssuance'
+import { useIssuanceQuote } from 'hooks/useIssuanceQuote'
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -128,9 +129,6 @@ const QuickTrade = (props: {
   const [maxFeePerGas, setMaxFeePerGas] = useState<BigNumber>(BigNumber.from(0))
   const [isToggle, setToggle] = useState(true)
   const [isIssue, setIssue] = useState(true)
-  const [estimatedUSDC, setEStimatedUSDC] = useState<BigNumber>(
-    BigNumber.from(0)
-  )
 
   const { bestOptionResult, isFetchingTradeData, fetchAndCompareOptions } =
     useBestTradeOption()
@@ -188,6 +186,9 @@ const QuickTrade = (props: {
     IssuanceContractAddress,
     buyTokenAmountInWei.mul(BigNumber.from('2'))
   )
+
+  const { estimatedUSDC, getQuote } = useIssuanceQuote(buyToken, buyTokenAmountInWei, isIssue)
+
   const {
     isApproved: isAppovedForUSDC,
     isApproving: isApprovingForUSDC,
@@ -405,31 +406,14 @@ const QuickTrade = (props: {
     setBestOption(null)
     setBuyTokenAmountFormatted('0.0')
     setTradeInfoData([])
-    setEStimatedUSDC(BigNumber.from('0'))
   }
 
   /**
    * Issuance Contract
    */
-  const getEstimatedBalance = async () => {
+  const getEstimatedBalance = () => {
     if (isToggle) return
-    const USDCISSUE = BigNumber.from('101781434')
-    const USDCREDEEM = BigNumber.from('99556496')
-    const buyTokenInWei = toWei(buyTokenAmount, buyToken.decimals)
-    const Wei = BigNumber.from('1000000000000000000')
-    if (buyTokenInWei.gte(Wei)) {
-      if (isIssue) {
-        setEStimatedUSDC(USDCISSUE.mul(buyTokenInWei.div(Wei)))
-      } else {
-        setEStimatedUSDC(USDCREDEEM.mul(buyTokenInWei.div(Wei)))
-      }
-    } else {
-      if (isIssue) {
-        setEStimatedUSDC(USDCISSUE.div(Wei.div(buyTokenInWei)))
-      } else {
-        setEStimatedUSDC(USDCREDEEM.div(Wei.div(buyTokenInWei)))
-      }
-    }
+    getQuote();
   }
   /**
    * Determine the best trade option.
