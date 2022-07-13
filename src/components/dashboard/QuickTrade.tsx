@@ -904,7 +904,7 @@ const QuickTrade = (props: {
             />
             <Text marginTop='16px'>
               {isIssue
-                ? 'Estimated USDC required for issuance (inc. slippage)'
+                ? 'Estimated USDC required for mint (inc. slippage)'
                 : 'Estimated USDC output for redemption (inc. slippage)'}
             </Text>
             <Flex alignItems='center' marginTop='8px'>
