@@ -219,7 +219,8 @@ const LiquidityMiningProvider = (props: { children: any }) => {
     addressOrName: gmiStakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'stake',
-    args: [BigNumber],
+    // TODO: not sure if you  need this, so might be able to delete
+    args: BigNumber,
   })
   const {
     data: getRewardData,
@@ -290,7 +291,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
         isPoolActive: isPoolActiveGmi,
         onApprove: onApproveGmi,
         onStake: async (token: string) => {
-          await stakeGmi(toWei(token))
+          await stakeGmi({ args: toWei(token) })
         },
         onHarvest: claimGmi,
         onUnstakeAndHarvest: exitGmi,
