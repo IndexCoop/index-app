@@ -14,8 +14,6 @@ export const useTokenSupply = (
 
   const fetchSupply = useCallback(async () => {
     try {
-      console.log(setTokenAddress, chainId, provider)
-      console.log('fetching...')
       const tokenSupply = await getTokenSupply(
         setTokenAddress,
         provider,

@@ -24,7 +24,7 @@ import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
 
 const Dashboard = () => {
-  const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
+  // const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
   const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
     useUserMarketData()
   const { address } = useAccount()

@@ -298,52 +298,14 @@ export async function getTokenSupply(
   return setDetails.totalSupply
 }
 
-// export async function getTokenSupply(
-//   ethersProvider: any,
-//   productAddresses: string[],
-//   chainId: number
-// ): Promise<SetDetails[]> {
-//   const set = getSet(ethersProvider, chainId)
-//   console.log(set)
-//   let moduleAddresses
-//   if (chainId === MAINNET.chainId) {
-//     moduleAddresses = [
-//       basicIssuanceModuleAddress,
-//       streamingFeeModuleAddress,
-//       tradeModuleAddress,
-//       debtIssuanceModuleAddress,
-//     ]
-//   } else {
-//     moduleAddresses = [
-//       basicIssuanceModulePolygonAddress,
-//       streamingFeeModulePolygonAddress,
-//       tradeModulePolygonAddress,
-//       debtIssuanceModuleV2PolygonAddress,
-//     ]
-//   }
-//   console.log(moduleAddresses, productAddresses)
-//   return await set.setToken.batchFetchSetDetailsAsync(
-//     productAddresses,
-//     moduleAddresses
-//   )
-// }
-
-export async function getStreamingFees(
-  ethersProvider: any,
-  productAddresses: string[],
-  chainId: number
-): Promise<StreamingFeeInfo[]> {
-  const set = getSet(ethersProvider, chainId)
-  return set.fees.batchFetchStreamingFeeInfoAsync(productAddresses)
-}
-
 export async function getSetDetails(
   ethersProvider: any,
   productAddresses: string[],
   chainId: number,
   isPerp: boolean = false
 ): Promise<SetDetails[]> {
-  const set = getSet(ethersProvider, chainId)
+  const address = protocolViewerAddress
+  const contract = new Contract(address, ABI, ethersProvider)
   let moduleAddresses: string[] = []
   switch (chainId) {
     case OPTIMISM.chainId:
@@ -381,29 +343,130 @@ export async function getSetDetails(
    * TODO: This isn't needed for the short term, but long term we need to account for all positions in NAV calcs + when showing positions on the allocations page.
    * This is how you get Perpetual Protocol products to show their full positions. For now will just log them, but they need to be added to the allocations list.
    */
-  if (isPerp) {
-    try {
-      const address = MNYeIndex.optimismAddress || ''
-      const arr =
-        await set.perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
-          address,
-          ethersProvider.address
-        )
+  // if (isPerp) {
+  //   try {
+  //     const address = MNYeIndex.optimismAddress || ''
+  //     const arr =
+  //       await set.perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
+  //         address,
+  //         ethersProvider.address
+  //       )
+  //
+  //     const arr2 =
+  //       await set.perpV2LeverageViewer.getVirtualAssetsDisplayInfoAsync(
+  //         address,
+  //         ethersProvider.address
+  //       )
+  //   } catch (e) {
+  //     console.log('PERP error', e)
+  //   }
+  // }
 
-      const arr2 =
-        await set.perpV2LeverageViewer.getVirtualAssetsDisplayInfoAsync(
-          address,
-          ethersProvider.address
-        )
-    } catch (e) {
-      console.log('PERP error', e)
-    }
-  }
-  return set.setToken.batchFetchSetDetailsAsync(
+  const setDetails: SetDetails[] = await contract.batchFetchDetails(
     productAddresses,
     moduleAddresses
   )
+  return setDetails
 }
+
+// export async function getTokenSupply(
+//   ethersProvider: any,
+//   productAddresses: string[],
+//   chainId: number
+// ): Promise<SetDetails[]> {
+//   const set = getSet(ethersProvider, chainId)
+//   console.log(set)
+//   let moduleAddresses
+//   if (chainId === MAINNET.chainId) {
+//     moduleAddresses = [
+//       basicIssuanceModuleAddress,
+//       streamingFeeModuleAddress,
+//       tradeModuleAddress,
+//       debtIssuanceModuleAddress,
+//     ]
+//   } else {
+//     moduleAddresses = [
+//       basicIssuanceModulePolygonAddress,
+//       streamingFeeModulePolygonAddress,
+//       tradeModulePolygonAddress,
+//       debtIssuanceModuleV2PolygonAddress,
+//     ]
+//   }
+//   console.log(moduleAddresses, productAddresses)
+//   return await set.setToken.batchFetchSetDetailsAsync(
+//     productAddresses,
+//     moduleAddresses
+//   )
+// }
+
+//
+// export async function getSetDetails(
+//   ethersProvider: any,
+//   productAddresses: string[],
+//   chainId: number,
+//   isPerp: boolean = false
+// ): Promise<SetDetails[]> {
+//   const set = getSet(ethersProvider, chainId)
+//   let moduleAddresses: string[] = []
+//   switch (chainId) {
+//     case OPTIMISM.chainId:
+//       moduleAddresses = [
+//         basicIssuanceModuleOptimismAddress,
+//         streamingFeeModuleOptimismAddress,
+//         tradeModuleOptimismAddress,
+//         debtIssuanceModuleV2OptimismAddress,
+//         slippageIssuanceModuleOptimismAddress,
+//         perpV2BasisTradingModuleOptimismAddress,
+//         perpV2LeverageModuleOptimismAddress,
+//         perpV2BasisTradingModuleViewerOptimismAddress,
+//         perpV2LeverageModuleViewerOptimismAddress,
+//       ]
+//       break
+//     case POLYGON.chainId:
+//       moduleAddresses = [
+//         basicIssuanceModulePolygonAddress,
+//         streamingFeeModulePolygonAddress,
+//         tradeModulePolygonAddress,
+//         debtIssuanceModuleV2PolygonAddress,
+//       ]
+//       break
+//     default:
+//       moduleAddresses = [
+//         basicIssuanceModuleAddress,
+//         streamingFeeModuleAddress,
+//         tradeModuleAddress,
+//         debtIssuanceModuleAddress,
+//         debtIssuanceModuleV2Address,
+//       ]
+//   }
+//
+//   /**
+//    * TODO: This isn't needed for the short term, but long term we need to account for all positions in NAV calcs + when showing positions on the allocations page.
+//    * This is how you get Perpetual Protocol products to show their full positions. For now will just log them, but they need to be added to the allocations list.
+//    */
+//   if (isPerp) {
+//     try {
+//       const address = MNYeIndex.optimismAddress || ''
+//       const arr =
+//         await set.perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
+//           address,
+//           ethersProvider.address
+//         )
+//
+//       const arr2 =
+//         await set.perpV2LeverageViewer.getVirtualAssetsDisplayInfoAsync(
+//           address,
+//           ethersProvider.address
+//         )
+//     } catch (e) {
+//       console.log('PERP error', e)
+//     }
+//   }
+//   return set.setToken.batchFetchSetDetailsAsync(
+//     productAddresses,
+//     moduleAddresses
+//   )
+// }
 
 function getSet(ethersProvider: any, chainId: number): Set {
   let set
