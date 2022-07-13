@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { constants, utils } from 'ethers'
+import { constants, Contract, utils } from 'ethers'
 import { useContract, useContractRead, useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
@@ -66,11 +66,11 @@ export const useApproval = (
   const [isApproving, setIsApproving] = useState(false)
   const [isApproved, setIsApproved] = useState(false)
 
-  const tokenContract = useContract({
-    addressOrName: tokenAddress,
-    contractInterface: ERC20Interface,
-    signerOrProvider: signer,
-  })
+  // const tokenContract = useContract({
+  //   addressOrName: tokenAddress,
+  //   contractInterface: ERC20Interface,
+  //   signerOrProvider: signer,
+  // })
 
   const handleApprove = useCallback(async () => {
     if (!signer || !address || !tokenAddress || !spenderAddress) {
@@ -78,8 +78,8 @@ export const useApproval = (
     }
     try {
       setIsApproving(true)
-
-      const tx = await tokenContract.approve(spenderAddress, amount)
+      const contract = new Contract(tokenAddress, ERC20Interface, signer)
+      const tx = await contract.approve(spenderAddress, amount)
       const receipt = await tx.wait()
       setIsApproved(receipt.status === 1)
       setIsApproving(false)
