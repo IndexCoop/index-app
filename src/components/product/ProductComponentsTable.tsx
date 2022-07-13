@@ -24,37 +24,11 @@ import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 
 import Chart from './Charts'
 
-const allocationEmptyMsg = (
-  tokenData: Token,
-  account?: string | null,
-  chainId?: number
-) => {
-  if (!account || !chainId) return 'Connect wallet to view allocations'
-  switch (chainId) {
-    case MAINNET.chainId:
-      if (!tokenData.address && tokenData.polygonAddress) {
-        return 'Switch wallet to Polygon to view allocations'
-      }
-      return 'Connect wallet to view allocations'
-    case POLYGON.chainId:
-      if (!tokenData.polygonAddress && tokenData.address) {
-        return 'Switch wallet to Ethereum Mainnet to view allocations'
-      }
-      return 'Connect wallet to view allocations'
-    default:
-      return 'Connect wallet to view allocations'
-  }
-}
-
 const ProductComponentsTable = (props: {
   components?: SetComponent[]
   tokenData: Token
   isLeveragedToken?: boolean
 }) => {
-  const { address } = useAccount()
-  const { chain } = useNetwork()
-  const chainId = chain?.id
-
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
   const showAllComponents = () =>
     setAmountToDisplay(props.components?.length || amountToDisplay)
@@ -94,11 +68,7 @@ const ProductComponentsTable = (props: {
   }
 
   if (props.components === undefined || props.components.length === 0) {
-    return (
-      <Text title='Allocations'>
-        {allocationEmptyMsg(props.tokenData, address, chainId)}
-      </Text>
-    )
+    return <Text title='Allocations'>Loading...</Text>
   }
 
   return (

@@ -6,7 +6,6 @@ import {
   Position,
   SetDetails,
 } from 'set.js/dist/types/src/types'
-import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -31,7 +30,6 @@ import {
   MNYeIndex,
 } from 'constants/tokens'
 import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
-import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { displayFromWei, safeDiv } from 'utils'
 import { getSetDetails } from 'utils/setjsApi'
@@ -101,28 +99,15 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
-  const { address } = useWallet()
   const readOnlyProvider = useReadOnlyProvider()
-  const { chain } = useNetwork()
-  const tokenList = getTokenList(chain?.id)
+  const mainnetTokens = getTokenList(MAINNET.chainId)
+  const polygonTokens = getTokenList(POLYGON.chainId)
+  const optimismTokens = getTokenList(OPTIMISM.chainId)
 
   useEffect(() => {
+    console.log('HERE', readOnlyProvider, gmi)
     if (
-      chain?.id &&
-      chain?.id === MAINNET.chainId &&
-      address &&
       readOnlyProvider &&
-      tokenList &&
-      DefiPulseIndex.address &&
-      MetaverseIndex.address &&
-      BedIndex.address &&
-      GmiIndex.address &&
-      Ethereum2xFlexibleLeverageIndex.address &&
-      Bitcoin2xFlexibleLeverageIndex.address &&
-      DataIndex.address &&
-      icETHIndex.address &&
-      JPGIndex.address &&
-      dpi &&
       mvi &&
       bed &&
       data &&
@@ -136,17 +121,17 @@ const SetComponentsProvider = (props: { children: any }) => {
       getSetDetails(
         readOnlyProvider,
         [
-          DefiPulseIndex.address,
-          MetaverseIndex.address,
-          BedIndex.address,
-          GmiIndex.address,
-          Ethereum2xFlexibleLeverageIndex.address,
-          Bitcoin2xFlexibleLeverageIndex.address,
-          DataIndex.address,
-          icETHIndex.address,
-          JPGIndex.address,
+          DefiPulseIndex.address!,
+          MetaverseIndex.address!,
+          BedIndex.address!,
+          GmiIndex.address!,
+          Ethereum2xFlexibleLeverageIndex.address!,
+          Bitcoin2xFlexibleLeverageIndex.address!,
+          DataIndex.address!,
+          icETHIndex.address!,
+          JPGIndex.address!,
         ],
-        chain?.id
+        MAINNET.chainId
       ).then(async (result) => {
         const [
           dpiSet,
@@ -159,20 +144,21 @@ const SetComponentsProvider = (props: { children: any }) => {
           icethSet,
           jpgSet,
         ] = result
+        console.log('dpiSet', dpiSet)
 
         const dpiComponentPrices = await getPositionPrices(dpiSet)
         if (dpiComponentPrices != null) {
           const dpiPositions = dpiSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
-              tokenList,
+              mainnetTokens,
               dpiComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
               dpiComponentPrices[position.component.toLowerCase()]?.[
                 `${VS_CURRENCY}_24h_change`
               ],
-              selectLatestMarketData(dpi.hourlyPrices)
+              selectLatestMarketData(dpi!.hourlyPrices)
             )
           })
           Promise.all(dpiPositions)
@@ -185,7 +171,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           const mviPositions = mviSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
-              tokenList,
+              mainnetTokens,
               mviComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
@@ -206,7 +192,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           const bedPositions = bedSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
-              tokenList,
+              mainnetTokens,
               bedComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
@@ -227,7 +213,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           const gmiPositions = gmiSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
-              tokenList,
+              mainnetTokens,
               gmiComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
@@ -249,7 +235,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             async (position) => {
               return await convertPositionToSetComponent(
                 position,
-                tokenList,
+                mainnetTokens,
                 eth2xfliComponentPrices[position.component.toLowerCase()]?.[
                   VS_CURRENCY
                 ],
@@ -272,7 +258,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             async (position) => {
               return await convertPositionToSetComponent(
                 position,
-                tokenList,
+                mainnetTokens,
                 btc2xfliComponentPrices[position.component.toLowerCase()]?.[
                   VS_CURRENCY
                 ],
@@ -294,7 +280,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           const dataPositions = dataSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
-              tokenList,
+              mainnetTokens,
               dataComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
@@ -315,7 +301,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           const icethPositions = icethSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
-              tokenList,
+              mainnetTokens,
               icethComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
@@ -336,7 +322,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           const jpgPositions = jpgSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
-              tokenList,
+              mainnetTokens,
               jpgComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
@@ -355,10 +341,8 @@ const SetComponentsProvider = (props: { children: any }) => {
     }
   }, [
     readOnlyProvider,
-    tokenList,
     dpi,
     mvi,
-    chain,
     bed,
     gmi,
     ethfli,
@@ -371,10 +355,7 @@ const SetComponentsProvider = (props: { children: any }) => {
 
   useEffect(() => {
     if (
-      chain?.id &&
-      chain?.id === POLYGON.chainId &&
       readOnlyProvider &&
-      tokenList &&
       ethflip &&
       iethflip &&
       maticflip &&
@@ -398,7 +379,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           Bitcoin2xFLIP.polygonAddress,
           IBitcoinFLIP.polygonAddress,
         ],
-        chain?.id
+        POLYGON.chainId
       )
         .then(async (result) => {
           const [
@@ -417,7 +398,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             async (position) => {
               return await convertPositionToSetComponent(
                 position,
-                tokenList,
+                polygonTokens,
                 ethFlipComponentPrices[position.component.toLowerCase()]?.[
                   VS_CURRENCY
                 ],
@@ -441,7 +422,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             async (position) => {
               return await convertPositionToSetComponent(
                 position,
-                tokenList,
+                polygonTokens,
                 iethFlipComponentPrices[position.component.toLowerCase()]?.[
                   VS_CURRENCY
                 ],
@@ -465,7 +446,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             async (position) => {
               return await convertPositionToSetComponent(
                 position,
-                tokenList,
+                polygonTokens,
                 maticFlipComponentPrices[position.component.toLowerCase()]?.[
                   VS_CURRENCY
                 ],
@@ -489,7 +470,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             async (position) => {
               return await convertPositionToSetComponent(
                 position,
-                tokenList,
+                polygonTokens,
                 imaticFlipComponentPrices[position.component.toLowerCase()]?.[
                   VS_CURRENCY
                 ],
@@ -513,7 +494,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             async (position) => {
               return await convertPositionToSetComponent(
                 position,
-                tokenList,
+                polygonTokens,
                 btcflipComponentPrices[position.component.toLowerCase()]?.[
                   VS_CURRENCY
                 ],
@@ -538,7 +519,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             async (position) => {
               return await convertPositionToSetComponent(
                 position,
-                tokenList,
+                polygonTokens,
                 ibtcFlipComponentPrices[position.component.toLowerCase()]?.[
                   VS_CURRENCY
                 ],
@@ -556,21 +537,23 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [chain, readOnlyProvider, tokenList, ethflip, selectLatestMarketData()])
+  }, [
+    readOnlyProvider,
+    ethflip,
+    iethflip,
+    maticflip,
+    imaticflip,
+    btcflip,
+    ibtcflip,
+    selectLatestMarketData(),
+  ])
 
   useEffect(() => {
-    if (
-      chain?.id &&
-      chain?.id === OPTIMISM.chainId &&
-      readOnlyProvider &&
-      tokenList &&
-      mnye &&
-      MNYeIndex.optimismAddress
-    ) {
+    if (readOnlyProvider && mnye && MNYeIndex.optimismAddress) {
       getSetDetails(
         readOnlyProvider,
         [MNYeIndex.optimismAddress],
-        chain?.id,
+        OPTIMISM.chainId,
         true
       )
         .then(async (result) => {
@@ -582,7 +565,7 @@ const SetComponentsProvider = (props: { children: any }) => {
           const mnyePositions = mnyeSet.positions.map(async (position) => {
             return await convertPositionToSetComponent(
               position,
-              tokenList,
+              optimismTokens,
               mnyeComponentPrices[position.component.toLowerCase()]?.[
                 VS_CURRENCY
               ],
@@ -600,7 +583,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [chain, readOnlyProvider, tokenList, mnye, selectLatestMarketData()])
+  }, [readOnlyProvider, mnye, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider
