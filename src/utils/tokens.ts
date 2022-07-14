@@ -1,5 +1,12 @@
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import { ETH, MATIC, Token } from 'constants/tokens'
+import {
+  ETH,
+  indexNamesMainnet,
+  indexNamesOptimism,
+  indexNamesPolygon,
+  MATIC,
+  Token,
+} from 'constants/tokens'
 
 export function getAddressForToken(
   token: Token,
@@ -14,6 +21,19 @@ export function getAddressForToken(
       return token.polygonAddress
     default:
       return undefined
+  }
+}
+
+export function getIndexes(chainId: number): Token[] {
+  switch (chainId) {
+    case MAINNET.chainId:
+      return indexNamesMainnet
+    case OPTIMISM.chainId:
+      return indexNamesOptimism
+    case POLYGON.chainId:
+      return indexNamesPolygon
+    default:
+      return []
   }
 }
 
