@@ -65,22 +65,20 @@ function getTotalHourlyPrices(marketData: UserTokenBalance[]) {
 }
 
 export const useUserMarketData = () => {
-  const {
-    balances: {
-      ethBalance,
-      bedBalance,
-      dataBalance,
-      dpiBalance,
-      mviBalance,
-      gmiBalance,
-      ethFliBalance,
-      btcFliBalance,
-      ethFliPBalance,
-      icEthBalance,
-      jpgBalance,
-      mnyeBalance,
-    },
-  } = useBalances()
+  const { getBalance } = useBalances()
+  const ethBalance = getBalance('ETH')
+  const bedBalance = getBalance('BED')
+  const dataBalance = getBalance('DATA')
+  const dpiBalance = getBalance('DPI')
+  const mviBalance = getBalance('MVI')
+  const gmiBalance = getBalance('GMI')
+  const ethFliBalance = getBalance('ETH2x-FLI')
+  const btcFliBalance = getBalance('BTC2x-FLI')
+  const ethFliPBalance = getBalance('ETH2x-FLI-P')
+  const icEthBalance = getBalance('icETH')
+  const jpgBalance = getBalance('JPG')
+  const mnyeBalance = getBalance('MNYE')
+
   const {
     eth,
     bed,

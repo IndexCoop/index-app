@@ -81,6 +81,7 @@ const MiningProgram = (props: { program: Program }) => {
     unclaimed,
   } = props.program
   const { address } = useAccount()
+  // TODO: replace
   const { balances } = useBalances()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const liquidityMining = useLiquidityMining()
