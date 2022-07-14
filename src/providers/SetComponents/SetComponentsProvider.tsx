@@ -1,11 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { utils } from 'ethers'
-import {
-  CoinGeckoCoinPrices,
-  Position,
-  SetDetails,
-} from 'set.js/dist/types/src/types'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -32,7 +27,12 @@ import {
 import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { displayFromWei, safeDiv } from 'utils'
-import { getSetDetails } from 'utils/setjsApi'
+import {
+  CoinGeckoCoinPrices,
+  getSetDetails,
+  Position,
+  SetDetails,
+} from 'utils/setjsApi'
 import { getTokenList, TokenData as Token } from 'utils/tokenlists'
 
 const ASSET_PLATFORM = 'ethereum'
