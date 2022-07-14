@@ -404,7 +404,7 @@ export const icETHIndex: Token = {
   fees: {
     streamingFee: '0.75%',
     mintFee: '0.0%',
-    redeemFee: '0.25%',
+    redeemFee: '0.0%',
   },
   isDangerous: false,
 }
