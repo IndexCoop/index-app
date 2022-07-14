@@ -1329,13 +1329,6 @@
     compute-scroll-into-view "1.0.14"
     copy-to-clipboard "3.3.1"
 
-"@chakra-ui/icon@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@chakra-ui/icon/-/icon-3.0.3.tgz#5620f01f0dbfcb16f2f051ab87192e6bf532e1c5"
-  integrity sha512-9gNDrWtD/O0lSsqaXh3Fr4LM23ZgatSLp8bFU2oJLxbkxLa7LCpldeO622nk01MRp/kgatr6gGjuzvtRpClmuA==
-  dependencies:
-    "@chakra-ui/utils" "2.0.3"
-
 "@chakra-ui/icon@3.0.4":
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/@chakra-ui/icon/-/icon-3.0.4.tgz#a8f2209e6accbf607a46eecb95e1cbd6036774cb"
@@ -1343,12 +1336,12 @@
   dependencies:
     "@chakra-ui/utils" "2.0.4"
 
-"@chakra-ui/icons@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@chakra-ui/icons/-/icons-2.0.3.tgz#b9e0b4a149d0aa81172ccb40bf4ca32e89ce42ad"
-  integrity sha512-CAUYILVvbT89bP+vHTpWMz+TnGGFkcN0nzyY/2VuWtDR0wjYf5SjGtp8BixroXLPap1CvDiRmTxmGq+FAU4LzA==
+"@chakra-ui/icons@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/icons/-/icons-2.0.4.tgz#8510cc9dd3e49fad3f65b60ae6879a9c08367606"
+  integrity sha512-/Xh6UtIilFhSCxZ6pKmB3zaatvGMc+IAvPb0TvlegWfNaLI7XwHWkEoK+GxYXV02wT/yqmup2gd41/OL3S0YLg==
   dependencies:
-    "@chakra-ui/icon" "3.0.3"
+    "@chakra-ui/icon" "3.0.4"
     "@types/react" "^18.0.1"
 
 "@chakra-ui/image@2.0.5":
@@ -1735,16 +1728,6 @@
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@chakra-ui/utils/-/utils-2.0.2.tgz#130ba1647ea2b94ad956ae4cbcf685838d350593"
   integrity sha512-9AC/ir9zm0shgFG7kdzOKUH2Wx5VB71M3uRMEsMZf75YlhhiU7AvBNtWXnJu+CBiTi41rKa5A+2ImMOsuPfGbA==
-  dependencies:
-    "@types/lodash.mergewith" "4.6.6"
-    css-box-model "1.2.1"
-    framesync "5.3.0"
-    lodash.mergewith "4.6.2"
-
-"@chakra-ui/utils@2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@chakra-ui/utils/-/utils-2.0.3.tgz#4d3aca809264eeaf7b4cc693143ceb5953acb0cb"
-  integrity sha512-BEGENnswWMc58fixsmdxRrnrbYZSrrDsTuFcvh+A4sfrbVbVfMQNJBSV46LT0Z4roMZ10Pi5/brlLH1+22gGQw==
   dependencies:
     "@types/lodash.mergewith" "4.6.6"
     css-box-model "1.2.1"
