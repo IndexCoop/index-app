@@ -1,50 +1,16 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { BigNumber, Contract, providers } from 'ethers'
-import { useBalance, useNetwork } from 'wagmi'
+import { BigNumber, Contract } from 'ethers'
+import { useNetwork } from 'wagmi'
 
-import {
-  dpi2020StakingRewardsAddress,
-  dpi2021StakingRewardsAddress,
-  gmiStakingRewardsAddress,
-  mviStakingRewardsAddress,
-  uniswapEthDpiLpTokenAddress,
-  uniswapEthMviLpTokenAddress,
-} from 'constants/ethContractAddresses'
-import {
-  BedIndex,
-  Bitcoin2xFlexibleLeverageIndex,
-  Bitcoin2xFLIP,
-  DAI,
-  DataIndex,
-  DefiPulseIndex,
-  ETH,
-  Ethereum2xFlexibleLeverageIndex,
-  Ethereum2xFLIP,
-  GmiIndex,
-  IBitcoinFLIP,
-  icETHIndex,
-  IEthereumFLIP,
-  IMaticFLIP,
-  IndexToken,
-  JPGIndex,
-  MATIC,
-  Matic2xFLIP,
-  MetaverseIndex,
-  MNYeIndex,
-  STETH,
-  Token,
-  USDC,
-  WETH,
-} from 'constants/tokens'
+import { Token } from 'constants/tokens'
 import { ERC20_ABI } from 'utils/abi/ERC20'
-import { useStakingUnclaimedRewards } from 'utils/stakingRewards'
-import { getAddressForToken } from 'utils/tokens'
+import { getAddressForToken, getIndexes } from 'utils/tokens'
 
+import { useEthBalance } from './useEthBalance'
 import { useWallet } from './useWallet'
 
-type Balance = BigNumber
-
+// TODO: remove when mining program is fixed
 export interface Balances {
   ethBalance?: BigNumber
   daiBalance?: BigNumber
@@ -90,345 +56,115 @@ async function balanceOf(
 ): Promise<BigNumber> {
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress) return BigNumber.from(0)
+  console.log('balanceOf')
   const erc20 = new Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)
   return balance
 }
 
+type IBalances = Record<string, BigNumber>
+
 export const useBalances = () => {
+  const [balances, setBalances] = useState<IBalances>({})
+
   const { address, provider } = useWallet()
   const { chain } = useNetwork()
-  const ethBalance = useBalance({
-    addressOrName: address || '',
-    watch: true,
-  }).data?.value
+  const chainId = chain?.id ?? 1
 
-  const [bedBalance, setBedBalance] = useState<Balance>(BigNumber.from(0))
-  const [btc2xFLIPBalance, setBtc2xFLIPBalance] = useState<Balance>(
-    BigNumber.from(0)
-  )
-  const [btcFliBalance, setBtcFliBalance] = useState<Balance>(BigNumber.from(0))
-  const [daiBalance, setDaiBalance] = useState<Balance>(BigNumber.from(0))
-  const [dataBalance, setDataBalance] = useState<Balance>(BigNumber.from(0))
-  const [dpiBalance, setDpiBalance] = useState<Balance>(BigNumber.from(0))
-  const [ethFliBalance, setEthFliBalance] = useState<Balance>(BigNumber.from(0))
-  const [ethFliPBalance, setEthFliPBalance] = useState<Balance>(
-    BigNumber.from(0)
-  )
-  const [gmiBalance, setGmiBalance] = useState<Balance>(BigNumber.from(0))
-  const [iBtcFLIPBalance, setIBtcFLIPBalance] = useState<Balance>(
-    BigNumber.from(0)
-  )
-  const [icEthBalance, setIcEthBalance] = useState<Balance>(BigNumber.from(0))
-  const [iEthFLIPbalance, setIEthFLIPbalance] = useState<Balance>(
-    BigNumber.from(0)
-  )
-  const [iMaticFLIPbalance, setIMaticFLIPbalance] = useState<Balance>(
-    BigNumber.from(0)
-  )
-  const [indexBalance, setIndexBalance] = useState<Balance>(BigNumber.from(0))
-  const [maticBalance, setMaticBalance] = useState<Balance>(BigNumber.from(0))
-  const [matic2xFLIPbalance, setMatic2xFLIPbalance] = useState<Balance>(
-    BigNumber.from(0)
-  )
-  const [mviBalance, setMviBalance] = useState<Balance>(BigNumber.from(0))
-  const [usdcBalance, setUsdcBalance] = useState<Balance>(BigNumber.from(0))
-  const [wethBalance, setWethBalance] = useState<Balance>(BigNumber.from(0))
-  const [jpgBalance, setJpgBalance] = useState<Balance>(BigNumber.from(0))
-  const [mnyeBalance, setMnyeBalance] = useState<Balance>(BigNumber.from(0))
-  const [stETHBalance, setstETHBalance] = useState<Balance>(BigNumber.from(0))
-
-  // LP Tokens
-  const uniswapEthDpiLpBalance = useBalance({
-    addressOrName: address || '',
-    token: uniswapEthDpiLpTokenAddress,
-    watch: true,
-  }).data?.value
-  const uniswapEthMviLpBalance = useBalance({
-    addressOrName: address || '',
-    token: uniswapEthMviLpTokenAddress,
-    watch: true,
-  }).data?.value
-
-  // DPI LM Program (Oct. 7th, 2020 - Dec. 6th, 2020)
-  const stakedUniswapEthDpi2020LpBalance = useBalance({
-    addressOrName: address || '',
-    token: dpi2020StakingRewardsAddress,
-    watch: true,
-  }).data?.value
-  const unclaimedUniswapEthDpi2020LpBalance = useStakingUnclaimedRewards(
-    dpi2020StakingRewardsAddress,
-    address
-  )
-  // DPI LM Program ( July 13th, 2021 - August 12th, 2021)
-  const stakedUniswapEthDpi2021LpBalance = useBalance({
-    addressOrName: address || '',
-    token: dpi2021StakingRewardsAddress,
-    watch: true,
-  }).data?.value
-  const unclaimedUniswapEthDpi2021LpBalance = useStakingUnclaimedRewards(
-    dpi2021StakingRewardsAddress,
-    address
-  )
-  // MVI LM Program (August 20th, 2021 - September 19th, 2021)
-  const stakedUniswapEthMvi2021LpBalance = useBalance({
-    addressOrName: address || '',
-    token: mviStakingRewardsAddress,
-    watch: true,
-  }).data?.value
-  const unclaimedUniswapEthMvi2021LpBalance = useStakingUnclaimedRewards(
-    mviStakingRewardsAddress,
-    address
-  )
-  // GMI LM Program (Jan. 10th, 2022 - Mar. 10th, 2022)
-  const stakedGmi2022Balance = useBalance({
-    addressOrName: address || '',
-    token: gmiStakingRewardsAddress,
-    watch: true,
-  }).data?.value
-  const unclaimedGmi2022Balance = useStakingUnclaimedRewards(
-    gmiStakingRewardsAddress,
-    address
-  )
+  const ethBalance = useEthBalance(chainId)
+  console.log('eth', ethBalance.toString())
 
   useEffect(() => {
-    if (!address || !chain?.id) return
-
     const fetchAllBalances = async () => {
-      const bedBalance = await balanceOf(BedIndex, chain?.id, address, provider)
-      const btc2xFLIPBalance = await balanceOf(
-        Bitcoin2xFLIP,
-        chain?.id,
-        address,
-        provider
+      if (!chainId || !address) return
+      console.log('fetchAllBalances')
+      const indexes = getIndexes(chainId)
+      console.log(indexes.length, 'indexes')
+      const promises = indexes.map((index) =>
+        balanceOf(index, chainId, address, provider)
       )
-      const btcFliBalance = await balanceOf(
-        Bitcoin2xFlexibleLeverageIndex,
-        chain?.id,
-        address,
-        provider
-      )
-      const daiBalance = await balanceOf(DAI, chain?.id, address, provider)
-      const dataBalance = await balanceOf(
-        DataIndex,
-        chain?.id,
-        address,
-        provider
-      )
-      const dpiBalance = await balanceOf(
-        DefiPulseIndex,
-        chain?.id,
-        address,
-        provider
-      )
-      const ethFliBalance = await balanceOf(
-        Ethereum2xFlexibleLeverageIndex,
-        chain?.id,
-        address,
-        provider
-      )
-      const ethFliPBalance = await balanceOf(
-        Ethereum2xFLIP,
-        chain?.id,
-        address,
-        provider
-      )
-      const gmiBalance = await balanceOf(GmiIndex, chain?.id, address, provider)
-      const iBtcFLIPBalance = await balanceOf(
-        IBitcoinFLIP,
-        chain?.id,
-        address,
-        provider
-      )
-      const icEthBalance = await balanceOf(
-        icETHIndex,
-        chain?.id,
-        address,
-        provider
-      )
-      const iEthFLIPbalance = await balanceOf(
-        IEthereumFLIP,
-        chain?.id,
-        address,
-        provider
-      )
-      const iMaticFLIPbalance = await balanceOf(
-        IMaticFLIP,
-        chain?.id,
-        address,
-        provider
-      )
-      const indexBalance = await balanceOf(
-        IndexToken,
-        chain?.id,
-        address,
-        provider
-      )
-      const maticBalance = await balanceOf(MATIC, chain?.id, address, provider)
-      const matic2xFLIPbalance = await balanceOf(
-        Matic2xFLIP,
-        chain?.id,
-        address,
-        provider
-      )
-      const mviBalance = await balanceOf(
-        MetaverseIndex,
-        chain?.id,
-        address,
-        provider
-      )
-      const usdcBalance = await balanceOf(USDC, chain?.id, address, provider)
-      const wethBalance = await balanceOf(WETH, chain?.id, address, provider)
-      const jpgBalance = await balanceOf(JPGIndex, chain?.id, address, provider)
-      const mnyeBalance = await balanceOf(
-        MNYeIndex,
-        chain?.id,
-        address,
-        provider
-      )
-      const stETHBalance = await balanceOf(STETH, chain?.id, address, provider)
-      setBedBalance(bedBalance)
-      setBtc2xFLIPBalance(btc2xFLIPBalance)
-      setBtcFliBalance(btcFliBalance)
-      setDaiBalance(daiBalance)
-      setDataBalance(dataBalance)
-      setDpiBalance(dpiBalance)
-      setEthFliBalance(ethFliBalance)
-      setEthFliPBalance(ethFliPBalance)
-      setGmiBalance(gmiBalance)
-      setIBtcFLIPBalance(iBtcFLIPBalance)
-      setIcEthBalance(icEthBalance)
-      setIEthFLIPbalance(iEthFLIPbalance)
-      setIMaticFLIPbalance(iMaticFLIPbalance)
-      setIndexBalance(indexBalance)
-      setMaticBalance(maticBalance)
-      setMatic2xFLIPbalance(matic2xFLIPbalance)
-      setMviBalance(mviBalance)
-      setUsdcBalance(usdcBalance)
-      setWethBalance(wethBalance)
-      setJpgBalance(jpgBalance)
-      setMnyeBalance(mnyeBalance)
-      setstETHBalance(stETHBalance)
+      const results = await Promise.all(promises)
+      console.log(results)
+      let balances: IBalances = {}
+      indexes.forEach((index, idx) => {
+        balances[index.symbol] = results[idx] ?? BigNumber.from(0)
+      })
+      setBalances(balances)
     }
 
     fetchAllBalances()
-  }, [address, chain?.id])
+  }, [address, chainId])
 
-  const getBalance = useCallback(
-    (tokenSymbol: string): BigNumber | undefined => {
-      switch (tokenSymbol) {
-        case BedIndex.symbol:
-          return bedBalance
-        case Bitcoin2xFlexibleLeverageIndex.symbol:
-          return btcFliBalance
-        case Bitcoin2xFLIP.symbol:
-          return btc2xFLIPBalance
-        case DAI.symbol:
-          return daiBalance
-        case DataIndex.symbol:
-          return dataBalance
-        case DefiPulseIndex.symbol:
-          return dpiBalance
-        case ETH.symbol:
-          return ethBalance
-        case Ethereum2xFlexibleLeverageIndex.symbol:
-          return ethFliBalance
-        case Ethereum2xFLIP.symbol:
-          return ethFliPBalance
-        case GmiIndex.symbol:
-          return gmiBalance
-        case IBitcoinFLIP.symbol:
-          return iBtcFLIPBalance
-        case icETHIndex.symbol:
-          return icEthBalance
-        case IEthereumFLIP.symbol:
-          return iEthFLIPbalance
-        case IMaticFLIP.symbol:
-          return iMaticFLIPbalance
-        case IndexToken.symbol:
-          return indexBalance
-        case MATIC.symbol:
-          return maticBalance
-        case Matic2xFLIP.symbol:
-          return matic2xFLIPbalance
-        case MetaverseIndex.symbol:
-          return mviBalance
-        case USDC.symbol:
-          return usdcBalance
-        case WETH.symbol:
-          return wethBalance
-        case JPGIndex.symbol:
-          return jpgBalance
-        case MNYeIndex.symbol:
-          return mnyeBalance
-        case STETH.symbol:
-          return stETHBalance
-        default:
-          return undefined
-      }
-    },
-    [
-      bedBalance,
-      btc2xFLIPBalance,
-      btcFliBalance,
-      daiBalance,
-      dataBalance,
-      dpiBalance,
-      ethBalance,
-      ethFliBalance,
-      ethFliPBalance,
-      gmiBalance,
-      iBtcFLIPBalance,
-      icEthBalance,
-      iEthFLIPbalance,
-      iMaticFLIPbalance,
-      indexBalance,
-      matic2xFLIPbalance,
-      maticBalance,
-      mviBalance,
-      usdcBalance,
-      wethBalance,
-      jpgBalance,
-      mnyeBalance,
-      stETHBalance,
-    ]
-  )
-
-  const balances = {
-    bedBalance,
-    btc2xFLIPBalance,
-    btcFliBalance,
-    daiBalance,
-    dataBalance,
-    dpiBalance,
-    ethBalance,
-    ethFliBalance,
-    ethFliPBalance,
-    gmiBalance,
-    iBtcFLIPBalance,
-    icEthBalance,
-    iEthFLIPbalance,
-    iMaticFLIPbalance,
-    indexBalance,
-    matic2xFLIPbalance,
-    maticBalance,
-    mviBalance,
-    usdcBalance,
-    wethBalance,
-    jpgBalance,
-    mnyeBalance,
-    stETHBalance,
-    stakedGmi2022Balance,
-    stakedUniswapEthDpi2020LpBalance,
-    stakedUniswapEthDpi2021LpBalance,
-    stakedUniswapEthMvi2021LpBalance,
-    uniswapEthDpiLpBalance,
-    uniswapEthMviLpBalance,
-    unclaimedGmi2022Balance,
-    unclaimedUniswapEthMvi2021LpBalance,
-    unclaimedUniswapEthDpi2020LpBalance,
-    unclaimedUniswapEthDpi2021LpBalance,
+  const getBalance = (symbol: string): BigNumber => {
+    return balances[symbol] ?? BigNumber.from(0)
   }
 
-  return { balances, getBalance }
+  // TODO: remove when mining program is fixed
+  const bal: Balances = {}
+  return { balances: bal, ethBalance, getBalance }
 }
+
+//   // LP Tokens
+//   // const uniswapEthDpiLpBalance = useBalance({
+//   //   addressOrName: address || '',
+//   //   token: uniswapEthDpiLpTokenAddress,
+//   //   watch: true,
+//   // }).data?.value
+//   // const uniswapEthMviLpBalance = useBalance({
+//   //   addressOrName: address || '',
+//   //   token: uniswapEthMviLpTokenAddress,
+//   //   watch: true,
+//   // }).data?.value
+//   //
+//   // // DPI LM Program (Oct. 7th, 2020 - Dec. 6th, 2020)
+//   // const stakedUniswapEthDpi2020LpBalance = useBalance({
+//   //   addressOrName: address || '',
+//   //   token: dpi2020StakingRewardsAddress,
+//   //   watch: true,
+//   // }).data?.value
+//   // const unclaimedUniswapEthDpi2020LpBalance = useStakingUnclaimedRewards(
+//   //   dpi2020StakingRewardsAddress,
+//   //   address
+//   // )
+//   // // DPI LM Program ( July 13th, 2021 - August 12th, 2021)
+//   // const stakedUniswapEthDpi2021LpBalance = useBalance({
+//   //   addressOrName: address || '',
+//   //   token: dpi2021StakingRewardsAddress,
+//   //   watch: true,
+//   // }).data?.value
+//   // const unclaimedUniswapEthDpi2021LpBalance = useStakingUnclaimedRewards(
+//   //   dpi2021StakingRewardsAddress,
+//   //   address
+//   // )
+//   // // MVI LM Program (August 20th, 2021 - September 19th, 2021)
+//   // const stakedUniswapEthMvi2021LpBalance = useBalance({
+//   //   addressOrName: address || '',
+//   //   token: mviStakingRewardsAddress,
+//   //   watch: true,
+//   // }).data?.value
+//   // const unclaimedUniswapEthMvi2021LpBalance = useStakingUnclaimedRewards(
+//   //   mviStakingRewardsAddress,
+//   //   address
+//   // )
+//   // // GMI LM Program (Jan. 10th, 2022 - Mar. 10th, 2022)
+//   // const stakedGmi2022Balance = useBalance({
+//   //   addressOrName: address || '',
+//   //   token: gmiStakingRewardsAddress,
+//   //   watch: true,
+//   // }).data?.value
+//   // const unclaimedGmi2022Balance = useStakingUnclaimedRewards(
+//   //   gmiStakingRewardsAddress,
+//   //   address
+//   // )
+//
+//     // stakedGmi2022Balance,
+//     // stakedUniswapEthDpi2020LpBalance,
+//     // stakedUniswapEthDpi2021LpBalance,
+//     // stakedUniswapEthMvi2021LpBalance,
+//     // uniswapEthDpiLpBalance,
+//     // uniswapEthMviLpBalance,
+//     // unclaimedGmi2022Balance,
+//     // unclaimedUniswapEthMvi2021LpBalance,
+//     // unclaimedUniswapEthDpi2020LpBalance,
+//     // unclaimedUniswapEthDpi2021LpBalance,
+//   }
