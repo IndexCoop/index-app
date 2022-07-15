@@ -115,27 +115,27 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   const { address, provider } = useWallet()
   const { index, gmi, selectLatestMarketData } = useMarketData()
 
-  const [uniswapEthDpi2020, setUniswapEthDpi2020] =
-    useState<LiquidityMiningValues>({
-      onApprove: () => {},
-      onStake: () => {},
-      onHarvest: () => {},
-      onUnstakeAndHarvest: () => {},
-    })
-  const [uniswapEthDpi2021, setUniswapEthDpi2021] =
-    useState<LiquidityMiningValues>({
-      onApprove: () => {},
-      onStake: () => {},
-      onHarvest: () => {},
-      onUnstakeAndHarvest: () => {},
-    })
-  const [uniswapEthMvi2021, setUniswapEthMvi2021] =
-    useState<LiquidityMiningValues>({
-      onApprove: () => {},
-      onStake: () => {},
-      onHarvest: () => {},
-      onUnstakeAndHarvest: () => {},
-    })
+  // const [uniswapEthDpi2020, setUniswapEthDpi2020] =
+  //   useState<LiquidityMiningValues>({
+  //     onApprove: () => {},
+  //     onStake: () => {},
+  //     onHarvest: () => {},
+  //     onUnstakeAndHarvest: () => {},
+  //   })
+  // const [uniswapEthDpi2021, setUniswapEthDpi2021] =
+  //   useState<LiquidityMiningValues>({
+  //     onApprove: () => {},
+  //     onStake: () => {},
+  //     onHarvest: () => {},
+  //     onUnstakeAndHarvest: () => {},
+  //   })
+  // const [uniswapEthMvi2021, setUniswapEthMvi2021] =
+  //   useState<LiquidityMiningValues>({
+  //     onApprove: () => {},
+  //     onStake: () => {},
+  //     onHarvest: () => {},
+  //     onUnstakeAndHarvest: () => {},
+  //   })
   const [gmi2022, setGmi2022] = useState<LiquidityMiningValues>({
     onApprove: () => {},
     onStake: () => {},
@@ -258,32 +258,25 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   }, [apyGmi])
 
   useEffect(() => {
-    if (
-      address &&
-      provider &&
-      dpi2020StakingRewardsAddress &&
-      dpi2021StakingRewardsAddress &&
-      gmiStakingRewardsAddress &&
-      mviStakingRewardsAddress
-    ) {
-      setUniswapEthDpi2020({
-        onApprove: () => {},
-        onStake: () => {},
-        onHarvest: () => {},
-        onUnstakeAndHarvest: exitDpi2020,
-      })
-      setUniswapEthDpi2021({
-        onApprove: () => {},
-        onStake: () => {},
-        onHarvest: () => {},
-        onUnstakeAndHarvest: exitDpi2021,
-      })
-      setUniswapEthMvi2021({
-        onApprove: () => {},
-        onStake: () => {},
-        onHarvest: () => {},
-        onUnstakeAndHarvest: exitMvi2021,
-      })
+    if (address && provider) {
+      // setUniswapEthDpi2020({
+      //   onApprove: () => {},
+      //   onStake: () => {},
+      //   onHarvest: () => {},
+      //   onUnstakeAndHarvest: exitDpi2020,
+      // })
+      // setUniswapEthDpi2021({
+      //   onApprove: () => {},
+      //   onStake: () => {},
+      //   onHarvest: () => {},
+      //   onUnstakeAndHarvest: exitDpi2021,
+      // })
+      // setUniswapEthMvi2021({
+      //   onApprove: () => {},
+      //   onStake: () => {},
+      //   onHarvest: () => {},
+      //   onUnstakeAndHarvest: exitMvi2021,
+      // })
       setGmi2022({
         apy: apyGmi,
         isApproved: isApprovedGmi,
@@ -298,6 +291,11 @@ const LiquidityMiningProvider = (props: { children: any }) => {
       })
     }
   }, [address, provider])
+
+  const uniswapEthDpi2020 = undefined
+  const uniswapEthDpi2021 = undefined
+  const uniswapEthMvi2021 = undefined
+  // const gmi2022 = undefined
 
   return (
     <LiquidityMiningContext.Provider

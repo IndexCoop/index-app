@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 
 import StakingModal from 'components/mining/StakingModal'
-import { Balances, useBalances } from 'hooks/useBalance'
+import { StakingBalances } from 'hooks/useBalance'
 import {
   LiquidityMiningProps,
   useLiquidityMining,
@@ -26,12 +26,12 @@ interface ProgramBase {
 }
 interface ProgramUnclaimed extends ProgramBase {
   valueExtra: string
-  unclaimedBalanceKey: keyof Balances
+  unclaimedBalanceKey: keyof StakingBalances
 }
 interface ProgramStaked extends ProgramBase {
   valueExtra: string
-  stakedBalanceKey: keyof Balances
-  underlyingBalanceKey: keyof Balances
+  stakedBalanceKey: keyof StakingBalances
+  underlyingBalanceKey: keyof StakingBalances
 }
 
 export interface Program {
@@ -70,7 +70,11 @@ const NumberBox = (props: {
   )
 }
 
-const MiningProgram = (props: { program: Program }) => {
+const MiningProgram = (props: {
+  program: Program
+  balances: StakingBalances
+}) => {
+  const { balances } = props
   const {
     isActive,
     title,
@@ -81,11 +85,11 @@ const MiningProgram = (props: { program: Program }) => {
     unclaimed,
   } = props.program
   const { address } = useAccount()
-  // TODO: replace
-  const { balances } = useBalances()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const liquidityMining = useLiquidityMining()
+  console.log(liquidityMining, 'liquidityMining')
   const { dividerColor, isDarkMode } = useICColorMode()
+  console.log('RENDER', balances)
 
   const program = liquidityMining[liquidityMiningKey]
   if (!program) return <></>

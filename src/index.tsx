@@ -36,7 +36,6 @@ import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
 import MNYe from 'components/views/productpages/MNYe'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
-import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
 import { ProtectionProvider } from 'providers/Protection/ProtectionProvider'
 import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
@@ -79,13 +78,11 @@ const Providers = (props: { children: any }) => {
           }}
         >
           <MarketDataProvider>
-            <LiquidityMiningProvider>
-              <SetComponentsProvider>
-                <ProtectionProvider>
-                  <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
-                </ProtectionProvider>
-              </SetComponentsProvider>
-            </LiquidityMiningProvider>
+            <SetComponentsProvider>
+              <ProtectionProvider>
+                <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+              </ProtectionProvider>
+            </SetComponentsProvider>
           </MarketDataProvider>
         </RainbowKitProvider>
       </WagmiConfig>

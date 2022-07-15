@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 
 import { Box, Button, Flex } from '@chakra-ui/react'
@@ -9,6 +7,8 @@ import WarningMessage from 'components/mining/WarningMessage'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { MAINNET } from 'constants/chains'
+import { useLiquidityMiningBalances } from 'hooks/useBalance'
+import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
 
 const programs: Program[] = [
   {
@@ -109,55 +109,50 @@ const LiquidityMining = () => {
   const { chain } = useNetwork()
   const { switchNetwork } = useSwitchNetwork()
   const chainId = chain?.id
+  const isMainnet = chainId === MAINNET.chainId
+  // const balances = useLiquidityMiningBalances()
+  const balances = {}
 
-  const [showFarms, setShowFarms] = useState(true)
-  const [warning, setWarning] = useState<string | null>(null)
+  console.log('CHAIN', chainId)
 
-  const closeWarningMessage = () => {
-    setWarning(null)
-  }
-
-  useEffect(() => {
-    if (chainId !== MAINNET.chainId) {
-      setWarning('Liquidity Mining is only available on Mainnet')
-      setShowFarms(false)
-    } else {
-      setWarning(null)
-      setShowFarms(true)
-    }
-  }, [chainId])
+  const showFarms = isMainnet
+  const warning = isMainnet
+    ? null
+    : 'Liquidity Mining is only available on Mainnet'
 
   return (
-    <Page>
-      <Box w='100vw'>
-        <PageTitle
-          title='Liquidity Mining Programs'
-          subtitle='Earn rewards for supplying liquidity for Index Coop products'
-        />
-        {warning && (
-          <WarningMessage message={warning} closeAction={closeWarningMessage} />
-        )}
-        <Flex px={['20px', '20px', '20px', '0']}>
-          <Flex direction='column' w='100%' maxWidth={800} mx='auto'>
-            {showFarms &&
-              programs.map((program, index) => {
-                return (
-                  <Box key={index} my='10' zIndex='1'>
-                    <MiningProgram program={program} />
-                  </Box>
-                )
-              })}
-            {!showFarms && (
-              <Box my='10'>
-                <Button onClick={() => switchNetwork?.(MAINNET.chainId)}>
-                  Switch to Mainnet
-                </Button>
-              </Box>
-            )}
+    <LiquidityMiningProvider>
+      <Page>
+        <Box w='100vw'>
+          <PageTitle
+            title='Liquidity Mining Programs'
+            subtitle='Earn rewards for supplying liquidity for Index Coop products'
+          />
+          {warning && (
+            <WarningMessage message={warning} closeAction={() => {}} />
+          )}
+          <Flex px={['20px', '20px', '20px', '0']}>
+            <Flex direction='column' w='100%' maxWidth={800} mx='auto'>
+              {showFarms &&
+                programs.map((program, index) => {
+                  return (
+                    <Box key={index} my='10' zIndex='1'>
+                      <MiningProgram program={program} balances={balances} />
+                    </Box>
+                  )
+                })}
+              {!showFarms && (
+                <Box my='10'>
+                  <Button onClick={() => switchNetwork?.(MAINNET.chainId)}>
+                    Switch to Mainnet
+                  </Button>
+                </Box>
+              )}
+            </Flex>
           </Flex>
-        </Flex>
-      </Box>
-    </Page>
+        </Box>
+      </Page>
+    </LiquidityMiningProvider>
   )
 }
 
