@@ -8,6 +8,7 @@ import {
 } from '@indexcoop/index-exchange-issuance-sdk'
 import { useTransactions } from '@usedapp/core'
 
+import { DefaultGasLimitExchangeIssuanceLeveraged } from 'constants/gas'
 import { ETH, MATIC, Token } from 'constants/tokens'
 import { useAccount } from 'hooks/useAccount'
 import { useNetwork } from 'hooks/useNetwork'
@@ -21,6 +22,8 @@ import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalance } from './useBalance'
+
+const gasLimit = BigNumber.from(DefaultGasLimitExchangeIssuanceLeveraged)
 
 export const useTradeLeveragedExchangeIssuance = (
   isIssuance: boolean,
@@ -80,7 +83,7 @@ export const useTradeLeveragedExchangeIssuance = (
             function: CaptureExchangeIssuanceFunctionKey.issueEth,
             setToken: outputTokenAddress,
             setAmount: amountOfSetToken.toString(),
-            gasLimit: BigNumber.from(1800000).toString(),
+            gasLimit: gasLimit.toString(),
             slippage: slippage.toString(),
           })
           const issueTx = await exchangeIssuance.issueExactSetFromETH(
@@ -89,7 +92,7 @@ export const useTradeLeveragedExchangeIssuance = (
             debtCollateralSwapData,
             inputOutputSwapData,
             inputOutputLimit,
-            { gasLimit: BigNumber.from(1800000) }
+            { gasLimit }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
@@ -101,7 +104,7 @@ export const useTradeLeveragedExchangeIssuance = (
             function: CaptureExchangeIssuanceFunctionKey.issueErc20,
             setToken: outputTokenAddress,
             setAmount: amountOfSetToken.toString(),
-            gasLimit: BigNumber.from(1800000).toString(),
+            gasLimit: gasLimit.toString(),
             slippage: slippage.toString(),
           })
           const issueTx = await exchangeIssuance.issueExactSetFromERC20(
@@ -111,7 +114,7 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputLimit,
             debtCollateralSwapData,
             inputOutputSwapData,
-            { gasLimit: BigNumber.from(1800000) }
+            { gasLimit }
           )
           if (issueTx) {
             const storedTx = getStoredTransaction(issueTx, chainId)
@@ -129,7 +132,7 @@ export const useTradeLeveragedExchangeIssuance = (
             function: CaptureExchangeIssuanceFunctionKey.redeemEth,
             setToken: inputTokenAddress,
             setAmount: tokenAmout.toString(),
-            gasLimit: BigNumber.from(1800000).toString(),
+            gasLimit: gasLimit.toString(),
             slippage: slippage.toString(),
           })
           const redeemTx = await exchangeIssuance.redeemExactSetForETH(
@@ -138,7 +141,7 @@ export const useTradeLeveragedExchangeIssuance = (
             inputOutputLimit,
             debtCollateralSwapData,
             inputOutputSwapData,
-            { gasLimit: BigNumber.from(1800000) }
+            { gasLimit }
           )
           if (redeemTx) {
             const storedTx = getStoredTransaction(redeemTx, chainId)
@@ -150,7 +153,7 @@ export const useTradeLeveragedExchangeIssuance = (
             function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
             setToken: inputTokenAddress,
             setAmount: tokenAmout.toString(),
-            gasLimit: BigNumber.from(1800000).toString(),
+            gasLimit: gasLimit.toString(),
             slippage: slippage.toString(),
           })
           const redeemTx = await exchangeIssuance.redeemExactSetForERC20(
@@ -161,7 +164,7 @@ export const useTradeLeveragedExchangeIssuance = (
             debtCollateralSwapData,
             inputOutputSwapData,
             {
-              gasLimit: BigNumber.from(2000000),
+              gasLimit,
               maxFeePerGas: BigNumber.from(100000000000),
               maxPriorityFeePerGas: BigNumber.from(2000000000),
             }

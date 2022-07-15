@@ -3,10 +3,11 @@ import axios from 'axios'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { OPTIMISM, POLYGON } from 'constants/chains'
+import { IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
 import { toWei } from 'utils'
 
-const API_0X_INDEX_URL = 'https://api.indexcoop.com/0x'
+const API_0X_INDEX_URL = `${IndexApiBaseUrl}/0x`
 
 type Result<T, E = Error> =
   | { success: true; value: T }
@@ -55,20 +56,6 @@ function getApiUrl(query: string, chainId: number): string {
   return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}&affilliateAddress=0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF`
 }
 
-// Temporarily adding this because we need to support more tokens than the once
-// we have defined as type Token in `tokens.ts`. Probably going to rewrite this
-// into one function later.
-export async function get0xQuote(params: any, chainId: number) {
-  const query = new URLSearchParams(params).toString()
-  const url = getApiUrl(query, chainId)
-  try {
-    const response = await axios.get(url)
-    return response.data
-  } catch (err: any) {
-    console.log('response', err.response)
-  }
-}
-
 /**
  *
  * @param slippagePercentage  The maximum acceptable slippage buy/sell amount. Slippage percentage: 0.03 for 3% slippage allowed.
@@ -108,9 +95,11 @@ export const getZeroExTradeData = async (
         )
     return { success: true, value: apiResult }
   } catch (e: any) {
+    const errorResponse = e.response
     if (
-      e.response.status === 400 &&
-      e.response.data.validationErrors[0].reason ===
+      errorResponse &&
+      errorResponse.status === 400 &&
+      errorResponse.data.validationErrors[0].reason ===
         'INSUFFICIENT_ASSET_LIQUIDITY'
     ) {
       return {
