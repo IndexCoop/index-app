@@ -28,7 +28,6 @@ async function balanceOf(
 ): Promise<BigNumber> {
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress) return BigNumber.from(0)
-  console.log('balanceOf')
   const erc20 = new Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)
   return balance
@@ -40,7 +39,6 @@ async function balanceOfAddress(
   account: string,
   library: any | undefined
 ): Promise<BigNumber> {
-  console.log('balanceOf')
   const erc20 = new Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)
   return balance
@@ -56,28 +54,25 @@ export const useBalances = () => {
   const chainId = chain?.id ?? 1
 
   const ethBalance = useEthBalance(chainId)
-  console.log('eth', ethBalance.toString())
+
+  const fetchAllBalances = useCallback(async () => {
+    if (!chainId || !address) return
+    console.log('fetchAllBalances')
+    const indexes = getIndexes(chainId)
+    const promises = indexes.map((index) =>
+      balanceOf(index, chainId, address, provider)
+    )
+    const results = await Promise.all(promises)
+    let balances: IBalances = {}
+    indexes.forEach((index, idx) => {
+      balances[index.symbol] = results[idx] ?? BigNumber.from(0)
+    })
+    setBalances(balances)
+  }, [address, chainId])
 
   useEffect(() => {
-    const fetchAllBalances = async () => {
-      if (!chainId || !address) return
-      console.log('fetchAllBalances')
-      const indexes = getIndexes(chainId)
-      console.log(indexes.length, 'indexes')
-      const promises = indexes.map((index) =>
-        balanceOf(index, chainId, address, provider)
-      )
-      const results = await Promise.all(promises)
-      console.log(results)
-      let balances: IBalances = {}
-      indexes.forEach((index, idx) => {
-        balances[index.symbol] = results[idx] ?? BigNumber.from(0)
-      })
-      setBalances(balances)
-    }
-
     fetchAllBalances()
-  }, [address, chainId])
+  }, [fetchAllBalances])
 
   const getBalance = (symbol: string): BigNumber => {
     return balances[symbol] ?? BigNumber.from(0)
