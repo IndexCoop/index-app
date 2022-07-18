@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { utils } from 'ethers'
+import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -99,6 +100,8 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
+  const { chain } = useNetwork()
+  const chainId = chain?.id ?? 1
   const readOnlyProvider = useReadOnlyProvider()
   const polygonReadOnlyProvider = useReadOnlyProvider(POLYGON.chainId)
   const optimismReadOnlyProvider = useReadOnlyProvider(OPTIMISM.chainId)
@@ -107,7 +110,6 @@ const SetComponentsProvider = (props: { children: any }) => {
   const optimismTokens = getTokenList(OPTIMISM.chainId)
 
   useEffect(() => {
-    console.log('HERE', readOnlyProvider, gmi)
     if (
       readOnlyProvider &&
       mvi &&
@@ -146,7 +148,6 @@ const SetComponentsProvider = (props: { children: any }) => {
           icethSet,
           jpgSet,
         ] = result
-        console.log('dpiSet', dpiSet)
 
         const dpiComponentPrices = await getPositionPrices(dpiSet)
         if (dpiComponentPrices != null) {
@@ -537,7 +538,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             .then(sortPositionsByPercentOfSet)
             .then(setIBtcflipComponents)
         })
-        .catch((err) => console.log('err', err))
+        .catch((err) => console.log('Polygon err', err))
     }
   }, [
     polygonReadOnlyProvider,
@@ -583,7 +584,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             .then(setMnyeComponents)
           ///
         })
-        .catch((err) => console.log('err', err))
+        .catch((err) => console.log('MYNe err', err))
     }
   }, [optimismReadOnlyProvider, mnye, selectLatestMarketData()])
 

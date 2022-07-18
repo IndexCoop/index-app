@@ -1,10 +1,9 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { utils } from 'ethers'
 import { useContractRead, useContractWrite } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { Contract } from '@ethersproject/contracts'
 
 import {
   dpi2020StakingRewardsAddress,
@@ -52,9 +51,10 @@ const useGetRewardForDuration = (
     functionName: 'getRewardForDuration',
     args: [],
   })
-
-  console.log('useGetRewardForDuration  data', data)
-  return undefined
+  return useMemo(
+    () => (isError || isLoading || !data ? undefined : data.value),
+    [data, isError, isLoading]
+  )
 }
 
 /**
@@ -67,9 +67,11 @@ const useTotalSupply = (stakingAddress?: string): BigNumber | undefined => {
     functionName: 'totalSupply',
     args: [],
   })
-
   console.log('useTotalSupply  data', data)
-  return undefined
+  return useMemo(
+    () => (isError || isLoading || !data ? undefined : data.value),
+    [data, isError, isLoading]
+  )
 }
 
 /**
@@ -115,27 +117,27 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   const { address, provider } = useWallet()
   const { index, gmi, selectLatestMarketData } = useMarketData()
 
-  // const [uniswapEthDpi2020, setUniswapEthDpi2020] =
-  //   useState<LiquidityMiningValues>({
-  //     onApprove: () => {},
-  //     onStake: () => {},
-  //     onHarvest: () => {},
-  //     onUnstakeAndHarvest: () => {},
-  //   })
-  // const [uniswapEthDpi2021, setUniswapEthDpi2021] =
-  //   useState<LiquidityMiningValues>({
-  //     onApprove: () => {},
-  //     onStake: () => {},
-  //     onHarvest: () => {},
-  //     onUnstakeAndHarvest: () => {},
-  //   })
-  // const [uniswapEthMvi2021, setUniswapEthMvi2021] =
-  //   useState<LiquidityMiningValues>({
-  //     onApprove: () => {},
-  //     onStake: () => {},
-  //     onHarvest: () => {},
-  //     onUnstakeAndHarvest: () => {},
-  //   })
+  const [uniswapEthDpi2020, setUniswapEthDpi2020] =
+    useState<LiquidityMiningValues>({
+      onApprove: () => {},
+      onStake: () => {},
+      onHarvest: () => {},
+      onUnstakeAndHarvest: () => {},
+    })
+  const [uniswapEthDpi2021, setUniswapEthDpi2021] =
+    useState<LiquidityMiningValues>({
+      onApprove: () => {},
+      onStake: () => {},
+      onHarvest: () => {},
+      onUnstakeAndHarvest: () => {},
+    })
+  const [uniswapEthMvi2021, setUniswapEthMvi2021] =
+    useState<LiquidityMiningValues>({
+      onApprove: () => {},
+      onStake: () => {},
+      onHarvest: () => {},
+      onUnstakeAndHarvest: () => {},
+    })
   const [gmi2022, setGmi2022] = useState<LiquidityMiningValues>({
     onApprove: () => {},
     onStake: () => {},
@@ -159,33 +161,29 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   /**
    * DPI 2020
    */
-  const dpi2020Contract = new Contract(
-    dpi2020StakingRewardsAddress,
-    stakingInterface
-  )
-  // TODO: all writing? functions
-  // const { send: exitDpi2020 } = useContractFunction(dpi2020Contract, 'exit')
-  const exitDpi2020 = () => {}
+  const { writeAsync: exitDpi2020 } = useContractWrite({
+    addressOrName: dpi2020StakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'exit',
+  })
 
   /**
    * DPI 2021
    */
-  const dpi2021Contract = new Contract(
-    dpi2021StakingRewardsAddress,
-    stakingInterface
-  )
-  // const { send: exitDpi2021 } = useContractFunction(dpi2021Contract, 'exit')
-  const exitDpi2021 = () => {}
+  const { writeAsync: exitDpi2021 } = useContractWrite({
+    addressOrName: dpi2021StakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'exit',
+  })
 
   /**
    * MVI 2021
    */
-  const mvi2021Contract = new Contract(
-    mviStakingRewardsAddress,
-    stakingInterface
-  )
-  // const { send: exitMvi2021 } = useContractFunction(mvi2021Contract, 'exit')
-  const exitMvi2021 = () => {}
+  const { writeAsync: exitMvi2021 } = useContractWrite({
+    addressOrName: mviStakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'exit',
+  })
 
   /**
    * GMI 2022
@@ -208,36 +206,17 @@ const LiquidityMiningProvider = (props: { children: any }) => {
     }))
   }, [isApprovedGmi, isApprovingGmi])
 
-  const gmiContract = new Contract(gmiStakingRewardsAddress, stakingInterface)
-
-  const {
-    data: stakeGmiData,
-    isError: isStakeGmiError,
-    isLoading: isStakeGmiLoading,
-    writeAsync: stakeGmi,
-  } = useContractWrite({
+  const { writeAsync: stakeGmi } = useContractWrite({
     addressOrName: gmiStakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'stake',
-    // TODO: not sure if you  need this, so might be able to delete
-    args: BigNumber,
   })
-  const {
-    data: getRewardData,
-    isError: isGetRewardError,
-    isLoading: isGetRewardLoading,
-    writeAsync: claimGmi,
-  } = useContractWrite({
+  const { writeAsync: claimGmi } = useContractWrite({
     addressOrName: gmiStakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'getReward',
   })
-  const {
-    data: exitGmiData,
-    isError: isExitGmiError,
-    isLoading: isExitGmiLoading,
-    writeAsync: exitGmi,
-  } = useContractWrite({
+  const { writeAsync: exitGmi } = useContractWrite({
     addressOrName: gmiStakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'exit',
@@ -259,24 +238,24 @@ const LiquidityMiningProvider = (props: { children: any }) => {
 
   useEffect(() => {
     if (address && provider) {
-      // setUniswapEthDpi2020({
-      //   onApprove: () => {},
-      //   onStake: () => {},
-      //   onHarvest: () => {},
-      //   onUnstakeAndHarvest: exitDpi2020,
-      // })
-      // setUniswapEthDpi2021({
-      //   onApprove: () => {},
-      //   onStake: () => {},
-      //   onHarvest: () => {},
-      //   onUnstakeAndHarvest: exitDpi2021,
-      // })
-      // setUniswapEthMvi2021({
-      //   onApprove: () => {},
-      //   onStake: () => {},
-      //   onHarvest: () => {},
-      //   onUnstakeAndHarvest: exitMvi2021,
-      // })
+      setUniswapEthDpi2020({
+        onApprove: () => {},
+        onStake: () => {},
+        onHarvest: () => {},
+        onUnstakeAndHarvest: exitDpi2020,
+      })
+      setUniswapEthDpi2021({
+        onApprove: () => {},
+        onStake: () => {},
+        onHarvest: () => {},
+        onUnstakeAndHarvest: exitDpi2021,
+      })
+      setUniswapEthMvi2021({
+        onApprove: () => {},
+        onStake: () => {},
+        onHarvest: () => {},
+        onUnstakeAndHarvest: exitMvi2021,
+      })
       setGmi2022({
         apy: apyGmi,
         isApproved: isApprovedGmi,
@@ -291,11 +270,6 @@ const LiquidityMiningProvider = (props: { children: any }) => {
       })
     }
   }, [address, provider])
-
-  const uniswapEthDpi2020 = undefined
-  const uniswapEthDpi2021 = undefined
-  const uniswapEthMvi2021 = undefined
-  // const gmi2022 = undefined
 
   return (
     <LiquidityMiningContext.Provider

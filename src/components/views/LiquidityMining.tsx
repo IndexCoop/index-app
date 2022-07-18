@@ -110,10 +110,7 @@ const LiquidityMining = () => {
   const { switchNetwork } = useSwitchNetwork()
   const chainId = chain?.id
   const isMainnet = chainId === MAINNET.chainId
-  // const balances = useLiquidityMiningBalances()
-  const balances = {}
-
-  console.log('CHAIN', chainId)
+  const balances = useLiquidityMiningBalances()
 
   const showFarms = isMainnet
   const warning = isMainnet
