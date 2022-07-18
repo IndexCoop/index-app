@@ -344,7 +344,6 @@ const SetComponentsProvider = (props: { children: any }) => {
       })
     }
   }, [
-    chainId,
     readOnlyProvider,
     dpi,
     mvi,
