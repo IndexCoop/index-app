@@ -111,7 +111,6 @@ const SetComponentsProvider = (props: { children: any }) => {
 
   useEffect(() => {
     if (
-      chainId === MAINNET.chainId &&
       readOnlyProvider &&
       mvi &&
       bed &&
