@@ -18,3 +18,11 @@ export function getTokenList(chainId: number = 1) {
       return MainnetTokens
   }
 }
+
+export const getAllTokenLists = () => {
+  return {
+    mainnetTokens: MainnetTokens,
+    polygonTokens: MaticTokens,
+    optimismTokens: OptimismTokens,
+  }
+}

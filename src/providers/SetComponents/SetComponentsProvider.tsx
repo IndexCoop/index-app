@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { utils } from 'ethers'
-import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -25,7 +24,7 @@ import {
   MetaverseIndex,
   MNYeIndex,
 } from 'constants/tokens'
-import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
+import { useAllReadOnlyProviders } from 'hooks/useReadOnlyProvider'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { displayFromWei, safeDiv } from 'utils'
 import {
@@ -34,7 +33,7 @@ import {
   Position,
   SetDetails,
 } from 'utils/setjsApi'
-import { getTokenList, TokenData as Token } from 'utils/tokenlists'
+import { getAllTokenLists, TokenData as Token } from 'utils/tokenlists'
 
 const ASSET_PLATFORM = 'ethereum'
 const VS_CURRENCY = 'usd'
@@ -100,18 +99,17 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
-  const { chain } = useNetwork()
-  const chainId = chain?.id ?? 1
-  const readOnlyProvider = useReadOnlyProvider()
-  const polygonReadOnlyProvider = useReadOnlyProvider(POLYGON.chainId)
-  const optimismReadOnlyProvider = useReadOnlyProvider(OPTIMISM.chainId)
-  const mainnetTokens = getTokenList(MAINNET.chainId)
-  const polygonTokens = getTokenList(POLYGON.chainId)
-  const optimismTokens = getTokenList(OPTIMISM.chainId)
+  const {
+    mainnetReadOnlyProvider,
+    optimismReadOnlyProvider,
+    polygonReadOnlyProvider,
+  } = useAllReadOnlyProviders()
+
+  const { mainnetTokens, polygonTokens, optimismTokens } = getAllTokenLists()
 
   useEffect(() => {
     if (
-      readOnlyProvider &&
+      mainnetReadOnlyProvider &&
       mvi &&
       bed &&
       data &&
@@ -123,7 +121,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       jpg
     ) {
       getSetDetails(
-        readOnlyProvider,
+        mainnetReadOnlyProvider,
         [
           DefiPulseIndex.address!,
           MetaverseIndex.address!,
@@ -343,7 +341,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       })
     }
   }, [
-    readOnlyProvider,
+    mainnetReadOnlyProvider,
     dpi,
     mvi,
     bed,
