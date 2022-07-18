@@ -100,6 +100,8 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
   const readOnlyProvider = useReadOnlyProvider()
+  const polygonReadOnlyProvider = useReadOnlyProvider(POLYGON.chainId)
+  const optimismReadOnlyProvider = useReadOnlyProvider(OPTIMISM.chainId)
   const mainnetTokens = getTokenList(MAINNET.chainId)
   const polygonTokens = getTokenList(POLYGON.chainId)
   const optimismTokens = getTokenList(OPTIMISM.chainId)
@@ -355,7 +357,7 @@ const SetComponentsProvider = (props: { children: any }) => {
 
   useEffect(() => {
     if (
-      readOnlyProvider &&
+      polygonReadOnlyProvider &&
       ethflip &&
       iethflip &&
       maticflip &&
@@ -370,7 +372,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       IBitcoinFLIP.polygonAddress
     ) {
       getSetDetails(
-        readOnlyProvider,
+        polygonReadOnlyProvider,
         [
           Ethereum2xFLIP.polygonAddress,
           IEthereumFLIP.polygonAddress,
@@ -538,7 +540,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         .catch((err) => console.log('err', err))
     }
   }, [
-    readOnlyProvider,
+    polygonReadOnlyProvider,
     ethflip,
     iethflip,
     maticflip,
@@ -549,9 +551,9 @@ const SetComponentsProvider = (props: { children: any }) => {
   ])
 
   useEffect(() => {
-    if (readOnlyProvider && mnye && MNYeIndex.optimismAddress) {
+    if (optimismReadOnlyProvider && mnye && MNYeIndex.optimismAddress) {
       getSetDetails(
-        readOnlyProvider,
+        optimismReadOnlyProvider,
         [MNYeIndex.optimismAddress],
         OPTIMISM.chainId,
         true
@@ -583,7 +585,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [readOnlyProvider, mnye, selectLatestMarketData()])
+  }, [optimismReadOnlyProvider, mnye, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider
