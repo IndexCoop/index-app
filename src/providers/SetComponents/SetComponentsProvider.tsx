@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { utils } from 'ethers'
+import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -99,6 +100,8 @@ const SetComponentsProvider = (props: { children: any }) => {
   const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
   const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
+  const { chain } = useNetwork()
+  const chainId = chain?.id ?? 1
   const readOnlyProvider = useReadOnlyProvider()
   const mainnetTokens = getTokenList(MAINNET.chainId)
   const polygonTokens = getTokenList(POLYGON.chainId)
@@ -107,6 +110,7 @@ const SetComponentsProvider = (props: { children: any }) => {
   useEffect(() => {
     console.log('HERE', readOnlyProvider, gmi)
     if (
+      chainId === MAINNET.chainId &&
       readOnlyProvider &&
       mvi &&
       bed &&
@@ -340,6 +344,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       })
     }
   }, [
+    chainId,
     readOnlyProvider,
     dpi,
     mvi,
@@ -355,6 +360,7 @@ const SetComponentsProvider = (props: { children: any }) => {
 
   useEffect(() => {
     if (
+      chainId === POLYGON.chainId &&
       readOnlyProvider &&
       ethflip &&
       iethflip &&
@@ -538,6 +544,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         .catch((err) => console.log('err', err))
     }
   }, [
+    chainId,
     readOnlyProvider,
     ethflip,
     iethflip,
@@ -549,7 +556,12 @@ const SetComponentsProvider = (props: { children: any }) => {
   ])
 
   useEffect(() => {
-    if (readOnlyProvider && mnye && MNYeIndex.optimismAddress) {
+    if (
+      chainId === OPTIMISM.chainId &&
+      readOnlyProvider &&
+      mnye &&
+      MNYeIndex.optimismAddress
+    ) {
       getSetDetails(
         readOnlyProvider,
         [MNYeIndex.optimismAddress],
@@ -583,7 +595,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('err', err))
     }
-  }, [readOnlyProvider, mnye, selectLatestMarketData()])
+  }, [chainId, readOnlyProvider, mnye, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider
