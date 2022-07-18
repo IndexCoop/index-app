@@ -108,7 +108,6 @@ const SetComponentsProvider = (props: { children: any }) => {
   const optimismTokens = getTokenList(OPTIMISM.chainId)
 
   useEffect(() => {
-    console.log('HERE', readOnlyProvider, gmi)
     if (
       chainId === MAINNET.chainId &&
       readOnlyProvider &&
@@ -148,7 +147,6 @@ const SetComponentsProvider = (props: { children: any }) => {
           icethSet,
           jpgSet,
         ] = result
-        console.log('dpiSet', dpiSet)
 
         const dpiComponentPrices = await getPositionPrices(dpiSet)
         if (dpiComponentPrices != null) {
@@ -541,7 +539,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             .then(sortPositionsByPercentOfSet)
             .then(setIBtcflipComponents)
         })
-        .catch((err) => console.log('err', err))
+        .catch((err) => console.log('Polygon err', err))
     }
   }, [
     chainId,
@@ -593,7 +591,7 @@ const SetComponentsProvider = (props: { children: any }) => {
             .then(setMnyeComponents)
           ///
         })
-        .catch((err) => console.log('err', err))
+        .catch((err) => console.log('MYNe err', err))
     }
   }, [chainId, readOnlyProvider, mnye, selectLatestMarketData()])
 

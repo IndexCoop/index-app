@@ -87,9 +87,7 @@ const MiningProgram = (props: {
   const { address } = useAccount()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const liquidityMining = useLiquidityMining()
-  console.log(liquidityMining, 'liquidityMining')
   const { dividerColor, isDarkMode } = useICColorMode()
-  console.log('RENDER', balances)
 
   const program = liquidityMining[liquidityMiningKey]
   if (!program) return <></>
