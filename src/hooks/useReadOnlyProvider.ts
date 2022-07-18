@@ -4,9 +4,9 @@ import { Chain, useNetwork } from 'wagmi'
 
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-export const useReadOnlyProvider = () => {
+export const useReadOnlyProvider = (propChainId?: number) => {
   const { chain, chains } = useNetwork()
-  const chainId = chain?.id ?? 1
+  const chainId = propChainId ? propChainId : chain?.id ?? 1
 
   return useMemo(
     () => new JsonRpcProvider(getJsonRpcUrl(chainId, chains)),

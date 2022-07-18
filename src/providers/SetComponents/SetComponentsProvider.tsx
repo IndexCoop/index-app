@@ -103,6 +103,8 @@ const SetComponentsProvider = (props: { children: any }) => {
   const { chain } = useNetwork()
   const chainId = chain?.id ?? 1
   const readOnlyProvider = useReadOnlyProvider()
+  const polygonReadOnlyProvider = useReadOnlyProvider(POLYGON.chainId)
+  const optimismReadOnlyProvider = useReadOnlyProvider(OPTIMISM.chainId)
   const mainnetTokens = getTokenList(MAINNET.chainId)
   const polygonTokens = getTokenList(POLYGON.chainId)
   const optimismTokens = getTokenList(OPTIMISM.chainId)
@@ -358,8 +360,7 @@ const SetComponentsProvider = (props: { children: any }) => {
 
   useEffect(() => {
     if (
-      chainId === POLYGON.chainId &&
-      readOnlyProvider &&
+      polygonReadOnlyProvider &&
       ethflip &&
       iethflip &&
       maticflip &&
@@ -374,7 +375,7 @@ const SetComponentsProvider = (props: { children: any }) => {
       IBitcoinFLIP.polygonAddress
     ) {
       getSetDetails(
-        readOnlyProvider,
+        polygonReadOnlyProvider,
         [
           Ethereum2xFLIP.polygonAddress,
           IEthereumFLIP.polygonAddress,
@@ -542,8 +543,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         .catch((err) => console.log('Polygon err', err))
     }
   }, [
-    chainId,
-    readOnlyProvider,
+    polygonReadOnlyProvider,
     ethflip,
     iethflip,
     maticflip,
@@ -554,14 +554,9 @@ const SetComponentsProvider = (props: { children: any }) => {
   ])
 
   useEffect(() => {
-    if (
-      chainId === OPTIMISM.chainId &&
-      readOnlyProvider &&
-      mnye &&
-      MNYeIndex.optimismAddress
-    ) {
+    if (optimismReadOnlyProvider && mnye && MNYeIndex.optimismAddress) {
       getSetDetails(
-        readOnlyProvider,
+        optimismReadOnlyProvider,
         [MNYeIndex.optimismAddress],
         OPTIMISM.chainId,
         true
@@ -593,7 +588,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         })
         .catch((err) => console.log('MYNe err', err))
     }
-  }, [chainId, readOnlyProvider, mnye, selectLatestMarketData()])
+  }, [optimismReadOnlyProvider, mnye, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider
