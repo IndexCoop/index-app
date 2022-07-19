@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef } from 'react'
 
 import { utils } from 'ethers'
 
@@ -42,7 +42,11 @@ export function useSetComponents() {
   return { ...useContext(SetComponentsContext) }
 }
 
+type CachedSetComponents = Record<string, SetComponent[] | null>
+
 const SetComponentsProvider = (props: { children: any }) => {
+  const cache = useRef<CachedSetComponents>({})
+
   const {
     selectLatestMarketData,
     dpi,
@@ -62,42 +66,6 @@ const SetComponentsProvider = (props: { children: any }) => {
     jpg,
     mnye,
   } = useMarketData()
-  const [dpiComponents, setDpiComponents] = useState<SetComponent[]>([])
-  const [mviComponents, setMviComponents] = useState<SetComponent[]>([])
-  const [bedComponents, setBedComponents] = useState<SetComponent[]>([])
-  const [gmiComponents, setGmiComponents] = useState<SetComponent[]>([])
-  const [eth2xfliComponents, setEth2xfliComponents] = useState<SetComponent[]>(
-    []
-  )
-  const [eth2xflipComponents, setEth2xflipComponents] = useState<
-    SetComponent[]
-  >([])
-  const [btc2xfliComponents, setBtc2xfliComponents] = useState<SetComponent[]>(
-    []
-  )
-  const [dataComponents, setDataComponents] = useState<SetComponent[]>([])
-
-  const [iethflipComponents, setIEthflipComponents] = useState<SetComponent[]>(
-    []
-  )
-
-  const [matic2xflipComponents, setMatic2xflipComponents] = useState<
-    SetComponent[]
-  >([])
-
-  const [imaticflipComponents, setIMaticflipComponents] = useState<
-    SetComponent[]
-  >([])
-
-  const [btc2xflipComponents, setBtc2xflipComponents] = useState<
-    SetComponent[]
-  >([])
-  const [ibtcflipComponents, setIBtcflipComponents] = useState<SetComponent[]>(
-    []
-  )
-  const [icethComponents, setIcethComponents] = useState<SetComponent[]>([])
-  const [jpgComponents, setJpgComponents] = useState<SetComponent[]>([])
-  const [mnyeComponents, setMnyeComponents] = useState<SetComponent[]>([])
 
   const {
     mainnetReadOnlyProvider,
@@ -106,6 +74,18 @@ const SetComponentsProvider = (props: { children: any }) => {
   } = useAllReadOnlyProviders()
 
   const { mainnetTokens, polygonTokens, optimismTokens } = getAllTokenLists()
+
+  const isCached = (tokenSymbol: string) => {
+    return cache.current[tokenSymbol] !== null
+  }
+
+  const getComponents = (tokenSymbol: string): SetComponent[] | undefined => {
+    return cache.current[tokenSymbol] ?? undefined
+  }
+
+  const setCache = (tokenSymbol: string, components: SetComponent[]) => {
+    cache.current[tokenSymbol] = components
+  }
 
   useEffect(() => {
     if (
@@ -147,196 +127,88 @@ const SetComponentsProvider = (props: { children: any }) => {
           jpgSet,
         ] = result
 
-        const dpiComponentPrices = await getPositionPrices(dpiSet)
-        if (dpiComponentPrices != null) {
-          const dpiPositions = dpiSet.positions.map(async (position) => {
-            return await convertPositionToSetComponent(
-              position,
-              mainnetTokens,
-              dpiComponentPrices[position.component.toLowerCase()]?.[
-                VS_CURRENCY
-              ],
-              dpiComponentPrices[position.component.toLowerCase()]?.[
-                `${VS_CURRENCY}_24h_change`
-              ],
-              selectLatestMarketData(dpi!.hourlyPrices)
-            )
-          })
-          Promise.all(dpiPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setDpiComponents)
-        }
-
-        const mviComponentPrices = await getPositionPrices(mviSet)
-        if (mviComponentPrices != null) {
-          const mviPositions = mviSet.positions.map(async (position) => {
-            return await convertPositionToSetComponent(
-              position,
-              mainnetTokens,
-              mviComponentPrices[position.component.toLowerCase()]?.[
-                VS_CURRENCY
-              ],
-              mviComponentPrices[position.component.toLowerCase()]?.[
-                `${VS_CURRENCY}_24h_change`
-              ],
-
-              selectLatestMarketData(mvi.hourlyPrices)
-            )
-          })
-          Promise.all(mviPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setMviComponents)
-        }
-
-        const bedComponentPrices = await getPositionPrices(bedSet)
-        if (bedComponentPrices != null) {
-          const bedPositions = bedSet.positions.map(async (position) => {
-            return await convertPositionToSetComponent(
-              position,
-              mainnetTokens,
-              bedComponentPrices[position.component.toLowerCase()]?.[
-                VS_CURRENCY
-              ],
-              bedComponentPrices[position.component.toLowerCase()]?.[
-                `${VS_CURRENCY}_24h_change`
-              ],
-
-              selectLatestMarketData(bed.hourlyPrices)
-            )
-          })
-          Promise.all(bedPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setBedComponents)
-        }
-
-        const gmiComponentPrices = await getPositionPrices(gmiSet)
-        if (gmiComponentPrices != null) {
-          const gmiPositions = gmiSet.positions.map(async (position) => {
-            return await convertPositionToSetComponent(
-              position,
-              mainnetTokens,
-              gmiComponentPrices[position.component.toLowerCase()]?.[
-                VS_CURRENCY
-              ],
-              gmiComponentPrices[position.component.toLowerCase()]?.[
-                `${VS_CURRENCY}_24h_change`
-              ],
-
-              selectLatestMarketData(gmi.hourlyPrices)
-            )
-          })
-          Promise.all(gmiPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setGmiComponents)
-        }
-
-        const eth2xfliComponentPrices = await getPositionPrices(eth2xfliSet)
-        if (eth2xfliComponentPrices != null) {
-          const eth2xfliPositions = eth2xfliSet.positions.map(
-            async (position) => {
-              return await convertPositionToSetComponent(
-                position,
-                mainnetTokens,
-                eth2xfliComponentPrices[position.component.toLowerCase()]?.[
-                  VS_CURRENCY
-                ],
-                eth2xfliComponentPrices[position.component.toLowerCase()]?.[
-                  `${VS_CURRENCY}_24h_change`
-                ],
-
-                selectLatestMarketData(ethfli.hourlyPrices)
-              )
-            }
+        console.log('isCached fetched', isCached(DefiPulseIndex.symbol))
+        if (!isCached(DefiPulseIndex.symbol) && dpi) {
+          const dpiComponents = await getSetComponents(
+            dpiSet,
+            selectLatestMarketData(dpi.hourlyPrices),
+            mainnetTokens
           )
-          Promise.all(eth2xfliPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setEth2xfliComponents)
+          setCache(DefiPulseIndex.symbol, dpiComponents)
+          console.log('fetched dpi components')
+          // setDpiComponents(dpiComponents)
         }
 
-        const btc2xfliComponentPrices = await getPositionPrices(btc2xfliSet)
-        if (btc2xfliComponentPrices != null) {
-          const btc2xfliPositions = btc2xfliSet.positions.map(
-            async (position) => {
-              return await convertPositionToSetComponent(
-                position,
-                mainnetTokens,
-                btc2xfliComponentPrices[position.component.toLowerCase()]?.[
-                  VS_CURRENCY
-                ],
-                btc2xfliComponentPrices[position.component.toLowerCase()]?.[
-                  `${VS_CURRENCY}_24h_change`
-                ],
-
-                selectLatestMarketData(btcfli.hourlyPrices)
-              )
-            }
+        if (!isCached(MetaverseIndex.symbol) && mvi) {
+          const mviComponents = await getSetComponents(
+            mviSet,
+            selectLatestMarketData(mvi.hourlyPrices),
+            mainnetTokens
           )
-          Promise.all(btc2xfliPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setBtc2xfliComponents)
+          setCache(MetaverseIndex.symbol, mviComponents)
         }
 
-        const dataComponentPrices = await getPositionPrices(dataSet)
-        if (dataComponentPrices != null) {
-          const dataPositions = dataSet.positions.map(async (position) => {
-            return await convertPositionToSetComponent(
-              position,
-              mainnetTokens,
-              dataComponentPrices[position.component.toLowerCase()]?.[
-                VS_CURRENCY
-              ],
-              dataComponentPrices[position.component.toLowerCase()]?.[
-                `${VS_CURRENCY}_24h_change`
-              ],
-
-              selectLatestMarketData(data.hourlyPrices)
-            )
-          })
-          Promise.all(dataPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setDataComponents)
+        if (!isCached(BedIndex.symbol) && bed) {
+          const bedComponents = await getSetComponents(
+            bedSet,
+            selectLatestMarketData(bed.hourlyPrices),
+            mainnetTokens
+          )
+          setCache(BedIndex.symbol, bedComponents)
         }
 
-        const icethComponentPrices = await getPositionPrices(icethSet)
-        if (icethComponentPrices != null) {
-          const icethPositions = icethSet.positions.map(async (position) => {
-            return await convertPositionToSetComponent(
-              position,
-              mainnetTokens,
-              icethComponentPrices[position.component.toLowerCase()]?.[
-                VS_CURRENCY
-              ],
-              icethComponentPrices[position.component.toLowerCase()]?.[
-                `${VS_CURRENCY}_24h_change`
-              ],
-
-              selectLatestMarketData(data.hourlyPrices)
-            )
-          })
-          Promise.all(icethPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setIcethComponents)
+        if (!isCached(GmiIndex.symbol) && gmi) {
+          const gmiComponents = await getSetComponents(
+            gmiSet,
+            selectLatestMarketData(gmi.hourlyPrices),
+            mainnetTokens
+          )
+          setCache(GmiIndex.symbol, gmiComponents)
         }
 
-        const jpgComponentPrices = await getPositionPrices(jpgSet)
-        if (jpgComponentPrices != null) {
-          const jpgPositions = jpgSet.positions.map(async (position) => {
-            return await convertPositionToSetComponent(
-              position,
-              mainnetTokens,
-              jpgComponentPrices[position.component.toLowerCase()]?.[
-                VS_CURRENCY
-              ],
-              jpgComponentPrices[position.component.toLowerCase()]?.[
-                `${VS_CURRENCY}_24h_change`
-              ],
+        if (!isCached(Ethereum2xFlexibleLeverageIndex.symbol) && ethfli) {
+          const ethFliComponents = await getSetComponents(
+            eth2xfliSet,
+            selectLatestMarketData(ethfli.hourlyPrices),
+            mainnetTokens
+          )
+          setCache(Ethereum2xFlexibleLeverageIndex.symbol, ethFliComponents)
+        }
 
-              selectLatestMarketData(data.hourlyPrices)
-            )
-          })
-          Promise.all(jpgPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setJpgComponents)
+        if (!isCached(Bitcoin2xFlexibleLeverageIndex.symbol) && btcfli) {
+          const btcFliComponents = await getSetComponents(
+            btc2xfliSet,
+            selectLatestMarketData(btcfli.hourlyPrices),
+            mainnetTokens
+          )
+          setCache(Bitcoin2xFlexibleLeverageIndex.symbol, btcFliComponents)
+        }
+
+        if (!isCached(DataIndex.symbol) && data) {
+          const dataComponents = await getSetComponents(
+            dataSet,
+            selectLatestMarketData(data.hourlyPrices),
+            mainnetTokens
+          )
+          setCache(DataIndex.symbol, dataComponents)
+        }
+
+        if (!isCached(icETHIndex.symbol) && iceth) {
+          const icEthComponents = await getSetComponents(
+            icethSet,
+            selectLatestMarketData(iceth.hourlyPrices),
+            mainnetTokens
+          )
+          setCache(icETHIndex.symbol, icEthComponents)
+        }
+
+        if (!isCached(JPGIndex.symbol) && jpg) {
+          const jpgComponents = await getSetComponents(
+            jpgSet,
+            selectLatestMarketData(jpg.hourlyPrices),
+            mainnetTokens
+          )
+          setCache(JPGIndex.symbol, jpgComponents)
         }
       })
     }
@@ -381,162 +253,76 @@ const SetComponentsProvider = (props: { children: any }) => {
           IBitcoinFLIP.polygonAddress,
         ],
         POLYGON.chainId
-      )
-        .then(async (result) => {
-          const [
+      ).then(async (result) => {
+        const [
+          ethflipSet,
+          iethflipSet,
+          maticflipSet,
+          imaticflipSet,
+          btcflipSet,
+          ibtcflipSet,
+        ] = result
+
+        if (!isCached(Ethereum2xFLIP.symbol) && ethflip) {
+          const ethFlipComponents = await getSetComponents(
             ethflipSet,
+            selectLatestMarketData(ethflip.hourlyPrices),
+            polygonTokens,
+            POLYGON.chainId
+          )
+          setCache(Ethereum2xFLIP.symbol, ethFlipComponents)
+        }
+
+        if (!isCached(IEthereumFLIP.symbol) && iethflip) {
+          const iEthFlipComponents = await getSetComponents(
             iethflipSet,
+            selectLatestMarketData(iethflip.hourlyPrices),
+            polygonTokens,
+            POLYGON.chainId
+          )
+          setCache(IEthereumFLIP.symbol, iEthFlipComponents)
+        }
+
+        if (!isCached(Matic2xFLIP.symbol) && iethflip) {
+          const matic2xflipComponents = await getSetComponents(
             maticflipSet,
+            selectLatestMarketData(iethflip.hourlyPrices),
+            polygonTokens,
+            POLYGON.chainId
+          )
+          setCache(Matic2xFLIP.symbol, matic2xflipComponents)
+        }
+
+        if (!isCached(IMaticFLIP.symbol) && imaticflip) {
+          const imaticFlipComponents = await getSetComponents(
             imaticflipSet,
+            selectLatestMarketData(imaticflip.hourlyPrices),
+            polygonTokens,
+            POLYGON.chainId
+          )
+          setCache(IMaticFLIP.symbol, imaticFlipComponents)
+        }
+
+        if (!isCached(Bitcoin2xFLIP.symbol) && btcflip) {
+          const btcFlipComponents = await getSetComponents(
             btcflipSet,
+            selectLatestMarketData(btcflip.hourlyPrices),
+            polygonTokens,
+            POLYGON.chainId
+          )
+          setCache(Bitcoin2xFLIP.symbol, btcFlipComponents)
+        }
+
+        if (!isCached(IBitcoinFLIP.symbol) && ibtcflip) {
+          const ibtcFlipComponents = await getSetComponents(
             ibtcflipSet,
-          ] = result
-          const ethFlipComponentPrices = await getPositionPrices(
-            ethflipSet,
-            'polygon-pos'
+            selectLatestMarketData(ibtcflip.hourlyPrices),
+            polygonTokens,
+            POLYGON.chainId
           )
-          const ethFlipPositions = ethflipSet.positions.map(
-            async (position) => {
-              return await convertPositionToSetComponent(
-                position,
-                polygonTokens,
-                ethFlipComponentPrices[position.component.toLowerCase()]?.[
-                  VS_CURRENCY
-                ],
-                ethFlipComponentPrices[position.component.toLowerCase()]?.[
-                  `${VS_CURRENCY}_24h_change`
-                ],
-
-                selectLatestMarketData(ethflip.hourlyPrices)
-              )
-            }
-          )
-          Promise.all(ethFlipPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setEth2xflipComponents)
-
-          const iethFlipComponentPrices = await getPositionPrices(
-            iethflipSet,
-            'polygon-pos'
-          )
-          const iethFlipPositions = iethflipSet.positions.map(
-            async (position) => {
-              return await convertPositionToSetComponent(
-                position,
-                polygonTokens,
-                iethFlipComponentPrices[position.component.toLowerCase()]?.[
-                  VS_CURRENCY
-                ],
-                iethFlipComponentPrices[position.component.toLowerCase()]?.[
-                  `${VS_CURRENCY}_24h_change`
-                ],
-
-                selectLatestMarketData(iethflip.hourlyPrices)
-              )
-            }
-          )
-          Promise.all(iethFlipPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setIEthflipComponents)
-
-          const maticFlipComponentPrices = await getPositionPrices(
-            maticflipSet,
-            'polygon-pos'
-          )
-          const maticFlipPositions = maticflipSet.positions.map(
-            async (position) => {
-              return await convertPositionToSetComponent(
-                position,
-                polygonTokens,
-                maticFlipComponentPrices[position.component.toLowerCase()]?.[
-                  VS_CURRENCY
-                ],
-                maticFlipComponentPrices[position.component.toLowerCase()]?.[
-                  `${VS_CURRENCY}_24h_change`
-                ],
-
-                selectLatestMarketData(maticflip.hourlyPrices)
-              )
-            }
-          )
-          Promise.all(maticFlipPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setMatic2xflipComponents)
-
-          const imaticFlipComponentPrices = await getPositionPrices(
-            imaticflipSet,
-            'polygon-pos'
-          )
-          const imaticFlipPositions = imaticflipSet.positions.map(
-            async (position) => {
-              return await convertPositionToSetComponent(
-                position,
-                polygonTokens,
-                imaticFlipComponentPrices[position.component.toLowerCase()]?.[
-                  VS_CURRENCY
-                ],
-                imaticFlipComponentPrices[position.component.toLowerCase()]?.[
-                  `${VS_CURRENCY}_24h_change`
-                ],
-
-                selectLatestMarketData(imaticflip.hourlyPrices)
-              )
-            }
-          )
-          Promise.all(imaticFlipPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setIMaticflipComponents)
-
-          const btcflipComponentPrices = await getPositionPrices(
-            btcflipSet,
-            'polygon-pos'
-          )
-          const btcflipPositions = btcflipSet.positions.map(
-            async (position) => {
-              return await convertPositionToSetComponent(
-                position,
-                polygonTokens,
-                btcflipComponentPrices[position.component.toLowerCase()]?.[
-                  VS_CURRENCY
-                ],
-                btcflipComponentPrices[position.component.toLowerCase()]?.[
-                  `${VS_CURRENCY}_24h_change`
-                ],
-
-                selectLatestMarketData(btcflip.hourlyPrices)
-              )
-            }
-          )
-          Promise.all(btcflipPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setBtc2xflipComponents)
-          ///
-
-          const ibtcFlipComponentPrices = await getPositionPrices(
-            ibtcflipSet,
-            'polygon-pos'
-          )
-          const ibtcFlipPositions = ibtcflipSet.positions.map(
-            async (position) => {
-              return await convertPositionToSetComponent(
-                position,
-                polygonTokens,
-                ibtcFlipComponentPrices[position.component.toLowerCase()]?.[
-                  VS_CURRENCY
-                ],
-                ibtcFlipComponentPrices[position.component.toLowerCase()]?.[
-                  `${VS_CURRENCY}_24h_change`
-                ],
-
-                selectLatestMarketData(ibtcflip.hourlyPrices)
-              )
-            }
-          )
-          Promise.all(ibtcFlipPositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setIBtcflipComponents)
-        })
-        .catch((err) => console.log('Polygon err', err))
+          setCache(IBitcoinFLIP.symbol, ibtcFlipComponents)
+        }
+      })
     }
   }, [
     polygonReadOnlyProvider,
@@ -556,60 +342,87 @@ const SetComponentsProvider = (props: { children: any }) => {
         [MNYeIndex.optimismAddress],
         OPTIMISM.chainId,
         true
-      )
-        .then(async (result) => {
-          const [mnyeSet] = result
-          const mnyeComponentPrices = await getPositionPrices(
-            mnyeSet,
-            'optimistic-ethereum'
-          )
-          const mnyePositions = mnyeSet.positions.map(async (position) => {
-            return await convertPositionToSetComponent(
-              position,
-              optimismTokens,
-              mnyeComponentPrices[position.component.toLowerCase()]?.[
-                VS_CURRENCY
-              ],
-              mnyeComponentPrices[position.component.toLowerCase()]?.[
-                `${VS_CURRENCY}_24h_change`
-              ],
+      ).then(async (result) => {
+        const [mnyeSet] = result
 
-              selectLatestMarketData(mnye.hourlyPrices)
-            )
-          })
-          Promise.all(mnyePositions)
-            .then(sortPositionsByPercentOfSet)
-            .then(setMnyeComponents)
-          ///
-        })
-        .catch((err) => console.log('MYNe err', err))
+        if (!isCached(MNYeIndex.symbol) && mnye) {
+          const mnyeComponents = await getSetComponents(
+            mnyeSet,
+            selectLatestMarketData(mnye.hourlyPrices),
+            optimismTokens,
+            OPTIMISM.chainId
+          )
+          setCache(MNYeIndex.symbol, mnyeComponents)
+        }
+      })
     }
   }, [optimismReadOnlyProvider, mnye, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider
       value={{
-        dpiComponents: dpiComponents,
-        mviComponents: mviComponents,
-        bedComponents: bedComponents,
-        gmiComponents: gmiComponents,
-        eth2xfliComponents: eth2xfliComponents,
-        eth2xflipComponents: eth2xflipComponents,
-        btc2xfliComponents: btc2xfliComponents,
-        dataComponents: dataComponents,
-        iethflipComponents: iethflipComponents,
-        imaticflipComponents: imaticflipComponents,
-        matic2xflipComponents: matic2xflipComponents,
-        ibtcflipComponents: ibtcflipComponents,
-        btc2xflipComponents: btc2xflipComponents,
-        icethComponents: icethComponents,
-        jpgComponents: jpgComponents,
-        mnyeComponents: mnyeComponents,
+        dpiComponents: getComponents(DefiPulseIndex.symbol),
+        mviComponents: getComponents(MetaverseIndex.symbol),
+        bedComponents: getComponents(BedIndex.symbol),
+        gmiComponents: getComponents(GmiIndex.symbol),
+        eth2xfliComponents: getComponents(
+          Ethereum2xFlexibleLeverageIndex.symbol
+        ),
+        eth2xflipComponents: getComponents(Ethereum2xFLIP.symbol),
+        btc2xfliComponents: getComponents(
+          Bitcoin2xFlexibleLeverageIndex.symbol
+        ),
+        dataComponents: getComponents(DataIndex.symbol),
+        iethflipComponents: getComponents(IEthereumFLIP.symbol),
+        imaticflipComponents: getComponents(IMaticFLIP.symbol),
+        matic2xflipComponents: getComponents(Matic2xFLIP.symbol),
+        ibtcflipComponents: getComponents(IBitcoinFLIP.symbol),
+        btc2xflipComponents: getComponents(Bitcoin2xFLIP.symbol),
+        icethComponents: getComponents(icETHIndex.symbol),
+        jpgComponents: getComponents(JPGIndex.symbol),
+        mnyeComponents: getComponents(MNYeIndex.symbol),
       }}
     >
       {props.children}
     </SetComponentsContext.Provider>
   )
+}
+
+const getAssetPlatform = (chainId: number): string => {
+  switch (chainId) {
+    case OPTIMISM.chainId:
+      return 'optimistic-ethereum'
+    case POLYGON.chainId:
+      return 'polygon-pos'
+    default:
+      return ASSET_PLATFORM
+  }
+}
+
+const getSetComponents = async (
+  set: SetDetails,
+  setPriceUsd: number,
+  tokenList: Token[],
+  chainId: number = MAINNET.chainId
+): Promise<SetComponent[]> => {
+  const assetPlatform = getAssetPlatform(chainId)
+  const dpiComponentPrices = await getPositionPrices(set, assetPlatform)
+  if (dpiComponentPrices === null) return []
+  const dpiPositions = set.positions.map(async (position) => {
+    return await convertPositionToSetComponent(
+      position,
+      tokenList,
+      dpiComponentPrices[position.component.toLowerCase()]?.[VS_CURRENCY],
+      dpiComponentPrices[position.component.toLowerCase()]?.[
+        `${VS_CURRENCY}_24h_change`
+      ],
+      setPriceUsd
+    )
+  })
+  const components = await Promise.all(dpiPositions).then(
+    sortPositionsByPercentOfSet
+  )
+  return components
 }
 
 export async function convertPositionToSetComponent(
