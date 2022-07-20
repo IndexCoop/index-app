@@ -14,7 +14,12 @@ import {
 import { GmiIndex, Token } from 'constants/tokens'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
-import { getAddressForToken, getIndexes, getNativeToken } from 'utils/tokens'
+import {
+  getAddressForToken,
+  getCurrencyTokens,
+  getIndexes,
+  getNativeToken,
+} from 'utils/tokens'
 
 import { useEthBalance } from './useEthBalance'
 import { useWallet } from './useWallet'
@@ -57,28 +62,52 @@ export const useBalances = () => {
 
   const fetchAllBalances = useCallback(async () => {
     if (!chainId || !address) return
-    console.log('fetchAllBalances')
     const indexes = getIndexes(chainId)
     const promises = indexes.map((index) =>
       balanceOf(index, chainId, address, provider)
     )
     const results = await Promise.all(promises)
-    let balances: IBalances = {}
+    let updatedBalances: IBalances = balances
     indexes.forEach((index, idx) => {
-      balances[index.symbol] = results[idx] ?? BigNumber.from(0)
+      updatedBalances[index.symbol] = results[idx] ?? BigNumber.from(0)
     })
-    setBalances(balances)
+    setBalances(updatedBalances)
+  }, [address, chainId])
+
+  const fetchCurrencyBalances = useCallback(async () => {
+    if (!chainId || !address) return
+    const nativeToken = getNativeToken(chainId)
+    if (!nativeToken) return
+    const tokens = getCurrencyTokens(chainId)
+    const tokensWithoutNativeToken = tokens.filter(
+      (token) => token.symbol !== nativeToken.symbol
+    )
+    const promises = tokensWithoutNativeToken.map((token) =>
+      balanceOf(token, chainId, address, provider)
+    )
+    const results = await Promise.all(promises)
+    const updatedBalances = balances
+    tokensWithoutNativeToken.forEach((token, idx) => {
+      updatedBalances[token.symbol] = results[idx] ?? BigNumber.from(0)
+    })
+    setBalances(updatedBalances)
   }, [address, chainId])
 
   useEffect(() => {
     const nativeToken = getNativeToken(chainId)
     if (!nativeToken) return
-    balances[nativeToken.symbol] = ethBalance
+    const updatedBalances = balances
+    updatedBalances[nativeToken.symbol] = ethBalance
+    setBalances(updatedBalances)
   }, [chainId, ethBalance])
 
   useEffect(() => {
     fetchAllBalances()
   }, [fetchAllBalances])
+
+  useEffect(() => {
+    fetchCurrencyBalances()
+  }, [fetchCurrencyBalances])
 
   const getBalance = (symbol: string): BigNumber => {
     return balances[symbol] ?? BigNumber.from(0)
@@ -245,18 +274,11 @@ export const useLiquidityMiningBalances = (): StakingBalances => {
     setUnclaimedUniswapEthDpi2021LpBalance(unclaimedUniswapEthDpi2021LpBalance)
     setUnclaimedUniswapEthMvi2021LpBalance(unclaimedUniswapEthMvi2021LpBalance)
     setUnclaimedGmi2022Balance(unclaimedGmi2022Balance)
-    console.log(
-      'setUnclaimedUniswapEthDpi2020LpBalance',
-      setUnclaimedUniswapEthDpi2020LpBalance.toString()
-    )
   }, [address, chainId, provider])
 
   useEffect(() => {
     fetchUnclaimed()
   }, [fetchUnclaimed])
-
-  console.log('GMIBAL', gmiBalance?.toString())
-  console.log('stakedGmi2022Balance', stakedGmi2022Balance?.toString())
 
   return useMemo(
     () => ({
