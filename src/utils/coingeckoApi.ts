@@ -1,8 +1,9 @@
 import { POLYGON } from 'constants/chains'
-import { IndexApiBaseUrl } from 'constants/server'
+import { getApiKey, IndexApiBaseUrl } from 'constants/server'
 import { ETH } from 'constants/tokens'
 
 const baseURL = `${IndexApiBaseUrl}/coingecko`
+const key = getApiKey()
 
 export const fetchHistoricalTokenMarketData = async (
   id: string,
@@ -15,8 +16,16 @@ export const fetchHistoricalTokenMarketData = async (
     baseURL + `/coins/${id}/market_chart?vs_currency=${baseCurrency}&days=90`
 
   return Promise.all([
-    fetch(coingeckoMaxTokenDataUrl),
-    fetch(coingeckoHourlyTokenDataUrl),
+    fetch(coingeckoMaxTokenDataUrl, {
+      headers: {
+        'X-INDEXCOOP-API-KEY': key,
+      },
+    }),
+    fetch(coingeckoHourlyTokenDataUrl, {
+      headers: {
+        'X-INDEXCOOP-API-KEY': key,
+      },
+    }),
   ])
     .then((responses) =>
       Promise.all(responses.map((response) => response.json()))
@@ -48,7 +57,11 @@ export const fetchCoingeckoTokenPrice = async (
     const getPriceUrl =
       baseURL + `/simple/price/?ids=ethereum&vs_currencies=${baseCurrency}`
 
-    const resp = await fetch(getPriceUrl)
+    const resp = await fetch(getPriceUrl, {
+      headers: {
+        'X-INDEXCOOP-API-KEY': key,
+      },
+    })
 
     const data = await resp.json().catch((_) => {
       return 0
@@ -65,7 +78,11 @@ export const fetchCoingeckoTokenPrice = async (
       chainId
     )}/?contract_addresses=${address}&vs_currencies=${baseCurrency}`
 
-  const resp = await fetch(getPriceUrl)
+  const resp = await fetch(getPriceUrl, {
+    headers: {
+      'X-INDEXCOOP-API-KEY': key,
+    },
+  })
 
   const data = await resp.json().catch((_) => {
     return 0

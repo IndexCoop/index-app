@@ -43,7 +43,7 @@ import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider
 import '@rainbow-me/rainbowkit/dist/index.css'
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.polygon, chain.optimism],
+  [chain.mainnet, chain.polygon], // TODO: add optimism for MNYe, chain.optimism],
   [
     alchemyProvider({ alchemyId: process.env.REACT_APP_ALCHEMY_ID }),
     publicProvider(),
@@ -51,7 +51,7 @@ const { chains, provider } = configureChains(
 )
 
 const { connectors } = getDefaultWallets({
-  appName: 'My RainbowKit App',
+  appName: 'Index Coop',
   chains,
 })
 

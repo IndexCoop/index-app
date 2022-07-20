@@ -5,7 +5,7 @@ import { utils } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import { IndexApiBaseUrl } from 'constants/server'
+import { getApiKey, IndexApiBaseUrl } from 'constants/server'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -516,8 +516,14 @@ async function getPositionPrices(
   assetPlatform: string = ASSET_PLATFORM
 ): Promise<CoinGeckoCoinPrices> {
   const componentAddresses = setDetails.positions.map((p) => p.component)
+  const key = getApiKey()
   return fetch(
-    `${IndexApiBaseUrl}/coingecko/simple/token_price/${assetPlatform}?vs_currencies=${VS_CURRENCY}&contract_addresses=${componentAddresses}&include_24hr_change=true`
+    `${IndexApiBaseUrl}/coingecko/simple/token_price/${assetPlatform}?vs_currencies=${VS_CURRENCY}&contract_addresses=${componentAddresses}&include_24hr_change=true`,
+    {
+      headers: {
+        'X-INDEXCOOP-API-KEY': key,
+      },
+    }
   )
     .then((response) => response.json())
     .catch((e) => {
