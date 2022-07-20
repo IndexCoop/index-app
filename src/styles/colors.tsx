@@ -3,12 +3,12 @@ import { theme, useColorMode } from '@chakra-ui/react'
 export const colors = {
   ...theme.colors,
   background: '#000000',
+  // old colors will be removed once they are replaced everywhere
   icApricot: '#FF8A7D',
   icLazurite: '#433BCE',
   icMalachite: '#09AA74',
   icPeriwinkle: '#B9B6FC',
   icRed: '#C32238',
-  icYellow: '#FABF00',
   // the new colors
   icBlack: '#0F1717',
   icBlue: '#00BEC2', // highlight

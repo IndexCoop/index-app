@@ -10,7 +10,7 @@ const chartColors = [
   colors.icBlue,
   colors.icPeriwinkle,
   colors.icLazurite,
-  colors.icYellow,
+  colors.icBlue,
 ]
 
 function getPosition(

@@ -14,7 +14,7 @@ export const Tabs = {
       },
       tab: {
         _selected: {
-          backgroundColor: colorMode === 'dark' ? 'white' : colors.icYellow,
+          backgroundColor: colorMode === 'dark' ? 'white' : colors.icBlue,
           borderRadius: '8px',
           color: colorMode === 'dark' ? colors.black : colors.icWhite,
         },

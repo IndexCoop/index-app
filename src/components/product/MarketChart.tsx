@@ -224,8 +224,8 @@ const MarketChart = (props: {
         <Area
           type='monotone'
           dataKey='y5'
-          stroke={theme.colors.icYellow}
-          fill={theme.colors.icYellow}
+          stroke={theme.colors.icBlue}
+          fill={theme.colors.icBlue}
         />
       </AreaChart>
     </Flex>
@@ -250,7 +250,7 @@ const PriceDisplay = ({
       <Flex flexDirection={'column'}>
         <Text
           fontSize={['3xl', '3xl', '3xl', '4xl']}
-          color={colors.icYellow}
+          color={colors.icBlue}
           fontWeight='700'
         >
           {price}
