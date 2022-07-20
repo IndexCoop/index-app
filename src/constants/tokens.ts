@@ -428,23 +428,23 @@ export const JPGIndex: Token = {
   },
   isDangerous: false,
 }
-export const MNYeIndex: Token = {
-  name: 'Market Neutral Yield ETH Index',
-  symbol: 'icETH', // TODO: 'MNYe',
-  address: undefined,
-  polygonAddress: undefined,
-  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93', // TODO: Get final address
-  decimals: 18,
-  url: 'mnye',
-  image: icethLogo, // TODO: mnyeLogo,
-  coingeckoId: 'eth-market-neutral-yield',
-  tokensetsId: 'mnye',
-  tokenContextKey: 'mnye',
-  fees: {
-    streamingFee: '0.95%',
-  },
-  isDangerous: false,
-}
+// export const MNYeIndex: Token = {
+//   name: 'Market Neutral Yield ETH Index',
+//   symbol: 'icETH', // TODO: 'MNYe',
+//   address: undefined,
+//   polygonAddress: undefined,
+//   optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93', // TODO: Get final address
+//   decimals: 18,
+//   url: 'mnye',
+//   image: icethLogo, // TODO: mnyeLogo,
+//   coingeckoId: 'eth-market-neutral-yield',
+//   tokensetsId: 'mnye',
+//   tokenContextKey: 'mnye',
+//   fees: {
+//     streamingFee: '0.95%',
+//   },
+//   isDangerous: false,
+// }
 
 export const productTokensBySymbol = {
   'DPI': DefiPulseIndex,
@@ -463,7 +463,7 @@ export const productTokensBySymbol = {
   'BTC2x-FLI-P': Bitcoin2xFLIP,
   'icETH': icETHIndex,
   'JPG': JPGIndex,
-  'MNYe': MNYeIndex,
+  //'MNYe': MNYeIndex,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH]
@@ -518,6 +518,6 @@ export const indexNamesPolygon = indexNames.filter(
   (index) => index.optimismAddress !== undefined
 )*/
 
-export const indexNamesOptimism = [MNYeIndex]
+export const indexNamesOptimism = [] //[MNYeIndex]
 
 export default indexNames

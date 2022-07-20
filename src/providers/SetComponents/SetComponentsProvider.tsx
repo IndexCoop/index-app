@@ -22,7 +22,7 @@ import {
   JPGIndex,
   Matic2xFLIP,
   MetaverseIndex,
-  MNYeIndex,
+  //MNYeIndex,
 } from 'constants/tokens'
 import { useAllReadOnlyProviders } from 'hooks/useReadOnlyProvider'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
@@ -64,7 +64,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     ibtcflip,
     iceth,
     jpg,
-    mnye,
+    //mnye,
   } = useMarketData()
 
   const {
@@ -335,28 +335,28 @@ const SetComponentsProvider = (props: { children: any }) => {
     selectLatestMarketData(),
   ])
 
-  useEffect(() => {
-    // if (optimismReadOnlyProvider && mnye && MNYeIndex.optimismAddress) {
-    //   getSetDetails(
-    //     optimismReadOnlyProvider,
-    //     [MNYeIndex.optimismAddress],
-    //     OPTIMISM.chainId,
-    //     true
-    //   ).then(async (result) => {
-    //     const [mnyeSet] = result
-    //
-    //     if (!isCached(MNYeIndex.symbol) && mnye) {
-    //       const mnyeComponents = await getSetComponents(
-    //         mnyeSet,
-    //         selectLatestMarketData(mnye.hourlyPrices),
-    //         optimismTokens,
-    //         OPTIMISM.chainId
-    //       )
-    //       setCache(MNYeIndex.symbol, mnyeComponents)
-    //     }
-    //   })
-    // }
-  }, [optimismReadOnlyProvider, mnye, selectLatestMarketData()])
+  //useEffect(() => {
+  // if (optimismReadOnlyProvider && mnye && MNYeIndex.optimismAddress) {
+  //   getSetDetails(
+  //     optimismReadOnlyProvider,
+  //     [MNYeIndex.optimismAddress],
+  //     OPTIMISM.chainId,
+  //     true
+  //   ).then(async (result) => {
+  //     const [mnyeSet] = result
+  //
+  //     if (!isCached(MNYeIndex.symbol) && mnye) {
+  //       const mnyeComponents = await getSetComponents(
+  //         mnyeSet,
+  //         selectLatestMarketData(mnye.hourlyPrices),
+  //         optimismTokens,
+  //         OPTIMISM.chainId
+  //       )
+  //       setCache(MNYeIndex.symbol, mnyeComponents)
+  //     }
+  //   })
+  // }
+  //}, [optimismReadOnlyProvider, mnye, selectLatestMarketData()])
 
   return (
     <SetComponentsContext.Provider
@@ -380,7 +380,7 @@ const SetComponentsProvider = (props: { children: any }) => {
         btc2xflipComponents: getComponents(Bitcoin2xFLIP.symbol),
         icethComponents: getComponents(icETHIndex.symbol),
         jpgComponents: getComponents(JPGIndex.symbol),
-        mnyeComponents: getComponents(MNYeIndex.symbol),
+        //mnyeComponents: getComponents(MNYeIndex.symbol),
       }}
     >
       {props.children}
@@ -550,7 +550,7 @@ interface SetComponentsProps {
   ibtcflipComponents?: SetComponent[]
   icethComponents?: SetComponent[]
   jpgComponents?: SetComponent[]
-  mnyeComponents?: SetComponent[]
+  //mnyeComponents?: SetComponent[]
 }
 
 export const SetComponentsContext = createContext<SetComponentsProps>({})

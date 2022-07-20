@@ -81,6 +81,5 @@
     "transformIgnorePatterns": [
       "/node_modules/@indexcoop/(?!index-exchange-issuance-sdk)"
     ]
-  },
-  "proxy": "https://api.indexcoop.com"
+  }
 }

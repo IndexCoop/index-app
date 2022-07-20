@@ -26,7 +26,7 @@ import {
   tradeModuleOptimismAddress,
   tradeModulePolygonAddress,
 } from 'constants/ethContractAddresses'
-import { MNYeIndex } from 'constants/tokens'
+//import { MNYeIndex } from 'constants/tokens'
 import { SetProtocolViewerAbi } from 'utils/abi/SetProtocolViewer'
 
 /**

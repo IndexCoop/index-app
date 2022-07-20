@@ -360,10 +360,10 @@ const QuickTrade = (props: {
       return (
         indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
       )
-    if (token && chain?.id === OPTIMISM.chainId)
-      return (
-        indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
-      )
+    // if (token && chain?.id === OPTIMISM.chainId)
+    //   return (
+    //     indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
+    //   )
     return false
   }
 

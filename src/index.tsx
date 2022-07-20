@@ -132,7 +132,6 @@ root.render(
             <Route path='iceth' element={<ICETH />} />
             <Route path='index' element={<INDEX />} />
             <Route path='jpg' element={<JPG />} />
-            <Route path='mnye' element={<MNYe />} />
           </Route>
         </Routes>
       </Providers>
