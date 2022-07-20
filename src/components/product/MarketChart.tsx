@@ -206,8 +206,8 @@ const MarketChart = (props: {
         <Area
           type='monotone'
           dataKey='y2'
-          stroke={theme.colors.icBlue}
-          fill={theme.colors.icBlue}
+          stroke={theme.colors.icBlue5}
+          fill={theme.colors.icBlue5}
         />
         <Area
           type='monotone'
