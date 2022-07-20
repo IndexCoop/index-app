@@ -4,12 +4,12 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import App from 'App'
-import theme, { rainbowkitTheme } from 'theme'
+import { GlobalFonts } from 'styles/fonts'
+import theme, { rainbowkitTheme } from 'styles/theme'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 
-import '@fontsource/ibm-plex-sans'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
@@ -110,6 +110,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Providers>
+        <GlobalFonts />
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
           <Route path='/' element={<App />}>
