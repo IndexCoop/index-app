@@ -1,6 +1,13 @@
-import { ETH, MATIC, WETH } from 'constants/tokens'
+import {
+  ETH,
+  mainnetCurrencyTokens,
+  MATIC,
+  optimismCurrencyTokens,
+  polygonCurrencyTokens,
+  WETH,
+} from 'constants/tokens'
 
-import { getAddressForToken, getNativeToken } from './tokens'
+import { getAddressForToken, getCurrencyTokens, getNativeToken } from './tokens'
 
 describe('getAddressForToken()', () => {
   test('should return undefined for undefined chain', async () => {
@@ -24,6 +31,28 @@ describe('getAddressForToken()', () => {
     const address = getAddressForToken(WETH, 137)
     expect(address).toBeDefined()
     expect(address).toEqual(WETH.polygonAddress)
+  })
+})
+
+describe('getCurrencyTokens()', () => {
+  test('returns empty array for unsupported chain', async () => {
+    const currencyTokens = getCurrencyTokens(100)
+    expect(currencyTokens).toEqual([])
+  })
+
+  test('returns correct currency tokens for mainnet', async () => {
+    const currencyTokens = getCurrencyTokens(1)
+    expect(currencyTokens).toEqual(mainnetCurrencyTokens)
+  })
+
+  test('returns correct currency tokens for optimism', async () => {
+    const currencyTokens = getCurrencyTokens(10)
+    expect(currencyTokens).toEqual(optimismCurrencyTokens)
+  })
+
+  test('returns correct currency tokens for polygon', async () => {
+    const currencyTokens = getCurrencyTokens(137)
+    expect(currencyTokens).toEqual(polygonCurrencyTokens)
   })
 })
 
