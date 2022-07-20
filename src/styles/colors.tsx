@@ -3,15 +3,28 @@ import { theme, useColorMode } from '@chakra-ui/react'
 export const colors = {
   ...theme.colors,
   background: '#000000',
-  icApricot: '#FF8A7D',
-  icBlue: '#327EE8',
-  icLazurite: '#433BCE',
+  // old colors will be removed once they are replaced everywhere
   icMalachite: '#09AA74',
-  icPeriwinkle: '#B9B6FC',
   icRed: '#C32238',
-  icYellow: '#FABF00',
-  icWhite: '#F6F1E4',
-  // not verified with designer
+  // the new colors
+  icBlack: '#0F1717',
+  icBlue: '#00BEC2', // highlight
+  icBlue1: '#05ACAF',
+  icBlue2: '#008F92',
+  icBlue3: '#006A71',
+  icBlue4: '#004D53',
+  icBlue5: '#143438',
+  icBlue6: '#15CDD1',
+  icBlue7: '#42E3E5',
+  icBlue8: '#78F2F4',
+  icBlue9: '#ADF4F6',
+  icBlue10: '#D1FBFD',
+  icGray1: '#EBF2F2',
+  icGray2: '#A6B2B2',
+  icGray3: '#627171',
+  icGray4: '#2C3333',
+  icWhite: '#FCFFFF',
+  // not verified with designer (will be replaced soon)
   icGrayLightMode: '#aaa',
   icGrayDarkMode: '#777',
 }

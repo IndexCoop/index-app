@@ -17,7 +17,7 @@ export function getSlippageColorCoding(
   }
 
   if (slippage > 1) {
-    return colors.icYellow
+    return colors.icBlue
   }
 
   return isDarkMode ? colors.icWhite : colors.black
@@ -32,7 +32,7 @@ export function getPriceImpactColorCoding(
   }
 
   if (priceImpact < -3) {
-    return colors.icYellow
+    return colors.icBlue
   }
 
   return isDarkMode ? colors.icGrayDarkMode : colors.icGrayLightMode

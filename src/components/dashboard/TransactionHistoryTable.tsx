@@ -65,7 +65,6 @@ const TableHeader = () => {
         {isWeb && (
           <>
             <Th>From</Th>
-            {!isTablet && <Th></Th>}
             <Th>To</Th>
             {!isTablet && <Th>Transaction</Th>}
           </>

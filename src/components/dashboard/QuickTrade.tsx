@@ -593,7 +593,7 @@ const QuickTrade = (props: {
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}
-            background={isDarkMode ? colors.icWhite : colors.icYellow}
+            background={isDarkMode ? colors.icWhite : colors.icBlue}
             isDisabled={isButtonDisabled}
             isLoading={isLoading}
             onClick={onClickTradeButton}
@@ -634,7 +634,7 @@ const ProtectionWarning = (props: { isDarkMode: boolean }) => {
   const borderColor = props.isDarkMode ? colors.icWhite : colors.black
   return (
     <Flex
-      background={colors.icYellow}
+      background={colors.icBlue}
       border='1px solid #000'
       borderColor={borderColor}
       borderRadius={10}

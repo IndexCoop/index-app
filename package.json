@@ -11,7 +11,6 @@
     "@elgorditosalsero/react-gtm-hook": "^2.4.0",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@fontsource/ibm-plex-sans": "^4.5.11",
     "@indexcoop/index-exchange-issuance-sdk": "^1.0.7",
     "@indexcoop/tokenlists": "^1.22.0",
     "@rainbow-me/rainbowkit": "^0.4.1",
