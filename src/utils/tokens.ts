@@ -4,7 +4,10 @@ import {
   indexNamesMainnet,
   indexNamesOptimism,
   indexNamesPolygon,
+  mainnetCurrencyTokens,
   MATIC,
+  optimismCurrencyTokens,
+  polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
 
@@ -21,6 +24,23 @@ export function getAddressForToken(
       return token.polygonAddress
     default:
       return undefined
+  }
+}
+
+/**
+ * Gets the list of currency tokens for the selected chain.
+ * @returns Token[] list of tokens
+ */
+export function getCurrencyTokens(chainId: number): Token[] {
+  switch (chainId) {
+    case MAINNET.chainId:
+      return mainnetCurrencyTokens
+    case OPTIMISM.chainId:
+      return optimismCurrencyTokens
+    case POLYGON.chainId:
+      return polygonCurrencyTokens
+    default:
+      return []
   }
 }
 
