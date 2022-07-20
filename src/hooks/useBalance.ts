@@ -14,7 +14,7 @@ import {
 import { GmiIndex, Token } from 'constants/tokens'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
-import { getAddressForToken, getIndexes } from 'utils/tokens'
+import { getAddressForToken, getIndexes, getNativeToken } from 'utils/tokens'
 
 import { useEthBalance } from './useEthBalance'
 import { useWallet } from './useWallet'
@@ -69,6 +69,12 @@ export const useBalances = () => {
     })
     setBalances(balances)
   }, [address, chainId])
+
+  useEffect(() => {
+    const nativeToken = getNativeToken(chainId)
+    if (!nativeToken) return
+    balances[nativeToken.symbol] = ethBalance
+  }, [chainId, ethBalance])
 
   useEffect(() => {
     fetchAllBalances()
