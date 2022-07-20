@@ -4,10 +4,7 @@ export const colors = {
   ...theme.colors,
   background: '#000000',
   // old colors will be removed once they are replaced everywhere
-  icApricot: '#FF8A7D',
-  icLazurite: '#433BCE',
   icMalachite: '#09AA74',
-  icPeriwinkle: '#B9B6FC',
   icRed: '#C32238',
   // the new colors
   icBlack: '#0F1717',
@@ -17,12 +14,17 @@ export const colors = {
   icBlue3: '#006A71',
   icBlue4: '#004D53',
   icBlue5: '#143438',
+  icBlue6: '#15CDD1',
+  icBlue7: '#42E3E5',
+  icBlue8: '#78F2F4',
+  icBlue9: '#ADF4F6',
+  icBlue10: '#D1FBFD',
   icGray1: '#EBF2F2',
   icGray2: '#A6B2B2',
   icGray3: '#627171',
   icGray4: '#2C3333',
   icWhite: '#FCFFFF',
-  // not verified with designer
+  // not verified with designer (will be replaced soon)
   icGrayLightMode: '#aaa',
   icGrayDarkMode: '#777',
 }
