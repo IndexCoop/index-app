@@ -6,12 +6,14 @@ import {
   indexNamesMainnet,
   indexNamesOptimism,
   indexNamesPolygon,
-  mainnetCurrencyTokens,
-  polygonCurrencyTokens,
   Token,
 } from 'constants/tokens'
 import { fetchCoingeckoTokenPrice } from 'utils/coingeckoApi'
-import { getAddressForToken, getNativeToken } from 'utils/tokens'
+import {
+  getAddressForToken,
+  getCurrencyTokens,
+  getNativeToken,
+} from 'utils/tokens'
 
 export const useTradeTokenLists = (
   chainId: number | undefined,
@@ -27,7 +29,7 @@ export const useTradeTokenLists = (
   const [nativeTokenPrice, setNativeTokenPrice] = useState<number>(0)
   const [sellToken, setSellToken] = useState<Token>(nativeToken)
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
-    getCurrencyTokensByChain(chainId)
+    getCurrencyTokens(chainId)
   )
   const [sellTokenPrice, setSellTokenPrice] = useState<number>(0)
 
@@ -36,7 +38,7 @@ export const useTradeTokenLists = (
    */
   useEffect(() => {
     if (chainId === undefined) return
-    const newSellTokenList = getCurrencyTokensByChain(chainId)
+    const newSellTokenList = getCurrencyTokens(chainId)
     const newBuyTokenList = getTokenListByChain(chainId, singleToken)
     setSellTokenList(newSellTokenList)
     setBuyTokenList(newBuyTokenList)
@@ -91,7 +93,7 @@ export const useTradeTokenLists = (
     const isBuyingNew = !isBuying
     const prevSellToken = sellToken
     const prevBuyToken = buyToken
-    const currencyTokensList = getCurrencyTokensByChain(chainId)
+    const currencyTokensList = getCurrencyTokens(chainId)
     const sellTokenList = isBuyingNew
       ? currencyTokensList
       : getTokenListByChain(chainId, singleToken)
@@ -118,17 +120,6 @@ export const useTradeTokenLists = (
     changeSellToken,
     swapTokenLists,
   }
-}
-
-/**
- * Get the list of currency tokens for the selected chain
- * @returns Token[] list of tokens
- */
-const getCurrencyTokensByChain = (
-  chainId: number | undefined = MAINNET.chainId
-) => {
-  if (chainId === POLYGON.chainId) return polygonCurrencyTokens
-  return mainnetCurrencyTokens
 }
 
 /**

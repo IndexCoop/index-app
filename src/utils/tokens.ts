@@ -31,7 +31,7 @@ export function getAddressForToken(
  * Gets the list of currency tokens for the selected chain.
  * @returns Token[] list of tokens
  */
-export function getCurrencyTokens(chainId: number): Token[] {
+export function getCurrencyTokens(chainId: number | undefined): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
       return mainnetCurrencyTokens
