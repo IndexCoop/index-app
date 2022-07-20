@@ -117,7 +117,6 @@ export async function getSetDetails(
   chainId: number,
   isPerp: boolean = false
 ): Promise<SetDetails[]> {
-  console.log('getSetDetails')
   const protocolViewerAddress = getProtocolViewerAddress(chainId)
   const contract = new Contract(
     protocolViewerAddress,
@@ -149,11 +148,16 @@ export async function getSetDetails(
   //   }
   // }
 
-  const setDetails: SetDetails[] = await contract.batchFetchDetails(
-    productAddresses,
-    moduleAddresses
-  )
-  return setDetails
+  try {
+    const setDetails: SetDetails[] = await contract.batchFetchDetails(
+      productAddresses,
+      moduleAddresses
+    )
+    return setDetails
+  } catch (error) {
+    console.log('Error fetching set details for chain id', chainId)
+    return []
+  }
 }
 
 export async function getTokenSupply(
@@ -172,6 +176,5 @@ export async function getTokenSupply(
     setTokenAddress,
     moduleAddresses
   )
-  console.log(setDetails)
   return setDetails.totalSupply
 }

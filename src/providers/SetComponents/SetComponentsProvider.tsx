@@ -336,26 +336,26 @@ const SetComponentsProvider = (props: { children: any }) => {
   ])
 
   useEffect(() => {
-    if (optimismReadOnlyProvider && mnye && MNYeIndex.optimismAddress) {
-      getSetDetails(
-        optimismReadOnlyProvider,
-        [MNYeIndex.optimismAddress],
-        OPTIMISM.chainId,
-        true
-      ).then(async (result) => {
-        const [mnyeSet] = result
-
-        if (!isCached(MNYeIndex.symbol) && mnye) {
-          const mnyeComponents = await getSetComponents(
-            mnyeSet,
-            selectLatestMarketData(mnye.hourlyPrices),
-            optimismTokens,
-            OPTIMISM.chainId
-          )
-          setCache(MNYeIndex.symbol, mnyeComponents)
-        }
-      })
-    }
+    // if (optimismReadOnlyProvider && mnye && MNYeIndex.optimismAddress) {
+    //   getSetDetails(
+    //     optimismReadOnlyProvider,
+    //     [MNYeIndex.optimismAddress],
+    //     OPTIMISM.chainId,
+    //     true
+    //   ).then(async (result) => {
+    //     const [mnyeSet] = result
+    //
+    //     if (!isCached(MNYeIndex.symbol) && mnye) {
+    //       const mnyeComponents = await getSetComponents(
+    //         mnyeSet,
+    //         selectLatestMarketData(mnye.hourlyPrices),
+    //         optimismTokens,
+    //         OPTIMISM.chainId
+    //       )
+    //       setCache(MNYeIndex.symbol, mnyeComponents)
+    //     }
+    //   })
+    // }
   }, [optimismReadOnlyProvider, mnye, selectLatestMarketData()])
 
   return (
