@@ -494,7 +494,7 @@ export const JPGIndex: Token = {
 //   },
 //   isDangerous: true,
 //   indexTypes: [IndexType.yield],
-//chainId: OPTIMISM.chainId,
+//   chainId: OPTIMISM.chainId,
 // }
 
 export const productTokensBySymbol = {
