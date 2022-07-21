@@ -2,7 +2,8 @@ import { colors } from 'styles/colors'
 
 export const Button = {
   baseStyle: {
-    border: '2px solid',
+    border: '1px solid',
+    borderRadius: 8,
     fontSize: 'md',
     fontWeight: 'bold',
     px: 6,
@@ -19,14 +20,19 @@ export const Button = {
       borderColor: colors.icMalachite,
       color: colors.icMalachite,
     },
-    purple: {
-      backgroundColor: 'rgba(128, 0, 128, 0.2)',
-      borderColor: 'purple.500',
-      color: 'purple.500',
+    highlight: {
+      backgroundColor: 'transparent',
+      borderColor: colors.icBlue,
+      color: colors.icBlue,
+    },
+    highlightSelected: {
+      backgroundColor: colors.icBlue,
+      borderColor: colors.icBlue,
+      color: colors.white,
     },
   },
   defaultProps: {
-    variant: 'green',
+    variant: 'highlight',
   },
 }
 
