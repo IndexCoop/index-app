@@ -28,7 +28,6 @@ type ProductsFilterProps = {
 export const ProductsFilter = (props: ProductsFilterProps) => {
   const { onSelectFilter, selected } = props
   const filters = Object.values(ProductFilter)
-  console.log(filters)
   return (
     <Flex ml={['0', '24px']} my='32px'>
       {filters.map((filter, index) => (
