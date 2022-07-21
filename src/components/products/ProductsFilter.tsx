@@ -30,7 +30,7 @@ export const ProductsFilter = (props: ProductsFilterProps) => {
   const filters = Object.values(ProductFilter)
   console.log(filters)
   return (
-    <Flex ml='0' my='32px'>
+    <Flex ml={['0', '24px']} my='32px'>
       {filters.map((filter, index) => (
         <FilterButton
           key={index}
@@ -54,7 +54,8 @@ const FilterButton = (props: FilterButtonProps) => {
   const label = labelForFilter(filter)
   return (
     <Button
-      mr={['0', '2']}
+      fontSize={['sm', 'md']}
+      mr={['2', '2']}
       onClick={() => onSelect(filter)}
       variant={isActive ? 'highlightSelected' : 'highlight'}
     >
