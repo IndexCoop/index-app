@@ -12,7 +12,6 @@ export const useIcEthApy = (): { apy: BigNumber } => {
       const key = getApiKey()
       const resp = await fetch(`${IndexApiBaseUrl}/iceth/apy`, {
         headers: {
-          'Origin': 'https://app.indexcoop.com',
           'X-INDEXCOOP-API-KEY': key,
         },
       })

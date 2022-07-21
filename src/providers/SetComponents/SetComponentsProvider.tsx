@@ -76,7 +76,7 @@ const SetComponentsProvider = (props: { children: any }) => {
   const { mainnetTokens, polygonTokens, optimismTokens } = getAllTokenLists()
 
   const isCached = (tokenSymbol: string) => {
-    return cache.current[tokenSymbol] !== null
+    return cache.current[tokenSymbol] !== undefined
   }
 
   const getComponents = (tokenSymbol: string): SetComponent[] | undefined => {
@@ -87,6 +87,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     cache.current[tokenSymbol] = components
   }
 
+  /* MAINNET */
   useEffect(() => {
     if (
       mainnetReadOnlyProvider &&
@@ -226,6 +227,7 @@ const SetComponentsProvider = (props: { children: any }) => {
     selectLatestMarketData(),
   ])
 
+  /* POLYGON */
   useEffect(() => {
     if (
       polygonReadOnlyProvider &&
@@ -234,23 +236,17 @@ const SetComponentsProvider = (props: { children: any }) => {
       maticflip &&
       imaticflip &&
       btcflip &&
-      ibtcflip &&
-      Ethereum2xFLIP.polygonAddress &&
-      IEthereumFLIP.polygonAddress &&
-      Matic2xFLIP.polygonAddress &&
-      IMaticFLIP.polygonAddress &&
-      Bitcoin2xFLIP.polygonAddress &&
-      IBitcoinFLIP.polygonAddress
+      ibtcflip
     ) {
       getSetDetails(
         polygonReadOnlyProvider,
         [
-          Ethereum2xFLIP.polygonAddress,
-          IEthereumFLIP.polygonAddress,
-          Matic2xFLIP.polygonAddress,
-          IMaticFLIP.polygonAddress,
-          Bitcoin2xFLIP.polygonAddress,
-          IBitcoinFLIP.polygonAddress,
+          Ethereum2xFLIP.polygonAddress!,
+          IEthereumFLIP.polygonAddress!,
+          Matic2xFLIP.polygonAddress!,
+          IMaticFLIP.polygonAddress!,
+          Bitcoin2xFLIP.polygonAddress!,
+          IBitcoinFLIP.polygonAddress!,
         ],
         POLYGON.chainId
       ).then(async (result) => {
