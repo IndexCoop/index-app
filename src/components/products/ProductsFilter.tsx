@@ -20,13 +20,24 @@ const labelForFilter = (filter: ProductFilter) => {
   }
 }
 
-export const ProductsFilter = () => {
+type ProductsFilterProps = {
+  onSelectFilter: (filter: ProductFilter) => void
+  selected: ProductFilter
+}
+
+export const ProductsFilter = (props: ProductsFilterProps) => {
+  const { onSelectFilter, selected } = props
   const filters = Object.values(ProductFilter)
   console.log(filters)
   return (
-    <Flex>
+    <Flex ml='0' my='32px'>
       {filters.map((filter, index) => (
-        <FilterButton key={index} filter={filter} isActive={index === 0} />
+        <FilterButton
+          key={index}
+          filter={filter}
+          onSelect={onSelectFilter}
+          isActive={filter === selected}
+        />
       ))}
     </Flex>
   )
@@ -34,16 +45,17 @@ export const ProductsFilter = () => {
 
 type FilterButtonProps = {
   filter: ProductFilter
+  onSelect: (filter: ProductFilter) => void
   isActive: boolean
 }
 
-const FilterButton = ({ filter, isActive }: FilterButtonProps) => {
+const FilterButton = (props: FilterButtonProps) => {
+  const { filter, onSelect, isActive } = props
   const label = labelForFilter(filter)
   return (
     <Button
       mr={['0', '2']}
-      // onClick={() => onOpen()}
-      // w={['100%', 'inherit']}
+      onClick={() => onSelect(filter)}
       variant={isActive ? 'highlightSelected' : 'highlight'}
     >
       {label}

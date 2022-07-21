@@ -1,7 +1,13 @@
+import { useState } from 'react'
+
 import { Box } from '@chakra-ui/react'
 
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
+import {
+  ProductsFilter,
+  ProductFilter,
+} from 'components/products/ProductsFilter'
 import ProductsTable from 'components/products/ProductsTable'
 import Indices, { IndexToken, Token } from 'constants/tokens'
 import {
@@ -90,6 +96,7 @@ const appendProductPerformance = ({
 }
 
 const Products = () => {
+  const [selectedFilter, setSelectedFilter] = useState(ProductFilter.all)
   const marketData = useMarketData()
 
   const getTokenMarketData = (tokenContextKey?: TokenContextKeys) => {
@@ -110,12 +117,21 @@ const Products = () => {
     })
   })
 
+  const onSelectFilter = (filter: ProductFilter) => {
+    // TODO: change products based on filter
+    setSelectedFilter(filter)
+  }
+
   return (
     <Page>
       <Box w='100%'>
         <PageTitle
           title='Discover Index Coop Indices'
           subtitle='Simple yet powerful crypto investment themes'
+        />
+        <ProductsFilter
+          onSelectFilter={onSelectFilter}
+          selected={selectedFilter}
         />
         <ProductsTable products={productsWithMarketData} />
       </Box>
