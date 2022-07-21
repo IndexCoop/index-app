@@ -219,6 +219,7 @@ export const useBestQuote = () => {
     const gasLimit0x = BigNumber.from(dexSwapOption?.gas ?? '0')
     const gasPrice0x = BigNumber.from(dexSwapOption?.gasPrice ?? '0')
     const gas0x = gasPrice0x.mul(gasLimit0x)
+    const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
     const zeroExQuote: ZeroExQuote | null = dexSwapOption
       ? {
           type: QuoteType.zeroEx,
@@ -236,12 +237,12 @@ export const useBestQuote = () => {
             nativeTokenPrice
           ),
           priceImpact: parseFloat(dexSwapOption.estimatedPriceImpact ?? '5'),
-          setTokenAmount: BigNumber.from(
-            isIssuance ? dexSwapOption.buyAmount : sellTokenAmount
-          ),
-          inputOutputTokenAmount: BigNumber.from(
-            isIssuance ? sellTokenAmount : dexSwapOption.buyAmount
-          ),
+          setTokenAmount: isIssuance
+            ? BigNumber.from(dexSwapOption.buyAmount)
+            : sellTokenAmountInWei,
+          inputOutputTokenAmount: isIssuance
+            ? sellTokenAmountInWei
+            : BigNumber.from(dexSwapOption.buyAmount),
           // type specific properties
           chainId: dexSwapOption.chainId,
           data: dexSwapOption.data,
