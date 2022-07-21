@@ -160,7 +160,7 @@ export const DefiPulseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   chainId: MAINNET.chainId,
 }
@@ -177,7 +177,7 @@ export const IndexToken: Token = {
   coingeckoId: 'index-cooperative',
   tokensetsId: 'index',
   fees: undefined,
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [],
   chainId: MAINNET.chainId,
 }
@@ -239,7 +239,7 @@ export const MetaverseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   chainId: MAINNET.chainId,
 }
@@ -279,7 +279,7 @@ export const BedIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   chainId: MAINNET.chainId,
 }
@@ -299,7 +299,7 @@ export const DataIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   chainId: MAINNET.chainId,
 }
@@ -319,7 +319,7 @@ export const GmiIndex: Token = {
   fees: {
     streamingFee: '1.95%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   chainId: MAINNET.chainId,
 }
@@ -451,7 +451,7 @@ export const icETHIndex: Token = {
     mintFee: '0.0%',
     redeemFee: '0.0%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.leverage, IndexType.yield],
   chainId: MAINNET.chainId,
 }
@@ -473,7 +473,7 @@ export const JPGIndex: Token = {
     mintFee: '0.5%',
     redeemFee: '0.5%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   chainId: MAINNET.chainId,
 }
@@ -492,7 +492,7 @@ export const JPGIndex: Token = {
 //   fees: {
 //     streamingFee: '0.95%',
 //   },
-//   isDangerous: false,
+//   isDangerous: true,
 //   indexTypes: [IndexType.yield],
 //chainId: OPTIMISM.chainId,
 // }
