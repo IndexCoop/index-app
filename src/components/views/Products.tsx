@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Box } from '@chakra-ui/react'
 
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import {
-  ProductsFilter,
   ProductFilter,
+  ProductsFilter,
 } from 'components/products/ProductsFilter'
 import ProductsTable from 'components/products/ProductsTable'
-import Indices, { IndexToken, Token } from 'constants/tokens'
+import Indices, { IndexToken, IndexType, Token } from 'constants/tokens'
 import {
   TokenContextKeys,
   useMarketData,
@@ -96,7 +96,6 @@ const appendProductPerformance = ({
 }
 
 const Products = () => {
-  const [selectedFilter, setSelectedFilter] = useState(ProductFilter.all)
   const marketData = useMarketData()
 
   const getTokenMarketData = (tokenContextKey?: TokenContextKeys) => {
@@ -108,17 +107,50 @@ const Products = () => {
     }
   }
 
-  const productsWithMarketData = Indices.filter(
-    (product) => product.symbol !== IndexToken.symbol
-  ).map((product) => {
-    return appendProductPerformance({
-      product,
-      ...getTokenMarketData(product.tokenContextKey),
-    })
-  })
+  const productsFiltered = (filter: ProductFilter): ProductsTableProduct[] => {
+    switch (filter) {
+      case ProductFilter.all:
+        return productsWithMarketData(Indices)
+
+      case ProductFilter.leverage:
+        return productsWithMarketData(
+          Indices.filter((index) =>
+            index.indexTypes.includes(IndexType.leverage)
+          )
+        )
+      case ProductFilter.thematic:
+        return productsWithMarketData(
+          Indices.filter((index) =>
+            index.indexTypes.includes(IndexType.thematic)
+          )
+        )
+      case ProductFilter.yield:
+        return productsWithMarketData(
+          Indices.filter((index) => index.indexTypes.includes(IndexType.yield))
+        )
+    }
+  }
+
+  const productsWithMarketData = (indices: Token[]) =>
+    indices
+      .filter((product) => product.symbol !== IndexToken.symbol)
+      .map((product) => {
+        return appendProductPerformance({
+          product,
+          ...getTokenMarketData(product.tokenContextKey),
+        })
+      })
+
+  const [selectedFilter, setSelectedFilter] = useState(ProductFilter.all)
+  const [products, setProducts] = useState(productsWithMarketData(Indices))
+
+  useEffect(() => {
+    const products = productsFiltered(selectedFilter)
+    setProducts(products)
+  }, [selectedFilter])
 
   const onSelectFilter = (filter: ProductFilter) => {
-    // TODO: change products based on filter
+    if (selectedFilter === filter) return
     setSelectedFilter(filter)
   }
 
@@ -133,7 +165,7 @@ const Products = () => {
           onSelectFilter={onSelectFilter}
           selected={selectedFilter}
         />
-        <ProductsTable products={productsWithMarketData} />
+        <ProductsTable products={products} />
       </Box>
     </Page>
   )
