@@ -1,4 +1,4 @@
-import { useICColorMode } from 'styles/colors'
+import { colors, useICColorMode } from 'styles/colors'
 
 import {
   Table,
@@ -60,13 +60,16 @@ const TableHeader = () => {
   return (
     <Thead>
       <Tr>
-        <Th>Action</Th>
+        <Th style={{ color: colors.icBlue2 }}>Action</Th>
         <Th></Th>
         {isWeb && (
           <>
-            <Th>From</Th>
-            <Th>To</Th>
-            {!isTablet && <Th>Transaction</Th>}
+            <Th style={{ color: colors.icBlue2 }}>From</Th>
+            {!isTablet && <Th></Th>}
+            <Th style={{ color: colors.icBlue2 }}>To</Th>
+            {!isTablet && (
+              <Th style={{ color: colors.icBlue2 }}>Transaction</Th>
+            )}
           </>
         )}
         <Th></Th>

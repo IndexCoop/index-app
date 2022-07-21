@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react'
 
 import historyLinkIcon from 'assets/history-link-icon.svg'
+import arrowAsset from 'assets/ic_arrow_right_24.svg'
 
 import { TransactionHistoryItem } from './TransactionHistoryTable'
 
@@ -58,7 +59,11 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
       {isWeb && (
         <>
           <Td>{item.from}</Td>
-
+          {!isTablet && (
+            <Td>
+              <Image src={arrowAsset} alt='arrow pointing right' />
+            </Td>
+          )}
           <Td>{item.to}</Td>
           {!isTablet && (
             <Td>
