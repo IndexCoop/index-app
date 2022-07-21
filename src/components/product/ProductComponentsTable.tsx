@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import numeral from 'numeral'
 import { colors, pieChartColors } from 'styles/colors'
-import { useAccount, useNetwork } from 'wagmi'
 
 import {
   Box,
@@ -18,15 +17,14 @@ import {
 } from '@chakra-ui/react'
 
 import { Position } from 'components/dashboard/AllocationChart'
-import { MAINNET, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
-import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
+import { SetComponent } from 'hooks/useTokenComponents'
 
 import Chart from './Charts'
 
 const ProductComponentsTable = (props: {
   components?: SetComponent[]
-  tokenData: Token
+  token: Token
   isLeveragedToken?: boolean
 }) => {
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)

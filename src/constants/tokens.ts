@@ -12,6 +12,8 @@ import maticflipLogo from 'assets/maticflilogo.svg'
 import mnyeLogo from 'assets/mnyeLogo.png'
 import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
 
+import { MAINNET, POLYGON } from './chains'
+
 export const dpiTokenImage =
   'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg'
 
@@ -38,6 +40,7 @@ export interface Token {
     | undefined
   isDangerous: boolean
   indexTypes: IndexType[]
+  chainId?: number
 }
 
 export const DAI: Token = {
@@ -159,6 +162,7 @@ export const DefiPulseIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
+  chainId: MAINNET.chainId,
 }
 
 export const IndexToken: Token = {
@@ -175,6 +179,7 @@ export const IndexToken: Token = {
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
+  chainId: MAINNET.chainId,
 }
 
 export const Ethereum2xFlexibleLeverageIndex: Token = {
@@ -194,6 +199,7 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
+  chainId: MAINNET.chainId,
 }
 
 export const Ethereum2xFLIP: Token = {
@@ -215,6 +221,7 @@ export const Ethereum2xFLIP: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
+  chainId: POLYGON.chainId,
 }
 
 export const MetaverseIndex: Token = {
@@ -234,6 +241,7 @@ export const MetaverseIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
+  chainId: MAINNET.chainId,
 }
 
 export const Bitcoin2xFlexibleLeverageIndex: Token = {
@@ -253,6 +261,7 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
+  chainId: MAINNET.chainId,
 }
 
 export const BedIndex: Token = {
@@ -272,6 +281,7 @@ export const BedIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
+  chainId: MAINNET.chainId,
 }
 
 export const DataIndex: Token = {
@@ -291,6 +301,7 @@ export const DataIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
+  chainId: MAINNET.chainId,
 }
 
 export const GmiIndex: Token = {
@@ -310,6 +321,7 @@ export const GmiIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
+  chainId: MAINNET.chainId,
 }
 
 export const Matic2xFLIP: Token = {
@@ -331,6 +343,7 @@ export const Matic2xFLIP: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
+  chainId: POLYGON.chainId,
 }
 
 export const IMaticFLIP: Token = {
@@ -352,6 +365,7 @@ export const IMaticFLIP: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
+  chainId: POLYGON.chainId,
 }
 
 export const IEthereumFLIP: Token = {
@@ -373,6 +387,7 @@ export const IEthereumFLIP: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
+  chainId: POLYGON.chainId,
 }
 
 export const Bitcoin2xFLIP: Token = {
@@ -394,6 +409,7 @@ export const Bitcoin2xFLIP: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
+  chainId: POLYGON.chainId,
 }
 
 export const IBitcoinFLIP: Token = {
@@ -415,6 +431,7 @@ export const IBitcoinFLIP: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
+  chainId: POLYGON.chainId,
 }
 
 export const icETHIndex: Token = {
@@ -436,6 +453,7 @@ export const icETHIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.leverage, IndexType.yield],
+  chainId: MAINNET.chainId,
 }
 
 export const JPGIndex: Token = {
@@ -457,6 +475,7 @@ export const JPGIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
+  chainId: MAINNET.chainId,
 }
 // export const MNYeIndex: Token = {
 //   name: 'Market Neutral Yield ETH Index',
@@ -475,6 +494,7 @@ export const JPGIndex: Token = {
 //   },
 //   isDangerous: false,
 //   indexTypes: [IndexType.yield],
+//chainId: OPTIMISM.chainId,
 // }
 
 export const productTokensBySymbol = {

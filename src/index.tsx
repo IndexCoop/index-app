@@ -38,7 +38,6 @@ import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
 import { ProtectionProvider } from 'providers/Protection/ProtectionProvider'
-import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
 
 import '@rainbow-me/rainbowkit/dist/index.css'
 
@@ -78,11 +77,9 @@ const Providers = (props: { children: any }) => {
           }}
         >
           <MarketDataProvider>
-            <SetComponentsProvider>
-              <ProtectionProvider>
-                <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
-              </ProtectionProvider>
-            </SetComponentsProvider>
+            <ProtectionProvider>
+              <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+            </ProtectionProvider>
           </MarketDataProvider>
         </RainbowKitProvider>
       </WagmiConfig>

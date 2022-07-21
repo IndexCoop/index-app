@@ -3,30 +3,30 @@ import { Image } from '@chakra-ui/react'
 
 import { Token } from 'constants/tokens'
 
-const ProductPageHeaderMobile = (props: { tokenData: Token }) => {
+const ProductPageHeaderMobile = (props: { token: Token }) => {
   return (
     <Flex direction='column' justifyContent='flex-end' alignItems='left'>
       <Flex>
         <Image
-          src={props.tokenData.image}
-          alt={props.tokenData.name + ' logo'}
+          src={props.token.image}
+          alt={props.token.name + ' logo'}
           w='32px'
           h='32px'
         />
         <Text fontSize='2xl' fontWeight='500' ml='8px'>
-          {props.tokenData.symbol}
+          {props.token.symbol}
         </Text>
       </Flex>
       <Text fontSize='xl' fontWeight='700'>
-        {props.tokenData.name}
+        {props.token.name}
       </Text>
     </Flex>
   )
 }
 
-const ProductPageHeader = (props: { isMobile: boolean; tokenData: Token }) => {
+const ProductPageHeader = (props: { isMobile: boolean; token: Token }) => {
   if (props.isMobile) {
-    return <ProductPageHeaderMobile tokenData={props.tokenData} />
+    return <ProductPageHeaderMobile token={props.token} />
   }
 
   return (
@@ -39,15 +39,15 @@ const ProductPageHeader = (props: { isMobile: boolean; tokenData: Token }) => {
       padding='10px 0'
     >
       <Text fontSize='4xl' fontWeight='700'>
-        {props.tokenData.name}
+        {props.token.name}
       </Text>
       <Spacer />
       <Text fontSize='4xl' fontWeight='500' mr='24px'>
-        {props.tokenData.symbol}
+        {props.token.symbol}
       </Text>
       <Image
-        src={props.tokenData.image}
-        alt={props.tokenData.name + ' logo'}
+        src={props.token.image}
+        alt={props.token.name + ' logo'}
         w='48px'
         h='48px'
       />
