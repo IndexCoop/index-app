@@ -1,22 +1,11 @@
 import { colors } from 'styles/colors'
 
-import {
-  Flex,
-  Image,
-  Link,
-  Spacer,
-  Text,
-  useBreakpointValue,
-} from '@chakra-ui/react'
+import { Flex, Image, Link, Spacer, Text } from '@chakra-ui/react'
 
 import indexLogoFullWhite from 'assets/index-logo-full-white.png'
 import indexLogoWhite from 'assets/index-logo-white.png'
 
 const Footer = () => {
-  const isWeb = useBreakpointValue({
-    base: false,
-    xl: true,
-  })
   return (
     <Flex backgroundColor={colors.backgroundFooter} w='100vw'>
       <Flex
@@ -30,7 +19,7 @@ const Footer = () => {
         w='100%'
       >
         <Logo />
-        {isWeb && <Spacer />}
+        <Spacer />
         <Flex align='right' direction={['column', 'column', 'column', 'row']}>
           <Link href='/liquidity-mining'>
             <Text color={colors.icGray2} mr='8'>
