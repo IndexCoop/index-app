@@ -435,7 +435,7 @@ export const icETHIndex: Token = {
     redeemFee: '0.0%',
   },
   isDangerous: false,
-  indexTypes: [IndexType.leverage],
+  indexTypes: [IndexType.leverage, IndexType.yield],
 }
 
 export const JPGIndex: Token = {
