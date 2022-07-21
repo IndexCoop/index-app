@@ -1,55 +1,56 @@
-import { useICColorMode } from 'styles/colors'
+import { colors } from 'styles/colors'
 
-import { Flex, Image, Link } from '@chakra-ui/react'
-import { useColorMode } from '@chakra-ui/system'
+import { Flex, Image, Link, Spacer, Text } from '@chakra-ui/react'
 
-import indexLogoBlack from 'assets/index-logo-black.png'
-import indexLogoFullBlack from 'assets/index-logo-full-black.png'
 import indexLogoFullWhite from 'assets/index-logo-full-white.png'
 import indexLogoWhite from 'assets/index-logo-white.png'
 
 const Footer = () => {
-  const { isDarkMode } = useICColorMode()
-  const backgroundColor = isDarkMode
-    ? 'rgba(0, 0, 0, 0.6)'
-    : 'rgba(255, 255, 255, 0.82)'
-
   return (
-    <Flex
-    // backgroundColor={backgroundColor}
-    // p={[
-    //   '16px 16px 16px 24px',
-    //   null,
-    //   '32px 60px 32px 60px',
-    //   '32px 80px 32px 80px',
-    // ]}
-    // position='fixed'
-    // top='0px'
-    // w='100vw'
-    >
-      <Flex align='center' justifyContent='space-between' w='100%'>
+    <Flex backgroundColor={colors.backgroundFooter} w='100vw'>
+      <Flex
+        align='center'
+        p={[
+          '32px 16px 32px 24px',
+          null,
+          '32px 60px 32px 60px',
+          '32px 80px 32px 80px',
+        ]}
+        w='100%'
+      >
         <Logo />
+        <Spacer />
+        <Flex>
+          <Link href='/liquidity-mining'>
+            <Text color={colors.icGray2} mr='8'>
+              Liquidity Mining (discontinued)
+            </Text>
+          </Link>
+          <Link href='https://indexcoop.com/legal/privacy-policy'>
+            <Text color={colors.icWhite} mr='8'>
+              Privacy Policy
+            </Text>
+          </Link>
+          <Link href='https://indexcoop.com/legal/terms-of-service'>
+            <Text color={colors.icWhite} mr='8'>
+              Terms of Service
+            </Text>
+          </Link>
+        </Flex>
       </Flex>
     </Flex>
   )
 }
 
 const Logo = () => {
-  const { colorMode } = useColorMode()
-  const isDarkMode = colorMode === 'dark'
-  let logo = isDarkMode ? indexLogoWhite : indexLogoBlack
-
-  if (window.innerWidth > 1350) {
-    logo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
-  }
-
+  const logo = window.innerWidth > 1350 ? indexLogoFullWhite : indexLogoWhite
   return (
     <Image
       src={logo}
       alt='Index Coop Logo'
       minWidth='24px'
-      height='30px'
-      mr={['', '', '', '20px']}
+      height='24px'
+      mr={['', '', '', '8']}
     />
   )
 }
