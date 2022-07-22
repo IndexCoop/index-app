@@ -164,7 +164,8 @@ export const useBestQuote = () => {
   const { provider, signer } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
-  const chainId = chain?.id
+  // Assume mainnet when no chain is connected (to be able to fetch quotes)
+  const chainId = chain?.id ?? 1
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [quoteResult, setQuoteResult] =
@@ -189,7 +190,7 @@ export const useBestQuote = () => {
     const outputTokenAddress = getAddressForToken(buyToken, chainId)
 
     if (!provider || !chainId) {
-      console.error('Error - no provider or chain id present')
+      console.error('Error fetching quotes - no provider or chain id present')
       return
     }
 
