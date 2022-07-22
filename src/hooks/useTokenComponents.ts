@@ -20,7 +20,7 @@ import { useReadOnlyProvider } from './useReadOnlyProvider'
 const VS_CURRENCY = 'usd'
 
 export const useTokenComponents = (token: Token, marketData: number[][]) => {
-  const chainId = token.chainId || MAINNET.chainId
+  const chainId = token.defaultChain || MAINNET.chainId
   const provider = useReadOnlyProvider(chainId)
   const address = getAddressForToken(token, chainId)
   const allTokens = getTokenList(chainId)
