@@ -14,7 +14,6 @@ import TransactionHistoryTable, {
 } from 'components/dashboard/TransactionHistoryTable'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
-import Disclaimer from 'components/product/Disclaimer'
 import { PriceChartData } from 'components/product/MarketChart'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
@@ -30,12 +29,6 @@ const Dashboard = () => {
   const { address } = useAccount()
   const { chain } = useNetwork()
   const chainId = chain?.id
-  const isWeb = useBreakpointValue({
-    base: false,
-    md: true,
-    lg: true,
-    xl: true,
-  })
 
   const [csvDownloadUrl, setCsvDownloadUrl] = useState('')
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
@@ -126,7 +119,6 @@ const Dashboard = () => {
           />
           <TransactionHistoryTable items={historyItems.slice(0, 20)} />
         </Box>
-        <Disclaimer />
       </Flex>
     </Page>
   )

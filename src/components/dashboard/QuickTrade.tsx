@@ -655,7 +655,7 @@ const ProtectionWarning = (props: { isDarkMode: boolean }) => {
           <InfoOutlineIcon
             alignSelf={'flex-end'}
             my={'auto'}
-            ml={'22px'}
+            ml={'18px'}
             color={colors.black}
           />
         </Tooltip>
