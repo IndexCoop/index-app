@@ -26,8 +26,11 @@ import {
   tradeModuleOptimismAddress,
   tradeModulePolygonAddress,
 } from 'constants/ethContractAddresses'
+import { IndexToken } from 'constants/tokens'
 //import { MNYeIndex } from 'constants/tokens'
 import { SetProtocolViewerAbi } from 'utils/abi/SetProtocolViewer'
+
+import { ERC20_ABI } from './abi/ERC20'
 
 /**
  * Utils types of Set.
@@ -165,6 +168,11 @@ export async function getTokenSupply(
   provider: JsonRpcProvider,
   chainId: number
 ) {
+  if (setTokenAddress === IndexToken.address) {
+    const indexContract = new Contract(setTokenAddress, ERC20_ABI, provider)
+    const supply = await indexContract.totalSupply()
+    return supply
+  }
   const protocolViewerAddress = getProtocolViewerAddress(chainId)
   const contract = new Contract(
     protocolViewerAddress,

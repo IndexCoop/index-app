@@ -80,9 +80,10 @@ const ProductPage = (props: {
   const { marketData, token } = props
 
   const { chain } = useNetwork()
-  const chainId = chain?.id ?? 1
+  const networkChainId = chain?.id ?? 1
+  const chainId = token.symbol === IndexToken.symbol ? 1 : networkChainId
   const { selectLatestMarketData } = useMarketData()
-  const provider = useReadOnlyProvider()
+  const provider = useReadOnlyProvider(chainId)
 
   const tokenAddress = getAddressForToken(token, chainId) ?? ''
   const tokenSupply = useTokenSupply(tokenAddress, provider, chainId)

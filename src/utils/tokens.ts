@@ -4,6 +4,7 @@ import {
   indexNamesMainnet,
   indexNamesOptimism,
   indexNamesPolygon,
+  IndexToken,
   mainnetCurrencyTokens,
   MATIC,
   optimismCurrencyTokens,
@@ -15,6 +16,7 @@ export function getAddressForToken(
   token: Token,
   chainId: number | undefined
 ): string | undefined {
+  if (token.symbol === IndexToken.symbol) return token.address
   switch (chainId) {
     case MAINNET.chainId:
       return token.address
