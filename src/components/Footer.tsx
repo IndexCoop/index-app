@@ -36,6 +36,11 @@ const Footer = () => {
               Terms of Service
             </Text>
           </Link>
+          <Link href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'>
+            <Text color={colors.icWhite} mr='8'>
+              Tokens Restricted for US Persons
+            </Text>
+          </Link>
         </Flex>
       </Flex>
     </Flex>

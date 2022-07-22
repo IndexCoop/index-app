@@ -9,7 +9,7 @@ import {
   Box,
   Flex,
   IconButton,
-  Spacer,
+  Link,
   Text,
   Tooltip,
   useDisclosure,
@@ -303,6 +303,7 @@ const QuickTrade = (props: {
   const fetchOptions = () => {
     // Right now we only allow setting the sell amount, so no need to check
     // buy token amount here
+    if (requiresProtection) return
     const sellTokenInWei = toWei(sellTokenAmount, sellToken.decimals)
     if (sellTokenInWei.isZero() || sellTokenInWei.isNegative()) return
     fetchAndCompareOptions(
@@ -642,18 +643,23 @@ const ProtectionWarning = (props: { isDarkMode: boolean }) => {
       direction='row'
       textAlign={'center'}
     >
-      <Spacer flexGrow={3} />
-      <Text p={4} justifySelf={'center'} flexGrow={6} color={colors.black}>
-        Not available in your region
+      <Text p={4} justifySelf={'center'} color={colors.black}>
+        Not available in your region. Click{' '}
+        <Link href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'>
+          <Text as='u' color={colors.black}>
+            here
+          </Text>
+        </Link>{' '}
+        for more.
+        <Tooltip label='Some of our contracts are unavailable to persons or entities who: are citizens of, reside in, located in, incorporated in, or operate a registered office in the U.S.A.'>
+          <InfoOutlineIcon
+            alignSelf={'flex-end'}
+            my={'auto'}
+            ml={'18px'}
+            color={colors.black}
+          />
+        </Tooltip>
       </Text>
-      <Tooltip label='Some of our contracts are unavailable to persons or entities who: are citizens of, reside in, located in, incorporated in, or operate a registered office in the U.S.A.'>
-        <InfoOutlineIcon
-          alignSelf={'flex-end'}
-          my={'auto'}
-          flexGrow={2}
-          color={colors.black}
-        />
-      </Tooltip>
     </Flex>
   )
 }
