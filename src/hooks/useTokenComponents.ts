@@ -4,7 +4,7 @@ import { BigNumber, utils } from 'ethers'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { getApiKey, IndexApiBaseUrl } from 'constants/server'
-import { Token } from 'constants/tokens'
+import { IndexToken, Token } from 'constants/tokens'
 import { displayFromWei, safeDiv, selectLatestMarketData } from 'utils'
 import {
   CoinGeckoCoinPrices,
@@ -22,13 +22,16 @@ const VS_CURRENCY = 'usd'
 export const useTokenComponents = (token: Token, marketData: number[][]) => {
   const chainId = token.defaultChain || MAINNET.chainId
   const provider = useReadOnlyProvider(chainId)
-  const address = getAddressForToken(token, chainId)
-  const allTokens = getTokenList(chainId)
   const [components, setComponents] = useState<SetComponent[]>([])
   useMemo(() => {
-    getSetDetails(provider, [address!], chainId).then(async (result) => {
+    const address = getAddressForToken(token, chainId)
+    if (!address || token.symbol === IndexToken.symbol) {
+      setComponents([])
+      return
+    }
+    const allTokens = getTokenList(chainId)
+    getSetDetails(provider, [address], chainId).then(async (result) => {
       const [setDetails] = result
-
       const componentData = await getSetComponents(
         setDetails,
         selectLatestMarketData(marketData),
@@ -48,20 +51,20 @@ const getSetComponents = async (
   chainId: number
 ): Promise<SetComponent[]> => {
   const assetPlatform = getAssetPlatform(chainId)
-  const dpiComponentPrices = await getPositionPrices(set, assetPlatform)
-  if (dpiComponentPrices === null) return []
-  const dpiPositions = set.positions.map(async (position) => {
+  const componentPrices = await getPositionPrices(set, assetPlatform)
+  if (componentPrices === null) return []
+  const positions = set.positions.map(async (position) => {
     return await convertPositionToSetComponent(
       position,
       tokenList,
-      dpiComponentPrices[position.component.toLowerCase()]?.[VS_CURRENCY],
-      dpiComponentPrices[position.component.toLowerCase()]?.[
+      componentPrices[position.component.toLowerCase()]?.[VS_CURRENCY],
+      componentPrices[position.component.toLowerCase()]?.[
         `${VS_CURRENCY}_24h_change`
       ],
       setPriceUsd
     )
   })
-  const components = await Promise.all(dpiPositions).then(
+  const components = await Promise.all(positions).then(
     sortPositionsByPercentOfSet
   )
   return components

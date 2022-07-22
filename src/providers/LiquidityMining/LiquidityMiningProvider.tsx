@@ -67,7 +67,6 @@ const useTotalSupply = (stakingAddress?: string): BigNumber | undefined => {
     functionName: 'totalSupply',
     args: [],
   })
-  console.log('useTotalSupply  data', data)
   return useMemo(
     () => (isError || isLoading || !data ? undefined : data.value),
     [data, isError, isLoading]
