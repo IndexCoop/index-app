@@ -12,7 +12,12 @@ import { publicProvider } from 'wagmi/providers/public'
 
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import {
+  connectorsForWallets,
+  getDefaultWallets,
+  RainbowKitProvider,
+  wallet,
+} from '@rainbow-me/rainbowkit'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 
@@ -49,10 +54,34 @@ const { chains, provider } = configureChains(
   ]
 )
 
-const { connectors } = getDefaultWallets({
+const { connectors: connectooors } = getDefaultWallets({
   appName: 'Index Coop',
   chains,
 })
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended',
+    wallets: [
+      wallet.metaMask({ chains }),
+      wallet.rainbow({ chains }),
+      wallet.argent({ chains }),
+      wallet.coinbase({
+        appName: 'Index Coop',
+        chains,
+      }),
+      wallet.ledger({ chains }),
+    ],
+  },
+  {
+    groupName: 'Others',
+    wallets: [
+      wallet.walletConnect({ chains }),
+      wallet.brave({ chains }),
+      wallet.trust({ chains }),
+    ],
+  },
+])
 
 const wagmiClient = createClient({
   autoConnect: true,
