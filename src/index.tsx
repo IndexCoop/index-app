@@ -47,7 +47,7 @@ import { ProtectionProvider } from 'providers/Protection/ProtectionProvider'
 import '@rainbow-me/rainbowkit/dist/index.css'
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.polygon], // TODO: add optimism for MNYe, chain.optimism],
+  [chain.mainnet, chain.polygon, chain.optimism],
   [
     alchemyProvider({ alchemyId: process.env.REACT_APP_ALCHEMY_ID }),
     publicProvider(),
@@ -159,6 +159,7 @@ root.render(
             <Route path='iceth' element={<ICETH />} />
             <Route path='index' element={<INDEX />} />
             <Route path='jpg' element={<JPG />} />
+            <Route path='mnye' element={<MNYe />} />
           </Route>
         </Routes>
       </Providers>

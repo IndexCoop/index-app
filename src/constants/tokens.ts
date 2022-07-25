@@ -483,7 +483,7 @@ export const MNYeIndex: Token = {
   symbol: 'MNYe',
   address: undefined,
   polygonAddress: undefined,
-  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93', // TODO: Get final address
+  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93',
   decimals: 18,
   url: 'mnye',
   image: mnyeLogo,
@@ -516,7 +516,7 @@ export const productTokensBySymbol = {
   'BTC2x-FLI-P': Bitcoin2xFLIP,
   'icETH': icETHIndex,
   'JPG': JPGIndex,
-  //'MNYe': MNYeIndex,
+  'MNYe': MNYeIndex,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH]
