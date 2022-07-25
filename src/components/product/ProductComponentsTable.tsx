@@ -17,44 +17,16 @@ import {
 } from '@chakra-ui/react'
 
 import { Position } from 'components/dashboard/AllocationChart'
-import { MAINNET, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
-import { useNetwork } from 'hooks/useNetwork'
-import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
+import { SetComponent } from 'hooks/useTokenComponents'
 
 import Chart from './Charts'
 
-const allocationEmptyMsg = (
-  tokenData: Token,
-  account?: string | null,
-  chainId?: number
-) => {
-  if (!account || !chainId) return 'Connect wallet to view allocations'
-  switch (chainId) {
-    case MAINNET.chainId:
-      if (!tokenData.address && tokenData.polygonAddress) {
-        return 'Switch wallet to Polygon to view allocations'
-      }
-      return 'Connect wallet to view allocations'
-    case POLYGON.chainId:
-      if (!tokenData.polygonAddress && tokenData.address) {
-        return 'Switch wallet to Ethereum Mainnet to view allocations'
-      }
-      return 'Connect wallet to view allocations'
-    default:
-      return 'Connect wallet to view allocations'
-  }
-}
-
 const ProductComponentsTable = (props: {
   components?: SetComponent[]
-  tokenData: Token
+  token: Token
   isLeveragedToken?: boolean
 }) => {
-  const { account } = useAccount()
-  const { chainId } = useNetwork()
-
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
   const showAllComponents = () =>
     setAmountToDisplay(props.components?.length || amountToDisplay)
@@ -94,11 +66,7 @@ const ProductComponentsTable = (props: {
   }
 
   if (props.components === undefined || props.components.length === 0) {
-    return (
-      <Text title='Allocations'>
-        {allocationEmptyMsg(props.tokenData, account, chainId)}
-      </Text>
-    )
+    return <Text title='Allocations'>Loading...</Text>
   }
 
   return (

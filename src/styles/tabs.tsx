@@ -4,7 +4,8 @@ export const Tabs = {
   variants: {
     unstyled: ({ colorMode }: { colorMode: string }) => ({
       tablist: {
-        backgroundColor: colorMode === 'dark' ? '#1D1B16' : '#FFF1C7',
+        backgroundColor:
+          colorMode === 'dark' ? colors.icGray4 : colors.icBlue10,
         borderRadius: '8px',
         color: colorMode === 'dark' ? colors.icWhite : colors.black,
         fontSize: '16px',
@@ -14,7 +15,7 @@ export const Tabs = {
       },
       tab: {
         _selected: {
-          backgroundColor: colorMode === 'dark' ? 'white' : colors.icYellow,
+          backgroundColor: colorMode === 'dark' ? 'white' : colors.icBlue,
           borderRadius: '8px',
           color: colorMode === 'dark' ? colors.black : colors.icWhite,
         },

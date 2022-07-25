@@ -102,12 +102,10 @@ describe('toWei', () => {
   })
   it('should convert USDC to wei', () => {
     const value = toWei(Number('40.242'), 6)
-    console.log(value.toString())
     expect(value).toStrictEqual(BigNumber.from('40242000'))
   })
   it('should convert loooong values for USDC to wei', () => {
     const value = toWei('1265.544702110571614391', 6)
-    console.log(value.toString())
     expect(value).toStrictEqual(BigNumber.from('1265544702'))
   })
 })

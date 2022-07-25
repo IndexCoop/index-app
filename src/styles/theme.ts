@@ -1,3 +1,4 @@
+import merge from 'lodash.merge'
 import { Button } from 'styles/button'
 import { colors } from 'styles/colors'
 import { fonts } from 'styles/fonts'
@@ -7,6 +8,7 @@ import { Tabs } from 'styles/tabs'
 import { Text } from 'styles/text'
 
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
+import { midnightTheme, Theme } from '@rainbow-me/rainbowkit'
 
 const config: ThemeConfig = {
   initialColorMode: 'system',
@@ -27,5 +29,19 @@ const theme = extendTheme({
   fonts,
   styles: { global },
 })
+
+export const rainbowkitTheme = merge(
+  midnightTheme({
+    borderRadius: 'medium',
+  }),
+  {
+    colors: {
+      accentColor: colors.icBlue,
+      accentColorForeground: colors.icWhite,
+      generalBorder: colors.icWhite,
+      modalBorder: colors.icWhite,
+    },
+  } as Theme
+)
 
 export default theme

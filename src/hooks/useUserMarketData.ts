@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { PriceChartRangeOption } from 'components/product/MarketChart'
-import { useBalance } from 'hooks/useBalance'
+import { useBalances } from 'hooks/useBalance'
 import {
   TokenMarketDataValues,
   useMarketData,
@@ -65,22 +65,20 @@ function getTotalHourlyPrices(marketData: UserTokenBalance[]) {
 }
 
 export const useUserMarketData = () => {
-  const {
-    balances: {
-      ethBalance,
-      bedBalance,
-      dataBalance,
-      dpiBalance,
-      mviBalance,
-      gmiBalance,
-      ethFliBalance,
-      btcFliBalance,
-      ethFliPBalance,
-      icEthBalance,
-      jpgBalance,
-      mnyeBalance,
-    },
-  } = useBalance()
+  const { getBalance } = useBalances()
+  const ethBalance = getBalance('ETH')
+  const bedBalance = getBalance('BED')
+  const dataBalance = getBalance('DATA')
+  const dpiBalance = getBalance('DPI')
+  const mviBalance = getBalance('MVI')
+  const gmiBalance = getBalance('GMI')
+  const ethFliBalance = getBalance('ETH2x-FLI')
+  const btcFliBalance = getBalance('BTC2x-FLI')
+  const ethFliPBalance = getBalance('ETH2x-FLI-P')
+  const icEthBalance = getBalance('icETH')
+  const jpgBalance = getBalance('JPG')
+  //const mnyeBalance = getBalance('MNYE')
+
   const {
     eth,
     bed,
@@ -93,7 +91,7 @@ export const useUserMarketData = () => {
     ethflip,
     iceth,
     jpg,
-    mnye,
+    //mnye,
   } = useMarketData()
 
   const balances = [
@@ -108,7 +106,7 @@ export const useUserMarketData = () => {
     { title: 'BTC2x-FLI', value: btcFliBalance },
     { title: 'icETH', value: icEthBalance },
     { title: 'JPG', value: jpgBalance },
-    { title: 'MNYE', value: mnyeBalance },
+    //{ title: 'MNYE', value: mnyeBalance },
   ]
 
   const userBalances: UserTokenBalance[] = balances
@@ -136,8 +134,8 @@ export const useUserMarketData = () => {
           return getTokenMarketDataValuesOrNull(pos.title, iceth, pos.value)
         case 'JPG':
           return getTokenMarketDataValuesOrNull(pos.title, jpg, pos.value)
-        case 'MNYE':
-          return getTokenMarketDataValuesOrNull(pos.title, mnye, pos.value)
+        // case 'MNYE':
+        //   return getTokenMarketDataValuesOrNull(pos.title, mnye, pos.value)
         default:
           return undefined
       }

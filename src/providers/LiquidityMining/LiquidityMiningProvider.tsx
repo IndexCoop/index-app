@@ -1,10 +1,9 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { utils } from 'ethers'
+import { useContractRead, useContractWrite } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { Contract } from '@ethersproject/contracts'
-import { useContractCall, useContractFunction } from '@usedapp/core'
 
 import {
   dpi2020StakingRewardsAddress,
@@ -13,8 +12,8 @@ import {
   mviStakingRewardsAddress,
 } from 'constants/ethContractAddresses'
 import { GmiIndex } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
 import { useApproval } from 'hooks/useApproval'
+import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { toWei } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
@@ -46,32 +45,32 @@ const LiquidityMiningContext = createContext<LiquidityMiningProps>({})
 const useGetRewardForDuration = (
   stakingAddress?: string
 ): BigNumber | undefined => {
-  const [rewardsForDuration] =
-    useContractCall(
-      stakingAddress && {
-        abi: stakingInterface,
-        address: stakingAddress,
-        method: 'getRewardForDuration',
-        args: [],
-      }
-    ) ?? []
-  return rewardsForDuration
+  const { data, isError, isLoading } = useContractRead({
+    addressOrName: stakingAddress || '',
+    contractInterface: stakingInterface,
+    functionName: 'getRewardForDuration',
+    args: [],
+  })
+  return useMemo(
+    () => (isError || isLoading || !data ? undefined : data.value),
+    [data, isError, isLoading]
+  )
 }
 
 /**
  * totalSupply for StakingRewardsV2 contracts
  */
 const useTotalSupply = (stakingAddress?: string): BigNumber | undefined => {
-  const [totalSupply] =
-    useContractCall(
-      stakingAddress && {
-        abi: stakingInterface,
-        address: stakingAddress,
-        method: 'totalSupply',
-        args: [],
-      }
-    ) ?? []
-  return totalSupply
+  const { data, isError, isLoading } = useContractRead({
+    addressOrName: stakingAddress || '',
+    contractInterface: stakingInterface,
+    functionName: 'totalSupply',
+    args: [],
+  })
+  return useMemo(
+    () => (isError || isLoading || !data ? undefined : data.value),
+    [data, isError, isLoading]
+  )
 }
 
 /**
@@ -114,7 +113,7 @@ export const calculateApyStakingRewardV2 = ({
 export const useLiquidityMining = () => useContext(LiquidityMiningContext)
 
 const LiquidityMiningProvider = (props: { children: any }) => {
-  const { account, provider } = useAccount()
+  const { address, provider } = useWallet()
   const { index, gmi, selectLatestMarketData } = useMarketData()
 
   const [uniswapEthDpi2020, setUniswapEthDpi2020] =
@@ -161,29 +160,29 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   /**
    * DPI 2020
    */
-  const dpi2020Contract = new Contract(
-    dpi2020StakingRewardsAddress,
-    stakingInterface
-  )
-  const { send: exitDpi2020 } = useContractFunction(dpi2020Contract, 'exit')
+  const { writeAsync: exitDpi2020 } = useContractWrite({
+    addressOrName: dpi2020StakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'exit',
+  })
 
   /**
    * DPI 2021
    */
-  const dpi2021Contract = new Contract(
-    dpi2021StakingRewardsAddress,
-    stakingInterface
-  )
-  const { send: exitDpi2021 } = useContractFunction(dpi2021Contract, 'exit')
+  const { writeAsync: exitDpi2021 } = useContractWrite({
+    addressOrName: dpi2021StakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'exit',
+  })
 
   /**
    * MVI 2021
    */
-  const mvi2021Contract = new Contract(
-    mviStakingRewardsAddress,
-    stakingInterface
-  )
-  const { send: exitMvi2021 } = useContractFunction(mvi2021Contract, 'exit')
+  const { writeAsync: exitMvi2021 } = useContractWrite({
+    addressOrName: mviStakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'exit',
+  })
 
   /**
    * GMI 2022
@@ -206,11 +205,21 @@ const LiquidityMiningProvider = (props: { children: any }) => {
     }))
   }, [isApprovedGmi, isApprovingGmi])
 
-  const gmiContract = new Contract(gmiStakingRewardsAddress, stakingInterface)
-
-  const { send: stakeGmi } = useContractFunction(gmiContract, 'stake')
-  const { send: claimGmi } = useContractFunction(gmiContract, 'getReward')
-  const { send: exitGmi } = useContractFunction(gmiContract, 'exit')
+  const { writeAsync: stakeGmi } = useContractWrite({
+    addressOrName: gmiStakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'stake',
+  })
+  const { writeAsync: claimGmi } = useContractWrite({
+    addressOrName: gmiStakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'getReward',
+  })
+  const { writeAsync: exitGmi } = useContractWrite({
+    addressOrName: gmiStakingRewardsAddress,
+    contractInterface: stakingInterface,
+    functionName: 'exit',
+  })
 
   const apyGmi = calculateApyStakingRewardV2({
     rewardsForDuration: useGetRewardForDuration(gmiStakingRewardsAddress),
@@ -227,14 +236,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   }, [apyGmi])
 
   useEffect(() => {
-    if (
-      account &&
-      provider &&
-      dpi2020StakingRewardsAddress &&
-      dpi2021StakingRewardsAddress &&
-      gmiStakingRewardsAddress &&
-      mviStakingRewardsAddress
-    ) {
+    if (address && provider) {
       setUniswapEthDpi2020({
         onApprove: () => {},
         onStake: () => {},
@@ -260,13 +262,13 @@ const LiquidityMiningProvider = (props: { children: any }) => {
         isPoolActive: isPoolActiveGmi,
         onApprove: onApproveGmi,
         onStake: async (token: string) => {
-          await stakeGmi(toWei(token))
+          await stakeGmi({ args: toWei(token) })
         },
         onHarvest: claimGmi,
         onUnstakeAndHarvest: exitGmi,
       })
     }
-  }, [account, provider])
+  }, [address, provider])
 
   return (
     <LiquidityMiningContext.Provider

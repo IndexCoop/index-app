@@ -16,6 +16,9 @@ import arrowAsset from 'assets/ic_arrow_right_24.svg'
 
 import { TransactionHistoryItem } from './TransactionHistoryTable'
 
+const backgroundColor = colors.icBlue10
+const highlightColor = colors.icBlue2
+
 const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
   const isWeb = useBreakpointValue({
     base: false,
@@ -36,12 +39,12 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
         <Flex align='center'>
           <Flex
             align='center'
-            backgroundColor={colors.icPeriwinkle}
+            backgroundColor={backgroundColor}
             borderRadius='8px'
             justify='center'
             padding='4px 8px'
           >
-            <Text color='#4A4AFF' fontSize='12px' fontWeight='500'>
+            <Text color={highlightColor} fontSize='12px' fontWeight='500'>
               {item.type}
             </Text>
           </Flex>
@@ -50,13 +53,12 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
       <Td>
         <Flex direction='column'>
           <Text>${item.asset}</Text>
-          {isWeb && <Text color={colors.icPeriwinkle}>{item.value}</Text>}
+          {isWeb && <Text color={highlightColor}>{item.value}</Text>}
         </Flex>
       </Td>
       {isWeb && (
         <>
           <Td>{item.from}</Td>
-
           {!isTablet && (
             <Td>
               <Image src={arrowAsset} alt='arrow pointing right' />

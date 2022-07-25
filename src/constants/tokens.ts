@@ -12,8 +12,17 @@ import maticflipLogo from 'assets/maticflilogo.svg'
 import mnyeLogo from 'assets/mnyeLogo.png'
 import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
 
+import { MAINNET, POLYGON } from './chains'
+
 export const dpiTokenImage =
   'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg'
+
+export enum IndexType {
+  thematic = 'thematic',
+  leverage = 'leverage',
+  yield = 'yield',
+}
+
 export interface Token {
   name: string
   symbol: string
@@ -30,6 +39,8 @@ export interface Token {
     | { streamingFee: string; mintFee?: string; redeemFee?: string }
     | undefined
   isDangerous: boolean
+  indexTypes: IndexType[]
+  defaultChain?: number
 }
 
 export const DAI: Token = {
@@ -46,6 +57,7 @@ export const DAI: Token = {
   tokensetsId: 'dai',
   fees: undefined,
   isDangerous: false,
+  indexTypes: [],
 }
 
 export const USDC: Token = {
@@ -62,6 +74,7 @@ export const USDC: Token = {
   tokensetsId: 'usdc',
   fees: undefined,
   isDangerous: false,
+  indexTypes: [],
 }
 
 export const ETH: Token = {
@@ -78,6 +91,7 @@ export const ETH: Token = {
   tokensetsId: 'eth',
   fees: undefined,
   isDangerous: false,
+  indexTypes: [],
 }
 
 export const WETH: Token = {
@@ -94,6 +108,7 @@ export const WETH: Token = {
   tokensetsId: 'weth',
   fees: undefined,
   isDangerous: false,
+  indexTypes: [],
 }
 
 export const MATIC: Token = {
@@ -110,6 +125,7 @@ export const MATIC: Token = {
   tokensetsId: 'matic',
   fees: undefined,
   isDangerous: false,
+  indexTypes: [],
 }
 
 export const STETH: Token = {
@@ -126,6 +142,7 @@ export const STETH: Token = {
   tokensetsId: 'staked-ether',
   fees: undefined,
   isDangerous: false,
+  indexTypes: [],
 }
 
 export const DefiPulseIndex: Token = {
@@ -144,6 +161,8 @@ export const DefiPulseIndex: Token = {
     streamingFee: '0.95%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.thematic],
+  defaultChain: MAINNET.chainId,
 }
 
 export const IndexToken: Token = {
@@ -159,6 +178,8 @@ export const IndexToken: Token = {
   tokensetsId: 'index',
   fees: undefined,
   isDangerous: true,
+  indexTypes: [],
+  defaultChain: MAINNET.chainId,
 }
 
 export const Ethereum2xFlexibleLeverageIndex: Token = {
@@ -177,6 +198,8 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
     streamingFee: '1.95%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: MAINNET.chainId,
 }
 
 export const Ethereum2xFLIP: Token = {
@@ -197,6 +220,8 @@ export const Ethereum2xFLIP: Token = {
     redeemFee: '0.1%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: POLYGON.chainId,
 }
 
 export const MetaverseIndex: Token = {
@@ -215,6 +240,8 @@ export const MetaverseIndex: Token = {
     streamingFee: '0.95%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.thematic],
+  defaultChain: MAINNET.chainId,
 }
 
 export const Bitcoin2xFlexibleLeverageIndex: Token = {
@@ -233,6 +260,8 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
     streamingFee: '1.95%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: MAINNET.chainId,
 }
 
 export const BedIndex: Token = {
@@ -251,6 +280,8 @@ export const BedIndex: Token = {
     streamingFee: '0.25%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.thematic],
+  defaultChain: MAINNET.chainId,
 }
 
 export const DataIndex: Token = {
@@ -269,6 +300,8 @@ export const DataIndex: Token = {
     streamingFee: '0.95%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.thematic],
+  defaultChain: MAINNET.chainId,
 }
 
 export const GmiIndex: Token = {
@@ -287,6 +320,8 @@ export const GmiIndex: Token = {
     streamingFee: '1.95%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.thematic],
+  defaultChain: MAINNET.chainId,
 }
 
 export const Matic2xFLIP: Token = {
@@ -307,6 +342,8 @@ export const Matic2xFLIP: Token = {
     redeemFee: '0.1%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: POLYGON.chainId,
 }
 
 export const IMaticFLIP: Token = {
@@ -327,6 +364,8 @@ export const IMaticFLIP: Token = {
     redeemFee: '0.1%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: POLYGON.chainId,
 }
 
 export const IEthereumFLIP: Token = {
@@ -347,6 +386,8 @@ export const IEthereumFLIP: Token = {
     redeemFee: '0.1%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: POLYGON.chainId,
 }
 
 export const Bitcoin2xFLIP: Token = {
@@ -367,6 +408,8 @@ export const Bitcoin2xFLIP: Token = {
     redeemFee: '0.1%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: POLYGON.chainId,
 }
 
 export const IBitcoinFLIP: Token = {
@@ -387,6 +430,8 @@ export const IBitcoinFLIP: Token = {
     redeemFee: '0.1%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: POLYGON.chainId,
 }
 
 export const icETHIndex: Token = {
@@ -407,6 +452,8 @@ export const icETHIndex: Token = {
     redeemFee: '0.0%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.yield],
+  defaultChain: MAINNET.chainId,
 }
 
 export const JPGIndex: Token = {
@@ -427,24 +474,28 @@ export const JPGIndex: Token = {
     redeemFee: '0.5%',
   },
   isDangerous: true,
+  indexTypes: [IndexType.thematic],
+  defaultChain: MAINNET.chainId,
 }
-export const MNYeIndex: Token = {
-  name: 'Market Neutral Yield ETH Index',
-  symbol: 'icETH', // TODO: 'MNYe',
-  address: undefined,
-  polygonAddress: undefined,
-  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93', // TODO: Get final address
-  decimals: 18,
-  url: 'mnye',
-  image: icethLogo, // TODO: mnyeLogo,
-  coingeckoId: 'eth-market-neutral-yield',
-  tokensetsId: 'mnye',
-  tokenContextKey: 'mnye',
-  fees: {
-    streamingFee: '0.95%',
-  },
-  isDangerous: true,
-}
+// export const MNYeIndex: Token = {
+//   name: 'Market Neutral Yield ETH Index',
+//   symbol: 'icETH', // TODO: 'MNYe',
+//   address: undefined,
+//   polygonAddress: undefined,
+//   optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93', // TODO: Get final address
+//   decimals: 18,
+//   url: 'mnye',
+//   image: icethLogo, // TODO: mnyeLogo,
+//   coingeckoId: 'eth-market-neutral-yield',
+//   tokensetsId: 'mnye',
+//   tokenContextKey: 'mnye',
+//   fees: {
+//     streamingFee: '0.95%',
+//   },
+//   isDangerous: true,
+//   indexTypes: [IndexType.yield],
+//   chainId: OPTIMISM.chainId,
+// }
 
 export const productTokensBySymbol = {
   'DPI': DefiPulseIndex,
@@ -463,7 +514,7 @@ export const productTokensBySymbol = {
   'BTC2x-FLI-P': Bitcoin2xFLIP,
   'icETH': icETHIndex,
   'JPG': JPGIndex,
-  'MNYe': MNYeIndex,
+  //'MNYe': MNYeIndex,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH]
@@ -518,6 +569,6 @@ export const indexNamesPolygon = indexNames.filter(
   (index) => index.optimismAddress !== undefined
 )*/
 
-export const indexNamesOptimism = [MNYeIndex]
+export const indexNamesOptimism = [] //[MNYeIndex]
 
 export default indexNames

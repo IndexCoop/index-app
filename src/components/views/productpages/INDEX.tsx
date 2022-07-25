@@ -7,9 +7,8 @@ const INDEX = () => {
 
   return (
     <ProductPage
-      tokenData={IndexToken}
+      token={IndexToken}
       marketData={index || {}}
-      components={[]}
       isLeveragedToken={true}
     />
   )

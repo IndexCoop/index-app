@@ -21,10 +21,9 @@ export async function getExchangeIssuanceGasEstimate(
   setTokenAmount: BigNumber,
   inputTokenAmount: BigNumber,
   inputTokenBalance: BigNumber,
-  quoteData: string[]
+  quoteData: string[],
+  signer: any
 ): Promise<BigNumber> {
-  const signer = provider?.getSigner()
-
   // Return default - as we can't fetch an estimate without a signer
   if (!signer) return defaultGasEstimate
 
