@@ -53,6 +53,11 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
         <ModalHeader>Select a token</ModalHeader>
         <ModalCloseButton />
         <ModalBody p='16px 0'>
+          <Flex justify='flex-end' pr='16px' w='100%'>
+            <Text fontSize='sm' fontWeight='500'>
+              Quantity Owned
+            </Text>
+          </Flex>
           {items.length > 0 &&
             items.map((item) => (
               <TokenItem
