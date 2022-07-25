@@ -4,7 +4,7 @@ import { BigNumber, utils } from 'ethers'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { IndexToken, Token } from 'constants/tokens'
-import { displayFromWei, safeDiv, selectLatestMarketData } from 'utils'
+import { displayFromWei, fromWei, safeDiv, selectLatestMarketData } from 'utils'
 import { IndexApi } from 'utils/indexApi'
 import {
   CoinGeckoCoinPrices,

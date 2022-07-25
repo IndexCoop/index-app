@@ -120,7 +120,7 @@ export async function getSetPerps(
     PerpV2LeverageModuleViewerABI,
     provider
   )
-  return await perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
+  return await perpV2BasisTradingViewer.getVirtualAssetsDisplayInfo(
     tokenAddress
   )
 }
