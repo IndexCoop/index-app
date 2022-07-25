@@ -1,13 +1,11 @@
-import axios from 'axios'
-
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { OPTIMISM, POLYGON } from 'constants/chains'
-import { getApiKey, IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
 import { toWei } from 'utils'
+import { IndexApi } from 'utils/indexApi'
 
-const API_0X_INDEX_URL = `${IndexApiBaseUrl}/0x`
+const API_0X_INDEX_URL = `/0x`
 
 type Result<T, E = Error> =
   | { success: true; value: T }
@@ -77,20 +75,14 @@ export const getZeroExTradeData = async (
     chainId
   )
   params.slippagePercentage = slippagePercentage
-
   const query = new URLSearchParams(params).toString()
-  const url = getApiUrl(query, chainId)
-  const key = getApiKey()
-  console.log('0x', url)
+  const path = getApiUrl(query, chainId)
   try {
-    const resp = await axios.get(url, {
-      headers: {
-        'X-INDEXCOOP-API-KEY': key,
-      },
-    })
-    const zeroExData: ZeroExData = resp.data
+    const indexApi = new IndexApi()
+    const resp = await indexApi.get(path)
+    const zeroExData: ZeroExData = resp
     const apiResult = rawData
-      ? resp.data
+      ? resp
       : await processApiResult(
           zeroExData,
           isExactInput,
