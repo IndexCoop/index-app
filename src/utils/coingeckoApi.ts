@@ -1,9 +1,9 @@
 import { POLYGON } from 'constants/chains'
-import { getApiKey, IndexApiBaseUrl } from 'constants/server'
 import { ETH } from 'constants/tokens'
+import { IndexApi } from 'utils/indexApi'
 
-const baseURL = `${IndexApiBaseUrl}/coingecko`
-const key = getApiKey()
+const baseURL = '/coingecko'
+const indexApi = new IndexApi()
 
 export const fetchHistoricalTokenMarketData = async (
   id: string,
@@ -14,22 +14,10 @@ export const fetchHistoricalTokenMarketData = async (
     `/coins/${id}/market_chart?vs_currency=${baseCurrency}&days=max&interval=daily`
   const coingeckoHourlyTokenDataUrl =
     baseURL + `/coins/${id}/market_chart?vs_currency=${baseCurrency}&days=90`
-
   return Promise.all([
-    fetch(coingeckoMaxTokenDataUrl, {
-      headers: {
-        'X-INDEXCOOP-API-KEY': key,
-      },
-    }),
-    fetch(coingeckoHourlyTokenDataUrl, {
-      headers: {
-        'X-INDEXCOOP-API-KEY': key,
-      },
-    }),
+    indexApi.get(coingeckoMaxTokenDataUrl),
+    indexApi.get(coingeckoHourlyTokenDataUrl),
   ])
-    .then((responses) =>
-      Promise.all(responses.map((response) => response.json()))
-    )
     .then((data) => {
       const hourlyPrices = data[1].prices,
         marketcaps = data[0].market_caps,
@@ -54,16 +42,10 @@ export const fetchCoingeckoTokenPrice = async (
   baseCurrency = 'usd'
 ): Promise<number> => {
   if (address === ETH.address) {
-    const getPriceUrl =
+    const priceUrl =
       baseURL + `/simple/price/?ids=ethereum&vs_currencies=${baseCurrency}`
 
-    const resp = await fetch(getPriceUrl, {
-      headers: {
-        'X-INDEXCOOP-API-KEY': key,
-      },
-    })
-
-    const data = await resp.json().catch((_) => {
+    const data = await indexApi.get(priceUrl).catch((_) => {
       return 0
     })
 
@@ -78,13 +60,7 @@ export const fetchCoingeckoTokenPrice = async (
       chainId
     )}/?contract_addresses=${address}&vs_currencies=${baseCurrency}`
 
-  const resp = await fetch(getPriceUrl, {
-    headers: {
-      'X-INDEXCOOP-API-KEY': key,
-    },
-  })
-
-  const data = await resp.json().catch((_) => {
+  const data = await indexApi.get(getPriceUrl).catch((_) => {
     return 0
   })
 

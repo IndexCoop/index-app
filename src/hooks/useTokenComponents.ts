@@ -3,9 +3,9 @@ import { useMemo, useState } from 'react'
 import { BigNumber, utils } from 'ethers'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import { getApiKey, IndexApiBaseUrl } from 'constants/server'
 import { IndexToken, Token } from 'constants/tokens'
-import { displayFromWei, fromWei, safeDiv, selectLatestMarketData } from 'utils'
+import { displayFromWei, safeDiv, selectLatestMarketData } from 'utils'
+import { IndexApi } from 'utils/indexApi'
 import {
   CoinGeckoCoinPrices,
   getSetDetails,
@@ -118,20 +118,10 @@ async function getPositionPrices(
   assetPlatform: string
 ): Promise<CoinGeckoCoinPrices> {
   const componentAddresses = setDetails.positions.map((p) => p.component)
-  const key = getApiKey()
-  return fetch(
-    `${IndexApiBaseUrl}/coingecko/simple/token_price/${assetPlatform}?vs_currencies=${VS_CURRENCY}&contract_addresses=${componentAddresses}&include_24hr_change=true`,
-    {
-      headers: {
-        'X-INDEXCOOP-API-KEY': key,
-      },
-    }
-  )
-    .then((response) => response.json())
-    .catch((e) => {
-      console.error(e)
-      return null
-    })
+  const indexApi = new IndexApi()
+  const path = `/coingecko/simple/token_price/${assetPlatform}?vs_currencies=${VS_CURRENCY}&contract_addresses=${componentAddresses}&include_24hr_change=true`
+  const prices = await indexApi.get(path)
+  return prices
 }
 
 export async function convertPositionToSetComponent(
