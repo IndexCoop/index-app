@@ -19,8 +19,7 @@ const Footer = () => {
         w='100%'
       >
         <Logo />
-        <Spacer />
-        <Flex align='right' direction={['column', 'column', 'column', 'row']}>
+        <Flex direction={['column', 'column', 'column', 'row']}>
           <Link href='/liquidity-mining'>
             <Text color={colors.icGray2} mr='8'>
               Liquidity Mining (discontinued)
