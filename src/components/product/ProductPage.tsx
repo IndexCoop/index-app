@@ -62,7 +62,7 @@ function getStatsForToken(
 
   return [
     { title: 'Market Cap', value: marketCapFormatted },
-    { title: 'Volume', value: volumeFormatted },
+    { title: 'Volume (24h)', value: volumeFormatted },
     { title: 'Current Supply', value: supplyFormatted },
     { title: 'Streaming Fee', value: token.fees?.streamingFee ?? 'n/a' },
     { title: 'Mint Fee', value: token.fees?.mintFee ?? 'n/a' },
