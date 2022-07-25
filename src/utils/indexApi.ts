@@ -1,11 +1,9 @@
 import { getApiKey, IndexApiBaseUrl } from 'constants/server'
 
 export class IndexApi {
-  constructor() {}
-
   /**
    * Fetches path and returns a json.
-   * @returns JSON or throws error.
+   * @returns JSON on success or throws error.
    */
   async get(path: string) {
     console.log('GET', path)
