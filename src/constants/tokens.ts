@@ -452,7 +452,7 @@ export const icETHIndex: Token = {
     redeemFee: '0.0%',
   },
   isDangerous: true,
-  indexTypes: [IndexType.leverage, IndexType.yield],
+  indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
 }
 

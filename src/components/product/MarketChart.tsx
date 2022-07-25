@@ -248,35 +248,33 @@ const PriceDisplay = ({
   <Flex align='center' width='100%' alignItems={['', 'flex-end']}>
     <Flex align='baseline' flexDir={['column', 'column', 'column', 'row']}>
       <Flex flexDirection={'column'}>
-        <Text
-          fontSize={['3xl', '3xl', '3xl', '4xl']}
-          color={colors.icBlue}
-          fontWeight='700'
-        >
-          {price}
-        </Text>
-        <Flex
-          flexDirection={['column', 'column', 'column', 'row']}
-          alignItems={['flex-start', 'flex-start', 'flex-start', 'flex-end']}
-        >
+        <Flex flexDirection={['row']} alignItems={['flex-end']}>
+          <Text
+            fontSize={['3xl', '3xl', '3xl', '4xl']}
+            color={colors.icBlue}
+            fontWeight='700'
+          >
+            {price}
+          </Text>
           {apy && (
             <Text
               fontSize={['md', 'md', 'xl', '2xl']}
-              color={colors.icWhite}
+              color={colors.icBlue}
               fontWeight='700'
-              mr={['0', '0', '0', '16px']}
+              mb={['6px']}
+              ml={['16px']}
             >
               {apy}% APY
             </Text>
           )}
-          <Text
-            fontSize={['md', 'md', 'xl', '2xl']}
-            color={color}
-            fontWeight='700'
-          >
-            {change}
-          </Text>
         </Flex>
+        <Text
+          fontSize={['md', 'md', 'xl', '2xl']}
+          color={color}
+          fontWeight='700'
+        >
+          {change}
+        </Text>
       </Flex>
     </Flex>
     {customSelector && <Box mt='8px'>{customSelector}</Box>}
