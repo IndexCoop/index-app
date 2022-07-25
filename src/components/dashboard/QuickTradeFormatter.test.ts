@@ -54,7 +54,7 @@ describe('getPriceImpaceColorCoding()', () => {
 
   test('should return correct color for price impact > 3% < 5%', async () => {
     const colorCoding = getPriceImpactColorCoding(-3.1, true)
-    expect(colorCoding).toEqual(colors.icYellow)
+    expect(colorCoding).toEqual(colors.icBlue)
   })
 
   test('should return correct color for price impact < 3%', async () => {

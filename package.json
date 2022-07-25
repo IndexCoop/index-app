@@ -11,9 +11,9 @@
     "@elgorditosalsero/react-gtm-hook": "^2.4.0",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@fontsource/ibm-plex-sans": "^4.5.11",
     "@indexcoop/index-exchange-issuance-sdk": "^1.0.7",
     "@indexcoop/tokenlists": "^1.22.0",
+    "@rainbow-me/rainbowkit": "^0.4.1",
     "@sentry/react": "7.7.0",
     "@sentry/tracing": "7.7.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -23,20 +23,21 @@
     "@types/node": "^18.0.6",
     "@types/react-dom": "^18.0.6",
     "@uniswap/smart-order-router": "^2.8.0",
-    "@usedapp/core": "1.0.12",
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "^6.2.14",
+    "ethers": "^5.6.9",
     "export-to-csv": "^0.2.1",
     "framer-motion": "^4",
     "history": "^5.3.0",
+    "lodash.merge": "^4.6.2",
     "numeral": "^2.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "4.0.3",
     "recharts": "^2.1.12",
-    "set.js": "^0.6.0",
     "typescript": "^4.7.4",
+    "wagmi": "^0.5.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -65,6 +66,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.merge": "^4.6.7",
     "@types/numeral": "^2.0.2",
     "@types/react": "^18.0.15",
     "eslint-plugin-simple-import-sort": "^7.0.0",
@@ -78,6 +80,5 @@
     "transformIgnorePatterns": [
       "/node_modules/@indexcoop/(?!index-exchange-issuance-sdk)"
     ]
-  },
-  "proxy": "https://api.indexcoop.com"
+  }
 }

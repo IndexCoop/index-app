@@ -1,6 +1,5 @@
 import { BigNumber } from 'ethers'
 
-import { ExchangeIssuanceQuote } from 'hooks/useBestTradeOption'
 import { toWei } from 'utils'
 
 import { getFullCostsInUsd } from './exchangeIssuanceQuotes'
@@ -15,7 +14,7 @@ describe('getFullCostsInUsd()', () => {
     const gasLimit = toWei(0.01)
     const gasPrice = BigNumber.from(2)
     const gas = gasPrice.mul(gasLimit)
-    const quote: ExchangeIssuanceQuote = {
+    const quote = {
       tradeData: [],
       inputTokenAmount: toWei(1),
       setTokenAmount: BigNumber.from(1),
@@ -37,7 +36,7 @@ describe('getFullCostsInUsd()', () => {
     const gasLimit = toWei(0.01)
     const gasPrice = BigNumber.from(2)
     const gas = gasPrice.mul(gasLimit)
-    const quote: ExchangeIssuanceQuote = {
+    const quote = {
       tradeData: [],
       inputTokenAmount: toWei(1000, 6),
       setTokenAmount: BigNumber.from(1),

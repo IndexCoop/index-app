@@ -6,11 +6,11 @@ import { Position } from 'components/dashboard/AllocationChart'
 import { displayFromWei, toWei } from 'utils'
 
 const chartColors = [
-  colors.icApricot,
   colors.icBlue,
-  colors.icPeriwinkle,
-  colors.icLazurite,
-  colors.icYellow,
+  colors.icBlue2,
+  colors.icBlue4,
+  colors.icBlue6,
+  colors.icBlue8,
 ]
 
 function getPosition(

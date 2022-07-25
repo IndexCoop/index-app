@@ -4,14 +4,22 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import App from 'App'
-import theme from 'theme'
+import { GlobalFonts } from 'styles/fonts'
+import theme, { rainbowkitTheme } from 'styles/theme'
+import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { publicProvider } from 'wagmi/providers/public'
 
-import '@fontsource/ibm-plex-sans'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
+import {
+  connectorsForWallets,
+  getDefaultWallets,
+  RainbowKitProvider,
+  wallet,
+} from '@rainbow-me/rainbowkit'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
-import { Config, DAppProvider } from '@usedapp/core'
 
 import Dashboard from 'components/views/Homepage'
 import LiquidityMining from 'components/views/LiquidityMining'
@@ -33,26 +41,53 @@ import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
 import MNYe from 'components/views/productpages/MNYe'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
 import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
 import { ProtectionProvider } from 'providers/Protection/ProtectionProvider'
-import SetComponentsProvider from 'providers/SetComponents/SetComponentsProvider'
 
-const config: Config = {
-  readOnlyChainId: MAINNET.chainId,
-  readOnlyUrls: {
-    [MAINNET.chainId]:
-      process.env.REACT_APP_MAINNET_ALCHEMY_API ??
-      'https://eth-mainnet.alchemyapi.io/v2/Z3DZk23EsAFNouAbUzuw9Y-TvfW9Bo1S',
-    [POLYGON.chainId]:
-      process.env.REACT_APP_POLYGON_ALCHEMY_API ??
-      'https://polygon-mainnet.g.alchemy.com/v2/r-z7OCwLoHZKz45NCFqlR0G8vgOXAp5t',
-    [OPTIMISM.chainId]:
-      process.env.REACT_APP_OPTIMISM_ALCHEMY_API ??
-      'https://op-mainnet.g.alchemy.com/v2/r-z7OCwLoHZKz45NCFqlR0G8vgOXAp5t',
+import '@rainbow-me/rainbowkit/dist/index.css'
+
+const { chains, provider } = configureChains(
+  [chain.mainnet, chain.polygon], // TODO: add optimism for MNYe, chain.optimism],
+  [
+    alchemyProvider({ alchemyId: process.env.REACT_APP_ALCHEMY_ID }),
+    publicProvider(),
+  ]
+)
+
+const { connectors: connectooors } = getDefaultWallets({
+  appName: 'Index Coop',
+  chains,
+})
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended',
+    wallets: [
+      wallet.metaMask({ chains }),
+      wallet.rainbow({ chains }),
+      wallet.argent({ chains }),
+      wallet.coinbase({
+        appName: 'Index Coop',
+        chains,
+      }),
+      wallet.ledger({ chains }),
+    ],
   },
-}
+  {
+    groupName: 'Others',
+    wallets: [
+      wallet.walletConnect({ chains }),
+      wallet.brave({ chains }),
+      wallet.trust({ chains }),
+    ],
+  },
+])
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+})
 
 const Providers = (props: { children: any }) => {
   const gtmParams = {
@@ -61,17 +96,22 @@ const Providers = (props: { children: any }) => {
 
   return (
     <ChakraProvider theme={theme}>
-      <DAppProvider config={config}>
-        <MarketDataProvider>
-          <LiquidityMiningProvider>
-            <SetComponentsProvider>
-              <ProtectionProvider>
-                <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
-              </ProtectionProvider>
-            </SetComponentsProvider>
-          </LiquidityMiningProvider>
-        </MarketDataProvider>
-      </DAppProvider>
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider
+          chains={chains}
+          theme={rainbowkitTheme}
+          appInfo={{
+            appName: 'Index Coop',
+            learnMoreUrl: 'https://indexcoop.com',
+          }}
+        >
+          <MarketDataProvider>
+            <ProtectionProvider>
+              <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+            </ProtectionProvider>
+          </MarketDataProvider>
+        </RainbowKitProvider>
+      </WagmiConfig>
     </ChakraProvider>
   )
 }
@@ -96,6 +136,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Providers>
+        <GlobalFonts />
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Routes>
           <Route path='/' element={<App />}>
@@ -118,7 +159,6 @@ root.render(
             <Route path='iceth' element={<ICETH />} />
             <Route path='index' element={<INDEX />} />
             <Route path='jpg' element={<JPG />} />
-            <Route path='mnye' element={<MNYe />} />
           </Route>
         </Routes>
       </Providers>

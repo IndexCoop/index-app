@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useNetwork } from 'wagmi'
 
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
@@ -6,19 +6,19 @@ import QuickTrade from 'components/dashboard/QuickTrade'
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import { IndexToken, Token } from 'constants/tokens'
-import { useAccount } from 'hooks/useAccount'
-import { useNetwork } from 'hooks/useNetwork'
+import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
+import { useTokenComponents } from 'hooks/useTokenComponents'
+import { useTokenSupply } from 'hooks/useTokenSupply'
 import {
   TokenMarketDataValues,
   useMarketData,
 } from 'providers/MarketData/MarketDataProvider'
-import { SetComponent } from 'providers/SetComponents/SetComponentsProvider'
 import { displayFromWei } from 'utils'
 import {
   getFormattedChartPriceChanges,
   getPricesChanges,
 } from 'utils/priceChange'
-import { getTokenSupply } from 'utils/setjsApi'
+import { getAddressForToken, isPerpToken } from 'utils/tokens'
 
 import Disclaimer from './Disclaimer'
 import MarketChart, { PriceChartRangeOption } from './MarketChart'
@@ -28,7 +28,7 @@ import ProductPageSectionHeader from './ProductPageSectionHeader'
 import ProductStats, { ProductStat } from './ProductStats'
 
 function getStatsForToken(
-  tokenData: Token,
+  token: Token,
   marketData: TokenMarketDataValues,
   currentSupply: number
 ): ProductStat[] {
@@ -62,61 +62,32 @@ function getStatsForToken(
 
   return [
     { title: 'Market Cap', value: marketCapFormatted },
-    { title: 'Volume', value: volumeFormatted },
+    { title: 'Volume (24h)', value: volumeFormatted },
     { title: 'Current Supply', value: supplyFormatted },
-    { title: 'Streaming Fee', value: tokenData.fees?.streamingFee ?? 'n/a' },
-    { title: 'Mint Fee', value: tokenData.fees?.mintFee ?? 'n/a' },
-    { title: 'Redeem Fee', value: tokenData.fees?.redeemFee ?? 'n/a' },
+    { title: 'Streaming Fee', value: token.fees?.streamingFee ?? 'n/a' },
+    { title: 'Mint Fee', value: token.fees?.mintFee ?? 'n/a' },
+    { title: 'Redeem Fee', value: token.fees?.redeemFee ?? 'n/a' },
   ]
 }
 
 const ProductPage = (props: {
-  tokenData: Token
+  token: Token
   marketData: TokenMarketDataValues
-  components: SetComponent[]
   isLeveragedToken?: boolean
   apy?: string
-  vAssets?: SetComponent[]
 }) => {
   const isMobile = useBreakpointValue({ base: true, lg: false })
-  const { marketData, tokenData } = props
+  const { marketData, token } = props
 
-  const { chainId } = useNetwork()
-  const { provider } = useAccount()
+  const { chain } = useNetwork()
+  const networkChainId = chain?.id ?? 1
+  const chainId = token.symbol === IndexToken.symbol ? 1 : networkChainId
   const { selectLatestMarketData } = useMarketData()
+  const provider = useReadOnlyProvider(chainId)
 
-  const [currentTokenSupply, setCurrentTokenSupply] = useState(0)
-
-  useEffect(() => {
-    const tokenAddress = tokenData.address
-
-    if (
-      tokenAddress === undefined ||
-      provider === undefined ||
-      chainId === undefined
-    ) {
-      return
-    }
-
-    const fetchSupply = async () => {
-      try {
-        const setDetails = await getTokenSupply(
-          provider,
-          [tokenAddress],
-          chainId
-        )
-        if (setDetails.length < 1) return
-        const supply = parseFloat(
-          displayFromWei(setDetails[0].totalSupply) ?? '0'
-        )
-        setCurrentTokenSupply(supply)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    fetchSupply()
-  }, [chainId, provider, tokenData])
+  const tokenAddress = getAddressForToken(token, chainId) ?? ''
+  const tokenSupply = useTokenSupply(tokenAddress, provider, chainId)
+  const currentSupplyFormatted = parseFloat(displayFromWei(tokenSupply) ?? '0')
 
   const priceChartData = getPriceChartData([marketData])
 
@@ -128,19 +99,22 @@ const ProductPage = (props: {
   const priceChanges = getPricesChanges(marketData.hourlyPrices ?? [])
   const priceChangesFormatted = getFormattedChartPriceChanges(priceChanges)
 
-  const stats = getStatsForToken(tokenData, marketData, currentTokenSupply)
+  const stats = getStatsForToken(token, marketData, currentSupplyFormatted)
 
   const chartWidth = window.outerWidth < 400 ? window.outerWidth : 648
   const chartHeight = window.outerWidth < 400 ? 300 : 400
+
+  const { components, vAssets } = useTokenComponents(
+    props.token,
+    marketData.hourlyPrices!,
+    isPerpToken(props.token)
+  )
 
   return (
     <Page>
       <Flex direction='column' w={['100%', '80vw']} m='0 auto'>
         <Box mb={['16px', '48px']}>
-          <ProductHeader
-            isMobile={isMobile ?? false}
-            tokenData={props.tokenData}
-          />
+          <ProductHeader isMobile={isMobile ?? false} token={props.token} />
         </Box>
         <Flex direction='column' position='relative' zIndex='1'>
           <Flex direction={['column', 'column', 'column', 'row']}>
@@ -160,24 +134,24 @@ const ProductPage = (props: {
               ml={['0', '0', '0', '36px']}
               justifyContent={['center', 'center', 'center', 'flex-start']}
             >
-              <QuickTrade isNarrowVersion={true} singleToken={tokenData} />
+              <QuickTrade isNarrowVersion={true} singleToken={token} />
             </Flex>
           </Flex>
           <ProductPageSectionHeader title='Stats' topMargin='120px' />
           <ProductStats stats={stats} />
-          {props.tokenData.symbol !== IndexToken.symbol && (
+          {props.token.symbol !== IndexToken.symbol && (
             <>
               <ProductPageSectionHeader title='Allocations' />
               <ProductComponentsTable
-                components={props.components}
-                tokenData={props.tokenData}
+                components={components}
+                token={props.token}
                 isLeveragedToken={props.isLeveragedToken}
-                vAssets={props.vAssets}
+                vAssets={vAssets}
               />
             </>
           )}
         </Flex>
-        <Disclaimer tokenData={props.tokenData} />
+        <Disclaimer />
       </Flex>
     </Page>
   )

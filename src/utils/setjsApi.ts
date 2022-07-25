@@ -1,25 +1,16 @@
-import Set from 'set.js'
-import {
-  SetDetails,
-  StreamingFeeInfo,
-  VAssetDisplayInfo,
-} from 'set.js/dist/types/src/types'
+import { BigNumber, Contract } from 'ethers'
 
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { JsonRpcProvider } from '@ethersproject/providers'
+
+import { OPTIMISM, POLYGON } from 'constants/chains'
 import {
   basicIssuanceModuleAddress,
   basicIssuanceModuleOptimismAddress,
   basicIssuanceModulePolygonAddress,
-  controllerAddress,
   debtIssuanceModuleAddress,
   debtIssuanceModuleV2Address,
   debtIssuanceModuleV2OptimismAddress,
   debtIssuanceModuleV2PolygonAddress,
-  delegatedManagerFactoryOptimismAddress,
-  governanceModuleAddress,
-  issuanceExtensionOptimismAddress,
-  masterOracleAddress,
-  navIssuanceModuleAddress,
   perpV2BasisTradingModuleOptimismAddress,
   perpV2BasisTradingModuleViewerOptimismAddress,
   perpV2LeverageModuleOptimismAddress,
@@ -27,67 +18,71 @@ import {
   protocolViewerAddress,
   protocolViewerOptimismAddress,
   protocolViewerPolygonAddress,
-  setTokenCreatorAddress,
-  slippageIssuanceModuleAddress,
   slippageIssuanceModuleOptimismAddress,
-  slippageIssuanceModulePolygonAddress,
-  streamingFeeExtensionOptimismAddress,
   streamingFeeModuleAddress,
   streamingFeeModuleOptimismAddress,
   streamingFeeModulePolygonAddress,
-  tradeExtensionOptimismAddress,
   tradeModuleAddress,
   tradeModuleOptimismAddress,
   tradeModulePolygonAddress,
 } from 'constants/ethContractAddresses'
+import { IndexToken } from 'constants/tokens'
+import { SetProtocolViewerAbi } from 'utils/abi/SetProtocolViewer'
 
-export async function getTokenSupply(
-  ethersProvider: any,
-  productAddresses: string[],
-  chainId: number
-): Promise<SetDetails[]> {
-  const set = getSet(ethersProvider, chainId)
-  let moduleAddresses
-  if (chainId === MAINNET.chainId) {
-    moduleAddresses = [
-      basicIssuanceModuleAddress,
-      streamingFeeModuleAddress,
-      tradeModuleAddress,
-      debtIssuanceModuleAddress,
-    ]
-  } else {
-    moduleAddresses = [
-      basicIssuanceModulePolygonAddress,
-      streamingFeeModulePolygonAddress,
-      tradeModulePolygonAddress,
-      debtIssuanceModuleV2PolygonAddress,
-    ]
-  }
-  return await set.setToken.batchFetchSetDetailsAsync(
-    productAddresses,
-    moduleAddresses
-  )
+import { ERC20_ABI } from './abi/ERC20'
+import { PerpV2LeverageModuleViewerABI } from './abi/PerpV2LeverageModuleViewerABI'
+
+/**
+ * Utils types of Set.
+ *
+ * https://github.com/SetProtocol/set.js/blob/master/src/types/utils.ts
+ */
+
+export type CurrencyCodePriceMap = {
+  [key: string]: number
 }
 
-export async function getStreamingFees(
-  ethersProvider: any,
-  productAddresses: string[],
-  chainId: number
-): Promise<StreamingFeeInfo[]> {
-  const set = getSet(ethersProvider, chainId)
-  return set.fees.batchFetchStreamingFeeInfoAsync(productAddresses)
+export type CoinGeckoCoinPrices = {
+  [key: string]: CurrencyCodePriceMap
 }
 
-export async function getSetDetails(
-  ethersProvider: any,
-  productAddresses: string[],
-  chainId: number
-): Promise<SetDetails[]> {
-  const set = getSet(ethersProvider, chainId)
-  let moduleAddresses: string[] = []
+/**
+ * Common types of Set.
+ *
+ * https://github.com/SetProtocol/set.js/blob/master/src/types/common.ts
+ */
+
+export type Position = {
+  component: string
+  module: string
+  unit: BigNumber
+  positionState: number
+  data: string
+}
+
+export type SetDetails = {
+  name: string
+  symbol: string
+  manager: string
+  modules: string[]
+  moduleStatuses: number[]
+  positions: Position[]
+  totalSupply: BigNumber
+}
+
+// For PerpV2LeverageModuleViewerWrapper
+export type VAssetDisplayInfo = {
+  symbol: string
+  vAssetAddress: string
+  positionUnit: BigNumber // 10^18 decimals
+  indexPrice: BigNumber // 10^18 decimals
+  currentLeverageRatio: BigNumber // 10^18 decimals
+}
+
+export function getModuleAddresses(chainId: number): string[] {
   switch (chainId) {
     case OPTIMISM.chainId:
-      moduleAddresses = [
+      return [
         basicIssuanceModuleOptimismAddress,
         streamingFeeModuleOptimismAddress,
         tradeModuleOptimismAddress,
@@ -98,17 +93,15 @@ export async function getSetDetails(
         perpV2BasisTradingModuleViewerOptimismAddress,
         perpV2LeverageModuleViewerOptimismAddress,
       ]
-      break
     case POLYGON.chainId:
-      moduleAddresses = [
+      return [
         basicIssuanceModulePolygonAddress,
         streamingFeeModulePolygonAddress,
         tradeModulePolygonAddress,
         debtIssuanceModuleV2PolygonAddress,
       ]
-      break
     default:
-      moduleAddresses = [
+      return [
         basicIssuanceModuleAddress,
         streamingFeeModuleAddress,
         tradeModuleAddress,
@@ -116,113 +109,196 @@ export async function getSetDetails(
         debtIssuanceModuleV2Address,
       ]
   }
-  return set.setToken.batchFetchSetDetailsAsync(
-    productAddresses,
-    moduleAddresses
-  )
 }
 
 export async function getSetPerps(
-  ethersProvider: any,
-  setTokenAddress: string,
-  chainId: number
+  provider: any,
+  tokenAddress: string
 ): Promise<VAssetDisplayInfo[]> {
-  const set = getSet(ethersProvider, chainId)
-  return await set.perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
-    setTokenAddress,
-    ethersProvider.address
+  const perpV2BasisTradingViewer = new Contract(
+    perpV2BasisTradingModuleViewerOptimismAddress,
+    PerpV2LeverageModuleViewerABI,
+    provider
+  )
+  return await perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
+    tokenAddress
   )
 }
 
-function getSet(ethersProvider: any, chainId: number): Set {
-  let set
+// https://docs.tokensets.com/developers/contracts/deployed/protocol#core-contracts
+export function getProtocolViewerAddress(chainId: number): string {
   switch (chainId) {
     case OPTIMISM.chainId:
-      set = new Set({
-        ethersProvider: ethersProvider,
-        basicIssuanceModuleAddress: basicIssuanceModuleOptimismAddress,
-        controllerAddress: controllerAddress,
-        masterOracleAddress: masterOracleAddress,
-        navIssuanceModuleAddress: navIssuanceModuleAddress,
-        protocolViewerAddress: protocolViewerOptimismAddress,
-        setTokenCreatorAddress: setTokenCreatorAddress,
-        streamingFeeModuleAddress: streamingFeeModuleOptimismAddress,
-        tradeModuleAddress: tradeModuleOptimismAddress,
-        governanceModuleAddress: governanceModuleAddress,
-        debtIssuanceModuleAddress: debtIssuanceModuleAddress,
-        debtIssuanceModuleV2Address: debtIssuanceModuleV2OptimismAddress,
-        slippageIssuanceModuleAddress: slippageIssuanceModuleOptimismAddress,
-        perpV2BasisTradingModuleAddress:
-          perpV2BasisTradingModuleOptimismAddress,
-        perpV2BasisTradingModuleViewerAddress:
-          perpV2BasisTradingModuleViewerOptimismAddress,
-        perpV2LeverageModuleAddress: perpV2BasisTradingModuleOptimismAddress,
-        perpV2LeverageModuleViewerAddress:
-          perpV2LeverageModuleViewerOptimismAddress,
-        delegatedManagerFactoryAddress: delegatedManagerFactoryOptimismAddress,
-        issuanceExtensionAddress: issuanceExtensionOptimismAddress,
-        streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
-        tradeExtensionAddress: tradeExtensionOptimismAddress,
-        batchTradeExtensionAddress: basicIssuanceModuleOptimismAddress,
-      })
-      break
+      return protocolViewerOptimismAddress
     case POLYGON.chainId:
-      set = new Set({
-        ethersProvider: ethersProvider,
-        basicIssuanceModuleAddress: basicIssuanceModulePolygonAddress,
-        controllerAddress: controllerAddress,
-        masterOracleAddress: masterOracleAddress,
-        navIssuanceModuleAddress: navIssuanceModuleAddress,
-        protocolViewerAddress: protocolViewerPolygonAddress,
-        setTokenCreatorAddress: setTokenCreatorAddress,
-        streamingFeeModuleAddress: streamingFeeModulePolygonAddress,
-        tradeModuleAddress: tradeModulePolygonAddress,
-        governanceModuleAddress: governanceModuleAddress,
-        debtIssuanceModuleAddress: debtIssuanceModuleAddress,
-        debtIssuanceModuleV2Address: debtIssuanceModuleV2PolygonAddress,
-        slippageIssuanceModuleAddress: slippageIssuanceModuleAddress,
-        perpV2BasisTradingModuleAddress:
-          perpV2BasisTradingModuleOptimismAddress,
-        perpV2BasisTradingModuleViewerAddress:
-          perpV2BasisTradingModuleViewerOptimismAddress,
-        perpV2LeverageModuleAddress: perpV2BasisTradingModuleOptimismAddress,
-        perpV2LeverageModuleViewerAddress:
-          perpV2LeverageModuleViewerOptimismAddress,
-        delegatedManagerFactoryAddress: delegatedManagerFactoryOptimismAddress,
-        issuanceExtensionAddress: issuanceExtensionOptimismAddress,
-        streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
-        tradeExtensionAddress: tradeExtensionOptimismAddress,
-        batchTradeExtensionAddress: basicIssuanceModulePolygonAddress,
-      })
-      break
+      return protocolViewerPolygonAddress
     default:
-      set = new Set({
-        ethersProvider: ethersProvider,
-        basicIssuanceModuleAddress: basicIssuanceModuleAddress,
-        controllerAddress: controllerAddress,
-        masterOracleAddress: masterOracleAddress,
-        navIssuanceModuleAddress: navIssuanceModuleAddress,
-        protocolViewerAddress: protocolViewerAddress,
-        setTokenCreatorAddress: setTokenCreatorAddress,
-        streamingFeeModuleAddress: streamingFeeModuleAddress,
-        tradeModuleAddress: tradeModuleAddress,
-        governanceModuleAddress: governanceModuleAddress,
-        debtIssuanceModuleAddress: debtIssuanceModuleAddress,
-        debtIssuanceModuleV2Address: debtIssuanceModuleAddress,
-        slippageIssuanceModuleAddress: slippageIssuanceModulePolygonAddress,
-        perpV2BasisTradingModuleAddress:
-          perpV2BasisTradingModuleOptimismAddress,
-        perpV2BasisTradingModuleViewerAddress:
-          perpV2BasisTradingModuleViewerOptimismAddress,
-        perpV2LeverageModuleAddress: perpV2BasisTradingModuleOptimismAddress,
-        perpV2LeverageModuleViewerAddress:
-          perpV2LeverageModuleViewerOptimismAddress,
-        delegatedManagerFactoryAddress: delegatedManagerFactoryOptimismAddress,
-        issuanceExtensionAddress: issuanceExtensionOptimismAddress,
-        streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
-        tradeExtensionAddress: tradeExtensionOptimismAddress,
-        batchTradeExtensionAddress: basicIssuanceModuleAddress,
-      })
+      return protocolViewerAddress
   }
-  return set
 }
+
+export async function getSetDetails(
+  ethersProvider: JsonRpcProvider,
+  productAddresses: string[],
+  chainId: number,
+  isPerp: boolean = false
+): Promise<SetDetails[]> {
+  const protocolViewerAddress = getProtocolViewerAddress(chainId)
+  const contract = new Contract(
+    protocolViewerAddress,
+    SetProtocolViewerAbi,
+    ethersProvider
+  )
+  const moduleAddresses = getModuleAddresses(chainId)
+
+  /**
+   * TODO: This isn't needed for the short term, but long term we need to account for all positions in NAV calcs + when showing positions on the allocations page.
+   * This is how you get Perpetual Protocol products to show their full positions. For now will just log them, but they need to be added to the allocations list.
+   */
+  // if (isPerp) {
+  //   try {
+  //     const address = MNYeIndex.optimismAddress || ''
+  //     const arr =
+  //       await set.perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
+  //         address,
+  //         ethersProvider.address
+  //       )
+  //
+  //     const arr2 =
+  //       await set.perpV2LeverageViewer.getVirtualAssetsDisplayInfoAsync(
+  //         address,
+  //         ethersProvider.address
+  //       )
+  //   } catch (e) {
+  //     console.log('PERP error', e)
+  //   }
+  // }
+
+  try {
+    const setDetails: SetDetails[] = await contract.batchFetchDetails(
+      productAddresses,
+      moduleAddresses
+    )
+    return setDetails
+  } catch (error) {
+    console.log('Error fetching set details for chain id', chainId)
+    return []
+  }
+}
+
+export async function getTokenSupply(
+  setTokenAddress: string,
+  provider: JsonRpcProvider,
+  chainId: number
+) {
+  if (setTokenAddress === IndexToken.address) {
+    const indexContract = new Contract(setTokenAddress, ERC20_ABI, provider)
+    const supply = await indexContract.totalSupply()
+    return supply
+  }
+  const protocolViewerAddress = getProtocolViewerAddress(chainId)
+  const contract = new Contract(
+    protocolViewerAddress,
+    SetProtocolViewerAbi,
+    provider
+  )
+  const moduleAddresses = getModuleAddresses(chainId)
+  const setDetails: SetDetails = await contract.getSetDetails(
+    setTokenAddress,
+    moduleAddresses
+  )
+  return setDetails.totalSupply
+}
+
+// function getSet(ethersProvider: any, chainId: number): Set {
+//   let set
+//   switch (chainId) {
+//     case OPTIMISM.chainId:
+//       set = new Set({
+//         ethersProvider: ethersProvider,
+//         basicIssuanceModuleAddress: basicIssuanceModuleOptimismAddress,
+//         controllerAddress: controllerAddress,
+//         masterOracleAddress: masterOracleAddress,
+//         navIssuanceModuleAddress: navIssuanceModuleAddress,
+//         protocolViewerAddress: protocolViewerOptimismAddress,
+//         setTokenCreatorAddress: setTokenCreatorAddress,
+//         streamingFeeModuleAddress: streamingFeeModuleOptimismAddress,
+//         tradeModuleAddress: tradeModuleOptimismAddress,
+//         governanceModuleAddress: governanceModuleAddress,
+//         debtIssuanceModuleAddress: debtIssuanceModuleAddress,
+//         debtIssuanceModuleV2Address: debtIssuanceModuleV2OptimismAddress,
+//         slippageIssuanceModuleAddress: slippageIssuanceModuleOptimismAddress,
+//         perpV2BasisTradingModuleAddress:
+//           perpV2BasisTradingModuleOptimismAddress,
+//         perpV2BasisTradingModuleViewerAddress:
+//           perpV2BasisTradingModuleViewerOptimismAddress,
+//         perpV2LeverageModuleAddress: perpV2BasisTradingModuleOptimismAddress,
+//         perpV2LeverageModuleViewerAddress:
+//           perpV2LeverageModuleViewerOptimismAddress,
+//         delegatedManagerFactoryAddress: delegatedManagerFactoryOptimismAddress,
+//         issuanceExtensionAddress: issuanceExtensionOptimismAddress,
+//         streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
+//         tradeExtensionAddress: tradeExtensionOptimismAddress,
+//         batchTradeExtensionAddress: basicIssuanceModuleOptimismAddress,
+//       })
+//       break
+//     case POLYGON.chainId:
+//       set = new Set({
+//         ethersProvider: ethersProvider,
+//         basicIssuanceModuleAddress: basicIssuanceModulePolygonAddress,
+//         controllerAddress: controllerAddress,
+//         masterOracleAddress: masterOracleAddress,
+//         navIssuanceModuleAddress: navIssuanceModuleAddress,
+//         protocolViewerAddress: protocolViewerPolygonAddress,
+//         setTokenCreatorAddress: setTokenCreatorAddress,
+//         streamingFeeModuleAddress: streamingFeeModulePolygonAddress,
+//         tradeModuleAddress: tradeModulePolygonAddress,
+//         governanceModuleAddress: governanceModuleAddress,
+//         debtIssuanceModuleAddress: debtIssuanceModuleAddress,
+//         debtIssuanceModuleV2Address: debtIssuanceModuleV2PolygonAddress,
+//         slippageIssuanceModuleAddress: slippageIssuanceModuleAddress,
+//         perpV2BasisTradingModuleAddress:
+//           perpV2BasisTradingModuleOptimismAddress,
+//         perpV2BasisTradingModuleViewerAddress:
+//           perpV2BasisTradingModuleViewerOptimismAddress,
+//         perpV2LeverageModuleAddress: perpV2BasisTradingModuleOptimismAddress,
+//         perpV2LeverageModuleViewerAddress:
+//           perpV2LeverageModuleViewerOptimismAddress,
+//         delegatedManagerFactoryAddress: delegatedManagerFactoryOptimismAddress,
+//         issuanceExtensionAddress: issuanceExtensionOptimismAddress,
+//         streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
+//         tradeExtensionAddress: tradeExtensionOptimismAddress,
+//         batchTradeExtensionAddress: basicIssuanceModulePolygonAddress,
+//       })
+//       break
+//     default:
+//       set = new Set({
+//         ethersProvider: ethersProvider,
+//         basicIssuanceModuleAddress: basicIssuanceModuleAddress,
+//         controllerAddress: controllerAddress,
+//         masterOracleAddress: masterOracleAddress,
+//         navIssuanceModuleAddress: navIssuanceModuleAddress,
+//         protocolViewerAddress: protocolViewerAddress,
+//         setTokenCreatorAddress: setTokenCreatorAddress,
+//         streamingFeeModuleAddress: streamingFeeModuleAddress,
+//         tradeModuleAddress: tradeModuleAddress,
+//         governanceModuleAddress: governanceModuleAddress,
+//         debtIssuanceModuleAddress: debtIssuanceModuleAddress,
+//         debtIssuanceModuleV2Address: debtIssuanceModuleAddress,
+//         slippageIssuanceModuleAddress: slippageIssuanceModulePolygonAddress,
+//         perpV2BasisTradingModuleAddress:
+//           perpV2BasisTradingModuleOptimismAddress,
+//         perpV2BasisTradingModuleViewerAddress:
+//           perpV2BasisTradingModuleViewerOptimismAddress,
+//         perpV2LeverageModuleAddress: perpV2BasisTradingModuleOptimismAddress,
+//         perpV2LeverageModuleViewerAddress:
+//           perpV2LeverageModuleViewerOptimismAddress,
+//         delegatedManagerFactoryAddress: delegatedManagerFactoryOptimismAddress,
+//         issuanceExtensionAddress: issuanceExtensionOptimismAddress,
+//         streamingFeeExtensionAddress: streamingFeeExtensionOptimismAddress,
+//         tradeExtensionAddress: tradeExtensionOptimismAddress,
+//         batchTradeExtensionAddress: basicIssuanceModuleAddress,
+//       })
+//   }
+//   return set
+// }

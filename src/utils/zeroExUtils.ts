@@ -3,7 +3,7 @@ import axios from 'axios'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { OPTIMISM, POLYGON } from 'constants/chains'
-import { IndexApiBaseUrl } from 'constants/server'
+import { getApiKey, IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
 import { toWei } from 'utils'
 
@@ -80,9 +80,14 @@ export const getZeroExTradeData = async (
 
   const query = new URLSearchParams(params).toString()
   const url = getApiUrl(query, chainId)
+  const key = getApiKey()
   console.log('0x', url)
   try {
-    const resp = await axios.get(url)
+    const resp = await axios.get(url, {
+      headers: {
+        'X-INDEXCOOP-API-KEY': key,
+      },
+    })
     const zeroExData: ZeroExData = resp.data
     const apiResult = rawData
       ? resp.data

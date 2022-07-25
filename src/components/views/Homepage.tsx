@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { useAccount, useNetwork } from 'wagmi'
+
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
@@ -12,29 +14,21 @@ import TransactionHistoryTable, {
 } from 'components/dashboard/TransactionHistoryTable'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
-import Disclaimer from 'components/product/Disclaimer'
 import { PriceChartData } from 'components/product/MarketChart'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
-import { useAccount } from 'hooks/useAccount'
-import { useNetwork } from 'hooks/useNetwork'
 import { useUserMarketData } from 'hooks/useUserMarketData'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
 
 const Dashboard = () => {
-  const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
+  // const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
   const { userBalances, totalBalanceInUSD, totalHourlyPrices, priceChanges } =
     useUserMarketData()
-  const { account } = useAccount()
-  const { chainId } = useNetwork()
-  const isWeb = useBreakpointValue({
-    base: false,
-    md: true,
-    lg: true,
-    xl: true,
-  })
+  const { address } = useAccount()
+  const { chain } = useNetwork()
+  const chainId = chain?.id
 
   const [csvDownloadUrl, setCsvDownloadUrl] = useState('')
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
@@ -52,15 +46,15 @@ const Dashboard = () => {
   }, [totalHourlyPrices])
 
   useEffect(() => {
-    if (account === null || account === undefined) return
+    if (address === null || address === undefined) return
     const fetchHistory = async () => {
       const chainIdNum = Number(chainId) ?? -1
-      const transactions = await getTransactionHistory(account, chainIdNum)
+      const transactions = await getTransactionHistory(address, chainIdNum)
       const historyItems = assembleHistoryItems(transactions)
       setHistoryItems(historyItems)
     }
     fetchHistory()
-  }, [account, chainId])
+  }, [address, chainId])
 
   useEffect(() => {
     if (csvDownloadUrl === '') return
@@ -125,7 +119,6 @@ const Dashboard = () => {
           />
           <TransactionHistoryTable items={historyItems.slice(0, 20)} />
         </Box>
-        <Disclaimer />
       </Flex>
     </Page>
   )

@@ -11,11 +11,11 @@ const WarningMessage = (props: {
   return (
     <Flex
       background='rgba(250, 191, 0, 0.2)'
-      borderColor={colors.icYellow}
+      borderColor={colors.icBlue}
       borderWidth='1'
       my='20px'
     >
-      <Box background={colors.icYellow} w='6px' />
+      <Box background={colors.icBlue} w='6px' />
       <Text fontSize='sm' fontWeight='600' px='16px' py='10px'>
         {props.message}
       </Text>
