@@ -177,7 +177,7 @@ export const IndexToken: Token = {
   coingeckoId: 'index-cooperative',
   tokensetsId: 'index',
   fees: undefined,
-  isDangerous: true,
+  isDangerous: false,
   indexTypes: [],
   defaultChain: MAINNET.chainId,
 }

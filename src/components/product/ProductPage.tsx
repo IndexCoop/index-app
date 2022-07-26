@@ -149,7 +149,7 @@ const ProductPage = (props: {
             </>
           )}
         </Flex>
-        <Disclaimer />
+        {props.token.symbol !== IndexToken.symbol && <Disclaimer />}
       </Flex>
     </Page>
   )
