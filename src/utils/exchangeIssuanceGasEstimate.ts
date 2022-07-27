@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import {
-  getExchangeIssuanceZeroExContract,
+  getFlashMintZeroExContract,
   getIssuanceModule,
-} from '@indexcoop/index-exchange-issuance-sdk'
+} from '@indexcoop/flash-mint-sdk'
 
 import { DefaultGasLimitExchangeIssuanceZeroEx } from 'constants/gas'
 import { ETH, MATIC, Token } from 'constants/tokens'
@@ -40,7 +40,7 @@ export async function getExchangeIssuanceGasEstimate(
   if (!outputTokenAddress || !inputTokenAddress) return gasEstimate
 
   try {
-    const contract = getExchangeIssuanceZeroExContract(signer, chainId ?? 1)
+    const contract = getFlashMintZeroExContract(signer, chainId ?? 1)
 
     if (isIssuance) {
       const isSellingNativeChainToken =

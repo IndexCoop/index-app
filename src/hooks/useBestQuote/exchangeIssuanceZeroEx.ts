@@ -1,9 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import {
-  getExchangeIssuanceZeroExQuote,
-  ZeroExApi,
-} from '@indexcoop/index-exchange-issuance-sdk'
+import { getFlashMintZeroExQuote, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from 'constants/chains'
 import { icETHIndex, IndexToken, JPGIndex, Token } from 'constants/tokens'
@@ -73,7 +70,7 @@ export async function getEIZeroExQuote(
 
   try {
     const spendingTokenBalance = inputTokenBalance
-    const quote0x = await getExchangeIssuanceZeroExQuote(
+    const quote0x = await getFlashMintZeroExQuote(
       inputToken,
       outputToken,
       setTokenAmount,

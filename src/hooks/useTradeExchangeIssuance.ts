@@ -6,10 +6,10 @@ import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import {
-  ExchangeIssuanceZeroEx,
-  getExchangeIssuanceZeroExContract,
+  FlashMintZeroEx,
+  getFlashMintZeroExContract,
   getIssuanceModule,
-} from '@indexcoop/index-exchange-issuance-sdk'
+} from '@indexcoop/flash-mint-sdk'
 
 import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceZeroExQuote } from 'hooks/useBestQuote'
@@ -59,11 +59,8 @@ export const useTradeExchangeIssuance = () => {
       )
       if (spendingTokenBalance.lt(requiredBalance)) return
 
-      const contract = getExchangeIssuanceZeroExContract(
-        signer as Signer,
-        chainId
-      )
-      const exchangeIssuance = new ExchangeIssuanceZeroEx(contract)
+      const contract = getFlashMintZeroExContract(signer as Signer, chainId)
+      const flashMint = new FlashMintZeroEx(contract)
 
       try {
         setIsTransacting(true)
@@ -82,7 +79,7 @@ export const useTradeExchangeIssuance = () => {
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
-            const issueTx = await exchangeIssuance.issueExactSetFromETH(
+            const mintTx = await flashMint.mintExactSetFromETH(
               outputTokenAddress,
               setTokenAmount,
               componentQuotes,
@@ -101,7 +98,7 @@ export const useTradeExchangeIssuance = () => {
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
-            const issueTx = await exchangeIssuance.issueExactSetFromToken(
+            const mintTx = await flashMint.mintExactSetFromToken(
               outputTokenAddress,
               inputTokenAddress,
               setTokenAmount,
@@ -127,7 +124,7 @@ export const useTradeExchangeIssuance = () => {
           })
 
           if (isRedeemingNativeChainToken) {
-            const redeemTx = await exchangeIssuance.redeemExactSetForETH(
+            const redeemTx = await flashMint.redeemExactSetForETH(
               inputTokenAddress,
               setTokenAmount,
               minOutputReceive,
@@ -145,7 +142,7 @@ export const useTradeExchangeIssuance = () => {
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
-            const redeemTx = await exchangeIssuance.redeemExactSetForToken(
+            const redeemTx = await flashMint.redeemExactSetForToken(
               inputTokenAddress,
               outputTokenAddress,
               setTokenAmount,
