@@ -84,8 +84,8 @@ export const useTradeLeveragedExchangeIssuance = () => {
               inputOutputTokenAmount,
               { gasLimit }
             )
-            // if (issueTx) {
-            //   const storedTx = getStoredTransaction(issueTx, chain?.id)
+            // if (mintTx) {
+            //   const storedTx = getStoredTransaction(mintTx, chain?.id)
             //   addTransaction(storedTx)
             // }
           } else {
@@ -106,8 +106,8 @@ export const useTradeLeveragedExchangeIssuance = () => {
               swapDataInputOutputToken,
               { gasLimit }
             )
-            // if (issueTx) {
-            //   const storedTx = getStoredTransaction(issueTx, chain?.id)
+            // if (mintTx) {
+            //   const storedTx = getStoredTransaction(mintTx, chain?.id)
             //   addTransaction(storedTx)
             // }
           }

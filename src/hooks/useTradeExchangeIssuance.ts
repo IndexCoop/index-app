@@ -91,8 +91,8 @@ export const useTradeExchangeIssuance = () => {
               inputOutputTokenAmount,
               { gasLimit }
             )
-            // if (issueTx) {
-            //   const storedTx = getStoredTransaction(issueTx, chainId)
+            // if (mintTx) {
+            //   const storedTx = getStoredTransaction(mintTx, chainId)
             //   addTransaction(storedTx)
             // }
           } else {
@@ -115,8 +115,8 @@ export const useTradeExchangeIssuance = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
-            // if (issueTx) {
-            //   const storedTx = getStoredTransaction(issueTx, chainId)
+            // if (mintTx) {
+            //   const storedTx = getStoredTransaction(mintTx, chainId)
             //   addTransaction(storedTx)
             // }
           }
