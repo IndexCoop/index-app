@@ -11,7 +11,7 @@
     "@elgorditosalsero/react-gtm-hook": "^2.4.0",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@indexcoop/index-exchange-issuance-sdk": "^1.0.7",
+    "@indexcoop/flash-mint-sdk": "^1.0.0",
     "@indexcoop/tokenlists": "^1.22.0",
     "@rainbow-me/rainbowkit": "^0.4.4",
     "@sentry/react": "7.7.0",
@@ -78,7 +78,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/@indexcoop/(?!index-exchange-issuance-sdk)"
+      "/node_modules/@indexcoop/(?!flash-mint-sdk)"
     ]
   }
 }
