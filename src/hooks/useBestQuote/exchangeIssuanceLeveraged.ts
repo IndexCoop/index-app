@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import {
-  getExchangeIssuanceLeveragedQuote,
+  getFlashMintLeveragedQuote,
   ZeroExApi,
-} from '@indexcoop/index-exchange-issuance-sdk'
+} from '@indexcoop/flash-mint-sdk'
 
 import {
   eligibleLeveragedExchangeIssuanceTokens,
@@ -83,7 +83,7 @@ export async function getEILeveragedQuote(
   }
 
   try {
-    const quoteLeveraged = await getExchangeIssuanceLeveragedQuote(
+    const quoteLeveraged = await getFlashMintLeveragedQuote(
       inputToken,
       outputToken,
       setTokenAmount,

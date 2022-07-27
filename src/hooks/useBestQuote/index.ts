@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { SwapData, ZeroExApi } from '@indexcoop/index-exchange-issuance-sdk'
+import { SwapData, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'

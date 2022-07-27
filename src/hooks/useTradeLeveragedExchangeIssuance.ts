@@ -5,9 +5,9 @@ import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import {
-  ExchangeIssuanceLeveraged,
-  getExchangeIssuanceLeveragedContract,
-} from '@indexcoop/index-exchange-issuance-sdk'
+  FlashMintLeveraged,
+  getFlashMintLeveragedContract,
+} from '@indexcoop/flash-mint-sdk'
 
 import { DefaultGasLimitExchangeIssuanceLeveraged } from 'constants/gas'
 import { ETH, MATIC } from 'constants/tokens'
@@ -54,11 +54,11 @@ export const useTradeLeveragedExchangeIssuance = () => {
         getBalance(inputToken.symbol) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
-      const contract = getExchangeIssuanceLeveragedContract(
+      const contract = getFlashMintLeveragedContract(
         signer as Signer,
         chain?.id
       )
-      const exchangeIssuance = new ExchangeIssuanceLeveraged(contract)
+      const flashMint = new FlashMintLeveraged(contract)
 
       try {
         setIsTransacting(true)
@@ -76,7 +76,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
-            const issueTx = await exchangeIssuance.issueExactSetFromETH(
+            const mintTx = await flashMint.mintExactSetFromETH(
               outputTokenAddress,
               setTokenAmount,
               swapDataDebtCollateral,
@@ -84,8 +84,8 @@ export const useTradeLeveragedExchangeIssuance = () => {
               inputOutputTokenAmount,
               { gasLimit }
             )
-            // if (issueTx) {
-            //   const storedTx = getStoredTransaction(issueTx, chain?.id)
+            // if (mintTx) {
+            //   const storedTx = getStoredTransaction(mintTx, chain?.id)
             //   addTransaction(storedTx)
             // }
           } else {
@@ -97,7 +97,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
-            const issueTx = await exchangeIssuance.issueExactSetFromERC20(
+            const mintTx = await flashMint.mintExactSetFromERC20(
               outputTokenAddress,
               setTokenAmount,
               inputTokenAddress,
@@ -106,8 +106,8 @@ export const useTradeLeveragedExchangeIssuance = () => {
               swapDataInputOutputToken,
               { gasLimit }
             )
-            // if (issueTx) {
-            //   const storedTx = getStoredTransaction(issueTx, chain?.id)
+            // if (mintTx) {
+            //   const storedTx = getStoredTransaction(mintTx, chain?.id)
             //   addTransaction(storedTx)
             // }
           }
@@ -125,7 +125,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
-            const redeemTx = await exchangeIssuance.redeemExactSetForETH(
+            const redeemTx = await flashMint.redeemExactSetForETH(
               inputTokenAddress,
               setTokenAmount,
               inputOutputTokenAmount,
@@ -146,7 +146,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
-            const redeemTx = await exchangeIssuance.redeemExactSetForERC20(
+            const redeemTx = await flashMint.redeemExactSetForERC20(
               inputTokenAddress,
               setTokenAmount,
               outputTokenAddress,

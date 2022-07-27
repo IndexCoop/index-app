@@ -18,7 +18,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import {
   getExchangeIssuanceLeveragedContractAddress,
   getExchangeIssuanceZeroExContractAddress,
-} from '@indexcoop/index-exchange-issuance-sdk'
+} from '@indexcoop/flash-mint-sdk'
 
 import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
