@@ -517,11 +517,11 @@ export const productTokensBySymbol = {
   //'MNYe': MNYeIndex,
 }
 
-export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH]
+export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH, WETH]
 
 export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
 
-export const optimismCurrencyTokens = [ETH, DAI, USDC]
+export const optimismCurrencyTokens = [ETH, DAI, USDC, WETH]
 
 export const eligibleLeveragedExchangeIssuanceTokens = [
   Bitcoin2xFLIP,
