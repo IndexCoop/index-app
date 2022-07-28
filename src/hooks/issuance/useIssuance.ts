@@ -5,10 +5,10 @@ import { utils } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
+import { IssuanceContractAddress } from 'constants/ethContractAddresses'
 import { Token } from 'constants/tokens'
 import { useWallet } from 'hooks/useWallet'
 import { ISSUANCE_ABI } from 'utils/abi/Issuance'
-import { IssuanceContractAddress } from 'constants/ethContractAddresses'
 
 const ISSUANCEInterface = new utils.Interface(ISSUANCE_ABI)
 

@@ -28,6 +28,7 @@ import {
   indexNamesOptimism,
   indexNamesPolygon,
   Token,
+  USDC,
 } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
@@ -43,7 +44,9 @@ import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 
 import { ContractExecutionView } from './ContractExecutionView'
+import DirectIssuance from './DirectIssuance'
 import {
+  formattedBalance,
   formattedFiat,
   getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
@@ -57,6 +60,7 @@ import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
+import TradeTypeToggle from './TradeTypeToggle'
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -114,6 +118,10 @@ const QuickTrade = (props: {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+
+  const [buyTokenAmount, setBuyTokenAmount] = useState('0')
+  const [isIssue, setIssue] = useState(true)
+  const [isToggle, setToggle] = useState(true)
 
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
     useBestQuote()
@@ -425,6 +433,15 @@ const QuickTrade = (props: {
     return 'Trade'
   }
 
+  const onChangeBuyTokenAmount = debounce((token: Token, input: string) => {
+    if (input === '') {
+      resetTradeData()
+      return
+    }
+    if (!isValidTokenInput(input, token.decimals)) return
+    setBuyTokenAmount(input || '0')
+  }, 1000)
+
   const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
     if (input === '') {
       resetTradeData()
@@ -534,54 +551,77 @@ const QuickTrade = (props: {
           slippage={slippage}
         />
       </Flex>
-      <Flex direction='column' my='20px'>
-        <QuickTradeSelector
-          title='From'
-          config={{
-            isDarkMode,
-            isInputDisabled: isNotTradable(props.singleToken),
-            isNarrowVersion: isNarrow,
-            isSelectorDisabled: false,
-            isReadOnly: false,
-          }}
-          selectedToken={sellToken}
-          formattedFiat={sellTokenFiat}
-          tokenList={sellTokenList}
-          onChangeInput={onChangeSellTokenAmount}
-          onSelectedToken={(_) => {
-            if (inputTokenItems.length > 1) onOpenSelectInputToken()
-          }}
+      {props.singleToken !== undefined && (
+        <TradeTypeToggle
+          isDarkMode={isDarkMode}
+          isToggled={isToggle}
+          onToggle={(toggled) => setToggle(toggled)}
         />
-        <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
-          <IconButton
-            background='transparent'
-            margin={'6px 0'}
-            aria-label='Search database'
-            borderColor={isDarkMode ? colors.icWhite : colors.black}
-            color={isDarkMode ? colors.icWhite : colors.black}
-            icon={<UpDownIcon />}
-            onClick={() => swapTokenLists()}
+      )}
+      {isToggle ? (
+        <Flex direction='column' my='20px'>
+          <QuickTradeSelector
+            title='From'
+            config={{
+              isDarkMode,
+              isInputDisabled: isNotTradable(props.singleToken),
+              isNarrowVersion: isNarrow,
+              isSelectorDisabled: false,
+              isReadOnly: false,
+            }}
+            selectedToken={sellToken}
+            formattedFiat={sellTokenFiat}
+            tokenList={sellTokenList}
+            onChangeInput={onChangeSellTokenAmount}
+            onSelectedToken={(_) => {
+              if (inputTokenItems.length > 1) onOpenSelectInputToken()
+            }}
           />
-        </Box>
-        <QuickTradeSelector
-          title='To'
-          config={{
-            isDarkMode,
-            isInputDisabled: true,
-            isNarrowVersion: isNarrow,
-            isSelectorDisabled: false,
-            isReadOnly: true,
-          }}
-          selectedToken={buyToken}
-          selectedTokenAmount={buyTokenAmountFormatted}
-          formattedFiat={buyTokenFiat}
+          <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
+            <IconButton
+              background='transparent'
+              margin={'6px 0'}
+              aria-label='Search database'
+              borderColor={isDarkMode ? colors.icWhite : colors.black}
+              color={isDarkMode ? colors.icWhite : colors.black}
+              icon={<UpDownIcon />}
+              onClick={() => swapTokenLists()}
+            />
+          </Box>
+          <QuickTradeSelector
+            title='To'
+            config={{
+              isDarkMode,
+              isInputDisabled: true,
+              isNarrowVersion: isNarrow,
+              isSelectorDisabled: false,
+              isReadOnly: true,
+            }}
+            selectedToken={buyToken}
+            selectedTokenAmount={buyTokenAmountFormatted}
+            formattedFiat={buyTokenFiat}
+            priceImpact={priceImpact ?? undefined}
+            tokenList={buyTokenList}
+            onSelectedToken={(_) => {
+              if (outputTokenItems.length > 1) onOpenSelectOutputToken()
+            }}
+          />
+        </Flex>
+      ) : (
+        <DirectIssuance
+          buyToken={buyToken}
+          buyTokenList={buyTokenList}
+          buyTokenAmountFormatted={buyTokenAmountFormatted}
+          formattedBalance={formattedBalance(USDC, BigNumber.from(0))}
+          formattedUSDCBalance={formattedBalance(USDC, getBalance(USDC.symbol))}
+          isDarkMode={isDarkMode}
+          isIssue={isIssue}
+          isNarrow={isNarrow}
+          onChangeBuyTokenAmount={onChangeBuyTokenAmount}
+          onToggleIssuance={(isIssuance) => setIssue(isIssuance)}
           priceImpact={priceImpact ?? undefined}
-          tokenList={buyTokenList}
-          onSelectedToken={(_) => {
-            if (outputTokenItems.length > 1) onOpenSelectOutputToken()
-          }}
         />
-      </Flex>
+      )}
       <Flex direction='column'>
         {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
