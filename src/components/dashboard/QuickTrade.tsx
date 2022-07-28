@@ -21,7 +21,12 @@ import {
 } from '@indexcoop/flash-mint-sdk'
 
 import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import {
+  MAINNET,
+  OPTIMISM,
+  POLYGON,
+  useIsSupportedNetwork,
+} from 'constants/chains'
 import { zeroExRouterAddress } from 'constants/ethContractAddresses'
 import {
   indexNamesMainnet,
@@ -39,7 +44,7 @@ import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchan
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useProtection } from 'providers/Protection/ProtectionProvider'
-import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
+import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 
 import { ContractExecutionView } from './ContractExecutionView'
@@ -84,7 +89,7 @@ const QuickTrade = (props: {
 
   const protection = useProtection()
 
-  const supportedNetwork = isSupportedNetwork(chain?.id ?? -1)
+  const supportedNetwork = useIsSupportedNetwork(chain?.id ?? -1)
 
   const {
     auto: autoSlippage,

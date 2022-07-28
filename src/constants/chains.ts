@@ -1,3 +1,5 @@
+import { useNetwork } from 'wagmi'
+
 export type ChainData = {
   name: string
   chainId: number
@@ -58,4 +60,7 @@ export const OPTIMISM: ChainData = {
   },
 }
 
-export const SUPPORTED_CHAINS = [MAINNET, POLYGON] // TODO: , OPTIMISM]
+export const useIsSupportedNetwork = (chainId: number): boolean => {
+  const { chains } = useNetwork()
+  return chains.some((chain) => chain.id === chainId)
+}

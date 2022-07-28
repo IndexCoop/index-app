@@ -25,7 +25,7 @@ export function getAddressForToken(
     case POLYGON.chainId:
       return token.polygonAddress
     default:
-      return undefined
+      return token.address
   }
 }
 
@@ -42,7 +42,7 @@ export function getCurrencyTokens(chainId: number | undefined): Token[] {
     case POLYGON.chainId:
       return polygonCurrencyTokens
     default:
-      return []
+      return mainnetCurrencyTokens
   }
 }
 
@@ -55,7 +55,7 @@ export function getIndexes(chainId: number): Token[] {
     case POLYGON.chainId:
       return indexNamesPolygon
     default:
-      return []
+      return indexNamesMainnet
   }
 }
 
@@ -68,6 +68,6 @@ export function getNativeToken(chainId: number | undefined): Token | null {
     case POLYGON.chainId:
       return MATIC
     default:
-      return null
+      return ETH
   }
 }
