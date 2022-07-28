@@ -108,3 +108,7 @@ export const tradeExtensionOptimismAddress =
   '0x7215f38011C3e4058Ca3cF7d2b99033016EeFBD8'
 export const deltaNeutralBasisTradingStrategyExtension =
   '0x95e24048AB1A9086b2F06107dF7ec5e61961951A'
+
+// TODO: rename to correct name of issuance (PerpFlashIssuanceV2?)
+export const IssuanceContractAddress =
+  '0xdCE1f88b95169cF6E6AEFaBe5e73B27a5c187DA5'
