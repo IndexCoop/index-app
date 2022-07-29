@@ -37,7 +37,7 @@ export const useIssuance = (
         provider.getSigner()
       )
       if (isIssue) {
-        await tokenContract.issueFixedSetFromUsdc(
+        const tx = await tokenContract.issueFixedSetFromUsdc(
           token.optimismAddress,
           amount,
           maxAmount
@@ -46,10 +46,10 @@ export const useIssuance = (
         //   const storedTx = getStoredTransaction(tx, chainId)
         //   addTransaction(storedTx)
         // }
-        // const receipt = await tx.wait()
+        const receipt = await tx.wait()
         setIsTrading(false)
       } else {
-        await tokenContract.redeemFixedSetForUsdc(
+        const tx = await tokenContract.redeemFixedSetForUsdc(
           token.optimismAddress,
           amount,
           maxAmount
@@ -58,7 +58,7 @@ export const useIssuance = (
         //   const storedTx = getStoredTransaction(tx, chainId)
         //   addTransaction(storedTx)
         // }
-        // const receipt = await tx.wait()
+        const receipt = await tx.wait()
         setIsTrading(false)
       }
     } catch (e) {

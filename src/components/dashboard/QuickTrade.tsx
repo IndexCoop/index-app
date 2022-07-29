@@ -22,7 +22,10 @@ import {
 
 import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import { zeroExRouterAddress } from 'constants/ethContractAddresses'
+import {
+  FlashMintPerp,
+  zeroExRouterAddress,
+} from 'constants/ethContractAddresses'
 import {
   indexNamesMainnet,
   indexNamesOptimism,
@@ -31,6 +34,7 @@ import {
   Token,
   USDC,
 } from 'constants/tokens'
+import { useIssuance } from 'hooks/issuance/useIssuance'
 import { useIssuanceQuote } from 'hooks/issuance/useIssuanceQuote'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
@@ -142,6 +146,29 @@ const QuickTrade = (props: {
   const { estimatedUSDC, getQuote } = useIssuanceQuote(
     buyToken,
     buyTokenAmountInWei,
+    isIssue
+  )
+
+  const {
+    isApproved: isAppovedForUSDC,
+    isApproving: isApprovingForUSDC,
+    onApprove: onApproveForUSDC,
+  } = useApproval(USDC, FlashMintPerp, estimatedUSDC.mul(BigNumber.from('2')))
+
+  const {
+    isApproved: isApprovedForMnye,
+    isApproving: isApprovingForMnye,
+    onApprove: onApproveForMnye,
+  } = useApproval(
+    buyToken,
+    FlashMintPerp,
+    buyTokenAmountInWei.mul(BigNumber.from('2'))
+  )
+
+  const { handleTrade, isTrading } = useIssuance(
+    buyToken,
+    buyTokenAmountInWei,
+    estimatedUSDC,
     isIssue
   )
 
@@ -363,35 +390,50 @@ const QuickTrade = (props: {
   }
 
   const getIsApproved = () => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return isApprovedForEIZX
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return isApprovedForEIL
-      default:
-        return isApprovedForSwap
+    if (isToggle) {
+      switch (bestOption) {
+        case QuickTradeBestOption.exchangeIssuance:
+          return isApprovedForEIZX
+        case QuickTradeBestOption.leveragedExchangeIssuance:
+          return isApprovedForEIL
+        default:
+          return isApprovedForSwap
+      }
+    } else {
+      if (isIssue) return isAppovedForUSDC
+      return isApprovedForMnye
     }
   }
 
   const getIsApproving = () => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return isApprovingForEIZX
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return isApprovingForEIL
-      default:
-        return isApprovingForSwap
+    if (isToggle) {
+      switch (bestOption) {
+        case QuickTradeBestOption.exchangeIssuance:
+          return isApprovingForEIZX
+        case QuickTradeBestOption.leveragedExchangeIssuance:
+          return isApprovingForEIL
+        default:
+          return isApprovingForSwap
+      }
+    } else {
+      if (isIssue) return isApprovingForUSDC
+      return isApprovingForMnye
     }
   }
 
   const getOnApprove = () => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return onApproveForEIZX()
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return onApproveForEIL()
-      default:
-        return onApproveForSwap()
+    if (isToggle) {
+      switch (bestOption) {
+        case QuickTradeBestOption.exchangeIssuance:
+          return onApproveForEIZX()
+        case QuickTradeBestOption.leveragedExchangeIssuance:
+          return onApproveForEIL()
+        default:
+          return onApproveForSwap()
+      }
+    } else {
+      if (isIssue) return onApproveForUSDC()
+      return onApproveForMnye()
     }
   }
 
@@ -463,19 +505,32 @@ const QuickTrade = (props: {
       return 'Try again'
     }
 
-    const isNativeToken =
-      sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
+    if (isToggle) {
+      const isNativeToken =
+        sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
 
-    if (!isNativeToken && getIsApproving()) {
-      return 'Approving...'
+      if (!isNativeToken && getIsApproving()) {
+        return 'Approving...'
+      }
+
+      if (!isNativeToken && !getIsApproved()) {
+        return 'Approve Tokens'
+      }
+
+      if (isTransacting || isTransactingEI || isTransactingLevEI)
+        return 'Trading...'
+    } else {
+      if (getIsApproving()) {
+        return 'Approving...'
+      }
+
+      if (!getIsApproved()) {
+        return 'Approve Tokens'
+      }
+      if (isTrading) {
+        return 'Trading...'
+      }
     }
-
-    if (!isNativeToken && !getIsApproved()) {
-      return 'Approve Tokens'
-    }
-
-    if (isTransacting || isTransactingEI || isTransactingLevEI)
-      return 'Trading...'
 
     return 'Trade'
   }
@@ -505,7 +560,9 @@ const QuickTrade = (props: {
       return
     }
 
-    if (hasInsufficientFunds) return
+    if (hasInsufficientFunds && isToggle) return
+    if (!isToggle && isIssue && hasInsufficientUSDC) return
+    if (!isToggle && !isIssue && hasInsufficientMNYe) return
 
     if (hasFetchingError) {
       fetchOptions()
@@ -514,29 +571,36 @@ const QuickTrade = (props: {
 
     const isNativeToken =
       sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
-    if (!getIsApproved() && !isNativeToken) {
-      await getOnApprove()
-      return
-    }
-
-    switch (bestOption) {
-      case QuickTradeBestOption.zeroEx:
-        await executeTrade(quoteResult.quotes.zeroEx)
-        break
-      case QuickTradeBestOption.exchangeIssuance:
-        await executeEITrade(
-          quoteResult.quotes.exchangeIssuanceZeroEx,
-          slippage
-        )
-        break
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        await executeLevEITrade(
-          quoteResult.quotes.exchangeIssuanceLeveraged,
-          slippage
-        )
-        break
-      default:
-      // Nothing
+    if (isToggle) {
+      if (!getIsApproved() && !isNativeToken) {
+        await getOnApprove()
+        return
+      }
+      switch (bestOption) {
+        case QuickTradeBestOption.zeroEx:
+          await executeTrade(quoteResult.quotes.zeroEx)
+          break
+        case QuickTradeBestOption.exchangeIssuance:
+          await executeEITrade(
+            quoteResult.quotes.exchangeIssuanceZeroEx,
+            slippage
+          )
+          break
+        case QuickTradeBestOption.leveragedExchangeIssuance:
+          await executeLevEITrade(
+            quoteResult.quotes.exchangeIssuanceLeveraged,
+            slippage
+          )
+          break
+        default:
+        // Nothing
+      }
+    } else {
+      if (!getIsApproved()) {
+        await getOnApprove()
+        return
+      }
+      await handleTrade()
     }
   }
 
@@ -544,14 +608,23 @@ const QuickTrade = (props: {
     if (!supportedNetwork) return true
     if (!address) return true
     if (hasFetchingError) return false
-    return (
-      sellTokenAmount === '0' ||
-      hasInsufficientFunds ||
-      isTransacting ||
-      isTransactingEI ||
-      isTransactingLevEI ||
-      isNotTradable(props.singleToken)
-    )
+    if (isToggle)
+      return (
+        sellTokenAmount === '0' ||
+        hasInsufficientFunds ||
+        isTransacting ||
+        isTransactingEI ||
+        isTransactingLevEI ||
+        isNotTradable(props.singleToken)
+      )
+    else
+      return (
+        buyTokenAmount === '0' ||
+        (isIssue && hasInsufficientUSDC) ||
+        (!isIssue && hasInsufficientMNYe) ||
+        isTrading ||
+        isNotTradable(props.singleToken)
+      )
   }
 
   const buttonLabel = getTradeButtonLabel()
