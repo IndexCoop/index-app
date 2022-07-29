@@ -27,6 +27,7 @@ import {
   indexNamesMainnet,
   indexNamesOptimism,
   indexNamesPolygon,
+  MNYeIndex,
   Token,
   USDC,
 } from 'constants/tokens'
@@ -190,6 +191,18 @@ const QuickTrade = (props: {
     bestOption === null,
     sellTokenAmountInWei,
     getBalance(sellToken.symbol)
+  )
+
+  const hasInsufficientUSDC = getHasInsufficientFunds(
+    false,
+    BigNumber.from(estimatedUSDC),
+    getBalance(USDC.symbol)
+  )
+
+  const hasInsufficientMNYe = getHasInsufficientFunds(
+    false,
+    buyTokenAmountInWei,
+    getBalance(MNYeIndex.symbol)
   )
 
   const getContractForBestOption = (
@@ -426,11 +439,23 @@ const QuickTrade = (props: {
       return `Not Available on ${chainName}`
     }
 
-    if (sellTokenAmount === '0') {
+    if (sellTokenAmount === '0' && isToggle) {
       return 'Enter an amount'
     }
 
-    if (hasInsufficientFunds) {
+    if (buyTokenAmount === '0' && !isToggle) {
+      return 'Enter an amount'
+    }
+
+    if (hasInsufficientFunds && isToggle) {
+      return 'Insufficient funds'
+    }
+
+    if (!isToggle && isIssue && hasInsufficientUSDC) {
+      return 'Insufficient funds'
+    }
+
+    if (!isToggle && !isIssue && hasInsufficientMNYe) {
       return 'Insufficient funds'
     }
 
