@@ -30,6 +30,7 @@ import {
   Token,
   USDC,
 } from 'constants/tokens'
+import { useIssuanceQuote } from 'hooks/issuance/useIssuanceQuote'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
 import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
@@ -135,6 +136,15 @@ const QuickTrade = (props: {
   )
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
+  const buyTokenAmountInWei = toWei(buyTokenAmount, buyToken.decimals)
+
+  const { estimatedUSDC, getQuote } = useIssuanceQuote(
+    buyToken,
+    buyTokenAmountInWei,
+    isIssue
+  )
+
+  console.log(buyTokenAmountInWei.toString(), estimatedUSDC.toString(), 'QUOTE')
 
   const sellTokenFiat = formattedFiat(
     parseFloat(sellTokenAmount),
@@ -281,6 +291,14 @@ const QuickTrade = (props: {
   }
 
   /**
+   * Issuance Contract
+   */
+  const getEstimatedBalance = () => {
+    if (isToggle) return
+    getQuote()
+  }
+
+  /**
    * Determine the best trade option.
    */
   useEffect(() => {
@@ -294,6 +312,10 @@ const QuickTrade = (props: {
   useEffect(() => {
     fetchOptions()
   }, [buyToken, sellToken, sellTokenAmount])
+
+  useEffect(() => {
+    getEstimatedBalance()
+  }, [buyTokenAmount, isIssue])
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
@@ -612,7 +634,7 @@ const QuickTrade = (props: {
           buyToken={buyToken}
           buyTokenList={buyTokenList}
           buyTokenAmountFormatted={buyTokenAmountFormatted}
-          formattedBalance={formattedBalance(USDC, BigNumber.from(0))}
+          formattedBalance={formattedBalance(USDC, estimatedUSDC)}
           formattedUSDCBalance={formattedBalance(USDC, getBalance(USDC.symbol))}
           isDarkMode={isDarkMode}
           isIssue={isIssue}

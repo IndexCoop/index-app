@@ -20,24 +20,16 @@ export const useIssuanceQuote = (
   amount?: BigNumber,
   isIssue?: Boolean
 ) => {
-  const { provider } = useWallet()
+  const { signer } = useWallet()
   const [estimatedUSDC, setEStimatedUSDC] = useState<BigNumber>(
     BigNumber.from('0')
   )
   const getQuote = async () => {
-    if (
-      !provider ||
-      !token?.optimismAddress ||
-      amount?.eq(BigNumber.from('0'))
-    ) {
+    if (!signer || !token?.optimismAddress || amount?.eq(BigNumber.from('0'))) {
       return
     }
     try {
-      const contract = new Contract(
-        FlashMintPerp,
-        ISSUANCEInterface,
-        provider.getSigner()
-      )
+      const contract = new Contract(FlashMintPerp, ISSUANCEInterface, signer)
       if (isIssue) {
         const quote =
           await contract.callStatic.getUsdcAmountInForFixedSetOffChain(
