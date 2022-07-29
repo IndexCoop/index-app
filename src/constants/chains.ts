@@ -1,5 +1,3 @@
-import { useNetwork } from 'wagmi'
-
 export type ChainData = {
   name: string
   chainId: number
@@ -58,9 +56,4 @@ export const OPTIMISM: ChainData = {
     symbol: 'ETH',
     decimals: 18,
   },
-}
-
-export const useIsSupportedNetwork = (chainId: number): boolean => {
-  const { chains } = useNetwork()
-  return chains.some((chain) => chain.id === chainId)
 }

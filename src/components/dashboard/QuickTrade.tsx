@@ -21,12 +21,7 @@ import {
 } from '@indexcoop/flash-mint-sdk'
 
 import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
-import {
-  MAINNET,
-  OPTIMISM,
-  POLYGON,
-  useIsSupportedNetwork,
-} from 'constants/chains'
+import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { zeroExRouterAddress } from 'constants/ethContractAddresses'
 import {
   indexNamesMainnet,
@@ -37,6 +32,7 @@ import {
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
 import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
+import { useIsSupportedNetwork } from 'hooks/useIsSupportedNetwork'
 import { useSlippage } from 'hooks/useSlippage'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
