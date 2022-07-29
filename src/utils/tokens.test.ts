@@ -10,9 +10,9 @@ import {
 import { getAddressForToken, getCurrencyTokens, getNativeToken } from './tokens'
 
 describe('getAddressForToken()', () => {
-  test('should return mainnet address for undefined chain', async () => {
+  test('should return undefined for undefined chain', async () => {
     const address = getAddressForToken(WETH, undefined)
-    expect(address).toBe(WETH.address)
+    expect(address).toBeUndefined()
   })
 
   test('should return correct token address for WETH on Ethereum', async () => {
@@ -35,9 +35,9 @@ describe('getAddressForToken()', () => {
 })
 
 describe('getCurrencyTokens()', () => {
-  test('returns mainnet array for unsupported chain', async () => {
+  test('returns empty array for unsupported chain', async () => {
     const currencyTokens = getCurrencyTokens(100)
-    expect(currencyTokens).toEqual(mainnetCurrencyTokens)
+    expect(currencyTokens).toEqual([])
   })
 
   test('returns correct currency tokens for mainnet', async () => {
@@ -57,9 +57,9 @@ describe('getCurrencyTokens()', () => {
 })
 
 describe('getNativeToken()', () => {
-  test('should return ETH for undefined chain', async () => {
+  test('should return undefined for undefined chain', async () => {
     const nativeToken = getNativeToken(undefined)
-    expect(nativeToken).toBe(ETH)
+    expect(nativeToken).toBeNull()
   })
 
   test('should return correct token address for WETH on Ethereum', async () => {

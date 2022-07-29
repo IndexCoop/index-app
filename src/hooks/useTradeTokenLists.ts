@@ -15,10 +15,13 @@ import {
   getNativeToken,
 } from 'utils/tokens'
 
+import { useIsSupportedNetwork } from './useIsSupportedNetwork'
+
 export const useTradeTokenLists = (
   chainId: number | undefined,
   singleToken?: Token
 ) => {
+  const supportedNetwork = useIsSupportedNetwork(chainId)
   const nativeToken = getNativeToken(chainId) ?? ETH
   const tokenList = getTokenListByChain(chainId, singleToken)
 
@@ -37,7 +40,7 @@ export const useTradeTokenLists = (
    * Switches sell token lists between mainnet and polygon
    */
   useEffect(() => {
-    if (chainId === undefined) return
+    if (chainId === undefined || !supportedNetwork) return
     const newSellTokenList = getCurrencyTokens(chainId)
     const newBuyTokenList = getTokenListByChain(chainId, singleToken)
     setSellTokenList(newSellTokenList)
@@ -48,7 +51,7 @@ export const useTradeTokenLists = (
   }, [chainId])
 
   useEffect(() => {
-    if (chainId === undefined) return
+    if (chainId === undefined || !supportedNetwork) return
     const fetchBuyTokenPrice = async () => {
       const buyTokenPrice = await getTokenPrice(buyToken, chainId)
       const nativeTokenPrice = await getTokenPrice(nativeToken, chainId)
@@ -60,7 +63,7 @@ export const useTradeTokenLists = (
   }, [buyToken, chainId])
 
   useEffect(() => {
-    if (chainId === undefined) return
+    if (chainId === undefined || !supportedNetwork) return
     const fetchSellTokenPrice = async () => {
       const sellTokenPrice = await getTokenPrice(sellToken, chainId)
       const nativeTokenPrice = await getTokenPrice(nativeToken, chainId)
