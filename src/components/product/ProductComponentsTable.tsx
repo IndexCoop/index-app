@@ -106,9 +106,11 @@ const ProductComponentsTable = (props: {
             ))}
             {props.vAssets && (
               <>
-                <Text fontSize='13px' color='gray.500' mt='8px'>
-                  Virtual Tokens on Perpetual Protocol
-                </Text>
+                <Tr>
+                  <Th colSpan={3} fontSize='13px' color='gray.500' mt='8px'>
+                    Virtual Tokens on Perpetual Protocol
+                  </Th>
+                </Tr>
                 {props.vAssets.slice(0, amountToDisplay).map((data) => (
                   <ComponentRow
                     key={data.name}
