@@ -523,7 +523,8 @@ export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH]
 
 export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
 
-export const optimismCurrencyTokens = [ETH, DAI, USDC]
+// MNYe only works with USDC, will have to optimize this once there is new indices on Optimism
+export const optimismCurrencyTokens = [USDC]
 
 export const eligibleLeveragedExchangeIssuanceTokens = [
   Bitcoin2xFLIP,
