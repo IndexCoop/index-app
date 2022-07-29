@@ -22,6 +22,9 @@ export const imaticFLIPSuppyCapAddress =
 export const iethFLIPSuppyCapAddress =
   '0x8173Bd491a27aF4DDe0a4dE48a54Daf6705c75F1'
 
+// Index Coop Optimism Addresses
+export const FlashMintPerp = '0x2b44C227d95B8FDa1c8750986d3aDfF0E67627F7'
+
 // Uniswap V2 Addresses
 export const uniswapEthDpiLpTokenAddress =
   '0x4d5ef58aac27d99935e5b6b4a6778ff292059991'
@@ -108,7 +111,3 @@ export const tradeExtensionOptimismAddress =
   '0x7215f38011C3e4058Ca3cF7d2b99033016EeFBD8'
 export const deltaNeutralBasisTradingStrategyExtension =
   '0x95e24048AB1A9086b2F06107dF7ec5e61961951A'
-
-// TODO: rename to correct name of issuance (PerpFlashIssuanceV2?)
-export const IssuanceContractAddress =
-  '0xdCE1f88b95169cF6E6AEFaBe5e73B27a5c187DA5'

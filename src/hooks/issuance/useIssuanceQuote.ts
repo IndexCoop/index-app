@@ -5,7 +5,7 @@ import { utils } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
-import { IssuanceContractAddress } from 'constants/ethContractAddresses'
+import { FlashMintPerp } from 'constants/ethContractAddresses'
 import { Token } from 'constants/tokens'
 import { useWallet } from 'hooks/useWallet'
 import { ISSUANCE_ABI } from 'utils/abi/Issuance'
@@ -34,7 +34,7 @@ export const useIssuanceQuote = (
     }
     try {
       const contract = new Contract(
-        IssuanceContractAddress,
+        FlashMintPerp,
         ISSUANCEInterface,
         provider.getSigner()
       )
