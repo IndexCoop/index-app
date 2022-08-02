@@ -37,29 +37,29 @@ const QuickTradeSelector = (props: {
   const { isDarkMode } = useICColorMode()
   const chainId = chain?.id
 
+  const { config, selectedToken, selectedTokenAmount } = props
+  const selectedTokenSymbol = selectedToken.symbol
+
   const [inputString, setInputString] = useState<string>(
-    props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
+    selectedTokenAmount === '0' ? '' : selectedTokenAmount || ''
   )
   const [tokenBalance, setTokenBalance] = useState<string>(
     BigNumber.from(0).toString()
   )
 
   useEffect(() => {
-    setInputString(
-      props.selectedTokenAmount === '0' ? '' : props.selectedTokenAmount || ''
-    )
-  }, [props.selectedTokenAmount])
+    setInputString(selectedTokenAmount === '0' ? '' : selectedTokenAmount || '')
+  }, [selectedTokenAmount])
 
   useEffect(() => {
     onChangeInput('')
   }, [chainId])
 
   useEffect(() => {
-    const tokenBal = getBalance(props.selectedToken.symbol)
-    setTokenBalance(formattedBalance(props.selectedToken, tokenBal))
-  }, [props.selectedToken, getBalance, chainId])
+    const tokenBal = getBalance(selectedTokenSymbol)
+    setTokenBalance(formattedBalance(selectedToken, tokenBal))
+  }, [selectedToken, getBalance, chainId])
 
-  const { config, selectedToken } = props
   const borderColor = config.isDarkMode ? colors.icWhite : colors.black
   const borderRadius = 16
 
@@ -72,7 +72,7 @@ const QuickTradeSelector = (props: {
     if (!amount) {
       setInputString('')
       if (props.onChangeInput) {
-        props.onChangeInput(props.selectedToken, '')
+        props.onChangeInput(selectedToken, '')
       }
     }
 
@@ -86,7 +86,7 @@ const QuickTradeSelector = (props: {
       return
 
     setInputString(amount)
-    props.onChangeInput(props.selectedToken, amount)
+    props.onChangeInput(selectedToken, amount)
   }
 
   return (
@@ -139,18 +139,18 @@ const QuickTradeSelector = (props: {
           borderRightRadius={borderRadius}
           cursor='pointer'
           w={widths}
-          onClick={() => props.onSelectedToken(props.selectedToken.symbol)}
+          onClick={() => props.onSelectedToken(selectedTokenSymbol)}
         >
           {!config.isNarrowVersion && (
             <Box pl='10px' pr='0px'>
               <Image
                 src={selectedToken.image}
-                alt={`${selectedToken.symbol} logo`}
+                alt={`${selectedTokenSymbol} logo`}
                 w='24px'
               />
             </Box>
           )}
-          <Text ml='8px'>{props.selectedToken.symbol}</Text>
+          <Text ml='8px'>{selectedTokenSymbol}</Text>
         </Flex>
       </Flex>
       <Text
@@ -161,8 +161,8 @@ const QuickTradeSelector = (props: {
         onClick={() => {
           if (tokenBalance) {
             const fullTokenBalance = formatUnits(
-              getBalance(props.selectedToken.symbol) ?? '0',
-              props.selectedToken.decimals
+              getBalance(selectedTokenSymbol) ?? '0',
+              selectedToken.decimals
             )
             onChangeInput(fullTokenBalance)
           }
