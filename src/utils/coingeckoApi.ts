@@ -60,6 +60,8 @@ export const fetchCoingeckoTokenPrice = async (
       chainId
     )}/?contract_addresses=${address}&vs_currencies=${baseCurrency}`
 
+  console.log('getPriceUrl', getPriceUrl)
+
   const data = await indexApi.get(getPriceUrl).catch((_) => {
     return 0
   })

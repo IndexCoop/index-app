@@ -184,6 +184,8 @@ const QuickTrade = (props: {
     buyTokenPrice
   )
 
+  console.log('FIAT', sellTokenFiat, buyTokenFiat)
+
   const priceImpact = isFetchingTradeData
     ? null
     : getFormattedPriceImpact(
