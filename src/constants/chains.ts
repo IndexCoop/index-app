@@ -57,5 +57,3 @@ export const OPTIMISM: ChainData = {
     decimals: 18,
   },
 }
-
-export const SUPPORTED_CHAINS = [MAINNET, POLYGON] // TODO: , OPTIMISM]

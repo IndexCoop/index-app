@@ -2,8 +2,6 @@ import { BigNumber } from 'ethers'
 
 import { formatUnits, parseUnits } from '@ethersproject/units'
 
-import { SUPPORTED_CHAINS } from 'constants/chains'
-
 export const selectLatestMarketData = (marketData?: number[][]) =>
   marketData?.[marketData.length - 1]?.[1] || 0
 
@@ -93,16 +91,4 @@ export const isValidTokenInput = (
 export const safeDiv = (dividend: BigNumber, divisor: BigNumber): BigNumber => {
   if (divisor.isZero()) return BigNumber.from(0)
   return dividend.div(divisor)
-}
-
-/**
- * Returns whether the chain(id) is supported
- * @param chainId
- * @returns boolean if chain with given id is supported.
- */
-export function isSupportedNetwork(chainId: number): boolean {
-  const supportedNetwork = SUPPORTED_CHAINS.filter(
-    (chain) => chain.chainId === chainId
-  )
-  return supportedNetwork.length > 0
 }

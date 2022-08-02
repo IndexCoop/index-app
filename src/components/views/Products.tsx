@@ -147,7 +147,7 @@ const Products = () => {
   useEffect(() => {
     const products = productsFiltered(selectedFilter)
     setProducts(products)
-  }, [selectedFilter])
+  }, [marketData, selectedFilter])
 
   const onSelectFilter = (filter: ProductFilter) => {
     if (selectedFilter === filter) return
