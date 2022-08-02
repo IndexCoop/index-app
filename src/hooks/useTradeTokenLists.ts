@@ -51,9 +51,7 @@ export const useTradeTokenLists = (
   }, [chainId])
 
   useEffect(() => {
-    console.log('buyTokenPriceHook', chainId, supportedNetwork)
     if (chainId === undefined || !supportedNetwork) return
-    console.log('made it here')
     const fetchBuyTokenPrice = async () => {
       const buyTokenPrice = await getTokenPrice(buyToken, chainId)
       const nativeTokenPrice = await getTokenPrice(nativeToken, chainId)

@@ -1,4 +1,4 @@
-import { POLYGON } from 'constants/chains'
+import { OPTIMISM, POLYGON } from 'constants/chains'
 import { ETH } from 'constants/tokens'
 import { IndexApi } from 'utils/indexApi'
 
@@ -33,6 +33,7 @@ export const fetchHistoricalTokenMarketData = async (
 
 const getAssetPlatform = (chainId: number) => {
   if (chainId === POLYGON.chainId) return 'polygon-pos'
+  if (chainId === OPTIMISM.chainId) return 'optimistic-ethereum'
   return 'ethereum'
 }
 
@@ -59,8 +60,6 @@ export const fetchCoingeckoTokenPrice = async (
     `/simple/token_price/${getAssetPlatform(
       chainId
     )}/?contract_addresses=${address}&vs_currencies=${baseCurrency}`
-
-  console.log('getPriceUrl', getPriceUrl)
 
   const data = await indexApi.get(getPriceUrl).catch((_) => {
     return 0
