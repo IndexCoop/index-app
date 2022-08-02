@@ -39,6 +39,7 @@ import { useIssuanceQuote } from 'hooks/issuance/useIssuanceQuote'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
 import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
+import { useIsSupportedNetwork } from 'hooks/useIsSupportedNetwork'
 import { useSlippage } from 'hooks/useSlippage'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
@@ -46,7 +47,7 @@ import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchan
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useProtection } from 'providers/Protection/ProtectionProvider'
-import { isSupportedNetwork, isValidTokenInput, toWei } from 'utils'
+import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 
 import { ContractExecutionView } from './ContractExecutionView'
@@ -94,7 +95,7 @@ const QuickTrade = (props: {
 
   const protection = useProtection()
 
-  const supportedNetwork = isSupportedNetwork(chain?.id ?? -1)
+  const supportedNetwork = useIsSupportedNetwork(chain?.id ?? -1)
 
   const {
     auto: autoSlippage,
