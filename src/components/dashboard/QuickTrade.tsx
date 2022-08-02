@@ -672,7 +672,7 @@ const QuickTrade = (props: {
           slippage={slippage}
         />
       </Flex>
-      {props.singleToken !== undefined && (
+      {chain !== undefined && chain.id === OPTIMISM.chainId && (
         <TradeTypeToggle
           isDarkMode={isDarkMode}
           isToggled={isToggle}
