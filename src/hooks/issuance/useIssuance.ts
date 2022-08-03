@@ -21,12 +21,12 @@ export const useIssuance = (
   maxAmount?: BigNumber,
   isIssue?: boolean
 ) => {
-  const { address, provider } = useWallet()
+  const { address, signer } = useWallet()
 
   const [isTrading, setIsTrading] = useState(false)
 
   const handleTrade = useCallback(async () => {
-    if (!provider || !address || !token?.optimismAddress) {
+    if (!signer || !address || !token?.optimismAddress) {
       return
     }
     try {
@@ -34,7 +34,7 @@ export const useIssuance = (
       const tokenContract = new Contract(
         FlashMintPerp,
         ISSUANCEInterface,
-        provider.getSigner()
+        signer
       )
       if (isIssue) {
         const tx = await tokenContract.issueFixedSetFromUsdc(
@@ -65,7 +65,7 @@ export const useIssuance = (
       setIsTrading(false)
       console.log('Error sending issuance transaction', e)
     }
-  }, [address, amount, maxAmount, provider, setIsTrading, token])
+  }, [address, amount, maxAmount, setIsTrading, signer, token])
 
   return {
     isTrading,
