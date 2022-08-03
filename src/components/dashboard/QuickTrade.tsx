@@ -145,32 +145,28 @@ const QuickTrade = (props: {
   const buyTokenAmountInWei = toWei(buyTokenAmount, buyToken.decimals)
 
   const { estimatedUSDC, getQuote } = useIssuanceQuote(
+    isIssue,
     buyToken,
-    buyTokenAmountInWei,
-    isIssue
+    buyTokenAmountInWei
   )
 
   const {
     isApproved: isAppovedForUSDC,
     isApproving: isApprovingForUSDC,
     onApprove: onApproveForUSDC,
-  } = useApproval(USDC, FlashMintPerp, estimatedUSDC.mul(BigNumber.from('2')))
+  } = useApproval(USDC, FlashMintPerp, estimatedUSDC)
 
   const {
     isApproved: isApprovedForMnye,
     isApproving: isApprovingForMnye,
     onApprove: onApproveForMnye,
-  } = useApproval(
-    buyToken,
-    FlashMintPerp,
-    buyTokenAmountInWei.mul(BigNumber.from('2'))
-  )
+  } = useApproval(buyToken, FlashMintPerp, buyTokenAmountInWei)
 
   const { handleTrade, isTrading } = useIssuance(
+    isIssue,
     buyToken,
     buyTokenAmountInWei,
-    estimatedUSDC,
-    isIssue
+    estimatedUSDC
   )
 
   console.log(buyTokenAmountInWei.toString(), estimatedUSDC.toString(), 'QUOTE')
@@ -348,7 +344,7 @@ const QuickTrade = (props: {
 
   useEffect(() => {
     setTradeInfoData([])
-    if (chain!.id !== OPTIMISM.chainId) setToggle(true)
+    if (!chain || chain.id !== OPTIMISM.chainId) setToggle(true)
   }, [chain])
 
   useEffect(() => {
