@@ -43,7 +43,10 @@ export const useIssuanceQuote = (
             token.optimismAddress,
             amount
           )
-        setEStimatedUSDC(BigNumber.from(quote.toString()))
+        const quoteWithSlippage = BigNumber.from(quote.toString())
+          .mul(99)
+          .div(100)
+        setEStimatedUSDC(quoteWithSlippage)
       }
     } catch (error) {
       console.log('Error getting quote for perp issuance', error)

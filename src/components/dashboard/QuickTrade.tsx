@@ -169,8 +169,6 @@ const QuickTrade = (props: {
     estimatedUSDC
   )
 
-  console.log(buyTokenAmountInWei.toString(), estimatedUSDC.toString(), 'QUOTE')
-
   const sellTokenFiat = formattedFiat(
     parseFloat(sellTokenAmount),
     sellTokenPrice
