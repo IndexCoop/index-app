@@ -12,14 +12,17 @@ import { ISSUANCE_ABI } from 'utils/abi/Issuance'
 
 const ISSUANCEInterface = new utils.Interface(ISSUANCE_ABI)
 
+const gasLimitMint = BigNumber.from('1600000')
+const gasLimitRedeem = BigNumber.from('2000000')
+
 /**
  * Approve the spending of an ERC20
  */
 export const useIssuance = (
+  isIssue: boolean,
   token?: Token,
   amount?: BigNumber,
-  maxAmount?: BigNumber,
-  isIssue?: boolean
+  maxAmount?: BigNumber
 ) => {
   const { address, signer } = useWallet()
 
@@ -40,7 +43,8 @@ export const useIssuance = (
         const tx = await tokenContract.issueFixedSetFromUsdc(
           token.optimismAddress,
           amount,
-          maxAmount
+          maxAmount,
+          { gasLimit: gasLimitMint }
         )
         // if (tx) {
         //   const storedTx = getStoredTransaction(tx, chainId)
@@ -52,7 +56,8 @@ export const useIssuance = (
         const tx = await tokenContract.redeemFixedSetForUsdc(
           token.optimismAddress,
           amount,
-          maxAmount
+          maxAmount,
+          { gasLimit: gasLimitRedeem }
         )
         // if (tx) {
         //   const storedTx = getStoredTransaction(tx, chainId)

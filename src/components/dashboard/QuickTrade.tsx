@@ -145,9 +145,9 @@ const QuickTrade = (props: {
   const buyTokenAmountInWei = toWei(buyTokenAmount, buyToken.decimals)
 
   const { estimatedUSDC, getQuote } = useIssuanceQuote(
+    isIssue,
     buyToken,
-    buyTokenAmountInWei,
-    isIssue
+    buyTokenAmountInWei
   )
 
   const {
@@ -163,10 +163,10 @@ const QuickTrade = (props: {
   } = useApproval(buyToken, FlashMintPerp, buyTokenAmountInWei)
 
   const { handleTrade, isTrading } = useIssuance(
+    isIssue,
     buyToken,
     buyTokenAmountInWei,
-    estimatedUSDC,
-    isIssue
+    estimatedUSDC
   )
 
   console.log(buyTokenAmountInWei.toString(), estimatedUSDC.toString(), 'QUOTE')
