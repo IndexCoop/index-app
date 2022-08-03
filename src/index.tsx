@@ -99,7 +99,6 @@ const Providers = (props: { children: any }) => {
       <WagmiConfig client={wagmiClient}>
         <RainbowKitProvider
           chains={chains}
-          initialChain={chain.mainnet}
           theme={rainbowkitTheme}
           appInfo={{
             appName: 'Index Coop',
