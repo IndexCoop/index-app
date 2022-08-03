@@ -105,20 +105,10 @@ const ProductComponentsTable = (props: {
               <ComponentRow key={data.name} component={data} />
             ))}
             {props.vAssets && (
-              <>
-                <Tr>
-                  <Th colSpan={3} fontSize='13px' color='gray.500' mt='8px'>
-                    Virtual Tokens on Perpetual Protocol
-                  </Th>
-                </Tr>
-                {props.vAssets.slice(0, amountToDisplay).map((data) => (
-                  <ComponentRow
-                    key={data.name}
-                    component={data}
-                    disablePercentage={true}
-                  />
-                ))}
-              </>
+              <VirutalAssets
+                amountToDisplay={amountToDisplay}
+                vAssets={props.vAssets}
+              />
             )}
           </Tbody>
         </Table>
@@ -175,6 +165,32 @@ const ComponentRow = (props: {
         {!props.disablePercentage && absPercentChange}
       </Td>
     </Tr>
+  )
+}
+
+const VirutalAssets = ({
+  amountToDisplay,
+  vAssets,
+}: {
+  amountToDisplay: number
+  vAssets?: SetComponent[]
+}) => {
+  if (!vAssets || vAssets.length < 1) return <></>
+  return (
+    <>
+      <Tr>
+        <Th colSpan={3} fontSize='13px' color='gray.500' mt='8px'>
+          Virtual Tokens on Perpetual Protocol
+        </Th>
+      </Tr>
+      {vAssets.slice(0, amountToDisplay).map((data) => (
+        <ComponentRow
+          key={data.name}
+          component={data}
+          disablePercentage={true}
+        />
+      ))}
+    </>
   )
 }
 

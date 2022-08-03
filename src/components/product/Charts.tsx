@@ -55,7 +55,7 @@ const LeveragedChart = (props: {
   vAssets: Position[] | undefined
 }) => {
   let data
-  if (props.vAssets) {
+  if (props.vAssets && props.vAssets.length > 1) {
     data = [
       {
         data0: props.data[0].value,

@@ -16,9 +16,9 @@ const ISSUANCEInterface = new utils.Interface(ISSUANCE_ABI)
  * Approve the spending of an ERC20
  */
 export const useIssuanceQuote = (
+  isIssue: Boolean,
   token?: Token,
-  amount?: BigNumber,
-  isIssue?: Boolean
+  amount?: BigNumber
 ) => {
   const { signer } = useWallet()
   const [estimatedUSDC, setEStimatedUSDC] = useState<BigNumber>(
