@@ -344,7 +344,7 @@ const QuickTrade = (props: {
 
   useEffect(() => {
     setTradeInfoData([])
-    if (chain!.id !== OPTIMISM.chainId) setToggle(true)
+    if (!chain || chain.id !== OPTIMISM.chainId) setToggle(true)
   }, [chain])
 
   useEffect(() => {
