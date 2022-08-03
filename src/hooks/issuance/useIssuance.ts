@@ -13,7 +13,7 @@ import { ISSUANCE_ABI } from 'utils/abi/Issuance'
 const ISSUANCEInterface = new utils.Interface(ISSUANCE_ABI)
 
 const gasLimitMint = BigNumber.from('1600000')
-const gasLimitRedeem = BigNumber.from('2000000')
+const gasLimitRedeem = BigNumber.from('2200000')
 
 /**
  * Approve the spending of an ERC20
