@@ -2392,10 +2392,10 @@
     "@ethersproject/units" "^5.6.1"
     axios "^0.27.2"
 
-"@indexcoop/tokenlists@^1.22.0":
-  version "1.22.0"
-  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.22.0.tgz#1ae3ae5ac6a3cd7704e4578a6a91fc10192faea3"
-  integrity sha512-0RoZ/EHjoWdw4WrjRDMbkp/HEDkuM2qk96S+vedGmaw2+uUmGdvBQcDpFLV5LU1KJH0qtFcU99xWQKA9acayaA==
+"@indexcoop/tokenlists@^1.23.0":
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.23.0.tgz#b087304e2f3c209bd7fc667e2287c53579de699e"
+  integrity sha512-eHWHRABIjGp2GhNrhqKhZNSAlg22GIxRBmp0BKOIVhzcudjVsCJmAEOIMPwuIMUEn/saS9W2/trEurG1HBFgRw==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
