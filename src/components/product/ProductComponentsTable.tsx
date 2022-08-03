@@ -26,11 +26,17 @@ const ProductComponentsTable = (props: {
   components?: SetComponent[]
   token: Token
   isLeveragedToken?: boolean
+  vAssets?: SetComponent[]
 }) => {
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
   const showAllComponents = () =>
     setAmountToDisplay(props.components?.length || amountToDisplay)
   const showDefaultComponents = () => setAmountToDisplay(5)
+
+  const priceToNumber = (price: string) => {
+    const priceNumber = numeral(price).value()
+    return priceNumber || 0
+  }
 
   const mapSetComponentToPosition = (
     component: SetComponent,
@@ -39,7 +45,9 @@ const ProductComponentsTable = (props: {
     const sliceColor = pieChartColors[index]
     const position: Position = {
       title: component.symbol,
-      value: +component.percentOfSet,
+      value: props.isLeveragedToken
+        ? priceToNumber(component.totalPriceUsd)
+        : +component.percentOfSet,
       percent: `${component.percentOfSetNumber.toFixed(1)}%` ?? '',
       color: sliceColor,
       backgroundColor: sliceColor,
@@ -48,7 +56,8 @@ const ProductComponentsTable = (props: {
   }
 
   const renderTableDisplayControls = () => {
-    if (!props.components || props.components.length < 5) return null
+    if (!props.components || props.components.length < 5 || props.vAssets)
+      return null
 
     return (
       <Box my='20px'>
@@ -74,6 +83,7 @@ const ProductComponentsTable = (props: {
       <Box margin={['0 auto', '0 auto', '0 64px 0 0']}>
         <Chart
           data={props.components.map(mapSetComponentToPosition)}
+          vAssets={props.vAssets?.map(mapSetComponentToPosition)}
           isLeveragedToken={props.isLeveragedToken}
         />
       </Box>
@@ -94,6 +104,12 @@ const ProductComponentsTable = (props: {
             {props.components?.slice(0, amountToDisplay).map((data) => (
               <ComponentRow key={data.name} component={data} />
             ))}
+            {props.vAssets && (
+              <VirutalAssets
+                amountToDisplay={amountToDisplay}
+                vAssets={props.vAssets}
+              />
+            )}
           </Tbody>
         </Table>
         {renderTableDisplayControls()}
@@ -107,13 +123,16 @@ const ProductComponentsTable = (props: {
  * @param component a SetComponent object to display
  * @returns a component row JSX element
  */
-const ComponentRow = (props: { component: SetComponent }) => {
+const ComponentRow = (props: {
+  component: SetComponent
+  disablePercentage?: boolean
+}) => {
   const formattedPriceUSD = numeral(props.component.totalPriceUsd).format(
     '$0,0.00'
   )
 
   const percentChange = parseFloat(props.component.dailyPercentChange)
-  const absPercentChange = numeral(Math.abs(percentChange)).format('0.00')
+  const absPercentChange = numeral(Math.abs(percentChange)).format('0.00') + '%'
   const percentChangeIsPositive = percentChange >= 0
   const percentChangeTextColor = percentChangeIsPositive
     ? colors.icMalachite
@@ -142,10 +161,36 @@ const ComponentRow = (props: { component: SetComponent }) => {
         color={percentChangeTextColor}
         p={['16px 8px', '16px 8px', '16px 24px']}
       >
-        {percentChangeSign}
-        {absPercentChange}%
+        {!props.disablePercentage && percentChangeSign}
+        {!props.disablePercentage && absPercentChange}
       </Td>
     </Tr>
+  )
+}
+
+const VirutalAssets = ({
+  amountToDisplay,
+  vAssets,
+}: {
+  amountToDisplay: number
+  vAssets?: SetComponent[]
+}) => {
+  if (!vAssets || vAssets.length < 1) return <></>
+  return (
+    <>
+      <Tr>
+        <Th colSpan={3} fontSize='13px' color='gray.500' mt='8px'>
+          Virtual Tokens on Perpetual Protocol
+        </Th>
+      </Tr>
+      {vAssets.slice(0, amountToDisplay).map((data) => (
+        <ComponentRow
+          key={data.name}
+          component={data}
+          disablePercentage={true}
+        />
+      ))}
+    </>
   )
 }
 

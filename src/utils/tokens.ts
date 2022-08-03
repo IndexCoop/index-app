@@ -71,3 +71,7 @@ export function getNativeToken(chainId: number | undefined): Token | null {
       return null
   }
 }
+
+export function isPerpToken(token: Token): boolean {
+  return token.isPerp ? true : false
+}

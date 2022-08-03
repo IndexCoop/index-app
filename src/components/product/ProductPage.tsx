@@ -18,7 +18,7 @@ import {
   getFormattedChartPriceChanges,
   getPricesChanges,
 } from 'utils/priceChange'
-import { getAddressForToken } from 'utils/tokens'
+import { getAddressForToken, isPerpToken } from 'utils/tokens'
 
 import Disclaimer from './Disclaimer'
 import MarketChart, { PriceChartRangeOption } from './MarketChart'
@@ -104,9 +104,10 @@ const ProductPage = (props: {
   const chartWidth = window.outerWidth < 400 ? window.outerWidth : 648
   const chartHeight = window.outerWidth < 400 ? 300 : 400
 
-  const setComponents = useTokenComponents(
+  const { components, vAssets } = useTokenComponents(
     props.token,
-    marketData.hourlyPrices!
+    marketData.hourlyPrices!,
+    isPerpToken(props.token)
   )
 
   return (
@@ -142,9 +143,10 @@ const ProductPage = (props: {
             <>
               <ProductPageSectionHeader title='Allocations' />
               <ProductComponentsTable
-                components={setComponents}
+                components={components}
                 token={props.token}
                 isLeveragedToken={props.isLeveragedToken}
+                vAssets={vAssets}
               />
             </>
           )}

@@ -24,7 +24,7 @@ import {
   JPGIndex,
   Matic2xFLIP,
   MetaverseIndex,
-  //MNYeIndex,
+  MNYeIndex,
 } from 'constants/tokens'
 import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
 
@@ -53,7 +53,7 @@ export interface TokenContext {
   ibtcflip?: TokenMarketDataValues
   iceth?: TokenMarketDataValues
   jpg?: TokenMarketDataValues
-  //mnye?: TokenMarketDataValues
+  mnye?: TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
 }
 
@@ -83,7 +83,7 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [iBtcFliPMarketData, setIBtcFliPMarketData] = useState<any>({})
   const [icEthMarketData, setIcEthMarketData] = useState<any>({})
   const [jpgMarketData, setJpgMarketData] = useState<any>({})
-  //const [mnyeMarketData, setMnyeMarketData] = useState<any>({})
+  const [mnyeMarketData, setMnyeMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
@@ -111,7 +111,7 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(IBitcoinFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(icETHIndex.coingeckoId),
       fetchHistoricalTokenMarketData(JPGIndex.coingeckoId),
-      //fetchHistoricalTokenMarketData(MNYeIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(MNYeIndex.coingeckoId),
     ])
 
     setEthMarketData(marketData[0])
@@ -131,7 +131,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     setIBtcFliPMarketData(marketData[14])
     setIcEthMarketData(marketData[15])
     setJpgMarketData(marketData[16])
-    //setMnyeMarketData(marketData[17])
+    setMnyeMarketData(marketData[17])
   }, [])
 
   useEffect(() => {
@@ -159,7 +159,7 @@ export const MarketDataProvider = (props: { children: any }) => {
         ibtcflip: iBtcFliPMarketData,
         iceth: icEthMarketData,
         jpg: jpgMarketData,
-        //mnye: mnyeMarketData,
+        mnye: mnyeMarketData,
       }}
     >
       {props.children}

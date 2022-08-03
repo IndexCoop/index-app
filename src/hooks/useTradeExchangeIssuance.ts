@@ -20,8 +20,6 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/sentry'
-// TODO:
-// import { getStoredTransaction } from 'utils/storedTransaction'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalances } from './useBalance'
@@ -30,7 +28,6 @@ export const useTradeExchangeIssuance = () => {
   const { address, signer } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
-  // const { addTransaction } = useTransactions()
   const chainId = chain?.id
 
   const [isTransactingEI, setIsTransacting] = useState(false)
@@ -91,10 +88,6 @@ export const useTradeExchangeIssuance = () => {
               inputOutputTokenAmount,
               { gasLimit }
             )
-            // if (mintTx) {
-            //   const storedTx = getStoredTransaction(mintTx, chainId)
-            //   addTransaction(storedTx)
-            // }
           } else {
             const maxAmountInputToken = inputOutputTokenAmount
             captureTransaction({
@@ -115,10 +108,6 @@ export const useTradeExchangeIssuance = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
-            // if (mintTx) {
-            //   const storedTx = getStoredTransaction(mintTx, chainId)
-            //   addTransaction(storedTx)
-            // }
           }
         } else {
           const isRedeemingNativeChainToken =
@@ -144,10 +133,6 @@ export const useTradeExchangeIssuance = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
-            // if (redeemTx) {
-            //   const storedTx = getStoredTransaction(redeemTx, chainId)
-            //   addTransaction(storedTx)
-            // }
           } else {
             captureTransaction({
               exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
@@ -167,10 +152,6 @@ export const useTradeExchangeIssuance = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
-            // if (redeemTx) {
-            //   const storedTx = getStoredTransaction(redeemTx, chainId)
-            //   addTransaction(storedTx)
-            // }
           }
         }
         setIsTransacting(false)

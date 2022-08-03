@@ -12,7 +12,7 @@ import maticflipLogo from 'assets/maticflilogo.svg'
 import mnyeLogo from 'assets/mnyeLogo.png'
 import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
 
-import { MAINNET, POLYGON } from './chains'
+import { MAINNET, OPTIMISM, POLYGON } from './chains'
 
 export const dpiTokenImage =
   'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg'
@@ -41,6 +41,7 @@ export interface Token {
   isDangerous: boolean
   indexTypes: IndexType[]
   defaultChain?: number
+  isPerp?: boolean
 }
 
 export const DAI: Token = {
@@ -477,25 +478,27 @@ export const JPGIndex: Token = {
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
-// export const MNYeIndex: Token = {
-//   name: 'Market Neutral Yield ETH Index',
-//   symbol: 'icETH', // TODO: 'MNYe',
-//   address: undefined,
-//   polygonAddress: undefined,
-//   optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93', // TODO: Get final address
-//   decimals: 18,
-//   url: 'mnye',
-//   image: icethLogo, // TODO: mnyeLogo,
-//   coingeckoId: 'eth-market-neutral-yield',
-//   tokensetsId: 'mnye',
-//   tokenContextKey: 'mnye',
-//   fees: {
-//     streamingFee: '0.95%',
-//   },
-//   isDangerous: true,
-//   indexTypes: [IndexType.yield],
-//   chainId: OPTIMISM.chainId,
-// }
+export const MNYeIndex: Token = {
+  name: 'Market Neutral Yield ETH Index',
+  symbol: 'MNYe',
+  address: undefined,
+  polygonAddress: undefined,
+  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93',
+  decimals: 18,
+  url: 'mnye',
+  image: mnyeLogo,
+  coingeckoId: 'market-neutral-yield-eth',
+  tokensetsId: 'mnye',
+  tokenContextKey: 'mnye',
+  fees: {
+    streamingFee: '0.95%',
+    redeemFee: '0.3%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.yield],
+  defaultChain: OPTIMISM.chainId,
+  isPerp: true,
+}
 
 export const productTokensBySymbol = {
   'DPI': DefiPulseIndex,
@@ -514,14 +517,15 @@ export const productTokensBySymbol = {
   'BTC2x-FLI-P': Bitcoin2xFLIP,
   'icETH': icETHIndex,
   'JPG': JPGIndex,
-  //'MNYe': MNYeIndex,
+  'MNYe': MNYeIndex,
 }
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH, WETH]
 
 export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
 
-export const optimismCurrencyTokens = [ETH, DAI, USDC, WETH]
+// MNYe only works with USDC, will have to optimize this once there is new indices on Optimism
+export const optimismCurrencyTokens = [USDC]
 
 export const eligibleLeveragedExchangeIssuanceTokens = [
   Bitcoin2xFLIP,
@@ -535,7 +539,7 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
 
 const indexNames = [
   icETHIndex,
-  // TODO: MNYeIndex,
+  MNYeIndex,
   DefiPulseIndex,
   MetaverseIndex,
   GmiIndex,
@@ -563,12 +567,8 @@ export const indexNamesPolygon = indexNames.filter(
     index.symbol !== DataIndex.symbol && // temporarily removed due to liquidity concerns
     index.symbol !== IndexToken.symbol // temporarily removed due to liquidity concerns
 )
-
-// TODO: swap these vvv
-/**export const indexNamesOptimism = indexNames.filter(
+export const indexNamesOptimism = indexNames.filter(
   (index) => index.optimismAddress !== undefined
-)*/
-
-export const indexNamesOptimism = [] //[MNYeIndex]
+)
 
 export default indexNames

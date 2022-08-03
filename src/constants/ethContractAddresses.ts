@@ -22,6 +22,9 @@ export const imaticFLIPSuppyCapAddress =
 export const iethFLIPSuppyCapAddress =
   '0x8173Bd491a27aF4DDe0a4dE48a54Daf6705c75F1'
 
+// Index Coop Optimism Addresses
+export const FlashMintPerp = '0x2b44C227d95B8FDa1c8750986d3aDfF0E67627F7'
+
 // Uniswap V2 Addresses
 export const uniswapEthDpiLpTokenAddress =
   '0x4d5ef58aac27d99935e5b6b4a6778ff292059991'

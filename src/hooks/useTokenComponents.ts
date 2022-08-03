@@ -4,11 +4,12 @@ import { BigNumber, utils } from 'ethers'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { IndexToken, Token } from 'constants/tokens'
-import { displayFromWei, safeDiv, selectLatestMarketData } from 'utils'
+import { displayFromWei, fromWei, safeDiv, selectLatestMarketData } from 'utils'
 import { IndexApi } from 'utils/indexApi'
 import {
   CoinGeckoCoinPrices,
   getSetDetails,
+  getSetPerps,
   Position,
   SetDetails,
 } from 'utils/setjsApi'
@@ -19,12 +20,18 @@ import { useReadOnlyProvider } from './useReadOnlyProvider'
 
 const VS_CURRENCY = 'usd'
 
-export const useTokenComponents = (token: Token, marketData: number[][]) => {
+export const useTokenComponents = (
+  token: Token,
+  marketData: number[][],
+  isPerpToken = false
+) => {
   const chainId = token.defaultChain || MAINNET.chainId
   const provider = useReadOnlyProvider(chainId)
   const [components, setComponents] = useState<SetComponent[]>([])
+  const [vAssets, setVAssets] = useState<SetComponent[]>([])
+  const address = getAddressForToken(token, chainId)
+
   useMemo(() => {
-    const address = getAddressForToken(token, chainId)
     if (!address || token.symbol === IndexToken.symbol) {
       setComponents([])
       return
@@ -40,8 +47,33 @@ export const useTokenComponents = (token: Token, marketData: number[][]) => {
       )
       setComponents(componentData)
     })
+    if (isPerpToken) {
+      getSetPerps(provider, address).then(async (result) => {
+        const tokenList = getTokenList(chainId)
+        const vTokens: SetComponent[] = result.map((perp) => {
+          const token = tokenList.find((t) => t.address === perp.vAssetAddress)
+          const vAsset: SetComponent = {
+            id: token?.name || perp.symbol,
+            name: token?.name || perp.symbol,
+            symbol: perp.symbol,
+            address: perp.vAssetAddress,
+            quantity: perp.positionUnit.toString(),
+            image: token?.logoURI || '',
+            totalPriceUsd: fromWei(
+              perp.indexPrice.mul(perp.positionUnit),
+              36
+            ).toString(),
+            dailyPercentChange: '0',
+            percentOfSet: '0',
+            percentOfSetNumber: 0,
+          }
+          return vAsset
+        })
+        setVAssets(vTokens)
+      })
+    }
   }, [marketData])
-  return components
+  return { components, vAssets }
 }
 
 const getSetComponents = async (

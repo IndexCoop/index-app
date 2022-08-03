@@ -27,10 +27,10 @@ import {
   tradeModulePolygonAddress,
 } from 'constants/ethContractAddresses'
 import { IndexToken } from 'constants/tokens'
-//import { MNYeIndex } from 'constants/tokens'
 import { SetProtocolViewerAbi } from 'utils/abi/SetProtocolViewer'
 
 import { ERC20_ABI } from './abi/ERC20'
+import { PerpV2LeverageModuleViewerABI } from './abi/PerpV2LeverageModuleViewerABI'
 
 /**
  * Utils types of Set.
@@ -70,6 +70,15 @@ export type SetDetails = {
   totalSupply: BigNumber
 }
 
+// For PerpV2LeverageModuleViewerWrapper
+export type VAssetDisplayInfo = {
+  symbol: string
+  vAssetAddress: string
+  positionUnit: BigNumber // 10^18 decimals
+  indexPrice: BigNumber // 10^18 decimals
+  currentLeverageRatio: BigNumber // 10^18 decimals
+}
+
 export function getModuleAddresses(chainId: number): string[] {
   switch (chainId) {
     case OPTIMISM.chainId:
@@ -102,6 +111,20 @@ export function getModuleAddresses(chainId: number): string[] {
   }
 }
 
+export async function getSetPerps(
+  provider: any,
+  tokenAddress: string
+): Promise<VAssetDisplayInfo[]> {
+  const perpV2BasisTradingViewer = new Contract(
+    perpV2BasisTradingModuleViewerOptimismAddress,
+    PerpV2LeverageModuleViewerABI,
+    provider
+  )
+  return await perpV2BasisTradingViewer.getVirtualAssetsDisplayInfo(
+    tokenAddress
+  )
+}
+
 // https://docs.tokensets.com/developers/contracts/deployed/protocol#core-contracts
 export function getProtocolViewerAddress(chainId: number): string {
   switch (chainId) {
@@ -117,8 +140,7 @@ export function getProtocolViewerAddress(chainId: number): string {
 export async function getSetDetails(
   ethersProvider: JsonRpcProvider,
   productAddresses: string[],
-  chainId: number,
-  isPerp: boolean = false
+  chainId: number
 ): Promise<SetDetails[]> {
   const protocolViewerAddress = getProtocolViewerAddress(chainId)
   const contract = new Contract(
@@ -127,29 +149,6 @@ export async function getSetDetails(
     ethersProvider
   )
   const moduleAddresses = getModuleAddresses(chainId)
-
-  /**
-   * TODO: This isn't needed for the short term, but long term we need to account for all positions in NAV calcs + when showing positions on the allocations page.
-   * This is how you get Perpetual Protocol products to show their full positions. For now will just log them, but they need to be added to the allocations list.
-   */
-  // if (isPerp) {
-  //   try {
-  //     const address = MNYeIndex.optimismAddress || ''
-  //     const arr =
-  //       await set.perpV2BasisTradingViewer.getVirtualAssetsDisplayInfoAsync(
-  //         address,
-  //         ethersProvider.address
-  //       )
-  //
-  //     const arr2 =
-  //       await set.perpV2LeverageViewer.getVirtualAssetsDisplayInfoAsync(
-  //         address,
-  //         ethersProvider.address
-  //       )
-  //   } catch (e) {
-  //     console.log('PERP error', e)
-  //   }
-  // }
 
   try {
     const setDetails: SetDetails[] = await contract.batchFetchDetails(
