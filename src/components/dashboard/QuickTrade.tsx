@@ -154,17 +154,13 @@ const QuickTrade = (props: {
     isApproved: isAppovedForUSDC,
     isApproving: isApprovingForUSDC,
     onApprove: onApproveForUSDC,
-  } = useApproval(USDC, FlashMintPerp, estimatedUSDC.mul(BigNumber.from('2')))
+  } = useApproval(USDC, FlashMintPerp, estimatedUSDC)
 
   const {
     isApproved: isApprovedForMnye,
     isApproving: isApprovingForMnye,
     onApprove: onApproveForMnye,
-  } = useApproval(
-    buyToken,
-    FlashMintPerp,
-    buyTokenAmountInWei.mul(BigNumber.from('2'))
-  )
+  } = useApproval(buyToken, FlashMintPerp, buyTokenAmountInWei)
 
   const { handleTrade, isTrading } = useIssuance(
     buyToken,
