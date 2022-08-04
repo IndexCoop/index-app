@@ -49,7 +49,7 @@ import '@rainbow-me/rainbowkit/dist/index.css'
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism],
   [
-    alchemyProvider({ alchemyId: process.env.REACT_APP_ALCHEMY_ID }),
+    alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_ID }),
     publicProvider(),
   ]
 )
