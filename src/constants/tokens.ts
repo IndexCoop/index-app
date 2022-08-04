@@ -564,8 +564,7 @@ export const indexNamesPolygon = indexNames.filter(
   (index) =>
     index.polygonAddress !== undefined &&
     index.symbol !== GmiIndex.symbol && // temporarily removed due to liquidity concerns
-    index.symbol !== DataIndex.symbol && // temporarily removed due to liquidity concerns
-    index.symbol !== IndexToken.symbol // temporarily removed due to liquidity concerns
+    index.symbol !== IndexToken.symbol // not available on Polygon
 )
 export const indexNamesOptimism = indexNames.filter(
   (index) => index.optimismAddress !== undefined
