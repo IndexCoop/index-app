@@ -48,7 +48,7 @@ const QuickTradeSelector = (props: {
   )
 
   useEffect(() => {
-    setInputString(selectedTokenAmount === '0' ? '' : selectedTokenAmount || '')
+    setInputString(selectedTokenAmount === '0' ? '' : selectedTokenAmount || '') // TODO: Can make impact here
   }, [selectedTokenAmount])
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const QuickTradeSelector = (props: {
     )
       return
 
-    setInputString(amount)
+    setInputString(amount) // TODO: Can make impact here
     props.onChangeInput(selectedToken, amount)
   }
 
