@@ -20,7 +20,7 @@ export const useTrade = () => {
     from: address ?? undefined,
     to: zeroExQuote?.to,
     data: zeroExQuote?.data,
-    value: BigNumber.from(zeroExQuote?.value),
+    value: BigNumber.from(zeroExQuote?.value ?? 0),
     // gas: undefined, use metamask estimated gas limit
   }
   const { config } = usePrepareSendTransaction({
