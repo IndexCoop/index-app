@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { useSendTransaction } from 'wagmi'
+import { usePrepareSendTransaction, useSendTransaction } from 'wagmi'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -13,7 +13,20 @@ import { useBalances } from './useBalance'
 
 export const useTrade = () => {
   const { address } = useWallet()
-  const { sendTransaction, status } = useSendTransaction()
+  const [zeroExQuote, setZeroExQuote] = useState<ZeroExQuote | null>(null)
+
+  const txRequest: TransactionRequest = {
+    chainId: Number(zeroExQuote?.chainId) ?? undefined,
+    from: address ?? undefined,
+    to: zeroExQuote?.to,
+    data: zeroExQuote?.data,
+    value: BigNumber.from(zeroExQuote?.value ?? 0),
+    // gas: undefined, use metamask estimated gas limit
+  }
+  const { config } = usePrepareSendTransaction({
+    request: txRequest,
+  })
+  const { sendTransaction, status } = useSendTransaction(config)
   const { getBalance } = useBalances()
 
   const [isTransacting, setIsTransacting] = useState(false)
@@ -35,18 +48,10 @@ export const useTrade = () => {
         getBalance(inputToken.symbol) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
-      const txRequest: TransactionRequest = {
-        chainId: Number(quote.chainId) ?? undefined,
-        from: address,
-        to: quote.to,
-        data: quote.data,
-        value: BigNumber.from(quote.value),
-        // gas: undefined, use metamask estimated gas limit
-      }
-
+      setZeroExQuote(quote)
       try {
         setIsTransacting(true)
-        sendTransaction({ request: txRequest })
+        sendTransaction?.()
       } catch (error) {
         setIsTransacting(false)
         console.log('Error sending transaction', error)
