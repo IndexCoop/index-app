@@ -1,7 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { utils } from 'ethers'
-import { useContractRead, useContractWrite } from 'wagmi'
+import {
+  useContractRead,
+  useContractWrite,
+  useDeprecatedContractWrite,
+} from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -160,7 +164,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   /**
    * DPI 2020
    */
-  const { writeAsync: exitDpi2020 } = useContractWrite({
+  const { writeAsync: exitDpi2020 } = useDeprecatedContractWrite({
     addressOrName: dpi2020StakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'exit',
@@ -169,7 +173,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   /**
    * DPI 2021
    */
-  const { writeAsync: exitDpi2021 } = useContractWrite({
+  const { writeAsync: exitDpi2021 } = useDeprecatedContractWrite({
     addressOrName: dpi2021StakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'exit',
@@ -178,7 +182,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   /**
    * MVI 2021
    */
-  const { writeAsync: exitMvi2021 } = useContractWrite({
+  const { writeAsync: exitMvi2021 } = useDeprecatedContractWrite({
     addressOrName: mviStakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'exit',
@@ -205,17 +209,17 @@ const LiquidityMiningProvider = (props: { children: any }) => {
     }))
   }, [isApprovedGmi, isApprovingGmi])
 
-  const { writeAsync: stakeGmi } = useContractWrite({
+  const { writeAsync: stakeGmi } = useDeprecatedContractWrite({
     addressOrName: gmiStakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'stake',
   })
-  const { writeAsync: claimGmi } = useContractWrite({
+  const { writeAsync: claimGmi } = useDeprecatedContractWrite({
     addressOrName: gmiStakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'getReward',
   })
-  const { writeAsync: exitGmi } = useContractWrite({
+  const { writeAsync: exitGmi } = useDeprecatedContractWrite({
     addressOrName: gmiStakingRewardsAddress,
     contractInterface: stakingInterface,
     functionName: 'exit',
