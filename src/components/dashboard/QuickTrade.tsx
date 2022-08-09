@@ -454,11 +454,8 @@ const QuickTrade = (props: {
    * @returns string label for trade button
    */
   const getTradeButtonLabel = () => {
+    if (!address) return 'Connect Wallet'
     if (!supportedNetwork) return 'Wrong Network'
-
-    if (!address) {
-      return 'Connect Wallet'
-    }
 
     if (isNotTradable(props.singleToken)) {
       let chainName = 'This Network'
