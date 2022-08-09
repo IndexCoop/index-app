@@ -14,7 +14,6 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import {
   connectorsForWallets,
-  getDefaultWallets,
   RainbowKitProvider,
   wallet,
 } from '@rainbow-me/rainbowkit'
@@ -53,11 +52,6 @@ const { chains, provider } = configureChains(
     publicProvider(),
   ]
 )
-
-const { connectors: connectooors } = getDefaultWallets({
-  appName: 'Index Coop',
-  chains,
-})
 
 const connectors = connectorsForWallets([
   {
