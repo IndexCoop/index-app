@@ -274,6 +274,7 @@ export const useBestQuote = () => {
     const zeroExApi = new ZeroExApi(
       `${IndexApiBaseUrl}/0x`,
       affilliateAddress,
+      null,
       swapPathOverride
     )
 
