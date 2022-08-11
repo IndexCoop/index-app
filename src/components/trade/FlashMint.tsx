@@ -17,6 +17,7 @@ import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   FlashMintPerp,
   zeroExRouterAddress,
+  zeroExRouterOptimismAddress,
 } from 'constants/ethContractAddresses'
 import {
   indexNamesMainnet,
@@ -142,7 +143,7 @@ const FlashMint = (props: QuickTradeProps) => {
       case QuickTradeBestOption.leveragedExchangeIssuance:
         return spenderAddressLevEIL
       default:
-        return zeroExRouterAddress
+        return zeroExRouterOptimismAddress
     }
   }
   const contractBestOption = getContractForBestOption(bestOption)
