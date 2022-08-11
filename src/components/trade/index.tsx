@@ -7,6 +7,7 @@ import { Flex, Text } from '@chakra-ui/react'
 
 import { useSlippage } from 'hooks/useSlippage'
 
+import FlashMint from './FlashMint'
 import QuickTrade, { QuickTradeProps } from './QuickTrade'
 import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 
@@ -17,8 +18,15 @@ enum TradeType {
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
   const { isDarkMode } = useICColorMode()
+  const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
 
   const paddingX = props.isNarrowVersion ? '16px' : '40px'
+
+  const onSelectType = (type: TradeType) => {
+    if (type !== selectedType) {
+      setSelectedType(type)
+    }
+  }
 
   return (
     <Flex
@@ -30,20 +38,11 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
       px={['16px', paddingX]}
       height={'100%'}
     >
-      <Navigation />
-      <QuickTrade {...props} />
+      <Navigation onSelect={onSelectType} selectedType={selectedType} />
+      {selectedType === TradeType.flashMint && <FlashMint {...props} />}
+      {selectedType === TradeType.swap && <QuickTrade {...props} />}
     </Flex>
   )
-}
-
-const useTradeType = () => {
-  const [selectedType, setSelectedType] = useState(TradeType.swap)
-
-  const onSelectType = (type: TradeType) => {
-    if (type !== selectedType) setSelectedType(type)
-  }
-
-  return { selectedType, onSelectType }
 }
 
 type NavigationButtonProps = {
@@ -70,7 +69,12 @@ const NavigationButton = (props: NavigationButtonProps) => {
   )
 }
 
-const Navigation = () => {
+type NavigationProps = {
+  onSelect: (type: TradeType) => void
+  selectedType: TradeType
+}
+
+const Navigation = (props: NavigationProps) => {
   const { chain } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
@@ -79,8 +83,8 @@ const Navigation = () => {
     set: setSlippage,
     slippage,
   } = useSlippage()
-  const { selectedType, onSelectType } = useTradeType()
 
+  const { onSelect, selectedType } = props
   const flashMintIsSelected = selectedType === TradeType.flashMint
   const swapIsSelected = selectedType === TradeType.swap
 
@@ -91,13 +95,13 @@ const Navigation = () => {
       <Flex>
         <NavigationButton
           isSelected={swapIsSelected}
-          onClick={() => onSelectType(TradeType.swap)}
+          onClick={() => onSelect(TradeType.swap)}
           title='Swap'
         />
         {shouldShowFlashMint && (
           <NavigationButton
             isSelected={flashMintIsSelected}
-            onClick={() => onSelectType(TradeType.flashMint)}
+            onClick={() => onSelect(TradeType.flashMint)}
             title='Flash Mint'
           />
         )}

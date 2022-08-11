@@ -22,20 +22,13 @@ import {
 
 import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import {
-  FlashMintPerp,
-  zeroExRouterAddress,
-} from 'constants/ethContractAddresses'
+import { zeroExRouterAddress } from 'constants/ethContractAddresses'
 import {
   indexNamesMainnet,
   indexNamesOptimism,
   indexNamesPolygon,
-  MNYeIndex,
   Token,
-  USDC,
 } from 'constants/tokens'
-import { useIssuance } from 'hooks/issuance/useIssuance'
-import { useIssuanceQuote } from 'hooks/issuance/useIssuanceQuote'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
 import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
@@ -51,9 +44,7 @@ import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 
 import { ContractExecutionView } from './ContractExecutionView'
-import DirectIssuance from './DirectIssuance'
 import {
-  formattedBalance,
   formattedFiat,
   getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
@@ -121,10 +112,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
-  const [buyTokenAmount, setBuyTokenAmount] = useState('0')
-  const [isIssue, setIssue] = useState(true)
-  const [isToggle, setToggle] = useState(true)
-
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
     useBestQuote()
 
@@ -137,32 +124,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   )
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
-  const buyTokenAmountInWei = toWei(buyTokenAmount, buyToken.decimals)
-
-  const { estimatedUSDC, getQuote } = useIssuanceQuote(
-    isIssue,
-    buyToken,
-    buyTokenAmountInWei
-  )
-
-  const {
-    isApproved: isAppovedForUSDC,
-    isApproving: isApprovingForUSDC,
-    onApprove: onApproveForUSDC,
-  } = useApproval(USDC, FlashMintPerp, estimatedUSDC)
-
-  const {
-    isApproved: isApprovedForMnye,
-    isApproving: isApprovingForMnye,
-    onApprove: onApproveForMnye,
-  } = useApproval(buyToken, FlashMintPerp, buyTokenAmountInWei)
-
-  const { handleTrade, isTrading } = useIssuance(
-    isIssue,
-    buyToken,
-    buyTokenAmountInWei,
-    estimatedUSDC
-  )
 
   const sellTokenFiat = formattedFiat(
     parseFloat(sellTokenAmount),
@@ -208,18 +169,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     bestOption === null,
     sellTokenAmountInWei,
     getBalance(sellToken.symbol)
-  )
-
-  const hasInsufficientUSDC = getHasInsufficientFunds(
-    false,
-    BigNumber.from(estimatedUSDC),
-    getBalance(USDC.symbol)
-  )
-
-  const hasInsufficientMNYe = getHasInsufficientFunds(
-    false,
-    buyTokenAmountInWei,
-    getBalance(MNYeIndex.symbol)
   )
 
   const getContractForBestOption = (
@@ -321,14 +270,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   }
 
   /**
-   * Issuance Contract
-   */
-  const getEstimatedBalance = () => {
-    if (isToggle) return
-    getQuote()
-  }
-
-  /**
    * Determine the best trade option.
    */
   useEffect(() => {
@@ -337,16 +278,11 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   useEffect(() => {
     setTradeInfoData([])
-    if (!chain || chain.id !== OPTIMISM.chainId) setToggle(true)
   }, [chain])
 
   useEffect(() => {
     fetchOptions()
   }, [buyToken, sellToken, sellTokenAmount])
-
-  useEffect(() => {
-    getEstimatedBalance()
-  }, [buyTokenAmount, isIssue])
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
@@ -381,50 +317,35 @@ const QuickTrade = (props: QuickTradeProps) => {
   }
 
   const getIsApproved = () => {
-    if (isToggle) {
-      switch (bestOption) {
-        case QuickTradeBestOption.exchangeIssuance:
-          return isApprovedForEIZX
-        case QuickTradeBestOption.leveragedExchangeIssuance:
-          return isApprovedForEIL
-        default:
-          return isApprovedForSwap
-      }
-    } else {
-      if (isIssue) return isAppovedForUSDC
-      return isApprovedForMnye
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return isApprovedForEIZX
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return isApprovedForEIL
+      default:
+        return isApprovedForSwap
     }
   }
 
   const getIsApproving = () => {
-    if (isToggle) {
-      switch (bestOption) {
-        case QuickTradeBestOption.exchangeIssuance:
-          return isApprovingForEIZX
-        case QuickTradeBestOption.leveragedExchangeIssuance:
-          return isApprovingForEIL
-        default:
-          return isApprovingForSwap
-      }
-    } else {
-      if (isIssue) return isApprovingForUSDC
-      return isApprovingForMnye
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return isApprovingForEIZX
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return isApprovingForEIL
+      default:
+        return isApprovingForSwap
     }
   }
 
   const getOnApprove = () => {
-    if (isToggle) {
-      switch (bestOption) {
-        case QuickTradeBestOption.exchangeIssuance:
-          return onApproveForEIZX()
-        case QuickTradeBestOption.leveragedExchangeIssuance:
-          return onApproveForEIL()
-        default:
-          return onApproveForSwap()
-      }
-    } else {
-      if (isIssue) return onApproveForUSDC()
-      return onApproveForMnye()
+    switch (bestOption) {
+      case QuickTradeBestOption.exchangeIssuance:
+        return onApproveForEIZX()
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        return onApproveForEIL()
+      default:
+        return onApproveForSwap()
     }
   }
 
@@ -469,23 +390,11 @@ const QuickTrade = (props: QuickTradeProps) => {
       return `Not Available on ${chainName}`
     }
 
-    if (sellTokenAmount === '0' && isToggle) {
+    if (sellTokenAmount === '0') {
       return 'Enter an amount'
     }
 
-    if (buyTokenAmount === '0' && !isToggle) {
-      return 'Enter an amount'
-    }
-
-    if (hasInsufficientFunds && isToggle) {
-      return 'Insufficient funds'
-    }
-
-    if (!isToggle && isIssue && hasInsufficientUSDC) {
-      return 'Insufficient funds'
-    }
-
-    if (!isToggle && !isIssue && hasInsufficientMNYe) {
+    if (hasInsufficientFunds) {
       return 'Insufficient funds'
     }
 
@@ -493,44 +402,22 @@ const QuickTrade = (props: QuickTradeProps) => {
       return 'Try again'
     }
 
-    if (isToggle) {
-      const isNativeToken =
-        sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
+    const isNativeToken =
+      sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
 
-      if (!isNativeToken && getIsApproving()) {
-        return 'Approving...'
-      }
-
-      if (!isNativeToken && !getIsApproved()) {
-        return 'Approve Tokens'
-      }
-
-      if (isTransacting || isTransactingEI || isTransactingLevEI)
-        return 'Trading...'
-    } else {
-      if (getIsApproving()) {
-        return 'Approving...'
-      }
-
-      if (!getIsApproved()) {
-        return 'Approve Tokens'
-      }
-      if (isTrading) {
-        return 'Trading...'
-      }
+    if (!isNativeToken && getIsApproving()) {
+      return 'Approving...'
     }
+
+    if (!isNativeToken && !getIsApproved()) {
+      return 'Approve Tokens'
+    }
+
+    if (isTransacting || isTransactingEI || isTransactingLevEI)
+      return 'Trading...'
 
     return 'Trade'
   }
-
-  const onChangeBuyTokenAmount = debounce((token: Token, input: string) => {
-    if (input === '') {
-      resetTradeData()
-      return
-    }
-    if (!isValidTokenInput(input, token.decimals)) return
-    setBuyTokenAmount(input || '0')
-  }, 1000)
 
   const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
     if (input === '') {
@@ -548,9 +435,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       return
     }
 
-    if (hasInsufficientFunds && isToggle) return
-    if (!isToggle && isIssue && hasInsufficientUSDC) return
-    if (!isToggle && !isIssue && hasInsufficientMNYe) return
+    if (hasInsufficientFunds) return
 
     if (hasFetchingError) {
       fetchOptions()
@@ -559,36 +444,28 @@ const QuickTrade = (props: QuickTradeProps) => {
 
     const isNativeToken =
       sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
-    if (isToggle) {
-      if (!getIsApproved() && !isNativeToken) {
-        await getOnApprove()
-        return
-      }
-      switch (bestOption) {
-        case QuickTradeBestOption.zeroEx:
-          await executeTrade(quoteResult.quotes.zeroEx)
-          break
-        case QuickTradeBestOption.exchangeIssuance:
-          await executeEITrade(
-            quoteResult.quotes.exchangeIssuanceZeroEx,
-            slippage
-          )
-          break
-        case QuickTradeBestOption.leveragedExchangeIssuance:
-          await executeLevEITrade(
-            quoteResult.quotes.exchangeIssuanceLeveraged,
-            slippage
-          )
-          break
-        default:
-        // Nothing
-      }
-    } else {
-      if (!getIsApproved()) {
-        await getOnApprove()
-        return
-      }
-      await handleTrade()
+    if (!getIsApproved() && !isNativeToken) {
+      await getOnApprove()
+      return
+    }
+    switch (bestOption) {
+      case QuickTradeBestOption.zeroEx:
+        await executeTrade(quoteResult.quotes.zeroEx)
+        break
+      case QuickTradeBestOption.exchangeIssuance:
+        await executeEITrade(
+          quoteResult.quotes.exchangeIssuanceZeroEx,
+          slippage
+        )
+        break
+      case QuickTradeBestOption.leveragedExchangeIssuance:
+        await executeLevEITrade(
+          quoteResult.quotes.exchangeIssuanceLeveraged,
+          slippage
+        )
+        break
+      default:
+      // Nothing
     }
   }
 
@@ -596,23 +473,14 @@ const QuickTrade = (props: QuickTradeProps) => {
     if (!supportedNetwork) return true
     if (!address) return true
     if (hasFetchingError) return false
-    if (isToggle)
-      return (
-        sellTokenAmount === '0' ||
-        hasInsufficientFunds ||
-        isTransacting ||
-        isTransactingEI ||
-        isTransactingLevEI ||
-        isNotTradable(props.singleToken)
-      )
-    else
-      return (
-        buyTokenAmount === '0' ||
-        (isIssue && hasInsufficientUSDC) ||
-        (!isIssue && hasInsufficientMNYe) ||
-        isTrading ||
-        isNotTradable(props.singleToken)
-      )
+    return (
+      sellTokenAmount === '0' ||
+      hasInsufficientFunds ||
+      isTransacting ||
+      isTransactingEI ||
+      isTransactingLevEI ||
+      isNotTradable(props.singleToken)
+    )
   }
 
   const buttonLabel = getTradeButtonLabel()
@@ -638,70 +506,54 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   return (
     <Box>
-      {isToggle ? (
-        <Flex direction='column' my='20px'>
-          <QuickTradeSelector
-            title='From'
-            config={{
-              isDarkMode,
-              isInputDisabled: isNotTradable(props.singleToken),
-              isNarrowVersion: isNarrow,
-              isSelectorDisabled: false,
-              isReadOnly: false,
-            }}
-            selectedToken={sellToken}
-            formattedFiat={sellTokenFiat}
-            tokenList={sellTokenList}
-            onChangeInput={onChangeSellTokenAmount}
-            onSelectedToken={(_) => {
-              if (inputTokenItems.length > 1) onOpenSelectInputToken()
-            }}
-          />
-          <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
-            <IconButton
-              background='transparent'
-              margin={'6px 0'}
-              aria-label='Search database'
-              borderColor={isDarkMode ? colors.icWhite : colors.black}
-              color={isDarkMode ? colors.icWhite : colors.black}
-              icon={<UpDownIcon />}
-              onClick={() => swapTokenLists()}
-            />
-          </Box>
-          <QuickTradeSelector
-            title='To'
-            config={{
-              isDarkMode,
-              isInputDisabled: true,
-              isNarrowVersion: isNarrow,
-              isSelectorDisabled: false,
-              isReadOnly: true,
-            }}
-            selectedToken={buyToken}
-            selectedTokenAmount={buyTokenAmountFormatted}
-            formattedFiat={buyTokenFiat}
-            priceImpact={priceImpact ?? undefined}
-            tokenList={buyTokenList}
-            onSelectedToken={(_) => {
-              if (outputTokenItems.length > 1) onOpenSelectOutputToken()
-            }}
-          />
-        </Flex>
-      ) : (
-        <DirectIssuance
-          buyToken={buyToken}
-          buyTokenList={buyTokenList}
-          buyTokenAmountFormatted={buyTokenAmountFormatted}
-          formattedBalance={formattedBalance(USDC, estimatedUSDC)}
-          formattedUSDCBalance={formattedBalance(USDC, getBalance(USDC.symbol))}
-          isDarkMode={isDarkMode}
-          isIssue={isIssue}
-          isNarrow={isNarrow}
-          onChangeBuyTokenAmount={onChangeBuyTokenAmount}
-          onToggleIssuance={(isIssuance) => setIssue(isIssuance)}
-          priceImpact={priceImpact ?? undefined}
+      <Flex direction='column' my='20px'>
+        <QuickTradeSelector
+          title='From'
+          config={{
+            isDarkMode,
+            isInputDisabled: isNotTradable(props.singleToken),
+            isNarrowVersion: isNarrow,
+            isSelectorDisabled: false,
+            isReadOnly: false,
+          }}
+          selectedToken={sellToken}
+          formattedFiat={sellTokenFiat}
+          tokenList={sellTokenList}
+          onChangeInput={onChangeSellTokenAmount}
+          onSelectedToken={(_) => {
+            if (inputTokenItems.length > 1) onOpenSelectInputToken()
+          }}
         />
-      )}
+        <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
+          <IconButton
+            background='transparent'
+            margin={'6px 0'}
+            aria-label='Search database'
+            borderColor={isDarkMode ? colors.icWhite : colors.black}
+            color={isDarkMode ? colors.icWhite : colors.black}
+            icon={<UpDownIcon />}
+            onClick={() => swapTokenLists()}
+          />
+        </Box>
+        <QuickTradeSelector
+          title='To'
+          config={{
+            isDarkMode,
+            isInputDisabled: true,
+            isNarrowVersion: isNarrow,
+            isSelectorDisabled: false,
+            isReadOnly: true,
+          }}
+          selectedToken={buyToken}
+          selectedTokenAmount={buyTokenAmountFormatted}
+          formattedFiat={buyTokenFiat}
+          priceImpact={priceImpact ?? undefined}
+          tokenList={buyTokenList}
+          onSelectedToken={(_) => {
+            if (outputTokenItems.length > 1) onOpenSelectOutputToken()
+          }}
+        />
+      </Flex>
       <Flex direction='column'>
         {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
         {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
