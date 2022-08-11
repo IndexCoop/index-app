@@ -6,6 +6,7 @@ import {
   useContractRead,
   useContractWrite,
   useNetwork,
+  usePrepareContractWrite,
 } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
@@ -117,15 +118,16 @@ export const useNewApproveToken = (
   token: Token,
   spenderAddress: string,
   amount: BigNumber = constants.MaxUint256,
-  chainId: number,
+  chainId: number
 ) => {
   const tokenAddress = (token && getAddressForToken(token, chainId)) || ''
-  const { data, isLoading, isSuccess, write } = useContractWrite({
+  const { config } = usePrepareContractWrite({
     addressOrName: tokenAddress,
     contractInterface: ERC20Interface,
     functionName: 'approve',
     args: [spenderAddress, amount],
   })
+  const { data, isLoading, isSuccess, write } = useContractWrite(config)
   return {
     data,
     isLoading,

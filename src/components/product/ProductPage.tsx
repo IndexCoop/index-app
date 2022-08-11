@@ -104,7 +104,7 @@ const ProductPage = (props: {
   const chartWidth = window.outerWidth < 400 ? window.outerWidth : 648
   const chartHeight = window.outerWidth < 400 ? 300 : 400
 
-  const { components, vAssets } = useTokenComponents(
+  const { components, vAssets, nav } = useTokenComponents(
     props.token,
     marketData.hourlyPrices!,
     isPerpToken(props.token)
