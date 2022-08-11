@@ -1,4 +1,4 @@
-import { colors } from 'styles/colors'
+import { colors, useICColorMode } from 'styles/colors'
 
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
@@ -35,39 +35,23 @@ const DirectIssuance = ({
 }: DirectIssuanceProps) => (
   <>
     <Flex>
-      <Box
-        borderTopLeftRadius='16px'
-        borderBottomLeftRadius='16px'
-        border='1px solid black'
-        borderColor={isDarkMode ? colors.icWhite : colors.black}
-        padding='8px'
-        _hover={{ fontWeight: 700 }}
-        cursor='pointer'
-        onClick={() => onToggleIssuance(true)}
-        fontWeight={isIssue ? 700 : 400}
-      >
-        Mint Tokens
-      </Box>
-      <Box
-        borderTopRightRadius='16px'
-        borderBottomRightRadius='16px'
-        border='1px solid black'
-        borderColor={isDarkMode ? colors.icWhite : colors.black}
-        padding='8px'
-        _hover={{ fontWeight: 700 }}
-        cursor='pointer'
-        fontWeight={!isIssue ? 700 : 400}
-        onClick={() => onToggleIssuance(false)}
-      >
-        Redeem Tokens
-      </Box>
+      <NavigationButton
+        isSelected={isIssue}
+        onSelect={() => onToggleIssuance(true)}
+        title='Mint'
+      />
+      <NavigationButton
+        isSelected={!isIssue}
+        onSelect={() => onToggleIssuance(false)}
+        title='Redeem'
+      />
     </Flex>
     <Box
       borderColor={isDarkMode ? colors.icWhite : colors.black}
       paddingTop='16px'
     >
       <QuickTradeSelector
-        title={isIssue ? 'Mint' : 'Redeem'}
+        title={''}
         config={{
           isDarkMode,
           isInputDisabled: false,
@@ -100,5 +84,30 @@ const DirectIssuance = ({
     </Box>
   </>
 )
+
+type NavigationButtonProps = {
+  isSelected: boolean
+  onSelect: () => void
+  title: string
+}
+
+const NavigationButton = (props: NavigationButtonProps) => {
+  const { isDarkMode } = useICColorMode()
+  const backgroundColor = isDarkMode ? colors.background : colors.white
+  return (
+    <Text
+      background={props.isSelected ? colors.icGray1 : backgroundColor}
+      borderRadius={32}
+      color={props.isSelected ? colors.icBlack : colors.icGray3}
+      cursor='pointer'
+      fontSize='22px'
+      fontWeight='700'
+      padding='4px 12px'
+      onClick={props.onSelect}
+    >
+      {props.title}
+    </Text>
+  )
+}
 
 export default DirectIssuance
