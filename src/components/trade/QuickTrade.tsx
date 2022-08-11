@@ -63,7 +63,6 @@ import {
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
-import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
@@ -99,12 +98,7 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   const supportedNetwork = useIsSupportedNetwork(chain?.id ?? -1)
 
-  const {
-    auto: autoSlippage,
-    isAuto: isAutoSlippage,
-    set: setSlippage,
-    slippage,
-  } = useSlippage()
+  const { slippage } = useSlippage()
 
   const {
     isBuying,

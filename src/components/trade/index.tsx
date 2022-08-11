@@ -1,7 +1,8 @@
+import { colors, useICColorMode } from 'styles/colors'
+
 import { Flex, Text } from '@chakra-ui/react'
 
 import { useSlippage } from 'hooks/useSlippage'
-import { colors, useICColorMode } from 'styles/colors'
 
 import QuickTrade, { QuickTradeProps } from './QuickTrade'
 import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
