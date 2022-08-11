@@ -274,7 +274,7 @@ export const useBestQuote = () => {
     const zeroExApi = new ZeroExApi(
       `${IndexApiBaseUrl}/0x`,
       affilliateAddress,
-      null,
+      { 'X-INDEXCOOP-API-KEY': process.env.REACT_APP_INDEX_COOP_API! },
       swapPathOverride
     )
 
