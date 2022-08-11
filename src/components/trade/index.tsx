@@ -1,8 +1,9 @@
 import { useState } from 'react'
 
 import { colors, useICColorMode } from 'styles/colors'
+import { useNetwork } from 'wagmi'
 
-import { Button, Flex, Text } from '@chakra-ui/react'
+import { Flex, Text } from '@chakra-ui/react'
 
 import { useSlippage } from 'hooks/useSlippage'
 
@@ -70,6 +71,7 @@ const NavigationButton = (props: NavigationButtonProps) => {
 }
 
 const Navigation = () => {
+  const { chain } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
     auto: autoSlippage,
@@ -82,6 +84,8 @@ const Navigation = () => {
   const flashMintIsSelected = selectedType === TradeType.flashMint
   const swapIsSelected = selectedType === TradeType.swap
 
+  const shouldShowFlashMint = chain !== undefined && chain.id === 10
+
   return (
     <Flex align='center' justify='space-between'>
       <Flex>
@@ -90,11 +94,13 @@ const Navigation = () => {
           onClick={() => onSelectType(TradeType.swap)}
           title='Swap'
         />
-        <NavigationButton
-          isSelected={flashMintIsSelected}
-          onClick={() => onSelectType(TradeType.flashMint)}
-          title='Flash Mint'
-        />
+        {shouldShowFlashMint && (
+          <NavigationButton
+            isSelected={flashMintIsSelected}
+            onClick={() => onSelectType(TradeType.flashMint)}
+            title='Flash Mint'
+          />
+        )}
       </Flex>
       <QuickTradeSettingsPopover
         isAuto={isAutoSlippage}

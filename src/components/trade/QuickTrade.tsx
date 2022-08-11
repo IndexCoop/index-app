@@ -66,7 +66,6 @@ import QuickTradeSelector from './QuickTradeSelector'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
-import TradeTypeToggle from './TradeTypeToggle'
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -639,13 +638,6 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   return (
     <Box>
-      {chain !== undefined && chain.id === OPTIMISM.chainId && (
-        <TradeTypeToggle
-          isDarkMode={isDarkMode}
-          isToggled={isToggle}
-          onToggle={(toggled) => setToggle(toggled)}
-        />
-      )}
       {isToggle ? (
         <Flex direction='column' my='20px'>
           <QuickTradeSelector
