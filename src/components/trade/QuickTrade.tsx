@@ -627,7 +627,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   const isLoading = getIsApproving() || isFetchingTradeData
 
   const isNarrow = props.isNarrowVersion ?? false
-  const paddingX = isNarrow ? '16px' : '40px'
 
   const inputTokenBalances = sellTokenList.map(
     (sellToken) => getBalance(sellToken.symbol) ?? BigNumber.from(0)
@@ -645,27 +644,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   )
 
   return (
-    <Flex
-      border='2px solid #F7F1E4'
-      borderColor={isDarkMode ? colors.icWhite : colors.black}
-      borderRadius='16px'
-      direction='column'
-      py='20px'
-      px={['16px', paddingX]}
-      height={'100%'}
-    >
-      <Flex align='center' justify='space-between'>
-        <Text fontSize='24px' fontWeight='700'>
-          Quick Trade
-        </Text>
-        <QuickTradeSettingsPopover
-          isAuto={isAutoSlippage}
-          isDarkMode={isDarkMode}
-          onChangeSlippage={setSlippage}
-          onClickAuto={autoSlippage}
-          slippage={slippage}
-        />
-      </Flex>
+    <Box>
       {chain !== undefined && chain.id === OPTIMISM.chainId && (
         <TradeTypeToggle
           isDarkMode={isDarkMode}
@@ -781,7 +760,7 @@ const QuickTrade = (props: QuickTradeProps) => {
         }}
         items={outputTokenItems}
       />
-    </Flex>
+    </Box>
   )
 }
 // TODO: fetching error
