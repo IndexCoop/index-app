@@ -16,6 +16,7 @@ type DirectIssuanceProps = {
   isIssue: boolean
   isNarrow: boolean
   onChangeBuyTokenAmount: (token: Token, input: string) => void
+  onSelectedToken: () => void
   onToggleIssuance: (toggled: boolean) => void
   priceImpact?: { priceImpact: string; colorCoding: string } | undefined
 }
@@ -30,6 +31,7 @@ const DirectIssuance = ({
   isIssue,
   isNarrow,
   onChangeBuyTokenAmount,
+  onSelectedToken,
   onToggleIssuance,
   priceImpact,
 }: DirectIssuanceProps) => (
@@ -65,7 +67,7 @@ const DirectIssuance = ({
         priceImpact={priceImpact}
         tokenList={buyTokenList}
         onChangeInput={onChangeBuyTokenAmount}
-        onSelectedToken={(_) => {}}
+        onSelectedToken={(_) => onSelectedToken()}
       />
       <Text marginTop='16px'>
         {isIssue
