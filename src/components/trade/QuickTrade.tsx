@@ -63,7 +63,6 @@ import {
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
-import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
@@ -75,10 +74,12 @@ export enum QuickTradeBestOption {
   leveragedExchangeIssuance,
 }
 
-const QuickTrade = (props: {
+export type QuickTradeProps = {
   isNarrowVersion?: boolean
   singleToken?: Token
-}) => {
+}
+
+const QuickTrade = (props: QuickTradeProps) => {
   const { address } = useWallet()
   const { chain } = useNetwork()
   const { isDarkMode } = useICColorMode()
@@ -97,12 +98,7 @@ const QuickTrade = (props: {
 
   const supportedNetwork = useIsSupportedNetwork(chain?.id ?? -1)
 
-  const {
-    auto: autoSlippage,
-    isAuto: isAutoSlippage,
-    set: setSlippage,
-    slippage,
-  } = useSlippage()
+  const { slippage } = useSlippage()
 
   const {
     isBuying,
@@ -625,7 +621,6 @@ const QuickTrade = (props: {
   const isLoading = getIsApproving() || isFetchingTradeData
 
   const isNarrow = props.isNarrowVersion ?? false
-  const paddingX = isNarrow ? '16px' : '40px'
 
   const inputTokenBalances = sellTokenList.map(
     (sellToken) => getBalance(sellToken.symbol) ?? BigNumber.from(0)
@@ -643,27 +638,7 @@ const QuickTrade = (props: {
   )
 
   return (
-    <Flex
-      border='2px solid #F7F1E4'
-      borderColor={isDarkMode ? colors.icWhite : colors.black}
-      borderRadius='16px'
-      direction='column'
-      py='20px'
-      px={['16px', paddingX]}
-      height={'100%'}
-    >
-      <Flex align='center' justify='space-between'>
-        <Text fontSize='24px' fontWeight='700'>
-          Quick Trade
-        </Text>
-        <QuickTradeSettingsPopover
-          isAuto={isAutoSlippage}
-          isDarkMode={isDarkMode}
-          onChangeSlippage={setSlippage}
-          onClickAuto={autoSlippage}
-          slippage={slippage}
-        />
-      </Flex>
+    <Box>
       {chain !== undefined && chain.id === OPTIMISM.chainId && (
         <TradeTypeToggle
           isDarkMode={isDarkMode}
@@ -779,7 +754,7 @@ const QuickTrade = (props: {
         }}
         items={outputTokenItems}
       />
-    </Flex>
+    </Box>
   )
 }
 // TODO: fetching error
