@@ -194,7 +194,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       case QuickTradeBestOption.leveragedExchangeIssuance:
         return spenderAddressLevEIL
       default:
-        return zeroExRouterAddress
+        return zeroExAddress
     }
   }
   const contractBestOption = getContractForBestOption(bestOption)
