@@ -22,7 +22,10 @@ import {
 
 import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import { zeroExRouterAddress } from 'constants/ethContractAddresses'
+import {
+  zeroExRouterAddress,
+  zeroExRouterOptimismAddress,
+} from 'constants/ethContractAddresses'
 import {
   indexNamesMainnet,
   indexNamesOptimism,
@@ -122,6 +125,17 @@ const QuickTrade = (props: QuickTradeProps) => {
   const spenderAddressLevEIL = getExchangeIssuanceLeveragedContractAddress(
     chain?.id
   )
+  const getZeroExRouterAddress = (chainId: number) => {
+    switch (chainId) {
+      case OPTIMISM.chainId:
+        return zeroExRouterOptimismAddress
+      case POLYGON.chainId:
+        return zeroExRouterAddress
+      default:
+        return zeroExRouterAddress
+    }
+  }
+  const zeroExAddress = getZeroExRouterAddress(chain?.id ?? 1)
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
 
@@ -148,7 +162,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
-  } = useApproval(sellToken, zeroExRouterAddress, sellTokenAmountInWei)
+  } = useApproval(sellToken, zeroExAddress, sellTokenAmountInWei)
   const {
     isApproved: isApprovedForEIL,
     isApproving: isApprovingForEIL,
@@ -180,7 +194,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       case QuickTradeBestOption.leveragedExchangeIssuance:
         return spenderAddressLevEIL
       default:
-        return zeroExRouterAddress
+        return zeroExAddress
     }
   }
   const contractBestOption = getContractForBestOption(bestOption)
