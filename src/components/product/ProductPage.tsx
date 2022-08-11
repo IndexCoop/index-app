@@ -2,9 +2,9 @@ import { useNetwork } from 'wagmi'
 
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
-import QuickTrade from 'components/dashboard/QuickTrade'
 import Page from 'components/Page'
 import { getPriceChartData } from 'components/product/PriceChartData'
+import QuickTradeContainer from 'components/trade'
 import { IndexToken, Token } from 'constants/tokens'
 import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
 import { useTokenComponents } from 'hooks/useTokenComponents'
@@ -134,7 +134,7 @@ const ProductPage = (props: {
               ml={['0', '0', '0', '36px']}
               justifyContent={['center', 'center', 'center', 'flex-start']}
             >
-              <QuickTrade isNarrowVersion={true} singleToken={token} />
+              <QuickTradeContainer isNarrowVersion={true} singleToken={token} />
             </Flex>
           </Flex>
           <ProductPageSectionHeader title='Stats' topMargin='120px' />

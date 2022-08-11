@@ -75,10 +75,12 @@ export enum QuickTradeBestOption {
   leveragedExchangeIssuance,
 }
 
-const QuickTrade = (props: {
+export type QuickTradeProps = {
   isNarrowVersion?: boolean
   singleToken?: Token
-}) => {
+}
+
+const QuickTrade = (props: QuickTradeProps) => {
   const { address } = useWallet()
   const { chain } = useNetwork()
   const { isDarkMode } = useICColorMode()
