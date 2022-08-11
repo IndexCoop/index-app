@@ -16,8 +16,6 @@ const TradeTypeToggle = ({
   isToggled ? (
     <>
       <Flex
-        borderTop='1px solid #F7F1E4'
-        borderColor={isDarkMode ? colors.icWhite : colors.black}
         fontSize='14px'
         pt='10px'
         alignItems='center'
