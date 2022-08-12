@@ -163,8 +163,6 @@ export function getTradeInfoDataFromEI(
   buyToken: Token,
   sellToken: Token,
   inputOutputTokenAmount: BigNumber,
-  slippage: number,
-  slippageColorCoding: string,
   chainId: number = 1,
   isBuying: boolean,
   navData: TradeInfoItem
@@ -181,6 +179,7 @@ export function getTradeInfoDataFromEI(
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = getNativeToken(chainId)?.symbol ?? ''
   const offeredFrom = 'Index - Exchange Issuance'
+  console.log('navData', navData)
   return [
     {
       title: getReceivedAmount(isBuying, buyToken, sellToken),
@@ -192,11 +191,6 @@ export function getTradeInfoDataFromEI(
     },
     { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
     navData,
-    {
-      title: 'Slippage Tolerance',
-      values: [`${slippage.toString()}%`],
-      valuesColor: slippageColorCoding,
-    },
     { title: 'Offered From', values: [offeredFrom] },
   ]
 }
@@ -224,8 +218,6 @@ export function getTradeInfoData0x(
   gasCosts: BigNumber,
   minOutput: BigNumber,
   sources: { name: string; proportion: string }[],
-  slippage: number,
-  slippageColorCoding: string,
   chainId: number = 1,
   navData: TradeInfoItem
 ): TradeInfoItem[] {
@@ -240,17 +232,15 @@ export function getTradeInfoData0x(
   const offeredFromSources = sources
     .filter((source) => Number(source.proportion) > 0)
     .map((source) => source.name)
+
+  console.log('navData', navData)
   return [
     {
       title: 'Minimum ' + buyToken.symbol + ' Received',
       values: [minReceiveFormatted],
     },
     { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
-    {
-      title: 'Slippage Tolerance',
-      values: [`${slippage.toString()}%`],
-      valuesColor: slippageColorCoding,
-    },
+    navData,
     { title: 'Offered From', values: offeredFromSources },
   ]
 }

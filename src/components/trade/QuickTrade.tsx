@@ -232,7 +232,6 @@ const QuickTrade = (props: QuickTradeProps) => {
       ? quoteResult.quotes.exchangeIssuanceLeveraged
       : quoteResult.quotes.exchangeIssuanceZeroEx
 
-    const slippageColorCoding = getSlippageColorCoding(slippage, isDarkMode)
     const navData: TradeInfoItem = {
       title: 'NAV',
       values: [
@@ -245,8 +244,6 @@ const QuickTrade = (props: QuickTradeProps) => {
           quoteZeroEx?.gasCosts ?? BigNumber.from(0),
           quoteZeroEx?.minOutput ?? BigNumber.from(0),
           quoteZeroEx?.sources ?? [],
-          slippage,
-          slippageColorCoding,
           chain?.id,
           navData
         )
@@ -257,8 +254,6 @@ const QuickTrade = (props: QuickTradeProps) => {
           buyToken,
           sellToken,
           tradeDataEI?.inputOutputTokenAmount ?? BigNumber.from(0),
-          slippage,
-          slippageColorCoding,
           chain?.id,
           isBuying,
           navData
