@@ -7,7 +7,6 @@ import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 import AllocationChart from 'components/dashboard/AllocationChart'
 import { getPieChartPositions } from 'components/dashboard/DashboardData'
 import DownloadCsvView from 'components/dashboard/DownloadCsvView'
-import QuickTrade from 'components/dashboard/QuickTrade'
 import { assembleHistoryItems } from 'components/dashboard/TransactionHistoryItems'
 import TransactionHistoryTable, {
   TransactionHistoryItem,
@@ -17,6 +16,7 @@ import PageTitle from 'components/PageTitle'
 import { PriceChartData } from 'components/product/MarketChart'
 import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
+import QuickTradeContainer from 'components/trade'
 import { useUserMarketData } from 'hooks/useUserMarketData'
 import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
@@ -108,7 +108,7 @@ const Dashboard = () => {
             </Flex>
             <Box w='24px' h={['10px', '10px', '10px', '0px']} />
             <Flex direction='column' grow={1} flexBasis='0'>
-              <QuickTrade />
+              <QuickTradeContainer />
             </Flex>
           </Flex>
         </Box>
