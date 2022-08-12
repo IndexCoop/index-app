@@ -25,6 +25,7 @@ import {
   Matic2xFLIP,
   MetaverseIndex,
   MNYeIndex,
+  Token,
 } from 'constants/tokens'
 import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
 
@@ -55,12 +56,14 @@ export interface TokenContext {
   jpg?: TokenMarketDataValues
   mnye?: TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
+  selectMarketDataByToken: (token: Token) => number[][]
 }
 
 export type TokenContextKeys = keyof TokenContext
 
 export const MarketDataContext = createContext<TokenContext>({
   selectLatestMarketData: () => 0,
+  selectMarketDataByToken: () => [[]],
 })
 
 export const useMarketData = () => useContext(MarketDataContext)
@@ -87,6 +90,45 @@ export const MarketDataProvider = (props: { children: any }) => {
 
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
+
+  const selectMarketDataByToken = (token: Token) => {
+    switch (token) {
+      case DefiPulseIndex:
+        return dpiMarketData
+      case Matic2xFLIP:
+        return maticFliPMarketData
+      case MetaverseIndex:
+        return mviMarketData
+      case BedIndex:
+        return bedMarketData
+      case DataIndex:
+        return dataMarketData
+      case Ethereum2xFLIP:
+        return ethFlipMarketData
+      case Ethereum2xFlexibleLeverageIndex:
+        return ethFliMarketData
+      case Bitcoin2xFLIP:
+        return btcFliPMarketData
+      case Bitcoin2xFlexibleLeverageIndex:
+        return btcFliMarketData
+      case GmiIndex:
+        return gmiMarketData
+      case icETHIndex:
+        return icEthMarketData
+      case JPGIndex:
+        return jpgMarketData
+      case MNYeIndex:
+        return mnyeMarketData
+      case IEthereumFLIP:
+        return iEthFliPMarketData
+      case IMaticFLIP:
+        return iMaticFliPMarketData
+      case IBitcoinFLIP:
+        return iBtcFliPMarketData
+      default:
+        return 0
+    }
+  }
 
   const fetchMarketData = useCallback(async () => {
     const marketData = await Promise.all([
@@ -142,6 +184,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     <MarketDataContext.Provider
       value={{
         selectLatestMarketData,
+        selectMarketDataByToken,
         eth: ethMarketData,
         index: indexMarketData,
         dpi: dpiMarketData,

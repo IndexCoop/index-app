@@ -29,7 +29,7 @@ export const useTokenComponents = (
   const provider = useReadOnlyProvider(chainId)
   const [components, setComponents] = useState<SetComponent[]>([])
   const [vAssets, setVAssets] = useState<SetComponent[]>([])
-  const [nav, setNav] = useState<BigNumber>(BigNumber.from(0))
+  const [nav, setNav] = useState<number>(0)
   const address = getAddressForToken(token, chainId)
 
   useMemo(() => {
@@ -218,13 +218,11 @@ function sortPositionsByPercentOfSet(
   })
 }
 
-const getNetAssetValue = (components: SetComponent[]): BigNumber => {
-  const totalValue = BigNumber.from(0)
-  console.log('components', components.length)
+const getNetAssetValue = (components: SetComponent[]): number => {
+  let totalValue: number = 0
   if (components.length > 0)
     components.forEach((c) => {
-      console.log('c', c, BigNumber.from(c.totalPriceUsd), totalValue)
-      totalValue.add(BigNumber.from(c.totalPriceUsd))
+      totalValue += parseFloat(c.totalPriceUsd)
     })
   return totalValue
 }

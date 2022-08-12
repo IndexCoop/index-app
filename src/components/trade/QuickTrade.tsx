@@ -37,14 +37,17 @@ import { useBalances } from 'hooks/useBalance'
 import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
 import { useIsSupportedNetwork } from 'hooks/useIsSupportedNetwork'
 import { useSlippage } from 'hooks/useSlippage'
+import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
+import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { useProtection } from 'providers/Protection/ProtectionProvider'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
+import { isPerpToken } from 'utils/tokens'
 
 import { ContractExecutionView } from './ContractExecutionView'
 import {
@@ -107,6 +110,14 @@ const QuickTrade = (props: QuickTradeProps) => {
     swapTokenLists,
   } = useTradeTokenLists(chain?.id, props.singleToken)
   const { getBalance } = useBalances()
+
+  const { selectMarketDataByToken } = useMarketData()
+
+  const { nav } = useTokenComponents(
+    isBuying ? buyToken : sellToken,
+    selectMarketDataByToken(sellToken),
+    isPerpToken(sellToken)
+  )
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
@@ -211,23 +222,6 @@ const QuickTrade = (props: QuickTradeProps) => {
       return
     }
 
-    console.log(quoteResult)
-
-    // todo: need this?
-    // const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
-    // let shouldUseEI0x = true
-    // const inputTokenAmountEI0x =
-    //   bestOptionResult.exchangeIssuanceData?.inputTokenAmount
-    // if (inputTokenAmountEI0x && inputTokenAmountEI0x.gt(inputBalance)) {
-    //   shouldUseEI0x = false
-    // }
-    // let shouldUseEILev = true
-    // const inputTokenAmountEILev =
-    //   bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount
-    // if (inputTokenAmountEILev && inputTokenAmountEILev.gt(inputBalance)) {
-    //   shouldUseEILev = false
-    // }
-
     const bestOption = getBestOptionFromQuoteType(quoteResult.bestQuote)
     const bestOptionIs0x = bestOption === QuickTradeBestOption.zeroEx
     const bestOptionIsLevEI =
@@ -239,6 +233,12 @@ const QuickTrade = (props: QuickTradeProps) => {
       : quoteResult.quotes.exchangeIssuanceZeroEx
 
     const slippageColorCoding = getSlippageColorCoding(slippage, isDarkMode)
+    const navData: TradeInfoItem = {
+      title: 'NAV',
+      values: [
+        nav.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
+      ],
+    }
     const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(
           buyToken,
@@ -247,7 +247,8 @@ const QuickTrade = (props: QuickTradeProps) => {
           quoteZeroEx?.sources ?? [],
           slippage,
           slippageColorCoding,
-          chain?.id
+          chain?.id,
+          navData
         )
       : getTradeInfoDataFromEI(
           tradeDataEI?.setTokenAmount ?? BigNumber.from(0),
@@ -259,7 +260,8 @@ const QuickTrade = (props: QuickTradeProps) => {
           slippage,
           slippageColorCoding,
           chain?.id,
-          isBuying
+          isBuying,
+          navData
         )
 
     const buyTokenAmountFormatted = getFormattedOuputTokenAmount(

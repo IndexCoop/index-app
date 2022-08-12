@@ -30,7 +30,8 @@ import ProductStats, { ProductStat } from './ProductStats'
 function getStatsForToken(
   token: Token,
   marketData: TokenMarketDataValues,
-  currentSupply: number
+  currentSupply: number,
+  nav: number
 ): ProductStat[] {
   const dailyPriceRange = PriceChartRangeOption.DAILY_PRICE_RANGE
   const hourlyDataInterval = 24
@@ -60,14 +61,22 @@ function getStatsForToken(
       ?.slice(-1)[0] ?? 0
   const volumeFormatted = formatter.format(volume)
 
-  return [
+  let stats = [
     { title: 'Market Cap', value: marketCapFormatted },
     { title: 'Volume (24h)', value: volumeFormatted },
     { title: 'Current Supply', value: supplyFormatted },
-    { title: 'Streaming Fee', value: token.fees?.streamingFee ?? 'n/a' },
-    { title: 'Mint Fee', value: token.fees?.mintFee ?? 'n/a' },
-    { title: 'Redeem Fee', value: token.fees?.redeemFee ?? 'n/a' },
   ]
+  if (token.symbol !== IndexToken.symbol) {
+    stats.push(
+      { title: 'Streaming Fee', value: token.fees?.streamingFee ?? 'n/a' },
+      { title: 'Mint Fee', value: token.fees?.mintFee ?? 'n/a' },
+      { title: 'Redeem Fee', value: token.fees?.redeemFee ?? 'n/a' },
+      { title: 'NAV', value: formatter.format(nav) }
+    )
+  }
+  console.log('stats', token.symbol, stats)
+
+  return stats
 }
 
 const ProductPage = (props: {
@@ -99,8 +108,6 @@ const ProductPage = (props: {
   const priceChanges = getPricesChanges(marketData.hourlyPrices ?? [])
   const priceChangesFormatted = getFormattedChartPriceChanges(priceChanges)
 
-  const stats = getStatsForToken(token, marketData, currentSupplyFormatted)
-
   const chartWidth = window.outerWidth < 400 ? window.outerWidth : 648
   const chartHeight = window.outerWidth < 400 ? 300 : 400
 
@@ -109,6 +116,8 @@ const ProductPage = (props: {
     marketData.hourlyPrices!,
     isPerpToken(props.token)
   )
+
+  const stats = getStatsForToken(token, marketData, currentSupplyFormatted, nav)
 
   return (
     <Page>

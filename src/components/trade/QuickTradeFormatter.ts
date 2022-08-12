@@ -166,7 +166,8 @@ export function getTradeInfoDataFromEI(
   slippage: number,
   slippageColorCoding: string,
   chainId: number = 1,
-  isBuying: boolean
+  isBuying: boolean,
+  navData: TradeInfoItem
 ): TradeInfoItem[] {
   const setTokenDecimals = isBuying ? buyToken.decimals : sellToken.decimals
   const inputTokenDecimals = sellToken.decimals
@@ -190,6 +191,7 @@ export function getTradeInfoDataFromEI(
       values: [maxPaymentFormatted],
     },
     { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
+    navData,
     {
       title: 'Slippage Tolerance',
       values: [`${slippage.toString()}%`],
@@ -224,7 +226,8 @@ export function getTradeInfoData0x(
   sources: { name: string; proportion: string }[],
   slippage: number,
   slippageColorCoding: string,
-  chainId: number = 1
+  chainId: number = 1,
+  navData: TradeInfoItem
 ): TradeInfoItem[] {
   const minReceive =
     displayFromWei(minOutput, 4) + ' ' + buyToken.symbol ?? '0.0'
