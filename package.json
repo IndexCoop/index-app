@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^2.0.4",
-    "@chakra-ui/react": "^2.2.4",
+    "@chakra-ui/react": "^2.2.8",
     "@dethcrypto/eth-sdk": "^0.3.0",
     "@dethcrypto/eth-sdk-client": "^0.1.6",
     "@elgorditosalsero/react-gtm-hook": "^2.4.0",
