@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { usePrepareSendTransaction, useSendTransaction } from 'wagmi'
+import { useNetwork, useSendTransaction } from 'wagmi'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { OPTIMISM } from 'constants/chains'
+import {
+  zeroExRouterAddress,
+  zeroExRouterOptimismAddress,
+} from 'constants/ethContractAddresses'
 import { ZeroExQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
@@ -13,6 +18,7 @@ import { useBalances } from './useBalance'
 
 export const useTrade = () => {
   const { address } = useWallet()
+  const { chain } = useNetwork()
   const [zeroExQuote, setZeroExQuote] = useState<ZeroExQuote | null>(null)
 
   const txRequest: TransactionRequest = {
@@ -23,10 +29,16 @@ export const useTrade = () => {
     value: BigNumber.from(zeroExQuote?.value ?? 0),
     // gas: undefined, use metamask estimated gas limit
   }
-  const { config } = usePrepareSendTransaction({
-    request: txRequest,
+  const { sendTransaction, status } = useSendTransaction({
+    mode: 'recklesslyUnprepared',
+    chainId: chain?.id,
+    from: address,
+    to:
+      chain?.id === OPTIMISM.chainId
+        ? zeroExRouterOptimismAddress
+        : zeroExRouterAddress,
+    value: BigNumber.from(0),
   })
-  const { sendTransaction, status } = useSendTransaction(config)
   const { getBalance } = useBalances()
 
   const [isTransacting, setIsTransacting] = useState(false)
@@ -34,6 +46,7 @@ export const useTrade = () => {
   const executeTrade = useCallback(
     async (quote: ZeroExQuote | null) => {
       if (!address || !quote) return
+      setZeroExQuote(quote)
 
       const inputToken = quote.inputToken
       const inputTokenAmount = quote.isIssuance
@@ -48,10 +61,18 @@ export const useTrade = () => {
         getBalance(inputToken.symbol) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
-      setZeroExQuote(quote)
+      const req: TransactionRequest = {
+        chainId: Number(quote.chainId),
+        from: address,
+        to: quote.to,
+        data: quote.data,
+        value: BigNumber.from(quote.value ?? 0),
+      }
       try {
         setIsTransacting(true)
-        sendTransaction?.()
+        sendTransaction?.({
+          recklesslySetUnpreparedRequest: req,
+        })
       } catch (error) {
         setIsTransacting(false)
         console.log('Error sending transaction', error)
