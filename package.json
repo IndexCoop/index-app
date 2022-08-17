@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.10.0",
     "@indexcoop/flash-mint-sdk": "^1.1.0",
     "@indexcoop/tokenlists": "^1.23.0",
-    "@rainbow-me/rainbowkit": "^0.4.6",
+    "@rainbow-me/rainbowkit": "^0.4.8",
     "@sentry/react": "7.10.0",
     "@sentry/tracing": "7.10.0",
     "@testing-library/jest-dom": "^5.16.5",
