@@ -160,7 +160,7 @@ export const useTradeExchangeIssuance = () => {
         console.log('Error sending transaction', error)
       }
     },
-    [address]
+    [address, signer]
   )
 
   return { executeEITrade, isTransactingEI }
