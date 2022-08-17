@@ -55,7 +55,6 @@ import {
   getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
   getHasInsufficientFunds,
-  getSlippageColorCoding,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
@@ -113,18 +112,24 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   const { selectMarketDataByToken } = useMarketData()
 
-  const { nav } = useTokenComponents(
-    isBuying ? buyToken : sellToken,
-    selectMarketDataByToken(sellToken),
-    isPerpToken(sellToken)
-  )
-
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
   )
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+  const [navToken, setNavToken] = useState<Token>(buyToken)
+
+  const { nav } = useTokenComponents(
+    navToken,
+    selectMarketDataByToken(sellToken),
+    isPerpToken(sellToken)
+  )
+
+  const [tokenNav, setTokenNav] = useState<number>(nav)
+  useEffect(() => {
+    setTokenNav(nav)
+  }, [nav])
 
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
     useBestQuote()
@@ -232,11 +237,34 @@ const QuickTrade = (props: QuickTradeProps) => {
       ? quoteResult.quotes.exchangeIssuanceLeveraged
       : quoteResult.quotes.exchangeIssuanceZeroEx
 
+    const formattedBuyTokenAmount = getFormattedOuputTokenAmount(
+      bestOption !== QuickTradeBestOption.zeroEx,
+      buyToken.decimals,
+      quoteZeroEx?.minOutput ?? BigNumber.from(0),
+      isBuying
+        ? tradeDataEI?.setTokenAmount
+        : tradeDataEI?.inputOutputTokenAmount
+    )
+
+    console.log('BESTOPTION', bestOption)
+    setBestOption(bestOption)
+    setBuyTokenAmountFormatted(formattedBuyTokenAmount)
+    setNavToken(isBuying ? buyToken : sellToken)
+    const navTokenAmount = isBuying ? buyTokenAmountFormatted : sellTokenAmount
+    const navTokenPrice = Number(navTokenAmount) * tokenNav
+    const proRatedNav = tokenNav * Number(navTokenAmount)
+    const navDivergence = (proRatedNav - navTokenPrice) / proRatedNav
     const navData: TradeInfoItem = {
       title: 'NAV',
       values: [
-        nav.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
+        proRatedNav.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }),
       ],
+      subValue: '(' + navDivergence.toFixed(2) + '%)',
+      tooltip:
+        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt taken on (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV',
     }
     const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(
@@ -259,24 +287,13 @@ const QuickTrade = (props: QuickTradeProps) => {
           navData
         )
 
-    const buyTokenAmountFormatted = getFormattedOuputTokenAmount(
-      bestOption !== QuickTradeBestOption.zeroEx,
-      buyToken.decimals,
-      quoteZeroEx?.minOutput ?? BigNumber.from(0),
-      isBuying
-        ? tradeDataEI?.setTokenAmount
-        : tradeDataEI?.inputOutputTokenAmount
-    )
-
-    console.log('BESTOPTION', bestOption)
-    setBestOption(bestOption)
-    setBuyTokenAmountFormatted(buyTokenAmountFormatted)
     setTradeInfoData(tradeInfoData)
   }
 
   const resetTradeData = () => {
     setBestOption(null)
     setBuyTokenAmountFormatted('0.0')
+    setNavToken(isBuying ? buyToken : sellToken)
     setTradeInfoData([])
   }
 

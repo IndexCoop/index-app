@@ -179,7 +179,6 @@ export function getTradeInfoDataFromEI(
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = getNativeToken(chainId)?.symbol ?? ''
   const offeredFrom = 'Index - Exchange Issuance'
-  console.log('navData', navData)
   return [
     {
       title: getReceivedAmount(isBuying, buyToken, sellToken),
@@ -233,7 +232,6 @@ export function getTradeInfoData0x(
     .filter((source) => Number(source.proportion) > 0)
     .map((source) => source.name)
 
-  console.log('navData', navData)
   return [
     {
       title: 'Minimum ' + buyToken.symbol + ' Received',
