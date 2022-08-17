@@ -171,7 +171,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
         console.log('Error sending transaction', error)
       }
     },
-    [address]
+    [address, signer]
   )
 
   return { executeLevEITrade, isTransactingLevEI }
