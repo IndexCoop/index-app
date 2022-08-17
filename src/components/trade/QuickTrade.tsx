@@ -36,13 +36,13 @@ import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
 import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
 import { useIsSupportedNetwork } from 'hooks/useIsSupportedNetwork'
-import { useSlippage } from 'hooks/useSlippage'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useProtection } from 'providers/Protection/ProtectionProvider'
+import { useSlippage } from 'providers/Slippage/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 
@@ -92,6 +92,9 @@ const QuickTrade = (props: QuickTradeProps) => {
   const supportedNetwork = useIsSupportedNetwork(chain?.id ?? -1)
 
   const { slippage } = useSlippage()
+  useEffect(() => {
+    console.log('ZZZZZZZZZZZZ', slippage)
+  }, [slippage])
 
   const {
     isBuying,
@@ -239,6 +242,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       : quoteResult.quotes.exchangeIssuanceZeroEx
 
     const slippageColorCoding = getSlippageColorCoding(slippage, isDarkMode)
+    console.log('slippage', slippage)
     const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(
           buyToken,
@@ -296,7 +300,7 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   useEffect(() => {
     fetchOptions()
-  }, [buyToken, sellToken, sellTokenAmount])
+  }, [buyToken, sellToken, sellTokenAmount, slippage])
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)

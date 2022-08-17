@@ -5,7 +5,7 @@ import { useNetwork } from 'wagmi'
 
 import { Flex, Text } from '@chakra-ui/react'
 
-import { useSlippage } from 'hooks/useSlippage'
+import { SlippageProvider, useSlippage } from 'providers/Slippage/Slippage'
 
 import FlashMint from './FlashMint'
 import QuickTrade, { QuickTradeProps } from './QuickTrade'
@@ -29,19 +29,21 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
   }
 
   return (
-    <Flex
-      border='2px solid #F7F1E4'
-      borderColor={isDarkMode ? colors.icWhite : colors.black}
-      borderRadius='16px'
-      direction='column'
-      py='20px'
-      px={['16px', paddingX]}
-      height={'100%'}
-    >
-      <Navigation onSelect={onSelectType} selectedType={selectedType} />
-      {selectedType === TradeType.flashMint && <FlashMint {...props} />}
-      {selectedType === TradeType.swap && <QuickTrade {...props} />}
-    </Flex>
+    <SlippageProvider>
+      <Flex
+        border='2px solid #F7F1E4'
+        borderColor={isDarkMode ? colors.icWhite : colors.black}
+        borderRadius='16px'
+        direction='column'
+        py='20px'
+        px={['16px', paddingX]}
+        height={'100%'}
+      >
+        <Navigation onSelect={onSelectType} selectedType={selectedType} />
+        {selectedType === TradeType.flashMint && <FlashMint {...props} />}
+        {selectedType === TradeType.swap && <QuickTrade {...props} />}
+      </Flex>
+    </SlippageProvider>
   )
 }
 
