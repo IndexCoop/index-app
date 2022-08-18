@@ -88,7 +88,7 @@ const FlashMint = (props: QuickTradeProps) => {
   )
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [buyTokenAmount, setBuyTokenAmount] = useState('0')
-  const [isIssue, setIssue] = useState(true)
+  const [isMinting, setIssue] = useState(true)
 
   const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chain?.id)
   const spenderAddressLevEIL = getExchangeIssuanceLeveragedContractAddress(
@@ -98,7 +98,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const buyTokenAmountInWei = toWei(buyTokenAmount, buyToken.decimals)
 
   const { estimatedUSDC, getQuote } = useIssuanceQuote(
-    isIssue,
+    isMinting,
     buyToken,
     buyTokenAmountInWei
   )
@@ -116,7 +116,7 @@ const FlashMint = (props: QuickTradeProps) => {
   } = useApproval(buyToken, FlashMintPerp, buyTokenAmountInWei)
 
   const { handleTrade, isTrading } = useIssuance(
-    isIssue,
+    isMinting,
     buyToken,
     buyTokenAmountInWei,
     estimatedUSDC
@@ -166,7 +166,7 @@ const FlashMint = (props: QuickTradeProps) => {
 
   useEffect(() => {
     getEstimatedBalance()
-  }, [buyTokenAmount, isIssue])
+  }, [buyTokenAmount, isMinting])
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
@@ -182,17 +182,17 @@ const FlashMint = (props: QuickTradeProps) => {
   }, [protection, sellToken, buyToken])
 
   const getIsApproved = () => {
-    if (isIssue) return isAppovedForUSDC
+    if (isMinting) return isAppovedForUSDC
     return isApprovedForMnye
   }
 
   const getIsApproving = () => {
-    if (isIssue) return isApprovingForUSDC
+    if (isMinting) return isApprovingForUSDC
     return isApprovingForMnye
   }
 
   const getOnApprove = () => {
-    if (isIssue) return onApproveForUSDC()
+    if (isMinting) return onApproveForUSDC()
     return onApproveForMnye()
   }
 
@@ -241,11 +241,11 @@ const FlashMint = (props: QuickTradeProps) => {
       return 'Enter an amount'
     }
 
-    if (isIssue && hasInsufficientUSDC) {
+    if (isMinting && hasInsufficientUSDC) {
       return 'Insufficient funds'
     }
 
-    if (!isIssue && hasInsufficientMNYe) {
+    if (!isMinting && hasInsufficientMNYe) {
       return 'Insufficient funds'
     }
 
@@ -279,8 +279,8 @@ const FlashMint = (props: QuickTradeProps) => {
       return
     }
 
-    if (isIssue && hasInsufficientUSDC) return
-    if (!isIssue && hasInsufficientMNYe) return
+    if (isMinting && hasInsufficientUSDC) return
+    if (!isMinting && hasInsufficientMNYe) return
 
     if (!getIsApproved()) {
       await getOnApprove()
@@ -294,8 +294,8 @@ const FlashMint = (props: QuickTradeProps) => {
     if (!address) return true
     return (
       buyTokenAmount === '0' ||
-      (isIssue && hasInsufficientUSDC) ||
-      (!isIssue && hasInsufficientMNYe) ||
+      (isMinting && hasInsufficientUSDC) ||
+      (!isMinting && hasInsufficientMNYe) ||
       isTrading ||
       isNotTradable(props.singleToken)
     )
@@ -331,7 +331,7 @@ const FlashMint = (props: QuickTradeProps) => {
         formattedBalance={formattedBalance(USDC, estimatedUSDC)}
         formattedUSDCBalance={formattedBalance(USDC, getBalance(USDC.symbol))}
         isDarkMode={isDarkMode}
-        isIssue={isIssue}
+        isIssue={isMinting}
         isNarrow={isNarrow}
         onChangeBuyTokenAmount={onChangeBuyTokenAmount}
         onSelectedToken={() => {
