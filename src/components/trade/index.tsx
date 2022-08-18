@@ -5,7 +5,7 @@ import { useNetwork } from 'wagmi'
 
 import { Flex, Text } from '@chakra-ui/react'
 
-import { SlippageProvider, useSlippage } from 'providers/Slippage/Slippage'
+import { SlippageProvider, useSlippage } from 'providers/Slippage'
 
 import FlashMint from './FlashMint'
 import QuickTrade, { QuickTradeProps } from './QuickTrade'

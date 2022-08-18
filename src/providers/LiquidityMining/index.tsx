@@ -18,7 +18,7 @@ import {
 import { GmiIndex } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useWallet } from 'hooks/useWallet'
-import { useMarketData } from 'providers/MarketData/MarketDataProvider'
+import { useMarketData } from 'providers/MarketData'
 import { toWei } from 'utils'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 

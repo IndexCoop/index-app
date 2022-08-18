@@ -41,8 +41,8 @@ import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
-import { useProtection } from 'providers/Protection/ProtectionProvider'
-import { useSlippage } from 'providers/Slippage/Slippage'
+import { useProtection } from 'providers/Protection'
+import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 
@@ -92,10 +92,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   const supportedNetwork = useIsSupportedNetwork(chain?.id ?? -1)
 
   const { slippage } = useSlippage()
-  useEffect(() => {
-    console.log('ZZZZZZZZZZZZ', slippage)
-  }, [slippage])
-
   const {
     isBuying,
     buyToken,
@@ -242,7 +238,6 @@ const QuickTrade = (props: QuickTradeProps) => {
       : quoteResult.quotes.exchangeIssuanceZeroEx
 
     const slippageColorCoding = getSlippageColorCoding(slippage, isDarkMode)
-    console.log('slippage', slippage)
     const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(
           buyToken,

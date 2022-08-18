@@ -1,6 +1,6 @@
 import ProductPage from 'components/product/ProductPage'
 import { Matic2xFLIP } from 'constants/tokens'
-import { useMarketData } from 'providers/MarketData/MarketDataProvider'
+import { useMarketData } from 'providers/MarketData'
 
 const MATIC2xFLIP = () => {
   const { maticflip } = useMarketData()

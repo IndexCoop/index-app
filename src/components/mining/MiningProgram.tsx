@@ -15,7 +15,7 @@ import { StakingBalances } from 'hooks/useBalance'
 import {
   LiquidityMiningProps,
   useLiquidityMining,
-} from 'providers/LiquidityMining/LiquidityMiningProvider'
+} from 'providers/LiquidityMining'
 import { displayFromWei } from 'utils'
 
 const gray = '#848484'

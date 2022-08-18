@@ -40,8 +40,8 @@ import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
 import MNYe from 'components/views/productpages/MNYe'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
-import { MarketDataProvider } from 'providers/MarketData/MarketDataProvider'
-import { ProtectionProvider } from 'providers/Protection/ProtectionProvider'
+import { MarketDataProvider } from 'providers/MarketData'
+import { ProtectionProvider } from 'providers/Protection'
 
 import '@rainbow-me/rainbowkit/dist/index.css'
 

@@ -10,7 +10,7 @@ import indexLogo from 'assets/index-token.png'
 import jpgLogo from 'assets/jpgLogo.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
 import mnyeLogo from 'assets/mnyeLogo.png'
-import { TokenContextKeys } from 'providers/MarketData/MarketDataProvider'
+import { TokenContextKeys } from 'providers/MarketData'
 
 import { MAINNET, OPTIMISM, POLYGON } from './chains'
 

@@ -13,7 +13,7 @@ import Indices, { IndexToken, IndexType, Token } from 'constants/tokens'
 import {
   TokenContextKeys,
   useMarketData,
-} from 'providers/MarketData/MarketDataProvider'
+} from 'providers/MarketData'
 
 /*  Disabling for 1Y time period because it saves
   us a lot of Coingecko API calls.

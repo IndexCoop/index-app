@@ -18,7 +18,6 @@ import { getPriceChartData } from 'components/product/PriceChartData'
 import SectionTitle from 'components/SectionTitle'
 import QuickTradeContainer from 'components/trade'
 import { useUserMarketData } from 'hooks/useUserMarketData'
-import { useMarketData } from 'providers/MarketData/MarketDataProvider'
 import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
 

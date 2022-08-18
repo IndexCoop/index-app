@@ -12,7 +12,7 @@ import { useTokenSupply } from 'hooks/useTokenSupply'
 import {
   TokenMarketDataValues,
   useMarketData,
-} from 'providers/MarketData/MarketDataProvider'
+} from 'providers/MarketData'
 import { displayFromWei } from 'utils'
 import {
   getFormattedChartPriceChanges,

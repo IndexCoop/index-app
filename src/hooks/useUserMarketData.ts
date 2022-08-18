@@ -5,7 +5,7 @@ import { useBalances } from 'hooks/useBalance'
 import {
   TokenMarketDataValues,
   useMarketData,
-} from 'providers/MarketData/MarketDataProvider'
+} from 'providers/MarketData'
 import { displayFromWei } from 'utils'
 import { getPricesChanges } from 'utils/priceChange'
 
