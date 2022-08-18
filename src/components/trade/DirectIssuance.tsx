@@ -2,36 +2,40 @@ import { colors, useICColorMode } from 'styles/colors'
 
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
-import { Token, USDC } from 'constants/tokens'
+import { Token } from 'constants/tokens'
 
 import QuickTradeSelector from './QuickTradeSelector'
 
 type DirectIssuanceProps = {
-  buyToken: Token
-  buyTokenList: Token[]
-  buyTokenAmountFormatted: string | undefined
+  indexToken: Token
+  indexTokenList: Token[]
+  indexTokenAmountFormatted: string | undefined
+  inputOutputToken: Token
   formattedBalance: string
-  formattedUSDCBalance: string
+  formattedBalanceInputOutputToken: string
   isDarkMode: boolean
   isIssue: boolean
   isNarrow: boolean
   onChangeBuyTokenAmount: (token: Token, input: string) => void
-  onSelectedToken: () => void
+  onSelectIndexToken: () => void
+  onSelectInputOutputToken: () => void
   onToggleIssuance: (toggled: boolean) => void
   priceImpact?: { priceImpact: string; colorCoding: string } | undefined
 }
 
 const DirectIssuance = ({
-  buyToken,
-  buyTokenList,
-  buyTokenAmountFormatted,
+  indexToken,
+  indexTokenList,
+  indexTokenAmountFormatted,
+  inputOutputToken,
   formattedBalance,
-  formattedUSDCBalance,
+  formattedBalanceInputOutputToken,
   isDarkMode,
   isIssue,
   isNarrow,
   onChangeBuyTokenAmount,
-  onSelectedToken,
+  onSelectIndexToken,
+  onSelectInputOutputToken,
   onToggleIssuance,
   priceImpact,
 }: DirectIssuanceProps) => (
@@ -63,27 +67,41 @@ const DirectIssuance = ({
           isSelectorDisabled: false,
           isReadOnly: false,
         }}
-        selectedToken={buyToken}
-        selectedTokenAmount={buyTokenAmountFormatted}
+        selectedToken={indexToken}
+        selectedTokenAmount={indexTokenAmountFormatted}
         formattedFiat=''
         priceImpact={priceImpact}
-        tokenList={buyTokenList}
+        tokenList={indexTokenList}
         onChangeInput={onChangeBuyTokenAmount}
-        onSelectedToken={(_) => onSelectedToken()}
+        onSelectedToken={(_) => onSelectIndexToken()}
       />
       <Text marginTop='16px'>
         {isIssue
-          ? 'Estimated USDC required for mint (inc. slippage)'
-          : 'Estimated USDC output for redemption (inc. slippage)'}
+          ? `Estimated ${inputOutputToken.symbol} required for mint (inc. slippage)`
+          : `Estimated ${inputOutputToken.symbol} output for redemption (inc. slippage)`}
       </Text>
       <Flex alignItems='center' marginTop='8px'>
-        <Image src={USDC.image} alt={USDC.name + ' logo'} w='48px' h='48px' />
+        <Flex
+          border='1px solid'
+          borderColor={colors.icGray2}
+          borderRadius='16'
+          cursor='pointer'
+          p='12px'
+          onClick={onSelectInputOutputToken}
+        >
+          <Image
+            src={inputOutputToken.image}
+            alt={inputOutputToken.name + ' logo'}
+            w='30px'
+            h='30px'
+          />
+        </Flex>
         <Text fontWeight='600' marginLeft='16px'>
           {formattedBalance}
         </Text>
       </Flex>
       <Text marginTop='8px' fontSize='12px' fontWeight='400'>
-        USDC Balance: {formattedUSDCBalance}
+        {inputOutputToken.symbol} Balance: {formattedBalanceInputOutputToken}
       </Text>
     </Box>
   </>

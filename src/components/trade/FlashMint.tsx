@@ -53,9 +53,9 @@ const FlashMint = (props: QuickTradeProps) => {
   const chainId = chain?.id
   const { isDarkMode } = useICColorMode()
   const {
-    isOpen: isSelectInputTokenOpen,
-    onOpen: onOpenSelectInputToken,
-    onClose: onCloseSelectInputToken,
+    isOpen: isInputOutputTokenModalOpen,
+    onOpen: onOpenInputOutputTokenModal,
+    onClose: onCloseInputOutputTokenModal,
   } = useDisclosure()
   const {
     isOpen: isIndexTokenModalOpen,
@@ -70,10 +70,10 @@ const FlashMint = (props: QuickTradeProps) => {
   const {
     buyToken: indexToken,
     buyTokenList: indexTokenList,
-    sellToken,
-    sellTokenList,
+    sellToken: inputOutputToken,
+    sellTokenList: inputOutputTokenList,
     changeBuyToken: changeIndexToken,
-    changeSellToken,
+    changeSellToken: changeInputOutputToken,
   } = useTradeTokenLists(chainId, props.singleToken)
   const { getBalance } = useBalances()
 
@@ -103,7 +103,7 @@ const FlashMint = (props: QuickTradeProps) => {
     isApproving: isApprovingForUSDC,
     onApprove: onApproveForUSDC,
     // TODO: change contract based on token
-  } = useApproval(USDC, FlashMintPerp, estimatedUSDC)
+  } = useApproval(inputOutputToken, FlashMintPerp, estimatedUSDC)
 
   const {
     isApproved: isApprovedForMnye,
@@ -170,13 +170,13 @@ const FlashMint = (props: QuickTradeProps) => {
   useEffect(() => {
     if (
       protection.isProtectable &&
-      (sellToken.isDangerous || indexToken.isDangerous)
+      (indexToken.isDangerous || inputOutputToken.isDangerous)
     ) {
       setRequiresProtection(true)
     } else {
       setRequiresProtection(false)
     }
-  }, [indexToken, protection, sellToken])
+  }, [indexToken, inputOutputToken, protection])
 
   const getIsApproved = () => {
     if (isMinting) return isAppovedForUSDC
@@ -284,35 +284,46 @@ const FlashMint = (props: QuickTradeProps) => {
 
   const isNarrow = props.isNarrowVersion ?? false
 
-  const inputTokenBalances = sellTokenList.map(
-    (sellToken) => getBalance(sellToken.symbol) ?? BigNumber.from(0)
+  const inputOutputTokenBalances = inputOutputTokenList.map(
+    (inputOutputToken) =>
+      getBalance(inputOutputToken.symbol) ?? BigNumber.from(0)
   )
   const outputTokenBalances = indexTokenList.map(
     (indexToken) => getBalance(indexToken.symbol) ?? BigNumber.from(0)
   )
-  const inputTokenItems = getSelectTokenListItems(
-    sellTokenList,
-    inputTokenBalances
+  const inputOutputTokenItems = getSelectTokenListItems(
+    inputOutputTokenList,
+    inputOutputTokenBalances
   )
   const indexTokenItems = getSelectTokenListItems(
     indexTokenList,
     outputTokenBalances
   )
 
+  const formattedBalanceIndexToken = formattedBalance(USDC, estimatedUSDC)
+  const formattedBalanceInputOutputToken = formattedBalance(
+    USDC,
+    getBalance(USDC.symbol)
+  )
+
   return (
     <Box mt='32px'>
       <DirectIssuance
-        buyToken={indexToken}
-        buyTokenList={indexTokenList}
-        buyTokenAmountFormatted={indexTokenAmountFormatted}
-        formattedBalance={formattedBalance(USDC, estimatedUSDC)}
-        formattedUSDCBalance={formattedBalance(USDC, getBalance(USDC.symbol))}
+        indexToken={indexToken}
+        indexTokenList={indexTokenList}
+        indexTokenAmountFormatted={indexTokenAmountFormatted}
+        inputOutputToken={inputOutputToken}
+        formattedBalance={formattedBalanceIndexToken}
+        formattedBalanceInputOutputToken={formattedBalanceInputOutputToken}
         isDarkMode={isDarkMode}
         isIssue={isMinting}
         isNarrow={isNarrow}
         onChangeBuyTokenAmount={onChangeIndexTokenAmount}
-        onSelectedToken={() => {
+        onSelectIndexToken={() => {
           if (indexTokenItems.length > 1) onOpenIndexTokenModal()
+        }}
+        onSelectInputOutputToken={() => {
+          if (inputOutputTokenItems.length > 1) onOpenInputOutputTokenModal()
         }}
         onToggleIssuance={(isMinting) => setIsMinting(isMinting)}
         priceImpact={undefined}
@@ -338,13 +349,14 @@ const FlashMint = (props: QuickTradeProps) => {
         )}
       </Flex>
       <SelectTokenModal
-        isOpen={isSelectInputTokenOpen}
-        onClose={onCloseSelectInputToken}
+        isOpen={isInputOutputTokenModalOpen}
+        onClose={onCloseInputOutputTokenModal}
         onSelectedToken={(tokenSymbol) => {
-          changeSellToken(tokenSymbol)
-          onCloseSelectInputToken()
+          // TODO: fetch quote
+          changeInputOutputToken(tokenSymbol)
+          onCloseInputOutputTokenModal()
         }}
-        items={inputTokenItems}
+        items={inputOutputTokenItems}
       />
       <SelectTokenModal
         isOpen={isIndexTokenModalOpen}
