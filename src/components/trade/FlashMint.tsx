@@ -57,6 +57,7 @@ export enum QuickTradeBestOption {
 const FlashMint = (props: QuickTradeProps) => {
   const { address } = useWallet()
   const { chain } = useNetwork()
+  const chainId = chain?.id
   const { isDarkMode } = useICColorMode()
   const {
     isOpen: isSelectInputTokenOpen,
@@ -64,23 +65,23 @@ const FlashMint = (props: QuickTradeProps) => {
     onClose: onCloseSelectInputToken,
   } = useDisclosure()
   const {
-    isOpen: isSelectOutputTokenOpen,
-    onOpen: onOpenSelectOutputToken,
-    onClose: onCloseSelectOutputToken,
+    isOpen: isIndexTokenModalOpen,
+    onOpen: onOpenIndexTokenModal,
+    onClose: onCloseIndexTokenModal,
   } = useDisclosure()
 
   const protection = useProtection()
 
-  const supportedNetwork = useIsSupportedNetwork(chain?.id ?? -1)
+  const supportedNetwork = useIsSupportedNetwork(chainId ?? -1)
 
   const {
     buyToken,
-    buyTokenList,
+    buyTokenList: indexTokenList,
     sellToken,
     sellTokenList,
-    changeBuyToken,
+    changeBuyToken: changeIndexToken,
     changeSellToken,
-  } = useTradeTokenLists(chain?.id, props.singleToken)
+  } = useTradeTokenLists(chainId, props.singleToken)
   const { getBalance } = useBalances()
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
@@ -310,15 +311,15 @@ const FlashMint = (props: QuickTradeProps) => {
   const inputTokenBalances = sellTokenList.map(
     (sellToken) => getBalance(sellToken.symbol) ?? BigNumber.from(0)
   )
-  const outputTokenBalances = buyTokenList.map(
-    (buyToken) => getBalance(buyToken.symbol) ?? BigNumber.from(0)
+  const outputTokenBalances = indexTokenList.map(
+    (indexToken) => getBalance(indexToken.symbol) ?? BigNumber.from(0)
   )
   const inputTokenItems = getSelectTokenListItems(
     sellTokenList,
     inputTokenBalances
   )
-  const outputTokenItems = getSelectTokenListItems(
-    buyTokenList,
+  const indexTokenItems = getSelectTokenListItems(
+    indexTokenList,
     outputTokenBalances
   )
 
@@ -326,7 +327,7 @@ const FlashMint = (props: QuickTradeProps) => {
     <Box mt='32px'>
       <DirectIssuance
         buyToken={buyToken}
-        buyTokenList={buyTokenList}
+        buyTokenList={indexTokenList}
         buyTokenAmountFormatted={buyTokenAmountFormatted}
         formattedBalance={formattedBalance(USDC, estimatedUSDC)}
         formattedUSDCBalance={formattedBalance(USDC, getBalance(USDC.symbol))}
@@ -335,8 +336,7 @@ const FlashMint = (props: QuickTradeProps) => {
         isNarrow={isNarrow}
         onChangeBuyTokenAmount={onChangeBuyTokenAmount}
         onSelectedToken={() => {
-          console.log(inputTokenItems)
-          if (inputTokenItems.length > 1) onOpenSelectOutputToken()
+          if (inputTokenItems.length > 1) onOpenIndexTokenModal()
         }}
         onToggleIssuance={(isIssuance) => setIssue(isIssuance)}
         priceImpact={undefined}
@@ -371,13 +371,13 @@ const FlashMint = (props: QuickTradeProps) => {
         items={inputTokenItems}
       />
       <SelectTokenModal
-        isOpen={isSelectOutputTokenOpen}
-        onClose={onCloseSelectOutputToken}
+        isOpen={isIndexTokenModalOpen}
+        onClose={onCloseIndexTokenModal}
         onSelectedToken={(tokenSymbol) => {
-          changeBuyToken(tokenSymbol)
-          onCloseSelectOutputToken()
+          changeIndexToken(tokenSymbol)
+          onCloseIndexTokenModal()
         }}
-        items={outputTokenItems}
+        items={indexTokenItems}
       />
     </Box>
   )
