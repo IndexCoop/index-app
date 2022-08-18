@@ -8,7 +8,7 @@ import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { MAINNET } from 'constants/chains'
 import { useLiquidityMiningBalances } from 'hooks/useBalance'
-import LiquidityMiningProvider from 'providers/LiquidityMining/LiquidityMiningProvider'
+import LiquidityMiningProvider from 'providers/LiquidityMining'
 
 const programs: Program[] = [
   {

@@ -1,6 +1,6 @@
 import ProductPage from 'components/product/ProductPage'
 import { Bitcoin2xFLIP } from 'constants/tokens'
-import { useMarketData } from 'providers/MarketData/MarketDataProvider'
+import { useMarketData } from 'providers/MarketData'
 
 const BTC2xFLIP = () => {
   const { btcflip } = useMarketData()

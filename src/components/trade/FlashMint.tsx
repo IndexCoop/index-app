@@ -34,7 +34,7 @@ import { useBalances } from 'hooks/useBalance'
 import { useIsSupportedNetwork } from 'hooks/useIsSupportedNetwork'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
-import { useProtection } from 'providers/Protection/ProtectionProvider'
+import { useProtection } from 'providers/Protection'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 

@@ -1,6 +1,6 @@
 import ProductPage from 'components/product/ProductPage'
 import { Ethereum2xFlexibleLeverageIndex } from 'constants/tokens'
-import { useMarketData } from 'providers/MarketData/MarketDataProvider'
+import { useMarketData } from 'providers/MarketData'
 
 const ETH2xFLI = () => {
   const { ethfli } = useMarketData()

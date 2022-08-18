@@ -1,7 +1,7 @@
 import ProductPage from 'components/product/ProductPage'
 import { icETHIndex } from 'constants/tokens'
 import { useIcEthApy } from 'hooks/useIcEthApy'
-import { useMarketData } from 'providers/MarketData/MarketDataProvider'
+import { useMarketData } from 'providers/MarketData'
 import { displayFromWei } from 'utils'
 
 const ICETH = () => {
