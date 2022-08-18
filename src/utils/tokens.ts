@@ -72,6 +72,29 @@ export function getNativeToken(chainId: number | undefined): Token | null {
   }
 }
 
+export const isNotTradableToken = (
+  token: Token | undefined,
+  chainId: number | undefined
+) => {
+  if (!token || !chainId) return false
+  switch (chainId) {
+    case MAINNET.chainId:
+      return (
+        indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
+      )
+    case OPTIMISM.chainId:
+      return (
+        indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
+      )
+    case POLYGON.chainId:
+      return (
+        indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
+      )
+    default:
+      return false
+  }
+}
+
 export function isPerpToken(token: Token): boolean {
   return token.isPerp ? true : false
 }

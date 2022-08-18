@@ -17,14 +17,7 @@ import {
   FlashMintPerp,
   zeroExRouterOptimismAddress,
 } from 'constants/ethContractAddresses'
-import {
-  indexNamesMainnet,
-  indexNamesOptimism,
-  indexNamesPolygon,
-  MNYeIndex,
-  Token,
-  USDC,
-} from 'constants/tokens'
+import { Token, USDC } from 'constants/tokens'
 import { useIssuance } from 'hooks/issuance/useIssuance'
 import { useIssuanceQuote } from 'hooks/issuance/useIssuanceQuote'
 import { useApproval } from 'hooks/useApproval'
@@ -35,6 +28,7 @@ import { useWallet } from 'hooks/useWallet'
 import { useProtection } from 'providers/Protection'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
+import { isNotTradableToken } from 'utils/tokens'
 
 import { ContractExecutionView } from './ContractExecutionView'
 import DirectIssuance from './DirectIssuance'
@@ -74,7 +68,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const supportedNetwork = useIsSupportedNetwork(chainId ?? -1)
 
   const {
-    buyToken,
+    buyToken: indexToken,
     buyTokenList: indexTokenList,
     sellToken,
     sellTokenList,
@@ -86,52 +80,55 @@ const FlashMint = (props: QuickTradeProps) => {
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
   )
-  const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
-  const [buyTokenAmount, setBuyTokenAmount] = useState('0')
-  const [isMinting, setIssue] = useState(true)
+  const [indexTokenAmountFormatted, setIndexTokenAmountFormatted] =
+    useState('0.0')
+  const [indexTokenAmount, setIndexTokenAmount] = useState('0')
+  const [isMinting, setIsMinting] = useState(true)
 
   const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chain?.id)
   const spenderAddressLevEIL = getExchangeIssuanceLeveragedContractAddress(
     chain?.id
   )
 
-  const buyTokenAmountInWei = toWei(buyTokenAmount, buyToken.decimals)
+  const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
 
   const { estimatedUSDC, getQuote } = useIssuanceQuote(
     isMinting,
-    buyToken,
-    buyTokenAmountInWei
+    indexToken,
+    indexTokenAmountWei
   )
 
   const {
     isApproved: isAppovedForUSDC,
     isApproving: isApprovingForUSDC,
     onApprove: onApproveForUSDC,
+    // TODO: change contract based on token
   } = useApproval(USDC, FlashMintPerp, estimatedUSDC)
 
   const {
     isApproved: isApprovedForMnye,
     isApproving: isApprovingForMnye,
     onApprove: onApproveForMnye,
-  } = useApproval(buyToken, FlashMintPerp, buyTokenAmountInWei)
+    // TODO: change contract based on token
+  } = useApproval(indexToken, FlashMintPerp, indexTokenAmountWei)
 
   const { handleTrade, isTrading } = useIssuance(
     isMinting,
-    buyToken,
-    buyTokenAmountInWei,
+    indexToken,
+    indexTokenAmountWei,
     estimatedUSDC
   )
 
-  const hasInsufficientUSDC = getHasInsufficientFunds(
+  const hasInsufficientFundsInputOutputToken = getHasInsufficientFunds(
     false,
     BigNumber.from(estimatedUSDC),
     getBalance(USDC.symbol)
   )
 
-  const hasInsufficientMNYe = getHasInsufficientFunds(
+  const hasInsufficientFundsIndexToken = getHasInsufficientFunds(
     false,
-    buyTokenAmountInWei,
-    getBalance(MNYeIndex.symbol)
+    indexTokenAmountWei,
+    getBalance(indexToken.symbol)
   )
 
   const getContractForBestOption = (
@@ -154,7 +151,7 @@ const FlashMint = (props: QuickTradeProps) => {
 
   const resetTradeData = () => {
     setBestOption(null)
-    setBuyTokenAmountFormatted('0.0')
+    setIndexTokenAmountFormatted('0.0')
   }
 
   /**
@@ -166,20 +163,20 @@ const FlashMint = (props: QuickTradeProps) => {
 
   useEffect(() => {
     getEstimatedBalance()
-  }, [buyTokenAmount, isMinting])
+  }, [indexTokenAmount, isMinting])
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
   useEffect(() => {
     if (
       protection.isProtectable &&
-      (sellToken.isDangerous || buyToken.isDangerous)
+      (sellToken.isDangerous || indexToken.isDangerous)
     ) {
       setRequiresProtection(true)
     } else {
       setRequiresProtection(false)
     }
-  }, [protection, sellToken, buyToken])
+  }, [indexToken, protection, sellToken])
 
   const getIsApproved = () => {
     if (isMinting) return isAppovedForUSDC
@@ -196,22 +193,6 @@ const FlashMint = (props: QuickTradeProps) => {
     return onApproveForMnye()
   }
 
-  const isNotTradable = (token: Token | undefined) => {
-    if (token && chain?.id === MAINNET.chainId)
-      return (
-        indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
-      )
-    if (token && chain?.id === POLYGON.chainId)
-      return (
-        indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
-      )
-    // if (token && chain?.id === OPTIMISM.chainId)
-    //   return (
-    //     indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
-    //   )
-    return false
-  }
-
   /**
    * Get the correct trade button label according to different states
    * @returns string label for trade button
@@ -220,8 +201,8 @@ const FlashMint = (props: QuickTradeProps) => {
     if (!address) return 'Connect Wallet'
     if (!supportedNetwork) return 'Wrong Network'
 
-    if (isNotTradable(props.singleToken)) {
-      let chainName = 'This Network'
+    if (isNotTradableToken(props.singleToken, chainId)) {
+      let chainName = 'this Network'
       switch (chain?.id) {
         case MAINNET.chainId:
           chainName = 'Mainnet'
@@ -237,15 +218,15 @@ const FlashMint = (props: QuickTradeProps) => {
       return `Not Available on ${chainName}`
     }
 
-    if (buyTokenAmount === '0') {
+    if (indexTokenAmount === '0') {
       return 'Enter an amount'
     }
 
-    if (isMinting && hasInsufficientUSDC) {
+    if (isMinting && hasInsufficientFundsInputOutputToken) {
       return 'Insufficient funds'
     }
 
-    if (!isMinting && hasInsufficientMNYe) {
+    if (!isMinting && hasInsufficientFundsIndexToken) {
       return 'Insufficient funds'
     }
 
@@ -263,24 +244,20 @@ const FlashMint = (props: QuickTradeProps) => {
     return 'Trade'
   }
 
-  const onChangeBuyTokenAmount = debounce((token: Token, input: string) => {
+  const onChangeIndexTokenAmount = debounce((token: Token, input: string) => {
     if (input === '') {
       resetTradeData()
       return
     }
     if (!isValidTokenInput(input, token.decimals)) return
-    setBuyTokenAmount(input || '0')
+    setIndexTokenAmount(input || '0')
   }, 1000)
 
   const onClickTradeButton = async () => {
-    if (!address) {
-      // Open connect wallet modal
-      //openConnectModal()
-      return
-    }
+    if (!address) return
 
-    if (isMinting && hasInsufficientUSDC) return
-    if (!isMinting && hasInsufficientMNYe) return
+    if (isMinting && hasInsufficientFundsInputOutputToken) return
+    if (!isMinting && hasInsufficientFundsIndexToken) return
 
     if (!getIsApproved()) {
       await getOnApprove()
@@ -293,11 +270,11 @@ const FlashMint = (props: QuickTradeProps) => {
     if (!supportedNetwork) return true
     if (!address) return true
     return (
-      buyTokenAmount === '0' ||
-      (isMinting && hasInsufficientUSDC) ||
-      (!isMinting && hasInsufficientMNYe) ||
+      indexTokenAmount === '0' ||
+      (isMinting && hasInsufficientFundsInputOutputToken) ||
+      (!isMinting && hasInsufficientFundsIndexToken) ||
       isTrading ||
-      isNotTradable(props.singleToken)
+      isNotTradableToken(props.singleToken, chainId)
     )
   }
 
@@ -325,19 +302,19 @@ const FlashMint = (props: QuickTradeProps) => {
   return (
     <Box mt='32px'>
       <DirectIssuance
-        buyToken={buyToken}
+        buyToken={indexToken}
         buyTokenList={indexTokenList}
-        buyTokenAmountFormatted={buyTokenAmountFormatted}
+        buyTokenAmountFormatted={indexTokenAmountFormatted}
         formattedBalance={formattedBalance(USDC, estimatedUSDC)}
         formattedUSDCBalance={formattedBalance(USDC, getBalance(USDC.symbol))}
         isDarkMode={isDarkMode}
         isIssue={isMinting}
         isNarrow={isNarrow}
-        onChangeBuyTokenAmount={onChangeBuyTokenAmount}
+        onChangeBuyTokenAmount={onChangeIndexTokenAmount}
         onSelectedToken={() => {
           if (indexTokenItems.length > 1) onOpenIndexTokenModal()
         }}
-        onToggleIssuance={(isIssuance) => setIssue(isIssuance)}
+        onToggleIssuance={(isMinting) => setIsMinting(isMinting)}
         priceImpact={undefined}
       />
       <Flex direction='column'>
