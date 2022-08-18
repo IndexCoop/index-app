@@ -335,7 +335,7 @@ const FlashMint = (props: QuickTradeProps) => {
         isNarrow={isNarrow}
         onChangeBuyTokenAmount={onChangeBuyTokenAmount}
         onSelectedToken={() => {
-          if (inputTokenItems.length > 1) onOpenIndexTokenModal()
+          if (indexTokenItems.length > 1) onOpenIndexTokenModal()
         }}
         onToggleIssuance={(isIssuance) => setIssue(isIssuance)}
         priceImpact={undefined}
