@@ -37,16 +37,18 @@ const DirectIssuance = ({
 }: DirectIssuanceProps) => (
   <>
     <Flex>
-      <NavigationButton
-        isSelected={isIssue}
-        onSelect={() => onToggleIssuance(true)}
-        title='Mint'
-      />
-      <NavigationButton
-        isSelected={!isIssue}
-        onSelect={() => onToggleIssuance(false)}
-        title='Redeem'
-      />
+      <Flex border='2px solid' borderColor={colors.icGray3} borderRadius='16'>
+        <NavigationButton
+          isSelected={isIssue}
+          onSelect={() => onToggleIssuance(true)}
+          title='Mint'
+        />
+        <NavigationButton
+          isSelected={!isIssue}
+          onSelect={() => onToggleIssuance(false)}
+          title='Redeem'
+        />
+      </Flex>
     </Flex>
     <Box
       borderColor={isDarkMode ? colors.icWhite : colors.black}
@@ -98,11 +100,11 @@ const NavigationButton = (props: NavigationButtonProps) => {
   const backgroundColor = isDarkMode ? colors.background : colors.white
   return (
     <Text
-      background={props.isSelected ? colors.icGray1 : backgroundColor}
-      borderRadius={32}
-      color={props.isSelected ? colors.icBlack : colors.icGray3}
+      background={props.isSelected ? colors.icGray3 : backgroundColor}
+      borderRadius={14}
+      color={props.isSelected ? colors.white : colors.icGray3}
       cursor='pointer'
-      fontSize='22px'
+      fontSize='21px'
       fontWeight='700'
       padding='4px 12px'
       onClick={props.onSelect}
