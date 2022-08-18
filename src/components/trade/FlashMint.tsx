@@ -4,8 +4,7 @@ import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
 import { useNetwork } from 'wagmi'
 
-import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { Box, Flex, Link, Text, Tooltip, useDisclosure } from '@chakra-ui/react'
+import { Box, Flex, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   getExchangeIssuanceLeveragedContractAddress,
@@ -16,7 +15,6 @@ import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   FlashMintPerp,
-  zeroExRouterAddress,
   zeroExRouterOptimismAddress,
 } from 'constants/ethContractAddresses'
 import {
@@ -40,6 +38,7 @@ import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 
 import { ContractExecutionView } from './ContractExecutionView'
 import DirectIssuance from './DirectIssuance'
+import { ProtectionWarning } from './ProtectionWarning'
 import { QuickTradeProps } from './QuickTrade'
 import {
   formattedBalance,
@@ -380,39 +379,6 @@ const FlashMint = (props: QuickTradeProps) => {
         items={indexTokenItems}
       />
     </Box>
-  )
-}
-
-const ProtectionWarning = (props: { isDarkMode: boolean }) => {
-  const borderColor = props.isDarkMode ? colors.icWhite : colors.black
-  return (
-    <Flex
-      background={colors.icBlue}
-      border='1px solid #000'
-      borderColor={borderColor}
-      borderRadius={10}
-      mb={'16px'}
-      direction='row'
-      textAlign={'center'}
-    >
-      <Text p={4} justifySelf={'center'} color={colors.black}>
-        Not available in your region. Click{' '}
-        <Link href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'>
-          <Text as='u' color={colors.black}>
-            here
-          </Text>
-        </Link>{' '}
-        for more.
-        <Tooltip label='Some of our contracts are unavailable to persons or entities who: are citizens of, reside in, located in, incorporated in, or operate a registered office in the U.S.A.'>
-          <InfoOutlineIcon
-            alignSelf={'flex-end'}
-            my={'auto'}
-            ml={'18px'}
-            color={colors.black}
-          />
-        </Tooltip>
-      </Text>
-    </Flex>
   )
 }
 
