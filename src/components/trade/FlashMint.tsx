@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
-import { useNetwork } from 'wagmi'
 
 import { Box, Flex, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -22,7 +21,7 @@ import { useIssuance } from 'hooks/issuance/useIssuance'
 import { useIssuanceQuote } from 'hooks/issuance/useIssuanceQuote'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
-import { useIsSupportedNetwork } from 'hooks/useIsSupportedNetwork'
+import { useNetwork } from 'hooks/useNetwork'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useProtection } from 'providers/Protection'
@@ -49,8 +48,7 @@ export enum QuickTradeBestOption {
 
 const FlashMint = (props: QuickTradeProps) => {
   const { address } = useWallet()
-  const { chain } = useNetwork()
-  const chainId = chain?.id
+  const { chainId, isMainnet, isSupportedNetwork } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
     isOpen: isInputOutputTokenModalOpen,
@@ -64,8 +62,6 @@ const FlashMint = (props: QuickTradeProps) => {
   } = useDisclosure()
 
   const protection = useProtection()
-
-  const supportedNetwork = useIsSupportedNetwork(chainId ?? -1)
 
   const {
     buyToken: indexToken,
@@ -85,10 +81,9 @@ const FlashMint = (props: QuickTradeProps) => {
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
   const [isMinting, setIsMinting] = useState(true)
 
-  const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chain?.id)
-  const spenderAddressLevEIL = getExchangeIssuanceLeveragedContractAddress(
-    chain?.id
-  )
+  const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chainId)
+  const spenderAddressLevEIL =
+    getExchangeIssuanceLeveragedContractAddress(chainId)
 
   const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
 
@@ -146,7 +141,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const contractBestOption = getContractForBestOption(bestOption)
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
     contractBestOption,
-    chain?.id
+    chainId
   )
 
   const resetTradeData = () => {
@@ -199,11 +194,11 @@ const FlashMint = (props: QuickTradeProps) => {
    */
   const getTradeButtonLabel = () => {
     if (!address) return 'Connect Wallet'
-    if (!supportedNetwork) return 'Wrong Network'
+    if (!isSupportedNetwork) return 'Wrong Network'
 
     if (isNotTradableToken(props.singleToken, chainId)) {
       let chainName = 'this Network'
-      switch (chain?.id) {
+      switch (chainId) {
         case MAINNET.chainId:
           chainName = 'Mainnet'
           break
@@ -267,7 +262,7 @@ const FlashMint = (props: QuickTradeProps) => {
   }
 
   const getButtonDisabledState = () => {
-    if (!supportedNetwork) return true
+    if (!isSupportedNetwork) return true
     if (!address) return true
     return (
       indexTokenAmount === '0' ||
@@ -330,7 +325,7 @@ const FlashMint = (props: QuickTradeProps) => {
       />
       <Flex direction='column'>
         {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
-        <Flex my='8px'>{chain?.id === 1 && <FlashbotsRpcMessage />}</Flex>
+        <Flex my='8px'>{isMainnet && <FlashbotsRpcMessage />}</Flex>
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}
