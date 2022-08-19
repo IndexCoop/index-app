@@ -84,10 +84,9 @@ const FlashMint = (props: QuickTradeProps) => {
       : getBlockExplorerContractUrl(contractAddress, chainId)
 
   const {
-    // TODO: rename
-    isApproved: isAppovedForUSDC,
-    isApproving: isApprovingForUSDC,
-    onApprove: onApproveForUSDC,
+    isApproved: isApprovedInputOutputToken,
+    isApproving: isApprovingInputOutputToken,
+    onApprove: onApproveInputOutputToken,
   } = useApproval(
     inputOutputToken,
     contractAddress ?? undefined,
@@ -95,10 +94,9 @@ const FlashMint = (props: QuickTradeProps) => {
   )
 
   const {
-    // TODO: rename
-    isApproved: isApprovedForMnye,
-    isApproving: isApprovingForMnye,
-    onApprove: onApproveForMnye,
+    isApproved: isApprovedIndexToken,
+    isApproving: isApprovingIndexToken,
+    onApprove: onApproveIndexToken,
   } = useApproval(indexToken, contractAddress ?? undefined, indexTokenAmountWei)
 
   const { handleTrade, isTrading } = useIssuance(
@@ -134,18 +132,18 @@ const FlashMint = (props: QuickTradeProps) => {
   }, [indexToken, indexTokenAmount, inputOutputToken, isMinting])
 
   const getIsApproved = () => {
-    if (isMinting) return isAppovedForUSDC
-    return isApprovedForMnye
+    if (isMinting) return isApprovedInputOutputToken
+    return isApprovedIndexToken
   }
 
   const getIsApproving = () => {
-    if (isMinting) return isApprovingForUSDC
-    return isApprovingForMnye
+    if (isMinting) return isApprovingInputOutputToken
+    return isApprovingIndexToken
   }
 
   const getOnApprove = () => {
-    if (isMinting) return onApproveForUSDC()
-    return onApproveForMnye()
+    if (isMinting) return onApproveInputOutputToken()
+    return onApproveIndexToken()
   }
 
   const getTradeButtonDisabledState = () => {
