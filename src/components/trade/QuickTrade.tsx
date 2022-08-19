@@ -4,16 +4,8 @@ import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
 import { useNetwork } from 'wagmi'
 
-import { InfoOutlineIcon, UpDownIcon } from '@chakra-ui/icons'
-import {
-  Box,
-  Flex,
-  IconButton,
-  Link,
-  Text,
-  Tooltip,
-  useDisclosure,
-} from '@chakra-ui/react'
+import { UpDownIcon } from '@chakra-ui/icons'
+import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   getExchangeIssuanceLeveragedContractAddress,
@@ -47,6 +39,7 @@ import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 
 import { ContractExecutionView } from './ContractExecutionView'
+import { ProtectionWarning } from './ProtectionWarning'
 import {
   formattedFiat,
   getFormattedOuputTokenAmount,
@@ -104,7 +97,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     changeBuyToken,
     changeSellToken,
     swapTokenLists,
-  } = useTradeTokenLists(chain?.id, props.singleToken)
+  } = useTradeTokenLists(props.singleToken)
   const { getBalance } = useBalances()
 
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
@@ -211,21 +204,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     }
 
     console.log(quoteResult)
-
-    // todo: need this?
-    // const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
-    // let shouldUseEI0x = true
-    // const inputTokenAmountEI0x =
-    //   bestOptionResult.exchangeIssuanceData?.inputTokenAmount
-    // if (inputTokenAmountEI0x && inputTokenAmountEI0x.gt(inputBalance)) {
-    //   shouldUseEI0x = false
-    // }
-    // let shouldUseEILev = true
-    // const inputTokenAmountEILev =
-    //   bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount
-    // if (inputTokenAmountEILev && inputTokenAmountEILev.gt(inputBalance)) {
-    //   shouldUseEILev = false
-    // }
 
     const bestOption = getBestOptionFromQuoteType(quoteResult.bestQuote)
     const bestOptionIs0x = bestOption === QuickTradeBestOption.zeroEx
@@ -612,40 +590,6 @@ const QuickTrade = (props: QuickTradeProps) => {
         items={outputTokenItems}
       />
     </Box>
-  )
-}
-// TODO: fetching error
-
-const ProtectionWarning = (props: { isDarkMode: boolean }) => {
-  const borderColor = props.isDarkMode ? colors.icWhite : colors.black
-  return (
-    <Flex
-      background={colors.icBlue}
-      border='1px solid #000'
-      borderColor={borderColor}
-      borderRadius={10}
-      mb={'16px'}
-      direction='row'
-      textAlign={'center'}
-    >
-      <Text p={4} justifySelf={'center'} color={colors.black}>
-        Not available in your region. Click{' '}
-        <Link href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'>
-          <Text as='u' color={colors.black}>
-            here
-          </Text>
-        </Link>{' '}
-        for more.
-        <Tooltip label='Some of our contracts are unavailable to persons or entities who: are citizens of, reside in, located in, incorporated in, or operate a registered office in the U.S.A.'>
-          <InfoOutlineIcon
-            alignSelf={'flex-end'}
-            my={'auto'}
-            ml={'18px'}
-            color={colors.black}
-          />
-        </Tooltip>
-      </Text>
-    </Flex>
   )
 }
 

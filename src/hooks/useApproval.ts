@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { constants, Contract, utils } from 'ethers'
-import { useContract, useContractRead, useNetwork } from 'wagmi'
+import { useContractRead, useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
