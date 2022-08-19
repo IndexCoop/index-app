@@ -205,21 +205,6 @@ const QuickTrade = (props: QuickTradeProps) => {
 
     console.log(quoteResult)
 
-    // todo: need this?
-    // const inputBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
-    // let shouldUseEI0x = true
-    // const inputTokenAmountEI0x =
-    //   bestOptionResult.exchangeIssuanceData?.inputTokenAmount
-    // if (inputTokenAmountEI0x && inputTokenAmountEI0x.gt(inputBalance)) {
-    //   shouldUseEI0x = false
-    // }
-    // let shouldUseEILev = true
-    // const inputTokenAmountEILev =
-    //   bestOptionResult.leveragedExchangeIssuanceData?.inputTokenAmount
-    // if (inputTokenAmountEILev && inputTokenAmountEILev.gt(inputBalance)) {
-    //   shouldUseEILev = false
-    // }
-
     const bestOption = getBestOptionFromQuoteType(quoteResult.bestQuote)
     const bestOptionIs0x = bestOption === QuickTradeBestOption.zeroEx
     const bestOptionIsLevEI =

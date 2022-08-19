@@ -22,6 +22,8 @@ import {
   useFlashMintQuote,
 } from 'hooks/useFlashMintQuote'
 import { useNetwork } from 'hooks/useNetwork'
+import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
+import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useProtection } from 'providers/Protection'
@@ -55,6 +57,9 @@ const FlashMint = (props: QuickTradeProps) => {
     onOpen: onOpenIndexTokenModal,
     onClose: onCloseIndexTokenModal,
   } = useDisclosure()
+  const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance()
+  const { executeLevEITrade, isTransactingLevEI } =
+    useTradeLeveragedExchangeIssuance()
   const {
     buyToken: indexToken,
     buyTokenList: indexTokenList,
@@ -99,12 +104,7 @@ const FlashMint = (props: QuickTradeProps) => {
     onApprove: onApproveIndexToken,
   } = useApproval(indexToken, contractAddress ?? undefined, indexTokenAmountWei)
 
-  const { handleTrade, isTrading } = useIssuance(
-    isMinting,
-    indexToken,
-    indexTokenAmountWei,
-    inputOutputTokenAmount
-  )
+  const { handleTrade, isTrading } = useIssuance()
 
   const hasInsufficientFundsInputOutputToken = getHasInsufficientFunds(
     false,
@@ -131,19 +131,19 @@ const FlashMint = (props: QuickTradeProps) => {
     )
   }, [indexToken, indexTokenAmount, inputOutputToken, isMinting])
 
-  const getIsApproved = () => {
+  const approve = () => {
+    if (isMinting) return onApproveInputOutputToken()
+    return onApproveIndexToken()
+  }
+
+  const isApproved = () => {
     if (isMinting) return isApprovedInputOutputToken
     return isApprovedIndexToken
   }
 
-  const getIsApproving = () => {
+  const isApproving = () => {
     if (isMinting) return isApprovingInputOutputToken
     return isApprovingIndexToken
-  }
-
-  const getOnApprove = () => {
-    if (isMinting) return onApproveInputOutputToken()
-    return onApproveIndexToken()
   }
 
   const getTradeButtonDisabledState = () => {
@@ -195,11 +195,11 @@ const FlashMint = (props: QuickTradeProps) => {
       return 'Insufficient funds'
     }
 
-    if (getIsApproving()) {
+    if (isApproving()) {
       return 'Approving...'
     }
 
-    if (!getIsApproved()) {
+    if (!isApproved()) {
       return 'Approve Tokens'
     }
     if (isTrading) {
@@ -225,15 +225,40 @@ const FlashMint = (props: QuickTradeProps) => {
 
   const onClickTradeButton = async () => {
     if (!address) return
-
     if (isMinting && hasInsufficientFundsInputOutputToken) return
     if (!isMinting && hasInsufficientFundsIndexToken) return
 
-    if (!getIsApproved()) {
-      await getOnApprove()
+    if (!isApproved()) {
+      await approve()
       return
     }
-    await handleTrade()
+
+    // Trade depending on quote result available
+    const quotes = quoteResult.quotes
+    if (!quotes || !chainId) return null
+
+    if (quotes.flashMintPerp) {
+      await handleTrade(
+        isMinting,
+        indexToken,
+        indexTokenAmountWei,
+        inputOutputTokenAmount
+      )
+      resetData()
+      return
+    }
+
+    if (quotes.flashMintLeveraged) {
+      await executeLevEITrade(quotes.flashMintLeveraged, slippage)
+      resetData()
+      return
+    }
+
+    if (quotes.flashMintZeroEx) {
+      await executeEITrade(quotes.flashMintZeroEx, slippage)
+      resetData()
+      return
+    }
   }
 
   const inputOutputTokenBalances = inputOutputTokenList.map(
@@ -254,7 +279,12 @@ const FlashMint = (props: QuickTradeProps) => {
 
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = getTradeButtonDisabledState()
-  const isLoading = isFetchingQuote || getIsApproving()
+  const isLoading =
+    isApproving() ||
+    isFetchingQuote ||
+    isTrading ||
+    isTransactingEI ||
+    isTransactingLevEI
   const isNarrow = props.isNarrowVersion ?? false
 
   const inputOutputTokenAmountFormatted = formattedBalance(
