@@ -67,7 +67,7 @@ const FlashMint = (props: QuickTradeProps) => {
     sellTokenList: inputOutputTokenList,
     changeBuyToken: changeIndexToken,
     changeSellToken: changeInputOutputToken,
-  } = useTradeTokenLists(chainId, props.singleToken)
+  } = useTradeTokenLists(props.singleToken, true)
   const { getBalance } = useBalances()
   const { slippage } = useSlippage()
 
