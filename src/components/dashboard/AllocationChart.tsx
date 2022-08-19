@@ -74,7 +74,7 @@ const AllocationChart = (props: { positions: Position[] }) => {
   return (
     <Flex
       align='center'
-      border='2px solid #fff'
+      border='1px solid #fff'
       borderColor={dividerColor}
       borderRadius='16px'
       direction='column'

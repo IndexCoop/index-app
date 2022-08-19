@@ -31,8 +31,8 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
   return (
     <SlippageProvider>
       <Flex
-        border='2px solid #F7F1E4'
-        borderColor={isDarkMode ? colors.icWhite : colors.black}
+        border='1px solid'
+        borderColor={isDarkMode ? colors.icGray3 : colors.icGray2}
         borderRadius='16px'
         direction='column'
         py='20px'
