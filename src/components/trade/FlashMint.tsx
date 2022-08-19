@@ -209,14 +209,14 @@ const FlashMint = (props: QuickTradeProps) => {
     return 'Trade'
   }
 
-  const resetTradeData = () => {
-    // TODO: reset quote?
+  const resetData = () => {
+    setIndexTokenAmount('0')
     setIndexTokenAmountFormatted('0.0')
   }
 
   const onChangeIndexTokenAmount = debounce((token: Token, input: string) => {
     if (input === '') {
-      resetTradeData()
+      resetData()
       return
     }
     if (!isValidTokenInput(input, token.decimals)) return
