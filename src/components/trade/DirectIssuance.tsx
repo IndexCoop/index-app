@@ -11,8 +11,8 @@ type DirectIssuanceProps = {
   indexTokenList: Token[]
   indexTokenAmountFormatted: string | undefined
   inputOutputToken: Token
-  formattedBalance: string
-  formattedBalanceInputOutputToken: string
+  inputOutputTokenAmountFormatted: string
+  inputOutputTokenBalanceFormatted: string
   isDarkMode: boolean
   isIssue: boolean
   isNarrow: boolean
@@ -28,8 +28,8 @@ const DirectIssuance = ({
   indexTokenList,
   indexTokenAmountFormatted,
   inputOutputToken,
-  formattedBalance,
-  formattedBalanceInputOutputToken,
+  inputOutputTokenAmountFormatted,
+  inputOutputTokenBalanceFormatted,
   isDarkMode,
   isIssue,
   isNarrow,
@@ -97,11 +97,11 @@ const DirectIssuance = ({
           />
         </Flex>
         <Text fontWeight='600' marginLeft='16px'>
-          {formattedBalance}
+          {inputOutputTokenAmountFormatted}
         </Text>
       </Flex>
       <Text marginTop='8px' fontSize='12px' fontWeight='400'>
-        {inputOutputToken.symbol} Balance: {formattedBalanceInputOutputToken}
+        {inputOutputToken.symbol} Balance: {inputOutputTokenBalanceFormatted}
       </Text>
     </Box>
   </>

@@ -4,16 +4,8 @@ import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
 import { useNetwork } from 'wagmi'
 
-import { InfoOutlineIcon, UpDownIcon } from '@chakra-ui/icons'
-import {
-  Box,
-  Flex,
-  IconButton,
-  Link,
-  Text,
-  Tooltip,
-  useDisclosure,
-} from '@chakra-ui/react'
+import { UpDownIcon } from '@chakra-ui/icons'
+import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   getExchangeIssuanceLeveragedContractAddress,

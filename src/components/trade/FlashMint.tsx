@@ -12,19 +12,20 @@ import {
 
 import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import {
-  FlashMintPerp,
-  zeroExRouterOptimismAddress,
-} from 'constants/ethContractAddresses'
-import { Token, USDC } from 'constants/tokens'
+import { FlashMintPerp } from 'constants/ethContractAddresses'
+import { Token } from 'constants/tokens'
 import { useIssuance } from 'hooks/issuance/useIssuance'
-import { useIssuanceQuote } from 'hooks/issuance/useIssuanceQuote'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
+import {
+  FlashMintQuoteResult,
+  useFlashMintQuote,
+} from 'hooks/useFlashMintQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useProtection } from 'providers/Protection'
+import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { isNotTradableToken } from 'utils/tokens'
@@ -40,15 +41,9 @@ import {
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButton } from './TradeButton'
 
-export enum QuickTradeBestOption {
-  zeroEx,
-  exchangeIssuance,
-  leveragedExchangeIssuance,
-}
-
 const FlashMint = (props: QuickTradeProps) => {
   const { address } = useWallet()
-  const { chainId, isMainnet, isSupportedNetwork } = useNetwork()
+  const { chainId, isSupportedNetwork } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
     isOpen: isInputOutputTokenModalOpen,
@@ -60,9 +55,6 @@ const FlashMint = (props: QuickTradeProps) => {
     onOpen: onOpenIndexTokenModal,
     onClose: onCloseIndexTokenModal,
   } = useDisclosure()
-
-  const protection = useProtection()
-
   const {
     buyToken: indexToken,
     buyTokenList: indexTokenList,
@@ -72,52 +64,54 @@ const FlashMint = (props: QuickTradeProps) => {
     changeSellToken: changeInputOutputToken,
   } = useTradeTokenLists(chainId, props.singleToken)
   const { getBalance } = useBalances()
+  const { slippage } = useSlippage()
 
-  const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
-    null
-  )
   const [indexTokenAmountFormatted, setIndexTokenAmountFormatted] =
     useState('0.0')
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
   const [isMinting, setIsMinting] = useState(true)
 
-  const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chainId)
-  const spenderAddressLevEIL =
-    getExchangeIssuanceLeveragedContractAddress(chainId)
-
   const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
 
-  const { estimatedUSDC, getQuote } = useIssuanceQuote(
-    isMinting,
-    indexToken,
-    indexTokenAmountWei
-  )
+  const { fetchQuote, isFetchingQuote, quoteResult } = useFlashMintQuote()
+  const inputOutputTokenAmount =
+    getQuoteAmount(quoteResult, chainId) ?? BigNumber.from(0)
+
+  const contractAddress = getContractForQuote(quoteResult, chainId)
+  const contractBlockExplorerUrl =
+    contractAddress === null
+      ? null
+      : getBlockExplorerContractUrl(contractAddress, chainId)
 
   const {
+    // TODO: rename
     isApproved: isAppovedForUSDC,
     isApproving: isApprovingForUSDC,
     onApprove: onApproveForUSDC,
-    // TODO: change contract based on token
-  } = useApproval(inputOutputToken, FlashMintPerp, estimatedUSDC)
+  } = useApproval(
+    inputOutputToken,
+    contractAddress ?? undefined,
+    inputOutputTokenAmount
+  )
 
   const {
+    // TODO: rename
     isApproved: isApprovedForMnye,
     isApproving: isApprovingForMnye,
     onApprove: onApproveForMnye,
-    // TODO: change contract based on token
-  } = useApproval(indexToken, FlashMintPerp, indexTokenAmountWei)
+  } = useApproval(indexToken, contractAddress ?? undefined, indexTokenAmountWei)
 
   const { handleTrade, isTrading } = useIssuance(
     isMinting,
     indexToken,
     indexTokenAmountWei,
-    estimatedUSDC
+    inputOutputTokenAmount
   )
 
   const hasInsufficientFundsInputOutputToken = getHasInsufficientFunds(
     false,
-    BigNumber.from(estimatedUSDC),
-    getBalance(USDC.symbol)
+    inputOutputTokenAmount,
+    getBalance(inputOutputToken.symbol)
   )
 
   const hasInsufficientFundsIndexToken = getHasInsufficientFunds(
@@ -126,52 +120,18 @@ const FlashMint = (props: QuickTradeProps) => {
     getBalance(indexToken.symbol)
   )
 
-  const getContractForBestOption = (
-    bestOption: QuickTradeBestOption | null
-  ): string => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return spenderAddress0x
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return spenderAddressLevEIL
-      default:
-        return zeroExRouterOptimismAddress
-    }
-  }
-  const contractBestOption = getContractForBestOption(bestOption)
-  const contractBlockExplorerUrl = getBlockExplorerContractUrl(
-    contractBestOption,
-    chainId
-  )
-
-  const resetTradeData = () => {
-    setBestOption(null)
-    setIndexTokenAmountFormatted('0.0')
-  }
-
-  /**
-   * Issuance Contract
-   */
-  const getEstimatedBalance = () => {
-    getQuote()
-  }
-
   useEffect(() => {
-    getEstimatedBalance()
-  }, [indexTokenAmount, isMinting])
-
-  // Does user need protecting from productive assets?
-  const [requiresProtection, setRequiresProtection] = useState(false)
-  useEffect(() => {
-    if (
-      protection.isProtectable &&
-      (indexToken.isDangerous || inputOutputToken.isDangerous)
-    ) {
-      setRequiresProtection(true)
-    } else {
-      setRequiresProtection(false)
-    }
-  }, [indexToken, inputOutputToken, protection])
+    const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
+    fetchQuote(
+      isMinting,
+      indexToken,
+      inputOutputToken,
+      indexTokenAmountWei,
+      0,
+      0,
+      slippage
+    )
+  }, [indexToken, indexTokenAmount, inputOutputToken, isMinting])
 
   const getIsApproved = () => {
     if (isMinting) return isAppovedForUSDC
@@ -186,6 +146,18 @@ const FlashMint = (props: QuickTradeProps) => {
   const getOnApprove = () => {
     if (isMinting) return onApproveForUSDC()
     return onApproveForMnye()
+  }
+
+  const getTradeButtonDisabledState = () => {
+    if (!isSupportedNetwork) return true
+    if (!address) return true
+    return (
+      indexTokenAmount === '0' ||
+      (isMinting && hasInsufficientFundsInputOutputToken) ||
+      (!isMinting && hasInsufficientFundsIndexToken) ||
+      isTrading ||
+      isNotTradableToken(props.singleToken, chainId)
+    )
   }
 
   /**
@@ -239,6 +211,11 @@ const FlashMint = (props: QuickTradeProps) => {
     return 'Trade'
   }
 
+  const resetTradeData = () => {
+    // TODO: reset quote?
+    setIndexTokenAmountFormatted('0.0')
+  }
+
   const onChangeIndexTokenAmount = debounce((token: Token, input: string) => {
     if (input === '') {
       resetTradeData()
@@ -261,24 +238,6 @@ const FlashMint = (props: QuickTradeProps) => {
     await handleTrade()
   }
 
-  const getButtonDisabledState = () => {
-    if (!isSupportedNetwork) return true
-    if (!address) return true
-    return (
-      indexTokenAmount === '0' ||
-      (isMinting && hasInsufficientFundsInputOutputToken) ||
-      (!isMinting && hasInsufficientFundsIndexToken) ||
-      isTrading ||
-      isNotTradableToken(props.singleToken, chainId)
-    )
-  }
-
-  const buttonLabel = getTradeButtonLabel()
-  const isButtonDisabled = getButtonDisabledState()
-  const isLoading = getIsApproving()
-
-  const isNarrow = props.isNarrowVersion ?? false
-
   const inputOutputTokenBalances = inputOutputTokenList.map(
     (inputOutputToken) =>
       getBalance(inputOutputToken.symbol) ?? BigNumber.from(0)
@@ -295,10 +254,18 @@ const FlashMint = (props: QuickTradeProps) => {
     outputTokenBalances
   )
 
-  const formattedBalanceIndexToken = formattedBalance(USDC, estimatedUSDC)
-  const formattedBalanceInputOutputToken = formattedBalance(
-    USDC,
-    getBalance(USDC.symbol)
+  const buttonLabel = getTradeButtonLabel()
+  const isButtonDisabled = getTradeButtonDisabledState()
+  const isLoading = isFetchingQuote || getIsApproving()
+  const isNarrow = props.isNarrowVersion ?? false
+
+  const inputOutputTokenAmountFormatted = formattedBalance(
+    inputOutputToken,
+    inputOutputTokenAmount
+  )
+  const inputOutputTokenBalanceFormatted = formattedBalance(
+    inputOutputToken,
+    getBalance(inputOutputToken.symbol)
   )
 
   return (
@@ -308,8 +275,8 @@ const FlashMint = (props: QuickTradeProps) => {
         indexTokenList={indexTokenList}
         indexTokenAmountFormatted={indexTokenAmountFormatted}
         inputOutputToken={inputOutputToken}
-        formattedBalance={formattedBalanceIndexToken}
-        formattedBalanceInputOutputToken={formattedBalanceInputOutputToken}
+        inputOutputTokenAmountFormatted={inputOutputTokenAmountFormatted}
+        inputOutputTokenBalanceFormatted={inputOutputTokenBalanceFormatted}
         isDarkMode={isDarkMode}
         isIssue={isMinting}
         isNarrow={isNarrow}
@@ -323,31 +290,20 @@ const FlashMint = (props: QuickTradeProps) => {
         onToggleIssuance={(isMinting) => setIsMinting(isMinting)}
         priceImpact={undefined}
       />
-      <Flex direction='column'>
-        {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
-        <Flex my='8px'>{isMainnet && <FlashbotsRpcMessage />}</Flex>
-        {!requiresProtection && (
-          <TradeButton
-            label={buttonLabel}
-            background={isDarkMode ? colors.icWhite : colors.icBlue}
-            isDisabled={isButtonDisabled}
-            isLoading={isLoading}
-            onClick={onClickTradeButton}
-          />
-        )}
-        {bestOption !== null && (
-          <ContractExecutionView
-            blockExplorerUrl={contractBlockExplorerUrl}
-            contractAddress={contractBestOption}
-            name=''
-          />
-        )}
-      </Flex>
+      <TradeButtonContainer
+        indexToken={indexToken}
+        inputOutputToken={inputOutputToken}
+        buttonLabel={buttonLabel}
+        isButtonDisabled={isButtonDisabled}
+        isLoading={isLoading}
+        onClickTradeButton={onClickTradeButton}
+        contractAddress={contractAddress}
+        contractExplorerUrl={contractBlockExplorerUrl}
+      />
       <SelectTokenModal
         isOpen={isInputOutputTokenModalOpen}
         onClose={onCloseInputOutputTokenModal}
         onSelectedToken={(tokenSymbol) => {
-          // TODO: fetch quote
           changeInputOutputToken(tokenSymbol)
           onCloseInputOutputTokenModal()
         }}
@@ -363,6 +319,112 @@ const FlashMint = (props: QuickTradeProps) => {
         items={indexTokenItems}
       />
     </Box>
+  )
+}
+
+const getContractForQuote = (
+  quoteResult: FlashMintQuoteResult | null,
+  chainId: number | undefined
+): string | null => {
+  const quotes = quoteResult?.quotes
+  if (!quotes || !chainId) return null
+
+  if (quotes.flashMintPerp) {
+    return FlashMintPerp
+  }
+
+  if (quotes.flashMintLeveraged) {
+    return getExchangeIssuanceLeveragedContractAddress(chainId)
+  }
+
+  if (quotes.flashMintZeroEx) {
+    return getExchangeIssuanceZeroExContractAddress(chainId)
+  }
+
+  return null
+}
+
+const getQuoteAmount = (
+  quoteResult: FlashMintQuoteResult | null,
+  chainId: number | undefined
+): BigNumber | null => {
+  const quotes = quoteResult?.quotes
+  if (!quotes || !chainId) return null
+
+  if (quotes.flashMintPerp) {
+    return quotes.flashMintPerp.inputOutputTokenAmount
+  }
+
+  if (quotes.flashMintLeveraged) {
+    return quotes.flashMintLeveraged.inputOutputTokenAmount
+  }
+
+  if (quotes.flashMintZeroEx) {
+    return quotes.flashMintZeroEx.inputOutputTokenAmount
+  }
+
+  return null
+}
+
+type TradeButtonContainerProps = {
+  indexToken: Token
+  inputOutputToken: Token
+  buttonLabel: string
+  isButtonDisabled: boolean
+  isLoading: boolean
+  onClickTradeButton: () => void
+  contractAddress: string | null
+  contractExplorerUrl: string | null
+}
+
+const TradeButtonContainer = ({
+  indexToken,
+  inputOutputToken,
+  buttonLabel,
+  isButtonDisabled,
+  isLoading,
+  onClickTradeButton,
+  contractAddress,
+  contractExplorerUrl,
+}: TradeButtonContainerProps) => {
+  const { isDarkMode } = useICColorMode()
+  const { isMainnet } = useNetwork()
+  const protection = useProtection()
+
+  // Does user need protecting from productive assets?
+  const [requiresProtection, setRequiresProtection] = useState(false)
+  useEffect(() => {
+    if (
+      protection.isProtectable &&
+      (indexToken.isDangerous || inputOutputToken.isDangerous)
+    ) {
+      setRequiresProtection(true)
+    } else {
+      setRequiresProtection(false)
+    }
+  }, [indexToken, inputOutputToken, protection])
+
+  return (
+    <Flex direction='column'>
+      {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
+      <Flex my='8px'>{isMainnet && <FlashbotsRpcMessage />}</Flex>
+      {!requiresProtection && (
+        <TradeButton
+          label={buttonLabel}
+          background={isDarkMode ? colors.icWhite : colors.icBlue}
+          isDisabled={isButtonDisabled}
+          isLoading={isLoading}
+          onClick={onClickTradeButton}
+        />
+      )}
+      {contractAddress && contractExplorerUrl && (
+        <ContractExecutionView
+          blockExplorerUrl={contractExplorerUrl}
+          contractAddress={contractAddress}
+          name=''
+        />
+      )}
+    </Flex>
   )
 }
 
