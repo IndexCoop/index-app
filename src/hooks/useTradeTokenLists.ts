@@ -90,6 +90,14 @@ export const useTradeTokenLists = (
     if (filteredList.length < 0) {
       return
     }
+    if (isBuying) {
+      const newSellTokenList = getCurrencyTokensForToken(
+        singleToken ?? filteredList[0],
+        chainId ?? 1
+      )
+      setSellTokenList(newSellTokenList)
+      setSellToken(newSellTokenList[0])
+    }
     setBuyToken(filteredList[0])
   }
 
@@ -100,6 +108,14 @@ export const useTradeTokenLists = (
     if (filteredList.length < 0) {
       return
     }
+    if (!isBuying) {
+      const newBuyTokenList = getCurrencyTokensForToken(
+        singleToken ?? filteredList[0],
+        chainId ?? 1
+      )
+      setBuyTokenList(newBuyTokenList)
+      setBuyToken(newBuyTokenList[0])
+    }
     setSellToken(filteredList[0])
   }
 
@@ -107,7 +123,7 @@ export const useTradeTokenLists = (
     const isBuyingNew = !isBuying
     const prevSellToken = sellToken
     const prevBuyToken = buyToken
-    const currencyToken = isBuying ? sellToken : buyToken
+    const currencyToken = isBuying ? buyToken : sellToken
     const currencyTokensList = getCurrencyTokensForToken(
       singleToken ?? currencyToken,
       chainId ?? 1
