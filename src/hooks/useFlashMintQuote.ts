@@ -63,6 +63,11 @@ export const useFlashMintQuote = () => {
     nativeTokenPrice: number,
     slippage: number
   ) => {
+    if (!indexTokenAmount.gt(BigNumber.from(0))) {
+      setQuoteResult(defaultQuoteResult)
+      return
+    }
+
     const inputToken = isMinting ? inputOutputToken : indexToken
     const outputToken = isMinting ? indexToken : inputOutputToken
     const inputTokenAddress = getAddressForToken(inputToken, chainId)
