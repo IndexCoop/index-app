@@ -1,6 +1,8 @@
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   ETH,
+  flashMintIndexesMainnet,
+  flashMintIndexesPolygon,
   indexNamesMainnet,
   indexNamesOptimism,
   indexNamesPolygon,
@@ -97,4 +99,29 @@ export const isNotTradableToken = (
 
 export function isPerpToken(token: Token): boolean {
   return token.isPerp ? true : false
+}
+
+export function isTokenAvailableForFlashMint(
+  token: Token,
+  chainId: number | undefined
+): boolean {
+  if (!chainId) return false
+  switch (chainId) {
+    case MAINNET.chainId:
+      return (
+        flashMintIndexesMainnet.filter((t) => t.symbol === token.symbol)
+          .length > 0
+      )
+    case OPTIMISM.chainId:
+      return (
+        indexNamesOptimism.filter((t) => t.symbol === token.symbol).length > 0
+      )
+    case POLYGON.chainId:
+      return (
+        flashMintIndexesPolygon.filter((t) => t.symbol === token.symbol)
+          .length > 0
+      )
+    default:
+      return false
+  }
 }

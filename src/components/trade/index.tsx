@@ -4,7 +4,9 @@ import { colors, useICColorMode } from 'styles/colors'
 
 import { Flex, Text } from '@chakra-ui/react'
 
+import { useNetwork } from 'hooks/useNetwork'
 import { SlippageProvider, useSlippage } from 'providers/Slippage'
+import { isTokenAvailableForFlashMint } from 'utils/tokens'
 
 import FlashMint from './FlashMint'
 import QuickTrade, { QuickTradeProps } from './QuickTrade'
@@ -16,10 +18,15 @@ enum TradeType {
 }
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
+  const { chainId } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
 
   const paddingX = props.isNarrowVersion ? '16px' : '40px'
+
+  const shouldShowFlashMintOption = props.singleToken
+    ? isTokenAvailableForFlashMint(props.singleToken, chainId)
+    : true
 
   const onSelectType = (type: TradeType) => {
     if (type !== selectedType) {
@@ -38,7 +45,11 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
         px={['16px', paddingX]}
         height={'100%'}
       >
-        <Navigation onSelect={onSelectType} selectedType={selectedType} />
+        <Navigation
+          onSelect={onSelectType}
+          selectedType={selectedType}
+          shouldShowFlashMintOption={shouldShowFlashMintOption}
+        />
         {selectedType === TradeType.flashMint && <FlashMint {...props} />}
         {selectedType === TradeType.swap && <QuickTrade {...props} />}
       </Flex>
@@ -73,6 +84,7 @@ const NavigationButton = (props: NavigationButtonProps) => {
 type NavigationProps = {
   onSelect: (type: TradeType) => void
   selectedType: TradeType
+  shouldShowFlashMintOption: boolean
 }
 
 const Navigation = (props: NavigationProps) => {
@@ -96,11 +108,13 @@ const Navigation = (props: NavigationProps) => {
           onClick={() => onSelect(TradeType.swap)}
           title='Swap'
         />
-        <NavigationButton
-          isSelected={flashMintIsSelected}
-          onClick={() => onSelect(TradeType.flashMint)}
-          title='Flash Mint'
-        />
+        {props.shouldShowFlashMintOption && (
+          <NavigationButton
+            isSelected={flashMintIsSelected}
+            onClick={() => onSelect(TradeType.flashMint)}
+            title='Flash Mint'
+          />
+        )}
       </Flex>
       <QuickTradeSettingsPopover
         isAuto={isAutoSlippage}
