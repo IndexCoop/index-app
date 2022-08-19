@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useAccount, useNetwork } from 'wagmi'
 
+import { ArcxAnalyticsSdk } from '@arcxmoney/analytics'
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
@@ -28,6 +29,15 @@ const Dashboard = () => {
   const { address } = useAccount()
   const { chain } = useNetwork()
   const chainId = chain?.id
+
+  const arcxAnalyticsSdk = await ArcxAnalyticsSdk.init(
+    process.env.REACT_APP_ARCX_ANALYTICS_API_KEY ?? ''
+  )
+
+  await arcxAnalyticsSdk.connectWallet({
+    account: address ?? '',
+    chain: chainId ?? '',
+  })
 
   const [csvDownloadUrl, setCsvDownloadUrl] = useState('')
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])

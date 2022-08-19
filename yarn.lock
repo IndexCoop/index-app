@@ -15,6 +15,13 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
+"@arcxmoney/analytics@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@arcxmoney/analytics/-/analytics-0.0.7.tgz#609727bbfda9c44f66db91d00f35b5be8a3b0b4a"
+  integrity sha512-4lop4xS9wKbeZJMho/teIgUWMam0fFX3eSSEAehE0t+CUInpzDg7oPY3sJUAab5BT1d7CkMESXwRVlGjXrCYlw==
+  dependencies:
+    "@restless/sanitizers" "^0.2.5"
+
 "@babel/code-frame@7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
@@ -2710,6 +2717,11 @@
     clsx "1.1.1"
     qrcode "1.5.0"
     react-remove-scroll "2.5.4"
+
+"@restless/sanitizers@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@restless/sanitizers/-/sanitizers-0.2.5.tgz#96a5cfa3edb52abd8fa14e77798738f3a067dbec"
+  integrity sha512-utsOFwv5owNnbj8HijF7uML/AURgUl5YvY4S2gpxQsrp2D1EP/4rQU/HSyYdIQaL89BoZ/5NHveRJrcFyuHo/w==
 
 "@rollup/plugin-node-resolve@^7.1.1":
   version "7.1.3"

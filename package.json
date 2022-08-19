@@ -4,6 +4,7 @@
   "version": "2.0.0",
   "private": true,
   "dependencies": {
+    "@arcxmoney/analytics": "^0.0.7",
     "@chakra-ui/icons": "^2.0.4",
     "@chakra-ui/react": "^2.2.4",
     "@dethcrypto/eth-sdk": "^0.3.0",
