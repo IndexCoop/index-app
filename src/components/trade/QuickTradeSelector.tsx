@@ -60,7 +60,7 @@ const QuickTradeSelector = (props: {
     setTokenBalance(formattedBalance(selectedToken, tokenBal))
   }, [selectedToken, getBalance, chainId])
 
-  const borderColor = config.isDarkMode ? colors.icWhite : colors.black
+  const borderColor = config.isDarkMode ? colors.icGray3 : colors.icGray2
   const borderRadius = 16
 
   const height = '64px'

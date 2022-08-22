@@ -18,59 +18,62 @@ const gasLimitRedeem = BigNumber.from('2200000')
 /**
  * Approve the spending of an ERC20
  */
-export const useIssuance = (
-  isIssue: boolean,
-  token?: Token,
-  amount?: BigNumber,
-  maxAmount?: BigNumber
-) => {
+export const useIssuance = () => {
   const { address, signer } = useWallet()
 
   const [isTrading, setIsTrading] = useState(false)
 
-  const handleTrade = useCallback(async () => {
-    if (!signer || !address || !token?.optimismAddress) {
-      return
-    }
-    try {
-      setIsTrading(true)
-      const tokenContract = new Contract(
-        FlashMintPerp,
-        ISSUANCEInterface,
-        signer
-      )
-      if (isIssue) {
-        const tx = await tokenContract.issueFixedSetFromUsdc(
-          token.optimismAddress,
-          amount,
-          maxAmount,
-          { gasLimit: gasLimitMint }
-        )
-        // if (tx) {
-        //   const storedTx = getStoredTransaction(tx, chainId)
-        //   addTransaction(storedTx)
-        // }
-        const receipt = await tx.wait()
-        setIsTrading(false)
-      } else {
-        const tx = await tokenContract.redeemFixedSetForUsdc(
-          token.optimismAddress,
-          amount,
-          maxAmount,
-          { gasLimit: gasLimitRedeem }
-        )
-        // if (tx) {
-        //   const storedTx = getStoredTransaction(tx, chainId)
-        //   addTransaction(storedTx)
-        // }
-        const receipt = await tx.wait()
-        setIsTrading(false)
+  const handleTrade = useCallback(
+    async (
+      isIssue: boolean,
+      token?: Token,
+      amount?: BigNumber,
+      maxAmount?: BigNumber
+    ) => {
+      if (!signer || !address || !token?.optimismAddress) {
+        return
       }
-    } catch (e) {
-      setIsTrading(false)
-      console.log('Error sending issuance transaction', e)
-    }
-  }, [address, amount, maxAmount, setIsTrading, signer, token])
+      try {
+        setIsTrading(true)
+        const tokenContract = new Contract(
+          FlashMintPerp,
+          ISSUANCEInterface,
+          signer
+        )
+        if (isIssue) {
+          const tx = await tokenContract.issueFixedSetFromUsdc(
+            token.optimismAddress,
+            amount,
+            maxAmount,
+            { gasLimit: gasLimitMint }
+          )
+          // if (tx) {
+          //   const storedTx = getStoredTransaction(tx, chainId)
+          //   addTransaction(storedTx)
+          // }
+          const receipt = await tx.wait()
+          setIsTrading(false)
+        } else {
+          const tx = await tokenContract.redeemFixedSetForUsdc(
+            token.optimismAddress,
+            amount,
+            maxAmount,
+            { gasLimit: gasLimitRedeem }
+          )
+          // if (tx) {
+          //   const storedTx = getStoredTransaction(tx, chainId)
+          //   addTransaction(storedTx)
+          // }
+          const receipt = await tx.wait()
+          setIsTrading(false)
+        }
+      } catch (e) {
+        setIsTrading(false)
+        console.log('Error sending issuance transaction', e)
+      }
+    },
+    [address, setIsTrading, signer]
+  )
 
   return {
     isTrading,
