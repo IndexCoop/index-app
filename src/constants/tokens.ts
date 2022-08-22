@@ -570,4 +570,21 @@ export const indexNamesOptimism = indexNames.filter(
   (index) => index.optimismAddress !== undefined
 )
 
+// FlashMint specific lists
+export const flashMintIndexesMainnet = indexNames.filter(
+  (index) =>
+    index.address !== undefined &&
+    index.symbol !== IndexToken.symbol &&
+    index.symbol !== JPGIndex.symbol
+)
+export const flashMintIndexesPolygon = indexNames.filter(
+  (index) =>
+    index.polygonAddress !== undefined &&
+    index.symbol !== DataIndex.symbol &&
+    index.symbol !== DefiPulseIndex.symbol &&
+    index.symbol !== GmiIndex.symbol &&
+    index.symbol !== IndexToken.symbol &&
+    index.symbol !== MetaverseIndex.symbol
+)
+
 export default indexNames

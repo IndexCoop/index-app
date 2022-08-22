@@ -33,7 +33,7 @@ export const colors = {
 export const useICColorMode = () => {
   const { colorMode } = useColorMode()
   const isDarkMode = colorMode === 'dark'
-  const dividerColor = isDarkMode ? colors.icWhite : colors.black
+  const dividerColor = isDarkMode ? colors.icGray3 : colors.icGray2
   return { isDarkMode, dividerColor }
 }
 

@@ -9,10 +9,7 @@ import { IndexToken, Token } from 'constants/tokens'
 import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
 import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTokenSupply } from 'hooks/useTokenSupply'
-import {
-  TokenMarketDataValues,
-  useMarketData,
-} from 'providers/MarketData'
+import { TokenMarketDataValues, useMarketData } from 'providers/MarketData'
 import { displayFromWei } from 'utils'
 import {
   getFormattedChartPriceChanges,
