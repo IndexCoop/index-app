@@ -14,6 +14,7 @@ import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceLeveragedQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
+import { logTx } from 'utils/analytics'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,
@@ -84,6 +85,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
               inputOutputTokenAmount,
               { gasLimit }
             )
+            logTx('LevEI', mintTx)
             // if (mintTx) {
             //   const storedTx = getStoredTransaction(mintTx, chain?.id)
             //   addTransaction(storedTx)
@@ -106,6 +108,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
               swapDataInputOutputToken,
               { gasLimit }
             )
+            logTx('LevEI', mintTx)
             // if (mintTx) {
             //   const storedTx = getStoredTransaction(mintTx, chain?.id)
             //   addTransaction(storedTx)
@@ -133,6 +136,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
               swapDataInputOutputToken,
               { gasLimit }
             )
+            logTx('LevEI', redeemTx)
             // if (redeemTx) {
             //   const storedTx = getStoredTransaction(redeemTx, chain?.id)
             //   addTransaction(storedTx)
@@ -159,6 +163,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
                 maxPriorityFeePerGas: BigNumber.from(2000000000),
               }
             )
+            logTx('LevEI', redeemTx)
             // if (redeemTx) {
             //   const storedTx = getStoredTransaction(redeemTx, chain?.id)
             //   addTransaction(storedTx)

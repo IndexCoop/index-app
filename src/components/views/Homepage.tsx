@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useAccount, useNetwork } from 'wagmi'
 
-import { ArcxAnalyticsSdk } from '@arcxmoney/analytics'
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
 import AllocationChart from 'components/dashboard/AllocationChart'
@@ -21,6 +20,7 @@ import QuickTradeContainer from 'components/trade'
 import { useUserMarketData } from 'hooks/useUserMarketData'
 import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
+import { logEvent } from 'utils/analytics'
 
 const Dashboard = () => {
   // const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
@@ -29,15 +29,6 @@ const Dashboard = () => {
   const { address } = useAccount()
   const { chain } = useNetwork()
   const chainId = chain?.id
-
-  const arcxAnalyticsSdk = await ArcxAnalyticsSdk.init(
-    process.env.REACT_APP_ARCX_ANALYTICS_API_KEY ?? ''
-  )
-
-  await arcxAnalyticsSdk.connectWallet({
-    account: address ?? '',
-    chain: chainId ?? '',
-  })
 
   const [csvDownloadUrl, setCsvDownloadUrl] = useState('')
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
@@ -84,6 +75,11 @@ const Dashboard = () => {
     const blob = new Blob([csv])
     const fileDownloadUrl = URL.createObjectURL(blob)
     setCsvDownloadUrl(fileDownloadUrl)
+    logEvent('DOWNLOAD_CSV', {
+      address: address || 'UNCONNECTED',
+      chain: chainId || 'UNCONNECTED',
+      fileDownloadUrl,
+    })
   }
 
   const renderCsvDownloadButton =
