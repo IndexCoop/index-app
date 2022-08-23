@@ -20,6 +20,7 @@ import QuickTradeContainer from 'components/trade'
 import { useUserMarketData } from 'hooks/useUserMarketData'
 import { getTransactionHistory } from 'utils/alchemyApi'
 import { exportCsv } from 'utils/exportToCsv'
+import { logEvent } from 'utils/analytics'
 
 const Dashboard = () => {
   // const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
@@ -74,6 +75,11 @@ const Dashboard = () => {
     const blob = new Blob([csv])
     const fileDownloadUrl = URL.createObjectURL(blob)
     setCsvDownloadUrl(fileDownloadUrl)
+    logEvent('DOWNLOAD_CSV', {
+      address: address || 'UNCONNECTED',
+      chain: chainId || 'UNCONNECTED',
+      fileDownloadUrl,
+    })
   }
 
   const renderCsvDownloadButton =
