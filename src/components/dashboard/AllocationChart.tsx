@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
 
 import { Cell, Pie, PieChart, Tooltip } from 'recharts'
-import { useICColorMode } from 'styles/colors'
+import { useColorStyles,useICColorMode } from 'styles/colors'
 
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
@@ -69,13 +69,14 @@ const PositionItem = (props: { position: Position }) => {
 }
 
 const AllocationChart = (props: { positions: Position[] }) => {
-  const { dividerColor, isDarkMode } = useICColorMode()
+  const { isDarkMode } = useICColorMode()
+  const { styles } = useColorStyles()
 
   return (
     <Flex
       align='center'
       border='1px solid #fff'
-      borderColor={dividerColor}
+      borderColor={styles.border}
       borderRadius='16px'
       direction='column'
       pt='20px'

@@ -31,7 +31,7 @@ export const colors = {
 export const colorStyles = (isDarkMode: boolean) => {
   return {
     background: isDarkMode ? colors.icBlack : colors.icWhite,
-    divider: colors.icGray3,
+    border: isDarkMode ? colors.icGray4 : colors.icGray1,
     text: isDarkMode ? colors.icWhite : colors.icBlack,
   }
 }
@@ -44,8 +44,7 @@ export const useColorStyles = () => {
 export const useICColorMode = () => {
   const { colorMode } = useColorMode()
   const isDarkMode = colorMode === 'dark'
-  const dividerColor = isDarkMode ? colors.icGray3 : colors.icGray2
-  return { isDarkMode, dividerColor }
+  return { isDarkMode }
 }
 
 export const pieChartColors = [

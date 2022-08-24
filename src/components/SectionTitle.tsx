@@ -1,4 +1,4 @@
-import { useICColorMode } from 'styles/colors'
+import { useColorStyles } from 'styles/colors'
 
 import { Box, Flex, Spacer, StackDivider, VStack } from '@chakra-ui/layout'
 import { Heading } from '@chakra-ui/react'
@@ -9,11 +9,11 @@ interface SectionTitleProps {
 }
 
 const SectionTitle = (props: SectionTitleProps) => {
-  const { dividerColor } = useICColorMode()
+  const { styles } = useColorStyles()
   return (
     <Box flex='1'>
       <VStack
-        divider={<StackDivider borderColor={dividerColor} />}
+        divider={<StackDivider borderColor={styles.border} />}
         spacing={2}
         align='flex-start'
       >

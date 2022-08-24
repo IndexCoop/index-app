@@ -1,4 +1,4 @@
-import { useICColorMode } from 'styles/colors'
+import { useColorStyles, useICColorMode } from 'styles/colors'
 
 import {
   Table,
@@ -23,6 +23,7 @@ type ProductsTableProps = {
 
 const ProductsTable = ({ products }: ProductsTableProps) => {
   const { isDarkMode } = useICColorMode()
+  const { styles } = useColorStyles()
   const isMobile = useBreakpointValue({ base: true, md: false, lg: false })
 
   const colorScheme = isDarkMode ? 'whiteAlpha' : 'blackAlpha'
@@ -47,11 +48,15 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
       <Tbody>
         {products.map((product) => (
           <Tr key={product.symbol}>
-            <Td p={['16px 8px', '16px 24px']}>
+            <Td borderColor={styles.border} p={['16px 8px', '16px 24px']}>
               <TickerCell product={product} />
             </Td>
             {priceChangeIntervals.map((interval) => (
-              <Td key={interval[0]} p={['16px 8px', '16px 24px']}>
+              <Td
+                borderColor={styles.border}
+                key={interval[0]}
+                p={['16px 8px', '16px 24px']}
+              >
                 <PerformanceCell
                   percentChange={product.performance?.[interval[0]]}
                 />
