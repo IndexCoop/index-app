@@ -9,6 +9,12 @@ import { FlashMintPerp } from 'constants/ethContractAddresses'
 import { Token } from 'constants/tokens'
 import { useWallet } from 'hooks/useWallet'
 import { ISSUANCE_ABI } from 'utils/abi/Issuance'
+import { logTx } from 'utils/analytics'
+import {
+  CaptureExchangeIssuanceFunctionKey,
+  CaptureExchangeIssuanceKey,
+  captureTransaction,
+} from 'utils/sentry'
 
 const ISSUANCEInterface = new utils.Interface(ISSUANCE_ABI)
 
@@ -26,6 +32,7 @@ export const useIssuance = () => {
   const handleTrade = useCallback(
     async (
       isIssue: boolean,
+      slippage: number,
       token?: Token,
       amount?: BigNumber,
       maxAmount?: BigNumber
@@ -51,7 +58,16 @@ export const useIssuance = () => {
           //   const storedTx = getStoredTransaction(tx, chainId)
           //   addTransaction(storedTx)
           // }
-          const receipt = await tx.wait()
+          await tx.wait()
+          logTx('Perp', tx)
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.perp,
+            function: CaptureExchangeIssuanceFunctionKey.issueErc20,
+            setToken: token?.optimismAddress ?? 'n/a',
+            setAmount: amount?.toString() ?? 'n/a',
+            gasLimit: gasLimitMint.toString(),
+            slippage: slippage.toString(),
+          })
           setIsTrading(false)
         } else {
           const tx = await tokenContract.redeemFixedSetForUsdc(
@@ -64,7 +80,16 @@ export const useIssuance = () => {
           //   const storedTx = getStoredTransaction(tx, chainId)
           //   addTransaction(storedTx)
           // }
-          const receipt = await tx.wait()
+          await tx.wait()
+          logTx('Perp', tx)
+          captureTransaction({
+            exchangeIssuance: CaptureExchangeIssuanceKey.perp,
+            function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
+            setToken: token?.optimismAddress ?? 'n/a',
+            setAmount: amount?.toString() ?? 'n/a',
+            gasLimit: gasLimitMint.toString(),
+            slippage: slippage.toString(),
+          })
           setIsTrading(false)
         }
       } catch (e) {

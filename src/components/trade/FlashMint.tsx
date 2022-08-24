@@ -240,6 +240,7 @@ const FlashMint = (props: QuickTradeProps) => {
     if (quotes.flashMintPerp) {
       await handleTrade(
         isMinting,
+        slippage,
         indexToken,
         indexTokenAmountWei,
         inputOutputTokenAmount
