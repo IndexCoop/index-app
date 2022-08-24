@@ -19,8 +19,8 @@ import SectionTitle from 'components/SectionTitle'
 import QuickTradeContainer from 'components/trade'
 import { useUserMarketData } from 'hooks/useUserMarketData'
 import { getTransactionHistory } from 'utils/alchemyApi'
-import { exportCsv } from 'utils/exportToCsv'
 import { logEvent } from 'utils/analytics'
+import { exportCsv } from 'utils/exportToCsv'
 
 const Dashboard = () => {
   // const { bed, data, dpi, mvi, gmi, btcfli, ethfli, ethflip } = useMarketData()
