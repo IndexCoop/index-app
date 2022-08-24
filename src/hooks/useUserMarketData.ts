@@ -2,10 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { PriceChartRangeOption } from 'components/product/MarketChart'
 import { useBalances } from 'hooks/useBalance'
-import {
-  TokenMarketDataValues,
-  useMarketData,
-} from 'providers/MarketData/MarketDataProvider'
+import { TokenMarketDataValues, useMarketData } from 'providers/MarketData'
 import { displayFromWei } from 'utils'
 import { getPricesChanges } from 'utils/priceChange'
 

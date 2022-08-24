@@ -1,4 +1,4 @@
-import { colors } from 'styles/colors'
+import { colors, useColorStyles } from 'styles/colors'
 
 import {
   Box,
@@ -20,6 +20,7 @@ const backgroundColor = colors.icBlue10
 const highlightColor = colors.icBlue2
 
 const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
+  const { styles } = useColorStyles()
   const isWeb = useBreakpointValue({
     base: false,
     md: true,
@@ -35,7 +36,7 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
   const { item } = props
   return (
     <Tr width={['340px', '400px', '800px', '1024px']}>
-      <Td>
+      <Td borderBottomColor={styles.border}>
         <Flex align='center'>
           <Flex
             align='center'
@@ -50,7 +51,7 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
           </Flex>
         </Flex>
       </Td>
-      <Td>
+      <Td borderBottomColor={styles.border}>
         <Flex direction='column'>
           <Text>${item.asset}</Text>
           {isWeb && <Text color={highlightColor}>{item.value}</Text>}
@@ -58,15 +59,15 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
       </Td>
       {isWeb && (
         <>
-          <Td>{item.from}</Td>
+          <Td borderBottomColor={styles.border}>{item.from}</Td>
           {!isTablet && (
-            <Td>
+            <Td borderBottomColor={styles.border}>
               <Image src={arrowAsset} alt='arrow pointing right' />
             </Td>
           )}
-          <Td>{item.to}</Td>
+          <Td borderBottomColor={styles.border}>{item.to}</Td>
           {!isTablet && (
-            <Td>
+            <Td borderBottomColor={styles.border}>
               <Flex direction='column'>
                 <Text color='gray'>{item.hash}</Text>
                 <Text>Block {item.date}</Text>
@@ -75,8 +76,7 @@ const TransactionHistoryRow = (props: { item: TransactionHistoryItem }) => {
           )}
         </>
       )}
-
-      <Td>
+      <Td borderBottomColor={styles.border}>
         <Link href={item.explorerUrl} isExternal>
           <Flex align='center' direction='row' justify='end'>
             View More{' '}

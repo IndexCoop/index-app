@@ -1,6 +1,6 @@
 import ProductPage from 'components/product/ProductPage'
 import { Ethereum2xFLIP } from 'constants/tokens'
-import { useMarketData } from 'providers/MarketData/MarketDataProvider'
+import { useMarketData } from 'providers/MarketData'
 
 const ETH2xFLIP = () => {
   const { ethflip } = useMarketData()

@@ -1,11 +1,12 @@
 import { useState } from 'react'
 
-import { colors, useICColorMode } from 'styles/colors'
-import { useNetwork } from 'wagmi'
+import { colors, useColorStyles, useICColorMode } from 'styles/colors'
 
 import { Flex, Text } from '@chakra-ui/react'
 
-import { useSlippage } from 'hooks/useSlippage'
+import { useNetwork } from 'hooks/useNetwork'
+import { SlippageProvider, useSlippage } from 'providers/Slippage'
+import { isTokenAvailableForFlashMint } from 'utils/tokens'
 
 import FlashMint from './FlashMint'
 import QuickTrade, { QuickTradeProps } from './QuickTrade'
@@ -17,10 +18,15 @@ enum TradeType {
 }
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
-  const { isDarkMode } = useICColorMode()
+  const { chainId } = useNetwork()
+  const { styles } = useColorStyles()
   const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
 
   const paddingX = props.isNarrowVersion ? '16px' : '40px'
+
+  const shouldShowFlashMintOption = props.singleToken
+    ? isTokenAvailableForFlashMint(props.singleToken, chainId)
+    : true
 
   const onSelectType = (type: TradeType) => {
     if (type !== selectedType) {
@@ -29,19 +35,27 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
   }
 
   return (
-    <Flex
-      border='2px solid #F7F1E4'
-      borderColor={isDarkMode ? colors.icWhite : colors.black}
-      borderRadius='16px'
-      direction='column'
-      py='20px'
-      px={['16px', paddingX]}
-      height={'100%'}
-    >
-      <Navigation onSelect={onSelectType} selectedType={selectedType} />
-      {selectedType === TradeType.flashMint && <FlashMint {...props} />}
-      {selectedType === TradeType.swap && <QuickTrade {...props} />}
-    </Flex>
+    <SlippageProvider>
+      <Flex
+        bgGradient={styles.backgroundGradient}
+        border='1px solid'
+        borderColor={styles.border}
+        borderRadius='16px'
+        boxShadow='sm'
+        direction='column'
+        py='20px'
+        px={['16px', paddingX]}
+        height={'100%'}
+      >
+        <Navigation
+          onSelect={onSelectType}
+          selectedType={selectedType}
+          shouldShowFlashMintOption={shouldShowFlashMintOption}
+        />
+        {selectedType === TradeType.flashMint && <FlashMint {...props} />}
+        {selectedType === TradeType.swap && <QuickTrade {...props} />}
+      </Flex>
+    </SlippageProvider>
   )
 }
 
@@ -72,10 +86,10 @@ const NavigationButton = (props: NavigationButtonProps) => {
 type NavigationProps = {
   onSelect: (type: TradeType) => void
   selectedType: TradeType
+  shouldShowFlashMintOption: boolean
 }
 
 const Navigation = (props: NavigationProps) => {
-  const { chain } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
     auto: autoSlippage,
@@ -88,8 +102,6 @@ const Navigation = (props: NavigationProps) => {
   const flashMintIsSelected = selectedType === TradeType.flashMint
   const swapIsSelected = selectedType === TradeType.swap
 
-  const shouldShowFlashMint = chain !== undefined && chain.id === 10
-
   return (
     <Flex align='center' justify='space-between'>
       <Flex>
@@ -98,7 +110,7 @@ const Navigation = (props: NavigationProps) => {
           onClick={() => onSelect(TradeType.swap)}
           title='Swap'
         />
-        {shouldShowFlashMint && (
+        {props.shouldShowFlashMintOption && (
           <NavigationButton
             isSelected={flashMintIsSelected}
             onClick={() => onSelect(TradeType.flashMint)}

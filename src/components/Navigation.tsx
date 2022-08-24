@@ -1,24 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { colors } from 'styles/colors'
+import { useColorStyles } from 'styles/colors'
+import { useAccount } from 'wagmi'
 
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
-import {
-  Flex,
-  IconButton,
-  useBreakpointValue,
-  useColorModeValue,
-} from '@chakra-ui/react'
+import { Flex, IconButton, useBreakpointValue } from '@chakra-ui/react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+
+import { useNetwork } from 'hooks/useNetwork'
+import { logConnect } from 'utils/analytics'
 
 import NavContent from './header/NavContent'
 
 const Navigation = () => {
   const [displayMenu, setDisplayMenu] = useState('none')
-  const backgroundColorMobile = useColorModeValue(
-    colors.white,
-    colors.background
-  )
+  const { styles } = useColorStyles()
+  const backgroundColorMobile = styles.background
   const isWeb = useBreakpointValue({
     base: false,
     md: true,
@@ -26,6 +23,13 @@ const Navigation = () => {
     xl: true,
   })
   const width = isWeb ? 1024 : 340
+
+  const { address } = useAccount()
+  const { chainId } = useNetwork()
+  useEffect(() => {
+    if (address === undefined || chainId === undefined) return
+    logConnect(address, chainId)
+  }, [address])
 
   return (
     <Flex w={['auto', 'auto', 'auto', width]} flexGrow={[0, 0, 0, 2]}>

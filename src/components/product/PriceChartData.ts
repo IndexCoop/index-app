@@ -1,4 +1,4 @@
-import { TokenMarketDataValues } from 'providers/MarketData/MarketDataProvider'
+import { TokenMarketDataValues } from 'providers/MarketData'
 
 import { PriceChartData, PriceChartRangeOption } from './MarketChart'
 

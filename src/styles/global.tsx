@@ -1,8 +1,8 @@
-import { colors } from 'styles/colors'
+import { colorStyles } from 'styles/colors'
 
 export const global = (props: { colorMode: string }) => ({
   body: {
-    bg: props.colorMode === 'dark' ? colors.background : '#fff',
-    color: props.colorMode === 'dark' ? colors.icWhite : colors.black,
+    bg: colorStyles(props.colorMode === 'dark').background,
+    color: colorStyles(props.colorMode === 'dark').text,
   },
 })

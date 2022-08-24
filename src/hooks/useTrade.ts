@@ -13,6 +13,7 @@ import {
 import { ZeroExQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
+import { logTransaction } from 'utils/analytics'
 
 import { useBalances } from './useBalance'
 
@@ -29,7 +30,7 @@ export const useTrade = () => {
     value: BigNumber.from(zeroExQuote?.value ?? 0),
     // gas: undefined, use metamask estimated gas limit
   }
-  const { sendTransaction, status } = useSendTransaction({
+  const { sendTransaction, status, data } = useSendTransaction({
     mode: 'recklesslyUnprepared',
     chainId: chain?.id,
     from: address,
@@ -84,6 +85,8 @@ export const useTrade = () => {
   useEffect(() => {
     if (status !== 'idle' && status) setIsTransacting(false)
   }, [status])
+
+  logTransaction('SWAP', JSON.stringify(data))
 
   return { executeTrade, isTransacting }
 }

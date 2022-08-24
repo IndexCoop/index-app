@@ -6,6 +6,8 @@ import {
   useState,
 } from 'react'
 
+import { logEvent } from 'utils/analytics'
+
 export const ProtectionContext = createContext<{
   isProtectable?: boolean
 }>({ isProtectable: true })
@@ -33,6 +35,7 @@ export const ProtectionProvider = (props: { children: any }) => {
 
   useEffect(() => {
     checkIfProtectable()
+    logEvent('US_IP_CHECK', { USA_IP: isProtectable })
   }, [])
 
   return (

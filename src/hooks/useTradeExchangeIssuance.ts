@@ -15,6 +15,7 @@ import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceZeroExQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
+import { logTx } from 'utils/analytics'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,
@@ -88,6 +89,7 @@ export const useTradeExchangeIssuance = () => {
               inputOutputTokenAmount,
               { gasLimit }
             )
+            logTx('0xEI', mintTx)
           } else {
             const maxAmountInputToken = inputOutputTokenAmount
             captureTransaction({
@@ -108,6 +110,7 @@ export const useTradeExchangeIssuance = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
+            logTx('0xEI', mintTx)
           }
         } else {
           const isRedeemingNativeChainToken =
@@ -133,6 +136,7 @@ export const useTradeExchangeIssuance = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
+            logTx('0xEI', redeemTx)
           } else {
             captureTransaction({
               exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
@@ -152,6 +156,7 @@ export const useTradeExchangeIssuance = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
+            logTx('0xEI', redeemTx)
           }
         }
         setIsTransacting(false)
@@ -160,7 +165,7 @@ export const useTradeExchangeIssuance = () => {
         console.log('Error sending transaction', error)
       }
     },
-    [address]
+    [address, signer]
   )
 
   return { executeEITrade, isTransactingEI }

@@ -1,4 +1,4 @@
-import { useICColorMode } from 'styles/colors'
+import { useColorStyles } from 'styles/colors'
 
 import { StackDivider, VStack } from '@chakra-ui/layout'
 import { Heading, Text } from '@chakra-ui/react'
@@ -9,11 +9,11 @@ interface PageTitleProps {
 }
 
 const PageTitle = (props: PageTitleProps) => {
-  const { dividerColor } = useICColorMode()
+  const { styles } = useColorStyles()
   return (
     <VStack
       divider={
-        <StackDivider mx={[0, '20px', '20px', 0]} borderColor={dividerColor} />
+        <StackDivider mx={[0, '20px', '20px', 0]} borderColor={styles.border} />
       }
       spacing={0}
       align='flex-start'

@@ -254,90 +254,90 @@ export const useBestQuote = () => {
         }
       : null
 
-    /* Determine Set token amount based on different factors */
-    let setTokenAmount = getSetTokenAmount(
-      isIssuance,
-      sellTokenAmount,
-      sellToken.decimals,
-      sellTokenPrice,
-      buyTokenPrice,
-      dexSwapOption
-    )
-
-    const gasStation = new GasStation(provider)
-    const gasPrice = await gasStation.getGasPrice()
-
-    // Create an instance of ZeroExApi (to pass to quote functions)
-    const affilliateAddress = '0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF'
-    const networkKey = getNetworkKey(chainId)
-    const swapPathOverride = `/${networkKey}/swap/v1/quote`
-    const zeroExApi = new ZeroExApi(
-      `${IndexApiBaseUrl}/0x`,
-      affilliateAddress,
-      { 'X-INDEXCOOP-API-KEY': process.env.REACT_APP_INDEX_COOP_API! },
-      swapPathOverride
-    )
-
-    const exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
-      await getEILeveragedQuote(
-        isIssuance,
-        inputTokenAddress,
-        outputTokenAddress,
-        sellToken,
-        buyToken,
-        setTokenAmount,
-        sellTokenPrice,
-        nativeTokenPrice,
-        gasPrice,
-        slippage,
-        chainId,
-        provider,
-        zeroExApi
-      )
-
-    const inputTokenBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
-    const exchangeIssuanceZeroExQuote: ExchangeIssuanceZeroExQuote | null =
-      await getEIZeroExQuote(
-        isIssuance,
-        inputTokenAddress,
-        outputTokenAddress,
-        inputTokenBalance,
-        sellToken,
-        buyToken,
-        setTokenAmount,
-        sellTokenPrice,
-        nativeTokenPrice,
-        gasPrice,
-        slippage,
-        chainId,
-        provider,
-        zeroExApi,
-        signer
-      )
-
-    console.log('////////')
-    console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
-    console.log(
-      'exchangeIssuanceLeveragedQuote',
-      exchangeIssuanceLeveragedQuote
-    )
+    // /* Determine Set token amount based on different factors */
+    // let setTokenAmount = getSetTokenAmount(
+    //   isIssuance,
+    //   sellTokenAmount,
+    //   sellToken.decimals,
+    //   sellTokenPrice,
+    //   buyTokenPrice,
+    //   dexSwapOption
+    // )
+    //
+    // const gasStation = new GasStation(provider)
+    // const gasPrice = await gasStation.getGasPrice()
+    //
+    // // Create an instance of ZeroExApi (to pass to quote functions)
+    // const affilliateAddress = '0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF'
+    // const networkKey = getNetworkKey(chainId)
+    // const swapPathOverride = `/${networkKey}/swap/v1/quote`
+    // const zeroExApi = new ZeroExApi(
+    //   `${IndexApiBaseUrl}/0x`,
+    //   affilliateAddress,
+    //   { 'X-INDEXCOOP-API-KEY': process.env.REACT_APP_INDEX_COOP_API! },
+    //   swapPathOverride
+    // )
+    //
+    // const exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
+    //   await getEILeveragedQuote(
+    //     isIssuance,
+    //     inputTokenAddress,
+    //     outputTokenAddress,
+    //     sellToken,
+    //     buyToken,
+    //     setTokenAmount,
+    //     sellTokenPrice,
+    //     nativeTokenPrice,
+    //     gasPrice,
+    //     slippage,
+    //     chainId,
+    //     provider,
+    //     zeroExApi
+    //   )
+    //
+    // const inputTokenBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
+    // const exchangeIssuanceZeroExQuote: ExchangeIssuanceZeroExQuote | null =
+    //   await getEIZeroExQuote(
+    //     isIssuance,
+    //     inputTokenAddress,
+    //     outputTokenAddress,
+    //     inputTokenBalance,
+    //     sellToken,
+    //     buyToken,
+    //     setTokenAmount,
+    //     sellTokenPrice,
+    //     nativeTokenPrice,
+    //     gasPrice,
+    //     slippage,
+    //     chainId,
+    //     provider,
+    //     zeroExApi,
+    //     signer
+    //   )
+    //
+    // console.log('////////')
+    // console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
+    // console.log(
+    //   'exchangeIssuanceLeveragedQuote',
+    //   exchangeIssuanceLeveragedQuote
+    // )
 
     const success =
-      exchangeIssuanceLeveragedQuote !== null ||
-      exchangeIssuanceZeroExQuote !== null ||
+      // exchangeIssuanceLeveragedQuote !== null ||
+      // exchangeIssuanceZeroExQuote !== null ||
       zeroExQuote !== null
 
     console.log(
       zeroExQuote?.fullCostsInUsd ?? null,
-      exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
-      exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
+      // exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
+      // exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
       'FC'
     )
 
     const bestQuote = getBestQuote(
       zeroExQuote?.fullCostsInUsd ?? null,
-      exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
-      exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
+      null,
+      null,
       zeroExQuote?.priceImpact ?? 5
     )
 
@@ -348,8 +348,8 @@ export const useBestQuote = () => {
       error: dexSwapError,
       bestQuote,
       quotes: {
-        exchangeIssuanceLeveraged: exchangeIssuanceLeveragedQuote,
-        exchangeIssuanceZeroEx: exchangeIssuanceZeroExQuote,
+        exchangeIssuanceLeveraged: null,
+        exchangeIssuanceZeroEx: null,
         zeroEx: zeroExQuote,
       },
     }
