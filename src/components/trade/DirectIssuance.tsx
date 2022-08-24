@@ -41,7 +41,7 @@ const DirectIssuance = ({
 }: DirectIssuanceProps) => (
   <>
     <Flex>
-      <Flex border='2px solid' borderColor={colors.icGray3} borderRadius='16'>
+      <Flex border='2px solid' borderColor={colors.icGray1} borderRadius='16'>
         <NavigationButton
           isSelected={isIssue}
           onSelect={() => onToggleIssuance(true)}
@@ -114,13 +114,15 @@ type NavigationButtonProps = {
 }
 
 const NavigationButton = (props: NavigationButtonProps) => {
-  const { styles } = useColorStyles()
+  const { isDarkMode, styles } = useColorStyles()
   const backgroundColor = styles.background
+  const backgroundSelectedColor = isDarkMode ? colors.icGray1 : colors.icGray2
+  const selectedColor = isDarkMode ? colors.icBlack : colors.icWhite
   return (
     <Text
-      background={props.isSelected ? colors.icGray3 : backgroundColor}
+      background={props.isSelected ? backgroundSelectedColor : backgroundColor}
       borderRadius={14}
-      color={props.isSelected ? colors.white : colors.icGray3}
+      color={props.isSelected ? selectedColor : backgroundSelectedColor}
       cursor='pointer'
       fontSize='21px'
       fontWeight='700'
