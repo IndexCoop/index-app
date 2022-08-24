@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { colors, useICColorMode } from 'styles/colors'
+import { colors, useColorStyles, useICColorMode } from 'styles/colors'
 
 import { Flex, Text } from '@chakra-ui/react'
 
@@ -19,7 +19,7 @@ enum TradeType {
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
   const { chainId } = useNetwork()
-  const { isDarkMode } = useICColorMode()
+  const { styles } = useColorStyles()
   const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
 
   const paddingX = props.isNarrowVersion ? '16px' : '40px'
@@ -37,9 +37,11 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
   return (
     <SlippageProvider>
       <Flex
+        bgGradient={styles.backgroundGradient}
         border='1px solid'
-        borderColor={isDarkMode ? colors.icGray3 : colors.icGray2}
+        borderColor={styles.border}
         borderRadius='16px'
+        boxShadow='sm'
         direction='column'
         py='20px'
         px={['16px', paddingX]}
