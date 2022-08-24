@@ -110,7 +110,8 @@ const QuickTrade = (props: QuickTradeProps) => {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
-  const [navToken, setNavToken] = useState<Token>(buyToken)
+
+  const navToken = isBuying ? buyToken : sellToken
 
   const { nav } = useTokenComponents(
     navToken,
@@ -118,10 +119,36 @@ const QuickTrade = (props: QuickTradeProps) => {
     isPerpToken(sellToken)
   )
 
-  const [tokenNav, setTokenNav] = useState<number>(nav)
+  console.log(nav)
+
   useEffect(() => {
-    setTokenNav(nav)
-  }, [nav])
+    if (bestOption === null) return
+    if (tradeInfoData.length < 1) return
+    if (nav <= 0) return
+    console.log('here', nav, bestOption)
+    const navTokenAmount = isBuying ? buyTokenAmountFormatted : sellTokenAmount
+    const navTokenPrice = Number(navTokenAmount) * nav
+    const proRatedNav = nav * Number(navTokenAmount)
+    const navDivergence = (proRatedNav - navTokenPrice) / proRatedNav
+    const navData: TradeInfoItem = {
+      title: 'NAV',
+      values: [
+        proRatedNav.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }),
+      ],
+      subValue: '(' + navDivergence.toFixed(2) + '%)',
+      tooltip:
+        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt taken on (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV',
+    }
+    const navIndex = bestOption === QuickTradeBestOption.zeroEx ? 2 : 3
+    var updatedInfoData = tradeInfoData
+    updatedInfoData[navIndex] = navData
+    console.log(updatedInfoData, tradeInfoData)
+    setTradeInfoData(updatedInfoData)
+    console.log('set')
+  }, [bestOption, nav])
 
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
     useBestQuote()
@@ -241,23 +268,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     console.log('BESTOPTION', bestOption)
     setBestOption(bestOption)
     setBuyTokenAmountFormatted(formattedBuyTokenAmount)
-    setNavToken(isBuying ? buyToken : sellToken)
-    const navTokenAmount = isBuying ? buyTokenAmountFormatted : sellTokenAmount
-    const navTokenPrice = Number(navTokenAmount) * tokenNav
-    const proRatedNav = tokenNav * Number(navTokenAmount)
-    const navDivergence = (proRatedNav - navTokenPrice) / proRatedNav
-    const navData: TradeInfoItem = {
-      title: 'NAV',
-      values: [
-        proRatedNav.toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }),
-      ],
-      subValue: '(' + navDivergence.toFixed(2) + '%)',
-      tooltip:
-        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt taken on (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV',
-    }
     const tradeInfoData = bestOptionIs0x
       ? getTradeInfoData0x(
           buyToken,
@@ -265,7 +275,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           quoteZeroEx?.minOutput ?? BigNumber.from(0),
           quoteZeroEx?.sources ?? [],
           chain?.id,
-          navData
+          null
         )
       : getTradeInfoDataFromEI(
           tradeDataEI?.setTokenAmount ?? BigNumber.from(0),
@@ -276,7 +286,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           tradeDataEI?.inputOutputTokenAmount ?? BigNumber.from(0),
           chain?.id,
           isBuying,
-          navData
+          null
         )
 
     setTradeInfoData(tradeInfoData)
@@ -285,7 +295,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   const resetTradeData = () => {
     setBestOption(null)
     setBuyTokenAmountFormatted('0.0')
-    setNavToken(isBuying ? buyToken : sellToken)
     setTradeInfoData([])
   }
 
