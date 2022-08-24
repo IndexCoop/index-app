@@ -20,16 +20,16 @@ export const Button = {
       borderColor: colors.icMalachite,
       color: colors.icMalachite,
     },
-    highlight: {
+    highlight: ({ colorMode }: { colorMode: string }) => ({
       backgroundColor: 'transparent',
-      borderColor: colors.icBlue,
-      color: colors.icBlue,
-    },
-    highlightSelected: {
-      backgroundColor: colors.icBlue,
-      borderColor: colors.icBlue,
-      color: colors.white,
-    },
+      borderColor: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
+      color: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
+    }),
+    highlightSelected: ({ colorMode }: { colorMode: string }) => ({
+      backgroundColor: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
+      borderColor: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
+      color: colorMode === 'dark' ? colors.icBlack : colors.icWhite,
+    }),
   },
   defaultProps: {
     variant: 'highlight',
