@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { BigNumber } from 'ethers'
-import { colors, useColorStyles, useICColorMode } from 'styles/colors'
+import { colors, useColorStyles } from 'styles/colors'
 import { useNetwork } from 'wagmi'
 
 import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
@@ -185,6 +185,7 @@ const Selector = ({
     py='2'
     pl='3'
     pr='4'
+    shrink={0}
   >
     {!isNarrowVersion && (
       <Box mr='8px' w='24px'>
