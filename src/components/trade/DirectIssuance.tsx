@@ -1,4 +1,4 @@
-import { colors, useICColorMode } from 'styles/colors'
+import { colors, useColorStyles } from 'styles/colors'
 
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
@@ -114,8 +114,8 @@ type NavigationButtonProps = {
 }
 
 const NavigationButton = (props: NavigationButtonProps) => {
-  const { isDarkMode } = useICColorMode()
-  const backgroundColor = isDarkMode ? colors.background : colors.white
+  const { styles } = useColorStyles()
+  const backgroundColor = styles.background
   return (
     <Text
       background={props.isSelected ? colors.icGray3 : backgroundColor}

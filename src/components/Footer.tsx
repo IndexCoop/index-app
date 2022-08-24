@@ -1,13 +1,14 @@
-import { colors } from 'styles/colors'
+import { colors, useColorStyles } from 'styles/colors'
 
-import { Flex, Image, Link, Spacer, Text } from '@chakra-ui/react'
+import { Flex, Image, Link, Text } from '@chakra-ui/react'
 
 import indexLogoFullWhite from 'assets/index-logo-full-white.png'
 import indexLogoWhite from 'assets/index-logo-white.png'
 
 const Footer = () => {
+  const { styles } = useColorStyles()
   return (
-    <Flex backgroundColor={colors.backgroundFooter} w='100vw'>
+    <Flex backgroundColor={styles.background} w='100vw'>
       <Flex
         align='center'
         p={[

@@ -2,8 +2,6 @@ import { theme, useColorMode } from '@chakra-ui/react'
 
 export const colors = {
   ...theme.colors,
-  background: '#000000',
-  backgroundFooter: '#242424',
   // old colors will be removed once they are replaced everywhere
   icMalachite: '#09AA74',
   icRed: '#C32238',
@@ -28,6 +26,19 @@ export const colors = {
   // not verified with designer (will be replaced soon)
   icGrayLightMode: '#aaa',
   icGrayDarkMode: '#777',
+}
+
+export const colorStyles = (isDarkMode: boolean) => {
+  return {
+    background: isDarkMode ? colors.icBlack : colors.icWhite,
+    divider: colors.icGray3,
+    text: isDarkMode ? colors.icWhite : colors.icBlack,
+  }
+}
+
+export const useColorStyles = () => {
+  const { isDarkMode } = useICColorMode()
+  return { styles: colorStyles(isDarkMode) }
 }
 
 export const useICColorMode = () => {
