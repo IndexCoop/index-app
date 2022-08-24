@@ -1,4 +1,4 @@
-import { colors, useColorStyles,useICColorMode } from 'styles/colors'
+import { colors, useColorStyles, useICColorMode } from 'styles/colors'
 import { useAccount } from 'wagmi'
 
 import {

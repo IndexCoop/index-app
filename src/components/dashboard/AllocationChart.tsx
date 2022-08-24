@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
 
 import { Cell, Pie, PieChart, Tooltip } from 'recharts'
-import { useColorStyles,useICColorMode } from 'styles/colors'
+import { useColorStyles, useICColorMode } from 'styles/colors'
 
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 

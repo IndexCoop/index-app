@@ -31,14 +31,21 @@ export const colors = {
 export const colorStyles = (isDarkMode: boolean) => {
   return {
     background: isDarkMode ? colors.icBlack : colors.icWhite,
+    backgroundGradient: isDarkMode
+      ? 'linear(to-tr, #143438, #0F1717, #0F1717)'
+      : 'linear(to-tr, #F7F8F8, #FCFFFF, #FCFFFF)',
+    backgroundInverted: isDarkMode ? colors.icWhite : colors.icBlack,
     border: isDarkMode ? colors.icGray4 : colors.icGray1,
     text: isDarkMode ? colors.icWhite : colors.icBlack,
+    text2: isDarkMode ? colors.icGray2 : colors.icGray4,
+    text3: colors.icGray3,
+    textInverted: isDarkMode ? colors.icBlack : colors.icWhite,
   }
 }
 
 export const useColorStyles = () => {
   const { isDarkMode } = useICColorMode()
-  return { styles: colorStyles(isDarkMode) }
+  return { isDarkMode, styles: colorStyles(isDarkMode) }
 }
 
 export const useICColorMode = () => {
