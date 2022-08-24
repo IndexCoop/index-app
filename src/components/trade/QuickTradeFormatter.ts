@@ -165,7 +165,7 @@ export function getTradeInfoDataFromEI(
   inputOutputTokenAmount: BigNumber,
   chainId: number = 1,
   isBuying: boolean,
-  navData: TradeInfoItem
+  navData: TradeInfoItem | null = null
 ): TradeInfoItem[] {
   const setTokenDecimals = isBuying ? buyToken.decimals : sellToken.decimals
   const inputTokenDecimals = sellToken.decimals
@@ -189,7 +189,7 @@ export function getTradeInfoDataFromEI(
       values: [maxPaymentFormatted],
     },
     { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
-    navData,
+    navData ?? { title: 'NavData', values: [''] },
     { title: 'Offered From', values: [offeredFrom] },
   ]
 }
@@ -218,7 +218,7 @@ export function getTradeInfoData0x(
   minOutput: BigNumber,
   sources: { name: string; proportion: string }[],
   chainId: number = 1,
-  navData: TradeInfoItem
+  navData: TradeInfoItem | null = null
 ): TradeInfoItem[] {
   const minReceive =
     displayFromWei(minOutput, 4) + ' ' + buyToken.symbol ?? '0.0'
@@ -238,7 +238,7 @@ export function getTradeInfoData0x(
       values: [minReceiveFormatted],
     },
     { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
-    navData,
+    navData ?? { title: 'NAV', values: [] },
     { title: 'Offered From', values: offeredFromSources },
   ]
 }
