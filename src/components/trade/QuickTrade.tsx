@@ -121,21 +121,18 @@ const QuickTrade = (props: QuickTradeProps) => {
     isPerpToken(navToken)
   )
 
-  console.log(nav)
-
   useEffect(() => {
     if (bestOption === null) return
     if (tradeInfoData.length < 1) return
     if (nav <= 0) return
-    console.log('here', nav, bestOption)
     const navTokenAmount = isBuying ? buyTokenAmountFormatted : sellTokenAmount
     const tokenFiat = isBuying
       ? parseFloat(buyTokenAmountFormatted) * buyTokenPrice
       : parseFloat(sellTokenAmount) * sellTokenPrice
-    const proRatedMarketPrice = Number(tokenFiat) * Number(navTokenAmount)
+    const proRatedMarketPrice = tokenFiat * Number(navTokenAmount)
     const proRatedNavPrice = nav * Number(navTokenAmount)
     const navDivergence =
-      (proRatedNavPrice - proRatedMarketPrice) / proRatedNavPrice
+      (proRatedMarketPrice - proRatedNavPrice) / proRatedMarketPrice
     const navData: TradeInfoItem = {
       title: 'NAV',
       values: [
@@ -151,10 +148,8 @@ const QuickTrade = (props: QuickTradeProps) => {
     const navIndex = bestOption === QuickTradeBestOption.zeroEx ? 2 : 3
     var updatedInfoData = tradeInfoData
     updatedInfoData[navIndex] = navData
-    console.log(updatedInfoData, tradeInfoData)
     setNavData(navData)
     setTradeInfoData(updatedInfoData)
-    console.log('set')
   }, [bestOption, nav, buyTokenAmountFormatted, sellTokenAmount])
 
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =

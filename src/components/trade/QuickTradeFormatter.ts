@@ -99,10 +99,11 @@ export function getFormattedOuputTokenAmount(
 
 export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
   const price = (tokenAmount * tokenPrice).toLocaleString('en-US', {
+    style: 'currency',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
-  return `$${price}`
+  return price
 }
 
 /**
