@@ -114,6 +114,7 @@ export const useApproval = (
   }
 }
 
+/** currently unused, testing wagmi version */
 export const useNewApproveToken = (
   token: Token,
   spenderAddress: string,
