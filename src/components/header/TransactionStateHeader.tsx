@@ -1,5 +1,5 @@
 import { headerButtonHover } from 'styles/button'
-import { colors } from 'styles/colors'
+import { colors, colorStyles } from 'styles/colors'
 
 import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import { Button, Flex, Spinner, Text } from '@chakra-ui/react'
@@ -25,10 +25,10 @@ const TransactionStateHeader = ({
   <Flex>
     <Button
       onClick={onClick}
-      background={isDarkMode ? colors.background : colors.white}
+      background={colorStyles(isDarkMode).background}
       borderColor={getBorderColor(state, isDarkMode)}
       borderRadius='32'
-      color={isDarkMode ? colors.background : colors.white}
+      color={colorStyles(isDarkMode).background}
       fontSize='md'
       fontWeight='700'
       padding='6px 16px'
@@ -59,7 +59,7 @@ const TransactionStateView = (props: TransactionStateViewProps) => {
           <Spinner
             size='sm'
             mr='16px'
-            color={props.isDarkMode ? colors.white : colors.background}
+            color={colorStyles(props.isDarkMode).text}
           />
           <Text>1 Pending</Text>
         </>

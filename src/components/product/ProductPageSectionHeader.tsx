@@ -1,4 +1,4 @@
-import { useICColorMode } from 'styles/colors'
+import { useColorStyles } from 'styles/colors'
 
 import { Box, Flex, Text } from '@chakra-ui/react'
 
@@ -9,7 +9,7 @@ const ProductPageSectionHeader = ({
   title: String
   topMargin?: string
 }) => {
-  const { dividerColor } = useICColorMode()
+  const { styles } = useColorStyles()
   const topMarginHeader = topMargin ?? ['64px', '80px']
 
   return (
@@ -23,7 +23,7 @@ const ProductPageSectionHeader = ({
       <Text fontSize='2xl' fontWeight='700'>
         {title}
       </Text>
-      <Box w='100%' h='1px' ml='20px' background={dividerColor} />
+      <Box w='100%' h='1px' ml='20px' background={styles.border} />
     </Flex>
   )
 }

@@ -13,8 +13,8 @@ import Navigation from './Navigation'
 const Header = () => {
   const { isDarkMode } = useICColorMode()
   const backgroundColor = isDarkMode
-    ? 'rgba(0, 0, 0, 0.6)'
-    : 'rgba(255, 255, 255, 0.82)'
+    ? 'rgba(15, 23, 23, 0.6)'
+    : 'rgba(252, 255, 255, 0.82)'
 
   return (
     <Flex

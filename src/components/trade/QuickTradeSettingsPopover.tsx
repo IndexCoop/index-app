@@ -23,7 +23,7 @@ type PopoverProps = {
 
 export const QuickTradeSettingsPopover = (props: PopoverProps) => {
   const { isAuto, isDarkMode, slippage, onChangeSlippage, onClickAuto } = props
-  const backgroundColor = isDarkMode ? colors.background : colors.white
+  const backgroundColor = isDarkMode ? colors.black : colors.icWhite
   return (
     <Popover placement='bottom-end'>
       <PopoverTrigger>
@@ -93,7 +93,7 @@ type AutoButtonProps = {
 }
 
 const AutoButton = ({ isActive, isDarkMode, onClickAuto }: AutoButtonProps) => {
-  const backgroundColor = isDarkMode ? colors.white : colors.background
+  const backgroundColor = isDarkMode ? colors.icWhite : colors.black
   const background = isActive ? backgroundColor : 'transparent'
   const activeColor = isDarkMode ? colors.black : colors.white
   const inactiveColor = isDarkMode ? colors.white : colors.black

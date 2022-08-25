@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { BigNumber } from 'ethers'
-import { colors, useICColorMode } from 'styles/colors'
+import { colors, useColorStyles } from 'styles/colors'
 import { useNetwork } from 'wagmi'
 
 import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
@@ -34,7 +34,7 @@ const QuickTradeSelector = (props: {
 }) => {
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
-  const { isDarkMode } = useICColorMode()
+  const { styles } = useColorStyles()
   const chainId = chain?.id
 
   const { config, selectedToken, selectedTokenAmount } = props
@@ -60,13 +60,8 @@ const QuickTradeSelector = (props: {
     setTokenBalance(formattedBalance(selectedToken, tokenBal))
   }, [selectedToken, getBalance, chainId])
 
-  const borderColor = config.isDarkMode ? colors.icGray3 : colors.icGray2
+  const borderColor = styles.border
   const borderRadius = 16
-
-  const height = '64px'
-  const wideWidths = ['250px', '180px']
-  const narrowWidths = ['250px']
-  const widths = config.isNarrowVersion ? narrowWidths : wideWidths
 
   const onChangeInput = (amount: string) => {
     if (!amount) {
@@ -89,23 +84,35 @@ const QuickTradeSelector = (props: {
     props.onChangeInput(selectedToken, amount)
   }
 
+  const onClickBalance = () => {
+    if (!tokenBalance) return
+    const fullTokenBalance = formatUnits(
+      getBalance(selectedTokenSymbol) ?? '0',
+      selectedToken.decimals
+    )
+    onChangeInput(fullTokenBalance)
+  }
+
   return (
     <Flex direction='column'>
       <Text fontSize='20px' fontWeight='700'>
         {props.title}
       </Text>
-      <Flex mt='10px' h={height}>
-        <Flex
-          align='flex-start'
-          direction='column'
-          justify='center'
-          border='1px solid #000'
-          borderColor={borderColor}
-          borderLeftRadius={borderRadius}
-          px={['16px', '30px']}
-        >
+      <Flex
+        align='center'
+        justify='space-between'
+        bg={styles.background}
+        border='1px solid'
+        borderColor={borderColor}
+        borderRadius={borderRadius}
+        mt='10px'
+        px={['16px', '20px']}
+        py='12px'
+      >
+        <Flex direction='column'>
           <Input
-            fontSize='20px'
+            color={styles.text2}
+            fontSize='24px'
             placeholder='0.0'
             type='number'
             step='any'
@@ -116,63 +123,81 @@ const QuickTradeSelector = (props: {
             onChange={(event) => onChangeInput(event.target.value)}
           />
           <Flex>
-            <Text
-              fontSize='12px'
-              textColor={
-                isDarkMode ? colors.icGrayDarkMode : colors.icGrayLightMode
-              }
-            >
+            <Text fontSize='14px' textColor={styles.text3}>
               {props.formattedFiat}
             </Text>
             {props.priceImpact && (
-              <Text fontSize='12px' textColor={props.priceImpact.colorCoding}>
+              <Text fontSize='14px' textColor={props.priceImpact.colorCoding}>
                 &nbsp;{props.priceImpact.priceImpact}
               </Text>
             )}
           </Flex>
         </Flex>
-        <Flex
-          align='center'
-          h={height}
-          border='1px solid #000'
-          borderColor={borderColor}
-          borderRightRadius={borderRadius}
-          cursor='pointer'
-          w={widths}
+        <Selector
           onClick={() => props.onSelectedToken(selectedTokenSymbol)}
-        >
-          {!config.isNarrowVersion && (
-            <Box pl='10px' pr='0px'>
-              <Image
-                src={selectedToken.image}
-                alt={`${selectedTokenSymbol} logo`}
-                w='24px'
-              />
-            </Box>
-          )}
-          <Text ml='8px'>{selectedTokenSymbol}</Text>
-        </Flex>
+          isNarrowVersion={config.isNarrowVersion}
+          selectedTokenImage={selectedToken.image}
+          selectedTokenSymbol={selectedTokenSymbol}
+        />
       </Flex>
-      <Text
-        align='left'
-        fontSize='12px'
-        fontWeight='400'
-        mt='5px'
-        onClick={() => {
-          if (tokenBalance) {
-            const fullTokenBalance = formatUnits(
-              getBalance(selectedTokenSymbol) ?? '0',
-              selectedToken.decimals
-            )
-            onChangeInput(fullTokenBalance)
-          }
-        }}
-        cursor='pointer'
-      >
-        Balance: {tokenBalance}
-      </Text>
+      <Balance balance={tokenBalance} onClick={onClickBalance} />
     </Flex>
   )
 }
+
+type BalanceProps = {
+  balance: string
+  onClick: () => void
+}
+
+const Balance = ({ balance, onClick }: BalanceProps) => (
+  <Text
+    align='left'
+    fontSize='12px'
+    fontWeight='400'
+    mt='5px'
+    onClick={onClick}
+    cursor='pointer'
+  >
+    Balance: {balance}
+  </Text>
+)
+
+type SelectorProps = {
+  isNarrowVersion: boolean
+  onClick: () => void
+  selectedTokenImage: string
+  selectedTokenSymbol: string
+}
+
+const Selector = ({
+  isNarrowVersion,
+  onClick,
+  selectedTokenImage,
+  selectedTokenSymbol,
+}: SelectorProps) => (
+  <Flex
+    bg={colors.icGray1}
+    borderRadius='32'
+    boxShadow='sm'
+    cursor='pointer'
+    onClick={onClick}
+    py='2'
+    pl='3'
+    pr='4'
+    shrink={0}
+  >
+    {!isNarrowVersion && (
+      <Box mr='8px' w='24px'>
+        <Image
+          src={selectedTokenImage}
+          alt={`${selectedTokenSymbol} logo`}
+          w='24px'
+        />
+      </Box>
+    )}
+    <Text color={colors.icGray4}>{selectedTokenSymbol}</Text>
+  </Flex>
+)
 
 export default QuickTradeSelector

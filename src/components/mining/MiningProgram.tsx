@@ -1,4 +1,4 @@
-import { colors, useICColorMode } from 'styles/colors'
+import { colors, useColorStyles, useICColorMode } from 'styles/colors'
 import { useAccount } from 'wagmi'
 
 import {
@@ -87,7 +87,8 @@ const MiningProgram = (props: {
   const { address } = useAccount()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const liquidityMining = useLiquidityMining()
-  const { dividerColor, isDarkMode } = useICColorMode()
+  const { isDarkMode } = useICColorMode()
+  const { styles } = useColorStyles()
 
   const program = liquidityMining[liquidityMiningKey]
   if (!program) return <></>
@@ -169,7 +170,7 @@ const MiningProgram = (props: {
         <Heading as='h3' size='md'>
           {title}
         </Heading>
-        <Box border='1px solid #fff' borderColor={dividerColor} mt='6px' />
+        <Box border='1px solid #fff' borderColor={styles.border} mt='6px' />
         <Heading as='h5' size='xs' mt='6px' fontWeight='normal'>
           {subtitle}
         </Heading>

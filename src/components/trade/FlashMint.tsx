@@ -240,6 +240,7 @@ const FlashMint = (props: QuickTradeProps) => {
     if (quotes.flashMintPerp) {
       await handleTrade(
         isMinting,
+        slippage,
         indexToken,
         indexTokenAmountWei,
         inputOutputTokenAmount
@@ -439,7 +440,6 @@ const TradeButtonContainer = ({
       {!requiresProtection && (
         <TradeButton
           label={buttonLabel}
-          background={isDarkMode ? colors.icWhite : colors.icBlue}
           isDisabled={isButtonDisabled}
           isLoading={isLoading}
           onClick={onClickTradeButton}

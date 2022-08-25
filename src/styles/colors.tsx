@@ -2,8 +2,6 @@ import { theme, useColorMode } from '@chakra-ui/react'
 
 export const colors = {
   ...theme.colors,
-  background: '#000000',
-  backgroundFooter: '#242424',
   // old colors will be removed once they are replaced everywhere
   icMalachite: '#09AA74',
   icRed: '#C32238',
@@ -30,11 +28,30 @@ export const colors = {
   icGrayDarkMode: '#777',
 }
 
+export const colorStyles = (isDarkMode: boolean) => {
+  return {
+    background: isDarkMode ? colors.icBlack : colors.icWhite,
+    backgroundGradient: isDarkMode
+      ? 'linear(to-tr, #143438, #0F1717, #0F1717)'
+      : 'linear(to-tr, #F7F8F8, #FCFFFF, #FCFFFF)',
+    backgroundInverted: isDarkMode ? colors.icWhite : colors.icBlack,
+    border: isDarkMode ? colors.icGray4 : colors.icGray1,
+    text: isDarkMode ? colors.icWhite : colors.icBlack,
+    text2: isDarkMode ? colors.icGray2 : colors.icGray4,
+    text3: colors.icGray3,
+    textInverted: isDarkMode ? colors.icBlack : colors.icWhite,
+  }
+}
+
+export const useColorStyles = () => {
+  const { isDarkMode } = useICColorMode()
+  return { isDarkMode, styles: colorStyles(isDarkMode) }
+}
+
 export const useICColorMode = () => {
   const { colorMode } = useColorMode()
   const isDarkMode = colorMode === 'dark'
-  const dividerColor = isDarkMode ? colors.icGray3 : colors.icGray2
-  return { isDarkMode, dividerColor }
+  return { isDarkMode }
 }
 
 export const pieChartColors = [

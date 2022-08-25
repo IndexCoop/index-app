@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { colors, useICColorMode } from 'styles/colors'
+import { colors, useColorStyles, useICColorMode } from 'styles/colors'
 
 import {
   Flex,
@@ -32,8 +32,9 @@ type SelectTokenModalProps = {
 
 export const SelectTokenModal = (props: SelectTokenModalProps) => {
   const { isDarkMode } = useICColorMode()
+  const { styles } = useColorStyles()
   const { isOpen, onClose, onSelectedToken, items } = props
-  const backgroundColor = isDarkMode ? colors.background : colors.white
+  const backgroundColor = styles.background
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
       <ModalOverlay
