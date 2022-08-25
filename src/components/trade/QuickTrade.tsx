@@ -132,7 +132,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     const proRatedMarketPrice = tokenFiat * Number(navTokenAmount)
     const proRatedNavPrice = nav * Number(navTokenAmount)
     const navDivergence =
-      (proRatedMarketPrice - proRatedNavPrice) / proRatedMarketPrice
+      (proRatedMarketPrice - proRatedNavPrice) / proRatedMarketPrice / 100
     const navData: TradeInfoItem = {
       title: 'NAV',
       values: [
