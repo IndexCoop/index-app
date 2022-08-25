@@ -110,13 +110,15 @@ const QuickTrade = (props: QuickTradeProps) => {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+  const [navData, setNavData] = useState<TradeInfoItem>()
 
   const navToken = isBuying ? buyToken : sellToken
+  const marketData = selectMarketDataByToken(navToken)
 
   const { nav } = useTokenComponents(
     navToken,
-    selectMarketDataByToken(sellToken),
-    isPerpToken(sellToken)
+    marketData,
+    isPerpToken(navToken)
   )
 
   console.log(nav)
@@ -127,13 +129,17 @@ const QuickTrade = (props: QuickTradeProps) => {
     if (nav <= 0) return
     console.log('here', nav, bestOption)
     const navTokenAmount = isBuying ? buyTokenAmountFormatted : sellTokenAmount
-    const navTokenPrice = Number(navTokenAmount) * nav
-    const proRatedNav = nav * Number(navTokenAmount)
-    const navDivergence = (proRatedNav - navTokenPrice) / proRatedNav
+    const tokenFiat = isBuying
+      ? parseFloat(buyTokenAmountFormatted) * buyTokenPrice
+      : parseFloat(sellTokenAmount) * sellTokenPrice
+    const proRatedMarketPrice = Number(tokenFiat) * Number(navTokenAmount)
+    const proRatedNavPrice = nav * Number(navTokenAmount)
+    const navDivergence =
+      (proRatedNavPrice - proRatedMarketPrice) / proRatedNavPrice
     const navData: TradeInfoItem = {
       title: 'NAV',
       values: [
-        proRatedNav.toLocaleString('en-US', {
+        proRatedNavPrice.toLocaleString('en-US', {
           style: 'currency',
           currency: 'USD',
         }),
@@ -146,9 +152,10 @@ const QuickTrade = (props: QuickTradeProps) => {
     var updatedInfoData = tradeInfoData
     updatedInfoData[navIndex] = navData
     console.log(updatedInfoData, tradeInfoData)
+    setNavData(navData)
     setTradeInfoData(updatedInfoData)
     console.log('set')
-  }, [bestOption, nav])
+  }, [bestOption, nav, buyTokenAmountFormatted, sellTokenAmount])
 
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
     useBestQuote()
@@ -275,7 +282,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           quoteZeroEx?.minOutput ?? BigNumber.from(0),
           quoteZeroEx?.sources ?? [],
           chain?.id,
-          null
+          navData
         )
       : getTradeInfoDataFromEI(
           tradeDataEI?.setTokenAmount ?? BigNumber.from(0),
@@ -286,7 +293,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           tradeDataEI?.inputOutputTokenAmount ?? BigNumber.from(0),
           chain?.id,
           isBuying,
-          null
+          navData
         )
 
     setTradeInfoData(tradeInfoData)

@@ -73,7 +73,7 @@ export const useTokenComponents = (
         setVAssets(vTokens)
       })
     }
-  }, [marketData])
+  }, [marketData, token])
   useMemo(() => {
     if (components.length === 0 && vAssets.length === 0) return
     setNav(getNetAssetValue(components.concat(vAssets)))
