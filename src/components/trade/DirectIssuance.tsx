@@ -1,4 +1,4 @@
-import { colors, useColorStyles } from 'styles/colors'
+import { colors, colorStyles, useColorStyles } from 'styles/colors'
 
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
@@ -82,9 +82,11 @@ const DirectIssuance = ({
       </Text>
       <Flex alignItems='center' marginTop='8px'>
         <Flex
+          bg={colors.icGray1}
           border='1px solid'
-          borderColor={colors.icGray2}
+          borderColor={colorStyles(isDarkMode).border}
           borderRadius='16'
+          boxShadow='sm'
           cursor='pointer'
           p='12px'
           onClick={onSelectInputOutputToken}
