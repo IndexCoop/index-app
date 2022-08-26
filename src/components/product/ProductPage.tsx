@@ -71,7 +71,6 @@ function getStatsForToken(
       { title: 'NAV', value: formatter.format(nav) }
     )
   }
-  console.log('stats', token.symbol, stats)
 
   return stats
 }

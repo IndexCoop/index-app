@@ -132,7 +132,7 @@ export const useNewApproveToken = (
   return {
     data,
     isLoading,
-    isSuccess,
-    write,
+    isApproved: isSuccess,
+    approveToken: write,
   }
 }
