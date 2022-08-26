@@ -10,14 +10,14 @@ import { BigNumber, Contract, utils } from 'ethers'
 
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import tokenList from 'constants/tokens'
+import tokenList, { Token } from 'constants/tokens'
 import { useAllReadOnlyProviders } from 'hooks/useReadOnlyProvider'
 import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData'
 import { ERC20_ABI } from 'utils/abi/ERC20'
-import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
 
 export interface BalanceValues {
+  token: Token
   mainnetBalance: BigNumber
   polygonBalance: BigNumber
   optimismBalance: BigNumber
@@ -25,14 +25,16 @@ export interface BalanceValues {
 }
 
 export interface TokenContext {
-  tokenBalances?: { [key: string]: BalanceValues }
+  tokenBalances: { [key: string]: BalanceValues }
 }
 
 const ERC20Interface = new utils.Interface(ERC20_ABI)
 
 export type TokenContextKeys = keyof TokenContext
 
-export const BalanceContext = createContext<TokenContext>({})
+export const BalanceContext = createContext<TokenContext>({
+  tokenBalances: {},
+})
 
 export const useBalanceData = () => useContext(BalanceContext)
 
@@ -48,7 +50,7 @@ const getBalance = async (
 
 export const BalanceProvider = (props: { children: any }) => {
   const { address } = useWallet()
-  const { selectLatestMarketData } = useMarketData()
+  const { selectLatestMarketData, selectMarketDataByToken } = useMarketData()
   const {
     mainnetReadOnlyProvider,
     optimismReadOnlyProvider,
@@ -62,7 +64,7 @@ export const BalanceProvider = (props: { children: any }) => {
     if (!address) return
     let balanceData: { [key: string]: BalanceValues } = {}
     tokenList.forEach(async (token) => {
-      const marketData = await fetchHistoricalTokenMarketData(token.coingeckoId)
+      const marketData = selectMarketDataByToken(token)
       let mainnetBalance = BigNumber.from(0)
       let polygonBalance = BigNumber.from(0)
       let optimismBalance = BigNumber.from(0)
@@ -95,6 +97,7 @@ export const BalanceProvider = (props: { children: any }) => {
         !optimismBalance.isZero()
       )
         balanceData[token.symbol] = {
+          token,
           mainnetBalance,
           polygonBalance,
           optimismBalance,
