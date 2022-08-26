@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
-import { colors, useICColorMode } from 'styles/colors'
+import { useICColorMode } from 'styles/colors'
 
 import { Box, Flex, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
