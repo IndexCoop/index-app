@@ -1,18 +1,10 @@
-import { BigNumber } from 'ethers'
 import { colors, useICColorMode } from 'styles/colors'
 
 import { Table, Tbody, Th, Thead, Tr } from '@chakra-ui/react'
 
-import { Token } from 'constants/tokens'
 import { useBalanceData } from 'providers/Balances'
 
 import BalanceTableRow from './BalanceTableRow'
-
-export interface BalanceTableItem {
-  token: Token
-  balance: BigNumber
-  price: number
-}
 
 const BalanceTable = () => {
   const { isDarkMode } = useICColorMode()
@@ -25,7 +17,15 @@ const BalanceTable = () => {
       colorScheme={colorScheme}
       width={['340px', '400px', '800px', '1024px']}
     >
-      <TableHeader />
+      <Thead>
+        <Tr>
+          <Th style={{ color: colors.icBlue2 }}>Token</Th>
+          <Th style={{ color: colors.icBlue2 }}>Mainnet</Th>
+          <Th style={{ color: colors.icBlue2 }}>Polygon</Th>
+          <Th style={{ color: colors.icBlue2 }}>Optimism</Th>
+          <Th style={{ color: colors.icBlue2 }}>Value</Th>
+        </Tr>
+      </Thead>
       <Tbody>
         {Object.entries(tokenBalances).map(([key, balances]) => {
           console.log('key', key)
@@ -33,20 +33,6 @@ const BalanceTable = () => {
         })}
       </Tbody>
     </Table>
-  )
-}
-
-const TableHeader = () => {
-  return (
-    <Thead>
-      <Tr>
-        <Th style={{ color: colors.icBlue2 }}>Token</Th>
-        <Th style={{ color: colors.icBlue2 }}>Mainnet</Th>
-        <Th style={{ color: colors.icBlue2 }}>Polygon</Th>
-        <Th style={{ color: colors.icBlue2 }}>Optimism</Th>
-        <Th style={{ color: colors.icBlue2 }}>Value</Th>
-      </Tr>
-    </Thead>
   )
 }
 
