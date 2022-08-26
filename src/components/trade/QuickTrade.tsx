@@ -28,15 +28,18 @@ import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
 import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
 import { useIsSupportedNetwork } from 'hooks/useIsSupportedNetwork'
+import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
+import { useMarketData } from 'providers/MarketData'
 import { useProtection } from 'providers/Protection'
 import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
+import { isPerpToken } from 'utils/tokens'
 
 import { ContractExecutionView } from './ContractExecutionView'
 import { ProtectionWarning } from './ProtectionWarning'
@@ -45,7 +48,6 @@ import {
   getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
   getHasInsufficientFunds,
-  getSlippageColorCoding,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
 } from './QuickTradeFormatter'
@@ -100,12 +102,55 @@ const QuickTrade = (props: QuickTradeProps) => {
   } = useTradeTokenLists(props.singleToken)
   const { getBalance } = useBalances()
 
+  const { selectMarketDataByToken } = useMarketData()
+
   const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
     null
   )
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+  const [navData, setNavData] = useState<TradeInfoItem>()
+
+  const navToken = isBuying ? buyToken : sellToken
+  const marketData = selectMarketDataByToken(navToken)
+
+  const { nav } = useTokenComponents(
+    navToken,
+    marketData,
+    isPerpToken(navToken)
+  )
+
+  useEffect(() => {
+    if (bestOption === null) return
+    if (tradeInfoData.length < 1) return
+    if (nav <= 0) return
+    const navTokenAmount = isBuying ? buyTokenAmountFormatted : sellTokenAmount
+    const tokenFiat = isBuying
+      ? parseFloat(buyTokenAmountFormatted) * buyTokenPrice
+      : parseFloat(sellTokenAmount) * sellTokenPrice
+    const proRatedMarketPrice = tokenFiat * Number(navTokenAmount)
+    const proRatedNavPrice = nav * Number(navTokenAmount)
+    const navDivergence =
+      (proRatedMarketPrice - proRatedNavPrice) / proRatedMarketPrice / 100
+    const navData: TradeInfoItem = {
+      title: 'NAV',
+      values: [
+        proRatedNavPrice.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }),
+      ],
+      subValue: '(' + navDivergence.toFixed(2) + '%)',
+      tooltip:
+        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt taken on (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV',
+    }
+    const navIndex = bestOption === QuickTradeBestOption.zeroEx ? 2 : 3
+    var updatedInfoData = tradeInfoData
+    updatedInfoData[navIndex] = navData
+    setNavData(navData)
+    setTradeInfoData(updatedInfoData)
+  }, [bestOption, nav, buyTokenAmountFormatted, sellTokenAmount])
 
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
     useBestQuote()
@@ -203,8 +248,6 @@ const QuickTrade = (props: QuickTradeProps) => {
       return
     }
 
-    console.log(quoteResult)
-
     const bestOption = getBestOptionFromQuoteType(quoteResult.bestQuote)
     const bestOptionIs0x = bestOption === QuickTradeBestOption.zeroEx
     const bestOptionIsLevEI =
@@ -215,31 +258,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       ? quoteResult.quotes.exchangeIssuanceLeveraged
       : quoteResult.quotes.exchangeIssuanceZeroEx
 
-    const slippageColorCoding = getSlippageColorCoding(slippage, isDarkMode)
-    const tradeInfoData = bestOptionIs0x
-      ? getTradeInfoData0x(
-          buyToken,
-          quoteZeroEx?.gasCosts ?? BigNumber.from(0),
-          quoteZeroEx?.minOutput ?? BigNumber.from(0),
-          quoteZeroEx?.sources ?? [],
-          slippage,
-          slippageColorCoding,
-          chain?.id
-        )
-      : getTradeInfoDataFromEI(
-          tradeDataEI?.setTokenAmount ?? BigNumber.from(0),
-          tradeDataEI?.gasPrice ?? BigNumber.from(0),
-          tradeDataEI?.gas ?? BigNumber.from(0),
-          buyToken,
-          sellToken,
-          tradeDataEI?.inputOutputTokenAmount ?? BigNumber.from(0),
-          slippage,
-          slippageColorCoding,
-          chain?.id,
-          isBuying
-        )
-
-    const buyTokenAmountFormatted = getFormattedOuputTokenAmount(
+    const formattedBuyTokenAmount = getFormattedOuputTokenAmount(
       bestOption !== QuickTradeBestOption.zeroEx,
       buyToken.decimals,
       quoteZeroEx?.minOutput ?? BigNumber.from(0),
@@ -250,7 +269,28 @@ const QuickTrade = (props: QuickTradeProps) => {
 
     console.log('BESTOPTION', bestOption)
     setBestOption(bestOption)
-    setBuyTokenAmountFormatted(buyTokenAmountFormatted)
+    setBuyTokenAmountFormatted(formattedBuyTokenAmount)
+    const tradeInfoData = bestOptionIs0x
+      ? getTradeInfoData0x(
+          buyToken,
+          quoteZeroEx?.gasCosts ?? BigNumber.from(0),
+          quoteZeroEx?.minOutput ?? BigNumber.from(0),
+          quoteZeroEx?.sources ?? [],
+          chain?.id,
+          navData
+        )
+      : getTradeInfoDataFromEI(
+          tradeDataEI?.setTokenAmount ?? BigNumber.from(0),
+          tradeDataEI?.gasPrice ?? BigNumber.from(0),
+          tradeDataEI?.gas ?? BigNumber.from(0),
+          buyToken,
+          sellToken,
+          tradeDataEI?.inputOutputTokenAmount ?? BigNumber.from(0),
+          chain?.id,
+          isBuying,
+          navData
+        )
+
     setTradeInfoData(tradeInfoData)
   }
 
