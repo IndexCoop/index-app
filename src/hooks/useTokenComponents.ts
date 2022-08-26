@@ -29,6 +29,7 @@ export const useTokenComponents = (
   const provider = useReadOnlyProvider(chainId)
   const [components, setComponents] = useState<SetComponent[]>([])
   const [vAssets, setVAssets] = useState<SetComponent[]>([])
+  const [nav, setNav] = useState<number>(0)
   const address = getAddressForToken(token, chainId)
 
   useMemo(() => {
@@ -72,8 +73,12 @@ export const useTokenComponents = (
         setVAssets(vTokens)
       })
     }
-  }, [marketData])
-  return { components, vAssets }
+  }, [marketData, token])
+  useMemo(() => {
+    if (components.length === 0 && vAssets.length === 0) return
+    setNav(getNetAssetValue(components.concat(vAssets)))
+  }, [components, vAssets])
+  return { components, vAssets, nav }
 }
 
 const getSetComponents = async (
@@ -211,6 +216,15 @@ function sortPositionsByPercentOfSet(
     if (b.percentOfSetNumber < a.percentOfSetNumber) return -1
     return 0
   })
+}
+
+const getNetAssetValue = (components: SetComponent[]): number => {
+  let totalValue: number = 0
+  if (components.length > 0)
+    components.forEach((c) => {
+      totalValue += parseFloat(c.totalPriceUsd)
+    })
+  return totalValue
 }
 
 export interface SetComponent {
