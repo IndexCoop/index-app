@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { constants, Contract, utils } from 'ethers'
-import { useContractRead, useNetwork } from 'wagmi'
+import {
+  useContract,
+  useContractRead,
+  useContractWrite,
+  useNetwork,
+  usePrepareContractWrite,
+} from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -105,5 +111,28 @@ export const useApproval = (
     isApproved,
     isApproving,
     onApprove: handleApprove,
+  }
+}
+
+/** currently unused, testing wagmi version */
+export const useNewApproveToken = (
+  token: Token,
+  spenderAddress: string,
+  amount: BigNumber = constants.MaxUint256,
+  chainId: number
+) => {
+  const tokenAddress = (token && getAddressForToken(token, chainId)) || ''
+  const { config } = usePrepareContractWrite({
+    addressOrName: tokenAddress,
+    contractInterface: ERC20Interface,
+    functionName: 'approve',
+    args: [spenderAddress, amount],
+  })
+  const { data, isLoading, isSuccess, write } = useContractWrite(config)
+  return {
+    data,
+    isLoading,
+    isApproved: isSuccess,
+    approveToken: write,
   }
 }

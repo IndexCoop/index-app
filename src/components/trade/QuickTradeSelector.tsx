@@ -48,7 +48,7 @@ const QuickTradeSelector = (props: {
   )
 
   useEffect(() => {
-    setInputString(selectedTokenAmount === '0' ? '' : selectedTokenAmount || '')
+    setInputString(selectedTokenAmount === '0' ? '' : selectedTokenAmount || '') // TODO: Need comma separated number here
   }, [selectedTokenAmount])
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const QuickTradeSelector = (props: {
     )
       return
 
-    setInputString(amount)
+    setInputString(amount) // TODO: Need comma separated number here
     props.onChangeInput(selectedToken, amount)
   }
 
