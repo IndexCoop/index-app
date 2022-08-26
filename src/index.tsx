@@ -40,6 +40,7 @@ import MATIC2xFLIP from 'components/views/productpages/MATIC2xFLIP'
 import MNYe from 'components/views/productpages/MNYe'
 import MVI from 'components/views/productpages/MVI'
 import Products from 'components/views/Products'
+import { BalanceProvider } from 'providers/Balances'
 import { MarketDataProvider } from 'providers/MarketData'
 import { ProtectionProvider } from 'providers/Protection'
 
@@ -100,9 +101,11 @@ const Providers = (props: { children: any }) => {
           }}
         >
           <MarketDataProvider>
-            <ProtectionProvider>
-              <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
-            </ProtectionProvider>
+            <BalanceProvider>
+              <ProtectionProvider>
+                <GTMProvider state={gtmParams}>{props.children}</GTMProvider>
+              </ProtectionProvider>
+            </BalanceProvider>
           </MarketDataProvider>
         </RainbowKitProvider>
       </WagmiConfig>
