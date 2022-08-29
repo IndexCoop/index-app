@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers'
 import { colors, useColorStyles } from 'styles/colors'
 import { useNetwork } from 'wagmi'
 
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 
@@ -183,8 +184,7 @@ const Selector = ({
     cursor='pointer'
     onClick={onClick}
     py='2'
-    pl='3'
-    pr='4'
+    px='2'
     shrink={0}
   >
     {!isNarrowVersion && (
@@ -197,6 +197,7 @@ const Selector = ({
       </Box>
     )}
     <Text color={colors.icGray4}>{selectedTokenSymbol}</Text>
+    <ChevronDownIcon ml={1} w={6} h={6} color={colors.icGray4} />
   </Flex>
 )
 
