@@ -123,7 +123,7 @@ const NavigationButton = (props: NavigationButtonProps) => {
   return (
     <Text
       background={props.isSelected ? backgroundSelectedColor : backgroundColor}
-      borderRadius={14}
+      borderRadius={13}
       color={props.isSelected ? selectedColor : backgroundSelectedColor}
       cursor='pointer'
       fontSize='21px'
