@@ -12,8 +12,8 @@ const highlightColor = colors.icBlue2
 const BalanceTableRow = (props: { item: BalanceValues }) => {
   const { item } = props
 
-  const formatBN = (number: BigNumber): string =>
-    Number(formatUnits(number, 18)).toFixed(4)
+  const formatBalance = (number: BigNumber | null): string =>
+    !number ? 'N/A' : Number(formatUnits(number, 18)).toFixed(4)
 
   return (
     <Tr width={['340px', '400px', '800px', '1024px']}>
@@ -33,13 +33,13 @@ const BalanceTableRow = (props: { item: BalanceValues }) => {
         </Flex>
       </Td>
       <Td isNumeric={true}>
-        <Text>{formatBN(item.mainnetBalance)}</Text>
+        <Text>{formatBalance(item.mainnetBalance)}</Text>
       </Td>
       <Td isNumeric={true}>
-        <Text>{formatBN(item.polygonBalance)}</Text>
+        <Text>{formatBalance(item.polygonBalance)}</Text>
       </Td>
       <Td isNumeric={true}>
-        <Text>{formatBN(item.optimismBalance)}</Text>
+        <Text>{formatBalance(item.optimismBalance)}</Text>
       </Td>
       {/* <Td isNumeric={true}>{item.price}</Td> */}
     </Tr>

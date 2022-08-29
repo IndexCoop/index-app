@@ -18,9 +18,9 @@ import { ERC20_ABI } from 'utils/abi/ERC20'
 
 export interface BalanceValues {
   token: Token
-  mainnetBalance: BigNumber
-  polygonBalance: BigNumber
-  optimismBalance: BigNumber
+  mainnetBalance: BigNumber | null
+  polygonBalance: BigNumber | null
+  optimismBalance: BigNumber | null
   price: number
 }
 
@@ -40,9 +40,10 @@ export const useBalanceData = () => useContext(BalanceContext)
 
 const getBalance = async (
   address: string,
-  tokenAddress: string,
+  tokenAddress: string | undefined,
   provider: JsonRpcProvider
-): Promise<BigNumber> => {
+): Promise<BigNumber | null> => {
+  if (!tokenAddress) return null
   const contract = new Contract(tokenAddress, ERC20Interface, provider)
   const bal = await contract.balanceOf(address)
   return bal
@@ -68,16 +69,36 @@ export const BalanceProvider = (props: { children: any }) => {
       tokenList.map(async (token) => {
         const marketData = selectMarketDataByToken(token)
         const price = selectLatestMarketData(marketData)
-        let mainnetBalance = BigNumber.from(0)
-        let polygonBalance = BigNumber.from(0)
-        let optimismBalance = BigNumber.from(0)
 
-        if (token.address !== undefined) {
-          mainnetBalance = await getBalance(
-            address,
-            token.address,
-            mainnetReadOnlyProvider
-          )
+      const mainnetBalance = await getBalance(
+        address,
+        token.address,
+        mainnetReadOnlyProvider
+      )
+
+      const polygonBalance = await getBalance(
+        address,
+        token.polygonAddress,
+        polygonReadOnlyProvider
+      )
+
+      const optimismBalance = await getBalance(
+        address,
+        token.optimismAddress,
+        optimismReadOnlyProvider
+      )
+
+      if (
+        (mainnetBalance && !mainnetBalance.isZero()) ||
+        (polygonBalance && !polygonBalance.isZero()) ||
+        (optimismBalance && !optimismBalance.isZero())
+      )
+        balanceData[token.symbol] = {
+          token,
+          mainnetBalance,
+          polygonBalance,
+          optimismBalance,
+          price,
         }
         if (token.polygonAddress !== undefined) {
           polygonBalance = await getBalance(

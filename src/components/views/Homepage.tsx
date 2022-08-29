@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { useAccount, useNetwork } from 'wagmi'
+import { useNetwork } from 'wagmi'
 
 import { Box, Flex } from '@chakra-ui/react'
 
@@ -11,15 +11,15 @@ import TransactionHistoryTable, {
   TransactionHistoryItem,
 } from 'components/dashboard/TransactionHistoryTable'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import SectionTitle from 'components/SectionTitle'
 import QuickTradeContainer from 'components/trade'
+import { useWallet } from 'hooks/useWallet'
 import { getTransactionHistory } from 'utils/alchemyApi'
 import { logEvent } from 'utils/analytics'
 import { exportCsv } from 'utils/exportToCsv'
 
 const Dashboard = () => {
-  const { address } = useAccount()
+  const { address, isConnected } = useWallet()
   const { chain } = useNetwork()
   const chainId = chain?.id
 
@@ -74,11 +74,12 @@ const Dashboard = () => {
         mx='auto'
         flexDir={'column'}
         justifyContent={'center'}
+        alignItems={'center'}
       >
-        <Box mb={12}>
+        <Box mb={12} w={'500px'}>
           <QuickTradeContainer />
         </Box>
-        {address !== undefined && (
+        {isConnected && (
           <>
             <Box
               w={['340px', '500px', '820px', '1024px']}
