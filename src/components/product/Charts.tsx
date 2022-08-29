@@ -10,8 +10,16 @@ import {
 } from 'recharts'
 import { colors } from 'styles/colors'
 
-import { Position } from 'components/dashboard/AllocationChart'
 import PieChartTooltip from 'components/dashboard/PieChartTooltip'
+
+export interface Position {
+  title: string
+  backgroundColor: string
+  color: string
+  value: number
+  valueDisplay?: string
+  percent?: string
+}
 
 const Chart = (props: {
   data: Position[]

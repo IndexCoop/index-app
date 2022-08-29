@@ -436,7 +436,9 @@ const TradeButtonContainer = ({
   return (
     <Flex direction='column'>
       {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
-      <Flex my='8px'>{isMainnet && <FlashbotsRpcMessage />}</Flex>
+      <Flex my='8px' justifyContent={'center'}>
+        {isMainnet && <FlashbotsRpcMessage />}
+      </Flex>
       {!requiresProtection && (
         <TradeButton
           label={buttonLabel}

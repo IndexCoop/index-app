@@ -16,11 +16,10 @@ import {
   Tr,
 } from '@chakra-ui/react'
 
-import { Position } from 'components/dashboard/AllocationChart'
 import { Token } from 'constants/tokens'
 import { SetComponent } from 'hooks/useTokenComponents'
 
-import Chart from './Charts'
+import Chart, { Position } from './Charts'
 
 const ProductComponentsTable = (props: {
   components?: SetComponent[]

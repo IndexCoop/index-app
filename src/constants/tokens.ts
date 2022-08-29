@@ -556,29 +556,27 @@ const indexNames = [
   JPGIndex,
 ]
 
-export const indexNamesMainnet = indexNames.filter(
-  (index) => index.address !== undefined
-)
+export const indexNamesMainnet = indexNames.filter((index) => index.address)
 export const indexNamesPolygon = indexNames.filter(
   (index) =>
-    index.polygonAddress !== undefined &&
+    index.polygonAddress &&
     index.symbol !== GmiIndex.symbol && // temporarily removed due to liquidity concerns
     index.symbol !== IndexToken.symbol // not available on Polygon
 )
 export const indexNamesOptimism = indexNames.filter(
-  (index) => index.optimismAddress !== undefined
+  (index) => index.optimismAddress
 )
 
 // FlashMint specific lists
 export const flashMintIndexesMainnet = indexNames.filter(
   (index) =>
-    index.address !== undefined &&
+    index.address &&
     index.symbol !== IndexToken.symbol &&
     index.symbol !== JPGIndex.symbol
 )
 export const flashMintIndexesPolygon = indexNames.filter(
   (index) =>
-    index.polygonAddress !== undefined &&
+    index.polygonAddress &&
     index.symbol !== DataIndex.symbol &&
     index.symbol !== DefiPulseIndex.symbol &&
     index.symbol !== GmiIndex.symbol &&

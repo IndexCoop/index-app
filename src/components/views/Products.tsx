@@ -96,7 +96,11 @@ const Products = () => {
   const marketData = useMarketData()
 
   const getTokenMarketData = (tokenContextKey?: TokenContextKeys) => {
-    if (tokenContextKey && tokenContextKey !== 'selectLatestMarketData' && tokenContextKey !== 'selectMarketDataByToken') {
+    if (
+      tokenContextKey &&
+      tokenContextKey !== 'selectLatestMarketData' &&
+      tokenContextKey !== 'selectMarketDataByToken'
+    ) {
       return {
         hourlyPrices: marketData[tokenContextKey]?.hourlyPrices,
         prices: marketData[tokenContextKey]?.prices,
