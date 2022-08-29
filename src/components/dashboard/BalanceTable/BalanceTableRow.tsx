@@ -32,16 +32,16 @@ const BalanceTableRow = (props: { item: BalanceValues }) => {
           </Flex>
         </Flex>
       </Td>
-      <Td>
+      <Td isNumeric={true}>
         <Text>{formatBN(item.mainnetBalance)}</Text>
       </Td>
-      <Td>
+      <Td isNumeric={true}>
         <Text>{formatBN(item.polygonBalance)}</Text>
       </Td>
-      <Td>
+      <Td isNumeric={true}>
         <Text>{formatBN(item.optimismBalance)}</Text>
       </Td>
-      <Td>{item.price}</Td>
+      <Td isNumeric={true}>{item.price}</Td>
     </Tr>
   )
 }

@@ -65,6 +65,8 @@ export const BalanceProvider = (props: { children: any }) => {
     let balanceData: { [key: string]: BalanceValues } = {}
     tokenList.forEach(async (token) => {
       const marketData = selectMarketDataByToken(token)
+      const price = selectLatestMarketData(marketData)
+      console.log('price', price, marketData)
       let mainnetBalance = BigNumber.from(0)
       let polygonBalance = BigNumber.from(0)
       let optimismBalance = BigNumber.from(0)
@@ -101,7 +103,7 @@ export const BalanceProvider = (props: { children: any }) => {
           mainnetBalance,
           polygonBalance,
           optimismBalance,
-          price: selectLatestMarketData(marketData),
+          price,
         }
     })
     setTokenBalances(balanceData)

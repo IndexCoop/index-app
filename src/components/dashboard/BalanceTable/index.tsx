@@ -34,10 +34,18 @@ const BalanceTable = () => {
       <Thead>
         <Tr>
           <Th style={{ color: colors.icBlue2 }}>Token</Th>
-          <Th style={{ color: colors.icBlue2 }}>Mainnet</Th>
-          <Th style={{ color: colors.icBlue2 }}>Polygon</Th>
-          <Th style={{ color: colors.icBlue2 }}>Optimism</Th>
-          <Th style={{ color: colors.icBlue2 }}>Value</Th>
+          <Th isNumeric={true} style={{ color: colors.icBlue2 }}>
+            Mainnet
+          </Th>
+          <Th isNumeric={true} style={{ color: colors.icBlue2 }}>
+            Polygon
+          </Th>
+          <Th isNumeric={true} style={{ color: colors.icBlue2 }}>
+            Optimism
+          </Th>
+          <Th isNumeric={true} style={{ color: colors.icBlue2 }}>
+            Value
+          </Th>
         </Tr>
       </Thead>
       <Tbody>{rows}</Tbody>
