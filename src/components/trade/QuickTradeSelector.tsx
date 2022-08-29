@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers'
 import { colors, useColorStyles } from 'styles/colors'
 import { useNetwork } from 'wagmi'
 
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 
@@ -19,6 +20,7 @@ interface InputSelectorConfig {
   isInputDisabled?: boolean
   isSelectorDisabled?: boolean
   isReadOnly?: boolean
+  showMaxLabel: boolean
 }
 
 const QuickTradeSelector = (props: {
@@ -140,7 +142,11 @@ const QuickTradeSelector = (props: {
           selectedTokenSymbol={selectedTokenSymbol}
         />
       </Flex>
-      <Balance balance={tokenBalance} onClick={onClickBalance} />
+      <Balance
+        balance={tokenBalance}
+        onClick={onClickBalance}
+        showMaxLabel={config.showMaxLabel}
+      />
     </Flex>
   )
 }
@@ -148,19 +154,30 @@ const QuickTradeSelector = (props: {
 type BalanceProps = {
   balance: string
   onClick: () => void
+  showMaxLabel: boolean
 }
 
-const Balance = ({ balance, onClick }: BalanceProps) => (
-  <Text
-    align='left'
-    fontSize='12px'
-    fontWeight='400'
-    mt='5px'
-    onClick={onClick}
-    cursor='pointer'
-  >
-    Balance: {balance}
-  </Text>
+const Balance = ({ balance, onClick, showMaxLabel }: BalanceProps) => (
+  <Flex align='left' cursor='pointer' onClick={onClick} mt='8px'>
+    <Text fontSize='12px' fontWeight='400'>
+      Balance: {balance}
+    </Text>
+    {showMaxLabel === true && (
+      <Flex
+        align='center'
+        bg={colors.icBlue10}
+        borderRadius='12px'
+        justify='center'
+        py='2px'
+        px='6px'
+        ml='4px'
+      >
+        <Text color={colors.icBlue2} fontSize='10px'>
+          MAX
+        </Text>
+      </Flex>
+    )}
+  </Flex>
 )
 
 type SelectorProps = {
@@ -183,8 +200,7 @@ const Selector = ({
     cursor='pointer'
     onClick={onClick}
     py='2'
-    pl='3'
-    pr='4'
+    px='2'
     shrink={0}
   >
     {!isNarrowVersion && (
@@ -197,6 +213,7 @@ const Selector = ({
       </Box>
     )}
     <Text color={colors.icGray4}>{selectedTokenSymbol}</Text>
+    <ChevronDownIcon ml={1} w={6} h={6} color={colors.icGray4} />
   </Flex>
 )
 

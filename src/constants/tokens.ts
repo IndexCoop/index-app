@@ -492,7 +492,6 @@ export const MNYeIndex: Token = {
   tokenContextKey: 'mnye',
   fees: {
     streamingFee: '0.95%',
-    redeemFee: '0.3%',
   },
   isDangerous: true,
   indexTypes: [IndexType.yield],

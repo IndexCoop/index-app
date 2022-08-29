@@ -546,6 +546,7 @@ const QuickTrade = (props: QuickTradeProps) => {
             isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
             isReadOnly: false,
+            showMaxLabel: true,
           }}
           selectedToken={sellToken}
           formattedFiat={sellTokenFiat}
@@ -574,6 +575,7 @@ const QuickTrade = (props: QuickTradeProps) => {
             isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
             isReadOnly: true,
+            showMaxLabel: false,
           }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmountFormatted}
