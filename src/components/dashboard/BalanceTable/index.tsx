@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { colors, useICColorMode } from 'styles/colors'
 
 import { Table, Tbody, Th, Thead, Tr } from '@chakra-ui/react'
@@ -10,7 +12,19 @@ const BalanceTable = () => {
   const { isDarkMode } = useICColorMode()
   const colorScheme = isDarkMode ? 'whiteAlpha' : 'blackAlpha'
   const { tokenBalances } = useBalanceData()
-  console.log('tokenBalances', tokenBalances)
+  const [rows, setRows] = useState<JSX.Element[]>([])
+
+  const renderRows = () => {
+    return Object.entries(tokenBalances).map(([key, balances]) => {
+      console.log('key', key)
+      return <BalanceTableRow key={key} item={balances} />
+    })
+  }
+  useEffect(() => {
+    setTimeout(() => {
+      setRows(renderRows())
+    }, 3000)
+  }, [tokenBalances])
 
   return (
     <Table
@@ -26,12 +40,7 @@ const BalanceTable = () => {
           <Th style={{ color: colors.icBlue2 }}>Value</Th>
         </Tr>
       </Thead>
-      <Tbody>
-        {Object.entries(tokenBalances).map(([key, balances]) => {
-          console.log('key', key)
-          return <BalanceTableRow key={key} item={balances} />
-        })}
-      </Tbody>
+      <Tbody>{rows}</Tbody>
     </Table>
   )
 }

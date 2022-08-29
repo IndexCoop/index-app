@@ -1,3 +1,5 @@
+import { BigNumber } from 'ethers'
+import { formatUnits } from 'ethers/lib/utils'
 import { colors } from 'styles/colors'
 
 import { Flex, Link, Td, Text, Tr } from '@chakra-ui/react'
@@ -9,7 +11,10 @@ const highlightColor = colors.icBlue2
 
 const BalanceTableRow = (props: { item: BalanceValues }) => {
   const { item } = props
-  // TODO: balances need formatting
+
+  const formatBN = (number: BigNumber): string =>
+    Number(formatUnits(number, 18)).toFixed(4)
+
   return (
     <Tr width={['340px', '400px', '800px', '1024px']}>
       <Td>
@@ -28,13 +33,13 @@ const BalanceTableRow = (props: { item: BalanceValues }) => {
         </Flex>
       </Td>
       <Td>
-        <Text>{item.mainnetBalance.toString()}</Text>
+        <Text>{formatBN(item.mainnetBalance)}</Text>
       </Td>
       <Td>
-        <Text>{item.polygonBalance.toString()}</Text>
+        <Text>{formatBN(item.polygonBalance)}</Text>
       </Td>
       <Td>
-        <Text>{item.optimismBalance.toString()}</Text>
+        <Text>{formatBN(item.optimismBalance)}</Text>
       </Td>
       <Td>{item.price}</Td>
     </Tr>
