@@ -75,7 +75,6 @@ const Dashboard = () => {
         flexDir={'column'}
         justifyContent={'center'}
       >
-        <PageTitle title='My Dashboard' subtitle='' />
         <Box mb={12}>
           <QuickTradeContainer />
         </Box>
