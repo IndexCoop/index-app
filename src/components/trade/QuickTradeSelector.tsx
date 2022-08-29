@@ -20,6 +20,7 @@ interface InputSelectorConfig {
   isInputDisabled?: boolean
   isSelectorDisabled?: boolean
   isReadOnly?: boolean
+  showMaxLabel: boolean
 }
 
 const QuickTradeSelector = (props: {
@@ -141,7 +142,11 @@ const QuickTradeSelector = (props: {
           selectedTokenSymbol={selectedTokenSymbol}
         />
       </Flex>
-      <Balance balance={tokenBalance} onClick={onClickBalance} />
+      <Balance
+        balance={tokenBalance}
+        onClick={onClickBalance}
+        showMaxLabel={config.showMaxLabel}
+      />
     </Flex>
   )
 }
@@ -149,19 +154,30 @@ const QuickTradeSelector = (props: {
 type BalanceProps = {
   balance: string
   onClick: () => void
+  showMaxLabel: boolean
 }
 
-const Balance = ({ balance, onClick }: BalanceProps) => (
-  <Text
-    align='left'
-    fontSize='12px'
-    fontWeight='400'
-    mt='5px'
-    onClick={onClick}
-    cursor='pointer'
-  >
-    Balance: {balance}
-  </Text>
+const Balance = ({ balance, onClick, showMaxLabel }: BalanceProps) => (
+  <Flex align='left' cursor='pointer' onClick={onClick} mt='8px'>
+    <Text fontSize='12px' fontWeight='400'>
+      Balance: {balance}
+    </Text>
+    {showMaxLabel === true && (
+      <Flex
+        align='center'
+        bg={colors.icBlue10}
+        borderRadius='12px'
+        justify='center'
+        py='2px'
+        px='6px'
+        ml='4px'
+      >
+        <Text color={colors.icBlue2} fontSize='10px'>
+          MAX
+        </Text>
+      </Flex>
+    )}
+  </Flex>
 )
 
 type SelectorProps = {

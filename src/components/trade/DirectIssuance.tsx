@@ -66,6 +66,7 @@ const DirectIssuance = ({
           isNarrowVersion: isNarrow,
           isSelectorDisabled: false,
           isReadOnly: false,
+          showMaxLabel: true,
         }}
         selectedToken={indexToken}
         selectedTokenAmount={indexTokenAmountFormatted}
