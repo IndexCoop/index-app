@@ -91,21 +91,28 @@ const Dashboard = () => {
             </Flex>
           </Flex>
         </Box>
-        <Box
-          w={['340px', '500px', '820px', '1024px']}
-          px={[0, 0, '20px', 0]}
-          pb={'50px'}
-        >
-          <SectionTitle title='Balances' />
-          <BalanceTable />
-        </Box>
-        <Box w={['340px', '500px', '820px', '1024px']} px={[0, 0, '20px', 0]}>
-          <SectionTitle
-            title='Transaction History'
-            itemRight={renderCsvDownloadButton}
-          />
-          <TransactionHistoryTable items={historyItems.slice(0, 20)} />
-        </Box>
+        {address !== undefined && (
+          <>
+            <Box
+              w={['340px', '500px', '820px', '1024px']}
+              px={[0, 0, '20px', 0]}
+              pb={'50px'}
+            >
+              <SectionTitle title='Balances' />
+              <BalanceTable />
+            </Box>
+            <Box
+              w={['340px', '500px', '820px', '1024px']}
+              px={[0, 0, '20px', 0]}
+            >
+              <SectionTitle
+                title='Transaction History'
+                itemRight={renderCsvDownloadButton}
+              />
+              <TransactionHistoryTable items={historyItems.slice(0, 20)} />
+            </Box>
+          </>
+        )}
       </Flex>
     </Page>
   )
