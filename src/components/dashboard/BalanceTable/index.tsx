@@ -4,7 +4,7 @@ import { colors, useICColorMode } from 'styles/colors'
 
 import { Table, Tbody, Th, Thead, Tr } from '@chakra-ui/react'
 
-import { useBalanceData } from 'providers/Balances'
+import { BalanceValues,useBalanceData } from 'providers/Balances'
 
 import BalanceTableRow from './BalanceTableRow'
 
@@ -14,16 +14,15 @@ const BalanceTable = () => {
   const { tokenBalances } = useBalanceData()
   const [rows, setRows] = useState<JSX.Element[]>([])
 
-  const renderRows = () => {
+  const renderRows = (tokenBalances: { [key: string]: BalanceValues }) => {
     return Object.entries(tokenBalances).map(([key, balances]) => {
-      console.log('key', key)
       return <BalanceTableRow key={key} item={balances} />
     })
   }
+
   useEffect(() => {
-    setTimeout(() => {
-      setRows(renderRows())
-    }, 3000)
+    const rows = renderRows(tokenBalances)
+    setRows(rows)
   }, [tokenBalances])
 
   return (
