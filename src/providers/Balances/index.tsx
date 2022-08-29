@@ -25,6 +25,7 @@ export interface BalanceValues {
 }
 
 export interface TokenContext {
+  isLoading: boolean
   tokenBalances: { [key: string]: BalanceValues }
 }
 
@@ -33,6 +34,7 @@ const ERC20Interface = new utils.Interface(ERC20_ABI)
 export type TokenContextKeys = keyof TokenContext
 
 export const BalanceContext = createContext<TokenContext>({
+  isLoading: true,
   tokenBalances: {},
 })
 
@@ -60,10 +62,12 @@ export const BalanceProvider = (props: { children: any }) => {
   const [tokenBalances, setTokenBalances] = useState<{
     [key: string]: BalanceValues
   }>({})
+  const [isLoading, setIsLoading] = useState(true)
 
   const fetchBalanceData = useCallback(async () => {
     if (!address) return
     let balanceData: { [key: string]: BalanceValues } = {}
+    setIsLoading(true)
 
     await Promise.allSettled(
       tokenList.map(async (token) => {
@@ -102,6 +106,7 @@ export const BalanceProvider = (props: { children: any }) => {
           }
       })
     )
+    setIsLoading(false)
     setTokenBalances(balanceData)
   }, [address, selectLatestMarketData, selectMarketDataByToken])
 
@@ -113,6 +118,7 @@ export const BalanceProvider = (props: { children: any }) => {
   return (
     <BalanceContext.Provider
       value={{
+        isLoading,
         tokenBalances,
       }}
     >

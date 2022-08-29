@@ -2,7 +2,17 @@ import { useEffect, useState } from 'react'
 
 import { colors, useICColorMode } from 'styles/colors'
 
-import { Table, Tbody, Th, Thead, Tr } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Spinner,
+  Table,
+  Tbody,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react'
 
 import { BalanceValues, useBalanceData } from 'providers/Balances'
 
@@ -11,7 +21,7 @@ import BalanceTableRow from './BalanceTableRow'
 const BalanceTable = () => {
   const { isDarkMode } = useICColorMode()
   const colorScheme = isDarkMode ? 'whiteAlpha' : 'blackAlpha'
-  const { tokenBalances } = useBalanceData()
+  const { tokenBalances, isLoading } = useBalanceData()
   const [rows, setRows] = useState<JSX.Element[]>([])
 
   const renderRows = (tokenBalances: { [key: string]: BalanceValues }) => {
@@ -25,6 +35,15 @@ const BalanceTable = () => {
     setRows(rows)
   }, [tokenBalances])
 
+  if (isLoading)
+    return (
+      <Flex w={'100%'} justifyContent={'center'}>
+        <Spinner />
+      </Flex>
+    )
+
+  if (!isLoading && rows.length === 0)
+    return <Text>You don't have any Index Coop products 😞</Text>
   return (
     <Table
       colorScheme={colorScheme}
