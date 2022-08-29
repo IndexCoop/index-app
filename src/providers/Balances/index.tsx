@@ -70,55 +70,28 @@ export const BalanceProvider = (props: { children: any }) => {
         const marketData = selectMarketDataByToken(token)
         const price = selectLatestMarketData(marketData)
 
-      const mainnetBalance = await getBalance(
-        address,
-        token.address,
-        mainnetReadOnlyProvider
-      )
+        const mainnetBalance = await getBalance(
+          address,
+          token.address,
+          mainnetReadOnlyProvider
+        )
 
-      const polygonBalance = await getBalance(
-        address,
-        token.polygonAddress,
-        polygonReadOnlyProvider
-      )
+        const polygonBalance = await getBalance(
+          address,
+          token.polygonAddress,
+          polygonReadOnlyProvider
+        )
 
-      const optimismBalance = await getBalance(
-        address,
-        token.optimismAddress,
-        optimismReadOnlyProvider
-      )
-
-      if (
-        (mainnetBalance && !mainnetBalance.isZero()) ||
-        (polygonBalance && !polygonBalance.isZero()) ||
-        (optimismBalance && !optimismBalance.isZero())
-      )
-        balanceData[token.symbol] = {
-          token,
-          mainnetBalance,
-          polygonBalance,
-          optimismBalance,
-          price,
-        }
-        if (token.polygonAddress !== undefined) {
-          polygonBalance = await getBalance(
-            address,
-            token.polygonAddress,
-            polygonReadOnlyProvider
-          )
-        }
-        if (token.optimismAddress !== undefined) {
-          optimismBalance = await getBalance(
-            address,
-            token.optimismAddress,
-            optimismReadOnlyProvider
-          )
-        }
+        const optimismBalance = await getBalance(
+          address,
+          token.optimismAddress,
+          optimismReadOnlyProvider
+        )
 
         if (
-          !mainnetBalance.isZero() ||
-          !polygonBalance.isZero() ||
-          !optimismBalance.isZero()
+          (mainnetBalance && !mainnetBalance.isZero()) ||
+          (polygonBalance && !polygonBalance.isZero()) ||
+          (optimismBalance && !optimismBalance.isZero())
         )
           balanceData[token.symbol] = {
             token,

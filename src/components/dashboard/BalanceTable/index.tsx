@@ -4,7 +4,7 @@ import { colors, useICColorMode } from 'styles/colors'
 
 import { Table, Tbody, Th, Thead, Tr } from '@chakra-ui/react'
 
-import { BalanceValues,useBalanceData } from 'providers/Balances'
+import { BalanceValues, useBalanceData } from 'providers/Balances'
 
 import BalanceTableRow from './BalanceTableRow'
 
