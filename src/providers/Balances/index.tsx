@@ -63,56 +63,58 @@ export const BalanceProvider = (props: { children: any }) => {
   const fetchBalanceData = useCallback(async () => {
     if (!address) return
     let balanceData: { [key: string]: BalanceValues } = {}
-    tokenList.forEach(async (token) => {
-      const marketData = selectMarketDataByToken(token)
-      const price = selectLatestMarketData(marketData)
-      console.log('price', price, marketData)
-      let mainnetBalance = BigNumber.from(0)
-      let polygonBalance = BigNumber.from(0)
-      let optimismBalance = BigNumber.from(0)
 
-      if (token.address !== undefined) {
-        mainnetBalance = await getBalance(
-          address,
-          token.address,
-          mainnetReadOnlyProvider
-        )
-      }
-      if (token.polygonAddress !== undefined) {
-        polygonBalance = await getBalance(
-          address,
-          token.polygonAddress,
-          polygonReadOnlyProvider
-        )
-      }
-      if (token.optimismAddress !== undefined) {
-        optimismBalance = await getBalance(
-          address,
-          token.optimismAddress,
-          optimismReadOnlyProvider
-        )
-      }
+    await Promise.allSettled(
+      tokenList.map(async (token) => {
+        const marketData = selectMarketDataByToken(token)
+        const price = selectLatestMarketData(marketData)
+        let mainnetBalance = BigNumber.from(0)
+        let polygonBalance = BigNumber.from(0)
+        let optimismBalance = BigNumber.from(0)
 
-      if (
-        !mainnetBalance.isZero() ||
-        !polygonBalance.isZero() ||
-        !optimismBalance.isZero()
-      )
-        balanceData[token.symbol] = {
-          token,
-          mainnetBalance,
-          polygonBalance,
-          optimismBalance,
-          price,
+        if (token.address !== undefined) {
+          mainnetBalance = await getBalance(
+            address,
+            token.address,
+            mainnetReadOnlyProvider
+          )
         }
-    })
+        if (token.polygonAddress !== undefined) {
+          polygonBalance = await getBalance(
+            address,
+            token.polygonAddress,
+            polygonReadOnlyProvider
+          )
+        }
+        if (token.optimismAddress !== undefined) {
+          optimismBalance = await getBalance(
+            address,
+            token.optimismAddress,
+            optimismReadOnlyProvider
+          )
+        }
+
+        if (
+          !mainnetBalance.isZero() ||
+          !polygonBalance.isZero() ||
+          !optimismBalance.isZero()
+        )
+          balanceData[token.symbol] = {
+            token,
+            mainnetBalance,
+            polygonBalance,
+            optimismBalance,
+            price,
+          }
+      })
+    )
     setTokenBalances(balanceData)
-  }, [])
+  }, [address, selectLatestMarketData, selectMarketDataByToken])
 
   useEffect(() => {
     if (!address || address === undefined) return
     fetchBalanceData()
-  }, [address])
+  }, [fetchBalanceData])
 
   return (
     <BalanceContext.Provider
