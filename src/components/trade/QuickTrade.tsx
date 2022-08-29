@@ -593,7 +593,9 @@ const QuickTrade = (props: QuickTradeProps) => {
             {quoteResult.error?.message ?? 'Error fetching quote'}
           </Text>
         )}
-        <Flex my='8px'>{chain?.id === 1 && <FlashbotsRpcMessage />}</Flex>
+        <Flex my='8px' justifyContent={'center'}>
+          {chain?.id === 1 && <FlashbotsRpcMessage />}
+        </Flex>
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}

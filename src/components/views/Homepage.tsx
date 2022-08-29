@@ -77,19 +77,7 @@ const Dashboard = () => {
       >
         <PageTitle title='My Dashboard' subtitle='' />
         <Box mb={12}>
-          <Flex
-            direction={['column', 'column', 'column', 'row']}
-            px={[0, 0, '20px', 0]}
-            w={['340px', '500px', '820px', '1024px']}
-            h={['auto', 'auto']}
-            justifyContent={'center'}
-          >
-            <Flex direction='column' grow={1} flexBasis='0'></Flex>
-            <Box w='24px' h={['10px', '10px', '10px', '0px']} />
-            <Flex direction='column' grow={1} flexBasis='0'>
-              <QuickTradeContainer />
-            </Flex>
-          </Flex>
+          <QuickTradeContainer />
         </Box>
         {address !== undefined && (
           <>
