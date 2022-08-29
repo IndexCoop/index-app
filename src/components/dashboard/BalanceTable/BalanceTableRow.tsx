@@ -41,7 +41,7 @@ const BalanceTableRow = (props: { item: BalanceValues }) => {
       <Td isNumeric={true}>
         <Text>{formatBN(item.optimismBalance)}</Text>
       </Td>
-      <Td isNumeric={true}>{item.price}</Td>
+      {/* <Td isNumeric={true}>{item.price}</Td> */}
     </Tr>
   )
 }
