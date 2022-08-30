@@ -8,7 +8,7 @@ import { Tabs } from 'styles/tabs'
 import { Text } from 'styles/text'
 
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
-import { midnightTheme, Theme } from '@rainbow-me/rainbowkit'
+import { darkTheme, midnightTheme, Theme } from '@rainbow-me/rainbowkit'
 
 const config: ThemeConfig = {
   initialColorMode: 'system',
@@ -31,15 +31,23 @@ const theme = extendTheme({
 })
 
 export const rainbowkitTheme = merge(
-  midnightTheme({
+  darkTheme({
     borderRadius: 'medium',
   }),
   {
     colors: {
       accentColor: colors.icBlue,
       accentColorForeground: colors.icWhite,
-      generalBorder: colors.icWhite,
-      modalBorder: colors.icWhite,
+      actionButtonBorder: colors.icGray4,
+      actionButtonBorderMobile: colors.icGray4,
+      generalBorder: colors.icGray4,
+      modalBorder: colors.icGray4,
+      modalBackground: colors.icBlack,
+      profileForeground: colors.icBlack,
+      closeButtonBackground: colors.icGray4,
+    },
+    fonts: {
+      body: fonts.body,
     },
   } as Theme
 )
