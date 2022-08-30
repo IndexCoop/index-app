@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react'
 
-import { logEvent } from 'utils/analytics'
+import { logEvent } from 'utils/api/analytics'
 
 export const ProtectionContext = createContext<{
   isProtectable?: boolean

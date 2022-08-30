@@ -5,14 +5,14 @@ import { BigNumber, utils } from 'ethers'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { IndexToken, Token } from 'constants/tokens'
 import { displayFromWei, fromWei, safeDiv, selectLatestMarketData } from 'utils'
-import { IndexApi } from 'utils/indexApi'
+import { IndexApi } from 'utils/api/indexApi'
 import {
   CoinGeckoCoinPrices,
   getSetDetails,
   getSetPerps,
   Position,
   SetDetails,
-} from 'utils/setjsApi'
+} from 'utils/api/setjsApi'
 import { getTokenList, TokenData } from 'utils/tokenlists'
 import { getAddressForToken } from 'utils/tokens'
 

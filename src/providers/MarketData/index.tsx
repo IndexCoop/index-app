@@ -27,7 +27,7 @@ import {
   MNYeIndex,
   Token,
 } from 'constants/tokens'
-import { fetchHistoricalTokenMarketData } from 'utils/coingeckoApi'
+import { fetchHistoricalTokenMarketData } from 'utils/api/coingeckoApi'
 
 export interface TokenMarketDataValues {
   prices?: number[][]

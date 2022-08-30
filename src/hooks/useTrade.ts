@@ -9,11 +9,11 @@ import { OPTIMISM } from 'constants/chains'
 import {
   zeroExRouterAddress,
   zeroExRouterOptimismAddress,
-} from 'constants/ethContractAddresses'
+} from 'constants/contractAddresses'
 import { ZeroExQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
-import { logTransaction } from 'utils/analytics'
+import { logTransaction } from 'utils/api/analytics'
 
 import { useBalances } from './useBalance'
 

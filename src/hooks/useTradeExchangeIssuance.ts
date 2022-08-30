@@ -15,12 +15,12 @@ import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceZeroExQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
-import { logTx } from 'utils/analytics'
+import { logTx } from 'utils/api/analytics'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,
   captureTransaction,
-} from 'utils/sentry'
+} from 'utils/api/sentry'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalances } from './useBalance'

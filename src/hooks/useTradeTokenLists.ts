@@ -12,7 +12,7 @@ import {
   STETH,
   Token,
 } from 'constants/tokens'
-import { fetchCoingeckoTokenPrice } from 'utils/coingeckoApi'
+import { fetchCoingeckoTokenPrice } from 'utils/api/coingeckoApi'
 import {
   getAddressForToken,
   getCurrencyTokens,

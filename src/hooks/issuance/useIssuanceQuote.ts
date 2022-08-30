@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
-import { FlashMintPerp } from 'constants/ethContractAddresses'
+import { FlashMintPerp } from 'constants/contractAddresses'
 import { Token } from 'constants/tokens'
 import { useWallet } from 'hooks/useWallet'
 import { FlashMintPerpInterface } from 'utils/abi/interfaces'

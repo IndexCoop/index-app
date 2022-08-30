@@ -9,14 +9,14 @@ import { IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
 import { useBalances } from 'hooks/useBalance'
 import { toWei } from 'utils'
-import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
-import { GasStation } from 'utils/gasStation'
-import { getAddressForToken } from 'utils/tokens'
+import { GasStation } from 'utils/api/gasStation'
 import {
   getNetworkKey,
   getZeroExTradeData,
   ZeroExData,
-} from 'utils/zeroExUtils'
+} from 'utils/api/zeroExUtils'
+import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { getAddressForToken } from 'utils/tokens'
 
 import { useWallet } from '../useWallet'
 

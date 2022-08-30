@@ -1,4 +1,4 @@
-import { PriceChartRangeOption } from 'components/product/MarketChart'
+import { PriceChartRangeOption } from 'components/token-page/MarketChart'
 
 interface PriceChange {
   abs: number
