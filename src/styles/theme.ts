@@ -43,7 +43,7 @@ export const rainbowkitTheme = merge(
       generalBorder: colors.icGray4,
       modalBorder: colors.icGray4,
       modalBackground: colors.icBlack,
-      profileForeground: colors.icBlack2,
+      profileForeground: colors.icBlack,
       closeButtonBackground: colors.icGray4,
     },
     fonts: {

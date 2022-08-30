@@ -7,7 +7,6 @@ export const colors = {
   icRed: '#C32238',
   // the new colors
   icBlack: '#0F1717',
-  icBlack2: '#101919',
   icBlue: '#00BEC2', // highlight
   icBlue1: '#05ACAF',
   icBlue2: '#008F92',
