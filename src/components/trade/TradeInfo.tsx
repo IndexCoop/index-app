@@ -1,3 +1,5 @@
+import { useColorStyles } from 'styles/colors'
+
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Box, Flex, Text, Tooltip } from '@chakra-ui/react'
 
@@ -10,20 +12,23 @@ export interface TradeInfoItem {
 }
 
 const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
+  const { styles } = useColorStyles()
   const { title, values, valuesColor, tooltip, subValue } = item
   return (
     <Flex direction='column'>
-      <Text fontSize='14px' fontWeight='500'>
-        {title}
+      <Flex align='center'>
+        <Text color={styles.text2} fontSize='12px' fontWeight='500'>
+          {title}
+        </Text>
         {tooltip && (
-          <Tooltip label={tooltip}>
-            <InfoOutlineIcon alignSelf={'flex-end'} my={'auto'} ml={'5px'} />
+          <Tooltip borderRadius='16px' label={tooltip} p='12px'>
+            <InfoOutlineIcon color={styles.text2} ml={'4px'} w='4' h='4' />
           </Tooltip>
         )}
-      </Text>
+      </Flex>
       {values.map((value, index) => (
         <Flex key={index} flexDir={'row'}>
-          <Text fontSize='20px' fontWeight='700' color={valuesColor}>
+          <Text fontSize='16px' fontWeight='700' color={valuesColor}>
             {value}
           </Text>
           <Text fontSize={'sm'}>{subValue}</Text>
@@ -37,7 +42,7 @@ const TradeInfo = ({ data }: { data: TradeInfoItem[] }) => {
   return (
     <Flex direction='column'>
       {data.map((item, index) => (
-        <Box key={index} mb='16px'>
+        <Box key={index} mb={index < data.length - 1 ? '8px' : '0'}>
           <TradeInfoItemRow item={item} />
         </Box>
       ))}
