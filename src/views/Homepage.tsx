@@ -18,7 +18,7 @@ import { getTransactionHistory } from 'utils/api/alchemyApi'
 import { logEvent } from 'utils/api/analytics'
 import { exportCsv } from 'utils/exportToCsv'
 
-const Dashboard = () => {
+const Homepage = () => {
   const { address, isConnected } = useWallet()
   const { chain } = useNetwork()
   const chainId = chain?.id
@@ -106,4 +106,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default Homepage
