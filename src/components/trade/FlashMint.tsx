@@ -10,9 +10,9 @@ import {
   getExchangeIssuanceZeroExContractAddress,
 } from '@indexcoop/flash-mint-sdk'
 
-import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
+import FlashbotsRpcMessage from 'components/trade/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import { FlashMintPerp } from 'constants/ethContractAddresses'
+import { FlashMintPerp } from 'constants/contractAddresses'
 import { Token } from 'constants/tokens'
 import { useIssuance } from 'hooks/issuance/useIssuance'
 import { useApproval } from 'hooks/useApproval'

@@ -8,7 +8,7 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 
-import { ProductsTableProduct } from 'components/views/Products'
+import { ProductsTableProduct } from 'views/Products'
 
 type TickerCellProps = {
   product: ProductsTableProduct

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { getTokenSupply } from 'utils/setjsApi'
+import { getTokenSupply } from 'utils/api/setjsApi'
 
 export const useTokenSupply = (
   setTokenAddress: string,

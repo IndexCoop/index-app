@@ -10,7 +10,7 @@ import {
   mviStakingRewardsAddress,
   uniswapEthDpiLpTokenAddress,
   uniswapEthMviLpTokenAddress,
-} from 'constants/ethContractAddresses'
+} from 'constants/contractAddresses'
 import { GmiIndex, Token } from 'constants/tokens'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'

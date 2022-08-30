@@ -15,7 +15,7 @@ import TickerCell from 'components/products/TickerCell'
 import {
   PriceChangeIntervals,
   ProductsTableProduct,
-} from 'components/views/Products'
+} from 'views/Products'
 
 type ProductsTableProps = {
   products: ProductsTableProduct[]

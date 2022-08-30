@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import TokenInput from 'components/TokenInput'
+import TokenInput from 'components/trade/TokenInput'
 import { displayFromWei } from 'utils'
 
 type StakeModalProps = {

@@ -1,5 +1,3 @@
-import { colors } from 'styles/colors'
-
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Box, Flex, Text, Tooltip } from '@chakra-ui/react'
 

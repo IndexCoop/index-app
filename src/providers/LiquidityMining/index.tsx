@@ -14,7 +14,7 @@ import {
   dpi2021StakingRewardsAddress,
   gmiStakingRewardsAddress,
   mviStakingRewardsAddress,
-} from 'constants/ethContractAddresses'
+} from 'constants/contractAddresses'
 import { GmiIndex } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useWallet } from 'hooks/useWallet'

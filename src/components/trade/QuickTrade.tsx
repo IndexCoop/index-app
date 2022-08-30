@@ -12,12 +12,12 @@ import {
   getExchangeIssuanceZeroExContractAddress,
 } from '@indexcoop/flash-mint-sdk'
 
-import FlashbotsRpcMessage from 'components/header/FlashbotsRpcMessage'
+import FlashbotsRpcMessage from 'components/trade/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   zeroExRouterAddress,
   zeroExRouterOptimismAddress,
-} from 'constants/ethContractAddresses'
+} from 'constants/contractAddresses'
 import {
   indexNamesMainnet,
   indexNamesOptimism,
