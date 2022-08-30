@@ -12,10 +12,7 @@ import {
 
 import PerformanceCell from 'components/products/PerformanceCell'
 import TickerCell from 'components/products/TickerCell'
-import {
-  PriceChangeIntervals,
-  ProductsTableProduct,
-} from 'views/Products'
+import { PriceChangeIntervals, ProductsTableProduct } from 'views/Products'
 
 type ProductsTableProps = {
   products: ProductsTableProduct[]

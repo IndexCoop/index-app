@@ -20,6 +20,9 @@ import {
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 
+import { BalanceProvider } from 'providers/Balances'
+import { MarketDataProvider } from 'providers/MarketData'
+import { ProtectionProvider } from 'providers/Protection'
 import Dashboard from 'views/Homepage'
 import LiquidityMining from 'views/LiquidityMining'
 import BED from 'views/productpages/BED'
@@ -40,9 +43,6 @@ import MATIC2xFLIP from 'views/productpages/MATIC2xFLIP'
 import MNYe from 'views/productpages/MNYe'
 import MVI from 'views/productpages/MVI'
 import Products from 'views/Products'
-import { BalanceProvider } from 'providers/Balances'
-import { MarketDataProvider } from 'providers/MarketData'
-import { ProtectionProvider } from 'providers/Protection'
 
 import '@rainbow-me/rainbowkit/dist/index.css'
 
