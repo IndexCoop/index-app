@@ -1,3 +1,5 @@
+import { colors, useColorStyles } from 'styles/colors'
+
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Accordion,
@@ -5,15 +7,15 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Box,
   Flex,
   Text,
 } from '@chakra-ui/react'
 
-import { colors, useColorStyles } from 'styles/colors'
+import TradeInfo, { TradeInfoItem } from './TradeInfo'
 
-export const TradeDetail = () => {
+export const TradeDetail = ({ data }: { data: TradeInfoItem[] }) => {
   const { styles } = useColorStyles()
-
   return (
     <Flex>
       <Accordion allowToggle border={0} borderColor='transparent' w='100%'>
@@ -22,11 +24,13 @@ export const TradeDetail = () => {
             <>
               <h4>
                 <AccordionButton
+                  border='1px solid'
+                  borderColor={styles.border}
                   borderRadius={16}
                   _expanded={{
                     bg: styles.background,
-                    border: '1px solid',
-                    borderColor: styles.border,
+                    borderBottomColor: styles.background,
+                    borderBottomRadius: 0,
                     color: styles.text,
                   }}
                 >
@@ -37,12 +41,22 @@ export const TradeDetail = () => {
                     pr='8px'
                   >
                     <InfoOutlineIcon color={styles.text} />
-                    {!isExpanded && <GasFees label='0.0035 ETH' />}
+                    <Box opacity={isExpanded ? 0 : 1}>
+                      <GasFees label='0.0035 ETH' />
+                    </Box>
                   </Flex>
                   <AccordionIcon />
                 </AccordionButton>
               </h4>
-              <AccordionPanel pb={4}></AccordionPanel>
+              <AccordionPanel
+                bg={styles.background}
+                border='1px solid'
+                borderColor={styles.border}
+                borderRadius='0 0 16px 16px'
+                borderTopColor={styles.background}
+              >
+                <TradeInfo data={data} />
+              </AccordionPanel>
             </>
           )}
         </AccordionItem>

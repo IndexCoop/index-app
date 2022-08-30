@@ -51,8 +51,8 @@ import {
 import QuickTradeSelector from './QuickTradeSelector'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
 import { TradeButtonContainer } from './TradeButtonContainer'
-import TradeInfo, { TradeInfoItem } from './TradeInfo'
 import { TradeDetail } from './TradeDetail'
+import { TradeInfoItem } from './TradeInfo'
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -596,7 +596,7 @@ const QuickTrade = (props: QuickTradeProps) => {
         contractExplorerUrl={contractBlockExplorerUrl}
       >
         <>
-          <TradeDetail />
+          {tradeInfoData.length > 0 && <TradeDetail data={tradeInfoData} />}
           {hasFetchingError && (
             <Text align='center' color={colors.icRed} p='16px'>
               {quoteResult.error?.message ?? 'Error fetching quote'}
