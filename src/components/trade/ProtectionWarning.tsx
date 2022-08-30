@@ -11,7 +11,6 @@ export const ProtectionWarning = (props: { isDarkMode: boolean }) => {
       border='1px solid #000'
       borderColor={borderColor}
       borderRadius={10}
-      mb={'16px'}
       direction='row'
       textAlign={'center'}
     >
