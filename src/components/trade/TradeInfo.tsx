@@ -1,7 +1,7 @@
+import { useColorStyles } from 'styles/colors'
+
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Box, Flex, Text, Tooltip } from '@chakra-ui/react'
-
-import { useColorStyles } from 'styles/colors'
 
 export interface TradeInfoItem {
   title: string
@@ -16,14 +16,16 @@ const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
   const { title, values, valuesColor, tooltip, subValue } = item
   return (
     <Flex direction='column'>
-      <Text color={styles.text2} fontSize='12px' fontWeight='500'>
-        {title}
+      <Flex align='center'>
+        <Text color={styles.text2} fontSize='12px' fontWeight='500'>
+          {title}
+        </Text>
         {tooltip && (
-          <Tooltip label={tooltip}>
-            <InfoOutlineIcon alignSelf={'flex-end'} my={'auto'} ml={'5px'} />
+          <Tooltip borderRadius='16px' label={tooltip} p='12px'>
+            <InfoOutlineIcon color={styles.text2} ml={'4px'} w='4' h='4' />
           </Tooltip>
         )}
-      </Text>
+      </Flex>
       {values.map((value, index) => (
         <Flex key={index} flexDir={'row'}>
           <Text fontSize='16px' fontWeight='700' color={valuesColor}>
