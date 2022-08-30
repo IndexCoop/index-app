@@ -42,7 +42,7 @@ export const TradeDetail = ({ data }: { data: TradeInfoItem[] }) => {
                   >
                     <InfoOutlineIcon color={styles.text} />
                     <Box opacity={isExpanded ? 0 : 1}>
-                      <GasFees label='0.0035 ETH' />
+                      <GasFees label={data[1].values[0]} />
                     </Box>
                   </Flex>
                   <AccordionIcon />
