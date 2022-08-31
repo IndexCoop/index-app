@@ -44,7 +44,7 @@ import MNYe from 'views/productpages/MNYe'
 import MVI from 'views/productpages/MVI'
 import Products from 'views/Products'
 
-import '@rainbow-me/rainbowkit/dist/index.css'
+import '@rainbow-me/rainbowkit/styles.css'
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism],
