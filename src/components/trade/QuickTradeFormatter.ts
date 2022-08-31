@@ -152,7 +152,7 @@ export const getHasInsufficientFunds = (
 const formatIfNumber = (value: string) => {
   if (/[a-z]/i.test(value)) return value
 
-  return Number(value).toLocaleString('en-US', {
+  return Number(value).toLocaleString('en', {
     minimumFractionDigits: 4,
     maximumFractionDigits: 4,
   })
@@ -183,11 +183,11 @@ export function getTradeInfoDataFromEI(
   const offeredFrom = 'Index - Exchange Issuance'
   return [
     {
-      title: getReceivedAmount(isBuying, buyToken, sellToken),
+      title: getExactTxLabel(isBuying, buyToken, sellToken),
       values: [exactSetAmountFormatted],
     },
     {
-      title: getTransactionAmount(isBuying, buyToken, sellToken),
+      title: getTxLabel(isBuying, buyToken, sellToken),
       values: [maxPaymentFormatted],
     },
     {
@@ -199,16 +199,12 @@ export function getTradeInfoDataFromEI(
   ]
 }
 
-const getTransactionAmount = (
-  isBuying: boolean,
-  buyToken: Token,
-  sellToken: Token
-) => {
+const getTxLabel = (isBuying: boolean, buyToken: Token, sellToken: Token) => {
   if (isBuying) return 'Maximum ' + sellToken.symbol + ' Payment'
   return 'Minimum ' + buyToken.symbol + ' Received'
 }
 
-const getReceivedAmount = (
+const getExactTxLabel = (
   isBuying: boolean,
   buyToken: Token,
   sellToken: Token
@@ -225,9 +221,8 @@ export function getTradeInfoData0x(
   chainId: number = 1,
   navData: TradeInfoItem | null = null
 ): TradeInfoItem[] {
-  const minReceive =
-    displayFromWei(minOutput, 4) + ' ' + buyToken.symbol ?? '0.0'
-  const minReceiveFormatted = formatIfNumber(minReceive)
+  const minReceive = displayFromWei(minOutput, 4) ?? '0.0'
+  const minReceiveFormatted = formatIfNumber(minReceive) + ' ' + buyToken.symbol
 
   const networkFee = displayFromWei(gasCosts)
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
