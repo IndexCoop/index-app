@@ -190,7 +190,10 @@ export function getTradeInfoDataFromEI(
       title: getTransactionAmount(isBuying, buyToken, sellToken),
       values: [maxPaymentFormatted],
     },
-    { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
+    {
+      title: 'Network Fee',
+      values: [`${networkFeeDisplay} ${networkToken}`],
+    },
     navData ?? { title: 'NavData', values: [''] },
     { title: 'Offered From', values: [offeredFrom] },
   ]
@@ -239,7 +242,10 @@ export function getTradeInfoData0x(
       title: 'Minimum ' + buyToken.symbol + ' Received',
       values: [minReceiveFormatted],
     },
-    { title: 'Network Fee', values: [`${networkFeeDisplay} ${networkToken}`] },
+    {
+      title: 'Network Fee',
+      values: [`${networkFeeDisplay} ${networkToken}`],
+    },
     navData ?? { title: 'NAV', values: [] },
     { title: 'Offered From', values: offeredFromSources },
   ]

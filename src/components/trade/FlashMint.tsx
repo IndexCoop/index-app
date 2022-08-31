@@ -3,14 +3,13 @@ import { useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
 import { useICColorMode } from 'styles/colors'
 
-import { Box, Flex, useDisclosure } from '@chakra-ui/react'
+import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   getExchangeIssuanceLeveragedContractAddress,
   getExchangeIssuanceZeroExContractAddress,
 } from '@indexcoop/flash-mint-sdk'
 
-import FlashbotsRpcMessage from 'components/trade/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { FlashMintPerp } from 'constants/contractAddresses'
 import { Token } from 'constants/tokens'
@@ -26,22 +25,19 @@ import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
 import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
-import { useProtection } from 'providers/Protection'
 import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { isNotTradableToken } from 'utils/tokens'
 
-import { ContractExecutionView } from './ContractExecutionView'
 import DirectIssuance from './DirectIssuance'
-import { ProtectionWarning } from './ProtectionWarning'
 import { QuickTradeProps } from './QuickTrade'
 import {
   formattedBalance,
   getHasInsufficientFunds,
 } from './QuickTradeFormatter'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
-import { TradeButton } from './TradeButton'
+import { TradeButtonContainer } from './TradeButtonContainer'
 
 const FlashMint = (props: QuickTradeProps) => {
   const { address } = useWallet()
@@ -393,69 +389,6 @@ const getQuoteAmount = (
   }
 
   return null
-}
-
-type TradeButtonContainerProps = {
-  indexToken: Token
-  inputOutputToken: Token
-  buttonLabel: string
-  isButtonDisabled: boolean
-  isLoading: boolean
-  onClickTradeButton: () => void
-  contractAddress: string | null
-  contractExplorerUrl: string | null
-}
-
-const TradeButtonContainer = ({
-  indexToken,
-  inputOutputToken,
-  buttonLabel,
-  isButtonDisabled,
-  isLoading,
-  onClickTradeButton,
-  contractAddress,
-  contractExplorerUrl,
-}: TradeButtonContainerProps) => {
-  const { isDarkMode } = useICColorMode()
-  const { isMainnet } = useNetwork()
-  const protection = useProtection()
-
-  // Does user need protecting from productive assets?
-  const [requiresProtection, setRequiresProtection] = useState(false)
-  useEffect(() => {
-    if (
-      protection.isProtectable &&
-      (indexToken.isDangerous || inputOutputToken.isDangerous)
-    ) {
-      setRequiresProtection(true)
-    } else {
-      setRequiresProtection(false)
-    }
-  }, [indexToken, inputOutputToken, protection])
-
-  return (
-    <Flex direction='column'>
-      {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
-      <Flex my='8px' justifyContent={'center'}>
-        {isMainnet && <FlashbotsRpcMessage />}
-      </Flex>
-      {!requiresProtection && (
-        <TradeButton
-          label={buttonLabel}
-          isDisabled={isButtonDisabled}
-          isLoading={isLoading}
-          onClick={onClickTradeButton}
-        />
-      )}
-      {contractAddress && contractExplorerUrl && (
-        <ContractExecutionView
-          blockExplorerUrl={contractExplorerUrl}
-          contractAddress={contractAddress}
-          name=''
-        />
-      )}
-    </Flex>
-  )
 }
 
 export default FlashMint
