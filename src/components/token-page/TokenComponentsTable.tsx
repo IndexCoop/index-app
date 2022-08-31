@@ -56,22 +56,25 @@ const TokenComponentsTable = (props: {
   }
 
   const renderTableDisplayControls = () => {
-    if (!props.components || props.components.length < 5 || props.vAssets)
-      return null
-
-    return (
-      <Box my='20px'>
-        {amountToDisplay < props.components.length ? (
-          <Text cursor='pointer' onClick={showAllComponents}>
-            Show Complete List
-          </Text>
-        ) : (
-          <Text cursor='pointer' onClick={showDefaultComponents}>
-            Show Less
-          </Text>
-        )}
-      </Box>
+    if (
+      props.components &&
+      props.components.length > 5 &&
+      !props.isLeveragedToken
     )
+      return (
+        <Box my='20px'>
+          {amountToDisplay < props.components.length ? (
+            <Text cursor='pointer' onClick={showAllComponents}>
+              Show Complete List
+            </Text>
+          ) : (
+            <Text cursor='pointer' onClick={showDefaultComponents}>
+              Show Less
+            </Text>
+          )}
+        </Box>
+      )
+    return null
   }
 
   if (props.components === undefined || props.components.length === 0) {
