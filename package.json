@@ -11,7 +11,7 @@
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@indexcoop/flash-mint-sdk": "^1.1.0",
-    "@indexcoop/tokenlists": "^1.23.0",
+    "@indexcoop/tokenlists": "^1.24.0",
     "@rainbow-me/rainbowkit": "0.5.0",
     "@sentry/react": "7.11.1",
     "@sentry/tracing": "7.11.1",
