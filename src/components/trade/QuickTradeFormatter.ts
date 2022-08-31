@@ -6,8 +6,8 @@ import { Token } from 'constants/tokens'
 import { displayFromWei } from 'utils'
 import { getNativeToken } from 'utils/tokens'
 
-import { TradeInfoItem } from './TradeInfo'
 import { TradeDetailTokenPrices } from './TradeDetail'
+import { TradeInfoItem } from './TradeInfo'
 
 export function getSlippageColorCoding(
   slippage: number,
