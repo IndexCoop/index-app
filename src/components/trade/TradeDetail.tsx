@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react'
 
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
+import { TradePrice } from './TradePrice'
 
 export const TradeDetail = ({ data }: { data: TradeInfoItem[] }) => {
   const { styles } = useColorStyles()
@@ -40,7 +41,13 @@ export const TradeDetail = ({ data }: { data: TradeInfoItem[] }) => {
                     justify='space-between'
                     pr='8px'
                   >
-                    <InfoOutlineIcon color={styles.text} />
+                    <Flex>
+                      <InfoOutlineIcon color={styles.text} mr='8px' />
+                      <TradePrice
+                        comparisonLabel={'1 ETH = 1561 USDC'}
+                        usdLabel={'($1,500.00)'}
+                      />
+                    </Flex>
                     <Box opacity={isExpanded ? 0 : 1}>
                       <GasFees label={data[1].values[0]} />
                     </Box>
