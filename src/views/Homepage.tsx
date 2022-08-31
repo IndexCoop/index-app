@@ -76,7 +76,7 @@ const Homepage = () => {
         justifyContent={'center'}
         alignItems={'center'}
       >
-        <Box mb={12} w={'500px'}>
+        <Box mb={12} w={['inherit', '500px']}>
           <QuickTradeContainer />
         </Box>
         {isConnected && (

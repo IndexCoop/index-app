@@ -44,6 +44,7 @@ import {
   formattedFiat,
   getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
+  getFormattedTokenPrices,
   getHasInsufficientFunds,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
@@ -533,6 +534,13 @@ const QuickTrade = (props: QuickTradeProps) => {
     outputTokenBalances
   )
 
+  const tokenPrices = getFormattedTokenPrices(
+    sellToken.symbol,
+    sellTokenPrice,
+    buyToken.symbol,
+    buyTokenPrice
+  )
+
   return (
     <Box>
       <Flex direction='column' my='20px'>
@@ -596,7 +604,9 @@ const QuickTrade = (props: QuickTradeProps) => {
         contractExplorerUrl={contractBlockExplorerUrl}
       >
         <>
-          {tradeInfoData.length > 0 && <TradeDetail data={tradeInfoData} />}
+          {tradeInfoData.length > 0 && (
+            <TradeDetail data={tradeInfoData} prices={tokenPrices} />
+          )}
           {hasFetchingError && (
             <Text align='center' color={colors.icRed} p='16px'>
               {quoteResult.error?.message ?? 'Error fetching quote'}
