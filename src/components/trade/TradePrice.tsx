@@ -10,11 +10,11 @@ type TradePriceProps = {
 export const TradePrice = ({ comparisonLabel, usdLabel }: TradePriceProps) => {
   const { styles } = useColorStyles()
   return (
-    <Flex>
+    <Flex align='flex-start' direction={['column', 'column']}>
       <Text color={styles.text} fontSize='12px'>
         {comparisonLabel}
       </Text>
-      <Text color={styles.text2} fontSize='12px' ml='4px'>
+      <Text color={styles.text2} fontSize='12px' ml={[0, '4px']}>
         {usdLabel}
       </Text>
     </Flex>

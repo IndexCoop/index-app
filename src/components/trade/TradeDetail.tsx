@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { colors, useColorStyles } from 'styles/colors'
 
@@ -10,9 +10,9 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
-  ExpandedIndex,
   Flex,
   Text,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
@@ -31,6 +31,7 @@ type TradeDetailProps = {
 }
 
 export const TradeDetail = ({ data, prices }: TradeDetailProps) => {
+  const isWeb = useBreakpointValue({ base: false, md: true, lg: true })
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
   const { styles } = useColorStyles()
 
@@ -72,7 +73,9 @@ export const TradeDetail = ({ data, prices }: TradeDetailProps) => {
                     pr='8px'
                   >
                     <Flex>
-                      <InfoOutlineIcon color={styles.text} mr='8px' />
+                      {isWeb && (
+                        <InfoOutlineIcon color={styles.text} mr='8px' />
+                      )}
                       <Box onClick={onToggleTokenPrice}>
                         <TradePrice
                           comparisonLabel={comparisonLabel}
