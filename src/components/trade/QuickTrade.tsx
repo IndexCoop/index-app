@@ -12,7 +12,6 @@ import {
   getExchangeIssuanceZeroExContractAddress,
 } from '@indexcoop/flash-mint-sdk'
 
-import FlashbotsRpcMessage from 'components/trade/FlashbotsRpcMessage'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   zeroExRouterAddress,
@@ -41,8 +40,6 @@ import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { isPerpToken } from 'utils/tokens'
 
-import { ContractExecutionView } from './ContractExecutionView'
-import { ProtectionWarning } from './ProtectionWarning'
 import {
   formattedFiat,
   getFormattedOuputTokenAmount,
@@ -53,8 +50,9 @@ import {
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
-import { TradeButton } from './TradeButton'
-import TradeInfo, { TradeInfoItem } from './TradeInfo'
+import { TradeButtonContainer } from './TradeButtonContainer'
+import { TradeDetail } from './TradeDetail'
+import { TradeInfoItem } from './TradeInfo'
 
 export enum QuickTradeBestOption {
   zeroEx,
@@ -587,33 +585,25 @@ const QuickTrade = (props: QuickTradeProps) => {
           }}
         />
       </Flex>
-      <Flex direction='column'>
-        {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
-        {tradeInfoData.length > 0 && <TradeInfo data={tradeInfoData} />}
-        {hasFetchingError && (
-          <Text align='center' color={colors.icRed} p='16px'>
-            {quoteResult.error?.message ?? 'Error fetching quote'}
-          </Text>
-        )}
-        <Flex my='8px' justifyContent={'center'}>
-          {chain?.id === 1 && <FlashbotsRpcMessage />}
-        </Flex>
-        {!requiresProtection && (
-          <TradeButton
-            label={buttonLabel}
-            isDisabled={isButtonDisabled}
-            isLoading={isLoading}
-            onClick={onClickTradeButton}
-          />
-        )}
-        {bestOption !== null && (
-          <ContractExecutionView
-            blockExplorerUrl={contractBlockExplorerUrl}
-            contractAddress={contractBestOption}
-            name=''
-          />
-        )}
-      </Flex>
+      <TradeButtonContainer
+        indexToken={isBuying ? buyToken : sellToken}
+        inputOutputToken={isBuying ? sellToken : buyToken}
+        buttonLabel={buttonLabel}
+        isButtonDisabled={isButtonDisabled}
+        isLoading={isLoading}
+        onClickTradeButton={onClickTradeButton}
+        contractAddress={contractBestOption}
+        contractExplorerUrl={contractBlockExplorerUrl}
+      >
+        <>
+          {tradeInfoData.length > 0 && <TradeDetail data={tradeInfoData} />}
+          {hasFetchingError && (
+            <Text align='center' color={colors.icRed} p='16px'>
+              {quoteResult.error?.message ?? 'Error fetching quote'}
+            </Text>
+          )}
+        </>
+      </TradeButtonContainer>
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
         onClose={onCloseSelectInputToken}
