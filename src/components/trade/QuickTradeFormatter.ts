@@ -106,8 +106,7 @@ export function getFormattedTokenPrice(
 ): string {
   const percent =
     comparingTokenPrice === 0 ? 0 : tokenPrice / comparingTokenPrice
-  // TODO: compare based on fractional
-  const price = percent.toFixed(4)
+  const price = percent.toFixed(3)
   return `1 ${tokenSymbol} = ${price} ${comparingTokenSymbol}`
 }
 
