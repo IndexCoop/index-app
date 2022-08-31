@@ -7,6 +7,7 @@ import { displayFromWei } from 'utils'
 import { getNativeToken } from 'utils/tokens'
 
 import { TradeInfoItem } from './TradeInfo'
+import { TradeDetailTokenPrices } from './TradeDetail'
 
 export function getSlippageColorCoding(
   slippage: number,
@@ -95,6 +96,47 @@ export function getFormattedOuputTokenAmount(
 
   // 0x quotes are always in wei (18 decimals)
   return displayFromWei(zeroExTradeDataOutputAmount, 4, 18) ?? '0.0'
+}
+
+export function getFormattedTokenPrice(
+  tokenSymbol: string,
+  comparingTokenSymbol: string,
+  tokenPrice: number,
+  comparingTokenPrice: number
+): string {
+  const percent =
+    comparingTokenPrice === 0 ? 0 : tokenPrice / comparingTokenPrice
+  // TODO: compare based on fractional
+  const price = percent.toFixed(4)
+  return `1 ${tokenSymbol} = ${price} ${comparingTokenSymbol}`
+}
+
+export function getFormattedTokenPrices(
+  inputTokenSymbol: string,
+  inputTokenUsd: number,
+  outputTokenSymbol: string,
+  outputTokenUsd: number
+): TradeDetailTokenPrices {
+  const inputTokenPrice = getFormattedTokenPrice(
+    inputTokenSymbol,
+    outputTokenSymbol,
+    inputTokenUsd,
+    outputTokenUsd
+  )
+  const inputTokenPriceUsd = `($${inputTokenUsd.toFixed(2)})`
+  const outputTokenPrice = getFormattedTokenPrice(
+    outputTokenSymbol,
+    inputTokenSymbol,
+    outputTokenUsd,
+    inputTokenUsd
+  )
+  const outputTokenPriceUsd = `($${outputTokenUsd.toFixed(2)})`
+  return {
+    inputTokenPrice,
+    inputTokenPriceUsd,
+    outputTokenPrice,
+    outputTokenPriceUsd,
+  }
 }
 
 export function formattedFiat(tokenAmount: number, tokenPrice: number): string {

@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { colors, useColorStyles } from 'styles/colors'
 
 import { InfoOutlineIcon } from '@chakra-ui/icons'
@@ -8,6 +10,7 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  ExpandedIndex,
   Flex,
   Text,
 } from '@chakra-ui/react'
@@ -15,8 +18,35 @@ import {
 import TradeInfo, { TradeInfoItem } from './TradeInfo'
 import { TradePrice } from './TradePrice'
 
-export const TradeDetail = ({ data }: { data: TradeInfoItem[] }) => {
+export type TradeDetailTokenPrices = {
+  inputTokenPrice: string
+  inputTokenPriceUsd: string
+  outputTokenPrice: string
+  outputTokenPriceUsd: string
+}
+
+type TradeDetailProps = {
+  data: TradeInfoItem[]
+  prices: TradeDetailTokenPrices
+}
+
+export const TradeDetail = ({ data, prices }: TradeDetailProps) => {
+  const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
   const { styles } = useColorStyles()
+
+  const onToggleTokenPrice = (event: any) => {
+    event.preventDefault()
+    event.stopPropagation()
+    setShowInputTokenPrice(!showInputTokenPrice)
+  }
+
+  const comparisonLabel = showInputTokenPrice
+    ? prices.inputTokenPrice
+    : prices.outputTokenPrice
+  const usdLabel = showInputTokenPrice
+    ? prices.inputTokenPriceUsd
+    : prices.outputTokenPriceUsd
+
   return (
     <Flex>
       <Accordion allowToggle border={0} borderColor='transparent' w='100%'>
@@ -43,10 +73,12 @@ export const TradeDetail = ({ data }: { data: TradeInfoItem[] }) => {
                   >
                     <Flex>
                       <InfoOutlineIcon color={styles.text} mr='8px' />
-                      <TradePrice
-                        comparisonLabel={'1 ETH = 1561 USDC'}
-                        usdLabel={'($1,500.00)'}
-                      />
+                      <Box onClick={onToggleTokenPrice}>
+                        <TradePrice
+                          comparisonLabel={comparisonLabel}
+                          usdLabel={usdLabel}
+                        />
+                      </Box>
                     </Flex>
                     <Box opacity={isExpanded ? 0 : 1}>
                       <GasFees label={data[1].values[0]} />
@@ -73,7 +105,7 @@ export const TradeDetail = ({ data }: { data: TradeInfoItem[] }) => {
 }
 
 const GasFees = ({ label }: { label: string }) => (
-  <Flex bg={colors.icGray1} borderRadius={16} fontSize='12px' px='2' py='1'>
+  <Flex bg={colors.icGray1} borderRadius={16} fontSize='12px' px='2' py='0'>
     <Text color={colors.icGray4}>Gas {label}</Text>
   </Flex>
 )
