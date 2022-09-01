@@ -13,8 +13,6 @@ import {
   Text,
 } from '@chakra-ui/react'
 
-import { getSlippageColorCoding } from './QuickTradeFormatter'
-
 type PopoverProps = {
   isAuto: boolean
   isDarkMode: boolean
@@ -27,71 +25,65 @@ export const QuickTradeSettingsPopover = (props: PopoverProps) => {
   const { isAuto, isDarkMode, slippage, onChangeSlippage, onClickAuto } = props
   const backgroundColor = isDarkMode ? colors.black : colors.icWhite
 
-  const slippageColorCoding = getSlippageColorCoding(slippage, isDarkMode)
   return (
-    <Flex flexDir={'row'} alignItems={'center'}>
-      <Text fontSize={'small'} pt={'5px'} color={slippageColorCoding}>
-        Slippage: {slippage.toString()}%
-      </Text>
-      <Popover placement='bottom-end'>
-        <PopoverTrigger>
-          <IconButton
-            aria-label='Trade Settings'
-            icon={<SettingsIcon />}
-            size='lg'
-            style={{ border: 0 }}
-            variant='unstyled'
-          />
-        </PopoverTrigger>
-        <PopoverContent bg={backgroundColor} p='8px'>
-          <PopoverBody>
-            <Text fontSize='md' fontWeight='700'>
-              Slippage Settings
-            </Text>
-            <Flex align='center' my='4'>
-              <AutoButton
-                isActive={isAuto}
-                isDarkMode={isDarkMode}
-                onClickAuto={onClickAuto}
+    <Popover placement='bottom-end'>
+      <PopoverTrigger>
+        <IconButton
+          aria-label='Trade Settings'
+          icon={<SettingsIcon />}
+          size='lg'
+          style={{ border: 0 }}
+          variant='unstyled'
+        />
+      </PopoverTrigger>
+      <PopoverContent bg={backgroundColor} p='8px'>
+        <PopoverBody>
+          <Text fontSize='md' fontWeight='700'>
+            Slippage Settings
+          </Text>
+          <Flex align='center' my='4'>
+            <AutoButton
+              isActive={isAuto}
+              isDarkMode={isDarkMode}
+              onClickAuto={onClickAuto}
+            />
+            <Flex
+              align='center'
+              border='1px solid gray'
+              borderRadius={10}
+              ml='8px'
+              px='8px'
+            >
+              <Input
+                fontSize='md'
+                placeholder={`${slippage}`}
+                p='8px'
+                pr='4px'
+                textAlign='right'
+                type='number'
+                variant='unstyled'
+                value={isAuto ? '' : slippage}
+                onChange={(event) => {
+                  const value = event.target.value
+                  let updatedSlippage = parseFloat(value)
+                  if (value === '') {
+                    onClickAuto()
+                    return
+                  }
+                  if (Number.isNaN(updatedSlippage)) return
+                  onChangeSlippage(updatedSlippage)
+                }}
               />
-              <Flex
-                align='center'
-                border='1px solid gray'
-                borderRadius={10}
-                ml='8px'
-                px='8px'
-              >
-                <Input
-                  fontSize='md'
-                  placeholder={`${slippage}`}
-                  p='8px'
-                  pr='4px'
-                  textAlign='right'
-                  type='number'
-                  variant='unstyled'
-                  value={isAuto ? '' : slippage}
-                  onChange={(event) => {
-                    const value = event.target.value
-                    let updatedSlippage = parseFloat(value)
-                    if (value === '') {
-                      onClickAuto()
-                      return
-                    }
-                    if (Number.isNaN(updatedSlippage)) return
-                    onChangeSlippage(updatedSlippage)
-                  }}
-                />
-                <Text>%</Text>
-              </Flex>
+              <Text>%</Text>
             </Flex>
-            <Text fontSize='sm' fontWeight='500'>
-              Make sure to know what you're doing when entering custom slippage
-              values.
-            </Text>
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
-    </Flex>
+          </Flex>
+          <Text fontSize='sm' fontWeight='500'>
+            Make sure to know what you're doing when entering custom slippage
+            values.
+          </Text>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
   )
 }
 
