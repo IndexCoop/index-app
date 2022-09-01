@@ -9,21 +9,6 @@ import { getNativeToken } from 'utils/tokens'
 import { TradeDetailTokenPrices } from './TradeDetail'
 import { TradeInfoItem } from './TradeInfo'
 
-export function getSlippageColorCoding(
-  slippage: number,
-  isDarkMode: boolean
-): string {
-  if (slippage > 5) {
-    return colors.icRed
-  }
-
-  if (slippage > 1) {
-    return colors.icBlue
-  }
-
-  return isDarkMode ? colors.icWhite : colors.black
-}
-
 export function getPriceImpactColorCoding(
   priceImpact: number,
   isDarkMode: boolean
@@ -262,7 +247,8 @@ export function getTradeInfoData0x(
   sources: { name: string; proportion: string }[],
   chainId: number = 1,
   navData: TradeInfoItem | null = null,
-  slippage: number
+  slippage: number,
+  showSlippageWarning: boolean
 ): TradeInfoItem[] {
   const minReceive = displayFromWei(minOutput, 4) ?? '0.0'
   const minReceiveFormatted = formatIfNumber(minReceive) + ' ' + buyToken.symbol
@@ -275,8 +261,8 @@ export function getTradeInfoData0x(
     .filter((source) => Number(source.proportion) > 0)
     .map((source) => source.name)
 
-  // TODO: add warning sign
   const slippageFormatted = `${slippage}%`
+  const slippageTitle = showSlippageWarning ? `Slippage ⚠` : `Slippage`
 
   return [
     {
@@ -288,7 +274,11 @@ export function getTradeInfoData0x(
       values: [`${networkFeeDisplay} ${networkToken}`],
     },
     navData ?? { title: 'NAV', values: [] },
-    { title: 'Slippage', values: [slippageFormatted] },
+    { title: slippageTitle, values: [slippageFormatted] },
     { title: 'Offered From', values: offeredFromSources },
   ]
+}
+
+export function shouldShowWarningSign(slippage: number): boolean {
+  return slippage > 1
 }

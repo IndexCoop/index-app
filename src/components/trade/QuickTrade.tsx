@@ -48,6 +48,7 @@ import {
   getHasInsufficientFunds,
   getTradeInfoData0x,
   getTradeInfoDataFromEI,
+  shouldShowWarningSign,
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
@@ -277,7 +278,8 @@ const QuickTrade = (props: QuickTradeProps) => {
           quoteZeroEx?.sources ?? [],
           chain?.id,
           navData,
-          slippage
+          slippage,
+          shouldShowWarningSign(slippage)
         )
       : getTradeInfoDataFromEI(
           tradeDataEI?.setTokenAmount ?? BigNumber.from(0),
@@ -535,6 +537,8 @@ const QuickTrade = (props: QuickTradeProps) => {
     outputTokenBalances
   )
 
+  // TradeDetail
+  const showWarning = shouldShowWarningSign(slippage)
   const tokenPrices = getFormattedTokenPrices(
     sellToken.symbol,
     sellTokenPrice,
@@ -606,7 +610,11 @@ const QuickTrade = (props: QuickTradeProps) => {
       >
         <>
           {tradeInfoData.length > 0 && (
-            <TradeDetail data={tradeInfoData} prices={tokenPrices} />
+            <TradeDetail
+              data={tradeInfoData}
+              prices={tokenPrices}
+              showWarning={showWarning}
+            />
           )}
           {hasFetchingError && (
             <Text align='center' color={colors.icRed} p='16px'>
