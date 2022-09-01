@@ -59,7 +59,7 @@
     "sort-imports": "off",
     "import/order": "off",
 
-    // // **UNIQUE TO INDEX-UI**
+    // // **UNIQUE TO INDEX-APP**
     // // Rules that have currently been disabled for producing warnings or errors that weren't present before adding these ESLint configs.
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/ban-types": "off",
