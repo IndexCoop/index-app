@@ -2,35 +2,20 @@ import { useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
-import { useNetwork } from 'wagmi'
 
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import {
-  getExchangeIssuanceLeveragedContractAddress,
-  getExchangeIssuanceZeroExContractAddress,
-} from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import {
-  zeroExRouterAddress,
-  zeroExRouterOptimismAddress,
-} from 'constants/contractAddresses'
-import {
-  indexNamesMainnet,
-  indexNamesOptimism,
-  indexNamesPolygon,
-  Token,
-} from 'constants/tokens'
+
+import { Token } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
 import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
-import { useIsSupportedNetwork } from 'hooks/useIsSupportedNetwork'
+import { useNetwork } from 'hooks/useNetwork'
 import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTrade } from 'hooks/useTrade'
-import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
-import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData'
@@ -38,7 +23,8 @@ import { useProtection } from 'providers/Protection'
 import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
-import { isPerpToken } from 'utils/tokens'
+import { getZeroExRouterAddress } from 'utils/contracts'
+import { getNativeToken, isNotTradableToken, isPerpToken } from 'utils/tokens'
 
 import {
   formattedFiat,
@@ -55,12 +41,6 @@ import { TradeButtonContainer } from './TradeButtonContainer'
 import { TradeDetail } from './TradeDetail'
 import { TradeInfoItem } from './TradeInfo'
 
-export enum QuickTradeBestOption {
-  zeroEx,
-  exchangeIssuance,
-  leveragedExchangeIssuance,
-}
-
 export type QuickTradeProps = {
   isNarrowVersion?: boolean
   singleToken?: Token
@@ -68,7 +48,7 @@ export type QuickTradeProps = {
 
 const QuickTrade = (props: QuickTradeProps) => {
   const { address } = useWallet()
-  const { chain } = useNetwork()
+  const { chainId, isSupportedNetwork } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
     isOpen: isSelectInputTokenOpen,
@@ -82,8 +62,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   } = useDisclosure()
 
   const protection = useProtection()
-
-  const supportedNetwork = useIsSupportedNetwork(chain?.id ?? -1)
 
   const { slippage } = useSlippage()
   const {
@@ -103,9 +81,8 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   const { selectMarketDataByToken } = useMarketData()
 
-  const [bestOption, setBestOption] = useState<QuickTradeBestOption | null>(
-    null
-  )
+  const supportedNetwork = isSupportedNetwork
+
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
@@ -121,7 +98,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   )
 
   useEffect(() => {
-    if (bestOption === null) return
     if (tradeInfoData.length < 1) return
     if (nav <= 0) return
     const navTokenAmount = isBuying ? buyTokenAmountFormatted : sellTokenAmount
@@ -144,12 +120,12 @@ const QuickTrade = (props: QuickTradeProps) => {
       tooltip:
         'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt taken on (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV',
     }
-    const navIndex = bestOption === QuickTradeBestOption.zeroEx ? 2 : 3
+    const navIndex = 2
     var updatedInfoData = tradeInfoData
     updatedInfoData[navIndex] = navData
     setNavData(navData)
     setTradeInfoData(updatedInfoData)
-  }, [bestOption, nav, buyTokenAmountFormatted, sellTokenAmount])
+  }, [nav, buyTokenAmountFormatted, sellTokenAmount])
 
   const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
     useBestQuote()
@@ -157,21 +133,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const hasFetchingError =
     quoteResult.error !== null && !quoteResult.success && !isFetchingTradeData
 
-  const spenderAddress0x = getExchangeIssuanceZeroExContractAddress(chain?.id)
-  const spenderAddressLevEIL = getExchangeIssuanceLeveragedContractAddress(
-    chain?.id
-  )
-  const getZeroExRouterAddress = (chainId: number) => {
-    switch (chainId) {
-      case OPTIMISM.chainId:
-        return zeroExRouterOptimismAddress
-      case POLYGON.chainId:
-        return zeroExRouterAddress
-      default:
-        return zeroExRouterAddress
-    }
-  }
-  const zeroExAddress = getZeroExRouterAddress(chain?.id ?? 1)
+  const zeroExAddress = getZeroExRouterAddress(chainId)
 
   const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
 
@@ -199,44 +161,19 @@ const QuickTrade = (props: QuickTradeProps) => {
     isApproving: isApprovingForSwap,
     onApprove: onApproveForSwap,
   } = useApproval(sellToken, zeroExAddress, sellTokenAmountInWei)
-  const {
-    isApproved: isApprovedForEIL,
-    isApproving: isApprovingForEIL,
-    onApprove: onApproveForEIL,
-  } = useApproval(sellToken, spenderAddressLevEIL, sellTokenAmountInWei)
-  const {
-    isApproved: isApprovedForEIZX,
-    isApproving: isApprovingForEIZX,
-    onApprove: onApproveForEIZX,
-  } = useApproval(sellToken, spenderAddress0x, sellTokenAmountInWei)
 
   const { executeTrade, isTransacting } = useTrade()
-  const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance()
-  const { executeLevEITrade, isTransactingLevEI } =
-    useTradeLeveragedExchangeIssuance()
 
   const hasInsufficientFunds = getHasInsufficientFunds(
-    bestOption === null,
+    quoteResult.bestQuote === QuoteType.notAvailable || !quoteResult.success,
     sellTokenAmountInWei,
     getBalance(sellToken.symbol)
   )
 
-  const getContractForBestOption = (
-    bestOption: QuickTradeBestOption | null
-  ): string => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return spenderAddress0x
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return spenderAddressLevEIL
-      default:
-        return zeroExAddress
-    }
-  }
-  const contractBestOption = getContractForBestOption(bestOption)
+  const contractBestOption = getZeroExRouterAddress(chainId)
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
     contractBestOption,
-    chain?.id
+    chainId
   )
 
   const determineBestOption = async () => {
@@ -247,32 +184,22 @@ const QuickTrade = (props: QuickTradeProps) => {
       return
     }
 
-    const bestOption = getBestOptionFromQuoteType(quoteResult.bestQuote)
-    const bestOptionIsLevEI =
-      bestOption === QuickTradeBestOption.leveragedExchangeIssuance
-
     const quoteZeroEx = quoteResult.quotes.zeroEx
-    const tradeDataEI = bestOptionIsLevEI
-      ? quoteResult.quotes.exchangeIssuanceLeveraged
-      : quoteResult.quotes.exchangeIssuanceZeroEx
 
     const formattedBuyTokenAmount = getFormattedOuputTokenAmount(
-      bestOption !== QuickTradeBestOption.zeroEx,
+      false,
       buyToken.decimals,
       quoteZeroEx?.minOutput ?? BigNumber.from(0),
-      isBuying
-        ? tradeDataEI?.setTokenAmount
-        : tradeDataEI?.inputOutputTokenAmount
+      BigNumber.from(0)
     )
 
-    setBestOption(bestOption)
     setBuyTokenAmountFormatted(formattedBuyTokenAmount)
     const tradeInfoData = getTradeInfoData0x(
       buyToken,
       quoteZeroEx?.gasCosts ?? BigNumber.from(0),
       quoteZeroEx?.minOutput ?? BigNumber.from(0),
       quoteZeroEx?.sources ?? [],
-      chain?.id,
+      chainId,
       navData,
       slippage,
       shouldShowWarningSign(slippage)
@@ -281,7 +208,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   }
 
   const resetTradeData = () => {
-    setBestOption(null)
     setBuyTokenAmountFormatted('0.0')
     setTradeInfoData([])
   }
@@ -295,7 +221,7 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   useEffect(() => {
     setTradeInfoData([])
-  }, [chain])
+  }, [chainId])
 
   useEffect(() => {
     fetchOptions()
@@ -334,52 +260,15 @@ const QuickTrade = (props: QuickTradeProps) => {
   }
 
   const getIsApproved = () => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return isApprovedForEIZX
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return isApprovedForEIL
-      default:
-        return isApprovedForSwap
-    }
+    return isApprovedForSwap
   }
 
   const getIsApproving = () => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return isApprovingForEIZX
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return isApprovingForEIL
-      default:
-        return isApprovingForSwap
-    }
+    return isApprovingForSwap
   }
 
   const getOnApprove = () => {
-    switch (bestOption) {
-      case QuickTradeBestOption.exchangeIssuance:
-        return onApproveForEIZX()
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        return onApproveForEIL()
-      default:
-        return onApproveForSwap()
-    }
-  }
-
-  const isNotTradable = (token: Token | undefined) => {
-    if (token && chain?.id === MAINNET.chainId)
-      return (
-        indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
-      )
-    if (token && chain?.id === POLYGON.chainId)
-      return (
-        indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
-      )
-    // if (token && chain?.id === OPTIMISM.chainId)
-    //   return (
-    //     indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
-    //   )
-    return false
+    return onApproveForSwap()
   }
 
   /**
@@ -390,9 +279,9 @@ const QuickTrade = (props: QuickTradeProps) => {
     if (!address) return 'Connect Wallet'
     if (!supportedNetwork) return 'Wrong Network'
 
-    if (isNotTradable(props.singleToken)) {
+    if (isNotTradableToken(props.singleToken, chainId)) {
       let chainName = 'This Network'
-      switch (chain?.id) {
+      switch (chainId) {
         case MAINNET.chainId:
           chainName = 'Mainnet'
           break
@@ -419,9 +308,8 @@ const QuickTrade = (props: QuickTradeProps) => {
       return 'Try again'
     }
 
-    const isNativeToken =
-      sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
-
+    const nativeToken = getNativeToken(chainId)
+    const isNativeToken = nativeToken?.symbol === sellToken.symbol
     if (!isNativeToken && getIsApproving()) {
       return 'Approving...'
     }
@@ -430,8 +318,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       return 'Approve Tokens'
     }
 
-    if (isTransacting || isTransactingEI || isTransactingLevEI)
-      return 'Trading...'
+    if (isTransacting) return 'Trading...'
 
     return 'Trade'
   }
@@ -459,31 +346,14 @@ const QuickTrade = (props: QuickTradeProps) => {
       return
     }
 
-    const isNativeToken =
-      sellToken.symbol === 'ETH' || sellToken.symbol === 'MATIC'
+    const nativeToken = getNativeToken(chainId)
+    const isNativeToken = nativeToken?.symbol === sellToken.symbol
     if (!getIsApproved() && !isNativeToken) {
       await getOnApprove()
       return
     }
-    switch (bestOption) {
-      case QuickTradeBestOption.zeroEx:
-        await executeTrade(quoteResult.quotes.zeroEx)
-        break
-      case QuickTradeBestOption.exchangeIssuance:
-        await executeEITrade(
-          quoteResult.quotes.exchangeIssuanceZeroEx,
-          slippage
-        )
-        break
-      case QuickTradeBestOption.leveragedExchangeIssuance:
-        await executeLevEITrade(
-          quoteResult.quotes.exchangeIssuanceLeveraged,
-          slippage
-        )
-        break
-      default:
-      // Nothing
-    }
+
+    await executeTrade(quoteResult.quotes.zeroEx)
   }
 
   const getButtonDisabledState = () => {
@@ -494,18 +364,18 @@ const QuickTrade = (props: QuickTradeProps) => {
       sellTokenAmount === '0' ||
       hasInsufficientFunds ||
       isTransacting ||
-      isTransactingEI ||
-      isTransactingLevEI ||
-      isNotTradable(props.singleToken)
+      isNotTradableToken(props.singleToken, chainId)
     )
   }
 
+  const isNarrow = props.isNarrowVersion ?? false
+
+  // TradeButtonContainer
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = getButtonDisabledState()
   const isLoading = getIsApproving() || isFetchingTradeData
 
-  const isNarrow = props.isNarrowVersion ?? false
-
+  // SelectTokenModal
   const inputTokenBalances = sellTokenList.map(
     (sellToken) => getBalance(sellToken.symbol) ?? BigNumber.from(0)
   )
@@ -537,7 +407,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           title='From'
           config={{
             isDarkMode,
-            isInputDisabled: isNotTradable(props.singleToken),
+            isInputDisabled: isNotTradableToken(props.singleToken, chainId),
             isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
             isReadOnly: false,
@@ -627,19 +497,6 @@ const QuickTrade = (props: QuickTradeProps) => {
       />
     </Box>
   )
-}
-
-function getBestOptionFromQuoteType(
-  quoteType: QuoteType
-): QuickTradeBestOption {
-  switch (quoteType) {
-    case QuoteType.exchangeIssuanceLeveraged:
-      return QuickTradeBestOption.leveragedExchangeIssuance
-    case QuoteType.exchangeIssuanceZeroEx:
-      return QuickTradeBestOption.exchangeIssuance
-    default:
-      return QuickTradeBestOption.zeroEx
-  }
 }
 
 export default QuickTrade
