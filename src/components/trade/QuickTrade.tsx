@@ -8,7 +8,6 @@ import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-
 import { Token } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
