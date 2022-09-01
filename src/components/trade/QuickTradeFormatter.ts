@@ -185,61 +185,6 @@ const formatIfNumber = (value: string) => {
   })
 }
 
-export function getTradeInfoDataFromEI(
-  setAmount: BigNumber,
-  gasPrice: BigNumber,
-  gasLimit: BigNumber,
-  buyToken: Token,
-  sellToken: Token,
-  inputOutputTokenAmount: BigNumber,
-  chainId: number = 1,
-  isBuying: boolean,
-  navData: TradeInfoItem | null = null
-): TradeInfoItem[] {
-  const setTokenDecimals = isBuying ? buyToken.decimals : sellToken.decimals
-  const inputTokenDecimals = sellToken.decimals
-  const exactSetAmount = displayFromWei(setAmount, 4, setTokenDecimals) ?? '0.0'
-  const exactSetAmountFormatted = formatIfNumber(exactSetAmount)
-  const inputTokenMax = inputOutputTokenAmount
-  const maxPayment =
-    displayFromWei(inputTokenMax, 4, inputTokenDecimals) ?? '0.0'
-  const maxPaymentFormatted = formatIfNumber(maxPayment)
-  const networkFee = displayFromWei(gasPrice.mul(gasLimit))
-  const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
-  const networkToken = getNativeToken(chainId)?.symbol ?? ''
-  const offeredFrom = 'Index - Exchange Issuance'
-  return [
-    {
-      title: getExactTxLabel(isBuying, buyToken, sellToken),
-      values: [exactSetAmountFormatted],
-    },
-    {
-      title: getTxLabel(isBuying, buyToken, sellToken),
-      values: [maxPaymentFormatted],
-    },
-    {
-      title: 'Network Fee',
-      values: [`${networkFeeDisplay} ${networkToken}`],
-    },
-    navData ?? { title: 'NavData', values: [''] },
-    { title: 'Offered From', values: [offeredFrom] },
-  ]
-}
-
-const getTxLabel = (isBuying: boolean, buyToken: Token, sellToken: Token) => {
-  if (isBuying) return 'Maximum ' + sellToken.symbol + ' Payment'
-  return 'Minimum ' + buyToken.symbol + ' Received'
-}
-
-const getExactTxLabel = (
-  isBuying: boolean,
-  buyToken: Token,
-  sellToken: Token
-) => {
-  if (isBuying) return 'Exact ' + buyToken.symbol + ' Received'
-  return 'Exact ' + sellToken.symbol + ' Paid'
-}
-
 export function getTradeInfoData0x(
   buyToken: Token,
   gasCosts: BigNumber,
