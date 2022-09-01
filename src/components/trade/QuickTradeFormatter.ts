@@ -261,7 +261,8 @@ export function getTradeInfoData0x(
   minOutput: BigNumber,
   sources: { name: string; proportion: string }[],
   chainId: number = 1,
-  navData: TradeInfoItem | null = null
+  navData: TradeInfoItem | null = null,
+  slippage: number
 ): TradeInfoItem[] {
   const minReceive = displayFromWei(minOutput, 4) ?? '0.0'
   const minReceiveFormatted = formatIfNumber(minReceive) + ' ' + buyToken.symbol
@@ -274,6 +275,9 @@ export function getTradeInfoData0x(
     .filter((source) => Number(source.proportion) > 0)
     .map((source) => source.name)
 
+  // TODO: add warning sign
+  const slippageFormatted = `${slippage}%`
+
   return [
     {
       title: 'Minimum ' + buyToken.symbol + ' Received',
@@ -284,6 +288,7 @@ export function getTradeInfoData0x(
       values: [`${networkFeeDisplay} ${networkToken}`],
     },
     navData ?? { title: 'NAV', values: [] },
+    { title: 'Slippage', values: [slippageFormatted] },
     { title: 'Offered From', values: offeredFromSources },
   ]
 }

@@ -276,7 +276,8 @@ const QuickTrade = (props: QuickTradeProps) => {
           quoteZeroEx?.minOutput ?? BigNumber.from(0),
           quoteZeroEx?.sources ?? [],
           chain?.id,
-          navData
+          navData,
+          slippage
         )
       : getTradeInfoDataFromEI(
           tradeDataEI?.setTokenAmount ?? BigNumber.from(0),
