@@ -132,15 +132,11 @@ const QuickTrade = (props: QuickTradeProps) => {
     setTradeInfoData(updatedInfoData)
   }, [nav, buyTokenAmountFormatted, sellTokenAmount])
 
-  const {
-    isFetchingZeroEx,
-    isFetchingMoreOptions,
-    fetchAndCompareOptions,
-    quoteResult,
-    quoteResultOptions,
-  } = useBestQuote()
+  const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
+    useBestQuote()
 
-  const hasFetchingError = quoteResult.error !== null && !isFetchingZeroEx
+  const hasFetchingError =
+    quoteResult.error !== null && !quoteResult.success && !isFetchingTradeData
 
   const zeroExAddress = getZeroExRouterAddress(chainId)
 
@@ -174,7 +170,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const { executeTrade, isTransacting } = useTrade()
 
   const hasInsufficientFunds = getHasInsufficientFunds(
-    false,
+    quoteResult.bestQuote === QuoteType.notAvailable || !quoteResult.success,
     sellTokenAmountInWei,
     getBalance(sellToken.symbol)
   )
@@ -387,7 +383,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   // TradeButtonContainer
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = getButtonDisabledState()
-  const isLoading = getIsApproving() || isFetchingZeroEx
+  const isLoading = getIsApproving() || isFetchingTradeData
 
   // SelectTokenModal
   const inputTokenBalances = sellTokenList.map(
