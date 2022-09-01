@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { colors, useColorStyles } from 'styles/colors'
 
-import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { InfoOutlineIcon, WarningTwoIcon } from '@chakra-ui/icons'
 import {
   Accordion,
   AccordionButton,
@@ -28,9 +28,14 @@ export type TradeDetailTokenPrices = {
 type TradeDetailProps = {
   data: TradeInfoItem[]
   prices: TradeDetailTokenPrices
+  showWarning?: boolean
 }
 
-export const TradeDetail = ({ data, prices }: TradeDetailProps) => {
+export const TradeDetail = ({
+  data,
+  prices,
+  showWarning,
+}: TradeDetailProps) => {
   const isWeb = useBreakpointValue({ base: false, md: true, lg: true })
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
   const { styles } = useColorStyles()
@@ -73,7 +78,10 @@ export const TradeDetail = ({ data, prices }: TradeDetailProps) => {
                     pr='8px'
                   >
                     <Flex>
-                      {isWeb && (
+                      {showWarning && (
+                        <WarningTwoIcon color={styles.text} mr='8px' />
+                      )}
+                      {isWeb && !showWarning && (
                         <InfoOutlineIcon color={styles.text} mr='8px' />
                       )}
                       <Box onClick={onToggleTokenPrice}>

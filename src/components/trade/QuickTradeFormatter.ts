@@ -9,21 +9,6 @@ import { getNativeToken } from 'utils/tokens'
 import { TradeDetailTokenPrices } from './TradeDetail'
 import { TradeInfoItem } from './TradeInfo'
 
-export function getSlippageColorCoding(
-  slippage: number,
-  isDarkMode: boolean
-): string {
-  if (slippage > 5) {
-    return colors.icRed
-  }
-
-  if (slippage > 1) {
-    return colors.icBlue
-  }
-
-  return isDarkMode ? colors.icWhite : colors.black
-}
-
 export function getPriceImpactColorCoding(
   priceImpact: number,
   isDarkMode: boolean
@@ -200,68 +185,15 @@ const formatIfNumber = (value: string) => {
   })
 }
 
-export function getTradeInfoDataFromEI(
-  setAmount: BigNumber,
-  gasPrice: BigNumber,
-  gasLimit: BigNumber,
-  buyToken: Token,
-  sellToken: Token,
-  inputOutputTokenAmount: BigNumber,
-  chainId: number = 1,
-  isBuying: boolean,
-  navData: TradeInfoItem | null = null
-): TradeInfoItem[] {
-  const setTokenDecimals = isBuying ? buyToken.decimals : sellToken.decimals
-  const inputTokenDecimals = sellToken.decimals
-  const exactSetAmount = displayFromWei(setAmount, 4, setTokenDecimals) ?? '0.0'
-  const exactSetAmountFormatted = formatIfNumber(exactSetAmount)
-  const inputTokenMax = inputOutputTokenAmount
-  const maxPayment =
-    displayFromWei(inputTokenMax, 4, inputTokenDecimals) ?? '0.0'
-  const maxPaymentFormatted = formatIfNumber(maxPayment)
-  const networkFee = displayFromWei(gasPrice.mul(gasLimit))
-  const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
-  const networkToken = getNativeToken(chainId)?.symbol ?? ''
-  const offeredFrom = 'Index - Exchange Issuance'
-  return [
-    {
-      title: getExactTxLabel(isBuying, buyToken, sellToken),
-      values: [exactSetAmountFormatted],
-    },
-    {
-      title: getTxLabel(isBuying, buyToken, sellToken),
-      values: [maxPaymentFormatted],
-    },
-    {
-      title: 'Network Fee',
-      values: [`${networkFeeDisplay} ${networkToken}`],
-    },
-    navData ?? { title: 'NavData', values: [''] },
-    { title: 'Offered From', values: [offeredFrom] },
-  ]
-}
-
-const getTxLabel = (isBuying: boolean, buyToken: Token, sellToken: Token) => {
-  if (isBuying) return 'Maximum ' + sellToken.symbol + ' Payment'
-  return 'Minimum ' + buyToken.symbol + ' Received'
-}
-
-const getExactTxLabel = (
-  isBuying: boolean,
-  buyToken: Token,
-  sellToken: Token
-) => {
-  if (isBuying) return 'Exact ' + buyToken.symbol + ' Received'
-  return 'Exact ' + sellToken.symbol + ' Paid'
-}
-
 export function getTradeInfoData0x(
   buyToken: Token,
   gasCosts: BigNumber,
   minOutput: BigNumber,
   sources: { name: string; proportion: string }[],
   chainId: number = 1,
-  navData: TradeInfoItem | null = null
+  navData: TradeInfoItem | null = null,
+  slippage: number,
+  showSlippageWarning: boolean
 ): TradeInfoItem[] {
   const minReceive = displayFromWei(minOutput, 4) ?? '0.0'
   const minReceiveFormatted = formatIfNumber(minReceive) + ' ' + buyToken.symbol
@@ -274,6 +206,9 @@ export function getTradeInfoData0x(
     .filter((source) => Number(source.proportion) > 0)
     .map((source) => source.name)
 
+  const slippageFormatted = `${slippage}%`
+  const slippageTitle = showSlippageWarning ? `Slippage ⚠` : `Slippage`
+
   return [
     {
       title: 'Minimum ' + buyToken.symbol + ' Received',
@@ -284,6 +219,11 @@ export function getTradeInfoData0x(
       values: [`${networkFeeDisplay} ${networkToken}`],
     },
     navData ?? { title: 'NAV', values: [] },
+    { title: slippageTitle, values: [slippageFormatted] },
     { title: 'Offered From', values: offeredFromSources },
   ]
+}
+
+export function shouldShowWarningSign(slippage: number): boolean {
+  return slippage > 1
 }

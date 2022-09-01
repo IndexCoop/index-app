@@ -47,7 +47,7 @@ import {
   getFormattedTokenPrices,
   getHasInsufficientFunds,
   getTradeInfoData0x,
-  getTradeInfoDataFromEI,
+  shouldShowWarningSign,
 } from './QuickTradeFormatter'
 import QuickTradeSelector from './QuickTradeSelector'
 import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
@@ -248,7 +248,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     }
 
     const bestOption = getBestOptionFromQuoteType(quoteResult.bestQuote)
-    const bestOptionIs0x = bestOption === QuickTradeBestOption.zeroEx
     const bestOptionIsLevEI =
       bestOption === QuickTradeBestOption.leveragedExchangeIssuance
 
@@ -266,30 +265,18 @@ const QuickTrade = (props: QuickTradeProps) => {
         : tradeDataEI?.inputOutputTokenAmount
     )
 
-    console.log('BESTOPTION', bestOption)
     setBestOption(bestOption)
     setBuyTokenAmountFormatted(formattedBuyTokenAmount)
-    const tradeInfoData = bestOptionIs0x
-      ? getTradeInfoData0x(
-          buyToken,
-          quoteZeroEx?.gasCosts ?? BigNumber.from(0),
-          quoteZeroEx?.minOutput ?? BigNumber.from(0),
-          quoteZeroEx?.sources ?? [],
-          chain?.id,
-          navData
-        )
-      : getTradeInfoDataFromEI(
-          tradeDataEI?.setTokenAmount ?? BigNumber.from(0),
-          tradeDataEI?.gasPrice ?? BigNumber.from(0),
-          tradeDataEI?.gas ?? BigNumber.from(0),
-          buyToken,
-          sellToken,
-          tradeDataEI?.inputOutputTokenAmount ?? BigNumber.from(0),
-          chain?.id,
-          isBuying,
-          navData
-        )
-
+    const tradeInfoData = getTradeInfoData0x(
+      buyToken,
+      quoteZeroEx?.gasCosts ?? BigNumber.from(0),
+      quoteZeroEx?.minOutput ?? BigNumber.from(0),
+      quoteZeroEx?.sources ?? [],
+      chain?.id,
+      navData,
+      slippage,
+      shouldShowWarningSign(slippage)
+    )
     setTradeInfoData(tradeInfoData)
   }
 
@@ -534,6 +521,8 @@ const QuickTrade = (props: QuickTradeProps) => {
     outputTokenBalances
   )
 
+  // TradeDetail
+  const showWarning = shouldShowWarningSign(slippage)
   const tokenPrices = getFormattedTokenPrices(
     sellToken.symbol,
     sellTokenPrice,
@@ -605,7 +594,11 @@ const QuickTrade = (props: QuickTradeProps) => {
       >
         <>
           {tradeInfoData.length > 0 && (
-            <TradeDetail data={tradeInfoData} prices={tokenPrices} />
+            <TradeDetail
+              data={tradeInfoData}
+              prices={tokenPrices}
+              showWarning={showWarning}
+            />
           )}
           {hasFetchingError && (
             <Text align='center' color={colors.icRed} p='16px'>
