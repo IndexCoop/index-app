@@ -6,7 +6,6 @@ import {
   getPriceImpact,
   getPriceImpactColorCoding,
 } from './QuickTradeFormatter'
-
 import { TradeDetailTokenPrices } from './TradeDetail'
 
 describe('getFormattedTokenPrice()', () => {
