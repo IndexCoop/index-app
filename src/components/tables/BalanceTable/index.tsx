@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { colors, useICColorMode } from 'styles/colors'
 
 import {
-  Box,
   Flex,
   Spinner,
   Table,

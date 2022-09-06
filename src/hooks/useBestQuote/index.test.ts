@@ -23,46 +23,50 @@ import { getBestQuote, getSetTokenAmount, maxPriceImpact, QuoteType } from './'
 describe('getBestQuote()', () => {
   test('should return 0x as best trade option', async () => {
     const bestTradeOption = getBestQuote(1, 2, 2, 3.5)
-    expect(bestTradeOption).toEqual(QuoteType.zeroEx)
+    expect(bestTradeOption.type).toEqual(QuoteType.zeroEx)
   })
 
   test('should return EI as the best option', async () => {
     const bestTradeOption = getBestQuote(2, 1, 3, 1)
-    expect(bestTradeOption).toEqual(QuoteType.exchangeIssuanceZeroEx)
+    expect(bestTradeOption.type).toEqual(QuoteType.exchangeIssuanceZeroEx)
   })
 
   test('should return Leveraged EI as the best option', async () => {
     const bestTradeOption = getBestQuote(2, 2, 1, 1)
-    expect(bestTradeOption).toEqual(QuoteType.exchangeIssuanceLeveraged)
+    expect(bestTradeOption.type).toEqual(QuoteType.exchangeIssuanceLeveraged)
   })
 
   test('should return 0x if everything else is not defined', async () => {
     const bestTradeOption = getBestQuote(1, null, null, 1)
-    expect(bestTradeOption).toEqual(QuoteType.zeroEx)
+    expect(bestTradeOption.type).toEqual(QuoteType.zeroEx)
   })
 
   test('should return EI if everything else is not defined', async () => {
     const bestTradeOption = getBestQuote(null, 1, null, 1)
-    expect(bestTradeOption).toEqual(QuoteType.exchangeIssuanceZeroEx)
+    expect(bestTradeOption.type).toEqual(QuoteType.exchangeIssuanceZeroEx)
   })
 
   test('should return Leveraged EI if everything else is not defined', async () => {
     const bestTradeOption = getBestQuote(null, null, 1, 1)
-    expect(bestTradeOption).toEqual(QuoteType.exchangeIssuanceLeveraged)
+    expect(bestTradeOption.type).toEqual(QuoteType.exchangeIssuanceLeveraged)
   })
 
   test('should NOT return 0x if price impact is too high', async () => {
     const bestTradeOption = getBestQuote(1, 1, null, 5)
-    expect(bestTradeOption).toEqual(QuoteType.exchangeIssuanceZeroEx)
+    expect(bestTradeOption.type).toEqual(QuoteType.exchangeIssuanceZeroEx)
+    expect(bestTradeOption.priceImpact).toEqual(true)
     const bestTradeOption2 = getBestQuote(1, null, 1, 5)
-    expect(bestTradeOption2).toEqual(QuoteType.exchangeIssuanceLeveraged)
+    expect(bestTradeOption2.type).toEqual(QuoteType.exchangeIssuanceLeveraged)
+    expect(bestTradeOption2.priceImpact).toEqual(true)
   })
 
   test('should NOT return 0x if price impact is too high (higher quotes)', async () => {
     const bestTradeOption = getBestQuote(1, 1.1, null, 5)
-    expect(bestTradeOption).toEqual(QuoteType.exchangeIssuanceZeroEx)
+    expect(bestTradeOption.type).toEqual(QuoteType.exchangeIssuanceZeroEx)
+    expect(bestTradeOption.priceImpact).toEqual(true)
     const bestTradeOption2 = getBestQuote(1, null, 1.1, 5)
-    expect(bestTradeOption2).toEqual(QuoteType.exchangeIssuanceLeveraged)
+    expect(bestTradeOption2.type).toEqual(QuoteType.exchangeIssuanceLeveraged)
+    expect(bestTradeOption2.priceImpact).toEqual(true)
   })
 })
 
