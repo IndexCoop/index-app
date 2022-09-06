@@ -34,6 +34,10 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
     }
   }
 
+  const onSwitchTabs = () => {
+    setSelectedType(TradeType.flashMint)
+  }
+
   return (
     <SlippageProvider>
       <Flex
@@ -53,7 +57,9 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
           shouldShowFlashMintOption={shouldShowFlashMintOption}
         />
         {selectedType === TradeType.flashMint && <FlashMint {...props} />}
-        {selectedType === TradeType.swap && <QuickTrade {...props} />}
+        {selectedType === TradeType.swap && (
+          <QuickTrade {...props} switchTabs={onSwitchTabs} />
+        )}
       </Flex>
     </SlippageProvider>
   )

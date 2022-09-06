@@ -25,6 +25,7 @@ import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getZeroExRouterAddress } from 'utils/contracts'
 import { getNativeToken, isNotTradableToken, isPerpToken } from 'utils/tokens'
 
+import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
 import {
   formattedFiat,
   getFormattedOuputTokenAmount,
@@ -43,6 +44,7 @@ import { TradeInfoItem } from './TradeInfo'
 export type QuickTradeProps = {
   isNarrowVersion?: boolean
   singleToken?: Token
+  switchTabs?: () => void
 }
 
 const QuickTrade = (props: QuickTradeProps) => {
@@ -126,11 +128,15 @@ const QuickTrade = (props: QuickTradeProps) => {
     setTradeInfoData(updatedInfoData)
   }, [nav, buyTokenAmountFormatted, sellTokenAmount])
 
-  const { isFetchingTradeData, fetchAndCompareOptions, quoteResult } =
-    useBestQuote()
+  const {
+    isFetchingZeroEx,
+    isFetchingMoreOptions,
+    fetchAndCompareOptions,
+    quoteResult,
+    quoteResultOptions,
+  } = useBestQuote()
 
-  const hasFetchingError =
-    quoteResult.error !== null && !quoteResult.success && !isFetchingTradeData
+  const hasFetchingError = quoteResult.error !== null && !isFetchingZeroEx
 
   const zeroExAddress = getZeroExRouterAddress(chainId)
 
@@ -145,7 +151,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     buyTokenPrice
   )
 
-  const priceImpact = isFetchingTradeData
+  const priceImpact = isFetchingZeroEx
     ? null
     : getFormattedPriceImpact(
         parseFloat(sellTokenAmount),
@@ -164,7 +170,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const { executeTrade, isTransacting } = useTrade()
 
   const hasInsufficientFunds = getHasInsufficientFunds(
-    quoteResult.bestQuote === QuoteType.notAvailable || !quoteResult.success,
+    false,
     sellTokenAmountInWei,
     getBalance(sellToken.symbol)
   )
@@ -176,9 +182,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   )
 
   const determineBestOption = async () => {
-    const quoteNotAvailable =
-      quoteResult.bestQuote === QuoteType.notAvailable || !quoteResult.success
-    if (quoteNotAvailable) {
+    if (quoteResult.error !== null) {
       setTradeInfoData([])
       return
     }
@@ -322,6 +326,13 @@ const QuickTrade = (props: QuickTradeProps) => {
     return 'Trade'
   }
 
+  const onClickBetterQuote = () => {
+    if (!quoteResultOptions.hasBetterQuote) return
+    if (props.switchTabs) {
+      props.switchTabs()
+    }
+  }
+
   const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
     if (input === '') {
       resetTradeData()
@@ -372,7 +383,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   // TradeButtonContainer
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = getButtonDisabledState()
-  const isLoading = getIsApproving() || isFetchingTradeData
+  const isLoading = getIsApproving() || isFetchingZeroEx
 
   // SelectTokenModal
   const inputTokenBalances = sellTokenList.map(
@@ -398,6 +409,22 @@ const QuickTrade = (props: QuickTradeProps) => {
     buyToken.symbol,
     buyTokenPrice
   )
+
+  const getBetterQuoteState = () => {
+    if (isFetchingMoreOptions) {
+      return BetterQuoteState.fetchingQuote
+    }
+
+    if (quoteResultOptions.hasBetterQuote) {
+      return quoteResultOptions.isReasonPriceImpact
+        ? BetterQuoteState.betterQuotePriceImpact
+        : BetterQuoteState.betterQuote
+    }
+
+    return BetterQuoteState.noBetterQuote
+  }
+
+  const betterQuoteState = getBetterQuoteState()
 
   return (
     <Box>
@@ -468,6 +495,15 @@ const QuickTrade = (props: QuickTradeProps) => {
               prices={tokenPrices}
               showWarning={showWarning}
             />
+          )}
+          {tradeInfoData.length > 0 && (
+            <Box mt='16px'>
+              <BetterQuoteView
+                onClick={onClickBetterQuote}
+                state={betterQuoteState}
+                savingsUsd={quoteResultOptions.savingsUsd}
+              />
+            </Box>
           )}
           {hasFetchingError && (
             <Text align='center' color={colors.icRed} p='16px'>
