@@ -135,18 +135,20 @@ const QuickTradeSelector = (props: {
             )}
           </Flex>
         </Flex>
-        <Selector
-          onClick={() => props.onSelectedToken(selectedTokenSymbol)}
-          isNarrowVersion={config.isNarrowVersion}
-          selectedTokenImage={selectedToken.image}
-          selectedTokenSymbol={selectedTokenSymbol}
-        />
+        <Flex align='flex-end' direction='column'>
+          <Selector
+            onClick={() => props.onSelectedToken(selectedTokenSymbol)}
+            isNarrowVersion={config.isNarrowVersion}
+            selectedTokenImage={selectedToken.image}
+            selectedTokenSymbol={selectedTokenSymbol}
+          />
+          <Balance
+            balance={tokenBalance}
+            onClick={onClickBalance}
+            showMaxLabel={config.showMaxLabel}
+          />
+        </Flex>
       </Flex>
-      <Balance
-        balance={tokenBalance}
-        onClick={onClickBalance}
-        showMaxLabel={config.showMaxLabel}
-      />
     </Flex>
   )
 }
@@ -158,8 +160,8 @@ type BalanceProps = {
 }
 
 const Balance = ({ balance, onClick, showMaxLabel }: BalanceProps) => (
-  <Flex align='left' cursor='pointer' onClick={onClick} mt='8px'>
-    <Text fontSize='12px' fontWeight='400'>
+  <Flex align='left' cursor='pointer' onClick={onClick} mt='12px' mr='4px'>
+    <Text color={colors.icGray2} fontSize='12px' fontWeight='400'>
       Balance: {balance}
     </Text>
     {showMaxLabel === true && (
