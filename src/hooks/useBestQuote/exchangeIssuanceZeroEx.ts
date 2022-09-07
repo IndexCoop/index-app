@@ -25,13 +25,6 @@ export function isEligibleTradePairZeroEx(
   )
     return false
 
-  if (
-    inputToken.symbol === JPGIndex.symbol ||
-    outputToken.symbol === JPGIndex.symbol
-  )
-    // temporarily - disabled JPG for EI0x
-    return false
-
   return true
 }
 
