@@ -275,9 +275,9 @@ describe('isEligibleTradePairZeroEx()', () => {
     // not eligible - as not approved in contract
     const isEligibleIndex = isEligibleTradePairZeroEx(inputToken, IndexToken)
     expect(isEligibleIndex).toEqual(false)
-    // temporarily - disabled JPG for EI0x
+    // Reenabled
     const isEligibleJpg = isEligibleTradePairZeroEx(inputToken, JPGIndex)
-    expect(isEligibleJpg).toEqual(false)
+    expect(isEligibleJpg).toEqual(true)
   })
 })
 
