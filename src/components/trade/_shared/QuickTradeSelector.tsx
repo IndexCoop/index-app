@@ -5,7 +5,7 @@ import { colors, useColorStyles } from 'styles/colors'
 import { useNetwork } from 'wagmi'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, Input, Spacer, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 
 import { Token } from 'constants/tokens'
@@ -101,20 +101,18 @@ const QuickTradeSelector = (props: {
         {props.title}
       </Text>
       <Flex
-        align='center'
-        justify='space-between'
         bg={styles.background}
         border='1px solid'
         borderColor={borderColor}
         borderRadius={borderRadius}
+        direction='column'
         mt='10px'
-        px={['16px', '20px']}
-        py='12px'
+        p='16px'
       >
-        <Flex direction='column'>
+        <Flex align='flex-start' direction='row' justify='space-between'>
           <Input
             color={styles.text2}
-            fontSize='24px'
+            fontSize='28px'
             placeholder='0.0'
             type='number'
             step='any'
@@ -124,6 +122,19 @@ const QuickTradeSelector = (props: {
             value={inputString}
             onChange={(event) => onChangeInput(event.target.value)}
           />
+          <Selector
+            onClick={() => props.onSelectedToken(selectedTokenSymbol)}
+            isNarrowVersion={config.isNarrowVersion}
+            selectedTokenImage={selectedToken.image}
+            selectedTokenSymbol={selectedTokenSymbol}
+          />
+        </Flex>
+        <Flex
+          align='flex-start'
+          direction='row'
+          justify='space-between'
+          mt='8px'
+        >
           <Flex>
             <Text fontSize='14px' textColor={styles.text3}>
               {props.formattedFiat}
@@ -134,14 +145,6 @@ const QuickTradeSelector = (props: {
               </Text>
             )}
           </Flex>
-        </Flex>
-        <Flex align='flex-end' direction='column'>
-          <Selector
-            onClick={() => props.onSelectedToken(selectedTokenSymbol)}
-            isNarrowVersion={config.isNarrowVersion}
-            selectedTokenImage={selectedToken.image}
-            selectedTokenSymbol={selectedTokenSymbol}
-          />
           <Balance
             balance={tokenBalance}
             onClick={onClickBalance}
@@ -160,8 +163,8 @@ type BalanceProps = {
 }
 
 const Balance = ({ balance, onClick, showMaxLabel }: BalanceProps) => (
-  <Flex align='left' cursor='pointer' onClick={onClick} mt='12px' mr='4px'>
-    <Text color={colors.icGray2} fontSize='12px' fontWeight='400'>
+  <Flex cursor='pointer' onClick={onClick} mr='4px'>
+    <Text color={colors.icGray2} fontSize='14px' fontWeight='400'>
       Balance: {balance}
     </Text>
     {showMaxLabel === true && (
