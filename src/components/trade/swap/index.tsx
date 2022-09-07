@@ -25,7 +25,7 @@ import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getZeroExRouterAddress } from 'utils/contracts'
 import { getNativeToken, isNotTradableToken, isPerpToken } from 'utils/tokens'
 
-import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
+import { TradeButtonContainer } from '../_shared/footer'
 import {
   formattedFiat,
   getFormattedOuputTokenAmount,
