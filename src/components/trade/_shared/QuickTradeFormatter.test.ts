@@ -1,12 +1,13 @@
 import { colors } from 'styles/colors'
 
+import { TradeDetailTokenPrices } from '../swap/TradeDetail'
+
 import {
   getFormattedTokenPrice,
   getFormattedTokenPrices,
   getPriceImpact,
   getPriceImpactColorCoding,
 } from './QuickTradeFormatter'
-import { TradeDetailTokenPrices } from './TradeDetail'
 
 describe('getFormattedTokenPrice()', () => {
   test('returns correct formatting', async () => {

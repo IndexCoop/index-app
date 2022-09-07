@@ -4,12 +4,12 @@ import { useICColorMode } from 'styles/colors'
 
 import { Flex } from '@chakra-ui/react'
 
-import FlashbotsRpcMessage from 'components/trade/FlashbotsRpcMessage'
 import { Token } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { useProtection } from 'providers/Protection'
 
 import { ContractExecutionView } from './ContractExecutionView'
+import FlashbotsRpcMessage from './FlashbotsRpcMessage'
 import { ProtectionWarning } from './ProtectionWarning'
 import { TradeButton } from './TradeButton'
 

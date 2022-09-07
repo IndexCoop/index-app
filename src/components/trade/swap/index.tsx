@@ -11,7 +11,7 @@ import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
 import { useBalances } from 'hooks/useBalance'
-import { QuoteType, useBestQuote } from 'hooks/useBestQuote'
+import { useBestQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTrade } from 'hooks/useTrade'
@@ -25,7 +25,7 @@ import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getZeroExRouterAddress } from 'utils/contracts'
 import { getNativeToken, isNotTradableToken, isPerpToken } from 'utils/tokens'
 
-import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
+import { TradeButtonContainer } from '../_shared/footer'
 import {
   formattedFiat,
   getFormattedOuputTokenAmount,
@@ -34,10 +34,14 @@ import {
   getHasInsufficientFunds,
   getTradeInfoData0x,
   shouldShowWarningSign,
-} from './QuickTradeFormatter'
-import QuickTradeSelector from './QuickTradeSelector'
-import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
-import { TradeButtonContainer } from './TradeButtonContainer'
+} from '../_shared/QuickTradeFormatter'
+import QuickTradeSelector from '../_shared/QuickTradeSelector'
+import {
+  getSelectTokenListItems,
+  SelectTokenModal,
+} from '../_shared/SelectTokenModal'
+
+import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
 import { TradeDetail } from './TradeDetail'
 import { TradeInfoItem } from './TradeInfo'
 
