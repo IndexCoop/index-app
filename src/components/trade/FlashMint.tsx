@@ -28,7 +28,7 @@ import { useWallet } from 'hooks/useWallet'
 import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
-import { isNotTradableToken } from 'utils/tokens'
+import { getNativeToken, isNotTradableToken } from 'utils/tokens'
 
 import DirectIssuance from './DirectIssuance'
 import { QuickTradeProps } from './QuickTrade'
@@ -195,9 +195,12 @@ const FlashMint = (props: QuickTradeProps) => {
       return 'Approving...'
     }
 
-    if (!isApproved()) {
+    const isNativeToken =
+      inputOutputToken.symbol === getNativeToken(chainId)?.symbol ?? ''
+    if (!isNativeToken && !isApproved()) {
       return 'Approve Tokens'
     }
+
     if (isTrading) {
       return 'Trading...'
     }
