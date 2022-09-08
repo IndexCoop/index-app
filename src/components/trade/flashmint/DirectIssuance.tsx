@@ -1,5 +1,6 @@
 import { colors, colorStyles, useColorStyles } from 'styles/colors'
 
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
 import { Token } from 'constants/tokens'
@@ -83,6 +84,7 @@ const DirectIssuance = ({
       </Text>
       <Flex alignItems='center' marginTop='8px'>
         <Flex
+          align='center'
           bg={colors.icGray1}
           border='1px solid'
           borderColor={colorStyles(isDarkMode).border}
@@ -90,6 +92,7 @@ const DirectIssuance = ({
           boxShadow='sm'
           cursor='pointer'
           p='12px'
+          pr='8px'
           onClick={onSelectInputOutputToken}
         >
           <Image
@@ -98,6 +101,7 @@ const DirectIssuance = ({
             w='30px'
             h='30px'
           />
+          <ChevronDownIcon ml={1} w={6} h={6} color={colors.icGray4} />
         </Flex>
         <Text fontWeight='600' marginLeft='16px'>
           {inputOutputTokenAmountFormatted}
