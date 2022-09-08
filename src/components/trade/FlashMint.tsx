@@ -133,7 +133,9 @@ const FlashMint = (props: QuickTradeProps) => {
   }
 
   const isApproved = () => {
-    if (isMinting) return isApprovedInputOutputToken
+    const isNativeCurrency =
+      inputOutputToken.symbol === getNativeToken(chainId)?.symbol ?? ''
+    if (isMinting) return isNativeCurrency ? true : isApprovedInputOutputToken
     return isApprovedIndexToken
   }
 
@@ -195,11 +197,7 @@ const FlashMint = (props: QuickTradeProps) => {
       return 'Approving...'
     }
 
-    // For redeeming it will always be an index, so approval state should be checked
-    const isNativeCurrency = isMinting
-      ? inputOutputToken.symbol === getNativeToken(chainId)?.symbol ?? ''
-      : false
-    if (!isNativeCurrency && !isApproved()) {
+    if (!isApproved()) {
       return 'Approve Tokens'
     }
 
