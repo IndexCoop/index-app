@@ -4,35 +4,56 @@ import {
   getIssuanceModule,
 } from '@indexcoop/flash-mint-sdk'
 
-import { DefaultGasLimitExchangeIssuanceZeroEx } from 'constants/gas'
-import { ETH, MATIC, Token } from 'constants/tokens'
-import { toWei } from 'utils'
-import { getAddressForToken } from 'utils/tokens'
+import { DefaultGasLimitFlashMintZeroEx } from 'constants/gas'
+import { Token } from 'constants/tokens'
+import { getAddressForToken, isNativeCurrency } from 'utils/tokens'
 
 // TODO: check scaling based on component counts (quoteData)
-const defaultGasEstimate = BigNumber.from(DefaultGasLimitExchangeIssuanceZeroEx)
+const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
+// Default gas margin to add on top of estimate
+const defaultGasMargin = 20
 
-export async function getExchangeIssuanceGasEstimate(
-  provider: any,
-  chainId: number,
-  isIssuance: boolean,
+/**
+ * Returns a gas estimate for FlashMintZeroEx.
+ *
+ * If the tx would fail an estimate is returned.
+ *
+ * @param isMinting     Minting or redeeming?
+ * @param inputToken    The input token.
+ * @param outputToken   The output token.
+ * @param indexTokenAmount        The Index token amount.
+ * @param inputOutputTokenAmount  The input/ouput token amount (depending on minting/redeeming).
+ * @param inputTokenBalance       The input token's balance.
+ * @param componentQuotes         The component quotes data.
+ * @param signer                  A signer.
+ * @param chainId                 The current's chain ID.
+ * @param canFail                 If the function should fail on error (default: true)
+ */
+export async function getFlashMintZeroExGasEstimate(
+  isMinting: boolean,
   inputToken: Token,
   outputToken: Token,
-  setTokenAmount: BigNumber,
-  inputTokenAmount: BigNumber,
+  indexTokenAmount: BigNumber,
+  inputOutputTokenAmount: BigNumber,
   inputTokenBalance: BigNumber,
-  quoteData: string[],
-  signer: any
+  componentQuotes: string[],
+  signer: any,
+  chainId: number,
+  canFail: boolean = true
 ): Promise<BigNumber> {
+  console.log('ESTIMATINGGAS')
   // Return default - as we can't fetch an estimate without a signer
   if (!signer) return defaultGasEstimate
 
   // Return default - as this would otherwise throw an error
-  if (inputTokenAmount.gt(inputTokenBalance)) return defaultGasEstimate
+  if (isMinting && inputOutputTokenAmount.gt(inputTokenBalance))
+    return defaultGasEstimate
+  if (!isMinting && indexTokenAmount.gt(inputTokenBalance))
+    return defaultGasEstimate
 
   let gasEstimate = defaultGasEstimate
 
-  const setTokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
+  const setTokenSymbol = isMinting ? outputToken.symbol : inputToken.symbol
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
 
   const outputTokenAddress = getAddressForToken(outputToken, chainId)
@@ -42,43 +63,40 @@ export async function getExchangeIssuanceGasEstimate(
   try {
     const contract = getFlashMintZeroExContract(signer, chainId ?? 1)
 
-    if (isIssuance) {
-      const isSellingNativeChainToken =
-        inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
-
+    if (isMinting) {
+      const isSellingNativeChainToken = isNativeCurrency(inputToken, chainId)
       if (isSellingNativeChainToken) {
         gasEstimate = await contract.estimateGas.issueExactSetFromETH(
           outputTokenAddress,
-          setTokenAmount,
-          quoteData,
+          indexTokenAmount,
+          componentQuotes,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
-          { value: inputTokenAmount, gasLimit: gasEstimate }
+          { value: inputOutputTokenAmount, gasLimit: gasEstimate }
         )
       } else {
-        const maxAmountInputToken = inputTokenAmount
+        const maxAmountInputToken = inputOutputTokenAmount
         gasEstimate = await contract.estimateGas.issueExactSetFromToken(
           outputTokenAddress,
           inputTokenAddress,
-          setTokenAmount,
+          indexTokenAmount,
           maxAmountInputToken,
-          quoteData,
+          componentQuotes,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
           { gasLimit: gasEstimate }
         )
       }
     } else {
-      const isRedeemingNativeChainToken =
-        inputToken.symbol === ETH.symbol || inputToken.symbol === MATIC.symbol
-      const minOutputReceive = inputTokenAmount
+      const isRedeemingNativeChainToken = isNativeCurrency(outputToken, chainId)
+      const minOutputReceive = inputOutputTokenAmount
 
       if (isRedeemingNativeChainToken) {
         gasEstimate = await contract.estimateGas.redeemExactSetForETH(
           inputTokenAddress,
-          setTokenAmount,
+          indexTokenAmount,
           minOutputReceive,
-          quoteData,
+          componentQuotes,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
           { gasLimit: gasEstimate }
@@ -87,9 +105,9 @@ export async function getExchangeIssuanceGasEstimate(
         gasEstimate = await contract.estimateGas.redeemExactSetForToken(
           inputTokenAddress,
           outputTokenAddress,
-          setTokenAmount,
+          indexTokenAmount,
           minOutputReceive,
-          quoteData,
+          componentQuotes,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
           {
@@ -100,13 +118,17 @@ export async function getExchangeIssuanceGasEstimate(
         )
       }
     }
-  } catch (error) {
-    console.log('Error estimating gas for 0x exchange issuance:', error)
+  } catch (error: any) {
+    console.log('Error estimating gas for FlashMintZeroEx:', error)
+    if (canFail) {
+      throw error
+    }
     return defaultGasEstimate
   }
 
-  // Adjust gas estiamte for complexity of 0x contract
-  gasEstimate = gasEstimate.mul(toWei(2.2, 1))
+  console.log('GASESTIMATE-BEFOREMARGIN', gasEstimate.toString())
+  // Add safety margin on top of estimate
+  gasEstimate = gasEstimate.mul(100 + defaultGasMargin).div(100)
 
   return gasEstimate
 }

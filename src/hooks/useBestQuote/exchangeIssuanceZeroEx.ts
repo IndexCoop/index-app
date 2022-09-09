@@ -3,8 +3,8 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { getFlashMintZeroExQuote, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from 'constants/chains'
-import { icETHIndex, IndexToken, JPGIndex, Token } from 'constants/tokens'
-import { getExchangeIssuanceGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
+import { icETHIndex, IndexToken, Token } from 'constants/tokens'
+import { getFlashMintZeroExGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
 
 import { ExchangeIssuanceZeroExQuote, QuoteType } from './'
@@ -28,14 +28,14 @@ export function isEligibleTradePairZeroEx(
   return true
 }
 
-export async function getEIZeroExQuote(
-  isIssuance: boolean,
+export async function getEnhancedFlashMintZeroExQuote(
+  isMinting: boolean,
   inputTokenAddress: string,
   outputTokenAddress: string,
   inputTokenBalance: BigNumber,
   sellToken: Token,
   buyToken: Token,
-  setTokenAmount: BigNumber,
+  indexTokenAmount: BigNumber,
   sellTokenPrice: number,
   nativeTokenPrice: number,
   gasPrice: BigNumber,
@@ -66,29 +66,38 @@ export async function getEIZeroExQuote(
     const quote0x = await getFlashMintZeroExQuote(
       inputToken,
       outputToken,
-      setTokenAmount,
-      isIssuance,
+      indexTokenAmount,
+      isMinting,
       slippage,
       zeroExApi,
       provider,
       chainId
     )
     if (quote0x) {
-      const gasEstimate = await getExchangeIssuanceGasEstimate(
-        provider,
-        chainId,
-        isIssuance,
+      // We don't want this function to fail for estimates here.
+      // A default will be returned if the tx would fail.
+      const canFail = false
+      const gasEstimate = await getFlashMintZeroExGasEstimate(
+        isMinting,
         sellToken,
         buyToken,
-        setTokenAmount,
+        indexTokenAmount,
         quote0x.inputOutputTokenAmount,
         spendingTokenBalance,
         quote0x.componentQuotes,
-        signer
+        signer,
+        chainId,
+        canFail
+      )
+      console.log(
+        'GAS',
+        gasEstimate.toString(),
+        gasPrice.toString(),
+        gasEstimate.mul(gasPrice).toString()
       )
       return {
         type: QuoteType.exchangeIssuanceZeroEx,
-        isIssuance,
+        isMinting,
         inputToken: sellToken,
         outputToken: buyToken,
         gas: gasEstimate,
@@ -102,7 +111,7 @@ export async function getEIZeroExQuote(
           nativeTokenPrice
         ),
         priceImpact: 0,
-        setTokenAmount,
+        indexTokenAmount,
         inputOutputTokenAmount: quote0x.inputOutputTokenAmount,
         // type specific properties
         componentQuotes: quote0x.componentQuotes,

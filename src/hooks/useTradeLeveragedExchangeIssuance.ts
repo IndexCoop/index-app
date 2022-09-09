@@ -9,7 +9,7 @@ import {
   getFlashMintLeveragedContract,
 } from '@indexcoop/flash-mint-sdk'
 
-import { DefaultGasLimitExchangeIssuanceLeveraged } from 'constants/gas'
+import { DefaultGasLimitFlashMintLeveraged } from 'constants/gas'
 import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceLeveragedQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
@@ -24,7 +24,7 @@ import { getAddressForToken } from 'utils/tokens'
 
 import { useBalances } from './useBalance'
 
-const gasLimit = BigNumber.from(DefaultGasLimitExchangeIssuanceLeveraged)
+const gasLimit = BigNumber.from(DefaultGasLimitFlashMintLeveraged)
 
 export const useTradeLeveragedExchangeIssuance = () => {
   const { address, signer } = useWallet()
@@ -38,10 +38,10 @@ export const useTradeLeveragedExchangeIssuance = () => {
     async (quote: ExchangeIssuanceLeveragedQuote | null, slippage: number) => {
       if (!address || !quote) return
 
-      const isIssuance = quote.isIssuance
+      const isMinting = quote.isMinting
       const inputToken = quote.inputToken
       const outputToken = quote.outputToken
-      const setTokenAmount = quote.setTokenAmount
+      const setTokenAmount = quote.indexTokenAmount
       const inputOutputTokenAmount = quote.inputOutputTokenAmount
       const swapDataDebtCollateral = quote.swapDataDebtCollateral
       const swapDataInputOutputToken = quote.swapDataPaymentToken
@@ -63,7 +63,7 @@ export const useTradeLeveragedExchangeIssuance = () => {
 
       try {
         setIsTransacting(true)
-        if (isIssuance) {
+        if (isMinting) {
           const isSellingNativeChainToken =
             inputToken.symbol === ETH.symbol ||
             inputToken.symbol === MATIC.symbol

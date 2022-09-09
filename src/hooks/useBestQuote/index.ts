@@ -21,7 +21,7 @@ import { getAddressForToken } from 'utils/tokens'
 import { useWallet } from '../useWallet'
 
 import { getEILeveragedQuote } from './exchangeIssuanceLeveraged'
-import { getEIZeroExQuote } from './exchangeIssuanceZeroEx'
+import { getEnhancedFlashMintZeroExQuote } from './exchangeIssuanceZeroEx'
 
 export enum QuoteType {
   notAvailable = 'notAvailable',
@@ -32,7 +32,7 @@ export enum QuoteType {
 
 interface Quote {
   type: QuoteType
-  isIssuance: boolean
+  isMinting: boolean
   inputToken: Token
   outputToken: Token
   gas: BigNumber
@@ -40,7 +40,7 @@ interface Quote {
   gasCosts: BigNumber
   fullCostsInUsd: number | null
   priceImpact: number
-  setTokenAmount: BigNumber
+  indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
 }
 
@@ -197,7 +197,7 @@ export const useBestQuote = () => {
     // buyTokenAmount: string,
     buyTokenPrice: number,
     nativeTokenPrice: number,
-    isIssuance: boolean,
+    isMinting: boolean,
     slippage: number
   ) => {
     const inputTokenAddress = getAddressForToken(sellToken, chainId)
@@ -238,7 +238,7 @@ export const useBestQuote = () => {
     const zeroExQuote: ZeroExQuote | null = dexSwapOption
       ? {
           type: QuoteType.zeroEx,
-          isIssuance,
+          isMinting,
           inputToken: sellToken,
           outputToken: buyToken,
           gas: gasLimit0x,
@@ -252,10 +252,10 @@ export const useBestQuote = () => {
             nativeTokenPrice
           ),
           priceImpact: parseFloat(dexSwapOption.estimatedPriceImpact ?? '5'),
-          setTokenAmount: isIssuance
+          indexTokenAmount: isMinting
             ? BigNumber.from(dexSwapOption.buyAmount)
             : sellTokenAmountInWei,
-          inputOutputTokenAmount: isIssuance
+          inputOutputTokenAmount: isMinting
             ? sellTokenAmountInWei
             : BigNumber.from(dexSwapOption.buyAmount),
           // type specific properties
@@ -273,7 +273,7 @@ export const useBestQuote = () => {
 
       /* Determine Set token amount based on different factors */
       let setTokenAmount = getSetTokenAmount(
-        isIssuance,
+        isMinting,
         sellTokenAmount,
         sellToken.decimals,
         sellTokenPrice,
@@ -297,7 +297,7 @@ export const useBestQuote = () => {
 
       const exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
         await getEILeveragedQuote(
-          isIssuance,
+          isMinting,
           inputTokenAddress,
           outputTokenAddress,
           sellToken,
@@ -315,8 +315,8 @@ export const useBestQuote = () => {
       const inputTokenBalance =
         getBalance(sellToken.symbol) ?? BigNumber.from(0)
       const exchangeIssuanceZeroExQuote: ExchangeIssuanceZeroExQuote | null =
-        await getEIZeroExQuote(
-          isIssuance,
+        await getEnhancedFlashMintZeroExQuote(
+          isMinting,
           inputTokenAddress,
           outputTokenAddress,
           inputTokenBalance,

@@ -13,7 +13,7 @@ import { getAddressForToken } from 'utils/tokens'
 
 import { useIssuanceQuote } from './issuance/useIssuanceQuote'
 import { getEILeveragedQuote } from './useBestQuote/exchangeIssuanceLeveraged'
-import { getEIZeroExQuote } from './useBestQuote/exchangeIssuanceZeroEx'
+import { getEnhancedFlashMintZeroExQuote } from './useBestQuote/exchangeIssuanceZeroEx'
 import {
   ExchangeIssuanceLeveragedQuote,
   ExchangeIssuanceZeroExQuote,
@@ -134,7 +134,7 @@ export const useFlashMintQuote = () => {
 
       const inputTokenBalance =
         getBalance(inputToken.symbol) ?? BigNumber.from(0)
-      flashMintZeroExQuote = await getEIZeroExQuote(
+      flashMintZeroExQuote = await getEnhancedFlashMintZeroExQuote(
         isMinting,
         inputTokenAddress,
         outputTokenAddress,

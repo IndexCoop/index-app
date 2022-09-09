@@ -50,9 +50,9 @@ export const useTrade = () => {
       setZeroExQuote(quote)
 
       const inputToken = quote.inputToken
-      const inputTokenAmount = quote.isIssuance
+      const inputTokenAmount = quote.isMinting
         ? quote.inputOutputTokenAmount
-        : quote.setTokenAmount
+        : quote.indexTokenAmount
 
       let requiredBalance = fromWei(
         BigNumber.from(inputTokenAmount),

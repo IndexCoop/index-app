@@ -50,12 +50,12 @@ export const isEligibleTradePair = (
 }
 
 export async function getEILeveragedQuote(
-  isIssuance: boolean,
+  isMinting: boolean,
   inputTokenAddress: string,
   outputTokenAddress: string,
   sellToken: Token,
   buyToken: Token,
-  setTokenAmount: BigNumber,
+  indexTokenAmount: BigNumber,
   sellTokenPrice: number,
   nativeTokenPrice: number,
   gasPrice: BigNumber,
@@ -67,7 +67,7 @@ export async function getEILeveragedQuote(
   const tokenEligibleForLeveragedEI = isEligibleTradePair(
     sellToken,
     buyToken,
-    isIssuance
+    isMinting
   )
   if (!tokenEligibleForLeveragedEI) return null
 
@@ -86,8 +86,8 @@ export async function getEILeveragedQuote(
     const quoteLeveraged = await getFlashMintLeveragedQuote(
       inputToken,
       outputToken,
-      setTokenAmount,
-      isIssuance,
+      indexTokenAmount,
+      isMinting,
       slippage,
       zeroExApi,
       provider,
@@ -97,7 +97,7 @@ export async function getEILeveragedQuote(
       const gasLimit = BigNumber.from(1800000)
       return {
         type: QuoteType.exchangeIssuanceLeveraged,
-        isIssuance,
+        isMinting,
         inputToken: sellToken,
         outputToken: buyToken,
         gas: gasLimit,
@@ -111,7 +111,7 @@ export async function getEILeveragedQuote(
           nativeTokenPrice
         ),
         priceImpact: 0,
-        setTokenAmount,
+        indexTokenAmount,
         inputOutputTokenAmount: quoteLeveraged.inputOutputTokenAmount,
         // type specific properties
         swapDataDebtCollateral: quoteLeveraged.swapDataDebtCollateral,

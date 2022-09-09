@@ -1,2 +1,2 @@
-export const DefaultGasLimitExchangeIssuanceLeveraged = 1800000
-export const DefaultGasLimitExchangeIssuanceZeroEx = 5000000
+export const DefaultGasLimitFlashMintLeveraged = 1800000
+export const DefaultGasLimitFlashMintZeroEx = 5000000
