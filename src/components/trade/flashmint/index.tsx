@@ -30,14 +30,18 @@ import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getNativeToken, isNotTradableToken } from 'utils/tokens'
 
-import DirectIssuance from './DirectIssuance'
-import { QuickTradeProps } from './QuickTrade'
+import { TradeButtonContainer } from '../_shared/footer'
 import {
   formattedBalance,
   getHasInsufficientFunds,
-} from './QuickTradeFormatter'
-import { getSelectTokenListItems, SelectTokenModal } from './SelectTokenModal'
-import { TradeButtonContainer } from './TradeButtonContainer'
+} from '../_shared/QuickTradeFormatter'
+import {
+  getSelectTokenListItems,
+  SelectTokenModal,
+} from '../_shared/SelectTokenModal'
+import { QuickTradeProps } from '../swap'
+
+import DirectIssuance from './DirectIssuance'
 
 const FlashMint = (props: QuickTradeProps) => {
   const { address } = useWallet()

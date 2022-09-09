@@ -4,7 +4,7 @@ import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
 import { Token } from 'constants/tokens'
 
-import QuickTradeSelector from './QuickTradeSelector'
+import QuickTradeSelector from '../_shared/QuickTradeSelector'
 
 type DirectIssuanceProps = {
   indexToken: Token

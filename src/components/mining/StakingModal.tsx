@@ -12,8 +12,9 @@ import {
 } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import TokenInput from 'components/trade/TokenInput'
 import { displayFromWei } from 'utils'
+
+import TokenInput from './TokenInput'
 
 type StakeModalProps = {
   isOpen: boolean

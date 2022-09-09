@@ -8,9 +8,9 @@ import { useNetwork } from 'hooks/useNetwork'
 import { SlippageProvider, useSlippage } from 'providers/Slippage'
 import { isTokenAvailableForFlashMint } from 'utils/tokens'
 
-import FlashMint from './FlashMint'
-import QuickTrade, { QuickTradeProps } from './QuickTrade'
-import { QuickTradeSettingsPopover } from './QuickTradeSettingsPopover'
+import { QuickTradeSettingsPopover } from './_shared/QuickTradeSettingsPopover'
+import FlashMint from './flashmint'
+import QuickTrade, { QuickTradeProps } from './swap'
 
 enum TradeType {
   flashMint,
@@ -34,6 +34,10 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
     }
   }
 
+  const onSwitchTabs = () => {
+    setSelectedType(TradeType.flashMint)
+  }
+
   return (
     <SlippageProvider>
       <Flex
@@ -53,7 +57,9 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
           shouldShowFlashMintOption={shouldShowFlashMintOption}
         />
         {selectedType === TradeType.flashMint && <FlashMint {...props} />}
-        {selectedType === TradeType.swap && <QuickTrade {...props} />}
+        {selectedType === TradeType.swap && (
+          <QuickTrade {...props} switchTabs={onSwitchTabs} />
+        )}
       </Flex>
     </SlippageProvider>
   )

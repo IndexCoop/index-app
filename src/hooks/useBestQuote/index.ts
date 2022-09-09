@@ -63,14 +63,20 @@ export interface ZeroExQuote extends Quote {
 }
 
 type QuoteResult = {
-  bestQuote: QuoteType
   error: Error | null
+  quotes: {
+    zeroEx: ZeroExQuote | null
+  }
+}
+
+type MoreQuotesResult = {
+  hasBetterQuote: boolean
+  isReasonPriceImpact: boolean
   quotes: {
     exchangeIssuanceLeveraged: ExchangeIssuanceLeveragedQuote | null
     exchangeIssuanceZeroEx: ExchangeIssuanceZeroExQuote | null
-    zeroEx: ZeroExQuote | null
   }
-  success: boolean
+  savingsUsd: number
 }
 
 // To determine if price impact for DEX is smaller 5%
@@ -81,9 +87,9 @@ export function getBestQuote(
   fullCostsEI: number | null,
   fullCostsLevEI: number | null,
   priceImpactDex: number
-): QuoteType {
+): { type: QuoteType; priceImpact: boolean } {
   if (fullCostsEI === null && fullCostsLevEI === null) {
-    return QuoteType.zeroEx
+    return { type: QuoteType.zeroEx, priceImpact: false }
   }
 
   const quotes: any[][] = []
@@ -99,7 +105,7 @@ export function getBestQuote(
   const cheapestQuotes = quotes.sort((q1, q2) => q1[1] - q2[1])
 
   if (cheapestQuotes.length <= 0) {
-    return QuoteType.zeroEx
+    return { type: QuoteType.zeroEx, priceImpact: false }
   }
 
   const cheapestQuote = cheapestQuotes[0]
@@ -107,16 +113,16 @@ export function getBestQuote(
 
   // If only one quote, return best option immediately
   if (cheapestQuotes.length === 1) {
-    return bestOption
+    return { type: bestOption, priceImpact: false }
   }
 
   // If multiple quotes, check price impact of 0x option
   if (bestOption === QuoteType.zeroEx && priceImpactDex >= maxPriceImpact) {
     // In case price impact is too high, return cheapest exchange issuance
-    return cheapestQuotes[1][0]
+    return { type: cheapestQuotes[1][0], priceImpact: true }
   }
 
-  return bestOption
+  return { type: bestOption, priceImpact: false }
 }
 
 export const getSetTokenAmount = (
@@ -150,14 +156,10 @@ export const getSetTokenAmount = (
 }
 
 const defaultQuoteResult: QuoteResult = {
-  bestQuote: QuoteType.notAvailable,
   error: null,
   quotes: {
-    exchangeIssuanceLeveraged: null,
-    exchangeIssuanceZeroEx: null,
     zeroEx: null,
   },
-  success: false,
 }
 
 export const useBestQuote = () => {
@@ -168,8 +170,20 @@ export const useBestQuote = () => {
   const chainId = chain?.id ?? 1
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
+  const [isFetchingMoreOptions, setIsFetchingMoreOptions] =
+    useState<boolean>(false)
   const [quoteResult, setQuoteResult] =
     useState<QuoteResult>(defaultQuoteResult)
+  const [quoteResultOptions, setQuoteResultOptions] =
+    useState<MoreQuotesResult>({
+      hasBetterQuote: false,
+      isReasonPriceImpact: false,
+      quotes: {
+        exchangeIssuanceLeveraged: null,
+        exchangeIssuanceZeroEx: null,
+      },
+      savingsUsd: 0,
+    })
 
   /**
    *
@@ -254,102 +268,144 @@ export const useBestQuote = () => {
         }
       : null
 
-    // /* Determine Set token amount based on different factors */
-    // let setTokenAmount = getSetTokenAmount(
-    //   isIssuance,
-    //   sellTokenAmount,
-    //   sellToken.decimals,
-    //   sellTokenPrice,
-    //   buyTokenPrice,
-    //   dexSwapOption
-    // )
-    //
-    // const gasStation = new GasStation(provider)
-    // const gasPrice = await gasStation.getGasPrice()
-    //
-    // // Create an instance of ZeroExApi (to pass to quote functions)
-    // const affilliateAddress = '0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF'
-    // const networkKey = getNetworkKey(chainId)
-    // const swapPathOverride = `/${networkKey}/swap/v1/quote`
-    // const zeroExApi = new ZeroExApi(
-    //   `${IndexApiBaseUrl}/0x`,
-    //   affilliateAddress,
-    //   { 'X-INDEXCOOP-API-KEY': process.env.REACT_APP_INDEX_COOP_API! },
-    //   swapPathOverride
-    // )
-    //
-    // const exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
-    //   await getEILeveragedQuote(
-    //     isIssuance,
-    //     inputTokenAddress,
-    //     outputTokenAddress,
-    //     sellToken,
-    //     buyToken,
-    //     setTokenAmount,
-    //     sellTokenPrice,
-    //     nativeTokenPrice,
-    //     gasPrice,
-    //     slippage,
-    //     chainId,
-    //     provider,
-    //     zeroExApi
-    //   )
-    //
-    // const inputTokenBalance = getBalance(sellToken.symbol) ?? BigNumber.from(0)
-    // const exchangeIssuanceZeroExQuote: ExchangeIssuanceZeroExQuote | null =
-    //   await getEIZeroExQuote(
-    //     isIssuance,
-    //     inputTokenAddress,
-    //     outputTokenAddress,
-    //     inputTokenBalance,
-    //     sellToken,
-    //     buyToken,
-    //     setTokenAmount,
-    //     sellTokenPrice,
-    //     nativeTokenPrice,
-    //     gasPrice,
-    //     slippage,
-    //     chainId,
-    //     provider,
-    //     zeroExApi,
-    //     signer
-    //   )
-    //
-    // console.log('////////')
-    // console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
-    // console.log(
-    //   'exchangeIssuanceLeveragedQuote',
-    //   exchangeIssuanceLeveragedQuote
-    // )
+    const fetchAndCompareMoreOptions = async () => {
+      setIsFetchingMoreOptions(true)
 
-    const success =
-      // exchangeIssuanceLeveragedQuote !== null ||
-      // exchangeIssuanceZeroExQuote !== null ||
-      zeroExQuote !== null
+      /* Determine Set token amount based on different factors */
+      let setTokenAmount = getSetTokenAmount(
+        isIssuance,
+        sellTokenAmount,
+        sellToken.decimals,
+        sellTokenPrice,
+        buyTokenPrice,
+        dexSwapOption
+      )
 
-    console.log(
-      zeroExQuote?.fullCostsInUsd ?? null,
-      // exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
-      // exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
-      'FC'
-    )
+      const gasStation = new GasStation(provider)
+      const gasPrice = await gasStation.getGasPrice()
 
-    const bestQuote = getBestQuote(
-      zeroExQuote?.fullCostsInUsd ?? null,
-      null,
-      null,
-      zeroExQuote?.priceImpact ?? 5
-    )
+      // Create an instance of ZeroExApi (to pass to quote functions)
+      const affilliateAddress = '0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF'
+      const networkKey = getNetworkKey(chainId)
+      const swapPathOverride = `/${networkKey}/swap/v1/quote`
+      const zeroExApi = new ZeroExApi(
+        `${IndexApiBaseUrl}/0x`,
+        affilliateAddress,
+        { 'X-INDEXCOOP-API-KEY': process.env.REACT_APP_INDEX_COOP_API! },
+        swapPathOverride
+      )
 
-    console.log('success', success, bestQuote)
+      const exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
+        await getEILeveragedQuote(
+          isIssuance,
+          inputTokenAddress,
+          outputTokenAddress,
+          sellToken,
+          buyToken,
+          setTokenAmount,
+          sellTokenPrice,
+          nativeTokenPrice,
+          gasPrice,
+          slippage,
+          chainId,
+          provider,
+          zeroExApi
+        )
+
+      const inputTokenBalance =
+        getBalance(sellToken.symbol) ?? BigNumber.from(0)
+      const exchangeIssuanceZeroExQuote: ExchangeIssuanceZeroExQuote | null =
+        await getEIZeroExQuote(
+          isIssuance,
+          inputTokenAddress,
+          outputTokenAddress,
+          inputTokenBalance,
+          sellToken,
+          buyToken,
+          setTokenAmount,
+          sellTokenPrice,
+          nativeTokenPrice,
+          gasPrice,
+          slippage,
+          chainId,
+          provider,
+          zeroExApi,
+          signer
+        )
+
+      console.log('////////')
+      console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
+      console.log(
+        'exchangeIssuanceLeveragedQuote',
+        exchangeIssuanceLeveragedQuote
+      )
+
+      console.log(
+        zeroExQuote?.fullCostsInUsd ?? null,
+        exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
+        exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
+        'FC'
+      )
+
+      const bestQuote = getBestQuote(
+        zeroExQuote?.fullCostsInUsd ?? null,
+        exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
+        exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
+        zeroExQuote?.priceImpact ?? 5
+      )
+
+      const isFlashMintLeveragedBestQuote =
+        bestQuote.type === QuoteType.exchangeIssuanceLeveraged
+      const isFlashMintZeroExBestQuote =
+        bestQuote.type === QuoteType.exchangeIssuanceZeroEx
+      const isReasonPriceImpact = bestQuote.priceImpact
+
+      const hasBetterQuote =
+        isFlashMintLeveragedBestQuote || isFlashMintZeroExBestQuote
+
+      const getSavings = (): number => {
+        if (!zeroExQuote) return 0
+        if (isFlashMintLeveragedBestQuote && exchangeIssuanceLeveragedQuote) {
+          return (
+            (zeroExQuote.fullCostsInUsd ?? 0) -
+            (exchangeIssuanceLeveragedQuote.fullCostsInUsd ?? 0)
+          )
+        }
+        if (isFlashMintZeroExBestQuote && exchangeIssuanceZeroExQuote) {
+          return (
+            (zeroExQuote.fullCostsInUsd ?? 0) -
+            (exchangeIssuanceZeroExQuote.fullCostsInUsd ?? 0)
+          )
+        }
+        return 0
+      }
+
+      const savingsUsd = getSavings()
+
+      const quoteResult: MoreQuotesResult = {
+        hasBetterQuote,
+        isReasonPriceImpact,
+        quotes: {
+          exchangeIssuanceLeveraged: isFlashMintLeveragedBestQuote
+            ? exchangeIssuanceLeveragedQuote
+            : null,
+          exchangeIssuanceZeroEx: isFlashMintZeroExBestQuote
+            ? exchangeIssuanceZeroExQuote
+            : null,
+        },
+        savingsUsd,
+      }
+
+      setQuoteResultOptions(quoteResult)
+      setIsFetchingMoreOptions(false)
+    }
+
+    // The individual Flash Mint functions will check if the the token pair is eligible
+    fetchAndCompareMoreOptions()
 
     const quoteResult: QuoteResult = {
-      success,
       error: dexSwapError,
-      bestQuote,
       quotes: {
-        exchangeIssuanceLeveraged: null,
-        exchangeIssuanceZeroEx: null,
         zeroEx: zeroExQuote,
       },
     }
@@ -360,7 +416,9 @@ export const useBestQuote = () => {
 
   return {
     fetchAndCompareOptions,
-    isFetchingTradeData: isFetching,
+    isFetchingZeroEx: isFetching,
+    isFetchingMoreOptions,
     quoteResult,
+    quoteResultOptions,
   }
 }
