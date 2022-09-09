@@ -21,12 +21,12 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/api/sentry'
-import { getFlashMintZeroExGasEstimate } from 'utils/exchangeIssuanceGasEstimate'
+import { getFlashMintZeroExGasEstimate } from 'utils/flashMintZeroExGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalances } from './useBalance'
 
-export const useTradeExchangeIssuance = () => {
+export const useTradeFlashMintZeroEx = () => {
   const { address, signer } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
