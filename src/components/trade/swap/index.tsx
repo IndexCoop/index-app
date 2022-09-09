@@ -451,7 +451,7 @@ const QuickTrade = (props: QuickTradeProps) => {
             if (inputTokenItems.length > 1) onOpenSelectInputToken()
           }}
         />
-        <Box h='12px' alignSelf={'flex-end'} m={'-12px 0 12px 0'}>
+        <Box h='12px' alignSelf={'center'} m={'4px'}>
           <IconButton
             background='transparent'
             margin={'6px 0'}
