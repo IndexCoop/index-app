@@ -4,8 +4,8 @@ import { getFlashMintZeroExQuote, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from 'constants/chains'
 import { icETHIndex, IndexToken, Token } from 'constants/tokens'
-import { getFlashMintZeroExGasEstimate } from 'utils/flashMintZeroExGasEstimate'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { getFlashMintZeroExGasEstimate } from 'utils/flashMintZeroExGasEstimate'
 
 import { ExchangeIssuanceZeroExQuote, QuoteType } from './'
 
