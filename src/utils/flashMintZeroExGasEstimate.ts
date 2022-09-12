@@ -37,13 +37,13 @@ export async function getFlashMintZeroExGasEstimate(
   inputOutputTokenAmount: BigNumber,
   inputTokenBalance: BigNumber,
   componentQuotes: string[],
+  provider: any,
   signer: any,
   chainId: number,
   canFail: boolean = true
 ): Promise<BigNumber> {
-  console.log('ESTIMATINGGAS')
-  // Return default - as we can't fetch an estimate without a signer
-  if (!signer) return defaultGasEstimate
+  // Return default - as we can't fetch an estimate without a provider or signer
+  if (!provider || !signer) return defaultGasEstimate
 
   // Return default - as this would otherwise throw an error
   if (isMinting && inputOutputTokenAmount.gt(inputTokenBalance))
@@ -61,8 +61,9 @@ export async function getFlashMintZeroExGasEstimate(
   if (!outputTokenAddress || !inputTokenAddress) return gasEstimate
 
   try {
+    const block = await provider.getBlock()
+    const gasLimitLastBlock = block.gasLimit
     const contract = getFlashMintZeroExContract(signer, chainId ?? 1)
-
     if (isMinting) {
       const isSellingNativeChainToken = isNativeCurrency(inputToken, chainId)
       if (isSellingNativeChainToken) {
@@ -72,7 +73,7 @@ export async function getFlashMintZeroExGasEstimate(
           componentQuotes,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
-          { value: inputOutputTokenAmount, gasLimit: gasEstimate }
+          { value: inputOutputTokenAmount, gasLimit: gasLimitLastBlock }
         )
       } else {
         const maxAmountInputToken = inputOutputTokenAmount
@@ -84,7 +85,7 @@ export async function getFlashMintZeroExGasEstimate(
           componentQuotes,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
-          { gasLimit: gasEstimate }
+          { gasLimit: gasLimitLastBlock }
         )
       }
     } else {
@@ -99,7 +100,7 @@ export async function getFlashMintZeroExGasEstimate(
           componentQuotes,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
-          { gasLimit: gasEstimate }
+          { gasLimit: gasLimitLastBlock }
         )
       } else {
         gasEstimate = await contract.estimateGas.redeemExactSetForToken(
@@ -111,9 +112,7 @@ export async function getFlashMintZeroExGasEstimate(
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
           {
-            gasLimit: gasEstimate,
-            maxFeePerGas: 100000000000,
-            maxPriorityFeePerGas: 2000000000,
+            gasLimit: gasLimitLastBlock,
           }
         )
       }
@@ -126,7 +125,6 @@ export async function getFlashMintZeroExGasEstimate(
     return defaultGasEstimate
   }
 
-  console.log('GASESTIMATE-BEFOREMARGIN', gasEstimate.toString())
   // Add safety margin on top of estimate
   gasEstimate = gasEstimate.mul(100 + defaultGasMargin).div(100)
 

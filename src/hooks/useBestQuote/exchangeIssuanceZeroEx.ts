@@ -85,6 +85,7 @@ export async function getEnhancedFlashMintZeroExQuote(
         quote0x.inputOutputTokenAmount,
         spendingTokenBalance,
         quote0x.componentQuotes,
+        provider,
         signer,
         chainId,
         canFail
