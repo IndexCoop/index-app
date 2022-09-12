@@ -8,7 +8,6 @@ import { DefaultGasLimitFlashMintZeroEx } from 'constants/gas'
 import { Token } from 'constants/tokens'
 import { getAddressForToken, isNativeCurrency } from 'utils/tokens'
 
-// TODO: check scaling based on component counts (quoteData)
 const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
 // Default gas margin to add on top of estimate
 const defaultGasMargin = 20
