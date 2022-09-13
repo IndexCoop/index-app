@@ -9,7 +9,6 @@ import {
   getFlashMintLeveragedContract,
 } from '@indexcoop/flash-mint-sdk'
 
-import { DefaultGasLimitFlashMintLeveraged } from 'constants/gas'
 import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceLeveragedQuote } from 'hooks/useBestQuote'
 import { useWallet } from 'hooks/useWallet'
@@ -20,14 +19,13 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/api/sentry'
+import { getFlashMintLeveragedGasEstimate } from 'utils/flashMintLeveragedGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalances } from './useBalance'
 
-const gasLimit = BigNumber.from(DefaultGasLimitFlashMintLeveraged)
-
 export const useTradeLeveragedExchangeIssuance = () => {
-  const { address, signer } = useWallet()
+  const { address, provider, signer } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
   const chainId = chain?.id
@@ -36,12 +34,12 @@ export const useTradeLeveragedExchangeIssuance = () => {
 
   const executeLevEITrade = useCallback(
     async (quote: ExchangeIssuanceLeveragedQuote | null, slippage: number) => {
-      if (!address || !quote) return
+      if (!address || !chainId || !quote) return
 
       const isMinting = quote.isMinting
       const inputToken = quote.inputToken
       const outputToken = quote.outputToken
-      const setTokenAmount = quote.indexTokenAmount
+      const indexTokenAmount = quote.indexTokenAmount
       const inputOutputTokenAmount = quote.inputOutputTokenAmount
       const swapDataDebtCollateral = quote.swapDataDebtCollateral
       const swapDataInputOutputToken = quote.swapDataPaymentToken
@@ -63,6 +61,22 @@ export const useTradeLeveragedExchangeIssuance = () => {
 
       try {
         setIsTransacting(true)
+
+        // Will throw error if tx would fail
+        const gasLimit = await getFlashMintLeveragedGasEstimate(
+          isMinting,
+          inputToken,
+          outputToken,
+          indexTokenAmount,
+          quote.inputOutputTokenAmount,
+          spendingTokenBalance,
+          quote.swapDataDebtCollateral,
+          quote.swapDataPaymentToken,
+          provider,
+          signer,
+          chainId
+        )
+
         if (isMinting) {
           const isSellingNativeChainToken =
             inputToken.symbol === ETH.symbol ||
@@ -73,35 +87,31 @@ export const useTradeLeveragedExchangeIssuance = () => {
               exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
               function: CaptureExchangeIssuanceFunctionKey.issueEth,
               setToken: outputTokenAddress,
-              setAmount: setTokenAmount.toString(),
+              setAmount: indexTokenAmount.toString(),
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
             const mintTx = await flashMint.mintExactSetFromETH(
               outputTokenAddress,
-              setTokenAmount,
+              indexTokenAmount,
               swapDataDebtCollateral,
               swapDataInputOutputToken,
               inputOutputTokenAmount,
               { gasLimit }
             )
             logTx('LevEI', mintTx)
-            // if (mintTx) {
-            //   const storedTx = getStoredTransaction(mintTx, chain?.id)
-            //   addTransaction(storedTx)
-            // }
           } else {
             captureTransaction({
               exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
               function: CaptureExchangeIssuanceFunctionKey.issueErc20,
               setToken: outputTokenAddress,
-              setAmount: setTokenAmount.toString(),
+              setAmount: indexTokenAmount.toString(),
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
             const mintTx = await flashMint.mintExactSetFromERC20(
               outputTokenAddress,
-              setTokenAmount,
+              indexTokenAmount,
               inputTokenAddress,
               inputOutputTokenAmount,
               swapDataDebtCollateral,
@@ -109,10 +119,6 @@ export const useTradeLeveragedExchangeIssuance = () => {
               { gasLimit }
             )
             logTx('LevEI', mintTx)
-            // if (mintTx) {
-            //   const storedTx = getStoredTransaction(mintTx, chain?.id)
-            //   addTransaction(storedTx)
-            // }
           }
         } else {
           const isRedeemingToNativeChainToken =
@@ -124,56 +130,46 @@ export const useTradeLeveragedExchangeIssuance = () => {
               exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
               function: CaptureExchangeIssuanceFunctionKey.redeemEth,
               setToken: inputTokenAddress,
-              setAmount: setTokenAmount.toString(),
+              setAmount: indexTokenAmount.toString(),
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
             const redeemTx = await flashMint.redeemExactSetForETH(
               inputTokenAddress,
-              setTokenAmount,
+              indexTokenAmount,
               inputOutputTokenAmount,
               swapDataDebtCollateral,
               swapDataInputOutputToken,
               { gasLimit }
             )
             logTx('LevEI', redeemTx)
-            // if (redeemTx) {
-            //   const storedTx = getStoredTransaction(redeemTx, chain?.id)
-            //   addTransaction(storedTx)
-            // }
           } else {
             captureTransaction({
               exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
               function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
               setToken: inputTokenAddress,
-              setAmount: setTokenAmount.toString(),
+              setAmount: indexTokenAmount.toString(),
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
             const redeemTx = await flashMint.redeemExactSetForERC20(
               inputTokenAddress,
-              setTokenAmount,
+              indexTokenAmount,
               outputTokenAddress,
               inputOutputTokenAmount,
               swapDataDebtCollateral,
               swapDataInputOutputToken,
               {
                 gasLimit,
-                maxFeePerGas: BigNumber.from(100000000000),
-                maxPriorityFeePerGas: BigNumber.from(2000000000),
               }
             )
             logTx('LevEI', redeemTx)
-            // if (redeemTx) {
-            //   const storedTx = getStoredTransaction(redeemTx, chain?.id)
-            //   addTransaction(storedTx)
-            // }
           }
         }
         setIsTransacting(false)
       } catch (error) {
         setIsTransacting(false)
-        console.log('Error sending transaction', error)
+        console.log('Error sending FlashMintLeveraged transaction', error)
       }
     },
     [address, signer]

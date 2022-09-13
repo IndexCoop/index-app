@@ -20,7 +20,7 @@ import { getAddressForToken } from 'utils/tokens'
 
 import { useWallet } from '../useWallet'
 
-import { getEILeveragedQuote } from './exchangeIssuanceLeveraged'
+import { getEnhancedFlashMintLeveragedQuote } from './exchangeIssuanceLeveraged'
 import { getEnhancedFlashMintZeroExQuote } from './exchangeIssuanceZeroEx'
 
 export enum QuoteType {
@@ -272,7 +272,7 @@ export const useBestQuote = () => {
       setIsFetchingMoreOptions(true)
 
       /* Determine Set token amount based on different factors */
-      let setTokenAmount = getSetTokenAmount(
+      let indexTokenAmount = getSetTokenAmount(
         isMinting,
         sellTokenAmount,
         sellToken.decimals,
@@ -295,25 +295,27 @@ export const useBestQuote = () => {
         swapPathOverride
       )
 
+      const inputTokenBalance =
+        getBalance(sellToken.symbol) ?? BigNumber.from(0)
+
       const exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
-        await getEILeveragedQuote(
+        await getEnhancedFlashMintLeveragedQuote(
           isMinting,
           inputTokenAddress,
           outputTokenAddress,
+          inputTokenBalance,
           sellToken,
           buyToken,
-          setTokenAmount,
+          indexTokenAmount,
           sellTokenPrice,
           nativeTokenPrice,
           gasPrice,
           slippage,
           chainId,
           provider,
-          zeroExApi
+          zeroExApi,
+          signer
         )
-
-      const inputTokenBalance =
-        getBalance(sellToken.symbol) ?? BigNumber.from(0)
       const exchangeIssuanceZeroExQuote: ExchangeIssuanceZeroExQuote | null =
         await getEnhancedFlashMintZeroExQuote(
           isMinting,
@@ -322,7 +324,7 @@ export const useBestQuote = () => {
           inputTokenBalance,
           sellToken,
           buyToken,
-          setTokenAmount,
+          indexTokenAmount,
           sellTokenPrice,
           nativeTokenPrice,
           gasPrice,
