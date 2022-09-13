@@ -21,8 +21,8 @@ import {
   useFlashMintQuote,
 } from 'hooks/useFlashMintQuote'
 import { useNetwork } from 'hooks/useNetwork'
-import { useTradeExchangeIssuance } from 'hooks/useTradeExchangeIssuance'
-import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
+import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeFlashMintLeveraged'
+import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useSlippage } from 'providers/Slippage'
@@ -57,7 +57,7 @@ const FlashMint = (props: QuickTradeProps) => {
     onOpen: onOpenIndexTokenModal,
     onClose: onCloseIndexTokenModal,
   } = useDisclosure()
-  const { executeEITrade, isTransactingEI } = useTradeExchangeIssuance()
+  const { executeEITrade, isTransactingEI } = useTradeFlashMintZeroEx()
   const { executeLevEITrade, isTransactingLevEI } =
     useTradeLeveragedExchangeIssuance()
   const {

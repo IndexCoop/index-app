@@ -12,8 +12,8 @@ import { getNetworkKey } from 'utils/api/zeroExUtils'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useIssuanceQuote } from './issuance/useIssuanceQuote'
-import { getEILeveragedQuote } from './useBestQuote/exchangeIssuanceLeveraged'
-import { getEIZeroExQuote } from './useBestQuote/exchangeIssuanceZeroEx'
+import { getEnhancedFlashMintLeveragedQuote } from './useBestQuote/exchangeIssuanceLeveraged'
+import { getEnhancedFlashMintZeroExQuote } from './useBestQuote/exchangeIssuanceZeroEx'
 import {
   ExchangeIssuanceLeveragedQuote,
   ExchangeIssuanceZeroExQuote,
@@ -116,10 +116,14 @@ export const useFlashMintQuote = () => {
         swapPathOverride
       )
 
-      flashMintLeveragedQuote = await getEILeveragedQuote(
+      const inputTokenBalance =
+        getBalance(inputToken.symbol) ?? BigNumber.from(0)
+
+      flashMintLeveragedQuote = await getEnhancedFlashMintLeveragedQuote(
         isMinting,
         inputTokenAddress,
         outputTokenAddress,
+        inputTokenBalance,
         inputToken,
         outputToken,
         indexTokenAmount,
@@ -129,12 +133,11 @@ export const useFlashMintQuote = () => {
         slippage,
         chainId,
         provider,
-        zeroExApi
+        zeroExApi,
+        signer
       )
 
-      const inputTokenBalance =
-        getBalance(inputToken.symbol) ?? BigNumber.from(0)
-      flashMintZeroExQuote = await getEIZeroExQuote(
+      flashMintZeroExQuote = await getEnhancedFlashMintZeroExQuote(
         isMinting,
         inputTokenAddress,
         outputTokenAddress,

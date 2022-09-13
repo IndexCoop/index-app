@@ -74,6 +74,12 @@ export function getNativeToken(chainId: number | undefined): Token | null {
   }
 }
 
+export const isNativeCurrency = (token: Token, chainId: number): Boolean => {
+  const nativeCurrency = getNativeToken(chainId)
+  if (!nativeCurrency) return false
+  return token.symbol === nativeCurrency.symbol
+}
+
 export const isNotTradableToken = (
   token: Token | undefined,
   chainId: number | undefined

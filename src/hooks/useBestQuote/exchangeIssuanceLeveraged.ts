@@ -13,6 +13,7 @@ import {
   Token,
 } from 'constants/tokens'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { getFlashMintLeveragedGasEstimate } from 'utils/flashMintLeveragedGasEstimate'
 
 import { ExchangeIssuanceLeveragedQuote, QuoteType } from './'
 
@@ -49,25 +50,27 @@ export const isEligibleTradePair = (
   return tokenEligible
 }
 
-export async function getEILeveragedQuote(
-  isIssuance: boolean,
+export async function getEnhancedFlashMintLeveragedQuote(
+  isMinting: boolean,
   inputTokenAddress: string,
   outputTokenAddress: string,
+  inputTokenBalance: BigNumber,
   sellToken: Token,
   buyToken: Token,
-  setTokenAmount: BigNumber,
+  indexTokenAmount: BigNumber,
   sellTokenPrice: number,
   nativeTokenPrice: number,
   gasPrice: BigNumber,
   slippage: number,
   chainId: number,
   provider: JsonRpcProvider,
-  zeroExApi: ZeroExApi
+  zeroExApi: ZeroExApi,
+  signer: any
 ): Promise<ExchangeIssuanceLeveragedQuote | null> {
   const tokenEligibleForLeveragedEI = isEligibleTradePair(
     sellToken,
     buyToken,
-    isIssuance
+    isMinting
   )
   if (!tokenEligibleForLeveragedEI) return null
 
@@ -86,32 +89,48 @@ export async function getEILeveragedQuote(
     const quoteLeveraged = await getFlashMintLeveragedQuote(
       inputToken,
       outputToken,
-      setTokenAmount,
-      isIssuance,
+      indexTokenAmount,
+      isMinting,
       slippage,
       zeroExApi,
       provider,
       chainId ?? 1
     )
     if (quoteLeveraged) {
-      const gasLimit = BigNumber.from(1800000)
+      // We don't want this function to fail for estimates here.
+      // A default will be returned if the tx would fail.
+      const canFail = false
+      const gasEstimate = await getFlashMintLeveragedGasEstimate(
+        isMinting,
+        sellToken,
+        buyToken,
+        indexTokenAmount,
+        quoteLeveraged.inputOutputTokenAmount,
+        inputTokenBalance,
+        quoteLeveraged.swapDataDebtCollateral,
+        quoteLeveraged.swapDataPaymentToken,
+        provider,
+        signer,
+        chainId,
+        canFail
+      )
       return {
         type: QuoteType.exchangeIssuanceLeveraged,
-        isIssuance,
+        isMinting,
         inputToken: sellToken,
         outputToken: buyToken,
-        gas: gasLimit,
+        gas: gasEstimate,
         gasPrice,
-        gasCosts: gasLimit.mul(gasPrice),
+        gasCosts: gasEstimate.mul(gasPrice),
         fullCostsInUsd: getFullCostsInUsd(
           quoteLeveraged.inputOutputTokenAmount,
-          gasLimit.mul(gasPrice),
+          gasEstimate.mul(gasPrice),
           sellToken.decimals,
           sellTokenPrice,
           nativeTokenPrice
         ),
         priceImpact: 0,
-        setTokenAmount,
+        indexTokenAmount,
         inputOutputTokenAmount: quoteLeveraged.inputOutputTokenAmount,
         // type specific properties
         swapDataDebtCollateral: quoteLeveraged.swapDataDebtCollateral,
@@ -119,7 +138,7 @@ export async function getEILeveragedQuote(
       }
     }
   } catch (e) {
-    console.warn('Error generating quote from EILeveraged', e)
+    console.warn('Error generating quote from FlashMintLeveraged', e)
   }
   return null
 }

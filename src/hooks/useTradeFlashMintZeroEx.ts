@@ -21,12 +21,13 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/api/sentry'
+import { getFlashMintZeroExGasEstimate } from 'utils/flashMintZeroExGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalances } from './useBalance'
 
-export const useTradeExchangeIssuance = () => {
-  const { address, signer } = useWallet()
+export const useTradeFlashMintZeroEx = () => {
+  const { address, provider, signer } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
   const chainId = chain?.id
@@ -35,12 +36,12 @@ export const useTradeExchangeIssuance = () => {
 
   const executeEITrade = useCallback(
     async (quote: ExchangeIssuanceZeroExQuote | null, slippage: number) => {
-      if (!address || !quote) return
+      if (!address || !chainId || !quote) return
 
-      const isIssuance = quote.isIssuance
+      const isMinting = quote.isMinting
       const inputToken = quote.inputToken
       const outputToken = quote.outputToken
-      const setTokenAmount = quote.setTokenAmount
+      const indexTokenAmount = quote.indexTokenAmount
       const inputOutputTokenAmount = quote.inputOutputTokenAmount
       const gasLimit = quote.gas
       const componentQuotes = quote.componentQuotes
@@ -49,7 +50,7 @@ export const useTradeExchangeIssuance = () => {
       const inputTokenAddress = getAddressForToken(inputToken, chainId)
       if (!outputTokenAddress || !inputTokenAddress) return
 
-      const setTokenSymbol = isIssuance ? outputToken.symbol : inputToken.symbol
+      const setTokenSymbol = isMinting ? outputToken.symbol : inputToken.symbol
       const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
 
       const spendingTokenBalance =
@@ -66,7 +67,22 @@ export const useTradeExchangeIssuance = () => {
       try {
         setIsTransacting(true)
 
-        if (isIssuance) {
+        // Will throw error if tx would fail
+        const gasEstimate = await getFlashMintZeroExGasEstimate(
+          isMinting,
+          inputToken,
+          outputToken,
+          indexTokenAmount,
+          inputOutputTokenAmount,
+          spendingTokenBalance,
+          componentQuotes,
+          provider,
+          signer,
+          chainId
+        )
+        console.log('gasEstimate for trade', gasEstimate.toString())
+
+        if (isMinting) {
           const isSellingNativeChainToken =
             inputToken.symbol === ETH.symbol ||
             inputToken.symbol === MATIC.symbol
@@ -76,13 +92,13 @@ export const useTradeExchangeIssuance = () => {
               exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
               function: CaptureExchangeIssuanceFunctionKey.issueEth,
               setToken: outputTokenAddress,
-              setAmount: setTokenAmount.toString(),
+              setAmount: indexTokenAmount.toString(),
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
             const mintTx = await flashMint.mintExactSetFromETH(
               outputTokenAddress,
-              setTokenAmount,
+              indexTokenAmount,
               componentQuotes,
               issuanceModule.address,
               issuanceModule.isDebtIssuance,
@@ -96,14 +112,14 @@ export const useTradeExchangeIssuance = () => {
               exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
               function: CaptureExchangeIssuanceFunctionKey.issueErc20,
               setToken: outputTokenAddress,
-              setAmount: setTokenAmount.toString(),
+              setAmount: indexTokenAmount.toString(),
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
             const mintTx = await flashMint.mintExactSetFromToken(
               outputTokenAddress,
               inputTokenAddress,
-              setTokenAmount,
+              indexTokenAmount,
               maxAmountInputToken,
               componentQuotes,
               issuanceModule.address,
@@ -121,7 +137,7 @@ export const useTradeExchangeIssuance = () => {
             exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
             function: CaptureExchangeIssuanceFunctionKey.redeemEth,
             setToken: inputTokenAddress,
-            setAmount: setTokenAmount.toString(),
+            setAmount: indexTokenAmount.toString(),
             gasLimit: gasLimit.toString(),
             slippage: slippage.toString(),
           })
@@ -129,7 +145,7 @@ export const useTradeExchangeIssuance = () => {
           if (isRedeemingNativeChainToken) {
             const redeemTx = await flashMint.redeemExactSetForETH(
               inputTokenAddress,
-              setTokenAmount,
+              indexTokenAmount,
               minOutputReceive,
               componentQuotes,
               issuanceModule.address,
@@ -142,14 +158,14 @@ export const useTradeExchangeIssuance = () => {
               exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
               function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
               setToken: inputTokenAddress,
-              setAmount: setTokenAmount.toString(),
+              setAmount: indexTokenAmount.toString(),
               gasLimit: gasLimit.toString(),
               slippage: slippage.toString(),
             })
             const redeemTx = await flashMint.redeemExactSetForToken(
               inputTokenAddress,
               outputTokenAddress,
-              setTokenAmount,
+              indexTokenAmount,
               minOutputReceive,
               componentQuotes,
               issuanceModule.address,
