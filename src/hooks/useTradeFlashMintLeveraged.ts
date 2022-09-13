@@ -76,7 +76,6 @@ export const useTradeLeveragedExchangeIssuance = () => {
           signer,
           chainId
         )
-        console.log('gasEstimate for trade', gasLimit.toString())
 
         if (isMinting) {
           const isSellingNativeChainToken =

@@ -114,9 +114,6 @@ export async function getEnhancedFlashMintLeveragedQuote(
         chainId,
         canFail
       )
-
-      console.log('GASLEV', gasEstimate.toString())
-
       return {
         type: QuoteType.exchangeIssuanceLeveraged,
         isMinting,

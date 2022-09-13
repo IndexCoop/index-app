@@ -21,8 +21,8 @@ import {
   useFlashMintQuote,
 } from 'hooks/useFlashMintQuote'
 import { useNetwork } from 'hooks/useNetwork'
+import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeFlashMintLeveraged'
 import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
-import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeLeveragedExchangeIssuance'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useSlippage } from 'providers/Slippage'
