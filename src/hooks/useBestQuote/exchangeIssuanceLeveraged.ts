@@ -13,6 +13,7 @@ import {
   Token,
 } from 'constants/tokens'
 import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { getFlashMintLeveragedGasEstimate } from 'utils/flashMintLeveragedGasEstimate'
 
 import { ExchangeIssuanceLeveragedQuote, QuoteType } from './'
 
@@ -49,10 +50,11 @@ export const isEligibleTradePair = (
   return tokenEligible
 }
 
-export async function getEILeveragedQuote(
+export async function getEnhancedFlashMintLeveragedQuote(
   isMinting: boolean,
   inputTokenAddress: string,
   outputTokenAddress: string,
+  inputTokenBalance: BigNumber,
   sellToken: Token,
   buyToken: Token,
   indexTokenAmount: BigNumber,
@@ -62,7 +64,8 @@ export async function getEILeveragedQuote(
   slippage: number,
   chainId: number,
   provider: JsonRpcProvider,
-  zeroExApi: ZeroExApi
+  zeroExApi: ZeroExApi,
+  signer: any
 ): Promise<ExchangeIssuanceLeveragedQuote | null> {
   const tokenEligibleForLeveragedEI = isEligibleTradePair(
     sellToken,
@@ -94,18 +97,37 @@ export async function getEILeveragedQuote(
       chainId ?? 1
     )
     if (quoteLeveraged) {
-      const gasLimit = BigNumber.from(1800000)
+      // We don't want this function to fail for estimates here.
+      // A default will be returned if the tx would fail.
+      const canFail = false
+      const gasEstimate = await getFlashMintLeveragedGasEstimate(
+        isMinting,
+        sellToken,
+        buyToken,
+        indexTokenAmount,
+        quoteLeveraged.inputOutputTokenAmount,
+        inputTokenBalance,
+        quoteLeveraged.swapDataDebtCollateral,
+        quoteLeveraged.swapDataPaymentToken,
+        provider,
+        signer,
+        chainId,
+        canFail
+      )
+
+      console.log('GASLEV', gasEstimate.toString())
+
       return {
         type: QuoteType.exchangeIssuanceLeveraged,
         isMinting,
         inputToken: sellToken,
         outputToken: buyToken,
-        gas: gasLimit,
+        gas: gasEstimate,
         gasPrice,
-        gasCosts: gasLimit.mul(gasPrice),
+        gasCosts: gasEstimate.mul(gasPrice),
         fullCostsInUsd: getFullCostsInUsd(
           quoteLeveraged.inputOutputTokenAmount,
-          gasLimit.mul(gasPrice),
+          gasEstimate.mul(gasPrice),
           sellToken.decimals,
           sellTokenPrice,
           nativeTokenPrice
@@ -119,7 +141,7 @@ export async function getEILeveragedQuote(
       }
     }
   } catch (e) {
-    console.warn('Error generating quote from EILeveraged', e)
+    console.warn('Error generating quote from FlashMintLeveraged', e)
   }
   return null
 }

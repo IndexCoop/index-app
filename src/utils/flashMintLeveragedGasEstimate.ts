@@ -1,42 +1,44 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import {
-  getFlashMintZeroExContract,
-  getIssuanceModule,
+  getFlashMintLeveragedContract,
+  SwapData,
 } from '@indexcoop/flash-mint-sdk'
 
-import { DefaultGasLimitFlashMintZeroEx } from 'constants/gas'
+import { DefaultGasLimitFlashMintLeveraged } from 'constants/gas'
 import { Token } from 'constants/tokens'
 import { getAddressForToken, isNativeCurrency } from 'utils/tokens'
 
-const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
+const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintLeveraged)
 // Default gas margin to add on top of estimate
 const defaultGasMargin = 20
 
 /**
- * Returns a gas estimate for FlashMintZeroEx.
+ * Returns a gas estimate for FlashMintLeveraged.
  *
  * If the tx would fail an estimate is returned.
  *
- * @param isMinting               Minting or redeeming?
- * @param inputToken              The input token.
- * @param outputToken             The output token.
- * @param indexTokenAmount        The Index token amount.
- * @param inputOutputTokenAmount  The input/ouput token amount (depending on minting/redeeming).
- * @param inputTokenBalance       The input token's balance.
- * @param componentQuotes         The component quotes data (from the quote).
- * @param provider                A provider.
- * @param signer                  A signer.
- * @param chainId                 The current's chain ID.
- * @param canFail                 If the function should fail on error (default: true)
+ * @param isMinting                   Minting or redeeming?
+ * @param inputToken                  The input token.
+ * @param outputToken                 The output token.
+ * @param indexTokenAmount            The Index token amount.
+ * @param inputOutputTokenAmount      The input/ouput token amount (depending on minting/redeeming).
+ * @param inputTokenBalance           The input token's balance.
+ * @param swapDataDebtCollateral      The debt collateral swap data (from the quote).
+ * @param swapDataInputOutputToken    The input (minting) output (redeeming) token swap data (from the quote).
+ * @param provider                    A provider.
+ * @param signer                      A signer.
+ * @param chainId                     The current's chain ID.
+ * @param canFail                     If the function should fail on error (default: true)
  */
-export async function getFlashMintZeroExGasEstimate(
+export async function getFlashMintLeveragedGasEstimate(
   isMinting: boolean,
   inputToken: Token,
   outputToken: Token,
   indexTokenAmount: BigNumber,
   inputOutputTokenAmount: BigNumber,
   inputTokenBalance: BigNumber,
-  componentQuotes: string[],
+  swapDataDebtCollateral: SwapData,
+  swapDataInputOutputToken: SwapData,
   provider: any,
   signer: any,
   chainId: number,
@@ -53,9 +55,6 @@ export async function getFlashMintZeroExGasEstimate(
 
   let gasEstimate = defaultGasEstimate
 
-  const setTokenSymbol = isMinting ? outputToken.symbol : inputToken.symbol
-  const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
-
   const outputTokenAddress = getAddressForToken(outputToken, chainId)
   const inputTokenAddress = getAddressForToken(inputToken, chainId)
   if (!outputTokenAddress || !inputTokenAddress) return gasEstimate
@@ -63,54 +62,49 @@ export async function getFlashMintZeroExGasEstimate(
   try {
     const block = await provider.getBlock()
     const gasLimitLastBlock = block.gasLimit
-    const contract = getFlashMintZeroExContract(signer, chainId ?? 1)
+    const contract = getFlashMintLeveragedContract(signer, chainId)
     if (isMinting) {
       const isSellingNativeChainToken = isNativeCurrency(inputToken, chainId)
       if (isSellingNativeChainToken) {
         gasEstimate = await contract.estimateGas.issueExactSetFromETH(
           outputTokenAddress,
           indexTokenAmount,
-          componentQuotes,
-          issuanceModule.address,
-          issuanceModule.isDebtIssuance,
+          swapDataDebtCollateral,
+          swapDataInputOutputToken,
           { value: inputOutputTokenAmount, gasLimit: gasLimitLastBlock }
         )
       } else {
         const maxAmountInputToken = inputOutputTokenAmount
-        gasEstimate = await contract.estimateGas.issueExactSetFromToken(
+        gasEstimate = await contract.estimateGas.issueExactSetFromERC20(
           outputTokenAddress,
-          inputTokenAddress,
           indexTokenAmount,
+          inputTokenAddress,
           maxAmountInputToken,
-          componentQuotes,
-          issuanceModule.address,
-          issuanceModule.isDebtIssuance,
+          swapDataDebtCollateral,
+          swapDataInputOutputToken,
           { gasLimit: gasLimitLastBlock }
         )
       }
     } else {
       const isRedeemingNativeChainToken = isNativeCurrency(outputToken, chainId)
-      const minOutputReceive = inputOutputTokenAmount
-
+      const minAmountOutputToken = inputOutputTokenAmount
       if (isRedeemingNativeChainToken) {
         gasEstimate = await contract.estimateGas.redeemExactSetForETH(
           inputTokenAddress,
           indexTokenAmount,
-          minOutputReceive,
-          componentQuotes,
-          issuanceModule.address,
-          issuanceModule.isDebtIssuance,
+          minAmountOutputToken,
+          swapDataDebtCollateral,
+          swapDataInputOutputToken,
           { gasLimit: gasLimitLastBlock }
         )
       } else {
-        gasEstimate = await contract.estimateGas.redeemExactSetForToken(
+        gasEstimate = await contract.estimateGas.redeemExactSetForERC20(
           inputTokenAddress,
-          outputTokenAddress,
           indexTokenAmount,
-          minOutputReceive,
-          componentQuotes,
-          issuanceModule.address,
-          issuanceModule.isDebtIssuance,
+          outputTokenAddress,
+          minAmountOutputToken,
+          swapDataDebtCollateral,
+          swapDataInputOutputToken,
           {
             gasLimit: gasLimitLastBlock,
           }
@@ -118,7 +112,7 @@ export async function getFlashMintZeroExGasEstimate(
       }
     }
   } catch (error: any) {
-    console.log('Error estimating gas for FlashMintZeroEx:', error)
+    console.log('Error estimating gas for FlashMintLeveraged:', error)
     if (canFail) {
       throw error
     }
