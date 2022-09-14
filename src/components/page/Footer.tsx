@@ -42,7 +42,11 @@ const Footer = () => {
           </Link>
         </Flex>
       </Flex>
-      <Text w={['390px', '500px', '820px', '1024px']} pt='30px'>
+      <Text
+        w={['390px', '500px', '820px', '1024px']}
+        pt='30px'
+        fontSize={'2xs'}
+      >
         Information is for educational and illustrative purposes only. The Index
         Cooperative is not engaged in the business of the offer, sale or trading
         of securities and does not provide legal, tax, or investment advice.
