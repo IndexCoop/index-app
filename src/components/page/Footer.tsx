@@ -10,17 +10,14 @@ import indexLogoWhite from 'assets/index-logo-white.png'
 const Footer = () => {
   const { isDarkMode, styles } = useColorStyles()
   return (
-    <Flex backgroundColor={styles.background} w='100vw'>
-      <Flex
-        align='center'
-        p={[
-          '32px 16px 32px 24px',
-          null,
-          '32px 60px 32px 60px',
-          '32px 80px 32px 80px',
-        ]}
-        w='100%'
-      >
+    <Flex
+      backgroundColor={styles.background}
+      w='100vw'
+      m={['32px 16px 32px 0', null, '32px 60px 32px 0', '32px 80px 32px 0']}
+      flexDir={'column'}
+      alignItems='center'
+    >
+      <Flex align='center' w={['390px', '500px', '820px', '1024px']} pb='32px'>
         <Logo isDarkMode={isDarkMode} />
         <Flex direction={['column', 'column', 'column', 'row']}>
           <Link color={colors.icGray2} href='/liquidity-mining'>
@@ -45,6 +42,19 @@ const Footer = () => {
           </Link>
         </Flex>
       </Flex>
+      <Text w={['390px', '500px', '820px', '1024px']} pt='30px'>
+        Information is for educational and illustrative purposes only. The Index
+        Cooperative is not engaged in the business of the offer, sale or trading
+        of securities and does not provide legal, tax, or investment advice.
+        Cryptocurrencies and other digital assets are speculative and involve a
+        substantial degree of risk, including the risk of complete loss. There
+        can be no assurance that any cryptocurrency, token, coin, or other
+        crypto asset will be viable, liquid, or solvent.No Index Cooperative
+        communication is intended to imply that any digital assets are low-risk
+        or risk-free. The Index Cooperative works hard to provide accurate
+        information on this website, but cannot guarantee all content is
+        correct, complete, or updated.
+      </Text>
     </Flex>
   )
 }
