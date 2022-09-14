@@ -42,6 +42,7 @@ import {
 import { QuickTradeProps } from '../swap'
 
 import DirectIssuance from './DirectIssuance'
+import Override from './Override'
 
 const FlashMint = (props: QuickTradeProps) => {
   const { address } = useWallet()
@@ -75,6 +76,7 @@ const FlashMint = (props: QuickTradeProps) => {
     useState('0.0')
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
   const [isMinting, setIsMinting] = useState(true)
+  const [override, setOverride] = useState(false)
 
   const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
 
@@ -226,6 +228,10 @@ const FlashMint = (props: QuickTradeProps) => {
     setIndexTokenAmount(input || '0')
   }, 1000)
 
+  const onChangeOverride = (isChecked: boolean) => {
+    setOverride(isChecked)
+  }
+
   const onClickTradeButton = async () => {
     if (!address) return
     if (isMinting && hasInsufficientFundsInputOutputToken) return
@@ -331,7 +337,9 @@ const FlashMint = (props: QuickTradeProps) => {
         onClickTradeButton={onClickTradeButton}
         contractAddress={contractAddress}
         contractExplorerUrl={contractBlockExplorerUrl}
-      />
+      >
+        <Override onChange={onChangeOverride} />
+      </TradeButtonContainer>
       <SelectTokenModal
         isOpen={isInputOutputTokenModalOpen}
         onClose={onCloseInputOutputTokenModal}
