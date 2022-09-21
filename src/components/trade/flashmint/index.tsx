@@ -21,7 +21,7 @@ import {
   useFlashMintQuote,
 } from 'hooks/useFlashMintQuote'
 import { useNetwork } from 'hooks/useNetwork'
-import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeFlashMintLeveraged'
+import { useTradeFlashMintLeveraged } from 'hooks/useTradeFlashMintLeveraged'
 import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
@@ -63,8 +63,11 @@ const FlashMint = (props: QuickTradeProps) => {
     isTransacting: isTransactingEI,
     txWouldFail: txWouldFailZeroEx,
   } = useTradeFlashMintZeroEx()
-  const { executeLevEITrade, isTransactingLevEI } =
-    useTradeLeveragedExchangeIssuance()
+  const {
+    executeFlashMintLeveragedTrade,
+    isTransacting: isTransactingLevEI,
+    txWouldFail: txWouldFailLeveraged,
+  } = useTradeFlashMintLeveraged()
   const {
     buyToken: indexToken,
     buyTokenList: indexTokenList,
@@ -221,6 +224,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const resetData = () => {
     setIndexTokenAmount('0')
     setIndexTokenAmountFormatted('0.0')
+    setOverride(false)
   }
 
   const onChangeIndexTokenAmount = debounce((token: Token, input: string) => {
@@ -263,7 +267,11 @@ const FlashMint = (props: QuickTradeProps) => {
     }
 
     if (quotes.flashMintLeveraged) {
-      await executeLevEITrade(quotes.flashMintLeveraged, slippage)
+      await executeFlashMintLeveragedTrade(
+        quotes.flashMintLeveraged,
+        slippage,
+        override
+      )
       resetData()
       return
     }
@@ -314,7 +322,7 @@ const FlashMint = (props: QuickTradeProps) => {
     getBalance(inputOutputToken.symbol)
   )
 
-  const shouldShowOverride: boolean = txWouldFailZeroEx
+  const shouldShowOverride: boolean = txWouldFailZeroEx || txWouldFailLeveraged
 
   return (
     <Box mt='32px'>
