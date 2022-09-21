@@ -119,7 +119,7 @@ export async function getEnhancedFlashMintZeroExQuote(
       }
     }
   } catch (e) {
-    console.warn('error when generating zeroexei option', e)
+    console.warn('Error fetching FlashMintZeroEx quote', e)
   }
 
   return null

@@ -58,7 +58,11 @@ const FlashMint = (props: QuickTradeProps) => {
     onOpen: onOpenIndexTokenModal,
     onClose: onCloseIndexTokenModal,
   } = useDisclosure()
-  const { executeEITrade, isTransactingEI } = useTradeFlashMintZeroEx()
+  const {
+    executeFlashMintZeroExTrade,
+    isTransacting: isTransactingEI,
+    txWouldFail: txWouldFailZeroEx,
+  } = useTradeFlashMintZeroEx()
   const { executeLevEITrade, isTransactingLevEI } =
     useTradeLeveragedExchangeIssuance()
   const {
@@ -265,7 +269,11 @@ const FlashMint = (props: QuickTradeProps) => {
     }
 
     if (quotes.flashMintZeroEx) {
-      await executeEITrade(quotes.flashMintZeroEx, slippage)
+      await executeFlashMintZeroExTrade(
+        quotes.flashMintZeroEx,
+        slippage,
+        override
+      )
       resetData()
       return
     }
@@ -306,6 +314,8 @@ const FlashMint = (props: QuickTradeProps) => {
     getBalance(inputOutputToken.symbol)
   )
 
+  const shouldShowOverride: boolean = txWouldFailZeroEx
+
   return (
     <Box mt='32px'>
       <DirectIssuance
@@ -338,7 +348,7 @@ const FlashMint = (props: QuickTradeProps) => {
         contractAddress={contractAddress}
         contractExplorerUrl={contractBlockExplorerUrl}
       >
-        <Override onChange={onChangeOverride} />
+        {shouldShowOverride ? <Override onChange={onChangeOverride} /> : <></>}
       </TradeButtonContainer>
       <SelectTokenModal
         isOpen={isInputOutputTokenModalOpen}

@@ -20,8 +20,8 @@ import { getAddressForToken } from 'utils/tokens'
 
 import { useWallet } from '../useWallet'
 
-import { getEnhancedFlashMintLeveragedQuote } from './exchangeIssuanceLeveraged'
-import { getEnhancedFlashMintZeroExQuote } from './exchangeIssuanceZeroEx'
+import { getEnhancedFlashMintLeveragedQuote } from './flashMintLeveraged'
+import { getEnhancedFlashMintZeroExQuote } from './flashMintZeroEx'
 
 export enum QuoteType {
   notAvailable = 'notAvailable',

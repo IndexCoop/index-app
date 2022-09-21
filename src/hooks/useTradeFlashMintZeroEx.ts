@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 
 import { Signer } from 'ethers'
-// import { useTransactions } from '@usedapp/core'
 import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
@@ -21,7 +20,10 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/api/sentry'
-import { getFlashMintZeroExGasEstimate } from 'utils/flashMintZeroExGasEstimate'
+import {
+  FlashMintZeroExGasEstimateFailedError,
+  getFlashMintZeroExGasEstimate,
+} from 'utils/flashMintZeroExGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalances } from './useBalance'
@@ -32,10 +34,15 @@ export const useTradeFlashMintZeroEx = () => {
   const { getBalance } = useBalances()
   const chainId = chain?.id
 
-  const [isTransactingEI, setIsTransacting] = useState(false)
+  const [isTransacting, setIsTransacting] = useState(false)
+  const [txWouldFail, setTxWouldFail] = useState(false)
 
-  const executeEITrade = useCallback(
-    async (quote: ExchangeIssuanceZeroExQuote | null, slippage: number) => {
+  const executeFlashMintZeroExTrade = useCallback(
+    async (
+      quote: ExchangeIssuanceZeroExQuote | null,
+      slippage: number,
+      override: boolean = false
+    ) => {
       if (!address || !chainId || !quote) return
 
       const isMinting = quote.isMinting
@@ -68,6 +75,8 @@ export const useTradeFlashMintZeroEx = () => {
         setIsTransacting(true)
 
         // Will throw error if tx would fail
+        // If the user overrides, we take any gas estimate
+        const canFail = override
         const gasEstimate = await getFlashMintZeroExGasEstimate(
           isMinting,
           inputToken,
@@ -78,9 +87,10 @@ export const useTradeFlashMintZeroEx = () => {
           componentQuotes,
           provider,
           signer,
-          chainId
+          chainId,
+          canFail
         )
-        console.log('gasEstimate for trade', gasEstimate.toString())
+        console.log('gasEstimate for trade', gasEstimate.toString(), canFail)
 
         if (isMinting) {
           const isSellingNativeChainToken =
@@ -177,12 +187,19 @@ export const useTradeFlashMintZeroEx = () => {
         }
         setIsTransacting(false)
       } catch (error) {
+        console.log('Error sending FlashMintZeroEx tx', error)
+        console.log('Override?', override)
         setIsTransacting(false)
-        console.log('Error sending transaction', error)
+        if (
+          error instanceof FlashMintZeroExGasEstimateFailedError &&
+          error.statusCode === 1001
+        ) {
+          setTxWouldFail(true)
+        }
       }
     },
     [address, signer]
   )
 
-  return { executeEITrade, isTransactingEI }
+  return { executeFlashMintZeroExTrade, isTransacting, txWouldFail }
 }

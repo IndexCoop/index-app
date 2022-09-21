@@ -12,6 +12,15 @@ const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
 // Default gas margin to add on top of estimate
 const defaultGasMargin = 20
 
+export class FlashMintZeroExGasEstimateFailedError extends Error {
+  statusCode = 1001
+  constructor() {
+    super('Failed to estimate gas for FlashMintZeroEx.')
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(this, FlashMintZeroExGasEstimateFailedError.prototype)
+  }
+}
+
 /**
  * Returns a gas estimate for FlashMintZeroEx.
  *
@@ -120,7 +129,7 @@ export async function getFlashMintZeroExGasEstimate(
   } catch (error: any) {
     console.log('Error estimating gas for FlashMintZeroEx:', error)
     if (canFail) {
-      throw error
+      throw new FlashMintZeroExGasEstimateFailedError()
     }
     return defaultGasEstimate
   }

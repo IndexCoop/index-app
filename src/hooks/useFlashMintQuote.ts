@@ -12,8 +12,8 @@ import { getNetworkKey } from 'utils/api/zeroExUtils'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useIssuanceQuote } from './issuance/useIssuanceQuote'
-import { getEnhancedFlashMintLeveragedQuote } from './useBestQuote/exchangeIssuanceLeveraged'
-import { getEnhancedFlashMintZeroExQuote } from './useBestQuote/exchangeIssuanceZeroEx'
+import { getEnhancedFlashMintLeveragedQuote } from './useBestQuote/flashMintLeveraged'
+import { getEnhancedFlashMintZeroExQuote } from './useBestQuote/flashMintZeroEx'
 import {
   ExchangeIssuanceLeveragedQuote,
   ExchangeIssuanceZeroExQuote,

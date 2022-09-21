@@ -22,7 +22,7 @@ const Override = (props: OverrideProps) => {
       <Flex align='center'>
         <WarningTwoIcon color={styles.text} />
         <Text color={styles.text} fontSize='14px' mx='16px'>
-          This tx would likely fail. Check override and press the trade buttona
+          This tx would likely fail. Check override and press the trade button
           again to execute anyway.
         </Text>
       </Flex>
