@@ -1,5 +1,6 @@
 import merge from 'lodash.merge'
 import { Button } from 'styles/button'
+import { Checkbox } from 'styles/checkbox'
 import { colors } from 'styles/colors'
 import { fonts } from 'styles/fonts'
 import { global } from 'styles/global'
@@ -8,7 +9,7 @@ import { Tabs } from 'styles/tabs'
 import { Text } from 'styles/text'
 
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
-import { darkTheme, midnightTheme, Theme } from '@rainbow-me/rainbowkit'
+import { darkTheme, Theme } from '@rainbow-me/rainbowkit'
 
 const config: ThemeConfig = {
   initialColorMode: 'system',
@@ -17,6 +18,7 @@ const config: ThemeConfig = {
 
 const components = {
   Button,
+  Checkbox,
   Heading,
   Tabs,
   Text,

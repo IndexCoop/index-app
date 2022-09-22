@@ -21,7 +21,7 @@ import {
   useFlashMintQuote,
 } from 'hooks/useFlashMintQuote'
 import { useNetwork } from 'hooks/useNetwork'
-import { useTradeLeveragedExchangeIssuance } from 'hooks/useTradeFlashMintLeveraged'
+import { useTradeFlashMintLeveraged } from 'hooks/useTradeFlashMintLeveraged'
 import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
@@ -42,6 +42,7 @@ import {
 import { QuickTradeProps } from '../swap'
 
 import DirectIssuance from './DirectIssuance'
+import Override from './Override'
 
 const FlashMint = (props: QuickTradeProps) => {
   const { address } = useWallet()
@@ -57,9 +58,16 @@ const FlashMint = (props: QuickTradeProps) => {
     onOpen: onOpenIndexTokenModal,
     onClose: onCloseIndexTokenModal,
   } = useDisclosure()
-  const { executeEITrade, isTransactingEI } = useTradeFlashMintZeroEx()
-  const { executeLevEITrade, isTransactingLevEI } =
-    useTradeLeveragedExchangeIssuance()
+  const {
+    executeFlashMintZeroExTrade,
+    isTransacting: isTransactingEI,
+    txWouldFail: txWouldFailZeroEx,
+  } = useTradeFlashMintZeroEx()
+  const {
+    executeFlashMintLeveragedTrade,
+    isTransacting: isTransactingLevEI,
+    txWouldFail: txWouldFailLeveraged,
+  } = useTradeFlashMintLeveraged()
   const {
     buyToken: indexToken,
     buyTokenList: indexTokenList,
@@ -75,6 +83,7 @@ const FlashMint = (props: QuickTradeProps) => {
     useState('0.0')
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
   const [isMinting, setIsMinting] = useState(true)
+  const [override, setOverride] = useState(false)
 
   const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
 
@@ -215,6 +224,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const resetData = () => {
     setIndexTokenAmount('0')
     setIndexTokenAmountFormatted('0.0')
+    setOverride(false)
   }
 
   const onChangeIndexTokenAmount = debounce((token: Token, input: string) => {
@@ -225,6 +235,10 @@ const FlashMint = (props: QuickTradeProps) => {
     if (!isValidTokenInput(input, token.decimals)) return
     setIndexTokenAmount(input || '0')
   }, 1000)
+
+  const onChangeOverride = (isChecked: boolean) => {
+    setOverride(isChecked)
+  }
 
   const onClickTradeButton = async () => {
     if (!address) return
@@ -253,13 +267,21 @@ const FlashMint = (props: QuickTradeProps) => {
     }
 
     if (quotes.flashMintLeveraged) {
-      await executeLevEITrade(quotes.flashMintLeveraged, slippage)
+      await executeFlashMintLeveragedTrade(
+        quotes.flashMintLeveraged,
+        slippage,
+        override
+      )
       resetData()
       return
     }
 
     if (quotes.flashMintZeroEx) {
-      await executeEITrade(quotes.flashMintZeroEx, slippage)
+      await executeFlashMintZeroExTrade(
+        quotes.flashMintZeroEx,
+        slippage,
+        override
+      )
       resetData()
       return
     }
@@ -300,6 +322,8 @@ const FlashMint = (props: QuickTradeProps) => {
     getBalance(inputOutputToken.symbol)
   )
 
+  const shouldShowOverride: boolean = txWouldFailZeroEx || txWouldFailLeveraged
+
   return (
     <Box mt='32px'>
       <DirectIssuance
@@ -331,7 +355,9 @@ const FlashMint = (props: QuickTradeProps) => {
         onClickTradeButton={onClickTradeButton}
         contractAddress={contractAddress}
         contractExplorerUrl={contractBlockExplorerUrl}
-      />
+      >
+        {shouldShowOverride ? <Override onChange={onChangeOverride} /> : <></>}
+      </TradeButtonContainer>
       <SelectTokenModal
         isOpen={isInputOutputTokenModalOpen}
         onClose={onCloseInputOutputTokenModal}

@@ -19,21 +19,29 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/api/sentry'
-import { getFlashMintLeveragedGasEstimate } from 'utils/flashMintLeveragedGasEstimate'
+import {
+  FlashMintLeveragedGasEstimateFailedError,
+  getFlashMintLeveragedGasEstimate,
+} from 'utils/flashMintLeveragedGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useBalances } from './useBalance'
 
-export const useTradeLeveragedExchangeIssuance = () => {
+export const useTradeFlashMintLeveraged = () => {
   const { address, provider, signer } = useWallet()
   const { chain } = useNetwork()
   const { getBalance } = useBalances()
   const chainId = chain?.id
 
-  const [isTransactingLevEI, setIsTransacting] = useState(false)
+  const [isTransacting, setIsTransacting] = useState(false)
+  const [txWouldFail, setTxWouldFail] = useState(false)
 
-  const executeLevEITrade = useCallback(
-    async (quote: ExchangeIssuanceLeveragedQuote | null, slippage: number) => {
+  const executeFlashMintLeveragedTrade = useCallback(
+    async (
+      quote: ExchangeIssuanceLeveragedQuote | null,
+      slippage: number,
+      override: boolean = false
+    ) => {
       if (!address || !chainId || !quote) return
 
       const isMinting = quote.isMinting
@@ -63,6 +71,8 @@ export const useTradeLeveragedExchangeIssuance = () => {
         setIsTransacting(true)
 
         // Will throw error if tx would fail
+        // If the user overrides, we take any gas estimate
+        const canFail = override
         const gasLimit = await getFlashMintLeveragedGasEstimate(
           isMinting,
           inputToken,
@@ -74,7 +84,8 @@ export const useTradeLeveragedExchangeIssuance = () => {
           quote.swapDataPaymentToken,
           provider,
           signer,
-          chainId
+          chainId,
+          canFail
         )
 
         if (isMinting) {
@@ -168,12 +179,19 @@ export const useTradeLeveragedExchangeIssuance = () => {
         }
         setIsTransacting(false)
       } catch (error) {
+        console.log('Error sending FlashMintLeveraged tx', error)
+        console.log('Override?', override)
         setIsTransacting(false)
-        console.log('Error sending FlashMintLeveraged transaction', error)
+        if (
+          error instanceof FlashMintLeveragedGasEstimateFailedError &&
+          error.statusCode === 1000
+        ) {
+          setTxWouldFail(true)
+        }
       }
     },
     [address, signer]
   )
 
-  return { executeLevEITrade, isTransactingLevEI }
+  return { executeFlashMintLeveragedTrade, isTransacting, txWouldFail }
 }

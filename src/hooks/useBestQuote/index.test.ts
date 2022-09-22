@@ -16,8 +16,8 @@ import {
 } from 'constants/tokens'
 import { toWei } from 'utils'
 
-import { isEligibleTradePair } from './exchangeIssuanceLeveraged'
-import { isEligibleTradePairZeroEx } from './exchangeIssuanceZeroEx'
+import { isEligibleTradePair } from './flashMintLeveraged'
+import { isEligibleTradePairZeroEx } from './flashMintZeroEx'
 import { getBestQuote, getSetTokenAmount, maxPriceImpact, QuoteType } from './'
 
 describe('getBestQuote()', () => {
