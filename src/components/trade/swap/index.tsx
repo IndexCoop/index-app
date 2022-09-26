@@ -17,7 +17,6 @@ import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
-import { useMarketData } from 'providers/MarketData'
 import { useProtection } from 'providers/Protection'
 import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
@@ -84,8 +83,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   } = useTradeTokenLists(props.singleToken)
   const { getBalance } = useBalances()
 
-  const { selectMarketDataByToken } = useMarketData()
-
   const supportedNetwork = isSupportedNetwork
 
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
@@ -94,13 +91,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const [navData, setNavData] = useState<TradeInfoItem>()
 
   const navToken = isBuying ? buyToken : sellToken
-  const marketData = selectMarketDataByToken(navToken)
-
-  const { nav } = useTokenComponents(
-    navToken,
-    marketData,
-    isPerpToken(navToken)
-  )
+  const { nav } = useTokenComponents(navToken, isPerpToken(navToken))
 
   useEffect(() => {
     if (tradeInfoData.length < 1) return

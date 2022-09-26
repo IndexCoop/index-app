@@ -109,7 +109,6 @@ const TokenPage = (props: {
 
   const { components, vAssets, nav } = useTokenComponents(
     props.token,
-    marketData.hourlyPrices!,
     isPerpToken(props.token)
   )
 
