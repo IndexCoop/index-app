@@ -24,10 +24,10 @@
     jsonpointer "^5.0.0"
     leven "^3.1.0"
 
-"@arcxmoney/analytics@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@arcxmoney/analytics/-/analytics-0.0.7.tgz#609727bbfda9c44f66db91d00f35b5be8a3b0b4a"
-  integrity sha512-4lop4xS9wKbeZJMho/teIgUWMam0fFX3eSSEAehE0t+CUInpzDg7oPY3sJUAab5BT1d7CkMESXwRVlGjXrCYlw==
+"@arcxmoney/analytics@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@arcxmoney/analytics/-/analytics-0.0.11.tgz#5bb7a8065abf39ffe24222f0cec75341de49e8a2"
+  integrity sha512-JoXYf07UOtQrwcd5YE9GAQyBtRdv2vuYWL4PShqNUon4pIzcxjYyAkCnRmcBNLW2RNiXOpPfzCTTKw0DPbdISg==
   dependencies:
     "@restless/sanitizers" "^0.2.5"
 
