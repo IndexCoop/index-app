@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BigNumber, Contract, providers, utils } from 'ethers'
-import { useNetwork } from 'wagmi'
 
 import {
   dpi2020StakingRewardsAddress,
@@ -12,6 +11,7 @@ import {
   uniswapEthMviLpTokenAddress,
 } from 'constants/contractAddresses'
 import { GmiIndex, Token } from 'constants/tokens'
+import { useNetwork } from 'hooks/useNetwork'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
 import {
@@ -55,10 +55,9 @@ export const useBalances = () => {
   const [balances, setBalances] = useState<IBalances>({})
 
   const { address, provider } = useWallet()
-  const { chain } = useNetwork()
-  const chainId = chain?.id ?? 1
+  const { chainId } = useNetwork()
 
-  const ethBalance = useEthBalance(chainId)
+  const ethBalance = useEthBalance(chainId ?? 1)
 
   const fetchAllBalances = useCallback(async () => {
     if (!chainId || !address) return
@@ -146,9 +145,8 @@ const fetchUnclaimedRewards = async (
 }
 
 export const useLiquidityMiningBalances = (): StakingBalances => {
-  const { chain } = useNetwork()
+  const { chainId } = useNetwork()
   const { address, provider } = useWallet()
-  const chainId = chain?.id
 
   const [gmiBalance, setGmiBalance] = useState(BigNumber.from(0))
   const [stakedGmi2022Balance, setStakedGmi2022Balance] = useState(

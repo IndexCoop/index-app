@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 
 import { BigNumber } from 'ethers'
 import { colors, useColorStyles } from 'styles/colors'
-import { useNetwork } from 'wagmi'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { Box, Flex, Image, Input, Spacer, Text } from '@chakra-ui/react'
+import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 
 import { Token } from 'constants/tokens'
 import { useBalances } from 'hooks/useBalance'
+import { useNetwork } from 'hooks/useNetwork'
 import { isValidTokenInput } from 'utils'
 
 import { formattedBalance } from './QuickTradeFormatter'
@@ -34,10 +34,9 @@ const QuickTradeSelector = (props: {
   onChangeInput?: (token: Token, input: string) => void
   onSelectedToken: (symbol: string) => void
 }) => {
-  const { chain } = useNetwork()
+  const { chainId } = useNetwork()
   const { getBalance } = useBalances()
   const { styles } = useColorStyles()
-  const chainId = chain?.id
 
   const { config, selectedToken, selectedTokenAmount } = props
   const selectedTokenSymbol = selectedToken.symbol
