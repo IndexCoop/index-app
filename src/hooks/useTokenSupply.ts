@@ -3,8 +3,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { getTokenSupply } from 'utils/api/setjsApi'
-
 export const useTokenSupply = (
   setTokenAddress: string,
   provider: JsonRpcProvider,
@@ -14,14 +12,12 @@ export const useTokenSupply = (
 
   const fetchSupply = useCallback(async () => {
     try {
-      const tokenSupply = await getTokenSupply(
-        setTokenAddress,
-        provider,
-        chainId
-      )
+      const tokenSupply = BigNumber.from(0)
+      // TODO: fetch from API
       setTokenSupply(tokenSupply)
     } catch (error) {
       console.log('Error fetching current supply', error)
+      setTokenSupply(BigNumber.from(0))
     }
   }, [chainId, provider, setTokenAddress])
 

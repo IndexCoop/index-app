@@ -26,10 +26,8 @@ import {
   tradeModuleOptimismAddress,
   tradeModulePolygonAddress,
 } from 'constants/contractAddresses'
-import { IndexToken } from 'constants/tokens'
 import { SetProtocolViewerAbi } from 'utils/abi/SetProtocolViewer'
 
-import { ERC20_ABI } from '../abi/ERC20'
 import { PerpV2LeverageModuleViewerABI } from '../abi/PerpV2LeverageModuleViewerABI'
 
 /**
@@ -160,28 +158,4 @@ export async function getSetDetails(
     console.log('Error fetching set details for chain id', chainId)
     return []
   }
-}
-
-export async function getTokenSupply(
-  setTokenAddress: string,
-  provider: JsonRpcProvider,
-  chainId: number
-) {
-  if (setTokenAddress === IndexToken.address) {
-    const indexContract = new Contract(setTokenAddress, ERC20_ABI, provider)
-    const supply = await indexContract.totalSupply()
-    return supply
-  }
-  const protocolViewerAddress = getProtocolViewerAddress(chainId)
-  const contract = new Contract(
-    protocolViewerAddress,
-    SetProtocolViewerAbi,
-    provider
-  )
-  const moduleAddresses = getModuleAddresses(chainId)
-  const setDetails: SetDetails = await contract.getSetDetails(
-    setTokenAddress,
-    moduleAddresses
-  )
-  return setDetails.totalSupply
 }
