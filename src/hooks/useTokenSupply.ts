@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 export const useTokenSupply = (
-  setTokenAddress: string,
-  provider: JsonRpcProvider,
+  indexTokenAddress: string,
   chainId: number
 ): BigNumber => {
   const [tokenSupply, setTokenSupply] = useState(BigNumber.from(0))
@@ -19,7 +17,7 @@ export const useTokenSupply = (
       console.log('Error fetching current supply', error)
       setTokenSupply(BigNumber.from(0))
     }
-  }, [chainId, provider, setTokenAddress])
+  }, [chainId, indexTokenAddress])
 
   useEffect(() => {
     fetchSupply()
