@@ -60,10 +60,7 @@ export const useTradeFlashMintLeveraged = () => {
         getBalance(inputToken.symbol) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
-      const contract = getFlashMintLeveragedContract(
-        signer as Signer,
-        chain?.id
-      )
+      const contract = getFlashMintLeveragedContract(signer as Signer, chainId)
       const flashMint = new FlashMintLeveraged(contract)
 
       try {
