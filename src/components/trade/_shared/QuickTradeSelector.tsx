@@ -112,10 +112,14 @@ const QuickTradeSelector = (props: {
           <Input
             color={styles.text2}
             fontSize='28px'
+            overflow='hidden'
             placeholder='0.0'
+            pr='4px'
             type='number'
             step='any'
+            textOverflow='ellipsis'
             variant='unstyled'
+            whiteSpace='nowrap'
             disabled={config.isInputDisabled ?? false}
             isReadOnly={config.isReadOnly ?? false}
             value={inputString}
