@@ -20,23 +20,32 @@ const Footer = () => {
       <Flex align='center' w={['390px', '500px', '820px', '1024px']} pb='32px'>
         <Logo isDarkMode={isDarkMode} />
         <Flex direction={['column', 'column', 'column', 'row']}>
+          <Link
+            color={colors.icGray2}
+            href='https://immunefi.com/bounty/indexcoop/'
+            isExternal
+          >
+            <Text color={colors.icGray2} mr='4'>
+              Bug Bounty
+            </Text>
+          </Link>
           <Link color={colors.icGray2} href='/liquidity-mining'>
-            <Text color={colors.icGray2} mr='8'>
+            <Text color={colors.icGray2} mr='4'>
               Liquidity Mining (discontinued)
             </Text>
           </Link>
           <Link href='https://indexcoop.com/legal/privacy-policy'>
-            <Text color={styles.text} mr='8'>
+            <Text color={styles.text} mr='4'>
               Privacy Policy
             </Text>
           </Link>
           <Link href='https://indexcoop.com/legal/terms-of-service'>
-            <Text color={styles.text} mr='8'>
+            <Text color={styles.text} mr='4'>
               Terms of Service
             </Text>
           </Link>
           <Link href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'>
-            <Text color={styles.text} mr='8'>
+            <Text color={styles.text} mr='4'>
               Tokens Restricted for US Persons
             </Text>
           </Link>
