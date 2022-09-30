@@ -2,7 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useNetwork } from 'wagmi'
 
-import { Box, Flex } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from '@chakra-ui/react'
 
 import Page from 'components/page/Page'
 import SectionTitle from 'components/page/SectionTitle'
@@ -16,6 +24,7 @@ import QuickTradeContainer from 'components/trade'
 import { useWallet } from 'hooks/useWallet'
 import { getTransactionHistory } from 'utils/api/alchemyApi'
 import { logEvent } from 'utils/api/analytics'
+import { captureDashboardSelection } from 'utils/api/sentry'
 import { exportCsv } from 'utils/exportToCsv'
 
 const Homepage = () => {
@@ -45,6 +54,10 @@ const Homepage = () => {
     URL.revokeObjectURL(csvDownloadUrl)
     setCsvDownloadUrl('')
   }, [csvDownloadUrl])
+
+  const onChangeTab = (index: number) => {
+    captureDashboardSelection(index)
+  }
 
   const onClickDownloadCsv = () => {
     const csv = exportCsv(historyItems, 'index')
@@ -80,26 +93,32 @@ const Homepage = () => {
           <QuickTradeContainer />
         </Box>
         {isConnected && (
-          <>
-            <Box
-              w={['340px', '500px', '820px', '1024px']}
-              px={[0, 0, '20px', 0]}
-              pb={'50px'}
-            >
-              <SectionTitle title='Balances' />
-              <BalanceTable />
-            </Box>
-            <Box
-              w={['340px', '500px', '820px', '1024px']}
-              px={[0, 0, '20px', 0]}
-            >
-              <SectionTitle
-                title='Transaction History'
-                itemRight={renderCsvDownloadButton}
-              />
-              <TransactionHistoryTable items={historyItems.slice(0, 20)} />
-            </Box>
-          </>
+          <Tabs isLazy mt='48px' onChange={onChangeTab} variant='main'>
+            <TabList>
+              <Tab>Balances</Tab>
+              <Tab>Transaction History</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <Box
+                  w={['340px', '500px', '820px', '1024px']}
+                  px={[0, 0, '20px', 0]}
+                  pb={'50px'}
+                >
+                  <BalanceTable />
+                </Box>
+              </TabPanel>
+              <TabPanel>
+                <Box
+                  w={['340px', '500px', '820px', '1024px']}
+                  px={[0, 0, '20px', 0]}
+                >
+                  <SectionTitle title='' itemRight={renderCsvDownloadButton} />
+                  <TransactionHistoryTable items={historyItems.slice(0, 20)} />
+                </Box>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         )}
       </Flex>
     </Page>

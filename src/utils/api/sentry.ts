@@ -22,6 +22,10 @@ type CaptureTradeRequest = {
   slippage: string
 }
 
+export const captureDashboardSelection = (id: number) => {
+  Sentry.captureException(`dashboard_tab.${id}`)
+}
+
 export const captureTransaction = (request: CaptureTradeRequest) => {
   Sentry.captureException(`exchangeIssuanceTrade.${request.exchangeIssuance}`, {
     extra: request,
