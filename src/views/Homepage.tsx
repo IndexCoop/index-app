@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { useNetwork } from 'wagmi'
-
 import {
   Box,
   Flex,
@@ -21,6 +19,7 @@ import TransactionHistoryTable, {
 import DownloadCsvView from 'components/tables/TransactionHistoryTable/DownloadCsvView'
 import { assembleHistoryItems } from 'components/tables/TransactionHistoryTable/TransactionHistoryItems'
 import QuickTradeContainer from 'components/trade'
+import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { getTransactionHistory } from 'utils/api/alchemyApi'
 import { logEvent } from 'utils/api/analytics'
@@ -29,8 +28,8 @@ import { exportCsv } from 'utils/exportToCsv'
 
 const Homepage = () => {
   const { address, isConnected } = useWallet()
-  const { chain } = useNetwork()
-  const chainId = chain?.id
+  const { chainId: networkChainId } = useNetwork()
+  const chainId = networkChainId
 
   const [csvDownloadUrl, setCsvDownloadUrl] = useState('')
   const [historyItems, setHistoryItems] = useState<TransactionHistoryItem[]>([])
