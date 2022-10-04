@@ -1,13 +1,12 @@
 import { useState } from 'react'
 
-import { useNetwork } from 'wagmi'
-
 import { BigNumber } from '@ethersproject/bignumber'
 import { SwapData, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
 import { useBalances } from 'hooks/useBalance'
+import { useNetwork } from 'hooks/useNetwork'
 import { toWei } from 'utils'
 import { GasStation } from 'utils/api/gasStation'
 import {
@@ -164,10 +163,10 @@ const defaultQuoteResult: QuoteResult = {
 
 export const useBestQuote = () => {
   const { provider, signer } = useWallet()
-  const { chain } = useNetwork()
+  const { chainId: networkChainId } = useNetwork()
   const { getBalance } = useBalances()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
-  const chainId = chain?.id ?? 1
+  const chainId = networkChainId ?? 1
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [isFetchingMoreOptions, setIsFetchingMoreOptions] =

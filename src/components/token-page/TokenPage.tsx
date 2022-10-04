@@ -1,12 +1,10 @@
-import { useNetwork } from 'wagmi'
-
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
 
 import Page from 'components/page/Page'
 import { getPriceChartData } from 'components/token-page/charts/PriceChartData'
 import QuickTradeContainer from 'components/trade'
 import { IndexToken, Token } from 'constants/tokens'
-import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
+import { useNetwork } from 'hooks/useNetwork'
 import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTokenSupply } from 'hooks/useTokenSupply'
 import { TokenMarketDataValues, useMarketData } from 'providers/MarketData'
@@ -84,14 +82,12 @@ const TokenPage = (props: {
   const isMobile = useBreakpointValue({ base: true, lg: false })
   const { marketData, token } = props
 
-  const { chain } = useNetwork()
-  const networkChainId = chain?.id ?? 1
-  const chainId = token.symbol === IndexToken.symbol ? 1 : networkChainId
+  const { chainId: networkChainId } = useNetwork()
+  const chainId = token.defaultChain ?? networkChainId
   const { selectLatestMarketData } = useMarketData()
-  const provider = useReadOnlyProvider(chainId)
 
   const tokenAddress = getAddressForToken(token, chainId) ?? ''
-  const tokenSupply = useTokenSupply(tokenAddress, provider, chainId)
+  const tokenSupply = useTokenSupply(tokenAddress, chainId ?? 1)
   const currentSupplyFormatted = parseFloat(displayFromWei(tokenSupply) ?? '0')
 
   const priceChartData = getPriceChartData([marketData])

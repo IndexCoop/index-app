@@ -13,7 +13,7 @@ const Footer = () => {
     <Flex
       backgroundColor={styles.background}
       w='100vw'
-      m={['32px 16px 32px 0', null, '32px 60px 32px 0', '32px 80px 32px 0']}
+      m={['80px 16px 32px 0', null, '96px 60px 32px 0', '96px 80px 32px 0']}
       flexDir={'column'}
       alignItems='center'
     >

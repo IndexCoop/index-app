@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
@@ -221,9 +221,27 @@ const QuickTrade = (props: QuickTradeProps) => {
     setTradeInfoData([])
   }, [chainId])
 
+  const fetchOptions = useCallback(() => {
+    if (requiresProtection) return
+    // Right now we only allow setting the sell amount, so no need to check
+    // buy token amount here
+    const sellTokenInWei = toWei(sellTokenAmount, sellToken.decimals)
+    if (sellTokenInWei.isZero() || sellTokenInWei.isNegative()) return
+    fetchAndCompareOptions(
+      sellToken,
+      sellTokenAmount,
+      sellTokenPrice,
+      buyToken,
+      buyTokenPrice,
+      nativeTokenPrice,
+      isBuying,
+      slippage
+    )
+  }, [buyToken, sellToken, sellTokenAmount, slippage])
+
   useEffect(() => {
     fetchOptions()
-  }, [buyToken, sellToken, sellTokenAmount, slippage])
+  }, [fetchOptions])
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
@@ -237,25 +255,6 @@ const QuickTrade = (props: QuickTradeProps) => {
       setRequiresProtection(false)
     }
   }, [protection, sellToken, buyToken])
-
-  const fetchOptions = () => {
-    // Right now we only allow setting the sell amount, so no need to check
-    // buy token amount here
-    if (requiresProtection) return
-    const sellTokenInWei = toWei(sellTokenAmount, sellToken.decimals)
-    if (sellTokenInWei.isZero() || sellTokenInWei.isNegative()) return
-    fetchAndCompareOptions(
-      sellToken,
-      sellTokenAmount,
-      sellTokenPrice,
-      buyToken,
-      // buyTokenAmount,
-      buyTokenPrice,
-      nativeTokenPrice,
-      isBuying,
-      slippage
-    )
-  }
 
   const getIsApproved = () => {
     return isApprovedForSwap

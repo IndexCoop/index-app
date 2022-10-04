@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 
 import { Signer } from 'ethers'
-import { useNetwork } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import {
@@ -12,6 +11,7 @@ import {
 
 import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceZeroExQuote } from 'hooks/useBestQuote'
+import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import { logTx } from 'utils/api/analytics'
@@ -30,9 +30,8 @@ import { useBalances } from './useBalance'
 
 export const useTradeFlashMintZeroEx = () => {
   const { address, provider, signer } = useWallet()
-  const { chain } = useNetwork()
+  const { chainId } = useNetwork()
   const { getBalance } = useBalances()
-  const chainId = chain?.id
 
   const [isTransacting, setIsTransacting] = useState(false)
   const [txWouldFail, setTxWouldFail] = useState(false)
