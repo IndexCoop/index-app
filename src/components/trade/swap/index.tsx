@@ -211,6 +211,7 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   const resetTradeData = () => {
     setBuyTokenAmountFormatted('0.0')
+    setGasCostsInUsd(0)
     setTradeInfoData([])
   }
 
@@ -222,7 +223,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   }, [quoteResult])
 
   useEffect(() => {
-    setTradeInfoData([])
+    resetTradeData()
   }, [chainId])
 
   const fetchOptions = useCallback(() => {
