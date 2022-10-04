@@ -12,7 +12,7 @@ import {
   STETH,
   Token,
 } from 'constants/tokens'
-import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { getFullCostsInUsd } from 'utils/costs'
 import { getFlashMintLeveragedGasEstimate } from 'utils/flashMintLeveragedGasEstimate'
 
 import { ExchangeIssuanceLeveragedQuote, QuoteType } from './'

@@ -8,13 +8,13 @@ import { Token } from 'constants/tokens'
 import { useBalances } from 'hooks/useBalance'
 import { useNetwork } from 'hooks/useNetwork'
 import { toWei } from 'utils'
-import { GasStation } from 'utils/api/gasStation'
+import { GasStation, getMaxFeePerGas } from 'utils/api/gasStation'
 import {
   getNetworkKey,
   getZeroExTradeData,
   ZeroExData,
 } from 'utils/api/zeroExUtils'
-import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { getFullCostsInUsd } from 'utils/costs'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useWallet } from '../useWallet'
