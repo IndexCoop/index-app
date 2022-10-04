@@ -83,11 +83,11 @@ const TokenPage = (props: {
   const { marketData, token } = props
 
   const { chainId: networkChainId } = useNetwork()
-  const chainId = token.symbol === IndexToken.symbol ? 1 : networkChainId ?? 1
+  const chainId = token.defaultChain ?? networkChainId
   const { selectLatestMarketData } = useMarketData()
 
   const tokenAddress = getAddressForToken(token, chainId) ?? ''
-  const tokenSupply = useTokenSupply(tokenAddress, chainId)
+  const tokenSupply = useTokenSupply(tokenAddress, chainId ?? 1)
   const currentSupplyFormatted = parseFloat(displayFromWei(tokenSupply) ?? '0')
 
   const priceChartData = getPriceChartData([marketData])
