@@ -2361,10 +2361,18 @@
     "@chakra-ui/icon" "3.0.10"
     "@chakra-ui/react-context" "2.0.3"
 
-"@chakra-ui/styled-system@2.3.3", "@chakra-ui/styled-system@^2.3.1":
+"@chakra-ui/styled-system@2.3.3":
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/@chakra-ui/styled-system/-/styled-system-2.3.3.tgz#6152739f817b6c6786a53c8388ea7ab5b338e7cc"
   integrity sha512-gCvyJkooWeE8NE6uOSkCf/sje7MdM92rx58dDcfHhVer+eYxat4AW4G8i9Tjnk+FWvgiYdqr70+SBWzEmfqn6g==
+  dependencies:
+    csstype "^3.0.11"
+    lodash.mergewith "4.6.2"
+
+"@chakra-ui/styled-system@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/styled-system/-/styled-system-2.3.4.tgz#6022c5a675b54a69b1d3c2d3e60258901dc7b82a"
+  integrity sha512-Lozbedu+GBj4EbHB/eGv475SFDLApsIEN9gNKiZJBJAE1HIhHn3Seh1iZQSrHC/Beq+D5cQq3Z+yPn3bXtFU7w==
   dependencies:
     csstype "^3.0.11"
     lodash.mergewith "4.6.2"
@@ -6635,15 +6643,10 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
-csstype@^3.0.11, csstype@^3.0.2:
+csstype@^3.0.11, csstype@^3.0.2, csstype@^3.0.7:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.1.tgz#841b532c45c758ee546a11d5bd7b7b473c8c30b9"
   integrity sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==
-
-csstype@^3.0.7:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.0.tgz#4ddcac3718d787cf9df0d1b7d15033925c8f29f2"
-  integrity sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==
 
 "d3-array@2 - 3", "d3-array@2.10.0 - 3":
   version "3.2.0"
