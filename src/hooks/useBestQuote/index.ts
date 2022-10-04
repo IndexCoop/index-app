@@ -8,7 +8,7 @@ import { Token } from 'constants/tokens'
 import { useBalances } from 'hooks/useBalance'
 import { useNetwork } from 'hooks/useNetwork'
 import { toWei } from 'utils'
-import { GasStation, getMaxFeePerGas } from 'utils/api/gasStation'
+import { GasStation } from 'utils/api/gasStation'
 import {
   getNetworkKey,
   getZeroExTradeData,
