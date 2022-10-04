@@ -6,7 +6,7 @@
   "dependencies": {
     "@arcxmoney/analytics": "^0.0.11",
     "@chakra-ui/icons": "^2.0.4",
-    "@chakra-ui/react": "^2.3.2",
+    "@chakra-ui/react": "^2.3.5",
     "@elgorditosalsero/react-gtm-hook": "^2.5.0",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
