@@ -14,7 +14,7 @@ import {
   getZeroExTradeData,
   ZeroExData,
 } from 'utils/api/zeroExUtils'
-import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useWallet } from '../useWallet'
@@ -37,6 +37,7 @@ interface Quote {
   gas: BigNumber
   gasPrice: BigNumber
   gasCosts: BigNumber
+  gasCostsInUsd: number
   fullCostsInUsd: number | null
   priceImpact: number
   indexTokenAmount: BigNumber
@@ -234,6 +235,7 @@ export const useBestQuote = () => {
     const gasPrice0x = BigNumber.from(dexSwapOption?.gasPrice ?? '0')
     const gas0x = gasPrice0x.mul(gasLimit0x)
     const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
+    const gasCostsInUsd = getGasCostsInUsd(gas0x, nativeTokenPrice)
     const zeroExQuote: ZeroExQuote | null = dexSwapOption
       ? {
           type: QuoteType.zeroEx,
@@ -243,6 +245,7 @@ export const useBestQuote = () => {
           gas: gasLimit0x,
           gasPrice: gasPrice0x,
           gasCosts: gas0x,
+          gasCostsInUsd,
           fullCostsInUsd: getFullCostsInUsd(
             toWei(sellTokenAmount, sellToken.decimals),
             gas0x,

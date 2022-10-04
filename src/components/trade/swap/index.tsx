@@ -88,6 +88,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+  const [gasCostsInUsd, setGasCostsInUsd] = useState(0)
   const [navData, setNavData] = useState<TradeInfoItem>()
 
   const navToken = isBuying ? buyToken : sellToken
@@ -191,10 +192,12 @@ const QuickTrade = (props: QuickTradeProps) => {
       BigNumber.from(0)
     )
 
+    const gasCostsInUsd = quoteZeroEx?.gasCostsInUsd ?? 0
     setBuyTokenAmountFormatted(formattedBuyTokenAmount)
     const tradeInfoData = getTradeInfoData0x(
       buyToken,
       quoteZeroEx?.gasCosts ?? BigNumber.from(0),
+      gasCostsInUsd,
       quoteZeroEx?.minOutput ?? BigNumber.from(0),
       quoteZeroEx?.sources ?? [],
       chainId,
@@ -202,11 +205,13 @@ const QuickTrade = (props: QuickTradeProps) => {
       slippage,
       shouldShowWarningSign(slippage)
     )
+    setGasCostsInUsd(gasCostsInUsd)
     setTradeInfoData(tradeInfoData)
   }
 
   const resetTradeData = () => {
     setBuyTokenAmountFormatted('0.0')
+    setGasCostsInUsd(0)
     setTradeInfoData([])
   }
 
@@ -218,7 +223,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   }, [quoteResult])
 
   useEffect(() => {
-    setTradeInfoData([])
+    resetTradeData()
   }, [chainId])
 
   const fetchOptions = useCallback(() => {
@@ -404,7 +409,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     buyTokenPrice
   )
 
-  const getBetterQuoteState = () => {
+  const getBetterQuoteState = useCallback(() => {
     if (isFetchingMoreOptions) {
       return BetterQuoteState.fetchingQuote
     }
@@ -416,7 +421,11 @@ const QuickTrade = (props: QuickTradeProps) => {
     }
 
     return BetterQuoteState.noBetterQuote
-  }
+  }, [
+    isFetchingMoreOptions,
+    quoteResultOptions.hasBetterQuote,
+    quoteResultOptions.isReasonPriceImpact,
+  ])
 
   const betterQuoteState = getBetterQuoteState()
 
@@ -486,6 +495,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           {tradeInfoData.length > 0 && (
             <TradeDetail
               data={tradeInfoData}
+              gasPriceInUsd={gasCostsInUsd}
               prices={tokenPrices}
               showWarning={showWarning}
             />

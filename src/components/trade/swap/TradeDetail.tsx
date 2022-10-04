@@ -27,12 +27,14 @@ export type TradeDetailTokenPrices = {
 
 type TradeDetailProps = {
   data: TradeInfoItem[]
+  gasPriceInUsd: number
   prices: TradeDetailTokenPrices
   showWarning?: boolean
 }
 
 export const TradeDetail = ({
   data,
+  gasPriceInUsd,
   prices,
   showWarning,
 }: TradeDetailProps) => {
@@ -92,7 +94,7 @@ export const TradeDetail = ({
                       </Box>
                     </Flex>
                     <Box opacity={isExpanded ? 0 : 1}>
-                      <GasFees label={data[1].values[0]} />
+                      <GasFees label={gasPriceInUsd.toFixed(2)} />
                     </Box>
                   </Flex>
                   <AccordionIcon />
@@ -117,6 +119,6 @@ export const TradeDetail = ({
 
 const GasFees = ({ label }: { label: string }) => (
   <Flex bg={colors.icGray1} borderRadius={16} fontSize='12px' px='2' py='0'>
-    <Text color={colors.icGray4}>Gas {label}</Text>
+    <Text color={colors.icGray4}>Gas ${label}</Text>
   </Flex>
 )

@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 
 import { toWei } from 'utils'
 
-import { getFullCostsInUsd } from './exchangeIssuanceQuotes'
+import { getFullCostsInUsd, getGasCostsInUsd } from './costs'
 
 describe('getFullCostsInUsd()', () => {
   test('should return null if undefined', async () => {
@@ -46,5 +46,16 @@ describe('getFullCostsInUsd()', () => {
     const expectedCosts = 1040
     expect(fullCosts).toBeDefined()
     expect(fullCosts).toEqual(expectedCosts)
+  })
+})
+
+describe('getGasCostsInUsd()', () => {
+  test('should return gas costs with USDC', async () => {
+    const gasLimit = toWei(0.01)
+    const gasPrice = BigNumber.from(2)
+    const gas = gasPrice.mul(gasLimit)
+    const gasCostsInUsd = getGasCostsInUsd(gas, 2000)
+    const expectedCosts = 40
+    expect(gasCostsInUsd).toEqual(expectedCosts)
   })
 })

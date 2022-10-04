@@ -12,7 +12,7 @@ import {
   STETH,
   Token,
 } from 'constants/tokens'
-import { getFullCostsInUsd } from 'utils/exchangeIssuanceQuotes'
+import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { getFlashMintLeveragedGasEstimate } from 'utils/flashMintLeveragedGasEstimate'
 
 import { ExchangeIssuanceLeveragedQuote, QuoteType } from './'
@@ -114,6 +114,8 @@ export async function getEnhancedFlashMintLeveragedQuote(
         chainId,
         canFail
       )
+      const gasCosts = gasEstimate.mul(gasPrice)
+      const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       return {
         type: QuoteType.exchangeIssuanceLeveraged,
         isMinting,
@@ -121,7 +123,8 @@ export async function getEnhancedFlashMintLeveragedQuote(
         outputToken: buyToken,
         gas: gasEstimate,
         gasPrice,
-        gasCosts: gasEstimate.mul(gasPrice),
+        gasCosts,
+        gasCostsInUsd,
         fullCostsInUsd: getFullCostsInUsd(
           quoteLeveraged.inputOutputTokenAmount,
           gasEstimate.mul(gasPrice),
