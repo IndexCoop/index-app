@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { IndexToken } from 'constants/tokens'
 import { Contract, providers } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { IndexToken } from 'constants/tokens'
 import { useReadOnlyProvider } from 'hooks/useReadOnlyProvider'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import { IndexApi } from 'utils/api/indexApi'
