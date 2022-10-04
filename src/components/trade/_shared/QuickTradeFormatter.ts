@@ -188,6 +188,7 @@ const formatIfNumber = (value: string) => {
 export function getTradeInfoData0x(
   buyToken: Token,
   gasCosts: BigNumber,
+  gasCostsInUsd: number,
   minOutput: BigNumber,
   sources: { name: string; proportion: string }[],
   chainId: number = 1,
@@ -216,7 +217,9 @@ export function getTradeInfoData0x(
     },
     {
       title: 'Network Fee',
-      values: [`${networkFeeDisplay} ${networkToken}`],
+      values: [
+        `${networkFeeDisplay} ${networkToken} ($${gasCostsInUsd.toFixed(2)})`,
+      ],
     },
     navData ?? { title: 'NAV', values: [] },
     { title: slippageTitle, values: [slippageFormatted] },

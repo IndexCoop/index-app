@@ -4,7 +4,7 @@ import { getFlashMintZeroExQuote, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from 'constants/chains'
 import { icETHIndex, IndexToken, Token } from 'constants/tokens'
-import { getFullCostsInUsd } from 'utils/costs'
+import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { getFlashMintZeroExGasEstimate } from 'utils/flashMintZeroExGasEstimate'
 
 import { ExchangeIssuanceZeroExQuote, QuoteType } from './'
@@ -90,12 +90,8 @@ export async function getEnhancedFlashMintZeroExQuote(
         chainId,
         canFail
       )
-      console.log(
-        'GAS',
-        gasEstimate.toString(),
-        gasPrice.toString(),
-        gasEstimate.mul(gasPrice).toString()
-      )
+      const gasCosts = gasEstimate.mul(gasPrice)
+      const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       return {
         type: QuoteType.exchangeIssuanceZeroEx,
         isMinting,
@@ -103,7 +99,8 @@ export async function getEnhancedFlashMintZeroExQuote(
         outputToken: buyToken,
         gas: gasEstimate,
         gasPrice,
-        gasCosts: gasEstimate.mul(gasPrice),
+        gasCosts,
+        gasCostsInUsd,
         fullCostsInUsd: getFullCostsInUsd(
           quote0x.inputOutputTokenAmount,
           gasEstimate.mul(gasPrice),
