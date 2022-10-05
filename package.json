@@ -13,7 +13,7 @@
     "@indexcoop/flash-mint-sdk": "^1.1.0",
     "@indexcoop/tokenlists": "^1.26.0",
     "@rainbow-me/rainbowkit": "0.6.1",
-    "@sentry/react": "7.14.0",
+    "@sentry/react": "7.14.1",
     "@sentry/tracing": "7.14.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -74,7 +74,7 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "prop-types": "^15.8.1",
-    "typescript": "^4.8.3"
+    "typescript": "^4.8.4"
   },
   "lint-staged": {
     "*": "yarn run lint:fix"
