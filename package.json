@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "private": true,
   "dependencies": {
-    "@arcxmoney/analytics": "^0.0.11",
+    "@arcxmoney/analytics": "1.0.0",
     "@chakra-ui/icons": "^2.0.11",
     "@chakra-ui/react": "^2.3.5",
     "@elgorditosalsero/react-gtm-hook": "^2.5.0",

@@ -106,7 +106,7 @@ export const useTradeFlashMintLeveraged = () => {
               inputOutputTokenAmount,
               { gasLimit }
             )
-            logTx('LevEI', mintTx)
+            logTx(chainId ?? -1, 'LevEI', mintTx)
           } else {
             captureTransaction({
               exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
@@ -125,7 +125,7 @@ export const useTradeFlashMintLeveraged = () => {
               swapDataInputOutputToken,
               { gasLimit }
             )
-            logTx('LevEI', mintTx)
+            logTx(chainId ?? -1, 'LevEI', mintTx)
           }
         } else {
           const isRedeemingToNativeChainToken =
@@ -149,7 +149,7 @@ export const useTradeFlashMintLeveraged = () => {
               swapDataInputOutputToken,
               { gasLimit }
             )
-            logTx('LevEI', redeemTx)
+            logTx(chainId ?? -1, 'LevEI', redeemTx)
           } else {
             captureTransaction({
               exchangeIssuance: CaptureExchangeIssuanceKey.leveraged,
@@ -170,7 +170,7 @@ export const useTradeFlashMintLeveraged = () => {
                 gasLimit,
               }
             )
-            logTx('LevEI', redeemTx)
+            logTx(chainId ?? -1, 'LevEI', redeemTx)
           }
         }
         setIsTransacting(false)

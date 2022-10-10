@@ -114,7 +114,7 @@ export const useTradeFlashMintZeroEx = () => {
               inputOutputTokenAmount,
               { gasLimit }
             )
-            logTx('0xEI', mintTx)
+            logTx(chainId ?? -1, '0xEI', mintTx)
           } else {
             const maxAmountInputToken = inputOutputTokenAmount
             captureTransaction({
@@ -135,7 +135,7 @@ export const useTradeFlashMintZeroEx = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
-            logTx('0xEI', mintTx)
+            logTx(chainId ?? -1, '0xEI', mintTx)
           }
         } else {
           const isRedeemingNativeChainToken =
@@ -161,7 +161,7 @@ export const useTradeFlashMintZeroEx = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
-            logTx('0xEI', redeemTx)
+            logTx(chainId ?? -1, '0xEI', redeemTx)
           } else {
             captureTransaction({
               exchangeIssuance: CaptureExchangeIssuanceKey.zeroEx,
@@ -181,7 +181,7 @@ export const useTradeFlashMintZeroEx = () => {
               issuanceModule.isDebtIssuance,
               { gasLimit }
             )
-            logTx('0xEI', redeemTx)
+            logTx(chainId ?? -1, '0xEI', redeemTx)
           }
         }
         setIsTransacting(false)

@@ -46,6 +46,7 @@ export const logPage = (url: string) => {
 }
 
 export const logTransaction = (
+  chainId: number,
   transactionType: string,
   transactionHash?: string,
   data?: any
@@ -53,14 +54,25 @@ export const logTransaction = (
   if (isDevEnv) return
   init()
     .then((arcxAnalyticsSdk) => {
-      arcxAnalyticsSdk!.transaction(transactionType, transactionHash, data)
+      arcxAnalyticsSdk.transaction({
+        chain: chainId,
+        transactionHash: transactionHash ?? '',
+        metadata: {
+          data,
+          transactionType,
+        },
+      })
     })
     .catch((error) => {
       console.error(error)
     })
 }
 
-export const logTx = (txType: string, tx: TransactionResponse | null) => {
-  if (!tx) logTransaction(txType, undefined, { status: 'NO_RESPONSE' })
-  else logTransaction(txType, tx.hash)
+export const logTx = (
+  chainId: number,
+  txType: string,
+  tx: TransactionResponse | null
+) => {
+  if (!tx) logTransaction(chainId, txType, undefined, { status: 'NO_RESPONSE' })
+  else logTransaction(chainId, txType, tx.hash)
 }
