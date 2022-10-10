@@ -65,7 +65,7 @@
     "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@chakra-ui/styled-system": "^2.3.4",
     "@chakra-ui/system": "^2.2.12",
-    "@testing-library/dom": "^8.17.1",
+    "@testing-library/dom": "^8.19.0",
     "@types/lodash.merge": "^4.6.7",
     "@types/numeral": "^2.0.2",
     "@types/react": "^18.0.21",
