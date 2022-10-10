@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { useNetwork, useSendTransaction } from 'wagmi'
+import { useSendTransaction } from 'wagmi'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -11,6 +11,7 @@ import {
   zeroExRouterOptimismAddress,
 } from 'constants/contractAddresses'
 import { ZeroExQuote } from 'hooks/useBestQuote'
+import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import { logTransaction } from 'utils/api/analytics'
@@ -19,7 +20,7 @@ import { useBalances } from './useBalance'
 
 export const useTrade = () => {
   const { address } = useWallet()
-  const { chain } = useNetwork()
+  const { chainId } = useNetwork()
   const [zeroExQuote, setZeroExQuote] = useState<ZeroExQuote | null>(null)
 
   const txRequest: TransactionRequest = {
@@ -32,10 +33,10 @@ export const useTrade = () => {
   }
   const { sendTransaction, status, data } = useSendTransaction({
     mode: 'recklesslyUnprepared',
-    chainId: chain?.id,
+    chainId: chainId,
     from: address,
     to:
-      chain?.id === OPTIMISM.chainId
+      chainId === OPTIMISM.chainId
         ? zeroExRouterOptimismAddress
         : zeroExRouterAddress,
     value: BigNumber.from(0),
@@ -86,7 +87,7 @@ export const useTrade = () => {
     if (status !== 'idle' && status) setIsTransacting(false)
   }, [status])
 
-  logTransaction('SWAP', JSON.stringify(data))
+  logTransaction(chainId ?? -1, 'SWAP', JSON.stringify(data))
 
   return { executeTrade, isTransacting }
 }

@@ -7,6 +7,7 @@ import { Contract } from '@ethersproject/contracts'
 
 import { FlashMintPerp } from 'constants/contractAddresses'
 import { Token } from 'constants/tokens'
+import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { ISSUANCE_ABI } from 'utils/abi/Issuance'
 import { logTx } from 'utils/api/analytics'
@@ -25,6 +26,7 @@ const gasLimitRedeem = BigNumber.from('2200000')
  * Approve the spending of an ERC20
  */
 export const useIssuance = () => {
+  const { chainId } = useNetwork()
   const { address, signer } = useWallet()
 
   const [isTrading, setIsTrading] = useState(false)
@@ -59,7 +61,7 @@ export const useIssuance = () => {
           //   addTransaction(storedTx)
           // }
           await tx.wait()
-          logTx('Perp', tx)
+          logTx(chainId ?? -1, 'Perp', tx)
           captureTransaction({
             exchangeIssuance: CaptureExchangeIssuanceKey.perp,
             function: CaptureExchangeIssuanceFunctionKey.issueErc20,
@@ -81,7 +83,7 @@ export const useIssuance = () => {
           //   addTransaction(storedTx)
           // }
           await tx.wait()
-          logTx('Perp', tx)
+          logTx(chainId ?? -1, 'Perp', tx)
           captureTransaction({
             exchangeIssuance: CaptureExchangeIssuanceKey.perp,
             function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
