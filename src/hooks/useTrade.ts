@@ -87,7 +87,7 @@ export const useTrade = () => {
     if (status !== 'idle' && status) setIsTransacting(false)
   }, [status])
 
-  logTransaction(chainId ?? -1, 'SWAP', JSON.stringify(data))
+  logTransaction(chainId ?? -1, 'SWAP', '', JSON.stringify(data))
 
   return { executeTrade, isTransacting }
 }
