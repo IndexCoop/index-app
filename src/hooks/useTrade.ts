@@ -84,10 +84,13 @@ export const useTrade = () => {
   )
 
   useEffect(() => {
+    if (!data) return
+    logTransaction(chainId ?? -1, 'SWAP', '', JSON.stringify(data))
+  }, [data])
+
+  useEffect(() => {
     if (status !== 'idle' && status) setIsTransacting(false)
   }, [status])
-
-  logTransaction(chainId ?? -1, 'SWAP', '', JSON.stringify(data))
 
   return { executeTrade, isTransacting }
 }
