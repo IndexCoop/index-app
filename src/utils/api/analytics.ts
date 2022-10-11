@@ -1,6 +1,8 @@
 import { ArcxAnalyticsSdk } from '@arcxmoney/analytics'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 
+import { captureTxData } from 'utils/api/sentry'
+
 const init = () => {
   return ArcxAnalyticsSdk.init(
     process.env.REACT_APP_ARCX_ANALYTICS_API_KEY ?? ''
@@ -48,23 +50,24 @@ export const logPage = (url: string) => {
 export const logTransaction = (
   chainId: number,
   transactionType: string,
-  transactionHash?: string,
-  data?: any
+  transactionHash: string,
+  data: any = {}
 ) => {
   if (isDevEnv) return
   init()
     .then((arcxAnalyticsSdk) => {
+      captureTxData(chainId, transactionType, transactionHash, data)
       arcxAnalyticsSdk.transaction({
         chain: chainId,
-        transactionHash: transactionHash ?? '',
+        transactionHash: transactionHash,
         metadata: {
-          data,
+          ...data,
           transactionType,
         },
       })
     })
     .catch((error) => {
-      console.error(error)
+      console.log('Error logging transaction via arcx', error)
     })
 }
 
@@ -73,6 +76,6 @@ export const logTx = (
   txType: string,
   tx: TransactionResponse | null
 ) => {
-  if (!tx) logTransaction(chainId, txType, undefined, { status: 'NO_RESPONSE' })
+  if (!tx) logTransaction(chainId, txType, '', { status: 'NO_RESPONSE' })
   else logTransaction(chainId, txType, tx.hash)
 }
