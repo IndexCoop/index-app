@@ -569,8 +569,13 @@ export const indexNamesOptimism = indexNames.filter(
 
 // FlashMint specific lists
 export const flashMintIndexesMainnet = indexNames.filter(
-  (index) => index.address && index.symbol !== IndexToken.symbol
+  (index) =>
+    index.address &&
+    index.symbol !== Bitcoin2xFlexibleLeverageIndex.symbol &&
+    index.symbol !== Ethereum2xFlexibleLeverageIndex.symbol &&
+    index.symbol !== IndexToken.symbol
 )
+
 export const flashMintIndexesPolygon = indexNames.filter(
   (index) =>
     index.polygonAddress &&
