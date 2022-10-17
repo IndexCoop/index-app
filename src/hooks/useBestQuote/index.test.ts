@@ -1,8 +1,10 @@
 import { BigNumber } from 'ethers'
 
 import {
+  Bitcoin2xFlexibleLeverageIndex,
   DAI,
   ETH,
+  Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   icETHIndex,
   IMaticFLIP,
@@ -282,6 +284,33 @@ describe('isEligibleTradePairZeroEx()', () => {
     // Reenabled
     const isEligibleJpg = isEligibleTradePairZeroEx(inputToken, JPGIndex)
     expect(isEligibleJpg).toEqual(true)
+    // Won't work with ZeroEx, so shouldn't be eligible
+    const isEligibleBtc2xFli = isEligibleTradePairZeroEx(
+      inputToken,
+      Bitcoin2xFlexibleLeverageIndex
+    )
+    expect(isEligibleBtc2xFli).toEqual(false)
+    const isEligibleEth2xFli = isEligibleTradePairZeroEx(
+      inputToken,
+      Ethereum2xFlexibleLeverageIndex
+    )
+    expect(isEligibleEth2xFli).toEqual(false)
+  })
+
+  test('mainnet FLIs are not be eligible for ZeroEx', async () => {
+    const inputToken = ETH
+
+    // Won't work with the ZeroEx contract, so shouldn't be eligible
+    const isEligibleBtc2xFli = isEligibleTradePairZeroEx(
+      inputToken,
+      Bitcoin2xFlexibleLeverageIndex
+    )
+    expect(isEligibleBtc2xFli).toEqual(false)
+    const isEligibleEth2xFli = isEligibleTradePairZeroEx(
+      inputToken,
+      Ethereum2xFlexibleLeverageIndex
+    )
+    expect(isEligibleEth2xFli).toEqual(false)
   })
 })
 
