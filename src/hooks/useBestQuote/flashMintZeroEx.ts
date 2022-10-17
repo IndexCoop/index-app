@@ -3,7 +3,13 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { getFlashMintZeroExQuote, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from 'constants/chains'
-import { icETHIndex, IndexToken, Token } from 'constants/tokens'
+import {
+  Bitcoin2xFlexibleLeverageIndex,
+  Ethereum2xFlexibleLeverageIndex,
+  icETHIndex,
+  IndexToken,
+  Token,
+} from 'constants/tokens'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { getFlashMintZeroExGasEstimate } from 'utils/flashMintZeroExGasEstimate'
 
@@ -13,6 +19,18 @@ export function isEligibleTradePairZeroEx(
   inputToken: Token,
   outputToken: Token
 ): boolean {
+  if (
+    inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol ||
+    outputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol
+  )
+    return false
+
+  if (
+    inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol ||
+    outputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol
+  )
+    return false
+
   if (
     inputToken.symbol === icETHIndex.symbol ||
     outputToken.symbol === icETHIndex.symbol
