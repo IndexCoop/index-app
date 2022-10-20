@@ -30,7 +30,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "6.4.2",
     "react-scripts": "5.0.1",
-    "recharts": "^2.1.14",
+    "recharts": "^2.1.15",
     "wagmi": "0.6.7",
     "web-vitals": "^3.0.3"
   },
