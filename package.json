@@ -6,7 +6,7 @@
   "dependencies": {
     "@arcxmoney/analytics": "1.0.0",
     "@chakra-ui/icons": "^2.0.11",
-    "@chakra-ui/react": "^2.3.5",
+    "@chakra-ui/react": "2.3.6",
     "@elgorditosalsero/react-gtm-hook": "^2.5.0",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
@@ -30,7 +30,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "6.4.2",
     "react-scripts": "5.0.1",
-    "recharts": "^2.1.14",
+    "recharts": "2.1.15",
     "wagmi": "0.6.7",
     "web-vitals": "^3.0.3"
   },
@@ -64,7 +64,7 @@
     "@babel/plugin-syntax-flow": "^7.14.5",
     "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@chakra-ui/styled-system": "^2.3.4",
-    "@chakra-ui/system": "^2.2.12",
+    "@chakra-ui/system": "2.3.0",
     "@testing-library/dom": "8.19.0",
     "@types/lodash.merge": "^4.6.7",
     "@types/numeral": "^2.0.2",
