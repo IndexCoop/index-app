@@ -60,10 +60,10 @@ export const logTransaction = (
       arcxAnalyticsSdk.transaction({
         chain: chainId,
         transactionHash: transactionHash,
-        // atrributes: {
-        //   // ...data,
-        //   transactionType,
-        // },
+        metadata: {
+          data,
+          transactionType,
+        },
       })
     })
     .catch((error) => {
