@@ -7,7 +7,6 @@
 
   "extends": [
     "eslint:recommended", // // Typical rules recommended for ESLint.
-    "react-app", // // Create React App configs.
     "plugin:react/recommended", // // Typical rules recommended for React projects.
     "plugin:@typescript-eslint/recommended" // // Typical rules recommended for Typescript.
   ],
