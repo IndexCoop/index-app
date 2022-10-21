@@ -44,7 +44,7 @@ export const captureTxData = (
       chainId,
       transactionType,
       transactionHash,
-      ...data,
+      data,
     },
   })
 }

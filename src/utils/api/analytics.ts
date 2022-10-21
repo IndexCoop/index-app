@@ -5,7 +5,8 @@ import { captureTxData } from 'utils/api/sentry'
 
 const init = () => {
   return ArcxAnalyticsSdk.init(
-    process.env.REACT_APP_ARCX_ANALYTICS_API_KEY ?? ''
+    process.env.REACT_APP_ARCX_ANALYTICS_API_KEY ?? '',
+    { trackPages: false }
   )
 }
 
