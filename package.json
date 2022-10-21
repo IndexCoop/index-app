@@ -32,7 +32,7 @@
     "react-scripts": "5.0.1",
     "recharts": "2.1.15",
     "wagmi": "0.6.7",
-    "web-vitals": "^3.0.3"
+    "web-vitals": "^3.0.4"
   },
   "scripts": {
     "start": "react-scripts start",
