@@ -1,14 +1,6 @@
-import { useEffect } from 'react'
-
 import { Flex } from '@chakra-ui/react'
 
-import { logPage } from 'utils/api/analytics'
-
 const Page = (props: { children?: JSX.Element }) => {
-  useEffect(() => {
-    logPage(window.location.href)
-  }, [])
-
   return (
     <Flex direction='column' mb='50px'>
       <Flex
