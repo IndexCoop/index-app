@@ -20,6 +20,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "^6.2.14",
+    "buffer": "^6.0.3",
     "ethers": "5.7.1",
     "export-to-csv": "^0.2.1",
     "framer-motion": "^7.3.2",
