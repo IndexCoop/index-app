@@ -448,7 +448,7 @@ export const icETHIndex: Token = {
   tokensetsId: 'iceth',
   tokenContextKey: 'iceth',
   fees: {
-    streamingFee: '0.0%',
+    streamingFee: '0.75%',
     mintFee: '0.0%',
     redeemFee: '0.0%',
   },
