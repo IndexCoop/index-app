@@ -26,7 +26,7 @@ import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useSlippage } from 'providers/Slippage'
-import { isValidTokenInput, toWei } from 'utils'
+import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getNativeToken, isNotTradableToken } from 'utils/tokens'
 
@@ -329,6 +329,13 @@ const FlashMint = (props: QuickTradeProps) => {
     parseFloat(indexTokenAmount),
     indexTokenPrice
   )
+  const inputOutputTokenFiatFormatted = formattedFiat(
+    parseFloat(
+      displayFromWei(inputOutputTokenAmount, 2, inputOutputToken.decimals) ??
+        '0'
+    ),
+    inputOutputPrice
+  )
 
   const shouldShowOverride: boolean = txWouldFailZeroEx || txWouldFailLeveraged
 
@@ -342,6 +349,7 @@ const FlashMint = (props: QuickTradeProps) => {
         inputOutputToken={inputOutputToken}
         inputOutputTokenAmountFormatted={inputOutputTokenAmountFormatted}
         inputOutputTokenBalanceFormatted={inputOutputTokenBalanceFormatted}
+        inputOutputTokenFiatFormatted={inputOutputTokenFiatFormatted}
         isDarkMode={isDarkMode}
         isIssue={isMinting}
         isNarrow={isNarrow}
