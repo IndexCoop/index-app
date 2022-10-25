@@ -33,6 +33,7 @@ import { getNativeToken, isNotTradableToken } from 'utils/tokens'
 import { TradeButtonContainer } from '../_shared/footer'
 import {
   formattedBalance,
+  formattedFiat,
   getHasInsufficientFunds,
 } from '../_shared/QuickTradeFormatter'
 import {
@@ -71,8 +72,10 @@ const FlashMint = (props: QuickTradeProps) => {
   const {
     buyToken: indexToken,
     buyTokenList: indexTokenList,
+    buyTokenPrice: indexTokenPrice,
     sellToken: inputOutputToken,
     sellTokenList: inputOutputTokenList,
+    sellTokenPrice: inputOutputPrice,
     changeBuyToken: changeIndexToken,
     changeSellToken: changeInputOutputToken,
   } = useTradeTokenLists(props.singleToken, true)
@@ -322,6 +325,11 @@ const FlashMint = (props: QuickTradeProps) => {
     getBalance(inputOutputToken.symbol)
   )
 
+  const indexTokenFiatFormatted = formattedFiat(
+    parseFloat(indexTokenAmount),
+    indexTokenPrice
+  )
+
   const shouldShowOverride: boolean = txWouldFailZeroEx || txWouldFailLeveraged
 
   return (
@@ -330,6 +338,7 @@ const FlashMint = (props: QuickTradeProps) => {
         indexToken={indexToken}
         indexTokenList={indexTokenList}
         indexTokenAmountFormatted={indexTokenAmountFormatted}
+        indexTokenFiatFormatted={indexTokenFiatFormatted}
         inputOutputToken={inputOutputToken}
         inputOutputTokenAmountFormatted={inputOutputTokenAmountFormatted}
         inputOutputTokenBalanceFormatted={inputOutputTokenBalanceFormatted}

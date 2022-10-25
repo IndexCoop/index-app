@@ -11,6 +11,7 @@ type DirectIssuanceProps = {
   indexToken: Token
   indexTokenList: Token[]
   indexTokenAmountFormatted: string | undefined
+  indexTokenFiatFormatted: string
   inputOutputToken: Token
   inputOutputTokenAmountFormatted: string
   inputOutputTokenBalanceFormatted: string
@@ -28,6 +29,7 @@ const DirectIssuance = ({
   indexToken,
   indexTokenList,
   indexTokenAmountFormatted,
+  indexTokenFiatFormatted,
   inputOutputToken,
   inputOutputTokenAmountFormatted,
   inputOutputTokenBalanceFormatted,
@@ -71,7 +73,7 @@ const DirectIssuance = ({
         }}
         selectedToken={indexToken}
         selectedTokenAmount={indexTokenAmountFormatted}
-        formattedFiat=''
+        formattedFiat={indexTokenFiatFormatted}
         priceImpact={priceImpact}
         tokenList={indexTokenList}
         onChangeInput={onChangeBuyTokenAmount}
