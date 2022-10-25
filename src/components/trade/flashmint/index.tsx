@@ -26,13 +26,14 @@ import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
 import { useSlippage } from 'providers/Slippage'
-import { isValidTokenInput, toWei } from 'utils'
+import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getNativeToken, isNotTradableToken } from 'utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
   formattedBalance,
+  formattedFiat,
   getHasInsufficientFunds,
 } from '../_shared/QuickTradeFormatter'
 import {
@@ -71,8 +72,10 @@ const FlashMint = (props: QuickTradeProps) => {
   const {
     buyToken: indexToken,
     buyTokenList: indexTokenList,
+    buyTokenPrice: indexTokenPrice,
     sellToken: inputOutputToken,
     sellTokenList: inputOutputTokenList,
+    sellTokenPrice: inputOutputPrice,
     changeBuyToken: changeIndexToken,
     changeSellToken: changeInputOutputToken,
   } = useTradeTokenLists(props.singleToken, true)
@@ -322,6 +325,18 @@ const FlashMint = (props: QuickTradeProps) => {
     getBalance(inputOutputToken.symbol)
   )
 
+  const indexTokenFiatFormatted = formattedFiat(
+    parseFloat(indexTokenAmount),
+    indexTokenPrice
+  )
+  const inputOutputTokenFiatFormatted = formattedFiat(
+    parseFloat(
+      displayFromWei(inputOutputTokenAmount, 2, inputOutputToken.decimals) ??
+        '0'
+    ),
+    inputOutputPrice
+  )
+
   const shouldShowOverride: boolean = txWouldFailZeroEx || txWouldFailLeveraged
 
   return (
@@ -330,9 +345,11 @@ const FlashMint = (props: QuickTradeProps) => {
         indexToken={indexToken}
         indexTokenList={indexTokenList}
         indexTokenAmountFormatted={indexTokenAmountFormatted}
+        indexTokenFiatFormatted={indexTokenFiatFormatted}
         inputOutputToken={inputOutputToken}
         inputOutputTokenAmountFormatted={inputOutputTokenAmountFormatted}
         inputOutputTokenBalanceFormatted={inputOutputTokenBalanceFormatted}
+        inputOutputTokenFiatFormatted={inputOutputTokenFiatFormatted}
         isDarkMode={isDarkMode}
         isIssue={isMinting}
         isNarrow={isNarrow}

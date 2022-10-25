@@ -11,9 +11,11 @@ type DirectIssuanceProps = {
   indexToken: Token
   indexTokenList: Token[]
   indexTokenAmountFormatted: string | undefined
+  indexTokenFiatFormatted: string
   inputOutputToken: Token
   inputOutputTokenAmountFormatted: string
   inputOutputTokenBalanceFormatted: string
+  inputOutputTokenFiatFormatted: string
   isDarkMode: boolean
   isIssue: boolean
   isNarrow: boolean
@@ -28,9 +30,11 @@ const DirectIssuance = ({
   indexToken,
   indexTokenList,
   indexTokenAmountFormatted,
+  indexTokenFiatFormatted,
   inputOutputToken,
   inputOutputTokenAmountFormatted,
   inputOutputTokenBalanceFormatted,
+  inputOutputTokenFiatFormatted,
   isDarkMode,
   isIssue,
   isNarrow,
@@ -71,7 +75,7 @@ const DirectIssuance = ({
         }}
         selectedToken={indexToken}
         selectedTokenAmount={indexTokenAmountFormatted}
-        formattedFiat=''
+        formattedFiat={indexTokenFiatFormatted}
         priceImpact={priceImpact}
         tokenList={indexTokenList}
         onChangeInput={onChangeBuyTokenAmount}
@@ -103,9 +107,12 @@ const DirectIssuance = ({
           />
           <ChevronDownIcon ml={1} w={6} h={6} color={colors.icGray4} />
         </Flex>
-        <Text fontWeight='600' marginLeft='16px'>
-          {inputOutputTokenAmountFormatted}
-        </Text>
+        <Flex direction='column' marginLeft='16px'>
+          <Text fontWeight='600'>{inputOutputTokenAmountFormatted}</Text>
+          <Text fontSize='12px' textColor={colorStyles(isDarkMode).text3}>
+            {inputOutputTokenFiatFormatted}
+          </Text>
+        </Flex>
       </Flex>
       <Text marginTop='8px' fontSize='12px' fontWeight='400'>
         {inputOutputToken.symbol} Balance: {inputOutputTokenBalanceFormatted}
