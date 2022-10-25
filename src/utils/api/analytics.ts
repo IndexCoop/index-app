@@ -6,7 +6,7 @@ import { captureTxData } from 'utils/api/sentry'
 const init = () => {
   return ArcxAnalyticsSdk.init(
     process.env.REACT_APP_ARCX_ANALYTICS_API_KEY ?? '',
-    { trackPages: false }
+    { trackPages: true }
   )
 }
 
@@ -31,17 +31,6 @@ export const logEvent = (event: string, data?: any) => {
   init()
     .then((arcxAnalyticsSdk) => {
       arcxAnalyticsSdk!.event(event, data)
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-}
-
-export const logPage = (url: string) => {
-  if (isDevEnv) return
-  init()
-    .then((arcxAnalyticsSdk) => {
-      arcxAnalyticsSdk!.page({ url })
     })
     .catch((error) => {
       console.error(error)
