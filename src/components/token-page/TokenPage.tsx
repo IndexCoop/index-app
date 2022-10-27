@@ -1,4 +1,6 @@
-import { Box, Flex, useBreakpointValue } from '@chakra-ui/react'
+import { colors, colorStyles, useColorStyles } from 'styles/colors'
+
+import { Box, Flex, Link, Text, useBreakpointValue } from '@chakra-ui/react'
 
 import Page from 'components/page/Page'
 import { getPriceChartData } from 'components/token-page/charts/PriceChartData'
@@ -13,7 +15,7 @@ import {
   getFormattedChartPriceChanges,
   getPricesChanges,
 } from 'utils/priceChange'
-import { getAddressForToken, isPerpToken } from 'utils/tokens'
+import { getAddressForToken, isPerpToken, isTokenMintable } from 'utils/tokens'
 
 import Disclaimer from './Disclaimer'
 import MarketChart, { PriceChartRangeOption } from './MarketChart'
@@ -79,6 +81,7 @@ const TokenPage = (props: {
   isLeveragedToken?: boolean
   apy?: string
 }) => {
+  const { isDarkMode } = useColorStyles()
   const isMobile = useBreakpointValue({ base: true, lg: false })
   const { marketData, token } = props
 
@@ -110,9 +113,25 @@ const TokenPage = (props: {
 
   const stats = getStatsForToken(token, marketData, currentSupplyFormatted, nav)
 
+  const isMintable = isTokenMintable(token, chainId)
+
   return (
     <Page>
       <Flex direction='column' w={['100%', '80vw']} m='0 auto'>
+        {!isMintable && (
+          <Text
+            color={isDarkMode ? colors.icBlue8 : colors.icBlue6}
+            fontSize={'16px'}
+            mx='1'
+            my='4'
+          >
+            <Link href='https://indexcoop.com/blog/deprecation-of-data-gmi-mnye-and-polygon-flis'>
+              This product is not available for purchase and undergoing
+              deprecation. If you are a holder or liquidity provider, please{' '}
+              visit our blog post for further details and next steps.
+            </Link>
+          </Text>
+        )}
         <Box mb={['16px', '48px']}>
           <TokenPageHeader isMobile={isMobile ?? false} token={props.token} />
         </Box>
