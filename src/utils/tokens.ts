@@ -1,7 +1,8 @@
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   ETH,
-  flashMintIndexesMainnet,
+  flashMintIndexesMainnetMint,
+  flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygon,
   indexNamesMainnet,
   indexNamesOptimism,
@@ -115,7 +116,7 @@ export function isTokenAvailableForFlashMint(
   switch (chainId) {
     case MAINNET.chainId:
       return (
-        flashMintIndexesMainnet.filter((t) => t.symbol === token.symbol)
+        flashMintIndexesMainnetRedeem.filter((t) => t.symbol === token.symbol)
           .length > 0
       )
     case OPTIMISM.chainId:
@@ -127,6 +128,25 @@ export function isTokenAvailableForFlashMint(
         flashMintIndexesPolygon.filter((t) => t.symbol === token.symbol)
           .length > 0
       )
+    default:
+      return false
+  }
+}
+
+export function isTokenMintable(
+  token: Token,
+  chainId: number | undefined
+): boolean {
+  switch (chainId) {
+    case MAINNET.chainId:
+      return (
+        flashMintIndexesMainnetMint.filter((t) => t.symbol === token.symbol)
+          .length > 0
+      )
+    case OPTIMISM.chainId:
+      return false
+    case POLYGON.chainId:
+      return false
     default:
       return false
   }
