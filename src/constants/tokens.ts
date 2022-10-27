@@ -568,7 +568,18 @@ export const indexNamesOptimism = indexNames.filter(
 )
 
 // FlashMint specific lists
-export const flashMintIndexesMainnet = indexNames.filter(
+export const flashMintIndexesMainnetMint = indexNames.filter(
+  (index) =>
+    index.address &&
+    index.symbol !== Bitcoin2xFlexibleLeverageIndex.symbol &&
+    index.symbol !== Ethereum2xFlexibleLeverageIndex.symbol &&
+    index.symbol !== IndexToken.symbol &&
+    // DATA and GMI are now deprecated
+    index.symbol !== DataIndex.symbol &&
+    index.symbol !== GmiIndex.symbol
+)
+
+export const flashMintIndexesMainnetRedeem = indexNames.filter(
   (index) =>
     index.address &&
     index.symbol !== Bitcoin2xFlexibleLeverageIndex.symbol &&

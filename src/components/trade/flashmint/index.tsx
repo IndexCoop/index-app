@@ -28,7 +28,11 @@ import { useWallet } from 'hooks/useWallet'
 import { useSlippage } from 'providers/Slippage'
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
-import { getNativeToken, isNotTradableToken } from 'utils/tokens'
+import {
+  getNativeToken,
+  isNotTradableToken,
+  isTokenMintable,
+} from 'utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
@@ -85,6 +89,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const [indexTokenAmountFormatted, setIndexTokenAmountFormatted] =
     useState('0.0')
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
+  const [isMintable, setIsMintable] = useState(true)
   const [isMinting, setIsMinting] = useState(true)
   const [override, setOverride] = useState(false)
 
@@ -129,6 +134,11 @@ const FlashMint = (props: QuickTradeProps) => {
     indexTokenAmountWei,
     getBalance(indexToken.symbol)
   )
+
+  useEffect(() => {
+    const isMintable = isTokenMintable(indexToken, chainId)
+    setIsMintable(isMintable)
+  }, [chainId, indexToken])
 
   useEffect(() => {
     const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
@@ -352,6 +362,7 @@ const FlashMint = (props: QuickTradeProps) => {
         inputOutputTokenFiatFormatted={inputOutputTokenFiatFormatted}
         isDarkMode={isDarkMode}
         isIssue={isMinting}
+        isMintable={isMintable}
         isNarrow={isNarrow}
         onChangeBuyTokenAmount={onChangeIndexTokenAmount}
         onSelectIndexToken={() => {

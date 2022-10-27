@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   ETH,
-  flashMintIndexesMainnet,
+  flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygon,
   icETHIndex,
   indexNamesMainnet,
@@ -170,16 +170,17 @@ const getCurrencyTokensForToken = (token: Token, chainId: number) => {
  * Get the list of currency tokens for the selected chain
  * @returns Token[] list of tokens
  */
-const getTokenListByChain = (
+export const getTokenListByChain = (
   chainId: number | undefined = MAINNET.chainId,
   isFlashMint: boolean,
   singleToken: Token | undefined
 ) => {
   if (singleToken) return [singleToken]
-  if (chainId === POLYGON.chainId)
+  if (chainId === POLYGON.chainId) {
     return isFlashMint ? flashMintIndexesPolygon : indexNamesPolygon
+  }
   if (chainId === OPTIMISM.chainId) return indexNamesOptimism
-  return isFlashMint ? flashMintIndexesMainnet : indexNamesMainnet
+  return isFlashMint ? flashMintIndexesMainnetRedeem : indexNamesMainnet
 }
 
 /**

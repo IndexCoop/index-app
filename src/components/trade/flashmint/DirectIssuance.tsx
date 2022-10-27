@@ -18,6 +18,7 @@ type DirectIssuanceProps = {
   inputOutputTokenFiatFormatted: string
   isDarkMode: boolean
   isIssue: boolean
+  isMintable: boolean
   isNarrow: boolean
   onChangeBuyTokenAmount: (token: Token, input: string) => void
   onSelectIndexToken: () => void
@@ -37,6 +38,7 @@ const DirectIssuance = ({
   inputOutputTokenFiatFormatted,
   isDarkMode,
   isIssue,
+  isMintable,
   isNarrow,
   onChangeBuyTokenAmount,
   onSelectIndexToken,
@@ -59,6 +61,17 @@ const DirectIssuance = ({
         />
       </Flex>
     </Flex>
+    <Flex>
+      {!isMintable && (
+        <Text
+          color={isDarkMode ? colors.icBlue8 : colors.icBlue6}
+          fontSize={'12px'}
+          m='2'
+        >
+          This token is deprecated and available for redemption only.
+        </Text>
+      )}
+    </Flex>
     <Box
       borderColor={isDarkMode ? colors.icWhite : colors.black}
       paddingTop='16px'
@@ -67,11 +80,11 @@ const DirectIssuance = ({
         title={''}
         config={{
           isDarkMode,
-          isInputDisabled: false,
+          isInputDisabled: isIssue && !isMintable,
           isNarrowVersion: isNarrow,
-          isSelectorDisabled: false,
-          isReadOnly: false,
-          showMaxLabel: true,
+          isSelectorDisabled: isIssue && !isMintable,
+          isReadOnly: isIssue && !isMintable,
+          showMaxLabel: isIssue && isMintable,
         }}
         selectedToken={indexToken}
         selectedTokenAmount={indexTokenAmountFormatted}
