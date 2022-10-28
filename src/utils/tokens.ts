@@ -140,13 +140,21 @@ export function isTokenMintable(
   switch (chainId) {
     case MAINNET.chainId:
       return (
+        mainnetCurrencyTokens.filter((t) => t.symbol === token.symbol).length >
+          0 ||
         flashMintIndexesMainnetMint.filter((t) => t.symbol === token.symbol)
           .length > 0
       )
     case OPTIMISM.chainId:
-      return false
+      return (
+        optimismCurrencyTokens.filter((t) => t.symbol === token.symbol).length >
+        0
+      )
     case POLYGON.chainId:
-      return false
+      return (
+        polygonCurrencyTokens.filter((t) => t.symbol === token.symbol).length >
+        0
+      )
     default:
       return false
   }

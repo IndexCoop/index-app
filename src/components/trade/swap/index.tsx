@@ -22,7 +22,12 @@ import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getZeroExRouterAddress } from 'utils/contracts'
-import { getNativeToken, isNotTradableToken, isPerpToken } from 'utils/tokens'
+import {
+  getNativeToken,
+  isNotTradableToken,
+  isPerpToken,
+  isTokenMintable,
+} from 'utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
@@ -428,6 +433,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   ])
 
   const betterQuoteState = getBetterQuoteState()
+  const tokenIsMintable = isTokenMintable(buyToken, chainId)
 
   return (
     <Box>
@@ -436,11 +442,13 @@ const QuickTrade = (props: QuickTradeProps) => {
           title='From'
           config={{
             isDarkMode,
-            isInputDisabled: isNotTradableToken(props.singleToken, chainId),
+            isInputDisabled:
+              isNotTradableToken(props.singleToken, chainId) ||
+              !tokenIsMintable,
             isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
-            isReadOnly: false,
-            showMaxLabel: true,
+            isReadOnly: !tokenIsMintable,
+            showMaxLabel: !tokenIsMintable,
           }}
           selectedToken={sellToken}
           formattedFiat={sellTokenFiat}
