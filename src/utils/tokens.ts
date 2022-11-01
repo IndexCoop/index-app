@@ -137,6 +137,9 @@ export function isTokenMintable(
   token: Token,
   chainId: number | undefined
 ): boolean {
+  if (token.symbol === IndexToken.symbol) {
+    return true
+  }
   switch (chainId) {
     case MAINNET.chainId:
       return (
