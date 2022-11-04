@@ -173,6 +173,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const getTradeButtonDisabledState = () => {
     if (!isSupportedNetwork) return true
     if (!address) return true
+    if (isMinting && !isTokenMintable(indexToken, chainId)) return true
     return (
       indexTokenAmount === '0' ||
       (isMinting && hasInsufficientFundsInputOutputToken) ||
@@ -309,11 +310,13 @@ const FlashMint = (props: QuickTradeProps) => {
   )
   const inputOutputTokenItems = getSelectTokenListItems(
     inputOutputTokenList,
-    inputOutputTokenBalances
+    inputOutputTokenBalances,
+    chainId
   )
   const indexTokenItems = getSelectTokenListItems(
     indexTokenList,
-    outputTokenBalances
+    outputTokenBalances,
+    chainId
   )
 
   const buttonLabel = getTradeButtonLabel()

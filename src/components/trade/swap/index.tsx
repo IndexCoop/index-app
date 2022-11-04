@@ -29,6 +29,7 @@ import {
   isTokenMintable,
 } from 'utils/tokens'
 
+import DeprecatedTokenMessage from '../_shared/DeprecatedTokenMessage'
 import { TradeButtonContainer } from '../_shared/footer'
 import {
   formattedFiat,
@@ -215,6 +216,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   }
 
   const resetTradeData = () => {
+    setSellTokenAmount('0')
     setBuyTokenAmountFormatted('0.0')
     setGasCostsInUsd(0)
     setTradeInfoData([])
@@ -370,9 +372,15 @@ const QuickTrade = (props: QuickTradeProps) => {
     await executeTrade(quoteResult.quotes.zeroEx)
   }
 
+  const onSwitchTokens = () => {
+    swapTokenLists()
+    resetTradeData()
+  }
+
   const getButtonDisabledState = () => {
     if (!supportedNetwork) return true
     if (!address) return true
+    if (isBuying && !isTokenMintable(buyToken, chainId)) return true
     if (hasFetchingError) return false
     return (
       sellTokenAmount === '0' ||
@@ -398,11 +406,13 @@ const QuickTrade = (props: QuickTradeProps) => {
   )
   const inputTokenItems = getSelectTokenListItems(
     sellTokenList,
-    inputTokenBalances
+    inputTokenBalances,
+    chainId
   )
   const outputTokenItems = getSelectTokenListItems(
     buyTokenList,
-    outputTokenBalances
+    outputTokenBalances,
+    chainId
   )
 
   // TradeDetail
@@ -438,6 +448,10 @@ const QuickTrade = (props: QuickTradeProps) => {
   return (
     <Box>
       <Flex direction='column' my='20px'>
+        <DeprecatedTokenMessage
+          isDarkMode={isDarkMode}
+          isMintable={tokenIsMintable}
+        />
         <QuickTradeSelector
           title='From'
           config={{
@@ -462,11 +476,11 @@ const QuickTrade = (props: QuickTradeProps) => {
           <IconButton
             background='transparent'
             margin={'6px 0'}
-            aria-label='Search database'
+            aria-label='switch buy/sell tokens'
             borderColor={isDarkMode ? colors.icWhite : colors.black}
             color={isDarkMode ? colors.icWhite : colors.black}
             icon={<UpDownIcon />}
-            onClick={() => swapTokenLists()}
+            onClick={onSwitchTokens}
           />
         </Box>
         <QuickTradeSelector

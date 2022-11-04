@@ -5,6 +5,7 @@ import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
 import { Token } from 'constants/tokens'
 
+import DeprecatedTokenMessage from '../_shared/DeprecatedTokenMessage'
 import QuickTradeSelector from '../_shared/QuickTradeSelector'
 
 type DirectIssuanceProps = {
@@ -61,16 +62,8 @@ const DirectIssuance = ({
         />
       </Flex>
     </Flex>
-    <Flex>
-      {!isMintable && (
-        <Text
-          color={isDarkMode ? colors.icBlue8 : colors.icBlue6}
-          fontSize={'12px'}
-          m='2'
-        >
-          This token is deprecated and available for redemption only.
-        </Text>
-      )}
+    <Flex justify='center' mt='4'>
+      <DeprecatedTokenMessage isDarkMode={isDarkMode} isMintable={isMintable} />
     </Flex>
     <Box
       borderColor={isDarkMode ? colors.icWhite : colors.black}

@@ -15,12 +15,14 @@ import {
 
 import { Token } from 'constants/tokens'
 import { displayFromWei } from 'utils'
+import { isTokenMintable } from 'utils/tokens'
 
 type SelectTokenModalItem = {
   symbol: string
   logo: string
   tokenName: string
   balance: string
+  isMintable: boolean
 }
 
 type SelectTokenModalProps = {
@@ -64,6 +66,7 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
               <TokenItem
                 key={item.symbol}
                 isDarkMode={isDarkMode}
+                isMintable={item.isMintable}
                 item={item}
                 onClick={() => onSelectedToken(item.symbol)}
               />
@@ -76,11 +79,17 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
 
 type TokenItemProps = {
   isDarkMode: boolean
+  isMintable: boolean
   item: SelectTokenModalItem
   onClick: (tokenSymbol: string) => void
 }
 
-const TokenItem = ({ isDarkMode, item, onClick }: TokenItemProps) => (
+const TokenItem = ({
+  isDarkMode,
+  isMintable,
+  item,
+  onClick,
+}: TokenItemProps) => (
   <Flex
     align='center'
     justify='space-between'
@@ -96,9 +105,16 @@ const TokenItem = ({ isDarkMode, item, onClick }: TokenItemProps) => (
     <Flex align='center'>
       <Image alt={`${item.symbol} logo`} src={item.logo} w='40px' h='40px' />
       <Flex direction='column' ml='16px'>
-        <Text fontSize='md' fontWeight='500'>
-          {item.symbol}
-        </Text>
+        <Flex align='baseline'>
+          <Text fontSize='md' fontWeight='500'>
+            {item.symbol}
+          </Text>
+          {!isMintable && (
+            <Text color={colors.icBlue} fontSize='sm' fontWeight='500' ml='2'>
+              Sell and redeem only.
+            </Text>
+          )}
+        </Flex>
         <Text fontSize='sm' fontWeight='500'>
           {item.tokenName}
         </Text>
@@ -115,13 +131,18 @@ const TokenItem = ({ isDarkMode, item, onClick }: TokenItemProps) => (
 
 export function getSelectTokenListItems(
   tokens: Token[],
-  balances: BigNumber[]
+  balances: BigNumber[],
+  chainId: number | undefined
 ): SelectTokenModalItem[] {
-  const tokenList: SelectTokenModalItem[] = tokens.map((token, index) => ({
-    symbol: token.symbol,
-    logo: token.image,
-    tokenName: token.name,
-    balance: displayFromWei(balances[index], 3, token.decimals) ?? '0',
-  }))
+  const tokenList: SelectTokenModalItem[] = tokens.map((token, index) => {
+    const isMintable = isTokenMintable(token, chainId)
+    return {
+      symbol: token.symbol,
+      logo: token.image,
+      tokenName: token.name,
+      balance: displayFromWei(balances[index], 3, token.decimals) ?? '0',
+      isMintable,
+    }
+  })
   return tokenList
 }
