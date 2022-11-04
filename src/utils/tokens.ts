@@ -1,5 +1,6 @@
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
+  DefiPulseIndex,
   ETH,
   flashMintIndexesMainnetMint,
   flashMintIndexesMainnetRedeem,
@@ -10,6 +11,7 @@ import {
   IndexToken,
   mainnetCurrencyTokens,
   MATIC,
+  MetaverseIndex,
   optimismCurrencyTokens,
   polygonCurrencyTokens,
   Token,
@@ -137,9 +139,9 @@ export function isTokenMintable(
   token: Token,
   chainId: number | undefined
 ): boolean {
-  if (token.symbol === IndexToken.symbol) {
-    return true
-  }
+  if (token.symbol === DefiPulseIndex.symbol) return true
+  if (token.symbol === IndexToken.symbol) return true
+  if (token.symbol === MetaverseIndex.symbol) return true
   switch (chainId) {
     case MAINNET.chainId:
       return (
@@ -159,6 +161,6 @@ export function isTokenMintable(
         0
       )
     default:
-      return false
+      return true
   }
 }
