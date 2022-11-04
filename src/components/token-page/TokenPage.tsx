@@ -5,12 +5,7 @@ import { Box, Flex, Link, Text, useBreakpointValue } from '@chakra-ui/react'
 import Page from 'components/page/Page'
 import { getPriceChartData } from 'components/token-page/charts/PriceChartData'
 import QuickTradeContainer from 'components/trade'
-import {
-  Bitcoin2xFlexibleLeverageIndex,
-  Ethereum2xFlexibleLeverageIndex,
-  IndexToken,
-  Token,
-} from 'constants/tokens'
+import { IndexToken, Token } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTokenSupply } from 'hooks/useTokenSupply'
@@ -118,15 +113,12 @@ const TokenPage = (props: {
 
   const stats = getStatsForToken(token, marketData, currentSupplyFormatted, nav)
 
-  const isException =
-    token.symbol === Ethereum2xFlexibleLeverageIndex.symbol ||
-    token.symbol === Bitcoin2xFlexibleLeverageIndex.symbol
   const isMintable = isTokenMintable(token, chainId)
 
   return (
     <Page>
       <Flex direction='column' w={['100%', '80vw']} m='0 auto'>
-        {!isException && !isMintable && (
+        {!isMintable && (
           <Text
             color={isDarkMode ? colors.icBlue8 : colors.icBlue6}
             fontSize={'16px'}
