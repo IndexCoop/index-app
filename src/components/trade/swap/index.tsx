@@ -29,6 +29,7 @@ import {
   isTokenMintable,
 } from 'utils/tokens'
 
+import DeprecatedTokenMessage from '../_shared/DeprecatedTokenMessage'
 import { TradeButtonContainer } from '../_shared/footer'
 import {
   formattedFiat,
@@ -440,6 +441,10 @@ const QuickTrade = (props: QuickTradeProps) => {
   return (
     <Box>
       <Flex direction='column' my='20px'>
+        <DeprecatedTokenMessage
+          isDarkMode={isDarkMode}
+          isMintable={tokenIsMintable}
+        />
         <QuickTradeSelector
           title='From'
           config={{
