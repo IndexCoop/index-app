@@ -309,11 +309,13 @@ const FlashMint = (props: QuickTradeProps) => {
   )
   const inputOutputTokenItems = getSelectTokenListItems(
     inputOutputTokenList,
-    inputOutputTokenBalances
+    inputOutputTokenBalances,
+    chainId
   )
   const indexTokenItems = getSelectTokenListItems(
     indexTokenList,
-    outputTokenBalances
+    outputTokenBalances,
+    chainId
   )
 
   const buttonLabel = getTradeButtonLabel()

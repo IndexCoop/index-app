@@ -398,11 +398,13 @@ const QuickTrade = (props: QuickTradeProps) => {
   )
   const inputTokenItems = getSelectTokenListItems(
     sellTokenList,
-    inputTokenBalances
+    inputTokenBalances,
+    chainId
   )
   const outputTokenItems = getSelectTokenListItems(
     buyTokenList,
-    outputTokenBalances
+    outputTokenBalances,
+    chainId
   )
 
   // TradeDetail
