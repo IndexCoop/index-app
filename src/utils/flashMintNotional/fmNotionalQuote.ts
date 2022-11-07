@@ -1,7 +1,9 @@
-import { ethers, BigNumber } from 'ethers'
+import { BigNumber,ethers } from 'ethers'
+
 import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Contract } from '@ethersproject/contracts'
+import { Exchange } from '@indexcoop/flash-mint-sdk'
 
 import { FLASH_MINT_NOTIONAL_ABI } from './FlashMintNotionalAbi'
 
@@ -19,6 +21,7 @@ export const getFlashMintNotionalContract = (
 
 export const getFlashMintNotionalQuote = async (
   fixedTokenAddress: string,
+  inputTokenAddress: string,
   amountIndexToken: BigNumber,
   slippage: number,
   providerOrSigner: Signer | Provider | undefined
@@ -41,4 +44,15 @@ export const getFlashMintNotionalQuote = async (
   console.log('///////////////')
   console.log('NOTIONAL')
   console.log(filteredComponents)
+
+  const swapData = filteredComponents.map((component: string) => {
+    return {
+      path: [inputTokenAddress, component],
+      fees: [3000],
+      pool: ethers.constants.AddressZero,
+      exchange: Exchange.UniV3,
+    }
+  })
+
+  console.log('SwapData', swapData)
 }
