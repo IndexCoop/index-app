@@ -65,6 +65,38 @@ export const DAI: Token = {
   indexTypes: [],
 }
 
+export const FIXED_DAI: Token = {
+  name: 'FIXED-DAI',
+  symbol: 'Fixed Rate Yield Index (DAI)',
+  image: '',
+  address: '0x015558c3aB97c9e5a9c8c437C71Bb498B2e5afB3',
+  optimismAddress: undefined,
+  polygonAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: '',
+  tokensetsId: '',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const FIXED_USDC: Token = {
+  name: 'FIXED-USDC',
+  symbol: 'Fixed Rate Yield Index (USDC)',
+  image: '',
+  address: '0xFB4D3b07aA16eE563Ea7C1f3202959448458e290',
+  optimismAddress: undefined,
+  polygonAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: '',
+  tokensetsId: '',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
 export const USDC: Token = {
   name: 'USD Coin',
   symbol: 'USDC',
