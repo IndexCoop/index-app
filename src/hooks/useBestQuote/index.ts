@@ -53,6 +53,11 @@ export interface ExchangeIssuanceZeroExQuote extends Quote {
   componentQuotes: string[]
 }
 
+// FIXME: add missing props
+export interface FlashMintNotionalQuote extends Quote {
+  swapData: SwapData[]
+}
+
 export interface ZeroExQuote extends Quote {
   chainId: string
   data: string

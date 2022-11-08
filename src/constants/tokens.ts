@@ -535,7 +535,6 @@ export const MNYeIndex: Token = {
   isPerp: true,
 }
 
-// TODO: add tokens
 // TODO: adapt mintable lists
 // TODO: create beta/staging list?
 // TODO: check for staging and show those lists?
