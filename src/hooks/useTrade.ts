@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { PopulatedTransaction } from 'ethers'
 import { useSendTransaction } from 'wagmi'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
@@ -15,6 +16,7 @@ import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { fromWei } from 'utils'
 import { logTransaction } from 'utils/api/analytics'
+import { TxSimulator } from 'utils/simulator'
 
 import { useBalances } from './useBalance'
 
@@ -70,11 +72,23 @@ export const useTrade = () => {
         data: quote.data,
         value: BigNumber.from(quote.value ?? 0),
       }
+
+      const req2: PopulatedTransaction = {
+        chainId: Number(quote.chainId),
+        from: address,
+        to: quote.to,
+        data: quote.data,
+        value: BigNumber.from(quote.value ?? 0),
+      }
       try {
-        setIsTransacting(true)
-        sendTransaction?.({
-          recklesslySetUnpreparedRequest: req,
-        })
+        const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
+        const simulator = new TxSimulator(accessKey)
+        await simulator.simulate(req2)
+        // FIXME: reactivate for production
+        // setIsTransacting(true)
+        // sendTransaction?.({
+        //   recklesslySetUnpreparedRequest: req,
+        // })
       } catch (error) {
         setIsTransacting(false)
         console.log('Error sending transaction', error)
