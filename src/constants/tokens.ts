@@ -66,8 +66,8 @@ export const DAI: Token = {
 }
 
 export const FIXED_DAI: Token = {
-  name: 'FIXED-DAI',
-  symbol: 'Fixed Rate Yield Index (DAI)',
+  name: 'Fixed Rate Yield Index (DAI)',
+  symbol: 'FIXED-DAI',
   image: '',
   address: '0x015558c3aB97c9e5a9c8c437C71Bb498B2e5afB3',
   optimismAddress: undefined,
@@ -82,8 +82,8 @@ export const FIXED_DAI: Token = {
 }
 
 export const FIXED_USDC: Token = {
-  name: 'FIXED-USDC',
-  symbol: 'Fixed Rate Yield Index (USDC)',
+  name: 'Fixed Rate Yield Index (USDC)',
+  symbol: 'FIXED-USDC',
   image: '',
   address: '0xFB4D3b07aA16eE563Ea7C1f3202959448458e290',
   optimismAddress: undefined,
@@ -535,34 +535,6 @@ export const MNYeIndex: Token = {
   isPerp: true,
 }
 
-// TODO: adapt mintable lists
-// TODO: create beta/staging list?
-// TODO: check for staging and show those lists?
-
-export const productTokensBySymbol = {
-  'DPI': DefiPulseIndex,
-  'MVI': MetaverseIndex,
-  'ETH2x-FLI': Ethereum2xFlexibleLeverageIndex,
-  'ETH2x-FLI-P': Ethereum2xFLIP,
-  'INDEX': IndexToken,
-  'BTC2x-FLI': Bitcoin2xFlexibleLeverageIndex,
-  'BED': BedIndex,
-  'DATA': DataIndex,
-  'GMI': GmiIndex,
-  'MATIC2x-FLI-P': Matic2xFLIP,
-  'iMATIC-FLI-P': IMaticFLIP,
-  'iETH-FLI-P': IEthereumFLIP,
-  'iBTC-FLI-P': IBitcoinFLIP,
-  'BTC2x-FLI-P': Bitcoin2xFLIP,
-  'icETH': icETHIndex,
-  'JPG': JPGIndex,
-  'MNYe': MNYeIndex,
-}
-
-/**
- * Currencies
- */
-
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH, WETH]
 
 export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
@@ -596,8 +568,11 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
   Matic2xFLIP,
 ]
 
+// TODO: create beta/staging list? (env === staging)
 const indexNames = [
   icETHIndex,
+  FIXED_DAI,
+  FIXED_USDC,
   MNYeIndex,
   DefiPulseIndex,
   MetaverseIndex,
