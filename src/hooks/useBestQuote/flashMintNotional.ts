@@ -24,10 +24,10 @@ export async function getEnhancedFlashMintNotionalQuote(
   const isTradablePair = isTradableForFlashMintNotional(inputToken, outputToken)
   if (!isTradablePair) return null
 
-  const fixedTokenAddress = isMinting ? inputToken.address : outputToken.address
+  const fixedTokenAddress = isMinting ? outputToken.address : inputToken.address
   const inputOutputTokenAddress = isMinting
-    ? outputToken.address
-    : inputToken.address
+    ? inputToken.address
+    : outputToken.address
 
   try {
     const quote = await getFlashMintNotionalQuote(

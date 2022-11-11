@@ -26,6 +26,7 @@ export enum QuoteType {
   notAvailable = 'notAvailable',
   exchangeIssuanceLeveraged = 'exchangeIssuanceLeveraged',
   exchangeIssuanceZeroEx = 'exchangeIssuanceZeroEx',
+  flashMintNotional = 'flashMintNotional',
   zeroEx = 'zeroEx',
 }
 
