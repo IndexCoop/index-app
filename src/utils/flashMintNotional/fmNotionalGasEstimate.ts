@@ -1,6 +1,7 @@
 import { ethers } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { SwapData } from '@indexcoop/flash-mint-sdk'
 
 import { Token } from 'constants/tokens'
@@ -18,12 +19,13 @@ export async function getFlashMintNotionalGasEstimate(
   outputToken: Token,
   indexTokenAmount: BigNumber,
   inputOutputTokenAmount: BigNumber,
+  swapData: SwapData[],
   slippagePercent: number,
   chainId: number,
-  signer: any
+  provider: JsonRpcProvider
 ): Promise<BigNumber> {
-  // Return default - as we can't fetch an estimate without a provider or signer
-  if (!signer) return defaultGasEstimate
+  // Return default - as we can't fetch an estimate without a provider
+  if (!provider) return defaultGasEstimate
 
   let gasEstimate = defaultGasEstimate
 
@@ -37,13 +39,11 @@ export async function getFlashMintNotionalGasEstimate(
   const issuanceModule = '0xa0a98EB7Af028BE00d04e46e1316808A62a8fd59'
   const redeemMaturedPositions = false
   const slippage = ethers.utils.parseEther(slippagePercent.toString())
-  // FIXME:
-  const swapData: SwapData[] = []
 
   try {
-    const block = await signer.getBlock()
+    const block = await provider.getBlock('latest')
     const gasLimitLastBlock = block.gasLimit
-    const contract = getFlashMintNotionalContract(signer)
+    const contract = getFlashMintNotionalContract(provider)
     if (isMinting) {
       const maxAmountInputToken = inputOutputTokenAmount
       gasEstimate = await contract.estimateGas.issueExactSetFromToken(
@@ -74,7 +74,7 @@ export async function getFlashMintNotionalGasEstimate(
       )
     }
   } catch (error: any) {
-    console.log('Error estimating gas for FlashMintLeveraged:', error)
+    console.log('Error estimating gas for FlashMintNotional:', error)
     // TODO:
     // if (canFail) {
     //   throw new FlashMintNotionalGasEstimateFailedError()
