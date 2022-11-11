@@ -13,10 +13,12 @@ import { getAddressForToken } from 'utils/tokens'
 
 import { useIssuanceQuote } from './issuance/useIssuanceQuote'
 import { getEnhancedFlashMintLeveragedQuote } from './useBestQuote/flashMintLeveraged'
+import { getEnhancedFlashMintNotionalQuote } from './useBestQuote/flashMintNotional'
 import { getEnhancedFlashMintZeroExQuote } from './useBestQuote/flashMintZeroEx'
 import {
   ExchangeIssuanceLeveragedQuote,
   ExchangeIssuanceZeroExQuote,
+  FlashMintNotionalQuote,
 } from './useBestQuote'
 import { useWallet } from './useWallet'
 
@@ -27,6 +29,7 @@ type FlashMintPerpQuote = {
 export type FlashMintQuoteResult = {
   quotes: {
     flashMintLeveraged: ExchangeIssuanceLeveragedQuote | null
+    flashMintNotional: FlashMintNotionalQuote | null
     flashMintPerp: FlashMintPerpQuote | null
     flashMintZeroEx: ExchangeIssuanceZeroExQuote | null
   }
@@ -35,6 +38,7 @@ export type FlashMintQuoteResult = {
 const defaultQuoteResult: FlashMintQuoteResult = {
   quotes: {
     flashMintLeveraged: null,
+    flashMintNotional: null,
     flashMintPerp: null,
     flashMintZeroEx: null,
   },
@@ -88,6 +92,7 @@ export const useFlashMintQuote = () => {
     setIsFetching(true)
 
     let flashMintLeveragedQuote: ExchangeIssuanceLeveragedQuote | null = null
+    let flashMintNotionalQuote: FlashMintNotionalQuote | null = null
     let flashMintPerpQuote: FlashMintPerpQuote | null = null
     let flashMintZeroExQuote: ExchangeIssuanceZeroExQuote | null = null
 
@@ -155,14 +160,30 @@ export const useFlashMintQuote = () => {
         signer
       )
 
+      flashMintNotionalQuote = await getEnhancedFlashMintNotionalQuote(
+        isMinting,
+        inputToken,
+        outputToken,
+        indexTokenAmount,
+        gasPrice,
+        sellTokenPrice,
+        nativeTokenPrice,
+        slippage,
+        chainId,
+        provider,
+        signer
+      )
+
       console.log('////////')
       console.log('exchangeIssuanceZeroExQuote', flashMintZeroExQuote)
       console.log('exchangeIssuanceLeveragedQuote', flashMintLeveragedQuote)
+      console.log('flashMintNotionalQuote', flashMintNotionalQuote)
     }
 
     const quoteResult: FlashMintQuoteResult = {
       quotes: {
         flashMintLeveraged: flashMintLeveragedQuote,
+        flashMintNotional: flashMintNotionalQuote,
         flashMintPerp: flashMintPerpQuote,
         flashMintZeroEx: flashMintZeroExQuote,
       },

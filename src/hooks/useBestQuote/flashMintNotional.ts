@@ -52,7 +52,7 @@ export async function getEnhancedFlashMintNotionalQuote(
       const gasCosts = gasEstimate.mul(gasPrice)
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       return {
-        type: QuoteType.exchangeIssuanceLeveraged,
+        type: QuoteType.flashMintNotional,
         isMinting,
         inputToken,
         outputToken,
