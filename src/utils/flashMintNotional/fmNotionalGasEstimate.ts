@@ -8,8 +8,7 @@ import { getAddressForToken } from 'utils/tokens'
 
 import { getFlashMintNotionalContract } from './fmNotionalContract'
 
-// FIXME:
-const defaultGasEstimate = BigNumber.from(5_000_000)
+const defaultGasEstimate = BigNumber.from(1_000_000)
 // Default gas margin to add on top of estimate
 const defaultGasMargin = 20
 
