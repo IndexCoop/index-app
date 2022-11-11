@@ -6,6 +6,8 @@ import { MAINNET } from 'constants/chains'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   Ethereum2xFlexibleLeverageIndex,
+  FIXED_DAI,
+  FIXED_USDC,
   icETHIndex,
   IndexToken,
   Token,
@@ -19,6 +21,16 @@ export function isEligibleTradePairZeroEx(
   inputToken: Token,
   outputToken: Token
 ): boolean {
+  if (
+    inputToken.symbol === FIXED_DAI.symbol ||
+    outputToken.symbol === FIXED_DAI.symbol
+  )
+    return false
+  if (
+    inputToken.symbol === FIXED_USDC.symbol ||
+    outputToken.symbol === FIXED_USDC.symbol
+  )
+    return false
   if (
     inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol ||
     outputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol
