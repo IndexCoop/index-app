@@ -2,12 +2,7 @@ import { BigNumber, ethers } from 'ethers'
 
 import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
-import {
-  Exchange,
-  getSwapData,
-  SwapData,
-  ZeroExApi,
-} from '@indexcoop/flash-mint-sdk'
+import { Exchange, SwapData } from '@indexcoop/flash-mint-sdk'
 
 import { getFlashMintNotionalContract } from './fmNotionalContract'
 
@@ -15,6 +10,11 @@ export interface FlashMintNotionalQuote {
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
   swapData: SwapData[]
+}
+
+type FilteredComponentsResponse = {
+  filteredComponents: string[]
+  filteredUnits: BigNumber[]
 }
 
 export const getFlashMintNotionalQuote = async (
@@ -25,33 +25,27 @@ export const getFlashMintNotionalQuote = async (
   slippagePercent: number,
   providerOrSigner: Signer | Provider | undefined
 ): Promise<FlashMintNotionalQuote> => {
-  console.log('getFlashMintNotionalQuote')
   const contract = getFlashMintNotionalContract(providerOrSigner)
   const issuanceModule = '0xa0a98EB7Af028BE00d04e46e1316808A62a8fd59'
   const isDebtIssuance = true
   const slippage = ethers.utils.parseEther(slippagePercent.toString())
 
-  console.log(contract.address)
-  console.log(providerOrSigner)
-
-  const [filteredComponents] = isMinting
-    ? await contract.getFilteredComponentsIssuance(
-        fixedTokenAddress,
-        amountIndexToken,
-        issuanceModule,
-        isDebtIssuance,
-        slippage
-      )
-    : await contract.getFilteredComponentsRedemption(
-        fixedTokenAddress,
-        amountIndexToken,
-        issuanceModule,
-        isDebtIssuance,
-        slippage
-      )
-  console.log('///////////////')
-  console.log('NOTIONAL')
-  console.log(filteredComponents)
+  const { filteredComponents, filteredUnits }: FilteredComponentsResponse =
+    isMinting
+      ? await contract.getFilteredComponentsIssuance(
+          fixedTokenAddress,
+          amountIndexToken,
+          issuanceModule,
+          isDebtIssuance,
+          slippage
+        )
+      : await contract.getFilteredComponentsRedemption(
+          fixedTokenAddress,
+          amountIndexToken,
+          issuanceModule,
+          isDebtIssuance,
+          slippage
+        )
 
   const swapData = isMinting
     ? filteredComponents.map((component: string) => {
@@ -73,13 +67,13 @@ export const getFlashMintNotionalQuote = async (
         }
       })
 
-  console.log('SwapData', swapData)
+  const inputOutputTokenAmount = filteredUnits.reduce((prevVal, currentVal) => {
+    return prevVal.add(currentVal)
+  })
 
-  // FIXME: return quote
   return {
     indexTokenAmount: amountIndexToken,
-    // TODO:
-    inputOutputTokenAmount: BigNumber.from(0),
+    inputOutputTokenAmount,
     swapData,
   }
 }

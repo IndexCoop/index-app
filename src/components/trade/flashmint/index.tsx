@@ -28,6 +28,7 @@ import { useWallet } from 'hooks/useWallet'
 import { useSlippage } from 'providers/Slippage'
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
+import { FlashMintNotionalContractAddress } from 'utils/flashMintNotional/fmNotionalContract'
 import {
   getNativeToken,
   isNotTradableToken,
@@ -426,6 +427,10 @@ const getContractForQuote = (
     return getExchangeIssuanceLeveragedContractAddress(chainId)
   }
 
+  if (quotes.flashMintNotional) {
+    return FlashMintNotionalContractAddress
+  }
+
   if (quotes.flashMintZeroEx) {
     return getExchangeIssuanceZeroExContractAddress(chainId)
   }
@@ -446,6 +451,10 @@ const getQuoteAmount = (
 
   if (quotes.flashMintLeveraged) {
     return quotes.flashMintLeveraged.inputOutputTokenAmount
+  }
+
+  if (quotes.flashMintNotional) {
+    return quotes.flashMintNotional.inputOutputTokenAmount
   }
 
   if (quotes.flashMintZeroEx) {
