@@ -47,6 +47,7 @@ export const getFlashMintNotionalQuote = async (
           slippage
         )
 
+  // Most swap data can be static if input is DAI/USDC since it won't be picked up.
   const swapData = isMinting
     ? filteredComponents.map((component: string) => {
         return {

@@ -13,6 +13,18 @@ const defaultGasEstimate = BigNumber.from(1_000_000)
 // Default gas margin to add on top of estimate
 const defaultGasMargin = 20
 
+export class FlashMintNotionalGasEstimateFailedError extends Error {
+  statusCode = 1003
+  constructor() {
+    super('Failed to estimate gas for FlashMintLeveraged.')
+    // 👇️ because we are extending a built-in class
+    Object.setPrototypeOf(
+      this,
+      FlashMintNotionalGasEstimateFailedError.prototype
+    )
+  }
+}
+
 export async function getFlashMintNotionalGasEstimate(
   isMinting: boolean,
   inputToken: Token,
@@ -22,7 +34,8 @@ export async function getFlashMintNotionalGasEstimate(
   swapData: SwapData[],
   slippagePercent: number,
   chainId: number,
-  provider: JsonRpcProvider
+  provider: JsonRpcProvider,
+  canFail: boolean = true
 ): Promise<BigNumber> {
   // Return default - as we can't fetch an estimate without a provider
   if (!provider) return defaultGasEstimate
@@ -75,10 +88,9 @@ export async function getFlashMintNotionalGasEstimate(
     }
   } catch (error: any) {
     console.log('Error estimating gas for FlashMintNotional:', error)
-    // TODO:
-    // if (canFail) {
-    //   throw new FlashMintNotionalGasEstimateFailedError()
-    // }
+    if (canFail) {
+      throw new FlashMintNotionalGasEstimateFailedError()
+    }
     return defaultGasEstimate
   }
 

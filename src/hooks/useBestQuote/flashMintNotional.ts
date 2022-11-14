@@ -48,7 +48,8 @@ export async function getEnhancedFlashMintNotionalQuote(
         quote.swapData,
         slippage,
         chainId,
-        provider
+        provider,
+        false // shouldn't fail for just estimating a quote
       )
       const gasCosts = gasEstimate.mul(gasPrice)
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)

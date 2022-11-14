@@ -29,6 +29,7 @@ import { useSlippage } from 'providers/Slippage'
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { FlashMintNotionalContractAddress } from 'utils/flashMintNotional/fmNotionalContract'
+import { useTradeFlashMintNotional } from 'utils/flashMintNotional/notional'
 import {
   getNativeToken,
   isNotTradableToken,
@@ -74,6 +75,11 @@ const FlashMint = (props: QuickTradeProps) => {
     isTransacting: isTransactingLevEI,
     txWouldFail: txWouldFailLeveraged,
   } = useTradeFlashMintLeveraged()
+  const {
+    executeFlashMintNotionalTrade,
+    isTransacting: isTransactingFmNotional,
+    txWouldFail: txWouldFailFmNotional,
+  } = useTradeFlashMintNotional()
   const {
     buyToken: indexToken,
     buyTokenList: indexTokenList,
@@ -291,6 +297,17 @@ const FlashMint = (props: QuickTradeProps) => {
       return
     }
 
+    if (quotes.flashMintNotional) {
+      // FIXME:
+      await executeFlashMintNotionalTrade(
+        quotes.flashMintNotional,
+        slippage,
+        override
+      )
+      resetData()
+      return
+    }
+
     if (quotes.flashMintZeroEx) {
       await executeFlashMintZeroExTrade(
         quotes.flashMintZeroEx,
@@ -327,7 +344,8 @@ const FlashMint = (props: QuickTradeProps) => {
     isFetchingQuote ||
     isTrading ||
     isTransactingEI ||
-    isTransactingLevEI
+    isTransactingLevEI ||
+    isTransactingFmNotional
   const isNarrow = props.isNarrowVersion ?? false
 
   const inputOutputTokenAmountFormatted = formattedBalance(
@@ -351,7 +369,8 @@ const FlashMint = (props: QuickTradeProps) => {
     inputOutputPrice
   )
 
-  const shouldShowOverride: boolean = txWouldFailZeroEx || txWouldFailLeveraged
+  const shouldShowOverride: boolean =
+    txWouldFailZeroEx || txWouldFailLeveraged || txWouldFailFmNotional
 
   return (
     <Box mt='32px'>
