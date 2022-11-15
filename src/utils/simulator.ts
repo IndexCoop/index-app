@@ -22,7 +22,7 @@ export class TxSimulator {
       value: tx.value?.toString() ?? '0',
       access_list: [],
       // simulation config (tenderly specific)
-      // save_if_fails: true,
+      save_if_fails: true,
       save: false,
       // simulation_type: 'quick',
     }
