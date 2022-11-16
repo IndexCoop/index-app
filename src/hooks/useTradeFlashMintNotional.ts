@@ -15,7 +15,10 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/api/sentry'
-import { getFlashMintNotionalContract } from 'utils/flashMintNotional/fmNotionalContract'
+import {
+  DebtIssuanceModuleV2,
+  getFlashMintNotionalContract,
+} from 'utils/flashMintNotional/fmNotionalContract'
 import {
   FlashMintNotionalGasEstimateFailedError,
   getFlashMintNotionalGasEstimate,
@@ -58,7 +61,7 @@ export const useTradeFlashMintNotional = () => {
       const fixedTokenAddress = isMinting
         ? outputTokenAddress
         : inputTokenAddress
-      const issuanceModule = '0xa0a98EB7Af028BE00d04e46e1316808A62a8fd59'
+      const issuanceModule = DebtIssuanceModuleV2
       const isDebtIssuance = true
       const redeemMaturedPositions = false
 

@@ -7,7 +7,10 @@ import { SwapData } from '@indexcoop/flash-mint-sdk'
 import { Token } from 'constants/tokens'
 import { getAddressForToken } from 'utils/tokens'
 
-import { getFlashMintNotionalContract } from './fmNotionalContract'
+import {
+  DebtIssuanceModuleV2,
+  getFlashMintNotionalContract,
+} from './fmNotionalContract'
 
 const defaultGasEstimate = BigNumber.from(1_000_000)
 // Default gas margin to add on top of estimate
@@ -49,7 +52,7 @@ export async function getFlashMintNotionalGasEstimate(
   const fixedTokenAddress = isMinting ? outputTokenAddress : inputTokenAddress
 
   const isDebtIssuance = true
-  const issuanceModule = '0xa0a98EB7Af028BE00d04e46e1316808A62a8fd59'
+  const issuanceModule = DebtIssuanceModuleV2
   const redeemMaturedPositions = false
   const slippage = ethers.utils.parseEther(slippagePercent.toString())
 

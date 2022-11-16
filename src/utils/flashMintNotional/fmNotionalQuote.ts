@@ -4,7 +4,10 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Exchange, SwapData } from '@indexcoop/flash-mint-sdk'
 
-import { getFlashMintNotionalContract } from './fmNotionalContract'
+import {
+  DebtIssuanceModuleV2,
+  getFlashMintNotionalContract,
+} from './fmNotionalContract'
 
 export interface FlashMintNotionalQuote {
   indexTokenAmount: BigNumber
@@ -26,7 +29,7 @@ export const getFlashMintNotionalQuote = async (
   providerOrSigner: Signer | Provider | undefined
 ): Promise<FlashMintNotionalQuote> => {
   const contract = getFlashMintNotionalContract(providerOrSigner)
-  const issuanceModule = '0xa0a98EB7Af028BE00d04e46e1316808A62a8fd59'
+  const issuanceModule = DebtIssuanceModuleV2
   const isDebtIssuance = true
   const slippage = ethers.utils.parseEther(slippagePercent.toString())
 
