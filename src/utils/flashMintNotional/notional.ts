@@ -83,14 +83,6 @@ export const useTradeFlashMintNotional = () => {
         )
 
         if (isMinting) {
-          captureTransaction({
-            exchangeIssuance: CaptureExchangeIssuanceKey.notional,
-            function: CaptureExchangeIssuanceFunctionKey.issueEth,
-            setToken: outputTokenAddress,
-            setAmount: indexTokenAmount.toString(),
-            gasLimit: gasLimit.toString(),
-            slippage: slippage.toString(),
-          })
           const maxAmountInputToken = inputOutputTokenAmount
           console.log('---')
           console.log(fixedTokenAddress)
