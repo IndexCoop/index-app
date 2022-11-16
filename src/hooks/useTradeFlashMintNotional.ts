@@ -15,13 +15,12 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/api/sentry'
-import { getAddressForToken } from 'utils/tokens'
-
-import { getFlashMintNotionalContract } from './fmNotionalContract'
+import { getFlashMintNotionalContract } from 'utils/flashMintNotional/fmNotionalContract'
 import {
   FlashMintNotionalGasEstimateFailedError,
   getFlashMintNotionalGasEstimate,
-} from './fmNotionalGasEstimate'
+} from 'utils/flashMintNotional/fmNotionalGasEstimate'
+import { getAddressForToken } from 'utils/tokens'
 
 export const useTradeFlashMintNotional = () => {
   const { address, provider, signer } = useWallet()

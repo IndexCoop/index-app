@@ -22,6 +22,7 @@ import {
 } from 'hooks/useFlashMintQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useTradeFlashMintLeveraged } from 'hooks/useTradeFlashMintLeveraged'
+import { useTradeFlashMintNotional } from 'hooks/useTradeFlashMintNotional'
 import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
@@ -29,7 +30,6 @@ import { useSlippage } from 'providers/Slippage'
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { FlashMintNotionalContractAddress } from 'utils/flashMintNotional/fmNotionalContract'
-import { useTradeFlashMintNotional } from 'utils/flashMintNotional/notional'
 import {
   getNativeToken,
   isNotTradableToken,
