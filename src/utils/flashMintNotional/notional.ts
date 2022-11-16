@@ -97,7 +97,7 @@ export const useTradeFlashMintNotional = () => {
           captureTransaction({
             exchangeIssuance: CaptureExchangeIssuanceKey.notional,
             function: CaptureExchangeIssuanceFunctionKey.issueErc20,
-            setToken: outputTokenAddress,
+            setToken: fixedTokenAddress,
             setAmount: indexTokenAmount.toString(),
             gasLimit: gasLimit.toString(),
             slippage: slippage.toString(),
@@ -119,7 +119,7 @@ export const useTradeFlashMintNotional = () => {
           captureTransaction({
             exchangeIssuance: CaptureExchangeIssuanceKey.notional,
             function: CaptureExchangeIssuanceFunctionKey.redeemErc20,
-            setToken: outputTokenAddress,
+            setToken: fixedTokenAddress,
             setAmount: indexTokenAmount.toString(),
             gasLimit: gasLimit.toString(),
             slippage: slippage.toString(),
