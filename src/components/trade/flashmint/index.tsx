@@ -46,6 +46,7 @@ import {
   getSelectTokenListItems,
   SelectTokenModal,
 } from '../_shared/SelectTokenModal'
+import { TransactionReviewModal } from '../_shared/TransactionReview/TransactionReviewModal'
 import { QuickTradeProps } from '../swap'
 
 import DirectIssuance from './DirectIssuance'
@@ -64,6 +65,11 @@ const FlashMint = (props: QuickTradeProps) => {
     isOpen: isIndexTokenModalOpen,
     onOpen: onOpenIndexTokenModal,
     onClose: onCloseIndexTokenModal,
+  } = useDisclosure()
+  const {
+    isOpen: isTransactionReviewOpen,
+    onOpen: onOpenTransactionReview,
+    onClose: onCloseTransactionReview,
   } = useDisclosure()
   const {
     executeFlashMintZeroExTrade,
@@ -425,6 +431,10 @@ const FlashMint = (props: QuickTradeProps) => {
           onCloseIndexTokenModal()
         }}
         items={indexTokenItems}
+      />
+      <TransactionReviewModal
+        isOpen={isTransactionReviewOpen}
+        onClose={onCloseTransactionReview}
       />
     </Box>
   )
