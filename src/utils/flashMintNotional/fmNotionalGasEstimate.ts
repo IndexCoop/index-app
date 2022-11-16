@@ -16,7 +16,7 @@ const defaultGasMargin = 20
 export class FlashMintNotionalGasEstimateFailedError extends Error {
   statusCode = 1003
   constructor() {
-    super('Failed to estimate gas for FlashMintLeveraged.')
+    super('Failed to estimate gas for FlashMintNotional.')
     // 👇️ because we are extending a built-in class
     Object.setPrototypeOf(
       this,
