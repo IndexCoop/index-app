@@ -298,7 +298,6 @@ const FlashMint = (props: QuickTradeProps) => {
     }
 
     if (quotes.flashMintNotional) {
-      // FIXME:
       await executeFlashMintNotionalTrade(
         quotes.flashMintNotional,
         slippage,
