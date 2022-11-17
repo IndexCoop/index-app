@@ -9,12 +9,18 @@ type NetworkBadgeProps = {
 const NetworkBadge = ({ network }: NetworkBadgeProps) => {
   const { styles } = useColorStyles()
   return (
-    <Flex align='center' direction='column' justify='center'>
+    <Flex align='center' direction='row' justify='center'>
       <Text fontSize={'sm'} fontWeight='500'>
         You're connected to
       </Text>
-      <Box bg={styles.backgroundInverted} borderRadius='16px' px='8px' py='4px'>
-        <Text color={styles.textInverted} fontSize='sm' fontWeight='500'>
+      <Box
+        bg={styles.backgroundInverted}
+        borderRadius='16px'
+        px='8px'
+        py='2px'
+        ml='4px'
+      >
+        <Text color={styles.textInverted} fontSize='xs' fontWeight='500'>
           {network}
         </Text>
       </Box>

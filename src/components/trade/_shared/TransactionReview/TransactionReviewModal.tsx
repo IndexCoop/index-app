@@ -15,6 +15,7 @@ import {
 
 import { TradeButton } from '../footer/TradeButton'
 
+import FromTo from './FromTo'
 import NetworkBadge from './NetworkBadge'
 import TransactionReviewDetails from './TransactionReviewDetails'
 import TransactionReviewSimulation from './TransactionReviewSimulation'
@@ -50,18 +51,22 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
         borderRadius='10'
         borderStyle='solid'
         borderWidth='2px'
-        h={['60vh', '50vh']}
         m={['16px', 0]}
       >
         <ModalHeader>
-          <Text>Review transaction</Text>
+          <Text>FlashMint - Review transaction</Text>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody p='16px'>
           <Flex direction='column' h='100%' w='100%'>
-            <Flex>
+            <Flex mb='16px'>
               <Spacer />
-              <NetworkBadge network={'Ethereum'} />
+              <Flex direction='column'>
+                <FromTo />
+                <Flex mt='16px'>
+                  <NetworkBadge network={'Ethereum'} />
+                </Flex>
+              </Flex>
               <Spacer />
             </Flex>
             <Spacer />
