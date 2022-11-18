@@ -136,7 +136,7 @@ const FlashMint = (props: QuickTradeProps) => {
   )
 
   useEffect(() => {
-    const isMintable = isTokenMintable(indexToken, chainId)
+    const isMintable = isTokenMintable(indexToken)
     setIsMintable(isMintable)
   }, [chainId, indexToken])
 
@@ -173,7 +173,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const getTradeButtonDisabledState = () => {
     if (!isSupportedNetwork) return true
     if (!address) return true
-    if (isMinting && !isTokenMintable(indexToken, chainId)) return true
+    if (isMinting && !isTokenMintable(indexToken)) return true
     return (
       indexTokenAmount === '0' ||
       (isMinting && hasInsufficientFundsInputOutputToken) ||

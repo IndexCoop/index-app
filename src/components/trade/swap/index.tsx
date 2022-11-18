@@ -380,7 +380,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const getButtonDisabledState = () => {
     if (!supportedNetwork) return true
     if (!address) return true
-    if (isBuying && !isTokenMintable(buyToken, chainId)) return true
+    if (isBuying && !isTokenMintable(buyToken)) return true
     if (hasFetchingError) return false
     return (
       sellTokenAmount === '0' ||
@@ -443,7 +443,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   ])
 
   const betterQuoteState = getBetterQuoteState()
-  const tokenIsMintable = isTokenMintable(buyToken, chainId)
+  const tokenIsMintable = isTokenMintable(buyToken)
 
   return (
     <Box>
