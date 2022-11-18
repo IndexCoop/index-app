@@ -535,6 +535,10 @@ export const MNYeIndex: Token = {
   isPerp: true,
 }
 
+/**
+ * Currencies
+ */
+
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH, WETH]
 
 export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
