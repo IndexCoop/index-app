@@ -113,7 +113,7 @@ const TokenPage = (props: {
 
   const stats = getStatsForToken(token, marketData, currentSupplyFormatted, nav)
 
-  const isMintable = isTokenMintable(token, chainId)
+  const isMintable = isTokenMintable(token)
 
   return (
     <Page>

@@ -135,7 +135,7 @@ export function getSelectTokenListItems(
   chainId: number | undefined
 ): SelectTokenModalItem[] {
   const tokenList: SelectTokenModalItem[] = tokens.map((token, index) => {
-    const isMintable = isTokenMintable(token, chainId)
+    const isMintable = isTokenMintable(token)
     return {
       symbol: token.symbol,
       logo: token.image,

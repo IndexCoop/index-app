@@ -44,6 +44,10 @@ export interface Token {
   isPerp?: boolean
 }
 
+/**
+ * Tokens
+ */
+
 export const DAI: Token = {
   name: 'Dai',
   symbol: 'DAI',
@@ -519,12 +523,32 @@ export const productTokensBySymbol = {
   'MNYe': MNYeIndex,
 }
 
+/**
+ * Currencies
+ */
+
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH, WETH]
 
 export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
 
 // MNYe only works with USDC, will have to optimize this once there is new indices on Optimism
 export const optimismCurrencyTokens = [USDC]
+
+/**
+ * Lists
+ */
+
+export const deprecatedIndices = [
+  Bitcoin2xFLIP,
+  DataIndex,
+  Ethereum2xFLIP,
+  GmiIndex,
+  IBitcoinFLIP,
+  IEthereumFLIP,
+  IMaticFLIP,
+  Matic2xFLIP,
+  MNYeIndex,
+]
 
 export const eligibleLeveragedExchangeIssuanceTokens = [
   Bitcoin2xFLIP,

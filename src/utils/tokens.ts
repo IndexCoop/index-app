@@ -1,10 +1,7 @@
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
-  Bitcoin2xFlexibleLeverageIndex,
-  DefiPulseIndex,
+  deprecatedIndices,
   ETH,
-  Ethereum2xFlexibleLeverageIndex,
-  flashMintIndexesMainnetMint,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygon,
   indexNamesMainnet,
@@ -13,7 +10,6 @@ import {
   IndexToken,
   mainnetCurrencyTokens,
   MATIC,
-  MetaverseIndex,
   optimismCurrencyTokens,
   polygonCurrencyTokens,
   Token,
@@ -137,34 +133,6 @@ export function isTokenAvailableForFlashMint(
   }
 }
 
-export function isTokenMintable(
-  token: Token,
-  chainId: number | undefined
-): boolean {
-  if (token.symbol === DefiPulseIndex.symbol) return true
-  if (token.symbol === IndexToken.symbol) return true
-  if (token.symbol === MetaverseIndex.symbol) return true
-  switch (chainId) {
-    case MAINNET.chainId:
-      if (token.symbol === Bitcoin2xFlexibleLeverageIndex.symbol) return true
-      if (token.symbol === Ethereum2xFlexibleLeverageIndex.symbol) return true
-      return (
-        mainnetCurrencyTokens.filter((t) => t.symbol === token.symbol).length >
-          0 ||
-        flashMintIndexesMainnetMint.filter((t) => t.symbol === token.symbol)
-          .length > 0
-      )
-    case OPTIMISM.chainId:
-      return (
-        optimismCurrencyTokens.filter((t) => t.symbol === token.symbol).length >
-        0
-      )
-    case POLYGON.chainId:
-      return (
-        polygonCurrencyTokens.filter((t) => t.symbol === token.symbol).length >
-        0
-      )
-    default:
-      return true
-  }
+export function isTokenMintable(token: Token): boolean {
+  return deprecatedIndices.filter((t) => t.symbol === token.symbol).length === 0
 }
