@@ -79,9 +79,6 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
               <Spacer />
             </Flex>
             <Spacer />
-            <Box my='8px'>
-              <TransactionReviewDetails />
-            </Box>
             <Box m='8px'>
               <TransactionReviewSimulation />
             </Box>
@@ -98,6 +95,12 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     </Modal>
   )
 }
+
+/**
+<Box my='8px'>
+  <TransactionReviewDetails />
+</Box>
+*/
 
 const BottomMessage = () => {
   const { styles } = useColorStyles()
