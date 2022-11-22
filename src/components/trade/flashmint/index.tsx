@@ -435,6 +435,12 @@ const FlashMint = (props: QuickTradeProps) => {
       <TransactionReviewModal
         isOpen={isTransactionReviewOpen}
         onClose={onCloseTransactionReview}
+        tx={{
+          inputToken: isMinting ? inputOutputToken : indexToken,
+          outputToken: isMinting ? indexToken : inputOutputToken,
+          inputTokenAmount: BigNumber.from(0),
+          outputTokenAmount: BigNumber.from(0),
+        }}
       />
     </Box>
   )

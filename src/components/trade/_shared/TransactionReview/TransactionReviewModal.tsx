@@ -17,6 +17,7 @@ import { TradeButton } from '../footer/TradeButton'
 
 import FromTo from './FromTo'
 import NetworkBadge from './NetworkBadge'
+import { TransactionReview } from './TransactionReview'
 import TransactionReviewDetails from './TransactionReviewDetails'
 import TransactionReviewSimulation from './TransactionReviewSimulation'
 
@@ -31,12 +32,13 @@ type SelectTokenModalItem = {
 type TransactionReviewModalProps = {
   isOpen: boolean
   onClose: () => void
+  tx: TransactionReview
 }
 
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const { isDarkMode } = useICColorMode()
   const { styles } = useColorStyles()
-  const { isOpen, onClose } = props
+  const { isOpen, onClose, tx } = props
   const backgroundColor = styles.background
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
@@ -62,7 +64,14 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
             <Flex mb='16px'>
               <Spacer />
               <Flex direction='column'>
-                <FromTo />
+                <FromTo
+                  inputToken={tx.inputToken.image}
+                  inputTokenAmount={tx.inputTokenAmount.toString()}
+                  inputTokenSymbol={tx.inputToken.symbol}
+                  outputToken={tx.outputToken.image}
+                  outputTokenAmount={tx.outputTokenAmount.toString()}
+                  outputTokenSymbol={tx.outputToken.symbol}
+                />
                 <Flex mt='16px'>
                   <NetworkBadge network={'Ethereum'} />
                 </Flex>

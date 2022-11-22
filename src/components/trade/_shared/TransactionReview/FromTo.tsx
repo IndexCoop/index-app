@@ -1,36 +1,58 @@
 import { useColorStyles } from 'styles/colors'
 
-import { Box, Flex, Spacer, Text } from '@chakra-ui/react'
+import { Flex, Image, Spacer, Text } from '@chakra-ui/react'
 
 type FromToProps = {
   inputToken: string
+  inputTokenAmount: string
+  inputTokenSymbol: string
   outputToken: string
+  outputTokenAmount: string
+  outputTokenSymbol: string
 }
 
-const FromTo = () => {
+const FromTo = (props: FromToProps) => {
   const { styles } = useColorStyles()
   return (
     <Flex direction='column' w='100%'>
-      <FromToItem />
-      <FromToItem />
+      <FromToItem
+        amount={props.inputTokenAmount}
+        icon={props.inputToken}
+        symbol={props.inputTokenSymbol}
+      />
+      <FromToItem
+        amount={props.outputTokenAmount}
+        icon={props.outputToken}
+        symbol={props.outputTokenSymbol}
+      />
     </Flex>
   )
 }
 
 export default FromTo
 
-const FromToItem = () => {
+type FromToItemProps = {
+  amount: string
+  icon: string
+  symbol: string
+}
+
+const FromToItem = ({ amount, icon, symbol }: FromToItemProps) => {
   const { styles } = useColorStyles()
   return (
-    <Flex my='8px'>
-      <Text>0.0000001</Text>
-      <Spacer />
-      <Box
-        bg={styles.backgroundInverted}
-        w='32px'
-        h='32px'
-        borderRadius='16px'
-      />
+    <Flex align='center' direction='row' justify='space-between' my='8px'>
+      <Flex align='center'>
+        <Flex bg='blue' mx='8px'>
+          <Image
+            borderRadius='full'
+            boxSize='32px'
+            src={icon}
+            alt={'token icon'}
+          />
+        </Flex>
+        <Text>{symbol}</Text>
+      </Flex>
+      <Text>{amount}</Text>
     </Flex>
   )
 }
