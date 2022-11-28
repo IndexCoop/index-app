@@ -123,12 +123,6 @@ export const BalanceProvider = (props: { children: any }) => {
           (polygonBalance && !polygonBalance.isZero()) ||
           (optimismBalance && !optimismBalance.isZero())
         ) {
-          console.log(
-            token.symbol,
-            mainnetBalance?.toString(),
-            polygonBalance?.toString(),
-            optimismBalance?.toString()
-          )
           const price = 0
           balanceData.push({
             token,
@@ -163,13 +157,11 @@ export const BalanceProvider = (props: { children: any }) => {
 
   useEffect(() => {
     if (!address || address === undefined) return
-    console.log('FETCH')
     fetchBalanceData()
   }, [fetchBalanceData])
 
   useEffect(() => {
     if (!address || address === undefined) return
-    console.log('FETCHCURRENCIES')
     fetchCurrencies()
   }, [fetchCurrencies])
 
@@ -178,24 +170,22 @@ export const BalanceProvider = (props: { children: any }) => {
     fetchNativeCurrencies()
   }, [fetchNativeCurrencies])
 
-  const getTokenBalance = (
-    symbol: string,
-    chainId: number | undefined
-  ): BigNumber => {
-    console.log('BALANCES', tokenBalances)
-    const tokenBalance = tokenBalances[symbol]
-    console.log(tokenBalance, 'BAL', symbol)
-    switch (chainId) {
-      case 1:
-        return tokenBalance?.mainnetBalance ?? BigNumber.from(0)
-      case 10:
-        return tokenBalance?.optimismBalance ?? BigNumber.from(0)
-      case 137:
-        return tokenBalance?.polygonBalance ?? BigNumber.from(0)
-      default:
-        return BigNumber.from(0)
-    }
-  }
+  const getTokenBalance = useCallback(
+    (symbol: string, chainId: number | undefined): BigNumber => {
+      const tokenBalance = tokenBalances[symbol]
+      switch (chainId) {
+        case 1:
+          return tokenBalance?.mainnetBalance ?? BigNumber.from(0)
+        case 10:
+          return tokenBalance?.optimismBalance ?? BigNumber.from(0)
+        case 137:
+          return tokenBalance?.polygonBalance ?? BigNumber.from(0)
+        default:
+          return BigNumber.from(0)
+      }
+    },
+    [tokenBalances]
+  )
 
   return (
     <BalanceContext.Provider

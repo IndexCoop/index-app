@@ -8,8 +8,8 @@ import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 
 import { Token } from 'constants/tokens'
-import { useBalances } from 'hooks/useBalance'
 import { useNetwork } from 'hooks/useNetwork'
+import { useBalanceData } from 'providers/Balances'
 import { isValidTokenInput } from 'utils'
 
 import { formattedBalance } from './QuickTradeFormatter'
@@ -35,7 +35,7 @@ const QuickTradeSelector = (props: {
   onSelectedToken: (symbol: string) => void
 }) => {
   const { chainId } = useNetwork()
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
   const { styles } = useColorStyles()
 
   const { config, selectedToken, selectedTokenAmount } = props
@@ -57,9 +57,10 @@ const QuickTradeSelector = (props: {
   }, [chainId])
 
   useEffect(() => {
-    const tokenBal = getBalance(selectedTokenSymbol)
+    // const tokenBal = getBalance(selectedTokenSymbol)
+    const tokenBal = getTokenBalance(selectedTokenSymbol, chainId)
     setTokenBalance(formattedBalance(selectedToken, tokenBal))
-  }, [selectedToken, getBalance, chainId])
+  }, [chainId, getTokenBalance, selectedToken])
 
   const borderColor = styles.border
   const borderRadius = 16
@@ -88,7 +89,7 @@ const QuickTradeSelector = (props: {
   const onClickBalance = () => {
     if (!tokenBalance) return
     const fullTokenBalance = formatUnits(
-      getBalance(selectedTokenSymbol) ?? '0',
+      getTokenBalance(selectedTokenSymbol, chainId) ?? '0',
       selectedToken.decimals
     )
     onChangeInput(fullTokenBalance)

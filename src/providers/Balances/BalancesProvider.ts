@@ -38,14 +38,6 @@ export class BalancesProvider {
       price: 0,
     }
 
-    console.log('---------')
-    console.log(
-      eth,
-      eth.mainnetBalance?.toString(),
-      eth.optimismBalance?.toString()
-    )
-    console.log(matic)
-
     return {
       eth,
       matic,
