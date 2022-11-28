@@ -50,6 +50,7 @@ const BalanceTable = () => {
 
   if (!isLoading && rows.length === 0)
     return <Text>You don't have any Index Coop products 😞</Text>
+
   return (
     <Table
       colorScheme={colorScheme}
