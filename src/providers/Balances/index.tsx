@@ -6,15 +6,12 @@ import {
   useState,
 } from 'react'
 
-import { BigNumber, Contract, utils } from 'ethers'
-
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { BigNumber } from 'ethers'
 
 import tokenList, { currencies, Token } from 'constants/tokens'
 import { useAllReadOnlyProviders } from 'hooks/useReadOnlyProvider'
 import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData'
-import { ERC20_ABI } from 'utils/abi/ERC20'
 
 import { BalancesProvider } from './BalancesProvider'
 
@@ -32,8 +29,6 @@ export interface TokenContext {
   tokenBalances: { [key: string]: BalanceValues }
 }
 
-const ERC20Interface = new utils.Interface(ERC20_ABI)
-
 export type TokenContextKeys = keyof TokenContext
 
 export const BalanceContext = createContext<TokenContext>({
@@ -43,17 +38,6 @@ export const BalanceContext = createContext<TokenContext>({
 })
 
 export const useBalanceData = () => useContext(BalanceContext)
-
-const getBalance = async (
-  address: string,
-  tokenAddress: string | undefined,
-  provider: JsonRpcProvider
-): Promise<BigNumber | null> => {
-  if (!tokenAddress) return null
-  const contract = new Contract(tokenAddress, ERC20Interface, provider)
-  const bal = await contract.balanceOf(address)
-  return bal
-}
 
 export const BalanceProvider = (props: { children: any }) => {
   const { address } = useWallet()
@@ -98,11 +82,11 @@ export const BalanceProvider = (props: { children: any }) => {
         }
       })
     )
-    setIsLoading(false)
     let balances = tokenBalances
     balanceData.forEach((balance: BalanceValues) => {
       balances[balance.token.symbol] = balance
     })
+    setIsLoading(false)
     setTokenBalances(balances)
   }, [address, selectLatestMarketData, selectMarketDataByToken])
 
@@ -155,21 +139,6 @@ export const BalanceProvider = (props: { children: any }) => {
     setTokenBalances(balances)
   }, [address])
 
-  useEffect(() => {
-    if (!address || address === undefined) return
-    fetchBalanceData()
-  }, [fetchBalanceData])
-
-  useEffect(() => {
-    if (!address || address === undefined) return
-    fetchCurrencies()
-  }, [fetchCurrencies])
-
-  useEffect(() => {
-    if (!address || address === undefined) return
-    fetchNativeCurrencies()
-  }, [fetchNativeCurrencies])
-
   const getTokenBalance = useCallback(
     (symbol: string, chainId: number | undefined): BigNumber => {
       const tokenBalance = tokenBalances[symbol]
@@ -187,6 +156,21 @@ export const BalanceProvider = (props: { children: any }) => {
     },
     [tokenBalances]
   )
+
+  useEffect(() => {
+    if (!address || address === undefined) return
+    fetchBalanceData()
+  }, [fetchBalanceData])
+
+  useEffect(() => {
+    if (!address || address === undefined) return
+    fetchCurrencies()
+  }, [fetchCurrencies])
+
+  useEffect(() => {
+    if (!address || address === undefined) return
+    fetchNativeCurrencies()
+  }, [fetchNativeCurrencies])
 
   return (
     <BalanceContext.Provider
