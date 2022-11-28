@@ -539,6 +539,8 @@ export const MNYeIndex: Token = {
  * Currencies
  */
 
+export const currencies = [DAI, USDC, STETH, WETH]
+
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH, WETH]
 
 export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
