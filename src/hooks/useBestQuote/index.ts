@@ -5,8 +5,8 @@ import { SwapData, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
-import { useBalances } from 'hooks/useBalance'
 import { useNetwork } from 'hooks/useNetwork'
+import { useBalanceData } from 'providers/Balances'
 import { toWei } from 'utils'
 import { GasStation } from 'utils/api/gasStation'
 import {
@@ -170,7 +170,7 @@ const defaultQuoteResult: QuoteResult = {
 export const useBestQuote = () => {
   const { provider, signer } = useWallet()
   const { chainId: networkChainId } = useNetwork()
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
   const chainId = networkChainId ?? 1
 
@@ -303,7 +303,7 @@ export const useBestQuote = () => {
       )
 
       const inputTokenBalance =
-        getBalance(sellToken.symbol) ?? BigNumber.from(0)
+        getTokenBalance(sellToken.symbol, chainId) ?? BigNumber.from(0)
 
       const exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
         await getEnhancedFlashMintLeveragedQuote(

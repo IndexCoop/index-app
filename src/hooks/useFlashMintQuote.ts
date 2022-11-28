@@ -5,8 +5,8 @@ import { ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
-import { useBalances } from 'hooks/useBalance'
 import { useNetwork } from 'hooks/useNetwork'
+import { useBalanceData } from 'providers/Balances'
 import { GasStation } from 'utils/api/gasStation'
 import { getNetworkKey } from 'utils/api/zeroExUtils'
 import { getAddressForToken } from 'utils/tokens'
@@ -46,7 +46,7 @@ const defaultQuoteResult: FlashMintQuoteResult = {
 
 export const useFlashMintQuote = () => {
   const { chainId } = useNetwork()
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
   const { provider, signer } = useWallet()
   const { getQuote } = useIssuanceQuote()
 
@@ -122,7 +122,7 @@ export const useFlashMintQuote = () => {
       )
 
       const inputTokenBalance =
-        getBalance(inputToken.symbol) ?? BigNumber.from(0)
+        getTokenBalance(inputToken.symbol, chainId) ?? BigNumber.from(0)
 
       flashMintLeveragedQuote = await getEnhancedFlashMintLeveragedQuote(
         isMinting,

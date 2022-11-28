@@ -181,6 +181,7 @@ export const BalanceProvider = (props: { children: any }) => {
         case 137:
           return tokenBalance?.polygonBalance ?? BigNumber.from(0)
         default:
+          // FIXME: return null or BigNumber?
           return BigNumber.from(0)
       }
     },

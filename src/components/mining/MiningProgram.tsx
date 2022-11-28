@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 
 import StakingModal from 'components/mining/StakingModal'
-import { StakingBalances } from 'hooks/useBalance'
+import { StakingBalances } from 'hooks/useLiquidityMiningBalances'
 import {
   LiquidityMiningProps,
   useLiquidityMining,

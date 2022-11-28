@@ -7,7 +7,7 @@ import WarningMessage from 'components/mining/WarningMessage'
 import Page from 'components/page/Page'
 import PageTitle from 'components/page/PageTitle'
 import { MAINNET } from 'constants/chains'
-import { useLiquidityMiningBalances } from 'hooks/useBalance'
+import { useLiquidityMiningBalances } from 'hooks/useLiquidityMiningBalances'
 import LiquidityMiningProvider from 'providers/LiquidityMining'
 
 const programs: Program[] = [

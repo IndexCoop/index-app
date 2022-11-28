@@ -14,11 +14,10 @@ import {
 import { ZeroExQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
+import { useBalanceData } from 'providers/Balances'
 import { fromWei } from 'utils'
 import { logTransaction } from 'utils/api/analytics'
 import { TxSimulator } from 'utils/simulator'
-
-import { useBalances } from './useBalance'
 
 export const useTrade = () => {
   const { address } = useWallet()
@@ -43,7 +42,7 @@ export const useTrade = () => {
         : zeroExRouterAddress,
     value: BigNumber.from(0),
   })
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
 
   const [isTransacting, setIsTransacting] = useState(false)
 
@@ -62,7 +61,7 @@ export const useTrade = () => {
         inputToken.decimals
       )
       const spendingTokenBalance =
-        getBalance(inputToken.symbol) || BigNumber.from(0)
+        getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
       const req: TransactionRequest = {
