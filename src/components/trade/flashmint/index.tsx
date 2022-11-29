@@ -1,35 +1,22 @@
 import { useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
-import { useICColorMode } from 'styles/colors'
 
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import {
-  getExchangeIssuanceLeveragedContractAddress,
-  getExchangeIssuanceZeroExContractAddress,
-} from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import { FlashMintPerp } from 'constants/contractAddresses'
 import { Token } from 'constants/tokens'
-import { useIssuance } from 'hooks/issuance/useIssuance'
 import { useApproval } from 'hooks/useApproval'
-import { useBalances } from 'hooks/useBalance'
-import {
-  FlashMintQuoteResult,
-  useFlashMintQuote,
-} from 'hooks/useFlashMintQuote'
+import { useFlashMintQuote } from 'hooks/useFlashMintQuote'
 import { useNetwork } from 'hooks/useNetwork'
-import { useTradeFlashMintLeveraged } from 'hooks/useTradeFlashMintLeveraged'
-import { useTradeFlashMintNotional } from 'hooks/useTradeFlashMintNotional'
-import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
+import { useBalanceData } from 'providers/Balances'
 import { useSlippage } from 'providers/Slippage'
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
-import { FlashMintNotionalContractAddress } from 'utils/flashMintNotional/fmNotionalContract'
+import { getContractForQuote, getQuoteAmount } from 'utils/quotes'
 import {
   getNativeToken,
   isNotTradableToken,
@@ -46,16 +33,33 @@ import {
   getSelectTokenListItems,
   SelectTokenModal,
 } from '../_shared/SelectTokenModal'
+import { TransactionReview } from '../_shared/TransactionReview/TransactionReview'
 import { TransactionReviewModal } from '../_shared/TransactionReview/TransactionReviewModal'
 import { QuickTradeProps } from '../swap'
 
 import DirectIssuance from './DirectIssuance'
-import Override from './Override'
+
+// const useSelectTokenListItems = (tokenList: Token[]) => {
+//   const { getTokenBalance } = useBalanceData()
+//
+//   const balances = useMemo(
+//     () =>
+//       // FIXME: chainId
+//       tokenList.map(
+//         (token) => getTokenBalance(token.symbol, 1) ?? BigNumber.from(0)
+//       ),
+//     [tokenList]
+//   )
+//
+//   return useMemo(
+//     () => getSelectTokenListItems(tokenList, balances, 0),
+//     [tokenList]
+//   )
+// }
 
 const FlashMint = (props: QuickTradeProps) => {
   const { address } = useWallet()
   const { chainId, isSupportedNetwork } = useNetwork()
-  const { isDarkMode } = useICColorMode()
   const {
     isOpen: isInputOutputTokenModalOpen,
     onOpen: onOpenInputOutputTokenModal,
@@ -72,21 +76,6 @@ const FlashMint = (props: QuickTradeProps) => {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
   const {
-    executeFlashMintZeroExTrade,
-    isTransacting: isTransactingEI,
-    txWouldFail: txWouldFailZeroEx,
-  } = useTradeFlashMintZeroEx()
-  const {
-    executeFlashMintLeveragedTrade,
-    isTransacting: isTransactingLevEI,
-    txWouldFail: txWouldFailLeveraged,
-  } = useTradeFlashMintLeveraged()
-  const {
-    executeFlashMintNotionalTrade,
-    isTransacting: isTransactingFmNotional,
-    txWouldFail: txWouldFailFmNotional,
-  } = useTradeFlashMintNotional()
-  const {
     buyToken: indexToken,
     buyTokenList: indexTokenList,
     buyTokenPrice: indexTokenPrice,
@@ -96,27 +85,22 @@ const FlashMint = (props: QuickTradeProps) => {
     changeBuyToken: changeIndexToken,
     changeSellToken: changeInputOutputToken,
   } = useTradeTokenLists(props.singleToken, true)
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
   const { slippage } = useSlippage()
 
+  const [contractAddress, setContractAddress] = useState<string | null>(null)
   const [indexTokenAmountFormatted, setIndexTokenAmountFormatted] =
     useState('0.0')
+  const [inputOutputTokenAmount, setInputOutputTokenAmount] = useState(
+    BigNumber.from(0)
+  )
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
   const [isMintable, setIsMintable] = useState(true)
   const [isMinting, setIsMinting] = useState(true)
-  const [override, setOverride] = useState(false)
 
   const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
 
   const { fetchQuote, isFetchingQuote, quoteResult } = useFlashMintQuote()
-  const inputOutputTokenAmount =
-    getQuoteAmount(quoteResult, chainId) ?? BigNumber.from(0)
-
-  const contractAddress = getContractForQuote(quoteResult, chainId)
-  const contractBlockExplorerUrl =
-    contractAddress === null
-      ? null
-      : getBlockExplorerContractUrl(contractAddress, chainId)
 
   const {
     isApproved: isApprovedInputOutputToken,
@@ -127,26 +111,31 @@ const FlashMint = (props: QuickTradeProps) => {
     contractAddress ?? undefined,
     inputOutputTokenAmount
   )
-
   const {
     isApproved: isApprovedIndexToken,
     isApproving: isApprovingIndexToken,
     onApprove: onApproveIndexToken,
   } = useApproval(indexToken, contractAddress ?? undefined, indexTokenAmountWei)
 
-  const { handleTrade, isTrading } = useIssuance()
-
   const hasInsufficientFundsInputOutputToken = getHasInsufficientFunds(
     false,
     inputOutputTokenAmount,
-    getBalance(inputOutputToken.symbol)
+    getTokenBalance(inputOutputToken.symbol, chainId)
   )
 
   const hasInsufficientFundsIndexToken = getHasInsufficientFunds(
     false,
     indexTokenAmountWei,
-    getBalance(indexToken.symbol)
+    getTokenBalance(indexToken.symbol, chainId)
   )
+
+  useEffect(() => {
+    const contractAddress = getContractForQuote(quoteResult, chainId)
+    setContractAddress(contractAddress)
+    const inputOutputTokenAmount =
+      getQuoteAmount(quoteResult, chainId) ?? BigNumber.from(0)
+    setInputOutputTokenAmount(inputOutputTokenAmount)
+  }, [chainId, quoteResult])
 
   useEffect(() => {
     const isMintable = isTokenMintable(indexToken)
@@ -166,15 +155,36 @@ const FlashMint = (props: QuickTradeProps) => {
     )
   }, [indexToken, indexTokenAmount, inputOutputToken, isMinting])
 
+  const getTransactionReview = (): TransactionReview | null => {
+    if (isFetchingQuote) return null
+    if (chainId && contractAddress) {
+      return {
+        chainId,
+        contractAddress,
+        inputToken: isMinting ? inputOutputToken : indexToken,
+        outputToken: isMinting ? indexToken : inputOutputToken,
+        inputTokenAmount: isMinting
+          ? inputOutputTokenAmount
+          : indexTokenAmountWei,
+        outputTokenAmount: isMinting
+          ? indexTokenAmountWei
+          : inputOutputTokenAmount,
+      }
+    }
+    return null
+  }
+
   const approve = () => {
     if (isMinting) return onApproveInputOutputToken()
     return onApproveIndexToken()
   }
 
   const isApproved = () => {
-    const isNativeCurrency =
-      inputOutputToken.symbol === getNativeToken(chainId)?.symbol ?? ''
-    if (isMinting) return isNativeCurrency ? true : isApprovedInputOutputToken
+    if (isMinting) {
+      const isNativeCurrency =
+        inputOutputToken.symbol === getNativeToken(chainId)?.symbol ?? ''
+      return isNativeCurrency ? true : isApprovedInputOutputToken
+    }
     return isApprovedIndexToken
   }
 
@@ -191,7 +201,6 @@ const FlashMint = (props: QuickTradeProps) => {
       indexTokenAmount === '0' ||
       (isMinting && hasInsufficientFundsInputOutputToken) ||
       (!isMinting && hasInsufficientFundsIndexToken) ||
-      isTrading ||
       isNotTradableToken(props.singleToken, chainId)
     )
   }
@@ -241,17 +250,12 @@ const FlashMint = (props: QuickTradeProps) => {
       return 'Approve Tokens'
     }
 
-    if (isTrading) {
-      return 'Trading...'
-    }
-
-    return 'Trade'
+    return 'Review Transaction'
   }
 
   const resetData = () => {
     setIndexTokenAmount('0')
     setIndexTokenAmountFormatted('0.0')
-    setOverride(false)
   }
 
   const onChangeIndexTokenAmount = debounce((token: Token, input: string) => {
@@ -263,11 +267,9 @@ const FlashMint = (props: QuickTradeProps) => {
     setIndexTokenAmount(input || '0')
   }, 1000)
 
-  const onChangeOverride = (isChecked: boolean) => {
-    setOverride(isChecked)
-  }
-
   const onClickTradeButton = async () => {
+    onOpenTransactionReview()
+    return
     if (!address) return
     if (isMinting && hasInsufficientFundsInputOutputToken) return
     if (!isMinting && hasInsufficientFundsIndexToken) return
@@ -277,59 +279,16 @@ const FlashMint = (props: QuickTradeProps) => {
       return
     }
 
-    // Trade depending on quote result available
-    const quotes = quoteResult.quotes
-    if (!quotes || !chainId) return null
-
-    if (quotes.flashMintPerp) {
-      await handleTrade(
-        isMinting,
-        slippage,
-        indexToken,
-        indexTokenAmountWei,
-        inputOutputTokenAmount
-      )
-      resetData()
-      return
-    }
-
-    if (quotes.flashMintLeveraged) {
-      await executeFlashMintLeveragedTrade(
-        quotes.flashMintLeveraged,
-        slippage,
-        override
-      )
-      resetData()
-      return
-    }
-
-    if (quotes.flashMintNotional) {
-      await executeFlashMintNotionalTrade(
-        quotes.flashMintNotional,
-        slippage,
-        override
-      )
-      resetData()
-      return
-    }
-
-    if (quotes.flashMintZeroEx) {
-      await executeFlashMintZeroExTrade(
-        quotes.flashMintZeroEx,
-        slippage,
-        override
-      )
-      resetData()
-      return
-    }
+    onOpenTransactionReview()
   }
 
   const inputOutputTokenBalances = inputOutputTokenList.map(
     (inputOutputToken) =>
-      getBalance(inputOutputToken.symbol) ?? BigNumber.from(0)
+      getTokenBalance(inputOutputToken.symbol, chainId) ?? BigNumber.from(0)
   )
   const outputTokenBalances = indexTokenList.map(
-    (indexToken) => getBalance(indexToken.symbol) ?? BigNumber.from(0)
+    (indexToken) =>
+      getTokenBalance(indexToken.symbol, chainId) ?? BigNumber.from(0)
   )
   const inputOutputTokenItems = getSelectTokenListItems(
     inputOutputTokenList,
@@ -344,14 +303,13 @@ const FlashMint = (props: QuickTradeProps) => {
 
   const buttonLabel = getTradeButtonLabel()
   const isButtonDisabled = getTradeButtonDisabledState()
-  const isLoading =
-    isApproving() ||
-    isFetchingQuote ||
-    isTrading ||
-    isTransactingEI ||
-    isTransactingLevEI ||
-    isTransactingFmNotional
+  const isLoading = isApproving() || isFetchingQuote
   const isNarrow = props.isNarrowVersion ?? false
+
+  const contractBlockExplorerUrl =
+    contractAddress === null
+      ? null
+      : getBlockExplorerContractUrl(contractAddress, chainId)
 
   const inputOutputTokenAmountFormatted = formattedBalance(
     inputOutputToken,
@@ -359,7 +317,7 @@ const FlashMint = (props: QuickTradeProps) => {
   )
   const inputOutputTokenBalanceFormatted = formattedBalance(
     inputOutputToken,
-    getBalance(inputOutputToken.symbol)
+    getTokenBalance(inputOutputToken.symbol, chainId)
   )
 
   const indexTokenFiatFormatted = formattedFiat(
@@ -374,8 +332,7 @@ const FlashMint = (props: QuickTradeProps) => {
     inputOutputPrice
   )
 
-  const shouldShowOverride: boolean =
-    txWouldFailZeroEx || txWouldFailLeveraged || txWouldFailFmNotional
+  const transactionReview = getTransactionReview()
 
   return (
     <Box mt='32px'>
@@ -388,7 +345,6 @@ const FlashMint = (props: QuickTradeProps) => {
         inputOutputTokenAmountFormatted={inputOutputTokenAmountFormatted}
         inputOutputTokenBalanceFormatted={inputOutputTokenBalanceFormatted}
         inputOutputTokenFiatFormatted={inputOutputTokenFiatFormatted}
-        isDarkMode={isDarkMode}
         isIssue={isMinting}
         isMintable={isMintable}
         isNarrow={isNarrow}
@@ -411,9 +367,7 @@ const FlashMint = (props: QuickTradeProps) => {
         onClickTradeButton={onClickTradeButton}
         contractAddress={contractAddress}
         contractExplorerUrl={contractBlockExplorerUrl}
-      >
-        {shouldShowOverride ? <Override onChange={onChangeOverride} /> : <></>}
-      </TradeButtonContainer>
+      ></TradeButtonContainer>
       <SelectTokenModal
         isOpen={isInputOutputTokenModalOpen}
         onClose={onCloseInputOutputTokenModal}
@@ -432,70 +386,15 @@ const FlashMint = (props: QuickTradeProps) => {
         }}
         items={indexTokenItems}
       />
-      <TransactionReviewModal
-        isOpen={isTransactionReviewOpen}
-        onClose={onCloseTransactionReview}
-        tx={{
-          inputToken: isMinting ? inputOutputToken : indexToken,
-          outputToken: isMinting ? indexToken : inputOutputToken,
-          inputTokenAmount: BigNumber.from(0),
-          outputTokenAmount: BigNumber.from(0),
-        }}
-      />
+      {transactionReview && (
+        <TransactionReviewModal
+          isOpen={isTransactionReviewOpen}
+          onClose={onCloseTransactionReview}
+          tx={transactionReview}
+        />
+      )}
     </Box>
   )
-}
-
-const getContractForQuote = (
-  quoteResult: FlashMintQuoteResult | null,
-  chainId: number | undefined
-): string | null => {
-  const quotes = quoteResult?.quotes
-  if (!quotes || !chainId) return null
-
-  if (quotes.flashMintPerp) {
-    return FlashMintPerp
-  }
-
-  if (quotes.flashMintLeveraged) {
-    return getExchangeIssuanceLeveragedContractAddress(chainId)
-  }
-
-  if (quotes.flashMintNotional) {
-    return FlashMintNotionalContractAddress
-  }
-
-  if (quotes.flashMintZeroEx) {
-    return getExchangeIssuanceZeroExContractAddress(chainId)
-  }
-
-  return null
-}
-
-const getQuoteAmount = (
-  quoteResult: FlashMintQuoteResult | null,
-  chainId: number | undefined
-): BigNumber | null => {
-  const quotes = quoteResult?.quotes
-  if (!quotes || !chainId) return null
-
-  if (quotes.flashMintPerp) {
-    return quotes.flashMintPerp.inputOutputTokenAmount
-  }
-
-  if (quotes.flashMintLeveraged) {
-    return quotes.flashMintLeveraged.inputOutputTokenAmount
-  }
-
-  if (quotes.flashMintNotional) {
-    return quotes.flashMintNotional.inputOutputTokenAmount
-  }
-
-  if (quotes.flashMintZeroEx) {
-    return quotes.flashMintZeroEx.inputOutputTokenAmount
-  }
-
-  return null
 }
 
 export default FlashMint

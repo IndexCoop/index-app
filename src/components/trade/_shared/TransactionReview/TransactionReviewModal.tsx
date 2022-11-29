@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useColorStyles, useICColorMode } from 'styles/colors'
 
 import {
@@ -13,6 +15,13 @@ import {
   Text,
 } from '@chakra-ui/react'
 
+import Override from 'components/trade/flashmint/Override'
+import { useIssuance } from 'hooks/issuance/useIssuance'
+import { useTradeFlashMintLeveraged } from 'hooks/useTradeFlashMintLeveraged'
+import { useTradeFlashMintNotional } from 'hooks/useTradeFlashMintNotional'
+import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
+import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
+
 import { TradeButton } from '../footer/TradeButton'
 
 import FromTo from './FromTo'
@@ -21,25 +30,131 @@ import { TransactionReview } from './TransactionReview'
 import TransactionReviewDetails from './TransactionReviewDetails'
 import TransactionReviewSimulation from './TransactionReviewSimulation'
 
-type SelectTokenModalItem = {
-  symbol: string
-  logo: string
-  tokenName: string
-  balance: string
-  isMintable: boolean
-}
-
 type TransactionReviewModalProps = {
   isOpen: boolean
   onClose: () => void
   tx: TransactionReview
 }
 
+const useTrade = () => {
+  const { handleTrade, isTrading } = useIssuance()
+
+  const {
+    executeFlashMintLeveragedTrade,
+    isTransacting: isTransactingLeveraged,
+    txWouldFail: txWouldFailLeveraged,
+  } = useTradeFlashMintLeveraged()
+  const {
+    executeFlashMintNotionalTrade,
+    isTransacting: isTransactingNotional,
+    txWouldFail: txWouldFailFmNotional,
+  } = useTradeFlashMintNotional()
+  const {
+    executeFlashMintZeroExTrade,
+    isTransacting: isTransactingZeroEx,
+    txWouldFail: txWouldFailZeroEx,
+  } = useTradeFlashMintZeroEx()
+
+  const isTransacting =
+    isTransactingNotional || isTransactingLeveraged || isTransactingZeroEx
+
+  // TODO:
+  const txWouldFail: boolean =
+    txWouldFailZeroEx || txWouldFailLeveraged || txWouldFailFmNotional
+
+  // TODO:
+  const executeTrade = () => {
+    // Trade depending on quote result available
+    // const quotes = quoteResult.quotes
+    // if (!quotes || !chainId) return null
+    // if (quotes.flashMintPerp) {
+    //   await handleTrade(
+    //     isMinting,
+    //     slippage,
+    //     indexToken,
+    //     indexTokenAmountWei,
+    //     inputOutputTokenAmount
+    //   )
+    //   resetData()
+    //   return
+    // }
+    // if (quotes.flashMintLeveraged) {
+    //   await executeFlashMintLeveragedTrade(
+    //     quotes.flashMintLeveraged,
+    //     slippage,
+    //     override
+    //   )
+    //   resetData()
+    //   return
+    // }
+    // if (quotes.flashMintNotional) {
+    //   await executeFlashMintNotionalTrade(
+    //     quotes.flashMintNotional,
+    //     slippage,
+    //     override
+    //   )
+    //   resetData()
+    //   return
+    // }
+    // if (quotes.flashMintZeroEx) {
+    //   await executeFlashMintZeroExTrade(
+    //     quotes.flashMintZeroEx,
+    //     slippage,
+    //     override
+    //   )
+    //   resetData()
+    //   return
+    // }
+  }
+
+  return { executeTrade, isTransacting, txWouldFail }
+}
+
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const { isDarkMode } = useICColorMode()
   const { styles } = useColorStyles()
   const { isOpen, onClose, tx } = props
+  const { chainId } = tx
   const backgroundColor = styles.background
+
+  const { isTransacting } = useTrade()
+
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  // TODO:
+  const [override, setOverride] = useState(false)
+
+  const contractBlockExplorerUrl = getBlockExplorerContractUrl(
+    tx.contractAddress,
+    chainId
+  )
+
+  const onChangeOverride = (isChecked: boolean) => {
+    setOverride(isChecked)
+  }
+
+  useEffect(() => {
+    console.log(props.tx, 'updated')
+  }, [props.tx])
+
+  // TODO:
+  // useEffect(() => {
+  //   setIsLoading(
+  //     isTrading ||
+  //       isTransactingEI ||
+  //       isTransactingLevEI ||
+  //       isTransactingFmNotional
+  //   )
+  // }, [isTrading, isTransactingEI, isTransactingLevEI, isTransactingFmNotional])
+
+  // TODO: button labels
+  // if (isTrading) {
+  //   return 'Trading...'
+  // }
+
+  // TODO:
+  const shouldShowOverride = true
+
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
       <ModalOverlay
@@ -82,10 +197,16 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
             <Box m='8px'>
               <TransactionReviewSimulation />
             </Box>
+            {shouldShowOverride ? (
+              <Override onChange={onChangeOverride} />
+            ) : (
+              <></>
+            )}
+
             <BottomMessage />
             <TradeButton
-              isDisabled={false}
-              isLoading={false}
+              isDisabled={isButtonDisabled}
+              isLoading={isLoading}
               label={'Submit Transaction'}
               onClick={() => console.log('submit')}
             />
