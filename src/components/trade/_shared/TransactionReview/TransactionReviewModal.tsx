@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useColorStyles, useICColorMode } from 'styles/colors'
+import { useColorStyles } from 'styles/colors'
 
 import {
   Box,
@@ -36,7 +36,7 @@ type TransactionReviewModalProps = {
   tx: TransactionReview
 }
 
-const useTrade = () => {
+const useTrade = (tx: TransactionReview) => {
   const { handleTrade, isTrading } = useIssuance()
 
   const {
@@ -61,66 +61,73 @@ const useTrade = () => {
     isTransactingLeveraged ||
     isTransactingZeroEx
 
-  // TODO:
   const txWouldFail: boolean =
     txWouldFailZeroEx || txWouldFailLeveraged || txWouldFailFmNotional
 
-  // TODO:
-  const executeTrade = async () => {
-    // Trade depending on quote result available
-    // const quotes = quoteResult.quotes
-    // if (!quotes || !chainId) return null
-    // if (quotes.flashMintPerp) {
-    //   await handleTrade(
-    //     isMinting,
-    //     slippage,
-    //     indexToken,
-    //     indexTokenAmountWei,
-    //     inputOutputTokenAmount
-    //   )
-    //   resetData()
-    //   return
-    // }
-    // if (quotes.flashMintLeveraged) {
-    //   await executeFlashMintLeveragedTrade(
-    //     quotes.flashMintLeveraged,
-    //     slippage,
-    //     override
-    //   )
-    //   resetData()
-    //   return
-    // }
-    // if (quotes.flashMintNotional) {
-    //   await executeFlashMintNotionalTrade(
-    //     quotes.flashMintNotional,
-    //     slippage,
-    //     override
-    //   )
-    //   resetData()
-    //   return
-    // }
-    // if (quotes.flashMintZeroEx) {
-    //   await executeFlashMintZeroExTrade(
-    //     quotes.flashMintZeroEx,
-    //     slippage,
-    //     override
-    //   )
-    //   resetData()
-    //   return
-    // }
+  const executeTrade = async (override: boolean) => {
+    const { quoteResult, slippage } = tx
+    const quotes = quoteResult.quotes
+    if (!quotes) return null
+    if (quotes.flashMintPerp) {
+      const {
+        inputToken,
+        inputTokenAmount,
+        isMinting,
+        outputToken,
+        outputTokenAmount,
+      } = tx
+      const indexToken = isMinting ? outputToken : inputToken
+      const indexTokenAmountWei = isMinting
+        ? outputTokenAmount
+        : inputTokenAmount
+      const inputOutputTokenAmount = isMinting
+        ? inputTokenAmount
+        : outputTokenAmount
+      await handleTrade(
+        tx.isMinting,
+        slippage,
+        indexToken,
+        indexTokenAmountWei,
+        inputOutputTokenAmount
+      )
+      return
+    }
+    if (quotes.flashMintLeveraged) {
+      await executeFlashMintLeveragedTrade(
+        quotes.flashMintLeveraged,
+        slippage,
+        override
+      )
+      return
+    }
+    if (quotes.flashMintNotional) {
+      await executeFlashMintNotionalTrade(
+        quotes.flashMintNotional,
+        slippage,
+        override
+      )
+      return
+    }
+    if (quotes.flashMintZeroEx) {
+      await executeFlashMintZeroExTrade(
+        quotes.flashMintZeroEx,
+        slippage,
+        override
+      )
+      return
+    }
   }
 
   return { executeTrade, isTransacting, txWouldFail }
 }
 
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
-  const { isDarkMode } = useICColorMode()
   const { styles } = useColorStyles()
   const { isOpen, onClose, tx } = props
   const { chainId } = tx
   const backgroundColor = styles.background
 
-  const { executeTrade, isTransacting, txWouldFail } = useTrade()
+  const { executeTrade, isTransacting, txWouldFail } = useTrade(tx)
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -151,8 +158,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const onSubmit = async () => {
     if (txWouldFail && !override) return
     console.log('submit')
-    // TODO:
-    // await executeTrade()
+    await executeTrade(override)
     onClose()
   }
 
@@ -221,6 +227,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
 }
 
 /**
+ // TODO:
 <Box my='8px'>
   <TransactionReviewDetails />
 </Box>

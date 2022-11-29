@@ -155,25 +155,6 @@ const FlashMint = (props: QuickTradeProps) => {
     )
   }, [indexToken, indexTokenAmount, inputOutputToken, isMinting])
 
-  const getTransactionReview = (): TransactionReview | null => {
-    if (isFetchingQuote) return null
-    if (chainId && contractAddress) {
-      return {
-        chainId,
-        contractAddress,
-        inputToken: isMinting ? inputOutputToken : indexToken,
-        outputToken: isMinting ? indexToken : inputOutputToken,
-        inputTokenAmount: isMinting
-          ? inputOutputTokenAmount
-          : indexTokenAmountWei,
-        outputTokenAmount: isMinting
-          ? indexTokenAmountWei
-          : inputOutputTokenAmount,
-      }
-    }
-    return null
-  }
-
   const approve = () => {
     if (isMinting) return onApproveInputOutputToken()
     return onApproveIndexToken()
@@ -251,6 +232,28 @@ const FlashMint = (props: QuickTradeProps) => {
     }
 
     return 'Review Transaction'
+  }
+
+  const getTransactionReview = (): TransactionReview | null => {
+    if (isFetchingQuote) return null
+    if (chainId && contractAddress && quoteResult) {
+      return {
+        chainId,
+        contractAddress,
+        isMinting,
+        inputToken: isMinting ? inputOutputToken : indexToken,
+        outputToken: isMinting ? indexToken : inputOutputToken,
+        inputTokenAmount: isMinting
+          ? inputOutputTokenAmount
+          : indexTokenAmountWei,
+        outputTokenAmount: isMinting
+          ? indexTokenAmountWei
+          : inputOutputTokenAmount,
+        quoteResult,
+        slippage,
+      }
+    }
+    return null
   }
 
   const resetData = () => {

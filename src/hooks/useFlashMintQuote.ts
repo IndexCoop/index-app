@@ -35,15 +35,6 @@ export type FlashMintQuoteResult = {
   }
 }
 
-const defaultQuoteResult: FlashMintQuoteResult = {
-  quotes: {
-    flashMintLeveraged: null,
-    flashMintNotional: null,
-    flashMintPerp: null,
-    flashMintZeroEx: null,
-  },
-}
-
 export const useFlashMintQuote = () => {
   const { chainId } = useNetwork()
   const { getTokenBalance } = useBalanceData()
@@ -51,8 +42,9 @@ export const useFlashMintQuote = () => {
   const { getQuote } = useIssuanceQuote()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
-  const [quoteResult, setQuoteResult] =
-    useState<FlashMintQuoteResult>(defaultQuoteResult)
+  const [quoteResult, setQuoteResult] = useState<FlashMintQuoteResult | null>(
+    null
+  )
 
   /**
    *
@@ -68,7 +60,7 @@ export const useFlashMintQuote = () => {
     slippage: number
   ) => {
     if (!indexTokenAmount.gt(BigNumber.from(0))) {
-      setQuoteResult(defaultQuoteResult)
+      setQuoteResult(null)
       return
     }
 
