@@ -124,25 +124,12 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  // TODO:
   const [override, setOverride] = useState(false)
 
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
     tx.contractAddress,
     chainId
   )
-
-  const onSubmit = async () => {
-    if (txWouldFail && !override) return
-    console.log('submit')
-    // TODO:
-    // await executeTrade()
-    // TODO: close modal
-  }
-
-  const onChangeOverride = (isChecked: boolean) => {
-    setOverride(isChecked)
-  }
 
   useEffect(() => {
     console.log(props.tx, 'updated')
@@ -152,13 +139,24 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     setIsButtonDisabled(txWouldFail && !override)
   }, [override, txWouldFail])
 
-  // TODO:
+  // TODO: isLoading when simulating
   useEffect(() => {
     setIsLoading(isTransacting)
   }, [isTransacting])
 
-  // TODO:
-  const shouldShowOverride = false
+  const onChangeOverride = (isChecked: boolean) => {
+    setOverride(isChecked)
+  }
+
+  const onSubmit = async () => {
+    if (txWouldFail && !override) return
+    console.log('submit')
+    // TODO:
+    // await executeTrade()
+    onClose()
+  }
+
+  const shouldShowOverride = txWouldFail
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
