@@ -97,6 +97,8 @@ const FlashMint = (props: QuickTradeProps) => {
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
   const [isMintable, setIsMintable] = useState(true)
   const [isMinting, setIsMinting] = useState(true)
+  const [transactionReview, setTransactionReview] =
+    useState<TransactionReview | null>(null)
 
   const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
 
@@ -154,6 +156,11 @@ const FlashMint = (props: QuickTradeProps) => {
       slippage
     )
   }, [indexToken, indexTokenAmount, inputOutputToken, isMinting])
+
+  useEffect(() => {
+    if (!transactionReview) return
+    onOpenTransactionReview()
+  }, [transactionReview])
 
   const approve = () => {
     if (isMinting) return onApproveInputOutputToken()
@@ -280,7 +287,9 @@ const FlashMint = (props: QuickTradeProps) => {
       return
     }
 
-    onOpenTransactionReview()
+    // Open transaction review modal
+    const transactionReview = getTransactionReview()
+    setTransactionReview(transactionReview)
   }
 
   // SelectTokenModal
@@ -333,9 +342,6 @@ const FlashMint = (props: QuickTradeProps) => {
     contractAddress === null
       ? null
       : getBlockExplorerContractUrl(contractAddress, chainId)
-
-  // TransactionReviewModal
-  const transactionReview = getTransactionReview()
 
   return (
     <Box mt='32px'>
