@@ -56,14 +56,17 @@ const useTrade = () => {
   } = useTradeFlashMintZeroEx()
 
   const isTransacting =
-    isTransactingNotional || isTransactingLeveraged || isTransactingZeroEx
+    isTrading ||
+    isTransactingNotional ||
+    isTransactingLeveraged ||
+    isTransactingZeroEx
 
   // TODO:
   const txWouldFail: boolean =
     txWouldFailZeroEx || txWouldFailLeveraged || txWouldFailFmNotional
 
   // TODO:
-  const executeTrade = () => {
+  const executeTrade = async () => {
     // Trade depending on quote result available
     // const quotes = quoteResult.quotes
     // if (!quotes || !chainId) return null
@@ -117,7 +120,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const { chainId } = tx
   const backgroundColor = styles.background
 
-  const { isTransacting } = useTrade()
+  const { executeTrade, isTransacting, txWouldFail } = useTrade()
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -129,6 +132,14 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     chainId
   )
 
+  const onSubmit = async () => {
+    if (txWouldFail && !override) return
+    console.log('submit')
+    // TODO:
+    // await executeTrade()
+    // TODO: close modal
+  }
+
   const onChangeOverride = (isChecked: boolean) => {
     setOverride(isChecked)
   }
@@ -137,23 +148,17 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     console.log(props.tx, 'updated')
   }, [props.tx])
 
-  // TODO:
-  // useEffect(() => {
-  //   setIsLoading(
-  //     isTrading ||
-  //       isTransactingEI ||
-  //       isTransactingLevEI ||
-  //       isTransactingFmNotional
-  //   )
-  // }, [isTrading, isTransactingEI, isTransactingLevEI, isTransactingFmNotional])
-
-  // TODO: button labels
-  // if (isTrading) {
-  //   return 'Trading...'
-  // }
+  useEffect(() => {
+    setIsButtonDisabled(txWouldFail && !override)
+  }, [override, txWouldFail])
 
   // TODO:
-  const shouldShowOverride = true
+  useEffect(() => {
+    setIsLoading(isTransacting)
+  }, [isTransacting])
+
+  // TODO:
+  const shouldShowOverride = false
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
@@ -198,17 +203,17 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
               <TransactionReviewSimulation />
             </Box>
             {shouldShowOverride ? (
-              <Override onChange={onChangeOverride} />
+              <Box m='8px'>
+                <Override onChange={onChangeOverride} />
+              </Box>
             ) : (
-              <></>
+              <BottomMessage />
             )}
-
-            <BottomMessage />
             <TradeButton
               isDisabled={isButtonDisabled}
               isLoading={isLoading}
               label={'Submit Transaction'}
-              onClick={() => console.log('submit')}
+              onClick={onSubmit}
             />
           </Flex>
         </ModalBody>
