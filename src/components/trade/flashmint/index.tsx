@@ -247,7 +247,7 @@ const FlashMint = (props: QuickTradeProps) => {
     }
 
     if (!isApproved()) {
-      return 'Approve Tokens'
+      return 'Approve Token'
     }
 
     return 'Review Transaction'
@@ -268,8 +268,6 @@ const FlashMint = (props: QuickTradeProps) => {
   }, 1000)
 
   const onClickTradeButton = async () => {
-    onOpenTransactionReview()
-    return
     if (!address) return
     if (isMinting && hasInsufficientFundsInputOutputToken) return
     if (!isMinting && hasInsufficientFundsIndexToken) return
@@ -282,6 +280,7 @@ const FlashMint = (props: QuickTradeProps) => {
     onOpenTransactionReview()
   }
 
+  // SelectTokenModal
   const inputOutputTokenBalances = inputOutputTokenList.map(
     (inputOutputToken) =>
       getTokenBalance(inputOutputToken.symbol, chainId) ?? BigNumber.from(0)
@@ -301,16 +300,8 @@ const FlashMint = (props: QuickTradeProps) => {
     chainId
   )
 
-  const buttonLabel = getTradeButtonLabel()
-  const isButtonDisabled = getTradeButtonDisabledState()
-  const isLoading = isApproving() || isFetchingQuote
+  // DirectIssuance
   const isNarrow = props.isNarrowVersion ?? false
-
-  const contractBlockExplorerUrl =
-    contractAddress === null
-      ? null
-      : getBlockExplorerContractUrl(contractAddress, chainId)
-
   const inputOutputTokenAmountFormatted = formattedBalance(
     inputOutputToken,
     inputOutputTokenAmount
@@ -319,7 +310,6 @@ const FlashMint = (props: QuickTradeProps) => {
     inputOutputToken,
     getTokenBalance(inputOutputToken.symbol, chainId)
   )
-
   const indexTokenFiatFormatted = formattedFiat(
     parseFloat(indexTokenAmount),
     indexTokenPrice
@@ -332,6 +322,16 @@ const FlashMint = (props: QuickTradeProps) => {
     inputOutputPrice
   )
 
+  // TradeButtonContainer
+  const buttonLabel = getTradeButtonLabel()
+  const isButtonDisabled = getTradeButtonDisabledState()
+  const isLoading = isApproving() || isFetchingQuote
+  const contractBlockExplorerUrl =
+    contractAddress === null
+      ? null
+      : getBlockExplorerContractUrl(contractAddress, chainId)
+
+  // TransactionReviewModal
   const transactionReview = getTransactionReview()
 
   return (
