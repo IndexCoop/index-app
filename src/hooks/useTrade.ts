@@ -80,14 +80,13 @@ export const useTrade = () => {
         value: BigNumber.from(quote.value ?? 0),
       }
       try {
-        const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
-        const simulator = new TxSimulator(accessKey)
-        await simulator.simulate(req2)
-        // FIXME: reactivate for production
-        // setIsTransacting(true)
-        // sendTransaction?.({
-        //   recklesslySetUnpreparedRequest: req,
-        // })
+        // const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
+        // const simulator = new TxSimulator(accessKey)
+        // await simulator.simulate(req2)
+        setIsTransacting(true)
+        sendTransaction?.({
+          recklesslySetUnpreparedRequest: req,
+        })
       } catch (error) {
         setIsTransacting(false)
         console.log('Error sending transaction', error)

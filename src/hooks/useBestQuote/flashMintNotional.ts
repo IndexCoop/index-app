@@ -41,24 +41,24 @@ export async function getEnhancedFlashMintNotionalQuote(
       provider
     )
     if (quote) {
-      const req = await getFlashMintNotionalTransaction(
-        isMinting,
-        inputToken,
-        outputToken,
-        quote.indexTokenAmount,
-        quote.inputOutputTokenAmount,
-        quote.swapData,
-        slippage,
-        provider,
-        signer,
-        chainId
-      )
+      // const req = await getFlashMintNotionalTransaction(
+      //   isMinting,
+      //   inputToken,
+      //   outputToken,
+      //   quote.indexTokenAmount,
+      //   quote.inputOutputTokenAmount,
+      //   quote.swapData,
+      //   slippage,
+      //   provider,
+      //   signer,
+      //   chainId
+      // )
 
-      if (req) {
-        const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
-        const simulator = new TxSimulator(accessKey)
-        await simulator.simulate(req)
-      }
+      // if (req) {
+      //   const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
+      //   const simulator = new TxSimulator(accessKey)
+      //   await simulator.simulate(req)
+      // }
 
       const gasEstimate = await getFlashMintNotionalGasEstimate(
         isMinting,

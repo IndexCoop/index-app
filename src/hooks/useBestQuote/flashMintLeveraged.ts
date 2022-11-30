@@ -99,25 +99,25 @@ export async function getEnhancedFlashMintLeveragedQuote(
       chainId ?? 1
     )
     if (quoteLeveraged) {
-      const req = await getFlashMintLeveragedTransaction(
-        isMinting,
-        sellToken,
-        buyToken,
-        indexTokenAmount,
-        quoteLeveraged.inputOutputTokenAmount,
-        inputTokenBalance,
-        quoteLeveraged.swapDataDebtCollateral,
-        quoteLeveraged.swapDataPaymentToken,
-        provider,
-        signer,
-        chainId
-      )
+      // const req = await getFlashMintLeveragedTransaction(
+      //   isMinting,
+      //   sellToken,
+      //   buyToken,
+      //   indexTokenAmount,
+      //   quoteLeveraged.inputOutputTokenAmount,
+      //   inputTokenBalance,
+      //   quoteLeveraged.swapDataDebtCollateral,
+      //   quoteLeveraged.swapDataPaymentToken,
+      //   provider,
+      //   signer,
+      //   chainId
+      // )
 
-      if (req) {
-        const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
-        const simulator = new TxSimulator(accessKey)
-        await simulator.simulate(req)
-      }
+      // if (req) {
+      //   const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
+      //   const simulator = new TxSimulator(accessKey)
+      //   await simulator.simulate(req)
+      // }
 
       // We don't want this function to fail for estimates here.
       // A default will be returned if the tx would fail.
