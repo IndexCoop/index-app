@@ -1,4 +1,4 @@
-import { Signer } from 'ethers'
+import { PopulatedTransaction, Signer } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { SwapData } from '@indexcoop/flash-mint-sdk'
@@ -19,13 +19,13 @@ export async function getFlashMintNotionalTransaction(
   provider: any,
   signer: any,
   chainId: number
-) {
+): Promise<PopulatedTransaction | null> {
   // Return default - as we can't construct a tx without a provider or signer
   if (!provider || !signer) return null
 
   const inputTokenAddress = getAddressForToken(inputToken, chainId)
   const outputTokenAddress = getAddressForToken(outputToken, chainId)
-  if (!outputTokenAddress || !inputTokenAddress) return
+  if (!outputTokenAddress || !inputTokenAddress) return null
 
   const contract = getFlashMintNotionalContract(signer as Signer, chainId)
   const fixedTokenAddress = isMinting ? outputTokenAddress : inputTokenAddress
@@ -70,6 +70,7 @@ export async function getFlashMintNotionalTransaction(
     }
   } catch (error) {
     console.log('Error sending FlashMintNotional tx', error)
+    return null
   }
   return null
 }
