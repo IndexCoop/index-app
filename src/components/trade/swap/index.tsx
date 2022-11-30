@@ -166,7 +166,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
-    onApprove: onApproveForSwap,
+    approve: onApproveForSwap,
   } = useApproval(sellToken, zeroExAddress, sellTokenAmountInWei)
 
   const { executeTrade, isTransacting } = useTrade()

@@ -39,24 +39,6 @@ import { QuickTradeProps } from '../swap'
 
 import DirectIssuance from './DirectIssuance'
 
-// const useSelectTokenListItems = (tokenList: Token[]) => {
-//   const { getTokenBalance } = useBalanceData()
-//
-//   const balances = useMemo(
-//     () =>
-//       // FIXME: chainId
-//       tokenList.map(
-//         (token) => getTokenBalance(token.symbol, 1) ?? BigNumber.from(0)
-//       ),
-//     [tokenList]
-//   )
-//
-//   return useMemo(
-//     () => getSelectTokenListItems(tokenList, balances, 0),
-//     [tokenList]
-//   )
-// }
-
 const FlashMint = (props: QuickTradeProps) => {
   const { address } = useWallet()
   const { chainId, isSupportedNetwork } = useNetwork()
@@ -105,19 +87,15 @@ const FlashMint = (props: QuickTradeProps) => {
   const { fetchQuote, isFetchingQuote, quoteResult } = useFlashMintQuote()
 
   const {
-    isApproved: isApprovedInputOutputToken,
-    isApproving: isApprovingInputOutputToken,
-    onApprove: onApproveInputOutputToken,
-  } = useApproval(
-    inputOutputToken,
-    contractAddress ?? undefined,
-    inputOutputTokenAmount
-  )
-  const {
+    approve: approveIndexToken,
     isApproved: isApprovedIndexToken,
     isApproving: isApprovingIndexToken,
-    onApprove: onApproveIndexToken,
-  } = useApproval(indexToken, contractAddress ?? undefined, indexTokenAmountWei)
+  } = useApproval(indexToken, contractAddress, indexTokenAmountWei)
+  const {
+    approve: approveInputOutputToken,
+    isApproved: isApprovedInputOutputToken,
+    isApproving: isApprovingInputOutputToken,
+  } = useApproval(inputOutputToken, contractAddress, inputOutputTokenAmount)
 
   const hasInsufficientFundsInputOutputToken = getHasInsufficientFunds(
     false,
@@ -163,8 +141,8 @@ const FlashMint = (props: QuickTradeProps) => {
   }, [transactionReview])
 
   const approve = () => {
-    if (isMinting) return onApproveInputOutputToken()
-    return onApproveIndexToken()
+    if (isMinting) return approveInputOutputToken()
+    return approveIndexToken()
   }
 
   const isApproved = () => {
