@@ -4,7 +4,13 @@ export class TxSimulator {
   /**
    * @param accessKey A Tenderly access key.
    */
-  constructor(private readonly accessKey: string) {}
+  constructor(private readonly accessKey: string) {
+    if (!accessKey) {
+      throw Error(
+        'You must provide a Tenderly access key for simulations to work.'
+      )
+    }
+  }
 
   /**
    * @param tx A PopulatedTransaction to be simulated on the specified chain
