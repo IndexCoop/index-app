@@ -22,9 +22,8 @@ export const useSimulateQuote = (quoteResult: FlashMintQuoteResult) => {
     if (!request) return false
     const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
     const simulator = new TxSimulator(accessKey)
-    await simulator.simulate(request)
-    // TODO:
-    return true
+    const success = await simulator.simulate(request)
+    return success
   }
 
   return { simulateTrade }
@@ -47,7 +46,7 @@ class TransactionRequestBuilder {
       flashMintNotional: quoteNotional,
       flashMintZeroEx: quoteZeroEx,
     } = quoteResult.quotes
-    let request: PopulatedTransaction | null
+    let request: PopulatedTransaction | null = null
 
     if (quoteLeveraged) {
       request = await getFlashMintLeveragedTransaction(
@@ -94,6 +93,6 @@ class TransactionRequestBuilder {
         chainId
       )
     }
-    return null
+    return request
   }
 }
