@@ -8,6 +8,7 @@ import { getFlashMintLeveragedTransaction } from 'utils/flashMintLeveragedTransa
 import { getFlashMintNotionalTransaction } from 'utils/flashMintNotional/fmNotionalTransaction'
 import { getFlashMintZeroExTransaction } from 'utils/flashMintZeroExTransaction'
 import { TxSimulator } from 'utils/simulator'
+
 import { FlashMintQuoteResult } from './useFlashMintQuote'
 
 export const useSimulateQuote = (quoteResult: FlashMintQuoteResult) => {
@@ -40,6 +41,7 @@ class TransactionRequestBuilder {
     quoteResult: FlashMintQuoteResult
   ): Promise<PopulatedTransaction | null> {
     const { chainId, provider, signer } = this
+    const { inputTokenBalance, slippage } = quoteResult
     const {
       flashMintLeveraged: quoteLeveraged,
       flashMintNotional: quoteNotional,
@@ -54,9 +56,7 @@ class TransactionRequestBuilder {
         quoteLeveraged.outputToken,
         quoteLeveraged.indexTokenAmount,
         quoteLeveraged.inputOutputTokenAmount,
-        // TODO:
-        // inputTokenBalance,
-        BigNumber.from(0),
+        inputTokenBalance,
         quoteLeveraged.swapDataDebtCollateral,
         quoteLeveraged.swapDataPaymentToken,
         provider,
@@ -73,9 +73,7 @@ class TransactionRequestBuilder {
         quoteNotional.indexTokenAmount,
         quoteNotional.inputOutputTokenAmount,
         quoteNotional.swapData,
-        // TODO:
-        // slippage,
-        1,
+        slippage,
         provider,
         signer,
         chainId
@@ -89,9 +87,7 @@ class TransactionRequestBuilder {
         quoteZeroEx.outputToken,
         quoteZeroEx.indexTokenAmount,
         quoteZeroEx.inputOutputTokenAmount,
-        // TODO:
-        // quoteZeroEx.inputTokenBalance,
-        BigNumber.from(0),
+        inputTokenBalance,
         quoteZeroEx.componentQuotes,
         provider,
         signer,

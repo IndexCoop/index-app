@@ -33,6 +33,8 @@ export type FlashMintQuoteResult = {
     flashMintPerp: FlashMintPerpQuote | null
     flashMintZeroEx: ExchangeIssuanceZeroExQuote | null
   }
+  inputTokenBalance: BigNumber
+  slippage: number
 }
 
 export const useFlashMintQuote = () => {
@@ -88,6 +90,9 @@ export const useFlashMintQuote = () => {
     let flashMintPerpQuote: FlashMintPerpQuote | null = null
     let flashMintZeroExQuote: ExchangeIssuanceZeroExQuote | null = null
 
+    const inputTokenBalance =
+      getTokenBalance(inputToken.symbol, chainId) ?? BigNumber.from(0)
+
     const isOptimismNetwork = chainId === 10
     if (isOptimismNetwork) {
       const estimatedQuoteAmount = await getQuote(
@@ -112,9 +117,6 @@ export const useFlashMintQuote = () => {
         { 'X-INDEXCOOP-API-KEY': process.env.REACT_APP_INDEX_COOP_API! },
         swapPathOverride
       )
-
-      const inputTokenBalance =
-        getTokenBalance(inputToken.symbol, chainId) ?? BigNumber.from(0)
 
       flashMintLeveragedQuote = await getEnhancedFlashMintLeveragedQuote(
         isMinting,
@@ -179,6 +181,8 @@ export const useFlashMintQuote = () => {
         flashMintPerp: flashMintPerpQuote,
         flashMintZeroEx: flashMintZeroExQuote,
       },
+      inputTokenBalance,
+      slippage,
     }
 
     setQuoteResult(quoteResult)
