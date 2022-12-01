@@ -13,9 +13,11 @@ export class TxSimulator {
   }
 
   /**
-   * @param tx A PopulatedTransaction to be simulated on the specified chain
+   * Simulates a given transaction request on Tenderly.
+   * @param tx A PopulatedTransaction to be simulated on the specified chain.
+   * @returns A boolean whether the simulation was successful.
    */
-  async simulate(tx: PopulatedTransaction) {
+  async simulate(tx: PopulatedTransaction): Promise<boolean> {
     console.log('yo', tx.chainId)
     const apiUrl = `https://api.tenderly.co/api/v1/account/jann/project/project/simulate`
     const body = {
@@ -57,6 +59,6 @@ export class TxSimulator {
     // if (data.simulation.status === false) {
     //   throw new Error('Transaction is going to fail')
     // }
-    return data.simulation.status === false
+    return data.simulation.status === true
   }
 }
