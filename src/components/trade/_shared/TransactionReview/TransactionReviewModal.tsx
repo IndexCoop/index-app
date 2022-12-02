@@ -198,7 +198,8 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     displayFromWei(tx.outputTokenAmount, decimals, tx.outputToken.decimals) ??
     ''
 
-  const shouldShowOverride = txWouldFail
+  const shouldShowOverride =
+    simulationState === TransactionReviewSimulationState.failure
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
