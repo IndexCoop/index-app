@@ -5,6 +5,7 @@ import { useColorStyles } from 'styles/colors'
 import {
   Box,
   Flex,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -236,9 +237,9 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
                   outputTokenSymbol={tx.outputToken.symbol}
                 />
               </Flex>
-              <Spacer />
             </Flex>
             <Box my='8px'>
+              <Box mb='8px'><ContractSection contractAddress={tx.contractAddress} explorerUrl={contractBlockExplorerUrl} /></Box>
               <TransactionReviewSimulation state={simulationState} />
             </Box>
             {shouldShowOverride ? (
@@ -282,5 +283,30 @@ const BottomMessage = () => {
       Submitting will open your currently connected wallet to confirm and sign
       the transaction.
     </Text>
+  )
+}
+
+const ContractSection = ({contractAddress, explorerUrl}: {contractAddress: string, explorerUrl: string}) => {
+  const { styles } = useColorStyles()
+  return (
+    <Flex
+      border='1px solid'
+      borderColor={styles.border}
+      borderRadius='16px'
+      p='16px'
+      w='100%'
+    >
+      <Text fontSize='lg' fontWeight='500'>
+        Contract
+      </Text>
+      <Spacer />
+    <Link
+      href={explorerUrl}
+      isExternal
+      style={{ textDecoration: 'underline' }}
+    >
+      {`${contractAddress.substring(0,8)}...`}
+    </Link>
+    </Flex>
   )
 }
