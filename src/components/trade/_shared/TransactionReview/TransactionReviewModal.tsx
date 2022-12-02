@@ -20,6 +20,7 @@ import { useIssuance } from 'hooks/issuance/useIssuance'
 import { useTradeFlashMintLeveraged } from 'hooks/useTradeFlashMintLeveraged'
 import { useTradeFlashMintNotional } from 'hooks/useTradeFlashMintNotional'
 import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
+import { displayFromWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 
 import { TradeButton } from '../footer/TradeButton'
@@ -162,6 +163,13 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     onClose()
   }
 
+  const decimals = 10
+  const formattedInputTokenAmount =
+    displayFromWei(tx.inputTokenAmount, decimals, tx.inputToken.decimals) ?? ''
+  const formattedOutputTokenAmount =
+    displayFromWei(tx.outputTokenAmount, decimals, tx.outputToken.decimals) ??
+    ''
+
   const shouldShowOverride = txWouldFail
 
   return (
@@ -190,10 +198,10 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
               <Flex direction='column'>
                 <FromTo
                   inputToken={tx.inputToken.image}
-                  inputTokenAmount={tx.inputTokenAmount.toString()}
+                  inputTokenAmount={formattedInputTokenAmount}
                   inputTokenSymbol={tx.inputToken.symbol}
                   outputToken={tx.outputToken.image}
-                  outputTokenAmount={tx.outputTokenAmount.toString()}
+                  outputTokenAmount={formattedOutputTokenAmount}
                   outputTokenSymbol={tx.outputToken.symbol}
                 />
                 <Flex mt='16px'>
