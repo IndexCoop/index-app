@@ -191,11 +191,13 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
           <Text>FlashMint - Review transaction</Text>
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody p='16px'>
+        <ModalBody p='0 16px 16px 16px'>
           <Flex direction='column' h='100%' w='100%'>
-            <Flex mb='16px'>
-              <Spacer />
-              <Flex direction='column'>
+            <Flex>
+              <Flex align='center' direction='column' w='100%'>
+                <Flex my='4px'>
+                  <NetworkBadge />
+                </Flex>
                 <FromTo
                   inputToken={tx.inputToken.image}
                   inputTokenAmount={formattedInputTokenAmount}
@@ -204,18 +206,14 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
                   outputTokenAmount={formattedOutputTokenAmount}
                   outputTokenSymbol={tx.outputToken.symbol}
                 />
-                <Flex mt='16px'>
-                  <NetworkBadge />
-                </Flex>
               </Flex>
               <Spacer />
             </Flex>
-            <Spacer />
-            <Box m='8px'>
+            <Box my='8px'>
               <TransactionReviewSimulation />
             </Box>
             {shouldShowOverride ? (
-              <Box m='8px'>
+              <Box my='8px'>
                 <Override onChange={onChangeOverride} />
               </Box>
             ) : (
