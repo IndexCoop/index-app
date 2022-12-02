@@ -17,6 +17,7 @@ import {
 
 import Override from 'components/trade/flashmint/Override'
 import { useIssuance } from 'hooks/issuance/useIssuance'
+import { useSimulateQuote } from 'hooks/useSimulateQuote'
 import { useTradeFlashMintLeveraged } from 'hooks/useTradeFlashMintLeveraged'
 import { useTradeFlashMintNotional } from 'hooks/useTradeFlashMintNotional'
 import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
@@ -130,6 +131,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const { chainId } = tx
   const backgroundColor = styles.background
 
+  const { simulateTrade } = useSimulateQuote(tx.quoteResult)
   const { executeTrade, isTransacting, txWouldFail } = useTrade(tx)
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
@@ -147,13 +149,26 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
 
   useEffect(() => {
     console.log(props.tx, 'updated')
+    setSimulationState(TransactionReviewSimulationState.default)
   }, [props.tx])
 
   useEffect(() => {
-    setIsButtonDisabled(txWouldFail && !override)
-  }, [override, txWouldFail])
+    if (simulationState === TransactionReviewSimulationState.loading) {
+      setIsButtonDisabled(true)
+      return
+    }
 
-  // TODO: isLoading when simulating
+    if (
+      !override &&
+      simulationState === TransactionReviewSimulationState.failure
+    ) {
+      setIsButtonDisabled(true)
+      return
+    }
+
+    setIsButtonDisabled(false)
+  }, [override, simulationState])
+
   useEffect(() => {
     setIsLoading(isTransacting)
   }, [isTransacting])
@@ -163,7 +178,14 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   }
 
   const onSubmit = async () => {
-    if (txWouldFail && !override) return
+    setSimulationState(TransactionReviewSimulationState.loading)
+    const isSuccess = await simulateTrade()
+    const state = isSuccess
+      ? TransactionReviewSimulationState.success
+      : TransactionReviewSimulationState.failure
+    setSimulationState(state)
+    console.log('isSuccess', isSuccess)
+    if (!isSuccess && !override) return
     console.log('submit')
     await executeTrade(override)
     onClose()
