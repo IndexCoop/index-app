@@ -197,7 +197,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
                   outputTokenSymbol={tx.outputToken.symbol}
                 />
                 <Flex mt='16px'>
-                  <NetworkBadge network={'Ethereum'} />
+                  <NetworkBadge />
                 </Flex>
               </Flex>
               <Spacer />

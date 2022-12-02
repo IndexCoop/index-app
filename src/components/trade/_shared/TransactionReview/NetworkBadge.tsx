@@ -2,12 +2,12 @@ import { useColorStyles } from 'styles/colors'
 
 import { Box, Flex, Text } from '@chakra-ui/react'
 
-type NetworkBadgeProps = {
-  network: string
-}
+import { useNetwork } from 'hooks/useNetwork'
 
-const NetworkBadge = ({ network }: NetworkBadgeProps) => {
+const NetworkBadge = () => {
   const { styles } = useColorStyles()
+  const { name } = useNetwork()
+  const networkName = name ?? 'Unsupported Network'
   return (
     <Flex align='center' direction='row' justify='center'>
       <Text fontSize={'sm'} fontWeight='500'>
@@ -21,7 +21,7 @@ const NetworkBadge = ({ network }: NetworkBadgeProps) => {
         ml='4px'
       >
         <Text color={styles.textInverted} fontSize='xs' fontWeight='500'>
-          {network}
+          {networkName}
         </Text>
       </Box>
     </Flex>
