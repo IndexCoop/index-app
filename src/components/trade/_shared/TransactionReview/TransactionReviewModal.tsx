@@ -29,7 +29,9 @@ import FromTo from './FromTo'
 import NetworkBadge from './NetworkBadge'
 import { TransactionReview } from './TransactionReview'
 import TransactionReviewDetails from './TransactionReviewDetails'
-import TransactionReviewSimulation from './TransactionReviewSimulation'
+import TransactionReviewSimulation, {
+  TransactionReviewSimulationState,
+} from './TransactionReviewSimulation'
 
 type TransactionReviewModalProps = {
   isOpen: boolean
@@ -133,6 +135,10 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [override, setOverride] = useState(false)
+  const [simulationState, setSimulationState] =
+    useState<TransactionReviewSimulationState>(
+      TransactionReviewSimulationState.default
+    )
 
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
     tx.contractAddress,
@@ -210,7 +216,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
               <Spacer />
             </Flex>
             <Box my='8px'>
-              <TransactionReviewSimulation />
+              <TransactionReviewSimulation state={simulationState} />
             </Box>
             {shouldShowOverride ? (
               <Box my='8px'>
