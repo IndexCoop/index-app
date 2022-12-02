@@ -7,7 +7,6 @@ import icethLogo from 'assets/icethlogo.png'
 import iethflipLogo from 'assets/iethfliplogo.svg'
 import imaticflipLogo from 'assets/imaticflilogo.svg'
 import indexLogo from 'assets/index-token.png'
-import jpgLogo from 'assets/jpgLogo.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
 import mnyeLogo from 'assets/mnyeLogo.png'
 import { TokenContextKeys } from 'providers/MarketData'
@@ -493,27 +492,6 @@ export const icETHIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
-export const JPGIndex: Token = {
-  name: 'JPG NFT Index',
-  symbol: 'JPG',
-  address: '0x02e7ac540409d32c90bfb51114003a9e1ff0249c',
-  polygonAddress: undefined,
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'jpg',
-  image: jpgLogo,
-  coingeckoId: 'jpg-nft-index',
-  tokensetsId: 'jpg',
-  tokenContextKey: 'jpg',
-  fees: {
-    streamingFee: '5.95%',
-    mintFee: '0.5%',
-    redeemFee: '0.5%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
-}
 export const MNYeIndex: Token = {
   name: 'Market Neutral Yield ETH Index',
   symbol: 'MNYe',
@@ -594,7 +572,6 @@ const indexNames = [
   BedIndex,
   DataIndex,
   IndexToken,
-  JPGIndex,
 ]
 
 export const indexNamesMainnet = indexNames.filter((index) => index.address)

@@ -9,7 +9,6 @@ import {
   icETHIndex,
   IMaticFLIP,
   IndexToken,
-  JPGIndex,
   MATIC,
   MetaverseIndex,
   STETH,
@@ -281,9 +280,6 @@ describe('isEligibleTradePairZeroEx()', () => {
     // not eligible - as not approved in contract
     const isEligibleIndex = isEligibleTradePairZeroEx(inputToken, IndexToken)
     expect(isEligibleIndex).toEqual(false)
-    // Reenabled
-    const isEligibleJpg = isEligibleTradePairZeroEx(inputToken, JPGIndex)
-    expect(isEligibleJpg).toEqual(true)
     // Won't work with ZeroEx, so shouldn't be eligible
     const isEligibleBtc2xFli = isEligibleTradePairZeroEx(
       inputToken,

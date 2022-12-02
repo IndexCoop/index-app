@@ -21,7 +21,6 @@ import {
   IEthereumFLIP,
   IMaticFLIP,
   IndexToken,
-  JPGIndex,
   Matic2xFLIP,
   MetaverseIndex,
   MNYeIndex,
@@ -53,7 +52,6 @@ export interface TokenContext {
   btcflip?: TokenMarketDataValues
   ibtcflip?: TokenMarketDataValues
   iceth?: TokenMarketDataValues
-  jpg?: TokenMarketDataValues
   mnye?: TokenMarketDataValues
   selectLatestMarketData: (...args: any) => number
   selectMarketDataByToken: (token: Token) => number[][]
@@ -85,7 +83,6 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [btcFliPMarketData, setBtcFliPMarketData] = useState<any>({})
   const [iBtcFliPMarketData, setIBtcFliPMarketData] = useState<any>({})
   const [icEthMarketData, setIcEthMarketData] = useState<any>({})
-  const [jpgMarketData, setJpgMarketData] = useState<any>({})
   const [mnyeMarketData, setMnyeMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
@@ -115,8 +112,6 @@ export const MarketDataProvider = (props: { children: any }) => {
         return gmiMarketData
       case icETHIndex:
         return icEthMarketData
-      case JPGIndex:
-        return jpgMarketData
       case MNYeIndex:
         return mnyeMarketData
       case IEthereumFLIP:
@@ -152,7 +147,6 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(Bitcoin2xFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(IBitcoinFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(icETHIndex.coingeckoId),
-      fetchHistoricalTokenMarketData(JPGIndex.coingeckoId),
       fetchHistoricalTokenMarketData(MNYeIndex.coingeckoId),
     ])
 
@@ -172,8 +166,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     setBtcFliPMarketData(marketData[13])
     setIBtcFliPMarketData(marketData[14])
     setIcEthMarketData(marketData[15])
-    setJpgMarketData(marketData[16])
-    setMnyeMarketData(marketData[17])
+    setMnyeMarketData(marketData[16])
   }, [])
 
   useEffect(() => {
@@ -201,7 +194,6 @@ export const MarketDataProvider = (props: { children: any }) => {
         btcflip: btcFliPMarketData,
         ibtcflip: iBtcFliPMarketData,
         iceth: icEthMarketData,
-        jpg: jpgMarketData,
         mnye: mnyeMarketData,
       }}
     >

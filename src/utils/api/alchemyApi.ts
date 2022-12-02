@@ -8,7 +8,6 @@ import {
   GmiIndex,
   icETHIndex,
   IndexToken,
-  JPGIndex,
   MetaverseIndex,
 } from 'constants/tokens'
 
@@ -33,7 +32,6 @@ const contractAddresses: string[] = [
   IndexToken.address!,
   MetaverseIndex.address!,
   icETHIndex.address!,
-  JPGIndex.address!,
 ]
 
 interface AlchemyApiParams {
