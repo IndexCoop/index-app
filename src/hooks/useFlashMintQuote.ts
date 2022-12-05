@@ -5,18 +5,20 @@ import { ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
-import { useBalances } from 'hooks/useBalance'
 import { useNetwork } from 'hooks/useNetwork'
+import { useBalanceData } from 'providers/Balances'
 import { GasStation } from 'utils/api/gasStation'
 import { getNetworkKey } from 'utils/api/zeroExUtils'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useIssuanceQuote } from './issuance/useIssuanceQuote'
 import { getEnhancedFlashMintLeveragedQuote } from './useBestQuote/flashMintLeveraged'
+import { getEnhancedFlashMintNotionalQuote } from './useBestQuote/flashMintNotional'
 import { getEnhancedFlashMintZeroExQuote } from './useBestQuote/flashMintZeroEx'
 import {
   ExchangeIssuanceLeveragedQuote,
   ExchangeIssuanceZeroExQuote,
+  FlashMintNotionalQuote,
 } from './useBestQuote'
 import { useWallet } from './useWallet'
 
@@ -27,28 +29,24 @@ type FlashMintPerpQuote = {
 export type FlashMintQuoteResult = {
   quotes: {
     flashMintLeveraged: ExchangeIssuanceLeveragedQuote | null
+    flashMintNotional: FlashMintNotionalQuote | null
     flashMintPerp: FlashMintPerpQuote | null
     flashMintZeroEx: ExchangeIssuanceZeroExQuote | null
   }
-}
-
-const defaultQuoteResult: FlashMintQuoteResult = {
-  quotes: {
-    flashMintLeveraged: null,
-    flashMintPerp: null,
-    flashMintZeroEx: null,
-  },
+  inputTokenBalance: BigNumber
+  slippage: number
 }
 
 export const useFlashMintQuote = () => {
   const { chainId } = useNetwork()
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
   const { provider, signer } = useWallet()
   const { getQuote } = useIssuanceQuote()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
-  const [quoteResult, setQuoteResult] =
-    useState<FlashMintQuoteResult>(defaultQuoteResult)
+  const [quoteResult, setQuoteResult] = useState<FlashMintQuoteResult | null>(
+    null
+  )
 
   /**
    *
@@ -64,7 +62,7 @@ export const useFlashMintQuote = () => {
     slippage: number
   ) => {
     if (!indexTokenAmount.gt(BigNumber.from(0))) {
-      setQuoteResult(defaultQuoteResult)
+      setQuoteResult(null)
       return
     }
 
@@ -88,8 +86,12 @@ export const useFlashMintQuote = () => {
     setIsFetching(true)
 
     let flashMintLeveragedQuote: ExchangeIssuanceLeveragedQuote | null = null
+    let flashMintNotionalQuote: FlashMintNotionalQuote | null = null
     let flashMintPerpQuote: FlashMintPerpQuote | null = null
     let flashMintZeroExQuote: ExchangeIssuanceZeroExQuote | null = null
+
+    const inputTokenBalance =
+      getTokenBalance(inputToken.symbol, chainId) ?? BigNumber.from(0)
 
     const isOptimismNetwork = chainId === 10
     if (isOptimismNetwork) {
@@ -115,9 +117,6 @@ export const useFlashMintQuote = () => {
         { 'X-INDEXCOOP-API-KEY': process.env.REACT_APP_INDEX_COOP_API! },
         swapPathOverride
       )
-
-      const inputTokenBalance =
-        getBalance(inputToken.symbol) ?? BigNumber.from(0)
 
       flashMintLeveragedQuote = await getEnhancedFlashMintLeveragedQuote(
         isMinting,
@@ -155,17 +154,35 @@ export const useFlashMintQuote = () => {
         signer
       )
 
+      flashMintNotionalQuote = await getEnhancedFlashMintNotionalQuote(
+        isMinting,
+        inputToken,
+        outputToken,
+        indexTokenAmount,
+        gasPrice,
+        sellTokenPrice,
+        nativeTokenPrice,
+        slippage,
+        chainId,
+        provider,
+        signer
+      )
+
       console.log('////////')
       console.log('exchangeIssuanceZeroExQuote', flashMintZeroExQuote)
       console.log('exchangeIssuanceLeveragedQuote', flashMintLeveragedQuote)
+      console.log('flashMintNotionalQuote', flashMintNotionalQuote)
     }
 
     const quoteResult: FlashMintQuoteResult = {
       quotes: {
         flashMintLeveraged: flashMintLeveragedQuote,
+        flashMintNotional: flashMintNotionalQuote,
         flashMintPerp: flashMintPerpQuote,
         flashMintZeroEx: flashMintZeroExQuote,
       },
+      inputTokenBalance,
+      slippage,
     }
 
     setQuoteResult(quoteResult)

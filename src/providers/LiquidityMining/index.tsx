@@ -1,11 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { utils } from 'ethers'
-import {
-  useContractRead,
-  useContractWrite,
-  useDeprecatedContractWrite,
-} from 'wagmi'
+import { useContractRead, useDeprecatedContractWrite } from 'wagmi'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -198,7 +194,7 @@ const LiquidityMiningProvider = (props: { children: any }) => {
   const {
     isApproved: isApprovedGmi,
     isApproving: isApprovingGmi,
-    onApprove: onApproveGmi,
+    approve: onApproveGmi,
   } = useApproval(GmiIndex, gmiStakingRewardsAddress)
 
   useEffect(() => {

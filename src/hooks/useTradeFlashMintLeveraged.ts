@@ -12,6 +12,7 @@ import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceLeveragedQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
+import { useBalanceData } from 'providers/Balances'
 import { fromWei } from 'utils'
 import { logTx } from 'utils/api/analytics'
 import {
@@ -25,12 +26,10 @@ import {
 } from 'utils/flashMintLeveragedGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
 
-import { useBalances } from './useBalance'
-
 export const useTradeFlashMintLeveraged = () => {
   const { address, provider, signer } = useWallet()
   const { chainId } = useNetwork()
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
 
   const [isTransacting, setIsTransacting] = useState(false)
   const [txWouldFail, setTxWouldFail] = useState(false)
@@ -57,7 +56,7 @@ export const useTradeFlashMintLeveraged = () => {
 
       let requiredBalance = fromWei(inputOutputTokenAmount, inputToken.decimals)
       const spendingTokenBalance =
-        getBalance(inputToken.symbol) || BigNumber.from(0)
+        getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
       const contract = getFlashMintLeveragedContract(signer as Signer, chainId)

@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/react'
 
 export enum CaptureExchangeIssuanceKey {
   leveraged = 'leveraged',
+  notional = 'notional',
   perp = 'perp',
   zeroEx = 'zeroEx',
 }

@@ -6,12 +6,16 @@ import { MAINNET } from 'constants/chains'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   Ethereum2xFlexibleLeverageIndex,
+  FIXED_DAI,
+  FIXED_USDC,
   icETHIndex,
   IndexToken,
   Token,
 } from 'constants/tokens'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { getFlashMintZeroExGasEstimate } from 'utils/flashMintZeroExGasEstimate'
+import { getFlashMintZeroExTransaction } from 'utils/flashMintZeroExTransaction'
+import { TxSimulator } from 'utils/simulator'
 
 import { ExchangeIssuanceZeroExQuote, QuoteType } from './'
 
@@ -19,6 +23,16 @@ export function isEligibleTradePairZeroEx(
   inputToken: Token,
   outputToken: Token
 ): boolean {
+  if (
+    inputToken.symbol === FIXED_DAI.symbol ||
+    outputToken.symbol === FIXED_DAI.symbol
+  )
+    return false
+  if (
+    inputToken.symbol === FIXED_USDC.symbol ||
+    outputToken.symbol === FIXED_USDC.symbol
+  )
+    return false
   if (
     inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol ||
     outputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol
@@ -92,6 +106,25 @@ export async function getEnhancedFlashMintZeroExQuote(
       chainId
     )
     if (quote0x) {
+      // const req = await getFlashMintZeroExTransaction(
+      //   isMinting,
+      //   sellToken,
+      //   buyToken,
+      //   indexTokenAmount,
+      //   quote0x.inputOutputTokenAmount,
+      //   inputTokenBalance,
+      //   quote0x.componentQuotes,
+      //   provider,
+      //   signer,
+      //   chainId
+      // )
+
+      // if (req) {
+      //   const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
+      //   const simulator = new TxSimulator(accessKey)
+      //   await simulator.simulate(req)
+      // }
+
       // We don't want this function to fail for estimates here.
       // A default will be returned if the tx would fail.
       const canFail = false

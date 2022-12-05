@@ -10,13 +10,13 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import { Token } from 'constants/tokens'
 import { useApproval } from 'hooks/useApproval'
-import { useBalances } from 'hooks/useBalance'
 import { useBestQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTrade } from 'hooks/useTrade'
 import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
 import { useWallet } from 'hooks/useWallet'
+import { useBalanceData } from 'providers/Balances'
 import { useProtection } from 'providers/Protection'
 import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
@@ -87,7 +87,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     changeSellToken,
     swapTokenLists,
   } = useTradeTokenLists(props.singleToken)
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
 
   const supportedNetwork = isSupportedNetwork
 
@@ -166,7 +166,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
-    onApprove: onApproveForSwap,
+    approve: onApproveForSwap,
   } = useApproval(sellToken, zeroExAddress, sellTokenAmountInWei)
 
   const { executeTrade, isTransacting } = useTrade()
@@ -174,7 +174,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const hasInsufficientFunds = getHasInsufficientFunds(
     false,
     sellTokenAmountInWei,
-    getBalance(sellToken.symbol)
+    getTokenBalance(sellToken.symbol, chainId)
   )
 
   const contractBestOption = getZeroExRouterAddress(chainId)
@@ -399,10 +399,11 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   // SelectTokenModal
   const inputTokenBalances = sellTokenList.map(
-    (sellToken) => getBalance(sellToken.symbol) ?? BigNumber.from(0)
+    (sellToken) =>
+      getTokenBalance(sellToken.symbol, chainId) ?? BigNumber.from(0)
   )
   const outputTokenBalances = buyTokenList.map(
-    (buyToken) => getBalance(buyToken.symbol) ?? BigNumber.from(0)
+    (buyToken) => getTokenBalance(buyToken.symbol, chainId) ?? BigNumber.from(0)
   )
   const inputTokenItems = getSelectTokenListItems(
     sellTokenList,

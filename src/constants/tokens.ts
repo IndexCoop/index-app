@@ -7,7 +7,6 @@ import icethLogo from 'assets/icethlogo.png'
 import iethflipLogo from 'assets/iethfliplogo.svg'
 import imaticflipLogo from 'assets/imaticflilogo.svg'
 import indexLogo from 'assets/index-token.png'
-import jpgLogo from 'assets/jpgLogo.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
 import mnyeLogo from 'assets/mnyeLogo.png'
 import { TokenContextKeys } from 'providers/MarketData'
@@ -60,6 +59,38 @@ export const DAI: Token = {
   url: '',
   coingeckoId: 'dai',
   tokensetsId: 'dai',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const FIXED_DAI: Token = {
+  name: 'Fixed Rate Yield Index (DAI)',
+  symbol: 'FIXED-DAI',
+  image: '',
+  address: '0x015558c3aB97c9e5a9c8c437C71Bb498B2e5afB3',
+  optimismAddress: undefined,
+  polygonAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: '',
+  tokensetsId: '',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const FIXED_USDC: Token = {
+  name: 'Fixed Rate Yield Index (USDC)',
+  symbol: 'FIXED-USDC',
+  image: '',
+  address: '0xFB4D3b07aA16eE563Ea7C1f3202959448458e290',
+  optimismAddress: undefined,
+  polygonAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: '',
+  tokensetsId: '',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -461,27 +492,6 @@ export const icETHIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
-export const JPGIndex: Token = {
-  name: 'JPG NFT Index',
-  symbol: 'JPG',
-  address: '0x02e7ac540409d32c90bfb51114003a9e1ff0249c',
-  polygonAddress: undefined,
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'jpg',
-  image: jpgLogo,
-  coingeckoId: 'jpg-nft-index',
-  tokensetsId: 'jpg',
-  tokenContextKey: 'jpg',
-  fees: {
-    streamingFee: '5.95%',
-    mintFee: '0.5%',
-    redeemFee: '0.5%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
-}
 export const MNYeIndex: Token = {
   name: 'Market Neutral Yield ETH Index',
   symbol: 'MNYe',
@@ -503,29 +513,11 @@ export const MNYeIndex: Token = {
   isPerp: true,
 }
 
-export const productTokensBySymbol = {
-  'DPI': DefiPulseIndex,
-  'MVI': MetaverseIndex,
-  'ETH2x-FLI': Ethereum2xFlexibleLeverageIndex,
-  'ETH2x-FLI-P': Ethereum2xFLIP,
-  'INDEX': IndexToken,
-  'BTC2x-FLI': Bitcoin2xFlexibleLeverageIndex,
-  'BED': BedIndex,
-  'DATA': DataIndex,
-  'GMI': GmiIndex,
-  'MATIC2x-FLI-P': Matic2xFLIP,
-  'iMATIC-FLI-P': IMaticFLIP,
-  'iETH-FLI-P': IEthereumFLIP,
-  'iBTC-FLI-P': IBitcoinFLIP,
-  'BTC2x-FLI-P': Bitcoin2xFLIP,
-  'icETH': icETHIndex,
-  'JPG': JPGIndex,
-  'MNYe': MNYeIndex,
-}
-
 /**
  * Currencies
  */
+
+export const currencies = [DAI, USDC, STETH, WETH]
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH, WETH]
 
@@ -560,25 +552,50 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
   Matic2xFLIP,
 ]
 
-const indexNames = [
-  icETHIndex,
-  MNYeIndex,
-  DefiPulseIndex,
-  MetaverseIndex,
-  GmiIndex,
-  Ethereum2xFLIP,
-  IEthereumFLIP,
-  Bitcoin2xFLIP,
-  IBitcoinFLIP,
-  Matic2xFLIP,
-  IMaticFLIP,
-  Ethereum2xFlexibleLeverageIndex,
-  Bitcoin2xFlexibleLeverageIndex,
-  BedIndex,
-  DataIndex,
-  IndexToken,
-  JPGIndex,
-]
+const isDevEnv =
+  process.env.REACT_APP_VERCEL_ENV === 'development' ||
+  process.env.REACT_APP_VERCEL_ENV === 'index-app-staging'
+// FIXED is not supposed to be released to the public yet, so we create a
+// separate list for dev/staging and production
+const indexNames = isDevEnv
+  ? [
+      icETHIndex,
+      FIXED_DAI,
+      FIXED_USDC,
+      MNYeIndex,
+      DefiPulseIndex,
+      MetaverseIndex,
+      GmiIndex,
+      Ethereum2xFLIP,
+      IEthereumFLIP,
+      Bitcoin2xFLIP,
+      IBitcoinFLIP,
+      Matic2xFLIP,
+      IMaticFLIP,
+      Ethereum2xFlexibleLeverageIndex,
+      Bitcoin2xFlexibleLeverageIndex,
+      BedIndex,
+      DataIndex,
+      IndexToken,
+    ]
+  : [
+      icETHIndex,
+      MNYeIndex,
+      DefiPulseIndex,
+      MetaverseIndex,
+      GmiIndex,
+      Ethereum2xFLIP,
+      IEthereumFLIP,
+      Bitcoin2xFLIP,
+      IBitcoinFLIP,
+      Matic2xFLIP,
+      IMaticFLIP,
+      Ethereum2xFlexibleLeverageIndex,
+      Bitcoin2xFlexibleLeverageIndex,
+      BedIndex,
+      DataIndex,
+      IndexToken,
+    ]
 
 export const indexNamesMainnet = indexNames.filter((index) => index.address)
 export const indexNamesPolygon = indexNames.filter(

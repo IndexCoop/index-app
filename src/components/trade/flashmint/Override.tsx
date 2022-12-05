@@ -16,7 +16,6 @@ const Override = (props: OverrideProps) => {
       background={backgroundColor}
       borderRadius='10'
       direction='column'
-      mt='32px'
       p='16px'
     >
       <Flex align='center'>
