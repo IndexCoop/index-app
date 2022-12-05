@@ -15,7 +15,12 @@ import {
   getFormattedChartPriceChanges,
   getPricesChanges,
 } from 'utils/priceChange'
-import { getAddressForToken, isPerpToken, isTokenMintable } from 'utils/tokens'
+import {
+  getAddressForToken,
+  isLeveragedToken,
+  isPerpToken,
+  isTokenMintable,
+} from 'utils/tokens'
 
 import Disclaimer from './Disclaimer'
 import MarketChart, { PriceChartRangeOption } from './MarketChart'
@@ -75,20 +80,17 @@ function getStatsForToken(
   return stats
 }
 
-const TokenPage = (props: {
-  token: Token
-  marketData: TokenMarketDataValues
-  isLeveragedToken?: boolean
-  apy?: string
-}) => {
+const TokenPage = (props: { token: Token; apy?: string }) => {
   const { isDarkMode } = useColorStyles()
   const isMobile = useBreakpointValue({ base: true, lg: false })
-  const { marketData, token } = props
+  const { token } = props
 
   const { chainId: networkChainId } = useNetwork()
   const chainId = token.defaultChain ?? networkChainId
-  const { selectLatestMarketData } = useMarketData()
+  const { getMarketDataBySymbol, selectLatestMarketData } = useMarketData()
+  const marketData = getMarketDataBySymbol(token) ?? {}
 
+  const isLevToken = isLeveragedToken(token)
   const tokenAddress = getAddressForToken(token, chainId) ?? ''
   const tokenSupply = useTokenSupply(tokenAddress, chainId ?? 1)
   const currentSupplyFormatted = parseFloat(displayFromWei(tokenSupply) ?? '0')
@@ -164,7 +166,7 @@ const TokenPage = (props: {
               <TokenComponentsTable
                 components={components}
                 token={props.token}
-                isLeveragedToken={props.isLeveragedToken}
+                isLeveragedToken={isLevToken}
                 vAssets={vAssets}
               />
             </>

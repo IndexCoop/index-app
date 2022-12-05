@@ -98,6 +98,7 @@ const Products = () => {
   const getTokenMarketData = (tokenContextKey?: TokenContextKeys) => {
     if (
       tokenContextKey &&
+      tokenContextKey !== 'getMarketDataBySymbol' &&
       tokenContextKey !== 'selectLatestMarketData' &&
       tokenContextKey !== 'selectMarketDataByToken'
     ) {
