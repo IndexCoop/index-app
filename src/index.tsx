@@ -38,7 +38,6 @@ import ICETH from 'views/productpages/ICETH'
 import IETHFLIP from 'views/productpages/IETHFLIP'
 import IMATICFLIP from 'views/productpages/IMATICFLIP'
 import INDEX from 'views/productpages/INDEX'
-import JPG from 'views/productpages/JPG'
 import MATIC2xFLIP from 'views/productpages/MATIC2xFLIP'
 import MNYe from 'views/productpages/MNYe'
 import MVI from 'views/productpages/MVI'
@@ -157,7 +156,6 @@ root.render(
             <Route path='ibtc' element={<IBTCFLIP />} />
             <Route path='iceth' element={<ICETH />} />
             <Route path='index' element={<INDEX />} />
-            <Route path='jpg' element={<JPG />} />
             <Route path='mnye' element={<MNYe />} />
           </Route>
         </Routes>
