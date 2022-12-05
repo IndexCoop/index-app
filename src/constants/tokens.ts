@@ -554,7 +554,7 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
 
 const isDevEnv =
   process.env.REACT_APP_VERCEL_ENV === 'development' ||
-  process.env.REACT_APP_VERCEL_ENV === 'staging'
+  process.env.REACT_APP_VERCEL_ENV === 'index-app-staging'
 // FIXED is not supposed to be released to the public yet, so we create a
 // separate list for dev/staging and production
 const indexNames = isDevEnv
