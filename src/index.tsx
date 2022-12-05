@@ -15,8 +15,17 @@ import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import {
   connectorsForWallets,
   RainbowKitProvider,
-  wallet,
 } from '@rainbow-me/rainbowkit'
+import {
+  argentWallet,
+  braveWallet,
+  coinbaseWallet,
+  ledgerWallet,
+  metaMaskWallet,
+  rainbowWallet,
+  trustWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets'
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 
@@ -59,22 +68,22 @@ const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
-      wallet.metaMask({ chains }),
-      wallet.rainbow({ chains }),
-      wallet.argent({ chains }),
-      wallet.coinbase({
+      metaMaskWallet({ chains }),
+      rainbowWallet({ chains }),
+      argentWallet({ chains }),
+      coinbaseWallet({
         appName: 'Index Coop',
         chains,
       }),
-      wallet.ledger({ chains }),
+      ledgerWallet({ chains }),
     ],
   },
   {
     groupName: 'Others',
     wallets: [
-      wallet.walletConnect({ chains }),
-      wallet.brave({ chains }),
-      wallet.trust({ chains }),
+      walletConnectWallet({ chains }),
+      braveWallet({ chains }),
+      trustWallet({ chains }),
     ],
   },
 ])
