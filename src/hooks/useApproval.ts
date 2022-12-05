@@ -8,7 +8,7 @@ import { Token } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { getERC20Contract } from 'utils/contracts'
-import { getAddressForToken } from 'utils/tokens'
+import { getAddressForToken, isNativeCurrency } from 'utils/tokens'
 
 export const useApproval = (
   token: Token,
@@ -21,7 +21,10 @@ export const useApproval = (
   const [isApproved, setIsApproved] = useState(false)
   const [isApproving, setIsApproving] = useState(false)
 
-  const tokenAddress = (token && getAddressForToken(token, chainId)) || ''
+  const isNative = isNativeCurrency(token, chainId ?? 1)
+  const tokenAddress = isNative
+    ? ''
+    : (token && getAddressForToken(token, chainId)) || ''
 
   const approve = useCallback(async () => {
     if (!signer || !address || !tokenAddress || !spenderAddress) return
@@ -50,9 +53,9 @@ export const useApproval = (
   }
 
   useEffect(() => {
-    if (!spenderAddress || isApproving) return
+    if (!spenderAddress || !tokenAddress || isApproving) return
     updateApprovalState(spenderAddress)
-  }, [amount, isApproving, spenderAddress])
+  }, [amount, isApproving, spenderAddress, tokenAddress])
 
   return { approve, isApproved, isApproving }
 }
