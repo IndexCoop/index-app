@@ -13,6 +13,7 @@ import {
   Tr,
 } from '@chakra-ui/react'
 
+import indices from 'constants/tokens'
 import { BalanceValues, useBalanceData } from 'providers/Balances'
 
 import BalanceTableRow from './BalanceTableRow'
@@ -30,9 +31,15 @@ const BalanceTable = () => {
   }
 
   useEffect(() => {
-    const rows = renderRows(tokenBalances)
+    const filtered = Object.assign(
+      {},
+      ...Object.entries(tokenBalances)
+        .filter(([key, tokenBalance]) => indices.includes(tokenBalance.token))
+        .map(([k, v]) => ({ [k]: v }))
+    )
+    const rows = renderRows(filtered)
     setRows(rows)
-  }, [tokenBalances])
+  }, [isLoading, tokenBalances])
 
   if (isLoading)
     return (
@@ -43,6 +50,7 @@ const BalanceTable = () => {
 
   if (!isLoading && rows.length === 0)
     return <Text>You don't have any Index Coop products 😞</Text>
+
   return (
     <Table
       colorScheme={colorScheme}

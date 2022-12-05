@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import { PopulatedTransaction } from 'ethers'
 import { useSendTransaction } from 'wagmi'
 
 import { TransactionRequest } from '@ethersproject/abstract-provider'
@@ -13,10 +14,10 @@ import {
 import { ZeroExQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
+import { useBalanceData } from 'providers/Balances'
 import { fromWei } from 'utils'
 import { logTransaction } from 'utils/api/analytics'
-
-import { useBalances } from './useBalance'
+import { TxSimulator } from 'utils/simulator'
 
 export const useTrade = () => {
   const { address } = useWallet()
@@ -41,7 +42,7 @@ export const useTrade = () => {
         : zeroExRouterAddress,
     value: BigNumber.from(0),
   })
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
 
   const [isTransacting, setIsTransacting] = useState(false)
 
@@ -60,7 +61,7 @@ export const useTrade = () => {
         inputToken.decimals
       )
       const spendingTokenBalance =
-        getBalance(inputToken.symbol) || BigNumber.from(0)
+        getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
       const req: TransactionRequest = {
@@ -70,7 +71,18 @@ export const useTrade = () => {
         data: quote.data,
         value: BigNumber.from(quote.value ?? 0),
       }
+
+      const req2: PopulatedTransaction = {
+        chainId: Number(quote.chainId),
+        from: address,
+        to: quote.to,
+        data: quote.data,
+        value: BigNumber.from(quote.value ?? 0),
+      }
       try {
+        // const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
+        // const simulator = new TxSimulator(accessKey)
+        // await simulator.simulate(req2)
         setIsTransacting(true)
         sendTransaction?.({
           recklesslySetUnpreparedRequest: req,

@@ -13,6 +13,7 @@ import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceZeroExQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
+import { useBalanceData } from 'providers/Balances'
 import { fromWei } from 'utils'
 import { logTx } from 'utils/api/analytics'
 import {
@@ -26,12 +27,10 @@ import {
 } from 'utils/flashMintZeroExGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
 
-import { useBalances } from './useBalance'
-
 export const useTradeFlashMintZeroEx = () => {
   const { address, provider, signer } = useWallet()
   const { chainId } = useNetwork()
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
 
   const [isTransacting, setIsTransacting] = useState(false)
   const [txWouldFail, setTxWouldFail] = useState(false)
@@ -60,7 +59,7 @@ export const useTradeFlashMintZeroEx = () => {
       const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
 
       const spendingTokenBalance =
-        getBalance(inputToken.symbol) || BigNumber.from(0)
+        getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
       const requiredBalance = fromWei(
         quote.inputOutputTokenAmount,
         inputToken.decimals

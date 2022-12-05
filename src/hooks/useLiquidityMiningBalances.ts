@@ -10,33 +10,12 @@ import {
   uniswapEthDpiLpTokenAddress,
   uniswapEthMviLpTokenAddress,
 } from 'constants/contractAddresses'
-import { GmiIndex, Token } from 'constants/tokens'
+import { GmiIndex } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { ERC20_ABI } from 'utils/abi/ERC20'
 import StakeRewardsABI from 'utils/abi/StakingRewards.json'
-import {
-  getAddressForToken,
-  getCurrencyTokens,
-  getIndexes,
-  getNativeToken,
-} from 'utils/tokens'
 
-import { useEthBalance } from './useEthBalance'
 import { useWallet } from './useWallet'
-
-/* Returns balance of ERC20 token */
-async function balanceOf(
-  token: Token,
-  chainId: number,
-  account: string,
-  library: any | undefined
-): Promise<BigNumber> {
-  const tokenAddress = getAddressForToken(token, chainId)
-  if (!tokenAddress) return BigNumber.from(0)
-  const erc20 = new Contract(tokenAddress, ERC20_ABI, library)
-  const balance = await erc20.balanceOf(account)
-  return balance
-}
 
 /* Returns balance of ERC20 token address*/
 async function balanceOfAddress(
@@ -47,72 +26,6 @@ async function balanceOfAddress(
   const erc20 = new Contract(tokenAddress, ERC20_ABI, library)
   const balance = await erc20.balanceOf(account)
   return balance
-}
-
-type IBalances = Record<string, BigNumber>
-
-export const useBalances = () => {
-  const [balances, setBalances] = useState<IBalances>({})
-
-  const { address, provider } = useWallet()
-  const { chainId } = useNetwork()
-
-  const ethBalance = useEthBalance(chainId ?? 1)
-
-  const fetchAllBalances = useCallback(async () => {
-    if (!chainId || !address) return
-    const indexes = getIndexes(chainId)
-    const promises = indexes.map((index) =>
-      balanceOf(index, chainId, address, provider)
-    )
-    const results = await Promise.all(promises)
-    let updatedBalances: IBalances = balances
-    indexes.forEach((index, idx) => {
-      updatedBalances[index.symbol] = results[idx] ?? BigNumber.from(0)
-    })
-    setBalances(updatedBalances)
-  }, [address, chainId])
-
-  const fetchCurrencyBalances = useCallback(async () => {
-    if (!chainId || !address) return
-    const nativeToken = getNativeToken(chainId)
-    if (!nativeToken) return
-    const tokens = getCurrencyTokens(chainId)
-    const tokensWithoutNativeToken = tokens.filter(
-      (token) => token.symbol !== nativeToken.symbol
-    )
-    const promises = tokensWithoutNativeToken.map((token) =>
-      balanceOf(token, chainId, address, provider)
-    )
-    const results = await Promise.all(promises)
-    const updatedBalances = balances
-    tokensWithoutNativeToken.forEach((token, idx) => {
-      updatedBalances[token.symbol] = results[idx] ?? BigNumber.from(0)
-    })
-    setBalances(updatedBalances)
-  }, [address, chainId])
-
-  useEffect(() => {
-    const nativeToken = getNativeToken(chainId)
-    if (!nativeToken) return
-    const updatedBalances = balances
-    updatedBalances[nativeToken.symbol] = ethBalance
-    setBalances(updatedBalances)
-  }, [chainId, ethBalance])
-
-  useEffect(() => {
-    fetchAllBalances()
-  }, [fetchAllBalances])
-
-  useEffect(() => {
-    fetchCurrencyBalances()
-  }, [fetchCurrencyBalances])
-
-  const getBalance = (symbol: string): BigNumber => {
-    return balances[symbol] ?? BigNumber.from(0)
-  }
-
-  return { ethBalance, getBalance }
 }
 
 // Liquidity Mining Program

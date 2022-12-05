@@ -4,10 +4,10 @@ import { Signer } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { useBalances } from 'hooks/useBalance'
 import { FlashMintNotionalQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
+import { useBalanceData } from 'providers/Balances'
 import { fromWei } from 'utils'
 import { logTx } from 'utils/api/analytics'
 import {
@@ -28,7 +28,7 @@ import { getAddressForToken } from 'utils/tokens'
 export const useTradeFlashMintNotional = () => {
   const { address, provider, signer } = useWallet()
   const { chainId } = useNetwork()
-  const { getBalance } = useBalances()
+  const { getTokenBalance } = useBalanceData()
 
   const [isTransacting, setIsTransacting] = useState(false)
   const [txWouldFail, setTxWouldFail] = useState(false)
@@ -54,7 +54,7 @@ export const useTradeFlashMintNotional = () => {
 
       let requiredBalance = fromWei(inputOutputTokenAmount, inputToken.decimals)
       const spendingTokenBalance =
-        getBalance(inputToken.symbol) || BigNumber.from(0)
+        getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
       const contract = getFlashMintNotionalContract(signer as Signer, chainId)

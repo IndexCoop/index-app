@@ -8,7 +8,6 @@ import {
   GmiIndex,
   icETHIndex,
   IndexToken,
-  JPGIndex,
   MetaverseIndex,
 } from 'constants/tokens'
 import { AlchemyApiTransaction } from 'utils/api/alchemyApi'
@@ -33,8 +32,6 @@ function resolveAddressToSymbol(address: string): string {
       return MetaverseIndex.symbol
     case icETHIndex.address!:
       return icETHIndex.symbol
-    case JPGIndex.address!:
-      return JPGIndex.symbol
     default:
       return truncateAddress(address)
   }
