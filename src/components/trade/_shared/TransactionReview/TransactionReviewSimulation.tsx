@@ -46,7 +46,7 @@ const SimulationDefaultView = ({ isLoading }: { isLoading: boolean }) => {
       {isLoading ? (
         <Spinner color={styles.backgroundInverted} />
       ) : (
-        <Text>Not started</Text>
+        <Text>Auto</Text>
       )}
     </Flex>
   )
