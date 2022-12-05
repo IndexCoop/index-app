@@ -53,6 +53,7 @@ export interface TokenContext {
   ibtcflip?: TokenMarketDataValues
   iceth?: TokenMarketDataValues
   mnye?: TokenMarketDataValues
+  getMarketDataBySymbol: (token: Token) => TokenMarketDataValues | null
   selectLatestMarketData: (...args: any) => number
   selectMarketDataByToken: (token: Token) => number[][]
 }
@@ -60,6 +61,7 @@ export interface TokenContext {
 export type TokenContextKeys = keyof TokenContext
 
 export const MarketDataContext = createContext<TokenContext>({
+  getMarketDataBySymbol: () => null,
   selectLatestMarketData: () => 0,
   selectMarketDataByToken: () => [[]],
 })
@@ -125,6 +127,47 @@ export const MarketDataProvider = (props: { children: any }) => {
     }
   }
 
+  const getMarketDataBySymbol = (
+    token: Token
+  ): TokenMarketDataValues | null => {
+    switch (token) {
+      case DefiPulseIndex:
+        return dpiMarketData
+      case Matic2xFLIP:
+        return maticFliPMarketData
+      case MetaverseIndex:
+        return mviMarketData
+      case BedIndex:
+        return bedMarketData
+      case DataIndex:
+        return dataMarketData
+      case Ethereum2xFLIP:
+        return ethFlipMarketData
+      case Ethereum2xFlexibleLeverageIndex:
+        return ethFliMarketData
+      case Bitcoin2xFLIP:
+        return btcFliPMarketData
+      case Bitcoin2xFlexibleLeverageIndex:
+        return btcFliMarketData
+      case GmiIndex:
+        return gmiMarketData
+      case icETHIndex:
+        return icEthMarketData
+      case IndexToken:
+        return indexMarketData
+      case MNYeIndex:
+        return mnyeMarketData
+      case IEthereumFLIP:
+        return iEthFliPMarketData
+      case IMaticFLIP:
+        return iMaticFliPMarketData
+      case IBitcoinFLIP:
+        return iBtcFliPMarketData
+      default:
+        return null
+    }
+  }
+
   const fetchMarketData = useCallback(async () => {
     const marketData = await Promise.all([
       fetchHistoricalTokenMarketData(ETH.coingeckoId),
@@ -176,6 +219,7 @@ export const MarketDataProvider = (props: { children: any }) => {
   return (
     <MarketDataContext.Provider
       value={{
+        getMarketDataBySymbol,
         selectLatestMarketData,
         selectMarketDataByToken,
         eth: ethMarketData,

@@ -1,10 +1,8 @@
 import TokenPage from 'components/token-page/TokenPage'
 import { GmiIndex } from 'constants/tokens'
-import { useMarketData } from 'providers/MarketData'
 
 const GMI = () => {
-  const { gmi } = useMarketData()
-  return <TokenPage token={GmiIndex} marketData={gmi || {}} />
+  return <TokenPage token={GmiIndex} />
 }
 
 export default GMI

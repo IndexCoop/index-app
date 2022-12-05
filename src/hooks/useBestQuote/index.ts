@@ -16,6 +16,7 @@ import {
 } from 'utils/api/zeroExUtils'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { getAddressForToken } from 'utils/tokens'
+import { getConfiguredZeroExApi } from 'utils/zeroExApi'
 
 import { useWallet } from '../useWallet'
 
@@ -292,15 +293,9 @@ export const useBestQuote = () => {
       const gasPrice = await gasStation.getGasPrice()
 
       // Create an instance of ZeroExApi (to pass to quote functions)
-      const affilliateAddress = '0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF'
       const networkKey = getNetworkKey(chainId)
       const swapPathOverride = `/${networkKey}/swap/v1/quote`
-      const zeroExApi = new ZeroExApi(
-        `${IndexApiBaseUrl}/0x`,
-        affilliateAddress,
-        { 'X-INDEXCOOP-API-KEY': process.env.REACT_APP_INDEX_COOP_API! },
-        swapPathOverride
-      )
+      const zeroExApi = getConfiguredZeroExApi(swapPathOverride)
 
       const inputTokenBalance =
         getTokenBalance(sellToken.symbol, chainId) ?? BigNumber.from(0)

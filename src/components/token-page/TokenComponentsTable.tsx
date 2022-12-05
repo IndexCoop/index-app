@@ -25,7 +25,7 @@ import Chart, { Position } from './charts/Charts'
 const TokenComponentsTable = (props: {
   components?: SetComponent[]
   token: Token
-  isLeveragedToken?: boolean
+  isLeveragedToken: boolean
   vAssets?: SetComponent[]
 }) => {
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
