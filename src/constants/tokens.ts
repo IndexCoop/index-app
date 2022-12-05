@@ -552,27 +552,50 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
   Matic2xFLIP,
 ]
 
-// TODO: create beta/staging list? (env === staging)
-const indexNames = [
-  icETHIndex,
-  FIXED_DAI,
-  FIXED_USDC,
-  MNYeIndex,
-  DefiPulseIndex,
-  MetaverseIndex,
-  GmiIndex,
-  Ethereum2xFLIP,
-  IEthereumFLIP,
-  Bitcoin2xFLIP,
-  IBitcoinFLIP,
-  Matic2xFLIP,
-  IMaticFLIP,
-  Ethereum2xFlexibleLeverageIndex,
-  Bitcoin2xFlexibleLeverageIndex,
-  BedIndex,
-  DataIndex,
-  IndexToken,
-]
+const isDevEnv =
+  process.env.REACT_APP_VERCEL_ENV === 'development' ||
+  process.env.REACT_APP_VERCEL_ENV === 'staging'
+// FIXED is not supposed to be released to the public yet, so we create a
+// separate list for dev/staging and production
+const indexNames = isDevEnv
+  ? [
+      icETHIndex,
+      FIXED_DAI,
+      FIXED_USDC,
+      MNYeIndex,
+      DefiPulseIndex,
+      MetaverseIndex,
+      GmiIndex,
+      Ethereum2xFLIP,
+      IEthereumFLIP,
+      Bitcoin2xFLIP,
+      IBitcoinFLIP,
+      Matic2xFLIP,
+      IMaticFLIP,
+      Ethereum2xFlexibleLeverageIndex,
+      Bitcoin2xFlexibleLeverageIndex,
+      BedIndex,
+      DataIndex,
+      IndexToken,
+    ]
+  : [
+      icETHIndex,
+      MNYeIndex,
+      DefiPulseIndex,
+      MetaverseIndex,
+      GmiIndex,
+      Ethereum2xFLIP,
+      IEthereumFLIP,
+      Bitcoin2xFLIP,
+      IBitcoinFLIP,
+      Matic2xFLIP,
+      IMaticFLIP,
+      Ethereum2xFlexibleLeverageIndex,
+      Bitcoin2xFlexibleLeverageIndex,
+      BedIndex,
+      DataIndex,
+      IndexToken,
+    ]
 
 export const indexNamesMainnet = indexNames.filter((index) => index.address)
 export const indexNamesPolygon = indexNames.filter(
