@@ -1,4 +1,5 @@
 import { GMIIndex } from '@indexcoop/flash-mint-sdk'
+
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   BedIndex,

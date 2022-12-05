@@ -239,7 +239,12 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
               </Flex>
             </Flex>
             <Box my='8px'>
-              <Box mb='8px'><ContractSection contractAddress={tx.contractAddress} explorerUrl={contractBlockExplorerUrl} /></Box>
+              <Box mb='8px'>
+                <ContractSection
+                  contractAddress={tx.contractAddress}
+                  explorerUrl={contractBlockExplorerUrl}
+                />
+              </Box>
               <TransactionReviewSimulation state={simulationState} />
             </Box>
             {shouldShowOverride ? (
@@ -286,7 +291,13 @@ const BottomMessage = () => {
   )
 }
 
-const ContractSection = ({contractAddress, explorerUrl}: {contractAddress: string, explorerUrl: string}) => {
+const ContractSection = ({
+  contractAddress,
+  explorerUrl,
+}: {
+  contractAddress: string
+  explorerUrl: string
+}) => {
   const { styles } = useColorStyles()
   return (
     <Flex
@@ -300,13 +311,13 @@ const ContractSection = ({contractAddress, explorerUrl}: {contractAddress: strin
         Contract
       </Text>
       <Spacer />
-    <Link
-      href={explorerUrl}
-      isExternal
-      style={{ textDecoration: 'underline' }}
-    >
-      {`${contractAddress.substring(0,8)}...`}
-    </Link>
+      <Link
+        href={explorerUrl}
+        isExternal
+        style={{ textDecoration: 'underline' }}
+      >
+        {`${contractAddress.substring(0, 8)}...`}
+      </Link>
     </Flex>
   )
 }
