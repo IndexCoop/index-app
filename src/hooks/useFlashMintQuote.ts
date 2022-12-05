@@ -10,6 +10,7 @@ import { useBalanceData } from 'providers/Balances'
 import { GasStation } from 'utils/api/gasStation'
 import { getNetworkKey } from 'utils/api/zeroExUtils'
 import { getAddressForToken } from 'utils/tokens'
+import { getConfiguredZeroExApi } from 'utils/zeroExApi'
 
 import { useIssuanceQuote } from './issuance/useIssuanceQuote'
 import { getEnhancedFlashMintLeveragedQuote } from './useBestQuote/flashMintLeveraged'
@@ -108,15 +109,9 @@ export const useFlashMintQuote = () => {
       const gasPrice = await gasStation.getGasPrice()
 
       // Create an instance of ZeroExApi (to pass to quote functions)
-      const affilliateAddress = '0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF'
       const networkKey = getNetworkKey(chainId)
       const swapPathOverride = `/${networkKey}/swap/v1/quote`
-      const zeroExApi = new ZeroExApi(
-        `${IndexApiBaseUrl}/0x`,
-        affilliateAddress,
-        { 'X-INDEXCOOP-API-KEY': process.env.REACT_APP_INDEX_COOP_API! },
-        swapPathOverride
-      )
+      const zeroExApi = getConfiguredZeroExApi(swapPathOverride)
 
       flashMintLeveragedQuote = await getEnhancedFlashMintLeveragedQuote(
         isMinting,
