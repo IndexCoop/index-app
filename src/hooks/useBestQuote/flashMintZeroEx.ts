@@ -77,10 +77,14 @@ export async function getEnhancedFlashMintZeroExQuote(
   zeroExApi: ZeroExApi,
   signer: any
 ): Promise<ExchangeIssuanceZeroExQuote | null> {
-  if (chainId !== MAINNET.chainId) return null
-  // For now only allow trade on mainnet, some tokens are disabled
+  console.log('0x', chainId, sellToken.symbol, buyToken.symbol)
+  // Allow trading only on mainnet and polygon (for deprecated/rebalanced tokens)
+  if (chainId !== MAINNET.chainId && chainId !== 137) return null
+  // For mainnet some tokens are disabled additionally
   const isEligibleTradePair = isEligibleTradePairZeroEx(sellToken, buyToken)
   if (!isEligibleTradePair) return null
+
+  console.log('fetching 0x quote')
 
   const inputToken = {
     symbol: sellToken.symbol,
