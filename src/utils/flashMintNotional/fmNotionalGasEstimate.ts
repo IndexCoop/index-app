@@ -4,6 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { SwapData } from '@indexcoop/flash-mint-sdk'
 
+import { DefaultGasLimitFlashMintNotional } from 'constants/gas'
 import { Token } from 'constants/tokens'
 import { getAddressForToken } from 'utils/tokens'
 
@@ -12,7 +13,7 @@ import {
   getFlashMintNotionalContract,
 } from './fmNotionalContract'
 
-const defaultGasEstimate = BigNumber.from(1_000_000)
+const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintNotional)
 // Default gas margin to add on top of estimate
 const defaultGasMargin = 20
 
