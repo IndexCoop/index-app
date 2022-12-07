@@ -29,6 +29,7 @@ import {
 import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 
+import { AlchemyApiKey } from 'constants/server'
 import { BalanceProvider } from 'providers/Balances'
 import { MarketDataProvider } from 'providers/MarketData'
 import { ProtectionProvider } from 'providers/Protection'
@@ -58,10 +59,7 @@ window.Buffer = window.Buffer || require('buffer').Buffer
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism],
-  [
-    alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_ID }),
-    publicProvider(),
-  ]
+  [alchemyProvider({ apiKey: AlchemyApiKey }), publicProvider()]
 )
 
 const connectors = connectorsForWallets([
