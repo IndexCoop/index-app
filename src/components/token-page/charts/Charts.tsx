@@ -67,7 +67,7 @@ const LeveragedChart = (props: {
     data = [
       {
         data0: props.data[0].value,
-        data1: props.data[1].value,
+        data1: props.data[1]?.value ?? 0,
       },
       {
         data0: props.vAssets[1].value,
@@ -78,7 +78,7 @@ const LeveragedChart = (props: {
     data = [
       {
         data0: props.data[0].value,
-        data1: props.data[1].value,
+        data1: props.data[1]?.value ?? 0,
       },
     ]
   }
