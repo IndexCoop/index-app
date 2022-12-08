@@ -31,7 +31,8 @@ export const getFlashMintNotionalQuote = async (
   const contract = getFlashMintNotionalContract(providerOrSigner)
   const issuanceModule = DebtIssuanceModuleV2
   const isDebtIssuance = true
-  const slippage = ethers.utils.parseEther(slippagePercent.toString())
+  // Divide by 100 to receive slippage as expected by the contract
+  const slippage = ethers.utils.parseEther(slippagePercent.toString()).div(100)
 
   const { filteredComponents, filteredUnits }: FilteredComponentsResponse =
     isMinting
