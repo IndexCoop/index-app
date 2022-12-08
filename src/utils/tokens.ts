@@ -9,6 +9,7 @@ import {
   ETH,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygon,
+  flashMintIndexesPolygonRedeem,
   indexNamesMainnet,
   indexNamesOptimism,
   indexNamesPolygon,
@@ -138,7 +139,7 @@ export function isTokenAvailableForFlashMint(
       )
     case POLYGON.chainId:
       return (
-        flashMintIndexesPolygon.filter((t) => t.symbol === token.symbol)
+        flashMintIndexesPolygonRedeem.filter((t) => t.symbol === token.symbol)
           .length > 0
       )
     default:

@@ -8,6 +8,7 @@ import {
   FIXED_USDC,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygon,
+  flashMintIndexesPolygonRedeem,
   icETHIndex,
   indexNamesMainnet,
   indexNamesOptimism,
@@ -183,7 +184,7 @@ export const getTokenListByChain = (
 ) => {
   if (singleToken) return [singleToken]
   if (chainId === POLYGON.chainId) {
-    return isFlashMint ? flashMintIndexesPolygon : indexNamesPolygon
+    return isFlashMint ? flashMintIndexesPolygonRedeem : indexNamesPolygon
   }
   if (chainId === OPTIMISM.chainId) return indexNamesOptimism
   return isFlashMint ? flashMintIndexesMainnetRedeem : indexNamesMainnet
