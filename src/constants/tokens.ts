@@ -1,4 +1,5 @@
 import { BTC2xFlexibleLeverageIndexPolygon } from '@indexcoop/flash-mint-sdk'
+
 import bedBorderLogo from 'assets/bed-border.png'
 import btcflipLogo from 'assets/btcflip.svg'
 import dataLogo from 'assets/data-logo.png'
