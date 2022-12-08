@@ -123,7 +123,12 @@ export const BalanceProvider = (props: { children: any }) => {
       balances[balance.token.symbol] = balance
     })
     setTokenBalances(balances)
-  }, [address])
+  }, [
+    address,
+    mainnetReadOnlyProvider,
+    optimismReadOnlyProvider,
+    polygonReadOnlyProvider,
+  ])
 
   const fetchNativeCurrencies = useCallback(async () => {
     if (!address) return
@@ -137,7 +142,12 @@ export const BalanceProvider = (props: { children: any }) => {
     balances['ETH'] = eth
     balances['MATIC'] = matic
     setTokenBalances(balances)
-  }, [address])
+  }, [
+    address,
+    mainnetReadOnlyProvider,
+    optimismReadOnlyProvider,
+    polygonReadOnlyProvider,
+  ])
 
   const getTokenBalance = useCallback(
     (symbol: string, chainId: number | undefined): BigNumber => {

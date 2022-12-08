@@ -1,3 +1,5 @@
+import { BTC2xFlexibleLeverageIndexPolygon } from '@indexcoop/flash-mint-sdk'
+
 import bedBorderLogo from 'assets/bed-border.png'
 import btcflipLogo from 'assets/btcflip.svg'
 import dataLogo from 'assets/data-logo.png'
@@ -12,6 +14,8 @@ import indexLogo from 'assets/index-token.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
 import mnyeLogo from 'assets/mnyeLogo.png'
 import { TokenContextKeys } from 'providers/MarketData'
+import BTC2xFLIP from 'views/productpages/BTC2xFLIP'
+import ETH2xFLIP from 'views/productpages/ETH2xFLIP'
 
 import { MAINNET, OPTIMISM, POLYGON } from './chains'
 
@@ -544,14 +548,15 @@ export const deprecatedIndices = [
   MNYeIndex,
 ]
 
+// Deprecated/rebalanced indicies will not work with FlashMintLeveraged any longer
 export const eligibleLeveragedExchangeIssuanceTokens = [
-  Bitcoin2xFLIP,
-  Ethereum2xFLIP,
+  // Bitcoin2xFLIP,
+  // Ethereum2xFLIP,
   IBitcoinFLIP,
   icETHIndex,
   IEthereumFLIP,
   IMaticFLIP,
-  Matic2xFLIP,
+  // Matic2xFLIP,
 ]
 
 const isDevEnv =
@@ -638,6 +643,20 @@ export const flashMintIndexesPolygon = indexNames.filter(
     index.symbol !== GmiIndex.symbol &&
     index.symbol !== IndexToken.symbol &&
     index.symbol !== MetaverseIndex.symbol
+)
+
+export const flashMintIndexesPolygonRedeem = indexNames.filter(
+  (index) =>
+    index.polygonAddress &&
+    index.symbol !== DataIndex.symbol &&
+    index.symbol !== DefiPulseIndex.symbol &&
+    index.symbol !== GmiIndex.symbol &&
+    index.symbol !== IndexToken.symbol &&
+    index.symbol !== MetaverseIndex.symbol &&
+    // Remove from redeeming as contracts don't work with 2xFLI's any longer
+    index.symbol !== Ethereum2xFLIP.symbol &&
+    index.symbol !== Matic2xFLIP.symbol &&
+    index.symbol !== BTC2xFlexibleLeverageIndexPolygon.symbol
 )
 
 export default indexNames

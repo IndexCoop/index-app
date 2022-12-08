@@ -1,8 +1,7 @@
 import {
   DefiPulseIndex,
-  flashMintIndexesMainnetMint,
   flashMintIndexesMainnetRedeem,
-  flashMintIndexesPolygon,
+  flashMintIndexesPolygonRedeem,
   indexNamesMainnet,
   indexNamesOptimism,
   indexNamesPolygon,
@@ -57,6 +56,6 @@ describe('getTokenListByChain()', () => {
     const isFlashMint = true
     const singleToken = undefined
     const list = getTokenListByChain(chainId, isFlashMint, singleToken)
-    expect(list).toEqual(flashMintIndexesPolygon)
+    expect(list).toEqual(flashMintIndexesPolygonRedeem)
   })
 })

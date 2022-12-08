@@ -1,4 +1,4 @@
-import { getIndexApiHeaders,IndexApiBaseUrl } from 'constants/server'
+import { getIndexApiHeaders, IndexApiBaseUrl } from 'constants/server'
 
 export class IndexApi {
   /**

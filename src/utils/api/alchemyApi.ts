@@ -1,4 +1,5 @@
 import { MAINNET, POLYGON } from 'constants/chains'
+import { AlchemyMainnetUrl, AlchemyPolygonUrl } from 'constants/server'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -14,9 +15,9 @@ import {
 const alchemyApiUrl = (chainId: number) => {
   switch (chainId) {
     case MAINNET.chainId:
-      return process.env.REACT_APP_MAINNET_ALCHEMY_API
+      return AlchemyMainnetUrl
     case POLYGON.chainId:
-      return process.env.REACT_APP_POLYGON_ALCHEMY_API
+      return AlchemyPolygonUrl
     default:
       return null
   }

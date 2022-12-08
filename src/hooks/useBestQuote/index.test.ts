@@ -7,6 +7,7 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   Ethereum2xFLIP,
   icETHIndex,
+  IEthereumFLIP,
   IMaticFLIP,
   IndexToken,
   MATIC,
@@ -232,7 +233,7 @@ describe('isEligibleTradePair()', () => {
 
   test('should return correct eligible status for leveraged exchange issuance - issuing', async () => {
     const inputToken = MATIC
-    const outputToken = Ethereum2xFLIP
+    const outputToken = IEthereumFLIP
     const isIssuance = true
     const isEligible = isEligibleTradePair(inputToken, outputToken, isIssuance)
     expect(isEligible).toEqual(true)
@@ -251,7 +252,7 @@ describe('isEligibleTradePair()', () => {
   })
 
   test('should return correct eligible status for leveraged exchange issuance - redeeming', async () => {
-    const inputToken = Ethereum2xFLIP
+    const inputToken = IEthereumFLIP
     const outputToken = MATIC
     const isIssuance = false
     const isEligible = isEligibleTradePair(inputToken, outputToken, isIssuance)

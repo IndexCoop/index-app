@@ -5,6 +5,7 @@ import { Chain, useNetwork } from 'wagmi'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { AlchemyMainnetUrl } from 'constants/server'
 
 export const useReadOnlyProvider = (propChainId?: number) => {
   const { chain, chains } = useNetwork()
@@ -28,7 +29,7 @@ export const useAllReadOnlyProviders = () => {
 }
 
 const getJsonRpcUrl = (chainId: number, chains: Chain[]) => {
-  const defaultUrl = process.env.REACT_APP_MAINNET_ALCHEMY_API || ''
+  const defaultUrl = AlchemyMainnetUrl
   return (
     chains.find((chain) => chain.id === chainId)?.rpcUrls.default ?? defaultUrl
   )
