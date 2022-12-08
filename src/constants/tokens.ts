@@ -548,10 +548,10 @@ export const deprecatedIndices = [
 export const eligibleLeveragedExchangeIssuanceTokens = [
   // Bitcoin2xFLIP,
   // Ethereum2xFLIP,
-  // IBitcoinFLIP,
+  IBitcoinFLIP,
   icETHIndex,
-  // IEthereumFLIP,
-  // IMaticFLIP,
+  IEthereumFLIP,
+  IMaticFLIP,
   // Matic2xFLIP,
 ]
 
