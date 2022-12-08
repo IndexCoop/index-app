@@ -4,11 +4,18 @@ export class TxSimulator {
   /**
    * @param accessKey A Tenderly access key.
    */
-  constructor(private readonly accessKey: string) {
+  constructor(
+    private readonly accessKey: string,
+    private readonly user: string,
+    private readonly project: string
+  ) {
     if (!accessKey) {
       throw Error(
         'You must provide a Tenderly access key for simulations to work.'
       )
+    }
+    if (!user || !project) {
+      throw Error('You must provide the user and the project name.')
     }
   }
 
@@ -18,8 +25,7 @@ export class TxSimulator {
    * @returns A boolean whether the simulation was successful.
    */
   async simulate(tx: PopulatedTransaction): Promise<boolean> {
-    console.log('yo', tx.chainId)
-    const apiUrl = `https://api.tenderly.co/api/v1/account/jann/project/project/simulate`
+    const apiUrl = `https://api.tenderly.co/api/v1/account/${this.user}/project/${this.project}/simulate`
     const body = {
       network_id: tx.chainId ?? 1,
       from: tx.from,
@@ -35,8 +41,8 @@ export class TxSimulator {
       // simulation_type: 'quick',
     }
 
-    console.log(tx)
-    console.log(body)
+    // console.log(tx)
+    // console.log(body)
 
     const headers = {
       'Content-Type': 'application/json',
@@ -50,15 +56,12 @@ export class TxSimulator {
     }
 
     const res = await fetch(apiUrl, requestOptions)
+    if (res.status === 403) {
+      throw Error('Tenderly simulation quota reached')
+    }
     const data = await res.json()
-
-    console.log(res)
-    console.log('///')
-    console.log(data)
-    console.log(data.simulation)
-    // if (data.simulation.status === false) {
-    //   throw new Error('Transaction is going to fail')
-    // }
+    // console.log(data)
+    // console.log(data.simulation)
     return data.simulation.status === true
   }
 }
