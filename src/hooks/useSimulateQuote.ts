@@ -21,9 +21,11 @@ export const useSimulateQuote = (quoteResult: FlashMintQuoteResult) => {
     const request = await builder.makeTransactionRequest(quoteResult)
     if (!request) return false
     const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
+    const project = process.env.REACT_APP_TENDERLY_PROJECT ?? ''
+    const user = process.env.REACT_APP_TENDERLY_USER ?? ''
     let success = false
     try {
-      const simulator = new TxSimulator(accessKey)
+      const simulator = new TxSimulator(accessKey, user, project)
       success = await simulator.simulate(request)
     } catch {
       // fallback: make a gas estimate
