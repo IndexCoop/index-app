@@ -1,6 +1,8 @@
 import bedBorderLogo from 'assets/bed-border.png'
 import btcflipLogo from 'assets/btcflip.svg'
 import dataLogo from 'assets/data-logo.png'
+import fixedDaiLogo from 'assets/fixed_dai_logo.png'
+import fixedUsdcLogo from 'assets/fixed_usdc_logo.png'
 import gmiLogo from 'assets/gmilogo.png'
 import ibtcflipLogo from 'assets/ibtcflip.svg'
 import icethLogo from 'assets/icethlogo.png'
@@ -67,7 +69,7 @@ export const DAI: Token = {
 export const FIXED_DAI: Token = {
   name: 'Fixed Rate Yield Index (DAI)',
   symbol: 'FIXED-DAI',
-  image: '',
+  image: fixedDaiLogo,
   address: '0x015558c3aB97c9e5a9c8c437C71Bb498B2e5afB3',
   optimismAddress: undefined,
   polygonAddress: undefined,
@@ -83,7 +85,7 @@ export const FIXED_DAI: Token = {
 export const FIXED_USDC: Token = {
   name: 'Fixed Rate Yield Index (USDC)',
   symbol: 'FIXED-USDC',
-  image: '',
+  image: fixedUsdcLogo,
   address: '0xFB4D3b07aA16eE563Ea7C1f3202959448458e290',
   optimismAddress: undefined,
   polygonAddress: undefined,
