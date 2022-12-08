@@ -18,7 +18,6 @@ export class TxSimulator {
    * @returns A boolean whether the simulation was successful.
    */
   async simulate(tx: PopulatedTransaction): Promise<boolean> {
-    console.log('yo', tx.chainId)
     const apiUrl = `https://api.tenderly.co/api/v1/account/jann/project/project/simulate`
     const body = {
       network_id: tx.chainId ?? 1,
@@ -35,8 +34,8 @@ export class TxSimulator {
       // simulation_type: 'quick',
     }
 
-    console.log(tx)
-    console.log(body)
+    // console.log(tx)
+    // console.log(body)
 
     const headers = {
       'Content-Type': 'application/json',
@@ -50,15 +49,14 @@ export class TxSimulator {
     }
 
     const res = await fetch(apiUrl, requestOptions)
+    if (res.status === 403) {
+      throw Error('Tenderly simulation quota reached')
+    }
+    // console.log(res)
+    // console.log('///')
     const data = await res.json()
-
-    console.log(res)
-    console.log('///')
-    console.log(data)
-    console.log(data.simulation)
-    // if (data.simulation.status === false) {
-    //   throw new Error('Transaction is going to fail')
-    // }
+    // console.log(data)
+    // console.log(data.simulation)
     return data.simulation.status === true
   }
 }
