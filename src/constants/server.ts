@@ -5,6 +5,9 @@ export const AlchemyPolygonUrl = `https://polygon-mainnet.g.alchemy.com/v2/${Alc
 export const IndexApiBaseUrl = 'https://api.indexcoop.com'
 export const IndexApiKey = process.env.REACT_APP_INDEX_COOP_API
 
+export const ZeroExAffiliateAddress =
+  '0x37e6365d4f6aE378467b0e24c9065Ce5f06D70bF'
+
 export function getIndexApiHeaders() {
   return {
     'X-INDEXCOOP-API-KEY': IndexApiKey ?? '',
