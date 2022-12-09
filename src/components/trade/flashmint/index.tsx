@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 
@@ -109,6 +109,11 @@ const FlashMint = (props: QuickTradeProps) => {
     getTokenBalance(indexToken.symbol, chainId)
   )
 
+  const getSlippage = useCallback(() => {
+    // Temporarily use at least 2% slippage for FlashMint
+    return slippage > 2 ? slippage : 2
+  }, [slippage])
+
   useEffect(() => {
     const contractAddress = getContractForQuote(quoteResult, chainId)
     setContractAddress(contractAddress)
@@ -124,6 +129,7 @@ const FlashMint = (props: QuickTradeProps) => {
 
   useEffect(() => {
     const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
+    const slippage = getSlippage()
     fetchQuote(
       isMinting,
       indexToken,
@@ -133,7 +139,7 @@ const FlashMint = (props: QuickTradeProps) => {
       0,
       slippage
     )
-  }, [indexToken, indexTokenAmount, inputOutputToken, isMinting])
+  }, [indexToken, indexTokenAmount, inputOutputToken, isMinting, getSlippage])
 
   useEffect(() => {
     if (!transactionReview) return
@@ -222,6 +228,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const getTransactionReview = (): TransactionReview | null => {
     if (isFetchingQuote) return null
     if (chainId && contractAddress && quoteResult) {
+      const slippage = getSlippage()
       return {
         chainId,
         contractAddress,
