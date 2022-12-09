@@ -13,7 +13,7 @@ export const useIssuanceQuote = () => {
   const { signer } = useWallet()
 
   const getQuote = async (
-    isIssue: Boolean,
+    isIssue: boolean,
     token: Token,
     amount: BigNumber
   ): Promise<BigNumber | null> => {
