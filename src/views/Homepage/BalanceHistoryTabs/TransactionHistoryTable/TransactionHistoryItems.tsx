@@ -1,4 +1,3 @@
-import { TransactionHistoryItem } from 'components/tables/TransactionHistoryTable'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -10,7 +9,10 @@ import {
   IndexToken,
   MetaverseIndex,
 } from 'constants/tokens'
-import { AlchemyApiTransaction } from 'utils/api/alchemyApi'
+
+import { AlchemyApiTransaction } from '../alchemyApi'
+
+import { TransactionHistoryItem } from './'
 
 function resolveAddressToSymbol(address: string): string {
   switch (address) {

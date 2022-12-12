@@ -16,7 +16,8 @@ import { useApproval } from 'hooks/useApproval'
 import { useWallet } from 'hooks/useWallet'
 import { useMarketData } from 'providers/MarketData'
 import { toWei } from 'utils'
-import StakeRewardsABI from 'utils/abi/StakingRewards.json'
+
+import StakeRewardsABI from './StakingRewards.json'
 
 type LiquidityMiningValues = {
   apy?: string
