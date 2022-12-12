@@ -14,7 +14,8 @@ import { GmiIndex } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { ERC20_ABI } from 'utils/abi/ERC20'
-import StakeRewardsABI from 'utils/abi/StakingRewards.json'
+
+import StakeRewardsABI from './StakingRewards.json'
 
 /* Returns balance of ERC20 token address*/
 async function balanceOfAddress(
