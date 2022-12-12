@@ -32,7 +32,7 @@
     "react-router-dom": "6.4.2",
     "react-scripts": "5.0.1",
     "recharts": "2.1.15",
-    "wagmi": "0.6.7"
+    "wagmi": "0.9.2"
   },
   "scripts": {
     "start": "react-scripts start",
