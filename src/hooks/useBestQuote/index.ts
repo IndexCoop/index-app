@@ -13,6 +13,7 @@ import { useNetwork } from 'hooks/useNetwork'
 import { useBalanceData } from 'providers/Balances'
 import { toWei } from 'utils'
 import { GasStation } from 'utils/api/gasStation'
+import { getConfiguredZeroExApi } from 'utils/api/zeroExApi'
 import {
   getNetworkKey,
   getZeroExTradeData,
@@ -20,7 +21,6 @@ import {
 } from 'utils/api/zeroExUtils'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { getAddressForToken } from 'utils/tokens'
-import { getConfiguredZeroExApi } from 'utils/zeroExApi'
 import BTC2xFLI from 'views/productpages/BTC2xFLI'
 
 import { useWallet } from '../useWallet'

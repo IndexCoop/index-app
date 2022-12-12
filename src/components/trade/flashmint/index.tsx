@@ -16,7 +16,7 @@ import { useBalanceData } from 'providers/Balances'
 import { useSlippage } from 'providers/Slippage'
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
-import { getContractForQuote, getQuoteAmount } from 'utils/quotes'
+import { getContractForQuote, getQuoteAmount } from 'utils/flashMint/quotes'
 import {
   getNativeToken,
   isNotTradableToken,

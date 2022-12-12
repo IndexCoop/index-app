@@ -13,8 +13,8 @@ import {
   Token,
 } from 'constants/tokens'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
-import { getFlashMintLeveragedGasEstimate } from 'utils/flashMintLeveragedGasEstimate'
-import { getFlashMintLeveragedTransaction } from 'utils/flashMintLeveragedTransaction'
+import { getFlashMintLeveragedGasEstimate } from 'utils/flashMint/flashMintLeveragedGasEstimate'
+import { getFlashMintLeveragedTransaction } from 'utils/flashMint/flashMintLeveragedTransaction'
 import { TxSimulator } from 'utils/simulator'
 
 import { ExchangeIssuanceLeveragedQuote, QuoteType } from './'
