@@ -4,9 +4,9 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
-import { getFlashMintLeveragedTransaction } from 'utils/flashMintLeveragedTransaction'
+import { getFlashMintLeveragedTransaction } from 'utils/flashMint/flashMintLeveragedTransaction'
+import { getFlashMintZeroExTransaction } from 'utils/flashMint/flashMintZeroExTransaction'
 import { getFlashMintNotionalTransaction } from 'utils/flashMintNotional/fmNotionalTransaction'
-import { getFlashMintZeroExTransaction } from 'utils/flashMintZeroExTransaction'
 import { TxSimulator } from 'utils/simulator'
 
 import { FlashMintQuoteResult } from './useFlashMintQuote'

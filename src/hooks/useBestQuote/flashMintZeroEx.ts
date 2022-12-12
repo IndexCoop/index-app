@@ -16,8 +16,8 @@ import {
   Token,
 } from 'constants/tokens'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
-import { getFlashMintZeroExGasEstimate } from 'utils/flashMintZeroExGasEstimate'
-import { getFlashMintZeroExTransaction } from 'utils/flashMintZeroExTransaction'
+import { getFlashMintZeroExGasEstimate } from 'utils/flashMint/flashMintZeroExGasEstimate'
+import { getFlashMintZeroExTransaction } from 'utils/flashMint/flashMintZeroExTransaction'
 import { TxSimulator } from 'utils/simulator'
 
 import { ExchangeIssuanceZeroExQuote, QuoteType } from './'

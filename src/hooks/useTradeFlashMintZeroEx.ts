@@ -24,7 +24,7 @@ import {
 import {
   FlashMintZeroExGasEstimateFailedError,
   getFlashMintZeroExGasEstimate,
-} from 'utils/flashMintZeroExGasEstimate'
+} from 'utils/flashMint/flashMintZeroExGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
 
 export const useTradeFlashMintZeroEx = () => {

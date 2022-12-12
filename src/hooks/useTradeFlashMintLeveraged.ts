@@ -23,7 +23,7 @@ import {
 import {
   FlashMintLeveragedGasEstimateFailedError,
   getFlashMintLeveragedGasEstimate,
-} from 'utils/flashMintLeveragedGasEstimate'
+} from 'utils/flashMint/flashMintLeveragedGasEstimate'
 import { getAddressForToken } from 'utils/tokens'
 
 export const useTradeFlashMintLeveraged = () => {
