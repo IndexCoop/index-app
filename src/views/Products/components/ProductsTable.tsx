@@ -10,9 +10,10 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 
-import PerformanceCell from 'components/products/PerformanceCell'
-import TickerCell from 'components/products/TickerCell'
-import { PriceChangeIntervals, ProductsTableProduct } from 'views/Products'
+import { PriceChangeIntervals, ProductsTableProduct } from '../'
+
+import PerformanceCell from './PerformanceCell'
+import TickerCell from './TickerCell'
 
 type ProductsTableProps = {
   products: ProductsTableProduct[]

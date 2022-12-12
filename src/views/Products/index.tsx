@@ -4,13 +4,11 @@ import { Box } from '@chakra-ui/react'
 
 import Page from 'components/page/Page'
 import PageTitle from 'components/page/PageTitle'
-import {
-  ProductFilter,
-  ProductsFilter,
-} from 'components/products/ProductsFilter'
-import ProductsTable from 'components/products/ProductsTable'
 import Indices, { IndexToken, IndexType, Token } from 'constants/tokens'
 import { TokenContextKeys, useMarketData } from 'providers/MarketData'
+
+import { ProductFilter, ProductsFilter } from './components/ProductsFilter'
+import ProductsTable from './components/ProductsTable'
 
 /*  Disabling for 1Y time period because it saves
   us a lot of Coingecko API calls.
