@@ -5,10 +5,10 @@ import { Box, Button, Flex } from '@chakra-ui/react'
 import Page from 'components/page/Page'
 import PageTitle from 'components/page/PageTitle'
 import { MAINNET } from 'constants/chains'
-import LiquidityMiningProvider from 'providers/LiquidityMining'
 
 import MiningProgram, { Program } from './components/MiningProgram'
 import WarningMessage from './components/WarningMessage'
+import LiquidityMiningProvider from './LiquidityMiningProvider'
 import { useLiquidityMiningBalances } from './useLiquidityMiningBalances'
 
 const programs: Program[] = [

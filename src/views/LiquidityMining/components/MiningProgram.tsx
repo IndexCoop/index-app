@@ -10,12 +10,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 
+import { displayFromWei } from 'utils'
+
 import {
   LiquidityMiningProps,
   useLiquidityMining,
-} from 'providers/LiquidityMining'
-import { displayFromWei } from 'utils'
-
+} from '../LiquidityMiningProvider'
 import { StakingBalances } from '../useLiquidityMiningBalances'
 
 import StakingModal from './StakingModal'

@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { calculateApyStakingRewardV2 } from '.'
+import { calculateApyStakingRewardV2 } from './LiquidityMiningProvider'
 
 describe('calculateApyStakingRewardV2()', () => {
   test('should return APY to one decimal place', () => {
