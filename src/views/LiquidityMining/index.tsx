@@ -2,13 +2,14 @@ import { useNetwork, useSwitchNetwork } from 'wagmi'
 
 import { Box, Button, Flex } from '@chakra-ui/react'
 
-import MiningProgram, { Program } from 'components/mining/MiningProgram'
-import WarningMessage from 'components/mining/WarningMessage'
 import Page from 'components/page/Page'
 import PageTitle from 'components/page/PageTitle'
 import { MAINNET } from 'constants/chains'
-import { useLiquidityMiningBalances } from 'hooks/useLiquidityMiningBalances'
 import LiquidityMiningProvider from 'providers/LiquidityMining'
+
+import MiningProgram, { Program } from './components/MiningProgram'
+import WarningMessage from './components/WarningMessage'
+import { useLiquidityMiningBalances } from './useLiquidityMiningBalances'
 
 const programs: Program[] = [
   {

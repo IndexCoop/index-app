@@ -9,8 +9,8 @@ import {
   IndexToken,
   MetaverseIndex,
 } from 'constants/tokens'
-import { AlchemyApiTransaction } from '../alchemyApi'
 
+import { AlchemyApiTransaction } from '../alchemyApi'
 import { TransactionHistoryItem } from '../TransactionHistoryTable/'
 
 function resolveAddressToSymbol(address: string): string {

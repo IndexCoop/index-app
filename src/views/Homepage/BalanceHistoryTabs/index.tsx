@@ -8,11 +8,11 @@ import { useWallet } from 'hooks/useWallet'
 import { logEvent } from 'utils/api/analytics'
 import { captureDashboardSelection } from 'utils/api/sentry'
 
-import { getTransactionHistory } from './alchemyApi'
-import { exportCsv } from './exportToCsv'
 import DownloadCsvView from './TransactionHistoryTable/DownloadCsvView'
 import { assembleHistoryItems } from './TransactionHistoryTable/TransactionHistoryItems'
+import { getTransactionHistory } from './alchemyApi'
 import BalanceTable from './BalanceTable'
+import { exportCsv } from './exportToCsv'
 import TransactionHistoryTable, {
   TransactionHistoryItem,
 } from './TransactionHistoryTable'

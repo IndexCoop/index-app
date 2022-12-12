@@ -10,13 +10,15 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 
-import StakingModal from 'components/mining/StakingModal'
-import { StakingBalances } from 'hooks/useLiquidityMiningBalances'
 import {
   LiquidityMiningProps,
   useLiquidityMining,
 } from 'providers/LiquidityMining'
 import { displayFromWei } from 'utils'
+
+import { StakingBalances } from '../useLiquidityMiningBalances'
+
+import StakingModal from './StakingModal'
 
 const gray = '#848484'
 
