@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 
-import SectionTitle from 'components/page/SectionTitle'
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
 import { logEvent } from 'utils/api/analytics'
@@ -13,6 +12,7 @@ import { assembleHistoryItems } from './TransactionHistoryTable/TransactionHisto
 import { getTransactionHistory } from './alchemyApi'
 import BalanceTable from './BalanceTable'
 import { exportCsv } from './exportToCsv'
+import SectionTitle from './SectionTitle'
 import TransactionHistoryTable, {
   TransactionHistoryItem,
 } from './TransactionHistoryTable'
