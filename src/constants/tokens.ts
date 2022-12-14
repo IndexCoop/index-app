@@ -573,17 +573,17 @@ const indexNames = isDevEnv
       DefiPulseIndex,
       MetaverseIndex,
       GmiIndex,
-      Ethereum2xFLIP,
       IEthereumFLIP,
-      Bitcoin2xFLIP,
       IBitcoinFLIP,
-      Matic2xFLIP,
       IMaticFLIP,
       Ethereum2xFlexibleLeverageIndex,
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
       DataIndex,
       IndexToken,
+      Ethereum2xFLIP,
+      Bitcoin2xFLIP,
+      Matic2xFLIP,
     ]
   : [
       icETHIndex,
@@ -652,11 +652,11 @@ export const flashMintIndexesPolygonRedeem = indexNames.filter(
     index.symbol !== DefiPulseIndex.symbol &&
     index.symbol !== GmiIndex.symbol &&
     index.symbol !== IndexToken.symbol &&
-    index.symbol !== MetaverseIndex.symbol &&
-    // Remove from redeeming as contracts don't work with 2xFLI's any longer
-    index.symbol !== Ethereum2xFLIP.symbol &&
-    index.symbol !== Matic2xFLIP.symbol &&
-    index.symbol !== BTC2xFlexibleLeverageIndexPolygon.symbol
+    index.symbol !== MetaverseIndex.symbol
+  // Remove from redeeming as contracts don't work with 2xFLI's any longer
+  // index.symbol !== Ethereum2xFLIP.symbol &&
+  // index.symbol !== Matic2xFLIP.symbol &&
+  // index.symbol !== BTC2xFlexibleLeverageIndexPolygon.symbol
 )
 
 export default indexNames
