@@ -9,9 +9,8 @@ import { Token } from 'constants/tokens'
 import { getAddressForToken, isNativeCurrency } from 'utils/tokens'
 
 /**
- * Returns a gas estimate for FlashMintZeroEx.
- *
- * If the tx would fail an estimate is returned.
+ * Returns a populated tx for FlashMintZeroEx.
+ * Returns null if there is an issue.
  *
  * @param isMinting               Minting or redeeming?
  * @param inputToken              The input token.
@@ -53,6 +52,7 @@ export async function getFlashMintZeroExTransaction(
   try {
     const block = await provider.getBlock()
     const gasLimitLastBlock = block.gasLimit
+    console.log(gasLimitLastBlock.toString(), 'gasLimitLastBlock')
     const contract = getFlashMintZeroExContract(signer, chainId ?? 1)
     if (isMinting) {
       const isSellingNativeChainToken = isNativeCurrency(inputToken, chainId)
