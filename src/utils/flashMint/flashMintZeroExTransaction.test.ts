@@ -1,17 +1,11 @@
-import { ethers } from 'ethers'
-
-import { JsonRpcProvider } from '@ethersproject/providers'
-
 import { ETH, MetaverseIndex } from 'constants/tokens'
 import { toWei } from 'utils'
+import { LocalhostProvider, SignerAccount0 } from 'utils/test-utils'
 
 import { getFlashMintZeroExTransaction } from './flashMintZeroExTransaction'
 
-const provider = new JsonRpcProvider('http://127.0.0.1:8545/')
-const wallet = new ethers.Wallet(
-  '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-  provider
-)
+const provider = LocalhostProvider
+const wallet = SignerAccount0
 
 describe('getFlashMintZeroExTransaction()', () => {
   beforeEach((): void => {
