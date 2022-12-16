@@ -22,4 +22,4 @@ jobs:
       - name: Install
         run: yarn
       - name: Run unit tests
-        run: yarn test
+        run: yarn hardhat & yarn test
