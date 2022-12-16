@@ -64,7 +64,6 @@ class TransactionRequestBuilder {
         quoteLeveraged.outputToken,
         quoteLeveraged.indexTokenAmount,
         quoteLeveraged.inputOutputTokenAmount,
-        inputTokenBalance,
         quoteLeveraged.swapDataDebtCollateral,
         quoteLeveraged.swapDataPaymentToken,
         provider,

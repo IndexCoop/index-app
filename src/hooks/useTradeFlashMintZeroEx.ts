@@ -86,17 +86,14 @@ export const useTradeFlashMintZeroEx = () => {
 
         if (!tx) throw new Error('No transaction object')
 
-        // Will throw error if tx would fail
-        // If the user overrides, we take any gas estimate
         const defaultGasEstimate = BigNumber.from(
           DefaultGasLimitFlashMintZeroEx
         )
         const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
-        // We don't want this function to fail for estimates here.
-        // A default will be returned if the tx would fail.
+        // Will throw error if tx would fail
+        // If the user overrides, we take any gas estimate
         const canFail = override
-        const gasEstimate = await gasEstimatooor.estimate(tx, canFail)
-        console.log('gasEstimate for trade', gasEstimate.toString(), canFail)
+        const gasLimit = await gasEstimatooor.estimate(tx, canFail)
 
         if (isMinting) {
           const isSellingNativeChainToken =
