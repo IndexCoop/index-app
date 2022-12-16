@@ -33,6 +33,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "hardhat": "npx hardhat node",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -62,6 +63,7 @@
     "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@chakra-ui/styled-system": "^2.3.4",
     "@chakra-ui/system": "2.3.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.7",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/jest": "^29.2.4",
@@ -70,6 +72,7 @@
     "@types/react": "^18.0.21",
     "eslint": "^8.24.0",
     "eslint-plugin-simple-import-sort": "^8.0.0",
+    "hardhat": "^2.12.4",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "prop-types": "^15.8.1",
