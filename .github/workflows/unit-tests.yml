@@ -1,4 +1,6 @@
 name: Unit Tests
+env:
+  REACT_APP_ALCHEMY_ID: ${{ secrets.REACT_APP_ALCHEMY_ID }}
 
 # Triggers the workflow on push or pull request events
 on:
@@ -19,6 +21,8 @@ jobs:
           node-version: 16
       - name: Copy .env vars
         run: cp .env.default .env
+      - name: Set env
+        run: echo "REACT_APP_ALCHEMY_ID=$(echo $REACT_APP_ALCHEMY_ID | cut -c 1-6)" >> $REACT_APP_ALCHEMY_ID
       - name: Install
         run: yarn
       - name: Run unit tests
