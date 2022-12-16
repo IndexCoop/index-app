@@ -54,10 +54,15 @@ async function getSwapTransaction(
   return tx
 }
 
-// describe('testtesttest', () => {
-//   beforeEach((): void => {
-//     jest.setTimeout(1000000)
-//   })
+describe('testtesttest', () => {
+  beforeEach((): void => {
+    jest.setTimeout(1000000)
+  })
+
+  it('should work', async () => {
+    expect(true).toBe(true)
+  })
+})
 
 //   it('should work', async () => {
 //     const provider = new JsonRpcProvider('http://127.0.0.1:8545/')

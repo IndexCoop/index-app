@@ -9,6 +9,7 @@ import {
   getIssuanceModule,
 } from '@indexcoop/flash-mint-sdk'
 
+import { DefaultGasLimitFlashMintZeroEx } from 'constants/gas'
 import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceZeroExQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
@@ -21,10 +22,8 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/api/sentry'
-import {
-  FlashMintZeroExGasEstimateFailedError,
-  getFlashMintZeroExGasEstimate,
-} from 'utils/flashMint/flashMintZeroExGasEstimate'
+import { getFlashMintZeroExTransaction } from 'utils/flashMint/flashMintZeroExTransaction'
+import { GasEstimatooor, GasEstimatooorFailedError } from 'utils/gasEstimatooor'
 import { getAddressForToken } from 'utils/tokens'
 
 export const useTradeFlashMintZeroEx = () => {
@@ -72,10 +71,7 @@ export const useTradeFlashMintZeroEx = () => {
       try {
         setIsTransacting(true)
 
-        // Will throw error if tx would fail
-        // If the user overrides, we take any gas estimate
-        const canFail = override
-        const gasEstimate = await getFlashMintZeroExGasEstimate(
+        const tx = await getFlashMintZeroExTransaction(
           isMinting,
           inputToken,
           outputToken,
@@ -85,9 +81,21 @@ export const useTradeFlashMintZeroEx = () => {
           componentQuotes,
           provider,
           signer,
-          chainId,
-          canFail
+          chainId
         )
+
+        if (!tx) throw new Error('No transaction object')
+
+        // Will throw error if tx would fail
+        // If the user overrides, we take any gas estimate
+        const defaultGasEstimate = BigNumber.from(
+          DefaultGasLimitFlashMintZeroEx
+        )
+        const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+        // We don't want this function to fail for estimates here.
+        // A default will be returned if the tx would fail.
+        const canFail = override
+        const gasEstimate = await gasEstimatooor.estimate(tx, canFail)
         console.log('gasEstimate for trade', gasEstimate.toString(), canFail)
 
         if (isMinting) {
@@ -189,7 +197,7 @@ export const useTradeFlashMintZeroEx = () => {
         console.log('Override?', override)
         setIsTransacting(false)
         if (
-          error instanceof FlashMintZeroExGasEstimateFailedError &&
+          error instanceof GasEstimatooorFailedError &&
           error.statusCode === 1001
         ) {
           setTxWouldFail(true)

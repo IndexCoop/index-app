@@ -3,6 +3,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { getFlashMintZeroExQuote, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from 'constants/chains'
+import { DefaultGasLimitFlashMintZeroEx } from 'constants/gas'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   Ethereum2xFlexibleLeverageIndex,
@@ -16,8 +17,8 @@ import {
   Token,
 } from 'constants/tokens'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
-import { getFlashMintZeroExGasEstimate } from 'utils/flashMint/flashMintZeroExGasEstimate'
 import { getFlashMintZeroExTransaction } from 'utils/flashMint/flashMintZeroExTransaction'
+import { GasEstimatooor } from 'utils/gasEstimatooor'
 import { TxSimulator } from 'utils/simulator'
 
 import { ExchangeIssuanceZeroExQuote, QuoteType } from './'
@@ -128,29 +129,7 @@ export async function getEnhancedFlashMintZeroExQuote(
       chainId
     )
     if (quote0x) {
-      // const req = await getFlashMintZeroExTransaction(
-      //   isMinting,
-      //   sellToken,
-      //   buyToken,
-      //   indexTokenAmount,
-      //   quote0x.inputOutputTokenAmount,
-      //   inputTokenBalance,
-      //   quote0x.componentQuotes,
-      //   provider,
-      //   signer,
-      //   chainId
-      // )
-
-      // if (req) {
-      //   const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
-      //   const simulator = new TxSimulator(accessKey)
-      //   await simulator.simulate(req)
-      // }
-
-      // We don't want this function to fail for estimates here.
-      // A default will be returned if the tx would fail.
-      const canFail = false
-      const gasEstimate = await getFlashMintZeroExGasEstimate(
+      const tx = await getFlashMintZeroExTransaction(
         isMinting,
         sellToken,
         buyToken,
@@ -160,9 +139,23 @@ export async function getEnhancedFlashMintZeroExQuote(
         quote0x.componentQuotes,
         provider,
         signer,
-        chainId,
-        canFail
+        chainId
       )
+
+      if (!tx) throw new Error('No transaction object')
+
+      // if (req) {
+      //   const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
+      //   const simulator = new TxSimulator(accessKey)
+      //   await simulator.simulate(req)
+      // }
+
+      const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
+      const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+      // We don't want this function to fail for estimates here.
+      // A default will be returned if the tx would fail.
+      const canFail = false
+      const gasEstimate = await gasEstimatooor.estimate(tx, canFail)
       const gasCosts = gasEstimate.mul(gasPrice)
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       return {
