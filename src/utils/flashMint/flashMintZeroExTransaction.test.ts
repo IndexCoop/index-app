@@ -1,10 +1,9 @@
 import { ethers } from 'ethers'
 
-import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { ETH, MetaverseIndex } from 'constants/tokens'
-import { displayFromWei, isValidTokenInput, safeDiv, toWei } from 'utils'
+import { toWei } from 'utils'
 
 import { getFlashMintZeroExTransaction } from './flashMintZeroExTransaction'
 
@@ -24,7 +23,6 @@ describe('getFlashMintZeroExTransaction()', () => {
     const inputToken = ETH
     const outputToken = MetaverseIndex
     const indexTokenAmount = toWei(1)
-    const inputTokenBalance = toWei(0)
 
     const inputOutputTokenAmount = toWei('0.1')
     const componentQuotes: string[] = []
@@ -35,7 +33,6 @@ describe('getFlashMintZeroExTransaction()', () => {
       outputToken,
       indexTokenAmount,
       inputOutputTokenAmount,
-      inputTokenBalance,
       componentQuotes,
       provider,
       null,
@@ -49,7 +46,6 @@ describe('getFlashMintZeroExTransaction()', () => {
     const inputToken = ETH
     const outputToken = MetaverseIndex
     const indexTokenAmount = toWei(1)
-    const inputTokenBalance = toWei(0)
 
     const inputOutputTokenAmount = toWei('0.1')
     const componentQuotes: string[] = []
@@ -60,7 +56,6 @@ describe('getFlashMintZeroExTransaction()', () => {
       outputToken,
       indexTokenAmount,
       inputOutputTokenAmount,
-      inputTokenBalance,
       componentQuotes,
       null,
       wallet,
@@ -69,62 +64,11 @@ describe('getFlashMintZeroExTransaction()', () => {
     expect(txNoProvider).toBeNull()
   })
 
-  it('should return null if isMinting and insufficient funds', async () => {
-    const isMinting = true
-    const inputToken = ETH
-    const outputToken = MetaverseIndex
-    const indexTokenAmount = toWei(1)
-    const inputTokenBalance = toWei(0)
-
-    const inputOutputTokenAmount = toWei('0.1')
-    const componentQuotes: string[] = []
-
-    const tx = await getFlashMintZeroExTransaction(
-      isMinting,
-      inputToken,
-      outputToken,
-      indexTokenAmount,
-      inputOutputTokenAmount,
-      inputTokenBalance,
-      componentQuotes,
-      provider,
-      wallet,
-      1
-    )
-    expect(tx).toBeNull()
-  })
-
-  it('should return null if !isMinting and insufficient funds', async () => {
-    const isMinting = false
-    const inputToken = MetaverseIndex
-    const outputToken = ETH
-    const indexTokenAmount = toWei(1)
-    const inputTokenBalance = toWei(0)
-
-    const inputOutputTokenAmount = toWei('0.1')
-    const componentQuotes: string[] = []
-
-    const tx = await getFlashMintZeroExTransaction(
-      isMinting,
-      inputToken,
-      outputToken,
-      indexTokenAmount,
-      inputOutputTokenAmount,
-      inputTokenBalance,
-      componentQuotes,
-      provider,
-      wallet,
-      1
-    )
-    expect(tx).toBeNull()
-  })
-
   it('should return null if ouput token address is undefined', async () => {
     const isMinting = true
     const inputToken = ETH
     const outputToken = MetaverseIndex
     const indexTokenAmount = toWei(1)
-    const inputTokenBalance = toWei(1)
 
     const inputOutputTokenAmount = toWei('0.1')
     const componentQuotes: string[] = []
@@ -135,7 +79,6 @@ describe('getFlashMintZeroExTransaction()', () => {
       outputToken,
       indexTokenAmount,
       inputOutputTokenAmount,
-      inputTokenBalance,
       componentQuotes,
       provider,
       wallet,
@@ -149,7 +92,6 @@ describe('getFlashMintZeroExTransaction()', () => {
     const inputToken = MetaverseIndex
     const outputToken = ETH
     const indexTokenAmount = toWei(1)
-    const inputTokenBalance = toWei(1)
 
     const inputOutputTokenAmount = toWei('0.1')
     const componentQuotes: string[] = []
@@ -160,7 +102,6 @@ describe('getFlashMintZeroExTransaction()', () => {
       outputToken,
       indexTokenAmount,
       inputOutputTokenAmount,
-      inputTokenBalance,
       componentQuotes,
       provider,
       wallet,
@@ -175,7 +116,6 @@ describe('getFlashMintZeroExTransaction()', () => {
     const inputToken = ETH
     const outputToken = MetaverseIndex
     const indexTokenAmount = toWei(1)
-    const inputTokenBalance = toWei(1)
 
     const inputOutputTokenAmount = toWei('0.1')
     const componentQuotes: string[] = []
@@ -186,7 +126,6 @@ describe('getFlashMintZeroExTransaction()', () => {
       outputToken,
       indexTokenAmount,
       inputOutputTokenAmount,
-      inputTokenBalance,
       componentQuotes,
       provider,
       wallet,

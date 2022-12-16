@@ -117,7 +117,6 @@ export async function getEnhancedFlashMintZeroExQuote(
   }
 
   try {
-    const spendingTokenBalance = inputTokenBalance
     const quote0x = await getFlashMintZeroExQuote(
       inputToken,
       outputToken,
@@ -135,7 +134,6 @@ export async function getEnhancedFlashMintZeroExQuote(
         buyToken,
         indexTokenAmount,
         quote0x.inputOutputTokenAmount,
-        spendingTokenBalance,
         quote0x.componentQuotes,
         provider,
         signer,

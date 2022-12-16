@@ -77,7 +77,6 @@ export const useTradeFlashMintZeroEx = () => {
           outputToken,
           indexTokenAmount,
           inputOutputTokenAmount,
-          spendingTokenBalance,
           componentQuotes,
           provider,
           signer,

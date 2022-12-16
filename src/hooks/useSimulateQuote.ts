@@ -94,7 +94,6 @@ class TransactionRequestBuilder {
         quoteZeroEx.outputToken,
         quoteZeroEx.indexTokenAmount,
         quoteZeroEx.inputOutputTokenAmount,
-        inputTokenBalance,
         quoteZeroEx.componentQuotes,
         provider,
         signer,
