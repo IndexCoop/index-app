@@ -4,6 +4,7 @@ import { Signer } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { DefaultGasLimitFlashMintNotional } from 'constants/gas'
 import { FlashMintNotionalQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
 import { useWallet } from 'hooks/useWallet'
@@ -19,10 +20,8 @@ import {
   DebtIssuanceModuleV2,
   getFlashMintNotionalContract,
 } from 'utils/flashMintNotional/fmNotionalContract'
-import {
-  FlashMintNotionalGasEstimateFailedError,
-  getFlashMintNotionalGasEstimate,
-} from 'utils/flashMintNotional/fmNotionalGasEstimate'
+import { getFlashMintNotionalTransaction } from 'utils/flashMintNotional/fmNotionalTransaction'
+import { GasEstimatooor, GasEstimatooorFailedError } from 'utils/gasEstimatooor'
 import { getAddressForToken } from 'utils/tokens'
 
 export const useTradeFlashMintNotional = () => {
@@ -68,21 +67,29 @@ export const useTradeFlashMintNotional = () => {
       try {
         setIsTransacting(true)
 
-        // Will throw error if tx would fail
-        // If the user overrides, we take any gas estimate
-        const canFail = override
-        const gasLimit = await getFlashMintNotionalGasEstimate(
+        const tx = await getFlashMintNotionalTransaction(
           isMinting,
           inputToken,
           outputToken,
-          indexTokenAmount,
-          inputOutputTokenAmount,
-          swapData,
+          quote.indexTokenAmount,
+          quote.inputOutputTokenAmount,
+          quote.swapData,
           slippage,
-          chainId,
           provider,
-          canFail
+          signer,
+          chainId
         )
+
+        if (!tx) throw new Error('No transaction object')
+
+        const defaultGasEstimate = BigNumber.from(
+          DefaultGasLimitFlashMintNotional
+        )
+        const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+        // Will throw error if tx would fail
+        // If the user overrides, we take any gas estimate
+        const canFail = override
+        const gasLimit = await gasEstimatooor.estimate(tx, canFail)
 
         if (isMinting) {
           const maxAmountInputToken = inputOutputTokenAmount
@@ -147,8 +154,8 @@ export const useTradeFlashMintNotional = () => {
         console.log('Override?', override)
         setIsTransacting(false)
         if (
-          error instanceof FlashMintNotionalGasEstimateFailedError &&
-          error.statusCode === 1003
+          error instanceof GasEstimatooorFailedError &&
+          error.statusCode === 1001
         ) {
           setTxWouldFail(true)
         }

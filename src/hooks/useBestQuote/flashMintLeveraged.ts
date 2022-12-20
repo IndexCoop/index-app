@@ -5,6 +5,7 @@ import {
   ZeroExApi,
 } from '@indexcoop/flash-mint-sdk'
 
+import { DefaultGasLimitFlashMintLeveraged } from 'constants/gas'
 import {
   eligibleLeveragedExchangeIssuanceTokens,
   ETH,
@@ -13,8 +14,8 @@ import {
   Token,
 } from 'constants/tokens'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
-import { getFlashMintLeveragedGasEstimate } from 'utils/flashMint/flashMintLeveragedGasEstimate'
 import { getFlashMintLeveragedTransaction } from 'utils/flashMint/flashMintLeveragedTransaction'
+import { GasEstimatooor } from 'utils/gasEstimatooor'
 import { TxSimulator } from 'utils/simulator'
 
 import { ExchangeIssuanceLeveragedQuote, QuoteType } from './'
@@ -99,19 +100,20 @@ export async function getEnhancedFlashMintLeveragedQuote(
       chainId ?? 1
     )
     if (quoteLeveraged) {
-      // const req = await getFlashMintLeveragedTransaction(
-      //   isMinting,
-      //   sellToken,
-      //   buyToken,
-      //   indexTokenAmount,
-      //   quoteLeveraged.inputOutputTokenAmount,
-      //   inputTokenBalance,
-      //   quoteLeveraged.swapDataDebtCollateral,
-      //   quoteLeveraged.swapDataPaymentToken,
-      //   provider,
-      //   signer,
-      //   chainId
-      // )
+      const tx = await getFlashMintLeveragedTransaction(
+        isMinting,
+        sellToken,
+        buyToken,
+        indexTokenAmount,
+        quoteLeveraged.inputOutputTokenAmount,
+        quoteLeveraged.swapDataDebtCollateral,
+        quoteLeveraged.swapDataPaymentToken,
+        provider,
+        signer,
+        chainId
+      )
+
+      if (!tx) throw new Error('No transaction object')
 
       // if (req) {
       //   const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
@@ -119,23 +121,14 @@ export async function getEnhancedFlashMintLeveragedQuote(
       //   await simulator.simulate(req)
       // }
 
+      const defaultGasEstimate = BigNumber.from(
+        DefaultGasLimitFlashMintLeveraged
+      )
+      const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
       // We don't want this function to fail for estimates here.
       // A default will be returned if the tx would fail.
       const canFail = false
-      const gasEstimate = await getFlashMintLeveragedGasEstimate(
-        isMinting,
-        sellToken,
-        buyToken,
-        indexTokenAmount,
-        quoteLeveraged.inputOutputTokenAmount,
-        inputTokenBalance,
-        quoteLeveraged.swapDataDebtCollateral,
-        quoteLeveraged.swapDataPaymentToken,
-        provider,
-        signer,
-        chainId,
-        canFail
-      )
+      const gasEstimate = await gasEstimatooor.estimate(tx, canFail)
       const gasCosts = gasEstimate.mul(gasPrice)
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       return {

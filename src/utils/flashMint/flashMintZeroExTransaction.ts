@@ -9,9 +9,8 @@ import { Token } from 'constants/tokens'
 import { getAddressForToken, isNativeCurrency } from 'utils/tokens'
 
 /**
- * Returns a gas estimate for FlashMintZeroEx.
- *
- * If the tx would fail an estimate is returned.
+ * Returns a populated tx for FlashMintZeroEx.
+ * Returns null if there is an issue.
  *
  * @param isMinting               Minting or redeeming?
  * @param inputToken              The input token.
@@ -30,18 +29,13 @@ export async function getFlashMintZeroExTransaction(
   outputToken: Token,
   indexTokenAmount: BigNumber,
   inputOutputTokenAmount: BigNumber,
-  inputTokenBalance: BigNumber,
   componentQuotes: string[],
   provider: any,
   signer: any,
   chainId: number
 ): Promise<PopulatedTransaction | null> {
-  // Return default - as we can't fetch an estimate without a provider or signer
+  // Return null - as we can't fetch an estimate without a provider or signer
   if (!provider || !signer) return null
-
-  // Return default - as this would otherwise throw an error
-  if (isMinting && inputOutputTokenAmount.gt(inputTokenBalance)) return null
-  if (!isMinting && indexTokenAmount.gt(inputTokenBalance)) return null
 
   const setTokenSymbol = isMinting ? outputToken.symbol : inputToken.symbol
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
@@ -53,6 +47,7 @@ export async function getFlashMintZeroExTransaction(
   try {
     const block = await provider.getBlock()
     const gasLimitLastBlock = block.gasLimit
+    console.log(gasLimitLastBlock.toString(), 'gasLimitLastBlock')
     const contract = getFlashMintZeroExContract(signer, chainId ?? 1)
     if (isMinting) {
       const isSellingNativeChainToken = isNativeCurrency(inputToken, chainId)

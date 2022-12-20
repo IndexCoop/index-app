@@ -31,19 +31,14 @@ export async function getFlashMintLeveragedTransaction(
   outputToken: Token,
   indexTokenAmount: BigNumber,
   inputOutputTokenAmount: BigNumber,
-  inputTokenBalance: BigNumber,
   swapDataDebtCollateral: SwapData,
   swapDataInputOutputToken: SwapData,
   provider: any,
   signer: any,
   chainId: number
 ): Promise<PopulatedTransaction | null> {
-  // Return default - as we can't fetch an estimate without a provider or signer
+  // Return null - as we can't fetch an estimate without a provider or signer
   if (!provider || !signer) return null
-
-  // Return default - as this would otherwise throw an error
-  if (isMinting && inputOutputTokenAmount.gt(inputTokenBalance)) return null
-  if (!isMinting && indexTokenAmount.gt(inputTokenBalance)) return null
 
   const outputTokenAddress = getAddressForToken(outputToken, chainId)
   const inputTokenAddress = getAddressForToken(inputToken, chainId)

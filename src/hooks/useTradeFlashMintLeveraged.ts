@@ -8,6 +8,7 @@ import {
   getFlashMintLeveragedContract,
 } from '@indexcoop/flash-mint-sdk'
 
+import { DefaultGasLimitFlashMintLeveraged } from 'constants/gas'
 import { ETH, MATIC } from 'constants/tokens'
 import { ExchangeIssuanceLeveragedQuote } from 'hooks/useBestQuote'
 import { useNetwork } from 'hooks/useNetwork'
@@ -20,10 +21,8 @@ import {
   CaptureExchangeIssuanceKey,
   captureTransaction,
 } from 'utils/api/sentry'
-import {
-  FlashMintLeveragedGasEstimateFailedError,
-  getFlashMintLeveragedGasEstimate,
-} from 'utils/flashMint/flashMintLeveragedGasEstimate'
+import { getFlashMintLeveragedTransaction } from 'utils/flashMint/flashMintLeveragedTransaction'
+import { GasEstimatooor, GasEstimatooorFailedError } from 'utils/gasEstimatooor'
 import { getAddressForToken } from 'utils/tokens'
 
 export const useTradeFlashMintLeveraged = () => {
@@ -65,23 +64,29 @@ export const useTradeFlashMintLeveraged = () => {
       try {
         setIsTransacting(true)
 
-        // Will throw error if tx would fail
-        // If the user overrides, we take any gas estimate
-        const canFail = override
-        const gasLimit = await getFlashMintLeveragedGasEstimate(
+        const tx = await getFlashMintLeveragedTransaction(
           isMinting,
           inputToken,
           outputToken,
           indexTokenAmount,
-          quote.inputOutputTokenAmount,
-          spendingTokenBalance,
-          quote.swapDataDebtCollateral,
-          quote.swapDataPaymentToken,
+          inputOutputTokenAmount,
+          swapDataDebtCollateral,
+          swapDataInputOutputToken,
           provider,
           signer,
-          chainId,
-          canFail
+          chainId
         )
+
+        if (!tx) throw new Error('No transaction object')
+
+        const defaultGasEstimate = BigNumber.from(
+          DefaultGasLimitFlashMintLeveraged
+        )
+        const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+        // Will throw error if tx would fail
+        // If the user overrides, we take any gas estimate
+        const canFail = override
+        const gasLimit = await gasEstimatooor.estimate(tx, canFail)
 
         if (isMinting) {
           const isSellingNativeChainToken =
@@ -178,8 +183,8 @@ export const useTradeFlashMintLeveraged = () => {
         console.log('Override?', override)
         setIsTransacting(false)
         if (
-          error instanceof FlashMintLeveragedGasEstimateFailedError &&
-          error.statusCode === 1000
+          error instanceof GasEstimatooorFailedError &&
+          error.statusCode === 1001
         ) {
           setTxWouldFail(true)
         }
