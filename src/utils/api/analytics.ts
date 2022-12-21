@@ -1,8 +1,6 @@
 import { ArcxAnalyticsSdk } from '@arcxmoney/analytics'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 
-import { captureTxData } from 'utils/api/sentry'
-
 const init = () => {
   return ArcxAnalyticsSdk.init(
     process.env.REACT_APP_ARCX_ANALYTICS_API_KEY ?? '',
@@ -46,7 +44,6 @@ export const logTransaction = (
   if (isDevEnv) return
   init()
     .then((arcxAnalyticsSdk) => {
-      captureTxData(chainId, transactionType, transactionHash, data)
       arcxAnalyticsSdk.transaction({
         chain: chainId,
         transactionHash: transactionHash,

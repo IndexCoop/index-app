@@ -1,5 +1,3 @@
-import { BTC2xFlexibleLeverageIndexPolygon } from '@indexcoop/flash-mint-sdk'
-
 import bedBorderLogo from 'assets/bed-border.png'
 import btcflipLogo from 'assets/btcflip.svg'
 import dataLogo from 'assets/data-logo.png'
@@ -14,8 +12,6 @@ import indexLogo from 'assets/index-token.png'
 import maticflipLogo from 'assets/maticflilogo.svg'
 import mnyeLogo from 'assets/mnyeLogo.png'
 import { TokenContextKeys } from 'providers/MarketData'
-import BTC2xFLIP from 'views/productpages/BTC2xFLIP'
-import ETH2xFLIP from 'views/productpages/ETH2xFLIP'
 
 import { MAINNET, OPTIMISM, POLYGON } from './chains'
 
