@@ -33,19 +33,3 @@ export const captureTransaction = (request: CaptureTradeRequest) => {
     extra: request,
   })
 }
-
-export const captureTxData = (
-  chainId: number,
-  transactionType: string,
-  transactionHash: string,
-  data: any = {}
-) => {
-  Sentry.captureException('arcx', {
-    extra: {
-      chainId,
-      transactionType,
-      transactionHash,
-      data,
-    },
-  })
-}
