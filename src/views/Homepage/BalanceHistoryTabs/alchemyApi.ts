@@ -3,10 +3,8 @@ import { AlchemyMainnetUrl, AlchemyPolygonUrl } from 'constants/server'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
-  DataIndex,
   DefiPulseIndex,
   Ethereum2xFlexibleLeverageIndex,
-  GmiIndex,
   icETHIndex,
   IndexToken,
   MetaverseIndex,
@@ -26,10 +24,8 @@ const alchemyApiUrl = (chainId: number) => {
 const contractAddresses: string[] = [
   BedIndex.address!,
   Bitcoin2xFlexibleLeverageIndex.address!,
-  DataIndex.address!,
   DefiPulseIndex.address!,
   Ethereum2xFlexibleLeverageIndex.address!,
-  GmiIndex.address!,
   IndexToken.address!,
   MetaverseIndex.address!,
   icETHIndex.address!,

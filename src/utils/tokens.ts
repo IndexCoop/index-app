@@ -3,7 +3,6 @@ import { GMIIndex } from '@indexcoop/flash-mint-sdk'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   BedIndex,
-  DataIndex,
   DefiPulseIndex,
   ETH,
   flashMintIndexesMainnetRedeem,
@@ -82,7 +81,6 @@ export function getNativeToken(chainId: number | undefined): Token | null {
 
 export function isLeveragedToken(token: Token): boolean {
   if (token === BedIndex) return false
-  if (token === DataIndex) return false
   if (token === DefiPulseIndex) return false
   if (token.symbol === GMIIndex.symbol) return false
   return true

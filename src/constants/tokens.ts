@@ -251,7 +251,6 @@ export const Ethereum2xFLIP: Token = {
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
   coingeckoId: 'index-coop-eth-2x-flexible-leverage-index',
   tokensetsId: 'eth2x-fli-p',
-  tokenContextKey: 'ethflip',
   fees: {
     streamingFee: '1.95%',
     mintFee: '0.1%',
@@ -322,26 +321,6 @@ export const BedIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
-export const DataIndex: Token = {
-  name: 'Web3 Data Economy Index',
-  symbol: 'DATA',
-  address: '0x33d63Ba1E57E54779F7dDAeaA7109349344cf5F1',
-  polygonAddress: '0x1D607Faa0A51518a7728580C238d912747e71F7a',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'data',
-  image: dataLogo,
-  coingeckoId: 'data-economy-index',
-  tokensetsId: 'data',
-  tokenContextKey: 'data',
-  fees: {
-    streamingFee: '0.95%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
-}
-
 export const GmiIndex: Token = {
   name: 'Bankless DeFi Innovation Index',
   symbol: 'GMI',
@@ -373,7 +352,6 @@ export const Matic2xFLIP: Token = {
   image: maticflipLogo,
   coingeckoId: 'index-coop-matic-2x-flexible-leverage-index',
   tokensetsId: 'matic2x-fli-p',
-  tokenContextKey: 'maticflip',
   fees: {
     streamingFee: '1.95%',
     mintFee: '0.1%',
@@ -395,7 +373,6 @@ export const IMaticFLIP: Token = {
   image: imaticflipLogo,
   coingeckoId: 'index-coop-inverse-matic-flexible-leverage-index',
   tokensetsId: 'imatic-fli-p',
-  tokenContextKey: 'imaticflip',
   fees: {
     streamingFee: '1.95%',
     mintFee: '0.1%',
@@ -417,7 +394,6 @@ export const IEthereumFLIP: Token = {
   image: iethflipLogo,
   coingeckoId: 'index-coop-inverse-eth-flexible-leverage-index',
   tokensetsId: 'ieth-fli-p',
-  tokenContextKey: 'iethflip',
   fees: {
     streamingFee: '1.95%',
     mintFee: '0.1%',
@@ -439,7 +415,6 @@ export const Bitcoin2xFLIP: Token = {
   image: btcflipLogo,
   coingeckoId: 'btc-2x-flexible-leverage-index-polygon',
   tokensetsId: 'btc2x-fli-p',
-  tokenContextKey: 'btcflip',
   fees: {
     streamingFee: '1.95%',
     mintFee: '0.1%',
@@ -461,7 +436,6 @@ export const IBitcoinFLIP: Token = {
   image: ibtcflipLogo,
   coingeckoId: 'inverse-btc-flexible-leverage-index',
   tokensetsId: 'ibtc-fli-p',
-  tokenContextKey: 'ibtcflip',
   fees: {
     streamingFee: '1.95%',
     mintFee: '0.1%',
@@ -505,7 +479,6 @@ export const MNYeIndex: Token = {
   image: mnyeLogo,
   coingeckoId: 'market-neutral-yield-eth',
   tokensetsId: 'mnye',
-  tokenContextKey: 'mnye',
   fees: {
     streamingFee: '0.95%',
   },
@@ -589,7 +562,6 @@ export const flashMintIndexesMainnetMint = indexNames.filter(
     index.symbol !== Ethereum2xFlexibleLeverageIndex.symbol &&
     index.symbol !== IndexToken.symbol &&
     // DATA and GMI are now deprecated
-    index.symbol !== DataIndex.symbol &&
     index.symbol !== GmiIndex.symbol
 )
 
@@ -604,7 +576,6 @@ export const flashMintIndexesMainnetRedeem = indexNames.filter(
 export const flashMintIndexesPolygon = indexNames.filter(
   (index) =>
     index.polygonAddress &&
-    index.symbol !== DataIndex.symbol &&
     index.symbol !== DefiPulseIndex.symbol &&
     index.symbol !== GmiIndex.symbol &&
     index.symbol !== IndexToken.symbol &&
@@ -614,7 +585,6 @@ export const flashMintIndexesPolygon = indexNames.filter(
 export const flashMintIndexesPolygonRedeem = indexNames.filter(
   (index) =>
     index.polygonAddress &&
-    index.symbol !== DataIndex.symbol &&
     index.symbol !== DefiPulseIndex.symbol &&
     index.symbol !== GmiIndex.symbol &&
     index.symbol !== IndexToken.symbol &&

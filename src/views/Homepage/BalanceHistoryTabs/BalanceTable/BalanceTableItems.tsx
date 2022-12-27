@@ -1,10 +1,8 @@
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
-  DataIndex,
   DefiPulseIndex,
   Ethereum2xFlexibleLeverageIndex,
-  GmiIndex,
   icETHIndex,
   IndexToken,
   MetaverseIndex,
@@ -19,14 +17,10 @@ function resolveAddressToSymbol(address: string): string {
       return BedIndex.symbol
     case Bitcoin2xFlexibleLeverageIndex.address:
       return Bitcoin2xFlexibleLeverageIndex.symbol
-    case DataIndex.address:
-      return DataIndex.symbol
     case DefiPulseIndex.address:
       return DefiPulseIndex.symbol
     case Ethereum2xFlexibleLeverageIndex.address!:
       return Ethereum2xFlexibleLeverageIndex.symbol
-    case GmiIndex.address!:
-      return GmiIndex.symbol
     case IndexToken.address!:
       return IndexToken.symbol
     case MetaverseIndex.address!:

@@ -9,21 +9,13 @@ import {
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
-  Bitcoin2xFLIP,
-  DataIndex,
   DefiPulseIndex,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
-  Ethereum2xFLIP,
   GmiIndex,
-  IBitcoinFLIP,
   icETHIndex,
-  IEthereumFLIP,
-  IMaticFLIP,
   IndexToken,
-  Matic2xFLIP,
   MetaverseIndex,
-  MNYeIndex,
   Token,
 } from 'constants/tokens'
 import { fetchHistoricalTokenMarketData } from 'utils/api/coingeckoApi'
@@ -39,20 +31,12 @@ export interface TokenContext {
   eth?: TokenMarketDataValues
   index?: TokenMarketDataValues
   dpi?: TokenMarketDataValues
+  gmi?: TokenMarketDataValues
   mvi?: TokenMarketDataValues
   bed?: TokenMarketDataValues
-  data?: TokenMarketDataValues
   ethfli?: TokenMarketDataValues
   btcfli?: TokenMarketDataValues
-  ethflip?: TokenMarketDataValues
-  gmi?: TokenMarketDataValues
-  maticflip?: TokenMarketDataValues
-  imaticflip?: TokenMarketDataValues
-  iethflip?: TokenMarketDataValues
-  btcflip?: TokenMarketDataValues
-  ibtcflip?: TokenMarketDataValues
   iceth?: TokenMarketDataValues
-  mnye?: TokenMarketDataValues
   getMarketDataBySymbol: (token: Token) => TokenMarketDataValues | null
   selectLatestMarketData: (...args: any) => number
   selectMarketDataByToken: (token: Token) => number[][]
@@ -74,18 +58,10 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [dpiMarketData, setDpiMarketData] = useState<any>({})
   const [mviMarketData, setMviMarketData] = useState<any>({})
   const [bedMarketData, setBedMarketData] = useState<any>({})
-  const [dataMarketData, setDataMarketData] = useState<any>({})
   const [ethFliMarketData, setEthFliMarketData] = useState<any>({})
   const [btcFliMarketData, setBtcFliMarketData] = useState<any>({})
-  const [ethFlipMarketData, setEthFlipMarketData] = useState<any>({})
-  const [iEthFliPMarketData, setIEthFliPMarketData] = useState<any>({})
-  const [gmiMarketData, setGmiMarketData] = useState<any>({})
-  const [maticFliPMarketData, setMaticFliPMarketData] = useState<any>({})
-  const [iMaticFliPMarketData, setIMaticFliPMarketData] = useState<any>({})
-  const [btcFliPMarketData, setBtcFliPMarketData] = useState<any>({})
-  const [iBtcFliPMarketData, setIBtcFliPMarketData] = useState<any>({})
   const [icEthMarketData, setIcEthMarketData] = useState<any>({})
-  const [mnyeMarketData, setMnyeMarketData] = useState<any>({})
+  const [gmiMarketData, setGmiMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
@@ -94,34 +70,18 @@ export const MarketDataProvider = (props: { children: any }) => {
     switch (token) {
       case DefiPulseIndex:
         return dpiMarketData
-      case Matic2xFLIP:
-        return maticFliPMarketData
       case MetaverseIndex:
         return mviMarketData
       case BedIndex:
         return bedMarketData
-      case DataIndex:
-        return dataMarketData
-      case Ethereum2xFLIP:
-        return ethFlipMarketData
       case Ethereum2xFlexibleLeverageIndex:
         return ethFliMarketData
-      case Bitcoin2xFLIP:
-        return btcFliPMarketData
       case Bitcoin2xFlexibleLeverageIndex:
         return btcFliMarketData
-      case GmiIndex:
-        return gmiMarketData
       case icETHIndex:
         return icEthMarketData
-      case MNYeIndex:
-        return mnyeMarketData
-      case IEthereumFLIP:
-        return iEthFliPMarketData
-      case IMaticFLIP:
-        return iMaticFliPMarketData
-      case IBitcoinFLIP:
-        return iBtcFliPMarketData
+      case GmiIndex:
+        return gmiMarketData
       default:
         return 0
     }
@@ -133,36 +93,20 @@ export const MarketDataProvider = (props: { children: any }) => {
     switch (token) {
       case DefiPulseIndex:
         return dpiMarketData
-      case Matic2xFLIP:
-        return maticFliPMarketData
       case MetaverseIndex:
         return mviMarketData
       case BedIndex:
         return bedMarketData
-      case DataIndex:
-        return dataMarketData
-      case Ethereum2xFLIP:
-        return ethFlipMarketData
       case Ethereum2xFlexibleLeverageIndex:
         return ethFliMarketData
-      case Bitcoin2xFLIP:
-        return btcFliPMarketData
       case Bitcoin2xFlexibleLeverageIndex:
         return btcFliMarketData
-      case GmiIndex:
-        return gmiMarketData
       case icETHIndex:
         return icEthMarketData
       case IndexToken:
         return indexMarketData
-      case MNYeIndex:
-        return mnyeMarketData
-      case IEthereumFLIP:
-        return iEthFliPMarketData
-      case IMaticFLIP:
-        return iMaticFliPMarketData
-      case IBitcoinFLIP:
-        return iBtcFliPMarketData
+      case GmiIndex:
+        return gmiMarketData
       default:
         return null
     }
@@ -175,22 +119,14 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(DefiPulseIndex.coingeckoId),
       fetchHistoricalTokenMarketData(MetaverseIndex.coingeckoId),
       fetchHistoricalTokenMarketData(BedIndex.coingeckoId),
-      fetchHistoricalTokenMarketData(DataIndex.coingeckoId),
       fetchHistoricalTokenMarketData(
         Ethereum2xFlexibleLeverageIndex.coingeckoId
       ),
       fetchHistoricalTokenMarketData(
         Bitcoin2xFlexibleLeverageIndex.coingeckoId
       ),
-      fetchHistoricalTokenMarketData(Ethereum2xFLIP.coingeckoId),
-      fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
-      fetchHistoricalTokenMarketData(IEthereumFLIP.coingeckoId),
-      fetchHistoricalTokenMarketData(Matic2xFLIP.coingeckoId),
-      fetchHistoricalTokenMarketData(IMaticFLIP.coingeckoId),
-      fetchHistoricalTokenMarketData(Bitcoin2xFLIP.coingeckoId),
-      fetchHistoricalTokenMarketData(IBitcoinFLIP.coingeckoId),
       fetchHistoricalTokenMarketData(icETHIndex.coingeckoId),
-      fetchHistoricalTokenMarketData(MNYeIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
     ])
 
     setEthMarketData(marketData[0])
@@ -198,18 +134,10 @@ export const MarketDataProvider = (props: { children: any }) => {
     setDpiMarketData(marketData[2])
     setMviMarketData(marketData[3])
     setBedMarketData(marketData[4])
-    setDataMarketData(marketData[5])
-    setEthFliMarketData(marketData[6])
-    setBtcFliMarketData(marketData[7])
-    setEthFlipMarketData(marketData[8])
-    setGmiMarketData(marketData[9])
-    setIEthFliPMarketData(marketData[10])
-    setMaticFliPMarketData(marketData[11])
-    setIMaticFliPMarketData(marketData[12])
-    setBtcFliPMarketData(marketData[13])
-    setIBtcFliPMarketData(marketData[14])
-    setIcEthMarketData(marketData[15])
-    setMnyeMarketData(marketData[16])
+    setEthFliMarketData(marketData[5])
+    setBtcFliMarketData(marketData[6])
+    setIcEthMarketData(marketData[7])
+    setGmiMarketData(marketData[8])
   }, [])
 
   useEffect(() => {
@@ -225,20 +153,12 @@ export const MarketDataProvider = (props: { children: any }) => {
         eth: ethMarketData,
         index: indexMarketData,
         dpi: dpiMarketData,
+        gmi: gmiMarketData,
         mvi: mviMarketData,
         bed: bedMarketData,
-        data: dataMarketData,
         ethfli: ethFliMarketData,
         btcfli: btcFliMarketData,
-        ethflip: ethFlipMarketData,
-        gmi: gmiMarketData,
-        maticflip: maticFliPMarketData,
-        imaticflip: iMaticFliPMarketData,
-        iethflip: iEthFliPMarketData,
-        btcflip: btcFliPMarketData,
-        ibtcflip: iBtcFliPMarketData,
         iceth: icEthMarketData,
-        mnye: mnyeMarketData,
       }}
     >
       {props.children}
