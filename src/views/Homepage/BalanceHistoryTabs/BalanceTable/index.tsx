@@ -65,12 +65,6 @@ const BalanceTable = () => {
           <Th isNumeric={true} style={{ color: colors.icBlue2 }}>
             Polygon
           </Th>
-          <Th isNumeric={true} style={{ color: colors.icBlue2 }}>
-            Optimism
-          </Th>
-          {/* <Th isNumeric={true} style={{ color: colors.icBlue2 }}>
-            Value
-          </Th> */}
         </Tr>
       </Thead>
       <Tbody>{rows}</Tbody>

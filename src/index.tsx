@@ -49,7 +49,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 window.Buffer = window.Buffer || require('buffer').Buffer
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.polygon, chain.optimism],
+  [chain.mainnet, chain.polygon],
   [alchemyProvider({ apiKey: AlchemyApiKey }), publicProvider()]
 )
 

@@ -38,10 +38,6 @@ const BalanceTableRow = (props: { item: BalanceValues }) => {
       <Td isNumeric={true}>
         <Text>{formatBalance(item.polygonBalance)}</Text>
       </Td>
-      <Td isNumeric={true}>
-        <Text>{formatBalance(item.optimismBalance)}</Text>
-      </Td>
-      {/* <Td isNumeric={true}>{item.price}</Td> */}
     </Tr>
   )
 }
