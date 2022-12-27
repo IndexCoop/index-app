@@ -6,10 +6,8 @@ import {
   DefiPulseIndex,
   ETH,
   flashMintIndexesMainnetRedeem,
-  flashMintIndexesPolygon,
   flashMintIndexesPolygonRedeem,
   indexNamesMainnet,
-  indexNamesOptimism,
   indexNamesPolygon,
   IndexToken,
   mainnetCurrencyTokens,
@@ -57,8 +55,6 @@ export function getIndexes(chainId: number): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
       return indexNamesMainnet
-    case OPTIMISM.chainId:
-      return indexNamesOptimism
     case POLYGON.chainId:
       return indexNamesPolygon
     default:
@@ -102,10 +98,6 @@ export const isNotTradableToken = (
       return (
         indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
       )
-    case OPTIMISM.chainId:
-      return (
-        indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
-      )
     case POLYGON.chainId:
       return (
         indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
@@ -129,10 +121,6 @@ export function isTokenAvailableForFlashMint(
       return (
         flashMintIndexesMainnetRedeem.filter((t) => t.symbol === token.symbol)
           .length > 0
-      )
-    case OPTIMISM.chainId:
-      return (
-        indexNamesOptimism.filter((t) => t.symbol === token.symbol).length > 0
       )
     case POLYGON.chainId:
       return (

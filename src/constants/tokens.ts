@@ -389,21 +389,8 @@ export const indexNamesPolygon = indexNames.filter(
     index.symbol !== GmiIndex.symbol && // temporarily removed due to liquidity concerns
     index.symbol !== IndexToken.symbol // not available on Polygon
 )
-export const indexNamesOptimism = indexNames.filter(
-  (index) => index.optimismAddress
-)
 
 // FlashMint specific lists
-export const flashMintIndexesMainnetMint = indexNames.filter(
-  (index) =>
-    index.address &&
-    index.symbol !== Bitcoin2xFlexibleLeverageIndex.symbol &&
-    index.symbol !== Ethereum2xFlexibleLeverageIndex.symbol &&
-    index.symbol !== IndexToken.symbol &&
-    // DATA and GMI are now deprecated
-    index.symbol !== GmiIndex.symbol
-)
-
 export const flashMintIndexesMainnetRedeem = indexNames.filter(
   (index) =>
     index.address &&

@@ -3,7 +3,6 @@ import {
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygonRedeem,
   indexNamesMainnet,
-  indexNamesOptimism,
   indexNamesPolygon,
 } from 'constants/tokens'
 
@@ -33,14 +32,6 @@ describe('getTokenListByChain()', () => {
     const singleToken = undefined
     const list = getTokenListByChain(chainId, isFlashMint, singleToken)
     expect(list).toEqual(flashMintIndexesMainnetRedeem)
-  })
-
-  test('returns list for optimism', async () => {
-    const chainId = 10
-    const isFlashMint = true
-    const singleToken = undefined
-    const list = getTokenListByChain(chainId, isFlashMint, singleToken)
-    expect(list).toEqual(indexNamesOptimism)
   })
 
   test('returns regular list for swap on polygon', async () => {
