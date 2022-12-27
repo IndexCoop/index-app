@@ -26,6 +26,9 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
 
   const shouldShowFlashMintOption = props.singleToken
     ? isTokenAvailableForFlashMint(props.singleToken, chainId)
+    : // Currently no FlashMintable tokens on Polygon
+    chainId === 137
+    ? false
     : true
 
   const onSelectType = (type: TradeType) => {
