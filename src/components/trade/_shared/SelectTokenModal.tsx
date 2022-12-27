@@ -13,12 +13,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 
-import {
-  Bitcoin2xFLIP,
-  Ethereum2xFLIP,
-  Matic2xFLIP,
-  Token,
-} from 'constants/tokens'
+import { Token } from 'constants/tokens'
 import { displayFromWei } from 'utils'
 
 type SelectTokenModalItem = {
@@ -132,17 +127,6 @@ const TokenItem = ({
     </Flex>
   </Flex>
 )
-
-function isSellOnly(token: Token): boolean {
-  switch (token.symbol) {
-    case Bitcoin2xFLIP.symbol:
-    case Ethereum2xFLIP.symbol:
-    case Matic2xFLIP.symbol:
-      return true
-    default:
-      return false
-  }
-}
 
 export function getSelectTokenListItems(
   tokens: Token[],
