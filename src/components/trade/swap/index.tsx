@@ -22,14 +22,8 @@ import { useSlippage } from 'providers/Slippage'
 import { isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getZeroExRouterAddress } from 'utils/contracts'
-import {
-  getNativeToken,
-  isNotTradableToken,
-  isPerpToken,
-  isTokenMintable,
-} from 'utils/tokens'
+import { getNativeToken, isNotTradableToken, isPerpToken } from 'utils/tokens'
 
-import DeprecatedTokenMessage from '../_shared/DeprecatedTokenMessage'
 import { TradeButtonContainer } from '../_shared/footer'
 import {
   formattedFiat,
@@ -380,7 +374,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   const getButtonDisabledState = () => {
     if (!supportedNetwork) return true
     if (!address) return true
-    if (isBuying && !isTokenMintable(buyToken)) return true
     if (hasFetchingError) return false
     return (
       sellTokenAmount === '0' ||
@@ -444,26 +437,19 @@ const QuickTrade = (props: QuickTradeProps) => {
   ])
 
   const betterQuoteState = getBetterQuoteState()
-  const tokenIsMintable = isTokenMintable(buyToken)
 
   return (
     <Box>
       <Flex direction='column' my='20px'>
-        <DeprecatedTokenMessage
-          isDarkMode={isDarkMode}
-          isMintable={tokenIsMintable}
-        />
         <QuickTradeSelector
           title='From'
           config={{
             isDarkMode,
-            isInputDisabled:
-              isNotTradableToken(props.singleToken, chainId) ||
-              !tokenIsMintable,
+            isInputDisabled: isNotTradableToken(props.singleToken, chainId),
             isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
-            isReadOnly: !tokenIsMintable,
-            showMaxLabel: !tokenIsMintable,
+            isReadOnly: false,
+            showMaxLabel: true,
           }}
           selectedToken={sellToken}
           formattedFiat={sellTokenFiat}

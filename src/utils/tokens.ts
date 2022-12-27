@@ -5,7 +5,6 @@ import {
   BedIndex,
   DataIndex,
   DefiPulseIndex,
-  deprecatedIndices,
   ETH,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygon,
@@ -145,8 +144,4 @@ export function isTokenAvailableForFlashMint(
     default:
       return false
   }
-}
-
-export function isTokenMintable(token: Token): boolean {
-  return deprecatedIndices.filter((t) => t.symbol === token.symbol).length === 0
 }

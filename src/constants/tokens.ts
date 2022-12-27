@@ -532,18 +532,6 @@ export const optimismCurrencyTokens = [USDC]
  * Lists
  */
 
-export const deprecatedIndices = [
-  Bitcoin2xFLIP,
-  DataIndex,
-  Ethereum2xFLIP,
-  GmiIndex,
-  IBitcoinFLIP,
-  IEthereumFLIP,
-  IMaticFLIP,
-  Matic2xFLIP,
-  MNYeIndex,
-]
-
 // Deprecated/rebalanced indicies will not work with FlashMintLeveraged any longer
 export const eligibleLeveragedExchangeIssuanceTokens = [
   // Bitcoin2xFLIP,

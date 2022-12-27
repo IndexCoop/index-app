@@ -20,7 +20,6 @@ import {
   Token,
 } from 'constants/tokens'
 import { displayFromWei } from 'utils'
-import { isTokenMintable } from 'utils/tokens'
 
 type SelectTokenModalItem = {
   symbol: string
@@ -151,12 +150,7 @@ export function getSelectTokenListItems(
   chainId: number | undefined
 ): SelectTokenModalItem[] {
   const tokenList: SelectTokenModalItem[] = tokens.map((token, index) => {
-    const isMintable = isTokenMintable(token)
-    const extraTitle = !isMintable
-      ? isSellOnly(token)
-        ? 'Sell only.'
-        : 'Sell and redeem only.'
-      : undefined
+    const extraTitle = undefined
     return {
       symbol: token.symbol,
       logo: token.image,
