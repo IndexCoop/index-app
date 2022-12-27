@@ -3,12 +3,7 @@ import { useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SwapData, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
-import {
-  Bitcoin2xFLIP,
-  Ethereum2xFLIP,
-  Matic2xFLIP,
-  Token,
-} from 'constants/tokens'
+import { Token } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { useBalanceData } from 'providers/Balances'
 import { toWei } from 'utils'
@@ -21,7 +16,6 @@ import {
 } from 'utils/api/zeroExUtils'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { getAddressForToken } from 'utils/tokens'
-import BTC2xFLI from 'views/productpages/BTC2xFLI'
 
 import { useWallet } from '../useWallet'
 
@@ -373,27 +367,7 @@ export const useBestQuote = () => {
       const hasBetterQuote =
         isFlashMintLeveragedBestQuote || isFlashMintZeroExBestQuote
 
-      const is2xFLI = (): boolean => {
-        if (
-          sellToken.symbol === Bitcoin2xFLIP.symbol ||
-          buyToken.symbol === Bitcoin2xFLIP.symbol
-        )
-          return true
-        if (
-          sellToken.symbol === Ethereum2xFLIP.symbol ||
-          buyToken.symbol === Ethereum2xFLIP.symbol
-        )
-          return true
-        if (
-          sellToken.symbol === Matic2xFLIP.symbol ||
-          buyToken.symbol === Matic2xFLIP.symbol
-        )
-          return true
-        return false
-      }
-
       const getSavings = (): number => {
-        if (is2xFLI()) return 0
         if (!zeroExQuote) return 0
         if (isFlashMintLeveragedBestQuote && exchangeIssuanceLeveragedQuote) {
           return (

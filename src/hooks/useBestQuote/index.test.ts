@@ -5,13 +5,8 @@ import {
   DAI,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
-  Ethereum2xFLIP,
   icETHIndex,
-  IEthereumFLIP,
-  IMaticFLIP,
   IndexToken,
-  MATIC,
-  MetaverseIndex,
   STETH,
   USDC,
   WETH,
@@ -229,46 +224,6 @@ describe('isEligibleTradePair()', () => {
     expect(isEligibleDai).toEqual(false)
     const isEligibleUSDC = isEligibleTradePair(inputToken, USDC, isIssuance)
     expect(isEligibleUSDC).toEqual(false)
-  })
-
-  test('should return correct eligible status for leveraged exchange issuance - issuing', async () => {
-    const inputToken = MATIC
-    const outputToken = IEthereumFLIP
-    const isIssuance = true
-    const isEligible = isEligibleTradePair(inputToken, outputToken, isIssuance)
-    expect(isEligible).toEqual(true)
-    const isEligibleImatic = isEligibleTradePair(
-      inputToken,
-      IMaticFLIP,
-      isIssuance
-    )
-    expect(isEligibleImatic).toEqual(true)
-    const isNotEligible = isEligibleTradePair(
-      inputToken,
-      MetaverseIndex,
-      isIssuance
-    )
-    expect(isNotEligible).toEqual(false)
-  })
-
-  test('should return correct eligible status for leveraged exchange issuance - redeeming', async () => {
-    const inputToken = IEthereumFLIP
-    const outputToken = MATIC
-    const isIssuance = false
-    const isEligible = isEligibleTradePair(inputToken, outputToken, isIssuance)
-    expect(isEligible).toEqual(true)
-    const isEligibleImatic = isEligibleTradePair(
-      IMaticFLIP,
-      outputToken,
-      isIssuance
-    )
-    expect(isEligibleImatic).toEqual(true)
-    const isNotEligible = isEligibleTradePair(
-      MetaverseIndex,
-      outputToken,
-      isIssuance
-    )
-    expect(isNotEligible).toEqual(false)
   })
 })
 

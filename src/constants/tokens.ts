@@ -1,19 +1,12 @@
 import bedBorderLogo from 'assets/bed-border.png'
-import btcflipLogo from 'assets/btcflip.svg'
-import dataLogo from 'assets/data-logo.png'
 import fixedDaiLogo from 'assets/fixed_dai_logo.png'
 import fixedUsdcLogo from 'assets/fixed_usdc_logo.png'
 import gmiLogo from 'assets/gmilogo.png'
-import ibtcflipLogo from 'assets/ibtcflip.svg'
 import icethLogo from 'assets/icethlogo.png'
-import iethflipLogo from 'assets/iethfliplogo.svg'
-import imaticflipLogo from 'assets/imaticflilogo.svg'
 import indexLogo from 'assets/index-token.png'
-import maticflipLogo from 'assets/maticflilogo.svg'
-import mnyeLogo from 'assets/mnyeLogo.png'
 import { TokenContextKeys } from 'providers/MarketData'
 
-import { MAINNET, OPTIMISM, POLYGON } from './chains'
+import { MAINNET } from './chains'
 
 export const dpiTokenImage =
   'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg'
@@ -240,28 +233,6 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
-export const Ethereum2xFLIP: Token = {
-  name: 'Ethereum 2x FLI Polygon',
-  symbol: 'ETH2X-FLI-P',
-  address: undefined,
-  polygonAddress: '0x3Ad707dA309f3845cd602059901E39C4dcd66473',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'ethflip',
-  image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
-  coingeckoId: 'index-coop-eth-2x-flexible-leverage-index',
-  tokensetsId: 'eth2x-fli-p',
-  tokenContextKey: 'ethflip',
-  fees: {
-    streamingFee: '1.95%',
-    mintFee: '0.1%',
-    redeemFee: '0.1%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.leverage],
-  defaultChain: POLYGON.chainId,
-}
-
 export const MetaverseIndex: Token = {
   name: 'Metaverse Index',
   symbol: 'MVI',
@@ -322,26 +293,6 @@ export const BedIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
-export const DataIndex: Token = {
-  name: 'Web3 Data Economy Index',
-  symbol: 'DATA',
-  address: '0x33d63Ba1E57E54779F7dDAeaA7109349344cf5F1',
-  polygonAddress: '0x1D607Faa0A51518a7728580C238d912747e71F7a',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'data',
-  image: dataLogo,
-  coingeckoId: 'data-economy-index',
-  tokensetsId: 'data',
-  tokenContextKey: 'data',
-  fees: {
-    streamingFee: '0.95%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
-}
-
 export const GmiIndex: Token = {
   name: 'Bankless DeFi Innovation Index',
   symbol: 'GMI',
@@ -360,116 +311,6 @@ export const GmiIndex: Token = {
   isDangerous: true,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
-}
-
-export const Matic2xFLIP: Token = {
-  name: 'MATIC 2x Flexible Leverage Index',
-  symbol: 'MATIC2x-FLI-P',
-  address: undefined,
-  polygonAddress: '0xf287D97B6345bad3D88856b26Fb7c0ab3F2C7976',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'matic2x',
-  image: maticflipLogo,
-  coingeckoId: 'index-coop-matic-2x-flexible-leverage-index',
-  tokensetsId: 'matic2x-fli-p',
-  tokenContextKey: 'maticflip',
-  fees: {
-    streamingFee: '1.95%',
-    mintFee: '0.1%',
-    redeemFee: '0.1%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.leverage],
-  defaultChain: POLYGON.chainId,
-}
-
-export const IMaticFLIP: Token = {
-  name: 'Inverse MATIC Flexible Leverage Index',
-  symbol: 'iMATIC-FLI-P',
-  address: undefined,
-  polygonAddress: '0x340f412860dA7b7823df372a2b59Ff78b7ae6abc',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'imatic',
-  image: imaticflipLogo,
-  coingeckoId: 'index-coop-inverse-matic-flexible-leverage-index',
-  tokensetsId: 'imatic-fli-p',
-  tokenContextKey: 'imaticflip',
-  fees: {
-    streamingFee: '1.95%',
-    mintFee: '0.1%',
-    redeemFee: '0.1%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.leverage],
-  defaultChain: POLYGON.chainId,
-}
-
-export const IEthereumFLIP: Token = {
-  name: 'Inverse ETH Flexible Leverage Index',
-  symbol: 'iETH-FLI-P',
-  address: undefined,
-  polygonAddress: '0x4f025829C4B13dF652f38Abd2AB901185fF1e609',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'ieth',
-  image: iethflipLogo,
-  coingeckoId: 'index-coop-inverse-eth-flexible-leverage-index',
-  tokensetsId: 'ieth-fli-p',
-  tokenContextKey: 'iethflip',
-  fees: {
-    streamingFee: '1.95%',
-    mintFee: '0.1%',
-    redeemFee: '0.1%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.leverage],
-  defaultChain: POLYGON.chainId,
-}
-
-export const Bitcoin2xFLIP: Token = {
-  name: 'BTC 2x Flexible Leverage Index',
-  symbol: 'BTC2x-FLI-P',
-  address: undefined,
-  polygonAddress: '0xd6ca869a4ec9ed2c7e618062cdc45306d8dbbc14',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'btc2x',
-  image: btcflipLogo,
-  coingeckoId: 'btc-2x-flexible-leverage-index-polygon',
-  tokensetsId: 'btc2x-fli-p',
-  tokenContextKey: 'btcflip',
-  fees: {
-    streamingFee: '1.95%',
-    mintFee: '0.1%',
-    redeemFee: '0.1%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.leverage],
-  defaultChain: POLYGON.chainId,
-}
-
-export const IBitcoinFLIP: Token = {
-  name: 'Inverse BTC Flexible Leverage Index',
-  symbol: 'iBTC-FLI-P',
-  address: undefined,
-  polygonAddress: '0x130cE4E4F76c2265f94a961D70618562de0bb8d2',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'ibtc',
-  image: ibtcflipLogo,
-  coingeckoId: 'inverse-btc-flexible-leverage-index',
-  tokensetsId: 'ibtc-fli-p',
-  tokenContextKey: 'ibtcflip',
-  fees: {
-    streamingFee: '1.95%',
-    mintFee: '0.1%',
-    redeemFee: '0.1%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.leverage],
-  defaultChain: POLYGON.chainId,
 }
 
 export const icETHIndex: Token = {
@@ -494,27 +335,6 @@ export const icETHIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
-export const MNYeIndex: Token = {
-  name: 'Market Neutral Yield ETH Index',
-  symbol: 'MNYe',
-  address: undefined,
-  polygonAddress: undefined,
-  optimismAddress: '0x0Be27c140f9Bdad3474bEaFf0A413EC7e19e9B93',
-  decimals: 18,
-  url: 'mnye',
-  image: mnyeLogo,
-  coingeckoId: 'market-neutral-yield-eth',
-  tokensetsId: 'mnye',
-  tokenContextKey: 'mnye',
-  fees: {
-    streamingFee: '0.95%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.yield],
-  defaultChain: OPTIMISM.chainId,
-  isPerp: true,
-}
-
 /**
  * Currencies
  */
@@ -532,28 +352,8 @@ export const optimismCurrencyTokens = [USDC]
  * Lists
  */
 
-export const deprecatedIndices = [
-  Bitcoin2xFLIP,
-  DataIndex,
-  Ethereum2xFLIP,
-  GmiIndex,
-  IBitcoinFLIP,
-  IEthereumFLIP,
-  IMaticFLIP,
-  Matic2xFLIP,
-  MNYeIndex,
-]
-
 // Deprecated/rebalanced indicies will not work with FlashMintLeveraged any longer
-export const eligibleLeveragedExchangeIssuanceTokens = [
-  // Bitcoin2xFLIP,
-  // Ethereum2xFLIP,
-  IBitcoinFLIP,
-  icETHIndex,
-  IEthereumFLIP,
-  IMaticFLIP,
-  // Matic2xFLIP,
-]
+export const eligibleLeveragedExchangeIssuanceTokens = [icETHIndex]
 
 const isDevEnv =
   process.env.REACT_APP_VERCEL_ENV === 'development' ||
@@ -565,38 +365,20 @@ const indexNames = isDevEnv
       icETHIndex,
       FIXED_DAI,
       FIXED_USDC,
-      MNYeIndex,
       DefiPulseIndex,
       MetaverseIndex,
-      GmiIndex,
-      IEthereumFLIP,
-      IBitcoinFLIP,
-      IMaticFLIP,
       Ethereum2xFlexibleLeverageIndex,
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
-      DataIndex,
       IndexToken,
-      Ethereum2xFLIP,
-      Bitcoin2xFLIP,
-      Matic2xFLIP,
     ]
   : [
       icETHIndex,
-      MNYeIndex,
       DefiPulseIndex,
       MetaverseIndex,
-      GmiIndex,
-      Ethereum2xFLIP,
-      IEthereumFLIP,
-      Bitcoin2xFLIP,
-      IBitcoinFLIP,
-      Matic2xFLIP,
-      IMaticFLIP,
       Ethereum2xFlexibleLeverageIndex,
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
-      DataIndex,
       IndexToken,
     ]
 
@@ -607,22 +389,8 @@ export const indexNamesPolygon = indexNames.filter(
     index.symbol !== GmiIndex.symbol && // temporarily removed due to liquidity concerns
     index.symbol !== IndexToken.symbol // not available on Polygon
 )
-export const indexNamesOptimism = indexNames.filter(
-  (index) => index.optimismAddress
-)
 
 // FlashMint specific lists
-export const flashMintIndexesMainnetMint = indexNames.filter(
-  (index) =>
-    index.address &&
-    index.symbol !== Bitcoin2xFlexibleLeverageIndex.symbol &&
-    index.symbol !== Ethereum2xFlexibleLeverageIndex.symbol &&
-    index.symbol !== IndexToken.symbol &&
-    // DATA and GMI are now deprecated
-    index.symbol !== DataIndex.symbol &&
-    index.symbol !== GmiIndex.symbol
-)
-
 export const flashMintIndexesMainnetRedeem = indexNames.filter(
   (index) =>
     index.address &&
@@ -634,7 +402,6 @@ export const flashMintIndexesMainnetRedeem = indexNames.filter(
 export const flashMintIndexesPolygon = indexNames.filter(
   (index) =>
     index.polygonAddress &&
-    index.symbol !== DataIndex.symbol &&
     index.symbol !== DefiPulseIndex.symbol &&
     index.symbol !== GmiIndex.symbol &&
     index.symbol !== IndexToken.symbol &&
@@ -644,15 +411,10 @@ export const flashMintIndexesPolygon = indexNames.filter(
 export const flashMintIndexesPolygonRedeem = indexNames.filter(
   (index) =>
     index.polygonAddress &&
-    index.symbol !== DataIndex.symbol &&
     index.symbol !== DefiPulseIndex.symbol &&
     index.symbol !== GmiIndex.symbol &&
     index.symbol !== IndexToken.symbol &&
     index.symbol !== MetaverseIndex.symbol
-  // Remove from redeeming as contracts don't work with 2xFLI's any longer
-  // index.symbol !== Ethereum2xFLIP.symbol &&
-  // index.symbol !== Matic2xFLIP.symbol &&
-  // index.symbol !== BTC2xFlexibleLeverageIndexPolygon.symbol
 )
 
 export default indexNames

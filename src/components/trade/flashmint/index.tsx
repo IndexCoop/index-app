@@ -17,11 +17,7 @@ import { useSlippage } from 'providers/Slippage'
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getContractForQuote, getQuoteAmount } from 'utils/flashMint/quotes'
-import {
-  getNativeToken,
-  isNotTradableToken,
-  isTokenMintable,
-} from 'utils/tokens'
+import { getNativeToken, isNotTradableToken } from 'utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
@@ -77,7 +73,6 @@ const FlashMint = (props: QuickTradeProps) => {
     BigNumber.from(0)
   )
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
-  const [isMintable, setIsMintable] = useState(true)
   const [isMinting, setIsMinting] = useState(true)
   const [transactionReview, setTransactionReview] =
     useState<TransactionReview | null>(null)
@@ -123,11 +118,6 @@ const FlashMint = (props: QuickTradeProps) => {
   }, [chainId, quoteResult])
 
   useEffect(() => {
-    const isMintable = isTokenMintable(indexToken)
-    setIsMintable(isMintable)
-  }, [chainId, indexToken])
-
-  useEffect(() => {
     const indexTokenAmountWei = toWei(indexTokenAmount, indexToken.decimals)
     const slippage = getSlippage()
     fetchQuote(
@@ -168,7 +158,6 @@ const FlashMint = (props: QuickTradeProps) => {
   const getTradeButtonDisabledState = () => {
     if (!isSupportedNetwork) return true
     if (!address) return true
-    if (isMinting && !isTokenMintable(indexToken)) return true
     return (
       indexTokenAmount === '0' ||
       (isMinting && hasInsufficientFundsInputOutputToken) ||
@@ -340,7 +329,7 @@ const FlashMint = (props: QuickTradeProps) => {
         inputOutputTokenBalanceFormatted={inputOutputTokenBalanceFormatted}
         inputOutputTokenFiatFormatted={inputOutputTokenFiatFormatted}
         isIssue={isMinting}
-        isMintable={isMintable}
+        isMintable={true}
         isNarrow={isNarrow}
         onChangeBuyTokenAmount={onChangeIndexTokenAmount}
         onSelectIndexToken={() => {

@@ -3,15 +3,11 @@ import { GMIIndex } from '@indexcoop/flash-mint-sdk'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   BedIndex,
-  DataIndex,
   DefiPulseIndex,
-  deprecatedIndices,
   ETH,
   flashMintIndexesMainnetRedeem,
-  flashMintIndexesPolygon,
   flashMintIndexesPolygonRedeem,
   indexNamesMainnet,
-  indexNamesOptimism,
   indexNamesPolygon,
   IndexToken,
   mainnetCurrencyTokens,
@@ -59,8 +55,6 @@ export function getIndexes(chainId: number): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
       return indexNamesMainnet
-    case OPTIMISM.chainId:
-      return indexNamesOptimism
     case POLYGON.chainId:
       return indexNamesPolygon
     default:
@@ -83,7 +77,6 @@ export function getNativeToken(chainId: number | undefined): Token | null {
 
 export function isLeveragedToken(token: Token): boolean {
   if (token === BedIndex) return false
-  if (token === DataIndex) return false
   if (token === DefiPulseIndex) return false
   if (token.symbol === GMIIndex.symbol) return false
   return true
@@ -104,10 +97,6 @@ export const isNotTradableToken = (
     case MAINNET.chainId:
       return (
         indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
-      )
-    case OPTIMISM.chainId:
-      return (
-        indexNamesOptimism.filter((t) => t.symbol === token.symbol).length === 0
       )
     case POLYGON.chainId:
       return (
@@ -133,10 +122,6 @@ export function isTokenAvailableForFlashMint(
         flashMintIndexesMainnetRedeem.filter((t) => t.symbol === token.symbol)
           .length > 0
       )
-    case OPTIMISM.chainId:
-      return (
-        indexNamesOptimism.filter((t) => t.symbol === token.symbol).length > 0
-      )
     case POLYGON.chainId:
       return (
         flashMintIndexesPolygonRedeem.filter((t) => t.symbol === token.symbol)
@@ -145,8 +130,4 @@ export function isTokenAvailableForFlashMint(
     default:
       return false
   }
-}
-
-export function isTokenMintable(token: Token): boolean {
-  return deprecatedIndices.filter((t) => t.symbol === token.symbol).length === 0
 }

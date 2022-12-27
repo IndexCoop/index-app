@@ -2,10 +2,8 @@ import { colors, useColorStyles } from 'styles/colors'
 
 import { Flex, Image, Link, Text } from '@chakra-ui/react'
 
-import indexLogoBlack from 'assets/index-logo-black.png'
 import indexLogoFullBlack from 'assets/index-logo-full-black.png'
 import indexLogoFullWhite from 'assets/index-logo-full-white.png'
-import indexLogoWhite from 'assets/index-logo-white.png'
 
 const Footer = () => {
   const { isDarkMode, styles } = useColorStyles()
@@ -13,42 +11,73 @@ const Footer = () => {
     <Flex
       backgroundColor={styles.background}
       w='100vw'
-      m={['80px 16px 32px 0', null, '96px 60px 32px 0', '96px 80px 32px 0']}
+      m={[
+        '80px 16px 32px auto',
+        '96px 60px 32px auto',
+        '96px 60px 32px auto',
+        '96px 80px 32px auto',
+      ]}
       flexDir={'column'}
       alignItems='center'
     >
-      <Flex align='center' w={['390px', '500px', '820px', '1024px']} pb='32px'>
-        <Logo isDarkMode={isDarkMode} />
+      <Flex
+        w={['100%', '100%', '100%', '1024px']}
+        p={['32px', '32px', '32px', 0]}
+      >
         <Flex direction={['column', 'column', 'column', 'row']}>
-          <Link
-            color={colors.icGray2}
-            href='https://immunefi.com/bounty/indexcoop/'
-            isExternal
+          <Flex direction={['column', 'column', 'column', 'column']}>
+            <Link
+              color={colors.icGray2}
+              href='https://immunefi.com/bounty/indexcoop/'
+              isExternal
+            >
+              <Text color={colors.icGray2} mr='4'>
+                Bug Bounty
+              </Text>
+            </Link>
+            <Link
+              color={colors.icGray2}
+              href='https://legacyproducts.indexcoop.com/'
+              isExternal
+            >
+              <Text color={colors.icGray2} mr='4'>
+                Legacy Products
+              </Text>
+            </Link>
+            <Link color={colors.icGray2} href='/liquidity-mining'>
+              <Text color={colors.icGray2} mr='4'>
+                Liquidity Mining (discontinued)
+              </Text>
+            </Link>
+          </Flex>
+          <Flex
+            direction={['column', 'column', 'column', 'column']}
+            ml={[0, 0, 0, 20]}
           >
-            <Text color={colors.icGray2} mr='4'>
-              Bug Bounty
-            </Text>
-          </Link>
-          <Link color={colors.icGray2} href='/liquidity-mining'>
-            <Text color={colors.icGray2} mr='4'>
-              Liquidity Mining (discontinued)
-            </Text>
-          </Link>
-          <Link href='https://indexcoop.com/legal/privacy-policy'>
-            <Text color={styles.text} mr='4'>
-              Privacy Policy
-            </Text>
-          </Link>
-          <Link href='https://indexcoop.com/legal/terms-of-service'>
-            <Text color={styles.text} mr='4'>
-              Terms of Service
-            </Text>
-          </Link>
-          <Link href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'>
-            <Text color={styles.text} mr='4'>
-              Tokens Restricted for US Persons
-            </Text>
-          </Link>
+            <Link href='https://indexcoop.com/legal/privacy-policy'>
+              <Text color={styles.text} mr='4'>
+                Privacy Policy
+              </Text>
+            </Link>
+            <Link href='https://indexcoop.com/legal/terms-of-service'>
+              <Text color={styles.text} mr='4'>
+                Terms of Service
+              </Text>
+            </Link>
+            <Link href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'>
+              <Text color={styles.text} mr='4'>
+                Tokens Restricted for US Persons
+              </Text>
+            </Link>
+          </Flex>
+        </Flex>
+      </Flex>
+      <Flex
+        align='left'
+        m={['20px 16px 32px 0', null, '20px 60px 32px 0', '20px 80px 32px 0']}
+      >
+        <Flex w={['390px', '500px', '820px', '1024px']} p={'16px 32px 0'}>
+          <Logo isDarkMode={isDarkMode} />
         </Flex>
       </Flex>
       <Text
@@ -117,16 +146,8 @@ const Footer = () => {
 
 const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
   const fullLogo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
-  const smallLogo = isDarkMode ? indexLogoWhite : indexLogoBlack
-  const logo = window.innerWidth > 1350 ? fullLogo : smallLogo
   return (
-    <Image
-      src={logo}
-      alt='Index Coop Logo'
-      minWidth='24px'
-      height='24px'
-      mr={['4', '8']}
-    />
+    <Image src={fullLogo} alt='Index Coop Logo' minWidth='24px' height='24px' />
   )
 }
 

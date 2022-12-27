@@ -7,11 +7,9 @@ import {
   FIXED_DAI,
   FIXED_USDC,
   flashMintIndexesMainnetRedeem,
-  flashMintIndexesPolygon,
   flashMintIndexesPolygonRedeem,
   icETHIndex,
   indexNamesMainnet,
-  indexNamesOptimism,
   indexNamesPolygon,
   STETH,
   Token,
@@ -186,7 +184,6 @@ export const getTokenListByChain = (
   if (chainId === POLYGON.chainId) {
     return isFlashMint ? flashMintIndexesPolygonRedeem : indexNamesPolygon
   }
-  if (chainId === OPTIMISM.chainId) return indexNamesOptimism
   return isFlashMint ? flashMintIndexesMainnetRedeem : indexNamesMainnet
 }
 

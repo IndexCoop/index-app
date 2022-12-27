@@ -9,10 +9,7 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   FIXED_DAI,
   FIXED_USDC,
-  IBitcoinFLIP,
   icETHIndex,
-  IEthereumFLIP,
-  IMaticFLIP,
   IndexToken,
   Token,
 } from 'constants/tokens'
@@ -27,24 +24,6 @@ export function isEligibleTradePairZeroEx(
   inputToken: Token,
   outputToken: Token
 ): boolean {
-  if (
-    inputToken.symbol === IBitcoinFLIP.symbol ||
-    outputToken.symbol === IBitcoinFLIP.symbol
-  ) {
-    return false
-  }
-  if (
-    inputToken.symbol === IEthereumFLIP.symbol ||
-    outputToken.symbol === IEthereumFLIP.symbol
-  ) {
-    return false
-  }
-  if (
-    inputToken.symbol === IMaticFLIP.symbol ||
-    outputToken.symbol === IMaticFLIP.symbol
-  ) {
-    return false
-  }
   if (
     inputToken.symbol === FIXED_DAI.symbol ||
     outputToken.symbol === FIXED_DAI.symbol
