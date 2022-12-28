@@ -233,6 +233,28 @@ export const icETHIndex: Token = {
 }
 
 /**
+ * Other - IndexCoop
+ */
+
+export const WSETH2: Token = {
+  name: 'wsETH2',
+  symbol: 'wsETH2',
+  // FIXME:
+  image: 'https://etherscan.io/images/main/empty-token.png',
+  address: '0x5dA21D9e63F1EA13D34e48B7223bcc97e3ecD687',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  // FIXME:
+  coingeckoId: '',
+  tokensetsId: '',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+/**
  * Other
  */
 
@@ -391,6 +413,7 @@ const indexNames = isDevEnv
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
       IndexToken,
+      WSETH2,
     ]
   : [
       icETHIndex,
