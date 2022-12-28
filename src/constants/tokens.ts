@@ -27,7 +27,6 @@ export interface Token {
   url: string
   image: string
   coingeckoId: string
-  tokensetsId: string
   tokenContextKey?: TokenContextKeys
   fees:
     | { streamingFee: string; mintFee?: string; redeemFee?: string }
@@ -51,7 +50,6 @@ export const FIXED_DAI: Token = {
   decimals: 18,
   url: '',
   coingeckoId: '',
-  tokensetsId: '',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -67,7 +65,6 @@ export const FIXED_USDC: Token = {
   decimals: 18,
   url: '',
   coingeckoId: '',
-  tokensetsId: '',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -83,7 +80,6 @@ export const DefiPulseIndex: Token = {
   decimals: 18,
   url: 'dpi',
   coingeckoId: 'defipulse-index',
-  tokensetsId: 'dpi',
   tokenContextKey: 'dpi',
   fees: {
     streamingFee: '0.95%',
@@ -103,7 +99,6 @@ export const IndexToken: Token = {
   url: 'index',
   image: indexLogo,
   coingeckoId: 'index-cooperative',
-  tokensetsId: 'index',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -120,7 +115,6 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   url: 'ethfli',
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
   coingeckoId: 'eth-2x-flexible-leverage-index',
-  tokensetsId: 'ethfli',
   tokenContextKey: 'ethfli',
   fees: {
     streamingFee: '1.95%',
@@ -140,7 +134,6 @@ export const MetaverseIndex: Token = {
   url: 'mvi',
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
   coingeckoId: 'metaverse-index',
-  tokensetsId: 'mvi',
   tokenContextKey: 'mvi',
   fees: {
     streamingFee: '0.95%',
@@ -160,7 +153,6 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
   url: 'btcfli',
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
   coingeckoId: 'btc-2x-flexible-leverage-index',
-  tokensetsId: 'btcfli',
   tokenContextKey: 'btcfli',
   fees: {
     streamingFee: '1.95%',
@@ -180,7 +172,6 @@ export const BedIndex: Token = {
   url: 'bed',
   image: bedBorderLogo,
   coingeckoId: 'bankless-bed-index',
-  tokensetsId: 'bed',
   tokenContextKey: 'bed',
   fees: {
     streamingFee: '0.25%',
@@ -200,7 +191,6 @@ export const GmiIndex: Token = {
   url: 'gmi',
   image: gmiLogo,
   coingeckoId: 'bankless-defi-innovation-index',
-  tokensetsId: 'gmi',
   tokenContextKey: 'gmi',
   fees: {
     streamingFee: '1.95%',
@@ -220,7 +210,6 @@ export const icETHIndex: Token = {
   url: 'iceth',
   image: icethLogo,
   coingeckoId: 'interest-compounding-eth-index',
-  tokensetsId: 'iceth',
   tokenContextKey: 'iceth',
   fees: {
     streamingFee: '0.75%',
@@ -248,7 +237,6 @@ export const WSETH2: Token = {
   url: '',
   // FIXME:
   coingeckoId: '',
-  tokensetsId: '',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -269,7 +257,6 @@ export const DAI: Token = {
   decimals: 18,
   url: '',
   coingeckoId: 'dai',
-  tokensetsId: 'dai',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -286,7 +273,6 @@ export const ETH: Token = {
   decimals: 18,
   url: '',
   coingeckoId: 'ethereum',
-  tokensetsId: 'eth',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -303,7 +289,6 @@ export const MATIC: Token = {
   decimals: 18,
   url: '',
   coingeckoId: 'matic-network',
-  tokensetsId: 'matic',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -320,7 +305,6 @@ export const SETH2: Token = {
   decimals: 18,
   url: '',
   coingeckoId: 'seth2',
-  tokensetsId: '',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -337,7 +321,6 @@ export const STETH: Token = {
   decimals: 18,
   url: '',
   coingeckoId: 'staked-ether',
-  tokensetsId: 'staked-ether',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -354,7 +337,6 @@ export const USDC: Token = {
   decimals: 6,
   url: '',
   coingeckoId: 'usd-coin',
-  tokensetsId: 'usdc',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -371,7 +353,6 @@ export const WETH: Token = {
   decimals: 18,
   url: '',
   coingeckoId: 'weth',
-  tokensetsId: 'weth',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
