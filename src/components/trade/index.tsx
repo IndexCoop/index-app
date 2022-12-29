@@ -20,7 +20,9 @@ enum TradeType {
 const QuickTradeContainer = (props: QuickTradeProps) => {
   const { chainId } = useNetwork()
   const { styles } = useColorStyles()
-  const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
+  const [selectedType, setSelectedType] = useState<TradeType>(
+    TradeType.flashMint
+  )
 
   const paddingX = props.isNarrowVersion ? '16px' : '40px'
 
@@ -57,9 +59,6 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
           shouldShowFlashMintOption={shouldShowFlashMintOption}
         />
         {selectedType === TradeType.flashMint && <FlashMint {...props} />}
-        {selectedType === TradeType.swap && (
-          <QuickTrade {...props} switchTabs={onSwitchTabs} />
-        )}
       </Flex>
     </SlippageProvider>
   )
@@ -111,11 +110,6 @@ const Navigation = (props: NavigationProps) => {
   return (
     <Flex align='center' justify='space-between'>
       <Flex>
-        <NavigationButton
-          isSelected={swapIsSelected}
-          onClick={() => onSelect(TradeType.swap)}
-          title='Swap'
-        />
         {props.shouldShowFlashMintOption && (
           <NavigationButton
             isSelected={flashMintIsSelected}

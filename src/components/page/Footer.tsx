@@ -29,11 +29,6 @@ const Footer = () => {
               Bug Bounty
             </Text>
           </Link>
-          <Link color={colors.icGray2} href='/liquidity-mining'>
-            <Text color={colors.icGray2} mr='4'>
-              Liquidity Mining (discontinued)
-            </Text>
-          </Link>
           <Link href='https://indexcoop.com/legal/privacy-policy'>
             <Text color={styles.text} mr='4'>
               Privacy Policy

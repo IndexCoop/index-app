@@ -60,8 +60,6 @@ const NavContent = () => {
   return (
     <Flex align='center' flexDirection={['column', 'column', 'column', 'row']}>
       <NavLink href='/' linkText='Trade' textColor={textColor} />
-      <NavLink href='/products' linkText='Products' textColor={textColor} />
-      <NavLink href='/index' linkText='$INDEX' textColor={textColor} />
       <IconButton
         aria-label='Color Theme Switch'
         onClick={toggleColorMode}
