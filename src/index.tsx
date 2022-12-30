@@ -34,24 +34,6 @@ import { BalanceProvider } from 'providers/Balances'
 import { MarketDataProvider } from 'providers/MarketData'
 import { ProtectionProvider } from 'providers/Protection'
 import Homepage from 'views/Homepage'
-import LiquidityMining from 'views/LiquidityMining'
-import BED from 'views/productpages/BED'
-import BTC2xFLI from 'views/productpages/BTC2xFLI'
-import BTC2xFLIP from 'views/productpages/BTC2xFLIP'
-import DATA from 'views/productpages/DATA'
-import DPI from 'views/productpages/DPI'
-import ETH2xFLI from 'views/productpages/ETH2xFLI'
-import ETH2xFLIP from 'views/productpages/ETH2xFLIP'
-import GMI from 'views/productpages/GMI'
-import IBTCFLIP from 'views/productpages/IBTCFLIP'
-import ICETH from 'views/productpages/ICETH'
-import IETHFLIP from 'views/productpages/IETHFLIP'
-import IMATICFLIP from 'views/productpages/IMATICFLIP'
-import INDEX from 'views/productpages/INDEX'
-import MATIC2xFLIP from 'views/productpages/MATIC2xFLIP'
-import MNYe from 'views/productpages/MNYe'
-import MVI from 'views/productpages/MVI'
-import Products from 'views/Products'
 
 import '@rainbow-me/rainbowkit/styles.css'
 
@@ -146,24 +128,6 @@ root.render(
         <Routes>
           <Route path='/' element={<App />}>
             <Route index element={<Homepage />} />
-            <Route path='liquidity-mining' element={<LiquidityMining />} />
-            <Route path='products' element={<Products />} />
-            <Route path='dpi' element={<DPI />} />
-            <Route path='mvi' element={<MVI />} />
-            <Route path='ethfli' element={<ETH2xFLI />} />
-            <Route path='ethflip' element={<ETH2xFLIP />} />
-            <Route path='btcfli' element={<BTC2xFLI />} />
-            <Route path='bed' element={<BED />} />
-            <Route path='data' element={<DATA />} />
-            <Route path='gmi' element={<GMI />} />
-            <Route path='ieth' element={<IETHFLIP />} />
-            <Route path='matic2x' element={<MATIC2xFLIP />} />
-            <Route path='imatic' element={<IMATICFLIP />} />
-            <Route path='btc2x' element={<BTC2xFLIP />} />
-            <Route path='ibtc' element={<IBTCFLIP />} />
-            <Route path='iceth' element={<ICETH />} />
-            <Route path='index' element={<INDEX />} />
-            <Route path='mnye' element={<MNYe />} />
           </Route>
         </Routes>
       </Providers>

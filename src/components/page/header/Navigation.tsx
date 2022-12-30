@@ -18,7 +18,7 @@ const DesktopMenu = () => {
       align='center'
       display={['none', 'none', 'none', 'flex']}
       flexDirection={'row'}
-      justifyContent={'space-between'}
+      justifyContent={'flex-end'}
       w='100%'
     >
       <NavContent />
