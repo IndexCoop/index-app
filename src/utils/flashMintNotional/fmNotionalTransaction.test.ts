@@ -10,7 +10,7 @@ import { getFlashMintNotionalTransaction } from './fmNotionalTransaction'
 const provider = LocalhostProvider
 const signer = SignerAccount0
 
-describe('getFlashMintZeroExTransaction()', () => {
+describe('getFlashMintNotionalTransaction()', () => {
   beforeEach((): void => {
     jest.setTimeout(1000000)
   })

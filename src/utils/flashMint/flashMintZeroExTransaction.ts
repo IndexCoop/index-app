@@ -1,7 +1,7 @@
 import { BigNumber, PopulatedTransaction } from 'ethers'
 
 import {
-  getFlashMintZeroExContract,
+  getFlashMintZeroExContractForToken,
   getIssuanceModule,
 } from '@indexcoop/flash-mint-sdk'
 
@@ -48,7 +48,11 @@ export async function getFlashMintZeroExTransaction(
     const block = await provider.getBlock()
     const gasLimitLastBlock = block.gasLimit
     console.log(gasLimitLastBlock.toString(), 'gasLimitLastBlock')
-    const contract = getFlashMintZeroExContract(signer, chainId ?? 1)
+    const contract = getFlashMintZeroExContractForToken(
+      setTokenSymbol,
+      signer,
+      chainId ?? 1
+    )
     if (isMinting) {
       const isSellingNativeChainToken = isNativeCurrency(inputToken, chainId)
       if (isSellingNativeChainToken) {
