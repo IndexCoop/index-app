@@ -546,13 +546,13 @@ export const deprecatedIndices = [
 
 // Deprecated/rebalanced indicies will not work with FlashMintLeveraged any longer
 export const eligibleLeveragedExchangeIssuanceTokens = [
-  // Bitcoin2xFLIP,
-  // Ethereum2xFLIP,
+  Bitcoin2xFLIP,
+  Ethereum2xFLIP,
   IBitcoinFLIP,
   icETHIndex,
   IEthereumFLIP,
   IMaticFLIP,
-  // Matic2xFLIP,
+  Matic2xFLIP,
 ]
 
 const isDevEnv =

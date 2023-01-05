@@ -136,10 +136,10 @@ const TokenItem = ({
 
 function isSellOnly(token: Token): boolean {
   switch (token.symbol) {
-    case Bitcoin2xFLIP.symbol:
-    case Ethereum2xFLIP.symbol:
-    case Matic2xFLIP.symbol:
-      return true
+    // case Bitcoin2xFLIP.symbol:
+    // case Ethereum2xFLIP.symbol:
+    // case Matic2xFLIP.symbol:
+    //   return true
     default:
       return false
   }
