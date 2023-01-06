@@ -11,7 +11,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.4",
     "@indexcoop/flash-mint-sdk": "^1.4.0",
-    "@rainbow-me/rainbowkit": "^0.8.0",
+    "@rainbow-me/rainbowkit": "^0.8.1",
     "@sentry/react": "7.16.0",
     "@sentry/tracing": "7.16.0",
     "@web3-react/walletconnect-connector": "^6.2.13",
