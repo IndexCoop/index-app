@@ -5,7 +5,7 @@ import { Signer } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   FlashMintLeveraged,
-  getFlashMintLeveragedContract,
+  getFlashMintLeveragedContractForToken,
 } from '@indexcoop/flash-mint-sdk'
 
 import { DefaultGasLimitFlashMintLeveraged } from 'constants/gas'
@@ -58,7 +58,14 @@ export const useTradeFlashMintLeveraged = () => {
         getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
-      const contract = getFlashMintLeveragedContract(signer as Signer, chainId)
+      const setTokenSymbol = isMinting
+        ? quote.outputToken.symbol
+        : quote.inputToken.symbol
+      const contract = getFlashMintLeveragedContractForToken(
+        setTokenSymbol,
+        signer as Signer,
+        chainId
+      )
       const flashMint = new FlashMintLeveraged(contract)
 
       try {

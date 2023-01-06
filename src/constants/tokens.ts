@@ -1,3 +1,8 @@
+import {
+  BTC2xFlexibleLeverageIndex,
+  ETH2xFlexibleLeverageIndex,
+} from '@indexcoop/flash-mint-sdk'
+
 import bedBorderLogo from 'assets/bed-border.png'
 import fixedDaiLogo from 'assets/fixed_dai_logo.png'
 import fixedUsdcLogo from 'assets/fixed_usdc_logo.png'
@@ -376,7 +381,11 @@ export const optimismCurrencyTokens = [USDC]
  */
 
 // Deprecated/rebalanced indicies will not work with FlashMintLeveraged any longer
-export const eligibleLeveragedExchangeIssuanceTokens = [icETHIndex]
+export const eligibleLeveragedExchangeIssuanceTokens = [
+  Bitcoin2xFlexibleLeverageIndex,
+  Ethereum2xFlexibleLeverageIndex,
+  icETHIndex,
+]
 
 const isDevEnv =
   process.env.REACT_APP_VERCEL_ENV === 'development' ||
@@ -416,11 +425,7 @@ export const indexNamesPolygon = indexNames.filter(
 
 // FlashMint specific lists
 export const flashMintIndexesMainnetRedeem = indexNames.filter(
-  (index) =>
-    index.address &&
-    index.symbol !== Bitcoin2xFlexibleLeverageIndex.symbol &&
-    index.symbol !== Ethereum2xFlexibleLeverageIndex.symbol &&
-    index.symbol !== IndexToken.symbol
+  (index) => index.address && index.symbol !== IndexToken.symbol
 )
 
 export const flashMintIndexesPolygon = indexNames.filter(
