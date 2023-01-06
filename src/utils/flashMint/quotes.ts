@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import {
-  getExchangeIssuanceLeveragedContractAddress,
-  getExchangeIssuanceZeroExContractAddress,
+  getFlashMintLeveragedContractForToken,
   getFlashMintZeroExContractForToken,
 } from '@indexcoop/flash-mint-sdk'
 
@@ -21,7 +20,14 @@ export const getContractForQuote = (
   }
 
   if (quotes.flashMintLeveraged) {
-    return getExchangeIssuanceLeveragedContractAddress(chainId)
+    const setToken = quotes.flashMintLeveraged.isMinting
+      ? quotes.flashMintLeveraged.outputToken
+      : quotes.flashMintLeveraged.inputToken
+    return getFlashMintLeveragedContractForToken(
+      setToken.symbol,
+      undefined,
+      chainId
+    ).address
   }
 
   if (quotes.flashMintNotional) {

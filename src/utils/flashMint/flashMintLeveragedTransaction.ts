@@ -1,7 +1,7 @@
 import { BigNumber, PopulatedTransaction } from 'ethers'
 
 import {
-  getFlashMintLeveragedContract,
+  getFlashMintLeveragedContractForToken,
   SwapData,
 } from '@indexcoop/flash-mint-sdk'
 
@@ -44,10 +44,16 @@ export async function getFlashMintLeveragedTransaction(
   const inputTokenAddress = getAddressForToken(inputToken, chainId)
   if (!outputTokenAddress || !inputTokenAddress) return null
 
+  const setTokenSymbol = isMinting ? outputToken.symbol : inputToken.symbol
+
   try {
     const block = await provider.getBlock()
     const gasLimitLastBlock = block.gasLimit
-    const contract = getFlashMintLeveragedContract(signer, chainId)
+    const contract = getFlashMintLeveragedContractForToken(
+      setTokenSymbol,
+      signer,
+      chainId
+    )
     if (isMinting) {
       const isSellingNativeChainToken = isNativeCurrency(inputToken, chainId)
       if (isSellingNativeChainToken) {
