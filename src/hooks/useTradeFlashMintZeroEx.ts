@@ -5,7 +5,7 @@ import { Signer } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   FlashMintZeroEx,
-  getFlashMintZeroExContract,
+  getFlashMintZeroExContractForToken,
   getIssuanceModule,
 } from '@indexcoop/flash-mint-sdk'
 
@@ -65,7 +65,11 @@ export const useTradeFlashMintZeroEx = () => {
       )
       if (spendingTokenBalance.lt(requiredBalance)) return
 
-      const contract = getFlashMintZeroExContract(signer as Signer, chainId)
+      const contract = getFlashMintZeroExContractForToken(
+        setTokenSymbol,
+        signer as Signer,
+        chainId
+      )
       const flashMint = new FlashMintZeroEx(contract)
 
       try {

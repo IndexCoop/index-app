@@ -27,7 +27,6 @@ export interface Token {
   url: string
   image: string
   coingeckoId: string
-  tokensetsId: string
   tokenContextKey?: TokenContextKeys
   fees:
     | { streamingFee: string; mintFee?: string; redeemFee?: string }
@@ -39,26 +38,8 @@ export interface Token {
 }
 
 /**
- * Tokens
+ * Indices
  */
-
-export const DAI: Token = {
-  name: 'Dai',
-  symbol: 'DAI',
-  image:
-    'https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734',
-  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-  polygonAddress: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
-  optimismAddress: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-  decimals: 18,
-  url: '',
-  coingeckoId: 'dai',
-  tokensetsId: 'dai',
-  fees: undefined,
-  isDangerous: false,
-  indexTypes: [],
-}
-
 export const FIXED_DAI: Token = {
   name: 'Fixed Rate Yield Index (DAI)',
   symbol: 'FIXED-DAI',
@@ -69,7 +50,6 @@ export const FIXED_DAI: Token = {
   decimals: 18,
   url: '',
   coingeckoId: '',
-  tokensetsId: '',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -85,92 +65,6 @@ export const FIXED_USDC: Token = {
   decimals: 18,
   url: '',
   coingeckoId: '',
-  tokensetsId: '',
-  fees: undefined,
-  isDangerous: false,
-  indexTypes: [],
-}
-
-export const USDC: Token = {
-  name: 'USD Coin',
-  symbol: 'USDC',
-  image:
-    'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
-  address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-  polygonAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-  optimismAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
-  decimals: 6,
-  url: '',
-  coingeckoId: 'usd-coin',
-  tokensetsId: 'usdc',
-  fees: undefined,
-  isDangerous: false,
-  indexTypes: [],
-}
-
-export const ETH: Token = {
-  name: 'Ethereum',
-  symbol: 'ETH',
-  image:
-    'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
-  address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-  polygonAddress: '',
-  optimismAddress: '',
-  decimals: 18,
-  url: '',
-  coingeckoId: 'ethereum',
-  tokensetsId: 'eth',
-  fees: undefined,
-  isDangerous: false,
-  indexTypes: [],
-}
-
-export const WETH: Token = {
-  name: 'Wrapped Ether',
-  symbol: 'WETH',
-  image:
-    'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
-  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-  polygonAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
-  optimismAddress: '0x4200000000000000000000000000000000000006',
-  decimals: 18,
-  url: '',
-  coingeckoId: 'weth',
-  tokensetsId: 'weth',
-  fees: undefined,
-  isDangerous: false,
-  indexTypes: [],
-}
-
-export const MATIC: Token = {
-  name: 'Matic',
-  symbol: 'MATIC',
-  image:
-    'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png?1624446912',
-  address: undefined,
-  polygonAddress: '0x0000000000000000000000000000000000001010',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: '',
-  coingeckoId: 'matic-network',
-  tokensetsId: 'matic',
-  fees: undefined,
-  isDangerous: false,
-  indexTypes: [],
-}
-
-export const STETH: Token = {
-  name: 'stETH',
-  symbol: 'stETH',
-  image:
-    'https://assets.coingecko.com/coins/images/13442/small/steth_logo.png?1608607546',
-  address: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
-  polygonAddress: undefined,
-  optimismAddress: undefined,
-  decimals: 18,
-  url: '',
-  coingeckoId: 'staked-ether',
-  tokensetsId: 'staked-ether',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -186,7 +80,6 @@ export const DefiPulseIndex: Token = {
   decimals: 18,
   url: 'dpi',
   coingeckoId: 'defipulse-index',
-  tokensetsId: 'dpi',
   tokenContextKey: 'dpi',
   fees: {
     streamingFee: '0.95%',
@@ -206,7 +99,6 @@ export const IndexToken: Token = {
   url: 'index',
   image: indexLogo,
   coingeckoId: 'index-cooperative',
-  tokensetsId: 'index',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
@@ -223,7 +115,6 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   url: 'ethfli',
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
   coingeckoId: 'eth-2x-flexible-leverage-index',
-  tokensetsId: 'ethfli',
   tokenContextKey: 'ethfli',
   fees: {
     streamingFee: '1.95%',
@@ -243,7 +134,6 @@ export const MetaverseIndex: Token = {
   url: 'mvi',
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
   coingeckoId: 'metaverse-index',
-  tokensetsId: 'mvi',
   tokenContextKey: 'mvi',
   fees: {
     streamingFee: '0.95%',
@@ -263,7 +153,6 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
   url: 'btcfli',
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
   coingeckoId: 'btc-2x-flexible-leverage-index',
-  tokensetsId: 'btcfli',
   tokenContextKey: 'btcfli',
   fees: {
     streamingFee: '1.95%',
@@ -283,7 +172,6 @@ export const BedIndex: Token = {
   url: 'bed',
   image: bedBorderLogo,
   coingeckoId: 'bankless-bed-index',
-  tokensetsId: 'bed',
   tokenContextKey: 'bed',
   fees: {
     streamingFee: '0.25%',
@@ -303,7 +191,6 @@ export const GmiIndex: Token = {
   url: 'gmi',
   image: gmiLogo,
   coingeckoId: 'bankless-defi-innovation-index',
-  tokensetsId: 'gmi',
   tokenContextKey: 'gmi',
   fees: {
     streamingFee: '1.95%',
@@ -323,7 +210,6 @@ export const icETHIndex: Token = {
   url: 'iceth',
   image: icethLogo,
   coingeckoId: 'interest-compounding-eth-index',
-  tokensetsId: 'iceth',
   tokenContextKey: 'iceth',
   fees: {
     streamingFee: '0.75%',
@@ -336,12 +222,149 @@ export const icETHIndex: Token = {
 }
 
 /**
+ * Other - IndexCoop
+ */
+
+export const WSETH2: Token = {
+  name: 'wsETH2',
+  symbol: 'wsETH2',
+  // FIXME:
+  image: 'https://etherscan.io/images/main/empty-token.png',
+  address: '0x5dA21D9e63F1EA13D34e48B7223bcc97e3ecD687',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  // FIXME:
+  coingeckoId: '',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+/**
+ * Other
+ */
+
+export const DAI: Token = {
+  name: 'Dai',
+  symbol: 'DAI',
+  image:
+    'https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734',
+  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+  polygonAddress: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+  optimismAddress: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+  decimals: 18,
+  url: '',
+  coingeckoId: 'dai',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const ETH: Token = {
+  name: 'Ethereum',
+  symbol: 'ETH',
+  image:
+    'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
+  address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+  polygonAddress: '',
+  optimismAddress: '',
+  decimals: 18,
+  url: '',
+  coingeckoId: 'ethereum',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const MATIC: Token = {
+  name: 'Matic',
+  symbol: 'MATIC',
+  image:
+    'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png?1624446912',
+  address: undefined,
+  polygonAddress: '0x0000000000000000000000000000000000001010',
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: 'matic-network',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const SETH2: Token = {
+  name: 'sETH2',
+  symbol: 'sETH2',
+  image:
+    'https://assets.coingecko.com/coins/images/16569/small/emerald256.png?1624494960',
+  address: '0xFe2e637202056d30016725477c5da089Ab0A043A',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: 'seth2',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const STETH: Token = {
+  name: 'stETH',
+  symbol: 'stETH',
+  image:
+    'https://assets.coingecko.com/coins/images/13442/small/steth_logo.png?1608607546',
+  address: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: 'staked-ether',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const USDC: Token = {
+  name: 'USD Coin',
+  symbol: 'USDC',
+  image:
+    'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
+  address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+  polygonAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+  optimismAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
+  decimals: 6,
+  url: '',
+  coingeckoId: 'usd-coin',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const WETH: Token = {
+  name: 'Wrapped Ether',
+  symbol: 'WETH',
+  image:
+    'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
+  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  polygonAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
+  optimismAddress: '0x4200000000000000000000000000000000000006',
+  decimals: 18,
+  url: '',
+  coingeckoId: 'weth',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+/**
  * Currencies
  */
 
 export const currencies = [DAI, USDC, STETH, WETH]
 
-export const mainnetCurrencyTokens = [ETH, DAI, USDC, STETH, WETH]
+export const mainnetCurrencyTokens = [ETH, DAI, USDC, SETH2, STETH, WETH]
 
 export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
 
@@ -371,6 +394,7 @@ const indexNames = isDevEnv
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
       IndexToken,
+      WSETH2,
     ]
   : [
       icETHIndex,

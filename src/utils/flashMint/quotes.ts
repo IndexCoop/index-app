@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import {
   getExchangeIssuanceLeveragedContractAddress,
   getExchangeIssuanceZeroExContractAddress,
+  getFlashMintZeroExContractForToken,
 } from '@indexcoop/flash-mint-sdk'
 
 import { FlashMintPerp } from 'constants/contractAddresses'
@@ -28,7 +29,14 @@ export const getContractForQuote = (
   }
 
   if (quotes.flashMintZeroEx) {
-    return getExchangeIssuanceZeroExContractAddress(chainId)
+    const setToken = quotes.flashMintZeroEx.isMinting
+      ? quotes.flashMintZeroEx.outputToken
+      : quotes.flashMintZeroEx.inputToken
+    return getFlashMintZeroExContractForToken(
+      setToken.symbol,
+      undefined,
+      chainId
+    ).address
   }
 
   return null
