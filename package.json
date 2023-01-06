@@ -9,7 +9,7 @@
     "@chakra-ui/react": "2.3.6",
     "@elgorditosalsero/react-gtm-hook": "^2.5.0",
     "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.4",
+    "@emotion/styled": "^11.10.5",
     "@indexcoop/flash-mint-sdk": "^1.4.0",
     "@rainbow-me/rainbowkit": "^0.8.0",
     "@sentry/react": "7.16.0",
