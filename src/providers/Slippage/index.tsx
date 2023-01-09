@@ -1,7 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-// Slippage default hard coded to 1%
-export const slippageDefault = 1
+import { slippageDefault } from 'constants/slippage'
 
 interface Context {
   isAuto: boolean
