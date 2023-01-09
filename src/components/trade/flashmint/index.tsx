@@ -17,6 +17,7 @@ import { useSlippage } from 'providers/Slippage'
 import { displayFromWei, isValidTokenInput, toWei } from 'utils'
 import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
 import { getContractForQuote, getQuoteAmount } from 'utils/flashMint/quotes'
+import { selectSlippage } from 'utils/slippage'
 import { getNativeToken, isNotTradableToken } from 'utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
@@ -105,9 +106,9 @@ const FlashMint = (props: QuickTradeProps) => {
   )
 
   const getSlippage = useCallback(() => {
-    // Temporarily use at least 2% slippage for FlashMint
-    return slippage > 2 ? slippage : 2
-  }, [slippage])
+    const useSlippage = selectSlippage(slippage, indexToken.symbol)
+    return useSlippage
+  }, [indexToken, slippage])
 
   useEffect(() => {
     const contractAddress = getContractForQuote(quoteResult, chainId)
