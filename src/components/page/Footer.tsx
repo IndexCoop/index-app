@@ -44,7 +44,11 @@ const Footer = () => {
                 Legacy Products
               </Text>
             </Link>
-            <Link color={colors.icGray2} href='/liquidity-mining'>
+            <Link
+              color={colors.icGray2}
+              href='https://archive.indexcoop.com/liquidity-mining'
+              isExternal
+            >
               <Text color={colors.icGray2} mr='4'>
                 Liquidity Mining (discontinued)
               </Text>
