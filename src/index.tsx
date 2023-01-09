@@ -34,7 +34,6 @@ import { BalanceProvider } from 'providers/Balances'
 import { MarketDataProvider } from 'providers/MarketData'
 import { ProtectionProvider } from 'providers/Protection'
 import Homepage from 'views/Homepage'
-import LiquidityMining from 'views/LiquidityMining'
 import BED from 'views/productpages/BED'
 import BTC2xFLI from 'views/productpages/BTC2xFLI'
 import DPI from 'views/productpages/DPI'
@@ -137,7 +136,6 @@ root.render(
         <Routes>
           <Route path='/' element={<App />}>
             <Route index element={<Homepage />} />
-            <Route path='liquidity-mining' element={<LiquidityMining />} />
             <Route path='products' element={<Products />} />
             <Route path='dpi' element={<DPI />} />
             <Route path='mvi' element={<MVI />} />

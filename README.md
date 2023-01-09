@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://opensource.org/licenses/MIT)
 
-Index App is a simple front-end used to interact with Index. This front-end describes Index and consolidates relevant links to onboard users onto the protocol's basic functionalities. It also allows users to stake, unstake, and claim INDEX tokens during the initial distribution + liquidity mining phase of the protocol's launch.
+Index App is a simple front-end used to interact with Index and its products.
 
 ## Local development
 

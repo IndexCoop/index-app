@@ -51,17 +51,6 @@ export function getCurrencyTokens(chainId: number | undefined): Token[] {
   }
 }
 
-export function getIndexes(chainId: number): Token[] {
-  switch (chainId) {
-    case MAINNET.chainId:
-      return indexNamesMainnet
-    case POLYGON.chainId:
-      return indexNamesPolygon
-    default:
-      return []
-  }
-}
-
 export function getNativeToken(chainId: number | undefined): Token | null {
   switch (chainId) {
     case MAINNET.chainId:
