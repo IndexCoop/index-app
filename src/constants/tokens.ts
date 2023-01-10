@@ -1,9 +1,5 @@
-import {
-  BTC2xFlexibleLeverageIndex,
-  ETH2xFlexibleLeverageIndex,
-} from '@indexcoop/flash-mint-sdk'
-
 import bedBorderLogo from 'assets/bed-border.png'
+import dsethLogo from 'assets/dseth_logo.svg'
 import fixedDaiLogo from 'assets/fixed_dai_logo.png'
 import fixedUsdcLogo from 'assets/fixed_usdc_logo.png'
 import gmiLogo from 'assets/gmilogo.png'
@@ -97,8 +93,7 @@ export const DefiPulseIndex: Token = {
 export const EthereumDiversifiedStakingIndex: Token = {
   name: 'Ethereum Diversified Staking Index',
   symbol: 'dsETH',
-  // FIXME:
-  image: 'https://etherscan.io/images/main/empty-token.png',
+  image: dsethLogo,
   address: '0x683bad7eb64ce3ec13ecec3bc7583fcbcb75a9f7',
   polygonAddress: undefined,
   optimismAddress: undefined,
