@@ -417,6 +417,8 @@ const isDevEnv =
 // separate list for dev/staging and production
 const indexNames = isDevEnv
   ? [
+      // FIXME: add to production list
+      EthereumDiversifiedStakingIndex,
       icETHIndex,
       FIXED_DAI,
       FIXED_USDC,
