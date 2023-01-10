@@ -94,6 +94,28 @@ export const DefiPulseIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
+export const EthereumDiversifiedStakingIndex: Token = {
+  name: 'Ethereum Diversified Staking Index',
+  symbol: 'dsETH',
+  // FIXME:
+  image: 'https://etherscan.io/images/main/empty-token.png',
+  address: '0x683bad7eb64ce3ec13ecec3bc7583fcbcb75a9f7',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  // TODO:
+  url: '',
+  coingeckoId: '',
+  // FIXME: add when adding to market data
+  tokenContextKey: undefined,
+  fees: {
+    streamingFee: '0.25%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.yield],
+  defaultChain: MAINNET.chainId,
+}
+
 export const IndexToken: Token = {
   name: 'Index Token',
   symbol: 'INDEX',
