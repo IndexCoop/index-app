@@ -92,8 +92,8 @@ export const DefiPulseIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
-export const EthereumDiversifiedStakingIndex: Token = {
-  name: 'Ethereum Diversified Staking Index',
+export const DiversifiedStakedETHIndex: Token = {
+  name: 'Diversified Staked ETH Index',
   symbol: 'dsETH',
   image: dsethLogo,
   address: '0x683bad7eb64ce3ec13ecec3bc7583fcbcb75a9f7',
@@ -413,7 +413,7 @@ const isDevEnv =
 const indexNames = isDevEnv
   ? [
       // FIXME: add to production list
-      EthereumDiversifiedStakingIndex,
+      DiversifiedStakedETHIndex,
       icETHIndex,
       FIXED_DAI,
       FIXED_USDC,
