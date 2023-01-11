@@ -272,7 +272,7 @@ export const DAI: Token = {
   name: 'Dai',
   symbol: 'DAI',
   image:
-    'https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734',
+    'https://assets.coingecko.com/coins/images/9956/large/4943.png?1636636734',
   address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
   polygonAddress: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
   optimismAddress: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
@@ -288,7 +288,7 @@ export const ETH: Token = {
   name: 'Ethereum',
   symbol: 'ETH',
   image:
-    'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
+    'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
   address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
   polygonAddress: '',
   optimismAddress: '',
@@ -304,7 +304,7 @@ export const MATIC: Token = {
   name: 'Matic',
   symbol: 'MATIC',
   image:
-    'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png?1624446912',
+    'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
   address: undefined,
   polygonAddress: '0x0000000000000000000000000000000000001010',
   optimismAddress: undefined,
@@ -316,11 +316,25 @@ export const MATIC: Token = {
   indexTypes: [],
 }
 
+export const RETH: Token = {
+  name: 'rETH',
+  symbol: 'rETH',
+  image: 'https://assets.coingecko.com/coins/images/20764/large/reth.png',
+  address: '0xae78736Cd615f374D3085123A210448E74Fc6393',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: 'rocket-pool-eth',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
 export const SETH2: Token = {
   name: 'sETH2',
   symbol: 'sETH2',
-  image:
-    'https://assets.coingecko.com/coins/images/16569/small/emerald256.png?1624494960',
+  image: 'https://assets.coingecko.com/coins/images/16569/large/emerald256.png',
   address: '0xFe2e637202056d30016725477c5da089Ab0A043A',
   polygonAddress: undefined,
   optimismAddress: undefined,
@@ -335,8 +349,7 @@ export const SETH2: Token = {
 export const STETH: Token = {
   name: 'stETH',
   symbol: 'stETH',
-  image:
-    'https://assets.coingecko.com/coins/images/13442/small/steth_logo.png?1608607546',
+  image: 'https://assets.coingecko.com/coins/images/13442/large/steth_logo.png',
   address: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
   polygonAddress: undefined,
   optimismAddress: undefined,
@@ -352,7 +365,7 @@ export const USDC: Token = {
   name: 'USD Coin',
   symbol: 'USDC',
   image:
-    'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
+    'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   polygonAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   optimismAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
@@ -368,13 +381,28 @@ export const WETH: Token = {
   name: 'Wrapped Ether',
   symbol: 'WETH',
   image:
-    'https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295',
+    'https://assets.coingecko.com/coins/images/2518/large/weth.png?1628852295',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   polygonAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
   optimismAddress: '0x4200000000000000000000000000000000000006',
   decimals: 18,
   url: '',
   coingeckoId: 'weth',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const WSTETH: Token = {
+  name: 'wstETH',
+  symbol: 'wstETH',
+  image: 'https://assets.coingecko.com/coins/images/18834/large/wstETH.png',
+  address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: 'wrapped-steth',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
