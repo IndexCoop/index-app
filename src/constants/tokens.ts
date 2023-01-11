@@ -5,6 +5,7 @@ import fixedUsdcLogo from 'assets/fixed_usdc_logo.png'
 import gmiLogo from 'assets/gmilogo.png'
 import icethLogo from 'assets/icethlogo.png'
 import indexLogo from 'assets/index-token.png'
+import wseth2Logo from 'assets/wseth2_logo.svg'
 import { TokenContextKeys } from 'providers/MarketData'
 
 import { MAINNET } from './chains'
@@ -25,6 +26,7 @@ export interface Token {
   polygonAddress: string | undefined
   optimismAddress: string | undefined
   decimals: number
+  // Url path for the token
   url: string
   image: string
   coingeckoId: string
@@ -250,15 +252,13 @@ export const icETHIndex: Token = {
 export const WSETH2: Token = {
   name: 'wsETH2',
   symbol: 'wsETH2',
-  // FIXME:
-  image: 'https://etherscan.io/images/main/empty-token.png',
+  image: wseth2Logo,
   address: '0x5dA21D9e63F1EA13D34e48B7223bcc97e3ecD687',
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
   url: '',
-  // FIXME:
-  coingeckoId: '',
+  coingeckoId: 'wrapped-stakewise-seth2',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
