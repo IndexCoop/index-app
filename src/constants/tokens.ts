@@ -413,7 +413,7 @@ export const WSTETH: Token = {
  */
 
 // Add new currencies here as well to fetch all balances
-export const currencies = [DAI, USDC, RETH, SETH2, STETH, WETH, WSETH2, WSETH2]
+export const currencies = [DAI, USDC, RETH, SETH2, STETH, WETH, WSETH2, WSTETH]
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, SETH2, STETH, WETH]
 
