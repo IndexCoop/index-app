@@ -174,7 +174,7 @@ export const getCurrencyTokensForToken = (token: Token, chainId: number) => {
   if (token.symbol === FIXED_USDC.symbol) return [USDC]
   if (token.symbol === icETHIndex.symbol) return [ETH, STETH]
   if (token.symbol === DiversifiedStakedETHIndex.symbol)
-    return [ETH, WETH, STETH, WSTETH, RETH, SETH2, WSETH2, USDC]
+    return [ETH, WETH, STETH, WSTETH, RETH, SETH2, USDC]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }

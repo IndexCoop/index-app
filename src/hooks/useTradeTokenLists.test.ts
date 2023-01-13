@@ -65,7 +65,6 @@ describe('getCurrencyTokensForToken()', () => {
       'wstETH',
       'rETH',
       'sETH2',
-      'wsETH2',
       'USDC',
     ]
     const currencyTokens = getCurrencyTokensForToken(token, chainId)
