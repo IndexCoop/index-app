@@ -96,12 +96,12 @@ export const DiversifiedStakedETHIndex: Token = {
   name: 'Diversified Staked ETH Index',
   symbol: 'dsETH',
   image: dsethLogo,
-  address: '0x683bad7eb64ce3ec13ecec3bc7583fcbcb75a9f7',
+  address: '0x341c05c0E9b33C0E38d64de76516b2Ce970bB3BE',
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
   // TODO:
-  url: '',
+  url: 'dseth',
   coingeckoId: '',
   // FIXME: add when adding to market data
   tokenContextKey: undefined,
