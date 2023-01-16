@@ -18,8 +18,8 @@ export class BalancesProvider {
 
   async fetchNativeBalances() {
     const { address, providers } = this
-    const ethBalance = await this.providers.mainnet.getBalance(address)
-    const maticBalance = await this.providers.polygon.getBalance(address)
+    const ethBalance = await providers.mainnet.getBalance(address)
+    const maticBalance = await providers.polygon.getBalance(address)
 
     const eth: BalanceValues = {
       token: ETH,
@@ -48,9 +48,10 @@ export class BalancesProvider {
     const mainnetBalance = token.address
       ? await getBalance(address, token.address, providers.mainnet)
       : null
-    const optimismBalance = token.optimismAddress
-      ? await getBalance(address, token.optimismAddress, providers.optimism)
-      : null
+    const optimismBalance = null
+    // const optimismBalance = token.optimismAddress
+    //   ? await getBalance(address, token.optimismAddress, providers.optimism)
+    //   : null
     const polygonBalance = token.polygonAddress
       ? await getBalance(address, token.polygonAddress, providers.polygon)
       : null

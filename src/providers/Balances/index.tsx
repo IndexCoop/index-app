@@ -67,8 +67,7 @@ export const BalanceProvider = (props: { children: any }) => {
           await provider.fetchAllBalances(token)
         if (
           (mainnetBalance && !mainnetBalance.isZero()) ||
-          (polygonBalance && !polygonBalance.isZero()) ||
-          (optimismBalance && !optimismBalance.isZero())
+          (polygonBalance && !polygonBalance.isZero())
         ) {
           const marketData = selectMarketDataByToken(token)
           const price = selectLatestMarketData(marketData)
@@ -104,8 +103,7 @@ export const BalanceProvider = (props: { children: any }) => {
           await provider.fetchAllBalances(token)
         if (
           (mainnetBalance && !mainnetBalance.isZero()) ||
-          (polygonBalance && !polygonBalance.isZero()) ||
-          (optimismBalance && !optimismBalance.isZero())
+          (polygonBalance && !polygonBalance.isZero())
         ) {
           const price = 0
           balanceData.push({
