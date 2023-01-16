@@ -35,7 +35,7 @@ const QuickTradeSelector = (props: {
   onSelectedToken: (symbol: string) => void
 }) => {
   const { chainId } = useNetwork()
-  const { getTokenBalance } = useBalanceData()
+  const { isLoading, getTokenBalance } = useBalanceData()
   const { styles } = useColorStyles()
 
   const { config, selectedToken, selectedTokenAmount } = props
@@ -57,10 +57,10 @@ const QuickTradeSelector = (props: {
   }, [chainId])
 
   useEffect(() => {
-    // const tokenBal = getBalance(selectedTokenSymbol)
+    if (isLoading) return
     const tokenBal = getTokenBalance(selectedTokenSymbol, chainId)
     setTokenBalance(formattedBalance(selectedToken, tokenBal))
-  }, [chainId, getTokenBalance, selectedToken])
+  }, [isLoading, getTokenBalance, selectedToken])
 
   const borderColor = styles.border
   const borderRadius = 16
