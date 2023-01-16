@@ -19,13 +19,12 @@ export class BalancesProvider {
   async fetchNativeBalances() {
     const { address, providers } = this
     const ethBalance = await this.providers.mainnet.getBalance(address)
-    const ethOptimismBalance = await this.providers.optimism.getBalance(address)
     const maticBalance = await this.providers.polygon.getBalance(address)
 
     const eth: BalanceValues = {
       token: ETH,
       mainnetBalance: ethBalance,
-      optimismBalance: ethOptimismBalance,
+      optimismBalance: null,
       polygonBalance: null,
       price: 0,
     }
