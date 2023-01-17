@@ -206,5 +206,6 @@ const getTokenPrice = async (
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress || !chainId) return 0
   const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
-  return tokenPrice
+  // Token price can return undefined
+  return tokenPrice ?? 0
 }
