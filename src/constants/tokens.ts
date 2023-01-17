@@ -102,8 +102,7 @@ export const DiversifiedStakedETHIndex: Token = {
   decimals: 18,
   url: 'dseth',
   coingeckoId: 'diversified-staked-eth',
-  // FIXME: add when adding to market data
-  tokenContextKey: undefined,
+  tokenContextKey: 'dseth',
   fees: {
     streamingFee: '0.25%',
   },
