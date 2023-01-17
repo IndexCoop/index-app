@@ -438,7 +438,6 @@ const isDevEnv =
 // separate list for dev/staging and production
 const indexNames = isDevEnv
   ? [
-      // FIXME: add to production list
       DiversifiedStakedETHIndex,
       icETHIndex,
       FIXED_DAI,
@@ -452,6 +451,7 @@ const indexNames = isDevEnv
       WSETH2,
     ]
   : [
+      DiversifiedStakedETHIndex,
       icETHIndex,
       DefiPulseIndex,
       MetaverseIndex,
