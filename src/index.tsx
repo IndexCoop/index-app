@@ -37,6 +37,7 @@ import Homepage from 'views/Homepage'
 import BED from 'views/productpages/BED'
 import BTC2xFLI from 'views/productpages/BTC2xFLI'
 import DPI from 'views/productpages/DPI'
+import DSETH from 'views/productpages/DSETH'
 import ETH2xFLI from 'views/productpages/ETH2xFLI'
 import ICETH from 'views/productpages/ICETH'
 import INDEX from 'views/productpages/INDEX'
@@ -138,6 +139,7 @@ root.render(
             <Route index element={<Homepage />} />
             <Route path='products' element={<Products />} />
             <Route path='dpi' element={<DPI />} />
+            <Route path='dseth' element={<DSETH />} />
             <Route path='mvi' element={<MVI />} />
             <Route path='ethfli' element={<ETH2xFLI />} />
             <Route path='btcfli' element={<BTC2xFLI />} />

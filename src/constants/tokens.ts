@@ -100,7 +100,6 @@ export const DiversifiedStakedETHIndex: Token = {
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
-  // TODO:
   url: 'dseth',
   coingeckoId: 'diversified-staked-eth',
   // FIXME: add when adding to market data
