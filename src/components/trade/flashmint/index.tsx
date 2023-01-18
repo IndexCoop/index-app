@@ -106,9 +106,13 @@ const FlashMint = (props: QuickTradeProps) => {
   )
 
   const getSlippage = useCallback(() => {
-    const useSlippage = selectSlippage(slippage, indexToken.symbol)
+    const useSlippage = selectSlippage(
+      slippage,
+      indexToken.symbol,
+      inputOutputToken.symbol
+    )
     return useSlippage
-  }, [indexToken, slippage])
+  }, [inputOutputToken, indexToken, slippage])
 
   useEffect(() => {
     const contractAddress = getContractForQuote(quoteResult, chainId)
