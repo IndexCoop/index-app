@@ -1,10 +1,10 @@
 import TokenPage from 'components/token-page/TokenPage'
 import { icETHIndex } from 'constants/tokens'
-import { useIcEthApy } from 'hooks/useIcEthApy'
+import { useApy } from 'hooks/useApy'
 import { displayFromWei } from 'utils'
 
 const ICETH = () => {
-  const { apy } = useIcEthApy()
+  const { apy } = useApy(icETHIndex.symbol)
   const formattedApy = displayFromWei(apy, 2) ?? undefined
   return <TokenPage token={icETHIndex} apy={formattedApy} />
 }
