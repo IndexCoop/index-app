@@ -5,7 +5,8 @@ import { displayFromWei } from 'utils'
 
 const DSETH = () => {
   const { apy } = useApy(DiversifiedStakedETHIndex.symbol)
-  const formattedApy = displayFromWei(apy, 2) ?? undefined
+  // FIXME: APY needs to be divided by 100
+  const formattedApy = displayFromWei(apy.div(100), 2) ?? undefined
   return <TokenPage token={DiversifiedStakedETHIndex} apy={formattedApy} />
 }
 
