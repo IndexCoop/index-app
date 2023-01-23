@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useColorStyles } from 'styles/colors'
 
+import { CheckCircleIcon } from '@chakra-ui/icons'
 import {
   Box,
   Flex,
@@ -34,6 +35,11 @@ import TransactionReviewDetails from './TransactionReviewDetails'
 import TransactionReviewSimulation, {
   TransactionReviewSimulationState,
 } from './TransactionReviewSimulation'
+
+enum TransactionReviewModalState {
+  submit,
+  success,
+}
 
 type TransactionReviewModalProps = {
   isOpen: boolean
@@ -129,78 +135,26 @@ const useTrade = (tx: TransactionReview) => {
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const { styles } = useColorStyles()
   const { isOpen, onClose, tx } = props
-  const { chainId } = tx
   const backgroundColor = styles.background
 
-  const { simulateTrade } = useSimulateQuote(tx.quoteResult)
-  const { executeTrade, isTransacting, txWouldFail } = useTrade(tx)
-
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [override, setOverride] = useState(false)
-  const [simulationState, setSimulationState] =
-    useState<TransactionReviewSimulationState>(
-      TransactionReviewSimulationState.default
-    )
-
-  const contractBlockExplorerUrl = getBlockExplorerContractUrl(
-    tx.contractAddress,
-    chainId
+  const [state, setState] = useState<TransactionReviewModalState>(
+    TransactionReviewModalState.submit
   )
 
-  useEffect(() => {
-    console.log(props.tx, 'updated')
-    setSimulationState(TransactionReviewSimulationState.default)
-  }, [props.tx])
-
-  useEffect(() => {
-    if (simulationState === TransactionReviewSimulationState.loading) {
-      setIsButtonDisabled(true)
-      return
-    }
-
-    if (
-      !override &&
-      simulationState === TransactionReviewSimulationState.failure
-    ) {
-      setIsButtonDisabled(true)
-      return
-    }
-
-    setIsButtonDisabled(false)
-  }, [override, simulationState])
-
-  useEffect(() => {
-    setIsLoading(isTransacting)
-  }, [isTransacting])
-
-  const onChangeOverride = (isChecked: boolean) => {
-    setOverride(isChecked)
-  }
-
-  const onSubmit = async () => {
-    setSimulationState(TransactionReviewSimulationState.loading)
-    const isSuccess = await simulateTrade()
-    const state = isSuccess
-      ? TransactionReviewSimulationState.success
-      : TransactionReviewSimulationState.failure
-    setSimulationState(state)
-    console.log('isSuccess', isSuccess)
-    if (!isSuccess && !override) return
-    console.log('submit')
-    await executeTrade(override)
+  const onDone = () => {
     onClose()
   }
 
-  const decimals = 10
-  const formattedInputTokenAmount =
-    displayFromWei(tx.inputTokenAmount, decimals, tx.inputToken.decimals) ?? ''
-  const formattedOutputTokenAmount =
-    displayFromWei(tx.outputTokenAmount, decimals, tx.outputToken.decimals) ??
-    ''
+  const onSubmitWithSuccess = (success: boolean) => {
+    if (!success) return
+    console.log('SUCCESS')
+    setState(TransactionReviewModalState.success)
+  }
 
-  const shouldShowOverride =
-    simulationState === TransactionReviewSimulationState.failure
+  const modalTitle =
+    state === TransactionReviewModalState.submit
+      ? 'FlashMint - Review transaction'
+      : ''
 
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
@@ -218,49 +172,16 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
         m={['16px', 0]}
       >
         <ModalHeader>
-          <Text>FlashMint - Review transaction</Text>
+          <Text>{modalTitle}</Text>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody p='0 16px 16px 16px'>
-          <Flex direction='column' h='100%' w='100%'>
-            <Flex>
-              <Flex align='center' direction='column' w='100%'>
-                <Flex my='4px'>
-                  <NetworkBadge />
-                </Flex>
-                <FromTo
-                  inputToken={tx.inputToken.image}
-                  inputTokenAmount={formattedInputTokenAmount}
-                  inputTokenSymbol={tx.inputToken.symbol}
-                  outputToken={tx.outputToken.image}
-                  outputTokenAmount={formattedOutputTokenAmount}
-                  outputTokenSymbol={tx.outputToken.symbol}
-                />
-              </Flex>
-            </Flex>
-            <Box my='8px'>
-              <Box mb='8px'>
-                <ContractSection
-                  contractAddress={tx.contractAddress}
-                  explorerUrl={contractBlockExplorerUrl}
-                />
-              </Box>
-              <TransactionReviewSimulation state={simulationState} />
-            </Box>
-            {shouldShowOverride ? (
-              <Box my='8px'>
-                <Override onChange={onChangeOverride} />
-              </Box>
-            ) : (
-              <BottomMessage />
-            )}
-            <TradeButton
-              isDisabled={isButtonDisabled}
-              isLoading={isLoading}
-              label={'Submit Transaction'}
-              onClick={onSubmit}
-            />
-          </Flex>
+          {state === TransactionReviewModalState.success && (
+            <SubmissionSuccessful onClick={onDone} />
+          )}
+          {state === TransactionReviewModalState.submit && (
+            <Review onSubmitWithSuccess={onSubmitWithSuccess} tx={tx} />
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>
@@ -318,6 +239,146 @@ const ContractSection = ({
       >
         {`${contractAddress.substring(0, 8)}...`}
       </Link>
+    </Flex>
+  )
+}
+
+type ReviewProps = {
+  onSubmitWithSuccess: (success: boolean) => void
+  tx: TransactionReview
+}
+
+const Review = (props: ReviewProps) => {
+  const { onSubmitWithSuccess, tx } = props
+  const { simulateTrade } = useSimulateQuote(tx.quoteResult)
+  const { executeTrade, isTransacting, txWouldFail } = useTrade(tx)
+
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [override, setOverride] = useState(false)
+  const [simulationState, setSimulationState] =
+    useState<TransactionReviewSimulationState>(
+      TransactionReviewSimulationState.default
+    )
+
+  useEffect(() => {
+    console.log(props.tx, 'updated')
+    setSimulationState(TransactionReviewSimulationState.default)
+  }, [props.tx])
+
+  useEffect(() => {
+    if (simulationState === TransactionReviewSimulationState.loading) {
+      setIsButtonDisabled(true)
+      return
+    }
+
+    if (
+      !override &&
+      simulationState === TransactionReviewSimulationState.failure
+    ) {
+      setIsButtonDisabled(true)
+      return
+    }
+
+    setIsButtonDisabled(false)
+  }, [override, simulationState])
+
+  useEffect(() => {
+    setIsLoading(isTransacting)
+  }, [isTransacting])
+
+  const onChangeOverride = (isChecked: boolean) => {
+    setOverride(isChecked)
+  }
+
+  const onSubmit = async () => {
+    setSimulationState(TransactionReviewSimulationState.loading)
+    const isSuccess = await simulateTrade()
+    const state = isSuccess
+      ? TransactionReviewSimulationState.success
+      : TransactionReviewSimulationState.failure
+    setSimulationState(state)
+    console.log('isSuccess', isSuccess)
+    if (!isSuccess && !override) return
+    console.log('submit')
+    await executeTrade(override)
+    onSubmitWithSuccess(true)
+  }
+
+  const contractBlockExplorerUrl = getBlockExplorerContractUrl(
+    tx.contractAddress,
+    tx.chainId
+  )
+
+  const decimals = 10
+  const formattedInputTokenAmount =
+    displayFromWei(tx.inputTokenAmount, decimals, tx.inputToken.decimals) ?? ''
+  const formattedOutputTokenAmount =
+    displayFromWei(tx.outputTokenAmount, decimals, tx.outputToken.decimals) ??
+    ''
+
+  const shouldShowOverride =
+    simulationState === TransactionReviewSimulationState.failure
+
+  return (
+    <Flex direction='column' h='100%' w='100%'>
+      <Flex>
+        <Flex align='center' direction='column' w='100%'>
+          <Flex my='4px'>
+            <NetworkBadge />
+          </Flex>
+          <FromTo
+            inputToken={tx.inputToken.image}
+            inputTokenAmount={formattedInputTokenAmount}
+            inputTokenSymbol={tx.inputToken.symbol}
+            outputToken={tx.outputToken.image}
+            outputTokenAmount={formattedOutputTokenAmount}
+            outputTokenSymbol={tx.outputToken.symbol}
+          />
+        </Flex>
+      </Flex>
+      <Box my='8px'>
+        <Box mb='8px'>
+          <ContractSection
+            contractAddress={tx.contractAddress}
+            explorerUrl={contractBlockExplorerUrl}
+          />
+        </Box>
+        <TransactionReviewSimulation state={simulationState} />
+      </Box>
+      {shouldShowOverride ? (
+        <Box my='8px'>
+          <Override onChange={onChangeOverride} />
+        </Box>
+      ) : (
+        <BottomMessage />
+      )}
+      <TradeButton
+        isDisabled={isButtonDisabled}
+        isLoading={isLoading}
+        label={'Submit Transaction'}
+        onClick={onSubmit}
+      />
+    </Flex>
+  )
+}
+
+const SubmissionSuccessful = ({ onClick }: { onClick: () => void }) => {
+  return (
+    <Flex align='center' direction={'column'}>
+      <Flex align='center' direction={'column'} p='16px'>
+        <CheckCircleIcon w='32px' h='32px' />
+        <Text align='center' fontSize='3xl' p='16px'>
+          You successfully submitted the transaction.
+        </Text>
+      </Flex>
+      <Spacer />
+      <TradeButton
+        isDisabled={false}
+        isLoading={false}
+        label={'Done'}
+        onClick={onClick}
+      />
     </Flex>
   )
 }
