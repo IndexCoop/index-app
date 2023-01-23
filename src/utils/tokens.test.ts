@@ -1,13 +1,25 @@
 import {
+  BedIndex,
+  Bitcoin2xFlexibleLeverageIndex,
+  DefiPulseIndex,
+  DiversifiedStakedETHIndex,
   ETH,
+  Ethereum2xFlexibleLeverageIndex,
+  icETHIndex,
   mainnetCurrencyTokens,
   MATIC,
+  MetaverseIndex,
   optimismCurrencyTokens,
   polygonCurrencyTokens,
   WETH,
 } from 'constants/tokens'
 
-import { getAddressForToken, getCurrencyTokens, getNativeToken } from './tokens'
+import {
+  getAddressForToken,
+  getCurrencyTokens,
+  getNativeToken,
+  isLeveragedToken,
+} from './tokens'
 
 describe('getAddressForToken()', () => {
   test('should return undefined for undefined chain', async () => {
@@ -78,5 +90,27 @@ describe('getNativeToken()', () => {
     const nativeToken = getNativeToken(137)
     expect(nativeToken).toBeDefined()
     expect(nativeToken).toEqual(MATIC)
+  })
+})
+
+describe('isLeveragedToken()', () => {
+  test('should return false for non leveraged tokens', async () => {
+    const bed = isLeveragedToken(BedIndex)
+    const dpi = isLeveragedToken(DefiPulseIndex)
+    const dsEth = isLeveragedToken(DiversifiedStakedETHIndex)
+    const mvi = isLeveragedToken(MetaverseIndex)
+    expect(bed).toBe(false)
+    expect(dpi).toBe(false)
+    expect(dsEth).toBe(false)
+    expect(mvi).toBe(false)
+  })
+
+  test('should return true for leveraged tokens', async () => {
+    const btc2xFli = isLeveragedToken(Bitcoin2xFlexibleLeverageIndex)
+    const eth2xFli = isLeveragedToken(Ethereum2xFlexibleLeverageIndex)
+    const icEth = isLeveragedToken(icETHIndex)
+    expect(btc2xFli).toBe(true)
+    expect(eth2xFli).toBe(true)
+    expect(icEth).toBe(true)
   })
 })

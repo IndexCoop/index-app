@@ -1,12 +1,11 @@
-import { GMIIndex } from '@indexcoop/flash-mint-sdk'
-
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
-  BedIndex,
-  DefiPulseIndex,
+  Bitcoin2xFlexibleLeverageIndex,
   ETH,
+  Ethereum2xFlexibleLeverageIndex,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygonRedeem,
+  icETHIndex,
   indexNamesMainnet,
   indexNamesPolygon,
   IndexToken,
@@ -65,10 +64,10 @@ export function getNativeToken(chainId: number | undefined): Token | null {
 }
 
 export function isLeveragedToken(token: Token): boolean {
-  if (token === BedIndex) return false
-  if (token === DefiPulseIndex) return false
-  if (token.symbol === GMIIndex.symbol) return false
-  return true
+  if (token === Bitcoin2xFlexibleLeverageIndex) return true
+  if (token === Ethereum2xFlexibleLeverageIndex) return true
+  if (token === icETHIndex) return true
+  return false
 }
 
 export const isNativeCurrency = (token: Token, chainId: number): boolean => {
