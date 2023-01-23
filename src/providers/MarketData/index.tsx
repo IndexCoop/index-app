@@ -10,6 +10,7 @@ import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   DefiPulseIndex,
+  DiversifiedStakedETHIndex,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
   GmiIndex,
@@ -28,6 +29,7 @@ export interface TokenMarketDataValues {
 }
 
 export interface TokenContext {
+  dseth?: TokenMarketDataValues
   eth?: TokenMarketDataValues
   index?: TokenMarketDataValues
   dpi?: TokenMarketDataValues
@@ -53,6 +55,7 @@ export const MarketDataContext = createContext<TokenContext>({
 export const useMarketData = () => useContext(MarketDataContext)
 
 export const MarketDataProvider = (props: { children: any }) => {
+  const [dsEthMarketData, setDsEthMarketData] = useState<any>({})
   const [ethMarketData, setEthMarketData] = useState<any>({})
   const [indexMarketData, setIndexMarketData] = useState<any>({})
   const [dpiMarketData, setDpiMarketData] = useState<any>({})
@@ -70,6 +73,8 @@ export const MarketDataProvider = (props: { children: any }) => {
     switch (token) {
       case DefiPulseIndex:
         return dpiMarketData
+      case DiversifiedStakedETHIndex:
+        return dsEthMarketData
       case MetaverseIndex:
         return mviMarketData
       case BedIndex:
@@ -93,6 +98,8 @@ export const MarketDataProvider = (props: { children: any }) => {
     switch (token) {
       case DefiPulseIndex:
         return dpiMarketData
+      case DiversifiedStakedETHIndex:
+        return dsEthMarketData
       case MetaverseIndex:
         return mviMarketData
       case BedIndex:
@@ -127,6 +134,7 @@ export const MarketDataProvider = (props: { children: any }) => {
       ),
       fetchHistoricalTokenMarketData(icETHIndex.coingeckoId),
       fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(DiversifiedStakedETHIndex.coingeckoId),
     ])
 
     setEthMarketData(marketData[0])
@@ -138,6 +146,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     setBtcFliMarketData(marketData[6])
     setIcEthMarketData(marketData[7])
     setGmiMarketData(marketData[8])
+    setDsEthMarketData(marketData[9])
   }, [])
 
   useEffect(() => {

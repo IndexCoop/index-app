@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   DAI,
+  DiversifiedStakedETHIndex,
   ETH,
   FIXED_DAI,
   FIXED_USDC,
@@ -11,9 +12,14 @@ import {
   icETHIndex,
   indexNamesMainnet,
   indexNamesPolygon,
+  RETH,
+  SETH2,
   STETH,
   Token,
   USDC,
+  WETH,
+  WSETH2,
+  WSTETH,
 } from 'constants/tokens'
 import { fetchCoingeckoTokenPrice } from 'utils/api/coingeckoApi'
 import {
@@ -163,10 +169,12 @@ export const useTradeTokenLists = (
  * Returns currency tokens based on individual tokens and their supported trade pairs.
  * @returns A (filtered) Token[] list.
  */
-const getCurrencyTokensForToken = (token: Token, chainId: number) => {
+export const getCurrencyTokensForToken = (token: Token, chainId: number) => {
   if (token.symbol === FIXED_DAI.symbol) return [DAI]
   if (token.symbol === FIXED_USDC.symbol) return [USDC]
   if (token.symbol === icETHIndex.symbol) return [ETH, STETH]
+  if (token.symbol === DiversifiedStakedETHIndex.symbol)
+    return [ETH, WETH, STETH, WSTETH, RETH, SETH2, USDC]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
@@ -198,5 +206,6 @@ const getTokenPrice = async (
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress || !chainId) return 0
   const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
-  return tokenPrice
+  // Token price can return undefined
+  return tokenPrice ?? 0
 }
