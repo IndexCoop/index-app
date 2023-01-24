@@ -17,7 +17,6 @@ import {
 } from 'utils/priceChange'
 import { getAddressForToken, isLeveragedToken, isPerpToken } from 'utils/tokens'
 
-import Disclaimer from './Disclaimer'
 import MarketChart, { PriceChartRangeOption } from './MarketChart'
 import TokenComponentsTable from './TokenComponentsTable'
 import TokenPageHeader from './TokenPageHeader'
@@ -151,7 +150,6 @@ const TokenPage = (props: { token: Token; apy?: string }) => {
             </>
           )}
         </Flex>
-        {props.token.symbol !== IndexToken.symbol && <Disclaimer />}
       </Flex>
     </Page>
   )
