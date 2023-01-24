@@ -54,6 +54,8 @@ export const useICColorMode = () => {
   return { isDarkMode }
 }
 
+export const dsEthColors = ['#fca282', '#01a7ff', '#74db77']
+
 export const pieChartColors = [
   '#2328cd',
   '#f433f0',

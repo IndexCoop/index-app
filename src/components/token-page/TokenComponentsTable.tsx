@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import numeral from 'numeral'
-import { colors, pieChartColors } from 'styles/colors'
+import { colors, dsEthColors, pieChartColors } from 'styles/colors'
 
 import {
   Box,
@@ -42,7 +42,11 @@ const TokenComponentsTable = (props: {
     component: SetComponent,
     index: number
   ) => {
-    const sliceColor = pieChartColors[index]
+    const isDsEth =
+      component.symbol.toLowerCase() === 'reth' ||
+      component.symbol.toLowerCase() === 'seth2' ||
+      component.symbol.toLowerCase() === 'wsteth'
+    const sliceColor = isDsEth ? dsEthColors[index] : pieChartColors[index]
     const position: Position = {
       title: component.symbol,
       value: props.isLeveragedToken
