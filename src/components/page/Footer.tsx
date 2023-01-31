@@ -24,8 +24,8 @@ const Footer = () => {
         p={['32px', '32px', '32px', 0]}
         w={['100%', '100%', '100%', '1024px']}
       >
-        <Links textColor={styles.text} />
-        <Flex m={'32px 0'}>
+        <Links textColor={styles.text2} />
+        <Flex m={'40px 0'}>
           <Logo isDarkMode={isDarkMode} />
         </Flex>
         <Disclaimer />
@@ -91,57 +91,61 @@ const Disclaimer = () => (
 )
 
 const Links = ({ textColor }: { textColor: string }) => (
-  <Flex>
-    <Flex direction={['column', 'column', 'column', 'row']}>
-      <Flex direction={['column', 'column', 'column', 'column']}>
-        <Link
-          color={colors.icGray2}
-          href='https://immunefi.com/bounty/indexcoop/'
-          isExternal
-        >
-          <Text color={colors.icGray2} mr='4'>
-            Bug Bounty
-          </Text>
-        </Link>
-        <Link
-          color={colors.icGray2}
-          href='https://legacyproducts.indexcoop.com/'
-          isExternal
-        >
-          <Text color={colors.icGray2} mr='4'>
-            Legacy Products
-          </Text>
-        </Link>
-        <Link
-          color={colors.icGray2}
-          href='https://archive.indexcoop.com/liquidity-mining'
-          isExternal
-        >
-          <Text color={colors.icGray2} mr='4'>
-            Liquidity Mining (discontinued)
-          </Text>
-        </Link>
-      </Flex>
-      <Flex
-        direction={['column', 'column', 'column', 'column']}
-        ml={[0, 0, 0, 20]}
+  <Flex direction={['column', 'column', 'column', 'row']}>
+    <Flex direction={['column', 'column', 'column', 'column']}>
+      <Link
+        color={textColor}
+        href='https://immunefi.com/bounty/indexcoop/'
+        isExternal
       >
-        <Link href='https://indexcoop.com/legal/privacy-policy'>
-          <Text color={textColor} mr='4'>
-            Privacy Policy
-          </Text>
-        </Link>
-        <Link href='https://indexcoop.com/legal/terms-of-service'>
-          <Text color={textColor} mr='4'>
-            Terms of Service
-          </Text>
-        </Link>
-        <Link href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'>
-          <Text color={textColor} mr='4'>
-            Tokens Restricted for US Persons
-          </Text>
-        </Link>
-      </Flex>
+        <Text color={textColor} mr='4'>
+          Bug Bounty
+        </Text>
+      </Link>
+      <Link
+        color={textColor}
+        href='https://legacyproducts.indexcoop.com/'
+        isExternal
+      >
+        <Text color={textColor} mr='4'>
+          Legacy Products
+        </Text>
+      </Link>
+      <Link
+        color={textColor}
+        href='https://archive.indexcoop.com/liquidity-mining'
+        isExternal
+      >
+        <Text color={textColor} mr='4'>
+          Liquidity Mining (discontinued)
+        </Text>
+      </Link>
+    </Flex>
+    <Flex
+      direction={['column', 'column', 'column', 'column']}
+      ml={[0, 0, 0, 20]}
+    >
+      <Link color={textColor} href='https://indexcoop.com/legal/privacy-policy'>
+        <Text color={textColor} mr='4'>
+          Privacy Policy
+        </Text>
+      </Link>
+      <Link
+        color={textColor}
+        href='https://indexcoop.com/legal/terms-of-service'
+      >
+        <Text color={textColor} mr='4'>
+          Terms of Service
+        </Text>
+      </Link>
+      <Link
+        color={textColor}
+        href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'
+      >
+        <Text color={textColor} mr='4'>
+          Tokens Restricted for US Persons
+        </Text>
+      </Link>
     </Flex>
   </Flex>
 )
