@@ -87,7 +87,7 @@ export const DefiPulseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: true,
+  isDangerous: false,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -160,7 +160,7 @@ export const MetaverseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: true,
+  isDangerous: false,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -198,7 +198,7 @@ export const BedIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
-  isDangerous: true,
+  isDangerous: false,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
