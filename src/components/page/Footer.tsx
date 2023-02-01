@@ -51,8 +51,8 @@ const Disclaimer = () => (
       functioning of Index Coop, and its ecosystem and community.
       <br />
       <br />
-      You shall not purchase or otherwise acquire any of our token products if
-      you are: a citizen, resident (tax or otherwise), green card holder,
+      You shall not purchase or otherwise acquire our restricted tokens if you
+      are: a citizen, resident (tax or otherwise), green card holder,
       incorporated in, owned or controlled by a person or entity in, located in,
       or have a registered office or principal place of business in the U.S. (a
       “U.S. Person”), or if you are a person in any jurisdiction in which such
@@ -66,12 +66,12 @@ const Disclaimer = () => (
       established and/or lawfully existing under the laws of, a jurisdiction in
       which such offer, sale, and/or purchase of any of our token products is
       unlawful, prohibited, or unauthorized). You shall not resell or otherwise
-      transfer any of our token products to any Restricted Person. The transfer
-      or resale of any of our token products to any Restricted Person is not
-      permitted. Click{' '}
+      transfer our restricted tokens to any Restricted Person. The transfer or
+      resale of our restricted tokens to any Restricted Person is not permitted.
+      Click{' '}
       <Link
         target={'_blank'}
-        href='https://indexcoop.com/legal/tokens-restricted-for-us-persons'
+        href='https://indexcoop.com/legal/tokens-restricted-for-restricted-persons'
         textDecoration={'underline'}
       >
         here
