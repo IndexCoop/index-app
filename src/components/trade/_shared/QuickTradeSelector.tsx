@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers'
 import { colors, useColorStyles } from 'styles/colors'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { Box, Flex, Image, Input, Text } from '@chakra-ui/react'
+import { Box, Flex, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 
 import { Token } from 'constants/tokens'
@@ -214,10 +214,11 @@ const Selector = ({
   >
     {!isNarrowVersion && (
       <Box mr='8px' w='24px'>
-        <Image
-          src={selectedTokenImage}
+        <img
           alt={`${selectedTokenSymbol} logo`}
-          w='24px'
+          src={selectedTokenImage}
+          width='24px'
+          height='24px'
         />
       </Box>
     )}
