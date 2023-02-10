@@ -106,7 +106,7 @@ export const DiversifiedStakedETHIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
-  isDangerous: true,
+  isDangerous: false,
   indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
 }
