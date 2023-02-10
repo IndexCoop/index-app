@@ -3,10 +3,12 @@ import { useICColorMode } from 'styles/colors'
 import { Flex, Image, Link } from '@chakra-ui/react'
 import { useColorMode } from '@chakra-ui/system'
 
-import indexLogoBlack from 'assets/index-logo-black.png'
-import indexLogoFullBlack from 'assets/index-logo-full-black.png'
-import indexLogoFullWhite from 'assets/index-logo-full-white.png'
-import indexLogoWhite from 'assets/index-logo-white.png'
+import {
+  IndexLogoBlack,
+  IndexLogoFullBlack,
+  IndexLogoFullWhite,
+  IndexLogoWhite,
+} from 'assets'
 
 import Navigation from './Navigation'
 
@@ -40,7 +42,9 @@ const Header = () => {
           }}
           flexGrow={1}
         >
-          <Logo />
+          <Flex marginRight={['', '', '', '20px']}>
+            <Logo />
+          </Flex>
         </Link>
         <Navigation />
       </Flex>
@@ -49,23 +53,15 @@ const Header = () => {
 }
 
 const Logo = () => {
-  const { colorMode } = useColorMode()
-  const isDarkMode = colorMode === 'dark'
-  let logo = isDarkMode ? indexLogoWhite : indexLogoBlack
+  const { isDarkMode } = useICColorMode()
 
   if (window.innerWidth > 1350) {
-    logo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
+    const logo = isDarkMode ? IndexLogoFullWhite : IndexLogoFullBlack
+    return <img alt='Index Coop Logo' src={logo} height='30px' width='130px' />
   }
 
-  return (
-    <Image
-      src={logo}
-      alt='Index Coop Logo'
-      minWidth='24px'
-      height='30px'
-      mr={['', '', '', '20px']}
-    />
-  )
+  const logo = isDarkMode ? IndexLogoWhite : IndexLogoBlack
+  return <img alt='Index Coop Logo' src={logo} height='30px' width='30px' />
 }
 
 export default Header

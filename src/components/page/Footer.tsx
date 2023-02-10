@@ -2,8 +2,7 @@ import { colors, useColorStyles } from 'styles/colors'
 
 import { Flex, Image, Link, Text } from '@chakra-ui/react'
 
-import indexLogoFullBlack from 'assets/index-logo-full-black.png'
-import indexLogoFullWhite from 'assets/index-logo-full-white.png'
+import { IndexLogoFullBlack, IndexLogoFullWhite } from 'assets'
 
 const Footer = () => {
   const { isDarkMode, styles } = useColorStyles()
@@ -166,10 +165,8 @@ const Links = ({ textColor }: { textColor: string }) => (
 )
 
 const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
-  const fullLogo = isDarkMode ? indexLogoFullWhite : indexLogoFullBlack
-  return (
-    <Image src={fullLogo} alt='Index Coop Logo' minWidth='24px' height='24px' />
-  )
+  const fullLogo = isDarkMode ? IndexLogoFullWhite : IndexLogoFullBlack
+  return <img alt='Index Coop Logo' src={fullLogo} width='24px' height='24px' />
 }
 
 export default Footer
