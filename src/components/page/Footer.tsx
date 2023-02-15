@@ -166,7 +166,9 @@ const Links = ({ textColor }: { textColor: string }) => (
 
 const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
   const fullLogo = isDarkMode ? IndexLogoFullWhite : IndexLogoFullBlack
-  return <img alt='Index Coop Logo' src={fullLogo} width='24px' height='24px' />
+  return (
+    <img alt='Index Coop Logo' src={fullLogo} height='30px' width='130px' />
+  )
 }
 
 export default Footer
