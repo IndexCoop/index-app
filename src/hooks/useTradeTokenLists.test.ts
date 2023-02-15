@@ -1,3 +1,5 @@
+import { stETH } from '@indexcoop/flash-mint-sdk'
+
 import {
   DAI,
   DefiPulseIndex,
@@ -19,7 +21,6 @@ import {
   getCurrencyTokensForToken,
   getTokenListByChain,
 } from './useTradeTokenLists'
-import { stETH } from '@indexcoop/flash-mint-sdk'
 
 describe('getCurrencyTokensForToken()', () => {
   test('returns default currency tokens', async () => {
