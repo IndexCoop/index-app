@@ -225,6 +225,27 @@ export const GmiIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
+export const GitcoinStakedETHIndex: Token = {
+  name: 'Gitcoin Staked ETH Index',
+  symbol: 'gtcETH',
+  image: gtcEthLogo,
+  address: '0x36c833Eed0D376f75D1ff9dFDeE260191336065e',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  // FIXME: add page
+  url: 'gtceth',
+  // FIXME: add when available
+  coingeckoId: '',
+  tokenContextKey: 'gtceth',
+  fees: {
+    streamingFee: '2.0%',
+  },
+  isDangerous: false,
+  indexTypes: [IndexType.yield],
+  defaultChain: MAINNET.chainId,
+}
+
 export const icETHIndex: Token = {
   name: 'Interest Compounding ETH Index',
   symbol: 'icETH',
@@ -443,6 +464,7 @@ const indexNames = isDevEnv
   ? [
       DiversifiedStakedETHIndex,
       icETHIndex,
+      GitcoinStakedETHIndex,
       FIXED_DAI,
       FIXED_USDC,
       DefiPulseIndex,
@@ -456,6 +478,7 @@ const indexNames = isDevEnv
   : [
       DiversifiedStakedETHIndex,
       icETHIndex,
+      GitcoinStakedETHIndex,
       DefiPulseIndex,
       MetaverseIndex,
       Ethereum2xFlexibleLeverageIndex,

@@ -39,6 +39,7 @@ export interface TokenContext {
   ethfli?: TokenMarketDataValues
   btcfli?: TokenMarketDataValues
   iceth?: TokenMarketDataValues
+  gtceth?: TokenMarketDataValues
   getMarketDataBySymbol: (token: Token) => TokenMarketDataValues | null
   selectLatestMarketData: (...args: any) => number
   selectMarketDataByToken: (token: Token) => number[][]
