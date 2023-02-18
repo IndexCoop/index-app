@@ -13,6 +13,7 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
+  GitcoinStakedETHIndex,
   GmiIndex,
   icETHIndex,
   IndexToken,
@@ -57,6 +58,7 @@ export const useMarketData = () => useContext(MarketDataContext)
 
 export const MarketDataProvider = (props: { children: any }) => {
   const [dsEthMarketData, setDsEthMarketData] = useState<any>({})
+  const [gtcEthMarketData, setGtcEthMarketData] = useState<any>({})
   const [ethMarketData, setEthMarketData] = useState<any>({})
   const [indexMarketData, setIndexMarketData] = useState<any>({})
   const [dpiMarketData, setDpiMarketData] = useState<any>({})
@@ -76,6 +78,8 @@ export const MarketDataProvider = (props: { children: any }) => {
         return dpiMarketData
       case DiversifiedStakedETHIndex:
         return dsEthMarketData
+      case GitcoinStakedETHIndex:
+        return gtcEthMarketData
       case MetaverseIndex:
         return mviMarketData
       case BedIndex:
@@ -101,6 +105,8 @@ export const MarketDataProvider = (props: { children: any }) => {
         return dpiMarketData
       case DiversifiedStakedETHIndex:
         return dsEthMarketData
+      case GitcoinStakedETHIndex:
+        return gtcEthMarketData
       case MetaverseIndex:
         return mviMarketData
       case BedIndex:
@@ -136,6 +142,7 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(icETHIndex.coingeckoId),
       fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
       fetchHistoricalTokenMarketData(DiversifiedStakedETHIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(GitcoinStakedETHIndex.coingeckoId),
     ])
 
     setEthMarketData(marketData[0])
@@ -148,6 +155,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     setIcEthMarketData(marketData[7])
     setGmiMarketData(marketData[8])
     setDsEthMarketData(marketData[9])
+    setDsEthMarketData(marketData[10])
   }, [])
 
   useEffect(() => {
@@ -164,6 +172,7 @@ export const MarketDataProvider = (props: { children: any }) => {
         index: indexMarketData,
         dpi: dpiMarketData,
         gmi: gmiMarketData,
+        gtceth: gtcEthMarketData,
         mvi: mviMarketData,
         bed: bedMarketData,
         ethfli: ethFliMarketData,

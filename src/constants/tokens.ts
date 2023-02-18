@@ -233,7 +233,6 @@ export const GitcoinStakedETHIndex: Token = {
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
-  // FIXME: add page
   url: 'gtceth',
   // FIXME: add when available
   coingeckoId: '',
