@@ -234,8 +234,7 @@ export const GitcoinStakedETHIndex: Token = {
   optimismAddress: undefined,
   decimals: 18,
   url: 'gtceth',
-  // FIXME: add when available
-  coingeckoId: '',
+  coingeckoId: 'gitcoin-staked-eth-index',
   tokenContextKey: 'gtceth',
   fees: {
     streamingFee: '2.0%',
