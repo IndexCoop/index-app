@@ -100,12 +100,19 @@ export async function getEnhancedFlashMintLeveragedQuote(
       chainId ?? 1
     )
     if (quoteLeveraged) {
+      const { inputOutputTokenAmount } = quoteLeveraged
+      let adjustedQuoteAmount = inputOutputTokenAmount
+      if (inputToken.symbol === 'icETH' || outputToken.symbol === 'icETH') {
+        adjustedQuoteAmount = isMinting
+          ? inputOutputTokenAmount.mul(10001).div(10000)
+          : inputOutputTokenAmount.mul(10000).div(10001)
+      }
       const tx = await getFlashMintLeveragedTransaction(
         isMinting,
         sellToken,
         buyToken,
         indexTokenAmount,
-        quoteLeveraged.inputOutputTokenAmount,
+        adjustedQuoteAmount,
         quoteLeveraged.swapDataDebtCollateral,
         quoteLeveraged.swapDataPaymentToken,
         provider,
