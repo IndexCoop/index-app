@@ -105,7 +105,7 @@ export async function getEnhancedFlashMintLeveragedQuote(
       if (inputToken.symbol === 'icETH' || outputToken.symbol === 'icETH') {
         adjustedQuoteAmount = isMinting
           ? inputOutputTokenAmount.mul(10001).div(10000)
-          : inputOutputTokenAmount.mul(10000).div(10001)
+          : inputOutputTokenAmount.mul(1000).div(1005)
       }
       const tx = await getFlashMintLeveragedTransaction(
         isMinting,

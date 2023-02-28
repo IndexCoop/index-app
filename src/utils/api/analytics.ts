@@ -4,7 +4,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider'
 const init = () => {
   return ArcxAnalyticsSdk.init(
     process.env.REACT_APP_ARCX_ANALYTICS_API_KEY ?? '',
-    { trackPages: true }
+    { trackPages: true, trackUTM: true }
   )
 }
 
