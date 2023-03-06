@@ -1,11 +1,14 @@
-import bedBorderLogo from 'assets/bed-border.png'
-import dsethLogo from 'assets/dseth_logo.svg'
-import fixedDaiLogo from 'assets/fixed_dai_logo.png'
-import fixedUsdcLogo from 'assets/fixed_usdc_logo.png'
-import gmiLogo from 'assets/gmilogo.png'
-import icethLogo from 'assets/icethlogo.png'
-import indexLogo from 'assets/index-token.png'
-import wseth2Logo from 'assets/wseth2_logo.svg'
+import {
+  bedBorderLogo,
+  dsethLogo,
+  fixedDaiLogo,
+  fixedUsdcLogo,
+  gmiLogo,
+  gtcEthLogo,
+  icethLogo,
+  indexLogo,
+  wseth2Logo,
+} from 'assets'
 import { TokenContextKeys } from 'providers/MarketData'
 
 import { MAINNET } from './chains'
@@ -219,6 +222,25 @@ export const GmiIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.thematic],
+  defaultChain: MAINNET.chainId,
+}
+
+export const GitcoinStakedETHIndex: Token = {
+  name: 'Gitcoin Staked ETH Index',
+  symbol: 'gtcETH',
+  image: gtcEthLogo,
+  address: '0x36c833Eed0D376f75D1ff9dFDeE260191336065e',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'gtceth',
+  coingeckoId: 'gitcoin-staked-eth-index',
+  tokenContextKey: 'gtceth',
+  fees: {
+    streamingFee: '2.0%',
+  },
+  isDangerous: false,
+  indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
 }
 
@@ -440,6 +462,7 @@ const indexNames = isDevEnv
   ? [
       DiversifiedStakedETHIndex,
       icETHIndex,
+      GitcoinStakedETHIndex,
       FIXED_DAI,
       FIXED_USDC,
       DefiPulseIndex,
@@ -453,6 +476,7 @@ const indexNames = isDevEnv
   : [
       DiversifiedStakedETHIndex,
       icETHIndex,
+      GitcoinStakedETHIndex,
       DefiPulseIndex,
       MetaverseIndex,
       Ethereum2xFlexibleLeverageIndex,

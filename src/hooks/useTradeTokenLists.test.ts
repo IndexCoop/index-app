@@ -7,6 +7,7 @@ import {
   FIXED_USDC,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygonRedeem,
+  GitcoinStakedETHIndex,
   icETHIndex,
   indexNamesMainnet,
   indexNamesPolygon,
@@ -19,7 +20,6 @@ import {
   getCurrencyTokensForToken,
   getTokenListByChain,
 } from './useTradeTokenLists'
-import { stETH } from '@indexcoop/flash-mint-sdk'
 
 describe('getCurrencyTokensForToken()', () => {
   test('returns default currency tokens', async () => {
@@ -58,6 +58,28 @@ describe('getCurrencyTokensForToken()', () => {
   test('returns correct currency tokens for dsETH', async () => {
     const chainId = 1
     const token = DiversifiedStakedETHIndex
+    const requiredTokens = [
+      'ETH',
+      'WETH',
+      'stETH',
+      'wstETH',
+      'rETH',
+      'sETH2',
+      'USDC',
+    ]
+    const currencyTokens = getCurrencyTokensForToken(token, chainId)
+    expect(currencyTokens.length).toEqual(requiredTokens.length)
+    for (let requiredToken of requiredTokens) {
+      expect(
+        currencyTokens.filter((currency) => currency.symbol === requiredToken)
+          .length
+      ).toEqual(1)
+    }
+  })
+
+  test('returns correct currency tokens for gtcETH', async () => {
+    const chainId = 1
+    const token = GitcoinStakedETHIndex
     const requiredTokens = [
       'ETH',
       'WETH',

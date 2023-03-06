@@ -115,7 +115,7 @@ const MarketChart = (props: {
     if (val === undefined || val === null) {
       return ''
     }
-    return `$${parseInt(val)}`
+    return `$${parseInt(val).toLocaleString('en-US')}`
   }
 
   const minY = Math.min(
