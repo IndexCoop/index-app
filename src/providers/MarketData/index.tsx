@@ -155,7 +155,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     setIcEthMarketData(marketData[7])
     setGmiMarketData(marketData[8])
     setDsEthMarketData(marketData[9])
-    setDsEthMarketData(marketData[10])
+    setGtcEthMarketData(marketData[10])
   }, [])
 
   useEffect(() => {

@@ -6,7 +6,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import App from 'App'
 import { GlobalFonts } from 'styles/fonts'
 import theme, { rainbowkitTheme } from 'styles/theme'
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { configureChains, createClient, WagmiConfig } from 'wagmi'
+import { mainnet, polygon } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 
@@ -49,7 +50,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 window.Buffer = window.Buffer || require('buffer').Buffer
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.polygon],
+  [mainnet, polygon],
   [alchemyProvider({ apiKey: AlchemyApiKey }), publicProvider()]
 )
 
