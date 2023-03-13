@@ -31,6 +31,7 @@ export const useAllReadOnlyProviders = () => {
 const getJsonRpcUrl = (chainId: number, chains: Chain[]) => {
   const defaultUrl = AlchemyMainnetUrl
   return (
-    chains.find((chain) => chain.id === chainId)?.rpcUrls.default ?? defaultUrl
+    chains.find((chain) => chain.id === chainId)?.rpcUrls.default.http[0] ??
+    defaultUrl
   )
 }
