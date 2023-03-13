@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react'
+import { BrowserTracing } from '@sentry/tracing'
 
 export enum CaptureExchangeIssuanceKey {
   leveraged = 'leveraged',
@@ -26,5 +27,17 @@ type CaptureTradeRequest = {
 export const captureTransaction = (request: CaptureTradeRequest) => {
   Sentry.captureException(`exchangeIssuanceTrade.${request.exchangeIssuance}`, {
     extra: request,
+  })
+}
+
+export const initSentryEventTracking = () => {
+  Sentry.init({
+    environment: process.env.REACT_APP_VERCEL_ENV,
+    dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
+    integrations: [new BrowserTracing()],
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0,
   })
 }
