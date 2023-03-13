@@ -26,13 +26,12 @@ import {
   trustWallet,
   walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets'
-import * as Sentry from '@sentry/react'
-import { BrowserTracing } from '@sentry/tracing'
 
 import { AlchemyApiKey } from 'constants/server'
 import { BalanceProvider } from 'providers/Balances'
 import { MarketDataProvider } from 'providers/MarketData'
 import { ProtectionProvider } from 'providers/Protection'
+import { initSentryEventTracking } from 'utils/api/sentry'
 import Homepage from 'views/Homepage'
 import BED from 'views/productpages/BED'
 import BTC2xFLI from 'views/productpages/BTC2xFLI'
@@ -113,20 +112,7 @@ const Providers = (props: { children: any }) => {
   )
 }
 
-const initSentryEventTracking = () => {
-  Sentry.init({
-    environment: process.env.REACT_APP_VERCEL_ENV,
-    dsn: 'https://a1f6cd2b7ce842b2a471a6c49def712e@o1145781.ingest.sentry.io/6213525',
-    integrations: [new BrowserTracing()],
-
-    // Set tracesSampleRate to 1.0 to capture 100%
-    // of transactions for performance monitoring.
-    // We recommend adjusting this value in production
-    tracesSampleRate: 1.0,
-  })
-}
 initSentryEventTracking()
-
 const container = document.getElementById('root')
 const root = createRoot(container!)
 root.render(
