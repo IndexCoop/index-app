@@ -62,7 +62,7 @@
     "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@chakra-ui/styled-system": "^2.3.4",
     "@chakra-ui/system": "2.3.0",
-    "@nomicfoundation/hardhat-network-helpers": "^1.0.7",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/jest": "^29.2.4",
