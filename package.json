@@ -70,7 +70,7 @@
     "@types/numeral": "^2.0.2",
     "@types/react": "^18.0.21",
     "eslint": "^8.24.0",
-    "eslint-plugin-simple-import-sort": "^8.0.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "hardhat": "^2.12.4",
     "lint-staged": "^13.0.3",
     "prettier": "^2.8.1",
