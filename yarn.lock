@@ -4891,10 +4891,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@*", "@types/jest@^29.2.4":
-  version "29.2.4"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.2.4.tgz#9c155c4b81c9570dbd183eb8604aa0ae80ba5a5b"
-  integrity sha512-PipFB04k2qTRPePduVLTRiPzQfvMeLwUN3Z21hsAKaB/W9IIzgB2pizCL466ftJlcyZqnHoC9ZHpxLGl3fS86A==
+"@types/jest@*", "@types/jest@^29.4.4":
+  version "29.4.4"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.4.4.tgz#ba257bd7b1876dec9e0b4fb82fa60eec5505e5f1"
+  integrity sha512-qezb65VIH7X1wobSnd6Lvdve7PXSyQRa3dljTkhTtDhi603RvHQCshSlJcuyMLHJpeHgY3NKwvDJWxMOOHxGDQ==
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
