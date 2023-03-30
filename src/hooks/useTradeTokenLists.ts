@@ -123,11 +123,11 @@ export const useTradeTokenLists = (
     const isBuyingNew = !isBuying
     const prevSellToken = sellToken
     const prevBuyToken = buyToken
-    const currencyToken = isBuying ? buyToken : sellToken
+    const indexToken = isBuying ? buyToken : sellToken
     const currencyTokensList = getCurrencyTokensForIndex(
-      singleToken ?? currencyToken,
+      singleToken ?? indexToken,
       chainId ?? 1,
-      isBuying
+      isBuyingNew
     )
     const sellTokenList = isBuyingNew
       ? currencyTokensList
