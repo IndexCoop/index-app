@@ -195,34 +195,86 @@ describe('getSetTokenAmount()', () => {
 
 describe('isEligibleTradePair()', () => {
   test('should return correct eligible status for 🧊ETH - issuing', async () => {
+    const chainId = 1
     const inputToken = ETH
     const outputToken = icETHIndex
     const isIssuance = true
-    const isEligible = isEligibleTradePair(inputToken, outputToken, isIssuance)
+    const isEligible = isEligibleTradePair(
+      inputToken,
+      outputToken,
+      chainId,
+      isIssuance
+    )
     expect(isEligible).toEqual(true)
-    const isEligibleStEth = isEligibleTradePair(STETH, outputToken, isIssuance)
+    const isEligibleStEth = isEligibleTradePair(
+      STETH,
+      outputToken,
+      chainId,
+      isIssuance
+    )
     expect(isEligibleStEth).toEqual(true)
-    const isEligibleWeth = isEligibleTradePair(WETH, outputToken, isIssuance)
+    const isEligibleWeth = isEligibleTradePair(
+      WETH,
+      outputToken,
+      chainId,
+      isIssuance
+    )
     expect(isEligibleWeth).toEqual(false)
-    const isEligibleDai = isEligibleTradePair(DAI, outputToken, isIssuance)
+    const isEligibleDai = isEligibleTradePair(
+      DAI,
+      outputToken,
+      chainId,
+      isIssuance
+    )
     expect(isEligibleDai).toEqual(false)
-    const isEligibleUSDC = isEligibleTradePair(USDC, outputToken, isIssuance)
+    const isEligibleUSDC = isEligibleTradePair(
+      USDC,
+      outputToken,
+      chainId,
+      isIssuance
+    )
     expect(isEligibleUSDC).toEqual(false)
   })
 
   test('should return correct eligible status for 🧊ETH - redeeming', async () => {
+    const chainId = 1
     const inputToken = icETHIndex
     const outputToken = ETH
     const isIssuance = false
-    const isEligible = isEligibleTradePair(inputToken, outputToken, isIssuance)
+    const isEligible = isEligibleTradePair(
+      inputToken,
+      outputToken,
+      chainId,
+      isIssuance
+    )
     expect(isEligible).toEqual(true)
-    const isEligibleStEth = isEligibleTradePair(inputToken, STETH, isIssuance)
+    const isEligibleStEth = isEligibleTradePair(
+      inputToken,
+      STETH,
+      chainId,
+      isIssuance
+    )
     expect(isEligibleStEth).toEqual(false)
-    const isEligibleWeth = isEligibleTradePair(inputToken, WETH, isIssuance)
+    const isEligibleWeth = isEligibleTradePair(
+      inputToken,
+      WETH,
+      chainId,
+      isIssuance
+    )
     expect(isEligibleWeth).toEqual(false)
-    const isEligibleDai = isEligibleTradePair(inputToken, DAI, isIssuance)
+    const isEligibleDai = isEligibleTradePair(
+      inputToken,
+      DAI,
+      chainId,
+      isIssuance
+    )
     expect(isEligibleDai).toEqual(false)
-    const isEligibleUSDC = isEligibleTradePair(inputToken, USDC, isIssuance)
+    const isEligibleUSDC = isEligibleTradePair(
+      inputToken,
+      USDC,
+      chainId,
+      isIssuance
+    )
     expect(isEligibleUSDC).toEqual(false)
   })
 })
@@ -251,7 +303,6 @@ describe('isEligibleTradePairZeroEx()', () => {
 
   test('mainnet FLIs are not be eligible for ZeroEx', async () => {
     const inputToken = ETH
-
     // Won't work with the ZeroEx contract, so shouldn't be eligible
     const isEligibleBtc2xFli = isEligibleTradePairZeroEx(
       inputToken,
