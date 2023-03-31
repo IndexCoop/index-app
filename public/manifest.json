@@ -1,13 +1,13 @@
 {
   "short_name": "Index",
   "name": "Index App",
-  "description": "Swap or FlashMint all products of the Index Coop",
+  "description": "Swap or FlashMint all products of the Index Coop.",
   "homepage_url": "https://app.indexcoop.com",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
-  "iconPath": "index-logo-white.svg",
+  "iconPath": "index-logo-black.svg",
   "icons": [
     {
       "src": "favicon.ico",
