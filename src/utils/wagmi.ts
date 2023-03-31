@@ -11,6 +11,7 @@ import {
   ledgerWallet,
   metaMaskWallet,
   rainbowWallet,
+  safeWallet,
   trustWallet,
   walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets'
@@ -26,6 +27,7 @@ const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
+      safeWallet({ chains }),
       metaMaskWallet({ chains }),
       rainbowWallet({ chains }),
       argentWallet({ chains }),
