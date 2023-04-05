@@ -1,31 +1,18 @@
 import { useEffect, useState } from 'react'
 
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { MAINNET, POLYGON } from 'constants/chains'
 import {
-  DAI,
-  DiversifiedStakedETHIndex,
   ETH,
-  FIXED_DAI,
-  FIXED_USDC,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygonRedeem,
-  GitcoinStakedETHIndex,
-  icETHIndex,
   indexNamesMainnet,
   indexNamesPolygon,
-  RETH,
-  SETH2,
-  STETH,
   Token,
-  USDC,
-  WETH,
-  WSETH2,
-  WSTETH,
 } from 'constants/tokens'
 import { fetchCoingeckoTokenPrice } from 'utils/api/coingeckoApi'
 import {
   getAddressForToken,
-  getCurrencyTokens,
+  getCurrencyTokensForIndex,
   getNativeToken,
 } from 'utils/tokens'
 
@@ -46,7 +33,7 @@ export const useTradeTokenLists = (
   const [nativeTokenPrice, setNativeTokenPrice] = useState<number>(0)
   const [sellToken, setSellToken] = useState<Token>(nativeToken)
   const [sellTokenList, setSellTokenList] = useState<Token[]>(
-    getCurrencyTokensForToken(tokenList[0], chainId ?? 1)
+    getCurrencyTokensForIndex(tokenList[0], chainId ?? 1, isBuying)
   )
   const [sellTokenPrice, setSellTokenPrice] = useState<number>(0)
 
@@ -60,9 +47,10 @@ export const useTradeTokenLists = (
       isFlashMint,
       singleToken
     )
-    const newSellTokenList = getCurrencyTokensForToken(
+    const newSellTokenList = getCurrencyTokensForIndex(
       singleToken ?? newBuyTokenList[0],
-      chainId ?? 1
+      chainId ?? 1,
+      isBuying
     )
     setSellTokenList(newSellTokenList)
     setBuyTokenList(newBuyTokenList)
@@ -101,9 +89,10 @@ export const useTradeTokenLists = (
       return
     }
     if (isBuying) {
-      const newSellTokenList = getCurrencyTokensForToken(
+      const newSellTokenList = getCurrencyTokensForIndex(
         singleToken ?? filteredList[0],
-        chainId ?? 1
+        chainId ?? 1,
+        isBuying
       )
       setSellTokenList(newSellTokenList)
       setSellToken(newSellTokenList[0])
@@ -119,9 +108,10 @@ export const useTradeTokenLists = (
       return
     }
     if (!isBuying) {
-      const newBuyTokenList = getCurrencyTokensForToken(
+      const newBuyTokenList = getCurrencyTokensForIndex(
         singleToken ?? filteredList[0],
-        chainId ?? 1
+        chainId ?? 1,
+        isBuying
       )
       setBuyTokenList(newBuyTokenList)
       setBuyToken(newBuyTokenList[0])
@@ -133,10 +123,11 @@ export const useTradeTokenLists = (
     const isBuyingNew = !isBuying
     const prevSellToken = sellToken
     const prevBuyToken = buyToken
-    const currencyToken = isBuying ? buyToken : sellToken
-    const currencyTokensList = getCurrencyTokensForToken(
-      singleToken ?? currencyToken,
-      chainId ?? 1
+    const indexToken = isBuying ? buyToken : sellToken
+    const currencyTokensList = getCurrencyTokensForIndex(
+      singleToken ?? indexToken,
+      chainId ?? 1,
+      isBuyingNew
     )
     const sellTokenList = isBuyingNew
       ? currencyTokensList
@@ -164,23 +155,6 @@ export const useTradeTokenLists = (
     changeSellToken,
     swapTokenLists,
   }
-}
-
-/**
- * Returns currency tokens based on individual tokens and their supported trade pairs.
- * @returns A (filtered) Token[] list.
- */
-export const getCurrencyTokensForToken = (token: Token, chainId: number) => {
-  if (token.symbol === FIXED_DAI.symbol) return [DAI]
-  if (token.symbol === FIXED_USDC.symbol) return [USDC]
-  if (token.symbol === icETHIndex.symbol) return [ETH, STETH]
-  if (
-    token.symbol === DiversifiedStakedETHIndex.symbol ||
-    token.symbol === GitcoinStakedETHIndex.symbol
-  )
-    return [ETH, WETH, STETH, WSTETH, RETH, SETH2, USDC]
-  const currencyTokens = getCurrencyTokens(chainId)
-  return currencyTokens
 }
 
 /**

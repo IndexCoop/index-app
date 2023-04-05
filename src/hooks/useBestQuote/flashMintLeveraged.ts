@@ -8,15 +8,13 @@ import {
 import { DefaultGasLimitFlashMintLeveraged } from 'constants/gas'
 import {
   eligibleLeveragedExchangeIssuanceTokens,
-  ETH,
-  icETHIndex,
-  STETH,
   Token,
 } from 'constants/tokens'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { getFlashMintLeveragedTransaction } from 'utils/flashMint/flashMintLeveragedTransaction'
 import { GasEstimatooor } from 'utils/gasEstimatooor'
 import { TxSimulator } from 'utils/simulator'
+import { getCurrencyTokensForIndex } from 'utils/tokens'
 
 import { ExchangeIssuanceLeveragedQuote, QuoteType } from './'
 
@@ -28,29 +26,21 @@ const isEligibleLeveragedToken = (token: Token) =>
 export const isEligibleTradePair = (
   inputToken: Token,
   outputToken: Token,
+  chainId: number,
   isIssuance: boolean
 ) => {
-  const tokenEligible = isIssuance
-    ? isEligibleLeveragedToken(outputToken)
-    : isEligibleLeveragedToken(inputToken)
-
-  const isIcEth =
-    inputToken.symbol === icETHIndex.symbol ||
-    outputToken.symbol === icETHIndex.symbol
-
-  if (tokenEligible && isIcEth && isIssuance) {
-    // Only ETH or stETH is allowed as input for icETH issuance at the moment
-    return (
-      inputToken.symbol === ETH.symbol || inputToken.symbol === STETH.symbol
-    )
-  }
-
-  if (tokenEligible && isIcEth && !isIssuance) {
-    // Only ETH is allowed as output for icETH redeeming at the moment
-    return outputToken.symbol === ETH.symbol
-  }
-
-  return tokenEligible
+  const indexToken = isIssuance ? outputToken : inputToken
+  const inputOutputToken = isIssuance ? inputToken : outputToken
+  const indexIsEligibleLeveragedToken = isEligibleLeveragedToken(indexToken)
+  const supportedTokens = getCurrencyTokensForIndex(
+    indexToken,
+    chainId,
+    isIssuance
+  )
+  const inputOutputTokenIsSupported =
+    supportedTokens.filter((token) => token.symbol === inputOutputToken.symbol)
+      .length > 0
+  return indexIsEligibleLeveragedToken && inputOutputTokenIsSupported
 }
 
 export async function getEnhancedFlashMintLeveragedQuote(
@@ -73,6 +63,7 @@ export async function getEnhancedFlashMintLeveragedQuote(
   const tokenEligibleForLeveragedEI = isEligibleTradePair(
     sellToken,
     buyToken,
+    chainId,
     isMinting
   )
   if (!tokenEligibleForLeveragedEI) return null

@@ -6,33 +6,17 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import App from 'App'
 import { GlobalFonts } from 'styles/fonts'
 import theme, { rainbowkitTheme } from 'styles/theme'
-import { configureChains, createClient, WagmiConfig } from 'wagmi'
-import { mainnet, polygon } from 'wagmi/chains'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
-import { publicProvider } from 'wagmi/providers/public'
+import { WagmiConfig } from 'wagmi'
 
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
-import {
-  connectorsForWallets,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit'
-import {
-  argentWallet,
-  braveWallet,
-  coinbaseWallet,
-  ledgerWallet,
-  metaMaskWallet,
-  rainbowWallet,
-  trustWallet,
-  walletConnectWallet,
-} from '@rainbow-me/rainbowkit/wallets'
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 
-import { AlchemyApiKey } from 'constants/server'
 import { BalanceProvider } from 'providers/Balances'
 import { MarketDataProvider } from 'providers/MarketData'
 import { ProtectionProvider } from 'providers/Protection'
 import { initSentryEventTracking } from 'utils/api/sentry'
+import { chains, wagmiClient } from 'utils/wagmi'
 import Homepage from 'views/Homepage'
 import BED from 'views/productpages/BED'
 import BTC2xFLI from 'views/productpages/BTC2xFLI'
@@ -48,41 +32,6 @@ import Products from 'views/Products'
 import '@rainbow-me/rainbowkit/styles.css'
 
 window.Buffer = window.Buffer || require('buffer').Buffer
-
-const { chains, provider } = configureChains(
-  [mainnet, polygon],
-  [alchemyProvider({ apiKey: AlchemyApiKey }), publicProvider()]
-)
-
-const connectors = connectorsForWallets([
-  {
-    groupName: 'Recommended',
-    wallets: [
-      metaMaskWallet({ chains }),
-      rainbowWallet({ chains }),
-      argentWallet({ chains }),
-      coinbaseWallet({
-        appName: 'Index Coop',
-        chains,
-      }),
-      ledgerWallet({ chains }),
-    ],
-  },
-  {
-    groupName: 'Others',
-    wallets: [
-      walletConnectWallet({ chains }),
-      braveWallet({ chains }),
-      trustWallet({ chains }),
-    ],
-  },
-])
-
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider,
-})
 
 const Providers = (props: { children: any }) => {
   const gtmParams = {

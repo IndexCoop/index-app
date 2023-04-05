@@ -1,10 +1,15 @@
 import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
 import {
   Bitcoin2xFlexibleLeverageIndex,
+  DAI,
+  DiversifiedStakedETHIndex,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
+  FIXED_DAI,
+  FIXED_USDC,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygonRedeem,
+  GitcoinStakedETHIndex,
   icETHIndex,
   indexNamesMainnet,
   indexNamesPolygon,
@@ -13,7 +18,13 @@ import {
   MATIC,
   optimismCurrencyTokens,
   polygonCurrencyTokens,
+  RETH,
+  SETH2,
+  STETH,
   Token,
+  USDC,
+  WETH,
+  WSTETH,
 } from 'constants/tokens'
 
 export function getAddressForToken(
@@ -48,6 +59,28 @@ export function getCurrencyTokens(chainId: number | undefined): Token[] {
     default:
       return []
   }
+}
+
+/**
+ * Gets the supported currency tokens for the given index.
+ * @returns Token[] list of supported currency tokens
+ */
+export function getCurrencyTokensForIndex(
+  index: Token,
+  chainId: number,
+  isMinting: boolean
+): Token[] {
+  if (index.symbol === FIXED_DAI.symbol) return [DAI]
+  if (index.symbol === FIXED_USDC.symbol) return [USDC]
+  if (index.symbol === icETHIndex.symbol)
+    return isMinting ? [ETH, STETH] : [ETH]
+  if (
+    index.symbol === DiversifiedStakedETHIndex.symbol ||
+    index.symbol === GitcoinStakedETHIndex.symbol
+  )
+    return [ETH, WETH, STETH, WSTETH, RETH, SETH2, USDC]
+  const currencyTokens = getCurrencyTokens(chainId)
+  return currencyTokens
 }
 
 export function getNativeToken(chainId: number | undefined): Token | null {
