@@ -18,6 +18,7 @@ import {
   icETHIndex,
   IndexToken,
   MetaverseIndex,
+  MoneyMarketIndex,
   Token,
 } from 'constants/tokens'
 import { fetchHistoricalTokenMarketData } from 'utils/api/coingeckoApi'
@@ -35,6 +36,7 @@ export interface TokenContext {
   index?: TokenMarketDataValues
   dpi?: TokenMarketDataValues
   gmi?: TokenMarketDataValues
+  mmi?: TokenMarketDataValues
   mvi?: TokenMarketDataValues
   bed?: TokenMarketDataValues
   ethfli?: TokenMarketDataValues
@@ -67,6 +69,7 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [ethFliMarketData, setEthFliMarketData] = useState<any>({})
   const [btcFliMarketData, setBtcFliMarketData] = useState<any>({})
   const [icEthMarketData, setIcEthMarketData] = useState<any>({})
+  const [mmiMarketData, setMmiMarketData] = useState<any>({})
   const [gmiMarketData, setGmiMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
@@ -92,6 +95,8 @@ export const MarketDataProvider = (props: { children: any }) => {
         return icEthMarketData
       case GmiIndex:
         return gmiMarketData
+      case MoneyMarketIndex:
+        return mmiMarketData
       default:
         return 0
     }
@@ -121,6 +126,8 @@ export const MarketDataProvider = (props: { children: any }) => {
         return indexMarketData
       case GmiIndex:
         return gmiMarketData
+      case MoneyMarketIndex:
+        return mmiMarketData
       default:
         return null
     }
@@ -143,6 +150,7 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
       fetchHistoricalTokenMarketData(DiversifiedStakedETHIndex.coingeckoId),
       fetchHistoricalTokenMarketData(GitcoinStakedETHIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(MoneyMarketIndex.coingeckoId),
     ])
 
     setEthMarketData(marketData[0])
@@ -156,6 +164,7 @@ export const MarketDataProvider = (props: { children: any }) => {
     setGmiMarketData(marketData[8])
     setDsEthMarketData(marketData[9])
     setGtcEthMarketData(marketData[10])
+    setMmiMarketData(marketData[11])
   }, [])
 
   useEffect(() => {
@@ -173,6 +182,7 @@ export const MarketDataProvider = (props: { children: any }) => {
         dpi: dpiMarketData,
         gmi: gmiMarketData,
         gtceth: gtcEthMarketData,
+        mmi: mmiMarketData,
         mvi: mviMarketData,
         bed: bedMarketData,
         ethfli: ethFliMarketData,
