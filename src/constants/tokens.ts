@@ -470,7 +470,17 @@ export const WSTETH: Token = {
  */
 
 // Add new currencies here as well to fetch all balances
-export const currencies = [DAI, USDC, RETH, SETH2, STETH, WETH, WSETH2, WSTETH]
+export const currencies = [
+  DAI,
+  USDC,
+  USDT,
+  RETH,
+  SETH2,
+  STETH,
+  WETH,
+  WSETH2,
+  WSTETH,
+]
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, SETH2, STETH, WETH]
 
@@ -500,6 +510,7 @@ const indexNames = isDevEnv
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
+      MoneyMarketIndex,
       FIXED_DAI,
       FIXED_USDC,
       DefiPulseIndex,
@@ -514,6 +525,7 @@ const indexNames = isDevEnv
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
+      MoneyMarketIndex,
       DefiPulseIndex,
       MetaverseIndex,
       Ethereum2xFlexibleLeverageIndex,
