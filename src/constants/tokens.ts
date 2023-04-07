@@ -418,6 +418,22 @@ export const USDC: Token = {
   indexTypes: [],
 }
 
+export const USDT: Token = {
+  name: 'Tether',
+  symbol: 'USDT',
+  image:
+    'https://assets.coingecko.com/coins/images/325/large/Tether.png?1668148663',
+  address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 6,
+  url: '',
+  coingeckoId: 'tether',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
 export const WETH: Token = {
   name: 'Wrapped Ether',
   symbol: 'WETH',
