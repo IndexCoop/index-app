@@ -265,6 +265,27 @@ export const icETHIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
+export const MoneyMarketIndex: Token = {
+  name: 'Money Market Index',
+  symbol: 'MMI',
+  address: '',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'mmi',
+  image: icethLogo,
+  coingeckoId: 'money-marketmmi-index',
+  tokenContextKey: 'mmi',
+  fees: {
+    streamingFee: '0.15%',
+    mintFee: '0.0%',
+    redeemFee: '0.0%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.yield],
+  defaultChain: MAINNET.chainId,
+}
+
 /**
  * Other - IndexCoop
  */
