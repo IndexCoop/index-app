@@ -268,7 +268,7 @@ export const icETHIndex: Token = {
 export const MoneyMarketIndex: Token = {
   name: 'Money Market Index',
   symbol: 'MMI',
-  address: '',
+  address: '0xB396C717105f2F9Ba81007c7FB774fb06d0fb937',
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
