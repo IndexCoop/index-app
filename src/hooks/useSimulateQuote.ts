@@ -49,16 +49,21 @@ class TransactionRequestBuilder {
     quoteResult: FlashMintQuoteResult
   ): Promise<PopulatedTransaction | null> {
     const { chainId, provider, signer } = this
-    const { inputTokenBalance, slippage } = quoteResult
+    const { quotes, slippage } = quoteResult
     const {
+      flashMint,
       flashMintLeveraged: quoteLeveraged,
       flashMintNotional: quoteNotional,
       flashMintZeroEx: quoteZeroEx,
-    } = quoteResult.quotes
-    let request: PopulatedTransaction | null = null
+    } = quotes
+
+    if (flashMint) {
+      console.log(flashMint.tx, 'request')
+      return flashMint.tx
+    }
 
     if (quoteLeveraged) {
-      request = await getFlashMintLeveragedTransaction(
+      return await getFlashMintLeveragedTransaction(
         quoteLeveraged.isMinting,
         quoteLeveraged.inputToken,
         quoteLeveraged.outputToken,
@@ -73,7 +78,7 @@ class TransactionRequestBuilder {
     }
 
     if (quoteNotional) {
-      request = await getFlashMintNotionalTransaction(
+      return await getFlashMintNotionalTransaction(
         quoteNotional.isMinting,
         quoteNotional.inputToken,
         quoteNotional.outputToken,
@@ -88,7 +93,7 @@ class TransactionRequestBuilder {
     }
 
     if (quoteZeroEx) {
-      request = await getFlashMintZeroExTransaction(
+      return await getFlashMintZeroExTransaction(
         quoteZeroEx.isMinting,
         quoteZeroEx.inputToken,
         quoteZeroEx.outputToken,
@@ -100,6 +105,7 @@ class TransactionRequestBuilder {
         chainId
       )
     }
-    return request
+
+    return null
   }
 }

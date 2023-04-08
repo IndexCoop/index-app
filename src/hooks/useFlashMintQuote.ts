@@ -1,9 +1,7 @@
 import { useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
-import { IndexApiBaseUrl } from 'constants/server'
 import { Token } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { useBalanceData } from 'providers/Balances'
@@ -13,10 +11,12 @@ import { getNetworkKey } from 'utils/api/zeroExUtils'
 import { getAddressForToken } from 'utils/tokens'
 
 import { useIssuanceQuote } from './issuance/useIssuanceQuote'
+import { getEnhancedFlashMintQuote } from './useBestQuote/flashMint'
 import { getEnhancedFlashMintLeveragedQuote } from './useBestQuote/flashMintLeveraged'
 import { getEnhancedFlashMintNotionalQuote } from './useBestQuote/flashMintNotional'
 import { getEnhancedFlashMintZeroExQuote } from './useBestQuote/flashMintZeroEx'
 import {
+  EnhancedFlashMintQuote,
   ExchangeIssuanceLeveragedQuote,
   ExchangeIssuanceZeroExQuote,
   FlashMintNotionalQuote,
@@ -29,6 +29,7 @@ type FlashMintPerpQuote = {
 
 export type FlashMintQuoteResult = {
   quotes: {
+    flashMint: EnhancedFlashMintQuote | null
     flashMintLeveraged: ExchangeIssuanceLeveragedQuote | null
     flashMintNotional: FlashMintNotionalQuote | null
     flashMintPerp: FlashMintPerpQuote | null
@@ -86,6 +87,7 @@ export const useFlashMintQuote = () => {
 
     setIsFetching(true)
 
+    let flashMintQuote: EnhancedFlashMintQuote | null = null
     let flashMintLeveragedQuote: ExchangeIssuanceLeveragedQuote | null = null
     let flashMintNotionalQuote: FlashMintNotionalQuote | null = null
     let flashMintPerpQuote: FlashMintPerpQuote | null = null
@@ -95,7 +97,27 @@ export const useFlashMintQuote = () => {
       getTokenBalance(inputToken.symbol, chainId) ?? BigNumber.from(0)
 
     const isOptimismNetwork = chainId === 10
-    if (isOptimismNetwork) {
+    if (indexToken.symbol === 'MMI') {
+      console.log('hereMMI')
+      const gasStation = new GasStation(provider)
+      const gasPrice = await gasStation.getGasPrice()
+      flashMintQuote = await getEnhancedFlashMintQuote(
+        isMinting,
+        inputTokenAddress,
+        outputTokenAddress,
+        inputToken,
+        outputToken,
+        indexTokenAmount,
+        sellTokenPrice,
+        nativeTokenPrice,
+        gasPrice,
+        slippage,
+        chainId,
+        provider,
+        signer
+      )
+      console.log(flashMintQuote)
+    } else if (isOptimismNetwork) {
       const estimatedQuoteAmount = await getQuote(
         isMinting,
         indexToken,
@@ -171,6 +193,7 @@ export const useFlashMintQuote = () => {
 
     const quoteResult: FlashMintQuoteResult = {
       quotes: {
+        flashMint: flashMintQuote,
         flashMintLeveraged: flashMintLeveragedQuote,
         flashMintNotional: flashMintNotionalQuote,
         flashMintPerp: flashMintPerpQuote,
