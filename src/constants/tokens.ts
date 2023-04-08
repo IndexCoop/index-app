@@ -7,6 +7,7 @@ import {
   gtcEthLogo,
   icethLogo,
   indexLogo,
+  mmiLogo,
   wseth2Logo,
 } from 'assets'
 import { TokenContextKeys } from 'providers/MarketData'
@@ -273,7 +274,7 @@ export const MoneyMarketIndex: Token = {
   optimismAddress: undefined,
   decimals: 18,
   url: 'mmi',
-  image: icethLogo,
+  image: mmiLogo,
   coingeckoId: 'money-marketmmi-index',
   tokenContextKey: 'mmi',
   fees: {
