@@ -107,6 +107,7 @@ export async function getEnhancedFlashMintQuote(
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,
         // type specific properties
+        contractType: quoteFM.contractType.toString(),
         contract: quoteFM.contract,
         tx: transaction,
       }

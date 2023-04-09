@@ -5,6 +5,7 @@ export enum CaptureExchangeIssuanceKey {
   leveraged = 'leveraged',
   notional = 'notional',
   perp = 'perp',
+  wrapped = 'wrapped',
   zeroEx = 'zeroEx',
 }
 
@@ -25,7 +26,7 @@ type CaptureTradeRequest = {
 }
 
 export const captureTransaction = (request: CaptureTradeRequest) => {
-  Sentry.captureException(`exchangeIssuanceTrade.${request.exchangeIssuance}`, {
+  Sentry.captureException(`flashmint.${request.exchangeIssuance}`, {
     extra: request,
   })
 }

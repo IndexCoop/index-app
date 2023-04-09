@@ -62,6 +62,7 @@ export interface FlashMintNotionalQuote extends Quote {
 }
 
 export interface EnhancedFlashMintQuote extends Quote {
+  contractType: string
   contract: string
   tx: PopulatedTransaction
 }
