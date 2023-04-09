@@ -275,7 +275,7 @@ export const MoneyMarketIndex: Token = {
   decimals: 18,
   url: 'mmi',
   image: mmiLogo,
-  coingeckoId: 'money-marketmmi-index',
+  coingeckoId: 'money-market-index',
   tokenContextKey: 'mmi',
   fees: {
     streamingFee: '0.15%',
