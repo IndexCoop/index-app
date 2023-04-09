@@ -58,7 +58,6 @@ class TransactionRequestBuilder {
     } = quotes
 
     if (flashMint) {
-      console.log(flashMint.tx, 'request')
       return flashMint.tx
     }
 

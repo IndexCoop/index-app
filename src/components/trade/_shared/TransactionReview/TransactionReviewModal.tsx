@@ -147,7 +147,6 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
 
   const onSubmitWithSuccess = (success: boolean) => {
     if (!success) return
-    console.log('SUCCESS')
     setState(TransactionReviewModalState.success)
   }
 
@@ -262,7 +261,6 @@ const Review = (props: ReviewProps) => {
     )
 
   useEffect(() => {
-    console.log(props.tx, 'updated')
     setSimulationState(TransactionReviewSimulationState.default)
   }, [props.tx])
 
@@ -300,7 +298,6 @@ const Review = (props: ReviewProps) => {
     setSimulationState(state)
     console.log('isSuccess', isSuccess)
     if (!isSuccess && !override) return
-    console.log('submit')
     await executeTrade(override)
     onSubmitWithSuccess(true)
   }

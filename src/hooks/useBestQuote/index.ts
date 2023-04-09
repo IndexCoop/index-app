@@ -346,19 +346,19 @@ export const useBestQuote = () => {
           signer
         )
 
-      console.log('////////')
-      console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
-      console.log(
-        'exchangeIssuanceLeveragedQuote',
-        exchangeIssuanceLeveragedQuote
-      )
+      // console.log('////////')
+      // console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
+      // console.log(
+      //   'exchangeIssuanceLeveragedQuote',
+      //   exchangeIssuanceLeveragedQuote
+      // )
 
-      console.log(
-        zeroExQuote?.fullCostsInUsd ?? null,
-        exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
-        exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
-        'FC'
-      )
+      // console.log(
+      //   zeroExQuote?.fullCostsInUsd ?? null,
+      //   exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
+      //   exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
+      //   'FC'
+      // )
 
       const bestQuote = getBestQuote(
         zeroExQuote?.fullCostsInUsd ?? null,

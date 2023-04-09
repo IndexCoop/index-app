@@ -98,7 +98,6 @@ export const useFlashMintQuote = () => {
 
     const isOptimismNetwork = chainId === 10
     if (indexToken.symbol === 'MMI') {
-      console.log('hereMMI')
       const gasStation = new GasStation(provider)
       const gasPrice = await gasStation.getGasPrice()
       flashMintQuote = await getEnhancedFlashMintQuote(
@@ -116,7 +115,6 @@ export const useFlashMintQuote = () => {
         provider,
         signer
       )
-      console.log(flashMintQuote)
     } else if (isOptimismNetwork) {
       const estimatedQuoteAmount = await getQuote(
         isMinting,
@@ -184,11 +182,6 @@ export const useFlashMintQuote = () => {
         provider,
         signer
       )
-
-      console.log('////////')
-      console.log('exchangeIssuanceZeroExQuote', flashMintZeroExQuote)
-      console.log('exchangeIssuanceLeveragedQuote', flashMintLeveragedQuote)
-      console.log('flashMintNotionalQuote', flashMintNotionalQuote)
     }
 
     const quoteResult: FlashMintQuoteResult = {

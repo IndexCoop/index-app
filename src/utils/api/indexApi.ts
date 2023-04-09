@@ -6,7 +6,6 @@ export class IndexApi {
    * @returns JSON on success or throws error.
    */
   async get(path: string) {
-    // console.log('GET', path)
     try {
       const headers = getIndexApiHeaders()
       const resp = await fetch(`${IndexApiBaseUrl}${path}`, {

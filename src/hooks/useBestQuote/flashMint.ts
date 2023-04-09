@@ -32,7 +32,6 @@ export async function getEnhancedFlashMintQuote(
   if (chainId !== MAINNET.chainId) return null
   const indexToken = isMinting ? buyToken : sellToken
   const inputOutputToken = isMinting ? sellToken : buyToken
-  console.log(indexToken, inputOutputToken)
   // Allow only MMI
   if (indexToken.symbol !== MoneyMarketIndex.symbol) return null
   const currencies = getCurrencyTokensForIndex(
@@ -44,7 +43,6 @@ export async function getEnhancedFlashMintQuote(
   const isAllowedCurrency =
     currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)
       .length > 0
-  console.log(isAllowedCurrency)
   if (!isAllowedCurrency) return null
 
   const inputToken = {
