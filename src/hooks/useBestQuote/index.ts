@@ -345,7 +345,6 @@ export const useBestQuote = () => {
           zeroExApi,
           signer
         )
-      // TODO: add FlashMintNotional
 
       console.log('////////')
       console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
@@ -400,6 +399,7 @@ export const useBestQuote = () => {
         hasBetterQuote,
         isReasonPriceImpact,
         quotes: {
+          // TODO: add flash mint quote
           exchangeIssuanceLeveraged: isFlashMintLeveragedBestQuote
             ? exchangeIssuanceLeveragedQuote
             : null,
