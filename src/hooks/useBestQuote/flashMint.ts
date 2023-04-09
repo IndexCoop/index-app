@@ -5,7 +5,6 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from 'constants/chains'
-import { DefaultGasLimitFlashMintZeroEx } from 'constants/gas'
 import { MoneyMarketIndex, Token } from 'constants/tokens'
 import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
 import { GasEstimatooor } from 'utils/gasEstimatooor'
@@ -56,9 +55,6 @@ export async function getEnhancedFlashMintQuote(
     address: outputTokenAddress,
   }
 
-  const from = await signer.getAddress()
-  console.log(from, 'SIGNER')
-
   try {
     const request = {
       isMinting,
@@ -69,9 +65,9 @@ export async function getEnhancedFlashMintQuote(
     }
     const quoteProvider = new FlashMintQuoteProvider(provider)
     const quoteFM = await quoteProvider.getQuote(request)
-    console.log(quoteFM)
     if (quoteFM) {
       const { inputOutputAmount, tx } = quoteFM
+      const from = await signer.getAddress()
       let transaction: PopulatedTransaction = {
         chainId: 1,
         from,
