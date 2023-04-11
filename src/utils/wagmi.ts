@@ -10,6 +10,7 @@ import {
   coinbaseWallet,
   ledgerWallet,
   metaMaskWallet,
+  okxWallet,
   rainbowWallet,
   safeWallet,
   trustWallet,
@@ -36,6 +37,7 @@ const connectors = connectorsForWallets([
         chains,
       }),
       ledgerWallet({ chains }),
+      okxWallet({ chains }),
     ],
   },
   {
