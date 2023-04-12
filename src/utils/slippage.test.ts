@@ -1,10 +1,13 @@
 import { slippageMap } from 'constants/slippage'
 import {
+  DAI,
   DiversifiedStakedETHIndex,
   ETH,
   icETHIndex,
   MoneyMarketIndex,
   USDC,
+  USDT,
+  WETH,
   WSETH2,
 } from 'constants/tokens'
 
@@ -93,7 +96,37 @@ describe('selectSlippage()', () => {
   it('returns correct slippage for MMI', () => {
     const expectedSlippage = 0.01
     const index = MoneyMarketIndex.symbol
+    const inputOutputToken = WETH.symbol
+    const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
+    const result = selectSlippage(slippageModified!, index, inputOutputToken)
+    expect(slippageModified).toBe(expectedSlippage)
+    expect(result).toBe(expectedSlippage)
+  })
+
+  it('returns correct slippage for MMI-USDC', () => {
+    const expectedSlippage = 0.001
+    const index = MoneyMarketIndex.symbol
+    const inputOutputToken = DAI.symbol
+    const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
+    const result = selectSlippage(slippageModified!, index, inputOutputToken)
+    expect(slippageModified).toBe(expectedSlippage)
+    expect(result).toBe(expectedSlippage)
+  })
+
+  it('returns correct slippage for MMI-USDC', () => {
+    const expectedSlippage = 0.001
+    const index = MoneyMarketIndex.symbol
     const inputOutputToken = USDC.symbol
+    const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
+    const result = selectSlippage(slippageModified!, index, inputOutputToken)
+    expect(slippageModified).toBe(expectedSlippage)
+    expect(result).toBe(expectedSlippage)
+  })
+
+  it('returns correct slippage for MMI-USDC', () => {
+    const expectedSlippage = 0.001
+    const index = MoneyMarketIndex.symbol
+    const inputOutputToken = USDT.symbol
     const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
     const result = selectSlippage(slippageModified!, index, inputOutputToken)
     expect(slippageModified).toBe(expectedSlippage)
