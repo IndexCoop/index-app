@@ -49,4 +49,15 @@ describe('getTokenListByChain()', () => {
     const list = getTokenListByChain(chainId, isFlashMint, singleToken)
     expect(list).toEqual(flashMintIndexesPolygonRedeem)
   })
+
+  test('returns MMI only for FlashMint (not Swap)', async () => {
+    const chainId = 1
+    const singleToken = undefined
+    const flashMintList = getTokenListByChain(chainId, true, singleToken)
+    const swapList = getTokenListByChain(chainId, false, singleToken)
+    expect(
+      flashMintList.filter((token) => token.symbol === 'MMI').length
+    ).toEqual(1)
+    expect(swapList.filter((token) => token.symbol === 'MMI').length).toEqual(0)
+  })
 })

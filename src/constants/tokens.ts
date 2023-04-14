@@ -535,7 +535,9 @@ const indexNames = isDevEnv
       IndexToken,
     ]
 
-export const indexNamesMainnet = indexNames.filter((index) => index.address)
+export const indexNamesMainnet = indexNames.filter(
+  (index) => index.address && index.symbol !== MoneyMarketIndex.symbol
+)
 export const indexNamesPolygon = indexNames.filter(
   (index) =>
     index.polygonAddress &&
