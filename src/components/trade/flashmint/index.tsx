@@ -352,6 +352,7 @@ const FlashMint = (props: QuickTradeProps) => {
         buttonLabel={buttonLabel}
         isButtonDisabled={isButtonDisabled}
         isLoading={isLoading}
+        showMevProtectionMessage={true}
         onClickTradeButton={onClickTradeButton}
         contractAddress={contractAddress}
         contractExplorerUrl={contractBlockExplorerUrl}
