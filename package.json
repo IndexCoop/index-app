@@ -10,7 +10,7 @@
     "@elgorditosalsero/react-gtm-hook": "^2.5.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.4",
-    "@indexcoop/flash-mint-sdk": "^1.8.0",
+    "@indexcoop/flash-mint-sdk": "^1.9.0",
     "@rainbow-me/rainbowkit": "^0.12.5",
     "@sentry/core": "^7.42.0",
     "@sentry/react": "^7.42.0",
