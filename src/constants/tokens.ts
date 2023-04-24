@@ -273,7 +273,7 @@ export const MoneyMarketIndex: Token = {
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
-  url: 'mmi',
+  url: 'icsmmt',
   image: mmiLogo,
   coingeckoId: 'money-market-index',
   tokenContextKey: 'mmi',
