@@ -1,5 +1,6 @@
 import {
   DefiPulseIndex,
+  MoneyMarketIndex,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygonRedeem,
   indexNamesMainnet,
@@ -56,8 +57,12 @@ describe('getTokenListByChain()', () => {
     const flashMintList = getTokenListByChain(chainId, true, singleToken)
     const swapList = getTokenListByChain(chainId, false, singleToken)
     expect(
-      flashMintList.filter((token) => token.symbol === 'MMI').length
+      flashMintList.filter((token) => token.symbol === MoneyMarketIndex.symbol)
+        .length
     ).toEqual(1)
-    expect(swapList.filter((token) => token.symbol === 'MMI').length).toEqual(0)
+    expect(
+      swapList.filter((token) => token.symbol === MoneyMarketIndex.symbol)
+        .length
+    ).toEqual(0)
   })
 })
