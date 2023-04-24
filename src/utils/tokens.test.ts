@@ -13,6 +13,7 @@ import {
   mainnetCurrencyTokens,
   MATIC,
   MetaverseIndex,
+  MoneyMarketIndex,
   optimismCurrencyTokens,
   polygonCurrencyTokens,
   STETH,
@@ -153,6 +154,20 @@ describe('getCurrencyTokensForIndex()', () => {
       'sETH2',
       'USDC',
     ]
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    expect(currencyTokens.length).toEqual(requiredTokens.length)
+    for (let requiredToken of requiredTokens) {
+      expect(
+        currencyTokens.filter((currency) => currency.symbol === requiredToken)
+          .length
+      ).toEqual(1)
+    }
+  })
+
+  test('returns correct currency tokens for gtcETH', async () => {
+    const chainId = 1
+    const token = MoneyMarketIndex
+    const requiredTokens = ['DAI', 'USDC', 'USDT', 'WETH']
     const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
     expect(currencyTokens.length).toEqual(requiredTokens.length)
     for (let requiredToken of requiredTokens) {

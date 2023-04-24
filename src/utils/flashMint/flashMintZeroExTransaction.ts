@@ -47,7 +47,6 @@ export async function getFlashMintZeroExTransaction(
   try {
     const block = await provider.getBlock()
     const gasLimitLastBlock = block.gasLimit
-    console.log(gasLimitLastBlock.toString(), 'gasLimitLastBlock')
     const contract = getFlashMintZeroExContractForToken(
       setTokenSymbol,
       signer,

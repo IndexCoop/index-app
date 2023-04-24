@@ -41,9 +41,6 @@ export class TxSimulator {
       // simulation_type: 'quick',
     }
 
-    // console.log(tx)
-    // console.log(body)
-
     const headers = {
       'Content-Type': 'application/json',
       'X-Access-Key': this.accessKey,
@@ -60,8 +57,6 @@ export class TxSimulator {
       throw Error('Tenderly simulation quota reached')
     }
     const data = await res.json()
-    // console.log(data)
-    // console.log(data.simulation)
     return data.simulation.status === true
   }
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1500 1500">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-2 {
+        fill: url(#radial-gradient-3);
+      }
+
+      .cls-3 {
+        fill: url(#radial-gradient-2);
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient-3);
+      }
+
+      .cls-5 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-6 {
+        fill: url(#radial-gradient);
+      }
+    </style>
+    <radialGradient id="radial-gradient" cx="955.06" cy="10.76" fx="955.06" fy="10.76" r="2131.1" gradientTransform="translate(1836.06 724.6) rotate(-135) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#018f92"/>
+      <stop offset=".28" stop-color="#017276"/>
+      <stop offset=".6" stop-color="#02575c"/>
+      <stop offset=".79" stop-color="#034d53"/>
+      <stop offset=".96" stop-color="#034f55"/>
+      <stop offset=".98" stop-color="#035157"/>
+    </radialGradient>
+    <radialGradient id="radial-gradient-2" cx="794.2" cy="526.97" fx="794.2" fy="526.97" r="1042.93" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fcfeff"/>
+      <stop offset=".2" stop-color="#f0f3f4"/>
+      <stop offset=".56" stop-color="#d1d8d9"/>
+      <stop offset=".99" stop-color="#a6b2b2"/>
+    </radialGradient>
+    <linearGradient id="linear-gradient" x1="486.43" y1="1006.64" x2="659.15" y2="1006.64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a6b2b2"/>
+      <stop offset=".06" stop-color="#b7c1c2"/>
+      <stop offset=".18" stop-color="#d0d7d8"/>
+      <stop offset=".31" stop-color="#e4e8e9"/>
+      <stop offset=".45" stop-color="#f1f4f5"/>
+      <stop offset=".64" stop-color="#f9fbfc"/>
+      <stop offset=".98" stop-color="#fcfeff"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="934.71" y1="705.31" x2="954.31" y2="734.11" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-3" x1="898.41" y1="672.14" x2="1146.98" y2="1002.4" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#59b5ba"/>
+      <stop offset=".05" stop-color="#64b8bc"/>
+      <stop offset=".14" stop-color="#83c0c3"/>
+      <stop offset=".26" stop-color="#b5cdce"/>
+      <stop offset=".31" stop-color="#cdd4d4"/>
+      <stop offset=".34" stop-color="#d6dcdc"/>
+      <stop offset=".41" stop-color="#e7ebec"/>
+      <stop offset=".5" stop-color="#f3f6f7"/>
+      <stop offset=".63" stop-color="#fafcfd"/>
+      <stop offset=".98" stop-color="#fcfeff"/>
+    </linearGradient>
+    <radialGradient id="radial-gradient-3" cx="1196.73" cy="497.02" fx="1196.73" fy="497.02" r="82.2" gradientUnits="userSpaceOnUse">
+      <stop offset=".02" stop-color="#fcfeff"/>
+      <stop offset=".47" stop-color="#fafcfd"/>
+      <stop offset=".64" stop-color="#f3f6f7"/>
+      <stop offset=".75" stop-color="#e7ebec"/>
+      <stop offset=".85" stop-color="#d6dcdd"/>
+      <stop offset=".93" stop-color="#c0c9ca"/>
+      <stop offset="1" stop-color="#a6b2b2"/>
+      <stop offset="1" stop-color="#a6b2b2"/>
+    </radialGradient>
+  </defs>
+  <circle class="cls-6" cx="750" cy="750" r="745"/>
+  <path class="cls-3" d="m1139.92,569.33l-390.55,301.15-.08-.06-49.83,38.49-40.31,31.12-172.72,133.21c-13.6,9.27-28.56,13.71-43.32,13.71-28.11,0-55.68-16.03-72.31-45.55-9.16-16.31-13.77-34.6-14.21-52.78-.05-.97-.05-1.93-.05-2.87v-475c0-1.46.03-2.92.11-4.36,2.73-71.18,75.9-114.67,136.38-82.69l255.05,204.92,257.45-198.85c39.87-30.82,93.48-17.91,119.77,28.8,8.03,14.29,12.61,30.07,13.91,45.99.25,2.98.36,6.01.39,8.99"/>
+  <path class="cls-1" d="m659.15,940.04l-168.52,130.17c-1.38,1.08-2.79,2.1-4.19,3.03l172.72-133.21Z"/>
+  <g>
+    <polygon class="cls-5" points="837.86 802.53 1139.92 569.61 1139.92 569.33 749.37 870.48 749.54 870.62 837.86 802.53"/>
+    <path class="cls-4" d="m865.1,823.69l-88.31,68.09,226.62,176.06c60.48,31.98,133.68-11.51,136.41-82.69.08-1.46.11-2.9.11-4.36v-369.02l-274.82,211.92Z"/>
+  </g>
+  <circle class="cls-2" cx="1201.22" cy="543.9" r="37.82"/>
+</svg>

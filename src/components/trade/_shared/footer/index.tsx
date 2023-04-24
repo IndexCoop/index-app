@@ -20,6 +20,7 @@ type TradeButtonContainerProps = {
   buttonLabel: string
   isButtonDisabled: boolean
   isLoading: boolean
+  showMevProtectionMessage: boolean
   onClickTradeButton: () => void
   contractAddress: string | null
   contractExplorerUrl: string | null
@@ -32,6 +33,7 @@ export const TradeButtonContainer = ({
   buttonLabel,
   isButtonDisabled,
   isLoading,
+  showMevProtectionMessage,
   onClickTradeButton,
   contractAddress,
   contractExplorerUrl,
@@ -57,9 +59,11 @@ export const TradeButtonContainer = ({
     <Flex direction='column'>
       {children}
       {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
-      <Flex my='8px' justifyContent={'center'}>
-        {isMainnet && <FlashbotsRpcMessage />}
-      </Flex>
+      {showMevProtectionMessage && (
+        <Flex my='8px' justifyContent={'center'}>
+          {isMainnet && <FlashbotsRpcMessage />}
+        </Flex>
+      )}
       {!requiresProtection && (
         <TradeButton
           label={buttonLabel}

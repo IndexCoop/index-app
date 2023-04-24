@@ -1,23 +1,33 @@
 import { colors, useColorStyles } from 'styles/colors'
 
-import { Flex, Link, Text } from '@chakra-ui/layout'
+import { Flex, Text } from '@chakra-ui/layout'
+
+import { addMEVProtectionChain } from 'utils/chains'
 
 const FlashbotsRpcMessage = () => {
   const { isDarkMode, styles } = useColorStyles()
   const backgroundColor = isDarkMode ? colors.icGray3 : colors.icGray1
+  const onClick = async () => {
+    const ethereum = window.ethereum
+    if (!ethereum) return
+    console.log('adding...')
+    await addMEVProtectionChain(ethereum)
+  }
   return (
-    <Link
-      color={styles.text}
-      href='https://docs.flashbots.net/flashbots-protect/rpc/quick-start/#how-to-use-flashbots-protect-rpc-in-metamask'
-      isExternal
+    <Flex
+      background={backgroundColor}
+      borderRadius='10'
+      cursor={'pointer'}
+      my='16px'
+      p='16px'
+      onClick={onClick}
     >
-      <Flex background={backgroundColor} borderRadius='10' my='16px' p='16px'>
-        <Text color={styles.text} fontSize='11px'>
-          If you want additional protection from transactions failing, we
-          recommend using flashbots RPC. Learn how to add it here.
-        </Text>
-      </Flex>
-    </Link>
+      <Text color={styles.text} fontSize='12px'>
+        It is highly recommended to use a MEV protected RPC for Flash minting
+        and redeeming. Click here to add the MEV Blocker network to your wallet
+        - if supported.
+      </Text>
+    </Flex>
   )
 }
 

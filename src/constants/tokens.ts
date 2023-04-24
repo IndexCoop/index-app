@@ -7,6 +7,7 @@ import {
   gtcEthLogo,
   icethLogo,
   indexLogo,
+  mmiLogo,
   wseth2Logo,
 } from 'assets'
 import { TokenContextKeys } from 'providers/MarketData'
@@ -265,6 +266,27 @@ export const icETHIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
+export const MoneyMarketIndex: Token = {
+  name: 'Money Market Index Token',
+  symbol: 'icSMMT',
+  address: '0xc30FBa978743a43E736fc32FBeEd364b8A2039cD',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'icsmmt',
+  image: mmiLogo,
+  coingeckoId: 'money-market-index',
+  tokenContextKey: 'mmi',
+  fees: {
+    streamingFee: '0.15%',
+    mintFee: '0.0%',
+    redeemFee: '0.0%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.yield],
+  defaultChain: MAINNET.chainId,
+}
+
 /**
  * Other - IndexCoop
  */
@@ -397,6 +419,22 @@ export const USDC: Token = {
   indexTypes: [],
 }
 
+export const USDT: Token = {
+  name: 'Tether',
+  symbol: 'USDT',
+  image:
+    'https://assets.coingecko.com/coins/images/325/large/Tether.png?1668148663',
+  address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 6,
+  url: '',
+  coingeckoId: 'tether',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
 export const WETH: Token = {
   name: 'Wrapped Ether',
   symbol: 'WETH',
@@ -433,7 +471,17 @@ export const WSTETH: Token = {
  */
 
 // Add new currencies here as well to fetch all balances
-export const currencies = [DAI, USDC, RETH, SETH2, STETH, WETH, WSETH2, WSTETH]
+export const currencies = [
+  DAI,
+  USDC,
+  USDT,
+  RETH,
+  SETH2,
+  STETH,
+  WETH,
+  WSETH2,
+  WSTETH,
+]
 
 export const mainnetCurrencyTokens = [ETH, DAI, USDC, SETH2, STETH, WETH]
 
@@ -463,6 +511,7 @@ const indexNames = isDevEnv
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
+      MoneyMarketIndex,
       FIXED_DAI,
       FIXED_USDC,
       DefiPulseIndex,
@@ -477,6 +526,7 @@ const indexNames = isDevEnv
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
+      MoneyMarketIndex,
       DefiPulseIndex,
       MetaverseIndex,
       Ethereum2xFlexibleLeverageIndex,
@@ -485,7 +535,9 @@ const indexNames = isDevEnv
       IndexToken,
     ]
 
-export const indexNamesMainnet = indexNames.filter((index) => index.address)
+export const indexNamesMainnet = indexNames.filter(
+  (index) => index.address && index.symbol !== MoneyMarketIndex.symbol
+)
 export const indexNamesPolygon = indexNames.filter(
   (index) =>
     index.polygonAddress &&

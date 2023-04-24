@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react'
 
 import Override from 'components/trade/flashmint/Override'
-import { useIssuance } from 'hooks/issuance/useIssuance'
+import { useFlashMintTrade } from 'hooks/useFlashMintTrade'
 import { useSimulateQuote } from 'hooks/useSimulateQuote'
 import { useTradeFlashMintLeveraged } from 'hooks/useTradeFlashMintLeveraged'
 import { useTradeFlashMintNotional } from 'hooks/useTradeFlashMintNotional'
@@ -48,8 +48,11 @@ type TransactionReviewModalProps = {
 }
 
 const useTrade = (tx: TransactionReview) => {
-  const { handleTrade, isTrading } = useIssuance()
-
+  const {
+    executeFlashMintTrade,
+    isTransacting: isTransactingFlashMint,
+    txWouldFail: txWouldFailFM,
+  } = useFlashMintTrade()
   const {
     executeFlashMintLeveragedTrade,
     isTransacting: isTransactingLeveraged,
@@ -67,40 +70,24 @@ const useTrade = (tx: TransactionReview) => {
   } = useTradeFlashMintZeroEx()
 
   const isTransacting =
-    isTrading ||
+    isTransactingFlashMint ||
     isTransactingNotional ||
     isTransactingLeveraged ||
     isTransactingZeroEx
 
   const txWouldFail: boolean =
-    txWouldFailZeroEx || txWouldFailLeveraged || txWouldFailFmNotional
+    txWouldFailFM ||
+    txWouldFailZeroEx ||
+    txWouldFailLeveraged ||
+    txWouldFailFmNotional
 
   const executeTrade = async (override: boolean) => {
     const { quoteResult, slippage } = tx
-    const quotes = quoteResult.quotes
+    const { quotes } = quoteResult
     if (!quotes) return null
-    if (quotes.flashMintPerp) {
-      const {
-        inputToken,
-        inputTokenAmount,
-        isMinting,
-        outputToken,
-        outputTokenAmount,
-      } = tx
-      const indexToken = isMinting ? outputToken : inputToken
-      const indexTokenAmountWei = isMinting
-        ? outputTokenAmount
-        : inputTokenAmount
-      const inputOutputTokenAmount = isMinting
-        ? inputTokenAmount
-        : outputTokenAmount
-      await handleTrade(
-        tx.isMinting,
-        slippage,
-        indexToken,
-        indexTokenAmountWei,
-        inputOutputTokenAmount
-      )
+
+    if (quotes.flashMint) {
+      await executeFlashMintTrade(quotes.flashMint, slippage, override)
       return
     }
     if (quotes.flashMintLeveraged) {
@@ -147,7 +134,6 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
 
   const onSubmitWithSuccess = (success: boolean) => {
     if (!success) return
-    console.log('SUCCESS')
     setState(TransactionReviewModalState.success)
   }
 
@@ -262,7 +248,6 @@ const Review = (props: ReviewProps) => {
     )
 
   useEffect(() => {
-    console.log(props.tx, 'updated')
     setSimulationState(TransactionReviewSimulationState.default)
   }, [props.tx])
 
@@ -300,7 +285,6 @@ const Review = (props: ReviewProps) => {
     setSimulationState(state)
     console.log('isSuccess', isSuccess)
     if (!isSuccess && !override) return
-    console.log('submit')
     await executeTrade(override)
     onSubmitWithSuccess(true)
   }

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
+import { PopulatedTransaction } from 'ethers'
+
 import { BigNumber } from '@ethersproject/bignumber'
-import { SwapData, ZeroExApi } from '@indexcoop/flash-mint-sdk'
+import { SwapData } from '@indexcoop/flash-mint-sdk'
 
 import { Token } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
@@ -26,6 +28,7 @@ export enum QuoteType {
   notAvailable = 'notAvailable',
   exchangeIssuanceLeveraged = 'exchangeIssuanceLeveraged',
   exchangeIssuanceZeroEx = 'exchangeIssuanceZeroEx',
+  flashMint = 'flashMint',
   flashMintNotional = 'flashMintNotional',
   zeroEx = 'zeroEx',
 }
@@ -56,6 +59,12 @@ export interface ExchangeIssuanceZeroExQuote extends Quote {
 
 export interface FlashMintNotionalQuote extends Quote {
   swapData: SwapData[]
+}
+
+export interface EnhancedFlashMintQuote extends Quote {
+  contractType: string
+  contract: string
+  tx: PopulatedTransaction
 }
 
 export interface ZeroExQuote extends Quote {
@@ -337,21 +346,20 @@ export const useBestQuote = () => {
           zeroExApi,
           signer
         )
-      // TODO: add FlashMintNotional
 
-      console.log('////////')
-      console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
-      console.log(
-        'exchangeIssuanceLeveragedQuote',
-        exchangeIssuanceLeveragedQuote
-      )
+      // console.log('////////')
+      // console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
+      // console.log(
+      //   'exchangeIssuanceLeveragedQuote',
+      //   exchangeIssuanceLeveragedQuote
+      // )
 
-      console.log(
-        zeroExQuote?.fullCostsInUsd ?? null,
-        exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
-        exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
-        'FC'
-      )
+      // console.log(
+      //   zeroExQuote?.fullCostsInUsd ?? null,
+      //   exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
+      //   exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
+      //   'FC'
+      // )
 
       const bestQuote = getBestQuote(
         zeroExQuote?.fullCostsInUsd ?? null,
@@ -392,6 +400,7 @@ export const useBestQuote = () => {
         hasBetterQuote,
         isReasonPriceImpact,
         quotes: {
+          // TODO: add flash mint quote
           exchangeIssuanceLeveraged: isFlashMintLeveragedBestQuote
             ? exchangeIssuanceLeveragedQuote
             : null,

@@ -1,8 +1,11 @@
 import { slippageDefault, slippageMap } from 'constants/slippage'
 import {
+  DAI,
   DiversifiedStakedETHIndex,
   GitcoinStakedETHIndex,
+  MoneyMarketIndex,
   USDC,
+  USDT,
 } from 'constants/tokens'
 
 export function getSlippageOverrideOrNull(
@@ -15,6 +18,14 @@ export function getSlippageOverrideOrNull(
     inputOutputTokenSymbol === USDC.symbol
   ) {
     return 0.1
+  }
+  if (
+    tokenSymbol === MoneyMarketIndex.symbol &&
+    (inputOutputTokenSymbol === DAI.symbol ||
+      inputOutputTokenSymbol === USDC.symbol ||
+      inputOutputTokenSymbol === USDT.symbol)
+  ) {
+    return 0.001
   }
   return slippageMap.get(tokenSymbol) ?? null
 }

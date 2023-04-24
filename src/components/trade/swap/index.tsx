@@ -496,6 +496,7 @@ const QuickTrade = (props: QuickTradeProps) => {
         buttonLabel={buttonLabel}
         isButtonDisabled={isButtonDisabled}
         isLoading={isLoading}
+        showMevProtectionMessage={false}
         onClickTradeButton={onClickTradeButton}
         contractAddress={contractBestOption}
         contractExplorerUrl={contractBlockExplorerUrl}

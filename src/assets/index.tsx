@@ -10,6 +10,7 @@ import IndexLogoFullBlack from 'assets/index-logo-full-black.svg'
 import IndexLogoFullWhite from 'assets/index-logo-full-white.svg'
 import IndexLogoWhite from 'assets/index-logo-white.svg'
 import indexLogo from 'assets/index-token.png'
+import mmiLogo from 'assets/mmi_logo.svg'
 import wseth2Logo from 'assets/wseth2_logo.svg'
 
 // Index logo
@@ -30,5 +31,6 @@ export {
   gtcEthLogo,
   icethLogo,
   indexLogo,
+  mmiLogo,
   wseth2Logo,
 }

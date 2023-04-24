@@ -15,6 +15,10 @@ export const getContractForQuote = (
   const quotes = quoteResult?.quotes
   if (!quotes || !chainId) return null
 
+  if (quotes.flashMint) {
+    return quotes.flashMint.contract
+  }
+
   if (quotes.flashMintPerp) {
     return FlashMintPerp
   }
@@ -54,6 +58,10 @@ export const getQuoteAmount = (
 ): BigNumber | null => {
   const quotes = quoteResult?.quotes
   if (!quotes || !chainId) return null
+
+  if (quotes.flashMint) {
+    return quotes.flashMint.inputOutputTokenAmount
+  }
 
   if (quotes.flashMintPerp) {
     return quotes.flashMintPerp.inputOutputTokenAmount

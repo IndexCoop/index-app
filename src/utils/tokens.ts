@@ -16,6 +16,7 @@ import {
   IndexToken,
   mainnetCurrencyTokens,
   MATIC,
+  MoneyMarketIndex,
   optimismCurrencyTokens,
   polygonCurrencyTokens,
   RETH,
@@ -23,6 +24,7 @@ import {
   STETH,
   Token,
   USDC,
+  USDT,
   WETH,
   WSTETH,
 } from 'constants/tokens'
@@ -79,6 +81,7 @@ export function getCurrencyTokensForIndex(
     index.symbol === GitcoinStakedETHIndex.symbol
   )
     return [ETH, WETH, STETH, WSTETH, RETH, SETH2, USDC]
+  if (index.symbol === MoneyMarketIndex.symbol) return [DAI, USDC, USDT, WETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
