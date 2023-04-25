@@ -1,10 +1,10 @@
 import {
   DefiPulseIndex,
-  MoneyMarketIndex,
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygonRedeem,
   indexNamesMainnet,
   indexNamesPolygon,
+  MoneyMarketIndex,
 } from 'constants/tokens'
 
 import { getTokenListByChain } from './useTradeTokenLists'

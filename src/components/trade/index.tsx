@@ -4,6 +4,7 @@ import { colors, useColorStyles, useICColorMode } from 'styles/colors'
 
 import { Flex, Text } from '@chakra-ui/react'
 
+import { MoneyMarketIndex } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { SlippageProvider, useSlippage } from 'providers/Slippage'
 import { isTokenAvailableForFlashMint } from 'utils/tokens'
@@ -11,7 +12,6 @@ import { isTokenAvailableForFlashMint } from 'utils/tokens'
 import { QuickTradeSettingsPopover } from './_shared/QuickTradeSettingsPopover'
 import FlashMint from './flashmint'
 import QuickTrade, { QuickTradeProps } from './swap'
-import { MoneyMarketIndex } from 'constants/tokens'
 
 enum TradeType {
   flashMint,
