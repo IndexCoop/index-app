@@ -119,6 +119,7 @@ export const isNotTradableToken = (
   if (!token || !chainId) return false
   switch (chainId) {
     case MAINNET.chainId:
+      if (token.symbol === MoneyMarketIndex.symbol) return false
       return (
         indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
       )
