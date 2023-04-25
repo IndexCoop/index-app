@@ -526,7 +526,7 @@ const indexNames = isDevEnv
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
-      // MoneyMarketIndex,
+      MoneyMarketIndex,
       DefiPulseIndex,
       MetaverseIndex,
       Ethereum2xFlexibleLeverageIndex,
