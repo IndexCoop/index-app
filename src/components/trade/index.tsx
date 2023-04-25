@@ -4,6 +4,7 @@ import { colors, useColorStyles, useICColorMode } from 'styles/colors'
 
 import { Flex, Text } from '@chakra-ui/react'
 
+import { MoneyMarketIndex } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { SlippageProvider, useSlippage } from 'providers/Slippage'
 import { isTokenAvailableForFlashMint } from 'utils/tokens'
@@ -18,18 +19,24 @@ enum TradeType {
 }
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
+  const isMMIT =
+    props.singleToken && props.singleToken.symbol === MoneyMarketIndex.symbol
   const { chainId } = useNetwork()
   const { styles } = useColorStyles()
-  const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
+  const [selectedType, setSelectedType] = useState<TradeType>(
+    isMMIT ? TradeType.flashMint : TradeType.swap
+  )
 
   const paddingX = props.isNarrowVersion ? '16px' : '40px'
 
-  const shouldShowFlashMintOption = props.singleToken
+  const shouldShowSwap = isMMIT ? false : true
+  let shouldShowFlashMintOption = props.singleToken
     ? isTokenAvailableForFlashMint(props.singleToken, chainId)
     : // Currently no FlashMintable tokens on Polygon
     chainId === 137
     ? false
     : true
+  shouldShowFlashMintOption = isMMIT ? true : shouldShowFlashMintOption
 
   const onSelectType = (type: TradeType) => {
     if (type !== selectedType) {
@@ -58,6 +65,7 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
           onSelect={onSelectType}
           selectedType={selectedType}
           shouldShowFlashMintOption={shouldShowFlashMintOption}
+          shouldShowSwap={shouldShowSwap}
         />
         {selectedType === TradeType.flashMint && <FlashMint {...props} />}
         {selectedType === TradeType.swap && (
@@ -96,6 +104,7 @@ type NavigationProps = {
   onSelect: (type: TradeType) => void
   selectedType: TradeType
   shouldShowFlashMintOption: boolean
+  shouldShowSwap: boolean
 }
 
 const Navigation = (props: NavigationProps) => {
@@ -114,11 +123,13 @@ const Navigation = (props: NavigationProps) => {
   return (
     <Flex align='center' justify='space-between'>
       <Flex>
-        <NavigationButton
-          isSelected={swapIsSelected}
-          onClick={() => onSelect(TradeType.swap)}
-          title='Swap'
-        />
+        {props.shouldShowSwap && (
+          <NavigationButton
+            isSelected={swapIsSelected}
+            onClick={() => onSelect(TradeType.swap)}
+            title='Swap'
+          />
+        )}
         {props.shouldShowFlashMintOption && (
           <NavigationButton
             isSelected={flashMintIsSelected}
