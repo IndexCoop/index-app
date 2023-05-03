@@ -1,11 +1,11 @@
 import { colors, useColorStyles } from 'styles/colors'
 
-import { Box, Flex, Link, Text, useBreakpointValue } from '@chakra-ui/react'
+import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react'
 
 import Page from 'components/page/Page'
 import { getPriceChartData } from 'components/token-page/charts/PriceChartData'
 import QuickTradeContainer from 'components/trade'
-import { IndexToken, Token } from 'constants/tokens'
+import { IndexToken, MoneyMarketIndex , Token } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTokenSupply } from 'hooks/useTokenSupply'
@@ -75,7 +75,7 @@ function getStatsForToken(
 }
 
 const TokenPage = (props: { token: Token; apy?: string }) => {
-  const { isDarkMode } = useColorStyles()
+  const { isDarkMode, styles } = useColorStyles()
   const isMobile = useBreakpointValue({ base: true, lg: false })
   const { token } = props
 
@@ -107,6 +107,8 @@ const TokenPage = (props: { token: Token; apy?: string }) => {
     isPerpToken(props.token)
   )
 
+  const backgroundColor = isDarkMode ? colors.icGray3 : colors.icGray1
+  const isMMI = token.symbol === MoneyMarketIndex.symbol
   const stats = getStatsForToken(token, marketData, currentSupplyFormatted, nav)
 
   return (
@@ -114,6 +116,14 @@ const TokenPage = (props: { token: Token; apy?: string }) => {
       <Flex direction='column' w={['100%', '80vw']} m='0 auto'>
         <Box mb={['16px', '48px']}>
           <TokenPageHeader isMobile={isMobile ?? false} token={props.token} />
+          {isMMI && (
+            <Flex bgColor={backgroundColor} borderRadius={'8px'} mt='24px'>
+              <Text color={styles.text} fontSize='13px' p='16px'>
+                The Index Coop Money Market Index (icSMMT) is designed for large
+                purchasers. We suggest a minimum purchase of $150,000.
+              </Text>
+            </Flex>
+          )}
         </Box>
         <Flex direction='column' position='relative' zIndex='1'>
           <Flex direction={['column', 'column', 'column', 'row']}>
