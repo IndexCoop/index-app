@@ -5,7 +5,7 @@ import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react'
 import Page from 'components/page/Page'
 import { getPriceChartData } from 'components/token-page/charts/PriceChartData'
 import QuickTradeContainer from 'components/trade'
-import { IndexToken, MoneyMarketIndex , Token } from 'constants/tokens'
+import { IndexToken, MoneyMarketIndex, Token } from 'constants/tokens'
 import { useNetwork } from 'hooks/useNetwork'
 import { useTokenComponents } from 'hooks/useTokenComponents'
 import { useTokenSupply } from 'hooks/useTokenSupply'
@@ -120,7 +120,7 @@ const TokenPage = (props: { token: Token; apy?: string }) => {
             <Flex bgColor={backgroundColor} borderRadius={'8px'} mt='24px'>
               <Text color={styles.text} fontSize='13px' p='16px'>
                 The Index Coop Money Market Index (icSMMT) is designed for large
-                purchasers. We suggest a minimum purchase of $150,000.
+                purchasers. We suggest a minimum purchase of $500,000.
               </Text>
             </Flex>
           )}
