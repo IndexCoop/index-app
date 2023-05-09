@@ -3226,10 +3226,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@indexcoop/flash-mint-sdk@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@indexcoop/flash-mint-sdk/-/flash-mint-sdk-1.9.0.tgz#a914b1076b0832dc910c67f46df008f10cc4c11c"
-  integrity sha512-eCllypSeVq+52yAhLwWa9yx612dn/5+aFrkgkr8EW0/NMb6QiYVKs3PdQ4YnPVXd8nboO8pSkAJ7nYr1ZF5P3A==
+"@indexcoop/flash-mint-sdk@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@indexcoop/flash-mint-sdk/-/flash-mint-sdk-1.10.0.tgz#f5ab63e9cee3946e902575a04502dfa65f725f78"
+  integrity sha512-mX3ZMcmiAGMdyccClo0m8X2GJna7kVqXMFcA7RAHCE9nFaRpfSkknjTABux/STNrohb0geSZrrRkbnmzKwF6cg==
   dependencies:
     "@ethersproject/abstract-provider" "^5.6.1"
     "@ethersproject/abstract-signer" "^5.6.2"
