@@ -162,7 +162,7 @@ export const BalanceProvider = (props: { children: any }) => {
           return BigNumber.from(0)
       }
     },
-    [tokenBalances]
+    [address, tokenBalances]
   )
 
   useEffect(() => {
