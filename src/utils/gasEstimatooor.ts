@@ -1,7 +1,7 @@
 import { BigNumber, PopulatedTransaction } from 'ethers'
 
 // Default gas margin to add on top of estimate
-const defaultGasMargin = 20
+const defaultGasMargin = 10
 
 export class GasEstimatooorFailedError extends Error {
   statusCode = 1001
