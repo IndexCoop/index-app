@@ -23,10 +23,12 @@ export interface BalanceValues {
   price: number
 }
 
+type Balances = { [key: string]: BalanceValues }
+
 export interface TokenContext {
   getTokenBalance: (symbol: string, chainId: number | undefined) => BigNumber
   isLoading: boolean
-  tokenBalances: { [key: string]: BalanceValues }
+  tokenBalances: Balances
 }
 
 export type TokenContextKeys = keyof TokenContext
@@ -52,7 +54,7 @@ export const BalanceProvider = (props: { children: any }) => {
   }>({})
   const [isLoading, setIsLoading] = useState(true)
 
-  const fetchBalanceData = useCallback(async () => {
+  const fetchBalanceData = async () => {
     if (!address) return
     let balanceData: BalanceValues[] = []
     setIsLoading(true)
@@ -81,15 +83,14 @@ export const BalanceProvider = (props: { children: any }) => {
         }
       })
     )
-    let balances = tokenBalances
+    let balances: Balances = {}
     balanceData.forEach((balance: BalanceValues) => {
       balances[balance.token.symbol] = balance
     })
-    setIsLoading(false)
-    setTokenBalances(balances)
-  }, [address, selectLatestMarketData, selectMarketDataByToken])
+    return balances
+  }
 
-  const fetchCurrencies = useCallback(async () => {
+  const fetchCurrencies = async () => {
     if (!address) return
     let balanceData: BalanceValues[] = []
     const provider = new BalancesProvider(address, {
@@ -116,19 +117,14 @@ export const BalanceProvider = (props: { children: any }) => {
         }
       })
     )
-    let balances = tokenBalances
+    let balances: Balances = {}
     balanceData.forEach((balance: BalanceValues) => {
       balances[balance.token.symbol] = balance
     })
-    setTokenBalances(balances)
-  }, [
-    address,
-    mainnetReadOnlyProvider,
-    optimismReadOnlyProvider,
-    polygonReadOnlyProvider,
-  ])
+    return balances
+  }
 
-  const fetchNativeCurrencies = useCallback(async () => {
+  const fetchNativeCurrencies = async () => {
     if (!address) return
     const provider = new BalancesProvider(address, {
       mainnet: mainnetReadOnlyProvider,
@@ -136,16 +132,11 @@ export const BalanceProvider = (props: { children: any }) => {
       polygon: polygonReadOnlyProvider,
     })
     const { eth, matic } = await provider.fetchNativeBalances()
-    let balances = tokenBalances
+    let balances: Balances = {}
     balances['ETH'] = eth
     balances['MATIC'] = matic
-    setTokenBalances(balances)
-  }, [
-    address,
-    mainnetReadOnlyProvider,
-    optimismReadOnlyProvider,
-    polygonReadOnlyProvider,
-  ])
+    return balances
+  }
 
   const getTokenBalance = useCallback(
     (symbol: string, chainId: number | undefined): BigNumber => {
@@ -162,23 +153,34 @@ export const BalanceProvider = (props: { children: any }) => {
           return BigNumber.from(0)
       }
     },
-    [tokenBalances]
+    [address, tokenBalances]
   )
 
   useEffect(() => {
     if (!address || address === undefined) return
-    fetchBalanceData()
-  }, [fetchBalanceData])
-
-  useEffect(() => {
-    if (!address || address === undefined) return
-    fetchCurrencies()
-  }, [fetchCurrencies])
-
-  useEffect(() => {
-    if (!address || address === undefined) return
-    fetchNativeCurrencies()
-  }, [fetchNativeCurrencies])
+    const fetchBalances = async () => {
+      setIsLoading(true)
+      const nativeBalances = await fetchNativeCurrencies()
+      const tokenBalances = await fetchBalanceData()
+      const currenciesBalances = await fetchCurrencies()
+      const balances = {
+        ...nativeBalances,
+        ...currenciesBalances,
+        ...tokenBalances,
+      }
+      setTokenBalances(balances)
+      setIsLoading(false)
+    }
+    // Reset balances and fetch all in one function as otherwise there might be
+    // hickups with old balances
+    setTokenBalances({})
+    fetchBalances()
+  }, [
+    address,
+    mainnetReadOnlyProvider,
+    optimismReadOnlyProvider,
+    polygonReadOnlyProvider,
+  ])
 
   return (
     <BalanceContext.Provider
