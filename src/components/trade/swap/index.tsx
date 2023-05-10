@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from 'styles/colors'
@@ -391,21 +391,12 @@ const QuickTrade = (props: QuickTradeProps) => {
   const isLoading = getIsApproving() || isFetchingZeroEx
 
   // SelectTokenModal
-  const inputTokenBalances = useMemo(
-    () =>
-      sellTokenList.map(
-        (sellToken) =>
-          getTokenBalance(sellToken.symbol, chainId) ?? BigNumber.from(0)
-      ),
-    [address, chainId]
+  const inputTokenBalances = sellTokenList.map(
+    (sellToken) =>
+      getTokenBalance(sellToken.symbol, chainId) ?? BigNumber.from(0)
   )
-  const outputTokenBalances = useMemo(
-    () =>
-      buyTokenList.map(
-        (buyToken) =>
-          getTokenBalance(buyToken.symbol, chainId) ?? BigNumber.from(0)
-      ),
-    [address, chainId]
+  const outputTokenBalances = buyTokenList.map(
+    (buyToken) => getTokenBalance(buyToken.symbol, chainId) ?? BigNumber.from(0)
   )
   const inputTokenItems = getSelectTokenListItems(
     sellTokenList,
