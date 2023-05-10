@@ -17,7 +17,7 @@ import {
   Tr,
 } from '@chakra-ui/react'
 
-import { Token } from 'constants/tokens'
+import { MoneyMarketIndex, Token } from 'constants/tokens'
 import { SetComponent } from 'hooks/useTokenComponents'
 
 import Chart, { Position } from './charts/Charts'
@@ -28,6 +28,7 @@ const TokenComponentsTable = (props: {
   isLeveragedToken: boolean
   vAssets?: SetComponent[]
 }) => {
+  const isIcSmmt = props.token.symbol === MoneyMarketIndex.symbol
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
   const showAllComponents = () =>
     setAmountToDisplay(props.components?.length || amountToDisplay)
@@ -113,7 +114,11 @@ const TokenComponentsTable = (props: {
           </Thead>
           <Tbody>
             {props.components?.slice(0, amountToDisplay).map((data) => (
-              <ComponentRow key={data.name} component={data} />
+              <ComponentRow
+                key={data.name}
+                component={data}
+                isIcSmmt={isIcSmmt}
+              />
             ))}
             {props.vAssets && (
               <VirutalAssets
@@ -137,6 +142,7 @@ const TokenComponentsTable = (props: {
 const ComponentRow = (props: {
   component: SetComponent
   disablePercentage?: boolean
+  isIcSmmt?: boolean
 }) => {
   const { component, disablePercentage } = props
   const { image, name } = component
@@ -152,7 +158,7 @@ const ComponentRow = (props: {
     <Tr borderBottom='1px'>
       <Td p={['16px 8px', '16px 8px', '16px 24px']}>
         <Flex alignItems='center'>
-          {image.length > 0 && (
+          {image.length > 0 && !props.isIcSmmt && (
             <Image
               borderRadius='full'
               boxSize='30px'
