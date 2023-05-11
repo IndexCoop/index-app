@@ -17,7 +17,7 @@ import {
   Tr,
 } from '@chakra-ui/react'
 
-import { Token } from 'constants/tokens'
+import { MoneyMarketIndex, Token } from 'constants/tokens'
 import { SetComponent } from 'hooks/useTokenComponents'
 
 import Chart, { Position } from './charts/Charts'
@@ -28,6 +28,7 @@ const TokenComponentsTable = (props: {
   isLeveragedToken: boolean
   vAssets?: SetComponent[]
 }) => {
+  const isIcSmmt = props.token.symbol === MoneyMarketIndex.symbol
   const [amountToDisplay, setAmountToDisplay] = useState<number>(5)
   const showAllComponents = () =>
     setAmountToDisplay(props.components?.length || amountToDisplay)
@@ -113,7 +114,11 @@ const TokenComponentsTable = (props: {
           </Thead>
           <Tbody>
             {props.components?.slice(0, amountToDisplay).map((data) => (
-              <ComponentRow key={data.name} component={data} />
+              <ComponentRow
+                key={data.name}
+                component={data}
+                isIcSmmt={isIcSmmt}
+              />
             ))}
             {props.vAssets && (
               <VirutalAssets
@@ -137,31 +142,32 @@ const TokenComponentsTable = (props: {
 const ComponentRow = (props: {
   component: SetComponent
   disablePercentage?: boolean
+  isIcSmmt?: boolean
 }) => {
-  const formattedPriceUSD = numeral(props.component.totalPriceUsd).format(
-    '$0,0.00'
-  )
-
-  const percentChange = parseFloat(props.component.dailyPercentChange)
+  const { component, disablePercentage } = props
+  const { image, name } = component
+  const formattedPriceUSD = numeral(component.totalPriceUsd).format('$0,0.00')
+  const percentChange = parseFloat(component.dailyPercentChange)
   const absPercentChange = numeral(Math.abs(percentChange)).format('0.00') + '%'
   const percentChangeIsPositive = percentChange >= 0
   const percentChangeTextColor = percentChangeIsPositive
     ? colors.icMalachite
     : colors.icRed
   const percentChangeSign = percentChangeIsPositive ? '+' : '-'
-
   return (
     <Tr borderBottom='1px'>
       <Td p={['16px 8px', '16px 8px', '16px 24px']}>
         <Flex alignItems='center'>
-          <Image
-            borderRadius='full'
-            boxSize='30px'
-            src={props.component.image}
-            alt={props.component.name}
-            marginRight='10px'
-          />
-          <Text fontWeight='500'>{props.component.name}</Text>
+          {image.length > 0 && !props.isIcSmmt && (
+            <Image
+              borderRadius='full'
+              boxSize='30px'
+              src={image}
+              alt={name}
+              marginRight='10px'
+            />
+          )}
+          <Text fontWeight='500'>{name}</Text>
         </Flex>
       </Td>
       <Td isNumeric p={['16px 8px', '16px 8px', '16px 24px']}>
@@ -172,8 +178,8 @@ const ComponentRow = (props: {
         color={percentChangeTextColor}
         p={['16px 8px', '16px 8px', '16px 24px']}
       >
-        {!props.disablePercentage && percentChangeSign}
-        {!props.disablePercentage && absPercentChange}
+        {!disablePercentage && percentChangeSign}
+        {!disablePercentage && absPercentChange}
       </Td>
     </Tr>
   )

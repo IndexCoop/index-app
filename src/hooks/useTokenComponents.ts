@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { MAINNET } from 'constants/chains'
-import { IndexToken, Token } from 'constants/tokens'
+import { IndexToken, MoneyMarketIndex, Token } from 'constants/tokens'
 import { IndexApi } from 'utils/api/indexApi'
 import { getAddressForToken } from 'utils/tokens'
 
@@ -89,15 +89,32 @@ export const useTokenComponents = (token: Token, isPerpToken = false) => {
     fetchComponents()
   }, [fetchComponents])
 
-  useMemo(() => {
+  useMemo(async () => {
     if (components.length === 0 && vAssets.length === 0) return
+    if (token.symbol === MoneyMarketIndex.symbol) {
+      const nav = await fetchIcSmmtNav()
+      setNav(nav)
+      return
+    }
     setNav(getNetAssetValue(components.concat(vAssets)))
   }, [components, vAssets])
 
   return { components, vAssets, nav }
 }
 
-const getNetAssetValue = (components: SetComponent[]): number => {
+async function fetchIcSmmtNav(): Promise<number> {
+  try {
+    const indexApi = new IndexApi()
+    const path = '/icsmmt/nav'
+    const { nav } = await indexApi.get(path)
+    return nav
+  } catch (err) {
+    console.log('Error fetching NAV for icSMMT:', err)
+    return 0
+  }
+}
+
+function getNetAssetValue(components: SetComponent[]): number {
   let totalValue: number = 0
   if (components.length > 0)
     components.forEach((c) => {

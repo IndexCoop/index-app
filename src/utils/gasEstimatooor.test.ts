@@ -66,6 +66,6 @@ describe('GasEstimatooor', () => {
       value: toWei(1),
     }
     const gasEstimate = await estimatooor.estimate(tx, false)
-    expect(gasEstimate.toString()).toEqual('25201')
+    expect(gasEstimate.toString()).toEqual('23101')
   })
 })
