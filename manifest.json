@@ -1,30 +1,20 @@
 {
-  "id": "test-dapp",
-  "name": "My super DApp",
+  "id": "index-coop",
+  "name": "Index Coop",
   "url": "https://eth-dapp-browser-ne49wqncp-ledgerhq.vercel.app",
   "params": {
-    "dappUrl": "http://localhost:3000",
+    "dappUrl": "http://localhost:3000?embedded=true",
     "nanoApp": "Ethereum",
-    "dappName": "Test DApp",
+    "dappName": "Index Coop",
     "networks": [
       {
         "currency": "ethereum",
         "chainID": 1,
         "nodeURL": "wss://eth-mainnet.ws.alchemyapi.io/v2/0fyudoTG94QWC0tEtfJViM9v2ZXJuij2"
-      },
-      {
-        "currency": "polygon",
-        "chainID": 137,
-        "nodeURL": "https://polygon-mainnet.g.alchemy.com/v2/oPIxZM7kXsPVVY1Sk0kOQwkoIOpSu8PE"
-      },
-      {
-        "currency": "ethereum_goerli",
-        "chainID": 5,
-        "nodeURL": "https://eth-goerli.g.alchemy.com/v2/vzJoUrfWDBOdwtCL-sybfBzIfNzY0_tk"
       }
     ]
   },
-  "homepageUrl": "https://developers.ledger.com/",
+  "homepageUrl": "https://indexcoop.com",
   "platform": "all",
   "apiVersion": "0.0.1",
   "manifestVersion": "1",
@@ -33,10 +23,10 @@
   "currencies": "*",
   "content": {
     "shortDescription": {
-      "en": "Try out the Ledger Live API to test capabilities of our platform integration solution. Use at your own risk."
+      "en": "Decentralized structured products that make crypto simple, accessible, and secure"
     },
     "description": {
-      "en": "Try out the Ledger Live API to test capabilities of our platform integration solution. Use at your own risk."
+      "en": "DeFi doesn’t have to be complicated. Unlock powerful sector, leverage and yield-earning strategies with our simple index tokens."
     }
   },
   "permissions": [
