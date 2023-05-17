@@ -5,15 +5,16 @@ import { useConnect } from 'wagmi'
 import Footer from 'components/page/Footer'
 import Header from 'components/page/header/Header'
 import { ledgerConnector } from 'utils/wagmi'
+import { useLedgerStatus } from 'hooks/useLedgerStatus'
 
 const App = () => {
-    const { connectAsync } = useConnect()
+    const { connectAsync, isIdle} = useConnect()
+    const { isRunningInLedgerLive } = useLedgerStatus()
 
     React.useEffect(() => {
+        if(!isIdle || !isRunningInLedgerLive) return
         console.log('connecting to ledger')
-        connectAsync({ connector: ledgerConnector as any }).then((result) => {
-            alert('connected to ledger: ' + result.toString())
-        }).catch((error) => {
+        connectAsync({ connector: ledgerConnector as any }).catch((error) => {
             alert('error connecting to ledger: ' + error.toString())
         })
     }, [])
