@@ -3,7 +3,7 @@
   "name": "Index Coop",
   "url": "https://eth-dapp-browser-ne49wqncp-ledgerhq.vercel.app",
   "params": {
-    "dappUrl": "http://index-app-git-ledger-integration-index-coop.vercel.app/?embedded=true",
+    "dappUrl": "https://index-app-git-ledger-integration-index-coop.vercel.app/?embedded=true",
     "nanoApp": "Ethereum",
     "dappName": "Index Coop",
     "networks": [
