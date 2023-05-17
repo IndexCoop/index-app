@@ -63,6 +63,7 @@ export const useFlashMintQuote = () => {
     nativeTokenPrice: number,
     slippage: number
   ) => {
+    console.log("fetchQuote - chainId: ", chainId)
     if (!indexTokenAmount.gt(BigNumber.from(0))) {
       setQuoteResult(null)
       return

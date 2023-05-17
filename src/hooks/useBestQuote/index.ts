@@ -181,7 +181,9 @@ export const useBestQuote = () => {
   const { chainId: networkChainId } = useNetwork()
   const { getTokenBalance } = useBalanceData()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
+    console.log('useBestquote - networkChainId', networkChainId) 
   const chainId = networkChainId ?? 1
+    console.log('useBestquote - chainId', chainId) 
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const [isFetchingMoreOptions, setIsFetchingMoreOptions] =

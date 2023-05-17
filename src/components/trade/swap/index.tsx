@@ -343,15 +343,20 @@ const QuickTrade = (props: QuickTradeProps) => {
   }, 1000)
 
   const onClickTradeButton = async () => {
+      console.log('onClickTradeButton')
     if (!address) {
       // Open connect wallet modal
       //openConnectModal()
+      console.log('onClickTradeButton - address is null')
       return
     }
+      console.log('onClickTradeButton - address non null')
 
     if (hasInsufficientFunds) return
+      console.log('onClickTradeButton - sufficient funds')
 
     if (hasFetchingError) {
+      console.log('onClickTradeButton - hasFetchingError')
       fetchOptions()
       return
     }
@@ -359,10 +364,12 @@ const QuickTrade = (props: QuickTradeProps) => {
     const nativeToken = getNativeToken(chainId)
     const isNativeToken = nativeToken?.symbol === sellToken.symbol
     if (!getIsApproved() && !isNativeToken) {
+      console.log('onClickTradeButton - trigger approval')
       await getOnApprove()
       return
     }
 
+      console.log('onClickTradeButton - executeTrade')
     await executeTrade(quoteResult.quotes.zeroEx)
   }
 
