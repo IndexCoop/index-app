@@ -25,9 +25,9 @@ export const { chains, provider } = configureChains(
   [alchemyProvider({ apiKey: AlchemyApiKey }), publicProvider()]
 )
 
-const ledgerConnector = new IFrameEthereumConnector({ chains, options: {} })
+export const ledgerConnector = new IFrameEthereumConnector({ chains, options: {} })
 
-const connectors = connectorsForWallets([
+const connectors = () => connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
@@ -51,7 +51,9 @@ const connectors = connectorsForWallets([
       trustWallet({ chains }),
     ],
   },
-])
+])().concat([ledgerConnector])
+
+console.log("connectors:", connectors())
 
 export const wagmiClient = createClient({
   autoConnect: true,

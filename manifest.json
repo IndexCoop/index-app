@@ -1,27 +1,48 @@
 {
-    "id": "indexcoop",
-    "name": "Index Coop",
-    "url": "https://app.indexcoop.com/",
-    "homepageUrl": "https://www.indexcoop.com",
-    "icon": "https://global.discourse-cdn.com/standard10/uploads/theindexdao/original/1X/fa26b1ec80f9ac9b5437424fe8f9799b5d105b3e.png",
-    "platform": "all",
-    "apiVersion": "0.0.1",
-    "manifestVersion": "1",
-    "branch": "stable",
-    "categories": ["buy"],
-    "currencies": [
-      "ethereum"
-    ],
-    "content": {
-      "shortDescription": {
-        "en": "Unlock powerful sector, leverage and yield-earning strategies with our simple index tokens"
+  "id": "test-dapp",
+  "name": "My super DApp",
+  "url": "https://eth-dapp-browser-ne49wqncp-ledgerhq.vercel.app",
+  "params": {
+    "dappUrl": "http://localhost:3000",
+    "nanoApp": "Ethereum",
+    "dappName": "Test DApp",
+    "networks": [
+      {
+        "currency": "ethereum",
+        "chainID": 1,
+        "nodeURL": "wss://eth-mainnet.ws.alchemyapi.io/v2/0fyudoTG94QWC0tEtfJViM9v2ZXJuij2"
       },
-      "description": {
-        "en": "DeFi doesn’t have to be complicated. Unlock powerful sector, leverage and yield-earning strategies with our simple index tokens."
+      {
+        "currency": "polygon",
+        "chainID": 137,
+        "nodeURL": "https://polygon-mainnet.g.alchemy.com/v2/oPIxZM7kXsPVVY1Sk0kOQwkoIOpSu8PE"
+      },
+      {
+        "currency": "ethereum_goerli",
+        "chainID": 5,
+        "nodeURL": "https://eth-goerli.g.alchemy.com/v2/vzJoUrfWDBOdwtCL-sybfBzIfNzY0_tk"
       }
-    },
-    "permissions": [],
-    "domains": [
-      "https://*"
     ]
-  }
+  },
+  "homepageUrl": "https://developers.ledger.com/",
+  "platform": "all",
+  "apiVersion": "0.0.1",
+  "manifestVersion": "1",
+  "branch": "debug",
+  "categories": ["tools"],
+  "currencies": "*",
+  "content": {
+    "shortDescription": {
+      "en": "Try out the Ledger Live API to test capabilities of our platform integration solution. Use at your own risk."
+    },
+    "description": {
+      "en": "Try out the Ledger Live API to test capabilities of our platform integration solution. Use at your own risk."
+    }
+  },
+  "permissions": [
+    {
+      "method": "*"
+    }
+  ],
+  "domains": ["https://*"]
+}
