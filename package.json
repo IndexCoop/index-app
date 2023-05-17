@@ -11,6 +11,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.4",
     "@indexcoop/flash-mint-sdk": "^1.10.0",
+    "@ledgerhq/ledger-live-wagmi-connector": "^0.4.0",
     "@rainbow-me/rainbowkit": "^0.12.5",
     "@sentry/core": "^7.42.0",
     "@sentry/react": "^7.42.0",
@@ -31,11 +32,11 @@
     "wagmi": "^0.12.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-app-rewired start",
     "hardhat": "npx hardhat node",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject",
     "lint:fix": "yarn prettier --write . && yarn eslint ./src --fix"
   },
   "eslintConfig": {

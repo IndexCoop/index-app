@@ -18,11 +18,14 @@ import {
 } from '@rainbow-me/rainbowkit/wallets'
 
 import { AlchemyApiKey } from 'constants/server'
+import { IFrameEthereumConnector } from "@ledgerhq/ledger-live-wagmi-connector";
 
 export const { chains, provider } = configureChains(
   [mainnet, polygon],
   [alchemyProvider({ apiKey: AlchemyApiKey }), publicProvider()]
 )
+
+const ledgerConnector = new IFrameEthereumConnector({ chains, options: {} })
 
 const connectors = connectorsForWallets([
   {
