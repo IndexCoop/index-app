@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors https://eth-dapp-browser-ne49wqncp-ledgerhq.vercel.app"
+          "value": "frame-ancestors https://app.safe.global https://eth-dapp-browser-ne49wqncp-ledgerhq.vercel.app"
         },
         {
           "key": "X-Content-Type-Options",
