@@ -1,0 +1,27 @@
+{
+    "id": "indexcoop",
+    "name": "Index Coop",
+    "url": "https://app.indexcoop.com/",
+    "homepageUrl": "https://www.indexcoop.com",
+    "icon": "https://global.discourse-cdn.com/standard10/uploads/theindexdao/original/1X/fa26b1ec80f9ac9b5437424fe8f9799b5d105b3e.png",
+    "platform": "all",
+    "apiVersion": "0.0.1",
+    "manifestVersion": "1",
+    "branch": "stable",
+    "categories": ["buy"],
+    "currencies": [
+      "ethereum"
+    ],
+    "content": {
+      "shortDescription": {
+        "en": "Unlock powerful sector, leverage and yield-earning strategies with our simple index tokens"
+      },
+      "description": {
+        "en": "DeFi doesn’t have to be complicated. Unlock powerful sector, leverage and yield-earning strategies with our simple index tokens."
+      }
+    },
+    "permissions": [],
+    "domains": [
+      "https://*"
+    ]
+  }
