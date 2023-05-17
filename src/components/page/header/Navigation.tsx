@@ -8,11 +8,14 @@ import { Flex, IconButton, useBreakpointValue } from '@chakra-ui/react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 import { useNetwork } from 'hooks/useNetwork'
+import { useLedgerStatus } from 'hooks/useLedgerStatus'
 import { logConnect } from 'utils/api/analytics'
 
 import NavContent from './NavContent'
 
 const DesktopMenu = () => {
+    const { isRunningInLedgerLive } = useLedgerStatus()
+    const chainStatus = isRunningInLedgerLive ? {smallScreen: 'none', largeScreen : 'none'} : {smallScreen: 'full', largeScreen : 'full'}
   return (
     <Flex
       align='center'
@@ -32,6 +35,7 @@ const DesktopMenu = () => {
           smallScreen: 'avatar',
           largeScreen: 'full',
         }}
+        chainStatus={chainStatus as any}
       />
     </Flex>
   )
