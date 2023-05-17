@@ -92,7 +92,7 @@ export const useTrade = () => {
         console.log('Error sending transaction', error)
       }
     },
-    [address]
+    [address, chainId]
   )
 
   useEffect(() => {
