@@ -48,29 +48,21 @@ export const useTrade = () => {
 
   const executeTrade = useCallback(
     async (quote: ZeroExQuote | null) => {
-        console.log("executeTrade - ", quote)
-          console.log("executeTrade - chainId", chainId)
       if (!address || !quote) return
-        console.log("executeTrade - address and quote are not null")
       setZeroExQuote(quote)
-        console.log("executeTrade - setZeroExQuote returned")
 
       const inputToken = quote.inputToken
       const inputTokenAmount = quote.isMinting
         ? quote.inputOutputTokenAmount
         : quote.indexTokenAmount
 
-        console.log("executeTrade - getting RequiredBalance")
       let requiredBalance = fromWei(
         BigNumber.from(inputTokenAmount),
         inputToken.decimals
       )
-        console.log("executeTrade - requiredBalance", requiredBalance.toString());
       const spendingTokenBalance =
         getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
-        console.log("executeTrade - spendingTokenBalance", spendingTokenBalance.toString())
       if (spendingTokenBalance.lt(requiredBalance)) return
-        console.log("executeTrade - spendingTokenBalance sufficient")
 
       const req: TransactionRequest = {
         chainId: Number(quote.chainId),
@@ -79,7 +71,6 @@ export const useTrade = () => {
         data: quote.data,
         value: BigNumber.from(quote.value ?? 0),
       }
-        console.log("executeTrade - req: ", req)
 
       const req2: PopulatedTransaction = {
         chainId: Number(quote.chainId),
@@ -88,19 +79,14 @@ export const useTrade = () => {
         data: quote.data,
         value: BigNumber.from(quote.value ?? 0),
       }
-        console.log("executeTrade - req2: ", req2)
       try {
         // const accessKey = process.env.REACT_APP_TENDERLY_ACCESS_KEY ?? ''
         // const simulator = new TxSimulator(accessKey)
         // await simulator.simulate(req2)
         setIsTransacting(true)
-          console.log("executeTrade - chainId", chainId)
-          console.log("executeTrade - quote.chainId", quote.chainId)
-          console.log("executeTrade - sendTransaction: ", sendTransaction)
         sendTransaction?.({
           recklesslySetUnpreparedRequest: req,
         })
-        console.log("executeTrade - sentTransaction")
       } catch (error) {
         setIsTransacting(false)
         console.log('Error sending transaction', error)
