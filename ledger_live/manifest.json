@@ -1,0 +1,43 @@
+{
+  "id": "index-coop",
+  "name": "Index Coop",
+  "url": "https://dapp-browser.apps.ledger.com",
+  "params": {
+    "dappUrl": "https://app.indexcoop.com/?embedded=true",
+    "nanoApp": "Ethereum",
+    "dappName": "Index Coop",
+    "networks": [
+      {
+        "currency": "ethereum",
+        "chainID": 1,
+        "nodeURL": "wss://eth-mainnet.g.alchemy.com/v2/EElfXQcZk-acQCjrLv4ERIBBdCBxCY2_"
+      },
+      {
+        "currency": "polygon",
+        "chainID": 137,
+        "nodeURL": "wss://polygon-mainnet.g.alchemy.com/v2/svOOPKaFDBQeRA9RaiPoMGCXamTiV0iK"
+      }
+    ]
+  },
+  "homepageUrl": "https://indexcoop.com",
+  "platform": "all",
+  "apiVersion": "0.0.1",
+  "manifestVersion": "1",
+  "branch": "debug",
+  "categories": ["defi"],
+  "currencies": "*",
+  "content": {
+    "shortDescription": {
+      "en": "Decentralized structured products that make crypto simple, accessible, and secure"
+    },
+    "description": {
+      "en": "DeFi doesn’t have to be complicated. Unlock powerful sector, leverage and yield-earning strategies with our simple index tokens."
+    }
+  },
+  "permissions": [
+    {
+      "method": "*"
+    }
+  ],
+  "domains": ["https://*"]
+}

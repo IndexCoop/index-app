@@ -138,7 +138,7 @@ describe('getFlashMintNotionalTransaction()', () => {
       signer,
       chainId
     )
-    if (!tx) fail()
+    if (!tx) throw new Error('tx is null')
     const fmNotionalContract = getFlashMintNotionalContract(signer)
     expect(tx.to).toEqual(fmNotionalContract.address)
     expect(tx.from).toEqual(signer.address)
@@ -167,7 +167,7 @@ describe('getFlashMintNotionalTransaction()', () => {
       signer,
       chainId
     )
-    if (!tx) fail()
+    if (!tx) throw new Error('tx is null')
     const fmNotionalContract = getFlashMintNotionalContract(signer)
     expect(tx.to).toEqual(fmNotionalContract.address)
     expect(tx.from).toEqual(signer.address)

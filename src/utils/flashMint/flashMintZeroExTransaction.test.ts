@@ -125,7 +125,7 @@ describe('getFlashMintZeroExTransaction()', () => {
       wallet,
       chainId
     )
-    if (!tx) fail()
+    if (!tx) throw new Error('tx is null')
     expect(tx.from).toEqual(wallet.address)
     expect(tx.value).toEqual(inputOutputTokenAmount)
   })
