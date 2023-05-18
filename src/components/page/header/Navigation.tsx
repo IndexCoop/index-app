@@ -7,15 +7,17 @@ import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 import { Flex, IconButton, useBreakpointValue } from '@chakra-ui/react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-import { useNetwork } from 'hooks/useNetwork'
 import { useLedgerStatus } from 'hooks/useLedgerStatus'
+import { useNetwork } from 'hooks/useNetwork'
 import { logConnect } from 'utils/api/analytics'
 
 import NavContent from './NavContent'
 
 const DesktopMenu = () => {
-    const { isRunningInLedgerLive } = useLedgerStatus()
-    const chainStatus = isRunningInLedgerLive ? {smallScreen: 'none', largeScreen : 'none'} : {smallScreen: 'full', largeScreen : 'full'}
+  const { isRunningInLedgerLive } = useLedgerStatus()
+  const chainStatus = isRunningInLedgerLive
+    ? { smallScreen: 'none', largeScreen: 'none' }
+    : { smallScreen: 'full', largeScreen: 'full' }
   return (
     <Flex
       align='center'
