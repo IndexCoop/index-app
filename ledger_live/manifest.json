@@ -3,7 +3,7 @@
   "name": "Index Coop",
   "url": "https://dapp-browser.apps.ledger.com",
   "params": {
-    "dappUrl": "https://index-app-git-ledger-integration-index-coop.vercel.app/?embedded=true",
+    "dappUrl": "https://app.indexcoop.com/?embedded=true",
     "nanoApp": "Ethereum",
     "dappName": "Index Coop",
     "networks": [
@@ -24,7 +24,7 @@
   "apiVersion": "0.0.1",
   "manifestVersion": "1",
   "branch": "debug",
-  "categories": ["tools"],
+  "categories": ["defi"],
   "currencies": "*",
   "content": {
     "shortDescription": {
