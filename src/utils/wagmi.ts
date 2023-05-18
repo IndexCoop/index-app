@@ -53,7 +53,6 @@ const connectors = () => connectorsForWallets([
   },
 ])().concat([ledgerConnector])
 
-console.log("connectors:", connectors())
 
 export const wagmiClient = createClient({
   autoConnect: true,
