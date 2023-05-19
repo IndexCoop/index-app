@@ -207,25 +207,6 @@ export const BedIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
-export const GmiIndex: Token = {
-  name: 'Bankless DeFi Innovation Index',
-  symbol: 'GMI',
-  address: '0x47110d43175f7f2C2425E7d15792acC5817EB44f',
-  polygonAddress: '0x7fb27ee135db455de5ab1ccec66a24cbc82e712d',
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'gmi',
-  image: gmiLogo,
-  coingeckoId: 'bankless-defi-innovation-index',
-  tokenContextKey: 'gmi',
-  fees: {
-    streamingFee: '1.95%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
-}
-
 export const GitcoinStakedETHIndex: Token = {
   name: 'Gitcoin Staked ETH Index',
   symbol: 'gtcETH',
@@ -539,10 +520,7 @@ export const indexNamesMainnet = indexNames.filter(
   (index) => index.address && index.symbol !== MoneyMarketIndex.symbol
 )
 export const indexNamesPolygon = indexNames.filter(
-  (index) =>
-    index.polygonAddress &&
-    index.symbol !== GmiIndex.symbol && // temporarily removed due to liquidity concerns
-    index.symbol !== IndexToken.symbol // not available on Polygon
+  (index) => index.polygonAddress && index.symbol !== IndexToken.symbol // not available on Polygon
 )
 
 // FlashMint specific lists
@@ -554,7 +532,6 @@ export const flashMintIndexesPolygon = indexNames.filter(
   (index) =>
     index.polygonAddress &&
     index.symbol !== DefiPulseIndex.symbol &&
-    index.symbol !== GmiIndex.symbol &&
     index.symbol !== IndexToken.symbol &&
     index.symbol !== MetaverseIndex.symbol
 )
@@ -563,7 +540,6 @@ export const flashMintIndexesPolygonRedeem = indexNames.filter(
   (index) =>
     index.polygonAddress &&
     index.symbol !== DefiPulseIndex.symbol &&
-    index.symbol !== GmiIndex.symbol &&
     index.symbol !== IndexToken.symbol &&
     index.symbol !== MetaverseIndex.symbol
 )
