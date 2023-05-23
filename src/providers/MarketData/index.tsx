@@ -14,7 +14,6 @@ import {
   ETH,
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
-  GmiIndex,
   icETHIndex,
   IndexToken,
   MetaverseIndex,
@@ -93,8 +92,6 @@ export const MarketDataProvider = (props: { children: any }) => {
         return btcFliMarketData
       case icETHIndex:
         return icEthMarketData
-      case GmiIndex:
-        return gmiMarketData
       case MoneyMarketIndex:
         return mmiMarketData
       default:
@@ -124,8 +121,6 @@ export const MarketDataProvider = (props: { children: any }) => {
         return icEthMarketData
       case IndexToken:
         return indexMarketData
-      case GmiIndex:
-        return gmiMarketData
       case MoneyMarketIndex:
         return mmiMarketData
       default:
@@ -147,7 +142,6 @@ export const MarketDataProvider = (props: { children: any }) => {
         Bitcoin2xFlexibleLeverageIndex.coingeckoId
       ),
       fetchHistoricalTokenMarketData(icETHIndex.coingeckoId),
-      fetchHistoricalTokenMarketData(GmiIndex.coingeckoId),
       fetchHistoricalTokenMarketData(DiversifiedStakedETHIndex.coingeckoId),
       fetchHistoricalTokenMarketData(GitcoinStakedETHIndex.coingeckoId),
       fetchHistoricalTokenMarketData(MoneyMarketIndex.coingeckoId),
@@ -164,7 +158,6 @@ export const MarketDataProvider = (props: { children: any }) => {
     setGmiMarketData(marketData[8])
     setDsEthMarketData(marketData[9])
     setGtcEthMarketData(marketData[10])
-    setMmiMarketData(marketData[11])
   }, [])
 
   useEffect(() => {
