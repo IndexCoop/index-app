@@ -17,7 +17,8 @@ import { MarketDataProvider } from 'providers/MarketData'
 import { ProtectionProvider } from 'providers/Protection'
 import { initSentryEventTracking } from 'utils/api/sentry'
 import { chains, wagmiClient } from 'utils/wagmi'
-import Homepage from 'views/Homepage'
+
+import Homepage from './Homepage'
 
 import '@rainbow-me/rainbowkit/styles.css'
 
