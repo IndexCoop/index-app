@@ -45,7 +45,9 @@ const Header = () => {
             <Logo />
           </Flex>
         </Link>
-        <Navigation />
+        <Flex align='center' justifyContent={'flex-end'}>
+          <Navigation />
+        </Flex>
       </Flex>
     </Flex>
   )
