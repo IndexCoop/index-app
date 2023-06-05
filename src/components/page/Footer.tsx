@@ -1,6 +1,6 @@
-import { colors, useColorStyles } from 'styles/colors'
+import { useColorStyles } from 'styles/colors'
 
-import { Flex, Image, Link, Text } from '@chakra-ui/react'
+import { Flex, Link, Text } from '@chakra-ui/react'
 
 import { IndexLogoFullBlack, IndexLogoFullWhite } from 'assets'
 

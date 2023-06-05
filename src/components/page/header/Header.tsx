@@ -1,7 +1,6 @@
 import { useICColorMode } from 'styles/colors'
 
-import { Flex, Image, Link } from '@chakra-ui/react'
-import { useColorMode } from '@chakra-ui/system'
+import { Flex, Link } from '@chakra-ui/react'
 
 import {
   IndexLogoBlack,
