@@ -11,8 +11,6 @@ import { useLedgerStatus } from 'hooks/useLedgerStatus'
 import { useNetwork } from 'hooks/useNetwork'
 import { logConnect } from 'utils/api/analytics'
 
-import NavContent from './NavContent'
-
 const DesktopMenu = () => {
   const { isRunningInLedgerLive } = useLedgerStatus()
   const chainStatus = isRunningInLedgerLive
@@ -26,7 +24,6 @@ const DesktopMenu = () => {
       justifyContent={'space-between'}
       w='100%'
     >
-      <NavContent />
       <ConnectButton
         label='Connect'
         showBalance={{
@@ -83,7 +80,6 @@ const MobileMenu = () => {
           display={['flex', 'flex', 'flex', 'none']}
         />
         <ConnectButton />
-        <NavContent />
       </Flex>
     </Flex>
   )
@@ -105,7 +101,7 @@ const Navigation = () => {
 
   const width = isWeb ? 1024 : 340
   return (
-    <Flex w={['auto', 'auto', 'auto', width]} flexGrow={[0, 0, 0, 2]}>
+    <Flex>
       <DesktopMenu />
       <MobileMenu />
     </Flex>
