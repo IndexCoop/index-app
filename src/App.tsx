@@ -10,6 +10,7 @@ import { useLedgerStatus } from 'hooks/useLedgerStatus'
 import { ledgerConnector } from 'utils/wagmi'
 
 const App = () => {
+  // TODO:
   const { connectAsync, isIdle } = useConnect()
   const { isRunningInLedgerLive } = useLedgerStatus()
 

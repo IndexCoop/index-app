@@ -26,7 +26,7 @@ window.Buffer = window.Buffer || require('buffer').Buffer
 
 const Providers = (props: { children: any }) => {
   const gtmParams = {
-    id: process.env.REACT_APP_GOOGLE_TAG_MANAGER_CONTAINER_ID ?? '',
+    id: process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_CONTAINER_ID ?? '',
   }
 
   return (

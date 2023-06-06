@@ -6,7 +6,7 @@ module.exports = {
   networks: {
     hardhat: {
       forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_ID}`,
+        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
       },
     },
   },
