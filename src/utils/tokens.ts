@@ -141,6 +141,7 @@ export function isTokenAvailableForFlashMint(
   chainId: number | undefined
 ): boolean {
   if (!chainId) return false
+  if (token.symbol === IndexToken.symbol) return false
   switch (chainId) {
     case MAINNET.chainId:
       return (
