@@ -13,7 +13,7 @@ import { darkTheme, Theme } from '@rainbow-me/rainbowkit'
 
 const config: ThemeConfig = {
   initialColorMode: 'system',
-  useSystemColorMode: false,
+  useSystemColorMode: true,
 }
 
 const components = {
