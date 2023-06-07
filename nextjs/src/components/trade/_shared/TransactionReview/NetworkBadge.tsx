@@ -1,8 +1,8 @@
-import { useColorStyles } from 'styles/colors'
+import { useColorStyles } from '@/lib/styles/colors'
 
 import { Box, Flex, Text } from '@chakra-ui/react'
 
-import { useNetwork } from 'hooks/useNetwork'
+import { useNetwork } from '@/lib/hooks/useNetwork'
 
 const NetworkBadge = () => {
   const { styles } = useColorStyles()

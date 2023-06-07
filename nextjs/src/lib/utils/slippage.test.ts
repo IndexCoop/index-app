@@ -1,4 +1,4 @@
-import { slippageMap } from 'constants/slippage'
+import { slippageMap } from '@/constants/slippage'
 import {
   DAI,
   DiversifiedStakedETHIndex,
@@ -9,7 +9,7 @@ import {
   USDT,
   WETH,
   WSETH2,
-} from 'constants/tokens'
+} from '@/constants/tokens'
 
 import { getSlippageOverrideOrNull, selectSlippage } from './slippage'
 

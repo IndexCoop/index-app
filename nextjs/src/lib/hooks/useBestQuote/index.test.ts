@@ -10,8 +10,8 @@ import {
   STETH,
   USDC,
   WETH,
-} from 'constants/tokens'
-import { toWei } from 'utils'
+} from '@/constants/tokens'
+import { toWei } from '@/lib/utils'
 
 import { isEligibleTradePair } from './flashMintLeveraged'
 import { isEligibleTradePairZeroEx } from './flashMintZeroEx'

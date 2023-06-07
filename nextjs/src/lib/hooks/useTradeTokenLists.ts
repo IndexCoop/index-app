@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { MAINNET, POLYGON } from 'constants/chains'
+import { MAINNET, POLYGON } from '@/constants/chains'
 import {
   ETH,
   flashMintIndexesMainnetRedeem,
@@ -8,13 +8,13 @@ import {
   indexNamesMainnet,
   indexNamesPolygon,
   Token,
-} from 'constants/tokens'
-import { fetchCoingeckoTokenPrice } from 'utils/api/coingeckoApi'
+} from '@/constants/tokens'
+import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingeckoApi'
 import {
   getAddressForToken,
   getCurrencyTokensForIndex,
   getNativeToken,
-} from 'utils/tokens'
+} from '@/lib/utils/tokens'
 
 import { useNetwork } from './useNetwork'
 

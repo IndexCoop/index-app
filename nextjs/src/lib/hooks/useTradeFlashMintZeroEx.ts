@@ -9,22 +9,25 @@ import {
   getIssuanceModule,
 } from '@indexcoop/flash-mint-sdk'
 
-import { DefaultGasLimitFlashMintZeroEx } from 'constants/gas'
-import { ETH, MATIC } from 'constants/tokens'
-import { ExchangeIssuanceZeroExQuote } from 'hooks/useBestQuote'
-import { useNetwork } from 'hooks/useNetwork'
-import { useWallet } from 'hooks/useWallet'
-import { useBalanceData } from 'providers/Balances'
-import { fromWei } from 'utils'
-import { logTx } from 'utils/api/analytics'
+import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
+import { ETH, MATIC } from '@/constants/tokens'
+import { ExchangeIssuanceZeroExQuote } from '@/lib/hooks/useBestQuote'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { useBalanceData } from '@/lib/providers/Balances'
+import { fromWei } from '@/lib/utils'
+import { logTx } from '@/lib/utils/api/analytics'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,
   captureTransaction,
-} from 'utils/api/sentry'
-import { getFlashMintZeroExTransaction } from 'utils/flashMint/flashMintZeroExTransaction'
-import { GasEstimatooor, GasEstimatooorFailedError } from 'utils/gasEstimatooor'
-import { getAddressForToken } from 'utils/tokens'
+} from '@/lib/utils/api/sentry'
+import { getFlashMintZeroExTransaction } from '@/lib/utils/flashMint/flashMintZeroExTransaction'
+import {
+  GasEstimatooor,
+  GasEstimatooorFailedError,
+} from '@/lib/utils/gasEstimatooor'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 export const useTradeFlashMintZeroEx = () => {
   const { address, provider, signer } = useWallet()

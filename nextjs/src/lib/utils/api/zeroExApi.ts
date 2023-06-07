@@ -4,7 +4,7 @@ import {
   getIndexApiHeaders,
   IndexApiBaseUrl,
   ZeroExAffiliateAddress,
-} from 'constants/server'
+} from '@/constants/server'
 
 export function getConfiguredZeroExApi(swapPathOverride: string): ZeroExApi {
   const headers = getIndexApiHeaders()

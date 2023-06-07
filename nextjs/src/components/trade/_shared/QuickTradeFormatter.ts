@@ -1,10 +1,10 @@
-import { colors } from 'styles/colors'
+import { colors } from '@/lib/styles/colors'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { Token } from 'constants/tokens'
-import { displayFromWei } from 'utils'
-import { getNativeToken } from 'utils/tokens'
+import { Token } from '@/constants/tokens'
+import { displayFromWei } from '@/lib/utils'
+import { getNativeToken } from '@/lib/utils/tokens'
 
 import { TradeDetailTokenPrices } from '../swap/TradeDetail'
 import { TradeInfoItem } from '../swap/TradeInfo'

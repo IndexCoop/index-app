@@ -1,10 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
-import { FlashMintPerp } from 'constants/contractAddresses'
-import { Token } from 'constants/tokens'
-import { useWallet } from 'hooks/useWallet'
-import { FlashMintPerpInterface } from 'utils/abi/interfaces'
+import { FlashMintPerp } from '@/constants/contractAddresses'
+import { Token } from '@/constants/tokens'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { FlashMintPerpInterface } from '@/lib/utils/abi/interfaces'
 
 /**
  * Approve the spending of an ERC20

@@ -2,17 +2,20 @@ import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { EnhancedFlashMintQuote } from 'hooks/useBestQuote'
-import { useNetwork } from 'hooks/useNetwork'
-import { useWallet } from 'hooks/useWallet'
-import { logTx } from 'utils/api/analytics'
+import { EnhancedFlashMintQuote } from '@/lib/hooks/useBestQuote'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { logTx } from '@/lib/utils/api/analytics'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,
   captureTransaction,
-} from 'utils/api/sentry'
-import { GasEstimatooor, GasEstimatooorFailedError } from 'utils/gasEstimatooor'
-import { getAddressForToken } from 'utils/tokens'
+} from '@/lib/utils/api/sentry'
+import {
+  GasEstimatooor,
+  GasEstimatooorFailedError,
+} from '@/lib/utils/gasEstimatooor'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 export const useFlashMintTrade = () => {
   const { address, signer } = useWallet()

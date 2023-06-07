@@ -1,6 +1,6 @@
-import { ETH, MetaverseIndex } from 'constants/tokens'
-import { toWei } from 'utils'
-import { LocalhostProvider, SignerAccount0 } from 'utils/test-utils'
+import { ETH, MetaverseIndex } from '@/constants/tokens'
+import { toWei } from '@/lib/utils'
+import { LocalhostProvider, SignerAccount0 } from '@/lib/utils/test-utils'
 
 import { getFlashMintZeroExTransaction } from './flashMintZeroExTransaction'
 

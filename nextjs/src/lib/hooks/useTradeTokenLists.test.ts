@@ -5,7 +5,7 @@ import {
   indexNamesMainnet,
   indexNamesPolygon,
   MoneyMarketIndex,
-} from 'constants/tokens'
+} from '@/constants/tokens'
 
 import { getTokenListByChain } from './useTradeTokenLists'
 

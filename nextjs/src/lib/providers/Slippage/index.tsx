@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-import { slippageDefault } from 'constants/slippage'
+import { slippageDefault } from '@/constants/slippage'
 
 interface Context {
   isAuto: boolean

@@ -1,13 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { DefaultGasLimitFlashMintNotional } from 'constants/gas'
-import { DAI, FIXED_DAI, FIXED_USDC, Token, USDC } from 'constants/tokens'
-import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
-import { getFlashMintNotionalQuote } from 'utils/flashMintNotional/fmNotionalQuote'
-import { getFlashMintNotionalTransaction } from 'utils/flashMintNotional/fmNotionalTransaction'
-import { GasEstimatooor } from 'utils/gasEstimatooor'
-import { TxSimulator } from 'utils/simulator'
+import { DefaultGasLimitFlashMintNotional } from '@/constants/gas'
+import { DAI, FIXED_DAI, FIXED_USDC, Token, USDC } from '@/constants/tokens'
+import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import { getFlashMintNotionalQuote } from '@/lib/utils/flashMintNotional/fmNotionalQuote'
+import { getFlashMintNotionalTransaction } from '@/lib/utils/flashMintNotional/fmNotionalTransaction'
+import { GasEstimatooor } from '@/lib/utils/gasEstimatooor'
+import { TxSimulator } from '@/lib/utils/simulator'
 
 import { FlashMintNotionalQuote, QuoteType } from './'
 

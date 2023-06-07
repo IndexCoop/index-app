@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { MAINNET } from 'constants/chains'
-import { IndexToken, MoneyMarketIndex, Token } from 'constants/tokens'
-import { IndexApi } from 'utils/api/indexApi'
-import { getAddressForToken } from 'utils/tokens'
+import { MAINNET } from '@/constants/chains'
+import { IndexToken, MoneyMarketIndex, Token } from '@/constants/tokens'
+import { IndexApi } from '@/lib/utils/api/indexApi'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 export interface SetComponent {
   /**

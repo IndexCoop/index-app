@@ -3,12 +3,12 @@ import {
   colorStyles,
   useColorStyles,
   useICColorMode,
-} from 'styles/colors'
+} from '@/lib/styles/colors'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
-import { Token } from 'constants/tokens'
+import { Token } from '@/constants/tokens'
 
 import QuickTradeSelector from '../_shared/QuickTradeSelector'
 

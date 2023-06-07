@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useColorStyles } from 'styles/colors'
+import { useColorStyles } from '@/lib/styles/colors'
 
 import { CheckCircleIcon } from '@chakra-ui/icons'
 import {
@@ -17,14 +17,14 @@ import {
   Text,
 } from '@chakra-ui/react'
 
-import Override from 'components/trade/flashmint/Override'
-import { useFlashMintTrade } from 'hooks/useFlashMintTrade'
-import { useSimulateQuote } from 'hooks/useSimulateQuote'
-import { useTradeFlashMintLeveraged } from 'hooks/useTradeFlashMintLeveraged'
-import { useTradeFlashMintNotional } from 'hooks/useTradeFlashMintNotional'
-import { useTradeFlashMintZeroEx } from 'hooks/useTradeFlashMintZeroEx'
-import { displayFromWei } from 'utils'
-import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
+import Override from '@/components/trade/flashmint/Override'
+import { useFlashMintTrade } from '@/lib/hooks/useFlashMintTrade'
+import { useSimulateQuote } from '@/lib/hooks/useSimulateQuote'
+import { useTradeFlashMintLeveraged } from '@/lib/hooks/useTradeFlashMintLeveraged'
+import { useTradeFlashMintNotional } from '@/lib/hooks/useTradeFlashMintNotional'
+import { useTradeFlashMintZeroEx } from '@/lib/hooks/useTradeFlashMintZeroEx'
+import { displayFromWei } from '@/lib/utils'
+import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 
 import { TradeButton } from '../footer/TradeButton'
 

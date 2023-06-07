@@ -2,8 +2,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { getFlashMintZeroExQuote, ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
-import { MAINNET } from 'constants/chains'
-import { DefaultGasLimitFlashMintZeroEx } from 'constants/gas'
+import { MAINNET } from '@/constants/chains'
+import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   Ethereum2xFlexibleLeverageIndex,
@@ -12,11 +12,11 @@ import {
   icETHIndex,
   IndexToken,
   Token,
-} from 'constants/tokens'
-import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
-import { getFlashMintZeroExTransaction } from 'utils/flashMint/flashMintZeroExTransaction'
-import { GasEstimatooor } from 'utils/gasEstimatooor'
-import { TxSimulator } from 'utils/simulator'
+} from '@/constants/tokens'
+import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import { getFlashMintZeroExTransaction } from '@/lib/utils/flashMint/flashMintZeroExTransaction'
+import { GasEstimatooor } from '@/lib/utils/gasEstimatooor'
+import { TxSimulator } from '@/lib/utils/simulator'
 
 import { ExchangeIssuanceZeroExQuote, QuoteType } from './'
 

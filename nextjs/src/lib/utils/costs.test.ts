@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 
-import { toWei } from 'utils'
+import { toWei } from '@/lib/utils'
 
 import { getFullCostsInUsd, getGasCostsInUsd } from './costs'
 

@@ -4,11 +4,11 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
 
-import { MAINNET } from 'constants/chains'
-import { MoneyMarketIndex, Token } from 'constants/tokens'
-import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
-import { GasEstimatooor } from 'utils/gasEstimatooor'
-import { getCurrencyTokensForIndex } from 'utils/tokens'
+import { MAINNET } from '@/constants/chains'
+import { MoneyMarketIndex, Token } from '@/constants/tokens'
+import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import { GasEstimatooor } from '@/lib/utils/gasEstimatooor'
+import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 
 import { EnhancedFlashMintQuote, QuoteType } from './'
 

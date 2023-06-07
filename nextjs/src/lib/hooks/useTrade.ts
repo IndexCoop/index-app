@@ -6,18 +6,18 @@ import { useSendTransaction } from 'wagmi'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { OPTIMISM } from 'constants/chains'
+import { OPTIMISM } from '@/constants/chains'
 import {
   zeroExRouterAddress,
   zeroExRouterOptimismAddress,
-} from 'constants/contractAddresses'
-import { ZeroExQuote } from 'hooks/useBestQuote'
-import { useNetwork } from 'hooks/useNetwork'
-import { useWallet } from 'hooks/useWallet'
-import { useBalanceData } from 'providers/Balances'
-import { fromWei } from 'utils'
-import { logTransaction } from 'utils/api/analytics'
-import { TxSimulator } from 'utils/simulator'
+} from '@/constants/contractAddresses'
+import { ZeroExQuote } from '@/lib/hooks/useBestQuote'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { useBalanceData } from '@/lib/providers/Balances'
+import { fromWei } from '@/lib/utils'
+import { logTransaction } from '@/lib/utils/api/analytics'
+import { TxSimulator } from '@/lib/utils/simulator'
 
 export const useTrade = () => {
   const { address } = useWallet()

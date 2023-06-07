@@ -5,8 +5,8 @@ import {
   SwapData,
 } from '@indexcoop/flash-mint-sdk'
 
-import { Token } from 'constants/tokens'
-import { getAddressForToken, isNativeCurrency } from 'utils/tokens'
+import { Token } from '@/constants/tokens'
+import { getAddressForToken, isNativeCurrency } from '@/lib/utils/tokens'
 
 /**
  * Returns a gas estimate for FlashMintLeveraged.

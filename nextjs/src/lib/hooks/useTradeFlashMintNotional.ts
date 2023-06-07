@@ -4,25 +4,28 @@ import { Signer } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { DefaultGasLimitFlashMintNotional } from 'constants/gas'
-import { FlashMintNotionalQuote } from 'hooks/useBestQuote'
-import { useNetwork } from 'hooks/useNetwork'
-import { useWallet } from 'hooks/useWallet'
-import { useBalanceData } from 'providers/Balances'
-import { fromWei } from 'utils'
-import { logTx } from 'utils/api/analytics'
+import { DefaultGasLimitFlashMintNotional } from '@/constants/gas'
+import { FlashMintNotionalQuote } from '@/lib/hooks/useBestQuote'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { useBalanceData } from '@/lib/providers/Balances'
+import { fromWei } from '@/lib/utils'
+import { logTx } from '@/lib/utils/api/analytics'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,
   captureTransaction,
-} from 'utils/api/sentry'
+} from '@/lib/utils/api/sentry'
 import {
   DebtIssuanceModuleV2,
   getFlashMintNotionalContract,
-} from 'utils/flashMintNotional/fmNotionalContract'
-import { getFlashMintNotionalTransaction } from 'utils/flashMintNotional/fmNotionalTransaction'
-import { GasEstimatooor, GasEstimatooorFailedError } from 'utils/gasEstimatooor'
-import { getAddressForToken } from 'utils/tokens'
+} from '@/lib/utils/flashMintNotional/fmNotionalContract'
+import { getFlashMintNotionalTransaction } from '@/lib/utils/flashMintNotional/fmNotionalTransaction'
+import {
+  GasEstimatooor,
+  GasEstimatooorFailedError,
+} from '@/lib/utils/gasEstimatooor'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 export const useTradeFlashMintNotional = () => {
   const { address, provider, signer } = useWallet()

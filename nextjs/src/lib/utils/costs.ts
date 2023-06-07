@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 
-import { displayFromWei } from 'utils'
+import { displayFromWei } from '@/lib/utils'
 
 export function getFullCostsInUsd(
   quote: BigNumber | null | undefined,

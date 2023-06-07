@@ -19,7 +19,7 @@ import {
   STETH,
   USDC,
   WETH,
-} from 'constants/tokens'
+} from '@/constants/tokens'
 
 import {
   getAddressForToken,

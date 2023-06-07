@@ -1,4 +1,4 @@
-import { colors } from 'styles/colors'
+import { colors } from '@/lib/styles/colors'
 
 import { CheckIcon, ChevronRightIcon, InfoIcon } from '@chakra-ui/icons'
 import { Flex, Spinner, Text } from '@chakra-ui/react'

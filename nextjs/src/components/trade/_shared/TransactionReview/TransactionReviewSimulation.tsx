@@ -1,4 +1,4 @@
-import { colors, useColorStyles } from 'styles/colors'
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import { Flex, Spacer, Spinner, Text } from '@chakra-ui/react'

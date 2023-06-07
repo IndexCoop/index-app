@@ -4,9 +4,9 @@ import {
   SwapData,
 } from '@indexcoop/flash-mint-sdk'
 
-import { ETH, icETHIndex } from 'constants/tokens'
-import { toWei } from 'utils'
-import { LocalhostProvider, SignerAccount0 } from 'utils/test-utils'
+import { ETH, icETHIndex } from '@/constants/tokens'
+import { toWei } from '@/lib/utils'
+import { LocalhostProvider, SignerAccount0 } from '@/lib/utils/test-utils'
 
 import { getFlashMintLeveragedTransaction } from './flashMintLeveragedTransaction'
 

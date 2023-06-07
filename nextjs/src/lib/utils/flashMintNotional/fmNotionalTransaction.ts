@@ -3,8 +3,8 @@ import { PopulatedTransaction, Signer } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SwapData } from '@indexcoop/flash-mint-sdk'
 
-import { Token } from 'constants/tokens'
-import { getAddressForToken } from 'utils/tokens'
+import { Token } from '@/constants/tokens'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { getFlashMintNotionalContract } from './fmNotionalContract'
 

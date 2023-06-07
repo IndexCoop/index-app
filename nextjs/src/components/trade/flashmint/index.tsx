@@ -5,20 +5,23 @@ import debounce from 'lodash/debounce'
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import { Token } from 'constants/tokens'
-import { useApproval } from 'hooks/useApproval'
-import { useFlashMintQuote } from 'hooks/useFlashMintQuote'
-import { useNetwork } from 'hooks/useNetwork'
-import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
-import { useWallet } from 'hooks/useWallet'
-import { useBalanceData } from 'providers/Balances'
-import { useSlippage } from 'providers/Slippage'
-import { displayFromWei, isValidTokenInput, toWei } from 'utils'
-import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
-import { getContractForQuote, getQuoteAmount } from 'utils/flashMint/quotes'
-import { selectSlippage } from 'utils/slippage'
-import { getNativeToken, isNotTradableToken } from 'utils/tokens'
+import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
+import { Token } from '@/constants/tokens'
+import { useApproval } from '@/lib/hooks/useApproval'
+import { useFlashMintQuote } from '@/lib/hooks/useFlashMintQuote'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useTradeTokenLists } from '@/lib/hooks/useTradeTokenLists'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { useBalanceData } from '@/lib/providers/Balances'
+import { useSlippage } from '@/lib/providers/Slippage'
+import { displayFromWei, isValidTokenInput, toWei } from '@/lib/utils'
+import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
+import {
+  getContractForQuote,
+  getQuoteAmount,
+} from '@/lib/utils/flashMint/quotes'
+import { selectSlippage } from '@/lib/utils/slippage'
+import { getNativeToken, isNotTradableToken } from '@/lib/utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
@@ -314,7 +317,7 @@ const FlashMint = (props: QuickTradeProps) => {
   )
 
   // TradeButtonContainer
-  const buttonLabel = getTradeButtonLabel()
+  const buttonLabel = 'getTradeButtonLabel()'
   const isButtonDisabled = getTradeButtonDisabledState()
   const isLoading = isApproving() || isFetchingQuote
   const contractBlockExplorerUrl =

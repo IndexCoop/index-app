@@ -8,22 +8,25 @@ import {
   getFlashMintLeveragedContractForToken,
 } from '@indexcoop/flash-mint-sdk'
 
-import { DefaultGasLimitFlashMintLeveraged } from 'constants/gas'
-import { ETH, MATIC } from 'constants/tokens'
-import { ExchangeIssuanceLeveragedQuote } from 'hooks/useBestQuote'
-import { useNetwork } from 'hooks/useNetwork'
-import { useWallet } from 'hooks/useWallet'
-import { useBalanceData } from 'providers/Balances'
-import { fromWei } from 'utils'
-import { logTx } from 'utils/api/analytics'
+import { DefaultGasLimitFlashMintLeveraged } from '@/constants/gas'
+import { ETH, MATIC } from '@/constants/tokens'
+import { ExchangeIssuanceLeveragedQuote } from '@/lib/hooks/useBestQuote'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { useBalanceData } from '@/lib/providers/Balances'
+import { fromWei } from '@/lib/utils'
+import { logTx } from '@/lib/utils/api/analytics'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,
   captureTransaction,
-} from 'utils/api/sentry'
-import { getFlashMintLeveragedTransaction } from 'utils/flashMint/flashMintLeveragedTransaction'
-import { GasEstimatooor, GasEstimatooorFailedError } from 'utils/gasEstimatooor'
-import { getAddressForToken } from 'utils/tokens'
+} from '@/lib/utils/api/sentry'
+import { getFlashMintLeveragedTransaction } from '@/lib/utils/flashMint/flashMintLeveragedTransaction'
+import {
+  GasEstimatooor,
+  GasEstimatooorFailedError,
+} from '@/lib/utils/gasEstimatooor'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 export const useTradeFlashMintLeveraged = () => {
   const { address, provider, signer } = useWallet()

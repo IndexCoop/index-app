@@ -1,28 +1,32 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import debounce from 'lodash/debounce'
-import { colors, useICColorMode } from 'styles/colors'
+import { colors, useICColorMode } from '@/lib/styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
-import { Token } from 'constants/tokens'
-import { useApproval } from 'hooks/useApproval'
-import { useBestQuote } from 'hooks/useBestQuote'
-import { useNetwork } from 'hooks/useNetwork'
-import { useTokenComponents } from 'hooks/useTokenComponents'
-import { useTrade } from 'hooks/useTrade'
-import { useTradeTokenLists } from 'hooks/useTradeTokenLists'
-import { useWallet } from 'hooks/useWallet'
-import { useBalanceData } from 'providers/Balances'
-import { useProtection } from 'providers/Protection'
-import { useSlippage } from 'providers/Slippage'
-import { isValidTokenInput, toWei } from 'utils'
-import { getBlockExplorerContractUrl } from 'utils/blockExplorer'
-import { getZeroExRouterAddress } from 'utils/contracts'
-import { getNativeToken, isNotTradableToken, isPerpToken } from 'utils/tokens'
+import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
+import { Token } from '@/constants/tokens'
+import { useApproval } from '@/lib/hooks/useApproval'
+import { useBestQuote } from '@/lib/hooks/useBestQuote'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useTokenComponents } from '@/lib/hooks/useTokenComponents'
+import { useTrade } from '@/lib/hooks/useTrade'
+import { useTradeTokenLists } from '@/lib/hooks/useTradeTokenLists'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { useBalanceData } from '@/lib/providers/Balances'
+import { useProtection } from '@/lib/providers/Protection'
+import { useSlippage } from '@/lib/providers/Slippage'
+import { isValidTokenInput, toWei } from '@/lib/utils'
+import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
+import { getZeroExRouterAddress } from '@/lib/utils/contracts'
+import {
+  getNativeToken,
+  isNotTradableToken,
+  isPerpToken,
+} from '@/lib/utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
@@ -386,7 +390,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const isNarrow = props.isNarrowVersion ?? false
 
   // TradeButtonContainer
-  const buttonLabel = getTradeButtonLabel()
+  const buttonLabel = `getTradeButtonLabel()`
   const isButtonDisabled = getButtonDisabledState()
   const isLoading = getIsApproving() || isFetchingZeroEx
 

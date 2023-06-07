@@ -5,16 +5,16 @@ import {
   ZeroExApi,
 } from '@indexcoop/flash-mint-sdk'
 
-import { DefaultGasLimitFlashMintLeveraged } from 'constants/gas'
+import { DefaultGasLimitFlashMintLeveraged } from '@/constants/gas'
 import {
   eligibleLeveragedExchangeIssuanceTokens,
   Token,
-} from 'constants/tokens'
-import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
-import { getFlashMintLeveragedTransaction } from 'utils/flashMint/flashMintLeveragedTransaction'
-import { GasEstimatooor } from 'utils/gasEstimatooor'
-import { TxSimulator } from 'utils/simulator'
-import { getCurrencyTokensForIndex } from 'utils/tokens'
+} from '@/constants/tokens'
+import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import { getFlashMintLeveragedTransaction } from '@/lib/utils/flashMint/flashMintLeveragedTransaction'
+import { GasEstimatooor } from '@/lib/utils/gasEstimatooor'
+import { TxSimulator } from '@/lib/utils/simulator'
+import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 
 import { ExchangeIssuanceLeveragedQuote, QuoteType } from './'
 

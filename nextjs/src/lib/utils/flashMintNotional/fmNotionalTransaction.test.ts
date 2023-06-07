@@ -1,8 +1,8 @@
 import { SwapData } from '@indexcoop/flash-mint-sdk'
 
-import { DAI, FIXED_DAI } from 'constants/tokens'
-import { toWei } from 'utils'
-import { LocalhostProvider, SignerAccount0 } from 'utils/test-utils'
+import { DAI, FIXED_DAI } from '@/constants/tokens'
+import { toWei } from '@/lib/utils'
+import { LocalhostProvider, SignerAccount0 } from '@/lib/utils/test-utils'
 
 import { getFlashMintNotionalContract } from './fmNotionalContract'
 import { getFlashMintNotionalTransaction } from './fmNotionalTransaction'

@@ -2,8 +2,8 @@ import { BigNumber, ethers } from 'ethers'
 
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { DefaultGasLimitFlashMintZeroEx } from 'constants/gas'
-import { toWei } from 'utils'
+import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
+import { toWei } from '@/lib/utils'
 
 import { GasEstimatooor, GasEstimatooorFailedError } from './gasEstimatooor'
 

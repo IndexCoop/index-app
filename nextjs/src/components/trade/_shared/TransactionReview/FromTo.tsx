@@ -1,4 +1,4 @@
-import { useColorStyles } from 'styles/colors'
+import { useColorStyles } from '@/lib/styles/colors'
 
 import { ArrowDownIcon } from '@chakra-ui/icons'
 import { Flex, Image, Spacer, Text } from '@chakra-ui/react'

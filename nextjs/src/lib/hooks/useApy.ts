@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { IndexApi } from 'utils/api/indexApi'
+import { IndexApi } from '@/lib/utils/api/indexApi'
 
 export const useApy = (symbol: string): { apy: BigNumber } => {
   const [apy, setApy] = useState(BigNumber.from(0))

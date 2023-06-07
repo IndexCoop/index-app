@@ -2,12 +2,12 @@ import { BigNumber, PopulatedTransaction } from 'ethers'
 
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { useNetwork } from 'hooks/useNetwork'
-import { useWallet } from 'hooks/useWallet'
-import { getFlashMintLeveragedTransaction } from 'utils/flashMint/flashMintLeveragedTransaction'
-import { getFlashMintZeroExTransaction } from 'utils/flashMint/flashMintZeroExTransaction'
-import { getFlashMintNotionalTransaction } from 'utils/flashMintNotional/fmNotionalTransaction'
-import { TxSimulator } from 'utils/simulator'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { getFlashMintLeveragedTransaction } from '@/lib/utils/flashMint/flashMintLeveragedTransaction'
+import { getFlashMintZeroExTransaction } from '@/lib/utils/flashMint/flashMintZeroExTransaction'
+import { getFlashMintNotionalTransaction } from '@/lib/utils/flashMintNotional/fmNotionalTransaction'
+import { TxSimulator } from '@/lib/utils/simulator'
 
 import { FlashMintQuoteResult } from './useFlashMintQuote'
 

@@ -1,4 +1,4 @@
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 
 export function getBlockExplorerContractUrl(
   contractAddress: string,

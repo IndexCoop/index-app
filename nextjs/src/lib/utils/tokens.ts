@@ -1,4 +1,4 @@
-import { MAINNET, OPTIMISM, POLYGON } from 'constants/chains'
+import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   DAI,
@@ -27,7 +27,7 @@ import {
   USDT,
   WETH,
   WSTETH,
-} from 'constants/tokens'
+} from '@/constants/tokens'
 
 export function getAddressForToken(
   token: Token,

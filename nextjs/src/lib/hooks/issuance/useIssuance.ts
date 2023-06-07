@@ -5,17 +5,17 @@ import { utils } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
-import { FlashMintPerp } from 'constants/contractAddresses'
-import { Token } from 'constants/tokens'
-import { useNetwork } from 'hooks/useNetwork'
-import { useWallet } from 'hooks/useWallet'
-import { ISSUANCE_ABI } from 'utils/abi/Issuance'
-import { logTx } from 'utils/api/analytics'
+import { FlashMintPerp } from '@/constants/contractAddresses'
+import { Token } from '@/constants/tokens'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useWallet } from '@/lib/hooks/useWallet'
+import { ISSUANCE_ABI } from '@/lib/utils/abi/Issuance'
+import { logTx } from '@/lib/utils/api/analytics'
 import {
   CaptureExchangeIssuanceFunctionKey,
   CaptureExchangeIssuanceKey,
   captureTransaction,
-} from 'utils/api/sentry'
+} from '@/lib/utils/api/sentry'
 
 const ISSUANCEInterface = new utils.Interface(ISSUANCE_ABI)
 

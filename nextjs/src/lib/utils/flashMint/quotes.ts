@@ -4,9 +4,9 @@ import {
   getFlashMintZeroExContractForToken,
 } from '@indexcoop/flash-mint-sdk'
 
-import { FlashMintPerp } from 'constants/contractAddresses'
-import { FlashMintQuoteResult } from 'hooks/useFlashMintQuote'
-import { FlashMintNotionalContractAddress } from 'utils/flashMintNotional/fmNotionalContract'
+import { FlashMintPerp } from '@/constants/contractAddresses'
+import { FlashMintQuoteResult } from '@/lib/hooks/useFlashMintQuote'
+import { FlashMintNotionalContractAddress } from '@/lib/utils/flashMintNotional/fmNotionalContract'
 
 export const getContractForQuote = (
   quoteResult: FlashMintQuoteResult | null,

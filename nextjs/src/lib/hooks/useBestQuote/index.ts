@@ -5,19 +5,19 @@ import { PopulatedTransaction } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { SwapData } from '@indexcoop/flash-mint-sdk'
 
-import { Token } from 'constants/tokens'
-import { useNetwork } from 'hooks/useNetwork'
-import { useBalanceData } from 'providers/Balances'
-import { toWei } from 'utils'
-import { GasStation } from 'utils/api/gasStation'
-import { getConfiguredZeroExApi } from 'utils/api/zeroExApi'
+import { Token } from '@/constants/tokens'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useBalanceData } from '@/lib/providers/Balances'
+import { toWei } from '@/lib/utils'
+import { GasStation } from '@/lib/utils/api/gasStation'
+import { getConfiguredZeroExApi } from '@/lib/utils/api/zeroExApi'
 import {
   getNetworkKey,
   getZeroExTradeData,
   ZeroExData,
-} from 'utils/api/zeroExUtils'
-import { getFullCostsInUsd, getGasCostsInUsd } from 'utils/costs'
-import { getAddressForToken } from 'utils/tokens'
+} from '@/lib/utils/api/zeroExUtils'
+import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { useWallet } from '../useWallet'
 
