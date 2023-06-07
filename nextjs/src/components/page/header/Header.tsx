@@ -17,7 +17,7 @@ const Header = () => {
     <Flex
       as='header'
       // backgroundColor={backgroundColor}
-      backdropFilter='saturate(180%) blur(5px)'
+      backdropFilter='saturate(120%) blur(5px)'
       p={[
         '16px 16px 16px 24px',
         null,
