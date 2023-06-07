@@ -3,14 +3,13 @@ import {
   dsethLogo,
   fixedDaiLogo,
   fixedUsdcLogo,
-  gmiLogo,
   gtcEthLogo,
   icethLogo,
   indexLogo,
   mmiLogo,
   wseth2Logo,
-} from '../../public/assets'
-import { TokenContextKeys } from '../lib/providers/MarketData'
+} from '@/lib/utils/assets'
+import { TokenContextKeys } from '@/lib/providers/MarketData'
 
 import { MAINNET } from './chains'
 

@@ -1,13 +1,14 @@
-import { useICColorMode } from '../../../lib/styles/colors'
+import { useICColorMode } from '@/lib/styles/colors'
 
 import { Flex, Link, Spacer } from '@chakra-ui/react'
 
-import { IndexLogoBlack, IndexLogoWhite } from '../../../../public/assets'
+import { IndexLogoBlack, IndexLogoWhite } from '@/lib/utils/assets'
 
 import Navigation from './Navigation'
 
 const Header = () => {
   const { isDarkMode } = useICColorMode()
+  // TODO:
   const backgroundColor = isDarkMode
     ? 'rgba(15, 23, 23, 0.6)'
     : 'rgba(252, 255, 255, 0.82)'
@@ -15,7 +16,7 @@ const Header = () => {
   return (
     <Flex
       as='header'
-      backgroundColor={backgroundColor}
+      // backgroundColor={backgroundColor}
       backdropFilter='saturate(180%) blur(5px)'
       p={[
         '16px 16px 16px 24px',
