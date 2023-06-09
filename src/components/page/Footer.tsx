@@ -2,8 +2,6 @@ import { useColorStyles } from '../../lib/styles/colors'
 
 import { Flex, Link, Text } from '@chakra-ui/react'
 
-import { IndexLogoFullBlack, IndexLogoFullWhite } from '../../../public/assets'
-
 const Footer = () => {
   const { isDarkMode, styles } = useColorStyles()
   return (
