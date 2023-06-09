@@ -11,8 +11,6 @@ import QuickTradeContainer from '@/components/trade'
 
 import { Providers } from './providers'
 
-import '@rainbow-me/rainbowkit/styles.css'
-
 export default function SwapPage() {
   const pathname = usePathname()
   console.log(pathname, 'path')

@@ -6,6 +6,8 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GlobalFonts } from '@/lib/styles/fonts'
 import theme from '@/lib/styles/theme'
 
+import '@rainbow-me/rainbowkit/styles.css'
+
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <CacheProvider>
