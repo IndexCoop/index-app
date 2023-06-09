@@ -31,10 +31,3 @@ export default function SwapPage() {
     </Providers>
   )
 }
-
-// TODO:
-// initSentryEventTracking()
-// const container = document.getElementById('root')
-// const root = createRoot(container!)
-// root.render(
-// )

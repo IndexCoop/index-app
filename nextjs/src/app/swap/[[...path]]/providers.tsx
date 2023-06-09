@@ -10,6 +10,8 @@ import { ProtectionProvider } from '@/lib/providers/Protection'
 import { initSentryEventTracking } from '@/lib/utils/api/sentry'
 import { chains, wagmiClient } from '@/lib/utils/wagmi'
 
+initSentryEventTracking()
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const gtmParams = {
     id: process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_CONTAINER_ID ?? '',
