@@ -1,5 +1,6 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
+import Script from 'next/script'
 import { Providers } from './providers'
 
 export const metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body>
         <Providers>{children}</Providers>
       </body>
+      <Script src='https://tag.safary.io/stag.js' async />
     </html>
   )
 }
