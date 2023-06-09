@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import debounce from 'lodash/debounce'
+// TODO:
+// import debounce from 'lodash/debounce'
 
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -250,14 +251,14 @@ const FlashMint = (props: QuickTradeProps) => {
     setIndexTokenAmountFormatted('0.0')
   }
 
-  const onChangeIndexTokenAmount = debounce((token: Token, input: string) => {
+  const onChangeIndexTokenAmount = (token: Token, input: string) => {
     if (input === '') {
       resetData()
       return
     }
     if (!isValidTokenInput(input, token.decimals)) return
     setIndexTokenAmount(input || '0')
-  }, 1000)
+  } // debounce, 1000)
 
   const onClickTradeButton = async () => {
     if (!address) return

@@ -1,6 +1,6 @@
-require('dotenv').config()
+require('dotenv').config({ path: __dirname + '/.env.local' })
+require('@nomicfoundation/hardhat-toolbox')
 
-/** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: '0.8.17',
   networks: {

@@ -8,7 +8,7 @@ import Navigation from './Navigation'
 
 const Header = () => {
   const { isDarkMode } = useICColorMode()
-  // TODO:
+  // TODO: w/ design changes
   const backgroundColor = isDarkMode
     ? 'rgba(15, 23, 23, 0.6)'
     : 'rgba(252, 255, 255, 0.82)'

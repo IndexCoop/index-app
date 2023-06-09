@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import debounce from 'lodash/debounce'
+// TODO:
+// import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from '@/lib/styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
@@ -337,14 +338,14 @@ const QuickTrade = (props: QuickTradeProps) => {
     }
   }
 
-  const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
+  const onChangeSellTokenAmount = (token: Token, input: string) => {
     if (input === '') {
       resetTradeData()
       return
     }
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '0')
-  }, 1000)
+  } // 1000 debounce
 
   const onClickTradeButton = async () => {
     if (!address) {

@@ -6,31 +6,31 @@ Index App is a simple front-end used to interact with Index and its products.
 
 ## Local development
 
-This project was created with [create-react-app](https://create-react-app.dev/). Refer to their docs for advanced usage.
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-### Prerequisites
+## Getting Started
 
-1. Install [Node](https://nodejs.org/en/) 14+
-2. Install [yarn](https://yarnpkg.com/getting-started/install)
-3. Clone this repo
+First, run the development server:
 
-### Steps
+1.  Make a copy of the env file
 
-1. Make a copy of the prod env file
-   ```bash
-   cp .env.default .env
-   ```
+```bash
+cp .env.default .env.local
+```
+
 1. Install all the dependencies
-   ```bash
-   yarn install
-   ```
-1. Start the app in development mode on localhost:3000
-   ```bash
-   yarn start
-   ```
-1. Navigate to [http://localhost:3000/](http://localhost:3000/). The changes you make locally should live-reload in the app.
 
----
+```bash
+npm install
+```
+
+1. Start dev mode
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Testing
 
@@ -39,27 +39,7 @@ This project was created with [create-react-app](https://create-react-app.dev/).
 Run unit tests in watch mode
 
 ```bash
-yarn test
-```
-
-### Helpful Commands
-
-Build the app for production in the `build` folder.
-
-```
-yarn build
-```
-
-Eject the app from `create-react-app` rails.
-
-```
-yarn eject
-```
-
-This project uses [browserslist](https://github.com/browserslist/browserslist). We need to [regularly update browser data](https://github.com/browserslist/browserslist#browsers-data-updating) via
-
-```bash
-npx browserslist --update-db
+npm run test
 ```
 
 ## Contributing
