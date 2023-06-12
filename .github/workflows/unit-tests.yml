@@ -18,10 +18,10 @@ jobs:
         with:
           node-version: 16
       - name: Copy .env vars
-        run: cp .env.default .env
+        run: cp .env.default .env.local
       - name: Set env
         run: echo "NEXT_PUBLIC_ALCHEMY_ID=$(echo $NEXT_PUBLIC_ALCHEMY_ID | cut -c 1-6)" >> $NEXT_PUBLIC_ALCHEMY_ID
       - name: Install
-        run: yarn
+        run: npm ci
       - name: Run unit tests
-        run: yarn hardhat & yarn test
+        run: npm run hardhat & npm run test
