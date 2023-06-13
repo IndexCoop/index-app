@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-// TODO:
-// import debounce from 'lodash/debounce'
+import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from '@/lib/styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
@@ -284,7 +283,7 @@ const QuickTrade = (props: QuickTradeProps) => {
    * Get the correct trade button label according to different states
    * @returns string label for trade button
    */
-  const getTradeButtonLabel = useEffect(() => {
+  useEffect(() => {
     const label = () => {
       if (!address) return 'Connect Wallet'
       if (!supportedNetwork) return 'Wrong Network'
@@ -352,14 +351,14 @@ const QuickTrade = (props: QuickTradeProps) => {
     }
   }
 
-  const onChangeSellTokenAmount = (token: Token, input: string) => {
+  const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
     if (input === '') {
       resetTradeData()
       return
     }
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '0')
-  } // 1000 debounce
+  }, 1000)
 
   const onClickTradeButton = async () => {
     if (!address) {
