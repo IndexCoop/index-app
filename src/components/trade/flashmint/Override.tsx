@@ -1,4 +1,4 @@
-import { colors, useColorStyles } from 'styles/colors'
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { WarningTwoIcon } from '@chakra-ui/icons'
 import { Checkbox, Flex, Text } from '@chakra-ui/react'

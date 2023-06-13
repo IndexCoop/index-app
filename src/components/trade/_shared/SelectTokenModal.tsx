@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { colors, useColorStyles, useICColorMode } from 'styles/colors'
+import { colors, useColorStyles, useICColorMode } from '@/lib/styles/colors'
 
 import {
   Flex,
@@ -13,8 +13,8 @@ import {
   Text,
 } from '@chakra-ui/react'
 
-import { Token } from 'constants/tokens'
-import { displayFromWei } from 'utils'
+import { Token } from '@/constants/tokens'
+import { displayFromWei } from '@/lib/utils'
 
 type SelectTokenModalItem = {
   symbol: string

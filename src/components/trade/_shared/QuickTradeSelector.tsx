@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 
 import { BigNumber } from 'ethers'
-import { colors, useColorStyles } from 'styles/colors'
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, Input, Text } from '@chakra-ui/react'
 import { formatUnits } from '@ethersproject/units'
 
-import { Token } from 'constants/tokens'
-import { useNetwork } from 'hooks/useNetwork'
-import { useBalanceData } from 'providers/Balances'
-import { isValidTokenInput } from 'utils'
+import { Token } from '@/constants/tokens'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useBalanceData } from '@/lib/providers/Balances'
+import { isValidTokenInput } from '@/lib/utils'
 
 import { formattedBalance } from './QuickTradeFormatter'
 

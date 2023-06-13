@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { colors, useColorStyles } from 'styles/colors'
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { InfoOutlineIcon, WarningTwoIcon } from '@chakra-ui/icons'
 import {

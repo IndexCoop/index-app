@@ -1,8 +1,8 @@
-import { useColorStyles } from 'styles/colors'
+import { useColorStyles } from '@/lib/styles/colors'
 
 import { Box, Flex, Text } from '@chakra-ui/react'
 
-import { useNetwork } from 'hooks/useNetwork'
+import { useNetwork } from '@/lib/hooks/useNetwork'
 
 const NetworkBadge = () => {
   const { styles } = useColorStyles()
@@ -11,7 +11,7 @@ const NetworkBadge = () => {
   return (
     <Flex align='center' direction='row' justify='center'>
       <Text fontSize={'sm'} fontWeight='500'>
-        You're connected to
+        You&apos;re connected to
       </Text>
       <Box
         bg={styles.backgroundInverted}

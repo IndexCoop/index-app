@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { useICColorMode } from 'styles/colors'
+import { useICColorMode } from '@/lib/styles/colors'
 
 import { Flex } from '@chakra-ui/react'
 
-import { Token } from 'constants/tokens'
-import { useNetwork } from 'hooks/useNetwork'
-import { useProtection } from 'providers/Protection'
+import { Token } from '@/constants/tokens'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useProtection } from '@/lib/providers/Protection'
 
 import { ContractExecutionView } from './ContractExecutionView'
 import FlashbotsRpcMessage from './FlashbotsRpcMessage'

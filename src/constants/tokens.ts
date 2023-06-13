@@ -3,14 +3,13 @@ import {
   dsethLogo,
   fixedDaiLogo,
   fixedUsdcLogo,
-  gmiLogo,
   gtcEthLogo,
   icethLogo,
   indexLogo,
   mmiLogo,
   wseth2Logo,
-} from 'assets'
-import { TokenContextKeys } from 'providers/MarketData'
+} from '@/lib/utils/assets'
+import { TokenContextKeys } from '@/lib/providers/MarketData'
 
 import { MAINNET } from './chains'
 
@@ -483,8 +482,8 @@ export const eligibleLeveragedExchangeIssuanceTokens = [
 ]
 
 const isDevEnv =
-  process.env.REACT_APP_VERCEL_ENV === 'development' ||
-  process.env.REACT_APP_VERCEL_ENV === 'index-app-staging'
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ||
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-staging'
 // FIXED is not supposed to be released to the public yet, so we create a
 // separate list for dev/staging and production
 const indexNames = isDevEnv

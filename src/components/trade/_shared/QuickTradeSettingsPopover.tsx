@@ -1,4 +1,4 @@
-import { colors } from 'styles/colors'
+import { colors } from '@/lib/styles/colors'
 
 import { SettingsIcon } from '@chakra-ui/icons'
 import {
@@ -78,8 +78,8 @@ export const QuickTradeSettingsPopover = (props: PopoverProps) => {
             </Flex>
           </Flex>
           <Text fontSize='sm' fontWeight='500'>
-            Make sure to know what you're doing when entering custom slippage
-            values.
+            Make sure to know what you&apos;re doing when entering custom
+            slippage values.
           </Text>
         </PopoverBody>
       </PopoverContent>

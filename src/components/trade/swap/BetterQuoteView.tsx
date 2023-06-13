@@ -1,4 +1,4 @@
-import { colors } from 'styles/colors'
+import { colors } from '@/lib/styles/colors'
 
 import { CheckIcon, ChevronRightIcon, InfoIcon } from '@chakra-ui/icons'
 import { Flex, Spinner, Text } from '@chakra-ui/react'
@@ -40,8 +40,8 @@ export const BetterQuoteView = (props: BetterQuoteViewProps) => {
             <Flex direction='column' ml='16px'>
               <Text color={colors.icGray4}>
                 {isBetterQuotePriceImpact
-                  ? "You're saving because of price impact."
-                  : `You're saving $${props.savingsUsd.toFixed(2)}`}
+                  ? 'You&apos;re saving because of price impact.'
+                  : `You&apos;re saving $${props.savingsUsd.toFixed(2)}`}
               </Text>
               <Text color={colors.icGray4}>When using Flash Mint.</Text>
             </Flex>
@@ -61,7 +61,7 @@ export const BetterQuoteView = (props: BetterQuoteViewProps) => {
         <Flex align='center'>
           <CheckIcon w='4' h='4' />
           <Text ml='16px' color={colors.icGray4}>
-            You've got the best quote.
+            You&apos;ve got the best quote.
           </Text>
         </Flex>
       )}
