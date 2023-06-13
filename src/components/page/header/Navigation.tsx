@@ -15,7 +15,7 @@ const Navigation = () => {
   useEffect(() => {
     if (address === undefined || chainId === undefined) return
     logConnect(address, chainId)
-  }, [address])
+  }, [address, chainId])
 
   const { isRunningInLedgerLive } = useLedgerStatus()
   const chainStatus = isRunningInLedgerLive

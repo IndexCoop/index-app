@@ -13,7 +13,7 @@ export const useReadOnlyProvider = (propChainId?: number) => {
 
   return useMemo(
     () => new JsonRpcProvider(getJsonRpcUrl(chainId, chains)),
-    [chainId]
+    [chainId, chains]
   )
 }
 

@@ -55,7 +55,7 @@ export const useApproval = (
   useEffect(() => {
     if (!spenderAddress || !tokenAddress || isApproving) return
     updateApprovalState(spenderAddress)
-  }, [amount, isApproving, spenderAddress, tokenAddress])
+  }, [amount, isApproving, spenderAddress, tokenAddress, updateApprovalState])
 
   return { approve, isApproved, isApproving }
 }

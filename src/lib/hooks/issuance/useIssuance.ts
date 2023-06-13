@@ -99,7 +99,7 @@ export const useIssuance = () => {
         console.log('Error sending issuance transaction', e)
       }
     },
-    [address, setIsTrading, signer]
+    [address, chainId, setIsTrading, signer]
   )
 
   return {
