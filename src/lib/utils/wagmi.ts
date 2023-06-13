@@ -3,13 +3,13 @@ import { mainnet } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 
-// import { IFrameEthereumConnector } from '@ledgerhq/ledger-live-wagmi-connector'
+import { IFrameEthereumConnector } from '@ledgerhq/ledger-live-wagmi-connector'
 import { connectorsForWallets } from '@rainbow-me/rainbowkit'
 import {
   argentWallet,
   braveWallet,
   coinbaseWallet,
-  // ledgerWallet,
+  ledgerWallet,
   metaMaskWallet,
   okxWallet,
   rainbowWallet,
@@ -25,10 +25,10 @@ export const { chains, provider } = configureChains(
   [alchemyProvider({ apiKey: AlchemyApiKey }), publicProvider()]
 )
 
-// export const ledgerConnector = new IFrameEthereumConnector({
-//   chains,
-//   options: {},
-// })
+export const ledgerConnector = new IFrameEthereumConnector({
+  chains,
+  options: {},
+})
 
 const connectors = () =>
   connectorsForWallets([
@@ -43,7 +43,7 @@ const connectors = () =>
           appName: 'Index Coop',
           chains,
         }),
-        // ledgerWallet({ chains }),
+        ledgerWallet({ chains }),
         okxWallet({ chains }),
       ],
     },
@@ -55,7 +55,7 @@ const connectors = () =>
         trustWallet({ chains }),
       ],
     },
-  ])() // .concat([ledgerConnector])
+  ])().concat([ledgerConnector])
 
 export const wagmiClient = createClient({
   autoConnect: true,
