@@ -90,6 +90,7 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   const supportedNetwork = isSupportedNetwork
 
+  const [buttonLabel, setButtonLabel] = useState('')
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
@@ -283,53 +284,66 @@ const QuickTrade = (props: QuickTradeProps) => {
    * Get the correct trade button label according to different states
    * @returns string label for trade button
    */
-  const getTradeButtonLabel = () => {
-    if (!address) return 'Connect Wallet'
-    if (!supportedNetwork) return 'Wrong Network'
+  const getTradeButtonLabel = useEffect(() => {
+    const label = () => {
+      if (!address) return 'Connect Wallet'
+      if (!supportedNetwork) return 'Wrong Network'
 
-    if (isNotTradableToken(props.singleToken, chainId)) {
-      let chainName = 'This Network'
-      switch (chainId) {
-        case MAINNET.chainId:
-          chainName = 'Mainnet'
-          break
-        case POLYGON.chainId:
-          chainName = 'Polygon'
-          break
-        case OPTIMISM.chainId:
-          chainName = 'Optimism'
-          break
+      if (isNotTradableToken(props.singleToken, chainId)) {
+        let chainName = 'This Network'
+        switch (chainId) {
+          case MAINNET.chainId:
+            chainName = 'Mainnet'
+            break
+          case POLYGON.chainId:
+            chainName = 'Polygon'
+            break
+          case OPTIMISM.chainId:
+            chainName = 'Optimism'
+            break
+        }
+
+        return `Not Available on ${chainName}`
       }
 
-      return `Not Available on ${chainName}`
+      if (sellTokenAmount === '0') {
+        return 'Enter an amount'
+      }
+
+      if (hasInsufficientFunds) {
+        return 'Insufficient funds'
+      }
+
+      if (hasFetchingError) {
+        return 'Try again'
+      }
+
+      const nativeToken = getNativeToken(chainId)
+      const isNativeToken = nativeToken?.symbol === sellToken.symbol
+      if (!isNativeToken && getIsApproving()) {
+        return 'Approving...'
+      }
+
+      if (!isNativeToken && !getIsApproved()) {
+        return 'Approve Tokens'
+      }
+
+      if (isTransacting) return 'Trading...'
+
+      return 'Trade'
     }
-
-    if (sellTokenAmount === '0') {
-      return 'Enter an amount'
-    }
-
-    if (hasInsufficientFunds) {
-      return 'Insufficient funds'
-    }
-
-    if (hasFetchingError) {
-      return 'Try again'
-    }
-
-    const nativeToken = getNativeToken(chainId)
-    const isNativeToken = nativeToken?.symbol === sellToken.symbol
-    if (!isNativeToken && getIsApproving()) {
-      return 'Approving...'
-    }
-
-    if (!isNativeToken && !getIsApproved()) {
-      return 'Approve Tokens'
-    }
-
-    if (isTransacting) return 'Trading...'
-
-    return 'Trade'
-  }
+    setButtonLabel(label())
+  }, [
+    address,
+    isSupportedNetwork,
+    isTransacting,
+    sellToken,
+    hasFetchingError,
+    hasInsufficientFunds,
+    sellTokenAmount,
+    props.singleToken,
+    chainId,
+  ])
 
   const onClickBetterQuote = () => {
     if (!quoteResultOptions.hasBetterQuote) return
@@ -391,7 +405,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   const isNarrow = props.isNarrowVersion ?? false
 
   // TradeButtonContainer
-  const buttonLabel = `getTradeButtonLabel()`
   const isButtonDisabled = getButtonDisabledState()
   const isLoading = getIsApproving() || isFetchingZeroEx
 
