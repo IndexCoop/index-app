@@ -67,10 +67,7 @@ export const BalanceProvider = (props: { children: any }) => {
       tokenList.map(async (token) => {
         const { mainnetBalance, optimismBalance, polygonBalance } =
           await provider.fetchAllBalances(token)
-        if (
-          (mainnetBalance && !mainnetBalance.isZero()) ||
-          (polygonBalance && !polygonBalance.isZero())
-        ) {
+        if (mainnetBalance && !mainnetBalance.isZero()) {
           const marketData = selectMarketDataByToken(token)
           const price = selectLatestMarketData(marketData)
           balanceData.push({
@@ -102,10 +99,7 @@ export const BalanceProvider = (props: { children: any }) => {
       currencies.map(async (token) => {
         const { mainnetBalance, optimismBalance, polygonBalance } =
           await provider.fetchAllBalances(token)
-        if (
-          (mainnetBalance && !mainnetBalance.isZero()) ||
-          (polygonBalance && !polygonBalance.isZero())
-        ) {
+        if (mainnetBalance && !mainnetBalance.isZero()) {
           const price = 0
           balanceData.push({
             token,

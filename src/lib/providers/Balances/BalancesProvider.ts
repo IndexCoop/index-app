@@ -52,9 +52,10 @@ export class BalancesProvider {
     // const optimismBalance = token.optimismAddress
     //   ? await getBalance(address, token.optimismAddress, providers.optimism)
     //   : null
-    const polygonBalance = token.polygonAddress
-      ? await getBalance(address, token.polygonAddress, providers.polygon)
-      : null
+    const polygonBalance = null
+    // const polygonBalance = token.polygonAddress
+    //   ? await getBalance(address, token.polygonAddress, providers.polygon)
+    //   : null
     return {
       mainnetBalance,
       optimismBalance,
