@@ -97,16 +97,12 @@ const QuickTradeSelector = (props: {
 
   return (
     <Flex direction='column'>
-      <Text fontSize='20px' fontWeight='700'>
-        {props.title}
-      </Text>
       <Flex
         bg={styles.background}
         border='1px solid'
         borderColor={borderColor}
         borderRadius={borderRadius}
         direction='column'
-        mt='10px'
         p='16px'
       >
         <Flex align='flex-start' direction='row' justify='space-between'>
