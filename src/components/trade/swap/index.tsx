@@ -528,7 +528,7 @@ const QuickTrade = (props: QuickTradeProps) => {
             />
           )}
           {tradeInfoData.length > 0 && (
-            <Box mt='16px'>
+            <Box my='16px'>
               <BetterQuoteView
                 onClick={onClickBetterQuote}
                 state={betterQuoteState}
