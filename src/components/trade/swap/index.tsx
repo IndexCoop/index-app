@@ -457,9 +457,9 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   return (
     <Box>
-      <Flex direction='column' my='20px'>
+      <Flex direction='column' m='40px 0 20px'>
         <QuickTradeSelector
-          title='From'
+          title=''
           config={{
             isDarkMode,
             isInputDisabled: isNotTradableToken(props.singleToken, chainId),
@@ -476,19 +476,18 @@ const QuickTrade = (props: QuickTradeProps) => {
             if (inputTokenItems.length > 1) onOpenSelectInputToken()
           }}
         />
-        <Box h='12px' alignSelf={'center'} m={'4px'}>
+        <Box h='12px' alignSelf={'center'}>
           <IconButton
-            background='transparent'
-            margin={'6px 0'}
+            background={colors.icGray1}
+            margin={'-16px 0 0 0'}
             aria-label='switch buy/sell tokens'
-            borderColor={isDarkMode ? colors.icWhite : colors.black}
             color={isDarkMode ? colors.icWhite : colors.black}
             icon={<UpDownIcon />}
             onClick={onSwitchTokens}
           />
         </Box>
         <QuickTradeSelector
-          title='To'
+          title=''
           config={{
             isDarkMode,
             isInputDisabled: true,
