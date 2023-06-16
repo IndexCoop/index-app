@@ -11,8 +11,6 @@ import {
   flashMintIndexesPolygonRedeem,
   GitcoinStakedETHIndex,
   icETHIndex,
-  indexNamesMainnet,
-  indexNamesPolygon,
   IndexToken,
   mainnetCurrencyTokens,
   MATIC,

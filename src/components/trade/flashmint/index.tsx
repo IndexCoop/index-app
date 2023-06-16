@@ -5,7 +5,6 @@ import debounce from 'lodash/debounce'
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useFlashMintQuote } from '@/lib/hooks/useFlashMintQuote'
@@ -66,7 +65,7 @@ const FlashMint = (props: QuickTradeProps) => {
     sellTokenPrice: inputOutputPrice,
     changeBuyToken: changeIndexToken,
     changeSellToken: changeInputOutputToken,
-  } = useTradeTokenLists(undefined, true)
+  } = useTradeTokenLists(true)
   const { getTokenBalance } = useBalanceData()
   const { slippage } = useSlippage()
 

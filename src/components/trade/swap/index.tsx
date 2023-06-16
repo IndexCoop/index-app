@@ -7,7 +7,6 @@ import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useBestQuote } from '@/lib/hooks/useBestQuote'
@@ -79,7 +78,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     changeBuyToken,
     changeSellToken,
     swapTokenLists,
-  } = useTradeTokenLists(props.singleToken)
+  } = useTradeTokenLists()
   const { getTokenBalance } = useBalanceData()
 
   const supportedNetwork = isSupportedNetwork
@@ -318,7 +317,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     hasFetchingError,
     hasInsufficientFunds,
     sellTokenAmount,
-    props.singleToken,
     chainId,
   ])
 
