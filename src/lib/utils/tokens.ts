@@ -112,26 +112,6 @@ export const isNativeCurrency = (token: Token, chainId: number): boolean => {
   return token.symbol === nativeCurrency.symbol
 }
 
-export const isNotTradableToken = (
-  token: Token | undefined,
-  chainId: number | undefined
-) => {
-  if (!token || !chainId) return false
-  switch (chainId) {
-    case MAINNET.chainId:
-      if (token.symbol === MoneyMarketIndex.symbol) return false
-      return (
-        indexNamesMainnet.filter((t) => t.symbol === token.symbol).length === 0
-      )
-    case POLYGON.chainId:
-      return (
-        indexNamesPolygon.filter((t) => t.symbol === token.symbol).length === 0
-      )
-    default:
-      return false
-  }
-}
-
 export function isPerpToken(token: Token): boolean {
   return token.isPerp ? true : false
 }

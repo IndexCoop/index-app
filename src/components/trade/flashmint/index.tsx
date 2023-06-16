@@ -21,7 +21,7 @@ import {
   getQuoteAmount,
 } from '@/lib/utils/flashMint/quotes'
 import { selectSlippage } from '@/lib/utils/slippage'
-import { getNativeToken, isNotTradableToken } from '@/lib/utils/tokens'
+import { getNativeToken } from '@/lib/utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
@@ -66,7 +66,7 @@ const FlashMint = (props: QuickTradeProps) => {
     sellTokenPrice: inputOutputPrice,
     changeBuyToken: changeIndexToken,
     changeSellToken: changeInputOutputToken,
-  } = useTradeTokenLists(props.singleToken, true)
+  } = useTradeTokenLists(undefined, true)
   const { getTokenBalance } = useBalanceData()
   const { slippage } = useSlippage()
 
@@ -170,8 +170,7 @@ const FlashMint = (props: QuickTradeProps) => {
     return (
       indexTokenAmount === '0' ||
       (isMinting && hasInsufficientFundsInputOutputToken) ||
-      (!isMinting && hasInsufficientFundsIndexToken) ||
-      isNotTradableToken(props.singleToken, chainId)
+      (!isMinting && hasInsufficientFundsIndexToken)
     )
   }
 
@@ -183,23 +182,6 @@ const FlashMint = (props: QuickTradeProps) => {
     const label = () => {
       if (!address) return 'Connect Wallet'
       if (!isSupportedNetwork) return 'Wrong Network'
-
-      if (isNotTradableToken(props.singleToken, chainId)) {
-        let chainName = 'this Network'
-        switch (chainId) {
-          case MAINNET.chainId:
-            chainName = 'Mainnet'
-            break
-          case POLYGON.chainId:
-            chainName = 'Polygon'
-            break
-          case OPTIMISM.chainId:
-            chainName = 'Optimism'
-            break
-        }
-
-        return `Not Available on ${chainName}`
-      }
 
       if (indexTokenAmount === '0') {
         return 'Enter an amount'
@@ -233,7 +215,6 @@ const FlashMint = (props: QuickTradeProps) => {
     hasInsufficientFundsInputOutputToken,
     indexTokenAmount,
     chainId,
-    props.singleToken,
     isSupportedNetwork,
   ])
 

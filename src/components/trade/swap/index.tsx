@@ -22,11 +22,7 @@ import { useSlippage } from '@/lib/providers/Slippage'
 import { isValidTokenInput, toWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
-import {
-  getNativeToken,
-  isNotTradableToken,
-  isPerpToken,
-} from '@/lib/utils/tokens'
+import { getNativeToken, isPerpToken } from '@/lib/utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
@@ -50,7 +46,6 @@ import { TradeInfoItem } from './TradeInfo'
 
 export type QuickTradeProps = {
   isNarrowVersion?: boolean
-  singleToken?: Token
   switchTabs?: () => void
 }
 
@@ -288,23 +283,6 @@ const QuickTrade = (props: QuickTradeProps) => {
       if (!address) return 'Connect Wallet'
       if (!supportedNetwork) return 'Wrong Network'
 
-      if (isNotTradableToken(props.singleToken, chainId)) {
-        let chainName = 'This Network'
-        switch (chainId) {
-          case MAINNET.chainId:
-            chainName = 'Mainnet'
-            break
-          case POLYGON.chainId:
-            chainName = 'Polygon'
-            break
-          case OPTIMISM.chainId:
-            chainName = 'Optimism'
-            break
-        }
-
-        return `Not Available on ${chainName}`
-      }
-
       if (sellTokenAmount === '0') {
         return 'Enter an amount'
       }
@@ -393,12 +371,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     if (!supportedNetwork) return true
     if (!address) return true
     if (hasFetchingError) return false
-    return (
-      sellTokenAmount === '0' ||
-      hasInsufficientFunds ||
-      isTransacting ||
-      isNotTradableToken(props.singleToken, chainId)
-    )
+    return sellTokenAmount === '0' || hasInsufficientFunds || isTransacting
   }
 
   const isNarrow = props.isNarrowVersion ?? false
@@ -462,7 +435,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           title=''
           config={{
             isDarkMode,
-            isInputDisabled: isNotTradableToken(props.singleToken, chainId),
+            isInputDisabled: false,
             isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
             isReadOnly: false,
