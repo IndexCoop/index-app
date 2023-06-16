@@ -12,8 +12,8 @@ import { extendTheme, ThemeConfig } from '@chakra-ui/react'
 import { darkTheme, Theme } from '@rainbow-me/rainbowkit'
 
 const config: ThemeConfig = {
-  initialColorMode: 'system',
-  useSystemColorMode: true,
+  initialColorMode: 'light',
+  useSystemColorMode: false,
 }
 
 const components = {
