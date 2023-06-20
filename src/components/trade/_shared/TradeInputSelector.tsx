@@ -23,31 +23,38 @@ interface InputSelectorConfig {
   showMaxLabel: boolean
 }
 
-const QuickTradeSelector = (props: {
-  title: string
+const TradeInputSelector = (props: {
+  // rename
   config: InputSelectorConfig
+  // TODO: change this on url load
   selectedToken: Token
-  selectedTokenAmount?: string
+  selectedTokenAmount?: string // remove
+  // Used from swap to show price impact behind fiat value
   priceImpact?: { priceImpact: string; colorCoding: string }
   formattedFiat: string
-  tokenList: Token[]
   onChangeInput?: (token: Token, input: string) => void
+  // onClick
   onSelectedToken: (symbol: string) => void
 }) => {
+  // remove if not needed
   const { chainId } = useNetwork()
+  // shouldn't be in here
   const { isLoading, getTokenBalance } = useBalanceData()
   const { styles } = useColorStyles()
 
   const { config, selectedToken, selectedTokenAmount } = props
   const selectedTokenSymbol = selectedToken.symbol
 
+  // remove?
   const [inputString, setInputString] = useState<string>(
     selectedTokenAmount === '0' ? '' : selectedTokenAmount || ''
   )
+  // remove
   const [tokenBalance, setTokenBalance] = useState<string>(
     BigNumber.from(0).toString()
   )
 
+  // TODO: format from outside
   useEffect(() => {
     setInputString(selectedTokenAmount === '0' ? '' : selectedTokenAmount || '') // TODO: Need comma separated number here
   }, [selectedTokenAmount])
@@ -65,6 +72,7 @@ const QuickTradeSelector = (props: {
   const borderColor = styles.border
   const borderRadius = 16
 
+  // move
   const onChangeInput = (amount: string) => {
     if (!amount) {
       setInputString('')
@@ -86,6 +94,7 @@ const QuickTradeSelector = (props: {
     props.onChangeInput(selectedToken, amount)
   }
 
+  // move
   const onClickBalance = () => {
     if (!tokenBalance) return
     const fullTokenBalance = formatUnits(
@@ -122,9 +131,8 @@ const QuickTradeSelector = (props: {
             value={inputString}
             onChange={(event) => onChangeInput(event.target.value)}
           />
-          <Selector
+          <SelectorButton
             onClick={() => props.onSelectedToken(selectedTokenSymbol)}
-            isNarrowVersion={config.isNarrowVersion}
             selectedTokenImage={selectedToken.image}
             selectedTokenSymbol={selectedTokenSymbol}
           />
@@ -186,14 +194,12 @@ const Balance = ({ balance, onClick, showMaxLabel }: BalanceProps) => (
 )
 
 type SelectorProps = {
-  isNarrowVersion: boolean
   onClick: () => void
   selectedTokenImage: string
   selectedTokenSymbol: string
 }
 
-const Selector = ({
-  isNarrowVersion,
+const SelectorButton = ({
   onClick,
   selectedTokenImage,
   selectedTokenSymbol,
@@ -204,23 +210,23 @@ const Selector = ({
     boxShadow='sm'
     cursor='pointer'
     onClick={onClick}
-    py='2'
-    px='2'
+    py='10px'
+    px='10px'
     shrink={0}
   >
-    {!isNarrowVersion && (
-      <Box mr='8px' w='24px'>
-        <img
-          alt={`${selectedTokenSymbol} logo`}
-          src={selectedTokenImage}
-          width='24px'
-          height='24px'
-        />
-      </Box>
-    )}
-    <Text color={colors.icGray4}>{selectedTokenSymbol}</Text>
-    <ChevronDownIcon ml={1} w={6} h={6} color={colors.icGray4} />
+    <Box w='24px'>
+      <img
+        alt={`${selectedTokenSymbol} logo`}
+        src={selectedTokenImage}
+        width='24px'
+        height='24px'
+      />
+    </Box>
+    <Text color={colors.icGray4} ml='10px' mr='8px'>
+      {selectedTokenSymbol}
+    </Text>
+    <ChevronDownIcon w={6} h={6} color={colors.icGray4} />
   </Flex>
 )
 
-export default QuickTradeSelector
+export default TradeInputSelector

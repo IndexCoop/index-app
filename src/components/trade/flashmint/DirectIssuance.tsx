@@ -10,7 +10,7 @@ import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
 import { Token } from '@/constants/tokens'
 
-import QuickTradeSelector from '../_shared/QuickTradeSelector'
+import TradeInputSelector from '../_shared/TradeInputSelector'
 
 type DirectIssuanceProps = {
   indexToken: Token
@@ -71,8 +71,7 @@ const DirectIssuance = ({
         borderColor={isDarkMode ? colors.icWhite : colors.black}
         paddingTop='16px'
       >
-        <QuickTradeSelector
-          title={''}
+        <TradeInputSelector
           config={{
             isDarkMode,
             isInputDisabled: isIssue && !isMintable,
@@ -85,7 +84,6 @@ const DirectIssuance = ({
           selectedTokenAmount={indexTokenAmountFormatted}
           formattedFiat={indexTokenFiatFormatted}
           priceImpact={priceImpact}
-          tokenList={indexTokenList}
           onChangeInput={onChangeBuyTokenAmount}
           onSelectedToken={(_) => onSelectIndexToken()}
         />

@@ -33,7 +33,7 @@ import {
   getTradeInfoData0x,
   shouldShowWarningSign,
 } from '../_shared/QuickTradeFormatter'
-import QuickTradeSelector from '../_shared/QuickTradeSelector'
+import TradeInputSelector from '../_shared/TradeInputSelector'
 import {
   getSelectTokenListItems,
   SelectTokenModal,
@@ -429,8 +429,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   return (
     <Box>
       <Flex direction='column' m='40px 0 20px'>
-        <QuickTradeSelector
-          title=''
+        <TradeInputSelector
           config={{
             isDarkMode,
             isInputDisabled: false,
@@ -441,7 +440,6 @@ const QuickTrade = (props: QuickTradeProps) => {
           }}
           selectedToken={sellToken}
           formattedFiat={sellTokenFiat}
-          tokenList={sellTokenList}
           onChangeInput={onChangeSellTokenAmount}
           onSelectedToken={(_) => {
             if (inputTokenItems.length > 1) onOpenSelectInputToken()
@@ -457,8 +455,7 @@ const QuickTrade = (props: QuickTradeProps) => {
             onClick={onSwitchTokens}
           />
         </Box>
-        <QuickTradeSelector
-          title=''
+        <TradeInputSelector
           config={{
             isDarkMode,
             isInputDisabled: true,
@@ -471,7 +468,6 @@ const QuickTrade = (props: QuickTradeProps) => {
           selectedTokenAmount={buyTokenAmountFormatted}
           formattedFiat={buyTokenFiat}
           priceImpact={priceImpact ?? undefined}
-          tokenList={buyTokenList}
           onSelectedToken={(_) => {
             if (outputTokenItems.length > 1) onOpenSelectOutputToken()
           }}
