@@ -11,7 +11,7 @@ const NetworkBadge = () => {
   return (
     <Flex align='center' direction='row' justify='center'>
       <Text fontSize={'sm'} fontWeight='500'>
-        You&apos;re connected to
+        You are connected to
       </Text>
       <Box
         bg={styles.backgroundInverted}
