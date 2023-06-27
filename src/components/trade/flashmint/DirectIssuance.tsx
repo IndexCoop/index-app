@@ -14,8 +14,8 @@ import TradeInputSelector from '../_shared/TradeInputSelector'
 
 type DirectIssuanceProps = {
   indexToken: Token
-  indexTokenList: Token[]
-  indexTokenAmountFormatted: string | undefined
+  indexTokenAmountFormatted: string
+  indexTokenBalanceFormatted: string
   indexTokenFiatFormatted: string
   inputOutputToken: Token
   inputOutputTokenAmountFormatted: string
@@ -25,6 +25,7 @@ type DirectIssuanceProps = {
   isMintable: boolean
   isNarrow: boolean
   onChangeBuyTokenAmount: (token: Token, input: string) => void
+  onClickBalance: () => void
   onSelectIndexToken: () => void
   onSelectInputOutputToken: () => void
   onToggleIssuance: (toggled: boolean) => void
@@ -33,8 +34,8 @@ type DirectIssuanceProps = {
 
 const DirectIssuance = ({
   indexToken,
-  indexTokenList,
   indexTokenAmountFormatted,
+  indexTokenBalanceFormatted,
   indexTokenFiatFormatted,
   inputOutputToken,
   inputOutputTokenAmountFormatted,
@@ -43,6 +44,7 @@ const DirectIssuance = ({
   isIssue,
   isMintable,
   isNarrow,
+  onClickBalance,
   onChangeBuyTokenAmount,
   onSelectIndexToken,
   onSelectInputOutputToken,
@@ -82,9 +84,11 @@ const DirectIssuance = ({
           }}
           selectedToken={indexToken}
           selectedTokenAmount={indexTokenAmountFormatted}
+          selectedTokenBalance={indexTokenBalanceFormatted}
           formattedFiat={indexTokenFiatFormatted}
           priceImpact={priceImpact}
           onChangeInput={onChangeBuyTokenAmount}
+          onClickBalance={onClickBalance}
           onSelectedToken={(_) => onSelectIndexToken()}
         />
         <Text marginTop='16px'>

@@ -4,6 +4,7 @@ import debounce from 'lodash/debounce'
 
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
+import { formatUnits } from '@ethersproject/units'
 
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
@@ -66,7 +67,7 @@ const FlashMint = (props: QuickTradeProps) => {
     changeBuyToken: changeIndexToken,
     changeSellToken: changeInputOutputToken,
   } = useTradeTokenLists(true)
-  const { getTokenBalance } = useBalanceData()
+  const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
   const { slippage } = useSlippage()
 
   const [buttonLabel, setButtonLabel] = useState('')
@@ -78,6 +79,8 @@ const FlashMint = (props: QuickTradeProps) => {
   )
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
   const [isMinting, setIsMinting] = useState(true)
+  const [indexTokenBalanceFormatted, setIndexTokenBalanceFormatted] =
+    useState('0.0')
   const [transactionReview, setTransactionReview] =
     useState<TransactionReview | null>(null)
 
@@ -245,14 +248,11 @@ const FlashMint = (props: QuickTradeProps) => {
     setIndexTokenAmountFormatted('0.0')
   }
 
-  const onChangeIndexTokenAmount = debounce((token: Token, input: string) => {
-    if (input === '') {
-      resetData()
-      return
-    }
+  const onChangeIndexTokenAmount = (token: Token, input: string) => {
+    setIndexTokenAmountFormatted(input)
     if (!isValidTokenInput(input, token.decimals)) return
-    setIndexTokenAmount(input || '0')
-  }, 1000)
+    setIndexTokenAmount(input || '')
+  }
 
   const onClickTradeButton = async () => {
     if (!address) return
@@ -319,12 +319,27 @@ const FlashMint = (props: QuickTradeProps) => {
       ? null
       : getBlockExplorerContractUrl(contractAddress, chainId)
 
+  const onClickBalance = () => {
+    if (!indexTokenBalanceFormatted) return
+    const fullTokenBalance = formatUnits(
+      getTokenBalance(indexToken.symbol, chainId) ?? '0.0',
+      indexToken.decimals
+    )
+    setIndexTokenAmountFormatted(fullTokenBalance)
+  }
+
+  useEffect(() => {
+    if (isLoadingBalance) return
+    const tokenBal = getTokenBalance(indexToken.symbol, chainId)
+    setIndexTokenBalanceFormatted(formattedBalance(indexToken, tokenBal))
+  }, [getTokenBalance, indexToken, isLoadingBalance])
+
   return (
     <Box mt='32px'>
       <DirectIssuance
         indexToken={indexToken}
-        indexTokenList={indexTokenList}
         indexTokenAmountFormatted={indexTokenAmountFormatted}
+        indexTokenBalanceFormatted={indexTokenBalanceFormatted}
         indexTokenFiatFormatted={indexTokenFiatFormatted}
         inputOutputToken={inputOutputToken}
         inputOutputTokenAmountFormatted={inputOutputTokenAmountFormatted}
@@ -334,6 +349,7 @@ const FlashMint = (props: QuickTradeProps) => {
         isMintable={true}
         isNarrow={isNarrow}
         onChangeBuyTokenAmount={onChangeIndexTokenAmount}
+        onClickBalance={onClickBalance}
         onSelectIndexToken={() => {
           if (indexTokenItems.length > 1) onOpenIndexTokenModal()
         }}
@@ -367,6 +383,7 @@ const FlashMint = (props: QuickTradeProps) => {
         isOpen={isIndexTokenModalOpen}
         onClose={onCloseIndexTokenModal}
         onSelectedToken={(tokenSymbol) => {
+          // TODO: remove
           if (
             tokenSymbol === 'ETH2X-FLI-P' ||
             tokenSymbol === 'BTC2x-FLI-P' ||

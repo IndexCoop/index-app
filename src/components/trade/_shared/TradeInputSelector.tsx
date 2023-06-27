@@ -1,18 +1,9 @@
-import { useEffect, useState } from 'react'
-
-import { BigNumber } from 'ethers'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, Input, Text } from '@chakra-ui/react'
-import { formatUnits } from '@ethersproject/units'
 
 import { Token } from '@/constants/tokens'
-import { useNetwork } from '@/lib/hooks/useNetwork'
-import { useBalanceData } from '@/lib/providers/Balances'
-import { isValidTokenInput } from '@/lib/utils'
-
-import { formattedBalance } from './QuickTradeFormatter'
 
 interface InputSelectorConfig {
   isDarkMode: boolean
@@ -24,84 +15,33 @@ interface InputSelectorConfig {
 }
 
 const TradeInputSelector = (props: {
-  // rename
   config: InputSelectorConfig
-  // TODO: change this on url load
-  selectedToken: Token
-  selectedTokenAmount?: string // remove
+  formattedFiat: string
   // Used from swap to show price impact behind fiat value
   priceImpact?: { priceImpact: string; colorCoding: string }
-  formattedFiat: string
-  onChangeInput?: (token: Token, input: string) => void
-  // onClick
+  selectedToken: Token
+  selectedTokenAmount: string
+  selectedTokenBalance: string
+  onClickBalance: () => void
   onSelectedToken: (symbol: string) => void
+  onChangeInput?: (token: Token, input: string) => void
 }) => {
-  // remove if not needed
-  const { chainId } = useNetwork()
-  // shouldn't be in here
-  const { isLoading, getTokenBalance } = useBalanceData()
   const { styles } = useColorStyles()
-
-  const { config, selectedToken, selectedTokenAmount } = props
-  const selectedTokenSymbol = selectedToken.symbol
-
-  // remove?
-  const [inputString, setInputString] = useState<string>(
-    selectedTokenAmount === '0' ? '' : selectedTokenAmount || ''
-  )
-  // remove
-  const [tokenBalance, setTokenBalance] = useState<string>(
-    BigNumber.from(0).toString()
-  )
-
-  // TODO: format from outside
-  useEffect(() => {
-    setInputString(selectedTokenAmount === '0' ? '' : selectedTokenAmount || '') // TODO: Need comma separated number here
-  }, [selectedTokenAmount])
-
-  useEffect(() => {
-    onChangeInput('')
-  }, [chainId])
-
-  useEffect(() => {
-    if (isLoading) return
-    const tokenBal = getTokenBalance(selectedTokenSymbol, chainId)
-    setTokenBalance(formattedBalance(selectedToken, tokenBal))
-  }, [isLoading, getTokenBalance, selectedToken])
-
+  const { config, selectedToken, selectedTokenAmount, selectedTokenBalance } =
+    props
   const borderColor = styles.border
   const borderRadius = 16
+  const selectedTokenSymbol = selectedToken.symbol
 
-  // move
   const onChangeInput = (amount: string) => {
-    if (!amount) {
-      setInputString('')
-      if (props.onChangeInput) {
-        props.onChangeInput(selectedToken, '')
-      }
-    }
-
     if (
       props.onChangeInput === undefined ||
       config.isInputDisabled ||
       config.isSelectorDisabled ||
-      config.isReadOnly ||
-      !isValidTokenInput(amount, selectedToken.decimals)
+      config.isReadOnly
     )
       return
-
-    setInputString(amount) // TODO: Need comma separated number here
     props.onChangeInput(selectedToken, amount)
-  }
-
-  // move
-  const onClickBalance = () => {
-    if (!tokenBalance) return
-    const fullTokenBalance = formatUnits(
-      getTokenBalance(selectedTokenSymbol, chainId) ?? '0',
-      selectedToken.decimals
-    )
-    onChangeInput(fullTokenBalance)
   }
 
   return (
@@ -128,8 +68,10 @@ const TradeInputSelector = (props: {
             whiteSpace='nowrap'
             disabled={config.isInputDisabled ?? false}
             isReadOnly={config.isReadOnly ?? false}
-            value={inputString}
-            onChange={(event) => onChangeInput(event.target.value)}
+            value={selectedTokenAmount}
+            onChange={(event) => {
+              onChangeInput(event.target.value)
+            }}
           />
           <SelectorButton
             onClick={() => props.onSelectedToken(selectedTokenSymbol)}
@@ -154,8 +96,8 @@ const TradeInputSelector = (props: {
             )}
           </Flex>
           <Balance
-            balance={tokenBalance}
-            onClick={onClickBalance}
+            balance={selectedTokenBalance}
+            onClick={props.onClickBalance}
             showMaxLabel={config.showMaxLabel}
           />
         </Flex>
@@ -175,7 +117,7 @@ const Balance = ({ balance, onClick, showMaxLabel }: BalanceProps) => (
     <Text color={colors.icGray2} fontSize='14px' fontWeight='400'>
       Balance: {balance}
     </Text>
-    {showMaxLabel === true && (
+    {showMaxLabel && (
       <Flex
         align='center'
         bg={colors.icBlue10}

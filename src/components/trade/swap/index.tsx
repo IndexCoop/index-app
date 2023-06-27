@@ -6,6 +6,7 @@ import { colors, useICColorMode } from '@/lib/styles/colors'
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
+import { formatUnits } from '@ethersproject/units'
 
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
@@ -25,6 +26,7 @@ import { getNativeToken, isPerpToken } from '@/lib/utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
+  formattedBalance,
   formattedFiat,
   getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
@@ -44,6 +46,7 @@ import { TradeDetail } from './TradeDetail'
 import { TradeInfoItem } from './TradeInfo'
 
 export type QuickTradeProps = {
+  // TODO: add
   isNarrowVersion?: boolean
   switchTabs?: () => void
 }
@@ -79,19 +82,25 @@ const QuickTrade = (props: QuickTradeProps) => {
     changeSellToken,
     swapTokenLists,
   } = useTradeTokenLists()
-  const { getTokenBalance } = useBalanceData()
+  const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
 
   const supportedNetwork = isSupportedNetwork
 
   const [buttonLabel, setButtonLabel] = useState('')
+  const [inputTokenAmountFormatted, setInputTokenAmountFormatted] =
+    useState('0.0')
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
+  const [inputTokenBalanceFormatted, setInputTokenBalanceFormatted] =
+    useState('0.0')
+  const [outputTokenBalanceFormatted, setOutputTokenBalanceFormatted] =
+    useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [gasCostsInUsd, setGasCostsInUsd] = useState(0)
   const [navData, setNavData] = useState<TradeInfoItem>()
 
-  const navToken = isBuying ? buyToken : sellToken
-  const { nav } = useTokenComponents(navToken, isPerpToken(navToken))
+  const indexToken = isBuying ? buyToken : sellToken
+  const { nav } = useTokenComponents(indexToken, isPerpToken(indexToken))
 
   useEffect(() => {
     if (tradeInfoData.length < 1) return
@@ -327,14 +336,41 @@ const QuickTrade = (props: QuickTradeProps) => {
     }
   }
 
-  const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
-    if (input === '') {
-      resetTradeData()
-      return
-    }
+  const onChangeInputTokenAmount = (token: Token, input: string) => {
+    setInputTokenAmountFormatted(input || '')
     if (!isValidTokenInput(input, token.decimals)) return
-    setSellTokenAmount(input || '0')
-  }, 1000)
+    setSellTokenAmount(input || '')
+  }
+
+  const onClickInputBalance = () => {
+    if (!inputTokenBalanceFormatted) return
+    const fullTokenBalance = formatUnits(
+      getTokenBalance(sellToken.symbol, chainId) ?? '0.0',
+      sellToken.decimals
+    )
+    setInputTokenAmountFormatted(fullTokenBalance)
+  }
+
+  const onClickOutputBalance = () => {
+    if (!outputTokenBalanceFormatted) return
+    const fullTokenBalance = formatUnits(
+      getTokenBalance(buyToken.symbol, chainId) ?? '0.0',
+      buyToken.decimals
+    )
+    setBuyTokenAmountFormatted(fullTokenBalance)
+  }
+
+  useEffect(() => {
+    if (isLoadingBalance) return
+    const tokenBal = getTokenBalance(sellToken.symbol, chainId)
+    setInputTokenBalanceFormatted(formattedBalance(sellToken, tokenBal))
+  }, [getTokenBalance, sellToken, isLoadingBalance])
+
+  useEffect(() => {
+    if (isLoadingBalance) return
+    const tokenBal = getTokenBalance(buyToken.symbol, chainId)
+    setOutputTokenBalanceFormatted(formattedBalance(buyToken, tokenBal))
+  }, [getTokenBalance, buyToken, isLoadingBalance])
 
   const onClickTradeButton = async () => {
     if (!address) {
@@ -439,8 +475,11 @@ const QuickTrade = (props: QuickTradeProps) => {
             showMaxLabel: true,
           }}
           selectedToken={sellToken}
+          selectedTokenAmount={inputTokenAmountFormatted}
+          selectedTokenBalance={inputTokenBalanceFormatted}
           formattedFiat={sellTokenFiat}
-          onChangeInput={onChangeSellTokenAmount}
+          onChangeInput={onChangeInputTokenAmount}
+          onClickBalance={onClickInputBalance}
           onSelectedToken={(_) => {
             if (inputTokenItems.length > 1) onOpenSelectInputToken()
           }}
@@ -466,8 +505,10 @@ const QuickTrade = (props: QuickTradeProps) => {
           }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmountFormatted}
+          selectedTokenBalance={outputTokenBalanceFormatted}
           formattedFiat={buyTokenFiat}
           priceImpact={priceImpact ?? undefined}
+          onClickBalance={onClickOutputBalance}
           onSelectedToken={(_) => {
             if (outputTokenItems.length > 1) onOpenSelectOutputToken()
           }}
