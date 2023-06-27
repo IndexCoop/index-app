@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import debounce from 'lodash/debounce'
-
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
+import { formatUnits } from '@ethersproject/units'
 
-import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useFlashMintQuote } from '@/lib/hooks/useFlashMintQuote'
@@ -21,7 +19,7 @@ import {
   getQuoteAmount,
 } from '@/lib/utils/flashMint/quotes'
 import { selectSlippage } from '@/lib/utils/slippage'
-import { getNativeToken, isNotTradableToken } from '@/lib/utils/tokens'
+import { getNativeToken } from '@/lib/utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
@@ -66,19 +64,20 @@ const FlashMint = (props: QuickTradeProps) => {
     sellTokenPrice: inputOutputPrice,
     changeBuyToken: changeIndexToken,
     changeSellToken: changeInputOutputToken,
-  } = useTradeTokenLists(props.singleToken, true)
-  const { getTokenBalance } = useBalanceData()
+  } = useTradeTokenLists(true)
+  const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
   const { slippage } = useSlippage()
 
   const [buttonLabel, setButtonLabel] = useState('')
   const [contractAddress, setContractAddress] = useState<string | null>(null)
-  const [indexTokenAmountFormatted, setIndexTokenAmountFormatted] =
-    useState('0.0')
+  const [indexTokenAmountFormatted, setIndexTokenAmountFormatted] = useState('')
   const [inputOutputTokenAmount, setInputOutputTokenAmount] = useState(
     BigNumber.from(0)
   )
   const [indexTokenAmount, setIndexTokenAmount] = useState('0')
   const [isMinting, setIsMinting] = useState(true)
+  const [indexTokenBalanceFormatted, setIndexTokenBalanceFormatted] =
+    useState('0.0')
   const [transactionReview, setTransactionReview] =
     useState<TransactionReview | null>(null)
 
@@ -170,8 +169,7 @@ const FlashMint = (props: QuickTradeProps) => {
     return (
       indexTokenAmount === '0' ||
       (isMinting && hasInsufficientFundsInputOutputToken) ||
-      (!isMinting && hasInsufficientFundsIndexToken) ||
-      isNotTradableToken(props.singleToken, chainId)
+      (!isMinting && hasInsufficientFundsIndexToken)
     )
   }
 
@@ -179,27 +177,10 @@ const FlashMint = (props: QuickTradeProps) => {
    * Get the correct trade button label according to different states
    * @returns string label for trade button
    */
-  const getTradeButtonLabel = useEffect(() => {
+  useEffect(() => {
     const label = () => {
       if (!address) return 'Connect Wallet'
       if (!isSupportedNetwork) return 'Wrong Network'
-
-      if (isNotTradableToken(props.singleToken, chainId)) {
-        let chainName = 'this Network'
-        switch (chainId) {
-          case MAINNET.chainId:
-            chainName = 'Mainnet'
-            break
-          case POLYGON.chainId:
-            chainName = 'Polygon'
-            break
-          case OPTIMISM.chainId:
-            chainName = 'Optimism'
-            break
-        }
-
-        return `Not Available on ${chainName}`
-      }
 
       if (indexTokenAmount === '0') {
         return 'Enter an amount'
@@ -233,7 +214,6 @@ const FlashMint = (props: QuickTradeProps) => {
     hasInsufficientFundsInputOutputToken,
     indexTokenAmount,
     chainId,
-    props.singleToken,
     isSupportedNetwork,
   ])
 
@@ -265,14 +245,14 @@ const FlashMint = (props: QuickTradeProps) => {
     setIndexTokenAmountFormatted('0.0')
   }
 
-  const onChangeIndexTokenAmount = debounce((token: Token, input: string) => {
+  const onChangeIndexTokenAmount = (token: Token, input: string) => {
     if (input === '') {
       resetData()
-      return
     }
+    setIndexTokenAmountFormatted(input)
     if (!isValidTokenInput(input, token.decimals)) return
-    setIndexTokenAmount(input || '0')
-  }, 1000)
+    setIndexTokenAmount(input || '')
+  }
 
   const onClickTradeButton = async () => {
     if (!address) return
@@ -339,12 +319,28 @@ const FlashMint = (props: QuickTradeProps) => {
       ? null
       : getBlockExplorerContractUrl(contractAddress, chainId)
 
+  const onClickBalance = () => {
+    if (!indexTokenBalanceFormatted) return
+    const fullTokenBalance = formatUnits(
+      getTokenBalance(indexToken.symbol, chainId) ?? '0.0',
+      indexToken.decimals
+    )
+    setIndexTokenAmountFormatted(fullTokenBalance)
+    setIndexTokenAmount(fullTokenBalance)
+  }
+
+  useEffect(() => {
+    if (isLoadingBalance) return
+    const tokenBal = getTokenBalance(indexToken.symbol, chainId)
+    setIndexTokenBalanceFormatted(formattedBalance(indexToken, tokenBal))
+  }, [getTokenBalance, indexToken, isLoadingBalance])
+
   return (
     <Box mt='32px'>
       <DirectIssuance
         indexToken={indexToken}
-        indexTokenList={indexTokenList}
         indexTokenAmountFormatted={indexTokenAmountFormatted}
+        indexTokenBalanceFormatted={indexTokenBalanceFormatted}
         indexTokenFiatFormatted={indexTokenFiatFormatted}
         inputOutputToken={inputOutputToken}
         inputOutputTokenAmountFormatted={inputOutputTokenAmountFormatted}
@@ -354,6 +350,7 @@ const FlashMint = (props: QuickTradeProps) => {
         isMintable={true}
         isNarrow={isNarrow}
         onChangeBuyTokenAmount={onChangeIndexTokenAmount}
+        onClickBalance={onClickBalance}
         onSelectIndexToken={() => {
           if (indexTokenItems.length > 1) onOpenIndexTokenModal()
         }}
@@ -387,17 +384,7 @@ const FlashMint = (props: QuickTradeProps) => {
         isOpen={isIndexTokenModalOpen}
         onClose={onCloseIndexTokenModal}
         onSelectedToken={(tokenSymbol) => {
-          if (
-            tokenSymbol === 'ETH2X-FLI-P' ||
-            tokenSymbol === 'BTC2x-FLI-P' ||
-            tokenSymbol === 'MATIC2x-FLI-P'
-          ) {
-            alert(
-              `${tokenSymbol} is currently sell only. Please use Swap instead of FlashMint.`
-            )
-          } else {
-            changeIndexToken(tokenSymbol)
-          }
+          changeIndexToken(tokenSymbol)
           onCloseIndexTokenModal()
         }}
         items={indexTokenItems}

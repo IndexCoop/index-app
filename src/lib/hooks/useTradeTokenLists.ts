@@ -18,13 +18,10 @@ import {
 
 import { useNetwork } from './useNetwork'
 
-export const useTradeTokenLists = (
-  singleToken?: Token,
-  isFlashMint: boolean = false
-) => {
+export const useTradeTokenLists = (isFlashMint: boolean = false) => {
   const { chainId, isSupportedNetwork } = useNetwork()
   const nativeToken = getNativeToken(chainId) ?? ETH
-  const tokenList = getTokenListByChain(chainId, isFlashMint, singleToken)
+  const tokenList = getTokenListByChain(chainId, isFlashMint)
 
   const [isBuying, setIsBuying] = useState<boolean>(true)
   const [buyToken, setBuyToken] = useState<Token>(tokenList[0])
@@ -42,13 +39,9 @@ export const useTradeTokenLists = (
    */
   useEffect(() => {
     if (chainId === undefined || !isSupportedNetwork) return
-    const newBuyTokenList = getTokenListByChain(
-      chainId,
-      isFlashMint,
-      singleToken
-    )
+    const newBuyTokenList = getTokenListByChain(chainId, isFlashMint)
     const newSellTokenList = getCurrencyTokensForIndex(
-      singleToken ?? newBuyTokenList[0],
+      newBuyTokenList[0],
       chainId ?? 1,
       isBuying
     )
@@ -90,7 +83,7 @@ export const useTradeTokenLists = (
     }
     if (isBuying) {
       const newSellTokenList = getCurrencyTokensForIndex(
-        singleToken ?? filteredList[0],
+        filteredList[0],
         chainId ?? 1,
         isBuying
       )
@@ -109,7 +102,7 @@ export const useTradeTokenLists = (
     }
     if (!isBuying) {
       const newBuyTokenList = getCurrencyTokensForIndex(
-        singleToken ?? filteredList[0],
+        filteredList[0],
         chainId ?? 1,
         isBuying
       )
@@ -125,15 +118,15 @@ export const useTradeTokenLists = (
     const prevBuyToken = buyToken
     const indexToken = isBuying ? buyToken : sellToken
     const currencyTokensList = getCurrencyTokensForIndex(
-      singleToken ?? indexToken,
+      indexToken,
       chainId ?? 1,
       isBuyingNew
     )
     const sellTokenList = isBuyingNew
       ? currencyTokensList
-      : getTokenListByChain(chainId, isFlashMint, singleToken)
+      : getTokenListByChain(chainId, isFlashMint)
     const buyTokenList = isBuyingNew
-      ? getTokenListByChain(chainId, isFlashMint, singleToken)
+      ? getTokenListByChain(chainId, isFlashMint)
       : currencyTokensList
     setSellTokenList(sellTokenList)
     setBuyTokenList(buyTokenList)
@@ -163,10 +156,8 @@ export const useTradeTokenLists = (
  */
 export const getTokenListByChain = (
   chainId: number | undefined = MAINNET.chainId,
-  isFlashMint: boolean,
-  singleToken: Token | undefined
+  isFlashMint: boolean
 ) => {
-  if (singleToken) return [singleToken]
   if (chainId === POLYGON.chainId) {
     return isFlashMint ? flashMintIndexesPolygonRedeem : indexNamesPolygon
   }

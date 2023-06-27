@@ -4,10 +4,8 @@ import { colors, useColorStyles, useICColorMode } from '../../lib/styles/colors'
 
 import { Flex, Text } from '@chakra-ui/react'
 
-import { MoneyMarketIndex } from '../../constants/tokens'
 import { useNetwork } from '../../lib/hooks/useNetwork'
 import { SlippageProvider, useSlippage } from '../../lib/providers/Slippage'
-import { isTokenAvailableForFlashMint } from '../../lib/utils/tokens'
 
 import { QuickTradeSettingsPopover } from './_shared/QuickTradeSettingsPopover'
 import FlashMint from './flashmint'
@@ -19,24 +17,13 @@ enum TradeType {
 }
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
-  const isMMIT =
-    props.singleToken && props.singleToken.symbol === MoneyMarketIndex.symbol
   const { chainId } = useNetwork()
   const { styles } = useColorStyles()
-  const [selectedType, setSelectedType] = useState<TradeType>(
-    isMMIT ? TradeType.flashMint : TradeType.swap
-  )
+  const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
 
   const paddingX = props.isNarrowVersion ? '16px' : '40px'
-
-  const shouldShowSwap = isMMIT ? false : true
-  let shouldShowFlashMintOption = props.singleToken
-    ? isTokenAvailableForFlashMint(props.singleToken, chainId)
-    : // Currently no FlashMintable tokens on Polygon
-    chainId === 137
-    ? false
-    : true
-  shouldShowFlashMintOption = isMMIT ? true : shouldShowFlashMintOption
+  const shouldShowSwap = true
+  const shouldShowFlashMintOption = true
 
   const onSelectType = (type: TradeType) => {
     if (type !== selectedType) {

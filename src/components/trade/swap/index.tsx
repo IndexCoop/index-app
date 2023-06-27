@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from '@/lib/styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
+import { formatUnits } from '@ethersproject/units'
 
-import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useBestQuote } from '@/lib/hooks/useBestQuote'
@@ -22,14 +21,11 @@ import { useSlippage } from '@/lib/providers/Slippage'
 import { isValidTokenInput, toWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
-import {
-  getNativeToken,
-  isNotTradableToken,
-  isPerpToken,
-} from '@/lib/utils/tokens'
+import { getNativeToken, isPerpToken } from '@/lib/utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
+  formattedBalance,
   formattedFiat,
   getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
@@ -38,7 +34,7 @@ import {
   getTradeInfoData0x,
   shouldShowWarningSign,
 } from '../_shared/QuickTradeFormatter'
-import QuickTradeSelector from '../_shared/QuickTradeSelector'
+import TradeInputSelector from '../_shared/TradeInputSelector'
 import {
   getSelectTokenListItems,
   SelectTokenModal,
@@ -49,8 +45,8 @@ import { TradeDetail } from './TradeDetail'
 import { TradeInfoItem } from './TradeInfo'
 
 export type QuickTradeProps = {
+  // TODO: add
   isNarrowVersion?: boolean
-  singleToken?: Token
   switchTabs?: () => void
 }
 
@@ -84,20 +80,25 @@ const QuickTrade = (props: QuickTradeProps) => {
     changeBuyToken,
     changeSellToken,
     swapTokenLists,
-  } = useTradeTokenLists(props.singleToken)
-  const { getTokenBalance } = useBalanceData()
+  } = useTradeTokenLists()
+  const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
 
   const supportedNetwork = isSupportedNetwork
 
   const [buttonLabel, setButtonLabel] = useState('')
+  const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
+  const [inputTokenBalanceFormatted, setInputTokenBalanceFormatted] =
+    useState('0.0')
+  const [outputTokenBalanceFormatted, setOutputTokenBalanceFormatted] =
+    useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [gasCostsInUsd, setGasCostsInUsd] = useState(0)
   const [navData, setNavData] = useState<TradeInfoItem>()
 
-  const navToken = isBuying ? buyToken : sellToken
-  const { nav } = useTokenComponents(navToken, isPerpToken(navToken))
+  const indexToken = isBuying ? buyToken : sellToken
+  const { nav } = useTokenComponents(indexToken, isPerpToken(indexToken))
 
   useEffect(() => {
     if (tradeInfoData.length < 1) return
@@ -288,23 +289,6 @@ const QuickTrade = (props: QuickTradeProps) => {
       if (!address) return 'Connect Wallet'
       if (!supportedNetwork) return 'Wrong Network'
 
-      if (isNotTradableToken(props.singleToken, chainId)) {
-        let chainName = 'This Network'
-        switch (chainId) {
-          case MAINNET.chainId:
-            chainName = 'Mainnet'
-            break
-          case POLYGON.chainId:
-            chainName = 'Polygon'
-            break
-          case OPTIMISM.chainId:
-            chainName = 'Optimism'
-            break
-        }
-
-        return `Not Available on ${chainName}`
-      }
-
       if (sellTokenAmount === '0') {
         return 'Enter an amount'
       }
@@ -340,7 +324,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     hasFetchingError,
     hasInsufficientFunds,
     sellTokenAmount,
-    props.singleToken,
     chainId,
   ])
 
@@ -351,14 +334,45 @@ const QuickTrade = (props: QuickTradeProps) => {
     }
   }
 
-  const onChangeSellTokenAmount = debounce((token: Token, input: string) => {
+  const onChangeInputTokenAmount = (token: Token, input: string) => {
     if (input === '') {
       resetTradeData()
-      return
     }
+    setInputTokenAmountFormatted(input || '')
     if (!isValidTokenInput(input, token.decimals)) return
-    setSellTokenAmount(input || '0')
-  }, 1000)
+    setSellTokenAmount(input || '')
+  }
+
+  const onClickInputBalance = () => {
+    if (!inputTokenBalanceFormatted) return
+    const fullTokenBalance = formatUnits(
+      getTokenBalance(sellToken.symbol, chainId) ?? '0.0',
+      sellToken.decimals
+    )
+    setInputTokenAmountFormatted(fullTokenBalance)
+    setSellTokenAmount(fullTokenBalance)
+  }
+
+  const onClickOutputBalance = () => {
+    if (!outputTokenBalanceFormatted) return
+    const fullTokenBalance = formatUnits(
+      getTokenBalance(buyToken.symbol, chainId) ?? '0.0',
+      buyToken.decimals
+    )
+    setBuyTokenAmountFormatted(fullTokenBalance)
+  }
+
+  useEffect(() => {
+    if (isLoadingBalance) return
+    const tokenBal = getTokenBalance(sellToken.symbol, chainId)
+    setInputTokenBalanceFormatted(formattedBalance(sellToken, tokenBal))
+  }, [getTokenBalance, sellToken, isLoadingBalance])
+
+  useEffect(() => {
+    if (isLoadingBalance) return
+    const tokenBal = getTokenBalance(buyToken.symbol, chainId)
+    setOutputTokenBalanceFormatted(formattedBalance(buyToken, tokenBal))
+  }, [getTokenBalance, buyToken, isLoadingBalance])
 
   const onClickTradeButton = async () => {
     if (!address) {
@@ -393,12 +407,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     if (!supportedNetwork) return true
     if (!address) return true
     if (hasFetchingError) return false
-    return (
-      sellTokenAmount === '0' ||
-      hasInsufficientFunds ||
-      isTransacting ||
-      isNotTradableToken(props.singleToken, chainId)
-    )
+    return sellTokenAmount === '0' || hasInsufficientFunds || isTransacting
   }
 
   const isNarrow = props.isNarrowVersion ?? false
@@ -458,20 +467,21 @@ const QuickTrade = (props: QuickTradeProps) => {
   return (
     <Box>
       <Flex direction='column' m='40px 0 20px'>
-        <QuickTradeSelector
-          title=''
+        <TradeInputSelector
           config={{
             isDarkMode,
-            isInputDisabled: isNotTradableToken(props.singleToken, chainId),
+            isInputDisabled: false,
             isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
             isReadOnly: false,
             showMaxLabel: true,
           }}
           selectedToken={sellToken}
+          selectedTokenAmount={inputTokenAmountFormatted}
+          selectedTokenBalance={inputTokenBalanceFormatted}
           formattedFiat={sellTokenFiat}
-          tokenList={sellTokenList}
-          onChangeInput={onChangeSellTokenAmount}
+          onChangeInput={onChangeInputTokenAmount}
+          onClickBalance={onClickInputBalance}
           onSelectedToken={(_) => {
             if (inputTokenItems.length > 1) onOpenSelectInputToken()
           }}
@@ -486,8 +496,7 @@ const QuickTrade = (props: QuickTradeProps) => {
             onClick={onSwitchTokens}
           />
         </Box>
-        <QuickTradeSelector
-          title=''
+        <TradeInputSelector
           config={{
             isDarkMode,
             isInputDisabled: true,
@@ -498,9 +507,10 @@ const QuickTrade = (props: QuickTradeProps) => {
           }}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmountFormatted}
+          selectedTokenBalance={outputTokenBalanceFormatted}
           formattedFiat={buyTokenFiat}
           priceImpact={priceImpact ?? undefined}
-          tokenList={buyTokenList}
+          onClickBalance={onClickOutputBalance}
           onSelectedToken={(_) => {
             if (outputTokenItems.length > 1) onOpenSelectOutputToken()
           }}

@@ -1,18 +1,9 @@
-import { useEffect, useState } from 'react'
-
-import { BigNumber } from 'ethers'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, Input, Text } from '@chakra-ui/react'
-import { formatUnits } from '@ethersproject/units'
 
 import { Token } from '@/constants/tokens'
-import { useNetwork } from '@/lib/hooks/useNetwork'
-import { useBalanceData } from '@/lib/providers/Balances'
-import { isValidTokenInput } from '@/lib/utils'
-
-import { formattedBalance } from './QuickTradeFormatter'
 
 interface InputSelectorConfig {
   isDarkMode: boolean
@@ -23,76 +14,34 @@ interface InputSelectorConfig {
   showMaxLabel: boolean
 }
 
-const QuickTradeSelector = (props: {
-  title: string
+const TradeInputSelector = (props: {
   config: InputSelectorConfig
-  selectedToken: Token
-  selectedTokenAmount?: string
-  priceImpact?: { priceImpact: string; colorCoding: string }
   formattedFiat: string
-  tokenList: Token[]
-  onChangeInput?: (token: Token, input: string) => void
+  // Used from swap to show price impact behind fiat value
+  priceImpact?: { priceImpact: string; colorCoding: string }
+  selectedToken: Token
+  selectedTokenAmount: string
+  selectedTokenBalance: string
+  onClickBalance: () => void
   onSelectedToken: (symbol: string) => void
+  onChangeInput?: (token: Token, input: string) => void
 }) => {
-  const { chainId } = useNetwork()
-  const { isLoading, getTokenBalance } = useBalanceData()
   const { styles } = useColorStyles()
-
-  const { config, selectedToken, selectedTokenAmount } = props
-  const selectedTokenSymbol = selectedToken.symbol
-
-  const [inputString, setInputString] = useState<string>(
-    selectedTokenAmount === '0' ? '' : selectedTokenAmount || ''
-  )
-  const [tokenBalance, setTokenBalance] = useState<string>(
-    BigNumber.from(0).toString()
-  )
-
-  useEffect(() => {
-    setInputString(selectedTokenAmount === '0' ? '' : selectedTokenAmount || '') // TODO: Need comma separated number here
-  }, [selectedTokenAmount])
-
-  useEffect(() => {
-    onChangeInput('')
-  }, [chainId])
-
-  useEffect(() => {
-    if (isLoading) return
-    const tokenBal = getTokenBalance(selectedTokenSymbol, chainId)
-    setTokenBalance(formattedBalance(selectedToken, tokenBal))
-  }, [isLoading, getTokenBalance, selectedToken])
-
+  const { config, selectedToken, selectedTokenAmount, selectedTokenBalance } =
+    props
   const borderColor = styles.border
   const borderRadius = 16
+  const selectedTokenSymbol = selectedToken.symbol
 
   const onChangeInput = (amount: string) => {
-    if (!amount) {
-      setInputString('')
-      if (props.onChangeInput) {
-        props.onChangeInput(selectedToken, '')
-      }
-    }
-
     if (
       props.onChangeInput === undefined ||
       config.isInputDisabled ||
       config.isSelectorDisabled ||
-      config.isReadOnly ||
-      !isValidTokenInput(amount, selectedToken.decimals)
+      config.isReadOnly
     )
       return
-
-    setInputString(amount) // TODO: Need comma separated number here
     props.onChangeInput(selectedToken, amount)
-  }
-
-  const onClickBalance = () => {
-    if (!tokenBalance) return
-    const fullTokenBalance = formatUnits(
-      getTokenBalance(selectedTokenSymbol, chainId) ?? '0',
-      selectedToken.decimals
-    )
-    onChangeInput(fullTokenBalance)
   }
 
   return (
@@ -119,12 +68,13 @@ const QuickTradeSelector = (props: {
             whiteSpace='nowrap'
             disabled={config.isInputDisabled ?? false}
             isReadOnly={config.isReadOnly ?? false}
-            value={inputString}
-            onChange={(event) => onChangeInput(event.target.value)}
+            value={selectedTokenAmount}
+            onChange={(event) => {
+              onChangeInput(event.target.value)
+            }}
           />
-          <Selector
+          <SelectorButton
             onClick={() => props.onSelectedToken(selectedTokenSymbol)}
-            isNarrowVersion={config.isNarrowVersion}
             selectedTokenImage={selectedToken.image}
             selectedTokenSymbol={selectedTokenSymbol}
           />
@@ -146,8 +96,8 @@ const QuickTradeSelector = (props: {
             )}
           </Flex>
           <Balance
-            balance={tokenBalance}
-            onClick={onClickBalance}
+            balance={selectedTokenBalance}
+            onClick={props.onClickBalance}
             showMaxLabel={config.showMaxLabel}
           />
         </Flex>
@@ -167,7 +117,7 @@ const Balance = ({ balance, onClick, showMaxLabel }: BalanceProps) => (
     <Text color={colors.icGray2} fontSize='14px' fontWeight='400'>
       Balance: {balance}
     </Text>
-    {showMaxLabel === true && (
+    {showMaxLabel && (
       <Flex
         align='center'
         bg={colors.icBlue10}
@@ -186,14 +136,12 @@ const Balance = ({ balance, onClick, showMaxLabel }: BalanceProps) => (
 )
 
 type SelectorProps = {
-  isNarrowVersion: boolean
   onClick: () => void
   selectedTokenImage: string
   selectedTokenSymbol: string
 }
 
-const Selector = ({
-  isNarrowVersion,
+const SelectorButton = ({
   onClick,
   selectedTokenImage,
   selectedTokenSymbol,
@@ -204,23 +152,23 @@ const Selector = ({
     boxShadow='sm'
     cursor='pointer'
     onClick={onClick}
-    py='2'
-    px='2'
+    py='10px'
+    px='10px'
     shrink={0}
   >
-    {!isNarrowVersion && (
-      <Box mr='8px' w='24px'>
-        <img
-          alt={`${selectedTokenSymbol} logo`}
-          src={selectedTokenImage}
-          width='24px'
-          height='24px'
-        />
-      </Box>
-    )}
-    <Text color={colors.icGray4}>{selectedTokenSymbol}</Text>
-    <ChevronDownIcon ml={1} w={6} h={6} color={colors.icGray4} />
+    <Box w='24px'>
+      <img
+        alt={`${selectedTokenSymbol} logo`}
+        src={selectedTokenImage}
+        width='24px'
+        height='24px'
+      />
+    </Box>
+    <Text color={colors.icGray4} ml='10px' mr='8px'>
+      {selectedTokenSymbol}
+    </Text>
+    <ChevronDownIcon w={6} h={6} color={colors.icGray4} />
   </Flex>
 )
 
-export default QuickTradeSelector
+export default TradeInputSelector

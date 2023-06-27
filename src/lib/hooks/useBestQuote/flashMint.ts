@@ -5,7 +5,9 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from '@/constants/chains'
-import { MoneyMarketIndex, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
+import { getConfiguredZeroExApi } from '@/lib/utils/api/zeroExApi'
+import { getNetworkKey } from '@/lib/utils/api/zeroExUtils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gasEstimatooor'
 import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
@@ -31,17 +33,17 @@ export async function getEnhancedFlashMintQuote(
   if (chainId !== MAINNET.chainId) return null
   const indexToken = isMinting ? buyToken : sellToken
   const inputOutputToken = isMinting ? sellToken : buyToken
-  // Allow only MMI
-  if (indexToken.symbol !== MoneyMarketIndex.symbol) return null
-  const currencies = getCurrencyTokensForIndex(
-    MoneyMarketIndex,
-    chainId,
-    isMinting
-  )
+  const currencies = getCurrencyTokensForIndex(indexToken, chainId, isMinting)
   // Allow only supported currencies
   const isAllowedCurrency =
     currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)
       .length > 0
+  console.log(
+    indexToken.symbol,
+    inputOutputToken.symbol,
+    currencies.length,
+    isAllowedCurrency
+  )
   if (!isAllowedCurrency) return null
 
   const inputToken = {
@@ -56,6 +58,10 @@ export async function getEnhancedFlashMintQuote(
   }
 
   try {
+    // Create an instance of ZeroExApi (to pass to quote functions)
+    const networkKey = getNetworkKey(chainId)
+    const swapPathOverride = `/${networkKey}/swap/v1/quote`
+    const zeroExApi = getConfiguredZeroExApi(swapPathOverride)
     const request = {
       isMinting,
       inputToken,
@@ -63,7 +69,7 @@ export async function getEnhancedFlashMintQuote(
       indexTokenAmount,
       slippage,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
+    const quoteProvider = new FlashMintQuoteProvider(provider, zeroExApi)
     const quoteFM = await quoteProvider.getQuote(request)
     if (quoteFM) {
       const { inputOutputAmount, tx } = quoteFM
