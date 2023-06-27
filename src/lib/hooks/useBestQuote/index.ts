@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { PopulatedTransaction } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { SwapData } from '@indexcoop/flash-mint-sdk'
 
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
