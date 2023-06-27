@@ -87,8 +87,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const supportedNetwork = isSupportedNetwork
 
   const [buttonLabel, setButtonLabel] = useState('')
-  const [inputTokenAmountFormatted, setInputTokenAmountFormatted] =
-    useState('0.0')
+  const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [inputTokenBalanceFormatted, setInputTokenBalanceFormatted] =
     useState('0.0')
@@ -337,6 +336,9 @@ const QuickTrade = (props: QuickTradeProps) => {
   }
 
   const onChangeInputTokenAmount = (token: Token, input: string) => {
+    if (input === '') {
+      resetTradeData()
+    }
     setInputTokenAmountFormatted(input || '')
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '')
@@ -349,6 +351,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       sellToken.decimals
     )
     setInputTokenAmountFormatted(fullTokenBalance)
+    setSellTokenAmount(fullTokenBalance)
   }
 
   const onClickOutputBalance = () => {

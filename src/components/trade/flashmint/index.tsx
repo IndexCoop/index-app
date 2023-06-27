@@ -72,8 +72,7 @@ const FlashMint = (props: QuickTradeProps) => {
 
   const [buttonLabel, setButtonLabel] = useState('')
   const [contractAddress, setContractAddress] = useState<string | null>(null)
-  const [indexTokenAmountFormatted, setIndexTokenAmountFormatted] =
-    useState('0.0')
+  const [indexTokenAmountFormatted, setIndexTokenAmountFormatted] = useState('')
   const [inputOutputTokenAmount, setInputOutputTokenAmount] = useState(
     BigNumber.from(0)
   )
@@ -249,6 +248,9 @@ const FlashMint = (props: QuickTradeProps) => {
   }
 
   const onChangeIndexTokenAmount = (token: Token, input: string) => {
+    if (input === '') {
+      resetData()
+    }
     setIndexTokenAmountFormatted(input)
     if (!isValidTokenInput(input, token.decimals)) return
     setIndexTokenAmount(input || '')
@@ -326,6 +328,7 @@ const FlashMint = (props: QuickTradeProps) => {
       indexToken.decimals
     )
     setIndexTokenAmountFormatted(fullTokenBalance)
+    setIndexTokenAmount(fullTokenBalance)
   }
 
   useEffect(() => {
