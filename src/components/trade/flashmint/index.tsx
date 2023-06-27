@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import debounce from 'lodash/debounce'
-
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from '@ethersproject/units'

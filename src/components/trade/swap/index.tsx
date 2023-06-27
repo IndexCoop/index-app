@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import debounce from 'lodash/debounce'
 import { colors, useICColorMode } from '@/lib/styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
