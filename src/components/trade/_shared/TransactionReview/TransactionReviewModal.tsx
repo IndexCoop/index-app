@@ -28,7 +28,6 @@ import { TradeButton } from '../footer/TradeButton'
 import FromTo from './FromTo'
 import NetworkBadge from './NetworkBadge'
 import { TransactionReview } from './TransactionReview'
-import TransactionReviewDetails from './TransactionReviewDetails'
 import TransactionReviewSimulation, {
   TransactionReviewSimulationState,
 } from './TransactionReviewSimulation'
@@ -115,13 +114,6 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     </Modal>
   )
 }
-
-/**
- // TODO:
-<Box my='8px'>
-  <TransactionReviewDetails />
-</Box>
-*/
 
 const BottomMessage = () => {
   const { styles } = useColorStyles()
