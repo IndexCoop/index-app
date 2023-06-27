@@ -384,18 +384,7 @@ const FlashMint = (props: QuickTradeProps) => {
         isOpen={isIndexTokenModalOpen}
         onClose={onCloseIndexTokenModal}
         onSelectedToken={(tokenSymbol) => {
-          // TODO: remove
-          if (
-            tokenSymbol === 'ETH2X-FLI-P' ||
-            tokenSymbol === 'BTC2x-FLI-P' ||
-            tokenSymbol === 'MATIC2x-FLI-P'
-          ) {
-            alert(
-              `${tokenSymbol} is currently sell only. Please use Swap instead of FlashMint.`
-            )
-          } else {
-            changeIndexToken(tokenSymbol)
-          }
+          changeIndexToken(tokenSymbol)
           onCloseIndexTokenModal()
         }}
         items={indexTokenItems}
