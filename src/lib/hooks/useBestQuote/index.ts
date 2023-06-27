@@ -10,19 +10,13 @@ import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useBalanceData } from '@/lib/providers/Balances'
 import { toWei } from '@/lib/utils'
 import { GasStation } from '@/lib/utils/api/gasStation'
-import { getConfiguredZeroExApi } from '@/lib/utils/api/zeroExApi'
-import {
-  getNetworkKey,
-  getZeroExTradeData,
-  ZeroExData,
-} from '@/lib/utils/api/zeroExUtils'
+import { getZeroExTradeData, ZeroExData } from '@/lib/utils/api/zeroExUtils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { useWallet } from '../useWallet'
-
-import { getEnhancedFlashMintLeveragedQuote } from './flashMintLeveraged'
-import { getEnhancedFlashMintZeroExQuote } from './flashMintZeroEx'
+import { getBestQuote } from './bestQuote'
+import { getEnhancedFlashMintQuote } from './flashMint'
 
 export enum QuoteType {
   notAvailable = 'notAvailable',
@@ -46,19 +40,6 @@ interface Quote {
   priceImpact: number
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
-}
-
-export interface ExchangeIssuanceLeveragedQuote extends Quote {
-  swapDataDebtCollateral: SwapData
-  swapDataPaymentToken: SwapData
-}
-
-export interface ExchangeIssuanceZeroExQuote extends Quote {
-  componentQuotes: string[]
-}
-
-export interface FlashMintNotionalQuote extends Quote {
-  swapData: SwapData[]
 }
 
 export interface EnhancedFlashMintQuote extends Quote {
@@ -87,57 +68,13 @@ type MoreQuotesResult = {
   hasBetterQuote: boolean
   isReasonPriceImpact: boolean
   quotes: {
-    exchangeIssuanceLeveraged: ExchangeIssuanceLeveragedQuote | null
-    exchangeIssuanceZeroEx: ExchangeIssuanceZeroExQuote | null
+    flashMint: EnhancedFlashMintQuote | null
   }
   savingsUsd: number
 }
 
 // To determine if price impact for DEX is smaller 5%
 export const maxPriceImpact = 5
-
-export function getBestQuote(
-  fullCosts0x: number | null,
-  fullCostsEI: number | null,
-  fullCostsLevEI: number | null,
-  priceImpactDex: number
-): { type: QuoteType; priceImpact: boolean } {
-  if (fullCostsEI === null && fullCostsLevEI === null) {
-    return { type: QuoteType.zeroEx, priceImpact: false }
-  }
-
-  const quotes: any[][] = []
-  if (fullCosts0x) {
-    quotes.push([QuoteType.zeroEx, fullCosts0x])
-  }
-  if (fullCostsEI) {
-    quotes.push([QuoteType.exchangeIssuanceZeroEx, fullCostsEI])
-  }
-  if (fullCostsLevEI) {
-    quotes.push([QuoteType.exchangeIssuanceLeveraged, fullCostsLevEI])
-  }
-  const cheapestQuotes = quotes.sort((q1, q2) => q1[1] - q2[1])
-
-  if (cheapestQuotes.length <= 0) {
-    return { type: QuoteType.zeroEx, priceImpact: false }
-  }
-
-  const cheapestQuote = cheapestQuotes[0]
-  const bestOption = cheapestQuote[0]
-
-  // If only one quote, return best option immediately
-  if (cheapestQuotes.length === 1) {
-    return { type: bestOption, priceImpact: false }
-  }
-
-  // If multiple quotes, check price impact of 0x option
-  if (bestOption === QuoteType.zeroEx && priceImpactDex >= maxPriceImpact) {
-    // In case price impact is too high, return cheapest exchange issuance
-    return { type: cheapestQuotes[1][0], priceImpact: true }
-  }
-
-  return { type: bestOption, priceImpact: false }
-}
 
 export const getSetTokenAmount = (
   isIssuance: boolean,
@@ -193,8 +130,7 @@ export const useBestQuote = () => {
       hasBetterQuote: false,
       isReasonPriceImpact: false,
       quotes: {
-        exchangeIssuanceLeveraged: null,
-        exchangeIssuanceZeroEx: null,
+        flashMint: null,
       },
       savingsUsd: 0,
     })
@@ -302,111 +238,57 @@ export const useBestQuote = () => {
       const gasStation = new GasStation(provider)
       const gasPrice = await gasStation.getGasPrice()
 
-      // Create an instance of ZeroExApi (to pass to quote functions)
-      const networkKey = getNetworkKey(chainId)
-      const swapPathOverride = `/${networkKey}/swap/v1/quote`
-      const zeroExApi = getConfiguredZeroExApi(swapPathOverride)
+      const flashMintQuote = await getEnhancedFlashMintQuote(
+        isMinting,
+        inputTokenAddress,
+        outputTokenAddress,
+        sellToken,
+        buyToken,
+        indexTokenAmount,
+        sellTokenPrice,
+        nativeTokenPrice,
+        gasPrice,
+        slippage,
+        chainId,
+        provider,
+        signer
+      )
 
-      const inputTokenBalance =
-        getTokenBalance(sellToken.symbol, chainId) ?? BigNumber.from(0)
-
-      const exchangeIssuanceLeveragedQuote: ExchangeIssuanceLeveragedQuote | null =
-        await getEnhancedFlashMintLeveragedQuote(
-          isMinting,
-          inputTokenAddress,
-          outputTokenAddress,
-          inputTokenBalance,
-          sellToken,
-          buyToken,
-          indexTokenAmount,
-          sellTokenPrice,
-          nativeTokenPrice,
-          gasPrice,
-          slippage,
-          chainId,
-          provider,
-          zeroExApi,
-          signer
-        )
-      const exchangeIssuanceZeroExQuote: ExchangeIssuanceZeroExQuote | null =
-        await getEnhancedFlashMintZeroExQuote(
-          isMinting,
-          inputTokenAddress,
-          outputTokenAddress,
-          inputTokenBalance,
-          sellToken,
-          buyToken,
-          indexTokenAmount,
-          sellTokenPrice,
-          nativeTokenPrice,
-          gasPrice,
-          slippage,
-          chainId,
-          provider,
-          zeroExApi,
-          signer
-        )
-
-      // console.log('////////')
-      // console.log('exchangeIssuanceZeroExQuote', exchangeIssuanceZeroExQuote)
-      // console.log(
-      //   'exchangeIssuanceLeveragedQuote',
-      //   exchangeIssuanceLeveragedQuote
-      // )
-
-      // console.log(
-      //   zeroExQuote?.fullCostsInUsd ?? null,
-      //   exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
-      //   exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
-      //   'FC'
-      // )
+      console.log('////////')
+      console.log('exchangeIssuanceZeroExQuote', flashMintQuote)
 
       const bestQuote = getBestQuote(
         zeroExQuote?.fullCostsInUsd ?? null,
-        exchangeIssuanceZeroExQuote?.fullCostsInUsd ?? null,
-        exchangeIssuanceLeveragedQuote?.fullCostsInUsd ?? null,
+        flashMintQuote?.fullCostsInUsd ?? null,
         zeroExQuote?.priceImpact ?? 5
       )
 
-      const isFlashMintLeveragedBestQuote =
-        bestQuote.type === QuoteType.exchangeIssuanceLeveraged
-      const isFlashMintZeroExBestQuote =
-        bestQuote.type === QuoteType.exchangeIssuanceZeroEx
-      const isReasonPriceImpact = bestQuote.priceImpact
-
-      const hasBetterQuote =
-        isFlashMintLeveragedBestQuote || isFlashMintZeroExBestQuote
-
       const getSavings = (): number => {
         if (!zeroExQuote) return 0
-        if (isFlashMintLeveragedBestQuote && exchangeIssuanceLeveragedQuote) {
+        if (bestQuote.type === QuoteType.flashMint && flashMintQuote) {
           return (
             (zeroExQuote.fullCostsInUsd ?? 0) -
-            (exchangeIssuanceLeveragedQuote.fullCostsInUsd ?? 0)
-          )
-        }
-        if (isFlashMintZeroExBestQuote && exchangeIssuanceZeroExQuote) {
-          return (
-            (zeroExQuote.fullCostsInUsd ?? 0) -
-            (exchangeIssuanceZeroExQuote.fullCostsInUsd ?? 0)
+            (flashMintQuote.fullCostsInUsd ?? 0)
           )
         }
         return 0
       }
 
+      const flashMintIsBestQuote = bestQuote.type === QuoteType.flashMint
       const savingsUsd = getSavings()
+      console.log(
+        flashMintIsBestQuote,
+        savingsUsd,
+        flashMintQuote?.fullCostsInUsd,
+        zeroExQuote?.fullCostsInUsd,
+        'isBestQuote/savings'
+      )
 
       const quoteResult: MoreQuotesResult = {
-        hasBetterQuote,
-        isReasonPriceImpact,
+        hasBetterQuote: flashMintIsBestQuote,
+        isReasonPriceImpact: bestQuote.priceImpact,
         quotes: {
-          // TODO: add flash mint quote
-          exchangeIssuanceLeveraged: isFlashMintLeveragedBestQuote
-            ? exchangeIssuanceLeveragedQuote
-            : null,
-          exchangeIssuanceZeroEx: isFlashMintZeroExBestQuote
-            ? exchangeIssuanceZeroExQuote
-            : null,
+          flashMint: flashMintIsBestQuote ? flashMintQuote : null,
         },
         savingsUsd,
       }
@@ -415,6 +297,7 @@ export const useBestQuote = () => {
       setIsFetchingMoreOptions(false)
     }
 
+    console.log('FETCH MORE...')
     // The individual Flash Mint functions will check if the the token pair is eligible
     fetchAndCompareMoreOptions()
 

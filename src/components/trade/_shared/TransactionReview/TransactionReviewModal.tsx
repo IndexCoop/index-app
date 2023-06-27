@@ -20,9 +20,6 @@ import {
 import Override from '@/components/trade/flashmint/Override'
 import { useFlashMintTrade } from '@/lib/hooks/useFlashMintTrade'
 import { useSimulateQuote } from '@/lib/hooks/useSimulateQuote'
-import { useTradeFlashMintLeveraged } from '@/lib/hooks/useTradeFlashMintLeveraged'
-import { useTradeFlashMintNotional } from '@/lib/hooks/useTradeFlashMintNotional'
-import { useTradeFlashMintZeroEx } from '@/lib/hooks/useTradeFlashMintZeroEx'
 import { displayFromWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 
@@ -43,75 +40,20 @@ enum TransactionReviewModalState {
 
 type TransactionReviewModalProps = {
   isOpen: boolean
-  onClose: () => void
   tx: TransactionReview
+  onClose: () => void
 }
 
 const useTrade = (tx: TransactionReview) => {
-  const {
-    executeFlashMintTrade,
-    isTransacting: isTransactingFlashMint,
-    txWouldFail: txWouldFailFM,
-  } = useFlashMintTrade()
-  const {
-    executeFlashMintLeveragedTrade,
-    isTransacting: isTransactingLeveraged,
-    txWouldFail: txWouldFailLeveraged,
-  } = useTradeFlashMintLeveraged()
-  const {
-    executeFlashMintNotionalTrade,
-    isTransacting: isTransactingNotional,
-    txWouldFail: txWouldFailFmNotional,
-  } = useTradeFlashMintNotional()
-  const {
-    executeFlashMintZeroExTrade,
-    isTransacting: isTransactingZeroEx,
-    txWouldFail: txWouldFailZeroEx,
-  } = useTradeFlashMintZeroEx()
-
-  const isTransacting =
-    isTransactingFlashMint ||
-    isTransactingNotional ||
-    isTransactingLeveraged ||
-    isTransactingZeroEx
-
-  const txWouldFail: boolean =
-    txWouldFailFM ||
-    txWouldFailZeroEx ||
-    txWouldFailLeveraged ||
-    txWouldFailFmNotional
+  const { executeFlashMintTrade, isTransacting, txWouldFail } =
+    useFlashMintTrade()
 
   const executeTrade = async (override: boolean) => {
     const { quoteResult, slippage } = tx
     const { quotes } = quoteResult
     if (!quotes) return null
-
     if (quotes.flashMint) {
       await executeFlashMintTrade(quotes.flashMint, slippage, override)
-      return
-    }
-    if (quotes.flashMintLeveraged) {
-      await executeFlashMintLeveragedTrade(
-        quotes.flashMintLeveraged,
-        slippage,
-        override
-      )
-      return
-    }
-    if (quotes.flashMintNotional) {
-      await executeFlashMintNotionalTrade(
-        quotes.flashMintNotional,
-        slippage,
-        override
-      )
-      return
-    }
-    if (quotes.flashMintZeroEx) {
-      await executeFlashMintZeroExTrade(
-        quotes.flashMintZeroEx,
-        slippage,
-        override
-      )
       return
     }
   }

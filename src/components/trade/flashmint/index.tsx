@@ -177,7 +177,7 @@ const FlashMint = (props: QuickTradeProps) => {
    * Get the correct trade button label according to different states
    * @returns string label for trade button
    */
-  const getTradeButtonLabel = useEffect(() => {
+  useEffect(() => {
     const label = () => {
       if (!address) return 'Connect Wallet'
       if (!isSupportedNetwork) return 'Wrong Network'
