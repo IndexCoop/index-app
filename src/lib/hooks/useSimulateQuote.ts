@@ -4,9 +4,6 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useWallet } from '@/lib/hooks/useWallet'
-import { getFlashMintLeveragedTransaction } from '@/lib/utils/flashMint/flashMintLeveragedTransaction'
-import { getFlashMintZeroExTransaction } from '@/lib/utils/flashMint/flashMintZeroExTransaction'
-import { getFlashMintNotionalTransaction } from '@/lib/utils/flashMintNotional/fmNotionalTransaction'
 import { TxSimulator } from '@/lib/utils/simulator'
 
 import { FlashMintQuoteResult } from './useFlashMintQuote'
@@ -48,61 +45,11 @@ class TransactionRequestBuilder {
   async makeTransactionRequest(
     quoteResult: FlashMintQuoteResult
   ): Promise<PopulatedTransaction | null> {
-    const { chainId, provider, signer } = this
-    const { quotes, slippage } = quoteResult
-    const {
-      flashMint,
-      flashMintLeveraged: quoteLeveraged,
-      flashMintNotional: quoteNotional,
-      flashMintZeroEx: quoteZeroEx,
-    } = quotes
+    const { quotes } = quoteResult
+    const { flashMint } = quotes
 
     if (flashMint) {
       return flashMint.tx
-    }
-
-    if (quoteLeveraged) {
-      return await getFlashMintLeveragedTransaction(
-        quoteLeveraged.isMinting,
-        quoteLeveraged.inputToken,
-        quoteLeveraged.outputToken,
-        quoteLeveraged.indexTokenAmount,
-        quoteLeveraged.inputOutputTokenAmount,
-        quoteLeveraged.swapDataDebtCollateral,
-        quoteLeveraged.swapDataPaymentToken,
-        provider,
-        signer,
-        chainId
-      )
-    }
-
-    if (quoteNotional) {
-      return await getFlashMintNotionalTransaction(
-        quoteNotional.isMinting,
-        quoteNotional.inputToken,
-        quoteNotional.outputToken,
-        quoteNotional.indexTokenAmount,
-        quoteNotional.inputOutputTokenAmount,
-        quoteNotional.swapData,
-        slippage,
-        provider,
-        signer,
-        chainId
-      )
-    }
-
-    if (quoteZeroEx) {
-      return await getFlashMintZeroExTransaction(
-        quoteZeroEx.isMinting,
-        quoteZeroEx.inputToken,
-        quoteZeroEx.outputToken,
-        quoteZeroEx.indexTokenAmount,
-        quoteZeroEx.inputOutputTokenAmount,
-        quoteZeroEx.componentQuotes,
-        provider,
-        signer,
-        chainId
-      )
     }
 
     return null
