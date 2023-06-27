@@ -1,8 +1,6 @@
 'use client'
 
 import React from 'react'
-
-import { usePathname } from 'next/navigation'
 import { useConnect } from 'wagmi'
 
 import { Box, Flex } from '@chakra-ui/react'
@@ -12,9 +10,6 @@ import { useLedgerStatus } from '@/lib/hooks/useLedgerStatus'
 import { ledgerConnector } from '@/lib/utils/wagmi'
 
 export default function SwapPage() {
-  const pathname = usePathname()
-  console.log(pathname, 'path')
-
   const { connectAsync, isIdle } = useConnect()
   const { isRunningInLedgerLive } = useLedgerStatus()
 
