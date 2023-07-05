@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from '@ethersproject/units'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
@@ -38,6 +39,7 @@ import { QuickTradeProps } from '../swap'
 import DirectIssuance from './DirectIssuance'
 
 const FlashMint = (props: QuickTradeProps) => {
+  const { openConnectModal } = useConnectModal()
   const { address } = useWallet()
   const { chainId, isSupportedNetwork } = useNetwork()
   const {
@@ -255,7 +257,10 @@ const FlashMint = (props: QuickTradeProps) => {
   }
 
   const onClickTradeButton = async () => {
-    if (!address) return
+    if (!address && openConnectModal) {
+      openConnectModal()
+      return
+    }
     if (isMinting && hasInsufficientFundsInputOutputToken) return
     if (!isMinting && hasInsufficientFundsIndexToken) return
 
