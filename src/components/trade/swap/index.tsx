@@ -6,6 +6,7 @@ import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from '@ethersproject/units'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
@@ -51,6 +52,7 @@ export type QuickTradeProps = {
 }
 
 const QuickTrade = (props: QuickTradeProps) => {
+  const { openConnectModal } = useConnectModal()
   const { address } = useWallet()
   const { chainId, isSupportedNetwork } = useNetwork()
   const { isDarkMode } = useICColorMode()
@@ -375,9 +377,8 @@ const QuickTrade = (props: QuickTradeProps) => {
   }, [getTokenBalance, buyToken, isLoadingBalance])
 
   const onClickTradeButton = async () => {
-    if (!address) {
-      // Open connect wallet modal
-      //openConnectModal()
+    if (!address && openConnectModal) {
+      openConnectModal()
       return
     }
 
