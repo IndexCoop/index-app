@@ -37,6 +37,7 @@ import { TransactionReviewModal } from '../_shared/TransactionReview/Transaction
 import { QuickTradeProps } from '../swap'
 
 import DirectIssuance from './DirectIssuance'
+import { RethSupplyCap } from './RethSupplyCap'
 
 const FlashMint = (props: QuickTradeProps) => {
   const { openConnectModal } = useConnectModal()
@@ -80,6 +81,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const [isMinting, setIsMinting] = useState(true)
   const [indexTokenBalanceFormatted, setIndexTokenBalanceFormatted] =
     useState('0.0')
+  const [shouldShowSupplyCap, setShouldShowSupplyCap] = useState(false)
   const [transactionReview, setTransactionReview] =
     useState<TransactionReview | null>(null)
 
@@ -340,6 +342,12 @@ const FlashMint = (props: QuickTradeProps) => {
     setIndexTokenBalanceFormatted(formattedBalance(indexToken, tokenBal))
   }, [getTokenBalance, indexToken, isLoadingBalance])
 
+  useEffect(() => {
+    const shouldShow = indexToken.symbol === 'icRETH' && isMinting
+    // FIXME: use shouldshow
+    setShouldShowSupplyCap(true)
+  }, [indexToken, isMinting])
+
   return (
     <Box mt='32px'>
       <DirectIssuance
@@ -375,7 +383,9 @@ const FlashMint = (props: QuickTradeProps) => {
         onClickTradeButton={onClickTradeButton}
         contractAddress={contractAddress}
         contractExplorerUrl={contractBlockExplorerUrl}
-      ></TradeButtonContainer>
+      >
+        {shouldShowSupplyCap ? <RethSupplyCap /> : <></>}
+      </TradeButtonContainer>
       <SelectTokenModal
         isOpen={isInputOutputTokenModalOpen}
         onClose={onCloseInputOutputTokenModal}
