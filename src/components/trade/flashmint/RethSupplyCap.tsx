@@ -1,27 +1,22 @@
-import { colors, useColorStyles } from '@/lib/styles/colors'
-
-import { WarningTwoIcon } from '@chakra-ui/icons'
 import { CircularProgress, Flex, Text } from '@chakra-ui/react'
 
-type RethSupplyCapProps = {
-  // cap: string
-  // totalSupply: string
-  // onChange: (isChecked: boolean) => void
-}
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
-// TODO: check would reach cap limit
-// TODO: cap limit reached
+interface RethSupplyCapProps {
+  formatted: {
+    available: string
+    cap: string
+    totalSupply: string
+  }
+  totalSupplyPercent: number
+}
 
 // TODO: add states available | capReached | capWillExceed
 
 export const RethSupplyCap = (props: RethSupplyCapProps) => {
-  const { isDarkMode, styles } = useColorStyles()
-  const backgroundColor = isDarkMode ? colors.icGray3 : colors.icGray1
-  // const { cap, totalSupply } = props
-  const available = '1250'
-  const totalSupplyPercent = 75
-  const totalSupply = '29.77K'
-  const cap = '40,000.00'
+  const { styles } = useColorStyles()
+  const { formatted, totalSupplyPercent } = props
+  const { available, cap, totalSupply } = formatted
   return (
     <Flex align='flex-start' borderRadius='10' direction='column' mt='32px'>
       <Flex
