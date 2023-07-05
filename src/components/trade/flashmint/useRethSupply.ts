@@ -6,7 +6,9 @@ import { useWallet } from '@/lib/hooks/useWallet'
 interface RethSupplyCapData {
   cap: number
   formatted: {
+    // note that this is available icRETH
     available: string
+    // these are cap and total supply of rETH on aave
     cap: string
     totalSupply: string
   }
@@ -30,7 +32,7 @@ export const useRethSupply = (
       setData({
         cap: data.cap,
         formatted: {
-          available: data.availableSupply.toString(),
+          available: (data.availableSupply / 8).toString(),
           cap: cap.toString(),
           totalSupply: totalSupply.toString(),
         },
