@@ -1,8 +1,7 @@
-import { colors, useColorStyles } from '@/lib/styles/colors'
-
 import { InfoIcon, WarningTwoIcon } from '@chakra-ui/icons'
-import { Checkbox, Flex, Spacer, Text } from '@chakra-ui/react'
+import { Flex, Text } from '@chakra-ui/react'
 
+import { colors, useColorStyles } from '@/lib/styles/colors'
 import { RethSupplyCap } from './RethSupplyCap'
 import { useRethSupply } from './useRethSupply'
 
@@ -19,10 +18,15 @@ interface RethSupplyCapContainerProps {
 
 export const RethSupplyCapContainer = (props: RethSupplyCapContainerProps) => {
   const { state } = props
-  // FIXME: fetch only for icRETH
   const { data: rethSupplyData } = useRethSupply(true)
-  const { isDarkMode, styles } = useColorStyles()
-  const backgroundColor = isDarkMode ? colors.icGray3 : colors.icGray1
+  const available = rethSupplyData?.formatted.available ?? 'n/a'
+  const cap = rethSupplyData?.formatted.cap ?? 'n/a'
+  const shouldShowErrorMessage =
+    state === SupplyCapState.capReached ||
+    state === SupplyCapState.capWillExceed
+  // FIXME: add data
+  const totalSupply = rethSupplyData?.formatted.totalSupply ?? 'n/a'
+  const totalSupplyPercent = 102.5
   return (
     <Flex
       bg='linear-gradient(218deg, #FAFCFC 0%, #F8FAFA 25.23%, #FFF 56.34%, #F9FAFA 89.45%)'
@@ -35,12 +39,11 @@ export const RethSupplyCapContainer = (props: RethSupplyCapContainerProps) => {
       <TitleAndDescription />
       <Flex mt='24px'>
         <RethSupplyCap
-          formatted={{ available: '21', cap: '40,000', totalSupply: '0' }}
-          totalSupplyPercent={102.45}
+          formatted={{ available, cap, totalSupply }}
+          totalSupplyPercent={totalSupplyPercent}
         />
       </Flex>
-      {(state === SupplyCapState.capReached ||
-        state === SupplyCapState.capWillExceed) && (
+      {shouldShowErrorMessage && (
         <Flex mt='24px'>
           <ErrorMessage state={state} />
         </Flex>

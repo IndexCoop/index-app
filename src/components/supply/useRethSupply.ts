@@ -34,7 +34,7 @@ export const useRethSupply = (
         formatted: {
           available: (data.availableSupply / 8).toString(),
           cap: cap.toFixed(2),
-          totalSupply: totalSupply.toString(),
+          totalSupply: totalSupply.toFixed(2),
         },
         totalSupply: data.totalSupply,
         totalSupplyPercent,

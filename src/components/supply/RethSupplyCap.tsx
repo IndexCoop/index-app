@@ -1,4 +1,4 @@
-import { CircularProgress, Flex, Text } from '@chakra-ui/react'
+import { Box, CircularProgress, Flex, Text } from '@chakra-ui/react'
 
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
@@ -13,10 +13,21 @@ interface RethSupplyCapProps {
   totalSupplyPercent: number
 }
 
+function getColorForProgress(progress: number): string {
+  if (progress === 100) {
+    return colors.icBlue5
+  }
+  if (progress > 100) {
+    return colors.icRed
+  }
+  return colors.icBlue4
+}
+
 export const RethSupplyCap = (props: RethSupplyCapProps) => {
   const { styles } = useColorStyles()
   const { formatted, totalSupplyPercent } = props
   const { available, cap, totalSupply } = formatted
+  const progressColor = getColorForProgress(totalSupplyPercent)
   return (
     <Flex align='flex-start' borderRadius='10' direction='column' w='100%'>
       <Flex
@@ -29,18 +40,33 @@ export const RethSupplyCap = (props: RethSupplyCapProps) => {
         width='100%'
       >
         <Flex align='center'>
-          <CircularProgress
-            size='44px'
-            color={colors.icGray4}
-            thickness='12px'
-            value={totalSupplyPercent}
-          />
-          <Flex direction={'column'} ml='16px'>
-            <Text color={styles.text} fontSize='12px'>
+          <Flex ml='32px'>
+            <Flex align='center' justify={'center'}>
+              <CircularProgress
+                position={'absolute'}
+                size='72px'
+                color={progressColor}
+                thickness='8px'
+                value={totalSupplyPercent}
+                zIndex={0}
+              />
+              <Text
+                position={'absolute'}
+                zIndex={1}
+                color={colors.icGray3}
+                fontSize='12px'
+                fontWeight='700'
+              >
+                102.45%
+              </Text>
+            </Flex>
+          </Flex>
+          <Flex direction={'column'} ml='48px'>
+            <Text color={colors.icGray3} fontSize='14px' fontWeight='400'>
               Total supplied
             </Text>
-            <Text color={styles.text} fontSize='16px'>
-              {`${totalSupply} of ${cap} rETH`}
+            <Text color={styles.text} fontSize='16px' fontWeight='700'>
+              {`${totalSupply} of ${cap}`}
             </Text>
           </Flex>
         </Flex>
