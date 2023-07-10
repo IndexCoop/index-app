@@ -37,8 +37,6 @@ import { TransactionReviewModal } from '../_shared/TransactionReview/Transaction
 import { QuickTradeProps } from '../swap'
 
 import DirectIssuance from './DirectIssuance'
-import { RethSupplyCap } from './RethSupplyCap'
-import { useRethSupply } from './useRethSupply'
 
 const FlashMint = (props: QuickTradeProps) => {
   const { openConnectModal } = useConnectModal()
@@ -70,8 +68,6 @@ const FlashMint = (props: QuickTradeProps) => {
     changeSellToken: changeInputOutputToken,
   } = useTradeTokenLists(true)
   const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
-  // FIXME: fetch only for icRETH
-  const { data: rethSupplyData } = useRethSupply(true)
   const { slippage } = useSlippage()
 
   const [buttonLabel, setButtonLabel] = useState('')
@@ -386,22 +382,7 @@ const FlashMint = (props: QuickTradeProps) => {
         onClickTradeButton={onClickTradeButton}
         contractAddress={contractAddress}
         contractExplorerUrl={contractBlockExplorerUrl}
-      >
-        {shouldShowSupplyCap ? (
-          <RethSupplyCap
-            formatted={
-              rethSupplyData?.formatted ?? {
-                available: '',
-                cap: '',
-                totalSupply: '',
-              }
-            }
-            totalSupplyPercent={rethSupplyData?.totalSupplyPercent ?? 0}
-          />
-        ) : (
-          <></>
-        )}
-      </TradeButtonContainer>
+      ></TradeButtonContainer>
       <SelectTokenModal
         isOpen={isInputOutputTokenModalOpen}
         onClose={onCloseInputOutputTokenModal}

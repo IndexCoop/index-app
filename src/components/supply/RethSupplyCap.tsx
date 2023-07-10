@@ -20,7 +20,7 @@ export const RethSupplyCap = (props: RethSupplyCapProps) => {
   const { formatted, totalSupplyPercent } = props
   const { available, cap, totalSupply } = formatted
   return (
-    <Flex align='flex-start' borderRadius='10' direction='column' mt='32px'>
+    <Flex align='flex-start' borderRadius='10' direction='column' w='100%'>
       <Flex
         align='flex-start'
         border='1px solid'
@@ -46,8 +46,22 @@ export const RethSupplyCap = (props: RethSupplyCapProps) => {
             </Text>
           </Flex>
         </Flex>
-        <Text color={styles.text} fontSize='16px' fontWeight='bold' mt='16px'>
-          {`${available} icRETH is available to mint.`}
+      </Flex>
+      <Flex
+        align='flex-start'
+        border='1px solid'
+        borderColor={styles.border}
+        borderRadius={'16px'}
+        direction={'column'}
+        mt='16px'
+        p='16px'
+        w='100%'
+      >
+        <Text color={colors.icGray3} fontSize='14px' fontWeight='400'>
+          Available to mint
+        </Text>
+        <Text color={colors.icBlack} fontSize='16px' fontWeight='700'>
+          {`${available} icRETH`}
         </Text>
       </Flex>
     </Flex>
