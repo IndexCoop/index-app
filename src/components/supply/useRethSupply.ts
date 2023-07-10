@@ -33,7 +33,7 @@ export const useRethSupply = (
         cap: data.cap,
         formatted: {
           available: (data.availableSupply / 8).toString(),
-          cap: cap.toString(),
+          cap: cap.toFixed(2),
           totalSupply: totalSupply.toString(),
         },
         totalSupply: data.totalSupply,
