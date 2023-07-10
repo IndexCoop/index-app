@@ -13,8 +13,6 @@ interface RethSupplyCapProps {
   totalSupplyPercent: number
 }
 
-// TODO: add states available | capReached | capWillExceed
-
 export const RethSupplyCap = (props: RethSupplyCapProps) => {
   const { styles } = useColorStyles()
   const { formatted, totalSupplyPercent } = props

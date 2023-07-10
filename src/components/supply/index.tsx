@@ -42,14 +42,14 @@ export const RethSupplyCapContainer = (props: RethSupplyCapContainerProps) => {
       {(state === SupplyCapState.capReached ||
         state === SupplyCapState.capWillExceed) && (
         <Flex mt='24px'>
-          <ErrorMessage />
+          <ErrorMessage state={state} />
         </Flex>
       )}
     </Flex>
   )
 }
 
-const ErrorMessage = () => {
+const ErrorMessage = ({ state }: { state: SupplyCapState }) => {
   const { styles } = useColorStyles()
   return (
     <Flex direction={'column'}>
@@ -59,11 +59,19 @@ const ErrorMessage = () => {
           Minting not possible
         </Text>
       </Flex>
-      <Text mt='4px' fontSize='14px' fontWeight='400'>
-        You have exceeded the supply limit.
-        <br />
-        Please reduce icRETH to mint.
-      </Text>
+      {state === SupplyCapState.capReached && (
+        <Text mt='4px' fontSize='14px' fontWeight='400'>
+          You have exceeded the supply limit.
+          <br />
+          Please reduce icRETH to mint.
+        </Text>
+      )}
+      {state === SupplyCapState.capWillExceed && (
+        <Text mt='4px' fontSize='14px' fontWeight='400'>
+          The supply limit for icRETH is reached. It is not possible to mint
+          more icRETH at this moment.
+        </Text>
+      )}
     </Flex>
   )
 }

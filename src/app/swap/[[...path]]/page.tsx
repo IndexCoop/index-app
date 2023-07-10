@@ -28,7 +28,7 @@ export default function SwapPage() {
         <QuickTradeContainer />
       </Box>
       <Box h='100%'>
-        <RethSupplyCapContainer state={SupplyCapState.capReached} />
+        <RethSupplyCapContainer state={SupplyCapState.capWillExceed} />
       </Box>
     </Flex>
   )
