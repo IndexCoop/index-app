@@ -6,11 +6,19 @@ import { Checkbox, Flex, Spacer, Text } from '@chakra-ui/react'
 import { RethSupplyCap } from './RethSupplyCap'
 import { useRethSupply } from './useRethSupply'
 
+export enum SupplyCapState {
+  available,
+  capReached,
+  capWillExceed,
+}
+
 interface RethSupplyCapContainerProps {
+  state: SupplyCapState
   //   onChange: (isChecked: boolean) => void
 }
 
 export const RethSupplyCapContainer = (props: RethSupplyCapContainerProps) => {
+  const { state } = props
   // FIXME: fetch only for icRETH
   const { data: rethSupplyData } = useRethSupply(true)
   const { isDarkMode, styles } = useColorStyles()
@@ -25,13 +33,18 @@ export const RethSupplyCapContainer = (props: RethSupplyCapContainerProps) => {
       w='370px'
     >
       <TitleAndDescription />
-      <Flex my='24px'>
+      <Flex mt='24px'>
         <RethSupplyCap
           formatted={{ available: '21', cap: '40,000', totalSupply: '0' }}
           totalSupplyPercent={102.45}
         />
       </Flex>
-      <ErrorMessage />
+      {(state === SupplyCapState.capReached ||
+        state === SupplyCapState.capWillExceed) && (
+        <Flex mt='24px'>
+          <ErrorMessage />
+        </Flex>
+      )}
     </Flex>
   )
 }

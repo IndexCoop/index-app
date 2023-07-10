@@ -5,7 +5,7 @@ import { useConnect } from 'wagmi'
 
 import { Box, Flex } from '@chakra-ui/react'
 
-import { RethSupplyCapContainer } from '@/components/supply'
+import { RethSupplyCapContainer, SupplyCapState } from '@/components/supply'
 import QuickTradeContainer from '@/components/trade'
 import { useLedgerStatus } from '@/lib/hooks/useLedgerStatus'
 import { ledgerConnector } from '@/lib/utils/wagmi'
@@ -28,7 +28,7 @@ export default function SwapPage() {
         <QuickTradeContainer />
       </Box>
       <Box h='100%'>
-        <RethSupplyCapContainer />
+        <RethSupplyCapContainer state={SupplyCapState.capReached} />
       </Box>
     </Flex>
   )
