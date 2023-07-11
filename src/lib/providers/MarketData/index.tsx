@@ -35,7 +35,6 @@ export interface TokenContext {
   eth?: TokenMarketDataValues
   index?: TokenMarketDataValues
   dpi?: TokenMarketDataValues
-  gmi?: TokenMarketDataValues
   mmi?: TokenMarketDataValues
   mvi?: TokenMarketDataValues
   bed?: TokenMarketDataValues
@@ -72,7 +71,6 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [icEthMarketData, setIcEthMarketData] = useState<any>({})
   const [icRethMarketData, setIcRethMarketData] = useState<any>({})
   const [mmiMarketData, setMmiMarketData] = useState<any>({})
-  const [gmiMarketData, setGmiMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
@@ -182,7 +180,6 @@ export const MarketDataProvider = (props: { children: any }) => {
         eth: ethMarketData,
         index: indexMarketData,
         dpi: dpiMarketData,
-        gmi: gmiMarketData,
         gtceth: gtcEthMarketData,
         mmi: mmiMarketData,
         mvi: mviMarketData,
