@@ -46,8 +46,8 @@ import { TradeDetail } from './TradeDetail'
 import { TradeInfoItem } from './TradeInfo'
 
 export type QuickTradeProps = {
-  // TODO: add
   isNarrowVersion?: boolean
+  onShowSupplyCap?: (show: boolean) => void
   switchTabs?: () => void
 }
 

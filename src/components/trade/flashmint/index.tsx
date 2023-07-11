@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from '@ethersproject/units'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
-import { Token } from '@/constants/tokens'
+import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useFlashMintQuote } from '@/lib/hooks/useFlashMintQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
@@ -80,7 +80,6 @@ const FlashMint = (props: QuickTradeProps) => {
   const [isMinting, setIsMinting] = useState(true)
   const [indexTokenBalanceFormatted, setIndexTokenBalanceFormatted] =
     useState('0.0')
-  const [shouldShowSupplyCap, setShouldShowSupplyCap] = useState(false)
   const [transactionReview, setTransactionReview] =
     useState<TransactionReview | null>(null)
 
@@ -146,6 +145,13 @@ const FlashMint = (props: QuickTradeProps) => {
     if (!transactionReview) return
     onOpenTransactionReview()
   }, [transactionReview])
+
+  useEffect(() => {
+    if (!props.onShowSupplyCap) return
+    const show =
+      indexToken.symbol === LeveragedRethStakingYield.symbol && isMinting
+    props.onShowSupplyCap(show)
+  }, [indexToken, isMinting])
 
   const approve = () => {
     if (isMinting) return approveInputOutputToken()
@@ -340,12 +346,6 @@ const FlashMint = (props: QuickTradeProps) => {
     const tokenBal = getTokenBalance(indexToken.symbol, chainId)
     setIndexTokenBalanceFormatted(formattedBalance(indexToken, tokenBal))
   }, [getTokenBalance, indexToken, isLoadingBalance])
-
-  useEffect(() => {
-    const shouldShow = indexToken.symbol === 'icRETH' && isMinting
-    // FIXME: use shouldshow
-    setShouldShowSupplyCap(true)
-  }, [indexToken, isMinting])
 
   return (
     <Box mt='32px'>

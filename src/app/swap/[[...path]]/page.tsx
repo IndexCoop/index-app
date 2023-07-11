@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { useConnect } from 'wagmi'
 
 import { Box, Flex } from '@chakra-ui/react'
@@ -14,7 +14,9 @@ export default function SwapPage() {
   const { connectAsync, isIdle } = useConnect()
   const { isRunningInLedgerLive } = useLedgerStatus()
 
-  React.useEffect(() => {
+  const [showSupplyCap, setShowSupplyCap] = useState(false)
+
+  useEffect(() => {
     if (!isIdle || !isRunningInLedgerLive) return
     console.log('connecting to ledger')
     connectAsync({ connector: ledgerConnector as any }).catch((error: any) => {
@@ -29,11 +31,15 @@ export default function SwapPage() {
       height='inherit'
     >
       <Box mb={[4, 4, 4, 12]} mr={4} w={['inherit', '500px']}>
-        <QuickTradeContainer />
+        <QuickTradeContainer
+          onShowSupplyCap={(show) => setShowSupplyCap(show)}
+        />
       </Box>
-      <Box h='100%' w={['100%', '100%', '500px', '370px']}>
-        <RethSupplyCapContainer state={SupplyCapState.capWillExceed} />
-      </Box>
+      {showSupplyCap && (
+        <Box h='100%' w={['100%', '100%', '500px', '370px']}>
+          <RethSupplyCapContainer state={SupplyCapState.capWillExceed} />
+        </Box>
+      )}
     </Flex>
   )
 }
