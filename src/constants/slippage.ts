@@ -2,6 +2,7 @@ import {
   DiversifiedStakedETHIndex,
   GitcoinStakedETHIndex,
   icETHIndex,
+  LeveragedRethStakingYield,
   MoneyMarketIndex,
   WSETH2,
 } from './tokens'
@@ -13,6 +14,7 @@ export const slippageMap = new Map([
   [DiversifiedStakedETHIndex.symbol, 0.0001],
   [GitcoinStakedETHIndex.symbol, 0.0001],
   [icETHIndex.symbol, 0.5],
+  [LeveragedRethStakingYield.symbol, 0.0001],
   [MoneyMarketIndex.symbol, 0.01],
   [WSETH2.symbol, 0.1],
 ])

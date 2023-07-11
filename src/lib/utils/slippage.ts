@@ -3,6 +3,7 @@ import {
   DAI,
   DiversifiedStakedETHIndex,
   GitcoinStakedETHIndex,
+  LeveragedRethStakingYield,
   MoneyMarketIndex,
   USDC,
   USDT,
@@ -15,6 +16,12 @@ export function getSlippageOverrideOrNull(
   if (
     (tokenSymbol === DiversifiedStakedETHIndex.symbol ||
       tokenSymbol === GitcoinStakedETHIndex.symbol) &&
+    inputOutputTokenSymbol === USDC.symbol
+  ) {
+    return 0.1
+  }
+  if (
+    tokenSymbol === LeveragedRethStakingYield.symbol &&
     inputOutputTokenSymbol === USDC.symbol
   ) {
     return 0.1
