@@ -149,6 +149,26 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
+export const LeveragedRethStakingYield: Token = {
+  name: 'Leveraged rETH Staking Yield',
+  symbol: 'icRETH',
+  address: '0xe8888Cdbc0A5958C29e7D91DAE44897c7e64F9BC',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'icreth',
+  image: '',
+  // FIXME:
+  coingeckoId: 'icreth',
+  tokenContextKey: 'icreth',
+  fees: {
+    streamingFee: '0.75%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: MAINNET.chainId,
+}
+
 export const MetaverseIndex: Token = {
   name: 'Metaverse Index',
   symbol: 'MVI',
@@ -488,6 +508,7 @@ const isDevEnv =
 // separate list for dev/staging and production
 const indexNames = isDevEnv
   ? [
+      LeveragedRethStakingYield,
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
@@ -503,6 +524,7 @@ const indexNames = isDevEnv
       WSETH2,
     ]
   : [
+      LeveragedRethStakingYield,
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
