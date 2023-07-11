@@ -538,7 +538,10 @@ const indexNames = isDevEnv
     ]
 
 export const indexNamesMainnet = indexNames.filter(
-  (index) => index.address && index.symbol !== MoneyMarketIndex.symbol
+  (index) =>
+    index.address &&
+    index.symbol !== MoneyMarketIndex.symbol &&
+    index.symbol !== LeveragedRethStakingYield.symbol
 )
 export const indexNamesPolygon = indexNames.filter(
   (index) => index.polygonAddress && index.symbol !== IndexToken.symbol // not available on Polygon
