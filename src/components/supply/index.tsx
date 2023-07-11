@@ -34,7 +34,7 @@ export const RethSupplyCapContainer = (props: RethSupplyCapContainerProps) => {
       boxShadow='0.5px 0.5px 2px 1px rgba(0, 0, 0, 0.17), -1px -1px 4px 0px rgba(255, 255, 255, 0.88) inset'
       direction='column'
       p='16px'
-      w='370px'
+      w='100%'
     >
       <TitleAndDescription />
       <Flex mt='24px'>
