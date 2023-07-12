@@ -11,22 +11,40 @@ export enum SupplyCapState {
   capWillExceed,
 }
 
+export interface RethSupplyCapOverrides {
+  state: SupplyCapState
+  totalSupply: string
+  totalSupplyPercent: number
+}
+
 interface RethSupplyCapContainerProps {
   state: SupplyCapState
-  //   onChange: (isChecked: boolean) => void
+  overrides?: RethSupplyCapOverrides
+}
+
+function getSupplyCapState(cap: number, totalSupply: number): SupplyCapState {
+  if (totalSupply >= cap) return SupplyCapState.capReached
+  return SupplyCapState.available
 }
 
 export const RethSupplyCapContainer = (props: RethSupplyCapContainerProps) => {
-  const { state } = props
+  const { overrides } = props
   const { data: rethSupplyData } = useRethSupply(true)
   const available = rethSupplyData?.formatted.available ?? 'n/a'
   const cap = rethSupplyData?.formatted.cap ?? 'n/a'
+  const defaultState = rethSupplyData?.state ?? SupplyCapState.available
+  const state = props.overrides?.state ?? defaultState
   const shouldShowErrorMessage =
     state === SupplyCapState.capReached ||
     state === SupplyCapState.capWillExceed
-  // FIXME: add data
-  const totalSupply = rethSupplyData?.formatted.totalSupply ?? 'n/a'
-  const totalSupplyPercent = 102.5
+  let totalSupply =
+    state === SupplyCapState.capWillExceed
+      ? overrides?.totalSupply ?? 'n/a'
+      : rethSupplyData?.formatted.totalSupply ?? 'n/a'
+  const totalSupplyPercent =
+    state === SupplyCapState.capWillExceed
+      ? overrides?.totalSupplyPercent ?? 0
+      : rethSupplyData?.totalSupplyPercent ?? 0
   return (
     <Flex
       bg='linear-gradient(218deg, #FAFCFC 0%, #F8FAFA 25.23%, #FFF 56.34%, #F9FAFA 89.45%)'

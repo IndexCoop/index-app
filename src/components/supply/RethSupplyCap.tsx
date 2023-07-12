@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Flex, Text } from '@chakra-ui/react'
+import { CircularProgress, Flex, Text } from '@chakra-ui/react'
 
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
@@ -57,7 +57,7 @@ export const RethSupplyCap = (props: RethSupplyCapProps) => {
                 fontSize='12px'
                 fontWeight='700'
               >
-                102.45%
+                {`${totalSupplyPercent.toFixed(2)}%`}
               </Text>
             </Flex>
           </Flex>

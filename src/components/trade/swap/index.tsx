@@ -44,9 +44,11 @@ import {
 import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
 import { TradeDetail } from './TradeDetail'
 import { TradeInfoItem } from './TradeInfo'
+import { RethSupplyCapOverrides } from '@/components/supply'
 
 export type QuickTradeProps = {
   isNarrowVersion?: boolean
+  onOverrideSupplyCap?: (overrides: RethSupplyCapOverrides | undefined) => void
   onShowSupplyCap?: (show: boolean) => void
   switchTabs?: () => void
 }

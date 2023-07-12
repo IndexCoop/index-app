@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { IndexREthProvider } from '@indexcoop/analytics-sdk'
 
 import { useWallet } from '@/lib/hooks/useWallet'
+import { SupplyCapState } from './'
 
 interface RethSupplyCapData {
   cap: number
@@ -12,8 +13,14 @@ interface RethSupplyCapData {
     cap: string
     totalSupply: string
   }
+  state: SupplyCapState
   totalSupply: number
   totalSupplyPercent: number
+}
+
+function getSupplyCapState(cap: number, totalSupply: number): SupplyCapState {
+  if (totalSupply >= cap) return SupplyCapState.capReached
+  return SupplyCapState.available
 }
 
 export const useRethSupply = (
@@ -29,13 +36,16 @@ export const useRethSupply = (
       const data = await rethProvider.getSupplyData()
       const { cap, totalSupply } = data
       const totalSupplyPercent = (totalSupply / cap) * 100
+      const state = getSupplyCapState(cap, totalSupply)
       setData({
         cap: data.cap,
         formatted: {
+          // FIXME: adjust units before launch
           available: (data.availableSupply / 8).toString(),
           cap: cap.toFixed(2),
           totalSupply: totalSupply.toFixed(2),
         },
+        state,
         totalSupply: data.totalSupply,
         totalSupplyPercent,
       })
