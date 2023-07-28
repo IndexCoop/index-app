@@ -34,19 +34,20 @@ export const useRethSupply = (
     try {
       const rethProvider = new IndexREthProvider(provider)
       const data = await rethProvider.getSupplyData()
-      const { cap, totalSupply } = data
+      const { cap, totalSupply } = data.reth
       const totalSupplyPercent = (totalSupply / cap) * 100
       const state = getSupplyCapState(cap, totalSupply)
+      // FIXME: addd icRETH data
       setData({
-        cap: data.cap,
+        cap: data.reth.cap,
         formatted: {
           // FIXME: adjust units before launch
-          available: (data.availableSupply / 8).toString(),
+          available: (data.reth.availableSupply / 8).toString(),
           cap: cap.toFixed(2),
           totalSupply: totalSupply.toFixed(2),
         },
         state,
-        totalSupply: data.totalSupply,
+        totalSupply: data.reth.totalSupply,
         totalSupplyPercent,
       })
     } catch (err) {
