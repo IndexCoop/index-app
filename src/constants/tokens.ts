@@ -5,6 +5,7 @@ import {
   fixedUsdcLogo,
   gtcEthLogo,
   icethLogo,
+  icrethLogo,
   indexLogo,
   mmiLogo,
   wseth2Logo,
@@ -157,7 +158,7 @@ export const LeveragedRethStakingYield: Token = {
   optimismAddress: undefined,
   decimals: 18,
   url: 'icreth',
-  image: '',
+  image: icethLogo,
   // FIXME:
   coingeckoId: 'icreth',
   tokenContextKey: 'icreth',
