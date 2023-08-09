@@ -158,7 +158,7 @@ export const LeveragedRethStakingYield: Token = {
   optimismAddress: undefined,
   decimals: 18,
   url: 'icreth',
-  image: icethLogo,
+  image: icrethLogo,
   // FIXME:
   coingeckoId: 'icreth',
   tokenContextKey: 'icreth',
