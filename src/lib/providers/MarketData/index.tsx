@@ -40,6 +40,7 @@ export interface TokenContext {
   bed?: TokenMarketDataValues
   ethfli?: TokenMarketDataValues
   btcfli?: TokenMarketDataValues
+  ic21?: TokenMarketDataValues
   iceth?: TokenMarketDataValues
   icreth?: TokenMarketDataValues
   gtceth?: TokenMarketDataValues

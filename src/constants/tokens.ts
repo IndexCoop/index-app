@@ -246,6 +246,31 @@ export const GitcoinStakedETHIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
+export const ic21TestToken: Token = {
+  name: 'ic21',
+  symbol: 'ic21',
+  // FIXME: fix address
+  address: '0x4D485C92684fb1725151957BD2352DEdF3c48598',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  // FIXME: check anything below
+  url: 'ic21',
+  image: '',
+  coingeckoId: '',
+  // FIXME: add all the info in MarketDataProvider
+  tokenContextKey: 'ic21',
+  // #FIXME:
+  fees: {
+    streamingFee: '0.25%',
+    mintFee: '0.0%',
+    redeemFee: '0.0%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.yield],
+  defaultChain: MAINNET.chainId,
+}
+
 export const icETHIndex: Token = {
   name: 'Interest Compounding ETH Index',
   symbol: 'icETH',
@@ -509,6 +534,7 @@ const isDevEnv =
 // separate list for dev/staging and production
 const indexNames = isDevEnv
   ? [
+      ic21TestToken,
       LeveragedRethStakingYield,
       DiversifiedStakedETHIndex,
       icETHIndex,
@@ -550,7 +576,10 @@ export const indexNamesPolygon = indexNames.filter(
 
 // FlashMint specific lists
 export const flashMintIndexesMainnetRedeem = indexNames.filter(
-  (index) => index.address && index.symbol !== IndexToken.symbol
+  (index) =>
+    index.address &&
+    index.symbol !== IndexToken.symbol &&
+    index.symbol !== ic21TestToken.symbol
 )
 
 export const flashMintIndexesPolygon = indexNames.filter(

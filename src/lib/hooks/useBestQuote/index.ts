@@ -4,12 +4,16 @@ import { PopulatedTransaction } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { Token } from '@/constants/tokens'
+import { ic21TestToken, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useBalanceData } from '@/lib/providers/Balances'
 import { toWei } from '@/lib/utils'
 import { GasStation } from '@/lib/utils/api/gasStation'
-import { getZeroExTradeData, ZeroExData } from '@/lib/utils/api/zeroExUtils'
+import {
+  getZeroExTradeData,
+  RequestForQuote,
+  ZeroExData,
+} from '@/lib/utils/api/zeroExUtils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
@@ -113,7 +117,7 @@ const defaultQuoteResult: QuoteResult = {
 }
 
 export const useBestQuote = () => {
-  const { provider, signer } = useWallet()
+  const { address, provider, signer } = useWallet()
   const { chainId: networkChainId } = useNetwork()
   const { getTokenBalance } = useBalanceData()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
@@ -165,6 +169,17 @@ export const useBestQuote = () => {
 
     setIsFetching(true)
 
+    let rfq: RequestForQuote | null = null
+
+    if (
+      buyToken.symbol === ic21TestToken.symbol ||
+      sellToken.symbol === ic21TestToken.symbol
+    ) {
+      rfq = {
+        takerAddress: address!,
+      }
+    }
+
     const slippagePercentage = slippage / 100
     /* Check 0x for DEX Swap option*/
     const zeroExResult = await getZeroExTradeData(
@@ -176,7 +191,9 @@ export const useBestQuote = () => {
       // so sell token amount will always be correct
       sellTokenAmount,
       slippagePercentage,
-      chainId
+      chainId,
+      false,
+      rfq
     )
     const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
     const dexSwapError = zeroExResult.success
