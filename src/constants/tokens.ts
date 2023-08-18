@@ -153,7 +153,7 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
 export const LeveragedRethStakingYield: Token = {
   name: 'Leveraged rETH Staking Yield',
   symbol: 'icRETH',
-  address: '0xe8888Cdbc0A5958C29e7D91DAE44897c7e64F9BC',
+  address: '0xcCdAE12162566E3f29fEfA7Bf7F5b24C644493b5',
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
