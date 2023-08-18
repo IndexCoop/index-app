@@ -5,6 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from '@ethersproject/units'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
+import { IcRethUnits } from '@/constants/icreth'
 import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useFlashMintQuote } from '@/lib/hooks/useFlashMintQuote'
@@ -169,14 +170,8 @@ const FlashMint = (props: QuickTradeProps) => {
     }
     const { cap } = rethSupplyData
     const indexAmountBn = indexTokenAmountWei
-    // const indexAmountBn =
-    //   quoteResult?.quotes.flashMint?.indexTokenAmount ?? BigNumber.from(0)
     const indexAmount = Number(displayFromWei(indexAmountBn))
-    // FIXME: units
-    const totalSupply = rethSupplyData.totalSupply + indexAmount * 8
-    // const totalSupply = 42000
-    // FIXME: add threshold?
-    console.log(indexAmount, 'Log')
+    const totalSupply = rethSupplyData.totalSupply + indexAmount * IcRethUnits
     const willExceedCap = totalSupply >= cap
     if (willExceedCap) {
       const totalSupplyPercent = (totalSupply / cap) * 100

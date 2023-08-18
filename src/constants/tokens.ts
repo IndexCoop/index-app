@@ -159,7 +159,7 @@ export const LeveragedRethStakingYield: Token = {
   decimals: 18,
   url: 'icreth',
   image: icrethLogo,
-  // FIXME:
+  // FIXME: add once live on coingecko
   coingeckoId: 'icreth',
   tokenContextKey: 'icreth',
   fees: {
@@ -258,9 +258,7 @@ export const ic21TestToken: Token = {
   url: 'ic21',
   image: '',
   coingeckoId: '',
-  // FIXME: add all the info in MarketDataProvider
   tokenContextKey: 'ic21',
-  // #FIXME:
   fees: {
     streamingFee: '0.25%',
     mintFee: '0.0%',

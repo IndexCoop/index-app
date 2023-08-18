@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { IndexREthProvider } from '@indexcoop/analytics-sdk'
 
+import { IcRethUnits } from '@/constants/icreth'
 import { useWallet } from '@/lib/hooks/useWallet'
 import { SupplyCapState } from './'
 
@@ -34,20 +35,18 @@ export const useRethSupply = (
     try {
       const rethProvider = new IndexREthProvider(provider)
       const data = await rethProvider.getSupplyData()
-      const { cap, totalSupply } = data.reth
+      const { availableSupply, cap, totalSupply } = data.reth
       const totalSupplyPercent = (totalSupply / cap) * 100
       const state = getSupplyCapState(cap, totalSupply)
-      // FIXME: addd icRETH data
       setData({
-        cap: data.reth.cap,
+        cap,
         formatted: {
-          // FIXME: adjust units before launch
-          available: (data.reth.availableSupply / 8).toString(),
-          cap: cap.toFixed(2),
-          totalSupply: totalSupply.toFixed(2),
+          available: (availableSupply / IcRethUnits).toString(),
+          cap: (cap / IcRethUnits).toFixed(2),
+          totalSupply: (totalSupply / IcRethUnits).toFixed(2),
         },
         state,
-        totalSupply: data.reth.totalSupply,
+        totalSupply,
         totalSupplyPercent,
       })
     } catch (err) {
