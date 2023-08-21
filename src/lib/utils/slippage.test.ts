@@ -4,6 +4,7 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   icETHIndex,
+  LeveragedRethStakingYield,
   MoneyMarketIndex,
   USDC,
   USDT,
@@ -22,6 +23,12 @@ describe('getSlippageOverrideOrNull()', () => {
 
   it('returns correct slippage for icETH', () => {
     const symbol = icETHIndex.symbol
+    const slippageOverride = getSlippageOverrideOrNull(symbol, '')
+    expect(slippageOverride).toBe(slippageMap.get(symbol))
+  })
+
+  it('returns correct slippage for icRETH', () => {
+    const symbol = LeveragedRethStakingYield.symbol
     const slippageOverride = getSlippageOverrideOrNull(symbol, '')
     expect(slippageOverride).toBe(slippageMap.get(symbol))
   })
@@ -86,6 +93,26 @@ describe('selectSlippage()', () => {
   it('returns correct slippage for dsETH-USDC', () => {
     const expectedSlippage = 0.1
     const index = DiversifiedStakedETHIndex.symbol
+    const inputOutputToken = USDC.symbol
+    const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
+    const result = selectSlippage(slippageModified!, index, inputOutputToken)
+    expect(slippageModified).toBe(expectedSlippage)
+    expect(result).toBe(expectedSlippage)
+  })
+
+  it('returns correct slippage for icRETH-ETH', () => {
+    const expectedSlippage = 0.0001
+    const index = LeveragedRethStakingYield.symbol
+    const inputOutputToken = ETH.symbol
+    const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
+    const result = selectSlippage(slippageModified!, index, inputOutputToken)
+    expect(slippageModified).toBe(slippageMap.get(index))
+    expect(result).toBe(expectedSlippage)
+  })
+
+  it('returns correct slippage for icRETH-USDC', () => {
+    const expectedSlippage = 0.1
+    const index = LeveragedRethStakingYield.symbol
     const inputOutputToken = USDC.symbol
     const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
     const result = selectSlippage(slippageModified!, index, inputOutputToken)

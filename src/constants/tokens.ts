@@ -5,6 +5,7 @@ import {
   fixedUsdcLogo,
   gtcEthLogo,
   icethLogo,
+  icrethLogo,
   indexLogo,
   mmiLogo,
   wseth2Logo,
@@ -149,6 +150,26 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
+export const LeveragedRethStakingYield: Token = {
+  name: 'Leveraged rETH Staking Yield',
+  symbol: 'icRETH',
+  address: '0xcCdAE12162566E3f29fEfA7Bf7F5b24C644493b5',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'icreth',
+  image: icrethLogo,
+  // FIXME: add once live on coingecko
+  coingeckoId: 'icreth',
+  tokenContextKey: 'icreth',
+  fees: {
+    streamingFee: '0.75%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.leverage],
+  defaultChain: MAINNET.chainId,
+}
+
 export const MetaverseIndex: Token = {
   name: 'Metaverse Index',
   symbol: 'MVI',
@@ -221,6 +242,29 @@ export const GitcoinStakedETHIndex: Token = {
     streamingFee: '2.0%',
   },
   isDangerous: false,
+  indexTypes: [IndexType.yield],
+  defaultChain: MAINNET.chainId,
+}
+
+export const ic21TestToken: Token = {
+  name: 'ic21',
+  symbol: 'ic21',
+  // FIXME: fix address
+  address: '0x4D485C92684fb1725151957BD2352DEdF3c48598',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  // FIXME: check anything below
+  url: 'ic21',
+  image: '',
+  coingeckoId: '',
+  tokenContextKey: 'ic21',
+  fees: {
+    streamingFee: '0.25%',
+    mintFee: '0.0%',
+    redeemFee: '0.0%',
+  },
+  isDangerous: true,
   indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
 }
@@ -488,6 +532,8 @@ const isDevEnv =
 // separate list for dev/staging and production
 const indexNames = isDevEnv
   ? [
+      ic21TestToken,
+      LeveragedRethStakingYield,
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
@@ -503,6 +549,7 @@ const indexNames = isDevEnv
       WSETH2,
     ]
   : [
+      LeveragedRethStakingYield,
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
@@ -516,7 +563,10 @@ const indexNames = isDevEnv
     ]
 
 export const indexNamesMainnet = indexNames.filter(
-  (index) => index.address && index.symbol !== MoneyMarketIndex.symbol
+  (index) =>
+    index.address &&
+    index.symbol !== MoneyMarketIndex.symbol &&
+    index.symbol !== LeveragedRethStakingYield.symbol
 )
 export const indexNamesPolygon = indexNames.filter(
   (index) => index.polygonAddress && index.symbol !== IndexToken.symbol // not available on Polygon
@@ -524,7 +574,10 @@ export const indexNamesPolygon = indexNames.filter(
 
 // FlashMint specific lists
 export const flashMintIndexesMainnetRedeem = indexNames.filter(
-  (index) => index.address && index.symbol !== IndexToken.symbol
+  (index) =>
+    index.address &&
+    index.symbol !== IndexToken.symbol &&
+    index.symbol !== ic21TestToken.symbol
 )
 
 export const flashMintIndexesPolygon = indexNames.filter(

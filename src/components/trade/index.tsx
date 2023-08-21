@@ -4,7 +4,6 @@ import { colors, useColorStyles, useICColorMode } from '../../lib/styles/colors'
 
 import { Flex, Text } from '@chakra-ui/react'
 
-import { useNetwork } from '../../lib/hooks/useNetwork'
 import { SlippageProvider, useSlippage } from '../../lib/providers/Slippage'
 
 import { QuickTradeSettingsPopover } from './_shared/QuickTradeSettingsPopover'
@@ -17,7 +16,6 @@ enum TradeType {
 }
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
-  const { chainId } = useNetwork()
   const { styles } = useColorStyles()
   const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
 

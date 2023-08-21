@@ -2,9 +2,9 @@ const bedBorderLogo = '/assets/bed-border.png'
 const dsethLogo = '/assets/dseth_logo.svg'
 const fixedDaiLogo = '/assets/fixed_dai_logo.png'
 const fixedUsdcLogo = '/assets/fixed_usdc_logo.png'
-const gmiLogo = '/assets/gmilogo.png'
 const gtcEthLogo = '/assets/gtceth_logo.svg'
 const icethLogo = '/assets/icethlogo.png'
+const icrethLogo = '/assets/icreth-logo.svg'
 const IndexLogoBlack = '/assets/index-logo-black.svg'
 const IndexLogoFullBlack = '/assets/index-logo-full-black.svg'
 const IndexLogoFullWhite = '/assets/index-logo-full-white.svg'
@@ -27,9 +27,9 @@ export {
   dsethLogo,
   fixedDaiLogo,
   fixedUsdcLogo,
-  gmiLogo,
   gtcEthLogo,
   icethLogo,
+  icrethLogo,
   indexLogo,
   mmiLogo,
   wseth2Logo,

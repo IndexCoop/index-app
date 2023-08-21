@@ -16,6 +16,7 @@ import {
   GitcoinStakedETHIndex,
   icETHIndex,
   IndexToken,
+  LeveragedRethStakingYield,
   MetaverseIndex,
   MoneyMarketIndex,
   Token,
@@ -34,13 +35,14 @@ export interface TokenContext {
   eth?: TokenMarketDataValues
   index?: TokenMarketDataValues
   dpi?: TokenMarketDataValues
-  gmi?: TokenMarketDataValues
   mmi?: TokenMarketDataValues
   mvi?: TokenMarketDataValues
   bed?: TokenMarketDataValues
   ethfli?: TokenMarketDataValues
   btcfli?: TokenMarketDataValues
+  ic21?: TokenMarketDataValues
   iceth?: TokenMarketDataValues
+  icreth?: TokenMarketDataValues
   gtceth?: TokenMarketDataValues
   getMarketDataBySymbol: (token: Token) => TokenMarketDataValues | null
   selectLatestMarketData: (...args: any) => number
@@ -68,8 +70,8 @@ export const MarketDataProvider = (props: { children: any }) => {
   const [ethFliMarketData, setEthFliMarketData] = useState<any>({})
   const [btcFliMarketData, setBtcFliMarketData] = useState<any>({})
   const [icEthMarketData, setIcEthMarketData] = useState<any>({})
+  const [icRethMarketData, setIcRethMarketData] = useState<any>({})
   const [mmiMarketData, setMmiMarketData] = useState<any>({})
-  const [gmiMarketData, setGmiMarketData] = useState<any>({})
 
   const selectLatestMarketData = (marketData?: number[][]) =>
     marketData?.[marketData.length - 1]?.[1] || 0
@@ -82,6 +84,8 @@ export const MarketDataProvider = (props: { children: any }) => {
         return dsEthMarketData
       case GitcoinStakedETHIndex:
         return gtcEthMarketData
+      case LeveragedRethStakingYield:
+        return icRethMarketData
       case MetaverseIndex:
         return mviMarketData
       case BedIndex:
@@ -109,6 +113,8 @@ export const MarketDataProvider = (props: { children: any }) => {
         return dsEthMarketData
       case GitcoinStakedETHIndex:
         return gtcEthMarketData
+      case LeveragedRethStakingYield:
+        return icRethMarketData
       case MetaverseIndex:
         return mviMarketData
       case BedIndex:
@@ -145,6 +151,7 @@ export const MarketDataProvider = (props: { children: any }) => {
       fetchHistoricalTokenMarketData(DiversifiedStakedETHIndex.coingeckoId),
       fetchHistoricalTokenMarketData(GitcoinStakedETHIndex.coingeckoId),
       fetchHistoricalTokenMarketData(MoneyMarketIndex.coingeckoId),
+      fetchHistoricalTokenMarketData(LeveragedRethStakingYield.coingeckoId),
     ])
 
     setEthMarketData(marketData[0])
@@ -155,9 +162,10 @@ export const MarketDataProvider = (props: { children: any }) => {
     setEthFliMarketData(marketData[5])
     setBtcFliMarketData(marketData[6])
     setIcEthMarketData(marketData[7])
-    setGmiMarketData(marketData[8])
-    setDsEthMarketData(marketData[9])
-    setGtcEthMarketData(marketData[10])
+    setDsEthMarketData(marketData[8])
+    setGtcEthMarketData(marketData[9])
+    setMmiMarketData(marketData[10])
+    setIcRethMarketData(marketData[11])
   }, [])
 
   useEffect(() => {
@@ -173,7 +181,6 @@ export const MarketDataProvider = (props: { children: any }) => {
         eth: ethMarketData,
         index: indexMarketData,
         dpi: dpiMarketData,
-        gmi: gmiMarketData,
         gtceth: gtcEthMarketData,
         mmi: mmiMarketData,
         mvi: mviMarketData,

@@ -5,7 +5,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from '@ethersproject/units'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
-import { Token } from '@/constants/tokens'
+import { IcRethUnits } from '@/constants/icreth'
+import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useFlashMintQuote } from '@/lib/hooks/useFlashMintQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
@@ -37,6 +38,8 @@ import { TransactionReviewModal } from '../_shared/TransactionReview/Transaction
 import { QuickTradeProps } from '../swap'
 
 import DirectIssuance from './DirectIssuance'
+import { useRethSupply } from '@/components/supply/useRethSupply'
+import { SupplyCapState } from '@/components/supply'
 
 const FlashMint = (props: QuickTradeProps) => {
   const { openConnectModal } = useConnectModal()
@@ -68,8 +71,12 @@ const FlashMint = (props: QuickTradeProps) => {
     changeSellToken: changeInputOutputToken,
   } = useTradeTokenLists(true)
   const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
+  const { data: rethSupplyData } = useRethSupply(
+    indexToken.symbol === LeveragedRethStakingYield.symbol
+  )
   const { slippage } = useSlippage()
 
+  const [buttonDisabled, setButtonDisabled] = useState(false)
   const [buttonLabel, setButtonLabel] = useState('')
   const [contractAddress, setContractAddress] = useState<string | null>(null)
   const [indexTokenAmountFormatted, setIndexTokenAmountFormatted] = useState('')
@@ -146,6 +153,47 @@ const FlashMint = (props: QuickTradeProps) => {
     onOpenTransactionReview()
   }, [transactionReview])
 
+  useEffect(() => {
+    if (!props.onShowSupplyCap) return
+    const show =
+      indexToken.symbol === LeveragedRethStakingYield.symbol && isMinting
+    props.onShowSupplyCap(show)
+  }, [indexToken, isMinting])
+
+  useEffect(() => {
+    if (!props.onOverrideSupplyCap) return
+    const isMintingIcReth =
+      indexToken.symbol === LeveragedRethStakingYield.symbol && isMinting
+    if (isFetchingQuote || !rethSupplyData) {
+      props.onOverrideSupplyCap(undefined)
+      return
+    }
+    const { cap } = rethSupplyData
+    const indexAmountBn = indexTokenAmountWei
+    const indexAmount = Number(displayFromWei(indexAmountBn))
+    const totalSupply = rethSupplyData.totalSupply + indexAmount * IcRethUnits
+    const willExceedCap = totalSupply >= cap
+    if (willExceedCap) {
+      const totalSupplyPercent = (totalSupply / cap) * 100
+      props.onOverrideSupplyCap({
+        state: SupplyCapState.capWillExceed,
+        totalSupply: totalSupply.toFixed(2),
+        totalSupplyPercent,
+      })
+      setButtonDisabled(true)
+    } else {
+      props.onOverrideSupplyCap(undefined)
+      setButtonDisabled(false)
+    }
+  }, [
+    chainId,
+    indexToken,
+    isFetchingQuote,
+    isMinting,
+    quoteResult,
+    rethSupplyData,
+  ])
+
   const approve = () => {
     if (isMinting) return approveInputOutputToken()
     return approveIndexToken()
@@ -168,6 +216,15 @@ const FlashMint = (props: QuickTradeProps) => {
   const getTradeButtonDisabledState = () => {
     if (!isSupportedNetwork) return true
     if (!address) return true
+    if (buttonDisabled) return true
+    if (
+      rethSupplyData &&
+      indexToken.symbol === LeveragedRethStakingYield.symbol &&
+      isMinting &&
+      rethSupplyData.state === SupplyCapState.capReached
+    ) {
+      return true
+    }
     return (
       indexTokenAmount === '0' ||
       (isMinting && hasInsufficientFundsInputOutputToken) ||
@@ -196,6 +253,20 @@ const FlashMint = (props: QuickTradeProps) => {
         return 'Insufficient funds'
       }
 
+      if (
+        rethSupplyData &&
+        indexToken.symbol === LeveragedRethStakingYield.symbol &&
+        isMinting
+      ) {
+        if (rethSupplyData.state === SupplyCapState.capReached) {
+          return 'Review supply cap'
+        }
+
+        if (buttonDisabled) {
+          return 'Adjust amount'
+        }
+      }
+
       if (isApproving()) {
         return 'Approving...'
       }
@@ -214,9 +285,11 @@ const FlashMint = (props: QuickTradeProps) => {
     isMinting,
     hasInsufficientFundsIndexToken,
     hasInsufficientFundsInputOutputToken,
+    indexToken,
     indexTokenAmount,
     chainId,
     isSupportedNetwork,
+    rethSupplyData,
   ])
 
   const getTransactionReview = (): TransactionReview | null => {

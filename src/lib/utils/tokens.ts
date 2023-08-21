@@ -12,6 +12,7 @@ import {
   GitcoinStakedETHIndex,
   icETHIndex,
   IndexToken,
+  LeveragedRethStakingYield,
   mainnetCurrencyTokens,
   MATIC,
   MoneyMarketIndex,
@@ -79,6 +80,8 @@ export function getCurrencyTokensForIndex(
     index.symbol === GitcoinStakedETHIndex.symbol
   )
     return [ETH, WETH, STETH, WSTETH, RETH, SETH2, USDC]
+  if (index.symbol === LeveragedRethStakingYield.symbol)
+    return [ETH, WETH, RETH, USDC]
   if (index.symbol === MoneyMarketIndex.symbol) return [DAI, USDC, USDT, WETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
