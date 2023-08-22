@@ -5,7 +5,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from '@ethersproject/units'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
-import { IcRethUnits } from '@/constants/icreth'
 import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useFlashMintQuote } from '@/lib/hooks/useFlashMintQuote'
@@ -164,20 +163,18 @@ const FlashMint = (props: QuickTradeProps) => {
     if (!props.onOverrideSupplyCap) return
     const isMintingIcReth =
       indexToken.symbol === LeveragedRethStakingYield.symbol && isMinting
-    if (isFetchingQuote || !rethSupplyData) {
+    if (isFetchingQuote || !rethSupplyData || !isMintingIcReth) {
       props.onOverrideSupplyCap(undefined)
       return
     }
-    const { cap } = rethSupplyData
     const indexAmountBn = indexTokenAmountWei
     const indexAmount = Number(displayFromWei(indexAmountBn))
-    const totalSupply = rethSupplyData.totalSupply + indexAmount * IcRethUnits
-    const willExceedCap = totalSupply >= cap
+    const willExceedCap = indexAmount > rethSupplyData.available
+    const totalSupplyPercent = 100 + 5
     if (willExceedCap) {
-      const totalSupplyPercent = (totalSupply / cap) * 100
       props.onOverrideSupplyCap({
         state: SupplyCapState.capWillExceed,
-        totalSupply: totalSupply.toFixed(2),
+        totalSupply: '',
         totalSupplyPercent,
       })
       setButtonDisabled(true)

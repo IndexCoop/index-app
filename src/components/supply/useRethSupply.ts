@@ -6,6 +6,7 @@ import { useWallet } from '@/lib/hooks/useWallet'
 import { SupplyCapState } from './'
 
 interface RethSupplyCapData {
+  available: number
   formatted: {
     available: string
   }
@@ -37,6 +38,7 @@ export const useRethSupply = (
       const state = getSupplyCapState(cap, totalSupply)
       console.log(available, availabeOnAave, availableOnIndex)
       setData({
+        available,
         formatted: {
           available: available.toString(),
         },
