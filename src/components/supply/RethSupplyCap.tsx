@@ -4,11 +4,7 @@ import { colors, useColorStyles } from '@/lib/styles/colors'
 
 interface RethSupplyCapProps {
   formatted: {
-    // note that this is available icRETH
     available: string
-    // these are cap and total supply of rETH on aave
-    cap: string
-    totalSupply: string
   }
   totalSupplyPercent: number
 }

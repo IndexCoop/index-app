@@ -6,16 +6,10 @@ import { useWallet } from '@/lib/hooks/useWallet'
 import { SupplyCapState } from './'
 
 interface RethSupplyCapData {
-  cap: number
   formatted: {
-    // note that this is available icRETH
     available: string
-    // these are cap and total supply of rETH on aave
-    cap: string
-    totalSupply: string
   }
   state: SupplyCapState
-  totalSupply: number
   totalSupplyPercent: number
 }
 
@@ -36,17 +30,17 @@ export const useRethSupply = (
       const rethProvider = new IndexREthProvider(provider)
       const data = await rethProvider.getSupplyData()
       const { availableSupply, cap, totalSupply } = data.reth
+      const availabeOnAave = availableSupply / IcRethUnits
+      const availableOnIndex = data.icreth.availableSupply
+      const available = Math.min(availabeOnAave, availableOnIndex)
       const totalSupplyPercent = (totalSupply / cap) * 100
       const state = getSupplyCapState(cap, totalSupply)
+      console.log(available, availabeOnAave, availableOnIndex)
       setData({
-        cap,
         formatted: {
-          available: (availableSupply / IcRethUnits).toString(),
-          cap: (cap / IcRethUnits).toFixed(2),
-          totalSupply: (totalSupply / IcRethUnits).toFixed(2),
+          available: available.toString(),
         },
         state,
-        totalSupply,
         totalSupplyPercent,
       })
     } catch (err) {
