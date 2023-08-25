@@ -1,26 +1,31 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
+  async redirects() {
     return [
+      {
+        source: '/BED',
+        destination: '/swap',
+        permanent: true,
+      },
       {
         source: '/DPI',
         destination: '/swap',
+        permanent: true,
+      },
+      {
+        source: '/dsETH',
+        destination: '/swap',
+        permanent: true,
       },
       {
         source: '/icETH ',
         destination: '/swap',
+        permanent: true,
       },
       {
-        source: '/MVI ',
+        source: '/MVI',
         destination: '/swap',
-      },
-      {
-        source: '/dsETH ',
-        destination: '/swap',
-      },
-      {
-        source: '/BED ',
-        destination: '/swap',
+        permanent: true,
       },
     ]
   },
