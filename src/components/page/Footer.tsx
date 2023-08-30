@@ -137,7 +137,7 @@ const Links = ({ textColor }: { textColor: string }) => (
     <Flex direction={'column'} ml={[0, 0, 0, 20]} mr='4' mt={[8, 0, 0, 0]}>
       <Link
         color={textColor}
-        href='https://docs.indexcoop.com/index-coop-community-handbook/resources/press-kit'
+        href='https://index-coop.notion.site/Index-Coop-Brand-Resources-16bfd8ba832046948bf747b4dc88f899'
         isExternal
       >
         <Text color={textColor}>Press Kit</Text>
