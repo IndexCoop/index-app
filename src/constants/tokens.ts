@@ -549,7 +549,6 @@ const indexNames = isDevEnv
       WSETH2,
     ]
   : [
-      LeveragedRethStakingYield,
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
@@ -559,6 +558,7 @@ const indexNames = isDevEnv
       Ethereum2xFlexibleLeverageIndex,
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
+      LeveragedRethStakingYield,
       IndexToken,
     ]
 
