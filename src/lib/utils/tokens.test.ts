@@ -117,7 +117,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const isMinting = false
     const token = icETHIndex
     const currencyTokens = getCurrencyTokensForIndex(token, chainId, isMinting)
-    expect(currencyTokens.length).toEqual(1)
+    expect(currencyTokens.length).toEqual(2)
     expect(currencyTokens).toEqual([ETH, STETH])
   })
 
