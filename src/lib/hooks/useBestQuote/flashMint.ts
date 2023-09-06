@@ -71,6 +71,7 @@ export async function getEnhancedFlashMintQuote(
     }
     const quoteProvider = new FlashMintQuoteProvider(provider, zeroExApi)
     const quoteFM = await quoteProvider.getQuote(request)
+    console.log(quoteFM)
     if (quoteFM) {
       const { inputOutputAmount, tx } = quoteFM
       const from = await signer.getAddress()
