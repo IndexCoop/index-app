@@ -74,7 +74,7 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === FIXED_DAI.symbol) return [DAI]
   if (index.symbol === FIXED_USDC.symbol) return [USDC]
   if (index.symbol === icETHIndex.symbol)
-    return isMinting ? [ETH, STETH] : [ETH]
+    return isMinting ? [ETH, STETH] : [ETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||
     index.symbol === GitcoinStakedETHIndex.symbol
