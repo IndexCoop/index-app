@@ -3,6 +3,7 @@ const dsethLogo = '/assets/dseth_logo.svg'
 const fixedDaiLogo = '/assets/fixed_dai_logo.png'
 const fixedUsdcLogo = '/assets/fixed_usdc_logo.png'
 const gtcEthLogo = '/assets/gtceth_logo.svg'
+const ic21Logo = '/assets/ic21_logo.svg'
 const icethLogo = '/assets/icethlogo.png'
 const icrethLogo = '/assets/icreth-logo.svg'
 const IndexLogoBlack = '/assets/index-logo-black.svg'
@@ -28,6 +29,7 @@ export {
   fixedDaiLogo,
   fixedUsdcLogo,
   gtcEthLogo,
+  ic21Logo,
   icethLogo,
   icrethLogo,
   indexLogo,
