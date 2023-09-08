@@ -548,7 +548,7 @@ const indexNames = isDevEnv
       WSETH2,
     ]
   : [
-      ic21,
+      // ic21, // FIXME: activate for production
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
