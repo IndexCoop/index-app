@@ -20,7 +20,7 @@
     "@elgorditosalsero/react-gtm-hook": "^2.7.2",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "@indexcoop/analytics-sdk": "^0.7.1",
+    "@indexcoop/analytics-sdk": "^0.8.0",
     "@indexcoop/flash-mint-sdk": "^2.2.1",
     "@ledgerhq/ledger-live-wagmi-connector": "^0.4.0",
     "@rainbow-me/rainbowkit": "^0.12.5",
