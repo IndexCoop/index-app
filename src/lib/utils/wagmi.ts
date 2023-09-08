@@ -1,4 +1,4 @@
-import { configureChains, createClient, WagmiConfig } from 'wagmi'
+import { configureChains, createConfig } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
@@ -20,7 +20,7 @@ import {
 
 import { AlchemyApiKey } from '../../constants/server'
 
-export const { chains, provider } = configureChains(
+export const { chains, publicClient } = configureChains(
   [mainnet],
   [alchemyProvider({ apiKey: AlchemyApiKey }), publicProvider()]
 )
@@ -30,35 +30,37 @@ export const ledgerConnector = new IFrameEthereumConnector({
   options: {},
 })
 
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!
+
 const connectors = () =>
   connectorsForWallets([
     {
       groupName: 'Recommended',
       wallets: [
         safeWallet({ chains }),
-        metaMaskWallet({ chains }),
-        rainbowWallet({ chains }),
-        argentWallet({ chains }),
+        metaMaskWallet({ chains, projectId }),
+        rainbowWallet({ chains, projectId }),
+        argentWallet({ chains, projectId }),
         coinbaseWallet({
           appName: 'Index Coop',
           chains,
         }),
-        ledgerWallet({ chains }),
-        okxWallet({ chains }),
+        ledgerWallet({ chains, projectId }),
+        okxWallet({ chains, projectId }),
       ],
     },
     {
       groupName: 'Others',
       wallets: [
-        walletConnectWallet({ chains }),
+        walletConnectWallet({ chains, projectId }),
         braveWallet({ chains }),
-        trustWallet({ chains }),
+        trustWallet({ chains, projectId }),
       ],
     },
-  ])().concat([ledgerConnector])
+  ])() // .concat([ledgerConnector])
 
-export const wagmiClient = createClient({
+export const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider,
+  publicClient,
 })

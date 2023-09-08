@@ -10,7 +10,7 @@ import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { GlobalFonts } from '@/lib/styles/fonts'
 import theme, { rainbowkitTheme } from '@/lib/styles/theme'
 import { initSentryEventTracking } from '@/lib/utils/api/sentry'
-import { chains, wagmiClient } from '@/lib/utils/wagmi'
+import { chains, wagmiConfig } from '@/lib/utils/wagmi'
 
 import '@rainbow-me/rainbowkit/styles.css'
 
@@ -30,7 +30,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ChakraProvider theme={theme}>
         <GlobalFonts />
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <WagmiConfig client={wagmiClient}>
+        <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider
             chains={chains}
             theme={rainbowkitTheme}

@@ -92,7 +92,7 @@ export const DefiPulseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -111,7 +111,7 @@ export const DiversifiedStakedETHIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
 }
@@ -127,7 +127,7 @@ export const IndexToken: Token = {
   image: indexLogo,
   coingeckoId: 'index-cooperative',
   fees: undefined,
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [],
   defaultChain: MAINNET.chainId,
 }
@@ -160,8 +160,7 @@ export const LeveragedRethStakingYield: Token = {
   decimals: 18,
   url: 'icreth',
   image: icrethLogo,
-  // FIXME: add once live on coingecko
-  coingeckoId: 'icreth',
+  coingeckoId: 'leveraged-reth-staking-yield',
   tokenContextKey: 'icreth',
   fees: {
     streamingFee: '0.75%',
@@ -185,7 +184,7 @@ export const MetaverseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -223,7 +222,7 @@ export const BedIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -242,7 +241,7 @@ export const GitcoinStakedETHIndex: Token = {
   fees: {
     streamingFee: '2.0%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
 }
@@ -549,7 +548,7 @@ const indexNames = isDevEnv
       WSETH2,
     ]
   : [
-      ic21,
+      // ic21, // FIXME: activate for production
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,

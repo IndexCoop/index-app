@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { PopulatedTransaction } from 'ethers'
+import { Hex } from 'viem'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -53,7 +54,7 @@ export interface EnhancedFlashMintQuote extends Quote {
 
 export interface ZeroExQuote extends Quote {
   chainId: string
-  data: string
+  data: Hex
   minOutput: BigNumber
   sources: { name: string; proportion: string }[]
   to: string
