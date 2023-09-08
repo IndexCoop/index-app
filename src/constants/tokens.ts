@@ -160,8 +160,7 @@ export const LeveragedRethStakingYield: Token = {
   decimals: 18,
   url: 'icreth',
   image: icrethLogo,
-  // FIXME: add once live on coingecko
-  coingeckoId: 'icreth',
+  coingeckoId: 'leveraged-reth-staking-yield',
   tokenContextKey: 'icreth',
   fees: {
     streamingFee: '0.75%',
