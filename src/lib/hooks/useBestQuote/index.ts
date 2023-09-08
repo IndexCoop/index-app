@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
 import { PopulatedTransaction } from 'ethers'
+import { Hex } from 'viem'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ic21TestToken, Token } from '@/constants/tokens'
+import { ic21, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useBalanceData } from '@/lib/providers/Balances'
 import { toWei } from '@/lib/utils'
@@ -53,7 +54,7 @@ export interface EnhancedFlashMintQuote extends Quote {
 
 export interface ZeroExQuote extends Quote {
   chainId: string
-  data: string
+  data: Hex
   minOutput: BigNumber
   sources: { name: string; proportion: string }[]
   to: string
@@ -171,10 +172,7 @@ export const useBestQuote = () => {
 
     let rfq: RequestForQuote | null = null
 
-    if (
-      buyToken.symbol === ic21TestToken.symbol ||
-      sellToken.symbol === ic21TestToken.symbol
-    ) {
+    if (buyToken.symbol === ic21.symbol || sellToken.symbol === ic21.symbol) {
       rfq = {
         takerAddress: address!,
       }

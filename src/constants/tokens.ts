@@ -4,6 +4,7 @@ import {
   fixedDaiLogo,
   fixedUsdcLogo,
   gtcEthLogo,
+  ic21Logo,
   icethLogo,
   icrethLogo,
   indexLogo,
@@ -91,7 +92,7 @@ export const DefiPulseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -110,7 +111,7 @@ export const DiversifiedStakedETHIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
 }
@@ -126,7 +127,7 @@ export const IndexToken: Token = {
   image: indexLogo,
   coingeckoId: 'index-cooperative',
   fees: undefined,
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [],
   defaultChain: MAINNET.chainId,
 }
@@ -159,8 +160,7 @@ export const LeveragedRethStakingYield: Token = {
   decimals: 18,
   url: 'icreth',
   image: icrethLogo,
-  // FIXME: add once live on coingecko
-  coingeckoId: 'icreth',
+  coingeckoId: 'leveraged-reth-staking-yield',
   tokenContextKey: 'icreth',
   fees: {
     streamingFee: '0.75%',
@@ -184,7 +184,7 @@ export const MetaverseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -222,7 +222,7 @@ export const BedIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -241,31 +241,30 @@ export const GitcoinStakedETHIndex: Token = {
   fees: {
     streamingFee: '2.0%',
   },
-  isDangerous: false,
+  isDangerous: true,
   indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
 }
 
-export const ic21TestToken: Token = {
-  name: 'ic21',
+export const ic21: Token = {
+  name: 'Index Coop Large Cap Index',
   symbol: 'ic21',
-  // FIXME: fix address
-  address: '0x4D485C92684fb1725151957BD2352DEdF3c48598',
+  address: '0x1B5E16C5b20Fb5EE87C61fE9Afe735Cca3B21A65',
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
-  // FIXME: check anything below
   url: 'ic21',
-  image: '',
+  image: ic21Logo,
+  // FIXME: add once available
   coingeckoId: '',
   tokenContextKey: 'ic21',
   fees: {
-    streamingFee: '0.25%',
+    streamingFee: '0.95%',
     mintFee: '0.0%',
     redeemFee: '0.0%',
   },
   isDangerous: true,
-  indexTypes: [IndexType.yield],
+  indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
 
@@ -532,7 +531,7 @@ const isDevEnv =
 // separate list for dev/staging and production
 const indexNames = isDevEnv
   ? [
-      ic21TestToken,
+      ic21,
       LeveragedRethStakingYield,
       DiversifiedStakedETHIndex,
       icETHIndex,
@@ -549,6 +548,7 @@ const indexNames = isDevEnv
       WSETH2,
     ]
   : [
+      // ic21, // FIXME: activate for production
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
@@ -577,7 +577,7 @@ export const flashMintIndexesMainnetRedeem = indexNames.filter(
   (index) =>
     index.address &&
     index.symbol !== IndexToken.symbol &&
-    index.symbol !== ic21TestToken.symbol
+    index.symbol !== ic21.symbol
 )
 
 export const flashMintIndexesPolygon = indexNames.filter(

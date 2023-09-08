@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { Hex } from 'viem'
 
 import { OPTIMISM, POLYGON } from '@/constants/chains'
 import { ZeroExAffiliateAddress } from '@/constants/server'
@@ -18,7 +19,7 @@ export type RequestForQuote = {
 
 export type ZeroExData = {
   chainId: string
-  data: string
+  data: Hex
   estimatedPriceImpact: string
   price: string
   guaranteedPrice: string
