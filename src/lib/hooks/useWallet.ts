@@ -1,11 +1,12 @@
 import { providers } from 'ethers'
 import { useEffect, useState } from 'react'
+import { Hex } from 'viem'
 import { useAccount, useNetwork } from 'wagmi'
 
 import { getEthersProvider, getEthersSigner } from '../utils/ethers-adapters'
 
 type Account = {
-  address: string | null | undefined
+  address: Hex | undefined
   provider: any | undefined
   signer: any | undefined
   isConnected: boolean

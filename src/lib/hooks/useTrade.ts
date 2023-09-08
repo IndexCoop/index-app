@@ -1,47 +1,18 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { PopulatedTransaction } from 'ethers'
-import { useSendTransaction } from 'wagmi'
-
-import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
+import { prepareSendTransaction, sendTransaction } from '@wagmi/core'
 
-import { OPTIMISM } from '@/constants/chains'
-import {
-  zeroExRouterAddress,
-  zeroExRouterOptimismAddress,
-} from '@/constants/contractAddresses'
 import { ZeroExQuote } from '@/lib/hooks/useBestQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useWallet } from '@/lib/hooks/useWallet'
 import { useBalanceData } from '@/lib/providers/Balances'
 import { fromWei } from '@/lib/utils'
-import { logTransaction } from '@/lib/utils/api/analytics'
-import { TxSimulator } from '@/lib/utils/simulator'
 
 export const useTrade = () => {
   const { address } = useWallet()
   const { chainId } = useNetwork()
-  const [zeroExQuote, setZeroExQuote] = useState<ZeroExQuote | null>(null)
 
-  const txRequest: TransactionRequest = {
-    chainId: Number(zeroExQuote?.chainId) ?? undefined,
-    from: address ?? undefined,
-    to: zeroExQuote?.to,
-    data: zeroExQuote?.data,
-    value: BigNumber.from(zeroExQuote?.value ?? 0),
-    // gas: undefined, use metamask estimated gas limit
-  }
-  const { sendTransaction, status, data } = useSendTransaction({
-    mode: 'recklesslyUnprepared',
-    chainId: chainId,
-    from: address,
-    to:
-      chainId === OPTIMISM.chainId
-        ? zeroExRouterOptimismAddress
-        : zeroExRouterAddress,
-    value: BigNumber.from(0),
-  })
   const { getTokenBalance } = useBalanceData()
 
   const [isTransacting, setIsTransacting] = useState(false)
@@ -49,7 +20,6 @@ export const useTrade = () => {
   const executeTrade = useCallback(
     async (quote: ZeroExQuote | null) => {
       if (!address || !quote) return
-      setZeroExQuote(quote)
 
       const inputToken = quote.inputToken
       const inputTokenAmount = quote.isMinting
@@ -64,29 +34,17 @@ export const useTrade = () => {
         getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
-      const req: TransactionRequest = {
-        chainId: Number(quote.chainId),
-        from: address,
-        to: quote.to,
-        data: quote.data,
-        value: BigNumber.from(quote.value ?? 0),
-      }
-
-      const req2: PopulatedTransaction = {
-        chainId: Number(quote.chainId),
-        from: address,
-        to: quote.to,
-        data: quote.data,
-        value: BigNumber.from(quote.value ?? 0),
-      }
       try {
-        // const accessKey = process.env.NEXT_PUBLIC_TENDERLY_ACCESS_KEY ?? ''
-        // const simulator = new TxSimulator(accessKey)
-        // await simulator.simulate(req2)
         setIsTransacting(true)
-        sendTransaction?.({
-          recklesslySetUnpreparedRequest: req,
+        const request = await prepareSendTransaction({
+          account: address,
+          chainId: Number(quote.chainId),
+          to: quote.to,
+          data: quote.data,
+          value: BigInt(quote.value ?? 0),
         })
+        const { hash } = await sendTransaction(request)
+        console.log(hash)
       } catch (error) {
         setIsTransacting(false)
         console.log('Error sending transaction', error)
@@ -94,15 +52,6 @@ export const useTrade = () => {
     },
     [address, chainId, getTokenBalance]
   )
-
-  useEffect(() => {
-    if (!data) return
-    logTransaction(chainId ?? -1, 'SWAP', '', JSON.stringify(data))
-  }, [data])
-
-  useEffect(() => {
-    if (status !== 'idle' && status) setIsTransacting(false)
-  }, [status])
 
   return { executeTrade, isTransacting }
 }
