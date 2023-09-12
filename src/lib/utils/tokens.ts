@@ -10,6 +10,7 @@ import {
   flashMintIndexesMainnetRedeem,
   flashMintIndexesPolygonRedeem,
   GitcoinStakedETHIndex,
+  ic21,
   icETHIndex,
   IndexToken,
   LeveragedRethStakingYield,
@@ -71,6 +72,7 @@ export function getCurrencyTokensForIndex(
   chainId: number,
   isMinting: boolean
 ): Token[] {
+  if (index.symbol === ic21.symbol) return [ETH, WETH]
   if (index.symbol === FIXED_DAI.symbol) return [DAI]
   if (index.symbol === FIXED_USDC.symbol) return [USDC]
   if (index.symbol === icETHIndex.symbol)

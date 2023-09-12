@@ -9,6 +9,7 @@ import {
   FIXED_DAI,
   FIXED_USDC,
   GitcoinStakedETHIndex,
+  ic21,
   icETHIndex,
   LeveragedRethStakingYield,
   mainnetCurrencyTokens,
@@ -101,6 +102,15 @@ describe('getCurrencyTokensForIndex()', () => {
     const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
     expect(currencyTokens.length).toEqual(1)
     expect(currencyTokens).toEqual([USDC])
+  })
+
+  test('returns correct currency tokens for ic21', async () => {
+    const chainId = 1
+    const isMinting = true
+    const token = ic21
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId, isMinting)
+    expect(currencyTokens.length).toEqual(2)
+    expect(currencyTokens).toEqual([ETH, WETH])
   })
 
   test('returns correct currency tokens for icETH', async () => {
