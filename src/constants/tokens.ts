@@ -255,8 +255,7 @@ export const ic21: Token = {
   decimals: 18,
   url: 'ic21',
   image: ic21Logo,
-  // FIXME: add once available
-  coingeckoId: '',
+  coingeckoId: 'index-coop-large-cap',
   tokenContextKey: 'ic21',
   fees: {
     streamingFee: '0.95%',
@@ -548,7 +547,7 @@ const indexNames = isDevEnv
       WSETH2,
     ]
   : [
-      // ic21, // FIXME: activate for production
+      ic21,
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
