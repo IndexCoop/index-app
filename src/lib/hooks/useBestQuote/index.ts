@@ -172,11 +172,11 @@ export const useBestQuote = () => {
 
     let rfq: RequestForQuote | null = null
 
-    if (buyToken.symbol === ic21.symbol || sellToken.symbol === ic21.symbol) {
-      rfq = {
-        takerAddress: address!,
-      }
-    }
+    // if (buyToken.symbol === ic21.symbol || sellToken.symbol === ic21.symbol) {
+    //   rfq = {
+    //     takerAddress: address!,
+    //   }
+    // }
 
     const slippagePercentage = slippage / 100
     /* Check 0x for DEX Swap option*/
