@@ -8,7 +8,7 @@ import {
 } from './tokens'
 
 // Slippage default hard coded to 1%
-export const slippageDefault = 1
+export const slippageDefault = 0.5
 
 export const slippageMap = new Map([
   [DiversifiedStakedETHIndex.symbol, 0.0001],
