@@ -11,7 +11,6 @@ import {
   mmiLogo,
   wseth2Logo,
 } from '@/lib/utils/assets'
-import { TokenContextKeys } from '@/lib/providers/MarketData'
 
 import { MAINNET } from './chains'
 
@@ -35,7 +34,6 @@ export interface Token {
   url: string
   image: string
   coingeckoId: string
-  tokenContextKey?: TokenContextKeys
   fees:
     | { streamingFee: string; mintFee?: string; redeemFee?: string }
     | undefined
