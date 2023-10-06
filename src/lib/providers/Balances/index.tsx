@@ -11,7 +11,6 @@ import { BigNumber } from 'ethers'
 import tokenList, { currencies, Token } from '../../../constants/tokens'
 import { useAllReadOnlyProviders } from '../../../lib/hooks/useReadOnlyProvider'
 import { useWallet } from '../../../lib/hooks/useWallet'
-import { useMarketData } from '../../../lib/providers/MarketData'
 
 import { BalancesProvider } from './BalancesProvider'
 
@@ -31,8 +30,6 @@ export interface TokenContext {
   tokenBalances: Balances
 }
 
-export type TokenContextKeys = keyof TokenContext
-
 export const BalanceContext = createContext<TokenContext>({
   getTokenBalance: () => BigNumber.from(0),
   isLoading: true,
@@ -43,7 +40,6 @@ export const useBalanceData = () => useContext(BalanceContext)
 
 export const BalanceProvider = (props: { children: any }) => {
   const { address } = useWallet()
-  const { selectLatestMarketData, selectMarketDataByToken } = useMarketData()
   const {
     mainnetReadOnlyProvider,
     optimismReadOnlyProvider,
@@ -68,8 +64,9 @@ export const BalanceProvider = (props: { children: any }) => {
         const { mainnetBalance, optimismBalance, polygonBalance } =
           await provider.fetchAllBalances(token)
         if (mainnetBalance && !mainnetBalance.isZero()) {
-          const marketData = selectMarketDataByToken(token)
-          const price = selectLatestMarketData(marketData)
+          // Price is not used from this provider at the moment.
+          // The provider and its structure will be refactored soon.
+          const price = 0
           balanceData.push({
             token,
             mainnetBalance,

@@ -11,7 +11,6 @@ import {
   mmiLogo,
   wseth2Logo,
 } from '@/lib/utils/assets'
-import { TokenContextKeys } from '@/lib/providers/MarketData'
 
 import { MAINNET } from './chains'
 
@@ -35,7 +34,6 @@ export interface Token {
   url: string
   image: string
   coingeckoId: string
-  tokenContextKey?: TokenContextKeys
   fees:
     | { streamingFee: string; mintFee?: string; redeemFee?: string }
     | undefined
@@ -88,7 +86,6 @@ export const DefiPulseIndex: Token = {
   decimals: 18,
   url: 'dpi',
   coingeckoId: 'defipulse-index',
-  tokenContextKey: 'dpi',
   fees: {
     streamingFee: '0.95%',
   },
@@ -107,7 +104,6 @@ export const DiversifiedStakedETHIndex: Token = {
   decimals: 18,
   url: 'dseth',
   coingeckoId: 'diversified-staked-eth',
-  tokenContextKey: 'dseth',
   fees: {
     streamingFee: '0.25%',
   },
@@ -142,7 +138,6 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   url: 'ethfli',
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
   coingeckoId: 'eth-2x-flexible-leverage-index',
-  tokenContextKey: 'ethfli',
   fees: {
     streamingFee: '1.95%',
   },
@@ -161,7 +156,6 @@ export const LeveragedRethStakingYield: Token = {
   url: 'icreth',
   image: icrethLogo,
   coingeckoId: 'leveraged-reth-staking-yield',
-  tokenContextKey: 'icreth',
   fees: {
     streamingFee: '0.75%',
   },
@@ -180,7 +174,6 @@ export const MetaverseIndex: Token = {
   url: 'mvi',
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
   coingeckoId: 'metaverse-index',
-  tokenContextKey: 'mvi',
   fees: {
     streamingFee: '0.95%',
   },
@@ -199,7 +192,6 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
   url: 'btcfli',
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
   coingeckoId: 'btc-2x-flexible-leverage-index',
-  tokenContextKey: 'btcfli',
   fees: {
     streamingFee: '1.95%',
   },
@@ -218,7 +210,6 @@ export const BedIndex: Token = {
   url: 'bed',
   image: bedBorderLogo,
   coingeckoId: 'bankless-bed-index',
-  tokenContextKey: 'bed',
   fees: {
     streamingFee: '0.25%',
   },
@@ -237,7 +228,6 @@ export const GitcoinStakedETHIndex: Token = {
   decimals: 18,
   url: 'gtceth',
   coingeckoId: 'gitcoin-staked-eth-index',
-  tokenContextKey: 'gtceth',
   fees: {
     streamingFee: '2.0%',
   },
@@ -256,7 +246,6 @@ export const ic21: Token = {
   url: 'ic21',
   image: ic21Logo,
   coingeckoId: 'index-coop-large-cap',
-  tokenContextKey: 'ic21',
   fees: {
     streamingFee: '0.95%',
     mintFee: '0.0%',
@@ -277,7 +266,6 @@ export const icETHIndex: Token = {
   url: 'iceth',
   image: icethLogo,
   coingeckoId: 'interest-compounding-eth-index',
-  tokenContextKey: 'iceth',
   fees: {
     streamingFee: '0.75%',
     mintFee: '0.0%',
@@ -298,7 +286,6 @@ export const MoneyMarketIndex: Token = {
   url: 'icsmmt',
   image: mmiLogo,
   coingeckoId: 'money-market-index',
-  tokenContextKey: 'mmi',
   fees: {
     streamingFee: '0.15%',
     mintFee: '0.0%',
