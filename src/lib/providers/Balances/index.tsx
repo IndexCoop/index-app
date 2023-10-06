@@ -66,7 +66,8 @@ export const BalanceProvider = (props: { children: any }) => {
         const { mainnetBalance, optimismBalance, polygonBalance } =
           await provider.fetchAllBalances(token)
         if (mainnetBalance && !mainnetBalance.isZero()) {
-          // TODO: get price from coingecko
+          // Price is not used from this provider at the moment.
+          // The provider and its structure will be refactored soon.
           const price = 0
           balanceData.push({
             token,
