@@ -42,10 +42,12 @@ export function selectSlippage(
   indexSymbol: string,
   inputOutputTokenSymbol: string
 ): number {
-  if (slippage !== slippageDefault) return slippage
   const slippageOverrride = getSlippageOverrideOrNull(
     indexSymbol,
     inputOutputTokenSymbol
   )
+  if (slippageOverrride && slippage < slippageOverrride)
+    return slippageOverrride
+  if (slippageOverrride && slippage > slippageOverrride) return slippage
   return slippageOverrride ?? slippage
 }
