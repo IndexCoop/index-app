@@ -30,8 +30,6 @@ export interface TokenContext {
   tokenBalances: Balances
 }
 
-export type TokenContextKeys = keyof TokenContext
-
 export const BalanceContext = createContext<TokenContext>({
   getTokenBalance: () => BigNumber.from(0),
   isLoading: true,
