@@ -11,7 +11,6 @@ import { BigNumber } from 'ethers'
 import tokenList, { currencies, Token } from '../../../constants/tokens'
 import { useAllReadOnlyProviders } from '../../../lib/hooks/useReadOnlyProvider'
 import { useWallet } from '../../../lib/hooks/useWallet'
-import { useMarketData } from '../../../lib/providers/MarketData'
 
 import { BalancesProvider } from './BalancesProvider'
 
@@ -43,7 +42,6 @@ export const useBalanceData = () => useContext(BalanceContext)
 
 export const BalanceProvider = (props: { children: any }) => {
   const { address } = useWallet()
-  const { selectLatestMarketData, selectMarketDataByToken } = useMarketData()
   const {
     mainnetReadOnlyProvider,
     optimismReadOnlyProvider,
@@ -68,8 +66,8 @@ export const BalanceProvider = (props: { children: any }) => {
         const { mainnetBalance, optimismBalance, polygonBalance } =
           await provider.fetchAllBalances(token)
         if (mainnetBalance && !mainnetBalance.isZero()) {
-          const marketData = selectMarketDataByToken(token)
-          const price = selectLatestMarketData(marketData)
+          // TODO: get price from coingecko
+          const price = 0
           balanceData.push({
             token,
             mainnetBalance,
