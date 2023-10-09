@@ -7,20 +7,16 @@ export class PathResolver {
   // Returns resolved path.
   // Either one could be set or also both input and output token.
   // If no token is set, only the /swap path was called.
-  resolve(path: string): ResolvedPath {
+  resolve(path: string[]): ResolvedPath {
     const defaultReturn = { inputToken: null, outputToken: null }
-    const pathParts = path.split('/')
-    const parts = pathParts.slice(1)
-    console.log(pathParts, parts)
-    if (parts.length <= 1) return defaultReturn
-    const tokens = parts.slice(1)
-    if (tokens.length === 1) {
-      return { inputToken: this.resolveToken(tokens[0]), outputToken: null }
+    if (path.length < 1) return defaultReturn
+    if (path.length === 1) {
+      return { inputToken: this.resolveToken(path[0]), outputToken: null }
     }
-    if (tokens.length === 2) {
+    if (path.length === 2) {
       return {
-        inputToken: this.resolveToken(tokens[0]),
-        outputToken: this.resolveToken(tokens[1]),
+        inputToken: this.resolveToken(path[0]),
+        outputToken: this.resolveToken(path[1]),
       }
     }
     return defaultReturn
