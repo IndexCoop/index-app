@@ -1,4 +1,5 @@
-import indexNames, { ETH, Token } from '@/constants/tokens'
+import indexNames from '@/constants/tokenlists'
+import { ETH, Token } from '@/constants/tokens'
 import { getCurrencyTokens } from '@/lib/utils/tokens'
 
 interface ResolvedPath {
