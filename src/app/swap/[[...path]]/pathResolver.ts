@@ -48,10 +48,10 @@ export class PathResolver {
 
     const inputToken = this.resolveToken(symbols.inputToken!)
     const outputToken = this.resolveToken(symbols.outputToken!)
-    const inputTokenIsIndex = indexNames.find(
+    const inputTokenIsIndex = indexNames.some(
       (token) => token.symbol === inputToken.symbol
     )
-    const outputTokenIsIndex = indexNames.find(
+    const outputTokenIsIndex = indexNames.some(
       (token) => token.symbol === outputToken.symbol
     )
     return {
