@@ -8,7 +8,8 @@ import {
 
 import { BigNumber } from 'ethers'
 
-import tokenList, { currencies, Token } from '../../../constants/tokens'
+import tokenList, { currencies } from '../../../constants/tokenlists'
+import { Token } from '../../../constants/tokens'
 import { useAllReadOnlyProviders } from '../../../lib/hooks/useReadOnlyProvider'
 import { useWallet } from '../../../lib/hooks/useWallet'
 
