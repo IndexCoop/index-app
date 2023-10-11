@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useColorStyles } from '@/lib/styles/colors'
 
-import { CheckCircleIcon } from '@chakra-ui/icons'
+import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import {
   Box,
   Flex,
@@ -33,6 +33,7 @@ import TransactionReviewSimulation, {
 } from './TransactionReviewSimulation'
 
 enum TransactionReviewModalState {
+  failed,
   submit,
   success,
 }
@@ -74,8 +75,10 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   }
 
   const onSubmitWithSuccess = (success: boolean) => {
-    if (!success) return
-    setState(TransactionReviewModalState.success)
+    const modalState = success
+      ? TransactionReviewModalState.success
+      : TransactionReviewModalState.failed
+    setState(modalState)
   }
 
   const modalTitle =
@@ -103,8 +106,12 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody p='0 16px 16px 16px'>
-          {state === TransactionReviewModalState.success && (
-            <SubmissionSuccessful onClick={onDone} />
+          {(state === TransactionReviewModalState.failed ||
+            state === TransactionReviewModalState.success) && (
+            <SubmissionSuccessful
+              onClick={onDone}
+              success={state === TransactionReviewModalState.success}
+            />
           )}
           {state === TransactionReviewModalState.submit && (
             <Review onSubmitWithSuccess={onSubmitWithSuccess} tx={tx} />
@@ -281,13 +288,27 @@ const Review = (props: ReviewProps) => {
   )
 }
 
-const SubmissionSuccessful = ({ onClick }: { onClick: () => void }) => {
+interface SubmissionSuccessfulProps {
+  onClick: () => void
+  success: boolean
+}
+
+const SubmissionSuccessful = ({
+  onClick,
+  success,
+}: SubmissionSuccessfulProps) => {
   return (
     <Flex align='center' direction={'column'}>
       <Flex align='center' direction={'column'} p='16px'>
-        <CheckCircleIcon w='32px' h='32px' />
+        {success ? (
+          <CheckCircleIcon w='32px' h='32px' />
+        ) : (
+          <WarningIcon w='32px' h='32px' />
+        )}
         <Text align='center' fontSize='3xl' p='16px'>
-          You successfully submitted the transaction.
+          {success
+            ? 'You successfully submitted the transaction.'
+            : 'The transaction was cancelled or failed.'}
         </Text>
       </Flex>
       <Spacer />
