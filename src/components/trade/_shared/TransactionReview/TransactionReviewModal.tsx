@@ -48,14 +48,22 @@ const useTrade = (tx: TransactionReview) => {
   const { executeFlashMintTrade, isTransacting, txWouldFail } =
     useFlashMintTrade()
 
+  /**
+   * Returns boolean indicating success or null for config error
+   */
   const executeTrade = async (override: boolean) => {
     const { quoteResult, slippage } = tx
     const { quotes } = quoteResult
     if (!quotes) return null
     if (quotes.flashMint) {
-      await executeFlashMintTrade(quotes.flashMint, slippage, override)
-      return
+      try {
+        await executeFlashMintTrade(quotes.flashMint, slippage, override)
+        return true
+      } catch {
+        return false
+      }
     }
+    return null
   }
 
   return { executeTrade, isTransacting, txWouldFail }
@@ -178,7 +186,7 @@ type ReviewProps = {
 const Review = (props: ReviewProps) => {
   const { onSubmitWithSuccess, tx } = props
   const { simulateTrade } = useSimulateQuote(tx.quoteResult)
-  const { executeTrade, isTransacting, txWouldFail } = useTrade(tx)
+  const { executeTrade, isTransacting } = useTrade(tx)
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -226,8 +234,9 @@ const Review = (props: ReviewProps) => {
     setSimulationState(state)
     console.log('isSuccess', isSuccess)
     if (!isSuccess && !override) return
-    await executeTrade(override)
-    onSubmitWithSuccess(true)
+    const success = await executeTrade(override)
+    if (success === null) return
+    onSubmitWithSuccess(success)
   }
 
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
