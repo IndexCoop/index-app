@@ -1,4 +1,4 @@
-import { slippageDefault, slippageMap } from '@/constants/slippage'
+import { slippageMap } from '@/constants/slippage'
 import {
   DAI,
   DiversifiedStakedETHIndex,
