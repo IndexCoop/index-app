@@ -74,6 +74,7 @@ export const useFlashMintTrade = () => {
         ) {
           setTxWouldFail(true)
         }
+        throw error
       }
     },
     [address, signer]
