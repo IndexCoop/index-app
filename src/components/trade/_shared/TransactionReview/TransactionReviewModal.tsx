@@ -78,8 +78,14 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     TransactionReviewModalState.submit
   )
 
-  const onDone = () => {
+  const onCloseModal = () => {
+    // Make sure to reset state, so that reopening popup doesn't show wrong state
+    setState(TransactionReviewModalState.submit)
     onClose()
+  }
+
+  const onDone = () => {
+    onCloseModal()
   }
 
   const onSubmitWithSuccess = (success: boolean) => {
@@ -95,7 +101,12 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
       : ''
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
+    <Modal
+      onClose={onCloseModal}
+      isOpen={isOpen}
+      isCentered
+      scrollBehavior='inside'
+    >
       <ModalOverlay
         bg='rgba(0, 0, 0, 0.6)'
         backdropFilter='auto'
@@ -317,7 +328,7 @@ const SubmissionSuccessful = ({
         <Text align='center' fontSize='3xl' p='16px'>
           {success
             ? 'You successfully submitted the transaction.'
-            : 'The transaction was cancelled or failed.'}
+            : 'Submitting the transaction was cancelled or failed.'}
         </Text>
       </Flex>
       <Spacer />
