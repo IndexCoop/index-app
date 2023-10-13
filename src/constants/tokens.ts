@@ -49,8 +49,7 @@ export const CoinDeskEthTrendIndex: Token = {
   symbol: 'cdETI',
   image:
     'https://uploads-ssl.webflow.com/62e3ff7a08cb1968bf057388/651f04818f458f918171c84d_cdETI-logo.svg',
-  // FIXME: add real address
-  address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+  address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 18,
