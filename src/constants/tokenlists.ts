@@ -92,6 +92,7 @@ const indexNames = isDevEnv
 export const indexNamesMainnet = indexNames.filter(
   (index) =>
     index.address &&
+    index.symbol !== CoinDeskEthTrendIndex.symbol &&
     index.symbol !== MoneyMarketIndex.symbol &&
     index.symbol !== LeveragedRethStakingYield.symbol
 )
