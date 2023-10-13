@@ -2,6 +2,7 @@ import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import { mainnetCurrencyTokens } from '@/constants/tokenlists'
 import {
   Bitcoin2xFlexibleLeverageIndex,
+  CoinDeskEthTrendIndex,
   DAI,
   DiversifiedStakedETHIndex,
   ETH,
@@ -64,6 +65,8 @@ export function getCurrencyTokensForIndex(
   chainId: number,
   isMinting: boolean
 ): Token[] {
+  if (index.symbol === CoinDeskEthTrendIndex.symbol)
+    return [ETH, USDC, DAI, WETH]
   if (index.symbol === ic21.symbol) return [ETH, WETH]
   if (index.symbol === FIXED_DAI.symbol) return [DAI]
   if (index.symbol === FIXED_USDC.symbol) return [USDC]
