@@ -48,7 +48,7 @@ export const useRethSupply = (
     } catch (err) {
       console.log('Error fetching RETH supply data', err)
     }
-  }, [shouldFetch])
+  }, [provider, shouldFetch])
 
   useEffect(() => {
     fetchData()

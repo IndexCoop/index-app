@@ -132,6 +132,7 @@ export const BalanceProvider = (props: { children: any }) => {
 
   const getTokenBalance = useCallback(
     (symbol: string, chainId: number | undefined): BigNumber => {
+      if (!address) return BigNumber.from(0)
       const tokenBalance = tokenBalances[symbol]
       switch (chainId) {
         case 1:

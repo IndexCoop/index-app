@@ -17,7 +17,7 @@ export const useProtection = () => useContext(ProtectionContext)
 export const ProtectionProvider = (props: { children: any }) => {
   const [isProtectable, setIsProtectable] = useState<boolean>()
 
-  const checkIfProtectable = useCallback(async () => {
+  const checkIfProtectable = async () => {
     const API_KEY =
       process.env.NEXT_PUBLIC_IP_LOOKUP_KEY ?? 'vN8S4cMfz4KPoq5eLx3X'
     fetch('https://extreme-ip-lookup.com/json/?key=' + API_KEY)
@@ -31,12 +31,15 @@ export const ProtectionProvider = (props: { children: any }) => {
           error
         )
       })
-  }, [])
+  }
 
   useEffect(() => {
     checkIfProtectable()
-    logEvent('US_IP_CHECK', { USA_IP: isProtectable })
   }, [])
+
+  useEffect(() => {
+    logEvent('US_IP_CHECK', { USA_IP: isProtectable })
+  }, [isProtectable])
 
   return (
     <ProtectionContext.Provider
