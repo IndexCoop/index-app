@@ -7,7 +7,7 @@ import HeaderV2 from '@/components/page/header/HeaderV2'
 
 import { Providers } from './providers'
 
-export default function SwapLayout({
+export default function VaultsLayout({
   children,
 }: {
   children: React.ReactNode
