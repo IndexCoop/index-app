@@ -101,6 +101,9 @@ const QuickTrade = (props: QuickTradeProps) => {
   const [gasCostsInUsd, setGasCostsInUsd] = useState(0)
   const [navData, setNavData] = useState<TradeInfoItem>()
 
+  // Does user need protecting from productive assets?
+  const [requiresProtection, setRequiresProtection] = useState(false)
+
   const indexToken = isBuying ? buyToken : sellToken
   const { nav } = useTokenComponents(indexToken, isPerpToken(indexToken))
 
@@ -259,8 +262,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     fetchOptions()
   }, [fetchOptions])
 
-  // Does user need protecting from productive assets?
-  const [requiresProtection, setRequiresProtection] = useState(false)
   useEffect(() => {
     if (
       protection.isProtectable &&
