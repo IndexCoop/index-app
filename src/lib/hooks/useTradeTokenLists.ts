@@ -2,13 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { MAINNET, POLYGON } from '@/constants/chains'
 import {
-  ETH,
   flashMintIndexesMainnetRedeem,
-  flashMintIndexesPolygonRedeem,
   indexNamesMainnet,
-  indexNamesPolygon,
-  Token,
-} from '@/constants/tokens'
+} from '@/constants/tokenlists'
+import { ETH, Token } from '@/constants/tokens'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingeckoApi'
 import {
   getAddressForToken,
@@ -158,9 +155,6 @@ export const getTokenListByChain = (
   chainId: number | undefined = MAINNET.chainId,
   isFlashMint: boolean
 ) => {
-  if (chainId === POLYGON.chainId) {
-    return isFlashMint ? flashMintIndexesPolygonRedeem : indexNamesPolygon
-  }
   return isFlashMint ? flashMintIndexesMainnetRedeem : indexNamesMainnet
 }
 
