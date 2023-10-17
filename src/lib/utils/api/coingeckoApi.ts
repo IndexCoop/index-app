@@ -20,7 +20,7 @@ export const fetchCoingeckoTokenPrice = async (
     const priceUrl =
       baseURL + `/simple/price/?ids=ethereum&vs_currencies=${baseCurrency}`
 
-    const data = await indexApi.get(priceUrl).catch((_) => {
+    const data = await indexApi.get(priceUrl).catch(() => {
       return 0
     })
 
@@ -35,7 +35,7 @@ export const fetchCoingeckoTokenPrice = async (
       chainId
     )}/?contract_addresses=${address}&vs_currencies=${baseCurrency}`
 
-  const data = await indexApi.get(getPriceUrl).catch((_) => {
+  const data = await indexApi.get(getPriceUrl).catch(() => {
     return 0
   })
 
