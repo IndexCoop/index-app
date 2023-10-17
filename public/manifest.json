@@ -1,7 +1,7 @@
 {
-  "short_name": "Index",
-  "name": "Index App",
-  "description": "Swap or FlashMint all products of the Index Coop.",
+  "short_name": "Index Coop",
+  "name": "Index Coop",
+  "description": "Buy clever automated and index products from Index Coop without leaving the Safe app.",
   "homepage_url": "https://app.indexcoop.com",
   "start_url": ".",
   "display": "standalone",
