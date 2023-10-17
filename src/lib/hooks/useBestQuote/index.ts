@@ -5,7 +5,7 @@ import { Hex } from 'viem'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ic21, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useBalanceData } from '@/lib/providers/Balances'
 import { toWei } from '@/lib/utils'
@@ -23,9 +23,6 @@ import { getBestQuote } from './bestQuote'
 import { getEnhancedFlashMintQuote } from './flashMint'
 
 export enum QuoteType {
-  notAvailable = 'notAvailable',
-  exchangeIssuanceLeveraged = 'exchangeIssuanceLeveraged',
-  exchangeIssuanceZeroEx = 'exchangeIssuanceZeroEx',
   flashMint = 'flashMint',
   flashMintNotional = 'flashMintNotional',
   zeroEx = 'zeroEx',
@@ -118,9 +115,8 @@ const defaultQuoteResult: QuoteResult = {
 }
 
 export const useBestQuote = () => {
-  const { address, provider, signer } = useWallet()
+  const { provider, signer } = useWallet()
   const { chainId: networkChainId } = useNetwork()
-  const { getTokenBalance } = useBalanceData()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
   const chainId = networkChainId ?? 1
 
