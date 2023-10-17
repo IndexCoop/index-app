@@ -381,9 +381,14 @@ const FlashMint = (props: QuickTradeProps) => {
     indexTokenPrice
   )
   const inputOutputTokenFiatFormatted = formattedFiat(
+    // To avoid rounding errors that could show a wrong fiat price, no `decimals`
+    // should be set here.
     parseFloat(
-      displayFromWei(inputOutputTokenAmount, 2, inputOutputToken.decimals) ??
-        '0'
+      displayFromWei(
+        inputOutputTokenAmount,
+        undefined,
+        inputOutputToken.decimals
+      ) ?? '0'
     ),
     inputOutputPrice
   )
