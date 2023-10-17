@@ -1,5 +1,11 @@
 'use client'
 
+import '@fontsource/open-sauce-sans/300.css';
+import '@fontsource/open-sauce-sans/400.css';
+import '@fontsource/open-sauce-sans/500.css';
+import '@fontsource/open-sauce-sans/600.css';
+import '@fontsource/open-sauce-sans/700.css';
+
 import { WagmiConfig } from 'wagmi'
 
 import { CacheProvider } from '@chakra-ui/next-js'
@@ -7,7 +13,6 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 
-import { GlobalFonts } from '@/lib/styles/fonts'
 import theme, { rainbowkitTheme } from '@/lib/styles/theme'
 import { initSentryEventTracking } from '@/lib/utils/api/sentry'
 import { chains, wagmiConfig } from '@/lib/utils/wagmi'
@@ -28,7 +33,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <CacheProvider>
       <ChakraProvider theme={theme}>
-        <GlobalFonts />
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider
