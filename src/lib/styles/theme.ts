@@ -2,7 +2,6 @@ import merge from 'lodash.merge'
 import { Button } from '../styles/button'
 import { Checkbox } from '../styles/checkbox'
 import { colors } from '../styles/colors'
-import { fonts } from '../styles/fonts'
 import { global } from '../styles/global'
 import { Heading } from '../styles/heading'
 import { Tabs } from '../styles/tabs'
@@ -14,6 +13,12 @@ import { darkTheme, Theme } from '@rainbow-me/rainbowkit'
 const config: ThemeConfig = {
   initialColorMode: 'light',
   useSystemColorMode: false,
+}
+
+const fonts = {
+  heading: 'Open Sauce Sans, sans-serif',
+  body: 'Open Sauce Sans, sans-serif',
+  text: 'Open Sauce Sans, sans-serif',
 }
 
 const components = {
