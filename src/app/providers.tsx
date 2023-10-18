@@ -7,12 +7,12 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 
-import { GlobalFonts } from '@/lib/styles/fonts'
 import theme, { rainbowkitTheme } from '@/lib/styles/theme'
 import { initSentryEventTracking } from '@/lib/utils/api/sentry'
 import { chains, wagmiConfig } from '@/lib/utils/wagmi'
 
 import '@rainbow-me/rainbowkit/styles.css'
+import '@/lib/styles/fonts'
 
 initSentryEventTracking()
 
@@ -28,7 +28,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <CacheProvider>
       <ChakraProvider theme={theme}>
-        <GlobalFonts />
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider
