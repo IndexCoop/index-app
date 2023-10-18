@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useColorStyles } from '@/lib/styles/colors'
 
-import { CheckCircleIcon } from '@chakra-ui/icons'
+import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import {
   Box,
   Flex,
@@ -33,6 +33,7 @@ import TransactionReviewSimulation, {
 } from './TransactionReviewSimulation'
 
 enum TransactionReviewModalState {
+  failed,
   submit,
   success,
 }
@@ -47,14 +48,22 @@ const useTrade = (tx: TransactionReview) => {
   const { executeFlashMintTrade, isTransacting, txWouldFail } =
     useFlashMintTrade()
 
+  /**
+   * Returns boolean indicating success or null for config error
+   */
   const executeTrade = async (override: boolean) => {
     const { quoteResult, slippage } = tx
     const { quotes } = quoteResult
     if (!quotes) return null
     if (quotes.flashMint) {
-      await executeFlashMintTrade(quotes.flashMint, slippage, override)
-      return
+      try {
+        await executeFlashMintTrade(quotes.flashMint, slippage, override)
+        return true
+      } catch {
+        return false
+      }
     }
+    return null
   }
 
   return { executeTrade, isTransacting, txWouldFail }
@@ -69,13 +78,21 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     TransactionReviewModalState.submit
   )
 
-  const onDone = () => {
+  const onCloseModal = () => {
+    // Make sure to reset state, so that reopening popup doesn't show wrong state
+    setState(TransactionReviewModalState.submit)
     onClose()
   }
 
+  const onDone = () => {
+    onCloseModal()
+  }
+
   const onSubmitWithSuccess = (success: boolean) => {
-    if (!success) return
-    setState(TransactionReviewModalState.success)
+    const modalState = success
+      ? TransactionReviewModalState.success
+      : TransactionReviewModalState.failed
+    setState(modalState)
   }
 
   const modalTitle =
@@ -84,7 +101,12 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
       : ''
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
+    <Modal
+      onClose={onCloseModal}
+      isOpen={isOpen}
+      isCentered
+      scrollBehavior='inside'
+    >
       <ModalOverlay
         bg='rgba(0, 0, 0, 0.6)'
         backdropFilter='auto'
@@ -103,8 +125,12 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody p='0 16px 16px 16px'>
-          {state === TransactionReviewModalState.success && (
-            <SubmissionSuccessful onClick={onDone} />
+          {(state === TransactionReviewModalState.failed ||
+            state === TransactionReviewModalState.success) && (
+            <SubmissionSuccessful
+              onClick={onDone}
+              success={state === TransactionReviewModalState.success}
+            />
           )}
           {state === TransactionReviewModalState.submit && (
             <Review onSubmitWithSuccess={onSubmitWithSuccess} tx={tx} />
@@ -171,7 +197,7 @@ type ReviewProps = {
 const Review = (props: ReviewProps) => {
   const { onSubmitWithSuccess, tx } = props
   const { simulateTrade } = useSimulateQuote(tx.quoteResult)
-  const { executeTrade, isTransacting, txWouldFail } = useTrade(tx)
+  const { executeTrade, isTransacting } = useTrade(tx)
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -219,8 +245,9 @@ const Review = (props: ReviewProps) => {
     setSimulationState(state)
     console.log('isSuccess', isSuccess)
     if (!isSuccess && !override) return
-    await executeTrade(override)
-    onSubmitWithSuccess(true)
+    const success = await executeTrade(override)
+    if (success === null) return
+    onSubmitWithSuccess(success)
   }
 
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
@@ -281,13 +308,27 @@ const Review = (props: ReviewProps) => {
   )
 }
 
-const SubmissionSuccessful = ({ onClick }: { onClick: () => void }) => {
+interface SubmissionSuccessfulProps {
+  onClick: () => void
+  success: boolean
+}
+
+const SubmissionSuccessful = ({
+  onClick,
+  success,
+}: SubmissionSuccessfulProps) => {
   return (
     <Flex align='center' direction={'column'}>
       <Flex align='center' direction={'column'} p='16px'>
-        <CheckCircleIcon w='32px' h='32px' />
+        {success ? (
+          <CheckCircleIcon w='32px' h='32px' />
+        ) : (
+          <WarningIcon w='32px' h='32px' />
+        )}
         <Text align='center' fontSize='3xl' p='16px'>
-          You successfully submitted the transaction.
+          {success
+            ? 'You successfully submitted the transaction.'
+            : 'Submitting the transaction was cancelled or failed.'}
         </Text>
       </Flex>
       <Spacer />

@@ -3,7 +3,7 @@ import { useColorStyles } from '../../lib/styles/colors'
 import { Flex, Link, Text } from '@chakra-ui/react'
 
 const Footer = () => {
-  const { isDarkMode, styles } = useColorStyles()
+  const { styles } = useColorStyles()
   return (
     <Flex
       flexDir={'column'}

@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
@@ -157,11 +158,11 @@ const SelectorButton = ({
     shrink={0}
   >
     <Box w='24px'>
-      <img
+      <Image
         alt={`${selectedTokenSymbol} logo`}
         src={selectedTokenImage}
-        width='24px'
-        height='24px'
+        width={24}
+        height={24}
       />
     </Box>
     <Text color={colors.icGray4} ml='10px' mr='8px'>

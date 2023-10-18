@@ -14,9 +14,6 @@ import {
 
 import { MAINNET } from './chains'
 
-export const dpiTokenImage =
-  'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg'
-
 export enum IndexType {
   thematic = 'thematic',
   leverage = 'leverage',
@@ -46,6 +43,29 @@ export interface Token {
 /**
  * Indices
  */
+
+export const CoinDeskEthTrendIndex: Token = {
+  name: 'CoinDesk ETH Trend Index',
+  symbol: 'cdETI',
+  image:
+    'https://uploads-ssl.webflow.com/62e3ff7a08cb1968bf057388/651f04818f458f918171c84d_cdETI-logo.svg',
+  address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'cdeti',
+  // Mostly likely won't be listed on coingecko
+  coingeckoId: 'coindesk-eth-trend-index',
+  fees: {
+    streamingFee: '1.50%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.thematic],
+  defaultChain: MAINNET.chainId,
+}
+
 export const FIXED_DAI: Token = {
   name: 'Fixed Rate Yield Index (DAI)',
   symbol: 'FIXED-DAI',
@@ -79,7 +99,7 @@ export const FIXED_USDC: Token = {
 export const DefiPulseIndex: Token = {
   name: 'DeFi Pulse Index',
   symbol: 'DPI',
-  image: dpiTokenImage,
+  image: 'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg',
   address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
   polygonAddress: '0x85955046DF4668e1DD369D2DE9f3AEB98DD2A369',
   optimismAddress: undefined,
@@ -474,112 +494,3 @@ export const WSTETH: Token = {
   isDangerous: false,
   indexTypes: [],
 }
-
-/**
- * Currencies
- */
-
-// Add new currencies here as well to fetch all balances
-export const currencies = [
-  DAI,
-  USDC,
-  USDT,
-  RETH,
-  SETH2,
-  STETH,
-  WETH,
-  WSETH2,
-  WSTETH,
-]
-
-export const mainnetCurrencyTokens = [ETH, DAI, USDC, SETH2, STETH, WETH]
-
-export const polygonCurrencyTokens = [MATIC, DAI, USDC, WETH]
-
-// MNYe only works with USDC, will have to optimize this once there is new indices on Optimism
-export const optimismCurrencyTokens = [USDC]
-
-/**
- * Lists
- */
-
-// Deprecated/rebalanced indicies will not work with FlashMintLeveraged any longer
-export const eligibleLeveragedExchangeIssuanceTokens = [
-  Bitcoin2xFlexibleLeverageIndex,
-  Ethereum2xFlexibleLeverageIndex,
-  icETHIndex,
-]
-
-const isDevEnv =
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ||
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-staging'
-// FIXED is not supposed to be released to the public yet, so we create a
-// separate list for dev/staging and production
-const indexNames = isDevEnv
-  ? [
-      ic21,
-      LeveragedRethStakingYield,
-      DiversifiedStakedETHIndex,
-      icETHIndex,
-      GitcoinStakedETHIndex,
-      MoneyMarketIndex,
-      FIXED_DAI,
-      FIXED_USDC,
-      DefiPulseIndex,
-      MetaverseIndex,
-      Ethereum2xFlexibleLeverageIndex,
-      Bitcoin2xFlexibleLeverageIndex,
-      BedIndex,
-      IndexToken,
-      WSETH2,
-    ]
-  : [
-      ic21,
-      DiversifiedStakedETHIndex,
-      icETHIndex,
-      GitcoinStakedETHIndex,
-      MoneyMarketIndex,
-      DefiPulseIndex,
-      MetaverseIndex,
-      Ethereum2xFlexibleLeverageIndex,
-      Bitcoin2xFlexibleLeverageIndex,
-      BedIndex,
-      LeveragedRethStakingYield,
-      IndexToken,
-    ]
-
-export const indexNamesMainnet = indexNames.filter(
-  (index) =>
-    index.address &&
-    index.symbol !== MoneyMarketIndex.symbol &&
-    index.symbol !== LeveragedRethStakingYield.symbol
-)
-export const indexNamesPolygon = indexNames.filter(
-  (index) => index.polygonAddress && index.symbol !== IndexToken.symbol // not available on Polygon
-)
-
-// FlashMint specific lists
-export const flashMintIndexesMainnetRedeem = indexNames.filter(
-  (index) =>
-    index.address &&
-    index.symbol !== IndexToken.symbol &&
-    index.symbol !== ic21.symbol
-)
-
-export const flashMintIndexesPolygon = indexNames.filter(
-  (index) =>
-    index.polygonAddress &&
-    index.symbol !== DefiPulseIndex.symbol &&
-    index.symbol !== IndexToken.symbol &&
-    index.symbol !== MetaverseIndex.symbol
-)
-
-export const flashMintIndexesPolygonRedeem = indexNames.filter(
-  (index) =>
-    index.polygonAddress &&
-    index.symbol !== DefiPulseIndex.symbol &&
-    index.symbol !== IndexToken.symbol &&
-    index.symbol !== MetaverseIndex.symbol
-)
-
-export default indexNames

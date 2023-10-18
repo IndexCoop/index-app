@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 import { useICColorMode } from '@/lib/styles/colors'
 
 import { Flex, Link, Spacer } from '@chakra-ui/react'
@@ -7,6 +9,7 @@ import { IndexLogoBlack, IndexLogoWhite } from '@/lib/utils/assets'
 import Navigation from './Navigation'
 
 const Header = () => {
+  // FIXME:
   const { isDarkMode } = useICColorMode()
   // TODO: w/ design changes
   const backgroundColor = isDarkMode
@@ -53,7 +56,7 @@ const Header = () => {
 const Logo = () => {
   const { isDarkMode } = useICColorMode()
   const logo = isDarkMode ? IndexLogoWhite : IndexLogoBlack
-  return <img alt='Index Coop Logo' src={logo} height='36px' width='36px' />
+  return <Image alt='Index Coop Logo' src={logo} height={36} width={36} />
 }
 
 export default Header

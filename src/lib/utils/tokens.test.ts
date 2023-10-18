@@ -1,6 +1,8 @@
+import { mainnetCurrencyTokens } from '@/constants/tokenlists'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
+  CoinDeskEthTrendIndex,
   DAI,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
@@ -12,12 +14,9 @@ import {
   ic21,
   icETHIndex,
   LeveragedRethStakingYield,
-  mainnetCurrencyTokens,
   MATIC,
   MetaverseIndex,
   MoneyMarketIndex,
-  optimismCurrencyTokens,
-  polygonCurrencyTokens,
   STETH,
   USDC,
   WETH,
@@ -66,16 +65,6 @@ describe('getCurrencyTokens()', () => {
     const currencyTokens = getCurrencyTokens(1)
     expect(currencyTokens).toEqual(mainnetCurrencyTokens)
   })
-
-  test('returns correct currency tokens for optimism', async () => {
-    const currencyTokens = getCurrencyTokens(10)
-    expect(currencyTokens).toEqual(optimismCurrencyTokens)
-  })
-
-  test('returns correct currency tokens for polygon', async () => {
-    const currencyTokens = getCurrencyTokens(137)
-    expect(currencyTokens).toEqual(polygonCurrencyTokens)
-  })
 })
 
 describe('getCurrencyTokensForIndex()', () => {
@@ -86,6 +75,14 @@ describe('getCurrencyTokensForIndex()', () => {
     const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
     expect(currencyTokens.length).toEqual(defaultTokens.length)
     expect(currencyTokens).toEqual(defaultTokens)
+  })
+
+  test('returns correct tokens for cdETI', async () => {
+    const chainId = 1
+    const token = CoinDeskEthTrendIndex
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    expect(currencyTokens.length).toEqual(4)
+    expect(currencyTokens).toEqual([ETH, USDC, DAI, WETH])
   })
 
   test('returns DAI only for FIXED-DAI', async () => {

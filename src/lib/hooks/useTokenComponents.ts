@@ -97,7 +97,7 @@ export const useTokenComponents = (token: Token, isPerpToken = false) => {
       return
     }
     setNav(getNetAssetValue(components.concat(vAssets)))
-  }, [components, vAssets])
+  }, [components, token.symbol, vAssets])
 
   return { components, vAssets, nav }
 }

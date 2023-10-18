@@ -8,7 +8,8 @@ import {
 
 import { BigNumber } from 'ethers'
 
-import tokenList, { currencies, Token } from '../../../constants/tokens'
+import tokenList, { currencies } from '../../../constants/tokenlists'
+import { Token } from '../../../constants/tokens'
 import { useAllReadOnlyProviders } from '../../../lib/hooks/useReadOnlyProvider'
 import { useWallet } from '../../../lib/hooks/useWallet'
 
@@ -131,6 +132,7 @@ export const BalanceProvider = (props: { children: any }) => {
 
   const getTokenBalance = useCallback(
     (symbol: string, chainId: number | undefined): BigNumber => {
+      if (!address) return BigNumber.from(0)
       const tokenBalance = tokenBalances[symbol]
       switch (chainId) {
         case 1:
