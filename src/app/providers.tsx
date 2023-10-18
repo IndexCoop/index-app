@@ -1,11 +1,5 @@
 'use client'
 
-import '@fontsource/open-sauce-sans/300.css';
-import '@fontsource/open-sauce-sans/400.css';
-import '@fontsource/open-sauce-sans/500.css';
-import '@fontsource/open-sauce-sans/600.css';
-import '@fontsource/open-sauce-sans/700.css';
-
 import { WagmiConfig } from 'wagmi'
 
 import { CacheProvider } from '@chakra-ui/next-js'
@@ -18,6 +12,7 @@ import { initSentryEventTracking } from '@/lib/utils/api/sentry'
 import { chains, wagmiConfig } from '@/lib/utils/wagmi'
 
 import '@rainbow-me/rainbowkit/styles.css'
+import '@/lib/styles/fonts'
 
 initSentryEventTracking()
 
