@@ -7,7 +7,7 @@
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
-  "iconPath": "index-logo-black.svg",
+  "iconPath": "index-logo-black.png",
   "icons": [
     {
       "src": "favicon.ico",
