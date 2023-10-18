@@ -6,7 +6,7 @@ import { Providers } from './providers'
 // For images just place the appropriate image file in this folder.
 // https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image#image-files-jpg-png-gif
 export const metadata = {
-  manifest: 'https://app.indexcoop.com/manifest.json',
+  manifest: '/manifest.json',
   themeColor: '#000000',
   title: 'Index App | Buy & Sell Our Tokens',
   description:
