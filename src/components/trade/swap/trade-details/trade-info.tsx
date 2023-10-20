@@ -1,4 +1,4 @@
-import { useColorStyles } from '@/lib/styles/colors'
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Box, Flex, Text, Tooltip } from '@chakra-ui/react'
@@ -12,37 +12,42 @@ export interface TradeInfoItem {
 }
 
 const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
-  const { styles } = useColorStyles()
   const { title, values, valuesColor, tooltip, subValue } = item
+  const cursor = tooltip && tooltip.length > 0 ? 'pointer' : 'default'
   return (
-    <Flex direction='column'>
-      <Flex align='center'>
-        <Text color={styles.text2} fontSize='12px' fontWeight='500'>
-          {title}
-        </Text>
-        {tooltip && (
-          <Tooltip borderRadius='16px' label={tooltip} p='12px'>
-            <InfoOutlineIcon color={styles.text2} ml={'4px'} w='4' h='4' />
-          </Tooltip>
-        )}
-      </Flex>
-      {values.map((value, index) => (
-        <Flex key={index} flexDir={'row'}>
-          <Text fontSize='16px' fontWeight='700' color={valuesColor}>
-            {value}
+    <Tooltip
+      bg={colors.icGray1}
+      borderRadius='4px'
+      fontSize={'11px'}
+      label={tooltip}
+      p='12px 20px'
+      placement='right-end'
+      textColor={colors.icGray3}
+    >
+      <Flex cursor={cursor} direction='row' justifyContent={'space-between'}>
+        <Flex align='center'>
+          <Text fontSize='12px' fontWeight='500' textColor={colors.icGray2}>
+            {title}
           </Text>
-          <Text fontSize={'sm'}>{subValue}</Text>
         </Flex>
-      ))}
-    </Flex>
+        {values.map((value, index) => (
+          <Flex key={index} flexDir={'row'}>
+            <Text fontSize='12px' fontWeight='700' textColor={colors.icGray3}>
+              {value}
+            </Text>
+            <Text fontSize={'sm'}>{subValue}</Text>
+          </Flex>
+        ))}
+      </Flex>
+    </Tooltip>
   )
 }
 
-const TradeInfo = ({ data }: { data: TradeInfoItem[] }) => {
+const TradeInfoItemsContainer = ({ items }: { items: TradeInfoItem[] }) => {
   return (
     <Flex direction='column'>
-      {data.map((item, index) => (
-        <Box key={index} mb={index < data.length - 1 ? '8px' : '0'}>
+      {items.map((item, index) => (
+        <Box key={index} mb={index < items.length - 1 ? '20px' : '0'}>
           <TradeInfoItemRow item={item} />
         </Box>
       ))}
@@ -50,4 +55,4 @@ const TradeInfo = ({ data }: { data: TradeInfoItem[] }) => {
   )
 }
 
-export default TradeInfo
+export default TradeInfoItemsContainer
