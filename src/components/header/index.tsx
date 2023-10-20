@@ -1,7 +1,7 @@
 import { Flex, Link, Spacer } from '@chakra-ui/react'
 
+import { Connect } from './connect'
 import { Logo } from './logo'
-import Navigation from './navigation'
 
 const Header = () => {
   return (
@@ -28,9 +28,7 @@ const Header = () => {
           </Link>
         </Flex>
         <Spacer />
-        <Flex align='center' justifyContent={'flex-end'}>
-          <Navigation />
-        </Flex>
+        <Connect />
       </Flex>
     </Flex>
   )
