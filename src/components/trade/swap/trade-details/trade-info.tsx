@@ -43,7 +43,16 @@ const TradeInfoItemsContainer = ({ items }: { items: TradeInfoItem[] }) => {
   return (
     <Flex direction='column'>
       {items.map((item, index) => (
-        <Box key={index} mb={index < items.length - 1 ? '20px' : '0'}>
+        <Box
+          key={index}
+          mb={index < items.length - 1 ? '20px' : '0'}
+          borderTop={
+            index === items.length - 1 || index === 0
+              ? '1px solid #E7F0F1'
+              : 'none'
+          }
+          paddingTop={index === items.length - 1 || index === 0 ? '16px' : '0'}
+        >
           <TradeInfoItemRow item={item} />
         </Box>
       ))}

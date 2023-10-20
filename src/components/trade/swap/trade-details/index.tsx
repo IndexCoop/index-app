@@ -68,8 +68,9 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                     bg: styles.background,
                     borderBottomColor: styles.background,
                     borderBottomRadius: 0,
+                    pb: '0px',
                   }}
-                  p={'12px'}
+                  p={'16px 20px'}
                 >
                   <Flex
                     align='center'
@@ -104,6 +105,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                 borderColor={styles.border}
                 borderRadius='0 0 12px 12px'
                 borderTopColor={styles.background}
+                p={'16px 20px'}
               >
                 <TradeInfoItemsContainer items={data} />
               </AccordionPanel>
