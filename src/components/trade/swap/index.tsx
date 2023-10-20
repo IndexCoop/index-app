@@ -42,8 +42,8 @@ import {
 } from '../_shared/SelectTokenModal'
 
 import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
-import { TradeDetail } from './TradeDetail'
-import { TradeInfoItem } from './TradeInfo'
+import { TradeDetails } from './trade-details'
+import { TradeInfoItem } from './trade-details/trade-info'
 import { RethSupplyCapOverrides } from '@/components/supply'
 
 export type QuickTradeProps = {
@@ -124,11 +124,13 @@ const QuickTrade = (props: QuickTradeProps) => {
         proRatedNavPrice.toLocaleString('en-US', {
           style: 'currency',
           currency: 'USD',
-        }),
+        }) +
+          ' (' +
+          navDivergence.toFixed(2) +
+          '%)',
       ],
-      subValue: '(' + navDivergence.toFixed(2) + '%)',
       tooltip:
-        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt taken on (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV',
+        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt token (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV.',
     }
     const navIndex = 2
     var updatedInfoData = tradeInfoData
@@ -533,7 +535,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       >
         <>
           {tradeInfoData.length > 0 && (
-            <TradeDetail
+            <TradeDetails
               data={tradeInfoData}
               gasPriceInUsd={gasCostsInUsd}
               prices={tokenPrices}
