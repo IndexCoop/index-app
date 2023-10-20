@@ -67,7 +67,7 @@ const Disclaimer = () => (
       Click{' '}
       <Link
         target={'_blank'}
-        href='https://indexcoop.com/legal/tokens-restricted-for-restricted-persons'
+        href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
         textDecoration={'underline'}
       >
         here
