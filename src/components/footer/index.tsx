@@ -1,6 +1,6 @@
-import { useColorStyles } from '../../lib/styles/colors'
-
 import { Flex, Link, Text } from '@chakra-ui/react'
+
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
 const Footer = () => {
   const { styles } = useColorStyles()
@@ -21,10 +21,10 @@ const Footer = () => {
         p={['32px', '32px', '32px', 0]}
         w={['100%', '100%', '100%', '1024px']}
       >
-        <Flex mb={'40px'}>
-          <Links textColor={styles.text2} />
+        <Flex mb={'45px'}>
+          <Disclaimer />
         </Flex>
-        <Disclaimer />
+        <Links textColor={styles.text2} />
       </Flex>
     </Flex>
   )
@@ -32,7 +32,7 @@ const Footer = () => {
 
 const Disclaimer = () => (
   <Flex direction='column'>
-    <Text fontSize={'2xs'}>
+    <Text fontSize={'2xs'} textColor={colors.icGray3}>
       Disclaimer: This content is for informational purposes only and is not
       legal, tax, investment, financial, or other advice. You should not take,
       or refrain from taking, any action based on any information contained
@@ -67,7 +67,7 @@ const Disclaimer = () => (
       Click{' '}
       <Link
         target={'_blank'}
-        href='https://indexcoop.com/legal/tokens-restricted-for-restricted-persons'
+        href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
         textDecoration={'underline'}
       >
         here
@@ -87,7 +87,11 @@ const Disclaimer = () => (
 )
 
 const Links = ({ textColor }: { textColor: string }) => (
-  <Flex direction={['column', 'column', 'column', 'row']}>
+  <Flex
+    direction={['column', 'column', 'column', 'row']}
+    fontSize={'sm'}
+    textColor={colors.icGray3}
+  >
     <Flex direction={'column'} mr='4'>
       <Link
         color={textColor}
