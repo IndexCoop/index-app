@@ -120,6 +120,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
       )}
       <Button
         borderRadius='10px'
+        boxShadow='md'
         color={colors.icWhite}
         background={colors.icBlue6}
         my='8px'

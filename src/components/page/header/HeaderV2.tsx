@@ -8,7 +8,6 @@ import NextLink from 'next/link'
 
 const links = [
   { href: '/swap', label: 'Swap' },
-  { href: '/tokens', label: 'Tokens' },
   { href: '/vaults', label: 'Vaults' },
 ]
 
