@@ -1,18 +1,15 @@
-import { colors, useColorStyles } from '@/lib/styles/colors'
-
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Box, Flex, Text, Tooltip } from '@chakra-ui/react'
+
+import { colors } from '@/lib/styles/colors'
 
 export interface TradeInfoItem {
   title: string
   values: string[]
-  valuesColor?: string
   tooltip?: string
-  subValue?: string
 }
 
 const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
-  const { title, values, valuesColor, tooltip, subValue } = item
+  const { title, values, tooltip } = item
   const cursor = tooltip && tooltip.length > 0 ? 'pointer' : 'default'
   return (
     <Tooltip
@@ -35,7 +32,6 @@ const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
             <Text fontSize='12px' fontWeight='700' textColor={colors.icGray3}>
               {value}
             </Text>
-            <Text fontSize={'sm'}>{subValue}</Text>
           </Flex>
         ))}
       </Flex>
