@@ -1,10 +1,8 @@
 import {
   flashMintIndexesMainnetRedeem,
-  flashMintIndexesPolygonRedeem,
   indexNamesMainnet,
-  indexNamesPolygon,
-  MoneyMarketIndex,
-} from '@/constants/tokens'
+} from '@/constants/tokenlists'
+import { MoneyMarketIndex } from '@/constants/tokens'
 
 import { getTokenListByChain } from './useTradeTokenLists'
 
@@ -27,20 +25,6 @@ describe('getTokenListByChain()', () => {
 //     const isFlashMint = true
 //     const list = getTokenListByChain(chainId, isFlashMint)
 //     expect(list).toEqual(flashMintIndexesMainnetRedeem)
-//   })
-
-//   test('returns regular list for swap on polygon', async () => {
-//     const chainId = 137
-//     const isFlashMint = false
-//     const list = getTokenListByChain(chainId, isFlashMint)
-//     expect(list).toEqual(indexNamesPolygon)
-//   })
-
-//   test('returns specific list for flash mint on polygon', async () => {
-//     const chainId = 137
-//     const isFlashMint = true
-//     const list = getTokenListByChain(chainId, isFlashMint)
-//     expect(list).toEqual(flashMintIndexesPolygonRedeem)
 //   })
 
 //   test('returns MMI only for FlashMint (not Swap)', async () => {

@@ -1,4 +1,5 @@
 import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
+import { mainnetCurrencyTokens } from '@/constants/tokenlists'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   DAI,
@@ -7,18 +8,13 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   FIXED_DAI,
   FIXED_USDC,
-  flashMintIndexesMainnetRedeem,
-  flashMintIndexesPolygonRedeem,
   GitcoinStakedETHIndex,
   ic21,
   icETHIndex,
   IndexToken,
   LeveragedRethStakingYield,
-  mainnetCurrencyTokens,
   MATIC,
   MoneyMarketIndex,
-  optimismCurrencyTokens,
-  polygonCurrencyTokens,
   RETH,
   SETH2,
   STETH,
@@ -54,10 +50,6 @@ export function getCurrencyTokens(chainId: number | undefined): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
       return mainnetCurrencyTokens
-    case OPTIMISM.chainId:
-      return optimismCurrencyTokens
-    case POLYGON.chainId:
-      return polygonCurrencyTokens
     default:
       return []
   }
@@ -117,26 +109,4 @@ export const isNativeCurrency = (token: Token, chainId: number): boolean => {
 
 export function isPerpToken(token: Token): boolean {
   return token.isPerp ? true : false
-}
-
-export function isTokenAvailableForFlashMint(
-  token: Token,
-  chainId: number | undefined
-): boolean {
-  if (!chainId) return false
-  if (token.symbol === IndexToken.symbol) return false
-  switch (chainId) {
-    case MAINNET.chainId:
-      return (
-        flashMintIndexesMainnetRedeem.filter((t) => t.symbol === token.symbol)
-          .length > 0
-      )
-    case POLYGON.chainId:
-      return (
-        flashMintIndexesPolygonRedeem.filter((t) => t.symbol === token.symbol)
-          .length > 0
-      )
-    default:
-      return false
-  }
 }

@@ -1,3 +1,4 @@
+import { mainnetCurrencyTokens } from '@/constants/tokenlists'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -12,12 +13,9 @@ import {
   ic21,
   icETHIndex,
   LeveragedRethStakingYield,
-  mainnetCurrencyTokens,
   MATIC,
   MetaverseIndex,
   MoneyMarketIndex,
-  optimismCurrencyTokens,
-  polygonCurrencyTokens,
   STETH,
   USDC,
   WETH,
@@ -65,16 +63,6 @@ describe('getCurrencyTokens()', () => {
   test('returns correct currency tokens for mainnet', async () => {
     const currencyTokens = getCurrencyTokens(1)
     expect(currencyTokens).toEqual(mainnetCurrencyTokens)
-  })
-
-  test('returns correct currency tokens for optimism', async () => {
-    const currencyTokens = getCurrencyTokens(10)
-    expect(currencyTokens).toEqual(optimismCurrencyTokens)
-  })
-
-  test('returns correct currency tokens for polygon', async () => {
-    const currencyTokens = getCurrencyTokens(137)
-    expect(currencyTokens).toEqual(polygonCurrencyTokens)
   })
 })
 
