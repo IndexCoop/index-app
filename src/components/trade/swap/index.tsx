@@ -42,8 +42,8 @@ import {
 } from '../_shared/SelectTokenModal'
 
 import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
-import { TradeDetail } from './TradeDetail'
-import { TradeInfoItem } from './TradeInfo'
+import { TradeDetail } from './trade-details'
+import { TradeInfoItem } from './trade-details/trade-info'
 import { RethSupplyCapOverrides } from '@/components/supply'
 
 export type QuickTradeProps = {
