@@ -15,7 +15,7 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 
-import TradeInfo, { TradeInfoItem } from './trade-info'
+import TradeInfoItemsContainer, { TradeInfoItem } from './trade-info'
 import { TradePrice } from './trade-price'
 
 export interface TradeDetailTokenPrices {
@@ -105,7 +105,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                 borderRadius='0 0 12px 12px'
                 borderTopColor={styles.background}
               >
-                <TradeInfo data={data} />
+                <TradeInfoItemsContainer items={data} />
               </AccordionPanel>
             </>
           )}
