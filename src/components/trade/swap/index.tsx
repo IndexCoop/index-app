@@ -124,9 +124,11 @@ const QuickTrade = (props: QuickTradeProps) => {
         proRatedNavPrice.toLocaleString('en-US', {
           style: 'currency',
           currency: 'USD',
-        }),
+        }) +
+          ' (' +
+          navDivergence.toFixed(2) +
+          '%)',
       ],
-      subValue: '(' + navDivergence.toFixed(2) + '%)',
       tooltip:
         'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt token (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV.',
     }
