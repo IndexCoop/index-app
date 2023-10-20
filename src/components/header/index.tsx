@@ -6,7 +6,7 @@ import { Flex, Link, Spacer } from '@chakra-ui/react'
 
 import { IndexLogoBlack, IndexLogoWhite } from '@/lib/utils/assets'
 
-import Navigation from './Navigation'
+import Navigation from './navigation'
 
 const Header = () => {
   // FIXME:

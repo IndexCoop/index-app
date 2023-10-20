@@ -4,9 +4,9 @@ import { useAccount } from 'wagmi'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-import { useLedgerStatus } from '../../../lib/hooks/useLedgerStatus'
-import { useNetwork } from '../../../lib/hooks/useNetwork'
-import { logConnect } from '../../../lib/utils/api/analytics'
+import { useLedgerStatus } from '@/lib/hooks/useLedgerStatus'
+import { useNetwork } from '@/lib/hooks/useNetwork'
+import { logConnect } from '@/lib/utils/api/analytics'
 
 const Navigation = () => {
   const { address } = useAccount()
