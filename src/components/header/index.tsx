@@ -1,4 +1,4 @@
-import { Flex, Link, Spacer } from '@chakra-ui/react'
+import { Flex, Spacer } from '@chakra-ui/react'
 
 import { Connect } from './connect'
 import { Logo } from './logo'
@@ -17,15 +17,7 @@ const Header = () => {
     >
       <Flex align='center' justifyContent='space-between' w='100%'>
         <Flex marginRight={['', '', '', '20px']}>
-          <Link
-            href='https://indexcoop.com/'
-            _hover={{
-              textDecoration: 'none',
-            }}
-            flexGrow={1}
-          >
-            <Logo />
-          </Link>
+          <Logo />
         </Flex>
         <Spacer />
         <Connect />
