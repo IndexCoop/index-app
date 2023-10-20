@@ -42,7 +42,7 @@ import {
 } from '../_shared/SelectTokenModal'
 
 import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
-import { TradeDetail } from './trade-details'
+import { TradeDetails } from './trade-details'
 import { TradeInfoItem } from './trade-details/trade-info'
 import { RethSupplyCapOverrides } from '@/components/supply'
 
@@ -533,7 +533,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       >
         <>
           {tradeInfoData.length > 0 && (
-            <TradeDetail
+            <TradeDetails
               data={tradeInfoData}
               gasPriceInUsd={gasCostsInUsd}
               prices={tokenPrices}
