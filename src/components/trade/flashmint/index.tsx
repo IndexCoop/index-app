@@ -418,7 +418,7 @@ const FlashMint = (props: QuickTradeProps) => {
   }, [getTokenBalance, indexToken, isLoadingBalance])
 
   return (
-    <Box mt='32px'>
+    <Box mt='8px'>
       <DirectIssuance
         indexToken={indexToken}
         indexTokenAmountFormatted={indexTokenAmountFormatted}

@@ -65,8 +65,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                   borderRadius={12}
                   color={colors.icGray2}
                   _expanded={{
-                    bg: styles.background,
-                    borderBottomColor: styles.background,
+                    borderBottomColor: 'transparent',
                     borderBottomRadius: 0,
                     pb: '0px',
                   }}
@@ -100,11 +99,10 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                 </AccordionButton>
               </h4>
               <AccordionPanel
-                bg={styles.background}
                 border='1px solid'
                 borderColor={styles.border}
                 borderRadius='0 0 12px 12px'
-                borderTopColor={styles.background}
+                borderTopColor={'transparent'}
                 p={'16px 20px'}
               >
                 <TradeInfoItemsContainer items={data} />
