@@ -1,7 +1,7 @@
 import { Flex, HStack, Link, Spacer } from '@chakra-ui/react'
 
-import Navigation from './Navigation'
-import LogoV2 from './LogoV2'
+import { Connect } from './connect'
+import { Logo } from './logo'
 import { colors } from '@/lib/styles/colors'
 import { usePathname } from 'next/navigation'
 import NextLink from 'next/link'
@@ -36,7 +36,7 @@ const HeaderV2 = () => {
               textDecoration: 'none',
             }}
           >
-            <LogoV2 />
+            <Logo />
           </Link>
           {links.map((link) => (
             <Link
@@ -55,7 +55,7 @@ const HeaderV2 = () => {
         </HStack>
         <Spacer />
         <Flex align='center' justifyContent={'flex-end'}>
-          <Navigation />
+          <Connect />
         </Flex>
       </Flex>
     </Flex>
