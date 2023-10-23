@@ -68,10 +68,7 @@ const DirectIssuance = ({
         </Flex>
       </Flex>
       <Flex justify='center' mt='4'></Flex>
-      <Box
-        borderColor={isDarkMode ? colors.icWhite : colors.black}
-        paddingTop='16px'
-      >
+      <Box borderColor={isDarkMode ? colors.icWhite : colors.black}>
         <TradeInputSelector
           caption=''
           config={{

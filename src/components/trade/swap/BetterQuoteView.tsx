@@ -23,7 +23,7 @@ export const BetterQuoteView = (props: BetterQuoteViewProps) => {
     props.state === BetterQuoteState.betterQuote || isBetterQuotePriceImpact
   return (
     <Flex
-      bg={colors.icGray1}
+      bg={colors.icWhite}
       border='1px solid'
       borderColor={colors.icGray1}
       borderRadius='16px'
