@@ -17,7 +17,9 @@ enum TradeType {
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
   const { styles } = useColorStyles()
-  const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
+  const [selectedType, setSelectedType] = useState<TradeType>(
+    TradeType.flashMint
+  )
 
   const paddingX = props.isNarrowVersion ? '16px' : '40px'
   const shouldShowSwap = true
