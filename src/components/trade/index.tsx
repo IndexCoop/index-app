@@ -44,8 +44,7 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
         borderRadius='16px'
         boxShadow='sm'
         direction='column'
-        py='20px'
-        px={['16px', paddingX]}
+        p='8px 16px 16px'
         height={'100%'}
       >
         <Navigation
@@ -70,16 +69,12 @@ type NavigationButtonProps = {
 }
 
 const NavigationButton = (props: NavigationButtonProps) => {
-  const { isDarkMode } = useICColorMode()
   return (
     <Text
-      borderBottom={props.isSelected ? '2px solid' : '0'}
-      borderColor={isDarkMode ? colors.white : colors.black}
-      color={props.isSelected ? 'inherit' : colors.icGray3}
+      color={props.isSelected ? colors.icGray4 : colors.icGray2}
       cursor='pointer'
-      fontSize='20px'
+      fontSize='14px'
       fontWeight='700'
-      mr='16px'
       onClick={props.onClick}
     >
       {props.title}
@@ -108,8 +103,8 @@ const Navigation = (props: NavigationProps) => {
   const swapIsSelected = selectedType === TradeType.swap
 
   return (
-    <Flex align='center' justify='space-between'>
-      <Flex>
+    <Flex align='center' justify='space-between' pl={'16px'}>
+      <Flex gap={'24px'}>
         {props.shouldShowSwap && (
           <NavigationButton
             isSelected={swapIsSelected}

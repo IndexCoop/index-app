@@ -20,8 +20,8 @@ interface TradeInputSelectorProps {
   selectedToken: Token
   selectedTokenAmount: string
   priceImpact?: { colorCoding: string; value: string }
-  onChangeInput: (token: Token, amount: string) => void
   onSelectToken: () => void
+  onChangeInput?: (token: Token, amount: string) => void
   onClickBalance?: () => void
 }
 
@@ -46,10 +46,10 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
       borderColor={colors.icGray1}
       borderRadius={12}
       direction={'column'}
-      p={'16px'}
+      p={'16px 20px'}
     >
       <Caption caption={props.caption} />
-      <Flex align='flex-start' direction='row' justify='space-between' mt='8px'>
+      <Flex align='center' direction='row' justify='space-between' mt='6px'>
         <Input
           color={colors.icBlack}
           fontSize='25px'
