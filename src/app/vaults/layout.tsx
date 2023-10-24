@@ -2,8 +2,8 @@
 
 import { Flex } from '@chakra-ui/react'
 
-import Footer from '@/components/page/Footer'
-import HeaderV2 from '@/components/page/header/HeaderV2'
+import Footer from '@/components/footer'
+import HeaderV2 from '@/components/header/header-v2'
 
 import { Providers } from './providers'
 

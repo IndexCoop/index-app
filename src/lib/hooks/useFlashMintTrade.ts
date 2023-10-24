@@ -74,9 +74,10 @@ export const useFlashMintTrade = () => {
         ) {
           setTxWouldFail(true)
         }
+        throw error
       }
     },
-    [address, signer]
+    [address, chainId, signer]
   )
 
   return { executeFlashMintTrade, isTransacting, txWouldFail }

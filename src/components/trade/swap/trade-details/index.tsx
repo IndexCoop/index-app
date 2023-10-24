@@ -15,32 +15,29 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 
-import TradeInfo, { TradeInfoItem } from './TradeInfo'
-import { TradePrice } from './TradePrice'
+import TradeInfoItemsContainer, { TradeInfoItem } from './trade-info'
+import { TradePrice } from './trade-price'
 
-export type TradeDetailTokenPrices = {
+export interface TradeDetailTokenPrices {
   inputTokenPrice: string
   inputTokenPriceUsd: string
   outputTokenPrice: string
   outputTokenPriceUsd: string
 }
 
-type TradeDetailProps = {
+interface TradeDetailsProps {
   data: TradeInfoItem[]
   gasPriceInUsd: number
   prices: TradeDetailTokenPrices
   showWarning?: boolean
 }
 
-export const TradeDetail = ({
-  data,
-  gasPriceInUsd,
-  prices,
-  showWarning,
-}: TradeDetailProps) => {
+export const TradeDetails = (props: TradeDetailsProps) => {
+  const { data, gasPriceInUsd, prices, showWarning } = props
   const isWeb = useBreakpointValue({ base: false, md: true, lg: true })
-  const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
   const { styles } = useColorStyles()
+
+  const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
 
   const onToggleTokenPrice = (event: any) => {
     event.preventDefault()
@@ -65,27 +62,28 @@ export const TradeDetail = ({
                 <AccordionButton
                   border='1px solid'
                   borderColor={styles.border}
-                  borderRadius={16}
+                  borderRadius={12}
+                  color={colors.icGray2}
                   _expanded={{
-                    bg: styles.background,
-                    borderBottomColor: styles.background,
+                    borderBottomColor: 'transparent',
                     borderBottomRadius: 0,
-                    color: styles.text,
+                    pb: '0px',
                   }}
+                  p={'16px 20px'}
                 >
                   <Flex
                     align='center'
                     flex='1'
                     justify='space-between'
-                    pr='8px'
+                    pr='4px'
                   >
                     <Flex>
                       {showWarning && (
                         <WarningTwoIcon color={styles.text} mr='8px' />
                       )}
-                      {isWeb && !showWarning && (
+                      {/* {isWeb && !showWarning && (
                         <InfoOutlineIcon color={styles.text} mr='8px' />
-                      )}
+                      )} */}
                       <Box onClick={onToggleTokenPrice}>
                         <TradePrice
                           comparisonLabel={comparisonLabel}
@@ -101,13 +99,13 @@ export const TradeDetail = ({
                 </AccordionButton>
               </h4>
               <AccordionPanel
-                bg={styles.background}
                 border='1px solid'
                 borderColor={styles.border}
-                borderRadius='0 0 16px 16px'
-                borderTopColor={styles.background}
+                borderRadius='0 0 12px 12px'
+                borderTopColor={'transparent'}
+                p={'16px 20px'}
               >
-                <TradeInfo data={data} />
+                <TradeInfoItemsContainer items={data} />
               </AccordionPanel>
             </>
           )}
@@ -118,7 +116,9 @@ export const TradeDetail = ({
 }
 
 const GasFees = ({ label }: { label: string }) => (
-  <Flex bg={colors.icGray1} borderRadius={16} fontSize='12px' px='2' py='0'>
-    <Text color={colors.icGray4}>Gas ${label}</Text>
+  <Flex>
+    <Text color={colors.icGray2} fontSize='12px' fontWeight={500}>
+      Gas ${label}
+    </Text>
   </Flex>
 )

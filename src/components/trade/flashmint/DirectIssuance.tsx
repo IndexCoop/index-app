@@ -10,7 +10,7 @@ import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
 import { Token } from '@/constants/tokens'
 
-import TradeInputSelector from '../_shared/TradeInputSelector'
+import { TradeInputSelector } from '../trade-input-selector'
 
 type DirectIssuanceProps = {
   indexToken: Token
@@ -43,7 +43,6 @@ const DirectIssuance = ({
   inputOutputTokenFiatFormatted,
   isIssue,
   isMintable,
-  isNarrow,
   onClickBalance,
   onChangeBuyTokenAmount,
   onSelectIndexToken,
@@ -69,27 +68,25 @@ const DirectIssuance = ({
         </Flex>
       </Flex>
       <Flex justify='center' mt='4'></Flex>
-      <Box
-        borderColor={isDarkMode ? colors.icWhite : colors.black}
-        paddingTop='16px'
-      >
+      <Box borderColor={isDarkMode ? colors.icWhite : colors.black}>
         <TradeInputSelector
+          caption=''
           config={{
-            isDarkMode,
             isInputDisabled: isIssue && !isMintable,
-            isNarrowVersion: isNarrow,
             isSelectorDisabled: isIssue && !isMintable,
             isReadOnly: isIssue && !isMintable,
-            showMaxLabel: isIssue && isMintable,
           }}
+          balance={indexTokenBalanceFormatted}
           selectedToken={indexToken}
           selectedTokenAmount={indexTokenAmountFormatted}
-          selectedTokenBalance={indexTokenBalanceFormatted}
           formattedFiat={indexTokenFiatFormatted}
-          priceImpact={priceImpact}
+          priceImpact={{
+            colorCoding: priceImpact?.colorCoding ?? '',
+            value: priceImpact?.priceImpact ?? '',
+          }}
           onChangeInput={onChangeBuyTokenAmount}
           onClickBalance={onClickBalance}
-          onSelectedToken={(_) => onSelectIndexToken()}
+          onSelectToken={onSelectIndexToken}
         />
         <Text marginTop='16px'>
           {isIssue

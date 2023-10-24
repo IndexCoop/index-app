@@ -41,6 +41,7 @@ import { useRethSupply } from '@/components/supply/useRethSupply'
 import { SupplyCapState } from '@/components/supply'
 
 const FlashMint = (props: QuickTradeProps) => {
+  const { onOverrideSupplyCap, onShowSupplyCap } = props
   const { openConnectModal } = useConnectModal()
   const { address } = useWallet()
   const { chainId, isSupportedNetwork } = useNetwork()
@@ -153,18 +154,18 @@ const FlashMint = (props: QuickTradeProps) => {
   }, [transactionReview])
 
   useEffect(() => {
-    if (!props.onShowSupplyCap) return
+    if (!onShowSupplyCap) return
     const show =
       indexToken.symbol === LeveragedRethStakingYield.symbol && isMinting
-    props.onShowSupplyCap(show)
-  }, [indexToken, isMinting])
+    onShowSupplyCap(show)
+  }, [indexToken, isMinting, onShowSupplyCap])
 
   useEffect(() => {
-    if (!props.onOverrideSupplyCap) return
+    if (!onOverrideSupplyCap) return
     const isMintingIcReth =
       indexToken.symbol === LeveragedRethStakingYield.symbol && isMinting
     if (isFetchingQuote || !rethSupplyData || !isMintingIcReth) {
-      props.onOverrideSupplyCap(undefined)
+      onOverrideSupplyCap(undefined)
       return
     }
     const indexAmountBn = indexTokenAmountWei
@@ -172,14 +173,14 @@ const FlashMint = (props: QuickTradeProps) => {
     const willExceedCap = indexAmount > rethSupplyData.available
     const totalSupplyPercent = 100 + 5
     if (willExceedCap) {
-      props.onOverrideSupplyCap({
+      onOverrideSupplyCap({
         state: SupplyCapState.capWillExceed,
         totalSupply: '',
         totalSupplyPercent,
       })
       setButtonDisabled(true)
     } else {
-      props.onOverrideSupplyCap(undefined)
+      onOverrideSupplyCap(undefined)
       setButtonDisabled(false)
     }
   }, [
@@ -187,6 +188,7 @@ const FlashMint = (props: QuickTradeProps) => {
     indexToken,
     isFetchingQuote,
     isMinting,
+    onOverrideSupplyCap,
     quoteResult,
     rethSupplyData,
   ])
@@ -379,9 +381,14 @@ const FlashMint = (props: QuickTradeProps) => {
     indexTokenPrice
   )
   const inputOutputTokenFiatFormatted = formattedFiat(
+    // To avoid rounding errors that could show a wrong fiat price, no `decimals`
+    // should be set here.
     parseFloat(
-      displayFromWei(inputOutputTokenAmount, 2, inputOutputToken.decimals) ??
-        '0'
+      displayFromWei(
+        inputOutputTokenAmount,
+        undefined,
+        inputOutputToken.decimals
+      ) ?? '0'
     ),
     inputOutputPrice
   )
@@ -411,7 +418,7 @@ const FlashMint = (props: QuickTradeProps) => {
   }, [getTokenBalance, indexToken, isLoadingBalance])
 
   return (
-    <Box mt='32px'>
+    <Box mt='8px'>
       <DirectIssuance
         indexToken={indexToken}
         indexTokenAmountFormatted={indexTokenAmountFormatted}

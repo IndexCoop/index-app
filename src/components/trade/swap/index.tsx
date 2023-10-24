@@ -35,15 +35,16 @@ import {
   getTradeInfoData0x,
   shouldShowWarningSign,
 } from '../_shared/QuickTradeFormatter'
-import TradeInputSelector from '../_shared/TradeInputSelector'
 import {
   getSelectTokenListItems,
   SelectTokenModal,
 } from '../_shared/SelectTokenModal'
 
+import { TradeInputSelector } from '../trade-input-selector'
+
 import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
-import { TradeDetail } from './TradeDetail'
-import { TradeInfoItem } from './TradeInfo'
+import { TradeDetails } from './trade-details'
+import { TradeInfoItem } from './trade-details/trade-info'
 import { RethSupplyCapOverrides } from '@/components/supply'
 
 export type QuickTradeProps = {
@@ -101,6 +102,9 @@ const QuickTrade = (props: QuickTradeProps) => {
   const [gasCostsInUsd, setGasCostsInUsd] = useState(0)
   const [navData, setNavData] = useState<TradeInfoItem>()
 
+  // Does user need protecting from productive assets?
+  const [requiresProtection, setRequiresProtection] = useState(false)
+
   const indexToken = isBuying ? buyToken : sellToken
   const { nav } = useTokenComponents(indexToken, isPerpToken(indexToken))
 
@@ -121,11 +125,13 @@ const QuickTrade = (props: QuickTradeProps) => {
         proRatedNavPrice.toLocaleString('en-US', {
           style: 'currency',
           currency: 'USD',
-        }),
+        }) +
+          ' (' +
+          navDivergence.toFixed(2) +
+          '%)',
       ],
-      subValue: '(' + navDivergence.toFixed(2) + '%)',
       tooltip:
-        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt taken on (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV',
+        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt token (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV.',
     }
     const navIndex = 2
     var updatedInfoData = tradeInfoData
@@ -259,8 +265,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     fetchOptions()
   }, [fetchOptions])
 
-  // Does user need protecting from productive assets?
-  const [requiresProtection, setRequiresProtection] = useState(false)
   useEffect(() => {
     if (
       protection.isProtectable &&
@@ -469,52 +473,51 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   return (
     <Box>
-      <Flex direction='column' m='40px 0 20px'>
+      <Flex direction='column' m='4px 0 6px'>
         <TradeInputSelector
-          config={{
-            isDarkMode,
-            isInputDisabled: false,
-            isNarrowVersion: isNarrow,
-            isSelectorDisabled: false,
-            isReadOnly: false,
-            showMaxLabel: true,
-          }}
+          config={{ isReadOnly: false }}
+          balance={inputTokenBalanceFormatted}
+          caption='You pay'
+          formattedFiat={sellTokenFiat}
           selectedToken={sellToken}
           selectedTokenAmount={inputTokenAmountFormatted}
-          selectedTokenBalance={inputTokenBalanceFormatted}
-          formattedFiat={sellTokenFiat}
           onChangeInput={onChangeInputTokenAmount}
           onClickBalance={onClickInputBalance}
-          onSelectedToken={(_) => {
+          onSelectToken={() => {
             if (inputTokenItems.length > 1) onOpenSelectInputToken()
           }}
         />
-        <Box h='12px' alignSelf={'center'}>
+        <Box h='6px' alignSelf={'center'}>
           <IconButton
-            background={colors.icGray1}
+            background={colors.icWhite}
             margin={'-16px 0 0 0'}
-            aria-label='switch buy/sell tokens'
-            color={isDarkMode ? colors.icWhite : colors.black}
+            aria-label='switch input/output tokens'
+            color={colors.icGray2}
             icon={<UpDownIcon />}
             onClick={onSwitchTokens}
           />
         </Box>
         <TradeInputSelector
           config={{
-            isDarkMode,
             isInputDisabled: true,
-            isNarrowVersion: isNarrow,
             isSelectorDisabled: false,
             isReadOnly: true,
-            showMaxLabel: false,
           }}
+          caption={'You receive'}
           selectedToken={buyToken}
           selectedTokenAmount={buyTokenAmountFormatted}
-          selectedTokenBalance={outputTokenBalanceFormatted}
+          balance={outputTokenBalanceFormatted}
           formattedFiat={buyTokenFiat}
-          priceImpact={priceImpact ?? undefined}
+          priceImpact={
+            priceImpact
+              ? {
+                  value: priceImpact.priceImpact,
+                  colorCoding: priceImpact.colorCoding,
+                }
+              : undefined
+          }
           onClickBalance={onClickOutputBalance}
-          onSelectedToken={(_) => {
+          onSelectToken={() => {
             if (outputTokenItems.length > 1) onOpenSelectOutputToken()
           }}
         />
@@ -532,7 +535,7 @@ const QuickTrade = (props: QuickTradeProps) => {
       >
         <>
           {tradeInfoData.length > 0 && (
-            <TradeDetail
+            <TradeDetails
               data={tradeInfoData}
               gasPriceInUsd={gasCostsInUsd}
               prices={tokenPrices}

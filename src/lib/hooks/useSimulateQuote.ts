@@ -18,7 +18,7 @@ export const useSimulateQuote = (quoteResult: FlashMintQuoteResult) => {
     const request = await builder.makeTransactionRequest(quoteResult)
     if (!request) return false
     const accessKey = process.env.NEXT_PUBLIC_TENDERLY_ACCESS_KEY ?? ''
-    const project = process.env.NEXT_PUBLIC_TENDERLY_PROJECT ?? ''
+    const project = 'project'
     const user = process.env.NEXT_PUBLIC_TENDERLY_USER ?? ''
     let success = false
     try {

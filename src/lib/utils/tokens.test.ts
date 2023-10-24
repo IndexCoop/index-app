@@ -2,6 +2,7 @@ import { mainnetCurrencyTokens } from '@/constants/tokenlists'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
+  CoinDeskEthTrendIndex,
   DAI,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
@@ -74,6 +75,14 @@ describe('getCurrencyTokensForIndex()', () => {
     const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
     expect(currencyTokens.length).toEqual(defaultTokens.length)
     expect(currencyTokens).toEqual(defaultTokens)
+  })
+
+  test('returns correct tokens for cdETI', async () => {
+    const chainId = 1
+    const token = CoinDeskEthTrendIndex
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    expect(currencyTokens.length).toEqual(4)
+    expect(currencyTokens).toEqual([ETH, USDC, DAI, WETH])
   })
 
   test('returns DAI only for FIXED-DAI', async () => {

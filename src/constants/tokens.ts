@@ -43,6 +43,29 @@ export interface Token {
 /**
  * Indices
  */
+
+export const CoinDeskEthTrendIndex: Token = {
+  name: 'CoinDesk ETH Trend Index',
+  symbol: 'cdETI',
+  image:
+    'https://uploads-ssl.webflow.com/62e3ff7a08cb1968bf057388/651f04818f458f918171c84d_cdETI-logo.svg',
+  address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'cdeti',
+  // Mostly likely won't be listed on coingecko
+  coingeckoId: 'coindesk-eth-trend-index',
+  fees: {
+    streamingFee: '1.50%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.thematic],
+  defaultChain: MAINNET.chainId,
+}
+
 export const FIXED_DAI: Token = {
   name: 'Fixed Rate Yield Index (DAI)',
   symbol: 'FIXED-DAI',
