@@ -480,7 +480,6 @@ const QuickTrade = (props: QuickTradeProps) => {
                 }
               : undefined
           }
-          onClickBalance={onClickOutputBalance}
           onSelectToken={() => {
             if (outputTokenItems.length > 1) onOpenSelectOutputToken()
           }}
