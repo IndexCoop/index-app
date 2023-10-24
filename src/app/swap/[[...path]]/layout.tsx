@@ -7,6 +7,7 @@ import Header from '@/components/header'
 
 import { Providers } from './providers'
 
+// TODO: potentially move header, footer etc. out of here (to a higher level)
 export default function SwapLayout({
   children,
 }: {
