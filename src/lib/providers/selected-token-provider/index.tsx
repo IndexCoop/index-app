@@ -35,16 +35,18 @@ export const SelectedTokenProvider = (props: { children: any }) => {
     setOutputToken(tokens.outputToken)
   }, [])
 
-  const selectInputToken = (inputToken: Token) => {
+  const routeSwap = (inputToken: string, outputToken: string) => {
     router.push(
-      `/swap/${inputToken.symbol.toLowerCase()}/${outputToken.symbol.toLowerCase()}`
+      `/swap/${inputToken.toLowerCase()}/${outputToken.toLowerCase()}`
     )
   }
 
+  const selectInputToken = (inputToken: Token) => {
+    routeSwap(inputToken.symbol, outputToken.symbol)
+  }
+
   const selectOutputToken = (outputToken: Token) => {
-    router.push(
-      `/swap/${inputToken.symbol.toLowerCase()}/${outputToken.symbol.toLowerCase()}`
-    )
+    routeSwap(inputToken.symbol, outputToken.symbol)
   }
 
   return (
