@@ -1,12 +1,24 @@
 import { useEffect, useState } from 'react'
 
-import { Token } from '@/constants/tokens'
+import { ETH, Token } from '@/constants/tokens'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingeckoApi'
-import { getAddressForToken } from '@/lib/utils/tokens'
+import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
 
 import { useNetwork } from './useNetwork'
 
-export function useTokenPrice(token: Token) {
+export function useNativeTokenPrice(chainId?: number): number {
+  const [nativeToken, setNativeToken] = useState(ETH)
+  const nativeTokenPrice = useTokenPrice(nativeToken)
+
+  useEffect(() => {
+    const nativeToken = getNativeToken(chainId)
+    setNativeToken(nativeToken ?? ETH)
+  }, [chainId])
+
+  return nativeTokenPrice
+}
+
+export function useTokenPrice(token: Token): number {
   const { chainId, isSupportedNetwork } = useNetwork()
   const [tokenPrice, setTokenPrice] = useState<number>(0)
 
@@ -19,9 +31,7 @@ export function useTokenPrice(token: Token) {
     fetchTokenPrice()
   }, [chainId, token])
 
-  return {
-    tokenPrice,
-  }
+  return tokenPrice
 }
 
 /**
