@@ -15,7 +15,7 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 
-import TradeInfoItemsContainer, { TradeInfoItem } from './trade-info'
+import { TradeInfoItemsContainer, TradeInfoItem } from './trade-info'
 import { TradePrice } from './trade-price'
 
 export interface TradeDetailTokenPrices {

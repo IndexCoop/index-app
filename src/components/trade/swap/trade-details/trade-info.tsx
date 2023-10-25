@@ -39,7 +39,11 @@ const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
   )
 }
 
-const TradeInfoItemsContainer = ({ items }: { items: TradeInfoItem[] }) => {
+export const TradeInfoItemsContainer = ({
+  items,
+}: {
+  items: TradeInfoItem[]
+}) => {
   return (
     <Flex direction='column'>
       {items.map((item, index) => (
@@ -59,5 +63,3 @@ const TradeInfoItemsContainer = ({ items }: { items: TradeInfoItem[] }) => {
     </Flex>
   )
 }
-
-export default TradeInfoItemsContainer
