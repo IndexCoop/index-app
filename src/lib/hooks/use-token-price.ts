@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { ETH, Token } from '@/constants/tokens'
-import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingeckoApi'
+import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
 import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
 
 import { useNetwork } from './useNetwork'
