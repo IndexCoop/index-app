@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useBalanceData } from '@/lib/providers/Balances'
-import { GasStation } from '@/lib/utils/api/gasStation'
+import { GasStation } from '@/lib/utils/api/gas-station'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { EnhancedFlashMintQuote } from './useBestQuote'

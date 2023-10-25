@@ -5,8 +5,9 @@ import {
   flashMintIndexesMainnetRedeem,
   indexNamesMainnet,
 } from '@/constants/tokenlists'
-import { ETH, Token } from '@/constants/tokens'
-import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingeckoApi'
+import { CoinDeskEthTrendIndex, ETH, Token } from '@/constants/tokens'
+import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
+import { NavProvider } from '@/lib/utils/api/nav'
 import {
   getAddressForToken,
   getCurrencyTokensForIndex,
@@ -168,6 +169,11 @@ const getTokenPrice = async (
 ): Promise<number> => {
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress || !chainId) return 0
+  if (token.symbol === CoinDeskEthTrendIndex.symbol) {
+    const navProvider = new NavProvider()
+    const price = await navProvider.getNavPrice(token.symbol)
+    return price
+  }
   const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
   // Token price can return undefined
   return tokenPrice ?? 0
