@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import indicesTokenList from '@/constants/tokenlists'
 import { Token } from '@/constants/tokens'
-import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingeckoApi'
+import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
 import {
   getAddressForToken,
   getCurrencyTokensForIndex,
