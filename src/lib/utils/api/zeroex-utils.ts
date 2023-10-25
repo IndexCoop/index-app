@@ -5,7 +5,7 @@ import { OPTIMISM, POLYGON } from '@/constants/chains'
 import { ZeroExAffiliateAddress } from '@/constants/server'
 import { Token } from '@/constants/tokens'
 import { toWei } from '@/lib/utils'
-import { IndexApi } from '@/lib/utils/api/indexApi'
+import { IndexApi } from '@/lib/utils/api/index-api'
 
 const API_0X_INDEX_URL = `/0x`
 

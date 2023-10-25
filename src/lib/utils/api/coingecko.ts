@@ -1,6 +1,6 @@
+import { IndexApi } from '@/lib/utils/api/index-api'
 import { OPTIMISM, POLYGON } from '../../../constants/chains'
 import { ETH } from '../../../constants/tokens'
-import { IndexApi } from '../api/indexApi'
 
 const baseURL = '/coingecko'
 const indexApi = new IndexApi()

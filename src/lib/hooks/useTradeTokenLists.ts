@@ -6,7 +6,7 @@ import {
   indexNamesMainnet,
 } from '@/constants/tokenlists'
 import { ETH, Token } from '@/constants/tokens'
-import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingeckoApi'
+import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
 import {
   getAddressForToken,
   getCurrencyTokensForIndex,

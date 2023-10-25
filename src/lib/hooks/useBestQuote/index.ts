@@ -9,12 +9,12 @@ import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useBalanceData } from '@/lib/providers/Balances'
 import { toWei } from '@/lib/utils'
-import { GasStation } from '@/lib/utils/api/gasStation'
+import { GasStation } from '@/lib/utils/api/gas-station'
 import {
   getZeroExTradeData,
   RequestForQuote,
   ZeroExData,
-} from '@/lib/utils/api/zeroExUtils'
+} from '@/lib/utils/api/zeroex-utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
