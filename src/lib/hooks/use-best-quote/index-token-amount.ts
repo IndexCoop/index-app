@@ -12,7 +12,7 @@ export const getIndexTokenAmount = (
   sellTokenDecimals: number,
   sellTokenPrice: number,
   buyTokenPrice: number,
-  dexSwapOption: ZeroExData | null
+  dexSwapOption: { buyAmount: string; estimatedPriceImpact: string } | null
 ): BigNumber => {
   if (!isIssuance) {
     return toWei(sellTokenAmount, sellTokenDecimals)
