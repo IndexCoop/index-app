@@ -5,6 +5,21 @@ import { formatUnits, parseUnits } from '@ethersproject/units'
 export const selectLatestMarketData = (marketData?: number[][]) =>
   marketData?.[marketData.length - 1]?.[1] || 0
 
+export function shortenAddress(
+  address: string,
+  startLength: number = 6,
+  endLength: number = 4
+): string {
+  if (address.length < startLength + endLength) {
+    throw new Error('Address is too short to be shortened.')
+  }
+
+  const shortenedStart = address.substring(0, startLength)
+  const shortenedEnd = address.substring(address.length - endLength)
+
+  return `${shortenedStart}...${shortenedEnd}`
+}
+
 /**
  * Converts a number to Wei to another denomination of Eth.
  * Note: will loose precision if fraction part is greater than the decimals.

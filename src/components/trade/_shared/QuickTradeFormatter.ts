@@ -7,7 +7,10 @@ import { displayFromWei } from '@/lib/utils'
 import { getNativeToken } from '@/lib/utils/tokens'
 
 import { TradeDetailTokenPrices } from '../swap/trade-details'
-import { TradeInfoItem } from '../swap/trade-details/trade-info'
+import {
+  TradeInfoItem,
+  TradeInfoItemType,
+} from '../swap/trade-details/trade-info'
 
 export function getPriceImpactColorCoding(
   priceImpact: number,
@@ -194,7 +197,9 @@ export function getTradeInfoData0x(
   chainId: number = 1,
   navData: TradeInfoItem | null = null,
   slippage: number,
-  showSlippageWarning: boolean
+  showSlippageWarning: boolean,
+  contractBestOption: string,
+  contractBlockExplorerUrl: string
 ): TradeInfoItem[] {
   const minReceive = displayFromWei(minOutput, 4) ?? '0.0'
   const minReceiveFormatted = formatIfNumber(minReceive) + ' ' + buyToken.symbol
@@ -222,6 +227,11 @@ export function getTradeInfoData0x(
       ],
     },
     { title: slippageTitle, values: [slippageFormatted] },
+    {
+      type: TradeInfoItemType.link,
+      title: 'Contract',
+      values: [contractBestOption, contractBlockExplorerUrl],
+    },
     { title: 'Offered From', values: [offeredFromSources.toString()] },
   ]
 }

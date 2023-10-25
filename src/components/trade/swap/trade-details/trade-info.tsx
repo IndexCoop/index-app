@@ -1,15 +1,21 @@
-import { Box, Flex, Text, Tooltip } from '@chakra-ui/react'
+import { Box, Flex, Link, Text, Tooltip } from '@chakra-ui/react'
 
 import { colors } from '@/lib/styles/colors'
+import { shortenAddress } from '@/lib/utils'
 
+export enum TradeInfoItemType {
+  link,
+}
 export interface TradeInfoItem {
+  type?: TradeInfoItemType
   title: string
   values: string[]
   tooltip?: string
 }
 
 const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
-  const { title, values, tooltip } = item
+  const { title, values, tooltip, type } = item
+  console.log(type, title, values[0], values[1])
   const cursor = tooltip && tooltip.length > 0 ? 'pointer' : 'default'
   return (
     <Tooltip
@@ -27,13 +33,28 @@ const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
             {title}
           </Text>
         </Flex>
-        {values.map((value, index) => (
-          <Flex key={index} flexDir={'row'}>
+        {type !== undefined && type === TradeInfoItemType.link && (
+          <Link isExternal href={values[1]}>
             <Text fontSize='12px' fontWeight='700' textColor={colors.icGray3}>
-              {value}
+              {shortenAddress(values[0])}
             </Text>
+          </Link>
+        )}
+        {type === undefined && (
+          <Flex>
+            {values.map((value, index) => (
+              <Flex key={index} flexDir={'row'}>
+                <Text
+                  fontSize='12px'
+                  fontWeight='700'
+                  textColor={colors.icGray3}
+                >
+                  {value}
+                </Text>
+              </Flex>
+            ))}
           </Flex>
-        ))}
+        )}
       </Flex>
     </Tooltip>
   )

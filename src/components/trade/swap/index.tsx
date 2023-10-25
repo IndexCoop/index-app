@@ -151,12 +151,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     getTokenBalance(sellToken.symbol, chainId)
   )
 
-  const contractBestOption = getZeroExRouterAddress(chainId)
-  const contractBlockExplorerUrl = getBlockExplorerContractUrl(
-    contractBestOption,
-    chainId
-  )
-
   const determineBestOption = async () => {
     if (quoteResult.error !== null) {
       setTradeInfoData([])
@@ -172,6 +166,12 @@ const QuickTrade = (props: QuickTradeProps) => {
       BigNumber.from(0)
     )
 
+    const contractBestOption = getZeroExRouterAddress(chainId)
+    const contractBlockExplorerUrl = getBlockExplorerContractUrl(
+      contractBestOption,
+      chainId
+    )
+
     const gasCostsInUsd = quoteZeroEx?.gasCostsInUsd ?? 0
     setBuyTokenAmountFormatted(formattedBuyTokenAmount)
     const tradeInfoData = getTradeInfoData0x(
@@ -183,7 +183,9 @@ const QuickTrade = (props: QuickTradeProps) => {
       chainId,
       navData,
       slippage,
-      shouldShowWarningSign(slippage)
+      shouldShowWarningSign(slippage),
+      contractBestOption,
+      contractBlockExplorerUrl
     )
     setGasCostsInUsd(gasCostsInUsd)
     setTradeInfoData(tradeInfoData)
@@ -493,8 +495,8 @@ const QuickTrade = (props: QuickTradeProps) => {
         isLoading={isLoading}
         showMevProtectionMessage={false}
         onClickTradeButton={onClickTradeButton}
-        contractAddress={contractBestOption}
-        contractExplorerUrl={contractBlockExplorerUrl}
+        contractAddress={null}
+        contractExplorerUrl={null}
       >
         <>
           {tradeInfoData.length > 0 && (
