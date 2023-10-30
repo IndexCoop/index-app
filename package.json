@@ -14,9 +14,6 @@
   },
   "dependencies": {
     "@arcxmoney/analytics": "^1.9.0",
-    "@bugsnag/browser-performance": "^1.2.0",
-    "@bugsnag/js": "^7.21.0",
-    "@bugsnag/plugin-react": "^7.19.0",
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/next-js": "^2.1.4",
     "@chakra-ui/react": "^2.7.0",

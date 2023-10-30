@@ -8,7 +8,6 @@ import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 
 import theme, { rainbowkitTheme } from '@/lib/styles/theme'
-import { ErrorBoundary } from '@/lib/utils/logging'
 import { initSentryEventTracking } from '@/lib/utils/api/sentry'
 import { chains, wagmiConfig } from '@/lib/utils/wagmi'
 
@@ -27,21 +26,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
     id: process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_CONTAINER_ID ?? '',
   }
   return (
-    <ErrorBoundary>
-      <CacheProvider>
-        <ChakraProvider theme={theme}>
-          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-          <WagmiConfig config={wagmiConfig}>
-            <RainbowKitProvider
-              chains={chains}
-              theme={rainbowkitTheme}
-              appInfo={rainbowKitAppInfo}
-            >
-              <GTMProvider state={gtmParams}>{children}</GTMProvider>
-            </RainbowKitProvider>
-          </WagmiConfig>
-        </ChakraProvider>
-      </CacheProvider>
-    </ErrorBoundary>
+    <CacheProvider>
+      <ChakraProvider theme={theme}>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <WagmiConfig config={wagmiConfig}>
+          <RainbowKitProvider
+            chains={chains}
+            theme={rainbowkitTheme}
+            appInfo={rainbowKitAppInfo}
+          >
+            <GTMProvider state={gtmParams}>{children}</GTMProvider>
+          </RainbowKitProvider>
+        </WagmiConfig>
+      </ChakraProvider>
+    </CacheProvider>
   )
 }
