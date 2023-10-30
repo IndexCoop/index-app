@@ -35,6 +35,16 @@ const nextConfig = {
         destination: '/swap',
         permanent: true,
       },
+      {
+        source: '/ic21',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
+        source: '/cdeti',
+        destination: '/swap',
+        permanent: true,
+      },
     ]
   },
   webpack: (config) => {

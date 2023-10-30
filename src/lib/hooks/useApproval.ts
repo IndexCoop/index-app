@@ -55,7 +55,8 @@ export const useApproval = (
   useEffect(() => {
     if (!spenderAddress || !tokenAddress || isApproving) return
     updateApprovalState(spenderAddress)
-  }, [amount, isApproving, spenderAddress, tokenAddress, updateApprovalState])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount, isApproving, spenderAddress, tokenAddress])
 
   return { approve, isApproved, isApproving }
 }
