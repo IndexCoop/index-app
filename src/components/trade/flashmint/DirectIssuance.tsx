@@ -88,7 +88,7 @@ const DirectIssuance = ({
           onClickBalance={onClickBalance}
           onSelectToken={onSelectIndexToken}
         />
-        <Text marginTop='16px'>
+        <Text marginTop='16px' textColor={colors.icBlack}>
           {isIssue
             ? `Estimated ${inputOutputToken.symbol} required for mint (inc. slippage)`
             : `Estimated ${inputOutputToken.symbol} output for redemption (inc. slippage)`}
@@ -115,7 +115,9 @@ const DirectIssuance = ({
             <ChevronDownIcon ml={1} w={6} h={6} color={colors.icGray4} />
           </Flex>
           <Flex direction='column' marginLeft='16px'>
-            <Text fontWeight='600'>{inputOutputTokenAmountFormatted}</Text>
+            <Text fontWeight='600' textColor={colors.icBlack}>
+              {inputOutputTokenAmountFormatted}
+            </Text>
             <Text fontSize='12px' textColor={colorStyles(isDarkMode).text3}>
               {inputOutputTokenFiatFormatted}
             </Text>
@@ -136,10 +138,10 @@ type NavigationButtonProps = {
 }
 
 const NavigationButton = (props: NavigationButtonProps) => {
-  const { isDarkMode, styles } = useColorStyles()
+  const { styles } = useColorStyles()
   const backgroundColor = styles.background
-  const backgroundSelectedColor = isDarkMode ? colors.icGray1 : colors.icGray2
-  const selectedColor = isDarkMode ? colors.icBlack : colors.icWhite
+  const backgroundSelectedColor = colors.icGray2
+  const selectedColor = colors.icWhite
   return (
     <Text
       background={props.isSelected ? backgroundSelectedColor : backgroundColor}
