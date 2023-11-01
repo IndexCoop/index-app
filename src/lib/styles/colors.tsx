@@ -51,7 +51,6 @@ export const useColorStyles = () => {
 export const useICColorMode = () => {
   // const { colorMode } = useColorMode()
   const isDarkMode = false
-  console.log(isDarkMode)
   return { isDarkMode }
 }
 
