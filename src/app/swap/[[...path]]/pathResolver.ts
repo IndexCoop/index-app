@@ -62,7 +62,7 @@ export class PathResolver {
 
   private convertPathToSymbols(path: string[]): ResolvedPath {
     const defaultReturn = { inputToken: null, outputToken: null }
-    if (path.length < 1) return defaultReturn
+    if (!path || path.length < 1) return defaultReturn
     if (path.length === 1) {
       return { inputToken: this.resolveTokenSymbol(path[0]), outputToken: null }
     }
