@@ -38,7 +38,7 @@ export const QuickTradeSettingsPopover = (props: PopoverProps) => {
       </PopoverTrigger>
       <PopoverContent bg={backgroundColor} p='8px'>
         <PopoverBody>
-          <Text fontSize='md' fontWeight='700'>
+          <Text fontSize='md' fontWeight='700' textColor={colors.icBlack}>
             Slippage Settings
           </Text>
           <Flex align='center' my='4'>
@@ -57,6 +57,7 @@ export const QuickTradeSettingsPopover = (props: PopoverProps) => {
               <Input
                 fontSize='md'
                 placeholder={`${slippage}`}
+                _placeholder={{ color: colors.icGray2 }}
                 p='8px'
                 pr='4px'
                 textAlign='right'
@@ -74,10 +75,10 @@ export const QuickTradeSettingsPopover = (props: PopoverProps) => {
                   onChangeSlippage(updatedSlippage)
                 }}
               />
-              <Text>%</Text>
+              <Text textColor={colors.icBlack}>%</Text>
             </Flex>
           </Flex>
-          <Text fontSize='sm' fontWeight='500'>
+          <Text fontSize='sm' fontWeight='500' textColor={colors.icBlack}>
             Make sure to know what you are doing when entering custom slippage
             values.
           </Text>

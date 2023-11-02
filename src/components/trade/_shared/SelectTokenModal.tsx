@@ -105,7 +105,7 @@ const TokenItem = ({
       <Image alt={`${item.symbol} logo`} src={item.logo} w='40px' h='40px' />
       <Flex direction='column' ml='16px'>
         <Flex align='baseline'>
-          <Text fontSize='md' fontWeight='500'>
+          <Text fontSize='md' fontWeight='500' textColor={colors.icBlack}>
             {item.symbol}
           </Text>
           {extraTitle && (
@@ -114,13 +114,13 @@ const TokenItem = ({
             </Text>
           )}
         </Flex>
-        <Text fontSize='sm' fontWeight='500'>
+        <Text fontSize='sm' fontWeight='500' textColor={colors.icBlack}>
           {item.tokenName}
         </Text>
       </Flex>
     </Flex>
     <Flex align='flex-end' direction='column' ml='16px'>
-      <Text fontSize='md' fontWeight='700'>
+      <Text fontSize='md' fontWeight='700' textColor={colors.icBlack}>
         {item.balance}
       </Text>
       <Text fontSize='sm' fontWeight='500'></Text>
