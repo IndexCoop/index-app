@@ -7,10 +7,7 @@ import { displayFromWei } from '@/lib/utils'
 import { getNativeToken } from '@/lib/utils/tokens'
 
 import { TradeDetailTokenPrices } from '../swap/trade-details'
-import {
-  TradeInfoItem,
-  TradeInfoItemType,
-} from '../swap/trade-details/trade-info'
+import { TradeInfoItem } from '../swap/trade-details/trade-info'
 
 export function getPriceImpactColorCoding(
   priceImpact: number,
