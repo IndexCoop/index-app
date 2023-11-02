@@ -3,19 +3,15 @@ import { Box, Flex, Link, Text, Tooltip } from '@chakra-ui/react'
 import { colors } from '@/lib/styles/colors'
 import { shortenAddress } from '@/lib/utils'
 
-export enum TradeInfoItemType {
-  link,
-}
 export interface TradeInfoItem {
-  type?: TradeInfoItemType
+  isLink?: boolean
   title: string
   values: string[]
   tooltip?: string
 }
 
-const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
-  const { title, values, tooltip, type } = item
-  console.log(type, title, values[0], values[1])
+const TradeInfoItemRow = (props: { item: TradeInfoItem }) => {
+  const { title, values, tooltip, isLink } = props.item
   const cursor = tooltip && tooltip.length > 0 ? 'pointer' : 'default'
   return (
     <Tooltip
@@ -33,28 +29,29 @@ const TradeInfoItemRow = ({ item }: { item: TradeInfoItem }) => {
             {title}
           </Text>
         </Flex>
-        {type !== undefined && type === TradeInfoItemType.link && (
+        {isLink === true && (
           <Link isExternal href={values[1]}>
             <Text fontSize='12px' fontWeight='700' textColor={colors.icGray3}>
               {shortenAddress(values[0])}
             </Text>
           </Link>
         )}
-        {type === undefined && (
-          <Flex>
-            {values.map((value, index) => (
-              <Flex key={index} flexDir={'row'}>
-                <Text
-                  fontSize='12px'
-                  fontWeight='700'
-                  textColor={colors.icGray3}
-                >
-                  {value}
-                </Text>
-              </Flex>
-            ))}
-          </Flex>
-        )}
+        {isLink === undefined ||
+          (!isLink && (
+            <Flex>
+              {values.map((value, index) => (
+                <Flex key={index} flexDir={'row'}>
+                  <Text
+                    fontSize='12px'
+                    fontWeight='700'
+                    textColor={colors.icGray3}
+                  >
+                    {value}
+                  </Text>
+                </Flex>
+              ))}
+            </Flex>
+          ))}
       </Flex>
     </Tooltip>
   )
