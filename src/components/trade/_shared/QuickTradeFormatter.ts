@@ -223,7 +223,7 @@ export function getTradeInfoData0x(
     },
     navData ?? { title: 'NAV', values: [] },
     { title: slippageTitle, values: [slippageFormatted] },
-    { title: 'Offered From', values: offeredFromSources },
+    { title: 'Offered From', values: [offeredFromSources.toString()] },
   ]
 }
 
