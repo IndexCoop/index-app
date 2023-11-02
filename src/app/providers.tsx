@@ -8,13 +8,10 @@ import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 
 import theme, { rainbowkitTheme } from '@/lib/styles/theme'
-import { initSentryEventTracking } from '@/lib/utils/api/sentry'
 import { chains, wagmiConfig } from '@/lib/utils/wagmi'
 
 import '@rainbow-me/rainbowkit/styles.css'
 import '@/lib/styles/fonts'
-
-initSentryEventTracking()
 
 const rainbowKitAppInfo = {
   appName: 'Index Coop',
