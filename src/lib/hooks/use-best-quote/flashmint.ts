@@ -36,14 +36,7 @@ export async function getEnhancedFlashMintQuote(
   const isAllowedCurrency =
     currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)
       .length > 0
-  console.log(
-    indexToken.symbol,
-    inputOutputToken.symbol,
-    currencies.length,
-    isAllowedCurrency
-  )
   if (!isAllowedCurrency) return null
-
   try {
     // Create an instance of ZeroExApi (to pass to quote functions)
     const networkKey = getNetworkKey(chainId)
