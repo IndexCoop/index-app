@@ -36,22 +36,21 @@ const TradeInfoItemRow = (props: { item: TradeInfoItem }) => {
             </Text>
           </Link>
         )}
-        {isLink === undefined ||
-          (!isLink && (
-            <Flex>
-              {values.map((value, index) => (
-                <Flex key={index} flexDir={'row'}>
-                  <Text
-                    fontSize='12px'
-                    fontWeight='700'
-                    textColor={colors.icGray3}
-                  >
-                    {value}
-                  </Text>
-                </Flex>
-              ))}
-            </Flex>
-          ))}
+        {isLink === undefined && (
+          <Flex>
+            {values.map((value, index) => (
+              <Flex key={index} flexDir={'row'}>
+                <Text
+                  fontSize='12px'
+                  fontWeight='700'
+                  textColor={colors.icGray3}
+                >
+                  {value}
+                </Text>
+              </Flex>
+            ))}
+          </Flex>
+        )}
       </Flex>
     </Tooltip>
   )
