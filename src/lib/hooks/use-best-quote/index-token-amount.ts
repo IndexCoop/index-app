@@ -5,14 +5,14 @@ import { toWei } from '@/lib/utils'
 import { maxPriceImpact } from './config'
 
 export const getIndexTokenAmount = (
-  isIssuance: boolean,
+  isMinting: boolean,
   sellTokenAmount: string,
   sellTokenDecimals: number,
   sellTokenPrice: number,
   buyTokenPrice: number,
   dexSwapOption: { buyAmount: string; estimatedPriceImpact: string } | null
 ): BigNumber => {
-  if (!isIssuance) {
+  if (!isMinting) {
     return toWei(sellTokenAmount, sellTokenDecimals)
   }
 
