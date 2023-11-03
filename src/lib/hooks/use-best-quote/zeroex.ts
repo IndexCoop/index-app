@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { ic21 } from '@/constants/tokens'
 import {
   getZeroExTradeData,
   RequestForQuote,
@@ -11,12 +12,14 @@ import { IndexQuoteRequest, QuoteType, ZeroExQuote } from './types'
 
 interface ZeroExQuoteRequest extends IndexQuoteRequest {
   chainId: number
+  address: string
   nativeTokenPrice: number
 }
 
 export async function get0xQuote(request: ZeroExQuoteRequest) {
   const {
     chainId,
+    address,
     inputToken,
     inputTokenAmount,
     inputTokenPrice,
@@ -27,11 +30,13 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
   } = request
   let rfq: RequestForQuote | null = null
 
-  // if (buyToken.symbol === ic21.symbol || sellToken.symbol === ic21.symbol) {
-  //   rfq = {
-  //     takerAddress: address!,
-  //   }
-  // }
+  if (outputToken.symbol === ic21.symbol || inputToken.symbol === ic21.symbol) {
+    // FIXME: always add address
+    // TODO: add skip validation true
+    rfq = {
+      takerAddress: address!,
+    }
+  }
 
   const slippagePercentage = slippage / 100
   /* Check 0x for DEX Swap option*/

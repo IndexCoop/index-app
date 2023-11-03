@@ -78,6 +78,7 @@ export const useBestQuote = () => {
     const quote0x = await get0xQuote({
       ...request,
       chainId,
+      address: signer._address,
       nativeTokenPrice,
     })
     const quoteFlashMint = await getFlashMintQuote(
