@@ -41,7 +41,7 @@ export interface Quote {
 export interface EnhancedFlashMintQuote extends Quote {
   contractType: string
   contract: string
-  // TODO: probably use abstract type here
+  // TODO: should probably use a more general type here (to not rely on ethers lib)
   tx: PopulatedTransaction
 }
 

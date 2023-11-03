@@ -6,18 +6,18 @@ import { JsonRpcSigner } from '@ethersproject/providers'
 
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { GasStation } from '@/lib/utils/api/gas-station'
-import { ZeroExData } from '@/lib/utils/api/zeroex-utils'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { useNativeTokenPrice } from '../use-token-price'
 import { useWallet } from '../useWallet'
 
+import { getBestQuote } from './best-quote'
+import { maxPriceImpact } from './config'
 import { getEnhancedFlashMintQuote } from './flashmint'
 import { getIndexTokenAmount } from './index-token-amount'
 import {
   EnhancedFlashMintQuote,
   IndexQuoteRequest,
-  Quote,
   QuoteType,
   ZeroExQuote,
 } from './types'
@@ -34,17 +34,16 @@ interface QuoteResult {
   savingsUsd: number
 }
 
-// TODO: ??
-// const defaultQuoteResult: QuoteResult = {
-//   bestQuote: QuoteType.zeroEx,
-//   error: null,
-//   quotes: {
-//     flashmint: null,
-//     zeroex: null,
-//   },
-//   isReasonPriceImpact: false,
-//   savingsUsd: 0,
-// }
+const defaultQuoteResult: QuoteResult = {
+  bestQuote: QuoteType.zeroEx,
+  error: null,
+  quotes: {
+    flashmint: null,
+    zeroex: null,
+  },
+  isReasonPriceImpact: false,
+  savingsUsd: 0,
+}
 
 export const useBestQuote = () => {
   const { provider, signer } = useWallet()
@@ -54,17 +53,8 @@ export const useBestQuote = () => {
   const nativeTokenPrice = useNativeTokenPrice(chainId)
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
-  //   const [quoteResult, setQuoteResult] =
-  //     useState<QuoteResult>(defaultQuoteResult)
-  //   const [quoteResultOptions, setQuoteResultOptions] =
-  //     useState<MoreQuotesResult>({
-  //       hasBetterQuote: false,
-  //       isReasonPriceImpact: false,
-  //       quotes: {
-  //         flashMint: null,
-  //       },
-  //       savingsUsd: 0,
-  //     })
+  const [quoteResult, setQuoteResult] =
+    useState<QuoteResult>(defaultQuoteResult)
 
   const fetchQuote = async (request: IndexQuoteRequest) => {
     const { inputToken, isMinting, outputToken } = request
@@ -106,74 +96,47 @@ export const useBestQuote = () => {
       provider,
       signer
     )
+
+    const bestQuote = getBestQuote(
+      quote0x?.fullCostsInUsd ?? null,
+      quoteFlashMint?.fullCostsInUsd ?? null,
+      quote0x?.priceImpact ?? maxPriceImpact
+    )
+    console.log(
+      quote0x?.inputOutputTokenAmount.toString(),
+      quote0x?.fullCostsInUsd,
+      quoteFlashMint?.fullCostsInUsd,
+      quoteFlashMint?.inputOutputTokenAmount.toString(),
+      quote0x?.priceImpact
+    )
+    //       const getSavings = (): number => {
+    //         if (!zeroExQuote) return 0
+    //         if (bestQuote.type === QuoteType.flashMint && flashMintQuote) {
+    //           return (
+    //             (zeroExQuote.fullCostsInUsd ?? 0) -
+    //             (flashMintQuote.fullCostsInUsd ?? 0)
+    //           )
+    //         }
+    //         return 0
+    //       }
+    //       const savingsUsd = getSavings()
+    setQuoteResult({
+      bestQuote: bestQuote.type,
+      // TODO:
+      error: null,
+      isReasonPriceImpact: bestQuote.priceImpact,
+      quotes: {
+        flashmint: quoteFlashMint,
+        zeroex: quote0x,
+      },
+      // TODO: ?
+      savingsUsd: 0,
+    })
     // TODO: error handling
     // TODO: compare quotes
     // TODO: response modeling
     setIsFetching(false)
   }
-
-  //     const fetchAndCompareMoreOptions = async () => {
-  //       setIsFetchingMoreOptions(true)
-
-  //       console.log('////////')
-  //       console.log('exchangeIssuanceZeroExQuote', flashMintQuote)
-
-  //       const bestQuote = getBestQuote(
-  //         zeroExQuote?.fullCostsInUsd ?? null,
-  //         flashMintQuote?.fullCostsInUsd ?? null,
-  //         zeroExQuote?.priceImpact ?? 5
-  //       )
-
-  //       const getSavings = (): number => {
-  //         if (!zeroExQuote) return 0
-  //         if (bestQuote.type === QuoteType.flashMint && flashMintQuote) {
-  //           return (
-  //             (zeroExQuote.fullCostsInUsd ?? 0) -
-  //             (flashMintQuote.fullCostsInUsd ?? 0)
-  //           )
-  //         }
-  //         return 0
-  //       }
-
-  //       const flashMintIsBestQuote = bestQuote.type === QuoteType.flashMint
-  //       const savingsUsd = getSavings()
-  //       console.log(
-  //         flashMintIsBestQuote,
-  //         savingsUsd,
-  //         flashMintQuote?.fullCostsInUsd,
-  //         zeroExQuote?.fullCostsInUsd,
-  //         'isBestQuote/savings'
-  //       )
-
-  //       const quoteResult: MoreQuotesResult = {
-  //         hasBetterQuote: flashMintIsBestQuote,
-  //         isReasonPriceImpact: bestQuote.priceImpact,
-  //         quotes: {
-  //           flashMint: flashMintIsBestQuote ? flashMintQuote : null,
-  //         },
-  //         savingsUsd,
-  //       }
-
-  //       setQuoteResultOptions(quoteResult)
-  //       setIsFetchingMoreOptions(false)
-  //     }
-
-  //     console.log('FETCH MORE...')
-  //     // The individual Flash Mint functions will check if the the token pair is eligible
-  //     fetchAndCompareMoreOptions()
-
-  //     const quoteResult: QuoteResult = {
-  //       error: dexSwapError,
-  //       quotes: {
-  //         zeroEx: zeroExQuote,
-  //       },
-  //     }
-
-  //     setQuoteResult(quoteResult)
-  //     setIsFetching(false)
-  //   }
-
-  const quoteResult = {}
 
   return {
     fetchQuote,
