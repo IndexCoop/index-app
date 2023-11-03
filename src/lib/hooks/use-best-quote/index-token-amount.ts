@@ -6,17 +6,17 @@ import { maxPriceImpact } from './config'
 
 export const getIndexTokenAmount = (
   isMinting: boolean,
-  sellTokenAmount: string,
-  sellTokenDecimals: number,
-  sellTokenPrice: number,
-  buyTokenPrice: number,
+  inputTokenAmount: string,
+  inputTokenDecimals: number,
+  inputTokenPrice: number,
+  outputTokenPrice: number,
   dexSwapOption: { buyAmount: string; estimatedPriceImpact: string } | null
 ): BigNumber => {
   if (!isMinting) {
-    return toWei(sellTokenAmount, sellTokenDecimals)
+    return toWei(inputTokenAmount, inputTokenDecimals)
   }
 
-  let setTokenAmount = BigNumber.from(dexSwapOption?.buyAmount ?? '0')
+  let indexTokenAmount = BigNumber.from(dexSwapOption?.buyAmount ?? '0')
 
   const priceImpact =
     dexSwapOption && dexSwapOption.estimatedPriceImpact
@@ -25,11 +25,11 @@ export const getIndexTokenAmount = (
 
   if (!dexSwapOption || priceImpact >= maxPriceImpact) {
     // Recalculate the exchange issue/redeem quotes if not enough DEX liquidity
-    const sellTokenTotal = parseFloat(sellTokenAmount) * sellTokenPrice
+    const sellTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
     const approxOutputAmount =
-      buyTokenPrice === 0 ? 0 : Math.floor(sellTokenTotal / buyTokenPrice)
-    setTokenAmount = toWei(approxOutputAmount, sellTokenDecimals)
+      outputTokenPrice === 0 ? 0 : Math.floor(sellTokenTotal / outputTokenPrice)
+    indexTokenAmount = toWei(approxOutputAmount, inputTokenDecimals)
   }
 
-  return setTokenAmount
+  return indexTokenAmount
 }
