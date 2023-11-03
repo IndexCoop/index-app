@@ -1,6 +1,7 @@
 import { ZeroExData } from '@/lib/utils/api/zeroex-utils'
 import { toWei } from '@/lib/utils'
 
+import { maxPriceImpact } from './config'
 import { getIndexTokenAmount } from './index-token-amount'
 
 describe('getIndexTokenAmount - redeeming', () => {
@@ -51,7 +52,7 @@ describe('getIndexTokenAmount - minting', () => {
     const inputTokenPrice = 2
     const outputTokenPrice = 3
     const dexData = {
-      estimatedPriceImpact: '5.0',
+      estimatedPriceImpact: maxPriceImpact.toString(),
       buyAmount: '2000000000000000000',
     } as ZeroExData
     const indexTokenAmount = getIndexTokenAmount(
