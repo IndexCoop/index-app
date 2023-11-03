@@ -1,10 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { toWei } from '@/lib/utils'
-import { ZeroExData } from '@/lib/utils/api/zeroex-utils'
 
-// To determine if price impact for DEX is smaller 5%
-export const maxPriceImpact = 5
+import { maxPriceImpact } from './config'
 
 export const getIndexTokenAmount = (
   isIssuance: boolean,
