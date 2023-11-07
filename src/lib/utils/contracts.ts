@@ -6,7 +6,7 @@ import { OPTIMISM, POLYGON } from '@/constants/chains'
 import {
   zeroExRouterAddress,
   zeroExRouterOptimismAddress,
-} from '@/constants/contractAddresses'
+} from '@/constants/contracts'
 import { ERC20Interface } from '@/lib/utils/abi/interfaces'
 
 export function getERC20Contract(
