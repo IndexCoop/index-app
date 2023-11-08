@@ -1,6 +1,6 @@
 import indexNames from '@/constants/tokenlists'
 import { ETH, MetaverseIndex, USDC } from '@/constants/tokens'
-import { PathResolver } from './pathResolver'
+import { PathResolver } from './path-resolver'
 
 describe('PathResolver', () => {
   it('returns default for path: /swap', async () => {

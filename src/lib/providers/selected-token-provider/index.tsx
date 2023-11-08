@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 import { useParams, useRouter } from 'next/navigation'
 
-import { PathResolver } from '@/app/swap/[[...path]]/pathResolver'
+import { PathResolver } from '@/app/swap/[[...path]]/path-resolver'
 import { ETH, Token, icETHIndex } from '@/constants/tokens'
 
 export interface TokenContext {
