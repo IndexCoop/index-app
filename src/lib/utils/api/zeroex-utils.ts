@@ -134,8 +134,8 @@ export const get0xApiParams = (
 
   if (rfq) {
     // https://0x.org/docs/0x-swap-api/api-references/get-swap-v1-quote#request
-    // params.includedSources = 'RFQT'
-    // params.intentOnFilling = true
+    params.includedSources = 'RFQT'
+    params.intentOnFilling = true
     params.takerAddress = rfq.takerAddress
   }
 
