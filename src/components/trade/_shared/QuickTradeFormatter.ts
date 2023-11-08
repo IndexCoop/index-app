@@ -192,7 +192,6 @@ export function getTradeInfoData0x(
   minOutput: BigNumber,
   sources: { name: string; proportion: string }[],
   chainId: number = 1,
-  navData: TradeInfoItem | null = null,
   slippage: number,
   showSlippageWarning: boolean,
   contractBestOption: string,

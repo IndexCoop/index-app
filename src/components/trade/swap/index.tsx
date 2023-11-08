@@ -99,7 +99,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [gasCostsInUsd, setGasCostsInUsd] = useState(0)
-  const [navData, setNavData] = useState<TradeInfoItem>()
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
@@ -181,7 +180,6 @@ const QuickTrade = (props: QuickTradeProps) => {
       quoteZeroEx?.minOutput ?? BigNumber.from(0),
       quoteZeroEx?.sources ?? [],
       chainId,
-      navData,
       slippage,
       shouldShowWarningSign(slippage),
       contractBestOption,
