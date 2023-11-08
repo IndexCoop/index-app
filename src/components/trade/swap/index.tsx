@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { colors, useICColorMode } from '@/lib/styles/colors'
 
@@ -46,6 +46,12 @@ import { TradeInfoItem } from './components/trade-details/trade-info'
 import { TradeInputSelector } from './components/trade-input-selector'
 import { RethSupplyCapOverrides } from '@/components/supply'
 
+import {
+  TradeButtonState,
+  useTradeButtonState,
+} from './hooks/use-trade-button-state'
+import { useTradeButton } from './hooks/use-trade-button'
+
 export type QuickTradeProps = {
   isNarrowVersion?: boolean
   onOverrideSupplyCap?: (overrides: RethSupplyCapOverrides | undefined) => void
@@ -55,7 +61,6 @@ export type QuickTradeProps = {
 
 const QuickTrade = (props: QuickTradeProps) => {
   const { openConnectModal } = useConnectModal()
-  const { address } = useWallet()
   const { chainId, isSupportedNetwork } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
@@ -89,7 +94,6 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   const supportedNetwork = isSupportedNetwork
 
-  const [buttonLabel, setButtonLabel] = useState('')
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
   const [inputTokenBalanceFormatted, setInputTokenBalanceFormatted] =
@@ -146,6 +150,23 @@ const QuickTrade = (props: QuickTradeProps) => {
     sellTokenAmountInWei,
     getTokenBalance(sellToken.symbol, chainId)
   )
+
+  const shouldApprove = useMemo(() => {
+    const nativeToken = getNativeToken(chainId)
+    const isNativeToken = nativeToken?.symbol === sellToken.symbol
+    return !isNativeToken
+  }, [chainId, sellToken])
+
+  const buttonState = useTradeButtonState(
+    hasFetchingError,
+    hasInsufficientFunds,
+    shouldApprove,
+    isApprovedForSwap,
+    isApprovingForSwap,
+    isTransacting,
+    sellTokenAmount
+  )
+  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
   const determineBestOption = async () => {
     if (quoteResult.error !== null) {
@@ -238,53 +259,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     return onApproveForSwap()
   }
 
-  /**
-   * Get the correct trade button label according to different states
-   * @returns string label for trade button
-   */
-  useEffect(() => {
-    const label = () => {
-      if (!address) return 'Connect Wallet'
-      if (!supportedNetwork) return 'Wrong Network'
-
-      if (sellTokenAmount === '0') {
-        return 'Enter an amount'
-      }
-
-      if (hasInsufficientFunds) {
-        return 'Insufficient funds'
-      }
-
-      if (hasFetchingError) {
-        return 'Try again'
-      }
-
-      const nativeToken = getNativeToken(chainId)
-      const isNativeToken = nativeToken?.symbol === sellToken.symbol
-      if (!isNativeToken && getIsApproving()) {
-        return 'Approving...'
-      }
-
-      if (!isNativeToken && !getIsApproved()) {
-        return 'Approve Tokens'
-      }
-
-      if (isTransacting) return 'Trading...'
-
-      return 'Trade'
-    }
-    setButtonLabel(label())
-  }, [
-    address,
-    isSupportedNetwork,
-    isTransacting,
-    sellToken,
-    hasFetchingError,
-    hasInsufficientFunds,
-    sellTokenAmount,
-    chainId,
-  ])
-
   const onClickBetterQuote = () => {
     if (!quoteResultOptions.hasBetterQuote) return
     if (props.switchTabs) {
@@ -332,46 +306,40 @@ const QuickTrade = (props: QuickTradeProps) => {
     setOutputTokenBalanceFormatted(formattedBalance(buyToken, tokenBal))
   }, [getTokenBalance, buyToken, isLoadingBalance])
 
-  const onClickTradeButton = async () => {
-    if (!address && openConnectModal) {
-      openConnectModal()
+  const onClickTradeButton = useCallback(async () => {
+    console.log('click', buttonState)
+    if (buttonState === TradeButtonState.connectWallet) {
+      if (openConnectModal) {
+        openConnectModal()
+      }
       return
     }
 
-    if (hasInsufficientFunds) return
-
-    if (hasFetchingError) {
+    if (buttonState === TradeButtonState.fetchingError) {
       fetchOptions()
       return
     }
 
-    const nativeToken = getNativeToken(chainId)
-    const isNativeToken = nativeToken?.symbol === sellToken.symbol
-    if (!getIsApproved() && !isNativeToken) {
+    if (buttonState === TradeButtonState.insufficientFunds) return
+
+    if (!getIsApproved() && shouldApprove) {
       await getOnApprove()
       return
     }
 
-    await executeTrade(quoteResult.quotes.zeroEx)
-  }
+    if (buttonState === TradeButtonState.default) {
+      await executeTrade(quoteResult.quotes.zeroEx)
+    }
+  }, [buttonState])
 
   const onSwitchTokens = () => {
     swapTokenLists()
     resetTradeData()
   }
 
-  const getButtonDisabledState = () => {
-    if (!supportedNetwork) return true
-    if (!address) return true
-    if (hasFetchingError) return false
-    return sellTokenAmount === '0' || hasInsufficientFunds || isTransacting
-  }
-
-  const isNarrow = props.isNarrowVersion ?? false
-
   // TradeButtonContainer
-  const isButtonDisabled = getButtonDisabledState()
   const isLoading = getIsApproving() || isFetchingZeroEx
+  console.log('isDisabled', isDisabled, buttonState, buttonLabel)
 
   // SelectTokenModal
   const inputTokenBalances = sellTokenList.map(
@@ -498,7 +466,7 @@ const QuickTrade = (props: QuickTradeProps) => {
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}
-            isDisabled={isButtonDisabled}
+            isDisabled={isDisabled}
             isLoading={isLoading}
             onClick={onClickTradeButton}
           />
