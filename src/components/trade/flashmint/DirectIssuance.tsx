@@ -10,7 +10,7 @@ import { Box, Flex, Image, Text } from '@chakra-ui/react'
 
 import { Token } from '@/constants/tokens'
 
-import { TradeInputSelector } from '../trade-input-selector'
+import { TradeInputSelector } from '../swap/components/trade-input-selector'
 
 type DirectIssuanceProps = {
   indexToken: Token

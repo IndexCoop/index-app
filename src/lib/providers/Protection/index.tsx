@@ -2,14 +2,12 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 import { logEvent } from '../../../lib/utils/api/analytics'
 
-export const ProtectionContext = createContext<{
-  isProtectable?: boolean
-}>({ isProtectable: true })
+export const ProtectionContext = createContext<boolean>(false)
 
 export const useProtection = () => useContext(ProtectionContext)
 
 export const ProtectionProvider = (props: { children: any }) => {
-  const [isProtectable, setIsProtectable] = useState<boolean>()
+  const [isProtectable, setIsProtectable] = useState<boolean>(false)
 
   const checkIfProtectable = async () => {
     const API_KEY =
@@ -36,11 +34,7 @@ export const ProtectionProvider = (props: { children: any }) => {
   }, [isProtectable])
 
   return (
-    <ProtectionContext.Provider
-      value={{
-        isProtectable,
-      }}
-    >
+    <ProtectionContext.Provider value={isProtectable}>
       {props.children}
     </ProtectionContext.Provider>
   )

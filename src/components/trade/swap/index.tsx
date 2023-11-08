@@ -69,7 +69,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
-  const protection = useProtection()
+  const requiresProtection = useProtection()
 
   const { slippage } = useSlippage()
   const {
@@ -99,9 +99,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
   const [gasCostsInUsd, setGasCostsInUsd] = useState(0)
-
-  // Does user need protecting from productive assets?
-  const [requiresProtection, setRequiresProtection] = useState(false)
 
   const {
     isFetchingZeroEx,
@@ -228,17 +225,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   useEffect(() => {
     fetchOptions()
   }, [fetchOptions])
-
-  useEffect(() => {
-    if (
-      protection.isProtectable &&
-      (sellToken.isDangerous || buyToken.isDangerous)
-    ) {
-      setRequiresProtection(true)
-    } else {
-      setRequiresProtection(false)
-    }
-  }, [protection, sellToken, buyToken])
 
   const getIsApproved = () => {
     return isApprovedForSwap
