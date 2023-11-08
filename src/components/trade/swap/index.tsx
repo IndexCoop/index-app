@@ -17,7 +17,7 @@ import { useTrade } from '@/lib/hooks/useTrade'
 import { useTradeTokenLists } from '@/lib/hooks/useTradeTokenLists'
 import { useBalanceData } from '@/lib/providers/Balances'
 import { useProtection } from '@/lib/providers/protection'
-import { useSlippage } from '../../../lib/providers/slippage'
+import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, toWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
@@ -40,10 +40,10 @@ import {
 
 import { BetterQuoteState, BetterQuoteView } from './components/BetterQuoteView'
 import { ProtectionWarning } from './components/protection-warning'
+import { RethSupplyCapOverrides } from '@/components/supply'
 import { TradeDetails } from './components/trade-details'
 import { TradeInfoItem } from './components/trade-details/trade-info'
 import { TradeInputSelector } from './components/trade-input-selector'
-import { RethSupplyCapOverrides } from '@/components/supply'
 
 import {
   TradeButtonState,
