@@ -12,7 +12,6 @@ import {
   Box,
   Flex,
   Text,
-  useBreakpointValue,
 } from '@chakra-ui/react'
 
 import { TradeInfoItemsContainer, TradeInfoItem } from './trade-info'
@@ -34,7 +33,6 @@ interface TradeDetailsProps {
 
 export const TradeDetails = (props: TradeDetailsProps) => {
   const { data, gasPriceInUsd, prices, showWarning } = props
-  const isWeb = useBreakpointValue({ base: false, md: true, lg: true })
   const { styles } = useColorStyles()
 
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
