@@ -37,20 +37,20 @@ export const TradeButtonContainer = ({
 }: TradeButtonContainerProps) => {
   const { isDarkMode } = useICColorMode()
   const { isMainnet } = useNetwork()
-  const protection = useProtection()
+  const isProtectable = useProtection()
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
   useEffect(() => {
     if (
-      protection.isProtectable &&
+      isProtectable &&
       (indexToken.isDangerous || inputOutputToken.isDangerous)
     ) {
       setRequiresProtection(true)
     } else {
       setRequiresProtection(false)
     }
-  }, [indexToken, inputOutputToken, protection])
+  }, [indexToken, inputOutputToken, isProtectable])
 
   return (
     <Flex direction='column'>
