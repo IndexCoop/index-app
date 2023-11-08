@@ -60,7 +60,7 @@ export type QuickTradeProps = {
 
 const QuickTrade = (props: QuickTradeProps) => {
   const { openConnectModal } = useConnectModal()
-  const { chainId, isSupportedNetwork } = useNetwork()
+  const { chainId } = useNetwork()
   const { isDarkMode } = useICColorMode()
   const {
     isOpen: isSelectInputTokenOpen,
@@ -90,8 +90,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     swapTokenLists,
   } = useTradeTokenLists()
   const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
-
-  const supportedNetwork = isSupportedNetwork
 
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
@@ -246,18 +244,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     fetchOptions()
   }, [fetchOptions])
 
-  const getIsApproved = () => {
-    return isApprovedForSwap
-  }
-
-  const getIsApproving = () => {
-    return isApprovingForSwap
-  }
-
-  const getOnApprove = () => {
-    return onApproveForSwap()
-  }
-
+  // Delete: with better quote view
   const onClickBetterQuote = () => {
     if (!quoteResultOptions.hasBetterQuote) return
     if (props.switchTabs) {
@@ -312,8 +299,8 @@ const QuickTrade = (props: QuickTradeProps) => {
 
     if (buttonState === TradeButtonState.insufficientFunds) return
 
-    if (!getIsApproved() && shouldApprove) {
-      await getOnApprove()
+    if (!isApprovedForSwap && shouldApprove) {
+      await onApproveForSwap()
       return
     }
 
@@ -328,7 +315,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   }
 
   // TradeButtonContainer
-  const isLoading = getIsApproving() || isFetchingZeroEx
+  const isLoading = isApprovingForSwap || isFetchingZeroEx
   console.log('isDisabled', isDisabled, buttonState, buttonLabel)
 
   // SelectTokenModal
@@ -359,6 +346,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     buyTokenPrice
   )
 
+  // Delete: with better quote view
   const betterQuoteState = useMemo(() => {
     if (isFetchingMoreOptions) {
       return BetterQuoteState.fetchingQuote
