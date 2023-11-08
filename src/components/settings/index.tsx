@@ -13,7 +13,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 
-type PopoverProps = {
+type SettingsProps = {
   isAuto: boolean
   isDarkMode: boolean
   onChangeSlippage: (slippage: number) => void
@@ -21,9 +21,8 @@ type PopoverProps = {
   slippage: number
 }
 
-export const QuickTradeSettingsPopover = (props: PopoverProps) => {
+export const Settings = (props: SettingsProps) => {
   const { isAuto, isDarkMode, slippage, onChangeSlippage, onClickAuto } = props
-  const backgroundColor = isDarkMode ? colors.black : colors.icWhite
 
   return (
     <Popover placement='bottom-end'>
@@ -36,10 +35,19 @@ export const QuickTradeSettingsPopover = (props: PopoverProps) => {
           variant='unstyled'
         />
       </PopoverTrigger>
-      <PopoverContent bg={backgroundColor} p='8px'>
+      <PopoverContent
+        bg={'linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'}
+        border='1px solid'
+        borderColor={colors.icGray1}
+        borderRadius={24}
+        boxShadow={
+          '0.5px 1px 10px 0px rgba(44, 51, 51, 0.10), 2px 2px 1px 0px #FCFFFF inset, 0.5px 0.5px 2px 0px rgba(0, 0, 0, 0.15)'
+        }
+        p='8px'
+      >
         <PopoverBody>
-          <Text fontSize='md' fontWeight='700' textColor={colors.icBlack}>
-            Slippage Settings
+          <Text fontSize='md' fontWeight='500' textColor={colors.icGray3}>
+            Slippage
           </Text>
           <Flex align='center' my='4'>
             <AutoButton
@@ -78,10 +86,6 @@ export const QuickTradeSettingsPopover = (props: PopoverProps) => {
               <Text textColor={colors.icBlack}>%</Text>
             </Flex>
           </Flex>
-          <Text fontSize='sm' fontWeight='500' textColor={colors.icBlack}>
-            Make sure to know what you are doing when entering custom slippage
-            values.
-          </Text>
         </PopoverBody>
       </PopoverContent>
     </Popover>

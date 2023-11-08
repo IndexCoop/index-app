@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
-import { colors, useColorStyles, useICColorMode } from '../../lib/styles/colors'
+import { colors, useICColorMode } from '../../lib/styles/colors'
 
 import { Flex, Text } from '@chakra-ui/react'
 
-import { useSlippage } from '../../lib/providers/Slippage'
+import { Settings } from '@/components/settings'
+import { useSlippage } from '@/lib/providers/Slippage'
 
-import { QuickTradeSettingsPopover } from './_shared/QuickTradeSettingsPopover'
 import FlashMint from './flashmint'
 import QuickTrade, { QuickTradeProps } from './swap'
 
@@ -16,10 +16,8 @@ enum TradeType {
 }
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
-  const { styles } = useColorStyles()
   const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
 
-  const paddingX = props.isNarrowVersion ? '16px' : '40px'
   const shouldShowSwap = true
   const shouldShowFlashMintOption = true
 
@@ -116,7 +114,7 @@ const Navigation = (props: NavigationProps) => {
           />
         )}
       </Flex>
-      <QuickTradeSettingsPopover
+      <Settings
         isAuto={isAutoSlippage}
         isDarkMode={isDarkMode}
         onChangeSlippage={setSlippage}
