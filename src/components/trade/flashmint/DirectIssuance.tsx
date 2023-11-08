@@ -23,7 +23,6 @@ type DirectIssuanceProps = {
   inputOutputTokenFiatFormatted: string
   isIssue: boolean
   isMintable: boolean
-  isNarrow: boolean
   onChangeBuyTokenAmount: (token: Token, input: string) => void
   onClickBalance: () => void
   onSelectIndexToken: () => void

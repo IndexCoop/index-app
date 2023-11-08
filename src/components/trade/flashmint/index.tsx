@@ -367,7 +367,6 @@ const FlashMint = (props: QuickTradeProps) => {
   )
 
   // DirectIssuance
-  const isNarrow = props.isNarrowVersion ?? false
   const inputOutputTokenAmountFormatted = formattedBalance(
     inputOutputToken,
     inputOutputTokenAmount
@@ -430,7 +429,6 @@ const FlashMint = (props: QuickTradeProps) => {
         inputOutputTokenFiatFormatted={inputOutputTokenFiatFormatted}
         isIssue={isMinting}
         isMintable={true}
-        isNarrow={isNarrow}
         onChangeBuyTokenAmount={onChangeIndexTokenAmount}
         onClickBalance={onClickBalance}
         onSelectIndexToken={() => {

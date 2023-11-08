@@ -52,7 +52,6 @@ import {
 import { useTradeButton } from './hooks/use-trade-button'
 
 export type QuickTradeProps = {
-  isNarrowVersion?: boolean
   onOverrideSupplyCap?: (overrides: RethSupplyCapOverrides | undefined) => void
   onShowSupplyCap?: (show: boolean) => void
   switchTabs?: () => void
