@@ -12,7 +12,7 @@ import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useTradeTokenLists } from '@/lib/hooks/useTradeTokenLists'
 import { useWallet } from '@/lib/hooks/useWallet'
 import { useBalanceData } from '@/lib/providers/Balances'
-import { useSlippage } from '@/lib/providers/Slippage'
+import { useSlippage } from '@/lib/providers/slippage'
 import { displayFromWei, isValidTokenInput, toWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 import {

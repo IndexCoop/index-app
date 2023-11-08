@@ -5,7 +5,7 @@ import { colors, useICColorMode } from '../../lib/styles/colors'
 import { Flex, Text } from '@chakra-ui/react'
 
 import { Settings } from '@/components/settings'
-import { useSlippage } from '@/lib/providers/Slippage'
+import { useSlippage } from '@/lib/providers/slippage'
 
 import FlashMint from './flashmint'
 import QuickTrade, { QuickTradeProps } from './swap'

@@ -7,7 +7,7 @@ import { Flex } from '@chakra-ui/react'
 import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
-import { useProtection } from '@/lib/providers/Protection'
+import { useProtection } from '@/lib/providers/protection'
 
 import FlashbotsRpcMessage from './FlashbotsRpcMessage'
 import { ProtectionWarning } from './ProtectionWarning'

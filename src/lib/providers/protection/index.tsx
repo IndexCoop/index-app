@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { logEvent } from '../../../lib/utils/api/analytics'
+import { logEvent } from '../../utils/api/analytics'
 
 export const ProtectionContext = createContext<boolean>(false)
 
