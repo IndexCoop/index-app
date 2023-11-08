@@ -221,7 +221,6 @@ export function getTradeInfoData0x(
         `${networkFeeDisplay} ${networkToken} ($${gasCostsInUsd.toFixed(2)})`,
       ],
     },
-    navData ?? { title: 'NAV', values: [] },
     { title: slippageTitle, values: [slippageFormatted] },
     { title: 'Offered From', values: [offeredFromSources.toString()] },
   ]

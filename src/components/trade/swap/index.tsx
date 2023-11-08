@@ -12,7 +12,6 @@ import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useBestQuote } from '@/lib/hooks/useBestQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
-import { useTokenComponents } from '@/lib/hooks/useTokenComponents'
 import { useTrade } from '@/lib/hooks/useTrade'
 import { useTradeTokenLists } from '@/lib/hooks/useTradeTokenLists'
 import { useWallet } from '@/lib/hooks/useWallet'
@@ -22,7 +21,7 @@ import { useSlippage } from '@/lib/providers/Slippage'
 import { isValidTokenInput, toWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
-import { getNativeToken, isPerpToken } from '@/lib/utils/tokens'
+import { getNativeToken } from '@/lib/utils/tokens'
 
 import { TradeButtonContainer } from '../_shared/footer'
 import {
@@ -104,41 +103,6 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   // Does user need protecting from productive assets?
   const [requiresProtection, setRequiresProtection] = useState(false)
-
-  const indexToken = isBuying ? buyToken : sellToken
-  const { nav } = useTokenComponents(indexToken, isPerpToken(indexToken))
-
-  useEffect(() => {
-    if (tradeInfoData.length < 1) return
-    if (nav <= 0) return
-    const navTokenAmount = isBuying ? buyTokenAmountFormatted : sellTokenAmount
-    const tokenFiat = isBuying
-      ? parseFloat(buyTokenAmountFormatted) * buyTokenPrice
-      : parseFloat(sellTokenAmount) * sellTokenPrice
-    const proRatedMarketPrice = tokenFiat * Number(navTokenAmount)
-    const proRatedNavPrice = nav * Number(navTokenAmount)
-    const navDivergence =
-      (proRatedMarketPrice - proRatedNavPrice) / proRatedMarketPrice / 100
-    const navData: TradeInfoItem = {
-      title: 'NAV',
-      values: [
-        proRatedNavPrice.toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }) +
-          ' (' +
-          navDivergence.toFixed(2) +
-          '%)',
-      ],
-      tooltip:
-        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt token (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV.',
-    }
-    const navIndex = 2
-    var updatedInfoData = tradeInfoData
-    updatedInfoData[navIndex] = navData
-    setNavData(navData)
-    setTradeInfoData(updatedInfoData)
-  }, [nav, buyTokenAmountFormatted, sellTokenAmount])
 
   const {
     isFetchingZeroEx,
