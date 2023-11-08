@@ -5,7 +5,7 @@ import {
   flashMintIndexesMainnetRedeem,
   indexNamesMainnet,
 } from '@/constants/tokenlists'
-import { CoinDeskEthTrendIndex, ETH, Token } from '@/constants/tokens'
+import { CoinDeskEthTrendIndex, ETH, Token, ic21 } from '@/constants/tokens'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
 import { NavProvider } from '@/lib/utils/api/nav'
 import {
@@ -169,7 +169,10 @@ const getTokenPrice = async (
 ): Promise<number> => {
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress || !chainId) return 0
-  if (token.symbol === CoinDeskEthTrendIndex.symbol) {
+  if (
+    token.symbol === CoinDeskEthTrendIndex.symbol ||
+    token.symbol === ic21.symbol
+  ) {
     const navProvider = new NavProvider()
     const price = await navProvider.getNavPrice(token.symbol)
     return price
