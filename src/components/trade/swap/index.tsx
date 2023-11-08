@@ -15,7 +15,6 @@ import { useBestQuote } from '@/lib/hooks/useBestQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useTrade } from '@/lib/hooks/useTrade'
 import { useTradeTokenLists } from '@/lib/hooks/useTradeTokenLists'
-import { useWallet } from '@/lib/hooks/useWallet'
 import { useBalanceData } from '@/lib/providers/Balances'
 import { useProtection } from '@/lib/providers/Protection'
 import { useSlippage } from '@/lib/providers/Slippage'
@@ -360,7 +359,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     buyTokenPrice
   )
 
-  const getBetterQuoteState = useCallback(() => {
+  const betterQuoteState = useMemo(() => {
     if (isFetchingMoreOptions) {
       return BetterQuoteState.fetchingQuote
     }
@@ -377,8 +376,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     quoteResultOptions.hasBetterQuote,
     quoteResultOptions.isReasonPriceImpact,
   ])
-
-  const betterQuoteState = getBetterQuoteState()
 
   return (
     <Box>
