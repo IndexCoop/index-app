@@ -8,6 +8,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { formatUnits } from '@ethersproject/units'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
+import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
 import { useBestQuote } from '@/lib/hooks/useBestQuote'
@@ -23,7 +24,6 @@ import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getNativeToken } from '@/lib/utils/tokens'
 
-import { TradeButtonContainer } from '../_shared/footer'
 import {
   formattedBalance,
   formattedFiat,
@@ -39,6 +39,7 @@ import {
   SelectTokenModal,
 } from '../_shared/SelectTokenModal'
 
+import { ProtectionWarning } from './components/protection-warning'
 import { TradeInputSelector } from '../trade-input-selector'
 
 import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
@@ -487,42 +488,39 @@ const QuickTrade = (props: QuickTradeProps) => {
           }}
         />
       </Flex>
-      <TradeButtonContainer
-        indexToken={isBuying ? buyToken : sellToken}
-        inputOutputToken={isBuying ? sellToken : buyToken}
-        buttonLabel={buttonLabel}
-        isButtonDisabled={isButtonDisabled}
-        isLoading={isLoading}
-        showMevProtectionMessage={false}
-        onClickTradeButton={onClickTradeButton}
-        contractAddress={null}
-        contractExplorerUrl={null}
-      >
-        <>
-          {tradeInfoData.length > 0 && (
-            <TradeDetails
-              data={tradeInfoData}
-              gasPriceInUsd={gasCostsInUsd}
-              prices={tokenPrices}
-              showWarning={showWarning}
+      <>
+        {tradeInfoData.length > 0 && (
+          <TradeDetails
+            data={tradeInfoData}
+            gasPriceInUsd={gasCostsInUsd}
+            prices={tokenPrices}
+            showWarning={showWarning}
+          />
+        )}
+        {tradeInfoData.length > 0 && (
+          <Box my='16px'>
+            <BetterQuoteView
+              onClick={onClickBetterQuote}
+              state={betterQuoteState}
+              savingsUsd={quoteResultOptions.savingsUsd}
             />
-          )}
-          {tradeInfoData.length > 0 && (
-            <Box my='16px'>
-              <BetterQuoteView
-                onClick={onClickBetterQuote}
-                state={betterQuoteState}
-                savingsUsd={quoteResultOptions.savingsUsd}
-              />
-            </Box>
-          )}
-          {hasFetchingError && (
-            <Text align='center' color={colors.icRed} p='16px'>
-              {quoteResult.error?.message ?? 'Error fetching quote'}
-            </Text>
-          )}
-        </>
-      </TradeButtonContainer>
+          </Box>
+        )}
+        {hasFetchingError && (
+          <Text align='center' color={colors.icRed} p='16px'>
+            {quoteResult.error?.message ?? 'Error fetching quote'}
+          </Text>
+        )}
+        {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
+        {!requiresProtection && (
+          <TradeButton
+            label={buttonLabel}
+            isDisabled={isButtonDisabled}
+            isLoading={isLoading}
+            onClick={onClickTradeButton}
+          />
+        )}
+      </>
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
         onClose={onCloseSelectInputToken}
