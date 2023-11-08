@@ -361,7 +361,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   )
 
   // TradeDetail
-  const showWarning = shouldShowWarningSign(slippage)
+  const showWarning = useMemo(() => shouldShowWarningSign(slippage), [slippage])
   const tokenPrices = getFormattedTokenPrices(
     sellToken.symbol,
     sellTokenPrice,
