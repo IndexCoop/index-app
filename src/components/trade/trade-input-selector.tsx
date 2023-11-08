@@ -144,7 +144,7 @@ const PriceUsd = (props: PriceUsdProps) => (
       {props.fiat}
     </Text>
     {props.priceImpact && (
-      <Text fontSize='14px' textColor={props.priceImpact.colorCoding}>
+      <Text fontSize='12px' textColor={props.priceImpact.colorCoding}>
         &nbsp;{props.priceImpact.value}
       </Text>
     )}
