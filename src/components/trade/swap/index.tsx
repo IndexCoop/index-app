@@ -39,12 +39,11 @@ import {
   SelectTokenModal,
 } from '../_shared/SelectTokenModal'
 
+import { BetterQuoteState, BetterQuoteView } from './components/BetterQuoteView'
 import { ProtectionWarning } from './components/protection-warning'
-import { TradeInputSelector } from '../trade-input-selector'
-
-import { BetterQuoteState, BetterQuoteView } from './BetterQuoteView'
-import { TradeDetails } from './trade-details'
-import { TradeInfoItem } from './trade-details/trade-info'
+import { TradeDetails } from './components/trade-details'
+import { TradeInfoItem } from './components/trade-details/trade-info'
+import { TradeInputSelector } from './components/trade-input-selector'
 import { RethSupplyCapOverrides } from '@/components/supply'
 
 export type QuickTradeProps = {

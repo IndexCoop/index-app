@@ -1,6 +1,6 @@
 import { colors } from '@/lib/styles/colors'
 
-import { TradeDetailTokenPrices } from '../swap/trade-details'
+import { TradeDetailTokenPrices } from '../swap/components/trade-details'
 
 import {
   getFormattedTokenPrice,
