@@ -223,9 +223,12 @@ export function getTradeInfoData0x(
         `${networkFeeDisplay} ${networkToken} ($${gasCostsInUsd.toFixed(2)})`,
       ],
     },
-    { title: slippageTitle, values: [slippageFormatted] },
     {
-      type: TradeInfoItemType.link,
+      title: slippageTitle,
+      values: [slippageFormatted],
+    },
+    {
+      isLink: true,
       title: 'Contract',
       values: [contractBestOption, contractBlockExplorerUrl],
     },
