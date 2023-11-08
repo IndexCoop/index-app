@@ -118,7 +118,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     const proRatedMarketPrice = tokenFiat * Number(navTokenAmount)
     const proRatedNavPrice = nav * Number(navTokenAmount)
     const navDivergence =
-      (proRatedMarketPrice - proRatedNavPrice) / proRatedMarketPrice / 100
+      (proRatedMarketPrice - proRatedNavPrice) / proRatedMarketPrice * 100
     const navData: TradeInfoItem = {
       title: 'NAV',
       values: [
@@ -131,7 +131,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           '%)',
       ],
       tooltip:
-        'Net Asset Value (NAV) for an Index Coop token is the net value of the underlying tokens minus the value of the debt token (only applicable for leveraged tokens). Sometimes the price of a token will trade at a different value than its NAV.',
+        'Net Asset Value (NAV) refers to the net value of the underlying tokens in an index. Market prices may deviate from NAV, but index tokens can always be redeemed and issued at NAV.',
     }
     const navIndex = 2
     var updatedInfoData = tradeInfoData
