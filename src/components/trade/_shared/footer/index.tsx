@@ -8,7 +8,6 @@ import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useProtection } from '@/lib/providers/Protection'
 
-import { ContractExecutionView } from './ContractExecutionView'
 import FlashbotsRpcMessage from './FlashbotsRpcMessage'
 import { ProtectionWarning } from './ProtectionWarning'
 import { TradeButton } from './TradeButton'
@@ -35,8 +34,6 @@ export const TradeButtonContainer = ({
   isLoading,
   showMevProtectionMessage,
   onClickTradeButton,
-  contractAddress,
-  contractExplorerUrl,
 }: TradeButtonContainerProps) => {
   const { isDarkMode } = useICColorMode()
   const { isMainnet } = useNetwork()
@@ -70,13 +67,6 @@ export const TradeButtonContainer = ({
           isDisabled={isButtonDisabled}
           isLoading={isLoading}
           onClick={onClickTradeButton}
-        />
-      )}
-      {contractAddress && contractExplorerUrl && (
-        <ContractExecutionView
-          blockExplorerUrl={contractExplorerUrl}
-          contractAddress={contractAddress}
-          name=''
         />
       )}
     </Flex>
