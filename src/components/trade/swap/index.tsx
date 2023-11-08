@@ -285,15 +285,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     setSellTokenAmount(fullTokenBalance)
   }
 
-  const onClickOutputBalance = () => {
-    if (!outputTokenBalanceFormatted) return
-    const fullTokenBalance = formatUnits(
-      getTokenBalance(buyToken.symbol, chainId) ?? '0.0',
-      buyToken.decimals
-    )
-    setBuyTokenAmountFormatted(fullTokenBalance)
-  }
-
   useEffect(() => {
     if (isLoadingBalance) return
     const tokenBal = getTokenBalance(sellToken.symbol, chainId)
