@@ -23,7 +23,7 @@ import { useSimulateQuote } from '@/lib/hooks/useSimulateQuote'
 import { displayFromWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 
-import { TradeButton } from '../footer/TradeButton'
+import { TradeButton } from '@/components/trade-button'
 
 import FromTo from './FromTo'
 import NetworkBadge from './NetworkBadge'

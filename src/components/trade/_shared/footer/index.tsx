@@ -4,13 +4,13 @@ import { useICColorMode } from '@/lib/styles/colors'
 
 import { Flex } from '@chakra-ui/react'
 
+import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useProtection } from '@/lib/providers/Protection'
 
 import FlashbotsRpcMessage from './FlashbotsRpcMessage'
 import { ProtectionWarning } from './ProtectionWarning'
-import { TradeButton } from './TradeButton'
 
 type TradeButtonContainerProps = {
   children?: JSX.Element
