@@ -44,7 +44,7 @@ import { RethSupplyCapOverrides } from '@/components/supply'
 import { TradeDetails } from './components/trade-details'
 import { TradeInfoItem } from './components/trade-details/trade-info'
 import { TradeInputSelector } from './components/trade-input-selector'
-
+import { useSwap } from './hooks/use-swap'
 import {
   TradeButtonState,
   useTradeButtonState,
@@ -58,9 +58,13 @@ export type QuickTradeProps = {
 }
 
 const QuickTrade = (props: QuickTradeProps) => {
+  const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
   const { openConnectModal } = useConnectModal()
-  const { chainId } = useNetwork()
   const { isDarkMode } = useICColorMode()
+  const requiresProtection = useProtection()
+  const { chainId } = useNetwork()
+  const { slippage } = useSlippage()
+
   const {
     isOpen: isSelectInputTokenOpen,
     onOpen: onOpenSelectInputToken,
@@ -72,9 +76,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
-  const requiresProtection = useProtection()
-
-  const { slippage } = useSlippage()
   const {
     isBuying,
     buyToken,
@@ -88,17 +89,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     changeSellToken,
     swapTokenLists,
   } = useTradeTokenLists()
-  const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
-
-  const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
-  const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
-  const [inputTokenBalanceFormatted, setInputTokenBalanceFormatted] =
-    useState('0.0')
-  const [outputTokenBalanceFormatted, setOutputTokenBalanceFormatted] =
-    useState('0.0')
-  const [sellTokenAmount, setSellTokenAmount] = useState('0')
-  const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
-  const [gasCostsInUsd, setGasCostsInUsd] = useState(0)
 
   const {
     isFetchingZeroEx,
@@ -108,7 +98,19 @@ const QuickTrade = (props: QuickTradeProps) => {
     quoteResultOptions,
   } = useBestQuote()
 
+  // TODO: useFormattedSwap
+  const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
+  const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
+  const [inputTokenBalanceFormatted, setInputTokenBalanceFormatted] =
+    useState('0.0')
+  const [outputTokenBalanceFormatted, setOutputTokenBalanceFormatted] =
+    useState('0.0')
+  const [sellTokenAmount, setSellTokenAmount] = useState('0')
+  const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
+
   const hasFetchingError = quoteResult.error !== null && !isFetchingZeroEx
+
+  const { gasCostsUsd } = useSwap(quoteResult?.quotes.zeroEx)
 
   const zeroExAddress = getZeroExRouterAddress(chainId)
 
@@ -141,6 +143,7 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   const { executeTrade, isTransacting } = useTrade()
 
+  // TODO:
   const hasInsufficientFunds = getHasInsufficientFunds(
     false,
     sellTokenAmountInWei,
@@ -199,14 +202,13 @@ const QuickTrade = (props: QuickTradeProps) => {
       contractBestOption,
       contractBlockExplorerUrl
     )
-    setGasCostsInUsd(gasCostsInUsd)
     setTradeInfoData(tradeInfoData)
   }
 
+  // TODO: move to formatting
   const resetTradeData = () => {
     setSellTokenAmount('0')
     setBuyTokenAmountFormatted('0.0')
-    setGasCostsInUsd(0)
     setTradeInfoData([])
   }
 
@@ -260,6 +262,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     setSellTokenAmount(input || '')
   }
 
+  // TODO: useCallback?
   const onClickInputBalance = () => {
     if (!inputTokenBalanceFormatted) return
     const fullTokenBalance = formatUnits(
@@ -270,6 +273,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     setSellTokenAmount(fullTokenBalance)
   }
 
+  // TODO:
   useEffect(() => {
     if (isLoadingBalance) return
     const tokenBal = getTokenBalance(sellToken.symbol, chainId)
@@ -317,7 +321,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   const isLoading = isApprovingForSwap || isFetchingZeroEx
   console.log('isDisabled', isDisabled, buttonState, buttonLabel)
 
-  // SelectTokenModal
+  // TODO: SelectTokenModal
   const inputTokenBalances = sellTokenList.map(
     (sellToken) =>
       getTokenBalance(sellToken.symbol, chainId) ?? BigNumber.from(0)
@@ -418,7 +422,7 @@ const QuickTrade = (props: QuickTradeProps) => {
         {tradeInfoData.length > 0 && (
           <TradeDetails
             data={tradeInfoData}
-            gasPriceInUsd={gasCostsInUsd}
+            gasPriceInUsd={gasCostsUsd}
             prices={tokenPrices}
             showWarning={showWarning}
           />
