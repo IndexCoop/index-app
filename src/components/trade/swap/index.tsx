@@ -147,7 +147,7 @@ export const QuickTrade = (props: QuickTradeProps) => {
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
   const resetTradeData = () => {
-    setInputTokenAmountFormatted('0')
+    setInputTokenAmountFormatted('')
     setSellTokenAmount('0')
   }
 
