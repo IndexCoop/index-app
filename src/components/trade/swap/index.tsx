@@ -46,7 +46,7 @@ export type QuickTradeProps = {
   switchTabs?: () => void
 }
 
-export const QuickTrade = (props: QuickTradeProps) => {
+export const Swap = (props: QuickTradeProps) => {
   const { getTokenBalance } = useBalanceData()
   const { openConnectModal } = useConnectModal()
   const { isDarkMode } = useICColorMode()
@@ -86,7 +86,7 @@ export const QuickTrade = (props: QuickTradeProps) => {
     quoteResultOptions,
   } = useBestQuote()
 
-  // TODO: useFormattedSwap
+  // TODO: ?
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
 
@@ -200,7 +200,6 @@ export const QuickTrade = (props: QuickTradeProps) => {
     setSellTokenAmount(input || '')
   }
 
-  // TODO: useCallback?
   const onClickInputBalance = useCallback(() => {
     if (!inputTokenBalance) return
     setInputTokenAmountFormatted(inputTokenBalance)

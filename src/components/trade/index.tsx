@@ -8,7 +8,7 @@ import { Settings } from '@/components/settings'
 import { useSlippage } from '@/lib/providers/slippage'
 
 import FlashMint from './flashmint'
-import { QuickTrade, QuickTradeProps } from './swap'
+import { Swap, QuickTradeProps } from './swap'
 
 enum TradeType {
   flashMint,
@@ -50,7 +50,7 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
       />
       {selectedType === TradeType.flashMint && <FlashMint {...props} />}
       {selectedType === TradeType.swap && (
-        <QuickTrade {...props} switchTabs={onSwitchTabs} />
+        <Swap {...props} switchTabs={onSwitchTabs} />
       )}
     </Flex>
   )
