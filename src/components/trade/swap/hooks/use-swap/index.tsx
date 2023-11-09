@@ -118,9 +118,7 @@ export function useSwap(
   const gasCostsUsd = quote0x?.gasCostsInUsd ?? 0
 
   // Trade details
-
   const showWarning = useMemo(() => shouldShowWarningSign(slippage), [slippage])
-
   const tokenPrices = useMemo(
     () =>
       getFormattedTokenPrices(

@@ -67,7 +67,9 @@ export function getFormattedOuputTokenAmount(
 ): string {
   if (
     (bestOptionIsTypeEI && !exchangeIssuanceOutputAmount) ||
-    (!bestOptionIsTypeEI && !zeroExTradeDataOutputAmount)
+    (!bestOptionIsTypeEI && !zeroExTradeDataOutputAmount) ||
+    (zeroExTradeDataOutputAmount?.isZero() &&
+      exchangeIssuanceOutputAmount?.isZero())
   ) {
     return '0.0'
   }

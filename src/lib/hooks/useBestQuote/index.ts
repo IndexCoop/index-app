@@ -151,6 +151,14 @@ export const useBestQuote = () => {
       isMinting: boolean,
       slippage: number
     ) => {
+      // Right now we only allow setting the sell amount, so no need to check
+      // buy token amount here
+      const sellTokenInWei = toWei(sellTokenAmount, sellToken.decimals)
+      if (sellTokenInWei.isZero() || sellTokenInWei.isNegative()) {
+        setQuoteResult(defaultQuoteResult)
+        return
+      }
+
       const inputTokenAddress = getAddressForToken(sellToken, chainId)
       const outputTokenAddress = getAddressForToken(buyToken, chainId)
 

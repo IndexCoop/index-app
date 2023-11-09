@@ -146,10 +146,9 @@ export const QuickTrade = (props: QuickTradeProps) => {
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
-  // TODO:
   const resetTradeData = () => {
+    setInputTokenAmountFormatted('0')
     setSellTokenAmount('0')
-    // setTradeInfoData([])
   }
 
   useEffect(() => {
@@ -158,10 +157,6 @@ export const QuickTrade = (props: QuickTradeProps) => {
 
   const fetchOptions = useCallback(() => {
     if (requiresProtection) return
-    // Right now we only allow setting the sell amount, so no need to check
-    // buy token amount here
-    const sellTokenInWei = toWei(sellTokenAmount, sellToken.decimals)
-    if (sellTokenInWei.isZero() || sellTokenInWei.isNegative()) return
     fetchAndCompareOptions(
       sellToken,
       sellTokenAmount,
@@ -173,9 +168,12 @@ export const QuickTrade = (props: QuickTradeProps) => {
       slippage
     )
   }, [
+    isBuying,
     buyToken,
     inputTokenPrice,
+    nativeTokenPrice,
     outputTokenPrice,
+    requiresProtection,
     sellToken,
     sellTokenAmount,
     slippage,
@@ -210,7 +208,6 @@ export const QuickTrade = (props: QuickTradeProps) => {
   }, [inputTokenBalance])
 
   const onClickTradeButton = useCallback(async () => {
-    console.log('click', buttonState)
     if (buttonState === TradeButtonState.connectWallet) {
       if (openConnectModal) {
         openConnectModal()
