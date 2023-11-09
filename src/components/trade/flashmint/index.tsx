@@ -201,7 +201,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const isApproved = () => {
     if (isMinting) {
       const isNativeCurrency =
-        inputOutputToken.symbol === getNativeToken(chainId)?.symbol ?? ''
+        inputOutputToken.symbol === (getNativeToken(chainId)?.symbol ?? '')
       return isNativeCurrency ? true : isApprovedInputOutputToken
     }
     return isApprovedIndexToken
