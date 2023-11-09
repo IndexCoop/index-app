@@ -28,6 +28,7 @@ export const SelectedTokenProvider = (props: { children: any }) => {
   const params = useParams()
   const router = useRouter()
 
+  // TODO: params.path
   useEffect(() => {
     const resolver = new PathResolver()
     const tokens = resolver.resolve(params.path as string[])
