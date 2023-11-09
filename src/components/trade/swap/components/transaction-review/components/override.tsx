@@ -7,7 +7,7 @@ type OverrideProps = {
   onChange: (isChecked: boolean) => void
 }
 
-const Override = (props: OverrideProps) => {
+export const Override = (props: OverrideProps) => {
   const { isDarkMode, styles } = useColorStyles()
   const backgroundColor = isDarkMode ? colors.icGray3 : colors.icGray1
   return (
@@ -33,5 +33,3 @@ const Override = (props: OverrideProps) => {
     </Flex>
   )
 }
-
-export default Override

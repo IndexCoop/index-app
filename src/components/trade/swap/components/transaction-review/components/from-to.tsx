@@ -12,7 +12,7 @@ type FromToProps = {
   outputTokenSymbol: string
 }
 
-const FromTo = (props: FromToProps) => {
+export const FromTo = (props: FromToProps) => {
   const { styles } = useColorStyles()
   return (
     <Flex align='center' direction='column' w='100%'>
@@ -38,8 +38,6 @@ const FromTo = (props: FromToProps) => {
     </Flex>
   )
 }
-
-export default FromTo
 
 type FromToItemProps = {
   amount: string

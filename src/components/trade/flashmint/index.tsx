@@ -32,8 +32,8 @@ import {
   getSelectTokenListItems,
   SelectTokenModal,
 } from '../_shared/SelectTokenModal'
-import { TransactionReview } from '../_shared/TransactionReview/TransactionReview'
-import { TransactionReviewModal } from '../_shared/TransactionReview/TransactionReviewModal'
+import { TransactionReview } from '@/components/trade/swap/components/transaction-review/types'
+import { TransactionReviewModal } from '@/components/trade/swap/components/transaction-review/'
 import { QuickTradeProps } from '../swap'
 
 import DirectIssuance from './DirectIssuance'

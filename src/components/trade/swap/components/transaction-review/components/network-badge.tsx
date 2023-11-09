@@ -4,7 +4,7 @@ import { Box, Flex, Text } from '@chakra-ui/react'
 
 import { useNetwork } from '@/lib/hooks/useNetwork'
 
-const NetworkBadge = () => {
+export const NetworkBadge = () => {
   const { styles } = useColorStyles()
   const { name } = useNetwork()
   const networkName = name ?? 'Unsupported Network'
@@ -27,5 +27,3 @@ const NetworkBadge = () => {
     </Flex>
   )
 }
-
-export default NetworkBadge

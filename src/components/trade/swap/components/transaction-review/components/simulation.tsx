@@ -14,7 +14,7 @@ type TransactionReviewSimulationProps = {
   state: TransactionReviewSimulationState
 }
 
-const TransactionReviewSimulation = ({
+export const TransactionReviewSimulation = ({
   state,
 }: TransactionReviewSimulationProps) => {
   const isLoading = state === TransactionReviewSimulationState.loading
@@ -82,5 +82,3 @@ const SimulationStateView = ({ success }: { success: boolean }) => {
     </Flex>
   )
 }
-
-export default TransactionReviewSimulation

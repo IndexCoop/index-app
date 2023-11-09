@@ -17,7 +17,6 @@ import {
   Text,
 } from '@chakra-ui/react'
 
-import Override from '@/components/trade/flashmint/Override'
 import { useFlashMintTrade } from '@/lib/hooks/useFlashMintTrade'
 import { useSimulateQuote } from '@/lib/hooks/useSimulateQuote'
 import { displayFromWei } from '@/lib/utils'
@@ -25,12 +24,14 @@ import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 
 import { TradeButton } from '@/components/trade-button'
 
-import FromTo from './FromTo'
-import NetworkBadge from './NetworkBadge'
-import { TransactionReview } from './TransactionReview'
-import TransactionReviewSimulation, {
+import { FromTo } from './components/from-to'
+import { Override } from './components/override'
+import { NetworkBadge } from './components/network-badge'
+import {
+  TransactionReviewSimulation,
   TransactionReviewSimulationState,
-} from './TransactionReviewSimulation'
+} from './components/simulation'
+import { TransactionReview } from './types'
 
 enum TransactionReviewModalState {
   failed,
