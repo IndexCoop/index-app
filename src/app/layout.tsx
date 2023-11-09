@@ -22,10 +22,7 @@ export default function RootLayout({
       <body>
         <Providers>{children}</Providers>
       </body>
-      <script
-        async
-        src='https://tag.safary.club/stag.js?id=prd_SLBZtG2z1K'
-      ></script>
+      <Script src='https://tag.safary.club/stag.js?id=prd_SLBZtG2z1K' />
     </html>
   )
 }
