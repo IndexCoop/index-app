@@ -5,7 +5,6 @@ import { colors, useICColorMode } from '@/lib/styles/colors'
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
-import { formatUnits } from '@ethersproject/units'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
 import { TradeButton } from '@/components/trade-button'
@@ -24,12 +23,7 @@ import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getNativeToken } from '@/lib/utils/tokens'
 
 import {
-  formattedBalance,
-  formattedFiat,
-  getFormattedOuputTokenAmount,
   getFormattedPriceImpact,
-  getFormattedTokenPrices,
-  getHasInsufficientFunds,
   getTradeInfoData0x,
   shouldShowWarningSign,
 } from '../_shared/QuickTradeFormatter'
@@ -51,19 +45,21 @@ import {
 } from './hooks/use-trade-button-state'
 import { useTradeButton } from './hooks/use-trade-button'
 
+// TODO: remove with new navigation
 export type QuickTradeProps = {
   onOverrideSupplyCap?: (overrides: RethSupplyCapOverrides | undefined) => void
   onShowSupplyCap?: (show: boolean) => void
   switchTabs?: () => void
 }
 
-const QuickTrade = (props: QuickTradeProps) => {
-  const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
+export const QuickTrade = (props: QuickTradeProps) => {
+  const { getTokenBalance } = useBalanceData()
   const { openConnectModal } = useConnectModal()
   const { isDarkMode } = useICColorMode()
   const requiresProtection = useProtection()
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
+  const { executeTrade, isTransacting } = useTrade()
 
   const {
     isOpen: isSelectInputTokenOpen,
@@ -80,11 +76,9 @@ const QuickTrade = (props: QuickTradeProps) => {
     isBuying,
     buyToken,
     buyTokenList,
-    buyTokenPrice,
     nativeTokenPrice,
     sellToken,
     sellTokenList,
-    sellTokenPrice,
     changeBuyToken,
     changeSellToken,
     swapTokenLists,
@@ -100,55 +94,46 @@ const QuickTrade = (props: QuickTradeProps) => {
 
   // TODO: useFormattedSwap
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
-  const [buyTokenAmountFormatted, setBuyTokenAmountFormatted] = useState('0.0')
-  const [inputTokenBalanceFormatted, setInputTokenBalanceFormatted] =
-    useState('0.0')
-  const [outputTokenBalanceFormatted, setOutputTokenBalanceFormatted] =
-    useState('0.0')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
   const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
   const hasFetchingError = quoteResult.error !== null && !isFetchingZeroEx
 
-  const { gasCostsUsd } = useSwap(quoteResult?.quotes.zeroEx)
-
-  const zeroExAddress = getZeroExRouterAddress(chainId)
-
-  const sellTokenAmountInWei = toWei(sellTokenAmount, sellToken.decimals)
-
-  const sellTokenFiat = formattedFiat(
-    parseFloat(sellTokenAmount),
-    sellTokenPrice
-  )
-  const buyTokenFiat = formattedFiat(
-    parseFloat(buyTokenAmountFormatted),
-    buyTokenPrice
-  )
+  const {
+    hasInsufficientFunds,
+    gasCostsUsd,
+    inputTokenAmountUsd,
+    inputTokenAmountWei,
+    inputTokenBalance,
+    inputTokenBalanceFormatted,
+    inputTokenPrice,
+    outputTokenAmountFormatted,
+    outputTokenAmountUsd,
+    outputTokenBalanceFormatted,
+    outputTokenPrice,
+    showWarning,
+    tokenPrices,
+  } = useSwap(sellToken, buyToken, sellTokenAmount, quoteResult?.quotes.zeroEx)
 
   const priceImpact = isFetchingZeroEx
     ? null
     : getFormattedPriceImpact(
         parseFloat(sellTokenAmount),
-        sellTokenPrice,
-        parseFloat(buyTokenAmountFormatted),
-        buyTokenPrice,
+        inputTokenPrice,
+        parseFloat(outputTokenAmountFormatted),
+        outputTokenPrice,
         isDarkMode
       )
 
+  const zeroExAddress = useMemo(
+    () => getZeroExRouterAddress(chainId),
+    [chainId]
+  )
   const {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     approve: onApproveForSwap,
-  } = useApproval(sellToken, zeroExAddress, sellTokenAmountInWei)
-
-  const { executeTrade, isTransacting } = useTrade()
-
-  // TODO:
-  const hasInsufficientFunds = getHasInsufficientFunds(
-    false,
-    sellTokenAmountInWei,
-    getTokenBalance(sellToken.symbol, chainId)
-  )
+  } = useApproval(sellToken, zeroExAddress, inputTokenAmountWei)
 
   const shouldApprove = useMemo(() => {
     const nativeToken = getNativeToken(chainId)
@@ -167,6 +152,7 @@ const QuickTrade = (props: QuickTradeProps) => {
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
+  // TODO: move trade info data
   const determineBestOption = async () => {
     if (quoteResult.error !== null) {
       setTradeInfoData([])
@@ -175,13 +161,6 @@ const QuickTrade = (props: QuickTradeProps) => {
 
     const quoteZeroEx = quoteResult.quotes.zeroEx
 
-    const formattedBuyTokenAmount = getFormattedOuputTokenAmount(
-      false,
-      buyToken.decimals,
-      quoteZeroEx?.minOutput ?? BigNumber.from(0),
-      BigNumber.from(0)
-    )
-
     const contractBestOption = getZeroExRouterAddress(chainId)
     const contractBlockExplorerUrl = getBlockExplorerContractUrl(
       contractBestOption,
@@ -189,7 +168,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     )
 
     const gasCostsInUsd = quoteZeroEx?.gasCostsInUsd ?? 0
-    setBuyTokenAmountFormatted(formattedBuyTokenAmount)
     const tradeInfoData = getTradeInfoData0x(
       buyToken,
       quoteZeroEx?.gasCosts ?? BigNumber.from(0),
@@ -208,7 +186,6 @@ const QuickTrade = (props: QuickTradeProps) => {
   // TODO: move to formatting
   const resetTradeData = () => {
     setSellTokenAmount('0')
-    setBuyTokenAmountFormatted('0.0')
     setTradeInfoData([])
   }
 
@@ -232,14 +209,21 @@ const QuickTrade = (props: QuickTradeProps) => {
     fetchAndCompareOptions(
       sellToken,
       sellTokenAmount,
-      sellTokenPrice,
+      inputTokenPrice,
       buyToken,
-      buyTokenPrice,
+      outputTokenPrice,
       nativeTokenPrice,
       isBuying,
       slippage
     )
-  }, [buyToken, sellToken, sellTokenAmount, slippage])
+  }, [
+    buyToken,
+    inputTokenPrice,
+    outputTokenPrice,
+    sellToken,
+    sellTokenAmount,
+    slippage,
+  ])
 
   useEffect(() => {
     fetchOptions()
@@ -263,28 +247,11 @@ const QuickTrade = (props: QuickTradeProps) => {
   }
 
   // TODO: useCallback?
-  const onClickInputBalance = () => {
-    if (!inputTokenBalanceFormatted) return
-    const fullTokenBalance = formatUnits(
-      getTokenBalance(sellToken.symbol, chainId) ?? '0.0',
-      sellToken.decimals
-    )
-    setInputTokenAmountFormatted(fullTokenBalance)
-    setSellTokenAmount(fullTokenBalance)
-  }
-
-  // TODO:
-  useEffect(() => {
-    if (isLoadingBalance) return
-    const tokenBal = getTokenBalance(sellToken.symbol, chainId)
-    setInputTokenBalanceFormatted(formattedBalance(sellToken, tokenBal))
-  }, [getTokenBalance, sellToken, isLoadingBalance])
-
-  useEffect(() => {
-    if (isLoadingBalance) return
-    const tokenBal = getTokenBalance(buyToken.symbol, chainId)
-    setOutputTokenBalanceFormatted(formattedBalance(buyToken, tokenBal))
-  }, [getTokenBalance, buyToken, isLoadingBalance])
+  const onClickInputBalance = useCallback(() => {
+    if (!inputTokenBalance) return
+    setInputTokenAmountFormatted(inputTokenBalance)
+    setSellTokenAmount(inputTokenBalance)
+  }, [inputTokenBalance])
 
   const onClickTradeButton = useCallback(async () => {
     console.log('click', buttonState)
@@ -317,10 +284,6 @@ const QuickTrade = (props: QuickTradeProps) => {
     resetTradeData()
   }
 
-  // TradeButtonContainer
-  const isLoading = isApprovingForSwap || isFetchingZeroEx
-  console.log('isDisabled', isDisabled, buttonState, buttonLabel)
-
   // TODO: SelectTokenModal
   const inputTokenBalances = sellTokenList.map(
     (sellToken) =>
@@ -340,16 +303,7 @@ const QuickTrade = (props: QuickTradeProps) => {
     chainId
   )
 
-  // TradeDetail
-  const showWarning = useMemo(() => shouldShowWarningSign(slippage), [slippage])
-  const tokenPrices = getFormattedTokenPrices(
-    sellToken.symbol,
-    sellTokenPrice,
-    buyToken.symbol,
-    buyTokenPrice
-  )
-
-  // Delete: with better quote view
+  // Delete: when removing better quote view
   const betterQuoteState = useMemo(() => {
     if (isFetchingMoreOptions) {
       return BetterQuoteState.fetchingQuote
@@ -375,7 +329,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           config={{ isReadOnly: false }}
           balance={inputTokenBalanceFormatted}
           caption='You pay'
-          formattedFiat={sellTokenFiat}
+          formattedFiat={inputTokenAmountUsd}
           selectedToken={sellToken}
           selectedTokenAmount={inputTokenAmountFormatted}
           onChangeInput={onChangeInputTokenAmount}
@@ -402,9 +356,9 @@ const QuickTrade = (props: QuickTradeProps) => {
           }}
           caption={'You receive'}
           selectedToken={buyToken}
-          selectedTokenAmount={buyTokenAmountFormatted}
+          selectedTokenAmount={outputTokenAmountFormatted}
           balance={outputTokenBalanceFormatted}
-          formattedFiat={buyTokenFiat}
+          formattedFiat={outputTokenAmountUsd}
           priceImpact={
             priceImpact
               ? {
@@ -446,7 +400,7 @@ const QuickTrade = (props: QuickTradeProps) => {
           <TradeButton
             label={buttonLabel}
             isDisabled={isDisabled}
-            isLoading={isLoading}
+            isLoading={isApprovingForSwap || isFetchingZeroEx}
             onClick={onClickTradeButton}
           />
         )}
@@ -472,5 +426,3 @@ const QuickTrade = (props: QuickTradeProps) => {
     </Box>
   )
 }
-
-export default QuickTrade

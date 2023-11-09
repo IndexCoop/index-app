@@ -8,7 +8,7 @@ import { Settings } from '@/components/settings'
 import { useSlippage } from '@/lib/providers/slippage'
 
 import FlashMint from './flashmint'
-import QuickTrade, { QuickTradeProps } from './swap'
+import { QuickTrade, QuickTradeProps } from './swap'
 
 enum TradeType {
   flashMint,
