@@ -18,15 +18,10 @@ import { useBalanceData } from '@/lib/providers/Balances'
 import { useProtection } from '@/lib/providers/protection'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, toWei } from '@/lib/utils'
-import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getNativeToken } from '@/lib/utils/tokens'
 
-import {
-  getFormattedPriceImpact,
-  getTradeInfoData0x,
-  shouldShowWarningSign,
-} from '../_shared/QuickTradeFormatter'
+import { getFormattedPriceImpact } from '../_shared/QuickTradeFormatter'
 import {
   getSelectTokenListItems,
   SelectTokenModal,
@@ -36,7 +31,6 @@ import { BetterQuoteState, BetterQuoteView } from './components/BetterQuoteView'
 import { ProtectionWarning } from './components/protection-warning'
 import { RethSupplyCapOverrides } from '@/components/supply'
 import { TradeDetails } from './components/trade-details'
-import { TradeInfoItem } from './components/trade-details/trade-info'
 import { TradeInputSelector } from './components/trade-input-selector'
 import { useSwap } from './hooks/use-swap'
 import {
@@ -95,7 +89,6 @@ export const QuickTrade = (props: QuickTradeProps) => {
   // TODO: useFormattedSwap
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
-  const [tradeInfoData, setTradeInfoData] = useState<TradeInfoItem[]>([])
 
   const hasFetchingError = quoteResult.error !== null && !isFetchingZeroEx
 
@@ -113,6 +106,7 @@ export const QuickTrade = (props: QuickTradeProps) => {
     outputTokenPrice,
     showWarning,
     tokenPrices,
+    tradeData,
   } = useSwap(sellToken, buyToken, sellTokenAmount, quoteResult?.quotes.zeroEx)
 
   const priceImpact = isFetchingZeroEx
@@ -152,49 +146,11 @@ export const QuickTrade = (props: QuickTradeProps) => {
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
-  // TODO: move trade info data
-  const determineBestOption = async () => {
-    if (quoteResult.error !== null) {
-      setTradeInfoData([])
-      return
-    }
-
-    const quoteZeroEx = quoteResult.quotes.zeroEx
-
-    const contractBestOption = getZeroExRouterAddress(chainId)
-    const contractBlockExplorerUrl = getBlockExplorerContractUrl(
-      contractBestOption,
-      chainId
-    )
-
-    const gasCostsInUsd = quoteZeroEx?.gasCostsInUsd ?? 0
-    const tradeInfoData = getTradeInfoData0x(
-      buyToken,
-      quoteZeroEx?.gasCosts ?? BigNumber.from(0),
-      gasCostsInUsd,
-      quoteZeroEx?.minOutput ?? BigNumber.from(0),
-      quoteZeroEx?.sources ?? [],
-      chainId,
-      slippage,
-      shouldShowWarningSign(slippage),
-      contractBestOption,
-      contractBlockExplorerUrl
-    )
-    setTradeInfoData(tradeInfoData)
-  }
-
-  // TODO: move to formatting
+  // TODO:
   const resetTradeData = () => {
     setSellTokenAmount('0')
-    setTradeInfoData([])
+    // setTradeInfoData([])
   }
-
-  /**
-   * Determine the best trade option.
-   */
-  useEffect(() => {
-    determineBestOption()
-  }, [quoteResult])
 
   useEffect(() => {
     resetTradeData()
@@ -373,15 +329,15 @@ export const QuickTrade = (props: QuickTradeProps) => {
         />
       </Flex>
       <>
-        {tradeInfoData.length > 0 && (
+        {tradeData.length > 0 && (
           <TradeDetails
-            data={tradeInfoData}
+            data={tradeData}
             gasPriceInUsd={gasCostsUsd}
             prices={tokenPrices}
             showWarning={showWarning}
           />
         )}
-        {tradeInfoData.length > 0 && (
+        {tradeData.length > 0 && (
           <Box my='16px'>
             <BetterQuoteView
               onClick={onClickBetterQuote}

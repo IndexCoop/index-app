@@ -6,6 +6,7 @@ import { formatUnits } from '@ethersproject/units'
 import { Token } from '@/constants/tokens'
 import { ZeroExQuote } from '@/lib/hooks/useBestQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useTokenPrice } from '@/lib/hooks/use-token-price'
 import { useBalanceData } from '@/lib/providers/Balances'
 import { useSlippage } from '@/lib/providers/slippage'
 import { toWei } from '@/lib/utils'
@@ -17,9 +18,11 @@ import {
   getFormattedTokenPrices,
   getHasInsufficientFunds,
   shouldShowWarningSign,
-} from '../../_shared/QuickTradeFormatter'
-import { useTokenPrice } from '@/lib/hooks/use-token-price'
-import { TradeDetailTokenPrices } from '../components/trade-details'
+} from '../../../_shared/QuickTradeFormatter'
+import { TradeDetailTokenPrices } from '../../components/trade-details'
+import { TradeInfoItem } from '../../components/trade-details/trade-info'
+
+import { buildTradeDetails } from './trade-details-builder'
 
 interface SwapData {
   hasInsufficientFunds: boolean
@@ -37,6 +40,7 @@ interface SwapData {
   // Trade details
   showWarning: boolean
   tokenPrices: TradeDetailTokenPrices
+  tradeData: TradeInfoItem[]
 }
 
 export function useSwap(
@@ -73,10 +77,6 @@ export function useSwap(
     const tokenBal = getTokenBalance(outputToken.symbol, chainId)
     setOutputTokenBalanceFormatted(formattedBalance(outputToken, tokenBal))
   }, [chainId, getTokenBalance, isLoadingBalance, outputToken])
-
-  const reset = () => {
-    // TODO:
-  }
 
   const inputTokenAmountUsd = useMemo(
     () => formattedFiat(parseFloat(inputTokenAmount), inputTokenPrice),
@@ -132,6 +132,9 @@ export function useSwap(
     [inputToken, inputTokenPrice, outputToken, outputTokenPrice]
   )
 
+  // Trade data
+  const tradeData: TradeInfoItem[] = buildTradeDetails(quote0x, slippage)
+
   return {
     hasInsufficientFunds,
     gasCostsUsd,
@@ -146,5 +149,6 @@ export function useSwap(
     outputTokenPrice,
     showWarning,
     tokenPrices,
+    tradeData,
   }
 }
