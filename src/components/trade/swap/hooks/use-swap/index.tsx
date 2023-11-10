@@ -1,18 +1,15 @@
 import { BigNumber } from 'ethers'
-import { useEffect, useMemo, useState } from 'react'
-
-import { formatUnits } from '@ethersproject/units'
+import { useMemo } from 'react'
 
 import { Token } from '@/constants/tokens'
 import { ZeroExQuote } from '@/lib/hooks/useBestQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useTokenPrice } from '@/lib/hooks/use-token-price'
-import { useBalanceData } from '@/lib/providers/Balances'
+import { useWallet } from '@/lib/hooks/useWallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { toWei } from '@/lib/utils'
 
 import {
-  formattedBalance,
   formattedFiat,
   getFormattedOuputTokenAmount,
   getFormattedTokenPrices,
@@ -23,6 +20,7 @@ import { TradeDetailTokenPrices } from '../../components/trade-details'
 import { TradeInfoItem } from '../../components/trade-details/trade-info'
 
 import { buildTradeDetails } from './trade-details-builder'
+import { useFormattedBalance } from './use-formatted-balance'
 
 interface SwapData {
   hasInsufficientFunds: boolean
@@ -49,34 +47,20 @@ export function useSwap(
   inputTokenAmount: string,
   quote0x: ZeroExQuote | null
 ): SwapData {
-  const { isLoading: isLoadingBalance, getTokenBalance } = useBalanceData()
+  const { address } = useWallet()
+  const {
+    balance,
+    balanceFormatted: inputTokenBalanceFormatted,
+    balanceWei: inputTokenBalance,
+  } = useFormattedBalance(inputToken, address ?? '')
+  const { balanceFormatted: outputTokenBalanceFormatted } = useFormattedBalance(
+    outputToken,
+    address ?? ''
+  )
   const inputTokenPrice = useTokenPrice(inputToken)
   const outputTokenPrice = useTokenPrice(outputToken)
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
-
-  const [inputTokenBalance, setInputTokenBalance] = useState('0')
-  const [inputTokenBalanceFormatted, setInputTokenBalanceFormatted] =
-    useState('0.0')
-  const [outputTokenBalanceFormatted, setOutputTokenBalanceFormatted] =
-    useState('0.0')
-
-  useEffect(() => {
-    if (isLoadingBalance) return
-    const tokenBal = getTokenBalance(inputToken.symbol, chainId)
-    const inputTokenBalance = formatUnits(
-      getTokenBalance(inputToken.symbol, chainId) ?? '0.0',
-      inputToken.decimals
-    )
-    setInputTokenBalance(inputTokenBalance)
-    setInputTokenBalanceFormatted(formattedBalance(inputToken, tokenBal))
-  }, [chainId, getTokenBalance, inputToken, isLoadingBalance])
-
-  useEffect(() => {
-    if (isLoadingBalance) return
-    const tokenBal = getTokenBalance(outputToken.symbol, chainId)
-    setOutputTokenBalanceFormatted(formattedBalance(outputToken, tokenBal))
-  }, [chainId, getTokenBalance, isLoadingBalance, outputToken])
 
   const inputTokenAmountUsd = useMemo(
     () => formattedFiat(parseFloat(inputTokenAmount), inputTokenPrice),
@@ -93,9 +77,9 @@ export function useSwap(
       getHasInsufficientFunds(
         false,
         inputTokenAmountWei,
-        getTokenBalance(inputToken.symbol, chainId)
+        BigNumber.from(balance.toString())
       ),
-    [chainId, getTokenBalance, inputToken, inputTokenAmountWei]
+    [balance, inputTokenAmountWei]
   )
 
   const outputTokenAmountFormatted = useMemo(
