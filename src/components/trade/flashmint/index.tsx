@@ -28,7 +28,7 @@ import {
   formattedFiat,
   getHasInsufficientFunds,
 } from '../_shared/QuickTradeFormatter'
-import { SelectTokenModal } from '../_shared/SelectTokenModal'
+import { SelectTokenModal } from '@/components/trade/swap/components/select-token-modal'
 import { TransactionReview } from '@/components/trade/swap/components/transaction-review/types'
 import { TransactionReviewModal } from '@/components/trade/swap/components/transaction-review/'
 import { QuickTradeProps } from '../swap'

@@ -13,7 +13,6 @@ import { useBestQuote } from '@/lib/hooks/useBestQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useTrade } from '@/lib/hooks/useTrade'
 import { useTradeTokenLists } from '@/lib/hooks/useTradeTokenLists'
-import { useBalanceData } from '@/lib/providers/Balances'
 import { useProtection } from '@/lib/providers/protection'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, toWei } from '@/lib/utils'
@@ -21,13 +20,10 @@ import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getNativeToken } from '@/lib/utils/tokens'
 
 import { getFormattedPriceImpact } from '../_shared/QuickTradeFormatter'
-import {
-  getSelectTokenListItems,
-  SelectTokenModal,
-} from '../_shared/SelectTokenModal'
 
 import { BetterQuoteState, BetterQuoteView } from './components/BetterQuoteView'
 import { ProtectionWarning } from './components/protection-warning'
+import { SelectTokenModal } from './components/select-token-modal'
 import { RethSupplyCapOverrides } from '@/components/supply'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
