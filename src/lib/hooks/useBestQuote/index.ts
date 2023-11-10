@@ -7,7 +7,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { ic21, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
-import { useBalanceData } from '@/lib/providers/Balances'
 import { toWei } from '@/lib/utils'
 import { GasStation } from '@/lib/utils/api/gas-station'
 import {

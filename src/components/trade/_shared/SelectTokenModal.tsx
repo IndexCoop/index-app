@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { colors, useColorStyles, useICColorMode } from '@/lib/styles/colors'
+import { useMemo } from 'react'
 
 import {
   Flex,
@@ -14,27 +14,27 @@ import {
 } from '@chakra-ui/react'
 
 import { Token } from '@/constants/tokens'
-import { displayFromWei } from '@/lib/utils'
-
-type SelectTokenModalItem = {
-  symbol: string
-  logo: string
-  tokenName: string
-  balance: string
-  extraTitle?: string
-}
+import { useBalances } from '@/lib/hooks/use-balance'
+import { colors, useColorStyles, useICColorMode } from '@/lib/styles/colors'
+import { displayFromWei, isSameAddress } from '@/lib/utils'
 
 type SelectTokenModalProps = {
+  address?: string
   isOpen: boolean
+  tokens: Token[]
   onClose: () => void
   onSelectedToken: (tokenSymbol: string) => void
-  items: SelectTokenModalItem[]
 }
 
 export const SelectTokenModal = (props: SelectTokenModalProps) => {
+  const { isOpen, onClose, onSelectedToken, tokens } = props
+  const tokenAddresses = useMemo(
+    () => tokens.map((token) => token.address!),
+    [tokens]
+  )
+  const balances = useBalances(props.address, tokenAddresses)
   const { isDarkMode } = useICColorMode()
   const { styles } = useColorStyles()
-  const { isOpen, onClose, onSelectedToken, items } = props
   const backgroundColor = styles.background
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
@@ -60,16 +60,27 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
               Quantity Owned
             </Text>
           </Flex>
-          {items.length > 0 &&
-            items.map((item) => (
-              <TokenItem
-                key={item.symbol}
-                extraTitle={item.extraTitle}
-                isDarkMode={isDarkMode}
-                item={item}
-                onClick={() => onSelectedToken(item.symbol)}
-              />
-            ))}
+          {tokens.length > 0 &&
+            tokens.map((token) => {
+              const tokenBalance = balances.find((bal) =>
+                isSameAddress(bal.token, token.address!)
+              )
+              const balance = BigNumber.from(
+                tokenBalance?.value.toString() ?? '0'
+              )
+              const balanceDisplay =
+                displayFromWei(balance, 3, token.decimals) ?? '0'
+              return (
+                <TokenItem
+                  balance={balanceDisplay}
+                  key={token.symbol}
+                  extraTitle={undefined}
+                  isDarkMode={isDarkMode}
+                  item={token}
+                  onClick={() => onSelectedToken(token.symbol)}
+                />
+              )
+            })}
         </ModalBody>
       </ModalContent>
     </Modal>
@@ -77,13 +88,15 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
 }
 
 type TokenItemProps = {
+  balance: string
   extraTitle?: string
   isDarkMode: boolean
-  item: SelectTokenModalItem
+  item: Token
   onClick: (tokenSymbol: string) => void
 }
 
 const TokenItem = ({
+  balance,
   extraTitle,
   isDarkMode,
   item,
@@ -102,7 +115,7 @@ const TokenItem = ({
     }}
   >
     <Flex align='center'>
-      <Image alt={`${item.symbol} logo`} src={item.logo} w='40px' h='40px' />
+      <Image alt={`${item.symbol} logo`} src={item.image} w='40px' h='40px' />
       <Flex direction='column' ml='16px'>
         <Flex align='baseline'>
           <Text fontSize='md' fontWeight='500' textColor={colors.icBlack}>
@@ -115,33 +128,15 @@ const TokenItem = ({
           )}
         </Flex>
         <Text fontSize='sm' fontWeight='500' textColor={colors.icBlack}>
-          {item.tokenName}
+          {item.name}
         </Text>
       </Flex>
     </Flex>
     <Flex align='flex-end' direction='column' ml='16px'>
       <Text fontSize='md' fontWeight='700' textColor={colors.icBlack}>
-        {item.balance}
+        {balance}
       </Text>
       <Text fontSize='sm' fontWeight='500'></Text>
     </Flex>
   </Flex>
 )
-
-export function getSelectTokenListItems(
-  tokens: Token[],
-  balances: BigNumber[],
-  chainId: number | undefined
-): SelectTokenModalItem[] {
-  const tokenList: SelectTokenModalItem[] = tokens.map((token, index) => {
-    const extraTitle = undefined
-    return {
-      symbol: token.symbol,
-      logo: token.image,
-      tokenName: token.name,
-      balance: displayFromWei(balances[index], 3, token.decimals) ?? '0',
-      extraTitle,
-    }
-  })
-  return tokenList
-}

@@ -46,3 +46,38 @@ export function useBalance(address?: string, token?: string) {
     return BigInt(0)
   }, [address, balance, token])
 }
+
+interface TokenBalance {
+  token: string
+  value: bigint
+}
+
+export function useBalances(address?: string, tokens?: string[]) {
+  const publicClient = usePublicClient()
+  const [balances, setBalances] = useState<TokenBalance[]>([])
+
+  useEffect(() => {
+    async function fetchBalance() {
+      if (!address || !tokens || tokens.length === 0) return
+      const balanceProvider = new BalanceProvider(publicClient)
+      const promises = tokens.map((token) => {
+        const isETH = token.toLowerCase() === ETH.address!.toLowerCase()
+        const balance = isETH
+          ? balanceProvider.getNativeBalance(address)
+          : balanceProvider.getErc20Balance(address, token)
+        return balance
+      })
+      const results = await Promise.all(promises)
+      const balances = tokens.map((token, index) => {
+        return { token: token, value: results[index] }
+      })
+      setBalances(balances)
+    }
+    fetchBalance()
+  }, [address, tokens, publicClient])
+
+  return useMemo(() => {
+    if (address && tokens) return balances
+    return []
+  }, [address, balances, tokens])
+}

@@ -28,10 +28,7 @@ import {
   formattedFiat,
   getHasInsufficientFunds,
 } from '../_shared/QuickTradeFormatter'
-import {
-  getSelectTokenListItems,
-  SelectTokenModal,
-} from '../_shared/SelectTokenModal'
+import { SelectTokenModal } from '../_shared/SelectTokenModal'
 import { TransactionReview } from '@/components/trade/swap/components/transaction-review/types'
 import { TransactionReviewModal } from '@/components/trade/swap/components/transaction-review/'
 import { QuickTradeProps } from '../swap'
@@ -346,26 +343,6 @@ const FlashMint = (props: QuickTradeProps) => {
     setTransactionReview(transactionReview)
   }
 
-  // SelectTokenModal
-  const inputOutputTokenBalances = inputOutputTokenList.map(
-    (inputOutputToken) =>
-      getTokenBalance(inputOutputToken.symbol, chainId) ?? BigNumber.from(0)
-  )
-  const outputTokenBalances = indexTokenList.map(
-    (indexToken) =>
-      getTokenBalance(indexToken.symbol, chainId) ?? BigNumber.from(0)
-  )
-  const inputOutputTokenItems = getSelectTokenListItems(
-    inputOutputTokenList,
-    inputOutputTokenBalances,
-    chainId
-  )
-  const indexTokenItems = getSelectTokenListItems(
-    indexTokenList,
-    outputTokenBalances,
-    chainId
-  )
-
   // DirectIssuance
   const inputOutputTokenAmountFormatted = formattedBalance(
     inputOutputToken,
@@ -432,10 +409,10 @@ const FlashMint = (props: QuickTradeProps) => {
         onChangeBuyTokenAmount={onChangeIndexTokenAmount}
         onClickBalance={onClickBalance}
         onSelectIndexToken={() => {
-          if (indexTokenItems.length > 1) onOpenIndexTokenModal()
+          if (indexTokenList.length > 1) onOpenIndexTokenModal()
         }}
         onSelectInputOutputToken={() => {
-          if (inputOutputTokenItems.length > 1) onOpenInputOutputTokenModal()
+          if (inputOutputTokenList.length > 1) onOpenInputOutputTokenModal()
         }}
         onToggleIssuance={(isMinting) => setIsMinting(isMinting)}
         priceImpact={undefined}
@@ -458,7 +435,8 @@ const FlashMint = (props: QuickTradeProps) => {
           changeInputOutputToken(tokenSymbol)
           onCloseInputOutputTokenModal()
         }}
-        items={inputOutputTokenItems}
+        address={address}
+        tokens={inputOutputTokenList}
       />
       <SelectTokenModal
         isOpen={isIndexTokenModalOpen}
@@ -467,7 +445,8 @@ const FlashMint = (props: QuickTradeProps) => {
           changeIndexToken(tokenSymbol)
           onCloseIndexTokenModal()
         }}
-        items={indexTokenItems}
+        address={address}
+        tokens={indexTokenList}
       />
       {transactionReview && (
         <TransactionReviewModal

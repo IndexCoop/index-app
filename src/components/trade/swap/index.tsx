@@ -4,7 +4,6 @@ import { colors, useICColorMode } from '@/lib/styles/colors'
 
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
-import { BigNumber } from '@ethersproject/bignumber'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
 import { TradeButton } from '@/components/trade-button'
@@ -38,6 +37,7 @@ import {
   useTradeButtonState,
 } from './hooks/use-trade-button-state'
 import { useTradeButton } from './hooks/use-trade-button'
+import { useWallet } from '@/lib/hooks/useWallet'
 
 // TODO: remove with new navigation
 export type QuickTradeProps = {
@@ -47,13 +47,13 @@ export type QuickTradeProps = {
 }
 
 export const Swap = (props: QuickTradeProps) => {
-  const { getTokenBalance } = useBalanceData()
   const { openConnectModal } = useConnectModal()
   const { isDarkMode } = useICColorMode()
   const requiresProtection = useProtection()
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
   const { executeTrade, isTransacting } = useTrade()
+  const { address } = useWallet()
 
   const {
     isOpen: isSelectInputTokenOpen,
@@ -236,25 +236,6 @@ export const Swap = (props: QuickTradeProps) => {
     resetTradeData()
   }
 
-  // TODO: SelectTokenModal
-  const inputTokenBalances = sellTokenList.map(
-    (sellToken) =>
-      getTokenBalance(sellToken.symbol, chainId) ?? BigNumber.from(0)
-  )
-  const outputTokenBalances = buyTokenList.map(
-    (buyToken) => getTokenBalance(buyToken.symbol, chainId) ?? BigNumber.from(0)
-  )
-  const inputTokenItems = getSelectTokenListItems(
-    sellTokenList,
-    inputTokenBalances,
-    chainId
-  )
-  const outputTokenItems = getSelectTokenListItems(
-    buyTokenList,
-    outputTokenBalances,
-    chainId
-  )
-
   // Delete: when removing better quote view
   const betterQuoteState = useMemo(() => {
     if (isFetchingMoreOptions) {
@@ -287,7 +268,7 @@ export const Swap = (props: QuickTradeProps) => {
           onChangeInput={onChangeInputTokenAmount}
           onClickBalance={onClickInputBalance}
           onSelectToken={() => {
-            if (inputTokenItems.length > 1) onOpenSelectInputToken()
+            if (sellTokenList.length > 1) onOpenSelectInputToken()
           }}
         />
         <Box h='6px' alignSelf={'center'}>
@@ -320,7 +301,7 @@ export const Swap = (props: QuickTradeProps) => {
               : undefined
           }
           onSelectToken={() => {
-            if (outputTokenItems.length > 1) onOpenSelectOutputToken()
+            if (buyTokenList.length > 1) onOpenSelectOutputToken()
           }}
         />
       </Flex>
@@ -364,7 +345,8 @@ export const Swap = (props: QuickTradeProps) => {
           changeSellToken(tokenSymbol)
           onCloseSelectInputToken()
         }}
-        items={inputTokenItems}
+        address={address}
+        tokens={sellTokenList}
       />
       <SelectTokenModal
         isOpen={isSelectOutputTokenOpen}
@@ -373,7 +355,8 @@ export const Swap = (props: QuickTradeProps) => {
           changeBuyToken(tokenSymbol)
           onCloseSelectOutputToken()
         }}
-        items={outputTokenItems}
+        address={address}
+        tokens={buyTokenList}
       />
     </Box>
   )
