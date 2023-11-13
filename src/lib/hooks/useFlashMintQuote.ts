@@ -4,7 +4,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
-import { useBalanceData } from '@/lib/providers/Balances'
 import { GasStation } from '@/lib/utils/api/gas-station'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
@@ -22,7 +21,6 @@ export type FlashMintQuoteResult = {
 
 export const useFlashMintQuote = () => {
   const { chainId } = useNetwork()
-  const { getTokenBalance } = useBalanceData()
   const { provider, signer } = useWallet()
 
   const [isFetching, setIsFetching] = useState<boolean>(false)
@@ -69,8 +67,8 @@ export const useFlashMintQuote = () => {
 
     let flashMintQuote: EnhancedFlashMintQuote | null = null
 
-    const inputTokenBalance =
-      getTokenBalance(inputToken.symbol, chainId) ?? BigNumber.from(0)
+    const inputTokenBalance = BigNumber.from(0)
+    // TODO: getTokenBalance(inputToken.symbol, chainId) ?? BigNumber.from(0)
 
     const gasStation = new GasStation(provider)
     const gasPrice = await gasStation.getGasPrice()
