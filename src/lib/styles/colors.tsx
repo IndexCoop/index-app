@@ -4,6 +4,7 @@ export const colors = {
   ...theme.colors,
   // old colors will be removed once they are replaced everywhere
   icMalachite: '#09AA74',
+  icYellow: '#ECB424',
   icRed: '#C32238',
   // the new colors
   icBlack: '#0F1717',

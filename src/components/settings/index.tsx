@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { SettingsIcon } from '@chakra-ui/icons'
 import {
-  Button,
   Flex,
   IconButton,
   Input,
@@ -15,6 +14,7 @@ import {
 import { colors } from '@/lib/styles/colors'
 
 import { Toggle, ToggleState } from './toggle'
+import { Warning } from './warning'
 
 type SettingsProps = {
   isAuto: boolean
@@ -31,6 +31,13 @@ export const Settings = (props: SettingsProps) => {
   const inputTextColor = useMemo(
     () => (parseFloat(inputValue) > 50 ? colors.icRed : colors.icGray4),
     [inputValue]
+  )
+
+  const lowSlippage = useMemo(() => slippage < 0.05, [slippage])
+
+  const showWarning = useMemo(
+    () => slippage < 0.05 || (slippage > 1.0 && slippage <= 50),
+    [slippage]
   )
 
   const toggleState = useMemo(
@@ -115,6 +122,7 @@ export const Settings = (props: SettingsProps) => {
               </Text>
             </Flex>
           </Flex>
+          {showWarning && <Warning lowSlippage={lowSlippage} />}
         </PopoverBody>
       </PopoverContent>
     </Popover>
