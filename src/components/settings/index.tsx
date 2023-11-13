@@ -1,5 +1,4 @@
-import { colors } from '@/lib/styles/colors'
-
+import { useMemo } from 'react'
 import { SettingsIcon } from '@chakra-ui/icons'
 import {
   Button,
@@ -13,6 +12,10 @@ import {
   Text,
 } from '@chakra-ui/react'
 
+import { colors } from '@/lib/styles/colors'
+
+import { Toggle, ToggleState } from './toggle'
+
 type SettingsProps = {
   isAuto: boolean
   isDarkMode: boolean
@@ -22,7 +25,30 @@ type SettingsProps = {
 }
 
 export const Settings = (props: SettingsProps) => {
-  const { isAuto, isDarkMode, slippage, onChangeSlippage, onClickAuto } = props
+  const { isAuto, slippage, onChangeSlippage, onClickAuto } = props
+
+  const toggleState = useMemo(
+    () => (isAuto ? ToggleState.auto : ToggleState.custom),
+    [isAuto]
+  )
+
+  const onChangeInput = (value: string) => {
+    let updatedSlippage = parseFloat(value)
+    if (value === '') {
+      onClickAuto()
+      return
+    }
+    if (Number.isNaN(updatedSlippage)) return
+    onChangeSlippage(updatedSlippage)
+  }
+
+  const onClickToggle = (toggleState: ToggleState) => {
+    console.log('click toggle')
+    if (toggleState === ToggleState.auto) {
+      onClickAuto()
+      return
+    }
+  }
 
   return (
     <Popover placement='bottom-end'>
@@ -44,75 +70,47 @@ export const Settings = (props: SettingsProps) => {
           '0.5px 1px 10px 0px rgba(44, 51, 51, 0.10), 2px 2px 1px 0px #FCFFFF inset, 0.5px 0.5px 2px 0px rgba(0, 0, 0, 0.15)'
         }
         p='8px'
+        w='320px'
       >
         <PopoverBody>
           <Text fontSize='md' fontWeight='500' textColor={colors.icGray3}>
             Slippage
           </Text>
           <Flex align='center' my='4'>
-            <AutoButton
-              isActive={isAuto}
-              isDarkMode={isDarkMode}
-              onClickAuto={onClickAuto}
-            />
+            <Toggle toggleState={toggleState} onClick={onClickToggle} />
             <Flex
               align='center'
-              border='1px solid gray'
-              borderRadius={10}
-              ml='8px'
+              borderColor={colors.icGray1}
+              borderRadius={'12px'}
+              borderWidth={1}
+              h='50px'
+              ml='10px'
               px='8px'
             >
               <Input
-                fontSize='md'
+                fontSize='sm'
+                fontWeight={500}
                 placeholder={`${slippage}`}
                 _placeholder={{ color: colors.icGray2 }}
                 p='8px'
                 pr='4px'
                 textAlign='right'
+                textColor={colors.icGray4}
                 type='number'
                 variant='unstyled'
                 value={isAuto ? '' : slippage}
                 onChange={(event) => {
                   const value = event.target.value
-                  let updatedSlippage = parseFloat(value)
-                  if (value === '') {
-                    onClickAuto()
-                    return
-                  }
-                  if (Number.isNaN(updatedSlippage)) return
-                  onChangeSlippage(updatedSlippage)
+                  onChangeInput(value)
                 }}
               />
-              <Text textColor={colors.icBlack}>%</Text>
+              <Text fontSize={'sm'} fontWeight={500} textColor={colors.icGray4}>
+                %
+              </Text>
             </Flex>
           </Flex>
         </PopoverBody>
       </PopoverContent>
     </Popover>
-  )
-}
-
-type AutoButtonProps = {
-  isActive: boolean
-  isDarkMode: boolean
-  onClickAuto: () => void
-}
-
-const AutoButton = ({ isActive, isDarkMode, onClickAuto }: AutoButtonProps) => {
-  const backgroundColor = isDarkMode ? colors.icWhite : colors.black
-  const background = isActive ? backgroundColor : 'transparent'
-  const activeColor = isDarkMode ? colors.black : colors.white
-  const inactiveColor = isDarkMode ? colors.white : colors.black
-  const color = isActive ? activeColor : inactiveColor
-  return (
-    <Button
-      background={background}
-      border='0'
-      borderRadius={10}
-      color={color}
-      onClick={onClickAuto}
-    >
-      Auto
-    </Button>
   )
 }
