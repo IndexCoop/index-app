@@ -53,7 +53,7 @@ const isDevEnv =
   process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-staging'
 // Keeping a separate list for dev/staging and production to be able to include
 // indices that have not been released yet.
-const indexNames = isDevEnv
+export const indexNames = isDevEnv
   ? [
       CoinDeskEthTrendIndex,
       ic21,

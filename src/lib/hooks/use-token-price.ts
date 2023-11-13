@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { ETH, Token } from '@/constants/tokens'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
-import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
+import { NavProvider } from '@/lib/utils/api/nav'
+import {
+  getAddressForToken,
+  getNativeToken,
+  isIndexToken,
+} from '@/lib/utils/tokens'
 
 import { useNetwork } from './useNetwork'
 
@@ -16,6 +21,26 @@ export function useNativeTokenPrice(chainId?: number): number {
   }, [chainId])
 
   return nativeTokenPrice
+}
+
+/**
+ * Returns price of given token.
+ * @returns price of token in USD
+ */
+const getTokenPrice = async (
+  token: Token,
+  chainId: number | undefined
+): Promise<number> => {
+  const tokenAddress = getAddressForToken(token, chainId)
+  if (!tokenAddress || !chainId) return 0
+  if (isIndexToken(token)) {
+    const navProvider = new NavProvider()
+    const price = await navProvider.getNavPrice(token.symbol)
+    return price
+  }
+  const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
+  // Token price can return undefined
+  return tokenPrice ?? 0
 }
 
 export function useTokenPrice(token: Token): number {
@@ -32,19 +57,4 @@ export function useTokenPrice(token: Token): number {
   }, [chainId, isSupportedNetwork, token])
 
   return tokenPrice
-}
-
-/**
- * Returns price of given token.
- * @returns price of token in USD
- */
-const getTokenPrice = async (
-  token: Token,
-  chainId: number | undefined
-): Promise<number> => {
-  const tokenAddress = getAddressForToken(token, chainId)
-  if (!tokenAddress || !chainId) return 0
-  const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
-  // Token price can return undefined
-  return tokenPrice ?? 0
 }
