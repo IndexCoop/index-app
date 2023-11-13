@@ -17,6 +17,7 @@ import {
   LeveragedRethStakingYield,
   MATIC,
   MetaverseIndex,
+  MoneyMarketIndex,
   STETH,
   USDC,
   WETH,
@@ -57,6 +58,11 @@ describe('isAvailableForSwap()', () => {
 
   test('should return false for cdETI swap availability', async () => {
     const isAvailable = isAvailableForSwap(CoinDeskEthTrendIndex)
+    expect(isAvailable).toBe(false)
+  })
+
+  test('should return false for MMI swap availability', async () => {
+    const isAvailable = isAvailableForSwap(MoneyMarketIndex)
     expect(isAvailable).toBe(false)
   })
 
@@ -178,7 +184,7 @@ describe('getCurrencyTokensForIndex()', () => {
     ]
     const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
     expect(currencyTokens.length).toEqual(requiredTokens.length)
-    for (let requiredToken of requiredTokens) {
+    for (const requiredToken of requiredTokens) {
       expect(
         currencyTokens.filter((currency) => currency.symbol === requiredToken)
           .length
@@ -192,7 +198,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const requiredTokens = ['ETH', 'WETH', 'rETH', 'USDC']
     const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
     expect(currencyTokens.length).toEqual(requiredTokens.length)
-    for (let requiredToken of requiredTokens) {
+    for (const requiredToken of requiredTokens) {
       expect(
         currencyTokens.filter((currency) => currency.symbol === requiredToken)
           .length
@@ -214,7 +220,21 @@ describe('getCurrencyTokensForIndex()', () => {
     ]
     const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
     expect(currencyTokens.length).toEqual(requiredTokens.length)
-    for (let requiredToken of requiredTokens) {
+    for (const requiredToken of requiredTokens) {
+      expect(
+        currencyTokens.filter((currency) => currency.symbol === requiredToken)
+          .length
+      ).toEqual(1)
+    }
+  })
+
+  test('returns correct currency tokens for gtcETH', async () => {
+    const chainId = 1
+    const token = MoneyMarketIndex
+    const requiredTokens = ['DAI', 'USDC', 'USDT', 'WETH']
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    expect(currencyTokens.length).toEqual(requiredTokens.length)
+    for (const requiredToken of requiredTokens) {
       expect(
         currencyTokens.filter((currency) => currency.symbol === requiredToken)
           .length
