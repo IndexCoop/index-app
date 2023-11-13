@@ -6,14 +6,15 @@ import { prepareSendTransaction, sendTransaction } from '@wagmi/core'
 import { ZeroExQuote } from '@/lib/hooks/useBestQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useWallet } from '@/lib/hooks/useWallet'
-import { useBalanceData } from '@/lib/providers/Balances'
 import { fromWei } from '@/lib/utils'
+
+import { useBalance } from './use-balance'
 
 export const useTrade = () => {
   const { address } = useWallet()
   const { chainId } = useNetwork()
 
-  const { getTokenBalance } = useBalanceData()
+  const inputTokenBalance = useBalance(address)
 
   const [isTransacting, setIsTransacting] = useState(false)
 
@@ -30,8 +31,9 @@ export const useTrade = () => {
         BigNumber.from(inputTokenAmount),
         inputToken.decimals
       )
-      const spendingTokenBalance =
-        getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
+      // TODO:
+      const spendingTokenBalance = BigNumber.from(0)
+      // TODO: getTokenBalance(inputToken.symbol, chainId) || BigNumber.from(0)
       if (spendingTokenBalance.lt(requiredBalance)) return
 
       try {
@@ -50,7 +52,7 @@ export const useTrade = () => {
         console.log('Error sending transaction', error)
       }
     },
-    [address, chainId, getTokenBalance]
+    [address, chainId]
   )
 
   return { executeTrade, isTransacting }
