@@ -22,11 +22,6 @@ interface RethSupplyCapContainerProps {
   overrides?: RethSupplyCapOverrides
 }
 
-function getSupplyCapState(cap: number, totalSupply: number): SupplyCapState {
-  if (totalSupply >= cap) return SupplyCapState.capReached
-  return SupplyCapState.available
-}
-
 export const RethSupplyCapContainer = (props: RethSupplyCapContainerProps) => {
   const { overrides } = props
   const { data: rethSupplyData } = useRethSupply(true)

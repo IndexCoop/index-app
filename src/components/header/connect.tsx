@@ -29,6 +29,7 @@ export const Connect = () => {
         smallScreen: 'avatar',
         largeScreen: 'full',
       }}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       chainStatus={chainStatus as any}
     />
   )
