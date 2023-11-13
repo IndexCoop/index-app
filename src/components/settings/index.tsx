@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { SettingsIcon } from '@chakra-ui/icons'
 import {
   Button,
@@ -26,6 +26,12 @@ type SettingsProps = {
 
 export const Settings = (props: SettingsProps) => {
   const { isAuto, slippage, onChangeSlippage, onClickAuto } = props
+  const [inputValue, setInputValue] = useState<string>('')
+
+  const inputTextColor = useMemo(
+    () => (parseFloat(inputValue) > 50 ? colors.icRed : colors.icGray4),
+    [inputValue]
+  )
 
   const toggleState = useMemo(
     () => (isAuto ? ToggleState.auto : ToggleState.custom),
@@ -33,6 +39,7 @@ export const Settings = (props: SettingsProps) => {
   )
 
   const onChangeInput = (value: string) => {
+    setInputValue(value)
     let updatedSlippage = parseFloat(value)
     if (value === '') {
       onClickAuto()
@@ -43,7 +50,6 @@ export const Settings = (props: SettingsProps) => {
   }
 
   const onClickToggle = (toggleState: ToggleState) => {
-    console.log('click toggle')
     if (toggleState === ToggleState.auto) {
       onClickAuto()
       return
@@ -95,10 +101,10 @@ export const Settings = (props: SettingsProps) => {
                 p='8px'
                 pr='4px'
                 textAlign='right'
-                textColor={colors.icGray4}
+                textColor={inputTextColor}
                 type='number'
                 variant='unstyled'
-                value={isAuto ? '' : slippage}
+                value={inputValue}
                 onChange={(event) => {
                   const value = event.target.value
                   onChangeInput(value)
