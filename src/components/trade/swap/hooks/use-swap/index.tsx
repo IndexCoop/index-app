@@ -59,7 +59,6 @@ export function useSwap(
   )
   const inputTokenPrice = useTokenPrice(inputToken)
   const outputTokenPrice = useTokenPrice(outputToken)
-  const { chainId } = useNetwork()
   const { slippage } = useSlippage()
 
   const inputTokenAmountUsd = useMemo(
