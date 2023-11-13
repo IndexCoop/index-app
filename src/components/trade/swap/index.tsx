@@ -34,14 +34,7 @@ import {
 import { useTradeButton } from './hooks/use-trade-button'
 import { useWallet } from '@/lib/hooks/useWallet'
 
-// TODO: remove with new navigation
-export type QuickTradeProps = {
-  onOverrideSupplyCap?: (overrides: RethSupplyCapOverrides | undefined) => void
-  onShowSupplyCap?: (show: boolean) => void
-  switchTabs?: () => void
-}
-
-export const Swap = (props: QuickTradeProps) => {
+export const Swap = () => {
   const { openConnectModal } = useConnectModal()
   const { isDarkMode } = useICColorMode()
   const requiresProtection = useProtection()
@@ -177,14 +170,6 @@ export const Swap = (props: QuickTradeProps) => {
   useEffect(() => {
     fetchOptions()
   }, [fetchOptions])
-
-  // Delete: with better quote view
-  const onClickBetterQuote = () => {
-    if (!quoteResultOptions.hasBetterQuote) return
-    if (props.switchTabs) {
-      props.switchTabs()
-    }
-  }
 
   const onChangeInputTokenAmount = (token: Token, input: string) => {
     if (input === '') {
