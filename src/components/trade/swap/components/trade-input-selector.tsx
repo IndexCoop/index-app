@@ -56,6 +56,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
           fontWeight={500}
           overflow='hidden'
           placeholder='0.0'
+          _placeholder={{ color: colors.icGray2 }}
           pr='4px'
           type='number'
           step='any'
