@@ -47,7 +47,7 @@ export const Settings = (props: SettingsProps) => {
 
   const onChangeInput = (value: string) => {
     setInputValue(value)
-    let updatedSlippage = parseFloat(value)
+    const updatedSlippage = parseFloat(value)
     if (value === '') {
       onClickAuto()
       return

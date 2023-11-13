@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 
 import { Token } from '@/constants/tokens'
 import { ZeroExQuote } from '@/lib/hooks/useBestQuote'
-import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/useWallet'
 import { useSlippage } from '@/lib/providers/slippage'
