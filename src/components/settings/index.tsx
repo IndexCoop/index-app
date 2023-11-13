@@ -58,6 +58,7 @@ export const Settings = (props: SettingsProps) => {
 
   const onClickToggle = (toggleState: ToggleState) => {
     if (toggleState === ToggleState.auto) {
+      setInputValue('')
       onClickAuto()
       return
     }
