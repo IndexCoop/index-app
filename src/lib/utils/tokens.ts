@@ -1,5 +1,5 @@
 import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
-import { mainnetCurrencyTokens } from '@/constants/tokenlists'
+import { indexNames, mainnetCurrencyTokens } from '@/constants/tokenlists'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
@@ -23,6 +23,7 @@ import {
   WETH,
   WSTETH,
 } from '@/constants/tokens'
+import { isSameAddress } from '.'
 
 export function getAddressForToken(
   token: Token,
@@ -112,6 +113,13 @@ export function isAvailableForSwap(token: Token): boolean {
     default:
       return true
   }
+}
+
+export function isIndexToken(token: Token): boolean {
+  if (token.symbol === IndexToken.symbol) return false
+  return indexNames.some((index) =>
+    isSameAddress(index.address!, token.address!)
+  )
 }
 
 export function isLeveragedToken(token: Token): boolean {
