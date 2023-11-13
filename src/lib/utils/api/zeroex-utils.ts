@@ -74,7 +74,7 @@ export const getZeroExTradeData = async (
   rawData: boolean = false,
   rfq: RequestForQuote | null = null
 ): Promise<Result<ZeroExData, Error>> => {
-  let params = getApiParamsForTokens(
+  const params = getApiParamsForTokens(
     isExactInput,
     sellToken,
     buyToken,
@@ -126,8 +126,7 @@ export const get0xApiParams = (
   buySellAmount: string,
   rfq: RequestForQuote | null
 ): any => {
-  let params: any
-  params = {
+  const params: any = {
     sellToken,
     buyToken,
   }
