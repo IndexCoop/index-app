@@ -1,4 +1,4 @@
-import indexNames from '@/constants/tokenlists'
+import { indicesTokenList } from '@/constants/tokenlists'
 import { ETH, Token } from '@/constants/tokens'
 import { getCurrencyTokens } from '@/lib/utils/tokens'
 
@@ -21,37 +21,37 @@ export class PathResolver {
     if (symbols.inputToken === null && symbols.outputToken === null)
       return {
         inputToken: ETH,
-        outputToken: indexNames[0],
+        outputToken: indicesTokenList[0],
       }
 
     if (symbols.inputToken === null) {
       const outputToken = this.resolveToken(symbols.outputToken!)
-      const isIndex = indexNames.find(
+      const isIndex = indicesTokenList.find(
         (token) => token.symbol === outputToken.symbol
       )
       return {
-        inputToken: isIndex ? ETH : indexNames[0],
+        inputToken: isIndex ? ETH : indicesTokenList[0],
         outputToken: outputToken,
       }
     }
 
     if (symbols.outputToken === null) {
       const inputToken = this.resolveToken(symbols.inputToken!)
-      const isIndex = indexNames.find(
+      const isIndex = indicesTokenList.find(
         (token) => token.symbol === inputToken.symbol
       )
       return {
         inputToken,
-        outputToken: isIndex ? ETH : indexNames[0],
+        outputToken: isIndex ? ETH : indicesTokenList[0],
       }
     }
 
     const inputToken = this.resolveToken(symbols.inputToken!)
     const outputToken = this.resolveToken(symbols.outputToken!)
-    const inputTokenIsIndex = indexNames.some(
+    const inputTokenIsIndex = indicesTokenList.some(
       (token) => token.symbol === inputToken.symbol
     )
-    const outputTokenIsIndex = indexNames.some(
+    const outputTokenIsIndex = indicesTokenList.some(
       (token) => token.symbol === outputToken.symbol
     )
     return {
@@ -80,7 +80,7 @@ export class PathResolver {
   }
 
   private resolveToken(tokenSymbol: string): Token {
-    const indexToken = indexNames.find(
+    const indexToken = indicesTokenList.find(
       (token) => token.symbol.toLowerCase() === tokenSymbol.toLowerCase()
     )
     if (indexToken !== undefined) {

@@ -1,4 +1,4 @@
-import indexNames from '@/constants/tokenlists'
+import { indicesTokenList } from '@/constants/tokenlists'
 import { ETH, MetaverseIndex, USDC } from '@/constants/tokens'
 import { PathResolver } from './path-resolver'
 
@@ -8,7 +8,7 @@ describe('PathResolver', () => {
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
-    expect(resolvedPath.outputToken.symbol).toBe(indexNames[0].symbol)
+    expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
   })
 
   it('returns an input token for path: /swap/usdc', async () => {
@@ -16,7 +16,7 @@ describe('PathResolver', () => {
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
     expect(resolvedPath.inputToken.symbol).toBe(USDC.symbol)
-    expect(resolvedPath.outputToken.symbol).toBe(indexNames[0].symbol)
+    expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
   })
 
   it('returns an input and output token for path: /swap/usdc/mvi', async () => {
@@ -40,7 +40,7 @@ describe('PathResolver', () => {
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
-    expect(resolvedPath.outputToken.symbol).toBe(indexNames[0].symbol)
+    expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
   })
 
   it('returns default for longer wrong path: /swap/usdc/mvi/eth', async () => {
@@ -48,7 +48,7 @@ describe('PathResolver', () => {
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
-    expect(resolvedPath.outputToken.symbol).toBe(indexNames[0].symbol)
+    expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
   })
 
   it('returns default for wrong path with two indices: /swap/ic21/mvi', async () => {
