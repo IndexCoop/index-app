@@ -21,7 +21,6 @@ import { getNativeToken } from '@/lib/utils/tokens'
 
 import { getFormattedPriceImpact } from '../_shared/QuickTradeFormatter'
 
-import { BetterQuoteState, BetterQuoteView } from './components/BetterQuoteView'
 import { ProtectionWarning } from './components/protection-warning'
 import { SelectTokenModal } from './components/select-token-modal'
 import { RethSupplyCapOverrides } from '@/components/supply'
@@ -232,25 +231,6 @@ export const Swap = (props: QuickTradeProps) => {
     resetTradeData()
   }
 
-  // Delete: when removing better quote view
-  const betterQuoteState = useMemo(() => {
-    if (isFetchingMoreOptions) {
-      return BetterQuoteState.fetchingQuote
-    }
-
-    if (quoteResultOptions.hasBetterQuote) {
-      return quoteResultOptions.isReasonPriceImpact
-        ? BetterQuoteState.betterQuotePriceImpact
-        : BetterQuoteState.betterQuote
-    }
-
-    return BetterQuoteState.noBetterQuote
-  }, [
-    isFetchingMoreOptions,
-    quoteResultOptions.hasBetterQuote,
-    quoteResultOptions.isReasonPriceImpact,
-  ])
-
   return (
     <Flex
       background='linear-gradient(33deg, rgba(0, 189, 192, 0.05) -9.23%, rgba(0, 249, 228, 0.05) 48.82%, rgba(212, 0, 216, 0.05) 131.54%), linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'
@@ -327,15 +307,6 @@ export const Swap = (props: QuickTradeProps) => {
             prices={tokenPrices}
             showWarning={showWarning}
           />
-        )}
-        {tradeData.length > 0 && (
-          <Box my='16px'>
-            <BetterQuoteView
-              onClick={onClickBetterQuote}
-              state={betterQuoteState}
-              savingsUsd={quoteResultOptions.savingsUsd}
-            />
-          </Box>
         )}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
