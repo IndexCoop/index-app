@@ -3,18 +3,19 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
 import { PathResolver } from '@/app/swap/[[...path]]/path-resolver'
-import { ETH, Token, icETHIndex } from '@/constants/tokens'
+import { ETH, Token } from '@/constants/tokens'
+import { getDefaultIndex } from '@/lib/utils/tokens'
 
 export interface TokenContext {
-  inputToken: Token | null
-  outputToken: Token | null
+  inputToken: Token
+  outputToken: Token
   selectInputToken: (inputToken: Token) => void
   selectOutputToken: (inputToken: Token) => void
 }
 
 export const SelectedTokenContext = createContext<TokenContext>({
-  inputToken: null,
-  outputToken: null,
+  inputToken: ETH,
+  outputToken: getDefaultIndex(),
   selectInputToken: () => {},
   selectOutputToken: () => {},
 })
@@ -23,18 +24,20 @@ export const useSelectedToken = () => useContext(SelectedTokenContext)
 
 export const SelectedTokenProvider = (props: { children: any }) => {
   const [inputToken, setInputToken] = useState<Token>(ETH)
-  const [outputToken, setOutputToken] = useState<Token>(icETHIndex)
+  const [outputToken, setOutputToken] = useState<Token>(getDefaultIndex())
 
   const params = useParams()
   const router = useRouter()
 
-  // TODO: params.path
-  useEffect(() => {
-    const resolver = new PathResolver()
-    const tokens = resolver.resolve(params.path as string[])
-    setInputToken(tokens.inputToken)
-    setOutputToken(tokens.outputToken)
-  }, [])
+  // TODO: comment out and just use simple setters from outside for now
+  // TODO: delete use trade token lists
+  // // TODO: params.path
+  // useEffect(() => {
+  //   const resolver = new PathResolver()
+  //   const tokens = resolver.resolve(params.path as string[])
+  //   setInputToken(tokens.inputToken)
+  //   setOutputToken(tokens.outputToken)
+  // }, [])
 
   const routeSwap = (inputToken: string, outputToken: string) => {
     router.push(
@@ -43,12 +46,21 @@ export const SelectedTokenProvider = (props: { children: any }) => {
   }
 
   const selectInputToken = (inputToken: Token) => {
-    routeSwap(inputToken.symbol, outputToken.symbol)
+    setInputToken(inputToken)
+    // routeSwap(inputToken.symbol, outputToken.symbol)
   }
 
   const selectOutputToken = (outputToken: Token) => {
-    routeSwap(inputToken.symbol, outputToken.symbol)
+    setOutputToken(outputToken)
+    // routeSwap(inputToken.symbol, outputToken.symbol)
   }
+
+  // TODO:
+  // const toggleIsMinting = () => {
+  //   // TODO: test
+  //   setIsBuying(!isBuying)
+  //   routeSwap(outputToken.symbol, inputToken.symbol)
+  // }
 
   return (
     <SelectedTokenContext.Provider
@@ -57,6 +69,7 @@ export const SelectedTokenProvider = (props: { children: any }) => {
         outputToken,
         selectInputToken,
         selectOutputToken,
+        // toggleIsMinting,
       }}
     >
       {props.children}

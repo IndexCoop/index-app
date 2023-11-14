@@ -1,5 +1,9 @@
 import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
-import { indicesTokenList, mainnetCurrencyTokens } from '@/constants/tokenlists'
+import {
+  currencies,
+  indicesTokenList,
+  mainnetCurrencyTokens,
+} from '@/constants/tokenlists'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
@@ -23,6 +27,7 @@ import {
   WETH,
   WSTETH,
 } from '@/constants/tokens'
+
 import { isSameAddress } from '.'
 
 export function getAddressForToken(
@@ -82,6 +87,10 @@ export function getCurrencyTokensForIndex(
   return currencyTokens
 }
 
+export function getDefaultIndex(): Token {
+  return indicesTokenList[0]
+}
+
 export function getNativeToken(chainId: number | undefined): Token | null {
   switch (chainId) {
     case MAINNET.chainId:
@@ -93,6 +102,15 @@ export function getNativeToken(chainId: number | undefined): Token | null {
     default:
       return null
   }
+}
+
+export function getTokenBySymbol(symbol: string): Token | null {
+  const indexToken = indicesTokenList.find((index) => index.symbol === symbol)
+  if (indexToken) {
+    return indexToken
+  }
+  const currencyToken = currencies.find((token) => token.symbol === symbol)
+  return currencyToken ?? null
 }
 
 export function isAvailableForFlashMint(token: Token): boolean {
