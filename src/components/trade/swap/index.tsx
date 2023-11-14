@@ -12,12 +12,15 @@ import { useApproval } from '@/lib/hooks/useApproval'
 import { useBestQuote } from '@/lib/hooks/useBestQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useTrade } from '@/lib/hooks/useTrade'
-import { useTradeTokenLists } from '@/lib/hooks/useTradeTokenLists'
+import { useTokenlists } from '@/lib/hooks/use-tokenlists'
+import { useTradeButton } from './hooks/use-trade-button'
+import { useWallet } from '@/lib/hooks/useWallet'
 import { useProtection } from '@/lib/providers/protection'
+import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, toWei } from '@/lib/utils'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
-import { getNativeToken } from '@/lib/utils/tokens'
+import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 
 import { getFormattedPriceImpact } from '../_shared/QuickTradeFormatter'
 
@@ -31,8 +34,6 @@ import {
   TradeButtonState,
   useTradeButtonState,
 } from './hooks/use-trade-button-state'
-import { useTradeButton } from './hooks/use-trade-button'
-import { useWallet } from '@/lib/hooks/useWallet'
 
 export const Swap = () => {
   const { openConnectModal } = useConnectModal()
@@ -55,18 +56,6 @@ export const Swap = () => {
   } = useDisclosure()
 
   const {
-    isBuying,
-    buyToken,
-    buyTokenList,
-    nativeTokenPrice,
-    sellToken,
-    sellTokenList,
-    changeBuyToken,
-    changeSellToken,
-    swapTokenLists,
-  } = useTradeTokenLists()
-
-  const {
     isFetchingZeroEx,
     isFetchingMoreOptions,
     fetchAndCompareOptions,
@@ -74,11 +63,21 @@ export const Swap = () => {
     quoteResultOptions,
   } = useBestQuote()
 
+  const [isBuying, setIsBuying] = useState(true)
+
   // TODO: ?
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
 
   const hasFetchingError = quoteResult.error !== null && !isFetchingZeroEx
+
+  const { inputToken, outputToken, selectInputToken, selectOutputToken } =
+    useSelectedToken()
+  const { inputTokenslist, outputTokenslist } = useTokenlists(
+    isBuying,
+    inputToken,
+    outputToken
+  )
 
   const {
     hasInsufficientFunds,
@@ -95,7 +94,12 @@ export const Swap = () => {
     showWarning,
     tokenPrices,
     tradeData,
-  } = useSwap(sellToken, buyToken, sellTokenAmount, quoteResult?.quotes.zeroEx)
+  } = useSwap(
+    inputToken,
+    outputToken,
+    sellTokenAmount,
+    quoteResult?.quotes.zeroEx
+  )
 
   const priceImpact = isFetchingZeroEx
     ? null
@@ -115,13 +119,13 @@ export const Swap = () => {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     approve: onApproveForSwap,
-  } = useApproval(sellToken, zeroExAddress, inputTokenAmountWei)
+  } = useApproval(inputToken, zeroExAddress, inputTokenAmountWei)
 
   const shouldApprove = useMemo(() => {
     const nativeToken = getNativeToken(chainId)
-    const isNativeToken = nativeToken?.symbol === sellToken.symbol
+    const isNativeToken = nativeToken?.symbol === inputToken.symbol
     return !isNativeToken
-  }, [chainId, sellToken])
+  }, [chainId, inputToken])
 
   const buttonState = useTradeButtonState(
     hasFetchingError,
@@ -146,23 +150,24 @@ export const Swap = () => {
   const fetchOptions = useCallback(() => {
     if (requiresProtection) return
     fetchAndCompareOptions(
-      sellToken,
+      inputToken,
       sellTokenAmount,
       inputTokenPrice,
-      buyToken,
+      outputToken,
       outputTokenPrice,
-      nativeTokenPrice,
+      // TODO:
+      // nativeTokenPrice,
+      0,
       isBuying,
       slippage
     )
   }, [
     isBuying,
-    buyToken,
+    outputToken,
     inputTokenPrice,
-    nativeTokenPrice,
     outputTokenPrice,
     requiresProtection,
-    sellToken,
+    inputToken,
     sellTokenAmount,
     slippage,
   ])
@@ -211,10 +216,14 @@ export const Swap = () => {
     }
   }, [buttonState, executeTrade, fetchOptions, isApprovedForSwap, onApproveForSwap, openConnectModal, quoteResult.quotes.zeroEx, shouldApprove])
 
-  const onSwitchTokens = () => {
-    swapTokenLists()
+  const onSwitchTokens = useCallback(() => {
+    const currentInputToken = inputToken
+    const currentOutputToken = outputToken
+    selectInputToken(currentOutputToken)
+    selectOutputToken(currentInputToken)
+    setIsBuying(!isBuying)
     resetTradeData()
-  }
+  }, [inputToken, outputToken])
 
   return (
     <Flex
@@ -242,12 +251,12 @@ export const Swap = () => {
           balance={inputTokenBalanceFormatted}
           caption='You pay'
           formattedFiat={inputTokenAmountUsd}
-          selectedToken={sellToken}
+          selectedToken={inputToken}
           selectedTokenAmount={inputTokenAmountFormatted}
           onChangeInput={onChangeInputTokenAmount}
           onClickBalance={onClickInputBalance}
           onSelectToken={() => {
-            if (sellTokenList.length > 1) onOpenSelectInputToken()
+            if (inputTokenslist.length > 1) onOpenSelectInputToken()
           }}
         />
         <Box h='6px' alignSelf={'center'}>
@@ -267,7 +276,7 @@ export const Swap = () => {
             isReadOnly: true,
           }}
           caption={'You receive'}
-          selectedToken={buyToken}
+          selectedToken={outputToken}
           selectedTokenAmount={outputTokenAmountFormatted}
           balance={outputTokenBalanceFormatted}
           formattedFiat={outputTokenAmountUsd}
@@ -280,7 +289,7 @@ export const Swap = () => {
               : undefined
           }
           onSelectToken={() => {
-            if (buyTokenList.length > 1) onOpenSelectOutputToken()
+            if (outputTokenslist.length > 1) onOpenSelectOutputToken()
           }}
         />
       </Flex>
@@ -312,21 +321,21 @@ export const Swap = () => {
         isOpen={isSelectInputTokenOpen}
         onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol) => {
-          changeSellToken(tokenSymbol)
+          selectInputToken(getTokenBySymbol(tokenSymbol)!)
           onCloseSelectInputToken()
         }}
         address={address}
-        tokens={sellTokenList}
+        tokens={inputTokenslist}
       />
       <SelectTokenModal
         isOpen={isSelectOutputTokenOpen}
         onClose={onCloseSelectOutputToken}
         onSelectedToken={(tokenSymbol) => {
-          changeBuyToken(tokenSymbol)
+          selectOutputToken(getTokenBySymbol(tokenSymbol)!)
           onCloseSelectOutputToken()
         }}
         address={address}
-        tokens={buyTokenList}
+        tokens={outputTokenslist}
       />
     </Flex>
   )
