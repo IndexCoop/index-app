@@ -28,14 +28,15 @@ export const useTradeButtonState = (
   const { isSupportedNetwork } = useNetwork()
 
   const buttonState = useMemo(() => {
+    // Order of the checks matters
     if (!address) return TradeButtonState.connectWallet
     if (!isSupportedNetwork) return TradeButtonState.wrongNetwork
-    if (!isApproved && shouldApprove) return TradeButtonState.approve
-    if (isApproving) return TradeButtonState.approving
+    if (sellTokenAmount === '0') return TradeButtonState.enterAmount
     if (hasFetchingError) return TradeButtonState.fetchingError
     if (hasInsufficientFunds) return TradeButtonState.insufficientFunds
+    if (isApproving) return TradeButtonState.approving
+    if (!isApproved && shouldApprove) return TradeButtonState.approve
     if (isTransacting) return TradeButtonState.loading
-    if (sellTokenAmount === '0') return TradeButtonState.enterAmount
     return TradeButtonState.default
   }, [
     address,
