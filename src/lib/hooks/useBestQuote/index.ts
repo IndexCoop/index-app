@@ -244,7 +244,7 @@ export const useBestQuote = () => {
         setIsFetchingMoreOptions(true)
 
         /* Determine Set token amount based on different factors */
-        let indexTokenAmount = getSetTokenAmount(
+        const indexTokenAmount = getSetTokenAmount(
           isMinting,
           sellTokenAmount,
           sellToken.decimals,

@@ -19,7 +19,7 @@ import { ledgerConnector } from '@/lib/utils/wagmi'
 export default function SwapPage() {
   const { connectAsync, isIdle } = useConnect()
   const { isRunningInLedgerLive } = useLedgerStatus()
-  const { inputToken, outputToken } = useSelectedToken()
+  const { inputToken, isMinting, outputToken } = useSelectedToken()
 
   const [supplyCapOverrides, setSupplyCapOverrides] = useState<
     RethSupplyCapOverrides | undefined
@@ -48,8 +48,11 @@ export default function SwapPage() {
     >
       <Box mb={[4, 4, 4, 12]} mr={4} w={['inherit', '500px']}>
         <Swap
-        // TODO: https://github.com/IndexCoop/index-app/blob/e7a9b8dd7b16901b92c93532707af1216b21a17b/src/components/trade/flashmint/index.tsx#L164C10-L164C29
-        // onOverrideSupplyCap={(overrides) => setSupplyCapOverrides(overrides)}
+          isBuying={isMinting}
+          inputToken={inputToken}
+          outputToken={outputToken}
+          // TODO: https://github.com/IndexCoop/index-app/blob/e7a9b8dd7b16901b92c93532707af1216b21a17b/src/components/trade/flashmint/index.tsx#L164C10-L164C29
+          // onOverrideSupplyCap={(overrides) => setSupplyCapOverrides(overrides)}
         />
       </Box>
       {showRethSupplyCap && (

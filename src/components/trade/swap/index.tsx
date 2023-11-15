@@ -34,7 +34,14 @@ import {
   useTradeButtonState,
 } from './hooks/use-trade-button-state'
 
-export const Swap = () => {
+type SwapProps = {
+  isBuying: boolean
+  inputToken: Token
+  outputToken: Token
+}
+
+export const Swap = (props: SwapProps) => {
+  const { inputToken, isBuying, outputToken } = props
   const { openConnectModal } = useConnectModal()
   const { isDarkMode } = useICColorMode()
   const requiresProtection = useProtection()
@@ -62,15 +69,13 @@ export const Swap = () => {
     quoteResultOptions,
   } = useBestQuote()
 
-  const [isBuying, setIsBuying] = useState(true)
-
   // TODO: ?
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
 
   const hasFetchingError = quoteResult.error !== null && !isFetchingZeroEx
 
-  const { inputToken, outputToken, selectInputToken, selectOutputToken } =
+  const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
   const { inputTokenslist, outputTokenslist } = useTokenlists(
     isBuying,
@@ -216,13 +221,9 @@ export const Swap = () => {
   }, [buttonState, executeTrade, fetchOptions, isApprovedForSwap, onApproveForSwap, openConnectModal, quoteResult.quotes.zeroEx, shouldApprove])
 
   const onSwitchTokens = useCallback(() => {
-    const currentInputToken = inputToken
-    const currentOutputToken = outputToken
-    selectInputToken(currentOutputToken)
-    selectOutputToken(currentInputToken)
-    setIsBuying(!isBuying)
+    toggleIsMinting()
     resetTradeData()
-  }, [inputToken, outputToken])
+  }, [resetTradeData, toggleIsMinting])
 
   return (
     <Flex
