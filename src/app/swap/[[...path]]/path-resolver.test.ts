@@ -1,12 +1,15 @@
 import { indicesTokenList } from '@/constants/tokenlists'
-import { ETH, MetaverseIndex, USDC } from '@/constants/tokens'
+import { ETH, MetaverseIndex, USDC, icETHIndex } from '@/constants/tokens'
 import { PathResolver } from './path-resolver'
 
 describe('PathResolver', () => {
+  const defaultIndex = indicesTokenList[0].symbol
+
   it('returns default for path: /swap', async () => {
     const pathComponents: string[] = []
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
   })
@@ -15,6 +18,7 @@ describe('PathResolver', () => {
     const pathComponents = ['usdc']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(USDC.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
   })
@@ -23,6 +27,7 @@ describe('PathResolver', () => {
     const pathComponents = ['usdc', 'mvi']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(USDC.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(MetaverseIndex.symbol)
   })
@@ -31,6 +36,7 @@ describe('PathResolver', () => {
     const pathComponents = ['_', 'mvi']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(MetaverseIndex.symbol)
   })
@@ -39,6 +45,7 @@ describe('PathResolver', () => {
     const pathComponents = ['eth', '_']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
   })
@@ -47,6 +54,7 @@ describe('PathResolver', () => {
     const pathComponents = ['usdc', 'mvi', 'eth']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
   })
@@ -55,7 +63,35 @@ describe('PathResolver', () => {
     const pathComponents = ['ic21', 'mvi']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(MetaverseIndex.symbol)
+  })
+
+  it('returns default for wrong path with two currencies: /swap/eth/usdc', async () => {
+    const pathComponents = ['eth', 'usdc']
+    const resolver = new PathResolver()
+    const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
+    expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
+    expect(resolvedPath.outputToken.symbol).toBe(defaultIndex)
+  })
+
+  it('returns minting state correctly for redeeming: /swap/mvi/usdc', async () => {
+    const pathComponents = ['mvi', 'usdc']
+    const resolver = new PathResolver()
+    const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(false)
+    expect(resolvedPath.inputToken.symbol).toBe(MetaverseIndex.symbol)
+    expect(resolvedPath.outputToken.symbol).toBe(USDC.symbol)
+  })
+
+  it('returns correct state for: /swap/usdc/iceth', async () => {
+    const pathComponents = ['usdc', 'iceth']
+    const resolver = new PathResolver()
+    const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
+    expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
+    expect(resolvedPath.outputToken.symbol).toBe(icETHIndex.symbol)
   })
 })
