@@ -26,7 +26,6 @@ import { getFormattedPriceImpact } from '../_shared/QuickTradeFormatter'
 
 import { ProtectionWarning } from './components/protection-warning'
 import { SelectTokenModal } from './components/select-token-modal'
-import { RethSupplyCapOverrides } from '@/components/supply'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
 import { useSwap } from './hooks/use-swap'
