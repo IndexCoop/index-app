@@ -33,7 +33,7 @@ export async function getEnhancedFlashMintQuote(
   if (chainId !== MAINNET.chainId) return null
   const indexToken = isMinting ? buyToken : sellToken
   const inputOutputToken = isMinting ? sellToken : buyToken
-  const currencies = getCurrencyTokensForIndex(indexToken, chainId, isMinting)
+  const currencies = getCurrencyTokensForIndex(indexToken, chainId)
   // Allow only supported currencies
   const isAllowedCurrency =
     currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)

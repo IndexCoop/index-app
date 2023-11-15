@@ -170,7 +170,7 @@ async function getFlashMintQuote(
     slippage,
   } = request
   /* Determine Set token amount based on different factors */
-  let indexTokenAmount = getIndexTokenAmount(
+  const indexTokenAmount = getIndexTokenAmount(
     isMinting,
     inputTokenAmount,
     inputToken.decimals,
