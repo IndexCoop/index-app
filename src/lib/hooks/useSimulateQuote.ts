@@ -26,7 +26,7 @@ export const useSimulateQuote = (quoteResult: FlashMintQuoteResult) => {
       success = await simulator.simulate(request)
     } catch {
       // fallback: make a gas estimate
-      let gasEstimate: BigNumber = await provider.estimateGas(request)
+      const gasEstimate: BigNumber = await provider.estimateGas(request)
       success = gasEstimate.gt(0)
     }
     return success
