@@ -27,7 +27,7 @@ export const useTrade = () => {
         ? quote.inputOutputTokenAmount
         : quote.indexTokenAmount
 
-      let requiredBalance = fromWei(
+      const requiredBalance = fromWei(
         BigNumber.from(inputTokenAmount),
         inputToken.decimals
       )
