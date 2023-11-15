@@ -6,6 +6,7 @@ import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
+import { Settings } from '@/components/settings'
 import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
@@ -46,7 +47,12 @@ export const Swap = (props: SwapProps) => {
   const { isDarkMode } = useICColorMode()
   const requiresProtection = useProtection()
   const { chainId } = useNetwork()
-  const { slippage } = useSlippage()
+  const {
+    auto: autoSlippage,
+    isAuto: isAutoSlippage,
+    set: setSlippage,
+    slippage,
+  } = useSlippage()
   const { executeTrade, isTransacting } = useTrade()
   const { address } = useWallet()
 
@@ -236,15 +242,24 @@ export const Swap = (props: SwapProps) => {
       p='8px 16px 16px'
       height={'100%'}
     >
-      <Text
-        color={colors.icGray4}
-        fontSize={'md'}
-        fontWeight={500}
-        ml={'12px'}
-        my={'16px'}
-      >
-        Swap
-      </Text>
+      <Flex direction={'row'} justify={'space-between'}>
+        <Text
+          color={colors.icGray4}
+          fontSize={'md'}
+          fontWeight={500}
+          ml={'12px'}
+          my={'16px'}
+        >
+          Swap
+        </Text>
+        <Settings
+          isAuto={isAutoSlippage}
+          isDarkMode={false}
+          slippage={slippage}
+          onChangeSlippage={setSlippage}
+          onClickAuto={autoSlippage}
+        />
+      </Flex>
       <Flex direction='column' m='4px 0 6px'>
         <TradeInputSelector
           config={{ isReadOnly: false }}
