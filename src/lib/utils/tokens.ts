@@ -1,9 +1,5 @@
 import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
-import {
-  currencies,
-  indicesTokenList,
-  mainnetCurrencyTokens,
-} from '@/constants/tokenlists'
+import { currencies, indicesTokenList } from '@/constants/tokenlists'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
@@ -54,7 +50,7 @@ export function getAddressForToken(
 export function getCurrencyTokens(chainId: number | undefined): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
-      return mainnetCurrencyTokens
+      return currencies
     default:
       return []
   }
@@ -66,16 +62,14 @@ export function getCurrencyTokens(chainId: number | undefined): Token[] {
  */
 export function getCurrencyTokensForIndex(
   index: Token,
-  chainId: number,
-  isMinting: boolean
+  chainId: number
 ): Token[] {
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, USDC, DAI, WETH]
   if (index.symbol === ic21.symbol) return [ETH, WETH]
   if (index.symbol === FIXED_DAI.symbol) return [DAI]
   if (index.symbol === FIXED_USDC.symbol) return [USDC]
-  if (index.symbol === icETHIndex.symbol)
-    return isMinting ? [ETH, STETH] : [ETH, STETH]
+  if (index.symbol === icETHIndex.symbol) return [ETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||
     index.symbol === GitcoinStakedETHIndex.symbol

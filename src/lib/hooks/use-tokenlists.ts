@@ -13,7 +13,10 @@ export function useTokenlists(
     () => (isMinting ? outputToken : inputToken),
     [isMinting, inputToken, outputToken]
   )
-  const currenciesList = getCurrencyTokensForIndex(indexToken, 1, isMinting)
+  const currenciesList = useMemo(
+    () => getCurrencyTokensForIndex(indexToken, 1),
+    [indexToken]
+  )
   const tokenList = indicesTokenList
 
   const inputTokenslist = useMemo(

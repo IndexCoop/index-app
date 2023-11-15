@@ -1,4 +1,4 @@
-import { mainnetCurrencyTokens } from '@/constants/tokenlists'
+import { currencies } from '@/constants/tokenlists'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -105,7 +105,7 @@ describe('getCurrencyTokens()', () => {
 
   test('returns correct currency tokens for mainnet', async () => {
     const currencyTokens = getCurrencyTokens(1)
-    expect(currencyTokens).toEqual(mainnetCurrencyTokens)
+    expect(currencyTokens).toEqual(currencies)
   })
 })
 
@@ -114,7 +114,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const chainId = 1
     const token = DefiPulseIndex
     const defaultTokens = getCurrencyTokens(chainId)
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(defaultTokens.length)
     expect(currencyTokens).toEqual(defaultTokens)
   })
@@ -122,7 +122,7 @@ describe('getCurrencyTokensForIndex()', () => {
   test('returns correct tokens for cdETI', async () => {
     const chainId = 1
     const token = CoinDeskEthTrendIndex
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(4)
     expect(currencyTokens).toEqual([ETH, USDC, DAI, WETH])
   })
@@ -130,7 +130,7 @@ describe('getCurrencyTokensForIndex()', () => {
   test('returns DAI only for FIXED-DAI', async () => {
     const chainId = 1
     const token = FIXED_DAI
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(1)
     expect(currencyTokens).toEqual([DAI])
   })
@@ -138,34 +138,23 @@ describe('getCurrencyTokensForIndex()', () => {
   test('returns USDC only for FIXED-USDC', async () => {
     const chainId = 1
     const token = FIXED_USDC
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(1)
     expect(currencyTokens).toEqual([USDC])
   })
 
   test('returns correct currency tokens for ic21', async () => {
     const chainId = 1
-    const isMinting = true
     const token = ic21
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, isMinting)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(2)
     expect(currencyTokens).toEqual([ETH, WETH])
   })
 
   test('returns correct currency tokens for icETH', async () => {
     const chainId = 1
-    const isMinting = true
     const token = icETHIndex
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, isMinting)
-    expect(currencyTokens.length).toEqual(2)
-    expect(currencyTokens).toEqual([ETH, STETH])
-  })
-
-  test('returns correct currency tokens for icETH - when redeeming', async () => {
-    const chainId = 1
-    const isMinting = false
-    const token = icETHIndex
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, isMinting)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(2)
     expect(currencyTokens).toEqual([ETH, STETH])
   })
@@ -182,7 +171,7 @@ describe('getCurrencyTokensForIndex()', () => {
       'sETH2',
       'USDC',
     ]
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(requiredTokens.length)
     for (const requiredToken of requiredTokens) {
       expect(
@@ -196,7 +185,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const chainId = 1
     const token = LeveragedRethStakingYield
     const requiredTokens = ['ETH', 'WETH', 'rETH', 'USDC']
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(requiredTokens.length)
     for (const requiredToken of requiredTokens) {
       expect(
@@ -218,7 +207,7 @@ describe('getCurrencyTokensForIndex()', () => {
       'sETH2',
       'USDC',
     ]
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(requiredTokens.length)
     for (const requiredToken of requiredTokens) {
       expect(
@@ -232,7 +221,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const chainId = 1
     const token = MoneyMarketIndex
     const requiredTokens = ['DAI', 'USDC', 'USDT', 'WETH']
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId, true)
+    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(requiredTokens.length)
     for (const requiredToken of requiredTokens) {
       expect(
