@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useDebounce } from 'use-debounce'
 
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -80,7 +81,7 @@ const FlashMint = (props: QuickTradeProps) => {
   const [inputOutputTokenAmount, setInputOutputTokenAmount] = useState(
     BigNumber.from(0)
   )
-  const [indexTokenAmount, setIndexTokenAmount] = useState('0')
+  const [indexTokenAmount, setIndexTokenAmount] = useDebounce('0', 500)
   const [isMinting, setIsMinting] = useState(true)
   const [indexTokenBalanceFormatted, setIndexTokenBalanceFormatted] =
     useState('0.0')
