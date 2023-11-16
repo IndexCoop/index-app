@@ -6,8 +6,8 @@ import { Token } from '@/constants/tokens'
 import { displayFromWei } from '@/lib/utils'
 import { getNativeToken } from '@/lib/utils/tokens'
 
-import { TradeDetailTokenPrices } from '../swap/trade-details'
-import { TradeInfoItem } from '../swap/trade-details/trade-info'
+import { TradeDetailTokenPrices } from '../swap/components/trade-details'
+import { TradeInfoItem } from '../swap/components/trade-details/trade-info'
 
 export function getPriceImpactColorCoding(
   priceImpact: number,
@@ -67,7 +67,9 @@ export function getFormattedOuputTokenAmount(
 ): string {
   if (
     (bestOptionIsTypeEI && !exchangeIssuanceOutputAmount) ||
-    (!bestOptionIsTypeEI && !zeroExTradeDataOutputAmount)
+    (!bestOptionIsTypeEI && !zeroExTradeDataOutputAmount) ||
+    (zeroExTradeDataOutputAmount?.isZero() &&
+      exchangeIssuanceOutputAmount?.isZero())
   ) {
     return '0.0'
   }
@@ -192,9 +194,10 @@ export function getTradeInfoData0x(
   minOutput: BigNumber,
   sources: { name: string; proportion: string }[],
   chainId: number = 1,
-  navData: TradeInfoItem | null = null,
   slippage: number,
-  showSlippageWarning: boolean
+  showSlippageWarning: boolean,
+  contractBestOption: string,
+  contractBlockExplorerUrl: string
 ): TradeInfoItem[] {
   const minReceive = displayFromWei(minOutput, 4) ?? '0.0'
   const minReceiveFormatted = formatIfNumber(minReceive) + ' ' + buyToken.symbol
@@ -221,7 +224,15 @@ export function getTradeInfoData0x(
         `${networkFeeDisplay} ${networkToken} ($${gasCostsInUsd.toFixed(2)})`,
       ],
     },
-    { title: slippageTitle, values: [slippageFormatted] },
+    {
+      title: slippageTitle,
+      values: [slippageFormatted],
+    },
+    {
+      isLink: true,
+      title: 'Contract',
+      values: [contractBestOption, contractBlockExplorerUrl],
+    },
     { title: 'Offered From', values: [offeredFromSources.toString()] },
   ]
 }

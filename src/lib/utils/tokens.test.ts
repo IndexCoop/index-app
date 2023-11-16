@@ -13,6 +13,7 @@ import {
   GitcoinStakedETHIndex,
   ic21,
   icETHIndex,
+  IndexToken,
   LeveragedRethStakingYield,
   MATIC,
   MetaverseIndex,
@@ -27,8 +28,49 @@ import {
   getCurrencyTokens,
   getCurrencyTokensForIndex,
   getNativeToken,
+  isAvailableForFlashMint,
+  isAvailableForSwap,
   isLeveragedToken,
 } from './tokens'
+
+describe('isAvailableForFlashMint()', () => {
+  test('returns true by default', async () => {
+    const isAvailable = isAvailableForFlashMint(CoinDeskEthTrendIndex)
+    expect(isAvailable).toBe(true)
+  })
+
+  test('should return false for ic21 swap availability', async () => {
+    const isAvailable = isAvailableForFlashMint(ic21)
+    expect(isAvailable).toBe(false)
+  })
+
+  test('should return false for INDEX swap availability', async () => {
+    const isAvailable = isAvailableForFlashMint(IndexToken)
+    expect(isAvailable).toBe(false)
+  })
+})
+
+describe('isAvailableForSwap()', () => {
+  test('returns true by default', async () => {
+    const isAvailable = isAvailableForFlashMint(DefiPulseIndex)
+    expect(isAvailable).toBe(true)
+  })
+
+  test('should return false for cdETI swap availability', async () => {
+    const isAvailable = isAvailableForSwap(CoinDeskEthTrendIndex)
+    expect(isAvailable).toBe(false)
+  })
+
+  test('should return false for MMI swap availability', async () => {
+    const isAvailable = isAvailableForSwap(MoneyMarketIndex)
+    expect(isAvailable).toBe(false)
+  })
+
+  test('should return false for icRETH swap availability', async () => {
+    const isAvailable = isAvailableForSwap(LeveragedRethStakingYield)
+    expect(isAvailable).toBe(false)
+  })
+})
 
 describe('getAddressForToken()', () => {
   test('should return undefined for undefined chain', async () => {

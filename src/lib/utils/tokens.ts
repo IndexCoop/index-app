@@ -97,6 +97,27 @@ export function getNativeToken(chainId: number | undefined): Token | null {
   }
 }
 
+export function isAvailableForFlashMint(token: Token): boolean {
+  switch (token.symbol) {
+    case ic21.symbol:
+    case IndexToken.symbol:
+      return false
+    default:
+      return true
+  }
+}
+
+export function isAvailableForSwap(token: Token): boolean {
+  switch (token.symbol) {
+    case CoinDeskEthTrendIndex.symbol:
+    case MoneyMarketIndex.symbol:
+    case LeveragedRethStakingYield.symbol:
+      return false
+    default:
+      return true
+  }
+}
+
 export function isLeveragedToken(token: Token): boolean {
   if (token === Bitcoin2xFlexibleLeverageIndex) return true
   if (token === Ethereum2xFlexibleLeverageIndex) return true

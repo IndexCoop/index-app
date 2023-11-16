@@ -219,4 +219,4 @@ export const ERC20_ABI = [
     name: 'Transfer',
     type: 'event',
   },
-]
+] as const

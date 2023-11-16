@@ -1,5 +1,5 @@
 import { BalanceProvider } from '@/lib/providers/Balances'
-import { ProtectionProvider } from '@/lib/providers/Protection'
+import { ProtectionProvider } from '@/lib/providers/protection'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (

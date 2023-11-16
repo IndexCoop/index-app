@@ -7,11 +7,6 @@ import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useWallet } from '@/lib/hooks/useWallet'
 import { logTx } from '@/lib/utils/api/analytics'
 import {
-  CaptureExchangeIssuanceFunctionKey,
-  CaptureExchangeIssuanceKey,
-  captureTransaction,
-} from '@/lib/utils/api/sentry'
-import {
   GasEstimatooor,
   GasEstimatooorFailedError,
 } from '@/lib/utils/gasEstimatooor'
@@ -50,18 +45,6 @@ export const useFlashMintTrade = () => {
         const gasLimit = await gasEstimatooor.estimate(tx, canFail)
         tx.gasLimit = gasLimit
         const res = await signer.sendTransaction(tx)
-        const contractFunction = quote.isMinting
-          ? CaptureExchangeIssuanceFunctionKey.issueErc20
-          : CaptureExchangeIssuanceFunctionKey.redeemErc20
-        captureTransaction({
-          // TODO: make dynamic
-          exchangeIssuance: CaptureExchangeIssuanceKey.wrapped,
-          function: contractFunction,
-          setToken: indexToken,
-          setAmount: indexTokenAmount.toString(),
-          gasLimit: gasLimit.toString(),
-          slippage: slippage.toString(),
-        })
         logTx(chainId ?? -1, 'Wrapped', res)
         setIsTransacting(false)
       } catch (error) {

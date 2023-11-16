@@ -1,14 +1,14 @@
 import { useState } from 'react'
 
-import { colors, useColorStyles, useICColorMode } from '../../lib/styles/colors'
+import { colors, useICColorMode } from '../../lib/styles/colors'
 
 import { Flex, Text } from '@chakra-ui/react'
 
-import { SlippageProvider, useSlippage } from '../../lib/providers/Slippage'
+import { Settings } from '@/components/settings'
+import { useSlippage } from '@/lib/providers/slippage'
 
-import { QuickTradeSettingsPopover } from './_shared/QuickTradeSettingsPopover'
 import FlashMint from './flashmint'
-import QuickTrade, { QuickTradeProps } from './swap'
+import { Swap, QuickTradeProps } from './swap'
 
 enum TradeType {
   flashMint,
@@ -16,12 +16,8 @@ enum TradeType {
 }
 
 const QuickTradeContainer = (props: QuickTradeProps) => {
-  const { styles } = useColorStyles()
-  const [selectedType, setSelectedType] = useState<TradeType>(
-    TradeType.flashMint
-  )
+  const [selectedType, setSelectedType] = useState<TradeType>(TradeType.swap)
 
-  const paddingX = props.isNarrowVersion ? '16px' : '40px'
   const shouldShowSwap = true
   const shouldShowFlashMintOption = true
 
@@ -36,29 +32,27 @@ const QuickTradeContainer = (props: QuickTradeProps) => {
   }
 
   return (
-    <SlippageProvider>
-      <Flex
-        background='linear-gradient(33deg, rgba(0, 189, 192, 0.05) -9.23%, rgba(0, 249, 228, 0.05) 48.82%, rgba(212, 0, 216, 0.05) 131.54%), linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'
-        border='1px solid'
-        borderColor={colors.icGray1}
-        borderRadius='24px'
-        boxShadow='0.5px 1px 2px 0px rgba(44, 51, 51, 0.25), 2px 2px 1px 0px #FCFFFF inset'
-        direction='column'
-        p='8px 16px 16px'
-        height={'100%'}
-      >
-        <Navigation
-          onSelect={onSelectType}
-          selectedType={selectedType}
-          shouldShowFlashMintOption={shouldShowFlashMintOption}
-          shouldShowSwap={shouldShowSwap}
-        />
-        {selectedType === TradeType.flashMint && <FlashMint {...props} />}
-        {selectedType === TradeType.swap && (
-          <QuickTrade {...props} switchTabs={onSwitchTabs} />
-        )}
-      </Flex>
-    </SlippageProvider>
+    <Flex
+      background='linear-gradient(33deg, rgba(0, 189, 192, 0.05) -9.23%, rgba(0, 249, 228, 0.05) 48.82%, rgba(212, 0, 216, 0.05) 131.54%), linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'
+      border='1px solid'
+      borderColor={colors.icGray1}
+      borderRadius='24px'
+      boxShadow='0.5px 1px 2px 0px rgba(44, 51, 51, 0.25), 2px 2px 1px 0px #FCFFFF inset'
+      direction='column'
+      p='8px 16px 16px'
+      height={'100%'}
+    >
+      <Navigation
+        onSelect={onSelectType}
+        selectedType={selectedType}
+        shouldShowFlashMintOption={shouldShowFlashMintOption}
+        shouldShowSwap={shouldShowSwap}
+      />
+      {selectedType === TradeType.flashMint && <FlashMint {...props} />}
+      {selectedType === TradeType.swap && (
+        <Swap {...props} switchTabs={onSwitchTabs} />
+      )}
+    </Flex>
   )
 }
 
@@ -120,7 +114,7 @@ const Navigation = (props: NavigationProps) => {
           />
         )}
       </Flex>
-      <QuickTradeSettingsPopover
+      <Settings
         isAuto={isAutoSlippage}
         isDarkMode={isDarkMode}
         onChangeSlippage={setSlippage}

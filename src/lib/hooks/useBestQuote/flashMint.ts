@@ -38,12 +38,6 @@ export async function getEnhancedFlashMintQuote(
   const isAllowedCurrency =
     currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)
       .length > 0
-  console.log(
-    indexToken.symbol,
-    inputOutputToken.symbol,
-    currencies.length,
-    isAllowedCurrency
-  )
   if (!isAllowedCurrency) return null
 
   const inputToken = {
