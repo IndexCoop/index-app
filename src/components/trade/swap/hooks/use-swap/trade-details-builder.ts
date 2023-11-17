@@ -11,7 +11,7 @@ import { getNativeToken } from '@/lib/utils/tokens'
 
 import { TradeInfoItem } from '../../types'
 
-const formatIfNumber = (value: string) => {
+function formatIfNumber(value: string) {
   if (/[a-z]/i.test(value)) return value
   return Number(value).toLocaleString('en', {
     minimumFractionDigits: 4,
@@ -36,13 +36,12 @@ function getNetworkFee(quote: Quote): TradeInfoItem {
   const networkFee = displayFromWei(quote.gasCosts)
   const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
   const networkToken = getNativeToken(quote.chainId)?.symbol ?? ''
+  const formattedFee = `$${quote.gasCostsInUsd.toFixed(
+    2
+  )} (${networkFeeDisplay} ${networkToken})`
   return {
     title: 'Network Fee',
-    values: [
-      `${networkFeeDisplay} ${networkToken} ($${quote.gasCostsInUsd.toFixed(
-        2
-      )})`,
-    ],
+    values: [formattedFee],
   }
 }
 
