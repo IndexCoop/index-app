@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useDebounce } from 'use-debounce'
 
 import { colors, useICColorMode } from '@/lib/styles/colors'
 
@@ -79,7 +80,7 @@ export const Swap = (props: SwapProps) => {
 
   // TODO: ?
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
-  const [sellTokenAmount, setSellTokenAmount] = useState('0')
+  const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 500)
 
   const hasFetchingError = quoteResult.error !== null && !isFetchingQuote
 
