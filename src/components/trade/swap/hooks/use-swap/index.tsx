@@ -2,15 +2,14 @@ import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
 import { Token } from '@/constants/tokens'
-import { ZeroExQuote } from '@/lib/hooks/useBestQuote'
+import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/useWallet'
 import { useSlippage } from '@/lib/providers/slippage'
-import { toWei } from '@/lib/utils'
+import { displayFromWei, toWei } from '@/lib/utils'
 
 import {
   formattedFiat,
-  getFormattedOuputTokenAmount,
   getFormattedTokenPrices,
   getHasInsufficientFunds,
   shouldShowWarningSign,
@@ -22,6 +21,7 @@ import { buildTradeDetails } from './trade-details-builder'
 import { useFormattedBalance } from './use-formatted-balance'
 
 interface SwapData {
+  contract: string | null
   hasInsufficientFunds: boolean
   //   inputTokenAmountFormatted: string
   inputTokenBalance: string
@@ -40,11 +40,24 @@ interface SwapData {
   tradeData: TradeInfoItem[]
 }
 
+function getFormattedOuputTokenAmount(quoteResult: QuoteResult | null): string {
+  if (!quoteResult) return '0'
+  const isFlashmintBestQuote = quoteResult.bestQuote === QuoteType.flashmint
+  const quote = isFlashmintBestQuote
+    ? quoteResult.quotes.flashmint
+    : quoteResult.quotes.zeroex
+  if (!quote) return '0'
+  const outputTokenAmount = quote.isMinting
+    ? quote.indexTokenAmount
+    : quote.inputOutputTokenAmount
+  return displayFromWei(outputTokenAmount, quote.outputToken.decimals) ?? '0'
+}
+
 export function useSwap(
   inputToken: Token,
   outputToken: Token,
   inputTokenAmount: string,
-  quote0x: ZeroExQuote | null
+  quoteResult: QuoteResult | null
 ): SwapData {
   const { address } = useWallet()
   const {
@@ -52,13 +65,36 @@ export function useSwap(
     balanceFormatted: inputTokenBalanceFormatted,
     balanceWei: inputTokenBalance,
   } = useFormattedBalance(inputToken, address ?? '')
+  // console.log(
+  //   inputTokenBalanceFormatted,
+  //   inputToken.symbol,
+  //   address,
+  //   'inputTokenBalanceFormatted'
+  // )
   const { balanceFormatted: outputTokenBalanceFormatted } = useFormattedBalance(
     outputToken,
     address ?? ''
   )
+  // console.log(
+  //   outputTokenBalanceFormatted,
+  //   outputToken.symbol,
+  //   address,
+  //   'outputTokenBalanceFormatted'
+  // )
+
   const inputTokenPrice = useTokenPrice(inputToken)
   const outputTokenPrice = useTokenPrice(outputToken)
   const { slippage } = useSlippage()
+
+  const selectedQuote = useMemo(
+    () =>
+      quoteResult?.bestQuote === QuoteType.zeroex
+        ? quoteResult?.quotes.zeroex
+        : quoteResult?.quotes.flashmint,
+    [quoteResult]
+  )
+
+  const contract = selectedQuote?.contract ?? null
 
   const inputTokenAmountUsd = useMemo(
     () => formattedFiat(parseFloat(inputTokenAmount), inputTokenPrice),
@@ -81,15 +117,8 @@ export function useSwap(
   )
 
   const outputTokenAmountFormatted = useMemo(
-    () =>
-      // TODO:
-      getFormattedOuputTokenAmount(
-        false,
-        outputToken.decimals,
-        quote0x?.minOutput ?? BigNumber.from(0),
-        BigNumber.from(0)
-      ),
-    [quote0x?.minOutput, outputToken]
+    () => getFormattedOuputTokenAmount(quoteResult),
+    [quoteResult]
   )
 
   const outputTokenAmountUsd = useMemo(
@@ -97,7 +126,7 @@ export function useSwap(
       formattedFiat(parseFloat(outputTokenAmountFormatted), outputTokenPrice),
     [outputTokenAmountFormatted, outputTokenPrice]
   )
-  const gasCostsUsd = quote0x?.gasCostsInUsd ?? 0
+  const gasCostsUsd = selectedQuote?.gasCostsInUsd ?? 0
 
   // Trade details
   const showWarning = useMemo(() => shouldShowWarningSign(slippage), [slippage])
@@ -113,9 +142,10 @@ export function useSwap(
   )
 
   // Trade data
-  const tradeData: TradeInfoItem[] = buildTradeDetails(quote0x, slippage)
+  const tradeData: TradeInfoItem[] = buildTradeDetails(quoteResult)
 
   return {
+    contract,
     hasInsufficientFunds,
     gasCostsUsd,
     inputTokenAmountUsd,

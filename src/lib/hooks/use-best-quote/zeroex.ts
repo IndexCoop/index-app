@@ -5,6 +5,7 @@ import {
   getZeroExTradeData,
   RequestForQuote,
 } from '@/lib/utils/api/zeroex-utils'
+import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { toWei } from '@/lib/utils'
 
@@ -63,7 +64,9 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
   const gasCostsInUsd = getGasCostsInUsd(gas0x, nativeTokenPrice)
   const zeroExQuote: ZeroExQuote | null = dexSwapOption
     ? {
-        type: QuoteType.zeroEx,
+        type: QuoteType.zeroex,
+        chainId,
+        contract: getZeroExRouterAddress(chainId),
         isMinting,
         inputToken,
         outputToken,
@@ -86,8 +89,8 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
         inputOutputTokenAmount: isMinting
           ? inputTokenAmountBn
           : BigNumber.from(dexSwapOption.buyAmount),
+        slippage,
         // type specific properties
-        chainId: dexSwapOption.chainId,
         data: dexSwapOption.data,
         minOutput: dexSwapOption.minOutput,
         sources: dexSwapOption.sources,

@@ -23,24 +23,14 @@ import { getIndexTokenAmount } from './index-token-amount'
 import {
   EnhancedFlashMintQuote,
   IndexQuoteRequest,
+  QuoteResult,
   QuoteType,
   ZeroExQuote,
 } from './types'
 import { get0xQuote } from './zeroex'
 
-interface QuoteResult {
-  bestQuote: QuoteType
-  error: Error | null
-  quotes: {
-    flashmint: EnhancedFlashMintQuote | null
-    zeroex: ZeroExQuote | null
-  }
-  isReasonPriceImpact: boolean
-  savingsUsd: number
-}
-
 const defaultQuoteResult: QuoteResult = {
-  bestQuote: QuoteType.zeroEx,
+  bestQuote: QuoteType.zeroex,
   error: null,
   quotes: {
     flashmint: null,
@@ -140,13 +130,7 @@ export const useBestQuote = () => {
       quoteFlashMint?.fullCostsInUsd ?? null,
       quote0x?.priceImpact ?? maxPriceImpact
     )
-    // console.log(
-    //   quote0x?.inputOutputTokenAmount.toString(),
-    //   quote0x?.fullCostsInUsd,
-    //   quoteFlashMint?.fullCostsInUsd,
-    //   quoteFlashMint?.inputOutputTokenAmount.toString(),
-    //   quote0x?.priceImpact
-    // )
+    console.log(bestQuote.type, quote0x?.priceImpact)
     //       const getSavings = (): number => {
     //         if (!zeroExQuote) return 0
     //         if (bestQuote.type === QuoteType.flashMint && flashMintQuote) {
