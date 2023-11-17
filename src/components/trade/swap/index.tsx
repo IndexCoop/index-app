@@ -20,7 +20,6 @@ import { useProtection } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, toWei } from '@/lib/utils'
-import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 
 import { getFormattedPriceImpact } from '../_shared/QuickTradeFormatter'
@@ -93,6 +92,7 @@ export const Swap = (props: SwapProps) => {
   )
 
   const {
+    contract,
     hasInsufficientFunds,
     gasCostsUsd,
     inputTokenAmountUsd,
@@ -107,12 +107,7 @@ export const Swap = (props: SwapProps) => {
     showWarning,
     tokenPrices,
     tradeData,
-  } = useSwap(
-    inputToken,
-    outputToken,
-    sellTokenAmount,
-    quoteResult?.quotes.zeroex
-  )
+  } = useSwap(inputToken, outputToken, sellTokenAmount, quoteResult)
 
   // TODO: move to hook? or use from quote?
   const priceImpact = isFetchingQuote
@@ -125,16 +120,11 @@ export const Swap = (props: SwapProps) => {
         isDarkMode
       )
 
-  // FIXME: use correct contract from quote
-  const zeroExAddress = useMemo(
-    () => getZeroExRouterAddress(chainId),
-    [chainId]
-  )
   const {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     approve: onApproveForSwap,
-  } = useApproval(inputToken, zeroExAddress, inputTokenAmountWei)
+  } = useApproval(inputToken, contract, inputTokenAmountWei)
 
   const shouldApprove = useMemo(() => {
     const nativeToken = getNativeToken(chainId)
@@ -160,6 +150,7 @@ export const Swap = (props: SwapProps) => {
 
   useEffect(() => {
     console.log('/////////')
+    console.log(quoteResult.bestQuote)
     console.log(
       quoteResult.quotes.flashmint?.fullCostsInUsd,
       quoteResult.quotes.flashmint?.inputOutputTokenAmount.toString(),
@@ -241,7 +232,7 @@ export const Swap = (props: SwapProps) => {
     }
 
     if (buttonState === TradeButtonState.default) {
-      // FIXME:
+      // FIXME: use selectedQuote
       // await executeTrade(quoteResult.quotes.zeroex)
     }
   }, [buttonState])

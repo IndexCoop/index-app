@@ -3,12 +3,7 @@ import { Box, Flex, Link, Text, Tooltip } from '@chakra-ui/react'
 import { colors } from '@/lib/styles/colors'
 import { shortenAddress } from '@/lib/utils'
 
-export interface TradeInfoItem {
-  isLink?: boolean
-  title: string
-  values: string[]
-  tooltip?: string
-}
+import { TradeInfoItem } from '../../types'
 
 const TradeInfoItemRow = (props: { item: TradeInfoItem }) => {
   const { title, values, tooltip, isLink } = props.item

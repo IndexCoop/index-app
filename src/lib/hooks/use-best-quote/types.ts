@@ -19,12 +19,14 @@ export interface IndexQuoteRequest {
 }
 
 export enum QuoteType {
-  flashMint = 'flashMint',
-  zeroEx = 'zeroEx',
+  flashmint = 'flashmint',
+  zeroex = 'zeroex',
 }
 
 export interface Quote {
   type: QuoteType
+  chainId: number
+  contract: string
   isMinting: boolean
   inputToken: Token
   outputToken: Token
@@ -36,21 +38,31 @@ export interface Quote {
   priceImpact: number
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
+  slippage: number
 }
 
 export interface EnhancedFlashMintQuote extends Quote {
   contractType: string
-  contract: string
   // TODO: should probably use a more general type here (to not rely on ethers lib)
   tx: PopulatedTransaction
 }
 
 export interface ZeroExQuote extends Quote {
-  chainId: string
   estimatedPriceImpact: string
   data: Hex
   minOutput: BigNumber
   sources: { name: string; proportion: string }[]
   to: string
   value: string
+}
+
+export interface QuoteResult {
+  bestQuote: QuoteType
+  error: Error | null
+  quotes: {
+    flashmint: EnhancedFlashMintQuote | null
+    zeroex: ZeroExQuote | null
+  }
+  isReasonPriceImpact: boolean
+  savingsUsd: number
 }

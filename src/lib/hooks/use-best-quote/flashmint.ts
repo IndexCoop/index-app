@@ -64,18 +64,18 @@ export async function getEnhancedFlashMintQuote(
       }
       const defaultGasEstimate = BigNumber.from(6_000_000)
       const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+      transaction.gasLimit = defaultGasEstimate
       // We don't want this function to fail for estimates here.
       // A default will be returned if the tx would fail.
       const canFail = false
-      tx.chainId = 1
-      tx.from = from
-      tx.gasLimit = defaultGasEstimate
       const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
       const gasCosts = gasEstimate.mul(gasPrice)
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       transaction.gasLimit = gasEstimate
       return {
-        type: QuoteType.flashMint,
+        type: QuoteType.flashmint,
+        chainId: 1,
+        contract: quoteFM.contract,
         isMinting,
         inputToken,
         outputToken,
@@ -93,9 +93,9 @@ export async function getEnhancedFlashMintQuote(
         priceImpact: 0,
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,
+        slippage,
         // type specific properties
         contractType: quoteFM.contractType.toString(),
-        contract: quoteFM.contract,
         tx: transaction,
       }
     }

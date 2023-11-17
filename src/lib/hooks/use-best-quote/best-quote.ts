@@ -7,20 +7,20 @@ export function getBestQuote(
   priceImpactDex: number
 ): { type: QuoteType; priceImpact: boolean } {
   if (fullCostsEI === null) {
-    return { type: QuoteType.zeroEx, priceImpact: false }
+    return { type: QuoteType.zeroex, priceImpact: false }
   }
 
   const quotes: any[][] = []
   if (fullCosts0x) {
-    quotes.push([QuoteType.zeroEx, fullCosts0x])
+    quotes.push([QuoteType.zeroex, fullCosts0x])
   }
   if (fullCostsEI) {
-    quotes.push([QuoteType.flashMint, fullCostsEI])
+    quotes.push([QuoteType.flashmint, fullCostsEI])
   }
   const cheapestQuotes = quotes.sort((q1, q2) => q1[1] - q2[1])
 
   if (cheapestQuotes.length <= 0) {
-    return { type: QuoteType.zeroEx, priceImpact: false }
+    return { type: QuoteType.zeroex, priceImpact: false }
   }
 
   const cheapestQuote = cheapestQuotes[0]
@@ -32,7 +32,7 @@ export function getBestQuote(
   }
 
   // If multiple quotes, check price impact of 0x option
-  if (bestOption === QuoteType.zeroEx && priceImpactDex >= maxPriceImpact) {
+  if (bestOption === QuoteType.zeroex && priceImpactDex >= maxPriceImpact) {
     // In case price impact is too high, return cheapest exchange issuance
     return { type: cheapestQuotes[1][0], priceImpact: true }
   }
