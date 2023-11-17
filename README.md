@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://opensource.org/licenses/MIT)
 
-Index App is a simple front-end used to interact with Index and its products.
+This is the official app frontend of the Index Coop.
 
 ## Local development
 
@@ -31,6 +31,14 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## New Token Release
+
+- Add logo in [assets](public/assets)
+- Add logo path to [asset utils](src/lib/utils/assets.tsx)
+- Add token in [tokens.ts](src/constants/tokens.ts)
+- Add that token object to [tokenslist](src/constants/tokenlists.ts)
+- If the token is only available for either Swap or FlashMint, add an entry to `isAvailableForFlashMint` or `isAvailableForSwap` in [token utils](src/lib/utils/tokens.ts). Write a test too!
 
 ## Testing
 
