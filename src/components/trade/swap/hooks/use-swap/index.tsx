@@ -15,7 +15,7 @@ import {
   shouldShowWarningSign,
 } from '../../../_shared/QuickTradeFormatter'
 import { TradeDetailTokenPrices } from '../../components/trade-details'
-import { TradeInfoItem } from '../../components/trade-details/trade-info'
+import { TradeInfoItem } from '../../types'
 
 import { buildTradeDetails } from './trade-details-builder'
 import { useFormattedBalance } from './use-formatted-balance'

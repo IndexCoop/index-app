@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import { colors, useColorStyles } from '@/lib/styles/colors'
-
 import { InfoOutlineIcon, WarningTwoIcon } from '@chakra-ui/icons'
 import {
   Accordion,
@@ -14,7 +12,10 @@ import {
   Text,
 } from '@chakra-ui/react'
 
-import { TradeInfoItemsContainer, TradeInfoItem } from './trade-info'
+import { colors, useColorStyles } from '@/lib/styles/colors'
+
+import { TradeInfoItem } from '../../types'
+import { TradeInfoItemsContainer } from './trade-info'
 import { TradePrice } from './trade-price'
 
 export interface TradeDetailTokenPrices {
