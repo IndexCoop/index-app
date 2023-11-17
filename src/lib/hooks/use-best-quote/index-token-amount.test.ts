@@ -1,5 +1,7 @@
+import { formatUnits } from 'viem'
+
 import { ZeroExData } from '@/lib/utils/api/zeroex-utils'
-import { toWei } from '@/lib/utils'
+import { fromWei, toWei } from '@/lib/utils'
 
 import { maxPriceImpact } from './config'
 import { getIndexTokenAmount } from './index-token-amount'
@@ -51,6 +53,7 @@ describe('getIndexTokenAmount - minting', () => {
 
   it('returns approx amount if price impact is above max', async () => {
     const isMinting = true
+    const inputTokenAmount = '1'
     const inputTokenPrice = 2
     const outputTokenPrice = 3
     const dexData = {
@@ -59,33 +62,45 @@ describe('getIndexTokenAmount - minting', () => {
     } as ZeroExData
     const indexTokenAmount = getIndexTokenAmount(
       isMinting,
-      '1',
+      inputTokenAmount,
       18,
       inputTokenPrice,
       outputTokenPrice,
       dexData
     )
-    const sellTokenTotal = parseFloat('1') * inputTokenPrice
-    const approxOutputAmount = Math.floor(sellTokenTotal / outputTokenPrice)
+    const inputTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
+    const approxOutputAmount = (inputTokenTotal / outputTokenPrice) * 0.999
     const expectedAmount = toWei(approxOutputAmount, 18)
+    const indexTokenPriceTotal =
+      Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
+      outputTokenPrice
+    console.log(indexTokenPriceTotal, inputTokenTotal)
+    console.log(indexTokenAmount.toString(), expectedAmount.toString())
     expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
   })
 
   it('returns approx amount if no 0x data', async () => {
     const isMinting = true
+    const inputTokenAmount = '1'
     const inputTokenPrice = 2
     const outputTokenPrice = 3
     const indexTokenAmount = getIndexTokenAmount(
       isMinting,
-      '1',
+      inputTokenAmount,
       18,
       inputTokenPrice,
       outputTokenPrice,
       null
     )
-    const sellTokenTotal = parseFloat('1') * inputTokenPrice
-    const approxOutputAmount = Math.floor(sellTokenTotal / outputTokenPrice)
+    const inputTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
+    const approxOutputAmount = (inputTokenTotal / outputTokenPrice) * 0.999
     const expectedAmount = toWei(approxOutputAmount, 18)
+    console.log(indexTokenAmount.toString(), expectedAmount.toString())
+    const indexTokenPriceTotal =
+      Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
+      outputTokenPrice
+    console.log(indexTokenPriceTotal, inputTokenTotal)
     expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
+    expect(indexTokenPriceTotal).toBeCloseTo(inputTokenTotal)
   })
 })
