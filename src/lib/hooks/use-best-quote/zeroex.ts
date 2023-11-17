@@ -32,7 +32,6 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
 
   if (outputToken.symbol === ic21.symbol || inputToken.symbol === ic21.symbol) {
     // FIXME: always add address
-    // TODO: add skip validation true
     rfq = {
       takerAddress: address!,
     }

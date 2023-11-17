@@ -5,8 +5,13 @@ import { providers } from 'ethers'
 import { JsonRpcSigner } from '@ethersproject/providers'
 
 import { useNetwork } from '@/lib/hooks/useNetwork'
+import { toWei } from '@/lib/utils'
 import { GasStation } from '@/lib/utils/api/gas-station'
-import { getAddressForToken } from '@/lib/utils/tokens'
+import {
+  getAddressForToken,
+  isAvailableForFlashMint,
+  isAvailableForSwap,
+} from '@/lib/utils/tokens'
 
 import { useNativeTokenPrice } from '../use-token-price'
 import { useWallet } from '../useWallet'
@@ -57,7 +62,23 @@ export const useBestQuote = () => {
     useState<QuoteResult>(defaultQuoteResult)
 
   const fetchQuote = async (request: IndexQuoteRequest) => {
-    const { inputToken, isMinting, outputToken } = request
+    const { inputToken, inputTokenAmount, isMinting, outputToken } = request
+
+    // Right now we only allow setting the input amount, so no need to check
+    // ouput token amount here
+    const inputTokenAmountWei = toWei(inputTokenAmount, inputToken.decimals)
+    if (inputTokenAmountWei.isZero() || inputTokenAmountWei.isNegative()) {
+      setQuoteResult(defaultQuoteResult)
+      return
+    }
+
+    console.log('--------')
+    console.log(
+      inputToken.symbol,
+      outputToken.symbol,
+      request.inputTokenAmount,
+      'new-best-quote'
+    )
 
     if (!provider || !chainId) {
       console.error('Error fetching quotes - no provider or chain id present')
@@ -73,43 +94,59 @@ export const useBestQuote = () => {
       return
     }
 
-    // TODO: check if token has 0x/flashmint option
     setIsFetching(true)
-    const quote0x = await get0xQuote({
-      ...request,
-      chainId,
-      address: signer._address,
-      nativeTokenPrice,
-    })
-    const quoteFlashMint = await getFlashMintQuote(
-      {
+
+    const indexToken = isMinting ? outputToken : inputToken
+    const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
+    const canSwapIndexToken = isAvailableForSwap(indexToken)
+
+    console.log(canSwapIndexToken, canFlashmintIndexToken, 'can')
+
+    let quote0x: ZeroExQuote | null = null
+    let quoteFlashMint: EnhancedFlashMintQuote | null = null
+
+    if (canSwapIndexToken) {
+      quote0x = await get0xQuote({
         ...request,
         chainId,
-        // TODO:
-        dexData: {
-          buyAmount: isMinting
-            ? quote0x!.indexTokenAmount.toString()
-            : quote0x!.inputOutputTokenAmount.toString(),
-          estimatedPriceImpact: quote0x!.estimatedPriceImpact,
-        },
+        address: signer._address,
         nativeTokenPrice,
-      },
-      provider,
-      signer
-    )
+      })
+    }
+
+    if (canFlashmintIndexToken) {
+      const buyAmount = isMinting
+        ? quote0x!.indexTokenAmount.toString()
+        : quote0x!.inputOutputTokenAmount.toString()
+      console.log(buyAmount, 'buyAmount')
+      quoteFlashMint = await getFlashMintQuote(
+        {
+          ...request,
+          chainId,
+          // TODO:
+          dexData: {
+            buyAmount,
+            estimatedPriceImpact: quote0x!.estimatedPriceImpact,
+          },
+          nativeTokenPrice,
+        },
+        provider,
+        signer
+      )
+    }
 
     const bestQuote = getBestQuote(
       quote0x?.fullCostsInUsd ?? null,
       quoteFlashMint?.fullCostsInUsd ?? null,
       quote0x?.priceImpact ?? maxPriceImpact
     )
-    console.log(
-      quote0x?.inputOutputTokenAmount.toString(),
-      quote0x?.fullCostsInUsd,
-      quoteFlashMint?.fullCostsInUsd,
-      quoteFlashMint?.inputOutputTokenAmount.toString(),
-      quote0x?.priceImpact
-    )
+    // console.log(
+    //   quote0x?.inputOutputTokenAmount.toString(),
+    //   quote0x?.fullCostsInUsd,
+    //   quoteFlashMint?.fullCostsInUsd,
+    //   quoteFlashMint?.inputOutputTokenAmount.toString(),
+    //   quote0x?.priceImpact
+    // )
     //       const getSavings = (): number => {
     //         if (!zeroExQuote) return 0
     //         if (bestQuote.type === QuoteType.flashMint && flashMintQuote) {
@@ -169,7 +206,8 @@ async function getFlashMintQuote(
     outputTokenPrice,
     slippage,
   } = request
-  /* Determine Set token amount based on different factors */
+
+  /* Determine index token amount based on different factors */
   const indexTokenAmount = getIndexTokenAmount(
     isMinting,
     inputTokenAmount,
