@@ -7,9 +7,11 @@ import { getIndexTokenAmount } from './index-token-amount'
 describe('getIndexTokenAmount - redeeming', () => {
   it('returns input token amount directly', async () => {
     const isMinting = false
-    const inputTokenAmount = toWei('1', 18)
+    const expectedIndexTokenAmount = toWei('1', 18)
     const indexTokenAmount = getIndexTokenAmount(isMinting, '1', 18, 0, 0, null)
-    expect(indexTokenAmount.toString()).toEqual(inputTokenAmount.toString())
+    expect(indexTokenAmount.toString()).toEqual(
+      expectedIndexTokenAmount.toString()
+    )
   })
 })
 
