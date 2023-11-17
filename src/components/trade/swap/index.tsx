@@ -10,9 +10,9 @@ import { Settings } from '@/components/settings'
 import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/useApproval'
-import { useBestQuote } from '@/lib/hooks/useBestQuote'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useTrade } from '@/lib/hooks/useTrade'
+import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { useTokenlists } from '@/lib/hooks/use-tokenlists'
 import { useTradeButton } from './hooks/use-trade-button'
 import { useWallet } from '@/lib/hooks/useWallet'
@@ -67,19 +67,22 @@ export const Swap = (props: SwapProps) => {
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
+  // TODO: make returning quotes right
+  // TODO: gather results
+  // TODO: return best quote
+  // TODO: use this new quote hook
+  // TODO: test outcomes (numbers) + vs old one
   const {
-    isFetchingZeroEx,
-    isFetchingMoreOptions,
-    fetchAndCompareOptions,
+    fetchQuote,
+    isFetching: isFetchingQuote,
     quoteResult,
-    quoteResultOptions,
   } = useBestQuote()
 
   // TODO: ?
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [sellTokenAmount, setSellTokenAmount] = useState('0')
 
-  const hasFetchingError = quoteResult.error !== null && !isFetchingZeroEx
+  const hasFetchingError = quoteResult.error !== null && !isFetchingQuote
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
@@ -108,10 +111,11 @@ export const Swap = (props: SwapProps) => {
     inputToken,
     outputToken,
     sellTokenAmount,
-    quoteResult?.quotes.zeroEx
+    quoteResult?.quotes.zeroex
   )
 
-  const priceImpact = isFetchingZeroEx
+  // TODO: move to hook? or use from quote?
+  const priceImpact = isFetchingQuote
     ? null
     : getFormattedPriceImpact(
         parseFloat(sellTokenAmount),
@@ -121,6 +125,7 @@ export const Swap = (props: SwapProps) => {
         isDarkMode
       )
 
+  // FIXME: use correct contract from quote
   const zeroExAddress = useMemo(
     () => getZeroExRouterAddress(chainId),
     [chainId]
@@ -154,23 +159,37 @@ export const Swap = (props: SwapProps) => {
   }
 
   useEffect(() => {
+    console.log('/////////')
+    console.log(
+      quoteResult.quotes.flashmint?.fullCostsInUsd,
+      quoteResult.quotes.flashmint?.inputOutputTokenAmount.toString(),
+      quoteResult.quotes.flashmint?.indexTokenAmount.toString(),
+      'flashmint'
+    )
+    console.log(
+      quoteResult.quotes.zeroex?.fullCostsInUsd,
+      quoteResult.quotes.zeroex?.inputOutputTokenAmount.toString(),
+      quoteResult.quotes.zeroex?.indexTokenAmount.toString(),
+      '0x'
+    )
+    console.log('---')
+  }, [quoteResult])
+
+  useEffect(() => {
     resetTradeData()
   }, [chainId])
 
   const fetchOptions = useCallback(() => {
     if (requiresProtection) return
-    fetchAndCompareOptions(
+    fetchQuote({
+      isMinting: isBuying,
       inputToken,
-      sellTokenAmount,
+      inputTokenAmount: sellTokenAmount,
       inputTokenPrice,
       outputToken,
       outputTokenPrice,
-      // TODO:
-      // nativeTokenPrice,
-      0,
-      isBuying,
-      slippage
-    )
+      slippage,
+    })
   }, [
     isBuying,
     outputToken,
@@ -222,7 +241,8 @@ export const Swap = (props: SwapProps) => {
     }
 
     if (buttonState === TradeButtonState.default) {
-      await executeTrade(quoteResult.quotes.zeroEx)
+      // FIXME:
+      // await executeTrade(quoteResult.quotes.zeroex)
     }
   }, [buttonState])
 
@@ -327,7 +347,7 @@ export const Swap = (props: SwapProps) => {
           <TradeButton
             label={buttonLabel}
             isDisabled={isDisabled}
-            isLoading={isApprovingForSwap || isFetchingZeroEx}
+            isLoading={isApprovingForSwap || isFetchingQuote}
             onClick={onClickTradeButton}
           />
         )}
