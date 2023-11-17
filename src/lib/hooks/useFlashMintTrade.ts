@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { EnhancedFlashMintQuote } from '@/lib/hooks/useBestQuote'
+import { EnhancedFlashMintQuote } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useWallet } from '@/lib/hooks/useWallet'
 import { logTx } from '@/lib/utils/api/analytics'

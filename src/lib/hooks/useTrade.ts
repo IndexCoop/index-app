@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { prepareSendTransaction, sendTransaction } from '@wagmi/core'
 
-import { ZeroExQuote } from '@/lib/hooks/useBestQuote'
+import { ZeroExQuote } from './use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useWallet } from '@/lib/hooks/useWallet'
 import { fromWei } from '@/lib/utils'
