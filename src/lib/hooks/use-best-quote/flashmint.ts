@@ -55,7 +55,7 @@ export async function getEnhancedFlashMintQuote(
     if (quoteFM) {
       const { inputOutputAmount, tx } = quoteFM
       const from = await signer.getAddress()
-      let transaction: PopulatedTransaction = {
+      const transaction: PopulatedTransaction = {
         chainId: 1,
         from,
         to: tx.to,

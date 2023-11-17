@@ -1,7 +1,7 @@
 import { formatUnits } from 'viem'
 
 import { ZeroExData } from '@/lib/utils/api/zeroex-utils'
-import { fromWei, toWei } from '@/lib/utils'
+import { toWei } from '@/lib/utils'
 
 import { maxPriceImpact } from './config'
 import { getIndexTokenAmount } from './index-token-amount'
