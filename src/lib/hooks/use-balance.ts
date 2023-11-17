@@ -17,7 +17,7 @@ class BalanceProvider {
   }
 
   async getNativeBalance(address: string) {
-    return await this.publicClient.getBalance({
+    return this.publicClient.getBalance({
       address: address as Address,
     })
   }
