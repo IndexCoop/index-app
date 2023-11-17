@@ -226,10 +226,10 @@ export const Swap = (props: SwapProps) => {
     }
   }, [buttonState])
 
-  const onSwitchTokens = useCallback(() => {
+  const onSwitchTokens = () => {
     toggleIsMinting()
     resetTradeData()
-  }, [resetTradeData, toggleIsMinting])
+  }
 
   return (
     <Flex
