@@ -15,13 +15,11 @@ import {
   IndexToken,
   LeveragedRethStakingYield,
   MATIC,
-  MoneyMarketIndex,
   RETH,
   SETH2,
   STETH,
   Token,
   USDC,
-  USDT,
   WETH,
   WSTETH,
 } from '@/constants/tokens'
@@ -79,7 +77,6 @@ export function getCurrencyTokensForIndex(
     return [ETH, WETH, STETH, WSTETH, RETH, SETH2, USDC]
   if (index.symbol === LeveragedRethStakingYield.symbol)
     return [ETH, WETH, RETH, USDC]
-  if (index.symbol === MoneyMarketIndex.symbol) return [DAI, USDC, USDT, WETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
@@ -110,7 +107,6 @@ export function isAvailableForFlashMint(token: Token): boolean {
 export function isAvailableForSwap(token: Token): boolean {
   switch (token.symbol) {
     case CoinDeskEthTrendIndex.symbol:
-    case MoneyMarketIndex.symbol:
     case LeveragedRethStakingYield.symbol:
       return false
     default:
