@@ -2,7 +2,6 @@ import {
   flashMintIndexesMainnetRedeem,
   indexNamesMainnet,
 } from '@/constants/tokenlists'
-import { MoneyMarketIndex } from '@/constants/tokens'
 
 import { getTokenListByChain } from './useTradeTokenLists'
 

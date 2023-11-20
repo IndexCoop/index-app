@@ -8,7 +8,6 @@ import {
   icethLogo,
   icrethLogo,
   indexLogo,
-  mmiLogo,
   wseth2Logo,
 } from '@/lib/utils/assets'
 
@@ -288,26 +287,6 @@ export const icETHIndex: Token = {
   coingeckoId: 'interest-compounding-eth-index',
   fees: {
     streamingFee: '0.75%',
-    mintFee: '0.0%',
-    redeemFee: '0.0%',
-  },
-  isDangerous: true,
-  indexTypes: [IndexType.yield],
-  defaultChain: MAINNET.chainId,
-}
-
-export const MoneyMarketIndex: Token = {
-  name: 'Money Market Index Token',
-  symbol: 'icSMMT',
-  address: '0xc30FBa978743a43E736fc32FBeEd364b8A2039cD',
-  polygonAddress: undefined,
-  optimismAddress: undefined,
-  decimals: 18,
-  url: 'icsmmt',
-  image: mmiLogo,
-  coingeckoId: 'money-market-index',
-  fees: {
-    streamingFee: '0.15%',
     mintFee: '0.0%',
     redeemFee: '0.0%',
   },

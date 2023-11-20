@@ -15,7 +15,6 @@ import {
   IndexToken,
   LeveragedRethStakingYield,
   MetaverseIndex,
-  MoneyMarketIndex,
   RETH,
   SETH2,
   STETH,
@@ -62,7 +61,6 @@ const indexNames = isDevEnv
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
-      MoneyMarketIndex,
       FIXED_DAI,
       FIXED_USDC,
       DefiPulseIndex,
@@ -79,7 +77,6 @@ const indexNames = isDevEnv
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
-      MoneyMarketIndex,
       DefiPulseIndex,
       MetaverseIndex,
       Ethereum2xFlexibleLeverageIndex,
@@ -93,7 +90,6 @@ export const indexNamesMainnet = indexNames.filter(
   (index) =>
     index.address &&
     index.symbol !== CoinDeskEthTrendIndex.symbol &&
-    index.symbol !== MoneyMarketIndex.symbol &&
     index.symbol !== LeveragedRethStakingYield.symbol
 )
 

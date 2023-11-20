@@ -11,7 +11,6 @@ const IndexLogoFullBlack = '/assets/index-logo-full-black.svg'
 const IndexLogoFullWhite = '/assets/index-logo-full-white.svg'
 const IndexLogoWhite = '/assets/index-logo-white.svg'
 const indexLogo = '/assets/index-token.png'
-const mmiLogo = '/assets/mmi_logo.svg'
 const wseth2Logo = '/assets/wseth2_logo.svg'
 
 // Index logo
@@ -33,6 +32,5 @@ export {
   icethLogo,
   icrethLogo,
   indexLogo,
-  mmiLogo,
   wseth2Logo,
 }
