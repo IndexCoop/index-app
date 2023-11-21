@@ -85,18 +85,3 @@ export const indicesTokenList = isDevEnv
       LeveragedRethStakingYield,
       IndexToken,
     ]
-
-export const indexNamesMainnet = indicesTokenList.filter(
-  (index) =>
-    index.address &&
-    index.symbol !== CoinDeskEthTrendIndex.symbol &&
-    index.symbol !== LeveragedRethStakingYield.symbol
-)
-
-// FlashMint specific lists
-export const flashMintIndexesMainnetRedeem = indicesTokenList.filter(
-  (index) =>
-    index.address &&
-    index.symbol !== IndexToken.symbol &&
-    index.symbol !== ic21.symbol
-)
