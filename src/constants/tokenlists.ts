@@ -25,12 +25,9 @@ import {
   WSTETH,
 } from '@/constants/tokens'
 
-/**
- * Currencies
- */
-
 // Add new currencies here as well to fetch all balances
 export const currencies = [
+  ETH,
   DAI,
   USDC,
   USDT,
@@ -41,12 +38,6 @@ export const currencies = [
   WSETH2,
   WSTETH,
 ]
-
-export const mainnetCurrencyTokens = [ETH, DAI, USDC, SETH2, STETH, WETH]
-
-/**
- * Lists
- */
 
 const isDevEnv =
   process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ||
