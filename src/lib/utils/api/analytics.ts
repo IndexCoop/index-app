@@ -4,7 +4,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider'
 const init = () => {
   return ArcxAnalyticsSdk.init(
     process.env.NEXT_PUBLIC_ARCX_ANALYTICS_API_KEY ?? '',
-    { trackPages: true, trackUTM: true }
+    { trackPages: true }
   )
 }
 
@@ -14,9 +14,9 @@ export const logConnect = (address: string, chainId: number) => {
   if (isDevEnv) return
   init()
     .then((arcxAnalyticsSdk) => {
-      arcxAnalyticsSdk!.connectWallet({
+      arcxAnalyticsSdk!.wallet({
         account: address ?? '',
-        chain: chainId ?? '',
+        chainId: chainId ?? '',
       })
     })
     .catch((error) => {
@@ -45,7 +45,7 @@ export const logTransaction = (
   init()
     .then((arcxAnalyticsSdk) => {
       arcxAnalyticsSdk.transaction({
-        chain: chainId,
+        chainId: chainId,
         transactionHash: transactionHash,
         metadata: {
           data,
