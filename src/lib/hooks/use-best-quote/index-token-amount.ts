@@ -16,7 +16,9 @@ export const getIndexTokenAmount = (
     return toWei(inputTokenAmount, inputTokenDecimals)
   }
 
-  let indexTokenAmount = BigNumber.from(dexSwapOption?.buyAmount ?? '0')
+  let indexTokenAmount = dexSwapOption
+    ? BigNumber.from(dexSwapOption?.buyAmount ?? '0')
+    : BigNumber.from('0')
 
   const priceImpact =
     dexSwapOption && dexSwapOption.estimatedPriceImpact
