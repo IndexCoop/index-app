@@ -8,15 +8,16 @@ import { useWallet } from '@/lib/hooks/useWallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { displayFromWei, toWei } from '@/lib/utils'
 
+import { TradeDetailTokenPrices } from '../../components/trade-details'
+import { TradeInfoItem } from '../../types'
+
 import {
   formattedFiat,
   getFormattedTokenPrices,
   getHasInsufficientFunds,
   shouldShowWarningSign,
-} from '../../../_shared/QuickTradeFormatter'
-import { TradeDetailTokenPrices } from '../../components/trade-details'
-import { TradeInfoItem } from '../../types'
-
+} from './formatters'
+import { getFormattedPriceImpact } from './formatters/price-impact'
 import { buildTradeDetails } from './trade-details-builder'
 import { useFormattedBalance } from './use-formatted-balance'
 
@@ -34,6 +35,10 @@ interface SwapData {
   outputTokenBalanceFormatted: string
   outputTokenPrice: number
   gasCostsUsd: number
+  priceImpactFormatting: {
+    colorCoding: string
+    priceImpact: string
+  } | null
   // Trade details
   showWarning: boolean
   tokenPrices: TradeDetailTokenPrices
@@ -57,7 +62,8 @@ export function useSwap(
   inputToken: Token,
   outputToken: Token,
   inputTokenAmount: string,
-  quoteResult: QuoteResult | null
+  quoteResult: QuoteResult | null,
+  isFetchingQuote: boolean
 ): SwapData {
   const { address } = useWallet()
   const {
@@ -128,6 +134,26 @@ export function useSwap(
   )
   const gasCostsUsd = selectedQuote?.gasCostsInUsd ?? 0
 
+  const isDarkMode = false
+  const priceImpactFormatting = useMemo(
+    () =>
+      isFetchingQuote
+        ? null
+        : getFormattedPriceImpact(
+            parseFloat(inputTokenAmount),
+            inputTokenPrice,
+            parseFloat(outputTokenAmountFormatted),
+            outputTokenPrice,
+            isDarkMode
+          ),
+    [
+      inputTokenAmount,
+      inputTokenPrice,
+      outputTokenAmountFormatted,
+      outputTokenPrice,
+    ]
+  )
+
   // Trade details
   const showWarning = useMemo(() => shouldShowWarningSign(slippage), [slippage])
   const tokenPrices = useMemo(
@@ -157,6 +183,7 @@ export function useSwap(
     outputTokenAmountUsd,
     outputTokenBalanceFormatted,
     outputTokenPrice,
+    priceImpactFormatting,
     showWarning,
     tokenPrices,
     tradeData,

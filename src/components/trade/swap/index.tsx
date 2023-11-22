@@ -23,8 +23,6 @@ import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, toWei } from '@/lib/utils'
 import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 
-import { getFormattedPriceImpact } from '../_shared/QuickTradeFormatter'
-
 import { ProtectionWarning } from './components/protection-warning'
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
@@ -67,10 +65,6 @@ export const Swap = (props: SwapProps) => {
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
-  // TODO: make returning quotes right
-  // TODO: gather results
-  // TODO: return best quote
-  // TODO: use this new quote hook
   // TODO: test outcomes (numbers) + vs old one
   const {
     fetchQuote,
@@ -105,21 +99,17 @@ export const Swap = (props: SwapProps) => {
     outputTokenAmountUsd,
     outputTokenBalanceFormatted,
     outputTokenPrice,
+    priceImpactFormatting,
     showWarning,
     tokenPrices,
     tradeData,
-  } = useSwap(inputToken, outputToken, sellTokenAmount, quoteResult)
-
-  // TODO: move to hook? or use from quote?
-  const priceImpact = isFetchingQuote
-    ? null
-    : getFormattedPriceImpact(
-        parseFloat(sellTokenAmount),
-        inputTokenPrice,
-        parseFloat(outputTokenAmountFormatted),
-        outputTokenPrice,
-        isDarkMode
-      )
+  } = useSwap(
+    inputToken,
+    outputToken,
+    sellTokenAmount,
+    quoteResult,
+    isFetchingQuote
+  )
 
   const {
     isApproved: isApprovedForSwap,
@@ -308,10 +298,10 @@ export const Swap = (props: SwapProps) => {
           balance={outputTokenBalanceFormatted}
           formattedFiat={outputTokenAmountUsd}
           priceImpact={
-            priceImpact
+            priceImpactFormatting
               ? {
-                  value: priceImpact.priceImpact,
-                  colorCoding: priceImpact.colorCoding,
+                  value: priceImpactFormatting.priceImpact,
+                  colorCoding: priceImpactFormatting.colorCoding,
                 }
               : undefined
           }

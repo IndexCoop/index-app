@@ -1,4 +1,3 @@
-import { shouldShowWarningSign } from '@/components/trade/_shared/QuickTradeFormatter'
 import {
   Quote,
   QuoteResult,
@@ -10,6 +9,7 @@ import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
 import { getNativeToken } from '@/lib/utils/tokens'
 
 import { TradeInfoItem } from '../../types'
+import { shouldShowWarningSign } from './formatters/index'
 
 function formatIfNumber(value: string) {
   if (/[a-z]/i.test(value)) return value

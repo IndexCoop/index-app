@@ -1,50 +1,9 @@
-import { colors } from '@/lib/styles/colors'
-
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from '@/constants/tokens'
 import { displayFromWei } from '@/lib/utils'
-import { getNativeToken } from '@/lib/utils/tokens'
 
-import { TradeDetailTokenPrices } from '../swap/components/trade-details'
-import { TradeInfoItem } from '../swap/types'
-
-export function getPriceImpactColorCoding(
-  priceImpact: number,
-  isDarkMode: boolean
-): string {
-  if (priceImpact < -5) {
-    return colors.icRed
-  }
-
-  if (priceImpact < -3) {
-    return colors.icBlue
-  }
-
-  return isDarkMode ? colors.icGrayDarkMode : colors.icGrayLightMode
-}
-
-/**
- * Returns price impact as percent
- */
-export function getPriceImpact(
-  inputTokenAmount: number,
-  inputTokenPrice: number,
-  outputokenAmount: number,
-  outputTokenPrice: number
-): number | null {
-  if (inputTokenAmount <= 0 || outputokenAmount <= 0) {
-    return null
-  }
-
-  const inputTotal = inputTokenAmount * inputTokenPrice
-  const outputTotal = outputokenAmount * outputTokenPrice
-
-  const diff = inputTotal - outputTotal
-  const priceImpact = (diff / inputTotal) * -100
-
-  return priceImpact
-}
+import { TradeDetailTokenPrices } from '../../../components/trade-details'
 
 /**
  * Rounds to 2 decimal places. NOT precise, should only be used for display
@@ -136,31 +95,6 @@ export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
   return price
 }
 
-/**
- * Returns price impact in the format (x.yy%)
- */
-export function getFormattedPriceImpact(
-  inputTokenAmount: number,
-  inputTokenPrice: number,
-  outputokenAmount: number,
-  outputTokenPrice: number,
-  isDarkMode: boolean
-): { priceImpact: string; colorCoding: string } | null {
-  const priceImpact = getPriceImpact(
-    inputTokenAmount,
-    inputTokenPrice,
-    outputokenAmount,
-    outputTokenPrice
-  )
-
-  if (!priceImpact) {
-    return null
-  }
-
-  const colorCoding = getPriceImpactColorCoding(priceImpact, isDarkMode)
-  return { priceImpact: `(${priceImpact.toFixed(2)}%)`, colorCoding }
-}
-
 export const getHasInsufficientFunds = (
   bestOptionUnavailable: boolean,
   sellAmount: BigNumber,
@@ -185,56 +119,6 @@ const formatIfNumber = (value: string) => {
     minimumFractionDigits: 4,
     maximumFractionDigits: 4,
   })
-}
-
-export function getTradeInfoData0x(
-  buyToken: Token,
-  gasCosts: BigNumber,
-  gasCostsInUsd: number,
-  minOutput: BigNumber,
-  sources: { name: string; proportion: string }[],
-  chainId: number = 1,
-  slippage: number,
-  showSlippageWarning: boolean,
-  contractBestOption: string,
-  contractBlockExplorerUrl: string
-): TradeInfoItem[] {
-  const minReceive = displayFromWei(minOutput, 4) ?? '0.0'
-  const minReceiveFormatted = formatIfNumber(minReceive) + ' ' + buyToken.symbol
-
-  const networkFee = displayFromWei(gasCosts)
-  const networkFeeDisplay = networkFee ? parseFloat(networkFee).toFixed(4) : '-'
-  const networkToken = getNativeToken(chainId)?.symbol ?? ''
-
-  const offeredFromSources = sources
-    .filter((source) => Number(source.proportion) > 0)
-    .map((source) => source.name)
-
-  const slippageFormatted = `${slippage}%`
-  const slippageTitle = showSlippageWarning ? `Slippage ⚠` : `Slippage`
-
-  return [
-    {
-      title: 'Minimum ' + buyToken.symbol + ' Received',
-      values: [minReceiveFormatted],
-    },
-    {
-      title: 'Network Fee',
-      values: [
-        `${networkFeeDisplay} ${networkToken} ($${gasCostsInUsd.toFixed(2)})`,
-      ],
-    },
-    {
-      title: slippageTitle,
-      values: [slippageFormatted],
-    },
-    {
-      isLink: true,
-      title: 'Contract',
-      values: [contractBestOption, contractBlockExplorerUrl],
-    },
-    { title: 'Offered From', values: [offeredFromSources.toString()] },
-  ]
 }
 
 export function shouldShowWarningSign(slippage: number): boolean {
