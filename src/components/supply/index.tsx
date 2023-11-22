@@ -2,8 +2,8 @@ import { InfoIcon, WarningTwoIcon } from '@chakra-ui/icons'
 import { Flex, Text } from '@chakra-ui/react'
 
 import { colors, useColorStyles } from '@/lib/styles/colors'
-import { RethSupplyCap } from './RethSupplyCap'
-import { useRethSupply } from './useRethSupply'
+import { RethSupplyCap } from './reth-supply-cap'
+import { useRethSupply } from './use-reth-supply'
 
 export enum SupplyCapState {
   available,
