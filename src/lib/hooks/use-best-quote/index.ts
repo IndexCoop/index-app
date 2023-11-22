@@ -63,14 +63,6 @@ export const useBestQuote = () => {
         return
       }
 
-      console.log('--------')
-      console.log(
-        inputToken.symbol,
-        outputToken.symbol,
-        request.inputTokenAmount,
-        'new-best-quote'
-      )
-
       if (!provider || !chainId) {
         console.error('Error fetching quotes - no provider or chain id present')
         return
@@ -91,8 +83,6 @@ export const useBestQuote = () => {
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
-      console.log(canSwapIndexToken, canFlashmintIndexToken, 'can')
-
       let quote0x: ZeroExQuote | null = null
       let quoteFlashMint: Quote | null = null
 
@@ -108,11 +98,9 @@ export const useBestQuote = () => {
       if (canFlashmintIndexToken) {
         let dexData = null
         if (quote0x !== null) {
-          console.log('here')
           const buyAmount = isMinting
             ? quote0x.indexTokenAmount.toString()
             : quote0x.inputOutputTokenAmount.toString()
-          console.log(buyAmount, 'buyAmount')
           dexData = {
             buyAmount,
             estimatedPriceImpact: quote0x!.priceImpact.toString(),
@@ -135,32 +123,32 @@ export const useBestQuote = () => {
         quoteFlashMint?.fullCostsInUsd ?? null,
         quote0x?.priceImpact ?? maxPriceImpact
       )
-      console.log(bestQuote.type, quote0x?.priceImpact)
-      //       const getSavings = (): number => {
-      //         if (!zeroExQuote) return 0
-      //         if (bestQuote.type === QuoteType.flashMint && flashMintQuote) {
-      //           return (
-      //             (zeroExQuote.fullCostsInUsd ?? 0) -
-      //             (flashMintQuote.fullCostsInUsd ?? 0)
-      //           )
-      //         }
-      //         return 0
-      //       }
-      //       const savingsUsd = getSavings()
+
+      const getSavings = (): number => {
+        if (!quote0x) return 0
+        if (bestQuote.type === QuoteType.flashmint && quoteFlashMint) {
+          return (
+            (quote0x.fullCostsInUsd ?? 0) - (quoteFlashMint.fullCostsInUsd ?? 0)
+          )
+        }
+        return 0
+      }
+      const savingsUsd = getSavings()
+
       setQuoteResult({
         bestQuote: bestQuote.type,
+        // TODO:
         error: null,
+        // Not used at the moment but kept for potential re-introduction
+        // Insted of one argument, could change to type of enums (reasons: ReasonType.)
         isReasonPriceImpact: bestQuote.priceImpact,
         quotes: {
           flashmint: quoteFlashMint,
           zeroex: quote0x,
         },
-        // TODO: ?
-        savingsUsd: 0,
+        // Not used at the moment but kept for potential re-introduction
+        savingsUsd,
       })
-      // TODO: error handling
-      // TODO: compare quotes
-      // TODO: response modeling
       setIsFetching(false)
     },
     [chainId, nativeTokenPrice, provider, signer]
