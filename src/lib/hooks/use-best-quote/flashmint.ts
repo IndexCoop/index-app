@@ -1,4 +1,4 @@
-import { PopulatedTransaction, utils } from 'ethers'
+import { utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
@@ -12,7 +12,7 @@ import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gasEstimatooor'
 import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 
-import { EnhancedFlashMintQuote, QuoteType } from './types'
+import { Quote, QuoteTransaction, QuoteType } from './types'
 
 export async function getEnhancedFlashMintQuote(
   isMinting: boolean,
@@ -26,7 +26,7 @@ export async function getEnhancedFlashMintQuote(
   chainId: number,
   provider: JsonRpcProvider,
   signer: JsonRpcSigner
-): Promise<EnhancedFlashMintQuote | null> {
+): Promise<Quote | null> {
   // Allow only on mainnet
   if (chainId !== MAINNET.chainId) return null
   const indexToken = isMinting ? outputToken : inputToken
@@ -55,7 +55,7 @@ export async function getEnhancedFlashMintQuote(
     if (quoteFM) {
       const { inputOutputAmount, tx } = quoteFM
       const from = await signer.getAddress()
-      const transaction: PopulatedTransaction = {
+      const transaction: QuoteTransaction = {
         chainId: 1,
         from,
         to: tx.to,
@@ -94,8 +94,6 @@ export async function getEnhancedFlashMintQuote(
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,
         slippage,
-        // type specific properties
-        contractType: quoteFM.contractType.toString(),
         tx: transaction,
       }
     }

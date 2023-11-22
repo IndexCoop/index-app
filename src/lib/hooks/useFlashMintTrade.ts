@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { EnhancedFlashMintQuote } from '@/lib/hooks/use-best-quote/types'
+import { Quote } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/useNetwork'
 import { useWallet } from '@/lib/hooks/useWallet'
 import { logTx } from '@/lib/utils/api/analytics'
@@ -21,7 +21,7 @@ export const useFlashMintTrade = () => {
 
   const executeFlashMintTrade = useCallback(
     async (
-      quote: EnhancedFlashMintQuote | null,
+      quote: Quote | null,
       slippage: number,
       override: boolean = false
     ) => {

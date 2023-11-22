@@ -74,7 +74,6 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
         gasPrice: gasPrice0x,
         gasCosts: gas0x,
         gasCostsInUsd,
-        estimatedPriceImpact: dexSwapOption.estimatedPriceImpact,
         fullCostsInUsd: getFullCostsInUsd(
           inputTokenAmountBn,
           gas0x,
@@ -90,12 +89,14 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
           ? inputTokenAmountBn
           : BigNumber.from(dexSwapOption.buyAmount),
         slippage,
+        tx: {
+          data: dexSwapOption.data,
+          to: dexSwapOption.to,
+          value: BigNumber.from(dexSwapOption.value),
+        },
         // type specific properties
-        data: dexSwapOption.data,
         minOutput: dexSwapOption.minOutput,
         sources: dexSwapOption.sources,
-        to: dexSwapOption.to,
-        value: dexSwapOption.value,
       }
     : null
   return zeroExQuote

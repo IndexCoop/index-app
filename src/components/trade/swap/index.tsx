@@ -144,11 +144,6 @@ export const Swap = (props: SwapProps) => {
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
-  const resetTradeData = () => {
-    setInputTokenAmountFormatted('')
-    setSellTokenAmount('0')
-  }
-
   useEffect(() => {
     console.log('/////////')
     console.log(quoteResult.bestQuote)
@@ -167,9 +162,14 @@ export const Swap = (props: SwapProps) => {
     console.log('---')
   }, [quoteResult])
 
+  const resetTradeData = useCallback(() => {
+    setInputTokenAmountFormatted('')
+    setSellTokenAmount('0')
+  }, [setSellTokenAmount])
+
   useEffect(() => {
     resetTradeData()
-  }, [chainId])
+  }, [chainId, resetTradeData])
 
   const fetchOptions = useCallback(() => {
     if (requiresProtection) return
@@ -184,11 +184,11 @@ export const Swap = (props: SwapProps) => {
     })
   }, [
     isBuying,
-    outputToken,
+    inputToken,
     inputTokenPrice,
+    outputToken,
     outputTokenPrice,
     requiresProtection,
-    inputToken,
     sellTokenAmount,
     slippage,
   ])
@@ -210,7 +210,7 @@ export const Swap = (props: SwapProps) => {
     if (!inputTokenBalance) return
     setInputTokenAmountFormatted(inputTokenBalance)
     setSellTokenAmount(inputTokenBalance)
-  }, [inputTokenBalance])
+  }, [inputTokenBalance, setSellTokenAmount])
 
   const onClickTradeButton = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
