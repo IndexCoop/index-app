@@ -135,20 +135,31 @@ export function useSwap(
   const gasCostsUsd = selectedQuote?.gasCostsInUsd ?? 0
 
   const isDarkMode = false
+  let inputTokenAmountAdjusted = inputTokenAmount
+  if (quoteResult && quoteResult.bestQuote === QuoteType.flashmint) {
+    inputTokenAmountAdjusted =
+      displayFromWei(
+        quoteResult.quotes.flashmint!.inputOutputTokenAmount,
+        10,
+        inputToken.decimals
+      ) ?? inputTokenAmount
+  }
   const priceImpactFormatting = useMemo(
     () =>
       isFetchingQuote
         ? null
         : getFormattedPriceImpact(
-            parseFloat(inputTokenAmount),
+            parseFloat(inputTokenAmountAdjusted),
             inputTokenPrice,
             parseFloat(outputTokenAmountFormatted),
             outputTokenPrice,
             isDarkMode
           ),
     [
-      inputTokenAmount,
+      inputTokenAmountAdjusted,
       inputTokenPrice,
+      isDarkMode,
+      isFetchingQuote,
       outputTokenAmountFormatted,
       outputTokenPrice,
     ]
