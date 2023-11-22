@@ -10,7 +10,7 @@ import {
   RethSupplyCapOverrides,
   SupplyCapState,
 } from '@/components/supply'
-import { Swap } from '@/components/trade/swap'
+import { Swap } from '@/components/swap'
 import { LeveragedRethStakingYield } from '@/constants/tokens'
 import { useLedgerStatus } from '@/lib/hooks/useLedgerStatus'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
