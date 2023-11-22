@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { Hex } from 'viem'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { prepareSendTransaction, sendTransaction } from '@wagmi/core'
@@ -41,9 +42,9 @@ export const useTrade = () => {
         const request = await prepareSendTransaction({
           account: address,
           chainId: Number(quote.chainId),
-          to: quote.to,
-          data: quote.data,
-          value: BigInt(quote.value ?? 0),
+          to: quote.tx.to,
+          data: quote.tx.data as Hex,
+          value: BigInt(quote.tx.value?.toString() ?? '0'),
         })
         const { hash } = await sendTransaction(request)
         console.log(hash)

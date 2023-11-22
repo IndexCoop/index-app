@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { providers } from 'ethers'
 
@@ -21,8 +21,8 @@ import { maxPriceImpact } from './config'
 import { getEnhancedFlashMintQuote } from './flashmint'
 import { getIndexTokenAmount } from './index-token-amount'
 import {
-  EnhancedFlashMintQuote,
   IndexQuoteRequest,
+  Quote,
   QuoteResult,
   QuoteType,
   ZeroExQuote,
@@ -51,114 +51,120 @@ export const useBestQuote = () => {
   const [quoteResult, setQuoteResult] =
     useState<QuoteResult>(defaultQuoteResult)
 
-  const fetchQuote = async (request: IndexQuoteRequest) => {
-    const { inputToken, inputTokenAmount, isMinting, outputToken } = request
+  const fetchQuote = useCallback(
+    async (request: IndexQuoteRequest) => {
+      const { inputToken, inputTokenAmount, isMinting, outputToken } = request
 
-    // Right now we only allow setting the input amount, so no need to check
-    // ouput token amount here
-    const inputTokenAmountWei = toWei(inputTokenAmount, inputToken.decimals)
-    if (inputTokenAmountWei.isZero() || inputTokenAmountWei.isNegative()) {
-      setQuoteResult(defaultQuoteResult)
-      return
-    }
+      // Right now we only allow setting the input amount, so no need to check
+      // ouput token amount here
+      const inputTokenAmountWei = toWei(inputTokenAmount, inputToken.decimals)
+      if (inputTokenAmountWei.isZero() || inputTokenAmountWei.isNegative()) {
+        setQuoteResult(defaultQuoteResult)
+        return
+      }
 
-    console.log('--------')
-    console.log(
-      inputToken.symbol,
-      outputToken.symbol,
-      request.inputTokenAmount,
-      'new-best-quote'
-    )
+      console.log('--------')
+      console.log(
+        inputToken.symbol,
+        outputToken.symbol,
+        request.inputTokenAmount,
+        'new-best-quote'
+      )
 
-    if (!provider || !chainId) {
-      console.error('Error fetching quotes - no provider or chain id present')
-      return
-    }
+      if (!provider || !chainId) {
+        console.error('Error fetching quotes - no provider or chain id present')
+        return
+      }
 
-    const inputTokenAddress = getAddressForToken(inputToken, chainId)
-    const outputTokenAddress = getAddressForToken(outputToken, chainId)
+      const inputTokenAddress = getAddressForToken(inputToken, chainId)
+      const outputTokenAddress = getAddressForToken(outputToken, chainId)
 
-    if (!inputTokenAddress || !outputTokenAddress) {
-      console.log(inputTokenAddress, outputTokenAddress)
-      console.error('Error can not determine input/ouput token address')
-      return
-    }
+      if (!inputTokenAddress || !outputTokenAddress) {
+        console.log(inputTokenAddress, outputTokenAddress)
+        console.error('Error can not determine input/ouput token address')
+        return
+      }
 
-    setIsFetching(true)
+      setIsFetching(true)
 
-    const indexToken = isMinting ? outputToken : inputToken
-    const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
-    const canSwapIndexToken = isAvailableForSwap(indexToken)
+      const indexToken = isMinting ? outputToken : inputToken
+      const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
+      const canSwapIndexToken = isAvailableForSwap(indexToken)
 
-    console.log(canSwapIndexToken, canFlashmintIndexToken, 'can')
+      console.log(canSwapIndexToken, canFlashmintIndexToken, 'can')
 
-    let quote0x: ZeroExQuote | null = null
-    let quoteFlashMint: EnhancedFlashMintQuote | null = null
+      let quote0x: ZeroExQuote | null = null
+      let quoteFlashMint: Quote | null = null
 
-    if (canSwapIndexToken) {
-      quote0x = await get0xQuote({
-        ...request,
-        chainId,
-        address: signer._address,
-        nativeTokenPrice,
-      })
-    }
-
-    if (canFlashmintIndexToken) {
-      const buyAmount = isMinting
-        ? quote0x!.indexTokenAmount.toString()
-        : quote0x!.inputOutputTokenAmount.toString()
-      console.log(buyAmount, 'buyAmount')
-      quoteFlashMint = await getFlashMintQuote(
-        {
+      if (canSwapIndexToken) {
+        quote0x = await get0xQuote({
           ...request,
           chainId,
-          // TODO:
-          dexData: {
-            buyAmount,
-            estimatedPriceImpact: quote0x!.estimatedPriceImpact,
-          },
+          address: signer._address,
           nativeTokenPrice,
-        },
-        provider,
-        signer
-      )
-    }
+        })
+      }
 
-    const bestQuote = getBestQuote(
-      quote0x?.fullCostsInUsd ?? null,
-      quoteFlashMint?.fullCostsInUsd ?? null,
-      quote0x?.priceImpact ?? maxPriceImpact
-    )
-    console.log(bestQuote.type, quote0x?.priceImpact)
-    //       const getSavings = (): number => {
-    //         if (!zeroExQuote) return 0
-    //         if (bestQuote.type === QuoteType.flashMint && flashMintQuote) {
-    //           return (
-    //             (zeroExQuote.fullCostsInUsd ?? 0) -
-    //             (flashMintQuote.fullCostsInUsd ?? 0)
-    //           )
-    //         }
-    //         return 0
-    //       }
-    //       const savingsUsd = getSavings()
-    setQuoteResult({
-      bestQuote: bestQuote.type,
-      // TODO:
-      error: null,
-      isReasonPriceImpact: bestQuote.priceImpact,
-      quotes: {
-        flashmint: quoteFlashMint,
-        zeroex: quote0x,
-      },
-      // TODO: ?
-      savingsUsd: 0,
-    })
-    // TODO: error handling
-    // TODO: compare quotes
-    // TODO: response modeling
-    setIsFetching(false)
-  }
+      if (canFlashmintIndexToken) {
+        let dexData = null
+        if (quote0x !== null) {
+          console.log('here')
+          const buyAmount = isMinting
+            ? quote0x.indexTokenAmount.toString()
+            : quote0x.inputOutputTokenAmount.toString()
+          console.log(buyAmount, 'buyAmount')
+          dexData = {
+            buyAmount,
+            estimatedPriceImpact: quote0x!.priceImpact.toString(),
+          }
+        }
+        quoteFlashMint = await getFlashMintQuote(
+          {
+            ...request,
+            chainId,
+            dexData,
+            nativeTokenPrice,
+          },
+          provider,
+          signer
+        )
+      }
+
+      const bestQuote = getBestQuote(
+        quote0x?.fullCostsInUsd ?? null,
+        quoteFlashMint?.fullCostsInUsd ?? null,
+        quote0x?.priceImpact ?? maxPriceImpact
+      )
+      console.log(bestQuote.type, quote0x?.priceImpact)
+      //       const getSavings = (): number => {
+      //         if (!zeroExQuote) return 0
+      //         if (bestQuote.type === QuoteType.flashMint && flashMintQuote) {
+      //           return (
+      //             (zeroExQuote.fullCostsInUsd ?? 0) -
+      //             (flashMintQuote.fullCostsInUsd ?? 0)
+      //           )
+      //         }
+      //         return 0
+      //       }
+      //       const savingsUsd = getSavings()
+      setQuoteResult({
+        bestQuote: bestQuote.type,
+        error: null,
+        isReasonPriceImpact: bestQuote.priceImpact,
+        quotes: {
+          flashmint: quoteFlashMint,
+          zeroex: quote0x,
+        },
+        // TODO: ?
+        savingsUsd: 0,
+      })
+      // TODO: error handling
+      // TODO: compare quotes
+      // TODO: response modeling
+      setIsFetching(false)
+    },
+    [chainId, nativeTokenPrice, provider, signer]
+  )
 
   return {
     fetchQuote,

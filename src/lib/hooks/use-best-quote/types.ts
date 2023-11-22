@@ -1,5 +1,4 @@
 import { PopulatedTransaction } from 'ethers'
-import { Hex } from 'viem'
 
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -17,6 +16,9 @@ export interface IndexQuoteRequest {
   outputTokenPrice: number
   slippage: number
 }
+
+// Could be separated from ethers whenever it's not used any more
+export interface QuoteTransaction extends PopulatedTransaction {}
 
 export enum QuoteType {
   flashmint = 'flashmint',
@@ -39,28 +41,21 @@ export interface Quote {
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
   slippage: number
+  tx: QuoteTransaction
 }
 
-export interface EnhancedFlashMintQuote extends Quote {
-  contractType: string
-  // TODO: should probably use a more general type here (to not rely on ethers lib)
-  tx: PopulatedTransaction
-}
-
+// TODO: join args to be part of quote e.g. price impact
+// TODO: move everything else into one 0x object and a common tx object (same as FM)
 export interface ZeroExQuote extends Quote {
-  estimatedPriceImpact: string
-  data: Hex
   minOutput: BigNumber
   sources: { name: string; proportion: string }[]
-  to: string
-  value: string
 }
 
 export interface QuoteResult {
   bestQuote: QuoteType
   error: Error | null
   quotes: {
-    flashmint: EnhancedFlashMintQuote | null
+    flashmint: Quote | null
     zeroex: ZeroExQuote | null
   }
   isReasonPriceImpact: boolean
