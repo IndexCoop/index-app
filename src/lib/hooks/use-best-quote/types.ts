@@ -44,8 +44,6 @@ export interface Quote {
   tx: QuoteTransaction
 }
 
-// TODO: join args to be part of quote e.g. price impact
-// TODO: move everything else into one 0x object and a common tx object (same as FM)
 export interface ZeroExQuote extends Quote {
   minOutput: BigNumber
   sources: { name: string; proportion: string }[]
