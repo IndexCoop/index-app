@@ -5,7 +5,7 @@ import { formatUnits } from '@ethersproject/units'
 import { Token } from '@/constants/tokens'
 import { useBalance } from '@/lib/hooks/use-balance'
 
-import { formattedBalance } from '../../../_shared/QuickTradeFormatter'
+import { formattedBalance } from './formatters/index'
 
 export function useFormattedBalance(token: Token, address?: string) {
   const balance = useBalance(address ?? '', token.address)

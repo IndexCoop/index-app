@@ -1,40 +1,6 @@
 import { colors } from '@/lib/styles/colors'
 
-import { TradeDetailTokenPrices } from '../swap/components/trade-details'
-
-import {
-  getFormattedTokenPrice,
-  getFormattedTokenPrices,
-  getPriceImpact,
-  getPriceImpactColorCoding,
-} from './QuickTradeFormatter'
-
-describe('getFormattedTokenPrice()', () => {
-  test('returns correct formatting', async () => {
-    const formattedPrice = getFormattedTokenPrice('ETH', 'USDC', 1500, 1)
-    const expectedResult = '1 ETH = 1500 USDC'
-    expect(formattedPrice).toEqual(expectedResult)
-  })
-
-  test('returns correct formatting for numbers lower 1', async () => {
-    const formattedPrice = getFormattedTokenPrice('ETH', 'USDC', 1, 234)
-    const expectedResult = '1 ETH = 0.004 USDC'
-    expect(formattedPrice).toEqual(expectedResult)
-  })
-})
-
-describe('getFormattedTokenPrices()', () => {
-  test('returns correct formatting', async () => {
-    const tokenPrices = getFormattedTokenPrices('ETH', 1500, 'USDC', 1)
-    const expectedResult: TradeDetailTokenPrices = {
-      inputTokenPrice: '1 ETH = 1500 USDC',
-      inputTokenPriceUsd: '($1500.00)',
-      outputTokenPrice: '1 USDC = 0.001 ETH',
-      outputTokenPriceUsd: '($1.00)',
-    }
-    expect(tokenPrices).toEqual(expectedResult)
-  })
-})
+import { getPriceImpact, getPriceImpactColorCoding } from './price-impact'
 
 describe('getPriceImpact()', () => {
   test('should return null if input/output token amount smaller or equal 0', async () => {
