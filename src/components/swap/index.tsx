@@ -72,11 +72,10 @@ export const Swap = (props: SwapProps) => {
     quoteResult,
   } = useBestQuote()
 
-  // TODO: ?
+  const hasFetchingError = quoteResult.error !== null && !isFetchingQuote
+
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 500)
-
-  const hasFetchingError = quoteResult.error !== null && !isFetchingQuote
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()

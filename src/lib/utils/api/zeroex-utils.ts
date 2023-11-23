@@ -60,29 +60,34 @@ function getApiUrl(query: string, chainId: number): string {
   return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}&affiliateAddress=${ZeroExAffiliateAddress}`
 }
 
+interface ZeroExRequest {
+  chainId: number
+  isMinting: boolean
+  sellToken: Token // inputToken
+  buyToken: Token // outputToken
+  amount: string
+  slippagePercentage: number
+}
+
 /**
  *
  * @param slippagePercentage  The maximum acceptable slippage buy/sell amount. Slippage percentage: 0.03 for 3% slippage allowed.
  */
 export const getZeroExTradeData = async (
-  isExactInput: boolean,
-  sellToken: Token,
-  buyToken: Token,
-  amount: string,
-  slippagePercentage: number,
-  chainId: number,
+  request: ZeroExRequest,
   rawData: boolean = false,
   rfq: RequestForQuote | null = null
 ): Promise<Result<ZeroExData, Error>> => {
+  const { amount, buyToken, chainId, isMinting, sellToken } = request
   const params = getApiParamsForTokens(
-    isExactInput,
+    isMinting,
     sellToken,
     buyToken,
     amount,
     chainId,
     rfq
   )
-  params.slippagePercentage = slippagePercentage
+  params.slippagePercentage = request.slippagePercentage
   const query = new URLSearchParams(params).toString()
   const path = getApiUrl(query, chainId)
   console.log(path)
@@ -94,7 +99,7 @@ export const getZeroExTradeData = async (
       ? resp
       : await processApiResult(
           zeroExData,
-          isExactInput,
+          isMinting,
           sellToken,
           buyToken,
           amount
