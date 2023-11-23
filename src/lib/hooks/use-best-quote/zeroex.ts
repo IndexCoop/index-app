@@ -1,10 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { ic21 } from '@/constants/tokens'
-import {
-  getZeroExTradeData,
-  RequestForQuote,
-} from '@/lib/utils/api/zeroex-utils'
+import { getZeroExTradeData } from '@/lib/utils/api/zeroex-utils'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { toWei } from '@/lib/utils'

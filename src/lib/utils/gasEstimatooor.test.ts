@@ -57,7 +57,7 @@ describe('GasEstimatooor', () => {
 
   it('should return gas estimate with margin - on success', async () => {
     const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
-    const defaultGasMargin = 20
+    // const defaultGasMargin = 20
     const estimatooor = new GasEstimatooor(signer, defaultGasEstimate)
     const tx = {
       from: signer.address,

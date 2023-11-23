@@ -20,7 +20,7 @@ import { useWallet } from '@/lib/hooks/useWallet'
 import { useProtection } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
-import { isValidTokenInput, toWei } from '@/lib/utils'
+import { isValidTokenInput } from '@/lib/utils'
 import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 
 import { ProtectionWarning } from './components/protection-warning'
