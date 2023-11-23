@@ -29,13 +29,10 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
     outputToken,
     slippage,
   } = request
-  let rfq: RequestForQuote | null = null
+  let rfq: boolean = false
 
   if (outputToken.symbol === ic21.symbol || inputToken.symbol === ic21.symbol) {
-    // FIXME: always add address
-    rfq = {
-      takerAddress: address!,
-    }
+    rfq = true
   }
 
   const zeroExResult = await getZeroExTradeData(
@@ -49,6 +46,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
       // so sell token amount will always be correct
       amount: inputTokenAmount,
       slippagePercentage: slippage / 100,
+      takerAddress: address!,
     },
     false,
     rfq

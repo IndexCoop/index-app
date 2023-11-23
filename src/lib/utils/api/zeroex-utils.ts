@@ -67,6 +67,7 @@ interface ZeroExRequest {
   buyToken: Token // outputToken
   amount: string
   slippagePercentage: number
+  takerAddress: string
 }
 
 /**
@@ -76,15 +77,17 @@ interface ZeroExRequest {
 export const getZeroExTradeData = async (
   request: ZeroExRequest,
   rawData: boolean = false,
-  rfq: RequestForQuote | null = null
+  rfq: boolean
 ): Promise<Result<ZeroExData, Error>> => {
-  const { amount, buyToken, chainId, isMinting, sellToken } = request
+  const { amount, buyToken, chainId, isMinting, sellToken, takerAddress } =
+    request
   const params = getApiParamsForTokens(
+    chainId,
     isMinting,
     sellToken,
     buyToken,
     amount,
-    chainId,
+    takerAddress,
     rfq
   )
   params.slippagePercentage = request.slippagePercentage
@@ -129,7 +132,8 @@ export const get0xApiParams = (
   buyToken: string,
   buyTokenDecimals: number,
   buySellAmount: string,
-  rfq: RequestForQuote | null
+  takerAddress: string,
+  rfq: boolean = false
 ): any => {
   const params: any = {
     sellToken,
@@ -140,7 +144,6 @@ export const get0xApiParams = (
     // https://0x.org/docs/0x-swap-api/api-references/get-swap-v1-quote#request
     params.includedSources = 'RFQT'
     params.intentOnFilling = true
-    params.takerAddress = rfq.takerAddress
   }
 
   if (isExactInput) {
@@ -153,6 +156,7 @@ export const get0xApiParams = (
   }
 
   params.skipValidation = true
+  params.takerAddress = takerAddress
 
   return params
 }
@@ -167,12 +171,13 @@ const getChainTokenAddress = (token: Token, chainId: number) => {
 
 /* Convenience function for Token's */
 const getApiParamsForTokens = (
+  chainId: number,
   isExactInput: boolean,
   sellToken: Token,
   buyToken: Token,
   buySellAmount: string,
-  chainId: number,
-  rfq: RequestForQuote | null
+  takerAddress: string,
+  rfq: boolean = false
 ): any => {
   return get0xApiParams(
     isExactInput,
@@ -181,6 +186,7 @@ const getApiParamsForTokens = (
     getChainTokenAddress(buyToken, chainId) ?? '',
     buyToken.decimals,
     buySellAmount,
+    takerAddress,
     rfq
   )
 }
