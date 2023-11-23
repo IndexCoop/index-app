@@ -20,7 +20,7 @@ import {
 import { useFlashMintTrade } from '@/lib/hooks/useFlashMintTrade'
 import { useSimulateQuote } from '@/lib/hooks/useSimulateQuote'
 import { displayFromWei } from '@/lib/utils'
-import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
+import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
 import { TradeButton } from '@/components/trade-button'
 
