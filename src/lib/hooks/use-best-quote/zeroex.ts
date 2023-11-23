@@ -38,18 +38,18 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
     }
   }
 
-  const slippagePercentage = slippage / 100
-  /* Check 0x for DEX Swap option*/
   const zeroExResult = await getZeroExTradeData(
-    // for now we only allow selling
-    true,
-    inputToken,
-    outputToken,
-    // for now we only allow specifing selling amount,
-    // so sell token amount will always be correct
-    inputTokenAmount,
-    slippagePercentage,
-    chainId,
+    {
+      chainId,
+      // for now we only allow selling
+      isMinting: true,
+      sellToken: inputToken,
+      buyToken: outputToken,
+      // for now we only allow specifing selling amount,
+      // so sell token amount will always be correct
+      amount: inputTokenAmount,
+      slippagePercentage: slippage / 100,
+    },
     false,
     rfq
   )
