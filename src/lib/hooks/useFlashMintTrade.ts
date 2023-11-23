@@ -26,13 +26,11 @@ export const useFlashMintTrade = () => {
       override: boolean = false
     ) => {
       if (!address || !chainId || !quote) return
-      const { indexTokenAmount, inputToken, isMinting, outputToken } = quote
+      const { inputToken, outputToken } = quote
 
       const inputTokenAddress = getAddressForToken(inputToken, chainId)
       const outputTokenAddress = getAddressForToken(outputToken, chainId)
       if (!outputTokenAddress || !inputTokenAddress) return
-
-      const indexToken = isMinting ? outputTokenAddress : inputTokenAddress
 
       try {
         setIsTransacting(true)

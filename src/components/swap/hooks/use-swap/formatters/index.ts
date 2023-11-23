@@ -112,15 +112,6 @@ export const getHasInsufficientFunds = (
   return hasInsufficientFunds
 }
 
-const formatIfNumber = (value: string) => {
-  if (/[a-z]/i.test(value)) return value
-
-  return Number(value).toLocaleString('en', {
-    minimumFractionDigits: 4,
-    maximumFractionDigits: 4,
-  })
-}
-
 export function shouldShowWarningSign(slippage: number): boolean {
   return slippage > 1
 }

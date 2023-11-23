@@ -1,4 +1,4 @@
-import { theme, useColorMode } from '@chakra-ui/react'
+import { theme } from '@chakra-ui/react'
 
 export const colors = {
   ...theme.colors,
