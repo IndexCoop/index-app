@@ -5,7 +5,7 @@ import {
   ZeroExQuote,
 } from '@/lib/hooks/use-best-quote/types'
 import { displayFromWei } from '@/lib/utils'
-import { getBlockExplorerContractUrl } from '@/lib/utils/blockExplorer'
+import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 import { getNativeToken } from '@/lib/utils/tokens'
 
 import { TradeInfoItem } from '../../types'
