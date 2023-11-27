@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { useNetwork } from '@/lib/hooks/useNetwork'
-import { useWallet } from '@/lib/hooks/useWallet'
+import { useWallet } from '@/lib/hooks/use-wallet'
 
 export enum TradeButtonState {
   approve,

@@ -3,7 +3,7 @@ import { BigNumber, PopulatedTransaction } from 'ethers'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { useNetwork } from '@/lib/hooks/useNetwork'
-import { useWallet } from '@/lib/hooks/useWallet'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { TxSimulator } from '@/lib/utils/simulator'
 
 import { FlashMintQuoteResult } from './useFlashMintQuote'

@@ -5,6 +5,7 @@ import { providers } from 'ethers'
 import { JsonRpcSigner } from '@ethersproject/providers'
 
 import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
 import { GasStation } from '@/lib/utils/api/gas-station'
 import {
@@ -14,7 +15,6 @@ import {
 } from '@/lib/utils/tokens'
 
 import { useNativeTokenPrice } from '../use-token-price'
-import { useWallet } from '../useWallet'
 
 import { getBestQuote } from './best-quote'
 import { maxPriceImpact } from './config'
