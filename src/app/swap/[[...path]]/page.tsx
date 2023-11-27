@@ -12,7 +12,7 @@ import {
 } from '@/components/supply'
 import { Swap } from '@/components/swap'
 import { LeveragedRethStakingYield } from '@/constants/tokens'
-import { useLedgerStatus } from '@/lib/hooks/useLedgerStatus'
+import { useLedgerStatus } from '@/lib/hooks/use-ledger-status'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { ledgerConnector } from '@/lib/utils/wagmi'
 

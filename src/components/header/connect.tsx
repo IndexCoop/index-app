@@ -6,7 +6,7 @@ import { useAccount } from 'wagmi'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-import { useLedgerStatus } from '@/lib/hooks/useLedgerStatus'
+import { useLedgerStatus } from '@/lib/hooks/use-ledger-status'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { logConnect } from '@/lib/utils/api/analytics'
 
