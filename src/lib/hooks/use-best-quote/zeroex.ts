@@ -83,6 +83,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
         inputOutputTokenAmount: isMinting
           ? inputTokenAmountBn
           : BigNumber.from(dexSwapOption.buyAmount),
+        inputTokenAmount: inputTokenAmountBn,
         slippage,
         tx: {
           data: dexSwapOption.data,

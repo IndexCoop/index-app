@@ -40,6 +40,9 @@ export interface Quote {
   priceImpact: number
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
+  // Return additionally for convenience to avoid
+  // having to determine based on isMinting
+  inputTokenAmount: BigNumber
   slippage: number
   tx: QuoteTransaction
 }
