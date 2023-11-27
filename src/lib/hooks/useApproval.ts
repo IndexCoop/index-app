@@ -6,7 +6,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/useNetwork'
-import { useWallet } from '@/lib/hooks/useWallet'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { getERC20Contract } from '@/lib/utils/contracts'
 import { getAddressForToken, isNativeCurrency } from '@/lib/utils/tokens'
 

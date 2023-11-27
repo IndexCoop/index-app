@@ -4,7 +4,7 @@ import { Address, PublicClient, usePublicClient } from 'wagmi'
 import { ETH } from '@/constants/tokens'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
 
-class BalanceProvider {
+export class BalanceProvider {
   constructor(readonly publicClient: PublicClient) {}
 
   async getErc20Balance(address: string, token: string): Promise<bigint> {

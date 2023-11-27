@@ -17,8 +17,8 @@ import {
   Text,
 } from '@chakra-ui/react'
 
-import { useFlashMintTrade } from '@/lib/hooks/useFlashMintTrade'
-import { useSimulateQuote } from '@/lib/hooks/useSimulateQuote'
+import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
+import { useTrade } from '@/lib/hooks/use-trade'
 import { displayFromWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 

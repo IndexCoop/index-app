@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { IndexREthProvider } from '@indexcoop/analytics-sdk'
 
 import { IcRethUnits } from '@/constants/icreth'
-import { useWallet } from '@/lib/hooks/useWallet'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { SupplyCapState } from './'
 
 interface RethSupplyCapData {
