@@ -7,7 +7,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from '@/constants/tokens'
 import { Quote } from '@/lib/hooks/use-best-quote/types'
-import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { logTx } from '@/lib/utils/api/analytics'
 import {
