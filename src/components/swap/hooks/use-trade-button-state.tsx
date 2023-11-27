@@ -21,7 +21,6 @@ export const useTradeButtonState = (
   shouldApprove: boolean,
   isApproved: boolean,
   isApproving: boolean,
-  isTransacting: boolean,
   sellTokenAmount: string
 ) => {
   const { address } = useWallet()
@@ -36,7 +35,6 @@ export const useTradeButtonState = (
     if (hasInsufficientFunds) return TradeButtonState.insufficientFunds
     if (isApproving) return TradeButtonState.approving
     if (!isApproved && shouldApprove) return TradeButtonState.approve
-    if (isTransacting) return TradeButtonState.loading
     return TradeButtonState.default
   }, [
     address,
@@ -45,7 +43,6 @@ export const useTradeButtonState = (
     isApproved,
     isApproving,
     isSupportedNetwork,
-    isTransacting,
     sellTokenAmount,
     shouldApprove,
   ])

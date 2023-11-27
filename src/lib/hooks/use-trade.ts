@@ -94,7 +94,7 @@ export const useTrade = () => {
         throw error
       }
     },
-    [address, chainId, publicClient]
+    [address, chainId, publicClient, signer]
   )
 
   return { executeTrade, isTransacting, txWouldFail }

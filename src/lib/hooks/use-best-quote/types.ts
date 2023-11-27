@@ -43,6 +43,7 @@ export interface Quote {
   // Return additionally for convenience to avoid
   // having to determine based on isMinting
   inputTokenAmount: BigNumber
+  outputTokenAmount: BigNumber
   slippage: number
   tx: QuoteTransaction
 }
