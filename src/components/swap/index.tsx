@@ -65,7 +65,6 @@ export const Swap = (props: SwapProps) => {
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
-  // TODO: test outcomes (numbers) + vs old one
   const {
     fetchQuote,
     isFetching: isFetchingQuote,

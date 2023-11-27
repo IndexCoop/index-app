@@ -93,6 +93,7 @@ export async function getEnhancedFlashMintQuote(
         priceImpact: 0,
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,
+        inputTokenAmount: isMinting ? inputOutputAmount : indexTokenAmount,
         slippage,
         tx: transaction,
       }
