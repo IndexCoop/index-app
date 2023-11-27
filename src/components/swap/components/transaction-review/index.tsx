@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useColorStyles } from '@/lib/styles/colors'
 
@@ -17,6 +17,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 
+import { Quote, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
 import { useTrade } from '@/lib/hooks/use-trade'
 import { displayFromWei } from '@/lib/utils'
@@ -41,38 +42,13 @@ enum TransactionReviewModalState {
 
 type TransactionReviewModalProps = {
   isOpen: boolean
-  tx: TransactionReview
+  transactionReview: TransactionReview
   onClose: () => void
-}
-
-const useTrade = (tx: TransactionReview) => {
-  const { executeFlashMintTrade, isTransacting, txWouldFail } =
-    useFlashMintTrade()
-
-  /**
-   * Returns boolean indicating success or null for config error
-   */
-  const executeTrade = async (override: boolean) => {
-    const { quoteResult, slippage } = tx
-    const { quotes } = quoteResult
-    if (!quotes) return null
-    if (quotes.flashMint) {
-      try {
-        await executeFlashMintTrade(quotes.flashMint, slippage, override)
-        return true
-      } catch {
-        return false
-      }
-    }
-    return null
-  }
-
-  return { executeTrade, isTransacting, txWouldFail }
 }
 
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const { styles } = useColorStyles()
-  const { isOpen, onClose, tx } = props
+  const { isOpen, onClose, transactionReview } = props
   const backgroundColor = styles.background
 
   const [state, setState] = useState<TransactionReviewModalState>(
@@ -134,7 +110,10 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
             />
           )}
           {state === TransactionReviewModalState.submit && (
-            <Review onSubmitWithSuccess={onSubmitWithSuccess} tx={tx} />
+            <Review
+              onSubmitWithSuccess={onSubmitWithSuccess}
+              transactionReview={transactionReview}
+            />
           )}
         </ModalBody>
       </ModalContent>
@@ -190,15 +169,46 @@ const ContractSection = ({
   )
 }
 
+function useBestQuote(review: TransactionReview) {
+  const { quoteResult } = review
+  const bestQuote = useMemo(() => {
+    const isFlashmintBestQuote = quoteResult.bestQuote === QuoteType.flashmint
+    return isFlashmintBestQuote
+      ? quoteResult.quotes.flashmint
+      : quoteResult.quotes.zeroex
+  }, [quoteResult])
+  return { bestQuote }
+}
+
+const useTradeMaker = (quote: Quote | null) => {
+  const { executeTrade, isTransacting, txWouldFail } = useTrade()
+
+  /**
+   * Returns boolean indicating success or null for config error
+   */
+  const makeTrade = async (override: boolean) => {
+    if (!quote) return null
+    try {
+      await executeTrade(quote, override)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  return { isTransacting, makeTrade, txWouldFail }
+}
+
 type ReviewProps = {
   onSubmitWithSuccess: (success: boolean) => void
-  tx: TransactionReview
+  transactionReview: TransactionReview
 }
 
 const Review = (props: ReviewProps) => {
-  const { onSubmitWithSuccess, tx } = props
-  const { simulateTrade } = useSimulateQuote(tx.quoteResult)
-  const { executeTrade, isTransacting } = useTrade(tx)
+  const { onSubmitWithSuccess, transactionReview } = props
+  const { bestQuote } = useBestQuote(transactionReview)
+  const { simulateTrade } = useSimulateQuote(bestQuote?.tx ?? null)
+  const { makeTrade, isTransacting } = useTradeMaker(bestQuote)
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -209,8 +219,9 @@ const Review = (props: ReviewProps) => {
     )
 
   useEffect(() => {
+    // Reset state for new data
     setSimulationState(TransactionReviewSimulationState.default)
-  }, [props.tx])
+  }, [props.transactionReview])
 
   useEffect(() => {
     if (simulationState === TransactionReviewSimulationState.loading) {
@@ -246,22 +257,29 @@ const Review = (props: ReviewProps) => {
     setSimulationState(state)
     console.log('isSuccess', isSuccess)
     if (!isSuccess && !override) return
-    const success = await executeTrade(override)
+    const success = await makeTrade(override)
     if (success === null) return
     onSubmitWithSuccess(success)
   }
 
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
-    tx.contractAddress,
-    tx.chainId
+    transactionReview.contractAddress,
+    transactionReview.chainId
   )
 
   const decimals = 10
   const formattedInputTokenAmount =
-    displayFromWei(tx.inputTokenAmount, decimals, tx.inputToken.decimals) ?? ''
+    displayFromWei(
+      transactionReview.inputTokenAmount,
+      decimals,
+      transactionReview.inputToken.decimals
+    ) ?? ''
   const formattedOutputTokenAmount =
-    displayFromWei(tx.outputTokenAmount, decimals, tx.outputToken.decimals) ??
-    ''
+    displayFromWei(
+      transactionReview.outputTokenAmount,
+      decimals,
+      transactionReview.outputToken.decimals
+    ) ?? ''
 
   const shouldShowOverride =
     simulationState === TransactionReviewSimulationState.failure
@@ -274,19 +292,19 @@ const Review = (props: ReviewProps) => {
             <NetworkBadge />
           </Flex>
           <FromTo
-            inputToken={tx.inputToken.image}
+            inputToken={transactionReview.inputToken.image}
             inputTokenAmount={formattedInputTokenAmount}
-            inputTokenSymbol={tx.inputToken.symbol}
-            outputToken={tx.outputToken.image}
+            inputTokenSymbol={transactionReview.inputToken.symbol}
+            outputToken={transactionReview.outputToken.image}
             outputTokenAmount={formattedOutputTokenAmount}
-            outputTokenSymbol={tx.outputToken.symbol}
+            outputTokenSymbol={transactionReview.outputToken.symbol}
           />
         </Flex>
       </Flex>
       <Box my='8px'>
         <Box mb='8px'>
           <ContractSection
-            contractAddress={tx.contractAddress}
+            contractAddress={transactionReview.contractAddress}
             explorerUrl={contractBlockExplorerUrl}
           />
         </Box>

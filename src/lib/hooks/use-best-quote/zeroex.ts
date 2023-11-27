@@ -56,6 +56,8 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
   const gasPrice0x = BigNumber.from(dexSwapOption?.gasPrice ?? '0')
   const gas0x = gasPrice0x.mul(gasLimit0x)
   const inputTokenAmountBn = toWei(inputTokenAmount, inputToken.decimals)
+  const outputTokenAmount =
+    BigNumber.from(dexSwapOption?.buyAmount) ?? BigNumber.from(0)
   const gasCostsInUsd = getGasCostsInUsd(gas0x, nativeTokenPrice)
   const zeroExQuote: ZeroExQuote | null = dexSwapOption
     ? {
@@ -77,16 +79,16 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
           nativeTokenPrice
         ),
         priceImpact: parseFloat(dexSwapOption.estimatedPriceImpact ?? '5'),
-        indexTokenAmount: isMinting
-          ? BigNumber.from(dexSwapOption.buyAmount)
-          : inputTokenAmountBn,
+        indexTokenAmount: isMinting ? outputTokenAmount : inputTokenAmountBn,
         inputOutputTokenAmount: isMinting
           ? inputTokenAmountBn
-          : BigNumber.from(dexSwapOption.buyAmount),
+          : outputTokenAmount,
         inputTokenAmount: inputTokenAmountBn,
+        outputTokenAmount,
         slippage,
         tx: {
           data: dexSwapOption.data,
+          from: address, // define for simulations which otherwise might fail
           to: dexSwapOption.to,
           value: BigNumber.from(dexSwapOption.value),
         },

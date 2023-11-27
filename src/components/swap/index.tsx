@@ -26,11 +26,13 @@ import { ProtectionWarning } from './components/protection-warning'
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
+import { TransactionReviewModal } from './components/transaction-review'
 import { useSwap } from './hooks/use-swap'
 import {
   TradeButtonState,
   useTradeButtonState,
 } from './hooks/use-trade-button-state'
+import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
 
 type SwapProps = {
   isBuying: boolean
@@ -50,7 +52,6 @@ export const Swap = (props: SwapProps) => {
     set: setSlippage,
     slippage,
   } = useSlippage()
-  const { executeTrade, isTransacting } = useTrade()
   const { address } = useWallet()
 
   const {
@@ -62,6 +63,11 @@ export const Swap = (props: SwapProps) => {
     isOpen: isSelectOutputTokenOpen,
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
+  } = useDisclosure()
+  const {
+    isOpen: isTransactionReviewOpen,
+    onOpen: onOpenTransactionReview,
+    onClose: onCloseTransactionReview,
   } = useDisclosure()
 
   const {
@@ -81,6 +87,10 @@ export const Swap = (props: SwapProps) => {
     isBuying,
     inputToken,
     outputToken
+  )
+  const { transactionReview } = useTransactionReviewModal(
+    quoteResult,
+    isFetchingQuote
   )
 
   const {
@@ -126,7 +136,6 @@ export const Swap = (props: SwapProps) => {
     shouldApprove,
     isApprovedForSwap,
     isApprovingForSwap,
-    isTransacting,
     sellTokenAmount
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
@@ -220,8 +229,7 @@ export const Swap = (props: SwapProps) => {
     }
 
     if (buttonState === TradeButtonState.default) {
-      // FIXME: use selectedQuote
-      // await executeTrade(quoteResult.quotes.zeroex)
+      onOpenTransactionReview()
     }
   }, [buttonState, executeTrade, fetchOptions, isApprovedForSwap, onApproveForSwap, openConnectModal, quoteResult.quotes.zeroEx, shouldApprove])
 
@@ -351,6 +359,13 @@ export const Swap = (props: SwapProps) => {
         address={address}
         tokens={outputTokenslist}
       />
+      {transactionReview && (
+        <TransactionReviewModal
+          isOpen={isTransactionReviewOpen}
+          onClose={onCloseTransactionReview}
+          transactionReview={transactionReview}
+        />
+      )}
     </Flex>
   )
 }

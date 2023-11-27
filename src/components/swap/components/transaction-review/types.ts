@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from '@/constants/tokens'
-import { FlashMintQuoteResult } from '@/lib/hooks/useFlashMintQuote'
+import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
 export type TransactionReview = {
   chainId: number
@@ -11,6 +11,6 @@ export type TransactionReview = {
   outputToken: Token
   inputTokenAmount: BigNumber
   outputTokenAmount: BigNumber
-  quoteResult: FlashMintQuoteResult
+  quoteResult: QuoteResult
   slippage: number
 }
