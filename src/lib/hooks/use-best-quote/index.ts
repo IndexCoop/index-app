@@ -4,7 +4,7 @@ import { providers } from 'ethers'
 
 import { JsonRpcSigner } from '@ethersproject/providers'
 
-import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
 import { GasStation } from '@/lib/utils/api/gas-station'

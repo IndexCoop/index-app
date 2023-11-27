@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 
-import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { TxSimulator } from '@/lib/utils/simulator'
 

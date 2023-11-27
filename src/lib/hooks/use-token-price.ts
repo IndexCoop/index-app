@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { ETH, Token } from '@/constants/tokens'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
 import { NavProvider } from '@/lib/utils/api/nav'
 import {
@@ -8,8 +9,6 @@ import {
   getNativeToken,
   isIndexToken,
 } from '@/lib/utils/tokens'
-
-import { useNetwork } from './useNetwork'
 
 export function useNativeTokenPrice(chainId?: number): number {
   const [nativeToken, setNativeToken] = useState(ETH)
