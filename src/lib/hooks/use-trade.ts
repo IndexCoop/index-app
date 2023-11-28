@@ -77,9 +77,8 @@ export const useTrade = () => {
           value: BigInt(quote.tx.value?.toString() ?? '0'),
         })
         const { hash } = await sendTransaction(request)
-        // TODO:
-        // logTx(chainId ?? -1, 'Tx', hash)
-        console.log(hash)
+        logTx(chainId ?? -1, quote.type.toString(), hash)
+        console.log('hash:', hash)
         setIsTransacting(false)
       } catch (error) {
         console.log('Override?', override)

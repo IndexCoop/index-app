@@ -1,5 +1,6 @@
 import { ArcxAnalyticsSdk } from '@arcxmoney/analytics'
-import { TransactionResponse } from '@ethersproject/abstract-provider'
+
+const isDevEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
 
 const init = () => {
   return ArcxAnalyticsSdk.init(
@@ -7,8 +8,6 @@ const init = () => {
     { trackPages: true }
   )
 }
-
-const isDevEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
 
 export const logConnect = (address: string, chainId: number) => {
   if (isDevEnv) return
@@ -58,11 +57,7 @@ export const logTransaction = (
     })
 }
 
-export const logTx = (
-  chainId: number,
-  txType: string,
-  tx: TransactionResponse | null
-) => {
-  if (!tx) logTransaction(chainId, txType, '', { status: 'NO_RESPONSE' })
-  else logTransaction(chainId, txType, tx.hash)
+export const logTx = (chainId: number, txType: string, hash: string) => {
+  if (!hash) logTransaction(chainId, txType, '', { status: 'NO_RESPONSE' })
+  else logTransaction(chainId, txType, hash)
 }
