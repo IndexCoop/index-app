@@ -9,7 +9,7 @@ import { Token } from '@/constants/tokens'
 import { getConfiguredZeroExApi } from '@/lib/utils/api/zeroex'
 import { getNetworkKey } from '@/lib/utils/api/zeroex-utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
-import { GasEstimatooor } from '@/lib/utils/gasEstimatooor'
+import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from './types'

@@ -5,7 +5,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
 import { toWei } from '@/lib/utils'
 
-import { GasEstimatooor, GasEstimatooorFailedError } from './gasEstimatooor'
+import { GasEstimatooor, GasEstimatooorFailedError } from './gas-estimatooor'
 
 const provider = new JsonRpcProvider('http://127.0.0.1:8545/')
 const signer = new ethers.Wallet(

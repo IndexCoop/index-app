@@ -13,7 +13,7 @@ import { logTx } from '@/lib/utils/api/analytics'
 import {
   GasEstimatooor,
   GasEstimatooorFailedError,
-} from '@/lib/utils/gasEstimatooor'
+} from '@/lib/utils/gas-estimatooor'
 import { getAddressForToken, isNativeCurrency } from '@/lib/utils/tokens'
 
 import { BalanceProvider } from './use-balance'
