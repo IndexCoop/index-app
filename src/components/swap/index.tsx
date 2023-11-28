@@ -122,7 +122,7 @@ export const Swap = (props: SwapProps) => {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     approve: onApproveForSwap,
-  } = useApproval(inputToken, contract, inputTokenAmountWei)
+  } = useApproval(inputToken, contract, BigInt(inputTokenAmountWei.toString()))
 
   const shouldApprove = useMemo(() => {
     const nativeToken = getNativeToken(chainId)
@@ -231,7 +231,15 @@ export const Swap = (props: SwapProps) => {
     if (buttonState === TradeButtonState.default) {
       onOpenTransactionReview()
     }
-  }, [buttonState])
+  }, [
+    buttonState,
+    fetchOptions,
+    isApprovedForSwap,
+    onApproveForSwap,
+    onOpenTransactionReview,
+    openConnectModal,
+    shouldApprove,
+  ])
 
   const onSwitchTokens = () => {
     toggleIsMinting()

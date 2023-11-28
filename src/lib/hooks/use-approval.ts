@@ -1,61 +1,35 @@
-import { useCallback, useEffect, useState } from 'react'
-
-import { constants } from 'ethers'
-
-import { BigNumber } from '@ethersproject/bignumber'
+import { useMemo } from 'react'
+import { Address, useContractRead, useContractWrite } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
-import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { getERC20Contract } from '@/lib/utils/contracts'
-import { getAddressForToken, isNativeCurrency } from '@/lib/utils/tokens'
+import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
 
 export const useApproval = (
   token: Token,
   spenderAddress: string | null,
-  amount: BigNumber = constants.MaxUint256
+  amount: bigint
 ) => {
-  const { address, provider, signer } = useWallet()
-  const { chainId } = useNetwork()
+  const { address } = useWallet()
 
-  const [isApproved, setIsApproved] = useState(false)
-  const [isApproving, setIsApproving] = useState(false)
+  const { data } = useContractRead({
+    address: token.address as Address,
+    abi: ERC20_ABI,
+    functionName: 'allowance',
+    args: [address as Address, spenderAddress as Address],
+  })
 
-  const isNative = isNativeCurrency(token, chainId ?? 1)
-  const tokenAddress = isNative
-    ? ''
-    : (token && getAddressForToken(token, chainId)) || ''
+  const { isLoading: isApproving, write: approve } = useContractWrite({
+    address: token.address as Address,
+    abi: ERC20_ABI,
+    functionName: 'approve',
+    args: [spenderAddress as Address, amount],
+  })
 
-  const approve = useCallback(async () => {
-    if (!signer || !address || !tokenAddress || !spenderAddress) return
-    try {
-      setIsApproving(true)
-      const contract = getERC20Contract(tokenAddress, signer)
-      const tx = await contract.approve(spenderAddress, amount)
-      await tx.wait()
-      setIsApproving(false)
-    } catch (e) {
-      setIsApproving(false)
-      console.warn('Error approving token', tokenAddress, e)
-    }
-  }, [address, amount, signer, spenderAddress, tokenAddress])
-
-  async function getAllowance(spenderAddress: string) {
-    const erc20 = getERC20Contract(tokenAddress, provider)
-    const allowance = await erc20.allowance(address, spenderAddress)
-    return allowance
-  }
-
-  async function updateApprovalState(spenderAddress: string) {
-    const allowance = await getAllowance(spenderAddress)
-    const isApproved = allowance.gte(amount)
-    setIsApproved(isApproved)
-  }
-
-  useEffect(() => {
-    if (!spenderAddress || !tokenAddress || isApproving) return
-    updateApprovalState(spenderAddress)
-  }, [amount, isApproving, spenderAddress, tokenAddress, updateApprovalState])
+  const isApproved = useMemo(() => {
+    if (token.symbol === 'ETH') return true
+    return data ? data > amount : false
+  }, [amount, data, token])
 
   return { approve, isApproved, isApproving }
 }
