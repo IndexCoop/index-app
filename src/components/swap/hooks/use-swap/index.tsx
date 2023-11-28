@@ -100,7 +100,10 @@ export function useSwap(
     [quoteResult]
   )
 
-  const contract = selectedQuote?.contract ?? null
+  const contract = useMemo(
+    () => selectedQuote?.contract ?? null,
+    [selectedQuote]
+  )
 
   const inputTokenAmountUsd = useMemo(
     () => formattedFiat(parseFloat(inputTokenAmount), inputTokenPrice),
