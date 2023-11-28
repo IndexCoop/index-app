@@ -73,9 +73,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   }
 
   const modalTitle =
-    state === TransactionReviewModalState.submit
-      ? 'FlashMint - Review transaction'
-      : ''
+    state === TransactionReviewModalState.submit ? 'Review Transaction' : ''
 
   return (
     <Modal
