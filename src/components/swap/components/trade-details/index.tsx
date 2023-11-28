@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { InfoOutlineIcon, WarningTwoIcon } from '@chakra-ui/icons'
+import { WarningTwoIcon } from '@chakra-ui/icons'
 import {
   Accordion,
   AccordionButton,

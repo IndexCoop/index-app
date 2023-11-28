@@ -49,9 +49,9 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
     rfq
   )
   const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
-  const dexSwapError = zeroExResult.success
-    ? null
-    : new Error('Not enough liqiuidity available for trade.')
+  // const dexSwapError = zeroExResult.success
+  //   ? null
+  //   : new Error('Not enough liqiuidity available for trade.')
   const gasLimit0x = BigNumber.from(dexSwapOption?.gas ?? '0')
   const gasPrice0x = BigNumber.from(dexSwapOption?.gasPrice ?? '0')
   const gas0x = gasPrice0x.mul(gasLimit0x)
