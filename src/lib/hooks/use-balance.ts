@@ -29,7 +29,10 @@ export function useBalance(address?: string, token?: string) {
 
   useEffect(() => {
     async function fetchBalance() {
-      if (!address || !token) return
+      if (!address || !token) {
+        setBalance(BigInt(0))
+        return
+      }
       const balanceProvider = new BalanceProvider(publicClient)
       const isETH = token.toLowerCase() === ETH.address!.toLowerCase()
       console.log('fetching', token, isETH)
