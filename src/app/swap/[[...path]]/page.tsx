@@ -21,9 +21,9 @@ export default function SwapPage() {
   const { isRunningInLedgerLive } = useLedgerStatus()
   const { inputToken, isMinting, outputToken } = useSelectedToken()
 
-  const [supplyCapOverrides, setSupplyCapOverrides] = useState<
-    RethSupplyCapOverrides | undefined
-  >(undefined)
+  const [supplyCapOverrides] = useState<RethSupplyCapOverrides | undefined>(
+    undefined
+  )
 
   const showRethSupplyCap = useMemo(
     () =>
@@ -38,7 +38,7 @@ export default function SwapPage() {
     connectAsync({ connector: ledgerConnector as any }).catch((error: any) => {
       alert('error connecting to ledger: ' + error.toString())
     })
-  }, [])
+  })
 
   return (
     <Flex
