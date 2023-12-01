@@ -51,7 +51,7 @@ export const SelectedTokenProvider = (props: { children: any }) => {
 
   const routeSwap = useCallback(
     (inputToken: string, outputToken: string) => {
-      router.push(
+      router.replace(
         `/swap/${inputToken.toLowerCase()}/${outputToken.toLowerCase()}`
       )
     },
