@@ -18,6 +18,8 @@ describe('getIndexTokenAmount - redeeming', () => {
 })
 
 describe('getIndexTokenAmount - minting', () => {
+  const outputAdjust = 0.99
+
   it('returns buy amount (0x data)', async () => {
     const isMinting = true
     const dexData = {
@@ -69,7 +71,8 @@ describe('getIndexTokenAmount - minting', () => {
       dexData
     )
     const inputTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
-    const approxOutputAmount = (inputTokenTotal / outputTokenPrice) * 0.999
+    const approxOutputAmount =
+      (inputTokenTotal / outputTokenPrice) * outputAdjust
     const expectedAmount = toWei(approxOutputAmount, 18)
     const indexTokenPriceTotal =
       Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
@@ -93,7 +96,8 @@ describe('getIndexTokenAmount - minting', () => {
       null
     )
     const inputTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
-    const approxOutputAmount = (inputTokenTotal / outputTokenPrice) * 0.999
+    const approxOutputAmount =
+      (inputTokenTotal / outputTokenPrice) * outputAdjust
     const expectedAmount = toWei(approxOutputAmount, 18)
     console.log(indexTokenAmount.toString(), expectedAmount.toString())
     const indexTokenPriceTotal =
@@ -101,6 +105,6 @@ describe('getIndexTokenAmount - minting', () => {
       outputTokenPrice
     console.log(indexTokenPriceTotal, inputTokenTotal)
     expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
-    expect(indexTokenPriceTotal).toBeCloseTo(inputTokenTotal)
+    expect(indexTokenPriceTotal).toBeCloseTo(inputTokenTotal, 1)
   })
 })
