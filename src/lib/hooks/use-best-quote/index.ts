@@ -16,10 +16,9 @@ import {
 
 import { useNativeTokenPrice } from '../use-token-price'
 
-import { getBestQuote } from './best-quote'
-import { maxPriceImpact } from './config'
-import { getEnhancedFlashMintQuote } from './flashmint'
-import { getIndexTokenAmount } from './index-token-amount'
+import { getBestQuote } from './utils/best-quote'
+import { getEnhancedFlashMintQuote } from './utils/flashmint'
+import { getIndexTokenAmount } from './utils/index-token-amount'
 import {
   IndexQuoteRequest,
   Quote,
@@ -27,7 +26,8 @@ import {
   QuoteType,
   ZeroExQuote,
 } from './types'
-import { get0xQuote } from './zeroex'
+import { get0xQuote } from './utils/zeroex'
+import { maxPriceImpact } from './config'
 
 const defaultQuoteResult: QuoteResult = {
   bestQuote: QuoteType.zeroex,

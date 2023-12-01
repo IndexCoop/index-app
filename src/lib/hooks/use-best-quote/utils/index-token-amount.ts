@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { toWei } from '@/lib/utils'
 
-import { maxPriceImpact } from './config'
+import { maxPriceImpact } from '../config'
 
 export const getIndexTokenAmount = (
   isMinting: boolean,

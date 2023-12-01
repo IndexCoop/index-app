@@ -3,7 +3,7 @@ import { formatUnits } from 'viem'
 import { ZeroExData } from '@/lib/utils/api/zeroex-utils'
 import { toWei } from '@/lib/utils'
 
-import { maxPriceImpact } from './config'
+import { maxPriceImpact } from '../config'
 import { getIndexTokenAmount } from './index-token-amount'
 
 describe('getIndexTokenAmount - redeeming', () => {

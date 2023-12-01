@@ -6,7 +6,7 @@ import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { toWei } from '@/lib/utils'
 
-import { IndexQuoteRequest, QuoteType, ZeroExQuote } from './types'
+import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
 
 interface ZeroExQuoteRequest extends IndexQuoteRequest {
   chainId: number
