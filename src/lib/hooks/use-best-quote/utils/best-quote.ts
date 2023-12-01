@@ -1,5 +1,5 @@
-import { maxPriceImpact } from './config'
-import { QuoteType } from './types'
+import { maxPriceImpact } from '../config'
+import { QuoteType } from '../types'
 
 export function getBestQuote(
   fullCosts0x: number | null,

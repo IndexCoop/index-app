@@ -12,7 +12,7 @@ import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 
-import { Quote, QuoteTransaction, QuoteType } from './types'
+import { Quote, QuoteTransaction, QuoteType } from '../types'
 
 export async function getEnhancedFlashMintQuote(
   isMinting: boolean,
