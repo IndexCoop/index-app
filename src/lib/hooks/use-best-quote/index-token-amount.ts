@@ -29,7 +29,7 @@ export const getIndexTokenAmount = (
     // Recalculate the exchange issue/redeem quotes if not enough DEX liquidity
     const sellTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
     const approxOutputAmount =
-      outputTokenPrice === 0 ? 0 : (sellTokenTotal / outputTokenPrice) * 0.999
+      outputTokenPrice === 0 ? 0 : (sellTokenTotal / outputTokenPrice) * 0.99
     indexTokenAmount = toWei(approxOutputAmount, inputTokenDecimals)
   }
 
