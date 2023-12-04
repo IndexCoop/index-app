@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { providers } from 'ethers'
+import { BigNumber, providers } from 'ethers'
 
 import { JsonRpcSigner } from '@ethersproject/providers'
 
@@ -111,6 +111,7 @@ export const useBestQuote = () => {
             ...request,
             chainId,
             dexData,
+            inputTokenAmountWei,
             nativeTokenPrice,
           },
           provider,
@@ -164,6 +165,7 @@ export const useBestQuote = () => {
 interface FlashMintQuoteRequest extends IndexQuoteRequest {
   chainId: number
   dexData: { buyAmount: string; estimatedPriceImpact: string } | null
+  inputTokenAmountWei: BigNumber
   nativeTokenPrice: number
 }
 
@@ -177,6 +179,7 @@ async function getFlashMintQuote(
     dexData,
     inputToken,
     inputTokenAmount,
+    inputTokenAmountWei,
     inputTokenPrice,
     isMinting,
     nativeTokenPrice,
@@ -185,8 +188,8 @@ async function getFlashMintQuote(
     slippage,
   } = request
 
-  /* Determine index token amount based on different factors */
-  const indexTokenAmount = getIndexTokenAmount(
+  /* Determine initial index token amount based on different factors */
+  let indexTokenAmount = getIndexTokenAmount(
     isMinting,
     inputTokenAmount,
     inputToken.decimals,
@@ -198,18 +201,30 @@ async function getFlashMintQuote(
   const gasStation = new GasStation(provider)
   const gasPrice = await gasStation.getGasPrice()
 
-  const flashMintQuote = await getEnhancedFlashMintQuote(
-    isMinting,
-    inputToken,
-    outputToken,
-    indexTokenAmount,
-    inputTokenPrice,
-    nativeTokenPrice,
-    gasPrice,
-    slippage,
-    chainId,
-    provider,
-    signer
-  )
-  return flashMintQuote
+  while (true) {
+    const flashMintQuote = await getEnhancedFlashMintQuote(
+      isMinting,
+      inputToken,
+      outputToken,
+      indexTokenAmount,
+      inputTokenPrice,
+      nativeTokenPrice,
+      gasPrice,
+      slippage,
+      chainId,
+      provider,
+      signer
+    )
+    // If there is no FlashMint quote, return immediately
+    if (flashMintQuote === null) return null
+    // For redeeming return quote immdediately
+    if (!isMinting) return flashMintQuote
+    // For minting check if we got a quote that is lower/equal than the input token amount
+    // - since we should never go above what the user entered intitially.
+    if (flashMintQuote?.inputOutputTokenAmount.lte(inputTokenAmountWei)) {
+      return flashMintQuote
+    }
+    // Otherwise, run again using a lil less index token amount to receive less input token amount
+    indexTokenAmount = indexTokenAmount.mul(99).div(100)
+  }
 }
