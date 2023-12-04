@@ -6,7 +6,7 @@ import { prepareSendTransaction, sendTransaction } from '@wagmi/core'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from '@/constants/tokens'
-import { Quote } from '@/lib/hooks/use-best-quote/types'
+import { Quote, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { logTx } from '@/lib/utils/api/analytics'
@@ -58,8 +58,10 @@ export const useTrade = () => {
       try {
         setIsTransacting(true)
         const { tx } = quote
-        // TODO: just for flash mint
-        const defaultGasEstimate = BigNumber.from(6_000_000)
+        const defaultGasEstimate =
+          quote.type === QuoteType.flashmint
+            ? BigNumber.from(6_000_000)
+            : BigNumber.from(250_000)
         const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
         // Will throw error if tx would fail
         // If the user overrides, we take any gas estimate
@@ -70,7 +72,6 @@ export const useTrade = () => {
         const request = await prepareSendTransaction({
           account: address,
           chainId: Number(quote.chainId),
-          // TODO:
           gas: BigInt(gasLimit.toString()),
           to: quote.tx.to,
           data: quote.tx.data as Hex,
