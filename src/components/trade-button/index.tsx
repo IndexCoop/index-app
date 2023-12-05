@@ -1,4 +1,4 @@
-import { colors, useColorStyles } from '@/lib/styles/colors'
+import { colors } from '@/lib/styles/colors'
 
 import { Button } from '@chakra-ui/react'
 
