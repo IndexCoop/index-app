@@ -54,8 +54,8 @@ function getOutputAmount(
       ? quote.indexTokenAmount
       : quote.inputOutputTokenAmount
     : (quote as ZeroExQuote).minOutput
-  const minReceive =
-    displayFromWei(outputAmount, 4, quote.outputToken.decimals) ?? '0.0'
+  const decimals = bestQuoteIsFlashmint ? quote.outputToken.decimals : 18
+  const minReceive = displayFromWei(outputAmount, 4, decimals) ?? '0.0'
   const minReceiveFormatted =
     formatIfNumber(minReceive) + ' ' + quote.outputToken.symbol
 

@@ -55,7 +55,7 @@ function getFormattedOuputTokenAmount(quoteResult: QuoteResult | null): string {
   const outputTokenAmount = quote.isMinting
     ? quote.indexTokenAmount
     : quote.inputOutputTokenAmount
-  return displayFromWei(outputTokenAmount, quote.outputToken.decimals) ?? '0'
+  return displayFromWei(outputTokenAmount, 4, quote.outputToken.decimals) ?? '0'
 }
 
 export function useSwap(
