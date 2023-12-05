@@ -47,7 +47,10 @@ export function useTokenPrice(token: Token): number {
   const [tokenPrice, setTokenPrice] = useState<number>(0)
 
   useEffect(() => {
-    if (chainId === undefined || !isSupportedNetwork) return
+    if (chainId === undefined || !isSupportedNetwork) {
+      setTokenPrice(0)
+      return
+    }
     const fetchTokenPrice = async () => {
       const tokenPrice = await getTokenPrice(token, chainId)
       setTokenPrice(tokenPrice)
