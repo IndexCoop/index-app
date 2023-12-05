@@ -10,7 +10,15 @@ describe('getIndexTokenAmount - redeeming', () => {
   it('returns input token amount directly', async () => {
     const isMinting = false
     const expectedIndexTokenAmount = toWei('1', 18)
-    const indexTokenAmount = getIndexTokenAmount(isMinting, '1', 18, 0, 0, null)
+    const indexTokenAmount = getIndexTokenAmount(
+      isMinting,
+      '1',
+      18,
+      18,
+      0,
+      0,
+      null
+    )
     expect(indexTokenAmount.toString()).toEqual(
       expectedIndexTokenAmount.toString()
     )
@@ -29,6 +37,7 @@ describe('getIndexTokenAmount - minting', () => {
       isMinting,
       '1',
       18,
+      18,
       0,
       0,
       dexData
@@ -45,6 +54,7 @@ describe('getIndexTokenAmount - minting', () => {
     const indexTokenAmount = getIndexTokenAmount(
       isMinting,
       '1',
+      18,
       18,
       0,
       0,
@@ -65,6 +75,7 @@ describe('getIndexTokenAmount - minting', () => {
     const indexTokenAmount = getIndexTokenAmount(
       isMinting,
       inputTokenAmount,
+      18,
       18,
       inputTokenPrice,
       outputTokenPrice,
@@ -90,6 +101,34 @@ describe('getIndexTokenAmount - minting', () => {
     const indexTokenAmount = getIndexTokenAmount(
       isMinting,
       inputTokenAmount,
+      18,
+      18,
+      inputTokenPrice,
+      outputTokenPrice,
+      null
+    )
+    const inputTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
+    const approxOutputAmount =
+      (inputTokenTotal / outputTokenPrice) * outputAdjust
+    const expectedAmount = toWei(approxOutputAmount, 18)
+    console.log(indexTokenAmount.toString(), expectedAmount.toString())
+    const indexTokenPriceTotal =
+      Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
+      outputTokenPrice
+    console.log(indexTokenPriceTotal, inputTokenTotal)
+    expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
+    expect(indexTokenPriceTotal).toBeCloseTo(inputTokenTotal, 1)
+  })
+
+  it('returns index token amount with correct decimals for usdc input', async () => {
+    const isMinting = true
+    const inputTokenAmount = '1'
+    const inputTokenPrice = 2
+    const outputTokenPrice = 3
+    const indexTokenAmount = getIndexTokenAmount(
+      isMinting,
+      inputTokenAmount,
+      6,
       18,
       inputTokenPrice,
       outputTokenPrice,

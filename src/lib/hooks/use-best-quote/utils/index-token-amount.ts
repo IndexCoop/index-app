@@ -8,6 +8,7 @@ export const getIndexTokenAmount = (
   isMinting: boolean,
   inputTokenAmount: string,
   inputTokenDecimals: number,
+  outputTokenDecimals: number,
   inputTokenPrice: number,
   outputTokenPrice: number,
   dexSwapOption: { buyAmount: string; estimatedPriceImpact: string } | null
@@ -30,7 +31,7 @@ export const getIndexTokenAmount = (
     const sellTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
     const approxOutputAmount =
       outputTokenPrice === 0 ? 0 : (sellTokenTotal / outputTokenPrice) * 0.99
-    indexTokenAmount = toWei(approxOutputAmount, inputTokenDecimals)
+    indexTokenAmount = toWei(approxOutputAmount, outputTokenDecimals)
   }
 
   return indexTokenAmount
