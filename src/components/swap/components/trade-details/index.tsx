@@ -52,7 +52,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
     : prices.outputTokenPriceUsd
 
   return (
-    <Flex>
+    <Flex mb={'6px'}>
       <Accordion allowToggle border={0} borderColor='transparent' w='100%'>
         <AccordionItem>
           {({ isExpanded }) => (
