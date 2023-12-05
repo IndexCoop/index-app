@@ -23,6 +23,7 @@ export const colors = {
   icGray2: '#A6B2B2',
   icGray3: '#627171',
   icGray4: '#2C3333',
+  icGray5: '#CFD9D9',
   icWhite: '#FCFFFF',
   // not verified with designer (will be replaced soon)
   icGrayLightMode: '#aaa',
