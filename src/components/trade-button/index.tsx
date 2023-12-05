@@ -1,4 +1,4 @@
-import { useColorStyles } from '@/lib/styles/colors'
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { Button } from '@chakra-ui/react'
 
@@ -10,16 +10,21 @@ interface TradeButtonProps {
 }
 
 export const TradeButton = (props: TradeButtonProps) => {
-  const { styles } = useColorStyles()
+  const { isDisabled } = props
+  const background = isDisabled ? colors.icGray5 : colors.icBlue6
+  const boxShadow = isDisabled
+    ? 'none'
+    : '0.5px 1px 2px 0px rgba(0, 0, 0, 0.30)'
   return (
     <Button
-      background={styles.backgroundInverted}
+      background={background}
       border='0'
-      borderRadius='12px'
-      color={styles.textInverted}
+      borderRadius='10px'
+      boxShadow={boxShadow}
+      color={colors.icWhite}
       disabled={props.isDisabled}
-      fontSize='24px'
-      fontWeight='600'
+      fontSize='16px'
+      fontWeight='700'
       isLoading={props.isLoading}
       height='54px'
       w='100%'
