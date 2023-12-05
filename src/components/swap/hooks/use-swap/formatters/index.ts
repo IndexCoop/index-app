@@ -18,32 +18,6 @@ export function formattedBalance(
     : zero
 }
 
-export function getFormattedOuputTokenAmount(
-  bestOptionIsTypeEI: boolean,
-  ouputTokenDecimals: number,
-  zeroExTradeDataOutputAmount: BigNumber | undefined,
-  exchangeIssuanceOutputAmount: BigNumber | undefined
-): string {
-  if (
-    (bestOptionIsTypeEI && !exchangeIssuanceOutputAmount) ||
-    (!bestOptionIsTypeEI && !zeroExTradeDataOutputAmount) ||
-    (zeroExTradeDataOutputAmount?.isZero() &&
-      exchangeIssuanceOutputAmount?.isZero())
-  ) {
-    return '0.0'
-  }
-
-  if (bestOptionIsTypeEI) {
-    return (
-      displayFromWei(exchangeIssuanceOutputAmount, 4, ouputTokenDecimals) ??
-      '0.0'
-    )
-  }
-
-  // 0x quotes are always in wei (18 decimals)
-  return displayFromWei(zeroExTradeDataOutputAmount, 4, 18) ?? '0.0'
-}
-
 export function getFormattedTokenPrice(
   tokenSymbol: string,
   comparingTokenSymbol: string,
