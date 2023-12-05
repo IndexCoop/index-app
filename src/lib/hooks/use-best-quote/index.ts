@@ -193,6 +193,7 @@ async function getFlashMintQuote(
     isMinting,
     inputTokenAmount,
     inputToken.decimals,
+    outputToken.decimals,
     inputTokenPrice,
     outputTokenPrice,
     dexData
