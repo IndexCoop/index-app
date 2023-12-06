@@ -68,8 +68,8 @@ function getOutputAmount(
 function getSlippageDetails(slippage: number): TradeInfoItem {
   const slippageFormatted = `${slippage}%`
   const slippageTitle = shouldShowWarningSign(slippage)
-    ? `Slippage ⚠`
-    : `Slippage`
+    ? `Max Slippage ⚠`
+    : `Max Slippage`
   return {
     title: slippageTitle,
     values: [slippageFormatted],
