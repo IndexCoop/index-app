@@ -7,8 +7,6 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
-  FIXED_DAI,
-  FIXED_USDC,
   GitcoinStakedETHIndex,
   ic21,
   icETHIndex,
@@ -21,7 +19,6 @@ import {
   USDC,
   USDT,
   WETH,
-  WSETH2,
   WSTETH,
 } from '@/constants/tokens'
 
@@ -35,7 +32,6 @@ export const currencies = [
   SETH2,
   STETH,
   WETH,
-  WSETH2,
   WSTETH,
 ]
 
@@ -52,15 +48,12 @@ export const indicesTokenList = isDevEnv
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
-      FIXED_DAI,
-      FIXED_USDC,
       DefiPulseIndex,
       MetaverseIndex,
       Ethereum2xFlexibleLeverageIndex,
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
       IndexToken,
-      WSETH2,
     ]
   : [
       CoinDeskEthTrendIndex,
