@@ -11,7 +11,6 @@ import {
   ic21,
   icETHIndex,
   IndexToken,
-  LeveragedRethStakingYield,
   MetaverseIndex,
   RETH,
   SETH2,
@@ -44,7 +43,6 @@ export const indicesTokenList = isDevEnv
   ? [
       CoinDeskEthTrendIndex,
       ic21,
-      LeveragedRethStakingYield,
       DiversifiedStakedETHIndex,
       icETHIndex,
       GitcoinStakedETHIndex,
@@ -66,6 +64,5 @@ export const indicesTokenList = isDevEnv
       Ethereum2xFlexibleLeverageIndex,
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
-      LeveragedRethStakingYield,
       IndexToken,
     ]
