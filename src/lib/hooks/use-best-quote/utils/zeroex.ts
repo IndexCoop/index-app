@@ -24,6 +24,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
     isMinting,
     nativeTokenPrice,
     outputToken,
+    outputTokenPrice,
     slippage,
   } = request
   let rfq: boolean = false
@@ -85,6 +86,9 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
           : outputTokenAmount,
         inputTokenAmount: inputTokenAmountBn,
         outputTokenAmount,
+        outputTokenAmountUsd: 0,
+        inputTokenPrice,
+        outputTokenPrice,
         slippage,
         tx: {
           data: dexSwapOption.data,

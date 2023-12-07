@@ -16,7 +16,7 @@ export const fetchCoingeckoTokenPrice = async (
   chainId: number,
   baseCurrency = 'usd'
 ): Promise<number> => {
-  if (address === ETH.address) {
+  if (address.toLowerCase() === ETH.address!.toLowerCase()) {
     const priceUrl =
       baseURL + `/simple/price/?ids=ethereum&vs_currencies=${baseCurrency}`
 

@@ -26,7 +26,7 @@ export function useNativeTokenPrice(chainId?: number): number {
  * Returns price of given token.
  * @returns price of token in USD
  */
-const getTokenPrice = async (
+export const getTokenPrice = async (
   token: Token,
   chainId: number | undefined
 ): Promise<number> => {

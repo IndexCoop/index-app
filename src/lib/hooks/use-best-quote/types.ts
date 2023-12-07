@@ -44,6 +44,9 @@ export interface Quote {
   // having to determine based on isMinting
   inputTokenAmount: BigNumber
   outputTokenAmount: BigNumber
+  outputTokenAmountUsd: number
+  inputTokenPrice: number
+  outputTokenPrice: number
   slippage: number
   tx: QuoteTransaction
 }
