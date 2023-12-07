@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 
 import { Token } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { useTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { displayFromWei, toWei } from '@/lib/utils'

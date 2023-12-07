@@ -11,11 +11,9 @@ import { getNetworkKey } from '@/lib/utils/api/zeroex-utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
+import { displayFromWei } from '@/lib/utils'
 
 import { Quote, QuoteTransaction, QuoteType } from '../types'
-
-import { displayFromWei } from '@/lib/utils'
-import { getTokenPrice } from '../../use-token-price'
 
 export async function getEnhancedFlashMintQuote(
   isMinting: boolean,
