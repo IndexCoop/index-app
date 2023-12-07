@@ -14,11 +14,13 @@ import {
   isAvailableForSwap,
 } from '@/lib/utils/tokens'
 
-import { useNativeTokenPrice } from '../use-token-price'
+import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 
+import { maxPriceImpact } from './config'
 import { getBestQuote } from './utils/best-quote'
 import { getEnhancedFlashMintQuote } from './utils/flashmint'
 import { getIndexTokenAmount } from './utils/index-token-amount'
+import { get0xQuote } from './utils/zeroex'
 import {
   IndexQuoteRequest,
   Quote,
@@ -26,8 +28,6 @@ import {
   QuoteType,
   ZeroExQuote,
 } from './types'
-import { get0xQuote } from './utils/zeroex'
-import { maxPriceImpact } from './config'
 
 const defaultQuoteResult: QuoteResult = {
   bestQuote: QuoteType.zeroex,
@@ -79,6 +79,9 @@ export const useBestQuote = () => {
 
       setIsFetching(true)
 
+      const inputTokenPrice = await getTokenPrice(inputToken, 1)
+      const outputTokenPrice = await getTokenPrice(outputToken, 1)
+
       const indexToken = isMinting ? outputToken : inputToken
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
       const canSwapIndexToken = isAvailableForSwap(indexToken)
@@ -91,6 +94,8 @@ export const useBestQuote = () => {
           ...request,
           chainId,
           address: signer._address,
+          inputTokenPrice,
+          outputTokenPrice,
           nativeTokenPrice,
         })
       }
@@ -112,6 +117,8 @@ export const useBestQuote = () => {
             chainId,
             dexData,
             inputTokenAmountWei,
+            inputTokenPrice,
+            outputTokenPrice,
             nativeTokenPrice,
           },
           provider,
@@ -209,6 +216,7 @@ async function getFlashMintQuote(
       outputToken,
       indexTokenAmount,
       inputTokenPrice,
+      outputTokenPrice,
       nativeTokenPrice,
       gasPrice,
       slippage,

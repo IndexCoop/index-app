@@ -14,12 +14,16 @@ import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../types'
 
+import { displayFromWei } from '@/lib/utils'
+import { getTokenPrice } from '../../use-token-price'
+
 export async function getEnhancedFlashMintQuote(
   isMinting: boolean,
   inputToken: Token,
   outputToken: Token,
   indexTokenAmount: BigNumber,
   inputTokenPrice: number,
+  outputTokenPrice: number,
   nativeTokenPrice: number,
   gasPrice: BigNumber,
   slippage: number,
@@ -72,6 +76,20 @@ export async function getEnhancedFlashMintQuote(
       const gasCosts = gasEstimate.mul(gasPrice)
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       transaction.gasLimit = gasEstimate
+      const outputTokenAmountUsd =
+        parseFloat(
+          displayFromWei(
+            isMinting ? indexTokenAmount : inputOutputAmount,
+            10,
+            outputToken.decimals
+          ) ?? '0'
+        ) * outputTokenPrice
+      // FIXME: remove
+      console.log(
+        'outputTokenAmountUsd:',
+        outputTokenAmountUsd,
+        outputTokenPrice
+      )
       return {
         type: QuoteType.flashmint,
         chainId: 1,
@@ -95,6 +113,9 @@ export async function getEnhancedFlashMintQuote(
         inputOutputTokenAmount: inputOutputAmount,
         inputTokenAmount: isMinting ? inputOutputAmount : indexTokenAmount,
         outputTokenAmount: isMinting ? indexTokenAmount : inputOutputAmount,
+        outputTokenAmountUsd,
+        inputTokenPrice,
+        outputTokenPrice,
         slippage,
         tx: transaction,
       }

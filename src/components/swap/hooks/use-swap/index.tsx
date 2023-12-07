@@ -65,32 +65,18 @@ export function useSwap(
   quoteResult: QuoteResult | null,
   isFetchingQuote: boolean
 ): SwapData {
+  const { slippage } = useSlippage()
   const { address } = useWallet()
+
   const {
     balance,
     balanceFormatted: inputTokenBalanceFormatted,
     balanceWei: inputTokenBalance,
   } = useFormattedBalance(inputToken, address ?? '')
-  // console.log(
-  //   inputTokenBalanceFormatted,
-  //   inputToken.symbol,
-  //   address,
-  //   'inputTokenBalanceFormatted'
-  // )
   const { balanceFormatted: outputTokenBalanceFormatted } = useFormattedBalance(
     outputToken,
     address ?? ''
   )
-  // console.log(
-  //   outputTokenBalanceFormatted,
-  //   outputToken.symbol,
-  //   address,
-  //   'outputTokenBalanceFormatted'
-  // )
-
-  const inputTokenPrice = useTokenPrice(inputToken)
-  const outputTokenPrice = useTokenPrice(outputToken)
-  const { slippage } = useSlippage()
 
   const selectedQuote = useMemo(
     () =>
@@ -106,8 +92,12 @@ export function useSwap(
   )
 
   const inputTokenAmountUsd = useMemo(
-    () => formattedFiat(parseFloat(inputTokenAmount), inputTokenPrice),
-    [inputTokenAmount, inputTokenPrice]
+    () =>
+      formattedFiat(
+        parseFloat(inputTokenAmount),
+        selectedQuote?.inputTokenPrice ?? 0
+      ),
+    [inputTokenAmount, selectedQuote?.inputTokenPrice]
   )
 
   const inputTokenAmountWei = useMemo(
@@ -132,8 +122,11 @@ export function useSwap(
 
   const outputTokenAmountUsd = useMemo(
     () =>
-      formattedFiat(parseFloat(outputTokenAmountFormatted), outputTokenPrice),
-    [outputTokenAmountFormatted, outputTokenPrice]
+      formattedFiat(
+        parseFloat(outputTokenAmountFormatted),
+        selectedQuote?.outputTokenPrice ?? 0
+      ),
+    [outputTokenAmountFormatted, selectedQuote]
   )
   const gasCostsUsd = selectedQuote?.gasCostsInUsd ?? 0
 
@@ -149,22 +142,21 @@ export function useSwap(
   }
   const priceImpactFormatting = useMemo(
     () =>
-      isFetchingQuote
+      isFetchingQuote || !selectedQuote
         ? null
         : getFormattedPriceImpact(
             parseFloat(inputTokenAmountAdjusted),
-            inputTokenPrice,
+            selectedQuote.inputTokenPrice,
             parseFloat(outputTokenAmountFormatted),
-            outputTokenPrice,
+            selectedQuote.outputTokenPrice,
             isDarkMode
           ),
     [
       inputTokenAmountAdjusted,
-      inputTokenPrice,
       isDarkMode,
       isFetchingQuote,
       outputTokenAmountFormatted,
-      outputTokenPrice,
+      selectedQuote,
     ]
   )
 
@@ -174,11 +166,11 @@ export function useSwap(
     () =>
       getFormattedTokenPrices(
         inputToken.symbol,
-        inputTokenPrice,
+        selectedQuote?.inputTokenPrice ?? 0,
         outputToken.symbol,
-        outputTokenPrice
+        selectedQuote?.outputTokenPrice ?? 0
       ),
-    [inputToken, inputTokenPrice, outputToken, outputTokenPrice]
+    [inputToken, outputToken, selectedQuote]
   )
 
   // Trade data
@@ -192,11 +184,11 @@ export function useSwap(
     inputTokenAmountWei,
     inputTokenBalance,
     inputTokenBalanceFormatted,
-    inputTokenPrice,
+    inputTokenPrice: selectedQuote?.inputTokenPrice ?? 0,
     outputTokenAmountFormatted,
     outputTokenAmountUsd,
     outputTokenBalanceFormatted,
-    outputTokenPrice,
+    outputTokenPrice: selectedQuote?.outputTokenPrice ?? 0,
     priceImpactFormatting,
     showWarning,
     tokenPrices,
