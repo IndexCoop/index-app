@@ -39,9 +39,9 @@ export const useFlashMintTrade = () => {
         const { tx } = quote
         const defaultGasEstimate = BigNumber.from(6_000_000)
         const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
-        // Will throw error if tx would fail
-        // If the user overrides, we take any gas estimate
-        const canFail = override
+        // `estimate` will throw error if tx would fail
+        // If the user overrides, we use the `defaultGasEstimate`
+        const canFail = !override
         const gasLimit = await gasEstimatooor.estimate(tx, canFail)
         tx.gasLimit = gasLimit
         const res = await signer.sendTransaction(tx)
