@@ -17,7 +17,7 @@ export class GasEstimatooor {
 
   async estimate(
     tx?: PopulatedTransaction,
-    canFail: boolean = false
+    canFail: boolean = true
   ): Promise<BigNumber> {
     const { defaultGasEstimate, signer } = this
 
@@ -28,7 +28,7 @@ export class GasEstimatooor {
       gasEstimate = await signer.estimateGas(tx)
     } catch (error: any) {
       console.log('Error estimating gas:', error)
-      if (!canFail) {
+      if (canFail) {
         throw new GasEstimatooorFailedError()
       }
       return defaultGasEstimate

@@ -25,7 +25,7 @@ describe('GasEstimatooor', () => {
     expect(gasEstimate).toEqual(defaultGasEstimate)
   })
 
-  it('should throw error if estimation fails and canFail === false (default)', async () => {
+  it('should throw error if estimation fails and canFail === true (default)', async () => {
     const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
     const estimatooor = new GasEstimatooor(signer, defaultGasEstimate)
     const failingTx = {
@@ -42,7 +42,7 @@ describe('GasEstimatooor', () => {
     }
   })
 
-  it('should throw no error and return default if estimation fails and canFail === true', async () => {
+  it('should throw no error and return default if estimation fails and canFail === false', async () => {
     const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
     const estimatooor = new GasEstimatooor(signer, defaultGasEstimate)
     const failingTx = {
@@ -51,7 +51,7 @@ describe('GasEstimatooor', () => {
       gasLimit: BigNumber.from(21_000),
       value: toWei(1),
     }
-    const gasEstimate = await estimatooor.estimate(failingTx, true)
+    const gasEstimate = await estimatooor.estimate(failingTx, false)
     expect(gasEstimate).toEqual(defaultGasEstimate)
   })
 
