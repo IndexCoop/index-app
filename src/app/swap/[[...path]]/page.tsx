@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { useConnect } from 'wagmi'
+import { useMemo, useState } from 'react'
 
 import { Box, Flex } from '@chakra-ui/react'
 
@@ -12,13 +11,9 @@ import {
 } from '@/components/supply'
 import { Swap } from '@/components/swap'
 import { LeveragedRethStakingYield } from '@/constants/tokens'
-import { useLedgerStatus } from '@/lib/hooks/use-ledger-status'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
-import { ledgerConnector } from '@/lib/utils/wagmi'
 
 export default function SwapPage() {
-  const { connectAsync, isIdle } = useConnect()
-  const { isRunningInLedgerLive } = useLedgerStatus()
   const { inputToken, isMinting, outputToken } = useSelectedToken()
 
   const [supplyCapOverrides] = useState<RethSupplyCapOverrides | undefined>(
@@ -31,14 +26,6 @@ export default function SwapPage() {
       outputToken.symbol === LeveragedRethStakingYield.symbol,
     [inputToken, outputToken]
   )
-
-  useEffect(() => {
-    if (!isIdle || !isRunningInLedgerLive) return
-    console.log('connecting to ledger')
-    connectAsync({ connector: ledgerConnector as any }).catch((error: any) => {
-      alert('error connecting to ledger: ' + error.toString())
-    })
-  })
 
   return (
     <Flex
