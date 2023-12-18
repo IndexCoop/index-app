@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
+import { isAddress } from 'viem'
 import { Address, useContractRead, useContractWrite } from 'wagmi'
 
-import { Token } from '@/constants/tokens'
+import { ETH, Token } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
 
@@ -17,6 +18,10 @@ export const useApproval = (
     abi: ERC20_ABI,
     functionName: 'allowance',
     args: [address as Address, spenderAddress as Address],
+    enabled:
+      typeof token.address === 'string' &&
+      isAddress(token.address) &&
+      token.symbol !== ETH.symbol,
   })
 
   const { isLoading: isApproving, write: approve } = useContractWrite({
