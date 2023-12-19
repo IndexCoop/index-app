@@ -6,23 +6,19 @@ import { useAccount } from 'wagmi'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-import { useLedgerStatus } from '@/lib/hooks/use-ledger-status'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { logConnect } from '@/lib/utils/api/analytics'
 
 export const Connect = () => {
   const { address } = useAccount()
   const { chainId } = useNetwork()
-  const { isRunningInLedgerLive } = useLedgerStatus()
 
   useEffect(() => {
     if (address === undefined || chainId === undefined) return
     logConnect(address, chainId)
   }, [address, chainId])
 
-  const chainStatus = isRunningInLedgerLive
-    ? { smallScreen: 'none', largeScreen: 'none' }
-    : { smallScreen: 'full', largeScreen: 'full' }
+  const chainStatus = { smallScreen: 'full', largeScreen: 'full' }
 
   return (
     <ConnectButton
