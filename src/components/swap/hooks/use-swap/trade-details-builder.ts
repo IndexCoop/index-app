@@ -41,6 +41,8 @@ function getNetworkFee(quote: Quote): TradeInfoItem {
   )} (${networkFeeDisplay} ${networkToken})`
   return {
     title: 'Network Fee',
+    tooltip:
+      'This is often referred to as a “gas fee” and is charged by the blockchain network to securely process a transaction.',
     values: [formattedFee],
   }
 }
@@ -72,6 +74,8 @@ function getSlippageDetails(slippage: number): TradeInfoItem {
     : `Max Slippage`
   return {
     title: slippageTitle,
+    tooltip:
+      'Slippage refers to the difference between the expected price of a trade and the price at which the trade is executed.',
     values: [slippageFormatted],
   }
 }
