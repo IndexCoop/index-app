@@ -10,11 +10,13 @@ const TradeInfoItemRow = (props: { item: TradeInfoItem }) => {
   const cursor = tooltip && tooltip.length > 0 ? 'pointer' : 'default'
   return (
     <Tooltip
-      bg={colors.icGray1}
-      borderRadius='4px'
+      bg={colors.icWhite}
+      borderRadius='6px'
       fontSize={'11px'}
+      fontWeight={500}
+      hasArrow
       label={tooltip}
-      p='12px 20px'
+      p='12px 16px'
       placement='right-end'
       textColor={colors.icGray3}
     >
