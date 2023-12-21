@@ -4,6 +4,7 @@ import { Flex, Text } from '@chakra-ui/react'
 import { colors } from '@/lib/styles/colors'
 
 export enum WarningType {
+  flashbots,
   priceImpact,
   restricted,
 }
@@ -14,6 +15,10 @@ export interface Warning {
 }
 
 export const warningsData: Record<WarningType, Warning> = {
+  [WarningType.flashbots]: {
+    title: 'MEV Protection',
+    text: 'It is highly recommended to use a MEV protected RPC for Flash minting and redeeming. Click here to add the MEV Blocker network to your wallet - if supported.',
+  },
   [WarningType.priceImpact]: {
     title: 'Price Impact Warning',
     text: 'A swap of this size may have a high price impact, given the current liquidity in the pool. This means that your trade could alter the price of the token and the quantity of tokens you receive.',
