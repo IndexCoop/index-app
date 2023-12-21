@@ -82,12 +82,6 @@ export async function getEnhancedFlashMintQuote(
             outputToken.decimals
           ) ?? '0'
         ) * outputTokenPrice
-      // FIXME: remove
-      console.log(
-        'outputTokenAmountUsd:',
-        outputTokenAmountUsd,
-        outputTokenPrice
-      )
       return {
         type: QuoteType.flashmint,
         chainId: 1,
