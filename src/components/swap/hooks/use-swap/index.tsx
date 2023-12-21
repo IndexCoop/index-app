@@ -22,6 +22,7 @@ import { useFormattedBalance } from './use-formatted-balance'
 
 interface SwapData {
   contract: string | null
+  isFlashMint: boolean
   hasInsufficientFunds: boolean
   //   inputTokenAmountFormatted: string
   inputTokenBalance: string
@@ -83,6 +84,10 @@ export function useSwap(
         ? quoteResult?.quotes.zeroex
         : quoteResult?.quotes.flashmint,
     [quoteResult]
+  )
+  const isFlashMint = useMemo(
+    () => selectedQuote?.type === QuoteType.flashmint,
+    [selectedQuote]
   )
 
   const contract = useMemo(
@@ -177,6 +182,7 @@ export function useSwap(
 
   return {
     contract,
+    isFlashMint,
     hasInsufficientFunds,
     gasCostsUsd,
     inputTokenAmountUsd,
