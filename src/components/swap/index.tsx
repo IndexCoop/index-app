@@ -22,11 +22,16 @@ import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput } from '@/lib/utils'
 import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 
-import { ProtectionWarning } from './components/protection-warning'
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
 import { TransactionReviewModal } from './components/transaction-review'
+import {
+  Warning,
+  Warnings,
+  warningsData,
+  WarningType,
+} from './components/warning'
 import { useSwap } from './hooks/use-swap'
 import {
   TradeButtonState,
@@ -43,7 +48,6 @@ type SwapProps = {
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
   const { openConnectModal } = useConnectModal()
-  const { isDarkMode } = useICColorMode()
   const requiresProtection = useProtection()
   const { chainId } = useNetwork()
   const {
@@ -80,6 +84,7 @@ export const Swap = (props: SwapProps) => {
 
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 500)
+  const [warnings, setWarnings] = useState<Warning[]>([])
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
@@ -139,6 +144,18 @@ export const Swap = (props: SwapProps) => {
     sellTokenAmount
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+
+  useEffect(() => {
+    if (requiresProtection) {
+      setWarnings([warningsData[WarningType.restricted]])
+      return
+    }
+    if (slippage > 9) {
+      setWarnings([warningsData[WarningType.priceImpact]])
+      return
+    }
+    setWarnings([])
+  }, [requiresProtection, slippage])
 
   useEffect(() => {
     console.log('/////////')
@@ -337,7 +354,6 @@ export const Swap = (props: SwapProps) => {
             {quoteResult.error?.message ?? 'Error fetching quote'}
           </Text>
         )}
-        {requiresProtection && <ProtectionWarning isDarkMode={isDarkMode} />}
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}
@@ -346,6 +362,7 @@ export const Swap = (props: SwapProps) => {
             onClick={onClickTradeButton}
           />
         )}
+        <Warnings warnings={warnings} />
       </>
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
