@@ -225,7 +225,7 @@ export const Swap = (props: QuickTradeProps) => {
     if (buttonState === TradeButtonState.default) {
       await executeTrade(quoteResult.quotes.zeroEx)
     }
-  }, [buttonState])
+  }, [buttonState, executeTrade, fetchOptions, isApprovedForSwap, onApproveForSwap, openConnectModal, quoteResult.quotes.zeroEx, shouldApprove])
 
   const onSwitchTokens = () => {
     swapTokenLists()
