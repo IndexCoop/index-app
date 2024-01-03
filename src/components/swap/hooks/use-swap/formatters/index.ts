@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { formatUnits } from 'viem'
 
 import { Token } from '@/constants/tokens'
 import { displayFromWei } from '@/lib/utils'
@@ -21,40 +22,39 @@ export function formattedBalance(
 export function getFormattedTokenPrice(
   tokenSymbol: string,
   comparingTokenSymbol: string,
-  tokenPrice: number,
-  comparingTokenPrice: number
+  tokenPrice: number
 ): string {
-  const percent =
-    comparingTokenPrice === 0 ? 0 : tokenPrice / comparingTokenPrice
-  const isFractional = percent % 1 !== 0
-  const price = isFractional ? percent.toFixed(3) : percent
+  const isFractional = tokenPrice % 1 !== 0
+  const price = isFractional ? tokenPrice.toFixed(4) : tokenPrice
   return `1 ${tokenSymbol} = ${price} ${comparingTokenSymbol}`
 }
 
 export function getFormattedTokenPrices(
   inputTokenSymbol: string,
+  inputTokenAmount: number,
   inputTokenUsd: number,
   outputTokenSymbol: string,
+  outputTokenAmount: number,
   outputTokenUsd: number
 ): TradeDetailTokenPrices {
-  const inputTokenPrice = getFormattedTokenPrice(
+  const inputTokenPrice = outputTokenAmount / inputTokenAmount
+  const outputTokenPrice = inputTokenAmount / outputTokenAmount
+  const inputTokenPriceFormatted = getFormattedTokenPrice(
     inputTokenSymbol,
     outputTokenSymbol,
-    inputTokenUsd,
-    outputTokenUsd
+    inputTokenPrice
+  )
+  const outputTokenPriceFormatted = getFormattedTokenPrice(
+    outputTokenSymbol,
+    inputTokenSymbol,
+    outputTokenPrice
   )
   const inputTokenPriceUsd = `($${inputTokenUsd.toFixed(2)})`
-  const outputTokenPrice = getFormattedTokenPrice(
-    outputTokenSymbol,
-    inputTokenSymbol,
-    outputTokenUsd,
-    inputTokenUsd
-  )
   const outputTokenPriceUsd = `($${outputTokenUsd.toFixed(2)})`
   return {
-    inputTokenPrice,
+    inputTokenPrice: inputTokenPriceFormatted,
     inputTokenPriceUsd,
-    outputTokenPrice,
+    outputTokenPrice: outputTokenPriceFormatted,
     outputTokenPriceUsd,
   }
 }
