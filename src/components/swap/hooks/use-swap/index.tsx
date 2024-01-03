@@ -19,6 +19,7 @@ import {
 import { getFormattedPriceImpact } from './formatters/price-impact'
 import { buildTradeDetails } from './trade-details-builder'
 import { useFormattedBalance } from './use-formatted-balance'
+import { formatUnits, parseUnits } from 'viem'
 
 interface SwapData {
   contract: string | null
@@ -170,8 +171,15 @@ export function useSwap(
     () =>
       getFormattedTokenPrices(
         inputToken.symbol,
+        Number(inputTokenAmount),
         selectedQuote?.inputTokenPrice ?? 0,
         outputToken.symbol,
+        Number(
+          formatUnits(
+            BigInt(selectedQuote?.outputTokenAmount.toString() ?? '0'),
+            outputToken.decimals
+          )
+        ),
         selectedQuote?.outputTokenPrice ?? 0
       ),
     [inputToken, outputToken, selectedQuote]
