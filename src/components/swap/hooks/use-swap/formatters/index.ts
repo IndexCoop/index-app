@@ -1,5 +1,4 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { formatUnits } from 'viem'
 
 import { Token } from '@/constants/tokens'
 import { displayFromWei } from '@/lib/utils'
