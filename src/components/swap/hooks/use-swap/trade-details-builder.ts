@@ -105,5 +105,5 @@ export function buildTradeDetails(
   const slippage = getSlippageDetails(quote.slippage)
   const sources = getSources(quote, bestQuoteIsFlashmint)
   const contract = getContractDetails(quote)
-  return [minimumReceived, networkFee, slippage, contract, sources]
+  return [minimumReceived, slippage, networkFee, contract, sources]
 }
