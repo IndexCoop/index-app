@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import Image from 'next/image'
 import { WarningTwoIcon } from '@chakra-ui/icons'
 import {
   Accordion,
@@ -114,9 +114,15 @@ export const TradeDetails = (props: TradeDetailsProps) => {
 }
 
 const GasFees = ({ label }: { label: string }) => (
-  <Flex>
+  <Flex direction={'row'} gap={2}>
+    <Image
+      alt='Gas fees icon'
+      src={'/assets/gas-icon.svg'}
+      height={10}
+      width={10}
+    />
     <Text color={colors.icGray2} fontSize='12px' fontWeight={500}>
-      Gas ${label}
+      ${label}
     </Text>
   </Flex>
 )
