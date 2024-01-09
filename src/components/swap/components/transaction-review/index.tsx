@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { useColorStyles } from '@/lib/styles/colors'
-
 import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import {
   Box,
@@ -20,6 +18,7 @@ import {
 import { Quote, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
 import { useTrade } from '@/lib/hooks/use-trade'
+import { useColorStyles } from '@/lib/styles/colors'
 import { displayFromWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 

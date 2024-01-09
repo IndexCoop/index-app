@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
-import { colors } from '@/lib/styles/colors'
-
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
@@ -14,11 +12,11 @@ import { useApproval } from '@/lib/hooks/use-approval'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { useTokenlists } from '@/lib/hooks/use-tokenlists'
-import { useTradeButton } from './hooks/use-trade-button'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useProtection } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
+import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
 import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 
@@ -33,6 +31,7 @@ import {
   WarningType,
 } from './components/warning'
 import { useSwap } from './hooks/use-swap'
+import { useTradeButton } from './hooks/use-trade-button'
 import {
   TradeButtonState,
   useTradeButtonState,

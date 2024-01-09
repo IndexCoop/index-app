@@ -1,7 +1,7 @@
-import { colors, useColorStyles } from '@/lib/styles/colors'
-
 import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import { Flex, Spacer, Spinner, Text } from '@chakra-ui/react'
+
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
 export enum TransactionReviewSimulationState {
   default,

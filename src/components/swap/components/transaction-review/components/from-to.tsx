@@ -1,7 +1,7 @@
-import { useColorStyles } from '@/lib/styles/colors'
-
 import { ArrowDownIcon } from '@chakra-ui/icons'
 import { Flex, Image, Text } from '@chakra-ui/react'
+
+import { useColorStyles } from '@/lib/styles/colors'
 
 type FromToProps = {
   inputToken: string
