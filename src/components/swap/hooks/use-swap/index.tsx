@@ -46,6 +46,12 @@ interface SwapData {
   tradeData: TradeInfoItem[]
 }
 
+const formatAmount = (amount: number, decimals = 2) =>
+  amount.toLocaleString('en-US', {
+    maximumFractionDigits: decimals,
+    minimumFractionDigits: decimals,
+  })
+
 function getFormattedOuputTokenAmount(quoteResult: QuoteResult | null): string {
   if (!quoteResult) return '0'
   const isFlashmintBestQuote = quoteResult.bestQuote === QuoteType.flashmint
@@ -56,7 +62,14 @@ function getFormattedOuputTokenAmount(quoteResult: QuoteResult | null): string {
   const outputTokenAmount = quote.isMinting
     ? quote.indexTokenAmount
     : quote.inputOutputTokenAmount
-  return displayFromWei(outputTokenAmount, 4, quote.outputToken.decimals) ?? '0'
+  const outputAmount = Number(
+    formatUnits(
+      BigInt(outputTokenAmount.toString()),
+      quote.outputToken.decimals
+    )
+  )
+  const decimals = outputAmount > 1 ? 2 : 4
+  return formatAmount(outputAmount, decimals)
 }
 
 export function useSwap(
