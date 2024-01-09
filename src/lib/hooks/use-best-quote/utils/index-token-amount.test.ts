@@ -88,8 +88,6 @@ describe('getIndexTokenAmount - minting', () => {
     const indexTokenPriceTotal =
       Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
       outputTokenPrice
-    console.log(indexTokenPriceTotal, inputTokenTotal)
-    console.log(indexTokenAmount.toString(), expectedAmount.toString())
     expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
   })
 
@@ -111,11 +109,9 @@ describe('getIndexTokenAmount - minting', () => {
     const approxOutputAmount =
       (inputTokenTotal / outputTokenPrice) * outputAdjust
     const expectedAmount = toWei(approxOutputAmount, 18)
-    console.log(indexTokenAmount.toString(), expectedAmount.toString())
     const indexTokenPriceTotal =
       Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
       outputTokenPrice
-    console.log(indexTokenPriceTotal, inputTokenTotal)
     expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
     expect(indexTokenPriceTotal).toBeCloseTo(inputTokenTotal, 1)
   })
@@ -138,11 +134,9 @@ describe('getIndexTokenAmount - minting', () => {
     const approxOutputAmount =
       (inputTokenTotal / outputTokenPrice) * outputAdjust
     const expectedAmount = toWei(approxOutputAmount, 18)
-    console.log(indexTokenAmount.toString(), expectedAmount.toString())
     const indexTokenPriceTotal =
       Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
       outputTokenPrice
-    console.log(indexTokenPriceTotal, inputTokenTotal)
     expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
     expect(indexTokenPriceTotal).toBeCloseTo(inputTokenTotal, 1)
   })
