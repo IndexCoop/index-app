@@ -87,7 +87,10 @@ export async function getEnhancedFlashMintQuote(
         parseFloat(
           displayFromWei(outputTokenAmount, 10, outputToken.decimals) ?? '0'
         ) * outputTokenPrice
-      const priceImpact = getPriceImpact(inputTokenPrice, outputTokenPrice)
+      const priceImpact = getPriceImpact(
+        inputTokenAmountUsd,
+        outputTokenAmountUsd
+      )
 
       return {
         type: QuoteType.flashmint,
