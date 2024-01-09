@@ -6,7 +6,7 @@ import { Token } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
-import { displayFromWei, toWei } from '@/lib/utils'
+import { toWei } from '@/lib/utils'
 
 import { TradeDetailTokenPrices } from '../../components/trade-details'
 import { TradeInfoItem } from '../../types'
