@@ -85,9 +85,6 @@ describe('getIndexTokenAmount - minting', () => {
     const approxOutputAmount =
       (inputTokenTotal / outputTokenPrice) * outputAdjust
     const expectedAmount = toWei(approxOutputAmount, 18)
-    const indexTokenPriceTotal =
-      Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
-      outputTokenPrice
     expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
   })
 
