@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
+import { formatUnits } from 'viem'
 
 import { Token } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -19,7 +20,6 @@ import {
 import { getFormattedPriceImpact } from './formatters/price-impact'
 import { buildTradeDetails } from './trade-details-builder'
 import { useFormattedBalance } from './use-formatted-balance'
-import { formatUnits } from 'viem'
 
 interface SwapData {
   contract: string | null

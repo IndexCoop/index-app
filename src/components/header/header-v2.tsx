@@ -1,10 +1,12 @@
+import { usePathname } from 'next/navigation'
+import NextLink from 'next/link'
+
 import { Flex, HStack, Link, Spacer } from '@chakra-ui/react'
+
+import { colors } from '@/lib/styles/colors'
 
 import { Connect } from './connect'
 import { Logo } from './logo'
-import { colors } from '@/lib/styles/colors'
-import { usePathname } from 'next/navigation'
-import NextLink from 'next/link'
 
 const links = [
   { href: '/swap', label: 'Swap' },

@@ -1,6 +1,8 @@
 import { Button, Divider, Flex, Spacer, Text } from '@chakra-ui/react'
-import { VaultToken } from './types'
+
 import { colors } from '@/lib/styles/colors'
+
+import { VaultToken } from './types'
 
 interface Props {
   vaultToken: VaultToken

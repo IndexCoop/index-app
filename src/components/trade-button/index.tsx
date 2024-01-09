@@ -1,6 +1,6 @@
-import { colors } from '@/lib/styles/colors'
-
 import { Button } from '@chakra-ui/react'
+
+import { colors } from '@/lib/styles/colors'
 
 interface TradeButtonProps {
   label: string

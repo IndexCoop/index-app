@@ -1,7 +1,7 @@
-import { colors, useColorStyles } from '@/lib/styles/colors'
-
 import { WarningTwoIcon } from '@chakra-ui/icons'
 import { Checkbox, Flex, Text } from '@chakra-ui/react'
+
+import { colors, useColorStyles } from '@/lib/styles/colors'
 
 type OverrideProps = {
   onChange: (isChecked: boolean) => void
