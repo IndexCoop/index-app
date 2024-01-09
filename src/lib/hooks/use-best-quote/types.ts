@@ -37,12 +37,13 @@ export interface Quote {
   gasCosts: BigNumber
   gasCostsInUsd: number
   fullCostsInUsd: number | null
-  priceImpact: number
+  priceImpact: number | null
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
   // Return additionally for convenience to avoid
   // having to determine based on isMinting
   inputTokenAmount: BigNumber
+  inputTokenAmountUsd: number
   outputTokenAmount: BigNumber
   outputTokenAmountUsd: number
   inputTokenPrice: number

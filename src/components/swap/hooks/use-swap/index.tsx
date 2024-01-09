@@ -97,12 +97,8 @@ export function useSwap(
   )
 
   const inputTokenAmountUsd = useMemo(
-    () =>
-      formattedFiat(
-        parseFloat(inputTokenAmount),
-        selectedQuote?.inputTokenPrice ?? 0
-      ),
-    [inputTokenAmount, selectedQuote?.inputTokenPrice]
+    () => formattedFiat(selectedQuote?.inputTokenAmountUsd ?? 0),
+    [selectedQuote]
   )
 
   const inputTokenAmountWei = useMemo(
@@ -126,43 +122,18 @@ export function useSwap(
   )
 
   const outputTokenAmountUsd = useMemo(
-    () =>
-      formattedFiat(
-        parseFloat(outputTokenAmountFormatted),
-        selectedQuote?.outputTokenPrice ?? 0
-      ),
-    [outputTokenAmountFormatted, selectedQuote]
+    () => formattedFiat(selectedQuote?.outputTokenAmountUsd ?? 0),
+    [selectedQuote]
   )
   const gasCostsUsd = selectedQuote?.gasCostsInUsd ?? 0
 
-  const isDarkMode = false
-  let inputTokenAmountAdjusted = inputTokenAmount
-  if (quoteResult && quoteResult.bestQuote === QuoteType.flashmint) {
-    inputTokenAmountAdjusted =
-      displayFromWei(
-        quoteResult.quotes.flashmint!.inputOutputTokenAmount,
-        10,
-        inputToken.decimals
-      ) ?? inputTokenAmount
-  }
+  const priceImpact = useMemo(() => selectedQuote?.priceImpact, [selectedQuote])
   const priceImpactFormatting = useMemo(
     () =>
-      isFetchingQuote || !selectedQuote
+      isFetchingQuote || !priceImpact
         ? null
-        : getFormattedPriceImpact(
-            parseFloat(inputTokenAmountAdjusted),
-            selectedQuote.inputTokenPrice,
-            parseFloat(outputTokenAmountFormatted),
-            selectedQuote.outputTokenPrice,
-            isDarkMode
-          ),
-    [
-      inputTokenAmountAdjusted,
-      isDarkMode,
-      isFetchingQuote,
-      outputTokenAmountFormatted,
-      selectedQuote,
-    ]
+        : getFormattedPriceImpact(priceImpact, false),
+    [isFetchingQuote, priceImpact]
   )
 
   // Trade details

@@ -14,6 +14,7 @@ import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 import { displayFromWei } from '@/lib/utils'
 
 import { Quote, QuoteTransaction, QuoteType } from '../types'
+import { getPriceImpact } from './price-impact'
 
 export async function getEnhancedFlashMintQuote(
   isMinting: boolean,
@@ -74,14 +75,20 @@ export async function getEnhancedFlashMintQuote(
       const gasCosts = gasEstimate.mul(gasPrice)
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       transaction.gasLimit = gasEstimate
+
+      const inputTokenAmount = isMinting ? inputOutputAmount : indexTokenAmount
+      const outputTokenAmount = isMinting ? indexTokenAmount : inputOutputAmount
+
+      const inputTokenAmountUsd =
+        parseFloat(
+          displayFromWei(inputTokenAmount, 10, inputToken.decimals) ?? '0'
+        ) * inputTokenPrice
       const outputTokenAmountUsd =
         parseFloat(
-          displayFromWei(
-            isMinting ? indexTokenAmount : inputOutputAmount,
-            10,
-            outputToken.decimals
-          ) ?? '0'
+          displayFromWei(outputTokenAmount, 10, outputToken.decimals) ?? '0'
         ) * outputTokenPrice
+      const priceImpact = getPriceImpact(inputTokenPrice, outputTokenPrice)
+
       return {
         type: QuoteType.flashmint,
         chainId: 1,
@@ -100,11 +107,12 @@ export async function getEnhancedFlashMintQuote(
           inputTokenPrice,
           nativeTokenPrice
         ),
-        priceImpact: 0,
+        priceImpact,
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,
-        inputTokenAmount: isMinting ? inputOutputAmount : indexTokenAmount,
-        outputTokenAmount: isMinting ? indexTokenAmount : inputOutputAmount,
+        inputTokenAmount,
+        inputTokenAmountUsd,
+        outputTokenAmount,
         outputTokenAmountUsd,
         inputTokenPrice,
         outputTokenPrice,
@@ -115,6 +123,5 @@ export async function getEnhancedFlashMintQuote(
   } catch (e) {
     console.warn('Error fetching FlashMintQuote', e)
   }
-
   return null
 }

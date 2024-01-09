@@ -108,7 +108,7 @@ export const useBestQuote = () => {
             : quote0x.inputOutputTokenAmount.toString()
           dexData = {
             buyAmount,
-            estimatedPriceImpact: quote0x!.priceImpact.toString(),
+            estimatedPriceImpact: quote0x.priceImpact?.toString() ?? '5',
           }
         }
         quoteFlashMint = await getFlashMintQuote(

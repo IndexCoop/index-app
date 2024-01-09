@@ -58,8 +58,8 @@ export function getFormattedTokenPrices(
   }
 }
 
-export function formattedFiat(tokenAmount: number, tokenPrice: number): string {
-  const price = (tokenAmount * tokenPrice).toLocaleString('en-US', {
+export function formattedFiat(tokenPrice: number): string {
+  const price = tokenPrice.toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,

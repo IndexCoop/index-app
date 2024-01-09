@@ -4,9 +4,10 @@ import { ic21 } from '@/constants/tokens'
 import { getZeroExTradeData } from '@/lib/utils/api/zeroex-utils'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
-import { toWei } from '@/lib/utils'
+import { displayFromWei, toWei } from '@/lib/utils'
 
 import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
+import { getPriceImpact } from './price-impact'
 
 interface ZeroExQuoteRequest extends IndexQuoteRequest {
   chainId: number
@@ -60,6 +61,14 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
   const outputTokenAmount =
     BigNumber.from(dexSwapOption?.buyAmount) ?? BigNumber.from(0)
   const gasCostsInUsd = getGasCostsInUsd(gas0x, nativeTokenPrice)
+
+  const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
+  const outputTokenAmountUsd =
+    parseFloat(
+      displayFromWei(outputTokenAmount, 10, outputToken.decimals) ?? '0'
+    ) * outputTokenPrice
+  const priceImpact = getPriceImpact(inputTokenAmountUsd, outputTokenAmountUsd)
+
   const zeroExQuote: ZeroExQuote | null = dexSwapOption
     ? {
         type: QuoteType.zeroex,
@@ -79,14 +88,15 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
           inputTokenPrice,
           nativeTokenPrice
         ),
-        priceImpact: parseFloat(dexSwapOption.estimatedPriceImpact ?? '5'),
+        priceImpact,
         indexTokenAmount: isMinting ? outputTokenAmount : inputTokenAmountBn,
         inputOutputTokenAmount: isMinting
           ? inputTokenAmountBn
           : outputTokenAmount,
         inputTokenAmount: inputTokenAmountBn,
+        inputTokenAmountUsd,
         outputTokenAmount,
-        outputTokenAmountUsd: 0,
+        outputTokenAmountUsd,
         inputTokenPrice,
         outputTokenPrice,
         slippage,
