@@ -24,12 +24,7 @@ import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
 import { TransactionReviewModal } from './components/transaction-review'
-import {
-  Warning,
-  Warnings,
-  warningsData,
-  WarningType,
-} from './components/warning'
+import { Warnings, WarningType } from './components/warning'
 import { useSwap } from './hooks/use-swap'
 import { useTradeButton } from './hooks/use-trade-button'
 import {
@@ -83,7 +78,7 @@ export const Swap = (props: SwapProps) => {
 
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 500)
-  const [warnings, setWarnings] = useState<Warning[]>([])
+  const [warnings, setWarnings] = useState<WarningType[]>([])
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
@@ -147,15 +142,15 @@ export const Swap = (props: SwapProps) => {
 
   useEffect(() => {
     if (requiresProtection) {
-      setWarnings([warningsData[WarningType.restricted]])
+      setWarnings([WarningType.restricted])
       return
     }
     if (slippage > 9) {
-      setWarnings([warningsData[WarningType.priceImpact]])
+      setWarnings([WarningType.priceImpact])
       return
     }
     if (isFlashMint) {
-      setWarnings([warningsData[WarningType.flashbots]])
+      setWarnings([WarningType.flashbots])
       return
     }
     setWarnings([])
