@@ -52,7 +52,6 @@ export const WarningCompProtection = () => {
   const onClick = async () => {
     const ethereum = window.ethereum
     if (!ethereum) return
-    console.log('adding...')
     await addMEVProtectionChain(ethereum)
   }
   return (
