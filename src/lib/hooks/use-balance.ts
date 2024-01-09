@@ -35,7 +35,6 @@ export function useBalance(address?: string, token?: string) {
       }
       const balanceProvider = new BalanceProvider(publicClient)
       const isETH = token.toLowerCase() === ETH.address!.toLowerCase()
-      console.log('fetching', token, isETH)
       const balance = isETH
         ? await balanceProvider.getNativeBalance(address)
         : await balanceProvider.getErc20Balance(address, token)

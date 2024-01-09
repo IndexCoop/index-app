@@ -36,7 +36,6 @@ export const useRethSupply = (
       const available = Math.min(availabeOnAave, availableOnIndex)
       const totalSupplyPercent = (totalSupply / cap) * 100
       const state = getSupplyCapState(cap, totalSupply)
-      console.log(available, availabeOnAave, availableOnIndex)
       setData({
         available,
         formatted: {

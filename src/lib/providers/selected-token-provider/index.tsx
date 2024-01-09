@@ -41,7 +41,6 @@ export const SelectedTokenProvider = (props: { children: any }) => {
   const router = useRouter()
 
   useEffect(() => {
-    console.log(params.path, 'params.path')
     const resolver = new PathResolver()
     const tokens = resolver.resolve(params.path as string[])
     setMinting(tokens.isMinting)
@@ -73,7 +72,6 @@ export const SelectedTokenProvider = (props: { children: any }) => {
   )
 
   const toggleIsMinting = useCallback(() => {
-    console.log('toggling:', outputToken.symbol, inputToken.symbol)
     routeSwap(outputToken.symbol, inputToken.symbol)
   }, [inputToken, outputToken, routeSwap])
 
