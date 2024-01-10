@@ -106,7 +106,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                 borderColor={styles.border}
                 borderRadius='0 0 12px 12px'
                 borderTopColor={'transparent'}
-                p={'0 20px 16px'}
+                p={'4px 20px 16px'}
               >
                 <Toggle
                   toggleState={ToggleState.auto}
