@@ -12,6 +12,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 
+import { Toggle, ToggleState } from '@/components/toggle'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { TradeInfoItem } from '../../types'
@@ -37,6 +38,10 @@ export const TradeDetails = (props: TradeDetailsProps) => {
   const { styles } = useColorStyles()
 
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
+
+  const onClickToggle = (toggleState: ToggleState) => {
+    console.log(toggleState)
+  }
 
   const onToggleTokenPrice = (event: any) => {
     event.preventDefault()
@@ -103,6 +108,10 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                 borderTopColor={'transparent'}
                 p={'0 20px 16px'}
               >
+                <Toggle
+                  toggleState={ToggleState.auto}
+                  onClick={onClickToggle}
+                />
                 <TradeInfoItemsContainer items={data} />
               </AccordionPanel>
             </>

@@ -19,6 +19,8 @@ const ToggleButton = (props: ToggleButtonProps) => (
     bg={props.selected ? colors.icGray1 : colors.icWhite}
     borderRadius={'10px'}
     cursor={'pointer'}
+    flex={1}
+    justify={'center'}
     onClick={props.onClick}
     p={'10px 16px'}
   >
@@ -39,6 +41,7 @@ export const Toggle = (props: ToggleProps) => (
     borderColor={colors.icGray1}
     borderRadius={'12px'}
     borderWidth={1}
+    justify={'center'}
     p={'4px'}
   >
     <ToggleButton

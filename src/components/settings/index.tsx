@@ -11,9 +11,9 @@ import {
   Text,
 } from '@chakra-ui/react'
 
+import { Toggle, ToggleState } from '@/components/toggle'
 import { colors } from '@/lib/styles/colors'
 
-import { Toggle, ToggleState } from './toggle'
 import { Warning } from './warning'
 
 type SettingsProps = {
