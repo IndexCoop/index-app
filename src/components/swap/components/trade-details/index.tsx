@@ -16,6 +16,7 @@ import { Toggle, ToggleState } from '@/components/toggle'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { TradeInfoItem } from '../../types'
+import { Tag } from './tag'
 import { TradeInfoItemsContainer } from './trade-info'
 import { TradePrice } from './trade-price'
 
@@ -84,9 +85,6 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                       {showWarning && (
                         <WarningTwoIcon color={styles.text} mr='8px' />
                       )}
-                      {/* {isWeb && !showWarning && (
-                        <InfoOutlineIcon color={styles.text} mr='8px' />
-                      )} */}
                       <Box onClick={onToggleTokenPrice}>
                         <TradePrice
                           comparisonLabel={comparisonLabel}
@@ -94,9 +92,10 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                         />
                       </Box>
                     </Flex>
-                    <Box opacity={isExpanded ? 0 : 1}>
+                    <Flex opacity={isExpanded ? 0 : 1} gap={4}>
+                      <Tag label={'FlashMint'} />
                       <GasFees label={gasPriceInUsd.toFixed(2)} />
-                    </Box>
+                    </Flex>
                   </Flex>
                   <AccordionIcon />
                 </AccordionButton>
