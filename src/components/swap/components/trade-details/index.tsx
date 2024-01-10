@@ -110,6 +110,8 @@ export const TradeDetails = (props: TradeDetailsProps) => {
               >
                 <Toggle
                   toggleState={ToggleState.auto}
+                  labelLeft='Swap'
+                  labelRight='Flash Mint'
                   onClick={onClickToggle}
                 />
                 <TradeInfoItemsContainer items={data} />

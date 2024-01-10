@@ -96,7 +96,12 @@ export const Settings = (props: SettingsProps) => {
             Max Slippage
           </Text>
           <Flex align='center' my='4'>
-            <Toggle toggleState={toggleState} onClick={onClickToggle} />
+            <Toggle
+              toggleState={toggleState}
+              labelLeft='Auto'
+              labelRight='Custom'
+              onClick={onClickToggle}
+            />
             <Flex
               align='center'
               borderColor={colors.icGray1}

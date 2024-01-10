@@ -32,6 +32,8 @@ const ToggleButton = (props: ToggleButtonProps) => (
 
 type ToggleProps = {
   toggleState: ToggleState
+  labelLeft: string
+  labelRight: string
   onClick: (toggleState: ToggleState) => void
 }
 
@@ -45,12 +47,12 @@ export const Toggle = (props: ToggleProps) => (
     p={'4px'}
   >
     <ToggleButton
-      label={'Auto'}
+      label={props.labelLeft}
       onClick={() => props.onClick(ToggleState.auto)}
       selected={props.toggleState === ToggleState.auto}
     />
     <ToggleButton
-      label={'Custom'}
+      label={props.labelRight}
       onClick={() => props.onClick(ToggleState.custom)}
       selected={props.toggleState === ToggleState.custom}
     />
