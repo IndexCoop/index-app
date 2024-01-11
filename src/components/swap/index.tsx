@@ -346,6 +346,7 @@ export const Swap = (props: SwapProps) => {
           <TradeDetails
             data={tradeData}
             gasPriceInUsd={gasCostsUsd}
+            isLoading={isFetchingQuote}
             prices={tokenPrices}
             showWarning={showWarning}
           />

@@ -12,6 +12,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 
+import { StyledSkeleton } from '@/components/skeleton'
 import { Toggle, ToggleState } from '@/components/toggle'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
@@ -30,12 +31,13 @@ export interface TradeDetailTokenPrices {
 interface TradeDetailsProps {
   data: TradeInfoItem[]
   gasPriceInUsd: number
+  isLoading: boolean
   prices: TradeDetailTokenPrices
   showWarning?: boolean
 }
 
 export const TradeDetails = (props: TradeDetailsProps) => {
-  const { data, gasPriceInUsd, prices, showWarning } = props
+  const { data, gasPriceInUsd, isLoading, prices, showWarning } = props
   const { styles } = useColorStyles()
 
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
@@ -60,7 +62,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
   return (
     <Flex mb={'6px'}>
       <Accordion allowToggle border={0} borderColor='transparent' w='100%'>
-        <AccordionItem>
+        <AccordionItem isDisabled={isLoading}>
           {({ isExpanded }) => (
             <>
               <h4>
@@ -81,21 +83,31 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                     justify='space-between'
                     pr='4px'
                   >
-                    <Flex>
-                      {showWarning && (
-                        <WarningTwoIcon color={styles.text} mr='8px' />
-                      )}
-                      <Box onClick={onToggleTokenPrice}>
-                        <TradePrice
-                          comparisonLabel={comparisonLabel}
-                          usdLabel={usdLabel}
-                        />
-                      </Box>
-                    </Flex>
-                    <Flex opacity={isExpanded ? 0 : 1} gap={4}>
-                      <Tag label={'FlashMint'} />
-                      <GasFees label={gasPriceInUsd.toFixed(2)} />
-                    </Flex>
+                    <>
+                      <Flex>
+                        {showWarning && (
+                          <WarningTwoIcon color={styles.text} mr='8px' />
+                        )}
+                        <Box onClick={onToggleTokenPrice}>
+                          {isLoading ? (
+                            <StyledSkeleton width={200} />
+                          ) : (
+                            <TradePrice
+                              comparisonLabel={comparisonLabel}
+                              usdLabel={usdLabel}
+                            />
+                          )}
+                        </Box>
+                      </Flex>
+                      <Flex opacity={isExpanded ? 0 : 1} gap={4}>
+                        {!isLoading && <Tag label={'FlashMint'} />}
+                        {isLoading ? (
+                          <StyledSkeleton width={70} />
+                        ) : (
+                          <GasFees label={gasPriceInUsd.toFixed(2)} />
+                        )}
+                      </Flex>
+                    </>
                   </Flex>
                   <AccordionIcon />
                 </AccordionButton>
