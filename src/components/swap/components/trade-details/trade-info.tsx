@@ -1,12 +1,19 @@
 import { Box, Flex, Link, Text, Tooltip } from '@chakra-ui/react'
 
+import { StyledSkeleton } from '@/components/skeleton'
 import { colors } from '@/lib/styles/colors'
 import { shortenAddress } from '@/lib/utils'
 
 import { TradeInfoItem } from '../../types'
 
-const TradeInfoItemRow = (props: { item: TradeInfoItem }) => {
-  const { title, values, tooltip, isLink } = props.item
+type TradeInfoItemRowProps = {
+  item: TradeInfoItem
+  isLoading: boolean
+}
+
+const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
+  const { isLoading, item } = props
+  const { title, values, tooltip, isLink } = item
   const cursor = tooltip && tooltip.length > 0 ? 'pointer' : 'default'
   return (
     <Tooltip
@@ -26,14 +33,15 @@ const TradeInfoItemRow = (props: { item: TradeInfoItem }) => {
             {title}
           </Text>
         </Flex>
-        {isLink === true && (
+        {isLoading && <StyledSkeleton width={60} />}
+        {!isLoading && isLink === true && (
           <Link isExternal href={values[1]}>
             <Text fontSize='12px' fontWeight='700' textColor={colors.icGray3}>
               {shortenAddress(values[0])}
             </Text>
           </Link>
         )}
-        {isLink === undefined && (
+        {!isLoading && isLink === undefined && (
           <Flex>
             {values.map((value, index) => (
               <Flex key={index} flexDir={'row'}>
@@ -53,11 +61,15 @@ const TradeInfoItemRow = (props: { item: TradeInfoItem }) => {
   )
 }
 
-export const TradeInfoItemsContainer = ({
-  items,
-}: {
+type TradeInfoItemsContainerProps = {
   items: TradeInfoItem[]
-}) => {
+  isLoading: boolean
+}
+
+export const TradeInfoItemsContainer = ({
+  isLoading,
+  items,
+}: TradeInfoItemsContainerProps) => {
   return (
     <Flex direction='column'>
       {items.map((item, index) => (
@@ -71,7 +83,7 @@ export const TradeInfoItemsContainer = ({
           }
           paddingTop={index === items.length - 1 || index === 0 ? '16px' : '0'}
         >
-          <TradeInfoItemRow item={item} />
+          <TradeInfoItemRow item={item} isLoading={isLoading} />
         </Box>
       ))}
     </Flex>

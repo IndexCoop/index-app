@@ -125,7 +125,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                   labelRight='Flash Mint'
                   onClick={onClickToggle}
                 />
-                <TradeInfoItemsContainer items={data} />
+                <TradeInfoItemsContainer items={data} isLoading={isLoading} />
               </AccordionPanel>
             </>
           )}
