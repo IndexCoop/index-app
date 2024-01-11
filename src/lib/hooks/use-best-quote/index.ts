@@ -89,7 +89,71 @@ export const useBestQuote = () => {
       let quote0x: ZeroExQuote | null = null
       let quoteFlashMint: Quote | null = null
 
+      const fetchMoreQuotes = async () => {
+        if (canFlashmintIndexToken) {
+          console.log('canFlashmintIndexToken')
+          let dexData = null
+          if (quote0x !== null) {
+            const buyAmount = isMinting
+              ? quote0x.indexTokenAmount.toString()
+              : quote0x.inputOutputTokenAmount.toString()
+            dexData = {
+              buyAmount,
+              estimatedPriceImpact: quote0x.priceImpact?.toString() ?? '5',
+            }
+          }
+          quoteFlashMint = await getFlashMintQuote(
+            {
+              ...request,
+              chainId,
+              dexData,
+              inputTokenAmountWei,
+              inputTokenPrice,
+              outputTokenPrice,
+              nativeTokenPrice,
+            },
+            provider,
+            signer
+          )
+        }
+
+        const bestQuote = getBestQuote(
+          quote0x?.fullCostsInUsd ?? null,
+          quoteFlashMint?.fullCostsInUsd ?? null,
+          quote0x?.priceImpact ?? maxPriceImpact
+        )
+
+        const getSavings = (): number => {
+          if (!quote0x) return 0
+          if (bestQuote.type === QuoteType.flashmint && quoteFlashMint) {
+            return (
+              (quote0x.fullCostsInUsd ?? 0) -
+              (quoteFlashMint.fullCostsInUsd ?? 0)
+            )
+          }
+          return 0
+        }
+        const savingsUsd = getSavings()
+
+        setQuoteResult({
+          bestQuote: bestQuote.type,
+          // TODO:
+          error: null,
+          // Not used at the moment but kept for potential re-introduction
+          // Insted of one argument, could change to type of enums (reasons: ReasonType.)
+          isReasonPriceImpact: bestQuote.priceImpact,
+          quotes: {
+            flashmint: quoteFlashMint,
+            zeroex: quote0x,
+          },
+          // Not used at the moment but kept for potential re-introduction
+          savingsUsd,
+        })
+        setIsFetching(false)
+      }
+
       if (canSwapIndexToken) {
+        console.log('canSwapIndexToken')
         quote0x = await get0xQuote({
           ...request,
           chainId,
@@ -98,66 +162,21 @@ export const useBestQuote = () => {
           outputTokenPrice,
           nativeTokenPrice,
         })
-      }
-
-      if (canFlashmintIndexToken) {
-        let dexData = null
-        if (quote0x !== null) {
-          const buyAmount = isMinting
-            ? quote0x.indexTokenAmount.toString()
-            : quote0x.inputOutputTokenAmount.toString()
-          dexData = {
-            buyAmount,
-            estimatedPriceImpact: quote0x.priceImpact?.toString() ?? '5',
-          }
-        }
-        quoteFlashMint = await getFlashMintQuote(
-          {
-            ...request,
-            chainId,
-            dexData,
-            inputTokenAmountWei,
-            inputTokenPrice,
-            outputTokenPrice,
-            nativeTokenPrice,
+        setQuoteResult({
+          bestQuote: QuoteType.zeroex,
+          error: null,
+          isReasonPriceImpact: false,
+          quotes: {
+            flashmint: quoteFlashMint,
+            zeroex: quote0x,
           },
-          provider,
-          signer
-        )
+          // Not used at the moment but kept for potential re-introduction
+          savingsUsd: 0,
+        })
       }
 
-      const bestQuote = getBestQuote(
-        quote0x?.fullCostsInUsd ?? null,
-        quoteFlashMint?.fullCostsInUsd ?? null,
-        quote0x?.priceImpact ?? maxPriceImpact
-      )
-
-      const getSavings = (): number => {
-        if (!quote0x) return 0
-        if (bestQuote.type === QuoteType.flashmint && quoteFlashMint) {
-          return (
-            (quote0x.fullCostsInUsd ?? 0) - (quoteFlashMint.fullCostsInUsd ?? 0)
-          )
-        }
-        return 0
-      }
-      const savingsUsd = getSavings()
-
-      setQuoteResult({
-        bestQuote: bestQuote.type,
-        // TODO:
-        error: null,
-        // Not used at the moment but kept for potential re-introduction
-        // Insted of one argument, could change to type of enums (reasons: ReasonType.)
-        isReasonPriceImpact: bestQuote.priceImpact,
-        quotes: {
-          flashmint: quoteFlashMint,
-          zeroex: quote0x,
-        },
-        // Not used at the moment but kept for potential re-introduction
-        savingsUsd,
-      })
-      setIsFetching(false)
+      // Non await because we already want to display the 0x quote - if one exists
+      fetchMoreQuotes()
     },
     [chainId, nativeTokenPrice, provider, signer]
   )
