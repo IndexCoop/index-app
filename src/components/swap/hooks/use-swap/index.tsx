@@ -98,7 +98,7 @@ export function useSwap(
       selectedQuoteType === null ||
       selectedQuoteType === QuoteType.zeroex ||
       quoteResult === null
-        ? quoteResult?.quotes.zeroex
+        ? quoteResult?.quotes.zeroex ?? null
         : quoteResult?.quotes.flashmint,
     [quoteResult, selectedQuoteType]
   )
@@ -173,7 +173,7 @@ export function useSwap(
   )
 
   // Trade data
-  const tradeData: TradeInfoItem[] = buildTradeDetails(quoteResult)
+  const tradeData: TradeInfoItem[] = buildTradeDetails(selectedQuote ?? null)
 
   return {
     contract,
