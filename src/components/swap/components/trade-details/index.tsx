@@ -14,6 +14,7 @@ import {
 
 import { StyledSkeleton } from '@/components/skeleton'
 import { Toggle, ToggleState } from '@/components/toggle'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { TradeInfoItem } from '../../types'
@@ -34,6 +35,8 @@ interface TradeDetailsProps {
   isLoading: boolean
   prices: TradeDetailTokenPrices
   showWarning?: boolean
+  selectedQuoteType: QuoteType
+  onToggle: (selectedQuoteType: QuoteType) => void
 }
 
 export const TradeDetails = (props: TradeDetailsProps) => {
@@ -43,7 +46,9 @@ export const TradeDetails = (props: TradeDetailsProps) => {
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
 
   const onClickToggle = (toggleState: ToggleState) => {
-    console.log(toggleState)
+    const quoteType = toggleState === 1 ? QuoteType.flashmint : QuoteType.zeroex
+    console.log(toggleState, quoteType)
+    props.onToggle(quoteType)
   }
 
   const onToggleTokenPrice = (event: any) => {
@@ -100,7 +105,15 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                         </Box>
                       </Flex>
                       <Flex opacity={isExpanded ? 0 : 1} gap={4}>
-                        {!isLoading && <Tag label={'FlashMint'} />}
+                        {!isLoading && (
+                          <Tag
+                            label={
+                              props.selectedQuoteType === QuoteType.zeroex
+                                ? '0x'
+                                : 'Flash Mint'
+                            }
+                          />
+                        )}
                         {isLoading ? (
                           <StyledSkeleton width={70} />
                         ) : (
@@ -120,7 +133,11 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                 p={'4px 20px 16px'}
               >
                 <Toggle
-                  toggleState={ToggleState.auto}
+                  toggleState={
+                    props.selectedQuoteType === QuoteType.zeroex
+                      ? ToggleState.auto
+                      : ToggleState.custom
+                  }
                   labelLeft='Swap'
                   labelRight='Flash Mint'
                   onClick={onClickToggle}

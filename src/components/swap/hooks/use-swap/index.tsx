@@ -77,7 +77,8 @@ export function useSwap(
   outputToken: Token,
   inputTokenAmount: string,
   quoteResult: QuoteResult | null,
-  isFetchingQuote: boolean
+  isFetchingQuote: boolean,
+  selectedQuoteType: QuoteType | null
 ): SwapData {
   const { slippage } = useSlippage()
   const { address } = useWallet()
@@ -94,10 +95,12 @@ export function useSwap(
 
   const selectedQuote = useMemo(
     () =>
-      quoteResult?.bestQuote === QuoteType.zeroex
+      selectedQuoteType === null ||
+      selectedQuoteType === QuoteType.zeroex ||
+      quoteResult === null
         ? quoteResult?.quotes.zeroex
         : quoteResult?.quotes.flashmint,
-    [quoteResult]
+    [quoteResult, selectedQuoteType]
   )
   const isFlashMint = useMemo(
     () => selectedQuote?.type === QuoteType.flashmint,
