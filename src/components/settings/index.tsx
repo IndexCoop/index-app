@@ -100,6 +100,7 @@ export const Settings = (props: SettingsProps) => {
               toggleState={toggleState}
               labelLeft='Auto'
               labelRight='Custom'
+              isDisabled={false}
               onClick={onClickToggle}
             />
             <Flex

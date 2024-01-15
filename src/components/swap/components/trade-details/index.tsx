@@ -33,6 +33,7 @@ interface TradeDetailsProps {
   data: TradeInfoItem[]
   gasPriceInUsd: number
   isLoading: boolean
+  isToggleDisabled: boolean
   prices: TradeDetailTokenPrices
   showWarning?: boolean
   selectedQuoteType: QuoteType
@@ -133,6 +134,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                 p={'4px 20px 16px'}
               >
                 <Toggle
+                  isDisabled={props.isToggleDisabled}
                   toggleState={
                     props.selectedQuoteType === QuoteType.zeroex
                       ? ToggleState.auto

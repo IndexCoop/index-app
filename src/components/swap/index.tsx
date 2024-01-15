@@ -144,6 +144,13 @@ export const Swap = (props: SwapProps) => {
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
+  const isToggleDisabled = useMemo(
+    () =>
+      quoteResult.quotes.flashmint === null ||
+      quoteResult.quotes.zeroex === null,
+    [quoteResult]
+  )
+
   useEffect(() => {
     if (requiresProtection) {
       setWarnings([WarningType.restricted])
@@ -377,6 +384,7 @@ export const Swap = (props: SwapProps) => {
             data={tradeData}
             gasPriceInUsd={gasCostsUsd}
             isLoading={isFetchingQuote}
+            isToggleDisabled={isToggleDisabled}
             prices={tokenPrices}
             showWarning={showWarning}
             selectedQuoteType={selectedQuote ?? QuoteType.zeroex}
