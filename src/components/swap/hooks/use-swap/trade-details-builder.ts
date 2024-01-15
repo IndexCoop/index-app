@@ -84,7 +84,7 @@ function getSources(
     : (quote as ZeroExQuote).sources
         .filter((source) => Number(source.proportion) > 0)
         .map((source) => source.name)
-  return { title: 'Offered From', values: [offeredFromSources.toString()] }
+  return { title: 'Offered from', values: [offeredFromSources.toString()] }
 }
 
 export function buildTradeDetails(quote: Quote | null): TradeInfoItem[] {
