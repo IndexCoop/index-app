@@ -41,7 +41,7 @@ const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
             </Text>
           </Link>
         )}
-        {!isLoading && isLink === undefined && (
+        {!isLoading && (isLink === undefined || isLink === false) && (
           <Flex>
             {values.map((value, index) => (
               <Flex key={index} flexDir={'row'}>
