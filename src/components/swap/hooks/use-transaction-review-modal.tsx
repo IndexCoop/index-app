@@ -6,22 +6,24 @@ import { TransactionReview } from '../components/transaction-review/types'
 
 export function useTransactionReviewModal(
   quoteResult: QuoteResult,
+  selectedQuote: QuoteType | null,
   isFetchingQuote: boolean
 ) {
   const transactionReview = useMemo((): TransactionReview | null => {
-    if (isFetchingQuote) return null
-    const isFlashmintBestQuote = quoteResult.bestQuote === QuoteType.flashmint
-    const quote = isFlashmintBestQuote
-      ? quoteResult.quotes.flashmint
-      : quoteResult.quotes.zeroex
+    if (isFetchingQuote || selectedQuote === null) return null
+    const quote =
+      selectedQuote === QuoteType.flashmint
+        ? quoteResult.quotes.flashmint
+        : quoteResult.quotes.zeroex
     if (quote) {
       return {
         ...quote,
         contractAddress: quote.contract,
         quoteResult,
+        selectedQuote,
       }
     }
     return null
-  }, [isFetchingQuote, quoteResult])
+  }, [isFetchingQuote, quoteResult, selectedQuote])
   return { transactionReview }
 }

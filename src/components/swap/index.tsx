@@ -91,6 +91,7 @@ export const Swap = (props: SwapProps) => {
   )
   const { transactionReview } = useTransactionReviewModal(
     quoteResult,
+    selectedQuote,
     isFetchingQuote
   )
 
