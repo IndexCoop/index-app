@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 
 import { Token } from '@/constants/tokens'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { toWei } from '@/lib/utils'
@@ -52,12 +52,7 @@ const formatAmount = (amount: number, decimals = 2) =>
     minimumFractionDigits: decimals,
   })
 
-function getFormattedOuputTokenAmount(quoteResult: QuoteResult | null): string {
-  if (!quoteResult) return '0'
-  const isFlashmintBestQuote = quoteResult.bestQuote === QuoteType.flashmint
-  const quote = isFlashmintBestQuote
-    ? quoteResult.quotes.flashmint
-    : quoteResult.quotes.zeroex
+function getFormattedOuputTokenAmount(quote: Quote | null): string {
   if (!quote) return '0'
   const outputTokenAmount = quote.isMinting
     ? quote.indexTokenAmount
@@ -133,8 +128,8 @@ export function useSwap(
   )
 
   const outputTokenAmountFormatted = useMemo(
-    () => getFormattedOuputTokenAmount(quoteResult),
-    [quoteResult]
+    () => getFormattedOuputTokenAmount(selectedQuote),
+    [selectedQuote]
   )
 
   const outputTokenAmountUsd = useMemo(
