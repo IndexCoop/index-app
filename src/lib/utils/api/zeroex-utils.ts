@@ -60,29 +60,37 @@ function getApiUrl(query: string, chainId: number): string {
   return `${API_0X_INDEX_URL}/${networkKey}${quotePath}?${query}&affiliateAddress=${ZeroExAffiliateAddress}`
 }
 
+interface ZeroExRequest {
+  chainId: number
+  isMinting: boolean
+  sellToken: Token // inputToken
+  buyToken: Token // outputToken
+  amount: string
+  slippagePercentage: number
+  takerAddress: string
+}
+
 /**
  *
  * @param slippagePercentage  The maximum acceptable slippage buy/sell amount. Slippage percentage: 0.03 for 3% slippage allowed.
  */
 export const getZeroExTradeData = async (
-  isExactInput: boolean,
-  sellToken: Token,
-  buyToken: Token,
-  amount: string,
-  slippagePercentage: number,
-  chainId: number,
+  request: ZeroExRequest,
   rawData: boolean = false,
-  rfq: RequestForQuote | null = null
+  rfq: boolean
 ): Promise<Result<ZeroExData, Error>> => {
-  let params = getApiParamsForTokens(
-    isExactInput,
+  const { amount, buyToken, chainId, isMinting, sellToken, takerAddress } =
+    request
+  const params = getApiParamsForTokens(
+    chainId,
+    isMinting,
     sellToken,
     buyToken,
     amount,
-    chainId,
+    takerAddress,
     rfq
   )
-  params.slippagePercentage = slippagePercentage
+  params.slippagePercentage = request.slippagePercentage
   const query = new URLSearchParams(params).toString()
   const path = getApiUrl(query, chainId)
   console.log(path)
@@ -94,7 +102,7 @@ export const getZeroExTradeData = async (
       ? resp
       : await processApiResult(
           zeroExData,
-          isExactInput,
+          isMinting,
           sellToken,
           buyToken,
           amount
@@ -124,10 +132,10 @@ export const get0xApiParams = (
   buyToken: string,
   buyTokenDecimals: number,
   buySellAmount: string,
-  rfq: RequestForQuote | null
+  takerAddress: string,
+  rfq: boolean = false
 ): any => {
-  let params: any
-  params = {
+  const params: any = {
     sellToken,
     buyToken,
   }
@@ -136,7 +144,6 @@ export const get0xApiParams = (
     // https://0x.org/docs/0x-swap-api/api-references/get-swap-v1-quote#request
     params.includedSources = 'RFQT'
     params.intentOnFilling = true
-    params.takerAddress = rfq.takerAddress
   }
 
   if (isExactInput) {
@@ -149,6 +156,7 @@ export const get0xApiParams = (
   }
 
   params.skipValidation = true
+  params.takerAddress = takerAddress
 
   return params
 }
@@ -163,12 +171,13 @@ const getChainTokenAddress = (token: Token, chainId: number) => {
 
 /* Convenience function for Token's */
 const getApiParamsForTokens = (
+  chainId: number,
   isExactInput: boolean,
   sellToken: Token,
   buyToken: Token,
   buySellAmount: string,
-  chainId: number,
-  rfq: RequestForQuote | null
+  takerAddress: string,
+  rfq: boolean = false
 ): any => {
   return get0xApiParams(
     isExactInput,
@@ -177,6 +186,7 @@ const getApiParamsForTokens = (
     getChainTokenAddress(buyToken, chainId) ?? '',
     buyToken.decimals,
     buySellAmount,
+    takerAddress,
     rfq
   )
 }

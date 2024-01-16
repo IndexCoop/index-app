@@ -46,7 +46,21 @@ const connectors = () =>
     {
       groupName: 'Others',
       wallets: [
-        walletConnectWallet({ chains, projectId }),
+        walletConnectWallet({
+          chains,
+          options: {
+            metadata: {
+              name: 'Index App',
+              description: 'Buy & Sell Our Tokens',
+              url: 'https://app.indexcoop.com/',
+              icons: [
+                '<https://app.indexcoop.com/assets/index-logo-black.svg>',
+              ],
+            },
+            projectId,
+          },
+          projectId,
+        }),
         braveWallet({ chains }),
         trustWallet({ chains, projectId }),
       ],

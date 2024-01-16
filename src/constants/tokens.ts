@@ -350,6 +350,22 @@ export const ETH: Token = {
   indexTypes: [],
 }
 
+export const GUSD: Token = {
+  name: 'Gemini dollar',
+  symbol: 'GUSD',
+  image:
+    'https://assets.coingecko.com/coins/images/5992/large/gemini-dollar-gusd.png',
+  address: '0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 2,
+  url: '',
+  coingeckoId: 'gemini-dollar',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
 export const MATIC: Token = {
   name: 'Matic',
   symbol: 'MATIC',

@@ -1,6 +1,10 @@
-import indexNames from '@/constants/tokenlists'
+import { indicesTokenList } from '@/constants/tokenlists'
 import { ETH, Token } from '@/constants/tokens'
-import { getCurrencyTokens } from '@/lib/utils/tokens'
+import {
+  getCurrencyTokens,
+  getCurrencyTokensForIndex,
+  getDefaultIndex,
+} from '@/lib/utils/tokens'
 
 interface ResolvedPath {
   inputToken: string | null
@@ -8,6 +12,7 @@ interface ResolvedPath {
 }
 
 interface ResolvedTokenPath {
+  isMinting: boolean
   inputToken: Token
   outputToken: Token
 }
@@ -16,46 +21,45 @@ export class PathResolver {
   // Returns resolved token path - always.
   // If the path shouldn't be resolvable - a default will be returned.
   resolve(path: string[]): ResolvedTokenPath {
+    const defaultIndex = getDefaultIndex()
     const symbols = this.convertPathToSymbols(path)
-    /// both null
+
     if (symbols.inputToken === null && symbols.outputToken === null)
       return {
+        isMinting: true,
         inputToken: ETH,
-        outputToken: indexNames[0],
+        outputToken: defaultIndex,
       }
 
-    if (symbols.inputToken === null) {
-      const outputToken = this.resolveToken(symbols.outputToken!)
-      const isIndex = indexNames.find(
-        (token) => token.symbol === outputToken.symbol
-      )
-      return {
-        inputToken: isIndex ? ETH : indexNames[0],
-        outputToken: outputToken,
-      }
-    }
-
-    if (symbols.outputToken === null) {
-      const inputToken = this.resolveToken(symbols.inputToken!)
-      const isIndex = indexNames.find(
-        (token) => token.symbol === inputToken.symbol
-      )
-      return {
-        inputToken,
-        outputToken: isIndex ? ETH : indexNames[0],
-      }
-    }
-
-    const inputToken = this.resolveToken(symbols.inputToken!)
-    const outputToken = this.resolveToken(symbols.outputToken!)
-    const inputTokenIsIndex = indexNames.some(
+    let inputToken = this.resolveToken(symbols.inputToken ?? ETH.symbol)
+    let outputToken = this.resolveToken(
+      symbols.outputToken ?? defaultIndex.symbol
+    )
+    const inputTokenIsIndex = indicesTokenList.some(
       (token) => token.symbol === inputToken.symbol
     )
-    const outputTokenIsIndex = indexNames.some(
+    const outputTokenIsIndex = indicesTokenList.some(
       (token) => token.symbol === outputToken.symbol
     )
+
+    if (!inputTokenIsIndex && !outputTokenIsIndex)
+      return {
+        isMinting: true,
+        inputToken: ETH,
+        outputToken: defaultIndex,
+      }
+
+    if (outputTokenIsIndex || (inputTokenIsIndex && outputTokenIsIndex)) {
+      inputToken = this.getCurrency(outputToken, inputToken)
+    }
+
+    if (inputTokenIsIndex && !outputTokenIsIndex) {
+      outputToken = this.getCurrency(inputToken, outputToken)
+    }
+
     return {
-      inputToken: inputTokenIsIndex && outputTokenIsIndex ? ETH : inputToken,
+      isMinting: outputTokenIsIndex,
+      inputToken,
       outputToken,
     }
   }
@@ -75,12 +79,20 @@ export class PathResolver {
     return defaultReturn
   }
 
+  private getCurrency(indexToken: Token, inputOutputToken: Token): Token {
+    const currencies = getCurrencyTokensForIndex(indexToken, 1)
+    const tokenIsAvailableCurrency = currencies.some(
+      (token) => token.symbol === inputOutputToken.symbol
+    )
+    return tokenIsAvailableCurrency ? inputOutputToken : currencies[0]
+  }
+
   private resolveTokenSymbol(symbol: string): string | null {
     return symbol === '' || symbol === '_' ? null : symbol
   }
 
   private resolveToken(tokenSymbol: string): Token {
-    const indexToken = indexNames.find(
+    const indexToken = indicesTokenList.find(
       (token) => token.symbol.toLowerCase() === tokenSymbol.toLowerCase()
     )
     if (indexToken !== undefined) {

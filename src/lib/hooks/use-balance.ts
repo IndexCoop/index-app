@@ -4,7 +4,7 @@ import { Address, PublicClient, usePublicClient } from 'wagmi'
 import { ETH } from '@/constants/tokens'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
 
-class BalanceProvider {
+export class BalanceProvider {
   constructor(readonly publicClient: PublicClient) {}
 
   async getErc20Balance(address: string, token: string): Promise<bigint> {
@@ -17,7 +17,7 @@ class BalanceProvider {
   }
 
   async getNativeBalance(address: string) {
-    return await this.publicClient.getBalance({
+    return this.publicClient.getBalance({
       address: address as Address,
     })
   }
@@ -29,10 +29,12 @@ export function useBalance(address?: string, token?: string) {
 
   useEffect(() => {
     async function fetchBalance() {
-      if (!address || !token) return
+      if (!address || !token) {
+        setBalance(BigInt(0))
+        return
+      }
       const balanceProvider = new BalanceProvider(publicClient)
       const isETH = token.toLowerCase() === ETH.address!.toLowerCase()
-      console.log('fetching', token, isETH)
       const balance = isETH
         ? await balanceProvider.getNativeBalance(address)
         : await balanceProvider.getErc20Balance(address, token)

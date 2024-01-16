@@ -1,5 +1,5 @@
 import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
-import { mainnetCurrencyTokens } from '@/constants/tokenlists'
+import { currencies, indicesTokenList } from '@/constants/tokenlists'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
@@ -23,6 +23,8 @@ import {
   WETH,
   WSTETH,
 } from '@/constants/tokens'
+
+import { isSameAddress } from '.'
 
 export function getAddressForToken(
   token: Token,
@@ -48,7 +50,7 @@ export function getAddressForToken(
 export function getCurrencyTokens(chainId: number | undefined): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
-      return mainnetCurrencyTokens
+      return currencies
     default:
       return []
   }
@@ -60,16 +62,14 @@ export function getCurrencyTokens(chainId: number | undefined): Token[] {
  */
 export function getCurrencyTokensForIndex(
   index: Token,
-  chainId: number,
-  isMinting: boolean
+  chainId: number
 ): Token[] {
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, USDC, DAI, WETH]
   if (index.symbol === ic21.symbol) return [ETH, WETH]
   if (index.symbol === FIXED_DAI.symbol) return [DAI]
   if (index.symbol === FIXED_USDC.symbol) return [USDC]
-  if (index.symbol === icETHIndex.symbol)
-    return isMinting ? [ETH, STETH] : [ETH, STETH]
+  if (index.symbol === icETHIndex.symbol) return [ETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||
     index.symbol === GitcoinStakedETHIndex.symbol
@@ -79,6 +79,10 @@ export function getCurrencyTokensForIndex(
     return [ETH, WETH, RETH, USDC]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
+}
+
+export function getDefaultIndex(): Token {
+  return indicesTokenList[0]
 }
 
 export function getNativeToken(chainId: number | undefined): Token | null {
@@ -92,6 +96,15 @@ export function getNativeToken(chainId: number | undefined): Token | null {
     default:
       return null
   }
+}
+
+export function getTokenBySymbol(symbol: string): Token | null {
+  const indexToken = indicesTokenList.find((index) => index.symbol === symbol)
+  if (indexToken) {
+    return indexToken
+  }
+  const currencyToken = currencies.find((token) => token.symbol === symbol)
+  return currencyToken ?? null
 }
 
 export function isAvailableForFlashMint(token: Token): boolean {
@@ -112,6 +125,13 @@ export function isAvailableForSwap(token: Token): boolean {
     default:
       return true
   }
+}
+
+export function isIndexToken(token: Token): boolean {
+  if (token.symbol === IndexToken.symbol) return false
+  return indicesTokenList.some((index) =>
+    isSameAddress(index.address!, token.address!)
+  )
 }
 
 export function isLeveragedToken(token: Token): boolean {

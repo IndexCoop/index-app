@@ -1,0 +1,169 @@
+import { useState } from 'react'
+import Image from 'next/image'
+import { WarningTwoIcon } from '@chakra-ui/icons'
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Flex,
+  Text,
+} from '@chakra-ui/react'
+
+import { StyledSkeleton } from '@/components/skeleton'
+import { Toggle, ToggleState } from '@/components/toggle'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { colors, useColorStyles } from '@/lib/styles/colors'
+
+import { TradeInfoItem } from '../../types'
+import { Tag } from './tag'
+import { FlashMintTag } from './tag-flashmint'
+import { TradeInfoItemsContainer } from './trade-info'
+import { TradePrice } from './trade-price'
+
+export interface TradeDetailTokenPrices {
+  inputTokenPrice: string
+  inputTokenPriceUsd: string
+  outputTokenPrice: string
+  outputTokenPriceUsd: string
+}
+
+interface TradeDetailsProps {
+  data: TradeInfoItem[]
+  gasPriceInUsd: number
+  isLoading: boolean
+  isToggleDisabled: boolean
+  prices: TradeDetailTokenPrices
+  showWarning?: boolean
+  selectedQuoteType: QuoteType
+  onToggle: (selectedQuoteType: QuoteType) => void
+}
+
+export const TradeDetails = (props: TradeDetailsProps) => {
+  const { data, gasPriceInUsd, isLoading, prices, showWarning } = props
+  const { styles } = useColorStyles()
+
+  const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
+
+  const onClickToggle = (toggleState: ToggleState) => {
+    const quoteType = toggleState === 1 ? QuoteType.flashmint : QuoteType.zeroex
+    console.log(toggleState, quoteType)
+    props.onToggle(quoteType)
+  }
+
+  const onToggleTokenPrice = (event: any) => {
+    event.preventDefault()
+    event.stopPropagation()
+    setShowInputTokenPrice(!showInputTokenPrice)
+  }
+
+  const comparisonLabel = showInputTokenPrice
+    ? prices.inputTokenPrice
+    : prices.outputTokenPrice
+  const usdLabel = showInputTokenPrice
+    ? prices.inputTokenPriceUsd
+    : prices.outputTokenPriceUsd
+
+  return (
+    <Flex mb={'6px'}>
+      <Accordion allowToggle border={0} borderColor='transparent' w='100%'>
+        <AccordionItem isDisabled={isLoading}>
+          {({ isExpanded }) => (
+            <>
+              <h4>
+                <AccordionButton
+                  border='1px solid'
+                  borderColor={styles.border}
+                  borderRadius={12}
+                  color={colors.icGray2}
+                  _expanded={{
+                    borderBottomColor: 'transparent',
+                    borderBottomRadius: 0,
+                  }}
+                  p={'16px 20px'}
+                >
+                  <Flex
+                    align='center'
+                    flex='1'
+                    justify='space-between'
+                    pr='4px'
+                  >
+                    <>
+                      <Flex>
+                        {showWarning && (
+                          <WarningTwoIcon color={styles.text} mr='8px' />
+                        )}
+                        <Box onClick={onToggleTokenPrice}>
+                          {isLoading ? (
+                            <StyledSkeleton width={200} />
+                          ) : (
+                            <TradePrice
+                              comparisonLabel={comparisonLabel}
+                              usdLabel={usdLabel}
+                            />
+                          )}
+                        </Box>
+                      </Flex>
+                      <Flex opacity={isExpanded ? 0 : 1} gap={4}>
+                        {!isLoading &&
+                          props.selectedQuoteType === QuoteType.zeroex && (
+                            <Tag label={'0x'} />
+                          )}
+                        {!isLoading &&
+                          props.selectedQuoteType === QuoteType.flashmint && (
+                            <FlashMintTag />
+                          )}
+                        {isLoading ? (
+                          <StyledSkeleton width={70} />
+                        ) : (
+                          <GasFees label={gasPriceInUsd.toFixed(2)} />
+                        )}
+                      </Flex>
+                    </>
+                  </Flex>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h4>
+              <AccordionPanel
+                border='1px solid'
+                borderColor={styles.border}
+                borderRadius='0 0 12px 12px'
+                borderTopColor={'transparent'}
+                p={'4px 20px 16px'}
+              >
+                <Toggle
+                  isDisabled={props.isToggleDisabled}
+                  toggleState={
+                    props.selectedQuoteType === QuoteType.zeroex
+                      ? ToggleState.auto
+                      : ToggleState.custom
+                  }
+                  labelLeft='Swap'
+                  labelRight='Flash Mint'
+                  onClick={onClickToggle}
+                />
+                <TradeInfoItemsContainer items={data} isLoading={isLoading} />
+              </AccordionPanel>
+            </>
+          )}
+        </AccordionItem>
+      </Accordion>
+    </Flex>
+  )
+}
+
+const GasFees = ({ label }: { label: string }) => (
+  <Flex direction={'row'} gap={2}>
+    <Image
+      alt='Gas fees icon'
+      src={'/assets/gas-icon.svg'}
+      height={10}
+      width={10}
+    />
+    <Text color={colors.icGray2} fontSize='12px' fontWeight={500}>
+      ${label}
+    </Text>
+  </Flex>
+)

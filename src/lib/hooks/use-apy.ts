@@ -12,7 +12,6 @@ export const useApy = (symbol: string): { apy: BigNumber } => {
       const indexApi = new IndexApi()
       const { apy } = await indexApi.get(`/${symbol.toLowerCase()}/apy`)
       setApy(BigNumber.from(apy))
-      console.log(apy)
     } catch (err) {
       console.log(err)
     }

@@ -1,4 +1,8 @@
-import Script from 'next/script'
+import { Flex } from '@chakra-ui/react'
+
+import Footer from '@/components/footer'
+import Header from '@/components/header'
+
 import { Providers } from './providers'
 
 // For images just place the appropriate image file in this folder.
@@ -12,15 +16,32 @@ export const metadata = {
   type: 'website',
 }
 
-export default function RootLayout({
-  children,
-}: {
+type LayoutProps = {
   children: React.ReactNode
-}) {
+}
+
+export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang='en'>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          <Flex direction='column' mb='50px'>
+            <Flex
+              maxWidth='1024px'
+              m={['0 auto']}
+              p={[
+                '100px 16px 0px 16px',
+                '100px 16px 0px 16px',
+                '128px 16px 0px 16px',
+                '128px 16px 0px 16px',
+              ]}
+            >
+              {children}
+            </Flex>
+          </Flex>
+          <Footer />
+        </Providers>
       </body>
     </html>
   )

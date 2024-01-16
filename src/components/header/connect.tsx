@@ -1,10 +1,12 @@
+'use client'
+
 import { useEffect } from 'react'
 
 import { useAccount } from 'wagmi'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-import { useNetwork } from '@/lib/hooks/useNetwork'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { logConnect } from '@/lib/utils/api/analytics'
 
 export const Connect = () => {

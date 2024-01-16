@@ -2,8 +2,8 @@ import { InfoIcon, WarningTwoIcon } from '@chakra-ui/icons'
 import { Flex, Text } from '@chakra-ui/react'
 
 import { colors, useColorStyles } from '@/lib/styles/colors'
-import { RethSupplyCap } from './RethSupplyCap'
-import { useRethSupply } from './useRethSupply'
+import { RethSupplyCap } from './reth-supply-cap'
+import { useRethSupply } from './use-reth-supply'
 
 export enum SupplyCapState {
   available,
@@ -20,11 +20,6 @@ export interface RethSupplyCapOverrides {
 interface RethSupplyCapContainerProps {
   state: SupplyCapState
   overrides?: RethSupplyCapOverrides
-}
-
-function getSupplyCapState(cap: number, totalSupply: number): SupplyCapState {
-  if (totalSupply >= cap) return SupplyCapState.capReached
-  return SupplyCapState.available
 }
 
 export const RethSupplyCapContainer = (props: RethSupplyCapContainerProps) => {

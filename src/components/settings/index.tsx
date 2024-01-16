@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { SettingsIcon } from '@chakra-ui/icons'
 import {
   Flex,
@@ -11,9 +11,9 @@ import {
   Text,
 } from '@chakra-ui/react'
 
+import { Toggle, ToggleState } from '@/components/toggle'
 import { colors } from '@/lib/styles/colors'
 
-import { Toggle, ToggleState } from './toggle'
 import { Warning } from './warning'
 
 type SettingsProps = {
@@ -26,6 +26,7 @@ type SettingsProps = {
 
 export const Settings = (props: SettingsProps) => {
   const { isAuto, slippage, onChangeSlippage, onClickAuto } = props
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const [inputValue, setInputValue] = useState<string>('')
 
   const inputTextColor = useMemo(
@@ -47,7 +48,7 @@ export const Settings = (props: SettingsProps) => {
 
   const onChangeInput = (value: string) => {
     setInputValue(value)
-    let updatedSlippage = parseFloat(value)
+    const updatedSlippage = parseFloat(value)
     if (value === '') {
       onClickAuto()
       return
@@ -62,6 +63,10 @@ export const Settings = (props: SettingsProps) => {
       onClickAuto()
       return
     }
+    if (!inputRef.current) return
+    // Focus input field and set slippage to adjust toggle state
+    inputRef.current.focus()
+    onChangeSlippage(slippage)
   }
 
   return (
@@ -88,10 +93,16 @@ export const Settings = (props: SettingsProps) => {
       >
         <PopoverBody>
           <Text fontSize='md' fontWeight='500' textColor={colors.icGray3}>
-            Slippage
+            Max Slippage
           </Text>
           <Flex align='center' my='4'>
-            <Toggle toggleState={toggleState} onClick={onClickToggle} />
+            <Toggle
+              toggleState={toggleState}
+              labelLeft='Auto'
+              labelRight='Custom'
+              isDisabled={false}
+              onClick={onClickToggle}
+            />
             <Flex
               align='center'
               borderColor={colors.icGray1}
@@ -108,6 +119,7 @@ export const Settings = (props: SettingsProps) => {
                 _placeholder={{ color: colors.icGray2 }}
                 p='8px'
                 pr='4px'
+                ref={inputRef}
                 textAlign='right'
                 textColor={inputTextColor}
                 type='number'

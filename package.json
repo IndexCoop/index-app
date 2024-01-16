@@ -13,7 +13,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@arcxmoney/analytics": "^1.9.0",
+    "@arcxmoney/analytics": "^2.0.3",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "^2.8.2",
@@ -23,7 +23,7 @@
     "@fontsource/open-sauce-sans": "^5.0.7",
     "@indexcoop/analytics-sdk": "^0.8.0",
     "@indexcoop/flash-mint-sdk": "^2.3.0",
-    "@rainbow-me/rainbowkit": "^1.0.11",
+    "@rainbow-me/rainbowkit": "1.3.1",
     "@types/node": "20.2.5",
     "@types/react": "18.2.8",
     "@types/react-dom": "18.2.4",
@@ -35,6 +35,7 @@
     "next": "^13.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-loading-skeleton": "^3.3.1",
     "use-debounce": "^10.0.0",
     "viem": "^1.10.8",
     "wagmi": "1.4.12"
@@ -52,9 +53,10 @@
     "@types/jest": "^29.5.2",
     "@types/lodash.merge": "^4.6.7",
     "@types/mocha": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
     "chai": "^4.3.7",
-    "dotenv": "^16.1.4",
-    "hardhat": "^2.15.0",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.19.1",
     "hardhat-gas-reporter": "^1.0.9",
     "jest": "^29.5.0",
     "solidity-coverage": "^0.8.2",
