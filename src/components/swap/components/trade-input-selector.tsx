@@ -50,26 +50,43 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
     >
       <Caption caption={props.caption} />
       <Flex align='center' direction='row' justify='space-between' mt='6px'>
-        <Input
-          color={colors.icBlack}
-          fontSize='25px'
-          fontWeight={500}
-          overflow='hidden'
-          placeholder='0'
-          _placeholder={{ color: colors.icGray2 }}
-          pr='4px'
-          type='number'
-          step='any'
-          textOverflow='ellipsis'
-          variant='unstyled'
-          whiteSpace='nowrap'
-          disabled={config.isInputDisabled ?? false}
-          isReadOnly={config.isReadOnly ?? false}
-          value={props.selectedTokenAmount}
-          onChange={(event) => {
-            onChangeInput(event.target.value)
-          }}
-        />
+        {config.isReadOnly ? (
+          <Text
+            color={
+              props.selectedTokenAmount === '0'
+                ? colors.icGray2
+                : colors.icBlack
+            }
+            fontSize='25px'
+            fontWeight={500}
+            pr='4px'
+            textOverflow='ellipsis'
+            whiteSpace='nowrap'
+          >
+            {props.selectedTokenAmount}
+          </Text>
+        ) : (
+          <Input
+            color={colors.icBlack}
+            fontSize='25px'
+            fontWeight={500}
+            overflow='hidden'
+            placeholder='0'
+            _placeholder={{ color: colors.icGray2 }}
+            pr='4px'
+            type='number'
+            step='any'
+            textOverflow='ellipsis'
+            variant='unstyled'
+            whiteSpace='nowrap'
+            disabled={config.isInputDisabled ?? false}
+            isReadOnly={config.isReadOnly ?? false}
+            value={props.selectedTokenAmount}
+            onChange={(event) => {
+              onChangeInput(event.target.value)
+            }}
+          />
+        )}
         <SelectorButton
           image={selectedToken.image}
           symbol={selectedToken.symbol}

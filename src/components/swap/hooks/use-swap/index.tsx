@@ -46,25 +46,25 @@ interface SwapData {
   tradeData: TradeInfoItem[]
 }
 
-const formatAmount = (amount: number, decimals = 2) =>
-  amount.toLocaleString('en-US', {
-    maximumFractionDigits: decimals,
+function formatIfNumber(value: string, decimals: number) {
+  if (/[a-z]/i.test(value)) return value
+  return Number(value).toLocaleString('en', {
     minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
   })
+}
 
 function getFormattedOuputTokenAmount(quote: Quote | null): string {
   if (!quote) return '0'
   const outputTokenAmount = quote.isMinting
     ? quote.indexTokenAmount
     : quote.inputOutputTokenAmount
-  const outputAmount = Number(
-    formatUnits(
-      BigInt(outputTokenAmount.toString()),
-      quote.outputToken.decimals
-    )
+  const outputAmount = formatUnits(
+    BigInt(outputTokenAmount.toString()),
+    quote.outputToken.decimals
   )
-  const decimals = outputAmount > 1 ? 2 : 4
-  return formatAmount(outputAmount, decimals)
+  const decimals = Number(outputAmount) > 1 ? 2 : 4
+  return formatIfNumber(outputAmount, decimals)
 }
 
 export function useSwap(
