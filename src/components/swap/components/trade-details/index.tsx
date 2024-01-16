@@ -19,6 +19,7 @@ import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { TradeInfoItem } from '../../types'
 import { Tag } from './tag'
+import { FlashMintTag } from './tag-flashmint'
 import { TradeInfoItemsContainer } from './trade-info'
 import { TradePrice } from './trade-price'
 
@@ -106,15 +107,14 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                         </Box>
                       </Flex>
                       <Flex opacity={isExpanded ? 0 : 1} gap={4}>
-                        {!isLoading && (
-                          <Tag
-                            label={
-                              props.selectedQuoteType === QuoteType.zeroex
-                                ? '0x'
-                                : 'Flash Mint'
-                            }
-                          />
-                        )}
+                        {!isLoading &&
+                          props.selectedQuoteType === QuoteType.zeroex && (
+                            <Tag label={'0x'} />
+                          )}
+                        {!isLoading &&
+                          props.selectedQuoteType === QuoteType.flashmint && (
+                            <FlashMintTag />
+                          )}
                         {isLoading ? (
                           <StyledSkeleton width={70} />
                         ) : (
