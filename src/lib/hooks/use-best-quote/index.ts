@@ -249,10 +249,14 @@ async function getFlashMintQuote(
     if (!isMinting) return flashMintQuote
     // For minting check if we got a quote that is lower/equal than the input token amount
     // - since we should never go above what the user entered intitially.
-    if (flashMintQuote?.inputOutputTokenAmount.lte(inputTokenAmountWei)) {
+    if (flashMintQuote.inputTokenAmount.lte(inputTokenAmountWei)) {
       return flashMintQuote
     }
-    // Otherwise, run again using a lil less index token amount to receive less input token amount
-    indexTokenAmount = indexTokenAmount.mul(99).div(100)
+    const diff = flashMintQuote.inputTokenAmount.sub(inputTokenAmountWei)
+    console.log('diff:', diff.toString())
+    const percentWei = diff.mul(100).div(inputTokenAmountWei)
+    indexTokenAmount = indexTokenAmount
+      .mul(100 - Number(percentWei.toString()) - 1)
+      .div(100)
   }
 }
