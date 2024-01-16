@@ -97,7 +97,6 @@ export const Swap = (props: SwapProps) => {
 
   const {
     contract,
-    isFlashMint,
     hasInsufficientFunds,
     gasCostsUsd,
     inputTokenAmountUsd,
@@ -160,12 +159,8 @@ export const Swap = (props: SwapProps) => {
       setWarnings([WarningType.priceImpact])
       return
     }
-    if (isFlashMint) {
-      setWarnings([WarningType.flashbots])
-      return
-    }
-    setWarnings([])
-  }, [isFlashMint, requiresProtection, slippage])
+    setWarnings([WarningType.flashbots])
+  }, [requiresProtection, slippage])
 
   useEffect(() => {
     console.log('/////////')
