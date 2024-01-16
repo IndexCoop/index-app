@@ -11,9 +11,9 @@ import {
   Text,
 } from '@chakra-ui/react'
 
+import { Toggle, ToggleState } from '@/components/toggle'
 import { colors } from '@/lib/styles/colors'
 
-import { Toggle, ToggleState } from './toggle'
 import { Warning } from './warning'
 
 type SettingsProps = {
@@ -96,7 +96,13 @@ export const Settings = (props: SettingsProps) => {
             Max Slippage
           </Text>
           <Flex align='center' my='4'>
-            <Toggle toggleState={toggleState} onClick={onClickToggle} />
+            <Toggle
+              toggleState={toggleState}
+              labelLeft='Auto'
+              labelRight='Custom'
+              isDisabled={false}
+              onClick={onClickToggle}
+            />
             <Flex
               align='center'
               borderColor={colors.icGray1}

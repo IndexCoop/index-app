@@ -11,6 +11,7 @@ import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useTokenlists } from '@/lib/hooks/use-tokenlists'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useProtection } from '@/lib/providers/protection'
@@ -77,6 +78,7 @@ export const Swap = (props: SwapProps) => {
   const hasFetchingError = quoteResult.error !== null && !isFetchingQuote
 
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
+  const [selectedQuote, setSelectedQuote] = useState<QuoteType | null>(null)
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 500)
   const [warnings, setWarnings] = useState<WarningType[]>([])
 
@@ -89,12 +91,12 @@ export const Swap = (props: SwapProps) => {
   )
   const { transactionReview } = useTransactionReviewModal(
     quoteResult,
+    selectedQuote,
     isFetchingQuote
   )
 
   const {
     contract,
-    isFlashMint,
     hasInsufficientFunds,
     gasCostsUsd,
     inputTokenAmountUsd,
@@ -115,7 +117,8 @@ export const Swap = (props: SwapProps) => {
     outputToken,
     sellTokenAmount,
     quoteResult,
-    isFetchingQuote
+    isFetchingQuote,
+    selectedQuote
   )
 
   const {
@@ -140,6 +143,13 @@ export const Swap = (props: SwapProps) => {
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
+  const isToggleDisabled = useMemo(
+    () =>
+      quoteResult.quotes.flashmint === null ||
+      quoteResult.quotes.zeroex === null,
+    [quoteResult]
+  )
+
   useEffect(() => {
     if (requiresProtection) {
       setWarnings([WarningType.restricted])
@@ -149,32 +159,54 @@ export const Swap = (props: SwapProps) => {
       setWarnings([WarningType.priceImpact])
       return
     }
-    if (isFlashMint) {
-      setWarnings([WarningType.flashbots])
-      return
-    }
-    setWarnings([])
-  }, [isFlashMint, requiresProtection, slippage])
+    setWarnings([WarningType.flashbots])
+  }, [requiresProtection, slippage])
 
   useEffect(() => {
     console.log('/////////')
     console.log(quoteResult.bestQuote)
-    console.log(
-      quoteResult.quotes.flashmint?.fullCostsInUsd,
-      'USD',
-      quoteResult.quotes.flashmint?.inputOutputTokenAmount.toString(),
-      quoteResult.quotes.flashmint?.indexTokenAmount.toString(),
-      'flashmint'
-    )
-    console.log(
-      quoteResult.quotes.zeroex?.fullCostsInUsd,
-      'USD',
-      quoteResult.quotes.zeroex?.inputOutputTokenAmount.toString(),
-      quoteResult.quotes.zeroex?.indexTokenAmount.toString(),
-      '0x'
-    )
+    console.log(quoteResult.quotes.zeroex !== null, '0x')
+    console.log(quoteResult.quotes.flashmint !== null, 'fm')
     console.log('---')
+    setSelectedQuote(quoteResult?.bestQuote)
   }, [quoteResult])
+
+  // useEffect(() => {
+  //   console.log('/////////')
+  //   console.log(quoteResult.bestQuote)
+  //   console.log(
+  //     quoteResult.quotes.flashmint?.fullCostsInUsd,
+  //     'USD',
+  //     quoteResult.quotes.flashmint?.inputOutputTokenAmount.toString(),
+  //     quoteResult.quotes.flashmint?.indexTokenAmount.toString(),
+  //     'flashmint'
+  //   )
+  //   console.log(
+  //     quoteResult.quotes.zeroex?.fullCostsInUsd,
+  //     'USD',
+  //     quoteResult.quotes.zeroex?.inputOutputTokenAmount.toString(),
+  //     quoteResult.quotes.zeroex?.indexTokenAmount.toString(),
+  //     '0x'
+  //   )
+  //   console.log('---')
+  // }, [quoteResult])
+
+  const onSelectQuoteType = useCallback(
+    (type: QuoteType) => {
+      console.log(
+        'onSelectQuoteType',
+        type,
+        quoteResult.quotes.flashmint === null,
+        quoteResult.quotes.zeroex === null
+      )
+      if (type === QuoteType.flashmint && quoteResult.quotes.flashmint === null)
+        return
+      if (type === QuoteType.zeroex && quoteResult.quotes.zeroex === null)
+        return
+      setSelectedQuote(type)
+    },
+    [quoteResult]
+  )
 
   const resetTradeData = useCallback(() => {
     setInputTokenAmountFormatted('')
@@ -346,8 +378,12 @@ export const Swap = (props: SwapProps) => {
           <TradeDetails
             data={tradeData}
             gasPriceInUsd={gasCostsUsd}
+            isLoading={isFetchingQuote}
+            isToggleDisabled={isToggleDisabled}
             prices={tokenPrices}
             showWarning={showWarning}
+            selectedQuoteType={selectedQuote ?? QuoteType.zeroex}
+            onToggle={onSelectQuoteType}
           />
         )}
         {hasFetchingError && (

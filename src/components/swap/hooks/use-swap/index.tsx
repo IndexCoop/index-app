@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 
 import { Token } from '@/constants/tokens'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { toWei } from '@/lib/utils'
@@ -46,30 +46,25 @@ interface SwapData {
   tradeData: TradeInfoItem[]
 }
 
-const formatAmount = (amount: number, decimals = 2) =>
-  amount.toLocaleString('en-US', {
-    maximumFractionDigits: decimals,
+function formatIfNumber(value: string, decimals: number) {
+  if (/[a-z]/i.test(value)) return value
+  return Number(value).toLocaleString('en', {
     minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
   })
+}
 
-function getFormattedOuputTokenAmount(quoteResult: QuoteResult | null): string {
-  if (!quoteResult) return '0'
-  const isFlashmintBestQuote = quoteResult.bestQuote === QuoteType.flashmint
-  const quote = isFlashmintBestQuote
-    ? quoteResult.quotes.flashmint
-    : quoteResult.quotes.zeroex
+function getFormattedOuputTokenAmount(quote: Quote | null): string {
   if (!quote) return '0'
   const outputTokenAmount = quote.isMinting
     ? quote.indexTokenAmount
     : quote.inputOutputTokenAmount
-  const outputAmount = Number(
-    formatUnits(
-      BigInt(outputTokenAmount.toString()),
-      quote.outputToken.decimals
-    )
+  const outputAmount = formatUnits(
+    BigInt(outputTokenAmount.toString()),
+    quote.outputToken.decimals
   )
-  const decimals = outputAmount > 1 ? 2 : 4
-  return formatAmount(outputAmount, decimals)
+  const decimals = Number(outputAmount) > 1 ? 2 : 4
+  return formatIfNumber(outputAmount, decimals)
 }
 
 export function useSwap(
@@ -77,7 +72,8 @@ export function useSwap(
   outputToken: Token,
   inputTokenAmount: string,
   quoteResult: QuoteResult | null,
-  isFetchingQuote: boolean
+  isFetchingQuote: boolean,
+  selectedQuoteType: QuoteType | null
 ): SwapData {
   const { slippage } = useSlippage()
   const { address } = useWallet()
@@ -94,10 +90,12 @@ export function useSwap(
 
   const selectedQuote = useMemo(
     () =>
-      quoteResult?.bestQuote === QuoteType.zeroex
-        ? quoteResult?.quotes.zeroex
+      selectedQuoteType === null ||
+      selectedQuoteType === QuoteType.zeroex ||
+      quoteResult === null
+        ? quoteResult?.quotes.zeroex ?? null
         : quoteResult?.quotes.flashmint,
-    [quoteResult]
+    [quoteResult, selectedQuoteType]
   )
   const isFlashMint = useMemo(
     () => selectedQuote?.type === QuoteType.flashmint,
@@ -130,8 +128,8 @@ export function useSwap(
   )
 
   const outputTokenAmountFormatted = useMemo(
-    () => getFormattedOuputTokenAmount(quoteResult),
-    [quoteResult]
+    () => getFormattedOuputTokenAmount(selectedQuote),
+    [selectedQuote]
   )
 
   const outputTokenAmountUsd = useMemo(
@@ -170,7 +168,7 @@ export function useSwap(
   )
 
   // Trade data
-  const tradeData: TradeInfoItem[] = buildTradeDetails(quoteResult)
+  const tradeData: TradeInfoItem[] = buildTradeDetails(selectedQuote ?? null)
 
   return {
     contract,

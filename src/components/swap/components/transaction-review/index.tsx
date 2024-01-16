@@ -166,15 +166,15 @@ const ContractSection = ({
   )
 }
 
-function useBestQuote(review: TransactionReview) {
-  const { quoteResult } = review
-  const bestQuote = useMemo(() => {
-    const isFlashmintBestQuote = quoteResult.bestQuote === QuoteType.flashmint
-    return isFlashmintBestQuote
+function useSelectedQuote(review: TransactionReview) {
+  const { quoteResult, selectedQuote } = review
+  const quote = useMemo(() => {
+    const isFlashmintSelectedQuote = selectedQuote === QuoteType.flashmint
+    return isFlashmintSelectedQuote
       ? quoteResult.quotes.flashmint
       : quoteResult.quotes.zeroex
-  }, [quoteResult])
-  return { bestQuote }
+  }, [quoteResult, selectedQuote])
+  return { quote }
 }
 
 const useTradeMaker = (quote: Quote | null) => {
@@ -203,9 +203,9 @@ type ReviewProps = {
 
 const Review = (props: ReviewProps) => {
   const { onSubmitWithSuccess, transactionReview } = props
-  const { bestQuote } = useBestQuote(transactionReview)
-  const { simulateTrade } = useSimulateQuote(bestQuote?.tx ?? null)
-  const { makeTrade, isTransacting } = useTradeMaker(bestQuote)
+  const { quote } = useSelectedQuote(transactionReview)
+  const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
+  const { makeTrade, isTransacting } = useTradeMaker(quote)
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)

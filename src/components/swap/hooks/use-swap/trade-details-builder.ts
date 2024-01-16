@@ -1,9 +1,4 @@
-import {
-  Quote,
-  QuoteResult,
-  QuoteType,
-  ZeroExQuote,
-} from '@/lib/hooks/use-best-quote/types'
+import { Quote, QuoteType, ZeroExQuote } from '@/lib/hooks/use-best-quote/types'
 import { displayFromWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 import { getNativeToken } from '@/lib/utils/tokens'
@@ -89,17 +84,12 @@ function getSources(
     : (quote as ZeroExQuote).sources
         .filter((source) => Number(source.proportion) > 0)
         .map((source) => source.name)
-  return { title: 'Offered From', values: [offeredFromSources.toString()] }
+  return { title: 'Offered from', values: [offeredFromSources.toString()] }
 }
 
-export function buildTradeDetails(
-  quoteResult: QuoteResult | null
-): TradeInfoItem[] {
-  if (quoteResult === null) return []
-  const { flashmint, zeroex } = quoteResult.quotes
-  const bestQuoteIsFlashmint = quoteResult.bestQuote === QuoteType.flashmint
-  const quote = bestQuoteIsFlashmint ? flashmint : zeroex
+export function buildTradeDetails(quote: Quote | null): TradeInfoItem[] {
   if (!quote) return []
+  const bestQuoteIsFlashmint = quote.type === QuoteType.flashmint
   const minimumReceived = getOutputAmount(quote, bestQuoteIsFlashmint)
   const networkFee = getNetworkFee(quote)
   const slippage = getSlippageDetails(quote.slippage)
