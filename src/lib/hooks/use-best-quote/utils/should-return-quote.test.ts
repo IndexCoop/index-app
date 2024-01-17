@@ -1,4 +1,3 @@
-import { parseUnits } from 'viem'
 import { shouldReturnQuote } from './should-return-quote'
 
 describe('getIndexTokenAmount - redeeming', () => {
