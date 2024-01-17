@@ -20,6 +20,7 @@ import { maxPriceImpact } from './config'
 import { getBestQuote } from './utils/best-quote'
 import { getEnhancedFlashMintQuote } from './utils/flashmint'
 import { getIndexTokenAmount } from './utils/index-token-amount'
+import { shouldReturnQuote } from './utils/should-return-quote'
 import { get0xQuote } from './utils/zeroex'
 import {
   IndexQuoteRequest,
@@ -249,9 +250,11 @@ async function getFlashMintQuote(
     if (!isMinting) return flashMintQuote
     // For minting check if we got a quote that is lower/equal than the input token amount
     // - since we should never go above what the user entered intitially.
-    console.log(flashMintQuote.indexTokenAmount.toString())
     if (
-      shouldReturnQuote(inputTokenAmountWei, flashMintQuote.inputTokenAmount)
+      shouldReturnQuote(
+        inputTokenAmountWei.toBigInt(),
+        flashMintQuote.inputTokenAmount.toBigInt()
+      )
     ) {
       return flashMintQuote
     }
@@ -263,21 +266,4 @@ async function getFlashMintQuote(
       .mul(100 - Number(percentWei.toString()) - 1)
       .div(100)
   }
-}
-
-function shouldReturnQuote(
-  inputTokenAmount: BigNumber,
-  inputTokenAmountQuote: BigNumber
-): boolean {
-  console.log(
-    'input:',
-    inputTokenAmount.toString(),
-    'quote:',
-    inputTokenAmountQuote.toString()
-  )
-  if (inputTokenAmountQuote.gt(inputTokenAmount)) return false
-  const diff = inputTokenAmount.sub(inputTokenAmountQuote)
-  const percent = diff.mul(100).div(inputTokenAmount).toString()
-  console.log('return:', percent.toString(), Number(percent.toString()))
-  return Number(percent) < 1.5
 }
