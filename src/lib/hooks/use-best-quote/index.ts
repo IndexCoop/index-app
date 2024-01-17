@@ -229,6 +229,7 @@ async function getFlashMintQuote(
   const gasStation = new GasStation(provider)
   const gasPrice = await gasStation.getGasPrice()
 
+  // TODO: use timestamps to check how long the loop's been running
   while (true) {
     const flashMintQuote = await getEnhancedFlashMintQuote(
       isMinting,
@@ -249,21 +250,24 @@ async function getFlashMintQuote(
     // For redeeming return quote immdediately
     if (!isMinting) return flashMintQuote
     // For minting check if we got a quote that is lower/equal than the input token amount
-    // - since we should never go above what the user entered intitially.
-    if (
-      shouldReturnQuote(
-        inputTokenAmountWei.toBigInt(),
-        flashMintQuote.inputTokenAmount.toBigInt()
-      )
-    ) {
-      return flashMintQuote
-    }
+    // - since we should never go above what the user entered intitially. Additionally,
+    // we're checking if there might be a too big of a difference to the original input amount.
+    const { diff, shouldReturn } = shouldReturnQuote(
+      inputTokenAmountWei.toBigInt(),
+      flashMintQuote.inputTokenAmount.toBigInt()
+    )
+    if (shouldReturn) return flashMintQuote
     // TODO: save last accepted quote - in case next run fails
-    const diff = flashMintQuote.inputTokenAmount.sub(inputTokenAmountWei)
     console.log('diff:', diff.toString())
-    const percentWei = diff.mul(100).div(inputTokenAmountWei)
-    indexTokenAmount = indexTokenAmount
-      .mul(100 - Number(percentWei.toString()) - 1)
-      .div(100)
+    const buffer = 1
+    if (diff >= 0) {
+      // The quote input amount is too high, reduce
+      indexTokenAmount = indexTokenAmount.mul(100 - diff - buffer).div(100)
+    } else {
+      // The quote input amount is too low from the original input, increase
+      indexTokenAmount = indexTokenAmount
+        .mul(100 + Math.round(Math.abs(diff)) - buffer)
+        .div(100)
+    }
   }
 }

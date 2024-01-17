@@ -1,16 +1,25 @@
+/**
+ *
+ * @param inputTokenAmount
+ * @param inputTokenAmountQuote
+ * @returns
+ *    shouldReturn: indicates whether to return the quote
+ *    diff: negative indicates that the amount is below,
+ *          positive above the input token amount
+ */
 export function shouldReturnQuote(
   inputTokenAmount: bigint,
   inputTokenAmountQuote: bigint
 ) {
   console.log('input:', inputTokenAmount, 'quote:', inputTokenAmountQuote)
-  if (inputTokenAmountQuote > inputTokenAmount)
-    return { shouldReturn: false, diff: -1 }
   const diff = inputTokenAmount - inputTokenAmountQuote
   const percent =
     (100 * Number(diff.toString())) / Number(inputTokenAmount.toString())
   console.log('return:', percent, '%')
+  if (inputTokenAmountQuote > inputTokenAmount)
+    return { shouldReturn: false, diff: Number(percent) }
   return {
     shouldReturn: Number(percent) < 1.5,
-    diff: percent,
+    diff: percent * -1, // make negative to indicate that the quote was too low
   }
 }
