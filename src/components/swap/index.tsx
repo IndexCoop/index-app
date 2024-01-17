@@ -171,25 +171,25 @@ export const Swap = (props: SwapProps) => {
     setSelectedQuote(quoteResult?.bestQuote)
   }, [quoteResult])
 
-  // useEffect(() => {
-  //   console.log('/////////')
-  //   console.log(quoteResult.bestQuote)
-  //   console.log(
-  //     quoteResult.quotes.flashmint?.fullCostsInUsd,
-  //     'USD',
-  //     quoteResult.quotes.flashmint?.inputOutputTokenAmount.toString(),
-  //     quoteResult.quotes.flashmint?.indexTokenAmount.toString(),
-  //     'flashmint'
-  //   )
-  //   console.log(
-  //     quoteResult.quotes.zeroex?.fullCostsInUsd,
-  //     'USD',
-  //     quoteResult.quotes.zeroex?.inputOutputTokenAmount.toString(),
-  //     quoteResult.quotes.zeroex?.indexTokenAmount.toString(),
-  //     '0x'
-  //   )
-  //   console.log('---')
-  // }, [quoteResult])
+  useEffect(() => {
+    console.log('/////////')
+    console.log(quoteResult.bestQuote)
+    console.log(
+      quoteResult.quotes.flashmint?.fullCostsInUsd,
+      'USD',
+      quoteResult.quotes.flashmint?.inputOutputTokenAmount.toString(),
+      quoteResult.quotes.flashmint?.indexTokenAmount.toString(),
+      'flashmint'
+    )
+    console.log(
+      quoteResult.quotes.zeroex?.fullCostsInUsd,
+      'USD',
+      quoteResult.quotes.zeroex?.inputOutputTokenAmount.toString(),
+      quoteResult.quotes.zeroex?.indexTokenAmount.toString(),
+      '0x'
+    )
+    console.log('---')
+  }, [quoteResult])
 
   const onSelectQuoteType = useCallback(
     (type: QuoteType) => {
