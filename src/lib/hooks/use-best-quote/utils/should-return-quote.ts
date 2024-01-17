@@ -4,8 +4,8 @@
  * @param inputTokenAmountQuote
  * @returns
  *    shouldReturn: indicates whether to return the quote
- *    diff: negative indicates that the amount is below,
- *          positive above the input token amount
+ *    diff: negative indicates that the amount is above,
+ *          positive below the input token amount
  */
 export function shouldReturnQuote(
   inputTokenAmount: bigint,
@@ -20,6 +20,6 @@ export function shouldReturnQuote(
     return { shouldReturn: false, diff: Number(percent) }
   return {
     shouldReturn: Number(percent) < 1.5,
-    diff: percent * -1, // make negative to indicate that the quote was too low
+    diff: percent,
   }
 }

@@ -9,7 +9,7 @@ describe('getIndexTokenAmount - redeeming', () => {
       inputTokenAmountQuote
     )
     expect(shouldReturn).toBe(false)
-    expect(diff).toBe(1)
+    expect(diff).toBe(-1)
   })
 
   it('returns true when quote amount is too lower than input token amount', async () => {
@@ -20,7 +20,7 @@ describe('getIndexTokenAmount - redeeming', () => {
       inputTokenAmountQuote
     )
     expect(shouldReturn).toBe(true)
-    expect(diff).toBe(-0.1)
+    expect(diff).toBe(0.1)
   })
 
   it('returns false when quote amount is above threshold (1.5%)', async () => {
@@ -31,6 +31,6 @@ describe('getIndexTokenAmount - redeeming', () => {
       inputTokenAmountQuote
     )
     expect(shouldReturn).toBe(false)
-    expect(diff).toBe(-10)
+    expect(diff).toBe(10)
   })
 })

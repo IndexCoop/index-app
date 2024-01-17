@@ -260,9 +260,11 @@ async function getFlashMintQuote(
     // TODO: save last accepted quote - in case next run fails
     console.log('diff:', diff.toString())
     const buffer = 1
-    if (diff >= 0) {
+    if (diff < 0) {
       // The quote input amount is too high, reduce
-      indexTokenAmount = indexTokenAmount.mul(100 - diff - buffer).div(100)
+      indexTokenAmount = indexTokenAmount
+        .mul(100 - Math.abs(diff) - buffer)
+        .div(100)
     } else {
       // The quote input amount is too low from the original input, increase
       indexTokenAmount = indexTokenAmount
