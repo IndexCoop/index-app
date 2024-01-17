@@ -330,7 +330,7 @@ export const Swap = (props: SwapProps) => {
           config={{ isReadOnly: false }}
           balance={inputTokenBalanceFormatted}
           caption='You pay'
-          formattedFiat={inputTokenAmountUsd}
+          formattedFiat={''}
           selectedToken={inputToken}
           selectedTokenAmount={inputTokenAmountFormatted}
           onChangeInput={onChangeInputTokenAmount}
