@@ -5,7 +5,7 @@ const isDevEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
 const init = () => {
   return ArcxAnalyticsSdk.init(
     process.env.NEXT_PUBLIC_ARCX_ANALYTICS_API_KEY ?? '',
-    { trackPages: true }
+    { trackPages: true, trackWalletConnections: true }
   )
 }
 
