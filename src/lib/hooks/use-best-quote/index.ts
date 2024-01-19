@@ -229,7 +229,8 @@ async function getFlashMintQuote(
   const gasStation = new GasStation(provider)
   const gasPrice = await gasStation.getGasPrice()
 
-  // TODO: use timestamps to check how long the loop's been running
+  const timestamp: number = new Date().getTime()
+  console.log('timestamp:', timestamp)
   while (true) {
     const flashMintQuote = await getEnhancedFlashMintQuote(
       isMinting,
@@ -249,6 +250,11 @@ async function getFlashMintQuote(
     if (flashMintQuote === null) return null
     // For redeeming return quote immdediately
     if (!isMinting) return flashMintQuote
+    // As a safety measure we're aborting after 30 seconds take whatever quote we got
+    const now: number = new Date().getTime()
+    const diffSinceStart = (now - timestamp) / 1000
+    console.log(timestamp, now, diffSinceStart)
+    if (diffSinceStart > 10) return flashMintQuote
     // For minting check if we got a quote that is lower/equal than the input token amount
     // - since we should never go above what the user entered intitially. Additionally,
     // we're checking if there might be a too big of a difference to the original input amount.
