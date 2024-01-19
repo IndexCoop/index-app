@@ -229,6 +229,7 @@ async function getFlashMintQuote(
   const gasStation = new GasStation(provider)
   const gasPrice = await gasStation.getGasPrice()
 
+  let savedQuote: Quote | null = null
   const timestamp: number = new Date().getTime()
   console.log('timestamp:', timestamp)
   while (true) {
@@ -247,7 +248,7 @@ async function getFlashMintQuote(
       signer
     )
     // If there is no FlashMint quote, return immediately
-    if (flashMintQuote === null) return null
+    if (flashMintQuote === null) return savedQuote
     // For redeeming return quote immdediately
     if (!isMinting) return flashMintQuote
     // As a safety measure we're aborting after 30 seconds take whatever quote we got
@@ -263,7 +264,8 @@ async function getFlashMintQuote(
       flashMintQuote.inputTokenAmount.toBigInt()
     )
     if (shouldReturn) return flashMintQuote
-    // TODO: save last accepted quote - in case next run fails
+    // Save last fetched quote to be able to return something if next run fails
+    savedQuote = flashMintQuote
     console.log('diff:', diff.toString())
     const buffer = 1
     if (diff < 0) {
