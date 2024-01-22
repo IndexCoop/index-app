@@ -23,7 +23,7 @@ export const getIndexTokenAmount = (
 
   const priceImpact =
     dexSwapOption && dexSwapOption.estimatedPriceImpact
-      ? parseFloat(dexSwapOption.estimatedPriceImpact)
+      ? Math.abs(parseFloat(dexSwapOption.estimatedPriceImpact))
       : 0
 
   if (!dexSwapOption || priceImpact >= maxPriceImpact) {
