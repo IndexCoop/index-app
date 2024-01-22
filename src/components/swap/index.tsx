@@ -125,7 +125,7 @@ export const Swap = (props: SwapProps) => {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     approve: onApproveForSwap,
-  } = useApproval(inputToken, contract, BigInt(inputTokenAmountWei.toString()))
+  } = useApproval(inputToken, contract, inputTokenAmountWei.toBigInt())
 
   const shouldApprove = useMemo(() => {
     const nativeToken = getNativeToken(chainId)
