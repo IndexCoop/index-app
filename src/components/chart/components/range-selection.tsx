@@ -24,7 +24,8 @@ function RangeSelectionItem({
       cursor='pointer'
       onClick={onClick}
       mr='4px'
-      p='10px'
+      px='8px'
+      py='10px'
     >
       <Text color={color} fontSize='sm' fontWeight='600'>
         {label}
