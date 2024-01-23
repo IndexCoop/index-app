@@ -93,21 +93,10 @@ export const useBestQuote = () => {
       const fetchMoreQuotes = async () => {
         if (canFlashmintIndexToken) {
           console.log('canFlashmintIndexToken')
-          let dexData = null
-          if (quote0x !== null) {
-            const buyAmount = isMinting
-              ? quote0x.indexTokenAmount.toString()
-              : quote0x.inputOutputTokenAmount.toString()
-            dexData = {
-              buyAmount,
-              estimatedPriceImpact: quote0x.priceImpact?.toString() ?? '5',
-            }
-          }
           quoteFlashMint = await getFlashMintQuote(
             {
               ...request,
               chainId,
-              dexData,
               inputTokenAmountWei,
               inputTokenPrice,
               outputTokenPrice,
@@ -191,7 +180,6 @@ export const useBestQuote = () => {
 
 interface FlashMintQuoteRequest extends IndexQuoteRequest {
   chainId: number
-  dexData: { buyAmount: string; estimatedPriceImpact: string } | null
   inputTokenAmountWei: BigNumber
   nativeTokenPrice: number
 }
@@ -203,7 +191,6 @@ async function getFlashMintQuote(
 ) {
   const {
     chainId,
-    dexData,
     inputToken,
     inputTokenAmount,
     inputTokenAmountWei,
