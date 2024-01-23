@@ -93,21 +93,10 @@ export const useBestQuote = () => {
       const fetchMoreQuotes = async () => {
         if (canFlashmintIndexToken) {
           console.log('canFlashmintIndexToken')
-          let dexData = null
-          if (quote0x !== null) {
-            const buyAmount = isMinting
-              ? quote0x.indexTokenAmount.toString()
-              : quote0x.inputOutputTokenAmount.toString()
-            dexData = {
-              buyAmount,
-              estimatedPriceImpact: quote0x.priceImpact?.toString() ?? '5',
-            }
-          }
           quoteFlashMint = await getFlashMintQuote(
             {
               ...request,
               chainId,
-              dexData,
               inputTokenAmountWei,
               inputTokenPrice,
               outputTokenPrice,
@@ -191,7 +180,6 @@ export const useBestQuote = () => {
 
 interface FlashMintQuoteRequest extends IndexQuoteRequest {
   chainId: number
-  dexData: { buyAmount: string; estimatedPriceImpact: string } | null
   inputTokenAmountWei: BigNumber
   nativeTokenPrice: number
 }
@@ -203,7 +191,6 @@ async function getFlashMintQuote(
 ) {
   const {
     chainId,
-    dexData,
     inputToken,
     inputTokenAmount,
     inputTokenAmountWei,
@@ -222,8 +209,7 @@ async function getFlashMintQuote(
     inputToken.decimals,
     outputToken.decimals,
     inputTokenPrice,
-    outputTokenPrice,
-    dexData
+    outputTokenPrice
   )
 
   const gasStation = new GasStation(provider)
@@ -237,7 +223,7 @@ async function getFlashMintQuote(
       isMinting,
       inputToken,
       outputToken,
-      indexTokenAmount,
+      BigNumber.from(indexTokenAmount.toString()),
       inputTokenPrice,
       outputTokenPrice,
       nativeTokenPrice,
@@ -272,14 +258,14 @@ async function getFlashMintQuote(
     console.log(diff >= 0, 100 + Math.round(Math.abs(diff)) - buffer)
     if (diff < 0) {
       // The quote input amount is too high, reduce
-      indexTokenAmount = indexTokenAmount
-        .mul(100 - Math.floor(Math.abs(diff)) - buffer)
-        .div(100)
+      indexTokenAmount =
+        (indexTokenAmount * BigInt(100 - Math.floor(Math.abs(diff)) - buffer)) /
+        BigInt(100)
     } else {
       // The quote input amount is too low from the original input, increase
-      indexTokenAmount = indexTokenAmount
-        .mul(100 + Math.round(Math.abs(diff)) - buffer)
-        .div(100)
+      indexTokenAmount =
+        (indexTokenAmount * BigInt(100 + Math.round(Math.abs(diff)) - buffer)) /
+        BigInt(100)
     }
   }
 }
