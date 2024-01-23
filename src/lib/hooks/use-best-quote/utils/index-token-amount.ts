@@ -14,6 +14,6 @@ export const getIndexTokenAmount = (
   // When minting - calculate an approximate index token amount for FlashMint quotes
   const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
   const approxOutputAmount =
-    outputTokenPrice === 0 ? 0 : (inputTokenAmountUsd / outputTokenPrice) * 0.99
+    outputTokenPrice === 0 ? 0 : (inputTokenAmountUsd / outputTokenPrice)
   return parseUnits(approxOutputAmount.toString(), outputTokenDecimals)
 }
