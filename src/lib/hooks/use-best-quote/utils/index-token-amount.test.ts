@@ -7,7 +7,7 @@ describe('getIndexTokenAmount - redeeming', () => {
     const isMinting = false
     const expectedIndexTokenAmount = parseUnits('1', 18)
     const indexTokenAmount = getIndexTokenAmount(isMinting, '1', 18, 18, 0, 0)
-    expect(indexTokenAmount.toBigInt()).toEqual(expectedIndexTokenAmount)
+    expect(indexTokenAmount).toEqual(expectedIndexTokenAmount)
   })
 })
 
@@ -34,7 +34,7 @@ describe('getIndexTokenAmount - minting', () => {
     const indexTokenPriceTotal =
       Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
       outputTokenPrice
-    expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
+    expect(indexTokenAmount).toEqual(expectedAmount)
     expect(indexTokenPriceTotal).toBeCloseTo(inputTokenAmountUsd, 1)
   })
 
@@ -58,7 +58,7 @@ describe('getIndexTokenAmount - minting', () => {
     const indexTokenPriceTotal =
       Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
       outputTokenPrice
-    expect(indexTokenAmount.toString()).toEqual(expectedAmount.toString())
+    expect(indexTokenAmount).toEqual(expectedAmount)
     expect(indexTokenPriceTotal).toBeCloseTo(inputTokenTotal, 1)
   })
 })

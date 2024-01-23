@@ -1,6 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber'
-
-import { toWei } from '@/lib/utils'
+import { parseUnits } from 'viem'
 
 export const getIndexTokenAmount = (
   isMinting: boolean,
@@ -9,14 +7,13 @@ export const getIndexTokenAmount = (
   outputTokenDecimals: number,
   inputTokenPrice: number,
   outputTokenPrice: number
-): BigNumber => {
+): bigint => {
   if (!isMinting) {
-    return toWei(inputTokenAmount, inputTokenDecimals)
+    return parseUnits(inputTokenAmount, inputTokenDecimals)
   }
-  // Recalculate the exchange issue/redeem quotes if not enough DEX liquidity
+  // When minting - calculate an approximate index token amount for FlashMint quotes
   const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
   const approxOutputAmount =
     outputTokenPrice === 0 ? 0 : (inputTokenAmountUsd / outputTokenPrice) * 0.99
-  const indexTokenAmount = toWei(approxOutputAmount, outputTokenDecimals)
-  return indexTokenAmount
+  return parseUnits(approxOutputAmount.toString(), outputTokenDecimals)
 }

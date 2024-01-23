@@ -222,8 +222,7 @@ async function getFlashMintQuote(
     inputToken.decimals,
     outputToken.decimals,
     inputTokenPrice,
-    outputTokenPrice,
-    dexData
+    outputTokenPrice
   )
 
   const gasStation = new GasStation(provider)
@@ -237,7 +236,7 @@ async function getFlashMintQuote(
       isMinting,
       inputToken,
       outputToken,
-      indexTokenAmount,
+      BigNumber.from(indexTokenAmount.toString()),
       inputTokenPrice,
       outputTokenPrice,
       nativeTokenPrice,
@@ -272,14 +271,14 @@ async function getFlashMintQuote(
     console.log(diff >= 0, 100 + Math.round(Math.abs(diff)) - buffer)
     if (diff < 0) {
       // The quote input amount is too high, reduce
-      indexTokenAmount = indexTokenAmount
-        .mul(100 - Math.floor(Math.abs(diff)) - buffer)
-        .div(100)
+      indexTokenAmount =
+        (indexTokenAmount * BigInt(100 - Math.floor(Math.abs(diff)) - buffer)) /
+        BigInt(100)
     } else {
       // The quote input amount is too low from the original input, increase
-      indexTokenAmount = indexTokenAmount
-        .mul(100 + Math.round(Math.abs(diff)) - buffer)
-        .div(100)
+      indexTokenAmount =
+        (indexTokenAmount * BigInt(100 + Math.round(Math.abs(diff)) - buffer)) /
+        BigInt(100)
     }
   }
 }
