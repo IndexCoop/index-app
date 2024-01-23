@@ -235,9 +235,9 @@ async function getFlashMintQuote(
     if (flashMintQuote === null) return savedQuote
     // For redeeming return quote immdediately
     if (!isMinting) return flashMintQuote
+    savedQuote = flashMintQuote
 
     console.log('estimated index token amount', indexTokenAmount.toString());
-    savedQuote = flashMintQuote
     const diff = (inputTokenAmountWei.sub(flashMintQuote.inputTokenAmount)).toBigInt()
     console.log("diff", diff.toString());
     const ratio = Number(diff.toString()) / Number(inputTokenAmountWei.toString())
