@@ -20,7 +20,6 @@ import { maxPriceImpact } from './config'
 import { getBestQuote } from './utils/best-quote'
 import { getEnhancedFlashMintQuote } from './utils/flashmint'
 import { getIndexTokenAmount } from './utils/index-token-amount'
-import { shouldReturnQuote } from './utils/should-return-quote'
 import { get0xQuote } from './utils/zeroex'
 import {
   IndexQuoteRequest,
@@ -216,11 +215,8 @@ async function getFlashMintQuote(
   const gasPrice = await gasStation.getGasPrice()
 
   let savedQuote: Quote | null = null
-  // const timestamp: number = new Date().getTime()
-  // console.log('timestamp:', timestamp)
 
-  // while (true) {
-  for (let i = 0; i < 1; i++) {
+  for (let t = 2; t > 0; t--) {
     const flashMintQuote = await getEnhancedFlashMintQuote(
       isMinting,
       inputToken,
@@ -239,42 +235,22 @@ async function getFlashMintQuote(
     if (flashMintQuote === null) return savedQuote
     // For redeeming return quote immdediately
     if (!isMinting) return flashMintQuote
-    // As a safety measure we're aborting after 30 seconds take whatever quote we got
-    // const now: number = new Date().getTime()
-    // const diffSinceStart = (now - timestamp) / 1000
-    // console.log(timestamp, now, diffSinceStart)
-    // if (diffSinceStart > 10) return flashMintQuote
-    // For minting check if we got a quote that is lower/equal than the input token amount
-    // - since we should never go above what the user entered intitially. Additionally,
-    // we're checking if there might be a too big of a difference to the original input amount.
-    // const { diff, shouldReturn } = shouldReturnQuote(
-    //   inputTokenAmountWei.toBigInt(),
-    //   flashMintQuote.inputTokenAmount.toBigInt()
-    // )
-    // if (shouldReturn) return flashMintQuote
-    // Save last fetched quote to be able to return something if next run fails
 
+    console.log('estimated index token amount', indexTokenAmount.toString());
     savedQuote = flashMintQuote
-    const diff = inputTokenAmountWei.toBigInt() - flashMintQuote.inputTokenAmount.toBigInt()
-    console.log("diff", Number(diff.toString()));
-    const percent =
-      (100 * Number(diff.toString())) / Number(inputTokenAmountWei.toBigInt().toString())
-    console.log("percent", percent);
+    const diff = (inputTokenAmountWei.sub(flashMintQuote.inputTokenAmount)).toBigInt()
+    console.log("diff", diff.toString());
+    const ratio = Number(diff.toString()) / Number(inputTokenAmountWei.toString())
+    console.log("ratio", ratio.toString());
 
-    // console.log('diff:', diff.toString())
-    // const buffer = 1
-    // console.log(diff < 0, 100 - Math.floor(Math.abs(diff)) - buffer)
-    // console.log(diff >= 0, 100 + Math.round(Math.abs(diff)) - buffer)
-    // if (diff < 0) {
-    //   // The quote input amount is too high, reduce
-    //   indexTokenAmount =
-    //     (indexTokenAmount * BigInt(100 - Math.floor(Math.abs(diff)) - buffer)) /
-    //     BigInt(100)
-    // } else {
-    //   // The quote input amount is too low from the original input, increase
-    //   indexTokenAmount =
-    //     (indexTokenAmount * BigInt(100 + Math.round(Math.abs(diff)) - buffer)) /
-    //     BigInt(100)
-    // }
+    // TODO: Use percentage instead of fixed amount
+    indexTokenAmount = indexTokenAmount + diff
+    console.log('new index token amount', indexTokenAmount.toString());
+
+    if (diff < 0 && t === 1) {
+      t++; // loop one more time to stay under the input amount
+    }
   }
+
+  return savedQuote
 }
