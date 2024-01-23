@@ -216,9 +216,11 @@ async function getFlashMintQuote(
   const gasPrice = await gasStation.getGasPrice()
 
   let savedQuote: Quote | null = null
-  const timestamp: number = new Date().getTime()
-  console.log('timestamp:', timestamp)
-  while (true) {
+  // const timestamp: number = new Date().getTime()
+  // console.log('timestamp:', timestamp)
+
+  // while (true) {
+  for (let i = 0; i < 1; i++) {
     const flashMintQuote = await getEnhancedFlashMintQuote(
       isMinting,
       inputToken,
@@ -238,34 +240,41 @@ async function getFlashMintQuote(
     // For redeeming return quote immdediately
     if (!isMinting) return flashMintQuote
     // As a safety measure we're aborting after 30 seconds take whatever quote we got
-    const now: number = new Date().getTime()
-    const diffSinceStart = (now - timestamp) / 1000
-    console.log(timestamp, now, diffSinceStart)
-    if (diffSinceStart > 10) return flashMintQuote
+    // const now: number = new Date().getTime()
+    // const diffSinceStart = (now - timestamp) / 1000
+    // console.log(timestamp, now, diffSinceStart)
+    // if (diffSinceStart > 10) return flashMintQuote
     // For minting check if we got a quote that is lower/equal than the input token amount
     // - since we should never go above what the user entered intitially. Additionally,
     // we're checking if there might be a too big of a difference to the original input amount.
-    const { diff, shouldReturn } = shouldReturnQuote(
-      inputTokenAmountWei.toBigInt(),
-      flashMintQuote.inputTokenAmount.toBigInt()
-    )
-    if (shouldReturn) return flashMintQuote
+    // const { diff, shouldReturn } = shouldReturnQuote(
+    //   inputTokenAmountWei.toBigInt(),
+    //   flashMintQuote.inputTokenAmount.toBigInt()
+    // )
+    // if (shouldReturn) return flashMintQuote
     // Save last fetched quote to be able to return something if next run fails
+
     savedQuote = flashMintQuote
-    console.log('diff:', diff.toString())
-    const buffer = 1
-    console.log(diff < 0, 100 - Math.floor(Math.abs(diff)) - buffer)
-    console.log(diff >= 0, 100 + Math.round(Math.abs(diff)) - buffer)
-    if (diff < 0) {
-      // The quote input amount is too high, reduce
-      indexTokenAmount =
-        (indexTokenAmount * BigInt(100 - Math.floor(Math.abs(diff)) - buffer)) /
-        BigInt(100)
-    } else {
-      // The quote input amount is too low from the original input, increase
-      indexTokenAmount =
-        (indexTokenAmount * BigInt(100 + Math.round(Math.abs(diff)) - buffer)) /
-        BigInt(100)
-    }
+    const diff = inputTokenAmountWei.toBigInt() - flashMintQuote.inputTokenAmount.toBigInt()
+    console.log("diff", Number(diff.toString()));
+    const percent =
+      (100 * Number(diff.toString())) / Number(inputTokenAmountWei.toBigInt().toString())
+    console.log("percent", percent);
+
+    // console.log('diff:', diff.toString())
+    // const buffer = 1
+    // console.log(diff < 0, 100 - Math.floor(Math.abs(diff)) - buffer)
+    // console.log(diff >= 0, 100 + Math.round(Math.abs(diff)) - buffer)
+    // if (diff < 0) {
+    //   // The quote input amount is too high, reduce
+    //   indexTokenAmount =
+    //     (indexTokenAmount * BigInt(100 - Math.floor(Math.abs(diff)) - buffer)) /
+    //     BigInt(100)
+    // } else {
+    //   // The quote input amount is too low from the original input, increase
+    //   indexTokenAmount =
+    //     (indexTokenAmount * BigInt(100 + Math.round(Math.abs(diff)) - buffer)) /
+    //     BigInt(100)
+    // }
   }
 }
