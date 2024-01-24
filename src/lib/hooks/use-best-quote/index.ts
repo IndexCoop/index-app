@@ -216,16 +216,6 @@ async function getFlashMintQuote(
 
   let savedQuote: Quote | null = null
 
-  const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
-    let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
-    console.log('ratio', ratio)
-    if (Math.abs(ratio) < 0.0001) {
-      // This is currently need to avoid infinite loops
-      ratio = diff < 0 ? -0.0001 : 0.0001
-    }
-    return BigInt(Math.round((1 + ratio) * 10000))
-  }
-
   for (let t = 2; t > 0; t--) {
     const flashMintQuote = await getEnhancedFlashMintQuote(
       isMinting,
@@ -254,16 +244,9 @@ async function getFlashMintQuote(
     console.log('diff', diff.toString())
     const factor = determineFactor(diff, inputTokenAmountWei.toBigInt())
     console.log('factor', factor.toString())
-    // console.log(
-    //   inputTokenAmountWei.toString(),
-    //   flashMintQuote.inputTokenAmount.toString(),
-    //   indexTokenAmount.toString(),
-    //   ((indexTokenAmount * factor) / BigInt(10000)).toString()
-    // )
 
     indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
-    console.log('new index token amount', indexTokenAmount.toString())
-    console.log('t', t)
+    console.log('new index token amount', indexTokenAmount.toString(), t)
 
     if (diff < 0 && t === 1) {
       t++ // loop one more time to stay under the input amount
@@ -271,4 +254,14 @@ async function getFlashMintQuote(
   }
 
   return savedQuote
+}
+
+const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
+  let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
+  console.log('ratio', ratio)
+  if (Math.abs(ratio) < 0.0001) {
+    // This is currently needed to avoid infinite loops
+    ratio = diff < 0 ? -0.0001 : 0.0001
+  }
+  return BigInt(Math.round((1 + ratio) * 10000))
 }
