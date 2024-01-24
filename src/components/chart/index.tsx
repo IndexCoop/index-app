@@ -1,22 +1,34 @@
+import { useRef, RefObject } from 'react'
+
 import { Flex } from '@chakra-ui/react'
+import { useSize } from '@chakra-ui/react-use-size'
 
 import { colors } from '@/lib/styles/colors'
 
 import { Price } from './components/price'
 import { RangeSelection } from './components/range-selection'
+import LineChart from './components/line-chart'
 
 export function Chart() {
+  const elementRef = useRef<HTMLDivElement>(null)
+  const { height, width } = useSize(elementRef) ?? { width: null }
   return (
     <Flex
       align='start'
       bg={colors.icWhite}
       borderRadius='22'
+      flexDirection={'column'}
+      ref={elementRef}
       shadow={'md'}
       w='700px'
+      h='100%'
     >
       <Flex align='center' flex='row' p='24px' justify='space-between' w='100%'>
         <Price label={'$2,379.95'} />
         <RangeSelection />
+      </Flex>
+      <Flex m='20px 0'>
+        <LineChart width={width ?? 200} height={300 - 20} />
       </Flex>
     </Flex>
   )
