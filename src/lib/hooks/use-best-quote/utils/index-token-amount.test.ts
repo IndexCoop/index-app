@@ -12,8 +12,6 @@ describe('getIndexTokenAmount - redeeming', () => {
 })
 
 describe('getIndexTokenAmount - minting', () => {
-  const outputAdjust = 0.99
-
   it('returns approx. index token amount', async () => {
     const isMinting = true
     const inputTokenAmount = '1'
@@ -28,8 +26,7 @@ describe('getIndexTokenAmount - minting', () => {
       outputTokenPrice
     )
     const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
-    const approxOutputAmount =
-      (inputTokenAmountUsd / outputTokenPrice) * outputAdjust
+    const approxOutputAmount = inputTokenAmountUsd / outputTokenPrice
     const expectedAmount = parseUnits(approxOutputAmount.toString(), 18)
     const indexTokenPriceTotal =
       Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
@@ -52,8 +49,7 @@ describe('getIndexTokenAmount - minting', () => {
       outputTokenPrice
     )
     const inputTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
-    const approxOutputAmount =
-      (inputTokenTotal / outputTokenPrice) * outputAdjust
+    const approxOutputAmount = inputTokenTotal / outputTokenPrice
     const expectedAmount = parseUnits(approxOutputAmount.toString(), 18)
     const indexTokenPriceTotal =
       Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
