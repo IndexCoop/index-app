@@ -5,10 +5,11 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from '@/constants/chains'
-import { CoinDeskEthTrendIndex, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 import { getConfiguredZeroExApi } from '@/lib/utils/api/zeroex'
 import { getNetworkKey } from '@/lib/utils/api/zeroex-utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 import { displayFromWei } from '@/lib/utils'
@@ -65,12 +66,12 @@ export async function getEnhancedFlashMintQuote(
         data: utils.hexlify(tx.data!),
         value: tx.value ? BigNumber.from(tx.value) : undefined,
       }
-      const isCdEti =
-        inputOutputToken.symbol === CoinDeskEthTrendIndex.symbol ||
-        outputToken.symbol === CoinDeskEthTrendIndex.symbol
-      const defaultGasEstimate = BigNumber.from(isCdEti ? 500_000 : 5_000_000)
+      const defaultGas = getFlashMintGasDefault(indexToken.symbol)
+      const defaultGasEstimate = BigNumber.from(defaultGas)
+      console.log('gas', defaultGas, defaultGasEstimate.toString())
       const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
-      transaction.gasLimit = defaultGasEstimate
+      transaction.gasLimit = await gasEstimatooor.estimate(transaction)
+      console.log('gasLimit', transaction.gasLimit.toString())
       // We don't want this function to fail for estimates here.
       // A default will be returned if the tx would fail.
       const canFail = false
