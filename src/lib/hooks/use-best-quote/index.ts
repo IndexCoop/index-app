@@ -220,6 +220,7 @@ async function getFlashMintQuote(
     let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
     console.log('ratio', ratio)
     if (Math.abs(ratio) < 0.0001) {
+      // This is currently need to avoid infinite loops
       ratio = diff < 0 ? -0.0001 : 0.0001
     }
     return BigInt(Math.round((1 + ratio) * 10000))
