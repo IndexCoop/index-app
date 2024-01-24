@@ -216,6 +216,15 @@ async function getFlashMintQuote(
 
   let savedQuote: Quote | null = null
 
+  const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
+    const ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
+    console.log('ratio', ratio.toString())
+    // TODO: we might need to check if 1000 always works, or we need to determine
+    // how many decimals there are
+    if (diff < 0) return BigInt(Math.round(1000 - Math.abs(ratio * 1000)))
+    return BigInt(Math.round(Math.abs(ratio * 1000) + 1000))
+  }
+
   for (let t = 2; t > 0; t--) {
     const flashMintQuote = await getEnhancedFlashMintQuote(
       isMinting,
@@ -237,18 +246,25 @@ async function getFlashMintQuote(
     if (!isMinting) return flashMintQuote
     savedQuote = flashMintQuote
 
-    console.log('estimated index token amount', indexTokenAmount.toString());
-    const diff = (inputTokenAmountWei.sub(flashMintQuote.inputTokenAmount)).toBigInt()
-    console.log("diff", diff.toString());
-    const ratio = Number(diff.toString()) / Number(inputTokenAmountWei.toString())
-    console.log("ratio", ratio.toString());
+    console.log('estimated index token amount', indexTokenAmount.toString())
+    const diff = inputTokenAmountWei
+      .sub(flashMintQuote.inputTokenAmount)
+      .toBigInt()
+    console.log('diff', diff.toString())
+    const factor = determineFactor(diff, inputTokenAmountWei.toBigInt())
+    console.log('factor', factor.toString())
+    // console.log(
+    //   inputTokenAmountWei.toString(),
+    //   flashMintQuote.inputTokenAmount.toString(),
+    //   indexTokenAmount.toString(),
+    //   ((indexTokenAmount * factor) / BigInt(1000)).toString()
+    // )
 
-    // TODO: Use percentage instead of fixed amount
-    indexTokenAmount = indexTokenAmount + diff
-    console.log('new index token amount', indexTokenAmount.toString());
+    indexTokenAmount = (indexTokenAmount * factor) / BigInt(1000)
+    console.log('new index token amount', indexTokenAmount.toString())
 
     if (diff < 0 && t === 1) {
-      t++; // loop one more time to stay under the input amount
+      t++ // loop one more time to stay under the input amount
     }
   }
 
