@@ -217,12 +217,12 @@ async function getFlashMintQuote(
   let savedQuote: Quote | null = null
 
   const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
-    const ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
-    console.log('ratio', ratio.toString())
-    // TODO: we might need to check if 1000 always works, or we need to determine
-    // how many decimals there are
-    if (diff < 0) return BigInt(Math.round(1000 - Math.abs(ratio * 1000)))
-    return BigInt(Math.round(Math.abs(ratio * 1000) + 1000))
+    let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
+    console.log('ratio', ratio)
+    if (Math.abs(ratio) < 0.0001) {
+      ratio = diff < 0 ? -0.0001 : 0.0001
+    }
+    return BigInt(Math.round((1 + ratio) * 10000))
   }
 
   for (let t = 2; t > 0; t--) {
@@ -257,11 +257,12 @@ async function getFlashMintQuote(
     //   inputTokenAmountWei.toString(),
     //   flashMintQuote.inputTokenAmount.toString(),
     //   indexTokenAmount.toString(),
-    //   ((indexTokenAmount * factor) / BigInt(1000)).toString()
+    //   ((indexTokenAmount * factor) / BigInt(10000)).toString()
     // )
 
-    indexTokenAmount = (indexTokenAmount * factor) / BigInt(1000)
+    indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
     console.log('new index token amount', indexTokenAmount.toString())
+    console.log('t', t)
 
     if (diff < 0 && t === 1) {
       t++ // loop one more time to stay under the input amount
