@@ -107,8 +107,8 @@ export const useBestQuote = () => {
         }
 
         const bestQuote = getBestQuote(
-          quote0x?.fullCostsInUsd ?? null,
-          quoteFlashMint?.fullCostsInUsd ?? null,
+          quote0x?.outputValueInUsdAfterGas ?? null,
+          quoteFlashMint?.outputValueInUsdAfterGas ?? null,
           quote0x?.priceImpact ?? maxPriceImpact
         )
 
@@ -116,8 +116,8 @@ export const useBestQuote = () => {
           if (!quote0x) return 0
           if (bestQuote.type === QuoteType.flashmint && quoteFlashMint) {
             return (
-              (quote0x.fullCostsInUsd ?? 0) -
-              (quoteFlashMint.fullCostsInUsd ?? 0)
+              (quoteFlashMint.outputValueInUsdAfterGas ?? 0) -
+              (quote0x.outputValueInUsdAfterGas ?? 0)
             )
           }
           return 0

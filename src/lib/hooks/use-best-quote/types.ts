@@ -37,6 +37,7 @@ export interface Quote {
   gasCosts: BigNumber
   gasCostsInUsd: number
   fullCostsInUsd: number | null
+  outputValueInUsdAfterGas: number | null
   priceImpact: number | null
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber

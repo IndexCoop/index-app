@@ -17,6 +17,25 @@ export function getFullCostsInUsd(
   return quotePrice + gasPrice
 }
 
+export function getOutputValueInUsdAfterGas(
+  outputTokenAmount: BigNumber | null | undefined,
+  gas: BigNumber,
+  outputTokenDecimals: number,
+  outputTokenPrice: number,
+  nativeTokenPrice: number
+): number | null {
+  if (outputTokenAmount === null || outputTokenAmount === undefined) return null
+  const q =
+    displayFromWei(
+      outputTokenAmount,
+      undefined,
+      outputTokenDecimals
+    )?.toString() ?? '0'
+  const outputValueInUsd = parseFloat(q) * outputTokenPrice
+  const gasPrice = getGasCostsInUsd(gas, nativeTokenPrice)
+  return outputValueInUsd - gasPrice
+}
+
 export function getGasCostsInUsd(
   gas: BigNumber,
   nativeTokenPrice: number

@@ -3,7 +3,11 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { ic21 } from '@/constants/tokens'
 import { getZeroExTradeData } from '@/lib/utils/api/zeroex-utils'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
-import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import {
+  getFullCostsInUsd,
+  getOutputValueInUsdAfterGas,
+  getGasCostsInUsd,
+} from '@/lib/utils/costs'
 import { displayFromWei, toWei } from '@/lib/utils'
 
 import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
@@ -86,6 +90,13 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
           gas0x,
           inputToken.decimals,
           inputTokenPrice,
+          nativeTokenPrice
+        ),
+        outputValueInUsdAfterGas: getOutputValueInUsdAfterGas(
+          outputTokenAmount,
+          gas0x,
+          outputToken.decimals,
+          outputTokenPrice,
           nativeTokenPrice
         ),
         priceImpact,

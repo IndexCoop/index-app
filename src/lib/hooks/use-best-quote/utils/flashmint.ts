@@ -8,7 +8,11 @@ import { MAINNET } from '@/constants/chains'
 import { CoinDeskEthTrendIndex, Token } from '@/constants/tokens'
 import { getConfiguredZeroExApi } from '@/lib/utils/api/zeroex'
 import { getNetworkKey } from '@/lib/utils/api/zeroex-utils'
-import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import {
+  getFullCostsInUsd,
+  getOutputValueInUsdAfterGas,
+  getGasCostsInUsd,
+} from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 import { displayFromWei } from '@/lib/utils'
@@ -111,6 +115,13 @@ export async function getEnhancedFlashMintQuote(
           gasEstimate.mul(gasPrice),
           inputToken.decimals,
           inputTokenPrice,
+          nativeTokenPrice
+        ),
+        outputValueInUsdAfterGas: getOutputValueInUsdAfterGas(
+          outputTokenAmount,
+          gasEstimate.mul(gasPrice),
+          outputToken.decimals,
+          outputTokenPrice,
           nativeTokenPrice
         ),
         priceImpact,
