@@ -16,7 +16,6 @@ import {
 
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 
-import { maxPriceImpact } from './config'
 import { getBestQuote } from './utils/best-quote'
 import { getEnhancedFlashMintQuote } from './utils/flashmint'
 import { getIndexTokenAmount } from './utils/index-token-amount'

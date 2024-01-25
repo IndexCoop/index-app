@@ -1,7 +1,5 @@
-import { formatUnits, parseUnits } from 'viem'
-
-import { getBestQuote } from './best-quote'
 import { QuoteType } from '../types'
+import { getBestQuote } from './best-quote'
 
 describe('getBestQuote', () => {
   it('returns 0x when it is the only quote', async () => {
