@@ -70,8 +70,6 @@ export async function getEnhancedFlashMintQuote(
       const defaultGasEstimate = BigNumber.from(defaultGas)
       console.log('gas', defaultGas, defaultGasEstimate.toString())
       const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
-      transaction.gasLimit = await gasEstimatooor.estimate(transaction)
-      console.log('gasLimit', transaction.gasLimit.toString())
       // We don't want this function to fail for estimates here.
       // A default will be returned if the tx would fail.
       const canFail = false
@@ -79,6 +77,7 @@ export async function getEnhancedFlashMintQuote(
       const gasCosts = gasEstimate.mul(gasPrice)
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       transaction.gasLimit = gasEstimate
+      console.log('gasLimit', transaction.gasLimit.toString())
 
       const inputTokenAmount = isMinting ? inputOutputAmount : indexTokenAmount
       const outputTokenAmount = isMinting ? indexTokenAmount : inputOutputAmount
