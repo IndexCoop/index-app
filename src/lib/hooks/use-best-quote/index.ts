@@ -216,6 +216,7 @@ async function getFlashMintQuote(
 
   let savedQuote: Quote | null = null
 
+  let inputTooHighStreak = 0
   for (let t = 2; t > 0; t--) {
     const flashMintQuote = await getEnhancedFlashMintQuote(
       isMinting,
@@ -235,33 +236,67 @@ async function getFlashMintQuote(
     if (flashMintQuote === null) return savedQuote
     // For redeeming return quote immdediately
     if (!isMinting) return flashMintQuote
-    savedQuote = flashMintQuote
 
     console.log('estimated index token amount', indexTokenAmount.toString())
     const diff = inputTokenAmountWei
       .sub(flashMintQuote.inputTokenAmount)
       .toBigInt()
     console.log('diff', diff.toString())
-    const factor = determineFactor(diff, inputTokenAmountWei.toBigInt())
+    const factor = determineFactor(
+      diff,
+      inputTokenAmountWei.toBigInt(),
+      inputTooHighStreak
+    )
     console.log('factor', factor.toString())
 
-    indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
+    indexTokenAmount = (indexTokenAmount * factor) / BigInt(1000000)
     console.log('new index token amount', indexTokenAmount.toString(), t)
 
     if (diff < 0 && t === 1) {
       t++ // loop one more time to stay under the input amount
+      inputTooHighStreak++
+    } else {
+      inputTooHighStreak = 0
+      savedQuote = flashMintQuote
     }
   }
 
+  // Get the quote one more time using the optimized indexTokenAmount
+  const flashMintQuote = await getEnhancedFlashMintQuote(
+    isMinting,
+    inputToken,
+    outputToken,
+    BigNumber.from(indexTokenAmount.toString()),
+    inputTokenPrice,
+    outputTokenPrice,
+    nativeTokenPrice,
+    gasPrice,
+    slippage,
+    chainId,
+    provider,
+    signer
+  )
+  // If there is no FlashMint quote, return immediately
+  if (flashMintQuote === null) return savedQuote
+  // For redeeming return quote immdediately
+  if (!isMinting) return flashMintQuote
+  savedQuote = flashMintQuote
+
+  const diff = inputTokenAmountWei
+    .sub(flashMintQuote.inputTokenAmount)
+    .toBigInt()
+  console.log('diff', diff.toString())
   return savedQuote
 }
 
-const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
-  let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
+const determineFactor = (
+  diff: bigint,
+  inputTokenAmount: bigint,
+  inputTooHighStreak: number
+): bigint => {
+  // To avoid infinite loop, make bigger adjustments if we keep getting input amounts that are too high
+  const ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
+  const buffer = 0.001 * (1 + inputTooHighStreak)
   console.log('ratio', ratio)
-  if (Math.abs(ratio) < 0.0001) {
-    // This is currently needed to avoid infinite loops
-    ratio = diff < 0 ? -0.0001 : 0.0001
-  }
-  return BigInt(Math.round((1 + ratio) * 10000))
+  return BigInt(Math.round((1 + ratio - buffer) * 1000000))
 }

@@ -17,6 +17,7 @@ export function getFullCostsInUsd(
   return quotePrice + gasPrice
 }
 
+// TODO: Calculate both input costs and output values when comparing to get best qoute
 export function getOutputValueInUsdAfterGas(
   outputTokenAmount: BigNumber | null | undefined,
   gas: BigNumber,
