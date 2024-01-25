@@ -109,12 +109,13 @@ export const useBestQuote = () => {
         const bestQuote = getBestQuote(
           quote0x?.fullCostsInUsd ?? null,
           quoteFlashMint?.fullCostsInUsd ?? null,
-          quote0x?.priceImpact ?? maxPriceImpact
+          quote0x?.outputTokenAmountUsd ?? null,
+          quoteFlashMint?.outputTokenAmountUsd ?? null
         )
 
         const getSavings = (): number => {
           if (!quote0x) return 0
-          if (bestQuote.type === QuoteType.flashmint && quoteFlashMint) {
+          if (bestQuote === QuoteType.flashmint && quoteFlashMint) {
             return (
               (quote0x.fullCostsInUsd ?? 0) -
               (quoteFlashMint.fullCostsInUsd ?? 0)
@@ -125,12 +126,12 @@ export const useBestQuote = () => {
         const savingsUsd = getSavings()
 
         setQuoteResult({
-          bestQuote: bestQuote.type,
+          bestQuote,
           // TODO:
           error: null,
           // Not used at the moment but kept for potential re-introduction
           // Insted of one argument, could change to type of enums (reasons: ReasonType.)
-          isReasonPriceImpact: bestQuote.priceImpact,
+          isReasonPriceImpact: false,
           quotes: {
             flashmint: quoteFlashMint,
             zeroex: quote0x,
