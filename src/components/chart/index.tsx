@@ -1,17 +1,18 @@
-import { useRef, RefObject } from 'react'
+import { useRef } from 'react'
 
 import { Flex } from '@chakra-ui/react'
 import { useSize } from '@chakra-ui/react-use-size'
 
 import { colors } from '@/lib/styles/colors'
 
+import { DateRange } from './components/date-range'
 import { Price } from './components/price'
 import { RangeSelection } from './components/range-selection'
 import LineChart from './components/line-chart'
 
 export function Chart() {
   const elementRef = useRef<HTMLDivElement>(null)
-  const { height, width } = useSize(elementRef) ?? { width: null }
+  const { width } = useSize(elementRef) ?? { width: null }
   return (
     <Flex
       align='start'
@@ -29,6 +30,9 @@ export function Chart() {
       </Flex>
       <Flex m='20px 0'>
         <LineChart width={width ?? 200} height={300 - 20} />
+      </Flex>
+      <Flex mb='20px' w='100%'>
+        <DateRange />
       </Flex>
     </Flex>
   )

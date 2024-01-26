@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react'
 import { AreaClosed, Line, Bar } from '@visx/shape'
 import appleStock, { AppleStock } from '@visx/mock-data/lib/mocks/appleStock'
 import { curveMonotoneX } from '@visx/curve'
-import { GridRows, GridColumns } from '@visx/grid'
+import { GridRows } from '@visx/grid'
 import { scaleTime, scaleLinear } from '@visx/scale'
 import {
   withTooltip,
@@ -22,12 +22,12 @@ const stock = appleStock.slice(800)
 export const background = '#fff' // '#3b6978'
 export const background2 = '#fff' // '#204051'
 export const accentColor = '#05ACAF'
-export const accentColorDark = '#75daad'
+export const accentColorDark = 'gray'
 const tooltipStyles = {
   ...defaultStyles,
   background,
   border: '1px solid white',
-  color: 'white',
+  color: '#05ACAF',
 }
 
 // util
@@ -112,24 +112,13 @@ export default withTooltip<AreaProps, TooltipData>(
     return (
       <div>
         <svg width={width} height={height}>
-          <rect
-            x={0}
-            y={0}
-            width={width}
-            height={height}
-            fill='url(#area-background-gradient)'
-            rx={14}
-          />
-          <LinearGradient
-            id='area-background-gradient'
-            from={background}
-            to={background2}
-          />
           <LinearGradient
             id='area-gradient'
             from={accentColor}
-            to={accentColor}
-            toOpacity={0.1}
+            fromOpacity={0.8}
+            to={'#fff'}
+            toOpacity={0.6}
+            vertical={true}
           />
           <GridRows
             left={margin.left}
@@ -140,21 +129,12 @@ export default withTooltip<AreaProps, TooltipData>(
             strokeOpacity={0}
             pointerEvents='none'
           />
-          <GridColumns
-            top={margin.top}
-            scale={dateScale}
-            height={innerHeight}
-            strokeDasharray='1,3'
-            stroke={accentColor}
-            strokeOpacity={0.2}
-            pointerEvents='none'
-          />
           <AreaClosed<AppleStock>
             data={stock}
             x={(d) => dateScale(getDate(d)) ?? 0}
             y={(d) => stockValueScale(getStockValue(d)) ?? 0}
             yScale={stockValueScale}
-            strokeWidth={1}
+            strokeWidth={2}
             stroke='url(#area-gradient)'
             fill='url(#area-gradient)'
             curve={curveMonotoneX}
