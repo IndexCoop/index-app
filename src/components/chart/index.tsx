@@ -24,12 +24,18 @@ export function Chart() {
       w='700px'
       h='100%'
     >
-      <Flex align='center' flex='row' p='24px' justify='space-between' w='100%'>
+      <Flex
+        align='center'
+        flex='row'
+        p='24px 24px 0'
+        justify='space-between'
+        w='100%'
+      >
         <Price label={'$2,379.95'} />
         <RangeSelection />
       </Flex>
       <Flex m='20px 0'>
-        <LineChart width={width ?? 200} height={300 - 20} />
+        <LineChart width={width ?? 200} height={200 - 20} />
       </Flex>
       <Flex mb='20px' w='100%'>
         <DateRange />
