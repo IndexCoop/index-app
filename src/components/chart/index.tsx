@@ -21,14 +21,15 @@ export function Chart() {
       flexDirection={'column'}
       ref={elementRef}
       shadow={'md'}
-      w='700px'
+      w='100%'
       h='100%'
     >
       <Flex
-        align='center'
-        flex='row'
-        p='24px 24px 0'
+        align={['flex-start', 'center']}
+        direction={['column', 'row']}
+        gap='8px'
         justify='space-between'
+        p='24px 24px 0'
         w='100%'
       >
         <Price label={'$2,379.95'} />
