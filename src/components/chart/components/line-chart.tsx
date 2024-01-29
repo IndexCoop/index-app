@@ -16,13 +16,14 @@ import { LinearGradient } from '@visx/gradient'
 import { max, extent, bisector } from '@visx/vendor/d3-array'
 import { timeFormat } from '@visx/vendor/d3-time-format'
 
+import { colors } from '@/lib/styles/colors'
+
 type TooltipData = AppleStock
 
 const stock = appleStock.slice(800)
-export const background = '#fff' // '#3b6978'
-export const background2 = '#fff' // '#204051'
+export const background = '#fff'
+export const background2 = '#fff'
 export const accentColor = '#05ACAF'
-export const accentColorDark = 'gray'
 const tooltipStyles = {
   ...defaultStyles,
   background,
@@ -156,29 +157,26 @@ export default withTooltip<AreaProps, TooltipData>(
               <Line
                 from={{ x: tooltipLeft, y: margin.top }}
                 to={{ x: tooltipLeft, y: innerHeight + margin.top }}
-                stroke={accentColorDark}
+                stroke={colors.icGray2}
+                strokeDasharray='2,4'
                 strokeWidth={2}
-                pointerEvents='none'
-                strokeDasharray='5,2'
-              />
-              <circle
-                cx={tooltipLeft}
-                cy={tooltipTop + 1}
-                r={4}
-                fill='black'
-                fillOpacity={0.1}
-                stroke='black'
-                strokeOpacity={0.1}
-                strokeWidth={2}
+                strokeLinecap='round'
                 pointerEvents='none'
               />
               <circle
                 cx={tooltipLeft}
                 cy={tooltipTop}
                 r={4}
-                fill={accentColorDark}
-                stroke='white'
-                strokeWidth={2}
+                fill={colors.icGray8}
+                fillOpacity={1}
+                pointerEvents='none'
+              />
+              <circle
+                cx={tooltipLeft}
+                cy={tooltipTop}
+                r={10}
+                fill={colors.icGray8}
+                fillOpacity={0.2}
                 pointerEvents='none'
               />
             </g>
