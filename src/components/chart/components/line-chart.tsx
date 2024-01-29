@@ -1,15 +1,12 @@
 import React, { useMemo, useCallback } from 'react'
+
+import { Flex, Text } from '@chakra-ui/react'
 import { AreaClosed, Line, Bar } from '@visx/shape'
 import appleStock, { AppleStock } from '@visx/mock-data/lib/mocks/appleStock'
 import { curveMonotoneX } from '@visx/curve'
 import { GridRows } from '@visx/grid'
 import { scaleTime, scaleLinear } from '@visx/scale'
-import {
-  withTooltip,
-  Tooltip,
-  TooltipWithBounds,
-  defaultStyles,
-} from '@visx/tooltip'
+import { withTooltip, TooltipWithBounds, defaultStyles } from '@visx/tooltip'
 import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip'
 import { localPoint } from '@visx/event'
 import { LinearGradient } from '@visx/gradient'
@@ -20,19 +17,9 @@ import { colors } from '@/lib/styles/colors'
 
 type TooltipData = AppleStock
 
-const stock = appleStock.slice(800)
-export const background = '#fff'
-export const background2 = '#fff'
 export const accentColor = '#05ACAF'
-const tooltipStyles = {
-  ...defaultStyles,
-  background,
-  border: '1px solid white',
-  color: '#05ACAF',
-}
-
-// util
-const formatDate = timeFormat("%b %d, '%y")
+const formatDate = timeFormat('%b %d, %I:%M %p')
+const stock = appleStock.slice(800)
 
 // accessors
 const getDate = (d: AppleStock) => new Date(d.date)
@@ -186,24 +173,29 @@ export default withTooltip<AreaProps, TooltipData>(
           <div>
             <TooltipWithBounds
               key={Math.random()}
-              top={tooltipTop - 12}
-              left={tooltipLeft + 12}
-              style={tooltipStyles}
-            >
-              {`$${getStockValue(tooltipData)}`}
-            </TooltipWithBounds>
-            <Tooltip
-              top={innerHeight + margin.top - 14}
-              left={tooltipLeft}
+              top={tooltipTop - 39}
+              left={tooltipLeft + 4}
               style={{
                 ...defaultStyles,
-                minWidth: 72,
-                textAlign: 'center',
-                transform: 'translateX(-50%)',
+                background: '#fff',
+                borderRadius: '8px',
+                opacity: 0.9,
+                padding: '10px',
               }}
             >
-              {formatDate(getDate(tooltipData))}
-            </Tooltip>
+              <Flex direction={'column'} gap={1}>
+                <Text
+                  color={colors.icGray7}
+                  fontSize={'lg'}
+                  fontWeight={600}
+                >{`$${getStockValue(tooltipData)}`}</Text>
+                <Text
+                  color={colors.icGray2}
+                  fontSize={'xs'}
+                  fontWeight={400}
+                >{`${formatDate(getDate(tooltipData))}`}</Text>
+              </Flex>
+            </TooltipWithBounds>
           </div>
         )}
       </div>
