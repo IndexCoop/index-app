@@ -35,7 +35,7 @@ export function Chart() {
         <RangeSelection />
       </Flex>
       <Flex m='20px 0'>
-        <LineChart width={width ?? 200} height={200 - 20} />
+        <LineChart width={width ?? 200} height={240 - 20} />
       </Flex>
       <Flex mb='20px' w='100%'>
         <DateRange />
