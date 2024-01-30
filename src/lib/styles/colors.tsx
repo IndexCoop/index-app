@@ -15,6 +15,7 @@ export const colors = {
   icBlue4: '#004D53',
   icBlue5: '#143438',
   icBlue6: '#15CDD1',
+  icBlue600: '#05acaf',
   icBlue7: '#42E3E5',
   icBlue8: '#78F2F4',
   icBlue9: '#ADF4F6',
@@ -32,6 +33,7 @@ export const colors = {
   icGray7: '#4E6060',
   icGray8: '#364746',
   icGray9: '#253333',
+  icGray950: '#1C2929',
   icWhite: '#FCFFFF',
   // not verified with designer (will be replaced soon)
   icGrayLightMode: '#aaa',

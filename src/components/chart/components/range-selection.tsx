@@ -15,7 +15,7 @@ function RangeSelectionItem({
   onClick,
   isSelected,
 }: RangeSelectionItemProps) {
-  const color = isSelected ? '#1C2929' : colors.icGray5
+  const color = isSelected ? colors.icGray950 : colors.icGray5
   const backgroundColor = isSelected ? '#F2F2F2' : 'none'
   return (
     <Flex

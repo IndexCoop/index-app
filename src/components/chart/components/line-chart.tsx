@@ -17,7 +17,7 @@ import { colors } from '@/lib/styles/colors'
 
 type TooltipData = AppleStock
 
-export const accentColor = '#05ACAF'
+export const accentColor = colors.icBlue600
 const formatDate = timeFormat('%b %d, %I:%M %p')
 const stock = appleStock.slice(800)
 
