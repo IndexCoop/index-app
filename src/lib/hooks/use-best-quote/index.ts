@@ -16,11 +16,9 @@ import {
 
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 
-import { maxPriceImpact } from './config'
 import { getBestQuote } from './utils/best-quote'
 import { getEnhancedFlashMintQuote } from './utils/flashmint'
 import { getIndexTokenAmount } from './utils/index-token-amount'
-import { shouldReturnQuote } from './utils/should-return-quote'
 import { get0xQuote } from './utils/zeroex'
 import {
   IndexQuoteRequest,
@@ -110,12 +108,13 @@ export const useBestQuote = () => {
         const bestQuote = getBestQuote(
           quote0x?.fullCostsInUsd ?? null,
           quoteFlashMint?.fullCostsInUsd ?? null,
-          quote0x?.priceImpact ?? maxPriceImpact
+          quote0x?.outputTokenAmountUsd ?? null,
+          quoteFlashMint?.outputTokenAmountUsd ?? null
         )
 
         const getSavings = (): number => {
           if (!quote0x) return 0
-          if (bestQuote.type === QuoteType.flashmint && quoteFlashMint) {
+          if (bestQuote === QuoteType.flashmint && quoteFlashMint) {
             return (
               (quote0x.fullCostsInUsd ?? 0) -
               (quoteFlashMint.fullCostsInUsd ?? 0)
@@ -126,12 +125,12 @@ export const useBestQuote = () => {
         const savingsUsd = getSavings()
 
         setQuoteResult({
-          bestQuote: bestQuote.type,
+          bestQuote,
           // TODO:
           error: null,
           // Not used at the moment but kept for potential re-introduction
           // Insted of one argument, could change to type of enums (reasons: ReasonType.)
-          isReasonPriceImpact: bestQuote.priceImpact,
+          isReasonPriceImpact: false,
           quotes: {
             flashmint: quoteFlashMint,
             zeroex: quote0x,
@@ -216,9 +215,8 @@ async function getFlashMintQuote(
   const gasPrice = await gasStation.getGasPrice()
 
   let savedQuote: Quote | null = null
-  const timestamp: number = new Date().getTime()
-  console.log('timestamp:', timestamp)
-  while (true) {
+
+  for (let t = 2; t > 0; t--) {
     const flashMintQuote = await getEnhancedFlashMintQuote(
       isMinting,
       inputToken,
@@ -237,35 +235,33 @@ async function getFlashMintQuote(
     if (flashMintQuote === null) return savedQuote
     // For redeeming return quote immdediately
     if (!isMinting) return flashMintQuote
-    // As a safety measure we're aborting after 30 seconds take whatever quote we got
-    const now: number = new Date().getTime()
-    const diffSinceStart = (now - timestamp) / 1000
-    console.log(timestamp, now, diffSinceStart)
-    if (diffSinceStart > 10) return flashMintQuote
-    // For minting check if we got a quote that is lower/equal than the input token amount
-    // - since we should never go above what the user entered intitially. Additionally,
-    // we're checking if there might be a too big of a difference to the original input amount.
-    const { diff, shouldReturn } = shouldReturnQuote(
-      inputTokenAmountWei.toBigInt(),
-      flashMintQuote.inputTokenAmount.toBigInt()
-    )
-    if (shouldReturn) return flashMintQuote
-    // Save last fetched quote to be able to return something if next run fails
     savedQuote = flashMintQuote
-    console.log('diff:', diff.toString())
-    const buffer = 1
-    console.log(diff < 0, 100 - Math.floor(Math.abs(diff)) - buffer)
-    console.log(diff >= 0, 100 + Math.round(Math.abs(diff)) - buffer)
-    if (diff < 0) {
-      // The quote input amount is too high, reduce
-      indexTokenAmount =
-        (indexTokenAmount * BigInt(100 - Math.floor(Math.abs(diff)) - buffer)) /
-        BigInt(100)
-    } else {
-      // The quote input amount is too low from the original input, increase
-      indexTokenAmount =
-        (indexTokenAmount * BigInt(100 + Math.round(Math.abs(diff)) - buffer)) /
-        BigInt(100)
+
+    console.log('estimated index token amount', indexTokenAmount.toString())
+    const diff = inputTokenAmountWei
+      .sub(flashMintQuote.inputTokenAmount)
+      .toBigInt()
+    console.log('diff', diff.toString())
+    const factor = determineFactor(diff, inputTokenAmountWei.toBigInt())
+    console.log('factor', factor.toString())
+
+    indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
+    console.log('new index token amount', indexTokenAmount.toString(), t)
+
+    if (diff < 0 && t === 1) {
+      t++ // loop one more time to stay under the input amount
     }
   }
+
+  return savedQuote
+}
+
+const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
+  let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
+  console.log('ratio', ratio)
+  if (Math.abs(ratio) < 0.0001) {
+    // This is currently needed to avoid infinite loops
+    ratio = diff < 0 ? -0.0001 : 0.0001
+  }
+  return BigInt(Math.round((1 + ratio) * 10000))
 }

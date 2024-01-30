@@ -1,41 +1,26 @@
-import { maxPriceImpact } from '../config'
 import { QuoteType } from '../types'
 
 export function getBestQuote(
   fullCosts0x: number | null,
-  fullCostsEI: number | null,
-  priceImpactDex: number
-): { type: QuoteType; priceImpact: boolean } {
-  if (fullCostsEI === null) {
-    return { type: QuoteType.zeroex, priceImpact: false }
+  fullCostsFM: number | null,
+  totalOutput0x: number | null,
+  totalOutputFM: number | null
+): QuoteType {
+  console.log(
+    'bestquote:',
+    fullCosts0x,
+    fullCostsFM,
+    totalOutput0x,
+    totalOutputFM
+  )
+  if (fullCosts0x !== null && fullCostsFM === null) return QuoteType.zeroex
+  if (fullCosts0x === null && fullCostsFM !== null) return QuoteType.flashmint
+  if (fullCosts0x && totalOutput0x && fullCostsFM && totalOutputFM) {
+    const costsDiff = fullCostsFM - fullCosts0x
+    const outputsDiff = totalOutputFM - totalOutput0x
+    const diff = outputsDiff - costsDiff
+    if (diff > 0) return QuoteType.flashmint
+    if (diff < 0) return QuoteType.zeroex
   }
-
-  const quotes: any[][] = []
-  if (fullCosts0x) {
-    quotes.push([QuoteType.zeroex, fullCosts0x])
-  }
-  if (fullCostsEI) {
-    quotes.push([QuoteType.flashmint, fullCostsEI])
-  }
-  const cheapestQuotes = quotes.sort((q1, q2) => q1[1] - q2[1])
-
-  if (cheapestQuotes.length <= 0) {
-    return { type: QuoteType.zeroex, priceImpact: false }
-  }
-
-  const cheapestQuote = cheapestQuotes[0]
-  const bestOption = cheapestQuote[0]
-
-  // If only one quote, return best option immediately
-  if (cheapestQuotes.length === 1) {
-    return { type: bestOption, priceImpact: false }
-  }
-
-  // If multiple quotes, check price impact of 0x option
-  if (bestOption === QuoteType.zeroex && priceImpactDex >= maxPriceImpact) {
-    // In case price impact is too high, return cheapest exchange issuance
-    return { type: cheapestQuotes[1][0], priceImpact: true }
-  }
-
-  return { type: bestOption, priceImpact: false }
+  return QuoteType.zeroex
 }
