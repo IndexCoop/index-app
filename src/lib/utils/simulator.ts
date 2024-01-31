@@ -38,7 +38,7 @@ export class TxSimulator {
       },
     }
     const url = `https://api.tenderly.co/api/v1/account/${this.user}/project/${this.project}/simulations/${simulationId}/share`
-    const res = await fetch(url, requestOptions)
+    await fetch(url, requestOptions)
     const shareUrl = `https://www.tdly.co/shared/simulation/${simulationId}`
     // This log is here on purpose - as for now we only log the url to the console.
     console.log('tenderly:', shareUrl)
