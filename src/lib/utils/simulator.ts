@@ -32,7 +32,7 @@ export class TxSimulator {
    */
   async share(simulationId: string) {
     const requestOptions = {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'X-Access-Key': this.accessKey,
       },
