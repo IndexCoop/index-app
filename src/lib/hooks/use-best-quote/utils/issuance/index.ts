@@ -1,10 +1,19 @@
+import { BigNumber } from 'ethers'
+import { Token } from '@indexcoop/flash-mint-sdk'
+
 import { Ethereum2xFlexibleLeverageIndex } from '@/constants/tokens'
 
 import { Quote, QuoteType } from '../../types'
-import { BigNumber } from 'ethers'
 
 interface RedemptionQuoteRequest {
+  inputToken: Token
+  outputToken: Token
+  indexTokenAmount: Token // input for redemption
+  inputTokenPrice: number
+  outputTokenPrice: number
+  nativeTokenPrice: number
   gasPrice: bigint
+  slippage: number
 }
 
 export async function getEnhancedRedemptionQuote(
