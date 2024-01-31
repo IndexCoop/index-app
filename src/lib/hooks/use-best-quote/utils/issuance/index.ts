@@ -23,13 +23,6 @@ export async function getEnhancedRedemptionQuote(
   if (inputToken.symbol !== Ethereum2xFlexibleLeverageIndex.symbol) return null
   // FIXME: use new 2x token
   if (outputToken.symbol !== Ethereum2xFlexibleLeverageIndex.symbol) return null
-  // TODO:
-  //   const currencies = getCurrencyTokensForIndex(indexToken, chainId)
-  //   // Allow only supported currencies
-  //   const isAllowedCurrency =
-  //     currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)
-  //       .length > 0
-  //   if (!isAllowedCurrency) return null
   try {
     return {
       type: QuoteType.redemption,
