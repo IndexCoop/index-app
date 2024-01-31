@@ -22,6 +22,7 @@ export interface QuoteTransaction extends PopulatedTransaction {}
 
 export enum QuoteType {
   flashmint = 'flashmint',
+  redemption = 'redemption',
   zeroex = 'zeroex',
 }
 
