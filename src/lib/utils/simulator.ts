@@ -39,8 +39,8 @@ export class TxSimulator {
     }
     const url = `https://api.tenderly.co/api/v1/account/${this.user}/project/${this.project}/simulations/${simulationId}/share`
     const res = await fetch(url, requestOptions)
-    console.log(res)
     const shareUrl = `https://www.tdly.co/shared/simulation/${simulationId}`
+    // This log is here on purpose - as for now we only log the url to the console.
     console.log('tenderly:', shareUrl)
   }
 
@@ -78,7 +78,6 @@ export class TxSimulator {
       throw Error('Tenderly simulation quota reached')
     }
     const data = await res.json()
-    console.log('ten', data.simulation.id, data.simulation.shared)
     this.share(data.simulation.id)
     return data.simulation.status === true
   }
