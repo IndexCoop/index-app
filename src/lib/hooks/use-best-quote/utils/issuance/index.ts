@@ -1,14 +1,16 @@
 import { BigNumber } from 'ethers'
+import { Address, PublicClient } from 'viem'
 import { Token } from '@indexcoop/flash-mint-sdk'
 
 import { Ethereum2xFlexibleLeverageIndex } from '@/constants/tokens'
 
 import { Quote, QuoteType } from '../../types'
+import { RedemptionProvider } from './redemption'
 
 interface RedemptionQuoteRequest {
   inputToken: Token
   outputToken: Token
-  indexTokenAmount: Token // input for redemption
+  indexTokenAmount: bigint // input for redemption
   inputTokenPrice: number
   outputTokenPrice: number
   nativeTokenPrice: number
@@ -17,13 +19,21 @@ interface RedemptionQuoteRequest {
 }
 
 export async function getEnhancedRedemptionQuote(
-  request: RedemptionQuoteRequest
+  request: RedemptionQuoteRequest,
+  publicClient: PublicClient
 ): Promise<Quote | null> {
-  const { inputToken, gasPrice, outputToken } = request
+  const { indexTokenAmount, inputToken, gasPrice, outputToken } = request
   if (inputToken.symbol !== Ethereum2xFlexibleLeverageIndex.symbol) return null
   // FIXME: use new 2x token
   if (outputToken.symbol !== Ethereum2xFlexibleLeverageIndex.symbol) return null
   try {
+    const redemptionProvider = new RedemptionProvider(publicClient)
+    const componentsUnits =
+      await redemptionProvider.getComponentRedemptionUnits(
+        inputToken.address! as Address,
+        indexTokenAmount
+      )
+    console.log('componentsUnits:', componentsUnits)
     return {
       type: QuoteType.redemption,
       chainId: 1,
@@ -38,7 +48,7 @@ export async function getEnhancedRedemptionQuote(
       gasCostsInUsd: 0,
       fullCostsInUsd: 0,
       priceImpact: 0,
-      indexTokenAmount: BigNumber.from(0),
+      indexTokenAmount: BigNumber.from(indexTokenAmount.toString()),
       inputOutputTokenAmount: BigNumber.from(0),
       inputTokenAmount: BigNumber.from(0),
       inputTokenAmountUsd: 0,
