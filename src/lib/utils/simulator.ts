@@ -19,6 +19,31 @@ export class TxSimulator {
     }
   }
 
+  getHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      'X-Access-Key': this.accessKey,
+    }
+  }
+
+  /**
+   * Gives public access to passed simulation and outputs public url to console.
+   * @param simulationId ID of the simulation to be made public.
+   */
+  async share(simulationId: string) {
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'X-Access-Key': this.accessKey,
+      },
+    }
+    const url = `https://api.tenderly.co/api/v1/account/${this.user}/project/${this.project}/simulations/${simulationId}/share`
+    await fetch(url, requestOptions)
+    const shareUrl = `https://www.tdly.co/shared/simulation/${simulationId}`
+    // This log is here on purpose - as for now we only log the url to the console.
+    console.log('tenderly:', shareUrl)
+  }
+
   /**
    * Simulates a given transaction request on Tenderly.
    * @param tx A PopulatedTransaction to be simulated on the specified chain.
@@ -37,18 +62,14 @@ export class TxSimulator {
       access_list: [],
       // simulation config (tenderly specific)
       save_if_fails: true,
-      save: false,
+      save: true,
+      shared: true,
       // simulation_type: 'quick',
-    }
-
-    const headers = {
-      'Content-Type': 'application/json',
-      'X-Access-Key': this.accessKey,
     }
 
     const requestOptions = {
       method: 'POST',
-      headers,
+      headers: this.getHeaders(),
       body: JSON.stringify(body),
     }
 
@@ -57,6 +78,7 @@ export class TxSimulator {
       throw Error('Tenderly simulation quota reached')
     }
     const data = await res.json()
+    this.share(data.simulation.id)
     return data.simulation.status === true
   }
 }
