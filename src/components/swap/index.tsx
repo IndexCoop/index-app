@@ -33,6 +33,7 @@ import {
   useTradeButtonState,
 } from './hooks/use-trade-button-state'
 import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
+import { TradeOutput } from './components/trade-output'
 
 type SwapProps = {
   isBuying: boolean
@@ -349,7 +350,7 @@ export const Swap = (props: SwapProps) => {
             onClick={onSwitchTokens}
           />
         </Box>
-        <TradeInputSelector
+        <TradeOutput
           config={{
             isInputDisabled: true,
             isSelectorDisabled: false,
