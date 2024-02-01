@@ -1,4 +1,4 @@
-export interface Quote {
+export interface QuoteDisplay {
   isBestQuote: boolean
   inputAmount: string
   outputAmount: string
