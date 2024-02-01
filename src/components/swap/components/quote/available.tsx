@@ -38,15 +38,37 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
       borderRadius='12'
       borderWidth={borderWidth}
       direction={'column'}
+      p='16px'
+      w='100%'
+      h='110px'
     >
-      <Flex align='flex-end' direction='row'>
-        <Text fontSize={'sm'} fontWeight={600} textColor={colors.icGray4}>
-          {type.toUpperCase()}
+      <Flex align='space-between' direction='column' justify={'flex-start'}>
+        <Flex justify={'space-between'}>
+          <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
+            {quote.inputAmount}
+          </Text>
+          <Text fontSize={'sm'} fontWeight={600} textColor={highlight}>
+            {type.toUpperCase()}
+          </Text>
+        </Flex>
+      </Flex>
+      <Text
+        fontSize={'2xl'}
+        fontWeight={500}
+        // mt='16px'
+        // mb='20px'
+        textColor={colors.icGray800}
+      >
+        {quote.outputAmount}
+      </Text>
+      <Flex justify={'space-between'}>
+        <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
+          {quote.feesTotal}
+        </Text>
+        <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
+          {quote.feesGas}
         </Text>
       </Flex>
-      <Text fontSize={'md'} fontWeight={500} textColor={colors.icGray5}>
-        Swap unavailable
-      </Text>
     </Flex>
   )
 }
