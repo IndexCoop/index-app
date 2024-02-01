@@ -6,6 +6,8 @@ import { Flex, Input, Text } from '@chakra-ui/react'
 import { Token } from '@/constants/tokens'
 import { colors } from '@/lib/styles/colors'
 
+import { Caption } from './caption'
+
 interface TradeInputSelectorConfig {
   isInputDisabled?: boolean
   isReadOnly?: boolean
@@ -141,12 +143,6 @@ const Balance = ({ balance, onClick }: BalanceProps) => {
     </Flex>
   )
 }
-
-const Caption = ({ caption }: { caption: string }) => (
-  <Text fontSize={'12px'} fontWeight={500} textColor={colors.icGray2}>
-    {caption}
-  </Text>
-)
 
 interface PriceUsdProps {
   fiat: string

@@ -351,24 +351,8 @@ export const Swap = (props: SwapProps) => {
           />
         </Box>
         <TradeOutput
-          config={{
-            isInputDisabled: true,
-            isSelectorDisabled: false,
-            isReadOnly: true,
-          }}
           caption={'You receive'}
           selectedToken={outputToken}
-          selectedTokenAmount={outputTokenAmountFormatted}
-          balance={outputTokenBalanceFormatted}
-          formattedFiat={outputTokenAmountUsd}
-          priceImpact={
-            priceImpactFormatting
-              ? {
-                  value: priceImpactFormatting.priceImpact,
-                  colorCoding: priceImpactFormatting.colorCoding,
-                }
-              : undefined
-          }
           onSelectToken={() => {
             if (outputTokenslist.length > 1) onOpenSelectOutputToken()
           }}
