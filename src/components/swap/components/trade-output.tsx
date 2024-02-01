@@ -7,6 +7,7 @@ import { Token } from '@/constants/tokens'
 import { colors } from '@/lib/styles/colors'
 
 import { Caption } from './caption'
+import { QuoteResult } from './quote'
 
 interface TradeOutputProps {
   caption: string
@@ -32,6 +33,23 @@ export const TradeOutput = (props: TradeOutputProps) => {
           symbol={selectedToken.symbol}
           onClick={props.onSelectToken}
         />
+      </Flex>
+      <Flex direction='column' gap='8px' mt='20px'>
+        <Text color={colors.icGray500} fontSize='sm'>
+          Select your preferred route
+        </Text>
+        <QuoteResult
+          type={'Flash Mint'}
+          isSelected={true}
+          quote={{
+            isBestQuote: true,
+            inputAmount: '9.807 ETH for',
+            outputAmount: '189.68 ETHx2',
+            feesGas: '$55.12 via Flash Mint',
+            feesTotal: '= $10,052.42 after fees',
+          }}
+        />
+        <QuoteResult type={'Swap'} isSelected={true} quote={null} />
       </Flex>
     </Flex>
   )
