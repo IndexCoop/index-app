@@ -27,6 +27,7 @@ export const colors = {
   icGray5: '#CFD9D9',
   icGray50: '#F2F8F8',
   icGray500: '#859292',
+  icGray600: '#627171',
   icGray800: '##364746',
   icWhite: '#FCFFFF',
   // not verified with designer (will be replaced soon)
