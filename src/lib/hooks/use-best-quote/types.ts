@@ -61,6 +61,10 @@ export interface ZeroExQuote extends Quote {
 export interface QuoteResult {
   bestQuote: QuoteType
   error: Error | null
+  canSwap: {
+    flashmint: boolean
+    zeroex: boolean
+  }
   quotes: {
     flashmint: Quote | null
     zeroex: ZeroExQuote | null

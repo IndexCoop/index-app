@@ -31,6 +31,10 @@ import {
 const defaultQuoteResult: QuoteResult = {
   bestQuote: QuoteType.zeroex,
   error: null,
+  canSwap: {
+    flashmint: true,
+    zeroex: true,
+  },
   quotes: {
     flashmint: null,
     zeroex: null,
@@ -135,6 +139,10 @@ export const useBestQuote = () => {
             flashmint: quoteFlashMint,
             zeroex: quote0x,
           },
+          canSwap: {
+            flashmint: canFlashmintIndexToken,
+            zeroex: canSwapIndexToken,
+          },
           // Not used at the moment but kept for potential re-introduction
           savingsUsd,
         })
@@ -158,6 +166,10 @@ export const useBestQuote = () => {
           quotes: {
             flashmint: quoteFlashMint,
             zeroex: quote0x,
+          },
+          canSwap: {
+            flashmint: canFlashmintIndexToken,
+            zeroex: canSwapIndexToken,
           },
           // Not used at the moment but kept for potential re-introduction
           savingsUsd: 0,
