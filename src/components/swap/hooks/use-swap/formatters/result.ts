@@ -5,7 +5,7 @@ import { QuoteDisplay } from '@/components/swap/components/quote/types'
 import { Token } from '@/constants/tokens'
 
 interface FormattedQuoteDisplay {
-  type: String
+  type: string
   quote?: QuoteDisplay
 }
 
