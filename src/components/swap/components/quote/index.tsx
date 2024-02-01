@@ -1,12 +1,6 @@
+import { QuoteAvailable } from './available'
 import { QuoteNotAvailable } from './not-available'
-
-interface Quote {
-  isBestQuote: boolean
-  inputAmount: string
-  outputAmount: string
-  feesGas: string
-  feesTotal: string
-}
+import { Quote } from './types'
 
 // TODO: isLoading?
 type QuoteProps = {
@@ -16,5 +10,10 @@ type QuoteProps = {
 }
 
 export const QuoteResult = (props: QuoteProps) => {
-  return props.quote ? <></> : <QuoteNotAvailable type={props.type} />
+  const { isSelected, quote, type } = props
+  return quote ? (
+    <QuoteAvailable isSelected={isSelected} quote={quote} type={type} />
+  ) : (
+    <QuoteNotAvailable type={type} />
+  )
 }
