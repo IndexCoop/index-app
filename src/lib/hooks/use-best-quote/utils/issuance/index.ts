@@ -89,7 +89,7 @@ export async function getEnhancedRedemptionQuote(
       outputTokenAmountUsd: 0,
       inputTokenPrice: 0,
       outputTokenPrice: 0,
-      slippage: 0,
+      slippage: request.slippage,
       tx: transaction,
     }
   } catch (e) {
