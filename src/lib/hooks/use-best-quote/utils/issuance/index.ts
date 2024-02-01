@@ -1,8 +1,7 @@
 import { BigNumber, providers } from 'ethers'
-import { Address, PublicClient } from 'viem'
-import { Token } from '@indexcoop/flash-mint-sdk'
+import { Address, formatUnits, PublicClient } from 'viem'
 
-import { Ethereum2xFlexibleLeverageIndex } from '@/constants/tokens'
+import { Ethereum2xFlexibleLeverageIndex, Token } from '@/constants/tokens'
 import { getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
@@ -21,13 +20,22 @@ interface RedemptionQuoteRequest {
   slippage: number
 }
 
+const contract = '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
+
 export async function getEnhancedRedemptionQuote(
   request: RedemptionQuoteRequest,
   publicClient: PublicClient,
   // Using ethers signer for now but will refactor gas estimator to use viem soon
   signer: providers.JsonRpcSigner
 ): Promise<Quote | null> {
-  const { indexTokenAmount, inputToken, gasPrice, outputToken } = request
+  const {
+    indexTokenAmount,
+    inputToken,
+    inputTokenPrice,
+    gasPrice,
+    outputToken,
+    outputTokenPrice,
+  } = request
   if (inputToken.symbol !== Ethereum2xFlexibleLeverageIndex.symbol) return null
   // FIXME: use new 2x token
   if (outputToken.symbol !== Ethereum2xFlexibleLeverageIndex.symbol) return null
@@ -39,9 +47,8 @@ export async function getEnhancedRedemptionQuote(
         indexTokenAmount
       )
     console.log('componentsUnits:', componentsUnits)
-
-    // tODO: calc input in usd
-    // TODO: calc quote return in usd
+    // TODO:
+    const outputTokenAmount = BigInt(0)
 
     const from = await signer.getAddress()
     // TODO: return transaction
@@ -49,7 +56,7 @@ export async function getEnhancedRedemptionQuote(
     const transaction: QuoteTransaction = {
       chainId: 1,
       from,
-      to: '0x04b59F9F09750C044D7CfbC177561E409085f0f3',
+      to: contract,
       data: '0x0', // TODO: encode function data
       value: undefined,
     }
@@ -65,12 +72,19 @@ export async function getEnhancedRedemptionQuote(
     transaction.gasLimit = gasEstimate
     console.log('gasLimit', transaction.gasLimit.toString())
 
+    const inputTokenAmountUsd =
+      parseFloat(formatUnits(indexTokenAmount, inputToken.decimals)) *
+      inputTokenPrice
+    const outputTokenAmountUsd =
+      parseFloat(formatUnits(indexTokenAmount, inputToken.decimals)) *
+      inputTokenPrice
+
     // TODO: full costs
 
     return {
       type: QuoteType.redemption,
       chainId: 1,
-      contract: '0x04b59F9F09750C044D7CfbC177561E409085f0f3',
+      contract,
       isMinting: false,
       inputToken: Ethereum2xFlexibleLeverageIndex,
       outputToken: Ethereum2xFlexibleLeverageIndex, // FIXME: use new 2x token
@@ -80,15 +94,16 @@ export async function getEnhancedRedemptionQuote(
       gasCostsInUsd,
       // TODO:
       fullCostsInUsd: 0,
+      // TODO:
       priceImpact: 0,
       indexTokenAmount: BigNumber.from(indexTokenAmount.toString()),
-      inputOutputTokenAmount: BigNumber.from(0),
-      inputTokenAmount: BigNumber.from(0),
-      inputTokenAmountUsd: 0,
-      outputTokenAmount: BigNumber.from(0),
-      outputTokenAmountUsd: 0,
-      inputTokenPrice: 0,
-      outputTokenPrice: 0,
+      inputOutputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
+      inputTokenAmount: BigNumber.from(indexTokenAmount.toString()),
+      inputTokenAmountUsd,
+      outputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
+      outputTokenAmountUsd,
+      inputTokenPrice,
+      outputTokenPrice,
       slippage: request.slippage,
       tx: transaction,
     }
