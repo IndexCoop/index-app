@@ -1,5 +1,5 @@
 import { BigNumber, providers } from 'ethers'
-import { Address, formatUnits, PublicClient } from 'viem'
+import { Address, encodeFunctionData, formatUnits, PublicClient } from 'viem'
 
 import { Ethereum2xFlexibleLeverageIndex, Token } from '@/constants/tokens'
 import { getGasCostsInUsd } from '@/lib/utils/costs'
@@ -8,6 +8,7 @@ import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
 import { RedemptionProvider } from './redemption'
+import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 
 interface RedemptionQuoteRequest {
   inputToken: Token
@@ -50,14 +51,23 @@ export async function getEnhancedRedemptionQuote(
     // TODO:
     const outputTokenAmount = BigInt(0)
 
-    const from = await signer.getAddress()
-    // TODO: return transaction
-    // https://viem.sh/docs/contract/encodeFunctionData#encodefunctiondata
+    const sender = await signer.getAddress()
+
+    const callData = encodeFunctionData({
+      abi: DebtIssuanceModuleV2Abi,
+      functionName: 'redeem',
+      args: [
+        Ethereum2xFlexibleLeverageIndex.address! as Address,
+        indexTokenAmount,
+        sender as Address,
+      ],
+    })
+
     const transaction: QuoteTransaction = {
       chainId: 1,
-      from,
+      from: sender,
       to: contract,
-      data: '0x0', // TODO: encode function data
+      data: callData,
       value: undefined,
     }
 
