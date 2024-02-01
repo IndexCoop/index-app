@@ -1,8 +1,8 @@
 import { Address, PublicClient } from 'viem'
 
-import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
+import { DebtIssuanceModuleAddress } from '@/constants/contracts'
 
-const DebtIssuanceModuleV2Address = '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
+import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 
 export class RedemptionProvider {
   constructor(readonly publicClient: PublicClient) {}
@@ -12,7 +12,7 @@ export class RedemptionProvider {
     redeemAmount: bigint
   ) {
     const data = await this.publicClient.readContract({
-      address: DebtIssuanceModuleV2Address,
+      address: DebtIssuanceModuleAddress,
       abi: DebtIssuanceModuleV2Abi,
       functionName: 'getRequiredComponentRedemptionUnits',
       args: [tokenAddress, redeemAmount],

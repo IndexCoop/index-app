@@ -1,6 +1,7 @@
 import { BigNumber, providers } from 'ethers'
 import { Address, encodeFunctionData, formatUnits, PublicClient } from 'viem'
 
+import { DebtIssuanceModuleAddress } from '@/constants/contracts'
 import { Ethereum2xFlexibleLeverageIndex, Token } from '@/constants/tokens'
 import { getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
@@ -21,7 +22,7 @@ interface RedemptionQuoteRequest {
   slippage: number
 }
 
-const contract = '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
+const contract = DebtIssuanceModuleAddress
 
 export async function getEnhancedRedemptionQuote(
   request: RedemptionQuoteRequest,
