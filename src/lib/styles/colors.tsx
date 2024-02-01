@@ -23,6 +23,7 @@ export const colors = {
   icGray2: '#A6B2B2',
   icGray3: '#627171',
   icGray4: '#2C3333',
+  icGray400: '#A6B4B4',
   icGray5: '#CFD9D9',
   icGray50: '#F2F8F8',
   icWhite: '#FCFFFF',
