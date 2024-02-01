@@ -1,12 +1,12 @@
 import { QuoteAvailable } from './available'
 import { QuoteNotAvailable } from './not-available'
-import { Quote } from './types'
+import { QuoteDisplay } from './types'
 
 // TODO: isLoading?
 type QuoteProps = {
   type: string
   isSelected: boolean
-  quote: Quote | null
+  quote: QuoteDisplay | null
 }
 
 export const QuoteResult = (props: QuoteProps) => {

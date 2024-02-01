@@ -2,12 +2,12 @@ import { Flex, Text } from '@chakra-ui/react'
 
 import { colors } from '@/lib/styles/colors'
 
-import { Quote } from './types'
+import { QuoteDisplay } from './types'
 
 type QuoteAvailableProps = {
   type: string
   isSelected: boolean
-  quote: Quote
+  quote: QuoteDisplay
 }
 
 function getBackgroundColor(isSelected: boolean, isBestQuote: boolean) {
