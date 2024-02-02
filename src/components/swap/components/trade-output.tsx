@@ -40,9 +40,11 @@ export const TradeOutput = (props: TradeOutputProps) => {
         />
       </Flex>
       <Flex direction='column' gap='8px' mt='20px'>
-        <Text color={colors.icGray600} fontSize='xs' fontWeight={500}>
-          Select your preferred route
-        </Text>
+        {props.quotes.length > 0 && (
+          <Text color={colors.icGray600} fontSize='xs' fontWeight={500}>
+            Select your preferred route
+          </Text>
+        )}
         {props.quotes.map((formattedQuote) => (
           <QuoteResult
             key={formattedQuote.type}
