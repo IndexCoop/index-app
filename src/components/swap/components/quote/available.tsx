@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { Flex, Text } from '@chakra-ui/react'
 
 import { colors } from '@/lib/styles/colors'
@@ -65,9 +66,18 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
         <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
           {quote.feesTotal}
         </Text>
-        <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
-          {quote.feesGas}
-        </Text>
+        <Flex direction={'row'} gap='6px'>
+          <Image
+            alt='Gas fees icon'
+            src={'/assets/gas-icon.svg'}
+            height={10}
+            width={10}
+            style={{ color: colors.icGray500 }}
+          />
+          <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
+            {quote.feesGas}
+          </Text>
+        </Flex>
       </Flex>
     </Flex>
   )
