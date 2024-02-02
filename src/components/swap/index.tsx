@@ -362,7 +362,6 @@ export const Swap = (props: SwapProps) => {
         {tradeData.length > 0 && (
           <TradeDetails
             data={tradeData}
-            gasPriceInUsd={gasCostsUsd}
             isLoading={isFetchingQuote}
             isToggleDisabled={isToggleDisabled}
             prices={tokenPrices}

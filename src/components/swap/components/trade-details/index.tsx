@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Image from 'next/image'
 import { WarningTwoIcon } from '@chakra-ui/icons'
 import {
   Accordion,
@@ -9,7 +8,6 @@ import {
   AccordionPanel,
   Box,
   Flex,
-  Text,
 } from '@chakra-ui/react'
 
 import { StyledSkeleton } from '@/components/skeleton'
@@ -32,7 +30,6 @@ export interface TradeDetailTokenPrices {
 
 interface TradeDetailsProps {
   data: TradeInfoItem[]
-  gasPriceInUsd: number
   isLoading: boolean
   isToggleDisabled: boolean
   prices: TradeDetailTokenPrices
@@ -42,7 +39,7 @@ interface TradeDetailsProps {
 }
 
 export const TradeDetails = (props: TradeDetailsProps) => {
-  const { data, gasPriceInUsd, isLoading, prices, showWarning } = props
+  const { data, isLoading, prices, showWarning } = props
   const { styles } = useColorStyles()
 
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
@@ -115,11 +112,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                           props.selectedQuoteType === QuoteType.flashmint && (
                             <FlashMintTag />
                           )}
-                        {isLoading ? (
-                          <StyledSkeleton width={70} />
-                        ) : (
-                          <GasFees label={gasPriceInUsd.toFixed(2)} />
-                        )}
+                        {isLoading && <StyledSkeleton width={70} />}
                       </Flex>
                     </>
                   </Flex>
@@ -153,17 +146,3 @@ export const TradeDetails = (props: TradeDetailsProps) => {
     </Flex>
   )
 }
-
-const GasFees = ({ label }: { label: string }) => (
-  <Flex direction={'row'} gap={2}>
-    <Image
-      alt='Gas fees icon'
-      src={'/assets/gas-icon.svg'}
-      height={10}
-      width={10}
-    />
-    <Text color={colors.icGray2} fontSize='12px' fontWeight={500}>
-      ${label}
-    </Text>
-  </Flex>
-)
