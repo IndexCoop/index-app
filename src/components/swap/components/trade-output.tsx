@@ -9,13 +9,14 @@ import { colors } from '@/lib/styles/colors'
 
 import { FormattedQuoteDisplay } from '../hooks/use-swap/formatters/result'
 import { Caption } from './caption'
-import { QuoteResult } from './quote'
+import { QuoteResult } from './quote-result'
 
 interface TradeOutputProps {
   caption: string
   selectedToken: Token
   selectedQuote: QuoteType | null
   quotes: FormattedQuoteDisplay[]
+  onSelectQuote: (quoteType: QuoteType) => void
   onSelectToken: () => void
 }
 
@@ -48,6 +49,7 @@ export const TradeOutput = (props: TradeOutputProps) => {
             type={formattedQuote.type}
             isSelected={selectedQuote === formattedQuote.quote?.type}
             quote={formattedQuote.quote ?? null}
+            onClick={() => props.onSelectQuote(formattedQuote.quote!.type)}
           />
         ))}
       </Flex>

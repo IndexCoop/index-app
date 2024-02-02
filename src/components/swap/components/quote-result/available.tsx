@@ -9,6 +9,7 @@ type QuoteAvailableProps = {
   type: string
   isSelected: boolean
   quote: QuoteDisplay
+  onClick: () => void
 }
 
 function getBackgroundColor(isSelected: boolean, isBestQuote: boolean) {
@@ -24,11 +25,11 @@ function getHighlightColor(isSelected: boolean, isBestQuote: boolean) {
   if (!isBestQuote && isSelected) {
     return '#F178B6'
   }
-  return colors.icWhite
+  return colors.icGray400
 }
 
 export const QuoteAvailable = (props: QuoteAvailableProps) => {
-  const { type, isSelected, quote } = props
+  const { type, isSelected, onClick, quote } = props
   const background = getBackgroundColor(isSelected, quote.isBestQuote)
   const highlight = getHighlightColor(isSelected, quote.isBestQuote)
   const borderWidth = isSelected ? 2 : 0
@@ -38,10 +39,12 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
       borderColor={highlight}
       borderRadius='12'
       borderWidth={borderWidth}
+      cursor='pointer'
       direction={'column'}
       p='16px'
       w='100%'
       h='110px'
+      onClick={onClick}
     >
       <Flex align='space-between' direction='column' justify={'flex-start'}>
         <Flex justify={'space-between'}>
@@ -58,7 +61,7 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
         fontWeight={500}
         // mt='16px'
         // mb='20px'
-        textColor={colors.icGray800}
+        textColor={!isSelected ? colors.icGray500 : colors.icGray800}
       >
         {quote.outputAmount}
       </Text>

@@ -6,7 +6,7 @@ import {
   QuoteType,
   ZeroExQuote,
 } from '@/lib/hooks/use-best-quote/types'
-import { QuoteDisplay } from '@/components/swap/components/quote/types'
+import { QuoteDisplay } from '@/components/swap/components/quote-result/types'
 import { Token } from '@/constants/tokens'
 
 export interface FormattedQuoteDisplay {

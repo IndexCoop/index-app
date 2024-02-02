@@ -352,6 +352,7 @@ export const Swap = (props: SwapProps) => {
           selectedToken={outputToken}
           selectedQuote={selectedQuote}
           quotes={quoteResults}
+          onSelectQuote={(quoteType) => setSelectedQuote(quoteType)}
           onSelectToken={() => {
             if (outputTokenslist.length > 1) onOpenSelectOutputToken()
           }}
