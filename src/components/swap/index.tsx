@@ -99,7 +99,7 @@ export const Swap = (props: SwapProps) => {
   const {
     contract,
     hasInsufficientFunds,
-    gasCostsUsd,
+    // gasCostsUsd,
     // inputTokenAmountUsd,
     inputTokenAmountWei,
     inputTokenBalance,
