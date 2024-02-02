@@ -4,19 +4,23 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Flex, Text } from '@chakra-ui/react'
 
 import { Token } from '@/constants/tokens'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { colors } from '@/lib/styles/colors'
 
+import { FormattedQuoteDisplay } from '../hooks/use-swap/formatters/result'
 import { Caption } from './caption'
 import { QuoteResult } from './quote'
 
 interface TradeOutputProps {
   caption: string
   selectedToken: Token
+  selectedQuote: QuoteType | null
+  quotes: FormattedQuoteDisplay[]
   onSelectToken: () => void
 }
 
 export const TradeOutput = (props: TradeOutputProps) => {
-  const { selectedToken } = props
+  const { selectedQuote, selectedToken } = props
   return (
     <Flex
       bg={colors.icWhite}
@@ -38,18 +42,14 @@ export const TradeOutput = (props: TradeOutputProps) => {
         <Text color={colors.icGray600} fontSize='xs' fontWeight={500}>
           Select your preferred route
         </Text>
-        <QuoteResult
-          type={'Flash Mint'}
-          isSelected={true}
-          quote={{
-            isBestQuote: true,
-            inputAmount: '9.807 ETH for',
-            outputAmount: '189.68 ETHx2',
-            feesGas: '$55.12 via Flash Mint',
-            feesTotal: '= $10,052.42 after fees',
-          }}
-        />
-        <QuoteResult type={'Swap'} isSelected={true} quote={null} />
+        {props.quotes.map((formattedQuote) => (
+          <QuoteResult
+            key={formattedQuote.type}
+            type={formattedQuote.type}
+            isSelected={selectedQuote === formattedQuote.quote?.type}
+            quote={formattedQuote.quote ?? null}
+          />
+        ))}
       </Flex>
     </Flex>
   )

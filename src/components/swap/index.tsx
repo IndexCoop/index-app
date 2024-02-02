@@ -106,6 +106,7 @@ export const Swap = (props: SwapProps) => {
     inputTokenBalanceFormatted,
     inputTokenPrice,
     outputTokenPrice,
+    quoteResults,
     showWarning,
     tokenPrices,
     tradeData,
@@ -349,6 +350,8 @@ export const Swap = (props: SwapProps) => {
         <TradeOutput
           caption={'You receive'}
           selectedToken={outputToken}
+          selectedQuote={selectedQuote}
+          quotes={quoteResults}
           onSelectToken={() => {
             if (outputTokenslist.length > 1) onOpenSelectOutputToken()
           }}

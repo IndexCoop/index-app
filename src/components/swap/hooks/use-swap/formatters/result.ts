@@ -1,10 +1,15 @@
 import { formatUnits } from 'viem'
 
-import { Quote, QuoteType, ZeroExQuote } from '@/lib/hooks/use-best-quote/types'
+import {
+  Quote,
+  QuoteResult,
+  QuoteType,
+  ZeroExQuote,
+} from '@/lib/hooks/use-best-quote/types'
 import { QuoteDisplay } from '@/components/swap/components/quote/types'
 import { Token } from '@/constants/tokens'
 
-interface FormattedQuoteDisplay {
+export interface FormattedQuoteDisplay {
   type: string
   quote?: QuoteDisplay
 }
@@ -31,8 +36,8 @@ function formattedOuputAmount(outputAmount: bigint, token: Token) {
   return `${formattedOutput} ${token.symbol}`
 }
 
-export function formatQuoteForDisplay(
-  quote: Quote,
+function formatQuoteForDisplay(
+  quote: Quote | ZeroExQuote,
   isBestQuote: boolean
 ): FormattedQuoteDisplay {
   const type = quote.type === QuoteType.flashmint ? 'Flash Mint' : 'Swap'
@@ -46,6 +51,7 @@ export function formatQuoteForDisplay(
   return {
     type,
     quote: {
+      type: quote.type,
       isBestQuote,
       inputAmount: formattedInputAmount(
         quote.inputTokenAmount.toBigInt(),
@@ -59,4 +65,32 @@ export function formatQuoteForDisplay(
       feesTotal: formattedFeesTotal(quote.fullCostsInUsd ?? 0),
     },
   }
+}
+
+export function getFormattedQuoteResults(
+  quoteResult: QuoteResult | null
+): FormattedQuoteDisplay[] {
+  if (!quoteResult) return []
+  const { quotes } = quoteResult
+  if (!quotes) return []
+  const flashmintQuote = quotes.flashmint
+    ? formatQuoteForDisplay(
+        quotes.flashmint,
+        quoteResult.bestQuote === QuoteType.flashmint
+      )
+    : null
+  const zeroexQuote = quotes.zeroex
+    ? formatQuoteForDisplay(
+        quotes.zeroex,
+        quoteResult.bestQuote === QuoteType.zeroex
+      )
+    : null
+  const formattedQuotes: FormattedQuoteDisplay[] = []
+  if (flashmintQuote) {
+    formattedQuotes.push(flashmintQuote)
+  }
+  if (zeroexQuote) {
+    formattedQuotes.push(zeroexQuote)
+  }
+  return formattedQuotes
 }

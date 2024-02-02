@@ -17,6 +17,10 @@ import {
   getHasInsufficientFunds,
   shouldShowWarningSign,
 } from './formatters'
+import {
+  FormattedQuoteDisplay,
+  getFormattedQuoteResults,
+} from './formatters/result'
 import { getFormattedPriceImpact } from './formatters/price-impact'
 import { buildTradeDetails } from './trade-details-builder'
 import { useFormattedBalance } from './use-formatted-balance'
@@ -40,6 +44,7 @@ interface SwapData {
     colorCoding: string
     priceImpact: string
   } | null
+  quoteResults: FormattedQuoteDisplay[]
   // Trade details
   showWarning: boolean
   tokenPrices: TradeDetailTokenPrices
@@ -167,6 +172,9 @@ export function useSwap(
     [inputToken, inputTokenAmount, outputToken, selectedQuote]
   )
 
+  // Formatted quote results
+  const quoteResults = getFormattedQuoteResults(quoteResult)
+
   // Trade data
   const tradeData: TradeInfoItem[] = buildTradeDetails(selectedQuote ?? null)
 
@@ -185,6 +193,7 @@ export function useSwap(
     outputTokenBalanceFormatted,
     outputTokenPrice: selectedQuote?.outputTokenPrice ?? 0,
     priceImpactFormatting,
+    quoteResults,
     showWarning,
     tokenPrices,
     tradeData,
