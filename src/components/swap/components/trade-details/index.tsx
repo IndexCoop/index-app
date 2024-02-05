@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react'
 
 import { StyledSkeleton } from '@/components/skeleton'
-import { Toggle, ToggleState } from '@/components/toggle'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
@@ -35,7 +34,6 @@ interface TradeDetailsProps {
   prices: TradeDetailTokenPrices
   showWarning?: boolean
   selectedQuoteType: QuoteType
-  onToggle: (selectedQuoteType: QuoteType) => void
 }
 
 export const TradeDetails = (props: TradeDetailsProps) => {
@@ -43,12 +41,6 @@ export const TradeDetails = (props: TradeDetailsProps) => {
   const { styles } = useColorStyles()
 
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
-
-  const onClickToggle = (toggleState: ToggleState) => {
-    const quoteType = toggleState === 1 ? QuoteType.flashmint : QuoteType.zeroex
-    console.log(toggleState, quoteType)
-    props.onToggle(quoteType)
-  }
 
   const onToggleTokenPrice = (event: any) => {
     event.preventDefault()
@@ -126,17 +118,6 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                 borderTopColor={'transparent'}
                 p={'4px 20px 16px'}
               >
-                <Toggle
-                  isDisabled={props.isToggleDisabled}
-                  toggleState={
-                    props.selectedQuoteType === QuoteType.zeroex
-                      ? ToggleState.auto
-                      : ToggleState.custom
-                  }
-                  labelLeft='Swap'
-                  labelRight='Flash Mint'
-                  onClick={onClickToggle}
-                />
                 <TradeInfoItemsContainer items={data} isLoading={isLoading} />
               </AccordionPanel>
             </>

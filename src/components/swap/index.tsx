@@ -189,23 +189,6 @@ export const Swap = (props: SwapProps) => {
     console.log('---')
   }, [quoteResult])
 
-  const onSelectQuoteType = useCallback(
-    (type: QuoteType) => {
-      console.log(
-        'onSelectQuoteType',
-        type,
-        quoteResult.quotes.flashmint === null,
-        quoteResult.quotes.zeroex === null
-      )
-      if (type === QuoteType.flashmint && quoteResult.quotes.flashmint === null)
-        return
-      if (type === QuoteType.zeroex && quoteResult.quotes.zeroex === null)
-        return
-      setSelectedQuote(type)
-    },
-    [quoteResult]
-  )
-
   const resetTradeData = useCallback(() => {
     setInputTokenAmountFormatted('')
     setSellTokenAmount('0')
@@ -367,7 +350,6 @@ export const Swap = (props: SwapProps) => {
             prices={tokenPrices}
             showWarning={showWarning}
             selectedQuoteType={selectedQuote ?? QuoteType.zeroex}
-            onToggle={onSelectQuoteType}
           />
         )}
         {hasFetchingError && (
