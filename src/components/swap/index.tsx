@@ -157,6 +157,10 @@ export const Swap = (props: SwapProps) => {
     setWarnings([WarningType.flashbots])
   }, [requiresProtection, slippage])
 
+  useEffect(() => {
+    setSelectedQuote(quoteResults?.bestQuote)
+  }, [quoteResults])
+
   const resetTradeData = useCallback(() => {
     setInputTokenAmountFormatted('')
     setSellTokenAmount('0')
