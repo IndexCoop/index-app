@@ -50,7 +50,11 @@ export const TradeOutput = (props: TradeOutputProps) => {
             isLoading={formattedQuote.isLoading}
             isSelected={selectedQuote === formattedQuote.quote?.type}
             quote={formattedQuote.quote ?? null}
-            onClick={() => props.onSelectQuote(formattedQuote.quote!.type)}
+            onClick={() => {
+              if (formattedQuote.quote) {
+                props.onSelectQuote(formattedQuote.quote.type)
+              }
+            }}
           />
         ))}
       </Flex>
