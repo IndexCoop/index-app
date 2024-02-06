@@ -28,7 +28,7 @@ export const QuoteNotAvailable = ({
         </Text>
       </Flex>
       <Text fontSize={'md'} fontWeight={500} textColor={colors.icGray5}>
-        Swap unavailable
+        {type} unavailable
       </Text>
       <Text fontSize={'sm'} fontWeight={400} textColor={colors.icGray5}>
         This token is not available for swapping.
