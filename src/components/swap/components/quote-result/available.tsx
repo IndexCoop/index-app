@@ -54,9 +54,21 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
             {isLoading && <StyledSkeleton width={50} />}
             {!isLoading && quote && quote.inputAmount}
           </Text>
-          <Text fontSize={'sm'} fontWeight={600} textColor={highlight}>
-            {type.toUpperCase()}
-          </Text>
+          <Flex direction={'row'} gap={1}>
+            {quote?.isBestQuote && (
+              <Flex opacity={isSelected ? 1 : 0.2}>
+                <Image
+                  src={'/assets/icon-trophy.svg'}
+                  alt={'token icon'}
+                  width={12}
+                  height={12}
+                />
+              </Flex>
+            )}
+            <Text fontSize={'sm'} fontWeight={600} textColor={highlight}>
+              {type.toUpperCase()}
+            </Text>
+          </Flex>
         </Flex>
       </Flex>
       <Text
