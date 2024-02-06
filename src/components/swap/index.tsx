@@ -82,7 +82,7 @@ export const Swap = (props: SwapProps) => {
 
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [selectedQuote, setSelectedQuote] = useState<QuoteType | null>(null)
-  const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 500)
+  const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
   const [warnings, setWarnings] = useState<WarningType[]>([])
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
