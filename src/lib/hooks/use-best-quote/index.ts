@@ -46,6 +46,11 @@ export const useBestQuote = (
   const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
   const [quoteResults, setQuoteResults] = useState<QuoteResults>(defaultResults)
 
+  const indexToken = useMemo(
+    () => (isMinting ? outputToken : inputToken),
+    [inputToken, isMinting, outputToken]
+  )
+
   const fetchQuote = useCallback(
     async (request: IndexQuoteRequest) => {
       const { inputTokenAmount } = request
@@ -75,7 +80,6 @@ export const useBestQuote = (
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
-      const indexToken = isMinting ? outputToken : inputToken
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
@@ -95,8 +99,8 @@ export const useBestQuote = (
             provider,
             signer
           )
-          setQuoteFlashmint(quoteFlashMint)
           setIsFetchingFlashMint(false)
+          setQuoteFlashmint(quoteFlashMint)
         } else {
           setQuoteFlashmint(null)
         }
@@ -114,8 +118,8 @@ export const useBestQuote = (
             outputTokenPrice,
             nativeTokenPrice,
           })
-          setQuote0x(quote0x)
           setIsFetching0x(false)
+          setQuote0x(quote0x)
         } else {
           setQuote0x(null)
         }
@@ -127,8 +131,8 @@ export const useBestQuote = (
     },
     [
       chainId,
+      indexToken,
       inputToken,
-      isMinting,
       outputToken,
       nativeTokenPrice,
       provider,
@@ -143,7 +147,6 @@ export const useBestQuote = (
       quote0x?.outputTokenAmountUsd ?? null,
       quoteFlashMint?.outputTokenAmountUsd ?? null
     )
-    const indexToken = isMinting ? outputToken : inputToken
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
     const canSwapIndexToken = isAvailableForSwap(indexToken)
     // TODO: only replace approriate quote?
@@ -165,7 +168,7 @@ export const useBestQuote = (
       },
     }
     setQuoteResults(results)
-  }, [inputToken, isMinting, outputToken, quote0x, quoteFlashMint])
+  }, [indexToken, quote0x, quoteFlashMint])
 
   const isFetchingAnyQuote = useMemo(() => {
     return isFetching0x || isFetchingFlashmint
