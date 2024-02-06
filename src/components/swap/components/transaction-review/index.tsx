@@ -167,13 +167,13 @@ const ContractSection = ({
 }
 
 function useSelectedQuote(review: TransactionReview) {
-  const { quoteResult, selectedQuote } = review
+  const { quoteResults, selectedQuote } = review
   const quote = useMemo(() => {
     const isFlashmintSelectedQuote = selectedQuote === QuoteType.flashmint
     return isFlashmintSelectedQuote
-      ? quoteResult.quotes.flashmint
-      : quoteResult.quotes.zeroex
-  }, [quoteResult, selectedQuote])
+      ? quoteResults.results.flashmint?.quote ?? null
+      : quoteResults.results.zeroex?.quote ?? null
+  }, [quoteResults, selectedQuote])
   return { quote }
 }
 

@@ -59,16 +59,16 @@ export interface ZeroExQuote extends Quote {
 }
 
 export interface QuoteResult {
+  type: QuoteType
+  isAvailable: boolean
+  quote: Quote | null
+  error: string | null
+}
+
+export interface QuoteResults {
   bestQuote: QuoteType
-  error: Error | null
-  canSwap: {
-    flashmint: boolean
-    zeroex: boolean
+  results: {
+    flashmint: QuoteResult | null
+    zeroex: QuoteResult | null
   }
-  quotes: {
-    flashmint: Quote | null
-    zeroex: ZeroExQuote | null
-  }
-  isReasonPriceImpact: boolean
-  savingsUsd: number
 }

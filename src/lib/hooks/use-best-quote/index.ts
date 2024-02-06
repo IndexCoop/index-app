@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
@@ -17,46 +18,43 @@ import { get0xQuote } from './utils/zeroex'
 import {
   IndexQuoteRequest,
   Quote,
-  QuoteResult,
+  QuoteResults,
   QuoteType,
   ZeroExQuote,
 } from './types'
 
-const defaultQuoteResult: QuoteResult = {
+const defaultResults: QuoteResults = {
   bestQuote: QuoteType.zeroex,
-  error: null,
-  canSwap: {
-    flashmint: true,
-    zeroex: true,
-  },
-  quotes: {
-    flashmint: null,
-    zeroex: null,
-  },
-  isReasonPriceImpact: false,
-  savingsUsd: 0,
+  results: { flashmint: null, zeroex: null },
 }
 
-export const useBestQuote = () => {
+export const useBestQuote = (
+  isMinting: boolean,
+  inputToken: Token,
+  outputToken: Token
+) => {
   const { provider, signer } = useWallet()
   const { chainId: networkChainId } = useNetwork()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
   const chainId = networkChainId ?? 1
   const nativeTokenPrice = useNativeTokenPrice(chainId)
 
-  const [isFetching, setIsFetching] = useState<boolean>(false)
-  const [quoteResult, setQuoteResult] =
-    useState<QuoteResult>(defaultQuoteResult)
+  const [isFetching0x, setIsFetching0x] = useState<boolean>(false)
+  const [isFetchingFlashmint, setIsFetchingFlashMint] = useState<boolean>(false)
+
+  const [quote0x, setQuote0x] = useState<ZeroExQuote | null>(null)
+  const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
+  const [quoteResults, setQuoteResults] = useState<QuoteResults>(defaultResults)
 
   const fetchQuote = useCallback(
     async (request: IndexQuoteRequest) => {
-      const { inputToken, inputTokenAmount, isMinting, outputToken } = request
+      const { inputTokenAmount } = request
 
       // Right now we only allow setting the input amount, so no need to check
       // ouput token amount here
       const inputTokenAmountWei = toWei(inputTokenAmount, inputToken.decimals)
       if (inputTokenAmountWei.isZero() || inputTokenAmountWei.isNegative()) {
-        setQuoteResult(defaultQuoteResult)
+        setQuoteResults(defaultResults)
         return
       }
 
@@ -74,8 +72,6 @@ export const useBestQuote = () => {
         return
       }
 
-      setIsFetching(true)
-
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
@@ -83,13 +79,11 @@ export const useBestQuote = () => {
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
-      let quote0x: ZeroExQuote | null = null
-      let quoteFlashMint: Quote | null = null
-
-      const fetchMoreQuotes = async () => {
+      const fetchFlashMintQuote = async () => {
         if (canFlashmintIndexToken) {
+          setIsFetchingFlashMint(true)
           console.log('canFlashmintIndexToken')
-          quoteFlashMint = await getFlashMintQuote(
+          const quoteFlashMint = await getFlashMintQuote(
             {
               ...request,
               chainId,
@@ -101,84 +95,87 @@ export const useBestQuote = () => {
             provider,
             signer
           )
+          setQuoteFlashmint(quoteFlashMint)
+          setIsFetchingFlashMint(false)
+        } else {
+          setQuoteFlashmint(null)
         }
-
-        const bestQuote = getBestQuote(
-          quote0x?.fullCostsInUsd ?? null,
-          quoteFlashMint?.fullCostsInUsd ?? null,
-          quote0x?.outputTokenAmountUsd ?? null,
-          quoteFlashMint?.outputTokenAmountUsd ?? null
-        )
-
-        const getSavings = (): number => {
-          if (!quote0x) return 0
-          if (bestQuote === QuoteType.flashmint && quoteFlashMint) {
-            return (
-              (quote0x.fullCostsInUsd ?? 0) -
-              (quoteFlashMint.fullCostsInUsd ?? 0)
-            )
-          }
-          return 0
-        }
-        const savingsUsd = getSavings()
-
-        setQuoteResult({
-          bestQuote,
-          // TODO:
-          error: null,
-          // Not used at the moment but kept for potential re-introduction
-          // Insted of one argument, could change to type of enums (reasons: ReasonType.)
-          isReasonPriceImpact: false,
-          quotes: {
-            flashmint: quoteFlashMint,
-            zeroex: quote0x,
-          },
-          canSwap: {
-            flashmint: canFlashmintIndexToken,
-            zeroex: canSwapIndexToken,
-          },
-          // Not used at the moment but kept for potential re-introduction
-          savingsUsd,
-        })
-        setIsFetching(false)
       }
 
-      if (canSwapIndexToken) {
-        console.log('canSwapIndexToken')
-        quote0x = await get0xQuote({
-          ...request,
-          chainId,
-          address: signer._address,
-          inputTokenPrice,
-          outputTokenPrice,
-          nativeTokenPrice,
-        })
-        setQuoteResult({
-          bestQuote: QuoteType.zeroex,
-          error: null,
-          isReasonPriceImpact: false,
-          quotes: {
-            flashmint: quoteFlashMint,
-            zeroex: quote0x,
-          },
-          canSwap: {
-            flashmint: canFlashmintIndexToken,
-            zeroex: canSwapIndexToken,
-          },
-          // Not used at the moment but kept for potential re-introduction
-          savingsUsd: 0,
-        })
+      const fetchSwapQuote = async () => {
+        if (canSwapIndexToken) {
+          setIsFetching0x(true)
+          console.log('canSwapIndexToken')
+          const quote0x = await get0xQuote({
+            ...request,
+            chainId,
+            address: signer._address,
+            inputTokenPrice,
+            outputTokenPrice,
+            nativeTokenPrice,
+          })
+          setQuote0x(quote0x)
+          setIsFetching0x(false)
+        } else {
+          setQuote0x(null)
+        }
       }
 
-      // Non await because we already want to display the 0x quote - if one exists
-      fetchMoreQuotes()
+      // Non await - because we want to fetch quotes in parallel
+      fetchSwapQuote()
+      fetchFlashMintQuote()
     },
-    [chainId, nativeTokenPrice, provider, signer]
+    [
+      chainId,
+      inputToken,
+      isMinting,
+      outputToken,
+      nativeTokenPrice,
+      provider,
+      signer,
+    ]
   )
+
+  useEffect(() => {
+    const bestQuote = getBestQuote(
+      quote0x?.fullCostsInUsd ?? null,
+      quoteFlashMint?.fullCostsInUsd ?? null,
+      quote0x?.outputTokenAmountUsd ?? null,
+      quoteFlashMint?.outputTokenAmountUsd ?? null
+    )
+    const indexToken = isMinting ? outputToken : inputToken
+    const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
+    const canSwapIndexToken = isAvailableForSwap(indexToken)
+    // TODO: only replace approriate quote?
+    const results = {
+      bestQuote,
+      results: {
+        flashmint: {
+          type: QuoteType.flashmint,
+          isAvailable: canFlashmintIndexToken,
+          quote: quoteFlashMint,
+          error: null,
+        },
+        zeroex: {
+          type: QuoteType.zeroex,
+          isAvailable: canSwapIndexToken,
+          quote: quote0x,
+          error: null,
+        },
+      },
+    }
+    setQuoteResults(results)
+  }, [inputToken, isMinting, outputToken, quote0x, quoteFlashMint])
+
+  const isFetchingAnyQuote = useMemo(() => {
+    return isFetching0x || isFetchingFlashmint
+  }, [isFetching0x, isFetchingFlashmint])
 
   return {
     fetchQuote,
-    isFetching,
-    quoteResult,
+    isFetchingAnyQuote,
+    isFetching0x,
+    isFetchingFlashmint,
+    quoteResults,
   }
 }

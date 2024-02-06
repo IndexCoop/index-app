@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { QuoteResults, QuoteType } from '@/lib/hooks/use-best-quote/types'
 
 import { TransactionReview } from '../components/transaction-review/types'
 
 export function useTransactionReviewModal(
-  quoteResult: QuoteResult,
+  quoteResults: QuoteResults,
   selectedQuote: QuoteType | null,
   isFetchingQuote: boolean
 ) {
@@ -13,17 +13,17 @@ export function useTransactionReviewModal(
     if (isFetchingQuote || selectedQuote === null) return null
     const quote =
       selectedQuote === QuoteType.flashmint
-        ? quoteResult.quotes.flashmint
-        : quoteResult.quotes.zeroex
+        ? quoteResults.results.flashmint?.quote
+        : quoteResults.results.zeroex?.quote
     if (quote) {
       return {
         ...quote,
         contractAddress: quote.contract,
-        quoteResult,
+        quoteResults,
         selectedQuote,
       }
     }
     return null
-  }, [isFetchingQuote, quoteResult, selectedQuote])
+  }, [isFetchingQuote, quoteResults, selectedQuote])
   return { transactionReview }
 }

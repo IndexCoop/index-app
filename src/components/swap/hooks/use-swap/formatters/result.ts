@@ -2,7 +2,7 @@ import { formatUnits } from 'viem'
 
 import {
   Quote,
-  QuoteResult,
+  QuoteResults,
   QuoteType,
   ZeroExQuote,
 } from '@/lib/hooks/use-best-quote/types'
@@ -11,6 +11,7 @@ import { Token } from '@/constants/tokens'
 
 export interface FormattedQuoteDisplay {
   type: string
+  isLoading: boolean
   quote?: QuoteDisplay
 }
 
@@ -36,6 +37,16 @@ function formattedOuputAmount(outputAmount: bigint, token: Token) {
   return `${formattedOutput} ${token.symbol}`
 }
 
+function formatLoadingQuoteForDisplay(
+  quoteType: QuoteType
+): FormattedQuoteDisplay {
+  const type = quoteType === QuoteType.flashmint ? 'Flash Mint' : 'Swap'
+  return {
+    type,
+    isLoading: true,
+  }
+}
+
 function formatQuoteForDisplay(
   quote: Quote | ZeroExQuote,
   isBestQuote: boolean
@@ -50,6 +61,7 @@ function formatQuoteForDisplay(
           .toString()
   return {
     type,
+    isLoading: false,
     quote: {
       type: quote.type,
       isBestQuote,
@@ -67,24 +79,61 @@ function formatQuoteForDisplay(
   }
 }
 
+function formatNotAvailable(type: string): FormattedQuoteDisplay {
+  return {
+    isLoading: false,
+    type,
+  }
+}
+
 export function getFormattedQuoteResults(
-  quoteResult: QuoteResult | null
+  quoteResult: QuoteResults | null,
+  isFetching0x: boolean,
+  isFetchingFlashMint: boolean
 ): FormattedQuoteDisplay[] {
   if (!quoteResult) return []
-  const { quotes } = quoteResult
-  if (!quotes) return []
-  const flashmintQuote = quotes.flashmint
-    ? formatQuoteForDisplay(
-        quotes.flashmint,
+  const { results } = quoteResult
+
+  const flashmintResults = results.flashmint
+  const zeroexResults = results.zeroex
+
+  let flashmintQuote: FormattedQuoteDisplay | null = null
+  let zeroexQuote: FormattedQuoteDisplay | null = null
+
+  if (flashmintResults) {
+    if (flashmintResults.isAvailable && isFetchingFlashMint) {
+      flashmintQuote = formatLoadingQuoteForDisplay(QuoteType.flashmint)
+    }
+    if (
+      flashmintResults.isAvailable &&
+      !isFetchingFlashMint &&
+      flashmintResults.quote
+    ) {
+      flashmintQuote = formatQuoteForDisplay(
+        flashmintResults.quote,
         quoteResult.bestQuote === QuoteType.flashmint
       )
-    : null
-  const zeroexQuote = quotes.zeroex
-    ? formatQuoteForDisplay(
-        quotes.zeroex,
+    }
+    if (!flashmintResults.isAvailable && !isFetchingFlashMint) {
+      flashmintQuote = formatNotAvailable('Flash Mint')
+    }
+  }
+
+  if (zeroexResults) {
+    if (zeroexResults.isAvailable && isFetching0x) {
+      zeroexQuote = formatLoadingQuoteForDisplay(QuoteType.zeroex)
+    }
+    if (zeroexResults.isAvailable && !isFetching0x && zeroexResults.quote) {
+      zeroexQuote = formatQuoteForDisplay(
+        zeroexResults.quote,
         quoteResult.bestQuote === QuoteType.zeroex
       )
-    : null
+    }
+    if (!zeroexResults.isAvailable && !isFetching0x) {
+      zeroexQuote = formatNotAvailable('Swap')
+    }
+  }
+
   const formattedQuotes: FormattedQuoteDisplay[] = []
   if (flashmintQuote) {
     formattedQuotes.push(flashmintQuote)

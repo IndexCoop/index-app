@@ -30,7 +30,6 @@ export interface TradeDetailTokenPrices {
 interface TradeDetailsProps {
   data: TradeInfoItem[]
   isLoading: boolean
-  isToggleDisabled: boolean
   prices: TradeDetailTokenPrices
   showWarning?: boolean
   selectedQuoteType: QuoteType

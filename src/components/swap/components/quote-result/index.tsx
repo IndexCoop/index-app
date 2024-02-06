@@ -2,24 +2,25 @@ import { QuoteAvailable } from './available'
 import { QuoteNotAvailable } from './not-available'
 import { QuoteDisplay } from './types'
 
-// TODO: isLoading?
 type QuoteProps = {
   type: string
+  isLoading: boolean
   isSelected: boolean
   quote: QuoteDisplay | null
   onClick: () => void
 }
 
 export const QuoteResult = (props: QuoteProps) => {
-  const { isSelected, quote, type } = props
-  return quote ? (
+  const { isLoading, isSelected, quote, type } = props
+  return !quote && !isLoading ? (
+    <QuoteNotAvailable type={type} onClick={props.onClick} />
+  ) : (
     <QuoteAvailable
+      isLoading={isLoading}
       isSelected={isSelected}
       quote={quote}
       type={type}
       onClick={props.onClick}
     />
-  ) : (
-    <QuoteNotAvailable type={type} onClick={props.onClick} />
   )
 }

@@ -47,6 +47,7 @@ export const TradeOutput = (props: TradeOutputProps) => {
           <QuoteResult
             key={formattedQuote.type}
             type={formattedQuote.type}
+            isLoading={formattedQuote.isLoading}
             isSelected={selectedQuote === formattedQuote.quote?.type}
             quote={formattedQuote.quote ?? null}
             onClick={() => props.onSelectQuote(formattedQuote.quote!.type)}

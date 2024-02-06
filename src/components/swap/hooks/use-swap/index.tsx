@@ -3,7 +3,11 @@ import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 
 import { Token } from '@/constants/tokens'
-import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import {
+  Quote,
+  QuoteResults,
+  QuoteType,
+} from '@/lib/hooks/use-best-quote/types'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { toWei } from '@/lib/utils'
@@ -44,7 +48,7 @@ interface SwapData {
     colorCoding: string
     priceImpact: string
   } | null
-  quoteResults: FormattedQuoteDisplay[]
+  formattedQuoteResults: FormattedQuoteDisplay[]
   // Trade details
   showWarning: boolean
   tokenPrices: TradeDetailTokenPrices
@@ -76,9 +80,11 @@ export function useSwap(
   inputToken: Token,
   outputToken: Token,
   inputTokenAmount: string,
-  quoteResult: QuoteResult | null,
+  quoteResults: QuoteResults,
+  selectedQuoteType: QuoteType | null,
   isFetchingQuote: boolean,
-  selectedQuoteType: QuoteType | null
+  isFetching0x: boolean,
+  isFetchingFlashmint: boolean
 ): SwapData {
   const { slippage } = useSlippage()
   const { address } = useWallet()
@@ -97,10 +103,10 @@ export function useSwap(
     () =>
       selectedQuoteType === null ||
       selectedQuoteType === QuoteType.zeroex ||
-      quoteResult === null
-        ? quoteResult?.quotes.zeroex ?? null
-        : quoteResult?.quotes.flashmint,
-    [quoteResult, selectedQuoteType]
+      quoteResults === null
+        ? quoteResults?.results.zeroex?.quote ?? null
+        : quoteResults?.results.flashmint?.quote ?? null,
+    [quoteResults, selectedQuoteType]
   )
   const isFlashMint = useMemo(
     () => selectedQuote?.type === QuoteType.flashmint,
@@ -173,7 +179,11 @@ export function useSwap(
   )
 
   // Formatted quote results
-  const quoteResults = getFormattedQuoteResults(quoteResult)
+  const formattedQuoteResults = getFormattedQuoteResults(
+    quoteResults,
+    isFetching0x,
+    isFetchingFlashmint
+  )
 
   // Trade data
   const tradeData: TradeInfoItem[] = buildTradeDetails(selectedQuote ?? null)
@@ -193,7 +203,7 @@ export function useSwap(
     outputTokenBalanceFormatted,
     outputTokenPrice: selectedQuote?.outputTokenPrice ?? 0,
     priceImpactFormatting,
-    quoteResults,
+    formattedQuoteResults,
     showWarning,
     tokenPrices,
     tradeData,
