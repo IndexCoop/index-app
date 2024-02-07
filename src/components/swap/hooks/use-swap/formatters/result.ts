@@ -16,7 +16,10 @@ export interface FormattedQuoteDisplay {
 }
 
 function formattedFeesGas(fees: number, route: string) {
-  return `$${fees.toFixed(2)} via ${route}`
+  const maxLength = route.length > 18 ? 20 : route.length
+  const formattedRoute =
+    route.length > 18 ? `${route.substring(0, maxLength)}...` : route
+  return `$${fees.toFixed(2)} via ${formattedRoute}`
 }
 
 function formattedFeesTotal(fees: number) {
