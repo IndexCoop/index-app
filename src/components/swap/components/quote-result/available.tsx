@@ -79,13 +79,16 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
         {isLoading && <StyledSkeleton width={200} />}
         {!isLoading && quote && quote.outputAmount}
       </Text>
-      <Flex justify={'space-between'}>
+      <Flex
+        direction={['column', 'row']}
+        justify={['flex-start', 'space-between']}
+      >
         <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
           {isLoading && <StyledSkeleton width={80} />}
           {!isLoading && quote && quote.feesTotal}
         </Text>
         {quote && (
-          <Flex direction={'row'} gap='6px'>
+          <Flex direction='row' gap='6px'>
             <Image
               alt='Gas fees icon'
               src={'/assets/gas-icon.svg'}

@@ -27,7 +27,7 @@ export const TradeOutput = (props: TradeOutputProps) => {
       borderColor={colors.icGray1}
       borderRadius={12}
       direction={'column'}
-      p={'16px 20px'}
+      p={'16px'}
     >
       <Caption caption={props.caption} />
       <Flex justify='flex-end' w='100%'>
