@@ -15,13 +15,15 @@ import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { get0xQuote } from './utils/zeroex'
-import {
-  IndexQuoteRequest,
-  Quote,
-  QuoteResults,
-  QuoteType,
-  ZeroExQuote,
-} from './types'
+import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
+
+export interface FetchQuoteRequest {
+  isMinting: boolean
+  inputToken: Token
+  outputToken: Token
+  inputTokenAmount: string
+  slippage: number
+}
 
 const defaultResults: QuoteResults = {
   bestQuote: QuoteType.zeroex,
@@ -52,7 +54,7 @@ export const useBestQuote = (
   )
 
   const fetchQuote = useCallback(
-    async (request: IndexQuoteRequest) => {
+    async (request: FetchQuoteRequest) => {
       const { inputTokenAmount } = request
 
       // Right now we only allow setting the input amount, so no need to check
@@ -91,8 +93,10 @@ export const useBestQuote = (
             {
               ...request,
               chainId,
+              inputToken,
               inputTokenAmountWei,
               inputTokenPrice,
+              outputToken,
               outputTokenPrice,
               nativeTokenPrice,
             },
@@ -114,7 +118,9 @@ export const useBestQuote = (
             ...request,
             chainId,
             address: signer._address,
+            inputToken,
             inputTokenPrice,
+            outputToken,
             outputTokenPrice,
             nativeTokenPrice,
           })
