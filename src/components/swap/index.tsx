@@ -101,8 +101,7 @@ export const Swap = (props: SwapProps) => {
   const {
     contract,
     hasInsufficientFunds,
-    // gasCostsUsd,
-    // inputTokenAmountUsd,
+    inputTokenAmountUsd,
     inputTokenAmountWei,
     inputTokenBalance,
     inputTokenBalanceFormatted,
@@ -277,7 +276,7 @@ export const Swap = (props: SwapProps) => {
           config={{ isReadOnly: false }}
           balance={inputTokenBalanceFormatted}
           caption='You pay'
-          formattedFiat={''}
+          formattedFiat={inputTokenAmountUsd}
           selectedToken={inputToken}
           selectedTokenAmount={inputTokenAmountFormatted}
           onChangeInput={onChangeInputTokenAmount}
