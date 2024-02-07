@@ -155,7 +155,6 @@ export const useBestQuote = (
     )
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
     const canSwapIndexToken = isAvailableForSwap(indexToken)
-    // TODO: only replace approriate quote?
     const results = {
       bestQuote,
       results: {
