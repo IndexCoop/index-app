@@ -113,6 +113,7 @@ export async function getEnhancedRedemptionQuote(
       inputTokenAmountUsd,
       outputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
       outputTokenAmountUsd,
+      outputTokenAmountUsdAfterFees: 0, // TODO:
       inputTokenPrice,
       outputTokenPrice,
       slippage: request.slippage,
