@@ -8,6 +8,7 @@ import {
 } from '@/lib/hooks/use-best-quote/types'
 import { QuoteDisplay } from '@/components/swap/components/quote-result/types'
 import { Token } from '@/constants/tokens'
+import { formatAmount } from '@/lib/utils'
 
 export interface FormattedQuoteDisplay {
   type: string
@@ -23,7 +24,7 @@ function formattedFeesGas(fees: number, route: string) {
 }
 
 function formattedFeesTotal(fees: number) {
-  return `= $${fees.toFixed(2)} after fees`
+  return `= $${formatAmount(fees)} after fees`
 }
 
 function formattedInputAmount(inputAmount: bigint, token: Token) {
