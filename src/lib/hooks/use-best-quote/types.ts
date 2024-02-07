@@ -47,6 +47,7 @@ export interface Quote {
   inputTokenAmountUsd: number
   outputTokenAmount: BigNumber
   outputTokenAmountUsd: number
+  outputTokenAmountUsdAfterFees: number
   inputTokenPrice: number
   outputTokenPrice: number
   slippage: number

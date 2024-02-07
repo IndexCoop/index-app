@@ -150,8 +150,8 @@ export const useBestQuote = (
     const bestQuote = getBestQuote(
       quote0x?.fullCostsInUsd ?? null,
       quoteFlashMint?.fullCostsInUsd ?? null,
-      quote0x?.outputTokenAmountUsd ?? null,
-      quoteFlashMint?.outputTokenAmountUsd ?? null
+      quote0x?.outputTokenAmountUsdAfterFees ?? null,
+      quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null
     )
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
     const canSwapIndexToken = isAvailableForSwap(indexToken)

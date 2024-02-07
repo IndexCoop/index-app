@@ -69,6 +69,8 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
     ) * outputTokenPrice
   const priceImpact = getPriceImpact(inputTokenAmountUsd, outputTokenAmountUsd)
 
+  const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
+
   const zeroExQuote: ZeroExQuote | null = dexSwapOption
     ? {
         type: QuoteType.zeroex,
@@ -97,6 +99,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
         inputTokenAmountUsd,
         outputTokenAmount,
         outputTokenAmountUsd,
+        outputTokenAmountUsdAfterFees,
         inputTokenPrice,
         outputTokenPrice,
         slippage,

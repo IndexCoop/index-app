@@ -74,7 +74,7 @@ function formatQuoteForDisplay(
         quote.outputToken
       ),
       feesGas: formattedFeesGas(quote.gasCostsInUsd, route),
-      feesTotal: formattedFeesTotal(quote.fullCostsInUsd ?? 0),
+      feesTotal: formattedFeesTotal(quote.outputTokenAmountUsdAfterFees),
     },
   }
 }

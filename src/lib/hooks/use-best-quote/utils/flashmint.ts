@@ -97,6 +97,8 @@ async function getEnhancedFlashMintQuote(
         outputTokenAmountUsd
       )
 
+      const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
+
       return {
         type: QuoteType.flashmint,
         chainId: 1,
@@ -122,6 +124,7 @@ async function getEnhancedFlashMintQuote(
         inputTokenAmountUsd,
         outputTokenAmount,
         outputTokenAmountUsd,
+        outputTokenAmountUsdAfterFees,
         inputTokenPrice,
         outputTokenPrice,
         slippage,
