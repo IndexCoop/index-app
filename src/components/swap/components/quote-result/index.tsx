@@ -13,7 +13,7 @@ type QuoteProps = {
 export const QuoteResult = (props: QuoteProps) => {
   const { isLoading, isSelected, quote, type } = props
   return !quote && !isLoading ? (
-    <QuoteNotAvailable type={type} onClick={props.onClick} />
+    <QuoteNotAvailable type={type} />
   ) : (
     <QuoteAvailable
       isLoading={isLoading}

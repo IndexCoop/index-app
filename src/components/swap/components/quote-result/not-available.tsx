@@ -3,14 +3,12 @@ import { Flex, Text } from '@chakra-ui/react'
 import { colors } from '@/lib/styles/colors'
 
 type QuoteNotAvailableProps = {
-  onClick: () => void
   type: string
 }
 
-export const QuoteNotAvailable = ({
-  onClick,
-  type,
-}: QuoteNotAvailableProps) => {
+export const QuoteNotAvailable = ({ type }: QuoteNotAvailableProps) => {
+  const isFlashmint = type === 'Flash Mint'
+  const text = isFlashmint ? 'flash minting' : 'swapping'
   return (
     <Flex
       background={colors.icGray50}
@@ -20,7 +18,6 @@ export const QuoteNotAvailable = ({
       p='16px'
       w='100%'
       h='110px'
-      onClick={onClick}
     >
       <Flex justify='flex-end' direction='row'>
         <Text fontSize={'sm'} fontWeight={600} textColor={colors.icGray400}>
@@ -31,7 +28,7 @@ export const QuoteNotAvailable = ({
         {type} unavailable
       </Text>
       <Text fontSize={'sm'} fontWeight={400} textColor={colors.icGray5}>
-        This token is not available for swapping.
+        {`This token is not available for ${text}.`}
       </Text>
     </Flex>
   )
