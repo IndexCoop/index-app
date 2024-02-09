@@ -132,7 +132,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const token = icETHIndex
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(2)
-    expect(currencyTokens).toEqual([ETH, STETH])
+    expect(currencyTokens).toEqual([ETH, WETH, STETH])
   })
 
   test('returns correct currency tokens for dsETH', async () => {

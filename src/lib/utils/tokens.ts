@@ -65,7 +65,7 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI]
   if (index.symbol === ic21.symbol) return [ETH, WETH]
-  if (index.symbol === icETHIndex.symbol) return [ETH, STETH]
+  if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||
     index.symbol === GitcoinStakedETHIndex.symbol
