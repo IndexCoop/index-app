@@ -7,8 +7,6 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
-  FIXED_DAI,
-  FIXED_USDC,
   GitcoinStakedETHIndex,
   ic21,
   icETHIndex,
@@ -67,8 +65,6 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI]
   if (index.symbol === ic21.symbol) return [ETH, WETH]
-  if (index.symbol === FIXED_DAI.symbol) return [DAI]
-  if (index.symbol === FIXED_USDC.symbol) return [USDC]
   if (index.symbol === icETHIndex.symbol) return [ETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||

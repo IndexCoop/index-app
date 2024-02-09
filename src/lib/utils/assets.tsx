@@ -1,7 +1,5 @@
 const bedBorderLogo = '/assets/bed-border.png'
 const dsethLogo = '/assets/dseth_logo.svg'
-const fixedDaiLogo = '/assets/fixed_dai_logo.png'
-const fixedUsdcLogo = '/assets/fixed_usdc_logo.png'
 const gtcEthLogo = '/assets/gtceth_logo.svg'
 const ic21Logo = '/assets/ic21_logo.svg'
 const icethLogo = '/assets/icethlogo.png'
@@ -25,8 +23,6 @@ export {
 export {
   bedBorderLogo,
   dsethLogo,
-  fixedDaiLogo,
-  fixedUsdcLogo,
   gtcEthLogo,
   ic21Logo,
   icethLogo,

@@ -8,8 +8,6 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
-  FIXED_DAI,
-  FIXED_USDC,
   GitcoinStakedETHIndex,
   ic21,
   icETHIndex,
@@ -119,22 +117,6 @@ describe('getCurrencyTokensForIndex()', () => {
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(4)
     expect(currencyTokens).toEqual([ETH, USDC, DAI, WETH])
-  })
-
-  test('returns DAI only for FIXED-DAI', async () => {
-    const chainId = 1
-    const token = FIXED_DAI
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(1)
-    expect(currencyTokens).toEqual([DAI])
-  })
-
-  test('returns USDC only for FIXED-USDC', async () => {
-    const chainId = 1
-    const token = FIXED_USDC
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(1)
-    expect(currencyTokens).toEqual([USDC])
   })
 
   test('returns correct currency tokens for ic21', async () => {
