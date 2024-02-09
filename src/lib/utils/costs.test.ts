@@ -6,7 +6,7 @@ import { getFullCostsInUsd, getGasCostsInUsd } from './costs'
 
 describe('getFullCostsInUsd()', () => {
   test('should return null if undefined', async () => {
-    const fullCostsNull = getFullCostsInUsd(null, BigNumber.from(0), 18, 1, 1)
+    const fullCostsNull = getFullCostsInUsd(null, BigInt(0), 18, 1, 1)
     expect(fullCostsNull).toBeNull()
   })
 
@@ -21,8 +21,8 @@ describe('getFullCostsInUsd()', () => {
       gas: gasLimit,
     }
     const fullCosts = getFullCostsInUsd(
-      quote.inputTokenAmount,
-      gas,
+      quote.inputTokenAmount.toBigInt(),
+      gas.toBigInt(),
       18,
       10,
       2000
@@ -42,7 +42,13 @@ describe('getFullCostsInUsd()', () => {
       setTokenAmount: BigNumber.from(1),
       gas: gasLimit,
     }
-    const fullCosts = getFullCostsInUsd(quote.inputTokenAmount, gas, 6, 1, 2000)
+    const fullCosts = getFullCostsInUsd(
+      quote.inputTokenAmount.toBigInt(),
+      gas.toBigInt(),
+      6,
+      1,
+      2000
+    )
     const expectedCosts = 1040
     expect(fullCosts).toBeDefined()
     expect(fullCosts).toEqual(expectedCosts)
@@ -54,7 +60,7 @@ describe('getGasCostsInUsd()', () => {
     const gasLimit = toWei(0.01)
     const gasPrice = BigNumber.from(2)
     const gas = gasPrice.mul(gasLimit)
-    const gasCostsInUsd = getGasCostsInUsd(gas, 2000)
+    const gasCostsInUsd = getGasCostsInUsd(gas.toBigInt(), 2000)
     const expectedCosts = 40
     expect(gasCostsInUsd).toEqual(expectedCosts)
   })
