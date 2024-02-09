@@ -77,7 +77,10 @@ async function getEnhancedFlashMintQuote(
       const canFail = false
       const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
       const gasCosts = gasEstimate.mul(gasPrice)
-      const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
+      const gasCostsInUsd = getGasCostsInUsd(
+        gasCosts.toBigInt(),
+        nativeTokenPrice
+      )
       transaction.gasLimit = gasEstimate
       console.log('gasLimit', transaction.gasLimit.toString())
 
@@ -99,6 +102,14 @@ async function getEnhancedFlashMintQuote(
 
       const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
+      const fullCostsInUsd = getFullCostsInUsd(
+        inputTokenAmount.toBigInt(),
+        gasEstimate.toBigInt() * gasPrice.toBigInt(),
+        inputToken.decimals,
+        inputTokenPrice,
+        nativeTokenPrice
+      )
+
       return {
         type: QuoteType.flashmint,
         chainId: 1,
@@ -110,13 +121,7 @@ async function getEnhancedFlashMintQuote(
         gasPrice,
         gasCosts,
         gasCostsInUsd,
-        fullCostsInUsd: getFullCostsInUsd(
-          inputOutputAmount,
-          gasEstimate.mul(gasPrice),
-          inputToken.decimals,
-          inputTokenPrice,
-          nativeTokenPrice
-        ),
+        fullCostsInUsd,
         priceImpact,
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,

@@ -1,27 +1,24 @@
-import { BigNumber } from 'ethers'
-
-import { displayFromWei } from '@/lib/utils'
+import { formatUnits } from 'viem'
 
 export function getFullCostsInUsd(
-  quote: BigNumber | null | undefined,
-  gas: BigNumber,
+  quote: bigint | null | undefined,
+  gas: bigint,
   inputTokenDecimals: number,
   inputTokenPrice: number,
   nativeTokenPrice: number
 ): number | null {
   if (quote === null || quote === undefined) return null
-  const q =
-    displayFromWei(quote, undefined, inputTokenDecimals)?.toString() ?? '0'
-  const quotePrice = parseFloat(q) * inputTokenPrice
+  const quoteAmount = formatUnits(quote, inputTokenDecimals)
+  const quotePrice = parseFloat(quoteAmount) * inputTokenPrice
   const gasPrice = getGasCostsInUsd(gas, nativeTokenPrice)
   return quotePrice + gasPrice
 }
 
 export function getGasCostsInUsd(
-  gas: BigNumber,
+  gas: bigint,
   nativeTokenPrice: number
 ): number {
-  const g = displayFromWei(gas)?.toString() ?? '0'
-  const gasPrice = parseFloat(g) * nativeTokenPrice
+  const gasAmount = formatUnits(gas, 18)
+  const gasPrice = parseFloat(gasAmount) * nativeTokenPrice
   return gasPrice
 }

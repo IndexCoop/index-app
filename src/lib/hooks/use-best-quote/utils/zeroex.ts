@@ -60,7 +60,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
   const inputTokenAmountBn = toWei(inputTokenAmount, inputToken.decimals)
   const outputTokenAmount =
     BigNumber.from(dexSwapOption?.buyAmount) ?? BigNumber.from(0)
-  const gasCostsInUsd = getGasCostsInUsd(gas0x, nativeTokenPrice)
+  const gasCostsInUsd = getGasCostsInUsd(gas0x.toBigInt(), nativeTokenPrice)
 
   const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
   const outputTokenAmountUsd =
@@ -70,6 +70,14 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
   const priceImpact = getPriceImpact(inputTokenAmountUsd, outputTokenAmountUsd)
 
   const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
+
+  const fullCostsInUsd = getFullCostsInUsd(
+    inputTokenAmountBn.toBigInt(),
+    gas0x.toBigInt(),
+    inputToken.decimals,
+    inputTokenPrice,
+    nativeTokenPrice
+  )
 
   const zeroExQuote: ZeroExQuote | null = dexSwapOption
     ? {
@@ -83,13 +91,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
         gasPrice: gasPrice0x,
         gasCosts: gas0x,
         gasCostsInUsd,
-        fullCostsInUsd: getFullCostsInUsd(
-          inputTokenAmountBn,
-          gas0x,
-          inputToken.decimals,
-          inputTokenPrice,
-          nativeTokenPrice
-        ),
+        fullCostsInUsd,
         priceImpact,
         indexTokenAmount: isMinting ? outputTokenAmount : inputTokenAmountBn,
         inputOutputTokenAmount: isMinting
