@@ -116,7 +116,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const token = CoinDeskEthTrendIndex
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(4)
-    expect(currencyTokens).toEqual([ETH, USDC, DAI, WETH])
+    expect(currencyTokens).toEqual([ETH, WETH, USDC, DAI])
   })
 
   test('returns correct currency tokens for ic21', async () => {
@@ -131,7 +131,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const chainId = 1
     const token = icETHIndex
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(2)
+    expect(currencyTokens.length).toEqual(3)
     expect(currencyTokens).toEqual([ETH, WETH, STETH])
   })
 
