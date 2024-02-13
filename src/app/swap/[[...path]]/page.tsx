@@ -12,6 +12,7 @@ import {
 import { Swap } from '@/components/swap'
 import { LeveragedRethStakingYield } from '@/constants/tokens'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
+import { FliMigrationBanner } from '@/components/banners/fli-migration-banner'
 
 export default function SwapPage() {
   const { inputToken, isMinting, outputToken } = useSelectedToken()
@@ -28,8 +29,18 @@ export default function SwapPage() {
   )
 
   return (
-    <Flex direction={['column', 'column', 'column', 'row']} mx='auto'>
-      <Flex w={['inherit', '500px']} h={'100%'}>
+    <Flex
+      direction={['column', 'column', 'column', 'row']}
+      mx='auto'
+      height='inherit'
+    >
+      <Flex
+        className='flex-col gap-8'
+        mb={[4, 4, 4, 12]}
+        mr={4}
+        w={['inherit', '500px']}
+      >
+        <FliMigrationBanner />
         <Swap
           isBuying={isMinting}
           inputToken={inputToken}
