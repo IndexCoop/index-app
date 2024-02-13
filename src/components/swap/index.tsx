@@ -90,12 +90,12 @@ export const Swap = (props: SwapProps) => {
   const { inputTokenslist, outputTokenslist } = useTokenlists(
     isBuying,
     inputToken,
-    outputToken
+    outputToken,
   )
   const { transactionReview } = useTransactionReviewModal(
     quoteResults,
     selectedQuote,
-    isFetchingAnyQuote
+    isFetchingAnyQuote,
   )
 
   const {
@@ -117,7 +117,7 @@ export const Swap = (props: SwapProps) => {
     selectedQuote,
     isFetchingAnyQuote,
     isFetching0x,
-    isFetchingFlashmint
+    isFetchingFlashmint,
   )
 
   const {
@@ -138,7 +138,7 @@ export const Swap = (props: SwapProps) => {
     shouldApprove,
     isApprovedForSwap,
     isApprovingForSwap,
-    sellTokenAmount
+    sellTokenAmount,
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
