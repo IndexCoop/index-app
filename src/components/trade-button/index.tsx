@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { Button } from '@chakra-ui/react'
 
 import { colors } from '@/lib/styles/colors'
@@ -11,13 +12,12 @@ interface TradeButtonProps {
 
 export const TradeButton = (props: TradeButtonProps) => {
   const { isDisabled } = props
-  const background = isDisabled ? colors.icGray5 : colors.icBlue6
+  const background = isDisabled ? 'bg-ic-gray-500' : 'bg-ic-blue-600'
   const boxShadow = isDisabled
     ? 'none'
     : '0.5px 1px 2px 0px rgba(0, 0, 0, 0.30)'
   return (
     <Button
-      background={background}
       border='0'
       borderRadius='10px'
       boxShadow={boxShadow}
@@ -29,6 +29,7 @@ export const TradeButton = (props: TradeButtonProps) => {
       height='54px'
       w='100%'
       onClick={props.onClick}
+      className={clsx(background)}
     >
       {props.label}
     </Button>
