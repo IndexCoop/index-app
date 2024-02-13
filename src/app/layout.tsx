@@ -2,6 +2,7 @@ import './globals.css'
 
 import { Flex } from '@chakra-ui/react'
 
+import { Banner } from '@/components/banner'
 import Footer from '@/components/footer'
 import { Header } from '@/components/header'
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: LayoutProps) {
     <html lang='en'>
       <body>
         <Providers>
+          <Banner />
           <Header />
           <Flex direction='column' mb='50px'>
             <Flex
