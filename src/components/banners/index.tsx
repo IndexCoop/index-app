@@ -2,8 +2,8 @@ import Link from 'next/link'
 
 export function Banner() {
   return (
-    <div className='flex justify-center bg-[#693798] p-3'>
-      <p className='text-sm font-semibold text-ic-white'>
+    <div className='bg-[#693798] flex justify-center p-3'>
+      <p className='text-ic-white text-sm font-semibold'>
         +++ Holding FLI’s?{' '}
         <Link className='underline' href={'/swap/eth2x-fli/eth'}>
           Click here
