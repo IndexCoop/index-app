@@ -1,29 +1,26 @@
-import { Flex, Spacer } from '@chakra-ui/react'
+'use client'
 
 import { Connect } from './connect'
+import { HeaderLink } from './link'
 import { Logo } from './logo'
 
-const Header = () => {
-  return (
-    <Flex
-      as='header'
-      backdropFilter='saturate(120%) blur(5px)'
-      // boxShadow='0px 2px 3px 0px rgba(0, 0, 0, 0.17);'
-      p={['24px 32px']}
-      position='fixed'
-      top='0px'
-      w='100vw'
-      zIndex='2'
-    >
-      <Flex align='center' justifyContent='space-between' w='100%'>
-        <Flex marginRight={['', '', '', '20px']}>
-          <Logo />
-        </Flex>
-        <Spacer />
-        <Connect />
-      </Flex>
-    </Flex>
-  )
+export enum Path {
+  HOMEPAGE = 'https://indexcoop.com/',
+  PRODUCTS = '/produc',
+  TRADE = '/swap',
 }
 
-export default Header
+export function Header() {
+  return (
+    <header className='bg-ic-white sticky top-0 flex justify-between px-9 py-4 shadow-md backdrop-blur shadow-ic-black/15 z-50 opacity-[.97]'>
+      <div className='flex flex-row items-center space-x-6'>
+        <Logo />
+        <HeaderLink href={Path.TRADE} label='Trade' />
+        <HeaderLink href={Path.PRODUCTS} label='Products' />
+      </div>
+      <div className='hidden sm:flex flex-row h-10 max-h-10'>
+        <Connect />
+      </div>
+    </header>
+  )
+}
