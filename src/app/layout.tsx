@@ -1,3 +1,5 @@
+import './globals.css'
+
 import { Flex } from '@chakra-ui/react'
 
 import Footer from '@/components/footer'
