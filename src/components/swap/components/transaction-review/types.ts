@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from '@/constants/tokens'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { QuoteResults, QuoteType } from '@/lib/hooks/use-best-quote/types'
 
 export type TransactionReview = {
   chainId: number
@@ -11,7 +11,7 @@ export type TransactionReview = {
   outputToken: Token
   inputTokenAmount: BigNumber
   outputTokenAmount: BigNumber
-  quoteResult: QuoteResult
+  quoteResults: QuoteResults
   selectedQuote: QuoteType
   slippage: number
 }

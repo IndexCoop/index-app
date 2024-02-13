@@ -6,13 +6,6 @@ export function getBestQuote(
   totalOutput0x: number | null,
   totalOutputFM: number | null
 ): QuoteType {
-  console.log(
-    'bestquote:',
-    fullCosts0x,
-    fullCostsFM,
-    totalOutput0x,
-    totalOutputFM
-  )
   if (fullCosts0x !== null && fullCostsFM === null) return QuoteType.zeroex
   if (fullCosts0x === null && fullCostsFM !== null) return QuoteType.flashmint
   if (fullCosts0x && totalOutput0x && fullCostsFM && totalOutputFM) {

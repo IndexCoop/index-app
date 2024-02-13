@@ -79,7 +79,10 @@ export async function getEnhancedRedemptionQuote(
     const canFail = false
     const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
     const gasCosts = gasEstimate.mul(gasPrice)
-    const gasCostsInUsd = getGasCostsInUsd(gasCosts, request.nativeTokenPrice)
+    const gasCostsInUsd = getGasCostsInUsd(
+      gasCosts.toBigInt(),
+      request.nativeTokenPrice
+    )
     transaction.gasLimit = gasEstimate
     console.log('gasLimit', transaction.gasLimit.toString())
 
@@ -113,6 +116,7 @@ export async function getEnhancedRedemptionQuote(
       inputTokenAmountUsd,
       outputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
       outputTokenAmountUsd,
+      outputTokenAmountUsdAfterFees: 0, // TODO:
       inputTokenPrice,
       outputTokenPrice,
       slippage: request.slippage,

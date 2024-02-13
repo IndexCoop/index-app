@@ -1,8 +1,6 @@
 import {
   bedBorderLogo,
   dsethLogo,
-  fixedDaiLogo,
-  fixedUsdcLogo,
   gtcEthLogo,
   ic21Logo,
   icethLogo,
@@ -63,36 +61,6 @@ export const CoinDeskEthTrendIndex: Token = {
   isDangerous: true,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
-}
-
-export const FIXED_DAI: Token = {
-  name: 'Fixed Rate Yield Index (DAI)',
-  symbol: 'FIXED-DAI',
-  image: fixedDaiLogo,
-  address: '0x015558c3aB97c9e5a9c8c437C71Bb498B2e5afB3',
-  optimismAddress: undefined,
-  polygonAddress: undefined,
-  decimals: 18,
-  url: '',
-  coingeckoId: '',
-  fees: undefined,
-  isDangerous: false,
-  indexTypes: [],
-}
-
-export const FIXED_USDC: Token = {
-  name: 'Fixed Rate Yield Index (USDC)',
-  symbol: 'FIXED-USDC',
-  image: fixedUsdcLogo,
-  address: '0xFB4D3b07aA16eE563Ea7C1f3202959448458e290',
-  optimismAddress: undefined,
-  polygonAddress: undefined,
-  decimals: 18,
-  url: '',
-  coingeckoId: '',
-  fees: undefined,
-  isDangerous: false,
-  indexTypes: [],
 }
 
 export const DefiPulseIndex: Token = {

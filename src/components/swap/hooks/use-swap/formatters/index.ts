@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from '@/constants/tokens'
-import { displayFromWei } from '@/lib/utils'
+import { displayFromWei, formatAmount } from '@/lib/utils'
 
 import { TradeDetailTokenPrices } from '../../../components/trade-details'
 
@@ -48,8 +48,8 @@ export function getFormattedTokenPrices(
     inputTokenSymbol,
     outputTokenPrice
   )
-  const inputTokenPriceUsd = `($${inputTokenUsd.toFixed(2)})`
-  const outputTokenPriceUsd = `($${outputTokenUsd.toFixed(2)})`
+  const inputTokenPriceUsd = `($${formatAmount(inputTokenUsd)})`
+  const outputTokenPriceUsd = `($${formatAmount(outputTokenUsd)})`
   return {
     inputTokenPrice: inputTokenPriceFormatted,
     inputTokenPriceUsd,

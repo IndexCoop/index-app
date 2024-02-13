@@ -47,6 +47,7 @@ export interface Quote {
   inputTokenAmountUsd: number
   outputTokenAmount: BigNumber
   outputTokenAmountUsd: number
+  outputTokenAmountUsdAfterFees: number
   inputTokenPrice: number
   outputTokenPrice: number
   slippage: number
@@ -59,12 +60,16 @@ export interface ZeroExQuote extends Quote {
 }
 
 export interface QuoteResult {
+  type: QuoteType
+  isAvailable: boolean
+  quote: Quote | null
+  error: string | null
+}
+
+export interface QuoteResults {
   bestQuote: QuoteType
-  error: Error | null
-  quotes: {
-    flashmint: Quote | null
-    zeroex: ZeroExQuote | null
+  results: {
+    flashmint: QuoteResult | null
+    zeroex: QuoteResult | null
   }
-  isReasonPriceImpact: boolean
-  savingsUsd: number
 }

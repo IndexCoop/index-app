@@ -21,7 +21,7 @@ describe('getFormattedTokenPrices()', () => {
     const tokenPrices = getFormattedTokenPrices('ETH', 1, 1500, 'USDC', 1520, 1)
     const expectedResult: TradeDetailTokenPrices = {
       inputTokenPrice: '1 ETH = 1520 USDC',
-      inputTokenPriceUsd: '($1500.00)',
+      inputTokenPriceUsd: '($1,500.00)',
       outputTokenPrice: '1 USDC = 0.0007 ETH',
       outputTokenPriceUsd: '($1.00)',
     }

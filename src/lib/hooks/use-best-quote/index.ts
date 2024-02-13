@@ -1,13 +1,9 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { BigNumber, providers } from 'ethers'
-
-import { JsonRpcSigner } from '@ethersproject/providers'
-
+import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
-import { GasStation } from '@/lib/utils/api/gas-station'
 import {
   getAddressForToken,
   isAvailableForFlashMint,
@@ -17,48 +13,55 @@ import {
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 
 import { getBestQuote } from './utils/best-quote'
-import { getEnhancedFlashMintQuote } from './utils/flashmint'
-import { getIndexTokenAmount } from './utils/index-token-amount'
+import { getFlashMintQuote } from './utils/flashmint'
 import { get0xQuote } from './utils/zeroex'
-import {
-  IndexQuoteRequest,
-  Quote,
-  QuoteResult,
-  QuoteType,
-  ZeroExQuote,
-} from './types'
+import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
 
-const defaultQuoteResult: QuoteResult = {
-  bestQuote: QuoteType.zeroex,
-  error: null,
-  quotes: {
-    flashmint: null,
-    zeroex: null,
-  },
-  isReasonPriceImpact: false,
-  savingsUsd: 0,
+export interface FetchQuoteRequest {
+  isMinting: boolean
+  inputToken: Token
+  outputToken: Token
+  inputTokenAmount: string
+  slippage: number
 }
 
-export const useBestQuote = () => {
+const defaultResults: QuoteResults = {
+  bestQuote: QuoteType.zeroex,
+  results: { flashmint: null, zeroex: null },
+}
+
+export const useBestQuote = (
+  isMinting: boolean,
+  inputToken: Token,
+  outputToken: Token
+) => {
   const { provider, signer } = useWallet()
   const { chainId: networkChainId } = useNetwork()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
   const chainId = networkChainId ?? 1
   const nativeTokenPrice = useNativeTokenPrice(chainId)
 
-  const [isFetching, setIsFetching] = useState<boolean>(false)
-  const [quoteResult, setQuoteResult] =
-    useState<QuoteResult>(defaultQuoteResult)
+  const [isFetching0x, setIsFetching0x] = useState<boolean>(false)
+  const [isFetchingFlashmint, setIsFetchingFlashMint] = useState<boolean>(false)
+
+  const [quote0x, setQuote0x] = useState<ZeroExQuote | null>(null)
+  const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
+  const [quoteResults, setQuoteResults] = useState<QuoteResults>(defaultResults)
+
+  const indexToken = useMemo(
+    () => (isMinting ? outputToken : inputToken),
+    [inputToken, isMinting, outputToken]
+  )
 
   const fetchQuote = useCallback(
-    async (request: IndexQuoteRequest) => {
-      const { inputToken, inputTokenAmount, isMinting, outputToken } = request
+    async (request: FetchQuoteRequest) => {
+      const { inputTokenAmount } = request
 
       // Right now we only allow setting the input amount, so no need to check
       // ouput token amount here
       const inputTokenAmountWei = toWei(inputTokenAmount, inputToken.decimals)
       if (inputTokenAmountWei.isZero() || inputTokenAmountWei.isNegative()) {
-        setQuoteResult(defaultQuoteResult)
+        setQuoteResults(defaultResults)
         return
       }
 
@@ -76,192 +79,111 @@ export const useBestQuote = () => {
         return
       }
 
-      setIsFetching(true)
-
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
-      const indexToken = isMinting ? outputToken : inputToken
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
-      let quote0x: ZeroExQuote | null = null
-      let quoteFlashMint: Quote | null = null
-
-      const fetchMoreQuotes = async () => {
+      const fetchFlashMintQuote = async () => {
         if (canFlashmintIndexToken) {
+          setIsFetchingFlashMint(true)
           console.log('canFlashmintIndexToken')
-          quoteFlashMint = await getFlashMintQuote(
+          const quoteFlashMint = await getFlashMintQuote(
             {
               ...request,
               chainId,
+              inputToken,
               inputTokenAmountWei,
               inputTokenPrice,
+              outputToken,
               outputTokenPrice,
               nativeTokenPrice,
             },
             provider,
             signer
           )
+          setIsFetchingFlashMint(false)
+          setQuoteFlashmint(quoteFlashMint)
+        } else {
+          setQuoteFlashmint(null)
         }
-
-        const bestQuote = getBestQuote(
-          quote0x?.fullCostsInUsd ?? null,
-          quoteFlashMint?.fullCostsInUsd ?? null,
-          quote0x?.outputTokenAmountUsd ?? null,
-          quoteFlashMint?.outputTokenAmountUsd ?? null
-        )
-
-        const getSavings = (): number => {
-          if (!quote0x) return 0
-          if (bestQuote === QuoteType.flashmint && quoteFlashMint) {
-            return (
-              (quote0x.fullCostsInUsd ?? 0) -
-              (quoteFlashMint.fullCostsInUsd ?? 0)
-            )
-          }
-          return 0
-        }
-        const savingsUsd = getSavings()
-
-        setQuoteResult({
-          bestQuote,
-          // TODO:
-          error: null,
-          // Not used at the moment but kept for potential re-introduction
-          // Insted of one argument, could change to type of enums (reasons: ReasonType.)
-          isReasonPriceImpact: false,
-          quotes: {
-            flashmint: quoteFlashMint,
-            zeroex: quote0x,
-          },
-          // Not used at the moment but kept for potential re-introduction
-          savingsUsd,
-        })
-        setIsFetching(false)
       }
 
-      if (canSwapIndexToken) {
-        console.log('canSwapIndexToken')
-        quote0x = await get0xQuote({
-          ...request,
-          chainId,
-          address: signer._address,
-          inputTokenPrice,
-          outputTokenPrice,
-          nativeTokenPrice,
-        })
-        setQuoteResult({
-          bestQuote: QuoteType.zeroex,
-          error: null,
-          isReasonPriceImpact: false,
-          quotes: {
-            flashmint: quoteFlashMint,
-            zeroex: quote0x,
-          },
-          // Not used at the moment but kept for potential re-introduction
-          savingsUsd: 0,
-        })
+      const fetchSwapQuote = async () => {
+        if (canSwapIndexToken) {
+          setIsFetching0x(true)
+          console.log('canSwapIndexToken')
+          const quote0x = await get0xQuote({
+            ...request,
+            chainId,
+            address: signer._address,
+            inputToken,
+            inputTokenPrice,
+            outputToken,
+            outputTokenPrice,
+            nativeTokenPrice,
+          })
+          setIsFetching0x(false)
+          setQuote0x(quote0x)
+        } else {
+          setQuote0x(null)
+        }
       }
 
-      // Non await because we already want to display the 0x quote - if one exists
-      fetchMoreQuotes()
+      // Non await - because we want to fetch quotes in parallel
+      fetchSwapQuote()
+      fetchFlashMintQuote()
     },
-    [chainId, nativeTokenPrice, provider, signer]
+    [
+      chainId,
+      indexToken,
+      inputToken,
+      outputToken,
+      nativeTokenPrice,
+      provider,
+      signer,
+    ]
   )
+
+  useEffect(() => {
+    const bestQuote = getBestQuote(
+      quote0x?.fullCostsInUsd ?? null,
+      quoteFlashMint?.fullCostsInUsd ?? null,
+      quote0x?.outputTokenAmountUsdAfterFees ?? null,
+      quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null
+    )
+    const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
+    const canSwapIndexToken = isAvailableForSwap(indexToken)
+    const results = {
+      bestQuote,
+      results: {
+        flashmint: {
+          type: QuoteType.flashmint,
+          isAvailable: canFlashmintIndexToken,
+          quote: quoteFlashMint,
+          error: null,
+        },
+        zeroex: {
+          type: QuoteType.zeroex,
+          isAvailable: canSwapIndexToken,
+          quote: quote0x,
+          error: null,
+        },
+      },
+    }
+    setQuoteResults(results)
+  }, [indexToken, quote0x, quoteFlashMint])
+
+  const isFetchingAnyQuote = useMemo(() => {
+    return isFetching0x || isFetchingFlashmint
+  }, [isFetching0x, isFetchingFlashmint])
 
   return {
     fetchQuote,
-    isFetching,
-    quoteResult,
+    isFetchingAnyQuote,
+    isFetching0x,
+    isFetchingFlashmint,
+    quoteResults,
   }
-}
-
-interface FlashMintQuoteRequest extends IndexQuoteRequest {
-  chainId: number
-  inputTokenAmountWei: BigNumber
-  nativeTokenPrice: number
-}
-
-async function getFlashMintQuote(
-  request: FlashMintQuoteRequest,
-  provider: providers.JsonRpcProvider,
-  signer: JsonRpcSigner
-) {
-  const {
-    chainId,
-    inputToken,
-    inputTokenAmount,
-    inputTokenAmountWei,
-    inputTokenPrice,
-    isMinting,
-    nativeTokenPrice,
-    outputToken,
-    outputTokenPrice,
-    slippage,
-  } = request
-
-  /* Determine initial index token amount based on different factors */
-  let indexTokenAmount = getIndexTokenAmount(
-    isMinting,
-    inputTokenAmount,
-    inputToken.decimals,
-    outputToken.decimals,
-    inputTokenPrice,
-    outputTokenPrice
-  )
-
-  const gasStation = new GasStation(provider)
-  const gasPrice = await gasStation.getGasPrice()
-
-  let savedQuote: Quote | null = null
-
-  for (let t = 2; t > 0; t--) {
-    const flashMintQuote = await getEnhancedFlashMintQuote(
-      isMinting,
-      inputToken,
-      outputToken,
-      BigNumber.from(indexTokenAmount.toString()),
-      inputTokenPrice,
-      outputTokenPrice,
-      nativeTokenPrice,
-      gasPrice,
-      slippage,
-      chainId,
-      provider,
-      signer
-    )
-    // If there is no FlashMint quote, return immediately
-    if (flashMintQuote === null) return savedQuote
-    // For redeeming return quote immdediately
-    if (!isMinting) return flashMintQuote
-    savedQuote = flashMintQuote
-
-    console.log('estimated index token amount', indexTokenAmount.toString())
-    const diff = inputTokenAmountWei
-      .sub(flashMintQuote.inputTokenAmount)
-      .toBigInt()
-    console.log('diff', diff.toString())
-    const factor = determineFactor(diff, inputTokenAmountWei.toBigInt())
-    console.log('factor', factor.toString())
-
-    indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
-    console.log('new index token amount', indexTokenAmount.toString(), t)
-
-    if (diff < 0 && t === 1) {
-      t++ // loop one more time to stay under the input amount
-    }
-  }
-
-  return savedQuote
-}
-
-const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
-  let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
-  console.log('ratio', ratio)
-  if (Math.abs(ratio) < 0.0001) {
-    // This is currently needed to avoid infinite loops
-    ratio = diff < 0 ? -0.0001 : 0.0001
-  }
-  return BigInt(Math.round((1 + ratio) * 10000))
 }

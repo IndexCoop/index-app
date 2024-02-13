@@ -8,8 +8,6 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
-  FIXED_DAI,
-  FIXED_USDC,
   GitcoinStakedETHIndex,
   ic21,
   icETHIndex,
@@ -118,23 +116,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const token = CoinDeskEthTrendIndex
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(4)
-    expect(currencyTokens).toEqual([ETH, USDC, DAI, WETH])
-  })
-
-  test('returns DAI only for FIXED-DAI', async () => {
-    const chainId = 1
-    const token = FIXED_DAI
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(1)
-    expect(currencyTokens).toEqual([DAI])
-  })
-
-  test('returns USDC only for FIXED-USDC', async () => {
-    const chainId = 1
-    const token = FIXED_USDC
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(1)
-    expect(currencyTokens).toEqual([USDC])
+    expect(currencyTokens).toEqual([ETH, WETH, USDC, DAI])
   })
 
   test('returns correct currency tokens for ic21', async () => {
@@ -149,8 +131,8 @@ describe('getCurrencyTokensForIndex()', () => {
     const chainId = 1
     const token = icETHIndex
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(2)
-    expect(currencyTokens).toEqual([ETH, STETH])
+    expect(currencyTokens.length).toEqual(3)
+    expect(currencyTokens).toEqual([ETH, WETH, STETH])
   })
 
   test('returns correct currency tokens for dsETH', async () => {

@@ -33,6 +33,7 @@ import {
   useTradeButtonState,
 } from './hooks/use-trade-button-state'
 import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
+import { TradeOutput } from './components/trade-output'
 
 type SwapProps = {
   isBuying: boolean
@@ -71,15 +72,17 @@ export const Swap = (props: SwapProps) => {
 
   const {
     fetchQuote,
-    isFetching: isFetchingQuote,
-    quoteResult,
-  } = useBestQuote()
+    isFetchingAnyQuote,
+    isFetching0x,
+    isFetchingFlashmint,
+    quoteResults,
+  } = useBestQuote(isBuying, inputToken, outputToken)
 
-  const hasFetchingError = quoteResult.error !== null && !isFetchingQuote
+  const hasFetchingError = false // quoteResults.error !== null && !isFetchingAnyQuote
 
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [selectedQuote, setSelectedQuote] = useState<QuoteType | null>(null)
-  const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 500)
+  const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
   const [warnings, setWarnings] = useState<WarningType[]>([])
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
@@ -90,25 +93,19 @@ export const Swap = (props: SwapProps) => {
     outputToken
   )
   const { transactionReview } = useTransactionReviewModal(
-    quoteResult,
+    quoteResults,
     selectedQuote,
-    isFetchingQuote
+    isFetchingAnyQuote
   )
 
   const {
     contract,
     hasInsufficientFunds,
-    gasCostsUsd,
-    // inputTokenAmountUsd,
+    inputTokenAmountUsd,
     inputTokenAmountWei,
     inputTokenBalance,
     inputTokenBalanceFormatted,
-    inputTokenPrice,
-    outputTokenAmountFormatted,
-    outputTokenAmountUsd,
-    outputTokenBalanceFormatted,
-    outputTokenPrice,
-    priceImpactFormatting,
+    formattedQuoteResults,
     showWarning,
     tokenPrices,
     tradeData,
@@ -116,9 +113,11 @@ export const Swap = (props: SwapProps) => {
     inputToken,
     outputToken,
     sellTokenAmount,
-    quoteResult,
-    isFetchingQuote,
-    selectedQuote
+    quoteResults,
+    selectedQuote,
+    isFetchingAnyQuote,
+    isFetching0x,
+    isFetchingFlashmint
   )
 
   const {
@@ -143,13 +142,6 @@ export const Swap = (props: SwapProps) => {
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
-  const isToggleDisabled = useMemo(
-    () =>
-      quoteResult.quotes.flashmint === null ||
-      quoteResult.quotes.zeroex === null,
-    [quoteResult]
-  )
-
   useEffect(() => {
     if (requiresProtection) {
       setWarnings([WarningType.restricted])
@@ -163,50 +155,8 @@ export const Swap = (props: SwapProps) => {
   }, [requiresProtection, slippage])
 
   useEffect(() => {
-    console.log('/////////')
-    console.log(quoteResult.bestQuote)
-    console.log(quoteResult.quotes.zeroex !== null, '0x')
-    console.log(quoteResult.quotes.flashmint !== null, 'fm')
-    console.log('---')
-    setSelectedQuote(quoteResult?.bestQuote)
-  }, [quoteResult])
-
-  useEffect(() => {
-    console.log('/////////')
-    console.log(quoteResult.bestQuote)
-    console.log(
-      quoteResult.quotes.flashmint?.fullCostsInUsd,
-      'USD',
-      quoteResult.quotes.flashmint?.inputOutputTokenAmount.toString(),
-      quoteResult.quotes.flashmint?.indexTokenAmount.toString(),
-      'flashmint'
-    )
-    console.log(
-      quoteResult.quotes.zeroex?.fullCostsInUsd,
-      'USD',
-      quoteResult.quotes.zeroex?.inputOutputTokenAmount.toString(),
-      quoteResult.quotes.zeroex?.indexTokenAmount.toString(),
-      '0x'
-    )
-    console.log('---')
-  }, [quoteResult])
-
-  const onSelectQuoteType = useCallback(
-    (type: QuoteType) => {
-      console.log(
-        'onSelectQuoteType',
-        type,
-        quoteResult.quotes.flashmint === null,
-        quoteResult.quotes.zeroex === null
-      )
-      if (type === QuoteType.flashmint && quoteResult.quotes.flashmint === null)
-        return
-      if (type === QuoteType.zeroex && quoteResult.quotes.zeroex === null)
-        return
-      setSelectedQuote(type)
-    },
-    [quoteResult]
-  )
+    setSelectedQuote(quoteResults?.bestQuote)
+  }, [quoteResults])
 
   const resetTradeData = useCallback(() => {
     setInputTokenAmountFormatted('')
@@ -223,17 +173,13 @@ export const Swap = (props: SwapProps) => {
       isMinting: isBuying,
       inputToken,
       inputTokenAmount: sellTokenAmount,
-      inputTokenPrice,
       outputToken,
-      outputTokenPrice,
       slippage,
     })
   }, [
     isBuying,
     inputToken,
-    inputTokenPrice,
     outputToken,
-    outputTokenPrice,
     requiresProtection,
     sellTokenAmount,
     slippage,
@@ -330,7 +276,7 @@ export const Swap = (props: SwapProps) => {
           config={{ isReadOnly: false }}
           balance={inputTokenBalanceFormatted}
           caption='You pay'
-          formattedFiat={''}
+          formattedFiat={inputTokenAmountUsd}
           selectedToken={inputToken}
           selectedTokenAmount={inputTokenAmountFormatted}
           onChangeInput={onChangeInputTokenAmount}
@@ -349,25 +295,12 @@ export const Swap = (props: SwapProps) => {
             onClick={onSwitchTokens}
           />
         </Box>
-        <TradeInputSelector
-          config={{
-            isInputDisabled: true,
-            isSelectorDisabled: false,
-            isReadOnly: true,
-          }}
+        <TradeOutput
           caption={'You receive'}
           selectedToken={outputToken}
-          selectedTokenAmount={outputTokenAmountFormatted}
-          balance={outputTokenBalanceFormatted}
-          formattedFiat={outputTokenAmountUsd}
-          priceImpact={
-            priceImpactFormatting
-              ? {
-                  value: priceImpactFormatting.priceImpact,
-                  colorCoding: priceImpactFormatting.colorCoding,
-                }
-              : undefined
-          }
+          selectedQuote={selectedQuote}
+          quotes={formattedQuoteResults}
+          onSelectQuote={(quoteType) => setSelectedQuote(quoteType)}
           onSelectToken={() => {
             if (outputTokenslist.length > 1) onOpenSelectOutputToken()
           }}
@@ -377,25 +310,22 @@ export const Swap = (props: SwapProps) => {
         {tradeData.length > 0 && (
           <TradeDetails
             data={tradeData}
-            gasPriceInUsd={gasCostsUsd}
-            isLoading={isFetchingQuote}
-            isToggleDisabled={isToggleDisabled}
+            isLoading={isFetchingAnyQuote}
             prices={tokenPrices}
             showWarning={showWarning}
             selectedQuoteType={selectedQuote ?? QuoteType.zeroex}
-            onToggle={onSelectQuoteType}
           />
         )}
         {hasFetchingError && (
           <Text align='center' color={colors.icRed} p='16px'>
-            {quoteResult.error?.message ?? 'Error fetching quote'}
+            {'Error fetching quote'}
           </Text>
         )}
         {!requiresProtection && (
           <TradeButton
             label={buttonLabel}
             isDisabled={isDisabled}
-            isLoading={isApprovingForSwap || isFetchingQuote}
+            isLoading={isApprovingForSwap || isFetchingAnyQuote}
             onClick={onClickTradeButton}
           />
         )}

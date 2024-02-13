@@ -25,14 +25,14 @@ import {
 // Add new currencies here as well to fetch all balances
 export const currencies = [
   ETH,
-  DAI,
+  WETH,
   USDC,
   USDT,
+  DAI,
   GUSD,
   RETH,
   SETH2,
   STETH,
-  WETH,
   WSTETH,
 ]
 

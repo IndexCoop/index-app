@@ -73,11 +73,7 @@ export const TradeInfoItemsContainer = ({
   return (
     <Flex direction='column'>
       {items.map((item, index) => (
-        <Box
-          key={index}
-          mb={index < items.length - 1 ? '20px' : '0'}
-          paddingTop={index === items.length - 1 || index === 0 ? '16px' : '0'}
-        >
+        <Box key={index} mb={'0'} paddingTop={index === 0 ? '0' : '16px'}>
           <TradeInfoItemRow item={item} isLoading={isLoading} />
         </Box>
       ))}

@@ -1,4 +1,4 @@
-import { utils } from 'ethers'
+import { providers, utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
@@ -6,6 +6,7 @@ import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
+import { GasStation } from '@/lib/utils/api/gas-station'
 import { getConfiguredZeroExApi } from '@/lib/utils/api/zeroex'
 import { getNetworkKey } from '@/lib/utils/api/zeroex-utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
@@ -14,10 +15,11 @@ import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 import { displayFromWei } from '@/lib/utils'
 
-import { Quote, QuoteTransaction, QuoteType } from '../types'
+import { IndexQuoteRequest, Quote, QuoteTransaction, QuoteType } from '../types'
+import { getIndexTokenAmount } from './index-token-amount'
 import { getPriceImpact } from './price-impact'
 
-export async function getEnhancedFlashMintQuote(
+async function getEnhancedFlashMintQuote(
   isMinting: boolean,
   inputToken: Token,
   outputToken: Token,
@@ -75,7 +77,10 @@ export async function getEnhancedFlashMintQuote(
       const canFail = false
       const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
       const gasCosts = gasEstimate.mul(gasPrice)
-      const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
+      const gasCostsInUsd = getGasCostsInUsd(
+        gasCosts.toBigInt(),
+        nativeTokenPrice
+      )
       transaction.gasLimit = gasEstimate
       console.log('gasLimit', transaction.gasLimit.toString())
 
@@ -95,6 +100,16 @@ export async function getEnhancedFlashMintQuote(
         outputTokenAmountUsd
       )
 
+      const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
+
+      const fullCostsInUsd = getFullCostsInUsd(
+        inputTokenAmount.toBigInt(),
+        gasEstimate.toBigInt() * gasPrice.toBigInt(),
+        inputToken.decimals,
+        inputTokenPrice,
+        nativeTokenPrice
+      )
+
       return {
         type: QuoteType.flashmint,
         chainId: 1,
@@ -106,13 +121,7 @@ export async function getEnhancedFlashMintQuote(
         gasPrice,
         gasCosts,
         gasCostsInUsd,
-        fullCostsInUsd: getFullCostsInUsd(
-          inputOutputAmount,
-          gasEstimate.mul(gasPrice),
-          inputToken.decimals,
-          inputTokenPrice,
-          nativeTokenPrice
-        ),
+        fullCostsInUsd,
         priceImpact,
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,
@@ -120,6 +129,7 @@ export async function getEnhancedFlashMintQuote(
         inputTokenAmountUsd,
         outputTokenAmount,
         outputTokenAmountUsd,
+        outputTokenAmountUsdAfterFees,
         inputTokenPrice,
         outputTokenPrice,
         slippage,
@@ -130,4 +140,93 @@ export async function getEnhancedFlashMintQuote(
     console.warn('Error fetching FlashMintQuote', e)
   }
   return null
+}
+
+interface FlashMintQuoteRequest extends IndexQuoteRequest {
+  chainId: number
+  inputTokenAmountWei: BigNumber
+  nativeTokenPrice: number
+}
+
+export async function getFlashMintQuote(
+  request: FlashMintQuoteRequest,
+  provider: providers.JsonRpcProvider,
+  signer: JsonRpcSigner
+) {
+  const {
+    chainId,
+    inputToken,
+    inputTokenAmount,
+    inputTokenAmountWei,
+    inputTokenPrice,
+    isMinting,
+    nativeTokenPrice,
+    outputToken,
+    outputTokenPrice,
+    slippage,
+  } = request
+
+  /* Determine initial index token amount based on different factors */
+  let indexTokenAmount = getIndexTokenAmount(
+    isMinting,
+    inputTokenAmount,
+    inputToken.decimals,
+    outputToken.decimals,
+    inputTokenPrice,
+    outputTokenPrice
+  )
+
+  const gasStation = new GasStation(provider)
+  const gasPrice = await gasStation.getGasPrice()
+
+  let savedQuote: Quote | null = null
+
+  for (let t = 2; t > 0; t--) {
+    const flashMintQuote = await getEnhancedFlashMintQuote(
+      isMinting,
+      inputToken,
+      outputToken,
+      BigNumber.from(indexTokenAmount.toString()),
+      inputTokenPrice,
+      outputTokenPrice,
+      nativeTokenPrice,
+      gasPrice,
+      slippage,
+      chainId,
+      provider,
+      signer
+    )
+    // If there is no FlashMint quote, return immediately
+    if (flashMintQuote === null) return savedQuote
+    // For redeeming return quote immdediately
+    if (!isMinting) return flashMintQuote
+    savedQuote = flashMintQuote
+
+    console.log('estimated index token amount', indexTokenAmount.toString())
+    const diff = inputTokenAmountWei
+      .sub(flashMintQuote.inputTokenAmount)
+      .toBigInt()
+    console.log('diff', diff.toString())
+    const factor = determineFactor(diff, inputTokenAmountWei.toBigInt())
+    console.log('factor', factor.toString())
+
+    indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
+    console.log('new index token amount', indexTokenAmount.toString(), t)
+
+    if (diff < 0 && t === 1) {
+      t++ // loop one more time to stay under the input amount
+    }
+  }
+
+  return savedQuote
+}
+
+const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
+  let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
+  console.log('ratio', ratio)
+  if (Math.abs(ratio) < 0.0001) {
+    // This is currently needed to avoid infinite loops
+    ratio = diff < 0 ? -0.0001 : 0.0001
+  }
+  return BigInt(Math.round((1 + ratio) * 10000))
 }

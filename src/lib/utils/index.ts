@@ -92,6 +92,12 @@ export const displayFromWei = (
   return formatUnits(number, power).toLocaleString()
 }
 
+export const formatAmount = (amount: number) =>
+  amount.toLocaleString('en-US', {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  })
+
 /**
  * Validate that the input amount is valid (positive, not excessive decimals)
  */

@@ -7,8 +7,6 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   Ethereum2xFlexibleLeverageIndex,
-  FIXED_DAI,
-  FIXED_USDC,
   GitcoinStakedETHIndex,
   ic21,
   icETHIndex,
@@ -65,18 +63,16 @@ export function getCurrencyTokensForIndex(
   chainId: number
 ): Token[] {
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
-    return [ETH, USDC, DAI, WETH]
+    return [ETH, WETH, USDC, DAI]
   if (index.symbol === ic21.symbol) return [ETH, WETH]
-  if (index.symbol === FIXED_DAI.symbol) return [DAI]
-  if (index.symbol === FIXED_USDC.symbol) return [USDC]
-  if (index.symbol === icETHIndex.symbol) return [ETH, STETH]
+  if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||
     index.symbol === GitcoinStakedETHIndex.symbol
   )
-    return [ETH, WETH, STETH, WSTETH, RETH, SETH2, USDC]
+    return [ETH, WETH, USDC, RETH, STETH, SETH2, WSTETH]
   if (index.symbol === LeveragedRethStakingYield.symbol)
-    return [ETH, WETH, RETH, USDC]
+    return [ETH, WETH, USDC, RETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
