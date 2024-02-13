@@ -2,7 +2,7 @@ import './globals.css'
 
 import { Flex } from '@chakra-ui/react'
 
-import { Banner } from '@/components/banner'
+import { Banner } from '@/components/banners'
 import Footer from '@/components/footer'
 import { Header } from '@/components/header'
 
