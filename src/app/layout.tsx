@@ -18,7 +18,25 @@ export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang='en'>
       <body>
-        {children}
+        <Providers>
+          <Banner />
+          <Header />
+          <Flex direction='column' mb='50px'>
+            <Flex
+              maxWidth='1024px'
+              m={['0 auto']}
+              p={[
+                '100px 16px 0px 16px',
+                '100px 16px 0px 16px',
+                '128px 16px 0px 16px',
+                '128px 16px 0px 16px',
+              ]}
+            >
+              {children}
+            </Flex>
+          </Flex>
+          <Footer />
+        </Providers>
         <SafaryScript />
       </body>
     </html>
