@@ -3,7 +3,7 @@ import './globals.css'
 import { Flex } from '@chakra-ui/react'
 
 import Footer from '@/components/footer'
-import Header from '@/components/header'
+import { Header } from '@/components/header'
 
 import { Providers } from './providers'
 
