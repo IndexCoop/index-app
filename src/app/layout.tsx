@@ -26,10 +26,10 @@ export default function RootLayout({ children }: LayoutProps) {
               maxWidth='1024px'
               m={['0 auto']}
               p={[
-                '100px 16px 0px 16px',
-                '100px 16px 0px 16px',
-                '128px 16px 0px 16px',
-                '128px 16px 0px 16px',
+                '48px 16px 0px 16px',
+                '48px 16px 0px 16px',
+                '48px 16px 0px 16px',
+                '48px 16px 0px 16px',
               ]}
             >
               {children}
