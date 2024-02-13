@@ -5,7 +5,7 @@ import { Logo } from './logo'
 
 export enum Path {
   HOMEPAGE = 'https://indexcoop.com/',
-  PRODUCTS = '/produc',
+  PRODUCTS = '/products',
   TRADE = '/swap',
 }
 
