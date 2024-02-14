@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { usePublicClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
+import { getEnhancedRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
+import { GasStation } from '@/lib/utils/api/gas-station'
 import {
   getAddressForToken,
   isAvailableForFlashMint,
@@ -17,7 +20,6 @@ import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { get0xQuote } from './utils/zeroex'
 import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
-import { error } from 'console'
 
 export interface FetchQuoteRequest {
   isMinting: boolean
@@ -37,6 +39,7 @@ export const useBestQuote = (
   inputToken: Token,
   outputToken: Token,
 ) => {
+  const publicClient = usePublicClient()
   const { provider, signer } = useWallet()
   const { chainId: networkChainId } = useNetwork()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
@@ -90,7 +93,7 @@ export const useBestQuote = (
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
       const canRedeemIndexToken = isAvailableForRedemption(
         inputToken,
-        outputToken,
+        // outputToken,
       )
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
@@ -123,11 +126,24 @@ export const useBestQuote = (
         if (canRedeemIndexToken) {
           console.log('canRedeemIndexToken')
           setIsFetchingRedemption(true)
-          // TODO: fetch
-
+          const gasStation = new GasStation(provider)
+          const gasPrice = await gasStation.getGasPrice()
+          const quoteRedemption = await getEnhancedRedemptionQuote(
+            {
+              ...request,
+              gasPrice: gasPrice.toBigInt(),
+              indexTokenAmount: inputTokenAmountWei.toBigInt(),
+              inputToken,
+              inputTokenPrice,
+              outputToken,
+              outputTokenPrice,
+              nativeTokenPrice,
+            },
+            publicClient,
+            signer,
+          )
           setIsFetchingRedemption(false)
-          // TODO:
-          setQuoteRedemption(null)
+          setQuoteRedemption(quoteRedemption)
         } else {
           setQuoteRedemption(null)
         }
@@ -166,6 +182,7 @@ export const useBestQuote = (
       outputToken,
       nativeTokenPrice,
       provider,
+      publicClient,
       signer,
     ],
   )
@@ -180,7 +197,7 @@ export const useBestQuote = (
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
     const canRedeemIndexToken = isAvailableForRedemption(
       inputToken,
-      outputToken,
+      // outputToken,
     )
     const canSwapIndexToken = isAvailableForSwap(indexToken)
     const results = {
@@ -207,7 +224,14 @@ export const useBestQuote = (
       },
     }
     setQuoteResults(results)
-  }, [indexToken, quote0x, quoteFlashMint])
+  }, [
+    indexToken,
+    inputToken,
+    outputToken,
+    quote0x,
+    quoteFlashMint,
+    quoteRedemption,
+  ])
 
   const isFetchingAnyQuote = useMemo(() => {
     return isFetching0x || isFetchingFlashmint
@@ -218,6 +242,7 @@ export const useBestQuote = (
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
+    isFetchingRedemption,
     quoteResults,
   }
 }

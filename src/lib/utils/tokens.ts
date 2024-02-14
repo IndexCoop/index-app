@@ -116,7 +116,7 @@ export function isAvailableForFlashMint(token: Token): boolean {
 export function isAvailableForRedemption(
   inputToken: Token,
   // FIXME: add with new tokens
-  outputToken: Token,
+  // outputToken: Token,
 ): boolean {
   return (
     inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol ||
