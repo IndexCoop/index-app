@@ -1,9 +1,20 @@
+import { fetchCoingeckoMarketData } from "@/lib/utils/api/coingecko"
+
 async function fetchIndexApi(path: string) {
   return fetch(`https://api.indexcoop.com${path}`, {
     headers: {
       'X-INDEXCOOP-API-KEY': process.env.NEXT_PUBLIC_INDEX_COOP_API!,
     },
   })
+}
+
+export async function fetchMarketData(address: string) {
+  try {
+    const res = await fetchCoingeckoMarketData(address)
+    return res
+  } catch {
+    return null
+  }
 }
 
 export async function fetchAnalytics(symbol: string) {
@@ -14,7 +25,7 @@ export async function fetchAnalytics(symbol: string) {
         .replace(
           '-',
           '',
-        )}/summary?include24hrChange=true&includeMarketCap=true`,
+        )}/analytics`,
     )
     const json = await res.json()
     return json

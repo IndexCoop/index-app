@@ -14,6 +14,7 @@ export enum ProductTheme {
 
 export type ProductRow = {
   hasApy: boolean
+  shouldUseAnalytics: boolean
   logoURI?: string
   symbol?: string
   name?: string

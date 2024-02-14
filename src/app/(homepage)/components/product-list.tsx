@@ -8,8 +8,14 @@ import { ProductRowItem } from '@/app/(homepage)/components/product-row-item'
 import { productTokens } from '@/app/(homepage)/constants/tokens'
 import { ProductRow } from '@/app/(homepage)/types/product'
 import { SortBy, SortDirection } from '@/app/(homepage)/types/sort'
-import { fetchAnalytics, fetchApy } from '@/app/(homepage)/utils/index-api'
+import {
+  fetchApy,
+  fetchMarketData,
+  fetchAnalytics,
+} from '@/app/(homepage)/utils/index-api'
 import { sortProducts } from '@/app/(homepage)/utils/sort'
+
+const THIRTY_SECONDS_IN_MS = 30 * 1000
 
 export function ProductList() {
   const [isLoading, setIsLoading] = useState(true)
@@ -23,29 +29,48 @@ export function ProductList() {
   useEffect(() => {
     async function fetchProducts() {
       const analyticsPromises = Promise.all(
-        productTokens.map((token) => token.symbol ? fetchAnalytics(token.symbol) : null)
+        productTokens.map((token) =>
+          token.shouldUseAnalytics && token.symbol
+            ? fetchAnalytics(token.symbol)
+            : null
+        )
+      )
+      const coingeckoPromises = Promise.all(
+        productTokens.map((token) => fetchMarketData(token.address!))
       )
       const apyPromises = Promise.all(
         productTokens.map((token) =>
-          token.hasApy && token.symbol ? fetchApy(token.symbol) : null,
-        ),
+          token.hasApy && token.symbol ? fetchApy(token.symbol) : null
+        )
       )
-      const [analytics, apys] = await Promise.all([
-        analyticsPromises,
-        apyPromises,
-      ])
+      const [analyticsResults, coingeckoResults, apyResults] =
+        await Promise.all([analyticsPromises, coingeckoPromises, apyPromises])
 
       const products = productTokens.map((token, idx) => ({
         ...token,
-        price: analytics[idx]?.navPrice,
-        delta: analytics[idx]?.change24h,
-        tvl: analytics[idx]?.marketCap,
-        apy: apys[idx]?.apy ? Number(formatEther(apys[idx].apy)) : null,
+        price: token.shouldUseAnalytics
+          ? analyticsResults[idx]?.navPrice
+          : coingeckoResults[idx]?.current_price.usd,
+        delta: token.shouldUseAnalytics
+          ? analyticsResults[idx]?.change24h
+          : coingeckoResults[idx]?.price_change_percentage_24h_in_currency.usd,
+        tvl: token.shouldUseAnalytics
+          ? analyticsResults[idx]?.marketCap
+          : coingeckoResults[idx]?.market_cap.usd,
+        apy: apyResults[idx]?.apy
+          ? Number(formatEther(apyResults[idx].apy))
+          : null,
       }))
       setProducts(sortProducts(products, sortBy, sortDirection))
       setIsLoading(false)
     }
+
     fetchProducts()
+    const interval = setInterval(() => {
+      fetchProducts()
+    }, THIRTY_SECONDS_IN_MS)
+
+    return () => clearInterval(interval)
     // eslint-disable-next-line
   }, [])
 
@@ -62,7 +87,7 @@ export function ProductList() {
         }).toString()}`,
         {
           scroll: false,
-        },
+        }
       )
     }
 
@@ -78,7 +103,7 @@ export function ProductList() {
       }).toString()}`,
       {
         scroll: false,
-      },
+      }
     )
   }
 
