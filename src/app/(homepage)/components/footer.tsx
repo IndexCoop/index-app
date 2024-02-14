@@ -8,14 +8,15 @@ const navigation = {
       href: 'https://docs.indexcoop.com/index-coop-community-handbook/protocols/security',
     },
     { name: 'Bug Bounty', href: 'https://immunefi.com/bounty/indexcoop/' },
-    {
-      name: 'Contracts',
-      href: 'https://github.com/IndexCoop/index-coop-smart-contracts',
-    },
     { name: 'GitHub', href: 'https://github.com/IndexCoop' },
     {
       name: 'Press Kit',
       href: 'https://index-coop.notion.site/Index-Coop-Brand-Resources-16bfd8ba832046948bf747b4dc88f899',
+    },
+    { name: 'Legacy Products', href: 'https://legacyproducts.indexcoop.com' },
+    {
+      name: 'Liquidity Mining (discontinued)',
+      href: 'https://archive.indexcoop.com/liquidity-mining',
     },
   ],
   community: [

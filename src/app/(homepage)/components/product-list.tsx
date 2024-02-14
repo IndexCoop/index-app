@@ -26,53 +26,57 @@ export function ProductList() {
   const sortBy = searchParams.get('sort')
   const sortDirection = searchParams.get('dir') ?? SortDirection.DESC
 
+  async function fetchProducts() {
+    const analyticsPromises = Promise.all(
+      productTokens.map((token) =>
+        token.shouldUseAnalytics && token.symbol
+          ? fetchAnalytics(token.symbol)
+          : null
+      )
+    )
+    const coingeckoPromises = Promise.all(
+      productTokens.map((token) => !token.shouldUseAnalytics ? fetchMarketData(token.address!) : null)
+    )
+    const apyPromises = Promise.all(
+      productTokens.map((token) =>
+        token.hasApy && token.symbol ? fetchApy(token.symbol) : null
+      )
+    )
+    const [analyticsResults, coingeckoResults, apyResults] =
+      await Promise.all([analyticsPromises, coingeckoPromises, apyPromises])
+
+    const products = productTokens.map((token, idx) => ({
+      ...token,
+      price: token.shouldUseAnalytics
+        ? analyticsResults[idx]?.navPrice
+        : coingeckoResults[idx]?.current_price.usd,
+      delta: token.shouldUseAnalytics
+        ? analyticsResults[idx]?.change24h
+        : coingeckoResults[idx]?.price_change_percentage_24h_in_currency.usd,
+      tvl: token.shouldUseAnalytics
+        ? analyticsResults[idx]?.marketCap
+        : coingeckoResults[idx]?.market_cap.usd,
+      apy: apyResults[idx]?.apy
+        ? Number(formatEther(apyResults[idx].apy))
+        : null,
+    }))
+    setProducts(sortProducts(products, sortBy, sortDirection))
+    setIsLoading(false)
+  }
+
   useEffect(() => {
-    async function fetchProducts() {
-      const analyticsPromises = Promise.all(
-        productTokens.map((token) =>
-          token.shouldUseAnalytics && token.symbol
-            ? fetchAnalytics(token.symbol)
-            : null
-        )
-      )
-      const coingeckoPromises = Promise.all(
-        productTokens.map((token) => fetchMarketData(token.address!))
-      )
-      const apyPromises = Promise.all(
-        productTokens.map((token) =>
-          token.hasApy && token.symbol ? fetchApy(token.symbol) : null
-        )
-      )
-      const [analyticsResults, coingeckoResults, apyResults] =
-        await Promise.all([analyticsPromises, coingeckoPromises, apyPromises])
-
-      const products = productTokens.map((token, idx) => ({
-        ...token,
-        price: token.shouldUseAnalytics
-          ? analyticsResults[idx]?.navPrice
-          : coingeckoResults[idx]?.current_price.usd,
-        delta: token.shouldUseAnalytics
-          ? analyticsResults[idx]?.change24h
-          : coingeckoResults[idx]?.price_change_percentage_24h_in_currency.usd,
-        tvl: token.shouldUseAnalytics
-          ? analyticsResults[idx]?.marketCap
-          : coingeckoResults[idx]?.market_cap.usd,
-        apy: apyResults[idx]?.apy
-          ? Number(formatEther(apyResults[idx].apy))
-          : null,
-      }))
-      setProducts(sortProducts(products, sortBy, sortDirection))
-      setIsLoading(false)
-    }
-
     fetchProducts()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     const interval = setInterval(() => {
       fetchProducts()
     }, THIRTY_SECONDS_IN_MS)
 
     return () => clearInterval(interval)
     // eslint-disable-next-line
-  }, [])
+  }, [sortBy, sortDirection])
 
   useEffect(() => {
     setProducts((products) => sortProducts(products, sortBy, sortDirection))
