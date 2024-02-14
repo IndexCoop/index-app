@@ -15,57 +15,57 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/BED',
+        source: '/(B|b)(E|e)(D|d)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/BTCFLI',
+        source: '/(B|b)(T|t)(C|c)(F|f)(L|l)(I|i)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/DPI',
+        source: '/(D|d)(P|p)(I|i)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/dsETH',
+        source: '/(D|d|(S|s)(E|e)(T|t)(H|h)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/ETHFLI',
+        source: '/(E|e)(T|t)(H|h)(F|f)(L|l)(I|i)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/GTCETH',
+        source: '/(G|g)(T|t)(C|c)(E|e)(T|t)(H|h)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/icETH ',
+        source: '/(I|i)(C|c)(E|e)(T|t)(H|h)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/ICSMMT ',
+        source: '/(I|i)(C|c)(S|s)(M|m)(M|m)(T|t) ',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/MVI',
+        source: '/(M|m)(V|v)(I|i)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/ic21',
+        source: '/(I|i)(C|c)21',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/cdeti',
+        source: '/(C|c)(D|d)(E|e)(T|t)(I|i)',
         destination: '/swap',
         permanent: true,
       },
