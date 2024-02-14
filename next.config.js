@@ -30,7 +30,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/(D|d|(S|s)(E|e)(T|t)(H|h)',
+        source: '/(D|d)(S|s)(E|e)(T|t)(H|h)',
         destination: '/swap',
         permanent: true,
       },
