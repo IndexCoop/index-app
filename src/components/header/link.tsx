@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { Path } from '.'
 
 type Props = {
   href: string
@@ -9,7 +10,8 @@ type Props = {
 
 export function HeaderLink({ href, label }: Props) {
   const pathname = usePathname()
-  const isActive = pathname === href
+  const isActive =
+    href === Path.TRADE ? pathname.startsWith(href) : pathname === href
   return (
     <Link
       className={clsx(
