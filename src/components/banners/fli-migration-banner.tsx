@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 import {
   Bitcoin2xFlexibleLeverageIndex,
@@ -25,6 +26,13 @@ function MigrateButton({ token }: { token: Token }) {
 }
 
 export function FliMigrationBanner() {
+  const router = useRouter()
+  const onClickBtc2xFli = () => {
+    router.push('/swap/btc2x-fli/eth')
+  }
+  const onClickEth2xFli = () => {
+    router.push('/swap/eth2x-fli/eth')
+  }
   return (
     <div className='banner-custom flex flex-col justify-center gap-1 rounded-3xl px-6 py-4'>
       <h2 className='text-center text-base font-bold text-ic-black'>
@@ -37,13 +45,13 @@ export function FliMigrationBanner() {
       <div className='mt-2 flex w-full flex-row items-center justify-evenly gap-5'>
         <div
           className='flex flex-grow cursor-pointer'
-          onClick={() => console.log('button')}
+          onClick={onClickEth2xFli}
         >
           <MigrateButton token={Ethereum2xFlexibleLeverageIndex} />
         </div>
         <div
           className='flex flex-grow cursor-pointer'
-          onClick={() => console.log('button')}
+          onClick={onClickBtc2xFli}
         >
           <MigrateButton token={Bitcoin2xFlexibleLeverageIndex} />
         </div>
