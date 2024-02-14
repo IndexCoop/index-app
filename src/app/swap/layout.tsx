@@ -1,11 +1,11 @@
-import './globals.css'
+import '../globals.css'
 
 import { Flex } from '@chakra-ui/react'
 
 import Footer from '@/components/footer'
 import { Header } from '@/components/header'
 
-import { Providers } from './providers'
+import { Providers } from '../providers'
 
 // For images just place the appropriate image file in this folder.
 // https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image#image-files-jpg-png-gif
