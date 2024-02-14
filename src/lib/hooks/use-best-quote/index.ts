@@ -7,6 +7,7 @@ import { toWei } from '@/lib/utils'
 import {
   getAddressForToken,
   isAvailableForFlashMint,
+  isAvailableForRedemption,
   isAvailableForSwap,
 } from '@/lib/utils/tokens'
 
@@ -16,6 +17,7 @@ import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { get0xQuote } from './utils/zeroex'
 import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
+import { error } from 'console'
 
 export interface FetchQuoteRequest {
   isMinting: boolean
@@ -27,13 +29,13 @@ export interface FetchQuoteRequest {
 
 const defaultResults: QuoteResults = {
   bestQuote: QuoteType.zeroex,
-  results: { flashmint: null, zeroex: null },
+  results: { flashmint: null, redemption: null, zeroex: null },
 }
 
 export const useBestQuote = (
   isMinting: boolean,
   inputToken: Token,
-  outputToken: Token
+  outputToken: Token,
 ) => {
   const { provider, signer } = useWallet()
   const { chainId: networkChainId } = useNetwork()
@@ -43,14 +45,17 @@ export const useBestQuote = (
 
   const [isFetching0x, setIsFetching0x] = useState<boolean>(false)
   const [isFetchingFlashmint, setIsFetchingFlashMint] = useState<boolean>(false)
+  const [isFetchingRedemption, setIsFetchingRedemption] =
+    useState<boolean>(false)
 
   const [quote0x, setQuote0x] = useState<ZeroExQuote | null>(null)
   const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
+  const [quoteRedemption, setQuoteRedemption] = useState<Quote | null>(null)
   const [quoteResults, setQuoteResults] = useState<QuoteResults>(defaultResults)
 
   const indexToken = useMemo(
     () => (isMinting ? outputToken : inputToken),
-    [inputToken, isMinting, outputToken]
+    [inputToken, isMinting, outputToken],
   )
 
   const fetchQuote = useCallback(
@@ -83,6 +88,10 @@ export const useBestQuote = (
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
+      const canRedeemIndexToken = isAvailableForRedemption(
+        inputToken,
+        outputToken,
+      )
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
       const fetchFlashMintQuote = async () => {
@@ -101,12 +110,26 @@ export const useBestQuote = (
               nativeTokenPrice,
             },
             provider,
-            signer
+            signer,
           )
           setIsFetchingFlashMint(false)
           setQuoteFlashmint(quoteFlashMint)
         } else {
           setQuoteFlashmint(null)
+        }
+      }
+
+      const fetchRedemptionQuote = async () => {
+        if (canRedeemIndexToken) {
+          console.log('canRedeemIndexToken')
+          setIsFetchingRedemption(true)
+          // TODO: fetch
+
+          setIsFetchingRedemption(false)
+          // TODO:
+          setQuoteRedemption(null)
+        } else {
+          setQuoteRedemption(null)
         }
       }
 
@@ -133,6 +156,7 @@ export const useBestQuote = (
 
       // Non await - because we want to fetch quotes in parallel
       fetchSwapQuote()
+      fetchRedemptionQuote()
       fetchFlashMintQuote()
     },
     [
@@ -143,7 +167,7 @@ export const useBestQuote = (
       nativeTokenPrice,
       provider,
       signer,
-    ]
+    ],
   )
 
   useEffect(() => {
@@ -151,9 +175,13 @@ export const useBestQuote = (
       quote0x?.fullCostsInUsd ?? null,
       quoteFlashMint?.fullCostsInUsd ?? null,
       quote0x?.outputTokenAmountUsdAfterFees ?? null,
-      quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null
+      quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null,
     )
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
+    const canRedeemIndexToken = isAvailableForRedemption(
+      inputToken,
+      outputToken,
+    )
     const canSwapIndexToken = isAvailableForSwap(indexToken)
     const results = {
       bestQuote,
@@ -162,6 +190,12 @@ export const useBestQuote = (
           type: QuoteType.flashmint,
           isAvailable: canFlashmintIndexToken,
           quote: quoteFlashMint,
+          error: null,
+        },
+        redemption: {
+          type: QuoteType.redemption,
+          isAvailable: canRedeemIndexToken,
+          quote: quoteRedemption,
           error: null,
         },
         zeroex: {
