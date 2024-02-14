@@ -28,7 +28,7 @@ export async function getEnhancedRedemptionQuote(
   request: RedemptionQuoteRequest,
   publicClient: PublicClient,
   // Using ethers signer for now but will refactor gas estimator to use viem soon
-  signer: providers.JsonRpcSigner
+  signer: providers.JsonRpcSigner,
 ): Promise<Quote | null> {
   const {
     indexTokenAmount,
@@ -46,7 +46,7 @@ export async function getEnhancedRedemptionQuote(
     const componentsUnits =
       await redemptionProvider.getComponentRedemptionUnits(
         inputToken.address! as Address,
-        indexTokenAmount
+        indexTokenAmount,
       )
     console.log('componentsUnits:', componentsUnits)
     // TODO:
@@ -81,7 +81,7 @@ export async function getEnhancedRedemptionQuote(
     const gasCosts = gasEstimate.mul(gasPrice)
     const gasCostsInUsd = getGasCostsInUsd(
       gasCosts.toBigInt(),
-      request.nativeTokenPrice
+      request.nativeTokenPrice,
     )
     transaction.gasLimit = gasEstimate
     console.log('gasLimit', transaction.gasLimit.toString())
