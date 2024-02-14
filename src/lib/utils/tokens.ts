@@ -26,7 +26,7 @@ import { isSameAddress } from '.'
 
 export function getAddressForToken(
   token: Token,
-  chainId: number | undefined
+  chainId: number | undefined,
 ): string | undefined {
   if (token.symbol === IndexToken.symbol) return token.address
   switch (chainId) {
@@ -60,7 +60,7 @@ export function getCurrencyTokens(chainId: number | undefined): Token[] {
  */
 export function getCurrencyTokensForIndex(
   index: Token,
-  chainId: number
+  chainId: number,
 ): Token[] {
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI]
@@ -113,6 +113,17 @@ export function isAvailableForFlashMint(token: Token): boolean {
   }
 }
 
+export function isAvailableForRedemption(
+  inputToken: Token,
+  // FIXME: add with new tokens
+  outputToken: Token,
+): boolean {
+  return (
+    inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol ||
+    inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol
+  )
+}
+
 export function isAvailableForSwap(token: Token): boolean {
   switch (token.symbol) {
     case CoinDeskEthTrendIndex.symbol:
@@ -126,7 +137,7 @@ export function isAvailableForSwap(token: Token): boolean {
 export function isIndexToken(token: Token): boolean {
   if (token.symbol === IndexToken.symbol) return false
   return indicesTokenList.some((index) =>
-    isSameAddress(index.address!, token.address!)
+    isSameAddress(index.address!, token.address!),
   )
 }
 
