@@ -20,6 +20,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/BTCFLI',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
         source: '/DPI',
         destination: '/swap',
         permanent: true,
@@ -30,7 +35,22 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/ETHFLI',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
+        source: '/GTCETH',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
         source: '/icETH ',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
+        source: '/ICSMMT ',
         destination: '/swap',
         permanent: true,
       },
