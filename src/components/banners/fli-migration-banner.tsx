@@ -36,11 +36,11 @@ export function FliMigrationBanner() {
   return (
     <div className='banner-custom flex flex-col justify-center gap-1 rounded-3xl px-6 py-4'>
       <h2 className='text-center text-base font-bold text-ic-black'>
-        Holding FLI? Upgrade for better cost of carry.
+        Holding FLIs? Unwrap for upgraded 2x tokens.
       </h2>
       <p className='text-xs font-medium text-ic-gray-600'>
-        We are migrating our Leverage suite to improved contracts. During this
-        time, the FLI tokens are only tradable for the new 2x tokens.
+        FLI tokens have migrated to modernized 2x tokens on Index Protocol. FLI
+        Tokens may be unwrapped in exchange for new 2x tokens.
       </p>
       <div className='mt-2 flex w-full flex-row items-center justify-evenly gap-5'>
         <div
