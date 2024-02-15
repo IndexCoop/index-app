@@ -8,7 +8,7 @@ export function Banner() {
         <Link className='underline' href={'/swap/eth2x-fli/eth'}>
           Click here
         </Link>{' '}
-        to upgrade to the new Leverage Tokens! +++
+        to unwrap for the new 2x Tokens! 🎁 +++
       </p>
     </div>
   )
