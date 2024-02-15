@@ -33,8 +33,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## New Token Release
 
 - Add logo in [assets](public/assets)
-- Add logo path to [asset utils](src/lib/utils/assets.tsx)
-- Add token in [tokens.ts](src/constants/tokens.ts)
+- Make sure tokenlists is up2date (and has the new token added)
+- Add token in [tokens.ts](src/constants/tokens.ts) - using tokenlists (check ETH2X for reference)
 - Add that token object to [tokenslist](src/constants/tokenlists.ts)
 - If the token is only available for either Swap or FlashMint, add an entry to `isAvailableForFlashMint` or `isAvailableForSwap` in [token utils](src/lib/utils/tokens.ts). Write a test too!
 
