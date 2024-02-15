@@ -1,3 +1,5 @@
+import { IndexCoopMainnetTokens } from '@indexcoop/tokenlists'
+
 import {
   bedBorderLogo,
   dsethLogo,
@@ -21,8 +23,8 @@ export interface Token {
   name: string
   symbol: string
   address: string | undefined
-  polygonAddress: string | undefined
-  optimismAddress: string | undefined
+  polygonAddress?: string | undefined
+  optimismAddress?: string | undefined
   decimals: number
   // Url path for the token
   url: string
@@ -36,6 +38,11 @@ export interface Token {
   defaultChain?: number
   isPerp?: boolean
 }
+
+const getTokenFromSymbol = (symbol: string) =>
+  IndexCoopMainnetTokens.find(
+    (token) => token.symbol.toLowerCase() === symbol.toLowerCase(),
+  )
 
 /**
  * Indices
@@ -97,6 +104,38 @@ export const DiversifiedStakedETHIndex: Token = {
   isDangerous: true,
   indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
+}
+
+const btc2x = getTokenFromSymbol('BTC2X')!
+export const IndexCoopBitcoin2xIndex: Token = {
+  ...btc2x,
+  // Random for now - as no listing
+  coingeckoId: 'btc2x',
+  fees: {
+    streamingFee: '	3.65%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: btc2x.logoURI,
+  indexTypes: [IndexType.leverage],
+  isDangerous: true,
+  url: 'btc2x',
+}
+
+const eth2x = getTokenFromSymbol('ETH2X')!
+export const IndexCoopEthereum2xIndex: Token = {
+  ...eth2x,
+  // Random for now - as no listing
+  coingeckoId: 'eth2x',
+  fees: {
+    streamingFee: '	3.65%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: eth2x.logoURI,
+  indexTypes: [IndexType.leverage],
+  isDangerous: true,
+  url: 'eth2x',
 }
 
 export const IndexToken: Token = {
