@@ -22,16 +22,7 @@ export default function RootLayout({ children }: LayoutProps) {
           <Banner />
           <Header />
           <Flex direction='column' mb='50px'>
-            <Flex
-              maxWidth='1024px'
-              m={['0 auto']}
-              p={[
-                '48px 16px 0px 16px',
-                '48px 16px 0px 16px',
-                '48px 16px 0px 16px',
-                '48px 16px 0px 16px',
-              ]}
-            >
+            <Flex maxWidth='1024px' m={['0 auto']} p='48px 16px 0px 16px'>
               {children}
             </Flex>
           </Flex>
