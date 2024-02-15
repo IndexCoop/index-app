@@ -19,7 +19,7 @@ function MigrateButton({ token }: { token: Token }) {
         height={20}
       />
       <div className='text-xs font-medium text-ic-gray-800'>
-        {`Migrate ${token.symbol} Position`}
+        {`Unwrap ${token.symbol}`}
       </div>
     </div>
   )
