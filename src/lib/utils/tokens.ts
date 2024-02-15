@@ -76,6 +76,12 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === LeveragedRethStakingYield.symbol)
     return [ETH, WETH, USDC, RETH]
   const currencyTokens = getCurrencyTokens(chainId)
+  if (index.symbol === Bitcoin2xFlexibleLeverageIndex.symbol) {
+    return [IndexCoopBitcoin2xIndex, ...currencyTokens]
+  }
+  if (index.symbol === Ethereum2xFlexibleLeverageIndex.symbol) {
+    return [IndexCoopEthereum2xIndex, ...currencyTokens]
+  }
   return currencyTokens
 }
 
