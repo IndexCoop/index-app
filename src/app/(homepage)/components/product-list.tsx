@@ -51,8 +51,8 @@ export function ProductList() {
         ? analyticsResults[idx]?.navPrice
         : coingeckoResults[idx]?.current_price.usd,
       delta: token.shouldUseAnalytics
-        ? analyticsResults[idx]?.change24h
-        : coingeckoResults[idx]?.price_change_percentage_24h_in_currency.usd,
+        ? analyticsResults[idx]?.change24h ?? 0
+        : coingeckoResults[idx]?.price_change_percentage_24h_in_currency.usd ?? 0,
       tvl: token.shouldUseAnalytics
         ? analyticsResults[idx]?.marketCap
         : coingeckoResults[idx]?.market_cap.usd,
