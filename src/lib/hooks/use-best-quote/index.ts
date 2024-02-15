@@ -93,7 +93,7 @@ export const useBestQuote = (
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
       const canRedeemIndexToken = isAvailableForRedemption(
         inputToken,
-        // outputToken,
+        outputToken,
       )
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
@@ -197,7 +197,7 @@ export const useBestQuote = (
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
     const canRedeemIndexToken = isAvailableForRedemption(
       inputToken,
-      // outputToken,
+      outputToken,
     )
     const canSwapIndexToken = isAvailableForSwap(indexToken)
     const results = {

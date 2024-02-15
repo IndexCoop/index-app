@@ -10,6 +10,8 @@ import {
   GitcoinStakedETHIndex,
   ic21,
   icETHIndex,
+  IndexCoopBitcoin2xIndex,
+  IndexCoopEthereum2xIndex,
   IndexToken,
   LeveragedRethStakingYield,
   MATIC,
@@ -115,12 +117,13 @@ export function isAvailableForFlashMint(token: Token): boolean {
 
 export function isAvailableForRedemption(
   inputToken: Token,
-  // FIXME: add with new tokens
-  // outputToken: Token,
+  outputToken: Token,
 ): boolean {
   return (
-    inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol ||
-    inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol
+    (inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol &&
+      outputToken.symbol === IndexCoopBitcoin2xIndex.symbol) ||
+    (inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol &&
+      outputToken.symbol === IndexCoopEthereum2xIndex.symbol)
   )
 }
 
