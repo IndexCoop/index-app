@@ -28,10 +28,10 @@ function MigrateButton({ token }: { token: Token }) {
 export function FliMigrationBanner() {
   const router = useRouter()
   const onClickBtc2xFli = () => {
-    router.push('/swap/btc2x-fli/eth')
+    router.push('/swap/btc2x-fli/btc2x')
   }
   const onClickEth2xFli = () => {
-    router.push('/swap/eth2x-fli/eth')
+    router.push('/swap/eth2x-fli/eth2x')
   }
   return (
     <div className='banner-custom flex flex-col justify-center gap-1 rounded-3xl px-6 py-4'>
