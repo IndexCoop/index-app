@@ -1,11 +1,18 @@
 import { BigNumber, providers } from 'ethers'
-import { Address, encodeFunctionData, formatUnits, PublicClient } from 'viem'
+import {
+  Address,
+  encodeFunctionData,
+  formatUnits,
+  parseEther,
+  PublicClient,
+} from 'viem'
 
 import { DebtIssuanceModuleAddress } from '@/constants/contracts'
-import { Ethereum2xFlexibleLeverageIndex, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 import { getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
+import { isAvailableForRedemption } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
 import { RedemptionProvider } from './redemption'
@@ -38,19 +45,20 @@ export async function getEnhancedRedemptionQuote(
     outputToken,
     outputTokenPrice,
   } = request
-  if (inputToken.symbol !== Ethereum2xFlexibleLeverageIndex.symbol) return null
-  // FIXME: use new 2x token
-  if (outputToken.symbol !== Ethereum2xFlexibleLeverageIndex.symbol) return null
+  console.log(isAvailableForRedemption(inputToken, outputToken), 'isavailable')
+  if (!isAvailableForRedemption(inputToken, outputToken)) return null
   try {
+    console.log('redemption')
+
     const redemptionProvider = new RedemptionProvider(publicClient)
     const componentsUnits =
       await redemptionProvider.getComponentRedemptionUnits(
         inputToken.address! as Address,
         indexTokenAmount,
       )
-    console.log('componentsUnits:', componentsUnits)
+    console.log('componentsUnits:', componentsUnits, componentsUnits[1][0])
     // TODO:
-    const outputTokenAmount = BigInt(0)
+    const outputTokenAmount = parseEther(componentsUnits[1][0].toString())
 
     const sender = await signer.getAddress()
 
@@ -58,7 +66,7 @@ export async function getEnhancedRedemptionQuote(
       abi: DebtIssuanceModuleV2Abi,
       functionName: 'redeem',
       args: [
-        Ethereum2xFlexibleLeverageIndex.address! as Address,
+        inputToken.address! as Address,
         indexTokenAmount,
         sender as Address,
       ],
@@ -90,7 +98,7 @@ export async function getEnhancedRedemptionQuote(
       parseFloat(formatUnits(indexTokenAmount, inputToken.decimals)) *
       inputTokenPrice
     const outputTokenAmountUsd =
-      parseFloat(formatUnits(indexTokenAmount, inputToken.decimals)) *
+      parseFloat(formatUnits(outputTokenAmount, outputToken.decimals)) *
       inputTokenPrice
 
     // TODO: full costs
@@ -100,8 +108,8 @@ export async function getEnhancedRedemptionQuote(
       chainId: 1,
       contract,
       isMinting: false,
-      inputToken: Ethereum2xFlexibleLeverageIndex,
-      outputToken: Ethereum2xFlexibleLeverageIndex, // FIXME: use new 2x token
+      inputToken,
+      outputToken,
       gas: gasEstimate,
       gasPrice: BigNumber.from(gasPrice.toString()),
       gasCosts,

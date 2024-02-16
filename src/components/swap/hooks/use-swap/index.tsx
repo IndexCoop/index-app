@@ -23,6 +23,7 @@ import {
 } from './formatters'
 import {
   FormattedQuoteDisplay,
+  getFormattedQuoteRedemptionResult,
   getFormattedQuoteResults,
 } from './formatters/result'
 import { getFormattedPriceImpact } from './formatters/price-impact'
@@ -70,7 +71,7 @@ function getFormattedOuputTokenAmount(quote: Quote | null): string {
     : quote.inputOutputTokenAmount
   const outputAmount = formatUnits(
     BigInt(outputTokenAmount.toString()),
-    quote.outputToken.decimals
+    quote.outputToken.decimals,
   )
   const decimals = Number(outputAmount) > 1 ? 2 : 4
   return formatIfNumber(outputAmount, decimals)
@@ -84,7 +85,8 @@ export function useSwap(
   selectedQuoteType: QuoteType | null,
   isFetchingQuote: boolean,
   isFetching0x: boolean,
-  isFetchingFlashmint: boolean
+  isFetchingFlashmint: boolean,
+  isFetchingRedemption: boolean,
 ): SwapData {
   const { slippage } = useSlippage()
   const { address } = useWallet()
@@ -96,7 +98,7 @@ export function useSwap(
   } = useFormattedBalance(inputToken, address ?? '')
   const { balanceFormatted: outputTokenBalanceFormatted } = useFormattedBalance(
     outputToken,
-    address ?? ''
+    address ?? '',
   )
 
   const selectedQuote = useMemo(
@@ -106,26 +108,26 @@ export function useSwap(
       quoteResults === null
         ? quoteResults?.results.zeroex?.quote ?? null
         : quoteResults?.results.flashmint?.quote ?? null,
-    [quoteResults, selectedQuoteType]
+    [quoteResults, selectedQuoteType],
   )
   const isFlashMint = useMemo(
     () => selectedQuote?.type === QuoteType.flashmint,
-    [selectedQuote]
+    [selectedQuote],
   )
 
   const contract = useMemo(
     () => selectedQuote?.contract ?? null,
-    [selectedQuote]
+    [selectedQuote],
   )
 
   const inputTokenAmountUsd = useMemo(
     () => formattedFiat(selectedQuote?.inputTokenAmountUsd ?? 0),
-    [selectedQuote]
+    [selectedQuote],
   )
 
   const inputTokenAmountWei = useMemo(
     () => toWei(inputTokenAmount, inputToken.decimals),
-    [inputToken, inputTokenAmount]
+    [inputToken, inputTokenAmount],
   )
 
   const hasInsufficientFunds = useMemo(
@@ -133,19 +135,19 @@ export function useSwap(
       getHasInsufficientFunds(
         false,
         inputTokenAmountWei,
-        BigNumber.from(balance.toString())
+        BigNumber.from(balance.toString()),
       ),
-    [balance, inputTokenAmountWei]
+    [balance, inputTokenAmountWei],
   )
 
   const outputTokenAmountFormatted = useMemo(
     () => getFormattedOuputTokenAmount(selectedQuote),
-    [selectedQuote]
+    [selectedQuote],
   )
 
   const outputTokenAmountUsd = useMemo(
     () => formattedFiat(selectedQuote?.outputTokenAmountUsd ?? 0),
-    [selectedQuote]
+    [selectedQuote],
   )
   const gasCostsUsd = selectedQuote?.gasCostsInUsd ?? 0
 
@@ -155,7 +157,7 @@ export function useSwap(
       isFetchingQuote || !priceImpact
         ? null
         : getFormattedPriceImpact(priceImpact, false),
-    [isFetchingQuote, priceImpact]
+    [isFetchingQuote, priceImpact],
   )
 
   // Trade details
@@ -170,20 +172,23 @@ export function useSwap(
         Number(
           formatUnits(
             BigInt(selectedQuote?.outputTokenAmount.toString() ?? '0'),
-            outputToken.decimals
-          )
+            outputToken.decimals,
+          ),
         ),
-        selectedQuote?.outputTokenPrice ?? 0
+        selectedQuote?.outputTokenPrice ?? 0,
       ),
-    [inputToken, inputTokenAmount, outputToken, selectedQuote]
+    [inputToken, inputTokenAmount, outputToken, selectedQuote],
   )
 
   // Formatted quote results
-  const formattedQuoteResults = getFormattedQuoteResults(
-    quoteResults,
-    isFetching0x,
-    isFetchingFlashmint
-  )
+  const formattedQuoteResults =
+    quoteResults.bestQuote === QuoteType.redemption
+      ? getFormattedQuoteRedemptionResult(quoteResults, isFetchingRedemption)
+      : getFormattedQuoteResults(
+          quoteResults,
+          isFetching0x,
+          isFetchingFlashmint,
+        )
 
   // Trade data
   const tradeData: TradeInfoItem[] = buildTradeDetails(selectedQuote ?? null)

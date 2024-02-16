@@ -75,6 +75,7 @@ export const Swap = (props: SwapProps) => {
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
+    isFetchingRedemption,
     quoteResults,
   } = useBestQuote(isBuying, inputToken, outputToken)
 
@@ -118,6 +119,7 @@ export const Swap = (props: SwapProps) => {
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
+    isFetchingRedemption,
   )
 
   const {
