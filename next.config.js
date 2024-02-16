@@ -47,6 +47,14 @@ const nextConfig = {
       },
     ]
   },
+  async rewrites() {
+    return [
+      {
+        source: '/swap/manifest.json',
+        destination: '/manifest.json'
+      }
+    ]
+  },
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false }
     config.externals.push('pino-pretty', 'lokijs', 'encoding')
