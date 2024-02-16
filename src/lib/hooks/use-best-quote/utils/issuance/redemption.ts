@@ -9,7 +9,7 @@ export class RedemptionProvider {
 
   async getComponentRedemptionUnits(
     tokenAddress: Address,
-    redeemAmount: bigint
+    redeemAmount: bigint,
   ) {
     const data = await this.publicClient.readContract({
       address: DebtIssuanceModuleAddress,

@@ -98,7 +98,10 @@ export const useBestQuote = (
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
       const fetchFlashMintQuote = async () => {
-        if (canFlashmintIndexToken) {
+        if (
+          canFlashmintIndexToken &&
+          !isAvailableForRedemption(inputToken, outputToken)
+        ) {
           setIsFetchingFlashMint(true)
           console.log('canFlashmintIndexToken')
           const quoteFlashMint = await getFlashMintQuote(
@@ -150,7 +153,10 @@ export const useBestQuote = (
       }
 
       const fetchSwapQuote = async () => {
-        if (canSwapIndexToken) {
+        if (
+          canSwapIndexToken &&
+          !isAvailableForRedemption(inputToken, outputToken)
+        ) {
           setIsFetching0x(true)
           console.log('canSwapIndexToken')
           const quote0x = await get0xQuote({
@@ -188,17 +194,40 @@ export const useBestQuote = (
   )
 
   useEffect(() => {
+    if (isAvailableForRedemption(inputToken, outputToken)) {
+      const results = {
+        bestQuote: QuoteType.redemption,
+        results: {
+          flashmint: {
+            type: QuoteType.flashmint,
+            isAvailable: false,
+            quote: null,
+            error: null,
+          },
+          redemption: {
+            type: QuoteType.redemption,
+            isAvailable: true,
+            quote: quoteRedemption,
+            error: null,
+          },
+          zeroex: {
+            type: QuoteType.zeroex,
+            isAvailable: false,
+            quote: null,
+            error: null,
+          },
+        },
+      }
+      setQuoteResults(results)
+      return
+    }
     const bestQuote = getBestQuote(
       quote0x?.fullCostsInUsd ?? null,
       quoteFlashMint?.fullCostsInUsd ?? null,
+      quoteRedemption?.fullCostsInUsd ?? null,
       quote0x?.outputTokenAmountUsdAfterFees ?? null,
-      quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null,
     )
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
-    const canRedeemIndexToken = isAvailableForRedemption(
-      inputToken,
-      outputToken,
-    )
     const canSwapIndexToken = isAvailableForSwap(indexToken)
     const results = {
       bestQuote,
@@ -211,8 +240,8 @@ export const useBestQuote = (
         },
         redemption: {
           type: QuoteType.redemption,
-          isAvailable: canRedeemIndexToken,
-          quote: quoteRedemption,
+          isAvailable: false,
+          quote: null,
           error: null,
         },
         zeroex: {
