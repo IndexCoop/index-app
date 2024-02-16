@@ -3,6 +3,7 @@ import { Flex } from '@chakra-ui/react'
 import Footer from '@/components/footer'
 import Header from '@/components/header'
 
+import { SafaryScript } from '@/components/external/safary-script'
 import { Providers } from './providers'
 
 // For images just place the appropriate image file in this folder.
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps) {
           </Flex>
           <Footer />
         </Providers>
+        <SafaryScript />
       </body>
     </html>
   )
