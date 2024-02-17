@@ -1,5 +1,5 @@
 import { WarningIcon } from '@chakra-ui/icons'
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex, Link, Text } from '@chakra-ui/react'
 
 import { colors } from '@/lib/styles/colors'
 import { addMEVProtectionChain } from '@/lib/utils/chains'
@@ -15,11 +15,10 @@ export interface Warning {
   text: string
 }
 
-export const warningsData: Record<WarningType, Warning> = {
-  [WarningType.flashbots]: {
-    title: 'MEV Protection',
-    text: 'It is highly recommended to use a MEV protected RPC for Flash minting and redeeming. Click here to add the MEV Blocker network to your wallet - if supported.',
-  },
+const warningsData: Record<
+  WarningType.priceImpact | WarningType.restricted,
+  Warning
+> = {
   [WarningType.priceImpact]: {
     title: 'Price Impact Warning',
     text: 'A swap of this size may have a high price impact, given the current liquidity in the pool. This means that your trade could alter the price of the token and the quantity of tokens you receive.',
@@ -49,17 +48,18 @@ export const WarningComp = (props: WarningProps) => (
 )
 
 export const WarningCompProtection = () => {
+  const ethereum = window.ethereum
+
   const onClick = async () => {
-    const ethereum = window.ethereum
-    if (!ethereum) return
     await addMEVProtectionChain(ethereum)
   }
+
+  if (!ethereum) return null
+
   return (
     <Flex
-      cursor={'pointer'}
       direction={'column'}
       m='20px 16px 8px'
-      onClick={onClick}
     >
       <Flex align={'center'} direction={'row'}>
         <WarningIcon color={colors.icGray3} mr={'8px'} />
@@ -73,9 +73,18 @@ export const WarningCompProtection = () => {
         mt='8px'
         textColor={colors.icGray3}
       >
-        It is highly recommended to use a MEV protected RPC for Flash minting
-        and redeeming. Click here to add the MEV Blocker network to your wallet
-        - if supported.
+        It is highly recommended to use an MEV protected RPC.{' '}
+        <Link onClick={onClick} style={{ textDecoration: 'underline' }}>
+        Click here
+        </Link>{' '}
+        to add the MEV Blocker network to your wallet.{' '}
+        <Link
+          href='https://mevblocker.io/'
+          isExternal
+          style={{ textDecoration: 'underline' }}
+        >
+          Learn More about MEV protection
+        </Link>
       </Text>
     </Flex>
   )
