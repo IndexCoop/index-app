@@ -12,6 +12,7 @@ import { Token } from '@/constants/tokens'
 import { getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
+import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { isAvailableForRedemption } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
@@ -42,6 +43,7 @@ export async function getEnhancedRedemptionQuote(
     inputToken,
     inputTokenPrice,
     gasPrice,
+    nativeTokenPrice,
     outputToken,
     outputTokenPrice,
   } = request
@@ -89,7 +91,7 @@ export async function getEnhancedRedemptionQuote(
     const gasCosts = gasEstimate.mul(gasPrice)
     const gasCostsInUsd = getGasCostsInUsd(
       gasCosts.toBigInt(),
-      request.nativeTokenPrice,
+      nativeTokenPrice,
     )
     transaction.gasLimit = gasEstimate
     console.log('gasLimit', transaction.gasLimit.toString())
@@ -102,7 +104,13 @@ export async function getEnhancedRedemptionQuote(
       inputTokenPrice
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
-    // TODO: full costs
+    const fullCostsInUsd = getFullCostsInUsd(
+      indexTokenAmount,
+      gasEstimate.toBigInt() * gasPrice,
+      inputToken.decimals,
+      inputTokenPrice,
+      nativeTokenPrice,
+    )
 
     return {
       type: QuoteType.redemption,
@@ -115,8 +123,7 @@ export async function getEnhancedRedemptionQuote(
       gasPrice: BigNumber.from(gasPrice.toString()),
       gasCosts,
       gasCostsInUsd,
-      // TODO:
-      fullCostsInUsd: 0,
+      fullCostsInUsd,
       priceImpact: 0,
       indexTokenAmount: BigNumber.from(indexTokenAmount.toString()),
       inputOutputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
