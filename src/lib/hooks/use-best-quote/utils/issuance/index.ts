@@ -100,6 +100,7 @@ export async function getEnhancedRedemptionQuote(
     const outputTokenAmountUsd =
       parseFloat(formatUnits(outputTokenAmount, outputToken.decimals)) *
       inputTokenPrice
+    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
     // TODO: full costs
 
@@ -116,7 +117,6 @@ export async function getEnhancedRedemptionQuote(
       gasCostsInUsd,
       // TODO:
       fullCostsInUsd: 0,
-      // TODO:
       priceImpact: 0,
       indexTokenAmount: BigNumber.from(indexTokenAmount.toString()),
       inputOutputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
@@ -124,7 +124,7 @@ export async function getEnhancedRedemptionQuote(
       inputTokenAmountUsd,
       outputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
       outputTokenAmountUsd,
-      outputTokenAmountUsdAfterFees: 0, // TODO:
+      outputTokenAmountUsdAfterFees,
       inputTokenPrice,
       outputTokenPrice,
       slippage: request.slippage,
