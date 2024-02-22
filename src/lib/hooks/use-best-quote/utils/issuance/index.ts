@@ -3,7 +3,7 @@ import {
   Address,
   encodeFunctionData,
   formatUnits,
-  parseEther,
+  parseUnits,
   PublicClient,
 } from 'viem'
 
@@ -53,14 +53,15 @@ export async function getEnhancedRedemptionQuote(
     console.log('redemption')
 
     const redemptionProvider = new RedemptionProvider(publicClient)
-    const componentsUnits =
+    const [addresses, units, _] =
       await redemptionProvider.getComponentRedemptionUnits(
         inputToken.address! as Address,
         indexTokenAmount,
       )
-    console.log('componentsUnits:', componentsUnits, componentsUnits[1][0])
     // TODO:
-    const outputTokenAmount = parseEther(componentsUnits[1][0].toString())
+    // if (!isSameAddress(addresses[0], outputToken.address!)) return null
+    console.log('componentsUnits:', units, units[0])
+    const outputTokenAmount = parseUnits(units[0].toString(), 8)
 
     const sender = await signer.getAddress()
 
