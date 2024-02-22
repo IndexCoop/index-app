@@ -13,6 +13,10 @@ import {
 
 import { MAINNET } from './chains'
 
+// FIXME: temporary only, delete for production
+const btc2xLogo = '/assets/btc2x.png'
+const eth2xLogo = '/assets/eth2x.png'
+
 export enum IndexType {
   thematic = 'thematic',
   leverage = 'leverage',
@@ -116,7 +120,7 @@ export const IndexCoopBitcoin2xIndex: Token = {
     mintFee: '0.10%',
     redeemFee: '0.10%',
   },
-  image: btc2x.logoURI,
+  image: btc2xLogo,
   indexTypes: [IndexType.leverage],
   isDangerous: true,
   url: 'btc2x',
@@ -132,7 +136,7 @@ export const IndexCoopEthereum2xIndex: Token = {
     mintFee: '0.10%',
     redeemFee: '0.10%',
   },
-  image: eth2x.logoURI,
+  image: eth2xLogo,
   indexTypes: [IndexType.leverage],
   isDangerous: true,
   url: 'eth2x',
