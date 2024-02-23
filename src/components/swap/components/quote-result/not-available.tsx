@@ -1,7 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react'
 
-import { colors } from '@/lib/styles/colors'
-
 type QuoteNotAvailableProps = {
   type: string
 }
