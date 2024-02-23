@@ -289,10 +289,9 @@ export const Swap = (props: SwapProps) => {
         />
         <Box h='6px' alignSelf={'center'}>
           <IconButton
-            background={colors.icWhite}
+            className='bg-ic-white text-ic-gray-400'
             margin={'-16px 0 0 0'}
             aria-label='switch input/output tokens'
-            color={colors.icGray2}
             icon={<UpDownIcon />}
             onClick={onSwitchTokens}
           />
