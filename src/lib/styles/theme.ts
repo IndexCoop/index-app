@@ -7,7 +7,6 @@ import { Checkbox } from '../styles/checkbox'
 import { colors } from '../styles/colors'
 import { global } from '../styles/global'
 import { Heading } from '../styles/heading'
-import { Tabs } from '../styles/tabs'
 import { Text } from '../styles/text'
 
 const config: ThemeConfig = {
@@ -25,7 +24,6 @@ const components = {
   Button,
   Checkbox,
   Heading,
-  Tabs,
   Text,
 }
 
@@ -56,7 +54,7 @@ export const rainbowkitTheme = merge(
     fonts: {
       body: fonts.body,
     },
-  } as Theme
+  } as Theme,
 )
 
 export default theme

@@ -88,11 +88,15 @@ const ErrorMessage = ({ state }: { state: SupplyCapState }) => {
 }
 
 const TitleAndDescription = () => {
-  const { styles } = useColorStyles()
+  const { theme, styles } = useColorStyles()
   return (
     <Flex direction={'column'}>
       <Flex align='center'>
-        <InfoIcon color={colors.icBlue4} height='20px' width='20px' />
+        <InfoIcon
+          color={theme.colors.ic.blue[900]}
+          height='20px'
+          width='20px'
+        />
         <Text color={styles.text} fontSize='16px' fontWeight='600' mx='12px'>
           icRETH Supply Cap
         </Text>

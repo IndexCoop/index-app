@@ -8,17 +8,8 @@ export const colors = {
   icRed: '#C32238',
   // the new colors
   icBlack: '#0F1717',
+  // TODO: replace with static config
   icBlue: '#00BEC2', // highlight
-  icBlue1: '#05ACAF',
-  icBlue2: '#008F92',
-  icBlue3: '#006A71',
-  icBlue4: '#004D53',
-  icBlue5: '#143438',
-  icBlue6: '#15CDD1',
-  icBlue7: '#42E3E5',
-  icBlue8: '#78F2F4',
-  icBlue9: '#ADF4F6',
-  icBlue10: '#D1FBFD',
   icGray1: '#EBF2F2',
   icGray2: '#A6B2B2',
   icGray3: '#627171',
@@ -52,7 +43,10 @@ export const colorStyles = (isDarkMode: boolean) => {
 
 export const useColorStyles = () => {
   const { isDarkMode } = useICColorMode()
-  return { isDarkMode, styles: colorStyles(isDarkMode) }
+  return {
+    isDarkMode,
+    styles: colorStyles(isDarkMode),
+  }
 }
 
 export const useICColorMode = () => {

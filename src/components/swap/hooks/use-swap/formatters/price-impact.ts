@@ -2,7 +2,7 @@ import { colors } from '@/lib/styles/colors'
 
 export function getPriceImpactColorCoding(
   priceImpact: number,
-  isDarkMode: boolean
+  isDarkMode: boolean,
 ): string {
   if (priceImpact < -5) {
     return colors.icRed
@@ -20,7 +20,7 @@ export function getPriceImpactColorCoding(
  */
 export function getFormattedPriceImpact(
   priceImpact: number,
-  isDarkMode: boolean
+  isDarkMode: boolean,
 ): { priceImpact: string; colorCoding: string } | null {
   if (!priceImpact) return null
   const colorCoding = getPriceImpactColorCoding(priceImpact, isDarkMode)

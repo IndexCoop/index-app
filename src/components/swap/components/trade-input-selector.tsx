@@ -127,7 +127,7 @@ const Balance = ({ balance, onClick }: BalanceProps) => {
       {showMaxLabel && (
         <Flex
           align='center'
-          bg={colors.icBlue1}
+          className='bg-ic-blue-500'
           borderRadius='12px'
           justify='center'
           py='2px'

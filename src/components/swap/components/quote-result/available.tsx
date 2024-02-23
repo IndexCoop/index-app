@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex, Text, useTheme } from '@chakra-ui/react'
 
 import { StyledSkeleton } from '@/components/skeleton'
 import { colors } from '@/lib/styles/colors'
@@ -21,8 +21,9 @@ function getBackgroundColor(isSelected: boolean, isBestQuote: boolean) {
   return colors.icGray50
 }
 
-function getHighlightColor(isSelected: boolean, isBestQuote: boolean) {
-  if (isBestQuote && isSelected) return colors.icBlue6
+function useHighlightColor(isSelected: boolean, isBestQuote: boolean) {
+  const { theme } = useTheme()
+  if (isBestQuote && isSelected) return theme.colors.ic.blue[600]
   if (isBestQuote && !isSelected) return '#CFF5F6'
   if (!isBestQuote && isSelected) {
     return '#F178B6'
@@ -33,7 +34,7 @@ function getHighlightColor(isSelected: boolean, isBestQuote: boolean) {
 export const QuoteAvailable = (props: QuoteAvailableProps) => {
   const { type, isLoading, isSelected, onClick, quote } = props
   const background = getBackgroundColor(isSelected, quote?.isBestQuote ?? false)
-  const highlight = getHighlightColor(isSelected, quote?.isBestQuote ?? false)
+  const highlight = useHighlightColor(isSelected, quote?.isBestQuote ?? false)
   const borderWidth = isSelected ? 2 : 0
   return (
     <Flex

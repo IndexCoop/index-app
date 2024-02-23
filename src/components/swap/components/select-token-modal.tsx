@@ -30,7 +30,7 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
   const { isOpen, onClose, onSelectedToken, tokens } = props
   const tokenAddresses = useMemo(
     () => tokens.map((token) => token.address!),
-    [tokens]
+    [tokens],
   )
   const balances = useBalances(props.address, tokenAddresses)
   const { isDarkMode } = useICColorMode()
@@ -63,10 +63,10 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
           {tokens.length > 0 &&
             tokens.map((token) => {
               const tokenBalance = balances.find((bal) =>
-                isSameAddress(bal.token, token.address!)
+                isSameAddress(bal.token, token.address!),
               )
               const balance = BigNumber.from(
-                tokenBalance?.value.toString() ?? '0'
+                tokenBalance?.value.toString() ?? '0',
               )
               const balanceDisplay =
                 displayFromWei(balance, 3, token.decimals) ?? '0'
@@ -101,42 +101,44 @@ const TokenItem = ({
   isDarkMode,
   item,
   onClick,
-}: TokenItemProps) => (
-  <Flex
-    align='center'
-    justify='space-between'
-    cursor='pointer'
-    h='60px'
-    my='4px'
-    px='16px'
-    onClick={() => onClick(item.symbol)}
-    _hover={{
-      backgroundColor: isDarkMode ? colors.gray[900] : colors.gray[100],
-    }}
-  >
-    <Flex align='center'>
-      <Image alt={`${item.symbol} logo`} src={item.image} w='40px' h='40px' />
-      <Flex direction='column' ml='16px'>
-        <Flex align='baseline'>
-          <Text fontSize='md' fontWeight='500' textColor={colors.icBlack}>
-            {item.symbol}
-          </Text>
-          {extraTitle && (
-            <Text color={colors.icBlue} fontSize='sm' fontWeight='500' ml='2'>
-              {extraTitle}
+}: TokenItemProps) => {
+  return (
+    <Flex
+      align='center'
+      justify='space-between'
+      cursor='pointer'
+      h='60px'
+      my='4px'
+      px='16px'
+      onClick={() => onClick(item.symbol)}
+      _hover={{
+        backgroundColor: isDarkMode ? colors.gray[900] : colors.gray[100],
+      }}
+    >
+      <Flex align='center'>
+        <Image alt={`${item.symbol} logo`} src={item.image} w='40px' h='40px' />
+        <Flex direction='column' ml='16px'>
+          <Flex align='baseline'>
+            <Text fontSize='md' fontWeight='500' textColor={colors.icBlack}>
+              {item.symbol}
             </Text>
-          )}
+            {extraTitle && (
+              <Text color={colors.icBlue} fontSize='sm' fontWeight='500' ml='2'>
+                {extraTitle}
+              </Text>
+            )}
+          </Flex>
+          <Text fontSize='sm' fontWeight='500' textColor={colors.icBlack}>
+            {item.name}
+          </Text>
         </Flex>
-        <Text fontSize='sm' fontWeight='500' textColor={colors.icBlack}>
-          {item.name}
+      </Flex>
+      <Flex align='flex-end' direction='column' ml='16px'>
+        <Text fontSize='md' fontWeight='700' textColor={colors.icBlack}>
+          {balance}
         </Text>
+        <Text fontSize='sm' fontWeight='500'></Text>
       </Flex>
     </Flex>
-    <Flex align='flex-end' direction='column' ml='16px'>
-      <Text fontSize='md' fontWeight='700' textColor={colors.icBlack}>
-        {balance}
-      </Text>
-      <Text fontSize='sm' fontWeight='500'></Text>
-    </Flex>
-  </Flex>
-)
+  )
+}
