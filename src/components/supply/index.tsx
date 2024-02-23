@@ -1,5 +1,5 @@
 import { InfoIcon, WarningTwoIcon } from '@chakra-ui/icons'
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex, Text, theme } from '@chakra-ui/react'
 
 import { colors, useColorStyles } from '@/lib/styles/colors'
 import { RethSupplyCap } from './reth-supply-cap'
@@ -88,15 +88,11 @@ const ErrorMessage = ({ state }: { state: SupplyCapState }) => {
 }
 
 const TitleAndDescription = () => {
-  const { theme, styles } = useColorStyles()
+  const { styles } = useColorStyles()
   return (
     <Flex direction={'column'}>
       <Flex align='center'>
-        <InfoIcon
-          color={theme.colors.ic.blue[900]}
-          height='20px'
-          width='20px'
-        />
+        <InfoIcon color={theme.colors.blue[900]} height='20px' width='20px' />
         <Text color={styles.text} fontSize='16px' fontWeight='600' mx='12px'>
           icRETH Supply Cap
         </Text>

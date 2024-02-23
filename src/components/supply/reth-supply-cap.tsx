@@ -12,12 +12,12 @@ interface RethSupplyCapProps {
 function useColorForProgress(progress: number): string {
   const { theme } = useTheme()
   if (progress === 100) {
-    return theme.colors.ic.blue[950]
+    return theme.colors.blue[950]
   }
   if (progress > 100) {
     return colors.icRed
   }
-  return theme.colors.ic.blue[900]
+  return theme.colors.blue[900]
 }
 
 export const RethSupplyCap = (props: RethSupplyCapProps) => {
