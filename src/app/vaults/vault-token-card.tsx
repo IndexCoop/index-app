@@ -1,6 +1,6 @@
 import { Button, Divider, Flex, Spacer, Text } from '@chakra-ui/react'
 
-import { colors, useColorStyles } from '@/lib/styles/colors'
+import { colors } from '@/lib/styles/colors'
 
 import { VaultToken } from './types'
 
@@ -14,7 +14,6 @@ const formatAmount = (amount: number) =>
   })
 
 export default function VaultTokenCard({ vaultToken }: Props) {
-  const { theme } = useColorStyles()
   return (
     <Flex
       p='16px'
@@ -122,10 +121,9 @@ export default function VaultTokenCard({ vaultToken }: Props) {
         </Flex>
       )}
       <Button
+        className='bg-ic-blue-600 text-ic-white'
         borderRadius='10px'
         boxShadow='md'
-        color={colors.icWhite}
-        background={theme.colors.ic.blue[600]}
         my='8px'
       >
         Detail View

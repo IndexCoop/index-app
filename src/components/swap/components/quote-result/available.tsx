@@ -1,5 +1,6 @@
+import clsx from 'clsx'
 import Image from 'next/image'
-import { Flex, Text, useTheme } from '@chakra-ui/react'
+import { Flex, Text } from '@chakra-ui/react'
 
 import { StyledSkeleton } from '@/components/skeleton'
 import { colors } from '@/lib/styles/colors'
@@ -18,17 +19,16 @@ function getBackgroundColor(isSelected: boolean, isBestQuote: boolean) {
   // return for best quote (whether selected or not)
   if (isBestQuote) return '#F0FEFF'
   if (!isBestQuote && isSelected) return '#FFF5FA'
-  return colors.icGray50
+  return '#f2f8f8'
 }
 
 function useHighlightColor(isSelected: boolean, isBestQuote: boolean) {
-  const { theme } = useTheme()
-  if (isBestQuote && isSelected) return theme.colors.ic.blue[600]
+  if (isBestQuote && isSelected) return '#15CDD1'
   if (isBestQuote && !isSelected) return '#CFF5F6'
   if (!isBestQuote && isSelected) {
     return '#F178B6'
   }
-  return colors.icGray400
+  return '#A6B4B4'
 }
 
 export const QuoteAvailable = (props: QuoteAvailableProps) => {
@@ -51,7 +51,7 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
     >
       <Flex align='space-between' direction='column' justify={'flex-start'}>
         <Flex justify={'space-between'}>
-          <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
+          <Text className='text-ic-gray-500' fontSize={'xs'} fontWeight={500}>
             {isLoading && <StyledSkeleton width={50} />}
             {!isLoading && quote && quote.inputAmount}
           </Text>
@@ -73,9 +73,9 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
         </Flex>
       </Flex>
       <Text
+        className={clsx(isSelected ? 'text-ic-gray-800' : 'text-ic-gray-500')}
         fontSize={'2xl'}
         fontWeight={500}
-        textColor={!isSelected ? colors.icGray500 : colors.icGray800}
       >
         {isLoading && <StyledSkeleton width={200} />}
         {!isLoading && quote && quote.outputAmount}
@@ -84,20 +84,20 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
         direction={['column', 'row']}
         justify={['flex-start', 'space-between']}
       >
-        <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
+        <Text className='text-ic-gray-500' fontSize={'xs'} fontWeight={500}>
           {isLoading && <StyledSkeleton width={80} />}
           {!isLoading && quote && quote.feesTotal}
         </Text>
         {quote && (
           <Flex direction='row' gap='6px'>
             <Image
+              className='text-ic-gray-500'
               alt='Gas fees icon'
               src={'/assets/gas-icon.svg'}
               height={10}
               width={10}
-              style={{ color: colors.icGray500 }}
             />
-            <Text fontSize={'xs'} fontWeight={500} textColor={colors.icGray500}>
+            <Text className='text-ic-gray-500' fontSize={'xs'} fontWeight={500}>
               {quote.feesGas}
             </Text>
           </Flex>
