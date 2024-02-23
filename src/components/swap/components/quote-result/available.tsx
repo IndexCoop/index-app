@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { Flex, Text } from '@chakra-ui/react'
 
 import { StyledSkeleton } from '@/components/skeleton'
-import { colors } from '@/lib/styles/colors'
 
 import { QuoteDisplay } from './types'
 
