@@ -7,16 +7,17 @@ import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 import { useNetwork } from '@/lib/hooks/use-network'
-import { logConnect } from '@/lib/utils/api/analytics'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 
 export const Connect = () => {
   const { address } = useAccount()
   const { chainId } = useNetwork()
+  const { logConnectWallet } = useAnalytics()
 
   useEffect(() => {
     if (address === undefined || chainId === undefined) return
-    logConnect(address, chainId)
-  }, [address, chainId])
+    logConnectWallet(address, chainId)
+  }, [address, chainId, logConnectWallet])
 
   const chainStatus = { smallScreen: 'full', largeScreen: 'full' }
 

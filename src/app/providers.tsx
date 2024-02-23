@@ -5,6 +5,7 @@ import { WagmiConfig } from 'wagmi'
 import { CacheProvider } from '@chakra-ui/next-js'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
+import { ArcxAnalyticsProvider } from '@arcxmoney/analytics'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 
 import theme, { rainbowkitTheme } from '@/lib/styles/theme'
@@ -17,6 +18,8 @@ const rainbowKitAppInfo = {
   appName: 'Index Coop',
   learnMoreUrl: 'https://indexcoop.com',
 }
+
+const arcxApiKey = process.env.NEXT_PUBLIC_ARCX_ANALYTICS_API_KEY ?? ''
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const gtmParams = {
@@ -32,7 +35,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             theme={rainbowkitTheme}
             appInfo={rainbowKitAppInfo}
           >
-            <GTMProvider state={gtmParams}>{children}</GTMProvider>
+            <ArcxAnalyticsProvider apiKey={arcxApiKey}>
+              <GTMProvider state={gtmParams}>{children}</GTMProvider>
+            </ArcxAnalyticsProvider>
           </RainbowKitProvider>
         </WagmiConfig>
       </ChakraProvider>

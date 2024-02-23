@@ -9,7 +9,6 @@ import { Token } from '@/constants/tokens'
 import { Quote, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { logTx } from '@/lib/utils/api/analytics'
 import {
   GasEstimatooor,
   GasEstimatooorFailedError,
@@ -17,6 +16,7 @@ import {
 import { getAddressForToken, isNativeCurrency } from '@/lib/utils/tokens'
 
 import { BalanceProvider } from './use-balance'
+import { useAnalytics } from './use-analytics'
 
 async function getInputTokenBalance(
   inputToken: Token,
@@ -33,6 +33,7 @@ export const useTrade = () => {
   const publicClient = usePublicClient()
   const { address, signer } = useWallet()
   const { chainId } = useNetwork()
+  const { logTransaction } = useAnalytics()
 
   const [isTransacting, setIsTransacting] = useState(false)
   const [txWouldFail, setTxWouldFail] = useState(false)
@@ -78,7 +79,7 @@ export const useTrade = () => {
           value: BigInt(quote.tx.value?.toString() ?? '0'),
         })
         const { hash } = await sendTransaction(request)
-        logTx(chainId ?? -1, quote.type.toString(), hash)
+        logTransaction(chainId ?? -1, quote.type.toString(), hash)
         console.log('hash:', hash)
         setIsTransacting(false)
       } catch (error) {
@@ -94,7 +95,7 @@ export const useTrade = () => {
         throw error
       }
     },
-    [address, chainId, publicClient, signer]
+    [address, chainId, logTransaction, publicClient, signer]
   )
 
   return { executeTrade, isTransacting, txWouldFail }
