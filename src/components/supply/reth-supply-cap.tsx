@@ -1,4 +1,4 @@
-import { CircularProgress, Flex, Text } from '@chakra-ui/react'
+import { CircularProgress, Flex, Text, useTheme } from '@chakra-ui/react'
 
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
@@ -9,20 +9,21 @@ interface RethSupplyCapProps {
   totalSupplyPercent: number
 }
 
-function getColorForProgress(progress: number): string {
+function useColorForProgress(progress: number): string {
+  const { theme } = useTheme()
   if (progress === 100) {
-    return colors.icBlue5
+    return theme.colors.ic.blue[950]
   }
   if (progress > 100) {
     return colors.icRed
   }
-  return colors.icBlue4
+  return theme.colors.ic.blue[900]
 }
 
 export const RethSupplyCap = (props: RethSupplyCapProps) => {
   const { styles } = useColorStyles()
   const { formatted, totalSupplyPercent } = props
-  const progressColor = getColorForProgress(totalSupplyPercent)
+  const progressColor = useColorForProgress(totalSupplyPercent)
   return (
     <Flex
       align='center'
