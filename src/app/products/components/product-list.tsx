@@ -12,7 +12,7 @@ import {
   fetchApy,
   fetchMarketData,
   fetchAnalytics,
-} from '@/app/products/utils/index-api'
+} from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
 
 const THIRTY_SECONDS_IN_MS = 30 * 1000
