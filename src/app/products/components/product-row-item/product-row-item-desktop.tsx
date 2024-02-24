@@ -16,7 +16,7 @@ const cellClassName = 'text-ic-gray-600 text-sm font-medium min-w-[116px]'
 
 export function ProductRowItemDesktop({
   isLoading,
-  product: { logoURI, symbol, name, theme, type, price, delta, apy, tvl },
+  product: { image, symbol, name, theme, type, price, delta, apy, tvl },
 }: ProductRowItemProps) {
   return (
     <Link
@@ -30,7 +30,7 @@ export function ProductRowItemDesktop({
         )}
       >
         <div className='mr-2 overflow-hidden rounded-full'>
-          <Image src={logoURI!} alt={`${symbol} logo`} height={30} width={30} />
+          <Image src={image!} alt={`${symbol} logo`} height={30} width={30} />
         </div>
         <div className='my-auto'>
           <span className='text-ic-gray-950 mr-4 font-semibold'>{name}</span>
