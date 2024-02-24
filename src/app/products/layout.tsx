@@ -1,31 +1,19 @@
-import '../globals.css'
-
-import { Metadata } from 'next'
 import { Footer } from '@/app/products/components/footer'
 import { Header } from '@/components/header'
 import { ProvidersLite } from '../providers-lite'
 
-export const metadata: Metadata = {
-  title: {
-    template: '%s | Index Coop',
-    default: 'App | Index Coop',
-  },
+type Props = {
+  children: React.ReactNode
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function Layout({ children }: Props) {
   return (
-    <html lang='en' className='h-full'>
-      <body className="h-fit flex flex-col bg-[url('/gradient-splash.jpg')] bg-top">
-        <ProvidersLite>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-        </ProvidersLite>
-      </body>
-    </html>
+    <div className="h-fit flex flex-col bg-[url('/gradient-splash.jpg')] bg-top">
+      <ProvidersLite>
+        <Header />
+        <main>{children}</main>
+        <Footer />
+      </ProvidersLite>
+    </div>
   )
 }
