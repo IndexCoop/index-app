@@ -3,14 +3,14 @@
 import clsx from 'clsx'
 import Image from 'next/image'
 import Link from 'next/link'
-import { LoadingSkeleton } from '@/app/(homepage)/components/loading-skeleton'
-import { ProductRowItemProps } from '@/app/(homepage)/components/product-row-item'
-import { MobileRow } from '@/app/(homepage)/components/product-row-item/mobile-row'
+import { LoadingSkeleton } from '@/app/products/components/loading-skeleton'
+import { ProductRowItemProps } from '@/app/products/components/product-row-item'
+import { MobileRow } from '@/app/products/components/product-row-item/mobile-row'
 import {
   formatPercentage,
   formatPrice,
   formatTvl,
-} from '@/app/(homepage)/utils/formatters'
+} from '@/app/products/utils/formatters'
 
 const rowClassName = 'text-ic-gray-600 text-sm font-medium text-right'
 

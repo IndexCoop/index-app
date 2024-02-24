@@ -1,5 +1,5 @@
-import { ProductTheme, ProductType } from '@/app/(homepage)/types/product'
-import { getTokenFromSymbol } from '@/app/(homepage)/utils/tokens'
+import { ProductTheme, ProductType } from '@/app/products/types/product'
+import { getTokenFromSymbol } from '@/app/products/utils/tokens'
 
 export const productTokens = [
   {
@@ -14,7 +14,7 @@ export const productTokens = [
     hasApy: false,
     shouldUseAnalytics: false,
     theme: ProductTheme.DEFI,
-    type: ProductType.SECTOR,
+    type: ProductType.INDEX,
   },
   {
     ...getTokenFromSymbol('iceth'),
@@ -28,7 +28,7 @@ export const productTokens = [
     hasApy: false,
     shouldUseAnalytics: false,
     theme: ProductTheme.METAVERSE,
-    type: ProductType.SECTOR,
+    type: ProductType.INDEX,
   },
   {
     ...getTokenFromSymbol('btc2x-fli'),
@@ -49,7 +49,7 @@ export const productTokens = [
     hasApy: false,
     shouldUseAnalytics: false,
     theme: ProductTheme.LCAP,
-    type: ProductType.SECTOR,
+    type: ProductType.INDEX,
   },
   {
     ...getTokenFromSymbol('gtceth'),
@@ -63,6 +63,6 @@ export const productTokens = [
     shouldUseAnalytics: true,
     hasApy: false,
     theme: ProductTheme.ETH,
-    type: ProductType.SECTOR,
+    type: ProductType.INDEX,
   },
 ]

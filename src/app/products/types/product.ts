@@ -1,6 +1,6 @@
 export enum ProductType {
   LEVERAGE = 'Leverage',
-  SECTOR = 'Sector',
+  INDEX = 'Index',
   YIELD = 'Yield',
 }
 

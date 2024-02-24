@@ -1,7 +1,7 @@
 import '../globals.css'
 
 import { Metadata } from 'next'
-import { Footer } from '@/app/(homepage)/components/footer'
+import { Footer } from '@/app/products/components/footer'
 import { Header } from '@/components/header'
 import { ProvidersLite } from '../providers-lite'
 

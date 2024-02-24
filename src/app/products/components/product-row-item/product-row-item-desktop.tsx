@@ -3,14 +3,14 @@
 import Image from 'next/image'
 import clsx from 'clsx'
 import Link from 'next/link'
-import { LoadingSkeleton } from '@/app/(homepage)/components/loading-skeleton'
-import { ProductRowItemProps } from '@/app/(homepage)/components/product-row-item'
-import { ProductType } from '@/app/(homepage)/types/product'
+import { LoadingSkeleton } from '@/app/products/components/loading-skeleton'
+import { ProductRowItemProps } from '@/app/products/components/product-row-item'
+import { ProductType } from '@/app/products/types/product'
 import {
   formatPercentage,
   formatPrice,
   formatTvl,
-} from '@/app/(homepage)/utils/formatters'
+} from '@/app/products/utils/formatters'
 
 const cellClassName = 'text-ic-gray-600 text-sm font-medium min-w-[116px]'
 
@@ -43,7 +43,7 @@ export function ProductRowItemDesktop({
             'rounded-2xl px-4 py-1 w-24 text-center border border-ic-gray-500 mx-auto',
             {
               'bg-[#E7F2FF]': type === ProductType.LEVERAGE,
-              'bg-[#F4ECFF]': type === ProductType.SECTOR,
+              'bg-[#F4ECFF]': type === ProductType.INDEX,
               'bg-[#FEEFF7]': type === ProductType.YIELD,
             },
           )}
