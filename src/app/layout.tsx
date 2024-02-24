@@ -1,4 +1,5 @@
 import './globals.css'
+import { SafaryScript } from '@/components/external/safary-script'
 
 export const metadata = {
   manifest: '/manifest.json',
@@ -16,7 +17,10 @@ type LayoutProps = {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang='en'>
-      <body>{children}</body>
+      <body>
+        {children}
+        <SafaryScript />
+      </body>
     </html>
   )
 }
