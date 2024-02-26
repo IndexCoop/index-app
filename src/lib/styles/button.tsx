@@ -17,8 +17,8 @@ export const Button = {
   variants: {
     green: {
       backgroundColor: 'rgba(9, 170, 116, 0.12)',
-      borderColor: colors.icMalachite,
-      color: colors.icMalachite,
+      borderColor: colors.ic.green,
+      color: colors.ic.green,
     },
     highlight: ({ colorMode }: { colorMode: string }) => ({
       backgroundColor: 'transparent',

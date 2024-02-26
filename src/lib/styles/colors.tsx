@@ -7,7 +7,6 @@ export const colors = {
   ...theme.colors,
   ic: tailwindConfig.theme.extend.colors.ic,
   // old colors will be removed once they are replaced everywhere
-  icMalachite: '#09AA74',
   icRed: '#C32238',
   // the new colors
   icBlack: '#0F1717',
