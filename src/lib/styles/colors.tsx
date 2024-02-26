@@ -1,7 +1,10 @@
 import { theme } from '@chakra-ui/react'
 
+const tailwindConfig = require('./tailwind.config.js')
+
 export const colors = {
   ...theme.colors,
+  ic: tailwindConfig.theme.extend.colors.ic,
   // old colors will be removed once they are replaced everywhere
   icMalachite: '#09AA74',
   icYellow: '#ECB424',
