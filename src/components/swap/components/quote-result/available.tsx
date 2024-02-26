@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Flex, Text } from '@chakra-ui/react'
 
 import { StyledSkeleton } from '@/components/skeleton'
+import { colors } from '@/lib/styles/colors'
 
 import { QuoteDisplay } from './types'
 
@@ -18,16 +19,16 @@ function getBackgroundColor(isSelected: boolean, isBestQuote: boolean) {
   // return for best quote (whether selected or not)
   if (isBestQuote) return '#F0FEFF'
   if (!isBestQuote && isSelected) return '#FFF5FA'
-  return '#f2f8f8'
+  return colors.ic.gray[50]
 }
 
 function useHighlightColor(isSelected: boolean, isBestQuote: boolean) {
-  if (isBestQuote && isSelected) return '#15CDD1'
+  if (isBestQuote && isSelected) return colors.ic.blue[600]
   if (isBestQuote && !isSelected) return '#CFF5F6'
   if (!isBestQuote && isSelected) {
     return '#F178B6'
   }
-  return '#A6B4B4'
+  return colors.ic.gray[400]
 }
 
 export const QuoteAvailable = (props: QuoteAvailableProps) => {
