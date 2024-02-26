@@ -55,7 +55,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
             color={
               props.selectedTokenAmount === '0'
                 ? colors.icGray2
-                : colors.icBlack
+                : colors.ic.black
             }
             fontSize='25px'
             fontWeight={500}
@@ -67,7 +67,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
           </Text>
         ) : (
           <Input
-            color={colors.icBlack}
+            color={colors.ic.black}
             fontSize='25px'
             fontWeight={500}
             overflow='hidden'
