@@ -5,11 +5,11 @@ export function getPriceImpactColorCoding(
   isDarkMode: boolean,
 ): string {
   if (priceImpact < -5) {
-    return colors.icRed
+    return colors.ic.red
   }
 
   if (priceImpact < -3) {
-    return colors.icBlue
+    return colors.ic.blue[500]
   }
 
   return isDarkMode ? colors.icGrayDarkMode : colors.icGrayLightMode

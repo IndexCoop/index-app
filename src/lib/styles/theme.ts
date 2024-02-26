@@ -41,7 +41,7 @@ export const rainbowkitTheme = merge(
   }),
   {
     colors: {
-      accentColor: colors.icBlue,
+      accentColor: colors.ic.blue[500],
       accentColorForeground: colors.icWhite,
       actionButtonBorder: colors.icGray4,
       actionButtonBorderMobile: colors.icGray4,

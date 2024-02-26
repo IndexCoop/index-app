@@ -19,7 +19,7 @@ describe('getPriceImpact()', () => {
     const expectedResult = '11.28'
     const priceImpact = getPriceImpact(
       inputTokenAmount * inputTokenPrice,
-      outputokenAmount * outputTokenPrice
+      outputokenAmount * outputTokenPrice,
     )
     expect(priceImpact).not.toBeNull()
     expect(priceImpact?.toFixed(2)).toEqual(expectedResult)
@@ -33,7 +33,7 @@ describe('getPriceImpact()', () => {
     const expectedResult = -50
     const priceImpact = getPriceImpact(
       inputTokenAmount * inputTokenPrice,
-      outputokenAmount * outputTokenPrice
+      outputokenAmount * outputTokenPrice,
     )
     expect(priceImpact).not.toBeNull()
     expect(priceImpact).toEqual(expectedResult)
@@ -43,12 +43,12 @@ describe('getPriceImpact()', () => {
 describe('getPriceImpaceColorCoding()', () => {
   test('should return correct color for > 5% price impact', async () => {
     const colorCoding = getPriceImpactColorCoding(-5.1, true)
-    expect(colorCoding).toEqual(colors.icRed)
+    expect(colorCoding).toEqual(colors.ic.red)
   })
 
   test('should return correct color for price impact > 3% < 5%', async () => {
     const colorCoding = getPriceImpactColorCoding(-3.1, true)
-    expect(colorCoding).toEqual(colors.icBlue)
+    expect(colorCoding).toEqual(colors.ic.blue[500])
   })
 
   test('should return correct color for price impact < 3%', async () => {

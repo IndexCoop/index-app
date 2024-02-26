@@ -12,8 +12,6 @@ export const colors = {
   icRed: '#C32238',
   // the new colors
   icBlack: '#0F1717',
-  // TODO: replace with static config
-  icBlue: '#00BEC2', // highlight
   icGray1: '#EBF2F2',
   icGray2: '#A6B2B2',
   icGray3: '#627171',
