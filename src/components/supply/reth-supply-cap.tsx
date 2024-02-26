@@ -1,4 +1,4 @@
-import { CircularProgress, Flex, Text, useTheme } from '@chakra-ui/react'
+import { CircularProgress, Flex, Text } from '@chakra-ui/react'
 
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
