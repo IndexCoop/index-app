@@ -112,14 +112,14 @@ const TokenItem = ({
       px='16px'
       onClick={() => onClick(item.symbol)}
       _hover={{
-        backgroundColor: isDarkMode ? colors.gray[900] : colors.gray[100],
+        backgroundColor: isDarkMode ? colors.ic.gray[900] : colors.ic.gray[100],
       }}
     >
       <Flex align='center'>
         <Image alt={`${item.symbol} logo`} src={item.image} w='40px' h='40px' />
         <Flex direction='column' ml='16px'>
           <Flex align='baseline'>
-            <Text fontSize='md' fontWeight='500' textColor={colors.icBlack}>
+            <Text fontSize='md' fontWeight='500' textColor={colors.ic.black}>
               {item.symbol}
             </Text>
             {extraTitle && (
@@ -128,13 +128,13 @@ const TokenItem = ({
               </Text>
             )}
           </Flex>
-          <Text fontSize='sm' fontWeight='500' textColor={colors.icBlack}>
+          <Text fontSize='sm' fontWeight='500' textColor={colors.ic.black}>
             {item.name}
           </Text>
         </Flex>
       </Flex>
       <Flex align='flex-end' direction='column' ml='16px'>
-        <Text fontSize='md' fontWeight='700' textColor={colors.icBlack}>
+        <Text fontSize='md' fontWeight='700' textColor={colors.ic.black}>
           {balance}
         </Text>
         <Text fontSize='sm' fontWeight='500'></Text>
