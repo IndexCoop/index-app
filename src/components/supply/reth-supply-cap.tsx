@@ -14,7 +14,7 @@ function useColorForProgress(progress: number): string {
     return colors.ic.blue[950]
   }
   if (progress > 100) {
-    return colors.icRed
+    return colors.ic.red
   }
   return colors.ic.blue[900]
 }

@@ -318,7 +318,7 @@ export const Swap = (props: SwapProps) => {
           />
         )}
         {hasFetchingError && (
-          <Text align='center' color={colors.icRed} p='16px'>
+          <Text align='center' color={colors.ic.red} p='16px'>
             {'Error fetching quote'}
           </Text>
         )}

@@ -6,9 +6,6 @@ const tailwindConfig = require('./tailwind.config.js')
 export const colors = {
   ...theme.colors,
   ic: tailwindConfig.theme.extend.colors.ic,
-  // old colors will be removed once they are replaced everywhere
-  icRed: '#C32238',
-  // the new colors
   icBlack: '#0F1717',
   icGray1: '#EBF2F2',
   icGray2: '#A6B2B2',

@@ -65,7 +65,7 @@ const ErrorMessage = ({ state }: { state: SupplyCapState }) => {
   return (
     <Flex direction={'column'}>
       <Flex align='center'>
-        <WarningTwoIcon color={colors.icRed} height='16px' width='16px' />
+        <WarningTwoIcon color={colors.ic.red} height='16px' width='16px' />
         <Text color={styles.text} fontSize='16px' fontWeight='700' mx='12px'>
           Minting not possible
         </Text>
