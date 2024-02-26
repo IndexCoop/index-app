@@ -16,7 +16,7 @@ function getTexts(lowSlippage: boolean) {
 export const Warning = (props: WarningProps) => (
   <Flex direction={'column'}>
     <Flex align={'center'} direction={'row'}>
-      <WarningIcon color={colors.icYellow} mr={'6px'} />
+      <WarningIcon color={colors.ic.yellow} mr={'6px'} />
       <Text fontSize={'md'} fontWeight={500} textColor={colors.icGray3}>
         Slippage warning
       </Text>
