@@ -1,7 +1,6 @@
 import { theme } from '@chakra-ui/react'
 
-/* eslint-disable @typescript-eslint/no-var-requires */
-const tailwindConfig = require('./tailwind.config.js')
+import tailwindConfig from './tailwind.config'
 
 export const colors = {
   ...theme.colors,
