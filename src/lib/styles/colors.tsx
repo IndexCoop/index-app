@@ -1,12 +1,11 @@
 import { theme } from '@chakra-ui/react'
 
-/* eslint-disable  @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const tailwindConfig = require('./tailwind.config.js')
 
 export const colors = {
   ...theme.colors,
   ic: tailwindConfig.theme.extend.colors.ic,
-  icBlack: '#0F1717',
   icGray1: '#EBF2F2',
   icGray2: '#A6B2B2',
   icGray3: '#627171',
@@ -19,16 +18,16 @@ export const colors = {
 
 export const colorStyles = (isDarkMode: boolean) => {
   return {
-    background: isDarkMode ? colors.icBlack : colors.icWhite,
+    background: isDarkMode ? colors.ic.black : colors.icWhite,
     backgroundGradient: isDarkMode
       ? 'linear(to-tr, #143438, #0F1717, #0F1717)'
       : 'linear(to-tr, #F7F8F8, #FCFFFF, #FCFFFF)',
-    backgroundInverted: isDarkMode ? colors.icWhite : colors.icBlack,
+    backgroundInverted: isDarkMode ? colors.icWhite : colors.ic.black,
     border: isDarkMode ? colors.icGray4 : colors.icGray1,
-    text: isDarkMode ? colors.icWhite : colors.icBlack,
+    text: isDarkMode ? colors.icWhite : colors.ic.black,
     text2: isDarkMode ? colors.icGray2 : colors.icGray4,
     text3: colors.icGray3,
-    textInverted: isDarkMode ? colors.icBlack : colors.icWhite,
+    textInverted: isDarkMode ? colors.ic.black : colors.icWhite,
   }
 }
 

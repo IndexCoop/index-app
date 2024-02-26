@@ -56,7 +56,7 @@ export const RethSupplyCap = (props: RethSupplyCapProps) => {
         <Text color={colors.icGray3} fontSize='14px' fontWeight='400'>
           Available to mint
         </Text>
-        <Text color={colors.icBlack} fontSize='16px' fontWeight='700'>
+        <Text color={colors.ic.black} fontSize='16px' fontWeight='700'>
           {`${formatted.available} icRETH`}
         </Text>
       </Flex>

@@ -39,7 +39,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
         </Text>
         <Flex
           align='center'
-          background={colors.icBlack}
+          background={colors.ic.black}
           borderRadius='12px'
           marginLeft='auto'
           py='8px'
