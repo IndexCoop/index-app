@@ -123,7 +123,12 @@ const TokenItem = ({
               {item.symbol}
             </Text>
             {extraTitle && (
-              <Text color={colors.icBlue} fontSize='sm' fontWeight='500' ml='2'>
+              <Text
+                className='text-ic-blue-500'
+                fontSize='sm'
+                fontWeight='500'
+                ml='2'
+              >
                 {extraTitle}
               </Text>
             )}
