@@ -30,20 +30,20 @@ export const Settings = (props: SettingsProps) => {
   const [inputValue, setInputValue] = useState<string>('')
 
   const inputTextColor = useMemo(
-    () => (parseFloat(inputValue) > 50 ? colors.icRed : colors.icGray4),
-    [inputValue]
+    () => (parseFloat(inputValue) > 50 ? colors.ic.red : colors.ic.gray[900]),
+    [inputValue],
   )
 
   const lowSlippage = useMemo(() => slippage < 0.05, [slippage])
 
   const showWarning = useMemo(
     () => slippage < 0.05 || (slippage > 1.0 && slippage <= 50),
-    [slippage]
+    [slippage],
   )
 
   const toggleState = useMemo(
     () => (isAuto ? ToggleState.auto : ToggleState.custom),
-    [isAuto]
+    [isAuto],
   )
 
   const onChangeInput = (value: string) => {
