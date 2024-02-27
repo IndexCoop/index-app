@@ -26,7 +26,7 @@ export function ProductRowItemDesktop({
       <div
         className={clsx(
           cellClassName,
-          'flex !min-w-[400px] max-w-[460px] pl-6',
+          'flex !min-w-[410px] max-w-[460px] pl-6',
         )}
       >
         <div className='mr-2 overflow-hidden rounded-full'>
