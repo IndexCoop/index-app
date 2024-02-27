@@ -45,7 +45,7 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
       />
       <ModalContent
         backgroundColor={backgroundColor}
-        borderColor={colors.gray}
+        borderColor={colors.ic.gray[100]}
         borderRadius='10'
         borderStyle='solid'
         borderWidth='2px'

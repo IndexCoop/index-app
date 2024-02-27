@@ -1,9 +1,6 @@
-import { theme } from '@chakra-ui/react'
-
 import tailwindConfig from './tailwind.config'
 
 export const colors = {
-  ...theme.colors,
   ic: tailwindConfig.theme.extend.colors.ic,
   icGray1: '#EBF2F2',
   icGray2: '#A6B2B2',
