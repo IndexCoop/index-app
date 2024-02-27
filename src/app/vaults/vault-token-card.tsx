@@ -76,7 +76,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
           Target Fundraise
         </Text>
         <Spacer />
-        <Text color={colors.icGray4} fontSize='12px' fontWeight='700'>
+        <Text color={colors.ic.gray[900]} fontSize='12px' fontWeight='700'>
           {formatAmount(vaultToken.targetFundraise.amount)}
         </Text>
         <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
@@ -88,7 +88,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
           Minimum Commitment
         </Text>
         <Spacer />
-        <Text color={colors.icGray4} fontSize='12px' fontWeight='700'>
+        <Text color={colors.ic.gray[900]} fontSize='12px' fontWeight='700'>
           {formatAmount(vaultToken.minimumCommitment.amount)}
         </Text>
         <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
@@ -101,7 +101,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
             Portfolio Term
           </Text>
           <Spacer />
-          <Text color={colors.icGray4} fontSize='12px' fontWeight='700'>
+          <Text color={colors.ic.gray[900]} fontSize='12px' fontWeight='700'>
             {vaultToken.portfolioTerm}
           </Text>
         </Flex>
@@ -115,7 +115,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
           <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
             withdrawals open every
           </Text>
-          <Text color={colors.icGray4} fontSize='12px' fontWeight='700'>
+          <Text color={colors.ic.gray[900]} fontSize='12px' fontWeight='700'>
             &nbsp;{vaultToken.lockupPeriod}
           </Text>
         </Flex>

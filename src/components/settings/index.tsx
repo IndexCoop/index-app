@@ -130,7 +130,11 @@ export const Settings = (props: SettingsProps) => {
                   onChangeInput(value)
                 }}
               />
-              <Text fontSize={'sm'} fontWeight={500} textColor={colors.icGray4}>
+              <Text
+                fontSize={'sm'}
+                fontWeight={500}
+                textColor={colors.ic.gray[900]}
+              >
                 %
               </Text>
             </Flex>
