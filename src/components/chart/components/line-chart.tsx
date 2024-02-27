@@ -108,15 +108,6 @@ export default withTooltip<AreaProps, TooltipData>(
             toOpacity={0.6}
             vertical={true}
           />
-          <GridRows
-            left={margin.left}
-            scale={stockValueScale}
-            width={innerWidth}
-            strokeDasharray='1,3'
-            stroke={accentColor}
-            strokeOpacity={0}
-            pointerEvents='none'
-          />
           <AreaClosed<AppleStock>
             data={stock}
             x={(d) => dateScale(getDate(d)) ?? 0}
