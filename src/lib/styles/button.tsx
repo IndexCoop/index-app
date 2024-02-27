@@ -28,7 +28,7 @@ export const Button = {
     highlightSelected: ({ colorMode }: { colorMode: string }) => ({
       backgroundColor: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
       borderColor: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
-      color: colorMode === 'dark' ? colors.ic.black : colors.icWhite,
+      color: colorMode === 'dark' ? colors.ic.black : colors.ic.white,
     }),
   },
   defaultProps: {

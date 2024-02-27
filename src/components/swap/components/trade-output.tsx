@@ -22,7 +22,7 @@ export const TradeOutput = (props: TradeOutputProps) => {
   const { selectedQuote, selectedToken } = props
   return (
     <Flex
-      bg={colors.icWhite}
+      className='bg-ic-white'
       border={'1px solid'}
       borderColor={colors.icGray1}
       borderRadius={12}

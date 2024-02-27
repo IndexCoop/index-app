@@ -4,7 +4,7 @@ import { colors } from '@/lib/styles/colors'
 
 export const FlashMintTag = () => (
   <Tooltip
-    bg={colors.icWhite}
+    className='bg-ic-white'
     borderRadius='6px'
     fontSize={'11px'}
     fontWeight={500}

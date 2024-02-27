@@ -41,7 +41,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
 
   return (
     <Flex
-      bg={colors.icWhite}
+      className='bg-ic-white'
       border={'1px solid'}
       borderColor={colors.icGray1}
       borderRadius={12}
@@ -133,7 +133,7 @@ const Balance = ({ balance, onClick }: BalanceProps) => {
           py='2px'
           px='8px'
         >
-          <Text color={colors.icWhite} fontSize='9px' fontWeight={500}>
+          <Text color={colors.ic.white} fontSize='9px' fontWeight={500}>
             MAX
           </Text>
         </Flex>

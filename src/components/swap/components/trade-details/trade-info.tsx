@@ -17,7 +17,7 @@ const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
   const cursor = tooltip && tooltip.length > 0 ? 'pointer' : 'default'
   return (
     <Tooltip
-      bg={colors.icWhite}
+      className='bg-ic-white'
       borderRadius='6px'
       fontSize={'11px'}
       fontWeight={500}

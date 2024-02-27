@@ -14,16 +14,16 @@ export const colors = {
 
 export const colorStyles = (isDarkMode: boolean) => {
   return {
-    background: isDarkMode ? colors.ic.black : colors.icWhite,
+    background: isDarkMode ? colors.ic.black : colors.ic.white,
     backgroundGradient: isDarkMode
       ? 'linear(to-tr, #143438, #0F1717, #0F1717)'
       : 'linear(to-tr, #F7F8F8, #FCFFFF, #FCFFFF)',
-    backgroundInverted: isDarkMode ? colors.icWhite : colors.ic.black,
+    backgroundInverted: isDarkMode ? colors.ic.white : colors.ic.black,
     border: isDarkMode ? colors.icGray4 : colors.icGray1,
-    text: isDarkMode ? colors.icWhite : colors.ic.black,
+    text: isDarkMode ? colors.ic.white : colors.ic.black,
     text2: isDarkMode ? colors.icGray2 : colors.icGray4,
     text3: colors.icGray3,
-    textInverted: isDarkMode ? colors.ic.black : colors.icWhite,
+    textInverted: isDarkMode ? colors.ic.black : colors.ic.white,
   }
 }
 
