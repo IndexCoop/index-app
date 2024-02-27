@@ -53,7 +53,7 @@ export default function VaultsPage() {
         Vaults
       </Text>
       <Text
-        color={colors.icGray3}
+        color={colors.ic.gray[600]}
         fontWeight='500'
         fontSize='14px'
         lineHeight='24px'

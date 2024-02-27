@@ -7,7 +7,7 @@ interface TagProps {
 }
 
 export const Tag = ({ label }: TagProps) => (
-  <Text fontSize='12px' fontWeight={600} textColor={colors.icGray3}>
+  <Text fontSize='12px' fontWeight={600} textColor={colors.ic.gray[600]}>
     {label}
   </Text>
 )

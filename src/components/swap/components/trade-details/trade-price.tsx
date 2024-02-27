@@ -10,7 +10,7 @@ interface TradePriceProps {
 export const TradePrice = ({ comparisonLabel, usdLabel }: TradePriceProps) => {
   return (
     <Flex align='flex-start' direction={['column', 'row']}>
-      <Text fontSize='12px' fontWeight={500} textColor={colors.icGray3}>
+      <Text fontSize='12px' fontWeight={500} textColor={colors.ic.gray[600]}>
         {comparisonLabel}
       </Text>
       <Text

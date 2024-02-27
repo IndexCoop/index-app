@@ -92,7 +92,7 @@ export const Settings = (props: SettingsProps) => {
         w='320px'
       >
         <PopoverBody>
-          <Text fontSize='md' fontWeight='500' textColor={colors.icGray3}>
+          <Text fontSize='md' fontWeight='500' textColor={colors.ic.gray[600]}>
             Max Slippage
           </Text>
           <Flex align='center' my='4'>

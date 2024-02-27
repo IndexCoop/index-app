@@ -25,7 +25,7 @@ const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
       label={tooltip}
       p='12px 16px'
       placement='right-end'
-      textColor={colors.icGray3}
+      textColor={colors.ic.gray[600]}
     >
       <Flex cursor={cursor} direction='row' justifyContent={'space-between'}>
         <Flex align='center'>
@@ -40,7 +40,11 @@ const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
         {isLoading && <StyledSkeleton width={60} />}
         {!isLoading && isLink === true && (
           <Link isExternal href={values[1]}>
-            <Text fontSize='12px' fontWeight='700' textColor={colors.icGray3}>
+            <Text
+              fontSize='12px'
+              fontWeight='700'
+              textColor={colors.ic.gray[600]}
+            >
               {shortenAddress(values[0])}
             </Text>
           </Link>
@@ -52,7 +56,7 @@ const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
                 <Text
                   fontSize='12px'
                   fontWeight='700'
-                  textColor={colors.icGray3}
+                  textColor={colors.ic.gray[600]}
                 >
                   {value}
                 </Text>

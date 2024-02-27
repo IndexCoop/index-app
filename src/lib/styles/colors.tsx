@@ -2,7 +2,6 @@ import tailwindConfig from './tailwind.config'
 
 export const colors = {
   ic: tailwindConfig.theme.extend.colors.ic,
-  icGray3: '#627171',
   // not verified with designer (will be replaced soon)
   icGrayLightMode: '#aaa',
   icGrayDarkMode: '#777',
@@ -18,7 +17,7 @@ export const colorStyles = (isDarkMode: boolean) => {
     border: isDarkMode ? colors.ic.gray[900] : colors.ic.gray[100],
     text: isDarkMode ? colors.ic.white : colors.ic.black,
     text2: isDarkMode ? colors.ic.gray[400] : colors.ic.gray[900],
-    text3: colors.icGray3,
+    text3: colors.ic.gray[600],
     textInverted: isDarkMode ? colors.ic.black : colors.ic.white,
   }
 }
