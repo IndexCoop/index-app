@@ -16,7 +16,7 @@ export const TradePrice = ({ comparisonLabel, usdLabel }: TradePriceProps) => {
       <Text
         fontSize='12px'
         fontWeight={500}
-        textColor={colors.icGray2}
+        textColor={colors.ic.gray[400]}
         ml={[0, '4px']}
       >
         {usdLabel}

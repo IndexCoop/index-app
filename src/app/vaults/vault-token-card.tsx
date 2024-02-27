@@ -67,7 +67,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
       <Text fontSize='14px' color={colors.icGray3} fontWeight='500' mb='8px'>
         {vaultToken.description}
       </Text>
-      <Text fontSize='11px' color={colors.icGray2} mb='4px'>
+      <Text fontSize='11px' color={colors.ic.gray[400]} mb='4px'>
         {vaultToken.assets.join(', ')}
       </Text>
       <Divider color='#E0E9E9' my='15px' />

@@ -116,7 +116,7 @@ export const Settings = (props: SettingsProps) => {
                 fontSize='sm'
                 fontWeight={500}
                 placeholder={`${slippage}`}
-                _placeholder={{ color: colors.icGray2 }}
+                _placeholder={{ color: colors.ic.gray[400] }}
                 p='8px'
                 pr='4px'
                 ref={inputRef}

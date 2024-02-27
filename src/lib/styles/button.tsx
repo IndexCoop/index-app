@@ -22,13 +22,15 @@ export const Button = {
     },
     highlight: ({ colorMode }: { colorMode: string }) => ({
       backgroundColor: 'transparent',
-      borderColor: colorMode === 'dark' ? colors.ic.gray[100] : colors.icGray2,
-      color: colorMode === 'dark' ? colors.ic.gray[100] : colors.icGray2,
+      borderColor:
+        colorMode === 'dark' ? colors.ic.gray[100] : colors.ic.gray[400],
+      color: colorMode === 'dark' ? colors.ic.gray[100] : colors.ic.gray[400],
     }),
     highlightSelected: ({ colorMode }: { colorMode: string }) => ({
       backgroundColor:
-        colorMode === 'dark' ? colors.ic.gray[100] : colors.icGray2,
-      borderColor: colorMode === 'dark' ? colors.ic.gray[100] : colors.icGray2,
+        colorMode === 'dark' ? colors.ic.gray[100] : colors.ic.gray[400],
+      borderColor:
+        colorMode === 'dark' ? colors.ic.gray[100] : colors.ic.gray[400],
       color: colorMode === 'dark' ? colors.ic.black : colors.ic.white,
     }),
   },
