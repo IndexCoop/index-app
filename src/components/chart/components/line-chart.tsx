@@ -102,10 +102,10 @@ export default withTooltip<AreaProps, TooltipData>(
         <svg width={width} height={height}>
           <LinearGradient
             id='area-gradient'
-            from={accentColor}
-            fromOpacity={0.8}
+            from={'#8CE1E2'}
+            fromOpacity={1}
             to={'#fff'}
-            toOpacity={0.6}
+            toOpacity={1}
             vertical={true}
           />
           <AreaClosed<AppleStock>
