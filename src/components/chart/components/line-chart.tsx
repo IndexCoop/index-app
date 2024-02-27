@@ -1,7 +1,8 @@
 import React, { useMemo, useCallback } from 'react'
 
 import { Flex, Text } from '@chakra-ui/react'
-import { AreaClosed, Line, Bar } from '@visx/shape'
+import { curveLinear } from '@visx/curve'
+import { AreaClosed, Bar, Line, LinePath,  } from '@visx/shape'
 import appleStock, { AppleStock } from '@visx/mock-data/lib/mocks/appleStock'
 import { scaleTime, scaleLinear } from '@visx/scale'
 import { withTooltip, TooltipWithBounds, defaultStyles } from '@visx/tooltip'
@@ -111,9 +112,15 @@ export default withTooltip<AreaProps, TooltipData>(
             x={(d) => dateScale(getDate(d)) ?? 0}
             y={(d) => stockValueScale(getStockValue(d)) ?? 0}
             yScale={stockValueScale}
-            strokeWidth={2}
-            stroke='url(#area-gradient)'
             fill='url(#area-gradient)'
+          />
+          <LinePath<AppleStock> 
+            curve={curveLinear}
+            data={stock}
+            x={(d) => dateScale(getDate(d)) ?? 0}
+            y={(d) => stockValueScale(getStockValue(d)) ?? 0}
+            stroke={accentColor}
+            strokeWidth={2}
           />
           <Bar
             x={margin.left}
