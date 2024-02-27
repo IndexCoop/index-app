@@ -3,8 +3,6 @@ import React, { useMemo, useCallback } from 'react'
 import { Flex, Text } from '@chakra-ui/react'
 import { AreaClosed, Line, Bar } from '@visx/shape'
 import appleStock, { AppleStock } from '@visx/mock-data/lib/mocks/appleStock'
-import { curveMonotoneX } from '@visx/curve'
-import { GridRows } from '@visx/grid'
 import { scaleTime, scaleLinear } from '@visx/scale'
 import { withTooltip, TooltipWithBounds, defaultStyles } from '@visx/tooltip'
 import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip'
@@ -116,7 +114,6 @@ export default withTooltip<AreaProps, TooltipData>(
             strokeWidth={2}
             stroke='url(#area-gradient)'
             fill='url(#area-gradient)'
-            curve={curveMonotoneX}
           />
           <Bar
             x={margin.left}
