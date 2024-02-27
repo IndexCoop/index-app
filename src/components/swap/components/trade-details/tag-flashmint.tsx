@@ -14,9 +14,9 @@ export const FlashMintTag = () => (
     }
     p='12px 16px'
     placement='right-end'
-    textColor={colors.icGray3}
+    textColor={colors.ic.gray[600]}
   >
-    <Text fontSize='12px' fontWeight={600} textColor={colors.icGray3}>
+    <Text fontSize='12px' fontWeight={600} textColor={colors.ic.gray[600]}>
       Flash Mint
     </Text>
   </Tooltip>
