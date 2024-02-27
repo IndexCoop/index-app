@@ -257,7 +257,7 @@ export const Swap = (props: SwapProps) => {
     >
       <Flex direction={'row'} justify={'space-between'}>
         <Text
-          color={colors.icGray4}
+          color={colors.ic.gray[900]}
           fontSize={'md'}
           fontWeight={500}
           ml={'12px'}

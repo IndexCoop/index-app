@@ -44,7 +44,12 @@ const vaultTokens: VaultToken[] = [
 export default function VaultsPage() {
   return (
     <Flex flexDirection='column' mx={['8px', null, null, '16px']}>
-      <Text color={colors.icGray4} fontSize='20px' fontWeight='600' mb='16px'>
+      <Text
+        color={colors.ic.gray[900]}
+        fontSize='20px'
+        fontWeight='600'
+        mb='16px'
+      >
         Vaults
       </Text>
       <Text

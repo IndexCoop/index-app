@@ -28,7 +28,7 @@ const ToggleButton = (props: ToggleButtonProps) => (
     <Text
       fontSize={'sm'}
       fontWeight={500}
-      textColor={props.isDisabled ? colors.ic.gray[100] : colors.icGray4}
+      textColor={props.isDisabled ? colors.ic.gray[100] : colors.ic.gray[900]}
     >
       {props.label}
     </Text>
