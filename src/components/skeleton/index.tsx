@@ -9,7 +9,7 @@ export const StyledSkeleton = (props: SkeletonProps) => {
   return (
     <Skeleton
       baseColor={'#CFD9D9'}
-      highlightColor={colors.icGray1}
+      highlightColor={colors.ic.gray[100]}
       {...props}
     />
   )

@@ -9,7 +9,7 @@ type OverrideProps = {
 
 export const Override = (props: OverrideProps) => {
   const { isDarkMode, styles } = useColorStyles()
-  const backgroundColor = isDarkMode ? colors.icGray3 : colors.icGray1
+  const backgroundColor = isDarkMode ? colors.icGray3 : colors.ic.gray[100]
   return (
     <Flex
       align='flex-start'

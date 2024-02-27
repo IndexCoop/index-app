@@ -14,7 +14,7 @@ type SelectorProps = {
 export const SelectorButton = ({ image, symbol, onClick }: SelectorProps) => (
   <Flex
     align='center'
-    bg={colors.icGray1}
+    bg={colors.ic.gray[100]}
     borderRadius='32'
     cursor='pointer'
     onClick={onClick}
