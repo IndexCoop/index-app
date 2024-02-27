@@ -54,7 +54,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
             Annualized Target Return
           </Text>
           <Text
-            color={colors.icWhite}
+            color={colors.ic.white}
             fontWeight={700}
             fontSize='16px'
             flex={1}

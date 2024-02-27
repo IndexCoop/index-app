@@ -17,7 +17,7 @@ type ToggleButtonProps = {
 
 const ToggleButton = (props: ToggleButtonProps) => (
   <Flex
-    bg={props.selected ? colors.icGray1 : colors.icWhite}
+    bg={props.selected ? colors.icGray1 : colors.ic.white}
     borderRadius={'10px'}
     cursor={'pointer'}
     flex={1}
@@ -45,7 +45,7 @@ type ToggleProps = {
 
 export const Toggle = (props: ToggleProps) => (
   <Flex
-    bg={colors.icWhite}
+    className='bg-ic-white'
     borderColor={colors.icGray1}
     borderRadius={'12px'}
     borderWidth={1}
