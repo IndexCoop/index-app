@@ -142,7 +142,6 @@ const TokenItem = ({
         <Text fontSize='md' fontWeight='700' textColor={colors.ic.black}>
           {balance}
         </Text>
-        <Text fontSize='sm' fontWeight='500'></Text>
       </Flex>
     </Flex>
   )
