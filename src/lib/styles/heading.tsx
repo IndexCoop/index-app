@@ -2,6 +2,6 @@ import { colors } from './colors'
 
 export const Heading = {
   baseStyle: ({ colorMode }: { colorMode: string }) => ({
-    color: colorMode === 'dark' ? colors.icWhite : colors.black,
+    color: colorMode === 'dark' ? colors.ic.white : colors.ic.black,
   }),
 }

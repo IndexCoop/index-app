@@ -17,7 +17,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
   return (
     <Flex
       p='16px'
-      background={colors.white}
+      background={colors.ic.white}
       border='1px'
       borderColor={colors.icGray1}
       borderRadius='23px'
