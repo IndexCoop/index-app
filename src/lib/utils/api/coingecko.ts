@@ -1,4 +1,5 @@
 import { IndexApi } from '@/lib/utils/api/index-api'
+import { indicesTokenList } from '@/constants/tokenlists'
 import { OPTIMISM, POLYGON } from '../../../constants/chains'
 import { ETH } from '../../../constants/tokens'
 
@@ -42,4 +43,21 @@ export const fetchCoingeckoTokenPrice = async (
   if (data === 0 || !data[address.toLowerCase()]) return 0
 
   return data[address.toLowerCase()][baseCurrency]
+}
+
+type CoingeckoMarketData = {
+  current_price: { usd: number }
+  market_cap: { usd: number }
+  price_change_percentage_24h_in_currency: { usd: number }
+}
+
+export const fetchCoingeckoMarketData = async (
+  address: string
+): Promise<CoingeckoMarketData | null> => {
+  const token = indicesTokenList.find(
+    (token) => token.address?.toLowerCase() === address.toLowerCase()
+  )
+  const url = `${baseURL}/coins/${token?.coingeckoId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`
+  const { market_data } = await indexApi.get(url)
+  return market_data
 }
