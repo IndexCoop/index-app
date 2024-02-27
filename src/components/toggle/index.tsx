@@ -17,7 +17,7 @@ type ToggleButtonProps = {
 
 const ToggleButton = (props: ToggleButtonProps) => (
   <Flex
-    bg={props.selected ? colors.icGray1 : colors.ic.white}
+    bg={props.selected ? colors.ic.gray[100] : colors.ic.white}
     borderRadius={'10px'}
     cursor={'pointer'}
     flex={1}
@@ -28,7 +28,7 @@ const ToggleButton = (props: ToggleButtonProps) => (
     <Text
       fontSize={'sm'}
       fontWeight={500}
-      textColor={props.isDisabled ? colors.icGray1 : colors.icGray4}
+      textColor={props.isDisabled ? colors.ic.gray[100] : colors.icGray4}
     >
       {props.label}
     </Text>
@@ -46,7 +46,7 @@ type ToggleProps = {
 export const Toggle = (props: ToggleProps) => (
   <Flex
     className='bg-ic-white'
-    borderColor={colors.icGray1}
+    borderColor={colors.ic.gray[100]}
     borderRadius={'12px'}
     borderWidth={1}
     justify={'center'}

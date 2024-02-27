@@ -19,7 +19,7 @@ export const colorStyles = (isDarkMode: boolean) => {
       ? 'linear(to-tr, #143438, #0F1717, #0F1717)'
       : 'linear(to-tr, #F7F8F8, #FCFFFF, #FCFFFF)',
     backgroundInverted: isDarkMode ? colors.ic.white : colors.ic.black,
-    border: isDarkMode ? colors.icGray4 : colors.icGray1,
+    border: isDarkMode ? colors.icGray4 : colors.ic.gray[100],
     text: isDarkMode ? colors.ic.white : colors.ic.black,
     text2: isDarkMode ? colors.icGray2 : colors.icGray4,
     text3: colors.icGray3,

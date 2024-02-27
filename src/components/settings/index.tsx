@@ -83,7 +83,7 @@ export const Settings = (props: SettingsProps) => {
       <PopoverContent
         bg={'linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'}
         border='1px solid'
-        borderColor={colors.icGray1}
+        borderColor={colors.ic.gray[100]}
         borderRadius={24}
         boxShadow={
           '0.5px 1px 10px 0px rgba(44, 51, 51, 0.10), 2px 2px 1px 0px #FCFFFF inset, 0.5px 0.5px 2px 0px rgba(0, 0, 0, 0.15)'
@@ -105,7 +105,7 @@ export const Settings = (props: SettingsProps) => {
             />
             <Flex
               align='center'
-              borderColor={colors.icGray1}
+              borderColor={colors.ic.gray[100]}
               borderRadius={'12px'}
               borderWidth={1}
               h='50px'

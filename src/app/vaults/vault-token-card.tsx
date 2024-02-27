@@ -19,7 +19,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
       p='16px'
       background={colors.ic.white}
       border='1px'
-      borderColor={colors.icGray1}
+      borderColor={colors.ic.gray[100]}
       borderRadius='23px'
       boxShadow='md'
       flexDirection='column'
@@ -46,7 +46,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
           px='8px'
         >
           <Text
-            color={colors.icGray1}
+            color={colors.ic.gray[100]}
             fontWeight={500}
             fontSize='10px'
             flex={1}
