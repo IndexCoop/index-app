@@ -29,7 +29,11 @@ const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
     >
       <Flex cursor={cursor} direction='row' justifyContent={'space-between'}>
         <Flex align='center'>
-          <Text fontSize='12px' fontWeight='500' textColor={colors.icGray2}>
+          <Text
+            fontSize='12px'
+            fontWeight='500'
+            textColor={colors.ic.gray[400]}
+          >
             {title}
           </Text>
         </Flex>

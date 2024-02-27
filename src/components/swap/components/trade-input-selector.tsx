@@ -54,7 +54,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
           <Text
             color={
               props.selectedTokenAmount === '0'
-                ? colors.icGray2
+                ? colors.ic.gray[400]
                 : colors.ic.black
             }
             fontSize='25px'
@@ -72,7 +72,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
             fontWeight={500}
             overflow='hidden'
             placeholder='0'
-            _placeholder={{ color: colors.icGray2 }}
+            _placeholder={{ color: colors.ic.gray[400] }}
             pr='4px'
             type='number'
             step='any'
@@ -121,7 +121,7 @@ const Balance = ({ balance, onClick }: BalanceProps) => {
       gap='8px'
       onClick={onClick}
     >
-      <Text color={colors.icGray2} fontSize='12px' fontWeight='500'>
+      <Text color={colors.ic.gray[400]} fontSize='12px' fontWeight='500'>
         Balance: {balance}
       </Text>
       {showMaxLabel && (
@@ -152,7 +152,7 @@ interface PriceUsdProps {
 
 const PriceUsd = (props: PriceUsdProps) => (
   <Flex>
-    <Text fontSize='12px' fontWeight={500} textColor={colors.icGray2}>
+    <Text fontSize='12px' fontWeight={500} textColor={colors.ic.gray[400]}>
       {props.fiat}
     </Text>
     {props.priceImpact && (
