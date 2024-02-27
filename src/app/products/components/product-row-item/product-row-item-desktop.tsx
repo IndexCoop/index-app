@@ -12,7 +12,7 @@ import {
   formatTvl,
 } from '@/app/products/utils/formatters'
 
-const cellClassName = 'text-ic-gray-600 text-sm font-medium min-w-[116px]'
+const cellClassName = 'text-ic-gray-600 text-sm font-medium min-w-[120px]'
 
 export function ProductRowItemDesktop({
   isLoading,
@@ -40,7 +40,7 @@ export function ProductRowItemDesktop({
       <div className={cellClassName}>
         <div
           className={clsx(
-            'rounded-2xl px-4 py-1 w-24 text-center border border-ic-gray-500 mx-auto',
+            'rounded-2xl px-4 py-1 w-28 text-center border border-ic-gray-500 mx-auto',
             {
               'bg-[#E7F2FF]': type === ProductType.LEVERAGE,
               'bg-[#F4ECFF]': type === ProductType.INDEX,
