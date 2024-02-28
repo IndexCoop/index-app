@@ -9,7 +9,7 @@ import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
 export const useApproval = (
   token: Token,
   spenderAddress: string | null,
-  amount: bigint
+  amount: bigint,
 ) => {
   const { address } = useWallet()
 
@@ -33,7 +33,8 @@ export const useApproval = (
 
   const isApproved = useMemo(() => {
     if (token.symbol === 'ETH') return true
-    return data ? data > amount : false
+    console.log(amount, data, 'allowance')
+    return data ? data >= amount : false
   }, [amount, data, token])
 
   return { approve, isApproved, isApproving }
