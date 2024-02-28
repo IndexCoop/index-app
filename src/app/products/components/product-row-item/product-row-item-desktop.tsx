@@ -3,20 +3,20 @@
 import Image from 'next/image'
 import clsx from 'clsx'
 import Link from 'next/link'
-import { LoadingSkeleton } from '@/app/(homepage)/components/loading-skeleton'
-import { ProductRowItemProps } from '@/app/(homepage)/components/product-row-item'
-import { ProductType } from '@/app/(homepage)/types/product'
+import { LoadingSkeleton } from '@/app/products/components/loading-skeleton'
+import { ProductRowItemProps } from '@/app/products/components/product-row-item'
+import { ProductType } from '@/app/products/types/product'
 import {
   formatPercentage,
   formatPrice,
   formatTvl,
-} from '@/app/(homepage)/utils/formatters'
+} from '@/app/products/utils/formatters'
 
-const cellClassName = 'text-ic-gray-600 text-sm font-medium min-w-[116px]'
+const cellClassName = 'text-ic-gray-600 text-sm font-medium min-w-[120px]'
 
 export function ProductRowItemDesktop({
   isLoading,
-  product: { logoURI, symbol, name, theme, type, price, delta, apy, tvl },
+  product: { image, symbol, name, theme, type, price, delta, apy, tvl },
 }: ProductRowItemProps) {
   return (
     <Link
@@ -26,11 +26,11 @@ export function ProductRowItemDesktop({
       <div
         className={clsx(
           cellClassName,
-          'flex !min-w-[400px] max-w-[460px] pl-6',
+          'flex !min-w-[410px] max-w-[460px] pl-6',
         )}
       >
         <div className='mr-2 overflow-hidden rounded-full'>
-          <Image src={logoURI!} alt={`${symbol} logo`} height={30} width={30} />
+          <Image src={image!} alt={`${symbol} logo`} height={30} width={30} />
         </div>
         <div className='my-auto'>
           <span className='text-ic-gray-950 mr-4 font-semibold'>{name}</span>
@@ -40,10 +40,10 @@ export function ProductRowItemDesktop({
       <div className={cellClassName}>
         <div
           className={clsx(
-            'rounded-2xl px-4 py-1 w-24 text-center border border-ic-gray-500 mx-auto',
+            'rounded-2xl px-4 py-1 w-28 text-center border border-ic-gray-500 mx-auto',
             {
               'bg-[#E7F2FF]': type === ProductType.LEVERAGE,
-              'bg-[#F4ECFF]': type === ProductType.SECTOR,
+              'bg-[#F4ECFF]': type === ProductType.INDEX,
               'bg-[#FEEFF7]': type === ProductType.YIELD,
             },
           )}

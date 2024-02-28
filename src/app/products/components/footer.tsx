@@ -1,5 +1,5 @@
-import { FooterLink } from '@/app/(homepage)/components/footer-link'
-import { LogoFull } from '@/app/(homepage)/components/logo-full'
+import { FooterLink } from '@/app/products/components/footer-link'
+import { LogoFull } from '@/app/products/components/logo-full'
 
 const navigation = {
   resources: [

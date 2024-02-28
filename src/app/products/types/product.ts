@@ -1,6 +1,6 @@
 export enum ProductType {
   LEVERAGE = 'Leverage',
-  SECTOR = 'Sector',
+  INDEX = 'Index',
   YIELD = 'Yield',
 }
 
@@ -15,7 +15,7 @@ export enum ProductTheme {
 export type ProductRow = {
   hasApy: boolean
   shouldUseAnalytics: boolean
-  logoURI?: string
+  image?: string
   symbol?: string
   name?: string
   type: ProductType

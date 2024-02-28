@@ -1,14 +1,7 @@
-'use client'
-
+import { Path } from '@/constants/paths'
 import { Connect } from './connect'
 import { HeaderLink } from './link'
 import { Logo } from './logo'
-
-export enum Path {
-  HOMEPAGE = 'https://indexcoop.com/',
-  PRODUCTS = '/',
-  TRADE = '/swap',
-}
 
 export function Header() {
   return (

@@ -3,17 +3,17 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { formatEther } from 'viem'
-import { ProductColHeader } from '@/app/(homepage)/components/product-col-header'
-import { ProductRowItem } from '@/app/(homepage)/components/product-row-item'
-import { productTokens } from '@/app/(homepage)/constants/tokens'
-import { ProductRow } from '@/app/(homepage)/types/product'
-import { SortBy, SortDirection } from '@/app/(homepage)/types/sort'
+import { ProductColHeader } from '@/app/products/components/product-col-header'
+import { ProductRowItem } from '@/app/products/components/product-row-item'
+import { productTokens } from '@/app/products/constants/tokens'
+import { ProductRow } from '@/app/products/types/product'
+import { SortBy, SortDirection } from '@/app/products/types/sort'
 import {
   fetchApy,
   fetchMarketData,
   fetchAnalytics,
-} from '@/app/(homepage)/utils/index-api'
-import { sortProducts } from '@/app/(homepage)/utils/sort'
+} from '@/app/products/utils/api'
+import { sortProducts } from '@/app/products/utils/sort'
 
 const THIRTY_SECONDS_IN_MS = 30 * 1000
 

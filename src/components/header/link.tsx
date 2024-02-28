@@ -1,7 +1,9 @@
+'use client'
+
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Path } from '.'
+import { Path } from '@/constants/paths'
 
 type Props = {
   href: string

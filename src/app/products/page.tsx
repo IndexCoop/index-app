@@ -1,5 +1,5 @@
-import { Hero } from '@/app/(homepage)/components/hero'
-import { ProductPanel } from '@/app/(homepage)/components/product-panel'
+import { Hero } from '@/app/products/components/hero'
+import { ProductPanel } from '@/app/products/components/product-panel'
 
 export default function Page() {
   return (

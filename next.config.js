@@ -15,6 +15,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
         source: '/(B|b)(E|e)(D|d)',
         destination: '/swap',
         permanent: true,
@@ -69,6 +74,14 @@ const nextConfig = {
         destination: '/swap',
         permanent: true,
       },
+    ]
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/swap/manifest.json',
+        destination: '/manifest.json'
+      }
     ]
   },
   webpack: (config) => {

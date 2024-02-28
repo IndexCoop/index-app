@@ -1,5 +1,5 @@
-import { ProductRow } from '@/app/(homepage)/types/product'
-import { SortBy, SortDirection } from '@/app/(homepage)/types/sort'
+import { ProductRow } from '@/app/products/types/product'
+import { SortBy, SortDirection } from '@/app/products/types/sort'
 
 function sortProductsByString(
   products: ProductRow[],

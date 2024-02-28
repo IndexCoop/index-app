@@ -3,26 +3,26 @@
 import clsx from 'clsx'
 import Image from 'next/image'
 import Link from 'next/link'
-import { LoadingSkeleton } from '@/app/(homepage)/components/loading-skeleton'
-import { ProductRowItemProps } from '@/app/(homepage)/components/product-row-item'
-import { MobileRow } from '@/app/(homepage)/components/product-row-item/mobile-row'
+import { LoadingSkeleton } from '@/app/products/components/loading-skeleton'
+import { ProductRowItemProps } from '@/app/products/components/product-row-item'
+import { MobileRow } from '@/app/products/components/product-row-item/mobile-row'
 import {
   formatPercentage,
   formatPrice,
   formatTvl,
-} from '@/app/(homepage)/utils/formatters'
+} from '@/app/products/utils/formatters'
 
 const rowClassName = 'text-ic-gray-600 text-sm font-medium text-right'
 
 export function ProductRowItemMobile({
   isLoading,
-  product: { logoURI, symbol, name, price, delta, apy, tvl },
+  product: { image, symbol, name, price, delta, apy, tvl },
 }: ProductRowItemProps) {
   return (
     <div className='items-center justify-between flex flex-col md:hidden px-4 py-6'>
       <div className={clsx(rowClassName, 'flex self-start pb-4 w-full')}>
         <div className='mr-2 overflow-hidden rounded-full min-w-[30px]'>
-          <Image src={logoURI!} alt={`${symbol} logo`} height={30} width={30} />
+          <Image src={image!} alt={`${symbol} logo`} height={30} width={30} />
         </div>
         <div className='my-auto truncate'>
           <span className='text-ic-gray-950 mr-4 font-semibold'>{name}</span>

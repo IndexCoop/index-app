@@ -1,7 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { MouseEventHandler, ReactNode } from 'react'
-import { SortDirection } from '@/app/(homepage)/types/sort'
+import { SortDirection } from '@/app/products/types/sort'
 
 type Props = {
   children: ReactNode

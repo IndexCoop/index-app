@@ -2,7 +2,7 @@ import {
   formatPercentage,
   formatPrice,
   formatTvl,
-} from '@/app/(homepage)/utils/formatters'
+} from '@/app/products/utils/formatters'
 
 describe('formatters tests', () => {
   it('formatTvl', () => {
