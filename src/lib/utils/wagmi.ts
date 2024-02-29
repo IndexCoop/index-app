@@ -1,5 +1,5 @@
 import { configureChains, createConfig } from 'wagmi'
-import { mainnet } from 'wagmi/chains'
+import { localhost, mainnet } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 
@@ -19,10 +19,16 @@ import {
 
 import { AlchemyApiKey } from '../../constants/server'
 
-export const { chains, publicClient } = configureChains(
-  [mainnet],
-  [alchemyProvider({ apiKey: AlchemyApiKey }), publicProvider()]
-)
+const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
+const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
+const shouldShowLocalHost = isDevelopmentEnv || isPreviewEnv
+
+const networks = [mainnet, ...(shouldShowLocalHost ? [localhost] : [])]
+
+export const { chains, publicClient } = configureChains(networks, [
+  alchemyProvider({ apiKey: AlchemyApiKey }),
+  publicProvider(),
+])
 
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!
 
