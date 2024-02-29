@@ -12,7 +12,6 @@ import {
 import { Swap } from '@/components/swap'
 import { LeveragedRethStakingYield } from '@/constants/tokens'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
-import { Chart } from '@/components/chart'
 
 export default function SwapPage() {
   const { inputToken, isMinting, outputToken } = useSelectedToken()
@@ -30,10 +29,7 @@ export default function SwapPage() {
 
   return (
     <Flex direction={['column', 'column', 'column', 'row']} mx='auto'>
-      <Box mb='auto' minW={['100%', '700px']} >
-        <Chart />
-      </Box>
-      <Flex mb={[4, 4, 4, 12]} ml={[0, 16]} mt={[8, 0]} w={['inherit', '500px']} h={'100%'}>
+      <Flex w={['inherit', '500px']} h={'100%'}>
         <Swap
           isBuying={isMinting}
           inputToken={inputToken}
