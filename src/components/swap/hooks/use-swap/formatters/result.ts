@@ -37,7 +37,10 @@ function formattedInputAmount(inputAmount: bigint, token: Token) {
 function formattedOuputAmount(outputAmount: bigint, token: Token) {
   const formattedOutput = Number(
     formatUnits(outputAmount, token.decimals),
-  ).toFixed(3)
+  ).toLocaleString('en-US', {
+    maximumFractionDigits: 3,
+    minimumFractionDigits: 3,
+  })
   return `${formattedOutput} ${token.symbol}`
 }
 
