@@ -40,15 +40,7 @@ interface SwapData {
   inputTokenAmountUsd: string
   inputTokenAmountWei: BigNumber
   inputTokenPrice: number
-  outputTokenAmountFormatted: string
-  outputTokenAmountUsd: string
-  outputTokenBalanceFormatted: string
   outputTokenPrice: number
-  gasCostsUsd: number
-  priceImpactFormatting: {
-    colorCoding: string
-    priceImpact: string
-  } | null
   formattedQuoteResults: FormattedQuoteDisplay[]
   // Trade details
   showWarning: boolean
@@ -64,18 +56,6 @@ function formatIfNumber(value: string, decimals: number) {
   })
 }
 
-function getFormattedOuputTokenAmount(quote: Quote | null): string {
-  if (!quote) return '0'
-  const outputTokenAmount = quote.isMinting
-    ? quote.indexTokenAmount
-    : quote.inputOutputTokenAmount
-  const outputAmount = formatUnits(
-    BigInt(outputTokenAmount.toString()),
-    quote.outputToken.decimals,
-  )
-  const decimals = Number(outputAmount) > 1 ? 2 : 4
-  return formatIfNumber(outputAmount, decimals)
-}
 
 export function useSwap(
   inputToken: Token,
@@ -96,10 +76,7 @@ export function useSwap(
     balanceFormatted: inputTokenBalanceFormatted,
     balanceWei: inputTokenBalance,
   } = useFormattedBalance(inputToken, address ?? '')
-  const { balanceFormatted: outputTokenBalanceFormatted } = useFormattedBalance(
-    outputToken,
-    address ?? '',
-  )
+
 
   const selectedQuote = useMemo(
     () =>
@@ -140,26 +117,6 @@ export function useSwap(
     [balance, inputTokenAmountWei],
   )
 
-  const outputTokenAmountFormatted = useMemo(
-    () => getFormattedOuputTokenAmount(selectedQuote),
-    [selectedQuote],
-  )
-
-  const outputTokenAmountUsd = useMemo(
-    () => formattedFiat(selectedQuote?.outputTokenAmountUsd ?? 0),
-    [selectedQuote],
-  )
-  const gasCostsUsd = selectedQuote?.gasCostsInUsd ?? 0
-
-  const priceImpact = useMemo(() => selectedQuote?.priceImpact, [selectedQuote])
-  const priceImpactFormatting = useMemo(
-    () =>
-      isFetchingQuote || !priceImpact
-        ? null
-        : getFormattedPriceImpact(priceImpact, false),
-    [isFetchingQuote, priceImpact],
-  )
-
   // Trade details
   const showWarning = useMemo(() => shouldShowWarningSign(slippage), [slippage])
   const tokenPrices = useMemo(
@@ -197,17 +154,12 @@ export function useSwap(
     contract,
     isFlashMint,
     hasInsufficientFunds,
-    gasCostsUsd,
     inputTokenAmountUsd,
     inputTokenAmountWei,
     inputTokenBalance,
     inputTokenBalanceFormatted,
     inputTokenPrice: selectedQuote?.inputTokenPrice ?? 0,
-    outputTokenAmountFormatted,
-    outputTokenAmountUsd,
-    outputTokenBalanceFormatted,
     outputTokenPrice: selectedQuote?.outputTokenPrice ?? 0,
-    priceImpactFormatting,
     formattedQuoteResults,
     showWarning,
     tokenPrices,
