@@ -62,7 +62,7 @@
     "chai": "^4.3.7",
     "dotenv": "^16.3.1",
     "hardhat": "^2.19.1",
-    "hardhat-gas-reporter": "^1.0.9",
+    "hardhat-gas-reporter": "^1.0.10",
     "jest": "^29.5.0",
     "postcss": "^8.4.35",
     "solidity-coverage": "^0.8.2",
