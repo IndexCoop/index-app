@@ -2,12 +2,16 @@ import { useArcxAnalytics } from '@arcxmoney/analytics'
 import { useGTMDispatch } from '@elgorditosalsero/react-gtm-hook'
 import { useCallback } from 'react'
 
+const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+
 export const useAnalytics = () => {
   const arcxSdk = useArcxAnalytics()
   const sendDataToGTM = useGTMDispatch()
 
   const logEvent = useCallback(
     (name: string, data?: Record<string, unknown>) => {
+      if (!isProduction) return
+
       arcxSdk?.event(name, data)
       sendDataToGTM({ event: name, ...data })
     },
@@ -16,6 +20,8 @@ export const useAnalytics = () => {
 
   const logTransaction = useCallback(
     (chainId: number, transactionType: string, transactionHash?: string) => {
+      if (!isProduction) return
+
       arcxSdk?.transaction({
         chainId,
         transactionHash: transactionHash ?? '',
@@ -34,6 +40,8 @@ export const useAnalytics = () => {
 
   const logConnectWallet = useCallback(
     (address?: string, chainId?: number) => {
+      if (!isProduction) return
+
       if (address && chainId) {
         arcxSdk?.wallet({
           account: address ?? '',
