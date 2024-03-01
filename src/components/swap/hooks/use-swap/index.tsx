@@ -3,11 +3,7 @@ import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 
 import { Token } from '@/constants/tokens'
-import {
-  Quote,
-  QuoteResults,
-  QuoteType,
-} from '@/lib/hooks/use-best-quote/types'
+import { QuoteResults, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { toWei } from '@/lib/utils'
@@ -26,7 +22,6 @@ import {
   getFormattedQuoteRedemptionResult,
   getFormattedQuoteResults,
 } from './formatters/result'
-import { getFormattedPriceImpact } from './formatters/price-impact'
 import { buildTradeDetails } from './trade-details-builder'
 import { useFormattedBalance } from './use-formatted-balance'
 
@@ -48,15 +43,6 @@ interface SwapData {
   tradeData: TradeInfoItem[]
 }
 
-function formatIfNumber(value: string, decimals: number) {
-  if (/[a-z]/i.test(value)) return value
-  return Number(value).toLocaleString('en', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  })
-}
-
-
 export function useSwap(
   inputToken: Token,
   outputToken: Token,
@@ -76,7 +62,6 @@ export function useSwap(
     balanceFormatted: inputTokenBalanceFormatted,
     balanceWei: inputTokenBalance,
   } = useFormattedBalance(inputToken, address ?? '')
-
 
   const selectedQuote = useMemo(
     () =>
