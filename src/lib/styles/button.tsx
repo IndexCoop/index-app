@@ -17,18 +17,21 @@ export const Button = {
   variants: {
     green: {
       backgroundColor: 'rgba(9, 170, 116, 0.12)',
-      borderColor: colors.icMalachite,
-      color: colors.icMalachite,
+      borderColor: colors.ic.green,
+      color: colors.ic.green,
     },
     highlight: ({ colorMode }: { colorMode: string }) => ({
       backgroundColor: 'transparent',
-      borderColor: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
-      color: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
+      borderColor:
+        colorMode === 'dark' ? colors.ic.gray[100] : colors.ic.gray[400],
+      color: colorMode === 'dark' ? colors.ic.gray[100] : colors.ic.gray[400],
     }),
     highlightSelected: ({ colorMode }: { colorMode: string }) => ({
-      backgroundColor: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
-      borderColor: colorMode === 'dark' ? colors.icGray1 : colors.icGray2,
-      color: colorMode === 'dark' ? colors.icBlack : colors.icWhite,
+      backgroundColor:
+        colorMode === 'dark' ? colors.ic.gray[100] : colors.ic.gray[400],
+      borderColor:
+        colorMode === 'dark' ? colors.ic.gray[100] : colors.ic.gray[400],
+      color: colorMode === 'dark' ? colors.ic.black : colors.ic.white,
     }),
   },
   defaultProps: {

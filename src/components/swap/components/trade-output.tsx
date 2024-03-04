@@ -22,9 +22,9 @@ export const TradeOutput = (props: TradeOutputProps) => {
   const { selectedQuote, selectedToken } = props
   return (
     <Flex
-      bg={colors.icWhite}
+      className='bg-ic-white'
       border={'1px solid'}
-      borderColor={colors.icGray1}
+      borderColor={colors.ic.gray[100]}
       borderRadius={12}
       direction={'column'}
       p={'16px'}
@@ -39,7 +39,7 @@ export const TradeOutput = (props: TradeOutputProps) => {
       </Flex>
       <Flex direction='column' gap='8px' mt='20px'>
         {props.quotes.length > 0 && (
-          <Text color={colors.icGray600} fontSize='xs' fontWeight={500}>
+          <Text className='text-ic-gray-600' fontSize='xs' fontWeight={500}>
             Select your preferred route
           </Text>
         )}
