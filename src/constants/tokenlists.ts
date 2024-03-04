@@ -11,8 +11,8 @@ import {
   GUSD,
   ic21,
   icETHIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopEthereum2xIndex,
+  // IndexCoopBitcoin2xIndex,
+  // IndexCoopEthereum2xIndex,
   IndexToken,
   MetaverseIndex,
   RETH,
@@ -45,8 +45,8 @@ const isDevEnv =
 // indices that have not been released yet.
 export const indicesTokenList = isDevEnv
   ? [
-      IndexCoopEthereum2xIndex,
-      IndexCoopBitcoin2xIndex,
+      // IndexCoopEthereum2xIndex,
+      // IndexCoopBitcoin2xIndex,
       CoinDeskEthTrendIndex,
       ic21,
       DiversifiedStakedETHIndex,
@@ -60,8 +60,8 @@ export const indicesTokenList = isDevEnv
       IndexToken,
     ]
   : [
-      IndexCoopEthereum2xIndex,
-      IndexCoopBitcoin2xIndex,
+      // IndexCoopEthereum2xIndex,
+      // IndexCoopBitcoin2xIndex,
       CoinDeskEthTrendIndex,
       ic21,
       DiversifiedStakedETHIndex,
