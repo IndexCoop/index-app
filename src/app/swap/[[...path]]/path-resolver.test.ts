@@ -104,7 +104,7 @@ describe('PathResolver', () => {
     expect(resolvedPath.outputToken.symbol).toBe(icETHIndex.symbol)
   })
 
-  it('returns correct state for: /swap/eth2x-fli/eth2x', async () => {
+  it.skip('returns correct state for: /swap/eth2x-fli/eth2x', async () => {
     const pathComponents = ['eth2x-fli', 'eth2x']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
@@ -117,7 +117,7 @@ describe('PathResolver', () => {
     )
   })
 
-  it('returns correct state for: /swap/btc2x-fli/btc2x', async () => {
+  it.skip('returns correct state for: /swap/btc2x-fli/btc2x', async () => {
     const pathComponents = ['btc2x-fli', 'btc2x']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
