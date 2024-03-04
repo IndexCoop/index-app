@@ -12,20 +12,20 @@ import {
 import { Swap } from '@/components/swap'
 import { LeveragedRethStakingYield } from '@/constants/tokens'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
-import { FliMigrationBanner } from '@/components/banners/fli-migration-banner'
+// import { FliMigrationBanner } from '@/components/banners/fli-migration-banner'
 
 export default function SwapPage() {
   const { inputToken, isMinting, outputToken } = useSelectedToken()
 
   const [supplyCapOverrides] = useState<RethSupplyCapOverrides | undefined>(
-    undefined
+    undefined,
   )
 
   const showRethSupplyCap = useMemo(
     () =>
       inputToken.symbol === LeveragedRethStakingYield.symbol ||
       outputToken.symbol === LeveragedRethStakingYield.symbol,
-    [inputToken, outputToken]
+    [inputToken, outputToken],
   )
 
   return (
@@ -40,7 +40,7 @@ export default function SwapPage() {
         mr={4}
         w={['inherit', '500px']}
       >
-        <FliMigrationBanner />
+        {/* <FliMigrationBanner /> */}
         <Swap
           isBuying={isMinting}
           inputToken={inputToken}
