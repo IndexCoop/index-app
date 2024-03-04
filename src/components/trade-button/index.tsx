@@ -21,7 +21,7 @@ export const TradeButton = (props: TradeButtonProps) => {
       border='0'
       borderRadius='10px'
       boxShadow={boxShadow}
-      color={colors.icWhite}
+      color={colors.ic.white}
       disabled={props.isDisabled}
       fontSize='16px'
       fontWeight='700'

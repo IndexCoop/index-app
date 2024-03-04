@@ -9,21 +9,13 @@ export class RedemptionProvider {
 
   async getComponentRedemptionUnits(
     tokenAddress: Address,
-    redeemAmount: bigint
+    redeemAmount: bigint,
   ) {
     const data = await this.publicClient.readContract({
       address: DebtIssuanceModuleAddress,
       abi: DebtIssuanceModuleV2Abi,
       functionName: 'getRequiredComponentRedemptionUnits',
       args: [tokenAddress, redeemAmount],
-      //   select: (data) => {
-      //     const [addresses, amountToken] = data
-      //     return addresses.map((address, idx) => ({
-      //       address,
-      //       amountToken: amountToken[idx],
-      //       ...getTokenFromAddress(address),
-      //     }))
-      //   },
     })
     return data
   }

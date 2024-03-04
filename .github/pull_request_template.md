@@ -1,10 +1,6 @@
 ## **Summary of Changes**
 
-&nbsp;
-
 ## **Test Data or Screenshots**
-
-&nbsp;
 
 ###### _By submitting this pull request, you are confirming the following to be true:_
 
