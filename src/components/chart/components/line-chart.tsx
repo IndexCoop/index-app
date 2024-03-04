@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react'
 
 import { Flex, Text } from '@chakra-ui/react'
 import { curveLinear } from '@visx/curve'
-import { AreaClosed, Bar, Line, LinePath,  } from '@visx/shape'
+import { AreaClosed, Bar, Line, LinePath } from '@visx/shape'
 import appleStock, { AppleStock } from '@visx/mock-data/lib/mocks/appleStock'
 import { scaleTime, scaleLinear } from '@visx/scale'
 import { withTooltip, TooltipWithBounds, defaultStyles } from '@visx/tooltip'
@@ -16,7 +16,7 @@ import { colors } from '@/lib/styles/colors'
 
 type TooltipData = AppleStock
 
-export const accentColor = colors.icBlue600
+export const accentColor = colors.ic.blue[600]
 const formatDate = timeFormat('%b %d, %I:%M %p')
 const stock = appleStock.slice(800)
 
@@ -55,7 +55,7 @@ export default withTooltip<AreaProps, TooltipData>(
           range: [margin.left, innerWidth + margin.left],
           domain: extent(stock, getDate) as [Date, Date],
         }),
-      [innerWidth, margin.left]
+      [innerWidth, margin.left],
     )
     const stockValueScale = useMemo(
       () =>
@@ -64,7 +64,7 @@ export default withTooltip<AreaProps, TooltipData>(
           domain: [0, (max(stock, getStockValue) || 0) + innerHeight / 3],
           nice: true,
         }),
-      [margin.top, innerHeight]
+      [margin.top, innerHeight],
     )
 
     // tooltip handler
@@ -72,7 +72,7 @@ export default withTooltip<AreaProps, TooltipData>(
       (
         event:
           | React.TouchEvent<SVGRectElement>
-          | React.MouseEvent<SVGRectElement>
+          | React.MouseEvent<SVGRectElement>,
       ) => {
         const { x } = localPoint(event) || { x: 0 }
         const x0 = dateScale.invert(x)
@@ -93,7 +93,7 @@ export default withTooltip<AreaProps, TooltipData>(
           tooltipTop: stockValueScale(getStockValue(d)),
         })
       },
-      [showTooltip, stockValueScale, dateScale]
+      [showTooltip, stockValueScale, dateScale],
     )
 
     return (
@@ -114,7 +114,7 @@ export default withTooltip<AreaProps, TooltipData>(
             yScale={stockValueScale}
             fill='url(#area-gradient)'
           />
-          <LinePath<AppleStock> 
+          <LinePath<AppleStock>
             curve={curveLinear}
             data={stock}
             x={(d) => dateScale(getDate(d)) ?? 0}
@@ -139,7 +139,7 @@ export default withTooltip<AreaProps, TooltipData>(
               <Line
                 from={{ x: tooltipLeft, y: margin.top }}
                 to={{ x: tooltipLeft, y: innerHeight + margin.top }}
-                stroke={colors.icGray2}
+                stroke={colors.ic.gray[400]}
                 strokeDasharray='2,4'
                 strokeWidth={2}
                 strokeLinecap='round'
@@ -149,7 +149,7 @@ export default withTooltip<AreaProps, TooltipData>(
                 cx={tooltipLeft}
                 cy={tooltipTop}
                 r={4}
-                fill={colors.icGray8}
+                fill={colors.ic.gray[800]}
                 fillOpacity={1}
                 pointerEvents='none'
               />
@@ -157,7 +157,7 @@ export default withTooltip<AreaProps, TooltipData>(
                 cx={tooltipLeft}
                 cy={tooltipTop}
                 r={10}
-                fill={colors.icGray8}
+                fill={colors.ic.gray[800]}
                 fillOpacity={0.2}
                 pointerEvents='none'
               />
@@ -180,12 +180,12 @@ export default withTooltip<AreaProps, TooltipData>(
             >
               <Flex direction={'column'} gap={1}>
                 <Text
-                  color={colors.icGray7}
+                  color={colors.ic.gray[700]}
                   fontSize={'lg'}
                   fontWeight={600}
                 >{`$${getStockValue(tooltipData)}`}</Text>
                 <Text
-                  color={colors.icGray2}
+                  color={colors.ic.gray[400]}
                   fontSize={'xs'}
                   fontWeight={400}
                 >{`${formatDate(getDate(tooltipData))}`}</Text>
@@ -195,5 +195,5 @@ export default withTooltip<AreaProps, TooltipData>(
         )}
       </div>
     )
-  }
+  },
 )

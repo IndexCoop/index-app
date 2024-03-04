@@ -4,7 +4,7 @@ import { colors } from '@/lib/styles/colors'
 
 function DateRangeItem({ label }: { label: string }) {
   return (
-    <Text color={colors.icGray2} fontSize='sm' fontWeight='600'>
+    <Text color={colors.ic.gray[400]} fontSize='sm' fontWeight='600'>
       {label}
     </Text>
   )
