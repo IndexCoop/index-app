@@ -145,7 +145,10 @@ export const Swap = (props: SwapProps) => {
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
   useEffect(() => {
-    if (requiresProtection) {
+    if (
+      requiresProtection &&
+      (inputToken.isDangerous || outputToken.isDangerous)
+    ) {
       setWarnings([WarningType.restricted])
       return
     }
@@ -154,7 +157,7 @@ export const Swap = (props: SwapProps) => {
       return
     }
     setWarnings([WarningType.flashbots])
-  }, [requiresProtection, slippage])
+  }, [inputToken, outputToken, requiresProtection, slippage])
 
   useEffect(() => {
     setSelectedQuote(quoteResults?.bestQuote)
