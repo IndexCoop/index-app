@@ -75,6 +75,7 @@ export const Swap = (props: SwapProps) => {
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
+    isFetchingRedemption,
     quoteResults,
   } = useBestQuote(isBuying, inputToken, outputToken)
 
@@ -118,6 +119,7 @@ export const Swap = (props: SwapProps) => {
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
+    isFetchingRedemption,
   )
 
   const {
@@ -246,7 +248,7 @@ export const Swap = (props: SwapProps) => {
     <Flex
       background='linear-gradient(33deg, rgba(0, 189, 192, 0.05) -9.23%, rgba(0, 249, 228, 0.05) 48.82%, rgba(212, 0, 216, 0.05) 131.54%), linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'
       border='1px solid'
-      borderColor={colors.icGray1}
+      borderColor={colors.ic.gray[100]}
       borderRadius='24px'
       boxShadow='0.5px 1px 2px 0px rgba(44, 51, 51, 0.25), 2px 2px 1px 0px #FCFFFF inset'
       direction='column'
@@ -255,7 +257,7 @@ export const Swap = (props: SwapProps) => {
     >
       <Flex direction={'row'} justify={'space-between'}>
         <Text
-          color={colors.icGray4}
+          color={colors.ic.gray[900]}
           fontSize={'md'}
           fontWeight={500}
           ml={'12px'}
@@ -287,10 +289,9 @@ export const Swap = (props: SwapProps) => {
         />
         <Box h='6px' alignSelf={'center'}>
           <IconButton
-            background={colors.icWhite}
+            className='bg-ic-white text-ic-gray-400'
             margin={'-16px 0 0 0'}
             aria-label='switch input/output tokens'
-            color={colors.icGray2}
             icon={<UpDownIcon />}
             onClick={onSwitchTokens}
           />
@@ -317,7 +318,7 @@ export const Swap = (props: SwapProps) => {
           />
         )}
         {hasFetchingError && (
-          <Text align='center' color={colors.icRed} p='16px'>
+          <Text align='center' color={colors.ic.red} p='16px'>
             {'Error fetching quote'}
           </Text>
         )}

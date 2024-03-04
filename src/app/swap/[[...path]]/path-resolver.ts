@@ -1,5 +1,12 @@
 import { indicesTokenList } from '@/constants/tokenlists'
-import { ETH, Token } from '@/constants/tokens'
+import {
+  Bitcoin2xFlexibleLeverageIndex,
+  ETH,
+  Ethereum2xFlexibleLeverageIndex,
+  IndexCoopBitcoin2xIndex,
+  IndexCoopEthereum2xIndex,
+  Token,
+} from '@/constants/tokens'
 import {
   getCurrencyTokens,
   getCurrencyTokensForIndex,
@@ -33,13 +40,36 @@ export class PathResolver {
 
     let inputToken = this.resolveToken(symbols.inputToken ?? ETH.symbol)
     let outputToken = this.resolveToken(
-      symbols.outputToken ?? defaultIndex.symbol
+      symbols.outputToken ?? defaultIndex.symbol,
     )
+
+    if (
+      inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol &&
+      outputToken.symbol === IndexCoopBitcoin2xIndex.symbol
+    ) {
+      return {
+        isMinting: false,
+        inputToken: Bitcoin2xFlexibleLeverageIndex,
+        outputToken: IndexCoopBitcoin2xIndex,
+      }
+    }
+
+    if (
+      inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol &&
+      outputToken.symbol === IndexCoopEthereum2xIndex.symbol
+    ) {
+      return {
+        isMinting: false,
+        inputToken: Ethereum2xFlexibleLeverageIndex,
+        outputToken: IndexCoopEthereum2xIndex,
+      }
+    }
+
     const inputTokenIsIndex = indicesTokenList.some(
-      (token) => token.symbol === inputToken.symbol
+      (token) => token.symbol === inputToken.symbol,
     )
     const outputTokenIsIndex = indicesTokenList.some(
-      (token) => token.symbol === outputToken.symbol
+      (token) => token.symbol === outputToken.symbol,
     )
 
     if (!inputTokenIsIndex && !outputTokenIsIndex)
@@ -82,7 +112,7 @@ export class PathResolver {
   private getCurrency(indexToken: Token, inputOutputToken: Token): Token {
     const currencies = getCurrencyTokensForIndex(indexToken, 1)
     const tokenIsAvailableCurrency = currencies.some(
-      (token) => token.symbol === inputOutputToken.symbol
+      (token) => token.symbol === inputOutputToken.symbol,
     )
     return tokenIsAvailableCurrency ? inputOutputToken : currencies[0]
   }
@@ -93,14 +123,14 @@ export class PathResolver {
 
   private resolveToken(tokenSymbol: string): Token {
     const indexToken = indicesTokenList.find(
-      (token) => token.symbol.toLowerCase() === tokenSymbol.toLowerCase()
+      (token) => token.symbol.toLowerCase() === tokenSymbol.toLowerCase(),
     )
     if (indexToken !== undefined) {
       return indexToken
     }
     const currencies = getCurrencyTokens(1)
     const currencyToken = currencies.find(
-      (token) => token.symbol.toLowerCase() === tokenSymbol.toLowerCase()
+      (token) => token.symbol.toLowerCase() === tokenSymbol.toLowerCase(),
     )
     if (currencyToken !== undefined) {
       return currencyToken

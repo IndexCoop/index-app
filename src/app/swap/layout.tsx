@@ -1,6 +1,6 @@
 import { Flex } from '@chakra-ui/react'
 
-import { Banner } from '@/components/banners'
+// import { Banner } from '@/components/banners'
 import Footer from '@/components/footer'
 import { Header } from '@/components/header'
 
@@ -13,7 +13,7 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
   return (
     <Providers>
-      <Banner />
+      {/* <Banner /> */}
       <Header />
       <Flex direction='column' mb='50px'>
         <Flex

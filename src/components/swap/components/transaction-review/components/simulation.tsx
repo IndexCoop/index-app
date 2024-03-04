@@ -53,7 +53,7 @@ const SimulationDefaultView = ({ isLoading }: { isLoading: boolean }) => {
 }
 
 const SimulationStateView = ({ success }: { success: boolean }) => {
-  const color = success ? colors.icMalachite : colors.icRed
+  const color = success ? colors.ic.green : colors.ic.red
   const title = success ? 'Success' : 'Failed'
   const text = success
     ? 'The transaction was successfully simulated.'

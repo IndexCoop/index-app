@@ -19,7 +19,7 @@ function MigrateButton({ token }: { token: Token }) {
         height={20}
       />
       <div className='text-xs font-medium text-ic-gray-800'>
-        {`Migrate ${token.symbol} Position`}
+        {`Unwrap ${token.symbol}`}
       </div>
     </div>
   )
@@ -28,19 +28,19 @@ function MigrateButton({ token }: { token: Token }) {
 export function FliMigrationBanner() {
   const router = useRouter()
   const onClickBtc2xFli = () => {
-    router.push('/swap/btc2x-fli/eth')
+    router.push('/swap/btc2x-fli/btc2x')
   }
   const onClickEth2xFli = () => {
-    router.push('/swap/eth2x-fli/eth')
+    router.push('/swap/eth2x-fli/eth2x')
   }
   return (
     <div className='banner-custom flex flex-col justify-center gap-1 rounded-3xl px-6 py-4'>
       <h2 className='text-center text-base font-bold text-ic-black'>
-        Holding FLI? Upgrade for better cost of carry.
+        Holding FLIs? Unwrap for upgraded 2x tokens.
       </h2>
       <p className='text-xs font-medium text-ic-gray-600'>
-        We are migrating our Leverage suite to improved contracts. During this
-        time, the FLI tokens are only tradable for the new 2x tokens.
+        FLI tokens have migrated to modernized 2x tokens on Index Protocol. FLI
+        Tokens may be unwrapped in exchange for new 2x tokens.
       </p>
       <div className='mt-2 flex w-full flex-row items-center justify-evenly gap-5'>
         <div

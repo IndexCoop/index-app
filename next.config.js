@@ -8,6 +8,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'index-app.vercel.app',
+      },
+      {
+        protocol: 'https',
         hostname: 'raw.githubusercontent.com',
       },
     ],

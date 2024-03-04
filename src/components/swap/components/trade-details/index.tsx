@@ -65,7 +65,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                   border='1px solid'
                   borderColor={styles.border}
                   borderRadius={12}
-                  color={colors.icGray2}
+                  color={colors.ic.gray[400]}
                   _expanded={{
                     borderBottomColor: 'transparent',
                     borderBottomRadius: 0,
