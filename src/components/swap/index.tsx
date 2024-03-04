@@ -47,7 +47,7 @@ function isTokenPairTradable(
   outputToken: Token,
 ): boolean {
   if (!requiresProtection) return true
-  return inputToken.isDangerous || outputToken.isDangerous
+  return !inputToken.isDangerous && !outputToken.isDangerous
 }
 
 export const Swap = (props: SwapProps) => {
