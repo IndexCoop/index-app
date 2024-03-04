@@ -41,10 +41,23 @@ type SwapProps = {
   outputToken: Token
 }
 
+function isTokenPairTradable(
+  requiresProtection: boolean,
+  inputToken: Token,
+  outputToken: Token,
+): boolean {
+  if (!requiresProtection) return true
+  return inputToken.isDangerous || outputToken.isDangerous
+}
+
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
   const { openConnectModal } = useConnectModal()
   const requiresProtection = useProtection()
+  const isTradablePair = useMemo(
+    () => isTokenPairTradable(requiresProtection, inputToken, outputToken),
+    [requiresProtection, inputToken, outputToken],
+  )
   const { chainId } = useNetwork()
   const {
     auto: autoSlippage,
@@ -145,10 +158,7 @@ export const Swap = (props: SwapProps) => {
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
   useEffect(() => {
-    if (
-      requiresProtection &&
-      (inputToken.isDangerous || outputToken.isDangerous)
-    ) {
+    if (!isTradablePair) {
       setWarnings([WarningType.restricted])
       return
     }
@@ -157,7 +167,7 @@ export const Swap = (props: SwapProps) => {
       return
     }
     setWarnings([WarningType.flashbots])
-  }, [inputToken, outputToken, requiresProtection, slippage])
+  }, [isTradablePair, slippage])
 
   useEffect(() => {
     setSelectedQuote(quoteResults?.bestQuote)
@@ -173,7 +183,7 @@ export const Swap = (props: SwapProps) => {
   }, [chainId, resetTradeData])
 
   const fetchOptions = useCallback(() => {
-    if (requiresProtection) return
+    if (!isTradablePair) return
     fetchQuote({
       isMinting: isBuying,
       inputToken,
@@ -184,8 +194,8 @@ export const Swap = (props: SwapProps) => {
   }, [
     isBuying,
     inputToken,
+    isTradablePair,
     outputToken,
-    requiresProtection,
     sellTokenAmount,
     slippage,
   ])
@@ -325,7 +335,7 @@ export const Swap = (props: SwapProps) => {
             {'Error fetching quote'}
           </Text>
         )}
-        {!requiresProtection && (
+        {isTradablePair && (
           <TradeButton
             label={buttonLabel}
             isDisabled={isDisabled}
