@@ -10,7 +10,7 @@ export function Header() {
         <Logo />
         <HeaderLink href={Path.TRADE} label='Trade' />
         <HeaderLink href={Path.PRODUCTS} label='Products' />
-        <HeaderLink href={Path.LEVERAGE} label='Leverage' />
+        {/* <HeaderLink href={Path.LEVERAGE} label='Leverage' /> */}
       </div>
       <div className='hidden h-10 max-h-10 flex-row sm:flex'>
         <Connect />
