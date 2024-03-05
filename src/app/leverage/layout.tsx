@@ -1,5 +1,3 @@
-import { Flex } from '@chakra-ui/react'
-
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 
@@ -13,7 +11,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <Providers>
       <Header />
-      <Flex className='bg-[#141E1F]'>{children}</Flex>
+      <main className='bg-[#141E1F]'>{children}</main>
       <Footer />
     </Providers>
   )
