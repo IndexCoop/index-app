@@ -1,13 +1,6 @@
-import { Flex } from '@chakra-ui/react'
-
-import Footer from '@/components/footer'
-import Header from '@/components/header'
-
+import './globals.css'
 import { SafaryScript } from '@/components/external/safary-script'
-import { Providers } from './providers'
 
-// For images just place the appropriate image file in this folder.
-// https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image#image-files-jpg-png-gif
 export const metadata = {
   manifest: '/manifest.json',
   themeColor: '#000000',
@@ -25,24 +18,7 @@ export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang='en'>
       <body>
-        <Providers>
-          <Header />
-          <Flex direction='column' mb='50px'>
-            <Flex
-              maxWidth='1024px'
-              m={['0 auto']}
-              p={[
-                '100px 16px 0px 16px',
-                '100px 16px 0px 16px',
-                '128px 16px 0px 16px',
-                '128px 16px 0px 16px',
-              ]}
-            >
-              {children}
-            </Flex>
-          </Flex>
-          <Footer />
-        </Providers>
+        {children}
         <SafaryScript />
       </body>
     </html>

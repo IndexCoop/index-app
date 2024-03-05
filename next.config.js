@@ -6,42 +6,75 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'assets.coingecko.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'index-app.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+      },
     ],
   },
   async redirects() {
     return [
       {
-        source: '/BED',
+        source: '/',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/DPI',
+        source: '/(B|b)(E|e)(D|d)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/dsETH',
+        source: '/(B|b)(T|t)(C|c)(F|f)(L|l)(I|i)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/icETH ',
+        source: '/(D|d)(P|p)(I|i)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/MVI',
+        source: '/(D|d)(S|s)(E|e)(T|t)(H|h)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/ic21',
+        source: '/(E|e)(T|t)(H|h)(F|f)(L|l)(I|i)',
         destination: '/swap',
         permanent: true,
       },
       {
-        source: '/cdeti',
+        source: '/(G|g)(T|t)(C|c)(E|e)(T|t)(H|h)',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
+        source: '/(I|i)(C|c)(E|e)(T|t)(H|h)',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
+        source: '/(I|i)(C|c)(S|s)(M|m)(M|m)(T|t) ',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
+        source: '/(M|m)(V|v)(I|i)',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
+        source: '/(I|i)(C|c)21',
+        destination: '/swap',
+        permanent: true,
+      },
+      {
+        source: '/(C|c)(D|d)(E|e)(T|t)(I|i)',
         destination: '/swap',
         permanent: true,
       },

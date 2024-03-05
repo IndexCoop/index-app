@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { usePublicClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
+import { getEnhancedRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
+import { GasStation } from '@/lib/utils/api/gas-station'
 import {
   getAddressForToken,
   isAvailableForFlashMint,
+  isAvailableForRedemption,
   isAvailableForSwap,
 } from '@/lib/utils/tokens'
 
@@ -27,14 +31,15 @@ export interface FetchQuoteRequest {
 
 const defaultResults: QuoteResults = {
   bestQuote: QuoteType.zeroex,
-  results: { flashmint: null, zeroex: null },
+  results: { flashmint: null, redemption: null, zeroex: null },
 }
 
 export const useBestQuote = (
   isMinting: boolean,
   inputToken: Token,
-  outputToken: Token
+  outputToken: Token,
 ) => {
+  const publicClient = usePublicClient()
   const { provider, signer } = useWallet()
   const { chainId: networkChainId } = useNetwork()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
@@ -43,14 +48,17 @@ export const useBestQuote = (
 
   const [isFetching0x, setIsFetching0x] = useState<boolean>(false)
   const [isFetchingFlashmint, setIsFetchingFlashMint] = useState<boolean>(false)
+  const [isFetchingRedemption, setIsFetchingRedemption] =
+    useState<boolean>(false)
 
   const [quote0x, setQuote0x] = useState<ZeroExQuote | null>(null)
   const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
+  const [quoteRedemption, setQuoteRedemption] = useState<Quote | null>(null)
   const [quoteResults, setQuoteResults] = useState<QuoteResults>(defaultResults)
 
   const indexToken = useMemo(
     () => (isMinting ? outputToken : inputToken),
-    [inputToken, isMinting, outputToken]
+    [inputToken, isMinting, outputToken],
   )
 
   const fetchQuote = useCallback(
@@ -83,10 +91,17 @@ export const useBestQuote = (
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
+      const canRedeemIndexToken = isAvailableForRedemption(
+        inputToken,
+        outputToken,
+      )
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
       const fetchFlashMintQuote = async () => {
-        if (canFlashmintIndexToken) {
+        if (
+          canFlashmintIndexToken &&
+          !isAvailableForRedemption(inputToken, outputToken)
+        ) {
           setIsFetchingFlashMint(true)
           console.log('canFlashmintIndexToken')
           const quoteFlashMint = await getFlashMintQuote(
@@ -101,7 +116,7 @@ export const useBestQuote = (
               nativeTokenPrice,
             },
             provider,
-            signer
+            signer,
           )
           setIsFetchingFlashMint(false)
           setQuoteFlashmint(quoteFlashMint)
@@ -110,8 +125,38 @@ export const useBestQuote = (
         }
       }
 
+      const fetchRedemptionQuote = async () => {
+        if (canRedeemIndexToken) {
+          console.log('canRedeemIndexToken')
+          setIsFetchingRedemption(true)
+          const gasStation = new GasStation(provider)
+          const gasPrice = await gasStation.getGasPrice()
+          const quoteRedemption = await getEnhancedRedemptionQuote(
+            {
+              ...request,
+              gasPrice: gasPrice.toBigInt(),
+              indexTokenAmount: inputTokenAmountWei.toBigInt(),
+              inputToken,
+              inputTokenPrice,
+              outputToken,
+              outputTokenPrice,
+              nativeTokenPrice,
+            },
+            publicClient,
+            signer,
+          )
+          setIsFetchingRedemption(false)
+          setQuoteRedemption(quoteRedemption)
+        } else {
+          setQuoteRedemption(null)
+        }
+      }
+
       const fetchSwapQuote = async () => {
-        if (canSwapIndexToken) {
+        if (
+          canSwapIndexToken &&
+          !isAvailableForRedemption(inputToken, outputToken)
+        ) {
           setIsFetching0x(true)
           console.log('canSwapIndexToken')
           const quote0x = await get0xQuote({
@@ -133,6 +178,7 @@ export const useBestQuote = (
 
       // Non await - because we want to fetch quotes in parallel
       fetchSwapQuote()
+      fetchRedemptionQuote()
       fetchFlashMintQuote()
     },
     [
@@ -142,16 +188,44 @@ export const useBestQuote = (
       outputToken,
       nativeTokenPrice,
       provider,
+      publicClient,
       signer,
-    ]
+    ],
   )
 
   useEffect(() => {
+    if (isAvailableForRedemption(inputToken, outputToken)) {
+      const results = {
+        bestQuote: QuoteType.redemption,
+        results: {
+          flashmint: {
+            type: QuoteType.flashmint,
+            isAvailable: false,
+            quote: null,
+            error: null,
+          },
+          redemption: {
+            type: QuoteType.redemption,
+            isAvailable: true,
+            quote: quoteRedemption,
+            error: null,
+          },
+          zeroex: {
+            type: QuoteType.zeroex,
+            isAvailable: false,
+            quote: null,
+            error: null,
+          },
+        },
+      }
+      setQuoteResults(results)
+      return
+    }
     const bestQuote = getBestQuote(
       quote0x?.fullCostsInUsd ?? null,
       quoteFlashMint?.fullCostsInUsd ?? null,
+      quoteRedemption?.fullCostsInUsd ?? null,
       quote0x?.outputTokenAmountUsdAfterFees ?? null,
-      quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null
     )
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
     const canSwapIndexToken = isAvailableForSwap(indexToken)
@@ -164,6 +238,12 @@ export const useBestQuote = (
           quote: quoteFlashMint,
           error: null,
         },
+        redemption: {
+          type: QuoteType.redemption,
+          isAvailable: false,
+          quote: null,
+          error: null,
+        },
         zeroex: {
           type: QuoteType.zeroex,
           isAvailable: canSwapIndexToken,
@@ -173,7 +253,14 @@ export const useBestQuote = (
       },
     }
     setQuoteResults(results)
-  }, [indexToken, quote0x, quoteFlashMint])
+  }, [
+    indexToken,
+    inputToken,
+    outputToken,
+    quote0x,
+    quoteFlashMint,
+    quoteRedemption,
+  ])
 
   const isFetchingAnyQuote = useMemo(() => {
     return isFetching0x || isFetchingFlashmint
@@ -184,6 +271,7 @@ export const useBestQuote = (
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
+    isFetchingRedemption,
     quoteResults,
   }
 }

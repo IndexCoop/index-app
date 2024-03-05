@@ -7,7 +7,6 @@ import { Checkbox } from '../styles/checkbox'
 import { colors } from '../styles/colors'
 import { global } from '../styles/global'
 import { Heading } from '../styles/heading'
-import { Tabs } from '../styles/tabs'
 import { Text } from '../styles/text'
 
 const config: ThemeConfig = {
@@ -25,7 +24,6 @@ const components = {
   Button,
   Checkbox,
   Heading,
-  Tabs,
   Text,
 }
 
@@ -43,20 +41,20 @@ export const rainbowkitTheme = merge(
   }),
   {
     colors: {
-      accentColor: colors.icBlue,
-      accentColorForeground: colors.icWhite,
-      actionButtonBorder: colors.icGray4,
-      actionButtonBorderMobile: colors.icGray4,
-      generalBorder: colors.icGray4,
-      modalBorder: colors.icGray4,
-      modalBackground: colors.icBlack,
-      profileForeground: colors.icBlack,
-      closeButtonBackground: colors.icGray4,
+      accentColor: colors.ic.blue[500],
+      accentColorForeground: colors.ic.white,
+      actionButtonBorder: colors.ic.gray[900],
+      actionButtonBorderMobile: colors.ic.gray[900],
+      generalBorder: colors.ic.gray[900],
+      modalBorder: colors.ic.gray[900],
+      modalBackground: colors.ic.black,
+      profileForeground: colors.ic.black,
+      closeButtonBackground: colors.ic.gray[900],
     },
     fonts: {
       body: fonts.body,
     },
-  } as Theme
+  } as Theme,
 )
 
 export default theme

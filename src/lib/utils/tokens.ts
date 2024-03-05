@@ -10,6 +10,8 @@ import {
   GitcoinStakedETHIndex,
   ic21,
   icETHIndex,
+  IndexCoopBitcoin2xIndex,
+  IndexCoopEthereum2xIndex,
   IndexToken,
   LeveragedRethStakingYield,
   MATIC,
@@ -26,7 +28,7 @@ import { isSameAddress } from '.'
 
 export function getAddressForToken(
   token: Token,
-  chainId: number | undefined
+  chainId: number | undefined,
 ): string | undefined {
   if (token.symbol === IndexToken.symbol) return token.address
   switch (chainId) {
@@ -60,7 +62,7 @@ export function getCurrencyTokens(chainId: number | undefined): Token[] {
  */
 export function getCurrencyTokensForIndex(
   index: Token,
-  chainId: number
+  chainId: number,
 ): Token[] {
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI]
@@ -74,6 +76,12 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === LeveragedRethStakingYield.symbol)
     return [ETH, WETH, USDC, RETH]
   const currencyTokens = getCurrencyTokens(chainId)
+  if (index.symbol === Bitcoin2xFlexibleLeverageIndex.symbol) {
+    return [IndexCoopBitcoin2xIndex, ...currencyTokens]
+  }
+  if (index.symbol === Ethereum2xFlexibleLeverageIndex.symbol) {
+    return [IndexCoopEthereum2xIndex, ...currencyTokens]
+  }
   return currencyTokens
 }
 
@@ -95,11 +103,11 @@ export function getNativeToken(chainId: number | undefined): Token | null {
 }
 
 export function getTokenBySymbol(symbol: string): Token | null {
-  const indexToken = indicesTokenList.find((index) => index.symbol === symbol)
+  const indexToken = indicesTokenList.find((index) => index.symbol.toLowerCase() === symbol.toLowerCase())
   if (indexToken) {
     return indexToken
   }
-  const currencyToken = currencies.find((token) => token.symbol === symbol)
+  const currencyToken = currencies.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase())
   return currencyToken ?? null
 }
 
@@ -111,6 +119,18 @@ export function isAvailableForFlashMint(token: Token): boolean {
     default:
       return true
   }
+}
+
+export function isAvailableForRedemption(
+  inputToken: Token,
+  outputToken: Token,
+): boolean {
+  return (
+    (inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol &&
+      outputToken.symbol === IndexCoopBitcoin2xIndex.symbol) ||
+    (inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol &&
+      outputToken.symbol === IndexCoopEthereum2xIndex.symbol)
+  )
 }
 
 export function isAvailableForSwap(token: Token): boolean {
@@ -126,7 +146,7 @@ export function isAvailableForSwap(token: Token): boolean {
 export function isIndexToken(token: Token): boolean {
   if (token.symbol === IndexToken.symbol) return false
   return indicesTokenList.some((index) =>
-    isSameAddress(index.address!, token.address!)
+    isSameAddress(index.address!, token.address!),
   )
 }
 

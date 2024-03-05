@@ -23,7 +23,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     id: process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_CONTAINER_ID ?? '',
   }
   return (
-    <CacheProvider>
+    <CacheProvider prepend={true}>
       <ChakraProvider theme={theme}>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <WagmiConfig config={wagmiConfig}>

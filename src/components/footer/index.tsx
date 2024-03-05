@@ -32,7 +32,7 @@ const Footer = () => {
 
 const Disclaimer = () => (
   <Flex direction='column'>
-    <Text fontSize={'2xs'} textColor={colors.icGray3}>
+    <Text fontSize={'2xs'} textColor={colors.ic.gray[600]}>
       Disclaimer: This content is for informational purposes only and is not
       legal, tax, investment, financial, or other advice. You should not take,
       or refrain from taking, any action based on any information contained
@@ -90,7 +90,7 @@ const Links = ({ textColor }: { textColor: string }) => (
   <Flex
     direction={['column', 'column', 'column', 'row']}
     fontSize={'sm'}
-    textColor={colors.icGray3}
+    textColor={colors.ic.gray[600]}
   >
     <Flex direction={'column'} mr='4'>
       <Link

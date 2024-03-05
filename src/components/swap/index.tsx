@@ -41,10 +41,23 @@ type SwapProps = {
   outputToken: Token
 }
 
+function isTokenPairTradable(
+  requiresProtection: boolean,
+  inputToken: Token,
+  outputToken: Token,
+): boolean {
+  if (!requiresProtection) return true
+  return !inputToken.isDangerous && !outputToken.isDangerous
+}
+
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
   const { openConnectModal } = useConnectModal()
   const requiresProtection = useProtection()
+  const isTradablePair = useMemo(
+    () => isTokenPairTradable(requiresProtection, inputToken, outputToken),
+    [requiresProtection, inputToken, outputToken],
+  )
   const { chainId } = useNetwork()
   const {
     auto: autoSlippage,
@@ -75,6 +88,7 @@ export const Swap = (props: SwapProps) => {
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
+    isFetchingRedemption,
     quoteResults,
   } = useBestQuote(isBuying, inputToken, outputToken)
 
@@ -90,12 +104,12 @@ export const Swap = (props: SwapProps) => {
   const { inputTokenslist, outputTokenslist } = useTokenlists(
     isBuying,
     inputToken,
-    outputToken
+    outputToken,
   )
   const { transactionReview } = useTransactionReviewModal(
     quoteResults,
     selectedQuote,
-    isFetchingAnyQuote
+    isFetchingAnyQuote,
   )
 
   const {
@@ -117,7 +131,8 @@ export const Swap = (props: SwapProps) => {
     selectedQuote,
     isFetchingAnyQuote,
     isFetching0x,
-    isFetchingFlashmint
+    isFetchingFlashmint,
+    isFetchingRedemption,
   )
 
   const {
@@ -138,12 +153,12 @@ export const Swap = (props: SwapProps) => {
     shouldApprove,
     isApprovedForSwap,
     isApprovingForSwap,
-    sellTokenAmount
+    sellTokenAmount,
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
   useEffect(() => {
-    if (requiresProtection) {
+    if (!isTradablePair) {
       setWarnings([WarningType.restricted])
       return
     }
@@ -152,7 +167,7 @@ export const Swap = (props: SwapProps) => {
       return
     }
     setWarnings([WarningType.flashbots])
-  }, [requiresProtection, slippage])
+  }, [isTradablePair, slippage])
 
   useEffect(() => {
     setSelectedQuote(quoteResults?.bestQuote)
@@ -168,7 +183,7 @@ export const Swap = (props: SwapProps) => {
   }, [chainId, resetTradeData])
 
   const fetchOptions = useCallback(() => {
-    if (requiresProtection) return
+    if (!isTradablePair) return
     fetchQuote({
       isMinting: isBuying,
       inputToken,
@@ -179,8 +194,8 @@ export const Swap = (props: SwapProps) => {
   }, [
     isBuying,
     inputToken,
+    isTradablePair,
     outputToken,
-    requiresProtection,
     sellTokenAmount,
     slippage,
   ])
@@ -246,7 +261,7 @@ export const Swap = (props: SwapProps) => {
     <Flex
       background='linear-gradient(33deg, rgba(0, 189, 192, 0.05) -9.23%, rgba(0, 249, 228, 0.05) 48.82%, rgba(212, 0, 216, 0.05) 131.54%), linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'
       border='1px solid'
-      borderColor={colors.icGray1}
+      borderColor={colors.ic.gray[100]}
       borderRadius='24px'
       boxShadow='0.5px 1px 2px 0px rgba(44, 51, 51, 0.25), 2px 2px 1px 0px #FCFFFF inset'
       direction='column'
@@ -255,7 +270,7 @@ export const Swap = (props: SwapProps) => {
     >
       <Flex direction={'row'} justify={'space-between'}>
         <Text
-          color={colors.icGray4}
+          color={colors.ic.gray[900]}
           fontSize={'md'}
           fontWeight={500}
           ml={'12px'}
@@ -287,10 +302,9 @@ export const Swap = (props: SwapProps) => {
         />
         <Box h='6px' alignSelf={'center'}>
           <IconButton
-            background={colors.icWhite}
+            className='bg-ic-white text-ic-gray-400'
             margin={'-16px 0 0 0'}
             aria-label='switch input/output tokens'
-            color={colors.icGray2}
             icon={<UpDownIcon />}
             onClick={onSwitchTokens}
           />
@@ -317,11 +331,11 @@ export const Swap = (props: SwapProps) => {
           />
         )}
         {hasFetchingError && (
-          <Text align='center' color={colors.icRed} p='16px'>
+          <Text align='center' color={colors.ic.red} p='16px'>
             {'Error fetching quote'}
           </Text>
         )}
-        {!requiresProtection && (
+        {isTradablePair && (
           <TradeButton
             label={buttonLabel}
             isDisabled={isDisabled}

@@ -29,22 +29,28 @@ function formattedFeesTotal(fees: number) {
 
 function formattedInputAmount(inputAmount: bigint, token: Token) {
   const formattedInput = Number(
-    formatUnits(inputAmount, token.decimals)
+    formatUnits(inputAmount, token.decimals),
   ).toFixed(3)
   return `${formattedInput} ${token.symbol} for`
 }
 
 function formattedOuputAmount(outputAmount: bigint, token: Token) {
   const formattedOutput = Number(
-    formatUnits(outputAmount, token.decimals)
-  ).toFixed(3)
+    formatUnits(outputAmount, token.decimals),
+  ).toLocaleString('en-US', {
+    maximumFractionDigits: 3,
+    minimumFractionDigits: 3,
+  })
   return `${formattedOutput} ${token.symbol}`
 }
 
 function formatLoadingQuoteForDisplay(
-  quoteType: QuoteType
+  quoteType: QuoteType,
 ): FormattedQuoteDisplay {
-  const type = quoteType === QuoteType.flashmint ? 'Flash Mint' : 'Swap'
+  let type = quoteType === QuoteType.flashmint ? 'Flash Mint' : 'Swap'
+  if (quoteType === QuoteType.redemption) {
+    type = 'Redemption'
+  }
   return {
     type,
     isLoading: true,
@@ -53,16 +59,16 @@ function formatLoadingQuoteForDisplay(
 
 function formatQuoteForDisplay(
   quote: Quote | ZeroExQuote,
-  isBestQuote: boolean
+  isBestQuote: boolean,
+  type: string,
 ): FormattedQuoteDisplay {
-  const type = quote.type === QuoteType.flashmint ? 'Flash Mint' : 'Swap'
   const route =
-    quote.type === QuoteType.flashmint
-      ? 'FlashMint'
-      : (quote as ZeroExQuote).sources
+    quote.type === QuoteType.zeroex
+      ? (quote as ZeroExQuote).sources
           .filter((source) => Number(source.proportion) > 0)
           .map((source) => source.name)
           .toString()
+      : type
   return {
     type,
     isLoading: false,
@@ -71,11 +77,11 @@ function formatQuoteForDisplay(
       isBestQuote,
       inputAmount: formattedInputAmount(
         quote.inputTokenAmount.toBigInt(),
-        quote.inputToken
+        quote.inputToken,
       ),
       outputAmount: formattedOuputAmount(
         quote.outputTokenAmount.toBigInt(),
-        quote.outputToken
+        quote.outputToken,
       ),
       feesGas: formattedFeesGas(quote.gasCostsInUsd, route),
       feesTotal: formattedFeesTotal(quote.outputTokenAmountUsdAfterFees),
@@ -90,10 +96,43 @@ function formatNotAvailable(type: string): FormattedQuoteDisplay {
   }
 }
 
+export function getFormattedQuoteRedemptionResult(
+  quoteResult: QuoteResults | null,
+  isFetching: boolean,
+): FormattedQuoteDisplay[] {
+  if (!quoteResult) return []
+
+  const redemptionResults = quoteResult.results.redemption
+  let formattedQuote: FormattedQuoteDisplay | null = null
+
+  if (redemptionResults) {
+    if (redemptionResults.isAvailable && isFetching) {
+      formattedQuote = formatLoadingQuoteForDisplay(QuoteType.redemption)
+    }
+    if (
+      redemptionResults.isAvailable &&
+      !isFetching &&
+      redemptionResults.quote
+    ) {
+      const quote = redemptionResults.quote
+      formattedQuote = formatQuoteForDisplay(quote, true, 'Redemption')
+    }
+    if (!redemptionResults.isAvailable && !isFetching) {
+      formattedQuote = formatNotAvailable('Swap')
+    }
+  }
+
+  const formattedQuotes: FormattedQuoteDisplay[] = []
+  if (formattedQuote) {
+    formattedQuotes.push(formattedQuote)
+  }
+  return formattedQuotes
+}
+
 export function getFormattedQuoteResults(
   quoteResult: QuoteResults | null,
   isFetching0x: boolean,
-  isFetchingFlashMint: boolean
+  isFetchingFlashMint: boolean,
 ): FormattedQuoteDisplay[] {
   if (!quoteResult) return []
   const { results } = quoteResult
@@ -115,7 +154,8 @@ export function getFormattedQuoteResults(
     ) {
       flashmintQuote = formatQuoteForDisplay(
         flashmintResults.quote,
-        quoteResult.bestQuote === QuoteType.flashmint
+        quoteResult.bestQuote === QuoteType.flashmint,
+        'Flash Mint',
       )
     }
     if (!flashmintResults.isAvailable && !isFetchingFlashMint) {
@@ -130,7 +170,8 @@ export function getFormattedQuoteResults(
     if (zeroexResults.isAvailable && !isFetching0x && zeroexResults.quote) {
       zeroexQuote = formatQuoteForDisplay(
         zeroexResults.quote,
-        quoteResult.bestQuote === QuoteType.zeroex
+        quoteResult.bestQuote === QuoteType.zeroex,
+        'Swap',
       )
     }
     if (!zeroexResults.isAvailable && !isFetching0x) {

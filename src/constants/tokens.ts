@@ -1,3 +1,5 @@
+import { IndexCoopMainnetTokens } from '@indexcoop/tokenlists'
+
 import {
   bedBorderLogo,
   dsethLogo,
@@ -11,6 +13,10 @@ import {
 
 import { MAINNET } from './chains'
 
+// FIXME: temporary only, delete for production
+const btc2xLogo = '/assets/btc2x.png'
+const eth2xLogo = '/assets/eth2x.png'
+
 export enum IndexType {
   thematic = 'thematic',
   leverage = 'leverage',
@@ -21,8 +27,8 @@ export interface Token {
   name: string
   symbol: string
   address: string | undefined
-  polygonAddress: string | undefined
-  optimismAddress: string | undefined
+  polygonAddress?: string | undefined
+  optimismAddress?: string | undefined
   decimals: number
   // Url path for the token
   url: string
@@ -36,6 +42,11 @@ export interface Token {
   defaultChain?: number
   isPerp?: boolean
 }
+
+const getTokenFromSymbol = (symbol: string) =>
+  IndexCoopMainnetTokens.find(
+    (token) => token.symbol.toLowerCase() === symbol.toLowerCase(),
+  )
 
 /**
  * Indices
@@ -76,7 +87,7 @@ export const DefiPulseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: true,
+  isDangerous: false,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -94,9 +105,41 @@ export const DiversifiedStakedETHIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
-  isDangerous: true,
+  isDangerous: false,
   indexTypes: [IndexType.yield],
   defaultChain: MAINNET.chainId,
+}
+
+const btc2x = getTokenFromSymbol('BTC2X')!
+export const IndexCoopBitcoin2xIndex: Token = {
+  ...btc2x,
+  // Random for now - as no listing
+  coingeckoId: 'btc2x',
+  fees: {
+    streamingFee: '	3.65%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: btc2xLogo,
+  indexTypes: [IndexType.leverage],
+  isDangerous: true,
+  url: 'btc2x',
+}
+
+const eth2x = getTokenFromSymbol('ETH2X')!
+export const IndexCoopEthereum2xIndex: Token = {
+  ...eth2x,
+  // Random for now - as no listing
+  coingeckoId: 'eth2x',
+  fees: {
+    streamingFee: '	3.65%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: eth2xLogo,
+  indexTypes: [IndexType.leverage],
+  isDangerous: true,
+  url: 'eth2x',
 }
 
 export const IndexToken: Token = {
@@ -164,7 +207,7 @@ export const MetaverseIndex: Token = {
   fees: {
     streamingFee: '0.95%',
   },
-  isDangerous: true,
+  isDangerous: false,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }
@@ -200,7 +243,7 @@ export const BedIndex: Token = {
   fees: {
     streamingFee: '0.25%',
   },
-  isDangerous: true,
+  isDangerous: false,
   indexTypes: [IndexType.thematic],
   defaultChain: MAINNET.chainId,
 }

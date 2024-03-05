@@ -1,29 +1,19 @@
-import { Flex, Spacer } from '@chakra-ui/react'
-
+import { Path } from '@/constants/paths'
 import { Connect } from './connect'
+import { HeaderLink } from './link'
 import { Logo } from './logo'
 
-const Header = () => {
+export function Header() {
   return (
-    <Flex
-      as='header'
-      backdropFilter='saturate(120%) blur(5px)'
-      // boxShadow='0px 2px 3px 0px rgba(0, 0, 0, 0.17);'
-      p={['24px 32px']}
-      position='fixed'
-      top='0px'
-      w='100vw'
-      zIndex='2'
-    >
-      <Flex align='center' justifyContent='space-between' w='100%'>
-        <Flex marginRight={['', '', '', '20px']}>
-          <Logo />
-        </Flex>
-        <Spacer />
+    <header className='bg-ic-white shadow-ic-black/15 sticky top-0 z-50 flex justify-between px-9 py-4 opacity-[.96] shadow-md backdrop-blur'>
+      <div className='flex flex-row items-center space-x-6'>
+        <Logo />
+        <HeaderLink href={Path.TRADE} label='Trade' />
+        <HeaderLink href={Path.PRODUCTS} label='Products' />
+      </div>
+      <div className='hidden h-10 max-h-10 flex-row sm:flex'>
         <Connect />
-      </Flex>
-    </Flex>
+      </div>
+    </header>
   )
 }
-
-export default Header

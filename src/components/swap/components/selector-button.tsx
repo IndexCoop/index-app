@@ -14,7 +14,7 @@ type SelectorProps = {
 export const SelectorButton = ({ image, symbol, onClick }: SelectorProps) => (
   <Flex
     align='center'
-    bg={colors.icGray1}
+    bg={colors.ic.gray[100]}
     borderRadius='32'
     cursor='pointer'
     onClick={onClick}
@@ -22,9 +22,9 @@ export const SelectorButton = ({ image, symbol, onClick }: SelectorProps) => (
     shrink={0}
   >
     <Image alt={`${symbol} logo`} src={image} width={20} height={20} />
-    <Text color={colors.icBlack} fontSize={'14px'} fontWeight={500} mx='8px'>
+    <Text color={colors.ic.black} fontSize={'14px'} fontWeight={500} mx='8px'>
       {symbol}
     </Text>
-    <ChevronDownIcon w={6} h={6} color={colors.icGray4} />
+    <ChevronDownIcon w={6} h={6} color={colors.ic.gray[900]} />
   </Flex>
 )

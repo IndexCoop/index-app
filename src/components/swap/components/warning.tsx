@@ -36,12 +36,17 @@ type WarningProps = {
 export const WarningComp = (props: WarningProps) => (
   <Flex direction={'column'} m='20px 16px 8px'>
     <Flex align={'center'} direction={'row'}>
-      <WarningIcon color={colors.icGray3} mr={'8px'} />
-      <Text fontSize={'sm'} fontWeight={600} textColor={colors.icGray3}>
+      <WarningIcon color={colors.ic.gray[600]} mr={'8px'} />
+      <Text fontSize={'sm'} fontWeight={600} textColor={colors.ic.gray[600]}>
         {props.warning.title}
       </Text>
     </Flex>
-    <Text fontSize={'xs'} fontWeight={400} mt='8px' textColor={colors.icGray3}>
+    <Text
+      fontSize={'xs'}
+      fontWeight={400}
+      mt='8px'
+      textColor={colors.ic.gray[600]}
+    >
       {props.warning.text}
     </Text>
   </Flex>
@@ -62,8 +67,8 @@ export const WarningCompProtection = () => {
       m='20px 16px 8px'
     >
       <Flex align={'center'} direction={'row'}>
-        <WarningIcon color={colors.icGray3} mr={'8px'} />
-        <Text fontSize={'sm'} fontWeight={600} textColor={colors.icGray3}>
+        <WarningIcon color={colors.ic.gray[600]} mr={'8px'} />
+        <Text fontSize={'sm'} fontWeight={600} textColor={colors.ic.gray[600]}>
           MEV Protection
         </Text>
       </Flex>
@@ -71,7 +76,7 @@ export const WarningCompProtection = () => {
         fontSize={'xs'}
         fontWeight={400}
         mt='8px'
-        textColor={colors.icGray3}
+        textColor={colors.ic.gray[600]}
       >
         It is highly recommended to use an MEV protected RPC.{' '}
         <Link onClick={onClick} style={{ textDecoration: 'underline' }}>
