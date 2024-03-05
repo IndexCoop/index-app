@@ -13,7 +13,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <Providers>
       <Header />
-      <Flex>{children}</Flex>
+      <Flex className='bg-[#141E1F]'>{children}</Flex>
       <Footer />
     </Providers>
   )
