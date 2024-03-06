@@ -1,6 +1,6 @@
 export function Title() {
   return (
-    <>
+    <div className='max-w-sm'>
       <h2 className='text-ic-gray-50 text-4xl font-bold'>
         <span className='text-ic-blue-600'>IC</span> Leverage Suite
       </h2>
@@ -8,6 +8,6 @@ export function Title() {
         Simplified leverage with automated liquidation protection and low
         transparent fees.
       </h3>
-    </>
+    </div>
   )
 }
