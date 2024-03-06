@@ -32,7 +32,7 @@ export const ProtectionProvider = (props: { children: any }) => {
 
   useEffect(() => {
     logEvent('US_IP_CHECK', { USA_IP: isProtectable })
-  }, [isProtectable])
+  }, [isProtectable, logEvent])
 
   return (
     <ProtectionContext.Provider value={isProtectable}>
