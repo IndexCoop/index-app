@@ -1,8 +1,5 @@
+import clsx from 'clsx'
 import { useState } from 'react'
-
-import { Flex, Text } from '@chakra-ui/react'
-
-import { colors } from '@/lib/styles/colors'
 
 type RangeSelectionItemProps = {
   label: string
@@ -15,22 +12,15 @@ function RangeSelectionItem({
   onClick,
   isSelected,
 }: RangeSelectionItemProps) {
-  const color = isSelected ? colors.ic.gray[950] : colors.ic.gray[500]
-  const backgroundColor = isSelected ? '#F2F2F2' : 'none'
+  const color = isSelected ? 'text-ic-gray-950' : 'text-ic-gray-50'
+  const backgroundColor = isSelected ? 'bg-ic-gray-200' : 'none'
   return (
-    <Flex
-      bg={backgroundColor}
-      borderRadius='8px'
-      cursor='pointer'
+    <div
+      className={clsx('cursor-pointer rounded-lg px-2 py-3', backgroundColor)}
       onClick={onClick}
-      mr='4px'
-      px='8px'
-      py='10px'
     >
-      <Text color={color} fontSize='sm' fontWeight='600'>
-        {label}
-      </Text>
-    </Flex>
+      <div className={clsx('text-xs font-semibold', color)}>{label}</div>
+    </div>
   )
 }
 
@@ -38,7 +28,7 @@ const range = ['1H', '1D', '1W', '1M', '1Y', 'ALL']
 export function RangeSelection() {
   const [selected, setSelected] = useState(3)
   return (
-    <Flex>
+    <div className='flex flex-row gap-6'>
       {range.map((range, index) => (
         <RangeSelectionItem
           key={index}
@@ -47,6 +37,6 @@ export function RangeSelection() {
           onClick={() => setSelected(index)}
         />
       ))}
-    </Flex>
+    </div>
   )
 }

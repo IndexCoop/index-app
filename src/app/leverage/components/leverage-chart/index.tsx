@@ -2,17 +2,17 @@
 
 import { useRef } from 'react'
 
-import { useSize } from '@chakra-ui/react-use-size'
+// import { useSize } from '@chakra-ui/react-use-size'
 
 // TODO: build actual chart component
-import Chart from './components/chart'
+// import Chart from './components/chart'
 import { DateRange } from './components/date-range'
 import { Price } from './components/price'
 import { RangeSelection } from './components/range-selection'
 
 export function LeverageChart() {
   const elementRef = useRef<HTMLDivElement>(null)
-  const { width } = useSize(elementRef) ?? { width: null }
+  // const { width } = useSize(elementRef) ?? { width: null }
   return (
     <div
       className='border-ic-gray-600 flex w-full max-w-3xl flex-col rounded-3xl border bg-[#1C2C2E]'
