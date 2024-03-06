@@ -13,7 +13,7 @@ export default function Layout({ children }: LayoutProps) {
       <div className='dark bg-[#141E1F]'>
         <Header />
         <main>{children}</main>
-        <Footer />
+        <Footer isDarkMode={true} />
       </div>
     </ProvidersLite>
   )

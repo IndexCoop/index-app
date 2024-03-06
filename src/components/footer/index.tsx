@@ -38,15 +38,15 @@ const navigation = {
   ],
 }
 
-export function Footer() {
+export function Footer({ isDarkMode }: { isDarkMode?: boolean }) {
   return (
     <footer className='mx-auto max-w-7xl px-8 py-12 leading-4 lg:px-12 lg:py-20'>
       <div className='mb-8 sm:mb-12 lg:mb-16'>
         <div className='lg:grid lg:grid-cols-4 lg:gap-8'>
-          <LogoFull />
+          <LogoFull isDarkMode={isDarkMode === true} />
           <div className='mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:col-span-3 lg:mt-0'>
             <div>
-              <h3 className='text-ic-gray-900 text-sm font-semibold leading-6'>
+              <h3 className='text-ic-gray-900 dark:text-ic-gray-300 text-sm font-semibold leading-6'>
                 Resources
               </h3>
               <ul role='list' className='mt-6 space-y-4'>
@@ -58,7 +58,7 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className='text-ic-gray-900 text-sm font-semibold leading-6'>
+              <h3 className='text-ic-gray-900 dark:text-ic-gray-300 text-sm font-semibold leading-6'>
                 Community
               </h3>
               <ul role='list' className='mt-6 space-y-4'>
@@ -70,7 +70,7 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className='text-ic-gray-900 text-sm font-semibold leading-6'>
+              <h3 className='text-ic-gray-900 dark:text-ic-gray-300 text-sm font-semibold leading-6'>
                 Legal
               </h3>
               <ul role='list' className='mt-6 space-y-4'>
@@ -84,7 +84,7 @@ export function Footer() {
           </div>
         </div>
       </div>
-      <div className='text-ic-gray-600 space-y-4 text-xs font-light'>
+      <div className='text-ic-gray-600 dark:text-ic-gray-300 space-y-4 text-xs font-light'>
         <p>
           Disclaimer: This content is for informational purposes only and is not
           legal, tax, investment, financial, or other advice. You should not
