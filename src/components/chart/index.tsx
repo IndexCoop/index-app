@@ -16,7 +16,7 @@ export function Chart() {
   return (
     <Flex
       align='start'
-      bg={colors.icWhite}
+      bg={colors.ic.white}
       borderRadius='22'
       flexDirection={'column'}
       ref={elementRef}

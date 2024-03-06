@@ -30,20 +30,20 @@ export const Settings = (props: SettingsProps) => {
   const [inputValue, setInputValue] = useState<string>('')
 
   const inputTextColor = useMemo(
-    () => (parseFloat(inputValue) > 50 ? colors.icRed : colors.icGray4),
-    [inputValue]
+    () => (parseFloat(inputValue) > 50 ? colors.ic.red : colors.ic.gray[900]),
+    [inputValue],
   )
 
   const lowSlippage = useMemo(() => slippage < 0.05, [slippage])
 
   const showWarning = useMemo(
     () => slippage < 0.05 || (slippage > 1.0 && slippage <= 50),
-    [slippage]
+    [slippage],
   )
 
   const toggleState = useMemo(
     () => (isAuto ? ToggleState.auto : ToggleState.custom),
-    [isAuto]
+    [isAuto],
   )
 
   const onChangeInput = (value: string) => {
@@ -83,7 +83,7 @@ export const Settings = (props: SettingsProps) => {
       <PopoverContent
         bg={'linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'}
         border='1px solid'
-        borderColor={colors.icGray1}
+        borderColor={colors.ic.gray[100]}
         borderRadius={24}
         boxShadow={
           '0.5px 1px 10px 0px rgba(44, 51, 51, 0.10), 2px 2px 1px 0px #FCFFFF inset, 0.5px 0.5px 2px 0px rgba(0, 0, 0, 0.15)'
@@ -92,7 +92,7 @@ export const Settings = (props: SettingsProps) => {
         w='320px'
       >
         <PopoverBody>
-          <Text fontSize='md' fontWeight='500' textColor={colors.icGray3}>
+          <Text fontSize='md' fontWeight='500' textColor={colors.ic.gray[600]}>
             Max Slippage
           </Text>
           <Flex align='center' my='4'>
@@ -105,7 +105,7 @@ export const Settings = (props: SettingsProps) => {
             />
             <Flex
               align='center'
-              borderColor={colors.icGray1}
+              borderColor={colors.ic.gray[100]}
               borderRadius={'12px'}
               borderWidth={1}
               h='50px'
@@ -116,7 +116,7 @@ export const Settings = (props: SettingsProps) => {
                 fontSize='sm'
                 fontWeight={500}
                 placeholder={`${slippage}`}
-                _placeholder={{ color: colors.icGray2 }}
+                _placeholder={{ color: colors.ic.gray[400] }}
                 p='8px'
                 pr='4px'
                 ref={inputRef}
@@ -130,7 +130,11 @@ export const Settings = (props: SettingsProps) => {
                   onChangeInput(value)
                 }}
               />
-              <Text fontSize={'sm'} fontWeight={500} textColor={colors.icGray4}>
+              <Text
+                fontSize={'sm'}
+                fontWeight={500}
+                textColor={colors.ic.gray[900]}
+              >
                 %
               </Text>
             </Flex>

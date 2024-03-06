@@ -17,9 +17,9 @@ export default function VaultTokenCard({ vaultToken }: Props) {
   return (
     <Flex
       p='16px'
-      background={colors.white}
+      background={colors.ic.white}
       border='1px'
-      borderColor={colors.icGray1}
+      borderColor={colors.ic.gray[100]}
       borderRadius='23px'
       boxShadow='md'
       flexDirection='column'
@@ -39,14 +39,14 @@ export default function VaultTokenCard({ vaultToken }: Props) {
         </Text>
         <Flex
           align='center'
-          background={colors.icBlack}
+          background={colors.ic.black}
           borderRadius='12px'
           marginLeft='auto'
           py='8px'
           px='8px'
         >
           <Text
-            color={colors.icGray1}
+            color={colors.ic.gray[100]}
             fontWeight={500}
             fontSize='10px'
             flex={1}
@@ -54,7 +54,7 @@ export default function VaultTokenCard({ vaultToken }: Props) {
             Annualized Target Return
           </Text>
           <Text
-            color={colors.icWhite}
+            color={colors.ic.white}
             fontWeight={700}
             fontSize='16px'
             flex={1}
@@ -64,67 +64,71 @@ export default function VaultTokenCard({ vaultToken }: Props) {
           </Text>
         </Flex>
       </Flex>
-      <Text fontSize='14px' color={colors.icGray3} fontWeight='500' mb='8px'>
+      <Text
+        fontSize='14px'
+        color={colors.ic.gray[600]}
+        fontWeight='500'
+        mb='8px'
+      >
         {vaultToken.description}
       </Text>
-      <Text fontSize='11px' color={colors.icGray2} mb='4px'>
+      <Text fontSize='11px' color={colors.ic.gray[400]} mb='4px'>
         {vaultToken.assets.join(', ')}
       </Text>
       <Divider color='#E0E9E9' my='15px' />
       <Flex my='6px'>
-        <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
+        <Text color={colors.ic.gray[600]} fontSize='12px' fontWeight='500'>
           Target Fundraise
         </Text>
         <Spacer />
-        <Text color={colors.icGray4} fontSize='12px' fontWeight='700'>
+        <Text color={colors.ic.gray[900]} fontSize='12px' fontWeight='700'>
           {formatAmount(vaultToken.targetFundraise.amount)}
         </Text>
-        <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
+        <Text color={colors.ic.gray[600]} fontSize='12px' fontWeight='500'>
           &nbsp;{vaultToken.targetFundraise.currency}
         </Text>
       </Flex>
       <Flex my='6px'>
-        <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
+        <Text color={colors.ic.gray[600]} fontSize='12px' fontWeight='500'>
           Minimum Commitment
         </Text>
         <Spacer />
-        <Text color={colors.icGray4} fontSize='12px' fontWeight='700'>
+        <Text color={colors.ic.gray[900]} fontSize='12px' fontWeight='700'>
           {formatAmount(vaultToken.minimumCommitment.amount)}
         </Text>
-        <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
+        <Text color={colors.ic.gray[600]} fontSize='12px' fontWeight='500'>
           &nbsp;{vaultToken.minimumCommitment.currency}
         </Text>
       </Flex>
       {vaultToken.portfolioTerm && (
         <Flex my='6px'>
-          <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
+          <Text color={colors.ic.gray[600]} fontSize='12px' fontWeight='500'>
             Portfolio Term
           </Text>
           <Spacer />
-          <Text color={colors.icGray4} fontSize='12px' fontWeight='700'>
+          <Text color={colors.ic.gray[900]} fontSize='12px' fontWeight='700'>
             {vaultToken.portfolioTerm}
           </Text>
         </Flex>
       )}
       {vaultToken.lockupPeriod && (
         <Flex my='6px'>
-          <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
+          <Text color={colors.ic.gray[600]} fontSize='12px' fontWeight='500'>
             Lockup Period
           </Text>
           <Spacer />
-          <Text color={colors.icGray3} fontSize='12px' fontWeight='500'>
+          <Text color={colors.ic.gray[600]} fontSize='12px' fontWeight='500'>
             withdrawals open every
           </Text>
-          <Text color={colors.icGray4} fontSize='12px' fontWeight='700'>
+          <Text color={colors.ic.gray[900]} fontSize='12px' fontWeight='700'>
             &nbsp;{vaultToken.lockupPeriod}
           </Text>
         </Flex>
       )}
       <Button
+        className='bg-ic-blue-600 text-ic-white'
         borderRadius='10px'
         boxShadow='md'
-        color={colors.icWhite}
-        background={colors.icBlue6}
         my='8px'
       >
         Detail View
