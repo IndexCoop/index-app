@@ -38,12 +38,12 @@ const navigation = {
   ],
 }
 
-export function Footer({ isDarkMode }: { isDarkMode?: boolean }) {
+export function Footer() {
   return (
     <footer className='mx-auto max-w-7xl px-8 py-12 leading-4 lg:px-12 lg:py-20'>
       <div className='mb-8 sm:mb-12 lg:mb-16'>
         <div className='lg:grid lg:grid-cols-4 lg:gap-8'>
-          <LogoFull isDarkMode={isDarkMode === true} />
+          <LogoFull />
           <div className='mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:col-span-3 lg:mt-0'>
             <div>
               <h3 className='text-ic-gray-900 dark:text-ic-gray-300 text-sm font-semibold leading-6'>
