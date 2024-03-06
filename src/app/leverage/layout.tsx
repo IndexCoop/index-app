@@ -10,9 +10,11 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
   return (
     <ProvidersLite>
-      <Header />
-      <main className='bg-[#141E1F]'>{children}</main>
-      <Footer />
+      <div className='dark bg-[#141E1F]'>
+        <Header />
+        <main>{children}</main>
+        <Footer />
+      </div>
     </ProvidersLite>
   )
 }
