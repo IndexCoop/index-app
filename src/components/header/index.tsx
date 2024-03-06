@@ -3,7 +3,7 @@ import { Connect } from './connect'
 import { HeaderLink } from './link'
 import { Logo } from './logo'
 
-const isDevEnv = process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production'
+const isDevEnv = process.env.NEXT_PUBLIC_VERCEL_ENV !== 'index-app-prod'
 
 export function Header() {
   return (

@@ -2,7 +2,7 @@ import Script from 'next/script'
 
 export const SafaryScript = () => {
   // Only load in production
-  if (process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production') {
+  if (process.env.NEXT_PUBLIC_VERCEL_ENV !== 'index-app-prod') {
     return null
   }
 
