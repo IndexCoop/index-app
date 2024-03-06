@@ -5,6 +5,7 @@ import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
+import { SwapNavigation } from '@/components/swap/components/navigation'
 import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
@@ -23,6 +24,7 @@ import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
+import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
 import { Warnings, WarningType } from './components/warning'
 import { useSwap } from './hooks/use-swap'
@@ -32,8 +34,6 @@ import {
   useTradeButtonState,
 } from './hooks/use-trade-button-state'
 import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
-import { TradeOutput } from './components/trade-output'
-import { SwapNavigation } from '@/components/swap/components/navigation'
 
 type SwapProps = {
   isBuying: boolean
