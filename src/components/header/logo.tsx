@@ -1,12 +1,12 @@
 import Image from 'next/image'
-import { IndexLogoBlack } from '@/lib/utils/assets'
+import { IndexLogoBlack, IndexLogoWhite } from '@/lib/utils/assets'
 
-export const Logo = () => {
+export const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
   return (
     <a href='https://indexcoop.com/'>
       <Image
         alt='Index Coop Logo'
-        src={IndexLogoBlack}
+        src={isDarkMode ? IndexLogoWhite : IndexLogoBlack}
         height={32}
         width={32}
       />
