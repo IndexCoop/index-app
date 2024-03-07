@@ -12,7 +12,9 @@ export default function Page() {
           <Stats />
         </div>
         <div className='flex flex-row gap-6'>
-          <LeverageChart />
+          <div className='flex-none flex-grow'>
+            <LeverageChart />
+          </div>
           <LeverageWidget />
         </div>
       </div>
