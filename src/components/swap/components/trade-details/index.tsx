@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Image from 'next/image'
 import { WarningTwoIcon } from '@chakra-ui/icons'
 import {
   Accordion,
@@ -82,6 +83,15 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                       <Flex>
                         {showWarning && (
                           <WarningTwoIcon color={styles.text} mr='8px' />
+                        )}
+                        {!showWarning && (
+                          <Image
+                            className='text-ic-gray-600 mr-1'
+                            alt='Swap icon'
+                            src='/assets/swap-icon.svg'
+                            width={16}
+                            height={16}
+                          />
                         )}
                         <Box onClick={onToggleTokenPrice}>
                           {isLoading ? (
