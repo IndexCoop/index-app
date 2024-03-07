@@ -107,31 +107,21 @@ interface BalanceProps {
 const Balance = ({ balance, onClick }: BalanceProps) => {
   const showMaxLabel = onClick !== undefined
   return (
-    <Flex
-      align='center'
-      cursor='pointer'
-      direction={'row'}
-      gap='8px'
+    <div
+      className='flex cursor-pointer flex-row items-center gap-2'
       onClick={onClick}
     >
-      <Text color={colors.ic.gray[400]} fontSize='12px' fontWeight='500'>
+      <div className='text-ic-gray-400 dark:text-ic-gray-300 text-xs font-medium'>
         Balance: {balance}
-      </Text>
+      </div>
       {showMaxLabel && (
-        <Flex
-          align='center'
-          className='bg-ic-blue-500'
-          borderRadius='12px'
-          justify='center'
-          py='2px'
-          px='8px'
-        >
-          <Text color={colors.ic.white} fontSize='9px' fontWeight={500}>
+        <div className='bg-ic-blue-500 dark:bg-ic-blue-600 align-center justify-center rounded-xl px-2 py-[2px]'>
+          <div className='text-ic-white dark:text-ic-black text-[9px] font-medium'>
             MAX
-          </Text>
-        </Flex>
+          </div>
+        </div>
       )}
-    </Flex>
+    </div>
   )
 }
 
