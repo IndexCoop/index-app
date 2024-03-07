@@ -60,13 +60,12 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
           </Text>
         ) : (
           <Input
-            color={colors.ic.black}
+            className='text-ic-black dark:text-ic-white bg-transparent pr-1 text-3xl'
             fontSize='25px'
             fontWeight={500}
             overflow='hidden'
             placeholder='0'
             _placeholder={{ color: colors.ic.gray[400] }}
-            pr='4px'
             type='number'
             step='any'
             textOverflow='ellipsis'
