@@ -40,14 +40,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
   }
 
   return (
-    <Flex
-      className='bg-ic-white'
-      border={'1px solid'}
-      borderColor={colors.ic.gray[100]}
-      borderRadius={12}
-      direction={'column'}
-      p={'16px 20px'}
-    >
+    <div className='bg-ic-white dark:bg-ic-blue-950 border-ic-gray-100 dark:border-ic-gray-200 flex flex-col rounded-xl border px-4 py-5'>
       <Caption caption={props.caption} />
       <Flex align='center' direction='row' justify='space-between' mt='6px'>
         {config.isReadOnly ? (
@@ -102,7 +95,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
         <PriceUsd fiat={formattedFiat} priceImpact={props.priceImpact} />
         <Balance balance={balance} onClick={props.onClickBalance} />
       </Flex>
-    </Flex>
+    </div>
   )
 }
 
