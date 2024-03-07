@@ -15,7 +15,7 @@ export function LeverageWidget() {
   const onSelectToken = () => {}
 
   return (
-    <div className='widget flex flex-col rounded-3xl p-6'>
+    <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
       <div>ETH</div>
       <BuySellSelector />
       <LeverageSelector />
