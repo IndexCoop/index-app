@@ -10,35 +10,21 @@ import { BTC, ETH, Token, USDC } from '@/constants/tokens'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getDefaultIndex } from '@/lib/utils/tokens'
 
-export interface BaseTokenStats {
-  symbol: string
-  price: number
-  change24h: number
-  low24h: number
-  high24h: number
-}
+import { BaseTokenStats } from './types'
 
 export interface TokenContext {
   isMinting: boolean
   inputToken: Token
   outputToken: Token
-  stats: BaseTokenStats
+  stats: BaseTokenStats | null
   toggleIsMinting: () => void
-}
-
-const emptyStats = {
-  symbol: '',
-  price: 0,
-  change24h: 0,
-  low24h: 0,
-  high24h: 0,
 }
 
 export const LeverageTokenContext = createContext<TokenContext>({
   isMinting: true,
   inputToken: ETH,
   outputToken: getDefaultIndex(),
-  stats: emptyStats,
+  stats: null,
   toggleIsMinting: () => {},
 })
 
@@ -50,7 +36,7 @@ export function LeverageProvider(props: { children: any }) {
   const [inputToken, setInputToken] = useState<Token>(USDC)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [outputToken, setOutputToken] = useState<Token>(BTC)
-  const [stats, setStats] = useState<BaseTokenStats>(emptyStats)
+  const [stats, setStats] = useState<BaseTokenStats | null>(null)
 
   const toggleIsMinting = useCallback(() => {
     setMinting(!isMinting)
