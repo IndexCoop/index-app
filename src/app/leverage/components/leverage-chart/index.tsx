@@ -10,7 +10,11 @@ import { DateRange } from './components/date-range'
 import { Price } from './components/price'
 import { RangeSelection } from './components/range-selection'
 
-export function LeverageChart() {
+type LeverageChartProps = {
+  price: string
+}
+
+export function LeverageChart(props: LeverageChartProps) {
   const elementRef = useRef<HTMLDivElement>(null)
   // const { width } = useSize(elementRef) ?? { width: null }
   return (
@@ -19,7 +23,7 @@ export function LeverageChart() {
       ref={elementRef}
     >
       <div className='flex w-full flex-row items-center justify-between gap-2 px-8 pb-0 pt-8'>
-        <Price label={'$2,379.95'} />
+        <Price label={`$${props.price}`} />
         <RangeSelection />
       </div>
       <div className='mx-0 my-5 h-60'>
