@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useState } from 'react'
 
-import { ETH, Token, USDC } from '@/constants/tokens'
+import { BTC, ETH, Token, USDC } from '@/constants/tokens'
 import { getDefaultIndex } from '@/lib/utils/tokens'
 
 export interface TokenContext {
@@ -24,7 +24,7 @@ export function LeverageProvider(props: { children: any }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [inputToken, setInputToken] = useState<Token>(USDC)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [outputToken, setOutputToken] = useState<Token>(ETH)
+  const [outputToken, setOutputToken] = useState<Token>(BTC)
 
   const toggleIsMinting = useCallback(() => {
     setMinting(!isMinting)
