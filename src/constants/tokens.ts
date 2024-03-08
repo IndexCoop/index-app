@@ -329,6 +329,19 @@ export const WSETH2: Token = {
  * Other
  */
 
+export const BTC: Token = {
+  name: 'Bitcoin',
+  symbol: 'BTC',
+  image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+  address: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+  decimals: 18,
+  url: '',
+  coingeckoId: 'bitcoin',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
 export const DAI: Token = {
   name: 'Dai',
   symbol: 'DAI',
