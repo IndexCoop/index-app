@@ -208,6 +208,10 @@ export const Swap = (props: SwapProps) => {
     setSellTokenAmount(input || '')
   }
 
+  const onClickBuyButton = () => {
+    console.log('buy')
+  }
+
   const onClickInputBalance = useCallback(() => {
     if (!inputTokenBalance) return
     setInputTokenAmountFormatted(inputTokenBalance)
@@ -263,7 +267,7 @@ export const Swap = (props: SwapProps) => {
       p='8px 16px 16px'
       height={'100%'}
     >
-      <SwapNavigation />
+      <SwapNavigation onClickBuy={onClickBuyButton} />
       <Flex direction='column' m='4px 0 6px'>
         <TradeInputSelector
           config={{ isReadOnly: false }}
