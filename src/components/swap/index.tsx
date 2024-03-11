@@ -5,6 +5,7 @@ import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
+import { OnrampModal } from '@/components/onramp'
 import { SwapNavigation } from '@/components/swap/components/navigation'
 import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
@@ -62,6 +63,11 @@ export const Swap = (props: SwapProps) => {
   const { slippage } = useSlippage()
   const { address } = useWallet()
 
+  const {
+    isOpen: isBuyModalOpen,
+    onOpen: onOpenBuyModal,
+    onClose: onCloseBuyModal,
+  } = useDisclosure()
   const {
     isOpen: isSelectInputTokenOpen,
     onOpen: onOpenSelectInputToken,
@@ -210,6 +216,7 @@ export const Swap = (props: SwapProps) => {
 
   const onClickBuyButton = () => {
     console.log('buy')
+    onOpenBuyModal()
   }
 
   const onClickInputBalance = useCallback(() => {
@@ -346,6 +353,11 @@ export const Swap = (props: SwapProps) => {
         }}
         address={address}
         tokens={outputTokenslist}
+      />
+      <OnrampModal
+        address={undefined}
+        isOpen={isBuyModalOpen}
+        onClose={onCloseBuyModal}
       />
       {transactionReview && (
         <TransactionReviewModal
