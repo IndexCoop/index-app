@@ -14,7 +14,6 @@ function generateUrl(address?: Address) {
     // https://docs.onramper.com/docs/buy-widget#network-wallets
     url.concat(`&networkWallets=${formatAddress(address)}`)
   }
-  console.log('onramper-url:', url)
   return url
 }
 
