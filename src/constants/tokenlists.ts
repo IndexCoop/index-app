@@ -14,6 +14,7 @@ import {
   // IndexCoopBitcoin2xIndex,
   // IndexCoopEthereum2xIndex,
   IndexToken,
+  LeveragedRethStakingYield,
   MetaverseIndex,
   RETH,
   SETH2,
@@ -58,6 +59,7 @@ export const indicesTokenList = isDevEnv
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
       IndexToken,
+      LeveragedRethStakingYield,
     ]
   : [
       // IndexCoopEthereum2xIndex,
