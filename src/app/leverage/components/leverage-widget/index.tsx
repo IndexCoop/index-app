@@ -11,7 +11,7 @@ import { LeverageSelector } from './components/leverage-selector'
 import './styles.css'
 
 export function LeverageWidget() {
-  const { inputToken, isMinting, outputToken, toggleIsMinting } =
+  const { inputToken, isMinting, leverageType, outputToken, toggleIsMinting } =
     useLeverageToken()
   const onChangeInput = (token: Token, amount: string) => {
     console.log(token.symbol, amount)
@@ -24,7 +24,7 @@ export function LeverageWidget() {
     <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
       <div>{outputToken.symbol}</div>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
-      <LeverageSelector />
+      <LeverageSelector selectedTye={leverageType} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={''}

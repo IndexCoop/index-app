@@ -12,8 +12,15 @@ import { getDefaultIndex } from '@/lib/utils/tokens'
 
 import { BaseTokenStats } from './types'
 
+export enum LeverageType {
+  Long2x,
+  Long3x,
+  Short,
+}
+
 export interface TokenContext {
   isMinting: boolean
+  leverageType: LeverageType
   inputToken: Token
   outputToken: Token
   stats: BaseTokenStats | null
@@ -22,6 +29,7 @@ export interface TokenContext {
 
 export const LeverageTokenContext = createContext<TokenContext>({
   isMinting: true,
+  leverageType: LeverageType.Long2x,
   inputToken: ETH,
   outputToken: getDefaultIndex(),
   stats: null,
@@ -32,10 +40,15 @@ export const useLeverageToken = () => useContext(LeverageTokenContext)
 
 export function LeverageProvider(props: { children: any }) {
   const [isMinting, setMinting] = useState<boolean>(true)
+  // TODO:
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [inputToken, setInputToken] = useState<Token>(USDC)
+  // TODO:
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [outputToken, setOutputToken] = useState<Token>(BTC)
+  const [leverageType, setLeverageType] = useState<LeverageType>(
+    LeverageType.Long2x,
+  )
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
 
   const toggleIsMinting = useCallback(() => {
@@ -60,6 +73,7 @@ export function LeverageProvider(props: { children: any }) {
     <LeverageTokenContext.Provider
       value={{
         isMinting,
+        leverageType,
         inputToken,
         outputToken,
         stats,
