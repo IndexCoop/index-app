@@ -24,6 +24,7 @@ export interface TokenContext {
   inputToken: Token
   outputToken: Token
   stats: BaseTokenStats | null
+  onSelectLeverageType: (type: LeverageType) => void
   toggleIsMinting: () => void
 }
 
@@ -33,6 +34,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputToken: ETH,
   outputToken: getDefaultIndex(),
   stats: null,
+  onSelectLeverageType: () => {},
   toggleIsMinting: () => {},
 })
 
@@ -54,7 +56,6 @@ export function LeverageProvider(props: { children: any }) {
   const toggleIsMinting = useCallback(() => {
     setMinting(!isMinting)
   }, [isMinting])
-
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -69,6 +70,10 @@ export function LeverageProvider(props: { children: any }) {
     fetchStats()
   }, [outputToken])
 
+  const onSelectLeverageType = (type: LeverageType) => {
+    setLeverageType(type)
+  }
+
   return (
     <LeverageTokenContext.Provider
       value={{
@@ -77,6 +82,7 @@ export function LeverageProvider(props: { children: any }) {
         inputToken,
         outputToken,
         stats,
+        onSelectLeverageType,
         toggleIsMinting,
       }}
     >
