@@ -24,7 +24,7 @@ export const OnrampModal = (props: OnrampModalProps) => {
       <ModalContent className='border-ic-gray-100 bg-ic-white mx-0 my-0 rounded-xl border-2 p-0'>
         <ModalHeader>Buy</ModalHeader>
         <ModalCloseButton />
-        <ModalBody className='m-0 p-0'>
+        <ModalBody className='m-0 p-0 pb-2'>
           <iframe
             src={src}
             title='Onramper Widget'
