@@ -31,9 +31,6 @@ export const OnrampModal = (props: OnrampModalProps) => {
             allow='accelerometer; autoplay; camera; gyroscope; payment'
           ></iframe>
         </ModalBody>
-        <div className='text-ic-gray-500 mb-4 text-center text-xs'>
-          Powered by Onramper
-        </div>
       </ModalContent>
     </Modal>
   )
