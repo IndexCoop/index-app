@@ -7,6 +7,8 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react'
 
+import { useOnramperUrl } from '@/components/onramp/utils'
+
 type OnrampModalProps = {
   address?: string
   isOpen: boolean
@@ -14,6 +16,7 @@ type OnrampModalProps = {
 }
 
 export const OnrampModal = (props: OnrampModalProps) => {
+  const src = useOnramperUrl()
   const { isOpen, onClose } = props
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
@@ -23,7 +26,7 @@ export const OnrampModal = (props: OnrampModalProps) => {
         <ModalCloseButton />
         <ModalBody className='m-0 p-0'>
           <iframe
-            src='https://buy.onramper.com?apiKey=pk_prod_01HREVCX1YJDHAHQ6BE777J41B&mode=buy&defaultCrypto=usdc_ethereum&onlyCryptos=dai_ethereum,usdc_ethereum,usdt_ethereum,eth,weth_ethereum,gusd_ethereum,eth_arbitrum,usdc_arbitrum,usdt_arbitrum&onlyCryptoNetworks=ethereum,arbitrum?themeName=light&containerColor=fcffffff&primaryColor=0f1717ff&secondaryColor=fcffffff&cardColor=f5f7f7ff&primaryTextColor=0f1717ff&secondaryTextColor=627171ff&borderRadius=0.5&wgBorderRadius=1'
+            src={src}
             title='Onramper Widget'
             height='600px'
             width='100%'
