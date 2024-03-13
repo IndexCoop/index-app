@@ -169,14 +169,13 @@ const ContractSection = ({
 function useSelectedQuote(review: TransactionReview) {
   const { quoteResults, selectedQuote } = review
   const quote = useMemo(() => {
-    let quote = quoteResults.results.zeroex?.quote
     if (selectedQuote === QuoteType.flashmint) {
-      quote = quoteResults.results.flashmint?.quote
+      return quoteResults.results.flashmint!.quote
     }
     if (selectedQuote === QuoteType.redemption) {
-      quote = quoteResults.results.redemption?.quote
+      return quoteResults.results.redemption!.quote
     }
-    return quote
+    return quoteResults.results.zeroex!.quote
   }, [quoteResults, selectedQuote])
   return { quote }
 }
