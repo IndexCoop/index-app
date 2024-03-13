@@ -61,7 +61,7 @@ export async function getEnhancedRedemptionQuote(
     // TODO:
     // if (!isSameAddress(addresses[0], outputToken.address!)) return null
     console.log('componentsUnits:', addresses, units, units[0])
-    const outputTokenAmount = parseUnits(units[0].toString(), 8)
+    const outputTokenAmount = units[0]
 
     const sender = await signer.getAddress()
 
