@@ -55,8 +55,18 @@ describe('isAvailableForSwap()', () => {
     expect(isAvailable).toBe(true)
   })
 
+  test('should return false for BTC2x swap availability', async () => {
+    const isAvailable = isAvailableForSwap(IndexCoopBitcoin2xIndex)
+    expect(isAvailable).toBe(false)
+  })
+
   test('should return false for cdETI swap availability', async () => {
     const isAvailable = isAvailableForSwap(CoinDeskEthTrendIndex)
+    expect(isAvailable).toBe(false)
+  })
+
+  test('should return false for ETH2x swap availability', async () => {
+    const isAvailable = isAvailableForSwap(IndexCoopEthereum2xIndex)
     expect(isAvailable).toBe(false)
   })
 
