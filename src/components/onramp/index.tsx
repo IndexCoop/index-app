@@ -10,7 +10,6 @@ import {
 import { useOnramperUrl } from '@/components/onramp/utils'
 
 type OnrampModalProps = {
-  address?: string
   isOpen: boolean
   onClose: () => void
 }

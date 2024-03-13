@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import Image from 'next/image'
+// import Image from 'next/image'
 
 import { useLeverageToken } from '../provider'
 import { useFormattedLeverageData } from '../use-formatted-data'
@@ -9,6 +9,8 @@ export function Stats() {
   const { symbol, price, change24h, change24hIsPositive, low24h, high24h } =
     useFormattedLeverageData(stats)
   const iconColor = change24hIsPositive ? 'text-ic-green' : 'text-ic-red'
+  // const iconScale = change24hIsPositive ? '' : '-scale-100'
+  console.log('change2:', iconColor)
   return (
     <div className='border-ic-gray-600 flex flex-row items-center gap-10 rounded-3xl border bg-[#1C2C2E] px-8 py-6'>
       <div className='flex'>
@@ -20,14 +22,21 @@ export function Stats() {
         {change24h.length > 0 && (
           <div className='flex flex-row items-center gap-1'>
             <div className={clsx(iconColor)}>
-              <Image
+              {/** TODO: image doesn't use icon color */}
+              {/* <Image
                 alt='indicator icon'
+                className={clsx(iconColor, iconScale)}
                 src='/assets/chevron-stats-icon.svg'
                 width={8}
                 height={5}
-              />
+              /> */}
             </div>
-            <div className='text-ic-green text-base font-semibold'>
+            <div
+              className={clsx(
+                'text-ic-green text-base font-semibold',
+                iconColor,
+              )}
+            >
               {change24h}
             </div>
           </div>

@@ -354,11 +354,7 @@ export const Swap = (props: SwapProps) => {
         address={address}
         tokens={outputTokenslist}
       />
-      <OnrampModal
-        address={undefined}
-        isOpen={isBuyModalOpen}
-        onClose={onCloseBuyModal}
-      />
+      <OnrampModal isOpen={isBuyModalOpen} onClose={onCloseBuyModal} />
       {transactionReview && (
         <TransactionReviewModal
           isOpen={isTransactionReviewOpen}
