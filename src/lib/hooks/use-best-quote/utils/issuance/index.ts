@@ -97,7 +97,8 @@ export async function getEnhancedRedemptionQuote(
       inputTokenPrice
     const outputTokenAmountUsd =
       parseFloat(formatUnits(outputTokenAmount, outputToken.decimals)) *
-      inputTokenPrice
+      outputTokenPrice
+    console.log(outputTokenAmountUsd, gasCostsInUsd, 'after fees')
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
