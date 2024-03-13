@@ -5,7 +5,8 @@ import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
-import { Settings } from '@/components/settings'
+import { OnrampModal } from '@/components/onramp'
+import { SwapNavigation } from '@/components/swap/components/navigation'
 import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
@@ -24,6 +25,7 @@ import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
+import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
 import { Warnings, WarningType } from './components/warning'
 import { useSwap } from './hooks/use-swap'
@@ -33,7 +35,6 @@ import {
   useTradeButtonState,
 } from './hooks/use-trade-button-state'
 import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
-import { TradeOutput } from './components/trade-output'
 
 type SwapProps = {
   isBuying: boolean
@@ -59,14 +60,14 @@ export const Swap = (props: SwapProps) => {
     [requiresProtection, inputToken, outputToken],
   )
   const { chainId } = useNetwork()
-  const {
-    auto: autoSlippage,
-    isAuto: isAutoSlippage,
-    set: setSlippage,
-    slippage,
-  } = useSlippage()
+  const { slippage } = useSlippage()
   const { address } = useWallet()
 
+  const {
+    isOpen: isBuyModalOpen,
+    onOpen: onOpenBuyModal,
+    onClose: onCloseBuyModal,
+  } = useDisclosure()
   const {
     isOpen: isSelectInputTokenOpen,
     onOpen: onOpenSelectInputToken,
@@ -213,6 +214,11 @@ export const Swap = (props: SwapProps) => {
     setSellTokenAmount(input || '')
   }
 
+  const onClickBuyButton = () => {
+    console.log('buy')
+    onOpenBuyModal()
+  }
+
   const onClickInputBalance = useCallback(() => {
     if (!inputTokenBalance) return
     setInputTokenAmountFormatted(inputTokenBalance)
@@ -268,24 +274,7 @@ export const Swap = (props: SwapProps) => {
       p='8px 16px 16px'
       height={'100%'}
     >
-      <Flex direction={'row'} justify={'space-between'}>
-        <Text
-          color={colors.ic.gray[900]}
-          fontSize={'md'}
-          fontWeight={500}
-          ml={'12px'}
-          my={'16px'}
-        >
-          Swap
-        </Text>
-        <Settings
-          isAuto={isAutoSlippage}
-          isDarkMode={false}
-          slippage={slippage}
-          onChangeSlippage={setSlippage}
-          onClickAuto={autoSlippage}
-        />
-      </Flex>
+      <SwapNavigation onClickBuy={onClickBuyButton} />
       <Flex direction='column' m='4px 0 6px'>
         <TradeInputSelector
           config={{ isReadOnly: false }}
@@ -365,6 +354,7 @@ export const Swap = (props: SwapProps) => {
         address={address}
         tokens={outputTokenslist}
       />
+      <OnrampModal isOpen={isBuyModalOpen} onClose={onCloseBuyModal} />
       {transactionReview && (
         <TransactionReviewModal
           isOpen={isTransactionReviewOpen}
