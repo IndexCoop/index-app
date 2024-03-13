@@ -33,7 +33,6 @@ export const useApproval = (
 
   const isApproved = useMemo(() => {
     if (token.symbol === 'ETH') return true
-    console.log(amount, data, 'allowance')
     return data ? data >= amount : false
   }, [amount, data, token])
 
