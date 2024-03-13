@@ -499,6 +499,22 @@ export const WETH: Token = {
   indexTypes: [],
 }
 
+export const WBTC: Token = {
+  name: 'Wrapped BTC',
+  symbol: 'WBTC',
+  image:
+    'https://assets.coingecko.com/coins/images/7598/large/wrapped_bitcoin_wbtc.png',
+  address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 8,
+  url: '',
+  coingeckoId: 'wrapped-bitcoin',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
 export const WSTETH: Token = {
   name: 'wstETH',
   symbol: 'wstETH',
