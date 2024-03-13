@@ -1,11 +1,5 @@
 import { BigNumber, providers } from 'ethers'
-import {
-  Address,
-  encodeFunctionData,
-  formatUnits,
-  parseUnits,
-  PublicClient,
-} from 'viem'
+import { Address, encodeFunctionData, formatUnits, PublicClient } from 'viem'
 
 import { DebtIssuanceModuleAddress } from '@/constants/contracts'
 import { Token } from '@/constants/tokens'
@@ -13,6 +7,7 @@ import { getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
+import { isSameAddress } from '@/lib/utils'
 import { isAvailableForRedemption } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
@@ -58,8 +53,7 @@ export async function getEnhancedRedemptionQuote(
         inputToken.address! as Address,
         indexTokenAmount,
       )
-    // TODO:
-    // if (!isSameAddress(addresses[0], outputToken.address!)) return null
+    if (!isSameAddress(addresses[0], outputToken.address!)) return null
     console.log('componentsUnits:', addresses, units, units[0])
     const outputTokenAmount = units[0]
 
