@@ -20,6 +20,7 @@ import {
   STETH,
   USDC,
   USDT,
+  WBTC,
   WETH,
   WSTETH,
 } from '@/constants/tokens'
@@ -32,6 +33,7 @@ export const currencies = [
   USDT,
   DAI,
   GUSD,
+  WBTC,
   RETH,
   SETH2,
   STETH,
