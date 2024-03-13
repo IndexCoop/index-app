@@ -16,7 +16,7 @@ export function getFlashMintGasDefault(symbol: string) {
     case BedIndex.symbol:
       return 500_000
     case Bitcoin2xFlexibleLeverageIndex.symbol:
-      return 1_200_000
+      return 500_000
     case CoinDeskEthTrendIndex.symbol:
       return 500_000
     case DefiPulseIndex.symbol:
@@ -24,7 +24,7 @@ export function getFlashMintGasDefault(symbol: string) {
     case DiversifiedStakedETHIndex.symbol:
       return 1_000_000
     case Ethereum2xFlexibleLeverageIndex.symbol:
-      return 1_200_000
+      return 500_000
     case icETHIndex.symbol:
       return 1_500_000
     case MetaverseIndex.symbol:

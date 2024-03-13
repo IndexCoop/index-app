@@ -46,14 +46,15 @@ export async function getEnhancedRedemptionQuote(
   if (!isAvailableForRedemption(inputToken, outputToken)) return null
   try {
     console.log('redemption')
-
     const redemptionProvider = new RedemptionProvider(publicClient)
     const [addresses, units] =
       await redemptionProvider.getComponentRedemptionUnits(
         inputToken.address! as Address,
         indexTokenAmount,
       )
+
     if (!isSameAddress(addresses[0], outputToken.address!)) return null
+
     console.log('componentsUnits:', addresses, units, units[0])
     const outputTokenAmount = units[0]
 
