@@ -51,7 +51,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const backgroundColor = styles.background
 
   const [state, setState] = useState<TransactionReviewModalState>(
-    TransactionReviewModalState.submit
+    TransactionReviewModalState.submit,
   )
 
   const onCloseModal = () => {
@@ -169,10 +169,13 @@ const ContractSection = ({
 function useSelectedQuote(review: TransactionReview) {
   const { quoteResults, selectedQuote } = review
   const quote = useMemo(() => {
-    const isFlashmintSelectedQuote = selectedQuote === QuoteType.flashmint
-    return isFlashmintSelectedQuote
-      ? quoteResults.results.flashmint?.quote ?? null
-      : quoteResults.results.zeroex?.quote ?? null
+    if (selectedQuote === QuoteType.flashmint) {
+      return quoteResults.results.flashmint!.quote
+    }
+    if (selectedQuote === QuoteType.redemption) {
+      return quoteResults.results.redemption!.quote
+    }
+    return quoteResults.results.zeroex!.quote
   }, [quoteResults, selectedQuote])
   return { quote }
 }
@@ -212,7 +215,7 @@ const Review = (props: ReviewProps) => {
   const [override, setOverride] = useState(false)
   const [simulationState, setSimulationState] =
     useState<TransactionReviewSimulationState>(
-      TransactionReviewSimulationState.default
+      TransactionReviewSimulationState.default,
     )
 
   useEffect(() => {
@@ -261,7 +264,7 @@ const Review = (props: ReviewProps) => {
 
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
     transactionReview.contractAddress,
-    transactionReview.chainId
+    transactionReview.chainId,
   )
 
   const decimals = 10
@@ -269,13 +272,13 @@ const Review = (props: ReviewProps) => {
     displayFromWei(
       transactionReview.inputTokenAmount,
       decimals,
-      transactionReview.inputToken.decimals
+      transactionReview.inputToken.decimals,
     ) ?? ''
   const formattedOutputTokenAmount =
     displayFromWei(
       transactionReview.outputTokenAmount,
       decimals,
-      transactionReview.outputToken.decimals
+      transactionReview.outputToken.decimals,
     ) ?? ''
 
   const shouldShowOverride =

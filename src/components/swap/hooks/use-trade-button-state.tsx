@@ -21,7 +21,7 @@ export const useTradeButtonState = (
   shouldApprove: boolean,
   isApproved: boolean,
   isApproving: boolean,
-  sellTokenAmount: string
+  sellTokenAmount: string,
 ) => {
   const { address } = useWallet()
   const { isSupportedNetwork } = useNetwork()

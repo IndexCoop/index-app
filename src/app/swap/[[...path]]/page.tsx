@@ -12,7 +12,7 @@ import {
 import { Swap } from '@/components/swap'
 import { LeveragedRethStakingYield } from '@/constants/tokens'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
-// import { FliMigrationBanner } from '@/components/banners/fli-migration-banner'
+import { FliMigrationBanner } from '@/components/banners/fli-migration-banner'
 
 export default function SwapPage() {
   const { inputToken, isMinting, outputToken } = useSelectedToken()
@@ -40,7 +40,7 @@ export default function SwapPage() {
         mr={4}
         w={['inherit', '500px']}
       >
-        {/* <FliMigrationBanner /> */}
+        <FliMigrationBanner />
         <Swap
           isBuying={isMinting}
           inputToken={inputToken}
