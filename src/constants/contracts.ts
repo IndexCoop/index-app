@@ -5,4 +5,4 @@ export const zeroExRouterOptimismAddress =
 
 // Index
 export const DebtIssuanceModuleAddress =
-  '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
+  '0x69a592D2129415a4A1d1b1E309C17051B7F28d57'
