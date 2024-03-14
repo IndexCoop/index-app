@@ -23,7 +23,8 @@ const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
 const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
 const shouldShowLocalHost = isDevelopmentEnv || isPreviewEnv
 
-const networks = [mainnet, ...(shouldShowLocalHost ? [localhost] : [])]
+const lh = { ...localhost, id: 31337 }
+const networks = [mainnet, ...(shouldShowLocalHost ? [lh] : [])]
 
 export const { chains, publicClient } = configureChains(networks, [
   alchemyProvider({ apiKey: AlchemyApiKey }),
