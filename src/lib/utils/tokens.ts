@@ -30,8 +30,6 @@ export function getAddressForToken(
   token: Token,
   chainId: number | undefined,
 ): string | undefined {
-  if (token.symbol === IndexCoopEthereum2xIndex.symbol) return token.address
-  if (token.symbol === USDC.symbol) return token.address
   if (token.symbol === IndexToken.symbol) return token.address
   switch (chainId) {
     case MAINNET.chainId:
