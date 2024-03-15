@@ -3,6 +3,8 @@
 import { useRef } from 'react'
 
 // import { useSize } from '@chakra-ui/react-use-size'
+import { useLeverageToken } from '@/app/leverage/provider'
+import { useFormattedLeverageData } from '@/app/leverage/use-formatted-data'
 
 // TODO: build actual chart component
 // import Chart from './components/chart'
@@ -12,6 +14,8 @@ import { RangeSelection } from './components/range-selection'
 
 export function LeverageChart() {
   const elementRef = useRef<HTMLDivElement>(null)
+  const { stats } = useLeverageToken()
+  const { price } = useFormattedLeverageData(stats)
   // const { width } = useSize(elementRef) ?? { width: null }
   return (
     <div
@@ -19,7 +23,7 @@ export function LeverageChart() {
       ref={elementRef}
     >
       <div className='flex w-full flex-row items-center justify-between gap-2 px-8 pb-0 pt-8'>
-        <Price label={'$2,379.95'} />
+        <Price label={price} />
         <RangeSelection />
       </div>
       <div className='mx-0 my-5 h-60'>

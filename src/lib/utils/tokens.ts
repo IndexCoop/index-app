@@ -103,11 +103,15 @@ export function getNativeToken(chainId: number | undefined): Token | null {
 }
 
 export function getTokenBySymbol(symbol: string): Token | null {
-  const indexToken = indicesTokenList.find((index) => index.symbol.toLowerCase() === symbol.toLowerCase())
+  const indexToken = indicesTokenList.find(
+    (index) => index.symbol.toLowerCase() === symbol.toLowerCase(),
+  )
   if (indexToken) {
     return indexToken
   }
-  const currencyToken = currencies.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase())
+  const currencyToken = currencies.find(
+    (token) => token.symbol.toLowerCase() === symbol.toLowerCase(),
+  )
   return currencyToken ?? null
 }
 
@@ -136,6 +140,8 @@ export function isAvailableForRedemption(
 export function isAvailableForSwap(token: Token): boolean {
   switch (token.symbol) {
     case CoinDeskEthTrendIndex.symbol:
+    case IndexCoopBitcoin2xIndex.symbol:
+    case IndexCoopEthereum2xIndex.symbol:
     case LeveragedRethStakingYield.symbol:
       return false
     default:

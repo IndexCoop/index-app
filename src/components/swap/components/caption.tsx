@@ -1,9 +1,5 @@
-import { Text } from '@chakra-ui/react'
-
-import { colors } from '@/lib/styles/colors'
-
 export const Caption = ({ caption }: { caption: string }) => (
-  <Text fontSize={'12px'} fontWeight={500} textColor={colors.ic.gray[400]}>
+  <div className='text-ic-gray-400 dark:text-ic-gray-300 text-xs font-medium'>
     {caption}
-  </Text>
+  </div>
 )

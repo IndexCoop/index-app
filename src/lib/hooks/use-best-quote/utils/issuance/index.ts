@@ -1,11 +1,5 @@
 import { BigNumber, providers } from 'ethers'
-import {
-  Address,
-  encodeFunctionData,
-  formatUnits,
-  parseUnits,
-  PublicClient,
-} from 'viem'
+import { Address, encodeFunctionData, formatUnits, PublicClient } from 'viem'
 
 import { DebtIssuanceModuleAddress } from '@/constants/contracts'
 import { Token } from '@/constants/tokens'
@@ -13,6 +7,7 @@ import { getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
+import { isSameAddress } from '@/lib/utils'
 import { isAvailableForRedemption } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
@@ -51,17 +46,17 @@ export async function getEnhancedRedemptionQuote(
   if (!isAvailableForRedemption(inputToken, outputToken)) return null
   try {
     console.log('redemption')
-
     const redemptionProvider = new RedemptionProvider(publicClient)
     const [addresses, units] =
       await redemptionProvider.getComponentRedemptionUnits(
         inputToken.address! as Address,
         indexTokenAmount,
       )
-    // TODO:
-    // if (!isSameAddress(addresses[0], outputToken.address!)) return null
+
+    if (!isSameAddress(addresses[0], outputToken.address!)) return null
+
     console.log('componentsUnits:', addresses, units, units[0])
-    const outputTokenAmount = parseUnits(units[0].toString(), 8)
+    const outputTokenAmount = units[0]
 
     const sender = await signer.getAddress()
 
@@ -102,7 +97,8 @@ export async function getEnhancedRedemptionQuote(
       inputTokenPrice
     const outputTokenAmountUsd =
       parseFloat(formatUnits(outputTokenAmount, outputToken.decimals)) *
-      inputTokenPrice
+      outputTokenPrice
+    console.log(outputTokenAmountUsd, gasCostsInUsd, 'after fees')
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
     const fullCostsInUsd = getFullCostsInUsd(

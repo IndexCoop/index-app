@@ -1,3 +1,5 @@
+'use client'
+
 import { LeverageChart } from './components/leverage-chart'
 import { LeverageWidget } from './components/leverage-widget'
 import { Stats } from './components/stats'
@@ -12,7 +14,9 @@ export default function Page() {
           <Stats />
         </div>
         <div className='flex flex-row gap-6'>
-          <LeverageChart />
+          <div className='flex-none flex-grow'>
+            <LeverageChart />
+          </div>
           <LeverageWidget />
         </div>
       </div>

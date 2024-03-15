@@ -63,15 +63,15 @@ export function useSwap(
     balanceWei: inputTokenBalance,
   } = useFormattedBalance(inputToken, address ?? '')
 
-  const selectedQuote = useMemo(
-    () =>
-      selectedQuoteType === null ||
-      selectedQuoteType === QuoteType.zeroex ||
-      quoteResults === null
-        ? quoteResults?.results.zeroex?.quote ?? null
-        : quoteResults?.results.flashmint?.quote ?? null,
-    [quoteResults, selectedQuoteType],
-  )
+  const selectedQuote = useMemo(() => {
+    if (selectedQuoteType === null)
+      return quoteResults?.results.zeroex?.quote ?? null
+    if (selectedQuoteType === QuoteType.flashmint)
+      return quoteResults?.results.flashmint?.quote ?? null
+    if (selectedQuoteType === QuoteType.redemption)
+      return quoteResults.results.redemption?.quote ?? null
+    return quoteResults?.results.zeroex?.quote ?? null
+  }, [quoteResults, selectedQuoteType])
   const isFlashMint = useMemo(
     () => selectedQuote?.type === QuoteType.flashmint,
     [selectedQuote],
@@ -122,18 +122,19 @@ export function useSwap(
     [inputToken, inputTokenAmount, outputToken, selectedQuote],
   )
 
+  const isRedemption = useMemo(
+    () => quoteResults.bestQuote === QuoteType.redemption,
+    [quoteResults.bestQuote],
+  )
   // Formatted quote results
-  const formattedQuoteResults =
-    quoteResults.bestQuote === QuoteType.redemption
-      ? getFormattedQuoteRedemptionResult(quoteResults, isFetchingRedemption)
-      : getFormattedQuoteResults(
-          quoteResults,
-          isFetching0x,
-          isFetchingFlashmint,
-        )
+  const formattedQuoteResults = isRedemption
+    ? getFormattedQuoteRedemptionResult(quoteResults, isFetchingRedemption)
+    : getFormattedQuoteResults(quoteResults, isFetching0x, isFetchingFlashmint)
 
   // Trade data
-  const tradeData: TradeInfoItem[] = buildTradeDetails(selectedQuote ?? null)
+  const tradeData: TradeInfoItem[] = isRedemption
+    ? []
+    : buildTradeDetails(selectedQuote ?? null)
 
   return {
     contract,

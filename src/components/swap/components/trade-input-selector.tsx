@@ -40,14 +40,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
   }
 
   return (
-    <Flex
-      className='bg-ic-white'
-      border={'1px solid'}
-      borderColor={colors.ic.gray[100]}
-      borderRadius={12}
-      direction={'column'}
-      p={'16px 20px'}
-    >
+    <div className='bg-ic-white dark:bg-ic-blue-950 border-ic-gray-100 dark:border-ic-gray-200 flex flex-col rounded-xl border px-4 py-5'>
       <Caption caption={props.caption} />
       <Flex align='center' direction='row' justify='space-between' mt='6px'>
         {config.isReadOnly ? (
@@ -67,13 +60,12 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
           </Text>
         ) : (
           <Input
-            color={colors.ic.black}
+            className='text-ic-black dark:text-ic-white bg-transparent pr-1 text-3xl'
             fontSize='25px'
             fontWeight={500}
             overflow='hidden'
             placeholder='0'
             _placeholder={{ color: colors.ic.gray[400] }}
-            pr='4px'
             type='number'
             step='any'
             textOverflow='ellipsis'
@@ -102,7 +94,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
         <PriceUsd fiat={formattedFiat} priceImpact={props.priceImpact} />
         <Balance balance={balance} onClick={props.onClickBalance} />
       </Flex>
-    </Flex>
+    </div>
   )
 }
 
@@ -114,31 +106,21 @@ interface BalanceProps {
 const Balance = ({ balance, onClick }: BalanceProps) => {
   const showMaxLabel = onClick !== undefined
   return (
-    <Flex
-      align='center'
-      cursor='pointer'
-      direction={'row'}
-      gap='8px'
+    <div
+      className='flex cursor-pointer flex-row items-center gap-2'
       onClick={onClick}
     >
-      <Text color={colors.ic.gray[400]} fontSize='12px' fontWeight='500'>
+      <div className='text-ic-gray-400 dark:text-ic-gray-300 text-xs font-medium'>
         Balance: {balance}
-      </Text>
+      </div>
       {showMaxLabel && (
-        <Flex
-          align='center'
-          className='bg-ic-blue-500'
-          borderRadius='12px'
-          justify='center'
-          py='2px'
-          px='8px'
-        >
-          <Text color={colors.ic.white} fontSize='9px' fontWeight={500}>
+        <div className='bg-ic-blue-500 dark:bg-ic-blue-600 align-center justify-center rounded-xl px-2 py-[2px]'>
+          <div className='text-ic-white dark:text-ic-black text-[9px] font-medium'>
             MAX
-          </Text>
-        </Flex>
+          </div>
+        </div>
       )}
-    </Flex>
+    </div>
   )
 }
 

@@ -329,6 +329,19 @@ export const WSETH2: Token = {
  * Other
  */
 
+export const BTC: Token = {
+  name: 'Bitcoin',
+  symbol: 'BTC',
+  image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+  address: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+  decimals: 18,
+  url: '',
+  coingeckoId: 'bitcoin',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
 export const DAI: Token = {
   name: 'Dai',
   symbol: 'DAI',
@@ -481,6 +494,22 @@ export const WETH: Token = {
   decimals: 18,
   url: '',
   coingeckoId: 'weth',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const WBTC: Token = {
+  name: 'Wrapped BTC',
+  symbol: 'WBTC',
+  image:
+    'https://assets.coingecko.com/coins/images/7598/large/wrapped_bitcoin_wbtc.png',
+  address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 8,
+  url: '',
+  coingeckoId: 'wrapped-bitcoin',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
