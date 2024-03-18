@@ -30,7 +30,7 @@
     "@types/node": "20.2.5",
     "@types/react": "18.2.8",
     "@types/react-dom": "18.2.4",
-    "@visx/visx": "^3.8.0",
+    "@visx/visx": "^3.10.2",
     "eslint": "8.42.0",
     "eslint-config-next": "^13.5.4",
     "ethers": "^5.7.2",
