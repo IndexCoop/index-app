@@ -1,22 +1,25 @@
 import clsx from 'clsx'
 
 type BuySellSelectorProps = {
-  isMinting: boolean
+  isDepositing: boolean
   onClick: () => void
 }
 
-export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
+export function DepositWithdrawSelector({
+  isDepositing,
+  onClick,
+}: BuySellSelectorProps) {
   return (
     <div className='bg-ic-blue-950 flex flex-row rounded-md'>
-      <BuySellSelectorButton
-        isSelected={isMinting === true}
-        label='Buy'
+      <SelectorButton
+        isSelected={isDepositing === true}
+        label='Deposit'
         roundedLeft={true}
         onClick={onClick}
       />
-      <BuySellSelectorButton
-        isSelected={isMinting === false}
-        label='Sell'
+      <SelectorButton
+        isSelected={isDepositing === false}
+        label='Withdraw'
         roundedLeft={false}
         onClick={onClick}
       />
@@ -24,7 +27,7 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
   )
 }
 
-export function BuySellSelectorButton({
+export function SelectorButton({
   isSelected,
   label,
   roundedLeft,

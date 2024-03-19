@@ -4,14 +4,15 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { TradeButton } from '@/components/trade-button'
 import { ETH, Token } from '@/constants/tokens'
 
+import { useDeposit } from '../../providers/deposit-provider'
 import { PreSaleToken } from '../../types'
-// TODO: rework into deposit|withdraw
-import { BuySellSelector } from './components/buy-sell-selector'
+import { DepositWithdrawSelector } from './components/deposit-withdraw-selector'
 import { TitleLogo } from './components/title-logo'
 
 import './styles.css'
 
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
+  const { isDepositing, toggleIsDepositing } = useDeposit()
   const onChangeInput = (token: Token, amount: string) => {
     console.log(token.symbol, amount)
   }
@@ -22,7 +23,10 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   return (
     <div className='widget min-w-80 flex-1 flex-col space-y-4 rounded-3xl p-6'>
       <TitleLogo logo={token.logo ?? ''} symbol={token.symbol} />
-      <BuySellSelector isMinting={true} onClick={() => {}} />
+      <DepositWithdrawSelector
+        isDepositing={isDepositing}
+        onClick={toggleIsDepositing}
+      />
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={''}
