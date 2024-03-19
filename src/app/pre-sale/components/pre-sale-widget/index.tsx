@@ -20,7 +20,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const onSelectToken = () => {}
 
   return (
-    <div className='widget min-w-80 flex-1 flex-col gap-3 rounded-3xl p-6'>
+    <div className='widget min-w-80 flex-1 flex-col space-y-4 rounded-3xl p-6'>
       <TitleLogo logo={token.logo ?? ''} symbol={token.symbol} />
       <BuySellSelector isMinting={true} onClick={() => {}} />
       <TradeInputSelector
