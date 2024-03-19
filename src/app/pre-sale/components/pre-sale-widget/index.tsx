@@ -6,13 +6,18 @@ import { ETH, Token } from '@/constants/tokens'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { PreSaleToken } from '../../types'
+
 import { DepositWithdrawSelector } from './components/deposit-withdraw-selector'
+import { DepositStats } from './components/deposit-stats'
 import { TitleLogo } from './components/title-logo'
+import { useFormattedData } from './use-formatted-data'
 
 import './styles.css'
 
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const { isDepositing, toggleIsDepositing } = useDeposit()
+  const { tvl, userBalance } = useFormattedData()
+
   const onChangeInput = (token: Token, amount: string) => {
     console.log(token.symbol, amount)
   }
@@ -27,6 +32,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         isDepositing={isDepositing}
         onClick={toggleIsDepositing}
       />
+      <DepositStats tvl={tvl} userBalance={userBalance} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={''}
