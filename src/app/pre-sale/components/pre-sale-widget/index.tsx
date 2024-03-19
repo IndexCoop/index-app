@@ -18,7 +18,7 @@ export function PreSaleWidget() {
   const onSelectToken = () => {}
 
   return (
-    <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
+    <div className='widget min-w-80 flex-1 flex-col gap-3 rounded-3xl p-6'>
       <div>hyETH</div>
       <BuySellSelector isMinting={true} onClick={() => {}} />
       <TradeInputSelector

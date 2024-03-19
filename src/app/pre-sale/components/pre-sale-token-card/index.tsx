@@ -8,7 +8,7 @@ type Props = {
 }
 export function PreSaleTokenCard({ token, onClick }: Props) {
   return (
-    <div className='border-ic-gray-100 bg-ic-white flex min-w-80 flex-col rounded-3xl border px-4 py-5'>
+    <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
         <div className='flex flex-1 self-center'>
           <div className='my-auto mr-2 overflow-hidden rounded-full'>
