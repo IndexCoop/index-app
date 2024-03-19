@@ -1,8 +1,9 @@
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/react'
 
-import { PreSaleWidget } from '../pre-sale-widget'
-import { PreSaleToken } from '../../types'
 import { PreSaleTokenCard } from '@/app/pre-sale/components/pre-sale-token-card'
+
+import { PreSaleToken } from '../../types'
+import { PreSaleWidget } from '../pre-sale-widget'
 
 type PreSalePopupProps = {
   isOpen: boolean
@@ -31,7 +32,7 @@ export const PreSalePopup = (props: PreSalePopupProps) => {
                   onClick={() => console.log('join')}
                 />
               )}
-              <PreSaleWidget />
+              <PreSaleWidget token={token!} />
             </div>
           </div>
         </ModalBody>

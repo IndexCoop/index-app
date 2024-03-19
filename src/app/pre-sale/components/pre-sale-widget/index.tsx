@@ -4,12 +4,14 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { TradeButton } from '@/components/trade-button'
 import { ETH, Token } from '@/constants/tokens'
 
+import { PreSaleToken } from '../../types'
 // TODO: rework into deposit|withdraw
 import { BuySellSelector } from './components/buy-sell-selector'
+import { TitleLogo } from './components/title-logo'
 
 import './styles.css'
 
-export function PreSaleWidget() {
+export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const onChangeInput = (token: Token, amount: string) => {
     console.log(token.symbol, amount)
   }
@@ -19,7 +21,7 @@ export function PreSaleWidget() {
 
   return (
     <div className='widget min-w-80 flex-1 flex-col gap-3 rounded-3xl p-6'>
-      <div>hyETH</div>
+      <TitleLogo logo={token.logo ?? ''} symbol={token.symbol} />
       <BuySellSelector isMinting={true} onClick={() => {}} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
