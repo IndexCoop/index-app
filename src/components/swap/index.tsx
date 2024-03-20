@@ -154,6 +154,7 @@ export const Swap = (props: SwapProps) => {
     shouldApprove,
     isApprovedForSwap,
     isApprovingForSwap,
+    outputToken,
     sellTokenAmount,
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
