@@ -12,7 +12,7 @@ export const selectLatestMarketData = (marketData?: number[][]) =>
 export function shortenAddress(
   address: string,
   startLength: number = 6,
-  endLength: number = 4
+  endLength: number = 4,
 ): string {
   if (address.length < startLength + endLength) {
     throw new Error('Address is too short to be shortened.')
@@ -33,7 +33,7 @@ export function shortenAddress(
  */
 export const toWei = (
   valueToConvert: number | string,
-  power: number = 18
+  power: number = 18,
 ): BigNumber => {
   // parseUnits only accepts strings
   let value =
@@ -77,7 +77,7 @@ export const fromWei = (number?: BigNumber, power: number = 18): BigNumber => {
 export const displayFromWei = (
   number: BigNumber | undefined,
   decimals: number = 0,
-  power: number = 18
+  power: number = 18,
 ): string | null => {
   if (!number) return null
 
@@ -103,7 +103,7 @@ export const formatAmount = (amount: number) =>
  */
 export const isValidTokenInput = (
   tokenAmount: string,
-  tokenDecimals: number = 18
+  tokenDecimals: number = 18,
 ) => {
   try {
     const parsedBn = parseUnits(tokenAmount, tokenDecimals)

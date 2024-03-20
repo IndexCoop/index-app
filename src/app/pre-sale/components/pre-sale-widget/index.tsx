@@ -2,7 +2,7 @@
 
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TradeButton } from '@/components/trade-button'
-import { ETH, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { PreSaleToken } from '../../types'
@@ -15,8 +15,9 @@ import { useFormattedData } from './use-formatted-data'
 import './styles.css'
 
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
-  const { isDepositing, toggleIsDepositing } = useDeposit()
-  const { tvl, userBalance } = useFormattedData()
+  const { isDepositing, preSaleCurrencyToken, toggleIsDepositing } =
+    useDeposit()
+  const { currencyBalance, tvl, userBalance } = useFormattedData()
 
   const onChangeInput = (token: Token, amount: string) => {
     console.log(token.symbol, amount)
@@ -35,10 +36,10 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <DepositStats tvl={tvl} userBalance={userBalance} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={''}
+        balance={currencyBalance}
         caption='You pay'
         formattedFiat={''}
-        selectedToken={ETH}
+        selectedToken={preSaleCurrencyToken}
         selectedTokenAmount={''}
         onChangeInput={onChangeInput}
         onClickBalance={onClickBalance}
