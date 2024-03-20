@@ -35,7 +35,6 @@ export function usePresaleData(symbol: string): PresaleData {
       try {
         const indexApi = new IndexApi()
         const res = await indexApi.get(`/${token.symbol}/marketcap`)
-        console.log('fetch:', res)
         setTvl(res.marketcap)
       } catch (err) {
         console.log('Error fetching tvl', err)

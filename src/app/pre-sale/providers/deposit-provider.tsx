@@ -7,7 +7,6 @@ interface DepositContextProps {
   isDepositing: boolean
   preSaleCurrencyToken: Token
   preSaleToken: Token
-  userBalance: bigint
   toggleIsDepositing: () => void
 }
 
@@ -15,7 +14,6 @@ const DepositContext = createContext<DepositContextProps>({
   isDepositing: true,
   preSaleCurrencyToken: WSTETH,
   preSaleToken: getDefaultIndex(),
-  userBalance: BigInt(0),
   toggleIsDepositing: () => {},
 })
 
@@ -26,7 +24,6 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
   const preSaleCurrencyToken = WSTETH
 
   const [isDepositing, setDepositing] = useState<boolean>(true)
-  const [userBalance, setUserBalance] = useState(BigInt(0))
 
   const toggleIsDepositing = useCallback(() => {
     setDepositing(!isDepositing)
@@ -38,7 +35,6 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
         isDepositing,
         preSaleCurrencyToken,
         preSaleToken,
-        userBalance,
         toggleIsDepositing,
       }}
     >

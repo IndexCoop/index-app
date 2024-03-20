@@ -20,7 +20,7 @@ function getSupplyCapState(cap: number, totalSupply: number): SupplyCapState {
 }
 
 export const useRethSupply = (
-  shouldFetch: boolean
+  shouldFetch: boolean,
 ): { data: RethSupplyCapData | null } => {
   const { provider } = useWallet()
   const [data, setData] = useState<RethSupplyCapData | null>(null)
