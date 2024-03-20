@@ -26,7 +26,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const onSelectToken = () => {}
 
   return (
-    <div className='widget min-w-80 flex-1 flex-col space-y-4 rounded-3xl p-6'>
+    <div className='widget w-full min-w-80 flex-1 flex-col space-y-4 rounded-3xl p-6'>
       <TitleLogo logo={token.logo ?? ''} symbol={token.symbol} />
       <DepositWithdrawSelector
         isDepositing={isDepositing}

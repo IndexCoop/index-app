@@ -31,12 +31,16 @@ export const PreSalePopup = (props: PreSalePopupProps) => {
             <div className='flex h-screen'>
               <div className='align-center max-h-4xl mx-auto my-auto flex max-w-4xl flex-row items-start gap-3'>
                 {token && (
-                  <PreSaleTokenCard
-                    token={token}
-                    onClick={() => console.log('join')}
-                  />
+                  <div className='w-1/2'>
+                    <PreSaleTokenCard
+                      token={token}
+                      onClick={() => console.log('join')}
+                    />
+                  </div>
                 )}
-                <PreSaleWidget token={token!} />
+                <div className='w-1/2'>
+                  <PreSaleWidget token={token!} />{' '}
+                </div>
               </div>
             </div>
           </DepositProvider>
