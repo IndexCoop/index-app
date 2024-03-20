@@ -9,7 +9,7 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <div>
+    <div className="flex h-fit flex-col bg-[url('/presale-splash.jpg')] bg-top">
       <Providers>
         <Header />
         <main>{children}</main>

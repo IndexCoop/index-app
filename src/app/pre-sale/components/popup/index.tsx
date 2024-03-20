@@ -1,10 +1,12 @@
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/react'
 
 import { PreSaleWidget } from '../pre-sale-widget'
+import { PreSaleToken } from '../../types'
 
 type PreSalePopupProps = {
   isOpen: boolean
   onClose: () => void
+  token: PreSaleToken | null
 }
 
 export const PreSalePopup = (props: PreSalePopupProps) => {
