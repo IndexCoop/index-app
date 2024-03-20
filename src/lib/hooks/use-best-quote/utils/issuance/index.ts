@@ -11,7 +11,7 @@ import { isSameAddress } from '@/lib/utils'
 import { isAvailableForRedemption } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
-import { DebtIssuanceProvider } from './redemption'
+import { DebtIssuanceProvider } from './provider'
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 
 interface RedemptionQuoteRequest {
