@@ -11,7 +11,7 @@ import { isSameAddress } from '@/lib/utils'
 import { isAvailableForRedemption } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
-import { RedemptionProvider } from './redemption'
+import { DebtIssuanceProvider } from './redemption'
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 
 interface RedemptionQuoteRequest {
@@ -46,7 +46,7 @@ export async function getEnhancedRedemptionQuote(
   if (!isAvailableForRedemption(inputToken, outputToken)) return null
   try {
     console.log('redemption')
-    const redemptionProvider = new RedemptionProvider(contract, publicClient)
+    const redemptionProvider = new DebtIssuanceProvider(contract, publicClient)
     const [addresses, units] =
       await redemptionProvider.getComponentRedemptionUnits(
         inputToken.address! as Address,
