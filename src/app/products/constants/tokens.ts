@@ -5,7 +5,7 @@ export const productTokens = [
   {
     ...getTokenBySymbol('eth2x'),
     hasApy: false,
-    shouldUseAnalytics: false,
+    shouldUseAnalytics: true,
     theme: ProductTheme.ETH,
     type: ProductType.LEVERAGE,
   },
@@ -33,7 +33,7 @@ export const productTokens = [
   {
     ...getTokenBySymbol('btc2x'),
     hasApy: false,
-    shouldUseAnalytics: false,
+    shouldUseAnalytics: true,
     theme: ProductTheme.BTC,
     type: ProductType.LEVERAGE,
   },
