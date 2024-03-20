@@ -23,6 +23,8 @@ export const useTradeButton = (buttonState: TradeButtonState) => {
         return 'Insufficient funds'
       case TradeButtonState.loading:
         return 'Swapping...'
+      case TradeButtonState.notAvailable:
+        return 'Not available'
       case TradeButtonState.wrongNetwork:
         return 'Wrong Network'
       default:
@@ -40,6 +42,7 @@ export const useTradeButton = (buttonState: TradeButtonState) => {
       case TradeButtonState.enterAmount:
       case TradeButtonState.insufficientFunds:
       case TradeButtonState.loading:
+      case TradeButtonState.notAvailable:
       case TradeButtonState.wrongNetwork:
         return true
       default:
