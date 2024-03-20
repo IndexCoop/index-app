@@ -26,7 +26,7 @@ export const PreSalePopup = (props: PreSalePopupProps) => {
     >
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
       <ModalContent className='bg-transparent shadow-none'>
-        <ModalBody className='bg-transparent'>
+        <ModalBody className='dark bg-transparent'>
           <DepositProvider preSaleToken={getDefaultIndex()}>
             <div className='flex h-screen'>
               <div className='align-center max-h-4xl mx-auto my-auto flex max-w-4xl flex-row items-start gap-3'>
