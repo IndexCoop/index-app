@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
 
+import {
+  Bitcoin2xFlexibleLeverageIndex,
+  Ethereum2xFlexibleLeverageIndex,
+  Token,
+} from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
@@ -12,6 +17,7 @@ export enum TradeButtonState {
   fetchingError,
   insufficientFunds,
   loading,
+  notAvailable,
   wrongNetwork,
 }
 
@@ -21,6 +27,7 @@ export const useTradeButtonState = (
   shouldApprove: boolean,
   isApproved: boolean,
   isApproving: boolean,
+  outputToken: Token,
   sellTokenAmount: string,
 ) => {
   const { address } = useWallet()
@@ -33,6 +40,11 @@ export const useTradeButtonState = (
       // Order of the checks matters
       if (!address) return TradeButtonState.connectWallet
       if (!isSupportedNetwork) return TradeButtonState.wrongNetwork
+      if (
+        outputToken === Ethereum2xFlexibleLeverageIndex ||
+        outputToken === Bitcoin2xFlexibleLeverageIndex
+      )
+        return TradeButtonState.notAvailable
       if (sellTokenAmount === '0') return TradeButtonState.enterAmount
       if (hasFetchingError) return TradeButtonState.fetchingError
       if (hasInsufficientFunds) return TradeButtonState.insufficientFunds
@@ -48,6 +60,7 @@ export const useTradeButtonState = (
     isApproved,
     isApproving,
     isSupportedNetwork,
+    outputToken,
     sellTokenAmount,
     shouldApprove,
   ])
