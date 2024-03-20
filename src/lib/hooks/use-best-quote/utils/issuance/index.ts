@@ -46,7 +46,7 @@ export async function getEnhancedRedemptionQuote(
   if (!isAvailableForRedemption(inputToken, outputToken)) return null
   try {
     console.log('redemption')
-    const redemptionProvider = new RedemptionProvider(publicClient)
+    const redemptionProvider = new RedemptionProvider(contract, publicClient)
     const [addresses, units] =
       await redemptionProvider.getComponentRedemptionUnits(
         inputToken.address! as Address,
