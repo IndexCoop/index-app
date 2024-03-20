@@ -15,8 +15,13 @@ import { useFormattedData } from './use-formatted-data'
 import './styles.css'
 
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
-  const { isDepositing, toggleIsDepositing } = useDeposit()
-  const { tvl, userBalance } = useFormattedData()
+  const {
+    isDepositing,
+    preSaleCurrencyToken,
+    preSaleToken,
+    toggleIsDepositing,
+  } = useDeposit()
+  const { currencyBalance, tvl, userBalance } = useFormattedData()
 
   const onChangeInput = (token: Token, amount: string) => {
     console.log(token.symbol, amount)
@@ -35,7 +40,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <DepositStats tvl={tvl} userBalance={userBalance} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={''}
+        balance={currencyBalance}
         caption='You pay'
         formattedFiat={''}
         selectedToken={ETH}
