@@ -2,7 +2,7 @@ import { Address, PublicClient } from 'viem'
 
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 
-export class RedemptionProvider {
+export class DebtIssuanceProvider {
   constructor(
     readonly issuance: Address,
     readonly publicClient: PublicClient,
