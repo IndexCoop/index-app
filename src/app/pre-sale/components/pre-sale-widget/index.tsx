@@ -2,7 +2,7 @@
 
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TradeButton } from '@/components/trade-button'
-import { ETH, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { PreSaleToken } from '../../types'
