@@ -3,7 +3,7 @@ import { getTokenBySymbol } from '@/lib/utils/tokens'
 
 export const productTokens = [
   {
-    ...getTokenBySymbol('eth2x-fli'),
+    ...getTokenBySymbol('eth2x'),
     hasApy: false,
     shouldUseAnalytics: false,
     theme: ProductTheme.ETH,
@@ -31,7 +31,7 @@ export const productTokens = [
     type: ProductType.INDEX,
   },
   {
-    ...getTokenBySymbol('btc2x-fli'),
+    ...getTokenBySymbol('btc2x'),
     hasApy: false,
     shouldUseAnalytics: false,
     theme: ProductTheme.BTC,
