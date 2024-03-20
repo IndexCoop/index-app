@@ -43,7 +43,7 @@ export function PreSaleSection() {
         .
       </p>
       <PreSalePopup
-        token={null}
+        token={preSaleTokens[0]}
         isOpen={isPreSalePopupOpen}
         onClose={onClosePreSalePopup}
       />
