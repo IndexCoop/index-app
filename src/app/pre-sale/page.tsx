@@ -1,24 +1,13 @@
-'use client'
-
-import { useDisclosure } from '@chakra-ui/react'
-
-import { PreSalePopup } from './components/popup'
+import { FaqSection } from './components/faq-section'
+import { HeroSection } from './components/hero-section'
+import { PreSaleSection } from './components/pre-sale-section'
 
 export default function Page() {
-  const {
-    isOpen: isPreSalePopupOpen,
-    onOpen: onOpenPreSalePopup,
-    onClose: onClosePreSalePopup,
-  } = useDisclosure()
-
-  const onClickPreSale = () => {
-    onOpenPreSalePopup()
-  }
-
   return (
-    <div>
-      <div onClick={onClickPreSale}>Open</div>
-      <PreSalePopup isOpen={isPreSalePopupOpen} onClose={onClosePreSalePopup} />
+    <div className='mx-auto max-w-5xl px-2 py-12 sm:px-4 md:px-8 md:py-16 lg:px-12'>
+      <HeroSection />
+      <PreSaleSection />
+      <FaqSection />
     </div>
   )
 }

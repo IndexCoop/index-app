@@ -2,14 +2,23 @@
 
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TradeButton } from '@/components/trade-button'
-import { ETH, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 
-// TODO: rework into deposit|withdraw
-import { BuySellSelector } from './components/buy-sell-selector'
+import { useDeposit } from '../../providers/deposit-provider'
+import { PreSaleToken } from '../../types'
+
+import { DepositWithdrawSelector } from './components/deposit-withdraw-selector'
+import { DepositStats } from './components/deposit-stats'
+import { TitleLogo } from './components/title-logo'
+import { useFormattedData } from './use-formatted-data'
 
 import './styles.css'
 
-export function PreSaleWidget() {
+export function PreSaleWidget({ token }: { token: PreSaleToken }) {
+  const { isDepositing, preSaleCurrencyToken, toggleIsDepositing } =
+    useDeposit()
+  const { currencyBalance, tvl, userBalance } = useFormattedData()
+
   const onChangeInput = (token: Token, amount: string) => {
     console.log(token.symbol, amount)
   }
@@ -18,15 +27,19 @@ export function PreSaleWidget() {
   const onSelectToken = () => {}
 
   return (
-    <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
-      <div>hyETH</div>
-      <BuySellSelector isMinting={true} onClick={() => {}} />
+    <div className='widget w-full min-w-80 flex-1 flex-col space-y-4 rounded-3xl p-6'>
+      <TitleLogo logo={token.logo ?? ''} symbol={token.symbol} />
+      <DepositWithdrawSelector
+        isDepositing={isDepositing}
+        onClick={toggleIsDepositing}
+      />
+      <DepositStats tvl={tvl} userBalance={userBalance} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={''}
+        balance={currencyBalance}
         caption='You pay'
         formattedFiat={''}
-        selectedToken={ETH}
+        selectedToken={preSaleCurrencyToken}
         selectedTokenAmount={''}
         onChangeInput={onChangeInput}
         onClickBalance={onClickBalance}
