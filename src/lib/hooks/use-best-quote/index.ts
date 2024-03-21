@@ -35,7 +35,7 @@ export interface FetchQuoteRequest {
 
 const defaultResults: QuoteResults = {
   bestQuote: QuoteType.zeroex,
-  results: { flashmint: null, redemption: null, zeroex: null },
+  results: { flashmint: null, issuance: null, redemption: null, zeroex: null },
 }
 
 export const useBestQuote = (
@@ -221,6 +221,7 @@ export const useBestQuote = (
 
       // Non await - because we want to fetch quotes in parallel
       fetchSwapQuote()
+      fetchIssuanceQuote()
       fetchRedemptionQuote()
       fetchFlashMintQuote()
     },
@@ -245,6 +246,12 @@ export const useBestQuote = (
           flashmint: {
             type: QuoteType.flashmint,
             isAvailable: false,
+            quote: null,
+            error: null,
+          },
+          issuance: {
+            type: QuoteType.issuance,
+            isAvailable: true,
             quote: null,
             error: null,
           },
@@ -282,6 +289,12 @@ export const useBestQuote = (
           quote: quoteFlashMint,
           error: null,
         },
+        issuance: {
+          type: QuoteType.issuance,
+          isAvailable: false,
+          quote: null,
+          error: null,
+        },
         redemption: {
           type: QuoteType.redemption,
           isAvailable: false,
@@ -303,6 +316,7 @@ export const useBestQuote = (
     outputToken,
     quote0x,
     quoteFlashMint,
+    quoteIssuance,
     quoteRedemption,
   ])
 
@@ -315,6 +329,7 @@ export const useBestQuote = (
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
+    isFetchingIssuance,
     isFetchingRedemption,
     quoteResults,
   }
