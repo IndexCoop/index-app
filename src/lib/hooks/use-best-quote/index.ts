@@ -2,13 +2,17 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
-import { getEnhancedRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
+import {
+  getEnhancedIssuanceQuote,
+  getEnhancedRedemptionQuote,
+} from '@/lib/hooks/use-best-quote/utils/issuance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
 import {
   getAddressForToken,
   isAvailableForFlashMint,
+  isAvailableForIssuance,
   isAvailableForRedemption,
   isAvailableForSwap,
 } from '@/lib/utils/tokens'
@@ -47,11 +51,13 @@ export const useBestQuote = (
 
   const [isFetching0x, setIsFetching0x] = useState<boolean>(false)
   const [isFetchingFlashmint, setIsFetchingFlashMint] = useState<boolean>(false)
+  const [isFetchingIssuance, setIsFetchingIssuance] = useState<boolean>(false)
   const [isFetchingRedemption, setIsFetchingRedemption] =
     useState<boolean>(false)
 
   const [quote0x, setQuote0x] = useState<ZeroExQuote | null>(null)
   const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
+  const [quoteIssuance, setQuoteIssuance] = useState<Quote | null>(null)
   const [quoteRedemption, setQuoteRedemption] = useState<Quote | null>(null)
   const [quoteResults, setQuoteResults] = useState<QuoteResults>(defaultResults)
 
@@ -99,6 +105,7 @@ export const useBestQuote = (
       const fetchFlashMintQuote = async () => {
         if (
           canFlashmintIndexToken &&
+          !isAvailableForIssuance(inputToken, outputToken) &&
           !isAvailableForRedemption(inputToken, outputToken)
         ) {
           setIsFetchingFlashMint(true)
@@ -125,8 +132,39 @@ export const useBestQuote = (
         }
       }
 
+      const fetchIssuanceQuote = async () => {
+        if (isAvailableForIssuance(inputToken, outputToken)) {
+          console.log('canIssue')
+          setIsFetchingIssuance(true)
+          const gasStation = new GasStation(provider)
+          const gasPrice = await gasStation.getGasPrice()
+          const quoteIssuance = await getEnhancedIssuanceQuote(
+            {
+              ...request,
+              isIssuance: isMinting,
+              gasPrice: gasPrice.toBigInt(),
+              indexTokenAmount: inputTokenAmountWei.toBigInt(),
+              inputToken,
+              inputTokenPrice,
+              outputToken,
+              outputTokenPrice,
+              nativeTokenPrice,
+            },
+            publicClient,
+            signer,
+          )
+          setIsFetchingIssuance(false)
+          setQuoteIssuance(quoteIssuance)
+        } else {
+          setQuoteIssuance(null)
+        }
+      }
+
       const fetchRedemptionQuote = async () => {
-        if (canRedeemIndexToken) {
+        if (
+          canRedeemIndexToken &&
+          !isAvailableForIssuance(inputToken, outputToken)
+        ) {
           console.log('canRedeemIndexToken')
           setIsFetchingRedemption(true)
           const gasPrice = await provider.getGasPrice()
@@ -154,6 +192,7 @@ export const useBestQuote = (
       const fetchSwapQuote = async () => {
         if (
           canSwapIndexToken &&
+          !isAvailableForIssuance(inputToken, outputToken) &&
           !isAvailableForRedemption(inputToken, outputToken)
         ) {
           setIsFetching0x(true)
