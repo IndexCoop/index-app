@@ -1,8 +1,14 @@
 'use client'
 
+import { BigNumber } from 'ethers'
+
+import { useDisclosure } from '@chakra-ui/react'
+
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
+import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TradeButton } from '@/components/trade-button'
-import { Token } from '@/constants/tokens'
+import { ETH, Token } from '@/constants/tokens'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { PreSaleToken } from '../../types'
@@ -19,11 +25,40 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     useDeposit()
   const { currencyBalance, tvl, userBalance } = useFormattedData()
 
+  const {
+    isOpen: isTransactionReviewOpen,
+    onOpen: onOpenTransactionReview,
+    onClose: onCloseTransactionReview,
+  } = useDisclosure()
+
+  // TODO: temporary placeholder delete once we have a quote
+  const transactionReview = {
+    chainId: 1,
+    isMinting: true,
+    inputToken: ETH,
+    outputToken: ETH,
+    inputTokenAmount: BigNumber.from(0),
+    outputTokenAmount: BigNumber.from(0),
+    slippage: 1,
+    contractAddress: 'quote.contract',
+    quoteResults: {
+      bestQuote: QuoteType.redemption,
+      results: {
+        flashmint: null,
+        redemption: null,
+        zeroex: null,
+      },
+    },
+    selectedQuote: QuoteType.redemption,
+  }
+
   const onChangeInput = (token: Token, amount: string) => {
     console.log(token.symbol, amount)
   }
   const onClickBalance = () => {}
-  const onClickButton = () => {}
+  const onClickButton = () => {
+    onOpenTransactionReview()
+  }
   const onSelectToken = () => {}
 
   return (
@@ -52,6 +87,13 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         isLoading={false}
         onClick={onClickButton}
       />
+      {transactionReview && (
+        <TransactionReviewModal
+          isOpen={isTransactionReviewOpen}
+          onClose={onCloseTransactionReview}
+          transactionReview={transactionReview}
+        />
+      )}
     </div>
   )
 }

@@ -39,7 +39,7 @@ export const PreSalePopup = (props: PreSalePopupProps) => {
                   </div>
                 )}
                 <div className='w-1/2'>
-                  <PreSaleWidget token={token!} />{' '}
+                  <PreSaleWidget token={token!} />
                 </div>
               </div>
             </div>
