@@ -73,6 +73,7 @@ export interface QuoteResults {
   bestQuote: QuoteType
   results: {
     flashmint: QuoteResult | null
+    issuance: QuoteResult | null
     redemption: QuoteResult | null
     zeroex: QuoteResult | null
   }
