@@ -125,6 +125,19 @@ export function isAvailableForFlashMint(token: Token): boolean {
   }
 }
 
+export function isAvailableForIssuance(
+  inputToken: Token,
+  outputToken: Token,
+): boolean {
+  // FIXME: add hyETH
+  return (
+    (inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol &&
+      outputToken.symbol === IndexCoopBitcoin2xIndex.symbol) ||
+    (inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol &&
+      outputToken.symbol === IndexCoopEthereum2xIndex.symbol)
+  )
+}
+
 export function isAvailableForRedemption(
   inputToken: Token,
   outputToken: Token,
