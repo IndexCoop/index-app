@@ -1,3 +1,5 @@
+'use client'
+
 import { useArcxAnalytics } from '@arcxmoney/analytics'
 import { useGTMDispatch } from '@elgorditosalsero/react-gtm-hook'
 import { useCallback } from 'react'
@@ -9,38 +11,53 @@ export const useAnalytics = () => {
   const sendDataToGTM = useGTMDispatch()
 
   const logEvent = useCallback(
-    (name: string, data?: Record<string, unknown>) => {
+    (name: string, data?: { [key: string]: string | number | boolean }) => {
       if (!isProduction) return
 
-      arcxSdk?.event(name, data)
-      sendDataToGTM({ event: name, ...data })
-      window.safary?.track({
-        eventType: 'Generic',
-        eventName: name,
-        parameters: data
-      })
+      try {
+        arcxSdk?.event(name, data)
+        sendDataToGTM({ event: name, ...data })
+        window.safary?.track({
+          eventType: 'Generic',
+          eventName: name,
+          parameters: data,
+        })
+      } catch (e) {
+        console.log('Caught error in logEvent', e)
+      }
     },
-    [arcxSdk, sendDataToGTM]
+    [arcxSdk, sendDataToGTM],
   )
 
   const logTransaction = useCallback(
     (chainId: number, transactionType: string, transactionHash?: string) => {
       if (!isProduction) return
 
-      arcxSdk?.transaction({
-        chainId,
-        transactionHash: transactionHash ?? '',
-        metadata: {
-          transactionType,
-        },
-      })
-      sendDataToGTM({
-        event: 'Transaction Submitted',
-        chainId,
-        transactionHash: transactionHash ?? '',
-      })
+      try {
+        arcxSdk?.transaction({
+          chainId,
+          transactionHash: transactionHash ?? '',
+          metadata: {
+            transactionType,
+          },
+        })
+        sendDataToGTM({
+          event: 'Transaction Submitted',
+          chainId,
+          transactionHash: transactionHash ?? '',
+        })
+        window.safary?.track({
+          eventType: 'Transaction',
+          eventName: 'Transaction Submitted',
+          parameters: {
+            transactionHash: transactionHash ?? '',
+          },
+        })
+      } catch (e) {
+        console.log('Caught error in logTransaction', e)
+      }
     },
-    [arcxSdk, sendDataToGTM]
+    [arcxSdk, sendDataToGTM],
   )
 
   const logConnectWallet = useCallback(
@@ -48,14 +65,26 @@ export const useAnalytics = () => {
       if (!isProduction) return
 
       if (address && chainId) {
-        arcxSdk?.wallet({
-          account: address ?? '',
-          chainId: chainId ?? '',
-        })
-        sendDataToGTM({ event: 'Connected Wallet', address, chainId })
+        try {
+          arcxSdk?.wallet({
+            account: address ?? '',
+            chainId: chainId ?? '',
+          })
+          sendDataToGTM({ event: 'Connected Wallet', address, chainId })
+          window.safary?.track({
+            eventType: 'Wallet',
+            eventName: 'Connected Wallet',
+            parameters: {
+              account: address ?? '',
+              chainId: chainId ?? '',
+            },
+          })
+        } catch (e) {
+          console.log('Caught error in logConnectWallet', e)
+        }
       }
     },
-    [arcxSdk, sendDataToGTM]
+    [arcxSdk, sendDataToGTM],
   )
 
   return {
