@@ -48,7 +48,7 @@ export const useAnalytics = () => {
         })
         window.safary?.track({
           eventType: 'Transaction',
-          eventName: 'Transaction Submitted',
+          eventName: 'Submitted',
           parameters: {
             transactionHash: transactionHash ?? '',
           },
@@ -70,10 +70,10 @@ export const useAnalytics = () => {
             account: address ?? '',
             chainId: chainId ?? '',
           })
-          sendDataToGTM({ event: 'Connected Wallet', address, chainId })
+          sendDataToGTM({ event: 'Wallet Connected', address, chainId })
           window.safary?.track({
             eventType: 'Wallet',
-            eventName: 'Connected Wallet',
+            eventName: 'Connected',
             parameters: {
               account: address ?? '',
               chainId: chainId ?? '',
