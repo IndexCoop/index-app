@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 
-import { logEvent } from '../../utils/api/analytics'
 
 export const ProtectionContext = createContext<boolean>(false)
 
@@ -8,6 +8,7 @@ export const useProtection = () => useContext(ProtectionContext)
 
 export const ProtectionProvider = (props: { children: any }) => {
   const [isProtectable, setIsProtectable] = useState<boolean>(false)
+  const { logEvent } = useAnalytics()
 
   const checkIfProtectable = async () => {
     const API_KEY =
@@ -31,7 +32,7 @@ export const ProtectionProvider = (props: { children: any }) => {
 
   useEffect(() => {
     logEvent('US_IP_CHECK', { USA_IP: isProtectable })
-  }, [isProtectable])
+  }, [isProtectable, logEvent])
 
   return (
     <ProtectionContext.Provider value={isProtectable}>

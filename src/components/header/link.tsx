@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Path } from '@/constants/paths'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 
 type Props = {
   href: string
@@ -12,6 +13,7 @@ type Props = {
 
 export function HeaderLink({ href, label }: Props) {
   const pathname = usePathname()
+  const { logEvent } = useAnalytics()
   const isActive =
     href === Path.TRADE ? pathname.startsWith(href) : pathname === href
   return (
@@ -23,6 +25,9 @@ export function HeaderLink({ href, label }: Props) {
           : 'text-ic-gray-500 hover:text-ic-gray-700 dark:hover:text-ic-gray-100 dark:text-ic-gray-300',
       )}
       href={href}
+      onClick={() =>
+        logEvent('Header Link Clicked', { href })
+      }
     >
       {label}
     </Link>
