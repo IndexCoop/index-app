@@ -36,9 +36,11 @@ export const PreSalePopup = (props: PreSalePopupProps) => {
                     />
                   </div>
                 )}
-                <div className='w-1/2'>
-                  <PreSaleWidget token={token!} />
-                </div>
+                {token && (
+                  <div className='w-1/2'>
+                    <PreSaleWidget token={token} />
+                  </div>
+                )}
               </div>
             </div>
           </DepositProvider>
