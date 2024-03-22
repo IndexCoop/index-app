@@ -32,7 +32,8 @@ export const PreSalePopup = (props: PreSalePopupProps) => {
                   <div className='w-1/2'>
                     <PreSaleTokenCard
                       token={token}
-                      onClick={() => console.log('join')}
+                      // disable button
+                      onClick={undefined}
                     />
                   </div>
                 )}
