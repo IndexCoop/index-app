@@ -8,6 +8,7 @@ import {
   ETH,
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  HighYieldETHIndex,
   ic21,
   icETHIndex,
   IndexCoopBitcoin2xIndex,
@@ -129,12 +130,9 @@ export function isAvailableForIssuance(
   inputToken: Token,
   outputToken: Token,
 ): boolean {
-  // FIXME: add hyETH
   return (
-    (inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopBitcoin2xIndex.symbol) ||
-    (inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopEthereum2xIndex.symbol)
+    inputToken.symbol === HighYieldETHIndex.symbol ||
+    outputToken.symbol === HighYieldETHIndex.symbol
   )
 }
 

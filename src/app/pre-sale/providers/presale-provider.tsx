@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { preSaleTokens } from '@/app/pre-sale/constants'
-import { MetaverseIndex, Token, WSTETH } from '@/constants/tokens'
+import { Token, WSTETH } from '@/constants/tokens'
 import { formatAmount } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 
@@ -29,19 +29,18 @@ export function usePresaleData(symbol: string): PresaleData {
   )
 
   useEffect(() => {
-    // FIXME: use hyETH (presale token)
-    const token = MetaverseIndex
+    if (!presaleToken) return
     const fetchTvl = async () => {
       try {
         const indexApi = new IndexApi()
-        const res = await indexApi.get(`/${token.symbol}/marketcap`)
+        const res = await indexApi.get(`/${presaleToken.symbol}/marketcap`)
         setTvl(res.marketcap)
       } catch (err) {
         console.log('Error fetching tvl', err)
       }
     }
     fetchTvl()
-  }, [symbol])
+  }, [presaleToken])
 
   return {
     currencyToken,
