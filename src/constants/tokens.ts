@@ -110,6 +110,19 @@ export const DiversifiedStakedETHIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
+const hyeth = getTokenFromSymbol('hyETH')!
+export const HighYieldETHIndex: Token = {
+  ...hyeth,
+  coingeckoId: 'hyeth',
+  fees: {
+    streamingFee: '	0.95%',
+  },
+  image: hyeth.logoURI,
+  indexTypes: [IndexType.leverage],
+  isDangerous: true,
+  url: 'hyeth',
+}
+
 const btc2x = getTokenFromSymbol('BTC2X')!
 export const IndexCoopBitcoin2xIndex: Token = {
   ...btc2x,
