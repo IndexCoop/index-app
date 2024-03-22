@@ -4,7 +4,7 @@ import { StatusChip } from './status-chip'
 
 type Props = {
   token: PreSaleToken
-  onClick: () => void
+  onClick?: () => void
 }
 export function PreSaleTokenCard({ token, onClick }: Props) {
   return (
@@ -77,7 +77,9 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
       </div>
       <button
         className='text-ic-white bg-ic-blue-600 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
-        disabled={token.status !== PreSaleStatus.ACTIVE}
+        disabled={
+          token.status !== PreSaleStatus.ACTIVE || onClick === undefined
+        }
         onClick={onClick}
       >
         {token.status === PreSaleStatus.ACTIVE
