@@ -6,7 +6,7 @@ import { getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
-import { isAvailableForRedemption } from '@/lib/utils/tokens'
+import { isAvailableForIssuance } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
@@ -41,8 +41,8 @@ export async function getEnhancedIssuanceQuote(
     outputToken,
     outputTokenPrice,
   } = request
-  console.log(isAvailableForRedemption(inputToken, outputToken), 'isavailable')
-  if (!isAvailableForRedemption(inputToken, outputToken)) return null
+  console.log(isAvailableForIssuance(inputToken, outputToken), 'isavailable')
+  if (!isAvailableForIssuance(inputToken, outputToken)) return null
   try {
     console.log('isIssuance:', isIssuance)
     const debtIssuanceProvider = new DebtIssuanceProvider(
@@ -51,7 +51,7 @@ export async function getEnhancedIssuanceQuote(
     )
     const [addresses, units] = isIssuance
       ? await debtIssuanceProvider.getComponentIssuanceUnits(
-          inputToken.address! as Address,
+          outputToken.address! as Address,
           indexTokenAmount,
         )
       : await debtIssuanceProvider.getComponentRedemptionUnits(
