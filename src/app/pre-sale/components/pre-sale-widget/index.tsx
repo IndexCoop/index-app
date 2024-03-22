@@ -45,6 +45,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       bestQuote: QuoteType.redemption,
       results: {
         flashmint: null,
+        issuance: null,
         redemption: null,
         zeroex: null,
       },
