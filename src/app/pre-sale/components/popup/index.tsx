@@ -1,10 +1,11 @@
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/react'
 
+import { HighYieldETHIndex } from '@/constants/tokens'
+
 import { DepositProvider } from '../../providers/deposit-provider'
 import { PreSaleToken } from '../../types'
 import { PreSaleTokenCard } from '../pre-sale-token-card'
 import { PreSaleWidget } from '../pre-sale-widget'
-import { HighYieldETHIndex } from '@/constants/tokens'
 
 type PreSalePopupProps = {
   isOpen: boolean

@@ -7,7 +7,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TradeButton } from '@/components/trade-button'
-import { ETH, Token } from '@/constants/tokens'
+import { ETH } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 
 import { useDeposit } from '../../providers/deposit-provider'
@@ -21,8 +21,13 @@ import { useFormattedData } from './use-formatted-data'
 import './styles.css'
 
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
-  const { isDepositing, preSaleCurrencyToken, toggleIsDepositing } =
-    useDeposit()
+  const {
+    inputValue,
+    isDepositing,
+    preSaleCurrencyToken,
+    onChangeInputTokenAmount,
+    toggleIsDepositing,
+  } = useDeposit()
   const { currencyBalance, tvl, userBalance } = useFormattedData()
 
   const {
@@ -53,9 +58,6 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     selectedQuote: QuoteType.redemption,
   }
 
-  const onChangeInput = (token: Token, amount: string) => {
-    console.log(token.symbol, amount)
-  }
   const onClickBalance = () => {}
   const onClickButton = () => {
     onOpenTransactionReview()
@@ -76,8 +78,8 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         caption='You pay'
         formattedFiat={''}
         selectedToken={preSaleCurrencyToken}
-        selectedTokenAmount={''}
-        onChangeInput={onChangeInput}
+        selectedTokenAmount={inputValue}
+        onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
         onSelectToken={onSelectToken}
       />
