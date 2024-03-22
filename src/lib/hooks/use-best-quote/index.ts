@@ -230,6 +230,7 @@ export const useBestQuote = (
       chainId,
       indexToken,
       inputToken,
+      isMinting,
       jsonRpcProvider,
       outputToken,
       nativeTokenPrice,
