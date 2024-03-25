@@ -35,12 +35,12 @@ export const useWallet = (): Account => {
   const { address } = useAccount()
   const { chainId } = useNetwork()
   const publicClient = usePublicClient({ chainId })
-  const isConnected = !!address
   const jsonRpcProvider = publicClientToProvider(publicClient)
+  const isConnected = !!address
   return {
     address,
+    isConnected,
     jsonRpcProvider,
     provider: publicClient,
-    isConnected,
   }
 }
