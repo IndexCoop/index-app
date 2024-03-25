@@ -5,6 +5,11 @@ import { useAccount, useNetwork, useWalletClient } from 'wagmi'
 
 import { getEthersProvider, getEthersSigner } from '../utils/ethers-adapters'
 
+interface IndexRpcProvider {
+  estimateGas(tx: any): Promise<bigint>
+  getGasPrice(): Promise<bigint>
+}
+
 type Account = {
   address: Hex | undefined
   provider: any | undefined
