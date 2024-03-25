@@ -1,9 +1,9 @@
 import { providers } from 'ethers'
 import { useEffect, useState } from 'react'
 import { Hex } from 'viem'
-import { useAccount, useNetwork, useWalletClient } from 'wagmi'
+import { useAccount, useNetwork, usePublicClient, useWalletClient } from 'wagmi'
 
-import { getEthersProvider, getEthersSigner } from '../utils/ethers-adapters'
+import { getEthersSigner } from '../utils/ethers-adapters'
 
 interface IndexRpcProvider {
   estimateGas(tx: any): Promise<bigint>
@@ -12,7 +12,7 @@ interface IndexRpcProvider {
 
 type Account = {
   address: Hex | undefined
-  provider: any | undefined
+  provider: IndexRpcProvider
   signer: any | undefined
   isConnected: boolean
 }
@@ -21,11 +21,11 @@ type Account = {
 export const useWallet = (): Account => {
   const { address } = useAccount()
   const { chain } = useNetwork()
+  const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient({ chainId: chain?.id })
-  const provider = getEthersProvider({ chainId: chain?.id })
   const isConnected = !!address
   const [signer, setSigner] = useState<providers.JsonRpcSigner | undefined>(
-    undefined
+    undefined,
   )
   useEffect(() => {
     const fetchSigner = async () => {
@@ -36,5 +36,5 @@ export const useWallet = (): Account => {
       fetchSigner()
     }
   }, [chain, walletClient])
-  return { address, provider, signer, isConnected }
+  return { address, provider: publicClient, signer, isConnected }
 }
