@@ -18,7 +18,9 @@ export interface IndexQuoteRequest {
 }
 
 // Could be separated from ethers whenever it's not used any more
-export interface QuoteTransaction extends PopulatedTransaction {}
+export interface QuoteTransaction extends PopulatedTransaction {
+  account: string
+}
 
 export enum QuoteType {
   flashmint = 'flashmint',
