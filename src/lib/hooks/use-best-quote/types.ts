@@ -24,6 +24,7 @@ export interface QuoteTransaction extends PopulatedTransaction {
 
 export enum QuoteType {
   flashmint = 'flashmint',
+  issuance = 'issuance',
   redemption = 'redemption',
   zeroex = 'zeroex',
 }
@@ -72,6 +73,7 @@ export interface QuoteResults {
   bestQuote: QuoteType
   results: {
     flashmint: QuoteResult | null
+    issuance: QuoteResult | null
     redemption: QuoteResult | null
     zeroex: QuoteResult | null
   }

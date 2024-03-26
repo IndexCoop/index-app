@@ -8,6 +8,7 @@ import {
   ETH,
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  HighYieldETHIndex,
   ic21,
   icETHIndex,
   IndexCoopBitcoin2xIndex,
@@ -123,6 +124,16 @@ export function isAvailableForFlashMint(token: Token): boolean {
     default:
       return true
   }
+}
+
+export function isAvailableForIssuance(
+  inputToken: Token,
+  outputToken: Token,
+): boolean {
+  return (
+    inputToken.symbol === HighYieldETHIndex.symbol ||
+    outputToken.symbol === HighYieldETHIndex.symbol
+  )
 }
 
 export function isAvailableForRedemption(

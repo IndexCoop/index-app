@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import {
   Box,
   Flex,
@@ -31,6 +30,7 @@ import {
   TransactionReviewSimulation,
   TransactionReviewSimulationState,
 } from './components/simulation'
+import { SubmissionResult } from './components/submission-result'
 import { TransactionReview } from './types'
 
 enum TransactionReviewModalState {
@@ -101,7 +101,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
         <ModalBody p='0 16px 16px 16px'>
           {(state === TransactionReviewModalState.failed ||
             state === TransactionReviewModalState.success) && (
-            <SubmissionSuccessful
+            <SubmissionResult
               onClick={onDone}
               success={state === TransactionReviewModalState.success}
             />
@@ -322,40 +322,6 @@ const Review = (props: ReviewProps) => {
         isLoading={isLoading}
         label={'Submit Transaction'}
         onClick={onSubmit}
-      />
-    </Flex>
-  )
-}
-
-interface SubmissionSuccessfulProps {
-  onClick: () => void
-  success: boolean
-}
-
-const SubmissionSuccessful = ({
-  onClick,
-  success,
-}: SubmissionSuccessfulProps) => {
-  return (
-    <Flex align='center' direction={'column'}>
-      <Flex align='center' direction={'column'} p='16px'>
-        {success ? (
-          <CheckCircleIcon w='32px' h='32px' />
-        ) : (
-          <WarningIcon w='32px' h='32px' />
-        )}
-        <Text align='center' fontSize='3xl' p='16px'>
-          {success
-            ? 'You successfully submitted the transaction.'
-            : 'Submitting the transaction was cancelled or failed.'}
-        </Text>
-      </Flex>
-      <Spacer />
-      <TradeButton
-        isDisabled={false}
-        isLoading={false}
-        label={'Done'}
-        onClick={onClick}
       />
     </Flex>
   )
