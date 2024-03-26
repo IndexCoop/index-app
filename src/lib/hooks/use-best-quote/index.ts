@@ -6,7 +6,6 @@ import { getEnhancedRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/iss
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
-import { GasStation } from '@/lib/utils/api/gas-station'
 import {
   getAddressForToken,
   isAvailableForFlashMint,
@@ -40,7 +39,7 @@ export const useBestQuote = (
   outputToken: Token,
 ) => {
   const publicClient = usePublicClient()
-  const { provider, signer } = useWallet()
+  const { address, jsonRpcProvider, provider } = useWallet()
   const { chainId: networkChainId } = useNetwork()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
   const chainId = networkChainId ?? 1
@@ -73,7 +72,7 @@ export const useBestQuote = (
         return
       }
 
-      if (!provider || !chainId) {
+      if (!provider || !chainId || !address) {
         console.error('Error fetching quotes - no provider or chain id present')
         return
       }
@@ -107,6 +106,7 @@ export const useBestQuote = (
           const quoteFlashMint = await getFlashMintQuote(
             {
               ...request,
+              account: address,
               chainId,
               inputToken,
               inputTokenAmountWei,
@@ -116,7 +116,7 @@ export const useBestQuote = (
               nativeTokenPrice,
             },
             provider,
-            signer,
+            jsonRpcProvider,
           )
           setIsFetchingFlashMint(false)
           setQuoteFlashmint(quoteFlashMint)
@@ -129,12 +129,12 @@ export const useBestQuote = (
         if (canRedeemIndexToken) {
           console.log('canRedeemIndexToken')
           setIsFetchingRedemption(true)
-          const gasStation = new GasStation(provider)
-          const gasPrice = await gasStation.getGasPrice()
+          const gasPrice = await provider.getGasPrice()
           const quoteRedemption = await getEnhancedRedemptionQuote(
             {
               ...request,
-              gasPrice: gasPrice.toBigInt(),
+              account: address,
+              gasPrice: gasPrice,
               indexTokenAmount: inputTokenAmountWei.toBigInt(),
               inputToken,
               inputTokenPrice,
@@ -143,7 +143,6 @@ export const useBestQuote = (
               nativeTokenPrice,
             },
             publicClient,
-            signer,
           )
           setIsFetchingRedemption(false)
           setQuoteRedemption(quoteRedemption)
@@ -162,7 +161,7 @@ export const useBestQuote = (
           const quote0x = await get0xQuote({
             ...request,
             chainId,
-            address: signer._address,
+            address,
             inputToken,
             inputTokenPrice,
             outputToken,
@@ -182,14 +181,15 @@ export const useBestQuote = (
       fetchFlashMintQuote()
     },
     [
+      address,
       chainId,
       indexToken,
       inputToken,
+      jsonRpcProvider,
       outputToken,
       nativeTokenPrice,
       provider,
       publicClient,
-      signer,
     ],
   )
 

@@ -21,7 +21,7 @@ import { useAnalytics } from './use-analytics'
 async function getInputTokenBalance(
   inputToken: Token,
   address: string,
-  publicClient: PublicClient
+  publicClient: PublicClient,
 ): Promise<bigint> {
   const balanceProvider = new BalanceProvider(publicClient)
   return isNativeCurrency(inputToken, publicClient.chain.id)
@@ -31,7 +31,7 @@ async function getInputTokenBalance(
 
 export const useTrade = () => {
   const publicClient = usePublicClient()
-  const { address, signer } = useWallet()
+  const { address } = useWallet()
   const { chainId } = useNetwork()
   const { logTransaction } = useAnalytics()
 
@@ -52,7 +52,7 @@ export const useTrade = () => {
       const inputTokenBalance = await getInputTokenBalance(
         inputToken,
         address,
-        publicClient
+        publicClient,
       )
       if (BigInt(inputTokenAmount.toString()) > inputTokenBalance) return
 
@@ -61,14 +61,17 @@ export const useTrade = () => {
         const { tx } = quote
         const defaultGasEstimate =
           quote.type === QuoteType.flashmint
-            ? BigNumber.from(6_000_000)
-            : BigNumber.from(250_000)
-        const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+            ? BigInt(6_000_000)
+            : BigInt(250_000)
+        const gasEstimatooor = new GasEstimatooor(
+          publicClient,
+          defaultGasEstimate,
+        )
         // Will throw error if tx would fail
         // If the user overrides, we take any gas estimate
         const canFail = override
         const gasLimit = await gasEstimatooor.estimate(tx, canFail)
-        tx.gasLimit = gasLimit
+        tx.gasLimit = BigNumber.from(gasLimit.toString())
         console.log(BigInt(gasLimit.toString()), gasLimit.toString())
         const request = await prepareSendTransaction({
           account: address,
@@ -95,7 +98,7 @@ export const useTrade = () => {
         throw error
       }
     },
-    [address, chainId, logTransaction, publicClient, signer]
+    [address, chainId, logTransaction, publicClient],
   )
 
   return { executeTrade, isTransacting, txWouldFail }

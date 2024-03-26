@@ -1,12 +1,11 @@
 import { providers, utils } from 'ethers'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
 
 import { MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
-import { GasStation } from '@/lib/utils/api/gas-station'
+import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { getConfiguredZeroExApi } from '@/lib/utils/api/zeroex'
 import { getNetworkKey } from '@/lib/utils/api/zeroex-utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
@@ -20,6 +19,7 @@ import { getIndexTokenAmount } from './index-token-amount'
 import { getPriceImpact } from './price-impact'
 
 async function getEnhancedFlashMintQuote(
+  account: string,
   isMinting: boolean,
   inputToken: Token,
   outputToken: Token,
@@ -27,11 +27,11 @@ async function getEnhancedFlashMintQuote(
   inputTokenPrice: number,
   outputTokenPrice: number,
   nativeTokenPrice: number,
-  gasPrice: BigNumber,
+  gasPrice: bigint,
   slippage: number,
   chainId: number,
-  provider: JsonRpcProvider,
-  signer: JsonRpcSigner
+  provider: IndexRpcProvider,
+  jsonRpcProvider: providers.JsonRpcProvider,
 ): Promise<Quote | null> {
   // Allow only on mainnet
   if (chainId !== MAINNET.chainId) return null
@@ -55,33 +55,30 @@ async function getEnhancedFlashMintQuote(
       indexTokenAmount,
       slippage,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider, zeroExApi)
+    const quoteProvider = new FlashMintQuoteProvider(jsonRpcProvider, zeroExApi)
     const quoteFM = await quoteProvider.getQuote(request)
     console.log(quoteFM)
     if (quoteFM) {
       const { inputOutputAmount, tx } = quoteFM
-      const from = await signer.getAddress()
       const transaction: QuoteTransaction = {
+        account,
         chainId: 1,
-        from,
+        from: account,
         to: tx.to,
         data: utils.hexlify(tx.data!),
         value: tx.value ? BigNumber.from(tx.value) : undefined,
       }
       const defaultGas = getFlashMintGasDefault(indexToken.symbol)
-      const defaultGasEstimate = BigNumber.from(defaultGas)
+      const defaultGasEstimate = BigInt(defaultGas)
       console.log('gas', defaultGas, defaultGasEstimate.toString())
-      const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+      const gasEstimatooor = new GasEstimatooor(provider, defaultGasEstimate)
       // We don't want this function to fail for estimates here.
       // A default will be returned if the tx would fail.
       const canFail = false
       const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
-      const gasCosts = gasEstimate.mul(gasPrice)
-      const gasCostsInUsd = getGasCostsInUsd(
-        gasCosts.toBigInt(),
-        nativeTokenPrice
-      )
-      transaction.gasLimit = gasEstimate
+      const gasCosts = gasEstimate * gasPrice
+      const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
+      transaction.gasLimit = BigNumber.from(gasEstimate.toString())
       console.log('gasLimit', transaction.gasLimit.toString())
 
       const inputTokenAmount = isMinting ? inputOutputAmount : indexTokenAmount
@@ -89,25 +86,25 @@ async function getEnhancedFlashMintQuote(
 
       const inputTokenAmountUsd =
         parseFloat(
-          displayFromWei(inputTokenAmount, 10, inputToken.decimals) ?? '0'
+          displayFromWei(inputTokenAmount, 10, inputToken.decimals) ?? '0',
         ) * inputTokenPrice
       const outputTokenAmountUsd =
         parseFloat(
-          displayFromWei(outputTokenAmount, 10, outputToken.decimals) ?? '0'
+          displayFromWei(outputTokenAmount, 10, outputToken.decimals) ?? '0',
         ) * outputTokenPrice
       const priceImpact = getPriceImpact(
         inputTokenAmountUsd,
-        outputTokenAmountUsd
+        outputTokenAmountUsd,
       )
 
       const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
       const fullCostsInUsd = getFullCostsInUsd(
         inputTokenAmount.toBigInt(),
-        gasEstimate.toBigInt() * gasPrice.toBigInt(),
+        gasEstimate * gasPrice,
         inputToken.decimals,
         inputTokenPrice,
-        nativeTokenPrice
+        nativeTokenPrice,
       )
 
       return {
@@ -117,9 +114,9 @@ async function getEnhancedFlashMintQuote(
         isMinting,
         inputToken,
         outputToken,
-        gas: gasEstimate,
-        gasPrice,
-        gasCosts,
+        gas: BigNumber.from(gasEstimate.toString()),
+        gasPrice: BigNumber.from(gasPrice.toString()),
+        gasCosts: BigNumber.from(gasCosts.toString()),
         gasCostsInUsd,
         fullCostsInUsd,
         priceImpact,
@@ -143,6 +140,7 @@ async function getEnhancedFlashMintQuote(
 }
 
 interface FlashMintQuoteRequest extends IndexQuoteRequest {
+  account: string
   chainId: number
   inputTokenAmountWei: BigNumber
   nativeTokenPrice: number
@@ -150,11 +148,12 @@ interface FlashMintQuoteRequest extends IndexQuoteRequest {
 
 export async function getFlashMintQuote(
   request: FlashMintQuoteRequest,
-  provider: providers.JsonRpcProvider,
-  signer: JsonRpcSigner
+  provider: IndexRpcProvider,
+  jsonRpcProvider: providers.JsonRpcProvider,
 ) {
   const {
     chainId,
+    account,
     inputToken,
     inputTokenAmount,
     inputTokenAmountWei,
@@ -173,16 +172,16 @@ export async function getFlashMintQuote(
     inputToken.decimals,
     outputToken.decimals,
     inputTokenPrice,
-    outputTokenPrice
+    outputTokenPrice,
   )
 
-  const gasStation = new GasStation(provider)
-  const gasPrice = await gasStation.getGasPrice()
+  const gasPrice = await provider.getGasPrice()
 
   let savedQuote: Quote | null = null
 
   for (let t = 2; t > 0; t--) {
     const flashMintQuote = await getEnhancedFlashMintQuote(
+      account,
       isMinting,
       inputToken,
       outputToken,
@@ -194,7 +193,7 @@ export async function getFlashMintQuote(
       slippage,
       chainId,
       provider,
-      signer
+      jsonRpcProvider,
     )
     // If there is no FlashMint quote, return immediately
     if (flashMintQuote === null) return savedQuote

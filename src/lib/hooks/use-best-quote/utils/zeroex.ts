@@ -48,7 +48,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
       takerAddress: address!,
     },
     false,
-    rfq
+    rfq,
   )
   const dexSwapOption = zeroExResult.success ? zeroExResult.value : null
   // const dexSwapError = zeroExResult.success
@@ -65,7 +65,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
   const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
   const outputTokenAmountUsd =
     parseFloat(
-      displayFromWei(outputTokenAmount, 10, outputToken.decimals) ?? '0'
+      displayFromWei(outputTokenAmount, 10, outputToken.decimals) ?? '0',
     ) * outputTokenPrice
   const priceImpact = getPriceImpact(inputTokenAmountUsd, outputTokenAmountUsd)
 
@@ -76,7 +76,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
     gas0x.toBigInt(),
     inputToken.decimals,
     inputTokenPrice,
-    nativeTokenPrice
+    nativeTokenPrice,
   )
 
   const zeroExQuote: ZeroExQuote | null = dexSwapOption
@@ -106,6 +106,7 @@ export async function get0xQuote(request: ZeroExQuoteRequest) {
         outputTokenPrice,
         slippage,
         tx: {
+          account: address,
           data: dexSwapOption.data,
           from: address, // define for simulations which otherwise might fail
           to: dexSwapOption.to,
