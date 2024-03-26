@@ -11,6 +11,7 @@ import { usePublicClient } from 'wagmi'
 
 import { HighYieldETHIndex, Token, WSTETH } from '@/constants/tokens'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
+import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, toWei } from '@/lib/utils'
@@ -18,8 +19,10 @@ import { isValidTokenInput, toWei } from '@/lib/utils'
 interface DepositContextProps {
   inputValue: string
   isDepositing: boolean
+  isFetchingQuote: boolean
   preSaleCurrencyToken: Token
   preSaleToken: Token
+  quoteResult: QuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
   toggleIsDepositing: () => void
 }
@@ -27,8 +30,10 @@ interface DepositContextProps {
 const DepositContext = createContext<DepositContextProps>({
   inputValue: '',
   isDepositing: true,
+  isFetchingQuote: false,
   preSaleCurrencyToken: WSTETH,
   preSaleToken: HighYieldETHIndex,
+  quoteResult: null,
   onChangeInputTokenAmount: () => {},
   toggleIsDepositing: () => {},
 })
@@ -44,7 +49,14 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
   const preSaleCurrencyToken = WSTETH
 
   const [inputValue, setInputValue] = useState('')
-  const [isDepositing, setDepositing] = useState<boolean>(true)
+  const [isDepositing, setDepositing] = useState(true)
+  const [isFetchingQuote, setFetchingQuote] = useState(false)
+  const [quoteResult, setQuoteResult] = useState<QuoteResult>({
+    type: QuoteType.issuance,
+    isAvailable: true,
+    quote: null,
+    error: null,
+  })
 
   const inputToken = useMemo(
     () => (isDepositing ? preSaleCurrencyToken : preSaleToken),
@@ -79,6 +91,7 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
   useEffect(() => {
     const fetchQuote = async () => {
       if (!address) return
+      setFetchingQuote(true)
       const outputToken = isDepositing ? preSaleToken : preSaleCurrencyToken
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
@@ -98,6 +111,13 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
         },
         publicClient,
       )
+      setFetchingQuote(false)
+      setQuoteResult({
+        type: QuoteType.issuance,
+        isAvailable: true,
+        quote: quoteIssuance,
+        error: null,
+      })
       console.log(
         inputTokenAmount.toString(),
         quoteIssuance?.indexTokenAmount.toString(),
@@ -123,8 +143,10 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
       value={{
         inputValue,
         isDepositing,
+        isFetchingQuote,
         preSaleCurrencyToken,
         preSaleToken,
+        quoteResult,
         onChangeInputTokenAmount,
         toggleIsDepositing,
       }}

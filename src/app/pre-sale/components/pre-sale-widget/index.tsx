@@ -28,7 +28,8 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     onChangeInputTokenAmount,
     toggleIsDepositing,
   } = useDeposit()
-  const { currencyBalance, tvl, userBalance } = useFormattedData()
+  const { currencyBalance, inputAmoutUsd, tvl, userBalance } =
+    useFormattedData()
 
   const {
     isOpen: isTransactionReviewOpen,
@@ -76,7 +77,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         config={{ isReadOnly: false }}
         balance={currencyBalance}
         caption='You pay'
-        formattedFiat={''}
+        formattedFiat={inputAmoutUsd}
         selectedToken={preSaleCurrencyToken}
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
