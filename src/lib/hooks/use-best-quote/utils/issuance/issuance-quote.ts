@@ -1,4 +1,4 @@
-import { BigNumber, providers } from 'ethers'
+import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, formatUnits, PublicClient } from 'viem'
 
 import { Token } from '@/constants/tokens'
@@ -13,6 +13,7 @@ import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 import { DebtIssuanceProvider } from './provider'
 
 interface IssuanceQuoteRequest {
+  account: string
   isIssuance: boolean
   inputToken: Token
   outputToken: Token
@@ -27,11 +28,10 @@ interface IssuanceQuoteRequest {
 export async function getEnhancedIssuanceQuote(
   request: IssuanceQuoteRequest,
   publicClient: PublicClient,
-  // Using ethers signer for now but will refactor gas estimator to use viem soon
-  signer: providers.JsonRpcSigner,
 ): Promise<Quote | null> {
   const contract = '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
   const {
+    account,
     isIssuance,
     indexTokenAmount,
     inputToken,
@@ -61,38 +61,34 @@ export async function getEnhancedIssuanceQuote(
     console.log('componentsUnits:', addresses, units, units[0])
     const outputTokenAmount = units[0]
 
-    const sender = await signer.getAddress()
-
     const callData = encodeFunctionData({
       abi: DebtIssuanceModuleV2Abi,
       functionName: 'redeem',
       args: [
         inputToken.address! as Address,
         indexTokenAmount,
-        sender as Address,
+        account as Address,
       ],
     })
 
     const transaction: QuoteTransaction = {
+      account,
       chainId: 1,
-      from: sender,
+      from: account,
       to: contract,
       data: callData,
       value: undefined,
     }
 
     const defaultGas = getFlashMintGasDefault(inputToken.symbol)
-    const defaultGasEstimate = BigNumber.from(defaultGas)
+    const defaultGasEstimate = BigInt(defaultGas)
     console.log('gas', defaultGas, defaultGasEstimate.toString())
-    const gasEstimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+    const gasEstimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const canFail = false
     const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
-    const gasCosts = gasEstimate.mul(gasPrice)
-    const gasCostsInUsd = getGasCostsInUsd(
-      gasCosts.toBigInt(),
-      nativeTokenPrice,
-    )
-    transaction.gasLimit = gasEstimate
+    const gasCosts = gasEstimate * gasPrice
+    const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
+    transaction.gasLimit = BigNumber.from(gasEstimate.toString())
     console.log('gasLimit', transaction.gasLimit.toString())
 
     const inputTokenAmountUsd =
@@ -106,7 +102,7 @@ export async function getEnhancedIssuanceQuote(
 
     const fullCostsInUsd = getFullCostsInUsd(
       indexTokenAmount,
-      gasEstimate.toBigInt() * gasPrice,
+      gasEstimate * gasPrice,
       inputToken.decimals,
       inputTokenPrice,
       nativeTokenPrice,
@@ -119,9 +115,9 @@ export async function getEnhancedIssuanceQuote(
       isMinting: isIssuance,
       inputToken,
       outputToken,
-      gas: gasEstimate,
+      gas: BigNumber.from(gasEstimate.toString()),
       gasPrice: BigNumber.from(gasPrice.toString()),
-      gasCosts,
+      gasCosts: BigNumber.from(gasCosts.toString()),
       gasCostsInUsd,
       fullCostsInUsd,
       priceImpact: 0,
