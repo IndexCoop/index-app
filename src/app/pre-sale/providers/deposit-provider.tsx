@@ -14,7 +14,6 @@ import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issua
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, toWei } from '@/lib/utils'
-import { GasStation } from '@/lib/utils/api/gas-station'
 
 interface DepositContextProps {
   inputValue: string
@@ -39,7 +38,7 @@ export const useDeposit = () => useContext(DepositContext)
 export function DepositProvider(props: { children: any; preSaleToken: Token }) {
   const nativeTokenPrice = useNativeTokenPrice(1)
   const publicClient = usePublicClient()
-  const { provider, signer } = useWallet()
+  const { address, provider } = useWallet()
 
   const { preSaleToken } = props
   const preSaleCurrencyToken = WSTETH
@@ -79,15 +78,16 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
 
   useEffect(() => {
     const fetchQuote = async () => {
+      if (!address) return
       const outputToken = isDepositing ? preSaleToken : preSaleCurrencyToken
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
-      const gasStation = new GasStation(provider)
-      const gasPrice = await gasStation.getGasPrice()
+      const gasPrice = await provider.getGasPrice()
       const quoteIssuance = await getEnhancedIssuanceQuote(
         {
+          account: address,
           isIssuance: isDepositing,
-          gasPrice: gasPrice.toBigInt(),
+          gasPrice,
           indexTokenAmount: inputTokenAmount,
           inputToken,
           inputTokenPrice,
@@ -97,7 +97,6 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
           slippage: 0,
         },
         publicClient,
-        signer,
       )
       console.log(
         inputTokenAmount.toString(),
@@ -108,6 +107,7 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
     }
     fetchQuote()
   }, [
+    address,
     inputToken,
     inputTokenAmount,
     isDepositing,
@@ -116,7 +116,6 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
     preSaleToken,
     provider,
     publicClient,
-    signer,
   ])
 
   return (

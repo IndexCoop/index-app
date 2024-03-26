@@ -139,13 +139,13 @@ export const useBestQuote = (
         if (isAvailableForIssuance(inputToken, outputToken)) {
           console.log('canIssue')
           setIsFetchingIssuance(true)
-          const gasStation = new GasStation(provider)
-          const gasPrice = await gasStation.getGasPrice()
+          const gasPrice = await provider.getGasPrice()
           const quoteIssuance = await getEnhancedIssuanceQuote(
             {
               ...request,
+              account: address,
               isIssuance: isMinting,
-              gasPrice: gasPrice.toBigInt(),
+              gasPrice,
               indexTokenAmount: inputTokenAmountWei.toBigInt(),
               inputToken,
               inputTokenPrice,
@@ -154,7 +154,6 @@ export const useBestQuote = (
               nativeTokenPrice,
             },
             publicClient,
-            signer,
           )
           setIsFetchingIssuance(false)
           setQuoteIssuance(quoteIssuance)
