@@ -6,7 +6,6 @@ import {
   useMemo,
   useState,
 } from 'react'
-
 import { usePublicClient } from 'wagmi'
 
 import { HighYieldETHIndex, Token, WSTETH } from '@/constants/tokens'
