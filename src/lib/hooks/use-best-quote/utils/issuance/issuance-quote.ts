@@ -61,11 +61,13 @@ export async function getEnhancedIssuanceQuote(
     console.log('componentsUnits:', addresses, units, units[0])
     const outputTokenAmount = units[0]
 
+    const indexToken = isIssuance ? outputToken : inputToken
+
     const callData = encodeFunctionData({
       abi: DebtIssuanceModuleV2Abi,
-      functionName: 'redeem',
+      functionName: isIssuance ? 'issue' : 'redeem',
       args: [
-        inputToken.address! as Address,
+        indexToken.address! as Address,
         indexTokenAmount,
         account as Address,
       ],
@@ -79,8 +81,6 @@ export async function getEnhancedIssuanceQuote(
       data: callData,
       value: undefined,
     }
-
-    const indexToken = isIssuance ? outputToken : inputToken
 
     const defaultGas = getFlashMintGasDefault(indexToken.symbol)
     const defaultGasEstimate = BigInt(defaultGas)
