@@ -161,6 +161,7 @@ export function isAvailableForSwap(token: Token): boolean {
 
 export function isIndexToken(token: Token): boolean {
   if (token.symbol === IndexToken.symbol) return false
+  if (token.symbol === HighYieldETHIndex.symbol) return true
   return indicesTokenList.some((index) =>
     isSameAddress(index.address!, token.address!),
   )
