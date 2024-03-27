@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
+import { formatUnits } from 'viem'
 
 import { useDisclosure } from '@chakra-ui/react'
 
@@ -33,8 +34,13 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     quoteResult,
     toggleIsDepositing,
   } = useDeposit()
-  const { currencyBalance, inputAmoutUsd, tvl, userBalance } =
-    useFormattedData()
+  const {
+    currencyBalance,
+    inputAmoutUsd,
+    inputTokenBalance,
+    tvl,
+    userBalance,
+  } = useFormattedData()
 
   const {
     isOpen: isTransactionReviewOpen,
@@ -83,12 +89,15 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     return null
   }, [isFetchingQuote, quoteResult])
 
-  const onClickBalance = () => {
-    // TODO:
-  }
+  const onClickBalance = useCallback(() => {
+    if (!inputTokenBalance) return
+    onChangeInputTokenAmount(formatUnits(inputTokenBalance, 18))
+  }, [inputTokenBalance, onChangeInputTokenAmount])
+
   const onClickButton = () => {
     onOpenTransactionReview()
   }
+
   const onSelectToken = () => {}
 
   return (
