@@ -43,7 +43,7 @@ export function useFormattedData() {
   )
   const inputTokenBalanceFormatted = useMemo(
     () => (isDepositing ? currencyBalanceFormatted : balanceFormatted),
-    [inputTokenBalance],
+    [balanceFormatted, currencyBalanceFormatted, isDepositing],
   )
 
   const hasInsufficientFunds = useMemo(
@@ -60,7 +60,7 @@ export function useFormattedData() {
 
   const shouldShowSummaryDetails = useMemo(
     () => quote !== null && inputValue !== '',
-    [quote],
+    [inputValue, quote],
   )
 
   return {
