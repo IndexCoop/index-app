@@ -1,15 +1,15 @@
 'use client'
 
-import { BigNumber } from 'ethers'
+import { useMemo } from 'react'
 
 import { useDisclosure } from '@chakra-ui/react'
 
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
+import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
 import { useTradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
-import { ETH } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 
 import { useDeposit } from '../../providers/deposit-provider'
@@ -30,6 +30,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     preSaleCurrencyToken,
     onChangeInputTokenAmount,
     outputToken,
+    quoteResult,
     toggleIsDepositing,
   } = useDeposit()
   const { currencyBalance, inputAmoutUsd, tvl, userBalance } =
@@ -60,27 +61,27 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
-  // TODO: temporary placeholder delete once we have a quote
-  const transactionReview = {
-    chainId: 1,
-    isMinting: true,
-    inputToken: ETH,
-    outputToken: ETH,
-    inputTokenAmount: BigNumber.from(0),
-    outputTokenAmount: BigNumber.from(0),
-    slippage: 1,
-    contractAddress: 'quote.contract',
-    quoteResults: {
-      bestQuote: QuoteType.redemption,
-      results: {
-        flashmint: null,
-        issuance: null,
-        redemption: null,
-        zeroex: null,
-      },
-    },
-    selectedQuote: QuoteType.redemption,
-  }
+  const transactionReview = useMemo((): TransactionReview | null => {
+    if (isFetchingQuote || quoteResult === null) return null
+    const quote = quoteResult.quote
+    if (quote) {
+      return {
+        ...quote,
+        contractAddress: quote.contract,
+        quoteResults: {
+          bestQuote: QuoteType.issuance,
+          results: {
+            flashmint: null,
+            issuance: quoteResult,
+            redemption: null,
+            zeroex: null,
+          },
+        },
+        selectedQuote: QuoteType.issuance,
+      }
+    }
+    return null
+  }, [isFetchingQuote, quoteResult])
 
   const onClickBalance = () => {
     // TODO:
