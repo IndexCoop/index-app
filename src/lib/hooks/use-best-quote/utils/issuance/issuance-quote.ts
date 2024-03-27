@@ -44,6 +44,7 @@ export async function getEnhancedIssuanceQuote(
 
   console.log(isAvailableForIssuance(inputToken, outputToken), 'isavailable')
   if (!isAvailableForIssuance(inputToken, outputToken)) return null
+  if (inputTokenAmount <= 0) return null
 
   try {
     console.log('isIssuance:', isIssuance)

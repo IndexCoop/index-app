@@ -35,6 +35,7 @@ export function Summary() {
     outputAmountUsd,
     shouldShowSummaryDetails,
   } = useFormattedData()
+  if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
       {({ open }) => (
