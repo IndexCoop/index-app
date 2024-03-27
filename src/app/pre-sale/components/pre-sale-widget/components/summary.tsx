@@ -3,6 +3,8 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 import { GasFees } from '@/components/gas-fees'
 
+import { useFormattedData } from '../use-formatted-data'
+
 type SummaryQuoteProps = {
   label: string
   value: string
@@ -22,6 +24,7 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
+  const { gasFeesEth, gasFeesUsd } = useFormattedData()
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
       {({ open }) => (
@@ -34,7 +37,7 @@ export function Summary() {
               <div className='flex flex-row items-center gap-1'>
                 {!open ? (
                   <GasFees
-                    valueUsd={'$8.79'}
+                    valueUsd={gasFeesUsd}
                     styles={{ valueUsdTextColor: 'text-ic-gray-300' }}
                   />
                 ) : null}
@@ -62,7 +65,7 @@ export function Summary() {
             <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
               <div className='font-normal'>Network Fee</div>
               <div>
-                <GasFees valueUsd={'$8.79'} value={'(0.04 ETH)'} />
+                <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
               </div>
             </div>
           </Disclosure.Panel>

@@ -37,6 +37,12 @@ export function useFormattedData() {
   return {
     currencyBalance: `${currencyBalanceFormatted}`,
     hasInsufficientFunds,
+    gasFeesEth: quoteResult?.quote?.gasCosts
+      ? `(${formatUnits(quoteResult.quote.gasCosts.toBigInt(), 18)})`
+      : '',
+    gasFeesUsd: quoteResult?.quote?.gasCostsInUsd
+      ? `$${formatAmount(quoteResult.quote.gasCostsInUsd)}`
+      : '',
     inputAmoutUsd,
     inputTokenBalance,
     tvl: formatted.tvl,
