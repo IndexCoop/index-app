@@ -31,6 +31,7 @@ export function Summary() {
     inputAmoutUsd,
     ouputAmount,
     outputAmountUsd,
+    shouldShowSummaryDetails,
   } = useFormattedData()
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
@@ -59,22 +60,26 @@ export function Summary() {
             </Disclosure.Button>
           </dt>
           <Disclosure.Panel as='dd' className='mt-2 flex flex-col gap-2'>
-            <SummaryQuote
-              label='Pay'
-              value={inputAmount}
-              valueUsd={`(${inputAmoutUsd})`}
-            />
-            <SummaryQuote
-              label='Receive'
-              value={ouputAmount}
-              valueUsd={`(${outputAmountUsd})`}
-            />
-            <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
-              <div className='font-normal'>Network Fee</div>
-              <div>
-                <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
-              </div>
-            </div>
+            {shouldShowSummaryDetails && (
+              <>
+                <SummaryQuote
+                  label='Pay'
+                  value={inputAmount}
+                  valueUsd={`(${inputAmoutUsd})`}
+                />
+                <SummaryQuote
+                  label='Receive'
+                  value={ouputAmount}
+                  valueUsd={`(${outputAmountUsd})`}
+                />
+                <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
+                  <div className='font-normal'>Network Fee</div>
+                  <div>
+                    <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
+                  </div>
+                </div>
+              </>
+            )}
           </Disclosure.Panel>
         </div>
       )}
