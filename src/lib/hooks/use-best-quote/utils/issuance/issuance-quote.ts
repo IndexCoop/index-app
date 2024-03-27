@@ -80,7 +80,9 @@ export async function getEnhancedIssuanceQuote(
       value: undefined,
     }
 
-    const defaultGas = getFlashMintGasDefault(inputToken.symbol)
+    const indexToken = isIssuance ? outputToken : inputToken
+
+    const defaultGas = getFlashMintGasDefault(indexToken.symbol)
     const defaultGasEstimate = BigInt(defaultGas)
     console.log('gas', defaultGas, defaultGasEstimate.toString())
     const gasEstimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)

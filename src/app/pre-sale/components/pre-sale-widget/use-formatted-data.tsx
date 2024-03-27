@@ -7,11 +7,13 @@ import { formatAmount } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { usePresaleData } from '../../providers/presale-provider'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 
 export function useFormattedData() {
   const { address } = useWallet()
   const {
     inputTokenAmount,
+    inputValue,
     isDepositing,
     preSaleCurrencyToken,
     preSaleToken,
@@ -49,20 +51,27 @@ export function useFormattedData() {
     ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
     : ''
 
+  // TODO:
+  const shouldShowSummaryDetails = useMemo(
+    () => quote !== null && inputValue !== '',
+    [quote],
+  )
+
   return {
     currencyBalance: `${currencyBalanceFormatted}`,
     hasInsufficientFunds,
-    gasFeesEth: quoteResult?.quote?.gasCosts
-      ? `(${formatUnits(quoteResult.quote.gasCosts.toBigInt(), 18)})`
+    gasFeesEth: quote?.gasCosts
+      ? `(${formatUnits(quote.gasCosts.toBigInt(), 18)} ETH)`
       : '',
-    gasFeesUsd: quoteResult?.quote?.gasCostsInUsd
-      ? `$${formatAmount(quoteResult.quote.gasCostsInUsd)}`
+    gasFeesUsd: quote?.gasCostsInUsd
+      ? `$${formatAmount(quote.gasCostsInUsd)}`
       : '',
     inputAmount,
     inputAmoutUsd,
     inputTokenBalance,
     ouputAmount,
     outputAmountUsd,
+    shouldShowSummaryDetails,
     tvl: formatted.tvl,
     // As the conversion is 1-1 we can use the pre sale token balance 1-1 to show
     // how much the user deposited in terms of pre sale currency token
