@@ -146,7 +146,7 @@ export const useBestQuote = (
               account: address,
               isIssuance: isMinting,
               gasPrice,
-              indexTokenAmount: inputTokenAmountWei.toBigInt(),
+              inputTokenAmount: inputTokenAmountWei.toBigInt(),
               inputToken,
               inputTokenPrice,
               outputToken,
