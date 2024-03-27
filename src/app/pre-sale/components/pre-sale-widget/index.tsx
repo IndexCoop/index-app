@@ -30,16 +30,17 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     isDepositing,
     isFetchingQuote,
     preSaleCurrencyToken,
+    preSaleToken,
     onChangeInputTokenAmount,
     outputToken,
     quoteResult,
     toggleIsDepositing,
   } = useDeposit()
   const {
-    currencyBalance,
     hasInsufficientFunds,
     inputAmoutUsd,
     inputTokenBalance,
+    inputTokenBalanceFormatted,
     tvl,
     userBalance,
   } = useFormattedData()
@@ -109,10 +110,10 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <DepositStats tvl={tvl} userBalance={userBalance} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={currencyBalance}
+        balance={inputTokenBalanceFormatted}
         caption='You pay'
         formattedFiat={inputAmoutUsd}
-        selectedToken={preSaleCurrencyToken}
+        selectedToken={isDepositing ? preSaleCurrencyToken : preSaleToken}
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}

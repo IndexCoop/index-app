@@ -7,7 +7,6 @@ import { formatAmount } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { usePresaleData } from '../../providers/presale-provider'
-import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 
 export function useFormattedData() {
   const { address } = useWallet()
@@ -20,7 +19,10 @@ export function useFormattedData() {
     preSaleToken,
     quoteResult,
   } = useDeposit()
-  const { balance } = useFormattedBalance(preSaleToken, address)
+  const { balance, balanceFormatted } = useFormattedBalance(
+    preSaleToken,
+    address,
+  )
   const {
     balance: currencyBalance,
     balanceFormatted: currencyBalanceFormatted,
@@ -39,6 +41,10 @@ export function useFormattedData() {
     () => (isDepositing ? currencyBalance : balance),
     [balance, currencyBalance, isDepositing],
   )
+  const inputTokenBalanceFormatted = useMemo(
+    () => (isDepositing ? currencyBalanceFormatted : balanceFormatted),
+    [inputTokenBalance],
+  )
 
   const hasInsufficientFunds = useMemo(
     () => inputTokenBalance < inputTokenAmount,
@@ -52,7 +58,6 @@ export function useFormattedData() {
     ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
     : ''
 
-  // TODO:
   const shouldShowSummaryDetails = useMemo(
     () => quote !== null && inputValue !== '',
     [quote],
@@ -70,6 +75,7 @@ export function useFormattedData() {
     inputAmount,
     inputAmoutUsd,
     inputTokenBalance,
+    inputTokenBalanceFormatted,
     isFetchingQuote,
     ouputAmount,
     outputAmountUsd,
