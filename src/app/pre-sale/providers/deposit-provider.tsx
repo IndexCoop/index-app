@@ -84,10 +84,9 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
       if (input === '') {
-        // TODO:
-        // resetTradeData()
+        setInputValue('')
+        return
       }
-      // setInputTokenAmountFormatted(input || '')
       if (!isValidTokenInput(input, inputToken.decimals)) return
       setInputValue(input || '')
     },
