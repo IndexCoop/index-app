@@ -1,12 +1,14 @@
 import Image from 'next/image'
 import { PreSaleStatus, PreSaleToken } from '../../types'
 import { StatusChip } from './status-chip'
+import { usePresaleData } from '@/app/pre-sale/providers/presale-provider'
 
 type Props = {
   token: PreSaleToken
   onClick?: () => void
 }
 export function PreSaleTokenCard({ token, onClick }: Props) {
+  const { data } = usePresaleData(token.symbol)
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
@@ -62,9 +64,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         <div className='mb-2 flex'>
           <div className='flex-1'>Total Value Locked</div>
           <div className='text-ic-gray-800'>
-            <span className='text-ic-gray-950 font-bold'>
-              {token.totalValueLocked}
-            </span>{' '}
+            <span className='text-ic-gray-950 font-bold'>{data.tvl}</span>{' '}
             wstETH
           </div>
         </div>
