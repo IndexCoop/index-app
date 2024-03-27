@@ -18,6 +18,7 @@ import { PreSaleToken } from '../../types'
 
 import { DepositWithdrawSelector } from './components/deposit-withdraw-selector'
 import { DepositStats } from './components/deposit-stats'
+import { Summary } from './components/summary'
 import { TitleLogo } from './components/title-logo'
 import { useFormattedData } from './use-formatted-data'
 
@@ -117,7 +118,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         onClickBalance={onClickBalance}
         onSelectToken={onSelectToken}
       />
-      <div>Summary</div>
+      <Summary />
       <TradeButton
         label={buttonLabel}
         isDisabled={isDisabled}
