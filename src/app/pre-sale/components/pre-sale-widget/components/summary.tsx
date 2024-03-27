@@ -24,7 +24,8 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
-  const { gasFeesEth, gasFeesUsd } = useFormattedData()
+  const { gasFeesEth, gasFeesUsd, inputAmount, inputAmoutUsd } =
+    useFormattedData()
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
       {({ open }) => (
@@ -54,8 +55,8 @@ export function Summary() {
           <Disclosure.Panel as='dd' className='mt-2 flex flex-col gap-2'>
             <SummaryQuote
               label='Pay'
-              value={'9.94 ETH'}
-              valueUsd={'($23,593.52)'}
+              value={inputAmount}
+              valueUsd={`(${inputAmoutUsd})`}
             />
             <SummaryQuote
               label='Receive'
