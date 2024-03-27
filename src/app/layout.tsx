@@ -1,3 +1,4 @@
+import { MavaScript } from '@/components/external/mava-script'
 import './globals.css'
 import { SafaryScript } from '@/components/external/safary-script'
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: LayoutProps) {
       <body>
         {children}
         <SafaryScript />
+        <MavaScript />
       </body>
     </html>
   )
