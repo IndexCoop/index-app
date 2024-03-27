@@ -28,17 +28,17 @@ const faqs = [
 
 export function FaqSection() {
   return (
-    <div className='max-w-5xl divide-y divide-ic-gray-900/10'>
-      <h2 className='text-xl font-semibold leading-10 tracking-tight text-ic-gray-800'>
+    <div className='divide-ic-gray-900/10 max-w-5xl divide-y'>
+      <h2 className='text-ic-gray-800 text-xl font-semibold leading-10 tracking-tight'>
         FAQ
       </h2>
-      <dl className='mt-6 space-y-6 divide-y divide-ic-gray-900/10'>
+      <dl className='divide-ic-gray-900/10 mt-6 space-y-6 divide-y'>
         {faqs.map((faq) => (
           <Disclosure as='div' key={faq.question} className='pt-6'>
             {({ open }) => (
               <>
                 <dt>
-                  <Disclosure.Button className='flex w-full items-start justify-between text-left text-ic-gray-800'>
+                  <Disclosure.Button className='text-ic-gray-800 flex w-full items-start justify-between text-left'>
                     <span className='text-base font-semibold leading-7'>
                       {faq.question}
                     </span>
@@ -55,7 +55,7 @@ export function FaqSection() {
                   </Disclosure.Button>
                 </dt>
                 <Disclosure.Panel as='dd' className='mt-2 pr-12'>
-                  <p className='text-sm leading-6 text-ic-gray-600 font-medium'>
+                  <p className='text-ic-gray-600 text-sm font-medium leading-6'>
                     {faq.answer}
                   </p>
                 </Disclosure.Panel>
