@@ -11,7 +11,7 @@ import { usePublicClient } from 'wagmi'
 
 import { HighYieldETHIndex, Token, WSTETH } from '@/constants/tokens'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
-import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, toWei } from '@/lib/utils'
@@ -22,6 +22,8 @@ interface DepositContextProps {
   isFetchingQuote: boolean
   preSaleCurrencyToken: Token
   preSaleToken: Token
+  inputToken: Token
+  outputToken: Token
   quoteResult: QuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
   toggleIsDepositing: () => void
@@ -33,6 +35,8 @@ const DepositContext = createContext<DepositContextProps>({
   isFetchingQuote: false,
   preSaleCurrencyToken: WSTETH,
   preSaleToken: HighYieldETHIndex,
+  inputToken: WSTETH,
+  outputToken: HighYieldETHIndex,
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
   toggleIsDepositing: () => {},
@@ -69,6 +73,11 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
         ? BigInt(0)
         : toWei(inputValue, inputToken.decimals).toBigInt(),
     [inputToken, inputValue],
+  )
+
+  const outputToken = useMemo(
+    () => (isDepositing ? preSaleToken : preSaleCurrencyToken),
+    [isDepositing, preSaleCurrencyToken, preSaleToken],
   )
 
   const onChangeInputTokenAmount = useCallback(
@@ -146,6 +155,8 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
         isFetchingQuote,
         preSaleCurrencyToken,
         preSaleToken,
+        inputToken,
+        outputToken,
         quoteResult,
         onChangeInputTokenAmount,
         toggleIsDepositing,

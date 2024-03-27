@@ -6,6 +6,8 @@ import { useDisclosure } from '@chakra-ui/react'
 
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
+import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
+import { useTradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
 import { ETH } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -24,8 +26,10 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const {
     inputValue,
     isDepositing,
+    isFetchingQuote,
     preSaleCurrencyToken,
     onChangeInputTokenAmount,
+    outputToken,
     toggleIsDepositing,
   } = useDeposit()
   const { currencyBalance, inputAmoutUsd, tvl, userBalance } =
@@ -36,6 +40,25 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     onOpen: onOpenTransactionReview,
     onClose: onCloseTransactionReview,
   } = useDisclosure()
+
+  // TODO:
+  const hasInsufficientFunds = false
+  const shouldApprove = true
+
+  // TODO: approvals
+  const isApprovedForSwap = true
+  const isApprovingForSwap = false
+
+  const buttonState = useTradeButtonState(
+    false,
+    hasInsufficientFunds,
+    shouldApprove,
+    isApprovedForSwap,
+    isApprovingForSwap,
+    outputToken,
+    inputValue,
+  )
+  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
   // TODO: temporary placeholder delete once we have a quote
   const transactionReview = {
@@ -59,7 +82,9 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     selectedQuote: QuoteType.redemption,
   }
 
-  const onClickBalance = () => {}
+  const onClickBalance = () => {
+    // TODO:
+  }
   const onClickButton = () => {
     onOpenTransactionReview()
   }
@@ -86,9 +111,9 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       />
       <div>Summary</div>
       <TradeButton
-        label={'Connect wallet'}
-        isDisabled={false}
-        isLoading={false}
+        label={buttonLabel}
+        isDisabled={isDisabled}
+        isLoading={isFetchingQuote}
         onClick={onClickButton}
       />
       {transactionReview && (
