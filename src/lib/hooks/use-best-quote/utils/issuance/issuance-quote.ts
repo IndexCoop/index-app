@@ -17,7 +17,7 @@ interface IssuanceQuoteRequest {
   isIssuance: boolean
   inputToken: Token
   outputToken: Token
-  indexTokenAmount: bigint
+  inputTokenAmount: bigint
   inputTokenPrice: number
   outputTokenPrice: number
   nativeTokenPrice: number
@@ -33,7 +33,7 @@ export async function getEnhancedIssuanceQuote(
   const {
     account,
     isIssuance,
-    indexTokenAmount,
+    inputTokenAmount,
     inputToken,
     inputTokenPrice,
     gasPrice,
@@ -41,8 +41,10 @@ export async function getEnhancedIssuanceQuote(
     outputToken,
     outputTokenPrice,
   } = request
+
   console.log(isAvailableForIssuance(inputToken, outputToken), 'isavailable')
   if (!isAvailableForIssuance(inputToken, outputToken)) return null
+
   try {
     console.log('isIssuance:', isIssuance)
     const debtIssuanceProvider = new DebtIssuanceProvider(
@@ -52,16 +54,17 @@ export async function getEnhancedIssuanceQuote(
     const [addresses, units] = isIssuance
       ? await debtIssuanceProvider.getComponentIssuanceUnits(
           outputToken.address! as Address,
-          indexTokenAmount,
+          inputTokenAmount,
         )
       : await debtIssuanceProvider.getComponentRedemptionUnits(
           inputToken.address! as Address,
-          indexTokenAmount,
+          inputTokenAmount,
         )
     console.log('componentsUnits:', addresses, units, units[0])
     const outputTokenAmount = units[0]
 
     const indexToken = isIssuance ? outputToken : inputToken
+    const indexTokenAmount = isIssuance ? outputTokenAmount : inputTokenAmount
 
     const callData = encodeFunctionData({
       abi: DebtIssuanceModuleV2Abi,
@@ -94,7 +97,7 @@ export async function getEnhancedIssuanceQuote(
     console.log('gasLimit', transaction.gasLimit.toString())
 
     const inputTokenAmountUsd =
-      parseFloat(formatUnits(indexTokenAmount, inputToken.decimals)) *
+      parseFloat(formatUnits(inputTokenAmount, inputToken.decimals)) *
       inputTokenPrice
     const outputTokenAmountUsd =
       parseFloat(formatUnits(outputTokenAmount, outputToken.decimals)) *
@@ -103,7 +106,7 @@ export async function getEnhancedIssuanceQuote(
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
-      indexTokenAmount,
+      inputTokenAmount,
       gasEstimate * gasPrice,
       inputToken.decimals,
       inputTokenPrice,
@@ -125,7 +128,7 @@ export async function getEnhancedIssuanceQuote(
       priceImpact: 0,
       indexTokenAmount: BigNumber.from(indexTokenAmount.toString()),
       inputOutputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
-      inputTokenAmount: BigNumber.from(indexTokenAmount.toString()),
+      inputTokenAmount: BigNumber.from(inputTokenAmount.toString()),
       inputTokenAmountUsd,
       outputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
       outputTokenAmountUsd,

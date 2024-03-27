@@ -110,7 +110,7 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
           account: address,
           isIssuance: isDepositing,
           gasPrice,
-          indexTokenAmount: inputTokenAmount,
+          inputTokenAmount,
           inputToken,
           inputTokenPrice,
           outputToken,
@@ -127,12 +127,6 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
         quote: quoteIssuance,
         error: null,
       })
-      console.log(
-        inputTokenAmount.toString(),
-        quoteIssuance?.indexTokenAmount.toString(),
-        quoteIssuance?.inputOutputTokenAmount.toString(),
-        'issuance-quote',
-      )
     }
     fetchQuote()
   }, [
