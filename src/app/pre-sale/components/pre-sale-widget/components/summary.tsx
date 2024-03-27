@@ -2,6 +2,7 @@ import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 import { GasFees } from '@/components/gas-fees'
+import { StyledSkeleton } from '@/components/skeleton'
 
 import { useFormattedData } from '../use-formatted-data'
 
@@ -29,6 +30,7 @@ export function Summary() {
     gasFeesUsd,
     inputAmount,
     inputAmoutUsd,
+    isFetchingQuote,
     ouputAmount,
     outputAmountUsd,
     shouldShowSummaryDetails,
@@ -40,15 +42,21 @@ export function Summary() {
           <dt>
             <Disclosure.Button className='text-ic-gray-300 flex w-full items-center justify-between text-left'>
               <span className='text-xs font-medium'>
-                {open ? 'Summary' : ''}
+                {open && 'Summary'}
+                {!open && isFetchingQuote && <StyledSkeleton width={120} />}
+                {!open &&
+                  !isFetchingQuote &&
+                  shouldShowSummaryDetails &&
+                  `Receive ${ouputAmount}`}
               </span>
               <div className='flex flex-row items-center gap-1'>
-                {!open ? (
+                {!open && !isFetchingQuote ? (
                   <GasFees
                     valueUsd={gasFeesUsd}
                     styles={{ valueUsdTextColor: 'text-ic-gray-300' }}
                   />
                 ) : null}
+                {!open && isFetchingQuote && <StyledSkeleton width={70} />}
                 <span className='flex items-center'>
                   {open ? (
                     <ChevronUpIcon className='h-6 w-6' aria-hidden='true' />
