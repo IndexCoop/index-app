@@ -173,6 +173,9 @@ function useSelectedQuote(review: TransactionReview) {
     if (selectedQuote === QuoteType.flashmint) {
       return quoteResults.results.flashmint!.quote
     }
+    if (selectedQuote === QuoteType.issuance) {
+      return quoteResults.results.issuance!.quote
+    }
     if (selectedQuote === QuoteType.redemption) {
       return quoteResults.results.redemption!.quote
     }
