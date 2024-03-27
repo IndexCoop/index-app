@@ -29,17 +29,26 @@ export function useFormattedData() {
   const inputAmount = quote?.inputTokenAmount
     ? `${formatAmount(Number(formatUnits(quote?.inputTokenAmount.toBigInt(), quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
     : ''
-  const inputAmoutUsd = quoteResult?.quote?.inputTokenAmountUsd
-    ? `$${formatAmount(quoteResult?.quote?.inputTokenAmountUsd)}`
+  const inputAmoutUsd = quote?.inputTokenAmountUsd
+    ? `$${formatAmount(quote?.inputTokenAmountUsd)}`
     : ''
   const inputTokenBalance = useMemo(
     () => (isDepositing ? currencyBalance : balance),
     [balance, currencyBalance, isDepositing],
   )
+
   const hasInsufficientFunds = useMemo(
     () => inputTokenBalance < inputTokenAmount,
     [inputTokenAmount, inputTokenBalance],
   )
+
+  const ouputAmount = quote?.outputTokenAmount
+    ? `${formatAmount(Number(formatUnits(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
+    : ''
+  const outputAmountUsd = quote?.outputTokenAmountUsd
+    ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
+    : ''
+
   return {
     currencyBalance: `${currencyBalanceFormatted}`,
     hasInsufficientFunds,
@@ -52,8 +61,8 @@ export function useFormattedData() {
     inputAmount,
     inputAmoutUsd,
     inputTokenBalance,
-    // ouputAmount,
-    // ouputAmountUsd,
+    ouputAmount,
+    outputAmountUsd,
     tvl: formatted.tvl,
     // As the conversion is 1-1 we can use the pre sale token balance 1-1 to show
     // how much the user deposited in terms of pre sale currency token

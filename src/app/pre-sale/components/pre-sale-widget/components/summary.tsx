@@ -24,8 +24,14 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
-  const { gasFeesEth, gasFeesUsd, inputAmount, inputAmoutUsd } =
-    useFormattedData()
+  const {
+    gasFeesEth,
+    gasFeesUsd,
+    inputAmount,
+    inputAmoutUsd,
+    ouputAmount,
+    outputAmountUsd,
+  } = useFormattedData()
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
       {({ open }) => (
@@ -60,8 +66,8 @@ export function Summary() {
             />
             <SummaryQuote
               label='Receive'
-              value={'10 ETH2x'}
-              valueUsd={'($23,593.52)'}
+              value={ouputAmount}
+              valueUsd={`(${outputAmountUsd})`}
             />
             <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
               <div className='font-normal'>Network Fee</div>
