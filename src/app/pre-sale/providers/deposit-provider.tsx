@@ -23,6 +23,7 @@ interface DepositContextProps {
   preSaleToken: Token
   inputToken: Token
   outputToken: Token
+  inputTokenAmount: bigint
   quoteResult: QuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
   toggleIsDepositing: () => void
@@ -36,6 +37,7 @@ const DepositContext = createContext<DepositContextProps>({
   preSaleToken: HighYieldETHIndex,
   inputToken: WSTETH,
   outputToken: HighYieldETHIndex,
+  inputTokenAmount: BigInt(0),
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
   toggleIsDepositing: () => {},
@@ -156,6 +158,7 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
         preSaleToken,
         inputToken,
         outputToken,
+        inputTokenAmount,
         quoteResult,
         onChangeInputTokenAmount,
         toggleIsDepositing,

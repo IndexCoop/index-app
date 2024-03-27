@@ -10,8 +10,13 @@ import { usePresaleData } from '../../providers/presale-provider'
 
 export function useFormattedData() {
   const { address } = useWallet()
-  const { isDepositing, preSaleCurrencyToken, preSaleToken, quoteResult } =
-    useDeposit()
+  const {
+    inputTokenAmount,
+    isDepositing,
+    preSaleCurrencyToken,
+    preSaleToken,
+    quoteResult,
+  } = useDeposit()
   const { balance } = useFormattedBalance(preSaleToken, address)
   const {
     balance: currencyBalance,
@@ -25,8 +30,13 @@ export function useFormattedData() {
     () => (isDepositing ? currencyBalance : balance),
     [balance, currencyBalance, isDepositing],
   )
+  const hasInsufficientFunds = useMemo(
+    () => inputTokenBalance < inputTokenAmount,
+    [inputTokenAmount, inputTokenBalance],
+  )
   return {
     currencyBalance: `${currencyBalanceFormatted}`,
+    hasInsufficientFunds,
     inputAmoutUsd,
     inputTokenBalance,
     tvl: formatted.tvl,

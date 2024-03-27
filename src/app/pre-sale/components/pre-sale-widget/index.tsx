@@ -36,6 +36,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   } = useDeposit()
   const {
     currencyBalance,
+    hasInsufficientFunds,
     inputAmoutUsd,
     inputTokenBalance,
     tvl,
@@ -48,11 +49,8 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
-  // TODO:
-  const hasInsufficientFunds = false
-  const shouldApprove = true
-
   // TODO: approvals
+  const shouldApprove = true
   const isApprovedForSwap = true
   const isApprovingForSwap = false
 
