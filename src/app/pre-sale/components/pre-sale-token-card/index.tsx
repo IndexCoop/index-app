@@ -1,7 +1,9 @@
 import Image from 'next/image'
+
+import { usePresaleData } from '@/app/pre-sale/providers/presale-provider'
+
 import { PreSaleStatus, PreSaleToken } from '../../types'
 import { StatusChip } from './status-chip'
-import { usePresaleData } from '@/app/pre-sale/providers/presale-provider'
 
 type Props = {
   token: PreSaleToken
