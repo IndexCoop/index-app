@@ -17,7 +17,7 @@ const faqs = [
   {
     question: 'How high are my rewards?',
     answer:
-      'Depending on wether the deposit threshold has been met, you will either receive product revenue tokens or $INDEX rewards. The $INDEX rewards are specified in each presale on the list above. The amount of PRTs distributed will be set per day and PRT rewards will be calculated on a pro rate basis amongst all depositors. The amount of PRT tokens given out for each pre-sale can vary by product. For each product there will be a total of 10,000 PRTs which will share the respective token’s revenue.',
+      'Depending on whether the deposit threshold has been met, you will either receive product revenue tokens or $INDEX rewards. The $INDEX rewards are specified in each presale on the list above. The amount of PRTs distributed will be set per day and PRT rewards will be calculated on a pro rate basis amongst all depositors. The amount of PRT tokens given out for each pre-sale can vary by product. For each product there will be a total of 10,000 PRTs which will share the respective token’s revenue.',
   },
   {
     question: 'Will my funds be locked up?',

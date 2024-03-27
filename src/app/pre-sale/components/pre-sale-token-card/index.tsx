@@ -44,7 +44,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='flex'>
-          <div className='flex-1'>$INDEX Rewards</div>
+          <div className='flex-1'>Daily Index Rewards</div>
           <div className='text-ic-gray-800'>
             <span className='text-ic-gray-950 font-bold'>
               {token.indexRewards}
@@ -71,7 +71,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='flex'>
-          <div className='flex-1'>$INDEX Rewards</div>
+          <div className='flex-1'>Time left in pre-sale</div>
           <div className='text-ic-gray-950 font-bold'>
             {token.timeLeftDays} / 30 days
           </div>
