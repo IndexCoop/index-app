@@ -1,7 +1,9 @@
 import Image from 'next/image'
 
+import { Tooltip } from '@chakra-ui/react'
 import { usePresaleData } from '@/app/pre-sale/providers/presale-provider'
 
+import { colors } from '@/lib/styles/colors'
 import { PreSaleStatus, PreSaleToken } from '../../types'
 import { StatusChip } from './status-chip'
 
@@ -30,30 +32,49 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
       <p className='text-ic-gray-800 mb-3 text-sm font-medium leading-6'>
         {token.description}
       </p>
-      {token.infoLink && <a className='block underline text-ic-blue-500 mb-4 text-sm' href={token.infoLink} target="_blank">More Info</a>}
+      {token.infoLink && (
+        <a
+          className='text-ic-blue-500 mb-4 block text-sm underline'
+          href={token.infoLink}
+          target='_blank'
+        >
+          More Info
+        </a>
+      )}
       <p className='text-ic-gray-400 mb-6 text-xs font-medium'>
         Components from {token.componentsFrom.join(', ')}
       </p>
-      <div className='bg-ic-gray-50 border-ic-gray-300 text-ic-gray-500 w-full rounded-xl border px-3 py-5 text-xs font-medium'>
-        <div className='mb-2 flex'>
-          <div className='flex-1'>PRT Rewards</div>
-          <div className='text-ic-gray-800'>
-            <span className='text-ic-gray-950 font-bold'>
-              ~{token.prtRewards}
-            </span>{' '}
-            PRTs per day
+      <Tooltip
+        className='bg-ic-white'
+        borderRadius='6px'
+        fontSize={'11px'}
+        fontWeight={500}
+        label="If deposit threshold is met, depositors will receive product revenue tokens. If the threshold is not met, depositors will receive $INDEX rewards."
+        p='12px 16px'
+        placement='bottom-start'
+        textColor={colors.ic.gray[600]}
+      >
+        <div className='bg-ic-gray-50 border-ic-gray-300 text-ic-gray-500 w-full rounded-xl border px-3 py-5 text-xs font-medium'>
+          <div className='mb-2 flex'>
+            <div className='flex-1'>PRT Rewards</div>
+            <div className='text-ic-gray-800'>
+              <span className='text-ic-gray-950 font-bold'>
+                ~{token.prtRewards}
+              </span>{' '}
+              PRTs per day
+            </div>
+          </div>
+          <div className='flex'>
+            <div className='flex-1'>Daily Index Rewards</div>
+            <div className='text-ic-gray-800'>
+              <span className='text-ic-gray-950 font-bold'>
+                {token.indexRewards}
+              </span>{' '}
+              $INDEX per ETH
+            </div>
           </div>
         </div>
-        <div className='flex'>
-          <div className='flex-1'>Daily Index Rewards</div>
-          <div className='text-ic-gray-800'>
-            <span className='text-ic-gray-950 font-bold'>
-              {token.indexRewards}
-            </span>{' '}
-            $INDEX per ETH
-          </div>
-        </div>
-      </div>
+      </Tooltip>
       <div className='text-ic-gray-600 w-full px-3 py-5 text-xs font-medium'>
         <div className='mb-2 flex'>
           <div className='flex-1'>Target Fundraise</div>
