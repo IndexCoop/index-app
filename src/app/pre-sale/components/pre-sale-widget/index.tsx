@@ -52,6 +52,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     inputTokenBalanceFormatted,
     tvl,
     userBalance,
+    forceRefetch,
   } = useFormattedData()
 
   const {
@@ -174,6 +175,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
           isOpen={isTransactionReviewOpen}
           onClose={() => {
             reset()
+            forceRefetch()
             onCloseTransactionReview()
           }}
           transactionReview={transactionReview}
