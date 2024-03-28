@@ -19,13 +19,15 @@ export function useFormattedData() {
     preSaleToken,
     quoteResult,
   } = useDeposit()
-  const { balance, balanceFormatted } = useFormattedBalance(
-    preSaleToken,
-    address,
-  )
+  const {
+    balance,
+    balanceFormatted,
+    forceRefetch: forceRefetchPreSaleTokenBalance,
+  } = useFormattedBalance(preSaleToken, address)
   const {
     balance: currencyBalance,
     balanceFormatted: currencyBalanceFormatted,
+    forceRefetch: forceRefetchPreSaleCurrencyTokenBalance,
   } = useFormattedBalance(preSaleCurrencyToken, address)
   const { formatted } = usePresaleData(preSaleToken.symbol)
 
@@ -63,6 +65,11 @@ export function useFormattedData() {
     [inputValue, quote],
   )
 
+  const forceRefetch = () => {
+    forceRefetchPreSaleTokenBalance()
+    forceRefetchPreSaleCurrencyTokenBalance()
+  }
+
   return {
     currencyBalance: `${currencyBalanceFormatted}`,
     hasInsufficientFunds,
@@ -84,5 +91,6 @@ export function useFormattedData() {
     // As the conversion is 1-1 we can use the pre sale token balance 1-1 to show
     // how much the user deposited in terms of pre sale currency token
     userBalance: `${formatUnits(balance, preSaleToken.decimals)} ${preSaleCurrencyToken.symbol}`,
+    forceRefetch,
   }
 }
