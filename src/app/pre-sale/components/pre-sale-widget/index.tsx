@@ -42,6 +42,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     onChangeInputTokenAmount,
     outputToken,
     quoteResult,
+    reset,
     toggleIsDepositing,
   } = useDeposit()
   const {
@@ -171,7 +172,10 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       {transactionReview && (
         <TransactionReviewModal
           isOpen={isTransactionReviewOpen}
-          onClose={onCloseTransactionReview}
+          onClose={() => {
+            reset()
+            onCloseTransactionReview()
+          }}
           transactionReview={transactionReview}
         />
       )}
