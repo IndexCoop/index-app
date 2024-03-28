@@ -26,6 +26,7 @@ interface DepositContextProps {
   inputTokenAmount: bigint
   quoteResult: QuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
+  reset: () => void
   toggleIsDepositing: () => void
 }
 
@@ -40,6 +41,7 @@ const DepositContext = createContext<DepositContextProps>({
   inputTokenAmount: BigInt(0),
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
+  reset: () => {},
   toggleIsDepositing: () => {},
 })
 
@@ -92,6 +94,16 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
     },
     [inputToken],
   )
+
+  const reset = () => {
+    setInputValue('')
+    setQuoteResult({
+      type: QuoteType.issuance,
+      isAvailable: true,
+      quote: null,
+      error: null,
+    })
+  }
 
   const toggleIsDepositing = useCallback(() => {
     setDepositing(!isDepositing)
@@ -155,6 +167,7 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
         inputTokenAmount,
         quoteResult,
         onChangeInputTokenAmount,
+        reset,
         toggleIsDepositing,
       }}
     >
