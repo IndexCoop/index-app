@@ -5,6 +5,7 @@ import {
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   Ethereum2xFlexibleLeverageIndex,
+  HighYieldETHIndex,
   icETHIndex,
   MetaverseIndex,
 } from '@/constants/tokens'
@@ -25,6 +26,8 @@ export function getFlashMintGasDefault(symbol: string) {
       return 1_000_000
     case Ethereum2xFlexibleLeverageIndex.symbol:
       return 500_000
+    case HighYieldETHIndex.symbol:
+      return 250_000
     case icETHIndex.symbol:
       return 1_500_000
     case MetaverseIndex.symbol:

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Address, PublicClient, usePublicClient } from 'wagmi'
 
 import { ETH } from '@/constants/tokens'
@@ -27,26 +27,34 @@ export function useBalance(address?: string, token?: string) {
   const publicClient = usePublicClient()
   const [balance, setBalance] = useState<bigint>(BigInt(0))
 
-  useEffect(() => {
-    async function fetchBalance() {
-      if (!address || !token) {
-        setBalance(BigInt(0))
-        return
-      }
-      const balanceProvider = new BalanceProvider(publicClient)
-      const isETH = token.toLowerCase() === ETH.address!.toLowerCase()
-      const balance = isETH
-        ? await balanceProvider.getNativeBalance(address)
-        : await balanceProvider.getErc20Balance(address, token)
-      setBalance(balance)
+  const fetchBalance = useCallback(async () => {
+    if (!address || !token) {
+      setBalance(BigInt(0))
+      return
     }
-    fetchBalance()
+    const balanceProvider = new BalanceProvider(publicClient)
+    const isETH = token.toLowerCase() === ETH.address!.toLowerCase()
+    const balance = isETH
+      ? await balanceProvider.getNativeBalance(address)
+      : await balanceProvider.getErc20Balance(address, token)
+    setBalance(balance)
   }, [address, token, publicClient])
 
-  return useMemo(() => {
-    if (address && token) return balance
-    return BigInt(0)
-  }, [address, balance, token])
+  const forceRefetch = () => {
+    fetchBalance()
+  }
+
+  useEffect(() => {
+    fetchBalance()
+  }, [fetchBalance])
+
+  return {
+    balance: useMemo(() => {
+      if (address && token) return balance
+      return BigInt(0)
+    }, [address, balance, token]),
+    forceRefetch,
+  }
 }
 
 interface TokenBalance {

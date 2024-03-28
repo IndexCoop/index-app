@@ -16,18 +16,12 @@ type PreSalePopupProps = {
 export const PreSalePopup = (props: PreSalePopupProps) => {
   const { isOpen, onClose, token } = props
   return (
-    <Modal
-      onClose={onClose}
-      isOpen={isOpen}
-      isCentered
-      size='full'
-      scrollBehavior='inside'
-    >
+    <Modal onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
-      <ModalContent className='bg-transparent shadow-none'>
-        <ModalBody className='dark bg-transparent'>
+      <ModalContent className='h-[500px] max-w-4xl bg-transparent shadow-none'>
+        <ModalBody className='dark m-0 bg-transparent p-0'>
           <DepositProvider preSaleToken={HighYieldETHIndex}>
-            <div className='flex h-screen'>
+            <div className='flex h-full'>
               <div className='align-center max-h-4xl mx-auto my-auto flex max-w-4xl flex-row items-start gap-3'>
                 {token && (
                   <div className='w-1/2'>

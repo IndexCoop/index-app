@@ -1,25 +1,96 @@
+import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { formatAmount } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { usePresaleData } from '../../providers/presale-provider'
 
 export function useFormattedData() {
   const { address } = useWallet()
-  const { preSaleCurrencyToken, preSaleToken } = useDeposit()
-  const { balance } = useFormattedBalance(preSaleToken, address)
-  const { balanceFormatted: currencyBalanceFormatted } = useFormattedBalance(
+  const {
+    inputTokenAmount,
+    inputValue,
+    isDepositing,
+    isFetchingQuote,
     preSaleCurrencyToken,
-    address,
-  )
+    preSaleToken,
+    quoteResult,
+  } = useDeposit()
+  const {
+    balance,
+    balanceFormatted,
+    forceRefetch: forceRefetchPreSaleTokenBalance,
+  } = useFormattedBalance(preSaleToken, address)
+  const {
+    balance: currencyBalance,
+    balanceFormatted: currencyBalanceFormatted,
+    forceRefetch: forceRefetchPreSaleCurrencyTokenBalance,
+  } = useFormattedBalance(preSaleCurrencyToken, address)
   const { formatted } = usePresaleData(preSaleToken.symbol)
+
+  const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
+
+  const inputAmount = quote?.inputTokenAmount
+    ? `${formatAmount(Number(formatUnits(quote?.inputTokenAmount.toBigInt(), quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
+    : ''
+  const inputAmoutUsd = quote?.inputTokenAmountUsd
+    ? `$${formatAmount(quote?.inputTokenAmountUsd)}`
+    : ''
+  const inputTokenBalance = useMemo(
+    () => (isDepositing ? currencyBalance : balance),
+    [balance, currencyBalance, isDepositing],
+  )
+  const inputTokenBalanceFormatted = useMemo(
+    () => (isDepositing ? currencyBalanceFormatted : balanceFormatted),
+    [balanceFormatted, currencyBalanceFormatted, isDepositing],
+  )
+
+  const hasInsufficientFunds = useMemo(
+    () => inputTokenBalance < inputTokenAmount,
+    [inputTokenAmount, inputTokenBalance],
+  )
+
+  const ouputAmount = quote?.outputTokenAmount
+    ? `${formatAmount(Number(formatUnits(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
+    : ''
+  const outputAmountUsd = quote?.outputTokenAmountUsd
+    ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
+    : ''
+
+  const shouldShowSummaryDetails = useMemo(
+    () => quote !== null && inputValue !== '',
+    [inputValue, quote],
+  )
+
+  const forceRefetch = () => {
+    forceRefetchPreSaleTokenBalance()
+    forceRefetchPreSaleCurrencyTokenBalance()
+  }
+
   return {
     currencyBalance: `${currencyBalanceFormatted}`,
+    hasInsufficientFunds,
+    gasFeesEth: quote?.gasCosts
+      ? `(${formatUnits(quote.gasCosts.toBigInt(), 18)} ETH)`
+      : '',
+    gasFeesUsd: quote?.gasCostsInUsd
+      ? `$${formatAmount(quote.gasCostsInUsd)}`
+      : '',
+    inputAmount,
+    inputAmoutUsd,
+    inputTokenBalance,
+    inputTokenBalanceFormatted,
+    isFetchingQuote,
+    ouputAmount,
+    outputAmountUsd,
+    shouldShowSummaryDetails,
     tvl: formatted.tvl,
     // As the conversion is 1-1 we can use the pre sale token balance 1-1 to show
-    // how much the user deposited in the pre sale currency token
+    // how much the user deposited in terms of pre sale currency token
     userBalance: `${formatUnits(balance, preSaleToken.decimals)} ${preSaleCurrencyToken.symbol}`,
+    forceRefetch,
   }
 }
