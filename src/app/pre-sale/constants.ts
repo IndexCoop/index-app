@@ -5,6 +5,7 @@ export const preSaleTokens: PreSaleToken[] = [
     status: PreSaleStatus.ACTIVE,
     symbol: 'hyETH',
     logo: '/assets/eth2x.png',
+    infoLink: 'https://indexcoop.com/blog/pre-sale-prt-hyeth',
     description:
       'The Index Coop High Yield ETH Index is designed to track the performance of the largest high-yield opportunities for ETH on Ethereum mainnet that meet minimum APY and TVL criteria verified by data from DeFi Llama.',
     componentsFrom: ['Mantle', 'Pendle', 'Instadapp', 'Across'],
