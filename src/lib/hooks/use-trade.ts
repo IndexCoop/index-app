@@ -16,7 +16,7 @@ import {
 import { getAddressForToken, isNativeCurrency } from '@/lib/utils/tokens'
 
 import { BalanceProvider } from './use-balance'
-import { useAnalytics } from './use-analytics'
+import { formatQuoteAnalytics, useAnalytics } from './use-analytics'
 
 async function getInputTokenBalance(
   inputToken: Token,
@@ -72,7 +72,6 @@ export const useTrade = () => {
         const canFail = override
         const gasLimit = await gasEstimatooor.estimate(tx, canFail)
         tx.gasLimit = BigNumber.from(gasLimit.toString())
-        console.log(BigInt(gasLimit.toString()), gasLimit.toString())
         const request = await prepareSendTransaction({
           account: address,
           chainId: Number(quote.chainId),
@@ -82,7 +81,7 @@ export const useTrade = () => {
           value: BigInt(quote.tx.value?.toString() ?? '0'),
         })
         const { hash } = await sendTransaction(request)
-        logTransaction(chainId ?? -1, quote.type.toString(), hash)
+        logTransaction(chainId ?? -1, hash, formatQuoteAnalytics(quote))
         console.log('hash:', hash)
         setIsTransacting(false)
       } catch (error) {

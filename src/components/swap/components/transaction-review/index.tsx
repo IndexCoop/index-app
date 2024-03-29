@@ -24,6 +24,7 @@ import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
 import { TradeButton } from '@/components/trade-button'
 
+import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { FromTo } from './components/from-to'
 import { Override } from './components/override'
 import { NetworkBadge } from './components/network-badge'
@@ -209,6 +210,7 @@ const Review = (props: ReviewProps) => {
   const { quote } = useSelectedQuote(transactionReview)
   const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
   const { makeTrade, isTransacting } = useTradeMaker(quote)
+  const { logEvent } = useAnalytics()
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -222,6 +224,11 @@ const Review = (props: ReviewProps) => {
     // Reset state for new data
     setSimulationState(TransactionReviewSimulationState.default)
   }, [props.transactionReview])
+
+  useEffect(() => {
+    logEvent('Transaction Review', formatQuoteAnalytics(quote))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (simulationState === TransactionReviewSimulationState.loading) {
