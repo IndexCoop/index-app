@@ -1,14 +1,13 @@
 'use client'
 
 import { useArcxAnalytics } from '@arcxmoney/analytics'
-import { useGTMDispatch } from '@elgorditosalsero/react-gtm-hook'
+import ReactGA from "react-ga4";
 import { useCallback } from 'react'
 
 const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-prod'
 
 export const useAnalytics = () => {
   const arcxSdk = useArcxAnalytics()
-  const sendDataToGTM = useGTMDispatch()
 
   const logEvent = useCallback(
     (name: string, data?: { [key: string]: string | number | boolean }) => {
@@ -16,7 +15,7 @@ export const useAnalytics = () => {
 
       try {
         arcxSdk?.event(name, data)
-        sendDataToGTM({ event: name, ...data })
+        ReactGA.event(name, data)
         window.safary?.track({
           eventType: 'Generic',
           eventName: name,
@@ -26,7 +25,7 @@ export const useAnalytics = () => {
         console.log('Caught error in logEvent', e)
       }
     },
-    [arcxSdk, sendDataToGTM],
+    [arcxSdk],
   )
 
   const logTransaction = useCallback(
@@ -41,14 +40,13 @@ export const useAnalytics = () => {
             transactionType,
           },
         })
-        sendDataToGTM({
-          event: 'Transaction Submitted',
+        ReactGA.event('Transaction Submitted', {
           chainId,
           transactionHash: transactionHash ?? '',
         })
         window.safary?.track({
           eventType: 'Transaction',
-          eventName: 'Submitted',
+          eventName: 'Transaction Submitted',
           parameters: {
             transactionHash: transactionHash ?? '',
           },
@@ -57,7 +55,7 @@ export const useAnalytics = () => {
         console.log('Caught error in logTransaction', e)
       }
     },
-    [arcxSdk, sendDataToGTM],
+    [arcxSdk],
   )
 
   const logConnectWallet = useCallback(
@@ -70,10 +68,10 @@ export const useAnalytics = () => {
             account: address ?? '',
             chainId: chainId ?? '',
           })
-          sendDataToGTM({ event: 'Wallet Connected', address, chainId })
+          ReactGA.event('Wallet Connected', { address, chainId })
           window.safary?.track({
             eventType: 'Wallet',
-            eventName: 'Connected',
+            eventName: 'Wallet Connected',
             parameters: {
               account: address ?? '',
               chainId: chainId ?? '',
@@ -84,7 +82,7 @@ export const useAnalytics = () => {
         }
       }
     },
-    [arcxSdk, sendDataToGTM],
+    [arcxSdk],
   )
 
   return {
