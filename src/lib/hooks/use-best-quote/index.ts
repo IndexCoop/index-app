@@ -15,6 +15,7 @@ import {
 
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 
+import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
 import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { get0xQuote } from './utils/zeroex'
@@ -41,6 +42,7 @@ export const useBestQuote = (
   const publicClient = usePublicClient()
   const { address, jsonRpcProvider, provider } = useWallet()
   const { chainId: networkChainId } = useNetwork()
+  const { logEvent } = useAnalytics()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
   const chainId = networkChainId ?? 1
   const nativeTokenPrice = useNativeTokenPrice(chainId)
@@ -118,6 +120,7 @@ export const useBestQuote = (
             provider,
             jsonRpcProvider,
           )
+          logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
           setIsFetchingFlashMint(false)
           setQuoteFlashmint(quoteFlashMint)
         } else {
@@ -144,6 +147,7 @@ export const useBestQuote = (
             },
             publicClient,
           )
+          logEvent('Quote Received', formatQuoteAnalytics(quoteRedemption))
           setIsFetchingRedemption(false)
           setQuoteRedemption(quoteRedemption)
         } else {
@@ -168,6 +172,7 @@ export const useBestQuote = (
             outputTokenPrice,
             nativeTokenPrice,
           })
+          logEvent('Quote Received', formatQuoteAnalytics(quote0x))
           setIsFetching0x(false)
           setQuote0x(quote0x)
         } else {
