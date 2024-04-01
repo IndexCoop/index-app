@@ -4,7 +4,7 @@ export function getBestQuote(
   fullCosts0x: number | null,
   fullCostsFM: number | null,
   totalOutput0x: number | null,
-  totalOutputFM: number | null
+  totalOutputFM: number | null,
 ): QuoteType {
   if (fullCosts0x !== null && fullCostsFM === null) return QuoteType.zeroex
   if (fullCosts0x === null && fullCostsFM !== null) return QuoteType.flashmint
