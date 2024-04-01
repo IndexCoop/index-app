@@ -5,7 +5,7 @@ import ReactGA from 'react-ga4'
 import { useCallback } from 'react'
 import { Quote } from './use-best-quote/types'
 
-const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-prod'
+const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV !== 'index-app-prod'
 
 export const formatQuoteAnalytics = (quote: Quote | null) => {
   if (quote === null) return {}
