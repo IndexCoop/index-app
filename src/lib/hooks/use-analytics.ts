@@ -17,6 +17,7 @@ export const formatQuoteAnalytics = (quote: Quote | null) => {
     gas: quote.gas.toString(),
     inputTokenAmount: quote.inputTokenAmount.toString(),
     outputTokenAmount: quote.outputTokenAmount.toString(),
+    fullCostsInUsd: quote.fullCostsInUsd ?? '',
     slippage: quote.slippage,
   }
 }
