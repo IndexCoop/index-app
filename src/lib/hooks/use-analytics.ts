@@ -5,19 +5,25 @@ import ReactGA from 'react-ga4'
 import { useCallback } from 'react'
 import { Quote } from './use-best-quote/types'
 
-const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV !== 'index-app-prod'
+const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-prod'
 
 export const formatQuoteAnalytics = (quote: Quote | null) => {
   if (quote === null) return {}
   return {
     type: quote.type.toString(),
-    contract: quote.contract,
     inputToken: quote.inputToken.symbol,
     outputToken: quote.outputToken.symbol,
     gas: quote.gas.toString(),
+    gasPrice: quote.gasPrice.toString(),
+    gasCosts: quote.gasCosts.toString(),
+    gasCostsInUsd: quote.gasCostsInUsd,
     inputTokenAmount: quote.inputTokenAmount.toString(),
+    inputTokenAmountUsd: quote.inputTokenAmountUsd,
     outputTokenAmount: quote.outputTokenAmount.toString(),
-    fullCostsInUsd: quote.fullCostsInUsd ?? '',
+    outputTokenAmountUsd: quote.outputTokenAmountUsd,
+    outputTokenAmountUsdAfterFees: quote.outputTokenAmountUsdAfterFees,
+    inputTokenPrice: quote.inputTokenPrice,
+    outputTokenPrice: quote.outputTokenPrice,
     slippage: quote.slippage,
   }
 }
