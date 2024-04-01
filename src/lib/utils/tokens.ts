@@ -141,7 +141,6 @@ export function isAvailableForSwap(token: Token): boolean {
   switch (token.symbol) {
     case CoinDeskEthTrendIndex.symbol:
     case IndexCoopBitcoin2xIndex.symbol:
-    case IndexCoopEthereum2xIndex.symbol:
     case LeveragedRethStakingYield.symbol:
       return false
     default:

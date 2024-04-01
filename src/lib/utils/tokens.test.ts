@@ -67,7 +67,7 @@ describe('isAvailableForSwap()', () => {
 
   test('should return false for ETH2x swap availability', async () => {
     const isAvailable = isAvailableForSwap(IndexCoopEthereum2xIndex)
-    expect(isAvailable).toBe(false)
+    expect(isAvailable).toBe(true)
   })
 
   test('should return false for icRETH swap availability', async () => {

@@ -1,7 +1,8 @@
-import { BigNumber, PopulatedTransaction } from 'ethers'
+import { QuoteTransaction } from '@/lib/hooks/use-best-quote/types'
+import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 
 // Default gas margin to add on top of estimate
-const defaultGasMargin = 10
+const defaultGasMargin = BigInt(10)
 
 export class GasEstimatooorFailedError extends Error {
   statusCode = 1001
@@ -13,19 +14,22 @@ export class GasEstimatooorFailedError extends Error {
 }
 
 export class GasEstimatooor {
-  constructor(readonly signer: any, readonly defaultGasEstimate: BigNumber) {}
+  constructor(
+    readonly provider: IndexRpcProvider,
+    readonly defaultGasEstimate: bigint,
+  ) {}
 
   async estimate(
-    tx?: PopulatedTransaction,
-    canFail: boolean = true
-  ): Promise<BigNumber> {
-    const { defaultGasEstimate, signer } = this
+    tx?: QuoteTransaction,
+    canFail: boolean = true,
+  ): Promise<bigint> {
+    const { defaultGasEstimate, provider } = this
 
     let gasEstimate = defaultGasEstimate
     if (!tx) return gasEstimate
 
     try {
-      gasEstimate = await signer.estimateGas(tx)
+      gasEstimate = await provider.estimateGas(tx)
     } catch (error: any) {
       // console.log('Error estimating gas:', error)
       if (canFail) {
@@ -35,8 +39,7 @@ export class GasEstimatooor {
     }
 
     // Add safety margin on top of estimate
-    gasEstimate = gasEstimate.mul(100 + defaultGasMargin).div(100)
-
+    gasEstimate = (gasEstimate * (BigInt(100) + defaultGasMargin)) / BigInt(100)
     return gasEstimate
   }
 }

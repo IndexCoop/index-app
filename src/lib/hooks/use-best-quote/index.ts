@@ -6,7 +6,6 @@ import { getEnhancedRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/iss
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
-import { GasStation } from '@/lib/utils/api/gas-station'
 import {
   getAddressForToken,
   isAvailableForFlashMint,
@@ -16,6 +15,7 @@ import {
 
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 
+import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
 import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { get0xQuote } from './utils/zeroex'
@@ -40,8 +40,9 @@ export const useBestQuote = (
   outputToken: Token,
 ) => {
   const publicClient = usePublicClient()
-  const { provider, signer } = useWallet()
+  const { address, jsonRpcProvider, provider } = useWallet()
   const { chainId: networkChainId } = useNetwork()
+  const { logEvent } = useAnalytics()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
   const chainId = networkChainId ?? 1
   const nativeTokenPrice = useNativeTokenPrice(chainId)
@@ -73,7 +74,7 @@ export const useBestQuote = (
         return
       }
 
-      if (!provider || !chainId) {
+      if (!provider || !chainId || !address) {
         console.error('Error fetching quotes - no provider or chain id present')
         return
       }
@@ -107,6 +108,7 @@ export const useBestQuote = (
           const quoteFlashMint = await getFlashMintQuote(
             {
               ...request,
+              account: address,
               chainId,
               inputToken,
               inputTokenAmountWei,
@@ -116,8 +118,9 @@ export const useBestQuote = (
               nativeTokenPrice,
             },
             provider,
-            signer,
+            jsonRpcProvider,
           )
+          logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
           setIsFetchingFlashMint(false)
           setQuoteFlashmint(quoteFlashMint)
         } else {
@@ -129,12 +132,12 @@ export const useBestQuote = (
         if (canRedeemIndexToken) {
           console.log('canRedeemIndexToken')
           setIsFetchingRedemption(true)
-          const gasStation = new GasStation(provider)
-          const gasPrice = await gasStation.getGasPrice()
+          const gasPrice = await provider.getGasPrice()
           const quoteRedemption = await getEnhancedRedemptionQuote(
             {
               ...request,
-              gasPrice: gasPrice.toBigInt(),
+              account: address,
+              gasPrice: gasPrice,
               indexTokenAmount: inputTokenAmountWei.toBigInt(),
               inputToken,
               inputTokenPrice,
@@ -143,8 +146,8 @@ export const useBestQuote = (
               nativeTokenPrice,
             },
             publicClient,
-            signer,
           )
+          logEvent('Quote Received', formatQuoteAnalytics(quoteRedemption))
           setIsFetchingRedemption(false)
           setQuoteRedemption(quoteRedemption)
         } else {
@@ -162,13 +165,14 @@ export const useBestQuote = (
           const quote0x = await get0xQuote({
             ...request,
             chainId,
-            address: signer._address,
+            address,
             inputToken,
             inputTokenPrice,
             outputToken,
             outputTokenPrice,
             nativeTokenPrice,
           })
+          logEvent('Quote Received', formatQuoteAnalytics(quote0x))
           setIsFetching0x(false)
           setQuote0x(quote0x)
         } else {
@@ -182,14 +186,15 @@ export const useBestQuote = (
       fetchFlashMintQuote()
     },
     [
+      address,
       chainId,
       indexToken,
       inputToken,
+      jsonRpcProvider,
       outputToken,
       nativeTokenPrice,
       provider,
       publicClient,
-      signer,
     ],
   )
 
@@ -224,8 +229,8 @@ export const useBestQuote = (
     const bestQuote = getBestQuote(
       quote0x?.fullCostsInUsd ?? null,
       quoteFlashMint?.fullCostsInUsd ?? null,
-      quoteRedemption?.fullCostsInUsd ?? null,
       quote0x?.outputTokenAmountUsdAfterFees ?? null,
+      quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null,
     )
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
     const canSwapIndexToken = isAvailableForSwap(indexToken)

@@ -1,63 +1,84 @@
 'use client'
 
 import { useArcxAnalytics } from '@arcxmoney/analytics'
-import { useGTMDispatch } from '@elgorditosalsero/react-gtm-hook'
+import ReactGA from 'react-ga4'
 import { useCallback } from 'react'
+import { Quote } from './use-best-quote/types'
 
 const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-prod'
 
+export const formatQuoteAnalytics = (quote: Quote | null) => {
+  if (quote === null) return {}
+  return {
+    type: quote.type.toString(),
+    inputToken: quote.inputToken.symbol,
+    outputToken: quote.outputToken.symbol,
+    gas: quote.gas.toString(),
+    gasPrice: quote.gasPrice.toString(),
+    gasCosts: quote.gasCosts.toString(),
+    gasCostsInUsd: quote.gasCostsInUsd,
+    inputTokenAmount: quote.inputTokenAmount.toString(),
+    inputTokenAmountUsd: quote.inputTokenAmountUsd,
+    outputTokenAmount: quote.outputTokenAmount.toString(),
+    outputTokenAmountUsd: quote.outputTokenAmountUsd,
+    outputTokenAmountUsdAfterFees: quote.outputTokenAmountUsdAfterFees,
+    inputTokenPrice: quote.inputTokenPrice,
+    outputTokenPrice: quote.outputTokenPrice,
+    slippage: quote.slippage,
+  }
+}
+
 export const useAnalytics = () => {
   const arcxSdk = useArcxAnalytics()
-  const sendDataToGTM = useGTMDispatch()
 
   const logEvent = useCallback(
-    (name: string, data?: { [key: string]: string | number | boolean }) => {
+    (name: string, data?: { [key: string]: string | number | boolean | undefined }) => {
       if (!isProduction) return
 
       try {
         arcxSdk?.event(name, data)
-        sendDataToGTM({ event: name, ...data })
+        ReactGA.event(name, data)
         window.safary?.track({
           eventType: 'Generic',
           eventName: name,
-          parameters: data,
+          parameters: data as { [key: string]: string | number | boolean },
         })
       } catch (e) {
         console.log('Caught error in logEvent', e)
       }
     },
-    [arcxSdk, sendDataToGTM],
+    [arcxSdk],
   )
 
   const logTransaction = useCallback(
-    (chainId: number, transactionType: string, transactionHash?: string) => {
+    (
+      chainId: number,
+      transactionHash: string,
+      metadata: { [key: string]: string | number | boolean | undefined },
+    ) => {
       if (!isProduction) return
 
       try {
         arcxSdk?.transaction({
           chainId,
-          transactionHash: transactionHash ?? '',
-          metadata: {
-            transactionType,
-          },
+          transactionHash,
+          metadata,
         })
-        sendDataToGTM({
-          event: 'Transaction Submitted',
+        ReactGA.event('Transaction Submitted', {
           chainId,
-          transactionHash: transactionHash ?? '',
+          transactionHash,
+          ...metadata,
         })
         window.safary?.track({
           eventType: 'Transaction',
-          eventName: 'Submitted',
-          parameters: {
-            transactionHash: transactionHash ?? '',
-          },
+          eventName: 'Transaction Submitted',
+          parameters: metadata as { [key: string]: string | number | boolean },
         })
       } catch (e) {
         console.log('Caught error in logTransaction', e)
       }
     },
-    [arcxSdk, sendDataToGTM],
+    [arcxSdk],
   )
 
   const logConnectWallet = useCallback(
@@ -70,10 +91,10 @@ export const useAnalytics = () => {
             account: address ?? '',
             chainId: chainId ?? '',
           })
-          sendDataToGTM({ event: 'Wallet Connected', address, chainId })
+          ReactGA.event('Wallet Connected', { address, chainId })
           window.safary?.track({
             eventType: 'Wallet',
-            eventName: 'Connected',
+            eventName: 'Wallet Connected',
             parameters: {
               account: address ?? '',
               chainId: chainId ?? '',
@@ -84,7 +105,7 @@ export const useAnalytics = () => {
         }
       }
     },
-    [arcxSdk, sendDataToGTM],
+    [arcxSdk],
   )
 
   return {

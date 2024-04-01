@@ -1,17 +1,18 @@
 import { BigNumber, ethers } from 'ethers'
-
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { createPublicClient, http } from 'viem'
 
 import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
 import { toWei } from '@/lib/utils'
 
 import { GasEstimatooor, GasEstimatooorFailedError } from './gas-estimatooor'
 
-const provider = new JsonRpcProvider('http://127.0.0.1:8545/')
 const signer = new ethers.Wallet(
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-  provider
 )
+
+const publicClient = createPublicClient({
+  transport: http('http://127.0.0.1:8545/'),
+})
 
 describe('GasEstimatooor', () => {
   beforeEach((): void => {
@@ -19,16 +20,17 @@ describe('GasEstimatooor', () => {
   })
 
   it('should return default estimate for undefined tx', async () => {
-    const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
-    const estimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+    const defaultGasEstimate = BigInt(DefaultGasLimitFlashMintZeroEx)
+    const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const gasEstimate = await estimatooor.estimate(undefined)
     expect(gasEstimate).toEqual(defaultGasEstimate)
   })
 
   it('should throw error if estimation fails and canFail === true (default)', async () => {
-    const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
-    const estimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+    const defaultGasEstimate = BigInt(DefaultGasLimitFlashMintZeroEx)
+    const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const failingTx = {
+      account: '',
       from: signer.address,
       //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigNumber.from(21_000),
@@ -43,9 +45,10 @@ describe('GasEstimatooor', () => {
   })
 
   it('should throw no error and return default if estimation fails and canFail === false', async () => {
-    const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
-    const estimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+    const defaultGasEstimate = BigInt(DefaultGasLimitFlashMintZeroEx)
+    const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const failingTx = {
+      account: '',
       from: signer.address,
       //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigNumber.from(21_000),
@@ -56,10 +59,11 @@ describe('GasEstimatooor', () => {
   })
 
   it('should return gas estimate with margin - on success', async () => {
-    const defaultGasEstimate = BigNumber.from(DefaultGasLimitFlashMintZeroEx)
+    const defaultGasEstimate = BigInt(DefaultGasLimitFlashMintZeroEx)
     // const defaultGasMargin = 20
-    const estimatooor = new GasEstimatooor(signer, defaultGasEstimate)
+    const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const tx = {
+      account: signer.address,
       from: signer.address,
       to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigNumber.from(21_000),

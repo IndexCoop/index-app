@@ -1,28 +1,27 @@
-import { GTMProvider } from '@elgorditosalsero/react-gtm-hook'
+'use client'
+
 import { ArcxAnalyticsProvider } from '@arcxmoney/analytics'
-import { ReactNode } from 'react'
+import ReactGA from "react-ga4";
+import { ReactNode, useEffect } from 'react'
 
 type Props = {
   children: ReactNode
 }
 
 const arcxApiKey = process.env.NEXT_PUBLIC_ARCX_ANALYTICS_API_KEY ?? ''
-const gtmParams = {
-  id: process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_CONTAINER_ID ?? '',
-}
 
 export function AnalyticsProvider({ children }: Props) {
-  const gtmProviderComponent = (
-    <GTMProvider state={gtmParams}>{children}</GTMProvider>
-  )
+  useEffect(() => {
+    ReactGA.initialize(process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ?? '')
+  }, [])
 
   if (!arcxApiKey) {
-    return gtmProviderComponent
+    return children
   }
 
   return (
     <ArcxAnalyticsProvider apiKey={arcxApiKey}>
-      {gtmProviderComponent}
+      {children}
     </ArcxAnalyticsProvider>
   )
 }

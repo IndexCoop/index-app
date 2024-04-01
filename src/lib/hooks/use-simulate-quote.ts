@@ -1,5 +1,3 @@
-import { BigNumber } from 'ethers'
-
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { TxSimulator } from '@/lib/utils/simulator'
@@ -22,8 +20,8 @@ export const useSimulateQuote = (tx: QuoteTransaction | null) => {
       success = await simulator.simulate(tx)
     } catch {
       // fallback: make a gas estimate
-      const gasEstimate: BigNumber = await provider.estimateGas(tx)
-      success = gasEstimate.gt(0)
+      const gasEstimate: bigint = await provider.estimateGas(tx)
+      success = gasEstimate > 0
     }
     return success
   }
