@@ -11,6 +11,7 @@ import { ReviewProps } from './components/review'
 import { TransactionReviewSimulationState } from './components/simulation'
 
 export function useTransactionReview(props: ReviewProps) {
+  const decimals = 10
   const { onSubmitWithSuccess, transactionReview } = props
   const { logEvent } = useAnalytics()
   const { executeTrade, isTransacting } = useTrade()
@@ -64,7 +65,6 @@ export function useTransactionReview(props: ReviewProps) {
     [transactionReview],
   )
 
-  const decimals = 10
   const formattedInputTokenAmount =
     displayFromWei(
       transactionReview.inputTokenAmount,
