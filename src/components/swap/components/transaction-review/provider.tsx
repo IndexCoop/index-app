@@ -31,6 +31,7 @@ export function useTransactionReview(props: ReviewProps) {
   }, [])
 
   useEffect(() => {
+    setOverride(false)
     // Reset state for new data
     setSimulationState(TransactionReviewSimulationState.default)
   }, [transactionReview])
@@ -123,6 +124,7 @@ export function useTransactionReview(props: ReviewProps) {
       if (!isSuccess) return
     }
     const success = await makeTrade(override)
+    setOverride(false)
     if (success === null) return
     onSubmitWithSuccess(success)
   }
