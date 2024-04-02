@@ -45,7 +45,8 @@ export const useTradeButtonState = (
         outputToken === Bitcoin2xFlexibleLeverageIndex
       )
         return TradeButtonState.notAvailable
-      if (sellTokenAmount === '0') return TradeButtonState.enterAmount
+      if (sellTokenAmount === '0' || sellTokenAmount === '')
+        return TradeButtonState.enterAmount
       if (hasFetchingError) return TradeButtonState.fetchingError
       if (hasInsufficientFunds) return TradeButtonState.insufficientFunds
       if (isApproving) return TradeButtonState.approving

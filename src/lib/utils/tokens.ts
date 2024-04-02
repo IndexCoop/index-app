@@ -8,6 +8,7 @@ import {
   ETH,
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  HighYieldETHIndex,
   ic21,
   icETHIndex,
   IndexCoopBitcoin2xIndex,
@@ -125,6 +126,16 @@ export function isAvailableForFlashMint(token: Token): boolean {
   }
 }
 
+export function isAvailableForIssuance(
+  inputToken: Token,
+  outputToken: Token,
+): boolean {
+  return (
+    inputToken.symbol === HighYieldETHIndex.symbol ||
+    outputToken.symbol === HighYieldETHIndex.symbol
+  )
+}
+
 export function isAvailableForRedemption(
   inputToken: Token,
   outputToken: Token,
@@ -150,6 +161,7 @@ export function isAvailableForSwap(token: Token): boolean {
 
 export function isIndexToken(token: Token): boolean {
   if (token.symbol === IndexToken.symbol) return false
+  if (token.symbol === HighYieldETHIndex.symbol) return true
   return indicesTokenList.some((index) =>
     isSameAddress(index.address!, token.address!),
   )

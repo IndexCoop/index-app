@@ -7,6 +7,7 @@ export type PreSaleToken = {
   status: PreSaleStatus
   symbol: string
   logo?: string
+  infoLink?: string
   description: string
   componentsFrom: string[]
   prtRewards: number

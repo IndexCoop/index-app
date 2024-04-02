@@ -2,13 +2,17 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
-import { getEnhancedRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
+import {
+  getEnhancedIssuanceQuote,
+  getEnhancedRedemptionQuote,
+} from '@/lib/hooks/use-best-quote/utils/issuance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { toWei } from '@/lib/utils'
 import {
   getAddressForToken,
   isAvailableForFlashMint,
+  isAvailableForIssuance,
   isAvailableForRedemption,
   isAvailableForSwap,
 } from '@/lib/utils/tokens'
@@ -31,7 +35,7 @@ export interface FetchQuoteRequest {
 
 const defaultResults: QuoteResults = {
   bestQuote: QuoteType.zeroex,
-  results: { flashmint: null, redemption: null, zeroex: null },
+  results: { flashmint: null, issuance: null, redemption: null, zeroex: null },
 }
 
 export const useBestQuote = (
@@ -49,11 +53,13 @@ export const useBestQuote = (
 
   const [isFetching0x, setIsFetching0x] = useState<boolean>(false)
   const [isFetchingFlashmint, setIsFetchingFlashMint] = useState<boolean>(false)
+  const [isFetchingIssuance, setIsFetchingIssuance] = useState<boolean>(false)
   const [isFetchingRedemption, setIsFetchingRedemption] =
     useState<boolean>(false)
 
   const [quote0x, setQuote0x] = useState<ZeroExQuote | null>(null)
   const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
+  const [quoteIssuance, setQuoteIssuance] = useState<Quote | null>(null)
   const [quoteRedemption, setQuoteRedemption] = useState<Quote | null>(null)
   const [quoteResults, setQuoteResults] = useState<QuoteResults>(defaultResults)
 
@@ -101,6 +107,7 @@ export const useBestQuote = (
       const fetchFlashMintQuote = async () => {
         if (
           canFlashmintIndexToken &&
+          !isAvailableForIssuance(inputToken, outputToken) &&
           !isAvailableForRedemption(inputToken, outputToken)
         ) {
           setIsFetchingFlashMint(true)
@@ -128,8 +135,38 @@ export const useBestQuote = (
         }
       }
 
+      const fetchIssuanceQuote = async () => {
+        if (isAvailableForIssuance(inputToken, outputToken)) {
+          console.log('canIssue')
+          setIsFetchingIssuance(true)
+          const gasPrice = await provider.getGasPrice()
+          const quoteIssuance = await getEnhancedIssuanceQuote(
+            {
+              ...request,
+              account: address,
+              isIssuance: isMinting,
+              gasPrice,
+              inputTokenAmount: inputTokenAmountWei.toBigInt(),
+              inputToken,
+              inputTokenPrice,
+              outputToken,
+              outputTokenPrice,
+              nativeTokenPrice,
+            },
+            publicClient,
+          )
+          setIsFetchingIssuance(false)
+          setQuoteIssuance(quoteIssuance)
+        } else {
+          setQuoteIssuance(null)
+        }
+      }
+
       const fetchRedemptionQuote = async () => {
-        if (canRedeemIndexToken) {
+        if (
+          canRedeemIndexToken &&
+          !isAvailableForIssuance(inputToken, outputToken)
+        ) {
           console.log('canRedeemIndexToken')
           setIsFetchingRedemption(true)
           const gasPrice = await provider.getGasPrice()
@@ -158,6 +195,7 @@ export const useBestQuote = (
       const fetchSwapQuote = async () => {
         if (
           canSwapIndexToken &&
+          !isAvailableForIssuance(inputToken, outputToken) &&
           !isAvailableForRedemption(inputToken, outputToken)
         ) {
           setIsFetching0x(true)
@@ -182,6 +220,7 @@ export const useBestQuote = (
 
       // Non await - because we want to fetch quotes in parallel
       fetchSwapQuote()
+      fetchIssuanceQuote()
       fetchRedemptionQuote()
       fetchFlashMintQuote()
     },
@@ -190,7 +229,9 @@ export const useBestQuote = (
       chainId,
       indexToken,
       inputToken,
+      isMinting,
       jsonRpcProvider,
+      logEvent,
       outputToken,
       nativeTokenPrice,
       provider,
@@ -206,6 +247,12 @@ export const useBestQuote = (
           flashmint: {
             type: QuoteType.flashmint,
             isAvailable: false,
+            quote: null,
+            error: null,
+          },
+          issuance: {
+            type: QuoteType.issuance,
+            isAvailable: true,
             quote: null,
             error: null,
           },
@@ -243,6 +290,12 @@ export const useBestQuote = (
           quote: quoteFlashMint,
           error: null,
         },
+        issuance: {
+          type: QuoteType.issuance,
+          isAvailable: false,
+          quote: null,
+          error: null,
+        },
         redemption: {
           type: QuoteType.redemption,
           isAvailable: false,
@@ -264,6 +317,7 @@ export const useBestQuote = (
     outputToken,
     quote0x,
     quoteFlashMint,
+    quoteIssuance,
     quoteRedemption,
   ])
 
@@ -276,6 +330,7 @@ export const useBestQuote = (
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
+    isFetchingIssuance,
     isFetchingRedemption,
     quoteResults,
   }

@@ -1,12 +1,18 @@
 import Image from 'next/image'
+
+import { Tooltip } from '@chakra-ui/react'
+import { usePresaleData } from '@/app/pre-sale/providers/presale-provider'
+
+import { colors } from '@/lib/styles/colors'
 import { PreSaleStatus, PreSaleToken } from '../../types'
 import { StatusChip } from './status-chip'
 
 type Props = {
   token: PreSaleToken
-  onClick: () => void
+  onClick?: () => void
 }
 export function PreSaleTokenCard({ token, onClick }: Props) {
+  const { data } = usePresaleData(token.symbol)
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
@@ -26,29 +32,49 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
       <p className='text-ic-gray-800 mb-3 text-sm font-medium leading-6'>
         {token.description}
       </p>
+      {token.infoLink && (
+        <a
+          className='text-ic-blue-500 mb-4 block text-sm underline'
+          href={token.infoLink}
+          target='_blank'
+        >
+          More Info
+        </a>
+      )}
       <p className='text-ic-gray-400 mb-6 text-xs font-medium'>
         Components from {token.componentsFrom.join(', ')}
       </p>
-      <div className='bg-ic-gray-50 border-ic-gray-300 text-ic-gray-500 w-full rounded-xl border px-3 py-5 text-xs font-medium'>
-        <div className='mb-2 flex'>
-          <div className='flex-1'>PRT Rewards</div>
-          <div className='text-ic-gray-800'>
-            <span className='text-ic-gray-950 font-bold'>
-              ~{token.prtRewards}
-            </span>{' '}
-            PRTs per day
+      <Tooltip
+        className='bg-ic-white'
+        borderRadius='6px'
+        fontSize={'11px'}
+        fontWeight={500}
+        label="If deposit threshold is met, depositors will receive product revenue tokens. If the threshold is not met, depositors will receive $INDEX rewards."
+        p='12px 16px'
+        placement='bottom-start'
+        textColor={colors.ic.gray[600]}
+      >
+        <div className='bg-ic-gray-50 border-ic-gray-300 text-ic-gray-500 w-full rounded-xl border px-3 py-5 text-xs font-medium'>
+          <div className='mb-2 flex'>
+            <div className='flex-1'>PRT Rewards</div>
+            <div className='text-ic-gray-800'>
+              <span className='text-ic-gray-950 font-bold'>
+                ~{token.prtRewards}
+              </span>{' '}
+              PRTs per day
+            </div>
+          </div>
+          <div className='flex'>
+            <div className='flex-1'>Daily Index Rewards</div>
+            <div className='text-ic-gray-800'>
+              <span className='text-ic-gray-950 font-bold'>
+                {token.indexRewards}
+              </span>{' '}
+              $INDEX per ETH
+            </div>
           </div>
         </div>
-        <div className='flex'>
-          <div className='flex-1'>$INDEX Rewards</div>
-          <div className='text-ic-gray-800'>
-            <span className='text-ic-gray-950 font-bold'>
-              {token.indexRewards}
-            </span>{' '}
-            $INDEX per ETH
-          </div>
-        </div>
-      </div>
+      </Tooltip>
       <div className='text-ic-gray-600 w-full px-3 py-5 text-xs font-medium'>
         <div className='mb-2 flex'>
           <div className='flex-1'>Target Fundraise</div>
@@ -62,14 +88,12 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         <div className='mb-2 flex'>
           <div className='flex-1'>Total Value Locked</div>
           <div className='text-ic-gray-800'>
-            <span className='text-ic-gray-950 font-bold'>
-              {token.totalValueLocked}
-            </span>{' '}
+            <span className='text-ic-gray-950 font-bold'>{data.tvl}</span>{' '}
             wstETH
           </div>
         </div>
         <div className='flex'>
-          <div className='flex-1'>$INDEX Rewards</div>
+          <div className='flex-1'>Time left in pre-sale</div>
           <div className='text-ic-gray-950 font-bold'>
             {token.timeLeftDays} / 30 days
           </div>
@@ -77,7 +101,9 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
       </div>
       <button
         className='text-ic-white bg-ic-blue-600 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
-        disabled={token.status !== PreSaleStatus.ACTIVE}
+        disabled={
+          token.status !== PreSaleStatus.ACTIVE || onClick === undefined
+        }
         onClick={onClick}
       >
         {token.status === PreSaleStatus.ACTIVE
