@@ -6,12 +6,12 @@ import { useTrade } from '@/lib/hooks/use-trade'
 import { displayFromWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
+import { ReviewProps } from './components/review'
 import { TransactionReviewSimulationState } from './components/simulation'
-import { ReviewProps } from './'
 
 export function useTransactionReview(props: ReviewProps) {
   const { onSubmitWithSuccess, transactionReview } = props
-  const { executeTrade, isTransacting, txWouldFail } = useTrade()
+  const { executeTrade, isTransacting } = useTrade()
   const { quoteResults, selectedQuote } = transactionReview
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
