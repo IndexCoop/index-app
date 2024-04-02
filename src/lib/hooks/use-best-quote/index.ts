@@ -231,6 +231,7 @@ export const useBestQuote = (
       inputToken,
       isMinting,
       jsonRpcProvider,
+      logEvent,
       outputToken,
       nativeTokenPrice,
       provider,
