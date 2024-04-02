@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import {
   Box,
@@ -14,12 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 
-import { Quote, QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
-import { useTrade } from '@/lib/hooks/use-trade'
 import { useColorStyles } from '@/lib/styles/colors'
-import { displayFromWei } from '@/lib/utils'
-import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
 import { TradeButton } from '@/components/trade-button'
 
@@ -27,11 +22,9 @@ import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { FromTo } from './components/from-to'
 import { Override } from './components/override'
 import { NetworkBadge } from './components/network-badge'
-import {
-  TransactionReviewSimulation,
-  TransactionReviewSimulationState,
-} from './components/simulation'
+import { TransactionReviewSimulation } from './components/simulation'
 import { SubmissionResult } from './components/submission-result'
+import { useTransactionReview } from './provider'
 import { TransactionReview } from './types'
 
 enum TransactionReviewModalState {
@@ -167,150 +160,39 @@ const ContractSection = ({
   )
 }
 
-function useSelectedQuote(review: TransactionReview) {
-  const { quoteResults, selectedQuote } = review
-  const quote = useMemo(() => {
-    if (selectedQuote === QuoteType.flashmint) {
-      return quoteResults.results.flashmint!.quote
-    }
-    if (selectedQuote === QuoteType.issuance) {
-      return quoteResults.results.issuance!.quote
-    }
-    if (selectedQuote === QuoteType.redemption) {
-      return quoteResults.results.redemption!.quote
-    }
-    return quoteResults.results.zeroex!.quote
-  }, [quoteResults, selectedQuote])
-  return { quote }
-}
-
-const useTradeMaker = (quote: Quote | null) => {
-  const { executeTrade, isTransacting, txWouldFail } = useTrade()
-
-  /**
-   * Returns boolean indicating success or null for config error
-   */
-  const makeTrade = async (override: boolean) => {
-    if (!quote) return null
-    try {
-      await executeTrade(quote, override)
-      return true
-    } catch {
-      return false
-    }
-  }
-
-  return { isTransacting, makeTrade, txWouldFail }
-}
-
-type ReviewProps = {
+export type ReviewProps = {
   onSubmitWithSuccess: (success: boolean) => void
   transactionReview: TransactionReview
 }
 
 const Review = (props: ReviewProps) => {
-  const { onSubmitWithSuccess, transactionReview } = props
-  const { quote } = useSelectedQuote(transactionReview)
-  const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
-  const { makeTrade, isTransacting } = useTradeMaker(quote)
-  const { logEvent } = useAnalytics()
-
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [override, setOverride] = useState(false)
-  const [simulationState, setSimulationState] =
-    useState<TransactionReviewSimulationState>(
-      TransactionReviewSimulationState.default,
-    )
-
-  useEffect(() => {
-    // Reset state for new data
-    setSimulationState(TransactionReviewSimulationState.default)
-  }, [props.transactionReview])
-
-  useEffect(() => {
-    logEvent('Transaction Review', formatQuoteAnalytics(quote))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (simulationState === TransactionReviewSimulationState.loading) {
-      setIsButtonDisabled(true)
-      return
-    }
-
-    if (
-      !override &&
-      simulationState === TransactionReviewSimulationState.failure
-    ) {
-      setIsButtonDisabled(true)
-      return
-    }
-
-    setIsButtonDisabled(false)
-  }, [override, simulationState])
-
-  useEffect(() => {
-    setIsLoading(isTransacting)
-  }, [isTransacting])
-
-  const onChangeOverride = (isChecked: boolean) => {
-    setOverride(isChecked)
-  }
-
-  const onSubmit = async () => {
-    setSimulationState(TransactionReviewSimulationState.loading)
-    const isSuccess = await simulateTrade()
-    const state = isSuccess
-      ? TransactionReviewSimulationState.success
-      : TransactionReviewSimulationState.failure
-    setSimulationState(state)
-    console.log('isSuccess', isSuccess)
-    if (!isSuccess && !override) return
-    const success = await makeTrade(override)
-    if (success === null) return
-    onSubmitWithSuccess(success)
-  }
-
-  const contractBlockExplorerUrl = getBlockExplorerContractUrl(
-    transactionReview.contractAddress,
-    transactionReview.chainId,
-  )
-
-  const decimals = 10
-  const formattedInputTokenAmount =
-    displayFromWei(
-      transactionReview.inputTokenAmount,
-      decimals,
-      transactionReview.inputToken.decimals,
-    ) ?? ''
-  const formattedOutputTokenAmount =
-    displayFromWei(
-      transactionReview.outputTokenAmount,
-      decimals,
-      transactionReview.outputToken.decimals,
-    ) ?? ''
-
-  const shouldShowOverride =
-    simulationState === TransactionReviewSimulationState.failure
-
+  const { transactionReview } = props
+  const {
+    contractBlockExplorerUrl,
+    formattedInputTokenAmount,
+    formattedOutputTokenAmount,
+    isButtonDisabled,
+    isLoading,
+    shouldShowOverride,
+    simulationState,
+    onChangeOverride,
+    onSubmit,
+  } = useTransactionReview(props)
   return (
-    <Flex direction='column' h='100%' w='100%'>
-      <Flex>
-        <Flex align='center' direction='column' w='100%'>
-          <Flex my='4px'>
-            <NetworkBadge />
-          </Flex>
-          <FromTo
-            inputToken={transactionReview.inputToken.image}
-            inputTokenAmount={formattedInputTokenAmount}
-            inputTokenSymbol={transactionReview.inputToken.symbol}
-            outputToken={transactionReview.outputToken.image}
-            outputTokenAmount={formattedOutputTokenAmount}
-            outputTokenSymbol={transactionReview.outputToken.symbol}
-          />
-        </Flex>
-      </Flex>
+    <div className='flex h-full w-full flex-col'>
+      <div className='flex w-full flex-col items-center'>
+        <div className='my-1 flex'>
+          <NetworkBadge />
+        </div>
+        <FromTo
+          inputToken={transactionReview.inputToken.image}
+          inputTokenAmount={formattedInputTokenAmount}
+          inputTokenSymbol={transactionReview.inputToken.symbol}
+          outputToken={transactionReview.outputToken.image}
+          outputTokenAmount={formattedOutputTokenAmount}
+          outputTokenSymbol={transactionReview.outputToken.symbol}
+        />
+      </div>
       <Box my='8px'>
         <Box mb='8px'>
           <ContractSection
@@ -333,6 +215,6 @@ const Review = (props: ReviewProps) => {
         label={'Submit Transaction'}
         onClick={onSubmit}
       />
-    </Flex>
+    </div>
   )
 }
