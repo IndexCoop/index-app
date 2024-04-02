@@ -11,6 +11,7 @@ import { ReviewProps } from './components/review'
 import { TransactionReviewSimulationState } from './components/simulation'
 
 export function useTransactionReview(props: ReviewProps) {
+  const decimals = 10
   const { onSubmitWithSuccess, transactionReview } = props
   const { logEvent } = useAnalytics()
   const { executeTrade, isTransacting } = useTrade()
@@ -30,6 +31,7 @@ export function useTransactionReview(props: ReviewProps) {
   }, [])
 
   useEffect(() => {
+    setOverride(false)
     // Reset state for new data
     setSimulationState(TransactionReviewSimulationState.default)
   }, [transactionReview])
@@ -64,7 +66,6 @@ export function useTransactionReview(props: ReviewProps) {
     [transactionReview],
   )
 
-  const decimals = 10
   const formattedInputTokenAmount =
     displayFromWei(
       transactionReview.inputTokenAmount,
@@ -113,15 +114,17 @@ export function useTransactionReview(props: ReviewProps) {
   }
 
   const onSubmit = async () => {
-    setSimulationState(TransactionReviewSimulationState.loading)
-    const isSuccess = await simulateTrade()
-    const state = isSuccess
-      ? TransactionReviewSimulationState.success
-      : TransactionReviewSimulationState.failure
-    setSimulationState(state)
-    console.log('isSuccess', isSuccess)
-    if (!isSuccess && !override) return
+    if (!override) {
+      setSimulationState(TransactionReviewSimulationState.loading)
+      const isSuccess = await simulateTrade()
+      const state = isSuccess
+        ? TransactionReviewSimulationState.success
+        : TransactionReviewSimulationState.failure
+      setSimulationState(state)
+      if (!isSuccess) return
+    }
     const success = await makeTrade(override)
+    setOverride(false)
     if (success === null) return
     onSubmitWithSuccess(success)
   }
