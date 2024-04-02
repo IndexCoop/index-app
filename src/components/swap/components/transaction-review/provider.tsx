@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
 import { useTrade } from '@/lib/hooks/use-trade'
@@ -11,6 +12,7 @@ import { TransactionReviewSimulationState } from './components/simulation'
 
 export function useTransactionReview(props: ReviewProps) {
   const { onSubmitWithSuccess, transactionReview } = props
+  const { logEvent } = useAnalytics()
   const { executeTrade, isTransacting } = useTrade()
   const { quoteResults, selectedQuote } = transactionReview
 
@@ -21,6 +23,11 @@ export function useTransactionReview(props: ReviewProps) {
     useState<TransactionReviewSimulationState>(
       TransactionReviewSimulationState.default,
     )
+
+  useEffect(() => {
+    logEvent('Transaction Review', formatQuoteAnalytics(quote))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     // Reset state for new data
