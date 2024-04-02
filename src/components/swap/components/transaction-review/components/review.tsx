@@ -1,5 +1,3 @@
-import { Box } from '@chakra-ui/react'
-
 import { TradeButton } from '@/components/trade-button'
 
 import { useTransactionReview } from '../provider'
@@ -44,19 +42,19 @@ export function Review(props: ReviewProps) {
           outputTokenSymbol={transactionReview.outputToken.symbol}
         />
       </div>
-      <Box my='8px'>
-        <Box mb='8px'>
+      <div className='my-2'>
+        <div className='mb-2'>
           <ContractSection
             contractAddress={transactionReview.contractAddress}
             explorerUrl={contractBlockExplorerUrl}
           />
-        </Box>
+        </div>
         <TransactionReviewSimulation state={simulationState} />
-      </Box>
+      </div>
       {shouldShowOverride ? (
-        <Box my='8px'>
+        <div className='my-2'>
           <Override onChange={onChangeOverride} />
-        </Box>
+        </div>
       ) : (
         <BottomMessage />
       )}
