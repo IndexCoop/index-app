@@ -7,6 +7,7 @@ import { Token } from '@/constants/tokens'
 
 import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
+import { Summary } from './components/summary'
 
 import './styles.css'
 
@@ -45,7 +46,7 @@ export function LeverageWidget() {
         onClickBalance={onClickBalance}
         onSelectToken={onSelectToken}
       />
-      <div>Summary</div>
+      <Summary />
       <TradeButton
         label={'Connect wallet'}
         isDisabled={false}
