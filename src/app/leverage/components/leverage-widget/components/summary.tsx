@@ -3,6 +3,7 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
+import { useLeverageToken } from '@/app/leverage/provider'
 
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
@@ -25,14 +26,17 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
-  const gasFeesEth = ''
-  const gasFeesUsd = ''
-  const inputAmount = ''
-  const inputAmoutUsd = ''
-  const isFetchingQuote = false
-  const ouputAmount = ''
-  const outputAmountUsd = ''
-  const shouldShowSummaryDetails = true
+  const { stats } = useLeverageToken()
+  const {
+    gasFeesEth,
+    gasFeesUsd,
+    inputAmount,
+    inputAmoutUsd,
+    isFetchingQuote,
+    ouputAmount,
+    outputAmountUsd,
+    shouldShowSummaryDetails,
+  } = useFormattedLeverageData(stats)
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
