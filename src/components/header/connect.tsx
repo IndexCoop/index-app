@@ -2,17 +2,16 @@
 
 import { useEffect } from 'react'
 
-import { useAccount } from 'wagmi'
-
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-import { useNetwork } from '@/lib/hooks/use-network'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
+import { useNetwork } from '@/lib/hooks/use-network'
+import { useWallet } from '@/lib/hooks/use-wallet'
 
 export const Connect = () => {
-  const { address } = useAccount()
-  const { chainId } = useNetwork()
   const { logConnectWallet } = useAnalytics()
+  const { chainId } = useNetwork()
+  const { address } = useWallet()
 
   useEffect(() => {
     if (address === undefined || chainId === undefined) return
