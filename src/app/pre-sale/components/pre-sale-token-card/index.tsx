@@ -59,7 +59,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
             <div className='flex-1'>Total PRT Rewards</div>
             <div className='text-ic-gray-800'>
               <span className='text-ic-gray-950 font-bold'>
-                ~{token.prtRewards}
+                {token.prtRewards}
               </span>{' '}
               PRTs per day
             </div>
