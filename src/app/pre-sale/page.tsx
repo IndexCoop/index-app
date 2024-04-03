@@ -1,5 +1,6 @@
 import { FaqSection } from './components/faq-section'
 import { HeroSection } from './components/hero-section'
+import { MoreQuestions } from './components/more-questions'
 import { PreSaleSection } from './components/pre-sale-section'
 
 export default function Page() {
@@ -8,6 +9,7 @@ export default function Page() {
       <HeroSection />
       <PreSaleSection />
       <FaqSection />
+      <MoreQuestions />
     </div>
   )
 }
