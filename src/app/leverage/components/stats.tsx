@@ -8,8 +8,9 @@ export function Stats() {
   const { stats } = useLeverageToken()
   const { symbol, price, change24h, change24hIsPositive, low24h, high24h } =
     useFormattedLeverageData(stats)
-  const iconColor = change24hIsPositive ? 'text-ic-green' : 'text-ic-red'
-  // const iconScale = change24hIsPositive ? '' : '-scale-100'
+  const iconColor = change24hIsPositive ? 'fill-ic-green' : 'fill-ic-red'
+  const iconScale = change24hIsPositive ? '' : '-scale-100'
+  const textColor = change24hIsPositive ? 'text-ic-green' : 'text-ic-red'
   console.log('change2:', iconColor)
   return (
     <div className='border-ic-gray-600 flex flex-row items-center gap-10 rounded-3xl border bg-[#1C2C2E] px-8 py-6'>
@@ -21,22 +22,19 @@ export function Stats() {
         <div className='text-ic-gray-100 text-xs font-normal'>24h Change</div>
         {change24h.length > 0 && (
           <div className='flex flex-row items-center gap-1'>
-            <div className={clsx(iconColor)}>
-              {/** TODO: image doesn't use icon color */}
-              {/* <Image
-                alt='indicator icon'
+            <div>
+              <svg
                 className={clsx(iconColor, iconScale)}
-                src='/assets/chevron-stats-icon.svg'
-                width={8}
-                height={5}
-              /> */}
+                xmlns='http://www.w3.org/2000/svg'
+                width='8'
+                height='6'
+                viewBox='0 0 8 6'
+                fill='none'
+              >
+                <path d='M0.666667 5.86914L4 2.26083L7.33333 5.86914L8 5.14748L4 0.817505L6.24448e-08 5.14748L0.666667 5.86914Z' />
+              </svg>
             </div>
-            <div
-              className={clsx(
-                'text-ic-green text-base font-semibold',
-                iconColor,
-              )}
-            >
+            <div className={clsx('text-base font-semibold', textColor)}>
               {change24h}
             </div>
           </div>
