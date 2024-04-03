@@ -10,7 +10,7 @@ export type PreSaleToken = {
   infoLink?: string
   description: string
   componentsFrom: string[]
-  prtRewards: number
+  prtRewards: string
   indexRewards: number
   targetFundraise: number
   totalValueLocked: number

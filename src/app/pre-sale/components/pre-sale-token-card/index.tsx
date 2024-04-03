@@ -49,14 +49,14 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         borderRadius='6px'
         fontSize={'11px'}
         fontWeight={500}
-        label="If deposit threshold is met, depositors will receive product revenue tokens. If the threshold is not met, depositors will receive $INDEX rewards."
+        label='This shows the total number of PRTs distributed between pre-sale participants. Individual rewards will be shown in the deposit widget.'
         p='12px 16px'
         placement='bottom-start'
         textColor={colors.ic.gray[600]}
       >
         <div className='bg-ic-gray-50 border-ic-gray-300 text-ic-gray-500 w-full rounded-xl border px-3 py-5 text-xs font-medium'>
-          <div className='mb-2 flex'>
-            <div className='flex-1'>PRT Rewards</div>
+          <div className='flex'>
+            <div className='flex-1'>Total PRT Rewards</div>
             <div className='text-ic-gray-800'>
               <span className='text-ic-gray-950 font-bold'>
                 ~{token.prtRewards}
@@ -64,20 +64,11 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
               PRTs per day
             </div>
           </div>
-          <div className='flex'>
-            <div className='flex-1'>Daily Index Rewards</div>
-            <div className='text-ic-gray-800'>
-              <span className='text-ic-gray-950 font-bold'>
-                {token.indexRewards}
-              </span>{' '}
-              $INDEX per ETH
-            </div>
-          </div>
         </div>
       </Tooltip>
       <div className='text-ic-gray-600 w-full px-3 py-5 text-xs font-medium'>
         <div className='mb-2 flex'>
-          <div className='flex-1'>Target Fundraise</div>
+          <div className='flex-1'>Target Threshold</div>
           <div className='text-ic-gray-800'>
             <span className='text-ic-gray-950 font-bold'>
               {token.targetFundraise}
