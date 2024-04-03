@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
@@ -10,9 +11,10 @@ const faqs = [
       'The pre-sale process enables customers and early adopters to demonstrate tangible demand for a proposed product by depositing funds into the token before launch. This way, Index Coop will allocate development resources only to products that quantifiably serve a need for enough customers while supporting early adopters. Additionally, the pre-sales will bootstrap initial TVL and liquidity for our new products, giving them a better chance at being adopted by the market.',
   },
   {
+    id: 'howdoesitwork',
     question: 'How does it work?',
     answer:
-      'Each pre-sale will have a pre-defined deposit threshold that must be met within a specified amount of time to determine whether or not the product is formally launched. If the pre-sale threshold is met the token will be formally launched and depositors will get product revenue tokens via an airdrop. PRTs distribute an Index products’ revenue amongst all PRT holders by staking PRTs in the respective IC product revenue pool.* If the pre-sale threshold is not met within the timeframe, your deposits will be returned alongside an $INDEX reward.',
+      'Each pre-sale will have a pre-defined deposit threshold that must be met within a specified time period to determine whether or not the product is formally launched. Pre-sale participants deposit to the pre-launch product contract in exchange for Product Revenue Token (PRT) rewards, which may be staked* to receive a share of future product revenue.\nIf a pre-sale meets or exceeds this threshold in the allotted time, Index Coop will launch the Product within a specified time period. The pre-launch token will be rebalanced into the full product composition and PRTs will be made available to pre-sale participants after the product has been launched and live for a specified time period.\nIf the pre-sale does not meet the target threshold, the product will not be launched and no PRTs will be distributed.',
   },
   {
     question: 'How high are my rewards?',
@@ -25,6 +27,26 @@ const faqs = [
       'No, you may withdraw at any time during and after a pre-sale. However, if you withdraw before a pre-sale is completed, you forfeit any accrued PRT rewards. Pre-sales may require participants to maintain deposits for a specified amount of time to be eligible for PRT staking also.\nIf a pre-sale is successful, your original deposit will be transformed into the ultimate product token, so no action will be required. At that point, the product token will be tradeable via the Index Coop app.',
   },
 ]
+
+// FIXME: add blog link
+function HowDoesItWorkAddOn() {
+  return (
+    <div className='text-ic-gray-600 text-sm font-medium'>
+      <span className='font-bold'>
+        Important: Deposits to the contract must be maintained until the end of
+        the post-launch period in order to maintain PRT eligibility.
+      </span>{' '}
+      Pre-sale participants are always free to withdraw their assets, though
+      withdrawing before the post-launch officially concludes results in
+      forfeiture of PRTs.
+      <br />
+      <br />
+      <Link className='underline' href='' target='_blank'>
+        Learn more about PRTs
+      </Link>
+    </div>
+  )
+}
 
 export function FaqSection() {
   return (
@@ -66,6 +88,9 @@ export function FaqSection() {
                           {paragraph}
                         </p>
                       ))}
+                      {faq.id && faq.id === 'howdoesitwork' && (
+                        <HowDoesItWorkAddOn />
+                      )}
                     </p>
                   </Disclosure.Panel>
                 </>
