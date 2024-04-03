@@ -42,18 +42,22 @@ export const useApproval = (
   const approve = useCallback(async () => {
     if (!walletClient) return
     setIsApproving(true)
-    const hash = await walletClient.writeContract({
-      address: token.address as Address,
-      abi: ERC20_ABI,
-      functionName: 'approve',
-      args: [spenderAddress as Address, amount],
-    })
-    await publicClient.waitForTransactionReceipt({
-      confirmations: 1,
-      hash,
-    })
-    await refetch()
-    setIsApproving(false)
+    try {
+      const hash = await walletClient.writeContract({
+        address: token.address as Address,
+        abi: ERC20_ABI,
+        functionName: 'approve',
+        args: [spenderAddress as Address, amount],
+      })
+      await publicClient.waitForTransactionReceipt({
+        confirmations: 1,
+        hash,
+      })
+      await refetch()
+      setIsApproving(false)
+    } catch {
+      setIsApproving(false)
+    }
   }, [
     amount,
     publicClient,
