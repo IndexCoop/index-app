@@ -15,4 +15,5 @@ export type PreSaleToken = {
   targetFundraise: number
   totalValueLocked: number
   timeLeftDays: number
+  timestampEndDate: number
 }

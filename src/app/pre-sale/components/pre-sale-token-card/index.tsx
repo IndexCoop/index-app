@@ -12,7 +12,7 @@ type Props = {
   onClick?: () => void
 }
 export function PreSaleTokenCard({ token, onClick }: Props) {
-  const { data } = usePresaleData(token.symbol)
+  const { data, formatted } = usePresaleData(token.symbol)
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
@@ -86,7 +86,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         <div className='flex'>
           <div className='flex-1'>Time left in pre-sale</div>
           <div className='text-ic-gray-950 font-bold'>
-            {token.timeLeftDays} / 30 days
+            {formatted.daysLeft} / 30 days
           </div>
         </div>
       </div>

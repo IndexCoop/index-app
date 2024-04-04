@@ -15,6 +15,7 @@ export const preSaleTokens: PreSaleToken[] = [
     targetFundraise: 500,
     totalValueLocked: 658,
     timeLeftDays: 12,
+    timestampEndDate: 1715356800000,
   },
   // {
   //   status: PreSaleStatus.NOT_STARTED,

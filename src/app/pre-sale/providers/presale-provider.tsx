@@ -11,10 +11,21 @@ interface PresaleData {
     tvl: number
   }
   formatted: {
+    daysLeft: string
     prtRewards: string
     indexRewards: string
     tvl: string
   }
+}
+
+function getDaysLeft(targetTimestamp: number): number {
+  const currentTimestamp: number = Date.now()
+  const timeDifference: number = targetTimestamp - currentTimestamp
+  const millisecondsInDay: number = 1000 * 60 * 60 * 24
+  const daysLeft: number = Math.ceil(
+    Math.abs(timeDifference / millisecondsInDay),
+  )
+  return daysLeft
 }
 
 export function usePresaleData(symbol: string): PresaleData {
@@ -22,6 +33,11 @@ export function usePresaleData(symbol: string): PresaleData {
   const currencyToken = WSTETH
 
   const [tvl, setTvl] = useState(0)
+
+  const daysLeft = useMemo(() => {
+    if (!presaleToken) return '-'
+    return getDaysLeft(presaleToken.timestampEndDate).toString()
+  }, [presaleToken])
 
   const tvlFormatted = useMemo(
     () => `${formatAmount(tvl)} ${currencyToken.symbol}`,
@@ -49,6 +65,7 @@ export function usePresaleData(symbol: string): PresaleData {
       tvl,
     },
     formatted: {
+      daysLeft,
       prtRewards: '',
       indexRewards: '',
       tvl: tvlFormatted,
