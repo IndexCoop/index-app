@@ -15,11 +15,11 @@ export function SubmissionResult({
     <div className='flex flex-col items-center'>
       <div className='flex flex-col items-center p-4'>
         {success ? (
-          <CheckCircleIcon w='32px' h='32px' />
+          <CheckCircleIcon w='24px' h='24px' />
         ) : (
-          <WarningIcon w='32px' h='32px' />
+          <WarningIcon w='24px' h='24px' />
         )}
-        <div className='p-4 text-center text-3xl'>
+        <div className='p-4 text-center text-xl'>
           {success
             ? 'You successfully submitted the transaction.'
             : 'Submitting the transaction was cancelled or failed.'}
