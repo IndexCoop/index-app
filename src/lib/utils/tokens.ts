@@ -132,7 +132,8 @@ export function isAvailableForIssuance(
 ): boolean {
   return (
     inputToken.symbol === HighYieldETHIndex.symbol ||
-    outputToken.symbol === HighYieldETHIndex.symbol
+    outputToken.symbol === HighYieldETHIndex.symbol ||
+    inputToken.symbol === LeveragedRethStakingYield.symbol
   )
 }
 
