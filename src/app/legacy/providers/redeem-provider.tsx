@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import { ETH, LeveragedRethStakingYield, Token } from '@/constants/tokens'
+import { LeveragedRethStakingYield, RETH, Token } from '@/constants/tokens'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
@@ -32,7 +32,7 @@ const RedeemContext = createContext<RedeemContextProps>({
   isDepositing: false,
   isFetchingQuote: false,
   inputToken: LeveragedRethStakingYield,
-  outputToken: ETH,
+  outputToken: RETH,
   inputTokenAmount: BigInt(0),
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
@@ -47,7 +47,7 @@ export function RedeemProvider(props: { children: any }) {
   const { address, provider } = useWallet()
 
   const isDepositing = false
-  const currencyToken = ETH
+  const currencyToken = RETH
   const indexToken = LeveragedRethStakingYield
 
   const [inputValue, setInputValue] = useState('')
