@@ -61,7 +61,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
               <span className='text-ic-gray-950 font-bold'>
                 {token.prtRewards}
               </span>{' '}
-              PRTs per day
+              PRTs
             </div>
           </div>
         </div>
