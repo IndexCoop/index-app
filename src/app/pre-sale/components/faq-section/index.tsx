@@ -6,13 +6,13 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 const faqs = [
   {
-    question: 'Why pre-sales?',
+    question: 'Why Pre-sales?',
     answer:
-      'The pre-sale process enables customers and early adopters to demonstrate tangible demand for a proposed product by depositing funds into the token before launch. This way, Index Coop will allocate development resources only to products that quantifiably serve a need for enough customers while supporting early adopters. Additionally, the pre-sales will bootstrap initial TVL and liquidity for our new products, giving them a better chance at being adopted by the market.',
+      'The pre-sale process enables users and early adopters to demonstrate tangible demand for a proposed product by depositing to the token before launch. This enables Index Coop to better allocate resources to products that the community wants. Successful pre-sales also help bootstrap initial TVL for new products and overcome the “cold start” problem that new products face.',
   },
   {
     id: 'howdoesitwork',
-    question: 'How does it work?',
+    question: 'How do pre-sales work?',
     answer:
       'Each pre-sale will have a pre-defined deposit threshold that must be met within a specified time period to determine whether or not the product is formally launched. Pre-sale participants deposit to the pre-launch product contract in exchange for Product Revenue Token (PRT) rewards, which may be staked* to receive a share of future product revenue.\nIf a pre-sale meets or exceeds this threshold in the allotted time, Index Coop will launch the Product within a specified time period. The pre-launch token will be rebalanced into the full product composition and PRTs will be made available to pre-sale participants after the product has been launched and live for a specified time period.\nIf the pre-sale does not meet the target threshold, the product will not be launched and no PRTs will be distributed.',
   },
@@ -52,7 +52,7 @@ export function FaqSection() {
   return (
     <div className='divide-ic-gray-900/10 max-w-5xl divide-y'>
       <h2 className='text-ic-gray-800 text-xl font-semibold leading-10 tracking-tight'>
-        FAQ
+        FAQs
       </h2>
       <dl className='divide-ic-gray-900/10 mt-6 space-y-6 divide-y'>
         {faqs.map((faq) => {
