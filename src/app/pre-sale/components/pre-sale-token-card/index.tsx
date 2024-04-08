@@ -77,7 +77,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='mb-2 flex'>
-          <div className='flex-1'>Total Value Locked</div>
+          <div className='flex-1'>Total Deposits</div>
           <div className='text-ic-gray-800'>
             <span className='text-ic-gray-950 font-bold'>{data.tvl}</span>{' '}
             wstETH
