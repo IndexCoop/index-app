@@ -34,22 +34,17 @@ type WarningProps = {
 }
 
 export const WarningComp = (props: WarningProps) => (
-  <Flex direction={'column'} m='20px 16px 8px'>
-    <Flex align={'center'} direction={'row'}>
-      <WarningIcon color={colors.ic.gray[600]} mr={'8px'} />
-      <Text fontSize={'sm'} fontWeight={600} textColor={colors.ic.gray[600]}>
+  <div className='mx-4 mb-2 mt-5 flex flex-row items-start gap-3'>
+    <WarningIcon className='text-ic-gray-600 dark:text-ic-gray-400' />
+    <div className='flex flex-col gap-2'>
+      <span className='text-ic-gray-600 dark:text-ic-gray-400 text-sm font-semibold'>
         {props.warning.title}
-      </Text>
-    </Flex>
-    <Text
-      fontSize={'xs'}
-      fontWeight={400}
-      mt='8px'
-      textColor={colors.ic.gray[600]}
-    >
-      {props.warning.text}
-    </Text>
-  </Flex>
+      </span>
+      <p className='font-base text-ic-gray-600 dark:text-ic-gray-400 text-xs'>
+        {props.warning.text}
+      </p>
+    </div>
+  </div>
 )
 
 export const WarningCompProtection = () => {
@@ -62,10 +57,7 @@ export const WarningCompProtection = () => {
   if (!ethereum) return null
 
   return (
-    <Flex
-      direction={'column'}
-      m='20px 16px 8px'
-    >
+    <Flex direction={'column'} m='20px 16px 8px'>
       <Flex align={'center'} direction={'row'}>
         <WarningIcon color={colors.ic.gray[600]} mr={'8px'} />
         <Text fontSize={'sm'} fontWeight={600} textColor={colors.ic.gray[600]}>
@@ -80,7 +72,7 @@ export const WarningCompProtection = () => {
       >
         It is highly recommended to use an MEV protected RPC.{' '}
         <Link onClick={onClick} style={{ textDecoration: 'underline' }}>
-        Click here
+          Click here
         </Link>{' '}
         to add the MEV Blocker network to your wallet.{' '}
         <Link

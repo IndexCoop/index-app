@@ -9,6 +9,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
+import { WarningComp } from '@/components/swap/components/warning'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
 import {
@@ -177,6 +178,12 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         isDisabled={isDisabled}
         isLoading={isFetchingQuote}
         onClick={onClickButton}
+      />
+      <WarningComp
+        warning={{
+          title: 'PRT eligibility',
+          text: 'Deposits to the contract must be maintained until the end of the post-launch period (60 days after pre-sale closes) in order to maintain PRT eligibility.',
+        }}
       />
       {transactionReview && (
         <TransactionReviewModal

@@ -26,7 +26,6 @@ function SummaryQuote(props: SummaryQuoteProps) {
 
 export function Summary() {
   const {
-    gasFeesEth,
     gasFeesUsd,
     inputAmount,
     inputAmoutUsd,
