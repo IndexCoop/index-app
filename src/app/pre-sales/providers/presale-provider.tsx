@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { preSaleTokens } from '@/app/pre-sale/constants'
 import { Token, WSTETH } from '@/constants/tokens'
 import { formatAmount } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
+
+import { preSaleTokens } from '../constants'
 
 interface PresaleData {
   currencyToken: Token
