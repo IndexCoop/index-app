@@ -22,7 +22,7 @@ export function StatusChip({ status }: Props) {
           },
         )}
       />
-      {status === PreSaleStatus.ACTIVE ? 'Presale active' : 'Not Started'}
+      {status === PreSaleStatus.ACTIVE ? 'Presale active' : 'Coming soon'}
     </div>
   )
 }
