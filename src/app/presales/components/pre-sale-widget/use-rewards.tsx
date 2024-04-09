@@ -2,12 +2,14 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { IndexApi } from '@/lib/utils/api/index-api'
 
+const earnedRewardsDefault = '0'
+
 export function usePrtRewards(address: string | undefined) {
-  const [earnedRewards, setEarnedRewards] = useState('')
+  const [earnedRewards, setEarnedRewards] = useState(earnedRewardsDefault)
 
   const fetchRewards = useCallback(async () => {
     if (!address) {
-      setEarnedRewards('')
+      setEarnedRewards(earnedRewardsDefault)
       return
     }
     try {
