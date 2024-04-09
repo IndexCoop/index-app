@@ -7,6 +7,7 @@ import { formatAmount } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { usePresaleData } from '../../providers/presale-provider'
+import { usePrtRewards } from '../pre-sale-widget/use-rewards'
 
 export function useFormattedData() {
   const { address } = useWallet()
@@ -30,6 +31,7 @@ export function useFormattedData() {
     forceRefetch: forceRefetchPreSaleCurrencyTokenBalance,
   } = useFormattedBalance(preSaleCurrencyToken, address)
   const { formatted } = usePresaleData(preSaleToken.symbol)
+  const { earnedRewards, refetch: refetchRewards } = usePrtRewards(address)
 
   const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
 
@@ -66,12 +68,14 @@ export function useFormattedData() {
   )
 
   const forceRefetch = () => {
+    refetchRewards()
     forceRefetchPreSaleTokenBalance()
     forceRefetchPreSaleCurrencyTokenBalance()
   }
 
   return {
     currencyBalance: `${currencyBalanceFormatted}`,
+    earnedRewards,
     hasInsufficientFunds,
     gasFeesEth: quote?.gasCosts
       ? `(${formatUnits(quote.gasCosts.toBigInt(), 18)} ETH)`

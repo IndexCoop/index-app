@@ -4,7 +4,7 @@ import Link from 'next/link'
 export function MoreQuestions() {
   return (
     <div className='text-ic-gray-600 mt-16 text-sm font-medium'>
-      Have more questions? More pre-sale info{' '}
+      Have more questions? More presale info{' '}
       <Link className='underline' href='' target='_blank'>
         here
       </Link>

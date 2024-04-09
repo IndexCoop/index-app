@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 import { Tooltip } from '@chakra-ui/react'
-import { usePresaleData } from '@/app/pre-sale/providers/presale-provider'
+import { usePresaleData } from '@/app/presales/providers/presale-provider'
 
 import { colors } from '@/lib/styles/colors'
 import { PreSaleStatus, PreSaleToken } from '../../types'
@@ -49,7 +49,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         borderRadius='6px'
         fontSize={'11px'}
         fontWeight={500}
-        label='This shows the total number of PRTs distributed between pre-sale participants. Individual rewards will be shown in the deposit widget.'
+        label='This shows the total number of PRTs distributed between presale participants. Individual rewards will be shown in the deposit widget.'
         p='12px 16px'
         placement='bottom-start'
         textColor={colors.ic.gray[600]}
@@ -61,7 +61,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
               <span className='text-ic-gray-950 font-bold'>
                 {token.prtRewards}
               </span>{' '}
-              PRTs per day
+              PRTs
             </div>
           </div>
         </div>
@@ -77,14 +77,14 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='mb-2 flex'>
-          <div className='flex-1'>Total Value Locked</div>
+          <div className='flex-1'>Total Deposits</div>
           <div className='text-ic-gray-800'>
             <span className='text-ic-gray-950 font-bold'>{data.tvl}</span>{' '}
             wstETH
           </div>
         </div>
         <div className='flex'>
-          <div className='flex-1'>Time left in pre-sale</div>
+          <div className='flex-1'>Time left in presale</div>
           <div className='text-ic-gray-950 font-bold'>
             {formatted.daysLeft} / 30 days
           </div>
@@ -98,8 +98,8 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         onClick={onClick}
       >
         {token.status === PreSaleStatus.ACTIVE
-          ? 'Join Pre-sale'
-          : 'Pre-sale not started'}
+          ? 'Join Presale'
+          : 'Presale not started'}
       </button>
     </div>
   )

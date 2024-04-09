@@ -26,7 +26,6 @@ function SummaryQuote(props: SummaryQuoteProps) {
 
 export function Summary() {
   const {
-    gasFeesEth,
     gasFeesUsd,
     inputAmount,
     inputAmoutUsd,
@@ -84,7 +83,7 @@ export function Summary() {
                 <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
                   <div className='font-normal'>Network Fee</div>
                   <div>
-                    <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
+                    <GasFees valueUsd={gasFeesUsd} value={''} />
                   </div>
                 </div>
               </>

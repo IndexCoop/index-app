@@ -31,8 +31,8 @@ export function PreSaleSection() {
       </div>
       <p className='text-ic-gray-400 my-2 text-[10px] font-medium leading-4'>
         *product-specific PRT staking will be made available in the Index Coop
-        app; staking pools will not be available to Restricted Persons
-        (including US Persons) as defined{' '}
+        app; staking will not be available to Restricted Persons (including US
+        Persons) as defined{' '}
         <Link
           className='underline'
           href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
@@ -41,7 +41,7 @@ export function PreSaleSection() {
           here
         </Link>
         . More information on PRT distribution and staking will be published
-        when a successful pre-sale product is formally launched.
+        when a successful presale product is formally launched.
       </p>
       <PreSalePopup
         token={preSaleTokens[0]}

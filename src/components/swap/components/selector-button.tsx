@@ -9,9 +9,15 @@ type SelectorProps = {
   onClick: () => void
   image: string
   symbol: string
+  showChevron?: boolean
 }
 
-export const SelectorButton = ({ image, symbol, onClick }: SelectorProps) => (
+export const SelectorButton = ({
+  image,
+  symbol,
+  onClick,
+  showChevron,
+}: SelectorProps) => (
   <Flex
     align='center'
     bg={colors.ic.gray[100]}
@@ -25,6 +31,8 @@ export const SelectorButton = ({ image, symbol, onClick }: SelectorProps) => (
     <Text color={colors.ic.black} fontSize={'14px'} fontWeight={500} mx='8px'>
       {symbol}
     </Text>
-    <ChevronDownIcon w={6} h={6} color={colors.ic.gray[900]} />
+    {showChevron !== false && (
+      <ChevronDownIcon w={6} h={6} color={colors.ic.gray[900]} />
+    )}
   </Flex>
 )

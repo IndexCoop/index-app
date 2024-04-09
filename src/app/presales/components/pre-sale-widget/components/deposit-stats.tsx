@@ -13,18 +13,18 @@ export function StatsItem({ title, subtitle }: StatsItemProps) {
 }
 
 type DepositStatsProps = {
-  tvl: string
+  rewards: string
   userBalance: string
 }
 
-export function DepositStats({ tvl, userBalance }: DepositStatsProps) {
+export function DepositStats({ rewards, userBalance }: DepositStatsProps) {
   return (
     <div className='flex flex-row rounded-xl border border-[#5D9797]'>
       <div className='flex-1'>
-        <StatsItem title={'TVL'} subtitle={tvl} />
+        <StatsItem title={'Deposited'} subtitle={userBalance} />
       </div>
       <div className='flex-1 border-l-[1px] border-[#5D9797]'>
-        <StatsItem title={'Deposited'} subtitle={userBalance} />
+        <StatsItem title={'PRTs earned'} subtitle={rewards} />
       </div>
     </div>
   )

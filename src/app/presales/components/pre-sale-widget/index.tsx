@@ -9,6 +9,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
+import { WarningComp } from '@/components/swap/components/warning'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
 import {
@@ -46,11 +47,11 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     toggleIsDepositing,
   } = useDeposit()
   const {
+    earnedRewards,
     hasInsufficientFunds,
     inputAmoutUsd,
     inputTokenBalance,
     inputTokenBalanceFormatted,
-    tvl,
     userBalance,
     forceRefetch,
   } = useFormattedData()
@@ -81,7 +82,13 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     outputToken,
     inputValue,
   )
-  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+  const { buttonLabel: generatedButtonLabel } = useTradeButton(buttonState)
+
+  const buttonLabel = useMemo(() => {
+    if (generatedButtonLabel === 'Swap' && isDepositing) return 'Deposit'
+    if (generatedButtonLabel === 'Swap' && !isDepositing) return 'Withdraw'
+    return generatedButtonLabel
+  }, [generatedButtonLabel, isDepositing])
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
@@ -118,6 +125,9 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       return
     }
 
+    // FIXME: revert on launch
+    return
+
     // if (buttonState === TradeButtonState.fetchingError) {
     //   fetchOptions()
     //   return
@@ -151,7 +161,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         isDepositing={isDepositing}
         onClick={toggleIsDepositing}
       />
-      <DepositStats tvl={tvl} userBalance={userBalance} />
+      <DepositStats rewards={earnedRewards} userBalance={userBalance} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={inputTokenBalanceFormatted}
@@ -159,6 +169,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         formattedFiat={inputAmoutUsd}
         selectedToken={isDepositing ? preSaleCurrencyToken : preSaleToken}
         selectedTokenAmount={inputValue}
+        showSelectorButtonChevron={false}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
         onSelectToken={onSelectToken}
@@ -166,9 +177,16 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <Summary />
       <TradeButton
         label={buttonLabel}
-        isDisabled={isDisabled}
+        // FIXME: revert on launch
+        isDisabled={true}
         isLoading={isFetchingQuote}
         onClick={onClickButton}
+      />
+      <WarningComp
+        warning={{
+          title: 'PRT eligibility',
+          text: 'Deposits to the contract must be maintained until the end of the post-launch period (60 days after presale closes) in order to maintain PRT eligibility.',
+        }}
       />
       {transactionReview && (
         <TransactionReviewModal

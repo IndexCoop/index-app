@@ -20,6 +20,7 @@ interface TradeInputSelectorProps {
   selectedToken: Token
   selectedTokenAmount: string
   priceImpact?: { colorCoding: string; value: string }
+  showSelectorButtonChevron?: boolean
   onSelectToken: () => void
   onChangeInput?: (token: Token, amount: string) => void
   onClickBalance?: () => void
@@ -82,6 +83,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
         <SelectorButton
           image={selectedToken.image}
           symbol={selectedToken.symbol}
+          showChevron={props.showSelectorButtonChevron}
           onClick={props.onSelectToken}
         />
       </Flex>
