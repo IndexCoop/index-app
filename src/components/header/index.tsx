@@ -13,7 +13,7 @@ export function Header() {
         <HeaderLink href={Path.TRADE} label='Trade' />
         <HeaderLink href={Path.PRODUCTS} label='Products' />
         {isDevEnv && <HeaderLink href={Path.LEVERAGE} label='Leverage' />}
-        {isDevEnv && <HeaderLink href={Path.PRE_SALE} label='Presales' />}
+        <HeaderLink href={Path.PRE_SALE} label='Presales' />
       </div>
       <div className='hidden h-10 max-h-10 flex-row sm:flex'>
         <Connect />
