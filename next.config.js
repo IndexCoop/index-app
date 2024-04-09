@@ -19,6 +19,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/pre-sales',
+        destination: '/presales',
+        permanent: true,
+      },
+      {
         source: '/',
         destination: '/swap',
         permanent: true,
@@ -84,8 +89,8 @@ const nextConfig = {
     return [
       {
         source: '/swap/manifest.json',
-        destination: '/manifest.json'
-      }
+        destination: '/manifest.json',
+      },
     ]
   },
   webpack: (config) => {
