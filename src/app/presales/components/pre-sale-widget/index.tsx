@@ -166,6 +166,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         formattedFiat={inputAmoutUsd}
         selectedToken={isDepositing ? preSaleCurrencyToken : preSaleToken}
         selectedTokenAmount={inputValue}
+        showSelectorButtonChevron={false}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
         onSelectToken={onSelectToken}
