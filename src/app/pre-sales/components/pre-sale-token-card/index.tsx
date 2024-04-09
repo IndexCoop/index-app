@@ -49,7 +49,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         borderRadius='6px'
         fontSize={'11px'}
         fontWeight={500}
-        label='This shows the total number of PRTs distributed between pre-sale participants. Individual rewards will be shown in the deposit widget.'
+        label='This shows the total number of PRTs distributed between presale participants. Individual rewards will be shown in the deposit widget.'
         p='12px 16px'
         placement='bottom-start'
         textColor={colors.ic.gray[600]}
@@ -84,7 +84,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='flex'>
-          <div className='flex-1'>Time left in pre-sale</div>
+          <div className='flex-1'>Time left in presale</div>
           <div className='text-ic-gray-950 font-bold'>
             {formatted.daysLeft} / 30 days
           </div>
@@ -98,8 +98,8 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         onClick={onClick}
       >
         {token.status === PreSaleStatus.ACTIVE
-          ? 'Join Pre-sale'
-          : 'Pre-sale not started'}
+          ? 'Join Presale'
+          : 'Presale not started'}
       </button>
     </div>
   )
