@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 import { Tooltip } from '@chakra-ui/react'
-import { usePresaleData } from '@/app/pre-sales/providers/presale-provider'
+import { usePresaleData } from '@/app/presales/providers/presale-provider'
 
 import { colors } from '@/lib/styles/colors'
 import { PreSaleStatus, PreSaleToken } from '../../types'
