@@ -2,8 +2,7 @@ import { PreSaleStatus, PreSaleToken } from './types'
 
 export const preSaleTokens: PreSaleToken[] = [
   {
-    // FIXME: make active upon launch
-    status: PreSaleStatus.NOT_STARTED,
+    status: PreSaleStatus.ACTIVE,
     symbol: 'hyETH',
     logo: '/assets/eth2x.png',
     infoLink:
