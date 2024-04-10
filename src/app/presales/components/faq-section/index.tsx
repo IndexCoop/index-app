@@ -28,7 +28,6 @@ const faqs = [
   },
 ]
 
-// FIXME: add blog link
 function HowDoesItWorkAddOn() {
   return (
     <div className='text-ic-gray-600 text-sm font-medium'>
@@ -41,7 +40,11 @@ function HowDoesItWorkAddOn() {
       forfeiture of PRTs.
       <br />
       <br />
-      <Link className='underline' href='' target='_blank'>
+      <Link
+        className='underline'
+        href='https://indexcoop.com/blog/hyeth-pre-sale-faqs'
+        target='_blank'
+      >
         Learn more about PRTs
       </Link>
     </div>

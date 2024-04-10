@@ -82,7 +82,8 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     outputToken,
     inputValue,
   )
-  const { buttonLabel: generatedButtonLabel } = useTradeButton(buttonState)
+  const { buttonLabel: generatedButtonLabel, isDisabled } =
+    useTradeButton(buttonState)
 
   const buttonLabel = useMemo(() => {
     if (generatedButtonLabel === 'Swap' && isDepositing) return 'Deposit'
@@ -124,9 +125,6 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       }
       return
     }
-
-    // FIXME: revert on launch
-    return
 
     // if (buttonState === TradeButtonState.fetchingError) {
     //   fetchOptions()
@@ -177,8 +175,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <Summary />
       <TradeButton
         label={buttonLabel}
-        // FIXME: revert on launch
-        isDisabled={true}
+        isDisabled={isDisabled}
         isLoading={isFetchingQuote}
         onClick={onClickButton}
       />
