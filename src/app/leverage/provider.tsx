@@ -54,38 +54,40 @@ export const useLeverageToken = () => useContext(LeverageTokenContext)
 
 export function LeverageProvider(props: { children: any }) {
   const isFetchingQuote = false
-  const quoteResult = {
-    type: QuoteType.issuance,
-    isAvailable: true,
-    quote: {
+  const quoteResult = useMemo(() => {
+    return {
       type: QuoteType.issuance,
-      chainId: 1,
-      contract: '0x',
-      isMinting: true,
-      inputToken: ETH,
-      outputToken: IndexCoopEthereum2xIndex,
-      gas: BigNumber.from(0),
-      gasPrice: BigNumber.from(0),
-      gasCosts: BigNumber.from(0),
-      gasCostsInUsd: 0,
-      fullCostsInUsd: 0,
-      priceImpact: 0,
-      indexTokenAmount: BigNumber.from(1000000),
-      inputOutputTokenAmount: BigNumber.from(10000000),
-      inputTokenAmount: BigNumber.from(1000000),
-      inputTokenAmountUsd: 0,
-      outputTokenAmount: BigNumber.from(1000000),
-      outputTokenAmountUsd: 0,
-      outputTokenAmountUsdAfterFees: 0,
-      inputTokenPrice: 0,
-      outputTokenPrice: 0,
-      slippage: 1,
-      tx: {
-        account: '0x',
+      isAvailable: true,
+      quote: {
+        type: QuoteType.issuance,
+        chainId: 1,
+        contract: '0x',
+        isMinting: true,
+        inputToken: ETH,
+        outputToken: IndexCoopEthereum2xIndex,
+        gas: BigNumber.from(0),
+        gasPrice: BigNumber.from(0),
+        gasCosts: BigNumber.from(0),
+        gasCostsInUsd: 0,
+        fullCostsInUsd: 0,
+        priceImpact: 0,
+        indexTokenAmount: BigNumber.from(1000000),
+        inputOutputTokenAmount: BigNumber.from(10000000),
+        inputTokenAmount: BigNumber.from(1000000),
+        inputTokenAmountUsd: 0,
+        outputTokenAmount: BigNumber.from(1000000),
+        outputTokenAmountUsd: 0,
+        outputTokenAmountUsdAfterFees: 0,
+        inputTokenPrice: 0,
+        outputTokenPrice: 0,
+        slippage: 1,
+        tx: {
+          account: '0x',
+        },
       },
-    },
-    error: null,
-  }
+      error: null,
+    }
+  }, [])
   const [isMinting, setMinting] = useState<boolean>(true)
   // TODO:
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
