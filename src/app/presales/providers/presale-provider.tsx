@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { Token, WSTETH } from '@/constants/tokens'
-import { formatAmount } from '@/lib/utils'
+import { formatWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 
 import { preSaleTokens } from '../constants'
@@ -9,7 +9,7 @@ import { preSaleTokens } from '../constants'
 interface PresaleData {
   currencyToken: Token
   data: {
-    tvl: number
+    tvl: bigint
   }
   formatted: {
     daysLeft: string
@@ -33,7 +33,7 @@ export function usePresaleData(symbol: string): PresaleData {
   const presaleToken = preSaleTokens.find((token) => token.symbol === symbol)
   const currencyToken = WSTETH
 
-  const [tvl, setTvl] = useState(0)
+  const [tvl, setTvl] = useState<bigint>(BigInt(0))
 
   const daysLeft = useMemo(() => {
     if (!presaleToken) return '-'
@@ -41,7 +41,7 @@ export function usePresaleData(symbol: string): PresaleData {
   }, [presaleToken])
 
   const tvlFormatted = useMemo(
-    () => `${formatAmount(tvl)} ${currencyToken.symbol}`,
+    () => `${formatWei(tvl, currencyToken.decimals)} ${currencyToken.symbol}`,
     [currencyToken, tvl],
   )
 
@@ -50,8 +50,8 @@ export function usePresaleData(symbol: string): PresaleData {
     const fetchTvl = async () => {
       try {
         const indexApi = new IndexApi()
-        const res = await indexApi.get(`/${presaleToken.symbol}/marketcap`)
-        setTvl(res.marketcap)
+        const res = await indexApi.get(`/${presaleToken.symbol}/supply`)
+        setTvl(BigInt(res.supply))
       } catch (err) {
         console.log('Error fetching tvl', err)
       }
