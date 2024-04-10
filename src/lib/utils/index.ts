@@ -98,6 +98,11 @@ export const formatAmount = (amount: number) =>
     minimumFractionDigits: 2,
   })
 
+export function formatWei(wei: bigint, units: number = 18) {
+  const formattedWei = formatUnits(wei, units)
+  return formatAmount(Number(formattedWei))
+}
+
 /**
  * Validate that the input amount is valid (positive, not excessive decimals)
  */
