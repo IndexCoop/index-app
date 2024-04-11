@@ -42,12 +42,10 @@ export async function getEnhancedIssuanceQuote(
     outputTokenPrice,
   } = request
 
-  console.log(isAvailableForIssuance(inputToken, outputToken), 'isavailable')
   if (!isAvailableForIssuance(inputToken, outputToken)) return null
   if (inputTokenAmount <= 0) return null
 
   try {
-    console.log('isIssuance:', isIssuance)
     const debtIssuanceProvider = new DebtIssuanceProvider(
       contract,
       publicClient,
@@ -61,7 +59,6 @@ export async function getEnhancedIssuanceQuote(
           inputToken.address! as Address,
           inputTokenAmount,
         )
-    console.log('componentsUnits:', addresses, units, units[0])
     const outputTokenAmount = units[0]
 
     const indexToken = isIssuance ? outputToken : inputToken
@@ -88,14 +85,12 @@ export async function getEnhancedIssuanceQuote(
 
     const defaultGas = getFlashMintGasDefault(indexToken.symbol)
     const defaultGasEstimate = BigInt(defaultGas)
-    console.log('gas', defaultGas, defaultGasEstimate.toString())
     const gasEstimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const canFail = false
     const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
     const gasCosts = gasEstimate * gasPrice
     const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
     transaction.gasLimit = BigNumber.from(gasEstimate.toString())
-    console.log('gasLimit', transaction.gasLimit.toString())
 
     const inputTokenAmountUsd =
       parseFloat(formatUnits(inputTokenAmount, inputToken.decimals)) *
@@ -103,7 +98,6 @@ export async function getEnhancedIssuanceQuote(
     const outputTokenAmountUsd =
       parseFloat(formatUnits(outputTokenAmount, outputToken.decimals)) *
       outputTokenPrice
-    console.log(outputTokenAmountUsd, gasCostsInUsd, 'after fees')
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
