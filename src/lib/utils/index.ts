@@ -117,8 +117,3 @@ export const isValidTokenInput = (
     return false
   }
 }
-
-export const safeDiv = (dividend: BigNumber, divisor: BigNumber): BigNumber => {
-  if (divisor.isZero()) return BigNumber.from(0)
-  return dividend.div(divisor)
-}
