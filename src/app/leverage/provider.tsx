@@ -1,12 +1,22 @@
+import { BigNumber } from 'ethers'
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 
-import { BTC, ETH, Token, USDC } from '@/constants/tokens'
+import { TransactionReview } from '@/components/swap/components/transaction-review/types'
+import {
+  BTC,
+  ETH,
+  IndexCoopEthereum2xIndex,
+  Token,
+  USDC,
+} from '@/constants/tokens'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getDefaultIndex } from '@/lib/utils/tokens'
 
@@ -24,6 +34,7 @@ export interface TokenContext {
   inputToken: Token
   outputToken: Token
   stats: BaseTokenStats | null
+  transactionReview: TransactionReview | null
   onSelectLeverageType: (type: LeverageType) => void
   toggleIsMinting: () => void
 }
@@ -34,6 +45,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputToken: ETH,
   outputToken: getDefaultIndex(),
   stats: null,
+  transactionReview: null,
   onSelectLeverageType: () => {},
   toggleIsMinting: () => {},
 })
@@ -41,6 +53,41 @@ export const LeverageTokenContext = createContext<TokenContext>({
 export const useLeverageToken = () => useContext(LeverageTokenContext)
 
 export function LeverageProvider(props: { children: any }) {
+  const isFetchingQuote = false
+  const quoteResult = useMemo(() => {
+    return {
+      type: QuoteType.issuance,
+      isAvailable: true,
+      quote: {
+        type: QuoteType.issuance,
+        chainId: 1,
+        contract: '0x',
+        isMinting: true,
+        inputToken: ETH,
+        outputToken: IndexCoopEthereum2xIndex,
+        gas: BigNumber.from(0),
+        gasPrice: BigNumber.from(0),
+        gasCosts: BigNumber.from(0),
+        gasCostsInUsd: 0,
+        fullCostsInUsd: 0,
+        priceImpact: 0,
+        indexTokenAmount: BigNumber.from(1000000),
+        inputOutputTokenAmount: BigNumber.from(10000000),
+        inputTokenAmount: BigNumber.from(1000000),
+        inputTokenAmountUsd: 0,
+        outputTokenAmount: BigNumber.from(1000000),
+        outputTokenAmountUsd: 0,
+        outputTokenAmountUsdAfterFees: 0,
+        inputTokenPrice: 0,
+        outputTokenPrice: 0,
+        slippage: 1,
+        tx: {
+          account: '0x',
+        },
+      },
+      error: null,
+    }
+  }, [])
   const [isMinting, setMinting] = useState<boolean>(true)
   // TODO:
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,6 +99,28 @@ export function LeverageProvider(props: { children: any }) {
     LeverageType.Long2x,
   )
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
+
+  const transactionReview = useMemo((): TransactionReview | null => {
+    if (isFetchingQuote || quoteResult === null) return null
+    const quote = quoteResult.quote
+    if (quote) {
+      return {
+        ...quote,
+        contractAddress: quote.contract,
+        quoteResults: {
+          bestQuote: QuoteType.issuance,
+          results: {
+            flashmint: null,
+            issuance: quoteResult,
+            redemption: null,
+            zeroex: null,
+          },
+        },
+        selectedQuote: QuoteType.issuance,
+      }
+    }
+    return null
+  }, [isFetchingQuote, quoteResult])
 
   const toggleIsMinting = useCallback(() => {
     setMinting(!isMinting)
@@ -81,6 +150,7 @@ export function LeverageProvider(props: { children: any }) {
         inputToken,
         outputToken,
         stats,
+        transactionReview,
         onSelectLeverageType,
         toggleIsMinting,
       }}
