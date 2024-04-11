@@ -68,6 +68,7 @@ export function LeverageWidget() {
       />
       {transactionReview && (
         <TransactionReviewModal
+          isDarkMode={true}
           isOpen={isTransactionReviewOpen}
           onClose={() => {
             // reset()

@@ -1,7 +1,6 @@
-import { ArrowDownIcon } from '@chakra-ui/icons'
-import { Flex, Image, Text } from '@chakra-ui/react'
+import Image from 'next/image'
 
-import { useColorStyles } from '@/lib/styles/colors'
+import { ArrowDownIcon } from '@chakra-ui/icons'
 
 type FromToProps = {
   inputToken: string
@@ -13,29 +12,22 @@ type FromToProps = {
 }
 
 export const FromTo = (props: FromToProps) => {
-  const { styles } = useColorStyles()
   return (
-    <Flex align='center' direction='column' w='100%'>
+    <div className='flex w-full flex-col items-center'>
       <FromToItem
         amount={props.inputTokenAmount}
         icon={props.inputToken}
         symbol={props.inputTokenSymbol}
       />
-      <Flex
-        bg={styles.backgroundInverted}
-        borderRadius={'16px'}
-        p='8px'
-        my='-20px'
-        zIndex={1}
-      >
-        <ArrowDownIcon color={styles.background} />
-      </Flex>
+      <div className='dark:bg-ic-white bg-ic-black z-10 -my-4 h-8 w-8 content-center items-center rounded-full p-2'>
+        <ArrowDownIcon className='dark:text-ic-black text-ic-white' />
+      </div>
       <FromToItem
         amount={props.outputTokenAmount}
         icon={props.outputToken}
         symbol={props.outputTokenSymbol}
       />
-    </Flex>
+    </div>
   )
 }
 
@@ -46,33 +38,15 @@ type FromToItemProps = {
 }
 
 const FromToItem = ({ amount, icon, symbol }: FromToItemProps) => {
-  const { styles } = useColorStyles()
   return (
-    <Flex
-      align='center'
-      direction='row'
-      justify='space-between'
-      my='8px'
-      border='1px solid'
-      borderColor={styles.border}
-      borderRadius='16px'
-      p='12px 16px'
-      w='100%'
-    >
-      <Flex align='center'>
-        <Flex mx='8px'>
-          <Image
-            borderRadius='full'
-            boxSize='32px'
-            src={icon}
-            alt={'token icon'}
-          />
-        </Flex>
-        <Text fontWeight='500'>{symbol}</Text>
-      </Flex>
-      <Text fontSize='18px' fontWeight='500'>
-        {amount}
-      </Text>
-    </Flex>
+    <div className='text-ic-black dark:text-ic-white border-ic-gray-100 my-2 flex w-full flex-row items-center justify-between rounded-2xl border px-3 py-4 dark:border-[#3A6060]'>
+      <div className='flex items-center'>
+        <div className='mx-2 flex'>
+          <Image src={icon} alt={'token icon'} width={32} height={32} />
+        </div>
+        <span className='font-medium'>{symbol}</span>
+      </div>
+      <span className='text-lg font-medium'>{amount}</span>
+    </div>
   )
 }

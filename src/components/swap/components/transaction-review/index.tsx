@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import clsx from 'clsx'
 
 import {
   Modal,
@@ -7,14 +8,15 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '@chakra-ui/react'
 
-import { useColorStyles } from '@/lib/styles/colors'
+import { colors } from '@/lib/styles/colors'
 
 import { Review } from './components/review'
 import { SubmissionResult } from './components/submission-result'
 import { TransactionReview } from './types'
+
+import './styles.css'
 
 enum TransactionReviewModalState {
   failed,
@@ -23,15 +25,15 @@ enum TransactionReviewModalState {
 }
 
 type TransactionReviewModalProps = {
+  isDarkMode?: boolean
   isOpen: boolean
   transactionReview: TransactionReview
   onClose: () => void
 }
 
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
-  const { styles } = useColorStyles()
   const { isOpen, onClose, transactionReview } = props
-  const backgroundColor = styles.background
+  const isDarkMode = props.isDarkMode === true
 
   const [state, setState] = useState<TransactionReviewModalState>(
     TransactionReviewModalState.submit,
@@ -58,30 +60,24 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     state === TransactionReviewModalState.submit ? 'Review Transaction' : ''
 
   return (
-    <Modal
-      onClose={onCloseModal}
-      isOpen={isOpen}
-      isCentered
-      scrollBehavior='inside'
-    >
-      <ModalOverlay
-        bg='rgba(0, 0, 0, 0.6)'
-        backdropFilter='auto'
-        backdropBlur='8px'
-      />
+    <Modal onClose={onCloseModal} isOpen={isOpen} isCentered>
+      <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
       <ModalContent
-        backgroundColor={backgroundColor}
-        borderColor={styles.border}
-        borderRadius='10'
-        borderStyle='solid'
-        borderWidth='2px'
-        m={['16px', 0]}
+        className={clsx(
+          'border-ic-gray-100  mx-4 my-0 rounded-xl border-[2px]',
+          isDarkMode ? 'review' : '',
+        )}
       >
-        <ModalHeader>
-          <Text>{modalTitle}</Text>
+        <ModalHeader className={clsx(isDarkMode ? 'dark' : '')}>
+          <span className='text-ic-black dark:text-ic-white'>{modalTitle}</span>
         </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody p='0 16px 16px 16px'>
+        <ModalCloseButton
+          color={isDarkMode ? colors.ic.white : colors.ic.black}
+        />
+        <ModalBody
+          className={clsx(isDarkMode ? 'dark' : '')}
+          p='0 16px 16px 16px'
+        >
           {(state === TransactionReviewModalState.failed ||
             state === TransactionReviewModalState.success) && (
             <SubmissionResult
