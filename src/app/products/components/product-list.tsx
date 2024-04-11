@@ -10,7 +10,6 @@ import { ProductRow } from '@/app/products/types/product'
 import { SortBy, SortDirection } from '@/app/products/types/sort'
 import {
   fetchApy,
-  fetchMarketData,
   fetchAnalytics,
 } from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
@@ -29,33 +28,24 @@ export function ProductList() {
   async function fetchProducts() {
     const analyticsPromises = Promise.all(
       productTokens.map((token) =>
-        token.shouldUseAnalytics && token.symbol
-          ? fetchAnalytics(token.symbol)
+        token.address
+          ? fetchAnalytics(token.address)
           : null
       )
-    )
-    const coingeckoPromises = Promise.all(
-      productTokens.map((token) => !token.shouldUseAnalytics ? fetchMarketData(token.address!) : null)
     )
     const apyPromises = Promise.all(
       productTokens.map((token) =>
         token.hasApy && token.symbol ? fetchApy(token.symbol) : null
       )
     )
-    const [analyticsResults, coingeckoResults, apyResults] =
-      await Promise.all([analyticsPromises, coingeckoPromises, apyPromises])
+    const [analyticsResults, apyResults] =
+      await Promise.all([analyticsPromises, apyPromises])
 
     const products = productTokens.map((token, idx) => ({
       ...token,
-      price: token.shouldUseAnalytics
-        ? analyticsResults[idx]?.navPrice
-        : coingeckoResults[idx]?.current_price.usd,
-      delta: token.shouldUseAnalytics
-        ? analyticsResults[idx]?.change24h ?? 0
-        : coingeckoResults[idx]?.price_change_percentage_24h_in_currency.usd ?? 0,
-      tvl: token.shouldUseAnalytics
-        ? analyticsResults[idx]?.marketCap
-        : coingeckoResults[idx]?.market_cap.usd,
+      price: analyticsResults[idx]?.navPrice,
+      delta: analyticsResults[idx]?.change24h ?? 0,
+      tvl: analyticsResults[idx]?.marketCap,
       apy: apyResults[idx]?.apy
         ? Number(formatEther(apyResults[idx].apy))
         : null,

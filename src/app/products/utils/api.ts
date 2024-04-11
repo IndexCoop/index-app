@@ -1,19 +1,9 @@
-import { fetchCoingeckoMarketData } from '@/lib/utils/api/coingecko'
 import { IndexApi } from '@/lib/utils/api/index-api'
 
-export async function fetchMarketData(address: string) {
-  try {
-    const res = await fetchCoingeckoMarketData(address)
-    return res
-  } catch {
-    return null
-  }
-}
-
-export async function fetchAnalytics(symbol: string) {
+export async function fetchAnalytics(address: string) {
   try {
     const indexApi = new IndexApi()
-    const res = await indexApi.get(`/${symbol.toLowerCase()}/analytics`)
+    const res = await indexApi.get(`/analytics/${address.toLowerCase()}`)
     return res
   } catch {
     return null
