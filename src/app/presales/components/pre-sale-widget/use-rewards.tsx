@@ -18,7 +18,7 @@ export function usePrtRewards(address: string | undefined) {
       //   const formattedRewards = formatAmount(Number(res.reward_earned))
       setEarnedRewards(res.reward_earned)
     } catch (err) {
-      console.log('Error fetching token stats', err)
+      console.log('Error fetching prt rewards', err)
     }
   }, [address])
 
