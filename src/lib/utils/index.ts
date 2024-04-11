@@ -34,12 +34,11 @@ export const formatAmount = (amount: number) =>
     minimumFractionDigits: 2,
   })
 
-export function formatWei(wei: bigint, units: number = 18) {
-  const formattedWei = formatUnits(wei, units)
-  return formatAmount(Number(formattedWei))
+export function formatWei(wei: bigint, units: number = 18): string {
+  return formatUnits(wei, units)
 }
 
-export function parseUnits(value: string, units: number) {
+export function parseUnits(value: string, units: number): bigint {
   return parseUnitsViem(value, units)
 }
 
