@@ -1,28 +1,18 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
-
 import { useNetwork } from '@/lib/hooks/use-network'
-import { useColorStyles } from '@/lib/styles/colors'
 
 export const NetworkBadge = () => {
-  const { styles } = useColorStyles()
   const { name } = useNetwork()
   const networkName = name ?? 'Unsupported Network'
   return (
-    <Flex align='center' direction='row' justify='center'>
-      <Text fontSize={'sm'} fontWeight='500'>
+    <div className='flex flex-row items-center justify-center'>
+      <p className='text-ic-black dark:text-ic-white text-sm font-medium'>
         You are connected to
-      </Text>
-      <Box
-        bg={styles.backgroundInverted}
-        borderRadius='16px'
-        px='8px'
-        py='2px'
-        ml='4px'
-      >
-        <Text color={styles.textInverted} fontSize='xs' fontWeight='500'>
+      </p>
+      <div className='bg-ic-black dark:bg-ic-white ml-1 rounded-2xl px-2 py-[2px]'>
+        <p className='text-ic-white dark:text-ic-black text-xs font-medium'>
           {networkName}
-        </Text>
-      </Box>
-    </Flex>
+        </p>
+      </div>
+    </div>
   )
 }

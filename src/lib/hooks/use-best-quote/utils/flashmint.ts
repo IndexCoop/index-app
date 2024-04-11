@@ -57,7 +57,7 @@ async function getEnhancedFlashMintQuote(
     }
     const quoteProvider = new FlashMintQuoteProvider(jsonRpcProvider, zeroExApi)
     const quoteFM = await quoteProvider.getQuote(request)
-    console.log(quoteFM)
+    // console.log(quoteFM)
     if (quoteFM) {
       const { inputOutputAmount, tx } = quoteFM
       const transaction: QuoteTransaction = {
@@ -70,7 +70,6 @@ async function getEnhancedFlashMintQuote(
       }
       const defaultGas = getFlashMintGasDefault(indexToken.symbol)
       const defaultGasEstimate = BigInt(defaultGas)
-      console.log('gas', defaultGas, defaultGasEstimate.toString())
       const gasEstimatooor = new GasEstimatooor(provider, defaultGasEstimate)
       // We don't want this function to fail for estimates here.
       // A default will be returned if the tx would fail.
@@ -79,7 +78,6 @@ async function getEnhancedFlashMintQuote(
       const gasCosts = gasEstimate * gasPrice
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       transaction.gasLimit = BigNumber.from(gasEstimate.toString())
-      console.log('gasLimit', transaction.gasLimit.toString())
 
       const inputTokenAmount = isMinting ? inputOutputAmount : indexTokenAmount
       const outputTokenAmount = isMinting ? indexTokenAmount : inputOutputAmount
@@ -201,16 +199,12 @@ export async function getFlashMintQuote(
     if (!isMinting) return flashMintQuote
     savedQuote = flashMintQuote
 
-    console.log('estimated index token amount', indexTokenAmount.toString())
     const diff = inputTokenAmountWei
       .sub(flashMintQuote.inputTokenAmount)
       .toBigInt()
-    console.log('diff', diff.toString())
     const factor = determineFactor(diff, inputTokenAmountWei.toBigInt())
-    console.log('factor', factor.toString())
 
     indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
-    console.log('new index token amount', indexTokenAmount.toString(), t)
 
     if (diff < 0 && t === 1) {
       t++ // loop one more time to stay under the input amount
@@ -222,7 +216,6 @@ export async function getFlashMintQuote(
 
 const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
   let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
-  console.log('ratio', ratio)
   if (Math.abs(ratio) < 0.0001) {
     // This is currently needed to avoid infinite loops
     ratio = diff < 0 ? -0.0001 : 0.0001

@@ -82,7 +82,6 @@ export const useTrade = () => {
         })
         const { hash } = await sendTransaction(request)
         logTransaction(chainId ?? -1, hash, formatQuoteAnalytics(quote))
-        console.log('hash:', hash)
         setIsTransacting(false)
       } catch (error) {
         console.log('Override?', override)

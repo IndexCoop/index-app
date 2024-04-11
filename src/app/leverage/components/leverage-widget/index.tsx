@@ -1,7 +1,10 @@
 'use client'
 
+import { useDisclosure } from '@chakra-ui/react'
+
 import { useLeverageToken } from '@/app/leverage/provider'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
+import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 
@@ -16,15 +19,25 @@ export function LeverageWidget() {
     inputToken,
     isMinting,
     leverageType,
+    transactionReview,
     onSelectLeverageType,
     outputToken,
     toggleIsMinting,
   } = useLeverageToken()
+
+  const {
+    isOpen: isTransactionReviewOpen,
+    onOpen: onOpenTransactionReview,
+    onClose: onCloseTransactionReview,
+  } = useDisclosure()
+
   const onChangeInput = (token: Token, amount: string) => {
     console.log(token.symbol, amount)
   }
   const onClickBalance = () => {}
-  const onClickButton = () => {}
+  const onClickButton = () => {
+    onOpenTransactionReview()
+  }
   const onSelectToken = () => {}
 
   return (
@@ -53,6 +66,18 @@ export function LeverageWidget() {
         isLoading={false}
         onClick={onClickButton}
       />
+      {transactionReview && (
+        <TransactionReviewModal
+          isDarkMode={true}
+          isOpen={isTransactionReviewOpen}
+          onClose={() => {
+            // reset()
+            // forceRefetch()
+            onCloseTransactionReview()
+          }}
+          transactionReview={transactionReview}
+        />
+      )}
     </div>
   )
 }

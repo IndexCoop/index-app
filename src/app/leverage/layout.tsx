@@ -1,9 +1,9 @@
 'use client'
 
+import { Providers } from '@/app/providers'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 
-import { ProvidersLite } from '../providers-lite'
 import { LeverageProvider } from './provider'
 
 type LayoutProps = {
@@ -12,7 +12,7 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <ProvidersLite>
+    <Providers>
       <div className='dark bg-[#141E1F]'>
         <Header />
         <LeverageProvider>
@@ -20,6 +20,6 @@ export default function Layout({ children }: LayoutProps) {
         </LeverageProvider>
         <Footer />
       </div>
-    </ProvidersLite>
+    </Providers>
   )
 }

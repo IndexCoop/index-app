@@ -216,7 +216,6 @@ export const Swap = (props: SwapProps) => {
   }
 
   const onClickBuyButton = () => {
-    console.log('buy')
     onOpenBuyModal()
   }
 

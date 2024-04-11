@@ -42,10 +42,8 @@ export async function getEnhancedRedemptionQuote(
     outputToken,
     outputTokenPrice,
   } = request
-  console.log(isAvailableForRedemption(inputToken, outputToken), 'isavailable')
   if (!isAvailableForRedemption(inputToken, outputToken)) return null
   try {
-    console.log('redemption')
     const redemptionProvider = new DebtIssuanceProvider(contract, publicClient)
     const [addresses, units] =
       await redemptionProvider.getComponentRedemptionUnits(
@@ -55,7 +53,6 @@ export async function getEnhancedRedemptionQuote(
 
     if (!isSameAddress(addresses[0], outputToken.address!)) return null
 
-    console.log('componentsUnits:', addresses, units, units[0])
     const outputTokenAmount = units[0]
 
     const callData = encodeFunctionData({
@@ -85,7 +82,6 @@ export async function getEnhancedRedemptionQuote(
     const gasCosts = gasEstimate * gasPrice
     const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
     transaction.gasLimit = BigNumber.from(gasEstimate.toString())
-    console.log('gasLimit', transaction.gasLimit.toString())
 
     const inputTokenAmountUsd =
       parseFloat(formatUnits(indexTokenAmount, inputToken.decimals)) *
@@ -93,7 +89,6 @@ export async function getEnhancedRedemptionQuote(
     const outputTokenAmountUsd =
       parseFloat(formatUnits(outputTokenAmount, outputToken.decimals)) *
       outputTokenPrice
-    console.log(outputTokenAmountUsd, gasCostsInUsd, 'after fees')
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
