@@ -39,6 +39,12 @@ export const productTokens = [
     type: ProductType.YIELD,
   },
   {
+    ...getTokenBySymbol('bed'),
+    hasApy: false,
+    theme: ProductTheme.DEFI,
+    type: ProductType.INDEX,
+  },
+  {
     ...getTokenBySymbol('ic21'),
     hasApy: false,
     theme: ProductTheme.LCAP,
