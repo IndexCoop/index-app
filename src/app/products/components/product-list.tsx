@@ -2,17 +2,15 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { formatEther } from 'viem'
+
 import { ProductColHeader } from '@/app/products/components/product-col-header'
 import { ProductRowItem } from '@/app/products/components/product-row-item'
 import { productTokens } from '@/app/products/constants/tokens'
 import { ProductRow } from '@/app/products/types/product'
 import { SortBy, SortDirection } from '@/app/products/types/sort'
-import {
-  fetchApy,
-  fetchAnalytics,
-} from '@/app/products/utils/api'
+import { fetchApy, fetchAnalytics } from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
+import { formatWei } from '@/lib/utils'
 
 const THIRTY_SECONDS_IN_MS = 30 * 1000
 
@@ -28,27 +26,25 @@ export function ProductList() {
   async function fetchProducts() {
     const analyticsPromises = Promise.all(
       productTokens.map((token) =>
-        token.address
-          ? fetchAnalytics(token.address)
-          : null
-      )
+        token.address ? fetchAnalytics(token.address) : null,
+      ),
     )
     const apyPromises = Promise.all(
       productTokens.map((token) =>
-        token.hasApy && token.symbol ? fetchApy(token.symbol) : null
-      )
+        token.hasApy && token.symbol ? fetchApy(token.symbol) : null,
+      ),
     )
-    const [analyticsResults, apyResults] =
-      await Promise.all([analyticsPromises, apyPromises])
+    const [analyticsResults, apyResults] = await Promise.all([
+      analyticsPromises,
+      apyPromises,
+    ])
 
     const products = productTokens.map((token, idx) => ({
       ...token,
       price: analyticsResults[idx]?.navPrice,
       delta: analyticsResults[idx]?.change24h ?? 0,
       tvl: analyticsResults[idx]?.marketCap,
-      apy: apyResults[idx]?.apy
-        ? Number(formatEther(apyResults[idx].apy))
-        : null,
+      apy: apyResults[idx]?.apy ? Number(formatWei(apyResults[idx].apy)) : null,
     }))
     setProducts(sortProducts(products, sortBy, sortDirection))
     setIsLoading(false)
@@ -56,7 +52,7 @@ export function ProductList() {
 
   useEffect(() => {
     fetchProducts()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -81,7 +77,7 @@ export function ProductList() {
         }).toString()}`,
         {
           scroll: false,
-        }
+        },
       )
     }
 
@@ -97,13 +93,13 @@ export function ProductList() {
       }).toString()}`,
       {
         scroll: false,
-      }
+      },
     )
   }
 
   return (
-    <div className='bg-ic-white rounded-3xl shadow-sm border border-ic-gray-100 w-full overflow-scroll py-4 mt-8'>
-      <div className='py-6 justify-between hidden md:flex'>
+    <div className='bg-ic-white border-ic-gray-100 mt-8 w-full overflow-scroll rounded-3xl border py-4 shadow-sm'>
+      <div className='hidden justify-between py-6 md:flex'>
         <ProductColHeader
           className='!min-w-[400px] max-w-[460px] pl-[62px] !text-left'
           onClick={() => handleSortClick(SortBy.Product)}
@@ -144,14 +140,14 @@ export function ProductList() {
           APY
         </ProductColHeader>
         <ProductColHeader
-          className='!text-right pr-8'
+          className='pr-8 !text-right'
           onClick={() => handleSortClick(SortBy.TVL)}
           sortDirection={sortBy === SortBy.TVL ? sortDirection : null}
         >
           TVL
         </ProductColHeader>
       </div>
-      <div className='flex flex-col divide-y md:divide-y-0 divide-ic-gray-200'>
+      <div className='divide-ic-gray-200 flex flex-col divide-y md:divide-y-0'>
         {products.map((product) => (
           <ProductRowItem
             key={product.symbol}
