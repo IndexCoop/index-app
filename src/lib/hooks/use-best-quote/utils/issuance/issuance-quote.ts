@@ -50,7 +50,7 @@ export async function getEnhancedIssuanceQuote(
       contract,
       publicClient,
     )
-    const [addresses, units] = isIssuance
+    const [, units] = isIssuance
       ? await debtIssuanceProvider.getComponentIssuanceUnits(
           outputToken.address! as Address,
           inputTokenAmount,
