@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
-import { formatUnits } from 'viem'
 
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { formatAmount } from '@/lib/utils'
+import { formatAmount, formatWei } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { usePresaleData } from '../../providers/presale-provider'
@@ -36,7 +35,7 @@ export function useFormattedData() {
   const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
 
   const inputAmount = quote?.inputTokenAmount
-    ? `${formatAmount(Number(formatUnits(quote?.inputTokenAmount.toBigInt(), quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
+    ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount.toBigInt(), quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
     : ''
   const inputAmoutUsd = quote?.inputTokenAmountUsd
     ? `$${formatAmount(quote?.inputTokenAmountUsd)}`
@@ -56,7 +55,7 @@ export function useFormattedData() {
   )
 
   const ouputAmount = quote?.outputTokenAmount
-    ? `${formatAmount(Number(formatUnits(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
+    ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
     : ''
   const outputAmountUsd = quote?.outputTokenAmountUsd
     ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
@@ -78,7 +77,7 @@ export function useFormattedData() {
     earnedRewards,
     hasInsufficientFunds,
     gasFeesEth: quote?.gasCosts
-      ? `(${formatUnits(quote.gasCosts.toBigInt(), 18)} ETH)`
+      ? `(${formatWei(quote.gasCosts.toBigInt(), 18)} ETH)`
       : '',
     gasFeesUsd: quote?.gasCostsInUsd
       ? `$${formatAmount(quote.gasCostsInUsd)}`
@@ -94,7 +93,7 @@ export function useFormattedData() {
     tvl: formatted.tvl,
     // As the conversion is 1-1 we can use the pre sale token balance 1-1 to show
     // how much the user deposited in terms of pre sale currency token
-    userBalance: `${formatUnits(balance, preSaleToken.decimals)} ${preSaleCurrencyToken.symbol}`,
+    userBalance: `${formatWei(balance, preSaleToken.decimals)} ${preSaleCurrencyToken.symbol}`,
     forceRefetch,
   }
 }

@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useMemo } from 'react'
-import { formatUnits } from 'viem'
 
 import { useDisclosure } from '@chakra-ui/react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
@@ -18,6 +17,7 @@ import {
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { formatWei } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { PreSaleToken } from '../../types'
@@ -115,7 +115,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
 
   const onClickBalance = useCallback(() => {
     if (!inputTokenBalance) return
-    onChangeInputTokenAmount(formatUnits(inputTokenBalance, 18))
+    onChangeInputTokenAmount(formatWei(inputTokenBalance, 18))
   }, [inputTokenBalance, onChangeInputTokenAmount])
 
   const onClickButton = useCallback(async () => {

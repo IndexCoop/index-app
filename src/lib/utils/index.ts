@@ -7,7 +7,7 @@ import {
 } from '@ethersproject/units'
 
 export function isAddress(address: string) {
-  return isAddress(address)
+  return isAddressViem(address)
 }
 
 export function isSameAddress(address1: string, address2: string): boolean {

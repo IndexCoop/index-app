@@ -1,12 +1,11 @@
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-import { formatUnits } from 'viem'
 
 import { Token } from '@/constants/tokens'
 import { QuoteResults, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
-import { toWei } from '@/lib/utils'
+import { formatWei, parseUnits } from '@/lib/utils'
 
 import { TradeDetailTokenPrices } from '../../components/trade-details'
 import { TradeInfoItem } from '../../types'
@@ -88,7 +87,7 @@ export function useSwap(
   )
 
   const inputTokenAmountWei = useMemo(
-    () => toWei(inputTokenAmount, inputToken.decimals),
+    () => parseUnits(inputTokenAmount, inputToken.decimals),
     [inputToken, inputTokenAmount],
   )
 
@@ -96,7 +95,7 @@ export function useSwap(
     () =>
       getHasInsufficientFunds(
         false,
-        inputTokenAmountWei,
+        BigNumber.from(inputTokenAmountWei.toString()),
         BigNumber.from(balance.toString()),
       ),
     [balance, inputTokenAmountWei],
@@ -112,7 +111,7 @@ export function useSwap(
         selectedQuote?.inputTokenPrice ?? 0,
         outputToken.symbol,
         Number(
-          formatUnits(
+          formatWei(
             BigInt(selectedQuote?.outputTokenAmount.toString() ?? '0'),
             outputToken.decimals,
           ),
@@ -141,7 +140,7 @@ export function useSwap(
     isFlashMint,
     hasInsufficientFunds,
     inputTokenAmountUsd,
-    inputTokenAmountWei,
+    inputTokenAmountWei: BigNumber.from(inputTokenAmountWei.toString()),
     inputTokenBalance,
     inputTokenBalanceFormatted,
     inputTokenPrice: selectedQuote?.inputTokenPrice ?? 0,

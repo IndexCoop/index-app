@@ -1,14 +1,14 @@
-import { formatUnits } from 'viem'
+import { formatWei } from '@/lib/utils'
 
 export function getFullCostsInUsd(
   quote: bigint | null | undefined,
   gas: bigint,
   inputTokenDecimals: number,
   inputTokenPrice: number,
-  nativeTokenPrice: number
+  nativeTokenPrice: number,
 ): number | null {
   if (quote === null || quote === undefined) return null
-  const quoteAmount = formatUnits(quote, inputTokenDecimals)
+  const quoteAmount = formatWei(quote, inputTokenDecimals)
   const quotePrice = parseFloat(quoteAmount) * inputTokenPrice
   const gasPrice = getGasCostsInUsd(gas, nativeTokenPrice)
   return quotePrice + gasPrice
@@ -16,9 +16,9 @@ export function getFullCostsInUsd(
 
 export function getGasCostsInUsd(
   gas: bigint,
-  nativeTokenPrice: number
+  nativeTokenPrice: number,
 ): number {
-  const gasAmount = formatUnits(gas, 18)
+  const gasAmount = formatWei(gas)
   const gasPrice = parseFloat(gasAmount) * nativeTokenPrice
   return gasPrice
 }

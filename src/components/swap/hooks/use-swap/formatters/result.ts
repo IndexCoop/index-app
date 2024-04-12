@@ -1,5 +1,3 @@
-import { formatUnits } from 'viem'
-
 import {
   Quote,
   QuoteResults,
@@ -8,7 +6,7 @@ import {
 } from '@/lib/hooks/use-best-quote/types'
 import { QuoteDisplay } from '@/components/swap/components/quote-result/types'
 import { Token } from '@/constants/tokens'
-import { formatAmount } from '@/lib/utils'
+import { formatAmount, formatWei } from '@/lib/utils'
 
 export interface FormattedQuoteDisplay {
   type: string
@@ -28,15 +26,15 @@ function formattedFeesTotal(fees: number) {
 }
 
 function formattedInputAmount(inputAmount: bigint, token: Token) {
-  const formattedInput = Number(
-    formatUnits(inputAmount, token.decimals),
-  ).toFixed(3)
+  const formattedInput = Number(formatWei(inputAmount, token.decimals)).toFixed(
+    3,
+  )
   return `${formattedInput} ${token.symbol} for`
 }
 
 function formattedOuputAmount(outputAmount: bigint, token: Token) {
   const formattedOutput = Number(
-    formatUnits(outputAmount, token.decimals),
+    formatWei(outputAmount, token.decimals),
   ).toLocaleString('en-US', {
     maximumFractionDigits: 3,
     minimumFractionDigits: 3,

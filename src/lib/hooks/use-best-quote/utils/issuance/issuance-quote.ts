@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { Address, encodeFunctionData, formatUnits, PublicClient } from 'viem'
+import { Address, encodeFunctionData, PublicClient } from 'viem'
 
 import { Token } from '@/constants/tokens'
 import { getGasCostsInUsd } from '@/lib/utils/costs'
@@ -7,6 +7,7 @@ import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { isAvailableForIssuance } from '@/lib/utils/tokens'
+import { formatWei } from '@/lib/utils'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
@@ -93,10 +94,10 @@ export async function getEnhancedIssuanceQuote(
     transaction.gasLimit = BigNumber.from(gasEstimate.toString())
 
     const inputTokenAmountUsd =
-      parseFloat(formatUnits(inputTokenAmount, inputToken.decimals)) *
+      parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *
       inputTokenPrice
     const outputTokenAmountUsd =
-      parseFloat(formatUnits(outputTokenAmount, outputToken.decimals)) *
+      parseFloat(formatWei(outputTokenAmount, outputToken.decimals)) *
       outputTokenPrice
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
