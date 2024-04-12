@@ -62,6 +62,6 @@ export const wagmiConfig = createConfig({
   ssr: true,
   transports: {
     [mainnet.id]: http(`https://eth-mainnet.g.alchemy.com/v2/${AlchemyApiKey}`),
-    [localhost.id]: http('http://127.0.0.1:8545/'),
+    [lh.id]: http('http://127.0.0.1:8545/'),
   },
 })
