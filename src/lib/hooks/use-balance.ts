@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Address, PublicClient, usePublicClient } from 'wagmi'
+import { Address, PublicClient } from 'viem'
+import { usePublicClient } from 'wagmi'
 
 import { ETH } from '@/constants/tokens'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
@@ -28,7 +29,7 @@ export function useBalance(address?: string, token?: string) {
   const [balance, setBalance] = useState<bigint>(BigInt(0))
 
   const fetchBalance = useCallback(async () => {
-    if (!address || !token) {
+    if (!address || !token || !publicClient) {
       setBalance(BigInt(0))
       return
     }
@@ -68,7 +69,7 @@ export function useBalances(address?: string, tokens?: string[]) {
 
   useEffect(() => {
     async function fetchBalance() {
-      if (!address || !tokens || tokens.length === 0) return
+      if (!address || !publicClient || !tokens || tokens.length === 0) return
       const balanceProvider = new BalanceProvider(publicClient)
       const promises = tokens.map((token) => {
         const isETH = token.toLowerCase() === ETH.address!.toLowerCase()

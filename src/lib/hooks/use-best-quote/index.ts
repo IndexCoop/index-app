@@ -80,7 +80,13 @@ export const useBestQuote = (
         return
       }
 
-      if (!provider || !chainId || !address) {
+      if (
+        !provider ||
+        !publicClient ||
+        !chainId ||
+        !address ||
+        !jsonRpcProvider
+      ) {
         console.error('Error fetching quotes - no provider or chain id present')
         return
       }

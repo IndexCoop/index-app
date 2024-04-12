@@ -102,6 +102,7 @@ export function RedeemProvider(props: { children: any }) {
   useEffect(() => {
     const fetchQuote = async () => {
       if (!address) return
+      if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       setFetchingQuote(true)
       const outputToken = isDepositing ? indexToken : currencyToken
