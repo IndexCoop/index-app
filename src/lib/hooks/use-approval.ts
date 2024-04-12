@@ -1,5 +1,4 @@
 import { useCallback, useState, useMemo } from 'react'
-import { isAddress } from 'viem'
 import {
   Address,
   useContractRead,
@@ -10,6 +9,7 @@ import {
 import { ETH, Token } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
+import { isAddress } from '@/lib/utils'
 
 export const useApproval = (
   token: Token,

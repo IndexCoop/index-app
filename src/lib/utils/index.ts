@@ -1,10 +1,14 @@
 import { BigNumber } from 'ethers'
-import { parseUnits as parseUnitsViem } from 'viem'
+import { isAddress as isAddressViem, parseUnits as parseUnitsViem } from 'viem'
 
 import {
   formatUnits,
   parseUnits as parseUnitsEthers,
 } from '@ethersproject/units'
+
+export function isAddress(address: string) {
+  return isAddress(address)
+}
 
 export function isSameAddress(address1: string, address2: string): boolean {
   return address1.toLowerCase() === address2.toLowerCase()
