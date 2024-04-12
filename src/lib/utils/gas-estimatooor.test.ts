@@ -55,7 +55,7 @@ describe('GasEstimatooor', () => {
       value: toWei(1),
     }
     const gasEstimate = await estimatooor.estimate(failingTx, false)
-    expect(gasEstimate).toEqual(defaultGasEstimate)
+    expect(gasEstimate.toString()).toEqual(defaultGasEstimate.toString())
   })
 
   it('should return gas estimate with margin - on success', async () => {
