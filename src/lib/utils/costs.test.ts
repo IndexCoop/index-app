@@ -25,7 +25,7 @@ describe('getFullCostsInUsd()', () => {
       gas.toBigInt(),
       18,
       10,
-      2000
+      2000,
     )
     const expectedCosts = 50
     expect(fullCosts).toBeDefined()
@@ -47,7 +47,7 @@ describe('getFullCostsInUsd()', () => {
       gas.toBigInt(),
       6,
       1,
-      2000
+      2000,
     )
     const expectedCosts = 1040
     expect(fullCosts).toBeDefined()

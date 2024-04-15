@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
-
 import { BigNumber } from '@ethersproject/bignumber'
+import { useCallback, useEffect, useState } from 'react'
 
 import { IndexApi } from '@/lib/utils/api/index-api'
 

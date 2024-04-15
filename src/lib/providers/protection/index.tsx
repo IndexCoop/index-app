@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-
 export const ProtectionContext = createContext<boolean>(false)
 
 export const useProtection = () => useContext(ProtectionContext)
@@ -19,7 +18,7 @@ export const ProtectionProvider = (props: { children: any }) => {
       .catch((error) => {
         console.log(
           'Cant determine whether or not we should protect the user because of this error: ',
-          error
+          error,
         )
       })
   }

@@ -1,17 +1,16 @@
 'use client'
 
-import { WagmiProvider } from 'wagmi'
-
 import { CacheProvider } from '@chakra-ui/next-js'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
 
 import theme, { rainbowkitTheme } from '@/lib/styles/theme'
 import { wagmiConfig } from '@/lib/utils/wagmi'
 
-import '@rainbow-me/rainbowkit/styles.css'
 import '@/lib/styles/fonts'
+import '@rainbow-me/rainbowkit/styles.css'
 import { AnalyticsProvider } from './analytics-provider'
 
 const queryClient = new QueryClient()

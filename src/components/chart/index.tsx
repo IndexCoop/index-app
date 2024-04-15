@@ -1,14 +1,13 @@
-import { useRef } from 'react'
-
 import { Flex } from '@chakra-ui/react'
 import { useSize } from '@chakra-ui/react-use-size'
+import { useRef } from 'react'
 
 import { colors } from '@/lib/styles/colors'
 
 import { DateRange } from './components/date-range'
+import LineChart from './components/line-chart'
 import { Price } from './components/price'
 import { RangeSelection } from './components/range-selection'
-import LineChart from './components/line-chart'
 
 export function Chart() {
   const elementRef = useRef<HTMLDivElement>(null)

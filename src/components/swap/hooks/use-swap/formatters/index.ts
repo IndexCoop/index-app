@@ -10,7 +10,7 @@ import { TradeDetailTokenPrices } from '../../../components/trade-details'
  */
 export function formattedBalance(
   token: Token,
-  tokenBalance: BigNumber | undefined
+  tokenBalance: BigNumber | undefined,
 ) {
   const zero = '0.00'
   return tokenBalance
@@ -21,7 +21,7 @@ export function formattedBalance(
 export function getFormattedTokenPrice(
   tokenSymbol: string,
   comparingTokenSymbol: string,
-  tokenPrice: number
+  tokenPrice: number,
 ): string {
   const isFractional = tokenPrice % 1 !== 0
   const price = isFractional ? tokenPrice.toFixed(4) : tokenPrice
@@ -34,19 +34,19 @@ export function getFormattedTokenPrices(
   inputTokenUsd: number,
   outputTokenSymbol: string,
   outputTokenAmount: number,
-  outputTokenUsd: number
+  outputTokenUsd: number,
 ): TradeDetailTokenPrices {
   const inputTokenPrice = outputTokenAmount / inputTokenAmount
   const outputTokenPrice = inputTokenAmount / outputTokenAmount
   const inputTokenPriceFormatted = getFormattedTokenPrice(
     inputTokenSymbol,
     outputTokenSymbol,
-    inputTokenPrice
+    inputTokenPrice,
   )
   const outputTokenPriceFormatted = getFormattedTokenPrice(
     outputTokenSymbol,
     inputTokenSymbol,
-    outputTokenPrice
+    outputTokenPrice,
   )
   const inputTokenPriceUsd = `($${formatAmount(inputTokenUsd)})`
   const outputTokenPriceUsd = `($${formatAmount(outputTokenUsd)})`
@@ -71,7 +71,7 @@ export function formattedFiat(tokenPrice: number): string {
 export const getHasInsufficientFunds = (
   bestOptionUnavailable: boolean,
   sellAmount: BigNumber,
-  sellTokenBalance: BigNumber | undefined
+  sellTokenBalance: BigNumber | undefined,
 ): boolean => {
   if (
     bestOptionUnavailable ||

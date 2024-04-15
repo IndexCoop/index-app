@@ -7,11 +7,11 @@ export class TxSimulator {
   constructor(
     private readonly accessKey: string,
     private readonly user: string,
-    private readonly project: string
+    private readonly project: string,
   ) {
     if (!accessKey) {
       throw Error(
-        'You must provide a Tenderly access key for simulations to work.'
+        'You must provide a Tenderly access key for simulations to work.',
       )
     }
     if (!user || !project) {

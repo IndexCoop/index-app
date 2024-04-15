@@ -1,8 +1,9 @@
 'use client'
 
 import { useArcxAnalytics } from '@arcxmoney/analytics'
-import ReactGA from 'react-ga4'
 import { useCallback } from 'react'
+import ReactGA from 'react-ga4'
+
 import { Quote } from './use-best-quote/types'
 
 const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-prod'
@@ -32,7 +33,10 @@ export const useAnalytics = () => {
   const arcxSdk = useArcxAnalytics()
 
   const logEvent = useCallback(
-    (name: string, data?: { [key: string]: string | number | boolean | undefined }) => {
+    (
+      name: string,
+      data?: { [key: string]: string | number | boolean | undefined },
+    ) => {
       if (!isProduction) return
 
       try {

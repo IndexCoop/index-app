@@ -1,4 +1,3 @@
-import { useMemo, useRef, useState } from 'react'
 import { SettingsIcon } from '@chakra-ui/icons'
 import {
   Flex,
@@ -10,6 +9,7 @@ import {
   PopoverTrigger,
   Text,
 } from '@chakra-ui/react'
+import { useMemo, useRef, useState } from 'react'
 
 import { Toggle, ToggleState } from '@/components/toggle'
 import { colors } from '@/lib/styles/colors'

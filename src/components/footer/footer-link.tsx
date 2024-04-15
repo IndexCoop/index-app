@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 
 type Props = {
@@ -16,9 +17,7 @@ export function FooterLink({ children, href }: Props) {
         target='_blank'
         href={href}
         className='text-ic-gray-600 hover:text-ic-gray-900 dark:hover:text-ic-gray-400 dark:text-ic-gray-200 text-sm leading-6'
-        onClick={() =>
-          logEvent('Header Link Clicked', { href })
-        }
+        onClick={() => logEvent('Header Link Clicked', { href })}
       >
         {children}
       </Link>

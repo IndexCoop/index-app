@@ -2,11 +2,12 @@ import { TradeButton } from '@/components/trade-button'
 
 import { useTransactionReview } from '../provider'
 import { TransactionReview } from '../types'
+
 import { BottomMessage } from './bottom-message'
 import { ContractSection } from './contract-section'
 import { FromTo } from './from-to'
-import { Override } from './override'
 import { NetworkBadge } from './network-badge'
+import { Override } from './override'
 import { TransactionReviewSimulation } from './simulation'
 
 export type ReviewProps = {

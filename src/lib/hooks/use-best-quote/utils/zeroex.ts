@@ -1,12 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { ic21 } from '@/constants/tokens'
+import { displayFromWei, toWei } from '@/lib/utils'
 import { getZeroExTradeData } from '@/lib/utils/api/zeroex-utils'
 import { getZeroExRouterAddress } from '@/lib/utils/contracts'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
-import { displayFromWei, toWei } from '@/lib/utils'
 
 import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
+
 import { getPriceImpact } from './price-impact'
 
 interface ZeroExQuoteRequest extends IndexQuoteRequest {

@@ -28,7 +28,7 @@ export function useNativeTokenPrice(chainId?: number): number {
  */
 export const getTokenPrice = async (
   token: Token,
-  chainId: number | undefined
+  chainId: number | undefined,
 ): Promise<number> => {
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress || !chainId) return 0

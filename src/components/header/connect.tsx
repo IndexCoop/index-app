@@ -1,8 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
-
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useEffect } from 'react'
 
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useNetwork } from '@/lib/hooks/use-network'

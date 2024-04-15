@@ -5,6 +5,7 @@ import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { colors } from '@/lib/styles/colors'
 
 import { FormattedQuoteDisplay } from '../hooks/use-swap/formatters/result'
+
 import { Caption } from './caption'
 import { QuoteResult } from './quote-result'
 import { SelectorButton } from './selector-button'

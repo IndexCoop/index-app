@@ -1,4 +1,5 @@
 import { QuoteType } from '../types'
+
 import { getBestQuote } from './best-quote'
 
 describe('getBestQuote', () => {

@@ -1,7 +1,3 @@
-import { Chain, http } from 'viem'
-import { createConfig } from 'wagmi'
-import { localhost, mainnet } from 'wagmi/chains'
-
 import { connectorsForWallets } from '@rainbow-me/rainbowkit'
 import {
   argentWallet,
@@ -15,6 +11,9 @@ import {
   trustWallet,
   walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets'
+import { Chain, http } from 'viem'
+import { createConfig } from 'wagmi'
+import { localhost, mainnet } from 'wagmi/chains'
 
 import { AlchemyApiKey } from '../../constants/server'
 

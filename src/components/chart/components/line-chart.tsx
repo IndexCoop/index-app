@@ -1,16 +1,15 @@
-import React, { useMemo, useCallback } from 'react'
-
 import { Flex, Text } from '@chakra-ui/react'
 import { curveLinear } from '@visx/curve'
-import { AreaClosed, Bar, Line, LinePath } from '@visx/shape'
-import appleStock, { AppleStock } from '@visx/mock-data/lib/mocks/appleStock'
-import { scaleTime, scaleLinear } from '@visx/scale'
-import { withTooltip, TooltipWithBounds, defaultStyles } from '@visx/tooltip'
-import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip'
 import { localPoint } from '@visx/event'
 import { LinearGradient } from '@visx/gradient'
-import { max, extent, bisector } from '@visx/vendor/d3-array'
+import appleStock, { AppleStock } from '@visx/mock-data/lib/mocks/appleStock'
+import { scaleLinear, scaleTime } from '@visx/scale'
+import { AreaClosed, Bar, Line, LinePath } from '@visx/shape'
+import { TooltipWithBounds, defaultStyles, withTooltip } from '@visx/tooltip'
+import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip'
+import { bisector, extent, max } from '@visx/vendor/d3-array'
 import { timeFormat } from '@visx/vendor/d3-time-format'
+import React, { useCallback, useMemo } from 'react'
 
 import { colors } from '@/lib/styles/colors'
 

@@ -1,9 +1,9 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
+import { useLeverageToken } from '@/app/leverage/provider'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
-import { useLeverageToken } from '@/app/leverage/provider'
 
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 

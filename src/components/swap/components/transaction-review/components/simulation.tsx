@@ -1,7 +1,6 @@
-import clsx from 'clsx'
-
 import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import { Spinner } from '@chakra-ui/react'
+import clsx from 'clsx'
 
 import { colors } from '@/lib/styles/colors'
 

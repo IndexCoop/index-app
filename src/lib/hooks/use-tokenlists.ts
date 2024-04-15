@@ -7,26 +7,26 @@ import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 export function useTokenlists(
   isMinting: boolean,
   inputToken: Token,
-  outputToken: Token
+  outputToken: Token,
 ) {
   const indexToken = useMemo(
     () => (isMinting ? outputToken : inputToken),
-    [isMinting, inputToken, outputToken]
+    [isMinting, inputToken, outputToken],
   )
   const currenciesList = useMemo(
     () => getCurrencyTokensForIndex(indexToken, 1),
-    [indexToken]
+    [indexToken],
   )
   const tokenList = indicesTokenList
 
   const inputTokenslist = useMemo(
     () => (isMinting ? currenciesList : tokenList),
-    [isMinting, currenciesList, tokenList]
+    [isMinting, currenciesList, tokenList],
   )
 
   const outputTokenslist = useMemo(
     () => (isMinting ? tokenList : currenciesList),
-    [isMinting, currenciesList, tokenList]
+    [isMinting, currenciesList, tokenList],
   )
 
   return {

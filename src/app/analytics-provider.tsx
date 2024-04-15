@@ -1,8 +1,8 @@
 'use client'
 
 import { ArcxAnalyticsProvider } from '@arcxmoney/analytics'
-import ReactGA from "react-ga4";
 import { ReactNode, useEffect } from 'react'
+import ReactGA from 'react-ga4'
 
 type Props = {
   children: ReactNode

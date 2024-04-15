@@ -1,6 +1,5 @@
-import Image from 'next/image'
-
 import { ArrowDownIcon } from '@chakra-ui/icons'
+import Image from 'next/image'
 
 type FromToProps = {
   inputToken: string

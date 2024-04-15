@@ -8,7 +8,7 @@ import {
 
 export function getSlippageOverrideOrNull(
   tokenSymbol: string,
-  inputOutputTokenSymbol: string
+  inputOutputTokenSymbol: string,
 ): number | null {
   if (
     (tokenSymbol === DiversifiedStakedETHIndex.symbol ||
@@ -29,11 +29,11 @@ export function getSlippageOverrideOrNull(
 export function selectSlippage(
   slippage: number,
   indexSymbol: string,
-  inputOutputTokenSymbol: string
+  inputOutputTokenSymbol: string,
 ): number {
   const slippageOverrride = getSlippageOverrideOrNull(
     indexSymbol,
-    inputOutputTokenSymbol
+    inputOutputTokenSymbol,
   )
   if (slippageOverrride && slippage < slippageOverrride)
     return slippageOverrride

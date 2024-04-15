@@ -3,16 +3,16 @@ import { Address, encodeFunctionData, PublicClient } from 'viem'
 
 import { DebtIssuanceModuleAddress } from '@/constants/contracts'
 import { Token } from '@/constants/tokens'
-import { getGasCostsInUsd } from '@/lib/utils/costs'
+import { formatWei, isSameAddress } from '@/lib/utils'
+import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
-import { getFullCostsInUsd } from '@/lib/utils/costs'
-import { formatWei, isSameAddress } from '@/lib/utils'
 import { isAvailableForRedemption } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
-import { DebtIssuanceProvider } from './provider'
+
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
+import { DebtIssuanceProvider } from './provider'
 
 interface RedemptionQuoteRequest {
   account: string
