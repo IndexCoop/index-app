@@ -1,11 +1,11 @@
-import { useCallback, useState, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { usePublicClient, useReadContract, useWalletClient } from 'wagmi'
 
 import { ETH, Token } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
 import { isAddress } from '@/lib/utils'
+import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
 
 export const useApproval = (
   token: Token,

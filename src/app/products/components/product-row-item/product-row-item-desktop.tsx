@@ -1,8 +1,9 @@
 'use client'
 
-import Image from 'next/image'
 import clsx from 'clsx'
+import Image from 'next/image'
 import Link from 'next/link'
+
 import { LoadingSkeleton } from '@/app/products/components/loading-skeleton'
 import { ProductRowItemProps } from '@/app/products/components/product-row-item'
 import { ProductType } from '@/app/products/types/product'
@@ -20,7 +21,7 @@ export function ProductRowItemDesktop({
 }: ProductRowItemProps) {
   return (
     <Link
-      className='h-[60px] odd:bg-[#FBFCFC] odd:border-[#FBFCFC] even:border-transparent hover:bg-ic-gray-100 hover:cursor-pointer hidden md:flex items-center justify-between min-w-fit'
+      className='hover:bg-ic-gray-100 hidden h-[60px] min-w-fit items-center justify-between odd:border-[#FBFCFC] odd:bg-[#FBFCFC] even:border-transparent hover:cursor-pointer md:flex'
       href={`/swap/eth/${symbol!.toLowerCase()}`}
     >
       <div
@@ -40,7 +41,7 @@ export function ProductRowItemDesktop({
       <div className={cellClassName}>
         <div
           className={clsx(
-            'rounded-2xl px-4 py-1 w-28 text-center border border-ic-gray-500 mx-auto',
+            'border-ic-gray-500 mx-auto w-28 rounded-2xl border px-4 py-1 text-center',
             {
               'bg-[#E7F2FF]': type === ProductType.LEVERAGE,
               'bg-[#F4ECFF]': type === ProductType.INDEX,
@@ -52,15 +53,15 @@ export function ProductRowItemDesktop({
         </div>
       </div>
       <div className={cellClassName}>
-        <div className='bg-ic-gray-300 rounded-2xl px-4 py-1 w-28 text-center border border-ic-gray-500 mx-auto'>
+        <div className='bg-ic-gray-300 border-ic-gray-500 mx-auto w-28 rounded-2xl border px-4 py-1 text-center'>
           {theme}
         </div>
       </div>
-      <div className={clsx(cellClassName, 'text-right px-2 !min-w-[130px]')}>
+      <div className={clsx(cellClassName, '!min-w-[130px] px-2 text-right')}>
         {isLoading ? <LoadingSkeleton /> : formatPrice(price)}
       </div>
       <div
-        className={clsx(cellClassName, 'text-right px-2', {
+        className={clsx(cellClassName, 'px-2 text-right', {
           'text-ic-green': delta !== undefined && delta > 0,
           'text-ic-red': delta !== undefined && delta < 0,
         })}
@@ -74,7 +75,7 @@ export function ProductRowItemDesktop({
           formatPercentage(apy)
         )}
       </div>
-      <div className={clsx(cellClassName, 'text-right px-2 pr-8')}>
+      <div className={clsx(cellClassName, 'px-2 pr-8 text-right')}>
         {isLoading ? <LoadingSkeleton /> : formatTvl(tvl)}
       </div>
     </Link>

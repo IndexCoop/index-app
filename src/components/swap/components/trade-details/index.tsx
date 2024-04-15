@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import Image from 'next/image'
 import { WarningTwoIcon } from '@chakra-ui/icons'
 import {
   Accordion,
@@ -10,12 +8,15 @@ import {
   Box,
   Flex,
 } from '@chakra-ui/react'
+import Image from 'next/image'
+import { useState } from 'react'
 
 import { StyledSkeleton } from '@/components/skeleton'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { TradeInfoItem } from '../../types'
+
 import { Tag } from './tag'
 import { FlashMintTag } from './tag-flashmint'
 import { TradeInfoItemsContainer } from './trade-info'

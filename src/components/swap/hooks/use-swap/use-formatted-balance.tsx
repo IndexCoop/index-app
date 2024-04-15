@@ -1,6 +1,6 @@
+import { formatUnits } from '@ethersproject/units'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-import { formatUnits } from '@ethersproject/units'
 
 import { Token } from '@/constants/tokens'
 import { useBalance } from '@/lib/hooks/use-balance'

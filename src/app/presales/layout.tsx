@@ -1,7 +1,6 @@
+import { Providers } from '@/app/providers'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
-
-import { Providers } from '@/app/providers'
 
 type Props = {
   children: React.ReactNode

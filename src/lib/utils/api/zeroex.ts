@@ -12,6 +12,6 @@ export function getConfiguredZeroExApi(swapPathOverride: string): ZeroExApi {
     `${IndexApiBaseUrl}/0x`,
     ZeroExAffiliateAddress,
     headers,
-    swapPathOverride
+    swapPathOverride,
   )
 }

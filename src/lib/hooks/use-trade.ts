@@ -12,8 +12,8 @@ import {
 } from '@/lib/utils/gas-estimatooor'
 import { getAddressForToken, isNativeCurrency } from '@/lib/utils/tokens'
 
-import { BalanceProvider } from './use-balance'
 import { formatQuoteAnalytics, useAnalytics } from './use-analytics'
+import { BalanceProvider } from './use-balance'
 
 async function getInputTokenBalance(
   inputToken: Token,

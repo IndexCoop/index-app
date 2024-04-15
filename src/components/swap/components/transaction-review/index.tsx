@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import clsx from 'clsx'
-
 import {
   Modal,
   ModalBody,
@@ -9,6 +6,8 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react'
+import clsx from 'clsx'
+import { useState } from 'react'
 
 import { colors } from '@/lib/styles/colors'
 

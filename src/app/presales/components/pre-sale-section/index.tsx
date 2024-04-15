@@ -1,10 +1,10 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-
 import Link from 'next/link'
-import { PreSalePopup } from '../popup'
+
 import { preSaleTokens } from '../../constants'
+import { PreSalePopup } from '../popup'
 import { PreSaleTokenCard } from '../pre-sale-token-card'
 
 export function PreSaleSection() {

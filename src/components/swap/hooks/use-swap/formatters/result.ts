@@ -1,11 +1,11 @@
+import { QuoteDisplay } from '@/components/swap/components/quote-result/types'
+import { Token } from '@/constants/tokens'
 import {
   Quote,
   QuoteResults,
   QuoteType,
   ZeroExQuote,
 } from '@/lib/hooks/use-best-quote/types'
-import { QuoteDisplay } from '@/components/swap/components/quote-result/types'
-import { Token } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
 
 export interface FormattedQuoteDisplay {

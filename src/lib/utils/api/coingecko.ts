@@ -1,5 +1,6 @@
-import { IndexApi } from '@/lib/utils/api/index-api'
 import { indicesTokenList } from '@/constants/tokenlists'
+import { IndexApi } from '@/lib/utils/api/index-api'
+
 import { OPTIMISM, POLYGON } from '../../../constants/chains'
 import { ETH } from '../../../constants/tokens'
 
@@ -15,7 +16,7 @@ const getAssetPlatform = (chainId: number) => {
 export const fetchCoingeckoTokenPrice = async (
   address: string,
   chainId: number,
-  baseCurrency = 'usd'
+  baseCurrency = 'usd',
 ): Promise<number> => {
   if (address.toLowerCase() === ETH.address!.toLowerCase()) {
     const priceUrl =
@@ -33,7 +34,7 @@ export const fetchCoingeckoTokenPrice = async (
   const getPriceUrl =
     baseURL +
     `/simple/token_price/${getAssetPlatform(
-      chainId
+      chainId,
     )}/?contract_addresses=${address}&vs_currencies=${baseCurrency}`
 
   const data = await indexApi.get(getPriceUrl).catch(() => {
@@ -52,10 +53,10 @@ type CoingeckoMarketData = {
 }
 
 export const fetchCoingeckoMarketData = async (
-  address: string
+  address: string,
 ): Promise<CoingeckoMarketData | null> => {
   const token = indicesTokenList.find(
-    (token) => token.address?.toLowerCase() === address.toLowerCase()
+    (token) => token.address?.toLowerCase() === address.toLowerCase(),
   )
   const url = `${baseURL}/coins/${token?.coingeckoId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`
   const { market_data } = await indexApi.get(url)

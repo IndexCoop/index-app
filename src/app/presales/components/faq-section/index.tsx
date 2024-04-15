@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
+import Link from 'next/link'
 
 const faqs = [
   {

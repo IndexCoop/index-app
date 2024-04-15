@@ -1,3 +1,4 @@
+import { useParams, useRouter } from 'next/navigation'
 import {
   createContext,
   useCallback,
@@ -5,8 +6,6 @@ import {
   useEffect,
   useState,
 } from 'react'
-
-import { useParams, useRouter } from 'next/navigation'
 
 import { PathResolver } from '@/app/swap/[[...path]]/path-resolver'
 import { ETH, Token } from '@/constants/tokens'
@@ -51,24 +50,24 @@ export const SelectedTokenProvider = (props: { children: any }) => {
   const routeSwap = useCallback(
     (inputToken: string, outputToken: string) => {
       router.replace(
-        `/swap/${inputToken.toLowerCase()}/${outputToken.toLowerCase()}`
+        `/swap/${inputToken.toLowerCase()}/${outputToken.toLowerCase()}`,
       )
     },
-    [router]
+    [router],
   )
 
   const selectInputToken = useCallback(
     (inputToken: Token) => {
       routeSwap(inputToken.symbol, outputToken.symbol)
     },
-    [outputToken, routeSwap]
+    [outputToken, routeSwap],
   )
 
   const selectOutputToken = useCallback(
     (outputToken: Token) => {
       routeSwap(inputToken.symbol, outputToken.symbol)
     },
-    [inputToken, routeSwap]
+    [inputToken, routeSwap],
   )
 
   const toggleIsMinting = useCallback(() => {

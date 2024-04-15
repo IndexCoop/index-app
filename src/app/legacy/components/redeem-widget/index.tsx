@@ -1,20 +1,19 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
-
 import { useDisclosure } from '@chakra-ui/react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useCallback, useMemo } from 'react'
 
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { useApproval } from '@/lib/hooks/use-approval'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
 import {
   TradeButtonState,
   useTradeButtonState,
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
+import { useApproval } from '@/lib/hooks/use-approval'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { formatWei } from '@/lib/utils'
 

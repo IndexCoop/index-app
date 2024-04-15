@@ -9,6 +9,7 @@ import {
   USDC,
   icETHIndex,
 } from '@/constants/tokens'
+
 import { PathResolver } from './path-resolver'
 
 describe('PathResolver', () => {

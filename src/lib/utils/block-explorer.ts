@@ -2,7 +2,7 @@ import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 
 export function getBlockExplorerContractUrl(
   contractAddress: string,
-  chainId?: number
+  chainId?: number,
 ): string {
   switch (chainId) {
     case OPTIMISM.chainId:

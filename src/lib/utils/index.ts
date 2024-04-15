@@ -1,10 +1,9 @@
-import { BigNumber } from 'ethers'
-import { isAddress as isAddressViem, parseUnits as parseUnitsViem } from 'viem'
-
 import {
   formatUnits,
   parseUnits as parseUnitsEthers,
 } from '@ethersproject/units'
+import { BigNumber } from 'ethers'
+import { isAddress as isAddressViem, parseUnits as parseUnitsViem } from 'viem'
 
 export function isAddress(address: string) {
   return isAddressViem(address)

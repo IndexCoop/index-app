@@ -1,6 +1,6 @@
+import { Flex, Text } from '@chakra-ui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
-import { Flex, Text } from '@chakra-ui/react'
 
 import { StyledSkeleton } from '@/components/skeleton'
 import { colors } from '@/lib/styles/colors'

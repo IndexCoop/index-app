@@ -1,5 +1,6 @@
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
+
 import { ProvidersLite } from '../providers-lite'
 
 type Props = {

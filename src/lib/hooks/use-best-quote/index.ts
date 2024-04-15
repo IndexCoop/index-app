@@ -17,13 +17,13 @@ import {
   isAvailableForSwap,
 } from '@/lib/utils/tokens'
 
+import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 
-import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
+import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
 import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { get0xQuote } from './utils/zeroex'
-import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
 
 export interface FetchQuoteRequest {
   isMinting: boolean

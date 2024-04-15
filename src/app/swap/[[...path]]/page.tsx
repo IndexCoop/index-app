@@ -2,9 +2,9 @@
 
 import { Flex } from '@chakra-ui/react'
 
+import { FliMigrationBanner } from '@/components/banners/fli-migration-banner'
 import { Swap } from '@/components/swap'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
-import { FliMigrationBanner } from '@/components/banners/fli-migration-banner'
 
 export default function SwapPage() {
   const { inputToken, isMinting, outputToken } = useSelectedToken()

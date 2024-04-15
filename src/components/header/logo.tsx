@@ -1,4 +1,5 @@
 import Image from 'next/image'
+
 import { IndexLogoBlack, IndexLogoWhite } from '@/lib/utils/assets'
 
 export const Logo = () => {

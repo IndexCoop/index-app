@@ -1,6 +1,6 @@
+import { getPriceImpact } from '@/lib/hooks/use-best-quote/utils/price-impact'
 import { colors } from '@/lib/styles/colors'
 
-import { getPriceImpact } from '@/lib/hooks/use-best-quote/utils/price-impact'
 import { getPriceImpactColorCoding } from './price-impact'
 
 describe('getPriceImpact()', () => {

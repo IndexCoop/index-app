@@ -2,13 +2,14 @@ import { Quote, QuoteType, ZeroExQuote } from '@/lib/hooks/use-best-quote/types'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
 import { TradeInfoItem } from '../../types'
+
 import { shouldShowWarningSign } from './formatters/index'
 
 function getContractDetails(quote: Quote): TradeInfoItem {
   const contractBestOption = quote.contract
   const contractBlockExplorerUrl = getBlockExplorerContractUrl(
     contractBestOption,
-    quote.chainId
+    quote.chainId,
   )
   return {
     isLink: true,
@@ -32,7 +33,7 @@ function getSlippageDetails(slippage: number): TradeInfoItem {
 
 function getSources(
   quote: Quote,
-  bestQuoteIsFlashmint: boolean
+  bestQuoteIsFlashmint: boolean,
 ): TradeInfoItem {
   const offeredFromSources = bestQuoteIsFlashmint
     ? 'FlashMint'
