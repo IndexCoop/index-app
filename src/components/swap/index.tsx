@@ -193,6 +193,7 @@ export const Swap = (props: SwapProps) => {
       outputToken,
       slippage,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isBuying,
     inputToken,

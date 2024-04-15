@@ -1,7 +1,9 @@
-import { useNetwork as useNetworkWagmi } from 'wagmi'
+import { useAccount } from 'wagmi'
+
+import { chains } from '@/lib/utils/wagmi'
 
 export const useNetwork = () => {
-  const { chain, chains } = useNetworkWagmi()
+  const { chain } = useAccount()
   const chainId = chain?.id
   const isMainnet = chainId === 1
   const isSupportedNetwork =

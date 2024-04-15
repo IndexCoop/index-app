@@ -1,5 +1,5 @@
 import { providers } from 'ethers'
-import { Hex, HttpTransport, PublicClient } from 'viem'
+import { Hex, PublicClient } from 'viem'
 import { useAccount, usePublicClient } from 'wagmi'
 
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -12,8 +12,8 @@ export interface IndexRpcProvider {
 type Account = {
   address: Hex | undefined
   // Convenience property to be used until we can fully get rid of this ethers provider
-  jsonRpcProvider: providers.JsonRpcProvider
-  provider: IndexRpcProvider
+  jsonRpcProvider: providers.JsonRpcProvider | null
+  provider: IndexRpcProvider | null
   isConnected: boolean
 }
 
@@ -24,10 +24,7 @@ function publicClientToProvider(publicClient: PublicClient) {
     name: chain?.name ?? '',
     ensAddress: chain?.contracts?.ensRegistry?.address,
   }
-  const url = (transport.transports as ReturnType<HttpTransport>[]).map(
-    ({ value }) => new providers.JsonRpcProvider(value?.url, network),
-  )[0].connection.url
-  return new providers.JsonRpcProvider(url, network)
+  return new providers.JsonRpcProvider(transport.url, network)
 }
 
 // A wrapper to be able to easily exchange how we retrieve the account
@@ -35,12 +32,14 @@ export const useWallet = (): Account => {
   const { address } = useAccount()
   const { chainId } = useNetwork()
   const publicClient = usePublicClient({ chainId })
-  const jsonRpcProvider = publicClientToProvider(publicClient)
+  const jsonRpcProvider = publicClient
+    ? publicClientToProvider(publicClient)
+    : null
   const isConnected = !!address
   return {
     address,
     isConnected,
     jsonRpcProvider,
-    provider: publicClient,
+    provider: publicClient ?? null,
   }
 }
