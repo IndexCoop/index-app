@@ -22,6 +22,7 @@ import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
 import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
@@ -54,6 +55,7 @@ function isTokenPairTradable(
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
   const { openConnectModal } = useConnectModal()
+  const { logEvent } = useAnalytics()
   const requiresProtection = useProtection()
   const isTradablePair = useMemo(
     () => isTokenPairTradable(requiresProtection, inputToken, outputToken),
@@ -217,6 +219,7 @@ export const Swap = (props: SwapProps) => {
 
   const onClickBuyButton = () => {
     onOpenBuyModal()
+    logEvent('Buy Onramp CTA Clicked')
   }
 
   const onClickInputBalance = useCallback(() => {
