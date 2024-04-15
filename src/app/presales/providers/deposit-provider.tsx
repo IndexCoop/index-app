@@ -112,6 +112,7 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
   useEffect(() => {
     const fetchQuote = async () => {
       if (!address) return
+      if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       setFetchingQuote(true)
       const outputToken = isDepositing ? preSaleToken : preSaleCurrencyToken

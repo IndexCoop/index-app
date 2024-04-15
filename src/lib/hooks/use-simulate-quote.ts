@@ -10,6 +10,7 @@ export const useSimulateQuote = (tx: QuoteTransaction | null) => {
 
   async function simulateTrade(): Promise<boolean> {
     if (!chainId) return false
+    if (!provider) return false
     if (!tx) return false
     const accessKey = process.env.NEXT_PUBLIC_TENDERLY_ACCESS_KEY ?? ''
     const project = 'project'

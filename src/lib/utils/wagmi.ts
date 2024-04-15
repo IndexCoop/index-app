@@ -1,7 +1,6 @@
-import { configureChains, createConfig } from 'wagmi'
+import { Chain, http } from 'viem'
+import { createConfig } from 'wagmi'
 import { localhost, mainnet } from 'wagmi/chains'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
-import { publicProvider } from 'wagmi/providers/public'
 
 import { connectorsForWallets } from '@rainbow-me/rainbowkit'
 import {
@@ -23,59 +22,46 @@ const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
 const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
 const shouldShowLocalHost = isDevelopmentEnv || isPreviewEnv
 
-const lh = { ...localhost, id: 31337 }
-const networks = [mainnet, ...(shouldShowLocalHost ? [lh] : [])]
-
-export const { chains, publicClient } = configureChains(networks, [
-  alchemyProvider({ apiKey: AlchemyApiKey }),
-  publicProvider(),
-])
-
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!
 
-const connectors = () =>
-  connectorsForWallets([
+const connectors = connectorsForWallets(
+  [
     {
       groupName: 'Recommended',
       wallets: [
-        safeWallet({ chains }),
-        metaMaskWallet({ chains, projectId }),
-        rainbowWallet({ chains, projectId }),
-        argentWallet({ chains, projectId }),
-        coinbaseWallet({
-          appName: 'Index Coop',
-          chains,
-        }),
-        ledgerWallet({ chains, projectId }),
-        okxWallet({ chains, projectId }),
+        safeWallet,
+        metaMaskWallet,
+        rainbowWallet,
+        argentWallet,
+        coinbaseWallet,
+        ledgerWallet,
+        okxWallet,
       ],
     },
     {
       groupName: 'Others',
-      wallets: [
-        walletConnectWallet({
-          chains,
-          options: {
-            metadata: {
-              name: 'Index App',
-              description: 'Buy & Sell Our Tokens',
-              url: 'https://app.indexcoop.com/',
-              icons: [
-                '<https://app.indexcoop.com/assets/index-logo-black.svg>',
-              ],
-            },
-            projectId,
-          },
-          projectId,
-        }),
-        braveWallet({ chains }),
-        trustWallet({ chains, projectId }),
-      ],
+      wallets: [walletConnectWallet, braveWallet, trustWallet],
     },
-  ])()
+  ],
+  {
+    appName: 'Index App',
+    projectId,
+  },
+)
+
+const lh = { ...localhost, id: 31337 }
+
+export const chains: [Chain, ...Chain[]] = [
+  mainnet,
+  ...(shouldShowLocalHost ? [lh] : []),
+]
 
 export const wagmiConfig = createConfig({
-  autoConnect: true,
+  chains,
   connectors,
-  publicClient,
+  ssr: true,
+  transports: {
+    [mainnet.id]: http(`https://eth-mainnet.g.alchemy.com/v2/${AlchemyApiKey}`),
+    [lh.id]: http('http://127.0.0.1:8545/'),
+  },
 })

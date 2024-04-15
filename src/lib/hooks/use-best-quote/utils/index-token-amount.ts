@@ -1,4 +1,4 @@
-import { parseUnits } from 'viem'
+import { parseUnits } from '@/lib/utils'
 
 export const getIndexTokenAmount = (
   isMinting: boolean,
@@ -6,7 +6,7 @@ export const getIndexTokenAmount = (
   inputTokenDecimals: number,
   outputTokenDecimals: number,
   inputTokenPrice: number,
-  outputTokenPrice: number
+  outputTokenPrice: number,
 ): bigint => {
   if (!isMinting) {
     return parseUnits(inputTokenAmount, inputTokenDecimals)
@@ -14,6 +14,6 @@ export const getIndexTokenAmount = (
   // When minting - calculate an approximate index token amount for FlashMint quotes
   const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
   const approxOutputAmount =
-    outputTokenPrice === 0 ? 0 : (inputTokenAmountUsd / outputTokenPrice)
+    outputTokenPrice === 0 ? 0 : inputTokenAmountUsd / outputTokenPrice
   return parseUnits(approxOutputAmount.toString(), outputTokenDecimals)
 }

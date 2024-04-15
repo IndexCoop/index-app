@@ -1,15 +1,11 @@
 import { useCallback, useState, useMemo } from 'react'
-import { isAddress } from 'viem'
-import {
-  Address,
-  useContractRead,
-  usePublicClient,
-  useWalletClient,
-} from 'wagmi'
+import { Address } from 'viem'
+import { usePublicClient, useReadContract, useWalletClient } from 'wagmi'
 
 import { ETH, Token } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
+import { isAddress } from '@/lib/utils'
 
 export const useApproval = (
   token: Token,
@@ -22,15 +18,17 @@ export const useApproval = (
 
   const [isApproving, setIsApproving] = useState(false)
 
-  const { data, refetch } = useContractRead({
+  const { data, refetch } = useReadContract({
     address: token.address as Address,
     abi: ERC20_ABI,
     functionName: 'allowance',
     args: [address as Address, spenderAddress as Address],
-    enabled:
-      typeof token.address === 'string' &&
-      isAddress(token.address) &&
-      token.symbol !== ETH.symbol,
+    query: {
+      enabled:
+        typeof token.address === 'string' &&
+        isAddress(token.address) &&
+        token.symbol !== ETH.symbol,
+    },
   })
 
   const isApproved = useMemo(() => {
@@ -40,7 +38,7 @@ export const useApproval = (
   }, [amount, data, isApproving, token])
 
   const approve = useCallback(async () => {
-    if (!walletClient) return
+    if (!publicClient || !walletClient) return
     setIsApproving(true)
     try {
       const hash = await walletClient.writeContract({

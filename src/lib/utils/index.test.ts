@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { displayFromWei, isValidTokenInput, safeDiv, toWei } from '.'
+import { displayFromWei, isValidTokenInput, toWei } from '.'
 
 describe('displayFromWei', () => {
   it('should return null with no number provided', () => {
@@ -16,7 +16,7 @@ describe('displayFromWei', () => {
   it('should convert to token value, given decimals', () => {
     const displayValue = displayFromWei(
       BigNumber.from('180313000000000000000'),
-      5
+      5,
     )
     expect(displayValue).toBe('180.31300')
   })
@@ -27,21 +27,21 @@ describe('displayFromWei', () => {
   it('should convert to token value, given large decimals. Not precise.', () => {
     const displayValue = displayFromWei(
       BigNumber.from('157097183810163372336'),
-      18
+      18,
     )
     expect(displayValue).toBe('157.097183810163400000')
   })
   it('should convert to token value showing commas for thousands', () => {
     const displayValue = displayFromWei(
       BigNumber.from('1570971838101633723360'),
-      4
+      4,
     )
     expect(displayValue).toBe('1570.9718')
   })
   it('should convert to token value showing commas for thousands w/ large amounts', () => {
     const displayValue = displayFromWei(
       BigNumber.from('507731000000000000000000'),
-      4
+      4,
     )
     expect(displayValue).toBe('507731.0000')
   })
@@ -69,25 +69,6 @@ describe('isValidTokenInput()', () => {
     it('input has more decimals then token actual does (underflow)', () => {
       expect(isValidTokenInput('0.01', 1)).toBe(false)
     })
-  })
-})
-
-describe('safeDiv', () => {
-  it('should div - two positive numbers', () => {
-    const quotient = safeDiv(BigNumber.from('100'), BigNumber.from('5'))
-    expect(quotient.toNumber()).toBe(20)
-  })
-  it('should div - positive and negative', () => {
-    const quotient = safeDiv(BigNumber.from('-100'), BigNumber.from('5'))
-    expect(quotient.toNumber()).toBe(-20)
-  })
-  it('should div - negative and negative', () => {
-    const quotient = safeDiv(BigNumber.from('-100'), BigNumber.from('-5'))
-    expect(quotient.toNumber()).toBe(20)
-  })
-  it('should div - safe with 0 divisor', () => {
-    const quotient = safeDiv(BigNumber.from('-100'), BigNumber.from('0'))
-    expect(quotient.toNumber()).toBe(0)
   })
 })
 

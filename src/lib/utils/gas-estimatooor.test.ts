@@ -30,7 +30,7 @@ describe('GasEstimatooor', () => {
     const defaultGasEstimate = BigInt(DefaultGasLimitFlashMintZeroEx)
     const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const failingTx = {
-      account: '',
+      account: '0xundefined',
       from: signer.address,
       //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigNumber.from(21_000),
@@ -48,14 +48,14 @@ describe('GasEstimatooor', () => {
     const defaultGasEstimate = BigInt(DefaultGasLimitFlashMintZeroEx)
     const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const failingTx = {
-      account: '',
+      account: '0xundefined',
       from: signer.address,
       //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigNumber.from(21_000),
       value: toWei(1),
     }
     const gasEstimate = await estimatooor.estimate(failingTx, false)
-    expect(gasEstimate).toEqual(defaultGasEstimate)
+    expect(gasEstimate.toString()).toEqual(defaultGasEstimate.toString())
   })
 
   it('should return gas estimate with margin - on success', async () => {

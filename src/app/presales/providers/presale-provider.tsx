@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { Token, WSTETH } from '@/constants/tokens'
-import { formatWei } from '@/lib/utils'
+import { formatAmount, formatWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 
 import { preSaleTokens } from '../constants'
@@ -41,7 +41,8 @@ export function usePresaleData(symbol: string): PresaleData {
   }, [presaleToken])
 
   const tvlFormatted = useMemo(
-    () => `${formatWei(tvl, currencyToken.decimals)} ${currencyToken.symbol}`,
+    () =>
+      `${formatAmount(Number(formatWei(tvl, currencyToken.decimals)))} ${currencyToken.symbol}`,
     [currencyToken, tvl],
   )
 

@@ -1,4 +1,4 @@
-import { formatUnits, parseUnits } from 'viem'
+import { formatWei, parseUnits } from '@/lib/utils'
 
 import { getIndexTokenAmount } from './index-token-amount'
 
@@ -23,13 +23,13 @@ describe('getIndexTokenAmount - minting', () => {
       18,
       18,
       inputTokenPrice,
-      outputTokenPrice
+      outputTokenPrice,
     )
     const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
     const approxOutputAmount = inputTokenAmountUsd / outputTokenPrice
     const expectedAmount = parseUnits(approxOutputAmount.toString(), 18)
     const indexTokenPriceTotal =
-      Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
+      Number(formatWei(BigInt(indexTokenAmount.toString()), 18)) *
       outputTokenPrice
     expect(indexTokenAmount).toEqual(expectedAmount)
     expect(indexTokenPriceTotal).toBeCloseTo(inputTokenAmountUsd, 1)
@@ -46,13 +46,13 @@ describe('getIndexTokenAmount - minting', () => {
       6,
       18,
       inputTokenPrice,
-      outputTokenPrice
+      outputTokenPrice,
     )
     const inputTokenTotal = parseFloat(inputTokenAmount) * inputTokenPrice
     const approxOutputAmount = inputTokenTotal / outputTokenPrice
     const expectedAmount = parseUnits(approxOutputAmount.toString(), 18)
     const indexTokenPriceTotal =
-      Number(formatUnits(BigInt(indexTokenAmount.toString()), 18)) *
+      Number(formatWei(BigInt(indexTokenAmount.toString()), 18)) *
       outputTokenPrice
     expect(indexTokenAmount).toEqual(expectedAmount)
     expect(indexTokenPriceTotal).toBeCloseTo(inputTokenTotal, 1)

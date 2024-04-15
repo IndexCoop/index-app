@@ -1,9 +1,6 @@
 import { useCallback, useState } from 'react'
-import { Hex } from 'viem'
-import { PublicClient, usePublicClient } from 'wagmi'
-import { prepareSendTransaction, sendTransaction } from '@wagmi/core'
-
-import { BigNumber } from '@ethersproject/bignumber'
+import { Address, Hex, PublicClient } from 'viem'
+import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
 import { Quote, QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -23,8 +20,10 @@ async function getInputTokenBalance(
   address: string,
   publicClient: PublicClient,
 ): Promise<bigint> {
+  const chainId = publicClient.chain?.id
+  if (!chainId) return BigInt(0)
   const balanceProvider = new BalanceProvider(publicClient)
-  return isNativeCurrency(inputToken, publicClient.chain.id)
+  return isNativeCurrency(inputToken, chainId)
     ? await balanceProvider.getNativeBalance(address)
     : await balanceProvider.getErc20Balance(address, inputToken.address!)
 }
@@ -34,13 +33,15 @@ export const useTrade = () => {
   const { address } = useWallet()
   const { chainId } = useNetwork()
   const { logTransaction } = useAnalytics()
+  const { data: walletClient } = useWalletClient()
 
   const [isTransacting, setIsTransacting] = useState(false)
   const [txWouldFail, setTxWouldFail] = useState(false)
 
   const executeTrade = useCallback(
     async (quote: Quote | null, override: boolean = false) => {
-      if (!address || !chainId || !quote) return
+      if (!address || !chainId || !publicClient || !walletClient || !quote)
+        return
       const { inputToken, inputTokenAmount, outputToken } = quote
 
       // Check that input/ouput token are known
@@ -71,16 +72,14 @@ export const useTrade = () => {
         // If the user overrides, we take any gas estimate
         const canFail = override
         const gasLimit = await gasEstimatooor.estimate(tx, canFail)
-        tx.gasLimit = BigNumber.from(gasLimit.toString())
-        const request = await prepareSendTransaction({
+        const hash = await walletClient.sendTransaction({
           account: address,
           chainId: Number(quote.chainId),
-          gas: BigInt(gasLimit.toString()),
-          to: quote.tx.to,
+          gas: gasLimit,
+          to: quote.tx.to as Address,
           data: quote.tx.data as Hex,
           value: BigInt(quote.tx.value?.toString() ?? '0'),
         })
-        const { hash } = await sendTransaction(request)
         logTransaction(chainId ?? -1, hash, formatQuoteAnalytics(quote))
         setIsTransacting(false)
       } catch (error) {
@@ -96,7 +95,7 @@ export const useTrade = () => {
         throw error
       }
     },
-    [address, chainId, logTransaction, publicClient],
+    [address, chainId, logTransaction, publicClient, walletClient],
   )
 
   return { executeTrade, isTransacting, txWouldFail }

@@ -1,6 +1,14 @@
 import { BigNumber } from 'ethers'
+import { isAddress as isAddressViem, parseUnits as parseUnitsViem } from 'viem'
 
-import { formatUnits, parseUnits } from '@ethersproject/units'
+import {
+  formatUnits,
+  parseUnits as parseUnitsEthers,
+} from '@ethersproject/units'
+
+export function isAddress(address: string) {
+  return isAddressViem(address)
+}
 
 export function isSameAddress(address1: string, address2: string): boolean {
   return address1.toLowerCase() === address2.toLowerCase()
@@ -24,6 +32,24 @@ export function shortenAddress(
   return `${shortenedStart}...${shortenedEnd}`
 }
 
+export const formatAmount = (amount: number) =>
+  amount.toLocaleString('en-US', {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  })
+
+export function formatWei(wei: bigint, units: number = 18): string {
+  return formatUnits(wei, units)
+}
+
+export function parseUnits(value: string, units: number): bigint {
+  return parseUnitsViem(value, units)
+}
+
+/**
+ * IDEALLY, DO NOT USE ANY OF THE BELOW FUNCTIONS ANY LONGER
+ */
+
 /**
  * Converts a number to Wei to another denomination of Eth.
  * Note: will loose precision if fraction part is greater than the decimals.
@@ -46,7 +72,7 @@ export const toWei = (
   let fractionalPart = splits[1]
 
   if (!fractionalPart) {
-    return parseUnits(integerPart, power)
+    return parseUnitsEthers(integerPart, power)
   }
 
   if (fractionalPart.length > power) {
@@ -55,7 +81,7 @@ export const toWei = (
   }
 
   value = integerPart + '.' + fractionalPart
-  return parseUnits(value, power)
+  return parseUnitsEthers(value, power)
 }
 
 /**
@@ -92,17 +118,6 @@ export const displayFromWei = (
   return formatUnits(number, power).toLocaleString()
 }
 
-export const formatAmount = (amount: number) =>
-  amount.toLocaleString('en-US', {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-  })
-
-export function formatWei(wei: bigint, units: number = 18) {
-  const formattedWei = formatUnits(wei, units)
-  return formatAmount(Number(formattedWei))
-}
-
 /**
  * Validate that the input amount is valid (positive, not excessive decimals)
  */
@@ -111,14 +126,9 @@ export const isValidTokenInput = (
   tokenDecimals: number = 18,
 ) => {
   try {
-    const parsedBn = parseUnits(tokenAmount, tokenDecimals)
+    const parsedBn = parseUnitsEthers(tokenAmount, tokenDecimals)
     return !parsedBn.isNegative()
   } catch {
     return false
   }
-}
-
-export const safeDiv = (dividend: BigNumber, divisor: BigNumber): BigNumber => {
-  if (divisor.isZero()) return BigNumber.from(0)
-  return dividend.div(divisor)
 }
