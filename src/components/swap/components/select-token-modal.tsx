@@ -1,5 +1,4 @@
 import {
-  Flex,
   Image,
   Modal,
   ModalBody,
@@ -7,19 +6,19 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '@chakra-ui/react'
+import clsx from 'clsx'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
 import { Token } from '@/constants/tokens'
 import { useBalances } from '@/lib/hooks/use-balance'
-import { colors, useColorStyles, useICColorMode } from '@/lib/styles/colors'
 import { displayFromWei, isSameAddress } from '@/lib/utils'
 
 type SelectTokenModalProps = {
   address?: string
   isOpen: boolean
+  isDarkMode?: boolean
   tokens: Token[]
   onClose: () => void
   onSelectedToken: (tokenSymbol: string) => void
@@ -27,38 +26,28 @@ type SelectTokenModalProps = {
 
 export const SelectTokenModal = (props: SelectTokenModalProps) => {
   const { isOpen, onClose, onSelectedToken, tokens } = props
+  const isDarkMode = props.isDarkMode ?? false
+  console.log('dark', isDarkMode)
   const tokenAddresses = useMemo(
     () => tokens.map((token) => token.address!),
     [tokens],
   )
   const balances = useBalances(props.address, tokenAddresses)
-  const { isDarkMode } = useICColorMode()
-  const { styles } = useColorStyles()
-  const backgroundColor = styles.background
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
-      <ModalOverlay
-        bg='rgba(0, 0, 0, 0.6)'
-        backdropFilter='auto'
-        backdropBlur='8px'
-      />
+      <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
       <ModalContent
-        backgroundColor={backgroundColor}
-        borderColor={colors.ic.gray[100]}
-        borderRadius='10'
-        borderStyle='solid'
-        borderWidth='2px'
-        h={['60vh', '50vh']}
-        m={['16px', 0]}
+        className={clsx(
+          'border-ic-gray-100 dark:border-ic-gray-950 bg-ic-white text-ic-black dark:text-ic-white  mx-0 my-4 h-2/4 rounded-xl border-2 p-0 dark:bg-[#1C2C2E]',
+          isDarkMode ? 'dark' : '',
+        )}
       >
         <ModalHeader>Select a token</ModalHeader>
         <ModalCloseButton />
-        <ModalBody p='16px 0'>
-          <Flex justify='flex-end' pr='16px' w='100%'>
-            <Text fontSize='sm' fontWeight='500'>
-              Quantity Owned
-            </Text>
-          </Flex>
+        <ModalBody className='px-0 py-4'>
+          <div className='flex w-full justify-end pr-4'>
+            <span className='text-sm font-medium'>Quantity Owned</span>
+          </div>
           {tokens.length > 0 &&
             tokens.map((token) => {
               const tokenBalance = balances.find((bal) =>
@@ -102,46 +91,25 @@ const TokenItem = ({
   onClick,
 }: TokenItemProps) => {
   return (
-    <Flex
-      align='center'
-      justify='space-between'
-      cursor='pointer'
-      h='60px'
-      my='4px'
-      px='16px'
+    <div
+      className='text-ic-black dark:text-ic-white h-15 hover:bg-ic-gray-100 dark:hover:bg-ic-gray-900 my-1 flex cursor-pointer items-center justify-between px-4 py-2 text-sm font-medium'
       onClick={() => onClick(item.symbol)}
-      _hover={{
-        backgroundColor: isDarkMode ? colors.ic.gray[900] : colors.ic.gray[100],
-      }}
     >
-      <Flex align='center'>
+      <div className='flex items-center'>
         <Image alt={`${item.symbol} logo`} src={item.image} w='40px' h='40px' />
-        <Flex direction='column' ml='16px'>
-          <Flex align='baseline'>
-            <Text fontSize='md' fontWeight='500' textColor={colors.ic.black}>
-              {item.symbol}
-            </Text>
+        <div className='ml-4 flex flex-col'>
+          <div className='flex align-baseline'>
+            <span>{item.symbol}</span>
             {extraTitle && (
-              <Text
-                className='text-ic-blue-500'
-                fontSize='sm'
-                fontWeight='500'
-                ml='2'
-              >
-                {extraTitle}
-              </Text>
+              <div className='text-ic-blue-500 ml-[2px]'>{extraTitle}</div>
             )}
-          </Flex>
-          <Text fontSize='sm' fontWeight='500' textColor={colors.ic.black}>
-            {item.name}
-          </Text>
-        </Flex>
-      </Flex>
-      <Flex align='flex-end' direction='column' ml='16px'>
-        <Text fontSize='md' fontWeight='700' textColor={colors.ic.black}>
-          {balance}
-        </Text>
-      </Flex>
-    </Flex>
+          </div>
+          <span className='dark:text-ic-gray-300'>{item.name}</span>
+        </div>
+      </div>
+      <div className='ml-4 flex flex-col justify-end'>
+        <span className='text-md font-bold'>{balance}</span>
+      </div>
+    </div>
   )
 }

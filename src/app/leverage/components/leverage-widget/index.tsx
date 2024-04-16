@@ -53,7 +53,6 @@ export function LeverageWidget() {
   const onClickButton = () => {
     onOpenTransactionReview()
   }
-  const onSelectToken = () => {}
 
   return (
     <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
@@ -84,6 +83,7 @@ export function LeverageWidget() {
         onClick={onClickButton}
       />
       <SelectTokenModal
+        isDarkMode={true}
         isOpen={isSelectIndexTokenOpen}
         onClose={onCloseSelectIndexToken}
         onSelectedToken={(tokenSymbol) => {
@@ -95,6 +95,7 @@ export function LeverageWidget() {
         tokens={indexTokens}
       />
       <SelectTokenModal
+        isDarkMode={true}
         isOpen={isSelectCurrencyTokenOpen}
         onClose={onCloseSelectCurrencyToken}
         onSelectedToken={(tokenSymbol) => {
