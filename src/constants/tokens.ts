@@ -23,6 +23,7 @@ export interface Token {
   name: string
   symbol: string
   address: string | undefined
+  arbitrumAddress?: string | undefined
   polygonAddress?: string | undefined
   optimismAddress?: string | undefined
   decimals: number
@@ -466,6 +467,7 @@ export const USDC: Token = {
   image:
     'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+  arbitrumAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
   polygonAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   optimismAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
   decimals: 6,
@@ -482,6 +484,7 @@ export const USDT: Token = {
   image:
     'https://assets.coingecko.com/coins/images/325/large/Tether.png?1668148663',
   address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+  arbitrumAddress: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 6,
@@ -498,6 +501,7 @@ export const WETH: Token = {
   image:
     'https://assets.coingecko.com/coins/images/2518/large/weth.png?1628852295',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  arbitrumAddress: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
   polygonAddress: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
   optimismAddress: '0x4200000000000000000000000000000000000006',
   decimals: 18,
@@ -514,6 +518,7 @@ export const WBTC: Token = {
   image:
     'https://assets.coingecko.com/coins/images/7598/large/wrapped_bitcoin_wbtc.png',
   address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+  arbitrumAddress: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
   polygonAddress: undefined,
   optimismAddress: undefined,
   decimals: 8,

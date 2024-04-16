@@ -15,12 +15,18 @@ import {
   IndexCoopEthereum2xIndex,
   Token,
   USDC,
+  USDT,
+  WBTC,
+  WETH,
 } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getDefaultIndex } from '@/lib/utils/tokens'
 
 import { BaseTokenStats } from './types'
+
+const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
+const indexTokens = [ETH, BTC]
 
 export enum LeverageType {
   Long2x,
@@ -33,6 +39,8 @@ export interface TokenContext {
   leverageType: LeverageType
   inputToken: Token
   outputToken: Token
+  currencyTokens: Token[]
+  indexTokens: Token[]
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onSelectLeverageType: (type: LeverageType) => void
@@ -44,6 +52,8 @@ export const LeverageTokenContext = createContext<TokenContext>({
   leverageType: LeverageType.Long2x,
   inputToken: ETH,
   outputToken: getDefaultIndex(),
+  currencyTokens,
+  indexTokens,
   stats: null,
   transactionReview: null,
   onSelectLeverageType: () => {},
@@ -149,6 +159,8 @@ export function LeverageProvider(props: { children: any }) {
         leverageType,
         inputToken,
         outputToken,
+        currencyTokens,
+        indexTokens,
         stats,
         transactionReview,
         onSelectLeverageType,
