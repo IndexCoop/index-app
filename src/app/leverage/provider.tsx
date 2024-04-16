@@ -43,6 +43,8 @@ export interface TokenContext {
   indexTokens: Token[]
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
+  onSelectCurrencyToken: (tokenSymbol: string) => void
+  onSelectIndexToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
   toggleIsMinting: () => void
 }
@@ -56,6 +58,8 @@ export const LeverageTokenContext = createContext<TokenContext>({
   indexTokens,
   stats: null,
   transactionReview: null,
+  onSelectCurrencyToken: () => {},
+  onSelectIndexToken: () => {},
   onSelectLeverageType: () => {},
   toggleIsMinting: () => {},
 })
@@ -99,11 +103,7 @@ export function LeverageProvider(props: { children: any }) {
     }
   }, [])
   const [isMinting, setMinting] = useState<boolean>(true)
-  // TODO:
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [inputToken, setInputToken] = useState<Token>(USDC)
-  // TODO:
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [inputToken, setInputToken] = useState<Token>(WBTC)
   const [outputToken, setOutputToken] = useState<Token>(BTC)
   const [leverageType, setLeverageType] = useState<LeverageType>(
     LeverageType.Long2x,
@@ -152,6 +152,20 @@ export function LeverageProvider(props: { children: any }) {
     setLeverageType(type)
   }
 
+  const onSelectCurrencyToken = (tokenSymbol: string) => {
+    const token = currencyTokens.filter(
+      (token) => token.symbol === tokenSymbol,
+    )[0]
+    if (!token) return
+    setInputToken(token)
+  }
+
+  const onSelectIndexToken = (tokenSymbol: string) => {
+    const token = indexTokens.filter((token) => token.symbol === tokenSymbol)[0]
+    if (!token) return
+    setOutputToken(token)
+  }
+
   return (
     <LeverageTokenContext.Provider
       value={{
@@ -163,6 +177,8 @@ export function LeverageProvider(props: { children: any }) {
         indexTokens,
         stats,
         transactionReview,
+        onSelectCurrencyToken,
+        onSelectIndexToken,
         onSelectLeverageType,
         toggleIsMinting,
       }}

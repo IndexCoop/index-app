@@ -25,6 +25,8 @@ export function LeverageWidget() {
     isMinting,
     leverageType,
     transactionReview,
+    onSelectCurrencyToken,
+    onSelectIndexToken,
     onSelectLeverageType,
     outputToken,
     toggleIsMinting,
@@ -88,9 +90,7 @@ export function LeverageWidget() {
         showBalances={false}
         onClose={onCloseSelectIndexToken}
         onSelectedToken={(tokenSymbol) => {
-          console.log(tokenSymbol)
-          // TODO: select token
-          // selectInputToken(getTokenBySymbol(tokenSymbol)!)
+          onSelectIndexToken(tokenSymbol)
           onCloseSelectIndexToken()
         }}
         address={address}
@@ -101,9 +101,7 @@ export function LeverageWidget() {
         isOpen={isSelectCurrencyTokenOpen}
         onClose={onCloseSelectCurrencyToken}
         onSelectedToken={(tokenSymbol) => {
-          console.log(tokenSymbol)
-          // TODO: select token
-          // selectOutputToken(getTokenBySymbol(tokenSymbol)!)
+          onSelectCurrencyToken(tokenSymbol)
           onCloseSelectCurrencyToken()
         }}
         address={address}
