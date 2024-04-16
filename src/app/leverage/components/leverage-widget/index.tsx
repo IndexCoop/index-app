@@ -88,6 +88,7 @@ export function LeverageWidget() {
         showBalances={false}
         onClose={onCloseSelectIndexToken}
         onSelectedToken={(tokenSymbol) => {
+          console.log(tokenSymbol)
           // TODO: select token
           // selectInputToken(getTokenBySymbol(tokenSymbol)!)
           onCloseSelectIndexToken()
@@ -100,6 +101,7 @@ export function LeverageWidget() {
         isOpen={isSelectCurrencyTokenOpen}
         onClose={onCloseSelectCurrencyToken}
         onSelectedToken={(tokenSymbol) => {
+          console.log(tokenSymbol)
           // TODO: select token
           // selectOutputToken(getTokenBySymbol(tokenSymbol)!)
           onCloseSelectCurrencyToken()

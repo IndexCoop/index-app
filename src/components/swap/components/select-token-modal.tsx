@@ -29,7 +29,6 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
   const { isOpen, onClose, onSelectedToken, tokens } = props
   const isDarkMode = props.isDarkMode ?? false
   const showBalances = props.showBalances ?? true
-  console.log('dark', isDarkMode)
   const tokenAddresses = useMemo(
     () => tokens.map((token) => token.address!),
     [tokens],
