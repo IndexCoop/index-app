@@ -16,13 +16,13 @@ export interface FormattedLeverageData {
   high24h: string
   inputBalance: bigint
   inputBalanceFormatted: string
+  isFetchingQuote: boolean
   resetData: () => void
   // TBD
   gasFeesEth: string
   gasFeesUsd: string
   inputAmount: string
   inputAmoutUsd: string
-  isFetchingQuote: boolean
   ouputAmount: string
   outputAmountUsd: string
   shouldShowSummaryDetails: boolean
@@ -32,7 +32,7 @@ export function useFormattedLeverageData(
   stats: BaseTokenStats | null,
 ): FormattedLeverageData {
   const { address } = useWallet()
-  const { inputToken, inputValue } = useLeverageToken()
+  const { inputToken, inputValue, isFetchingQuote } = useLeverageToken()
   const quote = null
 
   const { balance, balanceFormatted, forceRefetch } = useFormattedBalance(
@@ -64,7 +64,7 @@ export function useFormattedLeverageData(
     gasFeesUsd: '',
     inputAmount: '',
     inputAmoutUsd: '',
-    isFetchingQuote: false,
+    isFetchingQuote,
     ouputAmount: '',
     outputAmountUsd: '',
     shouldShowSummaryDetails,

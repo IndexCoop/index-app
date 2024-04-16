@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import {
   createContext,
   useCallback,
@@ -7,19 +6,13 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import {
-  BTC,
-  ETH,
-  IndexCoopEthereum2xIndex,
-  Token,
-  USDC,
-  USDT,
-  WBTC,
-  WETH,
-} from '@/constants/tokens'
-import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
+import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { getTokenPrice } from '@/lib/hooks/use-token-price'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getDefaultIndex } from '@/lib/utils/tokens'
@@ -44,6 +37,8 @@ export interface TokenContext {
   inputTokenAmount: bigint
   currencyTokens: Token[]
   indexTokens: Token[]
+  isFetchingQuote: boolean
+  quoteResult: QuoteResult | null
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
@@ -62,6 +57,8 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputTokenAmount: BigInt(0),
   currencyTokens,
   indexTokens,
+  isFetchingQuote: false,
+  quoteResult: null,
   stats: null,
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
@@ -74,42 +71,11 @@ export const LeverageTokenContext = createContext<TokenContext>({
 export const useLeverageToken = () => useContext(LeverageTokenContext)
 
 export function LeverageProvider(props: { children: any }) {
-  const isFetchingQuote = false
-  const quoteResult = useMemo(() => {
-    return {
-      type: QuoteType.issuance,
-      isAvailable: true,
-      quote: {
-        type: QuoteType.issuance,
-        chainId: 1,
-        contract: '0x',
-        isMinting: true,
-        inputToken: ETH,
-        outputToken: IndexCoopEthereum2xIndex,
-        gas: BigNumber.from(0),
-        gasPrice: BigNumber.from(0),
-        gasCosts: BigNumber.from(0),
-        gasCostsInUsd: 0,
-        fullCostsInUsd: 0,
-        priceImpact: 0,
-        indexTokenAmount: BigNumber.from(1000000),
-        inputOutputTokenAmount: BigNumber.from(10000000),
-        inputTokenAmount: BigNumber.from(1000000),
-        inputTokenAmountUsd: 0,
-        outputTokenAmount: BigNumber.from(1000000),
-        outputTokenAmountUsd: 0,
-        outputTokenAmountUsdAfterFees: 0,
-        inputTokenPrice: 0,
-        outputTokenPrice: 0,
-        slippage: 1,
-        tx: {
-          account: '0x',
-        },
-      },
-      error: null,
-    }
-  }, [])
+  const publicClient = usePublicClient()
+  const { address, provider } = useWallet()
+
   const [inputValue, setInputValue] = useState('')
+  const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(true)
   const [inputToken, setInputToken] = useState<Token>(WBTC)
   const [outputToken, setOutputToken] = useState<Token>(BTC)
@@ -117,6 +83,12 @@ export function LeverageProvider(props: { children: any }) {
     LeverageType.Long2x,
   )
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
+  const [quoteResult, setQuoteResult] = useState<QuoteResult>({
+    type: QuoteType.issuance,
+    isAvailable: true,
+    quote: null,
+    error: null,
+  })
 
   const inputTokenAmount = useMemo(
     () =>
@@ -192,6 +164,53 @@ export function LeverageProvider(props: { children: any }) {
     setOutputToken(token)
   }
 
+  useEffect(() => {
+    const fetchQuote = async () => {
+      if (!address) return
+      if (!provider || !publicClient) return
+      if (inputTokenAmount <= 0) return
+      setFetchingQuote(true)
+      // TODO: add specific logic here for selecting correct tokens (based on eth/btc selection)
+      // const outputToken = isMinting ? outputToken : inputToken
+      const inputTokenPrice = await getTokenPrice(inputToken, 1)
+      const outputTokenPrice = await getTokenPrice(outputToken, 1)
+      const gasPrice = await provider.getGasPrice()
+      console.log(inputTokenPrice, outputTokenPrice, gasPrice.toString())
+      // TODO: get FlashMint quote
+      // const quoteIssuance = await getEnhancedIssuanceQuote(
+      //   {
+      //     account: address,
+      //     isIssuance: isDepositing,
+      //     gasPrice,
+      //     inputTokenAmount,
+      //     inputToken,
+      //     inputTokenPrice,
+      //     outputToken,
+      //     outputTokenPrice,
+      //     nativeTokenPrice,
+      //     slippage: 0,
+      //   },
+      //   publicClient,
+      // )
+      setFetchingQuote(false)
+      setQuoteResult({
+        type: QuoteType.issuance,
+        isAvailable: true,
+        quote: null,
+        error: null,
+      })
+    }
+    fetchQuote()
+  }, [
+    address,
+    inputToken,
+    inputTokenAmount,
+    isMinting,
+    outputToken,
+    provider,
+    publicClient,
+  ])
+
   return (
     <LeverageTokenContext.Provider
       value={{
@@ -203,6 +222,8 @@ export function LeverageProvider(props: { children: any }) {
         inputTokenAmount,
         currencyTokens,
         indexTokens,
+        isFetchingQuote,
+        quoteResult,
         stats,
         transactionReview,
         onChangeInputTokenAmount,

@@ -38,7 +38,7 @@ export function LeverageWidget() {
     toggleIsMinting,
   } = useLeverageToken()
 
-  const { inputBalance, inputBalanceFormatted } =
+  const { inputBalance, inputBalanceFormatted, isFetchingQuote } =
     useFormattedLeverageData(stats)
 
   const {
@@ -91,7 +91,7 @@ export function LeverageWidget() {
       <TradeButton
         label={'Connect wallet'}
         isDisabled={false}
-        isLoading={false}
+        isLoading={isFetchingQuote}
         onClick={onClickButton}
       />
       <SelectTokenModal
