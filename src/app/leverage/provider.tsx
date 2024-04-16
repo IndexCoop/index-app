@@ -15,12 +15,18 @@ import {
   IndexCoopEthereum2xIndex,
   Token,
   USDC,
+  USDT,
+  WBTC,
+  WETH,
 } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getDefaultIndex } from '@/lib/utils/tokens'
 
 import { BaseTokenStats } from './types'
+
+const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
+const indexTokens = [ETH, BTC]
 
 export enum LeverageType {
   Long2x,
@@ -33,8 +39,12 @@ export interface TokenContext {
   leverageType: LeverageType
   inputToken: Token
   outputToken: Token
+  currencyTokens: Token[]
+  indexTokens: Token[]
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
+  onSelectCurrencyToken: (tokenSymbol: string) => void
+  onSelectIndexToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
   toggleIsMinting: () => void
 }
@@ -44,8 +54,12 @@ export const LeverageTokenContext = createContext<TokenContext>({
   leverageType: LeverageType.Long2x,
   inputToken: ETH,
   outputToken: getDefaultIndex(),
+  currencyTokens,
+  indexTokens,
   stats: null,
   transactionReview: null,
+  onSelectCurrencyToken: () => {},
+  onSelectIndexToken: () => {},
   onSelectLeverageType: () => {},
   toggleIsMinting: () => {},
 })
@@ -89,11 +103,7 @@ export function LeverageProvider(props: { children: any }) {
     }
   }, [])
   const [isMinting, setMinting] = useState<boolean>(true)
-  // TODO:
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [inputToken, setInputToken] = useState<Token>(USDC)
-  // TODO:
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [inputToken, setInputToken] = useState<Token>(WBTC)
   const [outputToken, setOutputToken] = useState<Token>(BTC)
   const [leverageType, setLeverageType] = useState<LeverageType>(
     LeverageType.Long2x,
@@ -142,6 +152,18 @@ export function LeverageProvider(props: { children: any }) {
     setLeverageType(type)
   }
 
+  const onSelectCurrencyToken = (tokenSymbol: string) => {
+    const token = currencyTokens.find((token) => token.symbol === tokenSymbol)
+    if (!token) return
+    setInputToken(token)
+  }
+
+  const onSelectIndexToken = (tokenSymbol: string) => {
+    const token = indexTokens.find((token) => token.symbol === tokenSymbol)
+    if (!token) return
+    setOutputToken(token)
+  }
+
   return (
     <LeverageTokenContext.Provider
       value={{
@@ -149,8 +171,12 @@ export function LeverageProvider(props: { children: any }) {
         leverageType,
         inputToken,
         outputToken,
+        currencyTokens,
+        indexTokens,
         stats,
         transactionReview,
+        onSelectCurrencyToken,
+        onSelectIndexToken,
         onSelectLeverageType,
         toggleIsMinting,
       }}
