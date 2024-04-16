@@ -85,6 +85,7 @@ export function LeverageWidget() {
       <SelectTokenModal
         isDarkMode={true}
         isOpen={isSelectIndexTokenOpen}
+        showBalances={false}
         onClose={onCloseSelectIndexToken}
         onSelectedToken={(tokenSymbol) => {
           // TODO: select token
