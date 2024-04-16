@@ -1,36 +1,51 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useCallback } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
+import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
+import {
+  TradeButtonState,
+  useTradeButtonState,
+} from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
-import { Token } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { formatWei } from '@/lib/utils'
+
+import { useFormattedLeverageData } from '../../use-formatted-data'
 
 import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
-
 import './styles.css'
 
 export function LeverageWidget() {
+  const { openConnectModal } = useConnectModal()
   const { address } = useWallet()
   const {
     currencyTokens,
     indexTokens,
     inputToken,
+    inputValue,
     isMinting,
     leverageType,
+    stats,
     transactionReview,
+    onChangeInputTokenAmount,
     onSelectCurrencyToken,
     onSelectIndexToken,
     onSelectLeverageType,
     outputToken,
     toggleIsMinting,
   } = useLeverageToken()
+
+  const { inputBalance, inputBalanceFormatted, isFetchingQuote } =
+    useFormattedLeverageData(stats)
 
   const {
     isOpen: isSelectIndexTokenOpen,
@@ -48,11 +63,33 @@ export function LeverageWidget() {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
-  const onChangeInput = (token: Token, amount: string) => {
-    console.log(token.symbol, amount)
-  }
-  const onClickBalance = () => {}
+  const isApproved = true
+  const isApproving = false
+  const hasInsufficientFunds = false
+  const shouldApprove = true
+  const buttonState = useTradeButtonState(
+    false,
+    hasInsufficientFunds,
+    shouldApprove,
+    isApproved,
+    isApproving,
+    outputToken,
+    inputValue,
+  )
+  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+
+  const onClickBalance = useCallback(() => {
+    if (!inputBalance) return
+    onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
+  }, [inputBalance, inputToken, onChangeInputTokenAmount])
+
   const onClickButton = () => {
+    if (buttonState === TradeButtonState.connectWallet) {
+      if (openConnectModal) {
+        openConnectModal()
+      }
+      return
+    }
     onOpenTransactionReview()
   }
 
@@ -68,20 +105,20 @@ export function LeverageWidget() {
       />
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={''}
+        balance={inputBalanceFormatted}
         caption='You pay'
         formattedFiat={''}
         selectedToken={inputToken}
-        selectedTokenAmount={''}
-        onChangeInput={onChangeInput}
+        selectedTokenAmount={inputValue}
+        onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
         onSelectToken={onOpenSelectCurrencyToken}
       />
       <Summary />
       <TradeButton
-        label={'Connect wallet'}
-        isDisabled={false}
-        isLoading={false}
+        label={buttonLabel}
+        isDisabled={isDisabled}
+        isLoading={isFetchingQuote}
         onClick={onClickButton}
       />
       <SelectTokenModal
