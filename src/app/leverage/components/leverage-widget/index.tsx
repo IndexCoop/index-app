@@ -1,6 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -8,7 +9,10 @@ import { SelectTokenModal } from '@/components/swap/components/select-token-moda
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
-import { useTradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
+import {
+  TradeButtonState,
+  useTradeButtonState,
+} from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
@@ -18,10 +22,10 @@ import { useFormattedLeverageData } from '../../use-formatted-data'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
-
 import './styles.css'
 
 export function LeverageWidget() {
+  const { openConnectModal } = useConnectModal()
   const { address } = useWallet()
   const {
     currencyTokens,
@@ -80,6 +84,12 @@ export function LeverageWidget() {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   const onClickButton = () => {
+    if (buttonState === TradeButtonState.connectWallet) {
+      if (openConnectModal) {
+        openConnectModal()
+      }
+      return
+    }
     onOpenTransactionReview()
   }
 
