@@ -153,15 +153,13 @@ export function LeverageProvider(props: { children: any }) {
   }
 
   const onSelectCurrencyToken = (tokenSymbol: string) => {
-    const token = currencyTokens.filter(
-      (token) => token.symbol === tokenSymbol,
-    )[0]
+    const token = currencyTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setInputToken(token)
   }
 
   const onSelectIndexToken = (tokenSymbol: string) => {
-    const token = indexTokens.filter((token) => token.symbol === tokenSymbol)[0]
+    const token = indexTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setOutputToken(token)
   }
