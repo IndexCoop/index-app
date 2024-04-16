@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatAmount } from '@/lib/utils'
@@ -12,7 +14,8 @@ export interface FormattedLeverageData {
   change24hIsPositive: boolean
   low24h: string
   high24h: string
-  inputBalance: string
+  inputBalance: bigint
+  inputBalanceFormatted: string
   resetData: () => void
   // TBD
   gasFeesEth: string
@@ -29,14 +32,23 @@ export function useFormattedLeverageData(
   stats: BaseTokenStats | null,
 ): FormattedLeverageData {
   const { address } = useWallet()
-  const { inputToken } = useLeverageToken()
-  const { balanceFormatted, forceRefetch } = useFormattedBalance(
+  const { inputToken, inputValue } = useLeverageToken()
+  const quote = null
+
+  const { balance, balanceFormatted, forceRefetch } = useFormattedBalance(
     inputToken,
     address,
   )
+
   const resetData = () => {
     forceRefetch()
   }
+
+  const shouldShowSummaryDetails = useMemo(
+    () => quote !== null && inputValue !== '',
+    [inputValue, quote],
+  )
+
   return {
     symbol: stats?.symbol ?? '',
     price: stats ? `$${formatAmount(stats.price)}` : '',
@@ -44,7 +56,8 @@ export function useFormattedLeverageData(
     change24hIsPositive: stats ? stats.change24h >= 0 : true,
     low24h: stats ? formatAmount(stats.low24h) : '',
     high24h: stats ? formatAmount(stats.high24h) : '',
-    inputBalance: balanceFormatted,
+    inputBalance: balance,
+    inputBalanceFormatted: balanceFormatted,
     resetData,
     // TBD
     gasFeesEth: '',
@@ -54,6 +67,6 @@ export function useFormattedLeverageData(
     isFetchingQuote: false,
     ouputAmount: '',
     outputAmountUsd: '',
-    shouldShowSummaryDetails: true,
+    shouldShowSummaryDetails,
   }
 }

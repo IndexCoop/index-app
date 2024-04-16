@@ -20,6 +20,7 @@ import {
   WETH,
 } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getDefaultIndex } from '@/lib/utils/tokens'
 
@@ -35,14 +36,17 @@ export enum LeverageType {
 }
 
 export interface TokenContext {
+  inputValue: string
   isMinting: boolean
   leverageType: LeverageType
   inputToken: Token
   outputToken: Token
+  inputTokenAmount: bigint
   currencyTokens: Token[]
   indexTokens: Token[]
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
+  onChangeInputTokenAmount: (input: string) => void
   onSelectCurrencyToken: (tokenSymbol: string) => void
   onSelectIndexToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
@@ -50,14 +54,17 @@ export interface TokenContext {
 }
 
 export const LeverageTokenContext = createContext<TokenContext>({
+  inputValue: '',
   isMinting: true,
   leverageType: LeverageType.Long2x,
   inputToken: ETH,
   outputToken: getDefaultIndex(),
+  inputTokenAmount: BigInt(0),
   currencyTokens,
   indexTokens,
   stats: null,
   transactionReview: null,
+  onChangeInputTokenAmount: () => {},
   onSelectCurrencyToken: () => {},
   onSelectIndexToken: () => {},
   onSelectLeverageType: () => {},
@@ -102,6 +109,7 @@ export function LeverageProvider(props: { children: any }) {
       error: null,
     }
   }, [])
+  const [inputValue, setInputValue] = useState('')
   const [isMinting, setMinting] = useState<boolean>(true)
   const [inputToken, setInputToken] = useState<Token>(WBTC)
   const [outputToken, setOutputToken] = useState<Token>(BTC)
@@ -109,6 +117,14 @@ export function LeverageProvider(props: { children: any }) {
     LeverageType.Long2x,
   )
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
+
+  const inputTokenAmount = useMemo(
+    () =>
+      inputValue === ''
+        ? BigInt(0)
+        : parseUnits(inputValue, inputToken.decimals),
+    [inputToken, inputValue],
+  )
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
@@ -148,6 +164,18 @@ export function LeverageProvider(props: { children: any }) {
     fetchStats()
   }, [outputToken])
 
+  const onChangeInputTokenAmount = useCallback(
+    (input: string) => {
+      if (input === '') {
+        setInputValue('')
+        return
+      }
+      if (!isValidTokenInput(input, inputToken.decimals)) return
+      setInputValue(input || '')
+    },
+    [inputToken],
+  )
+
   const onSelectLeverageType = (type: LeverageType) => {
     setLeverageType(type)
   }
@@ -167,14 +195,17 @@ export function LeverageProvider(props: { children: any }) {
   return (
     <LeverageTokenContext.Provider
       value={{
+        inputValue,
         isMinting,
         leverageType,
         inputToken,
         outputToken,
+        inputTokenAmount,
         currencyTokens,
         indexTokens,
         stats,
         transactionReview,
+        onChangeInputTokenAmount,
         onSelectCurrencyToken,
         onSelectIndexToken,
         onSelectLeverageType,
