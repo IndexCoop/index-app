@@ -1,9 +1,9 @@
 'use client'
 
-import { LeverageChart } from './components/leverage-chart'
 import { LeverageWidget } from './components/leverage-widget'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
+import TradingViewWidget from './components/trading-view-widget'
 
 export default function Page() {
   return (
@@ -15,7 +15,7 @@ export default function Page() {
         </div>
         <div className='flex flex-row gap-6'>
           <div className='flex-none flex-grow'>
-            <LeverageChart />
+            <TradingViewWidget />
           </div>
           <LeverageWidget />
         </div>
