@@ -7,6 +7,8 @@ import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
+import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
+import { useTradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
@@ -57,6 +59,21 @@ export function LeverageWidget() {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
+  const isApproved = true
+  const isApproving = false
+  const hasInsufficientFunds = false
+  const shouldApprove = true
+  const buttonState = useTradeButtonState(
+    false,
+    hasInsufficientFunds,
+    shouldApprove,
+    isApproved,
+    isApproving,
+    outputToken,
+    inputValue,
+  )
+  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
@@ -89,8 +106,8 @@ export function LeverageWidget() {
       />
       <Summary />
       <TradeButton
-        label={'Connect wallet'}
-        isDisabled={false}
+        label={buttonLabel}
+        isDisabled={isDisabled}
         isLoading={isFetchingQuote}
         onClick={onClickButton}
       />
