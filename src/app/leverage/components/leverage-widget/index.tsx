@@ -10,6 +10,8 @@ import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
+import { useFormattedLeverageData } from '../../use-formatted-data'
+
 import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
@@ -24,6 +26,7 @@ export function LeverageWidget() {
     inputToken,
     isMinting,
     leverageType,
+    stats,
     transactionReview,
     onSelectCurrencyToken,
     onSelectIndexToken,
@@ -31,6 +34,8 @@ export function LeverageWidget() {
     outputToken,
     toggleIsMinting,
   } = useLeverageToken()
+
+  const { inputBalance } = useFormattedLeverageData(stats)
 
   const {
     isOpen: isSelectIndexTokenOpen,
@@ -68,7 +73,7 @@ export function LeverageWidget() {
       />
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={''}
+        balance={inputBalance}
         caption='You pay'
         formattedFiat={''}
         selectedToken={inputToken}

@@ -1,5 +1,8 @@
+import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatAmount } from '@/lib/utils'
 
+import { useLeverageToken } from './provider'
 import { BaseTokenStats } from './types'
 
 export interface FormattedLeverageData {
@@ -9,6 +12,8 @@ export interface FormattedLeverageData {
   change24hIsPositive: boolean
   low24h: string
   high24h: string
+  inputBalance: string
+  resetData: () => void
   // TBD
   gasFeesEth: string
   gasFeesUsd: string
@@ -23,30 +28,24 @@ export interface FormattedLeverageData {
 export function useFormattedLeverageData(
   stats: BaseTokenStats | null,
 ): FormattedLeverageData {
-  if (!stats)
-    return {
-      symbol: '',
-      price: '',
-      change24h: '',
-      change24hIsPositive: true,
-      low24h: '',
-      high24h: '',
-      gasFeesEth: '',
-      gasFeesUsd: '',
-      inputAmount: '',
-      inputAmoutUsd: '',
-      isFetchingQuote: false,
-      ouputAmount: '',
-      outputAmountUsd: '',
-      shouldShowSummaryDetails: false,
-    }
+  const { address } = useWallet()
+  const { inputToken } = useLeverageToken()
+  const { balanceFormatted, forceRefetch } = useFormattedBalance(
+    inputToken,
+    address,
+  )
+  const resetData = () => {
+    forceRefetch()
+  }
   return {
-    symbol: stats.symbol,
-    price: `$${formatAmount(stats.price)}`,
-    change24h: `${stats.change24h.toFixed(2)}%`,
-    change24hIsPositive: stats.change24h >= 0,
-    low24h: formatAmount(stats.low24h),
-    high24h: formatAmount(stats.high24h),
+    symbol: stats?.symbol ?? '',
+    price: stats ? `$${formatAmount(stats.price)}` : '',
+    change24h: stats ? `${stats.change24h.toFixed(2)}%` : '',
+    change24hIsPositive: stats ? stats.change24h >= 0 : true,
+    low24h: stats ? formatAmount(stats.low24h) : '',
+    high24h: stats ? formatAmount(stats.high24h) : '',
+    inputBalance: balanceFormatted,
+    resetData,
     // TBD
     gasFeesEth: '',
     gasFeesUsd: '',
