@@ -76,7 +76,13 @@ export function LeverageWidget() {
     outputToken,
     inputValue,
   )
-  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+  const { buttonLabel: generatedButtonLabel, isDisabled } =
+    useTradeButton(buttonState)
+
+  const buttonLabel = useMemo(() => {
+    if (generatedButtonLabel === 'Swap') return 'Review Transaction'
+    return generatedButtonLabel
+  }, [generatedButtonLabel])
 
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
