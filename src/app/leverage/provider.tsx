@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers'
 import {
   createContext,
   useCallback,
@@ -9,7 +10,16 @@ import {
 import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
+import {
+  BTC,
+  ETH,
+  IndexCoopEthereum2xIndex,
+  Token,
+  USDC,
+  USDT,
+  WBTC,
+  WETH,
+} from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -193,12 +203,41 @@ export function LeverageProvider(props: { children: any }) {
       //   publicClient,
       // )
       setFetchingQuote(false)
-      setQuoteResult({
+
+      const quoteResult = {
         type: QuoteType.issuance,
         isAvailable: true,
-        quote: null,
+        quote: {
+          type: QuoteType.issuance,
+          chainId: 1,
+          contract: '0x',
+          isMinting: true,
+          inputToken: ETH,
+          outputToken: IndexCoopEthereum2xIndex,
+          gas: BigNumber.from(0),
+          gasPrice: BigNumber.from(0),
+          gasCosts: BigNumber.from(0),
+          gasCostsInUsd: 0,
+          fullCostsInUsd: 0,
+          priceImpact: 0,
+          indexTokenAmount: BigNumber.from(1000000),
+          inputOutputTokenAmount: BigNumber.from(10000000),
+          inputTokenAmount: BigNumber.from(1000000),
+          inputTokenAmountUsd: 0,
+          outputTokenAmount: BigNumber.from(1000000),
+          outputTokenAmountUsd: 0,
+          outputTokenAmountUsdAfterFees: 0,
+          inputTokenPrice: 0,
+          outputTokenPrice: 0,
+          slippage: 1,
+          tx: {
+            account: '0x',
+          },
+        },
         error: null,
-      })
+      }
+
+      setQuoteResult(quoteResult)
     }
     fetchQuote()
   }, [
