@@ -1,23 +1,18 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
-import { useLeverageToken } from '@/app/leverage/provider'
-import { GasFees } from '@/components/gas-fees'
-
-import { useFormattedLeverageData } from '../../../use-formatted-data'
-
-type SummaryQuoteProps = {
+type FeesItemProps = {
   label: string
-  value: string
+  percent: string
   valueUsd: string
 }
 
-function SummaryQuote(props: SummaryQuoteProps) {
+function FeesItem(props: FeesItemProps) {
   return (
     <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
       <div className='font-medium'>{props.label}</div>
       <div className='flex flex-row gap-1'>
-        <div className='text-ic-white font-bold'>{props.value}</div>
+        <div className='text-ic-white font-bold'>{props.percent}</div>
         <div className='font-normal'>{props.valueUsd}</div>
       </div>
     </div>
@@ -25,16 +20,6 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Fees() {
-  const { stats } = useLeverageToken()
-  const {
-    gasFeesEth,
-    gasFeesUsd,
-    inputAmount,
-    inputAmoutUsd,
-    ouputAmount,
-    outputAmountUsd,
-    shouldShowSummaryDetails,
-  } = useFormattedLeverageData(stats)
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
       {({ open }) => (
@@ -54,26 +39,16 @@ export function Fees() {
             </Disclosure.Button>
           </dt>
           <Disclosure.Panel as='dd' className='mt-2 flex flex-col gap-2'>
-            {shouldShowSummaryDetails && (
-              <>
-                <SummaryQuote
-                  label='Pay'
-                  value={inputAmount}
-                  valueUsd={`(${inputAmoutUsd})`}
-                />
-                <SummaryQuote
-                  label='Receive'
-                  value={ouputAmount}
-                  valueUsd={`(${outputAmountUsd})`}
-                />
-                <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
-                  <div className='font-normal'>Network Fee</div>
-                  <div>
-                    <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
-                  </div>
-                </div>
-              </>
-            )}
+            <FeesItem label='Streaming Fee' percent={'3.65%'} valueUsd={''} />
+            <FeesItem label='Mint Fee' percent={'0.10%'} valueUsd={''} />
+            <FeesItem label='Redeem Fee' percent={'0.10%'} valueUsd={''} />
+            {/* // See if we need this */}
+            {/* <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
+              <div className='font-normal'>Network Fee</div>
+              <div>
+                <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
+              </div>
+            </div> */}
           </Disclosure.Panel>
         </div>
       )}
