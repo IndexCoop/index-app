@@ -40,7 +40,7 @@
     "react-ga4": "2.1.0",
     "react-loading-skeleton": "^3.3.1",
     "use-debounce": "^10.0.0",
-    "viem": "^2.9.16",
+    "viem": "^2.9.20",
     "wagmi": "^2.5.20"
   },
   "devDependencies": {
