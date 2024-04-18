@@ -1,4 +1,7 @@
-import { IndexCoopMainnetTokens } from '@indexcoop/tokenlists'
+import {
+  IndexCoopMainnetTokens,
+  getIndexTokenData,
+} from '@indexcoop/tokenlists'
 
 import {
   bedBorderLogo,
@@ -11,7 +14,7 @@ import {
   wseth2Logo,
 } from '@/lib/utils/assets'
 
-import { MAINNET } from './chains'
+import { ARBITRUM, MAINNET } from './chains'
 
 export enum IndexType {
   thematic = 'thematic',
@@ -121,8 +124,10 @@ export const HighYieldETHIndex: Token = {
 }
 
 const btc2x = getTokenFromSymbol('BTC2X')!
+const btc2xArbitrum = getIndexTokenData('BTC3X', ARBITRUM.chainId)!
 export const IndexCoopBitcoin2xIndex: Token = {
   ...btc2x,
+  arbitrumAddress: btc2xArbitrum.address,
   // Random for now - as no listing
   coingeckoId: 'btc2x',
   fees: {
@@ -136,9 +141,29 @@ export const IndexCoopBitcoin2xIndex: Token = {
   url: 'btc2x',
 }
 
-const eth2x = getTokenFromSymbol('ETH2X')!
+const btc3xArbitrum = getIndexTokenData('BTC3X', ARBITRUM.chainId)!
+export const IndexCoopBitcoin3xIndex: Token = {
+  ...btc3xArbitrum,
+  address: '',
+  arbitrumAddress: btc3xArbitrum.address,
+  // Random for now - as no listing
+  coingeckoId: 'btc3x',
+  fees: {
+    streamingFee: '	3.65%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: btc3xArbitrum.logoURI,
+  indexTypes: [IndexType.leverage],
+  isDangerous: true,
+  url: 'btc3x',
+}
+
+const eth2x = getIndexTokenData('ETH2X')!
+const eth2xArbitrum = getIndexTokenData('ETH2X', ARBITRUM.chainId)!
 export const IndexCoopEthereum2xIndex: Token = {
   ...eth2x,
+  arbitrumAddress: eth2xArbitrum.address,
   // Random for now - as no listing
   coingeckoId: 'eth2x',
   fees: {
@@ -150,6 +175,60 @@ export const IndexCoopEthereum2xIndex: Token = {
   indexTypes: [IndexType.leverage],
   isDangerous: true,
   url: 'eth2x',
+}
+
+const eth3xArbitrum = getIndexTokenData('ETH3X', ARBITRUM.chainId)!
+export const IndexCoopEthereum3xIndex: Token = {
+  ...eth3xArbitrum,
+  address: '',
+  arbitrumAddress: eth3xArbitrum.address,
+  // Random for now - as no listing
+  coingeckoId: 'eth3x',
+  fees: {
+    streamingFee: '	3.65%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: eth3xArbitrum.logoURI,
+  indexTypes: [IndexType.leverage],
+  isDangerous: true,
+  url: 'eth3x',
+}
+
+const ibtc1x = getIndexTokenData('iBTC1x', ARBITRUM.chainId)!
+export const IndexCoopInverseBitcoinIndex: Token = {
+  ...ibtc1x,
+  address: '',
+  arbitrumAddress: ibtc1x.address,
+  // Random for now - as no listing
+  coingeckoId: 'ibtc1x',
+  fees: {
+    streamingFee: '	3.65%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: ibtc1x.logoURI,
+  indexTypes: [IndexType.leverage],
+  isDangerous: true,
+  url: 'ibtc1x',
+}
+
+const ieth1x = getIndexTokenData('iETH1X', ARBITRUM.chainId)!
+export const IndexCoopInverseEthereumIndex: Token = {
+  ...ieth1x,
+  address: '',
+  arbitrumAddress: ieth1x.address,
+  // Random for now - as no listing
+  coingeckoId: 'ieth1x',
+  fees: {
+    streamingFee: '	3.65%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: ieth1x.logoURI,
+  indexTypes: [IndexType.leverage],
+  isDangerous: true,
+  url: 'ieth1x',
 }
 
 export const IndexToken: Token = {
