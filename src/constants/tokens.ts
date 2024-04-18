@@ -149,7 +149,7 @@ export const IndexCoopBitcoin3xIndex: Token = {
   // Random for now - as no listing
   coingeckoId: 'btc3x',
   fees: {
-    streamingFee: '	3.65%',
+    streamingFee: '3.65%',
     mintFee: '0.10%',
     redeemFee: '0.10%',
   },
