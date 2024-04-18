@@ -3,6 +3,14 @@ import { useAccount } from 'wagmi'
 
 import { chains } from '@/lib/utils/wagmi'
 
+export function useArbitrumOnly() {
+  return useSupportedNetworks([arbitrum.id])
+}
+
+export function useMainnetOnly() {
+  return useSupportedNetworks([mainnet.id])
+}
+
 export const useNetwork = () => {
   const { chain } = useAccount()
   const chainId = chain?.id
