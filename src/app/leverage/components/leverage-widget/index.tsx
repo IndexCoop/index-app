@@ -1,7 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useMemo } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -29,6 +29,7 @@ import './styles.css'
 
 export function LeverageWidget() {
   const isSupportedNetwork = useArbitrumOnly()
+  const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
   const { address } = useWallet()
   const {
@@ -98,6 +99,12 @@ export function LeverageWidget() {
     if (buttonState === TradeButtonState.connectWallet) {
       if (openConnectModal) {
         openConnectModal()
+      }
+      return
+    }
+    if (buttonState === TradeButtonState.wrongNetwork) {
+      if (openChainModal) {
+        openChainModal()
       }
       return
     }

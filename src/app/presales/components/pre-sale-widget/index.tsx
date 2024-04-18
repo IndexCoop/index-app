@@ -1,7 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useMemo } from 'react'
 
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
@@ -32,6 +32,7 @@ import './styles.css'
 
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const isSupportedNetwork = useMainnetOnly()
+  const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
   const {
     inputValue,
@@ -124,6 +125,13 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     if (buttonState === TradeButtonState.connectWallet) {
       if (openConnectModal) {
         openConnectModal()
+      }
+      return
+    }
+
+    if (buttonState === TradeButtonState.wrongNetwork) {
+      if (openChainModal) {
+        openChainModal()
       }
       return
     }

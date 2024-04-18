@@ -1,6 +1,6 @@
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -54,6 +54,7 @@ function isTokenPairTradable(
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
   const isSupportedNetwork = useMainnetOnly()
+  const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
   const { logEvent } = useAnalytics()
   const requiresProtection = useProtection()
@@ -234,6 +235,13 @@ export const Swap = (props: SwapProps) => {
     if (buttonState === TradeButtonState.connectWallet) {
       if (openConnectModal) {
         openConnectModal()
+      }
+      return
+    }
+
+    if (buttonState === TradeButtonState.wrongNetwork) {
+      if (openChainModal) {
+        openChainModal()
       }
       return
     }
