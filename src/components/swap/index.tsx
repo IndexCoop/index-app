@@ -267,6 +267,7 @@ export const Swap = (props: SwapProps) => {
     isApprovedForSwap,
     onApproveForSwap,
     onOpenTransactionReview,
+    openChainModal,
     openConnectModal,
     shouldApprove,
   ])

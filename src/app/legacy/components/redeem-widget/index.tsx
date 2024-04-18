@@ -141,6 +141,7 @@ export function RedeemWidget() {
     isApproved,
     onApprove,
     onOpenTransactionReview,
+    openChainModal,
     openConnectModal,
     shouldApprove,
   ])

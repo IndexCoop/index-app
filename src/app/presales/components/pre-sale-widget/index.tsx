@@ -155,6 +155,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     buttonState,
     isApproved,
     onApprove,
+    openChainModal,
     onOpenTransactionReview,
     openConnectModal,
     shouldApprove,
