@@ -13,7 +13,7 @@ import {
 } from '@rainbow-me/rainbowkit/wallets'
 import { Chain, http } from 'viem'
 import { createConfig } from 'wagmi'
-import { localhost, mainnet } from 'wagmi/chains'
+import { arbitrum, localhost, mainnet } from 'wagmi/chains'
 
 import { AlchemyApiKey } from '../../constants/server'
 
@@ -52,6 +52,7 @@ const lh = { ...localhost, id: 31337 }
 
 export const chains: [Chain, ...Chain[]] = [
   mainnet,
+  arbitrum,
   ...(shouldShowLocalHost ? [lh] : []),
 ]
 
@@ -60,6 +61,9 @@ export const wagmiConfig = createConfig({
   connectors,
   ssr: true,
   transports: {
+    [arbitrum.id]: http(
+      `https://arb-mainnet.g.alchemy.com/v2/${AlchemyApiKey}`,
+    ),
     [mainnet.id]: http(`https://eth-mainnet.g.alchemy.com/v2/${AlchemyApiKey}`),
     [lh.id]: http('http://127.0.0.1:8545/'),
   },
