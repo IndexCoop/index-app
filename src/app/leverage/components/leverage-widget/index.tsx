@@ -2,7 +2,7 @@
 
 import { useDisclosure } from '@chakra-ui/react'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -20,8 +20,10 @@ import { formatWei } from '@/lib/utils'
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
 import { BuySellSelector } from './components/buy-sell-selector'
+import { Fees } from './components/fees'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
+
 import './styles.css'
 
 export function LeverageWidget() {
@@ -76,7 +78,13 @@ export function LeverageWidget() {
     outputToken,
     inputValue,
   )
-  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+  const { buttonLabel: generatedButtonLabel, isDisabled } =
+    useTradeButton(buttonState)
+
+  const buttonLabel = useMemo(() => {
+    if (generatedButtonLabel === 'Swap') return 'Review Transaction'
+    return generatedButtonLabel
+  }, [generatedButtonLabel])
 
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
@@ -115,6 +123,7 @@ export function LeverageWidget() {
         onSelectToken={onOpenSelectCurrencyToken}
       />
       <Summary />
+      <Fees />
       <TradeButton
         label={buttonLabel}
         isDisabled={isDisabled}
