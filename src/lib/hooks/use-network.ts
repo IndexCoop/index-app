@@ -12,6 +12,12 @@ export const useNetwork = () => {
   return { chainId, isMainnet, isSupportedNetwork, name }
 }
 
+export function useSupportedNetworks(chainIds: number[]) {
+  const { chain } = useAccount()
+  if (!chain) return false
+  return chainIds.some((chainId) => chain.id === chainId)
+}
+
 function getNetworkName(chainId: number | undefined): string | null {
   switch (chainId) {
     case 1:
