@@ -214,8 +214,6 @@ export function LeverageProvider(props: { children: any }) {
       if (!indexToken) return
       console.log('index-token:', indexToken.symbol)
       setFetchingQuote(true)
-      // TODO: add specific logic here for selecting correct tokens (based on eth/btc selection)
-      // const outputToken = isMinting ? outputToken : inputToken
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
       const gasPrice = await provider.getGasPrice()
