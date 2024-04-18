@@ -86,9 +86,9 @@ export function LeverageWidget() {
     useTradeButton(buttonState)
 
   const buttonLabel = useMemo(() => {
-    if (generatedButtonLabel === 'Swap') return 'Review Transaction'
+    if (buttonState === TradeButtonState.default) return 'Review Transaction'
     return generatedButtonLabel
-  }, [generatedButtonLabel])
+  }, [buttonState, generatedButtonLabel])
 
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
