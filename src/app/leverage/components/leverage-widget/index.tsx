@@ -14,6 +14,7 @@ import {
   useTradeButtonState,
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
+import { useArbitrumOnly } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
 
@@ -27,6 +28,7 @@ import { Summary } from './components/summary'
 import './styles.css'
 
 export function LeverageWidget() {
+  const isSupportedNetwork = useArbitrumOnly()
   const { openConnectModal } = useConnectModal()
   const { address } = useWallet()
   const {
@@ -70,6 +72,7 @@ export function LeverageWidget() {
   const hasInsufficientFunds = false
   const shouldApprove = true
   const buttonState = useTradeButtonState(
+    isSupportedNetwork,
     false,
     hasInsufficientFunds,
     shouldApprove,

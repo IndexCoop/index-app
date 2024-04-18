@@ -15,6 +15,7 @@ import {
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { useMainnetOnly } from '@/lib/hooks/use-network'
 import { formatWei } from '@/lib/utils'
 
 import { useRedeem } from '../../providers/redeem-provider'
@@ -27,6 +28,7 @@ import { useFormattedData } from './use-formatted-data'
 import './styles.css'
 
 export function RedeemWidget() {
+  const isSupportedNetwork = useMainnetOnly()
   const { openConnectModal } = useConnectModal()
   const {
     inputValue,
@@ -65,6 +67,7 @@ export function RedeemWidget() {
 
   const shouldApprove = true
   const buttonState = useTradeButtonState(
+    isSupportedNetwork,
     false,
     hasInsufficientFunds,
     shouldApprove,
