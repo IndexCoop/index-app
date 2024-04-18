@@ -1,3 +1,5 @@
+import { arbitrum } from 'viem/chains'
+
 export type ChainData = {
   name: string
   chainId: number
@@ -11,6 +13,21 @@ export type ChainData = {
     symbol: string
     decimals: number
   }
+}
+
+export const ARBITRUM: ChainData = {
+  name: 'Arbitrum',
+  chainId: arbitrum.id,
+  chainId0x: '0xA4B1',
+  rpcUrl: arbitrum.rpcUrls.default.http[0],
+  icon: 'https://assets.coingecko.com/coins/images/16547/large/photo_2023-03-29_21.47.00.jpeg',
+  coingeckoId: 'arbitrum',
+  blockExplorerUrl: arbitrum.blockExplorers.default.url,
+  nativeCurrency: {
+    name: 'Ether',
+    symbol: 'ETH',
+    decimals: 18,
+  },
 }
 
 export const MAINNET: ChainData = {

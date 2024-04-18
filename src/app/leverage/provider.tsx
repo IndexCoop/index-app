@@ -13,7 +13,12 @@ import { TransactionReview } from '@/components/swap/components/transaction-revi
 import {
   BTC,
   ETH,
+  IndexCoopBitcoin2xIndex,
+  IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
+  IndexCoopEthereum3xIndex,
+  IndexCoopInverseBitcoinIndex,
+  IndexCoopInverseEthereumIndex,
   Token,
   USDC,
   USDT,
@@ -100,6 +105,33 @@ export function LeverageProvider(props: { children: any }) {
     error: null,
   })
 
+  const indexToken = useMemo(() => {
+    const rawToken = isMinting ? outputToken : inputToken
+    if (rawToken.symbol === 'ETH') {
+      switch (leverageType) {
+        case LeverageType.Long2x:
+          return IndexCoopEthereum2xIndex
+        case LeverageType.Long3x:
+          return IndexCoopEthereum3xIndex
+        case LeverageType.Short:
+          return IndexCoopInverseEthereumIndex
+      }
+    }
+
+    if (rawToken.symbol === 'BTC') {
+      switch (leverageType) {
+        case LeverageType.Long2x:
+          return IndexCoopBitcoin2xIndex
+        case LeverageType.Long3x:
+          return IndexCoopBitcoin3xIndex
+        case LeverageType.Short:
+          return IndexCoopInverseBitcoinIndex
+      }
+    }
+
+    return null
+  }, [inputToken, isMinting, leverageType, outputToken])
+
   const inputTokenAmount = useMemo(
     () =>
       inputValue === ''
@@ -179,9 +211,9 @@ export function LeverageProvider(props: { children: any }) {
       if (!address) return
       if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
+      if (!indexToken) return
+      console.log('index-token:', indexToken.symbol)
       setFetchingQuote(true)
-      // TODO: add specific logic here for selecting correct tokens (based on eth/btc selection)
-      // const outputToken = isMinting ? outputToken : inputToken
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
       const gasPrice = await provider.getGasPrice()
@@ -242,6 +274,7 @@ export function LeverageProvider(props: { children: any }) {
     fetchQuote()
   }, [
     address,
+    indexToken,
     inputToken,
     inputTokenAmount,
     isMinting,

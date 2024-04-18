@@ -1,6 +1,15 @@
+import { arbitrum, mainnet } from 'viem/chains'
 import { useAccount } from 'wagmi'
 
 import { chains } from '@/lib/utils/wagmi'
+
+export function useArbitrumOnly() {
+  return useSupportedNetworks([arbitrum.id])
+}
+
+export function useMainnetOnly() {
+  return useSupportedNetworks([mainnet.id])
+}
 
 export const useNetwork = () => {
   const { chain } = useAccount()
@@ -12,14 +21,18 @@ export const useNetwork = () => {
   return { chainId, isMainnet, isSupportedNetwork, name }
 }
 
+export function useSupportedNetworks(chainIds: number[]) {
+  const { chain } = useAccount()
+  if (!chain) return false
+  return chainIds.some((chainId) => chain.id === chainId)
+}
+
 function getNetworkName(chainId: number | undefined): string | null {
   switch (chainId) {
-    case 1:
+    case arbitrum.id:
+      return 'Arbitrum'
+    case mainnet.id:
       return 'Ethereum'
-    case 10:
-      return 'Optimism'
-    case 137:
-      return 'Polygon'
     default:
       return null
   }

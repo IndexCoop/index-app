@@ -1,7 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useMemo } from 'react'
 
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
@@ -16,6 +16,7 @@ import {
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { useMainnetOnly } from '@/lib/hooks/use-network'
 import { formatWei } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
@@ -30,6 +31,8 @@ import { useFormattedData } from './use-formatted-data'
 import './styles.css'
 
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
+  const isSupportedNetwork = useMainnetOnly()
+  const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
   const {
     inputValue,
@@ -73,6 +76,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
 
   const shouldApprove = true
   const buttonState = useTradeButtonState(
+    isSupportedNetwork,
     false,
     hasInsufficientFunds,
     shouldApprove,
@@ -125,6 +129,13 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       return
     }
 
+    if (buttonState === TradeButtonState.wrongNetwork) {
+      if (openChainModal) {
+        openChainModal()
+      }
+      return
+    }
+
     // if (buttonState === TradeButtonState.fetchingError) {
     //   fetchOptions()
     //   return
@@ -144,6 +155,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     buttonState,
     isApproved,
     onApprove,
+    openChainModal,
     onOpenTransactionReview,
     openConnectModal,
     shouldApprove,

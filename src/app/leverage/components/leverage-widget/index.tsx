@@ -1,7 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useMemo } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -14,6 +14,8 @@ import {
   useTradeButtonState,
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
+import { useApproval } from '@/lib/hooks/use-approval'
+import { useArbitrumOnly } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
 
@@ -27,12 +29,15 @@ import { Summary } from './components/summary'
 import './styles.css'
 
 export function LeverageWidget() {
+  const isSupportedNetwork = useArbitrumOnly()
+  const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
   const { address } = useWallet()
   const {
     currencyTokens,
     indexTokens,
     inputToken,
+    inputTokenAmount,
     inputValue,
     isMinting,
     leverageType,
@@ -50,6 +55,17 @@ export function LeverageWidget() {
     useFormattedLeverageData(stats)
 
   const {
+    isApproved,
+    isApproving,
+    approve: onApprove,
+  } = useApproval(
+    inputToken,
+    // FIXME: change to correct FlashMint contract
+    '0x04b59F9F09750C044D7CfbC177561E409085f0f3',
+    inputTokenAmount,
+  )
+
+  const {
     isOpen: isSelectIndexTokenOpen,
     onOpen: onOpenSelectIndexToken,
     onClose: onCloseSelectIndexToken,
@@ -65,11 +81,11 @@ export function LeverageWidget() {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
-  const isApproved = true
-  const isApproving = false
+  // TODO:
   const hasInsufficientFunds = false
   const shouldApprove = true
   const buttonState = useTradeButtonState(
+    isSupportedNetwork,
     false,
     hasInsufficientFunds,
     shouldApprove,
@@ -82,22 +98,36 @@ export function LeverageWidget() {
     useTradeButton(buttonState)
 
   const buttonLabel = useMemo(() => {
-    if (generatedButtonLabel === 'Swap') return 'Review Transaction'
+    if (buttonState === TradeButtonState.default) return 'Review Transaction'
     return generatedButtonLabel
-  }, [generatedButtonLabel])
+  }, [buttonState, generatedButtonLabel])
 
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
-  const onClickButton = () => {
+  const onClickButton = async () => {
     if (buttonState === TradeButtonState.connectWallet) {
       if (openConnectModal) {
         openConnectModal()
       }
       return
     }
+    if (buttonState === TradeButtonState.wrongNetwork) {
+      if (openChainModal) {
+        openChainModal()
+      }
+      return
+    }
+
+    if (buttonState === TradeButtonState.insufficientFunds) return
+
+    if (!isApproved && shouldApprove) {
+      await onApprove()
+      return
+    }
+
     onOpenTransactionReview()
   }
 

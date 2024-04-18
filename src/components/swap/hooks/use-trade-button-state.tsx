@@ -5,7 +5,6 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   Token,
 } from '@/constants/tokens'
-import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 export enum TradeButtonState {
@@ -22,6 +21,7 @@ export enum TradeButtonState {
 }
 
 export const useTradeButtonState = (
+  isSupportedNetwork: boolean,
   hasFetchingError: boolean,
   hasInsufficientFunds: boolean,
   shouldApprove: boolean,
@@ -31,7 +31,6 @@ export const useTradeButtonState = (
   sellTokenAmount: string,
 ) => {
   const { address } = useWallet()
-  const { isSupportedNetwork } = useNetwork()
 
   const [buttonState, setButtonState] = useState(TradeButtonState.default)
 
