@@ -235,7 +235,6 @@ export function LeverageProvider(props: { children: any }) {
       //   publicClient,
       // )
       setFetchingQuote(false)
-
       const quoteResult = {
         type: QuoteType.issuance,
         isAvailable: true,
