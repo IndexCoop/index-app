@@ -101,7 +101,7 @@ export function LeverageProvider(props: { children: any }) {
   )
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
-    type: QuoteType.issuance,
+    type: QuoteType.flashmint,
     isAvailable: true,
     quote: null,
     error: null,
@@ -150,15 +150,15 @@ export function LeverageProvider(props: { children: any }) {
         ...quote,
         contractAddress: quote.contract,
         quoteResults: {
-          bestQuote: QuoteType.issuance,
+          bestQuote: QuoteType.flashmint,
           results: {
-            flashmint: null,
-            issuance: quoteResult,
+            flashmint: quoteResult,
+            issuance: null,
             redemption: null,
             zeroex: null,
           },
         },
-        selectedQuote: QuoteType.issuance,
+        selectedQuote: QuoteType.flashmint,
       }
     }
     return null
@@ -211,7 +211,7 @@ export function LeverageProvider(props: { children: any }) {
   const reset = () => {
     setInputValue('')
     setQuoteResult({
-      type: QuoteType.issuance,
+      type: QuoteType.flashmint,
       isAvailable: true,
       quote: null,
       error: null,
@@ -248,30 +248,30 @@ export function LeverageProvider(props: { children: any }) {
       // )
       setFetchingQuote(false)
       const quoteResult = {
-        type: QuoteType.issuance,
+        type: QuoteType.flashmint,
         isAvailable: true,
         quote: {
-          type: QuoteType.issuance,
+          type: QuoteType.flashmint,
           chainId: 1,
           contract: '0x',
-          isMinting: true,
-          inputToken: ETH,
-          outputToken: IndexCoopEthereum2xIndex,
+          isMinting,
+          inputToken,
+          outputToken: indexToken,
           gas: BigNumber.from(0),
-          gasPrice: BigNumber.from(0),
+          gasPrice: BigNumber.from(gasPrice.toString()),
           gasCosts: BigNumber.from(0),
           gasCostsInUsd: 10,
           fullCostsInUsd: 100,
           priceImpact: 0,
           indexTokenAmount: BigNumber.from(1000000),
           inputOutputTokenAmount: BigNumber.from(10000000),
-          inputTokenAmount: BigNumber.from(1000000),
+          inputTokenAmount: BigNumber.from(inputTokenAmount.toString()),
           inputTokenAmountUsd: 0,
           outputTokenAmount: BigNumber.from(1000000),
           outputTokenAmountUsd: 0,
           outputTokenAmountUsdAfterFees: 0,
-          inputTokenPrice: 0,
-          outputTokenPrice: 0,
+          inputTokenPrice,
+          outputTokenPrice,
           slippage: 1,
           tx: {
             account: '0x',
@@ -313,6 +313,7 @@ export function LeverageProvider(props: { children: any }) {
         onSelectCurrencyToken,
         onSelectIndexToken,
         onSelectLeverageType,
+        reset,
         toggleIsMinting,
       }}
     >
