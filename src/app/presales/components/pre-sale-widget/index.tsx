@@ -74,6 +74,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
+  // Should be always true as we only use ERC-20 as input tokens
   const shouldApprove = true
   const buttonState = useTradeButtonState(
     isSupportedNetwork,
