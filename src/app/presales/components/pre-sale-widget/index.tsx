@@ -95,7 +95,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     if (buttonState === TradeButtonState.default && !isDepositing)
       return 'Withdraw'
     return generatedButtonLabel
-  }, [generatedButtonLabel, isDepositing])
+  }, [buttonState, generatedButtonLabel, isDepositing])
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
