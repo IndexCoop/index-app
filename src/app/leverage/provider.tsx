@@ -60,6 +60,7 @@ export interface TokenContext {
   onSelectCurrencyToken: (tokenSymbol: string) => void
   onSelectIndexToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
+  reset: () => void
   toggleIsMinting: () => void
 }
 
@@ -80,6 +81,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   onSelectCurrencyToken: () => {},
   onSelectIndexToken: () => {},
   onSelectLeverageType: () => {},
+  reset: () => {},
   toggleIsMinting: () => {},
 })
 
@@ -204,6 +206,16 @@ export function LeverageProvider(props: { children: any }) {
     const token = indexTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setOutputToken(token)
+  }
+
+  const reset = () => {
+    setInputValue('')
+    setQuoteResult({
+      type: QuoteType.issuance,
+      isAvailable: true,
+      quote: null,
+      error: null,
+    })
   }
 
   useEffect(() => {

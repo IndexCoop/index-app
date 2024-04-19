@@ -50,6 +50,7 @@ export function LeverageWidget() {
     onSelectIndexToken,
     onSelectLeverageType,
     outputToken,
+    reset,
     toggleIsMinting,
   } = useLeverageToken()
 
@@ -58,6 +59,7 @@ export function LeverageWidget() {
     inputBalance,
     inputBalanceFormatted,
     isFetchingQuote,
+    resetData,
   } = useFormattedLeverageData(stats)
 
   const {
@@ -199,8 +201,8 @@ export function LeverageWidget() {
           isDarkMode={true}
           isOpen={isTransactionReviewOpen}
           onClose={() => {
-            // reset()
-            // forceRefetch()
+            reset()
+            resetData()
             onCloseTransactionReview()
           }}
           transactionReview={transactionReview}
