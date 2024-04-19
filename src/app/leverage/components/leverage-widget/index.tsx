@@ -36,17 +36,18 @@ export function LeverageWidget() {
   const { chainId } = useNetwork()
   const { address } = useWallet()
   const {
-    currencyTokens,
     indexTokens,
     inputToken,
     inputTokenAmount,
+    inputTokens,
     inputValue,
     isMinting,
     leverageType,
+    rawToken,
     stats,
     transactionReview,
     onChangeInputTokenAmount,
-    onSelectCurrencyToken,
+    onSelectInputToken,
     onSelectIndexToken,
     onSelectLeverageType,
     outputToken,
@@ -147,7 +148,7 @@ export function LeverageWidget() {
   return (
     <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
       <div className='cursor-pointer' onClick={onOpenSelectIndexToken}>
-        {outputToken.symbol}
+        {rawToken.symbol}
       </div>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
@@ -190,11 +191,11 @@ export function LeverageWidget() {
         isOpen={isSelectCurrencyTokenOpen}
         onClose={onCloseSelectCurrencyToken}
         onSelectedToken={(tokenSymbol) => {
-          onSelectCurrencyToken(tokenSymbol)
+          onSelectInputToken(tokenSymbol)
           onCloseSelectCurrencyToken()
         }}
         address={address}
-        tokens={currencyTokens}
+        tokens={inputTokens}
       />
       {transactionReview && (
         <TransactionReviewModal
