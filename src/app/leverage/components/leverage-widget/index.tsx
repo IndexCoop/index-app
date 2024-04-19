@@ -15,9 +15,10 @@ import {
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
-import { useArbitrumOnly } from '@/lib/hooks/use-network'
+import { useArbitrumOnly, useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
+import { getNativeToken } from '@/lib/utils/tokens'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
@@ -32,6 +33,7 @@ export function LeverageWidget() {
   const isSupportedNetwork = useArbitrumOnly()
   const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
+  const { chainId } = useNetwork()
   const { address } = useWallet()
   const {
     currencyTokens,
@@ -85,7 +87,12 @@ export function LeverageWidget() {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
-  const shouldApprove = true
+  const shouldApprove = useMemo(() => {
+    const nativeToken = getNativeToken(chainId)
+    const isNativeToken = nativeToken?.symbol === inputToken.symbol
+    return !isNativeToken
+  }, [chainId, inputToken])
+
   const buttonState = useTradeButtonState(
     isSupportedNetwork,
     false,
