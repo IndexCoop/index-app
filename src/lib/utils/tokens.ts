@@ -33,6 +33,8 @@ export function getAddressForToken(
 ): string | undefined {
   if (token.symbol === IndexToken.symbol) return token.address
   switch (chainId) {
+    case ARBITRUM.chainId:
+      return token.arbitrumAddress
     case MAINNET.chainId:
       return token.address
     case OPTIMISM.chainId:

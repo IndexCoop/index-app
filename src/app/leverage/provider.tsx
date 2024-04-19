@@ -10,6 +10,7 @@ import {
 import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
+import { ARBITRUM } from '@/constants/chains'
 import {
   BTC,
   ETH,
@@ -26,6 +27,7 @@ import {
   WETH,
 } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
@@ -89,6 +91,7 @@ export const useLeverageToken = () => useContext(LeverageTokenContext)
 
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
+  const { chainId } = useNetwork()
   const { address, provider } = useWallet()
 
   const [inputValue, setInputValue] = useState('')
@@ -221,13 +224,14 @@ export function LeverageProvider(props: { children: any }) {
   useEffect(() => {
     const fetchQuote = async () => {
       if (!address) return
+      if (chainId !== ARBITRUM.chainId) return
       if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       if (!indexToken) return
       console.log('index-token:', indexToken.symbol)
       setFetchingQuote(true)
-      const inputTokenPrice = await getTokenPrice(inputToken, 1)
-      const outputTokenPrice = await getTokenPrice(outputToken, 1)
+      const inputTokenPrice = await getTokenPrice(inputToken, chainId)
+      const outputTokenPrice = await getTokenPrice(outputToken, chainId)
       const gasPrice = await provider.getGasPrice()
       console.log(inputTokenPrice, outputTokenPrice, gasPrice.toString())
       // TODO: get FlashMint quote
@@ -285,6 +289,7 @@ export function LeverageProvider(props: { children: any }) {
     fetchQuote()
   }, [
     address,
+    chainId,
     indexToken,
     inputToken,
     inputTokenAmount,
