@@ -137,7 +137,9 @@ export function LeverageWidget() {
       return
     }
 
-    onOpenTransactionReview()
+    if (buttonState === TradeButtonState.default) {
+      onOpenTransactionReview()
+    }
   }
 
   return (
