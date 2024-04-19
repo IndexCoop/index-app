@@ -1,14 +1,18 @@
 import { formatUnits } from '@ethersproject/units'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
+import { usePublicClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
 import { useBalance } from '@/lib/hooks/use-balance'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { formattedBalance } from './formatters/index'
 
 export function useFormattedBalance(token: Token, address?: string) {
-  const { balance, forceRefetch } = useBalance(address ?? '', token.address)
+  const publicClient = usePublicClient()
+  const tokenAddress = getAddressForToken(token, publicClient?.chain.id)
+  const { balance, forceRefetch } = useBalance(address ?? '', tokenAddress)
   const balanceFormatted = useMemo(
     () => formattedBalance(token, BigNumber.from(balance.toString())),
     [token, balance],
