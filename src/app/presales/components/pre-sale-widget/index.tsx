@@ -89,8 +89,10 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     useTradeButton(buttonState)
 
   const buttonLabel = useMemo(() => {
-    if (generatedButtonLabel === 'Swap' && isDepositing) return 'Deposit'
-    if (generatedButtonLabel === 'Swap' && !isDepositing) return 'Withdraw'
+    if (buttonState === TradeButtonState.default && isDepositing)
+      return 'Deposit'
+    if (buttonState === TradeButtonState.default && !isDepositing)
+      return 'Withdraw'
     return generatedButtonLabel
   }, [generatedButtonLabel, isDepositing])
 
