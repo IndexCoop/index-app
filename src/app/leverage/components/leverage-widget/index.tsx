@@ -51,8 +51,12 @@ export function LeverageWidget() {
     toggleIsMinting,
   } = useLeverageToken()
 
-  const { inputBalance, inputBalanceFormatted, isFetchingQuote } =
-    useFormattedLeverageData(stats)
+  const {
+    hasInsufficientFunds,
+    inputBalance,
+    inputBalanceFormatted,
+    isFetchingQuote,
+  } = useFormattedLeverageData(stats)
 
   const {
     isApproved,
@@ -81,8 +85,6 @@ export function LeverageWidget() {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
-  // TODO:
-  const hasInsufficientFunds = false
   const shouldApprove = true
   const buttonState = useTradeButtonState(
     isSupportedNetwork,

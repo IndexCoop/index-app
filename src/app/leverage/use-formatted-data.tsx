@@ -14,6 +14,7 @@ export interface FormattedLeverageData {
   change24hIsPositive: boolean
   low24h: string
   high24h: string
+  hasInsufficientFunds: boolean
   inputBalance: bigint
   inputBalanceFormatted: string
   isFetchingQuote: boolean
@@ -32,12 +33,18 @@ export function useFormattedLeverageData(
   stats: BaseTokenStats | null,
 ): FormattedLeverageData {
   const { address } = useWallet()
-  const { inputToken, inputValue, isFetchingQuote } = useLeverageToken()
+  const { inputToken, inputTokenAmount, inputValue, isFetchingQuote } =
+    useLeverageToken()
   const quote = null
 
   const { balance, balanceFormatted, forceRefetch } = useFormattedBalance(
     inputToken,
     address,
+  )
+
+  const hasInsufficientFunds = useMemo(
+    () => balance < inputTokenAmount,
+    [inputTokenAmount, balance],
   )
 
   const resetData = () => {
@@ -56,6 +63,7 @@ export function useFormattedLeverageData(
     change24hIsPositive: stats ? stats.change24h >= 0 : true,
     low24h: stats ? formatAmount(stats.low24h) : '',
     high24h: stats ? formatAmount(stats.high24h) : '',
+    hasInsufficientFunds,
     inputBalance: balance,
     inputBalanceFormatted: balanceFormatted,
     resetData,
