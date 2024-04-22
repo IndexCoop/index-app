@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { formatAmount } from '@/lib/utils'
+import { formatAmount, formatWei } from '@/lib/utils'
 
 import { useLeverageToken } from './provider'
 import { BaseTokenStats } from './types'
@@ -14,17 +14,17 @@ export interface FormattedLeverageData {
   change24hIsPositive: boolean
   low24h: string
   high24h: string
-  inputBalance: bigint
-  inputBalanceFormatted: string
-  isFetchingQuote: boolean
-  resetData: () => void
-  // TBD
+  hasInsufficientFunds: boolean
   gasFeesEth: string
   gasFeesUsd: string
   inputAmount: string
   inputAmoutUsd: string
+  inputBalance: bigint
+  inputBalanceFormatted: string
+  isFetchingQuote: boolean
   ouputAmount: string
   outputAmountUsd: string
+  resetData: () => void
   shouldShowSummaryDetails: boolean
 }
 
@@ -32,16 +32,43 @@ export function useFormattedLeverageData(
   stats: BaseTokenStats | null,
 ): FormattedLeverageData {
   const { address } = useWallet()
-  const { inputToken, inputValue, isFetchingQuote } = useLeverageToken()
-  const quote = null
-
-  const { balance, balanceFormatted, forceRefetch } = useFormattedBalance(
+  const {
     inputToken,
-    address,
+    inputTokenAmount,
+    inputValue,
+    isFetchingQuote,
+    quoteResult,
+  } = useLeverageToken()
+
+  const {
+    balance,
+    balanceFormatted,
+    forceRefetch: forceRefetchInputBalance,
+  } = useFormattedBalance(inputToken, address)
+
+  const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
+
+  const inputAmount = quote?.inputTokenAmount
+    ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount.toBigInt(), quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
+    : ''
+  const inputAmoutUsd = quote?.inputTokenAmountUsd
+    ? `$${formatAmount(quote?.inputTokenAmountUsd)}`
+    : ''
+
+  const hasInsufficientFunds = useMemo(
+    () => balance < inputTokenAmount,
+    [inputTokenAmount, balance],
   )
 
+  const ouputAmount = quote?.outputTokenAmount
+    ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
+    : ''
+  const outputAmountUsd = quote?.outputTokenAmountUsd
+    ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
+    : ''
+
   const resetData = () => {
-    forceRefetch()
+    forceRefetchInputBalance()
   }
 
   const shouldShowSummaryDetails = useMemo(
@@ -56,17 +83,21 @@ export function useFormattedLeverageData(
     change24hIsPositive: stats ? stats.change24h >= 0 : true,
     low24h: stats ? formatAmount(stats.low24h) : '',
     high24h: stats ? formatAmount(stats.high24h) : '',
+    hasInsufficientFunds,
+    gasFeesEth: quote?.gasCosts
+      ? `(${formatWei(quote.gasCosts.toBigInt(), 18)} ETH)`
+      : '',
+    gasFeesUsd: quote?.gasCostsInUsd
+      ? `$${formatAmount(quote.gasCostsInUsd)}`
+      : '',
+    inputAmount,
+    inputAmoutUsd,
     inputBalance: balance,
     inputBalanceFormatted: balanceFormatted,
-    resetData,
-    // TBD
-    gasFeesEth: '',
-    gasFeesUsd: '',
-    inputAmount: '',
-    inputAmoutUsd: '',
     isFetchingQuote,
-    ouputAmount: '',
-    outputAmountUsd: '',
+    ouputAmount,
+    outputAmountUsd,
+    resetData,
     shouldShowSummaryDetails,
   }
 }

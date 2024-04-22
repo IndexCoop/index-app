@@ -15,9 +15,10 @@ import {
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
-import { useArbitrumOnly } from '@/lib/hooks/use-network'
+import { useArbitrumOnly, useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
+import { getNativeToken } from '@/lib/utils/tokens'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
@@ -32,27 +33,35 @@ export function LeverageWidget() {
   const isSupportedNetwork = useArbitrumOnly()
   const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
+  const { chainId } = useNetwork()
   const { address } = useWallet()
   const {
-    currencyTokens,
     indexTokens,
     inputToken,
     inputTokenAmount,
+    inputTokens,
     inputValue,
     isMinting,
     leverageType,
+    rawToken,
     stats,
     transactionReview,
     onChangeInputTokenAmount,
-    onSelectCurrencyToken,
+    onSelectInputToken,
     onSelectIndexToken,
     onSelectLeverageType,
     outputToken,
+    reset,
     toggleIsMinting,
   } = useLeverageToken()
 
-  const { inputBalance, inputBalanceFormatted, isFetchingQuote } =
-    useFormattedLeverageData(stats)
+  const {
+    hasInsufficientFunds,
+    inputBalance,
+    inputBalanceFormatted,
+    isFetchingQuote,
+    resetData,
+  } = useFormattedLeverageData(stats)
 
   const {
     isApproved,
@@ -81,9 +90,12 @@ export function LeverageWidget() {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
-  // TODO:
-  const hasInsufficientFunds = false
-  const shouldApprove = true
+  const shouldApprove = useMemo(() => {
+    const nativeToken = getNativeToken(chainId)
+    const isNativeToken = nativeToken?.symbol === inputToken.symbol
+    return !isNativeToken
+  }, [chainId, inputToken])
+
   const buttonState = useTradeButtonState(
     isSupportedNetwork,
     false,
@@ -128,13 +140,15 @@ export function LeverageWidget() {
       return
     }
 
-    onOpenTransactionReview()
+    if (buttonState === TradeButtonState.default) {
+      onOpenTransactionReview()
+    }
   }
 
   return (
     <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
       <div className='cursor-pointer' onClick={onOpenSelectIndexToken}>
-        {outputToken.symbol}
+        {rawToken.symbol}
       </div>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
@@ -177,19 +191,19 @@ export function LeverageWidget() {
         isOpen={isSelectCurrencyTokenOpen}
         onClose={onCloseSelectCurrencyToken}
         onSelectedToken={(tokenSymbol) => {
-          onSelectCurrencyToken(tokenSymbol)
+          onSelectInputToken(tokenSymbol)
           onCloseSelectCurrencyToken()
         }}
         address={address}
-        tokens={currencyTokens}
+        tokens={inputTokens}
       />
       {transactionReview && (
         <TransactionReviewModal
           isDarkMode={true}
           isOpen={isTransactionReviewOpen}
           onClose={() => {
-            // reset()
-            // forceRefetch()
+            reset()
+            resetData()
             onCloseTransactionReview()
           }}
           transactionReview={transactionReview}
