@@ -27,7 +27,7 @@
     "@indexcoop/flash-mint-sdk": "2.4.0",
     "@indexcoop/tokenlists": "1.41.0",
     "@rainbow-me/rainbowkit": "^2.0.5",
-    "@tanstack/react-query": "^5.29.2",
+    "@tanstack/react-query": "^5.31.0",
     "@visx/visx": "^3.8.0",
     "eslint": "8.42.0",
     "eslint-config-next": "^13.5.4",
