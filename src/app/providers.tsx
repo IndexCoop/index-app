@@ -27,16 +27,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ChakraProvider theme={theme}>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <WagmiProvider config={wagmiConfig}>
-          <SignTermsProvider>
-            <QueryClientProvider client={queryClient}>
-              <RainbowKitProvider
-                theme={rainbowkitTheme}
-                appInfo={rainbowKitAppInfo}
-              >
-                <AnalyticsProvider>{children}</AnalyticsProvider>
-              </RainbowKitProvider>
-            </QueryClientProvider>
-          </SignTermsProvider>
+          <QueryClientProvider client={queryClient}>
+            <RainbowKitProvider
+              theme={rainbowkitTheme}
+              appInfo={rainbowKitAppInfo}
+            >
+              <AnalyticsProvider>
+                <SignTermsProvider>{children}</SignTermsProvider>
+              </AnalyticsProvider>
+            </RainbowKitProvider>
+          </QueryClientProvider>
         </WagmiProvider>
       </ChakraProvider>
     </CacheProvider>
