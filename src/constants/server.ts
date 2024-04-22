@@ -10,5 +10,6 @@ export const ZeroExAffiliateAddress =
 export function getIndexApiHeaders() {
   return {
     'X-INDEXCOOP-API-KEY': IndexApiKey ?? '',
+    'Content-Type': 'application/json',
   }
 }

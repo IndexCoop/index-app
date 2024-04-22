@@ -15,6 +15,8 @@ export const useTradeButton = (buttonState: TradeButtonState) => {
         return 'Approving...'
       case TradeButtonState.connectWallet:
         return 'Connect Wallet'
+      case TradeButtonState.signTerms:
+        return 'Sign Terms and Conditions'
       case TradeButtonState.enterAmount:
         return 'Enter an amount'
       case TradeButtonState.fetchingError:
@@ -36,6 +38,7 @@ export const useTradeButton = (buttonState: TradeButtonState) => {
     switch (buttonState) {
       case TradeButtonState.approve:
       case TradeButtonState.connectWallet:
+      case TradeButtonState.signTerms:
       case TradeButtonState.fetchingError:
         return false
       case TradeButtonState.approving:

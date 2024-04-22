@@ -4,6 +4,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useMemo } from 'react'
 
+import { SignTermsModal } from '@/components/swap/components/sign-terms-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
@@ -16,6 +17,7 @@ import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useMainnetOnly } from '@/lib/hooks/use-network'
+import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
 
 import { useRedeem } from '../../providers/redeem-provider'
@@ -30,6 +32,7 @@ import './styles.css'
 export function RedeemWidget() {
   const isSupportedNetwork = useMainnetOnly()
   const { openChainModal } = useChainModal()
+  const { onOpenSignTermsModal } = useSignTerms()
   const { openConnectModal } = useConnectModal()
   const {
     inputValue,
@@ -114,6 +117,11 @@ export function RedeemWidget() {
       return
     }
 
+    if (buttonState === TradeButtonState.signTerms) {
+      onOpenSignTermsModal()
+      return
+    }
+
     if (buttonState === TradeButtonState.wrongNetwork) {
       if (openChainModal) {
         openChainModal()
@@ -140,6 +148,7 @@ export function RedeemWidget() {
     buttonState,
     isApproved,
     onApprove,
+    onOpenSignTermsModal,
     onOpenTransactionReview,
     openChainModal,
     openConnectModal,
@@ -181,6 +190,7 @@ export function RedeemWidget() {
           transactionReview={transactionReview}
         />
       )}
+      <SignTermsModal />
     </div>
   )
 }

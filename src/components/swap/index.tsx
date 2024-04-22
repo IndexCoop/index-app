@@ -17,12 +17,14 @@ import { useTokenlists } from '@/lib/hooks/use-tokenlists'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useProtection } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
+import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
 import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 
 import { SelectTokenModal } from './components/select-token-modal'
+import { SignTermsModal } from './components/sign-terms-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
 import { TradeOutput } from './components/trade-output'
@@ -110,6 +112,7 @@ export const Swap = (props: SwapProps) => {
     inputToken,
     outputToken,
   )
+  const { onOpenSignTermsModal } = useSignTerms()
   const { transactionReview } = useTransactionReviewModal(
     quoteResults,
     selectedQuote,
@@ -162,8 +165,13 @@ export const Swap = (props: SwapProps) => {
     sellTokenAmount,
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+  const { hasSignedTerms } = useSignTerms()
 
   useEffect(() => {
+    if (!hasSignedTerms) {
+      setWarnings([WarningType.signTerms])
+      return
+    }
     if (!isTradablePair) {
       setWarnings([WarningType.restricted])
       return
@@ -173,7 +181,7 @@ export const Swap = (props: SwapProps) => {
       return
     }
     setWarnings([WarningType.flashbots])
-  }, [isTradablePair, slippage])
+  }, [hasSignedTerms, isTradablePair, slippage])
 
   useEffect(() => {
     setSelectedQuote(quoteResults?.bestQuote)
@@ -239,6 +247,10 @@ export const Swap = (props: SwapProps) => {
       return
     }
 
+    if (buttonState === TradeButtonState.signTerms) {
+      onOpenSignTermsModal()
+    }
+
     if (buttonState === TradeButtonState.wrongNetwork) {
       if (openChainModal) {
         openChainModal()
@@ -266,6 +278,7 @@ export const Swap = (props: SwapProps) => {
     fetchOptions,
     isApprovedForSwap,
     onApproveForSwap,
+    onOpenSignTermsModal,
     onOpenTransactionReview,
     openChainModal,
     openConnectModal,
@@ -376,6 +389,7 @@ export const Swap = (props: SwapProps) => {
           transactionReview={transactionReview}
         />
       )}
+      <SignTermsModal />
     </Flex>
   )
 }

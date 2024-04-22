@@ -8,6 +8,7 @@ export enum WarningType {
   flashbots,
   priceImpact,
   restricted,
+  signTerms,
 }
 
 export interface Warning {
@@ -87,6 +88,35 @@ export const WarningCompProtection = () => {
   )
 }
 
+const WarningSignTerms = () => {
+  return (
+    <Flex direction={'column'} m='20px 16px 8px'>
+      <Flex align={'center'} direction={'row'}>
+        <WarningIcon color={colors.ic.gray[600]} mr={'8px'} />
+        <Text fontSize={'sm'} fontWeight={600} textColor={colors.ic.gray[600]}>
+          Please sign the Terms and Conditions
+        </Text>
+      </Flex>
+      <Text
+        fontSize={'xs'}
+        fontWeight={400}
+        mt='8px'
+        textColor={colors.ic.gray[600]}
+      >
+        I confirm that I have read the{' '}
+        <Link
+          href='https://indexcoop.com/terms-of-service'
+          style={{ textDecoration: 'underline' }}
+        >
+          Terms of Service
+        </Link>
+        , am not a restricted person - including US person - as described in the
+        terms, and use the Website in compliance with the terms.
+      </Text>
+    </Flex>
+  )
+}
+
 type WarningsProps = {
   warnings: WarningType[]
 }
@@ -97,6 +127,9 @@ export const Warnings = (props: WarningsProps) => {
       {props.warnings.map((warningType) => {
         if (warningType === WarningType.flashbots) {
           return <WarningCompProtection key={warningType.toString()} />
+        }
+        if (warningType === WarningType.signTerms) {
+          return <WarningSignTerms key={warningType.toString()} />
         }
         const warning = warningsData[warningType]
         return (

@@ -18,4 +18,19 @@ export class IndexApi {
       throw error
     }
   }
+
+  async put(path: string, data: Record<string, unknown>) {
+    try {
+      const resp = await fetch(`${IndexApiBaseUrl}${path}`, {
+        method: 'PUT',
+        headers: getIndexApiHeaders(),
+        body: JSON.stringify(data)
+      })
+      return resp.json()
+    } catch (error) {
+      console.log('Error putting Index API for path', path)
+      console.log(error)
+      throw error
+    }
+  }
 }
