@@ -27,12 +27,12 @@ import {
   WETH,
 } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { getTokenPrice } from '@/lib/hooks/use-token-price'
+import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
-import { getDefaultIndex } from '@/lib/utils/tokens'
 
 import { BaseTokenStats } from './types'
 
@@ -74,7 +74,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   isMinting: true,
   leverageType: LeverageType.Long2x,
   inputToken: ETH,
-  outputToken: getDefaultIndex(),
+  outputToken: IndexCoopEthereum2xIndex,
   rawToken: ETH,
   inputTokenAmount: BigInt(0),
   currencyTokens,
@@ -98,7 +98,8 @@ export const useLeverageToken = () => useContext(LeverageTokenContext)
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { chainId } = useNetwork()
-  const { address, provider } = useWallet()
+  const nativeTokenPrice = useNativeTokenPrice(chainId)
+  const { address, provider, jsonRpcProvider } = useWallet()
 
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
@@ -264,7 +265,7 @@ export function LeverageProvider(props: { children: any }) {
     const fetchQuote = async () => {
       if (!address) return
       if (chainId !== ARBITRUM.chainId) return
-      if (!provider || !publicClient) return
+      if (!jsonRpcProvider || !provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       if (!indexToken) return
       console.log('index-token:', indexToken.symbol)
@@ -273,66 +274,44 @@ export function LeverageProvider(props: { children: any }) {
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
       const gasPrice = await provider.getGasPrice()
       console.log(inputTokenPrice, outputTokenPrice, gasPrice.toString())
-      // TODO: get FlashMint quote
-      // const quoteIssuance = await getEnhancedIssuanceQuote(
-      //   {
-      //     account: address,
-      //     isIssuance: isDepositing,
-      //     gasPrice,
-      //     inputTokenAmount,
-      //     inputToken,
-      //     inputTokenPrice,
-      //     outputToken,
-      //     outputTokenPrice,
-      //     nativeTokenPrice,
-      //     slippage: 0,
-      //   },
-      //   publicClient,
-      // )
-      setFetchingQuote(false)
+      // Might have to use getEnhancedFlashMintQuote instead
+      const quoteFlashMint = await getFlashMintQuote(
+        {
+          isMinting,
+          account: address,
+          chainId,
+          inputToken,
+          inputTokenAmount: inputValue,
+          inputTokenAmountWei: BigNumber.from(inputTokenAmount.toString()),
+          inputTokenPrice,
+          outputToken,
+          outputTokenPrice,
+          nativeTokenPrice,
+          slippage: 0.1,
+        },
+        provider,
+        jsonRpcProvider,
+      )
       const quoteResult = {
         type: QuoteType.flashmint,
         isAvailable: true,
-        quote: {
-          type: QuoteType.flashmint,
-          chainId: 1,
-          contract: '0x',
-          isMinting,
-          inputToken,
-          outputToken: indexToken,
-          gas: BigNumber.from(0),
-          gasPrice: BigNumber.from(gasPrice.toString()),
-          gasCosts: BigNumber.from(0),
-          gasCostsInUsd: 10,
-          fullCostsInUsd: 100,
-          priceImpact: 0,
-          indexTokenAmount: BigNumber.from(1000000),
-          inputOutputTokenAmount: BigNumber.from(10000000),
-          inputTokenAmount: BigNumber.from(inputTokenAmount.toString()),
-          inputTokenAmountUsd: 0,
-          outputTokenAmount: BigNumber.from(1000000),
-          outputTokenAmountUsd: 0,
-          outputTokenAmountUsdAfterFees: 0,
-          inputTokenPrice,
-          outputTokenPrice,
-          slippage: 1,
-          tx: {
-            account: '0x',
-          },
-        },
+        quote: quoteFlashMint,
         error: null,
       }
-
+      setFetchingQuote(false)
       setQuoteResult(quoteResult)
     }
     fetchQuote()
   }, [
     address,
     chainId,
+    jsonRpcProvider,
     indexToken,
     inputToken,
     inputTokenAmount,
+    inputValue,
     isMinting,
+    nativeTokenPrice,
     outputToken,
     provider,
     publicClient,
