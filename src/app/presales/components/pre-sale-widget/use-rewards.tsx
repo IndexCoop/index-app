@@ -16,7 +16,7 @@ export function usePrtRewards(address: string | undefined) {
       const indexApi = new IndexApi()
       const res = await indexApi.get(`/prts/${address}`)
       //   const formattedRewards = formatAmount(Number(res.reward_earned))
-      setEarnedRewards(res.reward_earned)
+      setEarnedRewards(res.cumulative_rewards)
     } catch (err) {
       console.log('Error fetching prt rewards', err)
     }

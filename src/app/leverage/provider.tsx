@@ -10,6 +10,7 @@ import {
 import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
+import { ARBITRUM } from '@/constants/chains'
 import {
   BTC,
   ETH,
@@ -26,11 +27,12 @@ import {
   WETH,
 } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { getTokenPrice } from '@/lib/hooks/use-token-price'
+import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
+import { useNetwork } from '@/lib/hooks/use-network'
+import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
-import { getDefaultIndex } from '@/lib/utils/tokens'
 
 import { BaseTokenStats } from './types'
 
@@ -49,17 +51,21 @@ export interface TokenContext {
   leverageType: LeverageType
   inputToken: Token
   outputToken: Token
+  rawToken: Token
   inputTokenAmount: bigint
   currencyTokens: Token[]
   indexTokens: Token[]
+  inputTokens: Token[]
   isFetchingQuote: boolean
   quoteResult: QuoteResult | null
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
-  onSelectCurrencyToken: (tokenSymbol: string) => void
   onSelectIndexToken: (tokenSymbol: string) => void
+  onSelectInputToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
+  onSelectOutputToken: (tokenSymbol: string) => void
+  reset: () => void
   toggleIsMinting: () => void
 }
 
@@ -68,18 +74,22 @@ export const LeverageTokenContext = createContext<TokenContext>({
   isMinting: true,
   leverageType: LeverageType.Long2x,
   inputToken: ETH,
-  outputToken: getDefaultIndex(),
+  outputToken: IndexCoopEthereum2xIndex,
+  rawToken: ETH,
   inputTokenAmount: BigInt(0),
   currencyTokens,
   indexTokens,
+  inputTokens: [],
   isFetchingQuote: false,
   quoteResult: null,
   stats: null,
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
-  onSelectCurrencyToken: () => {},
+  onSelectInputToken: () => {},
   onSelectIndexToken: () => {},
   onSelectLeverageType: () => {},
+  onSelectOutputToken: () => {},
+  reset: () => {},
   toggleIsMinting: () => {},
 })
 
@@ -87,26 +97,31 @@ export const useLeverageToken = () => useContext(LeverageTokenContext)
 
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
-  const { address, provider } = useWallet()
+  const { chainId } = useNetwork()
+  const nativeTokenPrice = useNativeTokenPrice(chainId)
+  const { address, provider, jsonRpcProvider } = useWallet()
 
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(true)
-  const [inputToken, setInputToken] = useState<Token>(WBTC)
-  const [outputToken, setOutputToken] = useState<Token>(BTC)
+  const [inputToken, setInputToken] = useState<Token>(ETH)
+  const [outputToken, setOutputToken] = useState<Token>(
+    IndexCoopInverseEthereumIndex,
+  )
+  const [rawToken, setRawToken] = useState<Token>(ETH)
   const [leverageType, setLeverageType] = useState<LeverageType>(
     LeverageType.Long2x,
   )
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
-    type: QuoteType.issuance,
+    type: QuoteType.flashmint,
     isAvailable: true,
     quote: null,
     error: null,
   })
 
   const indexToken = useMemo(() => {
-    const rawToken = isMinting ? outputToken : inputToken
+    if (!isMinting) return inputToken
     if (rawToken.symbol === 'ETH') {
       switch (leverageType) {
         case LeverageType.Long2x:
@@ -130,7 +145,7 @@ export function LeverageProvider(props: { children: any }) {
     }
 
     return null
-  }, [inputToken, isMinting, leverageType, outputToken])
+  }, [inputToken, isMinting, leverageType, rawToken])
 
   const inputTokenAmount = useMemo(
     () =>
@@ -140,6 +155,22 @@ export function LeverageProvider(props: { children: any }) {
     [inputToken, inputValue],
   )
 
+  const inputTokens = useMemo(() => {
+    if (isMinting) return currencyTokens
+    if (rawToken.symbol === 'ETH') {
+      return [
+        IndexCoopInverseEthereumIndex,
+        IndexCoopEthereum2xIndex,
+        IndexCoopEthereum3xIndex,
+      ]
+    }
+    return [
+      IndexCoopInverseBitcoinIndex,
+      IndexCoopBitcoin2xIndex,
+      IndexCoopBitcoin3xIndex,
+    ]
+  }, [isMinting, rawToken])
+
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
     const quote = quoteResult.quote
@@ -148,15 +179,15 @@ export function LeverageProvider(props: { children: any }) {
         ...quote,
         contractAddress: quote.contract,
         quoteResults: {
-          bestQuote: QuoteType.issuance,
+          bestQuote: QuoteType.flashmint,
           results: {
-            flashmint: null,
-            issuance: quoteResult,
+            flashmint: quoteResult,
+            issuance: null,
             redemption: null,
             zeroex: null,
           },
         },
-        selectedQuote: QuoteType.issuance,
+        selectedQuote: QuoteType.flashmint,
       }
     }
     return null
@@ -165,18 +196,19 @@ export function LeverageProvider(props: { children: any }) {
   const toggleIsMinting = useCallback(() => {
     setMinting(!isMinting)
   }, [isMinting])
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const indexApi = new IndexApi()
-        const res = await indexApi.get(`/token/${outputToken.symbol}`)
+        const res = await indexApi.get(`/token/${rawToken.symbol}`)
         setStats(res.data)
       } catch (err) {
         console.log('Error fetching token stats', err)
       }
     }
     fetchStats()
-  }, [outputToken])
+  }, [rawToken])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -194,90 +226,92 @@ export function LeverageProvider(props: { children: any }) {
     setLeverageType(type)
   }
 
-  const onSelectCurrencyToken = (tokenSymbol: string) => {
-    const token = currencyTokens.find((token) => token.symbol === tokenSymbol)
-    if (!token) return
-    setInputToken(token)
-  }
+  const onSelectInputToken = useCallback(
+    (tokenSymbol: string) => {
+      const token = inputTokens.find((token) => token.symbol === tokenSymbol)
+      if (!token) return
+      setInputToken(token)
+    },
+    [inputTokens],
+  )
 
   const onSelectIndexToken = (tokenSymbol: string) => {
     const token = indexTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
+    setRawToken(token)
+  }
+
+  const onSelectOutputToken = (tokenSymbol: string) => {
+    const token = currencyTokens.find((token) => token.symbol === tokenSymbol)
+    if (!token) return
     setOutputToken(token)
   }
+
+  const reset = () => {
+    setInputValue('')
+    setQuoteResult({
+      type: QuoteType.flashmint,
+      isAvailable: true,
+      quote: null,
+      error: null,
+    })
+  }
+
+  useEffect(() => {
+    setInputToken(inputTokens[0])
+  }, [inputTokens, isMinting])
 
   useEffect(() => {
     const fetchQuote = async () => {
       if (!address) return
-      if (!provider || !publicClient) return
+      if (chainId !== ARBITRUM.chainId) return
+      if (!jsonRpcProvider || !provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       if (!indexToken) return
       console.log('index-token:', indexToken.symbol)
       setFetchingQuote(true)
-      const inputTokenPrice = await getTokenPrice(inputToken, 1)
-      const outputTokenPrice = await getTokenPrice(outputToken, 1)
+      const inputTokenPrice = await getTokenPrice(inputToken, chainId)
+      const outputTokenPrice = await getTokenPrice(outputToken, chainId)
       const gasPrice = await provider.getGasPrice()
       console.log(inputTokenPrice, outputTokenPrice, gasPrice.toString())
-      // TODO: get FlashMint quote
-      // const quoteIssuance = await getEnhancedIssuanceQuote(
-      //   {
-      //     account: address,
-      //     isIssuance: isDepositing,
-      //     gasPrice,
-      //     inputTokenAmount,
-      //     inputToken,
-      //     inputTokenPrice,
-      //     outputToken,
-      //     outputTokenPrice,
-      //     nativeTokenPrice,
-      //     slippage: 0,
-      //   },
-      //   publicClient,
-      // )
-      setFetchingQuote(false)
-
-      const quoteResult = {
-        type: QuoteType.issuance,
-        isAvailable: true,
-        quote: {
-          type: QuoteType.issuance,
-          chainId: 1,
-          contract: '0x',
-          isMinting: true,
-          inputToken: ETH,
-          outputToken: IndexCoopEthereum2xIndex,
-          gas: BigNumber.from(0),
-          gasPrice: BigNumber.from(0),
-          gasCosts: BigNumber.from(0),
-          gasCostsInUsd: 0,
-          fullCostsInUsd: 0,
-          priceImpact: 0,
-          indexTokenAmount: BigNumber.from(1000000),
-          inputOutputTokenAmount: BigNumber.from(10000000),
-          inputTokenAmount: BigNumber.from(1000000),
-          inputTokenAmountUsd: 0,
-          outputTokenAmount: BigNumber.from(1000000),
-          outputTokenAmountUsd: 0,
-          outputTokenAmountUsdAfterFees: 0,
-          inputTokenPrice: 0,
-          outputTokenPrice: 0,
-          slippage: 1,
-          tx: {
-            account: '0x',
-          },
+      // Might have to use getEnhancedFlashMintQuote instead
+      const quoteFlashMint = await getFlashMintQuote(
+        {
+          isMinting,
+          account: address,
+          chainId,
+          inputToken,
+          inputTokenAmount: inputValue,
+          inputTokenAmountWei: BigNumber.from(inputTokenAmount.toString()),
+          inputTokenPrice,
+          outputToken,
+          outputTokenPrice,
+          nativeTokenPrice,
+          slippage: 0.1,
         },
+        provider,
+        jsonRpcProvider,
+      )
+      const quoteResult = {
+        type: QuoteType.flashmint,
+        isAvailable: true,
+        quote: quoteFlashMint,
         error: null,
       }
-
+      setFetchingQuote(false)
       setQuoteResult(quoteResult)
     }
     fetchQuote()
   }, [
     address,
+    chainId,
+    jsonRpcProvider,
     indexToken,
     inputToken,
     inputTokenAmount,
+    inputValue,
     isMinting,
+    nativeTokenPrice,
     outputToken,
     provider,
     publicClient,
@@ -291,17 +325,21 @@ export function LeverageProvider(props: { children: any }) {
         leverageType,
         inputToken,
         outputToken,
+        rawToken,
         inputTokenAmount,
         currencyTokens,
         indexTokens,
+        inputTokens,
         isFetchingQuote,
         quoteResult,
         stats,
         transactionReview,
         onChangeInputTokenAmount,
-        onSelectCurrencyToken,
+        onSelectInputToken,
         onSelectIndexToken,
         onSelectLeverageType,
+        onSelectOutputToken,
+        reset,
         toggleIsMinting,
       }}
     >

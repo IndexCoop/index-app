@@ -1,4 +1,4 @@
-import { MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
+import { ARBITRUM, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import { currencies, indicesTokenList } from '@/constants/tokenlists'
 import {
   Bitcoin2xFlexibleLeverageIndex,
@@ -33,6 +33,8 @@ export function getAddressForToken(
 ): string | undefined {
   if (token.symbol === IndexToken.symbol) return token.address
   switch (chainId) {
+    case ARBITRUM.chainId:
+      return token.arbitrumAddress
     case MAINNET.chainId:
       return token.address
     case OPTIMISM.chainId:
@@ -92,6 +94,8 @@ export function getDefaultIndex(): Token {
 
 export function getNativeToken(chainId: number | undefined): Token | null {
   switch (chainId) {
+    case ARBITRUM.chainId:
+      return ETH
     case MAINNET.chainId:
       return ETH
     case OPTIMISM.chainId:

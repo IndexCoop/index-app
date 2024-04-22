@@ -77,6 +77,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
+  // Should be always true as we only use ERC-20 as input tokens
   const shouldApprove = true
   const buttonState = useTradeButtonState(
     isSupportedNetwork,
@@ -92,10 +93,12 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     useTradeButton(buttonState)
 
   const buttonLabel = useMemo(() => {
-    if (generatedButtonLabel === 'Swap' && isDepositing) return 'Deposit'
-    if (generatedButtonLabel === 'Swap' && !isDepositing) return 'Withdraw'
+    if (buttonState === TradeButtonState.default && isDepositing)
+      return 'Deposit'
+    if (buttonState === TradeButtonState.default && !isDepositing)
+      return 'Withdraw'
     return generatedButtonLabel
-  }, [generatedButtonLabel, isDepositing])
+  }, [buttonState, generatedButtonLabel, isDepositing])
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
