@@ -3,12 +3,15 @@ import clsx from 'clsx'
 import { useLeverageToken } from '../provider'
 import { useFormattedLeverageData } from '../use-formatted-data'
 
-import { BTC } from '@/constants/tokens'
 import { BaseTokenSelector } from './leverage-widget/components/base-token-selector'
 
-export function Stats() {
-  const { stats } = useLeverageToken()
-  const { symbol, price, change24h, change24hIsPositive, low24h, high24h } =
+type StatsProps = {
+  onClickBaseTokenSelector: () => void
+}
+
+export function Stats(props: StatsProps) {
+  const { baseToken, stats } = useLeverageToken()
+  const { price, change24h, change24hIsPositive, low24h, high24h } =
     useFormattedLeverageData(stats)
   const iconColor = change24hIsPositive ? 'fill-ic-green' : 'fill-ic-red'
   const iconScale = change24hIsPositive ? '' : '-scale-100'
@@ -17,10 +20,8 @@ export function Stats() {
     <div className='border-ic-gray-600 flex flex-row items-center gap-10 rounded-3xl border bg-[#1C2C2E] px-8 py-6'>
       <div className='flex'>
         <BaseTokenSelector
-          baseToken={BTC}
-          onClick={() => {
-            console.log('click')
-          }}
+          baseToken={baseToken}
+          onClick={props.onClickBaseTokenSelector}
         />
       </div>
       <div className='text-ic-white text-xl font-semibold'>{price}</div>

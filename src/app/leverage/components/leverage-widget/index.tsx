@@ -31,7 +31,11 @@ import { Summary } from './components/summary'
 
 import './styles.css'
 
-export function LeverageWidget() {
+type LeverageWidgetProps = {
+  onClickBaseTokenSelector: () => void
+}
+
+export function LeverageWidget(props: LeverageWidgetProps) {
   const isSupportedNetwork = useArbitrumOnly()
   const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
@@ -151,7 +155,7 @@ export function LeverageWidget() {
     <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
       <BaseTokenSelector
         baseToken={baseToken}
-        onClick={onOpenSelectIndexToken}
+        onClick={props.onClickBaseTokenSelector}
       />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector

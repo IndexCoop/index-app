@@ -36,8 +36,8 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 
 import { BaseTokenStats } from './types'
 
+const baseTokens = [ETH, BTC]
 const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
-const indexTokens = [ETH, BTC]
 
 export enum LeverageType {
   Long2x,
@@ -53,8 +53,8 @@ export interface TokenContext {
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
+  baseTokens: Token[]
   currencyTokens: Token[]
-  indexTokens: Token[]
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
@@ -62,7 +62,7 @@ export interface TokenContext {
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
-  onSelectIndexToken: (tokenSymbol: string) => void
+  onSelectBaseToken: (tokenSymbol: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
   onSelectOutputToken: (tokenSymbol: string) => void
@@ -78,8 +78,8 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
+  baseTokens,
   currencyTokens,
-  indexTokens,
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
@@ -87,8 +87,8 @@ export const LeverageTokenContext = createContext<TokenContext>({
   stats: null,
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
+  onSelectBaseToken: () => {},
   onSelectInputToken: () => {},
-  onSelectIndexToken: () => {},
   onSelectLeverageType: () => {},
   onSelectOutputToken: () => {},
   reset: () => {},
@@ -266,8 +266,8 @@ export function LeverageProvider(props: { children: any }) {
     [inputTokens],
   )
 
-  const onSelectIndexToken = (tokenSymbol: string) => {
-    const token = indexTokens.find((token) => token.symbol === tokenSymbol)
+  const onSelectBaseToken = (tokenSymbol: string) => {
+    const token = baseTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setBaseToken(token)
   }
@@ -375,8 +375,8 @@ export function LeverageProvider(props: { children: any }) {
         inputToken,
         outputToken,
         inputTokenAmount,
+        baseTokens,
         currencyTokens,
-        indexTokens,
         inputTokens,
         outputTokens,
         isFetchingQuote,
@@ -384,8 +384,8 @@ export function LeverageProvider(props: { children: any }) {
         stats,
         transactionReview,
         onChangeInputTokenAmount,
+        onSelectBaseToken,
         onSelectInputToken,
-        onSelectIndexToken,
         onSelectLeverageType,
         onSelectOutputToken,
         reset,
