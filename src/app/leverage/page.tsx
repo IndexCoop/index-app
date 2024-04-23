@@ -14,7 +14,7 @@ export default function Page() {
           <Stats />
         </div>
         <div className='flex flex-row gap-6'>
-          <div className='flex-none flex-grow'>
+          <div className='h-4/5 w-7/12 flex-none flex-grow'>
             <TradingViewWidget />
           </div>
           <LeverageWidget />
