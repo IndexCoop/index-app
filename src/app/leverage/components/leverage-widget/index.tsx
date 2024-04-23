@@ -22,6 +22,7 @@ import { getNativeToken } from '@/lib/utils/tokens'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
+import { BaseTokenSelector } from './components/base-token-selector'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { Fees } from './components/fees'
 import { LeverageSelector } from './components/leverage-selector'
@@ -148,9 +149,10 @@ export function LeverageWidget() {
 
   return (
     <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
-      <div className='cursor-pointer' onClick={onOpenSelectIndexToken}>
-        {rawToken.symbol}
-      </div>
+      <BaseTokenSelector
+        baseToken={rawToken}
+        onClick={onOpenSelectIndexToken}
+      />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
