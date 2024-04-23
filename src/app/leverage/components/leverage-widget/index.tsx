@@ -70,8 +70,7 @@ export function LeverageWidget() {
     approve: onApprove,
   } = useApproval(
     inputToken,
-    // FIXME: change to correct FlashMint contract
-    '0x04b59F9F09750C044D7CfbC177561E409085f0f3',
+    '0xC62e39d1f5232f154b7ccD3C6234A9c893bf9563',
     inputTokenAmount,
   )
 
