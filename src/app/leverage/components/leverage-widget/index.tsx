@@ -61,6 +61,7 @@ export function LeverageWidget() {
     inputBalance,
     inputBalanceFormatted,
     isFetchingQuote,
+    ouputAmount,
     resetData,
   } = useFormattedLeverageData(stats)
 
@@ -167,7 +168,7 @@ export function LeverageWidget() {
         onSelectToken={onOpenSelectIndexToken}
       />
       <Receive
-        outputAmount={''}
+        outputAmount={ouputAmount}
         selectedOutputToken={outputToken}
         onSelectToken={onOpenSelectCurrencyToken}
       />
