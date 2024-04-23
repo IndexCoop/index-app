@@ -38,6 +38,7 @@ export function LeverageWidget() {
   const { chainId } = useNetwork()
   const { address } = useWallet()
   const {
+    baseToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
@@ -45,7 +46,6 @@ export function LeverageWidget() {
     isMinting,
     leverageType,
     outputTokens,
-    rawToken,
     stats,
     transactionReview,
     onChangeInputTokenAmount,
@@ -150,7 +150,7 @@ export function LeverageWidget() {
   return (
     <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
       <BaseTokenSelector
-        baseToken={rawToken}
+        baseToken={baseToken}
         onClick={onOpenSelectIndexToken}
       />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
