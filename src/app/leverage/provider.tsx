@@ -98,7 +98,6 @@ export const LeverageTokenContext = createContext<TokenContext>({
 export const useLeverageToken = () => useContext(LeverageTokenContext)
 
 function getLeverageType(token: Token): LeverageType | null {
-  console.log(token.symbol, IndexCoopEthereum2xIndex.symbol)
   switch (token.symbol) {
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
@@ -261,10 +260,8 @@ export function LeverageProvider(props: { children: any }) {
   const onSelectOutputToken = (tokenSymbol: string) => {
     const token = outputTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
-    console.log(token)
     setOutputToken(token)
     const leverageType = getLeverageType(token)
-    console.log(leverageType)
     if (leverageType !== null) {
       setLeverageType(leverageType)
     }
