@@ -173,11 +173,13 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onClickBalance={onClickBalance}
         onSelectToken={onOpenSelectIndexToken}
       />
-      <Receive
-        outputAmount={ouputAmount}
-        selectedOutputToken={outputToken}
-        onSelectToken={onOpenSelectCurrencyToken}
-      />
+      {!isMinting && (
+        <Receive
+          outputAmount={ouputAmount}
+          selectedOutputToken={outputToken}
+          onSelectToken={onOpenSelectCurrencyToken}
+        />
+      )}
       <Summary />
       <Fees />
       <TradeButton
