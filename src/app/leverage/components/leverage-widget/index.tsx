@@ -25,6 +25,7 @@ import { useFormattedLeverageData } from '../../use-formatted-data'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { Fees } from './components/fees'
 import { LeverageSelector } from './components/leverage-selector'
+import { Receive } from './components/receive'
 import { Summary } from './components/summary'
 
 import './styles.css'
@@ -36,20 +37,20 @@ export function LeverageWidget() {
   const { chainId } = useNetwork()
   const { address } = useWallet()
   const {
-    indexTokens,
     inputToken,
     inputTokenAmount,
     inputTokens,
     inputValue,
     isMinting,
     leverageType,
+    outputTokens,
     rawToken,
     stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
-    onSelectIndexToken,
     onSelectLeverageType,
+    onSelectOutputToken,
     outputToken,
     reset,
     toggleIsMinting,
@@ -164,6 +165,11 @@ export function LeverageWidget() {
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
+        onSelectToken={onOpenSelectIndexToken}
+      />
+      <Receive
+        outputAmount={''}
+        selectedOutputToken={outputToken}
         onSelectToken={onOpenSelectCurrencyToken}
       />
       <Summary />
@@ -180,22 +186,22 @@ export function LeverageWidget() {
         showBalances={false}
         onClose={onCloseSelectIndexToken}
         onSelectedToken={(tokenSymbol) => {
-          onSelectIndexToken(tokenSymbol)
+          onSelectInputToken(tokenSymbol)
           onCloseSelectIndexToken()
         }}
         address={address}
-        tokens={indexTokens}
+        tokens={inputTokens}
       />
       <SelectTokenModal
         isDarkMode={true}
         isOpen={isSelectCurrencyTokenOpen}
         onClose={onCloseSelectCurrencyToken}
         onSelectedToken={(tokenSymbol) => {
-          onSelectInputToken(tokenSymbol)
+          onSelectOutputToken(tokenSymbol)
           onCloseSelectCurrencyToken()
         }}
         address={address}
-        tokens={inputTokens}
+        tokens={outputTokens}
       />
       {transactionReview && (
         <TransactionReviewModal
