@@ -81,14 +81,14 @@ export function LeverageWidget(props: LeverageWidgetProps) {
   )
 
   const {
-    isOpen: isSelectIndexTokenOpen,
-    onOpen: onOpenSelectIndexToken,
-    onClose: onCloseSelectIndexToken,
+    isOpen: isSelectInputTokenOpen,
+    onOpen: onOpenSelectInputToken,
+    onClose: onCloseSelectInputToken,
   } = useDisclosure()
   const {
-    isOpen: isSelectCurrencyTokenOpen,
-    onOpen: onOpenSelectCurrencyToken,
-    onClose: onCloseSelectCurrencyToken,
+    isOpen: isSelectOutputTokenOpen,
+    onOpen: onOpenSelectOutputToken,
+    onClose: onCloseSelectOutputToken,
   } = useDisclosure()
   const {
     isOpen: isTransactionReviewOpen,
@@ -173,13 +173,13 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
-        onSelectToken={onOpenSelectIndexToken}
+        onSelectToken={onOpenSelectInputToken}
       />
       {!isMinting && (
         <Receive
           outputAmount={ouputAmount}
           selectedOutputToken={outputToken}
-          onSelectToken={onOpenSelectCurrencyToken}
+          onSelectToken={onOpenSelectOutputToken}
         />
       )}
       <Summary />
@@ -192,23 +192,23 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       />
       <SelectTokenModal
         isDarkMode={true}
-        isOpen={isSelectIndexTokenOpen}
+        isOpen={isSelectInputTokenOpen}
         showBalances={false}
-        onClose={onCloseSelectIndexToken}
+        onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol) => {
           onSelectInputToken(tokenSymbol)
-          onCloseSelectIndexToken()
+          onCloseSelectInputToken()
         }}
         address={address}
         tokens={inputTokens}
       />
       <SelectTokenModal
         isDarkMode={true}
-        isOpen={isSelectCurrencyTokenOpen}
-        onClose={onCloseSelectCurrencyToken}
+        isOpen={isSelectOutputTokenOpen}
+        onClose={onCloseSelectOutputToken}
         onSelectedToken={(tokenSymbol) => {
           onSelectOutputToken(tokenSymbol)
-          onCloseSelectCurrencyToken()
+          onCloseSelectOutputToken()
         }}
         address={address}
         tokens={outputTokens}
