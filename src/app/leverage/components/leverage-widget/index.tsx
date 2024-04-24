@@ -6,7 +6,6 @@ import { useCallback, useMemo } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { SignTermsModal } from '@/components/swap/components/sign-terms-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
@@ -37,7 +36,7 @@ export function LeverageWidget() {
   const { openConnectModal } = useConnectModal()
   const { chainId } = useNetwork()
   const { address } = useWallet()
-  const { onOpenSignTermsModal } = useSignTerms()
+  const { signTermsOfService } = useSignTerms()
   const {
     indexTokens,
     inputToken,
@@ -130,7 +129,7 @@ export function LeverageWidget() {
       return
     }
     if (buttonState === TradeButtonState.signTerms) {
-      onOpenSignTermsModal()
+      await signTermsOfService()
       return
     }
     if (buttonState === TradeButtonState.wrongNetwork) {
@@ -216,7 +215,6 @@ export function LeverageWidget() {
           transactionReview={transactionReview}
         />
       )}
-      <SignTermsModal />
     </div>
   )
 }

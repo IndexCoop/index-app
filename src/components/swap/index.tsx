@@ -24,7 +24,6 @@ import { isValidTokenInput } from '@/lib/utils'
 import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
 
 import { SelectTokenModal } from './components/select-token-modal'
-import { SignTermsModal } from './components/sign-terms-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
 import { TradeOutput } from './components/trade-output'
@@ -112,7 +111,7 @@ export const Swap = (props: SwapProps) => {
     inputToken,
     outputToken,
   )
-  const { onOpenSignTermsModal } = useSignTerms()
+  const { signTermsOfService } = useSignTerms()
   const { transactionReview } = useTransactionReviewModal(
     quoteResults,
     selectedQuote,
@@ -248,7 +247,7 @@ export const Swap = (props: SwapProps) => {
     }
 
     if (buttonState === TradeButtonState.signTerms) {
-      onOpenSignTermsModal()
+      await signTermsOfService()
     }
 
     if (buttonState === TradeButtonState.wrongNetwork) {
@@ -278,7 +277,7 @@ export const Swap = (props: SwapProps) => {
     fetchOptions,
     isApprovedForSwap,
     onApproveForSwap,
-    onOpenSignTermsModal,
+    signTermsOfService,
     onOpenTransactionReview,
     openChainModal,
     openConnectModal,
@@ -389,7 +388,6 @@ export const Swap = (props: SwapProps) => {
           transactionReview={transactionReview}
         />
       )}
-      <SignTermsModal />
     </Flex>
   )
 }

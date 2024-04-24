@@ -1,32 +1,21 @@
-import { useDisclosure } from '@chakra-ui/react'
 import {
-  Dispatch,
   ReactNode,
-  SetStateAction,
   createContext,
   useContext,
   useEffect,
   useState,
 } from 'react'
-import { useAccount } from 'wagmi'
+import { useAccount, useWalletClient } from 'wagmi'
 
 import { IndexApi } from '@/lib/utils/api/index-api'
 
 interface Context {
   hasSignedTerms: boolean
-  isSignTermsModalOpen: boolean
-  onOpenSignTermsModal: () => void
-  onCloseSignTermsModal: () => void
-  setHasSignedTerms: Dispatch<SetStateAction<boolean>>
   signTermsOfService: () => void
 }
 
 const SignTermsContext = createContext<Context>({
   hasSignedTerms: false,
-  isSignTermsModalOpen: false,
-  onOpenSignTermsModal: () => {},
-  onCloseSignTermsModal: () => {},
-  setHasSignedTerms: () => {},
   signTermsOfService: () => {},
 })
 
@@ -34,16 +23,13 @@ interface Props {
   children: ReactNode
 }
 
-const SIGN_TERMS_KEY = 'termsOfService'
+const SIGN_TERMS_KEY = 'termsOfServiceV1'
+const TERMS_MESSAGE = 'I have read and accept the Terms of Service.'
 
 export const SignTermsProvider = ({ children }: Props) => {
   const { address } = useAccount()
+  const { data: walletClient } = useWalletClient()
   const [hasSignedTerms, setHasSignedTerms] = useState(false)
-  const {
-    isOpen: isSignTermsModalOpen,
-    onOpen: onOpenSignTermsModal,
-    onClose: onCloseSignTermsModal,
-  } = useDisclosure()
 
   useEffect(() => {
     async function fetchSignature() {
@@ -55,7 +41,7 @@ export const SignTermsProvider = ({ children }: Props) => {
           setHasSignedTerms(true)
         }
       } catch (e) {
-        console.error(e)
+        console.error('Signature GET error', e)
       }
     }
 
@@ -64,26 +50,33 @@ export const SignTermsProvider = ({ children }: Props) => {
   }, [address])
 
   const signTermsOfService = async () => {
+    let signature: `0x${string}` | undefined
     try {
-      const indexApi = new IndexApi()
-      await indexApi.put(`/signature/${address}`, {
+      signature = await walletClient?.signMessage({
+        message: TERMS_MESSAGE
+      })
+    } catch (e) {
+      console.error('Sign message error', e)
+    }
+
+    if (signature === undefined) return
+
+    try {
+      await new IndexApi().put(`/signature/${address}`, {
+        address,
+        signature,
         [SIGN_TERMS_KEY]: new Date().toISOString(),
       })
     } catch (e) {
-      console.error(e)
+      console.error('Signature PUT error', e)
     }
     setHasSignedTerms(true)
-    onCloseSignTermsModal()
   }
 
   return (
     <SignTermsContext.Provider
       value={{
         hasSignedTerms,
-        isSignTermsModalOpen,
-        onOpenSignTermsModal,
-        onCloseSignTermsModal,
-        setHasSignedTerms,
         signTermsOfService,
       }}
     >

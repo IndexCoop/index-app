@@ -4,7 +4,6 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useMemo } from 'react'
 
-import { SignTermsModal } from '@/components/swap/components/sign-terms-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
@@ -35,7 +34,7 @@ import './styles.css'
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const isSupportedNetwork = useMainnetOnly()
   const { openChainModal } = useChainModal()
-  const { onOpenSignTermsModal } = useSignTerms()
+  const { signTermsOfService } = useSignTerms()
   const { openConnectModal } = useConnectModal()
   const {
     inputValue,
@@ -136,7 +135,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     }
 
     if (buttonState === TradeButtonState.signTerms) {
-      onOpenSignTermsModal()
+      await signTermsOfService()
       return
     }
 
@@ -167,7 +166,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     isApproved,
     onApprove,
     openChainModal,
-    onOpenSignTermsModal,
+    signTermsOfService,
     onOpenTransactionReview,
     openConnectModal,
     shouldApprove,
@@ -219,7 +218,6 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
           transactionReview={transactionReview}
         />
       )}
-      <SignTermsModal />
     </div>
   )
 }
