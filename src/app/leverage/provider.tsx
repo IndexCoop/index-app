@@ -36,8 +36,8 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 
 import { BaseTokenStats } from './types'
 
+const baseTokens = [ETH, BTC]
 const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
-const indexTokens = [ETH, BTC]
 
 export enum LeverageType {
   Long2x,
@@ -49,19 +49,20 @@ export interface TokenContext {
   inputValue: string
   isMinting: boolean
   leverageType: LeverageType
+  baseToken: Token
   inputToken: Token
   outputToken: Token
-  rawToken: Token
   inputTokenAmount: bigint
+  baseTokens: Token[]
   currencyTokens: Token[]
-  indexTokens: Token[]
   inputTokens: Token[]
+  outputTokens: Token[]
   isFetchingQuote: boolean
   quoteResult: QuoteResult | null
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
-  onSelectIndexToken: (tokenSymbol: string) => void
+  onSelectBaseToken: (tokenSymbol: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
   onSelectOutputToken: (tokenSymbol: string) => void
@@ -73,20 +74,21 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputValue: '',
   isMinting: true,
   leverageType: LeverageType.Long2x,
+  baseToken: ETH,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
-  rawToken: ETH,
   inputTokenAmount: BigInt(0),
+  baseTokens,
   currencyTokens,
-  indexTokens,
   inputTokens: [],
+  outputTokens: [],
   isFetchingQuote: false,
   quoteResult: null,
   stats: null,
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
+  onSelectBaseToken: () => {},
   onSelectInputToken: () => {},
-  onSelectIndexToken: () => {},
   onSelectLeverageType: () => {},
   onSelectOutputToken: () => {},
   reset: () => {},
@@ -94,6 +96,22 @@ export const LeverageTokenContext = createContext<TokenContext>({
 })
 
 export const useLeverageToken = () => useContext(LeverageTokenContext)
+
+function getLeverageType(token: Token): LeverageType | null {
+  switch (token.symbol) {
+    case IndexCoopBitcoin2xIndex.symbol:
+    case IndexCoopEthereum2xIndex.symbol:
+      return LeverageType.Long2x
+    case IndexCoopBitcoin3xIndex.symbol:
+    case IndexCoopEthereum3xIndex.symbol:
+      return LeverageType.Long3x
+    case IndexCoopInverseBitcoinIndex.symbol:
+    case IndexCoopInverseEthereumIndex.symbol:
+      return LeverageType.Short
+    default:
+      return null
+  }
+}
 
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
@@ -108,7 +126,7 @@ export function LeverageProvider(props: { children: any }) {
   const [outputToken, setOutputToken] = useState<Token>(
     IndexCoopInverseEthereumIndex,
   )
-  const [rawToken, setRawToken] = useState<Token>(ETH)
+  const [baseToken, setBaseToken] = useState<Token>(ETH)
   const [leverageType, setLeverageType] = useState<LeverageType>(
     LeverageType.Long2x,
   )
@@ -121,8 +139,12 @@ export function LeverageProvider(props: { children: any }) {
   })
 
   const indexToken = useMemo(() => {
-    if (!isMinting) return inputToken
-    if (rawToken.symbol === 'ETH') {
+    if (isMinting) return outputToken
+    return inputToken
+  }, [inputToken, isMinting, outputToken])
+
+  const indexTokenBasedOnLeverageType = useMemo(() => {
+    if (baseToken.symbol === 'ETH') {
       switch (leverageType) {
         case LeverageType.Long2x:
           return IndexCoopEthereum2xIndex
@@ -131,9 +153,7 @@ export function LeverageProvider(props: { children: any }) {
         case LeverageType.Short:
           return IndexCoopInverseEthereumIndex
       }
-    }
-
-    if (rawToken.symbol === 'BTC') {
+    } else {
       switch (leverageType) {
         case LeverageType.Long2x:
           return IndexCoopBitcoin2xIndex
@@ -143,21 +163,10 @@ export function LeverageProvider(props: { children: any }) {
           return IndexCoopInverseBitcoinIndex
       }
     }
+  }, [baseToken, leverageType])
 
-    return null
-  }, [inputToken, isMinting, leverageType, rawToken])
-
-  const inputTokenAmount = useMemo(
-    () =>
-      inputValue === ''
-        ? BigInt(0)
-        : parseUnits(inputValue, inputToken.decimals),
-    [inputToken, inputValue],
-  )
-
-  const inputTokens = useMemo(() => {
-    if (isMinting) return currencyTokens
-    if (rawToken.symbol === 'ETH') {
+  const indexTokensBasedOnSymbol = useMemo(() => {
+    if (baseToken.symbol === 'ETH') {
       return [
         IndexCoopInverseEthereumIndex,
         IndexCoopEthereum2xIndex,
@@ -169,7 +178,25 @@ export function LeverageProvider(props: { children: any }) {
       IndexCoopBitcoin2xIndex,
       IndexCoopBitcoin3xIndex,
     ]
-  }, [isMinting, rawToken])
+  }, [baseToken])
+
+  const inputTokenAmount = useMemo(
+    () =>
+      inputValue === ''
+        ? BigInt(0)
+        : parseUnits(inputValue, inputToken.decimals),
+    [inputToken, inputValue],
+  )
+
+  const inputTokens = useMemo(() => {
+    if (isMinting) return currencyTokens
+    return indexTokensBasedOnSymbol
+  }, [indexTokensBasedOnSymbol, isMinting])
+
+  const outputTokens = useMemo(() => {
+    if (!isMinting) return currencyTokens
+    return indexTokensBasedOnSymbol
+  }, [indexTokensBasedOnSymbol, isMinting])
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
@@ -201,14 +228,14 @@ export function LeverageProvider(props: { children: any }) {
     const fetchStats = async () => {
       try {
         const indexApi = new IndexApi()
-        const res = await indexApi.get(`/token/${rawToken.symbol}`)
+        const res = await indexApi.get(`/token/${baseToken.symbol}`)
         setStats(res.data)
       } catch (err) {
         console.log('Error fetching token stats', err)
       }
     }
     fetchStats()
-  }, [rawToken])
+  }, [baseToken])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -231,20 +258,28 @@ export function LeverageProvider(props: { children: any }) {
       const token = inputTokens.find((token) => token.symbol === tokenSymbol)
       if (!token) return
       setInputToken(token)
+      const leverageType = getLeverageType(token)
+      if (leverageType !== null) {
+        setLeverageType(leverageType)
+      }
     },
     [inputTokens],
   )
 
-  const onSelectIndexToken = (tokenSymbol: string) => {
-    const token = indexTokens.find((token) => token.symbol === tokenSymbol)
+  const onSelectBaseToken = (tokenSymbol: string) => {
+    const token = baseTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
-    setRawToken(token)
+    setBaseToken(token)
   }
 
   const onSelectOutputToken = (tokenSymbol: string) => {
-    const token = currencyTokens.find((token) => token.symbol === tokenSymbol)
+    const token = outputTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setOutputToken(token)
+    const leverageType = getLeverageType(token)
+    if (leverageType !== null) {
+      setLeverageType(leverageType)
+    }
   }
 
   const reset = () => {
@@ -260,6 +295,19 @@ export function LeverageProvider(props: { children: any }) {
   useEffect(() => {
     setInputToken(inputTokens[0])
   }, [inputTokens, isMinting])
+
+  useEffect(() => {
+    setOutputToken(outputTokens[0])
+  }, [outputTokens, isMinting])
+
+  useEffect(() => {
+    const indexToken = indexTokenBasedOnLeverageType
+    if (isMinting) {
+      setOutputToken(indexToken)
+      return
+    }
+    setInputToken(indexToken)
+  }, [indexTokenBasedOnLeverageType, isMinting, leverageType])
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -323,20 +371,21 @@ export function LeverageProvider(props: { children: any }) {
         inputValue,
         isMinting,
         leverageType,
+        baseToken,
         inputToken,
         outputToken,
-        rawToken,
         inputTokenAmount,
+        baseTokens,
         currencyTokens,
-        indexTokens,
         inputTokens,
+        outputTokens,
         isFetchingQuote,
         quoteResult,
         stats,
         transactionReview,
         onChangeInputTokenAmount,
+        onSelectBaseToken,
         onSelectInputToken,
-        onSelectIndexToken,
         onSelectLeverageType,
         onSelectOutputToken,
         reset,
