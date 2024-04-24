@@ -248,6 +248,7 @@ export const Swap = (props: SwapProps) => {
 
     if (buttonState === TradeButtonState.signTerms) {
       await signTermsOfService()
+      return
     }
 
     if (buttonState === TradeButtonState.wrongNetwork) {

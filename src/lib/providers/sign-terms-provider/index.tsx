@@ -59,10 +59,12 @@ export const SignTermsProvider = ({ children }: Props) => {
       console.error('Sign message error', e)
     }
 
+    // Signature required to proceed
     if (signature === undefined) return
 
     try {
-      await new IndexApi().put(`/signature/${address}`, {
+      const indexApi = new IndexApi()
+      await indexApi.put(`/signature/${address}`, {
         address,
         signature,
         [SIGN_TERMS_KEY]: new Date().toISOString(),
