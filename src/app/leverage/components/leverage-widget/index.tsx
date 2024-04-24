@@ -23,14 +23,20 @@ import { getNativeToken } from '@/lib/utils/tokens'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
+import { BaseTokenSelector } from './components/base-token-selector'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { Fees } from './components/fees'
 import { LeverageSelector } from './components/leverage-selector'
+import { Receive } from './components/receive'
 import { Summary } from './components/summary'
 
 import './styles.css'
 
-export function LeverageWidget() {
+type LeverageWidgetProps = {
+  onClickBaseTokenSelector: () => void
+}
+
+export function LeverageWidget(props: LeverageWidgetProps) {
   const isSupportedNetwork = useArbitrumOnly()
   const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
@@ -38,20 +44,20 @@ export function LeverageWidget() {
   const { address } = useWallet()
   const { signTermsOfService } = useSignTerms()
   const {
-    indexTokens,
+    baseToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
     inputValue,
     isMinting,
     leverageType,
-    rawToken,
+    outputTokens,
     stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
-    onSelectIndexToken,
     onSelectLeverageType,
+    onSelectOutputToken,
     outputToken,
     reset,
     toggleIsMinting,
@@ -62,6 +68,7 @@ export function LeverageWidget() {
     inputBalance,
     inputBalanceFormatted,
     isFetchingQuote,
+    ouputAmount,
     resetData,
   } = useFormattedLeverageData(stats)
 
@@ -71,20 +78,19 @@ export function LeverageWidget() {
     approve: onApprove,
   } = useApproval(
     inputToken,
-    // FIXME: change to correct FlashMint contract
-    '0x04b59F9F09750C044D7CfbC177561E409085f0f3',
+    '0xC62e39d1f5232f154b7ccD3C6234A9c893bf9563',
     inputTokenAmount,
   )
 
   const {
-    isOpen: isSelectIndexTokenOpen,
-    onOpen: onOpenSelectIndexToken,
-    onClose: onCloseSelectIndexToken,
+    isOpen: isSelectInputTokenOpen,
+    onOpen: onOpenSelectInputToken,
+    onClose: onCloseSelectInputToken,
   } = useDisclosure()
   const {
-    isOpen: isSelectCurrencyTokenOpen,
-    onOpen: onOpenSelectCurrencyToken,
-    onClose: onCloseSelectCurrencyToken,
+    isOpen: isSelectOutputTokenOpen,
+    onOpen: onOpenSelectOutputToken,
+    onClose: onCloseSelectOutputToken,
   } = useDisclosure()
   const {
     isOpen: isTransactionReviewOpen,
@@ -153,14 +159,17 @@ export function LeverageWidget() {
 
   return (
     <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
-      <div className='cursor-pointer' onClick={onOpenSelectIndexToken}>
-        {rawToken.symbol}
-      </div>
-      <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
-      <LeverageSelector
-        selectedTye={leverageType}
-        onSelectType={onSelectLeverageType}
+      <BaseTokenSelector
+        baseToken={baseToken}
+        onClick={props.onClickBaseTokenSelector}
       />
+      <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
+      {isMinting && (
+        <LeverageSelector
+          selectedTye={leverageType}
+          onSelectType={onSelectLeverageType}
+        />
+      )}
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={inputBalanceFormatted}
@@ -170,8 +179,15 @@ export function LeverageWidget() {
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
-        onSelectToken={onOpenSelectCurrencyToken}
+        onSelectToken={onOpenSelectInputToken}
       />
+      {!isMinting && (
+        <Receive
+          outputAmount={ouputAmount}
+          selectedOutputToken={outputToken}
+          onSelectToken={onOpenSelectOutputToken}
+        />
+      )}
       <Summary />
       <Fees />
       <TradeButton
@@ -182,26 +198,26 @@ export function LeverageWidget() {
       />
       <SelectTokenModal
         isDarkMode={true}
-        isOpen={isSelectIndexTokenOpen}
+        isOpen={isSelectInputTokenOpen}
         showBalances={false}
-        onClose={onCloseSelectIndexToken}
-        onSelectedToken={(tokenSymbol) => {
-          onSelectIndexToken(tokenSymbol)
-          onCloseSelectIndexToken()
-        }}
-        address={address}
-        tokens={indexTokens}
-      />
-      <SelectTokenModal
-        isDarkMode={true}
-        isOpen={isSelectCurrencyTokenOpen}
-        onClose={onCloseSelectCurrencyToken}
+        onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol) => {
           onSelectInputToken(tokenSymbol)
-          onCloseSelectCurrencyToken()
+          onCloseSelectInputToken()
         }}
         address={address}
         tokens={inputTokens}
+      />
+      <SelectTokenModal
+        isDarkMode={true}
+        isOpen={isSelectOutputTokenOpen}
+        onClose={onCloseSelectOutputToken}
+        onSelectedToken={(tokenSymbol) => {
+          onSelectOutputToken(tokenSymbol)
+          onCloseSelectOutputToken()
+        }}
+        address={address}
+        tokens={outputTokens}
       />
       {transactionReview && (
         <TransactionReviewModal
