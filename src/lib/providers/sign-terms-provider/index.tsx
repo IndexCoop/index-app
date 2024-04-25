@@ -36,8 +36,7 @@ export const SignTermsProvider = ({ children }: Props) => {
       try {
         const indexApi = new IndexApi()
         const res = await indexApi.get(`/signature/${address}`)
-        const json = await res.json()
-        if (json[SIGN_TERMS_KEY]) {
+        if (res[SIGN_TERMS_KEY]) {
           setHasSignedTerms(true)
         }
       } catch (e) {
