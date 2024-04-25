@@ -1,9 +1,10 @@
 import { MavaScript } from '@/components/external/mava-script'
-import './globals.css'
 import { SafaryScript } from '@/components/external/safary-script'
+import './globals.css'
 
 export const metadata = {
   manifest: '/manifest.json',
+  metadataBase: new URL('https://app.indexcoop.com'),
   themeColor: '#000000',
   title: 'Index App | Buy & Sell Our Tokens',
   description:
