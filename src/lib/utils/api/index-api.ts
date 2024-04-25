@@ -21,12 +21,10 @@ export class IndexApi {
 
   async put(path: string, data: Record<string, unknown>) {
     try {
+      const headers = getIndexApiHeaders()
       const resp = await fetch(`${IndexApiBaseUrl}${path}`, {
         method: 'PUT',
-        headers: {
-          ...getIndexApiHeaders(),
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(data),
       })
       return resp.json()
