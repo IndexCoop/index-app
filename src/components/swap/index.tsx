@@ -164,10 +164,10 @@ export const Swap = (props: SwapProps) => {
     sellTokenAmount,
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
-  const { hasSignedTerms } = useSignTerms()
+  const { hasFetchedSignature, hasSignedTerms } = useSignTerms()
 
   useEffect(() => {
-    if (!hasSignedTerms) {
+    if (hasFetchedSignature && !hasSignedTerms) {
       setWarnings([WarningType.signTerms])
       return
     }
@@ -180,7 +180,7 @@ export const Swap = (props: SwapProps) => {
       return
     }
     setWarnings([WarningType.flashbots])
-  }, [hasSignedTerms, isTradablePair, slippage])
+  }, [hasFetchedSignature, hasSignedTerms, isTradablePair, slippage])
 
   useEffect(() => {
     setSelectedQuote(quoteResults?.bestQuote)

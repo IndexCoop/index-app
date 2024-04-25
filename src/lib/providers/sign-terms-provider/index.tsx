@@ -11,11 +11,13 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 
 interface Context {
   hasSignedTerms: boolean
+  hasFetchedSignature: boolean
   signTermsOfService: () => void
 }
 
 const SignTermsContext = createContext<Context>({
   hasSignedTerms: false,
+  hasFetchedSignature: false,
   signTermsOfService: () => {},
 })
 
@@ -29,6 +31,7 @@ const TERMS_MESSAGE = 'I have read and accept the Terms of Service.'
 export const SignTermsProvider = ({ children }: Props) => {
   const { address } = useAccount()
   const { data: walletClient } = useWalletClient()
+  const [hasFetchedSignature, setHasFetchedSignature] = useState(false)
   const [hasSignedTerms, setHasSignedTerms] = useState(false)
 
   useEffect(() => {
@@ -42,9 +45,11 @@ export const SignTermsProvider = ({ children }: Props) => {
       } catch (e) {
         console.error('Signature GET error', e)
       }
+      setHasFetchedSignature(true)
     }
 
     if (!address) return
+    setHasFetchedSignature(false)
     fetchSignature()
   }, [address])
 
@@ -78,6 +83,7 @@ export const SignTermsProvider = ({ children }: Props) => {
     <SignTermsContext.Provider
       value={{
         hasSignedTerms,
+        hasFetchedSignature,
         signTermsOfService,
       }}
     >
