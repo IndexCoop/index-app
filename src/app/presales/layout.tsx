@@ -6,6 +6,10 @@ type Props = {
   children: React.ReactNode
 }
 
+export const metadata = {
+  title: 'Presales',
+}
+
 export default function Layout({ children }: Props) {
   return (
     <div className="flex h-fit flex-col bg-[url('/presale-splash.jpg')] bg-cover">

@@ -1,3 +1,5 @@
+'use client'
+
 import { BigNumber } from 'ethers'
 import {
   createContext,
