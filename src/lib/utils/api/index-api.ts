@@ -23,8 +23,11 @@ export class IndexApi {
     try {
       const resp = await fetch(`${IndexApiBaseUrl}${path}`, {
         method: 'PUT',
-        headers: getIndexApiHeaders(),
-        body: JSON.stringify(data)
+        headers: {
+          ...getIndexApiHeaders(),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       })
       return resp.json()
     } catch (error) {
