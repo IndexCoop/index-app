@@ -1,6 +1,7 @@
-import { LeverageType } from '@/app/leverage/provider'
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
+
+import { LeverageType } from '@/app/leverage/provider'
 
 type FeesItemProps = {
   label: string
