@@ -183,7 +183,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         />
       )}
       <Summary />
-      <Fees />
+      <Fees leverageType={leverageType} />
       <TradeButton
         label={buttonLabel}
         isDisabled={isDisabled}
