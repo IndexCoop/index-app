@@ -15,7 +15,7 @@ export function FaqItem({ children, question }: Props) {
       {({ open }) => (
         <>
           <dt>
-            <Disclosure.Button className='text-ic-gray-800 flex w-full items-start justify-between text-left'>
+            <Disclosure.Button className='text-ic-gray-800 dark:text-ic-gray-100 flex w-full items-start justify-between text-left'>
               <span className='text-base font-semibold leading-7'>
                 {question}
               </span>
@@ -30,7 +30,7 @@ export function FaqItem({ children, question }: Props) {
           </dt>
           <Disclosure.Panel
             as='dd'
-            className='text-ic-gray-600 mt-2 pr-12 text-sm font-medium leading-6 space-y-2'
+            className='text-ic-gray-600 dark:text-ic-gray-300 mt-2 pr-12 text-sm font-medium leading-6 space-y-2'
           >
             {children}
           </Disclosure.Panel>
