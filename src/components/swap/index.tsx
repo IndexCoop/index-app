@@ -166,12 +166,12 @@ export const Swap = (props: SwapProps) => {
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
   useEffect(() => {
-    if (buttonState === TradeButtonState.signTerms) {
-      setWarnings([WarningType.signTerms])
-      return
-    }
     if (!isTradablePair) {
       setWarnings([WarningType.restricted])
+      return
+    }
+    if (buttonState === TradeButtonState.signTerms) {
+      setWarnings([WarningType.signTerms])
       return
     }
     if (slippage > 9) {
