@@ -1,5 +1,6 @@
 import { WarningIcon } from '@chakra-ui/icons'
 import { Flex, Link, Text } from '@chakra-ui/react'
+import { ReactNode } from 'react'
 
 import { colors } from '@/lib/styles/colors'
 import { addMEVProtectionChain } from '@/lib/utils/chains'
@@ -13,20 +14,53 @@ export enum WarningType {
 
 export interface Warning {
   title: string
-  text: string
+  node: ReactNode
 }
 
 const warningsData: Record<
-  WarningType.priceImpact | WarningType.restricted,
+  WarningType.priceImpact | WarningType.restricted | WarningType.signTerms,
   Warning
 > = {
   [WarningType.priceImpact]: {
     title: 'Price Impact Warning',
-    text: 'A swap of this size may have a high price impact, given the current liquidity in the pool. This means that your trade could alter the price of the token and the quantity of tokens you receive.',
+    node: 'A swap of this size may have a high price impact, given the current liquidity in the pool. This means that your trade could alter the price of the token and the quantity of tokens you receive.',
   },
   [WarningType.restricted]: {
-    title: 'Restricted Persons',
-    text: 'Some of our contracts are unavailable to persons or entities who: are citizens of, reside in, located in, incorporated in, or operate a registered office in the U.S.A.',
+    title: 'Not Available to Restricted Persons',
+    node: (
+      <>
+        Some of our tokens are not available to Restricted Persons - including
+        US persons - as defined in our{' '}
+        <Link
+          href='https://indexcoop.com/terms-of-service'
+          style={{ textDecoration: 'underline' }}
+        >
+          Terms of Service
+        </Link>
+        . Please also see our <Link
+          href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
+          style={{ textDecoration: 'underline' }}
+        >
+          Tokens Restricted for Restricted Persons
+        </Link>{' '}page.
+      </>
+    ),
+  },
+  [WarningType.signTerms]: {
+    title: 'Please sign the Terms and Conditions',
+    node: (
+      <>
+        I confirm that I have read the{' '}
+        <Link
+          href='https://indexcoop.com/terms-of-service'
+          style={{ textDecoration: 'underline' }}
+        >
+          Terms of Service
+        </Link>
+        , am not a restricted person - including US person - as described in the
+        terms, and use the Website in compliance with the terms.
+      </>
+    ),
   },
 }
 
@@ -41,8 +75,8 @@ export const WarningComp = (props: WarningProps) => (
       <span className='text-ic-gray-600 dark:text-ic-gray-400 text-sm font-semibold'>
         {props.warning.title}
       </span>
-      <p className='font-base text-ic-gray-600 dark:text-ic-gray-400 text-xs'>
-        {props.warning.text}
+      <p className='font-base text-ic-gray-600 dark:text-ic-gray-400 text-xs leading-[18px]'>
+        {props.warning.node}
       </p>
     </div>
   </div>
@@ -88,35 +122,6 @@ export const WarningCompProtection = () => {
   )
 }
 
-const WarningSignTerms = () => {
-  return (
-    <Flex direction={'column'} m='20px 16px 8px'>
-      <Flex align={'center'} direction={'row'}>
-        <WarningIcon color={colors.ic.gray[600]} mr={'8px'} />
-        <Text fontSize={'sm'} fontWeight={600} textColor={colors.ic.gray[600]}>
-          Please sign the Terms and Conditions
-        </Text>
-      </Flex>
-      <Text
-        fontSize={'xs'}
-        fontWeight={400}
-        mt='8px'
-        textColor={colors.ic.gray[600]}
-      >
-        I confirm that I have read the{' '}
-        <Link
-          href='https://indexcoop.com/terms-of-service'
-          style={{ textDecoration: 'underline' }}
-        >
-          Terms of Service
-        </Link>
-        , am not a restricted person - including US person - as described in the
-        terms, and use the Website in compliance with the terms.
-      </Text>
-    </Flex>
-  )
-}
-
 type WarningsProps = {
   warnings: WarningType[]
 }
@@ -127,9 +132,6 @@ export const Warnings = (props: WarningsProps) => {
       {props.warnings.map((warningType) => {
         if (warningType === WarningType.flashbots) {
           return <WarningCompProtection key={warningType.toString()} />
-        }
-        if (warningType === WarningType.signTerms) {
-          return <WarningSignTerms key={warningType.toString()} />
         }
         const warning = warningsData[warningType]
         return (
