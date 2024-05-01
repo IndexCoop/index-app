@@ -17,6 +17,7 @@ import { useTokenlists } from '@/lib/hooks/use-tokenlists'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useProtection } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
+import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
@@ -110,6 +111,7 @@ export const Swap = (props: SwapProps) => {
     inputToken,
     outputToken,
   )
+  const { signTermsOfService } = useSignTerms()
   const { transactionReview } = useTransactionReviewModal(
     quoteResults,
     selectedQuote,
@@ -168,12 +170,16 @@ export const Swap = (props: SwapProps) => {
       setWarnings([WarningType.restricted])
       return
     }
+    if (buttonState === TradeButtonState.signTerms) {
+      setWarnings([WarningType.signTerms])
+      return
+    }
     if (slippage > 9) {
       setWarnings([WarningType.priceImpact])
       return
     }
     setWarnings([WarningType.flashbots])
-  }, [isTradablePair, slippage])
+  }, [buttonState, isTradablePair, slippage])
 
   useEffect(() => {
     setSelectedQuote(quoteResults?.bestQuote)
@@ -239,6 +245,11 @@ export const Swap = (props: SwapProps) => {
       return
     }
 
+    if (buttonState === TradeButtonState.signTerms) {
+      await signTermsOfService()
+      return
+    }
+
     if (buttonState === TradeButtonState.wrongNetwork) {
       if (openChainModal) {
         openChainModal()
@@ -266,6 +277,7 @@ export const Swap = (props: SwapProps) => {
     fetchOptions,
     isApprovedForSwap,
     onApproveForSwap,
+    signTermsOfService,
     onOpenTransactionReview,
     openChainModal,
     openConnectModal,

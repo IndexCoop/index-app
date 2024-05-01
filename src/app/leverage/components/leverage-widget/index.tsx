@@ -17,6 +17,7 @@ import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { useArbitrumOnly, useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
 import { getNativeToken } from '@/lib/utils/tokens'
 
@@ -41,6 +42,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
   const { openConnectModal } = useConnectModal()
   const { chainId } = useNetwork()
   const { address } = useWallet()
+  const { signTermsOfService } = useSignTerms()
   const {
     baseToken,
     inputToken,
@@ -130,6 +132,10 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       if (openConnectModal) {
         openConnectModal()
       }
+      return
+    }
+    if (buttonState === TradeButtonState.signTerms) {
+      await signTermsOfService()
       return
     }
     if (buttonState === TradeButtonState.wrongNetwork) {
