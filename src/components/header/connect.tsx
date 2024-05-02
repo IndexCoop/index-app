@@ -17,8 +17,6 @@ export const Connect = () => {
     logConnectWallet(address, chainId)
   }, [address, chainId, logConnectWallet])
 
-  const chainStatus = { smallScreen: 'full', largeScreen: 'full' }
-
   return (
     <ConnectButton
       label='Connect'
@@ -30,7 +28,7 @@ export const Connect = () => {
         smallScreen: 'avatar',
         largeScreen: 'full',
       }}
-      chainStatus={chainStatus as any}
+      chainStatus={{ smallScreen: 'icon', largeScreen: 'full' }}
     />
   )
 }
