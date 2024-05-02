@@ -6,7 +6,6 @@ import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
-import { SignTermsProvider } from '@/lib/providers/sign-terms-provider'
 import theme, { rainbowkitTheme } from '@/lib/styles/theme'
 import { wagmiConfig } from '@/lib/utils/wagmi'
 
@@ -32,9 +31,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               theme={rainbowkitTheme}
               appInfo={rainbowKitAppInfo}
             >
-              <AnalyticsProvider>
-                <SignTermsProvider>{children}</SignTermsProvider>
-              </AnalyticsProvider>
+              <AnalyticsProvider>{children}</AnalyticsProvider>
             </RainbowKitProvider>
           </QueryClientProvider>
         </WagmiProvider>

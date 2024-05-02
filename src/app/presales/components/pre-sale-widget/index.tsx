@@ -17,7 +17,6 @@ import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useMainnetOnly } from '@/lib/hooks/use-network'
-import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
@@ -34,7 +33,6 @@ import './styles.css'
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const isSupportedNetwork = useMainnetOnly()
   const { openChainModal } = useChainModal()
-  const { signTermsOfService } = useSignTerms()
   const { openConnectModal } = useConnectModal()
   const {
     inputValue,
@@ -134,11 +132,6 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       return
     }
 
-    if (buttonState === TradeButtonState.signTerms) {
-      await signTermsOfService()
-      return
-    }
-
     if (buttonState === TradeButtonState.wrongNetwork) {
       if (openChainModal) {
         openChainModal()
@@ -166,7 +159,6 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     isApproved,
     onApprove,
     openChainModal,
-    signTermsOfService,
     onOpenTransactionReview,
     openConnectModal,
     shouldApprove,
@@ -204,7 +196,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <WarningComp
         warning={{
           title: 'PRT eligibility',
-          node: 'Deposits to the contract must be maintained until the end of the post-launch period (60 days after presale closes) in order to maintain PRT eligibility.',
+          text: 'Deposits to the contract must be maintained until the end of the post-launch period (60 days after presale closes) in order to maintain PRT eligibility.',
         }}
       />
       {transactionReview && (

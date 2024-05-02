@@ -1,6 +1,5 @@
 import { WarningIcon } from '@chakra-ui/icons'
 import { Flex, Link, Text } from '@chakra-ui/react'
-import { ReactNode } from 'react'
 
 import { colors } from '@/lib/styles/colors'
 import { addMEVProtectionChain } from '@/lib/utils/chains'
@@ -9,58 +8,24 @@ export enum WarningType {
   flashbots,
   priceImpact,
   restricted,
-  signTerms,
 }
 
 export interface Warning {
   title: string
-  node: ReactNode
+  text: string
 }
 
 const warningsData: Record<
-  WarningType.priceImpact | WarningType.restricted | WarningType.signTerms,
+  WarningType.priceImpact | WarningType.restricted,
   Warning
 > = {
   [WarningType.priceImpact]: {
     title: 'Price Impact Warning',
-    node: 'A swap of this size may have a high price impact, given the current liquidity in the pool. This means that your trade could alter the price of the token and the quantity of tokens you receive.',
+    text: 'A swap of this size may have a high price impact, given the current liquidity in the pool. This means that your trade could alter the price of the token and the quantity of tokens you receive.',
   },
   [WarningType.restricted]: {
-    title: 'Not Available to Restricted Persons',
-    node: (
-      <>
-        Some of our tokens are not available to Restricted Persons - including
-        US persons - as defined in our{' '}
-        <Link
-          href='https://indexcoop.com/terms-of-service'
-          style={{ textDecoration: 'underline' }}
-        >
-          Terms of Service
-        </Link>
-        . Please also see our <Link
-          href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
-          style={{ textDecoration: 'underline' }}
-        >
-          Tokens Restricted for Restricted Persons
-        </Link>{' '}page.
-      </>
-    ),
-  },
-  [WarningType.signTerms]: {
-    title: 'Please sign the Terms and Conditions',
-    node: (
-      <>
-        I confirm that I have read the{' '}
-        <Link
-          href='https://indexcoop.com/terms-of-service'
-          style={{ textDecoration: 'underline' }}
-        >
-          Terms of Service
-        </Link>
-        , am not a restricted person - including US person - as described in the
-        terms, and use the Website in compliance with the terms.
-      </>
-    ),
+    title: 'Restricted Persons',
+    text: 'Some of our contracts are unavailable to persons or entities who: are citizens of, reside in, located in, incorporated in, or operate a registered office in the U.S.A.',
   },
 }
 
@@ -75,8 +40,8 @@ export const WarningComp = (props: WarningProps) => (
       <span className='text-ic-gray-600 dark:text-ic-gray-400 text-sm font-semibold'>
         {props.warning.title}
       </span>
-      <p className='font-base text-ic-gray-600 dark:text-ic-gray-400 text-xs leading-[18px]'>
-        {props.warning.node}
+      <p className='font-base text-ic-gray-600 dark:text-ic-gray-400 text-xs'>
+        {props.warning.text}
       </p>
     </div>
   </div>

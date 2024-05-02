@@ -16,7 +16,6 @@ import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useMainnetOnly } from '@/lib/hooks/use-network'
-import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
 
 import { useRedeem } from '../../providers/redeem-provider'
@@ -31,7 +30,6 @@ import './styles.css'
 export function RedeemWidget() {
   const isSupportedNetwork = useMainnetOnly()
   const { openChainModal } = useChainModal()
-  const { signTermsOfService } = useSignTerms()
   const { openConnectModal } = useConnectModal()
   const {
     inputValue,
@@ -116,11 +114,6 @@ export function RedeemWidget() {
       return
     }
 
-    if (buttonState === TradeButtonState.signTerms) {
-      await signTermsOfService()
-      return
-    }
-
     if (buttonState === TradeButtonState.wrongNetwork) {
       if (openChainModal) {
         openChainModal()
@@ -147,7 +140,6 @@ export function RedeemWidget() {
     buttonState,
     isApproved,
     onApprove,
-    signTermsOfService,
     onOpenTransactionReview,
     openChainModal,
     openConnectModal,

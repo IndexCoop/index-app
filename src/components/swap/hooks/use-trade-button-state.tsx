@@ -6,7 +6,6 @@ import {
   Token,
 } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 
 export enum TradeButtonState {
   approve,
@@ -18,7 +17,6 @@ export enum TradeButtonState {
   insufficientFunds,
   loading,
   notAvailable,
-  signTerms,
   wrongNetwork,
 }
 
@@ -33,14 +31,13 @@ export const useTradeButtonState = (
   sellTokenAmount: string,
 ) => {
   const { address } = useWallet()
-  const { hasFetchedSignature, hasSignedTerms } = useSignTerms();
+
   const [buttonState, setButtonState] = useState(TradeButtonState.default)
 
   useEffect(() => {
     function getButtonState() {
       // Order of the checks matters
       if (!address) return TradeButtonState.connectWallet
-      if (hasFetchedSignature && !hasSignedTerms) return TradeButtonState.signTerms
       if (!isSupportedNetwork) return TradeButtonState.wrongNetwork
       if (
         outputToken === Ethereum2xFlexibleLeverageIndex ||
@@ -59,9 +56,7 @@ export const useTradeButtonState = (
   }, [
     address,
     hasFetchingError,
-    hasFetchedSignature,
     hasInsufficientFunds,
-    hasSignedTerms,
     isApproved,
     isApproving,
     isSupportedNetwork,
