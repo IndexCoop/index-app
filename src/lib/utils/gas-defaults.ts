@@ -11,7 +11,6 @@ import {
 } from '@/constants/tokens'
 
 export function getFlashMintGasDefault(symbol: string) {
-  console.log('Getting gas default...', symbol)
   // ic21 + INDEX are not available for flash mint
   switch (symbol) {
     case BedIndex.symbol:
