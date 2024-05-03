@@ -266,7 +266,7 @@ export const useBestQuote = (
 
       // Non await - because we want to fetch quotes in parallel
       fetchIndexSwapQuote()
-      // fetchSwapQuote()
+      fetchSwapQuote()
       fetchIssuanceQuote()
       fetchRedemptionQuote()
       fetchFlashMintQuote()
