@@ -164,12 +164,10 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onClick={props.onClickBaseTokenSelector}
       />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
-      {isMinting && (
-        <LeverageSelector
-          selectedTye={leverageType}
-          onSelectType={onSelectLeverageType}
-        />
-      )}
+      <LeverageSelector
+        selectedTye={leverageType}
+        onSelectType={onSelectLeverageType}
+      />
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={inputBalanceFormatted}
@@ -181,15 +179,13 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onClickBalance={onClickBalance}
         onSelectToken={onOpenSelectInputToken}
       />
-      {!isMinting && (
-        <Receive
-          outputAmount={ouputAmount}
-          selectedOutputToken={outputToken}
-          onSelectToken={onOpenSelectOutputToken}
-        />
-      )}
+      <Receive
+        outputAmount={ouputAmount}
+        selectedOutputToken={outputToken}
+        onSelectToken={onOpenSelectOutputToken}
+      />
       <Summary />
-      <Fees />
+      <Fees leverageType={leverageType} />
       <TradeButton
         label={buttonLabel}
         isDisabled={isDisabled}

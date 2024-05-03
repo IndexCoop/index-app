@@ -1,6 +1,8 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
+import { LeverageType } from '@/app/leverage/provider'
+
 type FeesItemProps = {
   label: string
   percent: string
@@ -19,7 +21,11 @@ function FeesItem(props: FeesItemProps) {
   )
 }
 
-export function Fees() {
+type FeesProps = {
+  leverageType: LeverageType
+}
+
+export function Fees(props: FeesProps) {
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
       {({ open }) => (
@@ -39,7 +45,7 @@ export function Fees() {
             </Disclosure.Button>
           </dt>
           <Disclosure.Panel as='dd' className='mt-2 flex flex-col gap-2'>
-            <FeesItem label='Streaming Fee' percent={'3.65%'} valueUsd={''} />
+            <FeesItem label='Streaming Fee' percent={props.leverageType === LeverageType.Long3x ? '5.48%' : '3.65%'} valueUsd={''} />
             <FeesItem label='Mint Fee' percent={'0.10%'} valueUsd={''} />
             <FeesItem label='Redeem Fee' percent={'0.10%'} valueUsd={''} />
             {/* // See if we need this */}

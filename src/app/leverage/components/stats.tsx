@@ -15,7 +15,7 @@ export function Stats(props: StatsProps) {
     useFormattedLeverageData(stats)
   const iconColor = change24hIsPositive ? 'fill-ic-green' : 'fill-ic-red'
   const iconScale = change24hIsPositive ? '' : '-scale-100'
-  const textColor = change24hIsPositive ? 'text-ic-green' : 'text-ic-red'
+  const textColor = change24hIsPositive ? 'text-[#65D993]' : 'text-ic-red'
   return (
     <div className='border-ic-gray-600 flex flex-row items-center gap-10 rounded-3xl border bg-[#1C2C2E] px-8 py-6'>
       <div className='flex'>
