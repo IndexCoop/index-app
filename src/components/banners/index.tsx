@@ -1,14 +1,14 @@
-import Link from 'next/link'
 
 export function Banner() {
   return (
-    <div className='bg-[#693798] flex justify-center p-3'>
+    <div className='flex justify-center bg-[#006A71] p-3'>
       <p className='text-ic-white text-sm font-semibold'>
-        +++ Holding FLI’s?{' '}
-        <Link className='underline' href={'/swap/eth2x-fli/eth2x'}>
-          Click here
-        </Link>{' '}
-        to unwrap for the new 2x Tokens! 🎁 +++
+        We are experiencing some temporary downtime for swaps via our app. To
+        swap our tokens please visit{' '}
+        <a className='underline' href='https://swap.cow.fi/' target='_blank'>
+          https://swap.cow.fi/
+        </a>
+        . Flash Minting is not affected.
       </p>
     </div>
   )

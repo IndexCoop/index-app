@@ -205,20 +205,26 @@ export const useBestQuote = (
           !isAvailableForRedemption(inputToken, outputToken)
         ) {
           setIsFetching0x(true)
-          console.log('canSwapIndexToken')
-          const quote0x = await get0xQuote({
-            ...request,
-            chainId,
-            address,
-            inputToken,
-            inputTokenPrice,
-            outputToken,
-            outputTokenPrice,
-            nativeTokenPrice,
-          })
-          logEvent('Quote Received', formatQuoteAnalytics(quote0x))
-          setIsFetching0x(false)
-          setQuote0x(quote0x)
+          try {
+            const quote0x = await get0xQuote({
+              ...request,
+              chainId,
+              address,
+              inputToken,
+              inputTokenPrice,
+              outputToken,
+              outputTokenPrice,
+              nativeTokenPrice,
+            })
+            logEvent('Quote Received', formatQuoteAnalytics(quote0x))
+            setIsFetching0x(false)
+            setQuote0x(quote0x)
+          } catch (e) {
+            console.error('get0xQuote error', e)
+            setIsFetching0x(false)
+            setQuote0x(null)
+            throw e
+          }
         } else {
           setQuote0x(null)
         }
