@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import { Token } from '@/constants/tokens'
+import { ic21, Token } from '@/constants/tokens'
 import {
   getEnhancedIssuanceQuote,
   getEnhancedRedemptionQuote,
@@ -23,6 +23,7 @@ import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
 import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
+import { getIndexQuote } from './utils/index-quote'
 import { get0xQuote } from './utils/zeroex'
 
 export interface FetchQuoteRequest {
@@ -198,11 +199,47 @@ export const useBestQuote = (
         }
       }
 
-      const fetchSwapQuote = async () => {
+      const fetchIndexSwapQuote = async () => {
         if (
           canSwapIndexToken &&
+          inputToken.symbol !== ic21.symbol &&
+          outputToken.symbol !== ic21.symbol &&
           !isAvailableForIssuance(inputToken, outputToken) &&
           !isAvailableForRedemption(inputToken, outputToken)
+        ) {
+          setIsFetching0x(true)
+          try {
+            const quote0x = await getIndexQuote({
+              ...request,
+              chainId,
+              address,
+              inputToken,
+              inputTokenPrice,
+              outputToken,
+              outputTokenPrice,
+              nativeTokenPrice,
+            })
+            console.log(quote0x)
+            logEvent('Quote Received', formatQuoteAnalytics(quote0x))
+            setIsFetching0x(false)
+            setQuote0x(quote0x)
+          } catch (e) {
+            console.error('get0xQuote error', e)
+            setIsFetching0x(false)
+            setQuote0x(null)
+            throw e
+          }
+        } else {
+          setQuote0x(null)
+        }
+      }
+
+      const fetchSwapQuote = async () => {
+        // For now only route ic21 thru 0x (before shutting it off completely)
+        if (
+          canSwapIndexToken &&
+          (inputToken.symbol === ic21.symbol ||
+            outputToken.symbol === ic21.symbol)
         ) {
           setIsFetching0x(true)
           try {
@@ -231,6 +268,7 @@ export const useBestQuote = (
       }
 
       // Non await - because we want to fetch quotes in parallel
+      fetchIndexSwapQuote()
       fetchSwapQuote()
       fetchIssuanceQuote()
       fetchRedemptionQuote()
