@@ -34,9 +34,9 @@ export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
   //   }
   try {
     const inputAmount = parseUnits(inputTokenAmount, inputToken.decimals)
-    const indexApi = new IndexApi()
     const path = `/quote?takerAddress=${address}&inputToken=${inputToken.address}&outputToken=${outputToken.address}&inputAmount=${inputAmount.toString()}&chainId=${chainId}`
     console.log(path)
+    const indexApi = new IndexApi()
     const res = await indexApi.get(path)
     const estimate = res?.estimate
     const gasLimit0x = BigNumber.from(estimate?.gasCosts[0].limit ?? '0')
