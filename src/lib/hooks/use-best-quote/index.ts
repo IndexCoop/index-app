@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import { Token } from '@/constants/tokens'
+import { ic21, Token } from '@/constants/tokens'
 import {
   getEnhancedIssuanceQuote,
   getEnhancedRedemptionQuote,
@@ -202,6 +202,8 @@ export const useBestQuote = (
       const fetchIndexSwapQuote = async () => {
         if (
           canSwapIndexToken &&
+          inputToken.symbol !== ic21.symbol &&
+          outputToken.symbol !== ic21.symbol &&
           !isAvailableForIssuance(inputToken, outputToken) &&
           !isAvailableForRedemption(inputToken, outputToken)
         ) {
@@ -218,9 +220,9 @@ export const useBestQuote = (
               nativeTokenPrice,
             })
             console.log(quote0x)
-            // logEvent('Quote Received', formatQuoteAnalytics(quote0x))
+            logEvent('Quote Received', formatQuoteAnalytics(quote0x))
             setIsFetching0x(false)
-            // setQuote0x(quote0x)
+            setQuote0x(quote0x)
           } catch (e) {
             console.error('get0xQuote error', e)
             setIsFetching0x(false)
@@ -233,10 +235,11 @@ export const useBestQuote = (
       }
 
       const fetchSwapQuote = async () => {
+        // For now only route ic21 thru 0x (before shutting it off completely)
         if (
           canSwapIndexToken &&
-          !isAvailableForIssuance(inputToken, outputToken) &&
-          !isAvailableForRedemption(inputToken, outputToken)
+          (inputToken.symbol === ic21.symbol ||
+            outputToken.symbol === ic21.symbol)
         ) {
           setIsFetching0x(true)
           try {
