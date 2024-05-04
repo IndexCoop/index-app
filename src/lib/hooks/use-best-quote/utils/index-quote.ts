@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { displayFromWei, toWei } from '@/lib/utils'
+import { displayFromWei, parseUnits, toWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 
@@ -32,10 +32,10 @@ export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
   //   if (outputToken.symbol === ic21.symbol || inputToken.symbol === ic21.symbol) {
   //     rfq = true
   //   }
-
   try {
+    const inputAmount = parseUnits(inputTokenAmount, inputToken.decimals)
     const indexApi = new IndexApi()
-    const path = `/quote?takerAddress=${address}&inputToken=${inputToken.address}&outputToken=${outputToken.address}&inputAmount=${inputTokenAmount}&chainId=${chainId}`
+    const path = `/quote?takerAddress=${address}&inputToken=${inputToken.address}&outputToken=${outputToken.address}&inputAmount=${inputAmount.toString()}&chainId=${chainId}`
     console.log(path)
     const res = await indexApi.get(path)
     const estimate = res?.estimate
