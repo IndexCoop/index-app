@@ -97,9 +97,9 @@ export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
         to: res.transactionRequest.to,
         value: res.transactionRequest.value,
       },
-      // type specific properties
+      // 0x type specific properties (will change with interface changes to the quote API)
       minOutput: BigNumber.from(estimate.toAmountMin),
-      sources: estimate.tool,
+      sources: [{ name: estimate.tool, proportion: '1' }],
     }
   } catch (err) {
     console.log('Error fetching Index quote', err)
