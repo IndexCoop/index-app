@@ -19,18 +19,18 @@ export default function Page() {
     onOpen: onOpenSelectBaseToken,
     onClose: onCloseSelectBaseToken,
   } = useDisclosure()
-  const { baseTokens, onSelectBaseToken } = useLeverageToken()
+  const { baseToken, baseTokens, onSelectBaseToken } = useLeverageToken()
   return (
     <div className='flex mx-auto max-w-screen-2xl justify-center'>
-      <div className='flex flex-col items-center'>
-        <div className='mx-auto flex flex-col gap-6 p-12'>
+      <div className='flex flex-col items-center w-full'>
+        <div className='mx-auto flex flex-col gap-6 py-12 px-4 w-full'>
           <div className='flex flex-row gap-36'>
             <Title />
             <Stats onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
-          <div className='flex flex-row gap-6'>
-            <div className='h-[425px] w-[62%] flex-none flex-grow'>
-              <TradingViewWidget />
+          <div className='flex flex-col lg:flex-row gap-6'>
+            <div className='h-[360px] lg:h-[520px] w-full'>
+              <TradingViewWidget baseToken={baseToken} />
             </div>
             <LeverageWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
