@@ -4,15 +4,14 @@ import { Token } from '@/constants/tokens'
 
 type Props = {
   baseToken: Token
+  symbol: string
 }
 
-const getScriptInnerHtml = (token: Token) => {
-  const symbol = token.symbol === 'BTC' ? 'INDEX:BTCUSD' : 'INDEX:ETHUSD'
-
+const getScriptInnerHtml = (symbol: string) => {
   return `
   {
     "autosize": true,
-    "symbol": "${symbol}",
+    "symbol": "INDEX:${symbol}USD",
     "timezone": "Etc/UTC",
     "theme": "dark",
     "style": "1",
@@ -29,7 +28,7 @@ const getScriptInnerHtml = (token: Token) => {
   }`
 }
 
-function TradingViewWidget({ baseToken }: Props) {
+function TradingViewWidget({ baseToken, symbol }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const initialized = useRef(false)
 
@@ -39,30 +38,24 @@ function TradingViewWidget({ baseToken }: Props) {
     initialized.current = true
 
     const script = document.createElement('script')
-    script.id = 'tradingview-chart'
     script.src =
       'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js'
     script.type = 'text/javascript'
     script.async = true
-    script.innerHTML = getScriptInnerHtml(baseToken)
+    script.innerHTML = getScriptInnerHtml(symbol)
 
     container.current?.appendChild(script)
-  }, [baseToken])
-
-  useEffect(() => {
-    const scriptTag = document.getElementById('tradingview-chart')
-    if (scriptTag) {
-      scriptTag.remove()
-      scriptTag.innerHTML = getScriptInnerHtml(baseToken)
-      container.current?.appendChild(scriptTag)
-    }
-  }, [baseToken])
+  }, [symbol])
 
   return (
     <div
       className='tradingview-widget-container'
       ref={container}
-      style={{ height: '100%', width: '100%' }}
+      style={{
+        height: '100%',
+        width: '100%',
+        display: symbol === baseToken.symbol ? 'block' : 'none',
+      }}
     >
       <div
         className='tradingview-widget-container__widget'

@@ -4,6 +4,7 @@ import { useDisclosure } from '@chakra-ui/react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
+import { BTC, ETH } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
@@ -30,7 +31,8 @@ export default function Page() {
           </div>
           <div className='flex flex-col lg:flex-row gap-6'>
             <div className='h-[360px] lg:h-[520px] w-full'>
-              <TradingViewWidget baseToken={baseToken} />
+              <TradingViewWidget baseToken={baseToken} symbol={ETH.symbol} />
+              <TradingViewWidget baseToken={baseToken} symbol={BTC.symbol} />
             </div>
             <LeverageWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
