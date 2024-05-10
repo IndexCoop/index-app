@@ -204,7 +204,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <WarningComp
         warning={{
           title: 'PRT eligibility',
-          node: 'Deposits to the contract must be maintained until the end of the post-launch period (60 days after presale closes) in order to maintain PRT eligibility.',
+          node: 'Deposits to the contract must be maintained until the end of the post-launch period (60 days after presale closes) in order to maintain PRT eligibility. Once a presale has ended, you can still deposit into a token but there won\'t be any PRT rewards for doing so.',
         }}
       />
       {transactionReview && (

@@ -2,7 +2,7 @@ import { PreSaleStatus, PreSaleToken } from './types'
 
 export const preSaleTokens: PreSaleToken[] = [
   {
-    status: PreSaleStatus.ACTIVE,
+    status: PreSaleStatus.CLOSED_TARGET_MET,
     symbol: 'hyETH',
     logo: '/assets/eth2x.png',
     infoLink:
@@ -14,6 +14,7 @@ export const preSaleTokens: PreSaleToken[] = [
     indexRewards: 1.67,
     targetFundraise: 500,
     totalValueLocked: 658,
+    launchDate: 'June 10th, 2024',
     timeLeftDays: 12,
     timestampEndDate: 1715356800000,
   },
@@ -30,3 +31,15 @@ export const preSaleTokens: PreSaleToken[] = [
   //   timeLeftDays: 30,
   // },
 ]
+
+export const presaleChipLabels = {
+  [PreSaleStatus.ACTIVE]: 'Presale active',
+  [PreSaleStatus.CLOSED_TARGET_MET]: 'Presale closed, target met',
+  [PreSaleStatus.NOT_STARTED]: 'Coming soon',
+}
+
+export const presaleButtonLabels = {
+  [PreSaleStatus.ACTIVE]: 'Join Presale',
+  [PreSaleStatus.CLOSED_TARGET_MET]: 'Manage Deposits',
+  [PreSaleStatus.NOT_STARTED]: 'Presale not started',
+}

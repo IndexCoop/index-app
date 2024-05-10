@@ -30,7 +30,7 @@ export function PreSaleSection() {
         ))}
       </div>
       <p className='text-ic-gray-400 my-2 text-[10px] font-medium leading-4'>
-        *product-specific PRT staking will be made available in the Index Coop
+        *Product-specific PRT staking will be made available in the Index Coop
         app; staking will not be available to Restricted Persons (including US
         Persons) as defined{' '}
         <Link

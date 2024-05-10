@@ -6,6 +6,7 @@ import { colors } from '@/lib/styles/colors'
 
 import { PreSaleStatus, PreSaleToken } from '../../types'
 
+import { presaleButtonLabels } from '../../constants'
 import { StatusChip } from './status-chip'
 
 type Props = {
@@ -84,9 +85,9 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='flex'>
-          <div className='flex-1'>Time left in presale</div>
+          <div className='flex-1'>{token.status === PreSaleStatus.CLOSED_TARGET_MET ? 'Token launch date' : 'Time left in presale'}</div>
           <div className='text-ic-gray-950 font-bold'>
-            {formatted.daysLeft} / 30 days
+            {token.status === PreSaleStatus.CLOSED_TARGET_MET ? token.launchDate : `${formatted.daysLeft} / 30 days`}
           </div>
         </div>
       </div>
@@ -97,9 +98,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         }
         onClick={onClick}
       >
-        {token.status === PreSaleStatus.ACTIVE
-          ? 'Join Presale'
-          : 'Presale not started'}
+        {presaleButtonLabels[token.status]}
       </button>
     </div>
   )
