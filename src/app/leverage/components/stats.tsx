@@ -17,15 +17,15 @@ export function Stats(props: StatsProps) {
   const iconScale = change24hIsPositive ? '' : '-scale-100'
   const textColor = change24hIsPositive ? 'text-[#65D993]' : 'text-ic-red'
   return (
-    <div className='border-ic-gray-600 flex flex-row items-center gap-10 rounded-3xl border bg-[#1C2C2E] px-8 py-6'>
+    <div className='border-ic-gray-600 flex flex-row items-center justify-between md:gap-6 rounded-3xl border bg-[#1C2C2E] px-4 py-3 md:px-8 md:py-6 md:ml-auto md:w-[650px]'>
       <div className='flex'>
         <BaseTokenSelector
           baseToken={baseToken}
           onClick={props.onClickBaseTokenSelector}
         />
       </div>
-      <div className='text-ic-white text-xl font-semibold'>{price}</div>
-      <div className='flex flex-col gap-1'>
+      <div className='text-ic-white text-xl font-semibold ml-auto sm:ml-0'>{price}</div>
+      <div className='hidden sm:flex flex-col gap-1 md:hidden lg:flex'>
         <div className='text-ic-gray-100 text-xs font-normal'>24h Change</div>
         {change24h.length > 0 && (
           <div className='flex flex-row items-center gap-1'>
@@ -47,11 +47,11 @@ export function Stats(props: StatsProps) {
           </div>
         )}
       </div>
-      <div className='flex flex-col gap-1'>
+      <div className='sm:flex flex-col gap-1 hidden md:hidden lg:flex'>
         <div className='text-ic-gray-100 text-xs font-normal'>24h High</div>
         <div className='text-ic-white text-base font-semibold'>{high24h}</div>
       </div>
-      <div className='flex flex-col gap-1'>
+      <div className='hidden sm:flex flex-col gap-1 md:hidden lg:flex'>
         <div className='text-ic-gray-100 text-xs font-normal'>24h Low</div>
         <div className='text-ic-white text-base font-semibold'>{low24h}</div>
       </div>

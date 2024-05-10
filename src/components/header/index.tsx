@@ -41,7 +41,7 @@ export function Header() {
             <HeaderLink key={item.name} label={item.name} href={item.href} />
           ))}
         </div>
-        <div className='flex lg:flex-grow lg:justify-end'>
+        <div className='flex md:flex-grow md:justify-end md:mr-6 lg:mr-0'>
           <Connect />
         </div>
         <div className='flex lg:hidden'>

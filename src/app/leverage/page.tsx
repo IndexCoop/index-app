@@ -24,8 +24,8 @@ export default function Page() {
   return (
     <div className='flex mx-auto max-w-screen-2xl justify-center'>
       <div className='flex flex-col items-center w-full'>
-        <div className='mx-auto flex flex-col gap-6 py-12 px-4 w-full'>
-          <div className='flex flex-row gap-36'>
+        <div className='mx-auto flex flex-col gap-8 py-12 px-4 w-full'>
+          <div className='flex flex-col md:flex-row'>
             <Title />
             <Stats onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>

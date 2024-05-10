@@ -4,7 +4,7 @@ import { FaqItem, FaqList } from '@/components/faq'
 
 export function FaqSection() {
   return (
-    <FaqList className='my-12 mx-auto w-full !max-w-7xl'>
+    <FaqList className='mx-auto my-12 w-full !max-w-7xl px-4'>
       <FaqItem question='Why Presales?'>
         <p>
           The presale process enables users and early adopters to demonstrate
