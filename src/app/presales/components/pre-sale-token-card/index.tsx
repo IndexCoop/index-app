@@ -4,9 +4,9 @@ import Image from 'next/image'
 import { usePresaleData } from '@/app/presales/providers/presale-provider'
 import { colors } from '@/lib/styles/colors'
 
+import { presaleButtonLabels } from '../../constants'
 import { PreSaleStatus, PreSaleToken } from '../../types'
 
-import { presaleButtonLabels } from '../../constants'
 import { StatusChip } from './status-chip'
 
 type Props = {
