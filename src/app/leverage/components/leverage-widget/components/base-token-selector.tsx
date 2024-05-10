@@ -12,7 +12,7 @@ export function BaseTokenSelector(props: BaseTokenSelectorProps) {
   const { image, symbol } = props.baseToken
   return (
     <div
-      className='flex cursor-pointer flex-row items-center p-2'
+      className='flex cursor-pointer flex-row items-center py-2'
       onClick={props.onClick}
     >
       <Image alt={`${symbol} logo`} src={image} width={24} height={24} />
