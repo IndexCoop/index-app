@@ -94,7 +94,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
       <button
         className='text-ic-white bg-ic-blue-600 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
         disabled={
-          token.status !== PreSaleStatus.ACTIVE || onClick === undefined
+          token.status === PreSaleStatus.NOT_STARTED || onClick === undefined
         }
         onClick={onClick}
       >
