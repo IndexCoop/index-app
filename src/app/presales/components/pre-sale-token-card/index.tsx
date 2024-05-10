@@ -110,12 +110,10 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         </div>
         <div className='flex'>
           <div className='flex-1'>
-            {token.status === PreSaleStatus.CLOSED_TARGET_MET
-              ? 'Token launch date'
-              : 'Time left in presale'}
+            {isStatusClosed ? 'Token launch date' : 'Time left in presale'}
           </div>
           <div className='text-ic-gray-950 font-bold'>
-            {token.status === PreSaleStatus.CLOSED_TARGET_MET
+            {isStatusClosed
               ? token.launchDate
               : `${formatted.daysLeft} / 30 days`}
           </div>
