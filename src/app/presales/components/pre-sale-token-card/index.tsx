@@ -1,4 +1,5 @@
 import { Tooltip } from '@chakra-ui/react'
+import clsx from 'clsx'
 import Image from 'next/image'
 
 import { usePresaleData } from '@/app/presales/providers/presale-provider'
@@ -15,6 +16,7 @@ type Props = {
 }
 export function PreSaleTokenCard({ token, onClick }: Props) {
   const { formatted } = usePresaleData(token.symbol)
+  const isStatusClosed = token.status === PreSaleStatus.CLOSED_TARGET_MET
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
@@ -58,9 +60,22 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
       >
         <div className='bg-ic-gray-50 border-ic-gray-300 text-ic-gray-500 w-full rounded-xl border px-3 py-5 text-xs font-medium'>
           <div className='flex'>
-            <div className='flex-1'>Total PRT Rewards</div>
-            <div className='text-ic-gray-800'>
-              <span className='text-ic-gray-950 font-bold'>
+            <div
+              className={clsx('flex-1', isStatusClosed && 'text-ic-gray-400')}
+            >
+              Total PRT Rewards
+            </div>
+            <div
+              className={
+                isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-800'
+              }
+            >
+              <span
+                className={clsx(
+                  'font-bold',
+                  isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-950',
+                )}
+              >
                 {token.prtRewards}
               </span>{' '}
               PRTs
@@ -70,9 +85,18 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
       </Tooltip>
       <div className='text-ic-gray-600 w-full px-3 py-5 text-xs font-medium'>
         <div className='mb-2 flex'>
-          <div className='flex-1'>Target Threshold</div>
-          <div className='text-ic-gray-800'>
-            <span className='text-ic-gray-950 font-bold'>
+          <div className={clsx('flex-1', isStatusClosed && 'text-ic-gray-400')}>
+            Target Threshold
+          </div>
+          <div
+            className={isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-800'}
+          >
+            <span
+              className={clsx(
+                'font-bold',
+                isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-950',
+              )}
+            >
               {token.targetFundraise}
             </span>{' '}
             wstETH
@@ -85,9 +109,15 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='flex'>
-          <div className='flex-1'>{token.status === PreSaleStatus.CLOSED_TARGET_MET ? 'Token launch date' : 'Time left in presale'}</div>
+          <div className='flex-1'>
+            {token.status === PreSaleStatus.CLOSED_TARGET_MET
+              ? 'Token launch date'
+              : 'Time left in presale'}
+          </div>
           <div className='text-ic-gray-950 font-bold'>
-            {token.status === PreSaleStatus.CLOSED_TARGET_MET ? token.launchDate : `${formatted.daysLeft} / 30 days`}
+            {token.status === PreSaleStatus.CLOSED_TARGET_MET
+              ? token.launchDate
+              : `${formatted.daysLeft} / 30 days`}
           </div>
         </div>
       </div>
