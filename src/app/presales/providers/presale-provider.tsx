@@ -13,8 +13,6 @@ interface PresaleData {
   }
   formatted: {
     daysLeft: string
-    prtRewards: string
-    indexRewards: string
     tvl: string
   }
 }
@@ -68,8 +66,6 @@ export function usePresaleData(symbol: string): PresaleData {
     },
     formatted: {
       daysLeft,
-      prtRewards: '',
-      indexRewards: '',
       tvl: tvlFormatted,
     },
   }

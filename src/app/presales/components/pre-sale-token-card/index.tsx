@@ -16,7 +16,9 @@ type Props = {
 }
 export function PreSaleTokenCard({ token, onClick }: Props) {
   const { formatted } = usePresaleData(token.symbol)
-  const isStatusClosed = token.status === PreSaleStatus.CLOSED_TARGET_MET
+  const isStatusClosed =
+    token.status === PreSaleStatus.CLOSED_TARGET_MET ||
+    token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
@@ -110,10 +112,15 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         </div>
         <div className='flex'>
           <div className='flex-1'>
-            {isStatusClosed ? 'Token launch date' : 'Time left in presale'}
+            {isStatusClosed
+              ? 'Token launch date'
+              : token.status === PreSaleStatus.TOKEN_LAUNCHED
+                ? 'Launched'
+                : 'Time left in presale'}
           </div>
           <div className='text-ic-gray-950 font-bold'>
-            {isStatusClosed
+            {token.status === PreSaleStatus.CLOSED_TARGET_MET ||
+            token.status === PreSaleStatus.TOKEN_LAUNCHED
               ? token.launchDate
               : `${formatted.daysLeft} / 30 days`}
           </div>

@@ -1,7 +1,9 @@
 export enum PreSaleStatus {
-  ACTIVE = 'active',
-  CLOSED_TARGET_MET = 'closed-target-met',
-  NOT_STARTED = 'not-started',
+  ACTIVE,
+  CLOSED_TARGET_MET,
+  CLOSED_TARGET_NOT_MET,
+  NOT_STARTED,
+  TOKEN_LAUNCHED,
 }
 
 export type PreSaleToken = {
@@ -15,7 +17,5 @@ export type PreSaleToken = {
   prtRewards: string
   indexRewards: number
   targetFundraise: number
-  totalValueLocked: number
-  timeLeftDays: number
   timestampEndDate: number
 }

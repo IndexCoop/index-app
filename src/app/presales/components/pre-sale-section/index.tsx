@@ -2,8 +2,10 @@
 
 import { useDisclosure } from '@chakra-ui/react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { preSaleTokens } from '../../constants'
+import { PreSaleStatus } from '../../types'
 import { PreSalePopup } from '../popup'
 import { PreSaleTokenCard } from '../pre-sale-token-card'
 
@@ -13,10 +15,7 @@ export function PreSaleSection() {
     onOpen: onOpenPreSalePopup,
     onClose: onClosePreSalePopup,
   } = useDisclosure()
-
-  const onClickPreSale = () => {
-    onOpenPreSalePopup()
-  }
+  const router = useRouter()
 
   return (
     <div className='py-10'>
@@ -25,11 +24,17 @@ export function PreSaleSection() {
           <PreSaleTokenCard
             key={preSaleToken.symbol}
             token={preSaleToken}
-            onClick={onClickPreSale}
+            onClick={() => {
+              if (preSaleToken.status === PreSaleStatus.TOKEN_LAUNCHED) {
+                router.push(`/swap/eth/${preSaleToken.symbol}`)
+              } else {
+                onOpenPreSalePopup()
+              }
+            }}
           />
         ))}
       </div>
-      <p className='text-ic-gray-400 my-2 text-[10px] font-medium leading-4'>
+      <p className='text-ic-gray-400 mt-4 text-[10px] font-medium leading-5'>
         *Product-specific PRT staking will be made available in the Index Coop
         app; staking will not be available to Restricted Persons (including US
         Persons) as defined{' '}
