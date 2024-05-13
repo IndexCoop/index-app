@@ -119,9 +119,8 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
                 : 'Time left in presale'}
           </div>
           <div className='text-ic-gray-950 font-bold'>
-            {token.status === PreSaleStatus.CLOSED_TARGET_MET ||
-            token.status === PreSaleStatus.TOKEN_LAUNCHED
-              ? token.launchDate
+            {isStatusClosed || token.status === PreSaleStatus.TOKEN_LAUNCHED
+              ? token.launchDate ?? 'N/A' // N/A when closed but target not met
               : `${formatted.daysLeft} / 30 days`}
           </div>
         </div>
