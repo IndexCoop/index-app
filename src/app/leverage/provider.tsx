@@ -32,7 +32,7 @@ import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
-import { useWallet } from '@/lib/hooks/use-wallet'
+import { publicClientToProvider, useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 
@@ -119,7 +119,7 @@ export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { chainId } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainId)
-  const { address, provider, jsonRpcProvider } = useWallet()
+  const { address, provider } = useWallet()
 
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
@@ -315,9 +315,10 @@ export function LeverageProvider(props: { children: any }) {
     const fetchQuote = async () => {
       if (!address) return
       if (chainId !== ARBITRUM.chainId) return
-      if (!jsonRpcProvider || !provider || !publicClient) return
+      if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       if (!indexToken) return
+      const jsonRpcProvider = publicClientToProvider(publicClient)
       console.log('index-token:', indexToken.symbol)
       setFetchingQuote(true)
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
@@ -348,14 +349,13 @@ export function LeverageProvider(props: { children: any }) {
         quote: quoteFlashMint,
         error: null,
       }
-      setFetchingQuote(false)
       setQuoteResult(quoteResult)
+      setFetchingQuote(false)
     }
     fetchQuote()
   }, [
     address,
     chainId,
-    jsonRpcProvider,
     indexToken,
     inputToken,
     inputTokenAmount,
