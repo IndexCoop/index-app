@@ -59,7 +59,7 @@ async function getEnhancedFlashMintQuote(
       const { inputOutputAmount, tx } = quoteFM
       const transaction: QuoteTransaction = {
         account,
-        chainId: 1,
+        chainId,
         from: account,
         to: tx.to,
         data: utils.hexlify(tx.data!),
@@ -104,7 +104,7 @@ async function getEnhancedFlashMintQuote(
 
       return {
         type: QuoteType.flashmint,
-        chainId: 1,
+        chainId,
         contract: quoteFM.contract,
         isMinting,
         inputToken,
