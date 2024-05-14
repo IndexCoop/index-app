@@ -1,3 +1,5 @@
+import { IndexCoopInverseEthereumIndex } from '@indexcoop/flash-mint-sdk'
+
 import { ARBITRUM, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import { currencies, indicesTokenList } from '@/constants/tokenlists'
 import {
@@ -12,7 +14,10 @@ import {
   ic21,
   icETHIndex,
   IndexCoopBitcoin2xIndex,
+  IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
+  IndexCoopEthereum3xIndex,
+  IndexCoopInverseBitcoinIndex,
   IndexToken,
   LeveragedRethStakingYield,
   MATIC,
@@ -21,6 +26,8 @@ import {
   STETH,
   Token,
   USDC,
+  USDT,
+  WBTC,
   WETH,
   WSTETH,
 } from '@/constants/tokens'
@@ -67,6 +74,9 @@ export function getCurrencyTokensForIndex(
   index: Token,
   chainId: number,
 ): Token[] {
+  if (chainId === ARBITRUM.chainId) {
+    return [ETH, WETH, WBTC, USDC, USDT]
+  }
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI]
   if (index.symbol === ic21.symbol) return [ETH, WETH]
@@ -167,6 +177,12 @@ export function isAvailableForSwap(token: Token): boolean {
 export function isIndexToken(token: Token): boolean {
   if (token.symbol === IndexToken.symbol) return false
   if (token.symbol === HighYieldETHIndex.symbol) return true
+  if (token.symbol === IndexCoopBitcoin2xIndex.symbol) return true
+  if (token.symbol === IndexCoopBitcoin3xIndex.symbol) return true
+  if (token.symbol === IndexCoopEthereum2xIndex.symbol) return true
+  if (token.symbol === IndexCoopEthereum3xIndex.symbol) return true
+  if (token.symbol === IndexCoopInverseBitcoinIndex.symbol) return true
+  if (token.symbol === IndexCoopInverseEthereumIndex.symbol) return true
   return indicesTokenList.some((index) =>
     isSameAddress(index.address!, token.address!),
   )
