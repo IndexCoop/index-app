@@ -2,7 +2,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
 import { providers, utils } from 'ethers'
 
-import { MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { displayFromWei } from '@/lib/utils'
@@ -33,8 +32,6 @@ async function getEnhancedFlashMintQuote(
   provider: IndexRpcProvider,
   jsonRpcProvider: providers.JsonRpcProvider,
 ): Promise<Quote | null> {
-  // Allow only on mainnet
-  if (chainId !== MAINNET.chainId) return null
   const indexToken = isMinting ? outputToken : inputToken
   const inputOutputToken = isMinting ? inputToken : outputToken
   const currencies = getCurrencyTokensForIndex(indexToken, chainId)
