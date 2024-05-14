@@ -10,7 +10,10 @@ import { getNetworkKey } from '@/lib/utils/api/zeroex-utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
-import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
+import {
+  getAddressForToken,
+  getCurrencyTokensForIndex,
+} from '@/lib/utils/tokens'
 
 import { IndexQuoteRequest, Quote, QuoteTransaction, QuoteType } from '../types'
 
@@ -32,6 +35,12 @@ async function getEnhancedFlashMintQuote(
   provider: IndexRpcProvider,
   jsonRpcProvider: providers.JsonRpcProvider,
 ): Promise<Quote | null> {
+  const inputTokenAddress = getAddressForToken(inputToken, chainId)
+  const outputTokenAddress = getAddressForToken(outputToken, chainId)
+  if (!inputTokenAddress || !outputTokenAddress) {
+    console.warn('Error unkown input/output token')
+    return null
+  }
   const indexToken = isMinting ? outputToken : inputToken
   const inputOutputToken = isMinting ? inputToken : outputToken
   const currencies = getCurrencyTokensForIndex(indexToken, chainId)
@@ -47,8 +56,8 @@ async function getEnhancedFlashMintQuote(
     const zeroExApi = getConfiguredZeroExApi(swapPathOverride)
     const request = {
       isMinting,
-      inputToken: { ...inputToken, address: inputToken.address! },
-      outputToken: { ...outputToken, address: outputToken.address! },
+      inputToken: { ...inputToken, address: inputTokenAddress },
+      outputToken: { ...outputToken, address: outputTokenAddress },
       indexTokenAmount,
       slippage,
     }
