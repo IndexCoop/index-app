@@ -1,6 +1,9 @@
 'use client'
 
-import { BigNumber } from 'ethers'
+import { ChainId, UiPoolDataProvider } from '@aave/contract-helpers'
+import { formatReserves } from '@aave/math-utils'
+import { AaveV3Ethereum } from '@bgd-labs/aave-address-book'
+import { BigNumber, providers } from 'ethers'
 import {
   createContext,
   useCallback,
@@ -57,6 +60,7 @@ export interface TokenContext {
   inputTokenAmount: bigint
   baseTokens: Token[]
   currencyTokens: Token[]
+  costOfCarry: number | null
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
@@ -82,6 +86,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputTokenAmount: BigInt(0),
   baseTokens,
   currencyTokens,
+  costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
@@ -122,6 +127,7 @@ export function LeverageProvider(props: { children: any }) {
   const { address, provider, jsonRpcProvider } = useWallet()
 
   const [inputValue, setInputValue] = useState('')
+  const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(true)
   const [inputToken, setInputToken] = useState<Token>(ETH)
@@ -238,6 +244,47 @@ export function LeverageProvider(props: { children: any }) {
     }
     fetchStats()
   }, [baseToken])
+
+  useEffect(() => {
+    async function fetchCostOfCarry(
+      jsonRpcProvider: providers.JsonRpcProvider,
+    ) {
+      const poolDataProviderContract = new UiPoolDataProvider({
+        uiPoolDataProviderAddress: AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
+        provider: jsonRpcProvider,
+        chainId: ChainId.mainnet,
+      })
+      const reserves = await poolDataProviderContract.getReservesHumanized({
+        lendingPoolAddressProvider: AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+      })
+
+      const formattedPoolReserves = formatReserves({
+        reserves: reserves.reservesData,
+        currentTimestamp: Math.floor(Date.now() / 1000),
+        marketReferenceCurrencyDecimals:
+          reserves.baseCurrencyData.marketReferenceCurrencyDecimals,
+        marketReferencePriceInUsd:
+          reserves.baseCurrencyData.marketReferenceCurrencyPriceInUsd,
+      })
+
+      const borrowedAsset = formattedPoolReserves.find(
+        (asset) =>
+          asset.symbol.toLowerCase() === outputToken.borrowedAssetSymbol,
+      )
+
+      if (!borrowedAsset) {
+        return
+      }
+
+      setCostOfCarry(
+        Number(borrowedAsset.variableBorrowAPY) -
+          Number(borrowedAsset.supplyAPY),
+      )
+    }
+
+    if (!jsonRpcProvider || outputToken === null) return
+    fetchCostOfCarry(jsonRpcProvider)
+  }, [jsonRpcProvider, outputToken])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -378,6 +425,7 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         inputTokenAmount,
         baseTokens,
+        costOfCarry,
         currencyTokens,
         inputTokens,
         outputTokens,
