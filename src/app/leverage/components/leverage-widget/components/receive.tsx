@@ -15,7 +15,7 @@ export function Receive(props: ReceiveProps) {
     <div className='flex flex-row justify-between rounded-xl border border-[#3A6060] p-4'>
       <div className='flex flex-col'>
         <Caption caption='Receive' />
-        <span>{outputAmount}</span>
+        <span className='text-ic-white'>{outputAmount}</span>
       </div>
       <SelectorButton
         image={selectedOutputToken.image}
