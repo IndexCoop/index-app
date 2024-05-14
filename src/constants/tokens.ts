@@ -453,6 +453,7 @@ export const ETH: Token = {
   image:
     'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
   address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+  arbitrumAddress: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
   polygonAddress: '',
   optimismAddress: '',
   decimals: 18,
