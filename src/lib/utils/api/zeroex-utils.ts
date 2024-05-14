@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Hex } from 'viem'
 
-import { OPTIMISM, POLYGON } from '@/constants/chains'
+import { ARBITRUM, OPTIMISM, POLYGON } from '@/constants/chains'
 import { ZeroExAffiliateAddress } from '@/constants/server'
 import { Token } from '@/constants/tokens'
 import { toWei } from '@/lib/utils'
@@ -44,6 +44,8 @@ export type ZeroExData = {
 
 export function getNetworkKey(chainId: number): string {
   switch (chainId) {
+    case ARBITRUM.chainId:
+      return 'arbitrum'
     case POLYGON.chainId:
       return 'polygon'
     case OPTIMISM.chainId:
