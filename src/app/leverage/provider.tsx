@@ -249,37 +249,41 @@ export function LeverageProvider(props: { children: any }) {
     async function fetchCostOfCarry(
       jsonRpcProvider: providers.JsonRpcProvider,
     ) {
-      const poolDataProviderContract = new UiPoolDataProvider({
-        uiPoolDataProviderAddress: AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
-        provider: jsonRpcProvider,
-        chainId: ChainId.mainnet,
-      })
-      const reserves = await poolDataProviderContract.getReservesHumanized({
-        lendingPoolAddressProvider: AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
-      })
+      try {
+        const poolDataProviderContract = new UiPoolDataProvider({
+          uiPoolDataProviderAddress: AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
+          provider: jsonRpcProvider,
+          chainId: ChainId.mainnet,
+        })
+        const reserves = await poolDataProviderContract.getReservesHumanized({
+          lendingPoolAddressProvider: AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+        })
 
-      const formattedPoolReserves = formatReserves({
-        reserves: reserves.reservesData,
-        currentTimestamp: Math.floor(Date.now() / 1000),
-        marketReferenceCurrencyDecimals:
-          reserves.baseCurrencyData.marketReferenceCurrencyDecimals,
-        marketReferencePriceInUsd:
-          reserves.baseCurrencyData.marketReferenceCurrencyPriceInUsd,
-      })
+        const formattedPoolReserves = formatReserves({
+          reserves: reserves.reservesData,
+          currentTimestamp: Math.floor(Date.now() / 1000),
+          marketReferenceCurrencyDecimals:
+            reserves.baseCurrencyData.marketReferenceCurrencyDecimals,
+          marketReferencePriceInUsd:
+            reserves.baseCurrencyData.marketReferenceCurrencyPriceInUsd,
+        })
 
-      const borrowedAsset = formattedPoolReserves.find(
-        (asset) =>
-          asset.symbol.toLowerCase() === outputToken.borrowedAssetSymbol,
-      )
+        const borrowedAsset = formattedPoolReserves.find(
+          (asset) =>
+            asset.symbol.toLowerCase() === outputToken.borrowedAssetSymbol,
+        )
 
-      if (!borrowedAsset) {
-        return
+        if (!borrowedAsset) {
+          return
+        }
+
+        setCostOfCarry(
+          Number(borrowedAsset.variableBorrowAPY) -
+            Number(borrowedAsset.supplyAPY),
+        )
+      } catch (e) {
+        console.error('Caught error while fetching borrow rates', e)
       }
-
-      setCostOfCarry(
-        Number(borrowedAsset.variableBorrowAPY) -
-          Number(borrowedAsset.supplyAPY),
-      )
     }
 
     if (!jsonRpcProvider || outputToken === null) return
