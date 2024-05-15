@@ -322,7 +322,6 @@ export function LeverageProvider(props: { children: any }) {
       setFetchingQuote(true)
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      const gasPrice = await provider.getGasPrice()
       const quoteFlashMint = await getFlashMintQuote(
         {
           isMinting,
