@@ -181,6 +181,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onSelectToken={onOpenSelectInputToken}
       />
       <Receive
+        isLoading={isFetchingQuote}
         outputAmount={ouputAmount}
         selectedOutputToken={outputToken}
         onSelectToken={onOpenSelectOutputToken}
