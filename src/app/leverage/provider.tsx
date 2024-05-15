@@ -319,13 +319,10 @@ export function LeverageProvider(props: { children: any }) {
       if (inputTokenAmount <= 0) return
       if (!indexToken) return
       const jsonRpcProvider = publicClientToProvider(publicClient)
-      console.log('index-token:', indexToken.symbol)
       setFetchingQuote(true)
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
       const gasPrice = await provider.getGasPrice()
-      console.log(inputTokenPrice, outputTokenPrice, gasPrice.toString())
-      // Might have to use getEnhancedFlashMintQuote instead
       const quoteFlashMint = await getFlashMintQuote(
         {
           isMinting,
@@ -343,6 +340,7 @@ export function LeverageProvider(props: { children: any }) {
         provider,
         jsonRpcProvider,
       )
+      console.log(quoteFlashMint)
       const quoteResult = {
         type: QuoteType.flashmint,
         isAvailable: true,
