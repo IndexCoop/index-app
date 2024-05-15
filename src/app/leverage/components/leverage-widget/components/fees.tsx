@@ -62,7 +62,7 @@ export function Fees(props: FeesProps) {
             />
             <FeesItem label='Mint Fee' percent={'0.10%'} valueUsd={''} />
             <FeesItem label='Redeem Fee' percent={'0.10%'} valueUsd={''} />
-            {props.costOfCarry !== null ? (
+            {props.costOfCarry !== null && (
               <FeesItem
                 label='Cost of Carry'
                 showPositiveFee={props.costOfCarry < 0}
@@ -73,7 +73,7 @@ export function Fees(props: FeesProps) {
                 }).format(Math.abs(props.costOfCarry))}
                 valueUsd={''}
               />
-            ) : null}
+            )}
             {/* // See if we need this */}
             {/* <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
               <div className='font-normal'>Network Fee</div>
