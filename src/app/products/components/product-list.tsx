@@ -8,7 +8,7 @@ import { ProductRowItem } from '@/app/products/components/product-row-item'
 import { productTokens } from '@/app/products/constants/tokens'
 import { ProductRow } from '@/app/products/types/product'
 import { SortBy, SortDirection } from '@/app/products/types/sort'
-import { fetchApy, fetchAnalytics } from '@/app/products/utils/api'
+import { fetchAnalytics, fetchApy } from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
 import { formatWei } from '@/lib/utils'
 
@@ -98,7 +98,7 @@ export function ProductList() {
   }
 
   return (
-    <div className='bg-ic-white border-ic-gray-100 mt-8 w-full overflow-scroll rounded-3xl border py-4 shadow-sm'>
+    <div className='bg-ic-white border-ic-gray-100 mt-8 w-full overflow-auto rounded-3xl border py-4 shadow-sm'>
       <div className='hidden justify-between py-6 md:flex'>
         <ProductColHeader
           className='!min-w-[400px] max-w-[460px] pl-[62px] !text-left'
