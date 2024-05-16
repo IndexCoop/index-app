@@ -2,7 +2,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
 import { providers, utils } from 'ethers'
 
-import { MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { displayFromWei } from '@/lib/utils'
@@ -11,7 +10,10 @@ import { getNetworkKey } from '@/lib/utils/api/zeroex-utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
-import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
+import {
+  getAddressForToken,
+  getCurrencyTokensForIndex,
+} from '@/lib/utils/tokens'
 
 import { IndexQuoteRequest, Quote, QuoteTransaction, QuoteType } from '../types'
 
@@ -33,8 +35,12 @@ async function getEnhancedFlashMintQuote(
   provider: IndexRpcProvider,
   jsonRpcProvider: providers.JsonRpcProvider,
 ): Promise<Quote | null> {
-  // Allow only on mainnet
-  if (chainId !== MAINNET.chainId) return null
+  const inputTokenAddress = getAddressForToken(inputToken, chainId)
+  const outputTokenAddress = getAddressForToken(outputToken, chainId)
+  if (!inputTokenAddress || !outputTokenAddress) {
+    console.warn('Error unkown input/output token')
+    return null
+  }
   const indexToken = isMinting ? outputToken : inputToken
   const inputOutputToken = isMinting ? inputToken : outputToken
   const currencies = getCurrencyTokensForIndex(indexToken, chainId)
@@ -50,8 +56,8 @@ async function getEnhancedFlashMintQuote(
     const zeroExApi = getConfiguredZeroExApi(swapPathOverride)
     const request = {
       isMinting,
-      inputToken: { ...inputToken, address: inputToken.address! },
-      outputToken: { ...outputToken, address: outputToken.address! },
+      inputToken: { ...inputToken, address: inputTokenAddress },
+      outputToken: { ...outputToken, address: outputTokenAddress },
       indexTokenAmount,
       slippage,
     }
@@ -62,7 +68,7 @@ async function getEnhancedFlashMintQuote(
       const { inputOutputAmount, tx } = quoteFM
       const transaction: QuoteTransaction = {
         account,
-        chainId: 1,
+        chainId,
         from: account,
         to: tx.to,
         data: utils.hexlify(tx.data!),
@@ -107,7 +113,7 @@ async function getEnhancedFlashMintQuote(
 
       return {
         type: QuoteType.flashmint,
-        chainId: 1,
+        chainId,
         contract: quoteFM.contract,
         isMinting,
         inputToken,

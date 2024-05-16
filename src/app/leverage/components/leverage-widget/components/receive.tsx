@@ -1,8 +1,10 @@
+import { StyledSkeleton } from '@/components/skeleton'
 import { Caption } from '@/components/swap/components/caption'
 import { SelectorButton } from '@/components/swap/components/selector-button'
 import { Token } from '@/constants/tokens'
 
 type ReceiveProps = {
+  isLoading: boolean
   outputAmount: string
   selectedOutputToken: Token
   showSelectorButtonChevron?: boolean
@@ -10,12 +12,13 @@ type ReceiveProps = {
 }
 
 export function Receive(props: ReceiveProps) {
-  const { outputAmount, selectedOutputToken } = props
+  const { isLoading, outputAmount, selectedOutputToken } = props
   return (
     <div className='flex flex-row justify-between rounded-xl border border-[#3A6060] p-4'>
       <div className='flex flex-col'>
         <Caption caption='Receive' />
-        <span>{outputAmount}</span>
+        {isLoading && <StyledSkeleton width={120} />}
+        {!isLoading && <span className='text-ic-white'>{outputAmount}</span>}
       </div>
       <SelectorButton
         image={selectedOutputToken.image}

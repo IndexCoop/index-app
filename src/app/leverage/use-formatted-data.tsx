@@ -60,9 +60,12 @@ export function useFormattedLeverageData(
     [inputTokenAmount, balance],
   )
 
-  const ouputAmount = quote?.outputTokenAmount
-    ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
-    : ''
+  const ouputAmount = useMemo(() => {
+    if (inputValue === '') return ''
+    return quote?.outputTokenAmount
+      ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
+      : ''
+  }, [inputValue, quote])
   const outputAmountUsd = quote?.outputTokenAmountUsd
     ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
     : ''

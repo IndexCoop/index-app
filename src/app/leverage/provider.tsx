@@ -32,9 +32,10 @@ import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
-import { useWallet } from '@/lib/hooks/use-wallet'
+import { publicClientToProvider, useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
+import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
 import { BaseTokenStats } from './types'
 
@@ -57,6 +58,7 @@ export interface TokenContext {
   inputTokenAmount: bigint
   baseTokens: Token[]
   currencyTokens: Token[]
+  costOfCarry: number | null
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
@@ -82,6 +84,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputTokenAmount: BigInt(0),
   baseTokens,
   currencyTokens,
+  costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
@@ -119,9 +122,10 @@ export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { chainId } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainId)
-  const { address, provider, jsonRpcProvider } = useWallet()
+  const { address, provider } = useWallet()
 
   const [inputValue, setInputValue] = useState('')
+  const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(true)
   const [inputToken, setInputToken] = useState<Token>(ETH)
@@ -239,6 +243,14 @@ export function LeverageProvider(props: { children: any }) {
     fetchStats()
   }, [baseToken])
 
+  useEffect(() => {
+    if (!publicClient || inputToken === null || outputToken === null) return
+
+    const jsonRpcProvider = publicClientToProvider(publicClient)
+    const inputOutputToken = isMinting ? outputToken : inputToken
+    fetchCostOfCarry(jsonRpcProvider, inputOutputToken, setCostOfCarry)
+  }, [publicClient, isMinting, inputToken, outputToken])
+
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
       if (input === '') {
@@ -315,16 +327,13 @@ export function LeverageProvider(props: { children: any }) {
     const fetchQuote = async () => {
       if (!address) return
       if (chainId !== ARBITRUM.chainId) return
-      if (!jsonRpcProvider || !provider || !publicClient) return
+      if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       if (!indexToken) return
-      console.log('index-token:', indexToken.symbol)
+      const jsonRpcProvider = publicClientToProvider(publicClient)
       setFetchingQuote(true)
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      const gasPrice = await provider.getGasPrice()
-      console.log(inputTokenPrice, outputTokenPrice, gasPrice.toString())
-      // Might have to use getEnhancedFlashMintQuote instead
       const quoteFlashMint = await getFlashMintQuote(
         {
           isMinting,
@@ -342,20 +351,20 @@ export function LeverageProvider(props: { children: any }) {
         provider,
         jsonRpcProvider,
       )
+      console.log(quoteFlashMint)
       const quoteResult = {
         type: QuoteType.flashmint,
         isAvailable: true,
         quote: quoteFlashMint,
         error: null,
       }
-      setFetchingQuote(false)
       setQuoteResult(quoteResult)
+      setFetchingQuote(false)
     }
     fetchQuote()
   }, [
     address,
     chainId,
-    jsonRpcProvider,
     indexToken,
     inputToken,
     inputTokenAmount,
@@ -378,6 +387,7 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         inputTokenAmount,
         baseTokens,
+        costOfCarry,
         currencyTokens,
         inputTokens,
         outputTokens,

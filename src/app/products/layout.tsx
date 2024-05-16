@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function Layout({ children }: Props) {
   return (
-    <div className="flex h-fit flex-col bg-[url('/gradient-splash.jpg')] bg-top">
+    <div className="flex h-fit flex-col bg-[url('/gradient-splash.jpg')] bg-cover">
       <ProvidersLite>
         <Header />
         <main>{children}</main>
