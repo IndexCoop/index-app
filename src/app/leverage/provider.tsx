@@ -270,7 +270,8 @@ export function LeverageProvider(props: { children: any }) {
 
         const borrowedAsset = formattedPoolReserves.find(
           (asset) =>
-            asset.symbol.toLowerCase() === outputToken.borrowedAssetSymbol,
+            asset.symbol.toLowerCase() ===
+            outputToken.borrowedAssetSymbol?.toLowerCase(),
         )
 
         if (!borrowedAsset) {
