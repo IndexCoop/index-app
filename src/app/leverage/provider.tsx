@@ -245,6 +245,7 @@ export function LeverageProvider(props: { children: any }) {
 
   useEffect(() => {
     if (!publicClient || inputToken === null || outputToken === null) return
+
     const jsonRpcProvider = publicClientToProvider(publicClient)
     const inputOutputToken = isMinting ? outputToken : inputToken
     fetchCostOfCarry(jsonRpcProvider, inputOutputToken, setCostOfCarry)

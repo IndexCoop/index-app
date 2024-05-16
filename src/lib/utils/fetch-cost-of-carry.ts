@@ -1,6 +1,6 @@
 import { ChainId, UiPoolDataProvider } from '@aave/contract-helpers'
 import { formatReserves } from '@aave/math-utils'
-import { AaveV3Ethereum } from '@bgd-labs/aave-address-book'
+import { AaveV3Arbitrum } from '@bgd-labs/aave-address-book'
 import { providers } from 'ethers'
 import { Dispatch, SetStateAction } from 'react'
 
@@ -13,12 +13,12 @@ export async function fetchCostOfCarry(
 ) {
   try {
     const poolDataProviderContract = new UiPoolDataProvider({
-      uiPoolDataProviderAddress: AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
+      uiPoolDataProviderAddress: AaveV3Arbitrum.UI_POOL_DATA_PROVIDER,
       provider: jsonRpcProvider,
-      chainId: ChainId.mainnet,
+      chainId: ChainId.arbitrum_one,
     })
     const reserves = await poolDataProviderContract.getReservesHumanized({
-      lendingPoolAddressProvider: AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+      lendingPoolAddressProvider: AaveV3Arbitrum.POOL_ADDRESSES_PROVIDER,
     })
 
     const formattedPoolReserves = formatReserves({
