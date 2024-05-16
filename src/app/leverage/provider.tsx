@@ -244,10 +244,11 @@ export function LeverageProvider(props: { children: any }) {
   }, [baseToken])
 
   useEffect(() => {
-    if (!publicClient || outputToken === null) return
+    if (!publicClient || inputToken === null || outputToken === null) return
     const jsonRpcProvider = publicClientToProvider(publicClient)
-    fetchCostOfCarry(jsonRpcProvider, outputToken, setCostOfCarry)
-  }, [publicClient, outputToken])
+    const inputOutputToken = isMinting ? outputToken : inputToken
+    fetchCostOfCarry(jsonRpcProvider, inputOutputToken, setCostOfCarry)
+  }, [publicClient, isMinting, inputToken, outputToken])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {

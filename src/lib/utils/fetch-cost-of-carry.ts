@@ -8,7 +8,7 @@ import { Token } from '@/constants/tokens'
 
 export async function fetchCostOfCarry(
   jsonRpcProvider: providers.JsonRpcProvider,
-  outputToken: Token,
+  inputOutputToken: Token,
   setCostOfCarry: Dispatch<SetStateAction<number | null>>,
 ) {
   try {
@@ -33,7 +33,7 @@ export async function fetchCostOfCarry(
     const borrowedAsset = formattedPoolReserves.find(
       (asset) =>
         asset.symbol.toLowerCase() ===
-        outputToken.borrowedAssetSymbol?.toLowerCase(),
+        inputOutputToken.borrowedAssetSymbol?.toLowerCase(),
     )
 
     if (!borrowedAsset) {
