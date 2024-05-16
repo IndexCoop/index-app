@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Hex } from 'viem'
 
-import { OPTIMISM, POLYGON } from '@/constants/chains'
+import { ARBITRUM, OPTIMISM, POLYGON } from '@/constants/chains'
 import { ZeroExAffiliateAddress } from '@/constants/server'
 import { Token } from '@/constants/tokens'
 import { toWei } from '@/lib/utils'
@@ -44,6 +44,8 @@ export type ZeroExData = {
 
 export function getNetworkKey(chainId: number): string {
   switch (chainId) {
+    case ARBITRUM.chainId:
+      return 'arbitrum'
     case POLYGON.chainId:
       return 'polygon'
     case OPTIMISM.chainId:
@@ -77,7 +79,7 @@ interface ZeroExRequest {
 export const getZeroExTradeData = async (
   request: ZeroExRequest,
   rawData: boolean = false,
-  rfq: boolean
+  rfq: boolean,
 ): Promise<Result<ZeroExData, Error>> => {
   const { amount, buyToken, chainId, isMinting, sellToken, takerAddress } =
     request
@@ -88,7 +90,7 @@ export const getZeroExTradeData = async (
     buyToken,
     amount,
     takerAddress,
-    rfq
+    rfq,
   )
   params.slippagePercentage = request.slippagePercentage
   const query = new URLSearchParams(params).toString()
@@ -105,7 +107,7 @@ export const getZeroExTradeData = async (
           isMinting,
           sellToken,
           buyToken,
-          amount
+          amount,
         )
     return { success: true, value: apiResult }
   } catch (e: any) {
@@ -133,7 +135,7 @@ export const get0xApiParams = (
   buyTokenDecimals: number,
   buySellAmount: string,
   takerAddress: string,
-  rfq: boolean = false
+  rfq: boolean = false,
 ): any => {
   const params: any = {
     sellToken,
@@ -149,7 +151,7 @@ export const get0xApiParams = (
   if (isExactInput) {
     params.sellAmount = getDecimalAdjustedAmount(
       buySellAmount,
-      sellTokenDecimals
+      sellTokenDecimals,
     )
   } else {
     params.buyAmount = getDecimalAdjustedAmount(buySellAmount, buyTokenDecimals)
@@ -177,7 +179,7 @@ const getApiParamsForTokens = (
   buyToken: Token,
   buySellAmount: string,
   takerAddress: string,
-  rfq: boolean = false
+  rfq: boolean = false,
 ): any => {
   return get0xApiParams(
     isExactInput,
@@ -187,7 +189,7 @@ const getApiParamsForTokens = (
     buyToken.decimals,
     buySellAmount,
     takerAddress,
-    rfq
+    rfq,
   )
 }
 
@@ -198,20 +200,20 @@ const processApiResult = async (
   isExactInput: boolean,
   sellToken: Token,
   buyToken: Token,
-  amount: string
+  amount: string,
 ): Promise<ZeroExData> => {
   zeroExData.displaySellAmount = getDisplayAdjustedAmount(
     zeroExData.sellAmount,
-    sellToken.decimals
+    sellToken.decimals,
   )
   zeroExData.displayBuyAmount = getDisplayAdjustedAmount(
     zeroExData.buyAmount,
-    buyToken.decimals
+    buyToken.decimals,
   )
 
   const amountInWei = toWei(
     amount,
-    isExactInput ? sellToken.decimals : buyToken.decimals
+    isExactInput ? sellToken.decimals : buyToken.decimals,
   )
   const priceInWei = toWei(zeroExData.guaranteedPrice)
   const guaranteedPrice = BigNumber.from(priceInWei)
@@ -233,14 +235,14 @@ const processApiResult = async (
 
 export const getDisplayAdjustedAmount = (
   amount: string,
-  decimals: number
+  decimals: number,
 ): number => {
   const e18 = BigNumber.from(10).pow(decimals)
   return BigNumber.from(amount).div(e18).toNumber()
 }
 
 const formatSources = (
-  sources: { name: string; proportion: string }[]
+  sources: { name: string; proportion: string }[],
 ): string => {
   const activeSources: any[] = []
 
@@ -248,7 +250,7 @@ const formatSources = (
     if (source.proportion !== '0') activeSources.push(source)
   })
   const sourceNames: string[] = activeSources.map((source) =>
-    source.name.replaceAll('_', ' ')
+    source.name.replaceAll('_', ' '),
   )
 
   return sourceNames.length === 1

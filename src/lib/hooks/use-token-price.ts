@@ -34,7 +34,7 @@ export const getTokenPrice = async (
   if (!tokenAddress || !chainId) return 0
   if (isIndexToken(token)) {
     const navProvider = new NavProvider()
-    const price = await navProvider.getNavPrice(token.symbol)
+    const price = await navProvider.getNavPrice(token.symbol, chainId)
     return price
   }
   const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
