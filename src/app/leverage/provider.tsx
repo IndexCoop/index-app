@@ -1,9 +1,6 @@
 'use client'
 
-import { ChainId, UiPoolDataProvider } from '@aave/contract-helpers'
-import { formatReserves } from '@aave/math-utils'
-import { AaveV3Ethereum } from '@bgd-labs/aave-address-book'
-import { BigNumber, providers } from 'ethers'
+import { BigNumber } from 'ethers'
 import {
   createContext,
   useCallback,
@@ -38,6 +35,7 @@ import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { publicClientToProvider, useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
+import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
 import { BaseTokenStats } from './types'
 
@@ -246,50 +244,9 @@ export function LeverageProvider(props: { children: any }) {
   }, [baseToken])
 
   useEffect(() => {
-    async function fetchCostOfCarry(
-      jsonRpcProvider: providers.JsonRpcProvider,
-    ) {
-      try {
-        const poolDataProviderContract = new UiPoolDataProvider({
-          uiPoolDataProviderAddress: AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
-          provider: jsonRpcProvider,
-          chainId: ChainId.mainnet,
-        })
-        const reserves = await poolDataProviderContract.getReservesHumanized({
-          lendingPoolAddressProvider: AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
-        })
-
-        const formattedPoolReserves = formatReserves({
-          reserves: reserves.reservesData,
-          currentTimestamp: Math.floor(Date.now() / 1000),
-          marketReferenceCurrencyDecimals:
-            reserves.baseCurrencyData.marketReferenceCurrencyDecimals,
-          marketReferencePriceInUsd:
-            reserves.baseCurrencyData.marketReferenceCurrencyPriceInUsd,
-        })
-
-        const borrowedAsset = formattedPoolReserves.find(
-          (asset) =>
-            asset.symbol.toLowerCase() ===
-            outputToken.borrowedAssetSymbol?.toLowerCase(),
-        )
-
-        if (!borrowedAsset) {
-          return
-        }
-
-        setCostOfCarry(
-          Number(borrowedAsset.variableBorrowAPY) -
-            Number(borrowedAsset.supplyAPY),
-        )
-      } catch (e) {
-        console.error('Caught error while fetching borrow rates', e)
-      }
-    }
-
     if (!publicClient || outputToken === null) return
     const jsonRpcProvider = publicClientToProvider(publicClient)
-    fetchCostOfCarry(jsonRpcProvider)
+    fetchCostOfCarry(jsonRpcProvider, outputToken, setCostOfCarry)
   }, [publicClient, outputToken])
 
   const onChangeInputTokenAmount = useCallback(
