@@ -66,6 +66,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
 
   const {
     hasInsufficientFunds,
+    inputAmoutUsd,
     inputBalance,
     inputBalanceFormatted,
     isFetchingQuote,
@@ -173,7 +174,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         config={{ isReadOnly: false }}
         balance={inputBalanceFormatted}
         caption='You pay'
-        formattedFiat={''}
+        formattedFiat={inputAmoutUsd}
         selectedToken={inputToken}
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
@@ -181,6 +182,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onSelectToken={onOpenSelectInputToken}
       />
       <Receive
+        isLoading={isFetchingQuote}
         outputAmount={ouputAmount}
         selectedOutputToken={outputToken}
         onSelectToken={onOpenSelectOutputToken}

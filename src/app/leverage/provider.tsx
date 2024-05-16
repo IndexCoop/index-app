@@ -122,7 +122,7 @@ export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { chainId } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainId)
-  const { address, provider, jsonRpcProvider } = useWallet()
+  const { address, provider } = useWallet()
 
   const [inputValue, setInputValue] = useState('')
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
@@ -327,16 +327,13 @@ export function LeverageProvider(props: { children: any }) {
     const fetchQuote = async () => {
       if (!address) return
       if (chainId !== ARBITRUM.chainId) return
-      if (!jsonRpcProvider || !provider || !publicClient) return
+      if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       if (!indexToken) return
-      console.log('index-token:', indexToken.symbol)
+      const jsonRpcProvider = publicClientToProvider(publicClient)
       setFetchingQuote(true)
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      const gasPrice = await provider.getGasPrice()
-      console.log(inputTokenPrice, outputTokenPrice, gasPrice.toString())
-      // Might have to use getEnhancedFlashMintQuote instead
       const quoteFlashMint = await getFlashMintQuote(
         {
           isMinting,
@@ -354,20 +351,20 @@ export function LeverageProvider(props: { children: any }) {
         provider,
         jsonRpcProvider,
       )
+      console.log(quoteFlashMint)
       const quoteResult = {
         type: QuoteType.flashmint,
         isAvailable: true,
         quote: quoteFlashMint,
         error: null,
       }
-      setFetchingQuote(false)
       setQuoteResult(quoteResult)
+      setFetchingQuote(false)
     }
     fetchQuote()
   }, [
     address,
     chainId,
-    jsonRpcProvider,
     indexToken,
     inputToken,
     inputTokenAmount,
