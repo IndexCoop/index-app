@@ -35,7 +35,7 @@ import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
-import { useWallet } from '@/lib/hooks/use-wallet'
+import { publicClientToProvider, useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 
@@ -286,9 +286,10 @@ export function LeverageProvider(props: { children: any }) {
       }
     }
 
-    if (!jsonRpcProvider || outputToken === null) return
+    if (!publicClient || outputToken === null) return
+    const jsonRpcProvider = publicClientToProvider(publicClient)
     fetchCostOfCarry(jsonRpcProvider)
-  }, [jsonRpcProvider, outputToken])
+  }, [publicClient, outputToken])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {

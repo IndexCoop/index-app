@@ -17,7 +17,7 @@ type Account = {
   isConnected: boolean
 }
 
-function publicClientToProvider(publicClient: PublicClient) {
+export function publicClientToProvider(publicClient: PublicClient) {
   const { chain, transport } = publicClient
   const network = {
     chainId: chain?.id ?? 1,
