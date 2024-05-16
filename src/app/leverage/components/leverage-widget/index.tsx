@@ -50,6 +50,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     inputTokens,
     inputValue,
     isMinting,
+    costOfCarry,
     leverageType,
     outputTokens,
     stats,
@@ -185,7 +186,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
-      <Fees leverageType={leverageType} />
+      <Fees costOfCarry={costOfCarry} leverageType={leverageType} />
       <TradeButton
         label={buttonLabel}
         isDisabled={isDisabled}

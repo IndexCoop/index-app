@@ -32,9 +32,10 @@ import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
-import { useWallet } from '@/lib/hooks/use-wallet'
+import { publicClientToProvider, useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
+import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
 import { BaseTokenStats } from './types'
 
@@ -57,6 +58,7 @@ export interface TokenContext {
   inputTokenAmount: bigint
   baseTokens: Token[]
   currencyTokens: Token[]
+  costOfCarry: number | null
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
@@ -82,6 +84,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputTokenAmount: BigInt(0),
   baseTokens,
   currencyTokens,
+  costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
@@ -122,6 +125,7 @@ export function LeverageProvider(props: { children: any }) {
   const { address, provider, jsonRpcProvider } = useWallet()
 
   const [inputValue, setInputValue] = useState('')
+  const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(true)
   const [inputToken, setInputToken] = useState<Token>(ETH)
@@ -238,6 +242,14 @@ export function LeverageProvider(props: { children: any }) {
     }
     fetchStats()
   }, [baseToken])
+
+  useEffect(() => {
+    if (!publicClient || inputToken === null || outputToken === null) return
+
+    const jsonRpcProvider = publicClientToProvider(publicClient)
+    const inputOutputToken = isMinting ? outputToken : inputToken
+    fetchCostOfCarry(jsonRpcProvider, inputOutputToken, setCostOfCarry)
+  }, [publicClient, isMinting, inputToken, outputToken])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -378,6 +390,7 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         inputTokenAmount,
         baseTokens,
+        costOfCarry,
         currencyTokens,
         inputTokens,
         outputTokens,
