@@ -191,6 +191,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       <Fees costOfCarry={costOfCarry} leverageType={leverageType} />
       <TradeButton
         label={buttonLabel}
+        isDarkMode
         isDisabled={isDisabled}
         isLoading={isFetchingQuote}
         onClick={onClickButton}

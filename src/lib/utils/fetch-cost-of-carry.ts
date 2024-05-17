@@ -41,7 +41,7 @@ export async function fetchCostOfCarry(
     }
 
     setCostOfCarry(
-      Number(borrowedAsset.variableBorrowAPY) - Number(borrowedAsset.supplyAPY),
+      Number(borrowedAsset.supplyAPY) - Number(borrowedAsset.variableBorrowAPY),
     )
   } catch (e) {
     console.error('Caught error while fetching borrow rates', e)

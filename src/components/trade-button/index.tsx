@@ -1,10 +1,11 @@
-import { Button } from '@chakra-ui/react'
+import { Button, Spinner } from '@chakra-ui/react'
 import clsx from 'clsx'
 
 import { colors } from '@/lib/styles/colors'
 
 interface TradeButtonProps {
   label: string
+  isDarkMode?: boolean
   isDisabled: boolean
   isLoading: boolean
   onClick: () => void
@@ -26,6 +27,9 @@ export const TradeButton = (props: TradeButtonProps) => {
       fontSize='16px'
       fontWeight='700'
       isLoading={props.isLoading}
+      spinner={
+        <Spinner color={props.isDarkMode ? colors.ic.gray[100] : '#555555'} />
+      }
       height='54px'
       w='100%'
       onClick={props.onClick}
