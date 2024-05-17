@@ -6,6 +6,7 @@ import { ETH, Token } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isAddress } from '@/lib/utils'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 export const useApproval = (
   token: Token,
@@ -18,15 +19,21 @@ export const useApproval = (
 
   const [isApproving, setIsApproving] = useState(false)
 
+  const tokenAddress = useMemo(() => {
+    if (!publicClient) return null
+    const chainId = publicClient?.chain.id
+    return getAddressForToken(token, chainId) ?? null
+  }, [publicClient, token])
+
   const { data, refetch } = useReadContract({
-    address: token.address as Address,
+    address: tokenAddress as Address,
     abi: ERC20_ABI,
     functionName: 'allowance',
     args: [address as Address, spenderAddress as Address],
     query: {
       enabled:
-        typeof token.address === 'string' &&
-        isAddress(token.address) &&
+        typeof tokenAddress === 'string' &&
+        isAddress(tokenAddress) &&
         token.symbol !== ETH.symbol,
     },
   })
@@ -42,7 +49,7 @@ export const useApproval = (
     setIsApproving(true)
     try {
       const hash = await walletClient.writeContract({
-        address: token.address as Address,
+        address: tokenAddress as Address,
         abi: ERC20_ABI,
         functionName: 'approve',
         args: [spenderAddress as Address, amount],
@@ -61,7 +68,7 @@ export const useApproval = (
     publicClient,
     refetch,
     spenderAddress,
-    token.address,
+    tokenAddress,
     walletClient,
   ])
 
