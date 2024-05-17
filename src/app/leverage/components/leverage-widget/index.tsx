@@ -8,6 +8,7 @@ import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
+import { WarningType, Warnings } from '@/components/swap/components/warning'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
 import {
   TradeButtonState,
@@ -191,10 +192,14 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       <Fees costOfCarry={costOfCarry} leverageType={leverageType} />
       <TradeButton
         label={buttonLabel}
+        isDarkMode
         isDisabled={isDisabled}
         isLoading={isFetchingQuote}
         onClick={onClickButton}
       />
+      {buttonState === TradeButtonState.signTerms && (
+        <Warnings warnings={[WarningType.signTerms]} />
+      )}
       <SelectTokenModal
         isDarkMode={true}
         isOpen={isSelectInputTokenOpen}

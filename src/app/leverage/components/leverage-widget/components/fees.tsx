@@ -65,7 +65,7 @@ export function Fees(props: FeesProps) {
             {props.costOfCarry !== null && (
               <FeesItem
                 label='Cost of Carry'
-                showPositiveFee={props.costOfCarry < 0}
+                showPositiveFee={props.costOfCarry > 0}
                 percent={new Intl.NumberFormat('en-us', {
                   style: 'percent',
                   minimumFractionDigits: 2,
