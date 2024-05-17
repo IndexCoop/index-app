@@ -3,6 +3,7 @@ import { IndexCoopInverseEthereumIndex } from '@indexcoop/flash-mint-sdk'
 import { ARBITRUM, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import { currencies, indicesTokenList } from '@/constants/tokenlists'
 import {
+  BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
   DAI,
@@ -145,6 +146,8 @@ export function isAvailableForIssuance(
   outputToken: Token,
 ): boolean {
   return (
+    inputToken.symbol === BedIndex.symbol ||
+    inputToken.symbol === GitcoinStakedETHIndex.symbol ||
     inputToken.symbol === HighYieldETHIndex.symbol ||
     outputToken.symbol === HighYieldETHIndex.symbol ||
     inputToken.symbol === LeveragedRethStakingYield.symbol

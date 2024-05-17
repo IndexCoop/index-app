@@ -1,7 +1,8 @@
+import { getIssuanceModule } from '@indexcoop/flash-mint-sdk'
 import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
-import { Token } from '@/constants/tokens'
+import { BedIndex, LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { formatWei } from '@/lib/utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
@@ -30,7 +31,6 @@ export async function getEnhancedIssuanceQuote(
   request: IssuanceQuoteRequest,
   publicClient: PublicClient,
 ): Promise<Quote | null> {
-  const contract = '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
   const {
     account,
     isIssuance,
@@ -42,6 +42,16 @@ export async function getEnhancedIssuanceQuote(
     outputToken,
     outputTokenPrice,
   } = request
+
+  const chainId = 1
+  let contract = getIssuanceModule(inputToken.symbol, chainId)
+    .address as Address
+  if (
+    BedIndex.symbol === inputToken.symbol ||
+    LeveragedRethStakingYield.symbol === inputToken.symbol
+  ) {
+    contract = '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
+  }
 
   if (!isAvailableForIssuance(inputToken, outputToken)) return null
   if (inputTokenAmount <= 0) return null

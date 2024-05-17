@@ -21,7 +21,11 @@ import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, toWei } from '@/lib/utils'
 
-export const inputTokenList = [GitcoinStakedETHIndex, RETH, BedIndex]
+export const inputTokenList = [
+  GitcoinStakedETHIndex,
+  LeveragedRethStakingYield,
+  BedIndex,
+]
 
 interface RedeemContextProps {
   inputTokenList: Token[]
