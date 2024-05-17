@@ -2,7 +2,10 @@ import { useMemo } from 'react'
 
 import { TradeButtonState } from './use-trade-button-state'
 
-export const useTradeButton = (buttonState: TradeButtonState) => {
+export function useTradeButton(
+  buttonState: TradeButtonState,
+  labelOverrides: { [key: number]: string } = {},
+) {
   /**
    * Returns the correct trade button label according to different states.
    * @returns string label for trade button
@@ -30,9 +33,9 @@ export const useTradeButton = (buttonState: TradeButtonState) => {
       case TradeButtonState.wrongNetwork:
         return 'Wrong Network'
       default:
-        return 'Swap'
+        return labelOverrides[TradeButtonState.default] ?? 'Swap'
     }
-  }, [buttonState])
+  }, [buttonState, labelOverrides])
 
   const isDisabled = useMemo(() => {
     switch (buttonState) {

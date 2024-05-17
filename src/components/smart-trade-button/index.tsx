@@ -26,12 +26,14 @@ type SmartTradeButtonProps = {
   hasInsufficientFunds: boolean
   isFetchingQuote: boolean
   isSupportedNetwork: boolean
+  buttonLabelOverrides: { [key: number]: string }
   onOpenTransactionReview: () => void
   onRefetchQuote: () => void
 }
 
 export function SmartTradeButton(props: SmartTradeButtonProps) {
   const {
+    buttonLabelOverrides,
     contract,
     hasFetchingError,
     hasInsufficientFunds,
@@ -79,7 +81,10 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     outputToken,
     inputValue,
   )
-  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+  const { buttonLabel, isDisabled } = useTradeButton(
+    buttonState,
+    buttonLabelOverrides,
+  )
 
   const [warnings, setWarnings] = useState<WarningType[]>([])
 

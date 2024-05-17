@@ -252,6 +252,7 @@ export const Swap = (props: SwapProps) => {
             isFetchingQuote={isFetchingAnyQuote}
             isSupportedNetwork={isSupportedNetwork}
             outputToken={outputToken}
+            buttonLabelOverrides={{}}
             onOpenTransactionReview={onOpenTransactionReview}
             onRefetchQuote={fetchOptions}
           />

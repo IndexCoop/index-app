@@ -17,6 +17,7 @@ export interface FormattedLeverageData {
   hasInsufficientFunds: boolean
   gasFeesEth: string
   gasFeesUsd: string
+  contract: string | null
   inputAmount: string
   inputAmoutUsd: string
   inputBalance: bigint
@@ -47,6 +48,8 @@ export function useFormattedLeverageData(
   } = useFormattedBalance(inputToken, address)
 
   const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
+
+  const contract = useMemo(() => quote?.contract ?? null, [quote])
 
   const inputAmount = quote?.inputTokenAmount
     ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount.toBigInt(), quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
@@ -100,6 +103,7 @@ export function useFormattedLeverageData(
     gasFeesUsd: quote?.gasCostsInUsd
       ? `$${formatAmount(quote.gasCostsInUsd)}`
       : '',
+    contract,
     inputAmount,
     inputAmoutUsd,
     inputBalance: balance,
