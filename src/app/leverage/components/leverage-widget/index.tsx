@@ -30,6 +30,7 @@ import { LeverageSelector } from './components/leverage-selector'
 import { Receive } from './components/receive'
 import { Summary } from './components/summary'
 
+import { WarningType, Warnings } from '@/components/swap/components/warning'
 import './styles.css'
 
 type LeverageWidgetProps = {
@@ -196,6 +197,9 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         isLoading={isFetchingQuote}
         onClick={onClickButton}
       />
+      {buttonState === TradeButtonState.signTerms && (
+        <Warnings warnings={[WarningType.signTerms]} />
+      )}
       <SelectTokenModal
         isDarkMode={true}
         isOpen={isSelectInputTokenOpen}
