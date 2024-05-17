@@ -1,15 +1,13 @@
 import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
-import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
 import { OnrampModal } from '@/components/onramp'
+import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
-import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
-import { useApproval } from '@/lib/hooks/use-approval'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useMainnetOnly, useNetwork } from '@/lib/hooks/use-network'
@@ -17,24 +15,17 @@ import { useTokenlists } from '@/lib/hooks/use-tokenlists'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useProtection } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
-import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
-import { getNativeToken, getTokenBySymbol } from '@/lib/utils/tokens'
+import { getTokenBySymbol } from '@/lib/utils/tokens'
 
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
 import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
-import { Warnings, WarningType } from './components/warning'
 import { useSwap } from './hooks/use-swap'
-import { useTradeButton } from './hooks/use-trade-button'
-import {
-  TradeButtonState,
-  useTradeButtonState,
-} from './hooks/use-trade-button-state'
 import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
 
 type SwapProps = {
@@ -55,8 +46,6 @@ function isTokenPairTradable(
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
   const isSupportedNetwork = useMainnetOnly()
-  const { openChainModal } = useChainModal()
-  const { openConnectModal } = useConnectModal()
   const { logEvent } = useAnalytics()
   const requiresProtection = useProtection()
   const isTradablePair = useMemo(
@@ -102,7 +91,7 @@ export const Swap = (props: SwapProps) => {
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [selectedQuote, setSelectedQuote] = useState<QuoteType | null>(null)
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
-  const [warnings, setWarnings] = useState<WarningType[]>([])
+  // const [warnings, setWarnings] = useState<WarningType[]>([])
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
@@ -111,7 +100,6 @@ export const Swap = (props: SwapProps) => {
     inputToken,
     outputToken,
   )
-  const { signTermsOfService } = useSignTerms()
   const { transactionReview } = useTransactionReviewModal(
     quoteResults,
     selectedQuote,
@@ -141,45 +129,22 @@ export const Swap = (props: SwapProps) => {
     isFetchingRedemption,
   )
 
-  const {
-    isApproved: isApprovedForSwap,
-    isApproving: isApprovingForSwap,
-    approve: onApproveForSwap,
-  } = useApproval(inputToken, contract, inputTokenAmountWei.toBigInt())
-
-  const shouldApprove = useMemo(() => {
-    const nativeToken = getNativeToken(chainId)
-    const isNativeToken = nativeToken?.symbol === inputToken.symbol
-    return !isNativeToken
-  }, [chainId, inputToken])
-
-  const buttonState = useTradeButtonState(
-    isSupportedNetwork,
-    hasFetchingError,
-    hasInsufficientFunds,
-    shouldApprove,
-    isApprovedForSwap,
-    isApprovingForSwap,
-    outputToken,
-    sellTokenAmount,
-  )
-  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
-
-  useEffect(() => {
-    if (!isTradablePair) {
-      setWarnings([WarningType.restricted])
-      return
-    }
-    if (buttonState === TradeButtonState.signTerms) {
-      setWarnings([WarningType.signTerms])
-      return
-    }
-    if (slippage > 9) {
-      setWarnings([WarningType.priceImpact])
-      return
-    }
-    setWarnings([WarningType.flashbots])
-  }, [buttonState, isTradablePair, slippage])
+  // TODO:
+  // useEffect(() => {
+  //   if (!isTradablePair) {
+  //     setWarnings([WarningType.restricted])
+  //     return
+  //   }
+  //   if (buttonState === TradeButtonState.signTerms) {
+  //     setWarnings([WarningType.signTerms])
+  //     return
+  //   }
+  //   if (slippage > 9) {
+  //     setWarnings([WarningType.priceImpact])
+  //     return
+  //   }
+  //   setWarnings([WarningType.flashbots])
+  // }, [buttonState, isTradablePair, slippage])
 
   useEffect(() => {
     setSelectedQuote(quoteResults?.bestQuote)
@@ -236,53 +201,6 @@ export const Swap = (props: SwapProps) => {
     setInputTokenAmountFormatted(inputTokenBalance)
     setSellTokenAmount(inputTokenBalance)
   }, [inputTokenBalance, setSellTokenAmount])
-
-  const onClickTradeButton = useCallback(async () => {
-    if (buttonState === TradeButtonState.connectWallet) {
-      if (openConnectModal) {
-        openConnectModal()
-      }
-      return
-    }
-
-    if (buttonState === TradeButtonState.signTerms) {
-      await signTermsOfService()
-      return
-    }
-
-    if (buttonState === TradeButtonState.wrongNetwork) {
-      if (openChainModal) {
-        openChainModal()
-      }
-      return
-    }
-
-    if (buttonState === TradeButtonState.fetchingError) {
-      fetchOptions()
-      return
-    }
-
-    if (buttonState === TradeButtonState.insufficientFunds) return
-
-    if (!isApprovedForSwap && shouldApprove) {
-      await onApproveForSwap()
-      return
-    }
-
-    if (buttonState === TradeButtonState.default) {
-      onOpenTransactionReview()
-    }
-  }, [
-    buttonState,
-    fetchOptions,
-    isApprovedForSwap,
-    onApproveForSwap,
-    signTermsOfService,
-    onOpenTransactionReview,
-    openChainModal,
-    openConnectModal,
-    shouldApprove,
-  ])
 
   const onSwitchTokens = () => {
     toggleIsMinting()
@@ -351,14 +269,21 @@ export const Swap = (props: SwapProps) => {
           </Text>
         )}
         {isTradablePair && (
-          <TradeButton
-            label={buttonLabel}
-            isDisabled={isDisabled}
-            isLoading={isApprovingForSwap || isFetchingAnyQuote}
-            onClick={onClickTradeButton}
+          <SmartTradeButton
+            contract={contract ?? ''}
+            hasFetchingError={hasFetchingError}
+            hasInsufficientFunds={hasInsufficientFunds}
+            inputTokenAmount={inputTokenAmountWei.toBigInt()}
+            inputToken={inputToken}
+            inputValue={sellTokenAmount}
+            isFetchingQuote={isFetchingAnyQuote}
+            isSupportedNetwork={isSupportedNetwork}
+            outputToken={outputToken}
+            onOpenTransactionReview={onOpenTransactionReview}
+            onRefetchQuote={fetchOptions}
           />
         )}
-        <Warnings warnings={warnings} />
+        {/* <Warnings warnings={warnings} /> */}
       </>
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
