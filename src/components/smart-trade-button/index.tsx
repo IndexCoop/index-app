@@ -1,11 +1,16 @@
-import { useMemo } from 'react'
+import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
+import { useCallback, useMemo } from 'react'
 
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
-import { useTradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
+import {
+  TradeButtonState,
+  useTradeButtonState,
+} from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { useNetwork } from '@/lib/hooks/use-network'
+import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { getNativeToken } from '@/lib/utils/tokens'
 
 type SmartTradeButtonProps = {
@@ -18,6 +23,8 @@ type SmartTradeButtonProps = {
   hasInsufficientFunds: boolean
   isFetchingQuote: boolean
   isSupportedNetwork: boolean
+  onOpenTransactionReview: () => void
+  onRefetchQuote: () => void
 }
 
 export function SmartTradeButton(props: SmartTradeButtonProps) {
@@ -31,9 +38,14 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     isFetchingQuote,
     isSupportedNetwork,
     outputToken,
+    onOpenTransactionReview,
+    onRefetchQuote,
   } = props
 
+  const { openChainModal } = useChainModal()
+  const { openConnectModal } = useConnectModal()
   const { chainId } = useNetwork()
+  const { signTermsOfService } = useSignTerms()
 
   const {
     isApproved: isApprovedForSwap,
@@ -59,9 +71,52 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
 
-  const onClick = () => {
-    // TODO:
-  }
+  const onClick = useCallback(async () => {
+    if (buttonState === TradeButtonState.connectWallet) {
+      if (openConnectModal) {
+        openConnectModal()
+      }
+      return
+    }
+
+    if (buttonState === TradeButtonState.signTerms) {
+      await signTermsOfService()
+      return
+    }
+
+    if (buttonState === TradeButtonState.wrongNetwork) {
+      if (openChainModal) {
+        openChainModal()
+      }
+      return
+    }
+
+    if (buttonState === TradeButtonState.fetchingError) {
+      onRefetchQuote()
+      return
+    }
+
+    if (buttonState === TradeButtonState.insufficientFunds) return
+
+    if (!isApprovedForSwap && shouldApprove) {
+      await onApproveForSwap()
+      return
+    }
+
+    if (buttonState === TradeButtonState.default) {
+      onOpenTransactionReview()
+    }
+  }, [
+    buttonState,
+    isApprovedForSwap,
+    onApproveForSwap,
+    onOpenTransactionReview,
+    onRefetchQuote,
+    openChainModal,
+    openConnectModal,
+    signTermsOfService,
+    shouldApprove,
+  ])
 
   return (
     <TradeButton
