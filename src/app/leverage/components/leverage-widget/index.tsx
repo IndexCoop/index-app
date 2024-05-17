@@ -8,6 +8,7 @@ import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
+import { WarningType, Warnings } from '@/components/swap/components/warning'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
 import {
   TradeButtonState,
@@ -30,7 +31,6 @@ import { LeverageSelector } from './components/leverage-selector'
 import { Receive } from './components/receive'
 import { Summary } from './components/summary'
 
-import { WarningType, Warnings } from '@/components/swap/components/warning'
 import './styles.css'
 
 type LeverageWidgetProps = {
