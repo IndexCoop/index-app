@@ -1,6 +1,7 @@
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { Warnings, WarningType } from '@/components/swap/components/warning'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
 import {
   TradeButtonState,
@@ -10,8 +11,10 @@ import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { useNetwork } from '@/lib/hooks/use-network'
+import { useProtection } from '@/lib/providers/protection'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
-import { getNativeToken } from '@/lib/utils/tokens'
+import { useSlippage } from '@/lib/providers/slippage'
+import { getNativeToken, isTokenPairTradable } from '@/lib/utils/tokens'
 
 type SmartTradeButtonProps = {
   inputToken: Token
@@ -45,13 +48,20 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
   const { chainId } = useNetwork()
+  const requiresProtection = useProtection()
   const { signTermsOfService } = useSignTerms()
+  const { slippage } = useSlippage()
 
   const {
     isApproved: isApprovedForSwap,
     isApproving: isApprovingForSwap,
     approve: onApproveForSwap,
   } = useApproval(inputToken, contract, inputTokenAmount)
+
+  const isTradablePair = useMemo(
+    () => isTokenPairTradable(requiresProtection, inputToken, outputToken),
+    [requiresProtection, inputToken, outputToken],
+  )
 
   const shouldApprove = useMemo(() => {
     const nativeToken = getNativeToken(chainId)
@@ -70,6 +80,24 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     inputValue,
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+
+  const [warnings, setWarnings] = useState<WarningType[]>([])
+
+  useEffect(() => {
+    if (!isTradablePair) {
+      setWarnings([WarningType.restricted])
+      return
+    }
+    if (buttonState === TradeButtonState.signTerms) {
+      setWarnings([WarningType.signTerms])
+      return
+    }
+    if (slippage > 9) {
+      setWarnings([WarningType.priceImpact])
+      return
+    }
+    setWarnings([WarningType.flashbots])
+  }, [buttonState, isTradablePair, slippage])
 
   const onClick = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
@@ -119,11 +147,14 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   ])
 
   return (
-    <TradeButton
-      label={buttonLabel}
-      isDisabled={isDisabled}
-      isLoading={isApprovingForSwap || isFetchingQuote}
-      onClick={onClick}
-    />
+    <>
+      <TradeButton
+        label={buttonLabel}
+        isDisabled={isDisabled}
+        isLoading={isApprovingForSwap || isFetchingQuote}
+        onClick={onClick}
+      />
+      <Warnings warnings={warnings} />
+    </>
   )
 }

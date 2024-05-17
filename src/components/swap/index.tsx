@@ -18,7 +18,7 @@ import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
-import { getTokenBySymbol } from '@/lib/utils/tokens'
+import { getTokenBySymbol, isTokenPairTradable } from '@/lib/utils/tokens'
 
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
@@ -32,15 +32,6 @@ type SwapProps = {
   isBuying: boolean
   inputToken: Token
   outputToken: Token
-}
-
-function isTokenPairTradable(
-  requiresProtection: boolean,
-  inputToken: Token,
-  outputToken: Token,
-): boolean {
-  if (!requiresProtection) return true
-  return !inputToken.isDangerous && !outputToken.isDangerous
 }
 
 export const Swap = (props: SwapProps) => {
@@ -91,7 +82,6 @@ export const Swap = (props: SwapProps) => {
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [selectedQuote, setSelectedQuote] = useState<QuoteType | null>(null)
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
-  // const [warnings, setWarnings] = useState<WarningType[]>([])
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
@@ -128,23 +118,6 @@ export const Swap = (props: SwapProps) => {
     isFetchingFlashmint,
     isFetchingRedemption,
   )
-
-  // TODO:
-  // useEffect(() => {
-  //   if (!isTradablePair) {
-  //     setWarnings([WarningType.restricted])
-  //     return
-  //   }
-  //   if (buttonState === TradeButtonState.signTerms) {
-  //     setWarnings([WarningType.signTerms])
-  //     return
-  //   }
-  //   if (slippage > 9) {
-  //     setWarnings([WarningType.priceImpact])
-  //     return
-  //   }
-  //   setWarnings([WarningType.flashbots])
-  // }, [buttonState, isTradablePair, slippage])
 
   useEffect(() => {
     setSelectedQuote(quoteResults?.bestQuote)
@@ -283,7 +256,6 @@ export const Swap = (props: SwapProps) => {
             onRefetchQuote={fetchOptions}
           />
         )}
-        {/* <Warnings warnings={warnings} /> */}
       </>
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
