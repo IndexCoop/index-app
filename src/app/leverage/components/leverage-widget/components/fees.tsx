@@ -40,7 +40,7 @@ export function Fees(props: FeesProps) {
         <div className='p-4'>
           <dt>
             <Disclosure.Button className='text-ic-gray-300 flex w-full items-center justify-between text-left'>
-              <span className='text-xs font-medium'>Fees and Costs</span>
+              <span className='text-xs font-medium'>Costs and Fees</span>
               <div className='flex flex-row items-center gap-1'>
                 <span className='flex items-center'>
                   {open ? (
@@ -65,7 +65,7 @@ export function Fees(props: FeesProps) {
             {props.costOfCarry !== null && (
               <FeesItem
                 label='Cost of Carry'
-                showPositiveFee={props.costOfCarry < 0}
+                showPositiveFee={props.costOfCarry > 0}
                 percent={new Intl.NumberFormat('en-us', {
                   style: 'percent',
                   minimumFractionDigits: 2,
