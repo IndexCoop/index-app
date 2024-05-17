@@ -30,7 +30,7 @@
     "@indexcoop/flash-mint-sdk": "2.5.0",
     "@indexcoop/tokenlists": "1.42.0",
     "@rainbow-me/rainbowkit": "^2.0.7",
-    "@tanstack/react-query": "^5.29.2",
+    "@tanstack/react-query": "5.36.2",
     "@visx/visx": "^3.8.0",
     "eslint": "8.42.0",
     "eslint-config-next": "^13.5.4",
@@ -43,8 +43,8 @@
     "react-ga4": "2.1.0",
     "react-loading-skeleton": "^3.3.1",
     "use-debounce": "^10.0.0",
-    "viem": "^2.9.23",
-    "wagmi": "^2.5.20"
+    "viem": "2.10.9",
+    "wagmi": "2.9.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
