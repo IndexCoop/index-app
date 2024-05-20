@@ -4,7 +4,7 @@ import { displayFromWei, parseUnits, toWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 
-import { IndexQuoteRequest, QuoteType } from '../types'
+import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
 
 import { getPriceImpact } from './price-impact'
 
@@ -14,7 +14,32 @@ interface ExtendedIndexQuoteRequest extends IndexQuoteRequest {
   nativeTokenPrice: number
 }
 
-export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
+interface QuoteResponseTransaction {
+  data: string
+  to: string
+  value: string
+  gasPrice?: string
+  gasLimit?: string
+  from?: string
+  chainId?: number
+}
+
+interface QuoteResponse {
+  type: string
+  chainId: number
+  contract: string
+  takerAddress: string
+  inputToken: string
+  outputToken: string
+  inputAmount: string // in wei
+  outputAmount: string // in wei
+  rawResponse: any
+  transaction: QuoteResponseTransaction
+}
+
+export async function getIndexQuote(
+  request: ExtendedIndexQuoteRequest,
+): Promise<ZeroExQuote | null> {
   const {
     chainId,
     address,
@@ -37,13 +62,13 @@ export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
     const path = `/quote?takerAddress=${address}&inputToken=${inputToken.address}&outputToken=${outputToken.address}&inputAmount=${inputAmount.toString()}&chainId=${chainId}`
     console.log(path)
     const indexApi = new IndexApi()
-    const res = await indexApi.get(path)
-    const estimate = res?.estimate
+    const res: QuoteResponse = await indexApi.get(path)
+    const estimate = res.rawResponse.estimate
     const gasLimit0x = BigNumber.from(estimate?.gasCosts[0].limit ?? '0')
     const gasPrice0x = BigNumber.from(estimate?.gasCosts[0].price ?? '0')
     const gas0x = gasPrice0x.mul(gasLimit0x)
     const inputTokenAmountBn = toWei(inputTokenAmount, inputToken.decimals)
-    const outputTokenAmount = BigNumber.from(estimate?.toAmount ?? '0')
+    const outputTokenAmount = BigNumber.from(res.outputAmount)
     const gasCostsInUsd = getGasCostsInUsd(gas0x.toBigInt(), nativeTokenPrice)
 
     const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
@@ -68,7 +93,7 @@ export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
     return {
       type: QuoteType.zeroex,
       chainId,
-      contract: estimate.approvalAddress,
+      contract: res.contract,
       isMinting,
       inputToken,
       outputToken,
@@ -92,10 +117,10 @@ export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
       slippage,
       tx: {
         account: address,
-        data: res.transactionRequest.data,
+        data: res.transaction.data,
         from: address, // define for simulations which otherwise might fail
-        to: res.transactionRequest.to,
-        value: res.transactionRequest.value,
+        to: res.transaction.to,
+        value: BigNumber.from(res.transaction.value),
       },
       // 0x type specific properties (will change with interface changes to the quote API)
       minOutput: BigNumber.from(estimate.toAmountMin),
