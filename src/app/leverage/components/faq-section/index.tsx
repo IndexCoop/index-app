@@ -92,7 +92,7 @@ export function FaqSection() {
           and conditions before your first action. Make sure you are connected
           to Arbitrum and that you have sufficient funds in your wallet. Now you
           can input the desired amount of collateral and click ‘Review
-          Transaction’ which will open a transaction review popup. Click ”Submit
+          Transaction’ which will open a transaction review popup. Click “Submit
           Transaction”. This will run a transaction simulation and in case of a
           successful simulation send it to your wallet. Use your wallet to sign
           the transaction. If you want to see your new balance, click “Sell” in
@@ -174,7 +174,7 @@ export function FaqSection() {
         </p>
         <p>
           Costs associated with utilising assets within Aave involve the concept
-          of ”Cost of Carry,” wherein assets deposited accrue interest from
+          of “Cost of Carry,” wherein assets deposited accrue interest from
           borrowers. This results in a spread between the interest earned from
           deposits and the interest paid for the debt. For example, if ETH2x
           deposits $1,000 of WETH and borrows $500 of USDC, where ETH deposits
@@ -188,7 +188,7 @@ export function FaqSection() {
           Regarding rebalancing costs, while Index Coop itself doesn’t impose
           charges, swapping assets through DEX pools incur small fees paid to
           liquidity providers, such as the 0.05% swap fee in Uni v3 WETH/USDC
-          pools. Moreover, swaps also entail ”price impact,” wherein larger
+          pools. Moreover, swaps also entail “price impact,” wherein larger
           swaps lead to higher overall prices paid for buys or lower overall
           prices received for sells, thus gradually reducing the net value of
           the position over time.
