@@ -66,7 +66,7 @@ export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
     const gasPrice0x = BigNumber.from(estimate?.gasCosts[0].price ?? '0')
     const gas0x = gasPrice0x.mul(gasLimit0x)
     const inputTokenAmountBn = toWei(inputTokenAmount, inputToken.decimals)
-    const outputTokenAmount = BigNumber.from(estimate?.toAmount ?? '0')
+    const outputTokenAmount = BigNumber.from(res.outputAmount)
     const gasCostsInUsd = getGasCostsInUsd(gas0x.toBigInt(), nativeTokenPrice)
 
     const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
