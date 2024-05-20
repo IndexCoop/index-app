@@ -98,7 +98,7 @@ export function FaqSection() {
           the amount of your position you want to close out.
         </p>
         <p>
-          For leverage tokens on Mainnet, you can sell via the Index Coop App
+          For leverage tokens on Mainnet, you can sell via the Index Coop App{' '}
           <Link href='/swap' className='underline' target='_blank'>
             swap widget
           </Link>
