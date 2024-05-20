@@ -207,3 +207,12 @@ export const isNativeCurrency = (token: Token, chainId: number): boolean => {
 export function isPerpToken(token: Token): boolean {
   return token.isPerp ? true : false
 }
+
+export function isTokenPairTradable(
+  requiresProtection: boolean,
+  inputToken: Token,
+  outputToken: Token,
+): boolean {
+  if (!requiresProtection) return true
+  return !inputToken.isDangerous && !outputToken.isDangerous
+}

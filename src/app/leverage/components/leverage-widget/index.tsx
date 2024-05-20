@@ -1,26 +1,17 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
+import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
-import { WarningType, Warnings } from '@/components/swap/components/warning'
-import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
-import {
-  TradeButtonState,
-  useTradeButtonState,
-} from '@/components/swap/hooks/use-trade-button-state'
-import { TradeButton } from '@/components/trade-button'
-import { useApproval } from '@/lib/hooks/use-approval'
-import { useArbitrumOnly, useNetwork } from '@/lib/hooks/use-network'
+import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
+import { useArbitrumOnly } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
-import { getNativeToken } from '@/lib/utils/tokens'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
@@ -39,11 +30,7 @@ type LeverageWidgetProps = {
 
 export function LeverageWidget(props: LeverageWidgetProps) {
   const isSupportedNetwork = useArbitrumOnly()
-  const { openChainModal } = useChainModal()
-  const { openConnectModal } = useConnectModal()
-  const { chainId } = useNetwork()
   const { address } = useWallet()
-  const { signTermsOfService } = useSignTerms()
   const {
     baseToken,
     inputToken,
@@ -66,6 +53,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
   } = useLeverageToken()
 
   const {
+    contract,
     hasInsufficientFunds,
     inputAmoutUsd,
     inputBalance,
@@ -74,16 +62,6 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     ouputAmount,
     resetData,
   } = useFormattedLeverageData(stats)
-
-  const {
-    isApproved,
-    isApproving,
-    approve: onApprove,
-  } = useApproval(
-    inputToken,
-    '0xC62e39d1f5232f154b7ccD3C6234A9c893bf9563',
-    inputTokenAmount,
-  )
 
   const {
     isOpen: isSelectInputTokenOpen,
@@ -101,64 +79,10 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
-  const shouldApprove = useMemo(() => {
-    const nativeToken = getNativeToken(chainId)
-    const isNativeToken = nativeToken?.symbol === inputToken.symbol
-    return !isNativeToken
-  }, [chainId, inputToken])
-
-  const buttonState = useTradeButtonState(
-    isSupportedNetwork,
-    false,
-    hasInsufficientFunds,
-    shouldApprove,
-    isApproved,
-    isApproving,
-    outputToken,
-    inputValue,
-  )
-  const { buttonLabel: generatedButtonLabel, isDisabled } =
-    useTradeButton(buttonState)
-
-  const buttonLabel = useMemo(() => {
-    if (buttonState === TradeButtonState.default) return 'Review Transaction'
-    return generatedButtonLabel
-  }, [buttonState, generatedButtonLabel])
-
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
-
-  const onClickButton = async () => {
-    if (buttonState === TradeButtonState.connectWallet) {
-      if (openConnectModal) {
-        openConnectModal()
-      }
-      return
-    }
-    if (buttonState === TradeButtonState.signTerms) {
-      await signTermsOfService()
-      return
-    }
-    if (buttonState === TradeButtonState.wrongNetwork) {
-      if (openChainModal) {
-        openChainModal()
-      }
-      return
-    }
-
-    if (buttonState === TradeButtonState.insufficientFunds) return
-
-    if (!isApproved && shouldApprove) {
-      await onApprove()
-      return
-    }
-
-    if (buttonState === TradeButtonState.default) {
-      onOpenTransactionReview()
-    }
-  }
 
   return (
     <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
@@ -190,16 +114,22 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       />
       <Summary />
       <Fees costOfCarry={costOfCarry} leverageType={leverageType} />
-      <TradeButton
-        label={buttonLabel}
-        isDarkMode
-        isDisabled={isDisabled}
-        isLoading={isFetchingQuote}
-        onClick={onClickButton}
+      <SmartTradeButton
+        contract={contract ?? ''}
+        hasFetchingError={false}
+        hasInsufficientFunds={hasInsufficientFunds}
+        inputTokenAmount={inputTokenAmount}
+        inputToken={inputToken}
+        inputValue={inputValue}
+        isFetchingQuote={isFetchingQuote}
+        isSupportedNetwork={isSupportedNetwork}
+        outputToken={outputToken}
+        buttonLabelOverrides={{
+          [TradeButtonState.default]: 'Review Transaction',
+        }}
+        onOpenTransactionReview={onOpenTransactionReview}
+        onRefetchQuote={() => {}}
       />
-      {buttonState === TradeButtonState.signTerms && (
-        <Warnings warnings={[WarningType.signTerms]} />
-      )}
       <SelectTokenModal
         isDarkMode={true}
         isOpen={isSelectInputTokenOpen}
