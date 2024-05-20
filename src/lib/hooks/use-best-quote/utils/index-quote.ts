@@ -4,7 +4,7 @@ import { displayFromWei, parseUnits, toWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 
-import { IndexQuoteRequest, QuoteType } from '../types'
+import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
 
 import { getPriceImpact } from './price-impact'
 
@@ -37,7 +37,9 @@ interface QuoteResponse {
   transaction: QuoteResponseTransaction
 }
 
-export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
+export async function getIndexQuote(
+  request: ExtendedIndexQuoteRequest,
+): Promise<ZeroExQuote | null> {
   const {
     chainId,
     address,
@@ -118,7 +120,7 @@ export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
         data: res.transaction.data,
         from: address, // define for simulations which otherwise might fail
         to: res.transaction.to,
-        value: res.transaction.value,
+        value: BigNumber.from(res.transaction.value),
       },
       // 0x type specific properties (will change with interface changes to the quote API)
       minOutput: BigNumber.from(estimate.toAmountMin),
