@@ -74,6 +74,15 @@ export function useFormattedLeverageData(
     forceRefetchInputBalance()
   }
 
+  const gasCosts = quote?.gasCosts.toBigInt()
+  let gasFeesEth = ''
+  if (gasCosts) {
+    gasFeesEth =
+      gasCosts < BigInt(1000000000000000)
+        ? '(<0.001 ETH)'
+        : `(${formatWei(gasCosts, 18)} ETH)`
+  }
+
   const shouldShowSummaryDetails = useMemo(
     () => quote !== null && inputValue !== '',
     [inputValue, quote],
@@ -87,9 +96,7 @@ export function useFormattedLeverageData(
     low24h: stats ? formatAmount(stats.low24h) : '',
     high24h: stats ? formatAmount(stats.high24h) : '',
     hasInsufficientFunds,
-    gasFeesEth: quote?.gasCosts
-      ? `(${formatWei(quote.gasCosts.toBigInt(), 18)} ETH)`
-      : '',
+    gasFeesEth,
     gasFeesUsd: quote?.gasCostsInUsd
       ? `$${formatAmount(quote.gasCostsInUsd)}`
       : '',

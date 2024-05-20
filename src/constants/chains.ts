@@ -22,7 +22,7 @@ export const ARBITRUM: ChainData = {
   rpcUrl: arbitrum.rpcUrls.default.http[0],
   icon: 'https://assets.coingecko.com/coins/images/16547/large/photo_2023-03-29_21.47.00.jpeg',
   coingeckoId: 'arbitrum',
-  blockExplorerUrl: arbitrum.blockExplorers.default.url,
+  blockExplorerUrl: arbitrum.blockExplorers.default.url + '/',
   nativeCurrency: {
     name: 'Ether',
     symbol: 'ETH',
