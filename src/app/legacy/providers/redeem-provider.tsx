@@ -8,14 +8,27 @@ import {
 } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import { LeveragedRethStakingYield, RETH, Token } from '@/constants/tokens'
+import {
+  BedIndex,
+  GitcoinStakedETHIndex,
+  LeveragedRethStakingYield,
+  RETH,
+  Token,
+} from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, toWei } from '@/lib/utils'
 
+export const inputTokenList = [
+  GitcoinStakedETHIndex,
+  LeveragedRethStakingYield,
+  BedIndex,
+]
+
 interface RedeemContextProps {
+  inputTokenList: Token[]
   inputValue: string
   isDepositing: boolean
   isFetchingQuote: boolean
@@ -24,10 +37,12 @@ interface RedeemContextProps {
   inputTokenAmount: bigint
   quoteResult: QuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
+  onSelectInputToken: (tokenSymbol: string) => void
   reset: () => void
 }
 
 const RedeemContext = createContext<RedeemContextProps>({
+  inputTokenList,
   inputValue: '',
   isDepositing: false,
   isFetchingQuote: false,
@@ -36,6 +51,7 @@ const RedeemContext = createContext<RedeemContextProps>({
   inputTokenAmount: BigInt(0),
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
+  onSelectInputToken: () => {},
   reset: () => {},
 })
 
@@ -50,6 +66,7 @@ export function RedeemProvider(props: { children: any }) {
   const currencyToken = RETH
   const indexToken = LeveragedRethStakingYield
 
+  const [inputToken, setInputToken] = useState(inputTokenList[0])
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
@@ -58,11 +75,6 @@ export function RedeemProvider(props: { children: any }) {
     quote: null,
     error: null,
   })
-
-  const inputToken = useMemo(
-    () => (isDepositing ? currencyToken : indexToken),
-    [isDepositing, currencyToken, indexToken],
-  )
 
   const inputTokenAmount = useMemo(
     () =>
@@ -88,6 +100,12 @@ export function RedeemProvider(props: { children: any }) {
     },
     [inputToken],
   )
+
+  const onSelectInputToken = useCallback((tokenSymbol: string) => {
+    const token = inputTokenList.find((token) => token.symbol === tokenSymbol)
+    if (!token) return
+    setInputToken(token)
+  }, [])
 
   const reset = () => {
     setInputValue('')
@@ -148,6 +166,7 @@ export function RedeemProvider(props: { children: any }) {
   return (
     <RedeemContext.Provider
       value={{
+        inputTokenList,
         inputValue,
         isDepositing,
         isFetchingQuote,
@@ -156,6 +175,7 @@ export function RedeemProvider(props: { children: any }) {
         inputTokenAmount,
         quoteResult,
         onChangeInputTokenAmount,
+        onSelectInputToken,
         reset,
       }}
     >

@@ -4,6 +4,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useMemo } from 'react'
 
+import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
@@ -16,6 +17,7 @@ import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useMainnetOnly } from '@/lib/hooks/use-network'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
 
@@ -32,14 +34,17 @@ export function RedeemWidget() {
   const isSupportedNetwork = useMainnetOnly()
   const { openChainModal } = useChainModal()
   const { signTermsOfService } = useSignTerms()
+  const { address } = useWallet()
   const { openConnectModal } = useConnectModal()
   const {
+    inputTokenList,
     inputValue,
     inputToken,
     inputTokenAmount,
     isDepositing,
     isFetchingQuote,
     onChangeInputTokenAmount,
+    onSelectInputToken,
     outputToken,
     quoteResult,
     reset,
@@ -62,6 +67,11 @@ export function RedeemWidget() {
     inputTokenAmount,
   )
 
+  const {
+    isOpen: isSelectInputTokenOpen,
+    onOpen: onOpenSelectInputToken,
+    onClose: onCloseSelectInputToken,
+  } = useDisclosure()
   const {
     isOpen: isTransactionReviewOpen,
     onOpen: onOpenTransactionReview,
@@ -154,8 +164,6 @@ export function RedeemWidget() {
     shouldApprove,
   ])
 
-  const onSelectToken = () => {}
-
   return (
     <div className='widget w-full min-w-80 flex-1 flex-col space-y-4 rounded-3xl p-6'>
       <TitleLogo logo={inputToken.image ?? ''} symbol={inputToken.symbol} />
@@ -169,7 +177,7 @@ export function RedeemWidget() {
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
-        onSelectToken={onSelectToken}
+        onSelectToken={onOpenSelectInputToken}
       />
       <Summary />
       <TradeButton
@@ -177,6 +185,18 @@ export function RedeemWidget() {
         isDisabled={isDisabled}
         isLoading={isFetchingQuote}
         onClick={onClickButton}
+      />
+      <SelectTokenModal
+        isDarkMode={true}
+        isOpen={isSelectInputTokenOpen}
+        showBalances={false}
+        onClose={onCloseSelectInputToken}
+        onSelectedToken={(tokenSymbol) => {
+          onSelectInputToken(tokenSymbol)
+          onCloseSelectInputToken()
+        }}
+        address={address}
+        tokens={inputTokenList}
       />
       {transactionReview && (
         <TransactionReviewModal
