@@ -7,34 +7,23 @@ export function FaqSection() {
     <FaqList className='mx-auto my-12 w-full !max-w-7xl px-4'>
       <FaqItem question='How does it work?'>
         <p>
-          When entering a position via the Index Coop Leverage suite, you are
-          using our automated leverage tokens under the hood. This means you are
-          not depositing your assets in the same way as you would via
-          traditional perp platforms.
+          The Index Coop Leverage Interface provides streamlined access to
+          leverage, featuring built-in liquidation protection and low,
+          transparent fees. Built on Index Protocol, our suite of automated
+          tokens simplifies leverage trading by utilising Aave V3 to offer users
+          six distinct strategies on ETH and BTC.
         </p>
         <p>
-          The Leverage Suite unlocks several benefits for traders, including:
+          To learn more about The Index Coop Leverage Suite, see our article:
+          <a
+            href='http://indexcoop.com/blog/introducing-arbitrum-leverage-suite'
+            target='_blank'
+            className='underline'
+          >
+            Introducing The Index Coop Leverage Suite Article
+          </a>
+          .
         </p>
-        <ul className='list-disc pl-6'>
-          <li>
-            A Streamlined Trading Experience: For Arbitrum leverage products,
-            the Leverage Interface provides a user-friendly platform for
-            leveraging ETH and BTC, helping to reduce complexity often
-            associated with obtaining leverage.
-          </li>
-          <li>
-            Liquidation Protection: All the leverage products include built-in
-            protection mechanisms that help minimise liquidation risks,
-            providing traders with greater peace of mind.
-          </li>
-          <li>
-            Low Costs and Fees: The fees for all the leverage products are
-            straightforward and easy to understand, avoiding the hidden or
-            confusing fees often found on other platforms. In addition to being
-            transparent, the costs of leverage tokens will generally be
-            substantially lower than comparable solutions in most situations.
-          </li>
-        </ul>
       </FaqItem>
       <FaqItem question='How do the Tokens work?'>
         <p>
@@ -102,9 +91,18 @@ export function FaqSection() {
       </FaqItem>
       <FaqItem question='How do I close a position?'>
         <p>
-          Selecting a market and selecting Leverage of open position, or by
-          clicking the position you want to close in the “open positions”
-          widget.
+          For leverage tokens on Arbitrum, you can close your position by first
+          selecting ETH or BTC, selecting “Sell” at the top of the trade widget,
+          and then selecting the corresponding leverage ratio of your currently
+          open position. You should see your total balance and be able to input
+          the amount of your position you want to close out.
+        </p>
+        <p>
+          For leverage tokens on Mainnet, you can sell via the Index Coop App
+          <Link href='/swap' className='underline' target='_blank'>
+            swap widget
+          </Link>
+          .
         </p>
       </FaqItem>
       <FaqItem question='How do I trade on Ethereum?'>
@@ -204,13 +202,13 @@ export function FaqSection() {
         <p>
           No, Index Coop products are not suitable for any Restricted Persons
           outlined{' '}
-          <Link
+          <a
             href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
             target='_blank'
             className='underline'
           >
             here
-          </Link>
+          </a>
           .
         </p>
       </FaqItem>
@@ -218,13 +216,13 @@ export function FaqSection() {
         <p>
           The Leverage Suite is unavailable to Restricted Persons as defined in
           our{' '}
-          <Link
+          <a
             href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
             target='_blank'
             className='underline'
           >
             Tokens Restricted for Restricted persons
-          </Link>{' '}
+          </a>{' '}
           page.
         </p>
         <p>
