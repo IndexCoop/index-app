@@ -14,7 +14,7 @@ export function FaqSection() {
           six distinct strategies on ETH and BTC.
         </p>
         <p>
-          To learn more about The Index Coop Leverage Suite, see our article:
+          To learn more about The Index Coop Leverage Suite, see our article:{' '}
           <a
             href='http://indexcoop.com/blog/introducing-arbitrum-leverage-suite'
             target='_blank'
