@@ -91,7 +91,7 @@ export async function getIndexQuote(request: ExtendedIndexQuoteRequest) {
     return {
       type: QuoteType.zeroex,
       chainId,
-      contract: estimate.approvalAddress,
+      contract: res.contract,
       isMinting,
       inputToken,
       outputToken,
