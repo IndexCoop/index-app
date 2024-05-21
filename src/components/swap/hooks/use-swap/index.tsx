@@ -64,12 +64,12 @@ export function useSwap(
 
   const selectedQuote = useMemo(() => {
     if (selectedQuoteType === null)
-      return quoteResults?.results.zeroex?.quote ?? null
+      return quoteResults?.results.index?.quote ?? null
     if (selectedQuoteType === QuoteType.flashmint)
       return quoteResults?.results.flashmint?.quote ?? null
     if (selectedQuoteType === QuoteType.redemption)
       return quoteResults.results.redemption?.quote ?? null
-    return quoteResults?.results.zeroex?.quote ?? null
+    return quoteResults?.results.index?.quote ?? null
   }, [quoteResults, selectedQuoteType])
   const isFlashMint = useMemo(
     () => selectedQuote?.type === QuoteType.flashmint,

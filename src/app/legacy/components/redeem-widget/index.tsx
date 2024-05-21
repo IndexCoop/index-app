@@ -102,9 +102,9 @@ export function RedeemWidget() {
           bestQuote: QuoteType.issuance,
           results: {
             flashmint: null,
+            index: null,
             issuance: quoteResult,
             redemption: null,
-            zeroex: null,
           },
         },
         selectedQuote: QuoteType.issuance,

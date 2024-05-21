@@ -121,7 +121,7 @@ export async function getIndexQuote(
       nativeTokenPrice,
     )
     return {
-      type: QuoteType.zeroex,
+      type: QuoteType.index,
       chainId,
       contract: res.contract,
       isMinting,

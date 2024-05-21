@@ -34,8 +34,8 @@ export interface FetchQuoteRequest {
 }
 
 const defaultResults: QuoteResults = {
-  bestQuote: QuoteType.zeroex,
-  results: { flashmint: null, issuance: null, redemption: null, zeroex: null },
+  bestQuote: QuoteType.index,
+  results: { flashmint: null, issuance: null, redemption: null, index: null },
 }
 
 export const useBestQuote = (
@@ -266,6 +266,12 @@ export const useBestQuote = (
             quote: null,
             error: null,
           },
+          index: {
+            type: QuoteType.index,
+            isAvailable: false,
+            quote: null,
+            error: null,
+          },
           issuance: {
             type: QuoteType.issuance,
             isAvailable: true,
@@ -276,12 +282,6 @@ export const useBestQuote = (
             type: QuoteType.redemption,
             isAvailable: true,
             quote: quoteRedemption,
-            error: null,
-          },
-          zeroex: {
-            type: QuoteType.zeroex,
-            isAvailable: false,
-            quote: null,
             error: null,
           },
         },
@@ -306,6 +306,12 @@ export const useBestQuote = (
           quote: quoteFlashMint,
           error: null,
         },
+        index: {
+          type: QuoteType.index,
+          isAvailable: canSwapIndexToken,
+          quote: quote0x,
+          error: null,
+        },
         issuance: {
           type: QuoteType.issuance,
           isAvailable: false,
@@ -316,12 +322,6 @@ export const useBestQuote = (
           type: QuoteType.redemption,
           isAvailable: false,
           quote: null,
-          error: null,
-        },
-        zeroex: {
-          type: QuoteType.zeroex,
-          isAvailable: canSwapIndexToken,
-          quote: quote0x,
           error: null,
         },
       },

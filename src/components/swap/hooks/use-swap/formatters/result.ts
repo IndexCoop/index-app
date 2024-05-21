@@ -61,7 +61,7 @@ function formatQuoteForDisplay(
   type: string,
 ): FormattedQuoteDisplay {
   const route =
-    quote.type === QuoteType.zeroex
+    quote.type === QuoteType.index
       ? (quote as ZeroExQuote).sources
           .filter((source) => Number(source.proportion) > 0)
           .map((source) => source.name)
@@ -136,7 +136,7 @@ export function getFormattedQuoteResults(
   const { results } = quoteResult
 
   const flashmintResults = results.flashmint
-  const zeroexResults = results.zeroex
+  const zeroexResults = results.index
 
   let flashmintQuote: FormattedQuoteDisplay | null = null
   let zeroexQuote: FormattedQuoteDisplay | null = null
@@ -163,12 +163,12 @@ export function getFormattedQuoteResults(
 
   if (zeroexResults) {
     if (zeroexResults.isAvailable && isFetching0x) {
-      zeroexQuote = formatLoadingQuoteForDisplay(QuoteType.zeroex)
+      zeroexQuote = formatLoadingQuoteForDisplay(QuoteType.index)
     }
     if (zeroexResults.isAvailable && !isFetching0x && zeroexResults.quote) {
       zeroexQuote = formatQuoteForDisplay(
         zeroexResults.quote,
-        quoteResult.bestQuote === QuoteType.zeroex,
+        quoteResult.bestQuote === QuoteType.index,
         'Swap',
       )
     }

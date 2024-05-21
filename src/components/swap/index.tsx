@@ -233,7 +233,7 @@ export const Swap = (props: SwapProps) => {
             isLoading={isFetchingAnyQuote}
             prices={tokenPrices}
             showWarning={showWarning}
-            selectedQuoteType={selectedQuote ?? QuoteType.zeroex}
+            selectedQuoteType={selectedQuote ?? QuoteType.index}
           />
         )}
         {hasFetchingError && (
