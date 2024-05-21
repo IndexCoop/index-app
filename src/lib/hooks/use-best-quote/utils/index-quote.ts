@@ -1,8 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { displayFromWei, parseUnits, toWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 
 import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
 
@@ -11,7 +13,9 @@ import { getPriceImpact } from './price-impact'
 interface ExtendedIndexQuoteRequest extends IndexQuoteRequest {
   chainId: number
   address: string
+  gasPrice: bigint
   nativeTokenPrice: number
+  provider: IndexRpcProvider
 }
 
 interface QuoteResponseTransaction {
@@ -50,26 +54,52 @@ export async function getIndexQuote(
     nativeTokenPrice,
     outputToken,
     outputTokenPrice,
+    provider,
     slippage,
   } = request
-  //   let rfq: boolean = false
-  // TODO: not supported yet
-  //   if (outputToken.symbol === ic21.symbol || inputToken.symbol === ic21.symbol) {
-  //     rfq = true
-  //   }
   try {
     const inputAmount = parseUnits(inputTokenAmount, inputToken.decimals)
     const path = `/quote?takerAddress=${address}&inputToken=${inputToken.address}&outputToken=${outputToken.address}&inputAmount=${inputAmount.toString()}&chainId=${chainId}`
     console.log(path)
     const indexApi = new IndexApi()
     const res: QuoteResponse = await indexApi.get(path)
+
+    const tx = {
+      account: address,
+      data: res.transaction.data,
+      from: address,
+      to: res.transaction.to,
+      value: BigNumber.from(res.transaction.value),
+    }
+
+    let gasCosts = BigNumber.from('0')
+    let gasLimit = BigNumber.from('0')
+    let gasPrice = BigNumber.from(request.gasPrice.toString())
     const estimate = res.rawResponse.estimate
-    const gasLimit0x = BigNumber.from(estimate?.gasCosts[0].limit ?? '0')
-    const gasPrice0x = BigNumber.from(estimate?.gasCosts[0].price ?? '0')
-    const gas0x = gasPrice0x.mul(gasLimit0x)
+    const isLifiQuote = res.type === 'lifi'
+    if (isLifiQuote) {
+      gasLimit = BigNumber.from(estimate?.gasCosts[0].limit ?? '0')
+      gasPrice = BigNumber.from(estimate?.gasCosts[0].price ?? '0')
+    } else {
+      // Right now this should only be ic21
+      const defaultGas = 120_000
+      const defaultGasEstimate = BigInt(defaultGas)
+      const gasEstimatooor = new GasEstimatooor(provider, defaultGasEstimate)
+      // We don't want this function to fail for estimates here.
+      // A default will be returned if the tx would fail.
+      const canFail = false
+      const gasEstimate = await gasEstimatooor.estimate(tx, canFail)
+      console.log(gasEstimate.toString(), 'gasLimit')
+      gasLimit = BigNumber.from(gasEstimate.toString())
+    }
+    gasCosts = gasPrice.mul(gasLimit)
+    const gasCostsInUsd = getGasCostsInUsd(
+      gasCosts.toBigInt(),
+      nativeTokenPrice,
+    )
+
     const inputTokenAmountBn = toWei(inputTokenAmount, inputToken.decimals)
     const outputTokenAmount = BigNumber.from(res.outputAmount)
-    const gasCostsInUsd = getGasCostsInUsd(gas0x.toBigInt(), nativeTokenPrice)
 
     const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
     const outputTokenAmountUsd =
@@ -85,7 +115,7 @@ export async function getIndexQuote(
 
     const fullCostsInUsd = getFullCostsInUsd(
       inputTokenAmountBn.toBigInt(),
-      gas0x.toBigInt(),
+      gasCosts.toBigInt(),
       inputToken.decimals,
       inputTokenPrice,
       nativeTokenPrice,
@@ -97,9 +127,9 @@ export async function getIndexQuote(
       isMinting,
       inputToken,
       outputToken,
-      gas: gasLimit0x,
-      gasPrice: gasPrice0x,
-      gasCosts: gas0x,
+      gas: gasLimit,
+      gasPrice,
+      gasCosts,
       gasCostsInUsd,
       fullCostsInUsd,
       priceImpact,
@@ -115,16 +145,14 @@ export async function getIndexQuote(
       inputTokenPrice,
       outputTokenPrice,
       slippage,
-      tx: {
-        account: address,
-        data: res.transaction.data,
-        from: address, // define for simulations which otherwise might fail
-        to: res.transaction.to,
-        value: BigNumber.from(res.transaction.value),
-      },
+      tx,
       // 0x type specific properties (will change with interface changes to the quote API)
-      minOutput: BigNumber.from(estimate.toAmountMin),
-      sources: [{ name: estimate.tool, proportion: '1' }],
+      minOutput: isLifiQuote
+        ? BigNumber.from(estimate.toAmountMin)
+        : outputTokenAmount,
+      sources: isLifiQuote
+        ? [{ name: estimate.tool, proportion: '1' }]
+        : [{ name: 'RFQ', proportion: '1' }],
     }
   } catch (err) {
     console.log('Error fetching Index quote', err)

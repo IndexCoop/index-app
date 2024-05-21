@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import { ic21, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 import {
   getEnhancedIssuanceQuote,
   getEnhancedRedemptionQuote,
@@ -24,7 +24,6 @@ import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
 import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { getIndexQuote } from './utils/index-quote'
-import { get0xQuote } from './utils/zeroex'
 
 export interface FetchQuoteRequest {
   isMinting: boolean
@@ -202,13 +201,12 @@ export const useBestQuote = (
       const fetchIndexSwapQuote = async () => {
         if (
           canSwapIndexToken &&
-          inputToken.symbol !== ic21.symbol &&
-          outputToken.symbol !== ic21.symbol &&
           !isAvailableForIssuance(inputToken, outputToken) &&
           !isAvailableForRedemption(inputToken, outputToken)
         ) {
           setIsFetching0x(true)
           try {
+            const gasPrice = await provider.getGasPrice()
             const quote0x = await getIndexQuote({
               ...request,
               chainId,
@@ -218,6 +216,8 @@ export const useBestQuote = (
               outputToken,
               outputTokenPrice,
               nativeTokenPrice,
+              gasPrice,
+              provider,
             })
             console.log(quote0x)
             logEvent('Quote Received', formatQuoteAnalytics(quote0x))
