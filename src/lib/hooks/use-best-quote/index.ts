@@ -234,42 +234,8 @@ export const useBestQuote = (
         }
       }
 
-      const fetchSwapQuote = async () => {
-        // For now only route ic21 thru 0x (before shutting it off completely)
-        if (
-          canSwapIndexToken &&
-          (inputToken.symbol === ic21.symbol ||
-            outputToken.symbol === ic21.symbol)
-        ) {
-          setIsFetching0x(true)
-          try {
-            const quote0x = await get0xQuote({
-              ...request,
-              chainId,
-              address,
-              inputToken,
-              inputTokenPrice,
-              outputToken,
-              outputTokenPrice,
-              nativeTokenPrice,
-            })
-            logEvent('Quote Received', formatQuoteAnalytics(quote0x))
-            setIsFetching0x(false)
-            setQuote0x(quote0x)
-          } catch (e) {
-            console.error('get0xQuote error', e)
-            setIsFetching0x(false)
-            setQuote0x(null)
-            throw e
-          }
-        } else {
-          setQuote0x(null)
-        }
-      }
-
       // Non await - because we want to fetch quotes in parallel
       fetchIndexSwapQuote()
-      fetchSwapQuote()
       fetchIssuanceQuote()
       fetchRedemptionQuote()
       fetchFlashMintQuote()
