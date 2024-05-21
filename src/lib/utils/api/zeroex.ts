@@ -1,7 +1,6 @@
 import { ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
 import { ARBITRUM, OPTIMISM, POLYGON } from '@/constants/chains'
-
 import {
   getIndexApiHeaders,
   IndexApiBaseUrl,
