@@ -107,7 +107,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                       </Flex>
                       <Flex opacity={isExpanded ? 0 : 1} gap={4}>
                         {!isLoading &&
-                          props.selectedQuoteType === QuoteType.zeroex && (
+                          props.selectedQuoteType === QuoteType.index && (
                             <Tag label={'LI.FI'} />
                           )}
                         {!isLoading &&

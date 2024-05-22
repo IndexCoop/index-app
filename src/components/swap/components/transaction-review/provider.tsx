@@ -89,7 +89,7 @@ export function useTransactionReview(props: ReviewProps) {
     if (selectedQuote === QuoteType.redemption) {
       return quoteResults.results.redemption!.quote
     }
-    return quoteResults.results.zeroex!.quote
+    return quoteResults.results.index!.quote
   }, [quoteResults, selectedQuote])
 
   const shouldShowOverride = useMemo(
