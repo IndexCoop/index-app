@@ -1,8 +1,10 @@
+import { BigNumber } from 'ethers'
 import { Dispatch, SetStateAction } from 'react'
 
 import { formatPrice } from '@/app/products/utils/formatters'
 import { ARBITRUM } from '@/constants/chains'
 import { TokenBalance } from '@/lib/hooks/use-balance'
+import { displayFromWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
 
 import { leverageTokens } from '../constants'
@@ -14,26 +16,24 @@ export async function fetchPositionPrices(
   balances: TokenBalance[],
   setTokens: Dispatch<SetStateAction<EnrichedToken[]>>,
 ) {
-  // const tokenBalances = balances.reduce((acc, current) => {
-  //   const token = leverageTokens.find(
-  //     (leverageToken) => current.token === leverageToken.arbitrumAddress,
-  //   )
-  //   return token
-  //     ? [
-  //         ...acc,
-  //         {
-  //           ...token,
-  //           balance: displayFromWei(
-  //             BigNumber.from(current.value.toString()),
-  //             3,
-  //             token.decimals,
-  //           ),
-  //         },
-  //       ]
-  //     : acc
-  // }, [] as EnrichedToken[])
-
-  const tokenBalances = leverageTokens.map((t) => ({ ...t, balance: '12' }))
+  const tokenBalances = balances.reduce((acc, current) => {
+    const token = leverageTokens.find(
+      (leverageToken) => current.token === leverageToken.arbitrumAddress,
+    )
+    return token
+      ? [
+          ...acc,
+          {
+            ...token,
+            balance: displayFromWei(
+              BigNumber.from(current.value.toString()),
+              3,
+              token.decimals,
+            ),
+          },
+        ]
+      : acc
+  }, [] as EnrichedToken[])
 
   // Avoid showing a faulty/missing position if the balance call fails
   if (tokenBalances.some((token) => token.balance === null)) return
