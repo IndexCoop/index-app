@@ -1,10 +1,7 @@
-import { BigNumber } from 'ethers'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
 
-import { formatPrice } from '@/app/products/utils/formatters'
-import { ARBITRUM } from '@/constants/chains'
 import {
   BTC,
   ETH,
@@ -12,35 +9,13 @@ import {
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopEthereum3xIndex,
-  IndexCoopInverseBitcoinIndex,
-  IndexCoopInverseEthereumIndex,
-  Token,
 } from '@/constants/tokens'
 import { useBalances } from '@/lib/hooks/use-balance'
-import { displayFromWei } from '@/lib/utils'
-import { NavProvider } from '@/lib/utils/api/nav'
 
+import { ethLeverageTokens, leverageTokens } from '../constants'
 import { LeverageType, useLeverageToken } from '../provider'
-
-const ethLeverageTokens = [
-  IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseEthereumIndex,
-]
-
-const btcLeverageTokens = [
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopInverseBitcoinIndex,
-]
-
-const leverageTokens = [...ethLeverageTokens, ...btcLeverageTokens]
-
-export type EnrichedToken = Token & {
-  balance: string | null
-  nav?: number
-  size?: string
-}
+import { EnrichedToken } from '../types'
+import { fetchPositionPrices } from '../utils/fetch-position-prices'
 
 const leverageTokenAddresses = leverageTokens
   .map((token) => token.arbitrumAddress ?? '')
@@ -55,52 +30,11 @@ export function OpenPositions() {
     onSelectLeverageType,
   } = useLeverageToken()
   const balances = useBalances(address, leverageTokenAddresses)
-
   const [tokens, setTokens] = useState<EnrichedToken[]>([])
+
   useEffect(() => {
-    async function fetchTokenPrices() {
-      const tokenBalances = balances.reduce((acc, current) => {
-        const token = leverageTokens.find(
-          (leverageToken) => current.token === leverageToken.arbitrumAddress,
-        )
-        return token
-          ? [
-              ...acc,
-              {
-                ...token,
-                balance: displayFromWei(
-                  BigNumber.from(current.value.toString()),
-                  3,
-                  token.decimals,
-                ),
-              },
-            ]
-          : acc
-      }, [] as EnrichedToken[])
-
-      if (tokenBalances.some((token) => token.balance === null)) return
-
-      try {
-        const navProvider = new NavProvider()
-        const tokenPrices = await Promise.all(
-          tokenBalances.map((token) =>
-            navProvider.getNavPrice(token.symbol, ARBITRUM.chainId),
-          ),
-        )
-
-        if (tokenPrices.some((tokenPrice) => tokenPrice === 0)) return
-
-        const enrichedTokens = tokenBalances.map((token, idx) => ({
-          ...token,
-          size: formatPrice(Number(token.balance) * tokenPrices[idx]),
-        }))
-        setTokens(enrichedTokens)
-      } catch (e) {
-        console.error('Caught error in fetchTokenPrices', e)
-      }
-    }
     if (balances.length === 0) return
-    fetchTokenPrices()
+    fetchPositionPrices(balances, setTokens)
   }, [balances])
 
   const handleCloseClick = (token: EnrichedToken) => {
@@ -129,7 +63,13 @@ export function OpenPositions() {
       onSelectLeverageType(LeverageType.Short)
     }
 
-    // TODO: Scroll up to widget
+    const scrollDiv = document.getElementById('close-position-scroll')
+    if (scrollDiv) {
+      window.scrollTo({
+        top: scrollDiv.getBoundingClientRect().top + window.scrollY - 90,
+        behavior: 'smooth',
+      })
+    }
   }
 
   if (tokens.length === 0) return null
