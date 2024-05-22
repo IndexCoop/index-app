@@ -215,9 +215,9 @@ export function LeverageProvider(props: { children: any }) {
           bestQuote: QuoteType.flashmint,
           results: {
             flashmint: quoteResult,
+            index: null,
             issuance: null,
             redemption: null,
-            zeroex: null,
           },
         },
         selectedQuote: QuoteType.flashmint,

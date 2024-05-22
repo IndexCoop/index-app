@@ -3,8 +3,8 @@ import { QuoteType } from '../types'
 import { getBestQuote } from './best-quote'
 
 describe('getBestQuote', () => {
-  it('returns 0x when it is the only quote', async () => {
-    const expectedQuote = QuoteType.zeroex
+  it('returns Index when it is the only quote', async () => {
+    const expectedQuote = QuoteType.index
     const bestQuote = getBestQuote(1, null, 1, null)
     expect(bestQuote).toEqual(expectedQuote)
   })
@@ -15,8 +15,8 @@ describe('getBestQuote', () => {
     expect(bestQuote).toEqual(expectedQuote)
   })
 
-  it('returns best quote - when 0x is the best quote', async () => {
-    const expectedQuote = QuoteType.zeroex
+  it('returns best quote - when Index API is the best quote', async () => {
+    const expectedQuote = QuoteType.index
     const bestQuote = getBestQuote(10, 10, 9.8, 9.7)
     expect(bestQuote).toEqual(expectedQuote)
   })
