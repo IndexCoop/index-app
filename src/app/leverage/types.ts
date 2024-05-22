@@ -1,5 +1,7 @@
 import { Token } from "@/constants/tokens"
 
+import { LeverageType } from "./provider"
+
 export interface BaseTokenStats {
   symbol: string
   price: number
@@ -10,6 +12,6 @@ export interface BaseTokenStats {
 
 export type EnrichedToken = Token & {
   balance: string | null
-  nav?: number
   size?: string
+  leverageType?: LeverageType | null
 }

@@ -2,24 +2,24 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
 
-import {
-  BTC,
-  ETH,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-} from '@/constants/tokens'
 import { useBalances } from '@/lib/hooks/use-balance'
 
-import { ethLeverageTokens, leverageTokens } from '../constants'
+import { leverageTokens } from '../constants'
 import { LeverageType, useLeverageToken } from '../provider'
 import { EnrichedToken } from '../types'
 import { fetchPositionPrices } from '../utils/fetch-position-prices'
+import { getLeverageBaseToken } from '../utils/get-leverage-base-token'
+import { getLeverageType } from '../utils/get-leverage-type'
 
 const leverageTokenAddresses = leverageTokens
   .map((token) => token.arbitrumAddress ?? '')
   .filter((address) => address.length > 0)
+
+const leverageTypeLabels = {
+  [LeverageType.Long2x]: '2x LONG',
+  [LeverageType.Long3x]: '3x LONG',
+  [LeverageType.Short]: '1x SHORT',
+}
 
 export function OpenPositions() {
   const { address } = useAccount()
@@ -39,29 +39,14 @@ export function OpenPositions() {
 
   const handleCloseClick = (token: EnrichedToken) => {
     if (isMinting) toggleIsMinting()
-    if (
-      ethLeverageTokens.some(
-        (ethToken) => ethToken.arbitrumAddress === token.arbitrumAddress,
-      )
-    ) {
-      onSelectBaseToken(ETH.symbol)
-    } else {
-      onSelectBaseToken(BTC.symbol)
-    }
 
-    if (
-      token.arbitrumAddress === IndexCoopEthereum2xIndex.arbitrumAddress ||
-      token.arbitrumAddress === IndexCoopBitcoin2xIndex.arbitrumAddress
-    ) {
-      onSelectLeverageType(LeverageType.Long2x)
-    } else if (
-      token.arbitrumAddress === IndexCoopEthereum3xIndex.arbitrumAddress ||
-      token.arbitrumAddress === IndexCoopBitcoin3xIndex.arbitrumAddress
-    ) {
-      onSelectLeverageType(LeverageType.Long3x)
-    } else {
-      onSelectLeverageType(LeverageType.Short)
-    }
+    const leverageBaseToken = getLeverageBaseToken(token)
+    if (leverageBaseToken === null) return
+    onSelectBaseToken(leverageBaseToken.symbol)
+
+    const leverageType = getLeverageType(token)
+    if (leverageType === null) return
+    onSelectLeverageType(leverageType)
 
     const scrollDiv = document.getElementById('close-position-scroll')
     if (scrollDiv) {
@@ -78,8 +63,9 @@ export function OpenPositions() {
     <div className='border-ic-gray-600 w-full rounded-3xl border bg-[#1C2C2E] lg:max-w-[67%]'>
       <h3 className='text-ic-white p-6 font-bold'>Open Positions</h3>
       <div className='border-ic-gray-600 flex w-full border-b px-6 pb-3'>
-        <div className='text-ic-gray-400 w-2/5'>Position</div>
-        <div className='text-ic-gray-400 w-2/5'>Size</div>
+        <div className='text-ic-gray-400 w-1/5'>Position</div>
+        <div className='text-ic-gray-400 w-1/5'>Size</div>
+        <div className='text-ic-gray-400 w-2/5'>Current Leverage</div>
         <div className='w-1/5'>
           <span className='sr-only'>Close Position</span>
         </div>
@@ -101,8 +87,9 @@ export function OpenPositions() {
               </div>
               <div className='my-auto font-medium'>{token.symbol}</div>
             </div>
-            <div className='mx-auto flex w-2/5 items-center'>
-              {token.balance}
+            <div className='flex w-1/5 items-center'>{token.size}</div>
+            <div className='text-ic-blue-700 flex w-2/5 items-center'>
+              {token.leverageType ? leverageTypeLabels[token.leverageType] : ''}
             </div>
             <div className='flex w-1/5'>
               <button
