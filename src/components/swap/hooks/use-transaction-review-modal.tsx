@@ -11,7 +11,7 @@ export function useTransactionReviewModal(
 ) {
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || selectedQuote === null) return null
-    let quote = quoteResults.results.zeroex?.quote
+    let quote = quoteResults.results.index?.quote
     if (selectedQuote === QuoteType.flashmint) {
       quote = quoteResults.results.flashmint?.quote
     }

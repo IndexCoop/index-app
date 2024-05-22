@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import { ic21, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 import {
   getEnhancedIssuanceQuote,
   getEnhancedRedemptionQuote,
@@ -24,7 +24,6 @@ import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
 import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { getIndexQuote } from './utils/index-quote'
-import { get0xQuote } from './utils/zeroex'
 
 export interface FetchQuoteRequest {
   isMinting: boolean
@@ -35,8 +34,8 @@ export interface FetchQuoteRequest {
 }
 
 const defaultResults: QuoteResults = {
-  bestQuote: QuoteType.zeroex,
-  results: { flashmint: null, issuance: null, redemption: null, zeroex: null },
+  bestQuote: QuoteType.index,
+  results: { flashmint: null, issuance: null, redemption: null, index: null },
 }
 
 export const useBestQuote = (
@@ -202,13 +201,12 @@ export const useBestQuote = (
       const fetchIndexSwapQuote = async () => {
         if (
           canSwapIndexToken &&
-          inputToken.symbol !== ic21.symbol &&
-          outputToken.symbol !== ic21.symbol &&
           !isAvailableForIssuance(inputToken, outputToken) &&
           !isAvailableForRedemption(inputToken, outputToken)
         ) {
           setIsFetching0x(true)
           try {
+            const gasPrice = await provider.getGasPrice()
             const quote0x = await getIndexQuote({
               ...request,
               chainId,
@@ -218,6 +216,8 @@ export const useBestQuote = (
               outputToken,
               outputTokenPrice,
               nativeTokenPrice,
+              gasPrice,
+              provider,
             })
             console.log(quote0x)
             logEvent('Quote Received', formatQuoteAnalytics(quote0x))
@@ -234,42 +234,8 @@ export const useBestQuote = (
         }
       }
 
-      const fetchSwapQuote = async () => {
-        // For now only route ic21 thru 0x (before shutting it off completely)
-        if (
-          canSwapIndexToken &&
-          (inputToken.symbol === ic21.symbol ||
-            outputToken.symbol === ic21.symbol)
-        ) {
-          setIsFetching0x(true)
-          try {
-            const quote0x = await get0xQuote({
-              ...request,
-              chainId,
-              address,
-              inputToken,
-              inputTokenPrice,
-              outputToken,
-              outputTokenPrice,
-              nativeTokenPrice,
-            })
-            logEvent('Quote Received', formatQuoteAnalytics(quote0x))
-            setIsFetching0x(false)
-            setQuote0x(quote0x)
-          } catch (e) {
-            console.error('get0xQuote error', e)
-            setIsFetching0x(false)
-            setQuote0x(null)
-            throw e
-          }
-        } else {
-          setQuote0x(null)
-        }
-      }
-
       // Non await - because we want to fetch quotes in parallel
       fetchIndexSwapQuote()
-      fetchSwapQuote()
       fetchIssuanceQuote()
       fetchRedemptionQuote()
       fetchFlashMintQuote()
@@ -300,6 +266,12 @@ export const useBestQuote = (
             quote: null,
             error: null,
           },
+          index: {
+            type: QuoteType.index,
+            isAvailable: false,
+            quote: null,
+            error: null,
+          },
           issuance: {
             type: QuoteType.issuance,
             isAvailable: true,
@@ -310,12 +282,6 @@ export const useBestQuote = (
             type: QuoteType.redemption,
             isAvailable: true,
             quote: quoteRedemption,
-            error: null,
-          },
-          zeroex: {
-            type: QuoteType.zeroex,
-            isAvailable: false,
-            quote: null,
             error: null,
           },
         },
@@ -340,6 +306,12 @@ export const useBestQuote = (
           quote: quoteFlashMint,
           error: null,
         },
+        index: {
+          type: QuoteType.index,
+          isAvailable: canSwapIndexToken,
+          quote: quote0x,
+          error: null,
+        },
         issuance: {
           type: QuoteType.issuance,
           isAvailable: false,
@@ -350,12 +322,6 @@ export const useBestQuote = (
           type: QuoteType.redemption,
           isAvailable: false,
           quote: null,
-          error: null,
-        },
-        zeroex: {
-          type: QuoteType.zeroex,
-          isAvailable: canSwapIndexToken,
-          quote: quote0x,
           error: null,
         },
       },
