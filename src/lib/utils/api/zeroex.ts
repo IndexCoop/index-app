@@ -1,5 +1,6 @@
 import { ZeroExApi } from '@indexcoop/flash-mint-sdk'
 
+import { ARBITRUM, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
   getIndexApiHeaders,
   IndexApiBaseUrl,
@@ -14,4 +15,17 @@ export function getConfiguredZeroExApi(swapPathOverride: string): ZeroExApi {
     headers,
     swapPathOverride,
   )
+}
+
+export function getNetworkKey(chainId: number): string {
+  switch (chainId) {
+    case ARBITRUM.chainId:
+      return 'arbitrum'
+    case POLYGON.chainId:
+      return 'polygon'
+    case OPTIMISM.chainId:
+      return 'optimism'
+    default:
+      return 'mainnet'
+  }
 }
