@@ -1,6 +1,7 @@
 import { LeverageBanner } from '@/components/banners/leverage-banner'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
+import { isLeverageSuiteEnabled } from '@/lib/utils/feature-flags'
 
 import { ProvidersLite } from '../providers-lite'
 
@@ -16,7 +17,7 @@ export default function Layout({ children }: Props) {
   return (
     <div className="flex h-fit flex-col bg-[url('/gradient-splash.jpg')] bg-cover">
       <ProvidersLite>
-        <LeverageBanner />
+        {isLeverageSuiteEnabled() && <LeverageBanner />}
         <Header />
         <main>{children}</main>
         <Footer />
