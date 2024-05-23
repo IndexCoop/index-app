@@ -50,6 +50,8 @@ export const SignTermsProvider = ({ children }: Props) => {
 
     if (!address) return
     setHasFetchedSignature(false)
+    setHasSignedTerms(false)
+
     fetchSignature()
   }, [address])
 
@@ -57,7 +59,7 @@ export const SignTermsProvider = ({ children }: Props) => {
     let signature: `0x${string}` | undefined
     try {
       signature = await walletClient?.signMessage({
-        message: TERMS_MESSAGE
+        message: TERMS_MESSAGE,
       })
     } catch (e) {
       console.error('Sign message error', e)
