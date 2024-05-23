@@ -1,4 +1,5 @@
 import { Providers } from '@/app/providers'
+import { LeverageBanner } from '@/components/banners/leverage-banner'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 
@@ -15,7 +16,8 @@ export const metadata = {
 export default function Layout({ children }: LayoutProps) {
   return (
     <Providers>
-      <div className='flex flex-col dark bg-[#141E1F]'>
+      <div className='dark flex flex-col bg-[#141E1F]'>
+        <LeverageBanner />
         <Header />
         <LeverageProvider>
           <main>{children}</main>
