@@ -3,6 +3,7 @@
 import { useArcxAnalytics } from '@arcxmoney/analytics'
 import { useCallback } from 'react'
 import ReactGA from 'react-ga4'
+import { useAccount } from 'wagmi'
 
 import { Quote } from './use-best-quote/types'
 
@@ -30,6 +31,7 @@ export const formatQuoteAnalytics = (quote: Quote | null) => {
 }
 
 export const useAnalytics = () => {
+  const { address: walletAddress } = useAccount()
   const arcxSdk = useArcxAnalytics()
 
   const logEvent = useCallback(
@@ -40,18 +42,21 @@ export const useAnalytics = () => {
       if (!isProduction) return
 
       try {
-        arcxSdk?.event(name, data)
-        ReactGA.event(name, data)
+        const enhancedData = { ...data, walletAddress }
+        arcxSdk?.event(name, enhancedData)
+        ReactGA.event(name, enhancedData)
         window.safary?.track({
           eventType: 'Generic',
           eventName: name,
-          parameters: data as { [key: string]: string | number | boolean },
+          parameters: enhancedData as {
+            [key: string]: string | number | boolean
+          },
         })
       } catch (e) {
         console.log('Caught error in logEvent', e)
       }
     },
-    [arcxSdk],
+    [arcxSdk, walletAddress],
   )
 
   const logTransaction = useCallback(
@@ -66,23 +71,29 @@ export const useAnalytics = () => {
         arcxSdk?.transaction({
           chainId,
           transactionHash,
-          metadata,
+          metadata: {
+            ...metadata,
+            walletAddress,
+          },
         })
         ReactGA.event('Transaction Submitted', {
+          ...metadata,
           chainId,
           transactionHash,
-          ...metadata,
+          walletAddress,
         })
         window.safary?.track({
           eventType: 'Transaction',
           eventName: 'Transaction Submitted',
-          parameters: metadata as { [key: string]: string | number | boolean },
+          parameters: { ...metadata, walletAddress } as {
+            [key: string]: string | number | boolean
+          },
         })
       } catch (e) {
         console.log('Caught error in logTransaction', e)
       }
     },
-    [arcxSdk],
+    [arcxSdk, walletAddress],
   )
 
   const logConnectWallet = useCallback(
