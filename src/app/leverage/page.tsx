@@ -9,6 +9,7 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
+import { OpenPositions } from './components/open-positions'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
 import TradingViewWidget from './components/trading-view-widget'
@@ -22,20 +23,21 @@ export default function Page() {
   } = useDisclosure()
   const { baseToken, baseTokens, onSelectBaseToken } = useLeverageToken()
   return (
-    <div className='flex mx-auto max-w-screen-2xl justify-center'>
-      <div className='flex flex-col items-center w-full'>
-        <div className='mx-auto flex flex-col gap-8 py-12 px-4 w-full'>
+    <div className='mx-auto flex max-w-screen-2xl justify-center'>
+      <div className='flex w-full flex-col items-center'>
+        <div className='mx-auto flex w-full flex-col gap-8 px-4 py-12'>
           <div className='flex flex-col md:flex-row'>
             <Title />
             <Stats onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
-          <div className='flex flex-col lg:flex-row gap-6'>
-            <div className='h-[360px] lg:h-[520px] w-full'>
+          <div className='flex flex-col gap-6 lg:flex-row'>
+            <div className='h-[360px] w-full lg:h-[520px] lg:min-w-[67%]'>
               <TradingViewWidget baseToken={baseToken} symbol={ETH.symbol} />
               <TradingViewWidget baseToken={baseToken} symbol={BTC.symbol} />
             </div>
             <LeverageWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
+          <OpenPositions />
         </div>
         <FaqSection />
       </div>

@@ -85,7 +85,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
-    <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
+    <div className='widget flex flex-col gap-3 rounded-3xl p-6' id='close-position-scroll'>
       <BaseTokenSelector
         baseToken={baseToken}
         onClick={props.onClickBaseTokenSelector}

@@ -58,7 +58,7 @@ export function useBalance(address?: string, token?: string) {
   }
 }
 
-interface TokenBalance {
+export interface TokenBalance {
   token: string
   value: bigint
 }
