@@ -22,10 +22,12 @@ async function getInputTokenBalance(
 ): Promise<bigint> {
   const chainId = publicClient.chain?.id
   if (!chainId) return BigInt(0)
+  const inputTokenAddress = getAddressForToken(inputToken, chainId)
+  if (!inputTokenAddress) return BigInt(0)
   const balanceProvider = new BalanceProvider(publicClient)
   return isNativeCurrency(inputToken, chainId)
     ? await balanceProvider.getNativeBalance(address)
-    : await balanceProvider.getErc20Balance(address, inputToken.address!)
+    : await balanceProvider.getErc20Balance(address, inputTokenAddress)
 }
 
 export const useTrade = () => {
