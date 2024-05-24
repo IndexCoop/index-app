@@ -241,22 +241,20 @@ export const Swap = (props: SwapProps) => {
             {'Error fetching quote'}
           </Text>
         )}
-        {isTradablePair && (
-          <SmartTradeButton
-            contract={contract ?? ''}
-            hasFetchingError={hasFetchingError}
-            hasInsufficientFunds={hasInsufficientFunds}
-            inputTokenAmount={inputTokenAmountWei.toBigInt()}
-            inputToken={inputToken}
-            inputValue={sellTokenAmount}
-            isFetchingQuote={isFetchingAnyQuote}
-            isSupportedNetwork={isSupportedNetwork}
-            outputToken={outputToken}
-            buttonLabelOverrides={{}}
-            onOpenTransactionReview={onOpenTransactionReview}
-            onRefetchQuote={fetchOptions}
-          />
-        )}
+        <SmartTradeButton
+          contract={contract ?? ''}
+          hasFetchingError={hasFetchingError}
+          hasInsufficientFunds={hasInsufficientFunds}
+          inputTokenAmount={inputTokenAmountWei.toBigInt()}
+          inputToken={inputToken}
+          inputValue={sellTokenAmount}
+          isFetchingQuote={isFetchingAnyQuote}
+          isSupportedNetwork={isSupportedNetwork}
+          outputToken={outputToken}
+          buttonLabelOverrides={{}}
+          onOpenTransactionReview={onOpenTransactionReview}
+          onRefetchQuote={fetchOptions}
+        />
       </>
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
