@@ -11,12 +11,14 @@ export function FaqSection() {
           leverage, featuring built-in liquidation protection and low,
           transparent fees. Built on Index Protocol, our suite of automated
           tokens simplifies leverage trading by utilising Aave V3 to offer users
-          six distinct strategies on ETH and BTC.
+          six distinct strategies on ETH and BTC. The leverage products users
+          trade via the Leverage interface are not perps, but fully
+          collateralized tokens.
         </p>
         <p>
           To learn more about The Index Coop Leverage Suite, see our article:{' '}
           <a
-            href='http://indexcoop.com/blog/introducing-arbitrum-leverage-suite'
+            href='https://indexcoop.com/blog/introducing-arbitrum-leverage-suite'
             target='_blank'
             className='underline'
           >
@@ -25,7 +27,7 @@ export function FaqSection() {
           .
         </p>
       </FaqItem>
-      <FaqItem question='How do the Tokens work?'>
+      <FaqItem question='How do the tokens work?'>
         <p>
           Both leverage tokens and perps offer a way for users to amplify their
           exposure to an asset. However, leverage tokens differ from perps in
@@ -53,8 +55,8 @@ export function FaqSection() {
         </p>
         <p>
           Leverage tokens can also be substantially cheaper than perps because
-          the borrow rates on Aave are significantly lower than the typical
-          funding rates on perp platforms.
+          the borrow rates on Aave are often significantly lower than the
+          typical funding rates on perp platforms.
         </p>
       </FaqItem>
       <FaqItem question='Is there liquidation risk?'>
@@ -72,15 +74,15 @@ export function FaqSection() {
           reward for anyone who triggers a ripcord rebalance.
         </p>
       </FaqItem>
-      <FaqItem question='How do I open a position?'>
+      <FaqItem question='How do I buy leverage tokens?'>
         <p>
           Start by selecting a market via the dropdown in the quickstats widget
           or in the trade widget, then select your desired Leverage amount using
-          the Leverage buttons. Now select your collateral from the ‘you pay’
+          the Leverage buttons. Now select your input token from the ‘you pay’
           dropdown menu. You will have to connect your wallet and sign our terms
           and conditions before your first action. Make sure you are connected
           to Arbitrum and that you have sufficient funds in your wallet. Now you
-          can input the desired amount of collateral and click ‘Review
+          can input the desired amount of tokens to trade and click ‘Review
           Transaction’ which will open a transaction review popup. Click “Submit
           Transaction”. This will run a transaction simulation and in case of a
           successful simulation send it to your wallet. Use your wallet to sign
@@ -89,17 +91,17 @@ export function FaqSection() {
           asset dropdown.
         </p>
       </FaqItem>
-      <FaqItem question='How do I close a position?'>
+      <FaqItem question='How do I sell leverage tokens?'>
         <p>
-          For leverage tokens on Arbitrum, you can close your position by first
-          selecting ETH or BTC, selecting “Sell” at the top of the trade widget,
-          and then selecting the corresponding leverage ratio of your currently
-          open position. You should see your total balance and be able to input
-          the amount of your position you want to close out.
+          For leverage tokens on Arbitrum, you can sell your leverage tokens by
+          first selecting ETH or BTC, selecting “Sell” at the top of the trade
+          widget, and then selecting the corresponding leverage ratio of your
+          current token holdings. You should see your total balance and be able
+          to input the amount of tokens you want to sell.
         </p>
         <p>
           For leverage tokens on Mainnet, you can sell via the Index Coop App{' '}
-          <Link href='/swap' className='underline' target='_blank'>
+          <Link href='/swap' className='underline'>
             swap widget
           </Link>
           .
@@ -116,13 +118,21 @@ export function FaqSection() {
           .
         </p>
       </FaqItem>
-      <FaqItem question='How long should I keep my positions open?'>
+      <FaqItem question='How long should I hold leverage tokens?'>
         <p>
-          There is no specific amount of time users should or should not keep
-          positions open. However, typically speaking, leverage products are not
-          designed for long term holding. You can gain a basic understanding of
-          the factors impacting some leverage token performance from our article
-          on how ETH2x performs in different market conditions.
+          There is no specific amount of time users should or should not hold
+          our leverage tokens. However, typically speaking, leverage products
+          are not designed for long term holding. You can gain a basic
+          understanding of the factors impacting some leverage token performance
+          from our{' '}
+          <a
+            href='https://indexcoop.com/blog/how-eth2x-performs-in-different-market-conditions'
+            target='_blank'
+            className='underline'
+          >
+            article on how ETH2x performs in different market conditions
+          </a>
+          .
         </p>
         <p>
           The main factors that will impact leverage token performance include,
@@ -130,14 +140,14 @@ export function FaqSection() {
           costs and fees compounding over time.
         </p>
         <p>
-          Users should frequently monitor their positions and take time to fully
-          understand how the products work and are expected to behave in
+          Users should frequently monitor their token holdings and take time to
+          fully understand how the products work and are expected to behave in
           different market environments.
         </p>
       </FaqItem>
-      <FaqItem question='I’m having trouble entering or exiting a position. What can I do?'>
+      <FaqItem question='I’m having trouble buying or selling my tokens. What can I do?'>
         <p>
-          If you are having difficulty selling your leverage tokens via that
+          If you are having difficulty trading your leverage tokens via that
           Index Coop app, double check the following:
         </p>
         <ul className='list-disc pl-6'>
@@ -163,7 +173,7 @@ export function FaqSection() {
           interface to receive more support from our team.
         </p>
       </FaqItem>
-      <FaqItem question='What are the costs and fees for Index Coop Leverage positions?'>
+      <FaqItem question='What are the costs and fees for Index Coop leverage tokens?'>
         <p>
           Index Coop charges annual fees based on the type of product: 1x and 2x
           products incur a 3.65% fee, while 3x products carry a 5.48% fee.
