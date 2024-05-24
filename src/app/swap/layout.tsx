@@ -4,7 +4,7 @@ import { LeverageBanner } from '@/components/banners/leverage-banner'
 import { SwapBanner } from '@/components/banners/swap-banner'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
-import { isLeverageSuiteEnabled } from '@/lib/utils/feature-flags'
+import { isLeverageSuiteEnabled } from '@/feature-flags'
 
 import { Providers } from '../providers'
 

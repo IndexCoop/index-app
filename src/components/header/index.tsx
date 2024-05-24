@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 import { Path } from '@/constants/paths'
-import { isLeverageSuiteEnabled } from '@/lib/utils/feature-flags'
+import { isLeverageSuiteEnabled } from '@/feature-flags'
 
 import { Connect } from './connect'
 import { HeaderLink } from './link'

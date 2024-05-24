@@ -2,7 +2,7 @@ import { Providers } from '@/app/providers'
 import { LeverageBanner } from '@/components/banners/leverage-banner'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
-import { isLeverageSuiteEnabled } from '@/lib/utils/feature-flags'
+import { isLeverageSuiteEnabled } from '@/feature-flags'
 
 type Props = {
   children: React.ReactNode
