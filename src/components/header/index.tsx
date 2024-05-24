@@ -8,18 +8,18 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 import { Path } from '@/constants/paths'
-
+import { isLeverageSuiteEnabled } from '@/feature-flags'
 
 import { Connect } from './connect'
 import { HeaderLink } from './link'
 import { Logo } from './logo'
 
-const isDevEnv = process.env.NEXT_PUBLIC_VERCEL_ENV !== 'index-app-prod'
-
 const navigation = [
   { name: 'Trade', href: Path.TRADE },
   { name: 'Products', href: Path.PRODUCTS },
-  ...(isDevEnv ? [{ name: 'Leverage', href: Path.LEVERAGE }] : []),
+  ...(isLeverageSuiteEnabled()
+    ? [{ name: 'Leverage', href: Path.LEVERAGE }]
+    : []),
   { name: 'Presales', href: Path.PRE_SALE },
 ]
 
@@ -41,13 +41,13 @@ export function Header() {
             <HeaderLink key={item.name} label={item.name} href={item.href} />
           ))}
         </div>
-        <div className='flex md:flex-grow md:justify-end md:mr-6 lg:mr-0'>
+        <div className='flex md:mr-6 md:flex-grow md:justify-end lg:mr-0'>
           <Connect />
         </div>
         <div className='flex lg:hidden'>
           <button
             type='button'
-            className='-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-ic-gray-800 dark:text-ic-gray-200'
+            className='text-ic-gray-800 dark:text-ic-gray-200 -m-2.5 inline-flex items-center justify-center rounded-md p-2.5'
             onClick={() => setMobileMenuOpen(true)}
           >
             <span className='sr-only'>Open main menu</span>
@@ -62,12 +62,12 @@ export function Header() {
         onClose={setMobileMenuOpen}
       >
         <div className='fixed inset-0 z-10' />
-        <Dialog.Panel className='fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-ic-white dark:bg-ic-blue-950 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:sm:ring-gray-100/10'>
+        <Dialog.Panel className='bg-ic-white dark:bg-ic-blue-950 fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:sm:ring-gray-100/10'>
           <div className='flex items-center justify-between'>
             <Logo />
             <button
               type='button'
-              className='-m-2.5 rounded-md p-2.5 text-ic-gray-800 dark:text-ic-gray-200'
+              className='text-ic-gray-800 dark:text-ic-gray-200 -m-2.5 rounded-md p-2.5'
               onClick={() => setMobileMenuOpen(false)}
             >
               <span className='sr-only'>Close menu</span>
@@ -81,7 +81,7 @@ export function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-ic-gray-900 hover:bg-ic-gray-50 dark:text-ic-gray-50 dark:hover:bg-ic-blue-900'
+                    className='text-ic-gray-900 hover:bg-ic-gray-50 dark:text-ic-gray-50 dark:hover:bg-ic-blue-900 -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7'
                   >
                     {item.name}
                   </Link>
