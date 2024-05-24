@@ -153,12 +153,14 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
   return (
     <>
-      <TradeButton
-        label={buttonLabel}
-        isDisabled={isDisabled}
-        isLoading={isApprovingForSwap || isFetchingQuote}
-        onClick={onClick}
-      />
+      {isTradablePair && (
+        <TradeButton
+          label={buttonLabel}
+          isDisabled={isDisabled}
+          isLoading={isApprovingForSwap || isFetchingQuote}
+          onClick={onClick}
+        />
+      )}
       <Warnings warnings={warnings} />
     </>
   )
