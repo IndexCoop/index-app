@@ -8,6 +8,7 @@ import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
+import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { useArbitrumOnly } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -85,7 +86,10 @@ export function LeverageWidget(props: LeverageWidgetProps) {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
-    <div className='widget flex flex-col gap-3 rounded-3xl p-6' id='close-position-scroll'>
+    <div
+      className='widget flex flex-col gap-3 rounded-3xl p-6'
+      id='close-position-scroll'
+    >
       <BaseTokenSelector
         baseToken={baseToken}
         onClick={props.onClickBaseTokenSelector}
@@ -118,6 +122,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         contract={contract ?? ''}
         hasFetchingError={false}
         hasInsufficientFunds={hasInsufficientFunds}
+        hiddenWarnings={[WarningType.flashbots]}
         inputTokenAmount={inputTokenAmount}
         inputToken={inputToken}
         inputValue={inputValue}

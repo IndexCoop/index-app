@@ -9,10 +9,10 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
-import { OpenPositions } from './components/open-positions'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
 import TradingViewWidget from './components/trading-view-widget'
+import { YourTokens } from './components/your-tokens'
 
 export default function Page() {
   const { address } = useWallet()
@@ -37,7 +37,7 @@ export default function Page() {
             </div>
             <LeverageWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
-          <OpenPositions />
+          <YourTokens />
         </div>
         <FaqSection />
       </div>
