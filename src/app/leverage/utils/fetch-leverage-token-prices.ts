@@ -1,15 +1,15 @@
+import { BigNumber } from 'ethers'
 import { Dispatch, SetStateAction } from 'react'
 
 import { formatPrice } from '@/app/products/utils/formatters'
 import { ARBITRUM } from '@/constants/chains'
 import { TokenBalance } from '@/lib/hooks/use-balance'
+import { displayFromWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
 
 import { leverageTokens } from '../constants'
 import { EnrichedToken } from '../types'
 
-import { displayFromWei } from '@/lib/utils'
-import { BigNumber } from 'ethers'
 import { getLeverageType } from './get-leverage-type'
 
 export async function fetchLeverageTokenPrices(
