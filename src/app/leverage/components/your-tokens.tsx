@@ -1,20 +1,12 @@
 import clsx from 'clsx'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { useAccount } from 'wagmi'
 
-import { useBalances } from '@/lib/hooks/use-balance'
-
-import { leverageTokens } from '../constants'
 import { LeverageType, useLeverageToken } from '../provider'
 import { EnrichedToken } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
 import { getLeverageBaseToken } from '../utils/get-leverage-base-token'
 import { getLeverageType } from '../utils/get-leverage-type'
-
-const leverageTokenAddresses = leverageTokens
-  .map((token) => token.arbitrumAddress ?? '')
-  .filter((address) => address.length > 0)
 
 const leverageTypeLabels = {
   [LeverageType.Long2x]: '2x LONG',
@@ -23,14 +15,13 @@ const leverageTypeLabels = {
 }
 
 export function YourTokens() {
-  const { address } = useAccount()
   const {
+    balances,
     onSelectBaseToken,
     isMinting,
     toggleIsMinting,
     onSelectLeverageType,
   } = useLeverageToken()
-  const balances = useBalances(address, leverageTokenAddresses)
   const [tokens, setTokens] = useState<EnrichedToken[]>([])
 
   useEffect(() => {

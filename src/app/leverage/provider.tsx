@@ -28,6 +28,7 @@ import {
   WBTC,
   WETH,
 } from '@/constants/tokens'
+import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -37,6 +38,7 @@ import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
+import { leverageTokenAddresses } from './constants'
 import { BaseTokenStats } from './types'
 
 const baseTokens = [ETH, BTC]
@@ -52,6 +54,7 @@ export interface TokenContext {
   inputValue: string
   isMinting: boolean
   leverageType: LeverageType
+  balances: TokenBalance[]
   baseToken: Token
   inputToken: Token
   outputToken: Token
@@ -78,6 +81,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputValue: '',
   isMinting: true,
   leverageType: LeverageType.Long2x,
+  balances: [],
   baseToken: ETH,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
@@ -137,6 +141,10 @@ export function LeverageProvider(props: { children: any }) {
     LeverageType.Long2x,
   )
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
+  const { balances, forceRefetchBalances } = useBalances(
+    address,
+    leverageTokenAddresses,
+  )
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
     isAvailable: true,
@@ -304,6 +312,7 @@ export function LeverageProvider(props: { children: any }) {
       quote: null,
       error: null,
     })
+    forceRefetchBalances()
   }
 
   useEffect(() => {
@@ -382,6 +391,7 @@ export function LeverageProvider(props: { children: any }) {
         inputValue,
         isMinting,
         leverageType,
+        balances,
         baseToken,
         inputToken,
         outputToken,
