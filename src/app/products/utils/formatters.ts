@@ -16,7 +16,7 @@ export function formatPercentage(percentage?: number | null) {
   return `${percentage.toFixed(2)}%`
 }
 
-export function formatPrice(price?: number | null) {
+export function formatPrice(price?: number | bigint | null) {
   if (price === undefined || price === null) return ''
 
   return Intl.NumberFormat('en', {

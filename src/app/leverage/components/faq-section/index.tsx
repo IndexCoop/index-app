@@ -4,7 +4,7 @@ import { FaqItem, FaqList } from '@/components/faq'
 
 export function FaqSection() {
   return (
-    <FaqList className='mx-auto my-12 w-full !max-w-7xl px-4'>
+    <FaqList className='mx-auto my-12 w-full !max-w-7xl px-4 sm:px-6 md:mx-8'>
       <FaqItem question='How does it work?'>
         <p>
           The Index Coop Leverage Interface provides streamlined access to

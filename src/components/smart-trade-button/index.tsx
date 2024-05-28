@@ -24,6 +24,7 @@ type SmartTradeButtonProps = {
   contract: string
   hasFetchingError: boolean
   hasInsufficientFunds: boolean
+  hiddenWarnings?: WarningType[]
   isFetchingQuote: boolean
   isSupportedNetwork: boolean
   buttonLabelOverrides: { [key: number]: string }
@@ -37,6 +38,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     contract,
     hasFetchingError,
     hasInsufficientFunds,
+    hiddenWarnings = [],
     inputTokenAmount,
     inputToken,
     inputValue,
@@ -89,20 +91,25 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   const [warnings, setWarnings] = useState<WarningType[]>([])
 
   useEffect(() => {
-    if (!isTradablePair) {
+    if (!isTradablePair && !hiddenWarnings.includes(WarningType.restricted)) {
       setWarnings([WarningType.restricted])
       return
     }
-    if (buttonState === TradeButtonState.signTerms) {
+    if (
+      buttonState === TradeButtonState.signTerms &&
+      !hiddenWarnings.includes(WarningType.signTerms)
+    ) {
       setWarnings([WarningType.signTerms])
       return
     }
-    if (slippage > 9) {
+    if (slippage > 9 && !hiddenWarnings.includes(WarningType.priceImpact)) {
       setWarnings([WarningType.priceImpact])
       return
     }
-    setWarnings([WarningType.flashbots])
-  }, [buttonState, isTradablePair, slippage])
+    if (!hiddenWarnings.includes(WarningType.flashbots)) {
+      setWarnings([WarningType.flashbots])
+    }
+  }, [buttonState, hiddenWarnings, isTradablePair, slippage])
 
   const onClick = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {

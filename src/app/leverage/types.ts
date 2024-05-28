@@ -1,6 +1,6 @@
-import { Token } from "@/constants/tokens"
+import { Token } from '@/constants/tokens'
 
-import { LeverageType } from "./provider"
+import { LeverageType } from './provider'
 
 export interface BaseTokenStats {
   symbol: string
@@ -11,7 +11,7 @@ export interface BaseTokenStats {
 }
 
 export type EnrichedToken = Token & {
-  balance: string | null
+  balance: bigint
   size?: string
   leverageType?: LeverageType | null
 }
