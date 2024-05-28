@@ -1,9 +1,10 @@
+import { BigNumber } from 'ethers'
 import { Dispatch, SetStateAction } from 'react'
-import { parseUnits } from 'viem'
 
 import { formatPrice } from '@/app/products/utils/formatters'
 import { ARBITRUM } from '@/constants/chains'
 import { TokenBalance } from '@/lib/hooks/use-balance'
+import { displayFromWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
 
 import { leverageTokens } from '../constants'
@@ -26,10 +27,7 @@ export async function fetchLeverageTokenPrices(
       (accToken) => accToken.symbol === token.symbol,
     )
     if (tokenIdx !== -1) {
-      acc[tokenIdx].balance! += parseUnits(
-        current.value.toString(),
-        token.decimals,
-      )
+      acc[tokenIdx].balance! += current.value
       return acc
     }
 
@@ -37,7 +35,7 @@ export async function fetchLeverageTokenPrices(
       ...acc,
       {
         ...token,
-        balance: parseUnits(current.value.toString(), token.decimals),
+        balance: current.value,
       },
     ]
   }, [] as EnrichedToken[])
@@ -59,7 +57,15 @@ export async function fetchLeverageTokenPrices(
     const enrichedTokens = tokenBalances.map((token, idx) => ({
       ...token,
       leverageType: getLeverageType(token),
-      size: formatPrice(Number(token.balance) * tokenPrices[idx]),
+      size: formatPrice(
+        Number(
+          displayFromWei(
+            BigNumber.from(token.balance.toString()),
+            3,
+            token.decimals,
+          ),
+        ) * tokenPrices[idx],
+      ),
     }))
 
     setTokens(enrichedTokens)

@@ -31,7 +31,7 @@ export default function Page() {
             <Stats onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
-            <div className='h-[360px] w-full lg:h-[520px] lg:min-w-[67%]'>
+            <div className='h-[360px] w-full lg:h-[520px] lg:max-w-[67%]'>
               <TradingViewWidget baseToken={baseToken} symbol={ETH.symbol} />
               <TradingViewWidget baseToken={baseToken} symbol={BTC.symbol} />
             </div>

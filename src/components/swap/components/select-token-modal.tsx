@@ -33,7 +33,7 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
     () => tokens.map((token) => token.address!),
     [tokens],
   )
-  const balances = useBalances(props.address, tokenAddresses)
+  const { balances } = useBalances(props.address, tokenAddresses)
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
