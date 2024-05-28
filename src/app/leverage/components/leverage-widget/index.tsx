@@ -25,6 +25,8 @@ import { Summary } from './components/summary'
 
 import './styles.css'
 
+const hiddenLeverageWarnings = [WarningType.flashbots]
+
 type LeverageWidgetProps = {
   onClickBaseTokenSelector: () => void
 }
@@ -122,7 +124,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         contract={contract ?? ''}
         hasFetchingError={false}
         hasInsufficientFunds={hasInsufficientFunds}
-        hiddenWarnings={[WarningType.flashbots]}
+        hiddenWarnings={hiddenLeverageWarnings}
         inputTokenAmount={inputTokenAmount}
         inputToken={inputToken}
         inputValue={inputValue}
