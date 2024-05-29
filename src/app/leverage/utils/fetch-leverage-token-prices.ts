@@ -54,19 +54,27 @@ export async function fetchLeverageTokenPrices(
     // Avoid showing a $0 position if nav call fails
     if (tokenPrices.some((tokenPrice) => tokenPrice === 0)) return
 
-    const enrichedTokens = tokenBalances.map((token, idx) => ({
-      ...token,
-      leverageType: getLeverageType(token),
-      size: formatPrice(
+    const enrichedTokens = tokenBalances.map((token, idx) => {
+      const usd =
         Number(
           displayFromWei(
             BigNumber.from(token.balance.toString()),
             3,
             token.decimals,
           ),
-        ) * tokenPrices[idx],
-      ),
-    }))
+        ) * tokenPrices[idx]
+      return {
+        ...token,
+        leverageType: getLeverageType(token),
+        size: formatPrice(usd),
+        usd,
+      }
+    })
+    enrichedTokens.sort((token1, token2) => {
+      if (token1.usd > token2.usd) return -1
+      if (token2.usd > token1.usd) return 1
+      return 0
+    })
 
     setTokens(enrichedTokens)
   } catch (e) {
