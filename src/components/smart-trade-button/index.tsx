@@ -108,7 +108,9 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     }
     if (!hiddenWarnings?.includes(WarningType.flashbots)) {
       setWarnings([WarningType.flashbots])
+      return
     }
+    setWarnings([])
   }, [buttonState, hiddenWarnings, isTradablePair, slippage])
 
   const onClick = useCallback(async () => {
