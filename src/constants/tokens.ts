@@ -125,7 +125,7 @@ export const HighYieldETHIndex: Token = {
 }
 
 const btc2x = getTokenFromSymbol('BTC2X')!
-const btc2xArbitrum = getIndexTokenData('BTC3X', ARBITRUM.chainId)!
+const btc2xArbitrum = getIndexTokenData('BTC2X', ARBITRUM.chainId)!
 export const IndexCoopBitcoin2xIndex: Token = {
   ...btc2x,
   arbitrumAddress: btc2xArbitrum.address,
