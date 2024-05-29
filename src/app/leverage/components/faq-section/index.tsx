@@ -5,7 +5,7 @@ import { FaqItem, FaqList } from '@/components/faq'
 export function FaqSection() {
   return (
     <FaqList className='mx-auto my-12 w-full !max-w-7xl px-4 sm:px-6 md:mx-8'>
-      <FaqItem question='How does it work?'>
+      <FaqItem question='How does the Leverage interface work?'>
         <p>
           The Index Coop Leverage Interface provides streamlined access to
           leverage, featuring built-in liquidation protection and low,
