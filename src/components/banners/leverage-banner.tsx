@@ -7,7 +7,7 @@ import { Banner } from './banner'
 export function LeverageBanner() {
   return (
     <Banner>
-      Trade on Arbitrum and earn ARB rewards now. Early users will earn 2bp /
+      Trade on Arbitrum and earn ARB rewards now. Early users will earn 2bps /
       day in ARB on all{' '}
       <Link className='underline' href={Path.LEVERAGE}>
         Leverage Suite tokens
