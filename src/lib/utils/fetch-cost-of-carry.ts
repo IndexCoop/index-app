@@ -4,7 +4,10 @@ import { AaveV3Arbitrum } from '@bgd-labs/aave-address-book'
 import { providers } from 'ethers'
 import { Dispatch, SetStateAction } from 'react'
 
+import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
+
+import { NavProvider } from './api/nav'
 
 export async function fetchCostOfCarry(
   jsonRpcProvider: providers.JsonRpcProvider,
@@ -40,9 +43,22 @@ export async function fetchCostOfCarry(
       return
     }
 
-    setCostOfCarry(
-      Number(borrowedAsset.supplyAPY) - Number(borrowedAsset.variableBorrowAPY),
+    const navProvider = new NavProvider()
+    const nav = await navProvider.getNavPrice(
+      inputOutputToken.symbol,
+      ARBITRUM.chainId,
     )
+
+    const supplyAPY = Number(borrowedAsset.supplyAPY)
+    const borrowAPY = Number(borrowedAsset.variableBorrowAPY)
+
+    // FIXME: amount resolution
+    const collateralAmount = 2
+    const debtAmount = 1
+
+    const costOfCarry =
+      (collateralAmount * supplyAPY - debtAmount * borrowAPY) / nav
+    setCostOfCarry(costOfCarry)
   } catch (e) {
     console.error('Caught error while fetching borrow rates', e)
   }
