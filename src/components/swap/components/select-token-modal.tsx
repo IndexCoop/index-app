@@ -22,7 +22,6 @@ type SelectTokenModalProps = {
   isOpen: boolean
   isDarkMode?: boolean
   showBalances?: boolean
-  tokenAddressField?: 'address' | 'arbitrumAddress'
   tokens: Token[]
   onClose: () => void
   onSelectedToken: (tokenSymbol: string) => void
