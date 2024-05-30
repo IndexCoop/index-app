@@ -1,20 +1,40 @@
+import { Tooltip } from '@chakra-ui/react'
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 
 import { LeverageType } from '@/app/leverage/provider'
+import { colors } from '@/lib/styles/colors'
 
 type FeesItemProps = {
   label: string
   showPositiveFee?: boolean
   percent: string
+  tooltip?: string
   valueUsd: string
 }
 
 function FeesItem(props: FeesItemProps) {
   return (
     <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
-      <div className='font-medium'>{props.label}</div>
+      <div className='font-medium'>
+        {props.tooltip ? (
+          <Tooltip
+            className='bg-[#141E1F]'
+            borderRadius='6px'
+            fontSize='12px'
+            fontWeight={500}
+            label={props.tooltip}
+            p='12px 16px'
+            placement='bottom-start'
+            textColor={colors.ic.gray[300]}
+          >
+            {props.label}
+          </Tooltip>
+        ) : (
+          props.label
+        )}
+      </div>
       <div className='flex flex-row gap-1'>
         <div
           className={clsx(
@@ -58,11 +78,12 @@ export function Fees(props: FeesProps) {
               percent={
                 props.leverageType === LeverageType.Long3x ? '5.48%' : '3.65%'
               }
+              tooltip='An annual fee for product holders. This fee is charged at the smart contract level.'
               valueUsd={''}
             />
             <FeesItem label='Mint Fee' percent={'0.10%'} valueUsd={''} />
             <FeesItem label='Redeem Fee' percent={'0.10%'} valueUsd={''} />
-            {props.costOfCarry !== null && (
+            {/* {props.costOfCarry !== null && (
               <FeesItem
                 label='Cost of Carry'
                 showPositiveFee={props.costOfCarry > 0}
@@ -71,9 +92,10 @@ export function Fees(props: FeesProps) {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 }).format(Math.abs(props.costOfCarry))}
+                tooltip='The underlying mechanism of the Leverage suite tokens uses AAVE deposits and borrows. Assets deposited accrue interest from borrows. This results in a spread between the interest earned from deposits and the interest paid for the debt. Cost of Carry may vary, sometimes favourably and sometimes unfavourably for users, as AAVE borrow and earn rates vary.'
                 valueUsd={''}
               />
-            )}
+            )} */}
             {/* // See if we need this */}
             {/* <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
               <div className='font-normal'>Network Fee</div>
