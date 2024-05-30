@@ -20,6 +20,7 @@ type SelectTokenModalProps = {
   isOpen: boolean
   isDarkMode?: boolean
   showBalances?: boolean
+  tokenAddressField?: 'address' | 'arbitrumAddress'
   tokens: Token[]
   onClose: () => void
   onSelectedToken: (tokenSymbol: string) => void
@@ -28,11 +29,13 @@ type SelectTokenModalProps = {
 export const SelectTokenModal = (props: SelectTokenModalProps) => {
   const { isOpen, onClose, onSelectedToken, tokens } = props
   const isDarkMode = props.isDarkMode ?? false
+  const tokenAddressField = props.tokenAddressField ?? 'address'
   const showBalances = props.showBalances ?? true
   const tokenAddresses = useMemo(
-    () => tokens.map((token) => token.address!),
-    [tokens],
+    () => tokens.map((token) => token[tokenAddressField] ?? ''),
+    [tokens, tokenAddressField],
   )
+
   const { balances } = useBalances(props.address, tokenAddresses)
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
@@ -54,7 +57,7 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
           {tokens.length > 0 &&
             tokens.map((token) => {
               const tokenBalance = balances.find((bal) =>
-                isSameAddress(bal.token, token.address!),
+                isSameAddress(bal.token, token[tokenAddressField] ?? ''),
               )
               const balance = BigNumber.from(
                 tokenBalance?.value.toString() ?? '0',

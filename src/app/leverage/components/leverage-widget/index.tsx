@@ -159,6 +159,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         }}
         address={address}
         tokens={outputTokens}
+        tokenAddressField='arbitrumAddress'
       />
       {transactionReview && (
         <TransactionReviewModal
