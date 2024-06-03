@@ -70,7 +70,7 @@
     "hardhat-gas-reporter": "^1.0.9",
     "jest": "^29.5.0",
     "postcss": "^8.4.35",
-    "prettier-plugin-tailwindcss": "^0.5.14",
+    "prettier-plugin-tailwindcss": "^0.6.1",
     "tailwindcss": "^3.4.3",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
