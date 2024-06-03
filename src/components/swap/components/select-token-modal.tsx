@@ -13,7 +13,9 @@ import { useMemo } from 'react'
 
 import { Token } from '@/constants/tokens'
 import { useBalances } from '@/lib/hooks/use-balance'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { displayFromWei, isSameAddress } from '@/lib/utils'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 type SelectTokenModalProps = {
   address?: string
@@ -27,12 +29,14 @@ type SelectTokenModalProps = {
 
 export const SelectTokenModal = (props: SelectTokenModalProps) => {
   const { isOpen, onClose, onSelectedToken, tokens } = props
+  const { chainId } = useNetwork()
   const isDarkMode = props.isDarkMode ?? false
   const showBalances = props.showBalances ?? true
   const tokenAddresses = useMemo(
-    () => tokens.map((token) => token.address!),
-    [tokens],
+    () => tokens.map((token) => getAddressForToken(token, chainId) ?? ''),
+    [chainId, tokens],
   )
+
   const { balances } = useBalances(props.address, tokenAddresses)
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
@@ -54,7 +58,10 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
           {tokens.length > 0 &&
             tokens.map((token) => {
               const tokenBalance = balances.find((bal) =>
-                isSameAddress(bal.token, token.address!),
+                isSameAddress(
+                  bal.token,
+                  getAddressForToken(token, chainId) ?? '',
+                ),
               )
               const balance = BigNumber.from(
                 tokenBalance?.value.toString() ?? '0',

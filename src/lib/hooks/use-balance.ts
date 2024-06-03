@@ -71,6 +71,8 @@ export function useBalances(address?: string, tokens?: string[]) {
     if (!address || !publicClient || !tokens || tokens.length === 0) return
     const balanceProvider = new BalanceProvider(publicClient)
     const promises = tokens.map((token) => {
+      if (token.length === 0) return BigInt(0)
+
       const isETH = token.toLowerCase() === ETH.address!.toLowerCase()
       const balance = isETH
         ? balanceProvider.getNativeBalance(address)
