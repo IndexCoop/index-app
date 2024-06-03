@@ -28,6 +28,7 @@ interface RedemptionQuoteRequest {
 
 const contract = DebtIssuanceModuleAddress
 
+// In scope?
 export async function getEnhancedRedemptionQuote(
   request: RedemptionQuoteRequest,
   publicClient: PublicClient,
