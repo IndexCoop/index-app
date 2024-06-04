@@ -256,8 +256,15 @@ export function LeverageProvider(props: { children: any }) {
 
     const jsonRpcProvider = publicClientToProvider(publicClient)
     const inputOutputToken = isMinting ? outputToken : inputToken
-    fetchCostOfCarry(jsonRpcProvider, inputOutputToken, setCostOfCarry)
-  }, [publicClient, isMinting, inputToken, outputToken])
+    fetchCostOfCarry(
+      publicClient,
+      jsonRpcProvider,
+      inputOutputToken,
+      inputTokenAmount,
+      isMinting,
+      setCostOfCarry,
+    )
+  }, [publicClient, isMinting, inputToken, outputToken, inputTokenAmount])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {

@@ -3,17 +3,25 @@ import { formatReserves } from '@aave/math-utils'
 import { AaveV3Arbitrum } from '@bgd-labs/aave-address-book'
 import { providers } from 'ethers'
 import { Dispatch, SetStateAction } from 'react'
+import { Address, PublicClient, formatUnits } from 'viem'
 
 import { ARBITRUM } from '@/constants/chains'
+import { FlashMintLeveragedExtendedAddress } from '@/constants/contracts'
 import { Token } from '@/constants/tokens'
 
+import { FlashMintLeveragedExtendedAbi } from './abi/interfaces'
 import { NavProvider } from './api/nav'
 
 export async function fetchCostOfCarry(
+  publicClient: PublicClient,
   jsonRpcProvider: providers.JsonRpcProvider,
   inputOutputToken: Token,
+  inputTokenAmount: bigint,
+  isMinting: boolean,
   setCostOfCarry: Dispatch<SetStateAction<number | null>>,
 ) {
+  if (inputTokenAmount === BigInt(0)) return
+
   try {
     const poolDataProviderContract = new UiPoolDataProvider({
       uiPoolDataProviderAddress: AaveV3Arbitrum.UI_POOL_DATA_PROVIDER,
@@ -43,6 +51,17 @@ export async function fetchCostOfCarry(
       return
     }
 
+    const { collateralAmount, debtAmount } = await publicClient.readContract({
+      address: FlashMintLeveragedExtendedAddress,
+      abi: FlashMintLeveragedExtendedAbi,
+      functionName: 'getLeveragedTokenData',
+      args: [
+        inputOutputToken.arbitrumAddress as Address,
+        inputTokenAmount,
+        isMinting,
+      ],
+    })
+
     const navProvider = new NavProvider()
     const nav = await navProvider.getNavPrice(
       inputOutputToken.symbol,
@@ -52,12 +71,10 @@ export async function fetchCostOfCarry(
     const supplyAPY = Number(borrowedAsset.supplyAPY)
     const borrowAPY = Number(borrowedAsset.variableBorrowAPY)
 
-    // FIXME: amount resolution
-    const collateralAmount = 2
-    const debtAmount = 1
-
     const costOfCarry =
-      (collateralAmount * supplyAPY - debtAmount * borrowAPY) / nav
+      (Number(formatUnits(collateralAmount, 18)) * supplyAPY -
+        Number(formatUnits(debtAmount, 18)) * borrowAPY) /
+      nav
     setCostOfCarry(costOfCarry)
   } catch (e) {
     console.error('Caught error while fetching borrow rates', e)
