@@ -27,7 +27,6 @@ interface IssuanceQuoteRequest {
   slippage: number
 }
 
-// In scope?
 export async function getEnhancedIssuanceQuote(
   request: IssuanceQuoteRequest,
   publicClient: PublicClient,
