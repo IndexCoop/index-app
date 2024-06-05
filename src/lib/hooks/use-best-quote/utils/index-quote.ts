@@ -5,6 +5,7 @@ import { displayFromWei, parseUnits, toWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
 
@@ -59,7 +60,9 @@ export async function getIndexQuote(
   } = request
   try {
     const inputAmount = parseUnits(inputTokenAmount, inputToken.decimals)
-    const path = `/quote?takerAddress=${address}&inputToken=${inputToken.address}&outputToken=${outputToken.address}&inputAmount=${inputAmount.toString()}&chainId=${chainId}`
+    const inputTokenAddress = getAddressForToken(inputToken, chainId)
+    const outputTokenAddress = getAddressForToken(outputToken, chainId)
+    const path = `/quote?takerAddress=${address}&inputToken=${inputTokenAddress}&outputToken=${outputTokenAddress}&inputAmount=${inputAmount.toString()}&chainId=${chainId}`
     console.log(path)
     const indexApi = new IndexApi()
     const res: QuoteResponse = await indexApi.get(path)

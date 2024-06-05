@@ -26,6 +26,7 @@ export function ProductList() {
   async function fetchProducts() {
     const analyticsPromises = Promise.all(
       productTokens.map((token) =>
+        // TODO: https://github.com/IndexCoop/analytics-sdk/issues/30
         token.address ? fetchAnalytics(token.address) : null,
       ),
     )
