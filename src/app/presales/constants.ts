@@ -1,10 +1,12 @@
+import { HighYieldETHIndex } from '@/constants/tokens'
+
 import { PreSaleStatus, PreSaleToken } from './types'
 
 export const preSaleTokens: PreSaleToken[] = [
   {
-    status: PreSaleStatus.CLOSED_TARGET_MET,
-    symbol: 'hyETH',
-    logo: '/assets/eth2x.png',
+    status: PreSaleStatus.TOKEN_LAUNCHED,
+    symbol: HighYieldETHIndex.symbol,
+    logo: HighYieldETHIndex.image,
     infoLink:
       'https://gov.indexcoop.com/t/iip-xxx-launch-the-high-yield-eth-index-hyeth-pre-sale/4764',
     description:
