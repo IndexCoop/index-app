@@ -5,12 +5,11 @@ import { providers } from 'ethers'
 import { Dispatch, SetStateAction } from 'react'
 import { Address, PublicClient, formatUnits } from 'viem'
 
+import { leverageCollateralDebt } from '@/app/leverage/constants'
 import { ARBITRUM } from '@/constants/chains'
-import { FlashMintLeveragedExtendedAddress } from '@/constants/contracts'
 import { Token } from '@/constants/tokens'
 
-import { leverageCollateralDebt } from '@/app/leverage/constants'
-import { FlashMintLeveragedExtendedAbi } from './abi/interfaces'
+import { ArbitrumLeverageTokenAbi } from './abi/interfaces'
 import { NavProvider } from './api/nav'
 
 export async function fetchCostOfCarry(
@@ -55,18 +54,36 @@ export async function fetchCostOfCarry(
     const collateralDebtTokens =
       leverageCollateralDebt[inputOutputToken.arbitrumAddress!]
 
-    console.log(collateralDebtTokens)
-
-    const { collateralAmount, debtAmount } = await publicClient.readContract({
-      address: FlashMintLeveragedExtendedAddress,
-      abi: FlashMintLeveragedExtendedAbi,
-      functionName: 'getLeveragedTokenData',
-      args: [
-        inputOutputToken.arbitrumAddress as Address,
-        inputTokenAmount,
-        isMinting,
-      ],
+    const collateralAmountPromise = publicClient.readContract({
+      address: collateralDebtTokens.collateralToken as Address,
+      abi: ArbitrumLeverageTokenAbi,
+      functionName: 'balanceOf',
+      args: [inputOutputToken.arbitrumAddress as Address],
     })
+    const collateralDecimalsPromise = publicClient.readContract({
+      address: collateralDebtTokens.collateralToken as Address,
+      abi: ArbitrumLeverageTokenAbi,
+      functionName: 'decimals',
+    })
+    const debtAmountPromise = publicClient.readContract({
+      address: collateralDebtTokens.debtToken as Address,
+      abi: ArbitrumLeverageTokenAbi,
+      functionName: 'balanceOf',
+      args: [inputOutputToken.arbitrumAddress as Address],
+    })
+    const debtDecimalsPromise = publicClient.readContract({
+      address: collateralDebtTokens.debtToken as Address,
+      abi: ArbitrumLeverageTokenAbi,
+      functionName: 'decimals',
+    })
+
+    const [collateralAmount, collateralDecimals, debtAmount, debtDecimals] =
+      await Promise.all([
+        collateralAmountPromise,
+        collateralDecimalsPromise,
+        debtAmountPromise,
+        debtDecimalsPromise,
+      ])
 
     const navProvider = new NavProvider()
     const nav = await navProvider.getNavPrice(
@@ -74,12 +91,24 @@ export async function fetchCostOfCarry(
       ARBITRUM.chainId,
     )
 
-    const supplyAPY = Number(borrowedAsset.supplyAPY)
-    const borrowAPY = Number(borrowedAsset.variableBorrowAPY)
+    const supplyAPY = Number(borrowedAsset.supplyAPY) / 100
+    const borrowAPY = Number(borrowedAsset.variableBorrowAPY) / 100
+
+    // TODO: Delete
+    console.log({
+      symbol: inputOutputToken.symbol,
+      collateralAmount,
+      collateralDecimals,
+      debtAmount,
+      debtDecimals,
+      nav,
+      supplyAPY,
+      borrowAPY,
+    })
 
     const costOfCarry =
-      (Number(formatUnits(collateralAmount, 18)) * supplyAPY -
-        Number(formatUnits(debtAmount, 18)) * borrowAPY) /
+      (Number(formatUnits(collateralAmount, collateralDecimals)) * supplyAPY -
+        Number(formatUnits(debtAmount, debtDecimals)) * borrowAPY) /
       nav
     setCostOfCarry(costOfCarry)
   } catch (e) {

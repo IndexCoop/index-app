@@ -37,7 +37,7 @@ export const leverageCollateralDebt = {
   },
   [IndexCoopInverseBitcoinIndex.arbitrumAddress!]: {
     collateralToken: '0x724dc807b04555b71ed48a6896b6F41593b8C637',
-    debtToken: '0xf611aeb5013fd2c0511c9cd55c7dc5c1140741a6',
+    debtToken: '0x92b42c66840C7AD907b4BF74879FF3eF7c529473',
   },
   [IndexCoopEthereum2xIndex.arbitrumAddress!]: {
     collateralToken: '0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8',
@@ -49,6 +49,6 @@ export const leverageCollateralDebt = {
   },
   [IndexCoopInverseEthereumIndex.arbitrumAddress!]: {
     collateralToken: '0x724dc807b04555b71ed48a6896b6F41593b8C637',
-    debtToken: '0x92b42c66840C7AD907b4BF74879FF3eF7c529473',
+    debtToken: '0x0c84331e39d6658Cd6e6b9ba04736cC4c4734351',
   },
 }
