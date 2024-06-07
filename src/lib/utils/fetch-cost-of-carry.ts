@@ -9,6 +9,7 @@ import { ARBITRUM } from '@/constants/chains'
 import { FlashMintLeveragedExtendedAddress } from '@/constants/contracts'
 import { Token } from '@/constants/tokens'
 
+import { leverageCollateralDebt } from '@/app/leverage/constants'
 import { FlashMintLeveragedExtendedAbi } from './abi/interfaces'
 import { NavProvider } from './api/nav'
 
@@ -50,6 +51,11 @@ export async function fetchCostOfCarry(
     if (!borrowedAsset) {
       return
     }
+
+    const collateralDebtTokens =
+      leverageCollateralDebt[inputOutputToken.arbitrumAddress!]
+
+    console.log(collateralDebtTokens)
 
     const { collateralAmount, debtAmount } = await publicClient.readContract({
       address: FlashMintLeveragedExtendedAddress,
