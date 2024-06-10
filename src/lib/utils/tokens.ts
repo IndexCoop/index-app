@@ -141,15 +141,10 @@ export function isAvailableForFlashMint(token: Token): boolean {
   }
 }
 
-export function isAvailableForIssuance(
-  inputToken: Token,
-  outputToken: Token,
-): boolean {
+export function isAvailableForIssuance(inputToken: Token, _: Token): boolean {
   return (
     inputToken.symbol === BedIndex.symbol ||
     inputToken.symbol === GitcoinStakedETHIndex.symbol ||
-    inputToken.symbol === HighYieldETHIndex.symbol ||
-    outputToken.symbol === HighYieldETHIndex.symbol ||
     inputToken.symbol === LeveragedRethStakingYield.symbol
   )
 }
