@@ -141,6 +141,7 @@ export function isAvailableForFlashMint(token: Token): boolean {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function isAvailableForIssuance(inputToken: Token, _: Token): boolean {
   return (
     inputToken.symbol === BedIndex.symbol ||
