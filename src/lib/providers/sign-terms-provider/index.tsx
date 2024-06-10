@@ -92,7 +92,6 @@ export const SignTermsProvider = ({ children }: Props) => {
       {children}
     </SignTermsContext.Provider>
   )
-  return
 }
 
 export const useSignTerms = () => useContext(SignTermsContext)
