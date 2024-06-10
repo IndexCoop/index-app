@@ -141,15 +141,11 @@ export function isAvailableForFlashMint(token: Token): boolean {
   }
 }
 
-export function isAvailableForIssuance(
-  inputToken: Token,
-  outputToken: Token,
-): boolean {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function isAvailableForIssuance(inputToken: Token, _: Token): boolean {
   return (
     inputToken.symbol === BedIndex.symbol ||
     inputToken.symbol === GitcoinStakedETHIndex.symbol ||
-    inputToken.symbol === HighYieldETHIndex.symbol ||
-    outputToken.symbol === HighYieldETHIndex.symbol ||
     inputToken.symbol === LeveragedRethStakingYield.symbol
   )
 }

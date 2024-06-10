@@ -1,4 +1,4 @@
-import { ZeroExApi } from '@indexcoop/flash-mint-sdk'
+import { ZeroExSwapQuoteProvider } from '@indexcoop/flash-mint-sdk'
 
 import { ARBITRUM, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
@@ -7,9 +7,13 @@ import {
   ZeroExAffiliateAddress,
 } from '@/constants/server'
 
-export function getConfiguredZeroExApi(swapPathOverride: string): ZeroExApi {
+export function getConfiguredZeroExSwapQuoteProvider(
+  chainId: number,
+): ZeroExSwapQuoteProvider {
+  const networkKey = getNetworkKey(chainId)
+  const swapPathOverride = `/${networkKey}/swap/v1/quote`
   const headers = getIndexApiHeaders()
-  return new ZeroExApi(
+  return new ZeroExSwapQuoteProvider(
     `${IndexApiBaseUrl}/0x`,
     ZeroExAffiliateAddress,
     headers,
