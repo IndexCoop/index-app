@@ -108,7 +108,7 @@ interface BalanceProps {
 const Balance = ({ balance, onClick }: BalanceProps) => {
   const showMaxLabel = onClick !== undefined
   return (
-    <div
+    <button
       className='flex cursor-pointer flex-row items-center gap-2'
       onClick={onClick}
     >
@@ -122,7 +122,7 @@ const Balance = ({ balance, onClick }: BalanceProps) => {
           </div>
         </div>
       )}
-    </div>
+    </button>
   )
 }
 

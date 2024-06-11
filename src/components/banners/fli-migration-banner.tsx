@@ -18,7 +18,7 @@ function MigrateButton({ token }: { token: Token }) {
         width={20}
         height={20}
       />
-      <div className='text-xs font-medium text-ic-gray-800'>
+      <div className='text-ic-gray-800 text-xs font-medium'>
         {`Unwrap ${token.symbol}`}
       </div>
     </div>
@@ -35,26 +35,26 @@ export function FliMigrationBanner() {
   }
   return (
     <div className='banner-custom flex flex-col justify-center gap-1 rounded-3xl px-6 py-4'>
-      <h2 className='text-center text-base font-bold text-ic-black'>
+      <h2 className='text-ic-black text-center text-base font-bold'>
         Holding FLIs? Unwrap for upgraded 2x tokens.
       </h2>
-      <p className='text-xs font-medium text-ic-gray-600'>
+      <p className='text-ic-gray-600 text-xs font-medium'>
         FLI tokens have migrated to modernized 2x tokens on Index Protocol. FLI
         Tokens may be unwrapped in exchange for new 2x tokens.
       </p>
       <div className='mt-2 flex w-full flex-row items-center justify-evenly gap-5'>
-        <div
+        <button
           className='flex flex-grow cursor-pointer'
           onClick={onClickEth2xFli}
         >
           <MigrateButton token={Ethereum2xFlexibleLeverageIndex} />
-        </div>
-        <div
+        </button>
+        <button
           className='flex flex-grow cursor-pointer'
           onClick={onClickBtc2xFli}
         >
           <MigrateButton token={Bitcoin2xFlexibleLeverageIndex} />
-        </div>
+        </button>
       </div>
     </div>
   )
