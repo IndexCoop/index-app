@@ -1,11 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
-import { providers, utils } from 'ethers'
+import { utils } from 'ethers'
 
 import { Token } from '@/constants/tokens'
 import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { displayFromWei } from '@/lib/utils'
-import { getConfiguredZeroExApi, getNetworkKey } from '@/lib/utils/api/zeroex'
+import { getConfiguredZeroExSwapQuoteProvider } from '@/lib/utils/api/zeroex'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
@@ -32,7 +32,7 @@ async function getEnhancedFlashMintQuote(
   slippage: number,
   chainId: number,
   provider: IndexRpcProvider,
-  jsonRpcProvider: providers.JsonRpcProvider,
+  rpcUrl: string,
 ): Promise<Quote | null> {
   const inputTokenAddress = getAddressForToken(inputToken, chainId)
   const outputTokenAddress = getAddressForToken(outputToken, chainId)
@@ -49,10 +49,7 @@ async function getEnhancedFlashMintQuote(
       .length > 0
   if (!isAllowedCurrency) return null
   try {
-    // Create an instance of ZeroExApi (to pass to quote functions)
-    const networkKey = getNetworkKey(chainId)
-    const swapPathOverride = `/${networkKey}/swap/v1/quote`
-    const zeroExApi = getConfiguredZeroExApi(swapPathOverride)
+    const swapQuoteProvider = getConfiguredZeroExSwapQuoteProvider(chainId)
     const request = {
       isMinting,
       inputToken: { ...inputToken, address: inputTokenAddress },
@@ -60,7 +57,7 @@ async function getEnhancedFlashMintQuote(
       indexTokenAmount,
       slippage,
     }
-    const quoteProvider = new FlashMintQuoteProvider(jsonRpcProvider, zeroExApi)
+    const quoteProvider = new FlashMintQuoteProvider(rpcUrl, swapQuoteProvider)
     const quoteFM = await quoteProvider.getQuote(request)
     // console.log(quoteFM)
     if (quoteFM) {
@@ -152,7 +149,7 @@ interface FlashMintQuoteRequest extends IndexQuoteRequest {
 export async function getFlashMintQuote(
   request: FlashMintQuoteRequest,
   provider: IndexRpcProvider,
-  jsonRpcProvider: providers.JsonRpcProvider,
+  rpcUrl: string,
 ) {
   const {
     chainId,
@@ -196,7 +193,7 @@ export async function getFlashMintQuote(
       slippage,
       chainId,
       provider,
-      jsonRpcProvider,
+      rpcUrl,
     )
     // If there is no FlashMint quote, return immediately
     if (flashMintQuote === null) return savedQuote

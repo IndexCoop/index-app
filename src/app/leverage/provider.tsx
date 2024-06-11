@@ -126,7 +126,7 @@ export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { chainId } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainId)
-  const { address, provider } = useWallet()
+  const { address, provider, rpcUrl } = useWallet()
 
   const [inputValue, setInputValue] = useState('')
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
@@ -339,7 +339,6 @@ export function LeverageProvider(props: { children: any }) {
       if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       if (!indexToken) return
-      const jsonRpcProvider = publicClientToProvider(publicClient)
       setFetchingQuote(true)
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
@@ -358,7 +357,7 @@ export function LeverageProvider(props: { children: any }) {
           slippage: 0.1,
         },
         provider,
-        jsonRpcProvider,
+        rpcUrl,
       )
       console.log(quoteFlashMint)
       const quoteResult = {
@@ -383,6 +382,7 @@ export function LeverageProvider(props: { children: any }) {
     outputToken,
     provider,
     publicClient,
+    rpcUrl,
   ])
 
   return (
