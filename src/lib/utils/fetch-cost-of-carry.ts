@@ -16,12 +16,8 @@ export async function fetchCostOfCarry(
   publicClient: PublicClient,
   jsonRpcProvider: providers.JsonRpcProvider,
   inputOutputToken: Token,
-  inputTokenAmount: bigint,
-  isMinting: boolean,
   setCostOfCarry: Dispatch<SetStateAction<number | null>>,
 ) {
-  if (inputTokenAmount === BigInt(0)) return
-
   try {
     const poolDataProviderContract = new UiPoolDataProvider({
       uiPoolDataProviderAddress: AaveV3Arbitrum.UI_POOL_DATA_PROVIDER,

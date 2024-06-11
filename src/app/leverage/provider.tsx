@@ -260,8 +260,6 @@ export function LeverageProvider(props: { children: any }) {
       publicClient,
       jsonRpcProvider,
       inputOutputToken,
-      inputTokenAmount,
-      isMinting,
       setCostOfCarry,
     )
   }, [publicClient, isMinting, inputToken, outputToken, inputTokenAmount])
