@@ -15,7 +15,6 @@ export type PreSaleToken = {
   description: string
   componentsFrom: string[]
   prtRewards: string
-  indexRewards: number
   targetFundraise: number
   timestampEndDate: number
 }
