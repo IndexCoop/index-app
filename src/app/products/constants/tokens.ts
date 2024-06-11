@@ -33,6 +33,12 @@ export const productTokens = [
     type: ProductType.LEVERAGE,
   },
   {
+    ...getTokenBySymbol('hyeth'),
+    hasApy: true,
+    theme: ProductTheme.ETH,
+    type: ProductType.YIELD,
+  },
+  {
     ...getTokenBySymbol('dseth'),
     hasApy: true,
     theme: ProductTheme.ETH,

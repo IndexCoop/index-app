@@ -5,6 +5,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "allowUnreachableCode": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,

@@ -15,6 +15,7 @@ type Account = {
   jsonRpcProvider: providers.JsonRpcProvider | null
   provider: IndexRpcProvider | null
   isConnected: boolean
+  rpcUrl: string
 }
 
 export function publicClientToProvider(publicClient: PublicClient) {
@@ -41,5 +42,6 @@ export const useWallet = (): Account => {
     isConnected,
     jsonRpcProvider,
     provider: publicClient ?? null,
+    rpcUrl: publicClient?.transport.url ?? '',
   }
 }
