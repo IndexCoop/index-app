@@ -7,7 +7,7 @@ import { SortDirection } from '@/app/products/types/sort'
 type Props = {
   children: ReactNode
   className?: string
-  onClick?: MouseEventHandler<HTMLButtonElement>
+  onClick?: MouseEventHandler<HTMLTableCellElement>
   sortDirection: string | null
 }
 
@@ -18,7 +18,7 @@ export function ProductColHeader({
   sortDirection,
 }: Props) {
   return (
-    <button
+    <div
       className={clsx(
         'text-ic-gray-600 hover:text-ic-gray-800 min-w-[116px] cursor-pointer items-center px-2 text-center text-sm font-medium',
         className,
@@ -32,6 +32,6 @@ export function ProductColHeader({
       {sortDirection === SortDirection.ASC ? (
         <ChevronUpIcon className='ml-1 inline-block h-4 w-4' />
       ) : null}
-    </button>
+    </div>
   )
 }

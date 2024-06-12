@@ -15,12 +15,12 @@ function RangeSelectionItem({
   const color = isSelected ? 'text-ic-gray-950' : 'text-ic-gray-50'
   const backgroundColor = isSelected ? 'bg-ic-gray-200' : 'none'
   return (
-    <button
+    <div
       className={clsx('cursor-pointer rounded-lg px-2 py-3', backgroundColor)}
       onClick={onClick}
     >
       <div className={clsx('text-xs font-semibold', color)}>{label}</div>
-    </button>
+    </div>
   )
 }
 

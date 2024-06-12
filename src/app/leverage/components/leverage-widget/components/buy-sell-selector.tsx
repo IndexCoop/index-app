@@ -38,7 +38,7 @@ export function BuySellSelectorButton({
   const textColor = isSelected ? 'text-ic-white' : 'text-ic-gray-500'
   const bgColor = isSelected ? 'bg-ic-blue-600' : 'bg-ic-gray-800'
   return (
-    <button
+    <div
       className={
         'bg-ic-blue-950 flex-grow cursor-pointer select-none rounded-md'
       }
@@ -54,6 +54,6 @@ export function BuySellSelectorButton({
           roundedLeft ? 'rounded-bl-md' : 'rounded-br-md',
         )}
       ></div>
-    </button>
+    </div>
   )
 }

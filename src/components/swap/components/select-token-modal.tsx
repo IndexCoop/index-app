@@ -93,7 +93,7 @@ type TokenItemProps = {
 
 const TokenItem = ({ balance, extraTitle, item, onClick }: TokenItemProps) => {
   return (
-    <button
+    <div
       className='text-ic-black dark:text-ic-white h-15 hover:bg-ic-gray-100 dark:hover:bg-ic-gray-900 my-1 flex cursor-pointer items-center justify-between px-4 py-2 text-sm font-medium'
       onClick={() => onClick(item.symbol)}
     >
@@ -112,6 +112,6 @@ const TokenItem = ({ balance, extraTitle, item, onClick }: TokenItemProps) => {
       <div className='ml-4 flex flex-col justify-end'>
         <span className='text-md font-bold'>{balance}</span>
       </div>
-    </button>
+    </div>
   )
 }

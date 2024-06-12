@@ -46,7 +46,7 @@ export function LeverageSelectorButton({
 }: LeverageSelectorButtonProps) {
   const border = isSelected ? 'border-[1px]' : 'border-0'
   return (
-    <button
+    <div
       className={clsx(
         'text-ic-gray-300 bg-ic-blue-950 border-ic-blue-600 w-14 cursor-pointer rounded-full px-3 py-2 text-center text-sm font-bold',
         border,
@@ -54,6 +54,6 @@ export function LeverageSelectorButton({
       onClick={onClick}
     >
       {label}
-    </button>
+    </div>
   )
 }
