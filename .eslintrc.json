@@ -1,7 +1,7 @@
 {
   "extends": ["eslint:recommended" ,"plugin:jsx-a11y/recommended", "plugin:@typescript-eslint/recommended", "next/core-web-vitals"],
   "rules": {
-    "no-constant-binary-expression": "error",
+    "no-constant-binary-expression": "error",  
     "@typescript-eslint/no-explicit-any": "off",
     "import/order": [
       "error",
@@ -19,6 +19,8 @@
         "newlines-between": "always",
         "alphabetize": { "order": "asc" }
       }
-    ]
+    ],
+    "jsx-a11y/no-static-element-interactions": "off",
+    "jsx-a11y/click-events-have-key-events": "off"
   }
 }
