@@ -1,7 +1,7 @@
 {
   "extends": ["eslint:recommended" ,"plugin:jsx-a11y/recommended", "plugin:@typescript-eslint/recommended", "next/core-web-vitals"],
   "rules": {
-    "no-constant-binary-expression": "error",  
+    "no-constant-binary-expression": "error",
     "@typescript-eslint/no-explicit-any": "off",
     "import/order": [
       "error",
