@@ -49,7 +49,7 @@ export function Footer() {
               <h3 className='text-ic-gray-900 dark:text-ic-gray-50 text-sm font-semibold leading-6'>
                 Resources
               </h3>
-              <ul role='list' className='mt-6 space-y-4'>
+              <ul className='mt-6 space-y-4'>
                 {navigation.resources.map((item) => (
                   <FooterLink key={item.name} href={item.href}>
                     {item.name}
@@ -61,7 +61,7 @@ export function Footer() {
               <h3 className='text-ic-gray-900 dark:text-ic-gray-50 text-sm font-semibold leading-6'>
                 Community
               </h3>
-              <ul role='list' className='mt-6 space-y-4'>
+              <ul className='mt-6 space-y-4'>
                 {navigation.community.map((item) => (
                   <FooterLink key={item.name} href={item.href}>
                     {item.name}
@@ -73,7 +73,7 @@ export function Footer() {
               <h3 className='text-ic-gray-900 dark:text-ic-gray-50 text-sm font-semibold leading-6'>
                 Legal
               </h3>
-              <ul role='list' className='mt-6 space-y-4'>
+              <ul className='mt-6 space-y-4'>
                 {navigation.legal.map((item) => (
                   <FooterLink key={item.name} href={item.href}>
                     {item.name}
