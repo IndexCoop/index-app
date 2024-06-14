@@ -84,17 +84,6 @@ export const toWei = (
 }
 
 /**
- * Converts a number from Wei to another denomination of Eth
- * @param number
- * @param power default = 18
- * @returns
- */
-export const fromWei = (number?: BigNumber, power: number = 18): BigNumber => {
-  if (!number) return BigNumber.from(0)
-  return number.div(BigNumber.from(10).pow(power))
-}
-
-/**
  * Formats a BigNumber from Wei
  * @param decimals round to decimals is NOT precise
  * @param power default to 18 covers most token decimals
