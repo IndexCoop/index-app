@@ -31,10 +31,10 @@ export function shortenAddress(
   return `${shortenedStart}...${shortenedEnd}`
 }
 
-export const formatAmount = (amount: number) =>
+export const formatAmount = (amount: number, digits: number = 2) =>
   amount.toLocaleString('en-US', {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
+    maximumFractionDigits: digits,
+    minimumFractionDigits: digits,
   })
 
 export function formatWei(wei: bigint, units: number = 18): string {
