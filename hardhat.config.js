@@ -17,14 +17,20 @@ module.exports = {
   },
 }
 
-task('accounts', 'prints the list of accounts', async (taskArgs, hre) => {
+task('accounts', 'prints the list of accounts', async (_, hre) => {
   console.log(hre.ethers)
   console.log('network:', hre.network.name)
-  // format: [token, whale]
+  // format: [token, whale, amount]
   const tokens = [
     [
       '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
       '0xda9ce944a37d218c3302f6b82a094844c6eceb17',
+      '1000000000',
+    ],
+    [
+      '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', // wstETH
+      '0x5ef0f3C15b2371E7355f5b6594F706aB7417655e',
+      '1000000000000000000',
     ],
   ]
   const account = process.env.HARDHAT_FUNDING_ACCOUNT
@@ -34,7 +40,7 @@ task('accounts', 'prints the list of accounts', async (taskArgs, hre) => {
     transferFromWhale(
       token[1],
       account,
-      '1000000000',
+      token[2],
       token[0],
       hre.ethers.provider,
     ),
