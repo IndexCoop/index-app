@@ -39,7 +39,6 @@ export interface Token {
     | undefined
   isDangerous: boolean
   indexTypes: IndexType[]
-  defaultChain?: number
   isPerp?: boolean
   borrowedAssetSymbol?: string
 }
@@ -72,7 +71,6 @@ export const CoinDeskEthTrendIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const DefiPulseIndex: Token = {
@@ -90,7 +88,6 @@ export const DefiPulseIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const DiversifiedStakedETHIndex: Token = {
@@ -108,7 +105,6 @@ export const DiversifiedStakedETHIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.yield],
-  defaultChain: MAINNET.chainId,
 }
 
 const hyeth = getTokenFromSymbol('hyETH')!
@@ -251,7 +247,6 @@ export const IndexToken: Token = {
   fees: undefined,
   isDangerous: true,
   indexTypes: [],
-  defaultChain: MAINNET.chainId,
 }
 
 export const Ethereum2xFlexibleLeverageIndex: Token = {
@@ -269,7 +264,6 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
-  defaultChain: MAINNET.chainId,
 }
 
 export const LeveragedRethStakingYield: Token = {
@@ -287,7 +281,6 @@ export const LeveragedRethStakingYield: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
-  defaultChain: MAINNET.chainId,
 }
 
 export const MetaverseIndex: Token = {
@@ -305,7 +298,6 @@ export const MetaverseIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const Bitcoin2xFlexibleLeverageIndex: Token = {
@@ -323,7 +315,6 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
-  defaultChain: MAINNET.chainId,
 }
 
 export const BedIndex: Token = {
@@ -341,7 +332,6 @@ export const BedIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const GitcoinStakedETHIndex: Token = {
@@ -359,7 +349,6 @@ export const GitcoinStakedETHIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.yield],
-  defaultChain: MAINNET.chainId,
 }
 
 export const ic21: Token = {
@@ -379,7 +368,6 @@ export const ic21: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const icETHIndex: Token = {
@@ -399,7 +387,6 @@ export const icETHIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.yield],
-  defaultChain: MAINNET.chainId,
 }
 
 const rwa = getIndexTokenData('RWA', MAINNET.chainId)!
