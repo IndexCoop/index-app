@@ -21,8 +21,9 @@ function getDaysLeft(targetTimestamp: number): number {
   const currentTimestamp: number = Date.now()
   const timeDifference: number = targetTimestamp - currentTimestamp
   const millisecondsInDay: number = 1000 * 60 * 60 * 24
-  const daysLeft: number = Math.ceil(
-    Math.abs(timeDifference / millisecondsInDay),
+  const daysLeft: number = Math.min(
+    Math.ceil(Math.abs(timeDifference / millisecondsInDay)),
+    30,
   )
   return daysLeft
 }

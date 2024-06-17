@@ -35,18 +35,20 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         </div>
         <StatusChip status={token.status} />
       </div>
-      <p className='text-ic-gray-800 mb-3 text-sm font-medium leading-6'>
-        {token.description}
-      </p>
-      {token.infoLink && (
-        <a
-          className='text-ic-blue-500 mb-4 block text-sm underline'
-          href={token.infoLink}
-          target='_blank'
-        >
-          More Info
-        </a>
-      )}
+      <div className='min-h-24'>
+        <p className='text-ic-gray-800 mb-3 text-sm font-medium leading-6'>
+          {token.description}
+        </p>
+        {token.infoLink && (
+          <a
+            className='text-ic-blue-500 mb-4 block text-sm underline'
+            href={token.infoLink}
+            target='_blank'
+          >
+            More Info
+          </a>
+        )}
+      </div>
       <p className='text-ic-gray-400 mb-6 text-xs font-medium'>
         Components from {token.componentsFrom.join(', ')}
       </p>
