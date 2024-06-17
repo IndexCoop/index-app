@@ -11,14 +11,14 @@ export function usePrtRewards(
   const [earnedRewards, setEarnedRewards] = useState(earnedRewardsDefault)
 
   const fetchRewards = useCallback(async () => {
-    if (!address) {
+    if (!address || !tokenAddress) {
       setEarnedRewards(earnedRewardsDefault)
       return
     }
     try {
       const indexApi = new IndexApi()
       const res = await indexApi.get(
-        `/prts/${address}?tokenAddress=${tokenAddress ?? ''}`,
+        `/prts/${address}?tokenAddress=${tokenAddress}`,
       )
       //   const formattedRewards = formatAmount(Number(res.reward_earned))
       setEarnedRewards(res.cumulative_rewards)
