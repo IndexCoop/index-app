@@ -1,4 +1,8 @@
-import { HighYieldETHIndex, RealWorldAssetIndex } from '@/constants/tokens'
+import {
+  HighYieldETHIndex,
+  RealWorldAssetIndex,
+  Token,
+} from '@/constants/tokens'
 
 import { PreSaleStatus, PreSaleToken } from './types'
 
@@ -29,6 +33,15 @@ export const preSaleTokens: PreSaleToken[] = [
     timestampEndDate: 1724068800000,
   },
 ]
+
+export function getTokenForPresaleToken(
+  presaleToken: PreSaleToken | null,
+): Token {
+  if (presaleToken?.symbol === RealWorldAssetIndex.symbol) {
+    return RealWorldAssetIndex
+  }
+  return HighYieldETHIndex
+}
 
 export const presaleChipLabels = {
   [PreSaleStatus.ACTIVE]: 'Presale active',
