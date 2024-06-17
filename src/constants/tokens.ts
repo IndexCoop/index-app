@@ -402,6 +402,22 @@ export const icETHIndex: Token = {
   defaultChain: MAINNET.chainId,
 }
 
+const rwa = getIndexTokenData('RWA', MAINNET.chainId)!
+export const RealWorldAssetIndex: Token = {
+  ...rwa,
+  // Random for now - as no listing
+  coingeckoId: 'rwa',
+  fees: {
+    streamingFee: '	1.95%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: rwa.logoURI,
+  indexTypes: [IndexType.thematic],
+  isDangerous: true,
+  url: 'rwa',
+}
+
 /**
  * Other - IndexCoop
  */
