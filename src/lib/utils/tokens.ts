@@ -22,6 +22,7 @@ import {
   IndexToken,
   LeveragedRethStakingYield,
   MATIC,
+  RealWorldAssetIndex,
   RETH,
   SETH2,
   STETH,
