@@ -4,23 +4,27 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 
 const earnedRewardsDefault = '0'
 
-export function usePrtRewards(address: string | undefined) {
+export function usePrtRewards(
+  address: string | undefined,
+  tokenAddress: string | undefined,
+) {
   const [earnedRewards, setEarnedRewards] = useState(earnedRewardsDefault)
 
   const fetchRewards = useCallback(async () => {
-    if (!address) {
+    if (!address || !tokenAddress) {
       setEarnedRewards(earnedRewardsDefault)
       return
     }
     try {
       const indexApi = new IndexApi()
-      const res = await indexApi.get(`/prts/${address}`)
-      //   const formattedRewards = formatAmount(Number(res.reward_earned))
+      const res = await indexApi.get(
+        `/prts/${address}?tokenAddress=${tokenAddress}`,
+      )
       setEarnedRewards(res.cumulative_rewards)
     } catch (err) {
       console.log('Error fetching prt rewards', err)
     }
-  }, [address])
+  }, [address, tokenAddress])
 
   useEffect(() => {
     fetchRewards()

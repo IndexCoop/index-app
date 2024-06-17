@@ -30,7 +30,10 @@ export function useFormattedData() {
     forceRefetch: forceRefetchPreSaleCurrencyTokenBalance,
   } = useFormattedBalance(preSaleCurrencyToken, address)
   const { formatted } = usePresaleData(preSaleToken.symbol)
-  const { earnedRewards, refetch: refetchRewards } = usePrtRewards(address)
+  const { earnedRewards, refetch: refetchRewards } = usePrtRewards(
+    address,
+    preSaleToken.address,
+  )
 
   const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
 
