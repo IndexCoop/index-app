@@ -1,7 +1,6 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -9,6 +8,8 @@ import { preSaleTokens } from '../../constants'
 import { PreSaleStatus, PreSaleToken } from '../../types'
 import { PreSalePopup } from '../popup'
 import { PreSaleTokenCard } from '../pre-sale-token-card'
+
+import { Disclaimer } from './disclaimer'
 
 export function PreSaleSection() {
   const [presaleToken, setPresaleToken] = useState<PreSaleToken>(
@@ -41,20 +42,7 @@ export function PreSaleSection() {
           />
         ))}
       </div>
-      <p className='text-ic-gray-400 mt-4 text-[10px] font-medium leading-5'>
-        *Product-specific PRT staking will be made available in the Index Coop
-        app; staking will not be available to Restricted Persons (including US
-        Persons) as defined{' '}
-        <Link
-          className='underline'
-          href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
-          target='_blank'
-        >
-          here
-        </Link>
-        . More information on PRT distribution and staking will be published
-        when a successful presale product is formally launched.
-      </p>
+      <Disclaimer />
       <PreSalePopup
         token={presaleToken}
         isOpen={isPreSalePopupOpen}
