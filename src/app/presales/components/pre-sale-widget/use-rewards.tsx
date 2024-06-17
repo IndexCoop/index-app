@@ -20,7 +20,6 @@ export function usePrtRewards(
       const res = await indexApi.get(
         `/prts/${address}?tokenAddress=${tokenAddress}`,
       )
-      //   const formattedRewards = formatAmount(Number(res.reward_earned))
       setEarnedRewards(res.cumulative_rewards)
     } catch (err) {
       console.log('Error fetching prt rewards', err)
