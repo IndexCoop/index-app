@@ -1,4 +1,4 @@
-import { HighYieldETHIndex } from '@/constants/tokens'
+import { HighYieldETHIndex, RealWorldAssetIndex } from '@/constants/tokens'
 
 import { PreSaleStatus, PreSaleToken } from './types'
 
@@ -18,8 +18,9 @@ export const preSaleTokens: PreSaleToken[] = [
     timestampEndDate: 1715356800000,
   },
   {
-    status: PreSaleStatus.NOT_STARTED,
-    symbol: 'RWA',
+    status: PreSaleStatus.ACTIVE,
+    symbol: RealWorldAssetIndex.symbol,
+    logo: RealWorldAssetIndex.image,
     description:
       'The Fortunafi Real World Assets Index (RWA) allows token holders to gain diversified exposure to projects and protocols that concentrate on tokenizing offchain assets.',
     componentsFrom: ['MKR', 'ONDO', 'ENA', 'CFG', 'CANTO', 'MPL'],
