@@ -13,7 +13,7 @@ import { Disclaimer } from './disclaimer'
 
 export function PreSaleSection() {
   const [presaleToken, setPresaleToken] = useState<PreSaleToken>(
-    preSaleTokens[1],
+    preSaleTokens[0],
   )
   const {
     isOpen: isPreSalePopupOpen,
