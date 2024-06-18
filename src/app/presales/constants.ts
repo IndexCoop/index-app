@@ -8,6 +8,17 @@ import { PreSaleStatus, PreSaleToken } from './types'
 
 export const preSaleTokens: PreSaleToken[] = [
   {
+    status: PreSaleStatus.ACTIVE,
+    symbol: RealWorldAssetIndex.symbol,
+    logo: RealWorldAssetIndex.image,
+    description:
+      'The Fortunafi Real World Assets Index (RWA) allows token holders to gain diversified exposure to projects and protocols that concentrate on tokenizing offchain assets.',
+    componentsFrom: ['MKR', 'ONDO', 'ENA', 'CFG', 'CANTO', 'MPL'],
+    prtRewards: '10,000 / 100,000',
+    targetFundraise: 500,
+    timestampEndDate: 1724068800000,
+  },
+  {
     status: PreSaleStatus.TOKEN_LAUNCHED,
     symbol: HighYieldETHIndex.symbol,
     logo: HighYieldETHIndex.image,
@@ -20,17 +31,6 @@ export const preSaleTokens: PreSaleToken[] = [
     targetFundraise: 500,
     launchDate: 'August 19th, 2024',
     timestampEndDate: 1715356800000,
-  },
-  {
-    status: PreSaleStatus.ACTIVE,
-    symbol: RealWorldAssetIndex.symbol,
-    logo: RealWorldAssetIndex.image,
-    description:
-      'The Fortunafi Real World Assets Index (RWA) allows token holders to gain diversified exposure to projects and protocols that concentrate on tokenizing offchain assets.',
-    componentsFrom: ['MKR', 'ONDO', 'ENA', 'CFG', 'CANTO', 'MPL'],
-    prtRewards: '10,000 / 100,000',
-    targetFundraise: 500,
-    timestampEndDate: 1724068800000,
   },
 ]
 
