@@ -14,6 +14,7 @@ export const preSaleTokens: PreSaleToken[] = [
     description:
       'The Fortunafi Real World Assets Index (RWA) allows token holders to gain diversified exposure to projects and protocols that concentrate on tokenizing offchain assets.',
     componentsFrom: ['MKR', 'ONDO', 'ENA', 'CFG', 'CANTO', 'MPL'],
+    infoLink: 'https://indexcoop.com/blog/previewing-rwa-index-presale',
     prtRewards: '10,000 / 100,000',
     targetFundraise: 500,
     timestampEndDate: 1724068800000,
