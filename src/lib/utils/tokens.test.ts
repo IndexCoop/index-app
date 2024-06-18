@@ -153,7 +153,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const chainId = 1
     const token = ic21
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(2)
+    expect(currencyTokens.length).toEqual(1)
     expect(currencyTokens).toEqual([WETH])
   })
 
