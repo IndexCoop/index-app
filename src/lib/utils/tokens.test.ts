@@ -154,7 +154,7 @@ describe('getCurrencyTokensForIndex()', () => {
     const token = ic21
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(2)
-    expect(currencyTokens).toEqual([ETH, WETH])
+    expect(currencyTokens).toEqual([WETH])
   })
 
   test('returns correct currency tokens for icETH', async () => {
