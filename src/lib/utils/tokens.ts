@@ -22,6 +22,7 @@ import {
   IndexToken,
   LeveragedRethStakingYield,
   MATIC,
+  RealWorldAssetIndex,
   RETH,
   SETH2,
   STETH,
@@ -80,7 +81,7 @@ export function getCurrencyTokensForIndex(
   }
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI]
-  if (index.symbol === ic21.symbol) return [ETH, WETH]
+  if (index.symbol === ic21.symbol) return [WETH]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||
@@ -142,11 +143,16 @@ export function isAvailableForFlashMint(token: Token): boolean {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function isAvailableForIssuance(inputToken: Token, _: Token): boolean {
+export function isAvailableForIssuance(
+  inputToken: Token,
+  outputToken: Token,
+): boolean {
   return (
     inputToken.symbol === BedIndex.symbol ||
     inputToken.symbol === GitcoinStakedETHIndex.symbol ||
-    inputToken.symbol === LeveragedRethStakingYield.symbol
+    inputToken.symbol === LeveragedRethStakingYield.symbol ||
+    inputToken.symbol === RealWorldAssetIndex.symbol ||
+    outputToken.symbol === RealWorldAssetIndex.symbol
   )
 }
 
@@ -182,6 +188,7 @@ export function isIndexToken(token: Token): boolean {
   if (token.symbol === IndexCoopEthereum3xIndex.symbol) return true
   if (token.symbol === IndexCoopInverseBitcoinIndex.symbol) return true
   if (token.symbol === IndexCoopInverseEthereumIndex.symbol) return true
+  if (token.symbol === RealWorldAssetIndex.symbol) return true
   return indicesTokenList.some((index) =>
     isSameAddress(index.address!, token.address!),
   )
