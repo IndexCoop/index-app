@@ -13,8 +13,8 @@ export const preSaleTokens: PreSaleToken[] = [
       'The Index Coop High Yield ETH Index (hyETH) tracks high-yield opportunities for ETH on Ethereum mainnet.',
     componentsFrom: ['Pendle', 'Instadapp', 'Across'],
     prtRewards: '3,000 / 10,000',
+    launchDate: 'June 10th, 2024',
     targetFundraise: 500,
-    launchDate: 'June 19th, 2024',
     timestampEndDate: 1715356800000,
   },
   {
@@ -24,6 +24,7 @@ export const preSaleTokens: PreSaleToken[] = [
       'The Fortunafi Real World Assets Index (RWA) allows token holders to gain diversified exposure to projects and protocols that concentrate on tokenizing offchain assets.',
     componentsFrom: ['MKR', 'ONDO', 'ENA', 'CFG', 'CANTO', 'MPL'],
     prtRewards: '10,000 / 100,000',
+    launchDate: 'August 19th, 2024',
     targetFundraise: 500,
     timestampEndDate: 1724068800000,
   },
