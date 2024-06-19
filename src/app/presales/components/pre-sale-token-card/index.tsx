@@ -35,7 +35,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         </div>
         <StatusChip status={token.status} />
       </div>
-      <div className='min-h-24'>
+      <div className='md:min-h-40 lg:min-h-32'>
         <p className='text-ic-gray-800 mb-3 text-sm font-medium leading-6'>
           {token.description}
         </p>
@@ -49,7 +49,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </a>
         )}
       </div>
-      <p className='text-ic-gray-400 mb-6 text-xs font-medium'>
+      <p className='text-ic-gray-400 mb-6 text-xs font-medium md:min-h-8 lg:min-h-0'>
         Components from {token.componentsFrom.join(', ')}
       </p>
       <Tooltip
