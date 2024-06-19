@@ -14,7 +14,7 @@ export const preSaleTokens: PreSaleToken[] = [
     componentsFrom: ['Pendle', 'Instadapp', 'Across'],
     prtRewards: '3,000 / 10,000',
     targetFundraise: 500,
-    launchDate: 'August 19th, 2024',
+    launchDate: 'June 19th, 2024',
     timestampEndDate: 1715356800000,
   },
   {
