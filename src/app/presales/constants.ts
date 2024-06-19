@@ -13,8 +13,8 @@ export const preSaleTokens: PreSaleToken[] = [
       'The Index Coop High Yield ETH Index (hyETH) tracks high-yield opportunities for ETH on Ethereum mainnet.',
     componentsFrom: ['Pendle', 'Instadapp', 'Across'],
     prtRewards: '3,000 / 10,000',
-    launchDate: 'June 10th, 2024',
     targetFundraise: 500,
+    launchDate: 'June 10th, 2024',
     timestampEndDate: 1715356800000,
   },
   {
