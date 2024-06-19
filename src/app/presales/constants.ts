@@ -17,6 +17,7 @@ export const preSaleTokens: PreSaleToken[] = [
     infoLink: 'https://indexcoop.com/blog/previewing-rwa-index-presale',
     prtRewards: '10,000 / 100,000',
     targetFundraise: 500,
+    launchDate: 'August 19th, 2024',
     timestampEndDate: 1724068800000,
   },
   {
@@ -30,7 +31,7 @@ export const preSaleTokens: PreSaleToken[] = [
     componentsFrom: ['Pendle', 'Instadapp', 'Across'],
     prtRewards: '3,000 / 10,000',
     targetFundraise: 500,
-    launchDate: 'August 19th, 2024',
+    launchDate: 'June 10th, 2024',
     timestampEndDate: 1715356800000,
   },
 ]
