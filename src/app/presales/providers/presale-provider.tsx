@@ -71,6 +71,7 @@ export function usePresaleData(symbol: string): PresaleData {
         const indexApi = new IndexApi()
         const supplyRes = await indexApi.get(`/${presaleToken.symbol}/supply`)
 
+        // TODO: Handling for after the token launches
         const realUnitsRes = await publicClient.readContract({
           address: presaleToken.address as Address,
           abi: PresaleTokenAbi,
