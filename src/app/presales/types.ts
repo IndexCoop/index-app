@@ -9,6 +9,7 @@ export enum PreSaleStatus {
 export type PreSaleToken = {
   status: PreSaleStatus
   symbol: string
+  currencyTokenDepositFactor: number
   logo?: string
   infoLink?: string
   launchDate?: string
