@@ -41,8 +41,8 @@ export function usePresaleData(symbol: string): PresaleData {
 
   const tvlFormatted = useMemo(
     () =>
-      `${formatAmount(Number(formatWei(tvl, currencyToken.decimals)))} ${currencyToken.symbol}`,
-    [currencyToken, tvl],
+      `${formatAmount(Number(formatWei(tvl, currencyToken.decimals)) * (presaleToken?.currencyTokenDepositFactor ?? 0))} ${currencyToken.symbol}`,
+    [currencyToken, presaleToken, tvl],
   )
 
   useEffect(() => {
