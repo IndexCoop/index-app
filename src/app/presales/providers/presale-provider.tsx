@@ -1,9 +1,13 @@
+import * as Sentry from '@sentry/nextjs'
 import { useEffect, useMemo, useState } from 'react'
+import { Address, formatUnits, isAddress } from 'viem'
+import { usePublicClient } from 'wagmi'
 
 import { Token, WSTETH } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 
+import { PresaleTokenAbi } from '../abis/presale-token-abi'
 import { preSaleTokens } from '../constants'
 
 interface PresaleData {
@@ -29,6 +33,7 @@ function getDaysLeft(targetTimestamp: number): number {
 }
 
 export function usePresaleData(symbol: string): PresaleData {
+  const publicClient = usePublicClient()
   const presaleToken = preSaleTokens.find((token) => token.symbol === symbol)
   const currencyToken = WSTETH
 
@@ -41,23 +46,49 @@ export function usePresaleData(symbol: string): PresaleData {
 
   const tvlFormatted = useMemo(
     () =>
-      `${formatAmount(Number(formatWei(tvl, currencyToken.decimals)) * (presaleToken?.currencyTokenDepositFactor ?? 0))} ${currencyToken.symbol}`,
-    [currencyToken, presaleToken, tvl],
+      `${formatAmount(Number(formatWei(tvl, currencyToken.decimals)))} ${currencyToken.symbol}`,
+    [currencyToken, tvl],
   )
 
   useEffect(() => {
     if (!presaleToken) return
     const fetchTvl = async () => {
+      if (!publicClient) return
+      if (!isAddress(presaleToken.address ?? '')) {
+        Sentry.captureMessage(
+          `Presale token address invalid - ${presaleToken.symbol}`,
+        )
+        return
+      }
+      if (!isAddress(currencyToken.address ?? '')) {
+        Sentry.captureMessage(
+          `Currency token address invalid - ${currencyToken.symbol}`,
+        )
+        return
+      }
+
       try {
         const indexApi = new IndexApi()
-        const res = await indexApi.get(`/${presaleToken.symbol}/supply`)
-        setTvl(BigInt(res.supply))
+        const supplyRes = await indexApi.get(`/${presaleToken.symbol}/supply`)
+
+        const realUnitsRes = await publicClient.readContract({
+          address: presaleToken.address as Address,
+          abi: PresaleTokenAbi,
+          functionName: 'getTotalComponentRealUnits',
+          args: [currencyToken.address as Address],
+        })
+        setTvl(
+          BigInt(
+            Number(supplyRes.supply) *
+              Number(formatUnits(realUnitsRes, presaleToken.decimals)),
+          ),
+        )
       } catch (err) {
         console.log('Error fetching tvl', err)
       }
     }
     fetchTvl()
-  }, [presaleToken])
+  }, [publicClient, presaleToken, currencyToken])
 
   return {
     currencyToken,
