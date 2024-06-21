@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers'
 import {
   createContext,
   useCallback,
@@ -8,8 +9,17 @@ import {
 } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import { HighYieldETHIndex, Token, WSTETH } from '@/constants/tokens'
+import {
+  ETH,
+  HighYieldETHIndex,
+  Token,
+  USDC,
+  USDT,
+  WETH,
+  WSTETH,
+} from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -19,6 +29,7 @@ interface DepositContextProps {
   inputValue: string
   isDepositing: boolean
   isFetchingQuote: boolean
+  inputTokens: Token[]
   preSaleCurrencyToken: Token
   preSaleToken: Token
   inputToken: Token
@@ -26,14 +37,18 @@ interface DepositContextProps {
   inputTokenAmount: bigint
   quoteResult: QuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
+  onSelectInputToken: (symbol: string) => void
   reset: () => void
   toggleIsDepositing: () => void
 }
+
+const inputTokens = [WSTETH, ETH, WETH, USDC, USDT]
 
 const DepositContext = createContext<DepositContextProps>({
   inputValue: '',
   isDepositing: true,
   isFetchingQuote: false,
+  inputTokens,
   preSaleCurrencyToken: WSTETH,
   preSaleToken: HighYieldETHIndex,
   inputToken: WSTETH,
@@ -41,6 +56,7 @@ const DepositContext = createContext<DepositContextProps>({
   inputTokenAmount: BigInt(0),
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
+  onSelectInputToken: () => {},
   reset: () => {},
   toggleIsDepositing: () => {},
 })
@@ -50,11 +66,12 @@ export const useDeposit = () => useContext(DepositContext)
 export function DepositProvider(props: { children: any; preSaleToken: Token }) {
   const nativeTokenPrice = useNativeTokenPrice(1)
   const publicClient = usePublicClient()
-  const { address, provider } = useWallet()
+  const { address, provider, rpcUrl } = useWallet()
 
   const { preSaleToken } = props
   const preSaleCurrencyToken = WSTETH
 
+  const [inputToken, setInputToken] = useState(preSaleCurrencyToken)
   const [inputValue, setInputValue] = useState('')
   const [isDepositing, setDepositing] = useState(true)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
@@ -65,10 +82,13 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
     error: null,
   })
 
-  const inputToken = useMemo(
-    () => (isDepositing ? preSaleCurrencyToken : preSaleToken),
-    [isDepositing, preSaleCurrencyToken, preSaleToken],
-  )
+  useEffect(() => {
+    if (isDepositing) {
+      setInputToken(preSaleCurrencyToken)
+      return
+    }
+    setInputToken(preSaleToken)
+  }, [isDepositing, preSaleCurrencyToken, preSaleToken])
 
   const inputTokenAmount = useMemo(
     () =>
@@ -95,6 +115,16 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
     [inputToken],
   )
 
+  const onSelectInputToken = useCallback(
+    (tokenSymbol: string) => {
+      if (!isDepositing) return
+      const token = inputTokens.find((token) => token.symbol === tokenSymbol)
+      if (!token) return
+      setInputToken(token)
+    },
+    [isDepositing],
+  )
+
   const reset = () => {
     setInputValue('')
     setQuoteResult({
@@ -115,25 +145,45 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
       if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       setFetchingQuote(true)
-      const outputToken = isDepositing ? preSaleToken : preSaleCurrencyToken
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
-      const gasPrice = await provider.getGasPrice()
-      const quoteIssuance = await getEnhancedIssuanceQuote(
-        {
-          account: address,
-          isIssuance: isDepositing,
-          gasPrice,
-          inputTokenAmount,
-          inputToken,
-          inputTokenPrice,
-          outputToken,
-          outputTokenPrice,
-          nativeTokenPrice,
-          slippage: 0,
-        },
-        publicClient,
-      )
+      let quoteIssuance = null
+      if (isDepositing) {
+        quoteIssuance = await getFlashMintQuote(
+          {
+            account: address,
+            chainId: 1,
+            isMinting: isDepositing,
+            inputToken,
+            inputTokenAmount: inputValue,
+            inputTokenAmountWei: BigNumber.from(inputTokenAmount.toString()),
+            inputTokenPrice,
+            outputToken,
+            outputTokenPrice,
+            nativeTokenPrice,
+            slippage: 0,
+          },
+          provider,
+          rpcUrl,
+        )
+      } else {
+        const gasPrice = await provider.getGasPrice()
+        quoteIssuance = await getEnhancedIssuanceQuote(
+          {
+            isIssuance: isDepositing,
+            account: address,
+            gasPrice,
+            inputToken,
+            inputTokenAmount,
+            inputTokenPrice,
+            outputToken,
+            outputTokenPrice,
+            nativeTokenPrice,
+            slippage: 0,
+          },
+          publicClient,
+        )
+      }
       setFetchingQuote(false)
       setQuoteResult({
         type: QuoteType.issuance,
@@ -147,12 +197,15 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
     address,
     inputToken,
     inputTokenAmount,
+    inputValue,
     isDepositing,
     nativeTokenPrice,
+    outputToken,
     preSaleCurrencyToken,
     preSaleToken,
     provider,
     publicClient,
+    rpcUrl,
   ])
 
   return (
@@ -161,6 +214,7 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
         inputValue,
         isDepositing,
         isFetchingQuote,
+        inputTokens,
         preSaleCurrencyToken,
         preSaleToken,
         inputToken,
@@ -168,6 +222,7 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
         inputTokenAmount,
         quoteResult,
         onChangeInputTokenAmount,
+        onSelectInputToken,
         reset,
         toggleIsDepositing,
       }}
