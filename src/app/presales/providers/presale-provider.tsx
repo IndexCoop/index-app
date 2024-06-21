@@ -3,18 +3,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { Address, formatUnits, isAddress } from 'viem'
 import { usePublicClient } from 'wagmi'
 
+import { formatTvl } from '@/app/products/utils/formatters'
 import { Token, WSTETH } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 
 import { PresaleTokenAbi } from '../abis/presale-token-abi'
 import { preSaleTokens } from '../constants'
+import { PreSaleStatus } from '../types'
 
 interface PresaleData {
   currencyToken: Token
-  data: {
-    tvl: bigint
-  }
   formatted: {
     daysLeft: string
     tvl: string
@@ -37,18 +36,20 @@ export function usePresaleData(symbol: string): PresaleData {
   const presaleToken = preSaleTokens.find((token) => token.symbol === symbol)
   const currencyToken = WSTETH
 
-  const [tvl, setTvl] = useState<bigint>(BigInt(0))
+  const [tvl, setTvl] = useState<number>(0)
 
   const daysLeft = useMemo(() => {
     if (!presaleToken) return '-'
     return getDaysLeft(presaleToken.timestampEndDate).toString()
   }, [presaleToken])
 
-  const tvlFormatted = useMemo(
-    () =>
-      `${formatAmount(Number(formatWei(tvl, currencyToken.decimals)))} ${currencyToken.symbol}`,
-    [currencyToken, tvl],
-  )
+  const tvlFormatted = useMemo(() => {
+    if (!presaleToken) return ''
+    if (presaleToken.status === PreSaleStatus.TOKEN_LAUNCHED)
+      return formatTvl(tvl)
+
+    return `${formatAmount(Number(formatWei(BigInt(tvl), currencyToken.decimals)))} ${currencyToken.symbol}`
+  }, [currencyToken, presaleToken, tvl])
 
   useEffect(() => {
     if (!presaleToken) return
@@ -67,25 +68,33 @@ export function usePresaleData(symbol: string): PresaleData {
         return
       }
 
-      try {
-        const indexApi = new IndexApi()
-        const supplyRes = await indexApi.get(`/${presaleToken.symbol}/supply`)
-
-        // TODO: Handling for after the token launches
-        const realUnitsRes = await publicClient.readContract({
-          address: presaleToken.address as Address,
-          abi: PresaleTokenAbi,
-          functionName: 'getTotalComponentRealUnits',
-          args: [currencyToken.address as Address],
-        })
-        setTvl(
-          BigInt(
+      if (presaleToken.status === PreSaleStatus.TOKEN_LAUNCHED) {
+        try {
+          const indexApi = new IndexApi()
+          const marketcapRes = await indexApi.get(
+            `/${presaleToken.symbol}/marketcap`,
+          )
+          setTvl(marketcapRes.marketcap)
+        } catch (err) {
+          console.log('Error fetching marketcap tvl', err)
+        }
+      } else {
+        try {
+          const indexApi = new IndexApi()
+          const supplyRes = await indexApi.get(`/${presaleToken.symbol}/supply`)
+          const realUnitsRes = await publicClient.readContract({
+            address: presaleToken.address as Address,
+            abi: PresaleTokenAbi,
+            functionName: 'getTotalComponentRealUnits',
+            args: [currencyToken.address as Address],
+          })
+          setTvl(
             Number(supplyRes.supply) *
               Number(formatUnits(realUnitsRes, presaleToken.decimals)),
-          ),
-        )
-      } catch (err) {
-        console.log('Error fetching tvl', err)
+          )
+        } catch (err) {
+          console.log('Error fetching tvl', err)
+        }
       }
     }
     fetchTvl()
@@ -93,10 +102,6 @@ export function usePresaleData(symbol: string): PresaleData {
 
   return {
     currencyToken,
-    data: {
-      ...presaleToken,
-      tvl,
-    },
     formatted: {
       daysLeft,
       tvl: tvlFormatted,
