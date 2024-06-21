@@ -19,7 +19,7 @@ export const preSaleTokens: PreSaleToken[] = [
     prtRewards: '10,000 / 100,000',
     targetFundraise: 500,
     launchDate: 'August 19th, 2024',
-    timestampEndDate: 1724068800000,
+    timestampEndDate: 1721404800000,
   },
   {
     status: PreSaleStatus.TOKEN_LAUNCHED,
