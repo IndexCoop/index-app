@@ -107,7 +107,11 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='mb-2 flex'>
-          <div className='flex-1'>Total Deposits</div>
+          <div className='flex-1'>
+            {token.status === PreSaleStatus.TOKEN_LAUNCHED
+              ? 'TVL'
+              : 'Total Deposits'}
+          </div>
           <div className='text-ic-gray-800'>
             <span className='text-ic-gray-950 font-bold'>{formatted.tvl}</span>
           </div>

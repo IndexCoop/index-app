@@ -10,8 +10,9 @@ export const preSaleTokens: PreSaleToken[] = [
   {
     status: PreSaleStatus.ACTIVE,
     symbol: RealWorldAssetIndex.symbol,
+    address: RealWorldAssetIndex.address,
+    decimals: RealWorldAssetIndex.decimals,
     logo: RealWorldAssetIndex.image,
-    currencyTokenDepositFactor: 0.0238,
     description:
       'The Fortunafi Real World Assets Index (RWA) allows token holders to gain diversified exposure to projects and protocols that concentrate on tokenizing offchain assets.',
     componentsFrom: ['MKR', 'ONDO', 'ENA', 'CFG', 'CANTO', 'MPL'],
@@ -24,8 +25,9 @@ export const preSaleTokens: PreSaleToken[] = [
   {
     status: PreSaleStatus.TOKEN_LAUNCHED,
     symbol: HighYieldETHIndex.symbol,
+    address: HighYieldETHIndex.address,
+    decimals: HighYieldETHIndex.decimals,
     logo: HighYieldETHIndex.image,
-    currencyTokenDepositFactor: 1,
     infoLink:
       'https://gov.indexcoop.com/t/iip-xxx-launch-the-high-yield-eth-index-hyeth-pre-sale/4764',
     description:
