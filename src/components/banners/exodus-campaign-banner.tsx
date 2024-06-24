@@ -42,7 +42,7 @@ export function ExodusCampaignBanner() {
       <h2 className='text-ic-black mb-1 text-center text-base font-bold'>
         Exodus Users Earn More with hyETH
       </h2>
-      <p className='text-ic-gray-700 text-sm font-medium'>
+      <p className='text-ic-gray-700 text-center text-sm font-medium'>
         Purchase hyETH and receive an additional 10% APY boost for holding it
         for one month
       </p>
