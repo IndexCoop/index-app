@@ -10,8 +10,8 @@ const CAMPAIGN_VALUE = 'exodus-hyeth'
 export function isExodusCampaign(searchParams: ReadonlyURLSearchParams) {
   if (!isExodusCampaignEnabled()) return false
   try {
-    // Campaign valid through 7/24/24
-    if (Date.now() > 1721865600000) return false
+    // Campaign valid through 7/31/24
+    if (Date.now() > 1722484800000) return false
 
     if (searchParams.get(CAMPAIGN_KEY) === CAMPAIGN_VALUE) return true
 
@@ -43,8 +43,8 @@ export function ExodusCampaignBanner() {
         Exodus & hyETH
       </h2>
       <p className='text-ic-gray-700 text-sm font-medium'>
-        Exodus wallet users will receive a boosted APY of xx% on hyETH if you
-        buy it this week & hold for 1 month.
+        Exodus wallet users will APY boost of an additional +10% APY on hyETH if
+        you buy it this week & hold for 1 month.
       </p>
     </div>
   )
