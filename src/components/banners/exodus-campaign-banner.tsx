@@ -40,11 +40,11 @@ export function ExodusCampaignBanner() {
   return (
     <div className='exodus-campaign-banner flex flex-col justify-center gap-1 rounded-3xl px-6 py-4'>
       <h2 className='text-ic-black mb-1 text-center text-base font-bold'>
-        Exodus & hyETH
+        Exodus Users Earn More with hyETH
       </h2>
       <p className='text-ic-gray-700 text-sm font-medium'>
-        Exodus wallet users will APY boost of an additional +10% APY on hyETH if
-        you buy it this week & hold for 1 month.
+        Purchase hyETH and receive an additional 10% APY boost for holding it
+        for one month
       </p>
     </div>
   )
