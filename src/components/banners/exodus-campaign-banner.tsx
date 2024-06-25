@@ -43,8 +43,8 @@ export function ExodusCampaignBanner() {
         Exodus Users Earn More with hyETH
       </h2>
       <p className='text-ic-gray-700 text-center text-sm font-medium'>
-        Purchase hyETH and receive an additional 10% APY boost for holding it
-        for one month
+        Purchase hyETH and qualify for an additional 10% APY boost from the
+        reward pool by holding it for one month.
       </p>
     </div>
   )
