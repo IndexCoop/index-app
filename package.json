@@ -34,7 +34,7 @@
     "@indexcoop/tokenlists": "1.47.0",
     "@rainbow-me/rainbowkit": "^2.0.7",
     "@sentry/nextjs": "8.8.0",
-    "@tanstack/react-query": "5.36.2",
+    "@tanstack/react-query": "5.47.0",
     "@visx/visx": "^3.8.0",
     "eslint": "8.42.0",
     "eslint-config-next": "^13.5.4",
