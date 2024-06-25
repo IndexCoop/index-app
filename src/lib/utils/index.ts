@@ -31,10 +31,10 @@ export function shortenAddress(
   return `${shortenedStart}...${shortenedEnd}`
 }
 
-export const formatAmount = (amount: number) =>
+export const formatAmount = (amount: number, digits: number = 2) =>
   amount.toLocaleString('en-US', {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
+    maximumFractionDigits: digits,
+    minimumFractionDigits: digits,
   })
 
 export function formatWei(wei: bigint, units: number = 18): string {
@@ -81,17 +81,6 @@ export const toWei = (
 
   value = integerPart + '.' + fractionalPart
   return parseUnitsEthers(value, power)
-}
-
-/**
- * Converts a number from Wei to another denomination of Eth
- * @param number
- * @param power default = 18
- * @returns
- */
-export const fromWei = (number?: BigNumber, power: number = 18): BigNumber => {
-  if (!number) return BigNumber.from(0)
-  return number.div(BigNumber.from(10).pow(power))
 }
 
 /**

@@ -35,19 +35,21 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         </div>
         <StatusChip status={token.status} />
       </div>
-      <p className='text-ic-gray-800 mb-3 text-sm font-medium leading-6'>
-        {token.description}
-      </p>
-      {token.infoLink && (
-        <a
-          className='text-ic-blue-500 mb-4 block text-sm underline'
-          href={token.infoLink}
-          target='_blank'
-        >
-          More Info
-        </a>
-      )}
-      <p className='text-ic-gray-400 mb-6 text-xs font-medium'>
+      <div className='md:min-h-40 lg:min-h-32'>
+        <p className='text-ic-gray-800 mb-3 text-sm font-medium leading-6'>
+          {token.description}
+        </p>
+        {token.infoLink && (
+          <a
+            className='text-ic-blue-500 mb-4 block text-sm underline'
+            href={token.infoLink}
+            target='_blank'
+          >
+            More Info
+          </a>
+        )}
+      </div>
+      <p className='text-ic-gray-400 mb-6 text-xs font-medium md:min-h-8 lg:min-h-0'>
         Components from {token.componentsFrom.join(', ')}
       </p>
       <Tooltip
@@ -105,7 +107,11 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='mb-2 flex'>
-          <div className='flex-1'>Total Deposits</div>
+          <div className='flex-1'>
+            {token.status === PreSaleStatus.TOKEN_LAUNCHED
+              ? 'TVL'
+              : 'Total Deposits'}
+          </div>
           <div className='text-ic-gray-800'>
             <span className='text-ic-gray-950 font-bold'>{formatted.tvl}</span>
           </div>

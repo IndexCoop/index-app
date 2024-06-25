@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { Token } from '@/constants/tokens'
-import { displayFromWei, formatAmount } from '@/lib/utils'
+import { formatAmount, formatWei } from '@/lib/utils'
 
 import { TradeDetailTokenPrices } from '../../../components/trade-details'
 
@@ -13,9 +13,12 @@ export function formattedBalance(
   tokenBalance: BigNumber | undefined,
 ) {
   const zero = '0.00'
-  return tokenBalance
-    ? displayFromWei(tokenBalance, 2, token.decimals) || zero
-    : zero
+  if (!tokenBalance) return zero
+  const formattedBalance = Number(
+    formatWei(tokenBalance.toBigInt(), token.decimals),
+  )
+  const formatted = formatAmount(formattedBalance, 3)
+  return formatted
 }
 
 export function getFormattedTokenPrice(

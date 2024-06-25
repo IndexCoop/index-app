@@ -9,13 +9,14 @@ export enum PreSaleStatus {
 export type PreSaleToken = {
   status: PreSaleStatus
   symbol: string
+  address: string | undefined
+  decimals: number
   logo?: string
   infoLink?: string
   launchDate?: string
   description: string
   componentsFrom: string[]
   prtRewards: string
-  indexRewards: number
   targetFundraise: number
   timestampEndDate: number
 }

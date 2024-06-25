@@ -56,11 +56,11 @@ export function FaqSection() {
       </FaqItem>
       <FaqItem question='How high are my rewards?'>
         <p>
-          There is a fixed supply of 10,000 PRTs for all products with PRTs. The
+          There is a fixed supply of PRTs for all products with PRTs. The
           presale will show how many PRTs will be distributed in the event of a
-          success, meeting the threshold by the deadline. For example, if 3,000
-          PRTs are distributed in the presale, 30% are allocated for presale
-          depositors.
+          success, meeting the threshold by the deadline. For example, if a
+          product has a supply of 10,000 PRTs and 3,000 PRTs are distributed in
+          the presale, 30% are allocated for presale depositors.
         </p>
         <p>
           Each presale will have a distribution curve for PRTs, and the

@@ -43,7 +43,7 @@ export function ProductList() {
     const products = productTokens.map((token, idx) => ({
       ...token,
       price: analyticsResults[idx]?.navPrice,
-      delta: analyticsResults[idx]?.change24h ?? 0,
+      delta: analyticsResults[idx]?.change24h,
       tvl: analyticsResults[idx]?.marketCap,
       apy: apyResults[idx]?.apy ? Number(formatWei(apyResults[idx].apy)) : null,
     }))
