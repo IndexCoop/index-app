@@ -8,14 +8,6 @@ export const getIndexTokenAmount = (
   inputTokenPrice: number,
   outputTokenPrice: number,
 ): bigint => {
-  console.log(
-    isMinting,
-    inputTokenAmount,
-    inputTokenDecimals,
-    outputTokenDecimals,
-    inputTokenPrice,
-    outputTokenPrice,
-  )
   if (!isMinting) {
     return parseUnits(inputTokenAmount, inputTokenDecimals)
   }
