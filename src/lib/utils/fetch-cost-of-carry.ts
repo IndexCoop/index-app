@@ -16,7 +16,7 @@ import { NavProvider } from './api/nav'
 export async function fetchCostOfCarry(
   publicClient: PublicClient,
   jsonRpcProvider: providers.JsonRpcProvider,
-  inputOutputToken: Token,
+  indexToken: Token,
   setCostOfCarry: Dispatch<SetStateAction<number | null>>,
 ) {
   try {
@@ -41,7 +41,7 @@ export async function fetchCostOfCarry(
     const borrowedAsset = formattedPoolReserves.find(
       (asset) =>
         asset.symbol.toLowerCase() ===
-        inputOutputToken.borrowedAssetSymbol?.toLowerCase(),
+        indexToken.borrowedAssetSymbol?.toLowerCase(),
     )
 
     if (!borrowedAsset) {
@@ -49,13 +49,13 @@ export async function fetchCostOfCarry(
     }
 
     const collateralDebtTokens =
-      leverageCollateralDebt[inputOutputToken.arbitrumAddress!]
+      leverageCollateralDebt[indexToken.arbitrumAddress!]
 
     const collateralAmountPromise = publicClient.readContract({
       address: collateralDebtTokens.collateralAmountToken as Address,
       abi: ArbitrumLeverageTokenAbi,
       functionName: 'balanceOf',
-      args: [inputOutputToken.arbitrumAddress as Address],
+      args: [indexToken.arbitrumAddress as Address],
     })
     const collateralDecimalsPromise = publicClient.readContract({
       address: collateralDebtTokens.collateralAmountToken as Address,
@@ -66,7 +66,7 @@ export async function fetchCostOfCarry(
       address: collateralDebtTokens.debtAmountToken as Address,
       abi: ArbitrumLeverageTokenAbi,
       functionName: 'balanceOf',
-      args: [inputOutputToken.arbitrumAddress as Address],
+      args: [indexToken.arbitrumAddress as Address],
     })
     const debtDecimalsPromise = publicClient.readContract({
       address: collateralDebtTokens.debtAmountToken as Address,
@@ -84,7 +84,7 @@ export async function fetchCostOfCarry(
 
     const navProvider = new NavProvider()
     const nav = await navProvider.getNavPrice(
-      inputOutputToken.symbol,
+      indexToken.symbol,
       ARBITRUM.chainId,
     )
 
@@ -109,7 +109,7 @@ export async function fetchCostOfCarry(
 
     // TODO: Delete
     console.log({
-      symbol: inputOutputToken.symbol,
+      symbol: indexToken.symbol,
       collateralAmount,
       collateralCalculated,
       collateralAmountFormatted: Number(
