@@ -10,6 +10,7 @@ import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 
 import { ArbitrumLeverageTokenAbi } from './abi/interfaces'
+import { fetchCoingeckoTokenPrice } from './api/coingecko'
 import { NavProvider } from './api/nav'
 
 export async function fetchCostOfCarry(
@@ -51,24 +52,24 @@ export async function fetchCostOfCarry(
       leverageCollateralDebt[inputOutputToken.arbitrumAddress!]
 
     const collateralAmountPromise = publicClient.readContract({
-      address: collateralDebtTokens.collateralToken as Address,
+      address: collateralDebtTokens.collateralAmountToken as Address,
       abi: ArbitrumLeverageTokenAbi,
       functionName: 'balanceOf',
       args: [inputOutputToken.arbitrumAddress as Address],
     })
     const collateralDecimalsPromise = publicClient.readContract({
-      address: collateralDebtTokens.collateralToken as Address,
+      address: collateralDebtTokens.collateralAmountToken as Address,
       abi: ArbitrumLeverageTokenAbi,
       functionName: 'decimals',
     })
     const debtAmountPromise = publicClient.readContract({
-      address: collateralDebtTokens.debtToken as Address,
+      address: collateralDebtTokens.debtAmountToken as Address,
       abi: ArbitrumLeverageTokenAbi,
       functionName: 'balanceOf',
       args: [inputOutputToken.arbitrumAddress as Address],
     })
     const debtDecimalsPromise = publicClient.readContract({
-      address: collateralDebtTokens.debtToken as Address,
+      address: collateralDebtTokens.debtAmountToken as Address,
       abi: ArbitrumLeverageTokenAbi,
       functionName: 'decimals',
     })
@@ -87,15 +88,38 @@ export async function fetchCostOfCarry(
       ARBITRUM.chainId,
     )
 
-    const supplyAPY = Number(borrowedAsset.supplyAPY) / 100
-    const borrowAPY = Number(borrowedAsset.variableBorrowAPY) / 100
+    const collateralPrice = await fetchCoingeckoTokenPrice(
+      collateralDebtTokens.collateralPriceToken,
+      1,
+    )
+    const debtPrice = await fetchCoingeckoTokenPrice(
+      collateralDebtTokens.debtPriceToken,
+      1,
+    )
+
+    const supplyAPY = Number(borrowedAsset.supplyAPY)
+    const borrowAPY = Number(borrowedAsset.variableBorrowAPY)
+
+    const collateralCalculated =
+      Number(formatUnits(collateralAmount, collateralDecimals)) *
+      collateralPrice
+
+    const debtCalculated =
+      Number(formatUnits(debtAmount, debtDecimals)) * debtPrice
 
     // TODO: Delete
     console.log({
       symbol: inputOutputToken.symbol,
       collateralAmount,
+      collateralCalculated,
+      collateralAmountFormatted: Number(
+        formatUnits(collateralAmount, collateralDecimals),
+      ),
+      collateralPrice,
       collateralDecimals,
       debtAmount,
+      debtAmountFormatted: Number(formatUnits(debtAmount, debtDecimals)),
+      debtCalculated,
       debtDecimals,
       nav,
       supplyAPY,
@@ -103,9 +127,7 @@ export async function fetchCostOfCarry(
     })
 
     const costOfCarry =
-      (Number(formatUnits(collateralAmount, collateralDecimals)) * supplyAPY -
-        Number(formatUnits(debtAmount, debtDecimals)) * borrowAPY) /
-      nav
+      (collateralCalculated * supplyAPY - debtCalculated * borrowAPY) / nav
     setCostOfCarry(costOfCarry)
   } catch (e) {
     console.error('Caught error while fetching borrow rates', e)
