@@ -8,7 +8,6 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 import { Path } from '@/constants/paths'
-import { isLeverageSuiteEnabled } from '@/feature-flags'
 
 import { Connect } from './connect'
 import { HeaderLink } from './link'
@@ -17,9 +16,7 @@ import { Logo } from './logo'
 const navigation = [
   { name: 'Trade', href: Path.TRADE },
   { name: 'Products', href: Path.PRODUCTS },
-  ...(isLeverageSuiteEnabled()
-    ? [{ name: 'Leverage', href: Path.LEVERAGE }]
-    : []),
+  { name: 'Leverage', href: Path.LEVERAGE },
   { name: 'Presales', href: Path.PRE_SALE },
 ]
 
