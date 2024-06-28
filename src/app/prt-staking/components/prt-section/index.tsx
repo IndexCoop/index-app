@@ -1,7 +1,6 @@
-import { prts } from '../../constants'
-
-import { Disclaimer } from './disclaimer'
-import { PrtCard } from './prt-card'
+import { Disclaimer } from '@/app/prt-staking/components/prt-section/disclaimer'
+import { PrtCard } from '@/app/prt-staking/components/prt-section/prt-card'
+import { prts } from '@/app/prt-staking/constants'
 
 export function PrtSection() {
   return (

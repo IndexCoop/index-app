@@ -83,7 +83,7 @@ export function PrtCard({ token }: Props) {
           <div className='text-ic-gray-950 font-bold'>$17,441.53</div>
         </div>
       </div>
-      <button className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'>
+      <button className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold'>
         Manage
       </button>
     </div>
