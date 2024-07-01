@@ -21,6 +21,8 @@ const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
       borderRadius='6px'
       fontSize={'11px'}
       fontWeight={500}
+      // need to set bg color here, as otherwise the arrow won't display correctly
+      bgColor={colors.ic.white}
       hasArrow
       label={tooltip}
       p='12px 16px'
