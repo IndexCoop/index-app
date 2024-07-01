@@ -1,14 +1,12 @@
 import { ReadonlyURLSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
-import { isExodusCampaignEnabled } from '@/feature-flags'
 import './exodus-campaign-banner.css'
 
 const CAMPAIGN_KEY = 'cid'
 const CAMPAIGN_VALUE = 'exodus-hyeth'
 
 export function isExodusCampaign(searchParams: ReadonlyURLSearchParams) {
-  if (!isExodusCampaignEnabled()) return false
   try {
     // Campaign valid through 7/31/24
     if (Date.now() > 1722484800000) return false

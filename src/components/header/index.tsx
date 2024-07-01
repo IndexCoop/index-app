@@ -18,7 +18,7 @@ const navigation = [
   { name: 'Trade', href: Path.TRADE },
   { name: 'Products', href: Path.PRODUCTS },
   { name: 'Leverage', href: Path.LEVERAGE },
-  { name: 'Presales', href: Path.PRE_SALE },
+  { name: 'Presales', href: Path.PRESALES },
   ...(isStakingEnabled()
     ? [{ name: 'PRT Staking', href: Path.PRT_STAKING }]
     : []),
