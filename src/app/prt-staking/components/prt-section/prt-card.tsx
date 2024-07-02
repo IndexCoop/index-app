@@ -5,10 +5,11 @@ import Link from 'next/link'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
 
 type Props = {
+  onClick: (token: ProductRevenueToken) => void
   token: ProductRevenueToken
 }
 
-export function PrtCard({ token }: Props) {
+export function PrtCard({ onClick, token }: Props) {
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
@@ -83,7 +84,10 @@ export function PrtCard({ token }: Props) {
           <div className='text-ic-gray-950 font-bold'>$17,441.53</div>
         </div>
       </div>
-      <button className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold'>
+      <button
+        className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold'
+        onClick={() => onClick(token)}
+      >
         Manage
       </button>
     </div>
