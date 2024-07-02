@@ -5,3 +5,9 @@ export type ProductRevenueToken = {
   description: string
   moreInfoUrl: string
 }
+
+export enum WidgetTab {
+  STAKE = 'Stake',
+  UNSTAKE = 'Unstake',
+  CLAIM = 'Claim',
+}
