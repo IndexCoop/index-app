@@ -11,6 +11,7 @@ import {
   ETH,
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  GUSD,
   HighYieldETHIndex,
   ic21,
   icETHIndex,
@@ -80,16 +81,16 @@ export function getCurrencyTokensForIndex(
     return [ETH, WETH, WBTC, USDC, USDT]
   }
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
-    return [ETH, WETH, USDC, DAI]
+    return [ETH, WETH, USDC, DAI, GUSD]
   if (index.symbol === ic21.symbol) return [WETH]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||
     index.symbol === GitcoinStakedETHIndex.symbol
   )
-    return [ETH, WETH, USDC, RETH, STETH, SETH2, WSTETH]
+    return [ETH, WETH, USDC, GUSD, RETH, STETH, SETH2, WSTETH]
   if (index.symbol === LeveragedRethStakingYield.symbol)
-    return [ETH, WETH, USDC, RETH]
+    return [ETH, WETH, USDC, GUSD, RETH]
   const currencyTokens = getCurrencyTokens(chainId)
   if (index.symbol === Bitcoin2xFlexibleLeverageIndex.symbol) {
     return [IndexCoopBitcoin2xIndex, ...currencyTokens]
