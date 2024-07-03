@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { displayFromWei, isValidTokenInput, toWei } from '.'
+import { displayFromWei, formatDollarAmount, isValidTokenInput, toWei } from '.'
 
 describe('displayFromWei', () => {
   it('should return null with no number provided', () => {
@@ -88,5 +88,28 @@ describe('toWei', () => {
   it('should convert loooong values for USDC to wei', () => {
     const value = toWei('1265.544702110571614391', 6)
     expect(value).toStrictEqual(BigNumber.from('1265544702'))
+  })
+})
+
+describe('formatDollarAmount', () => {
+  it('should display an empty string for null input', () => {
+    const value = formatDollarAmount(null)
+    expect(value).toStrictEqual('')
+  })
+  it('should display an empty string for undefined input', () => {
+    const value = formatDollarAmount(undefined)
+    expect(value).toStrictEqual('')
+  })
+  it('should display correct formatting for 0 input', () => {
+    const value = formatDollarAmount(0)
+    expect(value).toStrictEqual('$0.00')
+  })
+  it('should display correct formatting for number input', () => {
+    const value = formatDollarAmount(120123.45)
+    expect(value).toStrictEqual('$120,123.45')
+  })
+  it('should display correct formatting for number input with compact mode', () => {
+    const value = formatDollarAmount(120123.45, true)
+    expect(value).toStrictEqual('$120.12K')
   })
 })

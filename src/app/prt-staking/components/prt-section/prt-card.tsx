@@ -1,8 +1,11 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/16/solid'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 import { ProductRevenueToken } from '@/app/prt-staking/types'
+import { formatDollarAmount } from '@/lib/utils'
+import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
 
 type Props = {
   onClick: (token: ProductRevenueToken) => void
@@ -10,6 +13,23 @@ type Props = {
 }
 
 export function PrtCard({ onClick, token }: Props) {
+  const [tvl, setTvl] = useState<number | null>(null)
+  const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
+    null,
+  )
+
+  useEffect(() => {
+    async function fetchTokenData() {
+      const [tvl, cumulativeRevenue] = await Promise.all([
+        fetchTvl(token.tokenData.symbol),
+        fetchCumulativeRevenue(token.tokenData.symbol),
+      ])
+      setTvl(tvl)
+      setCumulativeRevenue(cumulativeRevenue)
+    }
+    fetchTokenData()
+  }, [token.tokenData.symbol])
+
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
@@ -69,19 +89,17 @@ export function PrtCard({ onClick, token }: Props) {
       <div className='my-3 mt-4 w-full px-3 text-sm'>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Product TVL</div>
-          <div className='text-ic-gray-950 font-bold'>$6,952,026.45</div>
+          <div className='text-ic-gray-950 font-bold'>
+            {formatDollarAmount(tvl)}
+          </div>
         </div>
       </div>
       <div className='my-3 w-full px-3 text-sm'>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Lifetime revenue</div>
-          <div className='text-ic-gray-950 font-bold'>$239,082.20</div>
-        </div>
-      </div>
-      <div className='my-3 w-full px-3 text-sm'>
-        <div className='text-ic-gray-600 flex font-medium'>
-          <div className='flex-1'>Est. Monthly Revenue</div>
-          <div className='text-ic-gray-950 font-bold'>$17,441.53</div>
+          <div className='text-ic-gray-950 font-bold'>
+            {formatDollarAmount(cumulativeRevenue)}
+          </div>
         </div>
       </div>
       <button

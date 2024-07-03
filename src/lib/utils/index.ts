@@ -37,6 +37,21 @@ export const formatAmount = (amount: number, digits: number = 2) =>
     minimumFractionDigits: digits,
   })
 
+export const formatDollarAmount = (
+  amount: number | null | undefined,
+  isCompact: boolean = false,
+) => {
+  if (amount === null || amount === undefined) return ''
+
+  return Intl.NumberFormat('en', {
+    notation: isCompact ? 'compact' : undefined,
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount)
+}
+
 export function formatWei(wei: bigint, units: number = 18): string {
   return formatUnits(wei, units)
 }
