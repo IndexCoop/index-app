@@ -20,6 +20,7 @@ import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
 import { getTokenBySymbol, isTokenPairTradable } from '@/lib/utils/tokens'
 
+import { selectSlippage } from '@/lib/utils/slippage'
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import { TradeInputSelector } from './components/trade-input-selector'
@@ -134,12 +135,16 @@ export const Swap = (props: SwapProps) => {
 
   const fetchOptions = useCallback(() => {
     if (!isTradablePair) return
+    const indexSymbol = isBuying ? outputToken.symbol : inputToken.symbol
+    const inputOutputTokenSymbol = isBuying
+      ? inputToken.symbol
+      : outputToken.symbol
     fetchQuote({
       isMinting: isBuying,
       inputToken,
       inputTokenAmount: sellTokenAmount,
       outputToken,
-      slippage,
+      slippage: selectSlippage(slippage, indexSymbol, inputOutputTokenSymbol),
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
