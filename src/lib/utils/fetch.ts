@@ -11,13 +11,13 @@ export async function fetchTvl(symbol: string) {
   }
 }
 
-export async function fetchCumulativeRevenue(symbol: string) {
+export async function fetchCumulativeRevenue(address: string) {
   try {
     const indexApi = new IndexApi()
-    const res = await indexApi.get(`/${symbol.toLowerCase()}/fees`)
-    return res.cumulativeRevenue as number
+    const res = await indexApi.get(`/prts/fees/${address.toLowerCase()}`)
+    return res.cumulative_revenue as number
   } catch (err) {
-    console.log(`Error fetching fees for ${symbol}`, err)
+    console.log(`Error fetching fees for ${address}`, err)
     return null
   }
 }

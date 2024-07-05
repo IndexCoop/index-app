@@ -22,13 +22,13 @@ export function PrtCard({ onClick, token }: Props) {
     async function fetchTokenData() {
       const [tvl, cumulativeRevenue] = await Promise.all([
         fetchTvl(token.tokenData.symbol),
-        fetchCumulativeRevenue(token.tokenData.symbol),
+        fetchCumulativeRevenue(token.tokenData.address),
       ])
       setTvl(tvl)
       setCumulativeRevenue(cumulativeRevenue)
     }
     fetchTokenData()
-  }, [token.tokenData.symbol])
+  }, [token.tokenData.address, token.tokenData.symbol])
 
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
