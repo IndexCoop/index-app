@@ -56,25 +56,71 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     null,
   )
 
+  // TODO
+  const readClaimableRewards = async () => {
+    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L71
+    return 0.02
+  }
+
+  // TODO
+  const readLifetimeRewards = async () => {
+    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L94
+    return 1.2
+  }
+
+  // TODO
+  const readUserStakedBalance = async () => {
+    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L84
+    return 3.64
+  }
+
+  // TODO
+  const readPoolStakedBalance = async () => {
+    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L89
+    return 967
+  }
+
   useEffect(() => {
     async function fetchTokenData() {
-      const [tvl, cumulativeRevenue] = await Promise.all([
+      const [
+        tvl,
+        cumulativeRevenue,
+        claimableRewards,
+        lifetimeRewards,
+        userStakedBalance,
+        poolStakedBalance,
+      ] = await Promise.all([
         fetchTvl(token.tokenData.symbol),
         fetchCumulativeRevenue(token.tokenData.address),
+        readClaimableRewards(),
+        readLifetimeRewards(),
+        readUserStakedBalance(),
+        readPoolStakedBalance(),
       ])
       setTvl(tvl)
       setCumulativeRevenue(cumulativeRevenue)
-      setClaimableRewards(0.02)
-      setLifetimeRewards(1.2)
-      setUserStakedBalance(3.64)
-      setPoolStakedBalance(967)
+      setClaimableRewards(claimableRewards)
+      setLifetimeRewards(lifetimeRewards)
+      setUserStakedBalance(userStakedBalance)
+      setPoolStakedBalance(poolStakedBalance)
     }
     fetchTokenData()
   }, [token.tokenData.address, token.tokenData.symbol])
 
-  const claimPrts = () => {}
-  const stakePrts = () => {}
-  const unstakePrts = () => {}
+  // TODO
+  const claimPrts = () => {
+    //  https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L45
+  }
+
+  // TODO
+  const stakePrts = () => {
+    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L34
+  }
+
+  // TODO
+  const unstakePrts = () => {
+    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L38
+  }
 
   return (
     <PrtStakingContext.Provider
