@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { parseUnits } from 'viem'
 
 import { ClaimablePanel } from '@/app/prt-staking/components/prt-section/claimable-panel'
@@ -27,8 +27,15 @@ export function PrtWidget({ token, onClose }: Props) {
   } = usePrtStakingContext()
   const [currentTab, setCurrentTab] = useState(WidgetTab.STAKE)
   const selectedToken = HighYieldETHIndex
-  const [inputAmount, setInputAmount] = useState('0')
+  const [inputAmount, setInputAmount] = useState('')
   const { balance: prtBalance } = useBalance(token.prtTokenData.address)
+
+  useEffect(() => {
+    if (currentTab === WidgetTab.STAKE) setInputAmount('')
+    if (currentTab === WidgetTab.UNSTAKE) setInputAmount('')
+    if (currentTab === WidgetTab.CLAIM)
+      setInputAmount(claimableRewards?.toString() ?? '')
+  }, [claimableRewards, currentTab])
 
   const inputSelectorCaption = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) return 'You stake'
@@ -36,6 +43,7 @@ export function PrtWidget({ token, onClose }: Props) {
     if (currentTab === WidgetTab.CLAIM) return 'Claimable'
     return ''
   }, [currentTab])
+
   const buttonLabel = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) return 'Stake'
     if (currentTab === WidgetTab.UNSTAKE) return 'Unstake'
@@ -64,7 +72,7 @@ export function PrtWidget({ token, onClose }: Props) {
     if (currentTab === WidgetTab.STAKE) {
       setInputAmount(prtBalance.toString())
     } else if (currentTab === WidgetTab.UNSTAKE) {
-      setInputAmount(userStakedBalance?.toString() ?? '0')
+      setInputAmount(userStakedBalance?.toString() ?? '')
     }
   }, [currentTab, prtBalance, userStakedBalance])
 
