@@ -10,6 +10,7 @@ import { ProductRevenueToken, WidgetTab } from '@/app/prt-staking/types'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TradeButton } from '@/components/trade-button'
 import { HighYieldETHIndex } from '@/constants/tokens'
+import { useBalance } from '@/lib/hooks/use-balance'
 
 type Props = {
   token: ProductRevenueToken
@@ -17,10 +18,17 @@ type Props = {
 }
 
 export function PrtWidget({ token, onClose }: Props) {
-  const { claimPrts, stakePrts, unstakePrts } = usePrtStakingContext()
+  const {
+    claimPrts,
+    claimableRewards,
+    stakePrts,
+    unstakePrts,
+    userStakedBalance,
+  } = usePrtStakingContext()
   const [currentTab, setCurrentTab] = useState(WidgetTab.STAKE)
   const selectedToken = HighYieldETHIndex
-  const [inputAmount, setInputAmount] = useState('')
+  const [inputAmount, setInputAmount] = useState('0')
+  const { balance: prtBalance } = useBalance(token.prtTokenData.address)
 
   const inputSelectorCaption = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) return 'You stake'
@@ -35,18 +43,13 @@ export function PrtWidget({ token, onClose }: Props) {
     return ''
   }, [currentTab])
 
-  const onClick = useCallback(() => {
+  const onClickTradeButton = useCallback(() => {
     if (currentTab === WidgetTab.STAKE) {
       stakePrts(parseUnits(inputAmount, token.prtTokenData.decimals))
-      return
-    }
-    if (currentTab === WidgetTab.UNSTAKE) {
+    } else if (currentTab === WidgetTab.UNSTAKE) {
       unstakePrts(parseUnits(inputAmount, token.prtTokenData.decimals))
-      return
-    }
-    if (currentTab === WidgetTab.CLAIM) {
+    } else if (currentTab === WidgetTab.CLAIM) {
       claimPrts()
-      return
     }
   }, [
     claimPrts,
@@ -57,6 +60,27 @@ export function PrtWidget({ token, onClose }: Props) {
     unstakePrts,
   ])
 
+  const onClickBalance = useCallback(() => {
+    if (currentTab === WidgetTab.STAKE) {
+      setInputAmount(prtBalance.toString())
+    } else if (currentTab === WidgetTab.UNSTAKE) {
+      setInputAmount(userStakedBalance?.toString() ?? '0')
+    }
+  }, [currentTab, prtBalance, userStakedBalance])
+
+  const balance = useMemo(() => {
+    if (currentTab === WidgetTab.STAKE) {
+      return prtBalance.toString()
+    }
+    if (currentTab === WidgetTab.UNSTAKE) {
+      return userStakedBalance?.toString() ?? '0'
+    }
+    if (currentTab === WidgetTab.CLAIM) {
+      return claimableRewards?.toString() ?? '0'
+    }
+    return '0'
+  }, [claimableRewards, currentTab, prtBalance, userStakedBalance])
+
   return (
     <div className='w-full min-w-80 flex-1 flex-col space-y-5 rounded-3xl bg-gray-50 p-6 sm:min-w-96'>
       <WidgetHeader tokenData={token.tokenData} onClose={onClose} />
@@ -64,21 +88,21 @@ export function PrtWidget({ token, onClose }: Props) {
       {currentTab === WidgetTab.CLAIM ? <ClaimablePanel /> : <StakedPanel />}
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={'1'}
+        balance={balance}
         caption={inputSelectorCaption}
         formattedFiat=''
         selectedToken={selectedToken}
-        selectedTokenAmount={'1'}
+        selectedTokenAmount={inputAmount}
         showSelectorButtonChevron={false}
         onChangeInput={(_, amount) => setInputAmount(amount)}
-        onClickBalance={() => {}}
+        onClickBalance={onClickBalance}
         onSelectToken={() => {}}
       />
       <TradeButton
         label={buttonLabel}
         isDisabled={false}
         isLoading={false}
-        onClick={onClick}
+        onClick={onClickTradeButton}
       />
     </div>
   )
