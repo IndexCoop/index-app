@@ -8,18 +8,21 @@ import { formatDollarAmount } from '@/lib/utils'
 
 type Props = {
   onClick: (token: ProductRevenueToken) => void
-  token: ProductRevenueToken
 }
 
-export function PrtCard({ onClick, token }: Props) {
+export function PrtCard({ onClick }: Props) {
   const {
     claimableRewards,
     cumulativeRevenue,
     lifetimeRewards,
+    token,
     tvl,
     poolStakedBalance,
     userStakedBalance,
   } = usePrtStakingContext()
+
+  if (!token) return
+
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>

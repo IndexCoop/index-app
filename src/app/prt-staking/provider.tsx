@@ -1,6 +1,5 @@
 'use client'
 
-import { TokenData } from '@indexcoop/tokenlists'
 import {
   ReactNode,
   createContext,
@@ -9,6 +8,7 @@ import {
   useState,
 } from 'react'
 
+import { ProductRevenueToken } from '@/app/prt-staking/types'
 import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
 
 interface Context {
@@ -16,7 +16,7 @@ interface Context {
   cumulativeRevenue: number | null
   lifetimeRewards: number | null
   poolStakedBalance: number | null
-  tokenData: TokenData | null
+  token: ProductRevenueToken | null
   tvl: number | null
   userStakedBalance: number | null
 }
@@ -26,17 +26,17 @@ const PrtStakingContext = createContext<Context>({
   cumulativeRevenue: null,
   lifetimeRewards: null,
   poolStakedBalance: null,
-  tokenData: null,
+  token: null,
   tvl: null,
   userStakedBalance: null,
 })
 
 interface Props {
   children: ReactNode
-  tokenData: TokenData
+  token: ProductRevenueToken
 }
 
-export const PrtStakingContextProvider = ({ children, tokenData }: Props) => {
+export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const [tvl, setTvl] = useState<number | null>(null)
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
@@ -53,8 +53,8 @@ export const PrtStakingContextProvider = ({ children, tokenData }: Props) => {
   useEffect(() => {
     async function fetchTokenData() {
       const [tvl, cumulativeRevenue] = await Promise.all([
-        fetchTvl(tokenData.symbol),
-        fetchCumulativeRevenue(tokenData.address),
+        fetchTvl(token.tokenData.symbol),
+        fetchCumulativeRevenue(token.tokenData.address),
       ])
       setTvl(tvl)
       setCumulativeRevenue(cumulativeRevenue)
@@ -64,7 +64,7 @@ export const PrtStakingContextProvider = ({ children, tokenData }: Props) => {
       setPoolStakedBalance(967)
     }
     fetchTokenData()
-  }, [tokenData.address, tokenData.symbol])
+  }, [token.tokenData.address, token.tokenData.symbol])
 
   return (
     <PrtStakingContext.Provider
@@ -73,7 +73,7 @@ export const PrtStakingContextProvider = ({ children, tokenData }: Props) => {
         cumulativeRevenue,
         lifetimeRewards,
         poolStakedBalance,
-        tokenData,
+        token,
         tvl,
         userStakedBalance,
       }}

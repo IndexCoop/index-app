@@ -16,13 +16,9 @@ export function PrtFrame({ token }: Props) {
   } = useDisclosure()
 
   return (
-    <PrtStakingContextProvider tokenData={token.tokenData}>
-      <PrtCard token={token} onClick={onOpenPrtPopup} />
-      <PrtPopup
-        token={token}
-        isOpen={isPrtPopupOpen}
-        onClose={onClosePrtPopup}
-      />
+    <PrtStakingContextProvider token={token}>
+      <PrtCard onClick={onOpenPrtPopup} />
+      <PrtPopup isOpen={isPrtPopupOpen} onClose={onClosePrtPopup} />
     </PrtStakingContextProvider>
   )
 }
