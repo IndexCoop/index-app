@@ -1,11 +1,10 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/16/solid'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 
+import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
 import { formatDollarAmount } from '@/lib/utils'
-import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
 
 type Props = {
   onClick: (token: ProductRevenueToken) => void
@@ -13,23 +12,7 @@ type Props = {
 }
 
 export function PrtCard({ onClick, token }: Props) {
-  const [tvl, setTvl] = useState<number | null>(null)
-  const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
-    null,
-  )
-
-  useEffect(() => {
-    async function fetchTokenData() {
-      const [tvl, cumulativeRevenue] = await Promise.all([
-        fetchTvl(token.tokenData.symbol),
-        fetchCumulativeRevenue(token.tokenData.address),
-      ])
-      setTvl(tvl)
-      setCumulativeRevenue(cumulativeRevenue)
-    }
-    fetchTokenData()
-  }, [token.tokenData.address, token.tokenData.symbol])
-
+  const { cumulativeRevenue, tvl } = usePrtStakingContext()
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
