@@ -3,12 +3,13 @@
 import {
   ReactNode,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
 } from 'react'
 import { Address, isAddress } from 'viem'
-import { useAccount, useReadContract } from 'wagmi'
+import { useAccount, useReadContract, useWalletClient } from 'wagmi'
 
 import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
@@ -48,6 +49,7 @@ interface Props {
 
 export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const { address } = useAccount()
+  const { data: walletClient } = useWalletClient()
   const [tvl, setTvl] = useState<number | null>(null)
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
@@ -103,20 +105,40 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     fetchTokenData()
   }, [token.tokenData.address, token.tokenData.symbol])
 
-  // TODO
-  const claimPrts = () => {
-    //  https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L45
-  }
+  const claimPrts = useCallback(async () => {
+    if (!walletClient) return
+    await walletClient.writeContract({
+      abi: PrtStakingAbi,
+      address: prtTokenAddress,
+      functionName: 'claim',
+    })
+  }, [prtTokenAddress, walletClient])
 
-  // TODO
-  const stakePrts = () => {
-    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L34
-  }
+  const stakePrts = useCallback(
+    async (amount: bigint) => {
+      if (!walletClient) return
+      await walletClient.writeContract({
+        abi: PrtStakingAbi,
+        address: prtTokenAddress,
+        functionName: 'stake',
+        args: [amount],
+      })
+    },
+    [prtTokenAddress, walletClient],
+  )
 
-  // TODO
-  const unstakePrts = () => {
-    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L38
-  }
+  const unstakePrts = useCallback(
+    async (amount: bigint) => {
+      if (!walletClient) return
+      await walletClient.writeContract({
+        abi: PrtStakingAbi,
+        address: prtTokenAddress,
+        functionName: 'unstake',
+        args: [amount],
+      })
+    },
+    [prtTokenAddress, walletClient],
+  )
 
   return (
     <PrtStakingContext.Provider
