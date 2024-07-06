@@ -62,7 +62,7 @@ export function PrtCard({ onClick }: Props) {
           <div className='flex-1'>Your share of Pool</div>
           <div className='font-bold'>
             {userStakedBalance && poolStakedBalance
-              ? `${((userStakedBalance / poolStakedBalance) * 100).toFixed(3)}%`
+              ? `${(Number(userStakedBalance / poolStakedBalance) * 100).toFixed(3)}%`
               : ''}
           </div>
         </div>

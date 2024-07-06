@@ -7,34 +7,38 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { Address, isAddress } from 'viem'
+import { useAccount, useReadContract } from 'wagmi'
 
+import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
+import { formatWeiAsNumber } from '@/lib/utils'
 import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
 
 interface Context {
   claimPrts: () => void
-  claimableRewards: number | null
+  claimableRewards: number | undefined
   cumulativeRevenue: number | null
-  lifetimeRewards: number | null
-  poolStakedBalance: number | null
+  lifetimeRewards: number | undefined
+  poolStakedBalance: number | undefined
   stakePrts: (amount: bigint) => void
   token: ProductRevenueToken | null
   tvl: number | null
   unstakePrts: (amount: bigint) => void
-  userStakedBalance: number | null
+  userStakedBalance: number | undefined
 }
 
 const PrtStakingContext = createContext<Context>({
   claimPrts: () => {},
-  claimableRewards: null,
+  claimableRewards: undefined,
   cumulativeRevenue: null,
-  lifetimeRewards: null,
-  poolStakedBalance: null,
+  lifetimeRewards: undefined,
+  poolStakedBalance: undefined,
   stakePrts: () => {},
   token: null,
   tvl: null,
   unstakePrts: () => {},
-  userStakedBalance: null,
+  userStakedBalance: undefined,
 })
 
 interface Props {
@@ -43,66 +47,58 @@ interface Props {
 }
 
 export const PrtStakingContextProvider = ({ children, token }: Props) => {
+  const { address } = useAccount()
   const [tvl, setTvl] = useState<number | null>(null)
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
   )
-  const [claimableRewards, setClaimableRewards] = useState<number | null>(null)
-  const [lifetimeRewards, setLifetimeRewards] = useState<number | null>(null)
-  const [userStakedBalance, setUserStakedBalance] = useState<number | null>(
-    null,
-  )
-  const [poolStakedBalance, setPoolStakedBalance] = useState<number | null>(
-    null,
-  )
+  const prtTokenAddress = token.prtTokenData.address as Address
+  const prtTokenDecimals = token.prtTokenData.decimals
 
-  // TODO
-  const readClaimableRewards = async () => {
-    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L71
-    return 0.02
-  }
+  const { data: userStakedBalance } = useReadContract({
+    abi: PrtStakingAbi,
+    address: prtTokenAddress,
+    functionName: 'balanceOf',
+    args: [address!],
+    query: {
+      enabled: isAddress(address ?? ''),
+    },
+  })
 
-  // TODO
-  const readLifetimeRewards = async () => {
-    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L94
-    return 1.2
-  }
+  const { data: poolStakedBalance } = useReadContract({
+    abi: PrtStakingAbi,
+    address: prtTokenAddress,
+    functionName: 'totalSupply',
+  })
 
-  // TODO
-  const readUserStakedBalance = async () => {
-    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L84
-    return 3.64
-  }
+  const { data: claimableRewards } = useReadContract({
+    abi: PrtStakingAbi,
+    address: prtTokenAddress,
+    functionName: 'getPendingRewards',
+    args: [address!],
+    query: {
+      enabled: isAddress(address ?? ''),
+    },
+  })
 
-  // TODO
-  const readPoolStakedBalance = async () => {
-    // https://github.com/IndexCoop/periphery/blob/main/src/interfaces/staking/ISnapshotStakingPool.sol#L89
-    return 967
-  }
+  const { data: lifetimeRewards } = useReadContract({
+    abi: PrtStakingAbi,
+    address: prtTokenAddress,
+    functionName: 'getLifetimeRewards',
+    args: [address!],
+    query: {
+      enabled: isAddress(address ?? ''),
+    },
+  })
 
   useEffect(() => {
     async function fetchTokenData() {
-      const [
-        tvl,
-        cumulativeRevenue,
-        claimableRewards,
-        lifetimeRewards,
-        userStakedBalance,
-        poolStakedBalance,
-      ] = await Promise.all([
+      const [tvl, cumulativeRevenue] = await Promise.all([
         fetchTvl(token.tokenData.symbol),
         fetchCumulativeRevenue(token.tokenData.address),
-        readClaimableRewards(),
-        readLifetimeRewards(),
-        readUserStakedBalance(),
-        readPoolStakedBalance(),
       ])
       setTvl(tvl)
       setCumulativeRevenue(cumulativeRevenue)
-      setClaimableRewards(claimableRewards)
-      setLifetimeRewards(lifetimeRewards)
-      setUserStakedBalance(userStakedBalance)
-      setPoolStakedBalance(poolStakedBalance)
     }
     fetchTokenData()
   }, [token.tokenData.address, token.tokenData.symbol])
@@ -126,15 +122,21 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     <PrtStakingContext.Provider
       value={{
         claimPrts,
-        claimableRewards,
+        claimableRewards: formatWeiAsNumber(claimableRewards, prtTokenDecimals),
         cumulativeRevenue,
-        lifetimeRewards,
-        poolStakedBalance,
+        lifetimeRewards: formatWeiAsNumber(lifetimeRewards, prtTokenDecimals),
+        poolStakedBalance: formatWeiAsNumber(
+          poolStakedBalance,
+          prtTokenDecimals,
+        ),
         stakePrts,
         token,
         tvl,
         unstakePrts,
-        userStakedBalance,
+        userStakedBalance: formatWeiAsNumber(
+          userStakedBalance,
+          prtTokenDecimals,
+        ),
       }}
     >
       {children}

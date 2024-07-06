@@ -56,6 +56,14 @@ export function formatWei(wei: bigint, units: number = 18): string {
   return formatUnits(wei, units)
 }
 
+export function formatWeiAsNumber(
+  wei: bigint | undefined,
+  units: number = 18,
+): number | undefined {
+  if (wei === undefined) return undefined
+  return Number(formatUnits(wei, units))
+}
+
 export function parseUnits(value: string, units: number): bigint {
   return parseUnitsViem(value, units)
 }
