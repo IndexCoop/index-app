@@ -18,28 +18,28 @@ import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
 
 interface Context {
   claimPrts: () => void
-  claimableRewards: number | undefined
+  claimableRewards: number | null
   cumulativeRevenue: number | null
-  lifetimeRewards: number | undefined
-  poolStakedBalance: number | undefined
+  lifetimeRewards: number | null
+  poolStakedBalance: number | null
   stakePrts: (amount: bigint) => void
   token: ProductRevenueToken | null
   tvl: number | null
   unstakePrts: (amount: bigint) => void
-  userStakedBalance: number | undefined
+  userStakedBalance: number | null
 }
 
 const PrtStakingContext = createContext<Context>({
   claimPrts: () => {},
-  claimableRewards: undefined,
+  claimableRewards: null,
   cumulativeRevenue: null,
-  lifetimeRewards: undefined,
-  poolStakedBalance: undefined,
+  lifetimeRewards: null,
+  poolStakedBalance: null,
   stakePrts: () => {},
   token: null,
   tvl: null,
   unstakePrts: () => {},
-  userStakedBalance: undefined,
+  userStakedBalance: null,
 })
 
 interface Props {
@@ -59,7 +59,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
 
   const { data: userStakedBalance } = useReadContract({
     abi: PrtStakingAbi,
-    address: prtTokenAddress,
+    address: prtTokenAddress, // staked token
     functionName: 'balanceOf',
     args: [address!],
     query: {
@@ -69,7 +69,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
 
   const { data: poolStakedBalance } = useReadContract({
     abi: PrtStakingAbi,
-    address: prtTokenAddress,
+    address: prtTokenAddress, // staked token
     functionName: 'totalSupply',
   })
 
@@ -109,7 +109,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     if (!walletClient) return
     await walletClient.writeContract({
       abi: PrtStakingAbi,
-      address: prtTokenAddress,
+      address: prtTokenAddress, // rewardToken
       functionName: 'claim',
     })
   }, [prtTokenAddress, walletClient])

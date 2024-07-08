@@ -59,8 +59,8 @@ export function formatWei(wei: bigint, units: number = 18): string {
 export function formatWeiAsNumber(
   wei: bigint | undefined,
   units: number = 18,
-): number | undefined {
-  if (wei === undefined) return undefined
+): number | null {
+  if (wei === undefined) return null
   return Number(formatUnits(wei, units))
 }
 
