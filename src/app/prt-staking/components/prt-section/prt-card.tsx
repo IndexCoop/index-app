@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
-import { formatDollarAmount } from '@/lib/utils'
+import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
 type Props = {
   onClick: (token: ProductRevenueToken) => void
@@ -62,7 +62,7 @@ export function PrtCard({ onClick }: Props) {
           <div className='flex-1'>Your share of Pool</div>
           <div className='font-bold'>
             {userStakedBalance && poolStakedBalance
-              ? `${(Number(userStakedBalance / poolStakedBalance) * 100).toFixed(3)}%`
+              ? `${formatAmount(Number(userStakedBalance / poolStakedBalance) * 100, 3)}%`
               : ''}
           </div>
         </div>
