@@ -54,12 +54,13 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
   )
-  const prtTokenAddress = token.prtTokenData.address as Address
-  const prtTokenDecimals = token.prtTokenData.decimals
+  const stakeTokenAddress = token.stakeTokenData.address as Address
+  const stakedTokenAddress = token.stakedTokenData.address as Address
+  const stakedTokenDecimals = token.stakedTokenData.decimals
 
   const { data: userStakedBalance } = useReadContract({
     abi: PrtStakingAbi,
-    address: prtTokenAddress, // staked token
+    address: stakedTokenAddress,
     functionName: 'balanceOf',
     args: [address!],
     query: {
@@ -69,13 +70,13 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
 
   const { data: poolStakedBalance } = useReadContract({
     abi: PrtStakingAbi,
-    address: prtTokenAddress, // staked token
+    address: stakedTokenAddress,
     functionName: 'totalSupply',
   })
 
   const { data: claimableRewards } = useReadContract({
     abi: PrtStakingAbi,
-    address: prtTokenAddress,
+    address: stakedTokenAddress,
     functionName: 'getPendingRewards',
     args: [address!],
     query: {
@@ -85,7 +86,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
 
   const { data: lifetimeRewards } = useReadContract({
     abi: PrtStakingAbi,
-    address: prtTokenAddress,
+    address: stakedTokenAddress,
     functionName: 'getLifetimeRewards',
     args: [address!],
     query: {
@@ -96,35 +97,35 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   useEffect(() => {
     async function fetchTokenData() {
       const [tvl, cumulativeRevenue] = await Promise.all([
-        fetchTvl(token.tokenData.symbol),
-        fetchCumulativeRevenue(token.tokenData.address),
+        fetchTvl(token.rewardTokenData.symbol),
+        fetchCumulativeRevenue(token.rewardTokenData.address),
       ])
       setTvl(tvl)
       setCumulativeRevenue(cumulativeRevenue)
     }
     fetchTokenData()
-  }, [token.tokenData.address, token.tokenData.symbol])
+  }, [token.rewardTokenData.address, token.rewardTokenData.symbol])
 
   const claimPrts = useCallback(async () => {
     if (!walletClient) return
     await walletClient.writeContract({
       abi: PrtStakingAbi,
-      address: prtTokenAddress, // rewardToken
+      address: stakedTokenAddress,
       functionName: 'claim',
     })
-  }, [prtTokenAddress, walletClient])
+  }, [stakedTokenAddress, walletClient])
 
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient) return
       await walletClient.writeContract({
         abi: PrtStakingAbi,
-        address: prtTokenAddress,
+        address: stakeTokenAddress,
         functionName: 'stake',
         args: [amount],
       })
     },
-    [prtTokenAddress, walletClient],
+    [stakeTokenAddress, walletClient],
   )
 
   const unstakePrts = useCallback(
@@ -132,24 +133,30 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       if (!walletClient) return
       await walletClient.writeContract({
         abi: PrtStakingAbi,
-        address: prtTokenAddress,
+        address: stakeTokenAddress,
         functionName: 'unstake',
         args: [amount],
       })
     },
-    [prtTokenAddress, walletClient],
+    [stakeTokenAddress, walletClient],
   )
 
   return (
     <PrtStakingContext.Provider
       value={{
         claimPrts,
-        claimableRewards: formatWeiAsNumber(claimableRewards, prtTokenDecimals),
+        claimableRewards: formatWeiAsNumber(
+          claimableRewards,
+          stakedTokenDecimals,
+        ),
         cumulativeRevenue,
-        lifetimeRewards: formatWeiAsNumber(lifetimeRewards, prtTokenDecimals),
+        lifetimeRewards: formatWeiAsNumber(
+          lifetimeRewards,
+          stakedTokenDecimals,
+        ),
         poolStakedBalance: formatWeiAsNumber(
           poolStakedBalance,
-          prtTokenDecimals,
+          stakedTokenDecimals,
         ),
         stakePrts,
         token,
@@ -157,7 +164,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         unstakePrts,
         userStakedBalance: formatWeiAsNumber(
           userStakedBalance,
-          prtTokenDecimals,
+          stakedTokenDecimals,
         ),
       }}
     >

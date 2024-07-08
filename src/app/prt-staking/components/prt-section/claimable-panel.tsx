@@ -8,7 +8,7 @@ export function ClaimablePanel() {
         <div className='flex-1'>Claimable</div>
         <div>
           {claimableRewards
-            ? `${claimableRewards} ${token?.tokenData.symbol}`
+            ? `${claimableRewards} ${token?.rewardTokenData.symbol}`
             : ''}
         </div>
       </div>
@@ -16,7 +16,7 @@ export function ClaimablePanel() {
         <div className='flex-1 font-medium'>Lifetime</div>
         <div className='font-bold'>
           {lifetimeRewards
-            ? `${lifetimeRewards} ${token?.tokenData.symbol}`
+            ? `${lifetimeRewards} ${token?.rewardTokenData.symbol}`
             : ''}
         </div>
       </div>

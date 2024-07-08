@@ -1,8 +1,9 @@
 import { TokenData } from '@indexcoop/tokenlists'
 
 export type ProductRevenueToken = {
-  tokenData: TokenData
-  prtTokenData: TokenData
+  rewardTokenData: TokenData
+  stakeTokenData: TokenData
+  stakedTokenData: TokenData
   description: string
   moreInfoUrl: string
 }

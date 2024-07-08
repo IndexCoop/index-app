@@ -9,7 +9,7 @@ export function PrtSection() {
     <div className='py-10'>
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         {prts.map((prt) => (
-          <PrtFrame key={prt.tokenData.symbol} token={prt} />
+          <PrtFrame key={prt.rewardTokenData.symbol} token={prt} />
         ))}
       </div>
       <Disclaimer />

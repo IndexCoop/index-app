@@ -28,7 +28,7 @@ export function PrtWidget({ token, onClose }: Props) {
   const [currentTab, setCurrentTab] = useState(WidgetTab.STAKE)
   const selectedToken = HighYieldETHIndex
   const [inputAmount, setInputAmount] = useState('')
-  const { balance: prtBalance } = useBalance(token.prtTokenData.address)
+  const { balance: prtBalance } = useBalance(token.stakeTokenData.address)
 
   useEffect(() => {
     if (currentTab === WidgetTab.STAKE) setInputAmount('')
@@ -53,9 +53,9 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const onClickTradeButton = useCallback(() => {
     if (currentTab === WidgetTab.STAKE) {
-      stakePrts(parseUnits(inputAmount, token.prtTokenData.decimals))
+      stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
     } else if (currentTab === WidgetTab.UNSTAKE) {
-      unstakePrts(parseUnits(inputAmount, token.prtTokenData.decimals))
+      unstakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
     } else if (currentTab === WidgetTab.CLAIM) {
       claimPrts()
     }
@@ -64,7 +64,7 @@ export function PrtWidget({ token, onClose }: Props) {
     currentTab,
     inputAmount,
     stakePrts,
-    token.prtTokenData.decimals,
+    token.stakeTokenData.decimals,
     unstakePrts,
   ])
 
@@ -91,7 +91,7 @@ export function PrtWidget({ token, onClose }: Props) {
 
   return (
     <div className='w-full min-w-80 flex-1 flex-col space-y-5 rounded-3xl bg-gray-50 p-6 sm:min-w-96'>
-      <WidgetHeader tokenData={token.tokenData} onClose={onClose} />
+      <WidgetHeader tokenData={token.rewardTokenData} onClose={onClose} />
       <WidgetTabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
       {currentTab === WidgetTab.CLAIM ? <ClaimablePanel /> : <StakedPanel />}
       <TradeInputSelector

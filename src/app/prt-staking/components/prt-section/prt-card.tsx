@@ -29,14 +29,16 @@ export function PrtCard({ onClick }: Props) {
         <div className='flex flex-1 items-center'>
           <div className='my-auto mr-2 overflow-hidden rounded-full'>
             <Image
-              src={token.tokenData.logoURI}
-              alt={`${token.tokenData.symbol} logo`}
+              src={token.rewardTokenData.logoURI}
+              alt={`${token.rewardTokenData.symbol} logo`}
               height={28}
               width={28}
             />
           </div>
-          {token.tokenData.symbol}
-          <Link href={`/swap/eth/${token.tokenData.symbol.toLowerCase()}`}>
+          {token.rewardTokenData.symbol}
+          <Link
+            href={`/swap/eth/${token.rewardTokenData.symbol.toLowerCase()}`}
+          >
             <ArrowTopRightOnSquareIcon className='text-ic-gray-800 ml-1.5 size-4' />
           </Link>
         </div>
@@ -78,7 +80,7 @@ export function PrtCard({ onClick }: Props) {
           <div className='flex-1'>Claimable</div>
           <div>
             {claimableRewards
-              ? `${claimableRewards} ${token.tokenData.symbol}`
+              ? `${claimableRewards} ${token.rewardTokenData.symbol}`
               : ''}
           </div>
         </div>
@@ -86,7 +88,7 @@ export function PrtCard({ onClick }: Props) {
           <div className='flex-1'>Lifetime</div>
           <div className='font-bold'>
             {lifetimeRewards
-              ? `${lifetimeRewards} ${token.tokenData.symbol}`
+              ? `${lifetimeRewards} ${token.rewardTokenData.symbol}`
               : ''}
           </div>
         </div>
