@@ -1,15 +1,18 @@
 import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/react'
 
 import { PrtWidget } from '@/app/prt-staking/components/prt-section/prt-widget'
-import { ProductRevenueToken } from '@/app/prt-staking/types'
+import { usePrtStakingContext } from '@/app/prt-staking/provider'
 
 type Props = {
   isOpen: boolean
   onClose: () => void
-  token: ProductRevenueToken
 }
 
-export function PrtPopup({ isOpen, onClose, token }: Props) {
+export function PrtPopup({ isOpen, onClose }: Props) {
+  const { token } = usePrtStakingContext()
+
+  if (!token) return
+
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />

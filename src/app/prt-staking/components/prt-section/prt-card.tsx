@@ -2,14 +2,27 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/16/solid'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
+import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
 type Props = {
   onClick: (token: ProductRevenueToken) => void
-  token: ProductRevenueToken
 }
 
-export function PrtCard({ onClick, token }: Props) {
+export function PrtCard({ onClick }: Props) {
+  const {
+    claimableRewards,
+    cumulativeRevenue,
+    lifetimeRewards,
+    token,
+    tvl,
+    poolStakedBalance,
+    userStakedBalance,
+  } = usePrtStakingContext()
+
+  if (!token) return
+
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
@@ -43,45 +56,55 @@ export function PrtCard({ onClick, token }: Props) {
       <div className='bg-ic-gray-50 border-ic-gray-300 my-3 w-full rounded-xl border px-3 py-5 text-sm'>
         <div className='text-ic-gray-950 mb-2 flex font-bold'>
           <div className='flex-1'>Your Staked PRTs</div>
-          <div>3.64 PRTs</div>
+          <div>{userStakedBalance ? `${userStakedBalance} PRTs` : ''}</div>
         </div>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Your share of Pool</div>
-          <div className='font-bold'>0.031%</div>
+          <div className='font-bold'>
+            {userStakedBalance && poolStakedBalance
+              ? `${formatAmount(Number(userStakedBalance / poolStakedBalance) * 100, 3)}%`
+              : ''}
+          </div>
         </div>
       </div>
       <div className='bg-ic-gray-50 border-ic-gray-300 my-3 w-full rounded-xl border px-3 py-5 text-sm'>
         <div className='text-ic-gray-950 mb-2 flex font-bold'>
           Your Rewards&nbsp;
-          <span className='text-ic-gray-600 font-medium'>
+          {/* <span className='text-ic-gray-600 font-medium'>
             (next distribution in X days.)
-          </span>
+          </span> */}
         </div>
         <div className='text-ic-gray-950 mb-2 flex font-bold'>
           <div className='flex-1'>Claimable</div>
-          <div>0.3 hyETH ($460.22)</div>
+          <div>
+            {claimableRewards
+              ? `${claimableRewards} ${token.tokenData.symbol}`
+              : ''}
+          </div>
         </div>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Lifetime</div>
-          <div className='font-bold'>1.2 hyETH ($2,895.01)</div>
+          <div className='font-bold'>
+            {lifetimeRewards
+              ? `${lifetimeRewards} ${token.tokenData.symbol}`
+              : ''}
+          </div>
         </div>
       </div>
       <div className='my-3 mt-4 w-full px-3 text-sm'>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Product TVL</div>
-          <div className='text-ic-gray-950 font-bold'>$6,952,026.45</div>
+          <div className='text-ic-gray-950 font-bold'>
+            {formatDollarAmount(tvl)}
+          </div>
         </div>
       </div>
       <div className='my-3 w-full px-3 text-sm'>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Lifetime revenue</div>
-          <div className='text-ic-gray-950 font-bold'>$239,082.20</div>
-        </div>
-      </div>
-      <div className='my-3 w-full px-3 text-sm'>
-        <div className='text-ic-gray-600 flex font-medium'>
-          <div className='flex-1'>Est. Monthly Revenue</div>
-          <div className='text-ic-gray-950 font-bold'>$17,441.53</div>
+          <div className='text-ic-gray-950 font-bold'>
+            {formatDollarAmount(cumulativeRevenue)}
+          </div>
         </div>
       </div>
       <button
