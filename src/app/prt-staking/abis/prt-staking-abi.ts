@@ -18,6 +18,7 @@ export const PrtStakingAbi = [
         internalType: 'contract IERC20',
       },
       { name: 'distributor', type: 'address', internalType: 'address' },
+      { name: 'snapshotBuffer', type: 'uint256', internalType: 'uint256' },
       { name: 'snapshotDelay', type: 'uint256', internalType: 'uint256' },
     ],
     stateMutability: 'nonpayable',
@@ -52,7 +53,7 @@ export const PrtStakingAbi = [
   {
     type: 'function',
     name: 'approveStaker',
-    inputs: [{ name: '_signature', type: 'bytes', internalType: 'bytes' }],
+    inputs: [{ name: 'signature', type: 'bytes', internalType: 'bytes' }],
     outputs: [],
     stateMutability: 'nonpayable',
   },
@@ -76,6 +77,13 @@ export const PrtStakingAbi = [
   {
     type: 'function',
     name: 'canAccrue',
+    inputs: [],
+    outputs: [{ name: '', type: 'bool', internalType: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'canStake',
     inputs: [],
     outputs: [{ name: '', type: 'bool', internalType: 'bool' }],
     stateMutability: 'view',
@@ -156,6 +164,20 @@ export const PrtStakingAbi = [
   },
   {
     type: 'function',
+    name: 'getNextSnapshotBufferTime',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'getNextSnapshotTime',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     name: 'getPendingRewards',
     inputs: [{ name: 'account', type: 'address', internalType: 'address' }],
     outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
@@ -178,6 +200,13 @@ export const PrtStakingAbi = [
   {
     type: 'function',
     name: 'getTimeUntilNextSnapshot',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'getTimeUntilNextSnapshotBuffer',
     inputs: [],
     outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
     stateMutability: 'view',
@@ -294,6 +323,26 @@ export const PrtStakingAbi = [
   },
   {
     type: 'function',
+    name: 'setMessage',
+    inputs: [{ name: 'newMessage', type: 'string', internalType: 'string' }],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'setSnapshotBuffer',
+    inputs: [
+      {
+        name: 'newSnapshotBuffer',
+        type: 'uint256',
+        internalType: 'uint256',
+      },
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
     name: 'setSnapshotDelay',
     inputs: [
       {
@@ -307,6 +356,13 @@ export const PrtStakingAbi = [
   },
   {
     type: 'function',
+    name: 'snapshotBuffer',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     name: 'snapshotDelay',
     inputs: [],
     outputs: [{ name: '', type: 'uint256', internalType: 'uint256' }],
@@ -316,8 +372,8 @@ export const PrtStakingAbi = [
     type: 'function',
     name: 'stake',
     inputs: [
-      { name: '_amount', type: 'uint256', internalType: 'uint256' },
-      { name: '_signature', type: 'bytes', internalType: 'bytes' },
+      { name: 'amount', type: 'uint256', internalType: 'uint256' },
+      { name: 'signature', type: 'bytes', internalType: 'bytes' },
     ],
     outputs: [],
     stateMutability: 'nonpayable',
@@ -325,7 +381,7 @@ export const PrtStakingAbi = [
   {
     type: 'function',
     name: 'stake',
-    inputs: [{ name: '_amount', type: 'uint256', internalType: 'uint256' }],
+    inputs: [{ name: 'amount', type: 'uint256', internalType: 'uint256' }],
     outputs: [],
     stateMutability: 'nonpayable',
   },
@@ -438,6 +494,19 @@ export const PrtStakingAbi = [
   },
   {
     type: 'event',
+    name: 'MessageChanged',
+    inputs: [
+      {
+        name: 'newMessage',
+        type: 'string',
+        indexed: false,
+        internalType: 'string',
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: 'event',
     name: 'OwnershipTransferred',
     inputs: [
       {
@@ -461,6 +530,19 @@ export const PrtStakingAbi = [
     inputs: [
       {
         name: 'id',
+        type: 'uint256',
+        indexed: false,
+        internalType: 'uint256',
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: 'event',
+    name: 'SnapshotBufferChanged',
+    inputs: [
+      {
+        name: 'newSnapshotBuffer',
         type: 'uint256',
         indexed: false,
         internalType: 'uint256',
@@ -522,8 +604,11 @@ export const PrtStakingAbi = [
   { type: 'error', name: 'CannotAccrueWithZeroStakedSupply', inputs: [] },
   { type: 'error', name: 'CannotAccrueZero', inputs: [] },
   { type: 'error', name: 'CannotClaimFromPastSnapshots', inputs: [] },
+  { type: 'error', name: 'CannotStakeDuringBuffer', inputs: [] },
   { type: 'error', name: 'InvalidShortString', inputs: [] },
   { type: 'error', name: 'InvalidSignature', inputs: [] },
+  { type: 'error', name: 'InvalidSnapshotBuffer', inputs: [] },
+  { type: 'error', name: 'InvalidSnapshotDelay', inputs: [] },
   { type: 'error', name: 'InvalidSnapshotId', inputs: [] },
   { type: 'error', name: 'MustBeDistributor', inputs: [] },
   { type: 'error', name: 'NonExistentSnapshotId', inputs: [] },
