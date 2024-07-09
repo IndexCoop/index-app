@@ -1,6 +1,5 @@
 import { FaqSection } from '@/app/prt-staking/components/faq-section'
 import { HeroSection } from '@/app/prt-staking/components/hero-section'
-import { MoreQuestions } from '@/app/prt-staking/components/more-questions'
 import { PrtSection } from '@/app/prt-staking/components/prt-section'
 
 export default function Page() {
@@ -9,7 +8,6 @@ export default function Page() {
       <HeroSection />
       <PrtSection />
       <FaqSection />
-      <MoreQuestions />
     </div>
   )
 }
