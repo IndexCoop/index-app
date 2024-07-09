@@ -106,17 +106,12 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     },
   })
 
-  const { data: stakeSignMessage } = useReadContract({
-    abi: PrtStakingAbi,
-    address: stakedTokenAddress,
-    functionName: 'message',
-  })
-
-  const { data: stakeDomain } = useReadContract({
-    abi: PrtStakingAbi,
-    address: stakedTokenAddress,
-    functionName: 'eip712Domain',
-  })
+  // const { data: stakeDomain } = useReadContract({
+  //   abi: PrtStakingAbi,
+  //   address: stakedTokenAddress,
+  //   functionName: 'eip712Domain',
+  // })
+  // console.log('stakeDomain', stakeDomain)
 
   const { data: lifetimeRewards } = useReadContract({
     abi: PrtStakingAbi,
@@ -162,16 +157,34 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           args: [amount],
         })
       } else {
-        if (!stakeSignMessage) return
-        if (!stakeDomain) return
         // FIXME: Domain arg typing/format
         const signature = await walletClient.signTypedData({
+          types: {
+            Person: [
+              { name: 'name', type: 'string' },
+              { name: 'wallet', type: 'address' },
+            ],
+            Mail: [
+              { name: 'from', type: 'Person' },
+              { name: 'to', type: 'Person' },
+              { name: 'contents', type: 'string' },
+            ],
+          },
+          primaryType: 'Mail',
           domain: {
             version: '1',
             verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
           },
           message: {
-            contents: stakeSignMessage,
+            from: {
+              name: 'Cow',
+              wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+            },
+            to: {
+              name: 'Bob',
+              wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            },
+            contents: 'I have read and accept the Terms of Service.',
           },
         })
         await walletClient.writeContract({
@@ -182,14 +195,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         })
       }
     },
-    [
-      canStake,
-      isApprovedStaker,
-      stakeDomain,
-      stakeSignMessage,
-      stakeTokenAddress,
-      walletClient,
-    ],
+    [canStake, isApprovedStaker, stakeTokenAddress, walletClient],
   )
 
   const unstakePrts = useCallback(
