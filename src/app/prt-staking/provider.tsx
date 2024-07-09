@@ -23,6 +23,7 @@ interface Context {
   lifetimeRewards: number | null
   poolStakedBalance: number | null
   refetchClaimableRewards: () => void
+  refetchUserStakedBalance: () => void
   stakePrts: (amount: bigint) => void
   token: ProductRevenueToken | null
   tvl: number | null
@@ -37,6 +38,7 @@ const PrtStakingContext = createContext<Context>({
   lifetimeRewards: null,
   poolStakedBalance: null,
   refetchClaimableRewards: () => {},
+  refetchUserStakedBalance: () => {},
   stakePrts: () => {},
   token: null,
   tvl: null,
@@ -60,15 +62,16 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const stakedTokenAddress = token.stakedTokenData.address as Address
   const stakedTokenDecimals = token.stakedTokenData.decimals
 
-  const { data: userStakedBalance } = useReadContract({
-    abi: PrtStakingAbi,
-    address: stakedTokenAddress,
-    functionName: 'balanceOf',
-    args: [address!],
-    query: {
-      enabled: isAddress(address ?? ''),
-    },
-  })
+  const { data: userStakedBalance, refetch: refetchUserStakedBalance } =
+    useReadContract({
+      abi: PrtStakingAbi,
+      address: stakedTokenAddress,
+      functionName: 'balanceOf',
+      args: [address!],
+      query: {
+        enabled: isAddress(address ?? ''),
+      },
+    })
 
   const { data: poolStakedBalance } = useReadContract({
     abi: PrtStakingAbi,
@@ -149,10 +152,20 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient) return
+      // FIXME: Need to add proper UX handling for case where staking is disabled
+      if (!canStake) return
       if (isApprovedStaker) {
+        await walletClient.writeContract({
+          abi: PrtStakingAbi,
+          address: stakeTokenAddress,
+          functionName: 'stake',
+          args: [amount],
+        })
+      } else {
         if (!stakeSignMessage) return
         if (!stakeDomain) return
         const signature = await walletClient.signTypedData({
+          // FIXME: Domain arg typing/format
           domain: stakeDomain,
           message: {
             contents: stakeSignMessage,
@@ -164,16 +177,10 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           functionName: 'stake',
           args: [amount, signature],
         })
-      } else {
-        await walletClient.writeContract({
-          abi: PrtStakingAbi,
-          address: stakeTokenAddress,
-          functionName: 'stake',
-          args: [amount],
-        })
       }
     },
     [
+      canStake,
       isApprovedStaker,
       stakeDomain,
       stakeSignMessage,
@@ -213,6 +220,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           stakedTokenDecimals,
         ),
         refetchClaimableRewards,
+        refetchUserStakedBalance,
         stakePrts,
         token,
         tvl,

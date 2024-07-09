@@ -22,6 +22,7 @@ export function PrtWidget({ token, onClose }: Props) {
     claimPrts,
     claimableRewards,
     refetchClaimableRewards,
+    refetchUserStakedBalance,
     stakePrts,
     unstakePrts,
     userStakedBalance,
@@ -54,16 +55,16 @@ export function PrtWidget({ token, onClose }: Props) {
     return ''
   }, [currentTab])
 
-  const onClickTradeButton = useCallback(() => {
+  const onClickTradeButton = useCallback(async () => {
     if (currentTab === WidgetTab.STAKE) {
-      stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
-      forceRefetch()
+      await stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
+      await forceRefetch()
     } else if (currentTab === WidgetTab.UNSTAKE) {
-      unstakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
-      forceRefetch() // FIXME
+      await unstakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
+      await refetchUserStakedBalance()
     } else if (currentTab === WidgetTab.CLAIM) {
-      claimPrts()
-      refetchClaimableRewards()
+      await claimPrts()
+      await refetchClaimableRewards()
     }
   }, [
     claimPrts,
@@ -71,6 +72,7 @@ export function PrtWidget({ token, onClose }: Props) {
     forceRefetch,
     inputAmount,
     refetchClaimableRewards,
+    refetchUserStakedBalance,
     stakePrts,
     token.stakeTokenData.decimals,
     unstakePrts,

@@ -6,7 +6,7 @@ export const prts: ProductRevenueToken[] = [
   {
     rewardTokenData: getIndexTokenData('hyETH')!,
     stakeTokenData: getIndexTokenData('prtHyETH')!,
-    stakedTokenData: getIndexTokenData('prtHyETH')!, // FIXME
+    stakedTokenData: getIndexTokenData('prtHyETH')!, // FIXME: Add staked token once deployed
     description:
       'Designed to track the performance of the largest high-yield opportunities for ETH on Ethereum mainnet.',
     moreInfoUrl: 'https://indexcoop.com/products/high-yield-eth',
