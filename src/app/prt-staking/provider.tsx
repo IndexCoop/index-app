@@ -22,6 +22,7 @@ interface Context {
   cumulativeRevenue: number | null
   lifetimeRewards: number | null
   poolStakedBalance: number | null
+  refetchClaimableRewards: () => void
   stakePrts: (amount: bigint) => void
   token: ProductRevenueToken | null
   tvl: number | null
@@ -35,6 +36,7 @@ const PrtStakingContext = createContext<Context>({
   cumulativeRevenue: null,
   lifetimeRewards: null,
   poolStakedBalance: null,
+  refetchClaimableRewards: () => {},
   stakePrts: () => {},
   token: null,
   tvl: null,
@@ -74,14 +76,43 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     functionName: 'totalSupply',
   })
 
-  const { data: claimableRewards } = useReadContract({
+  const { data: claimableRewards, refetch: refetchClaimableRewards } =
+    useReadContract({
+      abi: PrtStakingAbi,
+      address: stakedTokenAddress,
+      functionName: 'getPendingRewards',
+      args: [address!],
+      query: {
+        enabled: isAddress(address ?? ''),
+      },
+    })
+
+  const { data: canStake } = useReadContract({
     abi: PrtStakingAbi,
     address: stakedTokenAddress,
-    functionName: 'getPendingRewards',
+    functionName: 'canStake',
+  })
+
+  const { data: isApprovedStaker } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'isApprovedStaker',
     args: [address!],
     query: {
       enabled: isAddress(address ?? ''),
     },
+  })
+
+  const { data: stakeSignMessage } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'message',
+  })
+
+  const { data: stakeDomain } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'eip712Domain',
   })
 
   const { data: lifetimeRewards } = useReadContract({
@@ -118,14 +149,37 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient) return
-      await walletClient.writeContract({
-        abi: PrtStakingAbi,
-        address: stakeTokenAddress,
-        functionName: 'stake',
-        args: [amount],
-      })
+      if (isApprovedStaker) {
+        if (!stakeSignMessage) return
+        if (!stakeDomain) return
+        const signature = await walletClient.signTypedData({
+          domain: stakeDomain,
+          message: {
+            contents: stakeSignMessage,
+          },
+        })
+        await walletClient.writeContract({
+          abi: PrtStakingAbi,
+          address: stakeTokenAddress,
+          functionName: 'stake',
+          args: [amount, signature],
+        })
+      } else {
+        await walletClient.writeContract({
+          abi: PrtStakingAbi,
+          address: stakeTokenAddress,
+          functionName: 'stake',
+          args: [amount],
+        })
+      }
     },
-    [stakeTokenAddress, walletClient],
+    [
+      isApprovedStaker,
+      stakeDomain,
+      stakeSignMessage,
+      stakeTokenAddress,
+      walletClient,
+    ],
   )
 
   const unstakePrts = useCallback(
@@ -158,6 +212,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           poolStakedBalance,
           stakedTokenDecimals,
         ),
+        refetchClaimableRewards,
         stakePrts,
         token,
         tvl,

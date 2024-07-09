@@ -21,6 +21,7 @@ export function PrtWidget({ token, onClose }: Props) {
   const {
     claimPrts,
     claimableRewards,
+    refetchClaimableRewards,
     stakePrts,
     unstakePrts,
     userStakedBalance,
@@ -28,7 +29,9 @@ export function PrtWidget({ token, onClose }: Props) {
   const [currentTab, setCurrentTab] = useState(WidgetTab.STAKE)
   const selectedToken = HighYieldETHIndex
   const [inputAmount, setInputAmount] = useState('')
-  const { balance: prtBalance } = useBalance(token.stakeTokenData.address)
+  const { balance: prtBalance, forceRefetch } = useBalance(
+    token.stakeTokenData.address,
+  )
 
   useEffect(() => {
     if (currentTab === WidgetTab.STAKE) setInputAmount('')
@@ -54,15 +57,20 @@ export function PrtWidget({ token, onClose }: Props) {
   const onClickTradeButton = useCallback(() => {
     if (currentTab === WidgetTab.STAKE) {
       stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
+      forceRefetch()
     } else if (currentTab === WidgetTab.UNSTAKE) {
       unstakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
+      forceRefetch() // FIXME
     } else if (currentTab === WidgetTab.CLAIM) {
       claimPrts()
+      refetchClaimableRewards()
     }
   }, [
     claimPrts,
     currentTab,
+    forceRefetch,
     inputAmount,
+    refetchClaimableRewards,
     stakePrts,
     token.stakeTokenData.decimals,
     unstakePrts,
