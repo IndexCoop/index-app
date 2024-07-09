@@ -164,9 +164,12 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       } else {
         if (!stakeSignMessage) return
         if (!stakeDomain) return
+        // FIXME: Domain arg typing/format
         const signature = await walletClient.signTypedData({
-          // FIXME: Domain arg typing/format
-          domain: stakeDomain,
+          domain: {
+            version: '1',
+            verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+          },
           message: {
             contents: stakeSignMessage,
           },
