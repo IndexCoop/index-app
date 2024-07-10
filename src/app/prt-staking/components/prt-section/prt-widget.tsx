@@ -39,7 +39,7 @@ export function PrtWidget({ token, onClose }: Props) {
     if (currentTab === WidgetTab.STAKE) setInputAmount('')
     if (currentTab === WidgetTab.UNSTAKE) setInputAmount('')
     if (currentTab === WidgetTab.CLAIM)
-      setInputAmount(claimableRewards > 0 ? claimableRewards?.toString() : '')
+      setInputAmount(claimableRewards > 0 ? claimableRewards.toString() : '')
   }, [claimableRewards, currentTab])
 
   const inputSelectorCaption = useMemo(() => {
@@ -83,7 +83,7 @@ export function PrtWidget({ token, onClose }: Props) {
     if (currentTab === WidgetTab.STAKE) {
       setInputAmount(prtBalance.toString())
     } else if (currentTab === WidgetTab.UNSTAKE) {
-      setInputAmount(userStakedBalance?.toString() ?? '')
+      setInputAmount(userStakedBalance.toString())
     }
   }, [currentTab, prtBalance, userStakedBalance])
 
@@ -92,10 +92,10 @@ export function PrtWidget({ token, onClose }: Props) {
       return prtBalance.toString()
     }
     if (currentTab === WidgetTab.UNSTAKE) {
-      return userStakedBalance?.toString() ?? '0'
+      return userStakedBalance.toString()
     }
     if (currentTab === WidgetTab.CLAIM) {
-      return claimableRewards?.toString() ?? '0'
+      return claimableRewards.toString()
     }
     return '0'
   }, [claimableRewards, currentTab, prtBalance, userStakedBalance])
