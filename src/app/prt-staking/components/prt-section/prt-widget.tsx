@@ -9,8 +9,9 @@ import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken, WidgetTab } from '@/app/prt-staking/types'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TradeButton } from '@/components/trade-button'
-import { HighYieldETHIndex } from '@/constants/tokens'
+import { useApproval } from '@/lib/hooks/use-approval'
 import { useBalance } from '@/lib/hooks/use-balance'
+import { formatTokenDataToToken } from '@/lib/utils'
 
 type Props = {
   token: ProductRevenueToken
@@ -19,6 +20,7 @@ type Props = {
 
 export function PrtWidget({ token, onClose }: Props) {
   const {
+    accountAddress,
     canStake,
     claimPrts,
     claimableRewards,
@@ -29,10 +31,15 @@ export function PrtWidget({ token, onClose }: Props) {
     userStakedBalance,
   } = usePrtStakingContext()
   const [currentTab, setCurrentTab] = useState(WidgetTab.STAKE)
-  const selectedToken = HighYieldETHIndex
+  const selectedToken = formatTokenDataToToken(token.stakeTokenData)
   const [inputAmount, setInputAmount] = useState('')
   const { balance: prtBalance, forceRefetch } = useBalance(
     token.stakeTokenData.address,
+  )
+  const { isApproved, approve: onApprove } = useApproval(
+    selectedToken,
+    accountAddress ?? null,
+    parseUnits(inputAmount, token.stakedTokenData.decimals),
   )
 
   useEffect(() => {
@@ -58,6 +65,9 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const onClickTradeButton = useCallback(async () => {
     if (currentTab === WidgetTab.STAKE) {
+      if (!isApproved) {
+        await onApprove()
+      }
       await stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
       await forceRefetch()
     } else if (currentTab === WidgetTab.UNSTAKE) {
@@ -72,6 +82,8 @@ export function PrtWidget({ token, onClose }: Props) {
     currentTab,
     forceRefetch,
     inputAmount,
+    isApproved,
+    onApprove,
     refetchClaimableRewards,
     refetchUserStakedBalance,
     stakePrts,

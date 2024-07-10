@@ -2,8 +2,11 @@ import {
   formatUnits,
   parseUnits as parseUnitsEthers,
 } from '@ethersproject/units'
+import { TokenData } from '@indexcoop/tokenlists'
 import { BigNumber } from 'ethers'
 import { isAddress as isAddressViem, parseUnits as parseUnitsViem } from 'viem'
+
+import { Token } from '@/constants/tokens'
 
 export function isAddress(address: string) {
   return isAddressViem(address)
@@ -11,6 +14,26 @@ export function isAddress(address: string) {
 
 export function isSameAddress(address1: string, address2: string): boolean {
   return address1.toLowerCase() === address2.toLowerCase()
+}
+
+// TODO: Settle on one token typing approach?
+export const formatTokenDataToToken = (tokenData: TokenData): Token => {
+  console.log('tokenData', tokenData)
+  return {
+    address: tokenData.address,
+    name: tokenData.name,
+    decimals: tokenData.decimals,
+    symbol: tokenData.symbol,
+    image: tokenData.logoURI,
+    indexTypes: [],
+    isDangerous: true,
+    coingeckoId: '',
+    url: '',
+    arbitrumAddress: undefined,
+    optimismAddress: undefined,
+    polygonAddress: undefined,
+    fees: undefined,
+  }
 }
 
 export const selectLatestMarketData = (marketData?: number[][]) =>
