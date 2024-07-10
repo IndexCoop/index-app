@@ -9,6 +9,7 @@ type SelectorProps = {
   image: string
   symbol: string
   showChevron?: boolean
+  visible?: boolean
 }
 
 export const SelectorButton = ({
@@ -16,6 +17,7 @@ export const SelectorButton = ({
   symbol,
   onClick,
   showChevron,
+  visible = true,
 }: SelectorProps) => (
   <Flex
     align='center'
@@ -25,6 +27,7 @@ export const SelectorButton = ({
     onClick={onClick}
     p='10px'
     shrink={0}
+    visibility={visible ? 'visible' : 'hidden'}
   >
     <Image alt={`${symbol} logo`} src={image} width={20} height={20} />
     <Text color={colors.ic.black} fontSize={'14px'} fontWeight={500} mx='8px'>

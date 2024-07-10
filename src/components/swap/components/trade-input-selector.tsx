@@ -21,13 +21,20 @@ interface TradeInputSelectorProps {
   selectedTokenAmount: string
   priceImpact?: { colorCoding: string; value: string }
   showSelectorButtonChevron?: boolean
+  showSelectorButton?: boolean
   onSelectToken: () => void
   onChangeInput?: (token: Token, amount: string) => void
   onClickBalance?: () => void
 }
 
 export const TradeInputSelector = (props: TradeInputSelectorProps) => {
-  const { balance, config, formattedFiat, selectedToken } = props
+  const {
+    balance,
+    config,
+    formattedFiat,
+    selectedToken,
+    showSelectorButton = true,
+  } = props
 
   const onChangeInput = (amount: string) => {
     if (
@@ -84,6 +91,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
           image={selectedToken.image}
           symbol={selectedToken.symbol}
           showChevron={props.showSelectorButtonChevron}
+          visible={showSelectorButton}
           onClick={props.onSelectToken}
         />
       </Flex>
@@ -94,7 +102,9 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
         mt='10px'
       >
         <PriceUsd fiat={formattedFiat} priceImpact={props.priceImpact} />
-        <Balance balance={balance} onClick={props.onClickBalance} />
+        {showSelectorButton ? (
+          <Balance balance={balance} onClick={props.onClickBalance} />
+        ) : null}
       </Flex>
     </div>
   )

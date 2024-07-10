@@ -124,6 +124,7 @@ export function PrtWidget({ token, onClose }: Props) {
         formattedFiat=''
         selectedToken={selectedToken}
         selectedTokenAmount={inputAmount}
+        showSelectorButton={currentTab !== WidgetTab.CLAIM}
         showSelectorButtonChevron={false}
         onChangeInput={(_, amount) => setInputAmount(amount)}
         onClickBalance={onClickBalance}
