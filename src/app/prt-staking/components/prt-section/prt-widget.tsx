@@ -19,6 +19,7 @@ type Props = {
 
 export function PrtWidget({ token, onClose }: Props) {
   const {
+    canStake,
     claimPrts,
     claimableRewards,
     refetchClaimableRewards,
@@ -38,7 +39,7 @@ export function PrtWidget({ token, onClose }: Props) {
     if (currentTab === WidgetTab.STAKE) setInputAmount('')
     if (currentTab === WidgetTab.UNSTAKE) setInputAmount('')
     if (currentTab === WidgetTab.CLAIM)
-      setInputAmount(claimableRewards?.toString() ?? '')
+      setInputAmount(claimableRewards > 0 ? claimableRewards?.toString() : '')
   }, [claimableRewards, currentTab])
 
   const inputSelectorCaption = useMemo(() => {
@@ -118,7 +119,7 @@ export function PrtWidget({ token, onClose }: Props) {
       />
       <TradeButton
         label={buttonLabel}
-        isDisabled={false}
+        isDisabled={currentTab === WidgetTab.STAKE && !canStake}
         isLoading={false}
         onClick={onClickTradeButton}
       />

@@ -18,6 +18,7 @@ import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
 
 interface Context {
   accountAddress: `0x${string}` | undefined
+  canStake: boolean
   claimPrts: () => void
   claimableRewards: number
   cumulativeRevenue: number | null
@@ -34,6 +35,7 @@ interface Context {
 
 const PrtStakingContext = createContext<Context>({
   accountAddress: undefined,
+  canStake: false,
   claimPrts: () => {},
   claimableRewards: 0,
   cumulativeRevenue: null,
@@ -149,7 +151,6 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient) return
-      // FIXME: Need to add proper UX handling for case where staking is disabled
       if (!canStake) return
       if (isApprovedStaker) {
         await walletClient.writeContract({
@@ -217,6 +218,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     <PrtStakingContext.Provider
       value={{
         accountAddress,
+        canStake: canStake ?? false,
         claimPrts,
         claimableRewards: formatWeiAsNumber(
           claimableRewards,
