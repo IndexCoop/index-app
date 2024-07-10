@@ -118,12 +118,11 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     },
   })
 
-  // const { data: stakeDomain } = useReadContract({
-  //   abi: PrtStakingAbi,
-  //   address: stakedTokenAddress,
-  //   functionName: 'eip712Domain',
-  // })
-  // console.log('stakeDomain', stakeDomain)
+  const { data: stakeDomain } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'eip712Domain',
+  })
 
   const { data: lifetimeRewards } = useReadContract({
     abi: PrtStakingAbi,
@@ -160,6 +159,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     async (amount: bigint) => {
       if (!walletClient) return
       if (!canStake) return
+      if (!stakeDomain) return
       if (isApprovedStaker) {
         await walletClient.writeContract({
           abi: PrtStakingAbi,
@@ -168,35 +168,20 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           args: [amount],
         })
       } else {
-        // FIXME: Domain arg typing/format
         const signature = await walletClient.signTypedData({
           types: {
-            Person: [
-              { name: 'name', type: 'string' },
-              { name: 'wallet', type: 'address' },
-            ],
-            Mail: [
-              { name: 'from', type: 'Person' },
-              { name: 'to', type: 'Person' },
-              { name: 'contents', type: 'string' },
-            ],
+            StakeMessage: {
+              message: 'string',
+            },
           },
-          primaryType: 'Mail',
+          primaryType: 'StakeMessage',
           domain: {
-            version: '1',
-            verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            name: stakeDomain[1],
+            version: stakeDomain[2],
+            chainId: Number(stakeDomain[3]),
+            verifyingContract: stakeDomain[4],
           },
-          message: {
-            from: {
-              name: 'Cow',
-              wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-            },
-            to: {
-              name: 'Bob',
-              wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-            },
-            contents: 'I have read and accept the Terms of Service.',
-          },
+          message: { message: 'I have read and accept the Terms of Service.' },
         })
         await walletClient.writeContract({
           abi: PrtStakingAbi,
@@ -206,7 +191,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         })
       }
     },
-    [canStake, isApprovedStaker, stakeTokenAddress, walletClient],
+    [canStake, isApprovedStaker, stakeDomain, stakeTokenAddress, walletClient],
   )
 
   const unstakePrts = useCallback(
