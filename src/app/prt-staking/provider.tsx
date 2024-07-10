@@ -17,33 +17,35 @@ import { formatWeiAsNumber } from '@/lib/utils'
 import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
 
 interface Context {
+  accountAddress: `0x${string}` | undefined
   claimPrts: () => void
-  claimableRewards: number | null
+  claimableRewards: number
   cumulativeRevenue: number | null
-  lifetimeRewards: number | null
-  poolStakedBalance: number | null
+  lifetimeRewards: number
+  poolStakedBalance: number
   refetchClaimableRewards: () => void
   refetchUserStakedBalance: () => void
   stakePrts: (amount: bigint) => void
   token: ProductRevenueToken | null
   tvl: number | null
   unstakePrts: (amount: bigint) => void
-  userStakedBalance: number | null
+  userStakedBalance: number
 }
 
 const PrtStakingContext = createContext<Context>({
+  accountAddress: undefined,
   claimPrts: () => {},
-  claimableRewards: null,
+  claimableRewards: 0,
   cumulativeRevenue: null,
-  lifetimeRewards: null,
-  poolStakedBalance: null,
+  lifetimeRewards: 0,
+  poolStakedBalance: 0,
   refetchClaimableRewards: () => {},
   refetchUserStakedBalance: () => {},
   stakePrts: () => {},
   token: null,
   tvl: null,
   unstakePrts: () => {},
-  userStakedBalance: null,
+  userStakedBalance: 0,
 })
 
 interface Props {
@@ -52,7 +54,7 @@ interface Props {
 }
 
 export const PrtStakingContextProvider = ({ children, token }: Props) => {
-  const { address } = useAccount()
+  const { address: accountAddress } = useAccount()
   const { data: walletClient } = useWalletClient()
   const [tvl, setTvl] = useState<number | null>(null)
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
@@ -67,9 +69,9 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       abi: PrtStakingAbi,
       address: stakedTokenAddress,
       functionName: 'balanceOf',
-      args: [address!],
+      args: [accountAddress!],
       query: {
-        enabled: isAddress(address ?? ''),
+        enabled: isAddress(accountAddress ?? ''),
       },
     })
 
@@ -84,9 +86,9 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       abi: PrtStakingAbi,
       address: stakedTokenAddress,
       functionName: 'getPendingRewards',
-      args: [address!],
+      args: [accountAddress!],
       query: {
-        enabled: isAddress(address ?? ''),
+        enabled: isAddress(accountAddress ?? ''),
       },
     })
 
@@ -100,9 +102,9 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     abi: PrtStakingAbi,
     address: stakedTokenAddress,
     functionName: 'isApprovedStaker',
-    args: [address!],
+    args: [accountAddress!],
     query: {
-      enabled: isAddress(address ?? ''),
+      enabled: isAddress(accountAddress ?? ''),
     },
   })
 
@@ -117,9 +119,9 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     abi: PrtStakingAbi,
     address: stakedTokenAddress,
     functionName: 'getLifetimeRewards',
-    args: [address!],
+    args: [accountAddress!],
     query: {
-      enabled: isAddress(address ?? ''),
+      enabled: isAddress(accountAddress ?? ''),
     },
   })
 
@@ -214,6 +216,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   return (
     <PrtStakingContext.Provider
       value={{
+        accountAddress,
         claimPrts,
         claimableRewards: formatWeiAsNumber(
           claimableRewards,
