@@ -145,7 +145,7 @@ export function FaqSection() {
           </a>
           . The public audit report can be found{' '}
           <a
-            href='https://indexcoop.com/TODO'
+            href='https://github.com/IndexCoop/audits/blob/main/audits/IndexPRTAuditReport.md'
             target='_blank'
             className='underline'
           >
