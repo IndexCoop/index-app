@@ -18,7 +18,6 @@ export function isSameAddress(address1: string, address2: string): boolean {
 
 // TODO: Settle on one token typing approach?
 export const formatTokenDataToToken = (tokenData: TokenData): Token => {
-  console.log('tokenData', tokenData)
   return {
     address: tokenData.address,
     name: tokenData.name,

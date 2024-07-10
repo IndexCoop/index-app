@@ -120,10 +120,12 @@ export function PrtCard({ onClick }: Props) {
         </div>
       </div>
       <button
-        className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold'
+        className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
+        disabled
         onClick={handleClick}
       >
-        {!accountAddress ? 'Connect Wallet' : 'Manage'}
+        Available Soon
+        {/* {!accountAddress ? 'Connect Wallet' : 'Manage'} */}
       </button>
     </div>
   )
