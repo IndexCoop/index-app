@@ -27,6 +27,7 @@ interface Context {
   refetchClaimableRewards: () => void
   refetchUserStakedBalance: () => void
   stakePrts: (amount: bigint) => void
+  timeUntilNextSnapshotSeconds: number
   token: ProductRevenueToken | null
   tvl: number | null
   unstakePrts: (amount: bigint) => void
@@ -44,6 +45,7 @@ const PrtStakingContext = createContext<Context>({
   refetchClaimableRewards: () => {},
   refetchUserStakedBalance: () => {},
   stakePrts: () => {},
+  timeUntilNextSnapshotSeconds: 0,
   token: null,
   tvl: null,
   unstakePrts: () => {},
@@ -98,6 +100,12 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     abi: PrtStakingAbi,
     address: stakedTokenAddress,
     functionName: 'canStake',
+  })
+
+  const { data: timeUntilNextSnapshotSeconds } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'getTimeUntilNextSnapshot',
   })
 
   const { data: isApprovedStaker } = useReadContract({
@@ -236,6 +244,9 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         refetchClaimableRewards,
         refetchUserStakedBalance,
         stakePrts,
+        timeUntilNextSnapshotSeconds: timeUntilNextSnapshotSeconds
+          ? Number(timeUntilNextSnapshotSeconds)
+          : 0,
         token,
         tvl,
         unstakePrts,
