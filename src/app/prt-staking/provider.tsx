@@ -170,9 +170,12 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       } else {
         const signature = await walletClient.signTypedData({
           types: {
-            StakeMessage: {
-              message: 'string',
-            },
+            StakeMessage: [
+              {
+                name: 'message',
+                type: 'string',
+              },
+            ],
           },
           primaryType: 'StakeMessage',
           domain: {
