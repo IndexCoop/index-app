@@ -1,4 +1,5 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/16/solid'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -12,6 +13,7 @@ type Props = {
 
 export function PrtCard({ onClick }: Props) {
   const {
+    accountAddress,
     claimableRewards,
     cumulativeRevenue,
     lifetimeRewards,
@@ -20,8 +22,24 @@ export function PrtCard({ onClick }: Props) {
     poolStakedBalance,
     userStakedBalance,
   } = usePrtStakingContext()
+  const { openConnectModal } = useConnectModal()
 
   if (!token) return
+
+  const handleClick = () => {
+    if (accountAddress) {
+      onClick(token)
+    } else {
+      openConnectModal?.()
+    }
+  }
+
+  // poolStakedBalance can be 0
+  const userStakedBalancePercentage = !Number.isNaN(
+    userStakedBalance / poolStakedBalance,
+  )
+    ? userStakedBalance / poolStakedBalance
+    : 0
 
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
@@ -29,14 +47,16 @@ export function PrtCard({ onClick }: Props) {
         <div className='flex flex-1 items-center'>
           <div className='my-auto mr-2 overflow-hidden rounded-full'>
             <Image
-              src={token.tokenData.logoURI}
-              alt={`${token.tokenData.symbol} logo`}
+              src={token.rewardTokenData.logoURI}
+              alt={`${token.rewardTokenData.symbol} logo`}
               height={28}
               width={28}
             />
           </div>
-          {token.tokenData.symbol}
-          <Link href={`/swap/eth/${token.tokenData.symbol.toLowerCase()}`}>
+          {token.rewardTokenData.symbol}
+          <Link
+            href={`/swap/eth/${token.rewardTokenData.symbol.toLowerCase()}`}
+          >
             <ArrowTopRightOnSquareIcon className='text-ic-gray-800 ml-1.5 size-4' />
           </Link>
         </div>
@@ -56,14 +76,12 @@ export function PrtCard({ onClick }: Props) {
       <div className='bg-ic-gray-50 border-ic-gray-300 my-3 w-full rounded-xl border px-3 py-5 text-sm'>
         <div className='text-ic-gray-950 mb-2 flex font-bold'>
           <div className='flex-1'>Your Staked PRTs</div>
-          <div>{userStakedBalance ? `${userStakedBalance} PRTs` : ''}</div>
+          <div>{`${formatAmount(userStakedBalance)} PRTs`}</div>
         </div>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Your share of Pool</div>
           <div className='font-bold'>
-            {userStakedBalance && poolStakedBalance
-              ? `${formatAmount(Number(userStakedBalance / poolStakedBalance) * 100, 3)}%`
-              : ''}
+            {`${formatAmount(userStakedBalancePercentage * 100, 3)}%`}
           </div>
         </div>
       </div>
@@ -76,18 +94,12 @@ export function PrtCard({ onClick }: Props) {
         </div>
         <div className='text-ic-gray-950 mb-2 flex font-bold'>
           <div className='flex-1'>Claimable</div>
-          <div>
-            {claimableRewards
-              ? `${claimableRewards} ${token.tokenData.symbol}`
-              : ''}
-          </div>
+          <div>{`${formatAmount(claimableRewards)} ${token.rewardTokenData.symbol}`}</div>
         </div>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Lifetime</div>
           <div className='font-bold'>
-            {lifetimeRewards
-              ? `${lifetimeRewards} ${token.tokenData.symbol}`
-              : ''}
+            {`${formatAmount(lifetimeRewards)} ${token.rewardTokenData.symbol}`}
           </div>
         </div>
       </div>
@@ -108,10 +120,12 @@ export function PrtCard({ onClick }: Props) {
         </div>
       </div>
       <button
-        className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold'
-        onClick={() => onClick(token)}
+        className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
+        disabled
+        onClick={handleClick}
       >
-        Manage
+        Available Soon
+        {/* {!accountAddress ? 'Connect Wallet' : 'Manage'} */}
       </button>
     </div>
   )
