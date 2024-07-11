@@ -112,7 +112,7 @@ export function FaqSection() {
           revenue.
         </p>
       </FaqItem>
-      {/* <FaqItem question='Have PRT contracts been audited?'>
+      <FaqItem question='Have PRT contracts been audited?'>
         <p>
           Yes, the{' '}
           <a
@@ -153,7 +153,7 @@ export function FaqSection() {
           </a>
           .
         </p>
-      </FaqItem> */}
+      </FaqItem>
     </FaqList>
   )
 }
