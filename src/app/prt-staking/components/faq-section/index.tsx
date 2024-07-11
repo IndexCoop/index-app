@@ -124,7 +124,7 @@ export function FaqSection() {
           </a>
           ,{' '}
           <a
-            href='https://etherscan.io/address/TODO'
+            href='https://etherscan.io/address/0xBe03026716a4D5E0992F22A3e6494b4F2809a9C6'
             target='_blank'
             className='underline'
           >
