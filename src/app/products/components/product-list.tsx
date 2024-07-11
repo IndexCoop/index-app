@@ -45,7 +45,10 @@ export function ProductList() {
       price: analyticsResults[idx]?.navPrice,
       delta: analyticsResults[idx]?.change24h,
       tvl: analyticsResults[idx]?.marketCap,
-      apy: apyResults[idx]?.apy ? Number(formatWei(apyResults[idx].apy)) : null,
+      apy:
+        apyResults[idx]?.apy !== undefined && apyResults[idx].apy !== '0'
+          ? Number(formatWei(apyResults[idx].apy))
+          : null,
     }))
     setProducts(sortProducts(products, sortBy, sortDirection))
     setIsLoading(false)

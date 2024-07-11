@@ -96,7 +96,7 @@ export function PrtCard({ onClick }: Props) {
           Your Rewards&nbsp;
           {timeUntilNextSnapshotSeconds > 0 && (
             <span className='text-ic-gray-600 font-medium'>
-              {`(next distribution in ${dayjs().add(timeUntilNextSnapshotSeconds, 'second').fromNow(true)}.)`}
+              {`(next distribution in ${dayjs().add(timeUntilNextSnapshotSeconds, 'second').fromNow(true)})`}
             </span>
           )}
         </div>
