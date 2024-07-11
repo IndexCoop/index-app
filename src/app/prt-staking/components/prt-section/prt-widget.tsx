@@ -63,7 +63,11 @@ export function PrtWidget({ token, onClose }: Props) {
     return ''
   }, [currentTab])
 
+  const isTradeButtonDisabled =
+    inputAmount.length === 0 || (currentTab === WidgetTab.STAKE && !canStake)
+
   const onClickTradeButton = useCallback(async () => {
+    if (isTradeButtonDisabled) return
     if (currentTab === WidgetTab.STAKE) {
       if (!isApproved) {
         const approved = await onApprove()
@@ -84,6 +88,7 @@ export function PrtWidget({ token, onClose }: Props) {
     forceRefetch,
     inputAmount,
     isApproved,
+    isTradeButtonDisabled,
     onApprove,
     refetchClaimableRewards,
     refetchUserStakedBalance,
@@ -112,9 +117,6 @@ export function PrtWidget({ token, onClose }: Props) {
     }
     return '0'
   }, [claimableRewards, currentTab, prtBalance, userStakedBalance])
-
-  const isTradeButtonDisabled =
-    inputAmount.length === 0 || (currentTab === WidgetTab.STAKE && !canStake)
 
   return (
     <div className='w-full min-w-80 flex-1 flex-col space-y-5 rounded-3xl bg-gray-50 p-6 sm:min-w-96'>
