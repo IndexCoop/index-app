@@ -124,6 +124,12 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     functionName: 'eip712Domain',
   })
 
+  const { data: stakeMessage } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'message',
+  })
+
   const { data: lifetimeRewards } = useReadContract({
     abi: PrtStakingAbi,
     address: stakedTokenAddress,
@@ -158,8 +164,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient) return
-      if (!canStake) return
-      if (!stakeDomain) return
+      if (!canStake || !stakeDomain || !stakeMessage) return
       if (isApprovedStaker) {
         await walletClient.writeContract({
           abi: PrtStakingAbi,
@@ -184,7 +189,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
             chainId: Number(stakeDomain[3]),
             verifyingContract: stakeDomain[4],
           },
-          message: { message: 'I have read and accept the Terms of Service.' },
+          message: { message: stakeMessage },
         })
         await walletClient.writeContract({
           abi: PrtStakingAbi,
@@ -194,7 +199,14 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         })
       }
     },
-    [canStake, isApprovedStaker, stakeDomain, stakeTokenAddress, walletClient],
+    [
+      canStake,
+      isApprovedStaker,
+      stakeDomain,
+      stakeMessage,
+      stakeTokenAddress,
+      walletClient,
+    ],
   )
 
   const unstakePrts = useCallback(
