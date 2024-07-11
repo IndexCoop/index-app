@@ -27,6 +27,7 @@ interface Context {
   refetchClaimableRewards: () => void
   refetchUserStakedBalance: () => void
   stakePrts: (amount: bigint) => void
+  timeUntilNextSnapshotSeconds: number
   token: ProductRevenueToken | null
   tvl: number | null
   unstakePrts: (amount: bigint) => void
@@ -44,6 +45,7 @@ const PrtStakingContext = createContext<Context>({
   refetchClaimableRewards: () => {},
   refetchUserStakedBalance: () => {},
   stakePrts: () => {},
+  timeUntilNextSnapshotSeconds: 0,
   token: null,
   tvl: null,
   unstakePrts: () => {},
@@ -100,6 +102,12 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     functionName: 'canStake',
   })
 
+  const { data: timeUntilNextSnapshotSeconds } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'getTimeUntilNextSnapshot',
+  })
+
   const { data: isApprovedStaker } = useReadContract({
     abi: PrtStakingAbi,
     address: stakedTokenAddress,
@@ -110,12 +118,17 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     },
   })
 
-  // const { data: stakeDomain } = useReadContract({
-  //   abi: PrtStakingAbi,
-  //   address: stakedTokenAddress,
-  //   functionName: 'eip712Domain',
-  // })
-  // console.log('stakeDomain', stakeDomain)
+  const { data: stakeDomain } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'eip712Domain',
+  })
+
+  const { data: stakeMessage } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'message',
+  })
 
   const { data: lifetimeRewards } = useReadContract({
     abi: PrtStakingAbi,
@@ -151,7 +164,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient) return
-      if (!canStake) return
+      if (!canStake || !stakeDomain || !stakeMessage) return
       if (isApprovedStaker) {
         await walletClient.writeContract({
           abi: PrtStakingAbi,
@@ -160,35 +173,23 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           args: [amount],
         })
       } else {
-        // FIXME: Domain arg typing/format
         const signature = await walletClient.signTypedData({
           types: {
-            Person: [
-              { name: 'name', type: 'string' },
-              { name: 'wallet', type: 'address' },
-            ],
-            Mail: [
-              { name: 'from', type: 'Person' },
-              { name: 'to', type: 'Person' },
-              { name: 'contents', type: 'string' },
+            StakeMessage: [
+              {
+                name: 'message',
+                type: 'string',
+              },
             ],
           },
-          primaryType: 'Mail',
+          primaryType: 'StakeMessage',
           domain: {
-            version: '1',
-            verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            name: stakeDomain[1],
+            version: stakeDomain[2],
+            chainId: Number(stakeDomain[3]),
+            verifyingContract: stakeDomain[4],
           },
-          message: {
-            from: {
-              name: 'Cow',
-              wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-            },
-            to: {
-              name: 'Bob',
-              wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-            },
-            contents: 'I have read and accept the Terms of Service.',
-          },
+          message: { message: stakeMessage },
         })
         await walletClient.writeContract({
           abi: PrtStakingAbi,
@@ -198,7 +199,14 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         })
       }
     },
-    [canStake, isApprovedStaker, stakeTokenAddress, walletClient],
+    [
+      canStake,
+      isApprovedStaker,
+      stakeDomain,
+      stakeMessage,
+      stakeTokenAddress,
+      walletClient,
+    ],
   )
 
   const unstakePrts = useCallback(
@@ -236,6 +244,9 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         refetchClaimableRewards,
         refetchUserStakedBalance,
         stakePrts,
+        timeUntilNextSnapshotSeconds: timeUntilNextSnapshotSeconds
+          ? Number(timeUntilNextSnapshotSeconds)
+          : 0,
         token,
         tvl,
         unstakePrts,

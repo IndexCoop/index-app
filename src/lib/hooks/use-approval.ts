@@ -45,7 +45,7 @@ export const useApproval = (
   }, [amount, data, isApproving, token])
 
   const approve = useCallback(async () => {
-    if (!publicClient || !walletClient) return
+    if (!publicClient || !walletClient) return false
     setIsApproving(true)
     try {
       const hash = await walletClient.writeContract({
@@ -60,8 +60,10 @@ export const useApproval = (
       })
       await refetch()
       setIsApproving(false)
+      return true
     } catch {
       setIsApproving(false)
+      return false
     }
   }, [
     amount,

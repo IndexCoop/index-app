@@ -1,11 +1,16 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/16/solid'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
+import { isStakingEnabled } from '@/feature-flags'
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
+
+dayjs.extend(relativeTime)
 
 type Props = {
   onClick: (token: ProductRevenueToken) => void
@@ -17,6 +22,7 @@ export function PrtCard({ onClick }: Props) {
     claimableRewards,
     cumulativeRevenue,
     lifetimeRewards,
+    timeUntilNextSnapshotSeconds,
     token,
     tvl,
     poolStakedBalance,
@@ -88,9 +94,11 @@ export function PrtCard({ onClick }: Props) {
       <div className='bg-ic-gray-50 border-ic-gray-300 my-3 w-full rounded-xl border px-3 py-5 text-sm'>
         <div className='text-ic-gray-950 mb-2 flex font-bold'>
           Your Rewards&nbsp;
-          {/* <span className='text-ic-gray-600 font-medium'>
-            (next distribution in X days.)
-          </span> */}
+          {timeUntilNextSnapshotSeconds > 0 && (
+            <span className='text-ic-gray-600 font-medium'>
+              {`(next distribution in ${dayjs().add(timeUntilNextSnapshotSeconds, 'second').fromNow(true)}.)`}
+            </span>
+          )}
         </div>
         <div className='text-ic-gray-950 mb-2 flex font-bold'>
           <div className='flex-1'>Claimable</div>
@@ -121,11 +129,14 @@ export function PrtCard({ onClick }: Props) {
       </div>
       <button
         className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
-        disabled
+        disabled={!isStakingEnabled()}
         onClick={handleClick}
       >
-        Available Soon
-        {/* {!accountAddress ? 'Connect Wallet' : 'Manage'} */}
+        {!isStakingEnabled()
+          ? 'Available Soon'
+          : !accountAddress
+            ? 'Connect Wallet'
+            : 'Manage'}
       </button>
     </div>
   )

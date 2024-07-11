@@ -112,7 +112,7 @@ export function FaqSection() {
           revenue.
         </p>
       </FaqItem>
-      {/* <FaqItem question='Have PRT contracts been audited?'>
+      <FaqItem question='Have the PRT contracts been audited?'>
         <p>
           Yes, the{' '}
           <a
@@ -124,7 +124,7 @@ export function FaqSection() {
           </a>
           ,{' '}
           <a
-            href='https://etherscan.io/address/TODO'
+            href='https://etherscan.io/address/0xBe03026716a4D5E0992F22A3e6494b4F2809a9C6'
             target='_blank'
             className='underline'
           >
@@ -145,7 +145,7 @@ export function FaqSection() {
           </a>
           . The public audit report can be found{' '}
           <a
-            href='https://indexcoop.com/TODO'
+            href='https://github.com/IndexCoop/audits/blob/main/audits/IndexPRTAuditReport.md'
             target='_blank'
             className='underline'
           >
@@ -153,7 +153,7 @@ export function FaqSection() {
           </a>
           .
         </p>
-      </FaqItem> */}
+      </FaqItem>
     </FaqList>
   )
 }

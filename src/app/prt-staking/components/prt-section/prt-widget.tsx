@@ -63,10 +63,15 @@ export function PrtWidget({ token, onClose }: Props) {
     return ''
   }, [currentTab])
 
+  const isTradeButtonDisabled =
+    inputAmount.length === 0 || (currentTab === WidgetTab.STAKE && !canStake)
+
   const onClickTradeButton = useCallback(async () => {
+    if (isTradeButtonDisabled) return
     if (currentTab === WidgetTab.STAKE) {
       if (!isApproved) {
-        await onApprove()
+        const approved = await onApprove()
+        if (!approved) return
       }
       await stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
       await forceRefetch()
@@ -83,6 +88,7 @@ export function PrtWidget({ token, onClose }: Props) {
     forceRefetch,
     inputAmount,
     isApproved,
+    isTradeButtonDisabled,
     onApprove,
     refetchClaimableRewards,
     refetchUserStakedBalance,
@@ -132,7 +138,7 @@ export function PrtWidget({ token, onClose }: Props) {
       />
       <TradeButton
         label={buttonLabel}
-        isDisabled={currentTab === WidgetTab.STAKE && !canStake}
+        isDisabled={isTradeButtonDisabled}
         isLoading={false}
         onClick={onClickTradeButton}
       />
