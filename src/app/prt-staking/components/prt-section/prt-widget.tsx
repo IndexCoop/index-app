@@ -65,7 +65,6 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const onClickTradeButton = useCallback(async () => {
     if (currentTab === WidgetTab.STAKE) {
-      // TODO: Should this happen before signing?
       if (!isApproved) {
         await onApprove()
       }
