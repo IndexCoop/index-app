@@ -66,7 +66,8 @@ export function PrtWidget({ token, onClose }: Props) {
   const onClickTradeButton = useCallback(async () => {
     if (currentTab === WidgetTab.STAKE) {
       if (!isApproved) {
-        await onApprove()
+        const approved = await onApprove()
+        if (!approved) return
       }
       await stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
       await forceRefetch()
