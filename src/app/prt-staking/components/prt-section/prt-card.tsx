@@ -7,6 +7,7 @@ import Link from 'next/link'
 
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
+import { isStakingEnabled } from '@/feature-flags'
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
 dayjs.extend(relativeTime)
@@ -128,9 +129,14 @@ export function PrtCard({ onClick }: Props) {
       </div>
       <button
         className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
+        disabled={!isStakingEnabled()}
         onClick={handleClick}
       >
-        {!accountAddress ? 'Connect Wallet' : 'Manage'}
+        {!isStakingEnabled()
+          ? 'Available Soon'
+          : !accountAddress
+            ? 'Connect Wallet'
+            : 'Manage'}
       </button>
     </div>
   )
