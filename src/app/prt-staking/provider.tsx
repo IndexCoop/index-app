@@ -64,7 +64,6 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
   )
-  const stakeTokenAddress = token.stakeTokenData.address as Address
   const stakedTokenAddress = token.stakedTokenData.address as Address
   const stakedTokenDecimals = token.stakedTokenData.decimals
 
@@ -108,15 +107,16 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     functionName: 'getTimeUntilNextSnapshot',
   })
 
-  const { data: isApprovedStaker } = useReadContract({
-    abi: PrtStakingAbi,
-    address: stakedTokenAddress,
-    functionName: 'isApprovedStaker',
-    args: [accountAddress!],
-    query: {
-      enabled: isAddress(accountAddress ?? ''),
-    },
-  })
+  const { data: isApprovedStaker, refetch: refetchIsApprovedStaker } =
+    useReadContract({
+      abi: PrtStakingAbi,
+      address: stakedTokenAddress,
+      functionName: 'isApprovedStaker',
+      args: [accountAddress!],
+      query: {
+        enabled: isAddress(accountAddress ?? ''),
+      },
+    })
 
   const { data: stakeDomain } = useReadContract({
     abi: PrtStakingAbi,
@@ -168,7 +168,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       if (isApprovedStaker) {
         await walletClient.writeContract({
           abi: PrtStakingAbi,
-          address: stakeTokenAddress,
+          address: stakedTokenAddress,
           functionName: 'stake',
           args: [amount],
         })
@@ -193,18 +193,20 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         })
         await walletClient.writeContract({
           abi: PrtStakingAbi,
-          address: stakeTokenAddress,
+          address: stakedTokenAddress,
           functionName: 'stake',
           args: [amount, signature],
         })
+        await refetchIsApprovedStaker()
       }
     },
     [
       canStake,
       isApprovedStaker,
+      refetchIsApprovedStaker,
       stakeDomain,
       stakeMessage,
-      stakeTokenAddress,
+      stakedTokenAddress,
       walletClient,
     ],
   )
@@ -214,12 +216,12 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       if (!walletClient) return
       await walletClient.writeContract({
         abi: PrtStakingAbi,
-        address: stakeTokenAddress,
+        address: stakedTokenAddress,
         functionName: 'unstake',
         args: [amount],
       })
     },
-    [stakeTokenAddress, walletClient],
+    [stakedTokenAddress, walletClient],
   )
 
   return (
