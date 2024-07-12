@@ -36,6 +36,7 @@ export function PrtWidget({ token, onClose }: Props) {
   const { balance: prtBalance, forceRefetch } = useBalance(
     token.stakeTokenData.address,
   )
+  console.log('prtBalance', prtBalance)
   const { isApproved, approve: onApprove } = useApproval(
     selectedToken,
     accountAddress ?? null,
@@ -75,6 +76,9 @@ export function PrtWidget({ token, onClose }: Props) {
     }
     return '0'
   }, [claimableRewards, currentTab, prtBalance, userStakedBalance])
+
+  console.log('balance', balance)
+  console.log('currentTab', currentTab)
 
   const inputAmountNumber = Number(inputAmount)
   const balanceNumber = Number(balance)

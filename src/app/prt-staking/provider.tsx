@@ -107,15 +107,16 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     functionName: 'getTimeUntilNextSnapshot',
   })
 
-  const { data: isApprovedStaker } = useReadContract({
-    abi: PrtStakingAbi,
-    address: stakedTokenAddress,
-    functionName: 'isApprovedStaker',
-    args: [accountAddress!],
-    query: {
-      enabled: isAddress(accountAddress ?? ''),
-    },
-  })
+  const { data: isApprovedStaker, refetch: refetchIsApprovedStaker } =
+    useReadContract({
+      abi: PrtStakingAbi,
+      address: stakedTokenAddress,
+      functionName: 'isApprovedStaker',
+      args: [accountAddress!],
+      query: {
+        enabled: isAddress(accountAddress ?? ''),
+      },
+    })
 
   const { data: stakeDomain } = useReadContract({
     abi: PrtStakingAbi,
@@ -196,11 +197,13 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           functionName: 'stake',
           args: [amount, signature],
         })
+        await refetchIsApprovedStaker()
       }
     },
     [
       canStake,
       isApprovedStaker,
+      refetchIsApprovedStaker,
       stakeDomain,
       stakeMessage,
       stakedTokenAddress,
