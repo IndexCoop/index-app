@@ -37,8 +37,6 @@ export function PrtWidget({ token, onClose }: Props) {
     formatTokenDataToToken(token.stakeTokenData),
     accountAddress,
   )
-  console.log('prtBalance', prtBalance)
-  console.log('token.stakeTokenData.address', token.stakeTokenData.address)
   const { isApproved, approve: onApprove } = useApproval(
     selectedToken,
     token.stakedTokenData.address,
@@ -79,17 +77,8 @@ export function PrtWidget({ token, onClose }: Props) {
     return '0'
   }, [claimableRewards, currentTab, prtBalance, userStakedBalance])
 
-  console.log('balance', balance)
-  console.log('currentTab', currentTab)
-
   const inputAmountNumber = Number(inputAmount)
   const balanceNumber = Number(balance)
-  console.log('inputAmountNumber', inputAmountNumber)
-  console.log('balanceNumber', balanceNumber)
-  console.log(
-    'inputAmountNumber > balanceNumber',
-    inputAmountNumber > balanceNumber,
-  )
 
   const isTradeButtonDisabled =
     inputAmountNumber === 0 ||

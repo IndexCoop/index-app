@@ -29,7 +29,6 @@ export function useBalance(address?: string, token?: string) {
   const [balance, setBalance] = useState<bigint>(BigInt(0))
 
   const fetchBalance = useCallback(async () => {
-    console.log({ address, token, publicClient: !!publicClient })
     if (!address || !token || !publicClient) {
       setBalance(BigInt(0))
       return
@@ -39,9 +38,6 @@ export function useBalance(address?: string, token?: string) {
     const balance = isETH
       ? await balanceProvider.getNativeBalance(address)
       : await balanceProvider.getErc20Balance(address, token)
-
-    console.log('in hook balance', balance)
-    console.log('in hook address')
     setBalance(balance)
   }, [address, token, publicClient])
 
