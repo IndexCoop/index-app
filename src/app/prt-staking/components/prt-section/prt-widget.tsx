@@ -101,6 +101,7 @@ export function PrtWidget({ token, onClose }: Props) {
       await claimPrts()
       await refetchClaimableRewards()
     }
+    setInputAmount('')
   }, [
     claimPrts,
     currentTab,
