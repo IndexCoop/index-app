@@ -94,8 +94,10 @@ export function PrtWidget({ token, onClose }: Props) {
       }
       await stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
       await forceRefetch()
+      await refetchUserStakedBalance()
     } else if (currentTab === WidgetTab.UNSTAKE) {
       await unstakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
+      await forceRefetch()
       await refetchUserStakedBalance()
     } else if (currentTab === WidgetTab.CLAIM) {
       await claimPrts()
