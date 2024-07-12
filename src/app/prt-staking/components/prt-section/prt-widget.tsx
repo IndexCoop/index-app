@@ -8,9 +8,9 @@ import { WidgetTabs } from '@/app/prt-staking/components/prt-section/widget-tabs
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken, WidgetTab } from '@/app/prt-staking/types'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
+import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
-import { useBalance } from '@/lib/hooks/use-balance'
 import { formatTokenDataToToken } from '@/lib/utils'
 
 type Props = {
@@ -33,12 +33,13 @@ export function PrtWidget({ token, onClose }: Props) {
   const [currentTab, setCurrentTab] = useState(WidgetTab.STAKE)
   const selectedToken = formatTokenDataToToken(token.stakeTokenData)
   const [inputAmount, setInputAmount] = useState('')
-  const { balance: prtBalance, forceRefetch } = useBalance(
-    token.stakeTokenData.address,
+  const { balanceFormatted: prtBalance, forceRefetch } = useFormattedBalance(
+    formatTokenDataToToken(token.stakeTokenData),
+    accountAddress,
   )
   const { isApproved, approve: onApprove } = useApproval(
     selectedToken,
-    accountAddress ?? null,
+    token.stakedTokenData.address,
     parseUnits(inputAmount, token.stakedTokenData.decimals),
   )
 
@@ -93,13 +94,16 @@ export function PrtWidget({ token, onClose }: Props) {
       }
       await stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
       await forceRefetch()
+      await refetchUserStakedBalance()
     } else if (currentTab === WidgetTab.UNSTAKE) {
       await unstakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
+      await forceRefetch()
       await refetchUserStakedBalance()
     } else if (currentTab === WidgetTab.CLAIM) {
       await claimPrts()
       await refetchClaimableRewards()
     }
+    setInputAmount('')
   }, [
     claimPrts,
     currentTab,
