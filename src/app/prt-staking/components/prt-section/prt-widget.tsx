@@ -34,9 +34,11 @@ export function PrtWidget({ token, onClose }: Props) {
   const selectedToken = formatTokenDataToToken(token.stakeTokenData)
   const [inputAmount, setInputAmount] = useState('')
   const { balance: prtBalance, forceRefetch } = useBalance(
+    accountAddress,
     token.stakeTokenData.address,
   )
   console.log('prtBalance', prtBalance)
+  console.log('token.stakeTokenData.address', token.stakeTokenData.address)
   const { isApproved, approve: onApprove } = useApproval(
     selectedToken,
     accountAddress ?? null,
