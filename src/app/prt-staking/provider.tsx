@@ -64,7 +64,6 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
   )
-  const stakeTokenAddress = token.stakeTokenData.address as Address
   const stakedTokenAddress = token.stakedTokenData.address as Address
   const stakedTokenDecimals = token.stakedTokenData.decimals
 
@@ -168,7 +167,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       if (isApprovedStaker) {
         await walletClient.writeContract({
           abi: PrtStakingAbi,
-          address: stakeTokenAddress,
+          address: stakedTokenAddress,
           functionName: 'stake',
           args: [amount],
         })
@@ -193,7 +192,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         })
         await walletClient.writeContract({
           abi: PrtStakingAbi,
-          address: stakeTokenAddress,
+          address: stakedTokenAddress,
           functionName: 'stake',
           args: [amount, signature],
         })
@@ -204,7 +203,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       isApprovedStaker,
       stakeDomain,
       stakeMessage,
-      stakeTokenAddress,
+      stakedTokenAddress,
       walletClient,
     ],
   )
@@ -214,12 +213,12 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       if (!walletClient) return
       await walletClient.writeContract({
         abi: PrtStakingAbi,
-        address: stakeTokenAddress,
+        address: stakedTokenAddress,
         functionName: 'unstake',
         args: [amount],
       })
     },
-    [stakeTokenAddress, walletClient],
+    [stakedTokenAddress, walletClient],
   )
 
   return (
