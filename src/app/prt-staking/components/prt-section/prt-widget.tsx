@@ -41,7 +41,7 @@ export function PrtWidget({ token, onClose }: Props) {
   console.log('token.stakeTokenData.address', token.stakeTokenData.address)
   const { isApproved, approve: onApprove } = useApproval(
     selectedToken,
-    accountAddress ?? null,
+    token.stakedTokenData.address,
     parseUnits(inputAmount, token.stakedTokenData.decimals),
   )
 
