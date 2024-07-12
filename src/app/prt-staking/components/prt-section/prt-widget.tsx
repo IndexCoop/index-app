@@ -86,8 +86,6 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const onClickTradeButton = useCallback(async () => {
     if (isTradeButtonDisabled) return
-
-    if (inputAmountNumber === 0 || inputAmountNumber > balanceNumber) return
     if (currentTab === WidgetTab.STAKE) {
       if (!isApproved) {
         const approved = await onApprove()
