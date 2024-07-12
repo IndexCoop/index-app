@@ -101,7 +101,6 @@ export function PrtWidget({ token, onClose }: Props) {
       await refetchClaimableRewards()
     }
   }, [
-    balance,
     claimPrts,
     currentTab,
     forceRefetch,
