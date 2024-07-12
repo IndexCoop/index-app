@@ -63,11 +63,31 @@ export function PrtWidget({ token, onClose }: Props) {
     return ''
   }, [currentTab])
 
+  const balance = useMemo(() => {
+    if (currentTab === WidgetTab.STAKE) {
+      return prtBalance.toString()
+    }
+    if (currentTab === WidgetTab.UNSTAKE) {
+      return userStakedBalance.toString()
+    }
+    if (currentTab === WidgetTab.CLAIM) {
+      return claimableRewards.toString()
+    }
+    return '0'
+  }, [claimableRewards, currentTab, prtBalance, userStakedBalance])
+
+  const inputAmountNumber = Number(inputAmount)
+  const balanceNumber = Number(balance)
+
   const isTradeButtonDisabled =
-    inputAmount.length === 0 || (currentTab === WidgetTab.STAKE && !canStake)
+    inputAmountNumber === 0 ||
+    (currentTab === WidgetTab.STAKE && !canStake) ||
+    inputAmountNumber > balanceNumber
 
   const onClickTradeButton = useCallback(async () => {
     if (isTradeButtonDisabled) return
+
+    if (inputAmountNumber === 0 || inputAmountNumber > balanceNumber) return
     if (currentTab === WidgetTab.STAKE) {
       if (!isApproved) {
         const approved = await onApprove()
@@ -83,6 +103,7 @@ export function PrtWidget({ token, onClose }: Props) {
       await refetchClaimableRewards()
     }
   }, [
+    balance,
     claimPrts,
     currentTab,
     forceRefetch,
@@ -104,19 +125,6 @@ export function PrtWidget({ token, onClose }: Props) {
       setInputAmount(userStakedBalance.toString())
     }
   }, [currentTab, prtBalance, userStakedBalance])
-
-  const balance = useMemo(() => {
-    if (currentTab === WidgetTab.STAKE) {
-      return prtBalance.toString()
-    }
-    if (currentTab === WidgetTab.UNSTAKE) {
-      return userStakedBalance.toString()
-    }
-    if (currentTab === WidgetTab.CLAIM) {
-      return claimableRewards.toString()
-    }
-    return '0'
-  }, [claimableRewards, currentTab, prtBalance, userStakedBalance])
 
   return (
     <div className='w-full min-w-80 flex-1 flex-col space-y-5 rounded-3xl bg-gray-50 p-6 sm:min-w-96'>
