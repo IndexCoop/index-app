@@ -14,7 +14,7 @@ export const prts: ProductRevenueToken[] = [
     },
     stakedTokenData: {
       ...getIndexTokenData('sPrtHyETH')!,
-      address: '0x3329efE11A11F63AD2caE877dF640E377024Cd42',
+      address: '0x52cEeDd6d765e69C6ec20321Aa49956872913886',
     },
     description:
       'Designed to track the performance of the largest high-yield opportunities for ETH on Ethereum mainnet.',

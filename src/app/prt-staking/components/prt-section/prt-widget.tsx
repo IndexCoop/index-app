@@ -8,9 +8,9 @@ import { WidgetTabs } from '@/app/prt-staking/components/prt-section/widget-tabs
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken, WidgetTab } from '@/app/prt-staking/types'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
+import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
-import { useBalance } from '@/lib/hooks/use-balance'
 import { formatTokenDataToToken } from '@/lib/utils'
 
 type Props = {
@@ -33,9 +33,9 @@ export function PrtWidget({ token, onClose }: Props) {
   const [currentTab, setCurrentTab] = useState(WidgetTab.STAKE)
   const selectedToken = formatTokenDataToToken(token.stakeTokenData)
   const [inputAmount, setInputAmount] = useState('')
-  const { balance: prtBalance, forceRefetch } = useBalance(
+  const { balanceFormatted: prtBalance, forceRefetch } = useFormattedBalance(
+    formatTokenDataToToken(token.stakeTokenData),
     accountAddress,
-    token.stakeTokenData.address,
   )
   console.log('prtBalance', prtBalance)
   console.log('token.stakeTokenData.address', token.stakeTokenData.address)
@@ -84,6 +84,12 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const inputAmountNumber = Number(inputAmount)
   const balanceNumber = Number(balance)
+  console.log('inputAmountNumber', inputAmountNumber)
+  console.log('balanceNumber', balanceNumber)
+  console.log(
+    'inputAmountNumber > balanceNumber',
+    inputAmountNumber > balanceNumber,
+  )
 
   const isTradeButtonDisabled =
     inputAmountNumber === 0 ||
