@@ -20,10 +20,11 @@ interface Context {
   accountAddress: `0x${string}` | undefined
   canStake: boolean
   claimPrts: () => void
-  claimableRewards: number
+  claimableRewardsFormatted: number
   cumulativeRevenue: number | null
-  lifetimeRewards: number
-  poolStakedBalance: number
+  lifetimeRewardsFormatted: number
+  poolStakedBalance: bigint | undefined
+  poolStakedBalanceFormatted: number
   refetchClaimableRewards: () => void
   refetchUserStakedBalance: () => void
   stakePrts: (amount: bigint) => void
@@ -31,17 +32,19 @@ interface Context {
   token: ProductRevenueToken | null
   tvl: number | null
   unstakePrts: (amount: bigint) => void
-  userStakedBalance: number
+  userStakedBalance: bigint | undefined
+  userStakedBalanceFormatted: number
 }
 
 const PrtStakingContext = createContext<Context>({
   accountAddress: undefined,
   canStake: false,
   claimPrts: () => {},
-  claimableRewards: 0,
+  claimableRewardsFormatted: 0,
   cumulativeRevenue: null,
-  lifetimeRewards: 0,
-  poolStakedBalance: 0,
+  lifetimeRewardsFormatted: 0,
+  poolStakedBalance: undefined,
+  poolStakedBalanceFormatted: 0,
   refetchClaimableRewards: () => {},
   refetchUserStakedBalance: () => {},
   stakePrts: () => {},
@@ -49,7 +52,8 @@ const PrtStakingContext = createContext<Context>({
   token: null,
   tvl: null,
   unstakePrts: () => {},
-  userStakedBalance: 0,
+  userStakedBalance: undefined,
+  userStakedBalanceFormatted: 0,
 })
 
 interface Props {
@@ -230,16 +234,17 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         accountAddress,
         canStake: canStake ?? false,
         claimPrts,
-        claimableRewards: formatWeiAsNumber(
+        claimableRewardsFormatted: formatWeiAsNumber(
           claimableRewards,
           stakedTokenDecimals,
         ),
         cumulativeRevenue,
-        lifetimeRewards: formatWeiAsNumber(
+        lifetimeRewardsFormatted: formatWeiAsNumber(
           lifetimeRewards,
           stakedTokenDecimals,
         ),
-        poolStakedBalance: formatWeiAsNumber(
+        poolStakedBalance,
+        poolStakedBalanceFormatted: formatWeiAsNumber(
           poolStakedBalance,
           stakedTokenDecimals,
         ),
@@ -252,7 +257,8 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         token,
         tvl,
         unstakePrts,
-        userStakedBalance: formatWeiAsNumber(
+        userStakedBalance,
+        userStakedBalanceFormatted: formatWeiAsNumber(
           userStakedBalance,
           stakedTokenDecimals,
         ),

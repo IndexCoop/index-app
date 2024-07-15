@@ -11,7 +11,7 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
-import { formatTokenDataToToken } from '@/lib/utils'
+import { formatTokenDataToToken, formatWeiAsNumber } from '@/lib/utils'
 
 type Props = {
   token: ProductRevenueToken
@@ -23,32 +23,65 @@ export function PrtWidget({ token, onClose }: Props) {
     accountAddress,
     canStake,
     claimPrts,
-    claimableRewards,
+    claimableRewardsFormatted,
     refetchClaimableRewards,
     refetchUserStakedBalance,
     stakePrts,
     unstakePrts,
     userStakedBalance,
+    userStakedBalanceFormatted,
   } = usePrtStakingContext()
   const [currentTab, setCurrentTab] = useState(WidgetTab.STAKE)
-  const selectedToken = formatTokenDataToToken(token.stakeTokenData)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputAmount, setInputAmount] = useState('')
-  const { balanceFormatted: prtBalance, forceRefetch } = useFormattedBalance(
-    formatTokenDataToToken(token.stakeTokenData),
+  const [tradeAmount, setTradeAmount] = useState<bigint>(BigInt(0))
+  const selectedToken = useMemo(
+    () => formatTokenDataToToken(token.stakeTokenData),
+    [token.stakeTokenData],
+  )
+  const { balance: prtBalance, forceRefetch } = useFormattedBalance(
+    selectedToken,
     accountAddress,
   )
-  const { isApproved, approve: onApprove } = useApproval(
+  const {
+    isApproved,
+    isApproving,
+    approve: onApprove,
+  } = useApproval(
     selectedToken,
     token.stakedTokenData.address,
     parseUnits(inputAmount, token.stakedTokenData.decimals),
   )
 
   useEffect(() => {
-    if (currentTab === WidgetTab.STAKE) setInputAmount('')
-    if (currentTab === WidgetTab.UNSTAKE) setInputAmount('')
-    if (currentTab === WidgetTab.CLAIM)
-      setInputAmount(claimableRewards > 0 ? claimableRewards.toString() : '')
-  }, [claimableRewards, currentTab])
+    if (currentTab === WidgetTab.STAKE) {
+      if (prtBalance > BigInt(0)) {
+        setInputAmount(
+          formatWeiAsNumber(prtBalance, selectedToken.decimals).toString(),
+        )
+      } else {
+        setInputAmount('')
+      }
+      setTradeAmount(prtBalance)
+    }
+    if (currentTab === WidgetTab.UNSTAKE) {
+      setInputAmount('')
+      setTradeAmount(BigInt(0))
+    }
+    if (currentTab === WidgetTab.CLAIM) {
+      setInputAmount(
+        claimableRewardsFormatted > 0
+          ? claimableRewardsFormatted.toString()
+          : '',
+      )
+      setTradeAmount(BigInt(0))
+    }
+  }, [
+    claimableRewardsFormatted,
+    currentTab,
+    prtBalance,
+    selectedToken.decimals,
+  ])
 
   const inputSelectorCaption = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) return 'You stake'
@@ -66,16 +99,22 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const balance = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) {
-      return prtBalance.toString()
+      return formatWeiAsNumber(prtBalance, selectedToken.decimals)
     }
     if (currentTab === WidgetTab.UNSTAKE) {
-      return userStakedBalance.toString()
+      return userStakedBalanceFormatted
     }
     if (currentTab === WidgetTab.CLAIM) {
-      return claimableRewards.toString()
+      return claimableRewardsFormatted
     }
-    return '0'
-  }, [claimableRewards, currentTab, prtBalance, userStakedBalance])
+    return 0
+  }, [
+    claimableRewardsFormatted,
+    currentTab,
+    prtBalance,
+    selectedToken.decimals,
+    userStakedBalanceFormatted,
+  ])
 
   const inputAmountNumber = Number(inputAmount)
   const balanceNumber = Number(balance)
@@ -85,47 +124,54 @@ export function PrtWidget({ token, onClose }: Props) {
     (currentTab === WidgetTab.STAKE && !canStake) ||
     inputAmountNumber > balanceNumber
 
-  const onClickTradeButton = useCallback(async () => {
+  const onClickTradeButton = async () => {
     if (isTradeButtonDisabled) return
-    if (currentTab === WidgetTab.STAKE) {
-      if (!isApproved) {
-        const approved = await onApprove()
-        if (!approved) return
+    setIsSubmitting(true)
+    try {
+      if (currentTab === WidgetTab.STAKE) {
+        if (!isApproved) {
+          const approved = await onApprove()
+          if (!approved) {
+            throw new Error('Transaction not approved')
+          }
+        }
+        await stakePrts(tradeAmount)
+        await forceRefetch()
+        await refetchUserStakedBalance()
+      } else if (currentTab === WidgetTab.UNSTAKE) {
+        await unstakePrts(tradeAmount)
+        await forceRefetch()
+        await refetchUserStakedBalance()
+      } else if (currentTab === WidgetTab.CLAIM) {
+        await claimPrts()
+        await refetchClaimableRewards()
       }
-      await stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
-      await forceRefetch()
-      await refetchUserStakedBalance()
-    } else if (currentTab === WidgetTab.UNSTAKE) {
-      await unstakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
-      await forceRefetch()
-      await refetchUserStakedBalance()
-    } else if (currentTab === WidgetTab.CLAIM) {
-      await claimPrts()
-      await refetchClaimableRewards()
+      setInputAmount('')
+      setTradeAmount(BigInt(0))
+      setIsSubmitting(false)
+    } catch (e) {
+      console.error('Caught error in onClickTradeButton', e)
+      setIsSubmitting(false)
     }
-    setInputAmount('')
-  }, [
-    claimPrts,
-    currentTab,
-    forceRefetch,
-    inputAmount,
-    isApproved,
-    isTradeButtonDisabled,
-    onApprove,
-    refetchClaimableRewards,
-    refetchUserStakedBalance,
-    stakePrts,
-    token.stakeTokenData.decimals,
-    unstakePrts,
-  ])
+  }
 
   const onClickBalance = useCallback(() => {
     if (currentTab === WidgetTab.STAKE) {
-      setInputAmount(prtBalance.toString())
+      setInputAmount(
+        formatWeiAsNumber(prtBalance, selectedToken.decimals).toString(),
+      )
+      setTradeAmount(prtBalance)
     } else if (currentTab === WidgetTab.UNSTAKE) {
-      setInputAmount(userStakedBalance.toString())
+      setInputAmount(userStakedBalanceFormatted.toString())
+      setTradeAmount(userStakedBalance ?? BigInt(0))
     }
-  }, [currentTab, prtBalance, userStakedBalance])
+  }, [
+    currentTab,
+    prtBalance,
+    selectedToken.decimals,
+    userStakedBalance,
+    userStakedBalanceFormatted,
+  ])
 
   return (
     <div className='w-full min-w-80 flex-1 flex-col space-y-5 rounded-3xl bg-gray-50 p-6 sm:min-w-96'>
@@ -134,7 +180,7 @@ export function PrtWidget({ token, onClose }: Props) {
       {currentTab === WidgetTab.CLAIM ? <ClaimablePanel /> : <StakedPanel />}
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={balance}
+        balance={balance.toString()}
         caption={inputSelectorCaption}
         formattedFiat=''
         selectedToken={selectedToken}
@@ -148,7 +194,7 @@ export function PrtWidget({ token, onClose }: Props) {
       <TradeButton
         label={buttonLabel}
         isDisabled={isTradeButtonDisabled}
-        isLoading={false}
+        isLoading={isSubmitting || isApproving}
         onClick={onClickTradeButton}
       />
     </div>
