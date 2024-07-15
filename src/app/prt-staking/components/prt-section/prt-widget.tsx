@@ -27,16 +27,18 @@ export function PrtWidget({ token, onClose }: Props) {
     accountAddress,
     canStake,
     claimPrts,
-    claimableRewards,
+    claimableRewardsFormatted,
     refetchClaimableRewards,
     refetchUserStakedBalance,
     stakePrts,
     unstakePrts,
     userStakedBalance,
+    userStakedBalanceFormatted,
   } = usePrtStakingContext()
   const [currentTab, setCurrentTab] = useState(WidgetTab.STAKE)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [inputAmount, setInputAmount] = useState('')
+  const [tradeAmount, setTradeAmount] = useState<bigint>(BigInt(0))
   const selectedToken = useMemo(
     () => formatTokenDataToToken(token.stakeTokenData),
     [token.stakeTokenData],
@@ -60,8 +62,12 @@ export function PrtWidget({ token, onClose }: Props) {
     if (currentTab === WidgetTab.STAKE) setInputAmount('')
     if (currentTab === WidgetTab.UNSTAKE) setInputAmount('')
     if (currentTab === WidgetTab.CLAIM)
-      setInputAmount(claimableRewards > 0 ? claimableRewards.toString() : '')
-  }, [claimableRewards, currentTab])
+      setInputAmount(
+        claimableRewardsFormatted > 0
+          ? claimableRewardsFormatted.toString()
+          : '',
+      )
+  }, [claimableRewardsFormatted, currentTab])
 
   const inputSelectorCaption = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) return 'You stake'
@@ -82,18 +88,18 @@ export function PrtWidget({ token, onClose }: Props) {
       return formatWeiAsNumber(prtBalance, selectedToken.decimals)
     }
     if (currentTab === WidgetTab.UNSTAKE) {
-      return userStakedBalance
+      return userStakedBalanceFormatted
     }
     if (currentTab === WidgetTab.CLAIM) {
-      return claimableRewards
+      return claimableRewardsFormatted
     }
     return 0
   }, [
-    claimableRewards,
+    claimableRewardsFormatted,
     currentTab,
     prtBalance,
     selectedToken.decimals,
-    userStakedBalance,
+    userStakedBalanceFormatted,
   ])
 
   const inputAmountNumber = Number(inputAmount)
@@ -115,13 +121,11 @@ export function PrtWidget({ token, onClose }: Props) {
             throw new Error('Transaction not approved')
           }
         }
-        await stakePrts(parseUnits(inputAmount, token.stakeTokenData.decimals))
+        await stakePrts(tradeAmount)
         await forceRefetch()
         await refetchUserStakedBalance()
       } else if (currentTab === WidgetTab.UNSTAKE) {
-        await unstakePrts(
-          parseUnits(inputAmount, token.stakeTokenData.decimals),
-        )
+        await unstakePrts(tradeAmount)
         await forceRefetch()
         await refetchUserStakedBalance()
       } else if (currentTab === WidgetTab.CLAIM) {
@@ -139,10 +143,18 @@ export function PrtWidget({ token, onClose }: Props) {
   const onClickBalance = useCallback(() => {
     if (currentTab === WidgetTab.STAKE) {
       setInputAmount(prtBalanceFormatted)
+      setTradeAmount(prtBalance)
     } else if (currentTab === WidgetTab.UNSTAKE) {
-      setInputAmount(userStakedBalance.toString())
+      setInputAmount(userStakedBalanceFormatted.toString())
+      setTradeAmount(userStakedBalance ?? BigInt(0))
     }
-  }, [currentTab, prtBalanceFormatted, userStakedBalance])
+  }, [
+    currentTab,
+    prtBalance,
+    prtBalanceFormatted,
+    userStakedBalance,
+    userStakedBalanceFormatted,
+  ])
 
   return (
     <div className='w-full min-w-80 flex-1 flex-col space-y-5 rounded-3xl bg-gray-50 p-6 sm:min-w-96'>

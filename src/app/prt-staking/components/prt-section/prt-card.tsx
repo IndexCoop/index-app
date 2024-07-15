@@ -19,14 +19,14 @@ type Props = {
 export function PrtCard({ onClick }: Props) {
   const {
     accountAddress,
-    claimableRewards,
+    claimableRewardsFormatted,
     cumulativeRevenue,
-    lifetimeRewards,
+    lifetimeRewardsFormatted,
     timeUntilNextSnapshotSeconds,
     token,
     tvl,
-    poolStakedBalance,
-    userStakedBalance,
+    poolStakedBalanceFormatted,
+    userStakedBalanceFormatted,
   } = usePrtStakingContext()
   const { openConnectModal } = useConnectModal()
 
@@ -42,9 +42,9 @@ export function PrtCard({ onClick }: Props) {
 
   // poolStakedBalance can be 0
   const userStakedBalancePercentage = !Number.isNaN(
-    userStakedBalance / poolStakedBalance,
+    userStakedBalanceFormatted / poolStakedBalanceFormatted,
   )
-    ? userStakedBalance / poolStakedBalance
+    ? userStakedBalanceFormatted / poolStakedBalanceFormatted
     : 0
 
   return (
@@ -82,7 +82,7 @@ export function PrtCard({ onClick }: Props) {
       <div className='bg-ic-gray-50 border-ic-gray-300 my-3 w-full rounded-xl border px-3 py-5 text-sm'>
         <div className='text-ic-gray-950 mb-2 flex font-bold'>
           <div className='flex-1'>Your Staked PRTs</div>
-          <div>{`${formatAmount(userStakedBalance)} PRTs`}</div>
+          <div>{`${formatAmount(userStakedBalanceFormatted)} PRTs`}</div>
         </div>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Your share of Pool</div>
@@ -102,12 +102,12 @@ export function PrtCard({ onClick }: Props) {
         </div>
         <div className='text-ic-gray-950 mb-2 flex font-bold'>
           <div className='flex-1'>Claimable</div>
-          <div>{`${formatAmount(claimableRewards)} ${token.rewardTokenData.symbol}`}</div>
+          <div>{`${formatAmount(claimableRewardsFormatted)} ${token.rewardTokenData.symbol}`}</div>
         </div>
         <div className='text-ic-gray-600 flex font-medium'>
           <div className='flex-1'>Lifetime</div>
           <div className='font-bold'>
-            {`${formatAmount(lifetimeRewards)} ${token.rewardTokenData.symbol}`}
+            {`${formatAmount(lifetimeRewardsFormatted)} ${token.rewardTokenData.symbol}`}
           </div>
         </div>
       </div>

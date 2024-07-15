@@ -2,7 +2,8 @@ import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { formatAmount } from '@/lib/utils'
 
 export function StakedPanel() {
-  const { poolStakedBalance, userStakedBalance } = usePrtStakingContext()
+  const { poolStakedBalanceFormatted: poolStakedBalance, userStakedBalance } =
+    usePrtStakingContext()
   return (
     <div className='bg-ic-gray-50 border-ic-gray-300 my-3 rounded-xl border'>
       <div className='divide-ic-gray-300 flex w-full divide-x text-sm'>
