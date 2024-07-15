@@ -11,7 +11,11 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
-import { formatAmount, formatTokenDataToToken } from '@/lib/utils'
+import {
+  formatAmount,
+  formatTokenDataToToken,
+  formatWeiAsNumber,
+} from '@/lib/utils'
 
 type Props = {
   token: ProductRevenueToken
@@ -37,10 +41,11 @@ export function PrtWidget({ token, onClose }: Props) {
     () => formatTokenDataToToken(token.stakeTokenData),
     [token.stakeTokenData],
   )
-  const { balanceWei: prtBalanceWei, forceRefetch } = useFormattedBalance(
-    selectedToken,
-    accountAddress,
-  )
+  const {
+    balance: prtBalance,
+    balanceFormatted: prtBalanceFormatted,
+    forceRefetch,
+  } = useFormattedBalance(selectedToken, accountAddress)
   const {
     isApproved,
     isApproving,
@@ -74,7 +79,7 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const balance = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) {
-      return Number(prtBalanceWei)
+      return formatWeiAsNumber(prtBalance, selectedToken.decimals)
     }
     if (currentTab === WidgetTab.UNSTAKE) {
       return userStakedBalance
@@ -83,7 +88,13 @@ export function PrtWidget({ token, onClose }: Props) {
       return claimableRewards
     }
     return 0
-  }, [claimableRewards, currentTab, prtBalanceWei, userStakedBalance])
+  }, [
+    claimableRewards,
+    currentTab,
+    prtBalance,
+    selectedToken.decimals,
+    userStakedBalance,
+  ])
 
   const inputAmountNumber = Number(inputAmount)
   const balanceNumber = Number(balance)
@@ -127,11 +138,11 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const onClickBalance = useCallback(() => {
     if (currentTab === WidgetTab.STAKE) {
-      setInputAmount(prtBalanceWei)
+      setInputAmount(prtBalanceFormatted)
     } else if (currentTab === WidgetTab.UNSTAKE) {
       setInputAmount(userStakedBalance.toString())
     }
-  }, [currentTab, prtBalanceWei, userStakedBalance])
+  }, [currentTab, prtBalanceFormatted, userStakedBalance])
 
   return (
     <div className='w-full min-w-80 flex-1 flex-col space-y-5 rounded-3xl bg-gray-50 p-6 sm:min-w-96'>
