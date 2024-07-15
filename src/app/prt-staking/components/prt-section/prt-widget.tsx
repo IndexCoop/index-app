@@ -89,7 +89,7 @@ export function PrtWidget({ token, onClose }: Props) {
     (currentTab === WidgetTab.STAKE && !canStake) ||
     inputAmountNumber > balanceNumber
 
-  const onClickTradeButton = useCallback(async () => {
+  const onClickTradeButton = async () => {
     if (isTradeButtonDisabled) return
     setIsSubmitting(true)
     try {
@@ -119,20 +119,7 @@ export function PrtWidget({ token, onClose }: Props) {
       console.error('Caught error in onClickTradeButton', e)
       setIsSubmitting(false)
     }
-  }, [
-    claimPrts,
-    currentTab,
-    forceRefetch,
-    inputAmount,
-    isApproved,
-    isTradeButtonDisabled,
-    onApprove,
-    refetchClaimableRewards,
-    refetchUserStakedBalance,
-    stakePrts,
-    token.stakeTokenData.decimals,
-    unstakePrts,
-  ])
+  }
 
   const onClickBalance = useCallback(() => {
     if (currentTab === WidgetTab.STAKE) {
