@@ -41,7 +41,11 @@ export function PrtWidget({ token, onClose }: Props) {
     selectedToken,
     accountAddress,
   )
-  const { isApproved, approve: onApprove } = useApproval(
+  const {
+    isApproved,
+    isApproving,
+    approve: onApprove,
+  } = useApproval(
     selectedToken,
     token.stakedTokenData.address,
     parseUnits(inputAmount, token.stakedTokenData.decimals),
@@ -149,8 +153,8 @@ export function PrtWidget({ token, onClose }: Props) {
       />
       <TradeButton
         label={buttonLabel}
-        isDisabled={isTradeButtonDisabled || isSubmitting}
-        isLoading={false}
+        isDisabled={isTradeButtonDisabled}
+        isLoading={isSubmitting || isApproving}
         onClick={onClickTradeButton}
       />
     </div>
