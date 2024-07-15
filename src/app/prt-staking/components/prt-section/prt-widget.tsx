@@ -11,11 +11,7 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
-import {
-  formatAmount,
-  formatTokenDataToToken,
-  formatWeiAsNumber,
-} from '@/lib/utils'
+import { formatTokenDataToToken, formatWeiAsNumber } from '@/lib/utils'
 
 type Props = {
   token: ProductRevenueToken
@@ -184,7 +180,7 @@ export function PrtWidget({ token, onClose }: Props) {
       {currentTab === WidgetTab.CLAIM ? <ClaimablePanel /> : <StakedPanel />}
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={formatAmount(Number(balance), 3)}
+        balance={balance.toString()}
         caption={inputSelectorCaption}
         formattedFiat=''
         selectedToken={selectedToken}
