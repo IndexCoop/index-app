@@ -43,11 +43,10 @@ export function PrtWidget({ token, onClose }: Props) {
     () => formatTokenDataToToken(token.stakeTokenData),
     [token.stakeTokenData],
   )
-  const {
-    balance: prtBalance,
-    balanceFormatted: prtBalanceFormatted,
-    forceRefetch,
-  } = useFormattedBalance(selectedToken, accountAddress)
+  const { balance: prtBalance, forceRefetch } = useFormattedBalance(
+    selectedToken,
+    accountAddress,
+  )
   const {
     isApproved,
     isApproving,
@@ -59,15 +58,34 @@ export function PrtWidget({ token, onClose }: Props) {
   )
 
   useEffect(() => {
-    if (currentTab === WidgetTab.STAKE) setInputAmount('')
-    if (currentTab === WidgetTab.UNSTAKE) setInputAmount('')
-    if (currentTab === WidgetTab.CLAIM)
+    if (currentTab === WidgetTab.STAKE) {
+      if (prtBalance > BigInt(0)) {
+        setInputAmount(
+          formatWeiAsNumber(prtBalance, selectedToken.decimals).toString(),
+        )
+      } else {
+        setInputAmount('')
+      }
+      setTradeAmount(prtBalance)
+    }
+    if (currentTab === WidgetTab.UNSTAKE) {
+      setInputAmount('')
+      setTradeAmount(BigInt(0))
+    }
+    if (currentTab === WidgetTab.CLAIM) {
       setInputAmount(
         claimableRewardsFormatted > 0
           ? claimableRewardsFormatted.toString()
           : '',
       )
-  }, [claimableRewardsFormatted, currentTab])
+      setTradeAmount(BigInt(0))
+    }
+  }, [
+    claimableRewardsFormatted,
+    currentTab,
+    prtBalance,
+    selectedToken.decimals,
+  ])
 
   const inputSelectorCaption = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) return 'You stake'
@@ -133,6 +151,7 @@ export function PrtWidget({ token, onClose }: Props) {
         await refetchClaimableRewards()
       }
       setInputAmount('')
+      setTradeAmount(BigInt(0))
       setIsSubmitting(false)
     } catch (e) {
       console.error('Caught error in onClickTradeButton', e)
@@ -142,7 +161,9 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const onClickBalance = useCallback(() => {
     if (currentTab === WidgetTab.STAKE) {
-      setInputAmount(prtBalanceFormatted)
+      setInputAmount(
+        formatWeiAsNumber(prtBalance, selectedToken.decimals).toString(),
+      )
       setTradeAmount(prtBalance)
     } else if (currentTab === WidgetTab.UNSTAKE) {
       setInputAmount(userStakedBalanceFormatted.toString())
@@ -151,7 +172,7 @@ export function PrtWidget({ token, onClose }: Props) {
   }, [
     currentTab,
     prtBalance,
-    prtBalanceFormatted,
+    selectedToken.decimals,
     userStakedBalance,
     userStakedBalanceFormatted,
   ])
