@@ -37,7 +37,7 @@ export function PrtWidget({ token, onClose }: Props) {
     () => formatTokenDataToToken(token.stakeTokenData),
     [token.stakeTokenData],
   )
-  const { balanceFormatted: prtBalance, forceRefetch } = useFormattedBalance(
+  const { balanceWei: prtBalanceWei, forceRefetch } = useFormattedBalance(
     selectedToken,
     accountAddress,
   )
@@ -74,16 +74,16 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const balance = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) {
-      return prtBalance
+      return Number(prtBalanceWei)
     }
     if (currentTab === WidgetTab.UNSTAKE) {
-      return formatAmount(userStakedBalance, 3)
+      return userStakedBalance
     }
     if (currentTab === WidgetTab.CLAIM) {
-      return formatAmount(claimableRewards, 3)
+      return claimableRewards
     }
-    return formatAmount(0, 3)
-  }, [claimableRewards, currentTab, prtBalance, userStakedBalance])
+    return 0
+  }, [claimableRewards, currentTab, prtBalanceWei, userStakedBalance])
 
   const inputAmountNumber = Number(inputAmount)
   const balanceNumber = Number(balance)
@@ -127,11 +127,11 @@ export function PrtWidget({ token, onClose }: Props) {
 
   const onClickBalance = useCallback(() => {
     if (currentTab === WidgetTab.STAKE) {
-      setInputAmount(prtBalance.toString())
+      setInputAmount(prtBalanceWei)
     } else if (currentTab === WidgetTab.UNSTAKE) {
       setInputAmount(userStakedBalance.toString())
     }
-  }, [currentTab, prtBalance, userStakedBalance])
+  }, [currentTab, prtBalanceWei, userStakedBalance])
 
   return (
     <div className='w-full min-w-80 flex-1 flex-col space-y-5 rounded-3xl bg-gray-50 p-6 sm:min-w-96'>
@@ -140,7 +140,7 @@ export function PrtWidget({ token, onClose }: Props) {
       {currentTab === WidgetTab.CLAIM ? <ClaimablePanel /> : <StakedPanel />}
       <TradeInputSelector
         config={{ isReadOnly: false }}
-        balance={balance}
+        balance={formatAmount(Number(balance), 3)}
         caption={inputSelectorCaption}
         formattedFiat=''
         selectedToken={selectedToken}
