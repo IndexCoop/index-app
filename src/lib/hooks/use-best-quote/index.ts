@@ -229,7 +229,7 @@ export const useBestQuote = (
       }
 
       // Non await - because we want to fetch quotes in parallel
-      fetchIndexSwapQuote()
+      // fetchIndexSwapQuote()
       fetchIssuanceQuote()
       fetchRedemptionQuote()
       fetchFlashMintQuote()
