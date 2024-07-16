@@ -45,6 +45,8 @@ export function usePresaleData(symbol: string): PresaleData {
 
   const tvlFormatted = useMemo(() => {
     if (!presaleToken) return ''
+    if (presaleToken.status === PreSaleStatus.CLOSED_TARGET_NOT_MET)
+      return presaleToken.tvlLockedPresale ?? ''
     if (presaleToken.status === PreSaleStatus.TOKEN_LAUNCHED)
       return formatTvl(tvl)
 
