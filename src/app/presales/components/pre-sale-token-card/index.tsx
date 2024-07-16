@@ -144,7 +144,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           {
             'bg-ic-blue-600':
               token.status !== PreSaleStatus.CLOSED_TARGET_NOT_MET,
-            'bg-ic-gray-500':
+            'bg-ic-gray-700':
               token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET,
           },
         )}

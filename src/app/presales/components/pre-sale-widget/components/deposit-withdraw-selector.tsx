@@ -1,22 +1,28 @@
 import clsx from 'clsx'
 
+import { PreSaleStatus, PreSaleToken } from '@/app/presales/types'
+
 type BuySellSelectorProps = {
   isDepositing: boolean
   onClick: () => void
+  token: PreSaleToken
 }
 
 export function DepositWithdrawSelector({
   isDepositing,
   onClick,
+  token,
 }: BuySellSelectorProps) {
   return (
     <div className='bg-ic-blue-950 flex flex-row rounded-md'>
-      <SelectorButton
-        isSelected={isDepositing === true}
-        label='Deposit'
-        roundedLeft={true}
-        onClick={onClick}
-      />
+      {token.status !== PreSaleStatus.CLOSED_TARGET_NOT_MET && (
+        <SelectorButton
+          isSelected={isDepositing === true}
+          label='Deposit'
+          roundedLeft={true}
+          onClick={onClick}
+        />
+      )}
       <SelectorButton
         isSelected={isDepositing === false}
         label='Withdraw'
