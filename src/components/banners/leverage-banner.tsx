@@ -1,26 +1,18 @@
-import Link from 'next/link'
-
-import { Path } from '@/constants/paths'
-
 import { Banner } from './banner'
 
 export function LeverageBanner() {
   return (
     <Banner>
-      Trade on Arbitrum and earn ARB rewards now. Early users will earn 2bps /
-      day in ARB on all{' '}
-      <Link className='underline' href={Path.LEVERAGE}>
-        Leverage Suite tokens
-      </Link>{' '}
-      held. Track your rewards{' '}
+      Due to an ongoing exploit in the Li.Fi ecosystem, swaps are temporarily
+      disabled. Please make sure to revoke approvals for{' '}
       <a
-        href='https://dune.com/index_coop/arb-rewards'
+        href='https://x.com/lifiprotocol/status/1813196697641570635'
         target='_blank'
         className='underline'
       >
-        here
-      </a>
-      .
+        these Li.Fi addresses.
+      </a>{' '}
+      Flash Minting is not affected.
     </Banner>
   )
 }
