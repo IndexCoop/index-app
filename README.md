@@ -1,4 +1,4 @@
-# Index App
+# Index App - Legacy
 
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://opensource.org/licenses/MIT)
 
