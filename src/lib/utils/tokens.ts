@@ -1,7 +1,11 @@
 import { IndexCoopInverseEthereumIndex } from '@indexcoop/flash-mint-sdk'
 
 import { ARBITRUM, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
-import { currencies, indicesTokenList } from '@/constants/tokenlists'
+import {
+  currencies,
+  indicesTokenList,
+  indicesTokenListArbitrum,
+} from '@/constants/tokenlists'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -101,7 +105,8 @@ export function getCurrencyTokensForIndex(
   return currencyTokens
 }
 
-export function getDefaultIndex(): Token {
+export function getDefaultIndex(chainId: number = 1): Token {
+  if (chainId === ARBITRUM.chainId) return indicesTokenListArbitrum[0]
   return indicesTokenList[0]
 }
 

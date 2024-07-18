@@ -9,6 +9,7 @@ import {
 
 import { PathResolver } from '@/app/swap/[[...path]]/path-resolver'
 import { ETH, Token } from '@/constants/tokens'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { getDefaultIndex } from '@/lib/utils/tokens'
 
 export interface TokenContext {
@@ -36,16 +37,17 @@ export const SelectedTokenProvider = (props: { children: any }) => {
   const [inputToken, setInputToken] = useState<Token>(ETH)
   const [outputToken, setOutputToken] = useState<Token>(getDefaultIndex())
 
+  const { chainId } = useNetwork()
   const params = useParams()
   const router = useRouter()
 
   useEffect(() => {
     const resolver = new PathResolver()
-    const tokens = resolver.resolve(params.path as string[])
+    const tokens = resolver.resolve(params.path as string[], chainId)
     setMinting(tokens.isMinting)
     setInputToken(tokens.inputToken)
     setOutputToken(tokens.outputToken)
-  }, [params.path])
+  }, [chainId, params.path])
 
   const routeSwap = useCallback(
     (inputToken: string, outputToken: string) => {
