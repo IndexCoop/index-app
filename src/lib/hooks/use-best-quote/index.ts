@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
+import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import {
   getEnhancedIssuanceQuote,
@@ -229,10 +230,14 @@ export const useBestQuote = (
       }
 
       // Non await - because we want to fetch quotes in parallel
-      fetchIndexSwapQuote()
-      fetchIssuanceQuote()
-      fetchRedemptionQuote()
-      fetchFlashMintQuote()
+      if (chainId === ARBITRUM.chainId) {
+        fetchIndexSwapQuote()
+      } else {
+        fetchIndexSwapQuote
+        fetchIssuanceQuote()
+        fetchRedemptionQuote()
+        fetchFlashMintQuote()
+      }
     },
     [
       address,
