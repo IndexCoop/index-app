@@ -10,16 +10,22 @@ import {
 } from '@/components/banners/exodus-campaign-banner'
 import { FliMigrationBanner } from '@/components/banners/fli-migration-banner'
 import { Swap } from '@/components/swap'
+import { MAINNET } from '@/constants/chains'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 
 export default function SwapPage() {
+  const { chainId } = useNetwork()
   const { inputToken, isMinting, outputToken } = useSelectedToken()
   const searchParams = useSearchParams()
   const showExodusCampaignBanner = useMemo(
     () => isExodusCampaign(searchParams),
     [searchParams],
   )
-
+  const showMigrationBanner = useMemo(
+    () => chainId === MAINNET.chainId,
+    [chainId],
+  )
   return (
     <Flex
       direction={['column', 'column', 'column', 'row']}
@@ -34,8 +40,10 @@ export default function SwapPage() {
       >
         {showExodusCampaignBanner ? (
           <ExodusCampaignBanner />
-        ) : (
+        ) : showMigrationBanner ? (
           <FliMigrationBanner />
+        ) : (
+          <></>
         )}
         <Swap
           isBuying={isMinting}
