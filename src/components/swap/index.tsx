@@ -6,11 +6,12 @@ import { useDebounce } from 'use-debounce'
 import { OnrampModal } from '@/components/onramp'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { useMainnetOnly, useNetwork } from '@/lib/hooks/use-network'
+import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useProtection } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
@@ -37,7 +38,10 @@ type SwapProps = {
 
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
-  const isSupportedNetwork = useMainnetOnly()
+  const isSupportedNetwork = useSupportedNetworks([
+    MAINNET.chainId,
+    ARBITRUM.chainId,
+  ])
   const { logEvent } = useAnalytics()
   const requiresProtection = useProtection()
   const isTradablePair = useMemo(
@@ -87,6 +91,7 @@ export const Swap = (props: SwapProps) => {
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
   const { inputTokenslist, outputTokenslist } = useTokenlists(
+    chainId ?? 1,
     isBuying,
     inputToken,
     outputToken,
