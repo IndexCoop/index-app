@@ -8,7 +8,7 @@ import { PreSaleStatus, PreSaleToken } from './types'
 
 export const preSaleTokens: PreSaleToken[] = [
   {
-    status: PreSaleStatus.ACTIVE,
+    status: PreSaleStatus.CLOSED_TARGET_NOT_MET,
     symbol: RealWorldAssetIndex.symbol,
     address: RealWorldAssetIndex.address,
     decimals: RealWorldAssetIndex.decimals,
@@ -19,8 +19,8 @@ export const preSaleTokens: PreSaleToken[] = [
     infoLink: 'https://indexcoop.com/blog/previewing-rwa-index-presale',
     prtRewards: '10,000 / 100,000',
     targetFundraise: 500,
-    launchDate: 'August 19th, 2024',
     timestampEndDate: 1721404800000,
+    tvlLockedPresale: '14.08 wstETH',
   },
   {
     status: PreSaleStatus.TOKEN_LAUNCHED,

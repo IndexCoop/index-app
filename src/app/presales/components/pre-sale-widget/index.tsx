@@ -191,6 +191,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <DepositWithdrawSelector
         isDepositing={isDepositing}
         onClick={toggleIsDepositing}
+        token={token}
       />
       <DepositStats rewards={earnedRewards} userBalance={userBalance} />
       <TradeInputSelector

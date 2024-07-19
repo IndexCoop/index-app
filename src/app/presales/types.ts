@@ -19,4 +19,5 @@ export type PreSaleToken = {
   prtRewards: string
   targetFundraise: number
   timestampEndDate: number
+  tvlLockedPresale?: string
 }

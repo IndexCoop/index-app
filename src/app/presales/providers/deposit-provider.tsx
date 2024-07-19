@@ -9,6 +9,7 @@ import {
 } from 'react'
 import { usePublicClient } from 'wagmi'
 
+import { PreSaleStatus } from '@/app/presales/types'
 import {
   ETH,
   HighYieldETHIndex,
@@ -63,7 +64,11 @@ const DepositContext = createContext<DepositContextProps>({
 
 export const useDeposit = () => useContext(DepositContext)
 
-export function DepositProvider(props: { children: any; preSaleToken: Token }) {
+export function DepositProvider(props: {
+  children: any
+  preSaleToken: Token
+  preSaleStatus: PreSaleStatus | undefined
+}) {
   const nativeTokenPrice = useNativeTokenPrice(1)
   const publicClient = usePublicClient()
   const { address, provider, rpcUrl } = useWallet()
@@ -73,7 +78,9 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
 
   const [inputToken, setInputToken] = useState(preSaleCurrencyToken)
   const [inputValue, setInputValue] = useState('')
-  const [isDepositing, setDepositing] = useState(true)
+  const [isDepositing, setDepositing] = useState(
+    props.preSaleStatus !== PreSaleStatus.CLOSED_TARGET_NOT_MET,
+  )
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.issuance,
@@ -136,8 +143,9 @@ export function DepositProvider(props: { children: any; preSaleToken: Token }) {
   }
 
   const toggleIsDepositing = useCallback(() => {
+    if (props.preSaleStatus === PreSaleStatus.CLOSED_TARGET_NOT_MET) return
     setDepositing(!isDepositing)
-  }, [isDepositing])
+  }, [isDepositing, props.preSaleStatus])
 
   useEffect(() => {
     const fetchQuote = async () => {
