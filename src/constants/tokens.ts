@@ -78,6 +78,7 @@ export const DefiPulseIndex: Token = {
   symbol: 'DPI',
   image: 'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg',
   address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+  arbitrumAddress: '0x9737C658272e66Faad39D7AD337789Ee6D54F500',
   polygonAddress: '0x85955046DF4668e1DD369D2DE9f3AEB98DD2A369',
   optimismAddress: undefined,
   decimals: 18,
@@ -110,6 +111,7 @@ export const DiversifiedStakedETHIndex: Token = {
 const hyeth = getTokenFromSymbol('hyETH')!
 export const HighYieldETHIndex: Token = {
   ...hyeth,
+  arbitrumAddress: '0x8b5D1d8B3466eC21f8eE33cE63F319642c026142',
   coingeckoId: 'hyeth',
   fees: {
     streamingFee: '	0.95%',
@@ -287,6 +289,7 @@ export const MetaverseIndex: Token = {
   name: 'Metaverse Index',
   symbol: 'MVI',
   address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
+  arbitrumAddress: '0x0104a6FA30540DC1d9F45D2797F05eEa79304525',
   polygonAddress: '0xfe712251173A2cd5F5bE2B46Bb528328EA3565E1',
   optimismAddress: undefined,
   decimals: 18,

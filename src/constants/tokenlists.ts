@@ -41,6 +41,12 @@ export const currencies = [
   WSTETH,
 ]
 
+export const indicesTokenListArbitrum = [
+  DefiPulseIndex,
+  MetaverseIndex,
+  HighYieldETHIndex,
+]
+
 const isDevEnv =
   process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ||
   process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-staging'

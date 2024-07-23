@@ -68,9 +68,12 @@ export async function getIndexQuote(
     const res: QuoteResponse = await indexApi.get(path)
 
     const tx = {
+      ...res.transaction,
       account: address,
       data: res.transaction.data,
       from: address,
+      gasLimit: BigNumber.from(res.transaction.gasLimit ?? '0'),
+      gasPrice: BigNumber.from(res.transaction.gasPrice ?? '0'),
       to: res.transaction.to,
       value: BigNumber.from(res.transaction.value),
     }
