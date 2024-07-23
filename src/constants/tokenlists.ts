@@ -44,8 +44,7 @@ export const currencies = [
 export const indicesTokenListArbitrum = [
   DefiPulseIndex,
   MetaverseIndex,
-  // Needs to be listed first; no quotes avaialble via Li.Fi
-  // HighYieldETHIndex,
+  HighYieldETHIndex,
 ]
 
 const isDevEnv =
