@@ -233,7 +233,7 @@ export const useBestQuote = (
       if (chainId === ARBITRUM.chainId) {
         fetchIndexSwapQuote()
       } else {
-        fetchIndexSwapQuote
+        fetchIndexSwapQuote()
         fetchIssuanceQuote()
         fetchRedemptionQuote()
         fetchFlashMintQuote()
