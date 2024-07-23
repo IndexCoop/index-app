@@ -7,7 +7,7 @@ import { Banner } from './banner'
 export function LeverageBanner() {
   return (
     <Banner>
-      Earn ARB rewards for bridging, LPing and buying{' '}
+      Earn ARB rewards for{' '}
       <a
         href='https://app.indexcoop.com/swap/eth/mvi'
         target='_self'
@@ -25,7 +25,7 @@ export function LeverageBanner() {
       </a>
       ,{' '}
       <a
-        href='https://swap.cow.fi/#/42161/swap/WETH/hyETH'
+        href='https://app.indexcoop.com/swap/eth/hyETH'
         target='_blank'
         className='underline'
       >
@@ -35,9 +35,9 @@ export function LeverageBanner() {
       <Link className='underline' href={Path.LEVERAGE}>
         Leverage Tokens
       </Link>{' '}
-      on <b>Arbitrum.</b> FAQ and reward tracking{' '}
+      on <b>Arbitrum.</b> FAQ and rewards tracking{' '}
       <a
-        href='https://indexcoop.com/blog/arb-rewards-faq'
+        href='https://indexcoop.com/product-faqs/arb-rewards-ccip-faq'
         target='_blank'
         className='underline'
       >
