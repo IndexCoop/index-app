@@ -1,49 +1,63 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { displayFromWei, formatDollarAmount, isValidTokenInput, toWei } from '.'
+import {
+  formatAmountFromWei,
+  formatDollarAmount,
+  isValidTokenInput,
+  toWei,
+} from '.'
 
-describe('displayFromWei', () => {
-  it('should return null with no number provided', () => {
-    const displayValue = displayFromWei(undefined)
-    expect(displayValue).toBe(null)
-  })
-  it('should convert to token value, default full value', () => {
-    const displayValue = displayFromWei(BigNumber.from('180313000000000000000'))
+describe('formatAmountFromWei', () => {
+  it('should return formatted amount for given wei', () => {
+    const displayValue = formatAmountFromWei(
+      BigInt('180313000000000000000'),
+      18,
+      3,
+    )
     expect(displayValue).toBe('180.313')
-    const displayValue2 = displayFromWei(BigNumber.from('1'))
+    const displayValue2 = formatAmountFromWei(BigInt('1'), 18, 18)
     expect(displayValue2).toBe('0.000000000000000001')
   })
+
   it('should convert to token value, given decimals', () => {
-    const displayValue = displayFromWei(
-      BigNumber.from('180313000000000000000'),
+    const displayValue = formatAmountFromWei(
+      BigInt('180313000000000000000'),
+      18,
       5,
     )
     expect(displayValue).toBe('180.31300')
   })
+
   it('should convert to token value, given large decimals', () => {
-    const displayValue2 = displayFromWei(BigNumber.from('1'))
+    const displayValue2 = formatAmountFromWei(BigInt('1'), 18, 18)
     expect(displayValue2).toBe('0.000000000000000001')
   })
+
   it('should convert to token value, given large decimals. Not precise.', () => {
-    const displayValue = displayFromWei(
-      BigNumber.from('157097183810163372336'),
+    const displayValue = formatAmountFromWei(
+      BigInt('157097183810163372336'),
+      18,
       18,
     )
     expect(displayValue).toBe('157.097183810163400000')
   })
+
   it('should convert to token value showing commas for thousands', () => {
-    const displayValue = displayFromWei(
-      BigNumber.from('1570971838101633723360'),
+    const displayValue = formatAmountFromWei(
+      BigInt('1570971838101633723360'),
+      18,
       4,
     )
-    expect(displayValue).toBe('1570.9718')
+    expect(displayValue).toBe('1,570.9718')
   })
+
   it('should convert to token value showing commas for thousands w/ large amounts', () => {
-    const displayValue = displayFromWei(
-      BigNumber.from('507731000000000000000000'),
+    const displayValue = formatAmountFromWei(
+      BigInt('507731000000000000000000'),
+      18,
       4,
     )
-    expect(displayValue).toBe('507731.0000')
+    expect(displayValue).toBe('507,731.0000')
   })
 })
 
