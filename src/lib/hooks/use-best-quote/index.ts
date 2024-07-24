@@ -336,6 +336,15 @@ export const useBestQuote = (
     quoteRedemption,
   ])
 
+  useEffect(() => {
+    // Reset quotes
+    setQuote0x(null)
+    setQuoteFlashmint(null)
+    setQuoteIssuance(null)
+    setQuoteRedemption(null)
+    setQuoteResults(defaultResults)
+  }, [chainId])
+
   const isFetchingAnyQuote = useMemo(() => {
     return isFetching0x || isFetchingFlashmint
   }, [isFetching0x, isFetchingFlashmint])
