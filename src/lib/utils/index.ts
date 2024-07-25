@@ -138,29 +138,6 @@ export const toWei = (
 }
 
 /**
- * Formats a BigNumber from Wei
- * @param decimals round to decimals is NOT precise
- * @param power default to 18 covers most token decimals
- */
-export const displayFromWei = (
-  number: BigNumber | undefined,
-  decimals: number = 0,
-  power: number = 18,
-): string | null => {
-  if (!number) return null
-
-  if (decimals) {
-    return Number(formatUnits(number, power)).toLocaleString('en-US', {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-      useGrouping: false,
-    })
-  }
-
-  return formatUnits(number, power).toLocaleString()
-}
-
-/**
  * Validate that the input amount is valid (positive, not excessive decimals)
  */
 export const isValidTokenInput = (
