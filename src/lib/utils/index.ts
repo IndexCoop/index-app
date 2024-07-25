@@ -76,7 +76,7 @@ export const formatDollarAmount = (
 
 export function formatAmountFromWei(
   wei: bigint,
-  units: number = 18,
+  units: number,
   digits: number = 2,
 ): string {
   const balanceAmount = formatWeiAsNumber(wei, units)
