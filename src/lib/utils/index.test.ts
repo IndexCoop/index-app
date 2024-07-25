@@ -1,10 +1,8 @@
-import { BigNumber } from '@ethersproject/bignumber'
-
 import {
   formatAmountFromWei,
   formatDollarAmount,
   isValidTokenInput,
-  toWei,
+  parseUnits,
 } from '.'
 
 describe('formatAmountFromWei', () => {
@@ -86,22 +84,22 @@ describe('isValidTokenInput()', () => {
   })
 })
 
-describe('toWei', () => {
+describe('parseUnits', () => {
   it('should convert string token value to wei', () => {
-    const value = toWei(Number('40.242'))
-    expect(value).toStrictEqual(BigNumber.from('40242000000000000000'))
+    const value = parseUnits('40.242', 18)
+    expect(value).toStrictEqual(BigInt('40242000000000000000'))
   })
   it('should convert number token value to wei', () => {
-    const value = toWei(40.242)
-    expect(value).toStrictEqual(BigNumber.from('40242000000000000000'))
+    const value = parseUnits((40.242).toString(), 18)
+    expect(value).toStrictEqual(BigInt('40242000000000000000'))
   })
   it('should convert USDC to wei', () => {
-    const value = toWei(Number('40.242'), 6)
-    expect(value).toStrictEqual(BigNumber.from('40242000'))
+    const value = parseUnits('40.242', 6)
+    expect(value).toStrictEqual(BigInt('40242000'))
   })
   it('should convert loooong values for USDC to wei', () => {
-    const value = toWei('1265.544702110571614391', 6)
-    expect(value).toStrictEqual(BigNumber.from('1265544702'))
+    const value = parseUnits('1265.544702110571614391', 6)
+    expect(value).toStrictEqual(BigInt('1265544702'))
   })
 })
 
