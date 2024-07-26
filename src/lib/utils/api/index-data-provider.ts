@@ -57,6 +57,9 @@ export class IndexDataProvider {
         priceChange: metrics.includes(IndexDataMetric.PriceChange)
           ? (latest.PriceChange24Hr as number)
           : undefined,
+        supply: metrics.includes(IndexDataMetric.Supply)
+          ? (latest.Supply as number)
+          : undefined,
       }
     } catch (error) {
       console.error(`Error fetching token metrics: ${url}`, error)
