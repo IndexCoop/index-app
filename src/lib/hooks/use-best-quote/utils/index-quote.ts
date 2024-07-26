@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
-import { displayFromWei, parseUnits, toWei } from '@/lib/utils'
+import { formatAmountFromWei, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
@@ -104,13 +104,19 @@ export async function getIndexQuote(
       nativeTokenPrice,
     )
 
-    const inputTokenAmountBn = toWei(inputTokenAmount, inputToken.decimals)
+    const inputTokenAmountBn = BigNumber.from(
+      parseUnits(inputTokenAmount, inputToken.decimals).toString(),
+    )
     const outputTokenAmount = BigNumber.from(res.outputAmount)
 
     const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
     const outputTokenAmountUsd =
       parseFloat(
-        displayFromWei(outputTokenAmount, 10, outputToken.decimals) ?? '0',
+        formatAmountFromWei(
+          outputTokenAmount.toBigInt(),
+          outputToken.decimals,
+          10,
+        ),
       ) * outputTokenPrice
     const priceImpact = getPriceImpact(
       inputTokenAmountUsd,

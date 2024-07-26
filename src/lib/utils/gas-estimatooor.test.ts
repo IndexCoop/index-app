@@ -1,8 +1,7 @@
 import { BigNumber, ethers } from 'ethers'
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, http, parseUnits } from 'viem'
 
 import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
-import { toWei } from '@/lib/utils'
 
 import { GasEstimatooor, GasEstimatooorFailedError } from './gas-estimatooor'
 
@@ -34,7 +33,7 @@ describe('GasEstimatooor', () => {
       from: signer.address,
       //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigNumber.from(21_000),
-      value: toWei(1),
+      value: BigNumber.from(parseUnits('1', 18).toString()),
     }
     try {
       await estimatooor.estimate(failingTx)
@@ -52,7 +51,7 @@ describe('GasEstimatooor', () => {
       from: signer.address,
       //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigNumber.from(21_000),
-      value: toWei(1),
+      value: BigNumber.from(parseUnits('1', 18).toString()),
     }
     const gasEstimate = await estimatooor.estimate(failingTx, false)
     expect(gasEstimate.toString()).toEqual(defaultGasEstimate.toString())
@@ -67,7 +66,7 @@ describe('GasEstimatooor', () => {
       from: signer.address,
       to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigNumber.from(21_000),
-      value: toWei(1),
+      value: BigNumber.from(parseUnits('1', 18).toString()),
     }
     const gasEstimate = await estimatooor.estimate(tx, false)
     expect(gasEstimate.toString()).toEqual('23101')

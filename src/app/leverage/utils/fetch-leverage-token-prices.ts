@@ -1,10 +1,9 @@
-import { BigNumber } from 'ethers'
 import { Dispatch, SetStateAction } from 'react'
 
 import { formatPrice } from '@/app/products/utils/formatters'
 import { ARBITRUM } from '@/constants/chains'
 import { TokenBalance } from '@/lib/hooks/use-balance'
-import { displayFromWei } from '@/lib/utils'
+import { formatAmountFromWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
 
 import { leverageTokens } from '../constants'
@@ -56,13 +55,8 @@ export async function fetchLeverageTokenPrices(
 
     const enrichedTokens = tokenBalances.map((token, idx) => {
       const usd =
-        Number(
-          displayFromWei(
-            BigNumber.from(token.balance.toString()),
-            3,
-            token.decimals,
-          ),
-        ) * tokenPrices[idx]
+        parseFloat(formatAmountFromWei(token.balance, token.decimals, 3)) *
+        tokenPrices[idx]
       return {
         ...token,
         leverageType: getLeverageType(token),

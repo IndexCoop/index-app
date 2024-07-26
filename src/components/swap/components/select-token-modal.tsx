@@ -14,7 +14,7 @@ import { useMemo } from 'react'
 import { Token } from '@/constants/tokens'
 import { useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { displayFromWei, isSameAddress } from '@/lib/utils'
+import { formatAmountFromWei, isSameAddress } from '@/lib/utils'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 type SelectTokenModalProps = {
@@ -66,8 +66,11 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
               const balance = BigNumber.from(
                 tokenBalance?.value.toString() ?? '0',
               )
-              const balanceDisplay =
-                displayFromWei(balance, 3, token.decimals) ?? '0'
+              const balanceDisplay = formatAmountFromWei(
+                balance.toBigInt(),
+                token.decimals,
+                3,
+              )
               return (
                 <TokenItem
                   balance={showBalances ? balanceDisplay : ''}
