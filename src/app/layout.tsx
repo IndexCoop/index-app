@@ -1,5 +1,6 @@
 import { MavaScript } from '@/components/external/mava-script'
 import { SafaryScript } from '@/components/external/safary-script'
+import Script from 'next/script'
 import './globals.css'
 
 export const metadata = {
@@ -8,7 +9,7 @@ export const metadata = {
   themeColor: '#000000',
   title: {
     template: '%s | Index Coop',
-    default: 'Index App | Buy & Sell Our Tokens'
+    default: 'Index App | Buy & Sell Our Tokens',
   },
   description:
     'Use the Index Coop Trading App to buy and sell our sector, leveraged and yield generating tokens.',
@@ -24,6 +25,9 @@ export default function RootLayout({ children }: LayoutProps) {
     <html lang='en'>
       <body>
         {children}
+        <Script strategy='beforeInteractive' id='test'>
+          {`globalThis.Browser = { T: () => {} };`}
+        </Script>
         <SafaryScript />
         <MavaScript />
       </body>
