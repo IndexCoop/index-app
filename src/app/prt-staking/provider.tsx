@@ -14,7 +14,11 @@ import { useAccount, useReadContract, useWalletClient } from 'wagmi'
 import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
 import { formatWeiAsNumber } from '@/lib/utils'
-import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
+import {
+  IndexDataMetric,
+  IndexDataProvider,
+} from '@/lib/utils/api/index-data-provider'
+import { fetchCumulativeRevenue } from '@/lib/utils/fetch'
 
 interface Context {
   accountAddress: `0x${string}` | undefined
@@ -146,11 +150,15 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
 
   useEffect(() => {
     async function fetchTokenData() {
+      const indexDataProvider = new IndexDataProvider()
       const [tvl, cumulativeRevenue] = await Promise.all([
-        fetchTvl(token.rewardTokenData.symbol),
+        indexDataProvider.getTokenMetrics({
+          tokenAddress: token.rewardTokenData.address,
+          metrics: [IndexDataMetric.MarketCap],
+        }),
         fetchCumulativeRevenue(token.rewardTokenData.address),
       ])
-      setTvl(tvl)
+      setTvl(tvl?.marketCap ?? 0)
       setCumulativeRevenue(cumulativeRevenue)
     }
     fetchTokenData()
