@@ -144,6 +144,7 @@ export function LeverageProvider(props: { children: any }) {
   const { balances, forceRefetchBalances } = useBalances(
     address,
     leverageTokenAddresses,
+    chainId !== ARBITRUM.chainId,
   )
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,

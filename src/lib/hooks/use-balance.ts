@@ -63,12 +63,17 @@ export interface TokenBalance {
   value: bigint
 }
 
-export function useBalances(address?: string, tokens?: string[]) {
+export function useBalances(
+  address?: string,
+  tokens?: string[],
+  disabled?: boolean,
+) {
   const publicClient = usePublicClient()
   const [balances, setBalances] = useState<TokenBalance[]>([])
 
   const fetchBalances = useCallback(async () => {
-    if (!address || !publicClient || !tokens || tokens.length === 0) return
+    if (!address || !publicClient || !tokens || tokens.length === 0 || disabled)
+      return
     const balanceProvider = new BalanceProvider(publicClient)
     const promises = tokens.map((token) => {
       if (token.length === 0) return BigInt(0)
@@ -84,7 +89,7 @@ export function useBalances(address?: string, tokens?: string[]) {
       return { token: token, value: results[index] }
     })
     setBalances(balances)
-  }, [address, tokens, publicClient])
+  }, [address, disabled, tokens, publicClient])
 
   useEffect(() => {
     fetchBalances()
