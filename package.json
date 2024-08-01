@@ -34,6 +34,7 @@
     "@rainbow-me/rainbowkit": "^2.0.7",
     "@sentry/nextjs": "8.8.0",
     "@tanstack/react-query": "5.36.2",
+    "@typeform/embed-react": "4.0.0",
     "@visx/visx": "^3.8.0",
     "dayjs": "1.11.11",
     "eslint": "8.42.0",
