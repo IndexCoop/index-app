@@ -20,7 +20,12 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
     token.status === PreSaleStatus.CLOSED_TARGET_MET ||
     token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET
   return (
-    <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
+    <div
+      className={clsx(
+        'border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5',
+        token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET && 'opacity-75',
+      )}
+    >
       <div className='mb-4 flex font-bold tracking-wider'>
         <div className='flex flex-1 self-center'>
           <div className='my-auto mr-2 overflow-hidden rounded-full'>
@@ -110,7 +115,9 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           <div className='flex-1'>
             {token.status === PreSaleStatus.TOKEN_LAUNCHED
               ? 'TVL'
-              : 'Total Deposits'}
+              : token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET
+                ? 'Total Value Locked in Presale'
+                : 'Total Deposits'}
           </div>
           <div className='text-ic-gray-800'>
             <span className='text-ic-gray-950 font-bold'>{formatted.tvl}</span>
@@ -132,7 +139,15 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         </div>
       </div>
       <button
-        className='text-ic-white bg-ic-blue-600 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
+        className={clsx(
+          'text-ic-white w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]',
+          {
+            'bg-ic-blue-600':
+              token.status !== PreSaleStatus.CLOSED_TARGET_NOT_MET,
+            'bg-ic-gray-700':
+              token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET,
+          },
+        )}
         disabled={
           token.status === PreSaleStatus.NOT_STARTED || onClick === undefined
         }

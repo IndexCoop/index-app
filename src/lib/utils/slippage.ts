@@ -1,4 +1,4 @@
-import { slippageMap } from '@/constants/slippage'
+import { slippageDefault, slippageMap } from '@/constants/slippage'
 import {
   DiversifiedStakedETHIndex,
   GitcoinStakedETHIndex,
@@ -37,6 +37,7 @@ export function selectSlippage(
   )
   if (slippageOverrride && slippage < slippageOverrride)
     return slippageOverrride
-  if (slippageOverrride && slippage > slippageOverrride) return slippage
+  if (slippageOverrride && slippage > slippageOverrride)
+    return slippageDefault === slippage ? slippageOverrride : slippage
   return slippageOverrride ?? slippage
 }

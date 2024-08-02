@@ -17,15 +17,12 @@ const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
   const cursor = tooltip && tooltip.length > 0 ? 'pointer' : 'default'
   return (
     <Tooltip
-      className='bg-ic-white'
-      borderRadius='6px'
-      fontSize={'11px'}
-      fontWeight={500}
+      // need to set bg color here, as otherwise the arrow won't display correctly
+      bgColor={colors.ic.white}
+      className='bg-ic-white text-ic-gray-600 rounded-md px-4 py-3 text-[11px] font-medium'
       hasArrow
       label={tooltip}
-      p='12px 16px'
       placement='right-end'
-      textColor={colors.ic.gray[600]}
     >
       <Flex cursor={cursor} direction='row' justifyContent={'space-between'}>
         <Flex align='center'>

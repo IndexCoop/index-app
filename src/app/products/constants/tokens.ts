@@ -15,6 +15,12 @@ export const productTokens = [
     type: ProductType.INDEX,
   },
   {
+    ...getTokenBySymbol('hyeth'),
+    hasApy: true,
+    theme: ProductTheme.ETH,
+    type: ProductType.YIELD,
+  },
+  {
     ...getTokenBySymbol('iceth'),
     hasApy: true,
     theme: ProductTheme.ETH,
@@ -31,12 +37,6 @@ export const productTokens = [
     hasApy: false,
     theme: ProductTheme.BTC,
     type: ProductType.LEVERAGE,
-  },
-  {
-    ...getTokenBySymbol('hyeth'),
-    hasApy: true,
-    theme: ProductTheme.ETH,
-    type: ProductType.YIELD,
   },
   {
     ...getTokenBySymbol('dseth'),
