@@ -15,6 +15,8 @@ import { Title } from './components/title'
 import TradingViewWidget from './components/trading-view-widget'
 import { YourTokens } from './components/your-tokens'
 
+const surveyTracking = { utm_source: 'app' }
+
 export default function Page() {
   const { address } = useWallet()
   const {
@@ -45,6 +47,7 @@ export default function Page() {
             <PopupButton
               id='ywmAsQxf'
               className='text-ic-white bg-ic-black h-12 w-full rounded-lg py-2.5 font-bold'
+              tracking={surveyTracking}
             >
               Give us your feedback!
             </PopupButton>
