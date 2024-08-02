@@ -75,6 +75,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
             placeholder='0'
             _placeholder={{ color: colors.ic.gray[400] }}
             type='number'
+            onWheel={(e) => e.target instanceof HTMLElement && e.target.blur()}
             step='any'
             textOverflow='ellipsis'
             variant='unstyled'
