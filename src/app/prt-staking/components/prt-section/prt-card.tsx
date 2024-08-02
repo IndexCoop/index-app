@@ -1,13 +1,14 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/16/solid'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useMemo } from 'react'
 
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
-import { isStakingEnabled } from '@/feature-flags'
+import { useMainnetOnly } from '@/lib/hooks/use-network'
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
 dayjs.extend(relativeTime)
@@ -28,16 +29,30 @@ export function PrtCard({ onClick }: Props) {
     poolStakedBalanceFormatted,
     userStakedBalanceFormatted,
   } = usePrtStakingContext()
+  const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
+  const isSupportedNetwork = useMainnetOnly()
+
+  const buttonLabel = useMemo(() => {
+    if (!accountAddress) return 'Connect Wallet'
+    if (!isSupportedNetwork) return 'Wrong Network'
+    return 'Manage'
+  }, [accountAddress, isSupportedNetwork])
 
   if (!token) return
 
   const handleClick = () => {
-    if (accountAddress) {
-      onClick(token)
-    } else {
+    if (!accountAddress) {
       openConnectModal?.()
+      return
     }
+
+    if (!isSupportedNetwork) {
+      openChainModal?.()
+      return
+    }
+
+    onClick(token)
   }
 
   // poolStakedBalance can be 0
@@ -129,14 +144,9 @@ export function PrtCard({ onClick }: Props) {
       </div>
       <button
         className='text-ic-white bg-ic-blue-600 mt-4 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
-        disabled={!isStakingEnabled()}
         onClick={handleClick}
       >
-        {!isStakingEnabled()
-          ? 'Available Soon'
-          : !accountAddress
-            ? 'Connect Wallet'
-            : 'Manage'}
+        {buttonLabel}
       </button>
     </div>
   )
