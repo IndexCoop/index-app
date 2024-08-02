@@ -43,8 +43,13 @@ export async function fetchCostOfCarry(
         asset.symbol.toLowerCase() ===
         indexToken.borrowedAssetSymbol?.toLowerCase(),
     )
+    const collateralAsset = formattedPoolReserves.find(
+      (asset) =>
+        asset.symbol.toLowerCase() ===
+        indexToken.collateralAssetSymbol?.toLowerCase(),
+    )
 
-    if (!borrowedAsset) {
+    if (!borrowedAsset || !collateralAsset) {
       return
     }
 
@@ -97,7 +102,7 @@ export async function fetchCostOfCarry(
       1,
     )
 
-    const supplyAPY = Number(borrowedAsset.supplyAPY)
+    const supplyAPY = Number(collateralAsset.supplyAPY)
     const borrowAPY = Number(borrowedAsset.variableBorrowAPY)
 
     const collateralCalculated =

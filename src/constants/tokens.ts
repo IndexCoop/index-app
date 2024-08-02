@@ -41,6 +41,7 @@ export interface Token {
   indexTypes: IndexType[]
   isPerp?: boolean
   borrowedAssetSymbol?: string
+  collateralAssetSymbol?: string
 }
 
 const getTokenFromSymbol = (symbol: string) =>
@@ -139,6 +140,7 @@ export const IndexCoopBitcoin2xIndex: Token = {
   isDangerous: true,
   url: 'btc2x',
   borrowedAssetSymbol: 'usdc',
+  collateralAssetSymbol: 'wbtc',
 }
 
 const btc3xArbitrum = getIndexTokenData('BTC3X', ARBITRUM.chainId)!
@@ -158,6 +160,7 @@ export const IndexCoopBitcoin3xIndex: Token = {
   isDangerous: true,
   url: 'btc3x',
   borrowedAssetSymbol: 'usdc',
+  collateralAssetSymbol: 'wbtc',
 }
 
 const eth2x = getIndexTokenData('ETH2X')!
@@ -177,6 +180,7 @@ export const IndexCoopEthereum2xIndex: Token = {
   isDangerous: true,
   url: 'eth2x',
   borrowedAssetSymbol: 'usdc',
+  collateralAssetSymbol: 'weth',
 }
 
 const eth3xArbitrum = getIndexTokenData('ETH3X', ARBITRUM.chainId)!
@@ -196,6 +200,7 @@ export const IndexCoopEthereum3xIndex: Token = {
   isDangerous: true,
   url: 'eth3x',
   borrowedAssetSymbol: 'usdc',
+  collateralAssetSymbol: 'weth',
 }
 
 const ibtc1x = getIndexTokenData('iBTC1x', ARBITRUM.chainId)!
@@ -215,6 +220,7 @@ export const IndexCoopInverseBitcoinIndex: Token = {
   isDangerous: true,
   url: 'ibtc1x',
   borrowedAssetSymbol: 'wbtc',
+  collateralAssetSymbol: 'usdc',
 }
 
 const ieth1x = getIndexTokenData('iETH1X', ARBITRUM.chainId)!
@@ -234,6 +240,7 @@ export const IndexCoopInverseEthereumIndex: Token = {
   isDangerous: true,
   url: 'ieth1x',
   borrowedAssetSymbol: 'weth',
+  collateralAssetSymbol: 'usdc',
 }
 
 export const IndexToken: Token = {
