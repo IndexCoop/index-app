@@ -1,6 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
+import { PopupButton } from '@typeform/embed-react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -13,6 +14,8 @@ import { Stats } from './components/stats'
 import { Title } from './components/title'
 import TradingViewWidget from './components/trading-view-widget'
 import { YourTokens } from './components/your-tokens'
+
+const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
   const { address } = useWallet()
@@ -37,7 +40,18 @@ export default function Page() {
             </div>
             <LeverageWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
-          <YourTokens />
+          <div className='flex flex-col gap-6 lg:flex-row'>
+            <div className='h-full w-full lg:min-w-[67%] lg:max-w-[67%]'>
+              <YourTokens />
+            </div>
+            <PopupButton
+              id='ywmAsQxf'
+              className='text-ic-white bg-ic-black h-12 w-full rounded-lg py-2.5 font-bold'
+              tracking={surveyTracking}
+            >
+              Give us your feedback!
+            </PopupButton>
+          </div>
         </div>
         <FaqSection />
       </div>

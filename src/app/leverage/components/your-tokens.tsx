@@ -50,7 +50,7 @@ export function YourTokens() {
   }
 
   return (
-    <div className='border-ic-gray-600 w-full rounded-3xl border bg-[#1C2C2E] lg:max-w-[67%]'>
+    <div className='border-ic-gray-600 w-full rounded-3xl border bg-[#1C2C2E]'>
       <h3 className='text-ic-white p-6 font-bold'>Your Tokens</h3>
       <div className='border-ic-gray-600 flex w-full border-b px-6 pb-3'>
         <div className='text-ic-gray-400 w-1/2 sm:w-1/3 md:w-3/12'>Token</div>
