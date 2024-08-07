@@ -43,6 +43,9 @@ import { BaseTokenStats } from './types'
 
 const baseTokens = [ETH, BTC]
 const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
+const chainTokenAddresses = {
+  [ARBITRUM.chainId]: leverageTokenAddresses,
+}
 
 export enum LeverageType {
   Long2x,
@@ -143,7 +146,7 @@ export function LeverageProvider(props: { children: any }) {
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const { balances, forceRefetchBalances } = useBalances(
     address,
-    leverageTokenAddresses,
+    chainTokenAddresses[chainId ?? -1],
   )
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
