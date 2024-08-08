@@ -9,7 +9,12 @@ import {
   useState,
 } from 'react'
 import { Address, isAddress } from 'viem'
-import { useAccount, useReadContract, useWalletClient } from 'wagmi'
+import {
+  useAccount,
+  usePublicClient,
+  useReadContract,
+  useWalletClient,
+} from 'wagmi'
 
 import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
@@ -64,6 +69,7 @@ interface Props {
 export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const { address: accountAddress } = useAccount()
   const { data: walletClient } = useWalletClient()
+  const publicClient = usePublicClient()
   const [tvl, setTvl] = useState<number | null>(null)
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
@@ -167,7 +173,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
 
   const stakePrts = useCallback(
     async (amount: bigint) => {
-      if (!walletClient) return
+      if (!walletClient || !publicClient || !accountAddress) return
       if (!canStake || !stakeDomain || !stakeMessage) return
       if (isApprovedStaker) {
         await walletClient.writeContract({
@@ -176,25 +182,36 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           functionName: 'stake',
           args: [amount],
         })
-      } else {
-        const signature = await walletClient.signTypedData({
-          types: {
-            StakeMessage: [
-              {
-                name: 'message',
-                type: 'string',
-              },
-            ],
-          },
-          primaryType: 'StakeMessage',
-          domain: {
-            name: stakeDomain[1],
-            version: stakeDomain[2],
-            chainId: Number(stakeDomain[3]),
-            verifyingContract: stakeDomain[4],
-          },
-          message: { message: stakeMessage },
-        })
+        return
+      }
+
+      // Check if smart contract wallet
+      const bytecode = await publicClient.getCode({
+        address: accountAddress,
+      })
+
+      const typedData = {
+        types: {
+          StakeMessage: [
+            {
+              name: 'message',
+              type: 'string',
+            },
+          ],
+        },
+        primaryType: 'StakeMessage',
+        domain: {
+          name: stakeDomain[1],
+          version: stakeDomain[2],
+          chainId: Number(stakeDomain[3]),
+          verifyingContract: stakeDomain[4],
+        },
+        message: { message: stakeMessage },
+      } as const
+      const signature = await walletClient.signTypedData(typedData)
+
+      if (!bytecode) {
+        // Logic for raw wallets
         await walletClient.writeContract({
           abi: PrtStakingAbi,
           address: stakedTokenAddress,
@@ -202,11 +219,31 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           args: [amount, signature],
         })
         await refetchIsApprovedStaker()
+      } else {
+        // Logic for smart contract wallets
+        const isValidSignature = publicClient.verifyTypedData({
+          ...typedData,
+          address: accountAddress,
+          signature,
+        })
+        if (!isValidSignature) {
+          // broadcast
+        } else {
+          await walletClient.writeContract({
+            abi: PrtStakingAbi,
+            address: stakedTokenAddress,
+            functionName: 'stake',
+            args: [amount, signature],
+          })
+          await refetchIsApprovedStaker()
+        }
       }
     },
     [
+      accountAddress,
       canStake,
       isApprovedStaker,
+      publicClient,
       refetchIsApprovedStaker,
       stakeDomain,
       stakeMessage,
