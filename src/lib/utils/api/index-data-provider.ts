@@ -1,3 +1,5 @@
+import { IndexApiBaseUrl } from '@/constants/server'
+
 export enum IndexDataMetric {
   Fees = 'fees',
   MarketCap = 'marketcap',
@@ -16,14 +18,13 @@ function formatUrl(
   metrics: IndexDataMetric[],
 ) {
   const searchParams = new URLSearchParams({
-    'chainId': chainId.toString(),
-    'subscription-key': process.env.NEXT_PUBLIC_INDEX_DATA_PROVIDER_KEY ?? '',
+    chainId: chainId.toString(),
   })
   for (const metric of metrics) {
     searchParams.append('metrics', metric)
   }
 
-  return `${process.env.NEXT_PUBLIC_INDEX_DATA_PROVIDER_URL}/api/tokens/${tokenAddress}?${searchParams.toString()}`
+  return `${IndexApiBaseUrl}/data/tokens/${tokenAddress}?${searchParams.toString()}`
 }
 
 export class IndexDataProvider {
