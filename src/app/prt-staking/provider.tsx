@@ -20,6 +20,7 @@ import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
 import { formatWeiAsNumber } from '@/lib/utils'
 import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
+import SafeApiKit from '@safe-global/api-kit'
 
 interface Context {
   accountAddress: `0x${string}` | undefined
@@ -227,7 +228,8 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           signature,
         })
         if (!isValidSignature) {
-          // broadcast
+          const apiKit = new SafeApiKit({ chainId: BigInt(1) })
+          console.log(apiKit)
         } else {
           await walletClient.writeContract({
             abi: PrtStakingAbi,
