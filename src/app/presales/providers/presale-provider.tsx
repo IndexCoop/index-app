@@ -6,7 +6,10 @@ import { usePublicClient } from 'wagmi'
 import { formatTvl } from '@/app/products/utils/formatters'
 import { Token, WSTETH } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
-import { IndexApi } from '@/lib/utils/api/index-api'
+import {
+  IndexDataMetric,
+  IndexDataProvider,
+} from '@/lib/utils/api/index-data-provider'
 
 import { PresaleTokenAbi } from '../abis/presale-token-abi'
 import { preSaleTokens } from '../constants'
@@ -70,20 +73,29 @@ export function usePresaleData(symbol: string): PresaleData {
         return
       }
 
+      const indexDataProvider = new IndexDataProvider()
       if (presaleToken.status === PreSaleStatus.TOKEN_LAUNCHED) {
         try {
-          const indexApi = new IndexApi()
-          const marketcapRes = await indexApi.get(
-            `/${presaleToken.symbol}/marketcap`,
-          )
-          setTvl(marketcapRes.marketcap)
+          const res = await indexDataProvider.getTokenMetrics({
+            tokenAddress: presaleToken.address!,
+            metrics: [IndexDataMetric.MarketCap],
+          })
+
+          if (!res?.marketCap) return
+
+          setTvl(res.marketCap)
         } catch (err) {
           console.log('Error fetching marketcap tvl', err)
         }
-      } else {
+      } else if (presaleToken.status !== PreSaleStatus.CLOSED_TARGET_NOT_MET) {
         try {
-          const indexApi = new IndexApi()
-          const supplyRes = await indexApi.get(`/${presaleToken.symbol}/supply`)
+          const res = await indexDataProvider.getTokenMetrics({
+            tokenAddress: presaleToken.address!,
+            metrics: [IndexDataMetric.Supply],
+          })
+
+          if (!res?.supply) return
+
           const realUnitsRes = await publicClient.readContract({
             address: presaleToken.address as Address,
             abi: PresaleTokenAbi,
@@ -91,11 +103,11 @@ export function usePresaleData(symbol: string): PresaleData {
             args: [currencyToken.address as Address],
           })
           setTvl(
-            Number(supplyRes.supply) *
+            res.supply *
               Number(formatUnits(realUnitsRes, presaleToken.decimals)),
           )
         } catch (err) {
-          console.log('Error fetching tvl', err)
+          console.log('Error fetching supply tvl', err)
         }
       }
     }

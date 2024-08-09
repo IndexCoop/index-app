@@ -8,9 +8,13 @@ import { ProductRowItem } from '@/app/products/components/product-row-item'
 import { productTokens } from '@/app/products/constants/tokens'
 import { ProductRow } from '@/app/products/types/product'
 import { SortBy, SortDirection } from '@/app/products/types/sort'
-import { fetchAnalytics, fetchApy } from '@/app/products/utils/api'
+import { fetchApy } from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
 import { formatWei } from '@/lib/utils'
+import {
+  IndexDataMetric,
+  IndexDataProvider,
+} from '@/lib/utils/api/index-data-provider'
 
 const THIRTY_SECONDS_IN_MS = 30 * 1000
 
@@ -24,10 +28,19 @@ export function ProductList() {
   const sortDirection = searchParams.get('dir') ?? SortDirection.DESC
 
   async function fetchProducts() {
+    const indexDataProvider = new IndexDataProvider()
     const analyticsPromises = Promise.all(
       productTokens.map((token) =>
-        // TODO: https://github.com/IndexCoop/analytics-sdk/issues/30
-        token.address ? fetchAnalytics(token.address) : null,
+        token.address
+          ? indexDataProvider.getTokenMetrics({
+              tokenAddress: token.address,
+              metrics: [
+                IndexDataMetric.MarketCap,
+                IndexDataMetric.Nav,
+                IndexDataMetric.NavChange,
+              ],
+            })
+          : null,
       ),
     )
     const apyPromises = Promise.all(
@@ -42,8 +55,8 @@ export function ProductList() {
 
     const products = productTokens.map((token, idx) => ({
       ...token,
-      price: analyticsResults[idx]?.navPrice,
-      delta: analyticsResults[idx]?.change24h,
+      price: analyticsResults[idx]?.nav,
+      delta: analyticsResults[idx]?.navChange,
       tvl: analyticsResults[idx]?.marketCap,
       apy:
         apyResults[idx]?.apy !== undefined && apyResults[idx].apy !== '0'
