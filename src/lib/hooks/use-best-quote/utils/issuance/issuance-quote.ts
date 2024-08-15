@@ -2,7 +2,12 @@ import { getIssuanceModule } from '@indexcoop/flash-mint-sdk'
 import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
-import { BedIndex, LeveragedRethStakingYield, Token } from '@/constants/tokens'
+import {
+  BedIndex,
+  LeveragedRethStakingYield,
+  RealWorldAssetIndex,
+  Token,
+} from '@/constants/tokens'
 import { formatWei } from '@/lib/utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
@@ -27,6 +32,20 @@ interface IssuanceQuoteRequest {
   slippage: number
 }
 
+function getOutputTokenAmount(
+  isIssuance: boolean,
+  outputToken: Token,
+  inputTokenAmount: bigint,
+  units: bigint,
+): bigint {
+  if (!isIssuance) return units
+  if (outputToken.symbol !== RealWorldAssetIndex.symbol) return units
+  return (
+    (inputTokenAmount * BigInt('1000000000000000000')) /
+    BigInt('23800000000000000')
+  )
+}
+
 export async function getEnhancedIssuanceQuote(
   request: IssuanceQuoteRequest,
   publicClient: PublicClient,
@@ -34,8 +53,8 @@ export async function getEnhancedIssuanceQuote(
   const {
     account,
     isIssuance,
-    inputTokenAmount,
     inputToken,
+    inputTokenAmount,
     inputTokenPrice,
     gasPrice,
     nativeTokenPrice,
@@ -48,7 +67,9 @@ export async function getEnhancedIssuanceQuote(
     .address as Address
   if (
     BedIndex.symbol === inputToken.symbol ||
-    LeveragedRethStakingYield.symbol === inputToken.symbol
+    LeveragedRethStakingYield.symbol === inputToken.symbol ||
+    RealWorldAssetIndex.symbol === inputToken.symbol ||
+    RealWorldAssetIndex.symbol === outputToken.symbol
   ) {
     contract = '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
   }
@@ -70,7 +91,12 @@ export async function getEnhancedIssuanceQuote(
           inputToken.address! as Address,
           inputTokenAmount,
         )
-    const outputTokenAmount = units[0]
+    const outputTokenAmount = getOutputTokenAmount(
+      isIssuance,
+      outputToken,
+      request.inputTokenAmount,
+      units[0],
+    )
 
     const indexToken = isIssuance ? outputToken : inputToken
     const indexTokenAmount = isIssuance ? outputTokenAmount : inputTokenAmount
@@ -145,7 +171,7 @@ export async function getEnhancedIssuanceQuote(
       tx: transaction,
     }
   } catch (e) {
-    console.warn('Error fetching redemption quote', e)
+    console.warn('Error fetching issuance quote', e)
     return null
   }
 }

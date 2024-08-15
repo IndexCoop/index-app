@@ -4,7 +4,7 @@ import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
 import { useTrade } from '@/lib/hooks/use-trade'
-import { displayFromWei } from '@/lib/utils'
+import { formatAmountFromWei } from '@/lib/utils'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
 import { ReviewProps } from './components/review'
@@ -66,18 +66,16 @@ export function useTransactionReview(props: ReviewProps) {
     [transactionReview],
   )
 
-  const formattedInputTokenAmount =
-    displayFromWei(
-      transactionReview.inputTokenAmount,
-      decimals,
-      transactionReview.inputToken.decimals,
-    ) ?? ''
-  const formattedOutputTokenAmount =
-    displayFromWei(
-      transactionReview.outputTokenAmount,
-      decimals,
-      transactionReview.outputToken.decimals,
-    ) ?? ''
+  const formattedInputTokenAmount = formatAmountFromWei(
+    transactionReview.inputTokenAmount.toBigInt(),
+    transactionReview.inputToken.decimals,
+    decimals,
+  )
+  const formattedOutputTokenAmount = formatAmountFromWei(
+    transactionReview.outputTokenAmount.toBigInt(),
+    transactionReview.outputToken.decimals,
+    decimals,
+  )
 
   const quote = useMemo(() => {
     if (selectedQuote === QuoteType.flashmint) {

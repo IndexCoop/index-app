@@ -1,4 +1,8 @@
-import { indicesTokenList } from '@/constants/tokenlists'
+import { ARBITRUM } from '@/constants/chains'
+import {
+  indicesTokenList,
+  indicesTokenListArbitrum,
+} from '@/constants/tokenlists'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   ETH,
@@ -22,6 +26,17 @@ describe('PathResolver', () => {
     expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
+  })
+
+  it('returns default for path: /swap (Arbitrum)', async () => {
+    const pathComponents: string[] = []
+    const resolver = new PathResolver()
+    const resolvedPath = resolver.resolve(pathComponents, ARBITRUM.chainId)
+    expect(resolvedPath.isMinting).toBe(true)
+    expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
+    expect(resolvedPath.outputToken.symbol).toBe(
+      indicesTokenListArbitrum[0].symbol,
+    )
   })
 
   it('returns an input token for path: /swap/usdc', async () => {

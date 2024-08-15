@@ -39,7 +39,6 @@ export interface Token {
     | undefined
   isDangerous: boolean
   indexTypes: IndexType[]
-  defaultChain?: number
   isPerp?: boolean
   borrowedAssetSymbol?: string
 }
@@ -72,7 +71,6 @@ export const CoinDeskEthTrendIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const DefiPulseIndex: Token = {
@@ -80,6 +78,7 @@ export const DefiPulseIndex: Token = {
   symbol: 'DPI',
   image: 'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg',
   address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+  arbitrumAddress: '0x9737C658272e66Faad39D7AD337789Ee6D54F500',
   polygonAddress: '0x85955046DF4668e1DD369D2DE9f3AEB98DD2A369',
   optimismAddress: undefined,
   decimals: 18,
@@ -90,7 +89,6 @@ export const DefiPulseIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const DiversifiedStakedETHIndex: Token = {
@@ -108,12 +106,12 @@ export const DiversifiedStakedETHIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.yield],
-  defaultChain: MAINNET.chainId,
 }
 
 const hyeth = getTokenFromSymbol('hyETH')!
 export const HighYieldETHIndex: Token = {
   ...hyeth,
+  arbitrumAddress: '0x8b5D1d8B3466eC21f8eE33cE63F319642c026142',
   coingeckoId: 'hyeth',
   fees: {
     streamingFee: '	0.95%',
@@ -251,7 +249,6 @@ export const IndexToken: Token = {
   fees: undefined,
   isDangerous: true,
   indexTypes: [],
-  defaultChain: MAINNET.chainId,
 }
 
 export const Ethereum2xFlexibleLeverageIndex: Token = {
@@ -269,7 +266,6 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
-  defaultChain: MAINNET.chainId,
 }
 
 export const LeveragedRethStakingYield: Token = {
@@ -287,13 +283,13 @@ export const LeveragedRethStakingYield: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
-  defaultChain: MAINNET.chainId,
 }
 
 export const MetaverseIndex: Token = {
   name: 'Metaverse Index',
   symbol: 'MVI',
   address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
+  arbitrumAddress: '0x0104a6FA30540DC1d9F45D2797F05eEa79304525',
   polygonAddress: '0xfe712251173A2cd5F5bE2B46Bb528328EA3565E1',
   optimismAddress: undefined,
   decimals: 18,
@@ -305,7 +301,6 @@ export const MetaverseIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const Bitcoin2xFlexibleLeverageIndex: Token = {
@@ -323,7 +318,6 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.leverage],
-  defaultChain: MAINNET.chainId,
 }
 
 export const BedIndex: Token = {
@@ -341,7 +335,6 @@ export const BedIndex: Token = {
   },
   isDangerous: false,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const GitcoinStakedETHIndex: Token = {
@@ -359,7 +352,6 @@ export const GitcoinStakedETHIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.yield],
-  defaultChain: MAINNET.chainId,
 }
 
 export const ic21: Token = {
@@ -379,7 +371,6 @@ export const ic21: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.thematic],
-  defaultChain: MAINNET.chainId,
 }
 
 export const icETHIndex: Token = {
@@ -399,7 +390,22 @@ export const icETHIndex: Token = {
   },
   isDangerous: true,
   indexTypes: [IndexType.yield],
-  defaultChain: MAINNET.chainId,
+}
+
+const rwa = getIndexTokenData('RWA', MAINNET.chainId)!
+export const RealWorldAssetIndex: Token = {
+  ...rwa,
+  // Random for now - as no listing
+  coingeckoId: 'rwa',
+  fees: {
+    streamingFee: '	1.95%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: rwa.logoURI,
+  indexTypes: [IndexType.thematic],
+  isDangerous: true,
+  url: 'rwa',
 }
 
 /**

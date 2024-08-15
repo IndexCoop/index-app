@@ -4,6 +4,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useMemo } from 'react'
 
+import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
@@ -17,6 +18,7 @@ import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useMainnetOnly } from '@/lib/hooks/use-network'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
 
@@ -36,15 +38,16 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const { openChainModal } = useChainModal()
   const { signTermsOfService } = useSignTerms()
   const { openConnectModal } = useConnectModal()
+  const { address } = useWallet()
   const {
     inputValue,
     inputToken,
     inputTokenAmount,
+    inputTokens,
     isDepositing,
     isFetchingQuote,
-    preSaleCurrencyToken,
-    preSaleToken,
     onChangeInputTokenAmount,
+    onSelectInputToken,
     outputToken,
     quoteResult,
     reset,
@@ -70,6 +73,11 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     inputTokenAmount,
   )
 
+  const {
+    isOpen: isSelectInputTokenOpen,
+    onOpen: onOpenSelectInputToken,
+    onClose: onCloseSelectInputToken,
+  } = useDisclosure()
   const {
     isOpen: isTransactionReviewOpen,
     onOpen: onOpenTransactionReview,
@@ -172,7 +180,10 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     shouldApprove,
   ])
 
-  const onSelectToken = () => {}
+  const onSelectToken = () => {
+    if (!isDepositing) return
+    onOpenSelectInputToken()
+  }
 
   return (
     <div className='widget w-full min-w-80 flex-1 flex-col space-y-4 rounded-3xl p-6'>
@@ -180,6 +191,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <DepositWithdrawSelector
         isDepositing={isDepositing}
         onClick={toggleIsDepositing}
+        token={token}
       />
       <DepositStats rewards={earnedRewards} userBalance={userBalance} />
       <TradeInputSelector
@@ -187,9 +199,9 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
         balance={inputTokenBalanceFormatted}
         caption='You pay'
         formattedFiat={inputAmoutUsd}
-        selectedToken={isDepositing ? preSaleCurrencyToken : preSaleToken}
+        selectedToken={inputToken}
         selectedTokenAmount={inputValue}
-        showSelectorButtonChevron={false}
+        showSelectorButtonChevron={isDepositing && inputTokens.length > 1}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
         onSelectToken={onSelectToken}
@@ -204,8 +216,20 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       <WarningComp
         warning={{
           title: 'PRT eligibility',
-          node: "Deposits to the contract must be maintained until the end of the post-launch period (60 days after presale closes) in order to maintain PRT eligibility. Once a presale has ended, you can still deposit into a token but there won't be any PRT rewards for doing so.",
+          node: "Deposits to the contract must be maintained until the end of the post-launch period (140 days after presale closes) in order to maintain PRT eligibility. Once a presale has ended, you can still deposit into a token but there won't be any PRT rewards for doing so.",
         }}
+      />
+      <SelectTokenModal
+        isDarkMode={false}
+        isOpen={isSelectInputTokenOpen}
+        showBalances={true}
+        onClose={onCloseSelectInputToken}
+        onSelectedToken={(tokenSymbol) => {
+          onSelectInputToken(tokenSymbol)
+          onCloseSelectInputToken()
+        }}
+        address={address}
+        tokens={inputTokens}
       />
       {transactionReview && (
         <TransactionReviewModal

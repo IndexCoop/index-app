@@ -6,18 +6,19 @@ import { useDebounce } from 'use-debounce'
 import { OnrampModal } from '@/components/onramp'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { useMainnetOnly, useNetwork } from '@/lib/hooks/use-network'
-import { useTokenlists } from '@/lib/hooks/use-tokenlists'
+import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useProtection } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
+import { selectSlippage } from '@/lib/utils/slippage'
 import { getTokenBySymbol, isTokenPairTradable } from '@/lib/utils/tokens'
 
 import { SelectTokenModal } from './components/select-token-modal'
@@ -26,6 +27,7 @@ import { TradeInputSelector } from './components/trade-input-selector'
 import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
 import { useSwap } from './hooks/use-swap'
+import { useTokenlists } from './hooks/use-tokenlists'
 import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
 
 type SwapProps = {
@@ -36,7 +38,10 @@ type SwapProps = {
 
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
-  const isSupportedNetwork = useMainnetOnly()
+  const isSupportedNetwork = useSupportedNetworks([
+    MAINNET.chainId,
+    ARBITRUM.chainId,
+  ])
   const { logEvent } = useAnalytics()
   const requiresProtection = useProtection()
   const isTradablePair = useMemo(
@@ -86,6 +91,7 @@ export const Swap = (props: SwapProps) => {
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
   const { inputTokenslist, outputTokenslist } = useTokenlists(
+    chainId ?? 1,
     isBuying,
     inputToken,
     outputToken,
@@ -134,12 +140,16 @@ export const Swap = (props: SwapProps) => {
 
   const fetchOptions = useCallback(() => {
     if (!isTradablePair) return
+    const indexSymbol = isBuying ? outputToken.symbol : inputToken.symbol
+    const inputOutputTokenSymbol = isBuying
+      ? inputToken.symbol
+      : outputToken.symbol
     fetchQuote({
       isMinting: isBuying,
       inputToken,
       inputTokenAmount: sellTokenAmount,
       outputToken,
-      slippage,
+      slippage: selectSlippage(slippage, indexSymbol, inputOutputTokenSymbol),
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

@@ -9,6 +9,8 @@ export enum PreSaleStatus {
 export type PreSaleToken = {
   status: PreSaleStatus
   symbol: string
+  address: string | undefined
+  decimals: number
   logo?: string
   infoLink?: string
   launchDate?: string
@@ -17,4 +19,5 @@ export type PreSaleToken = {
   prtRewards: string
   targetFundraise: number
   timestampEndDate: number
+  tvlLockedPresale?: string
 }

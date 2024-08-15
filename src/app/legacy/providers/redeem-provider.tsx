@@ -19,7 +19,7 @@ import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { isValidTokenInput, toWei } from '@/lib/utils'
+import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
 export const inputTokenList = [
   GitcoinStakedETHIndex,
@@ -80,7 +80,7 @@ export function RedeemProvider(props: { children: any }) {
     () =>
       inputValue === ''
         ? BigInt(0)
-        : toWei(inputValue, inputToken.decimals).toBigInt(),
+        : parseUnits(inputValue, inputToken.decimals),
     [inputToken, inputValue],
   )
 

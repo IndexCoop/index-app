@@ -27,8 +27,8 @@ interface ResolvedTokenPath {
 export class PathResolver {
   // Returns resolved token path - always.
   // If the path shouldn't be resolvable - a default will be returned.
-  resolve(path: string[]): ResolvedTokenPath {
-    const defaultIndex = getDefaultIndex()
+  resolve(path: string[], chainId: number = 1): ResolvedTokenPath {
+    const defaultIndex = getDefaultIndex(chainId)
     const symbols = this.convertPathToSymbols(path)
 
     if (symbols.inputToken === null && symbols.outputToken === null)

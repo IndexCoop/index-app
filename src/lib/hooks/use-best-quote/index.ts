@@ -1,6 +1,8 @@
+import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
+import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import {
   getEnhancedIssuanceQuote,
@@ -8,7 +10,7 @@ import {
 } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { toWei } from '@/lib/utils'
+import { parseUnits } from '@/lib/utils'
 import {
   getAddressForToken,
   isAvailableForFlashMint,
@@ -74,8 +76,14 @@ export const useBestQuote = (
 
       // Right now we only allow setting the input amount, so no need to check
       // ouput token amount here
-      const inputTokenAmountWei = toWei(inputTokenAmount, inputToken.decimals)
-      if (inputTokenAmountWei.isZero() || inputTokenAmountWei.isNegative()) {
+      const inputTokenAmountWei = parseUnits(
+        inputTokenAmount,
+        inputToken.decimals,
+      )
+      if (
+        inputTokenAmountWei === BigInt(0) ||
+        inputTokenAmountWei < BigInt(0)
+      ) {
         setQuoteResults(defaultResults)
         return
       }
@@ -118,7 +126,9 @@ export const useBestQuote = (
               account: address,
               chainId,
               inputToken,
-              inputTokenAmountWei,
+              inputTokenAmountWei: BigNumber.from(
+                inputTokenAmountWei.toString(),
+              ),
               inputTokenPrice,
               outputToken,
               outputTokenPrice,
@@ -146,7 +156,7 @@ export const useBestQuote = (
               account: address,
               isIssuance: isMinting,
               gasPrice,
-              inputTokenAmount: inputTokenAmountWei.toBigInt(),
+              inputTokenAmount: inputTokenAmountWei,
               inputToken,
               inputTokenPrice,
               outputToken,
@@ -175,7 +185,7 @@ export const useBestQuote = (
               ...request,
               account: address,
               gasPrice: gasPrice,
-              indexTokenAmount: inputTokenAmountWei.toBigInt(),
+              indexTokenAmount: inputTokenAmountWei,
               inputToken,
               inputTokenPrice,
               outputToken,
@@ -229,10 +239,14 @@ export const useBestQuote = (
       }
 
       // Non await - because we want to fetch quotes in parallel
-      fetchIndexSwapQuote()
-      fetchIssuanceQuote()
-      fetchRedemptionQuote()
-      fetchFlashMintQuote()
+      if (chainId === ARBITRUM.chainId) {
+        fetchIndexSwapQuote()
+      } else {
+        fetchIndexSwapQuote()
+        fetchIssuanceQuote()
+        fetchRedemptionQuote()
+        fetchFlashMintQuote()
+      }
     },
     [
       address,
@@ -330,6 +344,15 @@ export const useBestQuote = (
     quoteIssuance,
     quoteRedemption,
   ])
+
+  useEffect(() => {
+    // Reset quotes
+    setQuote0x(null)
+    setQuoteFlashmint(null)
+    setQuoteIssuance(null)
+    setQuoteRedemption(null)
+    setQuoteResults(defaultResults)
+  }, [chainId])
 
   const isFetchingAnyQuote = useMemo(() => {
     return isFetching0x || isFetchingFlashmint

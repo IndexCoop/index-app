@@ -1,7 +1,11 @@
 import { IndexCoopInverseEthereumIndex } from '@indexcoop/flash-mint-sdk'
 
 import { ARBITRUM, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
-import { currencies, indicesTokenList } from '@/constants/tokenlists'
+import {
+  currencies,
+  indicesTokenList,
+  indicesTokenListArbitrum,
+} from '@/constants/tokenlists'
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -11,6 +15,7 @@ import {
   ETH,
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  GUSD,
   HighYieldETHIndex,
   ic21,
   icETHIndex,
@@ -22,6 +27,7 @@ import {
   IndexToken,
   LeveragedRethStakingYield,
   MATIC,
+  RealWorldAssetIndex,
   RETH,
   SETH2,
   STETH,
@@ -79,16 +85,16 @@ export function getCurrencyTokensForIndex(
     return [ETH, WETH, WBTC, USDC, USDT]
   }
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
-    return [ETH, WETH, USDC, DAI]
-  if (index.symbol === ic21.symbol) return [ETH, WETH]
+    return [ETH, WETH, USDC, DAI, GUSD]
+  if (index.symbol === ic21.symbol) return [WETH]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||
     index.symbol === GitcoinStakedETHIndex.symbol
   )
-    return [ETH, WETH, USDC, RETH, STETH, SETH2, WSTETH]
+    return [ETH, WETH, USDC, GUSD, RETH, STETH, SETH2, WSTETH]
   if (index.symbol === LeveragedRethStakingYield.symbol)
-    return [ETH, WETH, USDC, RETH]
+    return [ETH, WETH, USDC, GUSD, RETH]
   const currencyTokens = getCurrencyTokens(chainId)
   if (index.symbol === Bitcoin2xFlexibleLeverageIndex.symbol) {
     return [IndexCoopBitcoin2xIndex, ...currencyTokens]
@@ -99,7 +105,8 @@ export function getCurrencyTokensForIndex(
   return currencyTokens
 }
 
-export function getDefaultIndex(): Token {
+export function getDefaultIndex(chainId: number = 1): Token {
+  if (chainId === ARBITRUM.chainId) return indicesTokenListArbitrum[0]
   return indicesTokenList[0]
 }
 
@@ -142,11 +149,16 @@ export function isAvailableForFlashMint(token: Token): boolean {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function isAvailableForIssuance(inputToken: Token, _: Token): boolean {
+export function isAvailableForIssuance(
+  inputToken: Token,
+  outputToken: Token,
+): boolean {
   return (
     inputToken.symbol === BedIndex.symbol ||
     inputToken.symbol === GitcoinStakedETHIndex.symbol ||
-    inputToken.symbol === LeveragedRethStakingYield.symbol
+    inputToken.symbol === LeveragedRethStakingYield.symbol ||
+    inputToken.symbol === RealWorldAssetIndex.symbol ||
+    outputToken.symbol === RealWorldAssetIndex.symbol
   )
 }
 
@@ -182,6 +194,7 @@ export function isIndexToken(token: Token): boolean {
   if (token.symbol === IndexCoopEthereum3xIndex.symbol) return true
   if (token.symbol === IndexCoopInverseBitcoinIndex.symbol) return true
   if (token.symbol === IndexCoopInverseEthereumIndex.symbol) return true
+  if (token.symbol === RealWorldAssetIndex.symbol) return true
   return indicesTokenList.some((index) =>
     isSameAddress(index.address!, token.address!),
   )

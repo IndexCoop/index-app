@@ -38,6 +38,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Add that token object to [tokenslist](src/constants/tokenlists.ts)
 - If the token is only available for either Swap or FlashMint, add an entry to `isAvailableForFlashMint` or `isAvailableForSwap` in [token utils](src/lib/utils/tokens.ts). Write a test too!
 
+## New Presale
+
+- Make sure the token data was added to [tokenlists](https://github.com/IndexCoop/tokenlists)
+- Add logo in [assets](public/assets) - as defined in tokenlists
+- Update tokenlists dependency
+- Add token in [tokens.ts](src/constants/tokens.ts)
+- Add presale config in [src/app/presales/constants.ts](src/app/presales/constants.ts) and update `getTokenForPresaleToken`
+- Test locally w/ hardhat
+
 ## Testing
 
 ### Unit tests

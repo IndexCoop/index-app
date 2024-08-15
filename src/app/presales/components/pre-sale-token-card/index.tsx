@@ -20,7 +20,12 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
     token.status === PreSaleStatus.CLOSED_TARGET_MET ||
     token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET
   return (
-    <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
+    <div
+      className={clsx(
+        'border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5',
+        token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET && 'opacity-75',
+      )}
+    >
       <div className='mb-4 flex font-bold tracking-wider'>
         <div className='flex flex-1 self-center'>
           <div className='my-auto mr-2 overflow-hidden rounded-full'>
@@ -35,7 +40,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         </div>
         <StatusChip status={token.status} />
       </div>
-      <div className='min-h-24'>
+      <div className='md:min-h-40 lg:min-h-32'>
         <p className='text-ic-gray-800 mb-3 text-sm font-medium leading-6'>
           {token.description}
         </p>
@@ -49,7 +54,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </a>
         )}
       </div>
-      <p className='text-ic-gray-400 mb-6 text-xs font-medium'>
+      <p className='text-ic-gray-400 mb-6 text-xs font-medium md:min-h-8 lg:min-h-0'>
         Components from {token.componentsFrom.join(', ')}
       </p>
       <Tooltip
@@ -107,7 +112,13 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='mb-2 flex'>
-          <div className='flex-1'>Total Deposits</div>
+          <div className='flex-1'>
+            {token.status === PreSaleStatus.TOKEN_LAUNCHED
+              ? 'TVL'
+              : token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET
+                ? 'Total Value Locked in Presale'
+                : 'Total Deposits'}
+          </div>
           <div className='text-ic-gray-800'>
             <span className='text-ic-gray-950 font-bold'>{formatted.tvl}</span>
           </div>
@@ -128,7 +139,15 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
         </div>
       </div>
       <button
-        className='text-ic-white bg-ic-blue-600 w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]'
+        className={clsx(
+          'text-ic-white w-full rounded-lg py-2.5 font-bold disabled:cursor-not-allowed disabled:bg-[#CFD9D9]',
+          {
+            'bg-ic-blue-600':
+              token.status !== PreSaleStatus.CLOSED_TARGET_NOT_MET,
+            'bg-ic-gray-700':
+              token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET,
+          },
+        )}
         disabled={
           token.status === PreSaleStatus.NOT_STARTED || onClick === undefined
         }

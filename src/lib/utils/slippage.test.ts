@@ -3,6 +3,7 @@ import {
   CoinDeskEthTrendIndex,
   DiversifiedStakedETHIndex,
   ETH,
+  HighYieldETHIndex,
   icETHIndex,
   LeveragedRethStakingYield,
   USDC,
@@ -111,6 +112,16 @@ describe('selectSlippage()', () => {
     const expectedSlippage = 0.1
     const index = LeveragedRethStakingYield.symbol
     const inputOutputToken = USDC.symbol
+    const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
+    const result = selectSlippage(slippageModified!, index, inputOutputToken)
+    expect(slippageModified).toBe(expectedSlippage)
+    expect(result).toBe(expectedSlippage)
+  })
+
+  it('returns correct slippage for hyETH', () => {
+    const expectedSlippage = 0.2
+    const index = HighYieldETHIndex.symbol
+    const inputOutputToken = ETH.symbol
     const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
     const result = selectSlippage(slippageModified!, index, inputOutputToken)
     expect(slippageModified).toBe(expectedSlippage)

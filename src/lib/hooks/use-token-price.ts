@@ -31,12 +31,10 @@ export const getTokenPrice = async (
   chainId: number | undefined,
 ): Promise<number> => {
   const tokenAddress = getAddressForToken(token, chainId)
-  console.log(token.symbol, tokenAddress)
   if (!tokenAddress || !chainId) return 0
   if (isIndexToken(token)) {
     const navProvider = new NavProvider()
     const price = await navProvider.getNavPrice(token.symbol, chainId)
-    console.log(token.symbol, price)
     return price
   }
   const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)

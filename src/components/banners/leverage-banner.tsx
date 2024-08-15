@@ -7,20 +7,43 @@ import { Banner } from './banner'
 export function LeverageBanner() {
   return (
     <Banner>
-      Trade on Arbitrum and earn ARB rewards now. Early users will earn 2bps /
-      day in ARB on all{' '}
-      <Link className='underline' href={Path.LEVERAGE}>
-        Leverage Suite tokens
-      </Link>{' '}
-      held. Track your rewards{' '}
+      Earn ARB rewards for{' '}
       <a
-        href='https://dune.com/index_coop/arb-rewards'
+        href='https://app.indexcoop.com/swap/eth/mvi'
+        target='_self'
+        className='underline'
+      >
+        MVI
+      </a>
+      ,{' '}
+      <a
+        href='https://app.indexcoop.com/swap/eth/dpi'
+        target='_self'
+        className='underline'
+      >
+        DPI
+      </a>
+      ,{' '}
+      <a
+        href='https://app.indexcoop.com/swap/eth/hyETH'
+        target='_blank'
+        className='underline'
+      >
+        hyETH
+      </a>{' '}
+      and our{' '}
+      <Link className='underline' href={Path.LEVERAGE}>
+        Leverage Tokens
+      </Link>{' '}
+      on <b>Arbitrum.</b> FAQ and rewards tracking{' '}
+      <a
+        href='https://indexcoop.com/product-faqs/arb-rewards-ccip-faq'
         target='_blank'
         className='underline'
       >
         here
       </a>
-      .
+      {'.'}
     </Banner>
   )
 }
