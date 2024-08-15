@@ -1,5 +1,6 @@
 'use client'
 
+import SafeApiKit from '@safe-global/api-kit'
 import {
   ReactNode,
   createContext,
@@ -20,7 +21,6 @@ import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
 import { formatWeiAsNumber } from '@/lib/utils'
 import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
-import SafeApiKit from '@safe-global/api-kit'
 
 interface Context {
   accountAddress: `0x${string}` | undefined
