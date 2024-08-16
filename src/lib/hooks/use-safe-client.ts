@@ -60,7 +60,6 @@ export function useSafeClient() {
       )
     } else {
       // Message not created yet
-
       await apiKit.addMessage(safeAddress, {
         message: typedData as unknown as LegacyEIP712TypedData,
         signature: buildSignatureBytes([signature]),
