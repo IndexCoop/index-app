@@ -1,6 +1,6 @@
 'use client'
 
-import SafeApiKit from '@safe-global/api-kit'
+import { EIP712TypedData } from '@safe-global/safe-core-sdk-types'
 import {
   ReactNode,
   createContext,
@@ -19,6 +19,7 @@ import {
 
 import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
+import { useSafeClient } from '@/lib/hooks/use-safe-client'
 import { formatWeiAsNumber } from '@/lib/utils'
 import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
 
@@ -71,6 +72,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const { address: accountAddress } = useAccount()
   const { data: walletClient } = useWalletClient()
   const publicClient = usePublicClient()
+  const safeClient = useSafeClient()
   const [tvl, setTvl] = useState<number | null>(null)
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
@@ -209,10 +211,10 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         },
         message: { message: stakeMessage },
       } as const
-      const signature = await walletClient.signTypedData(typedData)
 
       if (!bytecode) {
         // Logic for raw wallets
+        const signature = await walletClient.signTypedData(typedData)
         await walletClient.writeContract({
           abi: PrtStakingAbi,
           address: stakedTokenAddress,
@@ -222,20 +224,16 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         await refetchIsApprovedStaker()
       } else {
         // Logic for smart contract wallets
-        const isValidSignature = publicClient.verifyTypedData({
-          ...typedData,
-          address: accountAddress,
-          signature,
-        })
-        if (!isValidSignature) {
-          const apiKit = new SafeApiKit({ chainId: BigInt(1) })
-          console.log(apiKit)
-        } else {
+        await safeClient.signTypedData(typedData as unknown as EIP712TypedData)
+        const validSignature = await safeClient.validSafeSignature(
+          typedData as unknown as EIP712TypedData,
+        )
+        if (validSignature) {
           await walletClient.writeContract({
             abi: PrtStakingAbi,
             address: stakedTokenAddress,
             functionName: 'stake',
-            args: [amount, signature],
+            args: [amount, validSignature],
           })
           await refetchIsApprovedStaker()
         }
@@ -247,6 +245,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       isApprovedStaker,
       publicClient,
       refetchIsApprovedStaker,
+      safeClient,
       stakeDomain,
       stakeMessage,
       stakedTokenAddress,
