@@ -31,12 +31,14 @@ export default function Page() {
         <div className='mx-auto flex w-full flex-col gap-8 px-4 py-12'>
           <div className='flex flex-col md:flex-row'>
             <Title />
-            <Stats onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
-            <div className='h-full min-h-[360px] w-full lg:min-w-[67%] lg:max-w-[67%]'>
-              <TradingViewWidget baseToken={baseToken} symbol={ETH.symbol} />
-              <TradingViewWidget baseToken={baseToken} symbol={BTC.symbol} />
+            <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
+              <Stats onClickBaseTokenSelector={onOpenSelectBaseToken} />
+              <div className='h-full min-h-[360px]'>
+                <TradingViewWidget baseToken={baseToken} symbol={ETH.symbol} />
+                <TradingViewWidget baseToken={baseToken} symbol={BTC.symbol} />
+              </div>
             </div>
             <LeverageWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
           </div>
