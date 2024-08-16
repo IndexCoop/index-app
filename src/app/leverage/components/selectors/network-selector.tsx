@@ -1,4 +1,4 @@
-import { ARBITRUM, MAINNET, OPTIMISM } from '@/constants/chains'
+import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { useNetwork } from '@/lib/hooks/use-network'
 
 import { SelectorButton } from './selector-button'
@@ -38,9 +38,9 @@ export function NetworkSelector(props: NetworkSelectorProps) {
             selected: '/assets/selector-network-base.png',
             disabled: '/assets/selector-network-base-disabled.png',
           }}
-          isSelected={chainId === OPTIMISM.chainId}
+          isSelected={chainId === BASE.chainId}
           onClick={() => {
-            props.onSelectNetwork(OPTIMISM.chainId)
+            props.onSelectNetwork(BASE.chainId)
           }}
         />
       </div>
