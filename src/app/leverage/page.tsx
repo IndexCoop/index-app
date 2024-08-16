@@ -9,6 +9,7 @@ import { BTC, ETH } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { BaseAssetSelector } from '@/app/leverage/components/selectors/base-asset-selector'
+import { NetworkSelector } from '@/app/leverage/components/selectors/network-selector'
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
 import { Stats } from './components/stats'
@@ -30,10 +31,16 @@ export default function Page() {
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
         <div className='mx-auto flex w-full flex-col gap-8 px-4 py-12'>
-          <div className='flex flex-row md:flex-row'>
+          <div className='flex flex-row gap-10 md:flex-row'>
             <Title />
             <BaseAssetSelector
               onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
+            />
+
+            <NetworkSelector
+              onSelectNetwork={(chainId) =>
+                console.log('change network to', chainId)
+              }
             />
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
