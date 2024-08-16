@@ -33,16 +33,18 @@ export default function Page() {
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
         <div className='mx-auto flex w-full flex-col gap-8 px-4 py-12'>
-          <div className='flex flex-row gap-10 md:flex-row'>
+          <div className='flex flex-col gap-10 md:flex-row'>
             <Title />
-            <BaseAssetSelector
-              onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
-            />
-            <NetworkSelector
-              onSelectNetwork={(chainId) => {
-                walletClient?.switchChain({ id: chainId })
-              }}
-            />
+            <div className='flex flex-row gap-10 '>
+              <BaseAssetSelector
+                onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
+              />
+              <NetworkSelector
+                onSelectNetwork={(chainId) => {
+                  walletClient?.switchChain({ id: chainId })
+                }}
+              />
+            </div>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
