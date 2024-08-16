@@ -1,4 +1,4 @@
-import { arbitrum } from 'viem/chains'
+import { arbitrum, base } from 'viem/chains'
 
 export type ChainData = {
   name: string
@@ -23,6 +23,21 @@ export const ARBITRUM: ChainData = {
   icon: 'https://assets.coingecko.com/coins/images/16547/large/photo_2023-03-29_21.47.00.jpeg',
   coingeckoId: 'arbitrum',
   blockExplorerUrl: arbitrum.blockExplorers.default.url + '/',
+  nativeCurrency: {
+    name: 'Ether',
+    symbol: 'ETH',
+    decimals: 18,
+  },
+}
+
+export const BASE: ChainData = {
+  name: 'Base',
+  chainId: base.id,
+  chainId0x: '0x2105',
+  rpcUrl: base.rpcUrls.default.http[0],
+  icon: 'https://assets.coingecko.com/nft_contracts/images/2989/large/base-introduced.png',
+  coingeckoId: 'base',
+  blockExplorerUrl: base.blockExplorers.default.url + '/',
   nativeCurrency: {
     name: 'Ether',
     symbol: 'ETH',
