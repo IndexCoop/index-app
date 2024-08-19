@@ -17,7 +17,7 @@ export function Stats() {
     high24h,
   } = useFormattedLeverageData(stats)
   return (
-    <div className='border-ic-gray-600 flex w-full flex-row items-center justify-between rounded-3xl border bg-[#1C2C2E]'>
+    <div className='border-ic-gray-600 flex w-full flex-row items-center justify-between rounded-3xl border bg-[#1C2C2E] px-4'>
       <StatsItem
         token={baseToken}
         change24h={change24h}
