@@ -1,6 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { PopupButton } from '@typeform/embed-react'
 import { useWalletClient } from 'wagmi'
 
@@ -21,6 +22,7 @@ import { YourTokens } from './components/your-tokens'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
+  const { openConnectModal } = useConnectModal()
   const { data: walletClient } = useWalletClient()
   const { address } = useWallet()
   const {
@@ -41,6 +43,10 @@ export default function Page() {
               />
               <NetworkSelector
                 onSelectNetwork={(chainId) => {
+                  console.log(walletClient)
+                  if (!walletClient && openConnectModal) {
+                    openConnectModal()
+                  }
                   walletClient?.switchChain({ id: chainId })
                 }}
               />
