@@ -95,7 +95,7 @@ export function useFormattedLeverageData(
 
   return {
     symbol: stats?.symbol ?? '',
-    price: stats ? `$${formatAmount(stats.price)}` : '',
+    price: stats ? formatDollarAmount(stats.price) : '',
     indexTokenPrice: formatDollarAmount(indexTokenPrice),
     change24h: stats ? `${stats.change24h.toFixed(2)}%` : '',
     change24hIsPositive: stats ? stats.change24h >= 0 : true,
