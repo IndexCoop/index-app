@@ -104,7 +104,7 @@ export function useFormattedLeverageData(
     hasInsufficientFunds,
     gasFeesEth,
     gasFeesUsd: quote?.gasCostsInUsd
-      ? `$${formatAmount(quote.gasCostsInUsd)}`
+      ? formatDollarAmount(quote.gasCostsInUsd)
       : '',
     contract,
     inputAmount,
