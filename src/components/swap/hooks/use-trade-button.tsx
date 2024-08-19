@@ -43,13 +43,13 @@ export function useTradeButton(
       case TradeButtonState.connectWallet:
       case TradeButtonState.signTerms:
       case TradeButtonState.fetchingError:
+      case TradeButtonState.wrongNetwork:
         return false
       case TradeButtonState.approving:
       case TradeButtonState.enterAmount:
       case TradeButtonState.insufficientFunds:
       case TradeButtonState.loading:
       case TradeButtonState.notAvailable:
-      case TradeButtonState.wrongNetwork:
         return true
       default:
         return false
