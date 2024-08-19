@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { formatAmount, formatWei } from '@/lib/utils'
+import { formatAmount, formatDollarAmount, formatWei } from '@/lib/utils'
 
 import { useLeverageToken } from './provider'
 import { BaseTokenStats } from './types'
@@ -10,6 +10,7 @@ import { BaseTokenStats } from './types'
 export interface FormattedLeverageData {
   symbol: string
   price: string
+  indexTokenPrice: string
   change24h: string
   change24hIsPositive: boolean
   low24h: string
@@ -34,6 +35,7 @@ export function useFormattedLeverageData(
 ): FormattedLeverageData {
   const { address } = useWallet()
   const {
+    indexTokenPrice,
     inputToken,
     inputTokenAmount,
     inputValue,
@@ -93,7 +95,8 @@ export function useFormattedLeverageData(
 
   return {
     symbol: stats?.symbol ?? '',
-    price: stats ? `$${formatAmount(stats.price)}` : '',
+    price: stats ? formatDollarAmount(stats.price) : '',
+    indexTokenPrice: formatDollarAmount(indexTokenPrice),
     change24h: stats ? `${stats.change24h.toFixed(2)}%` : '',
     change24hIsPositive: stats ? stats.change24h >= 0 : true,
     low24h: stats ? formatAmount(stats.low24h) : '',
@@ -101,7 +104,7 @@ export function useFormattedLeverageData(
     hasInsufficientFunds,
     gasFeesEth,
     gasFeesUsd: quote?.gasCostsInUsd
-      ? `$${formatAmount(quote.gasCostsInUsd)}`
+      ? formatDollarAmount(quote.gasCostsInUsd)
       : '',
     contract,
     inputAmount,
