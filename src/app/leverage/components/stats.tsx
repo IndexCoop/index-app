@@ -57,8 +57,7 @@ type StatsItemProps = {
 }
 
 function StatsItem(props: StatsItemProps) {
-  const { change24h, change24hIsPositive, high24h, low24h, price, token } =
-    props
+  const { change24h, change24hIsPositive, price, token } = props
   const iconColor = change24hIsPositive ? 'fill-ic-green' : 'fill-ic-red'
   const iconScale = change24hIsPositive ? '' : '-scale-100'
   const textColor = change24hIsPositive ? 'text-[#65D993]' : 'text-ic-red'
