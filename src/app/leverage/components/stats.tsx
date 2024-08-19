@@ -29,8 +29,8 @@ export function Stats(props: StatsProps) {
       <div className='bg-ic-gray-800 h-full w-[1px]' />
       <StatsItem
         token={indexToken}
-        change24h={change24h}
-        change24hIsPositive={change24hIsPositive}
+        change24h={''}
+        change24hIsPositive={true}
         high24h={high24h}
         low24h={low24h}
         price={price}
@@ -69,7 +69,7 @@ function StatsItem(props: StatsItemProps) {
       </div>
       <div className='hidden flex-col gap-1 sm:flex md:hidden lg:flex'>
         <div className='text-ic-gray-100 text-xs font-normal'>24h Change</div>
-        {change24h.length > 0 && (
+        {change24h.length > 0 ? (
           <div className='flex flex-row items-center gap-1'>
             <div>
               <svg
@@ -87,6 +87,8 @@ function StatsItem(props: StatsItemProps) {
               {change24h}
             </div>
           </div>
+        ) : (
+          <div className={clsx('text-base font-semibold', textColor)}>n/a</div>
         )}
       </div>
       {/* <div className='hidden flex-col gap-1 sm:flex md:hidden lg:flex'>
