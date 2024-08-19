@@ -1,6 +1,6 @@
 'use client'
 
-import { useArcxAnalytics } from '@arcxmoney/analytics'
+import { useArcxAnalytics } from '@0xarc-io/analytics'
 import { useCallback } from 'react'
 import ReactGA from 'react-ga4'
 import { useAccount } from 'wagmi'
