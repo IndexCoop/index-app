@@ -269,7 +269,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   return (
     <PrtStakingContext.Provider
       value={{
-        accountAddress,
+        accountAddress: accountAddress as `0x${string}` | undefined,
         canStake: canStake ?? false,
         claimPrts,
         claimableRewardsFormatted: formatWeiAsNumber(

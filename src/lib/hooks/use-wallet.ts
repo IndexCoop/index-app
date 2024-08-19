@@ -38,7 +38,7 @@ export const useWallet = (): Account => {
     : null
   const isConnected = !!address
   return {
-    address,
+    address: address as `0x${string}` | undefined,
     isConnected,
     jsonRpcProvider,
     provider: publicClient ?? null,
