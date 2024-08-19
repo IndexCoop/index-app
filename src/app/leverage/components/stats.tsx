@@ -12,7 +12,7 @@ type StatsProps = {
 }
 
 export function Stats(props: StatsProps) {
-  const { baseToken, stats } = useLeverageToken()
+  const { baseToken, indexToken, stats } = useLeverageToken()
   const { price, change24h, change24hIsPositive, low24h, high24h } =
     useFormattedLeverageData(stats)
   return (
@@ -28,7 +28,7 @@ export function Stats(props: StatsProps) {
       />
       <div className='bg-ic-gray-800 h-full w-[1px]' />
       <StatsItem
-        token={baseToken}
+        token={indexToken}
         change24h={change24h}
         change24hIsPositive={change24hIsPositive}
         high24h={high24h}
