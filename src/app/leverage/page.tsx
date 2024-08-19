@@ -48,7 +48,7 @@ export default function Page() {
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
-              <Stats onClickBaseTokenSelector={onOpenSelectBaseToken} />
+              <Stats />
               <div className='h-full min-h-[360px]'>
                 <TradingViewWidget baseToken={baseToken} symbol={ETH.symbol} />
                 <TradingViewWidget baseToken={baseToken} symbol={BTC.symbol} />

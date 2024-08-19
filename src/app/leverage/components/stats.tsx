@@ -1,17 +1,12 @@
 import clsx from 'clsx'
 
+import { TokenDisplay } from '@/app/leverage/components/leverage-widget/components/token-display'
 import { Token } from '@/constants/tokens'
 
 import { useLeverageToken } from '../provider'
 import { useFormattedLeverageData } from '../use-formatted-data'
 
-import { BaseTokenSelector } from './leverage-widget/components/base-token-selector'
-
-type StatsProps = {
-  onClickBaseTokenSelector: () => void
-}
-
-export function Stats(props: StatsProps) {
+export function Stats() {
   const { baseToken, indexToken, stats } = useLeverageToken()
   const {
     indexTokenPrice,
@@ -30,7 +25,6 @@ export function Stats(props: StatsProps) {
         high24h={high24h}
         low24h={low24h}
         price={price}
-        onClickBaseTokenSelector={props.onClickBaseTokenSelector}
       />
       <div className='bg-ic-gray-800 h-full w-[1px]' />
       <StatsItem
@@ -40,7 +34,6 @@ export function Stats(props: StatsProps) {
         high24h={high24h}
         low24h={low24h}
         price={indexTokenPrice}
-        onClickBaseTokenSelector={props.onClickBaseTokenSelector}
       />
     </div>
   )
@@ -53,7 +46,6 @@ type StatsItemProps = {
   change24hIsPositive: boolean
   high24h: string
   low24h: string
-  onClickBaseTokenSelector: () => void
 }
 
 function StatsItem(props: StatsItemProps) {
@@ -64,10 +56,7 @@ function StatsItem(props: StatsItemProps) {
   return (
     <div className='flex flex-grow flex-row items-center justify-center py-3 md:gap-6 md:py-6'>
       <div className='flex'>
-        <BaseTokenSelector
-          baseToken={token}
-          onClick={props.onClickBaseTokenSelector}
-        />
+        <TokenDisplay token={token} />
       </div>
       <div className='text-ic-white ml-auto text-xl font-semibold sm:ml-0'>
         {price}
