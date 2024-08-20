@@ -6,29 +6,34 @@ import Safe, {
   hashSafeMessage,
 } from '@safe-global/protocol-kit'
 import { EIP712TypedData } from '@safe-global/safe-core-sdk-types'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 export function useSafeClient() {
   const { address, rpcUrl } = useWallet()
   const [protocolKit, setProtocolKit] = useState<Safe | null>(null)
-  const apiKit = new SafeApiKit({ chainId: BigInt(1) })
-
-  // FIXME: Source safeAddress
-  const safeAddress = '0xSAFE'
+  const [safeAddress, setSafeAddress] = useState<string | null>(null)
+  const apiKit = useMemo(() => new SafeApiKit({ chainId: BigInt(1) }), [])
 
   useEffect(() => {
-    async function load() {
+    async function loadProtocolKit() {
       if (!rpcUrl || !address) return
+      const safeAccounts = await apiKit.getSafesByOwner(address)
+      console.log('safeAccounts', safeAccounts)
+      // FIXME: Determine correct safe account
+      const safeAddress = safeAccounts.safes.shift() ?? null
+      if (!safeAddress) return
+
+      setSafeAddress(safeAddress)
       const protocolKit = await Safe.init({
         provider: rpcUrl,
         safeAddress,
       })
       setProtocolKit(protocolKit)
     }
-    load()
-  }, [address, rpcUrl])
+    loadProtocolKit()
+  }, [address, apiKit, rpcUrl])
 
   const validSafeSignature = async (typedData: EIP712TypedData) => {
     if (!protocolKit) return null
@@ -44,7 +49,7 @@ export function useSafeClient() {
   }
 
   const signTypedData = async (typedData: EIP712TypedData) => {
-    if (!protocolKit || !address) return
+    if (!protocolKit || !address || !safeAddress) return
 
     const safeMessage = protocolKit.createMessage(typedData)
     const signature = safeMessage.getSignature(address) as EthSafeSignature
