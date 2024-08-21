@@ -23,6 +23,11 @@ export interface UniswapQuoteRequest {
 export async function POST(request: NextRequest) {
   const body: UniswapQuoteRequest = await request.json()
   const { chainId, inputAmount, outputAmount } = body
+
+  if (!inputAmount && !outputAmount) {
+    return NextResponse.json({ message: 'Bad Request' }, { status: 400 })
+  }
+
   try {
     const isExactOutput = outputAmount !== undefined
 
