@@ -23,7 +23,8 @@ export function useSafeClient() {
       const safeAccounts = await apiKit.getSafesByOwner(address)
       console.log('safeAccounts', safeAccounts)
       // FIXME: Determine correct safe account
-      const safeAddress = safeAccounts.safes.shift() ?? null
+      const safeAddress =
+        safeAccounts.safes.length > 0 ? safeAccounts.safes[0] : null
       console.log('safeAddress', safeAddress)
       if (!safeAddress) return
 

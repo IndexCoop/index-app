@@ -36,6 +36,7 @@ interface Context {
   refetchUserStakedBalance: () => void
   stakePrts: (amount: bigint) => void
   timeUntilNextSnapshotSeconds: number
+  testSignature: () => void
   token: ProductRevenueToken | null
   tvl: number | null
   unstakePrts: (amount: bigint) => void
@@ -54,6 +55,7 @@ const PrtStakingContext = createContext<Context>({
   poolStakedBalanceFormatted: 0,
   refetchClaimableRewards: () => {},
   refetchUserStakedBalance: () => {},
+  testSignature: () => {},
   stakePrts: () => {},
   timeUntilNextSnapshotSeconds: 0,
   token: null,
@@ -174,6 +176,51 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     })
   }, [stakedTokenAddress, walletClient])
 
+  const testSignature = async () => {
+    if (!walletClient || !publicClient || !accountAddress) return
+    if (!canStake || !stakeDomain || !stakeMessage) return
+
+    // Check if smart contract wallet
+    const bytecode = await publicClient.getCode({
+      address: accountAddress,
+    })
+
+    console.log('bytecode value', bytecode)
+
+    const typedData = {
+      types: {
+        StakeMessage: [
+          {
+            name: 'message',
+            type: 'string',
+          },
+        ],
+      },
+      primaryType: 'StakeMessage',
+      domain: {
+        name: stakeDomain[1],
+        version: stakeDomain[2],
+        chainId: Number(stakeDomain[3]),
+        verifyingContract: stakeDomain[4],
+      },
+      message: { message: stakeMessage },
+    } as const
+
+    console.log('typedData', typedData)
+
+    // Logic for smart contract wallets
+    await safeClient.signTypedData(typedData as unknown as EIP712TypedData)
+    const validSignature = await safeClient.validSafeSignature(
+      typedData as unknown as EIP712TypedData,
+    )
+    console.log('valid signature value', validSignature)
+    if (validSignature) {
+      console.log('valid signature yes')
+    } else {
+      console.log('not a valid signature')
+    }
+  }
+
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient || !publicClient || !accountAddress) return
@@ -292,6 +339,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         timeUntilNextSnapshotSeconds: timeUntilNextSnapshotSeconds
           ? Number(timeUntilNextSnapshotSeconds)
           : 0,
+        testSignature,
         token,
         tvl,
         unstakePrts,

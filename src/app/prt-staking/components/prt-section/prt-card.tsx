@@ -23,6 +23,7 @@ export function PrtCard({ onClick }: Props) {
     claimableRewardsFormatted,
     cumulativeRevenue,
     lifetimeRewardsFormatted,
+    testSignature,
     timeUntilNextSnapshotSeconds,
     token,
     tvl,
@@ -49,10 +50,11 @@ export function PrtCard({ onClick }: Props) {
 
     if (!isSupportedNetwork) {
       openChainModal?.()
+      onClick(token)
       return
     }
 
-    onClick(token)
+    testSignature()
   }
 
   // poolStakedBalance can be 0
