@@ -19,6 +19,7 @@ export function useSafeClient() {
   useEffect(() => {
     async function loadProtocolKit() {
       if (!rpcUrl || !address) return
+      console.log('ownerAddress', address)
       const safeAccounts = await apiKit.getSafesByOwner(address)
       console.log('safeAccounts', safeAccounts)
       // FIXME: Determine correct safe account
