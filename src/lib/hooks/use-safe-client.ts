@@ -32,6 +32,7 @@ export function useSafeClient() {
       const protocolKit = await Safe.init({
         provider: rpcUrl,
         safeAddress,
+        signer: address,
       })
       setProtocolKit(protocolKit)
     }
