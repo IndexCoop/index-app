@@ -59,14 +59,18 @@ export function useSafeClient() {
     const safeMessageHash = await protocolKit.getSafeMessageHash(
       hashSafeMessage(typedData),
     )
-    const confirmedMessage = await apiKit.getMessage(safeMessageHash)
-    if (confirmedMessage.confirmations.length > 0) {
-      // Message exists and is already signed
-      await apiKit.addMessageSignature(
-        safeMessageHash,
-        buildSignatureBytes([signature]),
-      )
-    } else {
+    try {
+      const confirmedMessage = await apiKit.getMessage(safeMessageHash)
+      console.log('got confirmedMessage', confirmedMessage)
+      if (confirmedMessage.confirmations.length > 0) {
+        // Message exists and is already signed
+        await apiKit.addMessageSignature(
+          safeMessageHash,
+          buildSignatureBytes([signature]),
+        )
+      }
+    } catch (e) {
+      console.error('e', e)
       // Message not created yet
       await apiKit.addMessage(safeAddress, {
         message: typedData as unknown as LegacyEIP712TypedData,
