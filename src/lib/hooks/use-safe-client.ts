@@ -56,6 +56,8 @@ export function useSafeClient() {
 
     const safeMessage = protocolKit.createMessage(typedData)
     console.log('safeMessage', safeMessage)
+    console.log('safeAddress', safeAddress)
+    console.log('address', address)
     const signature = safeMessage.getSignature(address) as EthSafeSignature
     console.log('signature', signature)
     const safeMessageHash = await protocolKit.getSafeMessageHash(
