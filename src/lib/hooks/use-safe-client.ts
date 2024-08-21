@@ -29,11 +29,17 @@ export function useSafeClient() {
       if (!safeAddress) return
 
       setSafeAddress(safeAddress)
+      console.log('calling init on protocolKit', {
+        rpcUrl,
+        safeAddress,
+        address,
+      })
       const protocolKit = await Safe.init({
         provider: rpcUrl,
         safeAddress,
         signer: address,
       })
+      console.log('finished calling init on protocolKit')
       setProtocolKit(protocolKit)
     }
     loadProtocolKit()
@@ -53,6 +59,11 @@ export function useSafeClient() {
   }
 
   const signTypedData = async (typedData: EIP712TypedData) => {
+    console.log('first line in signTypedData', {
+      protocolKit: !!protocolKit,
+      address: !!address,
+      safeAddress: !!safeAddress,
+    })
     if (!protocolKit || !address || !safeAddress) return
 
     console.log('in signTypedData')
