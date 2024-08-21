@@ -65,7 +65,6 @@ export async function POST(request: NextRequest) {
         TradeType.EXACT_INPUT,
       )
     }
-    console.log(swapRoute)
     return NextResponse.json({ route: swapRoute })
   } catch (error) {
     console.log('Error getting Uniswap swap quote:')
