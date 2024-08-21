@@ -55,10 +55,13 @@ export function useSafeClient() {
     if (!protocolKit || !address || !safeAddress) return
 
     const safeMessage = protocolKit.createMessage(typedData)
+    console.log('safeMessage', safeMessage)
     const signature = safeMessage.getSignature(address) as EthSafeSignature
+    console.log('signature', signature)
     const safeMessageHash = await protocolKit.getSafeMessageHash(
       hashSafeMessage(typedData),
     )
+    console.log('safeMessageHash', safeMessageHash)
     try {
       const confirmedMessage = await apiKit.getMessage(safeMessageHash)
       console.log('got confirmedMessage', confirmedMessage)
