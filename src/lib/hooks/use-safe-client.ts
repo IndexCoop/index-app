@@ -55,6 +55,7 @@ export function useSafeClient() {
     if (!protocolKit || !address || !safeAddress) return
 
     const safeMessage = protocolKit.createMessage(typedData)
+    await protocolKit.signMessage(safeMessage)
     console.log('safeMessage', safeMessage)
     console.log('safeAddress', safeAddress)
     console.log('address', address)
