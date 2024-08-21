@@ -24,6 +24,7 @@ export function useSafeClient() {
       console.log('safeAccounts', safeAccounts)
       // FIXME: Determine correct safe account
       const safeAddress = safeAccounts.safes.shift() ?? null
+      console.log('safeAddress', safeAddress)
       if (!safeAddress) return
 
       setSafeAddress(safeAddress)
