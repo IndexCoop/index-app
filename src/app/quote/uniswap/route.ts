@@ -7,7 +7,7 @@ import {
 import { providers } from 'ethers'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { AlchemyMainnetUrl } from '@/constants/server'
+import { getAlchemyBaseUrl } from '@/lib/utils/urls'
 
 export interface UniswapQuoteRequest {
   chainId: number
@@ -37,10 +37,11 @@ export async function POST(request: NextRequest) {
       body.outputTokenDecimals,
     )
 
+    const url = getAlchemyBaseUrl(chainId) + process.env.NEXT_PUBLIC_ALCHEMY_ID
+
     const router = new AlphaRouter({
       chainId,
-      // TODO: chain agnostic
-      provider: new providers.JsonRpcProvider(AlchemyMainnetUrl),
+      provider: new providers.JsonRpcProvider(url),
     })
 
     let swapRoute: SwapRoute | null = null
