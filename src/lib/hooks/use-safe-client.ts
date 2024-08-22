@@ -4,6 +4,7 @@ import Safe, {
   buildSignatureBytes,
   EthSafeSignature,
   hashSafeMessage,
+  SigningMethod,
 } from '@safe-global/protocol-kit'
 import { EIP712TypedData } from '@safe-global/safe-core-sdk-types'
 import { useEffect, useMemo, useState } from 'react'
@@ -62,7 +63,10 @@ export function useSafeClient() {
     if (!protocolKit || !address || !safeAddress) return
 
     let safeMessage = protocolKit.createMessage(typedData)
-    safeMessage = await protocolKit.signMessage(safeMessage)
+    safeMessage = await protocolKit.signMessage(
+      safeMessage,
+      SigningMethod.ETH_SIGN_TYPED_DATA_V4,
+    )
 
     const messageHash = hashSafeMessage(typedData)
     const safeMessageHash = await protocolKit.getSafeMessageHash(messageHash)

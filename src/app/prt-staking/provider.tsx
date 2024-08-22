@@ -258,20 +258,14 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
             ],
           },
         ],
-        contents: 'Hello, Foobar!',
+        contents: 'Hello, Foobar1!',
       },
     }
 
     // Logic for smart contract wallets
     await safeClient.signTypedData(TYPED_MESSAGE)
     // const validSignature = await safeClient.validSafeSignature(TYPED_MESSAGE)
-    // console.log('valid signature value', validSignature)
-    // if (validSignature) {
-    //   console.log('valid signature yes')
-    // } else {
-    //   console.log('not a valid signature')
-    // }
-    console.log('finished here!')
+    // console.log('validSafeSignature value', validSignature)
   }
 
   const stakePrts = useCallback(
