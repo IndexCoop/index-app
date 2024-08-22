@@ -189,6 +189,12 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
 
     const typedData = {
       types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
         StakeMessage: [
           {
             name: 'message',
@@ -204,21 +210,68 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         verifyingContract: stakeDomain[4],
       },
       message: { message: stakeMessage },
-    } as const
+    }
 
     console.log('typedData', typedData)
 
-    // Logic for smart contract wallets
-    await safeClient.signTypedData(typedData as unknown as EIP712TypedData)
-    const validSignature = await safeClient.validSafeSignature(
-      typedData as unknown as EIP712TypedData,
-    )
-    console.log('valid signature value', validSignature)
-    if (validSignature) {
-      console.log('valid signature yes')
-    } else {
-      console.log('not a valid signature')
+    // An example of a typed data message
+    const TYPED_MESSAGE = {
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Person: [
+          { name: 'name', type: 'string' },
+          { name: 'wallets', type: 'address[]' },
+        ],
+        Mail: [
+          { name: 'from', type: 'Person' },
+          { name: 'to', type: 'Person[]' },
+          { name: 'contents', type: 'string' },
+        ],
+      },
+      domain: {
+        name: 'Ether Mail',
+        version: '1',
+        chainId: Number(1),
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+      },
+      primaryType: 'Mail',
+      message: {
+        from: {
+          name: 'Cow',
+          wallets: [
+            '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+            '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+          ],
+        },
+        to: [
+          {
+            name: 'Bob',
+            wallets: [
+              '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+              '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+              '0xB0B0b0b0b0b0B000000000000000000000000000',
+            ],
+          },
+        ],
+        contents: 'Hello, Foobar!',
+      },
     }
+
+    // Logic for smart contract wallets
+    await safeClient.signTypedData(TYPED_MESSAGE)
+    // const validSignature = await safeClient.validSafeSignature(TYPED_MESSAGE)
+    // console.log('valid signature value', validSignature)
+    // if (validSignature) {
+    //   console.log('valid signature yes')
+    // } else {
+    //   console.log('not a valid signature')
+    // }
+    console.log('finished here!')
   }
 
   const stakePrts = useCallback(
@@ -271,8 +324,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         await refetchIsApprovedStaker()
       } else {
         // Logic for smart contract wallets
-        await safeClient.signTypedData(typedData as unknown as EIP712TypedData)
-        const validSignature = await safeClient.validSafeSignature(
+        const validSignature = await safeClient.signTypedData(
           typedData as unknown as EIP712TypedData,
         )
         if (validSignature) {
