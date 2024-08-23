@@ -29,6 +29,8 @@ export function useSafeClient() {
       // safeAccounts.safes.length > 0 ? safeAccounts.safes[0] : null
       // if (!safeAddress) return
 
+      console.log('address', address)
+
       setSafeAddress(address)
       const protocolKit = await Safe.init({
         provider: connectorClient.transport,
