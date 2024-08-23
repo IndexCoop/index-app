@@ -76,9 +76,11 @@ export function useSafeClient() {
       messageHash,
       encodedSignatures,
     )
+    console.log('isvalid signature', isValid)
     if (isValid) return encodedSignatures
 
     const signature = safeMessage.getSignature(address) as EthSafeSignature
+    console.log('signature123', signature)
     try {
       const confirmedMessage = await apiKit.getMessage(safeMessageHash)
       if (confirmedMessage) {
