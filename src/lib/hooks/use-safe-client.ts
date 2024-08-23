@@ -13,7 +13,7 @@ import { useConnectorClient } from 'wagmi'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 export function useSafeClient() {
-  const { address, rpcUrl } = useWallet()
+  const { address } = useWallet()
   const [protocolKit, setProtocolKit] = useState<Safe | null>(null)
   const [safeAddress, setSafeAddress] = useState<string | null>(null)
   const apiKit = useMemo(() => new SafeApiKit({ chainId: BigInt(1) }), [])
@@ -21,7 +21,7 @@ export function useSafeClient() {
 
   useEffect(() => {
     async function loadProtocolKit() {
-      if (!address || !connectorClient || !rpcUrl) return
+      if (!address || !connectorClient) return
 
       // const safeAccounts = await apiKit.getSafesByOwner(address)
       // FIXME: Determine correct safe account
@@ -33,8 +33,7 @@ export function useSafeClient() {
 
       setSafeAddress(address)
       const protocolKit = await Safe.init({
-        // provider: connectorClient.transport,
-        provider: rpcUrl,
+        provider: connectorClient.transport,
         safeAddress: address,
         // signer: address,
       })
@@ -43,7 +42,7 @@ export function useSafeClient() {
     if (protocolKit) return
 
     loadProtocolKit()
-  }, [address, apiKit, connectorClient, protocolKit, rpcUrl])
+  }, [address, apiKit, connectorClient, protocolKit])
 
   const validSafeSignature = async (typedData: EIP712TypedData) => {
     if (!protocolKit) return null
@@ -80,7 +79,6 @@ export function useSafeClient() {
       safeAddress,
     })
     const modifiedProtocolKit = await protocolKit.connect({
-      provider: connectorClient.transport,
       signer: '0x9F07803Aa18EDBEf8f5284A6060B490992Bb4682',
     })
     console.log('connected here')
