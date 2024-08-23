@@ -4,6 +4,7 @@ import Safe, {
   buildSignatureBytes,
   EthSafeSignature,
   hashSafeMessage,
+  SigningMethod,
 } from '@safe-global/protocol-kit'
 import { EIP712TypedData } from '@safe-global/safe-core-sdk-types'
 import { useEffect, useMemo, useState } from 'react'
@@ -12,7 +13,7 @@ import { useConnectorClient } from 'wagmi'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 export function useSafeClient() {
-  const { address, rpcUrl } = useWallet()
+  const { address } = useWallet()
   const [protocolKit, setProtocolKit] = useState<Safe | null>(null)
   const [safeAddress, setSafeAddress] = useState<string | null>(null)
   const apiKit = useMemo(() => new SafeApiKit({ chainId: BigInt(1) }), [])
@@ -20,24 +21,24 @@ export function useSafeClient() {
 
   useEffect(() => {
     async function loadProtocolKit() {
-      if (!address || !rpcUrl) return
+      if (!address || !connectorClient) return
 
       // const safeAccounts = await apiKit.getSafesByOwner(address)
-      // // FIXME: Determine correct safe account
-      // const safeAddress =
-      //   safeAccounts.safes.length > 0 ? safeAccounts.safes[0] : null
+      // FIXME: Determine correct safe account
+      // const safeAddress = address
+      // safeAccounts.safes.length > 0 ? safeAccounts.safes[0] : null
       // if (!safeAddress) return
 
-      setSafeAddress(safeAddress)
+      setSafeAddress(address)
       const protocolKit = await Safe.init({
-        provider: rpcUrl,
+        provider: connectorClient.transport,
         safeAddress: address,
-        // signer: address,
+        signer: address,
       })
       setProtocolKit(protocolKit)
     }
     loadProtocolKit()
-  }, [address, apiKit, connectorClient, rpcUrl, safeAddress])
+  }, [address, apiKit, connectorClient])
 
   const validSafeSignature = async (typedData: EIP712TypedData) => {
     if (!protocolKit) return null
@@ -62,13 +63,13 @@ export function useSafeClient() {
 
   const signTypedData = async (typedData: EIP712TypedData) => {
     console.log('signing', { protocolKit: !!protocolKit, address: !!address })
-    if (!protocolKit || !address) return
+    if (!protocolKit || !address || !safeAddress) return
 
-    const safeMessage = protocolKit.createMessage(typedData)
-    // safeMessage = await protocolKit.signMessage(
-    //   safeMessage,
-    //   SigningMethod.ETH_SIGN_TYPED_DATA_V4,
-    // )
+    let safeMessage = protocolKit.createMessage(typedData)
+    safeMessage = await protocolKit.signMessage(
+      safeMessage,
+      SigningMethod.ETH_SIGN_TYPED_DATA_V4,
+    )
 
     console.log('safeMessage', safeMessage)
 
@@ -97,7 +98,7 @@ export function useSafeClient() {
     } catch (e) {
       console.error('e', e)
       // Message not created yet
-      await apiKit.addMessage(address, {
+      await apiKit.addMessage(safeAddress, {
         message: typedData as unknown as LegacyEIP712TypedData,
         signature: buildSignatureBytes([]),
       })
