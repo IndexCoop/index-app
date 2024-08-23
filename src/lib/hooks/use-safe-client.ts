@@ -13,7 +13,7 @@ import { useConnectorClient } from 'wagmi'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 export function useSafeClient() {
-  const { address } = useWallet()
+  const { address, rpcUrl } = useWallet()
   const [protocolKit, setProtocolKit] = useState<Safe | null>(null)
   const [safeAddress, setSafeAddress] = useState<string | null>(null)
   const apiKit = useMemo(() => new SafeApiKit({ chainId: BigInt(1) }), [])
@@ -72,7 +72,8 @@ export function useSafeClient() {
       connectorClient: !!connectorClient,
       safeAddress: !!safeAddress,
     })
-    if (!protocolKit || !connectorClient || !safeAddress || !address) return
+    if (!protocolKit || !connectorClient || !safeAddress || !address || !rpcUrl)
+      return
 
     console.log('past return', {
       address,
@@ -81,7 +82,7 @@ export function useSafeClient() {
     const accts = await apiKit.getSafeDelegates({ safeAddress: address })
     console.log('accts', accts)
     const modifiedProtocolKit = await protocolKit.connect({
-      provider: connectorClient.transport,
+      provider: rpcUrl,
       safeAddress: address,
       signer: '0x9F07803Aa18EDBEf8f5284A6060B490992Bb4682',
     })
