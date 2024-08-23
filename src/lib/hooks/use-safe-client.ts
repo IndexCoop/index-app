@@ -61,6 +61,7 @@ export function useSafeClient() {
   }
 
   const signTypedData = async (typedData: EIP712TypedData) => {
+    console.log('signing', { protocolKit: !!protocolKit, address: !!address })
     if (!protocolKit || !address) return
 
     const safeMessage = protocolKit.createMessage(typedData)
@@ -68,6 +69,8 @@ export function useSafeClient() {
     //   safeMessage,
     //   SigningMethod.ETH_SIGN_TYPED_DATA_V4,
     // )
+
+    console.log('safeMessage', safeMessage)
 
     const messageHash = hashSafeMessage(typedData)
     const safeMessageHash = await protocolKit.getSafeMessageHash(messageHash)
