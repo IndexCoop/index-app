@@ -38,6 +38,7 @@ export function useSafeClient() {
         safeAddress: address,
         // signer: address,
       })
+      if (protocolKit) return
       setProtocolKit(protocolKit)
     }
     loadProtocolKit()
