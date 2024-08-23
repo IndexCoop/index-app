@@ -61,7 +61,7 @@ export function useSafeClient() {
   }
 
   const signTypedData = async (typedData: EIP712TypedData) => {
-    if (!protocolKit || !address || !safeAddress) return
+    if (!protocolKit || !address) return
 
     const safeMessage = protocolKit.createMessage(typedData)
     // safeMessage = await protocolKit.signMessage(
@@ -94,7 +94,7 @@ export function useSafeClient() {
     } catch (e) {
       console.error('e', e)
       // Message not created yet
-      await apiKit.addMessage(safeAddress, {
+      await apiKit.addMessage(address, {
         message: typedData as unknown as LegacyEIP712TypedData,
         signature: buildSignatureBytes([]),
       })
