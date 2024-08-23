@@ -38,11 +38,12 @@ export function useSafeClient() {
         safeAddress: address,
         // signer: address,
       })
-      if (protocolKit) return
       setProtocolKit(protocolKit)
     }
+    if (protocolKit) return
+
     loadProtocolKit()
-  }, [address, apiKit, connectorClient, rpcUrl])
+  }, [address, apiKit, connectorClient, protocolKit, rpcUrl])
 
   const validSafeSignature = async (typedData: EIP712TypedData) => {
     if (!protocolKit) return null
