@@ -65,7 +65,12 @@ export function useSafeClient() {
   }
 
   const signTypedData = async (typedData: EIP712TypedData) => {
-    console.log('signing', { protocolKit: !!protocolKit, address: !!address })
+    console.log('signing', {
+      protocolKit: !!protocolKit,
+      address: !!address,
+      connectorClient: !!connectorClient,
+      safeAddress: !!safeAddress,
+    })
     if (!protocolKit || !connectorClient || !safeAddress || !address) return
 
     let safeMessage = protocolKit.createMessage(typedData)
