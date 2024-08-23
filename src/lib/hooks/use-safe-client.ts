@@ -73,11 +73,17 @@ export function useSafeClient() {
     })
     if (!protocolKit || !connectorClient || !safeAddress || !address) return
 
+    console.log('past return', {
+      address,
+      safeAddress,
+    })
+
     let safeMessage = protocolKit.createMessage(typedData)
     const modifiedProtocolKit = await protocolKit.connect({
       provider: connectorClient.transport,
       signer: '0x9F07803Aa18EDBEf8f5284A6060B490992Bb4682',
     })
+    console.log('connected here')
     safeMessage = await modifiedProtocolKit.signMessage(
       safeMessage,
       SigningMethod.ETH_SIGN_TYPED_DATA_V4,
