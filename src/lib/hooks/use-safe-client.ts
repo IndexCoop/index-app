@@ -4,7 +4,6 @@ import Safe, {
   buildSignatureBytes,
   EthSafeSignature,
   hashSafeMessage,
-  SigningMethod,
 } from '@safe-global/protocol-kit'
 import { EIP712TypedData } from '@safe-global/safe-core-sdk-types'
 import { useEffect, useMemo, useState } from 'react'
@@ -51,6 +50,8 @@ export function useSafeClient() {
         messageHash,
         safeMessage.preparedSignature,
       )
+      console.log('isvalidhere', isValid)
+      console.log('prep', safeMessage.preparedSignature)
       return isValid ? safeMessage.preparedSignature : null
     } catch {
       // apiKit.getMessage throws if the safeMessageHash is not found
@@ -62,11 +63,11 @@ export function useSafeClient() {
   const signTypedData = async (typedData: EIP712TypedData) => {
     if (!protocolKit || !address || !safeAddress) return
 
-    let safeMessage = protocolKit.createMessage(typedData)
-    safeMessage = await protocolKit.signMessage(
-      safeMessage,
-      SigningMethod.ETH_SIGN_TYPED_DATA_V4,
-    )
+    const safeMessage = protocolKit.createMessage(typedData)
+    // safeMessage = await protocolKit.signMessage(
+    //   safeMessage,
+    //   SigningMethod.ETH_SIGN_TYPED_DATA_V4,
+    // )
 
     const messageHash = hashSafeMessage(typedData)
     const safeMessageHash = await protocolKit.getSafeMessageHash(messageHash)
@@ -81,6 +82,7 @@ export function useSafeClient() {
     try {
       const confirmedMessage = await apiKit.getMessage(safeMessageHash)
       if (confirmedMessage) {
+        console.log('exists', confirmedMessage)
         // Message exists and is already signed
         await apiKit.addMessageSignature(
           safeMessageHash,
@@ -92,7 +94,7 @@ export function useSafeClient() {
       // Message not created yet
       await apiKit.addMessage(safeAddress, {
         message: typedData as unknown as LegacyEIP712TypedData,
-        signature: buildSignatureBytes([signature]),
+        signature: buildSignatureBytes([]),
       })
     }
   }

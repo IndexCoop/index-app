@@ -258,13 +258,13 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
             ],
           },
         ],
-        contents: 'Hello, Foobar1!',
+        contents: 'Hello, Foobar2!',
       },
     }
 
     // Logic for smart contract wallets
     await safeClient.signTypedData(TYPED_MESSAGE)
-    // const validSignature = await safeClient.validSafeSignature(TYPED_MESSAGE)
+    // await safeClient.validSafeSignature(typedData)
     // console.log('validSafeSignature value', validSignature)
   }
 
