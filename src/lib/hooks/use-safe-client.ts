@@ -33,7 +33,7 @@ export function useSafeClient() {
       const protocolKit = await Safe.init({
         provider: connectorClient.transport,
         safeAddress: address,
-        signer: address,
+        // signer: address,
       })
       setProtocolKit(protocolKit)
     }
@@ -63,10 +63,14 @@ export function useSafeClient() {
 
   const signTypedData = async (typedData: EIP712TypedData) => {
     console.log('signing', { protocolKit: !!protocolKit, address: !!address })
-    if (!protocolKit || !address || !safeAddress) return
+    if (!protocolKit || !connectorClient || !safeAddress || !address) return
 
     let safeMessage = protocolKit.createMessage(typedData)
-    safeMessage = await protocolKit.signMessage(
+    const modifiedProtocolKit = await protocolKit.connect({
+      provider: connectorClient.transport,
+      signer: '0x9F07803Aa18EDBEf8f5284A6060B490992Bb4682',
+    })
+    safeMessage = await modifiedProtocolKit.signMessage(
       safeMessage,
       SigningMethod.ETH_SIGN_TYPED_DATA_V4,
     )
@@ -74,9 +78,10 @@ export function useSafeClient() {
     console.log('safeMessage', safeMessage)
 
     const messageHash = hashSafeMessage(typedData)
-    const safeMessageHash = await protocolKit.getSafeMessageHash(messageHash)
+    const safeMessageHash =
+      await modifiedProtocolKit.getSafeMessageHash(messageHash)
     const encodedSignatures = safeMessage.encodedSignatures()
-    const isValid = await protocolKit.isValidSignature(
+    const isValid = await modifiedProtocolKit.isValidSignature(
       messageHash,
       encodedSignatures,
     )
@@ -100,7 +105,7 @@ export function useSafeClient() {
       // Message not created yet
       await apiKit.addMessage(safeAddress, {
         message: typedData as unknown as LegacyEIP712TypedData,
-        signature: buildSignatureBytes([]),
+        signature: buildSignatureBytes([signature]),
       })
     }
   }
