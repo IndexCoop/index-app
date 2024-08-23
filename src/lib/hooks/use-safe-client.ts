@@ -78,7 +78,11 @@ export function useSafeClient() {
       address,
       safeAddress,
     })
+    const accts = await apiKit.getSafeDelegates({ safeAddress: address })
+    console.log('accts', accts)
     const modifiedProtocolKit = await protocolKit.connect({
+      provider: connectorClient.transport,
+      safeAddress: address,
       signer: '0x9F07803Aa18EDBEf8f5284A6060B490992Bb4682',
     })
     console.log('connected here')
