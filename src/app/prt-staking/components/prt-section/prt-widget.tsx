@@ -195,7 +195,7 @@ export function PrtWidget({ token, onClose }: Props) {
       />
       <TradeButton
         label={buttonLabel}
-        isDisabled={isTradeButtonDisabled}
+        isDisabled={false}
         isLoading={isSubmitting || isApproving}
         onClick={onClickTradeButton}
       />
