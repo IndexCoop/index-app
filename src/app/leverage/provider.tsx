@@ -36,6 +36,7 @@ import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { publicClientToProvider, useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
+import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
 import { leverageTokenAddresses } from './constants'
@@ -59,6 +60,8 @@ export interface TokenContext {
   leverageType: LeverageType
   balances: TokenBalance[]
   baseToken: Token
+  indexToken: Token
+  indexTokenPrice: number
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
@@ -86,6 +89,8 @@ export const LeverageTokenContext = createContext<TokenContext>({
   leverageType: LeverageType.Long2x,
   balances: [],
   baseToken: ETH,
+  indexToken: IndexCoopEthereum2xIndex,
+  indexTokenPrice: 0,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
@@ -133,6 +138,7 @@ export function LeverageProvider(props: { children: any }) {
 
   const [inputValue, setInputValue] = useState('')
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
+  const [indexTokenPrice, setIndexTokenPrice] = useState(0)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(true)
   const [inputToken, setInputToken] = useState<Token>(ETH)
@@ -253,6 +259,15 @@ export function LeverageProvider(props: { children: any }) {
     }
     fetchStats()
   }, [baseToken])
+
+  useEffect(() => {
+    const fetchPrice = async () => {
+      const navProvider = new NavProvider()
+      const navPrice = await navProvider.getNavPrice(indexToken.symbol, chainId)
+      setIndexTokenPrice(navPrice)
+    }
+    fetchPrice()
+  }, [chainId, indexToken])
 
   useEffect(() => {
     if (!publicClient || inputToken === null || outputToken === null) return
@@ -396,6 +411,8 @@ export function LeverageProvider(props: { children: any }) {
         leverageType,
         balances,
         baseToken,
+        indexToken,
+        indexTokenPrice,
         inputToken,
         outputToken,
         inputTokenAmount,

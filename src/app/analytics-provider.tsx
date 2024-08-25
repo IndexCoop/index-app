@@ -1,6 +1,6 @@
 'use client'
 
-import { ArcxAnalyticsProvider } from '@arcxmoney/analytics'
+import { ArcxAnalyticsProvider } from '@0xarc-io/analytics'
 import { ReactNode, useEffect } from 'react'
 import ReactGA from 'react-ga4'
 

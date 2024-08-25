@@ -17,9 +17,9 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@0xarc-io/analytics": "2.2.3",
     "@aave/contract-helpers": "1.28.1",
     "@aave/math-utils": "1.28.1",
-    "@arcxmoney/analytics": "^2.0.3",
     "@bgd-labs/aave-address-book": "2.27.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.2.0",
@@ -38,6 +38,9 @@
     "@sentry/nextjs": "8.8.0",
     "@tanstack/react-query": "5.36.2",
     "@typeform/embed-react": "4.0.0",
+    "@uniswap/sdk-core": "5.3.1",
+    "@uniswap/smart-order-router": "3.41.0",
+    "@uniswap/v3-sdk": "3.13.1",
     "@visx/visx": "^3.8.0",
     "dayjs": "1.11.11",
     "eslint": "8.42.0",
