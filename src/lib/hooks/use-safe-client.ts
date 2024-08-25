@@ -29,8 +29,6 @@ export function useSafeClient() {
       // safeAccounts.safes.length > 0 ? safeAccounts.safes[0] : null
       // if (!safeAddress) return
 
-      console.log('address', address)
-
       setSafeAddress(address)
       const protocolKit = await Safe.init({
         provider: connectorClient.transport,
@@ -55,8 +53,6 @@ export function useSafeClient() {
         messageHash,
         safeMessage.preparedSignature,
       )
-      console.log('isvalidhere', isValid)
-      console.log('prep', safeMessage.preparedSignature)
       return isValid ? safeMessage.preparedSignature : null
     } catch {
       // apiKit.getMessage throws if the safeMessageHash is not found
@@ -66,19 +62,9 @@ export function useSafeClient() {
   }
 
   const signTypedData = async (typedData: EIP712TypedData) => {
-    console.log('signing', {
-      protocolKit: !!protocolKit,
-      address: !!address,
-      connectorClient: !!connectorClient,
-      safeAddress: !!safeAddress,
-    })
     if (!protocolKit || !connectorClient || !safeAddress || !address || !rpcUrl)
       return
 
-    console.log('past return', {
-      address,
-      safeAddress,
-    })
     const accts = await apiKit.getSafeDelegates({ safeAddress: address })
     console.log('accts', accts)
     const modifiedProtocolKit = await protocolKit.connect({
@@ -86,14 +72,11 @@ export function useSafeClient() {
       safeAddress: address,
       signer: '0x9F07803Aa18EDBEf8f5284A6060B490992Bb4682',
     })
-    console.log('connected here')
     let safeMessage = modifiedProtocolKit.createMessage(typedData)
     safeMessage = await modifiedProtocolKit.signMessage(
       safeMessage,
       SigningMethod.ETH_SIGN_TYPED_DATA_V4,
     )
-
-    console.log('safeMessage', safeMessage)
 
     const messageHash = hashSafeMessage(typedData)
     const safeMessageHash =
@@ -103,15 +86,12 @@ export function useSafeClient() {
       messageHash,
       encodedSignatures,
     )
-    console.log('isvalid signature', isValid)
     if (isValid) return encodedSignatures
 
     const signature = safeMessage.getSignature(address) as EthSafeSignature
-    console.log('signature123', signature)
     try {
       const confirmedMessage = await apiKit.getMessage(safeMessageHash)
       if (confirmedMessage) {
-        console.log('exists', confirmedMessage)
         // Message exists and is already signed
         await apiKit.addMessageSignature(
           safeMessageHash,
