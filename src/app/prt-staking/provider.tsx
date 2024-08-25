@@ -39,6 +39,7 @@ interface Context {
   testSignature: () => void
   token: ProductRevenueToken | null
   tvl: number | null
+  typedData: EIP712TypedData | null
   unstakePrts: (amount: bigint) => void
   userStakedBalance: bigint | undefined
   userStakedBalanceFormatted: number
@@ -60,6 +61,7 @@ const PrtStakingContext = createContext<Context>({
   timeUntilNextSnapshotSeconds: 0,
   token: null,
   tvl: null,
+  typedData: null,
   unstakePrts: () => {},
   userStakedBalance: undefined,
   userStakedBalanceFormatted: 0,
@@ -76,11 +78,53 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const publicClient = usePublicClient()
   const safeClient = useSafeClient()
   const [tvl, setTvl] = useState<number | null>(null)
+  const [typedData, setTypedData] = useState<EIP712TypedData | null>(null)
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
   )
   const stakedTokenAddress = token.stakedTokenData.address as Address
   const stakedTokenDecimals = token.stakedTokenData.decimals
+
+  const { data: stakeDomain } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'eip712Domain',
+  })
+
+  const { data: stakeMessage } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'message',
+  })
+
+  useEffect(() => {
+    if (!stakeDomain || !stakeMessage) return
+    const typedData = {
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        StakeMessage: [
+          {
+            name: 'message',
+            type: 'string',
+          },
+        ],
+      },
+      primaryType: 'StakeMessage',
+      domain: {
+        name: stakeDomain[1],
+        version: stakeDomain[2],
+        chainId: Number(stakeDomain[3]),
+        verifyingContract: stakeDomain[4],
+      },
+      message: { message: stakeMessage },
+    }
+    setTypedData(typedData)
+  }, [stakeDomain, stakeMessage])
 
   const { data: userStakedBalance, refetch: refetchUserStakedBalance } =
     useReadContract({
@@ -133,18 +177,6 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       },
     })
 
-  const { data: stakeDomain } = useReadContract({
-    abi: PrtStakingAbi,
-    address: stakedTokenAddress,
-    functionName: 'eip712Domain',
-  })
-
-  const { data: stakeMessage } = useReadContract({
-    abi: PrtStakingAbi,
-    address: stakedTokenAddress,
-    functionName: 'message',
-  })
-
   const { data: lifetimeRewards } = useReadContract({
     abi: PrtStakingAbi,
     address: stakedTokenAddress,
@@ -186,32 +218,6 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     })
 
     console.log('bytecode value', bytecode)
-
-    const typedData = {
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        StakeMessage: [
-          {
-            name: 'message',
-            type: 'string',
-          },
-        ],
-      },
-      primaryType: 'StakeMessage',
-      domain: {
-        name: stakeDomain[1],
-        version: stakeDomain[2],
-        chainId: Number(stakeDomain[3]),
-        verifyingContract: stakeDomain[4],
-      },
-      message: { message: stakeMessage },
-    }
-
     console.log('typedData', typedData)
 
     // An example of a typed data message
@@ -271,7 +277,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient || !publicClient || !accountAddress) return
-      if (!canStake || !stakeDomain || !stakeMessage) return
+      if (!canStake || !typedData) return
       if (isApprovedStaker) {
         await walletClient.writeContract({
           abi: PrtStakingAbi,
@@ -287,28 +293,9 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         address: accountAddress,
       })
 
-      const typedData = {
-        types: {
-          StakeMessage: [
-            {
-              name: 'message',
-              type: 'string',
-            },
-          ],
-        },
-        primaryType: 'StakeMessage',
-        domain: {
-          name: stakeDomain[1],
-          version: stakeDomain[2],
-          chainId: Number(stakeDomain[3]),
-          verifyingContract: stakeDomain[4],
-        },
-        message: { message: stakeMessage },
-      } as const
-
       if (!bytecode) {
         // Logic for raw wallets
-        const signature = await walletClient.signTypedData(typedData)
+        const signature = await walletClient.signTypedData(typedData as any)
         await walletClient.writeContract({
           abi: PrtStakingAbi,
           address: stakedTokenAddress,
@@ -318,9 +305,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         await refetchIsApprovedStaker()
       } else {
         // Logic for smart contract wallets
-        const validSignature = await safeClient.signTypedData(
-          typedData as unknown as EIP712TypedData,
-        )
+        const validSignature = await safeClient.signTypedData(typedData)
         if (validSignature) {
           await walletClient.writeContract({
             abi: PrtStakingAbi,
@@ -388,6 +373,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         testSignature,
         token,
         tvl,
+        typedData,
         unstakePrts,
         userStakedBalance,
         userStakedBalanceFormatted: formatWeiAsNumber(

@@ -13,34 +13,43 @@ import { useConnectorClient } from 'wagmi'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 export function useSafeClient() {
-  const { address, rpcUrl } = useWallet()
+  const { address } = useWallet()
   const [protocolKit, setProtocolKit] = useState<Safe | null>(null)
   const [safeAddress, setSafeAddress] = useState<string | null>(null)
+  const [safes, setSafes] = useState<string[] | null>(null)
   const apiKit = useMemo(() => new SafeApiKit({ chainId: BigInt(1) }), [])
   const { data: connectorClient } = useConnectorClient()
 
   useEffect(() => {
     async function loadProtocolKit() {
-      if (!address || !connectorClient) return
+      if (!address || !safeAddress || !connectorClient) return
 
-      // const safeAccounts = await apiKit.getSafesByOwner(address)
-      // FIXME: Determine correct safe account
-      // const safeAddress = address
-      // safeAccounts.safes.length > 0 ? safeAccounts.safes[0] : null
-      // if (!safeAddress) return
-
-      setSafeAddress(address)
       const protocolKit = await Safe.init({
         provider: connectorClient.transport,
-        safeAddress: address,
-        // signer: address,
+        safeAddress,
+        signer: address,
       })
       setProtocolKit(protocolKit)
     }
-    if (protocolKit) return
-
     loadProtocolKit()
-  }, [address, apiKit, connectorClient, protocolKit])
+  }, [address, connectorClient, protocolKit, safeAddress])
+
+  useEffect(() => {
+    async function fetchSafes() {
+      if (!apiKit) return
+
+      if (!address) {
+        setSafes([])
+        return
+      }
+
+      const { safes } = await apiKit.getSafesByOwner(address)
+      if (safes.length === 1) setSafeAddress(safes[0])
+
+      setSafes(safes)
+    }
+    fetchSafes()
+  }, [apiKit, address])
 
   const validSafeSignature = async (typedData: EIP712TypedData) => {
     if (!protocolKit) return null
@@ -62,27 +71,18 @@ export function useSafeClient() {
   }
 
   const signTypedData = async (typedData: EIP712TypedData) => {
-    if (!protocolKit || !connectorClient || !safeAddress || !address || !rpcUrl)
-      return
+    if (!protocolKit || !connectorClient || !safeAddress || !address) return
 
-    const accts = await apiKit.getSafeDelegates({ safeAddress: address })
-    console.log('accts', accts)
-    const modifiedProtocolKit = await protocolKit.connect({
-      provider: rpcUrl,
-      safeAddress: address,
-      signer: '0x9F07803Aa18EDBEf8f5284A6060B490992Bb4682',
-    })
-    let safeMessage = modifiedProtocolKit.createMessage(typedData)
-    safeMessage = await modifiedProtocolKit.signMessage(
+    let safeMessage = protocolKit.createMessage(typedData)
+    safeMessage = await protocolKit.signMessage(
       safeMessage,
       SigningMethod.ETH_SIGN_TYPED_DATA_V4,
     )
 
     const messageHash = hashSafeMessage(typedData)
-    const safeMessageHash =
-      await modifiedProtocolKit.getSafeMessageHash(messageHash)
+    const safeMessageHash = await protocolKit.getSafeMessageHash(messageHash)
     const encodedSignatures = safeMessage.encodedSignatures()
-    const isValid = await modifiedProtocolKit.isValidSignature(
+    const isValid = await protocolKit.isValidSignature(
       messageHash,
       encodedSignatures,
     )
@@ -109,7 +109,10 @@ export function useSafeClient() {
   }
 
   return {
-    validSafeSignature,
+    safes,
+    safeAddress,
+    setSafeAddress,
     signTypedData,
+    validSafeSignature,
   }
 }
