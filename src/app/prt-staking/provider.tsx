@@ -304,8 +304,8 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         })
         await refetchIsApprovedStaker()
       } else {
-        // Logic for smart contract wallets
-        const validSignature = await safeClient.signTypedData(typedData)
+        // Logic for Safe wallets
+        const validSignature = await safeClient.validSafeSignature(typedData)
         if (validSignature) {
           await walletClient.writeContract({
             abi: PrtStakingAbi,
@@ -314,6 +314,8 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
             args: [amount, validSignature],
           })
           await refetchIsApprovedStaker()
+        } else {
+          console.warn('Signature not valid yet')
         }
       }
     },

@@ -71,7 +71,7 @@ export function useSafeClient() {
   }
 
   const signTypedData = async (typedData: EIP712TypedData) => {
-    if (!protocolKit || !connectorClient || !safeAddress || !address) return
+    if (!protocolKit || !safeAddress || !address) return
 
     let safeMessage = protocolKit.createMessage(typedData)
     safeMessage = await protocolKit.signMessage(
@@ -81,13 +81,6 @@ export function useSafeClient() {
 
     const messageHash = hashSafeMessage(typedData)
     const safeMessageHash = await protocolKit.getSafeMessageHash(messageHash)
-    const encodedSignatures = safeMessage.encodedSignatures()
-    const isValid = await protocolKit.isValidSignature(
-      messageHash,
-      encodedSignatures,
-    )
-    if (isValid) return encodedSignatures
-
     const signature = safeMessage.getSignature(address) as EthSafeSignature
     try {
       const confirmedMessage = await apiKit.getMessage(safeMessageHash)
