@@ -36,7 +36,6 @@ interface Context {
   refetchUserStakedBalance: () => void
   stakePrts: (amount: bigint) => void
   timeUntilNextSnapshotSeconds: number
-  testSignature: () => void
   token: ProductRevenueToken | null
   tvl: number | null
   typedData: EIP712TypedData | null
@@ -56,7 +55,6 @@ const PrtStakingContext = createContext<Context>({
   poolStakedBalanceFormatted: 0,
   refetchClaimableRewards: () => {},
   refetchUserStakedBalance: () => {},
-  testSignature: () => {},
   stakePrts: () => {},
   timeUntilNextSnapshotSeconds: 0,
   token: null,
@@ -208,72 +206,6 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     })
   }, [stakedTokenAddress, walletClient])
 
-  const testSignature = async () => {
-    if (!walletClient || !publicClient || !accountAddress) return
-    if (!canStake || !stakeDomain || !stakeMessage) return
-
-    // Check if smart contract wallet
-    const bytecode = await publicClient.getCode({
-      address: accountAddress,
-    })
-
-    console.log('bytecode value', bytecode)
-    console.log('typedData', typedData)
-
-    // An example of a typed data message
-    const TYPED_MESSAGE = {
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        Person: [
-          { name: 'name', type: 'string' },
-          { name: 'wallets', type: 'address[]' },
-        ],
-        Mail: [
-          { name: 'from', type: 'Person' },
-          { name: 'to', type: 'Person[]' },
-          { name: 'contents', type: 'string' },
-        ],
-      },
-      domain: {
-        name: 'Ether Mail',
-        version: '1',
-        chainId: Number(1),
-        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-      },
-      primaryType: 'Mail',
-      message: {
-        from: {
-          name: 'Cow',
-          wallets: [
-            '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-            '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
-          ],
-        },
-        to: [
-          {
-            name: 'Bob',
-            wallets: [
-              '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-              '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
-              '0xB0B0b0b0b0b0B000000000000000000000000000',
-            ],
-          },
-        ],
-        contents: 'Hello, Foobar2!',
-      },
-    }
-
-    // Logic for smart contract wallets
-    await safeClient.signTypedData(TYPED_MESSAGE)
-    // await safeClient.validSafeSignature(typedData)
-    // console.log('validSafeSignature value', validSignature)
-  }
-
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient || !publicClient || !accountAddress) return
@@ -372,7 +304,6 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         timeUntilNextSnapshotSeconds: timeUntilNextSnapshotSeconds
           ? Number(timeUntilNextSnapshotSeconds)
           : 0,
-        testSignature,
         token,
         tvl,
         typedData,
