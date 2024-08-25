@@ -1,4 +1,3 @@
-import { shortenAddress } from '@/lib/utils'
 import {
   Modal,
   ModalBody,
@@ -8,6 +7,8 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react'
 import { Dispatch, SetStateAction } from 'react'
+
+import { shortenAddress } from '@/lib/utils'
 
 type Props = {
   isOpen: boolean

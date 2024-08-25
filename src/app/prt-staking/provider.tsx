@@ -258,9 +258,8 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       publicClient,
       refetchIsApprovedStaker,
       safeClient,
-      stakeDomain,
-      stakeMessage,
       stakedTokenAddress,
+      typedData,
       walletClient,
     ],
   )

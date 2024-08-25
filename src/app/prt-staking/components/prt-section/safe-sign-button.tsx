@@ -1,7 +1,8 @@
+import { useDisclosure } from '@chakra-ui/react'
+
 import { SelectSafeModal } from '@/app/prt-staking/components/prt-section/select-safe-modal'
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { useSafeClient } from '@/lib/hooks/use-safe-client'
-import { useDisclosure } from '@chakra-ui/react'
 
 export function SafeSignButton() {
   const { typedData } = usePrtStakingContext()
