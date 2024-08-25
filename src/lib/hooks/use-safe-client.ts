@@ -62,6 +62,7 @@ export function useSafeClient() {
         messageHash,
         safeMessage.preparedSignature,
       )
+      console.log('isvalid', isValid)
       return isValid ? safeMessage.preparedSignature : null
     } catch {
       // apiKit.getMessage throws if the safeMessageHash is not found
