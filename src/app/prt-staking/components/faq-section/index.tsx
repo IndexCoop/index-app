@@ -52,17 +52,16 @@ export function FaqSection() {
         <p>
           Click the ‘Sign SafeMessage’ button to open the confirmation in your
           signer. After confirming, the message will be uploaded to the Safe
-          transaction service and you will be able to view it in the Safe UI
-          under ‘Messages’ in the ‘Transactions’ view. Repeat the signing
+          transaction service and be able to other signers. Repeat the signing
           process from each signer until you have the requisite number of
           signatures for the Safe account.
         </p>
         <p>
-          Once you have the signatures required, head to the ‘PRT Staking’ and
-          connect your Safe wallet. Stake your PRTs using the steps described
-          earlier in the FAQs. Behind the scenes, the signed message is fetched
-          from the Safe Transaction service and passed to the smart contract in
-          order to faciliate staking.
+          Once you have the signatures required, head to the ‘PRT Staking’ page
+          and connect your Safe wallet. Stake your PRTs using the steps
+          described earlier in the FAQs. Behind the scenes, the signed message
+          is fetched from the Safe Transaction service and passed to the smart
+          contract in order to faciliate staking.
         </p>
         <p>
           Please reach out to us if you use a different multi-sig wallet and
