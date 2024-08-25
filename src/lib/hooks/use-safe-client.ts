@@ -52,7 +52,12 @@ export function useSafeClient() {
   }, [apiKit, address])
 
   const validSafeSignature = async (typedData: EIP712TypedData) => {
-    if (!protocolKit) return null
+    if (!connectorClient || !address) return
+
+    const protocolKit = await Safe.init({
+      provider: connectorClient.transport,
+      safeAddress: address,
+    })
 
     try {
       const messageHash = hashSafeMessage(typedData)
