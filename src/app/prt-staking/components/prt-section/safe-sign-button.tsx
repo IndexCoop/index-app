@@ -24,9 +24,7 @@ export function SafeSignButton() {
       return
     }
 
-    if (safeAddress) {
-      signTypedData(typedData)
-    }
+    signTypedData(typedData)
   }
 
   if (safes === null || safes.length === 0) return null
