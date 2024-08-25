@@ -36,6 +36,40 @@ export function FaqSection() {
           updated total reflected in the ‘Your Staked PRTs’ field.
         </p>
       </FaqItem>
+      <FaqItem question='How do I stake PRTs in a Safe wallet?'>
+        <p>
+          The process requires a message to be signed before staking. To
+          initiate the signing process, visit the 'PRT Staking' page while
+          connected to one of the signers. Click the 'Manage' button for the
+          token you would like to stake, a button should appear below the
+          'Stake' button if the signer is an owner on any Safe accounts. If the
+          signer is attached to multiple Safe accounts, the button will be
+          labeled 'Select Safe', which you can click to choose the Safe account
+          you'd like to sign the message for. After the Safe account is chosen,
+          or if you only have one Safe account attached to the signer, the
+          button will be labeled 'Sign SafeMessage'.
+        </p>
+        <p>
+          Click the 'Sign SafeMessage' button to open the confirmation in your
+          signer. After confirming, the message will be uploaded to the Safe
+          transaction service and you will be able to view it in the Safe UI
+          under 'Messages' in the 'Transactions' view. Repeat the signing
+          process from each signer until you have the requisite number of
+          signatures for the Safe account.
+        </p>
+        <p>
+          Once you have the signatures required, head to the 'PRT Staking' and
+          connect your Safe wallet. Stake your PRTs using the steps described
+          earlier in the FAQs. Behind the scenes, the signed message is fetched
+          from the Safe Transaction service and passed to the smart contract in
+          order to faciliate staking.
+        </p>
+        <p>
+          Please reach out to us if you use a different multi-sig wallet and
+          would like to stake from it, as Safe is the only multi-sig wallet
+          currently supported.
+        </p>
+      </FaqItem>
       <FaqItem question='How do I unstake my PRTs?'>
         <p>
           Similarly to staking, unstaking is handled through the ‘Manage’ modal
