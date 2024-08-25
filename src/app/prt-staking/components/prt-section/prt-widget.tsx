@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { parseUnits } from 'viem'
 
@@ -127,16 +126,16 @@ export function PrtWidget({ token, onClose }: Props) {
     inputAmountNumber > balanceNumber
 
   const onClickTradeButton = async () => {
-    // if (isTradeButtonDisabled) return
+    if (isTradeButtonDisabled) return
     setIsSubmitting(true)
     try {
       if (currentTab === WidgetTab.STAKE) {
-        // if (!isApproved) {
-        //   const approved = await onApprove()
-        //   if (!approved) {
-        //     throw new Error('Transaction not approved')
-        //   }
-        // }
+        if (!isApproved) {
+          const approved = await onApprove()
+          if (!approved) {
+            throw new Error('Transaction not approved')
+          }
+        }
         await stakePrts(tradeAmount)
         await forceRefetch()
         await refetchUserStakedBalance()
@@ -195,7 +194,7 @@ export function PrtWidget({ token, onClose }: Props) {
       />
       <TradeButton
         label={buttonLabel}
-        isDisabled={false}
+        isDisabled={isTradeButtonDisabled}
         isLoading={isSubmitting || isApproving}
         onClick={onClickTradeButton}
       />

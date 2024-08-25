@@ -206,7 +206,6 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
     })
   }, [stakedTokenAddress, walletClient])
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stakePrts = useCallback(
     async (amount: bigint) => {
       if (!walletClient || !publicClient || !accountAddress) return
@@ -300,7 +299,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
         ),
         refetchClaimableRewards,
         refetchUserStakedBalance,
-        stakePrts: () => safeClient.validSafeSignature(typedData as any),
+        stakePrts,
         timeUntilNextSnapshotSeconds: timeUntilNextSnapshotSeconds
           ? Number(timeUntilNextSnapshotSeconds)
           : 0,
