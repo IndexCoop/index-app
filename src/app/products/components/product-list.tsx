@@ -55,7 +55,7 @@ export function ProductList() {
 
     const products = productTokens.map((token, idx) => ({
       ...token,
-      price: analyticsResults[idx]?.nav,
+      price: analyticsResults[idx]?.pav,
       delta: analyticsResults[idx]?.navChange,
       tvl: analyticsResults[idx]?.marketCap,
       apy:
