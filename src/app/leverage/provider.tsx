@@ -41,6 +41,7 @@ import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
 import { leverageTokenAddresses } from './constants'
 import { BaseTokenStats } from './types'
+import { getLeverageType } from './utils/get-leverage-type'
 
 const baseTokens = [ETH, BTC]
 const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
@@ -113,22 +114,6 @@ export const LeverageTokenContext = createContext<TokenContext>({
 })
 
 export const useLeverageToken = () => useContext(LeverageTokenContext)
-
-function getLeverageType(token: Token): LeverageType | null {
-  switch (token.symbol) {
-    case IndexCoopBitcoin2xIndex.symbol:
-    case IndexCoopEthereum2xIndex.symbol:
-      return LeverageType.Long2x
-    case IndexCoopBitcoin3xIndex.symbol:
-    case IndexCoopEthereum3xIndex.symbol:
-      return LeverageType.Long3x
-    case IndexCoopInverseBitcoinIndex.symbol:
-    case IndexCoopInverseEthereumIndex.symbol:
-      return LeverageType.Short
-    default:
-      return null
-  }
-}
 
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
@@ -298,7 +283,7 @@ export function LeverageProvider(props: { children: any }) {
       const token = inputTokens.find((token) => token.symbol === tokenSymbol)
       if (!token) return
       setInputToken(token)
-      const leverageType = getLeverageType(token)
+      const leverageType = getLeverageType(token.symbol)
       if (leverageType !== null) {
         setLeverageType(leverageType)
       }
@@ -316,7 +301,7 @@ export function LeverageProvider(props: { children: any }) {
     const token = outputTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setOutputToken(token)
-    const leverageType = getLeverageType(token)
+    const leverageType = getLeverageType(token.symbol)
     if (leverageType !== null) {
       setLeverageType(leverageType)
     }

@@ -59,7 +59,7 @@ export async function fetchLeverageTokenPrices(
         tokenPrices[idx]
       return {
         ...token,
-        leverageType: getLeverageType(token),
+        leverageType: getLeverageType(token.symbol),
         size: formatPrice(usd),
         usd,
       }
