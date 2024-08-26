@@ -16,6 +16,7 @@ import { ETH, IndexCoopEthereum2xIndex, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
+import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { publicClientToProvider, useWallet } from '@/lib/hooks/use-wallet'
@@ -304,7 +305,46 @@ export function LeverageProvider(props: { children: any }) {
   }, [indexTokenBasedOnLeverageType, isMinting, leverageType])
 
   useEffect(() => {
-    // TODO:
+    const fetchSwapQuote = async () => {
+      if (!address) return
+      if (!chainId) return
+      if (!provider || !publicClient) return
+      if (inputTokenAmount <= 0) return
+      if (!indexToken) return
+      setFetchingQuote(true)
+      try {
+        const inputTokenPrice = await getTokenPrice(inputToken, chainId)
+        const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+        const gasPrice = await provider.getGasPrice()
+        const quoteSwap = await getIndexQuote({
+          isMinting,
+          chainId,
+          address,
+          inputToken,
+          inputTokenAmount: inputValue,
+          inputTokenPrice,
+          outputToken,
+          outputTokenPrice,
+          nativeTokenPrice,
+          gasPrice,
+          provider,
+          slippage: 0.1,
+        })
+        console.log(quoteSwap)
+        const quoteResult = {
+          type: QuoteType.index,
+          isAvailable: true,
+          quote: quoteSwap,
+          error: null,
+        }
+        setQuoteResult(quoteResult)
+        setFetchingQuote(false)
+      } catch (e) {
+        console.error('Error getting swap quote', e)
+        setFetchingQuote(false)
+        throw e
+      }
+    }
     const fetchQuote = async () => {
       if (!address) return
       if (!chainId) return
@@ -342,6 +382,7 @@ export function LeverageProvider(props: { children: any }) {
       setFetchingQuote(false)
     }
     fetchQuote()
+    fetchSwapQuote()
   }, [
     address,
     chainId,
