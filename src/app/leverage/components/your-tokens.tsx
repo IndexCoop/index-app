@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 
 import { useNetwork } from '@/lib/hooks/use-network'
 
-import { LeverageType, useLeverageToken } from '../provider'
-import { EnrichedToken } from '../types'
+import { useLeverageToken } from '../provider'
+import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
 import { getLeverageBaseToken } from '../utils/get-leverage-base-token'
 import { getLeverageType } from '../utils/get-leverage-type'

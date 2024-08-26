@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 
-import { LeverageType } from '@/app/leverage/provider'
+import { LeverageType } from '@/app/leverage/types'
 
 type LeverageSelectorProps = {
   selectedTye: LeverageType

@@ -7,7 +7,7 @@ import {
   IndexCoopInverseEthereumIndex,
 } from '@/constants/tokens'
 
-import { LeverageType } from '../provider'
+import { LeverageType } from '../types'
 
 export function getLeverageType(symbol: string): LeverageType | null {
   switch (symbol) {

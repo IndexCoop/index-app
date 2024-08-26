@@ -25,14 +25,8 @@ import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
 import { baseTokens, currencyTokens, getLeverageTokens } from './constants'
-import { BaseTokenStats } from './types'
+import { BaseTokenStats, LeverageType } from './types'
 import { getLeverageType } from './utils/get-leverage-type'
-
-export enum LeverageType {
-  Long2x,
-  Long3x,
-  Short,
-}
 
 export interface TokenContext {
   inputValue: string

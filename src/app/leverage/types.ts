@@ -1,6 +1,10 @@
 import { Token } from '@/constants/tokens'
 
-import { LeverageType } from './provider'
+export enum LeverageType {
+  Long2x,
+  Long3x,
+  Short,
+}
 
 export interface BaseTokenStats {
   symbol: string
