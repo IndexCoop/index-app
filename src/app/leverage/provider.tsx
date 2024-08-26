@@ -398,6 +398,21 @@ export function LeverageProvider(props: { children: any }) {
     rpcUrl,
   ])
 
+  useEffect(() => {
+    // Reset quotes
+    setMinting(true)
+    setBaseToken(ETH)
+    setInputToken(ETH)
+    setOutputToken(IndexCoopEthereum2xIndex)
+    setLeverageType(LeverageType.Long2x)
+    setQuoteResult({
+      type: QuoteType.flashmint,
+      isAvailable: true,
+      quote: null,
+      error: null,
+    })
+  }, [chainId])
+
   return (
     <LeverageTokenContext.Provider
       value={{
