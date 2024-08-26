@@ -24,7 +24,12 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
-import { baseTokens, currencyTokens, getLeverageTokens } from './constants'
+import {
+  baseTokens,
+  currencyTokens,
+  getLeverageTokens,
+  supportedLeverageTypes,
+} from './constants'
 import { BaseTokenStats, LeverageType } from './types'
 import { getLeverageType } from './utils/get-leverage-type'
 
@@ -47,6 +52,7 @@ export interface TokenContext {
   isFetchingQuote: boolean
   quoteResult: QuoteResult | null
   stats: BaseTokenStats | null
+  supportedLeverageTypes: LeverageType[]
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectBaseToken: (tokenSymbol: string) => void
@@ -76,6 +82,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   isFetchingQuote: false,
   quoteResult: null,
   stats: null,
+  supportedLeverageTypes: [],
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
   onSelectBaseToken: () => {},
@@ -371,6 +378,7 @@ export function LeverageProvider(props: { children: any }) {
         isFetchingQuote,
         quoteResult,
         stats,
+        supportedLeverageTypes: supportedLeverageTypes[chainId ?? 1],
         transactionReview,
         onChangeInputTokenAmount,
         onSelectBaseToken,

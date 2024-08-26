@@ -1,5 +1,6 @@
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
 import {
   BTC,
   ETH,
@@ -17,7 +18,7 @@ import {
 import { isAddress } from '@/lib/utils'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
-import { LeverageToken } from './types'
+import { LeverageToken, LeverageType } from './types'
 
 export const baseTokens = [ETH, BTC]
 export const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
@@ -57,4 +58,12 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
     }
   })
   return tokens.filter((token) => token !== null)
+
+export const supportedLeverageTypes = {
+  [ARBITRUM.chainId]: [
+    LeverageType.Short,
+    LeverageType.Long2x,
+    LeverageType.Long3x,
+  ],
+  [MAINNET.chainId]: [LeverageType.Long2x],
 }

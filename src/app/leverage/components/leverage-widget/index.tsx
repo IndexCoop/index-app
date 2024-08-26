@@ -56,6 +56,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     onSelectOutputToken,
     outputToken,
     reset,
+    supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
 
@@ -103,6 +104,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
+        supportedTypes={supportedLeverageTypes}
         onSelectType={onSelectLeverageType}
       />
       <TradeInputSelector
