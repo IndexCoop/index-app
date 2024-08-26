@@ -4,11 +4,11 @@ import { formatPrice } from '@/app/products/utils/formatters'
 import { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatAmountFromWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { leverageTokens } from '../constants'
 import { EnrichedToken } from '../types'
 
-import { getAddressForToken } from '@/lib/utils/tokens'
 import { getLeverageType } from './get-leverage-type'
 
 export async function fetchLeverageTokenPrices(

@@ -30,12 +30,12 @@ export function YourTokens() {
   useEffect(() => {
     if (balances.length === 0) return
     fetchLeverageTokenPrices(balances, setTokens, chainId ?? 1)
-  }, [balances])
+  }, [balances, chainId])
 
   const handleCloseClick = (token: EnrichedToken) => {
     if (isMinting) toggleIsMinting()
 
-    const leverageBaseToken = getLeverageBaseToken(token)
+    const leverageBaseToken = getLeverageBaseToken(token.symbol)
     if (leverageBaseToken === null) return
     onSelectBaseToken(leverageBaseToken.symbol)
 

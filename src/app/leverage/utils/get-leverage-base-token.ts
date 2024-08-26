@@ -7,10 +7,9 @@ import {
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
-  Token,
 } from '@/constants/tokens'
 
-export function getLeverageBaseToken({ symbol }: Token) {
+export function getLeverageBaseToken(symbol: string) {
   if (
     symbol === IndexCoopBitcoin2xIndex.symbol ||
     symbol === IndexCoopBitcoin3xIndex.symbol ||
