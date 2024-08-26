@@ -16,3 +16,8 @@ export type EnrichedToken = Token & {
   size?: string
   leverageType?: LeverageType | null
 }
+
+export interface LeverageToken extends Token {
+  baseToken: string | null
+  leverageType: LeverageType
+}
