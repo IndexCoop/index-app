@@ -1,33 +1,69 @@
 import clsx from 'clsx'
 
+import { TokenDisplay } from '@/app/leverage/components/leverage-widget/components/token-display'
+import { Token } from '@/constants/tokens'
+
 import { useLeverageToken } from '../provider'
 import { useFormattedLeverageData } from '../use-formatted-data'
 
-import { BaseTokenSelector } from './leverage-widget/components/base-token-selector'
-
-type StatsProps = {
-  onClickBaseTokenSelector: () => void
+export function Stats() {
+  const { baseToken, indexToken, stats } = useLeverageToken()
+  const {
+    indexTokenPrice,
+    price,
+    change24h,
+    change24hIsPositive,
+    low24h,
+    high24h,
+  } = useFormattedLeverageData(stats)
+  return (
+    <div className='border-ic-gray-600 flex w-full flex-row items-center justify-between rounded-3xl border bg-[#1C2C2E] px-4'>
+      <StatsItem
+        token={baseToken}
+        change24h={change24h}
+        change24hIsPositive={change24hIsPositive}
+        high24h={high24h}
+        low24h={low24h}
+        price={price}
+      />
+      <div className='bg-ic-gray-800 h-full w-[1px]' />
+      <StatsItem
+        token={indexToken}
+        change24h={''}
+        change24hIsPositive={true}
+        high24h={high24h}
+        low24h={low24h}
+        price={indexTokenPrice}
+      />
+    </div>
+  )
 }
 
-export function Stats(props: StatsProps) {
-  const { baseToken, stats } = useLeverageToken()
-  const { price, change24h, change24hIsPositive, low24h, high24h } =
-    useFormattedLeverageData(stats)
+type StatsItemProps = {
+  token: Token
+  price: string
+  change24h: string
+  change24hIsPositive: boolean
+  high24h: string
+  low24h: string
+}
+
+function StatsItem(props: StatsItemProps) {
+  const { change24h, change24hIsPositive, price, token } = props
   const iconColor = change24hIsPositive ? 'fill-ic-green' : 'fill-ic-red'
   const iconScale = change24hIsPositive ? '' : '-scale-100'
   const textColor = change24hIsPositive ? 'text-[#65D993]' : 'text-ic-red'
   return (
-    <div className='border-ic-gray-600 flex flex-row items-center justify-between md:gap-6 rounded-3xl border bg-[#1C2C2E] px-4 py-3 md:px-8 md:py-6 md:ml-auto md:w-[650px]'>
+    <div className='flex flex-grow flex-row items-center justify-center py-3 md:gap-6 md:py-6'>
       <div className='flex'>
-        <BaseTokenSelector
-          baseToken={baseToken}
-          onClick={props.onClickBaseTokenSelector}
-        />
+        <TokenDisplay token={token} />
       </div>
-      <div className='text-ic-white text-xl font-semibold ml-auto sm:ml-0'>{price}</div>
-      <div className='hidden sm:flex flex-col gap-1 md:hidden lg:flex'>
+      <div className='text-ic-white ml-auto text-xl font-semibold sm:ml-0'>
+        {price}
+      </div>
+      <div className='hidden flex-col gap-1 sm:flex md:hidden lg:flex'>
         <div className='text-ic-gray-100 text-xs font-normal'>24h Change</div>
-        {change24h.length > 0 && (
+        {change24h.length > 0 ? (
           <div className='flex flex-row items-center gap-1'>
             <div>
               <svg
@@ -45,16 +81,18 @@ export function Stats(props: StatsProps) {
               {change24h}
             </div>
           </div>
+        ) : (
+          <div className={clsx('text-base font-semibold', textColor)}>n/a</div>
         )}
       </div>
-      <div className='sm:flex flex-col gap-1 hidden md:hidden lg:flex'>
+      {/* <div className='hidden flex-col gap-1 sm:flex md:hidden lg:flex'>
         <div className='text-ic-gray-100 text-xs font-normal'>24h High</div>
         <div className='text-ic-white text-base font-semibold'>{high24h}</div>
       </div>
-      <div className='hidden sm:flex flex-col gap-1 md:hidden lg:flex'>
+      <div className='hidden flex-col gap-1 sm:flex md:hidden lg:flex'>
         <div className='text-ic-gray-100 text-xs font-normal'>24h Low</div>
         <div className='text-ic-white text-base font-semibold'>{low24h}</div>
-      </div>
+      </div> */}
     </div>
   )
 }

@@ -24,7 +24,7 @@ import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { isValidTokenInput, toWei } from '@/lib/utils'
+import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
 interface DepositContextProps {
   inputValue: string
@@ -101,7 +101,7 @@ export function DepositProvider(props: {
     () =>
       inputValue === ''
         ? BigInt(0)
-        : toWei(inputValue, inputToken.decimals).toBigInt(),
+        : parseUnits(inputValue, inputToken.decimals),
     [inputToken, inputValue],
   )
 
