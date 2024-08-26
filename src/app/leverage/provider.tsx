@@ -12,16 +12,7 @@ import {
 import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import {
-  BTC,
-  ETH,
-  IndexCoopEthereum2xIndex,
-  Token,
-  USDC,
-  USDT,
-  WBTC,
-  WETH,
-} from '@/constants/tokens'
+import { ETH, IndexCoopEthereum2xIndex, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
@@ -33,12 +24,9 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
-import { getLeverageTokens } from './constants'
+import { baseTokens, currencyTokens, getLeverageTokens } from './constants'
 import { BaseTokenStats } from './types'
 import { getLeverageType } from './utils/get-leverage-type'
-
-const baseTokens = [ETH, BTC]
-const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
 
 export enum LeverageType {
   Long2x,
@@ -113,6 +101,7 @@ export function LeverageProvider(props: { children: any }) {
   const { address, provider, rpcUrl } = useWallet()
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
+  // Use leverage type 2x because it exists on all chains
   const [leverageType, setLeverageType] = useState<LeverageType>(
     LeverageType.Long2x,
   )
@@ -314,9 +303,10 @@ export function LeverageProvider(props: { children: any }) {
   }, [indexTokenBasedOnLeverageType, isMinting, leverageType])
 
   useEffect(() => {
+    // TODO:
     const fetchQuote = async () => {
       if (!address) return
-      if (chainId !== ARBITRUM.chainId) return
+      if (!chainId) return
       if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       if (!indexToken) return

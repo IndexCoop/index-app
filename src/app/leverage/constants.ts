@@ -1,17 +1,26 @@
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import {
+  BTC,
+  ETH,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
+  USDC,
+  USDT,
+  WBTC,
+  WETH,
 } from '@/constants/tokens'
 import { isAddress } from '@/lib/utils'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { LeverageToken } from './types'
+
+export const baseTokens = [ETH, BTC]
+export const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
 
 export const ethLeverageTokens = [
   IndexCoopEthereum2xIndex,
