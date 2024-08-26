@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { Token } from '@/constants/tokens'
 
 import { SelectorButton } from './selector-button'
 
 type BaseAssetSelectorProps = {
+  baseToken: Token
   onSelectBaseAsset: (symbol: string) => void
 }
 
 export function BaseAssetSelector(props: BaseAssetSelectorProps) {
-  const [isSelected, setSelected] = useState(true)
   return (
     <div className='flex flex-col gap-3'>
       <div className='text-xs font-normal text-gray-100'>Base Asset</div>
@@ -17,9 +17,8 @@ export function BaseAssetSelector(props: BaseAssetSelectorProps) {
             selected: '/assets/selector-base-asset-eth.png',
             disabled: '/assets/selector-base-asset-eth-disabled.png',
           }}
-          isSelected={isSelected}
+          isSelected={props.baseToken.symbol === 'ETH'}
           onClick={() => {
-            setSelected(true)
             props.onSelectBaseAsset('ETH')
           }}
         />
@@ -28,9 +27,8 @@ export function BaseAssetSelector(props: BaseAssetSelectorProps) {
             selected: '/assets/selector-base-asset-btc.png',
             disabled: '/assets/selector-base-asset-btc-disabled.png',
           }}
-          isSelected={!isSelected}
+          isSelected={props.baseToken.symbol === 'BTC'}
           onClick={() => {
-            setSelected(false)
             props.onSelectBaseAsset('BTC')
           }}
         />

@@ -39,6 +39,7 @@ export default function Page() {
             <Title />
             <div className='flex flex-row gap-10 '>
               <BaseAssetSelector
+                baseToken={baseToken}
                 onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
               />
               <NetworkSelector
