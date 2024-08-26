@@ -5,6 +5,7 @@ export enum IndexDataMetric {
   MarketCap = 'marketcap',
   Nav = 'nav',
   NavChange = 'navchange',
+  Pav = 'pav',
   Price = 'price',
   PriceChange = 'pricechange',
   ProductComposition = 'productcomposition',
@@ -51,6 +52,9 @@ export class IndexDataProvider {
           : undefined,
         navChange: metrics.includes(IndexDataMetric.NavChange)
           ? (latest.NavChange24Hr as number) * 100
+          : undefined,
+        pav: metrics.includes(IndexDataMetric.Pav)
+          ? (latest.ProductAssetValue as number)
           : undefined,
         price: metrics.includes(IndexDataMetric.Price)
           ? (latest.Price as number)

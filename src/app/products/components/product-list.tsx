@@ -36,7 +36,7 @@ export function ProductList() {
               tokenAddress: token.address,
               metrics: [
                 IndexDataMetric.MarketCap,
-                IndexDataMetric.Nav,
+                IndexDataMetric.Pav,
                 IndexDataMetric.NavChange,
               ],
             })
