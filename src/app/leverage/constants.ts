@@ -15,7 +15,6 @@ import {
   WBTC,
   WETH,
 } from '@/constants/tokens'
-import { isAddress } from '@/lib/utils'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { LeverageToken, LeverageType } from './types'
@@ -38,16 +37,11 @@ export const btcLeverageTokens = [
 export const leverageTokens = [...ethLeverageTokens, ...btcLeverageTokens]
 
 export function getLeverageTokens(chainId: number): LeverageToken[] {
-  const tokens = leverageTokens.map((token) => {
+  const tokens: (LeverageToken | null)[] = leverageTokens.map((token) => {
     const baseToken = getLeverageBaseToken(token.symbol)
     const address = getAddressForToken(token, chainId)
     const leverageType = getLeverageType(token.symbol)
-    if (
-      !baseToken ||
-      !address ||
-      !isAddress(address) ||
-      leverageType === null
-    ) {
+    if (!baseToken || !address || leverageType === null) {
       return null
     }
     return {
@@ -57,7 +51,8 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
       leverageType,
     }
   })
-  return tokens.filter((token) => token !== null)
+  return tokens.filter((token): token is LeverageToken => token !== null)
+}
 
 export const supportedLeverageTypes = {
   [ARBITRUM.chainId]: [
