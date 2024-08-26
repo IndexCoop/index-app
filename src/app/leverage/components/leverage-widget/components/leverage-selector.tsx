@@ -18,6 +18,7 @@ export function LeverageSelector(props: LeverageSelectorProps) {
           const label = getLabelForLeverageType(leverageType)
           return (
             <LeverageSelectorButton
+              key={`leverage-type-${label}`}
               isSelected={selectedTye === leverageType}
               label={label}
               onClick={() => onSelectType(leverageType)}
