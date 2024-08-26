@@ -1,7 +1,9 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { PopupButton } from '@typeform/embed-react'
+import { useWalletClient } from 'wagmi'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -11,6 +13,7 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
 import { BaseAssetSelector } from './components/selectors/base-asset-selector'
+import { NetworkSelector } from './components/selectors/network-selector'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
 import TradingViewWidget from './components/trading-view-widget'
@@ -19,8 +22,8 @@ import { YourTokens } from './components/your-tokens'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
-  // const { openConnectModal } = useConnectModal()
-  // const { data: walletClient } = useWalletClient()
+  const { openConnectModal } = useConnectModal()
+  const { data: walletClient } = useWalletClient()
   const { address } = useWallet()
   const {
     isOpen: isSelectBaseTokenOpen,
@@ -38,7 +41,7 @@ export default function Page() {
               <BaseAssetSelector
                 onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
               />
-              {/* <NetworkSelector
+              <NetworkSelector
                 onSelectNetwork={(chainId) => {
                   console.log(walletClient)
                   if (!walletClient && openConnectModal) {
@@ -46,7 +49,7 @@ export default function Page() {
                   }
                   walletClient?.switchChain({ id: chainId })
                 }}
-              /> */}
+              />
             </div>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
