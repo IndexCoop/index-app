@@ -12,16 +12,10 @@ import {
 import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { ARBITRUM } from '@/constants/chains'
 import {
   BTC,
   ETH,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseBitcoinIndex,
-  IndexCoopInverseEthereumIndex,
   Token,
   USDC,
   USDT,
@@ -39,15 +33,12 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
-import { leverageTokenAddresses } from './constants'
+import { getLeverageTokens } from './constants'
 import { BaseTokenStats } from './types'
 import { getLeverageType } from './utils/get-leverage-type'
 
 const baseTokens = [ETH, BTC]
 const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
-const chainTokenAddresses = {
-  [ARBITRUM.chainId]: leverageTokenAddresses,
-}
 
 export enum LeverageType {
   Long2x,
@@ -121,6 +112,11 @@ export function LeverageProvider(props: { children: any }) {
   const nativeTokenPrice = useNativeTokenPrice(chainId)
   const { address, provider, rpcUrl } = useWallet()
 
+  const [baseToken, setBaseToken] = useState<Token>(ETH)
+  const [leverageType, setLeverageType] = useState<LeverageType>(
+    LeverageType.Long2x,
+  )
+
   const [inputValue, setInputValue] = useState('')
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [indexTokenPrice, setIndexTokenPrice] = useState(0)
@@ -128,17 +124,9 @@ export function LeverageProvider(props: { children: any }) {
   const [isMinting, setMinting] = useState<boolean>(true)
   const [inputToken, setInputToken] = useState<Token>(ETH)
   const [outputToken, setOutputToken] = useState<Token>(
-    IndexCoopInverseEthereumIndex,
-  )
-  const [baseToken, setBaseToken] = useState<Token>(ETH)
-  const [leverageType, setLeverageType] = useState<LeverageType>(
-    LeverageType.Long2x,
+    IndexCoopEthereum2xIndex,
   )
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
-  const { balances, forceRefetchBalances } = useBalances(
-    address,
-    chainTokenAddresses[chainId ?? -1],
-  )
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
     isAvailable: true,
@@ -151,42 +139,32 @@ export function LeverageProvider(props: { children: any }) {
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
+  const indexTokens = useMemo(() => {
+    return getLeverageTokens(chainId ?? 1)
+  }, [chainId])
+
+  const indexTokenAddresses = useMemo(() => {
+    return indexTokens.map((token) => token.address!)
+  }, [indexTokens])
+
+  const { balances, forceRefetchBalances } = useBalances(
+    address,
+    indexTokenAddresses,
+  )
+
   const indexTokenBasedOnLeverageType = useMemo(() => {
-    if (baseToken.symbol === 'ETH') {
-      switch (leverageType) {
-        case LeverageType.Long2x:
-          return IndexCoopEthereum2xIndex
-        case LeverageType.Long3x:
-          return IndexCoopEthereum3xIndex
-        case LeverageType.Short:
-          return IndexCoopInverseEthereumIndex
-      }
-    } else {
-      switch (leverageType) {
-        case LeverageType.Long2x:
-          return IndexCoopBitcoin2xIndex
-        case LeverageType.Long3x:
-          return IndexCoopBitcoin3xIndex
-        case LeverageType.Short:
-          return IndexCoopInverseBitcoinIndex
-      }
-    }
-  }, [baseToken, leverageType])
+    return indexTokens.filter(
+      (token) =>
+        token.baseToken === baseToken.symbol &&
+        token.leverageType === leverageType,
+    )[0]
+  }, [baseToken, indexTokens, leverageType])
 
   const indexTokensBasedOnSymbol = useMemo(() => {
-    if (baseToken.symbol === 'ETH') {
-      return [
-        IndexCoopInverseEthereumIndex,
-        IndexCoopEthereum2xIndex,
-        IndexCoopEthereum3xIndex,
-      ]
-    }
-    return [
-      IndexCoopInverseBitcoinIndex,
-      IndexCoopBitcoin2xIndex,
-      IndexCoopBitcoin3xIndex,
-    ]
-  }, [baseToken])
+    return indexTokens.filter((token) => {
+      return token.baseToken === baseToken.symbol
+    })
+  }, [baseToken, indexTokens])
 
   const inputTokenAmount = useMemo(
     () =>
