@@ -2,6 +2,8 @@ import clsx from 'clsx'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
+import { useNetwork } from '@/lib/hooks/use-network'
+
 import { LeverageType, useLeverageToken } from '../provider'
 import { EnrichedToken } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
@@ -15,6 +17,7 @@ const leverageTypeLabels = {
 }
 
 export function YourTokens() {
+  const { chainId } = useNetwork()
   const {
     balances,
     onSelectBaseToken,
@@ -26,7 +29,7 @@ export function YourTokens() {
 
   useEffect(() => {
     if (balances.length === 0) return
-    fetchLeverageTokenPrices(balances, setTokens)
+    fetchLeverageTokenPrices(balances, setTokens, chainId ?? 1)
   }, [balances])
 
   const handleCloseClick = (token: EnrichedToken) => {
