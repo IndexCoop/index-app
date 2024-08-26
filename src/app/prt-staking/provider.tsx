@@ -154,11 +154,11 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       const [tvl, cumulativeRevenue] = await Promise.all([
         indexDataProvider.getTokenMetrics({
           tokenAddress: token.rewardTokenData.address,
-          metrics: [IndexDataMetric.MarketCap],
+          metrics: [IndexDataMetric.Pav],
         }),
         fetchCumulativeRevenue(token.rewardTokenData.address),
       ])
-      setTvl(tvl?.marketCap ?? 0)
+      setTvl(tvl?.pav ?? 0)
       setCumulativeRevenue(cumulativeRevenue)
     }
     fetchTokenData()

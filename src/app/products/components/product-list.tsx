@@ -35,7 +35,7 @@ export function ProductList() {
           ? indexDataProvider.getTokenMetrics({
               tokenAddress: token.address,
               metrics: [
-                IndexDataMetric.MarketCap,
+                IndexDataMetric.Nav,
                 IndexDataMetric.Pav,
                 IndexDataMetric.NavChange,
               ],
@@ -55,9 +55,9 @@ export function ProductList() {
 
     const products = productTokens.map((token, idx) => ({
       ...token,
-      price: analyticsResults[idx]?.pav,
+      price: analyticsResults[idx]?.nav,
       delta: analyticsResults[idx]?.navChange,
-      tvl: analyticsResults[idx]?.marketCap,
+      tvl: analyticsResults[idx]?.pav,
       apy:
         apyResults[idx]?.apy !== undefined && apyResults[idx].apy !== '0'
           ? Number(formatWei(apyResults[idx].apy))

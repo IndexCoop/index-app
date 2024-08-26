@@ -78,12 +78,12 @@ export function usePresaleData(symbol: string): PresaleData {
         try {
           const res = await indexDataProvider.getTokenMetrics({
             tokenAddress: presaleToken.address!,
-            metrics: [IndexDataMetric.MarketCap],
+            metrics: [IndexDataMetric.Pav],
           })
 
-          if (!res?.marketCap) return
+          if (!res?.pav) return
 
-          setTvl(res.marketCap)
+          setTvl(res.pav)
         } catch (err) {
           console.log('Error fetching marketcap tvl', err)
         }
