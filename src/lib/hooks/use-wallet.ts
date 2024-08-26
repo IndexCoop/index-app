@@ -1,5 +1,5 @@
 import { providers } from 'ethers'
-import { Hex, PublicClient } from 'viem'
+import { PublicClient } from 'viem'
 import { useAccount, usePublicClient } from 'wagmi'
 
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -10,7 +10,7 @@ export interface IndexRpcProvider {
 }
 
 type Account = {
-  address: Hex | undefined
+  address: string | undefined
   // Convenience property to be used until we can fully get rid of this ethers provider
   jsonRpcProvider: providers.JsonRpcProvider | null
   provider: IndexRpcProvider | null
@@ -38,7 +38,7 @@ export const useWallet = (): Account => {
     : null
   const isConnected = !!address
   return {
-    address: address as `0x${string}` | undefined,
+    address,
     isConnected,
     jsonRpcProvider,
     provider: publicClient ?? null,
