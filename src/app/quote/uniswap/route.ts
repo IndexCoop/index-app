@@ -43,10 +43,10 @@ export async function POST(request: NextRequest) {
     )
 
     const url = getAlchemyBaseUrl(chainId) + process.env.NEXT_PUBLIC_ALCHEMY_ID
-    console.log(url, chainId)
-
-    const provider = new providers.JsonRpcProvider(url)
-    console.log(chainId, provider)
+    const provider = new providers.JsonRpcProvider({
+      skipFetchSetup: true,
+      url,
+    })
     const router = new AlphaRouter({
       chainId,
       provider,
