@@ -44,6 +44,7 @@ export function useSafeClient() {
       }
 
       const { safes } = await apiKit.getSafesByOwner(address)
+      if (safes.length === 0) setSafeAddress(null)
       if (safes.length === 1) setSafeAddress(safes[0])
 
       setSafes(safes)
