@@ -152,7 +152,7 @@ export function LeverageProvider(props: { children: any }) {
       (token) =>
         token.baseToken === baseToken.symbol &&
         token.leverageType === leverageType,
-    )
+    )!
   }, [baseToken, indexTokens, leverageType])
 
   const indexTokensBasedOnSymbol = useMemo(() => {
