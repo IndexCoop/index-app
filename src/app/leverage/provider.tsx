@@ -12,9 +12,11 @@ import {
 import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
+import { ARBITRUM } from '@/constants/chains'
 import { ETH, IndexCoopEthereum2xIndex, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -118,6 +120,8 @@ export function LeverageProvider(props: { children: any }) {
     IndexCoopEthereum2xIndex,
   )
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
+  const [flashmintQuote, setFlashmintQuote] = useState<Quote | null>(null)
+  const [swapQuote, setSwapQuote] = useState<Quote | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
     isAvailable: true,
@@ -316,7 +320,7 @@ export function LeverageProvider(props: { children: any }) {
         const inputTokenPrice = await getTokenPrice(inputToken, chainId)
         const outputTokenPrice = await getTokenPrice(outputToken, chainId)
         const gasPrice = await provider.getGasPrice()
-        const quoteSwap = await getIndexQuote({
+        const swapQuote = await getIndexQuote({
           isMinting,
           chainId,
           address,
@@ -330,14 +334,8 @@ export function LeverageProvider(props: { children: any }) {
           provider,
           slippage: 0.1,
         })
-        console.log(quoteSwap)
-        const quoteResult = {
-          type: QuoteType.index,
-          isAvailable: true,
-          quote: quoteSwap,
-          error: null,
-        }
-        setQuoteResult(quoteResult)
+        console.log(swapQuote)
+        setSwapQuote(swapQuote)
         setFetchingQuote(false)
       } catch (e) {
         console.error('Error getting swap quote', e)
@@ -372,13 +370,7 @@ export function LeverageProvider(props: { children: any }) {
         rpcUrl,
       )
       console.log(quoteFlashMint)
-      const quoteResult = {
-        type: QuoteType.flashmint,
-        isAvailable: true,
-        quote: quoteFlashMint,
-        error: null,
-      }
-      setQuoteResult(quoteResult)
+      setFlashmintQuote(quoteFlashMint)
       setFetchingQuote(false)
     }
     fetchQuote()
@@ -397,6 +389,30 @@ export function LeverageProvider(props: { children: any }) {
     publicClient,
     rpcUrl,
   ])
+
+  useEffect(() => {
+    if (chainId === ARBITRUM.chainId) {
+      const quoteResult = {
+        type: QuoteType.flashmint,
+        isAvailable: true,
+        quote: flashmintQuote,
+        error: null,
+      }
+      setQuoteResult(quoteResult)
+      return
+    }
+    const bestQuote = getBestLeverageQuote(
+      flashmintQuote,
+      swapQuote,
+      chainId ?? -1,
+    )
+    setQuoteResult({
+      type: bestQuote?.type ?? QuoteType.flashmint,
+      isAvailable: true,
+      quote: bestQuote,
+      error: null,
+    })
+  }, [chainId, flashmintQuote, swapQuote])
 
   useEffect(() => {
     // Reset quotes
@@ -448,4 +464,37 @@ export function LeverageProvider(props: { children: any }) {
       {props.children}
     </LeverageTokenContext.Provider>
   )
+}
+
+function getBestLeverageQuote(
+  flashmintQuote: Quote | null,
+  swapQuote: Quote | null,
+  chainId: number,
+): Quote | null {
+  if (!flashmintQuote && swapQuote) return swapQuote
+  if (flashmintQuote && !swapQuote) return flashmintQuote
+  if (
+    flashmintQuote &&
+    flashmintQuote.chainId !== chainId &&
+    swapQuote &&
+    swapQuote.chainId === chainId
+  )
+    return swapQuote
+  if (
+    flashmintQuote &&
+    flashmintQuote.chainId === chainId &&
+    swapQuote &&
+    swapQuote.chainId !== chainId
+  )
+    return flashmintQuote
+  if (flashmintQuote && swapQuote) {
+    const bestQuoteType = getBestQuote(
+      swapQuote.fullCostsInUsd,
+      flashmintQuote.fullCostsInUsd,
+      swapQuote.outputTokenAmountUsdAfterFees,
+      flashmintQuote.outputTokenAmountUsdAfterFees,
+    )
+    return bestQuoteType === QuoteType.index ? swapQuote : flashmintQuote
+  }
+  return null
 }
