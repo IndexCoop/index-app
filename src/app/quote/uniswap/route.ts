@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
     )
 
     const url = getAlchemyBaseUrl(chainId) + process.env.NEXT_PUBLIC_ALCHEMY_ID
+    console.log(url, chainId)
 
     const router = new AlphaRouter({
       chainId,
