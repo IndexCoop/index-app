@@ -148,11 +148,11 @@ export function LeverageProvider(props: { children: any }) {
   )
 
   const indexTokenBasedOnLeverageType = useMemo(() => {
-    return indexTokens.filter(
+    return indexTokens.find(
       (token) =>
         token.baseToken === baseToken.symbol &&
         token.leverageType === leverageType,
-    )[0]
+    )
   }, [baseToken, indexTokens, leverageType])
 
   const indexTokensBasedOnSymbol = useMemo(() => {
