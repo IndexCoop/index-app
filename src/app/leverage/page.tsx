@@ -34,8 +34,8 @@ export default function Page() {
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
-        <div className='mx-auto flex w-full flex-col gap-8 px-4 py-12'>
-          <div className='flex flex-col gap-10 md:flex-row'>
+        <div className='mx-auto flex w-full flex-col gap-8 px-4 py-4 sm:py-12'>
+          <div className='flex flex-col gap-5 md:flex-row md:gap-10'>
             <Title />
             <div className='flex flex-row gap-10 '>
               <BaseAssetSelector

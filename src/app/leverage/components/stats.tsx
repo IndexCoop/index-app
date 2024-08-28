@@ -17,7 +17,7 @@ export function Stats() {
     high24h,
   } = useFormattedLeverageData(stats)
   return (
-    <div className='border-ic-gray-600 flex w-full flex-row items-center justify-between rounded-3xl border bg-[#1C2C2E] px-4'>
+    <div className='border-ic-gray-600 flex w-full flex-row items-center justify-between rounded-3xl border bg-[#1C2C2E] px-0 sm:px-4'>
       <StatsItem
         token={baseToken}
         change24h={change24h}
@@ -54,11 +54,11 @@ function StatsItem(props: StatsItemProps) {
   const iconScale = change24hIsPositive ? '' : '-scale-100'
   const textColor = change24hIsPositive ? 'text-[#65D993]' : 'text-ic-red'
   return (
-    <div className='flex flex-grow flex-row items-center justify-center py-3 md:gap-6 md:py-6'>
+    <div className='flex flex-grow flex-row items-center justify-center gap-2 py-2 sm:py-3 md:gap-6 md:py-6'>
       <div className='flex'>
         <TokenDisplay token={token} />
       </div>
-      <div className='text-ic-white ml-auto text-xl font-semibold sm:ml-0'>
+      <div className='text-ic-white ml-0 text-sm font-semibold sm:text-xl'>
         {price}
       </div>
       <div className='hidden flex-col gap-1 sm:flex md:hidden lg:flex'>
