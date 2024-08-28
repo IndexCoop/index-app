@@ -43,10 +43,13 @@ export async function POST(request: NextRequest) {
     )
 
     const url = getAlchemyBaseUrl(chainId) + process.env.NEXT_PUBLIC_ALCHEMY_ID
-
+    const provider = new providers.JsonRpcProvider({
+      skipFetchSetup: true,
+      url,
+    })
     const router = new AlphaRouter({
       chainId,
-      provider: new providers.JsonRpcProvider(url),
+      provider,
     })
 
     let swapRoute: SwapRoute | null = null

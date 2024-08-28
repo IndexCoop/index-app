@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from 'react'
 import { formatPrice } from '@/app/products/utils/formatters'
 import { ARBITRUM } from '@/constants/chains'
 import { TokenBalance } from '@/lib/hooks/use-balance'
-import { formatAmountFromWei } from '@/lib/utils'
+import { formatWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
 
 import { leverageTokens } from '../constants'
@@ -55,8 +55,7 @@ export async function fetchLeverageTokenPrices(
 
     const enrichedTokens = tokenBalances.map((token, idx) => {
       const usd =
-        parseFloat(formatAmountFromWei(token.balance, token.decimals, 3)) *
-        tokenPrices[idx]
+        parseFloat(formatWei(token.balance, token.decimals)) * tokenPrices[idx]
       return {
         ...token,
         leverageType: getLeverageType(token),
