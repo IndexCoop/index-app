@@ -100,8 +100,8 @@ export const useLeverageToken = () => useContext(LeverageTokenContext)
 
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
-  const { chainId } = useNetwork()
-  const nativeTokenPrice = useNativeTokenPrice(chainId)
+  const { chainId: chainIdRaw } = useNetwork()
+  const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
@@ -129,13 +129,19 @@ export function LeverageProvider(props: { children: any }) {
     error: null,
   })
 
+  const chainId = useMemo(() => {
+    // To control the defaults better
+    return chainIdRaw ?? ARBITRUM.chainId
+  }, [chainIdRaw])
+
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
   const indexTokens = useMemo(() => {
-    return getLeverageTokens(chainId ?? 1)
+    console.log('indexTokens', chainId)
+    return getLeverageTokens(chainId)
   }, [chainId])
 
   const indexTokenAddresses = useMemo(() => {
@@ -450,7 +456,7 @@ export function LeverageProvider(props: { children: any }) {
         isFetchingQuote,
         quoteResult,
         stats,
-        supportedLeverageTypes: supportedLeverageTypes[chainId ?? 1],
+        supportedLeverageTypes: supportedLeverageTypes[chainId],
         transactionReview,
         onChangeInputTokenAmount,
         onSelectBaseToken,

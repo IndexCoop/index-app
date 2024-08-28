@@ -28,7 +28,7 @@ export function NetworkSelector(props: NetworkSelectorProps) {
             selected: '/assets/selector-network-arbitrum.png',
             disabled: '/assets/selector-network-arbitrum-disabled.png',
           }}
-          isSelected={chainId === ARBITRUM.chainId}
+          isSelected={chainId === ARBITRUM.chainId || !chainId}
           onClick={() => {
             props.onSelectNetwork(ARBITRUM.chainId)
           }}
