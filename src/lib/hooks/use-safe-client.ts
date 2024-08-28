@@ -24,12 +24,16 @@ export function useSafeClient() {
     async function loadProtocolKit() {
       if (!address || !safeAddress || !connectorClient) return
 
-      const protocolKit = await Safe.init({
-        provider: connectorClient.transport,
-        safeAddress,
-        signer: address,
-      })
-      setProtocolKit(protocolKit)
+      try {
+        const protocolKit = await Safe.init({
+          provider: connectorClient.transport,
+          safeAddress,
+          signer: address,
+        })
+        setProtocolKit(protocolKit)
+      } catch {
+        setProtocolKit(null)
+      }
     }
     loadProtocolKit()
   }, [address, connectorClient, protocolKit, safeAddress])
