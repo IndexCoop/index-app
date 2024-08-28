@@ -14,17 +14,18 @@ export function LeverageSelector(props: LeverageSelectorProps) {
     <div className='flex flex-row items-center justify-between rounded-xl border border-[#3A6060] p-4'>
       <div className='text-ic-gray-300 text-xs font-medium'>Leverage</div>
       <div className='flex flex-row gap-2'>
-        {supportedTypes.map((leverageType) => {
-          const label = getLabelForLeverageType(leverageType)
-          return (
-            <LeverageSelectorButton
-              key={`leverage-type-${label}`}
-              isSelected={selectedTye === leverageType}
-              label={label}
-              onClick={() => onSelectType(leverageType)}
-            />
-          )
-        })}
+        {supportedTypes?.length > 0 &&
+          supportedTypes.map((leverageType) => {
+            const label = getLabelForLeverageType(leverageType)
+            return (
+              <LeverageSelectorButton
+                key={`leverage-type-${label}`}
+                isSelected={selectedTye === leverageType}
+                label={label}
+                onClick={() => onSelectType(leverageType)}
+              />
+            )
+          })}
       </div>
     </div>
   )
