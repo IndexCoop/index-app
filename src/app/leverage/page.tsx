@@ -44,7 +44,6 @@ export default function Page() {
               />
               <NetworkSelector
                 onSelectNetwork={(chainId) => {
-                  console.log(walletClient)
                   if (!walletClient && openConnectModal) {
                     openConnectModal()
                   }

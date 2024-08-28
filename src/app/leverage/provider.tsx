@@ -140,7 +140,6 @@ export function LeverageProvider(props: { children: any }) {
   }, [inputToken, isMinting, outputToken])
 
   const indexTokens = useMemo(() => {
-    console.log('indexTokens', chainId)
     return getLeverageTokens(chainId)
   }, [chainId])
 
@@ -340,7 +339,6 @@ export function LeverageProvider(props: { children: any }) {
           provider,
           slippage: 0.1,
         })
-        console.log(swapQuote)
         setSwapQuote(swapQuote)
         setFetchingQuote(false)
       } catch (e) {
@@ -375,7 +373,6 @@ export function LeverageProvider(props: { children: any }) {
         provider,
         rpcUrl,
       )
-      console.log(quoteFlashMint)
       setFlashmintQuote(quoteFlashMint)
       setFetchingQuote(false)
     }
