@@ -4,7 +4,7 @@ import { utils } from 'ethers'
 
 import { Token } from '@/constants/tokens'
 import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
-import { formatAmountFromWei } from '@/lib/utils'
+import { formatWei } from '@/lib/utils'
 import { getConfiguredZeroExSwapQuoteProvider } from '@/lib/utils/api/zeroex'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
@@ -86,19 +86,11 @@ async function getEnhancedFlashMintQuote(
 
       const inputTokenAmountUsd =
         parseFloat(
-          formatAmountFromWei(
-            inputTokenAmount.toBigInt(),
-            inputToken.decimals,
-            10,
-          ),
+          formatWei(inputTokenAmount.toBigInt(), inputToken.decimals),
         ) * inputTokenPrice
       const outputTokenAmountUsd =
         parseFloat(
-          formatAmountFromWei(
-            outputTokenAmount.toBigInt(),
-            outputToken.decimals,
-            10,
-          ),
+          formatWei(outputTokenAmount.toBigInt(), outputToken.decimals),
         ) * outputTokenPrice
       const priceImpact = getPriceImpact(
         inputTokenAmountUsd,
