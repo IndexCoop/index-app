@@ -13,13 +13,41 @@ export enum IndexDataMetric {
   Volume = 'volume',
 }
 
-function formatUrl(
-  tokenAddress: string,
-  chainId: number,
-  metrics: IndexDataMetric[],
-) {
+export enum IndexDataInterval {
+  Latest = 'latest',
+  Minute = 'minute',
+  Hour = 'hour',
+  Daily = 'daily',
+}
+
+export enum IndexDataPeriod {
+  Latest = 'latest',
+  Hour = 'hour',
+  Day = 'day',
+  Week = 'week',
+  Month = 'month',
+  Quarter = 'quarter',
+  Year = 'year',
+}
+
+type FormatUrlArgs = {
+  tokenAddress: string
+  chainId?: number
+  metrics?: IndexDataMetric[]
+  period?: IndexDataPeriod
+  interval?: IndexDataInterval
+}
+function formatUrl({
+  tokenAddress,
+  chainId = 1,
+  metrics = [],
+  period = IndexDataPeriod.Latest,
+  interval = IndexDataInterval.Latest,
+}: FormatUrlArgs) {
   const searchParams = new URLSearchParams({
     chainId: chainId.toString(),
+    period,
+    interval,
   })
   for (const metric of metrics) {
     searchParams.append('metrics', metric)
@@ -38,7 +66,7 @@ export class IndexDataProvider {
     chainId?: number
     metrics: IndexDataMetric[]
   }) {
-    const url = formatUrl(tokenAddress, chainId, metrics)
+    const url = formatUrl({ tokenAddress, chainId, metrics })
     try {
       const res = await fetch(url)
       const json = await res.json()
@@ -68,6 +96,36 @@ export class IndexDataProvider {
       }
     } catch (error) {
       console.error(`Error fetching token metrics: ${url}`, error)
+      return null
+    }
+  }
+
+  async getTokenHistoricalData({
+    tokenAddress,
+    chainId = 1,
+    interval = IndexDataInterval.Minute,
+    period = IndexDataPeriod.Day,
+  }: {
+    tokenAddress: string
+    chainId?: number
+    interval: IndexDataInterval
+    period: IndexDataPeriod
+  }) {
+    const url = formatUrl({
+      tokenAddress,
+      chainId,
+      metrics: [IndexDataMetric.Nav],
+      interval,
+      period,
+    })
+    try {
+      const res = await fetch(url)
+      const json = await res.json()
+      return json.map((data: any) => ({
+        nav: data.NetAssetValue as number,
+      }))
+    } catch (error) {
+      console.error(`Error fetching token historical data: ${url}`, error)
       return null
     }
   }
