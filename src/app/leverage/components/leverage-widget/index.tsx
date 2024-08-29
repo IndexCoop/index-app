@@ -10,7 +10,8 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
-import { useArbitrumOnly } from '@/lib/hooks/use-network'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
+import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
 
@@ -32,7 +33,10 @@ type LeverageWidgetProps = {
 }
 
 export function LeverageWidget(props: LeverageWidgetProps) {
-  const isSupportedNetwork = useArbitrumOnly()
+  const isSupportedNetwork = useSupportedNetworks([
+    MAINNET.chainId,
+    ARBITRUM.chainId,
+  ])
   const { address } = useWallet()
   const {
     baseToken,
@@ -52,6 +56,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     onSelectOutputToken,
     outputToken,
     reset,
+    supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
 
@@ -99,6 +104,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
+        supportedTypes={supportedLeverageTypes}
         onSelectType={onSelectLeverageType}
       />
       <TradeInputSelector

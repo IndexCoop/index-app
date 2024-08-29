@@ -3,7 +3,7 @@ import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 
-import { LeverageType } from '@/app/leverage/provider'
+import { LeverageType } from '@/app/leverage/types'
 import { colors } from '@/lib/styles/colors'
 
 type FeesItemProps = {

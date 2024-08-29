@@ -13,7 +13,10 @@ export function SelectorButton({
 }: SelectorButtonProps) {
   const path = isSelected ? imagePath.selected : imagePath.disabled
   return (
-    <div className={'h-14 w-14 cursor-pointer'} onClick={onClick}>
+    <div
+      className={'h-11 w-11 cursor-pointer sm:h-14 sm:w-14'}
+      onClick={onClick}
+    >
       <Image src={path} alt={`logo`} height={56} width={56} />
     </div>
   )

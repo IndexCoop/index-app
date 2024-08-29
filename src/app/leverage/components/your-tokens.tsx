@@ -2,8 +2,10 @@ import clsx from 'clsx'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-import { LeverageType, useLeverageToken } from '../provider'
-import { EnrichedToken } from '../types'
+import { useNetwork } from '@/lib/hooks/use-network'
+
+import { useLeverageToken } from '../provider'
+import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
 import { getLeverageBaseToken } from '../utils/get-leverage-base-token'
 import { getLeverageType } from '../utils/get-leverage-type'
@@ -15,6 +17,7 @@ const leverageTypeLabels = {
 }
 
 export function YourTokens() {
+  const { chainId } = useNetwork()
   const {
     balances,
     onSelectBaseToken,
@@ -26,17 +29,17 @@ export function YourTokens() {
 
   useEffect(() => {
     if (balances.length === 0) return
-    fetchLeverageTokenPrices(balances, setTokens)
-  }, [balances])
+    fetchLeverageTokenPrices(balances, setTokens, chainId ?? 1)
+  }, [balances, chainId])
 
   const handleCloseClick = (token: EnrichedToken) => {
     if (isMinting) toggleIsMinting()
 
-    const leverageBaseToken = getLeverageBaseToken(token)
+    const leverageBaseToken = getLeverageBaseToken(token.symbol)
     if (leverageBaseToken === null) return
     onSelectBaseToken(leverageBaseToken.symbol)
 
-    const leverageType = getLeverageType(token)
+    const leverageType = getLeverageType(token.symbol)
     if (leverageType === null) return
     onSelectLeverageType(leverageType)
 

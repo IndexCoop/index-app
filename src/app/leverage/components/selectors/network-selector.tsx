@@ -1,4 +1,4 @@
-import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
 import { useNetwork } from '@/lib/hooks/use-network'
 
 import { SelectorButton } from './selector-button'
@@ -15,16 +15,6 @@ export function NetworkSelector(props: NetworkSelectorProps) {
       <div className='flex flex-row gap-1'>
         <SelectorButton
           imagePath={{
-            selected: '/assets/selector-network-arbitrum.png',
-            disabled: '/assets/selector-network-arbitrum-disabled.png',
-          }}
-          isSelected={chainId === ARBITRUM.chainId}
-          onClick={() => {
-            props.onSelectNetwork(ARBITRUM.chainId)
-          }}
-        />
-        <SelectorButton
-          imagePath={{
             selected: '/assets/selector-network-ethereum.png',
             disabled: '/assets/selector-network-ethereum-disabled.png',
           }}
@@ -35,6 +25,16 @@ export function NetworkSelector(props: NetworkSelectorProps) {
         />
         <SelectorButton
           imagePath={{
+            selected: '/assets/selector-network-arbitrum.png',
+            disabled: '/assets/selector-network-arbitrum-disabled.png',
+          }}
+          isSelected={chainId === ARBITRUM.chainId || !chainId}
+          onClick={() => {
+            props.onSelectNetwork(ARBITRUM.chainId)
+          }}
+        />
+        {/* <SelectorButton
+          imagePath={{
             selected: '/assets/selector-network-base.png',
             disabled: '/assets/selector-network-base-disabled.png',
           }}
@@ -42,7 +42,7 @@ export function NetworkSelector(props: NetworkSelectorProps) {
           onClick={() => {
             props.onSelectNetwork(BASE.chainId)
           }}
-        />
+        /> */}
       </div>
     </div>
   )
