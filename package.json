@@ -32,6 +32,9 @@
     "@indexcoop/flash-mint-sdk": "3.4.1",
     "@indexcoop/tokenlists": "1.52.0",
     "@rainbow-me/rainbowkit": "^2.0.7",
+    "@safe-global/api-kit": "2.4.4",
+    "@safe-global/protocol-kit": "4.0.4",
+    "@safe-global/safe-core-sdk-types": "5.0.3",
     "@sentry/nextjs": "8.8.0",
     "@tanstack/react-query": "5.36.2",
     "@typeform/embed-react": "4.0.0",
@@ -51,7 +54,7 @@
     "react-ga4": "2.1.0",
     "react-loading-skeleton": "^3.3.1",
     "use-debounce": "^10.0.1",
-    "viem": "2.10.9",
+    "viem": "2.19.1",
     "wagmi": "2.9.2"
   },
   "devDependencies": {

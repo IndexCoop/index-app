@@ -1,5 +1,6 @@
 'use client'
 
+import { EIP712TypedData } from '@safe-global/safe-core-sdk-types'
 import {
   ReactNode,
   createContext,
@@ -9,10 +10,16 @@ import {
   useState,
 } from 'react'
 import { Address, isAddress } from 'viem'
-import { useAccount, useReadContract, useWalletClient } from 'wagmi'
+import {
+  useAccount,
+  usePublicClient,
+  useReadContract,
+  useWalletClient,
+} from 'wagmi'
 
 import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
+import { useSafeClient } from '@/lib/hooks/use-safe-client'
 import { formatWeiAsNumber } from '@/lib/utils'
 import { fetchCumulativeRevenue, fetchTvl } from '@/lib/utils/fetch'
 
@@ -31,6 +38,7 @@ interface Context {
   timeUntilNextSnapshotSeconds: number
   token: ProductRevenueToken | null
   tvl: number | null
+  typedData: EIP712TypedData | null
   unstakePrts: (amount: bigint) => void
   userStakedBalance: bigint | undefined
   userStakedBalanceFormatted: number
@@ -51,6 +59,7 @@ const PrtStakingContext = createContext<Context>({
   timeUntilNextSnapshotSeconds: 0,
   token: null,
   tvl: null,
+  typedData: null,
   unstakePrts: () => {},
   userStakedBalance: undefined,
   userStakedBalanceFormatted: 0,
@@ -64,12 +73,56 @@ interface Props {
 export const PrtStakingContextProvider = ({ children, token }: Props) => {
   const { address: accountAddress } = useAccount()
   const { data: walletClient } = useWalletClient()
+  const publicClient = usePublicClient()
+  const safeClient = useSafeClient()
   const [tvl, setTvl] = useState<number | null>(null)
+  const [typedData, setTypedData] = useState<EIP712TypedData | null>(null)
   const [cumulativeRevenue, setCumulativeRevenue] = useState<number | null>(
     null,
   )
   const stakedTokenAddress = token.stakedTokenData.address as Address
   const stakedTokenDecimals = token.stakedTokenData.decimals
+
+  const { data: stakeDomain } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'eip712Domain',
+  })
+
+  const { data: stakeMessage } = useReadContract({
+    abi: PrtStakingAbi,
+    address: stakedTokenAddress,
+    functionName: 'message',
+  })
+
+  useEffect(() => {
+    if (!stakeDomain || !stakeMessage) return
+    const typedData = {
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        StakeMessage: [
+          {
+            name: 'message',
+            type: 'string',
+          },
+        ],
+      },
+      primaryType: 'StakeMessage',
+      domain: {
+        name: stakeDomain[1],
+        version: stakeDomain[2],
+        chainId: Number(stakeDomain[3]),
+        verifyingContract: stakeDomain[4],
+      },
+      message: { message: stakeMessage },
+    }
+    setTypedData(typedData)
+  }, [stakeDomain, stakeMessage])
 
   const { data: userStakedBalance, refetch: refetchUserStakedBalance } =
     useReadContract({
@@ -122,18 +175,6 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       },
     })
 
-  const { data: stakeDomain } = useReadContract({
-    abi: PrtStakingAbi,
-    address: stakedTokenAddress,
-    functionName: 'eip712Domain',
-  })
-
-  const { data: stakeMessage } = useReadContract({
-    abi: PrtStakingAbi,
-    address: stakedTokenAddress,
-    functionName: 'message',
-  })
-
   const { data: lifetimeRewards } = useReadContract({
     abi: PrtStakingAbi,
     address: stakedTokenAddress,
@@ -167,8 +208,8 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
 
   const stakePrts = useCallback(
     async (amount: bigint) => {
-      if (!walletClient) return
-      if (!canStake || !stakeDomain || !stakeMessage) return
+      if (!walletClient || !publicClient || !accountAddress) return
+      if (!canStake || !typedData) return
       if (isApprovedStaker) {
         await walletClient.writeContract({
           abi: PrtStakingAbi,
@@ -176,25 +217,17 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           functionName: 'stake',
           args: [amount],
         })
-      } else {
-        const signature = await walletClient.signTypedData({
-          types: {
-            StakeMessage: [
-              {
-                name: 'message',
-                type: 'string',
-              },
-            ],
-          },
-          primaryType: 'StakeMessage',
-          domain: {
-            name: stakeDomain[1],
-            version: stakeDomain[2],
-            chainId: Number(stakeDomain[3]),
-            verifyingContract: stakeDomain[4],
-          },
-          message: { message: stakeMessage },
-        })
+        return
+      }
+
+      // Check if smart contract wallet
+      const bytecode = await publicClient.getCode({
+        address: accountAddress,
+      })
+
+      if (!bytecode) {
+        // Logic for raw wallets
+        const signature = await walletClient.signTypedData(typedData as any)
         await walletClient.writeContract({
           abi: PrtStakingAbi,
           address: stakedTokenAddress,
@@ -202,15 +235,31 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           args: [amount, signature],
         })
         await refetchIsApprovedStaker()
+      } else {
+        // Logic for Safe wallets
+        const validSignature = await safeClient.validSafeSignature(typedData)
+        if (validSignature) {
+          await walletClient.writeContract({
+            abi: PrtStakingAbi,
+            address: stakedTokenAddress,
+            functionName: 'stake',
+            args: [amount, validSignature],
+          })
+          await refetchIsApprovedStaker()
+        } else {
+          console.warn('Signature not valid yet')
+        }
       }
     },
     [
+      accountAddress,
       canStake,
       isApprovedStaker,
+      publicClient,
       refetchIsApprovedStaker,
-      stakeDomain,
-      stakeMessage,
+      safeClient,
       stakedTokenAddress,
+      typedData,
       walletClient,
     ],
   )
@@ -231,7 +280,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
   return (
     <PrtStakingContext.Provider
       value={{
-        accountAddress,
+        accountAddress: accountAddress as `0x${string}` | undefined,
         canStake: canStake ?? false,
         claimPrts,
         claimableRewardsFormatted: formatWeiAsNumber(
@@ -256,6 +305,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
           : 0,
         token,
         tvl,
+        typedData,
         unstakePrts,
         userStakedBalance,
         userStakedBalanceFormatted: formatWeiAsNumber(
