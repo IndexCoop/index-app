@@ -2,11 +2,13 @@ import { useDisclosure } from '@chakra-ui/react'
 
 import { SelectSafeModal } from '@/app/prt-staking/components/prt-section/select-safe-modal'
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useSafeClient } from '@/lib/hooks/use-safe-client'
 
 export function SafeSignButton() {
   const { typedData } = usePrtStakingContext()
   const { safeAddress, safes, setSafeAddress, signTypedData } = useSafeClient()
+  const { logEvent } = useAnalytics()
   const {
     isOpen: isModalOpen,
     onOpen: onModalOpen,
@@ -20,10 +22,12 @@ export function SafeSignButton() {
     }
 
     if (!safeAddress) {
+      logEvent('Select Safe Button Clicked')
       onModalOpen()
       return
     }
 
+    logEvent('Sign SafeMessage Button Clicked')
     signTypedData(typedData)
   }
 
