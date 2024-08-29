@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { parseUnits } from 'viem'
 
 import { ClaimablePanel } from '@/app/prt-staking/components/prt-section/claimable-panel'
+import { SafeSignButton } from '@/app/prt-staking/components/prt-section/safe-sign-button'
 import { StakedPanel } from '@/app/prt-staking/components/prt-section/staked-panel'
 import { WidgetHeader } from '@/app/prt-staking/components/prt-section/widget-header'
 import { WidgetTabs } from '@/app/prt-staking/components/prt-section/widget-tabs'
@@ -197,6 +198,7 @@ export function PrtWidget({ token, onClose }: Props) {
         isLoading={isSubmitting || isApproving}
         onClick={onClickTradeButton}
       />
+      <SafeSignButton />
     </div>
   )
 }
