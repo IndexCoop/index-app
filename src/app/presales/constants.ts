@@ -2,25 +2,25 @@ import {
   HighYieldETHIndex,
   RealWorldAssetIndex,
   Token,
+  UsdcyIndex,
 } from '@/constants/tokens'
 
 import { PreSaleStatus, PreSaleToken } from './types'
 
 export const preSaleTokens: PreSaleToken[] = [
   {
-    status: PreSaleStatus.CLOSED_TARGET_NOT_MET,
-    symbol: RealWorldAssetIndex.symbol,
-    address: RealWorldAssetIndex.address,
-    decimals: RealWorldAssetIndex.decimals,
-    logo: RealWorldAssetIndex.image,
+    status: PreSaleStatus.NOT_STARTED,
+    symbol: UsdcyIndex.symbol,
+    address: UsdcyIndex.address,
+    decimals: UsdcyIndex.decimals,
+    logo: UsdcyIndex.image,
+    infoLink: 'https://indexcoop.com/blog/introducing-usdc-yield-index',
     description:
-      'The Fortunafi Real World Assets Index (RWA) allows token holders to gain diversified exposure to projects and protocols that concentrate on tokenizing offchain assets.',
-    componentsFrom: ['MKR', 'ONDO', 'ENA', 'CFG', 'CANTO', 'MPL'],
-    infoLink: 'https://indexcoop.com/blog/previewing-rwa-index-presale',
+      'The USDC Yield Index (USDCY) tracks the USDC DeFi Yield Index from Chainlink to provide yield from the top USDC lending opportunities on Ethereum.',
+    componentsFrom: ['AAVE', 'Compound'],
     prtRewards: '10,000 / 100,000',
-    targetFundraise: 500,
-    timestampEndDate: 1721404800000,
-    tvlLockedPresale: '14.08 wstETH',
+    targetFundraise: { quantity: '$2,000,000', asset: 'aUSDC' },
+    timestampEndDate: 1727712000000,
   },
   {
     status: PreSaleStatus.TOKEN_LAUNCHED,
@@ -34,19 +34,40 @@ export const preSaleTokens: PreSaleToken[] = [
       'The Index Coop High Yield ETH Index (hyETH) tracks high-yield opportunities for ETH on Ethereum mainnet.',
     componentsFrom: ['Pendle', 'Instadapp', 'Across'],
     prtRewards: '3,000 / 10,000',
-    targetFundraise: 500,
+    targetFundraise: { quantity: '500', asset: 'wstETH' },
     launchDate: 'June 10th, 2024',
     timestampEndDate: 1715356800000,
+  },
+  {
+    status: PreSaleStatus.CLOSED_TARGET_NOT_MET,
+    symbol: RealWorldAssetIndex.symbol,
+    address: RealWorldAssetIndex.address,
+    decimals: RealWorldAssetIndex.decimals,
+    logo: RealWorldAssetIndex.image,
+    description:
+      'The Fortunafi Real World Assets Index (RWA) allows token holders to gain diversified exposure to projects and protocols that concentrate on tokenizing offchain assets.',
+    componentsFrom: ['MKR', 'ONDO', 'ENA', 'CFG', 'CANTO', 'MPL'],
+    infoLink: 'https://indexcoop.com/blog/previewing-rwa-index-presale',
+    prtRewards: '10,000 / 100,000',
+    targetFundraise: { quantity: '500', asset: 'wstETH' },
+    timestampEndDate: 1721404800000,
+    tvlLockedPresale: '14.08 wstETH',
   },
 ]
 
 export function getTokenForPresaleToken(
   presaleToken: PreSaleToken | null,
-): Token {
+): Token | null {
   if (presaleToken?.symbol === RealWorldAssetIndex.symbol) {
     return RealWorldAssetIndex
   }
-  return HighYieldETHIndex
+  if (presaleToken?.symbol === HighYieldETHIndex.symbol) {
+    return HighYieldETHIndex
+  }
+  if (presaleToken?.symbol === UsdcyIndex.symbol) {
+    return UsdcyIndex
+  }
+  return null
 }
 
 export const presaleChipLabels = {

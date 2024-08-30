@@ -408,6 +408,22 @@ export const RealWorldAssetIndex: Token = {
   url: 'rwa',
 }
 
+const usdcy = getIndexTokenData('USDCY', MAINNET.chainId)!
+export const UsdcyIndex: Token = {
+  ...usdcy,
+  // Random for now - as no listing
+  coingeckoId: 'usdcy',
+  fees: {
+    streamingFee: '	1.95%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: usdcy.logoURI,
+  indexTypes: [IndexType.thematic],
+  isDangerous: true,
+  url: 'usdcy',
+}
+
 /**
  * Other - IndexCoop
  */

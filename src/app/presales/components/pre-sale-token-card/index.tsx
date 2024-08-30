@@ -106,9 +106,9 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
                 isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-950',
               )}
             >
-              {token.targetFundraise}
+              {token.targetFundraise.quantity}
             </span>{' '}
-            wstETH
+            {token.targetFundraise.asset}
           </div>
         </div>
         <div className='mb-2 flex'>
@@ -134,7 +134,7 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           <div className='text-ic-gray-950 font-bold'>
             {isStatusClosed || token.status === PreSaleStatus.TOKEN_LAUNCHED
               ? token.launchDate ?? 'N/A' // N/A when closed but target not met
-              : `${formatted.daysLeft} / 30 days`}
+              : `${formatted.daysLeft} days`}
           </div>
         </div>
       </div>
