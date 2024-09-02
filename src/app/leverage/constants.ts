@@ -1,6 +1,6 @@
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
-import { ARBITRUM, MAINNET } from '@/constants/chains'
+import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import {
   BTC,
   ETH,
@@ -60,5 +60,12 @@ export const supportedLeverageTypes = {
     LeverageType.Long2x,
     LeverageType.Long3x,
   ],
+  [BASE.chainId]: [LeverageType.Long2x, LeverageType.Long3x],
   [MAINNET.chainId]: [LeverageType.Long2x],
 }
+
+export const supportedNetworks = [
+  MAINNET.chainId,
+  BASE.chainId,
+  ARBITRUM.chainId,
+]
