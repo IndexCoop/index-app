@@ -1,6 +1,6 @@
 import { ZeroExSwapQuoteProvider } from '@indexcoop/flash-mint-sdk'
 
-import { ARBITRUM, OPTIMISM, POLYGON } from '@/constants/chains'
+import { ARBITRUM, BASE, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
   getIndexApiHeaders,
   IndexApiBaseUrl,
@@ -25,6 +25,8 @@ export function getNetworkKey(chainId: number): string {
   switch (chainId) {
     case ARBITRUM.chainId:
       return 'arbitrum'
+    case BASE.chainId:
+      return 'base'
     case POLYGON.chainId:
       return 'polygon'
     case OPTIMISM.chainId:

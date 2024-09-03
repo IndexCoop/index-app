@@ -1,4 +1,4 @@
-import { arbitrum, mainnet } from 'viem/chains'
+import { arbitrum, base, mainnet } from 'viem/chains'
 import { useAccount } from 'wagmi'
 
 import { chains } from '@/lib/utils/wagmi'
@@ -31,6 +31,8 @@ function getNetworkName(chainId: number | undefined): string | null {
   switch (chainId) {
     case arbitrum.id:
       return 'Arbitrum'
+    case base.id:
+      return 'Base'
     case mainnet.id:
       return 'Ethereum'
     default:
