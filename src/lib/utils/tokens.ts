@@ -86,6 +86,9 @@ export function getCurrencyTokensForIndex(
   if (chainId === ARBITRUM.chainId) {
     return [ETH, WETH, WBTC, USDC, USDT]
   }
+  if (chainId === BASE.chainId) {
+    return [ETH, WETH, USDC]
+  }
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI, GUSD]
   if (index.symbol === ic21.symbol) return [WETH]
