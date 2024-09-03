@@ -1,6 +1,6 @@
 import { IndexCoopInverseEthereumIndex } from '@indexcoop/flash-mint-sdk'
 
-import { ARBITRUM, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
+import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
   currencies,
   indicesTokenList,
@@ -49,6 +49,8 @@ export function getAddressForToken(
   switch (chainId) {
     case ARBITRUM.chainId:
       return token.arbitrumAddress
+    case BASE.chainId:
+      return token.baseAddress
     case MAINNET.chainId:
       return token.address
     case OPTIMISM.chainId:
@@ -113,6 +115,8 @@ export function getDefaultIndex(chainId: number = 1): Token {
 export function getNativeToken(chainId: number | undefined): Token | null {
   switch (chainId) {
     case ARBITRUM.chainId:
+      return ETH
+    case BASE.chainId:
       return ETH
     case MAINNET.chainId:
       return ETH
