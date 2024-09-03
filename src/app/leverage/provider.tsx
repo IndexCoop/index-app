@@ -28,8 +28,8 @@ import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
 import {
-  baseTokens,
-  currencyTokens,
+  getBaseTokens,
+  getCurrencyTokens,
   getLeverageTokens,
   supportedLeverageTypes,
 } from './constants'
@@ -48,7 +48,6 @@ export interface TokenContext {
   outputToken: Token
   inputTokenAmount: bigint
   baseTokens: Token[]
-  currencyTokens: Token[]
   costOfCarry: number | null
   inputTokens: Token[]
   outputTokens: Token[]
@@ -77,8 +76,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
-  baseTokens,
-  currencyTokens,
+  baseTokens: [],
   costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
@@ -134,6 +132,10 @@ export function LeverageProvider(props: { children: any }) {
     return chainIdRaw ?? ARBITRUM.chainId
   }, [chainIdRaw])
 
+  const baseTokens = useMemo(() => {
+    return getBaseTokens(chainId)
+  }, [chainId])
+
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
     return inputToken
@@ -175,14 +177,14 @@ export function LeverageProvider(props: { children: any }) {
   )
 
   const inputTokens = useMemo(() => {
-    if (isMinting) return currencyTokens
+    if (isMinting) return getCurrencyTokens(chainId)
     return indexTokensBasedOnSymbol
-  }, [indexTokensBasedOnSymbol, isMinting])
+  }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const outputTokens = useMemo(() => {
-    if (!isMinting) return currencyTokens
+    if (!isMinting) return getCurrencyTokens(chainId)
     return indexTokensBasedOnSymbol
-  }, [indexTokensBasedOnSymbol, isMinting])
+  }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
@@ -447,7 +449,6 @@ export function LeverageProvider(props: { children: any }) {
         inputTokenAmount,
         baseTokens,
         costOfCarry,
-        currencyTokens,
         inputTokens,
         outputTokens,
         isFetchingQuote,

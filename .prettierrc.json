@@ -4,5 +4,4 @@
   "jsxSingleQuote": true,
   "quoteProps": "consistent",
   "plugins": ["prettier-plugin-tailwindcss"]
-
 }

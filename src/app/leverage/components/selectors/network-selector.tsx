@@ -1,4 +1,4 @@
-import { ARBITRUM, MAINNET } from '@/constants/chains'
+import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { useNetwork } from '@/lib/hooks/use-network'
 
 import { SelectorButton } from './selector-button'
@@ -33,7 +33,7 @@ export function NetworkSelector(props: NetworkSelectorProps) {
             props.onSelectNetwork(ARBITRUM.chainId)
           }}
         />
-        {/* <SelectorButton
+        <SelectorButton
           imagePath={{
             selected: '/assets/selector-network-base.png',
             disabled: '/assets/selector-network-base-disabled.png',
@@ -42,7 +42,7 @@ export function NetworkSelector(props: NetworkSelectorProps) {
           onClick={() => {
             props.onSelectNetwork(BASE.chainId)
           }}
-        /> */}
+        />
       </div>
     </div>
   )
