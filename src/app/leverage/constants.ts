@@ -10,6 +10,7 @@ import {
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
+  Token,
   USDC,
   USDT,
   WBTC,
@@ -20,7 +21,6 @@ import { getAddressForToken } from '@/lib/utils/tokens'
 import { LeverageToken, LeverageType } from './types'
 
 export const baseTokens = [ETH, BTC]
-export const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
 
 export const ethLeverageTokens = [
   IndexCoopEthereum2xIndex,
@@ -35,6 +35,11 @@ export const btcLeverageTokens = [
 ]
 
 export const leverageTokens = [...ethLeverageTokens, ...btcLeverageTokens]
+
+export function getCurrencyTokens(chainId: number): Token[] {
+  if (chainId === BASE.chainId) return [ETH, WETH, USDC]
+  return [ETH, WETH, WBTC, USDC, USDT]
+}
 
 export function getLeverageTokens(chainId: number): LeverageToken[] {
   const tokens: (LeverageToken | null)[] = leverageTokens.map((token) => {
