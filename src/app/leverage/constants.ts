@@ -20,8 +20,6 @@ import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { LeverageToken, LeverageType } from './types'
 
-export const baseTokens = [ETH, BTC]
-
 export const ethLeverageTokens = [
   IndexCoopEthereum2xIndex,
   IndexCoopEthereum3xIndex,
@@ -35,6 +33,11 @@ export const btcLeverageTokens = [
 ]
 
 export const leverageTokens = [...ethLeverageTokens, ...btcLeverageTokens]
+
+export function getBaseTokens(chainId: number): Token[] {
+  if (chainId === BASE.chainId) return [ETH]
+  return [ETH, BTC]
+}
 
 export function getCurrencyTokens(chainId: number): Token[] {
   if (chainId === BASE.chainId) return [ETH, WETH, USDC]

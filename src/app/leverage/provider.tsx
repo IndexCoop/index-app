@@ -28,7 +28,7 @@ import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
 
 import {
-  baseTokens,
+  getBaseTokens,
   getCurrencyTokens,
   getLeverageTokens,
   supportedLeverageTypes,
@@ -76,7 +76,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
-  baseTokens,
+  baseTokens: [],
   costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
@@ -131,6 +131,10 @@ export function LeverageProvider(props: { children: any }) {
     // To control the defaults better
     return chainIdRaw ?? ARBITRUM.chainId
   }, [chainIdRaw])
+
+  const baseTokens = useMemo(() => {
+    return getBaseTokens(chainId)
+  }, [chainId])
 
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
