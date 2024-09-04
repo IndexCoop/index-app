@@ -109,6 +109,9 @@ export function LeverageProvider(props: { children: any }) {
   )
 
   const [inputValue, setInputValue] = useState('')
+  const [carryCosts, setCarryCosts] = useState<Record<string, number> | null>(
+    null,
+  )
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [indexTokenPrice, setIndexTokenPrice] = useState(0)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
@@ -235,16 +238,21 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, indexToken])
 
   useEffect(() => {
-    async function fetchCost() {
-      if (inputToken === null || outputToken === null) return
-
-      const inputOutputToken = isMinting ? outputToken : inputToken
-      const carryCosts = await fetchCarryCosts(inputOutputToken)
-      setCostOfCarry(carryCosts)
+    async function fetchCosts() {
+      const carryCosts = await fetchCarryCosts()
+      setCarryCosts(carryCosts)
     }
 
-    fetchCost()
-  }, [isMinting, inputToken, outputToken])
+    fetchCosts()
+  }, [])
+
+  useEffect(() => {
+    if (inputToken === null || outputToken === null) return
+
+    const inputOutputToken = isMinting ? outputToken : inputToken
+    if (carryCosts)
+      setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
+  }, [isMinting, inputToken, outputToken, carryCosts])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
