@@ -21,11 +21,11 @@ import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
-import { publicClientToProvider, useWallet } from '@/lib/hooks/use-wallet'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { NavProvider } from '@/lib/utils/api/nav'
-import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
+import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 import {
   getBaseTokens,
@@ -235,12 +235,16 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, indexToken])
 
   useEffect(() => {
-    if (!publicClient || inputToken === null || outputToken === null) return
+    async function fetchCost() {
+      if (inputToken === null || outputToken === null) return
 
-    const jsonRpcProvider = publicClientToProvider(publicClient)
-    const inputOutputToken = isMinting ? outputToken : inputToken
-    fetchCostOfCarry(jsonRpcProvider, inputOutputToken, setCostOfCarry)
-  }, [publicClient, isMinting, inputToken, outputToken])
+      const inputOutputToken = isMinting ? outputToken : inputToken
+      const carryCosts = await fetchCarryCosts(inputOutputToken)
+      setCostOfCarry(carryCosts)
+    }
+
+    fetchCost()
+  }, [isMinting, inputToken, outputToken])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
