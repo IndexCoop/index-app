@@ -1,7 +1,9 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { PopupButton } from '@typeform/embed-react'
+import { useWalletClient } from 'wagmi'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -11,6 +13,7 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
 import { BaseAssetSelector } from './components/selectors/base-asset-selector'
+import { NetworkSelector } from './components/selectors/network-selector'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
 import TradingViewWidget from './components/trading-view-widget'
@@ -19,8 +22,8 @@ import { YourTokens } from './components/your-tokens'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
-  // const { openConnectModal } = useConnectModal()
-  // const { data: walletClient } = useWalletClient()
+  const { openConnectModal } = useConnectModal()
+  const { data: walletClient } = useWalletClient()
   const { address } = useWallet()
   const {
     isOpen: isSelectBaseTokenOpen,
@@ -31,22 +34,23 @@ export default function Page() {
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
-        <div className='mx-auto flex w-full flex-col gap-8 px-4 py-12'>
-          <div className='flex flex-col gap-10 md:flex-row'>
+        <div className='mx-auto flex w-full flex-col gap-8 px-4 py-4 sm:py-12'>
+          <div className='flex flex-col gap-5 md:flex-row md:gap-10'>
             <Title />
             <div className='flex flex-row gap-10 '>
               <BaseAssetSelector
+                baseTokens={baseTokens}
+                selectedBaseToken={baseToken}
                 onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
               />
-              {/* <NetworkSelector
+              <NetworkSelector
                 onSelectNetwork={(chainId) => {
-                  console.log(walletClient)
                   if (!walletClient && openConnectModal) {
                     openConnectModal()
                   }
                   walletClient?.switchChain({ id: chainId })
                 }}
-              /> */}
+              />
             </div>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>

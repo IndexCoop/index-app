@@ -5,29 +5,22 @@ import {
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
-  Token,
 } from '@/constants/tokens'
 
-import { LeverageType } from '../provider'
+import { LeverageType } from '../types'
 
-export function getLeverageType({ symbol }: Token) {
-  if (
-    symbol === IndexCoopBitcoin2xIndex.symbol ||
-    symbol === IndexCoopEthereum2xIndex.symbol
-  ) {
-    return LeverageType.Long2x
+export function getLeverageType(symbol: string): LeverageType | null {
+  switch (symbol) {
+    case IndexCoopBitcoin2xIndex.symbol:
+    case IndexCoopEthereum2xIndex.symbol:
+      return LeverageType.Long2x
+    case IndexCoopBitcoin3xIndex.symbol:
+    case IndexCoopEthereum3xIndex.symbol:
+      return LeverageType.Long3x
+    case IndexCoopInverseBitcoinIndex.symbol:
+    case IndexCoopInverseEthereumIndex.symbol:
+      return LeverageType.Short
+    default:
+      return null
   }
-  if (
-    symbol === IndexCoopBitcoin3xIndex.symbol ||
-    symbol === IndexCoopEthereum3xIndex.symbol
-  ) {
-    return LeverageType.Long3x
-  }
-  if (
-    symbol === IndexCoopInverseBitcoinIndex.symbol ||
-    symbol === IndexCoopInverseEthereumIndex.symbol
-  ) {
-    return LeverageType.Short
-  }
-  return null
 }

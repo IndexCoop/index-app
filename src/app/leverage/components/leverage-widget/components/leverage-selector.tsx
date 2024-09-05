@@ -1,33 +1,31 @@
 import clsx from 'clsx'
 
-import { LeverageType } from '@/app/leverage/provider'
+import { LeverageType } from '@/app/leverage/types'
 
 type LeverageSelectorProps = {
   selectedTye: LeverageType
+  supportedTypes: LeverageType[]
   onSelectType: (type: LeverageType) => void
 }
 
 export function LeverageSelector(props: LeverageSelectorProps) {
-  const { onSelectType, selectedTye } = props
+  const { onSelectType, selectedTye, supportedTypes } = props
   return (
     <div className='flex flex-row items-center justify-between rounded-xl border border-[#3A6060] p-4'>
       <div className='text-ic-gray-300 text-xs font-medium'>Leverage</div>
       <div className='flex flex-row gap-2'>
-        <LeverageSelectorButton
-          isSelected={selectedTye === LeverageType.Short}
-          label='-1x'
-          onClick={() => onSelectType(LeverageType.Short)}
-        />
-        <LeverageSelectorButton
-          isSelected={selectedTye === LeverageType.Long2x}
-          label='2x'
-          onClick={() => onSelectType(LeverageType.Long2x)}
-        />
-        <LeverageSelectorButton
-          isSelected={selectedTye === LeverageType.Long3x}
-          label='3x'
-          onClick={() => onSelectType(LeverageType.Long3x)}
-        />
+        {supportedTypes?.length > 0 &&
+          supportedTypes.map((leverageType) => {
+            const label = getLabelForLeverageType(leverageType)
+            return (
+              <LeverageSelectorButton
+                key={`leverage-type-${label}`}
+                isSelected={selectedTye === leverageType}
+                label={label}
+                onClick={() => onSelectType(leverageType)}
+              />
+            )
+          })}
       </div>
     </div>
   )
@@ -56,4 +54,15 @@ export function LeverageSelectorButton({
       {label}
     </div>
   )
+}
+
+function getLabelForLeverageType(type: LeverageType): string {
+  switch (type) {
+    case LeverageType.Long2x:
+      return '2x'
+    case LeverageType.Long3x:
+      return '3x'
+    case LeverageType.Short:
+      return '-1x'
+  }
 }

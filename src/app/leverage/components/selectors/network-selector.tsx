@@ -15,22 +15,22 @@ export function NetworkSelector(props: NetworkSelectorProps) {
       <div className='flex flex-row gap-1'>
         <SelectorButton
           imagePath={{
-            selected: '/assets/selector-network-arbitrum.png',
-            disabled: '/assets/selector-network-arbitrum-disabled.png',
-          }}
-          isSelected={chainId === ARBITRUM.chainId}
-          onClick={() => {
-            props.onSelectNetwork(ARBITRUM.chainId)
-          }}
-        />
-        <SelectorButton
-          imagePath={{
             selected: '/assets/selector-network-ethereum.png',
             disabled: '/assets/selector-network-ethereum-disabled.png',
           }}
           isSelected={chainId === MAINNET.chainId}
           onClick={() => {
             props.onSelectNetwork(MAINNET.chainId)
+          }}
+        />
+        <SelectorButton
+          imagePath={{
+            selected: '/assets/selector-network-arbitrum.png',
+            disabled: '/assets/selector-network-arbitrum-disabled.png',
+          }}
+          isSelected={chainId === ARBITRUM.chainId || !chainId}
+          onClick={() => {
+            props.onSelectNetwork(ARBITRUM.chainId)
           }}
         />
         <SelectorButton

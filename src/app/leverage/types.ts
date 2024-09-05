@@ -1,6 +1,10 @@
 import { Token } from '@/constants/tokens'
 
-import { LeverageType } from './provider'
+export enum LeverageType {
+  Long2x,
+  Long3x,
+  Short,
+}
 
 export interface BaseTokenStats {
   symbol: string
@@ -15,4 +19,10 @@ export type EnrichedToken = Token & {
   usd?: number
   size?: string
   leverageType?: LeverageType | null
+}
+
+export interface LeverageToken extends Token {
+  address: string
+  baseToken: string
+  leverageType: LeverageType
 }

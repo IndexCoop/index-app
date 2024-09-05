@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from 'react'
 
 import { formatPrice } from '@/app/products/utils/formatters'
-import { ARBITRUM } from '@/constants/chains'
 import { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { leverageTokens } from '../constants'
 import { EnrichedToken } from '../types'
@@ -14,10 +14,11 @@ import { getLeverageType } from './get-leverage-type'
 export async function fetchLeverageTokenPrices(
   balances: TokenBalance[],
   setTokens: Dispatch<SetStateAction<EnrichedToken[]>>,
+  chainId: number,
 ) {
   const tokenBalances = balances.reduce((acc, current) => {
-    const token = leverageTokens.find(
-      (leverageToken) => current.token === leverageToken.arbitrumAddress,
+    const token = leverageTokens.find((leverageToken) =>
+      getAddressForToken(leverageToken, chainId),
     )
 
     if (!token || current.value === BigInt(0)) return acc
@@ -46,7 +47,7 @@ export async function fetchLeverageTokenPrices(
     const navProvider = new NavProvider()
     const tokenPrices = await Promise.all(
       tokenBalances.map((token) =>
-        navProvider.getNavPrice(token.symbol, ARBITRUM.chainId),
+        navProvider.getNavPrice(token.symbol, chainId),
       ),
     )
 
@@ -58,7 +59,7 @@ export async function fetchLeverageTokenPrices(
         parseFloat(formatWei(token.balance, token.decimals)) * tokenPrices[idx]
       return {
         ...token,
-        leverageType: getLeverageType(token),
+        leverageType: getLeverageType(token.symbol),
         size: formatPrice(usd),
         usd,
       }

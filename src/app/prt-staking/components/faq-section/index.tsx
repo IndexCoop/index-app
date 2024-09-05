@@ -52,9 +52,9 @@ export function FaqSection() {
         <p>
           Click the ‘Sign SafeMessage’ button to open the confirmation in your
           signer. After confirming, the message will be uploaded to the Safe
-          transaction service and be able to other signers. Repeat the signing
-          process from each signer until you have the requisite number of
-          signatures for the Safe account.
+          transaction service and be able to be signed by other signers. Repeat
+          the signing process from each signer until you have the requisite
+          number of signatures for the Safe account.
         </p>
         <p>
           Once you have the signatures required, head to the ‘PRT Staking’ page

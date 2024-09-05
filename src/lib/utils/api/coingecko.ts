@@ -1,6 +1,6 @@
 import { IndexApi } from '@/lib/utils/api/index-api'
 
-import { ARBITRUM, OPTIMISM, POLYGON } from '../../../constants/chains'
+import { ARBITRUM, BASE, OPTIMISM, POLYGON } from '../../../constants/chains'
 import { ETH } from '../../../constants/tokens'
 
 const baseURL = '/coingecko'
@@ -10,6 +10,8 @@ const getAssetPlatform = (chainId: number) => {
   switch (chainId) {
     case ARBITRUM.chainId:
       return 'arbitrum-one'
+    case BASE.chainId:
+      return 'base'
     case POLYGON.chainId:
       return 'polygon-pos'
     case OPTIMISM.chainId:

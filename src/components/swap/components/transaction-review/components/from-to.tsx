@@ -18,7 +18,7 @@ export const FromTo = (props: FromToProps) => {
         icon={props.inputToken}
         symbol={props.inputTokenSymbol}
       />
-      <div className='dark:bg-ic-white bg-ic-black z-10 -my-4 h-8 w-8 content-center items-center rounded-full p-2'>
+      <div className='dark:bg-ic-white bg-ic-black z-10 -my-4 flex h-8 w-8 rounded-full p-2'>
         <ArrowDownIcon className='dark:text-ic-black text-ic-white' />
       </div>
       <FromToItem

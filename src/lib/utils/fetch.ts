@@ -10,3 +10,21 @@ export async function fetchCumulativeRevenue(address: string) {
     return null
   }
 }
+
+export async function fetchCarryCosts() {
+  try {
+    const indexApi = new IndexApi()
+    const res = await indexApi.get('/carry-costs')
+
+    const formattedRes: Record<string, number> = {}
+
+    const entries = Object.entries(res)
+    for (const [key, value] of entries) {
+      formattedRes[key.toLowerCase()] = value as number
+    }
+    return formattedRes
+  } catch (err) {
+    console.log('Error fetching carry costs', err)
+    return null
+  }
+}
