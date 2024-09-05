@@ -83,10 +83,10 @@ export function Fees(props: FeesProps) {
             />
             <FeesItem label='Mint Fee' percent={'0.10%'} valueUsd={''} />
             <FeesItem label='Redeem Fee' percent={'0.10%'} valueUsd={''} />
-            {/* {props.costOfCarry !== null && (
+            {props.costOfCarry !== null && (
               <FeesItem
                 label='Cost of Carry'
-                showPositiveFee={props.costOfCarry > 0}
+                showPositiveFee={props.costOfCarry < 0}
                 percent={new Intl.NumberFormat('en-us', {
                   style: 'percent',
                   minimumFractionDigits: 2,
@@ -95,7 +95,7 @@ export function Fees(props: FeesProps) {
                 tooltip='The underlying mechanism of the Leverage suite tokens uses AAVE deposits and borrows. Assets deposited accrue interest from borrows. This results in a spread between the interest earned from deposits and the interest paid for the debt. Cost of Carry may vary, sometimes favourably and sometimes unfavourably for users, as AAVE borrow and earn rates vary.'
                 valueUsd={''}
               />
-            )} */}
+            )}
             {/* // See if we need this */}
             {/* <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
               <div className='font-normal'>Network Fee</div>
