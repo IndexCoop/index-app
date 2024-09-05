@@ -3,6 +3,7 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
+import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -10,7 +11,6 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
-import { ARBITRUM, MAINNET } from '@/constants/chains'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
@@ -33,10 +33,7 @@ type LeverageWidgetProps = {
 }
 
 export function LeverageWidget(props: LeverageWidgetProps) {
-  const isSupportedNetwork = useSupportedNetworks([
-    MAINNET.chainId,
-    ARBITRUM.chainId,
-  ])
+  const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { address } = useWallet()
   const {
     baseToken,

@@ -21,15 +21,15 @@ import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
-import { publicClientToProvider, useWallet } from '@/lib/hooks/use-wallet'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { NavProvider } from '@/lib/utils/api/nav'
-import { fetchCostOfCarry } from '@/lib/utils/fetch-cost-of-carry'
+import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 import {
-  baseTokens,
-  currencyTokens,
+  getBaseTokens,
+  getCurrencyTokens,
   getLeverageTokens,
   supportedLeverageTypes,
 } from './constants'
@@ -48,7 +48,6 @@ export interface TokenContext {
   outputToken: Token
   inputTokenAmount: bigint
   baseTokens: Token[]
-  currencyTokens: Token[]
   costOfCarry: number | null
   inputTokens: Token[]
   outputTokens: Token[]
@@ -77,8 +76,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
-  baseTokens,
-  currencyTokens,
+  baseTokens: [],
   costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
@@ -111,6 +109,9 @@ export function LeverageProvider(props: { children: any }) {
   )
 
   const [inputValue, setInputValue] = useState('')
+  const [carryCosts, setCarryCosts] = useState<Record<string, number> | null>(
+    null,
+  )
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [indexTokenPrice, setIndexTokenPrice] = useState(0)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
@@ -133,6 +134,10 @@ export function LeverageProvider(props: { children: any }) {
     // To control the defaults better
     return chainIdRaw ?? ARBITRUM.chainId
   }, [chainIdRaw])
+
+  const baseTokens = useMemo(() => {
+    return getBaseTokens(chainId)
+  }, [chainId])
 
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
@@ -175,14 +180,14 @@ export function LeverageProvider(props: { children: any }) {
   )
 
   const inputTokens = useMemo(() => {
-    if (isMinting) return currencyTokens
+    if (isMinting) return getCurrencyTokens(chainId)
     return indexTokensBasedOnSymbol
-  }, [indexTokensBasedOnSymbol, isMinting])
+  }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const outputTokens = useMemo(() => {
-    if (!isMinting) return currencyTokens
+    if (!isMinting) return getCurrencyTokens(chainId)
     return indexTokensBasedOnSymbol
-  }, [indexTokensBasedOnSymbol, isMinting])
+  }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
@@ -233,12 +238,21 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, indexToken])
 
   useEffect(() => {
-    if (!publicClient || inputToken === null || outputToken === null) return
+    async function fetchCosts() {
+      const carryCosts = await fetchCarryCosts()
+      setCarryCosts(carryCosts)
+    }
 
-    const jsonRpcProvider = publicClientToProvider(publicClient)
+    fetchCosts()
+  }, [])
+
+  useEffect(() => {
+    if (inputToken === null || outputToken === null) return
+
     const inputOutputToken = isMinting ? outputToken : inputToken
-    fetchCostOfCarry(jsonRpcProvider, inputOutputToken, setCostOfCarry)
-  }, [publicClient, isMinting, inputToken, outputToken])
+    if (carryCosts)
+      setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
+  }, [isMinting, inputToken, outputToken, carryCosts])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -447,7 +461,6 @@ export function LeverageProvider(props: { children: any }) {
         inputTokenAmount,
         baseTokens,
         costOfCarry,
-        currencyTokens,
         inputTokens,
         outputTokens,
         isFetchingQuote,

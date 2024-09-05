@@ -1,6 +1,6 @@
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
-import { ARBITRUM, MAINNET } from '@/constants/chains'
+import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import {
   BTC,
   ETH,
@@ -10,6 +10,7 @@ import {
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
+  Token,
   USDC,
   USDT,
   WBTC,
@@ -18,9 +19,6 @@ import {
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { LeverageToken, LeverageType } from './types'
-
-export const baseTokens = [ETH, BTC]
-export const currencyTokens = [ETH, WETH, WBTC, USDC, USDT]
 
 export const ethLeverageTokens = [
   IndexCoopEthereum2xIndex,
@@ -35,6 +33,16 @@ export const btcLeverageTokens = [
 ]
 
 export const leverageTokens = [...ethLeverageTokens, ...btcLeverageTokens]
+
+export function getBaseTokens(chainId: number): Token[] {
+  if (chainId === BASE.chainId) return [ETH]
+  return [ETH, BTC]
+}
+
+export function getCurrencyTokens(chainId: number): Token[] {
+  if (chainId === BASE.chainId) return [ETH, WETH, USDC]
+  return [ETH, WETH, WBTC, USDC, USDT]
+}
 
 export function getLeverageTokens(chainId: number): LeverageToken[] {
   const tokens: (LeverageToken | null)[] = leverageTokens.map((token) => {
@@ -60,5 +68,12 @@ export const supportedLeverageTypes = {
     LeverageType.Long2x,
     LeverageType.Long3x,
   ],
+  [BASE.chainId]: [LeverageType.Long2x, LeverageType.Long3x],
   [MAINNET.chainId]: [LeverageType.Long2x],
 }
+
+export const supportedNetworks = [
+  MAINNET.chainId,
+  BASE.chainId,
+  ARBITRUM.chainId,
+]
