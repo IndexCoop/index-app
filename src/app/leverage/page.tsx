@@ -6,8 +6,8 @@ import { PopupButton } from '@typeform/embed-react'
 import { useWalletClient } from 'wagmi'
 
 import { useLeverageToken } from '@/app/leverage/provider'
+import { PriceChart } from '@/components/charts/price-chart'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { BTC, ETH } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
@@ -16,7 +16,6 @@ import { BaseAssetSelector } from './components/selectors/base-asset-selector'
 import { NetworkSelector } from './components/selectors/network-selector'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
-import TradingViewWidget from './components/trading-view-widget'
 import { YourTokens } from './components/your-tokens'
 
 const surveyTracking = { utm_source: 'app' }
@@ -30,7 +29,8 @@ export default function Page() {
     onOpen: onOpenSelectBaseToken,
     onClose: onCloseSelectBaseToken,
   } = useDisclosure()
-  const { baseToken, baseTokens, onSelectBaseToken } = useLeverageToken()
+  const { baseToken, baseTokens, indexToken, onSelectBaseToken } =
+    useLeverageToken()
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
@@ -57,8 +57,7 @@ export default function Page() {
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
               <Stats />
               <div className='h-full min-h-[360px]'>
-                <TradingViewWidget baseToken={baseToken} symbol={ETH.symbol} />
-                <TradingViewWidget baseToken={baseToken} symbol={BTC.symbol} />
+                <PriceChart indexToken={indexToken} />
               </div>
             </div>
             <LeverageWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
