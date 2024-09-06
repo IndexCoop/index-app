@@ -4,7 +4,7 @@ import { Address, formatUnits, isAddress } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { formatTvl } from '@/app/products/utils/formatters'
-import { Token, WSTETH } from '@/constants/tokens'
+import { AUSDC, Token, WSTETH } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 
@@ -34,7 +34,7 @@ function getDaysLeft(targetTimestamp: number): number {
 export function usePresaleData(symbol: string): PresaleData {
   const publicClient = usePublicClient()
   const presaleToken = preSaleTokens.find((token) => token.symbol === symbol)
-  const currencyToken = WSTETH
+  const currencyToken = presaleToken?.symbol === 'USDCY' ? AUSDC : WSTETH
 
   const [tvl, setTvl] = useState<number>(0)
 

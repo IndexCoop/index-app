@@ -661,3 +661,19 @@ export const WSTETH: Token = {
   isDangerous: false,
   indexTypes: [],
 }
+
+export const AUSDC: Token = {
+  name: 'aUSDC',
+  symbol: 'aUSDC',
+  image:
+    'https://assets.coingecko.com/coins/images/14318/large/aUSDC.e260d492.png',
+  address: '0xBcca60bB61934080951369a648Fb03DF4F96263C',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: 'aave-v2-usdc',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
