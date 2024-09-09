@@ -21,7 +21,7 @@ export const preSaleTokens: PreSaleToken[] = [
     prtRewards: '10,000 / 100,000',
     targetFundraise: { quantity: '$2,000,000', asset: 'aUSDC' },
     timestampEndDate: 1728964800000,
-    startDate: 'September 30th, 2024',
+    startDate: 'September 30, 2024',
   },
   {
     status: PreSaleStatus.TOKEN_LAUNCHED,
@@ -36,7 +36,7 @@ export const preSaleTokens: PreSaleToken[] = [
     componentsFrom: ['Pendle', 'Instadapp', 'Across'],
     prtRewards: '3,000 / 10,000',
     targetFundraise: { quantity: '500', asset: 'wstETH' },
-    launchDate: 'June 10th, 2024',
+    launchDate: 'June 10, 2024',
     timestampEndDate: 1715356800000,
   },
   {
