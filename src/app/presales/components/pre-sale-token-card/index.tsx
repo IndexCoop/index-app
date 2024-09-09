@@ -1,6 +1,7 @@
 import { Tooltip } from '@chakra-ui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
+import { useMemo } from 'react'
 
 import { usePresaleData } from '@/app/presales/providers/presale-provider'
 import { colors } from '@/lib/styles/colors'
@@ -8,7 +9,6 @@ import { colors } from '@/lib/styles/colors'
 import { presaleButtonLabels } from '../../constants'
 import { PreSaleStatus, PreSaleToken } from '../../types'
 
-import { useMemo } from 'react'
 import { StatusChip } from './status-chip'
 
 type Props = {
