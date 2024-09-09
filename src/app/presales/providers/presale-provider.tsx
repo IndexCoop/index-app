@@ -15,7 +15,7 @@ import { PreSaleStatus } from '../types'
 interface PresaleData {
   currencyToken: Token
   formatted: {
-    daysLeft: string
+    dateValue: string
     tvl: string
   }
 }
@@ -38,9 +38,11 @@ export function usePresaleData(symbol: string): PresaleData {
 
   const [tvl, setTvl] = useState<number>(0)
 
-  const daysLeft = useMemo(() => {
+  const dateValue = useMemo(() => {
     if (!presaleToken) return '-'
-    return getDaysLeft(presaleToken.timestampEndDate).toString()
+    if (presaleToken.status === PreSaleStatus.NOT_STARTED)
+      return presaleToken.startDate ?? ''
+    return `${getDaysLeft(presaleToken.timestampEndDate).toString()} days`
   }, [presaleToken])
 
   const tvlFormatted = useMemo(() => {
@@ -105,7 +107,7 @@ export function usePresaleData(symbol: string): PresaleData {
   return {
     currencyToken,
     formatted: {
-      daysLeft,
+      dateValue,
       tvl: tvlFormatted,
     },
   }

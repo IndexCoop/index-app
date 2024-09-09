@@ -20,7 +20,8 @@ export const preSaleTokens: PreSaleToken[] = [
     componentsFrom: ['AAVE', 'Compound'],
     prtRewards: '10,000 / 100,000',
     targetFundraise: { quantity: '$2,000,000', asset: 'aUSDC' },
-    timestampEndDate: 1727712000000,
+    timestampEndDate: 1728964800000,
+    startDate: 'September 30th, 2024',
   },
   {
     status: PreSaleStatus.TOKEN_LAUNCHED,

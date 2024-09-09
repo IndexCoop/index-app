@@ -21,6 +21,7 @@ export type PreSaleToken = {
     quantity: string
     asset: string
   }
+  startDate?: string
   timestampEndDate: number
   tvlLockedPresale?: string
 }
