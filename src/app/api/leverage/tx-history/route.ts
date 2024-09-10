@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
 
 import { fetchTokenTransfers } from '@/lib/utils/api/alchemy'
@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
 
     const transfers = await fetchTokenTransfers(user, tokens, chainId)
 
-    return Response.json(transfers, { status: 200 })
+    return NextResponse.json(transfers, { status: 200 })
   } catch (error) {
-    return Response.json(error, { status: 500 })
+    return NextResponse.json(error, { status: 500 })
   }
 }
