@@ -41,7 +41,7 @@ export const YourTokens: FC = () => {
     fetchLeverageTokenPrices(balances, setTokens, chain.id)
   }, [balances, chain])
 
-  const { tokenHistory, isLoading } = useTokenHistory(
+  const { tokenHistory, isFetching } = useTokenHistory(
     ...indexTokens.map((token) => token[mapChainIdToAddressProp(chain?.id)]!),
   )
 
@@ -205,7 +205,7 @@ export const YourTokens: FC = () => {
             <div className='text-ic-gray-400 hidden md:block md:w-4/12'>Tx</div>
           </div>
           <div className='divide-ic-gray-900/20 divide-y-4 py-2'>
-            {isLoading ? (
+            {isFetching ? (
               <div className='flex w-full flex-col gap-3 px-4 py-2'>
                 {[1, 2, 3].map((n) => (
                   <SkeletonLoader
@@ -277,7 +277,7 @@ export const YourTokens: FC = () => {
                 )
               })
             )}
-            {tokenHistory.length === 0 && (
+            {tokenHistory.length === 0 && !isFetching && (
               <div className='text-ic-white px-2 py-4 text-center'>
                 You have not executed any transactions with leverage tokens yet.
               </div>

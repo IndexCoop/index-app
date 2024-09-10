@@ -8,7 +8,7 @@ export const useTokenHistory = (...tokens: (string | Address)[]) => {
 
   const {
     data: tokenHistory,
-    isLoading,
+    isFetching,
     refetch,
   } = useQuery({
     initialData: [],
@@ -36,7 +36,7 @@ export const useTokenHistory = (...tokens: (string | Address)[]) => {
 
   return {
     tokenHistory,
-    isLoading,
+    isFetching,
     refetch,
   }
 }
