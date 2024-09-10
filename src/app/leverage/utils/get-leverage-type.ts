@@ -7,7 +7,12 @@ import {
   IndexCoopInverseEthereumIndex,
 } from '@/constants/tokens'
 
+import { Address, zeroAddress } from 'viem'
+
 import { LeverageType } from '../types'
+
+export const getLeverageAction = (from: string | Address) =>
+  from === zeroAddress ? 'open' : 'close'
 
 export function getLeverageType(symbol: string): LeverageType | null {
   switch (symbol) {

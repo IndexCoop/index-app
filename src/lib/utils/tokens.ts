@@ -39,6 +39,7 @@ import {
   WSTETH,
 } from '@/constants/tokens'
 
+import { arbitrum, base } from 'viem/chains'
 import { isSameAddress } from '.'
 
 export function getAddressForToken(
@@ -231,4 +232,15 @@ export function isTokenPairTradable(
 ): boolean {
   if (!requiresProtection) return true
   return !inputToken.isDangerous && !outputToken.isDangerous
+}
+
+export const mapChainIdToAddressProp = (chainId?: number) => {
+  switch (chainId) {
+    case base.id:
+      return 'baseAddress'
+    case arbitrum.id:
+      return 'arbitrumAddress'
+    default:
+      return 'address'
+  }
 }

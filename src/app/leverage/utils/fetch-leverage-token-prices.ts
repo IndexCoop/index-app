@@ -62,6 +62,7 @@ export async function fetchLeverageTokenPrices(
         leverageType: getLeverageType(token.symbol),
         size: formatPrice(usd),
         usd,
+        unitPriceUsd: tokenPrices[idx],
       }
     })
     enrichedTokens.sort((token1, token2) => {

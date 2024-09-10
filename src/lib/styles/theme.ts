@@ -1,6 +1,6 @@
 import { extendTheme, ThemeConfig } from '@chakra-ui/react'
 import { darkTheme, Theme } from '@rainbow-me/rainbowkit'
-import merge from 'lodash.merge'
+import merge from 'lodash/merge'
 
 import { Button } from '../styles/button'
 import { Checkbox } from '../styles/checkbox'
