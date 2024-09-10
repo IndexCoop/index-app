@@ -14,14 +14,15 @@ export const preSaleTokens: PreSaleToken[] = [
     address: UsdcyIndex.address,
     decimals: UsdcyIndex.decimals,
     logo: UsdcyIndex.image,
-    infoLink: 'https://indexcoop.com/blog/introducing-usdc-yield-index',
+    // TODO: Uncomment link once blog post is live
+    // infoLink: 'https://indexcoop.com/blog/introducing-usdc-yield-index',
     description:
       'The USDC Yield Index (USDCY) tracks the USDC DeFi Yield Index from Chainlink to provide yield from the top USDC lending opportunities on Ethereum.',
     componentsFrom: ['AAVE', 'Compound'],
     prtRewards: '10,000 / 100,000',
     targetFundraise: { quantity: '$2,000,000', asset: 'aUSDC' },
     timestampEndDate: 1728964800000,
-    startDate: 'September 30th, 2024',
+    startDate: 'TBD',
   },
   {
     status: PreSaleStatus.TOKEN_LAUNCHED,
