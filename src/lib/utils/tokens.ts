@@ -1,4 +1,5 @@
 import { IndexCoopInverseEthereumIndex } from '@indexcoop/flash-mint-sdk'
+import { arbitrum, base } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
@@ -39,7 +40,6 @@ import {
   WSTETH,
 } from '@/constants/tokens'
 
-import { arbitrum, base } from 'viem/chains'
 import { isSameAddress } from '.'
 
 export function getAddressForToken(

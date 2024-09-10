@@ -1,16 +1,17 @@
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
+import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
+import capitalize from 'lodash/capitalize'
 import Image from 'next/image'
 import { FC, useEffect, useMemo, useState } from 'react'
+import { Address } from 'viem'
+import { useAccount } from 'wagmi'
 
 import { useTokenHistory } from '@/lib/hooks/use-token-history'
 import { shortenAddress } from '@/lib/utils'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 import { mapChainIdToAddressProp } from '@/lib/utils/tokens'
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
-import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
-import capitalize from 'lodash/capitalize'
-import { Address } from 'viem'
-import { useAccount } from 'wagmi'
+
 import { useLeverageToken } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
@@ -38,7 +39,7 @@ export const YourTokens: FC = () => {
   useEffect(() => {
     if (!chain || balances.length === 0) return
     fetchLeverageTokenPrices(balances, setTokens, chain.id)
-  }, [balances])
+  }, [balances, chain])
 
   const { tokenHistory, isLoading } = useTokenHistory(
     ...indexTokens.map((token) => token[mapChainIdToAddressProp(chain?.id)]!),
@@ -208,6 +209,7 @@ export const YourTokens: FC = () => {
               <div className='flex w-full flex-col gap-3 px-4 py-2'>
                 {[1, 2, 3].map((n) => (
                   <SkeletonLoader
+                    key={n}
                     className='h-8 w-full rounded-lg'
                     delay={n * 100}
                   />

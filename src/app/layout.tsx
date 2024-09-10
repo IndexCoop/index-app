@@ -8,7 +8,7 @@ export const metadata = {
   themeColor: '#000000',
   title: {
     template: '%s | Index Coop',
-    default: 'Index App | Buy & Sell Our Tokens'
+    default: 'Index App | Buy & Sell Our Tokens',
   },
   description:
     'Use the Index Coop Trading App to buy and sell our sector, leveraged and yield generating tokens.',

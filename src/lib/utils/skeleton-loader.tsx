@@ -1,5 +1,6 @@
-import { cn } from '@/lib/utils/tailwind'
 import { FC } from 'react'
+
+import { cn } from '@/lib/utils/tailwind'
 
 type SkeletonLoaderProps = {
   delay?: number

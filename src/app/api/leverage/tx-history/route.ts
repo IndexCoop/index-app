@@ -1,6 +1,7 @@
-import { fetchTokenTransfers } from '@/lib/utils/api/alchemy'
 import { NextRequest } from 'next/server'
 import { Address } from 'viem'
+
+import { fetchTokenTransfers } from '@/lib/utils/api/alchemy'
 
 type TokenTransferRequest = {
   user: Address

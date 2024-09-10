@@ -1,3 +1,5 @@
+import { Address, zeroAddress } from 'viem'
+
 import {
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
@@ -6,8 +8,6 @@ import {
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
 } from '@/constants/tokens'
-
-import { Address, zeroAddress } from 'viem'
 
 import { LeverageType } from '../types'
 
