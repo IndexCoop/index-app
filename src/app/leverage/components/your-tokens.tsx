@@ -208,11 +208,7 @@ export const YourTokens: FC = () => {
             {isFetching ? (
               <div className='flex w-full flex-col gap-3 px-4 py-2'>
                 {[1, 2, 3].map((n) => (
-                  <SkeletonLoader
-                    key={n}
-                    className='h-8 w-full rounded-lg'
-                    delay={n * 100}
-                  />
+                  <SkeletonLoader key={n} className='h-8 w-full rounded-lg' />
                 ))}
               </div>
             ) : (
