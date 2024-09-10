@@ -248,6 +248,14 @@ export const YourTokens: FC = () => {
                       ).toLocaleString()}
                     </div>
                     <div className='flex w-1/3 md:w-2/12'>
+                      <div className='my-auto mr-2 overflow-hidden rounded-full'>
+                        <Image
+                          src={token.image}
+                          alt={`${token.symbol} logo`}
+                          height={30}
+                          width={30}
+                        />
+                      </div>
                       <div className='my-auto font-medium'>{token.symbol}</div>
                     </div>
 
