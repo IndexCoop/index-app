@@ -59,13 +59,11 @@ export const fetchTokenTransfers = async (
 
   const client = AlchemyApi[chainId as SupportedChainId]
 
-  // Collect all contractAddresses under the same flashMintContract
   const groupedTransfers = contractAddresses.reduce(
     indexTokenTransfersReducer(chainId),
     {},
   )
 
-  // Fire the requests for both outgoing (from the user) and incoming (to the user) for each flashMintContract
   const transfers = (
     await Promise.all(
       Object.entries(groupedTransfers).flatMap(
