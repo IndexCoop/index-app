@@ -23,7 +23,7 @@ export function ProductList() {
 
   const {data: products, isFetching} = useQuery({
     initialData: [[], []] as [any[], any[]],
-    queryKey: ['product-list'],
+    queryKey: ['product-list', sortBy, sortDirection],
     queryFn: async () => {
       const analyticsPromises = Promise.all(
         productTokens.map((token) =>
