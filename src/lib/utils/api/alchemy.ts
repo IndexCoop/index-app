@@ -3,26 +3,26 @@ import { Alchemy, AssetTransfersCategory, Network } from 'alchemy-sdk'
 import { zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
 
-const indexTokenTransfersReducer =
-  (chainId: number) =>
-  (
-    acc: Record<string, { contractAddresses: string[] }>,
-    tokenAddress: string,
-  ): Record<string, { contractAddresses: string[] }> => {
-    const flashMintContract = getIndexFlashMintLeveragedExtendedContract(
-      undefined,
-      chainId,
-    ).address
+// const indexTokenTransfersReducer =
+//   (chainId: number) =>
+//   (
+//     acc: Record<string, { contractAddresses: string[] }>,
+//     tokenAddress: string,
+//   ): Record<string, { contractAddresses: string[] }> => {
+//     const flashMintContract = getIndexFlashMintLeveragedExtendedContract(
+//       undefined,
+//       chainId,
+//     ).address
 
-    return {
-      ...acc,
-      [flashMintContract]: {
-        contractAddresses: (
-          acc[flashMintContract]?.contractAddresses ?? []
-        ).concat(tokenAddress),
-      },
-    }
-  }
+//     return {
+//       ...acc,
+//       [flashMintContract]: {
+//         contractAddresses: (
+//           acc[flashMintContract]?.contractAddresses ?? []
+//         ).concat(tokenAddress),
+//       },
+//     }
+//   }
 
 const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_ID
 
