@@ -12,8 +12,6 @@ import { fetchAnalytics, fetchApy } from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
 import { formatWei } from '@/lib/utils'
 
-const THIRTY_SECONDS_IN_MS = 30 * 1000
-
 export function ProductList() {
   const router = useRouter()
   const pathname = usePathname()
@@ -57,7 +55,6 @@ export function ProductList() {
         sortDirection,
       )
     },
-    refetchInterval: THIRTY_SECONDS_IN_MS,
   })
 
   const handleSortClick = (clickedSortBy: string) => {
