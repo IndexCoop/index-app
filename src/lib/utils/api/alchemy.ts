@@ -26,31 +26,25 @@ import * as chains from 'viem/chains'
 
 const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_ID
 
+const createAlchemyClient = <N extends number>(
+  chainId: N,
+  alchemyNetwork: Network,
+): Record<N, (headers?: Record<string, string>) => Alchemy> => ({
+  [chainId]: (headers?: Record<string, string>) => {
+    return new Alchemy({
+      connectionInfoOverrides: {
+        headers,
+      },
+      apiKey,
+      network: alchemyNetwork,
+    })
+  },
+})
+
 const AlchemyApi = {
-  [chains.mainnet.id]: (headers?: Record<string, string>) =>
-    new Alchemy({
-      connectionInfoOverrides: {
-        headers,
-      },
-      apiKey,
-      network: Network.ETH_MAINNET,
-    }),
-  [chains.arbitrum.id]: (headers?: Record<string, string>) =>
-    new Alchemy({
-      connectionInfoOverrides: {
-        headers,
-      },
-      apiKey,
-      network: Network.ARB_MAINNET,
-    }),
-  [chains.base.id]: (headers?: Record<string, string>) =>
-    new Alchemy({
-      connectionInfoOverrides: {
-        headers,
-      },
-      apiKey,
-      network: Network.BASE_MAINNET,
-    }),
+  ...createAlchemyClient(chains.mainnet.id, Network.ETH_MAINNET),
+  ...createAlchemyClient(chains.arbitrum.id, Network.ARB_MAINNET),
+  ...createAlchemyClient(chains.base.id, Network.BASE_MAINNET),
 }
 
 type SupportedChainId = keyof typeof AlchemyApi
