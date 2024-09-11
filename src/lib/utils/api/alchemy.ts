@@ -92,6 +92,5 @@ export const fetchTokenTransfers = async (
       }),
     ])
   ).flatMap(({ transfers }) => transfers)
-  console.log(transfers)
   return transfers
 }
