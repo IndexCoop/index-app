@@ -1,4 +1,4 @@
-import { getFlashMintLeveragedContractForToken } from '@indexcoop/flash-mint-sdk'
+import { getIndexFlashMintLeveragedExtendedContract } from '@indexcoop/flash-mint-sdk'
 import { Alchemy, AssetTransfersCategory, Network } from 'alchemy-sdk'
 import { zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
@@ -9,8 +9,7 @@ const indexTokenTransfersReducer =
     acc: Record<string, { contractAddresses: string[] }>,
     tokenAddress: string,
   ): Record<string, { contractAddresses: string[] }> => {
-    const flashMintContract = getFlashMintLeveragedContractForToken(
-      tokenAddress,
+    const flashMintContract = getIndexFlashMintLeveragedExtendedContract(
       undefined,
       chainId,
     ).address
@@ -59,34 +58,29 @@ export const fetchTokenTransfers = async (
 
   const client = AlchemyApi[chainId as SupportedChainId]
 
-  const groupedTransfers = contractAddresses.reduce(
-    indexTokenTransfersReducer(chainId),
-    {},
-  )
+  const flashMintContract = getIndexFlashMintLeveragedExtendedContract(
+    undefined,
+    chainId,
+  ).address
 
   const transfers = (
-    await Promise.all(
-      Object.entries(groupedTransfers).flatMap(
-        ([flashMintContract, { contractAddresses }]) => [
-          // Outgoing transfers: from user to flashMintContract
-          client.core.getAssetTransfers({
-            contractAddresses,
-            fromAddress: user,
-            toAddress: flashMintContract,
-            category: [AssetTransfersCategory.ERC20],
-            withMetadata: true,
-          }),
-          // Incoming transfers: from zero address to user
-          client.core.getAssetTransfers({
-            contractAddresses,
-            fromAddress: zeroAddress,
-            toAddress: user,
-            category: [AssetTransfersCategory.ERC20],
-            withMetadata: true,
-          }),
-        ],
-      ),
-    )
+    await Promise.all([
+      client.core.getAssetTransfers({
+        contractAddresses,
+        fromAddress: user,
+        toAddress: flashMintContract,
+        category: [AssetTransfersCategory.ERC20],
+        withMetadata: true,
+      }),
+      // Incoming transfers: from zero address to user
+      client.core.getAssetTransfers({
+        contractAddresses,
+        fromAddress: zeroAddress,
+        toAddress: user,
+        category: [AssetTransfersCategory.ERC20],
+        withMetadata: true,
+      }),
+    ])
   ).flatMap(({ transfers }) => transfers)
 
   return transfers
