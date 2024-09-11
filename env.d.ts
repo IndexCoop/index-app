@@ -12,6 +12,7 @@ declare global {
         | 'index-app-prod'
         | 'index-app-staging'
         | 'development'
+        | 'preview'
       NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: string
     }
   }
