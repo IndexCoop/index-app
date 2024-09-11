@@ -1,5 +1,6 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 import { ProductColHeader } from '@/app/products/components/product-col-header'
@@ -10,7 +11,6 @@ import { SortBy, SortDirection } from '@/app/products/types/sort'
 import { fetchAnalytics, fetchApy } from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
 import { formatWei } from '@/lib/utils'
-import { useQuery } from '@tanstack/react-query'
 
 const THIRTY_SECONDS_IN_MS = 30 * 1000
 
