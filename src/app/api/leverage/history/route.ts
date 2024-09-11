@@ -14,7 +14,11 @@ export async function POST(req: NextRequest) {
     const { user, tokens, chainId } = (await req.json()) as TokenTransferRequest
 
     const transfers = await fetchTokenTransfers(user, tokens, chainId, {
-      origin: req.headers.get('origin') || '',
+      connectionInfoOverrides: {
+        headers: {
+          origin: req.headers.get('origin') || '',
+        },
+      },
     })
 
     return NextResponse.json(transfers, {

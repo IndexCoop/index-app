@@ -1,5 +1,10 @@
 import { getIndexFlashMintLeveragedExtendedContract } from '@indexcoop/flash-mint-sdk'
-import { Alchemy, AssetTransfersCategory, Network } from 'alchemy-sdk'
+import {
+  Alchemy,
+  AlchemySettings,
+  AssetTransfersCategory,
+  Network,
+} from 'alchemy-sdk'
 import { zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
 
@@ -29,12 +34,10 @@ const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_ID
 const createAlchemyClient = <N extends number>(
   chainId: N,
   alchemyNetwork: Network,
-): Record<N, (headers?: Record<string, string>) => Alchemy> => ({
-  [chainId]: (headers?: Record<string, string>) => {
+): Record<N, (settings?: AlchemySettings) => Alchemy> => ({
+  [chainId]: (settings?: AlchemySettings) => {
     return new Alchemy({
-      connectionInfoOverrides: {
-        headers,
-      },
+      ...settings,
       apiKey,
       network: alchemyNetwork,
     })
@@ -53,7 +56,7 @@ export const fetchTokenTransfers = async (
   user?: string,
   contractAddresses?: string[],
   chainId?: number,
-  headers: Record<string, string> = {},
+  extendAlchemySettings: AlchemySettings = {},
 ) => {
   if (
     !user ||
@@ -63,7 +66,7 @@ export const fetchTokenTransfers = async (
   )
     return []
 
-  const client = AlchemyApi[chainId as SupportedChainId](headers)
+  const client = AlchemyApi[chainId as SupportedChainId](extendAlchemySettings)
 
   const flashMintContract = getIndexFlashMintLeveragedExtendedContract(
     undefined,
