@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils/tailwind'
 import { getAddressForToken } from '@/lib/utils/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
+import { formatPrice } from '@/app/products/utils/formatters'
 import { useLeverageToken } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
@@ -252,10 +253,7 @@ export function YourTokens() {
                       </div>
                     </div>
                     <div className='hidden w-1/3 items-center md:flex md:w-2/12'>
-                      $
-                      {(
-                        Number(value) * (token.unitPriceUsd ?? 0)
-                      ).toLocaleString()}
+                      {formatPrice(Number(value) * (token.unitPriceUsd ?? 0))}
                     </div>
                     <div className='flex w-1/3 md:w-2/12'>
                       <div className='my-auto mr-2 overflow-hidden rounded-full'>
