@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
       headers: {
         // Response will be cached for 5 seconds, and will serve stale content while revalidating for 10 seconds
         'Cache-Control': 'public, max-age=5, stale-while-revalidate=10',
+        'Access-Control-Allow-Origin': req.headers.get('origin') || '',
       },
     })
   } catch (error) {
