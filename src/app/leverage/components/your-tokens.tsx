@@ -2,7 +2,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
 import capitalize from 'lodash/capitalize'
 import Image from 'next/image'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { useAccount } from 'wagmi'
 
@@ -24,7 +24,7 @@ const leverageTypeLabels = {
   [LeverageType.Short]: '1x SHORT',
 }
 
-export const YourTokens: FC = () => {
+export function YourTokens() {
   const { chain } = useAccount()
   const {
     balances,
