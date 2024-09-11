@@ -15,7 +15,13 @@ export async function POST(req: NextRequest) {
 
     const transfers = await fetchTokenTransfers(user, tokens, chainId)
 
-    return NextResponse.json(transfers, { status: 200 })
+    return NextResponse.json(transfers, {
+      status: 200,
+      headers: {
+        // Response will be cached for 5 seconds, and will serve stale content while revalidating for 10 seconds
+        'Cache-Control': 'public, max-age=5, stale-while-revalidate=10',
+      },
+    })
   } catch (error) {
     return NextResponse.json(error, { status: 500 })
   }
