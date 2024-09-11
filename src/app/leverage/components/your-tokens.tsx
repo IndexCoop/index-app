@@ -44,6 +44,7 @@ export function YourTokens() {
 
   useEffect(() => {
     if (!chainId || balances.length === 0) return
+
     fetchLeverageTokenPrices(balances, setTokens, chainId)
   }, [balances, chainId])
 
@@ -80,6 +81,11 @@ export function YourTokens() {
         }),
         {},
       ),
+    [tokens],
+  )
+
+  const openPositions = useMemo(
+    () => tokens.filter((token) => token.balance > BigInt(0)),
     [tokens],
   )
 
@@ -148,12 +154,12 @@ export function YourTokens() {
             </div>
           </div>
           <div className='divide-ic-gray-900/20 divide-y-4 py-2'>
-            {tokens.length === 0 ? (
+            {openPositions.length === 0 ? (
               <div className='text-ic-white px-2 py-4 text-center'>
                 You are currently not holding any Leverage Suite tokens
               </div>
             ) : (
-              tokens.map((token) => (
+              openPositions.map((token) => (
                 <div
                   key={token.symbol}
                   className='text-ic-white flex h-14 w-full px-6'

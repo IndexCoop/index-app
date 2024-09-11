@@ -17,11 +17,12 @@ export async function fetchLeverageTokenPrices(
   chainId: number,
 ) {
   const tokenBalances = balances.reduce((acc, current) => {
-    const token = leverageTokens.find((leverageToken) =>
-      getAddressForToken(leverageToken, chainId),
+    const token = leverageTokens.find(
+      (leverageToken) =>
+        getAddressForToken(leverageToken, chainId) === current.token,
     )
 
-    if (!token || current.value === BigInt(0)) return acc
+    if (!token) return acc
 
     const tokenIdx = acc.findIndex(
       (accToken) => accToken.symbol === token.symbol,
