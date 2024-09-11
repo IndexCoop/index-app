@@ -4,13 +4,14 @@ import capitalize from 'lodash/capitalize'
 import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 import { Address } from 'viem'
-import { useAccount } from 'wagmi'
 
+import { useNetwork } from '@/lib/hooks/use-network'
 import { useTokenHistory } from '@/lib/hooks/use-token-history'
 import { shortenAddress } from '@/lib/utils'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
-import { mapChainIdToAddressProp } from '@/lib/utils/tokens'
+import { getAddressForToken } from '@/lib/utils/tokens'
+import { chains } from '@/lib/utils/wagmi'
 
 import { useLeverageToken } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
@@ -25,7 +26,12 @@ const leverageTypeLabels = {
 }
 
 export function YourTokens() {
-  const { chain } = useAccount()
+  const { chainId } = useNetwork()
+
+  const chain = useMemo(
+    () => chains.find((chain) => chain.id === chainId),
+    [chainId],
+  )
   const {
     balances,
     indexTokens,
@@ -37,12 +43,12 @@ export function YourTokens() {
   const [tokens, setTokens] = useState<EnrichedToken[]>([])
 
   useEffect(() => {
-    if (!chain || balances.length === 0) return
-    fetchLeverageTokenPrices(balances, setTokens, chain.id)
-  }, [balances, chain])
+    if (!chainId || balances.length === 0) return
+    fetchLeverageTokenPrices(balances, setTokens, chainId)
+  }, [balances, chainId])
 
   const { tokenHistory, isFetching } = useTokenHistory(
-    ...indexTokens.map((token) => token[mapChainIdToAddressProp(chain?.id)]!),
+    ...indexTokens.map((token) => getAddressForToken(token, chainId)!),
   )
 
   const handleCloseClick = (token: EnrichedToken) => {

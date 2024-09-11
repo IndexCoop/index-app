@@ -1,5 +1,4 @@
 import { IndexCoopInverseEthereumIndex } from '@indexcoop/flash-mint-sdk'
-import { arbitrum, base } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
@@ -232,15 +231,4 @@ export function isTokenPairTradable(
 ): boolean {
   if (!requiresProtection) return true
   return !inputToken.isDangerous && !outputToken.isDangerous
-}
-
-export const mapChainIdToAddressProp = (chainId?: number) => {
-  switch (chainId) {
-    case base.id:
-      return 'baseAddress'
-    case arbitrum.id:
-      return 'arbitrumAddress'
-    default:
-      return 'address'
-  }
 }

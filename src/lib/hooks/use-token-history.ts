@@ -1,10 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { AssetTransfersWithMetadataResult } from 'alchemy-sdk'
 import { Address } from 'viem'
-import { useAccount } from 'wagmi'
+
+import { useNetwork } from '@/lib/hooks/use-network'
+import { useWallet } from '@/lib/hooks/use-wallet'
 
 export const useTokenHistory = (...tokens: (string | Address)[]) => {
-  const { address: user, chainId } = useAccount()
+  const { address: user } = useWallet()
+  const { chainId } = useNetwork()
 
   const {
     data: tokenHistory,
