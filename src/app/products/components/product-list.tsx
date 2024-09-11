@@ -21,7 +21,7 @@ export function ProductList() {
   const sortBy = searchParams.get('sort')
   const sortDirection = searchParams.get('dir') ?? SortDirection.DESC
 
-  const {data: products, isFetching} = useQuery({
+  const { data: products, isFetching } = useQuery({
     initialData: [[], []] as [any[], any[]],
     queryKey: ['product-list', sortBy, sortDirection],
     queryFn: async () => {
@@ -42,16 +42,20 @@ export function ProductList() {
     select: (data) => {
       const [analyticsResults, apyResults] = data
 
-      return sortProducts(productTokens.map((token, idx) => ({
-        ...token,
-        price: analyticsResults[idx]?.navPrice,
-        delta: analyticsResults[idx]?.change24h,
-        tvl: analyticsResults[idx]?.marketCap,
-        apy:
-          apyResults[idx]?.apy !== undefined && apyResults[idx].apy !== '0'
-            ? Number(formatWei(apyResults[idx].apy))
-            : null,
-      })) as ProductRow[], sortBy ?? 'tvl', sortDirection)
+      return sortProducts(
+        productTokens.map((token, idx) => ({
+          ...token,
+          price: analyticsResults[idx]?.navPrice,
+          delta: analyticsResults[idx]?.change24h,
+          tvl: analyticsResults[idx]?.marketCap,
+          apy:
+            apyResults[idx]?.apy !== undefined && apyResults[idx].apy !== '0'
+              ? Number(formatWei(apyResults[idx].apy))
+              : null,
+        })) as ProductRow[],
+        sortBy ?? 'tvl',
+        sortDirection,
+      )
     },
     refetchInterval: THIRTY_SECONDS_IN_MS,
   })
