@@ -13,14 +13,15 @@ export async function POST(req: NextRequest) {
   try {
     const { user, tokens, chainId } = (await req.json()) as TokenTransferRequest
 
-    const transfers = await fetchTokenTransfers(user, tokens, chainId)
+    const transfers = await fetchTokenTransfers(user, tokens, chainId, {
+      origin: req.headers.get('origin') || '',
+    })
 
     return NextResponse.json(transfers, {
       status: 200,
       headers: {
         // Response will be cached for 5 seconds, and will serve stale content while revalidating for 10 seconds
         'Cache-Control': 'public, max-age=5, stale-while-revalidate=10',
-        'Access-Control-Allow-Origin': req.headers.get('origin') || '',
       },
     })
   } catch (error) {

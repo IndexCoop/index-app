@@ -27,18 +27,30 @@ import * as chains from 'viem/chains'
 const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_ID
 
 const AlchemyApi = {
-  [chains.mainnet.id]: new Alchemy({
-    apiKey,
-    network: Network.ETH_MAINNET,
-  }),
-  [chains.arbitrum.id]: new Alchemy({
-    apiKey,
-    network: Network.ARB_MAINNET,
-  }),
-  [chains.base.id]: new Alchemy({
-    apiKey,
-    network: Network.BASE_MAINNET,
-  }),
+  [chains.mainnet.id]: (headers?: Record<string, string>) =>
+    new Alchemy({
+      connectionInfoOverrides: {
+        headers,
+      },
+      apiKey,
+      network: Network.ETH_MAINNET,
+    }),
+  [chains.arbitrum.id]: (headers?: Record<string, string>) =>
+    new Alchemy({
+      connectionInfoOverrides: {
+        headers,
+      },
+      apiKey,
+      network: Network.ARB_MAINNET,
+    }),
+  [chains.base.id]: (headers?: Record<string, string>) =>
+    new Alchemy({
+      connectionInfoOverrides: {
+        headers,
+      },
+      apiKey,
+      network: Network.BASE_MAINNET,
+    }),
 }
 
 type SupportedChainId = keyof typeof AlchemyApi
@@ -47,6 +59,7 @@ export const fetchTokenTransfers = async (
   user?: string,
   contractAddresses?: string[],
   chainId?: number,
+  headers: Record<string, string> = {},
 ) => {
   if (
     !user ||
@@ -56,7 +69,7 @@ export const fetchTokenTransfers = async (
   )
     return []
 
-  const client = AlchemyApi[chainId as SupportedChainId]
+  const client = AlchemyApi[chainId as SupportedChainId](headers)
 
   const flashMintContract = getIndexFlashMintLeveragedExtendedContract(
     undefined,
@@ -82,6 +95,6 @@ export const fetchTokenTransfers = async (
       }),
     ])
   ).flatMap(({ transfers }) => transfers)
-
+  console.log(transfers)
   return transfers
 }
