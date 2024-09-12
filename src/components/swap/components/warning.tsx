@@ -37,12 +37,14 @@ const warningsData: Record<
         >
           Terms of Service
         </Link>
-        . Please also see our <Link
+        . Please also see our{' '}
+        <Link
           href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
           style={{ textDecoration: 'underline' }}
         >
           Tokens Restricted for Restricted Persons
-        </Link>{' '}page.
+        </Link>{' '}
+        page.
       </>
     ),
   },

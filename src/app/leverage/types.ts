@@ -17,6 +17,7 @@ export interface BaseTokenStats {
 export type EnrichedToken = Token & {
   balance: bigint
   usd?: number
+  unitPriceUsd?: number
   size?: string
   leverageType?: LeverageType | null
 }

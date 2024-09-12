@@ -3,7 +3,7 @@
  */
 export function getPriceImpact(
   inputTokenPrice: number,
-  outputTokenPrice: number
+  outputTokenPrice: number,
 ): number | null {
   if (inputTokenPrice <= 0 || outputTokenPrice <= 0) {
     return null
