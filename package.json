@@ -42,7 +42,7 @@
     "alchemy-sdk": "3.4.1",
     "dayjs": "1.11.11",
     "eslint": "8.42.0",
-    "eslint-config-next": "^13.5.4",
+    "eslint-config-next": "^14.2.10",
     "ethers": "^5.7.2",
     "framer-motion": "11.2.6",
     "lodash": "4.17.21",
