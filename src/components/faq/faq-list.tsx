@@ -8,7 +8,12 @@ type Props = {
 
 export function FaqList({ children, className }: Props) {
   return (
-    <div className={clsx('divide-ic-gray-900/10 dark:divide-ic-gray-100/90 max-w-5xl divide-y', className)}>
+    <div
+      className={clsx(
+        'divide-ic-gray-900/10 dark:divide-ic-gray-100/90 max-w-5xl divide-y',
+        className,
+      )}
+    >
       <h2 className='text-ic-gray-800  dark:text-ic-gray-200 text-xl font-semibold leading-10 tracking-tight'>
         FAQs
       </h2>

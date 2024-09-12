@@ -17,11 +17,12 @@ export async function fetchLeverageTokenPrices(
   chainId: number,
 ) {
   const tokenBalances = balances.reduce((acc, current) => {
-    const token = leverageTokens.find((leverageToken) =>
-      getAddressForToken(leverageToken, chainId),
+    const token = leverageTokens.find(
+      (leverageToken) =>
+        getAddressForToken(leverageToken, chainId) === current.token,
     )
 
-    if (!token || current.value === BigInt(0)) return acc
+    if (!token) return acc
 
     const tokenIdx = acc.findIndex(
       (accToken) => accToken.symbol === token.symbol,
@@ -62,6 +63,7 @@ export async function fetchLeverageTokenPrices(
         leverageType: getLeverageType(token.symbol),
         size: formatPrice(usd),
         usd,
+        unitPriceUsd: tokenPrices[idx],
       }
     })
     enrichedTokens.sort((token1, token2) => {
