@@ -3,7 +3,6 @@ import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareI
 import capitalize from 'lodash/capitalize'
 import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
-import { Address } from 'viem'
 
 import { formatPrice } from '@/app/products/utils/formatters'
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -225,63 +224,87 @@ export function YourTokens() {
                 ))}
               </div>
             ) : (
-              tokenHistory.map(({ metadata, from, hash, asset, value }) => {
-                const token = indexTokensBySymbol[asset!]
-                const at = new Date(metadata.blockTimestamp)
+              tokenHistory.map(
+                ({
+                  metadata,
+                  hash,
+                  asset,
+                  value,
+                  isMint,
+                  isFromUser,
+                  isToUser,
+                  isFromContract,
+                  isToContract,
+                }) => {
+                  const token = indexTokensBySymbol[asset!]
+                  const at = new Date(metadata.blockTimestamp)
 
-                if (!token) return null
+                  if (!token) return null
 
-                const action = getLeverageAction(from as Address)
-                return (
-                  <div
-                    key={hash}
-                    className='text-ic-white flex h-14 w-full px-6'
-                  >
-                    <div className='flex w-1/3 md:w-2/12'>
-                      <div className='my-auto font-medium'>
-                        {at.toLocaleDateString()}
-                      </div>
-                    </div>
-                    <div className='flex w-1/3 justify-center sm:justify-normal md:w-2/12'>
-                      <div
-                        className={cn(
-                          'my-auto font-medium',
-                          action === 'open' ? 'text-green-500' : 'text-red-500',
-                        )}
-                      >
-                        {capitalize(action)}
-                      </div>
-                    </div>
-                    <div className='hidden w-1/3 items-center md:flex md:w-2/12'>
-                      {formatPrice(Number(value) * (token.unitPriceUsd ?? 0))}
-                    </div>
-                    <div className='flex w-1/3 md:w-2/12'>
-                      <div className='my-auto mr-2 overflow-hidden rounded-full'>
-                        <Image
-                          src={token.image}
-                          alt={`${token.symbol} logo`}
-                          height={30}
-                          width={30}
-                        />
-                      </div>
-                      <div className='my-auto font-medium'>{token.symbol}</div>
-                    </div>
+                  const action = getLeverageAction({
+                    isMint,
+                    isFromContract,
+                    isToContract,
+                    isFromUser,
+                    isToUser,
+                  })
 
-                    <div className='hidden w-1/3 items-center md:flex md:w-4/12'>
-                      <a
-                        href={`${chain?.blockExplorers?.default.url}/tx/${hash}`}
-                        className='hover:underline'
-                        target='_blank'
-                      >
-                        <div className='my-auto flex gap-2 font-mono'>
-                          {shortenAddress(hash)}
-                          <ExternalLinkIcon className='h-5 w-5' />
+                  return (
+                    <div
+                      key={hash}
+                      className='text-ic-white flex h-14 w-full px-6'
+                    >
+                      <div className='flex w-1/3 md:w-2/12'>
+                        <div className='my-auto font-medium'>
+                          {at.toLocaleDateString()}
                         </div>
-                      </a>
+                      </div>
+                      <div className='flex w-1/3 justify-center sm:justify-normal md:w-2/12'>
+                        <div
+                          className={cn(
+                            'my-auto font-medium',
+                            action === 'open' ||
+                              (action === 'transfer' && isFromUser)
+                              ? 'text-green-500'
+                              : 'text-red-500',
+                          )}
+                        >
+                          {capitalize(action)}
+                        </div>
+                      </div>
+                      <div className='hidden w-1/3 items-center md:flex md:w-2/12'>
+                        {formatPrice(Number(value) * (token.unitPriceUsd ?? 0))}
+                      </div>
+                      <div className='flex w-1/3 md:w-2/12'>
+                        <div className='my-auto mr-2 overflow-hidden rounded-full'>
+                          <Image
+                            src={token.image}
+                            alt={`${token.symbol} logo`}
+                            height={30}
+                            width={30}
+                          />
+                        </div>
+                        <div className='my-auto font-medium'>
+                          {token.symbol}
+                        </div>
+                      </div>
+
+                      <div className='hidden w-1/3 items-center md:flex md:w-4/12'>
+                        <a
+                          href={`${chain?.blockExplorers?.default.url}/tx/${hash}`}
+                          className='hover:underline'
+                          target='_blank'
+                        >
+                          <div className='my-auto flex gap-2 font-mono'>
+                            {shortenAddress(hash)}
+                            <ExternalLinkIcon className='h-5 w-5' />
+                          </div>
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                )
-              })
+                  )
+                },
+              )
             )}
             {tokenHistory.length === 0 && !isFetching && (
               <div className='text-ic-white px-2 py-4 text-center'>
