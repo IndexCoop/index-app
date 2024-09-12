@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { formatPrice } from '@/app/products/utils/formatters'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useTokenHistory } from '@/lib/hooks/use-token-history'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { shortenAddress } from '@/lib/utils'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
@@ -17,7 +18,7 @@ import { useLeverageToken } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
 import { getLeverageBaseToken } from '../utils/get-leverage-base-token'
-import { getLeverageAction, getLeverageType } from '../utils/get-leverage-type'
+import { getLeverageType } from '../utils/get-leverage-type'
 
 const leverageTypeLabels = {
   [LeverageType.Long2x]: '2x LONG',
@@ -40,6 +41,7 @@ export function YourTokens() {
     toggleIsMinting,
     onSelectLeverageType,
   } = useLeverageToken()
+  const { address: user } = useWallet()
   const [tokens, setTokens] = useState<EnrichedToken[]>([])
 
   useEffect(() => {
@@ -225,29 +227,11 @@ export function YourTokens() {
               </div>
             ) : (
               tokenHistory.map(
-                ({
-                  metadata,
-                  hash,
-                  asset,
-                  value,
-                  isMint,
-                  isFromUser,
-                  isToUser,
-                  isFromContract,
-                  isToContract,
-                }) => {
+                ({ from, metadata, hash, asset, value, action }) => {
                   const token = indexTokensBySymbol[asset!]
                   const at = new Date(metadata.blockTimestamp)
 
                   if (!token) return null
-
-                  const action = getLeverageAction({
-                    isMint,
-                    isFromContract,
-                    isToContract,
-                    isFromUser,
-                    isToUser,
-                  })
 
                   return (
                     <div
@@ -264,7 +248,7 @@ export function YourTokens() {
                           className={cn(
                             'my-auto font-medium',
                             action === 'open' ||
-                              (action === 'transfer' && isFromUser)
+                              (action === 'transfer' && from === user)
                               ? 'text-green-500'
                               : 'text-red-500',
                           )}
