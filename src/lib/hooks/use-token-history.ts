@@ -39,6 +39,7 @@ export const useTokenHistory = (...tokens: (string | Address)[]) => {
           const isMint = transfer.from === zeroAddress
           const isFromUser = transfer.from === user?.toLowerCase()
           const isToUser = transfer.to === user?.toLowerCase()
+
           const isFromContract = await isContract(client!, transfer.from)
           const isToContract = await isContract(client!, transfer.to!)
 

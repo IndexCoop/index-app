@@ -43,6 +43,3 @@ export function getLeverageType(symbol: string): LeverageType | null {
       return null
   }
 }
-
-// zero -> user open
-// contract -> user open
