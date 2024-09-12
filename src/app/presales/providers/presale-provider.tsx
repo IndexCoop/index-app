@@ -7,8 +7,8 @@ import { formatTvl } from '@/app/products/utils/formatters'
 import { Token, WSTETH } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
 import {
+  fetchTokenMetrics,
   IndexDataMetric,
-  IndexDataProvider,
 } from '@/lib/utils/api/index-data-provider'
 
 import { PresaleTokenAbi } from '../abis/presale-token-abi'
@@ -73,10 +73,9 @@ export function usePresaleData(symbol: string): PresaleData {
         return
       }
 
-      const indexDataProvider = new IndexDataProvider()
       if (presaleToken.status === PreSaleStatus.TOKEN_LAUNCHED) {
         try {
-          const res = await indexDataProvider.getTokenMetrics({
+          const res = await fetchTokenMetrics({
             tokenAddress: presaleToken.address!,
             metrics: [IndexDataMetric.Pav],
           })
@@ -89,7 +88,7 @@ export function usePresaleData(symbol: string): PresaleData {
         }
       } else if (presaleToken.status !== PreSaleStatus.CLOSED_TARGET_NOT_MET) {
         try {
-          const res = await indexDataProvider.getTokenMetrics({
+          const res = await fetchTokenMetrics({
             tokenAddress: presaleToken.address!,
             metrics: [IndexDataMetric.Supply],
           })
