@@ -6,10 +6,7 @@ import { usePublicClient } from 'wagmi'
 import { formatTvl } from '@/app/products/utils/formatters'
 import { Token, WSTETH } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
-import {
-  fetchTokenMetrics,
-  IndexDataMetric,
-} from '@/lib/utils/api/index-data-provider'
+import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 import { PresaleTokenAbi } from '../abis/presale-token-abi'
 import { preSaleTokens } from '../constants'
@@ -77,12 +74,12 @@ export function usePresaleData(symbol: string): PresaleData {
         try {
           const res = await fetchTokenMetrics({
             tokenAddress: presaleToken.address!,
-            metrics: [IndexDataMetric.Pav],
+            metrics: ['pav'],
           })
 
-          if (!res?.pav) return
+          if (res?.ProductAssetValue === undefined) return
 
-          setTvl(res.pav)
+          setTvl(res.ProductAssetValue)
         } catch (err) {
           console.log('Error fetching marketcap tvl', err)
         }
@@ -90,10 +87,10 @@ export function usePresaleData(symbol: string): PresaleData {
         try {
           const res = await fetchTokenMetrics({
             tokenAddress: presaleToken.address!,
-            metrics: [IndexDataMetric.Supply],
+            metrics: ['supply'],
           })
 
-          if (!res?.supply) return
+          if (res?.Supply === undefined) return
 
           const realUnitsRes = await publicClient.readContract({
             address: presaleToken.address as Address,
@@ -102,7 +99,7 @@ export function usePresaleData(symbol: string): PresaleData {
             args: [currencyToken.address as Address],
           })
           setTvl(
-            res.supply *
+            res.Supply *
               Number(formatUnits(realUnitsRes, presaleToken.decimals)),
           )
         } catch (err) {

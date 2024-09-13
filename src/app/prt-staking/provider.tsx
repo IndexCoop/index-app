@@ -21,10 +21,7 @@ import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
 import { useSafeClient } from '@/lib/hooks/use-safe-client'
 import { formatWeiAsNumber } from '@/lib/utils'
-import {
-  fetchTokenMetrics,
-  IndexDataMetric,
-} from '@/lib/utils/api/index-data-provider'
+import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { fetchCumulativeRevenue } from '@/lib/utils/fetch'
 
 interface Context {
@@ -194,11 +191,11 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
       const [tvl, cumulativeRevenue] = await Promise.all([
         fetchTokenMetrics({
           tokenAddress: token.rewardTokenData.address,
-          metrics: [IndexDataMetric.Pav],
+          metrics: ['pav'],
         }),
         fetchCumulativeRevenue(token.rewardTokenData.address),
       ])
-      setTvl(tvl?.pav ?? 0)
+      setTvl(tvl?.ProductAssetValue ?? 0)
       setCumulativeRevenue(cumulativeRevenue)
     }
     fetchTokenData()

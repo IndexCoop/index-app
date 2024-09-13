@@ -11,10 +11,7 @@ import { SortBy, SortDirection } from '@/app/products/types/sort'
 import { fetchApy } from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
 import { formatWei } from '@/lib/utils'
-import {
-  fetchTokenMetrics,
-  IndexDataMetric,
-} from '@/lib/utils/api/index-data-provider'
+import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 export function ProductList() {
   const router = useRouter()
@@ -32,11 +29,7 @@ export function ProductList() {
           token.address
             ? fetchTokenMetrics({
                 tokenAddress: token.address,
-                metrics: [
-                  IndexDataMetric.Nav,
-                  IndexDataMetric.Pav,
-                  IndexDataMetric.NavChange,
-                ],
+                metrics: ['nav', 'pav', 'navchange'],
               })
             : null,
         ),
@@ -55,9 +48,12 @@ export function ProductList() {
       return sortProducts(
         productTokens.map((token, idx) => ({
           ...token,
-          price: analyticsResults[idx]?.nav,
-          delta: analyticsResults[idx]?.navChange,
-          tvl: analyticsResults[idx]?.pav,
+          price: analyticsResults[idx]?.NetAssetValue,
+          delta:
+            typeof analyticsResults[idx]?.NavChange24Hr === 'number'
+              ? analyticsResults[idx].NavChange24Hr * 100
+              : undefined,
+          tvl: analyticsResults[idx]?.ProductAssetValue,
           apy:
             apyResults[idx]?.apy !== undefined && apyResults[idx].apy !== '0'
               ? Number(formatWei(apyResults[idx].apy))
