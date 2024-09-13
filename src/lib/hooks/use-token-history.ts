@@ -37,6 +37,7 @@ export const useTokenHistory = (...tokens: (string | Address)[]) => {
       return Promise.all(
         transfers.map(async (transfer) => {
           const isMint = transfer.from === zeroAddress
+          const isBurn = transfer.to === zeroAddress
           const isFromUser = transfer.from === user?.toLowerCase()
           const isToUser = transfer.to === user?.toLowerCase()
 
@@ -45,6 +46,7 @@ export const useTokenHistory = (...tokens: (string | Address)[]) => {
 
           const action = getLeverageAction({
             isMint,
+            isBurn,
             isFromContract,
             isToContract,
             isFromUser,
