@@ -1,23 +1,22 @@
 import { IndexApiBaseUrl } from '@/constants/server'
 
-export type IndexData = Partial<{
-  MarketCap: number
-  NetAssetValue: number
-  NavChange24Hr: number
-  ProductAssetValue: number
-  Price: number
-  PriceChange24Hr: number
-  Supply: number
-}>
+const metricToIndexDataKey = {
+  marketcap: 'MarketCap',
+  nav: 'NetAssetValue',
+  navchange: 'NavChange24Hr',
+  pav: 'ProductAssetValue',
+  price: 'Price',
+  pricechange: 'PriceChange24Hr',
+  supply: 'Supply',
+} as const
 
-export type IndexDataMetric =
-  | 'marketcap'
-  | 'nav'
-  | 'navchange'
-  | 'pav'
-  | 'price'
-  | 'pricechange'
-  | 'supply'
+type FromValues<T extends Record<keyof T, string>> = {
+  [K in T[keyof T]]: number
+}
+
+export type IndexData = Partial<FromValues<typeof metricToIndexDataKey>>
+
+export type IndexDataMetric = keyof typeof metricToIndexDataKey
 
 export type IndexDataPeriod =
   | 'latest'
@@ -36,6 +35,7 @@ type FormatUrlArgs = {
   period?: IndexDataPeriod
   interval?: IndexDataInterval
 }
+
 function formatUrl({
   tokenAddress,
   metrics = [],
@@ -64,8 +64,14 @@ export async function fetchTokenMetrics({
   try {
     const res = await fetch(url)
     const json = await res.json()
-    const latest = json[0] as IndexData
-    return latest
+    const latest = json[0]
+    return metrics.reduce<IndexData>(
+      (acc, metric) =>
+        Object.assign(acc, {
+          [metricToIndexDataKey[metric]]: latest[metricToIndexDataKey[metric]],
+        }),
+      {},
+    )
   } catch (error) {
     console.error(`Error fetching token metrics: ${url}`, error)
     return null
@@ -89,10 +95,8 @@ export async function fetchTokenHistoricalData({
   })
   try {
     const res = await fetch(url)
-    const json = await res.json()
-    return json.map((data: any) => ({
-      nav: data.NetAssetValue as number,
-    }))
+    const json = (await res.json()) as Pick<IndexData, 'NetAssetValue'>[]
+    return json
   } catch (error) {
     console.error(`Error fetching token historical data: ${url}`, error)
     return null
