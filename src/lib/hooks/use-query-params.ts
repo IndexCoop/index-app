@@ -7,10 +7,6 @@ import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
 import { chains } from '@/lib/utils/wagmi'
 
-/**
- * Returns possible leverage query params, with handling of default values included
- * @returns
- */
 export const useQueryParams = () => {
   const searchParams = useSearchParams()
 
