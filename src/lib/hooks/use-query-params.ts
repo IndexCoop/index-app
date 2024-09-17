@@ -21,42 +21,32 @@ export const useQueryParams = () => {
 
     const queryNetwork = chains.find((chain) => chain.id === network)?.id
 
-    if (queryNetwork) {
-      const tokens = getCurrencyTokens(queryNetwork ?? 0).concat(
-        getLeverageTokens(network),
-      ) as LeverageToken[]
+    const tokens = getCurrencyTokens(queryNetwork ?? 0).concat(
+      getLeverageTokens(network),
+    ) as LeverageToken[]
 
-      const queryOutputToken = tokens.find(
-        (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
-      )
-      const queryInputToken = tokens.find(
-        (token) => token.symbol.toLowerCase() === sell.toLowerCase(),
-      )
+    const queryOutputToken = tokens.find(
+      (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
+    )
+    const queryInputToken = tokens.find(
+      (token) => token.symbol.toLowerCase() === sell.toLowerCase(),
+    )
 
-      const queryIsMinting = queryOutputToken
-        ? 'leverageType' in queryOutputToken
-        : true
+    const queryIsMinting = queryOutputToken
+      ? 'leverageType' in queryOutputToken
+      : true
 
-      const queryLeverageType =
-        (queryIsMinting
-          ? queryOutputToken?.leverageType
-          : queryInputToken?.leverageType) ?? LeverageType.Long2x
-
-      return {
-        queryIsMinting,
-        queryLeverageType,
-        queryNetwork,
-        queryInputToken,
-        queryOutputToken,
-      }
-    }
+    const queryLeverageType =
+      (queryIsMinting
+        ? queryOutputToken?.leverageType
+        : queryInputToken?.leverageType) ?? LeverageType.Long2x
 
     return {
-      queryIsMinting: true,
-      queryLeverageType: LeverageType.Long2x,
-      queryNetwork: undefined,
-      queryInputToken: undefined,
-      queryOutputToken: undefined,
+      queryIsMinting,
+      queryLeverageType,
+      queryNetwork,
+      queryInputToken,
+      queryOutputToken,
     }
   }, [searchParams])
 }
