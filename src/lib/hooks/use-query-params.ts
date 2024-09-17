@@ -2,7 +2,6 @@
 
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
-import { useNetwork } from '@/lib/hooks/use-network'
 import { chains } from '@/lib/utils/wagmi'
 import { useSearchParams } from 'next/navigation'
 import { useMemo } from 'react'
@@ -12,7 +11,6 @@ import { useMemo } from 'react'
  * @returns
  */
 export const useQueryParams = () => {
-  const { chainId } = useNetwork()
   const searchParams = useSearchParams()
 
   return useMemo(() => {
@@ -59,5 +57,5 @@ export const useQueryParams = () => {
       queryInputToken: undefined,
       queryOutputToken: undefined,
     }
-  }, [searchParams, chainId])
+  }, [searchParams])
 }
