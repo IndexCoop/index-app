@@ -45,6 +45,15 @@ export default {
       fontFamily: {
         sans: ['Open Sauce Sans', ...defaultTheme.fontFamily.sans],
       },
+      keyframes: {
+        shine: {
+          '0%': { left: '-100%' },
+          '100%': { left: '100%' },
+        },
+      },
+      animation: {
+        shine: 'shine 3s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

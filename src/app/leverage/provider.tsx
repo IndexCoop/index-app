@@ -43,6 +43,7 @@ export interface TokenContext {
   balances: TokenBalance[]
   baseToken: Token
   indexToken: Token
+  indexTokens: Token[]
   indexTokenPrice: number
   inputToken: Token
   outputToken: Token
@@ -72,6 +73,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   balances: [],
   baseToken: ETH,
   indexToken: IndexCoopEthereum2xIndex,
+  indexTokens: [],
   indexTokenPrice: 0,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
@@ -455,6 +457,7 @@ export function LeverageProvider(props: { children: any }) {
         balances,
         baseToken,
         indexToken,
+        indexTokens,
         indexTokenPrice,
         inputToken,
         outputToken,

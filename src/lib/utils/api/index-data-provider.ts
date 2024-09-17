@@ -1,51 +1,48 @@
 import { IndexApiBaseUrl } from '@/constants/server'
 
-export enum IndexDataMetric {
-  Fees = 'fees',
-  MarketCap = 'marketcap',
-  Nav = 'nav',
-  NavChange = 'navchange',
-  Pav = 'pav',
-  Price = 'price',
-  PriceChange = 'pricechange',
-  ProductComposition = 'productcomposition',
-  Supply = 'supply',
-  Volume = 'volume',
+const metricToIndexDataKey = {
+  marketcap: 'MarketCap',
+  nav: 'NetAssetValue',
+  navchange: 'NavChange24Hr',
+  pav: 'ProductAssetValue',
+  price: 'Price',
+  pricechange: 'PriceChange24Hr',
+  supply: 'Supply',
+} as const
+
+type FromValues<T extends Record<keyof T, string>> = {
+  [K in T[keyof T]]: number
 }
 
-export enum IndexDataInterval {
-  Latest = 'latest',
-  Minute = 'minute',
-  Hour = 'hour',
-  Daily = 'daily',
-}
+export type IndexData = Partial<FromValues<typeof metricToIndexDataKey>>
 
-export enum IndexDataPeriod {
-  Latest = 'latest',
-  Hour = 'hour',
-  Day = 'day',
-  Week = 'week',
-  Month = 'month',
-  Quarter = 'quarter',
-  Year = 'year',
-}
+export type IndexDataMetric = keyof typeof metricToIndexDataKey
+
+export type IndexDataPeriod =
+  | 'latest'
+  | 'hour'
+  | 'day'
+  | 'week'
+  | 'month'
+  | 'quarter'
+  | 'year'
+
+export type IndexDataInterval = 'latest' | 'minute' | 'hour' | 'daily'
 
 type FormatUrlArgs = {
   tokenAddress: string
-  chainId?: number
   metrics?: IndexDataMetric[]
   period?: IndexDataPeriod
   interval?: IndexDataInterval
 }
+
 function formatUrl({
   tokenAddress,
-  chainId = 1,
   metrics = [],
-  period = IndexDataPeriod.Latest,
-  interval = IndexDataInterval.Latest,
+  period = 'latest',
+  interval = 'latest',
 }: FormatUrlArgs) {
   const searchParams = new URLSearchParams({
-    chainId: chainId.toString(),
     period,
     interval,
   })
@@ -56,77 +53,52 @@ function formatUrl({
   return `${IndexApiBaseUrl}/data/tokens/${tokenAddress}?${searchParams.toString()}`
 }
 
-export class IndexDataProvider {
-  async getTokenMetrics({
-    tokenAddress,
-    chainId = 1,
-    metrics,
-  }: {
-    tokenAddress: string
-    chainId?: number
-    metrics: IndexDataMetric[]
-  }) {
-    const url = formatUrl({ tokenAddress, chainId, metrics })
-    try {
-      const res = await fetch(url)
-      const json = await res.json()
-      const latest = json[0]
-      return {
-        marketCap: metrics.includes(IndexDataMetric.MarketCap)
-          ? (latest.MarketCap as number)
-          : undefined,
-        nav: metrics.includes(IndexDataMetric.Nav)
-          ? (latest.NetAssetValue as number)
-          : undefined,
-        navChange: metrics.includes(IndexDataMetric.NavChange)
-          ? (latest.NavChange24Hr as number) * 100
-          : undefined,
-        pav: metrics.includes(IndexDataMetric.Pav)
-          ? (latest.ProductAssetValue as number)
-          : undefined,
-        price: metrics.includes(IndexDataMetric.Price)
-          ? (latest.Price as number)
-          : undefined,
-        priceChange: metrics.includes(IndexDataMetric.PriceChange)
-          ? (latest.PriceChange24Hr as number)
-          : undefined,
-        supply: metrics.includes(IndexDataMetric.Supply)
-          ? (latest.Supply as number)
-          : undefined,
-      }
-    } catch (error) {
-      console.error(`Error fetching token metrics: ${url}`, error)
-      return null
-    }
+export async function fetchTokenMetrics({
+  tokenAddress,
+  metrics,
+}: {
+  tokenAddress: string
+  metrics: IndexDataMetric[]
+}) {
+  const url = formatUrl({ tokenAddress, metrics })
+  try {
+    const res = await fetch(url)
+    const json = await res.json()
+    const latest = json[0]
+    return metrics.reduce<IndexData>(
+      (acc, metric) =>
+        Object.assign(acc, {
+          [metricToIndexDataKey[metric]]: latest[metricToIndexDataKey[metric]],
+        }),
+      {},
+    )
+  } catch (error) {
+    console.error(`Error fetching token metrics: ${url}`, error)
+    return null
   }
+}
 
-  async getTokenHistoricalData({
+export async function fetchTokenHistoricalData({
+  tokenAddress,
+  interval = 'minute',
+  period = 'day',
+}: {
+  tokenAddress: string
+  interval: IndexDataInterval
+  period: IndexDataPeriod
+}) {
+  const url = formatUrl({
     tokenAddress,
-    chainId = 1,
-    interval = IndexDataInterval.Minute,
-    period = IndexDataPeriod.Day,
-  }: {
-    tokenAddress: string
-    chainId?: number
-    interval: IndexDataInterval
-    period: IndexDataPeriod
-  }) {
-    const url = formatUrl({
-      tokenAddress,
-      chainId,
-      metrics: [IndexDataMetric.Nav],
-      interval,
-      period,
-    })
-    try {
-      const res = await fetch(url)
-      const json = await res.json()
-      return json.map((data: any) => ({
-        nav: data.NetAssetValue as number,
-      }))
-    } catch (error) {
-      console.error(`Error fetching token historical data: ${url}`, error)
-      return null
-    }
+    metrics: ['nav'],
+    interval,
+    period,
+  })
+  try {
+    const res = await fetch(url)
+    const json = (await res.json()) as Pick<IndexData, 'NetAssetValue'>[]
+    return json
+  } catch (error) {
+    console.error(`Error fetching token historical data: ${url}`, error)
+    return null
   }
 }

@@ -7,7 +7,7 @@ export function LoadingSkeleton({ className }: Props) {
   return (
     <div
       className={clsx(
-        'w-20 h-6 rounded-lg bg-ic-gray-200 animate-pulse ml-auto',
+        'bg-ic-gray-200 ml-auto h-6 w-20 animate-pulse rounded-lg',
         className,
       )}
     />

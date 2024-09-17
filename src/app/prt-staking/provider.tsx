@@ -2,8 +2,8 @@
 
 import { EIP712TypedData } from '@safe-global/safe-core-sdk-types'
 import {
-  ReactNode,
   createContext,
+  ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -21,10 +21,7 @@ import { PrtStakingAbi } from '@/app/prt-staking/abis/prt-staking-abi'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
 import { useSafeClient } from '@/lib/hooks/use-safe-client'
 import { formatWeiAsNumber } from '@/lib/utils'
-import {
-  IndexDataMetric,
-  IndexDataProvider,
-} from '@/lib/utils/api/index-data-provider'
+import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { fetchCumulativeRevenue } from '@/lib/utils/fetch'
 
 interface Context {
@@ -191,15 +188,14 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
 
   useEffect(() => {
     async function fetchTokenData() {
-      const indexDataProvider = new IndexDataProvider()
       const [tvl, cumulativeRevenue] = await Promise.all([
-        indexDataProvider.getTokenMetrics({
+        fetchTokenMetrics({
           tokenAddress: token.rewardTokenData.address,
-          metrics: [IndexDataMetric.Pav],
+          metrics: ['pav'],
         }),
         fetchCumulativeRevenue(token.rewardTokenData.address),
       ])
-      setTvl(tvl?.pav ?? 0)
+      setTvl(tvl?.ProductAssetValue ?? 0)
       setCumulativeRevenue(cumulativeRevenue)
     }
     fetchTokenData()
