@@ -20,6 +20,7 @@ import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
 import { useNetwork } from '@/lib/hooks/use-network'
+import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
@@ -27,7 +28,6 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
 
-import { useQueryParams } from '@/lib/hooks/use-query-params'
 import {
   getBaseTokens,
   getCurrencyTokens,

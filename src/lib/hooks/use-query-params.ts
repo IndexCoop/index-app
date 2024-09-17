@@ -1,10 +1,11 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
+import { useMemo } from 'react'
+
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
 import { chains } from '@/lib/utils/wagmi'
-import { useSearchParams } from 'next/navigation'
-import { useMemo } from 'react'
 
 /**
  * Returns possible leverage query params, with handling of default values included
