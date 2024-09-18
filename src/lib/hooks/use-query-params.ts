@@ -16,15 +16,17 @@ type DefaultParams = Partial<{
   outputToken: Token
 }>
 
-type AdjustedReturnType<T extends DefaultParams> = {
-  [K in keyof T as `query${Capitalize<string & K>}`]: T[K] extends undefined
-    ? T[K] | undefined
-    : T[K]
+type ReturnType<T extends DefaultParams> = {
+  [K in keyof T as `query${Capitalize<string & K>}`]: K extends keyof DefaultParams
+    ? T[K] extends undefined
+      ? DefaultParams[K]
+      : T[K]
+    : never
 }
 
 export const useQueryParams = <T extends DefaultParams>(
   defaultParams: T = {} as T,
-): AdjustedReturnType<T> => {
+): ReturnType<T> => {
   const searchParams = useSearchParams()
 
   return useMemo(() => {
@@ -64,7 +66,7 @@ export const useQueryParams = <T extends DefaultParams>(
       queryNetwork,
       queryInputToken,
       queryOutputToken,
-    } as AdjustedReturnType<T>
+    } as ReturnType<T>
     // NOTE: defaultQueryPararms should only be read initially.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
