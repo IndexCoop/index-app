@@ -1,3 +1,5 @@
+import { headers } from 'next/headers'
+
 import { Providers } from '@/app/providers'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
@@ -11,9 +13,11 @@ export const metadata = {
 }
 
 export default function Layout({ children }: Props) {
+  const cookies = headers().get('cookie')
+
   return (
     <div className="flex h-fit flex-col bg-[url('/presale-splash.jpg')] bg-cover">
-      <Providers>
+      <Providers cookies={cookies}>
         <Header />
         <main>{children}</main>
         <Footer />

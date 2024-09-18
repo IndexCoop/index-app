@@ -2,43 +2,61 @@
 
 import { CacheProvider } from '@chakra-ui/next-js'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { createAppKit } from '@reown/appkit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { WagmiProvider } from 'wagmi'
+import { WagmiProvider, cookieToInitialState, type Config } from 'wagmi'
 
 import { ProtectionProvider } from '@/lib/providers/protection'
 import { SignTermsProvider } from '@/lib/providers/sign-terms-provider'
-import theme, { rainbowkitTheme } from '@/lib/styles/theme'
-import { wagmiConfig } from '@/lib/utils/wagmi'
+import theme from '@/lib/styles/theme'
+import { networks, projectId, wagmiAdapter } from '@/lib/utils/wagmi'
 
 import '@/lib/styles/fonts'
-import '@rainbow-me/rainbowkit/styles.css'
 import { AnalyticsProvider } from './analytics-provider'
 
 const queryClient = new QueryClient()
 
-const rainbowKitAppInfo = {
-  appName: 'Index Coop',
-  learnMoreUrl: 'https://indexcoop.com',
+const metadata = {
+  name: 'indexcoop-app',
+  description: 'IndexCoop App',
+  url: 'https://app.indexcoop.com',
+  icons: [],
 }
 
-export function Providers({ children }: { children: React.ReactNode }) {
+createAppKit({
+  adapters: [wagmiAdapter],
+  projectId,
+  networks,
+  defaultNetwork: networks[0],
+  metadata: metadata,
+})
+
+export function Providers({
+  children,
+  cookies,
+}: {
+  children: React.ReactNode
+  cookies: string | null
+}) {
+  const initialState = cookieToInitialState(
+    wagmiAdapter.wagmiConfig as Config,
+    cookies,
+  )
+
   return (
     <CacheProvider prepend={true}>
       <ChakraProvider theme={theme}>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <WagmiProvider config={wagmiConfig}>
+        <WagmiProvider
+          config={wagmiAdapter.wagmiConfig}
+          initialState={initialState}
+        >
           <QueryClientProvider client={queryClient}>
-            <RainbowKitProvider
-              theme={rainbowkitTheme}
-              appInfo={rainbowKitAppInfo}
-            >
-              <AnalyticsProvider>
-                <ProtectionProvider>
-                  <SignTermsProvider>{children}</SignTermsProvider>
-                </ProtectionProvider>
-              </AnalyticsProvider>
-            </RainbowKitProvider>
+            <AnalyticsProvider>
+              <ProtectionProvider>
+                <SignTermsProvider>{children}</SignTermsProvider>
+              </ProtectionProvider>
+            </AnalyticsProvider>
           </QueryClientProvider>
         </WagmiProvider>
       </ChakraProvider>

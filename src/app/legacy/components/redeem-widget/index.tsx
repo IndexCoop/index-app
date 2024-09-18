@@ -1,7 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
+import { useAppKit } from '@reown/appkit/react'
 import { useCallback, useMemo } from 'react'
 
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -32,10 +32,9 @@ import './styles.css'
 
 export function RedeemWidget() {
   const isSupportedNetwork = useMainnetOnly()
-  const { openChainModal } = useChainModal()
+  const { open } = useAppKit()
   const { signTermsOfService } = useSignTerms()
   const { address } = useWallet()
-  const { openConnectModal } = useConnectModal()
   const {
     inputTokenList,
     inputValue,
@@ -120,9 +119,8 @@ export function RedeemWidget() {
 
   const onClickButton = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
-      if (openConnectModal) {
-        openConnectModal()
-      }
+      open({ view: 'Connect' })
+
       return
     }
 
@@ -132,9 +130,8 @@ export function RedeemWidget() {
     }
 
     if (buttonState === TradeButtonState.wrongNetwork) {
-      if (openChainModal) {
-        openChainModal()
-      }
+      open({ view: 'Networks' })
+
       return
     }
 
@@ -159,8 +156,8 @@ export function RedeemWidget() {
     onApprove,
     signTermsOfService,
     onOpenTransactionReview,
-    openChainModal,
-    openConnectModal,
+    open,
+
     shouldApprove,
   ])
 

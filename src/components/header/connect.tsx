@@ -1,6 +1,5 @@
 'use client'
 
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useEffect } from 'react'
 
 import { useAnalytics } from '@/lib/hooks/use-analytics'
@@ -17,18 +16,5 @@ export const Connect = () => {
     logConnectWallet(address, chainId)
   }, [address, chainId, logConnectWallet])
 
-  return (
-    <ConnectButton
-      label='Connect'
-      showBalance={{
-        smallScreen: false,
-        largeScreen: true,
-      }}
-      accountStatus={{
-        smallScreen: 'avatar',
-        largeScreen: 'full',
-      }}
-      chainStatus={{ smallScreen: 'icon', largeScreen: 'full' }}
-    />
-  )
+  return <w3m-button label='Connect' balance='show' />
 }
