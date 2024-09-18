@@ -60,7 +60,6 @@ function LineChart({ data, parentWidth, parentHeight, selectedPeriod }: Props) {
         dataKey='prices'
         data={data}
         curve={curveBasis}
-        autoReverse
       />
     </XYChart>
   )
