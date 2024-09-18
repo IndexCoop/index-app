@@ -1,5 +1,5 @@
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSwitchChain } from 'wagmi'
 
@@ -58,6 +58,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   const { switchChain } = useSwitchChain()
   const { chainId } = useNetwork()
   const router = useRouter()
+  const pathname = usePathname()
   const requiresProtection = useProtection()
   const { signTermsOfService } = useSignTerms()
   const { slippage } = useSlippage()
@@ -148,7 +149,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     if (buttonState === TradeButtonState.mismatchingQueryNetwork) {
       if (queryNetwork) {
         switchChain({ chainId: queryNetwork })
-        router.replace('/leverage')
+        router.replace(pathname)
       }
 
       return
