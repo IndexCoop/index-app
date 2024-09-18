@@ -45,13 +45,15 @@ export const useQueryParams = <T extends Partial<DefaultParams>>(
       (token) => token.symbol.toLowerCase() === sell.toLowerCase(),
     )
 
-    if (!queryInputToken || !queryOutputToken) {
-      queryOutputToken = leverageTokens.find(
-        (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
-      )
-
+    if (!queryInputToken) {
       queryInputToken = currencyTokens.find(
         (token) => token.symbol.toLowerCase() === sell.toLowerCase(),
+      )
+    }
+
+    if (!queryOutputToken) {
+      queryOutputToken = leverageTokens.find(
+        (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
       )
     }
 
