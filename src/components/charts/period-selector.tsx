@@ -1,14 +1,22 @@
 import clsx from 'clsx'
-import { useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
 import { ChartPeriod } from '@/components/charts/types'
 
+const periods = [
+  ChartPeriod.Hour,
+  ChartPeriod.Day,
+  ChartPeriod.Week,
+  ChartPeriod.Month,
+  ChartPeriod.Year,
+]
+
 type Props = {
-  periods: ChartPeriod[]
+  selectedPeriod: ChartPeriod
+  setSelectedPeriod: Dispatch<SetStateAction<ChartPeriod>>
 }
 
-export function PeriodSelector({ periods }: Props) {
-  const [selectedPeriod, setSelectedPeriod] = useState(ChartPeriod.Day)
+export function PeriodSelector({ selectedPeriod, setSelectedPeriod }: Props) {
   return (
     <div className='ml-auto flex space-x-2 text-sm font-medium'>
       {periods.map((period) => (

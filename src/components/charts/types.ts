@@ -4,5 +4,4 @@ export enum ChartPeriod {
   Week = '1W',
   Month = '1M',
   Year = '1Y',
-  All = 'All',
 }
