@@ -8,23 +8,21 @@ import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
 import { chains } from '@/lib/utils/wagmi'
 
-type DefaultParams = Partial<{
+type DefaultParams = {
   isMinting: boolean
   leverageType: LeverageType
   network: number
   inputToken: Token
   outputToken: Token
-}>
-
-type ReturnType<T extends DefaultParams> = {
-  [K in keyof T as `query${Capitalize<string & K>}`]: K extends keyof DefaultParams
-    ? T[K] extends undefined
-      ? DefaultParams[K]
-      : T[K]
-    : never
 }
 
-export const useQueryParams = <T extends DefaultParams>(
+type ReturnType<T extends Partial<DefaultParams>> = {
+  [K in keyof DefaultParams as `query${Capitalize<string & K>}`]: K extends keyof T
+    ? T[K]
+    : DefaultParams[K] | undefined
+}
+
+export const useQueryParams = <T extends Partial<DefaultParams>>(
   defaultParams: T = {} as T,
 ): ReturnType<T> => {
   const searchParams = useSearchParams()

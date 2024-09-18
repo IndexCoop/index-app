@@ -102,7 +102,6 @@ export const useLeverageToken = () => useContext(LeverageTokenContext)
 const defaultParams = {
   isMinting: true,
   leverageType: LeverageType.Long2x,
-  network: undefined,
   inputToken: ETH,
   outputToken: {
     ...IndexCoopEthereum2xIndex,
