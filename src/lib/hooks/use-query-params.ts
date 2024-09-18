@@ -71,5 +71,5 @@ export const useQueryParams = <T extends Partial<DefaultParams>>(
     } as ReturnType<T>
     // NOTE: defaultQueryPararms should only be read initially.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams])
+  }, [])
 }
