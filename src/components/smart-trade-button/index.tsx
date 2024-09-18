@@ -55,7 +55,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
   const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
-  const { switchChain } = useSwitchChain()
+  const { switchChainAsync } = useSwitchChain()
   const { chainId } = useNetwork()
   const router = useRouter()
   const pathname = usePathname()
@@ -148,8 +148,9 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
     if (buttonState === TradeButtonState.mismatchingQueryNetwork) {
       if (queryNetwork) {
-        switchChain({ chainId: queryNetwork })
-        router.replace(pathname)
+        switchChainAsync({ chainId: queryNetwork }).then(() =>
+          router.replace(pathname),
+        )
       }
 
       return
@@ -181,7 +182,9 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     signTermsOfService,
     shouldApprove,
     queryNetwork,
-    switchChain,
+    pathname,
+    router,
+    switchChainAsync,
   ])
 
   return (
