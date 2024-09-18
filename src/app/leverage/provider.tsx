@@ -34,7 +34,7 @@ import {
   getLeverageTokens,
   supportedLeverageTypes,
 } from './constants'
-import { BaseTokenStats, LeverageType } from './types'
+import { BaseTokenStats, LeverageToken, LeverageType } from './types'
 import { getLeverageType } from './utils/get-leverage-type'
 
 export interface TokenContext {
@@ -99,6 +99,18 @@ export const LeverageTokenContext = createContext<TokenContext>({
 
 export const useLeverageToken = () => useContext(LeverageTokenContext)
 
+const defaultQueryParams = {
+  queryIsMinting: true,
+  queryLeverageType: LeverageType.Long2x,
+  queryNetwork: undefined,
+  queryInputToken: ETH,
+  queryOutputToken: {
+    ...IndexCoopEthereum2xIndex,
+    leverageType: LeverageType.Long2x,
+    baseToken: ETH.symbol,
+  } as LeverageToken,
+}
+
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { chainId: chainIdRaw } = useNetwork()
@@ -110,7 +122,7 @@ export function LeverageProvider(props: { children: any }) {
     queryInputToken,
     queryOutputToken,
     queryIsMinting,
-  } = useQueryParams()
+  } = useQueryParams(defaultQueryParams)
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
 
@@ -125,10 +137,8 @@ export function LeverageProvider(props: { children: any }) {
   const [indexTokenPrice, setIndexTokenPrice] = useState(0)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
-  const [inputToken, setInputToken] = useState<Token>(queryInputToken ?? ETH)
-  const [outputToken, setOutputToken] = useState<Token>(
-    queryOutputToken ?? IndexCoopEthereum2xIndex,
-  )
+  const [inputToken, setInputToken] = useState<Token>(queryInputToken)
+  const [outputToken, setOutputToken] = useState<Token>(queryOutputToken)
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [flashmintQuote, setFlashmintQuote] = useState<Quote | null>(null)
   const [swapQuote, setSwapQuote] = useState<Quote | null>(null)
@@ -142,7 +152,7 @@ export function LeverageProvider(props: { children: any }) {
   const chainId = useMemo(() => {
     // To control the defaults better
     return queryNetwork ?? chainIdRaw ?? ARBITRUM.chainId
-  }, [chainIdRaw])
+  }, [chainIdRaw, queryNetwork])
 
   const baseTokens = useMemo(() => {
     return getBaseTokens(chainId)
@@ -444,8 +454,8 @@ export function LeverageProvider(props: { children: any }) {
     // Reset quotes
     setMinting(queryIsMinting)
     setBaseToken(ETH)
-    setInputToken(queryInputToken ?? ETH)
-    setOutputToken(queryOutputToken ?? IndexCoopEthereum2xIndex)
+    setInputToken(queryInputToken)
+    setOutputToken(queryOutputToken)
     setLeverageType(queryLeverageType)
     setQuoteResult({
       type: QuoteType.flashmint,

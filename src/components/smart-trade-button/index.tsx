@@ -1,5 +1,6 @@
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSwitchChain } from 'wagmi'
 
 import { Warnings, WarningType } from '@/components/swap/components/warning'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
@@ -27,6 +28,7 @@ type SmartTradeButtonProps = {
   hiddenWarnings?: WarningType[]
   isFetchingQuote: boolean
   isSupportedNetwork: boolean
+  queryNetwork?: number
   buttonLabelOverrides: { [key: number]: string }
   onOpenTransactionReview: () => void
   onRefetchQuote: () => void
@@ -44,6 +46,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     inputValue,
     isFetchingQuote,
     isSupportedNetwork,
+    queryNetwork,
     outputToken,
     onOpenTransactionReview,
     onRefetchQuote,
@@ -51,6 +54,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
   const { openChainModal } = useChainModal()
   const { openConnectModal } = useConnectModal()
+  const { switchChain } = useSwitchChain()
   const { chainId } = useNetwork()
   const requiresProtection = useProtection()
   const { signTermsOfService } = useSignTerms()
@@ -73,8 +77,14 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     return !isNativeToken
   }, [chainId, inputToken])
 
+  const isMismatchingQueryNetwork = useMemo(
+    () => queryNetwork !== undefined && chainId !== queryNetwork,
+    [chainId, queryNetwork],
+  )
+
   const buttonState = useTradeButtonState(
     isSupportedNetwork,
+    isMismatchingQueryNetwork,
     hasFetchingError,
     hasInsufficientFunds,
     shouldApprove,
@@ -133,6 +143,14 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
       return
     }
 
+    if (buttonState === TradeButtonState.mismatchingQueryNetwork) {
+      if (queryNetwork) {
+        switchChain({ chainId: queryNetwork })
+      }
+
+      return
+    }
+
     if (buttonState === TradeButtonState.fetchingError) {
       onRefetchQuote()
       return
@@ -158,6 +176,8 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     openConnectModal,
     signTermsOfService,
     shouldApprove,
+    queryNetwork,
+    switchChain,
   ])
 
   return (
