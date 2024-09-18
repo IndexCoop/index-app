@@ -99,12 +99,12 @@ export const LeverageTokenContext = createContext<TokenContext>({
 
 export const useLeverageToken = () => useContext(LeverageTokenContext)
 
-const defaultQueryParams = {
-  queryIsMinting: true,
-  queryLeverageType: LeverageType.Long2x,
-  queryNetwork: undefined,
-  queryInputToken: ETH,
-  queryOutputToken: {
+const defaultParams = {
+  isMinting: true,
+  leverageType: LeverageType.Long2x,
+  network: undefined,
+  inputToken: ETH,
+  outputToken: {
     ...IndexCoopEthereum2xIndex,
     leverageType: LeverageType.Long2x,
     baseToken: ETH.symbol,
@@ -122,7 +122,7 @@ export function LeverageProvider(props: { children: any }) {
     queryInputToken,
     queryOutputToken,
     queryIsMinting,
-  } = useQueryParams(defaultQueryParams)
+  } = useQueryParams(defaultParams)
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
 

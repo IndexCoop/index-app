@@ -8,34 +8,22 @@ import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
 import { chains } from '@/lib/utils/wagmi'
 
-type DefaultQueryParams = Partial<{
-  queryIsMinting: boolean
-  queryLeverageType: LeverageType
-  queryNetwork: number
-  queryInputToken: Token
-  queryOutputToken: Token
+type DefaultParams = Partial<{
+  isMinting: boolean
+  leverageType: LeverageType
+  network: number
+  inputToken: Token
+  outputToken: Token
 }>
 
-type AdjustedReturnType<T extends DefaultQueryParams> = {
-  queryIsMinting: T['queryIsMinting'] extends undefined
-    ? boolean | undefined
-    : T['queryIsMinting']
-  queryLeverageType: T['queryLeverageType'] extends undefined
-    ? LeverageType | undefined
-    : T['queryLeverageType']
-  queryNetwork: T['queryNetwork'] extends undefined
-    ? number | undefined
-    : T['queryNetwork']
-  queryInputToken: T['queryInputToken'] extends undefined
-    ? Token | undefined
-    : T['queryInputToken']
-  queryOutputToken: T['queryOutputToken'] extends undefined
-    ? Token | undefined
-    : T['queryOutputToken']
+type AdjustedReturnType<T extends DefaultParams> = {
+  [K in keyof T as `query${Capitalize<string & K>}`]: T[K] extends undefined
+    ? T[K] | undefined
+    : T[K]
 }
 
-export const useQueryParams = <T extends DefaultQueryParams>(
-  defaultQueryPararms: T = {} as T,
+export const useQueryParams = <T extends DefaultParams>(
+  defaultParams: T = {} as T,
 ): AdjustedReturnType<T> => {
   const searchParams = useSearchParams()
 
@@ -45,8 +33,7 @@ export const useQueryParams = <T extends DefaultQueryParams>(
     const sell = searchParams.get('sell') || ''
 
     const queryNetwork =
-      chains.find((chain) => chain.id === network)?.id ??
-      defaultQueryPararms.queryNetwork
+      chains.find((chain) => chain.id === network)?.id ?? defaultParams.network
 
     const tokens = getCurrencyTokens(queryNetwork ?? 0).concat(
       getLeverageTokens(network),
@@ -55,21 +42,21 @@ export const useQueryParams = <T extends DefaultQueryParams>(
     const queryOutputToken =
       tokens.find(
         (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
-      ) ?? defaultQueryPararms.queryOutputToken
+      ) ?? defaultParams.outputToken
     const queryInputToken =
       tokens.find(
         (token) => token.symbol.toLowerCase() === sell.toLowerCase(),
-      ) ?? defaultQueryPararms.queryInputToken
+      ) ?? defaultParams.inputToken
 
     const queryIsMinting = queryOutputToken
       ? 'leverageType' in queryOutputToken
-      : defaultQueryPararms.queryIsMinting
+      : defaultParams.isMinting
 
     const queryLeverageType =
       (queryIsMinting
         ? (queryOutputToken as LeverageToken)?.leverageType
         : (queryInputToken as LeverageToken)?.leverageType) ??
-      defaultQueryPararms.queryLeverageType
+      defaultParams.leverageType
 
     return {
       queryIsMinting,
@@ -77,7 +64,7 @@ export const useQueryParams = <T extends DefaultQueryParams>(
       queryNetwork,
       queryInputToken,
       queryOutputToken,
-    }
+    } as AdjustedReturnType<T>
     // NOTE: defaultQueryPararms should only be read initially.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
