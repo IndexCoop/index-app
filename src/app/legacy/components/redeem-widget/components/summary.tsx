@@ -31,7 +31,7 @@ export function Summary() {
     inputAmount,
     inputAmoutUsd,
     isFetchingQuote,
-    ouputAmount,
+    outputAmount,
     outputAmountUsd,
     shouldShowSummaryDetails,
   } = useFormattedData()
@@ -43,12 +43,8 @@ export function Summary() {
           <dt>
             <Disclosure.Button className='text-ic-gray-300 flex w-full items-center justify-between text-left'>
               <span className='text-ic-gray-500 text-xs font-medium'>
-                {open && 'Summary'}
+                {!isFetchingQuote && 'Summary'}
                 {!open && isFetchingQuote && <StyledSkeleton width={120} />}
-                {!open &&
-                  !isFetchingQuote &&
-                  shouldShowSummaryDetails &&
-                  `Receive ${ouputAmount}`}
               </span>
               <div className='flex flex-row items-center gap-1'>
                 {!open && !isFetchingQuote ? (
@@ -81,7 +77,7 @@ export function Summary() {
                 />
                 <SummaryQuote
                   label='Receive'
-                  value={ouputAmount}
+                  value={outputAmount}
                   valueUsd={`(${outputAmountUsd})`}
                 />
                 <div className='text-ic-gray-400 flex flex-row items-center justify-between text-xs'>

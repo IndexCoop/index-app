@@ -4,6 +4,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useMemo } from 'react'
 
+import { Receive } from '@/components/receive'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
@@ -53,6 +54,7 @@ export function RedeemWidget() {
     inputTokenBalance,
     inputTokenBalanceFormatted,
     forceRefetch,
+    outputAmount,
   } = useFormattedData()
 
   const {
@@ -175,6 +177,13 @@ export function RedeemWidget() {
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
         onSelectToken={onOpenSelectInputToken}
+      />
+      <Receive
+        isLoading={isFetchingQuote}
+        onSelectToken={() => {}}
+        outputAmount={outputAmount}
+        selectedOutputToken={outputToken}
+        showSelectorButtonChevron={false}
       />
       <Summary />
       <TradeButton
