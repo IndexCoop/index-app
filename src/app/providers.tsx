@@ -25,10 +25,18 @@ const metadata = {
 
 createAppKit({
   adapters: [wagmiAdapter],
+  enableInjected: true,
+  themeMode: 'dark',
   projectId,
   networks,
-  defaultNetwork: networks[0],
-  metadata: metadata,
+  //  defaultNetwork: networks[0],
+  metadata,
+  features: {
+    email: false,
+    onramp: false,
+    swaps: false,
+    socials: false,
+  },
 })
 
 export function Providers({
