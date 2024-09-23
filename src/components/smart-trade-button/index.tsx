@@ -1,4 +1,4 @@
-import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
+import { useAppKit } from '@reown/appkit/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Warnings, WarningType } from '@/components/swap/components/warning'
@@ -49,9 +49,8 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     onRefetchQuote,
   } = props
 
-  const { openChainModal } = useChainModal()
-  const { openConnectModal } = useConnectModal()
   const { chainId } = useNetwork()
+  const { open } = useAppKit()
   const requiresProtection = useProtection()
   const { signTermsOfService } = useSignTerms()
   const { slippage } = useSlippage()
@@ -115,9 +114,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
   const onClick = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
-      if (openConnectModal) {
-        openConnectModal()
-      }
+      open({ view: 'Connect' })
       return
     }
 
@@ -127,9 +124,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     }
 
     if (buttonState === TradeButtonState.wrongNetwork) {
-      if (openChainModal) {
-        openChainModal()
-      }
+      open({ view: 'Networks' })
       return
     }
 
@@ -154,8 +149,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     onApproveForSwap,
     onOpenTransactionReview,
     onRefetchQuote,
-    openChainModal,
-    openConnectModal,
+    open,
     signTermsOfService,
     shouldApprove,
   ])
