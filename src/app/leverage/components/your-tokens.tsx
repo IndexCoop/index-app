@@ -12,7 +12,7 @@ import { shortenAddress } from '@/lib/utils'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 import { getAddressForToken } from '@/lib/utils/tokens'
-import { networks } from '@/lib/utils/wagmi'
+import { chains } from '@/lib/utils/wagmi'
 
 import { useLeverageToken } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
@@ -30,7 +30,7 @@ export function YourTokens() {
   const { chainId } = useNetwork()
 
   const chain = useMemo(
-    () => networks.find((chain) => chain.chainId === chainId),
+    () => chains.find((chain) => chain.id === chainId),
     [chainId],
   )
   const {
@@ -275,7 +275,7 @@ export function YourTokens() {
 
                       <div className='hidden w-1/3 items-center md:flex md:w-4/12'>
                         <a
-                          href={`${chain?.explorerUrl}/tx/${hash}`}
+                          href={`${chain?.blockExplorers?.default}/tx/${hash}`}
                           className='hover:underline'
                           target='_blank'
                         >

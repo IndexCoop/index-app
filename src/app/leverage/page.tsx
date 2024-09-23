@@ -1,8 +1,8 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useAppKit } from '@reown/appkit/react'
 import { PopupButton } from '@typeform/embed-react'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useWalletClient } from 'wagmi'
 
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -22,7 +22,7 @@ import { YourTokens } from './components/your-tokens'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
-  const { open } = useAppKit()
+  const { open } = useWeb3Modal()
   const { data: walletClient } = useWalletClient()
   const { address } = useWallet()
   const {

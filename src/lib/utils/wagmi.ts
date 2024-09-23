@@ -1,11 +1,6 @@
-import { arbitrum, base, mainnet } from '@reown/appkit/networks'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { CaipNetwork } from '@reown/appkit-common'
-import { cookieStorage, createStorage, http } from '@wagmi/core'
-
-// const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
-// const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-const shouldShowLocalHost = false // isDevelopmentEnv
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import { cookieStorage, createStorage, http } from 'wagmi'
+import { arbitrum, base, localhost, mainnet } from 'wagmi/chains'
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
 
@@ -13,43 +8,42 @@ if (!projectId) {
   throw new Error('Project ID is not defined')
 }
 
-const localhost: CaipNetwork = {
-  chainId: 31337,
-  id: `eip155:localhost`,
-  name: 'Localhost',
-  chainNamespace: 'eip155',
-  currency: 'ETH',
-  rpcUrl: 'http://localhost:8545',
-  explorerUrl: '',
+const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
+const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
+const shouldShowLocalHost = isDevelopmentEnv || isPreviewEnv
+
+// Create a metadata object
+const metadata = {
+  name: 'index-coop',
+  description: 'AppKit Example',
+  url: 'https://reown.com/appkit', // origin must match your domain & subdomain
+  icons: ['https://assets.reown.com/reown-profile-pic.png'],
 }
 
-export const networks: CaipNetwork[] = [
-  {
-    ...mainnet,
-    rpcUrl: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
-  },
-  {
-    ...arbitrum,
-    rpcUrl: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
-  },
-  {
-    ...base,
-    rpcUrl: `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
-  },
+export const chains = [
+  arbitrum,
+  mainnet,
+  base,
   ...(shouldShowLocalHost ? [localhost] : []),
-]
-//Set up the Wagmi Adapter (Config)
-export const wagmiAdapter = new WagmiAdapter({
+] as const
+
+export const config = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata,
+  ssr: true,
   storage: createStorage({
     storage: cookieStorage,
   }),
-  transports: networks.reduce((acc, network) => ({
-    ...acc,
-    [network.id]: http(network.rpcUrl),
-  })),
-  ssr: true,
-  projectId,
-  networks,
+  transports: {
+    [mainnet.id]: http(
+      `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+    ),
+    [arbitrum.id]: http(
+      `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+    ),
+    [base.id]: http(
+      `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+    ),
+  },
 })
-
-export const wagmiConfig = wagmiAdapter.wagmiConfig

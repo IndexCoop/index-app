@@ -2,8 +2,8 @@
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@headlessui/react'
-import { useAppKit } from '@reown/appkit/react'
-import { CoreHelperUtil } from '@reown/appkit-core'
+import { CoreHelperUtil } from '@web3modal/core'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useEffect, useMemo, useState } from 'react'
 import { formatUnits } from 'viem'
 import { useAccount, useAccountEffect, useBalance } from 'wagmi'
@@ -15,7 +15,7 @@ import { emojiAvatarForAddress } from '@/lib/utils/emojiAddressAvatar'
 
 export const Connect = () => {
   const { address, isConnected } = useAccount()
-  const { open } = useAppKit()
+  const { open } = useWeb3Modal()
   const { logConnectWallet } = useAnalytics()
   const [mounted, setMounted] = useState(false)
 
@@ -65,6 +65,7 @@ export const Connect = () => {
                 balance!.symbol,
               )}
             </p>
+            <p className='hidden md:block'> {balance!.symbol}</p>
             <div
               className='flex h-6 w-6 items-center justify-center rounded-full'
               style={{ backgroundColor: avatar?.color }}
