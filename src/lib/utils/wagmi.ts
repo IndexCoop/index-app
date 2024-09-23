@@ -1,6 +1,6 @@
+import { arbitrum, base, mainnet } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { CaipNetwork } from '@reown/appkit-common'
-import { arbitrum, base, mainnet } from '@reown/appkit/networks'
 import { createStorage, http } from '@wagmi/core'
 
 const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
