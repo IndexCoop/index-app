@@ -4,7 +4,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@headlessui/react'
 import { CoreHelperUtil } from '@web3modal/core'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 import { useAccount, useAccountEffect, useBalance } from 'wagmi'
 
@@ -17,7 +17,6 @@ export const Connect = () => {
   const { address, isConnected } = useAccount()
   const { open } = useWeb3Modal()
   const { logConnectWallet } = useAnalytics()
-  const [mounted, setMounted] = useState(false)
 
   const { data: balance } = useBalance({
     query: {
@@ -42,12 +41,6 @@ export const Connect = () => {
 
     return emojiAvatarForAddress(address)
   }, [address])
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
 
   return (
     <div className='text-ic-white flex gap-4 font-bold'>

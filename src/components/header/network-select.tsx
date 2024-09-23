@@ -24,23 +24,24 @@ export const NetworkSelect = () => {
       (n) => NetworkUtil.caipNetworkIdToNumber(n.id) === chainId,
     )
 
-    return AssetUtil.getNetworkImageById(currentNetwork?.imageId)
+    return AssetUtil.getNetworkImageById(currentNetwork?.imageId) ?? ''
   }, [networks, chainId])
-
-  console.log(imageSrc)
 
   return (
     <Button
       className='bg-ic-black text-ic-white flex gap-2 rounded-md border-none px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
       onClick={() => open({ view: 'Networks' })}
     >
-      <Image
-        src={imageSrc ?? ''}
-        alt=''
-        className='rounded-full'
-        width={24}
-        height={24}
-      />
+      {imageSrc && (
+        <Image
+          src={imageSrc}
+          alt=''
+          className='rounded-full'
+          width={24}
+          height={24}
+        />
+      )}
+
       <p className='hidden md:block'>{chain?.name}</p>
       <ChevronDownIcon className='h-6 w-6' />
     </Button>
