@@ -3,9 +3,9 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { CaipNetwork } from '@reown/appkit-common'
 import { cookieStorage, createStorage, http } from '@wagmi/core'
 
-const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
-const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-const shouldShowLocalHost = isDevelopmentEnv || isPreviewEnv
+// const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
+// const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
+const shouldShowLocalHost = false // isDevelopmentEnv
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
 
