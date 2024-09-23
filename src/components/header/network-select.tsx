@@ -12,7 +12,7 @@ export const NetworkSelect = () => {
 
   return (
     <Button
-      className='bg-ic-black text-ic-white flex gap-2 rounded-md border-none px-4 py-2'
+      className='bg-ic-black text-ic-white flex gap-2 rounded-md border-none px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
       onClick={() => open({ view: 'Networks' })}
     >
       <Image
