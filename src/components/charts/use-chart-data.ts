@@ -5,6 +5,7 @@ import { isAddress } from 'viem'
 import { ChartPeriod } from '@/components/charts/types'
 import {
   fetchTokenHistoricalData,
+  fetchTokenMetrics,
   IndexDataInterval,
   IndexDataPeriod,
 } from '@/lib/utils/api/index-data-provider'
@@ -36,7 +37,7 @@ const fetchSettingsByPeriod: {
 
 export function useChartData(indexTokenAddress?: string) {
   const [selectedPeriod, setSelectedPeriod] = useState(ChartPeriod.Day)
-  const { data } = useQuery({
+  const { data: historicalData } = useQuery({
     enabled: isAddress(indexTokenAddress ?? ''),
     initialData: [],
     queryKey: ['token-historical-data', indexTokenAddress, selectedPeriod],
@@ -60,9 +61,23 @@ export function useChartData(indexTokenAddress?: string) {
         .reverse(),
   })
 
+  const { data: nav } = useQuery({
+    enabled: isAddress(indexTokenAddress ?? ''),
+    initialData: 0,
+    queryKey: ['token-nav', indexTokenAddress],
+    queryFn: async () => {
+      const data = await fetchTokenMetrics({
+        tokenAddress: indexTokenAddress!,
+        metrics: ['nav'],
+      })
+
+      return data?.NetAssetValue ?? 0
+    },
+  })
+
   return {
-    data,
-    latest: data.length > 0 ? data[data.length - 1] : null,
+    historicalData,
+    nav,
     selectedPeriod,
     setSelectedPeriod,
   }
