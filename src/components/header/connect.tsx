@@ -2,8 +2,8 @@
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@headlessui/react'
-import { useAppKit } from '@reown/appkit/react'
 import { CoreHelperUtil } from '@reown/appkit-core'
+import { useAppKit } from '@reown/appkit/react'
 import { AvatarGenerator } from 'random-avatar-generator'
 import { useEffect, useState } from 'react'
 import { formatUnits } from 'viem'
@@ -47,29 +47,31 @@ export const Connect = () => {
 
   return (
     <div className='text-ic-white flex gap-4 font-bold'>
-      <NetworkSelect />
       {isConnected && address ? (
-        <Button
-          suppressHydrationWarning
-          className='bg-ic-black flex items-center gap-2 rounded-md px-4 py-2'
-          onClick={() => open({ view: 'Account' })}
-        >
-          <p className='hidden md:block'>
-            {CoreHelperUtil.formatBalance(
-              formatUnits(balance!.value, balance!.decimals),
-              balance!.symbol,
-            )}
-          </p>
-          {/*  Here the Image component doesnt work with configuring the host for some reason */}
-          <img
-            src={avatarGenerator.generateRandomAvatar(address)}
-            alt=''
-            width={24}
-            height={24}
-          />
-          <p className='hidden md:block'>{shortenAddress(address)}</p>
-          <ChevronDownIcon className='h-5 w-5' />
-        </Button>
+        <>
+          <NetworkSelect />
+          <Button
+            suppressHydrationWarning
+            className='bg-ic-black flex items-center gap-2 rounded-md px-4 py-2'
+            onClick={() => open({ view: 'Account' })}
+          >
+            <p className='hidden md:block'>
+              {CoreHelperUtil.formatBalance(
+                formatUnits(balance!.value, balance!.decimals),
+                balance!.symbol,
+              )}
+            </p>
+            {/*  Here the Image component doesnt work with configuring the host for some reason */}
+            <img
+              src={avatarGenerator.generateRandomAvatar(address)}
+              alt=''
+              width={24}
+              height={24}
+            />
+            <p className='hidden md:block'>{shortenAddress(address)}</p>
+            <ChevronDownIcon className='h-5 w-5' />
+          </Button>
+        </>
       ) : (
         <Button
           suppressHydrationWarning
