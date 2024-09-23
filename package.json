@@ -48,7 +48,7 @@
     "ethers": "^5.7.2",
     "framer-motion": "11.2.6",
     "lodash": "4.17.21",
-    "next": "^13.5.4",
+    "next": "14.2.13",
     "random-avatar-generator": "2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -56,8 +56,8 @@
     "react-loading-skeleton": "^3.3.1",
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
-    "viem": "2.19.1",
-    "wagmi": "2.9.2"
+    "viem": "2.21.12",
+    "wagmi": "2.12.13"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
