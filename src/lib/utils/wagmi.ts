@@ -1,7 +1,7 @@
 import { arbitrum, base, mainnet } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { CaipNetwork } from '@reown/appkit-common'
-import { createStorage, http } from '@wagmi/core'
+import { cookieStorage, createStorage, http } from '@wagmi/core'
 
 const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
 const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
@@ -33,7 +33,7 @@ export const networks = [
 //Set up the Wagmi Adapter (Config)
 export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
-    storage: localStorage,
+    storage: cookieStorage,
   }),
   transports: {
     [arbitrum.id]: http(
