@@ -40,7 +40,6 @@ export function RedeemWidget() {
     inputValue,
     inputToken,
     inputTokenAmount,
-    isDepositing,
     isFetchingQuote,
     onChangeInputTokenAmount,
     onSelectInputToken,

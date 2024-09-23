@@ -16,10 +16,10 @@ export function FaqSection() {
       <FaqItem question='Why legacs tokens?'>
         <p>
           At Index Coop, we support legacy tokens to ensure that early users of
-          our products are never left behind. Whether you've held onto old
+          our products are never left behind. Whether you&apos;ve held onto old
           products or are looking to upgrade, you can easily and
           cost-efficiently redeem your legacy tokens through our streamlined
-          process. We're committed to making this transition smooth and
+          process. We&apos;re committed to making this transition smooth and
           accessible, and we appreciate your trust in Index Coop as we continue
           to innovate.
         </p>

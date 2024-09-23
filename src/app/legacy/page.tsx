@@ -2,6 +2,7 @@
 
 import { FaqSection } from '@/app/legacy/components/faq-section'
 import { LegacyHeader } from '@/app/legacy/components/legacy-header'
+
 import { RedeemWidget } from './components/redeem-widget'
 
 export default function Page() {
