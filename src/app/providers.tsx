@@ -27,6 +27,8 @@ createAppKit({
   adapters: [wagmiAdapter],
   projectId,
   networks,
+  termsConditionsUrl: 'https://indexcoop.com/terms-of-service',
+  privacyPolicyUrl: 'https://indexcoop.com/privacy-policy',
   //  defaultNetwork: networks[0],
   metadata,
   features: {
