@@ -2,8 +2,8 @@
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@headlessui/react'
-import { useAppKit } from '@reown/appkit/react'
 import { CoreHelperUtil } from '@reown/appkit-core'
+import { useAppKit } from '@reown/appkit/react'
 import { useEffect, useMemo, useState } from 'react'
 import { formatUnits } from 'viem'
 import { useAccount, useAccountEffect, useBalance } from 'wagmi'
@@ -65,7 +65,6 @@ export const Connect = () => {
                 balance!.symbol,
               )}
             </p>
-            {/*  Here the Image component doesnt work with configuring the host for some reason */}
             <div
               className='flex h-6 w-6 items-center justify-center rounded-full'
               style={{ backgroundColor: avatar?.color }}
