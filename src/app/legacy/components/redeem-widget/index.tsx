@@ -23,7 +23,6 @@ import { formatWei } from '@/lib/utils'
 
 import { useRedeem } from '../../providers/redeem-provider'
 
-import { DepositWithdrawSelector } from './components/deposit-withdraw-selector'
 import { Summary } from './components/summary'
 import { Title } from './components/title'
 import { useFormattedData } from './use-formatted-data'
@@ -167,7 +166,6 @@ export function RedeemWidget() {
   return (
     <div className='widget w-full min-w-80 max-w-xl flex-1 flex-col space-y-4 self-center rounded-3xl p-6'>
       <Title />
-      <DepositWithdrawSelector isDepositing={isDepositing} onClick={() => {}} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={inputTokenBalanceFormatted}
