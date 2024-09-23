@@ -169,7 +169,7 @@ export function RedeemWidget() {
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={inputTokenBalanceFormatted}
-        caption='You pay'
+        caption='You redeem'
         formattedFiat={inputAmoutUsd}
         selectedToken={inputToken}
         selectedTokenAmount={inputValue}
