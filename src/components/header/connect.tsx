@@ -48,7 +48,6 @@ export const Connect = () => {
         <>
           <NetworkSelect />
           <Button
-            suppressHydrationWarning
             className='bg-ic-black flex items-center gap-2 rounded-md px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
             onClick={() => open({ view: 'Account' })}
           >
@@ -70,7 +69,6 @@ export const Connect = () => {
         </>
       ) : (
         <Button
-          suppressHydrationWarning
           className='bg-ic-blue-500 hover:bg-ic-blue-500/90 rounded-md px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
           onClick={() => open({ view: 'Connect' })}
         >

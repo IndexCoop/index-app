@@ -4,7 +4,6 @@ import type { Config } from 'tailwindcss'
 
 export default {
   mode: 'jit',
-  purge: ['./public/**/*.html', './src/**/*.{js,jsx,ts,tsx}'],
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   darkMode: 'selector',
   theme: {
