@@ -2,8 +2,8 @@
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@headlessui/react'
-import { CoreHelperUtil } from '@reown/appkit-core'
 import { useAppKit } from '@reown/appkit/react'
+import { CoreHelperUtil } from '@reown/appkit-core'
 import { useEffect, useMemo, useState } from 'react'
 import { formatUnits } from 'viem'
 import { useAccount, useAccountEffect, useBalance } from 'wagmi'
