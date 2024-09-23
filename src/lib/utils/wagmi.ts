@@ -32,9 +32,14 @@ export const config = defaultWagmiConfig({
   projectId,
   metadata,
   ssr: true,
+  auth: {
+    email: false,
+    socials: [],
+  },
   storage: createStorage({
     storage: cookieStorage,
   }),
+
   transports: {
     [mainnet.id]: http(
       `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
