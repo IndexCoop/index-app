@@ -65,7 +65,6 @@ export const Connect = () => {
                 balance!.symbol,
               )}
             </p>
-            <p className='hidden md:block'> {balance!.symbol}</p>
             <div
               className='flex h-6 w-6 items-center justify-center rounded-full'
               style={{ backgroundColor: avatar?.color }}
