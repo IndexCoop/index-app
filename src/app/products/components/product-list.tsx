@@ -1,7 +1,7 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
 import { ProductColHeader } from '@/app/products/components/product-col-header'
 import { ProductRowItem } from '@/app/products/components/product-row-item'
@@ -12,68 +12,53 @@ import { fetchAnalytics, fetchApy } from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
 import { formatWei } from '@/lib/utils'
 
-const THIRTY_SECONDS_IN_MS = 30 * 1000
-
 export function ProductList() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [products, setProducts] = useState<ProductRow[]>(productTokens)
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const sortBy = searchParams.get('sort')
   const sortDirection = searchParams.get('dir') ?? SortDirection.DESC
 
-  async function fetchProducts() {
-    const analyticsPromises = Promise.all(
-      productTokens.map((token) =>
-        // TODO: https://github.com/IndexCoop/analytics-sdk/issues/30
-        token.address ? fetchAnalytics(token.address) : null,
-      ),
-    )
-    const apyPromises = Promise.all(
-      productTokens.map((token) =>
-        token.hasApy && token.symbol ? fetchApy(token.symbol) : null,
-      ),
-    )
-    const [analyticsResults, apyResults] = await Promise.all([
-      analyticsPromises,
-      apyPromises,
-    ])
+  const { data: products, isFetching } = useQuery({
+    initialData: [[], []] as [any[], any[]],
+    queryKey: ['product-list', sortBy, sortDirection],
+    queryFn: async () => {
+      const analyticsPromises = Promise.all(
+        productTokens.map((token) =>
+          // TODO: https://github.com/IndexCoop/analytics-sdk/issues/30
+          token.address ? fetchAnalytics(token.address) : null,
+        ),
+      )
+      const apyPromises = Promise.all(
+        productTokens.map((token) =>
+          token.hasApy && token.symbol ? fetchApy(token.symbol) : null,
+        ),
+      )
 
-    const products = productTokens.map((token, idx) => ({
-      ...token,
-      price: analyticsResults[idx]?.navPrice,
-      delta: analyticsResults[idx]?.change24h,
-      tvl: analyticsResults[idx]?.marketCap,
-      apy:
-        apyResults[idx]?.apy !== undefined && apyResults[idx].apy !== '0'
-          ? Number(formatWei(apyResults[idx].apy))
-          : null,
-    }))
-    setProducts(sortProducts(products, sortBy, sortDirection))
-    setIsLoading(false)
-  }
+      return Promise.all([analyticsPromises, apyPromises])
+    },
+    select: (data) => {
+      const [analyticsResults, apyResults] = data
 
-  useEffect(() => {
-    fetchProducts()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchProducts()
-    }, THIRTY_SECONDS_IN_MS)
-
-    return () => clearInterval(interval)
-    // eslint-disable-next-line
-  }, [sortBy, sortDirection])
-
-  useEffect(() => {
-    setProducts((products) => sortProducts(products, sortBy, sortDirection))
-  }, [sortBy, sortDirection])
+      return sortProducts(
+        productTokens.map((token, idx) => ({
+          ...token,
+          price: analyticsResults[idx]?.navPrice,
+          delta: analyticsResults[idx]?.change24h,
+          tvl: analyticsResults[idx]?.marketCap,
+          apy:
+            apyResults[idx]?.apy !== undefined && apyResults[idx].apy !== '0'
+              ? Number(formatWei(apyResults[idx].apy))
+              : null,
+        })) as ProductRow[],
+        sortBy ?? 'tvl',
+        sortDirection,
+      )
+    },
+  })
 
   const handleSortClick = (clickedSortBy: string) => {
-    if (isLoading) return
+    if (isFetching) return
     if (sortBy === null || sortBy !== clickedSortBy) {
       return router.push(
         `${pathname}?${new URLSearchParams({
@@ -155,7 +140,7 @@ export function ProductList() {
         {products.map((product) => (
           <ProductRowItem
             key={product.symbol}
-            isLoading={isLoading}
+            isLoading={isFetching}
             product={product}
           />
         ))}

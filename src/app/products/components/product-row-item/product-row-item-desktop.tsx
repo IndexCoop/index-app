@@ -30,32 +30,54 @@ export function ProductRowItemDesktop({
           'flex !min-w-[410px] max-w-[460px] pl-6',
         )}
       >
-        <div className='mr-2 overflow-hidden rounded-full'>
-          <Image src={image!} alt={`${symbol} logo`} height={30} width={30} />
-        </div>
-        <div className='my-auto'>
-          <span className='text-ic-gray-950 mr-4 font-semibold'>{name}</span>
-          <span className='text-ic-gray-400'>{symbol}</span>
-        </div>
+        {isLoading ? (
+          <LoadingSkeleton className='w-full' />
+        ) : (
+          <>
+            <div className='mr-2 overflow-hidden rounded-full'>
+              <Image
+                src={image!}
+                alt={`${symbol} logo`}
+                height={30}
+                width={30}
+              />
+            </div>
+            <div className='my-auto'>
+              <span className='text-ic-gray-950 mr-4 font-semibold'>
+                {name}
+              </span>
+              <span className='text-ic-gray-400'>{symbol}</span>
+            </div>
+          </>
+        )}
       </div>
       <div className={cellClassName}>
-        <div
-          className={clsx(
-            'border-ic-gray-500 mx-auto w-28 rounded-2xl border px-4 py-1 text-center',
-            {
-              'bg-[#E7F2FF]': type === ProductType.LEVERAGE,
-              'bg-[#F4ECFF]': type === ProductType.INDEX,
-              'bg-[#FEEFF7]': type === ProductType.YIELD,
-            },
-          )}
-        >
-          {type}
-        </div>
+        {isLoading ? (
+          <LoadingSkeleton />
+        ) : (
+          <div
+            className={clsx(
+              'border-ic-gray-500 mx-auto w-28 rounded-2xl border px-4 py-1 text-center',
+              {
+                'bg-[#E7F2FF]': type === ProductType.LEVERAGE,
+                'bg-[#F4ECFF]': type === ProductType.INDEX,
+                'bg-[#FEEFF7]': type === ProductType.YIELD,
+              },
+            )}
+          >
+            {type}
+          </div>
+        )}
       </div>
+
       <div className={cellClassName}>
-        <div className='bg-ic-gray-300 border-ic-gray-500 mx-auto w-28 rounded-2xl border px-4 py-1 text-center'>
-          {theme}
-        </div>
+        {isLoading ? (
+          <LoadingSkeleton />
+        ) : (
+          <div className='bg-ic-gray-300 border-ic-gray-500 mx-auto w-28 rounded-2xl border px-4 py-1 text-center'>
+            {theme}
+          </div>
+        )}
       </div>
       <div className={clsx(cellClassName, '!min-w-[130px] px-2 text-right')}>
         {isLoading ? <LoadingSkeleton /> : formatPrice(price)}

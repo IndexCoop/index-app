@@ -3,7 +3,12 @@ import {
   parseUnits as parseUnitsEthers,
 } from '@ethersproject/units'
 import { TokenData } from '@indexcoop/tokenlists'
-import { isAddress as isAddressViem, parseUnits as parseUnitsViem } from 'viem'
+import {
+  isAddress as isAddressViem,
+  parseUnits as parseUnitsViem,
+  PublicClient,
+} from 'viem'
+import { getCode } from 'viem/actions'
 
 import { Token } from '@/constants/tokens'
 
@@ -111,4 +116,10 @@ export const isValidTokenInput = (
   } catch {
     return false
   }
+}
+
+export const isContract = async (client: PublicClient, address: string) => {
+  const bytes = await getCode(client, { address })
+
+  return bytes !== undefined
 }

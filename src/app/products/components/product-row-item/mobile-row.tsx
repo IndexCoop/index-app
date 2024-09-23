@@ -7,8 +7,8 @@ type Props = {
 
 export function MobileRow({ label, children }: Props) {
   return (
-    <div className='flex content-between w-full py-2 items-center'>
-      <div className='text-ic-gray-600 text-sm font-medium flex-grow'>
+    <div className='flex w-full content-between items-center py-2'>
+      <div className='text-ic-gray-600 flex-grow text-sm font-medium'>
         {label}
       </div>
       <div className='flex-grow'>{children}</div>
