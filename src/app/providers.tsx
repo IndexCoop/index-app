@@ -25,8 +25,6 @@ const metadata = {
 
 createAppKit({
   adapters: [wagmiAdapter],
-  enableInjected: true,
-  themeMode: 'dark',
   projectId,
   networks,
   //  defaultNetwork: networks[0],
