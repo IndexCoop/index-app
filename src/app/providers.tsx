@@ -26,6 +26,8 @@ const metadata = {
 createWeb3Modal({
   wagmiConfig: config,
   projectId,
+  enableOnramp: false,
+  enableSwaps: false,
   termsConditionsUrl: 'https://indexcoop.com/terms-of-service',
   privacyPolicyUrl: 'https://indexcoop.com/privacy-policy',
   //  defaultNetwork: networks[0],
