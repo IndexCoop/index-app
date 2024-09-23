@@ -2,8 +2,8 @@
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@headlessui/react'
-import { CoreHelperUtil } from '@reown/appkit-core'
 import { useAppKit } from '@reown/appkit/react'
+import { CoreHelperUtil } from '@reown/appkit-core'
 import { AvatarGenerator } from 'random-avatar-generator'
 import { useEffect, useState } from 'react'
 import { formatUnits } from 'viem'
@@ -69,7 +69,7 @@ export const Connect = () => {
               height={24}
             />
             <p className='hidden md:block'>{shortenAddress(address)}</p>
-            <ChevronDownIcon className='h-5 w-5' />
+            <ChevronDownIcon className='h-6 w-6' />
           </Button>
         </>
       ) : (
