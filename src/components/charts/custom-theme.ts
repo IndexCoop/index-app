@@ -2,7 +2,7 @@ import { buildChartTheme } from '@visx/xychart'
 
 export const customTheme = buildChartTheme({
   backgroundColor: '#1C2C2E',
-  colors: ['#F2F8F8'],
+  colors: ['#84e9e9'],
   xAxisLineStyles: { color: '#364746' },
   yAxisLineStyles: { color: '#364746' },
   xTickLineStyles: { color: '#364746' },
