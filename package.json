@@ -36,7 +36,7 @@
     "@tanstack/react-query": "5.36.2",
     "@typeform/embed-react": "4.0.0",
     "@uniswap/sdk-core": "5.3.1",
-    "@uniswap/smart-order-router": "3.41.0",
+    "@uniswap/smart-order-router": "3.57.0",
     "@uniswap/v3-sdk": "3.13.1",
     "@visx/visx": "^3.8.0",
     "alchemy-sdk": "3.4.1",
