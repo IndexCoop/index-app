@@ -2,8 +2,8 @@
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@chakra-ui/react'
-import { CaipNetwork, useAppKit, useAppKitNetwork } from '@reown/appkit/react'
 import { AssetUtil } from '@reown/appkit-core'
+import { CaipNetwork, useAppKit, useAppKitNetwork } from '@reown/appkit/react'
 import Image from 'next/image'
 
 export const NetworkSelect = () => {
