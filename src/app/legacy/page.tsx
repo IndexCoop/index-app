@@ -1,15 +1,14 @@
 'use client'
 
+import { LegacyHeader } from '@/app/legacy/components/legacy-header'
 import { RedeemWidget } from './components/redeem-widget'
-import { RedeemProvider } from './providers/redeem-provider'
 
 export default function Page() {
   return (
     <div className='mx-auto max-w-xl px-4 py-16'>
-      <div className='w-full'>
-        <RedeemProvider>
-          <RedeemWidget />
-        </RedeemProvider>
+      <div className='flex w-full flex-col'>
+        <LegacyHeader />
+        <RedeemWidget />
       </div>
     </div>
   )
