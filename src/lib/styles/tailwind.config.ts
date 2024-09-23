@@ -3,7 +3,8 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 import type { Config } from 'tailwindcss'
 
 export default {
-  jit: true,
+  mode: 'jit',
+  purge: ['./public/**/*.html', './src/**/*.{js,jsx,ts,tsx}'],
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   darkMode: 'selector',
   theme: {
