@@ -332,7 +332,7 @@ export function LeverageProvider(props: { children: any }) {
   useEffect(() => {
     const fetchSwapQuote = async () => {
       if (!address) return null
-      if (!chainId) return null
+      if (!chainId || chainId === ARBITRUM.chainId) return null
       if (!provider || !publicClient) return null
       if (inputTokenAmount <= 0) return null
       if (!indexToken) return null
