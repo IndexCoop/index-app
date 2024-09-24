@@ -71,7 +71,7 @@ function LineChart({ data, parentWidth, parentHeight, selectedPeriod }: Props) {
       }}
     >
       <Axis orientation='left' tickFormat={(d) => d.toFixed(2)} />
-      <Axis orientation='bottom' numTicks={4} />
+      <Axis orientation='bottom' numTicks={5} />
       <AnimatedLineSeries {...accessors} dataKey='prices' data={data} />
       <Tooltip
         snapTooltipToDatumX
