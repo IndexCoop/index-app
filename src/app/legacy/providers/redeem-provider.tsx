@@ -8,25 +8,14 @@ import {
 } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import {
-  BedIndex,
-  GitcoinStakedETHIndex,
-  LeveragedRethStakingYield,
-  RETH,
-  Token,
-} from '@/constants/tokens'
+import { LeveragedRethStakingYield, RETH, Token } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
-export const inputTokenList = [
-  GitcoinStakedETHIndex,
-  LeveragedRethStakingYield,
-  BedIndex,
-]
-
+import { Issuance, LegacyTokenList } from '@/app/legacy/config'
 interface RedeemContextProps {
   inputTokenList: Token[]
   inputValue: string
@@ -35,6 +24,7 @@ interface RedeemContextProps {
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
+  issuance: string
   quoteResult: QuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
@@ -42,13 +32,14 @@ interface RedeemContextProps {
 }
 
 const RedeemContext = createContext<RedeemContextProps>({
-  inputTokenList,
+  inputTokenList: LegacyTokenList,
   inputValue: '',
   isDepositing: false,
   isFetchingQuote: false,
   inputToken: LeveragedRethStakingYield,
   outputToken: RETH,
   inputTokenAmount: BigInt(0),
+  issuance: Issuance[LeveragedRethStakingYield.symbol],
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
   onSelectInputToken: () => {},
@@ -66,7 +57,7 @@ export function RedeemProvider(props: { children: any }) {
   const currencyToken = RETH
   const indexToken = LeveragedRethStakingYield
 
-  const [inputToken, setInputToken] = useState(inputTokenList[0])
+  const [inputToken, setInputToken] = useState(LegacyTokenList[0])
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
@@ -102,9 +93,10 @@ export function RedeemProvider(props: { children: any }) {
   )
 
   const onSelectInputToken = useCallback((tokenSymbol: string) => {
-    const token = inputTokenList.find((token) => token.symbol === tokenSymbol)
+    const token = LegacyTokenList.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setInputToken(token)
+    // TODO: update output token
   }, [])
 
   const reset = () => {
@@ -166,13 +158,14 @@ export function RedeemProvider(props: { children: any }) {
   return (
     <RedeemContext.Provider
       value={{
-        inputTokenList,
+        inputTokenList: LegacyTokenList,
         inputValue,
         isDepositing,
         isFetchingQuote,
         inputToken,
         outputToken,
         inputTokenAmount,
+        issuance: Issuance[inputToken.symbol],
         quoteResult,
         onChangeInputTokenAmount,
         onSelectInputToken,

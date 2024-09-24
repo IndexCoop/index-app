@@ -45,6 +45,7 @@ export function RedeemWidget() {
     onChangeInputTokenAmount,
     onSelectInputToken,
     outputToken,
+    issuance,
     quoteResult,
     reset,
   } = useRedeem()
@@ -61,11 +62,7 @@ export function RedeemWidget() {
     isApproved,
     isApproving,
     approve: onApprove,
-  } = useApproval(
-    inputToken,
-    '0x04b59F9F09750C044D7CfbC177561E409085f0f3',
-    inputTokenAmount,
-  )
+  } = useApproval(inputToken, issuance, inputTokenAmount)
 
   const {
     isOpen: isSelectInputTokenOpen,
