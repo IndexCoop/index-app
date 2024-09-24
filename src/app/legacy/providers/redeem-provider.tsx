@@ -108,7 +108,6 @@ export function RedeemProvider(props: { children: any }) {
         inputToken.address!,
         publicClient,
       )
-      console.log('OP', outputToken?.symbol)
       if (!outputToken) return
       setOutputToken(outputToken)
     }
