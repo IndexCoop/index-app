@@ -20,11 +20,17 @@ export const metadata = {
   icons: ['/index-logo-black.png'],
 }
 
+// default wagmi localhost uses 1_337 as the chain id
+const localhostHH = {
+  ...localhost,
+  id: 31_337,
+}
+
 export const chains = [
   arbitrum,
   mainnet,
   base,
-  ...(shouldShowLocalHost ? [localhost] : []),
+  ...(shouldShowLocalHost ? [localhostHH] : []),
 ] as const
 
 export const config = defaultWagmiConfig({
