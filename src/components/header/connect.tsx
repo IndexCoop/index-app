@@ -2,15 +2,13 @@
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@headlessui/react'
-import { CoreHelperUtil } from '@web3modal/core'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useMemo } from 'react'
-import { formatUnits } from 'viem'
 import { useAccount, useAccountEffect, useBalance } from 'wagmi'
 
 import { NetworkSelect } from '@/components/header/network-select'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
-import { shortenAddress } from '@/lib/utils'
+import { formatAmountFromWei, shortenAddress } from '@/lib/utils'
 import { emojiAvatarForAddress } from '@/lib/utils/emoji-address-avatar'
 
 export const Connect = () => {
@@ -51,12 +49,13 @@ export const Connect = () => {
             className='bg-ic-black flex items-center gap-2 rounded-md px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
             onClick={() => open({ view: 'Account' })}
           >
-            <p className='hidden md:block'>
-              {CoreHelperUtil.formatBalance(
-                formatUnits(balance!.value, balance!.decimals),
-                balance!.symbol,
-              )}
-            </p>
+            <div className='flex gap-1'>
+              <p className='hidden md:block'>
+                {formatAmountFromWei(balance!.value, balance!.decimals, 3)}
+              </p>
+              <p className='hidden md:block'>{balance!.symbol}</p>
+            </div>
+
             <div
               className='flex h-6 w-6 items-center justify-center rounded-full'
               style={{ backgroundColor: avatar?.color }}
