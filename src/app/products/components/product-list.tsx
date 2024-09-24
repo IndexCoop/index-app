@@ -8,9 +8,7 @@ import { ProductRowItem } from '@/app/products/components/product-row-item'
 import { productTokens } from '@/app/products/constants/tokens'
 import { ProductRow } from '@/app/products/types/product'
 import { SortBy, SortDirection } from '@/app/products/types/sort'
-import { fetchApy } from '@/app/products/utils/api'
 import { sortProducts } from '@/app/products/utils/sort'
-import { formatWei } from '@/lib/utils'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 export function ProductList() {
@@ -21,43 +19,36 @@ export function ProductList() {
   const sortDirection = searchParams.get('dir') ?? SortDirection.DESC
 
   const { data: products, isFetching } = useQuery({
-    initialData: [[], []] as [any[], any[]],
+    initialData: [] as any[],
     queryKey: ['product-list', sortBy, sortDirection],
     queryFn: async () => {
-      const analyticsPromises = Promise.all(
+      return Promise.all(
         productTokens.map((token) =>
           token.address
             ? fetchTokenMetrics({
                 tokenAddress: token.address,
-                metrics: ['nav', 'pav', 'navchange'],
+                metrics: [
+                  'nav',
+                  'pav',
+                  'navchange',
+                  ...(token.hasApy ? (['apy'] as const) : []),
+                ],
               })
             : null,
         ),
       )
-      const apyPromises = Promise.all(
-        productTokens.map((token) =>
-          token.hasApy && token.symbol ? fetchApy(token.symbol) : null,
-        ),
-      )
-
-      return Promise.all([analyticsPromises, apyPromises])
     },
     select: (data) => {
-      const [analyticsResults, apyResults] = data
-
       return sortProducts(
         productTokens.map((token, idx) => ({
           ...token,
-          price: analyticsResults[idx]?.NetAssetValue,
+          price: data[idx]?.NetAssetValue,
           delta:
-            typeof analyticsResults[idx]?.NavChange24Hr === 'number'
-              ? analyticsResults[idx].NavChange24Hr * 100
+            typeof data[idx]?.NavChange24Hr === 'number'
+              ? data[idx].NavChange24Hr * 100
               : undefined,
-          tvl: analyticsResults[idx]?.ProductAssetValue,
-          apy:
-            apyResults[idx]?.apy !== undefined && apyResults[idx].apy !== '0'
-              ? Number(formatWei(apyResults[idx].apy))
-              : null,
+          tvl: data[idx]?.ProductAssetValue,
+          apy: data[idx]?.APY,
         })) as ProductRow[],
         sortBy ?? 'tvl',
         sortDirection,
