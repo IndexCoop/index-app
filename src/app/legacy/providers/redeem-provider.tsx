@@ -8,6 +8,8 @@ import {
 } from 'react'
 import { usePublicClient } from 'wagmi'
 
+import { Issuance, LegacyTokenList } from '@/app/legacy/config'
+import { getOutputToken } from '@/app/legacy/providers/utils'
 import { LeveragedRethStakingYield, RETH, Token } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
@@ -15,7 +17,6 @@ import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
-import { Issuance, LegacyTokenList } from '@/app/legacy/config'
 interface RedeemContextProps {
   inputTokenList: Token[]
   inputValue: string
@@ -53,11 +54,8 @@ export function RedeemProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { address, provider } = useWallet()
 
-  const isDepositing = false
-  const currencyToken = RETH
-  const indexToken = LeveragedRethStakingYield
-
   const [inputToken, setInputToken] = useState(LegacyTokenList[0])
+  const [outputToken, setOutputToken] = useState(RETH)
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
@@ -75,11 +73,6 @@ export function RedeemProvider(props: { children: any }) {
     [inputToken, inputValue],
   )
 
-  const outputToken = useMemo(
-    () => (isDepositing ? indexToken : currencyToken),
-    [isDepositing, currencyToken, indexToken],
-  )
-
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
       if (input === '') {
@@ -92,12 +85,16 @@ export function RedeemProvider(props: { children: any }) {
     [inputToken],
   )
 
-  const onSelectInputToken = useCallback((tokenSymbol: string) => {
-    const token = LegacyTokenList.find((token) => token.symbol === tokenSymbol)
-    if (!token) return
-    setInputToken(token)
-    // TODO: update output token
-  }, [])
+  const onSelectInputToken = useCallback(
+    (tokenSymbol: string) => {
+      const token = LegacyTokenList.find(
+        (token) => token.symbol === tokenSymbol,
+      )
+      if (!token) return
+      setInputToken(token)
+    },
+    [publicClient],
+  )
 
   const reset = () => {
     setInputValue('')
@@ -110,19 +107,32 @@ export function RedeemProvider(props: { children: any }) {
   }
 
   useEffect(() => {
+    const fetchOutputToken = async (inputToken: Token) => {
+      if (!publicClient) return
+      const outputToken = await getOutputToken(
+        inputToken.address!,
+        publicClient,
+      )
+      console.log('OP', outputToken?.symbol)
+      if (!outputToken) return
+      setOutputToken(outputToken)
+    }
+    fetchOutputToken(inputToken)
+  }, [inputToken, publicClient])
+
+  useEffect(() => {
     const fetchQuote = async () => {
       if (!address) return
       if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       setFetchingQuote(true)
-      const outputToken = isDepositing ? indexToken : currencyToken
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
       const gasPrice = await provider.getGasPrice()
       const quoteIssuance = await getEnhancedIssuanceQuote(
         {
           account: address,
-          isIssuance: isDepositing,
+          isIssuance: false,
           gasPrice,
           inputTokenAmount,
           inputToken,
@@ -145,12 +155,10 @@ export function RedeemProvider(props: { children: any }) {
     fetchQuote()
   }, [
     address,
-    currencyToken,
-    indexToken,
     inputToken,
     inputTokenAmount,
-    isDepositing,
     nativeTokenPrice,
+    outputToken,
     provider,
     publicClient,
   ])
@@ -160,7 +168,7 @@ export function RedeemProvider(props: { children: any }) {
       value={{
         inputTokenList: LegacyTokenList,
         inputValue,
-        isDepositing,
+        isDepositing: false,
         isFetchingQuote,
         inputToken,
         outputToken,
