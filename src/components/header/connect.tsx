@@ -11,7 +11,7 @@ import { useAccount, useAccountEffect, useBalance } from 'wagmi'
 import { NetworkSelect } from '@/components/header/network-select'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { shortenAddress } from '@/lib/utils'
-import { emojiAvatarForAddress } from '@/lib/utils/emojiAddressAvatar'
+import { emojiAvatarForAddress } from '@/lib/utils/emoji-address-avatar'
 
 export const Connect = () => {
   const { address, isConnected } = useAccount()
