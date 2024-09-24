@@ -331,48 +331,38 @@ export function LeverageProvider(props: { children: any }) {
 
   useEffect(() => {
     const fetchSwapQuote = async () => {
-      if (!address) return
-      if (!chainId) return
-      if (!provider || !publicClient) return
-      if (inputTokenAmount <= 0) return
-      if (!indexToken) return
-      setFetchingQuote(true)
-      try {
-        const inputTokenPrice = await getTokenPrice(inputToken, chainId)
-        const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-        const gasPrice = await provider.getGasPrice()
-        const swapQuote = await getIndexQuote({
-          isMinting,
-          chainId,
-          address,
-          inputToken,
-          inputTokenAmount: inputValue,
-          inputTokenPrice,
-          outputToken,
-          outputTokenPrice,
-          nativeTokenPrice,
-          gasPrice,
-          provider,
-          slippage: 0.1,
-        })
-        setSwapQuote(swapQuote)
-        setFetchingQuote(false)
-      } catch (e) {
-        console.error('Error getting swap quote', e)
-        setFetchingQuote(false)
-        throw e
-      }
-    }
-    const fetchQuote = async () => {
-      if (!address) return
-      if (!chainId) return
-      if (!provider || !publicClient) return
-      if (inputTokenAmount <= 0) return
-      if (!indexToken) return
-      setFetchingQuote(true)
+      if (!address) return null
+      if (!chainId) return null
+      if (!provider || !publicClient) return null
+      if (inputTokenAmount <= 0) return null
+      if (!indexToken) return null
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      const quoteFlashMint = await getFlashMintQuote(
+      const gasPrice = await provider.getGasPrice()
+      return await getIndexQuote({
+        isMinting,
+        chainId,
+        address,
+        inputToken,
+        inputTokenAmount: inputValue,
+        inputTokenPrice,
+        outputToken,
+        outputTokenPrice,
+        nativeTokenPrice,
+        gasPrice,
+        provider,
+        slippage: 0.1,
+      })
+    }
+    const fetchQuote = async () => {
+      if (!address) return null
+      if (!chainId) return null
+      if (!provider || !publicClient) return null
+      if (inputTokenAmount <= 0) return null
+      if (!indexToken) return null
+      const inputTokenPrice = await getTokenPrice(inputToken, chainId)
+      const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+      return await getFlashMintQuote(
         {
           isMinting,
           account: address,
@@ -389,11 +379,28 @@ export function LeverageProvider(props: { children: any }) {
         provider,
         rpcUrl,
       )
-      setFlashmintQuote(quoteFlashMint)
-      setFetchingQuote(false)
     }
-    fetchQuote()
-    fetchSwapQuote()
+
+    const fetchQuotes = async () => {
+      setFetchingQuote(true)
+      try {
+        const [quoteResult, swapQuoteResult] = await Promise.allSettled([
+          fetchQuote(),
+          fetchSwapQuote(),
+        ])
+        setFlashmintQuote(
+          quoteResult.status === 'fulfilled' ? quoteResult.value : null,
+        )
+        setSwapQuote(
+          swapQuoteResult.status === 'fulfilled' ? swapQuoteResult.value : null,
+        )
+      } catch (error) {
+        console.error('Error fetching quotes', error)
+      } finally {
+        setFetchingQuote(false)
+      }
+    }
+    fetchQuotes()
   }, [
     address,
     chainId,
