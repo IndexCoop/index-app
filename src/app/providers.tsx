@@ -9,19 +9,12 @@ import { WagmiProvider } from 'wagmi'
 import { ProtectionProvider } from '@/lib/providers/protection'
 import { SignTermsProvider } from '@/lib/providers/sign-terms-provider'
 import theme from '@/lib/styles/theme'
-import { config, projectId } from '@/lib/utils/wagmi'
+import { config, metadata, projectId } from '@/lib/utils/wagmi'
 
 import '@/lib/styles/fonts'
 import { AnalyticsProvider } from './analytics-provider'
 
 const queryClient = new QueryClient()
-
-const metadata = {
-  name: 'indexcoop-app',
-  description: 'IndexCoop App',
-  url: 'https://app.indexcoop.com',
-  icons: [],
-}
 
 createWeb3Modal({
   wagmiConfig: config,

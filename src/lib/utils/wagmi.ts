@@ -13,11 +13,11 @@ const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
 const shouldShowLocalHost = isDevelopmentEnv || isPreviewEnv
 
 // Create a metadata object
-const metadata = {
-  name: 'index-coop',
-  description: 'AppKit Example',
-  url: 'https://reown.com/appkit', // origin must match your domain & subdomain
-  icons: ['https://assets.reown.com/reown-profile-pic.png'],
+export const metadata = {
+  name: 'indexcoop-app',
+  description: 'IndexCoop App',
+  url: 'https://app.indexcoop.com',
+  icons: ['/index-logo-black.png'],
 }
 
 export const chains = [
