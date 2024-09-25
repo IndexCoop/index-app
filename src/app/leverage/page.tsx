@@ -1,8 +1,8 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { PopupButton } from '@typeform/embed-react'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useWalletClient } from 'wagmi'
 
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -22,7 +22,7 @@ import { YourTokens } from './components/your-tokens'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
-  const { openConnectModal } = useConnectModal()
+  const { open } = useWeb3Modal()
   const { data: walletClient } = useWalletClient()
   const { address } = useWallet()
   const {
@@ -45,8 +45,8 @@ export default function Page() {
               />
               <NetworkSelector
                 onSelectNetwork={(chainId) => {
-                  if (!walletClient && openConnectModal) {
-                    openConnectModal()
+                  if (!walletClient) {
+                    open({ view: 'Connect' })
                   }
                   walletClient?.switchChain({ id: chainId })
                 }}
