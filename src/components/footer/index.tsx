@@ -13,7 +13,11 @@ const navigation = {
       name: 'Press Kit',
       href: 'https://index-coop.notion.site/Index-Coop-Brand-Resources-16bfd8ba832046948bf747b4dc88f899',
     },
-    { name: 'Legacy Products', href: 'https://legacyproducts.indexcoop.com' },
+    {
+      name: 'Legacy Products',
+      href: '/legacy',
+      target: '_self',
+    },
     {
       name: 'Liquidity Mining (discontinued)',
       href: 'https://archive.indexcoop.com/liquidity-mining',
@@ -51,7 +55,11 @@ export function Footer() {
               </h3>
               <ul className='mt-6 space-y-4'>
                 {navigation.resources.map((item) => (
-                  <FooterLink key={item.name} href={item.href}>
+                  <FooterLink
+                    key={item.name}
+                    href={item.href}
+                    target={item.target}
+                  >
                     {item.name}
                   </FooterLink>
                 ))}
