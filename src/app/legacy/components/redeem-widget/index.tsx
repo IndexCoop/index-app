@@ -190,7 +190,7 @@ export function RedeemWidget() {
         onClick={onClickButton}
       />
       <SelectTokenModal
-        isDarkMode={true}
+        isDarkMode={false}
         isOpen={isSelectInputTokenOpen}
         showBalances={false}
         onClose={onCloseSelectInputToken}
