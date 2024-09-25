@@ -4,6 +4,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useCallback, useMemo } from 'react'
 
+import { Receive } from '@/components/receive'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
@@ -23,9 +24,8 @@ import { formatWei } from '@/lib/utils'
 
 import { useRedeem } from '../../providers/redeem-provider'
 
-import { DepositWithdrawSelector } from './components/deposit-withdraw-selector'
 import { Summary } from './components/summary'
-import { TitleLogo } from './components/title-logo'
+import { Title } from './components/title'
 import { useFormattedData } from './use-formatted-data'
 
 import './styles.css'
@@ -40,11 +40,11 @@ export function RedeemWidget() {
     inputValue,
     inputToken,
     inputTokenAmount,
-    isDepositing,
     isFetchingQuote,
     onChangeInputTokenAmount,
     onSelectInputToken,
     outputToken,
+    issuance,
     quoteResult,
     reset,
   } = useRedeem()
@@ -53,18 +53,16 @@ export function RedeemWidget() {
     inputAmoutUsd,
     inputTokenBalance,
     inputTokenBalanceFormatted,
+    outputAmountUsd,
     forceRefetch,
+    outputAmount,
   } = useFormattedData()
 
   const {
     isApproved,
     isApproving,
     approve: onApprove,
-  } = useApproval(
-    inputToken,
-    '0x04b59F9F09750C044D7CfbC177561E409085f0f3',
-    inputTokenAmount,
-  )
+  } = useApproval(inputToken, issuance, inputTokenAmount)
 
   const {
     isOpen: isSelectInputTokenOpen,
@@ -163,19 +161,26 @@ export function RedeemWidget() {
   ])
 
   return (
-    <div className='widget w-full min-w-80 flex-1 flex-col space-y-4 rounded-3xl p-6'>
-      <TitleLogo logo={inputToken.image ?? ''} symbol={inputToken.symbol} />
-      <DepositWithdrawSelector isDepositing={isDepositing} onClick={() => {}} />
+    <div className='widget w-full min-w-80 max-w-xl flex-1 flex-col space-y-4 self-center rounded-3xl p-6'>
+      <Title />
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={inputTokenBalanceFormatted}
-        caption='You pay'
+        caption='You redeem'
         formattedFiat={inputAmoutUsd}
         selectedToken={inputToken}
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
         onSelectToken={onOpenSelectInputToken}
+      />
+      <Receive
+        isLoading={isFetchingQuote}
+        onSelectToken={() => {}}
+        outputAmount={outputAmount}
+        outputAmountUsd={outputAmountUsd}
+        selectedOutputToken={outputToken}
+        showSelectorButtonChevron={false}
       />
       <Summary />
       <TradeButton
@@ -185,9 +190,9 @@ export function RedeemWidget() {
         onClick={onClickButton}
       />
       <SelectTokenModal
-        isDarkMode={true}
+        isDarkMode={false}
         isOpen={isSelectInputTokenOpen}
-        showBalances={false}
+        showBalances={true}
         onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol) => {
           onSelectInputToken(tokenSymbol)

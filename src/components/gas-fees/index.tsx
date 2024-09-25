@@ -5,6 +5,7 @@ type GasFeesProps = {
   value?: string
   styles?: {
     valueUsdTextColor: string
+    valueTextColor?: string
   }
 }
 
@@ -13,7 +14,7 @@ export function GasFees(props: GasFeesProps) {
     <div className='text-ic-gray-300 flex flex-row items-center justify-between gap-[6px] text-xs font-medium'>
       <div>
         <svg
-          className='text-ic-gray-300 fill-current'
+          className='text-ic-gray-400 fill-current'
           width='10'
           height='11'
           viewBox='0 0 10 11'
@@ -31,7 +32,9 @@ export function GasFees(props: GasFeesProps) {
         >
           {props.valueUsd}
         </div>
-        <div>{props.value ?? ''}</div>
+        <div className={clsx(props.styles?.valueTextColor ?? '')}>
+          {props.value ?? ''}
+        </div>
       </div>
     </div>
   )
