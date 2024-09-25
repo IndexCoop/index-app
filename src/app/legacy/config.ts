@@ -1,5 +1,4 @@
 import {
-  BasicIssuanceModuleAddress,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
@@ -11,7 +10,7 @@ import {
 } from '@/constants/tokens'
 
 export const Issuance = {
-  [BedIndex.symbol]: BasicIssuanceModuleAddress,
+  [BedIndex.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [GitcoinStakedETHIndex.symbol]: IndexDebtIssuanceModuleV2Address,
   [LeveragedRethStakingYield.symbol]: IndexDebtIssuanceModuleV2Address_v2,
 }

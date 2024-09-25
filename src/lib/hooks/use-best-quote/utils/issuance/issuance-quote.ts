@@ -1,4 +1,7 @@
-import { getIssuanceModule } from '@indexcoop/flash-mint-sdk'
+import {
+  getIssuanceModule,
+  IndexDebtIssuanceModuleV2Address_v2,
+} from '@indexcoop/flash-mint-sdk'
 import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
@@ -70,7 +73,7 @@ export async function getEnhancedIssuanceQuote(
     RealWorldAssetIndex.symbol === inputToken.symbol ||
     RealWorldAssetIndex.symbol === outputToken.symbol
   ) {
-    contract = '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
+    contract = IndexDebtIssuanceModuleV2Address_v2
   }
 
   if (!isAvailableForIssuance(inputToken, outputToken)) return null
