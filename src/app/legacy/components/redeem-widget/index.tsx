@@ -192,7 +192,7 @@ export function RedeemWidget() {
       <SelectTokenModal
         isDarkMode={false}
         isOpen={isSelectInputTokenOpen}
-        showBalances={false}
+        showBalances={true}
         onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol) => {
           onSelectInputToken(tokenSymbol)
