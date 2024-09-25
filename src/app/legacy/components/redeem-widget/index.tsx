@@ -54,6 +54,7 @@ export function RedeemWidget() {
     inputAmoutUsd,
     inputTokenBalance,
     inputTokenBalanceFormatted,
+    outputAmountUsd,
     forceRefetch,
     outputAmount,
   } = useFormattedData()
@@ -179,6 +180,7 @@ export function RedeemWidget() {
         isLoading={isFetchingQuote}
         onSelectToken={() => {}}
         outputAmount={outputAmount}
+        outputAmountUsd={outputAmountUsd}
         selectedOutputToken={outputToken}
         showSelectorButtonChevron={false}
       />

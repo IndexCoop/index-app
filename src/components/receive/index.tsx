@@ -6,13 +6,15 @@ import { Token } from '@/constants/tokens'
 type ReceiveProps = {
   isLoading: boolean
   outputAmount: string
+  outputAmountUsd?: string
   selectedOutputToken: Token
   showSelectorButtonChevron?: boolean
   onSelectToken: () => void
 }
 
 export function Receive(props: ReceiveProps) {
-  const { isLoading, outputAmount, selectedOutputToken } = props
+  const { isLoading, outputAmount, outputAmountUsd, selectedOutputToken } =
+    props
   return (
     <div className='border-ic-gray-100 flex flex-row justify-between rounded-xl border p-4 dark:border-[#3A6060]'>
       <div className='flex flex-col'>
@@ -21,6 +23,11 @@ export function Receive(props: ReceiveProps) {
         {!isLoading && (
           <span className='dark:text-ic-white text-ic-gray-600'>
             {outputAmount}
+          </span>
+        )}
+        {!isLoading && outputAmountUsd && (
+          <span className='dark:text-ic-white text-ic-gray-400 text-xs'>
+            {outputAmountUsd}
           </span>
         )}
       </div>
