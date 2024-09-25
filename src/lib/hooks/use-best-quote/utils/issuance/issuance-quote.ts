@@ -10,7 +10,6 @@ import {
 } from '@/constants/tokens'
 import { formatWei } from '@/lib/utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
-import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { isAvailableForIssuance } from '@/lib/utils/tokens'
 
@@ -120,7 +119,7 @@ export async function getEnhancedIssuanceQuote(
       value: undefined,
     }
 
-    const defaultGas = getFlashMintGasDefault(indexToken.symbol)
+    const defaultGas = 200_000
     const defaultGasEstimate = BigInt(defaultGas)
     const gasEstimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const canFail = false
