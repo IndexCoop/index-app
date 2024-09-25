@@ -5,7 +5,6 @@ import './globals.css'
 export const metadata = {
   manifest: '/manifest.json',
   metadataBase: new URL('https://app.indexcoop.com'),
-  themeColor: '#000000',
   title: {
     template: '%s | Index Coop',
     default: 'Index App | Buy & Sell Our Tokens',
@@ -13,6 +12,10 @@ export const metadata = {
   description:
     'Use the Index Coop Trading App to buy and sell our sector, leveraged and yield generating tokens.',
   type: 'website',
+}
+
+export const viewport = {
+  themeColor: '#000000',
 }
 
 type LayoutProps = {

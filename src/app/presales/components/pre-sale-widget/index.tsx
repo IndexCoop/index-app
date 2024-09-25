@@ -1,7 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useCallback, useMemo } from 'react'
 
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -35,9 +35,8 @@ import './styles.css'
 
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const isSupportedNetwork = useMainnetOnly()
-  const { openChainModal } = useChainModal()
+  const { open } = useWeb3Modal()
   const { signTermsOfService } = useSignTerms()
-  const { openConnectModal } = useConnectModal()
   const { address } = useWallet()
   const {
     inputValue,
@@ -137,9 +136,8 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
 
   const onClickButton = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
-      if (openConnectModal) {
-        openConnectModal()
-      }
+      open({ view: 'Connect' })
+
       return
     }
 
@@ -149,9 +147,8 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     }
 
     if (buttonState === TradeButtonState.wrongNetwork) {
-      if (openChainModal) {
-        openChainModal()
-      }
+      open({ view: 'Networks' })
+
       return
     }
 
@@ -174,10 +171,9 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     buttonState,
     isApproved,
     onApprove,
-    openChainModal,
+    open,
     signTermsOfService,
     onOpenTransactionReview,
-    openConnectModal,
     shouldApprove,
   ])
 

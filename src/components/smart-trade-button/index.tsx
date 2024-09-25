@@ -1,4 +1,4 @@
-import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSwitchChain } from 'wagmi'
@@ -53,12 +53,11 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     onRefetchQuote,
   } = props
 
-  const { openChainModal } = useChainModal()
-  const { openConnectModal } = useConnectModal()
   const { switchChainAsync } = useSwitchChain()
-  const { chainId } = useNetwork()
   const router = useRouter()
   const pathname = usePathname()
+  const { chainId } = useNetwork()
+  const { open } = useWeb3Modal()
   const requiresProtection = useProtection()
   const { signTermsOfService } = useSignTerms()
   const { slippage } = useSlippage()
@@ -128,9 +127,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
   const onClick = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
-      if (openConnectModal) {
-        openConnectModal()
-      }
+      open({ view: 'Connect' })
       return
     }
 
@@ -140,9 +137,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     }
 
     if (buttonState === TradeButtonState.wrongNetwork) {
-      if (openChainModal) {
-        openChainModal()
-      }
+      open({ view: 'Networks' })
       return
     }
 
@@ -177,8 +172,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     onApproveForSwap,
     onOpenTransactionReview,
     onRefetchQuote,
-    openChainModal,
-    openConnectModal,
+    open,
     signTermsOfService,
     shouldApprove,
     queryNetwork,
