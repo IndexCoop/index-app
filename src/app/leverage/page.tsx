@@ -3,6 +3,7 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { PopupButton } from '@typeform/embed-react'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { Suspense } from 'react'
 import { useWalletClient } from 'wagmi'
 
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -61,7 +62,11 @@ export default function Page() {
                 <TradingViewWidget baseToken={baseToken} symbol={BTC.symbol} />
               </div>
             </div>
-            <LeverageWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
+            <Suspense>
+              <LeverageWidget
+                onClickBaseTokenSelector={onOpenSelectBaseToken}
+              />
+            </Suspense>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='h-full w-full lg:min-w-[67%] lg:max-w-[67%]'>
