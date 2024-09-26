@@ -35,7 +35,7 @@ export function useFormattedData() {
     [inputTokenAmount, balance],
   )
 
-  const ouputAmount = quote?.outputTokenAmount
+  const outputAmount = quote?.outputTokenAmount
     ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
     : ''
   const outputAmountUsd = quote?.outputTokenAmountUsd
@@ -64,7 +64,7 @@ export function useFormattedData() {
     inputTokenBalance: balance,
     inputTokenBalanceFormatted: balanceFormatted,
     isFetchingQuote,
-    ouputAmount,
+    outputAmount,
     outputAmountUsd,
     shouldShowSummaryDetails,
     forceRefetch,

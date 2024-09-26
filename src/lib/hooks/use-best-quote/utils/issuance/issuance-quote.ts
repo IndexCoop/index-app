@@ -1,4 +1,7 @@
-import { getIssuanceModule } from '@indexcoop/flash-mint-sdk'
+import {
+  getIssuanceModule,
+  IndexDebtIssuanceModuleV2Address_v2,
+} from '@indexcoop/flash-mint-sdk'
 import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
@@ -10,7 +13,6 @@ import {
 } from '@/constants/tokens'
 import { formatWei } from '@/lib/utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
-import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { isAvailableForIssuance } from '@/lib/utils/tokens'
 
@@ -71,7 +73,7 @@ export async function getEnhancedIssuanceQuote(
     RealWorldAssetIndex.symbol === inputToken.symbol ||
     RealWorldAssetIndex.symbol === outputToken.symbol
   ) {
-    contract = '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
+    contract = IndexDebtIssuanceModuleV2Address_v2
   }
 
   if (!isAvailableForIssuance(inputToken, outputToken)) return null
@@ -120,7 +122,7 @@ export async function getEnhancedIssuanceQuote(
       value: undefined,
     }
 
-    const defaultGas = getFlashMintGasDefault(indexToken.symbol)
+    const defaultGas = 200_000
     const defaultGasEstimate = BigInt(defaultGas)
     const gasEstimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const canFail = false

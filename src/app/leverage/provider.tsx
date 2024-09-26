@@ -20,6 +20,7 @@ import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
 import { useNetwork } from '@/lib/hooks/use-network'
+import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
@@ -33,7 +34,7 @@ import {
   getLeverageTokens,
   supportedLeverageTypes,
 } from './constants'
-import { BaseTokenStats, LeverageType } from './types'
+import { BaseTokenStats, LeverageToken, LeverageType } from './types'
 import { getLeverageType } from './utils/get-leverage-type'
 
 export interface TokenContext {
@@ -98,17 +99,34 @@ export const LeverageTokenContext = createContext<TokenContext>({
 
 export const useLeverageToken = () => useContext(LeverageTokenContext)
 
+const defaultParams = {
+  isMinting: true,
+  leverageType: LeverageType.Long2x,
+  inputToken: ETH,
+  outputToken: {
+    ...IndexCoopEthereum2xIndex,
+    leverageType: LeverageType.Long2x,
+    baseToken: ETH.symbol,
+  } as LeverageToken,
+}
+
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { chainId: chainIdRaw } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
+  const {
+    queryNetwork,
+    queryLeverageType,
+    queryInputToken,
+    queryOutputToken,
+    queryIsMinting,
+  } = useQueryParams(defaultParams)
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
-  // Use leverage type 2x because it exists on all chains
-  const [leverageType, setLeverageType] = useState<LeverageType>(
-    LeverageType.Long2x,
-  )
+
+  const [leverageType, setLeverageType] =
+    useState<LeverageType>(queryLeverageType)
 
   const [inputValue, setInputValue] = useState('')
   const [carryCosts, setCarryCosts] = useState<Record<string, number> | null>(
@@ -117,11 +135,9 @@ export function LeverageProvider(props: { children: any }) {
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [indexTokenPrice, setIndexTokenPrice] = useState(0)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
-  const [isMinting, setMinting] = useState<boolean>(true)
-  const [inputToken, setInputToken] = useState<Token>(ETH)
-  const [outputToken, setOutputToken] = useState<Token>(
-    IndexCoopEthereum2xIndex,
-  )
+  const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
+  const [inputToken, setInputToken] = useState<Token>(queryInputToken)
+  const [outputToken, setOutputToken] = useState<Token>(queryOutputToken)
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [flashmintQuote, setFlashmintQuote] = useState<Quote | null>(null)
   const [swapQuote, setSwapQuote] = useState<Quote | null>(null)
@@ -134,8 +150,8 @@ export function LeverageProvider(props: { children: any }) {
 
   const chainId = useMemo(() => {
     // To control the defaults better
-    return chainIdRaw ?? ARBITRUM.chainId
-  }, [chainIdRaw])
+    return queryNetwork ?? chainIdRaw ?? ARBITRUM.chainId
+  }, [chainIdRaw, queryNetwork])
 
   const baseTokens = useMemo(() => {
     return getBaseTokens(chainId)
@@ -442,18 +458,24 @@ export function LeverageProvider(props: { children: any }) {
 
   useEffect(() => {
     // Reset quotes
-    setMinting(true)
+    setMinting(queryIsMinting)
     setBaseToken(ETH)
-    setInputToken(ETH)
-    setOutputToken(IndexCoopEthereum2xIndex)
-    setLeverageType(LeverageType.Long2x)
+    setInputToken(queryInputToken)
+    setOutputToken(queryOutputToken)
+    setLeverageType(queryLeverageType)
     setQuoteResult({
       type: QuoteType.flashmint,
       isAvailable: true,
       quote: null,
       error: null,
     })
-  }, [chainId])
+  }, [
+    chainId,
+    queryIsMinting,
+    queryInputToken,
+    queryOutputToken,
+    queryLeverageType,
+  ])
 
   return (
     <LeverageTokenContext.Provider

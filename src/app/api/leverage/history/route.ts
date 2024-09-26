@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
 
     const transfers = await fetchTokenTransfers(user, tokens, chainId, {
       connectionInfoOverrides: {
+        skipFetchSetup: true,
         headers: {
           origin: req.headers.get('origin') || '',
         },

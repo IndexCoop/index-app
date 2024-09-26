@@ -1,72 +1,60 @@
-import { connectorsForWallets } from '@rainbow-me/rainbowkit'
-import {
-  argentWallet,
-  braveWallet,
-  coinbaseWallet,
-  ledgerWallet,
-  metaMaskWallet,
-  okxWallet,
-  rainbowWallet,
-  safeWallet,
-  trustWallet,
-  walletConnectWallet,
-} from '@rainbow-me/rainbowkit/wallets'
-import { Chain, http } from 'viem'
-import { createConfig } from 'wagmi'
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import { cookieStorage, createStorage, http } from 'wagmi'
 import { arbitrum, base, localhost, mainnet } from 'wagmi/chains'
 
-import { AlchemyApiKey } from '../../constants/server'
+export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
+
+if (!projectId) {
+  throw new Error('Project ID is not defined')
+}
 
 const isDevelopmentEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'development'
 const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
 const shouldShowLocalHost = isDevelopmentEnv || isPreviewEnv
 
-const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!
+// Create a metadata object
+export const metadata = {
+  name: 'indexcoop-app',
+  description: 'IndexCoop App',
+  url: 'https://app.indexcoop.com',
+  icons: ['/index-logo-black.png'],
+}
 
-const connectors = connectorsForWallets(
-  [
-    {
-      groupName: 'Recommended',
-      wallets: [
-        safeWallet,
-        metaMaskWallet,
-        rainbowWallet,
-        argentWallet,
-        coinbaseWallet,
-        ledgerWallet,
-        okxWallet,
-      ],
-    },
-    {
-      groupName: 'Others',
-      wallets: [walletConnectWallet, braveWallet, trustWallet],
-    },
-  ],
-  {
-    appName: 'Index App',
-    projectId,
-  },
-)
+// default wagmi localhost uses 1_337 as the chain id
+const localhostHH = {
+  ...localhost,
+  id: 31_337,
+}
 
-const lh = { ...localhost, id: 31337 }
-
-export const chains: [Chain, ...Chain[]] = [
-  mainnet,
+export const chains = [
   arbitrum,
+  mainnet,
   base,
-  ...(shouldShowLocalHost ? [lh] : []),
-]
+  ...(shouldShowLocalHost ? [localhostHH] : []),
+] as const
 
-export const wagmiConfig = createConfig({
+export const config = defaultWagmiConfig({
   chains,
-  connectors,
+  projectId,
+  metadata,
   ssr: true,
+  auth: {
+    email: false,
+    socials: [],
+  },
+  storage: createStorage({
+    storage: cookieStorage,
+  }),
+
   transports: {
-    [arbitrum.id]: http(
-      `https://arb-mainnet.g.alchemy.com/v2/${AlchemyApiKey}`,
+    [mainnet.id]: http(
+      `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
     ),
-    [base.id]: http(`https://base-mainnet.g.alchemy.com/v2/${AlchemyApiKey}`),
-    [mainnet.id]: http(`https://eth-mainnet.g.alchemy.com/v2/${AlchemyApiKey}`),
-    [lh.id]: http('http://127.0.0.1:8545/'),
+    [arbitrum.id]: http(
+      `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+    ),
+    [base.id]: http(
+      `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+    ),
   },
 })

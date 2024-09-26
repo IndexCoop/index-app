@@ -35,13 +35,27 @@ export const btcLeverageTokens = [
 export const leverageTokens = [...ethLeverageTokens, ...btcLeverageTokens]
 
 export function getBaseTokens(chainId: number): Token[] {
-  if (chainId === BASE.chainId) return [ETH]
-  return [ETH, BTC]
+  switch (chainId) {
+    case MAINNET.chainId:
+    case ARBITRUM.chainId:
+      return [ETH, BTC]
+    case BASE.chainId:
+      return [ETH]
+    default:
+      return []
+  }
 }
 
 export function getCurrencyTokens(chainId: number): Token[] {
-  if (chainId === BASE.chainId) return [ETH, WETH, USDC]
-  return [ETH, WETH, WBTC, USDC, USDT]
+  switch (chainId) {
+    case MAINNET.chainId:
+    case ARBITRUM.chainId:
+      return [ETH, WETH, WBTC, USDC, USDT]
+    case BASE.chainId:
+      return [ETH, WETH, USDC]
+    default:
+      return []
+  }
 }
 
 export function getLeverageTokens(chainId: number): LeverageToken[] {
