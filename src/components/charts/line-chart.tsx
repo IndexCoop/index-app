@@ -17,7 +17,7 @@ type Props = {
 
 const timestampFormatByPeriod: { [k in ChartPeriod]: string } = {
   [ChartPeriod.Hour]: 'HH:mm',
-  [ChartPeriod.Day]: 'HH:mm',
+  [ChartPeriod.Day]: 'MMM DD HH:mm',
   [ChartPeriod.Week]: 'MMM DD HH:mm',
   [ChartPeriod.Month]: 'MMM DD',
   [ChartPeriod.Year]: 'MMM DD',
