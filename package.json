@@ -54,7 +54,7 @@
     "react-loading-skeleton": "^3.3.1",
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
-    "viem": "2.21.12",
+    "viem": "2.21.15",
     "wagmi": "2.12.13"
   },
   "devDependencies": {
