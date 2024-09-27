@@ -4,7 +4,6 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useCallback, useMemo } from 'react'
 
-import { Receive } from '@/components/receive'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
@@ -24,6 +23,7 @@ import { formatWei } from '@/lib/utils'
 
 import { useRedeem } from '../../providers/redeem-provider'
 
+import { Receive } from './components/receive'
 import { Summary } from './components/summary'
 import { Title } from './components/title'
 import { useFormattedData } from './use-formatted-data'
