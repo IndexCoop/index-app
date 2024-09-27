@@ -37,6 +37,7 @@ export function Receive(props: ReceiveProps) {
             <OutputTokenView
               image={outputToken.image}
               symbol={outputToken.symbol}
+              key={outputToken.address}
             />
           ))}
       </div>

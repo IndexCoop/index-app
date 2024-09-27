@@ -12,8 +12,8 @@ import { Issuance, LegacyTokenList } from '@/app/legacy/config'
 import { getOutputTokens } from '@/app/legacy/providers/utils'
 import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
-import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
+import { getLegacyRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance/legacy-quote'
+import { useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
@@ -119,19 +119,13 @@ export function RedeemProvider(props: { children: any }) {
       if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       setFetchingQuote(true)
-      const inputTokenPrice = await getTokenPrice(inputToken, 1)
-      const outputTokenPrice = await getTokenPrice(outputTokens[0], 1)
       const gasPrice = await provider.getGasPrice()
-      const quoteIssuance = await getEnhancedIssuanceQuote(
+      const quoteIssuance = await getLegacyRedemptionQuote(
         {
           account: address,
-          isIssuance: false,
-          gasPrice,
           inputTokenAmount,
           inputToken,
-          inputTokenPrice,
-          outputToken: outputTokens[0],
-          outputTokenPrice,
+          gasPrice,
           nativeTokenPrice,
           slippage: 0,
         },
