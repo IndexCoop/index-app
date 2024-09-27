@@ -43,7 +43,7 @@ export function RedeemWidget() {
     isFetchingQuote,
     onChangeInputTokenAmount,
     onSelectInputToken,
-    outputToken,
+    outputTokens,
     issuance,
     quoteResult,
     reset,
@@ -84,7 +84,7 @@ export function RedeemWidget() {
     shouldApprove,
     isApproved,
     isApproving,
-    outputToken,
+    outputTokens[0],
     inputValue,
   )
   const { buttonLabel, isDisabled } = useTradeButton(buttonState)
@@ -179,7 +179,7 @@ export function RedeemWidget() {
         onSelectToken={() => {}}
         outputAmount={outputAmount}
         outputAmountUsd={outputAmountUsd}
-        selectedOutputToken={outputToken}
+        ouputTokens={outputTokens}
         showSelectorButtonChevron={false}
       />
       <Summary />

@@ -9,8 +9,8 @@ import {
 import { usePublicClient } from 'wagmi'
 
 import { Issuance, LegacyTokenList } from '@/app/legacy/config'
-import { getOutputToken } from '@/app/legacy/providers/utils'
-import { LeveragedRethStakingYield, RETH, Token } from '@/constants/tokens'
+import { getOutputTokens } from '@/app/legacy/providers/utils'
+import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
@@ -23,7 +23,7 @@ interface RedeemContextProps {
   isDepositing: boolean
   isFetchingQuote: boolean
   inputToken: Token
-  outputToken: Token
+  outputTokens: Token[]
   inputTokenAmount: bigint
   issuance: string
   quoteResult: QuoteResult | null
@@ -38,7 +38,7 @@ const RedeemContext = createContext<RedeemContextProps>({
   isDepositing: false,
   isFetchingQuote: false,
   inputToken: LeveragedRethStakingYield,
-  outputToken: RETH,
+  outputTokens: [],
   inputTokenAmount: BigInt(0),
   issuance: Issuance[LeveragedRethStakingYield.symbol],
   quoteResult: null,
@@ -55,7 +55,7 @@ export function RedeemProvider(props: { children: any }) {
   const { address, provider } = useWallet()
 
   const [inputToken, setInputToken] = useState(LegacyTokenList[0])
-  const [outputToken, setOutputToken] = useState(RETH)
+  const [outputTokens, setOutputTokens] = useState<Token[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
@@ -104,12 +104,11 @@ export function RedeemProvider(props: { children: any }) {
   useEffect(() => {
     const fetchOutputToken = async (inputToken: Token) => {
       if (!publicClient) return
-      const outputToken = await getOutputToken(
+      const outputTokens = await getOutputTokens(
         inputToken.address!,
         publicClient,
       )
-      if (!outputToken) return
-      setOutputToken(outputToken)
+      setOutputTokens(outputTokens)
     }
     fetchOutputToken(inputToken)
   }, [inputToken, publicClient])
@@ -121,7 +120,7 @@ export function RedeemProvider(props: { children: any }) {
       if (inputTokenAmount <= 0) return
       setFetchingQuote(true)
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
-      const outputTokenPrice = await getTokenPrice(outputToken, 1)
+      const outputTokenPrice = await getTokenPrice(outputTokens[0], 1)
       const gasPrice = await provider.getGasPrice()
       const quoteIssuance = await getEnhancedIssuanceQuote(
         {
@@ -131,7 +130,7 @@ export function RedeemProvider(props: { children: any }) {
           inputTokenAmount,
           inputToken,
           inputTokenPrice,
-          outputToken,
+          outputToken: outputTokens[0],
           outputTokenPrice,
           nativeTokenPrice,
           slippage: 0,
@@ -152,7 +151,7 @@ export function RedeemProvider(props: { children: any }) {
     inputToken,
     inputTokenAmount,
     nativeTokenPrice,
-    outputToken,
+    outputTokens,
     provider,
     publicClient,
   ])
@@ -165,7 +164,7 @@ export function RedeemProvider(props: { children: any }) {
         isDepositing: false,
         isFetchingQuote,
         inputToken,
-        outputToken,
+        outputTokens,
         inputTokenAmount,
         issuance: Issuance[inputToken.symbol],
         quoteResult,
