@@ -22,7 +22,7 @@ export function Receive(props: ReceiveProps) {
     totalOutputAmountUsd,
   } = props
   return (
-    <div className='border-ic-gray-100 flex flex-col justify-between gap-4 rounded-xl border p-4 dark:border-[#3A6060]'>
+    <div className='border-ic-gray-100 flex flex-col gap-4 rounded-xl border p-4 dark:border-[#3A6060]'>
       <div className='flex flex-col'>
         <Caption caption='Receive' />
         {isLoading && <StyledSkeleton width={120} />}
@@ -66,7 +66,7 @@ export const OutputTokenView = ({
   outputAmountUsd,
   symbol,
 }: OutputTokenViewProps) => (
-  <div className='flex w-full flex-row items-center gap-4 text-sm'>
+  <div className='flex w-full flex-row items-center justify-between gap-4 text-sm'>
     <div className='flex flex-row items-center gap-2'>
       <span>{outputAmount}</span>
       <span className='text-ic-gray-400 text-xs'>{`(${outputAmountUsd})`}</span>
