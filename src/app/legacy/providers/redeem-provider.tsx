@@ -9,9 +9,9 @@ import {
 import { usePublicClient } from 'wagmi'
 
 import { Issuance, LegacyTokenList } from '@/app/legacy/config'
-import { getOutputTokens } from '@/app/legacy/providers/utils'
+import { LegacyRedemptionQuoteResult } from '@/app/legacy/types'
 import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getLegacyRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance/legacy-quote'
 import { useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -26,7 +26,7 @@ interface RedeemContextProps {
   outputTokens: Token[]
   inputTokenAmount: bigint
   issuance: string
-  quoteResult: QuoteResult | null
+  quoteResult: LegacyRedemptionQuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   reset: () => void
@@ -58,10 +58,11 @@ export function RedeemProvider(props: { children: any }) {
   const [outputTokens, setOutputTokens] = useState<Token[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
-  const [quoteResult, setQuoteResult] = useState<QuoteResult>({
+  const [quoteResult, setQuoteResult] = useState<LegacyRedemptionQuoteResult>({
     type: QuoteType.issuance,
     isAvailable: true,
     quote: null,
+    legacy: null,
     error: null,
   })
 
@@ -97,21 +98,10 @@ export function RedeemProvider(props: { children: any }) {
       type: QuoteType.issuance,
       isAvailable: true,
       quote: null,
+      legacy: null,
       error: null,
     })
   }
-
-  useEffect(() => {
-    const fetchOutputToken = async (inputToken: Token) => {
-      if (!publicClient) return
-      const outputTokens = await getOutputTokens(
-        inputToken.address!,
-        publicClient,
-      )
-      setOutputTokens(outputTokens)
-    }
-    fetchOutputToken(inputToken)
-  }, [inputToken, publicClient])
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -119,8 +109,9 @@ export function RedeemProvider(props: { children: any }) {
       if (!provider || !publicClient) return
       if (inputTokenAmount <= 0) return
       setFetchingQuote(true)
+      setOutputTokens([])
       const gasPrice = await provider.getGasPrice()
-      const quoteIssuance = await getLegacyRedemptionQuote(
+      const legacyQuote = await getLegacyRedemptionQuote(
         {
           account: address,
           inputTokenAmount,
@@ -135,9 +126,11 @@ export function RedeemProvider(props: { children: any }) {
       setQuoteResult({
         type: QuoteType.issuance,
         isAvailable: true,
-        quote: quoteIssuance,
+        quote: legacyQuote?.quote ?? null,
+        legacy: legacyQuote?.extended ?? null,
         error: null,
       })
+      setOutputTokens(legacyQuote?.extended.outputTokens ?? [])
     }
     fetchQuote()
   }, [
@@ -145,7 +138,6 @@ export function RedeemProvider(props: { children: any }) {
     inputToken,
     inputTokenAmount,
     nativeTokenPrice,
-    outputTokens,
     provider,
     publicClient,
   ])

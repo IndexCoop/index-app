@@ -6,36 +6,44 @@ import { Token } from '@/constants/tokens'
 
 type ReceiveProps = {
   isLoading: boolean
-  outputAmount: string
-  outputAmountUsd?: string
+  outputAmounts: string[]
+  outputAmountsUsd: string[]
   ouputTokens: Token[]
-  showSelectorButtonChevron?: boolean
+  totalOutputAmountUsd: string
   onSelectToken: () => void
 }
 
 export function Receive(props: ReceiveProps) {
-  const { isLoading, outputAmount, outputAmountUsd, ouputTokens } = props
+  const {
+    isLoading,
+    outputAmounts,
+    outputAmountsUsd,
+    ouputTokens,
+    totalOutputAmountUsd,
+  } = props
   return (
-    <div className='border-ic-gray-100 flex flex-row justify-between rounded-xl border p-4 dark:border-[#3A6060]'>
+    <div className='border-ic-gray-100 flex flex-col justify-between gap-4 rounded-xl border p-4 dark:border-[#3A6060]'>
       <div className='flex flex-col'>
         <Caption caption='Receive' />
         {isLoading && <StyledSkeleton width={120} />}
-        {!isLoading && (
+        {!isLoading && ouputTokens.length === 1 && (
           <span className='dark:text-ic-white text-ic-gray-600'>
-            {outputAmount}
+            {outputAmounts[0]}
           </span>
         )}
-        {!isLoading && outputAmountUsd && (
+        {!isLoading && (
           <span className='dark:text-ic-white text-ic-gray-400 text-xs'>
-            {outputAmountUsd}
+            {totalOutputAmountUsd}
           </span>
         )}
       </div>
-      <div className='flex flex-col gap-4'>
+      <div className='flex w-full flex-col gap-1'>
         {ouputTokens.length > 0 &&
-          ouputTokens.map((outputToken) => (
+          ouputTokens.map((outputToken, index) => (
             <OutputTokenView
               image={outputToken.image}
+              outputAmount={outputAmounts[index]}
+              outputAmountUsd={outputAmountsUsd[index]}
               symbol={outputToken.symbol}
               key={outputToken.address}
             />
@@ -47,12 +55,25 @@ export function Receive(props: ReceiveProps) {
 
 type OutputTokenViewProps = {
   image: string
+  outputAmount: string
+  outputAmountUsd: string
   symbol: string
 }
 
-export const OutputTokenView = ({ image, symbol }: OutputTokenViewProps) => (
-  <div className='flex flex-row items-center'>
-    <Image alt={`${symbol} logo`} src={image} width={20} height={20} />
-    <span className='text-ic-black mx-2 text-sm font-medium'> {symbol}</span>
+export const OutputTokenView = ({
+  image,
+  outputAmount,
+  outputAmountUsd,
+  symbol,
+}: OutputTokenViewProps) => (
+  <div className='flex w-full flex-row items-center gap-4 text-sm'>
+    <div className='flex flex-row items-center gap-2'>
+      <span>{outputAmount}</span>
+      <span className='text-ic-gray-400 text-xs'>{`(${outputAmountUsd})`}</span>
+    </div>
+    <div className='flex flex-row'>
+      <Image alt={`${symbol} logo`} src={image} width={20} height={20} />
+      <span className='text-ic-black mx-2 font-medium'> {symbol}</span>
+    </div>
   </div>
 )

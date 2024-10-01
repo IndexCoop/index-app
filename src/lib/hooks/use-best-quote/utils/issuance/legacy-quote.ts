@@ -6,6 +6,7 @@ import { getTokenDataByAddress } from '@indexcoop/tokenlists'
 import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
+import { LegacyQuote } from '@/app/legacy/types'
 import {
   BedIndex,
   LeveragedRethStakingYield,
@@ -35,10 +36,12 @@ interface IssuanceQuoteRequest {
 export async function getLegacyRedemptionQuote(
   request: IssuanceQuoteRequest,
   publicClient: PublicClient,
-): Promise<Quote | null> {
+): Promise<{ extended: LegacyQuote; quote: Quote } | null> {
   const chainId = 1
   const { account, inputToken, inputTokenAmount, gasPrice, nativeTokenPrice } =
     request
+
+  if (inputTokenAmount <= 0) return null
 
   let contract = getIssuanceModule(inputToken.symbol, chainId)
     .address as Address
@@ -49,8 +52,6 @@ export async function getLegacyRedemptionQuote(
   ) {
     contract = IndexDebtIssuanceModuleV2Address_v2
   }
-
-  if (inputTokenAmount <= 0) return null
 
   try {
     const debtIssuanceProvider = new DebtIssuanceProvider(
@@ -88,24 +89,13 @@ export async function getLegacyRedemptionQuote(
       return getTokenPrice(outputToken, chainId)
     })
     const outputTokenPrices = await Promise.all(outputTokenPricesPromises)
-    console.log(outputTokenPrices)
-    // TODO:
-    const outputTokenAmountUsd = outputTokenPrices.reduce(
-      (total, price, index) => {
-        console.log(
-          total,
-          price,
-          Number(formatWei(units[index], outputTokens[index].decimals)),
-          formatWei(units[index], outputTokens[index].decimals),
-        )
-        return (
-          total +
-          price * Number(formatWei(units[index], outputTokens[index].decimals))
-        )
-      },
-      0,
+    const outputTokenPricesUsd = outputTokenPrices.map(
+      (price, index) =>
+        price * Number(formatWei(units[index], outputTokens[index].decimals)),
     )
-    console.log('USD', outputTokenAmountUsd)
+    const outputTokenAmountUsd = outputTokenPricesUsd.reduce((total, price) => {
+      return total + price
+    }, 0)
 
     const callData = encodeFunctionData({
       abi: DebtIssuanceModuleV2Abi,
@@ -138,10 +128,6 @@ export async function getLegacyRedemptionQuote(
     const inputTokenAmountUsd =
       parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *
       inputTokenPrice
-    // TODO:
-    // const outputTokenAmountUsd =
-    //   parseFloat(formatWei(outputTokenAmount, inputToken.decimals)) *
-    //   outputTokenPrice
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
@@ -152,32 +138,41 @@ export async function getLegacyRedemptionQuote(
       nativeTokenPrice,
     )
 
-    const outputTokenAmount = BigInt(0)
+    const isMultiComponentRedemption = components.length > 1 && !isIcReth
+    const outputTokenAmount = isMultiComponentRedemption ? BigInt(0) : units[0]
 
     return {
-      type: QuoteType.issuance,
-      chainId: 1,
-      contract,
-      isMinting: false,
-      inputToken,
-      outputToken: inputToken, // TODO:
-      gas: BigNumber.from(gasEstimate.toString()),
-      gasPrice: BigNumber.from(gasPrice.toString()),
-      gasCosts: BigNumber.from(gasCosts.toString()),
-      gasCostsInUsd,
-      fullCostsInUsd,
-      priceImpact: 0,
-      indexTokenAmount: BigNumber.from(inputTokenAmount.toString()),
-      inputOutputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
-      inputTokenAmount: BigNumber.from(inputTokenAmount.toString()),
-      inputTokenAmountUsd,
-      outputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
-      outputTokenAmountUsd,
-      outputTokenAmountUsdAfterFees,
-      inputTokenPrice,
-      outputTokenPrice: 0,
-      slippage: request.slippage,
-      tx: transaction,
+      extended: {
+        components: [...components],
+        outputTokens,
+        outputTokenPricesUsd,
+        units: [...units],
+      },
+      quote: {
+        type: QuoteType.issuance,
+        chainId,
+        contract,
+        isMinting: false,
+        inputToken,
+        outputToken: outputTokens[0], // used only in tx review modal
+        gas: BigNumber.from(gasEstimate.toString()),
+        gasPrice: BigNumber.from(gasPrice.toString()),
+        gasCosts: BigNumber.from(gasCosts.toString()),
+        gasCostsInUsd,
+        fullCostsInUsd,
+        priceImpact: 0,
+        indexTokenAmount: BigNumber.from(inputTokenAmount.toString()),
+        inputOutputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
+        inputTokenAmount: BigNumber.from(inputTokenAmount.toString()),
+        inputTokenAmountUsd,
+        outputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
+        outputTokenAmountUsd,
+        outputTokenAmountUsdAfterFees,
+        inputTokenPrice,
+        outputTokenPrice: outputTokenPrices[0],
+        slippage: request.slippage,
+        tx: transaction,
+      },
     }
   } catch (e) {
     console.warn('Error fetching issuance quote', e)
