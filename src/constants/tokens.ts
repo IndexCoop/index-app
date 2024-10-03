@@ -413,20 +413,20 @@ export const RealWorldAssetIndex: Token = {
   url: 'rwa',
 }
 
-const usdcy = getIndexTokenData('USDCY', MAINNET.chainId)!
-export const UsdcyIndex: Token = {
-  ...usdcy,
+const icUSDTokenData = getIndexTokenData('ICUSD', MAINNET.chainId)!
+export const ICUSD: Token = {
+  ...icUSDTokenData,
   // Random for now - as no listing
-  coingeckoId: 'usdcy',
+  coingeckoId: 'icusd',
   fees: {
     streamingFee: '	1.95%',
     mintFee: '0.10%',
     redeemFee: '0.10%',
   },
-  image: usdcy.logoURI,
+  image: icUSDTokenData.logoURI,
   indexTypes: [IndexType.thematic],
   isDangerous: true,
-  url: 'usdcy',
+  url: 'icusd',
 }
 
 /**
