@@ -14,10 +14,10 @@ type SummaryQuoteProps = {
 
 function SummaryQuote(props: SummaryQuoteProps) {
   return (
-    <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
+    <div className='text-ic-gray-400 flex flex-row items-center justify-between text-xs'>
       <div className='font-medium'>{props.label}</div>
       <div className='flex flex-row gap-1'>
-        <div className='text-ic-white font-bold'>{props.value}</div>
+        <div className='text-ic-gray-500 font-medium'>{props.value}</div>
         <div className='font-normal'>{props.valueUsd}</div>
       </div>
     </div>
@@ -31,30 +31,29 @@ export function Summary() {
     inputAmount,
     inputAmoutUsd,
     isFetchingQuote,
-    ouputAmount,
+    outputAmount,
     outputAmountUsd,
     shouldShowSummaryDetails,
   } = useFormattedData()
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
-    <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
+    <Disclosure as='div' className='border-ic-gray-100 rounded-xl border'>
       {({ open }) => (
         <div className='p-4'>
           <dt>
             <Disclosure.Button className='text-ic-gray-300 flex w-full items-center justify-between text-left'>
-              <span className='text-xs font-medium'>
-                {open && 'Summary'}
+              <span className='text-ic-gray-500 text-xs font-medium'>
+                {!isFetchingQuote && 'Summary'}
                 {!open && isFetchingQuote && <StyledSkeleton width={120} />}
-                {!open &&
-                  !isFetchingQuote &&
-                  shouldShowSummaryDetails &&
-                  `Receive ${ouputAmount}`}
               </span>
               <div className='flex flex-row items-center gap-1'>
                 {!open && !isFetchingQuote ? (
                   <GasFees
                     valueUsd={gasFeesUsd}
-                    styles={{ valueUsdTextColor: 'text-ic-gray-300' }}
+                    styles={{
+                      valueUsdTextColor: 'text-ic-gray-400',
+                      valueTextColor: 'text-ic-gray-400',
+                    }}
                   />
                 ) : null}
                 {!open && isFetchingQuote && <StyledSkeleton width={70} />}
@@ -78,13 +77,20 @@ export function Summary() {
                 />
                 <SummaryQuote
                   label='Receive'
-                  value={ouputAmount}
+                  value={outputAmount}
                   valueUsd={`(${outputAmountUsd})`}
                 />
-                <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
+                <div className='text-ic-gray-400 flex flex-row items-center justify-between text-xs'>
                   <div className='font-normal'>Network Fee</div>
                   <div>
-                    <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
+                    <GasFees
+                      valueUsd={gasFeesUsd}
+                      value={gasFeesEth}
+                      styles={{
+                        valueUsdTextColor: 'text-ic-gray-500',
+                        valueTextColor: 'text-ic-gray-400',
+                      }}
+                    />
                   </div>
                 </div>
               </>

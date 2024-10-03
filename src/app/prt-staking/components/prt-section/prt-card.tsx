@@ -1,5 +1,5 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/16/solid'
-import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Image from 'next/image'
@@ -29,8 +29,7 @@ export function PrtCard({ onClick }: Props) {
     poolStakedBalanceFormatted,
     userStakedBalanceFormatted,
   } = usePrtStakingContext()
-  const { openChainModal } = useChainModal()
-  const { openConnectModal } = useConnectModal()
+  const { open } = useWeb3Modal()
   const isSupportedNetwork = useMainnetOnly()
 
   const buttonLabel = useMemo(() => {
@@ -43,12 +42,13 @@ export function PrtCard({ onClick }: Props) {
 
   const handleClick = () => {
     if (!accountAddress) {
-      openConnectModal?.()
+      open({ view: 'Connect' })
       return
     }
 
     if (!isSupportedNetwork) {
-      openChainModal?.()
+      open({ view: 'Networks' })
+
       return
     }
 

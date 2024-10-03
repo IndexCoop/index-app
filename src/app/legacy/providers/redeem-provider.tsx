@@ -1,31 +1,21 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import {
-  BedIndex,
-  GitcoinStakedETHIndex,
-  LeveragedRethStakingYield,
-  RETH,
-  Token,
-} from '@/constants/tokens'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
-import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
+import { Issuance, LegacyTokenList } from '@/app/legacy/config'
+import { LegacyRedemptionQuoteResult } from '@/app/legacy/types'
+import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { getLegacyRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance/legacy-quote'
+import { useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
-
-export const inputTokenList = [
-  GitcoinStakedETHIndex,
-  LeveragedRethStakingYield,
-  BedIndex,
-]
 
 interface RedeemContextProps {
   inputTokenList: Token[]
@@ -33,22 +23,24 @@ interface RedeemContextProps {
   isDepositing: boolean
   isFetchingQuote: boolean
   inputToken: Token
-  outputToken: Token
+  outputTokens: Token[]
   inputTokenAmount: bigint
-  quoteResult: QuoteResult | null
+  issuance: string
+  quoteResult: LegacyRedemptionQuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   reset: () => void
 }
 
 const RedeemContext = createContext<RedeemContextProps>({
-  inputTokenList,
+  inputTokenList: LegacyTokenList,
   inputValue: '',
   isDepositing: false,
   isFetchingQuote: false,
   inputToken: LeveragedRethStakingYield,
-  outputToken: RETH,
+  outputTokens: [],
   inputTokenAmount: BigInt(0),
+  issuance: Issuance[LeveragedRethStakingYield.symbol],
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
   onSelectInputToken: () => {},
@@ -60,21 +52,20 @@ export const useRedeem = () => useContext(RedeemContext)
 export function RedeemProvider(props: { children: any }) {
   const nativeTokenPrice = useNativeTokenPrice(1)
   const publicClient = usePublicClient()
+  const queryClient = useQueryClient()
   const { address, provider } = useWallet()
 
-  const isDepositing = false
-  const currencyToken = RETH
-  const indexToken = LeveragedRethStakingYield
-
-  const [inputToken, setInputToken] = useState(inputTokenList[0])
+  const [inputToken, setInputToken] = useState(LegacyTokenList[0])
   const [inputValue, setInputValue] = useState('')
-  const [isFetchingQuote, setFetchingQuote] = useState(false)
-  const [quoteResult, setQuoteResult] = useState<QuoteResult>({
+
+  const queryKey = 'legay-quote-result'
+  const initialData: LegacyRedemptionQuoteResult = {
     type: QuoteType.issuance,
     isAvailable: true,
     quote: null,
+    legacy: null,
     error: null,
-  })
+  }
 
   const inputTokenAmount = useMemo(
     () =>
@@ -84,10 +75,45 @@ export function RedeemProvider(props: { children: any }) {
     [inputToken, inputValue],
   )
 
-  const outputToken = useMemo(
-    () => (isDepositing ? indexToken : currencyToken),
-    [isDepositing, currencyToken, indexToken],
-  )
+  const { data: quoteResult, isFetching: isFetchingQuote } = useQuery({
+    enabled: Boolean(address),
+    initialData,
+    queryKey: [
+      queryKey,
+      {
+        address,
+        inputToken,
+        inputTokenAmount: inputTokenAmount.toString(),
+        nativeTokenPrice,
+        provider,
+        publicClient,
+      },
+    ],
+    queryFn: async () => {
+      if (!address) return null
+      if (!provider || !publicClient) return null
+      if (inputTokenAmount <= 0) return null
+      const gasPrice = await provider.getGasPrice()
+      const legacyQuote = await getLegacyRedemptionQuote(
+        {
+          account: address,
+          inputTokenAmount,
+          inputToken,
+          gasPrice,
+          nativeTokenPrice,
+          slippage: 0,
+        },
+        publicClient,
+      )
+      return {
+        type: QuoteType.issuance,
+        isAvailable: true,
+        quote: legacyQuote?.quote ?? null,
+        legacy: legacyQuote?.extended ?? null,
+        error: null,
+      }
+    },
+  })
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -102,77 +128,27 @@ export function RedeemProvider(props: { children: any }) {
   )
 
   const onSelectInputToken = useCallback((tokenSymbol: string) => {
-    const token = inputTokenList.find((token) => token.symbol === tokenSymbol)
+    const token = LegacyTokenList.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setInputToken(token)
   }, [])
 
   const reset = () => {
     setInputValue('')
-    setQuoteResult({
-      type: QuoteType.issuance,
-      isAvailable: true,
-      quote: null,
-      error: null,
-    })
+    queryClient.setQueryData([queryKey], initialData)
   }
-
-  useEffect(() => {
-    const fetchQuote = async () => {
-      if (!address) return
-      if (!provider || !publicClient) return
-      if (inputTokenAmount <= 0) return
-      setFetchingQuote(true)
-      const outputToken = isDepositing ? indexToken : currencyToken
-      const inputTokenPrice = await getTokenPrice(inputToken, 1)
-      const outputTokenPrice = await getTokenPrice(outputToken, 1)
-      const gasPrice = await provider.getGasPrice()
-      const quoteIssuance = await getEnhancedIssuanceQuote(
-        {
-          account: address,
-          isIssuance: isDepositing,
-          gasPrice,
-          inputTokenAmount,
-          inputToken,
-          inputTokenPrice,
-          outputToken,
-          outputTokenPrice,
-          nativeTokenPrice,
-          slippage: 0,
-        },
-        publicClient,
-      )
-      setFetchingQuote(false)
-      setQuoteResult({
-        type: QuoteType.issuance,
-        isAvailable: true,
-        quote: quoteIssuance,
-        error: null,
-      })
-    }
-    fetchQuote()
-  }, [
-    address,
-    currencyToken,
-    indexToken,
-    inputToken,
-    inputTokenAmount,
-    isDepositing,
-    nativeTokenPrice,
-    provider,
-    publicClient,
-  ])
 
   return (
     <RedeemContext.Provider
       value={{
-        inputTokenList,
+        inputTokenList: LegacyTokenList,
         inputValue,
-        isDepositing,
+        isDepositing: false,
         isFetchingQuote,
         inputToken,
-        outputToken,
+        outputTokens: quoteResult?.legacy?.outputTokens ?? [],
         inputTokenAmount,
+        issuance: Issuance[inputToken.symbol],
         quoteResult,
         onChangeInputTokenAmount,
         onSelectInputToken,
