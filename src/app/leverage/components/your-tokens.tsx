@@ -275,7 +275,7 @@ export function YourTokens() {
 
                       <div className='hidden w-1/3 items-center md:flex md:w-4/12'>
                         <a
-                          href={`${chain?.blockExplorers?.default.url}/tx/${hash}`}
+                          href={`${chain?.blockExplorers?.default}/tx/${hash}`}
                           className='hover:underline'
                           target='_blank'
                         >

@@ -32,6 +32,11 @@ export function useTradeButton(
         return 'Not available'
       case TradeButtonState.wrongNetwork:
         return 'Wrong Network'
+      case TradeButtonState.mismatchingQueryNetwork:
+        return (
+          labelOverrides[TradeButtonState.mismatchingQueryNetwork] ??
+          'Switch Network'
+        )
       default:
         return labelOverrides[TradeButtonState.default] ?? 'Swap'
     }

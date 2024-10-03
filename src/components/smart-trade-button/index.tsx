@@ -1,5 +1,7 @@
-import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSwitchChain } from 'wagmi'
 
 import { Warnings, WarningType } from '@/components/swap/components/warning'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
@@ -27,6 +29,7 @@ type SmartTradeButtonProps = {
   hiddenWarnings?: WarningType[]
   isFetchingQuote: boolean
   isSupportedNetwork: boolean
+  queryNetwork?: number
   buttonLabelOverrides: { [key: number]: string }
   onOpenTransactionReview: () => void
   onRefetchQuote: () => void
@@ -44,14 +47,17 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     inputValue,
     isFetchingQuote,
     isSupportedNetwork,
+    queryNetwork,
     outputToken,
     onOpenTransactionReview,
     onRefetchQuote,
   } = props
 
-  const { openChainModal } = useChainModal()
-  const { openConnectModal } = useConnectModal()
+  const { switchChainAsync } = useSwitchChain()
+  const router = useRouter()
+  const pathname = usePathname()
   const { chainId } = useNetwork()
+  const { open } = useWeb3Modal()
   const requiresProtection = useProtection()
   const { signTermsOfService } = useSignTerms()
   const { slippage } = useSlippage()
@@ -73,8 +79,14 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     return !isNativeToken
   }, [chainId, inputToken])
 
+  const isMismatchingQueryNetwork = useMemo(
+    () => queryNetwork !== undefined && chainId !== queryNetwork,
+    [chainId, queryNetwork],
+  )
+
   const buttonState = useTradeButtonState(
     isSupportedNetwork,
+    isMismatchingQueryNetwork,
     hasFetchingError,
     hasInsufficientFunds,
     shouldApprove,
@@ -115,9 +127,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
   const onClick = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
-      if (openConnectModal) {
-        openConnectModal()
-      }
+      open({ view: 'Connect' })
       return
     }
 
@@ -127,9 +137,17 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     }
 
     if (buttonState === TradeButtonState.wrongNetwork) {
-      if (openChainModal) {
-        openChainModal()
+      open({ view: 'Networks' })
+      return
+    }
+
+    if (buttonState === TradeButtonState.mismatchingQueryNetwork) {
+      if (queryNetwork) {
+        switchChainAsync({ chainId: queryNetwork }).then(() =>
+          router.replace(pathname),
+        )
       }
+
       return
     }
 
@@ -154,10 +172,13 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     onApproveForSwap,
     onOpenTransactionReview,
     onRefetchQuote,
-    openChainModal,
-    openConnectModal,
+    open,
     signTermsOfService,
     shouldApprove,
+    queryNetwork,
+    pathname,
+    router,
+    switchChainAsync,
   ])
 
   return (

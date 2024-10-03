@@ -5,6 +5,7 @@ import { useCallback } from 'react'
 
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
+import { Receive } from '@/components/receive'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
@@ -12,8 +13,10 @@ import { TransactionReviewModal } from '@/components/swap/components/transaction
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
+import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
+import { chains } from '@/lib/utils/wagmi'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
@@ -21,7 +24,6 @@ import { BaseTokenSelector } from './components/base-token-selector'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { Fees } from './components/fees'
 import { LeverageSelector } from './components/leverage-selector'
-import { Receive } from './components/receive'
 import { Summary } from './components/summary'
 
 import './styles.css'
@@ -34,6 +36,7 @@ type LeverageWidgetProps = {
 
 export function LeverageWidget(props: LeverageWidgetProps) {
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
+  const { queryNetwork } = useQueryParams()
   const { address } = useWallet()
   const {
     baseToken,
@@ -133,9 +136,11 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         inputValue={inputValue}
         isFetchingQuote={isFetchingQuote}
         isSupportedNetwork={isSupportedNetwork}
+        queryNetwork={queryNetwork}
         outputToken={outputToken}
         buttonLabelOverrides={{
           [TradeButtonState.default]: 'Review Transaction',
+          [TradeButtonState.mismatchingQueryNetwork]: `Switch to ${chains.find(({ id }) => id === queryNetwork)?.name}`,
         }}
         onOpenTransactionReview={onOpenTransactionReview}
         onRefetchQuote={() => {}}
