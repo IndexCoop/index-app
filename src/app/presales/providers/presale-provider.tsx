@@ -6,7 +6,7 @@ import { usePublicClient } from 'wagmi'
 import { formatTvl } from '@/app/products/utils/formatters'
 import { Token, WSTETH } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
-import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
+import { IndexApi } from '@/lib/utils/api/index-api'
 
 import { PresaleTokenAbi } from '../abis/presale-token-abi'
 import { preSaleTokens } from '../constants'
@@ -72,26 +72,18 @@ export function usePresaleData(symbol: string): PresaleData {
 
       if (presaleToken.status === PreSaleStatus.TOKEN_LAUNCHED) {
         try {
-          const res = await fetchTokenMetrics({
-            tokenAddress: presaleToken.address!,
-            metrics: ['pav'],
-          })
-
-          if (res?.ProductAssetValue === undefined) return
-
-          setTvl(res.ProductAssetValue)
+          const indexApi = new IndexApi()
+          const marketcapRes = await indexApi.get(
+            `/${presaleToken.symbol}/marketcap`,
+          )
+          setTvl(marketcapRes.marketcap)
         } catch (err) {
           console.log('Error fetching marketcap tvl', err)
         }
-      } else if (presaleToken.status !== PreSaleStatus.CLOSED_TARGET_NOT_MET) {
+      } else {
         try {
-          const res = await fetchTokenMetrics({
-            tokenAddress: presaleToken.address!,
-            metrics: ['supply'],
-          })
-
-          if (res?.Supply === undefined) return
-
+          const indexApi = new IndexApi()
+          const supplyRes = await indexApi.get(`/${presaleToken.symbol}/supply`)
           const realUnitsRes = await publicClient.readContract({
             address: presaleToken.address as Address,
             abi: PresaleTokenAbi,
@@ -99,11 +91,11 @@ export function usePresaleData(symbol: string): PresaleData {
             args: [currencyToken.address as Address],
           })
           setTvl(
-            res.Supply *
+            Number(supplyRes.supply) *
               Number(formatUnits(realUnitsRes, presaleToken.decimals)),
           )
         } catch (err) {
-          console.log('Error fetching supply tvl', err)
+          console.log('Error fetching tvl', err)
         }
       }
     }
