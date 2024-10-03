@@ -82,7 +82,7 @@ export function RedeemProvider(props: { children: any }) {
       {
         address,
         inputToken,
-        inputValue,
+        inputTokenAmount: inputTokenAmount.toString(),
         nativeTokenPrice,
         provider,
         publicClient,
@@ -91,10 +91,6 @@ export function RedeemProvider(props: { children: any }) {
     queryFn: async () => {
       if (!address) return null
       if (!provider || !publicClient) return null
-      const inputTokenAmount =
-        inputValue === ''
-          ? BigInt(0)
-          : parseUnits(inputValue, inputToken.decimals)
       if (inputTokenAmount <= 0) return null
       const gasPrice = await provider.getGasPrice()
       const legacyQuote = await getLegacyRedemptionQuote(
