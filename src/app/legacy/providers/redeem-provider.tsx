@@ -1,8 +1,8 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -52,19 +52,20 @@ export const useRedeem = () => useContext(RedeemContext)
 export function RedeemProvider(props: { children: any }) {
   const nativeTokenPrice = useNativeTokenPrice(1)
   const publicClient = usePublicClient()
+  const queryClient = useQueryClient()
   const { address, provider } = useWallet()
 
   const [inputToken, setInputToken] = useState(LegacyTokenList[0])
-  const [outputTokens, setOutputTokens] = useState<Token[]>([])
   const [inputValue, setInputValue] = useState('')
-  const [isFetchingQuote, setFetchingQuote] = useState(false)
-  const [quoteResult, setQuoteResult] = useState<LegacyRedemptionQuoteResult>({
+
+  const queryKey = 'legay-quote-result'
+  const initialData: LegacyRedemptionQuoteResult = {
     type: QuoteType.issuance,
     isAvailable: true,
     quote: null,
     legacy: null,
     error: null,
-  })
+  }
 
   const inputTokenAmount = useMemo(
     () =>
@@ -73,6 +74,49 @@ export function RedeemProvider(props: { children: any }) {
         : parseUnits(inputValue, inputToken.decimals),
     [inputToken, inputValue],
   )
+
+  const { data: quoteResult, isFetching: isFetchingQuote } = useQuery({
+    initialData,
+    queryKey: [
+      queryKey,
+      {
+        address,
+        inputToken,
+        inputValue,
+        nativeTokenPrice,
+        provider,
+        publicClient,
+      },
+    ],
+    queryFn: async () => {
+      if (!address) return null
+      if (!provider || !publicClient) return null
+      const inputTokenAmount =
+        inputValue === ''
+          ? BigInt(0)
+          : parseUnits(inputValue, inputToken.decimals)
+      if (inputTokenAmount <= 0) return null
+      const gasPrice = await provider.getGasPrice()
+      const legacyQuote = await getLegacyRedemptionQuote(
+        {
+          account: address,
+          inputTokenAmount,
+          inputToken,
+          gasPrice,
+          nativeTokenPrice,
+          slippage: 0,
+        },
+        publicClient,
+      )
+      return {
+        type: QuoteType.issuance,
+        isAvailable: true,
+        quote: legacyQuote?.quote ?? null,
+        legacy: legacyQuote?.extended ?? null,
+        error: null,
+      }
+    },
+  })
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -94,53 +138,8 @@ export function RedeemProvider(props: { children: any }) {
 
   const reset = () => {
     setInputValue('')
-    setQuoteResult({
-      type: QuoteType.issuance,
-      isAvailable: true,
-      quote: null,
-      legacy: null,
-      error: null,
-    })
+    queryClient.setQueryData([queryKey], initialData)
   }
-
-  useEffect(() => {
-    const fetchQuote = async () => {
-      if (!address) return
-      if (!provider || !publicClient) return
-      if (inputTokenAmount <= 0) return
-      setFetchingQuote(true)
-      setOutputTokens([])
-      const gasPrice = await provider.getGasPrice()
-      const legacyQuote = await getLegacyRedemptionQuote(
-        {
-          account: address,
-          inputTokenAmount,
-          inputToken,
-          gasPrice,
-          nativeTokenPrice,
-          slippage: 0,
-        },
-        publicClient,
-      )
-      setFetchingQuote(false)
-      setQuoteResult({
-        type: QuoteType.issuance,
-        isAvailable: true,
-        quote: legacyQuote?.quote ?? null,
-        legacy: legacyQuote?.extended ?? null,
-        error: null,
-      })
-      setOutputTokens(legacyQuote?.extended.outputTokens ?? [])
-    }
-    fetchQuote()
-  }, [
-    address,
-    inputToken,
-    inputTokenAmount,
-    nativeTokenPrice,
-    provider,
-    publicClient,
-  ])
 
   return (
     <RedeemContext.Provider
@@ -150,7 +149,7 @@ export function RedeemProvider(props: { children: any }) {
         isDepositing: false,
         isFetchingQuote,
         inputToken,
-        outputTokens,
+        outputTokens: quoteResult?.legacy?.outputTokens ?? [],
         inputTokenAmount,
         issuance: Issuance[inputToken.symbol],
         quoteResult,
