@@ -37,7 +37,7 @@ export function Receive(props: ReceiveProps) {
           </span>
         )}
       </div>
-      <div className='flex w-full flex-col gap-1'>
+      <div className='flex w-full flex-col gap-2'>
         {ouputTokens.length > 0 &&
           ouputTokens.map((outputToken, index) => (
             <OutputTokenView
