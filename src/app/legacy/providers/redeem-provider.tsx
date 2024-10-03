@@ -76,6 +76,7 @@ export function RedeemProvider(props: { children: any }) {
   )
 
   const { data: quoteResult, isFetching: isFetchingQuote } = useQuery({
+    enabled: Boolean(address),
     initialData,
     queryKey: [
       queryKey,
