@@ -4,9 +4,9 @@ import { Address, formatUnits, isAddress } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { formatTvl } from '@/app/products/utils/formatters'
-import { Token, WSTETH } from '@/constants/tokens'
+import { AUSDC, ICUSD, Token, WSTETH } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
-import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
+import { IndexApi } from '@/lib/utils/api/index-api'
 
 import { PresaleTokenAbi } from '../abis/presale-token-abi'
 import { preSaleTokens } from '../constants'
@@ -15,7 +15,7 @@ import { PreSaleStatus } from '../types'
 interface PresaleData {
   currencyToken: Token
   formatted: {
-    daysLeft: string
+    dateValue: string
     tvl: string
   }
 }
@@ -34,13 +34,15 @@ function getDaysLeft(targetTimestamp: number): number {
 export function usePresaleData(symbol: string): PresaleData {
   const publicClient = usePublicClient()
   const presaleToken = preSaleTokens.find((token) => token.symbol === symbol)
-  const currencyToken = WSTETH
+  const currencyToken = presaleToken?.symbol === ICUSD.symbol ? AUSDC : WSTETH
 
   const [tvl, setTvl] = useState<number>(0)
 
-  const daysLeft = useMemo(() => {
+  const dateValue = useMemo(() => {
     if (!presaleToken) return '-'
-    return getDaysLeft(presaleToken.timestampEndDate).toString()
+    if (presaleToken.status === PreSaleStatus.NOT_STARTED)
+      return presaleToken.startDate ?? ''
+    return `${getDaysLeft(presaleToken.timestampEndDate).toString()} days`
   }, [presaleToken])
 
   const tvlFormatted = useMemo(() => {
@@ -72,26 +74,18 @@ export function usePresaleData(symbol: string): PresaleData {
 
       if (presaleToken.status === PreSaleStatus.TOKEN_LAUNCHED) {
         try {
-          const res = await fetchTokenMetrics({
-            tokenAddress: presaleToken.address!,
-            metrics: ['pav'],
-          })
-
-          if (res?.ProductAssetValue === undefined) return
-
-          setTvl(res.ProductAssetValue)
+          const indexApi = new IndexApi()
+          const marketcapRes = await indexApi.get(
+            `/${presaleToken.symbol}/marketcap`,
+          )
+          setTvl(marketcapRes.marketcap)
         } catch (err) {
           console.log('Error fetching marketcap tvl', err)
         }
-      } else if (presaleToken.status !== PreSaleStatus.CLOSED_TARGET_NOT_MET) {
+      } else {
         try {
-          const res = await fetchTokenMetrics({
-            tokenAddress: presaleToken.address!,
-            metrics: ['supply'],
-          })
-
-          if (res?.Supply === undefined) return
-
+          const indexApi = new IndexApi()
+          const supplyRes = await indexApi.get(`/${presaleToken.symbol}/supply`)
           const realUnitsRes = await publicClient.readContract({
             address: presaleToken.address as Address,
             abi: PresaleTokenAbi,
@@ -99,11 +93,11 @@ export function usePresaleData(symbol: string): PresaleData {
             args: [currencyToken.address as Address],
           })
           setTvl(
-            res.Supply *
+            Number(supplyRes.supply) *
               Number(formatUnits(realUnitsRes, presaleToken.decimals)),
           )
         } catch (err) {
-          console.log('Error fetching supply tvl', err)
+          console.log('Error fetching tvl', err)
         }
       }
     }
@@ -113,7 +107,7 @@ export function usePresaleData(symbol: string): PresaleData {
   return {
     currencyToken,
     formatted: {
-      daysLeft,
+      dateValue,
       tvl: tvlFormatted,
     },
   }

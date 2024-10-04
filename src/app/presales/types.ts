@@ -17,7 +17,11 @@ export type PreSaleToken = {
   description: string
   componentsFrom: string[]
   prtRewards: string
-  targetFundraise: number
+  targetFundraise: {
+    quantity: string
+    asset: string
+  }
+  startDate?: string
   timestampEndDate: number
   tvlLockedPresale?: string
 }

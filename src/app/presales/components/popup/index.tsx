@@ -15,6 +15,7 @@ type PreSalePopupProps = {
 export const PreSalePopup = (props: PreSalePopupProps) => {
   const { isOpen, onClose, token } = props
   const preSaleToken = getTokenForPresaleToken(token)
+  if (!preSaleToken) return null
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
