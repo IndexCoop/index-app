@@ -1,6 +1,7 @@
 import { Tooltip } from '@chakra-ui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
+import { useMemo } from 'react'
 
 import { usePresaleData } from '@/app/presales/providers/presale-provider'
 import { colors } from '@/lib/styles/colors'
@@ -14,11 +15,38 @@ type Props = {
   token: PreSaleToken
   onClick?: () => void
 }
+
+const dateRowLabel = {
+  [PreSaleStatus.ACTIVE]: 'Time left in presale',
+  [PreSaleStatus.CLOSED_TARGET_MET]: 'Token launch date',
+  [PreSaleStatus.CLOSED_TARGET_NOT_MET]: 'Token launch date',
+  [PreSaleStatus.NOT_STARTED]: 'Presale start date',
+  [PreSaleStatus.TOKEN_LAUNCHED]: 'Launched',
+}
+
 export function PreSaleTokenCard({ token, onClick }: Props) {
   const { formatted } = usePresaleData(token.symbol)
   const isStatusClosed =
     token.status === PreSaleStatus.CLOSED_TARGET_MET ||
     token.status === PreSaleStatus.CLOSED_TARGET_NOT_MET
+
+  const dateRowValue = useMemo(() => {
+    const { launchDate, status } = token
+
+    switch (status) {
+      case PreSaleStatus.TOKEN_LAUNCHED:
+      case PreSaleStatus.CLOSED_TARGET_MET:
+        return launchDate
+      case PreSaleStatus.CLOSED_TARGET_NOT_MET:
+        return 'N/A'
+      case PreSaleStatus.ACTIVE:
+      case PreSaleStatus.NOT_STARTED:
+        return formatted.dateValue
+      default:
+        return ''
+    }
+  }, [formatted, token])
+
   return (
     <div
       className={clsx(
@@ -106,9 +134,9 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
                 isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-950',
               )}
             >
-              {token.targetFundraise}
+              {token.targetFundraise.quantity}
             </span>{' '}
-            wstETH
+            {token.targetFundraise.asset}
           </div>
         </div>
         <div className='mb-2 flex'>
@@ -124,18 +152,8 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
           </div>
         </div>
         <div className='flex'>
-          <div className='flex-1'>
-            {isStatusClosed
-              ? 'Token launch date'
-              : token.status === PreSaleStatus.TOKEN_LAUNCHED
-                ? 'Launched'
-                : 'Time left in presale'}
-          </div>
-          <div className='text-ic-gray-950 font-bold'>
-            {isStatusClosed || token.status === PreSaleStatus.TOKEN_LAUNCHED
-              ? token.launchDate ?? 'N/A' // N/A when closed but target not met
-              : `${formatted.daysLeft} / 30 days`}
-          </div>
+          <div className='flex-1'>{dateRowLabel[token.status]}</div>
+          <div className='text-ic-gray-950 font-bold'>{dateRowValue}</div>
         </div>
       </div>
       <button
