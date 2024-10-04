@@ -413,6 +413,22 @@ export const RealWorldAssetIndex: Token = {
   url: 'rwa',
 }
 
+const icUSDTokenData = getIndexTokenData('ICUSD', MAINNET.chainId)!
+export const ICUSD: Token = {
+  ...icUSDTokenData,
+  // Random for now - as no listing
+  coingeckoId: 'icusd',
+  fees: {
+    streamingFee: '	1.95%',
+    mintFee: '0.10%',
+    redeemFee: '0.10%',
+  },
+  image: icUSDTokenData.logoURI,
+  indexTypes: [IndexType.thematic],
+  isDangerous: true,
+  url: 'icusd',
+}
+
 /**
  * Other - IndexCoop
  */
@@ -641,6 +657,22 @@ export const WSTETH: Token = {
   decimals: 18,
   url: '',
   coingeckoId: 'wrapped-steth',
+  fees: undefined,
+  isDangerous: false,
+  indexTypes: [],
+}
+
+export const AUSDC: Token = {
+  name: 'aUSDC',
+  symbol: 'aUSDC',
+  image:
+    'https://assets.coingecko.com/coins/images/14318/large/aUSDC.e260d492.png',
+  address: '0xBcca60bB61934080951369a648Fb03DF4F96263C',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: '',
+  coingeckoId: 'aave-v2-usdc',
   fees: undefined,
   isDangerous: false,
   indexTypes: [],
