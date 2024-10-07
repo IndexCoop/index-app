@@ -18,7 +18,7 @@ const fetchSettingsByPeriod: {
     period: 'hour',
   },
   [ChartPeriod.Day]: {
-    interval: 'minute',
+    interval: 'hour',
     period: 'day',
   },
   [ChartPeriod.Week]: {
