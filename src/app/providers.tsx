@@ -16,7 +16,7 @@ import { AnalyticsProvider } from './analytics-provider'
 
 const queryClient = new QueryClient()
 
-createWeb3Modal({
+const modal = createWeb3Modal({
   wagmiConfig: config,
   projectId,
   enableOnramp: false,
@@ -27,6 +27,7 @@ createWeb3Modal({
   metadata,
 })
 
+modal
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <CacheProvider prepend={true}>
