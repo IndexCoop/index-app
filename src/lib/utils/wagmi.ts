@@ -1,7 +1,7 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { cookieStorage, createStorage, http } from 'wagmi'
 import { arbitrum, base, localhost, mainnet } from 'wagmi/chains'
-import { safe } from 'wagmi/connectors'
+import { safe, walletConnect } from 'wagmi/connectors'
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
 
@@ -39,6 +39,7 @@ export const config = defaultWagmiConfig({
   projectId,
   metadata,
   ssr: true,
+  enableWalletConnect: true,
   auth: {
     email: false,
     socials: [],
@@ -46,7 +47,13 @@ export const config = defaultWagmiConfig({
   storage: createStorage({
     storage: cookieStorage,
   }),
-  connectors: [safe()],
+  connectors: [
+    safe({
+      debug: false,
+      allowedDomains: [/^app\.safe\.global$/],
+    }),
+    walletConnect({ projectId }),
+  ],
   transports: {
     [mainnet.id]: http(
       `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
