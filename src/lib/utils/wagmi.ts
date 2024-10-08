@@ -1,5 +1,5 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
-import { createStorage, http } from 'wagmi'
+import { cookieStorage, createStorage, http } from 'wagmi'
 import { arbitrum, base, localhost, mainnet } from 'wagmi/chains'
 import { safe } from 'wagmi/connectors'
 
@@ -45,7 +45,7 @@ export const config = defaultWagmiConfig({
     socials: [],
   },
   storage: createStorage({
-    storage: localStorage,
+    storage: cookieStorage,
   }),
   connectors: [safe()],
   transports: {
