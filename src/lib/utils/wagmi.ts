@@ -39,7 +39,6 @@ export const config = defaultWagmiConfig({
   projectId,
   metadata,
   ssr: true,
-  enableWalletConnect: true,
   auth: {
     email: false,
     socials: [],
