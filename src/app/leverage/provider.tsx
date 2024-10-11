@@ -155,7 +155,7 @@ export function LeverageProvider(props: { children: any }) {
     updateQueryParams({ network: chainIdRaw })
     // To control the defaults better
     return queryNetwork ?? chainIdRaw ?? ARBITRUM.chainId
-  }, [chainIdRaw, queryNetwork])
+  }, [chainIdRaw, queryNetwork, updateQueryParams])
 
   const baseTokens = useMemo(() => {
     return getBaseTokens(chainId)
@@ -276,7 +276,7 @@ export function LeverageProvider(props: { children: any }) {
     updateQueryParams({ isMinting, inputToken, outputToken })
     if (carryCosts)
       setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
-  }, [isMinting, inputToken, outputToken, carryCosts])
+  }, [isMinting, inputToken, outputToken, carryCosts, updateQueryParams])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -488,6 +488,7 @@ export function LeverageProvider(props: { children: any }) {
     queryInputToken,
     queryOutputToken,
     queryLeverageType,
+    updateQueryParams,
   ])
 
   return (
