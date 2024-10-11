@@ -1,4 +1,5 @@
 import { getTokenByChainAndSymbol } from '@nsorcell/exp-tokenlist'
+import { arbitrum, base, mainnet } from 'viem/chains'
 
 import {
   bedBorderLogo,
@@ -10,8 +11,6 @@ import {
   indexLogo,
   wseth2Logo,
 } from '@/lib/utils/assets'
-
-import { arbitrum, base, mainnet } from 'viem/chains'
 
 export enum IndexType {
   thematic = 'thematic',
