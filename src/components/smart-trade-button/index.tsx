@@ -143,9 +143,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
     if (buttonState === TradeButtonState.mismatchingQueryNetwork) {
       if (queryNetwork) {
-        switchChainAsync({ chainId: queryNetwork }).then(() =>
-          router.replace(pathname),
-        )
+        switchChainAsync({ chainId: queryNetwork })
       }
 
       return

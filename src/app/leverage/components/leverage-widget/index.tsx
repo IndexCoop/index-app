@@ -36,7 +36,7 @@ type LeverageWidgetProps = {
 
 export function LeverageWidget(props: LeverageWidgetProps) {
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
-  const { queryNetwork } = useQueryParams()
+  const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
     baseToken,
@@ -136,11 +136,11 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         inputValue={inputValue}
         isFetchingQuote={isFetchingQuote}
         isSupportedNetwork={isSupportedNetwork}
-        queryNetwork={queryNetwork}
+        queryNetwork={queryParams.queryNetwork}
         outputToken={outputToken}
         buttonLabelOverrides={{
           [TradeButtonState.default]: 'Review Transaction',
-          [TradeButtonState.mismatchingQueryNetwork]: `Switch to ${chains.find(({ id }) => id === queryNetwork)?.name}`,
+          [TradeButtonState.mismatchingQueryNetwork]: `Switch to ${chains.find(({ id }) => id === queryParams.queryNetwork)?.name}`,
         }}
         onOpenTransactionReview={onOpenTransactionReview}
         onRefetchQuote={() => {}}

@@ -1,7 +1,7 @@
 'use client'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { Button } from '@chakra-ui/react'
+import { Button } from '@headlessui/react'
 import { NetworkUtil } from '@web3modal/common'
 import { AssetUtil, NetworkController } from '@web3modal/core'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
@@ -29,7 +29,7 @@ export const NetworkSelect = () => {
 
   return (
     <Button
-      className='bg-ic-black text-ic-white flex gap-2 rounded-md border-none px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
+      className='bg-ic-black text-ic-white flex items-center gap-2 rounded-md border-none px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
       onClick={() => open({ view: 'Networks' })}
     >
       {imageSrc && (

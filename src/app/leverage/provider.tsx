@@ -116,11 +116,14 @@ export function LeverageProvider(props: { children: any }) {
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
-    queryNetwork,
-    queryLeverageType,
-    queryInputToken,
-    queryOutputToken,
-    queryIsMinting,
+    queryParams: {
+      queryNetwork,
+      queryLeverageType,
+      queryInputToken,
+      queryOutputToken,
+      queryIsMinting,
+    },
+    updateQueryParams,
   } = useQueryParams(defaultParams)
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
@@ -149,6 +152,7 @@ export function LeverageProvider(props: { children: any }) {
   })
 
   const chainId = useMemo(() => {
+    updateQueryParams({ network: chainIdRaw })
     // To control the defaults better
     return queryNetwork ?? chainIdRaw ?? ARBITRUM.chainId
   }, [chainIdRaw, queryNetwork])
@@ -268,6 +272,8 @@ export function LeverageProvider(props: { children: any }) {
     if (inputToken === null || outputToken === null) return
 
     const inputOutputToken = isMinting ? outputToken : inputToken
+
+    updateQueryParams({ isMinting, inputToken, outputToken })
     if (carryCosts)
       setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
   }, [isMinting, inputToken, outputToken, carryCosts])
@@ -468,6 +474,13 @@ export function LeverageProvider(props: { children: any }) {
       isAvailable: true,
       quote: null,
       error: null,
+    })
+    updateQueryParams({
+      isMinting: queryIsMinting,
+      leverageType: queryLeverageType,
+      inputToken: queryInputToken,
+      outputToken: queryOutputToken,
+      network: chainId,
     })
   }, [
     chainId,
