@@ -1,5 +1,4 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react'
-import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSwitchChain } from 'wagmi'
 
@@ -54,8 +53,6 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   } = props
 
   const { switchChainAsync } = useSwitchChain()
-  const router = useRouter()
-  const pathname = usePathname()
   const { chainId } = useNetwork()
   const { open } = useWeb3Modal()
   const requiresProtection = useProtection()
@@ -143,9 +140,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
     if (buttonState === TradeButtonState.mismatchingQueryNetwork) {
       if (queryNetwork) {
-        switchChainAsync({ chainId: queryNetwork }).then(() =>
-          router.replace(pathname),
-        )
+        switchChainAsync({ chainId: queryNetwork })
       }
 
       return
@@ -176,8 +171,6 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     signTermsOfService,
     shouldApprove,
     queryNetwork,
-    pathname,
-    router,
     switchChainAsync,
   ])
 
