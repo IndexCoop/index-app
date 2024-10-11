@@ -2,7 +2,7 @@ import {
   getIssuanceModule,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
-import { getTokenDataByAddress } from '@indexcoop/tokenlists'
+import { getTokenByChainAndAddress } from '@nsorcell/exp-tokenlist'
 import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
@@ -71,11 +71,11 @@ export async function getLegacyRedemptionQuote(
     const outputTokens = isIcReth
       ? [RETH]
       : components.map((component) => {
-          const outputToken = getTokenDataByAddress(component, chainId)!
+          const outputToken = getTokenByChainAndAddress(chainId, component)!
           return {
             ...outputToken,
-            // all these properties below will be irrelevant for the legacy redemption
             image: outputToken.logoURI,
+            // all these properties below will be irrelevant for the legacy redemption
             coingeckoId: '',
             fees: { streamingFee: '0' },
             indexTypes: [],
