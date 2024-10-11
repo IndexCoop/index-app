@@ -2,8 +2,10 @@ import { XMarkIcon } from '@heroicons/react/16/solid'
 import { ListedToken } from '@nsorcell/exp-tokenlist'
 import Image from 'next/image'
 
+export type WidgetHeaderTokenData = Pick<ListedToken, 'logoURI' | 'symbol'>
+
 type Props = {
-  tokenData: Pick<ListedToken, 'logoURI' | 'symbol'>
+  tokenData: WidgetHeaderTokenData
   onClose: () => void
 }
 

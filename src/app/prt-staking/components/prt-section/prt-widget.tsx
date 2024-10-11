@@ -4,7 +4,10 @@ import { parseUnits } from 'viem'
 import { ClaimablePanel } from '@/app/prt-staking/components/prt-section/claimable-panel'
 import { SafeSignButton } from '@/app/prt-staking/components/prt-section/safe-sign-button'
 import { StakedPanel } from '@/app/prt-staking/components/prt-section/staked-panel'
-import { WidgetHeader } from '@/app/prt-staking/components/prt-section/widget-header'
+import {
+  WidgetHeader,
+  WidgetHeaderTokenData,
+} from '@/app/prt-staking/components/prt-section/widget-header'
 import { WidgetTabs } from '@/app/prt-staking/components/prt-section/widget-tabs'
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken, WidgetTab } from '@/app/prt-staking/types'
@@ -176,7 +179,10 @@ export function PrtWidget({ token, onClose }: Props) {
 
   return (
     <div className='w-full min-w-80 flex-1 flex-col space-y-5 rounded-3xl bg-gray-50 p-6 sm:min-w-96'>
-      <WidgetHeader tokenData={token.rewardTokenData} onClose={onClose} />
+      <WidgetHeader
+        tokenData={token.rewardTokenData as WidgetHeaderTokenData}
+        onClose={onClose}
+      />
       <WidgetTabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
       {currentTab === WidgetTab.CLAIM ? <ClaimablePanel /> : <StakedPanel />}
       <TradeInputSelector
