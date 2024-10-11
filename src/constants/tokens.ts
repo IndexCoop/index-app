@@ -1,4 +1,4 @@
-import { getIndexTokenData } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol } from '@nsorcell/exp-tokenlist'
 
 import {
   bedBorderLogo,
@@ -101,7 +101,7 @@ export const DiversifiedStakedETHIndex: Token = {
   indexTypes: [IndexType.yield],
 }
 
-const hyeth = getIndexTokenData('hyETH', MAINNET.chainId)!
+const hyeth = getTokenByChainAndSymbol(MAINNET.chainId, 'hyETH')!
 export const HighYieldETHIndex: Token = {
   ...hyeth,
   arbitrumAddress: '0x8b5D1d8B3466eC21f8eE33cE63F319642c026142',
@@ -115,8 +115,8 @@ export const HighYieldETHIndex: Token = {
   url: 'hyeth',
 }
 
-const btc2x = getIndexTokenData('BTC2X', MAINNET.chainId)!
-const btc2xArbitrum = getIndexTokenData('BTC2X', ARBITRUM.chainId)!
+const btc2x = getTokenByChainAndSymbol(MAINNET.chainId, 'BTC2X')!
+const btc2xArbitrum = getTokenByChainAndSymbol(ARBITRUM.chainId, 'BTC2X')!
 export const IndexCoopBitcoin2xIndex: Token = {
   ...btc2x,
   arbitrumAddress: btc2xArbitrum.address,
@@ -134,7 +134,7 @@ export const IndexCoopBitcoin2xIndex: Token = {
   borrowedAssetSymbol: 'usdc',
 }
 
-const btc3xArbitrum = getIndexTokenData('BTC3X', ARBITRUM.chainId)!
+const btc3xArbitrum = getTokenByChainAndSymbol(ARBITRUM.chainId, 'BTC3X')!
 export const IndexCoopBitcoin3xIndex: Token = {
   ...btc3xArbitrum,
   address: '',
@@ -153,9 +153,9 @@ export const IndexCoopBitcoin3xIndex: Token = {
   borrowedAssetSymbol: 'usdc',
 }
 
-const eth2x = getIndexTokenData('ETH2X')!
-const eth2xArbitrum = getIndexTokenData('ETH2X', ARBITRUM.chainId)!
-const eth2xBase = getIndexTokenData('ETH2X', BASE.chainId)!
+const eth2x = getTokenByChainAndSymbol(MAINNET.chainId, 'ETH2X')!
+const eth2xArbitrum = getTokenByChainAndSymbol(ARBITRUM.chainId, 'ETH2X')!
+const eth2xBase = getTokenByChainAndSymbol(BASE.chainId, 'ETH2X')!
 export const IndexCoopEthereum2xIndex: Token = {
   ...eth2x,
   arbitrumAddress: eth2xArbitrum.address,
@@ -174,8 +174,8 @@ export const IndexCoopEthereum2xIndex: Token = {
   borrowedAssetSymbol: 'usdc',
 }
 
-const eth3xArbitrum = getIndexTokenData('ETH3X', ARBITRUM.chainId)!
-const eth3xBase = getIndexTokenData('ETH3X', BASE.chainId)!
+const eth3xArbitrum = getTokenByChainAndSymbol(ARBITRUM.chainId, 'ETH3X')!
+const eth3xBase = getTokenByChainAndSymbol(BASE.chainId, 'ETH3X')!
 export const IndexCoopEthereum3xIndex: Token = {
   ...eth3xArbitrum,
   address: '',
@@ -195,7 +195,7 @@ export const IndexCoopEthereum3xIndex: Token = {
   borrowedAssetSymbol: 'usdc',
 }
 
-const ibtc1x = getIndexTokenData('iBTC1x', ARBITRUM.chainId)!
+const ibtc1x = getTokenByChainAndSymbol(ARBITRUM.chainId, 'iBTC1X')!
 export const IndexCoopInverseBitcoinIndex: Token = {
   ...ibtc1x,
   address: '',
@@ -214,7 +214,7 @@ export const IndexCoopInverseBitcoinIndex: Token = {
   borrowedAssetSymbol: 'wbtc',
 }
 
-const ieth1x = getIndexTokenData('iETH1X', ARBITRUM.chainId)!
+const ieth1x = getTokenByChainAndSymbol(ARBITRUM.chainId, 'iETH1X')!
 export const IndexCoopInverseEthereumIndex: Token = {
   ...ieth1x,
   address: '',
@@ -389,7 +389,7 @@ export const icETHIndex: Token = {
   indexTypes: [IndexType.yield],
 }
 
-const rwa = getIndexTokenData('RWA', MAINNET.chainId)!
+const rwa = getTokenByChainAndSymbol(MAINNET.chainId, 'RWA')!
 export const RealWorldAssetIndex: Token = {
   ...rwa,
   // Random for now - as no listing
@@ -405,7 +405,7 @@ export const RealWorldAssetIndex: Token = {
   url: 'rwa',
 }
 
-const icUSDTokenData = getIndexTokenData('ICUSD', MAINNET.chainId)!
+const icUSDTokenData = getTokenByChainAndSymbol(MAINNET.chainId, 'icUSD')!
 export const ICUSD: Token = {
   ...icUSDTokenData,
   // Random for now - as no listing
