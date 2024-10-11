@@ -1,7 +1,4 @@
-import {
-  IndexCoopMainnetTokens,
-  getIndexTokenData,
-} from '@indexcoop/tokenlists'
+import { getIndexTokenData } from '@indexcoop/tokenlists'
 
 import {
   bedBorderLogo,
@@ -43,11 +40,6 @@ export interface Token {
   isPerp?: boolean
   borrowedAssetSymbol?: string
 }
-
-const getTokenFromSymbol = (symbol: string) =>
-  IndexCoopMainnetTokens.find(
-    (token) => token.symbol.toLowerCase() === symbol.toLowerCase(),
-  )
 
 /**
  * Indices
@@ -109,7 +101,7 @@ export const DiversifiedStakedETHIndex: Token = {
   indexTypes: [IndexType.yield],
 }
 
-const hyeth = getTokenFromSymbol('hyETH')!
+const hyeth = getIndexTokenData('hyETH', MAINNET.chainId)!
 export const HighYieldETHIndex: Token = {
   ...hyeth,
   arbitrumAddress: '0x8b5D1d8B3466eC21f8eE33cE63F319642c026142',
@@ -123,7 +115,7 @@ export const HighYieldETHIndex: Token = {
   url: 'hyeth',
 }
 
-const btc2x = getTokenFromSymbol('BTC2X')!
+const btc2x = getIndexTokenData('BTC2X', MAINNET.chainId)!
 const btc2xArbitrum = getIndexTokenData('BTC2X', ARBITRUM.chainId)!
 export const IndexCoopBitcoin2xIndex: Token = {
   ...btc2x,
