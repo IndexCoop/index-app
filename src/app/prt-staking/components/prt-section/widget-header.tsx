@@ -1,8 +1,9 @@
 import { XMarkIcon } from '@heroicons/react/16/solid'
+import { ListedToken } from '@nsorcell/exp-tokenlist'
 import Image from 'next/image'
 
 type Props = {
-  tokenData: { logoURI: string; symbol: string }
+  tokenData: Pick<ListedToken, 'logoURI' | 'symbol'>
   onClose: () => void
 }
 
