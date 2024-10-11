@@ -1,9 +1,8 @@
 import { XMarkIcon } from '@heroicons/react/16/solid'
-import { TokenData } from '@indexcoop/tokenlists'
 import Image from 'next/image'
 
 type Props = {
-  tokenData: TokenData
+  tokenData: { logoURI: string; symbol: string }
   onClose: () => void
 }
 
