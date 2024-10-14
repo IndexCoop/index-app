@@ -2,7 +2,7 @@ import {
   formatUnits,
   parseUnits as parseUnitsEthers,
 } from '@ethersproject/units'
-import { TokenData } from '@indexcoop/tokenlists'
+import { ListedToken } from '@nsorcell/exp-tokenlist'
 import {
   isAddress as isAddressViem,
   parseUnits as parseUnitsViem,
@@ -21,7 +21,7 @@ export function isSameAddress(address1: string, address2: string): boolean {
 }
 
 // TODO: Settle on one token typing approach?
-export const formatTokenDataToToken = (tokenData: TokenData): Token => {
+export const formatTokenDataToToken = (tokenData: ListedToken): Token => {
   return {
     address: tokenData.address,
     name: tokenData.name,
