@@ -15,7 +15,9 @@ type FromValues<T extends Record<keyof T, string>> = {
   [K in T[keyof T]]: number
 }
 
-export type IndexData = Partial<FromValues<typeof metricToIndexDataKey>>
+export type IndexData = Partial<FromValues<typeof metricToIndexDataKey>> & {
+  CreatedTimestamp: string
+}
 
 export type IndexDataMetric = keyof typeof metricToIndexDataKey
 
@@ -71,7 +73,7 @@ export async function fetchTokenMetrics({
         Object.assign(acc, {
           [metricToIndexDataKey[metric]]: latest[metricToIndexDataKey[metric]],
         }),
-      {},
+      { CreatedTimestamp: latest.CreatedTimestamp },
     )
   } catch (error) {
     console.error(`Error fetching token metrics: ${url}`, error)
@@ -85,8 +87,8 @@ export async function fetchTokenHistoricalData({
   period = 'day',
 }: {
   tokenAddress: string
-  interval: IndexDataInterval
-  period: IndexDataPeriod
+  interval?: IndexDataInterval
+  period?: IndexDataPeriod
 }) {
   const url = formatUrl({
     tokenAddress,
@@ -96,7 +98,10 @@ export async function fetchTokenHistoricalData({
   })
   try {
     const res = await fetch(url)
-    const json = (await res.json()) as Pick<IndexData, 'NetAssetValue'>[]
+    const json = (await res.json()) as Pick<
+      IndexData,
+      'NetAssetValue' | 'CreatedTimestamp'
+    >[]
     return json
   } catch (error) {
     console.error(`Error fetching token historical data: ${url}`, error)
