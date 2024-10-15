@@ -1,4 +1,4 @@
-import { getTokenByChainAndSymbol } from '@nsorcell/exp-tokenlist'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { arbitrum, base, mainnet } from 'viem/chains'
 
 import {
