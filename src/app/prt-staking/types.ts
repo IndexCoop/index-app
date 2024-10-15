@@ -1,4 +1,4 @@
-import { ListedToken } from '@nsorcell/exp-tokenlist'
+import { ListedToken } from '@indexcoop/tokenlists'
 
 export type ProductRevenueToken = {
   rewardTokenData: ListedToken

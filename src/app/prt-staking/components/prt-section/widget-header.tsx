@@ -1,5 +1,5 @@
 import { XMarkIcon } from '@heroicons/react/16/solid'
-import { ListedToken } from '@nsorcell/exp-tokenlist'
+import { ListedToken } from '@indexcoop/tokenlists'
 import Image from 'next/image'
 
 export type WidgetHeaderTokenData = Pick<ListedToken, 'logoURI' | 'symbol'>

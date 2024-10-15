@@ -2,7 +2,7 @@ import {
   getIssuanceModule,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
-import { getTokenByChainAndAddress } from '@nsorcell/exp-tokenlist'
+import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 

@@ -2,7 +2,7 @@ import {
   formatUnits,
   parseUnits as parseUnitsEthers,
 } from '@ethersproject/units'
-import { ListedToken } from '@nsorcell/exp-tokenlist'
+import { ListedToken } from '@indexcoop/tokenlists'
 import {
   isAddress as isAddressViem,
   parseUnits as parseUnitsViem,
