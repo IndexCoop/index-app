@@ -80,7 +80,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
   const updateQueryParams = useCallback(
     (newParams: Partial<UseQueryParamsArgs>) => {
       const defaultQueryString = `?buy=ETH2X&sell=ETH&network=1`
-      if(typeof window === 'undefined')  return defaultQueryString
+      if (typeof window === 'undefined') return defaultQueryString
       const queryParams = new URLSearchParams(window.location.search)
 
       const { network, inputToken, outputToken } = newParams
