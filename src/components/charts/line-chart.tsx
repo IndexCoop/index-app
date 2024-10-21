@@ -38,16 +38,17 @@ function LineChart({ data, parentWidth, parentHeight, selectedPeriod }: Props) {
     const prices = data.map(({ NetAssetValue }) => NetAssetValue!)
     const minPrice = Math.min(...prices)
     const maxPrice = Math.max(...prices)
+    const diff = maxPrice - minPrice
     return {
-      minDomain: minPrice * 0.995,
-      maxDomain: maxPrice * 1.005,
+      minDomain: minPrice - diff * 0.05,
+      maxDomain: maxPrice + diff * 0.05,
     }
   }, [data])
 
   const accessors = {
     xAccessor: (d: LineChartIndexData) =>
       dayjs(d.CreatedTimestamp).format(timestampFormatByPeriod[selectedPeriod]),
-    yAccessor: (d: LineChartIndexData) => d.NetAssetValue!.toFixed(2),
+    yAccessor: (d: LineChartIndexData) => d.NetAssetValue,
   }
 
   const tooltipAccessors = {
@@ -67,10 +68,11 @@ function LineChart({ data, parentWidth, parentHeight, selectedPeriod }: Props) {
       yScale={{
         type: 'linear',
         domain: [minDomain, maxDomain],
+        nice: true,
         zero: false,
       }}
     >
-      <Axis orientation='left' tickFormat={(d) => d.toFixed(2)} />
+      <Axis orientation='left' numTicks={5} tickFormat={(d) => d.toFixed(2)} />
       <Axis orientation='bottom' numTicks={5} />
       <AnimatedLineSeries {...accessors} dataKey='prices' data={data} />
       <Tooltip
@@ -80,7 +82,7 @@ function LineChart({ data, parentWidth, parentHeight, selectedPeriod }: Props) {
         showSeriesGlyphs
         renderTooltip={({ tooltipData }) => (
           <div>
-            <div className='text-ic-white text-xs font-bold'>
+            <div className='text-ic-white mb-1 text-[14px] font-bold'>
               {tooltipAccessors.yAccessor(
                 tooltipData?.nearestDatum?.datum as LineChartIndexData,
               )}
