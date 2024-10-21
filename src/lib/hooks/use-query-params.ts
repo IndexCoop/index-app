@@ -1,14 +1,14 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
-import { useMemo } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useMemo } from 'react'
 
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
 import { Token } from '@/constants/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
-type DefaultParams = {
+type UseQueryParamsArgs = {
   isMinting: boolean
   leverageType: LeverageType
   network: number
@@ -16,18 +16,22 @@ type DefaultParams = {
   outputToken: Token
 }
 
-type ReturnType<T extends Partial<DefaultParams>> = {
-  [K in keyof DefaultParams as `query${Capitalize<string & K>}`]: K extends keyof T
+type ReturnType<T extends Partial<UseQueryParamsArgs>> = {
+  [K in keyof UseQueryParamsArgs as `query${Capitalize<string & K>}`]: K extends keyof T
     ? T[K]
-    : DefaultParams[K] | undefined
+    : UseQueryParamsArgs[K] | undefined
 }
 
-export const useQueryParams = <T extends Partial<DefaultParams>>(
+export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
   defaultParams: T = {} as T,
-): ReturnType<T> => {
+): {
+  queryParams: ReturnType<T>
+  updateQueryParams: (newParams: Partial<UseQueryParamsArgs>) => void
+} => {
   const searchParams = useSearchParams()
+  const router = useRouter()
 
-  return useMemo(() => {
+  const queryParams = useMemo(() => {
     const network = parseInt(searchParams.get('network') || '0')
     const buy = searchParams.get('buy') || ''
     const sell = searchParams.get('sell') || ''
@@ -72,4 +76,36 @@ export const useQueryParams = <T extends Partial<DefaultParams>>(
     // NOTE: defaultQueryPararms should only be read initially.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const updateQueryParams = useCallback(
+    (newParams: Partial<UseQueryParamsArgs>) => {
+      const defaultQueryString = `?buy=ETH2X&sell=ETH&network=1`
+      if (typeof window === 'undefined') return defaultQueryString
+      const queryParams = new URLSearchParams(window.location.search)
+
+      const { network, inputToken, outputToken } = newParams
+
+      queryParams.set(
+        'buy',
+        outputToken?.symbol ?? queryParams.get('buy') ?? '',
+      )
+      queryParams.set(
+        'sell',
+        inputToken?.symbol ?? queryParams.get('sell') ?? '',
+      )
+
+      queryParams.set(
+        'network',
+        network?.toString() ?? queryParams.get('network') ?? '',
+      )
+
+      router.replace(`?${queryParams.toString()}`)
+    },
+    [router],
+  )
+
+  return {
+    queryParams,
+    updateQueryParams,
+  }
 }

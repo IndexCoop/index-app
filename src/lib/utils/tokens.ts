@@ -207,21 +207,10 @@ export function isIndexToken(token: Token): boolean {
   )
 }
 
-export function isLeveragedToken(token: Token): boolean {
-  if (token === Bitcoin2xFlexibleLeverageIndex) return true
-  if (token === Ethereum2xFlexibleLeverageIndex) return true
-  if (token === icETHIndex) return true
-  return false
-}
-
 export const isNativeCurrency = (token: Token, chainId: number): boolean => {
   const nativeCurrency = getNativeToken(chainId)
   if (!nativeCurrency) return false
   return token.symbol === nativeCurrency.symbol
-}
-
-export function isPerpToken(token: Token): boolean {
-  return token.isPerp ? true : false
 }
 
 export function isTokenPairTradable(

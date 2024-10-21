@@ -116,11 +116,14 @@ export function LeverageProvider(props: { children: any }) {
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
-    queryNetwork,
-    queryLeverageType,
-    queryInputToken,
-    queryOutputToken,
-    queryIsMinting,
+    queryParams: {
+      queryNetwork,
+      queryLeverageType,
+      queryInputToken,
+      queryOutputToken,
+      queryIsMinting,
+    },
+    updateQueryParams,
   } = useQueryParams(defaultParams)
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
@@ -149,9 +152,10 @@ export function LeverageProvider(props: { children: any }) {
   })
 
   const chainId = useMemo(() => {
+    updateQueryParams({ network: chainIdRaw })
     // To control the defaults better
     return queryNetwork ?? chainIdRaw ?? ARBITRUM.chainId
-  }, [chainIdRaw, queryNetwork])
+  }, [chainIdRaw, queryNetwork, updateQueryParams])
 
   const baseTokens = useMemo(() => {
     return getBaseTokens(chainId)
@@ -268,9 +272,11 @@ export function LeverageProvider(props: { children: any }) {
     if (inputToken === null || outputToken === null) return
 
     const inputOutputToken = isMinting ? outputToken : inputToken
+
+    updateQueryParams({ isMinting, inputToken, outputToken })
     if (carryCosts)
       setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
-  }, [isMinting, inputToken, outputToken, carryCosts])
+  }, [isMinting, inputToken, outputToken, carryCosts, updateQueryParams])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -469,12 +475,20 @@ export function LeverageProvider(props: { children: any }) {
       quote: null,
       error: null,
     })
+    updateQueryParams({
+      isMinting: queryIsMinting,
+      leverageType: queryLeverageType,
+      inputToken: queryInputToken,
+      outputToken: queryOutputToken,
+      network: chainId,
+    })
   }, [
     chainId,
     queryIsMinting,
     queryInputToken,
     queryOutputToken,
     queryLeverageType,
+    updateQueryParams,
   ])
 
   return (
