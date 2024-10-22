@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    missingSuspenseWithCSRBailout: false
+    missingSuspenseWithCSRBailout: false,
   },
   async headers() {
     return [
@@ -22,10 +22,14 @@ const nextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
   images: {
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'tokens.1inch.io',
+      },
       {
         protocol: 'https',
         hostname: 'assets.coingecko.com',
