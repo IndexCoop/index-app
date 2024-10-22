@@ -152,7 +152,6 @@ export function LeverageProvider(props: { children: any }) {
   })
 
   const chainId = useMemo(() => {
-    updateQueryParams({ network: chainIdRaw })
     // To control the defaults better
     return queryNetwork ?? chainIdRaw ?? ARBITRUM.chainId
   }, [chainIdRaw, queryNetwork, updateQueryParams])
