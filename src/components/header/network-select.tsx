@@ -7,7 +7,7 @@ import { NetworkUtil } from '@web3modal/common'
 import { AssetUtil, NetworkController } from '@web3modal/core'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import Image from 'next/image'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
@@ -17,7 +17,6 @@ export const NetworkSelect = () => {
   const { open } = useWeb3Modal()
   const { chainId } = useNetwork()
   const { queryParams, updateQueryParams } = useQueryParams()
-  const hasMounted = useRef(false)
 
   const chain = useMemo(() => chains.find((c) => c.id === chainId), [chainId])
 
@@ -34,24 +33,24 @@ export const NetworkSelect = () => {
   useEffect(() => {
     const unwatch = watchAccount(config, {
       // Do not immediately override the chainId with the wallet one when the user arrives.
-      onChange({ chainId }) {
+      onChange({ chainId, isConnecting, isReconnecting }) {
+        console.log(isConnecting, isReconnecting)
         const { queryNetwork } = queryParams
         if (
-          hasMounted.current === true &&
           queryNetwork &&
-          queryNetwork !== chainId
+          queryNetwork !== chainId &&
+          !isConnecting &&
+          !isReconnecting
         ) {
           updateQueryParams({
             network: chainId,
           })
         }
-
-        hasMounted.current = true
       },
     })
 
     return () => unwatch()
-  }, [])
+  }, [queryParams, updateQueryParams])
 
   return (
     <Button
