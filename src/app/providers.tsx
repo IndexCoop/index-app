@@ -21,6 +21,10 @@ createWeb3Modal({
   projectId,
   enableOnramp: false,
   enableSwaps: false,
+  featuredWalletIds: [
+    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
+    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
+  ],
   termsConditionsUrl: 'https://indexcoop.com/terms-of-service',
   privacyPolicyUrl: 'https://indexcoop.com/privacy-policy',
   //  defaultNetwork: networks[0],
