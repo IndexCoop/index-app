@@ -6,7 +6,7 @@ import {
 import {
   getTokenByChainAndAddress,
   isAddressEqual,
-  isIndexToken,
+  isProductToken,
 } from '@indexcoop/tokenlists'
 import { BigNumber } from 'ethers'
 import { NextRequest, NextResponse } from 'next/server'
@@ -136,6 +136,6 @@ function getQuoteToken(
       decimals: listedToken.decimals,
       address: listedToken.address,
     },
-    isIndex: isIndexToken(listedToken),
+    isIndex: isProductToken(listedToken),
   }
 }
