@@ -124,7 +124,7 @@ export function LeverageProvider(props: { children: any }) {
       queryIsMinting,
     },
     updateQueryParams,
-  } = useQueryParams(defaultParams)
+  } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
 
@@ -152,10 +152,8 @@ export function LeverageProvider(props: { children: any }) {
   })
 
   const chainId = useMemo(() => {
-    updateQueryParams({ network: chainIdRaw })
-    // To control the defaults better
     return queryNetwork ?? chainIdRaw ?? ARBITRUM.chainId
-  }, [chainIdRaw, queryNetwork, updateQueryParams])
+  }, [chainIdRaw, queryNetwork])
 
   const baseTokens = useMemo(() => {
     return getBaseTokens(chainId)
