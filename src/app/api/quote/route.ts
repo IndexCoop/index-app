@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const request: IndexQuoteRequest = await req.json()
     console.log(request)
     const {
-      // account,
+      account,
       chainId,
       inputToken: inputTokenAddress,
       inputAmount,
@@ -90,22 +90,24 @@ export async function POST(req: NextRequest) {
 
     console.log(quote)
 
+    if (!quote) {
+      return NextResponse.json({ message: 'No quote found.' }, { status: 404 })
+    }
+
     return NextResponse.json({
       type: QuoteType.flashmint,
-      chainId: 1,
-      contract: '',
-      takerAddress: '',
-      inputToken: '',
-      outputToken: '',
-      inputAmount: '',
-      outputAmount: '',
-      rawResponse: {},
-      transaction: {
-        from: '',
-        to: '',
-        data: '',
-        value: '0',
-      },
+      chainId: quote.chainId,
+      contract: quote.contract,
+      contractType: quote.contractType,
+      takerAddress: account,
+      isMinting: quote.isMinting,
+      inputToken: quote.inputToken,
+      outputToken: quote.outputToken,
+      indexTokenAmount: quote.indexTokenAmount.toString(),
+      inputAmount: quote.inputAmount.toString(),
+      outputAmount: quote.outputAmount.toString(),
+      slippage: quote.slippage,
+      transaction: quote.tx,
     })
   } catch (error) {
     console.error(error)
