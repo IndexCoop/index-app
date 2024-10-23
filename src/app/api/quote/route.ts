@@ -29,7 +29,6 @@ interface IndexQuoteRequest {
 export async function POST(req: NextRequest) {
   try {
     const request: IndexQuoteRequest = await req.json()
-    console.log(request)
     const {
       account,
       chainId,
@@ -60,8 +59,6 @@ export async function POST(req: NextRequest) {
 
     const inputToken = getQuoteToken(inputTokenAddress, chainId)
     const outputToken = getQuoteToken(outputTokenAddress, chainId)
-    console.log(inputToken)
-    console.log(outputToken)
 
     if (
       !inputToken ||
@@ -87,8 +84,6 @@ export async function POST(req: NextRequest) {
       indexTokenAmount: BigNumber.from(parseEther('1').toString()),
       slippage,
     })
-
-    console.log(quote)
 
     if (!quote) {
       return NextResponse.json({ message: 'No quote found.' }, { status: 404 })
