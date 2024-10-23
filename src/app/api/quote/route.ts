@@ -23,6 +23,7 @@ interface IndexQuoteRequest {
   outputToken: string
   inputAmount?: string
   outputAmount?: string
+  slippage: number
 }
 
 export async function POST(req: NextRequest) {
@@ -36,7 +37,12 @@ export async function POST(req: NextRequest) {
       inputAmount,
       outputToken: outputTokenAddress,
       outputAmount,
+      slippage,
     } = request
+
+    if (slippage < 0 || slippage > 1) {
+      return BadRequest('Bad Request')
+    }
 
     if (!isAddress(inputTokenAddress) || !isAddress(outputTokenAddress)) {
       return BadRequest('Bad Request')
@@ -79,7 +85,7 @@ export async function POST(req: NextRequest) {
       inputToken: inputToken.quoteToken,
       outputToken: outputToken.quoteToken,
       indexTokenAmount: BigNumber.from(parseEther('1').toString()),
-      slippage: 0.1,
+      slippage,
     })
 
     console.log(quote)
