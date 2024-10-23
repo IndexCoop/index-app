@@ -39,30 +39,17 @@ export async function POST(req: NextRequest) {
     } = request
 
     if (!isAddress(inputTokenAddress) || !isAddress(outputTokenAddress)) {
-      return NextResponse.json(
-        {
-          message: 'Bad Request',
-        },
-        { status: 400 },
-      )
+      return BadRequest('Bad Request')
     }
 
     if (!inputAmount && !outputAmount) {
-      return NextResponse.json(
-        {
-          message: 'Either `inputAmount` or outputAmount` needs to be set.',
-        },
-        { status: 400 },
+      return BadRequest(
+        'Either `inputAmount` or outputAmount` needs to be set.',
       )
     }
 
     if (inputAmount && outputAmount) {
-      return NextResponse.json(
-        {
-          message: 'You can only set `inputAmount` or outputAmount`.',
-        },
-        { status: 400 },
-      )
+      return BadRequest('You can only set `inputAmount` or outputAmount`.')
     }
 
     const inputToken = getQuoteToken(inputTokenAddress, chainId)
@@ -75,12 +62,7 @@ export async function POST(req: NextRequest) {
       !outputToken ||
       (inputToken.isIndex && outputToken.isIndex)
     ) {
-      return NextResponse.json(
-        {
-          message: 'Bad Request',
-        },
-        { status: 400 },
-      )
+      return BadRequest('Bad Request')
     }
 
     const rpcUrl =
@@ -123,6 +105,10 @@ export async function POST(req: NextRequest) {
     console.error(error)
     return NextResponse.json(error, { status: 500 })
   }
+}
+
+function BadRequest(errorMessage: string) {
+  return NextResponse.json({ message: errorMessage }, { status: 400 })
 }
 
 function getQuoteToken(
