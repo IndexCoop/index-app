@@ -34,7 +34,6 @@ export const NetworkSelect = () => {
     const unwatch = watchAccount(config, {
       // Do not immediately override the chainId with the wallet one when the user arrives.
       onChange({ chainId, isConnecting, isReconnecting }) {
-        console.log(isConnecting, isReconnecting)
         const { queryNetwork } = queryParams
         if (
           queryNetwork &&
