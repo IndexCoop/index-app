@@ -7,7 +7,7 @@ export const customTheme = buildChartTheme({
   yAxisLineStyles: { color: '#364746' },
   xTickLineStyles: { color: '#364746' },
   yTickLineStyles: { color: '#364746' },
-  tickLength: 4,
+  tickLength: 6,
   svgLabelBig: { fill: '#A6B4B4' },
   svgLabelSmall: { fill: '#A6B4B4' },
   htmlLabel: { color: '#A6B4B4' },

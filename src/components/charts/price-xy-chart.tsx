@@ -1,5 +1,12 @@
+import { LinearGradient } from '@visx/gradient'
 import { withParentSize } from '@visx/responsive'
-import { AnimatedLineSeries, Axis, Tooltip, XYChart } from '@visx/xychart'
+import {
+  AnimatedAreaSeries,
+  AnimatedLineSeries,
+  Axis,
+  Tooltip,
+  XYChart,
+} from '@visx/xychart'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 
@@ -15,14 +22,6 @@ type Props = {
   selectedPeriod: ChartPeriod
 }
 
-const timestampFormatByPeriod: { [k in ChartPeriod]: string } = {
-  [ChartPeriod.Hour]: 'HH:mm',
-  [ChartPeriod.Day]: 'MMM DD HH:mm',
-  [ChartPeriod.Week]: 'MMM DD HH:mm',
-  [ChartPeriod.Month]: 'MMM DD',
-  [ChartPeriod.Year]: 'MMM DD',
-}
-
 const tooltipTimestampFormatByPeriod: { [k in ChartPeriod]: string } = {
   [ChartPeriod.Hour]: 'DD MMM YYYY HH:mm',
   [ChartPeriod.Day]: 'DD MMM YYYY HH:mm',
@@ -33,21 +32,25 @@ const tooltipTimestampFormatByPeriod: { [k in ChartPeriod]: string } = {
 
 type LineChartIndexData = Pick<IndexData, 'NetAssetValue' | 'CreatedTimestamp'>
 
-function LineChart({ data, parentWidth, parentHeight, selectedPeriod }: Props) {
-  const { minDomain, maxDomain } = useMemo(() => {
+function PriceXYChart({
+  data,
+  parentWidth,
+  parentHeight,
+  selectedPeriod,
+}: Props) {
+  const { minDomainY, maxDomainY } = useMemo(() => {
     const prices = data.map(({ NetAssetValue }) => NetAssetValue!)
     const minPrice = Math.min(...prices)
     const maxPrice = Math.max(...prices)
     const diff = maxPrice - minPrice
     return {
-      minDomain: minPrice - diff * 0.05,
-      maxDomain: maxPrice + diff * 0.05,
+      minDomainY: minPrice - diff * 0.05,
+      maxDomainY: maxPrice + diff * 0.05,
     }
   }, [data])
 
-  const accessors = {
-    xAccessor: (d: LineChartIndexData) =>
-      dayjs(d.CreatedTimestamp).format(timestampFormatByPeriod[selectedPeriod]),
+  const seriesAccessors = {
+    xAccessor: (d: LineChartIndexData) => new Date(d.CreatedTimestamp),
     yAccessor: (d: LineChartIndexData) => d.NetAssetValue,
   }
 
@@ -64,17 +67,34 @@ function LineChart({ data, parentWidth, parentHeight, selectedPeriod }: Props) {
       height={parentHeight}
       width={parentWidth}
       theme={customTheme}
-      xScale={{ type: 'band' }}
+      xScale={{ type: 'time' }}
       yScale={{
         type: 'linear',
-        domain: [minDomain, maxDomain],
+        domain: [minDomainY, maxDomainY],
         nice: true,
         zero: false,
       }}
     >
-      <Axis orientation='left' numTicks={5} tickFormat={(d) => d.toFixed(2)} />
+      <Axis
+        orientation='left'
+        numTicks={5}
+        tickFormat={(d) => d.toFixed(maxDomainY >= 1000 ? 0 : 2)}
+      />
       <Axis orientation='bottom' numTicks={5} />
-      <AnimatedLineSeries {...accessors} dataKey='prices' data={data} />
+      <AnimatedLineSeries {...seriesAccessors} dataKey='prices' data={data} />
+      <AnimatedAreaSeries
+        {...seriesAccessors}
+        fill='url(#gradient)'
+        dataKey='prices'
+        data={data}
+      />
+      <LinearGradient
+        from='#84e9e9'
+        to='#143438'
+        id='gradient'
+        fromOpacity={0.2}
+        toOpacity={0.1}
+      />
       <Tooltip
         snapTooltipToDatumX
         snapTooltipToDatumY
@@ -87,7 +107,7 @@ function LineChart({ data, parentWidth, parentHeight, selectedPeriod }: Props) {
                 tooltipData?.nearestDatum?.datum as LineChartIndexData,
               )}
             </div>
-            <div className='text-ic-gray-300 text-xs'>
+            <div className='text-ic-gray-300 text-xs font-light'>
               {tooltipAccessors.xAccessor(
                 tooltipData?.nearestDatum?.datum as LineChartIndexData,
               )}
@@ -99,4 +119,4 @@ function LineChart({ data, parentWidth, parentHeight, selectedPeriod }: Props) {
   )
 }
 
-export default withParentSize(LineChart)
+export default withParentSize(PriceXYChart)

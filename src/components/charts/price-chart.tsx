@@ -1,5 +1,5 @@
-import LineChart from '@/components/charts/line-chart'
 import { PeriodSelector } from '@/components/charts/period-selector'
+import PriceXYChart from '@/components/charts/price-xy-chart'
 import { useChartData } from '@/components/charts/use-chart-data'
 import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
@@ -35,7 +35,7 @@ export function PriceChart({ indexToken }: Props) {
         />
       </div>
       <div className='h-full w-full px-4'>
-        <LineChart data={historicalData} selectedPeriod={selectedPeriod} />
+        <PriceXYChart data={historicalData} selectedPeriod={selectedPeriod} />
       </div>
     </div>
   )
