@@ -1,19 +1,10 @@
-import {
-  getIssuanceModule,
-  IndexDebtIssuanceModuleV2Address_v2,
-} from '@indexcoop/flash-mint-sdk'
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
+import { Issuance } from '@/app/legacy/config'
 import { LegacyQuote } from '@/app/legacy/types'
-import {
-  BedIndex,
-  LeveragedRethStakingYield,
-  RealWorldAssetIndex,
-  RETH,
-  Token,
-} from '@/constants/tokens'
+import { LeveragedRethStakingYield, RETH, Token } from '@/constants/tokens'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 import { formatWei, isSameAddress } from '@/lib/utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
@@ -43,17 +34,9 @@ export async function getLegacyRedemptionQuote(
 
   if (inputTokenAmount <= 0) return null
 
-  let contract = getIssuanceModule(inputToken.symbol, chainId)
-    .address as Address
-  if (
-    BedIndex.symbol === inputToken.symbol ||
-    LeveragedRethStakingYield.symbol === inputToken.symbol ||
-    RealWorldAssetIndex.symbol === inputToken.symbol
-  ) {
-    contract = IndexDebtIssuanceModuleV2Address_v2
-  }
-
   try {
+    // Get issuance module contract
+    const contract = Issuance[inputToken.symbol] as Address
     const debtIssuanceProvider = new DebtIssuanceProvider(
       contract,
       publicClient,
