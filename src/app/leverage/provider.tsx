@@ -124,7 +124,7 @@ export function LeverageProvider(props: { children: any }) {
       queryIsMinting,
     },
     updateQueryParams,
-  } = useQueryParams(defaultParams)
+  } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
 

@@ -32,7 +32,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
   const router = useRouter()
 
   const queryParams = useMemo(() => {
-    const network = parseInt(searchParams.get('network') || '0')
+    const network = parseInt(searchParams.get('network') ?? '0')
     const buy = searchParams.get('buy') || ''
     const sell = searchParams.get('sell') || ''
 
