@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 import { FaqItem, FaqList } from '@/components/faq'
 
 export function FaqSection() {
@@ -81,41 +79,23 @@ export function FaqSection() {
           the Leverage buttons. Now select your input token from the ‘you pay’
           dropdown menu. You will have to connect your wallet and sign our terms
           and conditions before your first action. Make sure you are connected
-          to Arbitrum and that you have sufficient funds in your wallet. Now you
-          can input the desired amount of tokens to trade and click ‘Review
-          Transaction’ which will open a transaction review popup. Click “Submit
-          Transaction”. This will run a transaction simulation and in case of a
-          successful simulation send it to your wallet. Use your wallet to sign
-          the transaction. If you want to see your new balance, click “Sell” in
-          the transaction window and your balance will show under the input
-          asset dropdown.
+          to the correct chain and that you have sufficient funds in your
+          wallet. Now you can input the desired amount of tokens to trade and
+          click ‘Review Transaction’ which will open a transaction review popup.
+          Click “Submit Transaction”. This will run a transaction simulation and
+          in case of a successful simulation send it to your wallet. Use your
+          wallet to sign the transaction. If you want to see your new balance,
+          click “Sell” in the transaction window and your balance will show
+          under the input asset dropdown.
         </p>
       </FaqItem>
       <FaqItem question='How do I sell leverage tokens?'>
         <p>
-          For leverage tokens on Arbitrum, you can sell your leverage tokens by
-          first selecting ETH or BTC, selecting “Sell” at the top of the trade
-          widget, and then selecting the corresponding leverage ratio of your
-          current token holdings. You should see your total balance and be able
-          to input the amount of tokens you want to sell.
-        </p>
-        <p>
-          For leverage tokens on Mainnet, you can sell via the Index Coop App{' '}
-          <Link href='/swap' className='underline'>
-            swap widget
-          </Link>
-          .
-        </p>
-      </FaqItem>
-      <FaqItem question='How do I trade on Ethereum?'>
-        <p>
-          We are working hard on improving the IC Leverage experience and will
-          soon support Ethereum in the Leverage interface. Until then, to swap
-          our Leverage tokens on Ethereum, please use our{' '}
-          <Link href='/swap' className='underline' target='_blank'>
-            swap widget
-          </Link>
-          .
+          You can sell your leverage tokens by first selecting ETH or BTC,
+          selecting “Sell” at the top of the trade widget, and then selecting
+          the corresponding leverage ratio of your current token holdings. You
+          should see your total balance and be able to input the amount of
+          tokens you want to sell.
         </p>
       </FaqItem>
       <FaqItem question='How long should I hold leverage tokens?'>
@@ -151,10 +131,6 @@ export function FaqSection() {
           Index Coop app, double check the following:
         </p>
         <ul className='list-disc pl-6'>
-          <li>
-            If you are attempting to sell a leverage token on Arbitrum, ensure
-            that you are connected to Arbitrum.
-          </li>
           <li>
             Are you a restricted person? Keep in mind that restricted persons
             are not permitted to buy or sell Index Coop restricted tokens for
