@@ -51,12 +51,6 @@ export const productTokens = [
     type: ProductType.INDEX,
   },
   {
-    ...getTokenBySymbol('ic21'),
-    hasApy: false,
-    theme: ProductTheme.LCAP,
-    type: ProductType.INDEX,
-  },
-  {
     ...getTokenBySymbol('gtceth'),
     hasApy: true,
     theme: ProductTheme.ETH,

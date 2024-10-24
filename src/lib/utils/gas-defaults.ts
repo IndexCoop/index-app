@@ -6,13 +6,14 @@ import {
   DiversifiedStakedETHIndex,
   Ethereum2xFlexibleLeverageIndex,
   HighYieldETHIndex,
+  ic21,
   icETHIndex,
   MetaverseIndex,
   RealWorldAssetIndex,
 } from '@/constants/tokens'
 
 export function getFlashMintGasDefault(symbol: string) {
-  // ic21 + INDEX are not available for flash mint
+  // INDEX are not available for flash mint
   switch (symbol) {
     case BedIndex.symbol:
       return 500_000
@@ -30,6 +31,8 @@ export function getFlashMintGasDefault(symbol: string) {
       return 250_000
     case icETHIndex.symbol:
       return 1_500_000
+    case ic21.symbol:
+      return 250_000
     case MetaverseIndex.symbol:
       return 2_000_000
     case RealWorldAssetIndex.symbol:

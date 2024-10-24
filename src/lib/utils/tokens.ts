@@ -17,7 +17,6 @@ import {
   GitcoinStakedETHIndex,
   GUSD,
   HighYieldETHIndex,
-  ic21,
   icETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
@@ -91,7 +90,6 @@ export function getCurrencyTokensForIndex(
   }
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI, GUSD]
-  if (index.symbol === ic21.symbol) return [WETH]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
   if (
     index.symbol === DiversifiedStakedETHIndex.symbol ||
@@ -147,7 +145,6 @@ export function getTokenBySymbol(symbol: string): Token | null {
 
 export function isAvailableForFlashMint(token: Token): boolean {
   switch (token.symbol) {
-    case ic21.symbol:
     case IndexToken.symbol:
       return false
     default:
