@@ -36,9 +36,9 @@ describe('isAvailableForFlashMint()', () => {
     expect(isAvailable).toBe(true)
   })
 
-  test('should return false for ic21 swap availability', async () => {
+  test('should return true for ic21 swap availability', async () => {
     const isAvailable = isAvailableForFlashMint(ic21)
-    expect(isAvailable).toBe(false)
+    expect(isAvailable).toBe(true)
   })
 
   test('should return false for INDEX swap availability', async () => {
@@ -151,8 +151,8 @@ describe('getCurrencyTokensForIndex()', () => {
     const chainId = 1
     const token = ic21
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(1)
-    expect(currencyTokens).toEqual([WETH])
+    expect(currencyTokens.length).toEqual(currencies.length)
+    expect(currencyTokens).toEqual(currencies)
   })
 
   test('returns correct currency tokens for icETH', async () => {
