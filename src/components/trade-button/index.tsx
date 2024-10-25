@@ -9,7 +9,7 @@ interface TradeButtonProps {
   isDisabled: boolean
   isLoading: boolean
   onClick: () => void
-  tooltip: string | null
+  tooltip?: string | null
 }
 
 export const TradeButton = ({
