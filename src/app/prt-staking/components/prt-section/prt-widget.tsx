@@ -13,7 +13,6 @@ import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken, WidgetTab } from '@/app/prt-staking/types'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { formatTokenDataToToken, formatWeiAsNumber } from '@/lib/utils'
@@ -201,22 +200,17 @@ export function PrtWidget({ token, onClose }: Props) {
         onClickBalance={onClickBalance}
         onSelectToken={() => {}}
       />
-      <Tooltip>
-        <TooltipTrigger className='w-full'>
-          <TradeButton
-            label={buttonLabel}
-            isDisabled={isTradeButtonDisabled}
-            isLoading={isSubmitting || isApproving}
-            onClick={onClickTradeButton}
-          />
-        </TooltipTrigger>
-        {!canStake && (
-          <TooltipContent>
-            PRT Rewards distribution is in progress. Staking is temporarily
-            unavailable during this time. Please try again later.
-          </TooltipContent>
-        )}
-      </Tooltip>
+      <TradeButton
+        label={buttonLabel}
+        isDisabled={isTradeButtonDisabled}
+        isLoading={isSubmitting || isApproving}
+        onClick={onClickTradeButton}
+        tooltip={
+          !canStake
+            ? 'PRT Rewards distribution is in progress. Staking is temporarily unavailable during this time. Please try again later.'
+            : null
+        }
+      />
       <SafeSignButton />
     </div>
   )
