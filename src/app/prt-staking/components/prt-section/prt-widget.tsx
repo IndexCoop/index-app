@@ -13,6 +13,7 @@ import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken, WidgetTab } from '@/app/prt-staking/types'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { formatTokenDataToToken, formatWeiAsNumber } from '@/lib/utils'
@@ -95,11 +96,13 @@ export function PrtWidget({ token, onClose }: Props) {
   }, [currentTab])
 
   const buttonLabel = useMemo(() => {
-    if (currentTab === WidgetTab.STAKE) return 'Stake'
+    if (currentTab === WidgetTab.STAKE) {
+      return canStake ? 'Stake' : 'Distribution in process'
+    }
     if (currentTab === WidgetTab.UNSTAKE) return 'Unstake'
     if (currentTab === WidgetTab.CLAIM) return 'Claim Rewards'
     return ''
-  }, [currentTab])
+  }, [canStake, currentTab])
 
   const balance = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) {
@@ -198,12 +201,22 @@ export function PrtWidget({ token, onClose }: Props) {
         onClickBalance={onClickBalance}
         onSelectToken={() => {}}
       />
-      <TradeButton
-        label={buttonLabel}
-        isDisabled={isTradeButtonDisabled}
-        isLoading={isSubmitting || isApproving}
-        onClick={onClickTradeButton}
-      />
+      <Tooltip>
+        <TooltipTrigger className='w-full'>
+          <TradeButton
+            label={buttonLabel}
+            isDisabled={isTradeButtonDisabled}
+            isLoading={isSubmitting || isApproving}
+            onClick={onClickTradeButton}
+          />
+        </TooltipTrigger>
+        {!canStake && (
+          <TooltipContent>
+            PRT Rewards distribution is in progress. Staking is temporarily
+            unavailable during this time. Please try again later.
+          </TooltipContent>
+        )}
+      </Tooltip>
       <SafeSignButton />
     </div>
   )
