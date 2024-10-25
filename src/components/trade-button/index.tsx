@@ -38,7 +38,7 @@ export const TradeButton = ({
           {isLoading ? <Spinner /> : label}
         </button>
       </TooltipTrigger>
-      {tooltip !== null && <TooltipContent>{tooltip}</TooltipContent>}
+      {tooltip && <TooltipContent>{tooltip}</TooltipContent>}
     </Tooltip>
   )
 }
