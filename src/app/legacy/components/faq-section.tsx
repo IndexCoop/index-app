@@ -13,7 +13,7 @@ export function FaqSection() {
           seamlessly transitioning out of outdated products.
         </p>
       </FaqItem>
-      <FaqItem question='Why legacs tokens?'>
+      <FaqItem question='Why legacy tokens?'>
         <p>
           At Index Coop, we support legacy tokens to ensure that early users of
           our products are never left behind. Whether you&apos;ve held onto old

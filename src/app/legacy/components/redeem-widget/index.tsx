@@ -88,7 +88,9 @@ export function RedeemWidget() {
     outputTokens[0],
     inputValue,
   )
-  const { buttonLabel, isDisabled } = useTradeButton(buttonState)
+  const { buttonLabel, isDisabled } = useTradeButton(buttonState, {
+    [TradeButtonState.default]: 'Redeem',
+  })
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
