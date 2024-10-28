@@ -67,6 +67,7 @@ function PriceXYChart({
       height={parentHeight}
       width={parentWidth}
       theme={customTheme}
+      margin={{ top: 40, right: 0, bottom: 40, left: 58 }}
       xScale={{ type: 'time' }}
       yScale={{
         type: 'linear',

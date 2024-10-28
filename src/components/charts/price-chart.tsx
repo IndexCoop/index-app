@@ -34,7 +34,7 @@ export function PriceChart({ indexToken }: Props) {
           setSelectedPeriod={setSelectedPeriod}
         />
       </div>
-      <div className='h-full w-full px-4'>
+      <div className='h-full w-full'>
         <PriceXYChart data={historicalData} selectedPeriod={selectedPeriod} />
       </div>
     </div>
