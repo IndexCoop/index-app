@@ -3,7 +3,7 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { PopupButton } from '@typeform/embed-react'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { useWalletClient } from 'wagmi'
 
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -11,6 +11,10 @@ import { PriceChart } from '@/components/charts/price-chart'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
+import { ChartTabs } from '@/app/leverage/components/chart-tabs'
+import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
+import { ChartTab } from '@/app/leverage/types'
+import { BTC, ETH } from '@/constants/tokens'
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
 import { BaseAssetSelector } from './components/selectors/base-asset-selector'
@@ -32,6 +36,8 @@ export default function Page() {
   } = useDisclosure()
   const { baseToken, baseTokens, indexToken, onSelectBaseToken } =
     useLeverageToken()
+  const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
+
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
@@ -57,8 +63,25 @@ export default function Page() {
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
               <Stats />
-              <div className='h-full min-h-[360px]'>
-                <PriceChart indexToken={indexToken} />
+              <div className='flex h-full min-h-[360px] flex-col'>
+                {currentTab === 'indexcoop-chart' ? (
+                  <PriceChart indexToken={indexToken} />
+                ) : (
+                  <>
+                    <TradingViewWidget
+                      baseToken={baseToken}
+                      symbol={ETH.symbol}
+                    />
+                    <TradingViewWidget
+                      baseToken={baseToken}
+                      symbol={BTC.symbol}
+                    />
+                  </>
+                )}
+                <ChartTabs
+                  currentTab={currentTab}
+                  setCurrentTab={setCurrentTab}
+                />
               </div>
             </div>
             <Suspense>
