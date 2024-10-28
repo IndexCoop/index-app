@@ -2,20 +2,15 @@ import clsx from 'clsx'
 
 import { TokenDisplay } from '@/app/leverage/components/leverage-widget/components/token-display'
 import { Token } from '@/constants/tokens'
+import { formatDollarAmount } from '@/lib/utils'
 
 import { useLeverageToken } from '../provider'
 import { useFormattedLeverageData } from '../use-formatted-data'
 
 export function Stats() {
-  const { baseToken, indexToken, stats } = useLeverageToken()
-  const {
-    indexTokenPrice,
-    price,
-    change24h,
-    change24hIsPositive,
-    low24h,
-    high24h,
-  } = useFormattedLeverageData(stats)
+  const { baseToken, indexToken, nav, stats } = useLeverageToken()
+  const { price, change24h, change24hIsPositive, low24h, high24h } =
+    useFormattedLeverageData(stats)
   return (
     <div className='border-ic-gray-600 flex w-full flex-row items-center justify-between rounded-3xl border bg-[#1C2C2E] px-0 sm:px-4'>
       <StatsItem
@@ -33,7 +28,7 @@ export function Stats() {
         change24hIsPositive={true}
         high24h={high24h}
         low24h={low24h}
-        price={indexTokenPrice}
+        price={nav > 0 ? formatDollarAmount(nav) : ''}
       />
     </div>
   )

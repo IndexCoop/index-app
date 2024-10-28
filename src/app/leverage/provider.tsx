@@ -1,5 +1,6 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
 import { BigNumber } from 'ethers'
 import {
   createContext,
@@ -9,6 +10,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { isAddress } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
@@ -25,6 +27,7 @@ import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
+import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
 
@@ -46,6 +49,7 @@ export interface TokenContext {
   indexToken: Token
   indexTokens: Token[]
   indexTokenPrice: number
+  nav: number
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
@@ -76,6 +80,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   indexToken: IndexCoopEthereum2xIndex,
   indexTokens: [],
   indexTokenPrice: 0,
+  nav: 0,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
@@ -176,6 +181,20 @@ export function LeverageProvider(props: { children: any }) {
     address,
     indexTokenAddresses,
   )
+
+  const { data: nav } = useQuery({
+    enabled: isAddress(indexToken.address ?? ''),
+    initialData: 0,
+    queryKey: ['token-nav', indexToken.address],
+    queryFn: async () => {
+      const data = await fetchTokenMetrics({
+        tokenAddress: indexToken.address!,
+        metrics: ['nav'],
+      })
+
+      return data?.NetAssetValue ?? 0
+    },
+  })
 
   const indexTokenBasedOnLeverageType = useMemo(() => {
     return indexTokens.find(
@@ -503,6 +522,7 @@ export function LeverageProvider(props: { children: any }) {
         inputToken,
         outputToken,
         inputTokenAmount,
+        nav,
         baseTokens,
         costOfCarry,
         inputTokens,

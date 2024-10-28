@@ -1,3 +1,4 @@
+import { useLeverageToken } from '@/app/leverage/provider'
 import { PeriodSelector } from '@/components/charts/period-selector'
 import PriceXYChart from '@/components/charts/price-xy-chart'
 import { useChartData } from '@/components/charts/use-chart-data'
@@ -17,8 +18,9 @@ export function PriceChart({ indexToken }: Props) {
     indexToken,
     chainId ?? ARBITRUM.chainId,
   )
-  const { historicalData, nav, selectedPeriod, setSelectedPeriod } =
+  const { historicalData, selectedPeriod, setSelectedPeriod } =
     useChartData(tokenAddress)
+  const { nav } = useLeverageToken()
 
   return (
     <div className='border-ic-gray-600 flex h-full w-full flex-col rounded-3xl border bg-[#1C2C2E]'>

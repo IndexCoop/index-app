@@ -5,7 +5,6 @@ import { isAddress } from 'viem'
 import { ChartPeriod } from '@/components/charts/types'
 import {
   fetchTokenHistoricalData,
-  fetchTokenMetrics,
   IndexDataInterval,
   IndexDataPeriod,
 } from '@/lib/utils/api/index-data-provider'
@@ -68,23 +67,8 @@ export function useChartData(indexTokenAddress?: string) {
     },
   })
 
-  const { data: nav } = useQuery({
-    enabled: isAddress(indexTokenAddress ?? ''),
-    initialData: 0,
-    queryKey: ['token-nav', indexTokenAddress],
-    queryFn: async () => {
-      const data = await fetchTokenMetrics({
-        tokenAddress: indexTokenAddress!,
-        metrics: ['nav'],
-      })
-
-      return data?.NetAssetValue ?? 0
-    },
-  })
-
   return {
     historicalData,
-    nav,
     selectedPeriod,
     setSelectedPeriod,
   }
