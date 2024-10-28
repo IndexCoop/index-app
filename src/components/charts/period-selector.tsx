@@ -18,7 +18,7 @@ type Props = {
 
 export function PeriodSelector({ selectedPeriod, setSelectedPeriod }: Props) {
   return (
-    <div className='ml-auto flex space-x-2 text-sm font-medium'>
+    <div className='flex space-x-2 pt-6 text-sm font-medium md:ml-auto md:pt-0'>
       {periods.map((period) => (
         <div
           key={period}

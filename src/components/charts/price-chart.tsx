@@ -22,11 +22,11 @@ export function PriceChart({ indexToken }: Props) {
 
   return (
     <div className='border-ic-gray-600 flex h-full w-full flex-col rounded-3xl border bg-[#1C2C2E]'>
-      <div className='text-ic-white flex w-full items-stretch px-8 pt-6'>
-        <div className='basis-1/4 text-2xl font-semibold'>
+      <div className='text-ic-white flex w-full flex-wrap items-stretch px-8 pt-6'>
+        <div className='basis-1/2 text-2xl font-semibold md:basis-1/4'>
           {nav > 0 ? formatDollarAmount(nav) : ''}
         </div>
-        <div className='my-auto basis-1/4 text-center text-2xl font-medium'>
+        <div className='my-auto basis-1/2 text-center text-2xl font-medium md:basis-1/4'>
           {indexToken.symbol}
         </div>
         <PeriodSelector
