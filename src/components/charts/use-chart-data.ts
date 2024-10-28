@@ -10,8 +10,13 @@ import {
   IndexDataPeriod,
 } from '@/lib/utils/api/index-data-provider'
 
+type HistoricalData = { NetAssetValue: number; CreatedTimestamp: string }[]
+
 const fetchSettingsByPeriod: {
-  [k in ChartPeriod]: { interval: IndexDataInterval; period: IndexDataPeriod }
+  [k in ChartPeriod]: {
+    interval: IndexDataInterval
+    period: IndexDataPeriod
+  }
 } = {
   [ChartPeriod.Hour]: {
     interval: 'minute',
@@ -37,28 +42,30 @@ const fetchSettingsByPeriod: {
 
 export function useChartData(indexTokenAddress?: string) {
   const [selectedPeriod, setSelectedPeriod] = useState(ChartPeriod.Day)
-  const { data: historicalData } = useQuery({
+  const [historicalData, setHistoricalData] = useState<HistoricalData>([])
+  useQuery({
     enabled: isAddress(indexTokenAddress ?? ''),
-    initialData: [],
     queryKey: ['token-historical-data', indexTokenAddress, selectedPeriod],
     queryFn: async () => {
-      const historicalData = await fetchTokenHistoricalData({
+      const fetchSettings = fetchSettingsByPeriod[selectedPeriod]
+      const data = await fetchTokenHistoricalData({
         tokenAddress: indexTokenAddress!,
-        ...fetchSettingsByPeriod[selectedPeriod],
+        ...fetchSettings,
       })
-      return historicalData?.map((datum) => ({
-        ...datum,
-        NetAssetValue: Number(datum.NetAssetValue?.toFixed(2)),
-      }))
-    },
-    select: (data) =>
-      (data ?? [])
+      const historicalData = data
+        ?.map((datum) => ({
+          ...datum,
+          NetAssetValue: Number(datum.NetAssetValue?.toFixed(2)),
+        }))
         .sort(
           (a, b) =>
             new Date(b.CreatedTimestamp).getTime() -
             new Date(a.CreatedTimestamp).getTime(),
         )
-        .reverse(),
+        .reverse()
+
+      setHistoricalData(historicalData ?? [])
+    },
   })
 
   const { data: nav } = useQuery({
