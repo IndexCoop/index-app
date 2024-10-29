@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react'
 
-import { PathResolver } from '@/app/swap/[[...path]]/path-resolver'
+import { PathResolver } from '@/app/(light)/swap/[[...path]]/path-resolver'
 import { ETH, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { getDefaultIndex } from '@/lib/utils/tokens'

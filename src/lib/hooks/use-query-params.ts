@@ -3,8 +3,11 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 
-import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
-import { LeverageToken, LeverageType } from '@/app/leverage/types'
+import {
+  getCurrencyTokens,
+  getLeverageTokens,
+} from '@/app/(dark)/leverage/constants'
+import { LeverageToken, LeverageType } from '@/app/(dark)/leverage/types'
 import { Token } from '@/constants/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
@@ -99,7 +102,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
         network?.toString() ?? queryParams.get('network') ?? '',
       )
 
-      router.replace(`?${queryParams.toString()}`)
+      router.replace(`?${queryParams.toString()}`, { scroll: false })
     },
     [router],
   )

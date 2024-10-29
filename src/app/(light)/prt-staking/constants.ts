@@ -1,0 +1,14 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
+import { ProductRevenueToken } from '@/app/(light)/prt-staking/types'
+
+export const prts: ProductRevenueToken[] = [
+  {
+    rewardTokenData: getTokenByChainAndSymbol(1, 'hyETH'),
+    stakeTokenData: getTokenByChainAndSymbol(1, 'prtHyETH'),
+    stakedTokenData: getTokenByChainAndSymbol(1, 'sPrtHyETH'),
+    description:
+      'Designed to track the performance of the largest high-yield opportunities for ETH on Ethereum mainnet.',
+    moreInfoUrl: 'https://indexcoop.com/products/high-yield-eth',
+  },
+]

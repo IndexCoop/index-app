@@ -1,4 +1,4 @@
-import { useLeverageToken } from '@/app/leverage/provider'
+import { useLeverageToken } from '@/app/(dark)/leverage/provider'
 import { PeriodSelector } from '@/components/charts/period-selector'
 import PriceXYChart from '@/components/charts/price-xy-chart'
 import { useChartData } from '@/components/charts/use-chart-data'

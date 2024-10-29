@@ -3,7 +3,7 @@ import { AssetTransfersWithMetadataResult } from 'alchemy-sdk'
 import { Address, zeroAddress } from 'viem'
 import { usePublicClient } from 'wagmi'
 
-import { getLeverageAction } from '@/app/leverage/utils/get-leverage-type'
+import { getLeverageAction } from '@/app/(dark)/leverage/utils/get-leverage-type'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isContract } from '@/lib/utils'
