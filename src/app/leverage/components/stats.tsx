@@ -25,7 +25,7 @@ export function Stats() {
       <StatsItem
         token={indexToken}
         change24h={navchange !== 0 ? `${navchange.toFixed(2)}%` : ''}
-        change24hIsPositive={true}
+        change24hIsPositive={navchange > 0}
         high24h={high24h}
         low24h={low24h}
         price={nav > 0 ? formatDollarAmount(nav) : ''}
