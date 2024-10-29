@@ -15,27 +15,38 @@ const fetchSettingsByPeriod: {
   [k in ChartPeriod]: {
     interval: IndexDataInterval
     period: IndexDataPeriod
+    mod: number
   }
 } = {
   [ChartPeriod.Hour]: {
+    // 60
     interval: 'minute',
     period: 'hour',
+    mod: 1,
   },
   [ChartPeriod.Day]: {
-    interval: 'hour',
+    // 288
+    interval: 'minute',
     period: 'day',
+    mod: 10,
   },
   [ChartPeriod.Week]: {
+    // 168
     interval: 'hour',
     period: 'week',
+    mod: 1,
   },
   [ChartPeriod.Month]: {
-    interval: 'daily',
+    // 180
+    interval: 'hour',
     period: 'month',
+    mod: 4,
   },
   [ChartPeriod.Year]: {
+    // 365
     interval: 'daily',
     period: 'year',
+    mod: 1,
   },
 }
 
@@ -62,6 +73,7 @@ export function useChartData(indexTokenAddress?: string) {
             new Date(a.CreatedTimestamp).getTime(),
         )
         .reverse()
+        .filter((_, i) => i % fetchSettings.mod === 0)
 
       setHistoricalData(historicalData ?? [])
     },
