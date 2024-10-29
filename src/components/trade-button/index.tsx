@@ -23,20 +23,16 @@ export const TradeButton = ({
 
   return (
     <Tooltip>
-      <TooltipTrigger className='w-full'>
-        <button
-          className={clsx(
-            'text-ic-white h-14 w-full rounded-[10px] font-bold',
-            disabled
-              ? 'shadow-none'
-              : 'shadow-[0.5px_1px_2px_0_rgba(0,0,0,0.3)]',
-            disabled ? 'bg-ic-gray-500' : 'bg-ic-blue-600',
-          )}
-          disabled={disabled}
-          onClick={onClick}
-        >
-          {isLoading ? <Spinner /> : label}
-        </button>
+      <TooltipTrigger
+        className={clsx(
+          'text-ic-white h-14 w-full rounded-[10px] font-bold',
+          disabled ? 'shadow-none' : 'shadow-[0.5px_1px_2px_0_rgba(0,0,0,0.3)]',
+          disabled ? 'bg-ic-gray-500' : 'bg-ic-blue-600',
+        )}
+        disabled={disabled}
+        onClick={onClick}
+      >
+        {isLoading ? <Spinner /> : label}
       </TooltipTrigger>
       {tooltip && <TooltipContent>{tooltip}</TooltipContent>}
     </Tooltip>
