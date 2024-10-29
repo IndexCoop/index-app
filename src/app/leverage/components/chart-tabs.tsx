@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { Dispatch, SetStateAction } from 'react'
 
+import { useLeverageToken } from '@/app/leverage/provider'
 import { ChartTab } from '@/app/leverage/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 
@@ -18,6 +19,7 @@ type Props = {
 
 export function ChartTabs({ currentTab, setCurrentTab }: Props) {
   const { logEvent } = useAnalytics()
+  const { indexToken } = useLeverageToken()
 
   const handleClick = (tab: Tab) => {
     setCurrentTab(tab.name)
@@ -42,7 +44,11 @@ export function ChartTabs({ currentTab, setCurrentTab }: Props) {
           )}
           onClick={() => handleClick(tab)}
         >
-          <span>{tab.label}</span>
+          <span>
+            {tab.name === 'indexcoop-chart'
+              ? `IC_${indexToken.symbol}`
+              : 'TradingView Chart'}
+          </span>
           <span
             aria-hidden='true'
             className={clsx(
