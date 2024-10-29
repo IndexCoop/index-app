@@ -50,6 +50,7 @@ export interface TokenContext {
   indexTokens: Token[]
   indexTokenPrice: number
   nav: number
+  navchange: number
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
@@ -81,6 +82,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   indexTokens: [],
   indexTokenPrice: 0,
   nav: 0,
+  navchange: 0,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
@@ -182,17 +184,22 @@ export function LeverageProvider(props: { children: any }) {
     indexTokenAddresses,
   )
 
-  const { data: nav } = useQuery({
+  const {
+    data: { nav, navchange },
+  } = useQuery({
     enabled: isAddress(indexToken.address ?? ''),
-    initialData: 0,
+    initialData: { nav: 0, navchange: 0 },
     queryKey: ['token-nav', indexToken.address],
     queryFn: async () => {
       const data = await fetchTokenMetrics({
         tokenAddress: indexToken.address!,
-        metrics: ['nav'],
+        metrics: ['nav', 'navchange'],
       })
 
-      return data?.NetAssetValue ?? 0
+      return {
+        nav: data?.NetAssetValue ?? 0,
+        navchange: data?.NavChange24Hr ?? 0,
+      }
     },
   })
 
@@ -523,6 +530,7 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         inputTokenAmount,
         nav,
+        navchange,
         baseTokens,
         costOfCarry,
         inputTokens,

@@ -8,7 +8,7 @@ import { useLeverageToken } from '../provider'
 import { useFormattedLeverageData } from '../use-formatted-data'
 
 export function Stats() {
-  const { baseToken, indexToken, nav, stats } = useLeverageToken()
+  const { baseToken, indexToken, nav, navchange, stats } = useLeverageToken()
   const { price, change24h, change24hIsPositive, low24h, high24h } =
     useFormattedLeverageData(stats)
   return (
@@ -24,7 +24,7 @@ export function Stats() {
       <div className='bg-ic-gray-800 h-full w-[1px]' />
       <StatsItem
         token={indexToken}
-        change24h={''}
+        change24h={navchange !== 0 ? `${navchange.toFixed(2)}%` : ''}
         change24hIsPositive={true}
         high24h={high24h}
         low24h={low24h}
