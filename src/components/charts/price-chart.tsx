@@ -1,7 +1,7 @@
-import { useLeverageToken } from '@/app/(dark)/leverage/provider'
+import { useLeverageToken } from '@/app/leverage/provider'
 import { PeriodSelector } from '@/components/charts/period-selector'
 import PriceXYChart from '@/components/charts/price-xy-chart'
-import { useChartData } from '@/components/charts/use-chart-data'
+import { usePriceChartData } from '@/components/charts/use-price-chart-data'
 import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -18,8 +18,10 @@ export function PriceChart({ indexToken }: Props) {
     indexToken,
     chainId ?? ARBITRUM.chainId,
   )
+  console.log('indexToken', indexToken)
+  console.log('tokenAddress', tokenAddress)
   const { historicalData, selectedPeriod, setSelectedPeriod } =
-    useChartData(tokenAddress)
+    usePriceChartData(tokenAddress)
   const { nav } = useLeverageToken()
 
   return (

@@ -3,11 +3,8 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 
-import {
-  getCurrencyTokens,
-  getLeverageTokens,
-} from '@/app/(dark)/leverage/constants'
-import { LeverageToken, LeverageType } from '@/app/(dark)/leverage/types'
+import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
+import { LeverageToken, LeverageType } from '@/app/leverage/types'
 import { Token } from '@/constants/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
