@@ -3,20 +3,22 @@
 import { CacheProvider } from '@chakra-ui/next-js'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { watchAccount } from '@wagmi/core'
 import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 
+import { UserProvider } from '@/app/user-provider'
 import { ProtectionProvider } from '@/lib/providers/protection'
 import { SignTermsProvider } from '@/lib/providers/sign-terms-provider'
 import theme from '@/lib/styles/theme'
 import { config, metadata, projectId } from '@/lib/utils/wagmi'
 
-import { UserProvider } from '@/app/user-provider'
 import '@/lib/styles/fonts'
-import type { User } from '@prisma/client'
-import { watchAccount } from '@wagmi/core'
-import { useEffect, useState } from 'react'
 import { AnalyticsProvider } from './analytics-provider'
+
+import type { User } from '@prisma/client'
+
 
 const queryClient = new QueryClient()
 

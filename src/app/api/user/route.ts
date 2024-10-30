@@ -1,6 +1,7 @@
-import prisma from '@/lib/prisma'
 import { User } from '@prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
+
+import prisma from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   const { address }: Pick<User, 'address'> = await req.json()

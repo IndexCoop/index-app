@@ -1,5 +1,6 @@
-import type { User } from '@prisma/client'
 import { createContext, useContext } from 'react'
+
+import type { User } from '@prisma/client'
 
 const UserContext = createContext<User | null>(null)
 
