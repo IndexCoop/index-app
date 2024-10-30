@@ -1,5 +1,6 @@
 'use client'
 
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import { BigNumber } from 'ethers'
 import {
@@ -31,7 +32,6 @@ import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   getBaseTokens,
   getCurrencyTokens,
