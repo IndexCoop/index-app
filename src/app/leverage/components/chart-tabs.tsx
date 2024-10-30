@@ -1,9 +1,9 @@
-import clsx from 'clsx'
 import { Dispatch, SetStateAction } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import { ChartTab } from '@/app/leverage/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
+import { cn } from '@/lib/utils/tailwind'
 
 type Tab = { name: ChartTab; label: string }
 
@@ -34,7 +34,7 @@ export function ChartTabs({ currentTab, setCurrentTab }: Props) {
       {tabs.map((tab, tabIdx) => (
         <button
           key={tab.name}
-          className={clsx(
+          className={cn(
             tab.name === currentTab
               ? 'text-ic-white'
               : 'text-ic-gray-300 hover:text-ic-gray-100',
@@ -51,7 +51,7 @@ export function ChartTabs({ currentTab, setCurrentTab }: Props) {
           </span>
           <span
             aria-hidden='true'
-            className={clsx(
+            className={cn(
               tab.name === currentTab
                 ? 'bg-ic-blue-500'
                 : 'bg-ic-blue-900 group-hover:bg-ic-blue-700',
