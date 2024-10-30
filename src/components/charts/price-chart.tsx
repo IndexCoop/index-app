@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { useLeverageToken } from '@/app/leverage/provider'
 import { PeriodSelector } from '@/components/charts/period-selector'
 import PriceXYChart from '@/components/charts/price-xy-chart'
@@ -6,7 +8,6 @@ import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { formatDollarAmount } from '@/lib/utils'
-import { getAddressForToken } from '@/lib/utils/tokens'
 
 type Props = {
   indexToken: Token
@@ -14,10 +15,10 @@ type Props = {
 
 export function PriceChart({ indexToken }: Props) {
   const { chainId } = useNetwork()
-  const tokenAddress = getAddressForToken(
-    indexToken,
+  const tokenAddress = getTokenByChainAndSymbol(
     chainId ?? ARBITRUM.chainId,
-  )
+    indexToken.symbol,
+  )?.address
   const { historicalData, selectedPeriod, setSelectedPeriod } =
     usePriceChartData(tokenAddress)
   const { nav } = useLeverageToken()
