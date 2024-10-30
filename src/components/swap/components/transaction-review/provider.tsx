@@ -124,6 +124,7 @@ export function useTransactionReview(props: ReviewProps) {
     const success = await makeTrade(override)
     setOverride(false)
     if (success === null) return
+
     onSubmitWithSuccess(success)
   }
 

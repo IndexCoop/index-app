@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  address        String        @id @unique
+  last_connected DateTime?     @db.Timestamptz(6)
+  Transaction    Transaction[]
+}
+
+model Transaction {
+  transaction_hash String    @id
+  user_address     String
+  chain_id         Decimal?  @db.Decimal
+  from             String?
+  to               String?
+  amount           String?
+  created_at       DateTime? @db.Timestamptz(6)
+  User             User      @relation(fields: [user_address], references: [address], onDelete: NoAction, onUpdate: NoAction)
+}

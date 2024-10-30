@@ -11,7 +11,11 @@ import { SignTermsProvider } from '@/lib/providers/sign-terms-provider'
 import theme from '@/lib/styles/theme'
 import { config, metadata, projectId } from '@/lib/utils/wagmi'
 
+import { UserProvider } from '@/app/user-provider'
 import '@/lib/styles/fonts'
+import type { User } from '@prisma/client'
+import { watchAccount } from '@wagmi/core'
+import { useEffect, useState } from 'react'
 import { AnalyticsProvider } from './analytics-provider'
 
 const queryClient = new QueryClient()
@@ -28,6 +32,31 @@ createWeb3Modal({
 })
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [persistedUserData, setPersistedUserData] = useState<User | null>(null)
+
+  useEffect(() => {
+    const unwatch = watchAccount(config, {
+      async onChange(account) {
+        try {
+          const user = await (
+            await fetch('/api/user', {
+              method: 'POST',
+              body: JSON.stringify({
+                address: account.address,
+              }),
+            })
+          ).json()
+
+          setPersistedUserData(user)
+        } catch (e) {
+          console.error(e)
+        }
+      },
+    })
+
+    return () => unwatch()
+  }, [])
+
   return (
     <CacheProvider prepend={true}>
       <ChakraProvider theme={theme}>
@@ -36,7 +65,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <QueryClientProvider client={queryClient}>
             <AnalyticsProvider>
               <ProtectionProvider>
-                <SignTermsProvider>{children}</SignTermsProvider>
+                <SignTermsProvider>
+                  <UserProvider value={persistedUserData}>
+                    {children}
+                  </UserProvider>
+                </SignTermsProvider>
               </ProtectionProvider>
             </AnalyticsProvider>
           </QueryClientProvider>
