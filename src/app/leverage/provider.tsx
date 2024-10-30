@@ -112,7 +112,7 @@ const defaultParams = {
 
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
-  const { chainId: chainIdRaw } = useNetwork()
+  const { chainId: chainIdRaw, switchChain } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
@@ -124,7 +124,7 @@ export function LeverageProvider(props: { children: any }) {
       queryIsMinting,
     },
     updateQueryParams,
-  } = useQueryParams(defaultParams)
+  } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
 
@@ -152,10 +152,15 @@ export function LeverageProvider(props: { children: any }) {
   })
 
   const chainId = useMemo(() => {
-    updateQueryParams({ network: chainIdRaw })
-    // To control the defaults better
-    return queryNetwork ?? chainIdRaw ?? ARBITRUM.chainId
-  }, [chainIdRaw, queryNetwork, updateQueryParams])
+    return chainIdRaw ?? ARBITRUM.chainId
+  }, [chainIdRaw])
+
+  useEffect(() => {
+    // queryNetwork is only set on the initial load
+    if (queryNetwork) {
+      switchChain({ chainId: queryNetwork })
+    }
+  }, [queryNetwork, switchChain])
 
   const baseTokens = useMemo(() => {
     return getBaseTokens(chainId)
