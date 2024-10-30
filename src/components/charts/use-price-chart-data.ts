@@ -58,10 +58,9 @@ export function usePriceChartData(indexTokenAddress?: string) {
         }))
         .sort(
           (a, b) =>
-            new Date(b.CreatedTimestamp).getTime() -
-            new Date(a.CreatedTimestamp).getTime(),
+            new Date(a.CreatedTimestamp).getTime() -
+            new Date(b.CreatedTimestamp).getTime(),
         )
-        .reverse()
 
       // Explicitly using setState to avoid data being set to []
       // when the loading starts - too much jank.
