@@ -31,6 +31,7 @@ import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
 
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   getBaseTokens,
   getCurrencyTokens,
@@ -178,6 +179,10 @@ export function LeverageProvider(props: { children: any }) {
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
+  const indexTokenAddress = useMemo(() => {
+    return getTokenByChainAndSymbol(chainId, indexToken.symbol)?.address ?? ''
+  }, [chainId, indexToken.symbol])
+
   const indexTokens = useMemo(() => {
     return getLeverageTokens(chainId)
   }, [chainId])
@@ -194,12 +199,12 @@ export function LeverageProvider(props: { children: any }) {
   const {
     data: { nav, navchange },
   } = useQuery({
-    enabled: isAddress(indexToken.address ?? ''),
+    enabled: isAddress(indexTokenAddress),
     initialData: { nav: 0, navchange: 0 },
-    queryKey: ['token-nav', indexToken.address],
+    queryKey: ['token-nav', indexTokenAddress],
     queryFn: async () => {
       const data = await fetchTokenMetrics({
-        tokenAddress: indexToken.address!,
+        tokenAddress: indexTokenAddress!,
         metrics: ['nav', 'navchange'],
       })
 
