@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 
 import { TokenDisplay } from '@/app/leverage/components/leverage-widget/components/token-display'
+import { formatPercentage } from '@/app/products/utils/formatters'
 import { Token } from '@/constants/tokens'
 import { formatDollarAmount } from '@/lib/utils'
 
@@ -24,7 +25,7 @@ export function Stats() {
       <div className='bg-ic-gray-800 h-full w-[1px]' />
       <StatsItem
         token={indexToken}
-        change24h={navchange !== 0 ? `${navchange.toFixed(2)}%` : ''}
+        change24h={navchange !== 0 ? formatPercentage(navchange) : ''}
         change24hIsPositive={navchange > 0}
         high24h={high24h}
         low24h={low24h}
