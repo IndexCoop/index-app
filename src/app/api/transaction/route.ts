@@ -1,4 +1,5 @@
 import { Transaction } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 
 import prisma from '@/lib/prisma'
@@ -18,6 +19,13 @@ export async function POST(req: NextRequest) {
       data: transaction,
     })
   } catch (e) {
+    Sentry.captureMessage('Transaction creation in database failed', {
+      extra: {
+        e,
+        transaction,
+      },
+    })
+
     return NextResponse.json(
       {
         error: 'Failed to create transaction.',

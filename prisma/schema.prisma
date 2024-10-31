@@ -17,7 +17,7 @@ model User {
 model Transaction {
   transaction_hash String    @id
   user_address     String
-  chain_id         Decimal?  @db.Decimal
+  chain_id         Int?  @db.Integer
   from             String?
   to               String?
   amount           String?

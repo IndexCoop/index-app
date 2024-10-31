@@ -1,17 +1,12 @@
-import { User } from '@prisma/client'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 import prisma from '@/lib/prisma'
 
-export async function POST(req: NextRequest) {
-  const { address }: Pick<User, 'address'> = await req.json()
-
-  if (!address) {
-    return NextResponse.json(
-      { error: 'Bad Request: Missing Parameters.' },
-      { status: 400 },
-    )
-  }
+export async function GET(
+  _: Request,
+  { params }: { params: Promise<{ address: string }> },
+) {
+  const { address } = await params
 
   let user = await prisma.user.findUnique({
     where: { address },
