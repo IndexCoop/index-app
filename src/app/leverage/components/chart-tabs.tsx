@@ -5,12 +5,9 @@ import { ChartTab } from '@/app/leverage/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
-type Tab = { name: ChartTab; label: string }
+type Tab = { name: ChartTab }
 
-const tabs: Tab[] = [
-  { name: 'indexcoop-chart', label: 'Index Chart' },
-  { name: 'tradingview-chart', label: 'TradingView Chart' },
-]
+const tabs: Tab[] = [{ name: 'indexcoop-chart' }, { name: 'tradingview-chart' }]
 
 type Props = {
   currentTab: ChartTab
