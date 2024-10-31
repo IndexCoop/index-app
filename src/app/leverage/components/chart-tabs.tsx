@@ -43,7 +43,7 @@ export function ChartTabs({ currentTab, setCurrentTab }: Props) {
         >
           <span>
             {tab.name === 'indexcoop-chart'
-              ? `IC_${indexToken.symbol}`
+              ? `${indexToken.symbol} Chart`
               : 'TradingView Chart'}
           </span>
           <span
