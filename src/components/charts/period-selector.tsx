@@ -1,8 +1,8 @@
-import clsx from 'clsx'
 import { Dispatch, SetStateAction } from 'react'
 
 import { ChartPeriod } from '@/components/charts/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
+import { cn } from '@/lib/utils/tailwind'
 
 const periods = [
   ChartPeriod.Hour,
@@ -30,9 +30,9 @@ export function PeriodSelector({ selectedPeriod, setSelectedPeriod }: Props) {
       {periods.map((period) => (
         <div
           key={period}
-          className={clsx(
+          className={cn(
             'text-ic-gray-50 flex size-9 cursor-pointer items-center justify-center rounded-lg text-sm font-semibold',
-            selectedPeriod === period && 'bg-ic-gray-200 !text-ic-gray-950',
+            selectedPeriod === period && 'bg-ic-gray-200 text-ic-gray-950',
           )}
           onClick={() => handleClick(period)}
         >
