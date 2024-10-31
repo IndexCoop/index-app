@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { WagmiProvider } from 'wagmi'
 
-import { UserProvider } from '@/app/user-provider'
+import { UserMetadataProvider } from '@/app/user-metadata-provider'
 import { useUpsertUser } from '@/lib/hooks/use-upsert-user'
 import { ProtectionProvider } from '@/lib/providers/protection'
 import { SignTermsProvider } from '@/lib/providers/sign-terms-provider'
@@ -15,7 +15,6 @@ import { config, metadata, projectId } from '@/lib/utils/wagmi'
 
 import '@/lib/styles/fonts'
 import { AnalyticsProvider } from './analytics-provider'
-
 
 const queryClient = new QueryClient()
 
@@ -42,9 +41,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <AnalyticsProvider>
               <ProtectionProvider>
                 <SignTermsProvider>
-                  <UserProvider value={persistentUserData}>
+                  <UserMetadataProvider value={persistentUserData}>
                     {children}
-                  </UserProvider>
+                  </UserMetadataProvider>
                 </SignTermsProvider>
               </ProtectionProvider>
             </AnalyticsProvider>
