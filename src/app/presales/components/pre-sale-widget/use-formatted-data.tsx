@@ -6,7 +6,8 @@ import { formatAmount, formatWei } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
 import { usePresaleData } from '../../providers/presale-provider'
-import { usePrtRewards } from '../pre-sale-widget/use-rewards'
+
+import { usePrtRewards } from './use-rewards'
 
 export function useFormattedData() {
   const { address } = useWallet()

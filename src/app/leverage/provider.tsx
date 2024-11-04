@@ -1,5 +1,7 @@
 'use client'
 
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { useQuery } from '@tanstack/react-query'
 import { BigNumber } from 'ethers'
 import {
   createContext,
@@ -9,6 +11,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { isAddress } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
@@ -25,6 +28,7 @@ import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
+import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
 
@@ -46,6 +50,8 @@ export interface TokenContext {
   indexToken: Token
   indexTokens: Token[]
   indexTokenPrice: number
+  nav: number
+  navchange: number
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
@@ -76,6 +82,8 @@ export const LeverageTokenContext = createContext<TokenContext>({
   indexToken: IndexCoopEthereum2xIndex,
   indexTokens: [],
   indexTokenPrice: 0,
+  nav: 0,
+  navchange: 0,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
@@ -112,7 +120,7 @@ const defaultParams = {
 
 export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient()
-  const { chainId: chainIdRaw } = useNetwork()
+  const { chainId: chainIdRaw, switchChain } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
@@ -124,7 +132,7 @@ export function LeverageProvider(props: { children: any }) {
       queryIsMinting,
     },
     updateQueryParams,
-  } = useQueryParams(defaultParams)
+  } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
 
@@ -152,10 +160,15 @@ export function LeverageProvider(props: { children: any }) {
   })
 
   const chainId = useMemo(() => {
-    updateQueryParams({ network: chainIdRaw })
-    // To control the defaults better
-    return queryNetwork ?? chainIdRaw ?? ARBITRUM.chainId
-  }, [chainIdRaw, queryNetwork, updateQueryParams])
+    return chainIdRaw ?? ARBITRUM.chainId
+  }, [chainIdRaw])
+
+  useEffect(() => {
+    // queryNetwork is only set on the initial load
+    if (queryNetwork) {
+      switchChain({ chainId: queryNetwork })
+    }
+  }, [queryNetwork, switchChain])
 
   const baseTokens = useMemo(() => {
     return getBaseTokens(chainId)
@@ -165,6 +178,10 @@ export function LeverageProvider(props: { children: any }) {
     if (isMinting) return outputToken
     return inputToken
   }, [inputToken, isMinting, outputToken])
+
+  const indexTokenAddress = useMemo(() => {
+    return getTokenByChainAndSymbol(chainId, indexToken.symbol)?.address ?? ''
+  }, [chainId, indexToken.symbol])
 
   const indexTokens = useMemo(() => {
     return getLeverageTokens(chainId)
@@ -178,6 +195,25 @@ export function LeverageProvider(props: { children: any }) {
     address,
     indexTokenAddresses,
   )
+
+  const {
+    data: { nav, navchange },
+  } = useQuery({
+    enabled: isAddress(indexTokenAddress),
+    initialData: { nav: 0, navchange: 0 },
+    queryKey: ['token-nav', indexTokenAddress],
+    queryFn: async () => {
+      const data = await fetchTokenMetrics({
+        tokenAddress: indexTokenAddress!,
+        metrics: ['nav', 'navchange'],
+      })
+
+      return {
+        nav: data?.NetAssetValue ?? 0,
+        navchange: data?.NavChange24Hr ?? 0,
+      }
+    },
+  })
 
   const indexTokenBasedOnLeverageType = useMemo(() => {
     return indexTokens.find(
@@ -505,6 +541,8 @@ export function LeverageProvider(props: { children: any }) {
         inputToken,
         outputToken,
         inputTokenAmount,
+        nav,
+        navchange,
         baseTokens,
         costOfCarry,
         inputTokens,

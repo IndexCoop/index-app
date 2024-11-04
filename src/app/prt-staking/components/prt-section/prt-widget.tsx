@@ -95,11 +95,13 @@ export function PrtWidget({ token, onClose }: Props) {
   }, [currentTab])
 
   const buttonLabel = useMemo(() => {
-    if (currentTab === WidgetTab.STAKE) return 'Stake'
+    if (currentTab === WidgetTab.STAKE) {
+      return canStake ? 'Stake' : 'Distribution in process'
+    }
     if (currentTab === WidgetTab.UNSTAKE) return 'Unstake'
     if (currentTab === WidgetTab.CLAIM) return 'Claim Rewards'
     return ''
-  }, [currentTab])
+  }, [canStake, currentTab])
 
   const balance = useMemo(() => {
     if (currentTab === WidgetTab.STAKE) {
@@ -203,6 +205,11 @@ export function PrtWidget({ token, onClose }: Props) {
         isDisabled={isTradeButtonDisabled}
         isLoading={isSubmitting || isApproving}
         onClick={onClickTradeButton}
+        tooltip={
+          !canStake
+            ? 'PRT Rewards distribution is in progress. Staking is temporarily unavailable during this time. Please try again later.'
+            : null
+        }
       />
       <SafeSignButton />
     </div>
