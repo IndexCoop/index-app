@@ -3,10 +3,14 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { PopupButton } from '@typeform/embed-react'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useWalletClient } from 'wagmi'
 
+import { ChartTabs } from '@/app/leverage/components/chart-tabs'
+import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
 import { useLeverageToken } from '@/app/leverage/provider'
+import { ChartTab } from '@/app/leverage/types'
+import { PriceChart } from '@/components/charts/price-chart'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { BTC, ETH } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -17,7 +21,6 @@ import { BaseAssetSelector } from './components/selectors/base-asset-selector'
 import { NetworkSelector } from './components/selectors/network-selector'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
-import TradingViewWidget from './components/trading-view-widget'
 import { YourTokens } from './components/your-tokens'
 
 const surveyTracking = { utm_source: 'app' }
@@ -31,7 +34,17 @@ export default function Page() {
     onOpen: onOpenSelectBaseToken,
     onClose: onCloseSelectBaseToken,
   } = useDisclosure()
-  const { baseToken, baseTokens, onSelectBaseToken } = useLeverageToken()
+  const { baseToken, baseTokens, indexToken, onSelectBaseToken } =
+    useLeverageToken()
+  const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
+
+  useEffect(() => {
+    document.body.classList.add('bg-ic-dark')
+    return () => {
+      document.body.classList.remove('bg-ic-dark')
+    }
+  })
+
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
@@ -57,9 +70,25 @@ export default function Page() {
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
               <Stats />
-              <div className='h-full min-h-[360px]'>
-                <TradingViewWidget baseToken={baseToken} symbol={ETH.symbol} />
-                <TradingViewWidget baseToken={baseToken} symbol={BTC.symbol} />
+              <div className='flex h-full min-h-[360px] flex-col'>
+                {currentTab === 'indexcoop-chart' ? (
+                  <PriceChart indexToken={indexToken} />
+                ) : (
+                  <>
+                    <TradingViewWidget
+                      baseToken={baseToken}
+                      symbol={ETH.symbol}
+                    />
+                    <TradingViewWidget
+                      baseToken={baseToken}
+                      symbol={BTC.symbol}
+                    />
+                  </>
+                )}
+                <ChartTabs
+                  currentTab={currentTab}
+                  setCurrentTab={setCurrentTab}
+                />
               </div>
             </div>
             <Suspense>
