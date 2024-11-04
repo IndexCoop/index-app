@@ -9,18 +9,36 @@ datasource db {
 }
 
 model User {
-  address        String        @id @unique
-  last_connected DateTime?     @db.Timestamptz(6)
-  Transaction    Transaction[]
+  address        String    @id @unique
+  last_connected DateTime? @db.Timestamptz(6)
+  Transaction    Trade[]
 }
 
-model Transaction {
-  transaction_hash String    @id
-  user_address     String
-  chain_id         Int?  @db.Integer
-  from             String?
-  to               String?
-  amount           String?
-  created_at       DateTime? @db.Timestamptz(6)
-  User             User      @relation(fields: [user_address], references: [address], onDelete: NoAction, onUpdate: NoAction)
+model Trade {
+  transactionHash               String    @id
+  userAddress                   String
+  chainId                       Int?      @db.Integer
+  from                          String?
+  to                            String?
+  type                          String
+  inputToken                    String
+  outputToken                   String
+  gas                           String    @db.Text
+  gasPrice                      String    @db.Text
+  gasCosts                      String    @db.Text
+  gasCostsInUsd                 Float
+  fullCostsInUsd                Float?
+  priceImpact                   Float?
+  indexTokenAmount              String    @db.Text
+  inputOutputTokenAmount        String    @db.Text
+  inputTokenAmount              String    @db.Text
+  inputTokenAmountUsd           Float
+  outputTokenAmount             String    @db.Text
+  outputTokenAmountUsd          Float
+  outputTokenAmountUsdAfterFees Float
+  inputTokenPrice               Float
+  outputTokenPrice              Float
+  slippage                      Float
+  createdAt                     DateTime? @db.Timestamptz(6)
+  User                          User      @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction)
 }

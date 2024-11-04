@@ -21,7 +21,7 @@ const createAlchemyClient = <N extends number>(
   },
 })
 
-const AlchemyApi = {
+export const AlchemyApi = {
   ...createAlchemyClient(chains.mainnet.id, Network.ETH_MAINNET),
   ...createAlchemyClient(chains.arbitrum.id, Network.ARB_MAINNET),
   ...createAlchemyClient(chains.base.id, Network.BASE_MAINNET),
