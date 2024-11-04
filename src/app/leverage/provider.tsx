@@ -210,7 +210,7 @@ export function LeverageProvider(props: { children: any }) {
 
       return {
         nav: data?.NetAssetValue ?? 0,
-        navchange: data?.NavChange24Hr ?? 0,
+        navchange: (data?.NavChange24Hr ?? 0) * 100,
       }
     },
   })
