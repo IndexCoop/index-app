@@ -10,14 +10,13 @@ import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { ChartTab } from '@/app/leverage/types'
 import { PriceChart } from '@/components/charts/price-chart'
+import { NetworkSelector } from '@/components/selectors/network-selector'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { BTC, ETH } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
-import { BaseAssetSelector } from './components/selectors/base-asset-selector'
-import { NetworkSelector } from './components/selectors/network-selector'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
 import { YourTokens } from './components/your-tokens'
@@ -42,11 +41,6 @@ export default function Page() {
           <div className='flex flex-col gap-5 md:flex-row md:gap-10'>
             <Title />
             <div className='flex flex-row gap-10 '>
-              <BaseAssetSelector
-                baseTokens={baseTokens}
-                selectedBaseToken={baseToken}
-                onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
-              />
               <NetworkSelector
                 onSelectNetwork={(chainId) => {
                   if (!walletClient) {
