@@ -11,10 +11,10 @@ import {
   RealWorldAssetIndex,
   Token,
 } from '@/constants/tokens'
+import { isAvailableForIssuance } from '@/lib/hooks/use-best-quote/utils/available'
 import { formatWei } from '@/lib/utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
-import { isAvailableForIssuance } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
 
