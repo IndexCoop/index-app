@@ -1,5 +1,3 @@
-import { IndexCoopInverseEthereumIndex } from '@indexcoop/flash-mint-sdk'
-
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
   currencies,
@@ -16,13 +14,9 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   GUSD,
-  HighYieldETHIndex,
   icETHIndex,
   IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseBitcoinIndex,
   IndexToken,
   LeveragedRethStakingYield,
   MATIC,
@@ -37,8 +31,6 @@ import {
   WETH,
   WSTETH,
 } from '@/constants/tokens'
-
-import { isSameAddress } from '.'
 
 export function getAddressForToken(
   token: Token,
@@ -187,21 +179,6 @@ export function isAvailableForSwap(token: Token): boolean {
     default:
       return true
   }
-}
-
-export function isIndexToken(token: Token): boolean {
-  if (token.symbol === IndexToken.symbol) return false
-  if (token.symbol === HighYieldETHIndex.symbol) return true
-  if (token.symbol === IndexCoopBitcoin2xIndex.symbol) return true
-  if (token.symbol === IndexCoopBitcoin3xIndex.symbol) return true
-  if (token.symbol === IndexCoopEthereum2xIndex.symbol) return true
-  if (token.symbol === IndexCoopEthereum3xIndex.symbol) return true
-  if (token.symbol === IndexCoopInverseBitcoinIndex.symbol) return true
-  if (token.symbol === IndexCoopInverseEthereumIndex.symbol) return true
-  if (token.symbol === RealWorldAssetIndex.symbol) return true
-  return indicesTokenList.some((index) =>
-    isSameAddress(index.address!, token.address!),
-  )
 }
 
 export const isNativeCurrency = (token: Token, chainId: number): boolean => {
