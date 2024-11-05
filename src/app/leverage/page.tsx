@@ -2,9 +2,7 @@
 
 import { useDisclosure } from '@chakra-ui/react'
 import { PopupButton } from '@typeform/embed-react'
-import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { Suspense, useEffect, useState } from 'react'
-import { useWalletClient } from 'wagmi'
 
 import { ChartTabs } from '@/app/leverage/components/chart-tabs'
 import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
@@ -26,8 +24,6 @@ import { YourTokens } from './components/your-tokens'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
-  const { open } = useWeb3Modal()
-  const { data: walletClient } = useWalletClient()
   const { address } = useWallet()
   const {
     isOpen: isSelectBaseTokenOpen,
@@ -57,14 +53,7 @@ export default function Page() {
                 selectedBaseToken={baseToken}
                 onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
               />
-              <NetworkSelector
-                onSelectNetwork={(chainId) => {
-                  if (!walletClient) {
-                    open({ view: 'Connect' })
-                  }
-                  walletClient?.switchChain({ id: chainId })
-                }}
-              />
+              <NetworkSelector />
             </div>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
