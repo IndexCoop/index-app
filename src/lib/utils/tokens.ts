@@ -18,7 +18,6 @@ import {
   icETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
-  IndexToken,
   LeveragedRethStakingYield,
   MATIC,
   RETH,
@@ -36,21 +35,11 @@ export function getAddressForToken(
   token: Token,
   chainId: number | undefined,
 ): string | undefined {
-  if (token.symbol === IndexToken.symbol) return token.address
-  switch (chainId) {
-    case ARBITRUM.chainId:
-      return token.arbitrumAddress
-    case BASE.chainId:
-      return token.baseAddress
-    case MAINNET.chainId:
-      return token.address
-    case OPTIMISM.chainId:
-      return token.optimismAddress
-    case POLYGON.chainId:
-      return token.polygonAddress
-    default:
-      return undefined
-  }
+  const nativeToken = getNativeToken(chainId)
+  if (token.symbol.toLowerCase() === nativeToken?.symbol.toLowerCase())
+    return nativeToken.address
+  const listedToken = getTokenByChainAndSymbol(chainId, token.symbol)
+  return listedToken?.address
 }
 
 /**

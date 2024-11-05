@@ -33,22 +33,21 @@ describe('getAddressForToken()', () => {
     expect(address).toBeUndefined()
   })
 
+  test('should return undefined for unsupported chain', async () => {
+    const address = getAddressForToken(ETH, 56)
+    expect(address).toBeUndefined()
+  })
+
+  test('should return correct token address for ETH on Ethereum', async () => {
+    const address = getAddressForToken(ETH, 1)
+    expect(address).toBeDefined()
+    expect(address).toEqual(ETH.address)
+  })
+
   test('should return correct token address for WETH on Ethereum', async () => {
     const address = getAddressForToken(WETH, 1)
     expect(address).toBeDefined()
     expect(address).toEqual(WETH.address)
-  })
-
-  test('should return correct token address for WETH on Optimism', async () => {
-    const address = getAddressForToken(WETH, 10)
-    expect(address).toBeDefined()
-    expect(address).toEqual(WETH.optimismAddress)
-  })
-
-  test('should return correct token address for WETH on Polygon', async () => {
-    const address = getAddressForToken(WETH, 137)
-    expect(address).toBeDefined()
-    expect(address).toEqual(WETH.polygonAddress)
   })
 })
 
