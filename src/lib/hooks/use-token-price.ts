@@ -1,11 +1,11 @@
-import { getChainTokenList } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isIndexToken } from '@indexcoop/tokenlists'
 import { useEffect, useState } from 'react'
 
 import { ETH, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
 import { NavProvider } from '@/lib/utils/api/nav'
-import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
+import { getNativeToken } from '@/lib/utils/tokens'
 
 export function useNativeTokenPrice(chainId?: number): number {
   const [nativeToken, setNativeToken] = useState(ETH)
@@ -27,18 +27,17 @@ export const getTokenPrice = async (
   token: Token,
   chainId: number | undefined,
 ): Promise<number> => {
-  const tokenAddress = getAddressForToken(token, chainId)
-  if (!tokenAddress || !chainId) return 0
-  const productTokensList = getChainTokenList(chainId, ['product'])
-  const isIndexToken = productTokensList.some(
-    ({ address }) => address === tokenAddress,
-  )
-  if (isIndexToken) {
+  const listedToken = getTokenByChainAndSymbol(chainId, token.symbol)
+  if (!listedToken || !chainId) return 0
+  if (isIndexToken(listedToken)) {
     const navProvider = new NavProvider()
-    const price = await navProvider.getNavPrice(token.symbol, chainId)
+    const price = await navProvider.getNavPrice(listedToken.symbol, chainId)
     return price
   }
-  const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
+  const tokenPrice = await fetchCoingeckoTokenPrice(
+    listedToken.address,
+    chainId,
+  )
   // Token price can return undefined
   return tokenPrice ?? 0
 }

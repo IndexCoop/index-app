@@ -7,6 +7,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import clsx from 'clsx'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
@@ -15,7 +16,6 @@ import { Token } from '@/constants/tokens'
 import { useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { formatAmountFromWei, isSameAddress } from '@/lib/utils'
-import { getAddressForToken } from '@/lib/utils/tokens'
 
 type SelectTokenModalProps = {
   address?: string
@@ -33,7 +33,11 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
   const isDarkMode = props.isDarkMode ?? false
   const showBalances = props.showBalances ?? true
   const tokenAddresses = useMemo(
-    () => tokens.map((token) => getAddressForToken(token, chainId) ?? ''),
+    () =>
+      tokens.map(
+        (token) =>
+          getTokenByChainAndSymbol(chainId, token.symbol)?.address ?? '',
+      ),
     [chainId, tokens],
   )
 
@@ -60,7 +64,8 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
               const tokenBalance = balances.find((bal) =>
                 isSameAddress(
                   bal.token,
-                  getAddressForToken(token, chainId) ?? '',
+                  getTokenByChainAndSymbol(chainId, token.symbol)?.address ??
+                    '',
                 ),
               )
               const balance = BigNumber.from(

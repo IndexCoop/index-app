@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { utils } from 'ethers'
 
 import { Token } from '@/constants/tokens'
@@ -9,10 +10,7 @@ import { getConfiguredZeroExSwapQuoteProvider } from '@/lib/utils/api/zeroex'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
-import {
-  getAddressForToken,
-  getCurrencyTokensForIndex,
-} from '@/lib/utils/tokens'
+import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
 
 import { IndexQuoteRequest, Quote, QuoteTransaction, QuoteType } from '../types'
 
@@ -34,8 +32,14 @@ async function getEnhancedFlashMintQuote(
   provider: IndexRpcProvider,
   rpcUrl: string,
 ): Promise<Quote | null> {
-  const inputTokenAddress = getAddressForToken(inputToken, chainId)
-  const outputTokenAddress = getAddressForToken(outputToken, chainId)
+  const inputTokenAddress = getTokenByChainAndSymbol(
+    chainId,
+    inputToken.symbol,
+  )?.address
+  const outputTokenAddress = getTokenByChainAndSymbol(
+    chainId,
+    outputToken.symbol,
+  )?.address
   if (!inputTokenAddress || !outputTokenAddress) {
     console.warn('Error unkown input/output token')
     return null

@@ -1,10 +1,10 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { Dispatch, SetStateAction } from 'react'
 
 import { formatPrice } from '@/app/products/utils/formatters'
 import { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
-import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { leverageTokens } from '../constants'
 import { EnrichedToken } from '../types'
@@ -19,7 +19,8 @@ export async function fetchLeverageTokenPrices(
   const tokenBalances = balances.reduce((acc, current) => {
     const token = leverageTokens.find(
       (leverageToken) =>
-        getAddressForToken(leverageToken, chainId) === current.token,
+        getTokenByChainAndSymbol(chainId, leverageToken.symbol)?.address ===
+        current.token,
     )
 
     if (!token) return acc
