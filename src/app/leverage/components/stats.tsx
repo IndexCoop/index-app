@@ -1,8 +1,8 @@
 import { ChevronUpIcon } from '@heroicons/react/16/solid'
 import clsx from 'clsx'
 
-import { TokenDisplay } from '@/app/leverage/components/leverage-widget/components/token-display'
 import { formatPercentage } from '@/app/products/utils/formatters'
+import { TokenDisplay } from '@/components/token-display'
 import { Token } from '@/constants/tokens'
 import { formatDollarAmount } from '@/lib/utils'
 

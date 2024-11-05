@@ -15,7 +15,7 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
-import { Stats } from './components/stats'
+import { QuickStats } from './components/quick-stats'
 import { Title } from './components/title'
 import { YourTokens } from './components/your-tokens'
 
@@ -42,7 +42,7 @@ export default function Page() {
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
-              <Stats />
+              <QuickStats />
               <div className='flex h-full min-h-[360px] flex-col'>
                 {currentTab === 'indexcoop-chart' ? (
                   <PriceChart indexToken={indexToken} />

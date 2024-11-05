@@ -50,8 +50,7 @@ interface Context {
   indexToken: Token
   indexTokens: Token[]
   indexTokenPrice: number
-  nav: number
-  navchange: number
+  nav: number | null
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
@@ -83,7 +82,6 @@ export const YieldContext = createContext<Context>({
   indexTokens: [],
   indexTokenPrice: 0,
   nav: 0,
-  navchange: 0,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
@@ -197,20 +195,19 @@ export function YieldProvider(props: { children: any }) {
   )
 
   const {
-    data: { nav, navchange },
+    data: { nav },
   } = useQuery({
     enabled: isAddress(indexTokenAddress),
-    initialData: { nav: 0, navchange: 0 },
+    initialData: { nav: null },
     queryKey: ['token-nav', indexTokenAddress],
     queryFn: async () => {
       const data = await fetchTokenMetrics({
         tokenAddress: indexTokenAddress!,
-        metrics: ['nav', 'navchange'],
+        metrics: ['nav'],
       })
 
       return {
-        nav: data?.NetAssetValue ?? 0,
-        navchange: data?.NavChange24Hr ?? 0,
+        nav: data?.NetAssetValue ?? null,
       }
     },
   })
@@ -542,7 +539,6 @@ export function YieldProvider(props: { children: any }) {
         outputToken,
         inputTokenAmount,
         nav,
-        navchange,
         baseTokens,
         costOfCarry,
         inputTokens,
