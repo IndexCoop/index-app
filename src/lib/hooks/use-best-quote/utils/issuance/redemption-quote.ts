@@ -7,9 +7,9 @@ import { formatWei, isSameAddress } from '@/lib/utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
-import { isAvailableForRedemption } from '@/lib/utils/tokens'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
+import { isAvailableForRedemption } from '../available'
 
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 import { DebtIssuanceProvider } from './provider'

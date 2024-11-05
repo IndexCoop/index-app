@@ -13,7 +13,6 @@ import {
   icETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
-  IndexToken,
   LeveragedRethStakingYield,
   MATIC,
   STETH,
@@ -26,53 +25,7 @@ import {
   getCurrencyTokens,
   getCurrencyTokensForIndex,
   getNativeToken,
-  isAvailableForFlashMint,
-  isAvailableForSwap,
 } from './tokens'
-
-describe('isAvailableForFlashMint()', () => {
-  test('returns true by default', async () => {
-    const isAvailable = isAvailableForFlashMint(CoinDeskEthTrendIndex)
-    expect(isAvailable).toBe(true)
-  })
-
-  test('should return true for ic21 swap availability', async () => {
-    const isAvailable = isAvailableForFlashMint(ic21)
-    expect(isAvailable).toBe(true)
-  })
-
-  test('should return false for INDEX swap availability', async () => {
-    const isAvailable = isAvailableForFlashMint(IndexToken)
-    expect(isAvailable).toBe(false)
-  })
-})
-
-describe('isAvailableForSwap()', () => {
-  test('returns true by default', async () => {
-    const isAvailable = isAvailableForFlashMint(DefiPulseIndex)
-    expect(isAvailable).toBe(true)
-  })
-
-  test('should return false for BTC2x swap availability', async () => {
-    const isAvailable = isAvailableForSwap(IndexCoopBitcoin2xIndex)
-    expect(isAvailable).toBe(false)
-  })
-
-  test('should return false for cdETI swap availability', async () => {
-    const isAvailable = isAvailableForSwap(CoinDeskEthTrendIndex)
-    expect(isAvailable).toBe(false)
-  })
-
-  test('should return false for ETH2x swap availability', async () => {
-    const isAvailable = isAvailableForSwap(IndexCoopEthereum2xIndex)
-    expect(isAvailable).toBe(true)
-  })
-
-  test('should return false for icRETH swap availability', async () => {
-    const isAvailable = isAvailableForSwap(LeveragedRethStakingYield)
-    expect(isAvailable).toBe(false)
-  })
-})
 
 describe('getAddressForToken()', () => {
   test('should return undefined for undefined chain', async () => {
@@ -80,22 +33,21 @@ describe('getAddressForToken()', () => {
     expect(address).toBeUndefined()
   })
 
+  test('should return undefined for unsupported chain', async () => {
+    const address = getAddressForToken(ETH, 56)
+    expect(address).toBeUndefined()
+  })
+
+  test('should return correct token address for ETH on Ethereum', async () => {
+    const address = getAddressForToken(ETH, 1)
+    expect(address).toBeDefined()
+    expect(address).toEqual(ETH.address)
+  })
+
   test('should return correct token address for WETH on Ethereum', async () => {
     const address = getAddressForToken(WETH, 1)
     expect(address).toBeDefined()
     expect(address).toEqual(WETH.address)
-  })
-
-  test('should return correct token address for WETH on Optimism', async () => {
-    const address = getAddressForToken(WETH, 10)
-    expect(address).toBeDefined()
-    expect(address).toEqual(WETH.optimismAddress)
-  })
-
-  test('should return correct token address for WETH on Polygon', async () => {
-    const address = getAddressForToken(WETH, 137)
-    expect(address).toBeDefined()
-    expect(address).toEqual(WETH.polygonAddress)
   })
 })
 

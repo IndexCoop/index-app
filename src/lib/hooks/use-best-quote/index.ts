@@ -5,19 +5,19 @@ import { usePublicClient } from 'wagmi'
 import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import {
+  isAvailableForFlashMint,
+  isAvailableForIssuance,
+  isAvailableForRedemption,
+  isAvailableForSwap,
+} from '@/lib/hooks/use-best-quote/utils/available'
+import {
   getEnhancedIssuanceQuote,
   getEnhancedRedemptionQuote,
 } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { parseUnits } from '@/lib/utils'
-import {
-  getAddressForToken,
-  isAvailableForFlashMint,
-  isAvailableForIssuance,
-  isAvailableForRedemption,
-  isAvailableForSwap,
-} from '@/lib/utils/tokens'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
