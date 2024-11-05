@@ -181,12 +181,6 @@ export function isAvailableForSwap(token: Token): boolean {
   }
 }
 
-export const isNativeCurrency = (token: Token, chainId: number): boolean => {
-  const nativeCurrency = getNativeToken(chainId)
-  if (!nativeCurrency) return false
-  return token.symbol === nativeCurrency.symbol
-}
-
 export function isTokenPairTradable(
   requiresProtection: boolean,
   inputToken: Token,
