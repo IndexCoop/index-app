@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
   currencies,
@@ -183,9 +185,18 @@ export function isAvailableForSwap(token: Token): boolean {
 
 export function isTokenPairTradable(
   requiresProtection: boolean,
-  inputToken: Token,
-  outputToken: Token,
+  inputTokenSymbol: string,
+  outputTokenSymbol: string,
+  chainId: number,
 ): boolean {
   if (!requiresProtection) return true
-  return !inputToken.isDangerous && !outputToken.isDangerous
+  // When tokenlists is used everywhere, we can just pass these objects as function
+  // arguments instead of the token symbol
+  const inputToken = getTokenByChainAndSymbol(chainId, inputTokenSymbol)
+  const outputToken = getTokenByChainAndSymbol(chainId, outputTokenSymbol)
+  const inputTokenIsDangerous =
+    inputToken?.tags.some((tag) => tag === 'dangerous') ?? true
+  const outputTokenIsDangerous =
+    outputToken?.tags.some((tag) => tag === 'dangerous') ?? true
+  return !inputTokenIsDangerous && !outputTokenIsDangerous
 }

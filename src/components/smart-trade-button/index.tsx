@@ -66,8 +66,14 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   } = useApproval(inputToken, contract, inputTokenAmount)
 
   const isTradablePair = useMemo(
-    () => isTokenPairTradable(requiresProtection, inputToken, outputToken),
-    [requiresProtection, inputToken, outputToken],
+    () =>
+      isTokenPairTradable(
+        requiresProtection,
+        inputToken.symbol,
+        outputToken.symbol,
+        chainId ?? 1,
+      ),
+    [chainId, requiresProtection, inputToken, outputToken],
   )
 
   const shouldApprove = useMemo(() => {
