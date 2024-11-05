@@ -10,7 +10,7 @@ import {
   GasEstimatooor,
   GasEstimatooorFailedError,
 } from '@/lib/utils/gas-estimatooor'
-import { getAddressForToken, isNativeCurrency } from '@/lib/utils/tokens'
+import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
 
 import { formatQuoteAnalytics, useAnalytics } from './use-analytics'
 import { BalanceProvider } from './use-balance'
@@ -20,6 +20,12 @@ export type TradeCallback = (args: {
   hash: string
   quote: Quote
 }) => Promise<void>
+
+const isNativeCurrency = (tokenSymbol: string, chainId: number): boolean => {
+  const nativeCurrency = getNativeToken(chainId)
+  if (!nativeCurrency) return false
+  return tokenSymbol.toLowerCase() === nativeCurrency.symbol.toLowerCase()
+}
 
 async function getInputTokenBalance(
   inputToken: Token,
@@ -31,7 +37,7 @@ async function getInputTokenBalance(
   const inputTokenAddress = getAddressForToken(inputToken, chainId)
   if (!inputTokenAddress) return BigInt(0)
   const balanceProvider = new BalanceProvider(publicClient)
-  return isNativeCurrency(inputToken, chainId)
+  return isNativeCurrency(inputToken.symbol, chainId)
     ? await balanceProvider.getNativeBalance(address)
     : await balanceProvider.getErc20Balance(address, inputTokenAddress)
 }

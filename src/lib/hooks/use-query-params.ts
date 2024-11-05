@@ -99,7 +99,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
         network?.toString() ?? queryParams.get('network') ?? '',
       )
 
-      router.replace(`?${queryParams.toString()}`)
+      router.replace(`?${queryParams.toString()}`, { scroll: false })
     },
     [router],
   )

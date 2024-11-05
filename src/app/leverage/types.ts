@@ -27,3 +27,5 @@ export interface LeverageToken extends Token {
   baseToken: string
   leverageType: LeverageType
 }
+
+export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'

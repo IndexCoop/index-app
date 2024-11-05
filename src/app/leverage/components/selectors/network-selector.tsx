@@ -12,7 +12,7 @@ export function NetworkSelector(props: NetworkSelectorProps) {
   return (
     <div className='flex flex-col gap-3'>
       <div className='text-xs font-normal text-gray-100'>Network</div>
-      <div className='flex flex-row gap-1'>
+      <div className='flex flex-row gap-1 sm:gap-2'>
         <SelectorButton
           imagePath={{
             selected: '/assets/selector-network-ethereum.png',

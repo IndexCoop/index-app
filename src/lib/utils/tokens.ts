@@ -1,4 +1,4 @@
-import { IndexCoopInverseEthereumIndex } from '@indexcoop/flash-mint-sdk'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
@@ -7,7 +7,6 @@ import {
   indicesTokenListArbitrum,
 } from '@/constants/tokenlists'
 import {
-  BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
   DAI,
@@ -16,17 +15,11 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   GUSD,
-  HighYieldETHIndex,
   icETHIndex,
   IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseBitcoinIndex,
-  IndexToken,
   LeveragedRethStakingYield,
   MATIC,
-  RealWorldAssetIndex,
   RETH,
   SETH2,
   STETH,
@@ -38,27 +31,15 @@ import {
   WSTETH,
 } from '@/constants/tokens'
 
-import { isSameAddress } from '.'
-
 export function getAddressForToken(
   token: Token,
   chainId: number | undefined,
 ): string | undefined {
-  if (token.symbol === IndexToken.symbol) return token.address
-  switch (chainId) {
-    case ARBITRUM.chainId:
-      return token.arbitrumAddress
-    case BASE.chainId:
-      return token.baseAddress
-    case MAINNET.chainId:
-      return token.address
-    case OPTIMISM.chainId:
-      return token.optimismAddress
-    case POLYGON.chainId:
-      return token.polygonAddress
-    default:
-      return undefined
-  }
+  const nativeToken = getNativeToken(chainId)
+  if (token.symbol.toLowerCase() === nativeToken?.symbol.toLowerCase())
+    return nativeToken.address
+  const listedToken = getTokenByChainAndSymbol(chainId, token.symbol)
+  return listedToken?.address
 }
 
 /**
@@ -143,78 +124,20 @@ export function getTokenBySymbol(symbol: string): Token | null {
   return currencyToken ?? null
 }
 
-export function isAvailableForFlashMint(token: Token): boolean {
-  switch (token.symbol) {
-    case IndexToken.symbol:
-      return false
-    default:
-      return true
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function isAvailableForIssuance(
-  inputToken: Token,
-  outputToken: Token,
-): boolean {
-  return (
-    inputToken.symbol === BedIndex.symbol ||
-    inputToken.symbol === GitcoinStakedETHIndex.symbol ||
-    inputToken.symbol === LeveragedRethStakingYield.symbol ||
-    inputToken.symbol === RealWorldAssetIndex.symbol ||
-    outputToken.symbol === RealWorldAssetIndex.symbol
-  )
-}
-
-export function isAvailableForRedemption(
-  inputToken: Token,
-  outputToken: Token,
-): boolean {
-  return (
-    (inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopBitcoin2xIndex.symbol) ||
-    (inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopEthereum2xIndex.symbol)
-  )
-}
-
-export function isAvailableForSwap(token: Token): boolean {
-  switch (token.symbol) {
-    case CoinDeskEthTrendIndex.symbol:
-    case IndexCoopBitcoin2xIndex.symbol:
-    case LeveragedRethStakingYield.symbol:
-      return false
-    default:
-      return true
-  }
-}
-
-export function isIndexToken(token: Token): boolean {
-  if (token.symbol === IndexToken.symbol) return false
-  if (token.symbol === HighYieldETHIndex.symbol) return true
-  if (token.symbol === IndexCoopBitcoin2xIndex.symbol) return true
-  if (token.symbol === IndexCoopBitcoin3xIndex.symbol) return true
-  if (token.symbol === IndexCoopEthereum2xIndex.symbol) return true
-  if (token.symbol === IndexCoopEthereum3xIndex.symbol) return true
-  if (token.symbol === IndexCoopInverseBitcoinIndex.symbol) return true
-  if (token.symbol === IndexCoopInverseEthereumIndex.symbol) return true
-  if (token.symbol === RealWorldAssetIndex.symbol) return true
-  return indicesTokenList.some((index) =>
-    isSameAddress(index.address!, token.address!),
-  )
-}
-
-export const isNativeCurrency = (token: Token, chainId: number): boolean => {
-  const nativeCurrency = getNativeToken(chainId)
-  if (!nativeCurrency) return false
-  return token.symbol === nativeCurrency.symbol
-}
-
 export function isTokenPairTradable(
   requiresProtection: boolean,
-  inputToken: Token,
-  outputToken: Token,
+  inputTokenSymbol: string,
+  outputTokenSymbol: string,
+  chainId: number,
 ): boolean {
   if (!requiresProtection) return true
-  return !inputToken.isDangerous && !outputToken.isDangerous
+  // When tokenlists is used everywhere, we can just pass these objects as function
+  // arguments instead of the token symbol
+  const inputToken = getTokenByChainAndSymbol(chainId, inputTokenSymbol)
+  const outputToken = getTokenByChainAndSymbol(chainId, outputTokenSymbol)
+  const inputTokenIsDangerous =
+    inputToken?.tags.some((tag) => tag === 'dangerous') ?? true
+  const outputTokenIsDangerous =
+    outputToken?.tags.some((tag) => tag === 'dangerous') ?? true
+  return !inputTokenIsDangerous && !outputTokenIsDangerous
 }

@@ -106,7 +106,7 @@ export function YourTokens() {
                   (selected || hover) && 'text-ic-white',
                 )}
               >
-                Open Positions
+                Your Tokens
               </p>
               <div
                 className={cn(

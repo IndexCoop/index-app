@@ -10,6 +10,7 @@ export default {
     extend: {
       colors: {
         ic: {
+          dark: '#141E1F',
           black: '#0F1717',
           green: '#09AA74',
           red: '#C32238',
