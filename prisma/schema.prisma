@@ -13,7 +13,7 @@ model User {
   last_connected              DateTime?                     @db.Timestamptz(6)
   Transaction                 Trade[]
   UserAssetPerformanceMonthly UserAssetPerformanceMonthly[]
-  UserLifetimePerformance     UserLifetimePerformance?
+  UserLifetimePerformance     UserLifetimePerformance[]
 }
 
 model Trade {
@@ -42,13 +42,15 @@ model Trade {
   outputTokenPrice              Float
   slippage                      Float
   createdAt                     DateTime @db.Timestamptz(6)
+  isMint                        Boolean
   User                          User     @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction, map: "trade_useraddress_fkey")
 
-  @@id([transactionHash, createdAt], map: "trade_pkey")
+  @@id([transactionHash, createdAt])
 }
 
 model UserAssetPerformanceMonthly {
   userAddress      String
+  trackedToken     String
   month            DateTime @db.Date
   totalTrades      Int
   totalInputUsd    Float
@@ -59,11 +61,12 @@ model UserAssetPerformanceMonthly {
   averageSlippage  Float
   User             User     @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction, map: "userassetperformancemonthly_useraddress_fkey")
 
-  @@id([userAddress, month])
+  @@id([userAddress, trackedToken, month])
 }
 
 model UserLifetimePerformance {
-  userAddress      String @id
+  userAddress      String
+  trackedToken     String
   totalTrades      Int    @default(0)
   totalInputUsd    Float  @default(0)
   totalOutputUsd   Float  @default(0)
@@ -72,4 +75,6 @@ model UserLifetimePerformance {
   netGainLossUsd   Float  @default(0)
   averageSlippage  Float?
   User             User   @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction, map: "userlifetimeperformance_useraddress_fkey")
+
+  @@id([userAddress, trackedToken])
 }

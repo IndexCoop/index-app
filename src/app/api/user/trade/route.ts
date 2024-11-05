@@ -28,7 +28,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        error: 'Failed to create transaction.',
+        message: 'Failed to create transaction.',
+        e,
       },
       { status: 500 },
     )

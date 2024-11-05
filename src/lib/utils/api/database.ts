@@ -10,6 +10,7 @@ export const mapQuoteToTrade = (
   transactionHash,
   userAddress: address,
   chainId: quote.chainId,
+  isMint: quote.isMinting,
   from: quote.tx.from ?? null,
   to: quote.tx.to ?? null,
   type: quote.type,
