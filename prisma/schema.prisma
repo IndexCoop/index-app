@@ -9,36 +9,67 @@ datasource db {
 }
 
 model User {
-  address        String    @id @unique
-  last_connected DateTime? @db.Timestamptz(6)
-  Transaction    Trade[]
+  address                     String                        @id @unique
+  last_connected              DateTime?                     @db.Timestamptz(6)
+  Transaction                 Trade[]
+  UserAssetPerformanceMonthly UserAssetPerformanceMonthly[]
+  UserLifetimePerformance     UserLifetimePerformance?
 }
 
 model Trade {
-  transactionHash               String    @id
+  transactionHash               String
   userAddress                   String
-  chainId                       Int?      @db.Integer
+  chainId                       Int?
   from                          String?
   to                            String?
   type                          String
   inputToken                    String
   outputToken                   String
-  gas                           String    @db.Text
-  gasPrice                      String    @db.Text
-  gasCosts                      String    @db.Text
+  gas                           String
+  gasPrice                      String
+  gasCosts                      String
   gasCostsInUsd                 Float
   fullCostsInUsd                Float?
   priceImpact                   Float?
-  indexTokenAmount              String    @db.Text
-  inputOutputTokenAmount        String    @db.Text
-  inputTokenAmount              String    @db.Text
+  indexTokenAmount              String
+  inputOutputTokenAmount        String
+  inputTokenAmount              String
   inputTokenAmountUsd           Float
-  outputTokenAmount             String    @db.Text
+  outputTokenAmount             String
   outputTokenAmountUsd          Float
   outputTokenAmountUsdAfterFees Float
   inputTokenPrice               Float
   outputTokenPrice              Float
   slippage                      Float
-  createdAt                     DateTime? @db.Timestamptz(6)
-  User                          User      @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction)
+  createdAt                     DateTime @db.Timestamptz(6)
+  User                          User     @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction, map: "trade_useraddress_fkey")
+
+  @@id([transactionHash, createdAt], map: "trade_pkey")
+}
+
+model UserAssetPerformanceMonthly {
+  userAddress      String
+  month            DateTime @db.Date
+  totalTrades      Int
+  totalInputUsd    Float
+  totalOutputUsd   Float
+  totalFeesUsd     Float
+  totalGasCostsUsd Float
+  netGainLossUsd   Float
+  averageSlippage  Float
+  User             User     @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction, map: "userassetperformancemonthly_useraddress_fkey")
+
+  @@id([userAddress, month])
+}
+
+model UserLifetimePerformance {
+  userAddress      String @id
+  totalTrades      Int    @default(0)
+  totalInputUsd    Float  @default(0)
+  totalOutputUsd   Float  @default(0)
+  totalFeesUsd     Float  @default(0)
+  totalGasCostsUsd Float  @default(0)
+  netGainLossUsd   Float  @default(0)
+  averageSlippage  Float?
+  User             User   @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction, map: "userlifetimeperformance_useraddress_fkey")
 }
