@@ -23,7 +23,9 @@ export function NetworkSelector() {
 
   return (
     <div className='flex flex-col gap-3'>
-      <div className='text-xs font-normal text-gray-100'>Network</div>
+      <div className='text-ic-gray-600 text-xs font-normal dark:text-gray-100'>
+        Network
+      </div>
       <div className='flex flex-row gap-1 sm:gap-2'>
         <SelectorButton
           imagePath={{
