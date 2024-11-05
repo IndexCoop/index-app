@@ -7,7 +7,6 @@ import {
   indicesTokenListArbitrum,
 } from '@/constants/tokenlists'
 import {
-  BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
   DAI,
@@ -22,7 +21,6 @@ import {
   IndexToken,
   LeveragedRethStakingYield,
   MATIC,
-  RealWorldAssetIndex,
   RETH,
   SETH2,
   STETH,
@@ -135,52 +133,6 @@ export function getTokenBySymbol(symbol: string): Token | null {
     (token) => token.symbol.toLowerCase() === symbol.toLowerCase(),
   )
   return currencyToken ?? null
-}
-
-export function isAvailableForFlashMint(token: Token): boolean {
-  switch (token.symbol) {
-    case IndexToken.symbol:
-      return false
-    default:
-      return true
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function isAvailableForIssuance(
-  inputToken: Token,
-  outputToken: Token,
-): boolean {
-  return (
-    inputToken.symbol === BedIndex.symbol ||
-    inputToken.symbol === GitcoinStakedETHIndex.symbol ||
-    inputToken.symbol === LeveragedRethStakingYield.symbol ||
-    inputToken.symbol === RealWorldAssetIndex.symbol ||
-    outputToken.symbol === RealWorldAssetIndex.symbol
-  )
-}
-
-export function isAvailableForRedemption(
-  inputToken: Token,
-  outputToken: Token,
-): boolean {
-  return (
-    (inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopBitcoin2xIndex.symbol) ||
-    (inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopEthereum2xIndex.symbol)
-  )
-}
-
-export function isAvailableForSwap(token: Token): boolean {
-  switch (token.symbol) {
-    case CoinDeskEthTrendIndex.symbol:
-    case IndexCoopBitcoin2xIndex.symbol:
-    case LeveragedRethStakingYield.symbol:
-      return false
-    default:
-      return true
-  }
 }
 
 export function isTokenPairTradable(

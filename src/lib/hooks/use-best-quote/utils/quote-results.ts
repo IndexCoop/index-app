@@ -1,11 +1,11 @@
 import { Token } from '@/constants/tokens'
+
+import { Quote, QuoteResults, QuoteType, ZeroExQuote } from '../types'
 import {
   isAvailableForFlashMint,
   isAvailableForRedemption,
   isAvailableForSwap,
-} from '@/lib/utils/tokens'
-
-import { Quote, QuoteResults, QuoteType, ZeroExQuote } from '../types'
+} from '../utils/available'
 
 import { getBestQuote } from './best-quote'
 
