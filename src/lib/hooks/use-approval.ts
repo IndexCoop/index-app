@@ -1,4 +1,3 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useCallback, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { usePublicClient, useReadContract, useWalletClient } from 'wagmi'
@@ -7,6 +6,7 @@ import { ETH, Token } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isAddress } from '@/lib/utils'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 export const useApproval = (
   token: Token,
@@ -22,7 +22,7 @@ export const useApproval = (
   const tokenAddress = useMemo(() => {
     if (!publicClient) return null
     const chainId = publicClient?.chain.id
-    return getTokenByChainAndSymbol(chainId, token.symbol)?.address ?? null
+    return getAddressForToken(token, chainId) ?? null
   }, [publicClient, token])
 
   const { data, refetch } = useReadContract({

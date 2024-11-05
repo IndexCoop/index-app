@@ -1,4 +1,3 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
@@ -18,6 +17,7 @@ import {
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { parseUnits } from '@/lib/utils'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
@@ -93,14 +93,8 @@ export const useBestQuote = (
         return
       }
 
-      const inputTokenAddress = getTokenByChainAndSymbol(
-        chainId,
-        inputToken.symbol,
-      )?.address
-      const outputTokenAddress = getTokenByChainAndSymbol(
-        chainId,
-        outputToken.symbol,
-      )?.address
+      const inputTokenAddress = getAddressForToken(inputToken, chainId)
+      const outputTokenAddress = getAddressForToken(outputToken, chainId)
 
       if (!inputTokenAddress || !outputTokenAddress) {
         console.log(inputTokenAddress, outputTokenAddress)

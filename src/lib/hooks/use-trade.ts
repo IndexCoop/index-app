@@ -1,4 +1,3 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useCallback, useState } from 'react'
 import { Address, Hex, PublicClient } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
@@ -11,7 +10,7 @@ import {
   GasEstimatooor,
   GasEstimatooorFailedError,
 } from '@/lib/utils/gas-estimatooor'
-import { getNativeToken } from '@/lib/utils/tokens'
+import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
 
 import { formatQuoteAnalytics, useAnalytics } from './use-analytics'
 import { BalanceProvider } from './use-balance'
@@ -29,10 +28,7 @@ async function getInputTokenBalance(
 ): Promise<bigint> {
   const chainId = publicClient.chain?.id
   if (!chainId) return BigInt(0)
-  const inputTokenAddress = getTokenByChainAndSymbol(
-    chainId,
-    inputToken.symbol,
-  )?.address
+  const inputTokenAddress = getAddressForToken(inputToken, chainId)
   if (!inputTokenAddress) return BigInt(0)
   const balanceProvider = new BalanceProvider(publicClient)
   return isNativeCurrency(inputToken.symbol, chainId)
@@ -57,14 +53,8 @@ export const useTrade = () => {
       const { inputToken, inputTokenAmount, outputToken } = quote
 
       // Check that input/ouput token are known
-      const inputTokenAddress = getTokenByChainAndSymbol(
-        chainId,
-        inputToken.symbol,
-      )?.address
-      const outputTokenAddress = getTokenByChainAndSymbol(
-        chainId,
-        outputToken.symbol,
-      )?.address
+      const inputTokenAddress = getAddressForToken(inputToken, chainId)
+      const outputTokenAddress = getAddressForToken(outputToken, chainId)
       if (!outputTokenAddress || !inputTokenAddress) return
 
       // Check is user has sufficient funds

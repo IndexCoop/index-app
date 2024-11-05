@@ -1,11 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { formatWei, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
 
@@ -60,14 +60,8 @@ export async function getIndexQuote(
   } = request
   try {
     const inputAmount = parseUnits(inputTokenAmount, inputToken.decimals)
-    const inputTokenAddress = getTokenByChainAndSymbol(
-      chainId,
-      inputToken.symbol,
-    )
-    const outputTokenAddress = getTokenByChainAndSymbol(
-      chainId,
-      outputToken.symbol,
-    )
+    const inputTokenAddress = getAddressForToken(inputToken, chainId)
+    const outputTokenAddress = getAddressForToken(outputToken, chainId)
     const path = `/quote?takerAddress=${address}&inputToken=${inputTokenAddress}&outputToken=${outputTokenAddress}&inputAmount=${inputAmount.toString()}&chainId=${chainId}`
     console.log(path)
     const indexApi = new IndexApi()

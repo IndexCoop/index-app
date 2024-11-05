@@ -1,6 +1,5 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import capitalize from 'lodash/capitalize'
 import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
@@ -12,6 +11,7 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 import { shortenAddress } from '@/lib/utils'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
+import { getAddressForToken } from '@/lib/utils/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
 import { useLeverageToken } from '../provider'
@@ -51,9 +51,7 @@ export function YourTokens() {
   }, [balances, chainId])
 
   const { tokenHistory, isFetching } = useTokenHistory(
-    ...indexTokens.map(
-      (token) => getTokenByChainAndSymbol(chainId, token.symbol)!.address,
-    ),
+    ...indexTokens.map((token) => getAddressForToken(token, chainId)!),
   )
 
   const handleCloseClick = (token: EnrichedToken) => {

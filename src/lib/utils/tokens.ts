@@ -18,6 +18,7 @@ import {
   icETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
+  IndexToken,
   LeveragedRethStakingYield,
   MATIC,
   RETH,
@@ -30,6 +31,27 @@ import {
   WETH,
   WSTETH,
 } from '@/constants/tokens'
+
+export function getAddressForToken(
+  token: Token,
+  chainId: number | undefined,
+): string | undefined {
+  if (token.symbol === IndexToken.symbol) return token.address
+  switch (chainId) {
+    case ARBITRUM.chainId:
+      return token.arbitrumAddress
+    case BASE.chainId:
+      return token.baseAddress
+    case MAINNET.chainId:
+      return token.address
+    case OPTIMISM.chainId:
+      return token.optimismAddress
+    case POLYGON.chainId:
+      return token.polygonAddress
+    default:
+      return undefined
+  }
+}
 
 /**
  * Gets the list of currency tokens for the selected chain.
