@@ -152,7 +152,6 @@ interface FlashMintQuoteRequest extends IndexQuoteRequest {
   account: string
   chainId: number
   inputTokenAmountWei: bigint
-  nativeTokenPrice: number
 }
 
 export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
