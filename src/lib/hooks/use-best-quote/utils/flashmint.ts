@@ -44,7 +44,7 @@ async function getEnhancedFlashMintQuote(
     currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)
       .length > 0
   if (!isAllowedCurrency) {
-    console.warn('Currency not allowed')
+    console.warn('Currency not allowed:', inputOutputToken.symbol)
     return null
   }
 
