@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { utils } from 'ethers'
+import { toHex } from 'viem'
 
 import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import { Token } from '@/constants/tokens'
@@ -84,7 +84,7 @@ async function getEnhancedFlashMintQuote(
         chainId,
         from: account,
         to: tx.to,
-        data: utils.hexlify(tx.data!),
+        data: toHex(tx.data),
         value: tx.value ? BigNumber.from(tx.value) : undefined,
       }
       const defaultGas = getFlashMintGasDefault(indexToken.symbol)
