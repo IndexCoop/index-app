@@ -13,8 +13,8 @@ interface GasLimitResponse {
     costs: bigint
     costsUsd: number
     price: bigint
-    priceEth: number
   }
+  ethPrice: number
 }
 
 export async function getGasLimit(
@@ -47,7 +47,7 @@ export async function getGasLimit(
       costs,
       costsUsd,
       price: gasPrice,
-      priceEth: ethPrice,
     },
+    ethPrice,
   }
 }

@@ -92,7 +92,7 @@ async function getEnhancedFlashMintQuote(
       const defaultGasEstimate = BigInt(defaultGas)
       const res = await getGasLimit(transaction, defaultGasEstimate)
       if (!res?.gas) return null
-      const { gas } = res
+      const { ethPrice, gas } = res
       transaction.gas = gas.limit
 
       const inputTokenAmountUsd =
@@ -113,7 +113,7 @@ async function getEnhancedFlashMintQuote(
         gas.limit * gas.price,
         inputToken.decimals,
         inputTokenPrice,
-        gas.priceEth,
+        ethPrice,
       )
 
       return {
