@@ -87,3 +87,22 @@ model UserLifetimePerformance {
 
   @@id([userAddress, trackedToken])
 }
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view UserPerformanceView {
+  userAddress           String
+  token                 String
+  totalTrades           BigInt?
+  totalGasCostsUsd      Float?
+  totalFeesUsd          Float?
+  totalCost             Float?
+  totalTokensBought     Decimal? @db.Decimal
+  averageCostPerToken   Float?
+  totalReturn           Float?
+  totalTokensSold       Decimal? @db.Decimal
+  averageReturnPerToken Float?
+  totalRealizedGainLoss Float?
+  averageSlippage       Float?
+
+  @@id([userAddress, token])
+}

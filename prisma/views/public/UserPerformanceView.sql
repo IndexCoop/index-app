@@ -1,0 +1,16 @@
+SELECT
+  "RecentUserPerformanceView"."userAddress",
+  "RecentUserPerformanceView".token,
+  "RecentUserPerformanceView"."totalTrades",
+  "RecentUserPerformanceView"."totalGasCostsUsd",
+  "RecentUserPerformanceView"."totalFeesUsd",
+  "RecentUserPerformanceView"."totalCost",
+  "RecentUserPerformanceView"."totalTokensBought",
+  "RecentUserPerformanceView"."averageCostPerToken",
+  "RecentUserPerformanceView"."totalReturn",
+  "RecentUserPerformanceView"."totalTokensSold",
+  "RecentUserPerformanceView"."averageReturnPerToken",
+  "RecentUserPerformanceView"."totalRealizedGainLoss",
+  "RecentUserPerformanceView"."averageSlippage"
+FROM
+  "RecentUserPerformanceView";
