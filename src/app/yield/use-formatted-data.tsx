@@ -35,7 +35,7 @@ export function useFormattedLeverageData(
 ): FormattedLeverageData {
   const { address } = useWallet()
   const {
-    indexTokenPrice,
+    nav,
     inputToken,
     inputTokenAmount,
     inputValue,
@@ -96,7 +96,7 @@ export function useFormattedLeverageData(
   return {
     symbol: stats?.symbol ?? '',
     price: stats ? formatDollarAmount(stats.price) : '',
-    indexTokenPrice: formatDollarAmount(indexTokenPrice),
+    indexTokenPrice: formatDollarAmount(nav),
     change24h: stats ? `${stats.change24h.toFixed(2)}%` : '',
     change24hIsPositive: stats ? stats.change24h >= 0 : true,
     low24h: stats ? formatAmount(stats.low24h) : '',

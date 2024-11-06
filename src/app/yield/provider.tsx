@@ -16,7 +16,12 @@ import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM } from '@/constants/chains'
-import { ETH, IndexCoopEthereum2xIndex, Token } from '@/constants/tokens'
+import {
+  ETH,
+  HighYieldETHIndex,
+  IndexCoopEthereum2xIndex,
+  Token,
+} from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
@@ -27,30 +32,21 @@ import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
-import { IndexApi } from '@/lib/utils/api/index-api'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
-import { NavProvider } from '@/lib/utils/api/nav'
 
-import {
-  getBaseTokens,
-  getCurrencyTokens,
-  getLeverageTokens,
-} from './constants'
-import { BaseTokenStats, LeverageToken } from './types'
+import { getCurrencyTokens, getYieldTokens } from './constants'
+import { BaseTokenStats } from './types'
 
 interface Context {
   inputValue: string
   isMinting: boolean
   balances: TokenBalance[]
-  baseToken: Token
   indexToken: Token
   indexTokens: Token[]
-  indexTokenPrice: number
   nav: number | null
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
-  baseTokens: Token[]
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
@@ -58,7 +54,6 @@ interface Context {
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
-  onSelectBaseToken: (tokenSymbol: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   onSelectOutputToken: (tokenSymbol: string) => void
   reset: () => void
@@ -69,15 +64,12 @@ export const YieldContext = createContext<Context>({
   inputValue: '',
   isMinting: true,
   balances: [],
-  baseToken: ETH,
   indexToken: IndexCoopEthereum2xIndex,
   indexTokens: [],
-  indexTokenPrice: 0,
   nav: 0,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
-  baseTokens: [],
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
@@ -85,7 +77,6 @@ export const YieldContext = createContext<Context>({
   stats: null,
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
-  onSelectBaseToken: () => {},
   onSelectInputToken: () => {},
   onSelectOutputToken: () => {},
   reset: () => {},
@@ -97,10 +88,7 @@ export const useYieldContext = () => useContext(YieldContext)
 const defaultParams = {
   isMinting: true,
   inputToken: ETH,
-  outputToken: {
-    ...IndexCoopEthereum2xIndex,
-    baseToken: ETH.symbol,
-  } as LeverageToken,
+  outputToken: HighYieldETHIndex,
 }
 
 export function YieldProvider(props: { children: any }) {
@@ -118,15 +106,11 @@ export function YieldProvider(props: { children: any }) {
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
-  const [baseToken, setBaseToken] = useState<Token>(ETH)
-
   const [inputValue, setInputValue] = useState('')
-  const [indexTokenPrice, setIndexTokenPrice] = useState(0)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
   const [inputToken, setInputToken] = useState<Token>(queryInputToken)
   const [outputToken, setOutputToken] = useState<Token>(queryOutputToken)
-  const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [flashmintQuote, setFlashmintQuote] = useState<Quote | null>(null)
   const [swapQuote, setSwapQuote] = useState<Quote | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
@@ -147,10 +131,6 @@ export function YieldProvider(props: { children: any }) {
     }
   }, [queryNetwork, switchChain])
 
-  const baseTokens = useMemo(() => {
-    return getBaseTokens(chainId)
-  }, [chainId])
-
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
     return inputToken
@@ -161,7 +141,7 @@ export function YieldProvider(props: { children: any }) {
   }, [chainId, indexToken.symbol])
 
   const indexTokens = useMemo(() => {
-    return getLeverageTokens(chainId)
+    return getYieldTokens(chainId)
   }, [chainId])
 
   const indexTokenAddresses = useMemo(() => {
@@ -191,12 +171,6 @@ export function YieldProvider(props: { children: any }) {
     },
   })
 
-  const indexTokensBasedOnSymbol = useMemo(() => {
-    return indexTokens.filter((token) => {
-      return token.baseToken === baseToken.symbol
-    })
-  }, [baseToken, indexTokens])
-
   const inputTokenAmount = useMemo(
     () =>
       inputValue === ''
@@ -207,13 +181,13 @@ export function YieldProvider(props: { children: any }) {
 
   const inputTokens = useMemo(() => {
     if (isMinting) return getCurrencyTokens(chainId)
-    return indexTokensBasedOnSymbol
-  }, [chainId, indexTokensBasedOnSymbol, isMinting])
+    return indexTokens
+  }, [chainId, indexTokens, isMinting])
 
   const outputTokens = useMemo(() => {
     if (!isMinting) return getCurrencyTokens(chainId)
-    return indexTokensBasedOnSymbol
-  }, [chainId, indexTokensBasedOnSymbol, isMinting])
+    return indexTokens
+  }, [chainId, indexTokens, isMinting])
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
@@ -242,28 +216,6 @@ export function YieldProvider(props: { children: any }) {
   }, [isMinting])
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const indexApi = new IndexApi()
-        const res = await indexApi.get(`/token/${baseToken.symbol}`)
-        setStats(res.data)
-      } catch (err) {
-        console.log('Error fetching token stats', err)
-      }
-    }
-    fetchStats()
-  }, [baseToken])
-
-  useEffect(() => {
-    const fetchPrice = async () => {
-      const navProvider = new NavProvider()
-      const navPrice = await navProvider.getNavPrice(indexToken.symbol, chainId)
-      setIndexTokenPrice(navPrice)
-    }
-    fetchPrice()
-  }, [chainId, indexToken])
-
-  useEffect(() => {
     if (inputToken === null || outputToken === null) return
 
     updateQueryParams({ isMinting, inputToken, outputToken })
@@ -289,12 +241,6 @@ export function YieldProvider(props: { children: any }) {
     },
     [inputTokens],
   )
-
-  const onSelectBaseToken = (tokenSymbol: string) => {
-    const token = baseTokens.find((token) => token.symbol === tokenSymbol)
-    if (!token) return
-    setBaseToken(token)
-  }
 
   const onSelectOutputToken = (tokenSymbol: string) => {
     const token = outputTokens.find((token) => token.symbol === tokenSymbol)
@@ -419,7 +365,7 @@ export function YieldProvider(props: { children: any }) {
       setQuoteResult(quoteResult)
       return
     }
-    const bestQuote = getBestLeverageQuote(
+    const bestQuote = getBestYieldQuote(
       flashmintQuote,
       swapQuote,
       chainId ?? -1,
@@ -435,7 +381,6 @@ export function YieldProvider(props: { children: any }) {
   useEffect(() => {
     // Reset quotes
     setMinting(queryIsMinting)
-    setBaseToken(ETH)
     setInputToken(queryInputToken)
     setOutputToken(queryOutputToken)
     setQuoteResult({
@@ -464,23 +409,19 @@ export function YieldProvider(props: { children: any }) {
         inputValue,
         isMinting,
         balances,
-        baseToken,
         indexToken,
         indexTokens,
-        indexTokenPrice,
         inputToken,
         outputToken,
         inputTokenAmount,
         nav,
-        baseTokens,
         inputTokens,
         outputTokens,
         isFetchingQuote,
         quoteResult,
-        stats,
+        stats: null, // FIXME
         transactionReview,
         onChangeInputTokenAmount,
-        onSelectBaseToken,
         onSelectInputToken,
         onSelectOutputToken,
         reset,
@@ -492,7 +433,7 @@ export function YieldProvider(props: { children: any }) {
   )
 }
 
-function getBestLeverageQuote(
+function getBestYieldQuote(
   flashmintQuote: Quote | null,
   swapQuote: Quote | null,
   chainId: number,

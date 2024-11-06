@@ -6,10 +6,8 @@ import { formatWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
-import { leverageTokens } from '../constants'
+import { yieldTokens } from '../constants'
 import { EnrichedToken } from '../types'
-
-import { getLeverageType } from './get-leverage-type'
 
 export async function fetchLeverageTokenPrices(
   balances: TokenBalance[],
@@ -17,7 +15,7 @@ export async function fetchLeverageTokenPrices(
   chainId: number,
 ) {
   const tokenBalances = balances.reduce((acc, current) => {
-    const token = leverageTokens.find(
+    const token = yieldTokens.find(
       (leverageToken) =>
         getAddressForToken(leverageToken, chainId) === current.token,
     )
@@ -60,7 +58,6 @@ export async function fetchLeverageTokenPrices(
         parseFloat(formatWei(token.balance, token.decimals)) * tokenPrices[idx]
       return {
         ...token,
-        leverageType: getLeverageType(token.symbol),
         size: formatPrice(usd),
         usd,
         unitPriceUsd: tokenPrices[idx],

@@ -1,15 +1,7 @@
-import { getLeverageBaseToken } from '@/app/yield/utils/get-leverage-base-token'
-import { getLeverageType } from '@/app/yield/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import {
-  BTC,
   ETH,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseBitcoinIndex,
-  IndexCoopInverseEthereumIndex,
+  HighYieldETHIndex,
   Token,
   USDC,
   USDT,
@@ -18,33 +10,7 @@ import {
 } from '@/constants/tokens'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
-import { LeverageToken } from './types'
-
-export const ethLeverageTokens = [
-  IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseEthereumIndex,
-]
-
-export const btcLeverageTokens = [
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopInverseBitcoinIndex,
-]
-
-export const leverageTokens = [...ethLeverageTokens, ...btcLeverageTokens]
-
-export function getBaseTokens(chainId: number): Token[] {
-  switch (chainId) {
-    case MAINNET.chainId:
-    case ARBITRUM.chainId:
-      return [ETH, BTC]
-    case BASE.chainId:
-      return [ETH]
-    default:
-      return []
-  }
-}
+export const yieldTokens = [HighYieldETHIndex]
 
 export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
@@ -58,22 +24,19 @@ export function getCurrencyTokens(chainId: number): Token[] {
   }
 }
 
-export function getLeverageTokens(chainId: number): LeverageToken[] {
-  const tokens: (LeverageToken | null)[] = leverageTokens.map((token) => {
-    const baseToken = getLeverageBaseToken(token.symbol)
+// FIXME
+export function getYieldTokens(chainId: number): Token[] {
+  const tokens: (Token | null)[] = yieldTokens.map((token) => {
     const address = getAddressForToken(token, chainId)
-    const leverageType = getLeverageType(token.symbol)
-    if (!baseToken || !address || leverageType === null) {
+    if (!address) {
       return null
     }
     return {
       ...token,
       address,
-      baseToken: baseToken.symbol,
-      leverageType,
     }
   })
-  return tokens.filter((token): token is LeverageToken => token !== null)
+  return tokens.filter((token): token is Token => token !== null)
 }
 
 export const supportedNetworks = [

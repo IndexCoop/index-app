@@ -18,12 +18,9 @@ import { YieldWidget } from './components/yield-widget'
 
 export default function Page() {
   const { address } = useWallet()
-  const {
-    isOpen: isSelectBaseTokenOpen,
-    onOpen: onOpenSelectBaseToken,
-    onClose: onCloseSelectBaseToken,
-  } = useDisclosure()
-  const { baseTokens, indexToken, onSelectBaseToken } = useYieldContext()
+  const { isOpen: isSelectBaseTokenOpen, onClose: onCloseSelectBaseToken } =
+    useDisclosure()
+  const { indexToken } = useYieldContext()
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
 
   return (
@@ -52,7 +49,7 @@ export default function Page() {
               </div>
             </div>
             <Suspense>
-              <YieldWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
+              <YieldWidget />
             </Suspense>
           </div>
         </div>
@@ -63,12 +60,9 @@ export default function Page() {
         isOpen={isSelectBaseTokenOpen}
         showBalances={false}
         onClose={onCloseSelectBaseToken}
-        onSelectedToken={(tokenSymbol) => {
-          onSelectBaseToken(tokenSymbol)
-          onCloseSelectBaseToken()
-        }}
+        onSelectedToken={() => {}}
         address={address}
-        tokens={baseTokens}
+        tokens={[]}
       />
     </div>
   )

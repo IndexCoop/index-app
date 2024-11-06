@@ -20,7 +20,6 @@ import { chains } from '@/lib/utils/wagmi'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
-import { BaseTokenSelector } from './components/base-token-selector'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { Fees } from './components/fees'
 import { Summary } from './components/summary'
@@ -29,16 +28,11 @@ import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
-type Props = {
-  onClickBaseTokenSelector: () => void
-}
-
-export function YieldWidget(props: Props) {
+export function YieldWidget() {
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
-    baseToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
@@ -92,10 +86,6 @@ export function YieldWidget(props: Props) {
       className='widget flex flex-col gap-3 rounded-3xl p-6'
       id='close-position-scroll'
     >
-      <BaseTokenSelector
-        baseToken={baseToken}
-        onClick={props.onClickBaseTokenSelector}
-      />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
