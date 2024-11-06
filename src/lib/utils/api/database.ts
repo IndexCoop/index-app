@@ -1,6 +1,7 @@
 import { Trade } from '@prisma/client'
 
 import { Quote } from '@/lib/hooks/use-best-quote/types'
+import { formatUnits } from 'viem'
 
 export const mapQuoteToTrade = (
   address: string,
@@ -16,8 +17,14 @@ export const mapQuoteToTrade = (
   type: quote.type,
   inputToken: quote.inputToken.symbol,
   outputToken: quote.outputToken.symbol,
-  inputTokenAmount: quote.inputTokenAmount.toString(),
-  outputTokenAmount: quote.outputTokenAmount.toString(),
+  inputTokenAmount: formatUnits(
+    quote.inputTokenAmount.toBigInt(),
+    quote.inputToken.decimals,
+  ),
+  outputTokenAmount: formatUnits(
+    quote.outputTokenAmount.toBigInt(),
+    quote.outputToken.decimals,
+  ),
   gas: quote.gas.toString(),
   gasPrice: quote.gasPrice.toString(),
   gasCosts: quote.gasCosts.toString(),
