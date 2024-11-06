@@ -54,7 +54,6 @@ model UserAssetPerformanceMonthly {
   trackedToken          String
   month                 DateTime @db.Date
   totalTrades           Int
-  totalFeesUsd          Float
   totalGasCostsUsd      Float
   totalCost             Float
   totalTokensBought     Float
@@ -73,7 +72,6 @@ model UserLifetimePerformance {
   userAddress           String
   trackedToken          String
   totalTrades           Int    @default(0)
-  totalFeesUsd          Float  @default(0)
   totalGasCostsUsd      Float  @default(0)
   totalCost             Float  @default(0)
   totalTokensBought     Float  @default(0)
@@ -86,22 +84,4 @@ model UserLifetimePerformance {
   User                  User   @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction, map: "userlifetimeperformance_useraddress_fkey")
 
   @@id([userAddress, trackedToken])
-}
-
-view UserPerformanceView {
-  userAddress           String
-  token                 String
-  totalTrades           BigInt?
-  totalGasCostsUsd      Float?
-  totalFeesUsd          Float?
-  totalCost             Float?
-  totalTokensBought     Decimal? @db.Decimal
-  averageCostPerToken   Float?
-  totalReturn           Float?
-  totalTokensSold       Decimal? @db.Decimal
-  averageReturnPerToken Float?
-  totalRealizedGainLoss Float?
-  averageSlippage       Float?
-
-  @@id([userAddress, token])
 }
