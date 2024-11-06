@@ -13,7 +13,6 @@ import { LegacyRedemptionQuoteResult } from '@/app/legacy/types'
 import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getLegacyRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance/legacy-quote'
-import { useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
@@ -50,7 +49,6 @@ const RedeemContext = createContext<RedeemContextProps>({
 export const useRedeem = () => useContext(RedeemContext)
 
 export function RedeemProvider(props: { children: any }) {
-  const nativeTokenPrice = useNativeTokenPrice(1)
   const publicClient = usePublicClient()
   const queryClient = useQueryClient()
   const { address, provider } = useWallet()
@@ -84,7 +82,6 @@ export function RedeemProvider(props: { children: any }) {
         address,
         inputToken,
         inputTokenAmount: inputTokenAmount.toString(),
-        nativeTokenPrice,
         provider,
         publicClient,
       },
@@ -93,14 +90,11 @@ export function RedeemProvider(props: { children: any }) {
       if (!address) return null
       if (!provider || !publicClient) return null
       if (inputTokenAmount <= 0) return null
-      const gasPrice = await provider.getGasPrice()
       const legacyQuote = await getLegacyRedemptionQuote(
         {
           account: address,
           inputTokenAmount,
           inputToken,
-          gasPrice,
-          nativeTokenPrice,
           slippage: 0,
         },
         publicClient,
