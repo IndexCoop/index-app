@@ -10,13 +10,13 @@ import {
 } from '@indexcoop/tokenlists'
 import { BigNumber } from 'ethers'
 import { NextRequest, NextResponse } from 'next/server'
-import { Address, isAddress, parseEther } from 'viem'
+import { Address, isAddress } from 'viem'
 
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getConfiguredZeroExSwapQuoteProvider } from '@/lib/utils/api/zeroex'
 import { getAlchemyBaseUrl } from '@/lib/utils/urls'
 
-interface IndexQuoteRequest {
+export interface IndexQuoteRequest {
   chainId: number
   account: string
   inputToken: string
@@ -77,11 +77,14 @@ export async function POST(req: NextRequest) {
       zeroexSwapQuoteProvider,
     )
 
+    const isMinting = outputToken.isIndex
     const quote = await quoteProvider.getQuote({
-      isMinting: outputToken.isIndex,
+      isMinting,
       inputToken: inputToken.quoteToken,
       outputToken: outputToken.quoteToken,
-      indexTokenAmount: BigNumber.from(parseEther('1').toString()),
+      indexTokenAmount: BigNumber.from(
+        isMinting ? outputAmount! : inputAmount!,
+      ),
       slippage,
     })
 
