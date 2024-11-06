@@ -27,15 +27,21 @@ export function ChartTabs({ currentTab, setCurrentTab }: Props) {
 
   return (
     <nav
-      className='divide-ic-gray-200 border-ic-gray-200 mt-2 flex divide-x-2 rounded-xl border'
+      className='border-ic-gray-200 bg-ic-gray-50 z-10 mt-2 flex rounded-xl border sm:mt-3 md:mt-4'
       aria-label='Tabs'
     >
-      {tabs.map((tab) => (
+      {tabs.map((tab, tabIdx) => (
         <button
           key={tab.name}
           className={cn(
-            tab.name === currentTab ? 'bg-[#F0FEFF]' : 'bg-ic-gray-50',
-            'text-ic-gray-500 relative min-w-0 flex-1 px-4 py-4 text-center text-sm font-bold',
+            tab.name === currentTab
+              ? 'border-ic-gray-500 rounded-lg bg-[#F0FEFF]'
+              : 'hover:bg-ic-gray-100 border-transparent',
+            tab.name !== currentTab && tabIdx === 0 && 'rounded-l-xl',
+            tab.name !== currentTab &&
+              tabIdx === tabs.length - 1 &&
+              'rounded-r-xl',
+            'text-ic-gray-500 relative min-w-0 flex-1 border-2 px-4 py-4 text-center text-sm font-bold',
           )}
           onClick={() => handleClick(tab)}
         >
