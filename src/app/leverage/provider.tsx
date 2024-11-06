@@ -435,7 +435,6 @@ export function LeverageProvider(props: { children: any }) {
           slippage: 0.1,
         },
         provider,
-        rpcUrl,
       )
     }
 

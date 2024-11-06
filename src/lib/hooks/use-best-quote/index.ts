@@ -135,7 +135,6 @@ export const useBestQuote = (
               nativeTokenPrice,
             },
             provider,
-            rpcUrl,
           )
           logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
           setIsFetchingFlashMint(false)

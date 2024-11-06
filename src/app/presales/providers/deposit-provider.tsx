@@ -172,7 +172,6 @@ export function DepositProvider(props: {
             slippage: 0,
           },
           provider,
-          rpcUrl,
         )
       } else {
         const gasPrice = await provider.getGasPrice()

@@ -1,11 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
 import { utils } from 'ethers'
 
+import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import { Token } from '@/constants/tokens'
 import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
-import { getConfiguredZeroExSwapQuoteProvider } from '@/lib/utils/api/zeroex'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
@@ -24,7 +23,7 @@ async function getEnhancedFlashMintQuote(
   isMinting: boolean,
   inputToken: Token,
   outputToken: Token,
-  indexTokenAmount: BigNumber,
+  indexTokenAmount: bigint,
   inputTokenPrice: number,
   outputTokenPrice: number,
   nativeTokenPrice: number,
@@ -32,36 +31,54 @@ async function getEnhancedFlashMintQuote(
   slippage: number,
   chainId: number,
   provider: IndexRpcProvider,
-  rpcUrl: string,
 ): Promise<Quote | null> {
   const inputTokenAddress = getAddressForToken(inputToken, chainId)
   const outputTokenAddress = getAddressForToken(outputToken, chainId)
+
   if (!inputTokenAddress || !outputTokenAddress) {
     console.warn('Error unkown input/output token')
     return null
   }
+
   const indexToken = isMinting ? outputToken : inputToken
   const inputOutputToken = isMinting ? inputToken : outputToken
+
   const currencies = getCurrencyTokensForIndex(indexToken, chainId)
   // Allow only supported currencies
   const isAllowedCurrency =
     currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)
       .length > 0
-  if (!isAllowedCurrency) return null
+  if (!isAllowedCurrency) {
+    console.warn('Currency not allowed')
+    return null
+  }
+
   try {
-    const swapQuoteProvider = getConfiguredZeroExSwapQuoteProvider(chainId)
-    const request = {
-      isMinting,
-      inputToken: { ...inputToken, address: inputTokenAddress },
-      outputToken: { ...outputToken, address: outputTokenAddress },
-      indexTokenAmount,
+    const request: ApiIndexQuoteRequest = {
+      chainId,
+      account,
+      inputToken: inputTokenAddress,
+      outputToken: outputTokenAddress,
       slippage,
     }
-    const quoteProvider = new FlashMintQuoteProvider(rpcUrl, swapQuoteProvider)
-    const quoteFM = await quoteProvider.getQuote(request)
-    // console.log(quoteFM)
+
+    if (isMinting) {
+      request.outputAmount = indexTokenAmount.toString()
+    } else {
+      request.inputAmount = indexTokenAmount.toString()
+    }
+
+    const response = await fetch('/api/quote', {
+      method: 'POST',
+      body: JSON.stringify(request),
+    })
+    const quoteFM = await response.json()
+    console.log(quoteFM)
     if (quoteFM) {
-      const { inputOutputAmount, tx } = quoteFM
+      const { inputAmount, outputAmount, transaction: tx } = quoteFM
+      const inputOutputAmount = isMinting
+        ? BigInt(inputAmount)
+        : BigInt(outputAmount)
       const transaction: QuoteTransaction = {
         account,
         chainId,
@@ -81,17 +98,12 @@ async function getEnhancedFlashMintQuote(
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
       transaction.gasLimit = BigNumber.from(gasEstimate.toString())
 
-      const inputTokenAmount = isMinting ? inputOutputAmount : indexTokenAmount
-      const outputTokenAmount = isMinting ? indexTokenAmount : inputOutputAmount
-
       const inputTokenAmountUsd =
-        parseFloat(
-          formatWei(inputTokenAmount.toBigInt(), inputToken.decimals),
-        ) * inputTokenPrice
+        parseFloat(formatWei(inputAmount, inputToken.decimals)) *
+        inputTokenPrice
       const outputTokenAmountUsd =
-        parseFloat(
-          formatWei(outputTokenAmount.toBigInt(), outputToken.decimals),
-        ) * outputTokenPrice
+        parseFloat(formatWei(outputAmount, outputToken.decimals)) *
+        outputTokenPrice
       const priceImpact = getPriceImpact(
         inputTokenAmountUsd,
         outputTokenAmountUsd,
@@ -100,7 +112,7 @@ async function getEnhancedFlashMintQuote(
       const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
       const fullCostsInUsd = getFullCostsInUsd(
-        inputTokenAmount.toBigInt(),
+        inputAmount,
         gasEstimate * gasPrice,
         inputToken.decimals,
         inputTokenPrice,
@@ -120,11 +132,11 @@ async function getEnhancedFlashMintQuote(
         gasCostsInUsd,
         fullCostsInUsd,
         priceImpact,
-        indexTokenAmount,
-        inputOutputTokenAmount: inputOutputAmount,
-        inputTokenAmount,
+        indexTokenAmount: BigNumber.from(indexTokenAmount.toString()),
+        inputOutputTokenAmount: BigNumber.from(inputOutputAmount.toString()),
+        inputTokenAmount: BigNumber.from(inputAmount.toString()),
         inputTokenAmountUsd,
-        outputTokenAmount,
+        outputTokenAmount: BigNumber.from(outputAmount.toString()),
         outputTokenAmountUsd,
         outputTokenAmountUsdAfterFees,
         inputTokenPrice,
@@ -149,7 +161,6 @@ interface FlashMintQuoteRequest extends IndexQuoteRequest {
 export async function getFlashMintQuote(
   request: FlashMintQuoteRequest,
   provider: IndexRpcProvider,
-  rpcUrl: string,
 ) {
   const {
     chainId,
@@ -185,7 +196,7 @@ export async function getFlashMintQuote(
       isMinting,
       inputToken,
       outputToken,
-      BigNumber.from(indexTokenAmount.toString()),
+      indexTokenAmount,
       inputTokenPrice,
       outputTokenPrice,
       nativeTokenPrice,
@@ -193,7 +204,6 @@ export async function getFlashMintQuote(
       slippage,
       chainId,
       provider,
-      rpcUrl,
     )
     // If there is no FlashMint quote, return immediately
     if (flashMintQuote === null) return savedQuote
