@@ -30,7 +30,6 @@ import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { NavProvider } from '@/lib/utils/api/nav'
-import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 import {
   getBaseTokens,
@@ -55,7 +54,6 @@ interface Context {
   outputToken: Token
   inputTokenAmount: bigint
   baseTokens: Token[]
-  costOfCarry: number | null
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
@@ -66,7 +64,6 @@ interface Context {
   onChangeInputTokenAmount: (input: string) => void
   onSelectBaseToken: (tokenSymbol: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
-  onSelectLeverageType: (type: LeverageType) => void
   onSelectOutputToken: (tokenSymbol: string) => void
   reset: () => void
   toggleIsMinting: () => void
@@ -86,7 +83,6 @@ export const YieldContext = createContext<Context>({
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
   baseTokens: [],
-  costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
@@ -97,7 +93,6 @@ export const YieldContext = createContext<Context>({
   onChangeInputTokenAmount: () => {},
   onSelectBaseToken: () => {},
   onSelectInputToken: () => {},
-  onSelectLeverageType: () => {},
   onSelectOutputToken: () => {},
   reset: () => {},
   toggleIsMinting: () => {},
@@ -138,10 +133,6 @@ export function YieldProvider(props: { children: any }) {
     useState<LeverageType>(queryLeverageType)
 
   const [inputValue, setInputValue] = useState('')
-  const [carryCosts, setCarryCosts] = useState<Record<string, number> | null>(
-    null,
-  )
-  const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [indexTokenPrice, setIndexTokenPrice] = useState(0)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
@@ -293,23 +284,10 @@ export function YieldProvider(props: { children: any }) {
   }, [chainId, indexToken])
 
   useEffect(() => {
-    async function fetchCosts() {
-      const carryCosts = await fetchCarryCosts()
-      setCarryCosts(carryCosts)
-    }
-
-    fetchCosts()
-  }, [])
-
-  useEffect(() => {
     if (inputToken === null || outputToken === null) return
 
-    const inputOutputToken = isMinting ? outputToken : inputToken
-
     updateQueryParams({ isMinting, inputToken, outputToken })
-    if (carryCosts)
-      setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
-  }, [isMinting, inputToken, outputToken, carryCosts, updateQueryParams])
+  }, [isMinting, inputToken, outputToken, updateQueryParams])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -322,10 +300,6 @@ export function YieldProvider(props: { children: any }) {
     },
     [inputToken],
   )
-
-  const onSelectLeverageType = (type: LeverageType) => {
-    setLeverageType(type)
-  }
 
   const onSelectInputToken = useCallback(
     (tokenSymbol: string) => {
@@ -540,7 +514,6 @@ export function YieldProvider(props: { children: any }) {
         inputTokenAmount,
         nav,
         baseTokens,
-        costOfCarry,
         inputTokens,
         outputTokens,
         isFetchingQuote,
@@ -551,7 +524,6 @@ export function YieldProvider(props: { children: any }) {
         onChangeInputTokenAmount,
         onSelectBaseToken,
         onSelectInputToken,
-        onSelectLeverageType,
         onSelectOutputToken,
         reset,
         toggleIsMinting,

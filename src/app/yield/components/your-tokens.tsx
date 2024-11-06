@@ -18,7 +18,6 @@ import { useYieldContext } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
 import { getLeverageBaseToken } from '../utils/get-leverage-base-token'
-import { getLeverageType } from '../utils/get-leverage-type'
 
 const leverageTypeLabels = {
   [LeverageType.Long2x]: '2x LONG',
@@ -39,7 +38,6 @@ export function YourTokens() {
     onSelectBaseToken,
     isMinting,
     toggleIsMinting,
-    onSelectLeverageType,
   } = useYieldContext()
   const { address: user } = useWallet()
   const [tokens, setTokens] = useState<EnrichedToken[]>([])
@@ -60,10 +58,6 @@ export function YourTokens() {
     const leverageBaseToken = getLeverageBaseToken(token.symbol)
     if (leverageBaseToken === null) return
     onSelectBaseToken(leverageBaseToken.symbol)
-
-    const leverageType = getLeverageType(token.symbol)
-    if (leverageType === null) return
-    onSelectLeverageType(leverageType)
 
     const scrollDiv = document.getElementById('close-position-scroll')
     if (scrollDiv) {

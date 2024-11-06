@@ -1,5 +1,5 @@
-import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
-import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
+import { getLeverageBaseToken } from '@/app/yield/utils/get-leverage-base-token'
+import { getLeverageType } from '@/app/yield/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import {
   BTC,

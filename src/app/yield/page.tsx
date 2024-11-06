@@ -3,10 +3,10 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { Suspense, useState } from 'react'
 
-import { ChartTabs } from '@/app/leverage/components/chart-tabs'
-import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
-import { useLeverageToken } from '@/app/leverage/provider'
-import { ChartTab } from '@/app/leverage/types'
+import { ChartTabs } from '@/app/yield/components/chart-tabs'
+import TradingViewWidget from '@/app/yield/components/trading-view-widget'
+import { useYieldContext } from '@/app/yield/provider'
+import { ChartTab } from '@/app/yield/types'
 import { PriceChart } from '@/components/charts/price-chart'
 import { NetworkSelector } from '@/components/selectors/network-selector'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -27,7 +27,7 @@ export default function Page() {
     onClose: onCloseSelectBaseToken,
   } = useDisclosure()
   const { baseToken, baseTokens, indexToken, onSelectBaseToken } =
-    useLeverageToken()
+    useYieldContext()
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
 
   return (

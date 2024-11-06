@@ -1,15 +1,14 @@
 import clsx from 'clsx'
 
-import { LeverageType } from '@/app/leverage/types'
+import { LeverageType } from '@/app/yield/types'
 
 type LeverageSelectorProps = {
   selectedTye: LeverageType
   supportedTypes: LeverageType[]
-  onSelectType: (type: LeverageType) => void
 }
 
 export function LeverageSelector(props: LeverageSelectorProps) {
-  const { onSelectType, selectedTye, supportedTypes } = props
+  const { selectedTye, supportedTypes } = props
   return (
     <div className='flex flex-row items-center justify-between rounded-xl border border-[#3A6060] p-4'>
       <div className='text-ic-gray-300 text-xs font-medium'>Leverage</div>
@@ -22,7 +21,7 @@ export function LeverageSelector(props: LeverageSelectorProps) {
                 key={`leverage-type-${label}`}
                 isSelected={selectedTye === leverageType}
                 label={label}
-                onClick={() => onSelectType(leverageType)}
+                onClick={() => {}}
               />
             )
           })}

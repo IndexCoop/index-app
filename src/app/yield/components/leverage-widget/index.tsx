@@ -3,8 +3,8 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
-import { supportedNetworks } from '@/app/leverage/constants'
-import { useLeverageToken } from '@/app/leverage/provider'
+import { supportedNetworks } from '@/app/yield/constants'
+import { useYieldContext } from '@/app/yield/provider'
 import { Receive } from '@/components/receive'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -45,20 +45,18 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     inputTokens,
     inputValue,
     isMinting,
-    costOfCarry,
     leverageType,
     outputTokens,
     stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
-    onSelectLeverageType,
     onSelectOutputToken,
     outputToken,
     reset,
     supportedLeverageTypes,
     toggleIsMinting,
-  } = useLeverageToken()
+  } = useYieldContext()
 
   const {
     contract,
@@ -105,7 +103,6 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       <LeverageSelector
         selectedTye={leverageType}
         supportedTypes={supportedLeverageTypes}
-        onSelectType={onSelectLeverageType}
       />
       <TradeInputSelector
         config={{ isReadOnly: false }}
@@ -125,7 +122,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
-      <Fees costOfCarry={costOfCarry} leverageType={leverageType} />
+      <Fees leverageType={leverageType} />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={false}

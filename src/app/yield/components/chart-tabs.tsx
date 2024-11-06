@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react'
 
-import { useLeverageToken } from '@/app/leverage/provider'
-import { ChartTab } from '@/app/leverage/types'
+import { useYieldContext } from '@/app/yield/provider'
+import { ChartTab } from '@/app/yield/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -16,7 +16,7 @@ type Props = {
 
 export function ChartTabs({ currentTab, setCurrentTab }: Props) {
   const { logEvent } = useAnalytics()
-  const { indexToken } = useLeverageToken()
+  const { indexToken } = useYieldContext()
 
   const handleClick = (tab: Tab) => {
     setCurrentTab(tab.name)

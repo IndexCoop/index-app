@@ -1,7 +1,7 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
-import { useLeverageToken } from '@/app/leverage/provider'
+import { useYieldContext } from '@/app/yield/provider'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 
@@ -26,7 +26,7 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
-  const { stats } = useLeverageToken()
+  const { stats } = useYieldContext()
   const {
     gasFeesEth,
     gasFeesUsd,
