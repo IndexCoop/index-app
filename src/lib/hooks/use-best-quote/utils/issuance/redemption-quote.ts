@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
 import { DebtIssuanceModuleAddress } from '@/constants/contracts'
@@ -81,7 +80,7 @@ export async function getEnhancedRedemptionQuote(
     const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
     const gasCosts = gasEstimate * gasPrice
     const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
-    transaction.gasLimit = BigNumber.from(gasEstimate.toString())
+    transaction.gas = gasEstimate
 
     const inputTokenAmountUsd =
       parseFloat(formatWei(indexTokenAmount, inputToken.decimals)) *

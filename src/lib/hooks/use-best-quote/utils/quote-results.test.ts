@@ -1,5 +1,3 @@
-import { BigNumber } from 'ethers'
-
 import {
   Bitcoin2xFlexibleLeverageIndex,
   ETH,
@@ -94,8 +92,10 @@ const mockQuote: Quote = {
   slippage: 0,
   tx: {
     account: '0x0',
+    chainId: 1,
+    from: '0x0',
     to: '0x0',
     data: '0x',
-    value: BigNumber.from(0),
+    value: BigInt(0),
   },
 }

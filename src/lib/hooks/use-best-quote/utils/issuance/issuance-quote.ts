@@ -2,7 +2,6 @@ import {
   getIssuanceModule,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
-import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
 import {
@@ -129,7 +128,7 @@ export async function getEnhancedIssuanceQuote(
     const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
     const gasCosts = gasEstimate * gasPrice
     const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
-    transaction.gasLimit = BigNumber.from(gasEstimate.toString())
+    transaction.gas = gasEstimate
 
     const inputTokenAmountUsd =
       parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *

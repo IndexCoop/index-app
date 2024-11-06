@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import { Hex } from 'viem'
 
 import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { formatWei, parseUnits } from '@/lib/utils'
@@ -70,12 +70,13 @@ export async function getIndexQuote(
     const tx = {
       ...res.transaction,
       account: address,
-      data: res.transaction.data,
+      chainId: res.transaction.chainId ?? 1,
+      data: res.transaction.data as Hex,
       from: address,
-      gasLimit: BigNumber.from(res.transaction.gasLimit ?? '0'),
-      gasPrice: BigNumber.from(res.transaction.gasPrice ?? '0'),
+      gas: BigInt(res.transaction.gasLimit ?? '0'),
+      gasPrice: BigInt(res.transaction.gasPrice ?? '0'),
       to: res.transaction.to,
-      value: BigNumber.from(res.transaction.value),
+      value: BigInt(res.transaction.value),
     }
 
     let gasCosts = BigInt('0')

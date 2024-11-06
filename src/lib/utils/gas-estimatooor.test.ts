@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { createPublicClient, http, parseUnits } from 'viem'
 
 import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
@@ -30,10 +30,11 @@ describe('GasEstimatooor', () => {
     const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const failingTx = {
       account: '0xundefined',
+      chainId: 1,
       from: signer.address,
-      //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-      gasLimit: BigNumber.from(21_000),
-      value: BigNumber.from(parseUnits('1', 18).toString()),
+      // to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      gasLimit: BigInt(21_000),
+      value: parseUnits('1', 18),
     }
     try {
       await estimatooor.estimate(failingTx)
@@ -48,10 +49,11 @@ describe('GasEstimatooor', () => {
     const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const failingTx = {
       account: '0xundefined',
+      chainId: 1,
       from: signer.address,
       //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-      gasLimit: BigNumber.from(21_000),
-      value: BigNumber.from(parseUnits('1', 18).toString()),
+      gasLimit: BigInt(21_000),
+      value: parseUnits('1', 18),
     }
     const gasEstimate = await estimatooor.estimate(failingTx, false)
     expect(gasEstimate.toString()).toEqual(defaultGasEstimate.toString())
@@ -63,10 +65,11 @@ describe('GasEstimatooor', () => {
     const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const tx = {
       account: signer.address,
+      chainId: 1,
       from: signer.address,
       to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-      gasLimit: BigNumber.from(21_000),
-      value: BigNumber.from(parseUnits('1', 18).toString()),
+      gasLimit: BigInt(21_000),
+      value: parseUnits('1', 18),
     }
     const gasEstimate = await estimatooor.estimate(tx, false)
     expect(gasEstimate.toString()).toEqual('23101')

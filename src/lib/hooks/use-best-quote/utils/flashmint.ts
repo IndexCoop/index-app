@@ -1,5 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { toHex } from 'viem'
+import { Hex } from 'viem'
 
 import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import { Token } from '@/constants/tokens'
@@ -73,19 +72,22 @@ async function getEnhancedFlashMintQuote(
       body: JSON.stringify(request),
     })
     const quoteFM = await response.json()
-    console.log(quoteFM)
     if (quoteFM) {
-      const { inputAmount, outputAmount, transaction: tx } = quoteFM
-      const inputOutputAmount = isMinting
-        ? BigInt(inputAmount)
-        : BigInt(outputAmount)
+      const {
+        inputAmount: quoteInputAmount,
+        outputAmount: quoteOutputAmount,
+        transaction: tx,
+      } = quoteFM
+      const inputAmount = BigInt(quoteInputAmount)
+      const outputAmount = BigInt(quoteOutputAmount)
+      const inputOutputAmount = isMinting ? inputAmount : outputAmount
       const transaction: QuoteTransaction = {
         account,
         chainId,
         from: account,
         to: tx.to,
-        data: toHex(tx.data),
-        value: tx.value ? BigNumber.from(tx.value) : undefined,
+        data: tx.data as Hex,
+        value: tx.value ? BigInt(tx.value.hex) : undefined,
       }
       const defaultGas = getFlashMintGasDefault(indexToken.symbol)
       const defaultGasEstimate = BigInt(defaultGas)
@@ -96,7 +98,7 @@ async function getEnhancedFlashMintQuote(
       const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
       const gasCosts = gasEstimate * gasPrice
       const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
-      transaction.gasLimit = BigNumber.from(gasEstimate.toString())
+      transaction.gas = gasEstimate
 
       const inputTokenAmountUsd =
         parseFloat(formatWei(inputAmount, inputToken.decimals)) *

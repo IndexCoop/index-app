@@ -1,4 +1,4 @@
-import { PopulatedTransaction } from 'ethers'
+import { TransactionRequest } from 'viem'
 
 import { Token } from '@/constants/tokens'
 
@@ -15,9 +15,9 @@ export interface IndexQuoteRequest {
   slippage: number
 }
 
-// Could be separated from ethers whenever it's not used any more
-export interface QuoteTransaction extends PopulatedTransaction {
+export type QuoteTransaction = TransactionRequest & {
   account: string
+  chainId: number
 }
 
 export enum QuoteType {

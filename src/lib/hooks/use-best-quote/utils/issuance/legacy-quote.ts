@@ -1,5 +1,4 @@
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
-import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
 import { Issuance } from '@/app/legacy/config'
@@ -106,7 +105,7 @@ export async function getLegacyRedemptionQuote(
     const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
     const gasCosts = gasEstimate * gasPrice
     const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
-    transaction.gasLimit = BigNumber.from(gasEstimate.toString())
+    transaction.gas = gasEstimate
 
     const inputTokenAmountUsd =
       parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *
