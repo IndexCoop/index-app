@@ -1,5 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber'
-
 import { Token } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
 
@@ -71,19 +69,16 @@ export function formattedFiat(tokenPrice: number): string {
 
 export const getHasInsufficientFunds = (
   bestOptionUnavailable: boolean,
-  sellAmount: BigNumber,
-  sellTokenBalance: BigNumber | undefined,
+  sellAmount: bigint,
+  sellTokenBalance: bigint | undefined,
 ): boolean => {
   if (
     bestOptionUnavailable ||
-    sellAmount.isZero() ||
-    sellAmount.isNegative() ||
+    sellAmount <= BigInt(0) ||
     sellTokenBalance === undefined
   )
     return false
-
-  const hasInsufficientFunds = sellAmount.gt(sellTokenBalance)
-  return hasInsufficientFunds
+  return sellAmount > sellTokenBalance
 }
 
 export function shouldShowWarningSign(slippage: number): boolean {
