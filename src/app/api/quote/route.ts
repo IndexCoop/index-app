@@ -68,8 +68,7 @@ export async function POST(req: NextRequest) {
       return BadRequest('Bad Request')
     }
 
-    const rpcUrl =
-      getAlchemyBaseUrl(chainId) + process.env.NEXT_PUBLIC_ALCHEMY_ID
+    const rpcUrl = getAlchemyBaseUrl(chainId) + process.env.ALCHEMY_API_KEY
     const zeroexSwapQuoteProvider =
       getConfiguredZeroExSwapQuoteProvider(chainId)
     const quoteProvider = new FlashMintQuoteProvider(
