@@ -35,7 +35,6 @@ import {
   getBaseTokens,
   getCurrencyTokens,
   getLeverageTokens,
-  supportedLeverageTypes,
 } from './constants'
 import { BaseTokenStats, LeverageToken, LeverageType } from './types'
 import { getLeverageType } from './utils/get-leverage-type'
@@ -59,7 +58,6 @@ interface Context {
   isFetchingQuote: boolean
   quoteResult: QuoteResult | null
   stats: BaseTokenStats | null
-  supportedLeverageTypes: LeverageType[]
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectBaseToken: (tokenSymbol: string) => void
@@ -88,7 +86,6 @@ export const YieldContext = createContext<Context>({
   isFetchingQuote: false,
   quoteResult: null,
   stats: null,
-  supportedLeverageTypes: [],
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
   onSelectBaseToken: () => {},
@@ -519,7 +516,6 @@ export function YieldProvider(props: { children: any }) {
         isFetchingQuote,
         quoteResult,
         stats,
-        supportedLeverageTypes: supportedLeverageTypes[chainId],
         transactionReview,
         onChangeInputTokenAmount,
         onSelectBaseToken,

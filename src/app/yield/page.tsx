@@ -14,9 +14,9 @@ import { BTC, ETH } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
-import { LeverageWidget } from './components/leverage-widget'
 import { QuickStats } from './components/quick-stats'
 import { Title } from './components/title'
+import { YieldWidget } from './components/yield-widget'
 import { YourTokens } from './components/your-tokens'
 
 export default function Page() {
@@ -65,9 +65,7 @@ export default function Page() {
               </div>
             </div>
             <Suspense>
-              <LeverageWidget
-                onClickBaseTokenSelector={onOpenSelectBaseToken}
-              />
+              <YieldWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
             </Suspense>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>

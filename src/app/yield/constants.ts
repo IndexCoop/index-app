@@ -18,7 +18,7 @@ import {
 } from '@/constants/tokens'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
-import { LeverageToken, LeverageType } from './types'
+import { LeverageToken } from './types'
 
 export const ethLeverageTokens = [
   IndexCoopEthereum2xIndex,
@@ -74,16 +74,6 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
     }
   })
   return tokens.filter((token): token is LeverageToken => token !== null)
-}
-
-export const supportedLeverageTypes = {
-  [ARBITRUM.chainId]: [
-    LeverageType.Short,
-    LeverageType.Long2x,
-    LeverageType.Long3x,
-  ],
-  [BASE.chainId]: [LeverageType.Long2x, LeverageType.Long3x],
-  [MAINNET.chainId]: [LeverageType.Long2x],
 }
 
 export const supportedNetworks = [

@@ -23,18 +23,17 @@ import { useFormattedLeverageData } from '../../use-formatted-data'
 import { BaseTokenSelector } from './components/base-token-selector'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { Fees } from './components/fees'
-import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
 
 import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
-type LeverageWidgetProps = {
+type Props = {
   onClickBaseTokenSelector: () => void
 }
 
-export function LeverageWidget(props: LeverageWidgetProps) {
+export function YieldWidget(props: Props) {
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
@@ -54,7 +53,6 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     onSelectOutputToken,
     outputToken,
     reset,
-    supportedLeverageTypes,
     toggleIsMinting,
   } = useYieldContext()
 
@@ -100,10 +98,6 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onClick={props.onClickBaseTokenSelector}
       />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
-      <LeverageSelector
-        selectedTye={leverageType}
-        supportedTypes={supportedLeverageTypes}
-      />
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={inputBalanceFormatted}
