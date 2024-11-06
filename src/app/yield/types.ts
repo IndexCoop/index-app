@@ -15,4 +15,4 @@ export type EnrichedToken = Token & {
   size?: string
 }
 
-export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'
+export type ChartTab = 'apy' | 'tvl' | 'price'

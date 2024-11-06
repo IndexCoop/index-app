@@ -21,7 +21,7 @@ export default function Page() {
   const { isOpen: isSelectBaseTokenOpen, onClose: onCloseSelectBaseToken } =
     useDisclosure()
   const { indexToken } = useYieldContext()
-  const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
+  const [currentTab, setCurrentTab] = useState<ChartTab>('price')
 
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
@@ -37,7 +37,7 @@ export default function Page() {
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
               <QuickStats />
               <div className='flex h-full min-h-[360px] flex-col'>
-                {currentTab === 'indexcoop-chart' ? (
+                {currentTab === 'price' ? (
                   <PriceChart indexToken={indexToken} />
                 ) : (
                   <PriceChart indexToken={indexToken} />

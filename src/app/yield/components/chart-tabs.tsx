@@ -1,13 +1,16 @@
 import { Dispatch, SetStateAction } from 'react'
 
-import { useYieldContext } from '@/app/yield/provider'
 import { ChartTab } from '@/app/yield/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
-type Tab = { name: ChartTab }
+type Tab = { name: ChartTab; label: string }
 
-const tabs: Tab[] = [{ name: 'indexcoop-chart' }, { name: 'tradingview-chart' }]
+const tabs: Tab[] = [
+  { name: 'price', label: 'Token Price' },
+  { name: 'apy', label: 'APY' },
+  { name: 'tvl', label: 'TVL' },
+]
 
 type Props = {
   currentTab: ChartTab
@@ -16,7 +19,6 @@ type Props = {
 
 export function ChartTabs({ currentTab, setCurrentTab }: Props) {
   const { logEvent } = useAnalytics()
-  const { indexToken } = useYieldContext()
 
   const handleClick = (tab: Tab) => {
     setCurrentTab(tab.name)
@@ -25,36 +27,19 @@ export function ChartTabs({ currentTab, setCurrentTab }: Props) {
 
   return (
     <nav
-      className='divide-ic-blue-700 mt-2 flex divide-x rounded-t-lg'
+      className='divide-ic-gray-200 border-ic-gray-200 mt-2 flex divide-x-2 rounded-xl border'
       aria-label='Tabs'
     >
-      {tabs.map((tab, tabIdx) => (
+      {tabs.map((tab) => (
         <button
           key={tab.name}
           className={cn(
-            tab.name === currentTab
-              ? 'text-ic-white'
-              : 'text-ic-gray-300 hover:text-ic-gray-100',
-            tabIdx === 0 ? 'rounded-l-lg' : '',
-            tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
-            'bg-ic-blue-900 hover:bg-ic-blue-700 group group relative min-w-0 flex-1 overflow-hidden px-4 py-4 text-center text-sm font-bold focus:z-10',
+            tab.name === currentTab ? 'bg-[#F0FEFF]' : 'bg-ic-gray-50',
+            'text-ic-gray-500 relative min-w-0 flex-1 px-4 py-4 text-center text-sm font-bold',
           )}
           onClick={() => handleClick(tab)}
         >
-          <span>
-            {tab.name === 'indexcoop-chart'
-              ? `${indexToken.symbol} Chart`
-              : 'TradingView Chart'}
-          </span>
-          <span
-            aria-hidden='true'
-            className={cn(
-              tab.name === currentTab
-                ? 'bg-ic-blue-500'
-                : 'bg-ic-blue-900 group-hover:bg-ic-blue-700',
-              'absolute inset-x-0 bottom-0 h-1',
-            )}
-          />
+          {tab.label}
         </button>
       ))}
     </nav>
