@@ -429,7 +429,6 @@ export function LeverageProvider(props: { children: any }) {
         inputTokenPrice,
         outputToken,
         outputTokenPrice,
-        nativeTokenPrice,
         slippage: 0.1,
       })
     }

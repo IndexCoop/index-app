@@ -166,7 +166,6 @@ export function DepositProvider(props: {
           inputTokenPrice,
           outputToken,
           outputTokenPrice,
-          nativeTokenPrice,
           slippage: 0,
         })
       } else {
