@@ -2,11 +2,10 @@ import { Hex } from 'viem'
 
 import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import { Token } from '@/constants/tokens'
-import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
-import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import { getFullCostsInUsd } from '@/lib/utils/costs'
+import { getGasLimit } from '@/lib/utils/gas'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
-import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import {
   getAddressForToken,
   getCurrencyTokensForIndex,
@@ -25,11 +24,8 @@ async function getEnhancedFlashMintQuote(
   indexTokenAmount: bigint,
   inputTokenPrice: number,
   outputTokenPrice: number,
-  nativeTokenPrice: number,
-  gasPrice: bigint,
   slippage: number,
   chainId: number,
-  provider: IndexRpcProvider,
 ): Promise<Quote | null> {
   const inputTokenAddress = getAddressForToken(inputToken, chainId)
   const outputTokenAddress = getAddressForToken(outputToken, chainId)
@@ -78,9 +74,11 @@ async function getEnhancedFlashMintQuote(
         outputAmount: quoteOutputAmount,
         transaction: tx,
       } = quoteFM
+
       const inputAmount = BigInt(quoteInputAmount)
       const outputAmount = BigInt(quoteOutputAmount)
       const inputOutputAmount = isMinting ? inputAmount : outputAmount
+
       const transaction: QuoteTransaction = {
         account,
         chainId,
@@ -89,16 +87,13 @@ async function getEnhancedFlashMintQuote(
         data: tx.data as Hex,
         value: tx.value ? BigInt(tx.value.hex) : undefined,
       }
+
       const defaultGas = getFlashMintGasDefault(indexToken.symbol)
       const defaultGasEstimate = BigInt(defaultGas)
-      const gasEstimatooor = new GasEstimatooor(provider, defaultGasEstimate)
-      // We don't want this function to fail for estimates here.
-      // A default will be returned if the tx would fail.
-      const canFail = false
-      const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
-      const gasCosts = gasEstimate * gasPrice
-      const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
-      transaction.gas = gasEstimate
+      const res = await getGasLimit(transaction, defaultGasEstimate)
+      if (!res?.gas) return null
+      const { gas } = res
+      transaction.gas = gas.limit
 
       const inputTokenAmountUsd =
         parseFloat(formatWei(inputAmount, inputToken.decimals)) *
@@ -111,14 +106,14 @@ async function getEnhancedFlashMintQuote(
         outputTokenAmountUsd,
       )
 
-      const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
+      const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
 
       const fullCostsInUsd = getFullCostsInUsd(
         inputAmount,
-        gasEstimate * gasPrice,
+        gas.limit * gas.price,
         inputToken.decimals,
         inputTokenPrice,
-        nativeTokenPrice,
+        gas.priceEth,
       )
 
       return {
@@ -128,10 +123,10 @@ async function getEnhancedFlashMintQuote(
         isMinting,
         inputToken,
         outputToken,
-        gas: gasEstimate,
-        gasPrice,
-        gasCosts,
-        gasCostsInUsd,
+        gas: gas.limit,
+        gasPrice: gas.price,
+        gasCosts: gas.costs,
+        gasCostsInUsd: gas.costsUsd,
         fullCostsInUsd,
         priceImpact,
         indexTokenAmount,
@@ -160,10 +155,7 @@ interface FlashMintQuoteRequest extends IndexQuoteRequest {
   nativeTokenPrice: number
 }
 
-export async function getFlashMintQuote(
-  request: FlashMintQuoteRequest,
-  provider: IndexRpcProvider,
-) {
+export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
   const {
     chainId,
     account,
@@ -172,7 +164,6 @@ export async function getFlashMintQuote(
     inputTokenAmountWei,
     inputTokenPrice,
     isMinting,
-    nativeTokenPrice,
     outputToken,
     outputTokenPrice,
     slippage,
@@ -188,8 +179,6 @@ export async function getFlashMintQuote(
     outputTokenPrice,
   )
 
-  const gasPrice = await provider.getGasPrice()
-
   let savedQuote: Quote | null = null
 
   for (let t = 2; t > 0; t--) {
@@ -201,11 +190,8 @@ export async function getFlashMintQuote(
       indexTokenAmount,
       inputTokenPrice,
       outputTokenPrice,
-      nativeTokenPrice,
-      gasPrice,
       slippage,
       chainId,
-      provider,
     )
     // If there is no FlashMint quote, return immediately
     if (flashMintQuote === null) return savedQuote

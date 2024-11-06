@@ -119,20 +119,17 @@ export const useBestQuote = (
         ) {
           setIsFetchingFlashMint(true)
           console.log('canFlashmintIndexToken')
-          const quoteFlashMint = await getFlashMintQuote(
-            {
-              ...request,
-              account: address,
-              chainId,
-              inputToken,
-              inputTokenAmountWei,
-              inputTokenPrice,
-              outputToken,
-              outputTokenPrice,
-              nativeTokenPrice,
-            },
-            provider,
-          )
+          const quoteFlashMint = await getFlashMintQuote({
+            ...request,
+            account: address,
+            chainId,
+            inputToken,
+            inputTokenAmountWei,
+            inputTokenPrice,
+            outputToken,
+            outputTokenPrice,
+            nativeTokenPrice,
+          })
           logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
           setIsFetchingFlashMint(false)
           setQuoteFlashmint(quoteFlashMint)

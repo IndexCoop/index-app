@@ -156,22 +156,19 @@ export function DepositProvider(props: {
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
       let quoteIssuance = null
       if (isDepositing) {
-        quoteIssuance = await getFlashMintQuote(
-          {
-            account: address,
-            chainId: 1,
-            isMinting: isDepositing,
-            inputToken,
-            inputTokenAmount: inputValue,
-            inputTokenAmountWei: inputTokenAmount,
-            inputTokenPrice,
-            outputToken,
-            outputTokenPrice,
-            nativeTokenPrice,
-            slippage: 0,
-          },
-          provider,
-        )
+        quoteIssuance = await getFlashMintQuote({
+          account: address,
+          chainId: 1,
+          isMinting: isDepositing,
+          inputToken,
+          inputTokenAmount: inputValue,
+          inputTokenAmountWei: inputTokenAmount,
+          inputTokenPrice,
+          outputToken,
+          outputTokenPrice,
+          nativeTokenPrice,
+          slippage: 0,
+        })
       } else {
         const gasPrice = await provider.getGasPrice()
         quoteIssuance = await getEnhancedIssuanceQuote(

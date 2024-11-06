@@ -419,22 +419,19 @@ export function LeverageProvider(props: { children: any }) {
       if (!indexToken) return null
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      return await getFlashMintQuote(
-        {
-          isMinting,
-          account: address,
-          chainId,
-          inputToken,
-          inputTokenAmount: inputValue,
-          inputTokenAmountWei: inputTokenAmount,
-          inputTokenPrice,
-          outputToken,
-          outputTokenPrice,
-          nativeTokenPrice,
-          slippage: 0.1,
-        },
-        provider,
-      )
+      return await getFlashMintQuote({
+        isMinting,
+        account: address,
+        chainId,
+        inputToken,
+        inputTokenAmount: inputValue,
+        inputTokenAmountWei: inputTokenAmount,
+        inputTokenPrice,
+        outputToken,
+        outputTokenPrice,
+        nativeTokenPrice,
+        slippage: 0.1,
+      })
     }
 
     const fetchQuotes = async () => {
