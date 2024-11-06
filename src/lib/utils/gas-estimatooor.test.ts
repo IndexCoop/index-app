@@ -1,13 +1,11 @@
-import { ethers } from 'ethers'
 import { createPublicClient, http, parseUnits } from 'viem'
 
 import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
 
 import { GasEstimatooor, GasEstimatooorFailedError } from './gas-estimatooor'
 
-const signer = new ethers.Wallet(
-  '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-)
+// Hardhat Account #0
+const signer = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 
 const publicClient = createPublicClient({
   transport: http('http://127.0.0.1:8545/'),
@@ -31,7 +29,7 @@ describe('GasEstimatooor', () => {
     const failingTx = {
       account: '0xundefined',
       chainId: 1,
-      from: signer.address,
+      from: signer,
       // to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigInt(21_000),
       value: parseUnits('1', 18),
@@ -50,7 +48,7 @@ describe('GasEstimatooor', () => {
     const failingTx = {
       account: '0xundefined',
       chainId: 1,
-      from: signer.address,
+      from: signer,
       //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigInt(21_000),
       value: parseUnits('1', 18),
@@ -64,9 +62,9 @@ describe('GasEstimatooor', () => {
     // const defaultGasMargin = 20
     const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const tx = {
-      account: signer.address,
+      account: signer,
       chainId: 1,
-      from: signer.address,
+      from: signer,
       to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigInt(21_000),
       value: parseUnits('1', 18),
