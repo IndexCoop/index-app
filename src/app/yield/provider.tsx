@@ -36,13 +36,11 @@ import {
   getCurrencyTokens,
   getLeverageTokens,
 } from './constants'
-import { BaseTokenStats, LeverageToken, LeverageType } from './types'
-import { getLeverageType } from './utils/get-leverage-type'
+import { BaseTokenStats, LeverageToken } from './types'
 
 interface Context {
   inputValue: string
   isMinting: boolean
-  leverageType: LeverageType
   balances: TokenBalance[]
   baseToken: Token
   indexToken: Token
@@ -70,7 +68,6 @@ interface Context {
 export const YieldContext = createContext<Context>({
   inputValue: '',
   isMinting: true,
-  leverageType: LeverageType.Long2x,
   balances: [],
   baseToken: ETH,
   indexToken: IndexCoopEthereum2xIndex,
@@ -99,11 +96,9 @@ export const useYieldContext = () => useContext(YieldContext)
 
 const defaultParams = {
   isMinting: true,
-  leverageType: LeverageType.Long2x,
   inputToken: ETH,
   outputToken: {
     ...IndexCoopEthereum2xIndex,
-    leverageType: LeverageType.Long2x,
     baseToken: ETH.symbol,
   } as LeverageToken,
 }
@@ -116,7 +111,6 @@ export function YieldProvider(props: { children: any }) {
   const {
     queryParams: {
       queryNetwork,
-      queryLeverageType,
       queryInputToken,
       queryOutputToken,
       queryIsMinting,
@@ -125,9 +119,6 @@ export function YieldProvider(props: { children: any }) {
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
   const [baseToken, setBaseToken] = useState<Token>(ETH)
-
-  const [leverageType, setLeverageType] =
-    useState<LeverageType>(queryLeverageType)
 
   const [inputValue, setInputValue] = useState('')
   const [indexTokenPrice, setIndexTokenPrice] = useState(0)
@@ -199,14 +190,6 @@ export function YieldProvider(props: { children: any }) {
       }
     },
   })
-
-  const indexTokenBasedOnLeverageType = useMemo(() => {
-    return indexTokens.find(
-      (token) =>
-        token.baseToken === baseToken.symbol &&
-        token.leverageType === leverageType,
-    )!
-  }, [baseToken, indexTokens, leverageType])
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
@@ -303,10 +286,6 @@ export function YieldProvider(props: { children: any }) {
       const token = inputTokens.find((token) => token.symbol === tokenSymbol)
       if (!token) return
       setInputToken(token)
-      const leverageType = getLeverageType(token.symbol)
-      if (leverageType !== null) {
-        setLeverageType(leverageType)
-      }
     },
     [inputTokens],
   )
@@ -321,10 +300,6 @@ export function YieldProvider(props: { children: any }) {
     const token = outputTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setOutputToken(token)
-    const leverageType = getLeverageType(token.symbol)
-    if (leverageType !== null) {
-      setLeverageType(leverageType)
-    }
   }
 
   const reset = () => {
@@ -345,15 +320,6 @@ export function YieldProvider(props: { children: any }) {
   useEffect(() => {
     setOutputToken(outputTokens[0])
   }, [outputTokens, isMinting])
-
-  useEffect(() => {
-    const indexToken = indexTokenBasedOnLeverageType
-    if (isMinting) {
-      setOutputToken(indexToken)
-      return
-    }
-    setInputToken(indexToken)
-  }, [indexTokenBasedOnLeverageType, isMinting, leverageType])
 
   useEffect(() => {
     const fetchSwapQuote = async () => {
@@ -472,7 +438,6 @@ export function YieldProvider(props: { children: any }) {
     setBaseToken(ETH)
     setInputToken(queryInputToken)
     setOutputToken(queryOutputToken)
-    setLeverageType(queryLeverageType)
     setQuoteResult({
       type: QuoteType.flashmint,
       isAvailable: true,
@@ -481,7 +446,6 @@ export function YieldProvider(props: { children: any }) {
     })
     updateQueryParams({
       isMinting: queryIsMinting,
-      leverageType: queryLeverageType,
       inputToken: queryInputToken,
       outputToken: queryOutputToken,
       network: chainId,
@@ -491,7 +455,6 @@ export function YieldProvider(props: { children: any }) {
     queryIsMinting,
     queryInputToken,
     queryOutputToken,
-    queryLeverageType,
     updateQueryParams,
   ])
 
@@ -500,7 +463,6 @@ export function YieldProvider(props: { children: any }) {
       value={{
         inputValue,
         isMinting,
-        leverageType,
         balances,
         baseToken,
         indexToken,

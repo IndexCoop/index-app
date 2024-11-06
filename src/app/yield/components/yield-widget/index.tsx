@@ -44,7 +44,6 @@ export function YieldWidget(props: Props) {
     inputTokens,
     inputValue,
     isMinting,
-    leverageType,
     outputTokens,
     stats,
     transactionReview,
@@ -116,7 +115,7 @@ export function YieldWidget(props: Props) {
         onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
-      <Fees leverageType={leverageType} />
+      <Fees />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={false}

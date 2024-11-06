@@ -3,7 +3,6 @@ import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 
-import { LeverageType } from '@/app/yield/types'
 import { colors } from '@/lib/styles/colors'
 
 type FeesItemProps = {
@@ -48,11 +47,7 @@ function FeesItem(props: FeesItemProps) {
   )
 }
 
-type FeesProps = {
-  leverageType: LeverageType
-}
-
-export function Fees(props: FeesProps) {
+export function Fees() {
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
       {({ open }) => (
@@ -74,9 +69,7 @@ export function Fees(props: FeesProps) {
           <Disclosure.Panel as='dd' className='mt-2 flex flex-col gap-2'>
             <FeesItem
               label='Streaming Fee'
-              percent={
-                props.leverageType === LeverageType.Long3x ? '5.48%' : '3.65%'
-              }
+              percent={'5.48%'}
               tooltip='An annual fee for product holders. This fee is charged at the smart contract level.'
               valueUsd={''}
             />
