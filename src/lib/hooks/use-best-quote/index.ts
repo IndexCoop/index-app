@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
@@ -126,9 +125,7 @@ export const useBestQuote = (
               account: address,
               chainId,
               inputToken,
-              inputTokenAmountWei: BigNumber.from(
-                inputTokenAmountWei.toString(),
-              ),
+              inputTokenAmountWei,
               inputTokenPrice,
               outputToken,
               outputTokenPrice,

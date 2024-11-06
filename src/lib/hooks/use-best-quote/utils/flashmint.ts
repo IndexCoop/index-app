@@ -126,17 +126,17 @@ async function getEnhancedFlashMintQuote(
         isMinting,
         inputToken,
         outputToken,
-        gas: BigNumber.from(gasEstimate.toString()),
-        gasPrice: BigNumber.from(gasPrice.toString()),
-        gasCosts: BigNumber.from(gasCosts.toString()),
+        gas: gasEstimate,
+        gasPrice,
+        gasCosts,
         gasCostsInUsd,
         fullCostsInUsd,
         priceImpact,
-        indexTokenAmount: BigNumber.from(indexTokenAmount.toString()),
-        inputOutputTokenAmount: BigNumber.from(inputOutputAmount.toString()),
-        inputTokenAmount: BigNumber.from(inputAmount.toString()),
+        indexTokenAmount,
+        inputOutputTokenAmount: inputOutputAmount,
+        inputTokenAmount: inputAmount,
         inputTokenAmountUsd,
-        outputTokenAmount: BigNumber.from(outputAmount.toString()),
+        outputTokenAmount: outputAmount,
         outputTokenAmountUsd,
         outputTokenAmountUsdAfterFees,
         inputTokenPrice,
@@ -154,7 +154,7 @@ async function getEnhancedFlashMintQuote(
 interface FlashMintQuoteRequest extends IndexQuoteRequest {
   account: string
   chainId: number
-  inputTokenAmountWei: BigNumber
+  inputTokenAmountWei: bigint
   nativeTokenPrice: number
 }
 
@@ -211,10 +211,8 @@ export async function getFlashMintQuote(
     if (!isMinting) return flashMintQuote
     savedQuote = flashMintQuote
 
-    const diff = inputTokenAmountWei
-      .sub(flashMintQuote.inputTokenAmount)
-      .toBigInt()
-    const factor = determineFactor(diff, inputTokenAmountWei.toBigInt())
+    const diff = inputTokenAmountWei - flashMintQuote.inputTokenAmount
+    const factor = determineFactor(diff, inputTokenAmountWei)
 
     indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
 

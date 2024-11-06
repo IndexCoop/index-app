@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber'
 import { PopulatedTransaction } from 'ethers'
 
 import { Token } from '@/constants/tokens'
@@ -35,19 +34,19 @@ export interface Quote {
   isMinting: boolean
   inputToken: Token
   outputToken: Token
-  gas: BigNumber
-  gasPrice: BigNumber
-  gasCosts: BigNumber
+  gas: bigint
+  gasPrice: bigint
+  gasCosts: bigint
   gasCostsInUsd: number
   fullCostsInUsd: number | null
   priceImpact: number | null
-  indexTokenAmount: BigNumber
-  inputOutputTokenAmount: BigNumber
+  indexTokenAmount: bigint
+  inputOutputTokenAmount: bigint
   // Return additionally for convenience to avoid
   // having to determine based on isMinting
-  inputTokenAmount: BigNumber
+  inputTokenAmount: bigint
   inputTokenAmountUsd: number
-  outputTokenAmount: BigNumber
+  outputTokenAmount: bigint
   outputTokenAmountUsd: number
   outputTokenAmountUsdAfterFees: number
   inputTokenPrice: number
@@ -57,7 +56,7 @@ export interface Quote {
 }
 
 export interface ZeroExQuote extends Quote {
-  minOutput: BigNumber
+  minOutput: bigint
   sources: { name: string; proportion: string }[]
 }
 

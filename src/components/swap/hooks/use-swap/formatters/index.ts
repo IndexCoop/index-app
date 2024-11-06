@@ -10,13 +10,11 @@ import { TradeDetailTokenPrices } from '../../../components/trade-details'
  */
 export function formattedBalance(
   token: Token,
-  tokenBalance: BigNumber | undefined,
+  tokenBalance: bigint | undefined,
 ) {
   const zero = '0.00'
   if (!tokenBalance) return zero
-  const formattedBalance = Number(
-    formatWei(tokenBalance.toBigInt(), token.decimals),
-  )
+  const formattedBalance = Number(formatWei(tokenBalance, token.decimals))
   const formatted = formatAmount(formattedBalance, 3)
   return formatted
 }

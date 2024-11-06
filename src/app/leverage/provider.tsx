@@ -2,7 +2,6 @@
 
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
-import { BigNumber } from 'ethers'
 import {
   createContext,
   useCallback,
@@ -427,7 +426,7 @@ export function LeverageProvider(props: { children: any }) {
           chainId,
           inputToken,
           inputTokenAmount: inputValue,
-          inputTokenAmountWei: BigNumber.from(inputTokenAmount.toString()),
+          inputTokenAmountWei: inputTokenAmount,
           inputTokenPrice,
           outputToken,
           outputTokenPrice,

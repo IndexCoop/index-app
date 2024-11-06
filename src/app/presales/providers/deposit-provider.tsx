@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import {
   createContext,
   useCallback,
@@ -164,7 +163,7 @@ export function DepositProvider(props: {
             isMinting: isDepositing,
             inputToken,
             inputTokenAmount: inputValue,
-            inputTokenAmountWei: BigNumber.from(inputTokenAmount.toString()),
+            inputTokenAmountWei: inputTokenAmount,
             inputTokenPrice,
             outputToken,
             outputTokenPrice,

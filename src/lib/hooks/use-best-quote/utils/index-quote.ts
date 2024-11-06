@@ -78,14 +78,14 @@ export async function getIndexQuote(
       value: BigNumber.from(res.transaction.value),
     }
 
-    let gasCosts = BigNumber.from('0')
-    let gasLimit = BigNumber.from('0')
-    let gasPrice = BigNumber.from(request.gasPrice.toString())
+    let gasCosts = BigInt('0')
+    let gasLimit = BigInt('0')
+    let gasPrice = BigInt(request.gasPrice.toString())
     const estimate = res.rawResponse.estimate
     const isLifiQuote = res.type === 'lifi'
     if (isLifiQuote) {
-      gasLimit = BigNumber.from(estimate?.gasCosts[0].limit ?? '0')
-      gasPrice = BigNumber.from(estimate?.gasCosts[0].price ?? '0')
+      gasLimit = BigInt(estimate?.gasCosts[0].limit ?? '0')
+      gasPrice = BigInt(estimate?.gasCosts[0].price ?? '0')
     } else {
       // Right now this should only be ic21
       const defaultGas = 120_000
@@ -96,24 +96,18 @@ export async function getIndexQuote(
       const canFail = false
       const gasEstimate = await gasEstimatooor.estimate(tx, canFail)
       console.log(gasEstimate.toString(), 'gasLimit')
-      gasLimit = BigNumber.from(gasEstimate.toString())
+      gasLimit = gasEstimate
     }
-    gasCosts = gasPrice.mul(gasLimit)
-    const gasCostsInUsd = getGasCostsInUsd(
-      gasCosts.toBigInt(),
-      nativeTokenPrice,
-    )
+    gasCosts = gasPrice * gasLimit
+    const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
 
-    const inputTokenAmountBn = BigNumber.from(
-      parseUnits(inputTokenAmount, inputToken.decimals).toString(),
-    )
-    const outputTokenAmount = BigNumber.from(res.outputAmount)
+    const inputTokenAmountBn = parseUnits(inputTokenAmount, inputToken.decimals)
+    const outputTokenAmount = BigInt(res.outputAmount)
 
     const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
     const outputTokenAmountUsd =
-      parseFloat(
-        formatWei(outputTokenAmount.toBigInt(), outputToken.decimals),
-      ) * outputTokenPrice
+      parseFloat(formatWei(outputTokenAmount, outputToken.decimals)) *
+      outputTokenPrice
     const priceImpact = getPriceImpact(
       inputTokenAmountUsd,
       outputTokenAmountUsd,
@@ -122,8 +116,8 @@ export async function getIndexQuote(
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
-      inputTokenAmountBn.toBigInt(),
-      gasCosts.toBigInt(),
+      inputTokenAmountBn,
+      gasCosts,
       inputToken.decimals,
       inputTokenPrice,
       nativeTokenPrice,
@@ -155,9 +149,7 @@ export async function getIndexQuote(
       slippage,
       tx,
       // 0x type specific properties (will change with interface changes to the quote API)
-      minOutput: isLifiQuote
-        ? BigNumber.from(estimate.toAmountMin)
-        : outputTokenAmount,
+      minOutput: isLifiQuote ? BigInt(estimate.toAmountMin) : outputTokenAmount,
       sources: isLifiQuote
         ? [{ name: estimate.tool, proportion: '1' }]
         : [{ name: 'RFQ', proportion: '1' }],
