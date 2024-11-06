@@ -4,20 +4,17 @@ import { useDisclosure } from '@chakra-ui/react'
 import { Suspense, useState } from 'react'
 
 import { ChartTabs } from '@/app/yield/components/chart-tabs'
-import TradingViewWidget from '@/app/yield/components/trading-view-widget'
 import { useYieldContext } from '@/app/yield/provider'
 import { ChartTab } from '@/app/yield/types'
 import { PriceChart } from '@/components/charts/price-chart'
 import { NetworkSelector } from '@/components/selectors/network-selector'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { BTC, ETH } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
 import { QuickStats } from './components/quick-stats'
 import { Title } from './components/title'
 import { YieldWidget } from './components/yield-widget'
-import { YourTokens } from './components/your-tokens'
 
 export default function Page() {
   const { address } = useWallet()
@@ -26,8 +23,7 @@ export default function Page() {
     onOpen: onOpenSelectBaseToken,
     onClose: onCloseSelectBaseToken,
   } = useDisclosure()
-  const { baseToken, baseTokens, indexToken, onSelectBaseToken } =
-    useYieldContext()
+  const { baseTokens, indexToken, onSelectBaseToken } = useYieldContext()
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
 
   return (
@@ -47,16 +43,7 @@ export default function Page() {
                 {currentTab === 'indexcoop-chart' ? (
                   <PriceChart indexToken={indexToken} />
                 ) : (
-                  <>
-                    <TradingViewWidget
-                      baseToken={baseToken}
-                      symbol={ETH.symbol}
-                    />
-                    <TradingViewWidget
-                      baseToken={baseToken}
-                      symbol={BTC.symbol}
-                    />
-                  </>
+                  <PriceChart indexToken={indexToken} />
                 )}
                 <ChartTabs
                   currentTab={currentTab}
@@ -67,11 +54,6 @@ export default function Page() {
             <Suspense>
               <YieldWidget onClickBaseTokenSelector={onOpenSelectBaseToken} />
             </Suspense>
-          </div>
-          <div className='flex flex-col gap-6 lg:flex-row'>
-            <div className='h-full w-full lg:min-w-[67%] lg:max-w-[67%]'>
-              <YourTokens />
-            </div>
           </div>
         </div>
         <FaqSection />
