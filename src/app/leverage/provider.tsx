@@ -395,7 +395,6 @@ export function LeverageProvider(props: { children: any }) {
       if (!indexToken) return null
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      const gasPrice = await provider.getGasPrice()
       return await getIndexQuote({
         isMinting,
         chainId,
@@ -406,8 +405,6 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         outputTokenPrice,
         nativeTokenPrice,
-        gasPrice,
-        provider,
         slippage: 0.1,
       })
     }

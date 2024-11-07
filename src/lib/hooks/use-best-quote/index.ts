@@ -202,7 +202,6 @@ export const useBestQuote = (
         ) {
           setIsFetching0x(true)
           try {
-            const gasPrice = await provider.getGasPrice()
             const quote0x = await getIndexQuote({
               ...request,
               chainId,
@@ -212,8 +211,6 @@ export const useBestQuote = (
               outputToken,
               outputTokenPrice,
               nativeTokenPrice,
-              gasPrice,
-              provider,
             })
             console.log(quote0x)
             logEvent('Quote Received', formatQuoteAnalytics(quote0x))

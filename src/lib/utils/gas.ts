@@ -21,9 +21,6 @@ export async function getGasLimit(
   transaction: QuoteTransaction,
   defaultGasEstimate: bigint,
 ): Promise<GasLimitResponse> {
-  throw new Error(
-    `Error determining gas limit: no native token for chainId: ${'1'}`,
-  )
   const { chainId } = transaction
   const eth = getNativeToken(chainId)
   const publicClient = getPublicClient(config, { chainId })
