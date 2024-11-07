@@ -20,17 +20,22 @@ interface GasLimitResponse {
 export async function getGasLimit(
   transaction: QuoteTransaction,
   defaultGasEstimate: bigint,
-): Promise<GasLimitResponse | null> {
+): Promise<GasLimitResponse> {
+  throw new Error(
+    `Error determining gas limit: no native token for chainId: ${'1'}`,
+  )
   const { chainId } = transaction
-  const publicClient = getPublicClient(config, { chainId })
-  if (!publicClient) {
-    console.warn('No public client for chainId:', chainId)
-    return null
-  }
   const eth = getNativeToken(chainId)
+  const publicClient = getPublicClient(config, { chainId })
   if (!eth) {
-    console.warn('No native token for chainId:', chainId)
-    return null
+    throw new Error(
+      `Error determining gas limit: no native token for chainId: ${chainId}`,
+    )
+  }
+  if (!publicClient) {
+    throw new Error(
+      `Error determining gas limit: no public client for chainId: ${chainId}`,
+    )
   }
   const ethPrice = await getTokenPrice(eth, chainId)
   const gasPrice = await publicClient.getGasPrice()

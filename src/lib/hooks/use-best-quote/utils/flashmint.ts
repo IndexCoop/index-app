@@ -90,9 +90,10 @@ async function getEnhancedFlashMintQuote(
 
       const defaultGas = getFlashMintGasDefault(indexToken.symbol)
       const defaultGasEstimate = BigInt(defaultGas)
-      const res = await getGasLimit(transaction, defaultGasEstimate)
-      if (!res?.gas) return null
-      const { ethPrice, gas } = res
+      const { ethPrice, gas } = await getGasLimit(
+        transaction,
+        defaultGasEstimate,
+      )
       transaction.gas = gas.limit
 
       const inputTokenAmountUsd =

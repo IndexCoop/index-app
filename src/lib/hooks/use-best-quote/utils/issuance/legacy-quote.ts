@@ -95,11 +95,8 @@ export async function getLegacyRedemptionQuote(
       value: undefined,
     }
 
-    const defaultGas = 200_000
-    const defaultGasEstimate = BigInt(defaultGas)
-    const res = await getGasLimit(transaction, defaultGasEstimate)
-    if (!res?.gas) return null
-    const { ethPrice, gas } = res
+    const defaultGasEstimate = BigInt(200_000)
+    const { ethPrice, gas } = await getGasLimit(transaction, defaultGasEstimate)
     transaction.gas = gas.limit
 
     const inputTokenAmountUsd =
@@ -152,7 +149,7 @@ export async function getLegacyRedemptionQuote(
       },
     }
   } catch (e) {
-    console.warn('Error fetching issuance quote', e)
+    console.warn('Error fetching legacy redemption quote', e)
     return null
   }
 }
