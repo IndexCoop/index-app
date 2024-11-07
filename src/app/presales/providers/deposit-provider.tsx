@@ -169,18 +169,15 @@ export function DepositProvider(props: {
           slippage: 0,
         })
       } else {
-        const gasPrice = await provider.getGasPrice()
         quoteIssuance = await getEnhancedIssuanceQuote(
           {
             isIssuance: isDepositing,
             account: address,
-            gasPrice,
             inputToken,
             inputTokenAmount,
             inputTokenPrice,
             outputToken,
             outputTokenPrice,
-            nativeTokenPrice,
             slippage: 0,
           },
           publicClient,
