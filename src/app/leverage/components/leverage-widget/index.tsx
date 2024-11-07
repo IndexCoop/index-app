@@ -148,7 +148,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       <SelectTokenModal
         isDarkMode={true}
         isOpen={isSelectInputTokenOpen}
-        showBalances={false}
+        showBalances={true}
         onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol) => {
           onSelectInputToken(tokenSymbol)
