@@ -168,18 +168,15 @@ export const useBestQuote = (
         ) {
           console.log('canRedeemIndexToken')
           setIsFetchingRedemption(true)
-          const gasPrice = await provider.getGasPrice()
           const quoteRedemption = await getEnhancedRedemptionQuote(
             {
               ...request,
               account: address,
-              gasPrice: gasPrice,
               indexTokenAmount: inputTokenAmountWei,
               inputToken,
               inputTokenPrice,
               outputToken,
               outputTokenPrice,
-              nativeTokenPrice,
             },
             publicClient,
           )

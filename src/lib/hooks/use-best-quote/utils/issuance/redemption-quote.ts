@@ -3,9 +3,9 @@ import { Address, encodeFunctionData, PublicClient } from 'viem'
 import { DebtIssuanceModuleAddress } from '@/constants/contracts'
 import { Token } from '@/constants/tokens'
 import { formatWei, isSameAddress } from '@/lib/utils'
-import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
+import { getFullCostsInUsd } from '@/lib/utils/costs'
+import { getGasLimit } from '@/lib/utils/gas'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
-import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
 import { isAvailableForRedemption } from '../available'
@@ -20,8 +20,6 @@ interface RedemptionQuoteRequest {
   indexTokenAmount: bigint // input for redemption
   inputTokenPrice: number
   outputTokenPrice: number
-  nativeTokenPrice: number
-  gasPrice: bigint
   slippage: number
 }
 
@@ -36,8 +34,6 @@ export async function getEnhancedRedemptionQuote(
     indexTokenAmount,
     inputToken,
     inputTokenPrice,
-    gasPrice,
-    nativeTokenPrice,
     outputToken,
     outputTokenPrice,
   } = request
@@ -75,12 +71,8 @@ export async function getEnhancedRedemptionQuote(
 
     const defaultGas = getFlashMintGasDefault(inputToken.symbol)
     const defaultGasEstimate = BigInt(defaultGas)
-    const gasEstimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
-    const canFail = false
-    const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
-    const gasCosts = gasEstimate * gasPrice
-    const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
-    transaction.gas = gasEstimate
+    const { ethPrice, gas } = await getGasLimit(transaction, defaultGasEstimate)
+    transaction.gas = gas.limit
 
     const inputTokenAmountUsd =
       parseFloat(formatWei(indexTokenAmount, inputToken.decimals)) *
@@ -88,14 +80,14 @@ export async function getEnhancedRedemptionQuote(
     const outputTokenAmountUsd =
       parseFloat(formatWei(outputTokenAmount, outputToken.decimals)) *
       outputTokenPrice
-    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
+    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
       indexTokenAmount,
-      gasEstimate * gasPrice,
+      gas.limit * gas.price,
       inputToken.decimals,
       inputTokenPrice,
-      nativeTokenPrice,
+      ethPrice,
     )
 
     return {
@@ -105,10 +97,10 @@ export async function getEnhancedRedemptionQuote(
       isMinting: false,
       inputToken,
       outputToken,
-      gas: gasEstimate,
-      gasPrice,
-      gasCosts,
-      gasCostsInUsd,
+      gas: gas.limit,
+      gasPrice: gas.price,
+      gasCosts: gas.costs,
+      gasCostsInUsd: gas.costsUsd,
       fullCostsInUsd,
       priceImpact: 0,
       indexTokenAmount,
