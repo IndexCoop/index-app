@@ -1,7 +1,7 @@
 import { Trade } from '@prisma/client'
+import { formatUnits } from 'viem'
 
 import { Quote } from '@/lib/hooks/use-best-quote/types'
-import { formatUnits } from 'viem'
 
 export const mapQuoteToTrade = (
   address: string,
