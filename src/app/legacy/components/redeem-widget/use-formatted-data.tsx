@@ -25,7 +25,7 @@ export function useFormattedData() {
   const legacyQuote = useMemo(() => quoteResult?.legacy ?? null, [quoteResult])
 
   const inputAmount = quote?.inputTokenAmount
-    ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount.toBigInt(), quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
+    ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount, quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
     : ''
   const inputAmoutUsd = quote?.inputTokenAmountUsd
     ? `$${formatAmount(quote?.inputTokenAmountUsd)}`
@@ -67,9 +67,7 @@ export function useFormattedData() {
 
   return {
     hasInsufficientFunds,
-    gasFeesEth: quote?.gasCosts
-      ? `(${formatWei(quote.gasCosts.toBigInt(), 18)} ETH)`
-      : '',
+    gasFeesEth: quote?.gasCosts ? `(${formatWei(quote.gasCosts, 18)} ETH)` : '',
     gasFeesUsd: quote?.gasCostsInUsd
       ? `$${formatAmount(quote.gasCostsInUsd)}`
       : '',

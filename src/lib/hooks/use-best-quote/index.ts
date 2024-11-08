@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
@@ -120,23 +119,16 @@ export const useBestQuote = (
         ) {
           setIsFetchingFlashMint(true)
           console.log('canFlashmintIndexToken')
-          const quoteFlashMint = await getFlashMintQuote(
-            {
-              ...request,
-              account: address,
-              chainId,
-              inputToken,
-              inputTokenAmountWei: BigNumber.from(
-                inputTokenAmountWei.toString(),
-              ),
-              inputTokenPrice,
-              outputToken,
-              outputTokenPrice,
-              nativeTokenPrice,
-            },
-            provider,
-            rpcUrl,
-          )
+          const quoteFlashMint = await getFlashMintQuote({
+            ...request,
+            account: address,
+            chainId,
+            inputToken,
+            inputTokenAmountWei,
+            inputTokenPrice,
+            outputToken,
+            outputTokenPrice,
+          })
           logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
           setIsFetchingFlashMint(false)
           setQuoteFlashmint(quoteFlashMint)
@@ -149,19 +141,16 @@ export const useBestQuote = (
         if (isAvailableForIssuance(inputToken, outputToken)) {
           console.log('canIssue')
           setIsFetchingIssuance(true)
-          const gasPrice = await provider.getGasPrice()
           const quoteIssuance = await getEnhancedIssuanceQuote(
             {
               ...request,
               account: address,
               isIssuance: isMinting,
-              gasPrice,
               inputTokenAmount: inputTokenAmountWei,
               inputToken,
               inputTokenPrice,
               outputToken,
               outputTokenPrice,
-              nativeTokenPrice,
             },
             publicClient,
           )
@@ -179,18 +168,15 @@ export const useBestQuote = (
         ) {
           console.log('canRedeemIndexToken')
           setIsFetchingRedemption(true)
-          const gasPrice = await provider.getGasPrice()
           const quoteRedemption = await getEnhancedRedemptionQuote(
             {
               ...request,
               account: address,
-              gasPrice: gasPrice,
               indexTokenAmount: inputTokenAmountWei,
               inputToken,
               inputTokenPrice,
               outputToken,
               outputTokenPrice,
-              nativeTokenPrice,
             },
             publicClient,
           )
@@ -210,7 +196,6 @@ export const useBestQuote = (
         ) {
           setIsFetching0x(true)
           try {
-            const gasPrice = await provider.getGasPrice()
             const quote0x = await getIndexQuote({
               ...request,
               chainId,
@@ -220,8 +205,6 @@ export const useBestQuote = (
               outputToken,
               outputTokenPrice,
               nativeTokenPrice,
-              gasPrice,
-              provider,
             })
             console.log(quote0x)
             logEvent('Quote Received', formatQuoteAnalytics(quote0x))

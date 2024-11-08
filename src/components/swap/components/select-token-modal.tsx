@@ -8,7 +8,6 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react'
 import clsx from 'clsx'
-import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
 import { Token } from '@/constants/tokens'
@@ -63,11 +62,8 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
                   getAddressForToken(token, chainId) ?? '',
                 ),
               )
-              const balance = BigNumber.from(
-                tokenBalance?.value.toString() ?? '0',
-              )
               const balanceDisplay = formatAmountFromWei(
-                balance.toBigInt(),
+                tokenBalance?.value ?? BigInt(0),
                 token.decimals,
                 3,
               )

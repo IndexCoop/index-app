@@ -39,7 +39,7 @@ export function useFormattedData() {
   const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
 
   const inputAmount = quote?.inputTokenAmount
-    ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount.toBigInt(), quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
+    ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount, quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
     : ''
   const inputAmoutUsd = quote?.inputTokenAmountUsd
     ? `$${formatAmount(quote?.inputTokenAmountUsd)}`
@@ -59,7 +59,7 @@ export function useFormattedData() {
   )
 
   const ouputAmount = quote?.outputTokenAmount
-    ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
+    ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount, quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
     : ''
   const outputAmountUsd = quote?.outputTokenAmountUsd
     ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
@@ -80,9 +80,7 @@ export function useFormattedData() {
     currencyBalance: `${currencyBalanceFormatted}`,
     earnedRewards,
     hasInsufficientFunds,
-    gasFeesEth: quote?.gasCosts
-      ? `(${formatWei(quote.gasCosts.toBigInt(), 18)} ETH)`
-      : '',
+    gasFeesEth: quote?.gasCosts ? `(${formatWei(quote.gasCosts, 18)} ETH)` : '',
     gasFeesUsd: quote?.gasCostsInUsd
       ? `$${formatAmount(quote.gasCostsInUsd)}`
       : '',

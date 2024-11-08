@@ -262,7 +262,7 @@ export const Swap = (props: SwapProps) => {
           contract={contract ?? ''}
           hasFetchingError={hasFetchingError}
           hasInsufficientFunds={hasInsufficientFunds}
-          inputTokenAmount={inputTokenAmountWei.toBigInt()}
+          inputTokenAmount={inputTokenAmountWei}
           inputToken={inputToken}
           inputValue={sellTokenAmount}
           isFetchingQuote={isFetchingAnyQuote}
