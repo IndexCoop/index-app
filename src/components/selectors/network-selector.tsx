@@ -5,11 +5,7 @@ import { useWalletClient } from 'wagmi'
 import { NetworkSelectorButton } from '@/components/selectors/network-selector-button'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 
-type Props = {
-  isDark?: boolean
-}
-
-export function NetworkSelector({ isDark = false }: Props) {
+export function NetworkSelector() {
   const { open } = useWeb3Modal()
   const { data: walletClient } = useWalletClient()
   const handleClick = useCallback(
@@ -34,7 +30,6 @@ export function NetworkSelector({ isDark = false }: Props) {
             light: '/assets/network-ethereum-light.svg',
             dark: '/assets/network-ethereum-dark.svg',
           }}
-          isDark={isDark}
           onClick={handleClick}
         />
         <NetworkSelectorButton
@@ -43,7 +38,6 @@ export function NetworkSelector({ isDark = false }: Props) {
             light: '/assets/network-arbitrum-light.svg',
             dark: '/assets/network-arbitrum-dark.svg',
           }}
-          isDark={isDark}
           onClick={handleClick}
         />
         <NetworkSelectorButton
@@ -52,7 +46,6 @@ export function NetworkSelector({ isDark = false }: Props) {
             light: '/assets/network-base-light.svg',
             dark: '/assets/network-base-dark.svg',
           }}
-          isDark={isDark}
           onClick={handleClick}
         />
       </div>
