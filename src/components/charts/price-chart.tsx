@@ -1,6 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
-import { useLeverageToken } from '@/app/leverage/provider'
 import { PeriodSelector } from '@/components/charts/period-selector'
 import PriceXYChart from '@/components/charts/price-xy-chart'
 import { usePriceChartData } from '@/components/charts/use-price-chart-data'
@@ -11,9 +10,10 @@ import { formatDollarAmount } from '@/lib/utils'
 
 type Props = {
   indexToken: Token
+  nav: number | null
 }
 
-export function PriceChart({ indexToken }: Props) {
+export function PriceChart({ indexToken, nav }: Props) {
   const { chainId } = useNetwork()
   const tokenAddress = getTokenByChainAndSymbol(
     chainId ?? MAINNET.chainId,
@@ -21,7 +21,6 @@ export function PriceChart({ indexToken }: Props) {
   )?.address
   const { historicalData, selectedPeriod, setSelectedPeriod } =
     usePriceChartData(tokenAddress)
-  const { nav } = useLeverageToken()
 
   return (
     <div className='border-ic-gray-600 flex h-full w-full flex-col rounded-3xl border bg-[#1C2C2E]'>

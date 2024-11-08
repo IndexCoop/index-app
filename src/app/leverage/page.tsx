@@ -30,7 +30,7 @@ export default function Page() {
     onOpen: onOpenSelectBaseToken,
     onClose: onCloseSelectBaseToken,
   } = useDisclosure()
-  const { baseToken, baseTokens, indexToken, onSelectBaseToken } =
+  const { baseToken, baseTokens, indexToken, nav, onSelectBaseToken } =
     useLeverageToken()
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
 
@@ -61,7 +61,7 @@ export default function Page() {
               <Stats />
               <div className='flex h-full min-h-[360px] flex-col'>
                 {currentTab === 'indexcoop-chart' ? (
-                  <PriceChart indexToken={indexToken} />
+                  <PriceChart indexToken={indexToken} nav={nav} />
                 ) : (
                   <>
                     <TradingViewWidget
