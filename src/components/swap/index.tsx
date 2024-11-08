@@ -44,13 +44,20 @@ export const Swap = (props: SwapProps) => {
   ])
   const { logEvent } = useAnalytics()
   const requiresProtection = useProtection()
-  const isTradablePair = useMemo(
-    () => isTokenPairTradable(requiresProtection, inputToken, outputToken),
-    [requiresProtection, inputToken, outputToken],
-  )
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
   const { address } = useWallet()
+
+  const isTradablePair = useMemo(
+    () =>
+      isTokenPairTradable(
+        requiresProtection,
+        inputToken.symbol,
+        outputToken.symbol,
+        chainId ?? 1,
+      ),
+    [chainId, requiresProtection, inputToken, outputToken],
+  )
 
   const {
     isOpen: isBuyModalOpen,
@@ -255,7 +262,7 @@ export const Swap = (props: SwapProps) => {
           contract={contract ?? ''}
           hasFetchingError={hasFetchingError}
           hasInsufficientFunds={hasInsufficientFunds}
-          inputTokenAmount={inputTokenAmountWei.toBigInt()}
+          inputTokenAmount={inputTokenAmountWei}
           inputToken={inputToken}
           inputValue={sellTokenAmount}
           isFetchingQuote={isFetchingAnyQuote}

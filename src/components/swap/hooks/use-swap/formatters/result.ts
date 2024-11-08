@@ -74,11 +74,11 @@ function formatQuoteForDisplay(
       type: quote.type,
       isBestQuote,
       inputAmount: formattedInputAmount(
-        quote.inputTokenAmount.toBigInt(),
+        quote.inputTokenAmount,
         quote.inputToken,
       ),
       outputAmount: formattedOuputAmount(
-        quote.outputTokenAmount.toBigInt(),
+        quote.outputTokenAmount,
         quote.outputToken,
       ),
       feesGas: formattedFeesGas(quote.gasCostsInUsd, route),

@@ -53,7 +53,7 @@ export const useAnalytics = () => {
           },
         })
       } catch (e) {
-        console.log('Caught error in logEvent', e)
+        console.warn('Caught error in logEvent', e)
       }
     },
     [arcxSdk, walletAddress],
@@ -90,7 +90,7 @@ export const useAnalytics = () => {
           },
         })
       } catch (e) {
-        console.log('Caught error in logTransaction', e)
+        console.warn('Caught error in logTransaction', e)
       }
     },
     [arcxSdk, walletAddress],
@@ -116,7 +116,7 @@ export const useAnalytics = () => {
             },
           })
         } catch (e) {
-          console.log('Caught error in logConnectWallet', e)
+          console.warn('Caught error in logConnectWallet', e)
         }
       }
     },

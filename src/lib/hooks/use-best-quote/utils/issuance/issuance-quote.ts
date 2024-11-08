@@ -2,7 +2,6 @@ import {
   getIssuanceModule,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
-import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
 import {
@@ -11,10 +10,10 @@ import {
   RealWorldAssetIndex,
   Token,
 } from '@/constants/tokens'
+import { isAvailableForIssuance } from '@/lib/hooks/use-best-quote/utils/available'
 import { formatWei } from '@/lib/utils'
-import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
-import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
-import { isAvailableForIssuance } from '@/lib/utils/tokens'
+import { getFullCostsInUsd } from '@/lib/utils/costs'
+import { getGasLimit } from '@/lib/utils/gas'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
 
@@ -29,8 +28,6 @@ interface IssuanceQuoteRequest {
   inputTokenAmount: bigint
   inputTokenPrice: number
   outputTokenPrice: number
-  nativeTokenPrice: number
-  gasPrice: bigint
   slippage: number
 }
 
@@ -58,8 +55,6 @@ export async function getEnhancedIssuanceQuote(
     inputToken,
     inputTokenAmount,
     inputTokenPrice,
-    gasPrice,
-    nativeTokenPrice,
     outputToken,
     outputTokenPrice,
   } = request
@@ -122,14 +117,9 @@ export async function getEnhancedIssuanceQuote(
       value: undefined,
     }
 
-    const defaultGas = 200_000
-    const defaultGasEstimate = BigInt(defaultGas)
-    const gasEstimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
-    const canFail = false
-    const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
-    const gasCosts = gasEstimate * gasPrice
-    const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
-    transaction.gasLimit = BigNumber.from(gasEstimate.toString())
+    const defaultGasEstimate = BigInt(200_000)
+    const { ethPrice, gas } = await getGasLimit(transaction, defaultGasEstimate)
+    transaction.gas = gas.limit
 
     const inputTokenAmountUsd =
       parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *
@@ -137,14 +127,14 @@ export async function getEnhancedIssuanceQuote(
     const outputTokenAmountUsd =
       parseFloat(formatWei(outputTokenAmount, outputToken.decimals)) *
       outputTokenPrice
-    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
+    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
       inputTokenAmount,
-      gasEstimate * gasPrice,
+      gas.limit * gas.price,
       inputToken.decimals,
       inputTokenPrice,
-      nativeTokenPrice,
+      ethPrice,
     )
 
     return {
@@ -154,17 +144,17 @@ export async function getEnhancedIssuanceQuote(
       isMinting: isIssuance,
       inputToken,
       outputToken,
-      gas: BigNumber.from(gasEstimate.toString()),
-      gasPrice: BigNumber.from(gasPrice.toString()),
-      gasCosts: BigNumber.from(gasCosts.toString()),
-      gasCostsInUsd,
+      gas: gas.limit,
+      gasPrice: gas.price,
+      gasCosts: gas.costs,
+      gasCostsInUsd: gas.costsUsd,
       fullCostsInUsd,
       priceImpact: 0,
-      indexTokenAmount: BigNumber.from(indexTokenAmount.toString()),
-      inputOutputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
-      inputTokenAmount: BigNumber.from(inputTokenAmount.toString()),
+      indexTokenAmount,
+      inputOutputTokenAmount: outputTokenAmount,
+      inputTokenAmount,
       inputTokenAmountUsd,
-      outputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
+      outputTokenAmount,
       outputTokenAmountUsd,
       outputTokenAmountUsdAfterFees,
       inputTokenPrice,
