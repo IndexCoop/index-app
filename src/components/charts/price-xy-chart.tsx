@@ -1,4 +1,3 @@
-import { LinearGradient } from '@visx/gradient'
 import { withParentSize } from '@visx/responsive'
 import {
   AnimatedAreaSeries,
@@ -10,6 +9,8 @@ import {
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 
+import { ChartTooltip } from '@/components/charts/chart-tooltip'
+import { LinearGradientFill } from '@/components/charts/linear-gradient-fill'
 import { darkTheme, lightTheme } from '@/components/charts/themes'
 import { ChartPeriod } from '@/components/charts/types'
 import { formatDollarAmount } from '@/lib/utils'
@@ -91,31 +92,21 @@ function PriceXYChart({
         dataKey='prices'
         data={data}
       />
-      <LinearGradient
-        from={isDark ? '#84e9e9' : '#15CDD1'}
-        to={isDark ? '#143438' : '#f1fffd'}
-        id='gradient'
-        fromOpacity={0.2}
-        toOpacity={0.1}
-      />
+      <LinearGradientFill isDark={isDark} />
       <Tooltip
         snapTooltipToDatumX
         snapTooltipToDatumY
         showVerticalCrosshair
         showSeriesGlyphs
         renderTooltip={({ tooltipData }) => (
-          <div>
-            <div className='text-ic-gray-800 dark:text-ic-white mb-1 text-[14px] font-bold'>
-              {tooltipAccessors.yAccessor(
-                tooltipData?.nearestDatum?.datum as LineChartIndexData,
-              )}
-            </div>
-            <div className='text-ic-gray-700 dark:text-ic-gray-300 text-xs font-light'>
-              {tooltipAccessors.xAccessor(
-                tooltipData?.nearestDatum?.datum as LineChartIndexData,
-              )}
-            </div>
-          </div>
+          <ChartTooltip
+            line1={tooltipAccessors.yAccessor(
+              tooltipData?.nearestDatum?.datum as LineChartIndexData,
+            )}
+            line2={tooltipAccessors.xAccessor(
+              tooltipData?.nearestDatum?.datum as LineChartIndexData,
+            )}
+          />
         )}
       />
     </XYChart>
