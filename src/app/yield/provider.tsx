@@ -204,8 +204,8 @@ export function YieldProvider(props: { children: any }) {
 
       const historicalData = (data ?? []).sort(
         (a, b) =>
-          new Date(a.CreatedTimestamp).getTime() -
-          new Date(b.CreatedTimestamp).getTime(),
+          new Date(b.CreatedTimestamp).getTime() -
+          new Date(a.CreatedTimestamp).getTime(),
       )
 
       const apy7d = historicalData
