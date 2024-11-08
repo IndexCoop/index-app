@@ -16,7 +16,7 @@ export function QuickStats() {
           <TokenDisplay token={indexToken} />
         </div>
         <StatMetric
-          className='hidden w-16 sm:flex'
+          className='hidden w-20 sm:flex'
           isLoading={isFetchingStats}
           label='TVL'
           value={formatTvl(tvl)}
