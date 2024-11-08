@@ -2,7 +2,6 @@
 
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
-import { BigNumber } from 'ethers'
 import {
   createContext,
   useCallback,
@@ -396,7 +395,6 @@ export function LeverageProvider(props: { children: any }) {
       if (!indexToken) return null
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      const gasPrice = await provider.getGasPrice()
       return await getIndexQuote({
         isMinting,
         chainId,
@@ -407,8 +405,6 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         outputTokenPrice,
         nativeTokenPrice,
-        gasPrice,
-        provider,
         slippage: 0.1,
       })
     }
@@ -420,22 +416,18 @@ export function LeverageProvider(props: { children: any }) {
       if (!indexToken) return null
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      return await getFlashMintQuote(
-        {
-          isMinting,
-          account: address,
-          chainId,
-          inputToken,
-          inputTokenAmount: inputValue,
-          inputTokenAmountWei: BigNumber.from(inputTokenAmount.toString()),
-          inputTokenPrice,
-          outputToken,
-          outputTokenPrice,
-          nativeTokenPrice,
-          slippage: 0.1,
-        },
-        provider,
-      )
+      return await getFlashMintQuote({
+        isMinting,
+        account: address,
+        chainId,
+        inputToken,
+        inputTokenAmount: inputValue,
+        inputTokenAmountWei: inputTokenAmount,
+        inputTokenPrice,
+        outputToken,
+        outputTokenPrice,
+        slippage: 0.1,
+      })
     }
 
     const fetchQuotes = async () => {

@@ -1,5 +1,3 @@
-import { BigNumber } from 'ethers'
-
 import {
   Bitcoin2xFlexibleLeverageIndex,
   ETH,
@@ -46,7 +44,7 @@ describe('getQuoteResults', () => {
       ...mockQuote,
       fullCostsInUsd: 10,
       outputTokenAmountUsdAfterFees: 1,
-      minOutput: BigNumber.from(0),
+      minOutput: BigInt(0),
       sources: [{ name: 'LiFi', proportion: '1' }],
     }
     const quoteResults = getQuoteResults(
@@ -74,19 +72,19 @@ const mockQuote: Quote = {
   isMinting: true,
   inputToken: Bitcoin2xFlexibleLeverageIndex,
   outputToken: IndexCoopBitcoin2xIndex,
-  gas: BigNumber.from(0),
-  gasPrice: BigNumber.from(0),
-  gasCosts: BigNumber.from(0),
+  gas: BigInt(0),
+  gasPrice: BigInt(0),
+  gasCosts: BigInt(0),
   gasCostsInUsd: 0,
   fullCostsInUsd: 0,
   priceImpact: 0,
-  indexTokenAmount: BigNumber.from(0),
-  inputOutputTokenAmount: BigNumber.from(0),
+  indexTokenAmount: BigInt(0),
+  inputOutputTokenAmount: BigInt(0),
   // Return additionally for convenience to avoid
   // having to determine based on isMinting
-  inputTokenAmount: BigNumber.from(0),
+  inputTokenAmount: BigInt(0),
   inputTokenAmountUsd: 0,
-  outputTokenAmount: BigNumber.from(0),
+  outputTokenAmount: BigInt(0),
   outputTokenAmountUsd: 0,
   outputTokenAmountUsdAfterFees: 0,
   inputTokenPrice: 0,
@@ -94,8 +92,10 @@ const mockQuote: Quote = {
   slippage: 0,
   tx: {
     account: '0x0',
+    chainId: 1,
+    from: '0x0',
     to: '0x0',
     data: '0x',
-    value: BigNumber.from(0),
+    value: BigInt(0),
   },
 }

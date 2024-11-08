@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
 import { Token } from '@/constants/tokens'
@@ -32,7 +31,7 @@ interface SwapData {
   inputTokenBalance: string
   inputTokenBalanceFormatted: string
   inputTokenAmountUsd: string
-  inputTokenAmountWei: BigNumber
+  inputTokenAmountWei: bigint
   inputTokenPrice: number
   outputTokenPrice: number
   formattedQuoteResults: FormattedQuoteDisplay[]
@@ -92,12 +91,7 @@ export function useSwap(
   )
 
   const hasInsufficientFunds = useMemo(
-    () =>
-      getHasInsufficientFunds(
-        false,
-        BigNumber.from(inputTokenAmountWei.toString()),
-        BigNumber.from(balance.toString()),
-      ),
+    () => getHasInsufficientFunds(false, inputTokenAmountWei, balance),
     [balance, inputTokenAmountWei],
   )
 
@@ -140,7 +134,7 @@ export function useSwap(
     isFlashMint,
     hasInsufficientFunds,
     inputTokenAmountUsd,
-    inputTokenAmountWei: BigNumber.from(inputTokenAmountWei.toString()),
+    inputTokenAmountWei,
     inputTokenBalance,
     inputTokenBalanceFormatted,
     inputTokenPrice: selectedQuote?.inputTokenPrice ?? 0,

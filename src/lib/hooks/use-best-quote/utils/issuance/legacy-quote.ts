@@ -1,5 +1,4 @@
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
-import { BigNumber } from 'ethers'
 import { Address, encodeFunctionData, PublicClient } from 'viem'
 
 import { Issuance } from '@/app/legacy/config'
@@ -7,8 +6,8 @@ import { LegacyQuote } from '@/app/legacy/types'
 import { LeveragedRethStakingYield, RETH, Token } from '@/constants/tokens'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 import { formatWei, isSameAddress } from '@/lib/utils'
-import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
-import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
+import { getFullCostsInUsd } from '@/lib/utils/costs'
+import { getGasLimit } from '@/lib/utils/gas'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
 
@@ -19,8 +18,6 @@ interface IssuanceQuoteRequest {
   account: string
   inputToken: Token
   inputTokenAmount: bigint
-  gasPrice: bigint
-  nativeTokenPrice: number
   slippage: number
 }
 
@@ -29,8 +26,7 @@ export async function getLegacyRedemptionQuote(
   publicClient: PublicClient,
 ): Promise<{ extended: LegacyQuote; quote: Quote } | null> {
   const chainId = 1
-  const { account, inputToken, inputTokenAmount, gasPrice, nativeTokenPrice } =
-    request
+  const { account, inputToken, inputTokenAmount } = request
 
   if (inputTokenAmount <= 0) return null
 
@@ -99,26 +95,21 @@ export async function getLegacyRedemptionQuote(
       value: undefined,
     }
 
-    const defaultGas = 200_000
-    const defaultGasEstimate = BigInt(defaultGas)
-    const gasEstimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
-    const canFail = false
-    const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
-    const gasCosts = gasEstimate * gasPrice
-    const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
-    transaction.gasLimit = BigNumber.from(gasEstimate.toString())
+    const defaultGasEstimate = BigInt(200_000)
+    const { ethPrice, gas } = await getGasLimit(transaction, defaultGasEstimate)
+    transaction.gas = gas.limit
 
     const inputTokenAmountUsd =
       parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *
       inputTokenPrice
-    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
+    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
       inputTokenAmount,
-      gasEstimate * gasPrice,
+      gas.limit * gas.price,
       inputToken.decimals,
       inputTokenPrice,
-      nativeTokenPrice,
+      ethPrice,
     )
 
     const isMultiComponentRedemption = components.length > 1 && !isIcReth
@@ -138,17 +129,17 @@ export async function getLegacyRedemptionQuote(
         isMinting: false,
         inputToken,
         outputToken: outputTokens[0], // used only in tx review modal
-        gas: BigNumber.from(gasEstimate.toString()),
-        gasPrice: BigNumber.from(gasPrice.toString()),
-        gasCosts: BigNumber.from(gasCosts.toString()),
-        gasCostsInUsd,
+        gas: gas.limit,
+        gasPrice: gas.price,
+        gasCosts: gas.costs,
+        gasCostsInUsd: gas.costsUsd,
         fullCostsInUsd,
         priceImpact: 0,
-        indexTokenAmount: BigNumber.from(inputTokenAmount.toString()),
-        inputOutputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
-        inputTokenAmount: BigNumber.from(inputTokenAmount.toString()),
+        indexTokenAmount: inputTokenAmount,
+        inputOutputTokenAmount: outputTokenAmount,
+        inputTokenAmount,
         inputTokenAmountUsd,
-        outputTokenAmount: BigNumber.from(outputTokenAmount.toString()),
+        outputTokenAmount,
         outputTokenAmountUsd,
         outputTokenAmountUsdAfterFees,
         inputTokenPrice,
@@ -158,7 +149,7 @@ export async function getLegacyRedemptionQuote(
       },
     }
   } catch (e) {
-    console.warn('Error fetching issuance quote', e)
+    console.warn('Error fetching legacy redemption quote', e)
     return null
   }
 }
