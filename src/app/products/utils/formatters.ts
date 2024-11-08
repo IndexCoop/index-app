@@ -1,5 +1,5 @@
 export function formatTvl(tvl?: number | null) {
-  if (tvl === undefined || tvl === null) return ''
+  if (tvl === undefined || tvl === null || tvl === 0) return ''
 
   return Intl.NumberFormat('en', {
     notation: 'compact',
@@ -10,8 +10,12 @@ export function formatTvl(tvl?: number | null) {
   }).format(tvl)
 }
 
-export function formatPercentage(percentage?: number | null) {
+export function formatPercentage(
+  percentage?: number | null,
+  hideZeroPercentage: boolean = false,
+) {
   if (percentage === undefined || percentage === null) return ''
+  if (percentage === 0 && hideZeroPercentage) return ''
 
   return `${percentage.toFixed(2)}%`
 }

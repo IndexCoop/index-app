@@ -25,7 +25,7 @@ export function QuickStats() {
           className='w-24'
           isLoading={isFetchingStats}
           label='Token Price'
-          value={formatDollarAmount(nav)}
+          value={formatDollarAmount(nav, true)}
         />
       </div>
       <div className='flex w-1/2 items-center justify-evenly py-2 sm:py-3 md:py-4'>
@@ -33,19 +33,19 @@ export function QuickStats() {
           isLoading={isFetchingStats}
           className='hidden w-16 sm:flex'
           label='7d APY'
-          value={formatPercentage(apy7d)}
+          value={formatPercentage(apy7d, true)}
         />
         <StatMetric
           className='w-16'
           isLoading={isFetchingStats}
           label='30d APY'
-          value={formatPercentage(apy30d)}
+          value={formatPercentage(apy30d, true)}
         />
         <StatMetric
           className='w-16'
           isLoading={isFetchingStats}
           label='APY'
-          value={formatPercentage(apy)}
+          value={formatPercentage(apy, true)}
         />
       </div>
     </div>
