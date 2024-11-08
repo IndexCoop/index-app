@@ -58,7 +58,6 @@ export async function getIndexQuote(
     const inputTokenAddress = getAddressForToken(inputToken, chainId)
     const outputTokenAddress = getAddressForToken(outputToken, chainId)
     const path = `/quote?takerAddress=${address}&inputToken=${inputTokenAddress}&outputToken=${outputTokenAddress}&inputAmount=${inputAmount.toString()}&chainId=${chainId}`
-    console.log(path)
     const indexApi = new IndexApi()
     const res: QuoteResponse = await indexApi.get(path)
 
@@ -138,7 +137,7 @@ export async function getIndexQuote(
         : [{ name: 'RFQ', proportion: '1' }],
     }
   } catch (err) {
-    console.log('Error fetching Index quote', err)
+    console.warn('Error fetching Index quote', err)
     return null
   }
 }

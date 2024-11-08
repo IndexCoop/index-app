@@ -279,7 +279,7 @@ export function LeverageProvider(props: { children: any }) {
         const res = await indexApi.get(`/token/${baseToken.symbol}`)
         setStats(res.data)
       } catch (err) {
-        console.log('Error fetching token stats', err)
+        console.warn('Error fetching token stats', err)
       }
     }
     fetchStats()

@@ -31,7 +31,6 @@ export class GasEstimatooor {
     try {
       gasEstimate = await provider.estimateGas(tx)
     } catch (error: any) {
-      // console.log('Error estimating gas:', error)
       if (canFail) {
         throw new GasEstimatooorFailedError()
       }

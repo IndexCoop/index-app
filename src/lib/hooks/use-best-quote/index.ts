@@ -96,7 +96,7 @@ export const useBestQuote = (
       const outputTokenAddress = getAddressForToken(outputToken, chainId)
 
       if (!inputTokenAddress || !outputTokenAddress) {
-        console.log(inputTokenAddress, outputTokenAddress)
+        console.info(inputTokenAddress, outputTokenAddress)
         console.error('Error can not determine input/ouput token address')
         return
       }
@@ -118,7 +118,6 @@ export const useBestQuote = (
           !isAvailableForRedemption(inputToken, outputToken)
         ) {
           setIsFetchingFlashMint(true)
-          console.log('canFlashmintIndexToken')
           const quoteFlashMint = await getFlashMintQuote({
             ...request,
             account: address,
@@ -139,7 +138,6 @@ export const useBestQuote = (
 
       const fetchIssuanceQuote = async () => {
         if (isAvailableForIssuance(inputToken, outputToken)) {
-          console.log('canIssue')
           setIsFetchingIssuance(true)
           const quoteIssuance = await getEnhancedIssuanceQuote(
             {
@@ -166,7 +164,6 @@ export const useBestQuote = (
           canRedeemIndexToken &&
           !isAvailableForIssuance(inputToken, outputToken)
         ) {
-          console.log('canRedeemIndexToken')
           setIsFetchingRedemption(true)
           const quoteRedemption = await getEnhancedRedemptionQuote(
             {
@@ -206,7 +203,6 @@ export const useBestQuote = (
               outputTokenPrice,
               nativeTokenPrice,
             })
-            console.log(quote0x)
             logEvent('Quote Received', formatQuoteAnalytics(quote0x))
             setIsFetching0x(false)
             setQuote0x(quote0x)

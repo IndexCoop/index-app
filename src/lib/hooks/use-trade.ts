@@ -91,8 +91,8 @@ export const useTrade = () => {
         logTransaction(chainId ?? -1, hash, formatQuoteAnalytics(quote))
         setIsTransacting(false)
       } catch (error) {
-        console.log('Override?', override)
-        console.log('Error sending transaction', error)
+        console.info('Override?', override)
+        console.warn('Error sending transaction', error)
         setIsTransacting(false)
         if (
           error instanceof GasEstimatooorFailedError &&

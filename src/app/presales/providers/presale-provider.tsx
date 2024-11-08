@@ -80,7 +80,7 @@ export function usePresaleData(symbol: string): PresaleData {
           )
           setTvl(marketcapRes.marketcap)
         } catch (err) {
-          console.log('Error fetching marketcap tvl', err)
+          console.warn('Error fetching marketcap tvl', err)
         }
       } else {
         try {
@@ -97,7 +97,7 @@ export function usePresaleData(symbol: string): PresaleData {
               Number(formatUnits(realUnitsRes, presaleToken.decimals)),
           )
         } catch (err) {
-          console.log('Error fetching tvl', err)
+          console.warn('Error fetching tvl', err)
         }
       }
     }

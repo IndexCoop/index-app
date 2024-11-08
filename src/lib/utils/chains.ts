@@ -30,6 +30,6 @@ export async function addMEVProtectionChain(ethereum: any): Promise<void> {
       params: [MevBlockerParams],
     })
   } catch (addError: any) {
-    console.log('Error adding MEV Blocker', addError)
+    console.warn('Error adding MEV Blocker', addError)
   }
 }
