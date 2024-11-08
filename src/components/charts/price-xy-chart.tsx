@@ -10,13 +10,14 @@ import {
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 
-import { customTheme } from '@/components/charts/custom-theme'
+import { darkTheme, lightTheme } from '@/components/charts/themes'
 import { ChartPeriod } from '@/components/charts/types'
 import { formatDollarAmount } from '@/lib/utils'
 import { IndexData } from '@/lib/utils/api/index-data-provider'
 
 type Props = {
   data: Pick<IndexData, 'NetAssetValue' | 'CreatedTimestamp'>[]
+  isDark?: boolean
   parentWidth: number
   parentHeight: number
   selectedPeriod: ChartPeriod
@@ -34,6 +35,7 @@ type LineChartIndexData = Pick<IndexData, 'NetAssetValue' | 'CreatedTimestamp'>
 
 function PriceXYChart({
   data,
+  isDark = false,
   parentWidth,
   parentHeight,
   selectedPeriod,
@@ -67,7 +69,7 @@ function PriceXYChart({
       height={parentHeight}
       width={parentWidth}
       margin={{ top: 20, right: 20, bottom: 40, left: 60 }}
-      theme={customTheme}
+      theme={isDark ? darkTheme : lightTheme}
       xScale={{ type: 'time' }}
       yScale={{
         type: 'linear',
@@ -90,8 +92,8 @@ function PriceXYChart({
         data={data}
       />
       <LinearGradient
-        from='#84e9e9'
-        to='#143438'
+        from={isDark ? '#84e9e9' : '#15CDD1'}
+        to={isDark ? '#143438' : '#f1fffd'}
         id='gradient'
         fromOpacity={0.2}
         toOpacity={0.1}
@@ -103,12 +105,12 @@ function PriceXYChart({
         showSeriesGlyphs
         renderTooltip={({ tooltipData }) => (
           <div>
-            <div className='text-ic-white mb-1 text-[14px] font-bold'>
+            <div className='text-ic-gray-800 dark:text-ic-white mb-1 text-[14px] font-bold'>
               {tooltipAccessors.yAccessor(
                 tooltipData?.nearestDatum?.datum as LineChartIndexData,
               )}
             </div>
-            <div className='text-ic-gray-300 text-xs font-light'>
+            <div className='text-ic-gray-700 dark:text-ic-gray-300 text-xs font-light'>
               {tooltipAccessors.xAccessor(
                 tooltipData?.nearestDatum?.datum as LineChartIndexData,
               )}

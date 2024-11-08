@@ -33,8 +33,15 @@ export function PriceChart({ indexToken, nav }: Props) {
           setSelectedPeriod={setSelectedPeriod}
         />
       </div>
-      <div className='h-full w-full'>
+      <div className='block h-full w-full dark:hidden'>
         <PriceXYChart data={historicalData} selectedPeriod={selectedPeriod} />
+      </div>
+      <div className='hidden h-full w-full dark:block'>
+        <PriceXYChart
+          data={historicalData}
+          selectedPeriod={selectedPeriod}
+          isDark={true}
+        />
       </div>
     </div>
   )
