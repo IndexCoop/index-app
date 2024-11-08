@@ -1,6 +1,6 @@
 import { Token } from '@/constants/tokens'
 
-import { SelectorButton } from './selector-button'
+import { BaseAssetSelectorButton } from './base-asset-selector-button'
 
 type BaseAssetSelectorProps = {
   baseTokens: Token[]
@@ -14,7 +14,7 @@ export function BaseAssetSelector(props: BaseAssetSelectorProps) {
       <div className='text-xs font-normal text-gray-100'>Base Asset</div>
       <div className='flex flex-row gap-1 sm:gap-2'>
         {props.baseTokens.some((token) => token.symbol === 'ETH') && (
-          <SelectorButton
+          <BaseAssetSelectorButton
             imagePath={{
               selected: '/assets/selector-base-asset-eth.png',
               disabled: '/assets/selector-base-asset-eth-disabled.png',
@@ -26,7 +26,7 @@ export function BaseAssetSelector(props: BaseAssetSelectorProps) {
           />
         )}
         {props.baseTokens.some((token) => token.symbol === 'BTC') && (
-          <SelectorButton
+          <BaseAssetSelectorButton
             imagePath={{
               selected: '/assets/selector-base-asset-btc.png',
               disabled: '/assets/selector-base-asset-btc-disabled.png',

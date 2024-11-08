@@ -2,15 +2,16 @@ import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useCallback } from 'react'
 import { useWalletClient } from 'wagmi'
 
+import { NetworkSelectorButton } from '@/components/selectors/network-selector-button'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { useNetwork } from '@/lib/hooks/use-network'
 
-import { SelectorButton } from './selector-button'
+type Props = {
+  isDark?: boolean
+}
 
-export function NetworkSelector() {
+export function NetworkSelector({ isDark = false }: Props) {
   const { open } = useWeb3Modal()
   const { data: walletClient } = useWalletClient()
-  const { chainId } = useNetwork()
   const handleClick = useCallback(
     (chainId: number) => {
       if (!walletClient) {
@@ -27,29 +28,32 @@ export function NetworkSelector() {
         Network
       </div>
       <div className='flex flex-row gap-1 sm:gap-2'>
-        <SelectorButton
+        <NetworkSelectorButton
+          chain={MAINNET}
           imagePath={{
-            selected: '/assets/selector-network-ethereum.png',
-            disabled: '/assets/selector-network-ethereum-disabled.png',
+            light: '/assets/network-ethereum-light.svg',
+            dark: '/assets/network-ethereum-dark.svg',
           }}
-          isSelected={chainId === MAINNET.chainId}
-          onClick={() => handleClick(MAINNET.chainId)}
+          isDark={isDark}
+          onClick={handleClick}
         />
-        <SelectorButton
+        <NetworkSelectorButton
+          chain={ARBITRUM}
           imagePath={{
-            selected: '/assets/selector-network-arbitrum.png',
-            disabled: '/assets/selector-network-arbitrum-disabled.png',
+            light: '/assets/network-arbitrum-light.svg',
+            dark: '/assets/network-arbitrum-dark.svg',
           }}
-          isSelected={chainId === ARBITRUM.chainId || !chainId}
-          onClick={() => handleClick(ARBITRUM.chainId)}
+          isDark={isDark}
+          onClick={handleClick}
         />
-        <SelectorButton
+        <NetworkSelectorButton
+          chain={BASE}
           imagePath={{
-            selected: '/assets/selector-network-base.png',
-            disabled: '/assets/selector-network-base-disabled.png',
+            light: '/assets/network-base-light.svg',
+            dark: '/assets/network-base-dark.svg',
           }}
-          isSelected={chainId === BASE.chainId}
-          onClick={() => handleClick(BASE.chainId)}
+          isDark={isDark}
+          onClick={handleClick}
         />
       </div>
     </div>

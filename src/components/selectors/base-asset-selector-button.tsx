@@ -6,7 +6,7 @@ type SelectorButtonProps = {
   onClick: () => void
 }
 
-export function SelectorButton({
+export function BaseAssetSelectorButton({
   imagePath,
   isSelected,
   onClick,

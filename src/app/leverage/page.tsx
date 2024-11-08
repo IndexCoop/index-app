@@ -53,7 +53,7 @@ export default function Page() {
                 selectedBaseToken={baseToken}
                 onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
               />
-              <NetworkSelector />
+              <NetworkSelector isDark />
             </div>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
