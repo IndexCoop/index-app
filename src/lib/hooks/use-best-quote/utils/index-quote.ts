@@ -1,10 +1,8 @@
 import { Hex } from 'viem'
 
-import { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import { formatWei, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
-import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
@@ -14,9 +12,7 @@ import { getPriceImpact } from './price-impact'
 interface ExtendedIndexQuoteRequest extends IndexQuoteRequest {
   chainId: number
   address: string
-  gasPrice: bigint
   nativeTokenPrice: number
-  provider: IndexRpcProvider
 }
 
 interface QuoteResponseTransaction {
@@ -55,7 +51,6 @@ export async function getIndexQuote(
     nativeTokenPrice,
     outputToken,
     outputTokenPrice,
-    provider,
     slippage,
   } = request
   try {
@@ -81,24 +76,11 @@ export async function getIndexQuote(
 
     let gasCosts = BigInt('0')
     let gasLimit = BigInt('0')
-    let gasPrice = BigInt(request.gasPrice.toString())
+    let gasPrice = tx.gasPrice
     const estimate = res.rawResponse.estimate
     const isLifiQuote = res.type === 'lifi'
-    if (isLifiQuote) {
-      gasLimit = BigInt(estimate?.gasCosts[0].limit ?? '0')
-      gasPrice = BigInt(estimate?.gasCosts[0].price ?? '0')
-    } else {
-      // Right now this should only be ic21
-      const defaultGas = 120_000
-      const defaultGasEstimate = BigInt(defaultGas)
-      const gasEstimatooor = new GasEstimatooor(provider, defaultGasEstimate)
-      // We don't want this function to fail for estimates here.
-      // A default will be returned if the tx would fail.
-      const canFail = false
-      const gasEstimate = await gasEstimatooor.estimate(tx, canFail)
-      console.log(gasEstimate.toString(), 'gasLimit')
-      gasLimit = gasEstimate
-    }
+    gasLimit = BigInt(estimate?.gasCosts[0].limit ?? '0')
+    gasPrice = BigInt(estimate?.gasCosts[0].price ?? '0')
     gasCosts = gasPrice * gasLimit
     const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
 

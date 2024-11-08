@@ -12,8 +12,8 @@ import {
 } from '@/constants/tokens'
 import { isAvailableForIssuance } from '@/lib/hooks/use-best-quote/utils/available'
 import { formatWei } from '@/lib/utils'
-import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
-import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
+import { getFullCostsInUsd } from '@/lib/utils/costs'
+import { getGasLimit } from '@/lib/utils/gas'
 
 import { Quote, QuoteTransaction, QuoteType } from '../../types'
 
@@ -28,8 +28,6 @@ interface IssuanceQuoteRequest {
   inputTokenAmount: bigint
   inputTokenPrice: number
   outputTokenPrice: number
-  nativeTokenPrice: number
-  gasPrice: bigint
   slippage: number
 }
 
@@ -57,8 +55,6 @@ export async function getEnhancedIssuanceQuote(
     inputToken,
     inputTokenAmount,
     inputTokenPrice,
-    gasPrice,
-    nativeTokenPrice,
     outputToken,
     outputTokenPrice,
   } = request
@@ -121,14 +117,9 @@ export async function getEnhancedIssuanceQuote(
       value: undefined,
     }
 
-    const defaultGas = 200_000
-    const defaultGasEstimate = BigInt(defaultGas)
-    const gasEstimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
-    const canFail = false
-    const gasEstimate = await gasEstimatooor.estimate(transaction, canFail)
-    const gasCosts = gasEstimate * gasPrice
-    const gasCostsInUsd = getGasCostsInUsd(gasCosts, nativeTokenPrice)
-    transaction.gas = gasEstimate
+    const defaultGasEstimate = BigInt(200_000)
+    const { ethPrice, gas } = await getGasLimit(transaction, defaultGasEstimate)
+    transaction.gas = gas.limit
 
     const inputTokenAmountUsd =
       parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *
@@ -136,14 +127,14 @@ export async function getEnhancedIssuanceQuote(
     const outputTokenAmountUsd =
       parseFloat(formatWei(outputTokenAmount, outputToken.decimals)) *
       outputTokenPrice
-    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
+    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
 
     const fullCostsInUsd = getFullCostsInUsd(
       inputTokenAmount,
-      gasEstimate * gasPrice,
+      gas.limit * gas.price,
       inputToken.decimals,
       inputTokenPrice,
-      nativeTokenPrice,
+      ethPrice,
     )
 
     return {
@@ -153,10 +144,10 @@ export async function getEnhancedIssuanceQuote(
       isMinting: isIssuance,
       inputToken,
       outputToken,
-      gas: gasEstimate,
-      gasPrice,
-      gasCosts,
-      gasCostsInUsd,
+      gas: gas.limit,
+      gasPrice: gas.price,
+      gasCosts: gas.costs,
+      gasCostsInUsd: gas.costsUsd,
       fullCostsInUsd,
       priceImpact: 0,
       indexTokenAmount,
