@@ -96,8 +96,9 @@ export const useBestQuote = (
       const outputTokenAddress = getAddressForToken(outputToken, chainId)
 
       if (!inputTokenAddress || !outputTokenAddress) {
-        console.info(inputTokenAddress, outputTokenAddress)
-        console.error('Error can not determine input/ouput token address')
+        console.error(
+          `Error can not determine input/ouput token address: ${chainId} ${inputToken.symbol} ${outputToken.symbol}`,
+        )
         return
       }
 
