@@ -15,7 +15,7 @@ import { isAddress } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { ARBITRUM } from '@/constants/chains'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
 import {
   ETH,
   HighYieldETHIndex,
@@ -32,7 +32,10 @@ import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
-import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
+import {
+  fetchTokenHistoricalData,
+  fetchTokenMetrics,
+} from '@/lib/utils/api/index-data-provider'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
 import { BaseTokenStats } from './types'
@@ -43,13 +46,18 @@ interface Context {
   balances: TokenBalance[]
   indexToken: Token
   indexTokens: Token[]
+  apy: number | null
+  apy7d: number | null
+  apy30d: number | null
   nav: number | null
+  tvl: number | null
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
+  isFetchingStats: boolean
   quoteResult: QuoteResult | null
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
@@ -66,13 +74,18 @@ export const YieldContext = createContext<Context>({
   balances: [],
   indexToken: IndexCoopEthereum2xIndex,
   indexTokens: [],
-  nav: 0,
+  apy: null,
+  apy7d: null,
+  apy30d: null,
+  nav: null,
+  tvl: null,
   inputToken: ETH,
   outputToken: IndexCoopEthereum2xIndex,
   inputTokenAmount: BigInt(0),
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
+  isFetchingStats: true,
   quoteResult: null,
   stats: null,
   transactionReview: null,
@@ -121,7 +134,7 @@ export function YieldProvider(props: { children: any }) {
   })
 
   const chainId = useMemo(() => {
-    return chainIdRaw ?? ARBITRUM.chainId
+    return chainIdRaw ?? MAINNET.chainId
   }, [chainIdRaw])
 
   useEffect(() => {
@@ -154,19 +167,62 @@ export function YieldProvider(props: { children: any }) {
   )
 
   const {
-    data: { nav },
+    data: { apy, nav, tvl },
+    isFetching: isFetchingLatestStats,
   } = useQuery({
     enabled: isAddress(indexTokenAddress),
-    initialData: { nav: null },
-    queryKey: ['token-nav', indexTokenAddress],
+    initialData: { apy: null, nav: null, tvl: null },
+    queryKey: ['token-latest-stats', indexTokenAddress],
     queryFn: async () => {
       const data = await fetchTokenMetrics({
         tokenAddress: indexTokenAddress!,
-        metrics: ['nav'],
+        metrics: ['nav', 'apy', 'pav'],
       })
 
       return {
+        apy: data?.APY ?? null,
         nav: data?.NetAssetValue ?? null,
+        tvl: data?.ProductAssetValue ?? null,
+      }
+    },
+  })
+
+  const {
+    data: { apy7d, apy30d },
+    isFetching: isFetchingApyStats,
+  } = useQuery({
+    enabled: isAddress(indexTokenAddress),
+    initialData: { apy7d: null, apy30d: null },
+    queryKey: ['token-apy-stats', indexTokenAddress],
+    queryFn: async () => {
+      const data = await fetchTokenHistoricalData({
+        tokenAddress: indexTokenAddress!,
+        metrics: ['apy'],
+        interval: 'daily',
+        period: 'month',
+      })
+
+      const historicalData = (data ?? []).sort(
+        (a, b) =>
+          new Date(a.CreatedTimestamp).getTime() -
+          new Date(b.CreatedTimestamp).getTime(),
+      )
+
+      const apy7d = historicalData
+        .slice(0, 7)
+        .reduce((acc, current, _, { length }) => {
+          return acc + (current.APY ?? 0) / length
+        }, 0)
+
+      const apy30d = historicalData
+        .slice(0, 30)
+        .reduce((acc, current, _, { length }) => {
+          return acc + (current.APY ?? 0) / length
+        }, 0)
+
+      return {
+        apy7d: apy7d || null,
+        apy30d: apy30d || null,
       }
     },
   })
@@ -414,10 +470,15 @@ export function YieldProvider(props: { children: any }) {
         inputToken,
         outputToken,
         inputTokenAmount,
+        apy,
+        apy7d,
+        apy30d,
         nav,
+        tvl,
         inputTokens,
         outputTokens,
         isFetchingQuote,
+        isFetchingStats: isFetchingLatestStats || isFetchingApyStats,
         quoteResult,
         stats: null, // FIXME
         transactionReview,

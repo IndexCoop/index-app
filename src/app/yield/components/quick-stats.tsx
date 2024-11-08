@@ -1,10 +1,13 @@
+import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
 import { StatMetric } from '@/app/yield/components/stat-metric'
 import { TokenDisplay } from '@/components/token-display'
+import { formatDollarAmount } from '@/lib/utils'
 
 import { useYieldContext } from '../provider'
 
 export function QuickStats() {
-  const { indexToken } = useYieldContext()
+  const { indexToken, isFetchingStats, nav, apy, apy30d, apy7d, tvl } =
+    useYieldContext()
 
   return (
     <div className='border-ic-gray-200 divide-ic-gray-200 flex w-full items-center justify-between divide-x rounded-3xl border bg-[#F7F8F8] px-0 sm:px-4'>
@@ -12,13 +15,38 @@ export function QuickStats() {
         <div className='flex'>
           <TokenDisplay token={indexToken} />
         </div>
-        <StatMetric className='hidden sm:flex' label='TVL' value='$73.4m' />
-        <StatMetric label='Token Price' value='$2,528.36' />
+        <StatMetric
+          className='hidden w-16 sm:flex'
+          isLoading={isFetchingStats}
+          label='TVL'
+          value={formatTvl(tvl)}
+        />
+        <StatMetric
+          className='w-24'
+          isLoading={isFetchingStats}
+          label='Token Price'
+          value={formatDollarAmount(nav)}
+        />
       </div>
       <div className='flex w-1/2 items-center justify-evenly py-2 sm:py-3 md:py-4'>
-        <StatMetric className='hidden sm:flex' label='7d APY' value='4.29%' />
-        <StatMetric label='30d APY' value='4.74%' />
-        <StatMetric label='APY' value='4.98%' />
+        <StatMetric
+          isLoading={isFetchingStats}
+          className='hidden w-16 sm:flex'
+          label='7d APY'
+          value={formatPercentage(apy7d)}
+        />
+        <StatMetric
+          className='w-16'
+          isLoading={isFetchingStats}
+          label='30d APY'
+          value={formatPercentage(apy30d)}
+        />
+        <StatMetric
+          className='w-16'
+          isLoading={isFetchingStats}
+          label='APY'
+          value={formatPercentage(apy)}
+        />
       </div>
     </div>
   )
