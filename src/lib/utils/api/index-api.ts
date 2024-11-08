@@ -13,7 +13,7 @@ export class IndexApi {
       })
       return resp.json()
     } catch (error) {
-      console.log('Error fetching Index API for path', path)
+      console.warn('Error fetching Index API for path', path)
       console.log(error)
       throw error
     }
@@ -29,7 +29,7 @@ export class IndexApi {
       })
       return resp.json()
     } catch (error) {
-      console.log('Error putting Index API for path', path)
+      console.warn('Error putting Index API for path', path)
       console.log(error)
       throw error
     }

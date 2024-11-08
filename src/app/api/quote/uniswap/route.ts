@@ -70,8 +70,8 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ route: swapRoute })
   } catch (error) {
-    console.log('Error getting Uniswap swap quote:')
-    console.log(error)
+    console.warn('Error getting Uniswap swap quote:')
+    console.error(error)
     return NextResponse.json({}, { status: 500 })
   }
 }

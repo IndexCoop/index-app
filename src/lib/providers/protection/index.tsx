@@ -16,7 +16,7 @@ export const ProtectionProvider = (props: { children: any }) => {
         if (response.country === 'United States') setIsProtectable(true)
       })
       .catch((error) => {
-        console.log(
+        console.error(
           'Cant determine whether or not we should protect the user because of this error: ',
           error,
         )

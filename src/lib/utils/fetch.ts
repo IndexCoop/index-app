@@ -6,7 +6,7 @@ export async function fetchTvl(symbol: string) {
     const res = await indexApi.get(`/${symbol.toLowerCase()}/marketcap`)
     return res.marketcap as number
   } catch (err) {
-    console.log(`Error fetching marketcap for ${symbol}`, err)
+    console.warn(`Error fetching marketcap for ${symbol}`, err)
     return null
   }
 }
@@ -17,7 +17,7 @@ export async function fetchCumulativeRevenue(address: string) {
     const res = await indexApi.get(`/prts/fees/${address.toLowerCase()}`)
     return res.cumulative_revenue as number
   } catch (err) {
-    console.log(`Error fetching fees for ${address}`, err)
+    console.warn(`Error fetching fees for ${address}`, err)
     return null
   }
 }
@@ -35,7 +35,7 @@ export async function fetchCarryCosts() {
     }
     return formattedRes
   } catch (err) {
-    console.log('Error fetching carry costs', err)
+    console.warn('Error fetching carry costs', err)
     return null
   }
 }
