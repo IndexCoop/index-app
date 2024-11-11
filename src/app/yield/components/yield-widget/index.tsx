@@ -121,7 +121,6 @@ export function YieldWidget() {
         onRefetchQuote={() => {}}
       />
       <SelectTokenModal
-        isDarkMode={true}
         isOpen={isSelectInputTokenOpen}
         showBalances={false}
         onClose={onCloseSelectInputToken}

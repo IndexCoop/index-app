@@ -335,7 +335,6 @@ export function YieldProvider(props: { children: any }) {
       if (!indexToken) return null
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      const gasPrice = await provider.getGasPrice()
       return await getIndexQuote({
         isMinting,
         chainId,
