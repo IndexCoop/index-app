@@ -21,7 +21,6 @@ import { chains } from '@/lib/utils/wagmi'
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
 import { BuySellSelector } from './components/buy-sell-selector'
-import { Fees } from './components/fees'
 import { Summary } from './components/summary'
 
 import './styles.css'
@@ -82,10 +81,7 @@ export function YieldWidget() {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
-    <div
-      className='widget flex flex-col gap-3 rounded-3xl p-6'
-      id='close-position-scroll'
-    >
+    <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
@@ -105,7 +101,6 @@ export function YieldWidget() {
         onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
-      <Fees />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={false}

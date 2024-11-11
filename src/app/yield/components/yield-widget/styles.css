@@ -1,18 +1,14 @@
 .widget {
+  border-radius: 23px;
+  border: 1px solid #ebf2f2;
   background: linear-gradient(
-      210deg,
-      rgba(243, 255, 239, 0.08) -24.93%,
-      rgba(255, 255, 255, 0) 145.44%
+      33deg,
+      rgba(0, 189, 192, 0.02) -9.23%,
+      rgba(0, 249, 228, 0.01) 48.82%,
+      rgba(212, 0, 216, 0.02) 131.54%
     ),
-    linear-gradient(
-      51deg,
-      rgba(0, 189, 192, 0.15) -76.7%,
-      rgba(0, 249, 228, 0.15) -6.53%,
-      rgba(212, 0, 216, 0.15) 183.55%
-    ),
-    linear-gradient(195deg, #143438 -23.15%, #052629 227.79%);
-  border: 1px solid #006a71;
+    linear-gradient(187deg, #fcffff -184.07%, #fcffff 171.05%);
   box-shadow:
-    0.5px 1px 2px 0px rgba(44, 51, 51, 0.25),
-    2px 2px 1px 0px rgba(5, 172, 175, 0.49) inset;
+    2px 2px 1px 0px #fcffff inset,
+    0.5px 1px 2px 0px rgba(44, 51, 51, 0.25);
 }

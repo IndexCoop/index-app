@@ -171,6 +171,8 @@ export function YieldProvider(props: { children: any }) {
     isFetching: isFetchingLatestStats,
   } = useQuery({
     enabled: isAddress(indexTokenAddress),
+    gcTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
     initialData: { apy: null, nav: null, tvl: null },
     queryKey: ['token-latest-stats', indexTokenAddress],
     queryFn: async () => {
@@ -192,6 +194,8 @@ export function YieldProvider(props: { children: any }) {
     isFetching: isFetchingApyStats,
   } = useQuery({
     enabled: isAddress(indexTokenAddress),
+    gcTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
     initialData: { apy7d: null, apy30d: null },
     queryKey: ['token-apy-stats', indexTokenAddress],
     queryFn: async () => {
