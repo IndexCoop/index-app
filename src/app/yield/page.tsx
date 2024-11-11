@@ -41,9 +41,6 @@ export default function Page() {
                 {currentTab === 'price' && (
                   <PriceChart indexToken={indexToken} nav={nav} />
                 )}
-                {currentTab === 'apy' && (
-                  <PriceChart indexToken={indexToken} nav={nav} />
-                )}
                 {currentTab === 'tvl' && (
                   <TvlChart indexToken={indexToken} tvl={tvl} />
                 )}

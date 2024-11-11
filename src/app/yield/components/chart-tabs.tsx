@@ -8,7 +8,6 @@ type Tab = { name: ChartTab; label: string }
 
 const tabs: Tab[] = [
   { name: 'price', label: 'Token Price' },
-  { name: 'apy', label: 'APY' },
   { name: 'tvl', label: 'TVL' },
 ]
 
