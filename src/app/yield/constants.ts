@@ -1,7 +1,9 @@
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import {
+  DiversifiedStakedETHIndex,
   ETH,
   HighYieldETHIndex,
+  icETHIndex,
   Token,
   USDC,
   USDT,
@@ -10,7 +12,11 @@ import {
 } from '@/constants/tokens'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
-export const yieldTokens = [HighYieldETHIndex]
+export const yieldTokens = [
+  HighYieldETHIndex,
+  icETHIndex,
+  DiversifiedStakedETHIndex,
+]
 
 export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
@@ -24,7 +30,6 @@ export function getCurrencyTokens(chainId: number): Token[] {
   }
 }
 
-// FIXME
 export function getYieldTokens(chainId: number): Token[] {
   const tokens: (Token | null)[] = yieldTokens.map((token) => {
     const address = getAddressForToken(token, chainId)

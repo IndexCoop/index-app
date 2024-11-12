@@ -15,12 +15,7 @@ import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM, MAINNET } from '@/constants/chains'
-import {
-  ETH,
-  HighYieldETHIndex,
-  IndexCoopEthereum2xIndex,
-  Token,
-} from '@/constants/tokens'
+import { ETH, HighYieldETHIndex, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
@@ -71,7 +66,7 @@ export const YieldContext = createContext<Context>({
   inputValue: '',
   isMinting: true,
   balances: [],
-  indexToken: IndexCoopEthereum2xIndex,
+  indexToken: HighYieldETHIndex,
   indexTokens: [],
   apy: null,
   apy7d: null,
@@ -79,7 +74,7 @@ export const YieldContext = createContext<Context>({
   nav: null,
   tvl: null,
   inputToken: ETH,
-  outputToken: IndexCoopEthereum2xIndex,
+  outputToken: HighYieldETHIndex,
   inputTokenAmount: BigInt(0),
   inputTokens: [],
   outputTokens: [],
