@@ -102,6 +102,7 @@ function PriceXYChart({
         showSeriesGlyphs
         renderTooltip={({ tooltipData }) => (
           <ChartTooltip
+            isDark={isDark}
             line1={tooltipAccessors.yAccessor(
               tooltipData?.nearestDatum?.datum as PriceChartIndexData,
             )}

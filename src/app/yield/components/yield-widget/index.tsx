@@ -6,6 +6,7 @@ import { useCallback } from 'react'
 import { supportedNetworks } from '@/app/yield/constants'
 import { useYieldContext } from '@/app/yield/provider'
 import { Receive } from '@/components/receive'
+import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
@@ -20,7 +21,6 @@ import { chains } from '@/lib/utils/wagmi'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
-import { BuySellSelector } from './components/buy-sell-selector'
 import { Summary } from './components/summary'
 
 import './styles.css'
@@ -81,7 +81,7 @@ export function YieldWidget() {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
-    <div className='widget flex flex-col gap-3 rounded-3xl p-6'>
+    <div className='widget flex h-fit flex-col gap-3 rounded-3xl px-4 py-6'>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector
         config={{ isReadOnly: false }}

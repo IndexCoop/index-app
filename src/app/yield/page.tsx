@@ -37,7 +37,7 @@ export default function Page() {
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
               <QuickStats />
-              <div className='flex h-full min-h-[360px] flex-col'>
+              <div className='flex h-full min-h-[388px] flex-col'>
                 {currentTab === 'price' && (
                   <PriceChart indexToken={indexToken} nav={nav} />
                 )}
