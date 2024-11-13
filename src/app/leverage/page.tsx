@@ -35,9 +35,9 @@ export default function Page() {
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
 
   useEffect(() => {
-    document.body.classList.add('dark')
+    document.body.classList.add('dark', 'bg-ic-dark')
     return () => {
-      document.body.classList.remove('dark')
+      document.body.classList.remove('dark', 'bg-ic-dark')
     }
   })
 
