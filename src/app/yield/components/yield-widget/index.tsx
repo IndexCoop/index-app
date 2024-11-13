@@ -134,7 +134,6 @@ export function YieldWidget() {
         tokens={inputTokens}
       />
       <SelectTokenModal
-        isDarkMode={true}
         isOpen={isSelectOutputTokenOpen}
         onClose={onCloseSelectOutputToken}
         onSelectedToken={(tokenSymbol) => {
