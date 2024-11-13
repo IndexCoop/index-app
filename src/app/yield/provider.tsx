@@ -267,7 +267,9 @@ export function YieldProvider(props: { children: any }) {
 
   const toggleIsMinting = useCallback(() => {
     setMinting(!isMinting)
-  }, [isMinting])
+    setInputToken(outputToken)
+    setOutputToken(inputToken)
+  }, [inputToken, isMinting, outputToken])
 
   useEffect(() => {
     if (inputToken === null || outputToken === null) return

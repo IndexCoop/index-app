@@ -21,7 +21,7 @@ export default function Page() {
   const { address } = useWallet()
   const { isOpen: isSelectBaseTokenOpen, onClose: onCloseSelectBaseToken } =
     useDisclosure()
-  const { indexToken, nav, tvl } = useYieldContext()
+  const { indexToken, isFetchingStats, nav, tvl } = useYieldContext()
   const [currentTab, setCurrentTab] = useState<ChartTab>('price')
 
   return (
@@ -37,12 +37,20 @@ export default function Page() {
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
               <QuickStats />
-              <div className='flex h-full min-h-[388px] flex-col'>
+              <div className='flex h-[300px] flex-col md:h-[320px] lg:h-[422px]'>
                 {currentTab === 'price' && (
-                  <PriceChart indexToken={indexToken} nav={nav} />
+                  <PriceChart
+                    indexToken={indexToken}
+                    isFetchingStats={isFetchingStats}
+                    nav={nav}
+                  />
                 )}
                 {currentTab === 'tvl' && (
-                  <TvlChart indexToken={indexToken} tvl={tvl} />
+                  <TvlChart
+                    indexToken={indexToken}
+                    isFetchingStats={isFetchingStats}
+                    tvl={tvl}
+                  />
                 )}
                 <ChartTabs
                   currentTab={currentTab}
