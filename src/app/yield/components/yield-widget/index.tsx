@@ -23,6 +23,7 @@ import { useFormattedLeverageData } from '../../use-formatted-data'
 
 import { Summary } from './components/summary'
 
+import { TokenDisplay } from '@/components/token-display'
 import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
@@ -32,6 +33,7 @@ export function YieldWidget() {
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
+    indexToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
@@ -82,6 +84,7 @@ export function YieldWidget() {
 
   return (
     <div className='widget flex h-fit flex-col gap-3 rounded-3xl px-4 py-6'>
+      <TokenDisplay mini token={indexToken} />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
