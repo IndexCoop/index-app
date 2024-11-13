@@ -316,14 +316,6 @@ export function YieldProvider(props: { children: any }) {
   }
 
   useEffect(() => {
-    setInputToken(inputTokens[0])
-  }, [inputTokens, isMinting])
-
-  useEffect(() => {
-    setOutputToken(outputTokens[0])
-  }, [outputTokens, isMinting])
-
-  useEffect(() => {
     const fetchSwapQuote = async () => {
       if (!address) return null
       if (!chainId || chainId === ARBITRUM.chainId) return null
