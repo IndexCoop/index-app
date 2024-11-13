@@ -3,6 +3,7 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
+import { Summary } from '@/app/yield/components/yield-widget/components/summary'
 import { supportedNetworks } from '@/app/yield/constants'
 import { useYieldContext } from '@/app/yield/provider'
 import { Receive } from '@/components/receive'
@@ -21,8 +22,6 @@ import { formatWei } from '@/lib/utils'
 import { chains } from '@/lib/utils/wagmi'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
-
-import { Summary } from './components/summary'
 
 import './styles.css'
 
