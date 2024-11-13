@@ -13,6 +13,7 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
+import { TokenDisplay } from '@/components/token-display'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -23,7 +24,6 @@ import { useFormattedLeverageData } from '../../use-formatted-data'
 
 import { Summary } from './components/summary'
 
-import { TokenDisplay } from '@/components/token-display'
 import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
