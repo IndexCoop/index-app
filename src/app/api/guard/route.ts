@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
       'x-real-ip': req.headers.get('x-real-ip'),
       'x-vercel-country': req.headers.get('x-vercel-ip-country'),
       'cf-connecting-ip': req.headers.get('cf-connecting-ip'),
+      'cf-ipcountry': req.headers.get('cf-ipcountry'),
     })
   } catch (error) {
     return NextResponse.json(error, { status: 500 })
