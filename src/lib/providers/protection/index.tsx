@@ -8,11 +8,10 @@ export const ProtectionProvider = (props: { children: any }) => {
   const [isProtectable, setIsProtectable] = useState<boolean>(false)
 
   const checkIfProtectable = async () => {
-    const API_KEY =
-      process.env.NEXT_PUBLIC_IP_LOOKUP_KEY ?? 'vN8S4cMfz4KPoq5eLx3X'
-    fetch('https://extreme-ip-lookup.com/json/?key=' + API_KEY)
+    fetch('/api/protected')
       .then((res) => res.json())
       .then((response) => {
+        console.log('Response from /api/protected: ', response)
         if (response.country === 'United States') setIsProtectable(true)
       })
       .catch((error) => {
