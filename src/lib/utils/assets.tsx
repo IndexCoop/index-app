@@ -1,5 +1,6 @@
 const bedBorderLogo = '/assets/bed-border.png'
 const dsethLogo = '/assets/dseth_logo.svg'
+const gmiLogo = '/assets/gmi_logo.webp'
 const gtcEthLogo = '/assets/gtceth_logo.svg'
 const ic21Logo = '/assets/ic21_logo.svg'
 const icethLogo = '/assets/icethlogo.png'
@@ -23,6 +24,7 @@ export {
 export {
   bedBorderLogo,
   dsethLogo,
+  gmiLogo,
   gtcEthLogo,
   ic21Logo,
   icethLogo,

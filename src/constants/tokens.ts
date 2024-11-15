@@ -4,6 +4,7 @@ import { arbitrum, base, mainnet } from 'viem/chains'
 import {
   bedBorderLogo,
   dsethLogo,
+  gmiLogo,
   gtcEthLogo,
   ic21Logo,
   icethLogo,
@@ -330,6 +331,40 @@ export const BedIndex: Token = {
     streamingFee: '0.25%',
   },
   isDangerous: false,
+  indexTypes: [IndexType.thematic],
+}
+
+export const DATA: Token = {
+  name: 'DATA Economy Index',
+  symbol: 'DATA',
+  address: '0x33d63Ba1E57E54779F7dDAeaA7109349344cf5F1',
+  polygonAddress: undefined,
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'data',
+  image: indexLogo,
+  coingeckoId: '',
+  fees: {
+    streamingFee: '1.95%',
+  },
+  isDangerous: true,
+  indexTypes: [IndexType.thematic],
+}
+
+export const GmiIndex: Token = {
+  name: 'Bankless DeFi Innovation Index',
+  symbol: 'GMI',
+  address: '0x47110d43175f7f2C2425E7d15792acC5817EB44f',
+  polygonAddress: '0x7fb27ee135db455de5ab1ccec66a24cbc82e712d',
+  optimismAddress: undefined,
+  decimals: 18,
+  url: 'gmi',
+  image: gmiLogo,
+  coingeckoId: 'bankless-defi-innovation-index',
+  fees: {
+    streamingFee: '1.95%',
+  },
+  isDangerous: true,
   indexTypes: [IndexType.thematic],
 }
 
