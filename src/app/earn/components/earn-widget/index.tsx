@@ -82,7 +82,7 @@ export function EarnWidget() {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
-    <div className='earn-widget flex h-fit flex-col gap-3 rounded-3xl px-4 py-6'>
+    <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6'>
       <TokenDisplay mini token={indexToken} />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector

@@ -14,7 +14,7 @@ export function Stats() {
   const { price, change24h, change24hIsPositive, low24h, high24h } =
     useFormattedLeverageData(stats)
   return (
-    <div className='border-ic-gray-600 flex w-full flex-row items-center justify-between rounded-3xl border bg-[#1C2C2E] px-0 sm:px-4'>
+    <div className='border-ic-gray-600 flex w-full flex-row items-center justify-between rounded-lg border bg-[#1C2C2E] px-0 sm:px-4'>
       <StatsItem
         token={baseToken}
         change24h={change24h}

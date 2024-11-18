@@ -27,7 +27,7 @@ export function PriceChart({ indexToken, isFetchingStats, nav }: Props) {
   )
 
   return (
-    <div className='border-ic-gray-200 dark:border-ic-gray-600 flex h-full w-full flex-col rounded-3xl border bg-[#F7F8F8] dark:bg-[#1C2C2E]'>
+    <div className='border-ic-gray-200 dark:border-ic-gray-600 flex h-full w-full flex-col rounded-lg border bg-[#F7F8F8] dark:bg-[#1C2C2E]'>
       <div className='text-ic-gray-800 dark:text-ic-white flex w-full items-stretch px-4 pt-4 md:px-8 md:pt-6'>
         <div
           className={cn(
