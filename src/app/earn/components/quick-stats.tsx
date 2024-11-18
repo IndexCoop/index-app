@@ -1,13 +1,13 @@
+import { StatMetric } from '@/app/earn/components/stat-metric'
 import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
-import { StatMetric } from '@/app/yield/components/stat-metric'
 import { TokenDisplay } from '@/components/token-display'
 import { formatDollarAmount } from '@/lib/utils'
 
-import { useYieldContext } from '../provider'
+import { useEarnContext } from '../provider'
 
 export function QuickStats() {
   const { indexToken, isFetchingStats, nav, apy, apy30d, apy7d, tvl } =
-    useYieldContext()
+    useEarnContext()
 
   return (
     <div className='border-ic-gray-200 divide-ic-gray-200 flex w-full items-center justify-between divide-x rounded-3xl border bg-[#F7F8F8] px-0 sm:px-4'>

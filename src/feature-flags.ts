@@ -2,5 +2,5 @@
 // export const isFeatureEnabled = () =>
 //   process.env.NEXT_PUBLIC_VERCEL_ENV !== 'index-app-prod'
 
-export const isYieldPageEnabled = () =>
+export const isEarnPageEnabled = () =>
   process.env.NEXT_PUBLIC_VERCEL_ENV !== 'index-app-prod'

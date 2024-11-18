@@ -71,7 +71,7 @@ export function useChartData(
   indexTokenAddress?: string,
   metric: IndexDataMetric = 'nav',
 ) {
-  const [selectedPeriod, setSelectedPeriod] = useState(ChartPeriod.Day)
+  const [selectedPeriod, setSelectedPeriod] = useState(ChartPeriod.Week)
   const [historicalData, setHistoricalData] = useState<HistoricalData>([])
   useQuery({
     enabled: isAddress(indexTokenAddress ?? ''),

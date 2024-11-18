@@ -2,14 +2,14 @@ import { Providers } from '@/app/providers'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 
-import { YieldProvider } from './provider'
+import { EarnProvider } from './provider'
 
 type LayoutProps = {
   children: React.ReactNode
 }
 
 export const metadata = {
-  title: 'Yield',
+  title: 'Earn',
 }
 
 export default function Layout({ children }: LayoutProps) {
@@ -17,9 +17,9 @@ export default function Layout({ children }: LayoutProps) {
     <Providers>
       <div className='flex flex-col'>
         <Header />
-        <YieldProvider>
+        <EarnProvider>
           <main>{children}</main>
-        </YieldProvider>
+        </EarnProvider>
         <Footer />
       </div>
     </Providers>

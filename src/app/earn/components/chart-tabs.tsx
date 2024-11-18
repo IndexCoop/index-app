@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 
-import { ChartTab } from '@/app/yield/types'
+import { ChartTab } from '@/app/earn/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 

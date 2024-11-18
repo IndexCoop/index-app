@@ -4,7 +4,7 @@ import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-format
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatAmount, formatDollarAmount, formatWei } from '@/lib/utils'
 
-import { useYieldContext } from './provider'
+import { useEarnContext } from './provider'
 import { BaseTokenStats } from './types'
 
 export interface FormattedLeverageData {
@@ -41,7 +41,7 @@ export function useFormattedLeverageData(
     inputValue,
     isFetchingQuote,
     quoteResult,
-  } = useYieldContext()
+  } = useEarnContext()
 
   const {
     balance,

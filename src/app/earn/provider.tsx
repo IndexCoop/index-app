@@ -62,7 +62,7 @@ interface Context {
   toggleIsMinting: () => void
 }
 
-export const YieldContext = createContext<Context>({
+export const EarnContext = createContext<Context>({
   inputValue: '',
   isMinting: true,
   balances: [],
@@ -90,7 +90,7 @@ export const YieldContext = createContext<Context>({
   toggleIsMinting: () => {},
 })
 
-export const useYieldContext = () => useContext(YieldContext)
+export const useEarnContext = () => useContext(EarnContext)
 
 const defaultParams = {
   isMinting: true,
@@ -98,7 +98,7 @@ const defaultParams = {
   outputToken: HighYieldETHIndex,
 }
 
-export function YieldProvider(props: { children: any }) {
+export function EarnProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { chainId: chainIdRaw, switchChain } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
@@ -444,7 +444,7 @@ export function YieldProvider(props: { children: any }) {
   ])
 
   return (
-    <YieldContext.Provider
+    <EarnContext.Provider
       value={{
         inputValue,
         isMinting,
@@ -474,7 +474,7 @@ export function YieldProvider(props: { children: any }) {
       }}
     >
       {props.children}
-    </YieldContext.Provider>
+    </EarnContext.Provider>
   )
 }
 

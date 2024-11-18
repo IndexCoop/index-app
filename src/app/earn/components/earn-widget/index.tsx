@@ -3,9 +3,9 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
-import { Summary } from '@/app/yield/components/yield-widget/components/summary'
-import { supportedNetworks } from '@/app/yield/constants'
-import { useYieldContext } from '@/app/yield/provider'
+import { Summary } from '@/app/earn/components/earn-widget/components/summary'
+import { supportedNetworks } from '@/app/earn/constants'
+import { useEarnContext } from '@/app/earn/provider'
 import { Receive } from '@/components/receive'
 import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
 import { SmartTradeButton } from '@/components/smart-trade-button'
@@ -27,7 +27,7 @@ import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
-export function YieldWidget() {
+export function EarnWidget() {
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
@@ -47,7 +47,7 @@ export function YieldWidget() {
     outputToken,
     reset,
     toggleIsMinting,
-  } = useYieldContext()
+  } = useEarnContext()
 
   const {
     contract,
@@ -82,7 +82,7 @@ export function YieldWidget() {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
-    <div className='yield-widget flex h-fit flex-col gap-3 rounded-3xl px-4 py-6'>
+    <div className='earn-widget flex h-fit flex-col gap-3 rounded-3xl px-4 py-6'>
       <TokenDisplay mini token={indexToken} />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector
