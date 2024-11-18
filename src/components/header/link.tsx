@@ -16,7 +16,7 @@ export function HeaderLink({ href, label }: Props) {
   const pathname = usePathname()
   const { logEvent } = useAnalytics()
   const isActive =
-    href === Path.TRADE ? pathname.startsWith(href) : pathname === href
+    href === Path.SWAP ? pathname.startsWith(href) : pathname === href
   return (
     <Link
       className={clsx(

@@ -14,7 +14,7 @@ import { HeaderLink } from './link'
 import { Logo } from './logo'
 
 const navigation = [
-  { name: 'Trade', href: Path.TRADE },
+  { name: 'Trade', href: Path.SWAP },
   { name: 'Products', href: Path.PRODUCTS },
   { name: 'Leverage', href: Path.LEVERAGE },
   { name: 'Presales', href: Path.PRESALES },

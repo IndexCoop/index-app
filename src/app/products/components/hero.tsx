@@ -20,7 +20,7 @@ export function Hero() {
       </h3>
       <Link
         className='bg-ic-blue-500 text-ic-white hover:bg-ic-blue-400 rounded-lg px-11 py-3'
-        href={Path.TRADE}
+        href={Path.SWAP}
         onClick={() =>
           logEvent('Trade Now Button Clicked', { context: 'Hero' })
         }

@@ -5,5 +5,5 @@ export enum Path {
   PRESALES = '/presales',
   PRODUCTS = '/products',
   PRT_STAKING = '/prt-staking',
-  TRADE = '/swap',
+  SWAP = '/swap',
 }
