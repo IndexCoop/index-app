@@ -31,7 +31,7 @@ export function Header() {
   return (
     <header className='bg-ic-white dark:bg-ic-blue-950 shadow-ic-black/15 opacity-[.96] shadow-md backdrop-blur'>
       <nav
-        className='mx-auto flex items-center justify-between p-6 lg:px-8'
+        className='mx-auto flex items-center justify-between px-6 py-2 lg:px-8 lg:py-3'
         aria-label='Global'
       >
         <div className='flex lg:pr-8'>

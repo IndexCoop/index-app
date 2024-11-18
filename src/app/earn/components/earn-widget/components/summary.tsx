@@ -39,7 +39,7 @@ export function Summary() {
   } = useFormattedLeverageData(stats)
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
-    <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
+    <Disclosure as='div' className='rounded-lg border border-[#3A6060]'>
       {({ open }) => (
         <div className='p-4'>
           <dt>
