@@ -17,7 +17,7 @@ export const darkTheme = buildChartTheme({
 
 export const lightTheme = buildChartTheme({
   backgroundColor: '#F7F8F8',
-  colors: ['#15CDD1'],
+  colors: ['#44d7d7'],
   xAxisLineStyles: { color: '#627171' },
   yAxisLineStyles: { color: '#627171' },
   xTickLineStyles: { color: '#627171' },
