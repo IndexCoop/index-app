@@ -22,7 +22,7 @@ export const mapQuoteToTrade = (
   inputTokenAddress: quote.inputToken.address!,
   inputTokenSymbol: quote.inputToken.symbol,
   inputTokenUnits: formatUnits(
-    quote.inputTokenAmount.toBigInt(),
+    quote.inputTokenAmount,
     quote.inputToken.decimals,
   ),
   inputTokenAmountWei: quote.inputTokenAmount.toString(),
@@ -31,7 +31,7 @@ export const mapQuoteToTrade = (
   outputTokenAddress: quote.outputToken.address!,
   outputTokenSymbol: quote.outputToken.symbol,
   outputTokenUnits: formatUnits(
-    quote.outputTokenAmount.toBigInt(),
+    quote.outputTokenAmount,
     quote.outputToken.decimals,
   ),
   outputTokenAmountWei: quote.outputTokenAmount.toString(),
