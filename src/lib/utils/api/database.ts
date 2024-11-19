@@ -13,7 +13,7 @@ export const mapQuoteToTrade = (
   chainId: quote.chainId,
   from: quote.tx.from ?? null,
   to: quote.tx.to ?? null,
-  quoteType: quote.type,
+  quoteType: quote.type === 'index' ? 'swap' : quote.type,
   gasUnits: quote.gas.toString(),
   gasPrice: quote.gasPrice.toString(),
   gasCost: quote.gasCosts.toString(),
@@ -41,6 +41,6 @@ export const mapQuoteToTrade = (
   transactionType: quote.isMinting ? 'buy' : 'sell',
   mintFee: '',
   redeemFee: '',
-  refId: null,
+  refId: 'indexcoop', // TODO: if we have a refId as a queryParam or any other way, set it here.
   createdAt: new Date(),
 })
