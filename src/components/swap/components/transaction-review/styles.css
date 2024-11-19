@@ -1,5 +1,5 @@
 .review {
-  border: 1px solid #006a71 !important;
+  border: 1px solid #006a71;
   background: linear-gradient(
       210deg,
       rgba(243, 255, 239, 0.08) -24.93%,
@@ -11,6 +11,6 @@
       rgba(0, 249, 228, 0.15) -6.53%,
       rgba(212, 0, 216, 0.15) 183.55%
     ),
-    linear-gradient(195deg, #143438 -23.15%, #052629 227.79%) !important;
-  box-shadow: 2px 2px 1px 0px rgba(5, 172, 175, 0.49) inset !important;
+    linear-gradient(195deg, #143438 -23.15%, #052629 227.79%);
+  box-shadow: 2px 2px 1px 0px rgba(5, 172, 175, 0.49) inset;
 }

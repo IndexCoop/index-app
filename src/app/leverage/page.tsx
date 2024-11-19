@@ -1,6 +1,6 @@
 'use client'
 
-import { useDisclosure } from '@chakra-ui/react'
+import { useColorMode, useDisclosure } from '@chakra-ui/react'
 import { PopupButton } from '@typeform/embed-react'
 import { Suspense, useEffect, useState } from 'react'
 
@@ -33,6 +33,13 @@ export default function Page() {
   const { baseToken, baseTokens, indexToken, nav, onSelectBaseToken } =
     useLeverageToken()
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
+  const { colorMode, toggleColorMode } = useColorMode()
+
+  useEffect(() => {
+    if (colorMode === 'light') {
+      toggleColorMode()
+    }
+  }, [colorMode, toggleColorMode])
 
   useEffect(() => {
     document.body.classList.add('dark', 'bg-ic-dark')
