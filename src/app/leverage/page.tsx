@@ -39,6 +39,12 @@ export default function Page() {
     if (colorMode === 'light') {
       toggleColorMode()
     }
+
+    return () => {
+      if (colorMode === 'dark') {
+        toggleColorMode()
+      }
+    }
   }, [colorMode, toggleColorMode])
 
   useEffect(() => {
