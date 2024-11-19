@@ -13,7 +13,6 @@ import { SelectTokenModal } from '@/components/swap/components/select-token-moda
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { EarnWidget } from './components/earn-widget'
-import { FaqSection } from './components/faq-section'
 import { QuickStats } from './components/quick-stats'
 import { Title } from './components/title'
 
@@ -63,7 +62,6 @@ export default function Page() {
             </Suspense>
           </div>
         </div>
-        <FaqSection />
       </div>
       <SelectTokenModal
         isDarkMode={true}
