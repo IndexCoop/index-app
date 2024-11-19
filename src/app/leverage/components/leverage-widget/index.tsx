@@ -94,7 +94,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
 
   return (
     <div
-      className='widget flex flex-col gap-3 rounded-3xl p-6'
+      className='leverage-widget flex flex-col gap-3 rounded-3xl p-6'
       id='close-position-scroll'
     >
       <BaseTokenSelector
