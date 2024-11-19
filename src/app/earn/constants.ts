@@ -18,6 +18,7 @@ export const yieldTokens = [
   DiversifiedStakedETHIndex,
 ]
 
+// TODO: Use new tokenlists
 export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
@@ -30,6 +31,7 @@ export function getCurrencyTokens(chainId: number): Token[] {
   }
 }
 
+// TODO: Use new tokenlists
 export function getYieldTokens(chainId: number): Token[] {
   const tokens: (Token | null)[] = yieldTokens.map((token) => {
     const address = getAddressForToken(token, chainId)
