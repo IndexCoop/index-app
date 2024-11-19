@@ -3,7 +3,7 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { PeriodSelector } from '@/components/charts/period-selector'
 import PriceXYChart from '@/components/charts/price-xy-chart'
 import { useChartData } from '@/components/charts/use-chart-data'
-import { MAINNET } from '@/constants/chains'
+import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { formatDollarAmount } from '@/lib/utils'
@@ -18,7 +18,7 @@ type Props = {
 export function PriceChart({ indexToken, isFetchingStats, nav }: Props) {
   const { chainId } = useNetwork()
   const tokenAddress = getTokenByChainAndSymbol(
-    chainId ?? MAINNET.chainId,
+    chainId ?? ARBITRUM.chainId,
     indexToken.symbol,
   )?.address
   const { historicalData, selectedPeriod, setSelectedPeriod } = useChartData(
