@@ -53,7 +53,7 @@ const nextConfig = {
       },
       {
         source: '/',
-        destination: '/swap',
+        destination: '/products',
         permanent: true,
       },
       {
