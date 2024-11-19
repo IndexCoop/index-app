@@ -2,5 +2,4 @@
 // export const isFeatureEnabled = () =>
 //   process.env.NEXT_PUBLIC_VERCEL_ENV !== 'index-app-prod'
 
-export const isEarnPageEnabled = () =>
-  process.env.NEXT_PUBLIC_VERCEL_ENV !== 'index-app-prod'
+export const isEarnPageEnabled = () => false
