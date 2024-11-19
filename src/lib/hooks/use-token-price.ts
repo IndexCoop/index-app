@@ -1,7 +1,7 @@
 import { getChainTokenList } from '@indexcoop/tokenlists'
 import { useEffect, useState } from 'react'
 
-import { ETH, Token } from '@/constants/tokens'
+import { DATA, ETH, GmiIndex, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
 import { NavProvider } from '@/lib/utils/api/nav'
@@ -30,9 +30,13 @@ export const getTokenPrice = async (
   const tokenAddress = getAddressForToken(token, chainId)
   if (!tokenAddress || !chainId) return 0
   const productTokensList = getChainTokenList(chainId, ['product'])
-  const isIndexToken = productTokensList.some(
+  let isIndexToken = productTokensList.some(
     ({ address }) => address === tokenAddress,
   )
+  if (token.symbol === DATA.symbol || token.symbol === GmiIndex.symbol) {
+    // Force using Coingecko for this deprecated indices
+    isIndexToken = false
+  }
   if (isIndexToken) {
     const navProvider = new NavProvider()
     const price = await navProvider.getNavPrice(token.symbol, chainId)

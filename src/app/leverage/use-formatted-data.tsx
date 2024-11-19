@@ -54,7 +54,7 @@ export function useFormattedLeverageData(
   const contract = useMemo(() => quote?.contract ?? null, [quote])
 
   const inputAmount = quote?.inputTokenAmount
-    ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount.toBigInt(), quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
+    ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount, quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`
     : ''
   const inputAmoutUsd = quote?.inputTokenAmountUsd
     ? `$${formatAmount(quote?.inputTokenAmountUsd)}`
@@ -68,7 +68,7 @@ export function useFormattedLeverageData(
   const ouputAmount = useMemo(() => {
     if (inputValue === '') return ''
     return quote?.outputTokenAmount
-      ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount.toBigInt(), quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
+      ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount, quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
       : ''
   }, [inputValue, quote])
   const outputAmountUsd = quote?.outputTokenAmountUsd
@@ -79,7 +79,7 @@ export function useFormattedLeverageData(
     forceRefetchInputBalance()
   }
 
-  const gasCosts = quote?.gasCosts.toBigInt()
+  const gasCosts = quote?.gasCosts
   let gasFeesEth = ''
   if (gasCosts) {
     gasFeesEth =

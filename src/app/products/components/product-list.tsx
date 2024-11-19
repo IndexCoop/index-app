@@ -19,6 +19,8 @@ export function ProductList() {
   const sortDirection = searchParams.get('dir') ?? SortDirection.DESC
 
   const { data: products, isFetching } = useQuery({
+    gcTime: 5 * 60 * 1000, // 5 mins
+    refetchOnWindowFocus: false,
     initialData: [] as any[],
     queryKey: ['product-list', sortBy, sortDirection],
     queryFn: async () => {

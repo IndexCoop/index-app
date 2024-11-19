@@ -102,8 +102,8 @@ export const useTrade = () => {
         setIsTransacting(false)
         callback?.({ address, hash, quote })
       } catch (error) {
-        console.log('Override?', override)
-        console.log('Error sending transaction', error)
+        console.info('Override?', override)
+        console.warn('Error sending transaction', error)
         setIsTransacting(false)
         if (
           error instanceof GasEstimatooorFailedError &&

@@ -68,12 +68,12 @@ export function useTransactionReview(props: ReviewProps) {
   )
 
   const formattedInputTokenAmount = formatAmountFromWei(
-    transactionReview.inputTokenAmount.toBigInt(),
+    transactionReview.inputTokenAmount,
     transactionReview.inputToken.decimals,
     decimals,
   )
   const formattedOutputTokenAmount = formatAmountFromWei(
-    transactionReview.outputTokenAmount.toBigInt(),
+    transactionReview.outputTokenAmount,
     transactionReview.outputToken.decimals,
     decimals,
   )

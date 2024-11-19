@@ -1,4 +1,4 @@
-import { PopulatedTransaction } from 'ethers'
+import { QuoteTransaction } from '@/lib/hooks/use-best-quote/types'
 
 export class TxSimulator {
   /**
@@ -49,14 +49,14 @@ export class TxSimulator {
    * @param tx A PopulatedTransaction to be simulated on the specified chain.
    * @returns A boolean whether the simulation was successful.
    */
-  async simulate(tx: PopulatedTransaction): Promise<boolean> {
+  async simulate(tx: QuoteTransaction): Promise<boolean> {
     const apiUrl = `https://api.tenderly.co/api/v1/account/${this.user}/project/${this.project}/simulate`
     const body = {
       network_id: tx.chainId ?? 1,
       from: tx.from,
       to: tx.to,
       input: tx.data,
-      gas: tx.gasLimit?.toNumber() ?? 0,
+      gas: Number(tx.gas),
       gas_price: 0,
       value: tx.value?.toString() ?? '0',
       access_list: [],

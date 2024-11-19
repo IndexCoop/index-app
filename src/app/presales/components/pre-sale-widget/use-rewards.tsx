@@ -22,7 +22,7 @@ export function usePrtRewards(
       )
       setEarnedRewards(res.cumulative_rewards)
     } catch (err) {
-      console.log('Error fetching prt rewards', err)
+      console.warn('Error fetching prt rewards', err)
     }
   }, [address, tokenAddress])
 
