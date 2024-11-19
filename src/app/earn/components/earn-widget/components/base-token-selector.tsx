@@ -8,12 +8,15 @@ type BaseTokenSelectorProps = {
   onClick: () => void
 }
 
-export function BaseTokenSelector(props: BaseTokenSelectorProps) {
-  const { image, symbol } = props.baseToken
+export function BaseTokenSelector({
+  baseToken,
+  onClick,
+}: BaseTokenSelectorProps) {
+  const { image, symbol } = baseToken
   return (
     <div
       className='flex cursor-pointer flex-row items-center py-2'
-      onClick={props.onClick}
+      onClick={onClick}
     >
       <Image alt={`${symbol} logo`} src={image} width={24} height={24} />
       <span className='text-ic-white mx-1 text-xl font-medium'>{symbol}</span>
