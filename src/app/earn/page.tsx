@@ -64,9 +64,8 @@ export default function Page() {
         </div>
       </div>
       <SelectTokenModal
-        isDarkMode={true}
         isOpen={isSelectBaseTokenOpen}
-        showBalances={false}
+        showBalances
         onClose={onCloseSelectBaseToken}
         onSelectedToken={() => {}}
         address={address}
