@@ -33,13 +33,13 @@ export function ChartTabs({ currentTab, setCurrentTab }: Props) {
         <button
           key={tab.name}
           className={cn(
-            'text-ic-gray-500 relative flex-1 px-4 py-4 text-center text-sm font-bold',
+            'text-ic-gray-500 relative flex-1 px-4 py-3 text-center text-sm font-medium',
             {
               'border-ic-gray-200 border-r-2': tabIdx === 0,
               'border-ic-gray-200 border-l-2': tabIdx === tabs.length - 1,
             },
             tab.name === currentTab &&
-              'outline-ic-gray-500 z-10 rounded-lg border-transparent bg-[#F0FEFF] outline outline-2',
+              'outline-ic-gray-500 z-10 rounded-lg border-transparent bg-[#F0FEFF] outline',
           )}
           onClick={() => handleClick(tab)}
         >
