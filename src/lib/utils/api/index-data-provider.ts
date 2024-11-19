@@ -83,25 +83,27 @@ export async function fetchTokenMetrics({
 
 export async function fetchTokenHistoricalData({
   tokenAddress,
+  metrics = ['nav'],
   interval = 'minute',
   period = 'day',
 }: {
   tokenAddress: string
+  metrics?: IndexDataMetric[]
   interval?: IndexDataInterval
   period?: IndexDataPeriod
 }) {
   const url = formatUrl({
     tokenAddress,
-    metrics: ['nav'],
+    metrics,
     interval,
     period,
   })
   try {
     const res = await fetch(url)
-    const json = (await res.json()) as Pick<
-      IndexData,
-      'NetAssetValue' | 'CreatedTimestamp'
-    >[]
+    const json = (await res.json()) as (IndexData & {
+      CreatedTimestamp: string
+    })[]
+
     return json
   } catch (error) {
     console.error(`Error fetching token historical data: ${url}`, error)

@@ -3,8 +3,9 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
-import { supportedNetworks } from '@/app/leverage/constants'
-import { useLeverageToken } from '@/app/leverage/provider'
+import { Summary } from '@/app/earn/components/earn-widget/components/summary'
+import { supportedNetworks } from '@/app/earn/constants'
+import { useEarnContext } from '@/app/earn/provider'
 import { Receive } from '@/components/receive'
 import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
 import { SmartTradeButton } from '@/components/smart-trade-button'
@@ -13,6 +14,7 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
+import { TokenDisplay } from '@/components/token-display'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -21,44 +23,31 @@ import { chains } from '@/lib/utils/wagmi'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
-import { BaseTokenSelector } from './components/base-token-selector'
-import { Fees } from './components/fees'
-import { LeverageSelector } from './components/leverage-selector'
-import { Summary } from './components/summary'
-
 import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
-type LeverageWidgetProps = {
-  onClickBaseTokenSelector: () => void
-}
-
-export function LeverageWidget(props: LeverageWidgetProps) {
+export function EarnWidget() {
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
-    baseToken,
+    indexToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
     inputValue,
     isMinting,
-    costOfCarry,
-    leverageType,
     outputTokens,
     stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
-    onSelectLeverageType,
     onSelectOutputToken,
     outputToken,
     reset,
-    supportedLeverageTypes,
     toggleIsMinting,
-  } = useLeverageToken()
+  } = useEarnContext()
 
   const {
     contract,
@@ -93,20 +82,9 @@ export function LeverageWidget(props: LeverageWidgetProps) {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
-    <div
-      className='leverage-widget flex flex-col gap-3 rounded-3xl p-6'
-      id='close-position-scroll'
-    >
-      <BaseTokenSelector
-        baseToken={baseToken}
-        onClick={props.onClickBaseTokenSelector}
-      />
+    <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6'>
+      <TokenDisplay mini token={indexToken} />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
-      <LeverageSelector
-        selectedTye={leverageType}
-        supportedTypes={supportedLeverageTypes}
-        onSelectType={onSelectLeverageType}
-      />
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={inputBalanceFormatted}
@@ -125,7 +103,6 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
-      <Fees costOfCarry={costOfCarry} leverageType={leverageType} />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={false}
@@ -146,9 +123,8 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         onRefetchQuote={() => {}}
       />
       <SelectTokenModal
-        isDarkMode={true}
         isOpen={isSelectInputTokenOpen}
-        showBalances={true}
+        showBalances={false}
         onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol) => {
           onSelectInputToken(tokenSymbol)
@@ -158,7 +134,6 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         tokens={inputTokens}
       />
       <SelectTokenModal
-        isDarkMode={true}
         isOpen={isSelectOutputTokenOpen}
         onClose={onCloseSelectOutputToken}
         onSelectedToken={(tokenSymbol) => {

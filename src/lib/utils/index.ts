@@ -65,12 +65,12 @@ export const formatAmount = (amount: number, digits: number = 2) =>
 
 export const formatDollarAmount = (
   amount: number | null | undefined,
-  isCompact: boolean = false,
+  hideZeroAmount: boolean = false,
 ) => {
   if (amount === null || amount === undefined) return ''
+  if (amount === 0 && hideZeroAmount) return ''
 
   return Intl.NumberFormat('en', {
-    notation: isCompact ? 'compact' : undefined,
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,

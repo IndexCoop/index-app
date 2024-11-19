@@ -1,29 +1,29 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
+import { formatTvl } from '@/app/products/utils/formatters'
 import { PeriodSelector } from '@/components/charts/period-selector'
-import PriceXYChart from '@/components/charts/price-xy-chart'
+import TvlXyChart from '@/components/charts/tvl-xy-chart'
 import { useChartData } from '@/components/charts/use-chart-data'
-import { ARBITRUM } from '@/constants/chains'
+import { MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { formatDollarAmount } from '@/lib/utils'
 import { cn } from '@/lib/utils/tailwind'
 
 type Props = {
   indexToken: Token
   isFetchingStats?: boolean
-  nav: number | null
+  tvl: number | null
 }
 
-export function PriceChart({ indexToken, isFetchingStats, nav }: Props) {
+export function TvlChart({ indexToken, isFetchingStats = false, tvl }: Props) {
   const { chainId } = useNetwork()
   const tokenAddress = getTokenByChainAndSymbol(
-    chainId ?? ARBITRUM.chainId,
+    chainId ?? MAINNET.chainId,
     indexToken.symbol,
   )?.address
   const { historicalData, selectedPeriod, setSelectedPeriod } = useChartData(
     tokenAddress,
-    'nav',
+    'pav',
   )
 
   return (
@@ -32,12 +32,12 @@ export function PriceChart({ indexToken, isFetchingStats, nav }: Props) {
         <div
           className={cn(
             'basis-1/2 self-center text-lg font-semibold md:basis-1/4 md:text-2xl',
-            nav === null &&
+            tvl === null &&
               isFetchingStats &&
               'bg-ic-gray-200 h-[18px] animate-pulse rounded-md text-opacity-0 md:h-8',
           )}
         >
-          {formatDollarAmount(nav, true)}
+          {formatTvl(tvl)}
         </div>
         <PeriodSelector
           selectedPeriod={selectedPeriod}
@@ -45,10 +45,10 @@ export function PriceChart({ indexToken, isFetchingStats, nav }: Props) {
         />
       </div>
       <div className='block h-full w-full dark:hidden'>
-        <PriceXYChart data={historicalData} selectedPeriod={selectedPeriod} />
+        <TvlXyChart data={historicalData} selectedPeriod={selectedPeriod} />
       </div>
       <div className='hidden h-full w-full dark:block'>
-        <PriceXYChart
+        <TvlXyChart
           data={historicalData}
           selectedPeriod={selectedPeriod}
           isDark={true}

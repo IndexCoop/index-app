@@ -116,12 +116,12 @@ describe('formatDollarAmount', () => {
     const value = formatDollarAmount(0)
     expect(value).toStrictEqual('$0.00')
   })
+  it('should display empty string when hideZeroAmount is true', () => {
+    const value = formatDollarAmount(0, true)
+    expect(value).toStrictEqual('')
+  })
   it('should display correct formatting for number input', () => {
     const value = formatDollarAmount(120123.45)
     expect(value).toStrictEqual('$120,123.45')
-  })
-  it('should display correct formatting for number input with compact mode', () => {
-    const value = formatDollarAmount(120123.45, true)
-    expect(value).toStrictEqual('$120.12K')
   })
 })
