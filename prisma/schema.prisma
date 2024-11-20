@@ -48,10 +48,11 @@ model Trade {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model User {
-  address                 String                    @id @unique
-  last_connected          DateTime?                 @db.Timestamptz(6)
-  Trade                   Trade[]
-  UserLifetimePerformance UserLifetimePerformance[]
+  address                                String                                   @id
+  last_connected                         DateTime?                                @db.Timestamptz(6)
+  Trade                                  Trade[]
+  UserLifetimePerformance                UserLifetimePerformance[]
+  UserLifetimePerformanceMonthlySnapshot UserLifetimePerformanceMonthlySnapshot[]
 }
 
 model UserLifetimePerformance {
@@ -73,7 +74,7 @@ model UserLifetimePerformance {
   totalRealizedGainLossUsd Float  @default(0)
   User                     User   @relation(fields: [userAddress], references: [address], onDelete: NoAction, onUpdate: NoAction, map: "userlifetimeperformance_useraddress_fkey")
 
-  @@id([userAddress, tokenAddress])
+  @@id([userAddress, tokenAddress, chainId])
   @@index([tokenAddress], map: "idx_token_address")
   @@index([userAddress], map: "idx_user_address")
 }
@@ -96,4 +97,27 @@ model Referrals {
   updatedAt DateTime? @default(now()) @db.Timestamp(6)
   ApiKey    ApiKey[]
   Trade     Trade[]
+}
+
+model UserLifetimePerformanceMonthlySnapshot {
+  snapshotDate                    DateTime @db.Date
+  userAddress                     String
+  tokenAddress                    String
+  tokenSymbol                     String
+  chainId                         Int
+  monthlyTotalSells               Int      @default(0)
+  monthlyTotalBuys                Int      @default(0)
+  monthlyTotalTrades              Int      @default(0)
+  monthlyTotalGasCostUsd          Float    @default(0)
+  monthlyTotalBoughtUsd           Float    @default(0)
+  monthlyTotalBoughtUnits         Float    @default(0)
+  monthlyTotalSoldUsd             Float    @default(0)
+  monthlyTotalSoldUnits           Float    @default(0)
+  monthlyAverageCostPerUnitUsd    Float?
+  monthlyAverageReturnPerUnitUsd  Float?
+  monthlyAverageSlippage          Float?
+  monthlyTotalRealizedGainLossUsd Float    @default(0)
+  User                            User     @relation(fields: [userAddress], references: [address], onDelete: Cascade, onUpdate: NoAction, map: "userlifetimeperformancemonthlysnapshot_useraddress_fkey")
+
+  @@id([snapshotDate, userAddress, tokenAddress, chainId])
 }
