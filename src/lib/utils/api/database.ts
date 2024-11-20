@@ -39,8 +39,8 @@ export const mapQuoteToTrade = (
   outputTokenPriceUsd: quote.outputTokenPrice,
   slippage: quote.slippage,
   transactionType: quote.isMinting ? 'buy' : 'sell',
-  mintFee: '',
-  redeemFee: '',
+  mintFee: 'THIS WILL COME FROM THE QUOTE',
+  redeemFee: 'THIS WILL COME FROM THE QUOTE',
   refId: 'indexcoop', // TODO: if we have a refId as a queryParam or any other way, set it here.
   createdAt: new Date(),
 })
