@@ -23,7 +23,7 @@ export function BaseTokenSelector({
         {symbol}
       </span>
       <ChevronDownIcon
-        className='dark:fill-ic-white fill-ic-black'
+        className='dark:text-ic-white text-ic-black'
         w={6}
         h={6}
       />
