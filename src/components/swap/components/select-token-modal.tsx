@@ -49,7 +49,7 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
         <ModalHeader className='text-ic-black dark:text-ic-white'>
           Select a token
         </ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton className='text-ic-black dark:text-ic-white' />
         <ModalBody className='px-0 py-4'>
           {showBalances && (
             <div className='flex w-full justify-end pr-4'>

@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from '@chakra-ui/icons'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 
 import { Token } from '@/constants/tokens'
@@ -22,11 +22,7 @@ export function BaseTokenSelector({
       <span className='text-ic-black dark:text-ic-white mx-1 text-xl font-medium'>
         {symbol}
       </span>
-      <ChevronDownIcon
-        className='dark:text-ic-white text-ic-black'
-        w={6}
-        h={6}
-      />
+      <ChevronDownIcon className='dark:text-ic-white text-ic-black size-6' />
     </div>
   )
 }
