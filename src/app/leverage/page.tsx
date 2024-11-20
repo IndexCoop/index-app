@@ -72,7 +72,7 @@ export default function Page() {
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
               <Stats />
-              <div className='flex h-full min-h-[360px] flex-col'>
+              <div className='flex h-[320px] flex-col md:h-[390px] lg:h-[514px]'>
                 {currentTab === 'indexcoop-chart' ? (
                   <PriceChart indexToken={indexToken} nav={nav} />
                 ) : (
