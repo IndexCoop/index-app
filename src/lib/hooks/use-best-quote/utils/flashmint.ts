@@ -2,7 +2,7 @@ import { Hex } from 'viem'
 
 import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import { Token } from '@/constants/tokens'
-import { formatWei } from '@/lib/utils'
+import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
