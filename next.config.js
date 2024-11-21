@@ -56,11 +56,11 @@ const nextConfig = {
         destination: '/swap',
         permanent: true,
       },
-      {
-        source: '/earn',
-        destination: '/swap',
-        permanent: true,
-      },
+      // {
+      //   source: '/earn',
+      //   destination: '/swap',
+      //   permanent: true,
+      // },
       {
         source: '/(B|b)(E|e)(D|d)',
         destination: '/swap',
