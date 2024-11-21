@@ -1,7 +1,8 @@
+import { isAddressEqual } from '@indexcoop/tokenlists'
 import { Hex } from 'viem'
 
 import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
-import { Token } from '@/constants/tokens'
+import { ICUSD, Token } from '@/constants/tokens'
 import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
@@ -64,6 +65,10 @@ async function getEnhancedFlashMintQuote(
       request.inputAmount = indexTokenAmount.toString()
     }
 
+    if (isMinting && isAddressEqual(outputToken.address, ICUSD.address)) {
+      // icUSD routing requires to set the input amount as well.
+      request.inputAmount = inputTokenAmount.toString()
+    }
     const response = await fetch('/api/quote', {
       method: 'POST',
       body: JSON.stringify(request),
