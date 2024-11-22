@@ -12,11 +12,15 @@ export enum ProductTheme {
   METAVERSE = 'Metaverse',
 }
 
+export type ProductListType = 'Earn' | 'Strategies'
+
 export type ProductRow = {
+  address?: string
   hasApy: boolean
   image?: string
   symbol?: string
   name?: string
+  listType: ProductListType
   type: ProductType
   theme: ProductTheme
   price?: number
