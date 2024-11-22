@@ -57,8 +57,9 @@ export async function POST(req: NextRequest) {
     const inputToken = getQuoteToken(inputTokenAddress, chainId)
     const outputToken = getQuoteToken(outputTokenAddress, chainId)
     const isMintingIcUsd = outputToken?.quoteToken.symbol === 'icUSD'
+    const isRedeemingIcUsd = inputToken?.quoteToken.symbol === 'icUSD'
 
-    if (!isMintingIcUsd && inputAmount && outputAmount) {
+    if (!isMintingIcUsd && !isRedeemingIcUsd && inputAmount && outputAmount) {
       return BadRequest('You can only set `inputAmount` or outputAmount`.')
     }
 
@@ -88,7 +89,7 @@ export async function POST(req: NextRequest) {
       ),
       slippage,
     }
-    if (isMintingIcUsd) {
+    if (isMintingIcUsd || isRedeemingIcUsd) {
       quoteRequest.inputTokenAmount =
         BigNumber.from(inputAmount) ?? BigNumber.from(0)
     }

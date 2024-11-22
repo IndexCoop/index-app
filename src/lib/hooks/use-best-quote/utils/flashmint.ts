@@ -65,7 +65,10 @@ async function getEnhancedFlashMintQuote(
       request.inputAmount = indexTokenAmount.toString()
     }
 
-    if (isMinting && isAddressEqual(outputToken.address, ICUSD.address)) {
+    if (
+      (isMinting && isAddressEqual(outputToken.address, ICUSD.address)) ||
+      (!isMinting && isAddressEqual(inputToken.address, ICUSD.address))
+    ) {
       // icUSD routing requires to set the input amount as well.
       request.inputAmount = inputTokenAmount.toString()
     }
