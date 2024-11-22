@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import dayjs from 'dayjs'
 import { useState } from 'react'
 import { isAddress } from 'viem'
 
@@ -21,27 +22,33 @@ const fetchSettingsByPeriod: {
   [k in ChartPeriod]: {
     interval: IndexDataInterval
     period: IndexDataPeriod
+    sample: number
   }
 } = {
   [ChartPeriod.Hour]: {
     interval: 'minute',
     period: 'hour',
+    sample: 1,
   },
   [ChartPeriod.Day]: {
-    interval: 'hour',
+    interval: 'minute',
     period: 'day',
+    sample: 10,
   },
   [ChartPeriod.Week]: {
     interval: 'hour',
     period: 'week',
+    sample: 1,
   },
   [ChartPeriod.Month]: {
-    interval: 'daily',
+    interval: 'hour',
     period: 'month',
+    sample: 4,
   },
   [ChartPeriod.Year]: {
     interval: 'daily',
     period: 'year',
+    sample: 1,
   },
 }
 
@@ -82,7 +89,7 @@ export function useChartData(
       selectedPeriod,
     ],
     queryFn: async () => {
-      const fetchSettings = fetchSettingsByPeriod[selectedPeriod]
+      const { sample, ...fetchSettings } = fetchSettingsByPeriod[selectedPeriod]
       const data = await fetchTokenHistoricalData({
         metrics: [metric],
         tokenAddress: indexTokenAddress!,
@@ -90,11 +97,24 @@ export function useChartData(
       })
 
       const formattedData = formatData(data ?? [], metric)
-      const historicalData = formattedData.sort(
-        (a, b) =>
-          new Date(a.CreatedTimestamp).getTime() -
-          new Date(b.CreatedTimestamp).getTime(),
-      )
+      const historicalData = formattedData
+        .sort(
+          (a, b) =>
+            new Date(a.CreatedTimestamp).getTime() -
+            new Date(b.CreatedTimestamp).getTime(),
+        )
+        .filter((item) => {
+          if (sample === 1) return true
+          if (fetchSettings.interval === 'minute') {
+            const minute = dayjs(item.CreatedTimestamp).minute()
+            return minute % sample === 0
+          }
+          if (fetchSettings.interval === 'hour') {
+            const hour = dayjs(item.CreatedTimestamp).hour()
+            return hour % sample === 0
+          }
+          return false
+        })
 
       // Explicitly using setState to avoid data being set to []
       // when the loading starts - too much jank.
