@@ -124,7 +124,6 @@ export function EarnWidget() {
       />
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
-        showBalances={false}
         onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol) => {
           onSelectInputToken(tokenSymbol)
