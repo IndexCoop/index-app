@@ -439,9 +439,10 @@ export const RealWorldAssetIndex: Token = {
   url: 'rwa',
 }
 
-const icUSDTokenData = getTokenByChainAndSymbol(mainnet.id, 'icUSD')
+const icUSDTokenData = getTokenByChainAndSymbol(base.id, 'icUSD')
 export const ICUSD: Token = {
   ...icUSDTokenData,
+  image: icUSDTokenData.logoURI,
   // Random for now - as no listing
   coingeckoId: 'icusd',
   fees: {
@@ -449,7 +450,6 @@ export const ICUSD: Token = {
     mintFee: '0.10%',
     redeemFee: '0.10%',
   },
-  image: icUSDTokenData.logoURI,
   indexTypes: [IndexType.thematic],
   isDangerous: true,
   url: 'icusd',

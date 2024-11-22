@@ -1,6 +1,7 @@
 import {
   EthAddress,
   FlashMintQuoteProvider,
+  FlashMintQuoteRequest,
   QuoteToken,
 } from '@indexcoop/flash-mint-sdk'
 import {
@@ -53,12 +54,14 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    if (inputAmount && outputAmount) {
-      return BadRequest('You can only set `inputAmount` or outputAmount`.')
-    }
-
     const inputToken = getQuoteToken(inputTokenAddress, chainId)
     const outputToken = getQuoteToken(outputTokenAddress, chainId)
+    const isMintingIcUsd = outputToken?.quoteToken.symbol === 'icUSD'
+    const isRedeemingIcUsd = inputToken?.quoteToken.symbol === 'icUSD'
+
+    if (!isMintingIcUsd && !isRedeemingIcUsd && inputAmount && outputAmount) {
+      return BadRequest('You can only set `inputAmount` or outputAmount`.')
+    }
 
     if (
       !inputToken ||
@@ -77,7 +80,7 @@ export async function POST(req: NextRequest) {
     )
 
     const isMinting = outputToken.isIndex
-    const quote = await quoteProvider.getQuote({
+    const quoteRequest: FlashMintQuoteRequest = {
       isMinting,
       inputToken: inputToken.quoteToken,
       outputToken: outputToken.quoteToken,
@@ -85,7 +88,13 @@ export async function POST(req: NextRequest) {
         isMinting ? outputAmount! : inputAmount!,
       ),
       slippage,
-    })
+    }
+    if (isMintingIcUsd || isRedeemingIcUsd) {
+      quoteRequest.inputTokenAmount =
+        BigNumber.from(inputAmount) ?? BigNumber.from(0)
+    }
+
+    const quote = await quoteProvider.getQuote(quoteRequest)
 
     if (!quote) {
       return NextResponse.json({ message: 'No quote found.' }, { status: 404 })
