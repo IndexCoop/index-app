@@ -4,6 +4,7 @@ import {
   ETH,
   HighYieldETHIndex,
   icETHIndex,
+  ICUSD,
   Token,
   USDC,
   USDT,
@@ -13,6 +14,7 @@ import {
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 export const yieldTokens = [
+  ICUSD,
   HighYieldETHIndex,
   icETHIndex,
   DiversifiedStakedETHIndex,
