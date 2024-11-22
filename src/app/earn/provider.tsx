@@ -344,7 +344,9 @@ export function EarnProvider(props: { children: any }) {
       if (inputTokenAmount <= 0) return null
       if (!indexToken) return null
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
-      const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+      const outputTokenPrice = 1 // await getTokenPrice(outputToken, chainId)
+
+      console.log('input/output price', inputTokenPrice, outputTokenPrice)
       return await getFlashMintQuote({
         isMinting,
         account: address,
