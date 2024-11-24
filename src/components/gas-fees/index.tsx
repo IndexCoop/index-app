@@ -29,12 +29,14 @@ export function GasFees(props: GasFeesProps) {
           className={clsx(
             props.styles
               ? props.styles.valueUsdTextColor
-              : 'text-ic-black dark:text-ic-white',
+              : 'text-ic-black dark:text-ic-white font-bold',
           )}
         >
           {props.valueUsd}
         </div>
-        <div className={clsx(props.styles?.valueTextColor ?? '')}>
+        <div
+          className={clsx('font-normal', props.styles?.valueTextColor ?? '')}
+        >
           {props.value ?? ''}
         </div>
       </div>
