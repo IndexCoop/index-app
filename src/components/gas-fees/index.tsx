@@ -11,7 +11,7 @@ type GasFeesProps = {
 
 export function GasFees(props: GasFeesProps) {
   return (
-    <div className='text-ic-gray-700 dark:text-ic-gray-300 flex flex-row items-center justify-between gap-[6px] text-xs font-medium'>
+    <div className='text-ic-gray-600 dark:text-ic-gray-300 flex flex-row items-center justify-between gap-[6px] text-xs font-medium'>
       <div>
         <svg
           className='text-ic-gray-600 dark:text-ic-gray-400 fill-current'
