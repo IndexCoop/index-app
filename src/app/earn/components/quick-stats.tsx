@@ -10,10 +10,10 @@ export function QuickStats() {
     useEarnContext()
 
   return (
-    <div className='border-ic-gray-200 divide-ic-gray-200 flex w-full items-center justify-between divide-x rounded-lg border bg-[#F7F8F8] px-0 sm:px-4'>
-      <div className='flex w-1/2 items-center justify-evenly py-2 sm:py-3 md:py-4'>
+    <div className='border-ic-gray-200 divide-ic-gray-200 flex w-full items-center justify-between divide-x rounded-lg border bg-[#F7F8F8]'>
+      <div className='flex w-1/2 items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
         <div className='flex'>
-          <TokenDisplay token={indexToken} />
+          <TokenDisplay smHideLabel token={indexToken} />
         </div>
         <StatMetric
           className='hidden w-20 sm:flex'
@@ -28,7 +28,7 @@ export function QuickStats() {
           value={formatDollarAmount(nav, true)}
         />
       </div>
-      <div className='flex w-1/2 items-center justify-evenly py-2 sm:py-3 md:py-4'>
+      <div className='flex w-1/2 items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
         <StatMetric
           isLoading={isFetchingStats}
           className='hidden w-16 sm:flex'
