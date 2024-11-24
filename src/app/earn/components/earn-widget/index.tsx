@@ -144,7 +144,6 @@ export function EarnWidget() {
       />
       {transactionReview && (
         <TransactionReviewModal
-          isDarkMode={true}
           isOpen={isTransactionReviewOpen}
           onClose={() => {
             reset()

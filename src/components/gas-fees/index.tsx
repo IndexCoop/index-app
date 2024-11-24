@@ -29,7 +29,7 @@ export function GasFees(props: GasFeesProps) {
           className={clsx(
             props.styles
               ? props.styles.valueUsdTextColor
-              : 'text-ic-black dark:text-ic-white font-bold',
+              : 'text-ic-black dark:text-ic-white font-medium',
           )}
         >
           {props.valueUsd}
