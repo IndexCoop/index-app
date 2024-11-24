@@ -2,6 +2,7 @@ import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import {
   DiversifiedStakedETHIndex,
   ETH,
+  GitcoinStakedETHIndex,
   HighYieldETHIndex,
   icETHIndex,
   ICUSD,
@@ -18,6 +19,7 @@ export const yieldTokens = [
   HighYieldETHIndex,
   icETHIndex,
   DiversifiedStakedETHIndex,
+  GitcoinStakedETHIndex,
 ]
 
 // TODO: Use new tokenlists

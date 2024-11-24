@@ -3,6 +3,11 @@ import {
   ProductTheme,
   ProductType,
 } from '@/app/products/types/product'
+import {
+  buildEarnTradePath,
+  buildLeverageTradePath,
+  buildSwapTradePath,
+} from '@/app/products/utils/trade-path'
 import { getTokenBySymbol } from '@/lib/utils/tokens'
 
 export const productTokens: ProductRow[] = [
@@ -11,6 +16,7 @@ export const productTokens: ProductRow[] = [
     hasApy: false,
     theme: ProductTheme.ETH,
     listType: 'Strategies',
+    tradeHref: buildLeverageTradePath('eth2x'),
     type: ProductType.LEVERAGE,
   },
   {
@@ -18,6 +24,7 @@ export const productTokens: ProductRow[] = [
     hasApy: false,
     theme: ProductTheme.DEFI,
     listType: 'Strategies',
+    tradeHref: buildSwapTradePath('dpi'),
     type: ProductType.INDEX,
   },
   {
@@ -25,6 +32,7 @@ export const productTokens: ProductRow[] = [
     hasApy: true,
     theme: ProductTheme.ETH,
     listType: 'Earn',
+    tradeHref: buildEarnTradePath('hyETH'),
     type: ProductType.YIELD,
   },
   {
@@ -32,6 +40,7 @@ export const productTokens: ProductRow[] = [
     hasApy: true,
     theme: ProductTheme.ETH,
     listType: 'Earn',
+    tradeHref: buildEarnTradePath('icETH'),
     type: ProductType.YIELD,
   },
   {
@@ -39,6 +48,7 @@ export const productTokens: ProductRow[] = [
     hasApy: false,
     theme: ProductTheme.METAVERSE,
     listType: 'Strategies',
+    tradeHref: buildSwapTradePath('mvi'),
     type: ProductType.INDEX,
   },
   {
@@ -46,6 +56,7 @@ export const productTokens: ProductRow[] = [
     hasApy: false,
     theme: ProductTheme.BTC,
     listType: 'Strategies',
+    tradeHref: buildLeverageTradePath('btc2x'),
     type: ProductType.LEVERAGE,
   },
   {
@@ -53,6 +64,7 @@ export const productTokens: ProductRow[] = [
     hasApy: true,
     theme: ProductTheme.ETH,
     listType: 'Earn',
+    tradeHref: buildEarnTradePath('dsETH'),
     type: ProductType.YIELD,
   },
   {
@@ -60,6 +72,7 @@ export const productTokens: ProductRow[] = [
     hasApy: false,
     theme: ProductTheme.DEFI,
     listType: 'Strategies',
+    tradeHref: buildSwapTradePath('bed'),
     type: ProductType.INDEX,
   },
   {
@@ -67,6 +80,7 @@ export const productTokens: ProductRow[] = [
     hasApy: true,
     theme: ProductTheme.ETH,
     listType: 'Earn',
+    tradeHref: buildEarnTradePath('gtcETH'),
     type: ProductType.YIELD,
   },
   {
@@ -74,6 +88,7 @@ export const productTokens: ProductRow[] = [
     hasApy: false,
     listType: 'Strategies',
     theme: ProductTheme.ETH,
+    tradeHref: buildSwapTradePath('cdeti'),
     type: ProductType.INDEX,
   },
 ]

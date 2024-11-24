@@ -32,7 +32,7 @@ export function ProductList({
       <div className='text-ic-gray-950 pb-3 font-semibold md:pb-5'>
         {listType}
       </div>
-      <div className='bg-ic-white border-ic-gray-100 w-full overflow-auto rounded-3xl border py-4 shadow-sm'>
+      <div className='bg-ic-white border-ic-gray-100 w-full overflow-auto rounded-lg border py-4 shadow-sm'>
         <div className='hidden justify-between py-6 md:flex'>
           <ProductColHeader
             className='!min-w-[400px] max-w-[460px] pl-[62px] !text-left'

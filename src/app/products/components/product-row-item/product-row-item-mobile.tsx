@@ -17,7 +17,7 @@ const rowClassName = 'text-ic-gray-600 text-sm font-medium text-right'
 
 export function ProductRowItemMobile({
   isLoading,
-  product: { image, symbol, name, price, delta, apy, tvl },
+  product: { image, symbol, name, price, delta, apy, tradeHref, tvl },
 }: ProductRowItemProps) {
   return (
     <div className='flex flex-col items-center justify-between px-4 py-6 md:hidden'>
@@ -57,7 +57,7 @@ export function ProductRowItemMobile({
       </MobileRow>
       <Link
         className='text-ic-blue-700 ring-ic-blue-300 mt-4 w-full rounded-md bg-white px-3.5 py-2.5 text-center text-sm font-semibold shadow-sm ring-1 ring-inset hover:bg-gray-50'
-        href={`https://app.indexcoop.com/swap/eth/${symbol!.toLowerCase()}`}
+        href={tradeHref}
       >
         {`Trade ${symbol}`}
       </Link>

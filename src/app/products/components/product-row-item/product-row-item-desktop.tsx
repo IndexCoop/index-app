@@ -17,12 +17,23 @@ const cellClassName = 'text-ic-gray-600 text-sm font-medium min-w-[120px]'
 
 export function ProductRowItemDesktop({
   isLoading,
-  product: { image, symbol, name, theme, type, price, delta, apy, tvl },
+  product: {
+    image,
+    symbol,
+    name,
+    theme,
+    tradeHref,
+    type,
+    price,
+    delta,
+    apy,
+    tvl,
+  },
 }: ProductRowItemProps) {
   return (
     <Link
       className='hover:bg-ic-gray-100 hidden h-[60px] min-w-fit items-center justify-between odd:border-[#FBFCFC] odd:bg-[#FBFCFC] even:border-transparent hover:cursor-pointer md:flex'
-      href={`/swap/eth/${symbol!.toLowerCase()}`}
+      href={tradeHref}
     >
       <div
         className={clsx(

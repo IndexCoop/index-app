@@ -21,6 +21,7 @@ export type ProductRow = {
   symbol?: string
   name?: string
   listType: ProductListType
+  tradeHref: string
   type: ProductType
   theme: ProductTheme
   price?: number
