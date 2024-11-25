@@ -3,8 +3,6 @@ export enum SortBy {
   Delta = 'delta',
   Price = 'price',
   Product = 'name',
-  Theme = 'theme',
-  Type = 'type',
   TVL = 'tvl',
 }
 

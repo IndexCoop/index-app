@@ -101,6 +101,7 @@ export function ProductPanel() {
         />
         <ProductList
           isFetching={isFetching}
+          hideApyColumn
           products={products}
           onSortClick={handleSortClick}
           sortBy={sortBy}

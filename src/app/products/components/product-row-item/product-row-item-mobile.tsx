@@ -17,6 +17,7 @@ const rowClassName = 'text-ic-gray-600 text-sm font-medium text-right'
 
 export function ProductRowItemMobile({
   isLoading,
+  hideApyColumn,
   product: { image, symbol, name, price, delta, apy, tradeHref, tvl },
 }: ProductRowItemProps) {
   return (
@@ -45,11 +46,13 @@ export function ProductRowItemMobile({
           {isLoading ? <LoadingSkeleton /> : formatPercentage(delta)}
         </div>
       </MobileRow>
-      <MobileRow label='APY'>
-        <div className={rowClassName}>
-          {isLoading ? <LoadingSkeleton /> : formatPercentage(apy)}
-        </div>
-      </MobileRow>
+      {!hideApyColumn && (
+        <MobileRow label='APY'>
+          <div className={rowClassName}>
+            {isLoading ? <LoadingSkeleton /> : formatPercentage(apy)}
+          </div>
+        </MobileRow>
+      )}
       <MobileRow label='TVL'>
         <div className={rowClassName}>
           {isLoading ? <LoadingSkeleton /> : formatTvl(tvl)}

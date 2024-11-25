@@ -9,6 +9,7 @@ import { SortBy, SortDirection } from '@/app/products/types/sort'
 
 type Props = {
   isFetching: boolean
+  hideApyColumn?: boolean
   onSortClick: (sortBy: SortBy) => void
   products: ProductRow[]
   sortBy: SortBy | null
@@ -18,6 +19,7 @@ type Props = {
 
 export function ProductList({
   isFetching,
+  hideApyColumn = false,
   products,
   onSortClick,
   sortBy,
@@ -42,18 +44,6 @@ export function ProductList({
             Product
           </ProductColHeader>
           <ProductColHeader
-            onClick={() => onSortClick(SortBy.Type)}
-            sortDirection={sortBy === SortBy.Type ? sortDirection : null}
-          >
-            Type
-          </ProductColHeader>
-          <ProductColHeader
-            onClick={() => onSortClick(SortBy.Theme)}
-            sortDirection={sortBy === SortBy.Theme ? sortDirection : null}
-          >
-            Theme
-          </ProductColHeader>
-          <ProductColHeader
             className='!min-w-[130px] !text-right'
             onClick={() => onSortClick(SortBy.Price)}
             sortDirection={sortBy === SortBy.Price ? sortDirection : null}
@@ -67,12 +57,14 @@ export function ProductList({
           >
             24h
           </ProductColHeader>
-          <ProductColHeader
-            onClick={() => onSortClick(SortBy.APY)}
-            sortDirection={sortBy === SortBy.APY ? sortDirection : null}
-          >
-            APY
-          </ProductColHeader>
+          {!hideApyColumn && (
+            <ProductColHeader
+              onClick={() => onSortClick(SortBy.APY)}
+              sortDirection={sortBy === SortBy.APY ? sortDirection : null}
+            >
+              APY
+            </ProductColHeader>
+          )}
           <ProductColHeader
             className='pr-8 !text-right'
             onClick={() => onSortClick(SortBy.TVL)}
@@ -85,6 +77,7 @@ export function ProductList({
           {filteredProducts.map((product) => (
             <ProductRowItem
               key={product.symbol}
+              hideApyColumn={hideApyColumn}
               isLoading={isFetching}
               product={product}
             />
