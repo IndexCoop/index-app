@@ -81,7 +81,7 @@ export const productTokens: ProductRow[] = [
     hasApy: true,
     theme: ProductTheme.ETH,
     listType: 'Earn',
-    tradeHref: buildEarnTradePath('icusd', BASE.chainId),
+    tradeHref: buildEarnTradePath('icUSD', BASE.chainId),
     type: ProductType.YIELD,
   },
   {
