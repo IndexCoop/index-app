@@ -8,6 +8,7 @@ import {
   buildLeverageTradePath,
   buildSwapTradePath,
 } from '@/app/products/utils/trade-path'
+import { BASE } from '@/constants/chains'
 import { getTokenBySymbol } from '@/lib/utils/tokens'
 
 export const productTokens: ProductRow[] = [
@@ -76,11 +77,11 @@ export const productTokens: ProductRow[] = [
     type: ProductType.INDEX,
   },
   {
-    ...getTokenBySymbol('gtceth'),
+    ...getTokenBySymbol('icusd'),
     hasApy: true,
     theme: ProductTheme.ETH,
     listType: 'Earn',
-    tradeHref: buildEarnTradePath('gtcETH'),
+    tradeHref: buildEarnTradePath('icusd', BASE.chainId),
     type: ProductType.YIELD,
   },
   {
