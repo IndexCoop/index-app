@@ -1,5 +1,8 @@
-export function formatTvl(tvl?: number | null) {
-  if (tvl === undefined || tvl === null) return ''
+export function formatTvl(
+  tvl?: number | null,
+  hideDollarSign: boolean = false,
+) {
+  if (tvl === undefined || tvl === null || tvl === 0) return ''
 
   return Intl.NumberFormat('en', {
     notation: 'compact',
@@ -7,11 +10,17 @@ export function formatTvl(tvl?: number | null) {
     currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(tvl)
+  })
+    .format(tvl)
+    .slice(hideDollarSign ? 1 : 0)
 }
 
-export function formatPercentage(percentage?: number | null) {
+export function formatPercentage(
+  percentage?: number | null,
+  hideZeroPercentage: boolean = false,
+) {
   if (percentage === undefined || percentage === null) return ''
+  if (percentage === 0 && hideZeroPercentage) return ''
 
   return `${percentage.toFixed(2)}%`
 }

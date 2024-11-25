@@ -31,8 +31,9 @@ export function PeriodSelector({ selectedPeriod, setSelectedPeriod }: Props) {
         <div
           key={period}
           className={cn(
-            'text-ic-gray-50 flex size-9 cursor-pointer items-center justify-center rounded-lg text-sm font-semibold',
-            selectedPeriod === period && 'bg-ic-gray-200 text-ic-gray-950',
+            'text-ic-gray-800 dark:text-ic-gray-50 flex size-9 cursor-pointer items-center justify-center rounded-lg text-sm font-semibold',
+            selectedPeriod === period &&
+              'bg-ic-gray-800 dark:bg-ic-gray-200 text-ic-gray-50 dark:text-ic-gray-950',
           )}
           onClick={() => handleClick(period)}
         >

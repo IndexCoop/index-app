@@ -1,24 +1,22 @@
 'use client'
 
-import { useDisclosure } from '@chakra-ui/react'
+import { useColorMode, useDisclosure } from '@chakra-ui/react'
 import { PopupButton } from '@typeform/embed-react'
-import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { Suspense, useEffect, useState } from 'react'
-import { useWalletClient } from 'wagmi'
 
 import { ChartTabs } from '@/app/leverage/components/chart-tabs'
 import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { ChartTab } from '@/app/leverage/types'
 import { PriceChart } from '@/components/charts/price-chart'
+import { BaseAssetSelector } from '@/components/selectors/base-asset-selector'
+import { NetworkSelector } from '@/components/selectors/network-selector'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { BTC, ETH } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
-import { BaseAssetSelector } from './components/selectors/base-asset-selector'
-import { NetworkSelector } from './components/selectors/network-selector'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
 import { YourTokens } from './components/your-tokens'
@@ -26,22 +24,33 @@ import { YourTokens } from './components/your-tokens'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
-  const { open } = useWeb3Modal()
-  const { data: walletClient } = useWalletClient()
   const { address } = useWallet()
   const {
     isOpen: isSelectBaseTokenOpen,
     onOpen: onOpenSelectBaseToken,
     onClose: onCloseSelectBaseToken,
   } = useDisclosure()
-  const { baseToken, baseTokens, indexToken, onSelectBaseToken } =
+  const { baseToken, baseTokens, indexToken, nav, onSelectBaseToken } =
     useLeverageToken()
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
+  const { colorMode, toggleColorMode } = useColorMode()
 
   useEffect(() => {
-    document.body.classList.add('bg-ic-dark')
+    if (colorMode === 'light') {
+      toggleColorMode()
+    }
+
     return () => {
-      document.body.classList.remove('bg-ic-dark')
+      if (colorMode === 'dark') {
+        toggleColorMode()
+      }
+    }
+  }, [colorMode, toggleColorMode])
+
+  useEffect(() => {
+    document.body.classList.add('dark', 'bg-ic-dark')
+    return () => {
+      document.body.classList.remove('dark', 'bg-ic-dark')
     }
   })
 
@@ -57,22 +66,15 @@ export default function Page() {
                 selectedBaseToken={baseToken}
                 onSelectBaseAsset={(symbol) => onSelectBaseToken(symbol)}
               />
-              <NetworkSelector
-                onSelectNetwork={(chainId) => {
-                  if (!walletClient) {
-                    open({ view: 'Connect' })
-                  }
-                  walletClient?.switchChain({ id: chainId })
-                }}
-              />
+              <NetworkSelector />
             </div>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
               <Stats />
-              <div className='flex h-full min-h-[360px] flex-col'>
+              <div className='flex h-[320px] flex-col md:h-[390px] lg:h-[514px]'>
                 {currentTab === 'indexcoop-chart' ? (
-                  <PriceChart indexToken={indexToken} />
+                  <PriceChart indexToken={indexToken} nav={nav} />
                 ) : (
                   <>
                     <TradingViewWidget
