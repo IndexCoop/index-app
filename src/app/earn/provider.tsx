@@ -106,7 +106,7 @@ export function EarnProvider(props: { children: any }) {
   const {
     queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
     updateQueryParams,
-  } = useQueryParams({ ...defaultParams })
+  } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
