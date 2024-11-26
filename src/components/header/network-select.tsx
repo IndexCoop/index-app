@@ -33,7 +33,13 @@ export const NetworkSelect = () => {
   useEffect(() => {
     const unwatch = watchAccount(config, {
       onChange(account, prevAccount) {
-        const { queryNetwork } = queryParams
+        const {
+          queryNetwork,
+          queryInputToken,
+          queryIsMinting,
+          queryLeverageType,
+          queryOutputToken,
+        } = queryParams
 
         if (
           account.status === 'connected' &&
@@ -41,10 +47,10 @@ export const NetworkSelect = () => {
           queryNetwork !== account.chainId
         ) {
           updateQueryParams({
-            inputToken: queryParams.queryInputToken,
-            outputToken: queryParams.queryOutputToken,
-            leverageType: queryParams.queryLeverageType,
-            isMinting: queryParams.queryIsMinting,
+            inputToken: queryInputToken,
+            outputToken: queryOutputToken,
+            leverageType: queryLeverageType,
+            isMinting: queryIsMinting,
             network: account.chainId,
           })
         }
