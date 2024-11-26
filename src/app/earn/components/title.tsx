@@ -10,9 +10,6 @@ export function Title() {
       <h2 className='text-ic-black text-2xl font-bold sm:text-3xl'>
         {indexToken.name}
       </h2>
-      <h3 className='text-ic-gray-700 my-2 text-sm font-medium leading-6 sm:my-3 sm:text-sm'>
-        Ethereum’s top yield opportunities.
-      </h3>
     </div>
   )
 }

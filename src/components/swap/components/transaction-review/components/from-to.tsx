@@ -1,4 +1,4 @@
-import { ArrowDownIcon } from '@chakra-ui/icons'
+import ArrowDownIcon from '@heroicons/react/20/solid/ArrowDownIcon'
 import Image from 'next/image'
 
 type FromToProps = {
@@ -19,7 +19,7 @@ export const FromTo = (props: FromToProps) => {
         symbol={props.inputTokenSymbol}
       />
       <div className='dark:bg-ic-white bg-ic-black z-10 -my-4 flex h-8 w-8 rounded-full p-2'>
-        <ArrowDownIcon className='dark:text-ic-black text-ic-white' />
+        <ArrowDownIcon className='dark:text-ic-black text-ic-white size-6' />
       </div>
       <FromToItem
         amount={props.outputTokenAmount}
