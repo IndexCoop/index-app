@@ -37,7 +37,7 @@ export const NetworkSelect = () => {
         const { queryNetwork } = queryParams
         if (
           (queryNetwork &&
-            queryNetwork !== chainId &&
+            queryNetwork !== account.chainId &&
             !prevAccount.isReconnecting &&
             !prevAccount.isConnecting) ||
           prevAccount.chainId !== account.chainId
