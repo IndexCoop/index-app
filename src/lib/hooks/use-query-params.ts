@@ -6,6 +6,7 @@ import { useCallback, useMemo } from 'react'
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
 import { Token } from '@/constants/tokens'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { chains } from '@/lib/utils/wagmi'
 
 type UseQueryParamsArgs = {
@@ -30,16 +31,18 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
 } => {
   const searchParams = useSearchParams()
   const router = useRouter()
+  const { chainId } = useNetwork()
 
   const queryParams = useMemo(() => {
     const network = parseInt(searchParams.get('network') ?? '0')
     const buy = searchParams.get('buy') || ''
     const sell = searchParams.get('sell') || ''
 
-    const queryNetwork = chains.find((chain) => chain.id === network)?.id ?? 1
+    const queryNetwork =
+      chains.find((chain) => chain.id === network)?.id ?? chainId ?? 1
 
-    const currencyTokens = getCurrencyTokens(queryNetwork ?? 1)
-    const leverageTokens = getLeverageTokens(queryNetwork ?? 1)
+    const currencyTokens = getCurrencyTokens(queryNetwork ?? chainId ?? 1)
+    const leverageTokens = getLeverageTokens(queryNetwork ?? chainId ?? 1)
 
     let queryOutputToken: Token | undefined = currencyTokens.find(
       (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
