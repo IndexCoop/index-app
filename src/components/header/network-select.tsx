@@ -40,7 +40,8 @@ export const NetworkSelect = () => {
             queryNetwork !== account.chainId &&
             !prevAccount.isReconnecting &&
             !prevAccount.isConnecting) ||
-          prevAccount.chainId !== account.chainId
+          (prevAccount.chainId !== account.chainId &&
+            prevAccount.chainId !== undefined)
         ) {
           updateQueryParams({
             network: account.chainId,
