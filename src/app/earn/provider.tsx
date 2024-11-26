@@ -104,7 +104,12 @@ export function EarnProvider(props: { children: any }) {
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
-    queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
+    queryParams: {
+      queryInputToken,
+      queryOutputToken,
+      queryIsMinting,
+      queryNetwork,
+    },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
@@ -262,7 +267,12 @@ export function EarnProvider(props: { children: any }) {
   useEffect(() => {
     if (inputToken === null || outputToken === null) return
 
-    updateQueryParams({ isMinting, inputToken, outputToken })
+    updateQueryParams({
+      isMinting,
+      inputToken,
+      outputToken,
+      network: queryNetwork,
+    })
   }, [isMinting, inputToken, outputToken, updateQueryParams])
 
   const onChangeInputTokenAmount = useCallback(
@@ -417,18 +427,7 @@ export function EarnProvider(props: { children: any }) {
       quote: null,
       error: null,
     })
-    updateQueryParams({
-      isMinting: queryIsMinting,
-      inputToken: queryInputToken,
-      outputToken: queryOutputToken,
-    })
-  }, [
-    chainId,
-    queryIsMinting,
-    queryInputToken,
-    queryOutputToken,
-    updateQueryParams,
-  ])
+  }, [chainId, queryIsMinting, queryInputToken, queryOutputToken])
 
   return (
     <EarnContext.Provider
