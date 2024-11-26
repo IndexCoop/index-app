@@ -32,18 +32,21 @@ export const NetworkSelect = () => {
 
   useEffect(() => {
     const unwatch = watchAccount(config, {
-      // Do not immediately override the chainId with the wallet one when the user arrives.
       onChange(account, prevAccount) {
         const { queryNetwork } = queryParams
+
+        console.log(account, prevAccount, queryNetwork, account.chainId)
+
         if (
-          (queryNetwork &&
-            queryNetwork !== account.chainId &&
-            !prevAccount.isReconnecting &&
-            !prevAccount.isConnecting) ||
-          (prevAccount.chainId !== account.chainId &&
-            prevAccount.chainId !== undefined)
+          account.status === 'connected' &&
+          prevAccount.status === 'connected' &&
+          queryNetwork !== account.chainId
         ) {
           updateQueryParams({
+            inputToken: queryParams.queryInputToken,
+            outputToken: queryParams.queryOutputToken,
+            leverageType: queryParams.queryLeverageType,
+            isMinting: queryParams.queryIsMinting,
             network: account.chainId,
           })
         }

@@ -79,25 +79,23 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
 
   const updateQueryParams = useCallback(
     (newParams: Partial<UseQueryParamsArgs>) => {
-      const defaultQueryString = `?buy=ETH2X&sell=ETH&network=1`
-      if (typeof window === 'undefined') return defaultQueryString
-      const queryParams = new URLSearchParams(window.location.search)
+      if (typeof window === 'undefined') return
+
+      const queryParams = new URLSearchParams()
 
       const { network, inputToken, outputToken } = newParams
 
-      queryParams.set(
-        'buy',
-        outputToken?.symbol ?? queryParams.get('buy') ?? '',
-      )
-      queryParams.set(
-        'sell',
-        inputToken?.symbol ?? queryParams.get('sell') ?? '',
-      )
+      if (inputToken) {
+        queryParams.set('sell', inputToken.symbol)
+      }
 
-      queryParams.set(
-        'network',
-        network?.toString() ?? queryParams.get('network') ?? '',
-      )
+      if (outputToken) {
+        queryParams.set('buy', outputToken.symbol)
+      }
+
+      if (network) {
+        queryParams.set('network', network.toString())
+      }
 
       router.replace(`?${queryParams.toString()}`, { scroll: false })
     },
