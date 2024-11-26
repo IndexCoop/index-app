@@ -35,8 +35,6 @@ export const NetworkSelect = () => {
       onChange(account, prevAccount) {
         const { queryNetwork } = queryParams
 
-        console.log(account, prevAccount, queryNetwork, account.chainId)
-
         if (
           account.status === 'connected' &&
           prevAccount.status === 'connected' &&
