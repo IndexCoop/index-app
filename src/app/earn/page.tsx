@@ -4,6 +4,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { Suspense, useState } from 'react'
 
 import { ChartTabs } from '@/app/earn/components/chart-tabs'
+import { FaqSection } from '@/app/earn/components/faq-section'
 import { useEarnContext } from '@/app/earn/provider'
 import { ChartTab } from '@/app/earn/types'
 import { PriceChart } from '@/components/charts/price-chart'
@@ -58,6 +59,7 @@ export default function Page() {
             </Suspense>
           </div>
         </div>
+        <FaqSection />
       </div>
       <SelectTokenModal
         isOpen={isSelectBaseTokenOpen}
