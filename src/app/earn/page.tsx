@@ -8,7 +8,6 @@ import { useEarnContext } from '@/app/earn/provider'
 import { ChartTab } from '@/app/earn/types'
 import { PriceChart } from '@/components/charts/price-chart'
 import { TvlChart } from '@/components/charts/tvl-chart'
-import { NetworkSelector } from '@/components/selectors/network-selector'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
@@ -29,11 +28,8 @@ export default function Page() {
         <div className='mx-auto flex w-full flex-col gap-8 px-4 py-4 sm:py-12'>
           <div className='flex flex-col gap-5 md:flex-row md:gap-10'>
             <Title />
-            <div className='flex flex-row gap-10 '>
-              <NetworkSelector />
-            </div>
           </div>
-          <div className='flex flex-col gap-6 lg:flex-row'>
+          <div className='flex flex-col-reverse gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
               <QuickStats />
               <div className='flex h-[300px] flex-col md:h-[320px] lg:h-[422px]'>
