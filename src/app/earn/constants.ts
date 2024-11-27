@@ -30,11 +30,6 @@ export function getYieldTokens(): Token[] {
     return {
       ...token,
       image: token.logoURI,
-      url: '',
-      coingeckoId: '',
-      fees: undefined,
-      isDangerous: true,
-      indexTypes: [],
     }
   })
   return tokens
