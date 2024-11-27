@@ -342,7 +342,6 @@ export function EarnProvider(props: { children: any }) {
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
 
-      console.log('input/output price', inputTokenPrice, outputTokenPrice)
       return await getFlashMintQuote({
         isMinting,
         account: address,
