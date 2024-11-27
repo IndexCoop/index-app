@@ -104,11 +104,11 @@ export const NetworkSelect = () => {
             <div className='dark:border-b-ic-black absolute -top-4 left-1/2 h-0 w-0 -translate-x-1/2 border-b-[16px] border-l-[12px] border-r-[12px] border-l-transparent border-r-transparent'></div>
 
             <p className='text-md mb-6 mt-2 font-bold'>
-              You have followed a link that requires you to switch to{' '}
+              You have followed a link that requires your wallet to switch to{' '}
               <b className='text-ic-blue-500'>{getNetworkName(chainId)}</b>.
             </p>
             <p className='text-sm'>
-              You are currently connected to{' '}
+              Your wallet is currently connected to{' '}
               <b className='text-ic-blue-500'>
                 {getNetworkName(walletChainId)}
               </b>
