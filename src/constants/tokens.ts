@@ -13,12 +13,6 @@ import {
   wseth2Logo,
 } from '@/lib/utils/assets'
 
-export enum IndexType {
-  thematic = 'thematic',
-  leverage = 'leverage',
-  yield = 'yield',
-}
-
 export interface Token {
   name: string
   symbol: string
