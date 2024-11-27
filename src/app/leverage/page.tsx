@@ -74,7 +74,10 @@ export default function Page() {
               <Stats />
               <div className='flex h-[320px] flex-col md:h-[390px] lg:h-[514px]'>
                 {currentTab === 'indexcoop-chart' ? (
-                  <PriceChart indexToken={indexToken} nav={nav} />
+                  <PriceChart
+                    indexTokenAddress={indexToken.address ?? ''}
+                    nav={nav}
+                  />
                 ) : (
                   <>
                     <TradingViewWidget

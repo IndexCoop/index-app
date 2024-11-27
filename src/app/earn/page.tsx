@@ -30,14 +30,14 @@ export default function Page() {
               <div className='flex h-[300px] flex-col md:h-[320px] lg:h-[422px]'>
                 {currentTab === 'price' && (
                   <PriceChart
-                    indexToken={indexToken}
+                    indexTokenAddress={indexToken.address ?? ''}
                     isFetchingStats={isFetchingStats}
                     nav={nav}
                   />
                 )}
                 {currentTab === 'tvl' && (
                   <TvlChart
-                    indexToken={indexToken}
+                    indexTokenAddress={indexToken.address ?? ''}
                     isFetchingStats={isFetchingStats}
                     tvl={tvl}
                   />
