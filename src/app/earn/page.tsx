@@ -1,6 +1,5 @@
 'use client'
 
-import { useDisclosure } from '@chakra-ui/react'
 import { Suspense, useState } from 'react'
 
 import { ChartTabs } from '@/app/earn/components/chart-tabs'
@@ -9,17 +8,12 @@ import { useEarnContext } from '@/app/earn/provider'
 import { ChartTab } from '@/app/earn/types'
 import { PriceChart } from '@/components/charts/price-chart'
 import { TvlChart } from '@/components/charts/tvl-chart'
-import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { EarnWidget } from './components/earn-widget'
 import { QuickStats } from './components/quick-stats'
 import { Title } from './components/title'
 
 export default function Page() {
-  const { address } = useWallet()
-  const { isOpen: isSelectBaseTokenOpen, onClose: onCloseSelectBaseToken } =
-    useDisclosure()
   const { indexToken, isFetchingStats, nav, tvl } = useEarnContext()
   const [currentTab, setCurrentTab] = useState<ChartTab>('price')
 
@@ -61,14 +55,6 @@ export default function Page() {
         </div>
         <FaqSection />
       </div>
-      <SelectTokenModal
-        isOpen={isSelectBaseTokenOpen}
-        showBalances
-        onClose={onCloseSelectBaseToken}
-        onSelectedToken={() => {}}
-        address={address}
-        tokens={[]}
-      />
     </div>
   )
 }

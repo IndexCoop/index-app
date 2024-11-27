@@ -1,6 +1,5 @@
 'use client'
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -143,13 +142,11 @@ export function EarnProvider(props: { children: any }) {
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
-  const indexTokenAddress = useMemo(() => {
-    return getTokenByChainAndSymbol(chainId, indexToken.symbol)?.address ?? ''
-  }, [chainId, indexToken.symbol])
+  const indexTokenAddress = indexToken.address ?? ''
 
   const indexTokens = useMemo(() => {
-    return getYieldTokens(chainId)
-  }, [chainId])
+    return getYieldTokens()
+  }, [])
 
   const indexTokenAddresses = useMemo(() => {
     return indexTokens.map((token) => token.address!)
@@ -274,8 +271,19 @@ export function EarnProvider(props: { children: any }) {
   useEffect(() => {
     if (inputToken === null || outputToken === null) return
 
-    updateQueryParams({ isMinting, inputToken, outputToken })
-  }, [isMinting, inputToken, outputToken, updateQueryParams])
+    updateQueryParams({
+      isMinting,
+      inputToken,
+      outputToken,
+      network: indexToken.chainId,
+    })
+  }, [
+    isMinting,
+    inputToken,
+    outputToken,
+    updateQueryParams,
+    indexToken.chainId,
+  ])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {

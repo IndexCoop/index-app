@@ -38,6 +38,7 @@ export interface Token {
   isDangerous: boolean
   indexTypes: IndexType[]
   isPerp?: boolean
+  chainId?: number
   borrowedAssetSymbol?: string
 }
 
