@@ -5,6 +5,7 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   Token,
 } from '@/constants/tokens'
+import { useIsMismatchingNetwork } from '@/lib/hooks/use-is-mismatching-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 
@@ -35,6 +36,7 @@ export const useTradeButtonState = (
   const { address } = useWallet()
   const { hasFetchedSignature, hasSignedTerms } = useSignTerms()
   const [buttonState, setButtonState] = useState(TradeButtonState.default)
+  const isMismatchingNetwork = useIsMismatchingNetwork()
 
   useEffect(() => {
     function getButtonState() {
@@ -42,7 +44,8 @@ export const useTradeButtonState = (
       if (!address) return TradeButtonState.connectWallet
       if (hasFetchedSignature && !hasSignedTerms)
         return TradeButtonState.signTerms
-      if (!isSupportedNetwork) return TradeButtonState.wrongNetwork
+      if (!isSupportedNetwork || isMismatchingNetwork)
+        return TradeButtonState.wrongNetwork
       if (
         outputToken === Ethereum2xFlexibleLeverageIndex ||
         outputToken === Bitcoin2xFlexibleLeverageIndex
@@ -66,6 +69,7 @@ export const useTradeButtonState = (
     isApproved,
     isApproving,
     isSupportedNetwork,
+    isMismatchingNetwork,
     outputToken,
     sellTokenAmount,
     shouldApprove,

@@ -30,6 +30,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
   updateQueryParams: (newParams: Partial<UseQueryParamsArgs>) => void
 } => {
   const searchParams = useSearchParams()
+
   const router = useRouter()
   const { chainId } = useAccount()
 
