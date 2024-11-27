@@ -25,7 +25,7 @@ export default function Page() {
             <Title />
           </div>
           <div className='flex flex-col-reverse gap-6 lg:flex-row'>
-            <div className='lg:gap5 flex w-full flex-col gap-4 lg:min-w-[67%] lg:max-w-[67%]'>
+            <div className='flex w-full flex-col gap-4 lg:min-w-[67%] lg:max-w-[67%] lg:gap-5'>
               <QuickStats />
               <div className='flex h-[350px]'>
                 {currentTab === 'price' && (
