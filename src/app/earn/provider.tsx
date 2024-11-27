@@ -1,6 +1,5 @@
 'use client'
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -100,16 +99,11 @@ const defaultParams = {
 
 export function EarnProvider(props: { children: any }) {
   const publicClient = usePublicClient()
-  const { chainId: chainIdRaw, switchChain } = useNetwork()
+  const { chainId: chainIdRaw } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
-    queryParams: {
-      queryNetwork,
-      queryInputToken,
-      queryOutputToken,
-      queryIsMinting,
-    },
+    queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
@@ -131,25 +125,16 @@ export function EarnProvider(props: { children: any }) {
     return chainIdRaw ?? MAINNET.chainId
   }, [chainIdRaw])
 
-  useEffect(() => {
-    // queryNetwork is only set on the initial load
-    if (queryNetwork) {
-      switchChain({ chainId: queryNetwork })
-    }
-  }, [queryNetwork, switchChain])
-
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
-  const indexTokenAddress = useMemo(() => {
-    return getTokenByChainAndSymbol(chainId, indexToken.symbol)?.address ?? ''
-  }, [chainId, indexToken.symbol])
+  const indexTokenAddress = indexToken.address ?? ''
 
   const indexTokens = useMemo(() => {
-    return getYieldTokens(chainId)
-  }, [chainId])
+    return getYieldTokens()
+  }, [])
 
   const indexTokenAddresses = useMemo(() => {
     return indexTokens.map((token) => token.address!)
@@ -274,8 +259,19 @@ export function EarnProvider(props: { children: any }) {
   useEffect(() => {
     if (inputToken === null || outputToken === null) return
 
-    updateQueryParams({ isMinting, inputToken, outputToken })
-  }, [isMinting, inputToken, outputToken, updateQueryParams])
+    updateQueryParams({
+      isMinting,
+      inputToken,
+      outputToken,
+      network: indexToken.chainId,
+    })
+  }, [
+    isMinting,
+    inputToken,
+    outputToken,
+    updateQueryParams,
+    indexToken.chainId,
+  ])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -344,7 +340,7 @@ export function EarnProvider(props: { children: any }) {
       if (inputTokenAmount <= 0) return null
       if (!indexToken) return null
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
-      const outputTokenPrice = 1 // await getTokenPrice(outputToken, chainId)
+      const outputTokenPrice = await getTokenPrice(outputToken, chainId)
 
       console.log('input/output price', inputTokenPrice, outputTokenPrice)
       return await getFlashMintQuote({

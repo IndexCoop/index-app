@@ -28,14 +28,6 @@ export const formatTokenDataToToken = (tokenData: ListedToken): Token => {
     decimals: tokenData.decimals,
     symbol: tokenData.symbol,
     image: tokenData.logoURI,
-    indexTypes: [],
-    isDangerous: true,
-    coingeckoId: '',
-    url: '',
-    arbitrumAddress: undefined,
-    optimismAddress: undefined,
-    polygonAddress: undefined,
-    fees: undefined,
   }
 }
 

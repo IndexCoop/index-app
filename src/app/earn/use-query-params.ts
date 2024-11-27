@@ -37,7 +37,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
     const queryNetwork = chains.find((chain) => chain.id === network)?.id
 
     const currencyTokens = getCurrencyTokens(queryNetwork ?? 0)
-    const yieldTokens = getYieldTokens(queryNetwork ?? 0)
+    const yieldTokens = getYieldTokens()
 
     let queryOutputToken: Token | undefined = currencyTokens.find(
       (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
@@ -71,9 +71,8 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
       queryInputToken: queryInputToken ?? defaultParams.inputToken,
       queryOutputToken: queryOutputToken ?? defaultParams.outputToken,
     } as ReturnType<T>
-    // NOTE: defaultQueryPararms should only be read initially.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchParams])
 
   const updateQueryParams = useCallback(
     (newParams: Partial<UseQueryParamsArgs>) => {

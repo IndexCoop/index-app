@@ -1,24 +1,8 @@
-import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import {
-  DiversifiedStakedETHIndex,
-  ETH,
-  HighYieldETHIndex,
-  icETHIndex,
-  ICUSD,
-  Token,
-  USDC,
-  USDT,
-  WBTC,
-  WETH,
-} from '@/constants/tokens'
-import { getAddressForToken } from '@/lib/utils/tokens'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { base, mainnet } from 'viem/chains'
 
-export const yieldTokens = [
-  ICUSD,
-  HighYieldETHIndex,
-  icETHIndex,
-  DiversifiedStakedETHIndex,
-]
+import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
+import { ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 // TODO: Use new tokenlists
 export function getCurrencyTokens(chainId: number): Token[] {
@@ -33,19 +17,22 @@ export function getCurrencyTokens(chainId: number): Token[] {
   }
 }
 
+const yieldTokens = [
+  getTokenByChainAndSymbol(base.id, 'icUSD'),
+  getTokenByChainAndSymbol(mainnet.id, 'hyETH'),
+  getTokenByChainAndSymbol(mainnet.id, 'icETH'),
+  getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
+]
+
 // TODO: Use new tokenlists
-export function getYieldTokens(chainId: number): Token[] {
-  const tokens: (Token | null)[] = yieldTokens.map((token) => {
-    const address = getAddressForToken(token, chainId)
-    if (!address) {
-      return null
-    }
+export function getYieldTokens(): Token[] {
+  const tokens: Token[] = yieldTokens.map((token) => {
     return {
       ...token,
-      address,
+      image: token.logoURI,
     }
   })
-  return tokens.filter((token): token is Token => token !== null)
+  return tokens
 }
 
 export const supportedNetworks = [
