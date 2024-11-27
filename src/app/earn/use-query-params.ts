@@ -71,9 +71,8 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
       queryInputToken: queryInputToken ?? defaultParams.inputToken,
       queryOutputToken: queryOutputToken ?? defaultParams.outputToken,
     } as ReturnType<T>
-    // NOTE: defaultQueryPararms should only be read initially.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchParams])
 
   const updateQueryParams = useCallback(
     (newParams: Partial<UseQueryParamsArgs>) => {

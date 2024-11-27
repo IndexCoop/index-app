@@ -99,16 +99,11 @@ const defaultParams = {
 
 export function EarnProvider(props: { children: any }) {
   const publicClient = usePublicClient()
-  const { chainId: chainIdRaw, switchChain } = useNetwork()
+  const { chainId: chainIdRaw } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
-    queryParams: {
-      queryNetwork,
-      queryInputToken,
-      queryOutputToken,
-      queryIsMinting,
-    },
+    queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
@@ -129,13 +124,6 @@ export function EarnProvider(props: { children: any }) {
   const chainId = useMemo(() => {
     return chainIdRaw ?? MAINNET.chainId
   }, [chainIdRaw])
-
-  useEffect(() => {
-    // queryNetwork is only set on the initial load
-    if (queryNetwork) {
-      switchChain({ chainId: queryNetwork })
-    }
-  }, [queryNetwork, switchChain])
 
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
