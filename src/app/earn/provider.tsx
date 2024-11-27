@@ -273,7 +273,7 @@ export function EarnProvider(props: { children: any }) {
       outputToken,
       network: queryNetwork,
     })
-  }, [isMinting, inputToken, outputToken, updateQueryParams])
+  }, [isMinting, inputToken, outputToken, updateQueryParams, queryNetwork])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {

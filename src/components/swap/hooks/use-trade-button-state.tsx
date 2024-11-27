@@ -20,12 +20,10 @@ export enum TradeButtonState {
   notAvailable,
   signTerms,
   wrongNetwork,
-  mismatchingQueryNetwork,
 }
 
 export const useTradeButtonState = (
   isSupportedNetwork: boolean,
-  isMismatchingQueryNetwork: boolean,
   hasFetchingError: boolean,
   hasInsufficientFunds: boolean,
   shouldApprove: boolean,
@@ -45,8 +43,6 @@ export const useTradeButtonState = (
       if (hasFetchedSignature && !hasSignedTerms)
         return TradeButtonState.signTerms
       if (!isSupportedNetwork) return TradeButtonState.wrongNetwork
-      if (isMismatchingQueryNetwork)
-        return TradeButtonState.mismatchingQueryNetwork
       if (
         outputToken === Ethereum2xFlexibleLeverageIndex ||
         outputToken === Bitcoin2xFlexibleLeverageIndex
@@ -70,7 +66,6 @@ export const useTradeButtonState = (
     isApproved,
     isApproving,
     isSupportedNetwork,
-    isMismatchingQueryNetwork,
     outputToken,
     sellTokenAmount,
     shouldApprove,

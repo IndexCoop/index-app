@@ -2,11 +2,11 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
+import { useAccount } from 'wagmi'
 
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
 import { Token } from '@/constants/tokens'
-import { useNetwork } from '@/lib/hooks/use-network'
 import { chains } from '@/lib/utils/wagmi'
 
 type UseQueryParamsArgs = {
@@ -31,7 +31,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
 } => {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const { chainId } = useNetwork()
+  const { chainId } = useAccount()
 
   const queryParams = useMemo(() => {
     const network = parseInt(searchParams.get('network') ?? '0')
