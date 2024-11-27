@@ -25,9 +25,9 @@ export default function Page() {
             <Title />
           </div>
           <div className='flex flex-col-reverse gap-6 lg:flex-row'>
-            <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
+            <div className='lg:gap5 flex w-full flex-col gap-4 lg:min-w-[67%] lg:max-w-[67%]'>
               <QuickStats />
-              <div className='flex h-[300px] flex-col md:h-[320px] lg:h-[422px]'>
+              <div className='flex h-[350px]'>
                 {currentTab === 'price' && (
                   <PriceChart
                     indexTokenAddress={indexToken.address ?? ''}
@@ -42,11 +42,11 @@ export default function Page() {
                     tvl={tvl}
                   />
                 )}
-                <ChartTabs
-                  currentTab={currentTab}
-                  setCurrentTab={setCurrentTab}
-                />
               </div>
+              <ChartTabs
+                currentTab={currentTab}
+                setCurrentTab={setCurrentTab}
+              />
             </div>
             <Suspense>
               <EarnWidget />
