@@ -19,7 +19,9 @@ const config = defineConfig({
     pluginTs({
       output: {
         path: 'models',
-        banner: `/* eslint-disable */`,
+        banner: `/* eslint-disable */
+        /* @ts-ignore */`,
+        barrelType: 'propagate',
       },
       group: {
         type: 'tag',
@@ -31,8 +33,9 @@ const config = defineConfig({
       baseURL: 'https://api-q513.onrender.com/',
       output: {
         path: './clients/axios',
-        barrelType: false,
-        banner: `/* eslint-disable */`,
+        barrelType: 'propagate',
+        banner: `/* eslint-disable */
+        // @ts-nocheck`,
       },
 
       importPath: '@/lib/axios',
