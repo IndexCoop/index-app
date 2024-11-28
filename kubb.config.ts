@@ -29,7 +29,7 @@ const config = defineConfig({
       dateType: 'date',
     }),
     pluginClient({
-      baseURL: 'https://api-q513.onrender.com/',
+      baseURL: 'https://api.indexcoop/v2',
       output: {
         path: './clients/axios',
         barrelType: 'propagate',
