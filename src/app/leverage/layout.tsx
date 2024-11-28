@@ -9,7 +9,7 @@ type LayoutProps = {
 }
 
 export const metadata = {
-  title: 'Leverage',
+  title: 'Leverage Suite',
 }
 
 export default function Layout({ children }: LayoutProps) {
