@@ -1,7 +1,8 @@
 import { formatUnits } from 'viem'
 
-import { PostApiV2TradeMutationRequest } from '@/gen'
 import { Quote } from '@/lib/hooks/use-best-quote/types'
+
+import type { PostApiV2TradeMutationRequest } from '@/gen'
 
 export const mapQuoteToTrade = (
   address: string,

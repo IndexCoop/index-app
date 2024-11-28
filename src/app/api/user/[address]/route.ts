@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { postApiV2UserAddress } from '@/gen/clients/axios/userService/postApiV2UserAddress'
+import { postApiV2UserAddress } from '@/gen'
 
 export async function GET(
   _: Request,

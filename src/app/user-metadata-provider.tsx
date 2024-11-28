@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-import { GetApiV2UserAddressQueryResponse } from '@/gen'
+import type { GetApiV2UserAddressQueryResponse } from '@/gen'
 
 const UserMetadataContext =
   createContext<GetApiV2UserAddressQueryResponse | null>(null)

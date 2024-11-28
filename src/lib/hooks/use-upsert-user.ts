@@ -1,8 +1,9 @@
 import { watchAccount } from '@wagmi/core'
 import { useEffect, useState } from 'react'
 
-import { GetApiV2UserAddress200 } from '@/gen'
 import { config } from '@/lib/utils/wagmi'
+
+import type { GetApiV2UserAddress200 } from '@/gen'
 
 export const useUpsertUser = () => {
   const [persistentUserData, setPersistentUserData] =

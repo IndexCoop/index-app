@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { PostApiV2TradeMutationRequest } from '@/gen'
-import { postApiV2Trade } from '@/gen/clients/axios/userService/postApiV2Trade'
+import { postApiV2Trade, PostApiV2TradeMutationRequest } from '@/gen'
 
 export async function POST(req: NextRequest) {
   const trade: PostApiV2TradeMutationRequest = await req.json()
@@ -15,8 +14,5 @@ export async function POST(req: NextRequest) {
 
   const res = await postApiV2Trade(trade)
 
-  return NextResponse.json(
-    { success: res.data.status === 'ok' },
-    { status: res.status },
-  )
+  return NextResponse.json(res.data, { status: res.status })
 }
