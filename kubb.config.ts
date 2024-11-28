@@ -19,9 +19,8 @@ const config = defineConfig({
     pluginTs({
       output: {
         path: 'models',
-        banner: `/* eslint-disable */
-        /* @ts-ignore */`,
         barrelType: 'propagate',
+        banner: `/* eslint-disable */`,
       },
       group: {
         type: 'tag',
@@ -34,8 +33,7 @@ const config = defineConfig({
       output: {
         path: './clients/axios',
         barrelType: 'propagate',
-        banner: `/* eslint-disable */
-        // @ts-nocheck`,
+        banner: `/* eslint-disable */`,
       },
 
       importPath: '@/lib/axios',
