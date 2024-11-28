@@ -32,6 +32,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
   const searchParams = useSearchParams()
 
   const router = useRouter()
+
   const { chainId } = useAccount()
 
   const queryParams = useMemo(() => {

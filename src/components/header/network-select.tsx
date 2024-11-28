@@ -92,7 +92,7 @@ export const NetworkSelect = () => {
             anchor='bottom'
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className='dark:bg-ic-black z-50 mt-6 w-80 !overflow-visible rounded-md border border-gray-300 bg-white p-4 shadow-md dark:border-none dark:text-white'
+            className='dark:bg-ic-black dark:border-ic-gray-800 z-50 mt-8 w-80 !overflow-visible rounded-md border border-gray-300 bg-white p-4 shadow-md dark:text-white'
             exit={{ opacity: 0, scale: 0.95 }}
           >
             <Button
@@ -101,7 +101,8 @@ export const NetworkSelect = () => {
             >
               <XMarkIcon className='dark:fill-ic-white group-hover:fill-ic-white' />
             </Button>
-            <div className='dark:border-b-ic-black absolute -top-4 left-1/2 h-0 w-0 -translate-x-1/2 border-b-[16px] border-l-[12px] border-r-[12px] border-l-transparent border-r-transparent'></div>
+            <div className='border-b-ic-gray-300 dark:border-b-ic-gray-800 absolute -top-[18px] left-1/2 h-0 w-0 -translate-x-1/2 border-b-[18px] border-l-[13px] border-r-[13px] border-l-transparent border-r-transparent'></div>
+            <div className='border-b-ic-white dark:border-b-ic-black absolute -top-4 left-1/2 h-0 w-0 -translate-x-1/2 border-b-[16px] border-l-[12px] border-r-[12px] border-l-transparent border-r-transparent'></div>
 
             <p className='text-md mb-6 mt-2 font-bold'>
               You have followed a link that requires your wallet to switch to{' '}
