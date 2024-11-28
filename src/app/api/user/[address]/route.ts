@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import prisma from '@/lib/prisma'
+import { postApiV2UserAddress } from '@/gen/clients/axios/userService/postApiV2UserAddress'
 
 export async function GET(
   _: Request,
@@ -8,25 +8,7 @@ export async function GET(
 ) {
   const { address } = await params
 
-  let user = await prisma.user.findUnique({
-    where: { address },
-  })
+  const { data: user, status } = await postApiV2UserAddress({ address }, {})
 
-  const last_connected = new Date().toISOString()
-
-  if (user) {
-    user = await prisma.user.update({
-      where: { address },
-      data: { last_connected },
-    })
-  } else {
-    user = await prisma.user.create({
-      data: {
-        address,
-        last_connected,
-      },
-    })
-  }
-
-  return NextResponse.json(user, { status: 200 })
+  return NextResponse.json(user, { status })
 }

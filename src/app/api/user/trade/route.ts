@@ -1,11 +1,10 @@
-import { Trade } from '@prisma/client'
-import * as Sentry from '@sentry/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 
-import prisma from '@/lib/prisma'
+import { PostApiV2TradeMutationRequest } from '@/gen'
+import { postApiV2Trade } from '@/gen/clients/axios/userService/postApiV2Trade'
 
 export async function POST(req: NextRequest) {
-  const trade: Trade = await req.json()
+  const trade: PostApiV2TradeMutationRequest = await req.json()
 
   if (!trade) {
     return NextResponse.json(
@@ -14,26 +13,10 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  try {
-    await prisma.trade.create({
-      data: trade,
-    })
-  } catch (e) {
-    Sentry.captureMessage('Transaction creation in database failed', {
-      extra: {
-        e,
-        trade,
-      },
-    })
+  const res = await postApiV2Trade(trade)
 
-    return NextResponse.json(
-      {
-        message: 'Failed to create transaction.',
-        e,
-      },
-      { status: 500 },
-    )
-  }
-
-  return NextResponse.json({ success: true }, { status: 200 })
+  return NextResponse.json(
+    { success: res.data.status === 'ok' },
+    { status: res.status },
+  )
 }

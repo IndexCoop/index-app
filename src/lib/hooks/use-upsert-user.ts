@@ -1,13 +1,12 @@
-import { User } from '@prisma/client'
 import { watchAccount } from '@wagmi/core'
 import { useEffect, useState } from 'react'
 
+import { GetApiV2UserAddress200 } from '@/gen'
 import { config } from '@/lib/utils/wagmi'
 
 export const useUpsertUser = () => {
-  const [persistentUserData, setPersistentUserData] = useState<User | null>(
-    null,
-  )
+  const [persistentUserData, setPersistentUserData] =
+    useState<GetApiV2UserAddress200 | null>(null)
 
   useEffect(() => {
     const unwatch = watchAccount(config, {

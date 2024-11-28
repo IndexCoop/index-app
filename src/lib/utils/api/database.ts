@@ -1,13 +1,13 @@
-import { Trade } from '@prisma/client'
 import { formatUnits } from 'viem'
 
+import { PostApiV2TradeMutationRequest } from '@/gen'
 import { Quote } from '@/lib/hooks/use-best-quote/types'
 
 export const mapQuoteToTrade = (
   address: string,
   transactionHash: string,
   quote: Quote,
-): Trade => ({
+): PostApiV2TradeMutationRequest => ({
   transactionHash,
   userAddress: address,
   chainId: quote.chainId,

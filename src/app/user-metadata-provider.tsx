@@ -1,8 +1,9 @@
 import { createContext, useContext } from 'react'
 
-import type { User } from '@prisma/client'
+import { GetApiV2UserAddressQueryResponse } from '@/gen'
 
-const UserMetadataContext = createContext<User | null>(null)
+const UserMetadataContext =
+  createContext<GetApiV2UserAddressQueryResponse | null>(null)
 
 export const UserMetadataProvider = UserMetadataContext.Provider
 
