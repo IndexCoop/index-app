@@ -15,13 +15,15 @@ import { useAccount } from 'wagmi'
 import { getNetworkName, useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { chains, config } from '@/lib/utils/wagmi'
+import { useRouter } from 'next/navigation'
 
 export const NetworkSelect = () => {
   const { chainId: walletChainId } = useAccount()
   const { open } = useWeb3Modal()
   const { chainId, switchChain } = useNetwork()
-  const { queryParams, updateQueryParams } = useQueryParams()
+  const { queryParams, searchParams, updateQueryParams } = useQueryParams()
   const [isNetworkWarningClosed, setIsNetworkWarningClosed] = useState(false)
+  const router = useRouter()
 
   const chain = useMemo(() => chains.find((c) => c.id === chainId), [chainId])
 
@@ -97,7 +99,19 @@ export const NetworkSelect = () => {
           >
             <Button
               className='hover:bg-ic-gray-600 group absolute right-2 top-2 w-5 rounded-md '
-              onClick={() => setIsNetworkWarningClosed(true)}
+              onClick={() => {
+                setIsNetworkWarningClosed(true)
+
+                if (walletChainId) {
+                  const queryParams = new URLSearchParams(searchParams)
+
+                  queryParams.set('network', walletChainId.toString())
+
+                  router.replace(`?${queryParams.toString()}`, {
+                    scroll: false,
+                  })
+                }
+              }}
             >
               <XMarkIcon className='dark:fill-ic-white group-hover:fill-ic-white' />
             </Button>

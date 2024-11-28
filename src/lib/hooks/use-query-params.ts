@@ -27,6 +27,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
   defaultParams: T = {} as T,
 ): {
   queryParams: ReturnType<T>
+  searchParams: URLSearchParams
   updateQueryParams: (newParams: Partial<UseQueryParamsArgs>) => void
 } => {
   const searchParams = useSearchParams()
@@ -109,6 +110,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
 
   return {
     queryParams,
+    searchParams,
     updateQueryParams,
   }
 }
