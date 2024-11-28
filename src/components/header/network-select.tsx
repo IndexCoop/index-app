@@ -9,13 +9,13 @@ import { AssetUtil, NetworkController } from '@web3modal/core'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { useAccount } from 'wagmi'
 
 import { getNetworkName, useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { chains, config } from '@/lib/utils/wagmi'
-import { useRouter } from 'next/navigation'
 
 export const NetworkSelect = () => {
   const { chainId: walletChainId } = useAccount()
