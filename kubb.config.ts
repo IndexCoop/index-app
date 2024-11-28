@@ -22,6 +22,12 @@ const config = defineConfig({
         barrelType: 'propagate',
         banner: `/* eslint-disable */`,
       },
+      exclude: [
+        {
+          type: 'tag',
+          pattern: 'admin',
+        },
+      ],
       group: {
         type: 'tag',
       },
@@ -35,7 +41,12 @@ const config = defineConfig({
         barrelType: 'propagate',
         banner: `/* eslint-disable */`,
       },
-
+      exclude: [
+        {
+          type: 'tag',
+          pattern: 'admin',
+        },
+      ],
       importPath: '@/lib/axios',
       group: {
         type: 'tag',
