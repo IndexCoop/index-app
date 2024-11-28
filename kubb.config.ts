@@ -43,7 +43,7 @@ const config = defineConfig({
           return `${group}Service`
         },
       },
-
+      operations: true,
       pathParamsType: 'object',
       dataReturnType: 'full',
     }),

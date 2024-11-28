@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { postApiV2UserAddress } from '@/gen'
+import { postApiV2UserAddress, PostApiV2UserAddressMutation } from '@/gen'
 
 export async function GET(
   _: Request,
@@ -8,7 +8,14 @@ export async function GET(
 ) {
   const { address } = await params
 
-  const { data: user, status } = await postApiV2UserAddress({ address }, {})
+  try {
+    const { data: user, status } = await postApiV2UserAddress({ address }, {})
 
-  return NextResponse.json(user, { status })
+    return NextResponse.json(user, { status })
+  } catch (e) {
+    return NextResponse.json(
+      { error: (e as PostApiV2UserAddressMutation['Errors']).message },
+      { status: 500 },
+    )
+  }
 }
