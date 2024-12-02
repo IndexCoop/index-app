@@ -7,8 +7,6 @@ import {
 import { NextRequest, NextResponse } from 'next/server'
 import { Address, isAddress } from 'viem'
 
-import { QuoteType } from '@/lib/hooks/use-best-quote/types'
-
 export interface IndexQuoteRequest {
   chainId: number
   account: string
@@ -103,21 +101,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'No quote found.' }, { status: 404 })
     }
 
-    return NextResponse.json({
-      type: QuoteType.flashmint,
-      chainId: quote.chainId,
-      contract: quote.contract,
-      contractType: quote.contractType,
-      takerAddress: account,
-      isMinting: quote.isMinting,
-      inputToken: quote.inputToken,
-      outputToken: quote.outputToken,
-      indexTokenAmount: quote.indexTokenAmount,
-      inputAmount: quote.inputAmount,
-      outputAmount: quote.outputAmount,
-      slippage: quote.slippage,
-      transaction: quote.tx,
-    })
+    return NextResponse.json(quote)
   } catch (error) {
     console.error(error)
     return NextResponse.json(error, { status: 500 })
