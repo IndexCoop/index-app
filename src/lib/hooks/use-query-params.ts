@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
+import { useAccount } from 'wagmi'
 
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
@@ -26,20 +27,25 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
   defaultParams: T = {} as T,
 ): {
   queryParams: ReturnType<T>
+  searchParams: URLSearchParams
   updateQueryParams: (newParams: Partial<UseQueryParamsArgs>) => void
 } => {
   const searchParams = useSearchParams()
+
   const router = useRouter()
+
+  const { chainId } = useAccount()
 
   const queryParams = useMemo(() => {
     const network = parseInt(searchParams.get('network') ?? '0')
     const buy = searchParams.get('buy') || ''
     const sell = searchParams.get('sell') || ''
 
-    const queryNetwork = chains.find((chain) => chain.id === network)?.id
+    const queryNetwork =
+      chains.find((chain) => chain.id === network)?.id ?? chainId ?? 1
 
-    const currencyTokens = getCurrencyTokens(queryNetwork ?? 0)
-    const leverageTokens = getLeverageTokens(queryNetwork ?? 0)
+    const currencyTokens = getCurrencyTokens(queryNetwork ?? chainId ?? 1)
+    const leverageTokens = getLeverageTokens(queryNetwork ?? chainId ?? 1)
 
     let queryOutputToken: Token | undefined = currencyTokens.find(
       (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
@@ -75,29 +81,27 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
     } as ReturnType<T>
     // NOTE: defaultQueryPararms should only be read initially.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchParams])
 
   const updateQueryParams = useCallback(
     (newParams: Partial<UseQueryParamsArgs>) => {
-      const defaultQueryString = `?buy=ETH2X&sell=ETH&network=1`
-      if (typeof window === 'undefined') return defaultQueryString
-      const queryParams = new URLSearchParams(window.location.search)
+      if (typeof window === 'undefined') return
+
+      const queryParams = new URLSearchParams()
 
       const { network, inputToken, outputToken } = newParams
 
-      queryParams.set(
-        'buy',
-        outputToken?.symbol ?? queryParams.get('buy') ?? '',
-      )
-      queryParams.set(
-        'sell',
-        inputToken?.symbol ?? queryParams.get('sell') ?? '',
-      )
+      if (inputToken) {
+        queryParams.set('sell', inputToken.symbol)
+      }
 
-      queryParams.set(
-        'network',
-        network?.toString() ?? queryParams.get('network') ?? '',
-      )
+      if (outputToken) {
+        queryParams.set('buy', outputToken.symbol)
+      }
+
+      if (network) {
+        queryParams.set('network', network.toString())
+      }
 
       router.replace(`?${queryParams.toString()}`, { scroll: false })
     },
@@ -106,6 +110,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
 
   return {
     queryParams,
+    searchParams,
     updateQueryParams,
   }
 }

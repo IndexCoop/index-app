@@ -88,7 +88,6 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const buttonState = useTradeButtonState(
     isSupportedNetwork,
     false,
-    false,
     hasInsufficientFunds,
     shouldApprove,
     isApproved,
