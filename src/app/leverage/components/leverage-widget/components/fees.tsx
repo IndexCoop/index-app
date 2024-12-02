@@ -8,7 +8,7 @@ import { colors } from '@/lib/styles/colors'
 
 type FeesItemProps = {
   label: string
-  showPositiveFee?: boolean
+  showNegativeFee?: boolean
   percent: string
   tooltip?: string
   valueUsd: string
@@ -39,9 +39,9 @@ function FeesItem(props: FeesItemProps) {
         <div
           className={clsx(
             'font-bold',
-            props.showPositiveFee ? 'text-ic-green' : 'text-ic-white',
+            props.showNegativeFee ? 'text-ic-green' : 'text-ic-white',
           )}
-        >{`${props.showPositiveFee ? '+' : ''}${props.percent}`}</div>
+        >{`${props.showNegativeFee ? '-' : ''}${props.percent}`}</div>
         <div className='font-normal'>{props.valueUsd}</div>
       </div>
     </div>
@@ -86,7 +86,7 @@ export function Fees(props: FeesProps) {
             {props.costOfCarry !== null && (
               <FeesItem
                 label='Cost of Carry'
-                showPositiveFee={props.costOfCarry < 0}
+                showNegativeFee={props.costOfCarry < 0}
                 percent={new Intl.NumberFormat('en-us', {
                   style: 'percent',
                   minimumFractionDigits: 2,
