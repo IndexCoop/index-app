@@ -497,7 +497,7 @@ export function LeverageProvider(props: { children: any }) {
 
   useEffect(() => {
     setBaseToken(baseTokens[0] ?? ETH)
-  }, [chainId])
+  }, [chainId, baseTokens])
 
   useEffect(() => {
     // Reset quotes
