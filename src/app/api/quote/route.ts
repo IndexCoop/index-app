@@ -5,7 +5,7 @@ import {
   isProductToken,
 } from '@indexcoop/tokenlists'
 import { NextRequest, NextResponse } from 'next/server'
-import { Address, isAddress } from 'viem'
+import { Address } from 'viem'
 
 export interface IndexQuoteRequest {
   chainId: number
@@ -29,20 +29,6 @@ export async function POST(req: NextRequest) {
       outputAmount,
       slippage,
     } = request
-
-    if (slippage < 0 || slippage > 1) {
-      return BadRequest('Bad Request')
-    }
-
-    if (!isAddress(inputTokenAddress) || !isAddress(outputTokenAddress)) {
-      return BadRequest('Bad Request')
-    }
-
-    if (!inputAmount && !outputAmount) {
-      return BadRequest(
-        'Either `inputAmount` or outputAmount` needs to be set.',
-      )
-    }
 
     const inputToken = getQuoteToken(inputTokenAddress, chainId)
     const outputToken = getQuoteToken(outputTokenAddress, chainId)
