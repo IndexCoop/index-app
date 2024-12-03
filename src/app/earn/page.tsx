@@ -19,10 +19,10 @@ export default function Page() {
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
-        <div className='mx-auto flex w-full flex-col gap-8 px-4 py-4'>
-          <div className='flex flex-col-reverse gap-6 lg:flex-row'>
+        <div className='mx-auto flex w-full flex-col gap-4 px-1 py-4 sm:gap-5 sm:px-4'>
+          <QuickStats />
+          <div className='flex flex-col-reverse gap-4 lg:flex-row'>
             <div className='flex w-full flex-col gap-4 lg:min-w-[67%] lg:max-w-[67%] lg:gap-5'>
-              <QuickStats />
               <div className='flex h-[350px]'>
                 {currentTab === 'price' && (
                   <PriceChart
