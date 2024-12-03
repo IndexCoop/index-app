@@ -426,19 +426,7 @@ export function EarnProvider(props: { children: any }) {
       quote: null,
       error: null,
     })
-    updateQueryParams({
-      isMinting: queryIsMinting,
-      inputToken: queryInputToken,
-      outputToken: queryOutputToken,
-      network: chainId,
-    })
-  }, [
-    chainId,
-    queryIsMinting,
-    queryInputToken,
-    queryOutputToken,
-    updateQueryParams,
-  ])
+  }, [chainId, queryIsMinting, queryInputToken, queryOutputToken])
 
   return (
     <EarnContext.Provider

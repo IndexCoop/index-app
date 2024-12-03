@@ -3,6 +3,7 @@ import { Address, PublicClient } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { ETH } from '@/constants/tokens'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
 
 export class BalanceProvider {
@@ -25,14 +26,19 @@ export class BalanceProvider {
 }
 
 export function useBalance(address?: string, token?: string) {
-  const publicClient = usePublicClient()
   const [balance, setBalance] = useState<bigint>(BigInt(0))
+  const { chainId } = useNetwork()
+
+  const publicClient = usePublicClient({
+    chainId,
+  })
 
   const fetchBalance = useCallback(async () => {
     if (!address || !token || !publicClient) {
       setBalance(BigInt(0))
       return
     }
+
     const balanceProvider = new BalanceProvider(publicClient)
     const isETH = token.toLowerCase() === ETH.address!.toLowerCase()
     const balance = isETH
@@ -64,8 +70,11 @@ export interface TokenBalance {
 }
 
 export function useBalances(address?: string, tokens?: string[]) {
-  const publicClient = usePublicClient()
   const [balances, setBalances] = useState<TokenBalance[]>([])
+  const { chainId } = useNetwork()
+  const publicClient = usePublicClient({
+    chainId,
+  })
 
   const fetchBalances = useCallback(async () => {
     if (!address || !publicClient || !tokens || tokens.length === 0) return
