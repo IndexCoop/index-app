@@ -17,7 +17,6 @@ import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
-import { chains } from '@/lib/utils/wagmi'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
@@ -140,7 +139,6 @@ export function LeverageWidget(props: LeverageWidgetProps) {
         outputToken={outputToken}
         buttonLabelOverrides={{
           [TradeButtonState.default]: 'Review Transaction',
-          [TradeButtonState.mismatchingQueryNetwork]: `Switch to ${chains.find(({ id }) => id === queryParams.queryNetwork)?.name}`,
         }}
         onOpenTransactionReview={onOpenTransactionReview}
         onRefetchQuote={() => {}}

@@ -80,7 +80,6 @@ export function RedeemWidget() {
   const buttonState = useTradeButtonState(
     isSupportedNetwork,
     false,
-    false,
     hasInsufficientFunds,
     shouldApprove,
     isApproved,
