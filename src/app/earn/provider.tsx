@@ -103,12 +103,7 @@ export function EarnProvider(props: { children: any }) {
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
-    queryParams: {
-      queryInputToken,
-      queryOutputToken,
-      queryIsMinting,
-      queryNetwork,
-    },
+    queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
@@ -268,9 +263,15 @@ export function EarnProvider(props: { children: any }) {
       isMinting,
       inputToken,
       outputToken,
-      network: queryNetwork,
+      network: indexToken.chainId,
     })
-  }, [isMinting, inputToken, outputToken, updateQueryParams, queryNetwork])
+  }, [
+    isMinting,
+    inputToken,
+    outputToken,
+    updateQueryParams,
+    indexToken.chainId,
+  ])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
