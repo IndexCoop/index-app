@@ -10,7 +10,7 @@ export function QuickStats() {
     useEarnContext()
 
   return (
-    <div className='border-ic-gray-200 divide-ic-gray-200 flex w-full items-center justify-between rounded-lg border bg-[#F7F8F8]'>
+    <div className='border-ic-gray-200 divide-ic-gray-200 flex w-full items-center justify-between rounded-lg border bg-[linear-gradient(180deg,#FCFFFF,#F7F8F8)]'>
       <div className='flex items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
         <div className='flex'>
           <TokenDisplay smHideLabel token={indexToken} />
