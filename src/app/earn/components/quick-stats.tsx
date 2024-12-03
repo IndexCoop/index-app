@@ -10,11 +10,22 @@ export function QuickStats() {
     useEarnContext()
 
   return (
-    <div className='border-ic-gray-200 divide-ic-gray-200 flex w-full items-center justify-between divide-x rounded-lg border bg-[#F7F8F8]'>
-      <div className='flex w-1/2 items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
+    <div className='border-ic-gray-200 divide-ic-gray-200 flex w-full items-center justify-between rounded-lg border bg-[#F7F8F8]'>
+      <div className='flex items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
         <div className='flex'>
           <TokenDisplay smHideLabel token={indexToken} />
         </div>
+        <div className='hidden lg:flex'>
+          The largest USDC lending opportunities on Base.
+        </div>
+      </div>
+      <div className='flex items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
+        <StatMetric
+          className='w-16'
+          isLoading={isFetchingStats}
+          label='APY'
+          value={formatPercentage(apy, true)}
+        />
         <StatMetric
           className='hidden w-20 sm:flex'
           isLoading={isFetchingStats}
@@ -27,8 +38,6 @@ export function QuickStats() {
           label='Token Price'
           value={formatDollarAmount(nav, true)}
         />
-      </div>
-      <div className='flex w-1/2 items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
         <StatMetric
           isLoading={isFetchingStats}
           className='hidden w-16 sm:flex'
@@ -40,12 +49,6 @@ export function QuickStats() {
           isLoading={isFetchingStats}
           label='30d APY'
           value={formatPercentage(apy30d, true)}
-        />
-        <StatMetric
-          className='w-16'
-          isLoading={isFetchingStats}
-          label='APY'
-          value={formatPercentage(apy, true)}
         />
       </div>
     </div>
