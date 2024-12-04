@@ -1,19 +1,30 @@
 import { StatMetric } from '@/app/earn/components/stat-metric'
 import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
-import { TokenDisplay } from '@/components/token-display'
 import { formatDollarAmount } from '@/lib/utils'
 
+import { TokenSelector } from '@/app/earn/components/earn-widget/components/base-token-selector'
 import { useEarnContext } from '../provider'
 
 export function QuickStats() {
-  const { indexToken, isFetchingStats, nav, apy, apy30d, apy7d, tvl } =
-    useEarnContext()
+  const {
+    indexToken,
+    indexTokens,
+    isFetchingStats,
+    nav,
+    apy,
+    apy30d,
+    apy7d,
+    tvl,
+  } = useEarnContext()
 
   return (
     <div className='border-ic-gray-200 flex w-full items-center justify-between rounded-lg border bg-[linear-gradient(180deg,#FCFFFF,#F7F8F8)]'>
       <div className='flex w-full items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
         <div className='flex items-center gap-4'>
-          <TokenDisplay smHideLabel token={indexToken} />
+          <TokenSelector
+            selectedToken={indexToken}
+            onClick={() => console.log('hello')}
+          />
           <div className='hidden text-xs font-normal lg:flex'>
             The largest USDC lending opportunities on Base.
           </div>
