@@ -1,11 +1,20 @@
-import { StatMetric } from '@/app/earn/components/stat-metric'
-import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
-import { formatDollarAmount } from '@/lib/utils'
+import { useDisclosure } from '@chakra-ui/react'
 
 import { TokenSelector } from '@/app/earn/components/earn-widget/components/base-token-selector'
+import { StatMetric } from '@/app/earn/components/stat-metric'
+import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
+import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
+import { useWallet } from '@/lib/hooks/use-wallet'
+import { formatDollarAmount } from '@/lib/utils'
+
 import { useEarnContext } from '../provider'
 
 export function QuickStats() {
+  const {
+    isOpen: isSelectIndexTokenOpen,
+    onOpen: onOpenSelectIndexToken,
+    onClose: onCloseSelectIndexToken,
+  } = useDisclosure()
   const {
     indexToken,
     indexTokens,
@@ -15,7 +24,9 @@ export function QuickStats() {
     apy30d,
     apy7d,
     tvl,
+    onSelectIndexToken,
   } = useEarnContext()
+  const { address } = useWallet()
 
   return (
     <div className='border-ic-gray-200 flex w-full items-center justify-between rounded-lg border bg-[linear-gradient(180deg,#FCFFFF,#F7F8F8)]'>
@@ -23,7 +34,7 @@ export function QuickStats() {
         <div className='flex items-center gap-4'>
           <TokenSelector
             selectedToken={indexToken}
-            onClick={() => console.log('hello')}
+            onClick={onOpenSelectIndexToken}
           />
           <div className='hidden text-xs font-normal lg:flex'>
             The largest USDC lending opportunities on Base.
@@ -60,6 +71,16 @@ export function QuickStats() {
           value={formatPercentage(apy30d, true)}
         />
       </div>
+      <SelectTokenModal
+        isOpen={isSelectIndexTokenOpen}
+        onClose={onCloseSelectIndexToken}
+        onSelectedToken={(tokenSymbol) => {
+          onSelectIndexToken(tokenSymbol)
+          onCloseSelectIndexToken()
+        }}
+        address={address}
+        tokens={indexTokens}
+      />
     </div>
   )
 }
