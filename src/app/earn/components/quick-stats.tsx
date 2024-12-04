@@ -25,25 +25,25 @@ export function QuickStats() {
           value={formatPercentage(apy, true)}
         />
         <StatMetric
-          className='hidden w-20 sm:flex'
+          className='w-20'
           isLoading={isFetchingStats}
           label='TVL'
           value={formatTvl(tvl)}
         />
         <StatMetric
-          className='w-24'
+          className='hidden w-24 sm:flex'
           isLoading={isFetchingStats}
           label='Token Price'
           value={formatDollarAmount(nav, true)}
         />
         <StatMetric
           isLoading={isFetchingStats}
-          className='hidden w-16 sm:flex'
+          className='hidden w-16 md:flex'
           label='7d APY'
           value={formatPercentage(apy7d, true)}
         />
         <StatMetric
-          className='w-16'
+          className='hidden w-16 md:flex'
           isLoading={isFetchingStats}
           label='30d APY'
           value={formatPercentage(apy30d, true)}
