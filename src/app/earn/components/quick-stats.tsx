@@ -7,6 +7,7 @@ import { SelectTokenModal } from '@/components/swap/components/select-token-moda
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatDollarAmount } from '@/lib/utils'
 
+import { getTagline } from '../constants'
 import { useEarnContext } from '../provider'
 
 export function QuickStats() {
@@ -37,7 +38,7 @@ export function QuickStats() {
             onClick={onOpenSelectIndexToken}
           />
           <div className='hidden text-xs font-normal lg:flex'>
-            The largest USDC lending opportunities on Base.
+            {getTagline(indexToken.symbol)}
           </div>
         </div>
         <StatMetric
