@@ -55,6 +55,7 @@ interface Context {
   stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
+  onSelectIndexToken: (tokenSymbol: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   onSelectOutputToken: (tokenSymbol: string) => void
   reset: () => void
@@ -83,6 +84,7 @@ export const EarnContext = createContext<Context>({
   stats: null,
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
+  onSelectIndexToken: () => {},
   onSelectInputToken: () => {},
   onSelectOutputToken: () => {},
   reset: () => {},
@@ -300,11 +302,25 @@ export function EarnProvider(props: { children: any }) {
     [inputTokens],
   )
 
-  const onSelectOutputToken = (tokenSymbol: string) => {
-    const token = outputTokens.find((token) => token.symbol === tokenSymbol)
-    if (!token) return
-    setOutputToken(token)
-  }
+  const onSelectOutputToken = useCallback(
+    (tokenSymbol: string) => {
+      const token = outputTokens.find((token) => token.symbol === tokenSymbol)
+      if (!token) return
+      setOutputToken(token)
+    },
+    [outputTokens],
+  )
+
+  const onSelectIndexToken = useCallback(
+    (tokenSymbol: string) => {
+      if (isMinting) {
+        onSelectOutputToken(tokenSymbol)
+      } else {
+        onSelectInputToken(tokenSymbol)
+      }
+    },
+    [isMinting, onSelectInputToken, onSelectOutputToken],
+  )
 
   const reset = () => {
     setInputValue('')
@@ -458,6 +474,7 @@ export function EarnProvider(props: { children: any }) {
         stats: null, // FIXME
         transactionReview,
         onChangeInputTokenAmount,
+        onSelectIndexToken,
         onSelectInputToken,
         onSelectOutputToken,
         reset,

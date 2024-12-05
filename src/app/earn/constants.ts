@@ -17,6 +17,21 @@ export function getCurrencyTokens(chainId: number): Token[] {
   }
 }
 
+export function getTagline(indexTokenSymbol: string): string {
+  switch (indexTokenSymbol.toLowerCase()) {
+    case 'dseth':
+      return 'The leading Ethereum liquid staking tokens on Ethereum.'
+    case 'hyeth':
+      return 'The highest ETH-denominated yields on Ethereum Mainnet.'
+    case 'iceth':
+      return 'ETH staking returns using a leveraged liquid staking strategy.'
+    case 'icusd':
+      return 'The largest USDC lending opportunities on Base.'
+    default:
+      return ''
+  }
+}
+
 const yieldTokens = [
   getTokenByChainAndSymbol(base.id, 'icUSD'),
   getTokenByChainAndSymbol(mainnet.id, 'hyETH'),
