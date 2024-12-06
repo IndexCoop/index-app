@@ -4,6 +4,7 @@ import { ProductRow } from '@/app/products/types/product'
 
 export type ProductRowItemProps = {
   isLoading: boolean
+  hideApyColumn: boolean
   product: ProductRow
 }
 

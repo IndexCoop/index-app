@@ -1,65 +1,71 @@
-import { ProductTheme, ProductType } from '@/app/products/types/product'
+import { ProductRow } from '@/app/products/types/product'
+import {
+  buildEarnTradePath,
+  buildLeverageTradePath,
+  buildSwapTradePath,
+} from '@/app/products/utils/trade-path'
+import { BASE } from '@/constants/chains'
 import { getTokenBySymbol } from '@/lib/utils/tokens'
 
-export const productTokens = [
+export const productTokens: ProductRow[] = [
   {
     ...getTokenBySymbol('eth2x'),
     hasApy: false,
-    theme: ProductTheme.ETH,
-    type: ProductType.LEVERAGE,
+    listType: 'Strategies',
+    tradeHref: buildLeverageTradePath('eth2x'),
   },
   {
     ...getTokenBySymbol('dpi'),
     hasApy: false,
-    theme: ProductTheme.DEFI,
-    type: ProductType.INDEX,
+    listType: 'Strategies',
+    tradeHref: buildSwapTradePath('dpi'),
   },
   {
     ...getTokenBySymbol('hyeth'),
     hasApy: true,
-    theme: ProductTheme.ETH,
-    type: ProductType.YIELD,
+    listType: 'Earn',
+    tradeHref: buildEarnTradePath('hyETH'),
   },
   {
     ...getTokenBySymbol('iceth'),
     hasApy: true,
-    theme: ProductTheme.ETH,
-    type: ProductType.YIELD,
+    listType: 'Earn',
+    tradeHref: buildEarnTradePath('icETH'),
   },
   {
     ...getTokenBySymbol('mvi'),
     hasApy: false,
-    theme: ProductTheme.METAVERSE,
-    type: ProductType.INDEX,
+    listType: 'Strategies',
+    tradeHref: buildSwapTradePath('mvi'),
   },
   {
     ...getTokenBySymbol('btc2x'),
     hasApy: false,
-    theme: ProductTheme.BTC,
-    type: ProductType.LEVERAGE,
+    listType: 'Strategies',
+    tradeHref: buildLeverageTradePath('btc2x'),
   },
   {
     ...getTokenBySymbol('dseth'),
     hasApy: true,
-    theme: ProductTheme.ETH,
-    type: ProductType.YIELD,
+    listType: 'Earn',
+    tradeHref: buildEarnTradePath('dsETH'),
   },
   {
     ...getTokenBySymbol('bed'),
     hasApy: false,
-    theme: ProductTheme.DEFI,
-    type: ProductType.INDEX,
+    listType: 'Strategies',
+    tradeHref: buildSwapTradePath('bed'),
   },
   {
-    ...getTokenBySymbol('gtceth'),
+    ...getTokenBySymbol('icusd'),
     hasApy: true,
-    theme: ProductTheme.ETH,
-    type: ProductType.YIELD,
+    listType: 'Earn',
+    tradeHref: buildEarnTradePath('icUSD', BASE.chainId),
   },
   {
     ...getTokenBySymbol('cdeti'),
     hasApy: false,
-    theme: ProductTheme.ETH,
-    type: ProductType.INDEX,
+    listType: 'Strategies',
+    tradeHref: buildSwapTradePath('cdeti'),
   },
 ]

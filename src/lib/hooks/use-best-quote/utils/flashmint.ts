@@ -1,8 +1,9 @@
+import { isAddressEqual } from '@indexcoop/tokenlists'
 import { Hex } from 'viem'
 
 import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
-import { Token } from '@/constants/tokens'
-import { formatWei } from '@/lib/utils'
+import { ICUSD, Token } from '@/constants/tokens'
+import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
@@ -22,6 +23,7 @@ async function getEnhancedFlashMintQuote(
   inputToken: Token,
   outputToken: Token,
   indexTokenAmount: bigint,
+  inputTokenAmount: bigint,
   inputTokenPrice: number,
   outputTokenPrice: number,
   slippage: number,
@@ -63,6 +65,13 @@ async function getEnhancedFlashMintQuote(
       request.inputAmount = indexTokenAmount.toString()
     }
 
+    if (
+      (isMinting && isAddressEqual(outputToken.address, ICUSD.address)) ||
+      (!isMinting && isAddressEqual(inputToken.address, ICUSD.address))
+    ) {
+      // icUSD routing requires to set the input amount as well.
+      request.inputAmount = inputTokenAmount.toString()
+    }
     const response = await fetch('/api/quote', {
       method: 'POST',
       body: JSON.stringify(request),
@@ -188,6 +197,7 @@ export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
       inputToken,
       outputToken,
       indexTokenAmount,
+      parseUnits(inputTokenAmount, inputToken.decimals),
       inputTokenPrice,
       outputTokenPrice,
       slippage,

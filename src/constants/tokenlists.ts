@@ -12,6 +12,7 @@ import {
   HighYieldETHIndex,
   ic21,
   icETHIndex,
+  ICUSD,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
   IndexToken,
@@ -68,6 +69,7 @@ export const indicesTokenList = isDevEnv
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
       IndexToken,
+      ICUSD,
     ]
   : [
       IndexCoopEthereum2xIndex,
@@ -84,4 +86,5 @@ export const indicesTokenList = isDevEnv
       Bitcoin2xFlexibleLeverageIndex,
       BedIndex,
       IndexToken,
+      ICUSD,
     ]

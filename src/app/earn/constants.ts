@@ -1,22 +1,8 @@
-import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import {
-  DiversifiedStakedETHIndex,
-  ETH,
-  HighYieldETHIndex,
-  icETHIndex,
-  Token,
-  USDC,
-  USDT,
-  WBTC,
-  WETH,
-} from '@/constants/tokens'
-import { getAddressForToken } from '@/lib/utils/tokens'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { base, mainnet } from 'viem/chains'
 
-export const yieldTokens = [
-  HighYieldETHIndex,
-  icETHIndex,
-  DiversifiedStakedETHIndex,
-]
+import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
+import { ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 // TODO: Use new tokenlists
 export function getCurrencyTokens(chainId: number): Token[] {
@@ -31,19 +17,37 @@ export function getCurrencyTokens(chainId: number): Token[] {
   }
 }
 
+export function getTagline(indexTokenSymbol: string): string {
+  switch (indexTokenSymbol.toLowerCase()) {
+    case 'dseth':
+      return 'The leading Ethereum liquid staking tokens on Ethereum.'
+    case 'hyeth':
+      return 'The highest ETH-denominated yields on Ethereum Mainnet.'
+    case 'iceth':
+      return 'ETH staking returns using a leveraged liquid staking strategy.'
+    case 'icusd':
+      return 'The largest USDC lending opportunities on Base.'
+    default:
+      return ''
+  }
+}
+
+const yieldTokens = [
+  getTokenByChainAndSymbol(base.id, 'icUSD'),
+  getTokenByChainAndSymbol(mainnet.id, 'hyETH'),
+  getTokenByChainAndSymbol(mainnet.id, 'icETH'),
+  getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
+]
+
 // TODO: Use new tokenlists
-export function getYieldTokens(chainId: number): Token[] {
-  const tokens: (Token | null)[] = yieldTokens.map((token) => {
-    const address = getAddressForToken(token, chainId)
-    if (!address) {
-      return null
-    }
+export function getYieldTokens(): Token[] {
+  const tokens: Token[] = yieldTokens.map((token) => {
     return {
       ...token,
-      address,
+      image: token.logoURI,
     }
   })
-  return tokens.filter((token): token is Token => token !== null)
+  return tokens
 }
 
 export const supportedNetworks = [

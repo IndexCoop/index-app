@@ -11,10 +11,10 @@ type GasFeesProps = {
 
 export function GasFees(props: GasFeesProps) {
   return (
-    <div className='text-ic-gray-300 flex flex-row items-center justify-between gap-[6px] text-xs font-medium'>
+    <div className='text-ic-gray-600 dark:text-ic-gray-300 flex flex-row items-center justify-between gap-[6px] text-xs font-medium'>
       <div>
         <svg
-          className='text-ic-gray-400 fill-current'
+          className='text-ic-gray-600 dark:text-ic-gray-400 fill-current'
           width='10'
           height='11'
           viewBox='0 0 10 11'
@@ -27,12 +27,16 @@ export function GasFees(props: GasFeesProps) {
       <div className='flex flex-row gap-1'>
         <div
           className={clsx(
-            props.styles ? props.styles.valueUsdTextColor : 'text-ic-white',
+            props.styles
+              ? props.styles.valueUsdTextColor
+              : 'text-ic-black dark:text-ic-white font-medium',
           )}
         >
           {props.valueUsd}
         </div>
-        <div className={clsx(props.styles?.valueTextColor ?? '')}>
+        <div
+          className={clsx('font-normal', props.styles?.valueTextColor ?? '')}
+        >
           {props.value ?? ''}
         </div>
       </div>
