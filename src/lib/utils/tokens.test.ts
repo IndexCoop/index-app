@@ -1,18 +1,14 @@
 import { currencies } from '@/constants/tokenlists'
 import {
-  Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
   DAI,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH,
-  Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   GUSD,
   ic21,
   icETHIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopEthereum2xIndex,
   LeveragedRethStakingYield,
   MATIC,
   STETH,
@@ -73,24 +69,6 @@ describe('getCurrencyTokensForIndex()', () => {
     expect(currencyTokens).toEqual(defaultTokens)
   })
 
-  test('returns correct currency tokens for BTC2x-FLI', async () => {
-    const chainId = 1
-    const token = Bitcoin2xFlexibleLeverageIndex
-    const requiredTokens = [
-      IndexCoopBitcoin2xIndex,
-      ...getCurrencyTokens(chainId),
-    ]
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(requiredTokens.length)
-    for (const requiredToken of requiredTokens) {
-      expect(
-        currencyTokens.filter(
-          (currency) => currency.symbol === requiredToken.symbol,
-        ).length,
-      ).toEqual(1)
-    }
-  })
-
   test('returns correct tokens for cdETI', async () => {
     const chainId = 1
     const token = CoinDeskEthTrendIndex
@@ -134,24 +112,6 @@ describe('getCurrencyTokensForIndex()', () => {
       expect(
         currencyTokens.filter((currency) => currency.symbol === requiredToken)
           .length,
-      ).toEqual(1)
-    }
-  })
-
-  test('returns correct currency tokens for ETH2x-FLI', async () => {
-    const chainId = 1
-    const token = Ethereum2xFlexibleLeverageIndex
-    const requiredTokens = [
-      IndexCoopEthereum2xIndex,
-      ...getCurrencyTokens(chainId),
-    ]
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(requiredTokens.length)
-    for (const requiredToken of requiredTokens) {
-      expect(
-        currencyTokens.filter(
-          (currency) => currency.symbol === requiredToken.symbol,
-        ).length,
       ).toEqual(1)
     }
   })

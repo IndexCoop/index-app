@@ -6,7 +6,6 @@ import { Token } from '@/constants/tokens'
 import {
   isAvailableForFlashMint,
   isAvailableForIssuance,
-  isAvailableForRedemption,
   isAvailableForSwap,
 } from '@/lib/hooks/use-best-quote/utils/available'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
@@ -106,8 +105,7 @@ export const useBestQuote = (
       const fetchFlashMintQuote = async () => {
         if (
           canFlashmintIndexToken &&
-          !isAvailableForIssuance(inputToken, outputToken) &&
-          !isAvailableForRedemption(inputToken, outputToken)
+          !isAvailableForIssuance(inputToken, outputToken)
         ) {
           setIsFetchingFlashMint(true)
           const quoteFlashMint = await getFlashMintQuote({
@@ -154,8 +152,7 @@ export const useBestQuote = (
       const fetchIndexSwapQuote = async () => {
         if (
           canSwapIndexToken &&
-          !isAvailableForIssuance(inputToken, outputToken) &&
-          !isAvailableForRedemption(inputToken, outputToken)
+          !isAvailableForIssuance(inputToken, outputToken)
         ) {
           setIsFetching0x(true)
           try {
@@ -208,39 +205,6 @@ export const useBestQuote = (
   )
 
   useEffect(() => {
-    if (isAvailableForRedemption(inputToken, outputToken)) {
-      const results = {
-        bestQuote: QuoteType.redemption,
-        results: {
-          flashmint: {
-            type: QuoteType.flashmint,
-            isAvailable: false,
-            quote: null,
-            error: null,
-          },
-          index: {
-            type: QuoteType.index,
-            isAvailable: false,
-            quote: null,
-            error: null,
-          },
-          issuance: {
-            type: QuoteType.issuance,
-            isAvailable: true,
-            quote: null,
-            error: null,
-          },
-          redemption: {
-            type: QuoteType.redemption,
-            isAvailable: true,
-            quote: quoteRedemption,
-            error: null,
-          },
-        },
-      }
-      setQuoteResults(results)
-      return
-    }
     const bestQuote = getBestQuote(
       quote0x?.fullCostsInUsd ?? null,
       quoteFlashMint?.fullCostsInUsd ?? null,
