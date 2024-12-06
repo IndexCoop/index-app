@@ -118,6 +118,7 @@ export const useBestQuote = (
             outputToken,
             outputTokenPrice,
           })
+          console.log(quoteFlashMint)
           logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
           setIsFetchingFlashMint(false)
           setQuoteFlashmint(quoteFlashMint)
