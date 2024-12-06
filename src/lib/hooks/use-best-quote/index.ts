@@ -9,10 +9,7 @@ import {
   isAvailableForRedemption,
   isAvailableForSwap,
 } from '@/lib/hooks/use-best-quote/utils/available'
-import {
-  getEnhancedIssuanceQuote,
-  getEnhancedRedemptionQuote,
-} from '@/lib/hooks/use-best-quote/utils/issuance'
+import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { parseUnits } from '@/lib/utils'
@@ -55,8 +52,6 @@ export const useBestQuote = (
   const [isFetching0x, setIsFetching0x] = useState<boolean>(false)
   const [isFetchingFlashmint, setIsFetchingFlashMint] = useState<boolean>(false)
   const [isFetchingIssuance, setIsFetchingIssuance] = useState<boolean>(false)
-  const [isFetchingRedemption, setIsFetchingRedemption] =
-    useState<boolean>(false)
 
   const [quote0x, setQuote0x] = useState<ZeroExQuote | null>(null)
   const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
@@ -106,10 +101,6 @@ export const useBestQuote = (
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
-      const canRedeemIndexToken = isAvailableForRedemption(
-        inputToken,
-        outputToken,
-      )
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
       const fetchFlashMintQuote = async () => {
@@ -160,32 +151,6 @@ export const useBestQuote = (
         }
       }
 
-      const fetchRedemptionQuote = async () => {
-        if (
-          canRedeemIndexToken &&
-          !isAvailableForIssuance(inputToken, outputToken)
-        ) {
-          setIsFetchingRedemption(true)
-          const quoteRedemption = await getEnhancedRedemptionQuote(
-            {
-              ...request,
-              account: address,
-              indexTokenAmount: inputTokenAmountWei,
-              inputToken,
-              inputTokenPrice,
-              outputToken,
-              outputTokenPrice,
-            },
-            publicClient,
-          )
-          logEvent('Quote Received', formatQuoteAnalytics(quoteRedemption))
-          setIsFetchingRedemption(false)
-          setQuoteRedemption(quoteRedemption)
-        } else {
-          setQuoteRedemption(null)
-        }
-      }
-
       const fetchIndexSwapQuote = async () => {
         if (
           canSwapIndexToken &&
@@ -224,7 +189,6 @@ export const useBestQuote = (
       } else {
         fetchIndexSwapQuote()
         fetchIssuanceQuote()
-        fetchRedemptionQuote()
         fetchFlashMintQuote()
       }
     },
@@ -344,7 +308,6 @@ export const useBestQuote = (
     isFetching0x,
     isFetchingFlashmint,
     isFetchingIssuance,
-    isFetchingRedemption,
     quoteResults,
   }
 }
