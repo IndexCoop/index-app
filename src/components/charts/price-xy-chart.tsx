@@ -84,7 +84,7 @@ function PriceXYChart({
       <Axis
         orientation='left'
         numTicks={5}
-        tickFormat={(d) => d.toFixed(maxDomainY >= 1000 ? 0 : 2)}
+        tickFormat={(d) => `$${d.toFixed(maxDomainY >= 1000 ? 0 : 2)}`}
       />
       <Axis orientation='bottom' numTicks={5} />
       <AnimatedLineSeries {...seriesAccessors} dataKey='prices' data={data} />
