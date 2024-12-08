@@ -1,5 +1,4 @@
 import {
-  Bitcoin2xFlexibleLeverageIndex,
   ETH,
   HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
@@ -10,31 +9,6 @@ import { Quote, QuoteType, ZeroExQuote } from '../types'
 import { getQuoteResults } from './quote-results'
 
 describe('getQuoteResults', () => {
-  it('returns redemption quote', async () => {
-    const redemptionQuote = mockQuote
-    redemptionQuote.type = QuoteType.redemption
-    const quoteResults = getQuoteResults(
-      IndexCoopBitcoin2xIndex,
-      Bitcoin2xFlexibleLeverageIndex,
-      IndexCoopBitcoin2xIndex,
-      null,
-      null,
-      null,
-      redemptionQuote,
-    )
-    expect(quoteResults.bestQuote).toEqual(QuoteType.redemption)
-    const results = quoteResults.results
-    expect(results.flashmint?.quote).toBeNull()
-    expect(results.index?.quote).toBeNull()
-    expect(results.issuance?.quote).toBeNull()
-    expect(results.redemption).toEqual({
-      type: QuoteType.redemption,
-      isAvailable: true,
-      quote: redemptionQuote,
-      error: null,
-    })
-  })
-
   it('returns best quote', async () => {
     const flashmintQuote = mockQuote
     flashmintQuote.type = QuoteType.flashmint
@@ -49,12 +23,8 @@ describe('getQuoteResults', () => {
     }
     const quoteResults = getQuoteResults(
       HighYieldETHIndex,
-      ETH,
-      HighYieldETHIndex,
       indexQuote,
       flashmintQuote,
-      null,
-      null,
     )
     expect(quoteResults.bestQuote).toEqual(QuoteType.flashmint)
     const results = quoteResults.results
@@ -70,7 +40,7 @@ const mockQuote: Quote = {
   chainId: 1,
   contract: '0x0',
   isMinting: true,
-  inputToken: Bitcoin2xFlexibleLeverageIndex,
+  inputToken: ETH,
   outputToken: IndexCoopBitcoin2xIndex,
   gas: BigInt(0),
   gasPrice: BigInt(0),
