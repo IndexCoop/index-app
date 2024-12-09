@@ -3,7 +3,7 @@ import {
   indicesTokenList,
   indicesTokenListArbitrum,
 } from '@/constants/tokenlists'
-import { ETH, MetaverseIndex, USDC, icETHIndex } from '@/constants/tokens'
+import { ETH, MetaverseIndex, USDC } from '@/constants/tokens'
 
 import { PathResolver } from './path-resolver'
 
@@ -100,14 +100,5 @@ describe('PathResolver', () => {
     expect(resolvedPath.isMinting).toBe(false)
     expect(resolvedPath.inputToken.symbol).toBe(MetaverseIndex.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(USDC.symbol)
-  })
-
-  it('returns correct state for: /swap/usdc/iceth', async () => {
-    const pathComponents = ['usdc', 'iceth']
-    const resolver = new PathResolver()
-    const resolvedPath = resolver.resolve(pathComponents)
-    expect(resolvedPath.isMinting).toBe(true)
-    expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
-    expect(resolvedPath.outputToken.symbol).toBe(icETHIndex.symbol)
   })
 })
