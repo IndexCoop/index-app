@@ -100,15 +100,15 @@ const defaultParams = {
 
 export function EarnProvider(props: { children: any }) {
   const publicClient = usePublicClient()
-  const { chainId: chainIdRaw, switchChain } = useNetwork()
+  const { chainId: chainIdRaw } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
     queryParams: {
-      queryNetwork,
       queryInputToken,
       queryOutputToken,
       queryIsMinting,
+      queryNetwork,
     },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
@@ -130,13 +130,6 @@ export function EarnProvider(props: { children: any }) {
   const chainId = useMemo(() => {
     return chainIdRaw ?? MAINNET.chainId
   }, [chainIdRaw])
-
-  useEffect(() => {
-    // queryNetwork is only set on the initial load
-    if (queryNetwork) {
-      switchChain({ chainId: queryNetwork })
-    }
-  }, [queryNetwork, switchChain])
 
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
@@ -274,8 +267,13 @@ export function EarnProvider(props: { children: any }) {
   useEffect(() => {
     if (inputToken === null || outputToken === null) return
 
-    updateQueryParams({ isMinting, inputToken, outputToken })
-  }, [isMinting, inputToken, outputToken, updateQueryParams])
+    updateQueryParams({
+      isMinting,
+      inputToken,
+      outputToken,
+      network: queryNetwork,
+    })
+  }, [isMinting, inputToken, outputToken, updateQueryParams, queryNetwork])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -429,19 +427,7 @@ export function EarnProvider(props: { children: any }) {
       quote: null,
       error: null,
     })
-    updateQueryParams({
-      isMinting: queryIsMinting,
-      inputToken: queryInputToken,
-      outputToken: queryOutputToken,
-      network: chainId,
-    })
-  }, [
-    chainId,
-    queryIsMinting,
-    queryInputToken,
-    queryOutputToken,
-    updateQueryParams,
-  ])
+  }, [chainId, queryIsMinting, queryInputToken, queryOutputToken])
 
   return (
     <EarnContext.Provider

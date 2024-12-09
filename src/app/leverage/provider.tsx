@@ -118,8 +118,7 @@ const defaultParams = {
 }
 
 export function LeverageProvider(props: { children: any }) {
-  const publicClient = usePublicClient()
-  const { chainId: chainIdRaw, switchChain } = useNetwork()
+  const { chainId: chainIdRaw } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
@@ -133,7 +132,7 @@ export function LeverageProvider(props: { children: any }) {
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
-  const [baseToken, setBaseToken] = useState<Token>(ETH)
+  const publicClient = usePublicClient({ chainId: chainIdRaw })
 
   const [leverageType, setLeverageType] =
     useState<LeverageType>(queryLeverageType)
@@ -162,16 +161,11 @@ export function LeverageProvider(props: { children: any }) {
     return chainIdRaw ?? ARBITRUM.chainId
   }, [chainIdRaw])
 
-  useEffect(() => {
-    // queryNetwork is only set on the initial load
-    if (queryNetwork) {
-      switchChain({ chainId: queryNetwork })
-    }
-  }, [queryNetwork, switchChain])
-
   const baseTokens = useMemo(() => {
     return getBaseTokens(chainId)
   }, [chainId])
+
+  const [baseToken, setBaseToken] = useState<Token>(baseTokens[0] ?? ETH)
 
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
@@ -308,10 +302,22 @@ export function LeverageProvider(props: { children: any }) {
 
     const inputOutputToken = isMinting ? outputToken : inputToken
 
-    updateQueryParams({ isMinting, inputToken, outputToken })
+    updateQueryParams({
+      isMinting,
+      inputToken,
+      outputToken,
+      network: queryNetwork,
+    })
     if (carryCosts)
       setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
-  }, [isMinting, inputToken, outputToken, carryCosts, updateQueryParams])
+  }, [
+    isMinting,
+    inputToken,
+    outputToken,
+    carryCosts,
+    queryNetwork,
+    updateQueryParams,
+  ])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -490,9 +496,12 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, flashmintQuote, swapQuote])
 
   useEffect(() => {
+    setBaseToken(baseTokens[0] ?? ETH)
+  }, [chainId, baseTokens])
+
+  useEffect(() => {
     // Reset quotes
     setMinting(queryIsMinting)
-    setBaseToken(ETH)
     setInputToken(queryInputToken)
     setOutputToken(queryOutputToken)
     setLeverageType(queryLeverageType)
@@ -502,20 +511,12 @@ export function LeverageProvider(props: { children: any }) {
       quote: null,
       error: null,
     })
-    updateQueryParams({
-      isMinting: queryIsMinting,
-      leverageType: queryLeverageType,
-      inputToken: queryInputToken,
-      outputToken: queryOutputToken,
-      network: chainId,
-    })
   }, [
     chainId,
     queryIsMinting,
     queryInputToken,
     queryOutputToken,
     queryLeverageType,
-    updateQueryParams,
   ])
 
   return (
