@@ -1,4 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { base } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
 import {
@@ -140,4 +141,9 @@ export function isTokenPairTradable(
   const outputTokenIsDangerous =
     outputToken?.tags.some((tag) => tag === 'dangerous') ?? true
   return !inputTokenIsDangerous && !outputTokenIsDangerous
+}
+
+export function digitsByAddress(address: string): number {
+  if (address === getTokenByChainAndSymbol(base.id, 'icUSD').address) return 4;
+  return 2;
 }
