@@ -8,17 +8,13 @@ import {
   indicesTokenListArbitrum,
 } from '@/constants/tokenlists'
 import {
-  Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
   DAI,
   DiversifiedStakedETHIndex,
   ETH,
-  Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   GUSD,
   icETHIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopEthereum2xIndex,
   LeveragedRethStakingYield,
   MATIC,
   RETH,
@@ -81,12 +77,6 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === LeveragedRethStakingYield.symbol)
     return [ETH, WETH, USDC, GUSD, RETH]
   const currencyTokens = getCurrencyTokens(chainId)
-  if (index.symbol === Bitcoin2xFlexibleLeverageIndex.symbol) {
-    return [IndexCoopBitcoin2xIndex, ...currencyTokens]
-  }
-  if (index.symbol === Ethereum2xFlexibleLeverageIndex.symbol) {
-    return [IndexCoopEthereum2xIndex, ...currencyTokens]
-  }
   return currencyTokens
 }
 

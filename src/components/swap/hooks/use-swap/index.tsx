@@ -17,7 +17,6 @@ import {
 } from './formatters'
 import {
   FormattedQuoteDisplay,
-  getFormattedQuoteRedemptionResult,
   getFormattedQuoteResults,
 } from './formatters/result'
 import { buildTradeDetails } from './trade-details-builder'
@@ -50,7 +49,6 @@ export function useSwap(
   isFetchingQuote: boolean,
   isFetching0x: boolean,
   isFetchingFlashmint: boolean,
-  isFetchingRedemption: boolean,
 ): SwapData {
   const { slippage } = useSlippage()
   const { address } = useWallet()
@@ -120,9 +118,11 @@ export function useSwap(
     [quoteResults.bestQuote],
   )
   // Formatted quote results
-  const formattedQuoteResults = isRedemption
-    ? getFormattedQuoteRedemptionResult(quoteResults, isFetchingRedemption)
-    : getFormattedQuoteResults(quoteResults, isFetching0x, isFetchingFlashmint)
+  const formattedQuoteResults = getFormattedQuoteResults(
+    quoteResults,
+    isFetching0x,
+    isFetchingFlashmint,
+  )
 
   // Trade data
   const tradeData: TradeInfoItem[] = isRedemption

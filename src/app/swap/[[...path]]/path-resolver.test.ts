@@ -3,16 +3,7 @@ import {
   indicesTokenList,
   indicesTokenListArbitrum,
 } from '@/constants/tokenlists'
-import {
-  Bitcoin2xFlexibleLeverageIndex,
-  ETH,
-  Ethereum2xFlexibleLeverageIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopEthereum2xIndex,
-  MetaverseIndex,
-  USDC,
-  icETHIndex,
-} from '@/constants/tokens'
+import { ETH, MetaverseIndex, USDC, icETHIndex } from '@/constants/tokens'
 
 import { PathResolver } from './path-resolver'
 
@@ -118,29 +109,5 @@ describe('PathResolver', () => {
     expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
     expect(resolvedPath.outputToken.symbol).toBe(icETHIndex.symbol)
-  })
-
-  it.skip('returns correct state for: /swap/eth2x-fli/eth2x', async () => {
-    const pathComponents = ['eth2x-fli', 'eth2x']
-    const resolver = new PathResolver()
-    const resolvedPath = resolver.resolve(pathComponents)
-    expect(resolvedPath.isMinting).toBe(false)
-    expect(resolvedPath.inputToken.symbol).toBe(
-      Ethereum2xFlexibleLeverageIndex.symbol,
-    )
-    expect(resolvedPath.outputToken.symbol).toBe(
-      IndexCoopEthereum2xIndex.symbol,
-    )
-  })
-
-  it.skip('returns correct state for: /swap/btc2x-fli/btc2x', async () => {
-    const pathComponents = ['btc2x-fli', 'btc2x']
-    const resolver = new PathResolver()
-    const resolvedPath = resolver.resolve(pathComponents)
-    expect(resolvedPath.isMinting).toBe(false)
-    expect(resolvedPath.inputToken.symbol).toBe(
-      Bitcoin2xFlexibleLeverageIndex.symbol,
-    )
-    expect(resolvedPath.outputToken.symbol).toBe(IndexCoopBitcoin2xIndex.symbol)
   })
 })
