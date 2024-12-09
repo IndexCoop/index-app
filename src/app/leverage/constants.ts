@@ -1,38 +1,20 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import {
-  BTC,
-  ETH,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseBitcoinIndex,
-  IndexCoopInverseEthereumIndex,
-  Token,
-  USDC,
-  USDT,
-  WBTC,
-  WETH,
-} from '@/constants/tokens'
-import { getAddressForToken } from '@/lib/utils/tokens'
+import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 import { LeverageToken, LeverageType } from './types'
 
-export const ethLeverageTokens = [
-  IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseEthereumIndex,
-]
+const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X']
 
-export const btcLeverageTokens = [
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopInverseBitcoinIndex,
-]
+const btcLeverageTokensSymbols = ['BTC2X', 'BTC3X', 'iBTC1X']
 
-export const leverageTokens = [...ethLeverageTokens, ...btcLeverageTokens]
+export const leverageTokens = [
+  ...ethLeverageTokenSymbols,
+  ...btcLeverageTokensSymbols,
+]
 
 export function getBaseTokens(chainId: number): Token[] {
   switch (chainId) {
@@ -59,16 +41,17 @@ export function getCurrencyTokens(chainId: number): Token[] {
 }
 
 export function getLeverageTokens(chainId: number): LeverageToken[] {
-  const tokens: (LeverageToken | null)[] = leverageTokens.map((token) => {
+  const tokens: (LeverageToken | null)[] = leverageTokens.map((tokenSymbol) => {
+    const token = getTokenByChainAndSymbol(chainId, tokenSymbol)
+    if (!token) return null
     const baseToken = getLeverageBaseToken(token.symbol)
-    const address = getAddressForToken(token, chainId)
     const leverageType = getLeverageType(token.symbol)
-    if (!baseToken || !address || leverageType === null) {
+    if (!baseToken || !token.address || leverageType === null) {
       return null
     }
     return {
       ...token,
-      address,
+      image: token.logoURI,
       baseToken: baseToken.symbol,
       leverageType,
     }
