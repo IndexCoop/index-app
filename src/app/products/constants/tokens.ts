@@ -1,3 +1,6 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { base, mainnet } from 'viem/chains'
+
 import { ProductRow } from '@/app/products/types/product'
 import {
   buildEarnTradePath,
@@ -5,65 +8,64 @@ import {
   buildSwapTradePath,
 } from '@/app/products/utils/trade-path'
 import { BASE } from '@/constants/chains'
-import { getTokenBySymbol } from '@/lib/utils/tokens'
 
 export const productTokens: ProductRow[] = [
   {
-    ...getTokenBySymbol('eth2x'),
+    ...getTokenByChainAndSymbol(mainnet.id, 'ETH2X'),
     hasApy: false,
     listType: 'Strategies',
     tradeHref: buildLeverageTradePath('eth2x'),
   },
   {
-    ...getTokenBySymbol('dpi'),
+    ...getTokenByChainAndSymbol(mainnet.id, 'DPI'),
     hasApy: false,
     listType: 'Strategies',
     tradeHref: buildSwapTradePath('dpi'),
   },
   {
-    ...getTokenBySymbol('hyeth'),
+    ...getTokenByChainAndSymbol(mainnet.id, 'hyETH'),
     hasApy: true,
     listType: 'Earn',
     tradeHref: buildEarnTradePath('hyETH'),
   },
   {
-    ...getTokenBySymbol('iceth'),
+    ...getTokenByChainAndSymbol(mainnet.id, 'icETH'),
     hasApy: true,
     listType: 'Earn',
     tradeHref: buildEarnTradePath('icETH'),
   },
   {
-    ...getTokenBySymbol('mvi'),
+    ...getTokenByChainAndSymbol(mainnet.id, 'MVI'),
     hasApy: false,
     listType: 'Strategies',
     tradeHref: buildSwapTradePath('mvi'),
   },
   {
-    ...getTokenBySymbol('btc2x'),
+    ...getTokenByChainAndSymbol(mainnet.id, 'BTC2X'),
     hasApy: false,
     listType: 'Strategies',
     tradeHref: buildLeverageTradePath('btc2x'),
   },
   {
-    ...getTokenBySymbol('dseth'),
+    ...getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
     hasApy: true,
     listType: 'Earn',
     tradeHref: buildEarnTradePath('dsETH'),
   },
   {
-    ...getTokenBySymbol('bed'),
+    ...getTokenByChainAndSymbol(mainnet.id, 'BED'),
     hasApy: false,
     listType: 'Strategies',
     tradeHref: buildSwapTradePath('bed'),
   },
   {
-    ...getTokenBySymbol('icusd'),
+    ...getTokenByChainAndSymbol(base.id, 'icUSD'),
     hasApy: true,
     listType: 'Earn',
     tradeHref: buildEarnTradePath('icUSD', 'USDC', BASE.chainId),
   },
   {
-    ...getTokenBySymbol('cdeti'),
+    ...getTokenByChainAndSymbol(mainnet.id, 'cdETI'),
     hasApy: false,
     listType: 'Strategies',
     tradeHref: buildSwapTradePath('cdeti'),

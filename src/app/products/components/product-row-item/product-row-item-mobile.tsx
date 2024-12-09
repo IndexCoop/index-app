@@ -18,13 +18,13 @@ const rowClassName = 'text-ic-gray-600 text-sm font-medium text-right'
 export function ProductRowItemMobile({
   isLoading,
   hideApyColumn,
-  product: { image, symbol, name, price, delta, apy, tradeHref, tvl },
+  product: { logoURI, symbol, name, price, delta, apy, tradeHref, tvl },
 }: ProductRowItemProps) {
   return (
     <div className='flex flex-col items-center justify-between px-4 py-6 md:hidden'>
       <div className={clsx(rowClassName, 'flex w-full self-start pb-4')}>
         <div className='mr-2 min-w-[30px] overflow-hidden rounded-full'>
-          <Image src={image!} alt={`${symbol} logo`} height={30} width={30} />
+          <Image src={logoURI!} alt={`${symbol} logo`} height={30} width={30} />
         </div>
         <div className='my-auto truncate'>
           <span className='text-ic-gray-950 mr-4 font-semibold'>{name}</span>

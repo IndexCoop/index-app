@@ -3,7 +3,7 @@ export type ProductListType = 'Earn' | 'Strategies'
 export type ProductRow = {
   address?: string
   hasApy: boolean
-  image?: string
+  logoURI?: string
   symbol?: string
   name?: string
   listType: ProductListType
