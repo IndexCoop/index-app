@@ -134,6 +134,6 @@ export function isTokenPairTradable(
 }
 
 export function digitsByAddress(address: string): number {
-  if (address === getTokenByChainAndSymbol(base.id, 'icUSD').address) return 4;
-  return 2;
+  if (address === getTokenByChainAndSymbol(base.id, 'icUSD').address) return 4
+  return 2
 }
