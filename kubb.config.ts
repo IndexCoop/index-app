@@ -35,7 +35,7 @@ const config = defineConfig({
       dateType: 'date',
     }),
     pluginClient({
-      baseURL: 'https://api.indexcoop/v2',
+      baseURL: 'https://api.indexcoop.com/v2',
       output: {
         path: './clients/axios',
         barrelType: 'propagate',
