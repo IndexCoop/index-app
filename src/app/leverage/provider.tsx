@@ -18,7 +18,7 @@ import { usePublicClient } from 'wagmi'
 
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM } from '@/constants/chains'
-import { ETH, IndexCoopEthereum2xIndex, Token } from '@/constants/tokens'
+import { ETH, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
@@ -42,6 +42,8 @@ import {
 } from './constants'
 import { BaseTokenStats, LeverageToken, LeverageType } from './types'
 import { getLeverageType } from './utils/get-leverage-type'
+
+const eth2x = getTokenByChainAndSymbol(1, 'ETH2X')
 
 export interface TokenContext {
   inputValue: string
@@ -81,13 +83,13 @@ export const LeverageTokenContext = createContext<TokenContext>({
   leverageType: LeverageType.Long2x,
   balances: [],
   baseToken: ETH,
-  indexToken: IndexCoopEthereum2xIndex,
+  indexToken: { ...eth2x, image: eth2x.logoURI },
   indexTokens: [],
   indexTokenPrice: 0,
   nav: 0,
   navchange: 0,
   inputToken: ETH,
-  outputToken: IndexCoopEthereum2xIndex,
+  outputToken: { ...eth2x, image: eth2x.logoURI },
   inputTokenAmount: BigInt(0),
   baseTokens: [],
   costOfCarry: null,
@@ -114,7 +116,8 @@ const defaultParams = {
   leverageType: LeverageType.Long2x,
   inputToken: ETH,
   outputToken: {
-    ...IndexCoopEthereum2xIndex,
+    ...eth2x,
+    image: eth2x.logoURI,
     leverageType: LeverageType.Long2x,
     baseToken: ETH.symbol,
   } as LeverageToken,

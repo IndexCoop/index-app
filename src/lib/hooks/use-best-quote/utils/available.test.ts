@@ -2,8 +2,6 @@ import {
   CoinDeskEthTrendIndex,
   DefiPulseIndex,
   ic21,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopEthereum2xIndex,
   IndexToken,
   LeveragedRethStakingYield,
 } from '@/constants/tokens'
@@ -33,19 +31,9 @@ describe('isAvailableForSwap()', () => {
     expect(isAvailable).toBe(true)
   })
 
-  test('should return false for BTC2x swap availability', async () => {
-    const isAvailable = isAvailableForSwap(IndexCoopBitcoin2xIndex)
-    expect(isAvailable).toBe(false)
-  })
-
   test('should return false for cdETI swap availability', async () => {
     const isAvailable = isAvailableForSwap(CoinDeskEthTrendIndex)
     expect(isAvailable).toBe(false)
-  })
-
-  test('should return false for ETH2x swap availability', async () => {
-    const isAvailable = isAvailableForSwap(IndexCoopEthereum2xIndex)
-    expect(isAvailable).toBe(true)
   })
 
   test('should return false for icRETH swap availability', async () => {

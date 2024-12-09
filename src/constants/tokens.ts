@@ -57,18 +57,6 @@ export const HighYieldETHIndex: Token = {
   image: hyeth.logoURI,
 }
 
-const btc2x = getTokenByChainAndSymbol(mainnet.id, 'BTC2X')
-export const IndexCoopBitcoin2xIndex: Token = {
-  ...btc2x,
-  image: btc2x.logoURI,
-}
-
-const eth2x = getTokenByChainAndSymbol(mainnet.id, 'ETH2X')
-export const IndexCoopEthereum2xIndex: Token = {
-  ...eth2x,
-  image: eth2x.logoURI,
-}
-
 export const IndexToken: Token = {
   name: 'Index Token',
   symbol: 'INDEX',
