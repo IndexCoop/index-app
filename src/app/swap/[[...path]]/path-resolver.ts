@@ -1,12 +1,5 @@
 import { indicesTokenList } from '@/constants/tokenlists'
-import {
-  Bitcoin2xFlexibleLeverageIndex,
-  ETH,
-  Ethereum2xFlexibleLeverageIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopEthereum2xIndex,
-  Token,
-} from '@/constants/tokens'
+import { ETH, Token } from '@/constants/tokens'
 import {
   getCurrencyTokens,
   getCurrencyTokensForIndex,
@@ -42,28 +35,6 @@ export class PathResolver {
     let outputToken = this.resolveToken(
       symbols.outputToken ?? defaultIndex.symbol,
     )
-
-    if (
-      inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopBitcoin2xIndex.symbol
-    ) {
-      return {
-        isMinting: false,
-        inputToken: Bitcoin2xFlexibleLeverageIndex,
-        outputToken: IndexCoopBitcoin2xIndex,
-      }
-    }
-
-    if (
-      inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopEthereum2xIndex.symbol
-    ) {
-      return {
-        isMinting: false,
-        inputToken: Ethereum2xFlexibleLeverageIndex,
-        outputToken: IndexCoopEthereum2xIndex,
-      }
-    }
 
     const inputTokenIsIndex = indicesTokenList.some(
       (token) => token.symbol === inputToken.symbol,

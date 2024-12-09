@@ -1,20 +1,11 @@
 import {
   BedIndex,
-  Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
   DAI,
   DefiPulseIndex,
-  DiversifiedStakedETHIndex,
   ETH,
-  Ethereum2xFlexibleLeverageIndex,
-  GitcoinStakedETHIndex,
   GUSD,
-  HighYieldETHIndex,
   ic21,
-  icETHIndex,
-  ICUSD,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopEthereum2xIndex,
   IndexToken,
   MetaverseIndex,
   RETH,
@@ -42,49 +33,13 @@ export const currencies = [
   WSTETH,
 ]
 
-export const indicesTokenListArbitrum = [
+export const indicesTokenListArbitrum = [DefiPulseIndex, MetaverseIndex]
+
+export const indicesTokenList = [
   DefiPulseIndex,
   MetaverseIndex,
-  HighYieldETHIndex,
+  BedIndex,
+  CoinDeskEthTrendIndex,
+  ic21,
+  IndexToken,
 ]
-
-const isDevEnv =
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'development' ||
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-staging'
-// Keeping a separate list for dev/staging and production to be able to include
-// indices that have not been released yet.
-export const indicesTokenList = isDevEnv
-  ? [
-      IndexCoopEthereum2xIndex,
-      IndexCoopBitcoin2xIndex,
-      CoinDeskEthTrendIndex,
-      ic21,
-      DiversifiedStakedETHIndex,
-      icETHIndex,
-      GitcoinStakedETHIndex,
-      HighYieldETHIndex,
-      DefiPulseIndex,
-      MetaverseIndex,
-      Ethereum2xFlexibleLeverageIndex,
-      Bitcoin2xFlexibleLeverageIndex,
-      BedIndex,
-      IndexToken,
-      ICUSD,
-    ]
-  : [
-      IndexCoopEthereum2xIndex,
-      IndexCoopBitcoin2xIndex,
-      CoinDeskEthTrendIndex,
-      ic21,
-      DiversifiedStakedETHIndex,
-      icETHIndex,
-      GitcoinStakedETHIndex,
-      HighYieldETHIndex,
-      DefiPulseIndex,
-      MetaverseIndex,
-      Ethereum2xFlexibleLeverageIndex,
-      Bitcoin2xFlexibleLeverageIndex,
-      BedIndex,
-      IndexToken,
-      ICUSD,
-    ]
