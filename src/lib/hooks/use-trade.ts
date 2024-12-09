@@ -15,6 +15,12 @@ import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
 import { formatQuoteAnalytics, useAnalytics } from './use-analytics'
 import { BalanceProvider } from './use-balance'
 
+export type TradeCallback = (args: {
+  address: string
+  hash: string
+  quote: Quote
+}) => Promise<void>
+
 const isNativeCurrency = (tokenSymbol: string, chainId: number): boolean => {
   const nativeCurrency = getNativeToken(chainId)
   if (!nativeCurrency) return false
@@ -47,7 +53,11 @@ export const useTrade = () => {
   const [txWouldFail, setTxWouldFail] = useState(false)
 
   const executeTrade = useCallback(
-    async (quote: Quote | null, override: boolean = false) => {
+    async (
+      quote: Quote | null,
+      override: boolean = false,
+      callback?: TradeCallback,
+    ) => {
       if (!address || !chainId || !publicClient || !walletClient || !quote)
         return
       const { inputToken, inputTokenAmount, outputToken } = quote
@@ -90,6 +100,7 @@ export const useTrade = () => {
         })
         logTransaction(chainId ?? -1, hash, formatQuoteAnalytics(quote))
         setIsTransacting(false)
+        callback?.({ address, hash, quote })
       } catch (error) {
         console.info('Override?', override)
         console.warn('Error sending transaction', error)
