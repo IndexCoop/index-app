@@ -356,7 +356,7 @@ export function LeverageProvider(props: { children: any }) {
         }
       }
     },
-    [inputTokens],
+    [indexTokens, inputTokens, isMinting],
   )
 
   const onSelectBaseToken = (tokenSymbol: string) => {

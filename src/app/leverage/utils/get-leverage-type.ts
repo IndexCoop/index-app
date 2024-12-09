@@ -1,4 +1,5 @@
 import { LeverageToken } from '@indexcoop/tokenlists'
+
 import { LeverageType } from '../types'
 
 export const getLeverageAction = ({
