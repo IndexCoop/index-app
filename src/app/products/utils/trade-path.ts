@@ -1,10 +1,11 @@
 export const buildEarnTradePath = (
-  symbol: string,
+  buySymbol: string,
+  sellSymbol: string = 'ETH',
   network: number | string = 1,
-) => `/earn?buy=${symbol}&sell=ETH&network=${network}`
+) => `/earn?buy=${buySymbol}&sell=${sellSymbol}&network=${network}`
 
-export const buildLeverageTradePath = (symbol: string) =>
-  `/leverage?buy=${symbol}&sell=ETH&network=1`
+export const buildLeverageTradePath = (buySymbol: string) =>
+  `/leverage?buy=${buySymbol}&sell=ETH&network=1`
 
-export const buildSwapTradePath = (symbol: string) =>
-  `/swap/eth/${symbol.toLowerCase()}`
+export const buildSwapTradePath = (buySymbol: string) =>
+  `/swap/eth/${buySymbol.toLowerCase()}`
