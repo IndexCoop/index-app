@@ -1,6 +1,9 @@
 'use client'
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import {
+  getTokenByChainAndSymbol,
+  isLeverageToken,
+} from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -340,9 +343,17 @@ export function LeverageProvider(props: { children: any }) {
       const token = inputTokens.find((token) => token.symbol === tokenSymbol)
       if (!token) return
       setInputToken(token)
-      const leverageType = getLeverageType(token.symbol)
-      if (leverageType !== null) {
-        setLeverageType(leverageType)
+      if (!isMinting) {
+        const indexToken = indexTokens.find(
+          (indexToken) =>
+            token.symbol.toLowerCase() === indexToken.symbol.toLowerCase(),
+        )
+        if (!indexToken) return
+        if (!isLeverageToken(indexToken)) return
+        const leverageType = getLeverageType(indexToken)
+        if (leverageType !== null) {
+          setLeverageType(leverageType)
+        }
       }
     },
     [inputTokens],
@@ -358,9 +369,17 @@ export function LeverageProvider(props: { children: any }) {
     const token = outputTokens.find((token) => token.symbol === tokenSymbol)
     if (!token) return
     setOutputToken(token)
-    const leverageType = getLeverageType(token.symbol)
-    if (leverageType !== null) {
-      setLeverageType(leverageType)
+    if (isMinting) {
+      const indexToken = indexTokens.find(
+        (indexToken) =>
+          token.symbol.toLowerCase() === indexToken.symbol.toLowerCase(),
+      )
+      if (!indexToken) return
+      if (!isLeverageToken(indexToken)) return
+      const leverageType = getLeverageType(indexToken)
+      if (leverageType !== null) {
+        setLeverageType(leverageType)
+      }
     }
   }
 

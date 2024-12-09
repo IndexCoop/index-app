@@ -9,8 +9,6 @@ import { NavProvider } from '@/lib/utils/api/nav'
 import { leverageTokens } from '../constants'
 import { EnrichedToken } from '../types'
 
-import { getLeverageType } from './get-leverage-type'
-
 export async function fetchLeverageTokenPrices(
   balances: TokenBalance[],
   setTokens: Dispatch<SetStateAction<EnrichedToken[]>>,
@@ -63,7 +61,7 @@ export async function fetchLeverageTokenPrices(
         parseFloat(formatWei(token.balance, token.decimals)) * tokenPrices[idx]
       return {
         ...token,
-        leverageType: getLeverageType(token.symbol),
+        leverageType: token.leverageType,
         size: formatPrice(usd),
         usd,
         unitPriceUsd: tokenPrices[idx],

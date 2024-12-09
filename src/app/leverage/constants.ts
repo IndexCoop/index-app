@@ -1,4 +1,7 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import {
+  getTokenByChainAndSymbol,
+  isLeverageToken,
+} from '@indexcoop/tokenlists'
 
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
@@ -7,9 +10,9 @@ import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 import { LeverageToken, LeverageType } from './types'
 
-const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X']
+const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X', 'ETH2xBTC']
 
-const btcLeverageTokensSymbols = ['BTC2X', 'BTC3X', 'iBTC1X']
+const btcLeverageTokensSymbols = ['BTC2X', 'BTC3X', 'iBTC1X', 'BTC2xETH']
 
 export const leverageTokens = [
   ...ethLeverageTokenSymbols,
@@ -44,8 +47,9 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
   const tokens: (LeverageToken | null)[] = leverageTokens.map((tokenSymbol) => {
     const token = getTokenByChainAndSymbol(chainId, tokenSymbol)
     if (!token) return null
+    if (!isLeverageToken(token)) return null
     const baseToken = getLeverageBaseToken(token.symbol)
-    const leverageType = getLeverageType(token.symbol)
+    const leverageType = getLeverageType(token)
     if (!baseToken || !token.address || leverageType === null) {
       return null
     }

@@ -1,12 +1,4 @@
-import {
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseBitcoinIndex,
-  IndexCoopInverseEthereumIndex,
-} from '@/constants/tokens'
-
+import { LeverageToken } from '@indexcoop/tokenlists'
 import { LeverageType } from '../types'
 
 export const getLeverageAction = ({
@@ -30,16 +22,14 @@ export const getLeverageAction = ({
   return 'transfer'
 }
 
-export function getLeverageType(symbol: string): LeverageType | null {
-  switch (symbol) {
-    case IndexCoopBitcoin2xIndex.symbol:
-    case IndexCoopEthereum2xIndex.symbol:
+export function getLeverageType(token: LeverageToken): LeverageType | null {
+  const { leverage } = token.extensions
+  switch (leverage.type) {
+    case 'Long2x':
       return LeverageType.Long2x
-    case IndexCoopBitcoin3xIndex.symbol:
-    case IndexCoopEthereum3xIndex.symbol:
+    case 'Long3x':
       return LeverageType.Long3x
-    case IndexCoopInverseBitcoinIndex.symbol:
-    case IndexCoopInverseEthereumIndex.symbol:
+    case 'Short1x':
       return LeverageType.Short
     default:
       return null
