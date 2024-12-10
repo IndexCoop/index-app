@@ -42,7 +42,7 @@ export function useFormattedData() {
   if (legacyQuote) {
     const { outputTokens, outputTokenPricesUsd, units } = legacyQuote
     outputAmounts = outputTokens.map((outputToken, index) =>
-      formatAmount(Number(formatWei(units[index], outputToken.decimals))),
+      formatAmount(Number(formatWei(units[index], outputToken.decimals)), 4),
     )
     outputAmountsUsd = outputTokenPricesUsd.map(
       (price) => `$${formatAmount(price)}`,
