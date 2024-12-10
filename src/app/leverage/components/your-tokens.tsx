@@ -61,7 +61,7 @@ export function YourTokens() {
     if (leverageBaseToken === null) return
     onSelectBaseToken(leverageBaseToken.symbol)
 
-    const leverageType = getLeverageType(token.symbol)
+    const leverageType = getLeverageType(token)
     if (leverageType === null) return
     onSelectLeverageType(leverageType)
 

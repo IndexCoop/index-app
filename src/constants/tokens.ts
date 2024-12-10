@@ -1,5 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { arbitrum, base, mainnet } from 'viem/chains'
+import { base, mainnet } from 'viem/chains'
 
 import {
   bedBorderLogo,
@@ -55,46 +55,6 @@ const hyeth = getTokenByChainAndSymbol(mainnet.id, 'hyETH')
 export const HighYieldETHIndex: Token = {
   ...hyeth,
   image: hyeth.logoURI,
-}
-
-const btc2x = getTokenByChainAndSymbol(mainnet.id, 'BTC2X')
-export const IndexCoopBitcoin2xIndex: Token = {
-  ...btc2x,
-  image: btc2x.logoURI,
-}
-
-const btc3xArbitrum = getTokenByChainAndSymbol(arbitrum.id, 'BTC3X')
-export const IndexCoopBitcoin3xIndex: Token = {
-  ...btc3xArbitrum,
-  address: '',
-  image: btc3xArbitrum.logoURI,
-}
-
-const eth2x = getTokenByChainAndSymbol(mainnet.id, 'ETH2X')
-export const IndexCoopEthereum2xIndex: Token = {
-  ...eth2x,
-  image: eth2x.logoURI,
-}
-
-const eth3xArbitrum = getTokenByChainAndSymbol(arbitrum.id, 'ETH3X')
-export const IndexCoopEthereum3xIndex: Token = {
-  ...eth3xArbitrum,
-  address: '',
-  image: eth3xArbitrum.logoURI,
-}
-
-const ibtc1x = getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X')
-export const IndexCoopInverseBitcoinIndex: Token = {
-  ...ibtc1x,
-  address: '',
-  image: ibtc1x.logoURI,
-}
-
-const ieth1x = getTokenByChainAndSymbol(arbitrum.id, 'iETH1X')
-export const IndexCoopInverseEthereumIndex: Token = {
-  ...ieth1x,
-  address: '',
-  image: ieth1x.logoURI,
 }
 
 export const IndexToken: Token = {

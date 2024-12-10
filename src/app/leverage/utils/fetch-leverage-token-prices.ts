@@ -1,15 +1,13 @@
+import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 import { Dispatch, SetStateAction } from 'react'
 
 import { formatPrice } from '@/app/products/utils/formatters'
 import { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatWei } from '@/lib/utils'
 import { NavProvider } from '@/lib/utils/api/nav'
-import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { leverageTokens } from '../constants'
 import { EnrichedToken } from '../types'
-
-import { getLeverageType } from './get-leverage-type'
 
 export async function fetchLeverageTokenPrices(
   balances: TokenBalance[],
@@ -17,12 +15,14 @@ export async function fetchLeverageTokenPrices(
   chainId: number,
 ) {
   const tokenBalances = balances.reduce((acc, current) => {
-    const token = leverageTokens.find(
-      (leverageToken) =>
-        getAddressForToken(leverageToken, chainId) === current.token,
+    const token = getTokenByChainAndAddress(current.token, chainId)
+    if (!token) return acc
+
+    const isLeverageToken = leverageTokens.some(
+      (leverageTokenSymbol) => leverageTokenSymbol === token.symbol,
     )
 
-    if (!token) return acc
+    if (!isLeverageToken) return acc
 
     const tokenIdx = acc.findIndex(
       (accToken) => accToken.symbol === token.symbol,
@@ -36,6 +36,7 @@ export async function fetchLeverageTokenPrices(
       ...acc,
       {
         ...token,
+        image: token.logoURI,
         balance: current.value,
       },
     ]
@@ -60,7 +61,7 @@ export async function fetchLeverageTokenPrices(
         parseFloat(formatWei(token.balance, token.decimals)) * tokenPrices[idx]
       return {
         ...token,
-        leverageType: getLeverageType(token.symbol),
+        leverageType: token.leverageType,
         size: formatPrice(usd),
         usd,
         unitPriceUsd: tokenPrices[idx],

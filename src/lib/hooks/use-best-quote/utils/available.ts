@@ -2,7 +2,6 @@ import {
   BedIndex,
   CoinDeskEthTrendIndex,
   GitcoinStakedETHIndex,
-  IndexCoopBitcoin2xIndex,
   IndexToken,
   LeveragedRethStakingYield,
   RealWorldAssetIndex,
@@ -35,7 +34,6 @@ export function isAvailableForIssuance(
 export function isAvailableForSwap(token: Token): boolean {
   switch (token.symbol) {
     case CoinDeskEthTrendIndex.symbol:
-    case IndexCoopBitcoin2xIndex.symbol:
     case LeveragedRethStakingYield.symbol:
       return false
     default:

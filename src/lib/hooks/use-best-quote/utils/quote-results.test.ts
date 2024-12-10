@@ -1,8 +1,4 @@
-import {
-  ETH,
-  HighYieldETHIndex,
-  IndexCoopBitcoin2xIndex,
-} from '@/constants/tokens'
+import { ETH, HighYieldETHIndex, MetaverseIndex } from '@/constants/tokens'
 
 import { Quote, QuoteType, ZeroExQuote } from '../types'
 
@@ -41,7 +37,7 @@ const mockQuote: Quote = {
   contract: '0x0',
   isMinting: true,
   inputToken: ETH,
-  outputToken: IndexCoopBitcoin2xIndex,
+  outputToken: MetaverseIndex,
   gas: BigInt(0),
   gasPrice: BigInt(0),
   gasCosts: BigInt(0),
