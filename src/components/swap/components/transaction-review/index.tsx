@@ -62,6 +62,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     <Modal onClose={onCloseModal} isOpen={isOpen} isCentered>
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
       <ModalContent
+        backgroundColor={isDarkMode ? '#1C2C2E' : '#FCFFFF'}
         className={clsx(
           'border-ic-gray-100  mx-4 my-0 rounded-xl border-[2px]',
           isDarkMode ? 'review' : '',
