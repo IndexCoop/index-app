@@ -1,6 +1,5 @@
 export function formatTvl(
   tvl?: number | null,
-  hideDollarSign: boolean = false,
 ) {
   if (tvl === undefined || tvl === null || tvl === 0) return ''
 
@@ -12,7 +11,6 @@ export function formatTvl(
     maximumFractionDigits: 2,
   })
     .format(tvl)
-    .slice(hideDollarSign ? 1 : 0)
 }
 
 export function formatPercentage(

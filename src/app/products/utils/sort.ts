@@ -52,8 +52,6 @@ export function sortProducts(
     case SortBy.TVL:
       return sortProductsByNumber(products, sortBy, sortDirection)
     case SortBy.Product:
-    case SortBy.Theme:
-    case SortBy.Type:
       return sortProductsByString(products, sortBy, sortDirection)
     default:
       console.warn(`Unknown sort key [${sortBy}]`)

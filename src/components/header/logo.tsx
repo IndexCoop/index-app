@@ -1,10 +1,12 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
+import { Path } from '@/constants/paths'
 import { IndexLogoBlack, IndexLogoWhite } from '@/lib/utils/assets'
 
 export const Logo = () => {
   return (
-    <a href='https://indexcoop.com/'>
+    <Link href={Path.PRODUCTS}>
       <Image
         className='block dark:hidden'
         alt='Index Coop Logo'
@@ -19,6 +21,6 @@ export const Logo = () => {
         height={32}
         width={32}
       />
-    </a>
+    </Link>
   )
 }

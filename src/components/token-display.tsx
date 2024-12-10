@@ -4,11 +4,16 @@ import { Token } from '@/constants/tokens'
 import { cn } from '@/lib/utils/tailwind'
 
 type TokenDisplayProps = {
-  token: Token
   mini?: boolean
+  smHideLabel?: boolean
+  token: Token
 }
 
-export function TokenDisplay({ mini = false, token }: TokenDisplayProps) {
+export function TokenDisplay({
+  mini = false,
+  smHideLabel = false,
+  token,
+}: TokenDisplayProps) {
   const { image, symbol } = token
   return (
     <div
@@ -25,6 +30,7 @@ export function TokenDisplay({ mini = false, token }: TokenDisplayProps) {
         className={cn(
           'text-ic-gray-900 dark:text-ic-white ml-[2px] text-sm font-medium sm:mx-1 sm:text-xl',
           mini && 'sm:text-base',
+          smHideLabel && 'hidden sm:block',
         )}
       >
         {symbol}

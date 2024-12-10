@@ -1,6 +1,5 @@
 'use client'
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -13,6 +12,7 @@ import {
 import { isAddress } from 'viem'
 import { usePublicClient } from 'wagmi'
 
+import { useQueryParams } from '@/app/earn/use-query-params'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM, MAINNET } from '@/constants/chains'
 import { ETH, HighYieldETHIndex, Token } from '@/constants/tokens'
@@ -22,7 +22,6 @@ import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
@@ -32,7 +31,6 @@ import {
 } from '@/lib/utils/api/index-data-provider'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
-import { BaseTokenStats } from './types'
 
 interface Context {
   inputValue: string
@@ -53,9 +51,9 @@ interface Context {
   isFetchingQuote: boolean
   isFetchingStats: boolean
   quoteResult: QuoteResult | null
-  stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
+  onSelectIndexToken: (tokenSymbol: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   onSelectOutputToken: (tokenSymbol: string) => void
   reset: () => void
@@ -81,9 +79,9 @@ export const EarnContext = createContext<Context>({
   isFetchingQuote: false,
   isFetchingStats: true,
   quoteResult: null,
-  stats: null,
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
+  onSelectIndexToken: () => {},
   onSelectInputToken: () => {},
   onSelectOutputToken: () => {},
   reset: () => {},
@@ -108,7 +106,6 @@ export function EarnProvider(props: { children: any }) {
       queryInputToken,
       queryOutputToken,
       queryIsMinting,
-      queryNetwork,
     },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
@@ -136,13 +133,11 @@ export function EarnProvider(props: { children: any }) {
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
-  const indexTokenAddress = useMemo(() => {
-    return getTokenByChainAndSymbol(chainId, indexToken.symbol)?.address ?? ''
-  }, [chainId, indexToken.symbol])
+  const indexTokenAddress = indexToken.address ?? ''
 
   const indexTokens = useMemo(() => {
-    return getYieldTokens(chainId)
-  }, [chainId])
+    return getYieldTokens()
+  }, [])
 
   const indexTokenAddresses = useMemo(() => {
     return indexTokens.map((token) => token.address!)
@@ -267,13 +262,20 @@ export function EarnProvider(props: { children: any }) {
   useEffect(() => {
     if (inputToken === null || outputToken === null) return
 
+    console.log('updating query params', indexToken.chainId)
     updateQueryParams({
       isMinting,
       inputToken,
       outputToken,
-      network: queryNetwork,
+      network: indexToken.chainId,
     })
-  }, [isMinting, inputToken, outputToken, updateQueryParams, queryNetwork])
+  }, [
+    isMinting,
+    inputToken,
+    outputToken,
+    updateQueryParams,
+    indexToken.chainId,
+  ])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -296,11 +298,25 @@ export function EarnProvider(props: { children: any }) {
     [inputTokens],
   )
 
-  const onSelectOutputToken = (tokenSymbol: string) => {
-    const token = outputTokens.find((token) => token.symbol === tokenSymbol)
-    if (!token) return
-    setOutputToken(token)
-  }
+  const onSelectOutputToken = useCallback(
+    (tokenSymbol: string) => {
+      const token = outputTokens.find((token) => token.symbol === tokenSymbol)
+      if (!token) return
+      setOutputToken(token)
+    },
+    [outputTokens],
+  )
+
+  const onSelectIndexToken = useCallback(
+    (tokenSymbol: string) => {
+      if (isMinting) {
+        onSelectOutputToken(tokenSymbol)
+      } else {
+        onSelectInputToken(tokenSymbol)
+      }
+    },
+    [isMinting, onSelectInputToken, onSelectOutputToken],
+  )
 
   const reset = () => {
     setInputValue('')
@@ -343,6 +359,7 @@ export function EarnProvider(props: { children: any }) {
       if (!indexToken) return null
       const inputTokenPrice = await getTokenPrice(inputToken, chainId)
       const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+
       return await getFlashMintQuote({
         isMinting,
         account: address,
@@ -450,9 +467,9 @@ export function EarnProvider(props: { children: any }) {
         isFetchingQuote,
         isFetchingStats: isFetchingLatestStats || isFetchingApyStats,
         quoteResult,
-        stats: null, // FIXME
         transactionReview,
         onChangeInputTokenAmount,
+        onSelectIndexToken,
         onSelectInputToken,
         onSelectOutputToken,
         reset,

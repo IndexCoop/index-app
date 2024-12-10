@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { DATA, ETH, GmiIndex, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
+import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { NavProvider } from '@/lib/utils/api/nav'
 import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
 
@@ -36,6 +37,13 @@ export const getTokenPrice = async (
   if (token.symbol === DATA.symbol || token.symbol === GmiIndex.symbol) {
     // Force using Coingecko for this deprecated indices
     isIndexToken = false
+  }
+  if (token.symbol.toLowerCase() === 'icusd') {
+    const dataResponse = await fetchTokenMetrics({
+      tokenAddress,
+      metrics: ['nav'],
+    })
+    return dataResponse?.NetAssetValue ?? 0
   }
   if (isIndexToken) {
     const navProvider = new NavProvider()

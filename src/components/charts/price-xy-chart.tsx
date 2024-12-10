@@ -20,6 +20,7 @@ type PriceChartIndexData = Pick<IndexData, 'NetAssetValue' | 'CreatedTimestamp'>
 
 type Props = {
   data: PriceChartIndexData[]
+  digits?: number
   isDark?: boolean
   parentWidth: number
   parentHeight: number
@@ -36,6 +37,7 @@ const tooltipTimestampFormatByPeriod: { [k in ChartPeriod]: string } = {
 
 function PriceXYChart({
   data,
+  digits = 2,
   isDark = false,
   parentWidth,
   parentHeight,
@@ -62,7 +64,7 @@ function PriceXYChart({
       dayjs(d.CreatedTimestamp).format(
         tooltipTimestampFormatByPeriod[selectedPeriod],
       ),
-    yAccessor: (d: PriceChartIndexData) => formatDollarAmount(d.NetAssetValue),
+    yAccessor: (d: PriceChartIndexData) => formatDollarAmount(d.NetAssetValue, undefined, digits),
   }
 
   if (parentHeight === 0 || parentWidth === 0) return null
@@ -84,9 +86,9 @@ function PriceXYChart({
       <Axis
         orientation='left'
         numTicks={5}
-        tickFormat={(d) => d.toFixed(maxDomainY >= 1000 ? 0 : 2)}
+        tickFormat={(d) => formatDollarAmount(d, undefined, maxDomainY >= 1000 ? 0 : digits)}
       />
-      <Axis orientation='bottom' numTicks={5} />
+      <Axis orientation='bottom' numTicks={parentWidth > 500 ? 5 : 3} />
       <AnimatedLineSeries {...seriesAccessors} dataKey='prices' data={data} />
       <AnimatedAreaSeries
         {...seriesAccessors}

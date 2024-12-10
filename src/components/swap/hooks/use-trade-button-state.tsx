@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import {
-  Bitcoin2xFlexibleLeverageIndex,
-  Ethereum2xFlexibleLeverageIndex,
-  Token,
-} from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 import { useIsMismatchingNetwork } from '@/lib/hooks/use-is-mismatching-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
@@ -46,11 +42,6 @@ export const useTradeButtonState = (
         return TradeButtonState.signTerms
       if (!isSupportedNetwork || isMismatchingNetwork)
         return TradeButtonState.wrongNetwork
-      if (
-        outputToken === Ethereum2xFlexibleLeverageIndex ||
-        outputToken === Bitcoin2xFlexibleLeverageIndex
-      )
-        return TradeButtonState.notAvailable
       if (sellTokenAmount === '0' || sellTokenAmount === '')
         return TradeButtonState.enterAmount
       if (hasFetchingError) return TradeButtonState.fetchingError

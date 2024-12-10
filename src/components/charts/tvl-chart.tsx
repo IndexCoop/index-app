@@ -1,28 +1,22 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-
 import { formatTvl } from '@/app/products/utils/formatters'
 import { PeriodSelector } from '@/components/charts/period-selector'
 import TvlXyChart from '@/components/charts/tvl-xy-chart'
 import { useChartData } from '@/components/charts/use-chart-data'
-import { MAINNET } from '@/constants/chains'
-import { Token } from '@/constants/tokens'
-import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
 
 type Props = {
-  indexToken: Token
+  indexTokenAddress: string
   isFetchingStats?: boolean
   tvl: number | null
 }
 
-export function TvlChart({ indexToken, isFetchingStats = false, tvl }: Props) {
-  const { chainId } = useNetwork()
-  const tokenAddress = getTokenByChainAndSymbol(
-    chainId ?? MAINNET.chainId,
-    indexToken.symbol,
-  )?.address
+export function TvlChart({
+  indexTokenAddress,
+  isFetchingStats = false,
+  tvl,
+}: Props) {
   const { historicalData, selectedPeriod, setSelectedPeriod } = useChartData(
-    tokenAddress,
+    indexTokenAddress,
     'pav',
   )
 

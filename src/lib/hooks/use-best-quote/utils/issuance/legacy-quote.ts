@@ -54,12 +54,6 @@ export async function getLegacyRedemptionQuote(
           return {
             ...outputToken,
             image: outputToken.logoURI,
-            // all these properties below will be irrelevant for the legacy redemption
-            coingeckoId: '',
-            fees: { streamingFee: '0' },
-            indexTypes: [],
-            isDangerous: false,
-            url: '',
           }
         })
 

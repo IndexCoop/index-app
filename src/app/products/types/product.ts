@@ -1,24 +1,13 @@
-export enum ProductType {
-  LEVERAGE = 'Leverage',
-  INDEX = 'Index',
-  YIELD = 'Yield',
-}
-
-export enum ProductTheme {
-  BTC = 'BTC',
-  DEFI = 'DeFi',
-  ETH = 'ETH',
-  LCAP = 'Lcap',
-  METAVERSE = 'Metaverse',
-}
+export type ProductListType = 'Earn' | 'Strategies'
 
 export type ProductRow = {
+  address?: string
   hasApy: boolean
-  image?: string
+  logoURI?: string
   symbol?: string
   name?: string
-  type: ProductType
-  theme: ProductTheme
+  listType: ProductListType
+  tradeHref: string
   price?: number
   delta?: number
   apy?: number | null
