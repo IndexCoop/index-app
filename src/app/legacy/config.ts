@@ -1,7 +1,7 @@
 import {
-  BasicIssuanceModulePolygonAddress,
   DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
+  DebtIssuanceModuleV2PolygonAddress,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
@@ -20,6 +20,9 @@ import {
 import {
   Bitcoin2xFlexibleLeverageIndexPolygon,
   ETH2xFlexibleLeverageIndexPolygon,
+  InverseBTCFlexibleLeverageIndexPolygon,
+  InverseETHFlexibleLeverageIndexPolygon,
+  InverseMATICFlexibleLeverageIndexPolygon,
   Matic2xFlexibleLeverageIndexPolygon,
 } from './polygon'
 
@@ -27,16 +30,23 @@ export const Issuance = {
   [BedIndex.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [Bitcoin2xFlexibleLeverageIndex.symbol]: DebtIssuanceModuleV2Address,
   [Bitcoin2xFlexibleLeverageIndexPolygon.symbol]:
-    BasicIssuanceModulePolygonAddress,
+    DebtIssuanceModuleV2PolygonAddress,
   [DATA.symbol]: DebtIssuanceModuleAddress,
   [Ethereum2xFlexibleLeverageIndex.symbol]: DebtIssuanceModuleV2Address,
-  [ETH2xFlexibleLeverageIndexPolygon.symbol]: BasicIssuanceModulePolygonAddress,
+  [ETH2xFlexibleLeverageIndexPolygon.symbol]:
+    DebtIssuanceModuleV2PolygonAddress,
   [GitcoinStakedETHIndex.symbol]: IndexDebtIssuanceModuleV2Address,
   [GmiIndex.symbol]: DebtIssuanceModuleAddress,
   [ic21.symbol]: IndexDebtIssuanceModuleV2Address_v2,
+  [InverseBTCFlexibleLeverageIndexPolygon.symbol]:
+    DebtIssuanceModuleV2PolygonAddress,
+  [InverseETHFlexibleLeverageIndexPolygon.symbol]:
+    DebtIssuanceModuleV2PolygonAddress,
+  [InverseMATICFlexibleLeverageIndexPolygon.symbol]:
+    DebtIssuanceModuleV2PolygonAddress,
   [LeveragedRethStakingYield.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [Matic2xFlexibleLeverageIndexPolygon.symbol]:
-    BasicIssuanceModulePolygonAddress,
+    DebtIssuanceModuleV2PolygonAddress,
 }
 
 export const LegacyTokenList = [
@@ -54,4 +64,7 @@ export const PolygonLegacyTokenList = [
   Bitcoin2xFlexibleLeverageIndexPolygon,
   ETH2xFlexibleLeverageIndexPolygon,
   Matic2xFlexibleLeverageIndexPolygon,
+  InverseBTCFlexibleLeverageIndexPolygon,
+  InverseETHFlexibleLeverageIndexPolygon,
+  InverseMATICFlexibleLeverageIndexPolygon,
 ]

@@ -137,11 +137,14 @@ export function RedeemProvider(props: { children: any }) {
     [inputToken],
   )
 
-  const onSelectInputToken = useCallback((tokenSymbol: string) => {
-    const token = inputTokenList.find((token) => token.symbol === tokenSymbol)
-    if (!token) return
-    setInputToken(token)
-  }, [])
+  const onSelectInputToken = useCallback(
+    (tokenSymbol: string) => {
+      const token = inputTokenList.find((token) => token.symbol === tokenSymbol)
+      if (!token) return
+      setInputToken(token)
+    },
+    [inputTokenList],
+  )
 
   const reset = () => {
     setInputValue('')
