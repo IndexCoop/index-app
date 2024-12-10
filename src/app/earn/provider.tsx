@@ -262,7 +262,6 @@ export function EarnProvider(props: { children: any }) {
   useEffect(() => {
     if (inputToken === null || outputToken === null) return
 
-    console.log('updating query params', indexToken.chainId)
     updateQueryParams({
       isMinting,
       inputToken,
