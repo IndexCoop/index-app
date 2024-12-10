@@ -31,7 +31,6 @@ import {
 } from '@/lib/utils/api/index-data-provider'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
-import { BaseTokenStats } from './types'
 
 interface Context {
   inputValue: string
@@ -52,7 +51,6 @@ interface Context {
   isFetchingQuote: boolean
   isFetchingStats: boolean
   quoteResult: QuoteResult | null
-  stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectIndexToken: (tokenSymbol: string) => void
@@ -81,7 +79,6 @@ export const EarnContext = createContext<Context>({
   isFetchingQuote: false,
   isFetchingStats: true,
   quoteResult: null,
-  stats: null,
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
   onSelectIndexToken: () => {},
@@ -471,7 +468,6 @@ export function EarnProvider(props: { children: any }) {
         isFetchingQuote,
         isFetchingStats: isFetchingLatestStats || isFetchingApyStats,
         quoteResult,
-        stats: null, // FIXME
         transactionReview,
         onChangeInputTokenAmount,
         onSelectIndexToken,

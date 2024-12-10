@@ -20,7 +20,7 @@ import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
 
-import { useFormattedLeverageData } from '../../use-formatted-data'
+import { useFormattedEarnData } from '../../use-formatted-data'
 
 import './styles.css'
 
@@ -38,7 +38,6 @@ export function EarnWidget() {
     inputValue,
     isMinting,
     outputTokens,
-    stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
@@ -57,7 +56,7 @@ export function EarnWidget() {
     isFetchingQuote,
     ouputAmount,
     resetData,
-  } = useFormattedLeverageData(stats)
+  } = useFormattedEarnData()
 
   const {
     isOpen: isSelectInputTokenOpen,

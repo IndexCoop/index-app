@@ -1,11 +1,10 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
-import { useEarnContext } from '@/app/earn/provider'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 
-import { useFormattedLeverageData } from '../../../use-formatted-data'
+import { useFormattedEarnData } from '../../../use-formatted-data'
 
 type SummaryQuoteProps = {
   label: string
@@ -28,7 +27,6 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
-  const { stats } = useEarnContext()
   const {
     gasFeesEth,
     gasFeesUsd,
@@ -38,7 +36,7 @@ export function Summary() {
     ouputAmount,
     outputAmountUsd,
     shouldShowSummaryDetails,
-  } = useFormattedLeverageData(stats)
+  } = useFormattedEarnData()
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
     <Disclosure
