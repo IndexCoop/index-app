@@ -106,7 +106,6 @@ export function EarnProvider(props: { children: any }) {
       queryInputToken,
       queryOutputToken,
       queryIsMinting,
-      queryNetwork,
     },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
@@ -263,11 +262,12 @@ export function EarnProvider(props: { children: any }) {
   useEffect(() => {
     if (inputToken === null || outputToken === null) return
 
+    console.log('updating query params', indexToken.chainId)
     updateQueryParams({
       isMinting,
       inputToken,
       outputToken,
-      network: queryNetwork,
+      network: indexToken.chainId,
     })
   }, [
     isMinting,
@@ -275,7 +275,6 @@ export function EarnProvider(props: { children: any }) {
     outputToken,
     updateQueryParams,
     indexToken.chainId,
-    queryNetwork,
   ])
 
   const onChangeInputTokenAmount = useCallback(
