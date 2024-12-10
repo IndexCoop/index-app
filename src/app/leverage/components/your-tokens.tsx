@@ -1,5 +1,6 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
+import { isLeverageToken } from '@indexcoop/tokenlists'
 import capitalize from 'lodash/capitalize'
 import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
@@ -61,7 +62,14 @@ export function YourTokens() {
     if (leverageBaseToken === null) return
     onSelectBaseToken(leverageBaseToken.symbol)
 
-    const leverageType = getLeverageType(token)
+    const indexToken = indexTokens.find(
+      (indexToken) =>
+        token.symbol.toLowerCase() === indexToken.symbol.toLowerCase(),
+    )
+    if (!indexToken) return
+    if (!isLeverageToken(indexToken)) return
+
+    const leverageType = getLeverageType(indexToken)
     if (leverageType === null) return
     onSelectLeverageType(leverageType)
 
