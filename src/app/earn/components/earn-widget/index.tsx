@@ -6,6 +6,7 @@ import { useCallback } from 'react'
 import { Summary } from '@/app/earn/components/earn-widget/components/summary'
 import { supportedNetworks } from '@/app/earn/constants'
 import { useEarnContext } from '@/app/earn/provider'
+import { useQueryParams } from '@/app/earn/use-query-params'
 import { Receive } from '@/components/receive'
 import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
 import { SmartTradeButton } from '@/components/smart-trade-button'
@@ -16,11 +17,10 @@ import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { TokenDisplay } from '@/components/token-display'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
-import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
 
-import { useFormattedLeverageData } from '../../use-formatted-data'
+import { useFormattedEarnData } from '../../use-formatted-data'
 
 import './styles.css'
 
@@ -38,7 +38,6 @@ export function EarnWidget() {
     inputValue,
     isMinting,
     outputTokens,
-    stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
@@ -57,7 +56,7 @@ export function EarnWidget() {
     isFetchingQuote,
     ouputAmount,
     resetData,
-  } = useFormattedLeverageData(stats)
+  } = useFormattedEarnData()
 
   const {
     isOpen: isSelectInputTokenOpen,
@@ -81,7 +80,7 @@ export function EarnWidget() {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
-    <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6'>
+    <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6 lg:ml-auto'>
       <TokenDisplay mini token={indexToken} />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector
@@ -122,7 +121,6 @@ export function EarnWidget() {
       />
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
-        showBalances={false}
         onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol) => {
           onSelectInputToken(tokenSymbol)
@@ -143,7 +141,6 @@ export function EarnWidget() {
       />
       {transactionReview && (
         <TransactionReviewModal
-          isDarkMode={true}
           isOpen={isTransactionReviewOpen}
           onClose={() => {
             reset()

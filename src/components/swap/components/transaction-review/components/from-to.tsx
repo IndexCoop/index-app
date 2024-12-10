@@ -1,4 +1,4 @@
-import { ArrowDownIcon } from '@chakra-ui/icons'
+import ArrowDownIcon from '@heroicons/react/20/solid/ArrowDownIcon'
 import Image from 'next/image'
 
 type FromToProps = {

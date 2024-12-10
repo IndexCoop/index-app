@@ -1,11 +1,10 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
-import { useEarnContext } from '@/app/earn/provider'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 
-import { useFormattedLeverageData } from '../../../use-formatted-data'
+import { useFormattedEarnData } from '../../../use-formatted-data'
 
 type SummaryQuoteProps = {
   label: string
@@ -15,10 +14,12 @@ type SummaryQuoteProps = {
 
 function SummaryQuote(props: SummaryQuoteProps) {
   return (
-    <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
+    <div className='text-ic-gray-600 dark:text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
       <div className='font-medium'>{props.label}</div>
       <div className='flex flex-row gap-1'>
-        <div className='text-ic-white font-bold'>{props.value}</div>
+        <div className='text-ic-black dark:text-ic-white font-bold'>
+          {props.value}
+        </div>
         <div className='font-normal'>{props.valueUsd}</div>
       </div>
     </div>
@@ -26,7 +27,6 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
-  const { stats } = useEarnContext()
   const {
     gasFeesEth,
     gasFeesUsd,
@@ -36,14 +36,17 @@ export function Summary() {
     ouputAmount,
     outputAmountUsd,
     shouldShowSummaryDetails,
-  } = useFormattedLeverageData(stats)
+  } = useFormattedEarnData()
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
-    <Disclosure as='div' className='rounded-lg border border-[#3A6060]'>
+    <Disclosure
+      as='div'
+      className='border-ic-gray-100 rounded-lg border dark:border-[#3A6060]'
+    >
       {({ open }) => (
         <div className='p-4'>
           <dt>
-            <Disclosure.Button className='text-ic-gray-300 flex w-full items-center justify-between text-left'>
+            <Disclosure.Button className='text-ic-gray-600 dark:text-ic-gray-300 flex w-full items-center justify-between text-left'>
               <span className='text-xs font-medium'>
                 {open && 'Summary'}
                 {!open && isFetchingQuote && <StyledSkeleton width={120} />}
@@ -56,7 +59,10 @@ export function Summary() {
                 {!open && !isFetchingQuote ? (
                   <GasFees
                     valueUsd={gasFeesUsd}
-                    styles={{ valueUsdTextColor: 'text-ic-gray-300' }}
+                    styles={{
+                      valueUsdTextColor:
+                        'text-ic-gray-600 dark:text-ic-gray-300',
+                    }}
                   />
                 ) : null}
                 {!open && isFetchingQuote && <StyledSkeleton width={70} />}
@@ -83,7 +89,7 @@ export function Summary() {
                   value={ouputAmount}
                   valueUsd={`(${outputAmountUsd})`}
                 />
-                <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
+                <div className='text-ic-gray-600 dark:text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
                   <div className='font-normal'>Network Fee</div>
                   <div>
                     <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />

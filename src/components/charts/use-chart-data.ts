@@ -11,6 +11,7 @@ import {
   IndexDataMetric,
   IndexDataPeriod,
 } from '@/lib/utils/api/index-data-provider'
+import { digitsByAddress } from '@/lib/utils/tokens'
 
 type HistoricalData = {
   NetAssetValue?: number
@@ -56,18 +57,18 @@ type PartialIndexData = Partial<IndexData> & {
   CreatedTimestamp: string
 }
 
-function formatData(data: PartialIndexData[], metric: IndexDataMetric) {
+function formatData(data: PartialIndexData[], metric: IndexDataMetric, digits: number = 2) {
   if (metric === 'nav') {
     return data.map((datum) => ({
       ...datum,
-      NetAssetValue: Number(datum.NetAssetValue?.toFixed(2)),
+      NetAssetValue: Number(datum.NetAssetValue?.toFixed(digits)),
     }))
   }
 
   if (metric === 'pav') {
     return data.map((datum) => ({
       ...datum,
-      ProductAssetValue: Number(datum.ProductAssetValue?.toFixed(0)),
+      ProductAssetValue: Number(datum.ProductAssetValue?.toFixed(2)),
     }))
   }
 
@@ -96,7 +97,8 @@ export function useChartData(
         ...fetchSettings,
       })
 
-      const formattedData = formatData(data ?? [], metric)
+      const digits = digitsByAddress(indexTokenAddress ?? '')
+      const formattedData = formatData(data ?? [], metric, digits)
       const historicalData = formattedData
         .sort(
           (a, b) =>

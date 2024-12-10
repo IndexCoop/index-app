@@ -9,10 +9,11 @@ import { AssetUtil, NetworkController } from '@web3modal/core'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { useAccount } from 'wagmi'
 
+import { Path } from '@/constants/paths'
 import { getNetworkName, useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { chains, config } from '@/lib/utils/wagmi'
@@ -24,6 +25,7 @@ export const NetworkSelect = () => {
   const { queryParams, searchParams, updateQueryParams } = useQueryParams()
   const [isNetworkWarningClosed, setIsNetworkWarningClosed] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
 
   const chain = useMemo(() => chains.find((c) => c.id === chainId), [chainId])
 
@@ -97,24 +99,26 @@ export const NetworkSelect = () => {
             className='dark:bg-ic-black dark:border-ic-gray-800 z-50 mt-8 w-80 !overflow-visible rounded-md border border-gray-300 bg-white p-4 shadow-md dark:text-white'
             exit={{ opacity: 0, scale: 0.95 }}
           >
-            <Button
-              className='hover:bg-ic-gray-600 group absolute right-2 top-2 w-5 rounded-md '
-              onClick={() => {
-                setIsNetworkWarningClosed(true)
+            {!pathname.startsWith(Path.EARN) && (
+              <Button
+                className='hover:bg-ic-gray-600 group absolute right-2 top-2 w-5 rounded-md '
+                onClick={() => {
+                  setIsNetworkWarningClosed(true)
 
-                if (walletChainId) {
-                  const queryParams = new URLSearchParams(searchParams)
+                  if (walletChainId) {
+                    const queryParams = new URLSearchParams(searchParams)
 
-                  queryParams.set('network', walletChainId.toString())
+                    queryParams.set('network', walletChainId.toString())
 
-                  router.replace(`?${queryParams.toString()}`, {
-                    scroll: false,
-                  })
-                }
-              }}
-            >
-              <XMarkIcon className='dark:fill-ic-white group-hover:fill-ic-white' />
-            </Button>
+                    router.replace(`?${queryParams.toString()}`, {
+                      scroll: false,
+                    })
+                  }
+                }}
+              >
+                <XMarkIcon className='dark:fill-ic-white group-hover:fill-ic-white' />
+              </Button>
+            )}
             <div className='border-b-ic-gray-300 dark:border-b-ic-gray-800 absolute -top-[18px] left-1/2 h-0 w-0 -translate-x-1/2 border-b-[18px] border-l-[13px] border-r-[13px] border-l-transparent border-r-transparent'></div>
             <div className='border-b-ic-white dark:border-b-ic-black absolute -top-4 left-1/2 h-0 w-0 -translate-x-1/2 border-b-[16px] border-l-[12px] border-r-[12px] border-l-transparent border-r-transparent'></div>
 
