@@ -47,7 +47,6 @@ export const rainbowkitTheme = merge(
       actionButtonBorderMobile: colors.ic.gray[900],
       generalBorder: colors.ic.gray[900],
       modalBorder: colors.ic.gray[900],
-      modalBackground: colors.ic.black,
       profileForeground: colors.ic.black,
       closeButtonBackground: colors.ic.gray[900],
     },
