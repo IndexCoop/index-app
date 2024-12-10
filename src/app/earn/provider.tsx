@@ -15,7 +15,7 @@ import { usePublicClient } from 'wagmi'
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM, MAINNET } from '@/constants/chains'
-import { ETH, HighYieldETHIndex, Token } from '@/constants/tokens'
+import { ETH, ICUSD, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
@@ -31,7 +31,6 @@ import {
 } from '@/lib/utils/api/index-data-provider'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
-import { BaseTokenStats } from './types'
 
 interface Context {
   inputValue: string
@@ -52,7 +51,6 @@ interface Context {
   isFetchingQuote: boolean
   isFetchingStats: boolean
   quoteResult: QuoteResult | null
-  stats: BaseTokenStats | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectIndexToken: (tokenSymbol: string) => void
@@ -66,7 +64,7 @@ export const EarnContext = createContext<Context>({
   inputValue: '',
   isMinting: true,
   balances: [],
-  indexToken: HighYieldETHIndex,
+  indexToken: ICUSD,
   indexTokens: [],
   apy: null,
   apy7d: null,
@@ -74,14 +72,13 @@ export const EarnContext = createContext<Context>({
   nav: null,
   tvl: null,
   inputToken: ETH,
-  outputToken: HighYieldETHIndex,
+  outputToken: ICUSD,
   inputTokenAmount: BigInt(0),
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
   isFetchingStats: true,
   quoteResult: null,
-  stats: null,
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
   onSelectIndexToken: () => {},
@@ -96,7 +93,7 @@ export const useEarnContext = () => useContext(EarnContext)
 const defaultParams = {
   isMinting: true,
   inputToken: ETH,
-  outputToken: HighYieldETHIndex,
+  outputToken: ICUSD,
 }
 
 export function EarnProvider(props: { children: any }) {
@@ -105,12 +102,7 @@ export function EarnProvider(props: { children: any }) {
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
-    queryParams: {
-      queryInputToken,
-      queryOutputToken,
-      queryIsMinting,
-      queryNetwork,
-    },
+    queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
@@ -270,7 +262,7 @@ export function EarnProvider(props: { children: any }) {
       isMinting,
       inputToken,
       outputToken,
-      network: queryNetwork,
+      network: indexToken.chainId,
     })
   }, [
     isMinting,
@@ -278,7 +270,6 @@ export function EarnProvider(props: { children: any }) {
     outputToken,
     updateQueryParams,
     indexToken.chainId,
-    queryNetwork,
   ])
 
   const onChangeInputTokenAmount = useCallback(
@@ -471,7 +462,6 @@ export function EarnProvider(props: { children: any }) {
         isFetchingQuote,
         isFetchingStats: isFetchingLatestStats || isFetchingApyStats,
         quoteResult,
-        stats: null, // FIXME
         transactionReview,
         onChangeInputTokenAmount,
         onSelectIndexToken,

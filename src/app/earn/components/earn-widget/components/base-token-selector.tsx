@@ -13,7 +13,13 @@ export function TokenSelector({ selectedToken, onClick }: TokenSelectorProps) {
       className='flex cursor-pointer flex-row items-center'
       onClick={onClick}
     >
-      <Image alt={`${symbol} logo`} src={image} width={24} height={24} />
+      <Image
+        alt={`${symbol} logo`}
+        src={image}
+        width={24}
+        height={24}
+        priority
+      />
       <span className='text-ic-black dark:text-ic-white ml-2 text-base font-bold'>
         {symbol}
       </span>

@@ -20,7 +20,7 @@ import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
 
-import { useFormattedLeverageData } from '../../use-formatted-data'
+import { useFormattedEarnData } from '../../use-formatted-data'
 
 import './styles.css'
 
@@ -38,7 +38,6 @@ export function EarnWidget() {
     inputValue,
     isMinting,
     outputTokens,
-    stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
@@ -57,7 +56,7 @@ export function EarnWidget() {
     isFetchingQuote,
     ouputAmount,
     resetData,
-  } = useFormattedLeverageData(stats)
+  } = useFormattedEarnData()
 
   const {
     isOpen: isSelectInputTokenOpen,
@@ -81,7 +80,7 @@ export function EarnWidget() {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
-    <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6'>
+    <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6 lg:ml-auto'>
       <TokenDisplay mini token={indexToken} />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector
