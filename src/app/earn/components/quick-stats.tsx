@@ -6,8 +6,8 @@ import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatDollarAmount } from '@/lib/utils'
-
 import { digitsByAddress } from '@/lib/utils/tokens'
+
 import { getTagline } from '../constants'
 import { useEarnContext } from '../provider'
 
