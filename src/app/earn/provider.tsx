@@ -15,7 +15,7 @@ import { usePublicClient } from 'wagmi'
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM, MAINNET } from '@/constants/chains'
-import { ETH, HighYieldETHIndex, Token } from '@/constants/tokens'
+import { ETH, ICUSD, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
@@ -64,7 +64,7 @@ export const EarnContext = createContext<Context>({
   inputValue: '',
   isMinting: true,
   balances: [],
-  indexToken: HighYieldETHIndex,
+  indexToken: ICUSD,
   indexTokens: [],
   apy: null,
   apy7d: null,
@@ -72,7 +72,7 @@ export const EarnContext = createContext<Context>({
   nav: null,
   tvl: null,
   inputToken: ETH,
-  outputToken: HighYieldETHIndex,
+  outputToken: ICUSD,
   inputTokenAmount: BigInt(0),
   inputTokens: [],
   outputTokens: [],
@@ -93,7 +93,7 @@ export const useEarnContext = () => useContext(EarnContext)
 const defaultParams = {
   isMinting: true,
   inputToken: ETH,
-  outputToken: HighYieldETHIndex,
+  outputToken: ICUSD,
 }
 
 export function EarnProvider(props: { children: any }) {
@@ -102,11 +102,7 @@ export function EarnProvider(props: { children: any }) {
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address, provider, rpcUrl } = useWallet()
   const {
-    queryParams: {
-      queryInputToken,
-      queryOutputToken,
-      queryIsMinting,
-    },
+    queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
