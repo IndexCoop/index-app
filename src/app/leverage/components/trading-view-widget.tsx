@@ -12,6 +12,7 @@ const getScriptInnerHtml = (symbol: string) => {
   {
     "autosize": true,
     "symbol": "INDEX:${symbol}USD",
+    "interval": "5",
     "timezone": "Etc/UTC",
     "theme": "dark",
     "style": "1",
@@ -19,8 +20,6 @@ const getScriptInnerHtml = (symbol: string) => {
     "enable_publishing": false,
     "backgroundColor": "rgba(28, 44, 46, 1)",
     "withdateranges": true,
-    "range": "3M",
-    "hide_side_toolbar": false,
     "allow_symbol_change": false,
     "calendar": false,
     "hide_volume": true,
