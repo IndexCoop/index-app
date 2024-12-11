@@ -1,6 +1,7 @@
 import { getChainTokenList } from '@indexcoop/tokenlists'
 import { useEffect, useState } from 'react'
 
+import { PolygonLegacyTokenList } from '@/app/legacy/config'
 import { DATA, ETH, GmiIndex, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
@@ -34,7 +35,13 @@ export const getTokenPrice = async (
   let isIndexToken = productTokensList.some(
     ({ address }) => address === tokenAddress,
   )
-  if (token.symbol === DATA.symbol || token.symbol === GmiIndex.symbol) {
+  if (
+    token.symbol === DATA.symbol ||
+    token.symbol === GmiIndex.symbol ||
+    PolygonLegacyTokenList.some(
+      (polygonIndex) => token.symbol === polygonIndex.symbol,
+    )
+  ) {
     // Force using Coingecko for this deprecated indices
     isIndexToken = false
   }

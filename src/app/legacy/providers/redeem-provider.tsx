@@ -8,11 +8,17 @@ import {
 } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import { Issuance, LegacyTokenList } from '@/app/legacy/config'
+import {
+  Issuance,
+  LegacyTokenList,
+  PolygonLegacyTokenList,
+} from '@/app/legacy/config'
 import { LegacyRedemptionQuoteResult } from '@/app/legacy/types'
+import { POLYGON } from '@/constants/chains'
 import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getLegacyRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance/legacy-quote'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
@@ -49,11 +55,18 @@ const RedeemContext = createContext<RedeemContextProps>({
 export const useRedeem = () => useContext(RedeemContext)
 
 export function RedeemProvider(props: { children: any }) {
+  const { chainId } = useNetwork()
   const publicClient = usePublicClient()
   const queryClient = useQueryClient()
   const { address, provider } = useWallet()
 
-  const [inputToken, setInputToken] = useState(LegacyTokenList[0])
+  const inputTokenList = useMemo(
+    () =>
+      chainId === POLYGON.chainId ? PolygonLegacyTokenList : LegacyTokenList,
+    [chainId],
+  )
+
+  const [inputToken, setInputToken] = useState(inputTokenList[0])
   const [inputValue, setInputValue] = useState('')
 
   const queryKey = 'legay-quote-result'
@@ -74,12 +87,13 @@ export function RedeemProvider(props: { children: any }) {
   )
 
   const { data: quoteResult, isFetching: isFetchingQuote } = useQuery({
-    enabled: Boolean(address),
+    enabled: Boolean(address) && Boolean(chainId),
     initialData,
     queryKey: [
       queryKey,
       {
         address,
+        chainId,
         inputToken,
         inputTokenAmount: inputTokenAmount.toString(),
         provider,
@@ -88,10 +102,12 @@ export function RedeemProvider(props: { children: any }) {
     ],
     queryFn: async () => {
       if (!address) return null
+      if (!chainId) return null
       if (!provider || !publicClient) return null
       if (inputTokenAmount <= 0) return null
       const legacyQuote = await getLegacyRedemptionQuote(
         {
+          chainId,
           account: address,
           inputTokenAmount,
           inputToken,
@@ -121,11 +137,14 @@ export function RedeemProvider(props: { children: any }) {
     [inputToken],
   )
 
-  const onSelectInputToken = useCallback((tokenSymbol: string) => {
-    const token = LegacyTokenList.find((token) => token.symbol === tokenSymbol)
-    if (!token) return
-    setInputToken(token)
-  }, [])
+  const onSelectInputToken = useCallback(
+    (tokenSymbol: string) => {
+      const token = inputTokenList.find((token) => token.symbol === tokenSymbol)
+      if (!token) return
+      setInputToken(token)
+    },
+    [inputTokenList],
+  )
 
   const reset = () => {
     setInputValue('')
@@ -135,7 +154,7 @@ export function RedeemProvider(props: { children: any }) {
   return (
     <RedeemContext.Provider
       value={{
-        inputTokenList: LegacyTokenList,
+        inputTokenList,
         inputValue,
         isDepositing: false,
         isFetchingQuote,
