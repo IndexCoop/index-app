@@ -57,7 +57,11 @@ type PartialIndexData = Partial<IndexData> & {
   CreatedTimestamp: string
 }
 
-function formatData(data: PartialIndexData[], metric: IndexDataMetric, digits: number = 2) {
+function formatData(
+  data: PartialIndexData[],
+  metric: IndexDataMetric,
+  digits: number = 2,
+) {
   if (metric === 'nav') {
     return data.map((datum) => ({
       ...datum,
@@ -69,6 +73,13 @@ function formatData(data: PartialIndexData[], metric: IndexDataMetric, digits: n
     return data.map((datum) => ({
       ...datum,
       ProductAssetValue: Number(datum.ProductAssetValue?.toFixed(2)),
+    }))
+  }
+
+  if (metric === 'apy') {
+    return data.map((datum) => ({
+      ...datum,
+      APY: Number(datum.APY?.toFixed(4)),
     }))
   }
 
