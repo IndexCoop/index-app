@@ -168,5 +168,6 @@ export function useTransactionReview(props: ReviewProps) {
     simulationState,
     onChangeOverride,
     onSubmit,
+    override,
   }
 }
