@@ -48,9 +48,9 @@ export default function Page() {
   }, [colorMode, toggleColorMode])
 
   useEffect(() => {
-    document.body.classList.add('dark', 'bg-ic-dark')
+    document.body.classList.add('dark', 'bg-ic-black')
     return () => {
-      document.body.classList.remove('dark', 'bg-ic-dark')
+      document.body.classList.remove('dark', 'bg-ic-black')
     }
   })
 

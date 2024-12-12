@@ -14,9 +14,10 @@ import {
   useTradeButtonState,
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
+import { MAINNET, POLYGON } from '@/constants/chains'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { useMainnetOnly } from '@/lib/hooks/use-network'
+import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
@@ -31,7 +32,10 @@ import { useFormattedData } from './use-formatted-data'
 import './styles.css'
 
 export function RedeemWidget() {
-  const isSupportedNetwork = useMainnetOnly()
+  const isSupportedNetwork = useSupportedNetworks([
+    MAINNET.chainId,
+    POLYGON.chainId,
+  ])
   const { open } = useWeb3Modal()
   const { signTermsOfService } = useSignTerms()
   const { address } = useWallet()
