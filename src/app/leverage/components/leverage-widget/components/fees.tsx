@@ -20,7 +20,7 @@ function FeesItem(props: FeesItemProps) {
       <div className='font-medium'>
         {props.tooltip ? (
           <Tooltip
-            className='bg-ic-dark'
+            className='bg-ic-black'
             borderRadius='6px'
             fontSize='12px'
             fontWeight={500}
