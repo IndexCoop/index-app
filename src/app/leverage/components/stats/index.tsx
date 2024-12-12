@@ -1,6 +1,7 @@
 import { useDisclosure } from '@chakra-ui/react'
 
 import { BaseTokenSelector } from '@/app/leverage/components/leverage-widget/components/base-token-selector'
+import { LeverageSelectorContainer } from '@/app/leverage/components/stats/leverage-selector-container'
 import { StatsMetric } from '@/app/leverage/components/stats/stats-metric'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
@@ -80,6 +81,7 @@ export function QuickStats() {
           value={formatPercentage(apy30d, true)}
         />
       </div>
+      <LeverageSelectorContainer />
       <SelectTokenModal
         isOpen={isSelectIndexTokenOpen}
         onClose={onCloseSelectIndexToken}
