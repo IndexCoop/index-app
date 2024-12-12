@@ -44,7 +44,7 @@
     "@visx/xychart": "3.11.0",
     "@web3modal/wagmi": "5.1.11",
     "alchemy-sdk": "3.4.1",
-    "dayjs": "1.11.11",
+    "dayjs": "1.11.13",
     "eslint": "8.42.0",
     "eslint-config-next": "14.2.13",
     "ethers": "^5.7.2",
