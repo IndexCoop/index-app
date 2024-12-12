@@ -12,14 +12,14 @@ export const Override = ({ onChange, override }: OverrideProps) => {
       <div className='items-top flex'>
         <ExclamationTriangleIcon className='fill-ic-black size-6 flex-none' />
         <p className='text-ic-black mx-4 text-sm'>
-          This tx would likely fail. Check override and press the trade button
-          again to execute anyway.
+          This tx will likely fail. Check &apos;Override&apos; below and click
+          the submit button again to execute anyway.
         </p>
       </div>
       <Field className='flex cursor-pointer items-center gap-2'>
         <Checkbox
           checked={override}
-          className='data-[checked]:bg-ic-blue-500 group block size-4 rounded border bg-white'
+          className='data-[checked]:bg-ic-blue-500 bg-ic-white group block size-4 rounded border'
           onChange={() => onChange(!override)}
         >
           <svg

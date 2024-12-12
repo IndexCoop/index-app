@@ -10,9 +10,12 @@ import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 import { ReviewProps } from './components/review'
 import { TransactionReviewSimulationState } from './components/simulation'
 
-export function useTransactionReview(props: ReviewProps) {
-  const decimals = 10
-  const { onSubmitWithSuccess, transactionReview } = props
+const DECIMALS = 10
+
+export function useTransactionReview({
+  onSubmitWithSuccess,
+  transactionReview,
+}: ReviewProps) {
   const { logEvent } = useAnalytics()
   const { executeTrade, isTransacting } = useTrade()
   const { quoteResults, selectedQuote } = transactionReview
@@ -69,12 +72,12 @@ export function useTransactionReview(props: ReviewProps) {
   const formattedInputTokenAmount = formatAmountFromWei(
     transactionReview.inputTokenAmount,
     transactionReview.inputToken.decimals,
-    decimals,
+    DECIMALS,
   )
   const formattedOutputTokenAmount = formatAmountFromWei(
     transactionReview.outputTokenAmount,
     transactionReview.outputToken.decimals,
-    decimals,
+    DECIMALS,
   )
 
   const quote = useMemo(() => {
