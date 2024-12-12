@@ -38,7 +38,10 @@ export function QuickStats() {
   const isFetchingStats = false
 
   return (
-    <div className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg border border-[#627171]'>
+    <div
+      className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
+      style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
+    >
       <div className='flex w-full items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
         <div className='flex items-center gap-4'>
           <BaseTokenSelector
