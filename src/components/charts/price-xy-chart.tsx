@@ -64,7 +64,8 @@ function PriceXYChart({
       dayjs(d.CreatedTimestamp).format(
         tooltipTimestampFormatByPeriod[selectedPeriod],
       ),
-    yAccessor: (d: PriceChartIndexData) => formatDollarAmount(d.NetAssetValue, undefined, digits),
+    yAccessor: (d: PriceChartIndexData) =>
+      formatDollarAmount(d.NetAssetValue, undefined, digits),
   }
 
   if (parentHeight === 0 || parentWidth === 0) return null
@@ -86,7 +87,9 @@ function PriceXYChart({
       <Axis
         orientation='left'
         numTicks={5}
-        tickFormat={(d) => formatDollarAmount(d, undefined, maxDomainY >= 1000 ? 0 : digits)}
+        tickFormat={(d) =>
+          formatDollarAmount(d, undefined, maxDomainY >= 1000 ? 0 : digits)
+        }
       />
       <Axis orientation='bottom' numTicks={parentWidth > 500 ? 5 : 3} />
       <AnimatedLineSeries {...seriesAccessors} dataKey='prices' data={data} />

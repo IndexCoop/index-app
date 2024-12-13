@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
+import { AssetTransfersWithMetadataResult } from 'alchemy-sdk'
 import { Address } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { getLeverageAction } from '@/app/leverage/utils/get-leverage-type'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { AssetTransfersWithMetadataResult } from 'alchemy-sdk'
 
 export const useTokenHistory = (...tokens: (string | Address)[]) => {
   const { address: user } = useWallet()

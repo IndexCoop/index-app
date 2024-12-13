@@ -84,11 +84,7 @@ function TvlXYChart({
         zero: false,
       }}
     >
-      <Axis
-        orientation='left'
-        numTicks={5}
-        tickFormat={(d) => formatTvl(d)}
-      />
+      <Axis orientation='left' numTicks={5} tickFormat={(d) => formatTvl(d)} />
       <Axis orientation='bottom' numTicks={5} />
       <AnimatedLineSeries {...seriesAccessors} dataKey='tvls' data={data} />
       <AnimatedAreaSeries

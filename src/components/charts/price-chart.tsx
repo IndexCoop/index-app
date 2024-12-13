@@ -19,7 +19,10 @@ export function PriceChart({ indexTokenAddress, isFetchingStats, nav }: Props) {
     'nav',
   )
 
-  const digits = useMemo(() => digitsByAddress(indexTokenAddress), [indexTokenAddress]);
+  const digits = useMemo(
+    () => digitsByAddress(indexTokenAddress),
+    [indexTokenAddress],
+  )
 
   return (
     <div className='border-ic-gray-200 dark:border-ic-gray-600 flex h-full w-full flex-col rounded-lg border bg-[#F7F8F8] dark:bg-[#1C2C2E]'>
@@ -40,7 +43,11 @@ export function PriceChart({ indexTokenAddress, isFetchingStats, nav }: Props) {
         />
       </div>
       <div className='block h-full w-full dark:hidden'>
-        <PriceXYChart data={historicalData} selectedPeriod={selectedPeriod} digits={digits} />
+        <PriceXYChart
+          data={historicalData}
+          selectedPeriod={selectedPeriod}
+          digits={digits}
+        />
       </div>
       <div className='hidden h-full w-full dark:block'>
         <PriceXYChart
