@@ -20,9 +20,9 @@ export function HeaderLink({ href, label }: Props) {
   return (
     <Link
       className={clsx(
-        'font-semibold',
+        'text-xs font-medium',
         isActive
-          ? 'text-ic-gray-950 dark:text-ic-gray-50'
+          ? 'text-ic-gray-950 dark:text-ic-white'
           : 'text-ic-gray-500 hover:text-ic-gray-700 dark:hover:text-ic-gray-100 dark:text-ic-gray-300',
       )}
       href={href}

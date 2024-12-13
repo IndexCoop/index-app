@@ -29,15 +29,15 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className='bg-ic-white dark:bg-ic-blue-950 shadow-ic-black/15 opacity-[.96] shadow-md backdrop-blur'>
+    <header className='bg-ic-white dark:bg-ic-gray-950 shadow-ic-black/15 opacity-[.96] shadow-md backdrop-blur'>
       <nav
-        className='mx-auto flex items-center justify-between px-6 py-2 lg:px-8 lg:py-3'
+        className='mx-auto flex items-center justify-between px-6 py-3.5 lg:px-8'
         aria-label='Global'
       >
         <div className='flex lg:pr-8'>
           <Logo />
         </div>
-        <div className='hidden lg:flex lg:gap-x-8'>
+        <div className='hidden items-center lg:flex lg:gap-x-8'>
           {navigation
             .filter((item) => !item.isMoreNavLink)
             .map((item) => (

@@ -72,7 +72,7 @@ export const NetworkSelect = () => {
   return (
     <Popover as='div' className='relative'>
       <PopoverButton
-        className='bg-ic-black text-ic-white flex items-center gap-2 rounded-md border-none px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
+        className='bg-ic-black text-ic-white flex items-center gap-2 rounded-md border-none px-4 py-1 text-xs transition-all duration-300 hover:scale-[1.04]'
         onClick={() => open({ view: 'Networks' })}
       >
         {imageSrc && (
@@ -80,13 +80,13 @@ export const NetworkSelect = () => {
             src={imageSrc}
             alt=''
             className='rounded-full'
-            width={24}
-            height={24}
+            width={16}
+            height={16}
           />
         )}
 
         <p className='hidden md:block'>{chain?.name}</p>
-        <ChevronDownIcon className='h-6 w-6' />
+        <ChevronDownIcon className='h-4 w-4' />
       </PopoverButton>
       <AnimatePresence>
         {chainId !== walletChainId && !isNetworkWarningClosed && (
