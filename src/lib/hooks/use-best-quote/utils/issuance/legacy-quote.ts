@@ -3,6 +3,7 @@ import { Address, encodeFunctionData, PublicClient } from 'viem'
 
 import { Issuance } from '@/app/legacy/config'
 import { LegacyQuote } from '@/app/legacy/types'
+import { POLYGON } from '@/constants/chains'
 import { LeveragedRethStakingYield, RETH, Token } from '@/constants/tokens'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 import { formatWei, isSameAddress } from '@/lib/utils'
@@ -15,6 +16,7 @@ import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 import { DebtIssuanceProvider } from './provider'
 
 interface IssuanceQuoteRequest {
+  chainId: number
   account: string
   inputToken: Token
   inputTokenAmount: bigint
@@ -25,8 +27,7 @@ export async function getLegacyRedemptionQuote(
   request: IssuanceQuoteRequest,
   publicClient: PublicClient,
 ): Promise<{ extended: LegacyQuote; quote: Quote } | null> {
-  const chainId = 1
-  const { account, inputToken, inputTokenAmount } = request
+  const { account, chainId, inputToken, inputTokenAmount } = request
 
   if (inputTokenAmount <= 0) return null
 
@@ -37,11 +38,15 @@ export async function getLegacyRedemptionQuote(
       contract,
       publicClient,
     )
-    const [components, units] =
+    const [productComponents, units] =
       await debtIssuanceProvider.getComponentRedemptionUnits(
         inputToken.address! as Address,
         inputTokenAmount,
       )
+
+    // hack to avoid obsolete components for polygon tokens
+    const components =
+      chainId === POLYGON.chainId ? [productComponents[0]] : productComponents
 
     const isIcReth = isSameAddress(
       inputToken.address!,
@@ -54,12 +59,6 @@ export async function getLegacyRedemptionQuote(
           return {
             ...outputToken,
             image: outputToken.logoURI,
-            // all these properties below will be irrelevant for the legacy redemption
-            coingeckoId: '',
-            fees: { streamingFee: '0' },
-            indexTypes: [],
-            isDangerous: false,
-            url: '',
           }
         })
 
@@ -88,7 +87,7 @@ export async function getLegacyRedemptionQuote(
 
     const transaction: QuoteTransaction = {
       account,
-      chainId: 1,
+      chainId,
       from: account,
       to: contract,
       data: callData,

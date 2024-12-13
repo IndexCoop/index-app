@@ -5,16 +5,9 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatAmount, formatDollarAmount, formatWei } from '@/lib/utils'
 
 import { useEarnContext } from './provider'
-import { BaseTokenStats } from './types'
 
-export interface FormattedLeverageData {
-  symbol: string
-  price: string
+export interface FormattedEarnData {
   indexTokenPrice: string
-  change24h: string
-  change24hIsPositive: boolean
-  low24h: string
-  high24h: string
   hasInsufficientFunds: boolean
   gasFeesEth: string
   gasFeesUsd: string
@@ -30,9 +23,7 @@ export interface FormattedLeverageData {
   shouldShowSummaryDetails: boolean
 }
 
-export function useFormattedLeverageData(
-  stats: BaseTokenStats | null,
-): FormattedLeverageData {
+export function useFormattedEarnData(): FormattedEarnData {
   const { address } = useWallet()
   const {
     nav,
@@ -67,9 +58,13 @@ export function useFormattedLeverageData(
 
   const ouputAmount = useMemo(() => {
     if (inputValue === '') return ''
-    return quote?.outputTokenAmount
-      ? `${formatAmount(Number(formatWei(quote?.outputTokenAmount, quote?.outputToken.decimals)))} ${quote?.outputToken.symbol}`
-      : ''
+    if (!quote?.outputTokenAmount) return ''
+    const amount = Number(
+      formatWei(quote?.outputTokenAmount, quote?.outputToken.decimals),
+    )
+    const digits =
+      amount < 0.01 ? Math.min(6, Math.ceil(-Math.log10(amount)) + 1) : 2
+    return `${formatAmount(amount, digits)} ${quote?.outputToken.symbol}`
   }, [inputValue, quote])
   const outputAmountUsd = quote?.outputTokenAmountUsd
     ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
@@ -94,13 +89,7 @@ export function useFormattedLeverageData(
   )
 
   return {
-    symbol: stats?.symbol ?? '',
-    price: stats ? formatDollarAmount(stats.price) : '',
     indexTokenPrice: formatDollarAmount(nav),
-    change24h: stats ? `${stats.change24h.toFixed(2)}%` : '',
-    change24hIsPositive: stats ? stats.change24h >= 0 : true,
-    low24h: stats ? formatAmount(stats.low24h) : '',
-    high24h: stats ? formatAmount(stats.high24h) : '',
     hasInsufficientFunds,
     gasFeesEth,
     gasFeesUsd: quote?.gasCostsInUsd

@@ -1,7 +1,4 @@
-export function formatTvl(
-  tvl?: number | null,
-  hideDollarSign: boolean = false,
-) {
+export function formatTvl(tvl?: number | null) {
   if (tvl === undefined || tvl === null || tvl === 0) return ''
 
   return Intl.NumberFormat('en', {
@@ -10,9 +7,7 @@ export function formatTvl(
     currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  })
-    .format(tvl)
-    .slice(hideDollarSign ? 1 : 0)
+  }).format(tvl)
 }
 
 export function formatPercentage(

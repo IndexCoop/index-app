@@ -1,29 +1,27 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { useMemo } from 'react'
 
 import { PeriodSelector } from '@/components/charts/period-selector'
 import PriceXYChart from '@/components/charts/price-xy-chart'
 import { useChartData } from '@/components/charts/use-chart-data'
-import { ARBITRUM } from '@/constants/chains'
-import { Token } from '@/constants/tokens'
-import { useNetwork } from '@/lib/hooks/use-network'
 import { formatDollarAmount } from '@/lib/utils'
 import { cn } from '@/lib/utils/tailwind'
+import { digitsByAddress } from '@/lib/utils/tokens'
 
 type Props = {
-  indexToken: Token
+  indexTokenAddress: string
   isFetchingStats?: boolean
   nav: number | null
 }
 
-export function PriceChart({ indexToken, isFetchingStats, nav }: Props) {
-  const { chainId } = useNetwork()
-  const tokenAddress = getTokenByChainAndSymbol(
-    chainId ?? ARBITRUM.chainId,
-    indexToken.symbol,
-  )?.address
+export function PriceChart({ indexTokenAddress, isFetchingStats, nav }: Props) {
   const { historicalData, selectedPeriod, setSelectedPeriod } = useChartData(
-    tokenAddress,
+    indexTokenAddress,
     'nav',
+  )
+
+  const digits = useMemo(
+    () => digitsByAddress(indexTokenAddress),
+    [indexTokenAddress],
   )
 
   return (
@@ -37,7 +35,7 @@ export function PriceChart({ indexToken, isFetchingStats, nav }: Props) {
               'bg-ic-gray-200 h-[18px] animate-pulse rounded-md text-opacity-0 md:h-8',
           )}
         >
-          {formatDollarAmount(nav, true)}
+          {formatDollarAmount(nav, true, digits)}
         </div>
         <PeriodSelector
           selectedPeriod={selectedPeriod}
@@ -45,11 +43,16 @@ export function PriceChart({ indexToken, isFetchingStats, nav }: Props) {
         />
       </div>
       <div className='block h-full w-full dark:hidden'>
-        <PriceXYChart data={historicalData} selectedPeriod={selectedPeriod} />
+        <PriceXYChart
+          data={historicalData}
+          selectedPeriod={selectedPeriod}
+          digits={digits}
+        />
       </div>
       <div className='hidden h-full w-full dark:block'>
         <PriceXYChart
           data={historicalData}
+          digits={digits}
           selectedPeriod={selectedPeriod}
           isDark={true}
         />

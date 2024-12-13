@@ -1,11 +1,7 @@
 import {
   BedIndex,
-  Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
-  Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopEthereum2xIndex,
   IndexToken,
   LeveragedRethStakingYield,
   RealWorldAssetIndex,
@@ -35,22 +31,9 @@ export function isAvailableForIssuance(
   )
 }
 
-export function isAvailableForRedemption(
-  inputToken: Token,
-  outputToken: Token,
-): boolean {
-  return (
-    (inputToken.symbol === Bitcoin2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopBitcoin2xIndex.symbol) ||
-    (inputToken.symbol === Ethereum2xFlexibleLeverageIndex.symbol &&
-      outputToken.symbol === IndexCoopEthereum2xIndex.symbol)
-  )
-}
-
 export function isAvailableForSwap(token: Token): boolean {
   switch (token.symbol) {
     case CoinDeskEthTrendIndex.symbol:
-    case IndexCoopBitcoin2xIndex.symbol:
     case LeveragedRethStakingYield.symbol:
       return false
     default:
