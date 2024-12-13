@@ -15,7 +15,8 @@ export async function fetchLeverageTokenPrices(
   chainId: number,
 ) {
   const tokenBalances = balances.reduce((acc, current) => {
-    const token = getTokenByChainAndAddress(current.token, chainId)
+    const token = getTokenByChainAndAddress(chainId, current.token)
+
     if (!token) return acc
 
     const isLeverageToken = leverageTokens.some(
