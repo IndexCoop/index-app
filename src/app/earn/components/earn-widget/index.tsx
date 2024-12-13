@@ -128,6 +128,7 @@ export function EarnWidget() {
         }}
         address={address}
         tokens={inputTokens}
+        showNetworks={!isMinting}
       />
       <SelectTokenModal
         isOpen={isSelectOutputTokenOpen}
@@ -138,6 +139,7 @@ export function EarnWidget() {
         }}
         address={address}
         tokens={outputTokens}
+        showNetworks={isMinting}
       />
       {transactionReview && (
         <TransactionReviewModal
