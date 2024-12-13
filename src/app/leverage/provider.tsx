@@ -31,7 +31,6 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
-import { NavProvider } from '@/lib/utils/api/nav'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 import {
@@ -53,7 +52,6 @@ export interface TokenContext {
   baseToken: Token
   indexToken: Token
   indexTokens: Token[]
-  indexTokenPrice: number
   nav: number
   navchange: number
   inputToken: Token
@@ -85,7 +83,6 @@ export const LeverageTokenContext = createContext<TokenContext>({
   baseToken: ETH,
   indexToken: { ...eth2x, image: eth2x.logoURI },
   indexTokens: [],
-  indexTokenPrice: 0,
   nav: 0,
   navchange: 0,
   inputToken: ETH,
@@ -148,7 +145,6 @@ export function LeverageProvider(props: { children: any }) {
     null,
   )
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
-  const [indexTokenPrice, setIndexTokenPrice] = useState(0)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
   const [inputToken, setInputToken] = useState<Token>(queryInputToken)
@@ -284,15 +280,6 @@ export function LeverageProvider(props: { children: any }) {
     }
     fetchStats()
   }, [baseToken])
-
-  useEffect(() => {
-    const fetchPrice = async () => {
-      const navProvider = new NavProvider()
-      const navPrice = await navProvider.getNavPrice(indexToken.symbol, chainId)
-      setIndexTokenPrice(navPrice)
-    }
-    fetchPrice()
-  }, [chainId, indexToken])
 
   useEffect(() => {
     async function fetchCosts() {
@@ -551,7 +538,6 @@ export function LeverageProvider(props: { children: any }) {
         baseToken,
         indexToken,
         indexTokens,
-        indexTokenPrice,
         inputToken,
         outputToken,
         inputTokenAmount,
