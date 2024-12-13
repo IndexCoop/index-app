@@ -21,6 +21,7 @@ type SelectTokenModalProps = {
   isOpen: boolean
   isDarkMode?: boolean
   showBalances?: boolean
+  showNetworks?: boolean
   tokens: Token[]
   onClose: () => void
   onSelectedToken: (tokenSymbol: string) => void
@@ -80,6 +81,7 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
                   key={token.symbol}
                   extraTitle={undefined}
                   item={token}
+                  showNetwork={props.showNetworks}
                   onClick={() => onSelectedToken(token.symbol)}
                 />
               )
@@ -91,20 +93,45 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
 }
 
 type TokenItemProps = {
+  item: Token
   balance: string
   extraTitle?: string
-  item: Token
+  showNetwork?: boolean
   onClick: (tokenSymbol: string) => void
 }
 
-const TokenItem = ({ balance, extraTitle, item, onClick }: TokenItemProps) => {
+const TokenItem = ({
+  balance,
+  extraTitle,
+  item,
+  onClick,
+  showNetwork,
+}: TokenItemProps) => {
   return (
     <div
       className='text-ic-black dark:text-ic-white h-15 hover:bg-ic-gray-100 dark:hover:bg-ic-gray-900 my-1 flex cursor-pointer items-center justify-between px-4 py-2 text-sm font-medium'
       onClick={() => onClick(item.symbol)}
     >
       <div className='flex items-center'>
-        <Image alt={`${item.symbol} logo`} src={item.image} w='40px' h='40px' />
+        <div className='relative inline-block h-11 w-11'>
+          <Image
+            className='h-10 w-10'
+            alt={`${item.symbol} logo`}
+            src={item.image}
+            w='40px'
+            h='40px'
+          />
+          {showNetwork === true && (
+            <div className='bg-ic-gray-100 absolute bottom-0 right-0 h-5 w-5 rounded-full'>
+              <Image
+                alt={`${item.symbol} logo`}
+                src={'/assets/arbitrum-network-logo.svg'}
+                w='20px'
+                h='20px'
+              />
+            </div>
+          )}
+        </div>
         <div className='ml-4 flex flex-col'>
           <div className='flex align-baseline'>
             <span>{item.symbol}</span>

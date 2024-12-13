@@ -86,6 +86,7 @@ export function QuickStats() {
         }}
         address={address}
         tokens={indexTokens}
+        showNetworks={true}
       />
     </div>
   )
