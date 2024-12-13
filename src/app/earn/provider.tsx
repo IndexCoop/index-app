@@ -106,6 +106,7 @@ export function EarnProvider(props: { children: any }) {
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
+  const [chainId, setChainId] = useState(chainIdRaw ?? MAINNET.chainId)
   const [inputValue, setInputValue] = useState('')
   const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
@@ -119,10 +120,6 @@ export function EarnProvider(props: { children: any }) {
     quote: null,
     error: null,
   })
-
-  const chainId = useMemo(() => {
-    return chainIdRaw ?? MAINNET.chainId
-  }, [chainIdRaw])
 
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
@@ -290,6 +287,7 @@ export function EarnProvider(props: { children: any }) {
         (token) => token.symbol === tokenSymbol && token.chainId === chainId,
       )
       if (!token) return
+      setChainId(chainId)
       setInputToken(token)
     },
     [inputTokens],
@@ -301,6 +299,7 @@ export function EarnProvider(props: { children: any }) {
         (token) => token.symbol === tokenSymbol && token.chainId === chainId,
       )
       if (!token) return
+      setChainId(chainId)
       setOutputToken(token)
     },
     [outputTokens],
