@@ -53,9 +53,9 @@ interface Context {
   quoteResult: QuoteResult | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
-  onSelectIndexToken: (tokenSymbol: string) => void
-  onSelectInputToken: (tokenSymbol: string) => void
-  onSelectOutputToken: (tokenSymbol: string) => void
+  onSelectIndexToken: (tokenSymbol: string, chainId: number) => void
+  onSelectInputToken: (tokenSymbol: string, chainId: number) => void
+  onSelectOutputToken: (tokenSymbol: string, chainId: number) => void
   reset: () => void
   toggleIsMinting: () => void
 }
@@ -285,8 +285,10 @@ export function EarnProvider(props: { children: any }) {
   )
 
   const onSelectInputToken = useCallback(
-    (tokenSymbol: string) => {
-      const token = inputTokens.find((token) => token.symbol === tokenSymbol)
+    (tokenSymbol: string, chainId: number) => {
+      const token = inputTokens.find(
+        (token) => token.symbol === tokenSymbol && token.chainId === chainId,
+      )
       if (!token) return
       setInputToken(token)
     },
@@ -294,8 +296,10 @@ export function EarnProvider(props: { children: any }) {
   )
 
   const onSelectOutputToken = useCallback(
-    (tokenSymbol: string) => {
-      const token = outputTokens.find((token) => token.symbol === tokenSymbol)
+    (tokenSymbol: string, chainId: number) => {
+      const token = outputTokens.find(
+        (token) => token.symbol === tokenSymbol && token.chainId === chainId,
+      )
       if (!token) return
       setOutputToken(token)
     },
@@ -303,11 +307,11 @@ export function EarnProvider(props: { children: any }) {
   )
 
   const onSelectIndexToken = useCallback(
-    (tokenSymbol: string) => {
+    (tokenSymbol: string, chainId: number) => {
       if (isMinting) {
-        onSelectOutputToken(tokenSymbol)
+        onSelectOutputToken(tokenSymbol, chainId)
       } else {
-        onSelectInputToken(tokenSymbol)
+        onSelectInputToken(tokenSymbol, chainId)
       }
     },
     [isMinting, onSelectInputToken, onSelectOutputToken],

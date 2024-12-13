@@ -25,7 +25,7 @@ type SelectTokenModalProps = {
   showNetworks?: boolean
   tokens: Token[]
   onClose: () => void
-  onSelectedToken: (tokenSymbol: string) => void
+  onSelectedToken: (tokenSymbol: string, chainId: number) => void
 }
 
 export const SelectTokenModal = (props: SelectTokenModalProps) => {
@@ -83,7 +83,9 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
                   extraTitle={undefined}
                   item={token}
                   showNetwork={props.showNetworks}
-                  onClick={() => onSelectedToken(token.symbol)}
+                  onClick={() =>
+                    onSelectedToken(token.symbol, token.chainId ?? 1)
+                  }
                 />
               )
             })}
