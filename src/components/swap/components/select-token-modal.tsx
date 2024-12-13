@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 import clsx from 'clsx'
 import { useMemo } from 'react'
+import { arbitrum, base } from 'viem/chains'
 
 import { Token } from '@/constants/tokens'
 import { useBalances } from '@/lib/hooks/use-balance'
@@ -107,6 +108,8 @@ const TokenItem = ({
   onClick,
   showNetwork,
 }: TokenItemProps) => {
+  const networkAsset =
+    showNetwork === true ? getAssetForChain(item.chainId ?? 1) : null
   return (
     <div
       className='text-ic-black dark:text-ic-white h-15 hover:bg-ic-gray-100 dark:hover:bg-ic-gray-900 my-1 flex cursor-pointer items-center justify-between px-4 py-2 text-sm font-medium'
@@ -121,11 +124,11 @@ const TokenItem = ({
             w='40px'
             h='40px'
           />
-          {showNetwork === true && (
+          {networkAsset && (
             <div className='bg-ic-gray-100 absolute bottom-0 right-0 h-5 w-5 rounded-full'>
               <Image
                 alt={`${item.symbol} logo`}
-                src={'/assets/arbitrum-network-logo.svg'}
+                src={networkAsset}
                 w='20px'
                 h='20px'
               />
@@ -147,4 +150,16 @@ const TokenItem = ({
       </div>
     </div>
   )
+}
+
+function getAssetForChain(chainId: number): string | null {
+  switch (chainId) {
+    case arbitrum.id:
+      return '/assets/arbitrum-network-logo.svg'
+    case base.id:
+      return '/assets/base-network-icon.svg'
+    default:
+      // Return null by default to indicate ethereum and not show asset
+      return null
+  }
 }
