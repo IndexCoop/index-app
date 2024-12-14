@@ -14,7 +14,7 @@ import { usePublicClient } from 'wagmi'
 
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { ARBITRUM, MAINNET } from '@/constants/chains'
+import { MAINNET } from '@/constants/chains'
 import { ETH, ICUSD, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -347,7 +347,7 @@ export function EarnProvider(props: { children: any }) {
 
   const fetchSwapQuote = async () => {
     if (!address) return null
-    if (!chainId || chainId === ARBITRUM.chainId) return null
+    if (!chainId) return null
     if (!publicClient) return null
     if (inputTokenAmount <= 0) return null
     if (!indexToken) return null
@@ -394,16 +394,6 @@ export function EarnProvider(props: { children: any }) {
   )
 
   useEffect(() => {
-    if (chainId === ARBITRUM.chainId) {
-      const quoteResult = {
-        type: QuoteType.flashmint,
-        isAvailable: true,
-        quote: flashmintQuote ?? null,
-        error: null,
-      }
-      setQuoteResult(quoteResult)
-      return
-    }
     const bestQuote = getBestYieldQuote(
       flashmintQuote ?? null,
       swapQuote ?? null,
