@@ -40,20 +40,28 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
     const yieldTokens = getYieldTokens()
 
     let queryOutputToken: Token | undefined = currencyTokens.find(
-      (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
+      (token) =>
+        token.symbol.toLowerCase() === buy.toLowerCase() &&
+        token.chainId === queryNetwork,
     )
 
     let queryInputToken: Token | undefined = yieldTokens.find(
-      (token) => token.symbol.toLowerCase() === sell.toLowerCase(),
+      (token) =>
+        token.symbol.toLowerCase() === sell.toLowerCase() &&
+        token.chainId === queryNetwork,
     )
 
     if (!queryInputToken || !queryOutputToken) {
       queryOutputToken = yieldTokens.find(
-        (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
+        (token) =>
+          token.symbol.toLowerCase() === buy.toLowerCase() &&
+          token.chainId === queryNetwork,
       )
 
       queryInputToken = currencyTokens.find(
-        (token) => token.symbol.toLowerCase() === sell.toLowerCase(),
+        (token) =>
+          token.symbol.toLowerCase() === sell.toLowerCase() &&
+          token.chainId === queryNetwork,
       )
     }
 
