@@ -1,9 +1,15 @@
+import { LeverageSelector } from './leverage-selector'
 import { StatsMetric } from './stats-metric'
 
 export function LeverageSelectorContainer() {
   const isFetchingStats = false
   return (
-    <div className='border-ic-black flex h-full items-center border-l px-16 py-0'>
+    <div className='border-ic-black flex h-full items-center gap-8 border-l px-16 py-0'>
+      <LeverageSelector
+        leverage={'2x'}
+        leverageType={'Long'}
+        onClick={() => console.log('select long')}
+      />
       <StatsMetric
         className='w-16'
         isLoading={isFetchingStats}
