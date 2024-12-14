@@ -6,7 +6,7 @@ import { useDebounce } from 'use-debounce'
 import { OnrampModal } from '@/components/onramp'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
-import { ARBITRUM, MAINNET } from '@/constants/chains'
+import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
@@ -41,6 +41,7 @@ export const Swap = (props: SwapProps) => {
   const isSupportedNetwork = useSupportedNetworks([
     MAINNET.chainId,
     ARBITRUM.chainId,
+    BASE.chainId,
   ])
   const { logEvent } = useAnalytics()
   const requiresProtection = useProtection()
