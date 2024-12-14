@@ -76,6 +76,13 @@ function formatData(
     }))
   }
 
+  if (metric === 'apy') {
+    return data.map((datum) => ({
+      ...datum,
+      APY: Number(datum.APY?.toFixed(4)),
+    }))
+  }
+
   return []
 }
 
