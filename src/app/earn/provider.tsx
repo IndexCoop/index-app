@@ -100,19 +100,16 @@ export function EarnProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const { chainId: chainIdRaw } = useNetwork()
   const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
-  const { address, provider, rpcUrl } = useWallet()
+  const { address } = useWallet()
   const {
     queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
   const [inputValue, setInputValue] = useState('')
-  const [isFetchingQuote, setFetchingQuote] = useState(false)
   const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
   const [inputToken, setInputToken] = useState<Token>(queryInputToken)
   const [outputToken, setOutputToken] = useState<Token>(queryOutputToken)
-  const [flashmintQuote, setFlashmintQuote] = useState<Quote | null>(null)
-  const [swapQuote, setSwapQuote] = useState<Quote | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
     isAvailable: true,
@@ -227,28 +224,6 @@ export function EarnProvider(props: { children: any }) {
     return indexTokens
   }, [chainId, indexTokens, isMinting])
 
-  const transactionReview = useMemo((): TransactionReview | null => {
-    if (isFetchingQuote || quoteResult === null) return null
-    const quote = quoteResult.quote
-    if (quote) {
-      return {
-        ...quote,
-        contractAddress: quote.contract,
-        quoteResults: {
-          bestQuote: QuoteType.flashmint,
-          results: {
-            flashmint: quoteResult,
-            index: null,
-            issuance: null,
-            redemption: null,
-          },
-        },
-        selectedQuote: QuoteType.flashmint,
-      }
-    }
-    return null
-  }, [isFetchingQuote, quoteResult])
-
   const toggleIsMinting = useCallback(() => {
     setMinting(!isMinting)
     setInputToken(outputToken)
@@ -257,7 +232,6 @@ export function EarnProvider(props: { children: any }) {
 
   useEffect(() => {
     if (inputToken === null || outputToken === null) return
-
     updateQueryParams({
       isMinting,
       inputToken,
@@ -324,100 +298,112 @@ export function EarnProvider(props: { children: any }) {
     forceRefetchBalances()
   }
 
-  useEffect(() => {
-    const fetchSwapQuote = async () => {
-      if (!address) return null
-      if (!chainId || chainId === ARBITRUM.chainId) return null
-      if (!provider || !publicClient) return null
-      if (inputTokenAmount <= 0) return null
-      if (!indexToken) return null
-      const inputTokenPrice = await getTokenPrice(inputToken, chainId)
-      const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-      return await getIndexQuote({
-        isMinting,
-        chainId,
+  const fetchFlashMintQuote = async () => {
+    if (!address) return null
+    if (!chainId) return null
+    if (!publicClient) return null
+    if (inputTokenAmount <= 0) return null
+    if (!indexToken) return null
+    const inputTokenPrice = await getTokenPrice(inputToken, chainId)
+    const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+    return await getFlashMintQuote({
+      isMinting,
+      account: address,
+      chainId,
+      inputToken,
+      inputTokenAmount: inputValue,
+      inputTokenAmountWei: inputTokenAmount,
+      inputTokenPrice,
+      outputToken,
+      outputTokenPrice,
+      slippage: 0.1,
+    })
+  }
+
+  const { data: flashmintQuote, isFetching: isFetchingFlashMintQuote } =
+    useQuery({
+      queryKey: [
+        'flashmint-quote',
+        {
+          address,
+          chainId,
+          indexToken,
+          inputToken,
+          inputTokenAmount: inputTokenAmount.toString(),
+          publicClient,
+        },
+      ],
+      queryFn: fetchFlashMintQuote,
+      enabled:
+        !!address &&
+        !!chainId &&
+        !!indexToken &&
+        !!publicClient &&
+        inputTokenAmount > 0, // Condition to trigger
+    })
+
+  const fetchSwapQuote = async () => {
+    if (!address) return null
+    if (!chainId || chainId === ARBITRUM.chainId) return null
+    if (!publicClient) return null
+    if (inputTokenAmount <= 0) return null
+    if (!indexToken) return null
+    const inputTokenPrice = await getTokenPrice(inputToken, chainId)
+    const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+    return await getIndexQuote({
+      isMinting,
+      chainId,
+      address,
+      inputToken,
+      inputTokenAmount: inputValue,
+      inputTokenPrice,
+      outputToken,
+      outputTokenPrice,
+      nativeTokenPrice,
+      slippage: 0.1,
+    })
+  }
+
+  const { data: swapQuote, isFetching: isFetchingSwapQuote } = useQuery({
+    queryKey: [
+      'swap-quote',
+      {
         address,
-        inputToken,
-        inputTokenAmount: inputValue,
-        inputTokenPrice,
-        outputToken,
-        outputTokenPrice,
-        nativeTokenPrice,
-        slippage: 0.1,
-      })
-    }
-    const fetchQuote = async () => {
-      if (!address) return null
-      if (!chainId) return null
-      if (!provider || !publicClient) return null
-      if (inputTokenAmount <= 0) return null
-      if (!indexToken) return null
-      const inputTokenPrice = await getTokenPrice(inputToken, chainId)
-      const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-
-      return await getFlashMintQuote({
-        isMinting,
-        account: address,
         chainId,
+        indexToken,
         inputToken,
-        inputTokenAmount: inputValue,
-        inputTokenAmountWei: inputTokenAmount,
-        inputTokenPrice,
-        outputToken,
-        outputTokenPrice,
-        slippage: 0.1,
-      })
-    }
+        inputTokenAmount: inputTokenAmount.toString(),
+        publicClient,
+      },
+    ],
+    queryFn: fetchSwapQuote,
+    enabled:
+      !!address &&
+      !!chainId &&
+      !!publicClient &&
+      !!indexToken &&
+      inputTokenAmount > 0,
+  })
 
-    const fetchQuotes = async () => {
-      setFetchingQuote(true)
-      try {
-        const [quoteResult, swapQuoteResult] = await Promise.allSettled([
-          fetchQuote(),
-          fetchSwapQuote(),
-        ])
-        setFlashmintQuote(
-          quoteResult.status === 'fulfilled' ? quoteResult.value : null,
-        )
-        setSwapQuote(
-          swapQuoteResult.status === 'fulfilled' ? swapQuoteResult.value : null,
-        )
-      } catch (error) {
-        console.error('Error fetching quotes', error)
-      } finally {
-        setFetchingQuote(false)
-      }
-    }
-    fetchQuotes()
-  }, [
-    address,
-    chainId,
-    indexToken,
-    inputToken,
-    inputTokenAmount,
-    inputValue,
-    isMinting,
-    nativeTokenPrice,
-    outputToken,
-    provider,
-    publicClient,
-    rpcUrl,
-  ])
+  const isFetchingQuote = useMemo(
+    () => isFetchingFlashMintQuote || isFetchingSwapQuote,
+    [isFetchingFlashMintQuote, isFetchingSwapQuote],
+  )
 
   useEffect(() => {
     if (chainId === ARBITRUM.chainId) {
       const quoteResult = {
         type: QuoteType.flashmint,
         isAvailable: true,
-        quote: flashmintQuote,
+        quote: flashmintQuote ?? null,
         error: null,
       }
       setQuoteResult(quoteResult)
       return
     }
     const bestQuote = getBestYieldQuote(
-      flashmintQuote,
-      swapQuote,
+      flashmintQuote ?? null,
+      swapQuote ?? null,
       chainId ?? -1,
     )
     setQuoteResult({
@@ -427,6 +413,28 @@ export function EarnProvider(props: { children: any }) {
       error: null,
     })
   }, [chainId, flashmintQuote, swapQuote])
+
+  const transactionReview = useMemo((): TransactionReview | null => {
+    if (isFetchingQuote || quoteResult === null) return null
+    const quote = quoteResult.quote
+    if (quote) {
+      return {
+        ...quote,
+        contractAddress: quote.contract,
+        quoteResults: {
+          bestQuote: QuoteType.flashmint,
+          results: {
+            flashmint: quoteResult,
+            index: null,
+            issuance: null,
+            redemption: null,
+          },
+        },
+        selectedQuote: QuoteType.flashmint,
+      }
+    }
+    return null
+  }, [isFetchingQuote, quoteResult])
 
   useEffect(() => {
     // Reset quotes
