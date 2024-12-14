@@ -58,7 +58,7 @@ export function RedeemProvider(props: { children: any }) {
   const { chainId } = useNetwork()
   const publicClient = usePublicClient()
   const queryClient = useQueryClient()
-  const { address, provider } = useWallet()
+  const { address } = useWallet()
 
   const inputTokenList = useMemo(
     () =>
@@ -96,14 +96,13 @@ export function RedeemProvider(props: { children: any }) {
         chainId,
         inputToken,
         inputTokenAmount: inputTokenAmount.toString(),
-        provider,
         publicClient,
       },
     ],
     queryFn: async () => {
       if (!address) return null
       if (!chainId) return null
-      if (!provider || !publicClient) return null
+      if (!publicClient) return null
       if (inputTokenAmount <= 0) return null
       const legacyQuote = await getLegacyRedemptionQuote(
         {
