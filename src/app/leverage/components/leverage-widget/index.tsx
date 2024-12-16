@@ -28,11 +28,7 @@ import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
-type LeverageWidgetProps = {
-  onClickBaseTokenSelector: () => void
-}
-
-export function LeverageWidget(props: LeverageWidgetProps) {
+export function LeverageWidget() {
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
