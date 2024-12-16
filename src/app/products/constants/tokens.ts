@@ -1,5 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { base, mainnet } from 'viem/chains'
+import { arbitrum, base, mainnet } from 'viem/chains'
 
 import { ProductRow } from '@/app/products/types/product'
 import {
@@ -7,14 +7,13 @@ import {
   buildLeverageTradePath,
   buildSwapTradePath,
 } from '@/app/products/utils/trade-path'
-import { BASE } from '@/constants/chains'
 
 export const productTokens: ProductRow[] = [
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'ETH2X'),
     hasApy: false,
     listType: 'Strategies',
-    tradeHref: buildLeverageTradePath('eth2x'),
+    tradeHref: buildLeverageTradePath('ETH2X'),
   },
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'DPI'),
@@ -44,7 +43,7 @@ export const productTokens: ProductRow[] = [
     ...getTokenByChainAndSymbol(mainnet.id, 'BTC2X'),
     hasApy: false,
     listType: 'Strategies',
-    tradeHref: buildLeverageTradePath('btc2x'),
+    tradeHref: buildLeverageTradePath('BTC2X'),
   },
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
@@ -62,12 +61,24 @@ export const productTokens: ProductRow[] = [
     ...getTokenByChainAndSymbol(base.id, 'icUSD'),
     hasApy: true,
     listType: 'Earn',
-    tradeHref: buildEarnTradePath('icUSD', 'USDC', BASE.chainId),
+    tradeHref: buildEarnTradePath('icUSD', 'USDC', base.id),
   },
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'cdETI'),
     hasApy: false,
     listType: 'Strategies',
     tradeHref: buildSwapTradePath('cdeti'),
+  },
+  {
+    ...getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC'),
+    hasApy: false,
+    listType: 'Strategies',
+    tradeHref: buildLeverageTradePath('ETH2xBTC', undefined, arbitrum.id),
+  },
+  {
+    ...getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH'),
+    hasApy: false,
+    listType: 'Strategies',
+    tradeHref: buildLeverageTradePath('BTC2xETH', undefined, arbitrum.id),
   },
 ]
