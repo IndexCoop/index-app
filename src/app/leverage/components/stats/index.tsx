@@ -45,7 +45,7 @@ export function QuickStats() {
       className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
-      <div className='flex w-full items-center justify-between py-2 pl-6 pr-16'>
+      <div className='flex w-full items-center justify-between py-4 pl-6 pr-16'>
         <TokenSelector
           selectedToken={indexToken}
           onClick={onOpenSelectIndexToken}
