@@ -30,9 +30,11 @@ export function QuickStats() {
           baseToken={baseToken}
           onClick={onOpenSelectIndexToken}
         />
-        <div className='text-ic-white text-base font-semibold'>{price}</div>
+        <div className='text-ic-white hidden w-20 text-base font-semibold md:flex'>
+          {price}
+        </div>
         <StatsMetric
-          className='w-20'
+          className='hidden w-20 sm:flex'
           isLoading={isFetchingStats}
           label='24h Change'
           value={change24h}
@@ -42,12 +44,12 @@ export function QuickStats() {
         />
         <StatsMetric
           isLoading={isFetchingStats}
-          className='hidden w-16 md:flex'
+          className='hidden w-16 lg:flex'
           label='24h High'
           value={high24h}
         />
         <StatsMetric
-          className='hidden w-16 md:flex'
+          className='hidden w-16 lg:flex'
           isLoading={isFetchingStats}
           label='24h Low'
           value={low24h}
