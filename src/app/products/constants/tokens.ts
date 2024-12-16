@@ -12,7 +12,7 @@ export const productTokens: ProductRow[] = [
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'ETH2X'),
     hasApy: false,
-    listType: 'Strategies',
+    listType: 'Leverage',
     tradeHref: buildLeverageTradePath('ETH2X'),
   },
   {
@@ -42,7 +42,7 @@ export const productTokens: ProductRow[] = [
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'BTC2X'),
     hasApy: false,
-    listType: 'Strategies',
+    listType: 'Leverage',
     tradeHref: buildLeverageTradePath('BTC2X'),
   },
   {
@@ -72,13 +72,13 @@ export const productTokens: ProductRow[] = [
   {
     ...getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC'),
     hasApy: false,
-    listType: 'Strategies',
+    listType: 'Leverage',
     tradeHref: buildLeverageTradePath('ETH2xBTC', undefined, arbitrum.id),
   },
   {
     ...getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH'),
     hasApy: false,
-    listType: 'Strategies',
+    listType: 'Leverage',
     tradeHref: buildLeverageTradePath('BTC2xETH', undefined, arbitrum.id),
   },
 ]
