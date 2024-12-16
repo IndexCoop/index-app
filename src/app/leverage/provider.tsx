@@ -387,8 +387,10 @@ export function LeverageProvider(props: { children: any }) {
     if (!publicClient) return null
     if (inputTokenAmount <= 0) return null
     if (!indexToken) return null
-    const inputTokenPrice = await getTokenPrice(inputToken, chainId)
-    const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+    const [inputTokenPrice, outputTokenPrice] = await Promise.all([
+      getTokenPrice(inputToken, chainId),
+      getTokenPrice(outputToken, chainId),
+    ])
     return await getFlashMintQuote({
       isMinting,
       account: address,
@@ -431,8 +433,10 @@ export function LeverageProvider(props: { children: any }) {
     if (!publicClient) return null
     if (inputTokenAmount <= 0) return null
     if (!indexToken) return null
-    const inputTokenPrice = await getTokenPrice(inputToken, chainId)
-    const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+    const [inputTokenPrice, outputTokenPrice] = await Promise.all([
+      getTokenPrice(inputToken, chainId),
+      getTokenPrice(outputToken, chainId),
+    ])
     return await getIndexQuote({
       isMinting,
       chainId,
