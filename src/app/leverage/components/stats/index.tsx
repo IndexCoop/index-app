@@ -1,6 +1,7 @@
 import { useDisclosure } from '@chakra-ui/react'
+import { useCallback } from 'react'
 
-import { BaseTokenSelector } from '@/app/leverage/components/leverage-widget/components/base-token-selector'
+import { TokenSelector } from '@/app/earn/components/earn-widget/components/base-token-selector'
 import { LeverageSelectorContainer } from '@/app/leverage/components/stats/leverage-selector-container'
 import { StatsMetric } from '@/app/leverage/components/stats/stats-metric'
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -14,11 +15,30 @@ export function QuickStats() {
     onOpen: onOpenSelectIndexToken,
     onClose: onCloseSelectIndexToken,
   } = useDisclosure()
-  const { baseToken, isFetchingStats, stats } = useLeverageToken()
+  const {
+    indexToken,
+    indexTokens,
+    isFetchingStats,
+    isMinting,
+    stats,
+    onSelectInputToken,
+    onSelectOutputToken,
+  } = useLeverageToken()
   const { address } = useWallet()
 
   const { price, change24h, change24hIsPositive, low24h, high24h } =
     useFormattedLeverageData(stats)
+
+  const onSelectIndexToken = useCallback(
+    (tokenSymbol: string) => {
+      if (isMinting) {
+        onSelectOutputToken(tokenSymbol)
+      } else {
+        onSelectInputToken(tokenSymbol)
+      }
+    },
+    [isMinting, onSelectInputToken, onSelectOutputToken],
+  )
 
   return (
     <div
@@ -26,8 +46,8 @@ export function QuickStats() {
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
       <div className='flex w-full items-center justify-between py-2 pl-6 pr-16'>
-        <BaseTokenSelector
-          baseToken={baseToken}
+        <TokenSelector
+          selectedToken={indexToken}
           onClick={onOpenSelectIndexToken}
         />
         <div className='text-ic-white hidden w-20 text-base font-semibold md:flex'>
@@ -57,17 +77,16 @@ export function QuickStats() {
       </div>
       <LeverageSelectorContainer />
       <SelectTokenModal
+        isDarkMode={true}
         isOpen={isSelectIndexTokenOpen}
         onClose={onCloseSelectIndexToken}
         onSelectedToken={(tokenSymbol) => {
           console.log(tokenSymbol)
-          // TODO:
-          //   onSelectIndexToken(tokenSymbol)
+          onSelectIndexToken(tokenSymbol)
           onCloseSelectIndexToken()
         }}
         address={address}
-        // TODO:
-        tokens={[]}
+        tokens={indexTokens}
       />
     </div>
   )
