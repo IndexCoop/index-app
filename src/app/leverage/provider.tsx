@@ -64,6 +64,7 @@ export interface TokenContext {
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
+  isFetchingStats: boolean
   quoteResult: QuoteResult | null
   stats: BaseTokenStats | null
   supportedLeverageTypes: LeverageType[]
@@ -96,6 +97,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
+  isFetchingStats: false,
   quoteResult: null,
   stats: null,
   supportedLeverageTypes: [],
@@ -150,6 +152,7 @@ export function LeverageProvider(props: { children: any }) {
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [indexTokenPrice, setIndexTokenPrice] = useState(0)
   const [isFetchingQuote, setFetchingQuote] = useState(false)
+  const [isFetchingStats, setFetchingStats] = useState(true)
   const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
   const [inputToken, setInputToken] = useState<Token>(queryInputToken)
   const [outputToken, setOutputToken] = useState<Token>(queryOutputToken)
@@ -275,12 +278,14 @@ export function LeverageProvider(props: { children: any }) {
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        setFetchingStats(true)
         const indexApi = new IndexApi()
         const res = await indexApi.get(`/token/${baseToken.symbol}`)
         setStats(res.data)
       } catch (err) {
         console.warn('Error fetching token stats', err)
       }
+      setFetchingStats(false)
     }
     fetchStats()
   }, [baseToken])
@@ -562,6 +567,7 @@ export function LeverageProvider(props: { children: any }) {
         inputTokens,
         outputTokens,
         isFetchingQuote,
+        isFetchingStats,
         quoteResult,
         stats,
         supportedLeverageTypes: supportedLeverageTypes[chainId],

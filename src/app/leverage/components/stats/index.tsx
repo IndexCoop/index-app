@@ -14,25 +14,11 @@ export function QuickStats() {
     onOpen: onOpenSelectIndexToken,
     onClose: onCloseSelectIndexToken,
   } = useDisclosure()
-  //   const {
-  //     indexToken,
-  //     indexTokens,
-  //     isFetchingStats,
-  //     nav,
-  //     apy,
-  //     apy30d,
-  //     apy7d,
-  //     tvl,
-  //     onSelectIndexToken,
-  //   } = useEarnContext()
-  const { baseToken, indexToken, stats } = useLeverageToken()
+  const { baseToken, isFetchingStats, stats } = useLeverageToken()
   const { address } = useWallet()
 
   const { price, change24h, change24hIsPositive, low24h, high24h } =
     useFormattedLeverageData(stats)
-
-  const nav = 0
-  const isFetchingStats = false
 
   return (
     <div
@@ -50,6 +36,9 @@ export function QuickStats() {
           isLoading={isFetchingStats}
           label='24h Change'
           value={change24h}
+          overrideLabelColor={
+            change24hIsPositive ? 'text-ic-green' : 'text-ic-red'
+          }
         />
         <StatsMetric
           isLoading={isFetchingStats}
