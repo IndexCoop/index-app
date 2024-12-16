@@ -81,7 +81,6 @@ export function QuickStats() {
         isOpen={isSelectIndexTokenOpen}
         onClose={onCloseSelectIndexToken}
         onSelectedToken={(tokenSymbol) => {
-          console.log(tokenSymbol)
           onSelectIndexToken(tokenSymbol)
           onCloseSelectIndexToken()
         }}
