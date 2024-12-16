@@ -4,11 +4,9 @@ import { BaseTokenSelector } from '@/app/leverage/components/leverage-widget/com
 import { LeverageSelectorContainer } from '@/app/leverage/components/stats/leverage-selector-container'
 import { StatsMetric } from '@/app/leverage/components/stats/stats-metric'
 import { useLeverageToken } from '@/app/leverage/provider'
-import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
+import { useFormattedLeverageData } from '@/app/leverage/use-formatted-data'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { formatDollarAmount } from '@/lib/utils'
-import { digitsByAddress } from '@/lib/utils/tokens'
 
 export function QuickStats() {
   const {
@@ -27,14 +25,13 @@ export function QuickStats() {
   //     tvl,
   //     onSelectIndexToken,
   //   } = useEarnContext()
-  const { baseToken, indexToken } = useLeverageToken()
+  const { baseToken, indexToken, stats } = useLeverageToken()
   const { address } = useWallet()
 
-  const apy = 0
-  const apy7d = 0
-  const apy30d = 0
+  const { price, change24h, change24hIsPositive, low24h, high24h } =
+    useFormattedLeverageData(stats)
+
   const nav = 0
-  const tvl = 0
   const isFetchingStats = false
 
   return (
@@ -42,46 +39,29 @@ export function QuickStats() {
       className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
-      <div className='flex w-full items-center justify-between px-4 py-2 sm:py-3 md:px-8 md:py-4'>
-        <div className='flex items-center gap-4'>
-          <BaseTokenSelector
-            baseToken={baseToken}
-            onClick={onOpenSelectIndexToken}
-          />
-        </div>
-        <StatsMetric
-          className='w-16'
-          isLoading={isFetchingStats}
-          label='APY'
-          value={formatPercentage(apy, true)}
+      <div className='flex w-full items-center justify-between py-2 pl-6 pr-16'>
+        <BaseTokenSelector
+          baseToken={baseToken}
+          onClick={onOpenSelectIndexToken}
         />
+        <div className='text-ic-white text-base font-semibold'>{price}</div>
         <StatsMetric
           className='w-20'
           isLoading={isFetchingStats}
-          label='TVL'
-          value={formatTvl(tvl)}
-        />
-        <StatsMetric
-          className='hidden w-24 sm:flex'
-          isLoading={isFetchingStats}
-          label='Token Price'
-          value={formatDollarAmount(
-            nav,
-            true,
-            digitsByAddress(indexToken.address ?? ''),
-          )}
+          label='24h Change'
+          value={change24h}
         />
         <StatsMetric
           isLoading={isFetchingStats}
           className='hidden w-16 md:flex'
-          label='7d APY'
-          value={formatPercentage(apy7d, true)}
+          label='24h High'
+          value={high24h}
         />
         <StatsMetric
           className='hidden w-16 md:flex'
           isLoading={isFetchingStats}
-          label='30d APY'
-          value={formatPercentage(apy30d, true)}
+          label='24h Low'
+          value={low24h}
         />
       </div>
       <LeverageSelectorContainer />
