@@ -468,10 +468,7 @@ export function LeverageProvider(props: { children: any }) {
       inputTokenAmount > 0,
   })
 
-  const isFetchingQuote = useMemo(
-    () => isFetchingFlashMintQuote || isFetchingSwapQuote,
-    [isFetchingFlashMintQuote, isFetchingSwapQuote],
-  )
+  const isFetchingQuote = isFetchingFlashMintQuote || isFetchingSwapQuote
 
   useEffect(() => {
     const bestQuote = getBestLeverageQuote(
