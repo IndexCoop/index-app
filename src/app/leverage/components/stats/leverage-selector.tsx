@@ -14,7 +14,7 @@ function CurrentLeverage(props: CurrentLeverageProps) {
   return (
     <div className='text-ic-gray-300 flex items-center gap-1 text-xs font-normal'>
       <span>Current Leverage</span>
-      <span className='bg-ic-blue-300 text-ic-gray-950 rounded px-[6px] py-[1px] text-[9px] font-semibold'>
+      <span className='bg-ic-blue-300 text-ic-gray-950 rounded px-1.5 py-px text-[9px] font-semibold'>
         {props.leverage}
       </span>
     </div>
