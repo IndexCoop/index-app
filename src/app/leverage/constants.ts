@@ -10,13 +10,13 @@ import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 import { LeverageToken, LeverageType } from './types'
 
-const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X', 'ETH2xBTC']
+export const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X', 'ETH2xBTC']
 
-const btcLeverageTokensSymbols = ['BTC2X', 'BTC3X', 'iBTC1X', 'BTC2xETH']
+export const btcLeverageTokenSymbols = ['BTC2X', 'BTC3X', 'iBTC1X', 'BTC2xETH']
 
 export const leverageTokens = [
   ...ethLeverageTokenSymbols,
-  ...btcLeverageTokensSymbols,
+  ...btcLeverageTokenSymbols,
 ]
 
 export function getBaseTokens(chainId: number): Token[] {
