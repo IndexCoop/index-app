@@ -11,7 +11,6 @@ import { useLeverageToken } from '@/app/leverage/provider'
 import { ChartTab } from '@/app/leverage/types'
 import { PriceChart } from '@/components/charts/price-chart'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { BTC, ETH } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
@@ -27,8 +26,7 @@ export default function Page() {
     onOpen: onOpenSelectBaseToken,
     onClose: onCloseSelectBaseToken,
   } = useDisclosure()
-  const { baseToken, baseTokens, indexToken, nav, onSelectBaseToken } =
-    useLeverageToken()
+  const { baseTokens, indexToken, nav, onSelectBaseToken } = useLeverageToken()
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
   const { colorMode, toggleColorMode } = useColorMode()
 
@@ -66,13 +64,22 @@ export default function Page() {
                   />
                 ) : (
                   <>
+                    {/* TODO: Refactor to use single component */}
                     <TradingViewWidget
-                      baseToken={baseToken}
-                      symbol={ETH.symbol}
+                      chartSymbol='INDEX:ETHUSD'
+                      indexToken={indexToken}
                     />
                     <TradingViewWidget
-                      baseToken={baseToken}
-                      symbol={BTC.symbol}
+                      chartSymbol='INDEX:BTCUSD'
+                      indexToken={indexToken}
+                    />
+                    <TradingViewWidget
+                      chartSymbol='BINANCE:ETHBTC'
+                      indexToken={indexToken}
+                    />
+                    <TradingViewWidget
+                      chartSymbol='BINANCE:BTCETH'
+                      indexToken={indexToken}
                     />
                   </>
                 )}
