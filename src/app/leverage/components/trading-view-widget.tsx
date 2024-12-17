@@ -82,8 +82,6 @@ function TradingViewWidget({ chartSymbol, indexToken }: Props) {
     container.current?.appendChild(script)
   }, [chartSymbol, indexToken])
 
-  console.log('val', getDisplayStyle(chartSymbol, indexToken.symbol))
-
   return (
     <div
       className='tradingview-widget-container'
