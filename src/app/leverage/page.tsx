@@ -57,13 +57,22 @@ export default function Page() {
                   />
                 ) : (
                   <>
+                    {/* TODO: Refactor to use single component */}
                     <TradingViewWidget
-                      baseToken={baseToken}
-                      symbol={ETH.symbol}
+                      chartSymbol='INDEX:ETHUSD'
+                      indexToken={indexToken}
                     />
                     <TradingViewWidget
-                      baseToken={baseToken}
-                      symbol={BTC.symbol}
+                      chartSymbol='INDEX:BTCUSD'
+                      indexToken={indexToken}
+                    />
+                    <TradingViewWidget
+                      chartSymbol='BINANCE:ETHBTC'
+                      indexToken={indexToken}
+                    />
+                    <TradingViewWidget
+                      chartSymbol='BINANCE:BTCETH'
+                      indexToken={indexToken}
                     />
                   </>
                 )}
