@@ -10,7 +10,6 @@ import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { ChartTab } from '@/app/leverage/types'
 import { PriceChart } from '@/components/charts/price-chart'
-import { BTC, ETH } from '@/constants/tokens'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
@@ -19,7 +18,7 @@ import { YourTokens } from './components/your-tokens'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
-  const { baseToken, indexToken, nav } = useLeverageToken()
+  const { indexToken, nav } = useLeverageToken()
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
   const { colorMode, toggleColorMode } = useColorMode()
 
