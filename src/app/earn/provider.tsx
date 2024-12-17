@@ -227,22 +227,6 @@ export function EarnProvider(props: { children: any }) {
     setOutputToken(inputToken)
   }, [inputToken, isMinting, outputToken])
 
-  useEffect(() => {
-    if (inputToken === null || outputToken === null) return
-    updateQueryParams({
-      isMinting,
-      inputToken,
-      outputToken,
-      network: indexToken.chainId,
-    })
-  }, [
-    isMinting,
-    inputToken,
-    outputToken,
-    updateQueryParams,
-    indexToken.chainId,
-  ])
-
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
       if (input === '') {
@@ -263,8 +247,14 @@ export function EarnProvider(props: { children: any }) {
       if (!token) return
       setChainId(chainId)
       setInputToken(token)
+      updateQueryParams({
+        isMinting,
+        inputToken: token,
+        outputToken,
+        network: chainId,
+      })
     },
-    [inputTokens],
+    [inputTokens, isMinting, outputToken, updateQueryParams],
   )
 
   const onSelectOutputToken = useCallback(
@@ -275,8 +265,14 @@ export function EarnProvider(props: { children: any }) {
       if (!token) return
       setChainId(chainId)
       setOutputToken(token)
+      updateQueryParams({
+        isMinting,
+        inputToken,
+        outputToken: token,
+        network: chainId,
+      })
     },
-    [outputTokens],
+    [outputTokens, isMinting, inputToken, updateQueryParams],
   )
 
   const onSelectIndexToken = useCallback(
