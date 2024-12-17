@@ -6,7 +6,6 @@ import { useCallback } from 'react'
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Receive } from '@/components/receive'
-import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
@@ -20,7 +19,7 @@ import { formatWei } from '@/lib/utils'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
-import { BaseTokenSelector } from './components/base-token-selector'
+import { BuySellSelector } from './components/buy-sell-selector'
 import { Fees } from './components/fees'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
@@ -29,16 +28,11 @@ import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
-type LeverageWidgetProps = {
-  onClickBaseTokenSelector: () => void
-}
-
-export function LeverageWidget(props: LeverageWidgetProps) {
+export function LeverageWidget() {
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
-    baseToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
@@ -93,13 +87,9 @@ export function LeverageWidget(props: LeverageWidgetProps) {
 
   return (
     <div
-      className='leverage-widget flex flex-col gap-3 rounded-3xl p-6'
+      className='leverage-widget flex flex-col gap-3 rounded-md p-6'
       id='close-position-scroll'
     >
-      <BaseTokenSelector
-        baseToken={baseToken}
-        onClick={props.onClickBaseTokenSelector}
-      />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
