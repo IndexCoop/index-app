@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 import clsx from 'clsx'
 import { useMemo } from 'react'
+import { arbitrum, base } from 'viem/chains'
 
 import { Token } from '@/constants/tokens'
 import { useBalances } from '@/lib/hooks/use-balance'
@@ -21,9 +22,10 @@ type SelectTokenModalProps = {
   isOpen: boolean
   isDarkMode?: boolean
   showBalances?: boolean
+  showNetworks?: boolean
   tokens: Token[]
   onClose: () => void
-  onSelectedToken: (tokenSymbol: string) => void
+  onSelectedToken: (tokenSymbol: string, chainId: number) => void
 }
 
 export const SelectTokenModal = (props: SelectTokenModalProps) => {
@@ -80,7 +82,10 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
                   key={token.symbol}
                   extraTitle={undefined}
                   item={token}
-                  onClick={() => onSelectedToken(token.symbol)}
+                  showNetwork={props.showNetworks}
+                  onClick={() =>
+                    onSelectedToken(token.symbol, token.chainId ?? 1)
+                  }
                 />
               )
             })}
@@ -91,20 +96,47 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
 }
 
 type TokenItemProps = {
+  item: Token
   balance: string
   extraTitle?: string
-  item: Token
+  showNetwork?: boolean
   onClick: (tokenSymbol: string) => void
 }
 
-const TokenItem = ({ balance, extraTitle, item, onClick }: TokenItemProps) => {
+const TokenItem = ({
+  balance,
+  extraTitle,
+  item,
+  onClick,
+  showNetwork,
+}: TokenItemProps) => {
+  const networkAsset =
+    showNetwork === true ? getAssetForChain(item.chainId ?? 1) : null
   return (
     <div
       className='text-ic-black dark:text-ic-white h-15 hover:bg-ic-gray-100 dark:hover:bg-ic-gray-900 my-1 flex cursor-pointer items-center justify-between px-4 py-2 text-sm font-medium'
       onClick={() => onClick(item.symbol)}
     >
       <div className='flex items-center'>
-        <Image alt={`${item.symbol} logo`} src={item.image} w='40px' h='40px' />
+        <div className='relative inline-block h-11 w-11'>
+          <Image
+            className='h-10 w-10'
+            alt={`${item.symbol} logo`}
+            src={item.image}
+            w='40px'
+            h='40px'
+          />
+          {networkAsset && (
+            <div className='bg-ic-gray-100 absolute bottom-0 right-0 h-5 w-5 rounded-full'>
+              <Image
+                alt={`${item.symbol} logo`}
+                src={networkAsset}
+                w='20px'
+                h='20px'
+              />
+            </div>
+          )}
+        </div>
         <div className='ml-4 flex flex-col'>
           <div className='flex align-baseline'>
             <span>{item.symbol}</span>
@@ -120,4 +152,16 @@ const TokenItem = ({ balance, extraTitle, item, onClick }: TokenItemProps) => {
       </div>
     </div>
   )
+}
+
+function getAssetForChain(chainId: number): string | null {
+  switch (chainId) {
+    case arbitrum.id:
+      return '/assets/arbitrum-network-logo.svg'
+    case base.id:
+      return '/assets/base-network-icon.svg'
+    default:
+      // Return null by default to indicate ethereum and not show asset
+      return null
+  }
 }

@@ -1,5 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { base, mainnet } from 'viem/chains'
+import { arbitrum, base, mainnet } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
@@ -35,8 +35,12 @@ export function getTagline(indexTokenSymbol: string): string {
 const yieldTokens = [
   getTokenByChainAndSymbol(base.id, 'icUSD'),
   getTokenByChainAndSymbol(mainnet.id, 'hyETH'),
+  getTokenByChainAndSymbol(arbitrum.id, 'hyETH'),
+  getTokenByChainAndSymbol(base.id, 'hyETH'),
   getTokenByChainAndSymbol(mainnet.id, 'icETH'),
   getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
+  getTokenByChainAndSymbol(arbitrum.id, 'dsETH'),
+  getTokenByChainAndSymbol(base.id, 'dsETH'),
 ]
 
 // TODO: Use new tokenlists

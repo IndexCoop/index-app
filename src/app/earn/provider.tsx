@@ -14,7 +14,7 @@ import { usePublicClient } from 'wagmi'
 
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { ARBITRUM, MAINNET } from '@/constants/chains'
+import { MAINNET } from '@/constants/chains'
 import { ETH, ICUSD, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -53,9 +53,9 @@ interface Context {
   quoteResult: QuoteResult | null
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
-  onSelectIndexToken: (tokenSymbol: string) => void
-  onSelectInputToken: (tokenSymbol: string) => void
-  onSelectOutputToken: (tokenSymbol: string) => void
+  onSelectIndexToken: (tokenSymbol: string, chainId: number) => void
+  onSelectInputToken: (tokenSymbol: string, chainId: number) => void
+  onSelectOutputToken: (tokenSymbol: string, chainId: number) => void
   reset: () => void
   toggleIsMinting: () => void
 }
@@ -106,6 +106,7 @@ export function EarnProvider(props: { children: any }) {
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
+  const [chainId, setChainId] = useState(chainIdRaw ?? MAINNET.chainId)
   const [inputValue, setInputValue] = useState('')
   const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
   const [inputToken, setInputToken] = useState<Token>(queryInputToken)
@@ -116,10 +117,6 @@ export function EarnProvider(props: { children: any }) {
     quote: null,
     error: null,
   })
-
-  const chainId = useMemo(() => {
-    return chainIdRaw ?? MAINNET.chainId
-  }, [chainIdRaw])
 
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
@@ -230,22 +227,6 @@ export function EarnProvider(props: { children: any }) {
     setOutputToken(inputToken)
   }, [inputToken, isMinting, outputToken])
 
-  useEffect(() => {
-    if (inputToken === null || outputToken === null) return
-    updateQueryParams({
-      isMinting,
-      inputToken,
-      outputToken,
-      network: indexToken.chainId,
-    })
-  }, [
-    isMinting,
-    inputToken,
-    outputToken,
-    updateQueryParams,
-    indexToken.chainId,
-  ])
-
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
       if (input === '') {
@@ -259,29 +240,47 @@ export function EarnProvider(props: { children: any }) {
   )
 
   const onSelectInputToken = useCallback(
-    (tokenSymbol: string) => {
-      const token = inputTokens.find((token) => token.symbol === tokenSymbol)
+    (tokenSymbol: string, chainId: number) => {
+      const token = inputTokens.find(
+        (token) => token.symbol === tokenSymbol && token.chainId === chainId,
+      )
       if (!token) return
+      setChainId(chainId)
       setInputToken(token)
+      updateQueryParams({
+        isMinting,
+        inputToken: token,
+        outputToken,
+        network: chainId,
+      })
     },
-    [inputTokens],
+    [inputTokens, isMinting, outputToken, updateQueryParams],
   )
 
   const onSelectOutputToken = useCallback(
-    (tokenSymbol: string) => {
-      const token = outputTokens.find((token) => token.symbol === tokenSymbol)
+    (tokenSymbol: string, chainId: number) => {
+      const token = outputTokens.find(
+        (token) => token.symbol === tokenSymbol && token.chainId === chainId,
+      )
       if (!token) return
+      setChainId(chainId)
       setOutputToken(token)
+      updateQueryParams({
+        isMinting,
+        inputToken,
+        outputToken: token,
+        network: chainId,
+      })
     },
-    [outputTokens],
+    [outputTokens, isMinting, inputToken, updateQueryParams],
   )
 
   const onSelectIndexToken = useCallback(
-    (tokenSymbol: string) => {
+    (tokenSymbol: string, chainId: number) => {
       if (isMinting) {
-        onSelectOutputToken(tokenSymbol)
+        onSelectOutputToken(tokenSymbol, chainId)
       } else {
-        onSelectInputToken(tokenSymbol)
+        onSelectInputToken(tokenSymbol, chainId)
       }
     },
     [isMinting, onSelectInputToken, onSelectOutputToken],
@@ -344,7 +343,7 @@ export function EarnProvider(props: { children: any }) {
 
   const fetchSwapQuote = async () => {
     if (!address) return null
-    if (!chainId || chainId === ARBITRUM.chainId) return null
+    if (!chainId) return null
     if (!publicClient) return null
     if (inputTokenAmount <= 0) return null
     if (!indexToken) return null
@@ -391,16 +390,6 @@ export function EarnProvider(props: { children: any }) {
   )
 
   useEffect(() => {
-    if (chainId === ARBITRUM.chainId) {
-      const quoteResult = {
-        type: QuoteType.flashmint,
-        isAvailable: true,
-        quote: flashmintQuote ?? null,
-        error: null,
-      }
-      setQuoteResult(quoteResult)
-      return
-    }
     const bestQuote = getBestYieldQuote(
       flashmintQuote ?? null,
       swapQuote ?? null,
