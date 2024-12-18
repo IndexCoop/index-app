@@ -32,7 +32,6 @@ import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 import {
-  getBaseTokens,
   getCurrencyTokens,
   getLeverageTokens,
   supportedLeverageTypes,
@@ -54,7 +53,6 @@ export interface TokenContext {
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
-  baseTokens: Token[]
   costOfCarry: number | null
   inputTokens: Token[]
   outputTokens: Token[]
@@ -85,7 +83,6 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputToken: ETH,
   outputToken: { ...eth2x, image: eth2x.logoURI },
   inputTokenAmount: BigInt(0),
-  baseTokens: [],
   costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
@@ -106,6 +103,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
 export const useLeverageToken = () => useContext(LeverageTokenContext)
 
 const defaultParams = {
+  baseToken: ETH,
   isMinting: true,
   leverageType: LeverageType.Long2x,
   inputToken: ETH,
@@ -123,6 +121,7 @@ export function LeverageProvider(props: { children: any }) {
   const { address } = useWallet()
   const {
     queryParams: {
+      queryBaseToken,
       queryLeverageType,
       queryInputToken,
       queryOutputToken,
@@ -139,9 +138,6 @@ export function LeverageProvider(props: { children: any }) {
   )
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [isFetchingStats, setFetchingStats] = useState(true)
-  const isMinting = queryIsMinting
-  const inputToken = queryInputToken
-  const outputToken = queryOutputToken
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
@@ -150,15 +146,14 @@ export function LeverageProvider(props: { children: any }) {
     error: null,
   })
 
+  const isMinting = queryIsMinting
+  const inputToken = queryInputToken
+  const outputToken = queryOutputToken
+  const baseToken = queryBaseToken
+
   const chainId = useMemo(() => {
     return chainIdRaw ?? ARBITRUM.chainId
   }, [chainIdRaw])
-
-  const baseTokens = useMemo(() => {
-    return getBaseTokens(chainId)
-  }, [chainId])
-
-  const [baseToken, setBaseToken] = useState<Token>(baseTokens[0] ?? ETH)
 
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
@@ -201,12 +196,6 @@ export function LeverageProvider(props: { children: any }) {
     },
   })
 
-  const indexTokensBasedOnSymbol = useMemo(() => {
-    return indexTokens.filter((token) => {
-      return token.baseToken === baseToken.symbol
-    })
-  }, [baseToken, indexTokens])
-
   const inputTokenAmount = useMemo(
     () =>
       inputValue === ''
@@ -214,6 +203,12 @@ export function LeverageProvider(props: { children: any }) {
         : parseUnits(inputValue, inputToken.decimals),
     [inputToken, inputValue],
   )
+
+  const indexTokensBasedOnSymbol = useMemo(() => {
+    return indexTokens.filter((token) => {
+      return token.baseToken === baseToken.symbol
+    })
+  }, [baseToken, indexTokens])
 
   const inputTokens = useMemo(() => {
     if (isMinting) return getCurrencyTokens(chainId)
@@ -504,7 +499,6 @@ export function LeverageProvider(props: { children: any }) {
         inputTokenAmount,
         nav,
         navchange,
-        baseTokens,
         costOfCarry,
         inputTokens,
         outputTokens,
