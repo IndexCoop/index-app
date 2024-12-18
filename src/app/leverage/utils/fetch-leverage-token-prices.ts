@@ -1,6 +1,7 @@
-import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
+import { getTokenByChainAndAddress, LeverageToken } from '@indexcoop/tokenlists'
 import { Dispatch, SetStateAction } from 'react'
 
+import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { formatPrice } from '@/app/products/utils/formatters'
 import { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatWei } from '@/lib/utils'
@@ -37,6 +38,7 @@ export async function fetchLeverageTokenPrices(
       ...acc,
       {
         ...token,
+        leverageType: getLeverageType(token as LeverageToken),
         image: token.logoURI,
         balance: current.value,
       },
@@ -67,7 +69,6 @@ export async function fetchLeverageTokenPrices(
         parseFloat(formatWei(token.balance, token.decimals)) * tokenPrices[idx]
       return {
         ...token,
-        leverageType: token.leverageType,
         size: formatPrice(usd),
         usd,
         unitPriceUsd: tokenPrices[idx],
