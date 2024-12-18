@@ -310,6 +310,7 @@ export function LeverageProvider(props: { children: any }) {
 
   const onSelectInputToken = useCallback(
     (tokenSymbol: string) => {
+      const inputTokens = isMinting ? getCurrencyTokens(chainId) : indexTokens
       const token = inputTokens.find((token) => token.symbol === tokenSymbol)
       if (!token) return
       setInputToken(token)
@@ -326,7 +327,7 @@ export function LeverageProvider(props: { children: any }) {
         }
       }
     },
-    [indexTokens, inputTokens, isMinting],
+    [chainId, indexTokens, isMinting],
   )
 
   const onSelectBaseToken = (tokenSymbol: string) => {
@@ -335,23 +336,27 @@ export function LeverageProvider(props: { children: any }) {
     setBaseToken(token)
   }
 
-  const onSelectOutputToken = (tokenSymbol: string) => {
-    const token = outputTokens.find((token) => token.symbol === tokenSymbol)
-    if (!token) return
-    setOutputToken(token)
-    if (isMinting) {
-      const indexToken = indexTokens.find(
-        (indexToken) =>
-          token.symbol.toLowerCase() === indexToken.symbol.toLowerCase(),
-      )
-      if (!indexToken) return
-      if (!isLeverageToken(indexToken)) return
-      const leverageType = getLeverageType(indexToken)
-      if (leverageType !== null) {
-        setLeverageType(leverageType)
+  const onSelectOutputToken = useCallback(
+    (tokenSymbol: string) => {
+      const outputTokens = isMinting ? indexTokens : getCurrencyTokens(chainId)
+      const token = outputTokens.find((token) => token.symbol === tokenSymbol)
+      if (!token) return
+      setOutputToken(token)
+      if (isMinting) {
+        const indexToken = indexTokens.find(
+          (indexToken) =>
+            token.symbol.toLowerCase() === indexToken.symbol.toLowerCase(),
+        )
+        if (!indexToken) return
+        if (!isLeverageToken(indexToken)) return
+        const leverageType = getLeverageType(indexToken)
+        if (leverageType !== null) {
+          setLeverageType(leverageType)
+        }
       }
-    }
-  }
+    },
+    [chainId, indexTokens, isMinting],
+  )
 
   const reset = () => {
     setInputValue('')
