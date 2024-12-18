@@ -48,7 +48,7 @@ export default function Page() {
           <QuickStats />
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
-              <div className='flex h-[320px] flex-col md:h-[390px] lg:h-[514px]'>
+              <div className='flex h-[558px] flex-col'>
                 {currentTab === 'indexcoop-chart' ? (
                   <PriceChart
                     indexTokenAddress={indexToken.address ?? ''}
