@@ -49,7 +49,7 @@ export const Connect = () => {
           {chainId !== walletChainId && <div className='absolute'></div>}
           <NetworkSelect />
           <Button
-            className='bg-ic-black flex items-center gap-2 rounded-md px-4 py-1 text-xs transition-all duration-300 hover:scale-[1.04]'
+            className='bg-ic-black flex items-center gap-2 rounded-md px-4 py-1 text-sm transition-all duration-300 hover:scale-[1.04]'
             onClick={() => open({ view: 'Account' })}
           >
             <div className='flex gap-1'>
@@ -60,18 +60,18 @@ export const Connect = () => {
             </div>
 
             <div
-              className='flex h-4 w-4 items-center justify-center rounded-full'
+              className='flex h-5 w-5 items-center justify-center rounded-full'
               style={{ backgroundColor: avatar?.color }}
             >
               {avatar?.emoji}
             </div>
             <p className='hidden md:block'>{shortenAddress(address)}</p>
-            <ChevronDownIcon className='h-4 w-4' />
+            <ChevronDownIcon className='h-5 w-5' />
           </Button>
         </div>
       ) : (
         <Button
-          className='bg-ic-blue-600 hover:bg-ic-blue-600/90 text-ic-gray-50 block rounded-md px-8 py-1 text-xs font-medium shadow-sm transition-all duration-300 hover:scale-[1.04]'
+          className='bg-ic-blue-600 hover:bg-ic-blue-600/90 text-ic-gray-50 block rounded-md px-8 py-1 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-[1.04]'
           onClick={() => open({ view: 'Connect' })}
         >
           Connect
