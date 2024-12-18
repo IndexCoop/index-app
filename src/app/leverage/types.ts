@@ -19,7 +19,7 @@ export type EnrichedToken = Token & {
   usd?: number
   unitPriceUsd?: number
   size?: string
-  leverageType?: LeverageType | null
+  leverageType: LeverageType | null
 }
 
 export interface LeverageToken extends Token {
