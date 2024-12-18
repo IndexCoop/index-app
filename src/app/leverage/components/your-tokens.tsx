@@ -102,7 +102,7 @@ export function YourTokens() {
   return (
     <TabGroup
       as='div'
-      className='border-ic-gray-600 w-full rounded-md border bg-[#1C2C2E]'
+      className='border-ic-gray-600 w-full rounded-lg border bg-[#1C2C2E] text-sm'
     >
       <TabList className='flex gap-8 px-6 py-8'>
         <Tab className='outline-none'>
