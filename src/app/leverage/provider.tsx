@@ -484,6 +484,15 @@ export function LeverageProvider(props: { children: any }) {
     return null
   }, [isFetchingQuote, quoteResult])
 
+  const isRatioToken = useMemo(() => {
+    const eth2xBtc = getTokenByChainAndSymbol(chainId, 'ETH2xBTC')
+    const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
+    return (
+      indexToken.symbol === eth2xBtc?.symbol ||
+      indexToken.symbol === btc2xEth?.symbol
+    )
+  }, [chainId, indexToken])
+
   return (
     <LeverageTokenContext.Provider
       value={{
@@ -506,7 +515,9 @@ export function LeverageProvider(props: { children: any }) {
         isFetchingStats,
         quoteResult,
         stats,
-        supportedLeverageTypes: supportedLeverageTypes[chainId],
+        supportedLeverageTypes: isRatioToken
+          ? [LeverageType.Long2x]
+          : supportedLeverageTypes[chainId],
         transactionReview,
         onChangeInputTokenAmount,
         onSelectInputToken,
