@@ -110,7 +110,7 @@ export function YourTokens() {
             <div className='flex flex-col gap-[2px]'>
               <p
                 className={cn(
-                  'text-ic-gray-400 font-bold',
+                  'text-ic-gray-500 font-medium',
                   (selected || hover) && 'text-ic-white',
                 )}
               >
@@ -130,7 +130,7 @@ export function YourTokens() {
             <div className='flex flex-col gap-[2px]'>
               <p
                 className={cn(
-                  'text-ic-gray-400 font-bold',
+                  'text-ic-gray-500 font-medium',
                   (selected || hover) && 'text-ic-white',
                 )}
               >
