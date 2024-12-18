@@ -21,7 +21,7 @@ const getScriptInnerHtml = (chartSymbol: string) => {
     "style": "1",
     "locale": "en",
     "enable_publishing": false,
-    "backgroundColor": "rgba(28, 41, 41, 1)",
+    "backgroundColor": "rgba(15, 23, 23, 1)",
     "withdateranges": true,
     "range": "1D",
     "allow_symbol_change": false,
