@@ -10,10 +10,22 @@ import {
 
 export const productTokens: ProductRow[] = [
   {
-    ...getTokenByChainAndSymbol(mainnet.id, 'ETH2X'),
+    ...getTokenByChainAndSymbol(arbitrum.id, 'iETH1X'),
     hasApy: false,
     listType: 'Leverage',
-    tradeHref: buildLeverageTradePath('ETH2X'),
+    tradeHref: buildLeverageTradePath('iETH1X', undefined, arbitrum.id),
+  },
+  {
+    ...getTokenByChainAndSymbol(arbitrum.id, 'ETH2X'),
+    hasApy: false,
+    listType: 'Leverage',
+    tradeHref: buildLeverageTradePath('ETH2X', undefined, arbitrum.id),
+  },
+  {
+    ...getTokenByChainAndSymbol(arbitrum.id, 'ETH3X'),
+    hasApy: false,
+    listType: 'Leverage',
+    tradeHref: buildLeverageTradePath('ETH3X', undefined, arbitrum.id),
   },
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'DPI'),
@@ -40,10 +52,22 @@ export const productTokens: ProductRow[] = [
     tradeHref: buildSwapTradePath('mvi'),
   },
   {
-    ...getTokenByChainAndSymbol(mainnet.id, 'BTC2X'),
+    ...getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X'),
     hasApy: false,
     listType: 'Leverage',
-    tradeHref: buildLeverageTradePath('BTC2X'),
+    tradeHref: buildLeverageTradePath('iBTC1X', undefined, arbitrum.id),
+  },
+  {
+    ...getTokenByChainAndSymbol(arbitrum.id, 'BTC2X'),
+    hasApy: false,
+    listType: 'Leverage',
+    tradeHref: buildLeverageTradePath('BTC2X', undefined, arbitrum.id),
+  },
+  {
+    ...getTokenByChainAndSymbol(arbitrum.id, 'BTC3X'),
+    hasApy: false,
+    listType: 'Leverage',
+    tradeHref: buildLeverageTradePath('BTC3X', undefined, arbitrum.id),
   },
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
