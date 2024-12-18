@@ -21,6 +21,8 @@ export function useNativeTokenPrice(chainId?: number): number {
   return nativeTokenPrice
 }
 
+const navTokenOverrides = ['icusd', 'eth2xbtc', 'btc2xeth']
+
 /**
  * Returns price of given token.
  * @returns price of token in USD
@@ -45,7 +47,7 @@ export const getTokenPrice = async (
     // Force using Coingecko for this deprecated indices
     isIndexToken = false
   }
-  if (token.symbol.toLowerCase() === 'icusd') {
+  if (navTokenOverrides.includes(token.symbol.toLowerCase())) {
     const dataResponse = await fetchTokenMetrics({
       tokenAddress,
       metrics: ['nav'],
