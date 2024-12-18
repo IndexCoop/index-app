@@ -1,9 +1,6 @@
 'use client'
 
-import {
-  getTokenByChainAndSymbol,
-  isLeverageToken,
-} from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -16,6 +13,7 @@ import {
 import { isAddress } from 'viem'
 import { usePublicClient } from 'wagmi'
 
+import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM } from '@/constants/chains'
 import { ETH, Token } from '@/constants/tokens'
@@ -40,7 +38,6 @@ import {
   supportedLeverageTypes,
 } from './constants'
 import { BaseTokenStats, LeverageToken, LeverageType } from './types'
-import { getLeverageType } from './utils/get-leverage-type'
 
 const eth2x = getTokenByChainAndSymbol(1, 'ETH2X')
 
@@ -68,7 +65,6 @@ export interface TokenContext {
   supportedLeverageTypes: LeverageType[]
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
-  onSelectBaseToken: (tokenSymbol: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
   onSelectOutputToken: (tokenSymbol: string) => void
@@ -100,7 +96,6 @@ export const LeverageTokenContext = createContext<TokenContext>({
   supportedLeverageTypes: [],
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
-  onSelectBaseToken: () => {},
   onSelectInputToken: () => {},
   onSelectLeverageType: () => {},
   onSelectOutputToken: () => {},
@@ -128,7 +123,6 @@ export function LeverageProvider(props: { children: any }) {
   const { address } = useWallet()
   const {
     queryParams: {
-      queryNetwork,
       queryLeverageType,
       queryInputToken,
       queryOutputToken,
@@ -139,18 +133,15 @@ export function LeverageProvider(props: { children: any }) {
 
   const publicClient = usePublicClient({ chainId: chainIdRaw })
 
-  const [leverageType, setLeverageType] =
-    useState<LeverageType>(queryLeverageType)
-
   const [inputValue, setInputValue] = useState('')
   const [carryCosts, setCarryCosts] = useState<Record<string, number> | null>(
     null,
   )
   const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [isFetchingStats, setFetchingStats] = useState(true)
-  const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
-  const [inputToken, setInputToken] = useState<Token>(queryInputToken)
-  const [outputToken, setOutputToken] = useState<Token>(queryOutputToken)
+  const isMinting = queryIsMinting
+  const inputToken = queryInputToken
+  const outputToken = queryOutputToken
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
@@ -210,14 +201,6 @@ export function LeverageProvider(props: { children: any }) {
     },
   })
 
-  const indexTokenBasedOnLeverageType = useMemo(() => {
-    return indexTokens.find(
-      (token) =>
-        token.baseToken === baseToken.symbol &&
-        token.leverageType === leverageType,
-    )!
-  }, [baseToken, indexTokens, leverageType])
-
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
       return token.baseToken === baseToken.symbol
@@ -243,8 +226,13 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const toggleIsMinting = useCallback(() => {
-    setMinting(!isMinting)
-  }, [isMinting])
+    updateQueryParams({
+      isMinting,
+      inputToken: outputToken,
+      outputToken: inputToken,
+      network: chainId,
+    })
+  }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -271,26 +259,11 @@ export function LeverageProvider(props: { children: any }) {
   }, [])
 
   useEffect(() => {
-    if (inputToken === null || outputToken === null) return
-
     const inputOutputToken = isMinting ? outputToken : inputToken
-
-    updateQueryParams({
-      isMinting,
-      inputToken,
-      outputToken,
-      network: queryNetwork,
-    })
+    if (!inputOutputToken) return
     if (carryCosts)
       setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
-  }, [
-    isMinting,
-    inputToken,
-    outputToken,
-    carryCosts,
-    queryNetwork,
-    updateQueryParams,
-  ])
+  }, [isMinting, inputToken, outputToken, carryCosts])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -304,58 +277,60 @@ export function LeverageProvider(props: { children: any }) {
     [inputToken],
   )
 
-  const onSelectLeverageType = (type: LeverageType) => {
-    setLeverageType(type)
-  }
+  const onSelectLeverageType = useCallback(
+    (type: LeverageType) => {
+      const currentBase = getLeverageBaseToken(indexToken.symbol)?.symbol
+      const leverageTokens = getLeverageTokens(chainId).filter(
+        (leverageToken) => leverageToken.baseToken === currentBase,
+      )
+      const selectedLeverageToken = leverageTokens.find(
+        (token) => token.leverageType === type,
+      )
+      updateQueryParams({
+        isMinting,
+        inputToken: isMinting ? inputToken : selectedLeverageToken,
+        outputToken: isMinting ? selectedLeverageToken : outputToken,
+        network: chainId,
+      })
+    },
+    [
+      chainId,
+      indexToken,
+      inputToken,
+      outputToken,
+      isMinting,
+      updateQueryParams,
+    ],
+  )
 
   const onSelectInputToken = useCallback(
     (tokenSymbol: string) => {
       const inputTokens = isMinting ? getCurrencyTokens(chainId) : indexTokens
       const token = inputTokens.find((token) => token.symbol === tokenSymbol)
       if (!token) return
-      setInputToken(token)
-      if (!isMinting) {
-        const indexToken = indexTokens.find(
-          (indexToken) =>
-            token.symbol.toLowerCase() === indexToken.symbol.toLowerCase(),
-        )
-        if (!indexToken) return
-        if (!isLeverageToken(indexToken)) return
-        const leverageType = getLeverageType(indexToken)
-        if (leverageType !== null) {
-          setLeverageType(leverageType)
-        }
-      }
+      updateQueryParams({
+        isMinting,
+        inputToken: token,
+        outputToken,
+        network: token.chainId,
+      })
     },
-    [chainId, indexTokens, isMinting],
+    [chainId, indexTokens, outputToken, isMinting, updateQueryParams],
   )
-
-  const onSelectBaseToken = (tokenSymbol: string) => {
-    const token = baseTokens.find((token) => token.symbol === tokenSymbol)
-    if (!token) return
-    setBaseToken(token)
-  }
 
   const onSelectOutputToken = useCallback(
     (tokenSymbol: string) => {
       const outputTokens = isMinting ? indexTokens : getCurrencyTokens(chainId)
       const token = outputTokens.find((token) => token.symbol === tokenSymbol)
       if (!token) return
-      setOutputToken(token)
-      if (isMinting) {
-        const indexToken = indexTokens.find(
-          (indexToken) =>
-            token.symbol.toLowerCase() === indexToken.symbol.toLowerCase(),
-        )
-        if (!indexToken) return
-        if (!isLeverageToken(indexToken)) return
-        const leverageType = getLeverageType(indexToken)
-        if (leverageType !== null) {
-          setLeverageType(leverageType)
-        }
-      }
+      updateQueryParams({
+        isMinting,
+        inputToken,
+        outputToken: token,
+        network: token.chainId,
+      })
     },
-    [chainId, indexTokens, isMinting],
+    [chainId, indexTokens, inputToken, isMinting, updateQueryParams],
   )
 
   const reset = () => {
@@ -368,23 +343,6 @@ export function LeverageProvider(props: { children: any }) {
     })
     forceRefetchBalances()
   }
-
-  useEffect(() => {
-    setInputToken(inputTokens[0])
-  }, [inputTokens, isMinting])
-
-  useEffect(() => {
-    setOutputToken(outputTokens[0])
-  }, [outputTokens, isMinting])
-
-  useEffect(() => {
-    const indexToken = indexTokenBasedOnLeverageType
-    if (isMinting) {
-      setOutputToken(indexToken)
-      return
-    }
-    setInputToken(indexToken)
-  }, [indexTokenBasedOnLeverageType, isMinting, leverageType])
 
   const fetchFlashMintQuote = async () => {
     if (!address) return null
@@ -494,15 +452,7 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, flashmintQuote, swapQuote])
 
   useEffect(() => {
-    setBaseToken(baseTokens[0] ?? ETH)
-  }, [chainId, baseTokens])
-
-  useEffect(() => {
     // Reset quotes
-    setMinting(queryIsMinting)
-    setInputToken(queryInputToken)
-    setOutputToken(queryOutputToken)
-    setLeverageType(queryLeverageType)
     setQuoteResult({
       type: QuoteType.flashmint,
       isAvailable: true,
@@ -544,7 +494,7 @@ export function LeverageProvider(props: { children: any }) {
       value={{
         inputValue,
         isMinting,
-        leverageType,
+        leverageType: queryLeverageType,
         balances,
         baseToken,
         indexToken,
@@ -565,7 +515,6 @@ export function LeverageProvider(props: { children: any }) {
         supportedLeverageTypes: supportedLeverageTypes[chainId],
         transactionReview,
         onChangeInputTokenAmount,
-        onSelectBaseToken,
         onSelectInputToken,
         onSelectLeverageType,
         onSelectOutputToken,
