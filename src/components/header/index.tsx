@@ -85,7 +85,7 @@ export function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className='text-ic-gray-900 hover:bg-ic-gray-50 dark:text-ic-gray-50 dark:hover:bg-ic-blue-900 -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7'
+                    className='text-ic-gray-900 hover:bg-ic-gray-50 dark:text-ic-gray-50 dark:hover:bg-ic-blue-900 -mx-3 block rounded-lg px-3 py-2 text-sm font-semibold leading-7'
                   >
                     {item.name}
                   </Link>
