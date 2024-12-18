@@ -1,6 +1,6 @@
 'use client'
 
-import { useColorMode, useDisclosure } from '@chakra-ui/react'
+import { useColorMode } from '@chakra-ui/react'
 import { PopupButton } from '@typeform/embed-react'
 import { Suspense, useEffect, useState } from 'react'
 
@@ -10,9 +10,6 @@ import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { ChartTab } from '@/app/leverage/types'
 import { PriceChart } from '@/components/charts/price-chart'
-import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { BTC, ETH } from '@/constants/tokens'
-import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
@@ -21,14 +18,7 @@ import { YourTokens } from './components/your-tokens'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
-  const { address } = useWallet()
-  const {
-    isOpen: isSelectBaseTokenOpen,
-    onOpen: onOpenSelectBaseToken,
-    onClose: onCloseSelectBaseToken,
-  } = useDisclosure()
-  const { baseToken, baseTokens, indexToken, nav, onSelectBaseToken } =
-    useLeverageToken()
+  const { indexToken, nav } = useLeverageToken()
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
   const { colorMode, toggleColorMode } = useColorMode()
 
@@ -66,13 +56,22 @@ export default function Page() {
                   />
                 ) : (
                   <>
+                    {/* TODO: Refactor to use single component */}
                     <TradingViewWidget
-                      baseToken={baseToken}
-                      symbol={ETH.symbol}
+                      chartSymbol='INDEX:ETHUSD'
+                      indexToken={indexToken}
                     />
                     <TradingViewWidget
-                      baseToken={baseToken}
-                      symbol={BTC.symbol}
+                      chartSymbol='INDEX:BTCUSD'
+                      indexToken={indexToken}
+                    />
+                    <TradingViewWidget
+                      chartSymbol='BINANCE:ETHBTC'
+                      indexToken={indexToken}
+                    />
+                    <TradingViewWidget
+                      chartSymbol='BINANCE:BTCETH'
+                      indexToken={indexToken}
                     />
                   </>
                 )}
@@ -83,9 +82,7 @@ export default function Page() {
               </div>
             </div>
             <Suspense>
-              <LeverageWidget
-                onClickBaseTokenSelector={onOpenSelectBaseToken}
-              />
+              <LeverageWidget />
             </Suspense>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
@@ -103,18 +100,6 @@ export default function Page() {
         </div>
         <FaqSection />
       </div>
-      <SelectTokenModal
-        isDarkMode={true}
-        isOpen={isSelectBaseTokenOpen}
-        showBalances={false}
-        onClose={onCloseSelectBaseToken}
-        onSelectedToken={(tokenSymbol) => {
-          onSelectBaseToken(tokenSymbol)
-          onCloseSelectBaseToken()
-        }}
-        address={address}
-        tokens={baseTokens}
-      />
     </div>
   )
 }
