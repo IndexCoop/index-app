@@ -1,4 +1,4 @@
-export type ProductListType = 'Earn' | 'Strategies'
+export type ProductListType = 'Earn' | 'Leverage' | 'Strategies'
 
 export type ProductRow = {
   address?: string

@@ -106,6 +106,15 @@ export function ProductPanel() {
           onSortClick={handleSortClick}
           sortBy={sortBy}
           sortDirection={sortDirection}
+          listType='Leverage'
+        />
+        <ProductList
+          isFetching={isFetching}
+          hideApyColumn
+          products={products}
+          onSortClick={handleSortClick}
+          sortBy={sortBy}
+          sortDirection={sortDirection}
           listType='Strategies'
         />
       </Suspense>

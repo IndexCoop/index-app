@@ -7,7 +7,6 @@ import { formatAmount, formatDollarAmount, formatWei } from '@/lib/utils'
 import { useEarnContext } from './provider'
 
 export interface FormattedEarnData {
-  indexTokenPrice: string
   hasInsufficientFunds: boolean
   gasFeesEth: string
   gasFeesUsd: string
@@ -26,7 +25,6 @@ export interface FormattedEarnData {
 export function useFormattedEarnData(): FormattedEarnData {
   const { address } = useWallet()
   const {
-    nav,
     inputToken,
     inputTokenAmount,
     inputValue,
@@ -89,7 +87,6 @@ export function useFormattedEarnData(): FormattedEarnData {
   )
 
   return {
-    indexTokenPrice: formatDollarAmount(nav),
     hasInsufficientFunds,
     gasFeesEth,
     gasFeesUsd: quote?.gasCostsInUsd

@@ -11,15 +11,15 @@ export const Logo = () => {
         className='block dark:hidden'
         alt='Index Coop Logo'
         src={IndexLogoBlack}
-        height={32}
-        width={32}
+        height={24}
+        width={24}
       />
       <Image
         className='hidden dark:block'
         alt='Index Coop Logo'
         src={IndexLogoWhite}
-        height={32}
-        width={32}
+        height={24}
+        width={24}
       />
     </Link>
   )

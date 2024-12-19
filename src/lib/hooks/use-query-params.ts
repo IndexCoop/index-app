@@ -6,10 +6,11 @@ import { useAccount } from 'wagmi'
 
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
 import { LeverageToken, LeverageType } from '@/app/leverage/types'
-import { Token } from '@/constants/tokens'
+import { BTC, ETH, Token } from '@/constants/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
 type UseQueryParamsArgs = {
+  baseToken: Token
   isMinting: boolean
   leverageType: LeverageType
   network: number
@@ -65,6 +66,14 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
       )
     }
 
+    if (!queryInputToken) {
+      queryInputToken = defaultParams.inputToken
+    }
+
+    if (!queryOutputToken) {
+      queryOutputToken = defaultParams.outputToken
+    }
+
     const queryIsMinting =
       queryOutputToken && 'leverageType' in queryOutputToken
 
@@ -72,12 +81,18 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
       ? (queryOutputToken as LeverageToken)?.leverageType
       : (queryInputToken as LeverageToken)?.leverageType
 
+    const baseTokenSymbol = queryIsMinting
+      ? (queryOutputToken as LeverageToken)?.baseToken
+      : (queryInputToken as LeverageToken)?.baseToken
+    const queryBaseToken = baseTokenSymbol === 'ETH' ? ETH : BTC
+
     return {
+      queryBaseToken: queryBaseToken ?? defaultParams.baseToken,
       queryIsMinting: queryIsMinting ?? defaultParams.isMinting,
       queryLeverageType: queryLeverageType ?? defaultParams.leverageType,
       queryNetwork: queryNetwork ?? defaultParams.network,
-      queryInputToken: queryInputToken ?? defaultParams.inputToken,
-      queryOutputToken: queryOutputToken ?? defaultParams.outputToken,
+      queryInputToken,
+      queryOutputToken,
     } as ReturnType<T>
     // NOTE: defaultQueryPararms should only be read initially.
     // eslint-disable-next-line react-hooks/exhaustive-deps

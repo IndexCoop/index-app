@@ -18,7 +18,6 @@ import { chains } from '@/lib/utils/wagmi'
 import { useLeverageToken } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
-import { getLeverageBaseToken } from '../utils/get-leverage-base-token'
 import { getLeverageType } from '../utils/get-leverage-type'
 
 const leverageTypeLabels = {
@@ -29,7 +28,6 @@ const leverageTypeLabels = {
 
 export function YourTokens() {
   const { chainId } = useNetwork()
-
   const chain = useMemo(
     () => chains.find((chain) => chain.id === chainId),
     [chainId],
@@ -37,7 +35,6 @@ export function YourTokens() {
   const {
     balances,
     indexTokens,
-    onSelectBaseToken,
     isMinting,
     toggleIsMinting,
     onSelectLeverageType,
@@ -57,10 +54,6 @@ export function YourTokens() {
 
   const handleCloseClick = (token: EnrichedToken) => {
     if (isMinting) toggleIsMinting()
-
-    const leverageBaseToken = getLeverageBaseToken(token.symbol)
-    if (leverageBaseToken === null) return
-    onSelectBaseToken(leverageBaseToken.symbol)
 
     const indexToken = indexTokens.find(
       (indexToken) =>
@@ -102,7 +95,7 @@ export function YourTokens() {
   return (
     <TabGroup
       as='div'
-      className='border-ic-gray-600 w-full rounded-3xl border bg-[#1C2C2E]'
+      className='border-ic-gray-600 w-full rounded-lg border bg-[#1C2C2E] text-sm'
     >
       <TabList className='flex gap-8 px-6 py-8'>
         <Tab className='outline-none'>
@@ -110,7 +103,7 @@ export function YourTokens() {
             <div className='flex flex-col gap-[2px]'>
               <p
                 className={cn(
-                  'text-ic-gray-400 font-bold',
+                  'text-ic-gray-500 font-medium',
                   (selected || hover) && 'text-ic-white',
                 )}
               >
@@ -130,7 +123,7 @@ export function YourTokens() {
             <div className='flex flex-col gap-[2px]'>
               <p
                 className={cn(
-                  'text-ic-gray-400 font-bold',
+                  'text-ic-gray-500 font-medium',
                   (selected || hover) && 'text-ic-white',
                 )}
               >

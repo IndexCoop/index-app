@@ -19,13 +19,21 @@ export type EnrichedToken = Token & {
   usd?: number
   unitPriceUsd?: number
   size?: string
-  leverageType?: LeverageType | null
+  leverageType: LeverageType | null
 }
 
 export interface LeverageToken extends Token {
   address: string
   baseToken: string
   leverageType: LeverageType
+}
+
+export interface Market {
+  icon: string
+  market: string
+  priceRatio: string
+  collateral: string
+  debt: string
 }
 
 export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'

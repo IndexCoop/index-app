@@ -1,10 +1,11 @@
-import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
+import { getTokenByChainAndAddress, LeverageToken } from '@indexcoop/tokenlists'
 import { Dispatch, SetStateAction } from 'react'
 
+import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { formatPrice } from '@/app/products/utils/formatters'
 import { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatWei } from '@/lib/utils'
-import { NavProvider } from '@/lib/utils/api/nav'
+import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 import { leverageTokens } from '../constants'
 import { EnrichedToken } from '../types'
@@ -37,6 +38,7 @@ export async function fetchLeverageTokenPrices(
       ...acc,
       {
         ...token,
+        leverageType: getLeverageType(token as LeverageToken),
         image: token.logoURI,
         balance: current.value,
       },
@@ -47,11 +49,16 @@ export async function fetchLeverageTokenPrices(
   if (tokenBalances.some((token) => token.balance === null)) return
 
   try {
-    const navProvider = new NavProvider()
-    const tokenPrices = await Promise.all(
+    const navResponses = await Promise.all(
       tokenBalances.map((token) =>
-        navProvider.getNavPrice(token.symbol, chainId),
+        fetchTokenMetrics({
+          tokenAddress: token.address ?? '',
+          metrics: ['nav'],
+        }),
       ),
+    )
+    const tokenPrices = navResponses.map(
+      (response) => response?.NetAssetValue ?? 0,
     )
 
     // Avoid showing a $0 position if nav call fails
@@ -62,7 +69,6 @@ export async function fetchLeverageTokenPrices(
         parseFloat(formatWei(token.balance, token.decimals)) * tokenPrices[idx]
       return {
         ...token,
-        leverageType: token.leverageType,
         size: formatPrice(usd),
         usd,
         unitPriceUsd: tokenPrices[idx],
