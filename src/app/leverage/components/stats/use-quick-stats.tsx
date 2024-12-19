@@ -19,8 +19,8 @@ interface QuickStatsApiResponse {
 }
 
 function formatStatsAmount(amount: number, baseCurrency: string): string {
-  if (baseCurrency === 'btc') return `${formatAmount(amount)} BTC`
-  if (baseCurrency === 'eth') return `${formatAmount(amount)} ETH`
+  if (baseCurrency === 'btc') return `${formatAmount(amount, 4)} BTC`
+  if (baseCurrency === 'eth') return `${formatAmount(amount, 4)} ETH`
   return formatDollarAmount(amount, true, 2)
 }
 

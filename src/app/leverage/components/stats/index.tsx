@@ -14,13 +14,13 @@ export function QuickStats() {
       className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
-      <div className='flex w-full items-center justify-between py-4 pl-6 pr-16'>
+      <div className='flex w-full items-center justify-between py-4 pl-6 pr-8'>
         <MarketSelector />
-        <div className='text-ic-white hidden w-20 text-base font-semibold md:flex'>
+        <div className='text-ic-white hidden w-28 text-base font-semibold md:flex'>
           {price}
         </div>
         <StatsMetric
-          className='hidden sm:flex'
+          className='hidden w-20 sm:flex'
           isLoading={isFetchingQuickStats}
           label='24h Change'
           value={`${formatAmount(change24h, 2)} %`}
