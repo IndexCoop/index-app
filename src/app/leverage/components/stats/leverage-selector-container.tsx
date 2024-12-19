@@ -1,96 +1,117 @@
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import Image from 'next/image'
-import { arbitrum } from 'viem/chains'
 
 import { useLeverageToken } from '@/app/leverage/provider'
+import { useFormattedLeverageData } from '@/app/leverage/use-formatted-data'
 
-import { LeverageSelector } from './leverage-selector'
 import { StatsMetric } from './stats-metric'
 
-type LeverageRatio = {
-  icon: string
-  ratio: string
-  networks: string[]
-  leverage: string
-  isPositive: boolean
+// type LeverageRatio = {
+//   icon: string
+//   ratio: string
+//   networks: string[]
+//   leverage: string
+//   isPositive: boolean
+// }
+
+// const ratios: LeverageRatio[] = [
+//   {
+//     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
+//     ratio: '2x',
+//     // TODO: merge other earn PR first or cherry-pick here?
+//     networks: [
+//       getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
+//       getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
+//       getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
+//       // '/assets/ethereum-network-logo.svg',
+//       // '/assets/arbitrum-network-logo.svg',
+//       // '/assets/base-network-icon.svg',
+//     ],
+//     leverage: '1.94x',
+//     isPositive: true,
+//   },
+//   {
+//     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
+//     ratio: '3x',
+//     networks: [
+//       getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
+//       getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
+//       // '/assets/ethereum-network-logo.svg',
+//       // '/assets/arbitrum-network-logo.svg',
+//     ],
+//     leverage: '2.96x',
+//     isPositive: true,
+//   },
+//   {
+//     icon: getTokenByChainAndSymbol(arbitrum.id, 'iETH1X').logoURI,
+//     ratio: '-1x',
+//     networks: [
+//       getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
+//       // '/assets/ethereum-network-logo.svg'
+//     ],
+//     leverage: '-1.10x',
+//     isPositive: false,
+//   },
+// ]
+
+// function LeverageRatioItem({ item }: { item: LeverageRatio }) {
+//   return (
+//     <div className='border-ic-gray-600 flex items-center justify-between border-t px-4 py-3 first:border-t-0'>
+//       <div className='flex items-center gap-2'>
+//         <Image
+//           src={item.icon}
+//           alt={`${item.ratio} leverage`}
+//           height={16}
+//           width={16}
+//         />
+//         <span className='text-ic-white text-xs font-medium'>{item.ratio}</span>
+//       </div>
+//       <div className='flex gap-1'>
+//         {item.networks.map((network, idx) => (
+//           <Image
+//             key={idx}
+//             src={network}
+//             alt={'Network Icon'}
+//             height={12}
+//             width={12}
+//           />
+//         ))}
+//       </div>
+//       <span className={'text-ic-white text-right text-xs font-medium'}>
+//         {item.leverage}
+//       </span>
+//     </div>
+//   )
+// }
+
+type TokenSelectProps = {
+  selectedToken: { image: string; symbol: string }
 }
 
-const ratios: LeverageRatio[] = [
-  {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-    ratio: '2x',
-    // TODO: merge other earn PR first or cherry-pick here?
-    networks: [
-      getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-      getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-      getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-      // '/assets/ethereum-network-logo.svg',
-      // '/assets/arbitrum-network-logo.svg',
-      // '/assets/base-network-icon.svg',
-    ],
-    leverage: '1.94x',
-    isPositive: true,
-  },
-  {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
-    ratio: '3x',
-    networks: [
-      getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-      getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-      // '/assets/ethereum-network-logo.svg',
-      // '/assets/arbitrum-network-logo.svg',
-    ],
-    leverage: '2.96x',
-    isPositive: true,
-  },
-  {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'iETH1X').logoURI,
-    ratio: '-1x',
-    networks: [
-      getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-      // '/assets/ethereum-network-logo.svg'
-    ],
-    leverage: '-1.10x',
-    isPositive: false,
-  },
-]
-
-function LeverageRatioItem({ item }: { item: LeverageRatio }) {
+// Temporary: will be deleted once the commented out parts are ready.
+export function TokenSelector({ selectedToken }: TokenSelectProps) {
+  const { image, symbol } = selectedToken
   return (
-    <div className='border-ic-gray-600 flex items-center justify-between border-t px-4 py-3 first:border-t-0'>
-      <div className='flex items-center gap-2'>
-        <Image
-          src={item.icon}
-          alt={`${item.ratio} leverage`}
-          height={16}
-          width={16}
-        />
-        <span className='text-ic-white text-xs font-medium'>{item.ratio}</span>
-      </div>
-      <div className='flex gap-1'>
-        {item.networks.map((network, idx) => (
-          <Image
-            key={idx}
-            src={network}
-            alt={'Network Icon'}
-            height={12}
-            width={12}
-          />
-        ))}
-      </div>
-      <span className={'text-ic-white text-right text-xs font-medium'}>
-        {item.leverage}
+    <div className='flex cursor-pointer flex-row items-center'>
+      <Image
+        alt={`${symbol} logo`}
+        src={image}
+        width={20}
+        height={20}
+        priority
+      />
+      <span className='text-ic-black dark:text-ic-white ml-2 text-base font-bold'>
+        {symbol}
       </span>
     </div>
   )
 }
 
 export function LeverageSelectorContainer() {
-  const { isFetchingStats } = useLeverageToken()
+  const { indexToken, isFetchingStats, stats } = useLeverageToken()
+  const { change24h, change24hIsPositive } = useFormattedLeverageData(stats)
   return (
     <div className='border-ic-black flex h-full w-2/3 items-center gap-8 border-l px-16 py-0'>
-      <Popover className='flex'>
+      {/* <Popover className='flex'>
         <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 focus:outline-none data-[focus]:outline-1'>
           <LeverageSelector
             leverage={'2x'}
@@ -116,12 +137,22 @@ export function LeverageSelectorContainer() {
             </div>
           </div>
         </PopoverPanel>
-      </Popover>
-      <StatsMetric
+      </Popover> */}
+      {/* <StatsMetric
         className='hidden w-16 md:flex'
         isLoading={isFetchingStats}
         label='Net Rate'
         value={'0.03%'}
+      /> */}
+      <TokenSelector selectedToken={indexToken} />
+      <StatsMetric
+        className='hidden w-20 sm:flex'
+        isLoading={isFetchingStats}
+        label='24h Change'
+        value={change24h}
+        overrideLabelColor={
+          change24hIsPositive ? 'text-ic-green' : 'text-ic-red'
+        }
       />
     </div>
   )
