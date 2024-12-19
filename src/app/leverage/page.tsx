@@ -48,7 +48,7 @@ export default function Page() {
           <QuickStats />
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>
-              <div className='flex h-[558px] flex-col'>
+              <div className='flex h-[490px] flex-col'>
                 {currentTab === 'indexcoop-chart' ? (
                   <PriceChart
                     indexTokenAddress={indexToken.address ?? ''}
@@ -70,7 +70,7 @@ export default function Page() {
                       indexToken={indexToken}
                     />
                     <TradingViewWidget
-                      chartSymbol='BINANCE:BTCETH'
+                      chartSymbol='VANTAGE:BTCETH'
                       indexToken={indexToken}
                     />
                   </>
