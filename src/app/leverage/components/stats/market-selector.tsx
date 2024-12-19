@@ -1,8 +1,12 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
-import { getMarketsForChain } from '@/app/leverage/constants'
+import {
+  getDefaultPathForMarket,
+  getMarketsForChain,
+} from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Market } from '@/app/leverage/types'
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -32,6 +36,7 @@ function MarketSelectorItem({
 }
 
 export function MarketSelector() {
+  const router = useRouter()
   const { chainId } = useNetwork()
   const { market } = useLeverageToken()
   const markets = getMarketsForChain(chainId ?? 1)
@@ -55,11 +60,18 @@ export function MarketSelector() {
           </div> */}
           <div className='w-full rounded-lg bg-[#1A2A2B]'>
             {markets.map((item, index) => (
-              // tDOO: add action: path?
               <MarketSelectorItem
-                item={item}
                 key={index}
-                onClick={() => close()}
+                item={item}
+                onClick={() => {
+                  const path = getDefaultPathForMarket(
+                    item.market,
+                    chainId ?? 1,
+                  )
+                  close()
+                  if (!path) return
+                  router.replace(path)
+                }}
               />
             ))}
           </div>

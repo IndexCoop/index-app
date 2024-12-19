@@ -64,6 +64,29 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
   return tokens.filter((token): token is LeverageToken => token !== null)
 }
 
+function getDefaultMarketAsset(market: string) {
+  switch (market) {
+    case 'BTC / USD':
+      return 'BTC2x'
+    case 'ETH / BTC':
+      return 'ETH2xBTC'
+    case 'BTC / ETH':
+      return 'BTC2xETH'
+    default:
+      return 'ETH2x'
+  }
+}
+
+export function getDefaultPathForMarket(market: string, chainId: number) {
+  const markets = getMarketsForChain(chainId)
+  const existingMarket = markets.find(
+    (m) => m.market.toLowerCase() === market.toLowerCase(),
+  )
+  if (!existingMarket) return null
+  const defaultAsset = getDefaultMarketAsset(market)
+  return `/leverage?sell=ETH&buy=${defaultAsset}&network=${chainId}`
+}
+
 export function getMarketsForChain(chainId: number) {
   switch (chainId) {
     case arbitrum.id:
