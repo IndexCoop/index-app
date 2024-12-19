@@ -8,7 +8,7 @@ import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
-import { LeverageToken, LeverageType } from './types'
+import { LeverageToken, LeverageType, Market } from './types'
 
 export const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X', 'ETH2xBTC']
 
@@ -62,6 +62,37 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
   })
   return tokens.filter((token): token is LeverageToken => token !== null)
 }
+
+export const markets: Market[] = [
+  {
+    icon: '/assets/selector-base-asset-eth.svg',
+    market: 'ETH / USD',
+    priceRatio: '$3,712.23',
+    collateral: 'ETH',
+    debt: 'USDC',
+  },
+  {
+    icon: BTC.image,
+    market: 'BTC / USD',
+    priceRatio: '$94,712.40',
+    collateral: 'BTC',
+    debt: 'USDC',
+  },
+  {
+    icon: '/assets/selector-base-asset-eth.svg',
+    market: 'ETH / BTC',
+    priceRatio: '0.14',
+    collateral: 'ETH, USDC',
+    debt: '',
+  },
+  {
+    icon: BTC.image,
+    market: 'BTC / ETH',
+    priceRatio: '0.14',
+    collateral: 'BTC, USDC',
+    debt: '',
+  },
+]
 
 export const supportedLeverageTypes = {
   [ARBITRUM.chainId]: [

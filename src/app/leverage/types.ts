@@ -28,4 +28,12 @@ export interface LeverageToken extends Token {
   leverageType: LeverageType
 }
 
+export interface Market {
+  icon: string
+  market: string
+  priceRatio: string
+  collateral: string
+  debt: string
+}
+
 export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'

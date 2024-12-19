@@ -31,6 +31,7 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
 
+import { arbitrum } from 'viem/chains'
 import {
   getCurrencyTokens,
   getLeverageTokens,
@@ -48,6 +49,7 @@ export interface TokenContext {
   baseToken: Token
   indexToken: Token
   indexTokens: Token[]
+  market: string
   nav: number
   navchange: number
   inputToken: Token
@@ -78,6 +80,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   baseToken: ETH,
   indexToken: { ...eth2x, image: eth2x.logoURI },
   indexTokens: [],
+  market: 'ETH/USD',
   nav: 0,
   navchange: 0,
   inputToken: ETH,
@@ -219,6 +222,20 @@ export function LeverageProvider(props: { children: any }) {
     if (!isMinting) return getCurrencyTokens(chainId)
     return indexTokensBasedOnSymbol
   }, [chainId, indexTokensBasedOnSymbol, isMinting])
+
+  const market = useMemo(() => {
+    if (
+      indexToken.symbol ===
+      getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC').symbol
+    )
+      return 'ETH/BTC'
+    if (
+      indexToken.symbol ===
+      getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH').symbol
+    )
+      return 'BTC/ETH'
+    return baseToken.symbol === ETH.symbol ? 'ETH/USD' : 'BTC/USD'
+  }, [indexToken])
 
   const toggleIsMinting = useCallback(() => {
     updateQueryParams({
@@ -506,6 +523,7 @@ export function LeverageProvider(props: { children: any }) {
         inputToken,
         outputToken,
         inputTokenAmount,
+        market,
         nav,
         navchange,
         costOfCarry,

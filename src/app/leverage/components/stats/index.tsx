@@ -1,55 +1,20 @@
-import { useDisclosure } from '@chakra-ui/react'
-import { useCallback } from 'react'
-
-import { TokenSelector } from '@/app/earn/components/earn-widget/components/base-token-selector'
 import { LeverageSelectorContainer } from '@/app/leverage/components/stats/leverage-selector-container'
+import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
 import { StatsMetric } from '@/app/leverage/components/stats/stats-metric'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { useFormattedLeverageData } from '@/app/leverage/use-formatted-data'
-import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { useWallet } from '@/lib/hooks/use-wallet'
 
 export function QuickStats() {
-  const {
-    isOpen: isSelectIndexTokenOpen,
-    onOpen: onOpenSelectIndexToken,
-    onClose: onCloseSelectIndexToken,
-  } = useDisclosure()
-  const {
-    indexToken,
-    indexTokens,
-    isFetchingStats,
-    isMinting,
-    stats,
-    onSelectInputToken,
-    onSelectOutputToken,
-  } = useLeverageToken()
-  const { address } = useWallet()
-
+  const { isFetchingStats, stats } = useLeverageToken()
   const { price, change24h, change24hIsPositive, low24h, high24h } =
     useFormattedLeverageData(stats)
-
-  const onSelectIndexToken = useCallback(
-    (tokenSymbol: string) => {
-      if (isMinting) {
-        onSelectOutputToken(tokenSymbol)
-      } else {
-        onSelectInputToken(tokenSymbol)
-      }
-    },
-    [isMinting, onSelectInputToken, onSelectOutputToken],
-  )
-
   return (
     <div
       className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
       <div className='flex w-full items-center justify-between py-4 pl-6 pr-16'>
-        <TokenSelector
-          selectedToken={indexToken}
-          onClick={onOpenSelectIndexToken}
-        />
+        <MarketSelector />
         <div className='text-ic-white hidden w-20 text-base font-semibold md:flex'>
           {price}
         </div>
@@ -76,17 +41,6 @@ export function QuickStats() {
         />
       </div>
       <LeverageSelectorContainer />
-      <SelectTokenModal
-        isDarkMode={true}
-        isOpen={isSelectIndexTokenOpen}
-        onClose={onCloseSelectIndexToken}
-        onSelectedToken={(tokenSymbol) => {
-          onSelectIndexToken(tokenSymbol)
-          onCloseSelectIndexToken()
-        }}
-        address={address}
-        tokens={indexTokens}
-      />
     </div>
   )
 }
