@@ -80,7 +80,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   baseToken: ETH,
   indexToken: { ...eth2x, image: eth2x.logoURI },
   indexTokens: [],
-  market: 'ETH/USD',
+  market: 'ETH / USD',
   nav: 0,
   navchange: 0,
   inputToken: ETH,
@@ -228,13 +228,13 @@ export function LeverageProvider(props: { children: any }) {
       indexToken.symbol ===
       getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC').symbol
     )
-      return 'ETH/BTC'
+      return 'ETH / BTC'
     if (
       indexToken.symbol ===
       getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH').symbol
     )
-      return 'BTC/ETH'
-    return baseToken.symbol === ETH.symbol ? 'ETH/USD' : 'BTC/USD'
+      return 'BTC / ETH'
+    return baseToken.symbol === ETH.symbol ? 'ETH / USD' : 'BTC / USD'
   }, [baseToken, indexToken])
 
   const toggleIsMinting = useCallback(() => {

@@ -1,13 +1,14 @@
 import { LeverageSelectorContainer } from '@/app/leverage/components/stats/leverage-selector-container'
 import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
 import { StatsMetric } from '@/app/leverage/components/stats/stats-metric'
+import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { useLeverageToken } from '@/app/leverage/provider'
-import { useFormattedLeverageData } from '@/app/leverage/use-formatted-data'
+import { formatAmount } from '@/lib/utils'
 
 export function QuickStats() {
-  const { isFetchingStats, stats } = useLeverageToken()
-  const { price, change24h, change24hIsPositive, low24h, high24h } =
-    useFormattedLeverageData(stats)
+  const { market } = useLeverageToken()
+  const { data: quickStats, isFetchingQuickStats } = useQuickStats(market)
+  const { price, change24h, low24h, high24h } = quickStats
   return (
     <div
       className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
@@ -19,23 +20,21 @@ export function QuickStats() {
           {price}
         </div>
         <StatsMetric
-          className='hidden w-20 sm:flex'
-          isLoading={isFetchingStats}
+          className='hidden sm:flex'
+          isLoading={isFetchingQuickStats}
           label='24h Change'
-          value={change24h}
-          overrideLabelColor={
-            change24hIsPositive ? 'text-ic-green' : 'text-ic-red'
-          }
+          value={`${formatAmount(change24h, 2)} %`}
+          overrideLabelColor={change24h >= 0 ? 'text-ic-green' : 'text-ic-red'}
         />
         <StatsMetric
-          isLoading={isFetchingStats}
-          className='hidden w-16 lg:flex'
+          isLoading={isFetchingQuickStats}
+          className='hidden lg:flex'
           label='24h High'
           value={high24h}
         />
         <StatsMetric
-          className='hidden w-16 lg:flex'
-          isLoading={isFetchingStats}
+          className='hidden lg:flex'
+          isLoading={isFetchingQuickStats}
           label='24h Low'
           value={low24h}
         />
