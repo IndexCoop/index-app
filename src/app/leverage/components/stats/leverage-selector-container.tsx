@@ -99,7 +99,7 @@ export function TokenSelector({ selectedToken }: TokenSelectProps) {
         height={20}
         priority
       />
-      <span className='text-ic-black dark:text-ic-white ml-2 text-base font-bold'>
+      <span className='text-ic-black dark:text-ic-white ml-2 text-sm font-bold sm:text-base'>
         {symbol}
       </span>
     </div>

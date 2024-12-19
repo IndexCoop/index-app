@@ -51,6 +51,7 @@ export default function Page() {
               <div className='flex h-[490px] flex-col'>
                 {currentTab === 'indexcoop-chart' ? (
                   <PriceChart
+                    indexToken={indexToken}
                     indexTokenAddress={indexToken.address ?? ''}
                     nav={nav}
                   />

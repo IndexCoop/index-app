@@ -43,7 +43,9 @@ export function MarketSelector() {
   return (
     <Popover className='flex'>
       <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 flex items-center gap-1 focus:outline-none data-[focus]:outline-1'>
-        <div className='text-ic-white text-base font-bold'>{market}</div>
+        <div className='text-ic-white text-sm font-bold sm:text-base'>
+          {market}
+        </div>
         <ChevronDownIcon className='dark:text-ic-white text-ic-black size-5' />
       </PopoverButton>
       <PopoverPanel
