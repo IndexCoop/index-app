@@ -1,6 +1,5 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
-import { isLeverageToken } from '@indexcoop/tokenlists'
 import capitalize from 'lodash/capitalize'
 import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
@@ -15,10 +14,11 @@ import { cn } from '@/lib/utils/tailwind'
 import { getAddressForToken } from '@/lib/utils/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
+import { ETH } from '@/constants/tokens'
+import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useLeverageToken } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
-import { getLeverageType } from '../utils/get-leverage-type'
 
 const leverageTypeLabels = {
   [LeverageType.Long2x]: '2x LONG',
@@ -32,13 +32,8 @@ export function YourTokens() {
     () => chains.find((chain) => chain.id === chainId),
     [chainId],
   )
-  const {
-    balances,
-    indexTokens,
-    isMinting,
-    toggleIsMinting,
-    onSelectLeverageType,
-  } = useLeverageToken()
+  const { balances, indexTokens } = useLeverageToken()
+  const { queryParams, updateQueryParams } = useQueryParams()
   const { address: user } = useWallet()
   const [tokens, setTokens] = useState<EnrichedToken[]>([])
 
@@ -53,18 +48,11 @@ export function YourTokens() {
   )
 
   const handleCloseClick = (token: EnrichedToken) => {
-    if (isMinting) toggleIsMinting()
-
-    const indexToken = indexTokens.find(
-      (indexToken) =>
-        token.symbol.toLowerCase() === indexToken.symbol.toLowerCase(),
-    )
-    if (!indexToken) return
-    if (!isLeverageToken(indexToken)) return
-
-    const leverageType = getLeverageType(indexToken)
-    if (leverageType === null) return
-    onSelectLeverageType(leverageType)
+    updateQueryParams({
+      inputToken: token,
+      outputToken: ETH,
+      network: queryParams.queryNetwork,
+    })
 
     const scrollDiv = document.getElementById('close-position-scroll')
     if (scrollDiv) {
