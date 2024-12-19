@@ -14,7 +14,7 @@ export function QuickStats() {
       className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
-      <div className='flex w-full items-center justify-between py-4 pl-6 pr-8'>
+      <div className='flex w-full items-center justify-center px-2 py-4 sm:px-4 md:justify-between md:px-6'>
         <MarketSelector />
         <div className='text-ic-white hidden w-28 text-base font-semibold md:flex'>
           {price}
