@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 import { useLeverageToken } from '@/app/leverage/provider'
-import { useFormattedLeverageData } from '@/app/leverage/use-formatted-data'
+import { formatAmount } from '@/lib/utils'
 
 import { StatsMetric } from './stats-metric'
 
@@ -107,8 +107,7 @@ export function TokenSelector({ selectedToken }: TokenSelectProps) {
 }
 
 export function LeverageSelectorContainer() {
-  const { indexToken, isFetchingStats, stats } = useLeverageToken()
-  const { change24h, change24hIsPositive } = useFormattedLeverageData(stats)
+  const { indexToken, isFetchingStats, navchange } = useLeverageToken()
   return (
     <div className='border-ic-black xs:justify-end flex h-full w-2/3 items-center gap-8 border-l px-16 py-0'>
       {/* <Popover className='flex'>
@@ -149,10 +148,8 @@ export function LeverageSelectorContainer() {
         className='hidden w-20 sm:flex'
         isLoading={isFetchingStats}
         label='24h Change'
-        value={change24h}
-        overrideLabelColor={
-          change24hIsPositive ? 'text-ic-green' : 'text-ic-red'
-        }
+        value={`${formatAmount(navchange, 2)}%`}
+        overrideLabelColor={navchange >= 0 ? 'text-ic-green' : 'text-ic-red'}
       />
     </div>
   )
