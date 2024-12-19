@@ -91,7 +91,7 @@ type TokenSelectProps = {
 export function TokenSelector({ selectedToken }: TokenSelectProps) {
   const { image, symbol } = selectedToken
   return (
-    <div className='flex cursor-pointer flex-row items-center'>
+    <div className='flex flex-row items-center'>
       <Image
         alt={`${symbol} logo`}
         src={image}
