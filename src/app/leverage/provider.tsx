@@ -11,6 +11,7 @@ import {
   useState,
 } from 'react'
 import { isAddress } from 'viem'
+import { arbitrum } from 'viem/chains'
 import { usePublicClient } from 'wagmi'
 
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
@@ -31,7 +32,6 @@ import { IndexApi } from '@/lib/utils/api/index-api'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
 
-import { arbitrum } from 'viem/chains'
 import {
   getCurrencyTokens,
   getLeverageTokens,
@@ -235,7 +235,7 @@ export function LeverageProvider(props: { children: any }) {
     )
       return 'BTC/ETH'
     return baseToken.symbol === ETH.symbol ? 'ETH/USD' : 'BTC/USD'
-  }, [indexToken])
+  }, [baseToken, indexToken])
 
   const toggleIsMinting = useCallback(() => {
     updateQueryParams({
