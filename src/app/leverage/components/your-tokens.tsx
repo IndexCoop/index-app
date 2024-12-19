@@ -5,7 +5,9 @@ import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 
 import { formatPrice } from '@/app/products/utils/formatters'
+import { ETH } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
+import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useTokenHistory } from '@/lib/hooks/use-token-history'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { shortenAddress } from '@/lib/utils'
@@ -14,8 +16,6 @@ import { cn } from '@/lib/utils/tailwind'
 import { getAddressForToken } from '@/lib/utils/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
-import { ETH } from '@/constants/tokens'
-import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useLeverageToken } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
@@ -49,6 +49,7 @@ export function YourTokens() {
 
   const handleCloseClick = (token: EnrichedToken) => {
     updateQueryParams({
+      isMinting: false,
       inputToken: token,
       outputToken: ETH,
       network: queryParams.queryNetwork,
