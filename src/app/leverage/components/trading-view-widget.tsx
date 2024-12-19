@@ -40,7 +40,7 @@ const getDisplayStyle = (
   switch (chartSymbol) {
     case 'BINANCE:ETHBTC':
       return lowercaseIndexSymbol === 'eth2xbtc' ? 'block' : 'none'
-    case 'BINANCE:BTCETH':
+    case 'VANTAGE:BTCETH':
       return lowercaseIndexSymbol === 'btc2xeth' ? 'block' : 'none'
     case 'INDEX:ETHUSD':
       return lowercaseIndexSymbol !== 'eth2xbtc' &&
@@ -51,7 +51,7 @@ const getDisplayStyle = (
         ? 'block'
         : 'none'
     case 'INDEX:BTCUSD':
-      return lowercaseIndexSymbol !== 'eth2xbtc' &&
+      return lowercaseIndexSymbol !== 'btc2xeth' &&
         btcLeverageTokenSymbols.some(
           (btcTokenSymbol) =>
             btcTokenSymbol.toLowerCase() === lowercaseIndexSymbol,
