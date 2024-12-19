@@ -51,31 +51,33 @@ export function MarketSelector() {
         anchor='bottom'
         className='z-10 mt-4 rounded-lg transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
       >
-        <div className='w-full min-w-36 max-w-xl'>
-          {/* <div className='text-ic-gray-400 space-between flex gap-5 px-5 py-1 text-[11px]'>
+        {({ close }) => (
+          <div className='w-full min-w-36 max-w-xl'>
+            {/* <div className='text-ic-gray-400 space-between flex gap-5 px-5 py-1 text-[11px]'>
             <span>Market</span>
             <span>Price / Ratio</span>
             <span>Collateral</span>
             <span>Debt</span>
           </div> */}
-          <div className='w-full rounded-lg bg-[#1A2A2B]'>
-            {markets.map((item, index) => (
-              <MarketSelectorItem
-                key={index}
-                item={item}
-                onClick={() => {
-                  const path = getDefaultPathForMarket(
-                    item.market,
-                    chainId ?? 1,
-                  )
-                  close()
-                  if (!path) return
-                  router.replace(path)
-                }}
-              />
-            ))}
+            <div className='w-full rounded-lg bg-[#1A2A2B]'>
+              {markets.map((item, index) => (
+                <MarketSelectorItem
+                  key={index}
+                  item={item}
+                  onClick={() => {
+                    const path = getDefaultPathForMarket(
+                      item.market,
+                      chainId ?? 1,
+                    )
+                    close()
+                    if (!path) return
+                    router.replace(path)
+                  }}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </PopoverPanel>
     </Popover>
   )
