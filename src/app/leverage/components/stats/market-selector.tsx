@@ -2,9 +2,10 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 
-import { markets } from '@/app/leverage/constants'
+import { getMarketsForChain } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Market } from '@/app/leverage/types'
+import { useNetwork } from '@/lib/hooks/use-network'
 
 function MarketSelectorItem({
   item,
@@ -31,7 +32,9 @@ function MarketSelectorItem({
 }
 
 export function MarketSelector() {
+  const { chainId } = useNetwork()
   const { market } = useLeverageToken()
+  const markets = getMarketsForChain(chainId ?? 1)
   return (
     <Popover className='flex'>
       <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 flex items-center gap-1 focus:outline-none data-[focus]:outline-1'>
