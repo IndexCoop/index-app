@@ -23,7 +23,7 @@ export function BuySellSelectorButton({
     >
       <div
         className={cn(
-          'py-5 text-center text-sm font-bold',
+          'py-4 text-center text-sm font-medium',
           isSelected
             ? 'text-ic-gray-700 dark:text-ic-white'
             : 'text-ic-gray-500',
