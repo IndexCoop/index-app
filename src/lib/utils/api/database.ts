@@ -44,6 +44,26 @@ export const mapQuoteToTrade = (
   redeemFee: quote.fees?.redeemUsd.toString() ?? '',
   refId: 'indexcoop', // TODO: if we have a refId as a queryParam or any other way, set it here.
   createdAt: new Date(),
-  underlyingAssetSymbol: quote.inputToken.symbol,
-  underlyingAssetUnitPriceDenominator: 'USD',
+  underlyingAssetSymbol: getUnderlyingAssetSymbol(quote),
+  underlyingAssetUnitPriceDenominator:
+    getUnderlyingAssetUnitPriceDenominator(quote),
 })
+
+const getUnderlyingAssetSymbol = (quote: Quote) => {
+  const symbol = (quote.isMinting ? quote.outputToken : quote.inputToken).symbol
+
+  if (symbol.startsWith('ETH')) return 'ETH'
+  if (symbol.startsWith('BTC')) return 'BTC'
+
+  return ''
+}
+
+const getUnderlyingAssetUnitPriceDenominator = (quote: Quote) => {
+  const symbol = (quote.isMinting ? quote.outputToken : quote.inputToken).symbol
+
+  if (symbol.endsWith('ETH')) return 'ETH'
+  if (symbol.endsWith('BTC')) return 'BTC'
+  if (symbol.endsWith('USDC')) return 'USD'
+
+  return ''
+}
