@@ -18,7 +18,7 @@ const rowClassName = 'text-ic-gray-600 text-sm font-medium text-right'
 export function ProductRowItemMobile({
   isLoading,
   hideApyColumn,
-  product: { logoURI, symbol, name, price, delta, apy, tradeHref, tvl },
+  product: { logoURI, symbol, name, price, delta, apy, tradeHref, tvl, digits },
 }: ProductRowItemProps) {
   return (
     <div className='flex flex-col items-center justify-between px-4 py-6 md:hidden'>
@@ -33,7 +33,7 @@ export function ProductRowItemMobile({
       </div>
       <MobileRow label='Current Price'>
         <div className={rowClassName}>
-          {isLoading ? <LoadingSkeleton /> : formatPrice(price)}
+          {isLoading ? <LoadingSkeleton /> : formatPrice(price, digits)}
         </div>
       </MobileRow>
       <MobileRow label='24h'>

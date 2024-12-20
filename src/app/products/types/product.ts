@@ -12,4 +12,5 @@ export type ProductRow = {
   delta?: number
   apy?: number | null
   tvl?: number
+  digits?: number
 }
