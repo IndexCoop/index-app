@@ -1,4 +1,4 @@
-export type ProductListType = 'Earn' | 'Strategies'
+export type ProductListType = 'Earn' | 'Leverage' | 'Strategies'
 
 export type ProductRow = {
   address?: string
@@ -12,4 +12,5 @@ export type ProductRow = {
   delta?: number
   apy?: number | null
   tvl?: number
+  digits?: number
 }

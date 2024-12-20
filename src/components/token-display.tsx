@@ -4,12 +4,14 @@ import { Token } from '@/constants/tokens'
 import { cn } from '@/lib/utils/tailwind'
 
 type TokenDisplayProps = {
+  className?: string
   mini?: boolean
   smHideLabel?: boolean
   token: Token
 }
 
 export function TokenDisplay({
+  className,
   mini = false,
   smHideLabel = false,
   token,
@@ -17,7 +19,11 @@ export function TokenDisplay({
   const { image, symbol } = token
   return (
     <div
-      className={cn('flex flex-row items-center gap-1 py-2', mini && 'py-0')}
+      className={cn(
+        'flex flex-row items-center gap-1 py-2',
+        mini && 'py-0',
+        className,
+      )}
     >
       <Image
         alt={`${symbol} logo`}
