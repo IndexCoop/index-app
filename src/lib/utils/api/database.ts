@@ -44,4 +44,6 @@ export const mapQuoteToTrade = (
   redeemFee: quote.fees?.redeemUsd.toString() ?? '',
   refId: 'indexcoop', // TODO: if we have a refId as a queryParam or any other way, set it here.
   createdAt: new Date(),
+  underlyingAssetSymbol: quote.inputToken.symbol,
+  underlyingAssetUnitPriceDenominator: 'USD',
 })

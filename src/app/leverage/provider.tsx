@@ -75,6 +75,7 @@ export interface TokenContext {
   onSelectOutputToken: (tokenSymbol: string) => void
   reset: () => void
   toggleIsMinting: () => void
+  setIsMinting: (to: boolean) => void
 }
 
 export const LeverageTokenContext = createContext<TokenContext>({
@@ -107,6 +108,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   onSelectOutputToken: () => {},
   reset: () => {},
   toggleIsMinting: () => {},
+  setIsMinting: () => {},
 })
 
 export const useLeverageToken = () => useContext(LeverageTokenContext)
@@ -271,6 +273,10 @@ export function LeverageProvider(props: { children: any }) {
   const toggleIsMinting = useCallback(() => {
     setMinting(!isMinting)
   }, [isMinting])
+
+  const setIsMinting = useCallback((to: boolean) => {
+    setMinting(to)
+  }, [])
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -573,6 +579,7 @@ export function LeverageProvider(props: { children: any }) {
         onSelectOutputToken,
         reset,
         toggleIsMinting,
+        setIsMinting,
       }}
     >
       {props.children}

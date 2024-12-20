@@ -17,9 +17,9 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
+import YourTokens from './components/portfolio-widget/portfolio-widget'
 import { Stats } from './components/stats'
 import { Title } from './components/title'
-import { YourTokens } from './components/your-tokens'
 
 const surveyTracking = { utm_source: 'app' }
 
@@ -103,7 +103,7 @@ export default function Page() {
             </Suspense>
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
-            <div className='h-full w-full lg:min-w-[67%] lg:max-w-[67%]'>
+            <div className='mt-16 h-full w-full lg:min-w-[67%] lg:max-w-[67%]'>
               <YourTokens />
             </div>
             <PopupButton
