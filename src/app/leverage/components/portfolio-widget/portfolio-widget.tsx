@@ -94,14 +94,8 @@ const OpenPositions = () => {
 
       return data
     },
-    select: (data) => {
-      return selectedIndex === 0
-        ? data.open
-        : data.history.sort(
-            (a, b) =>
-              new Date(b.metadata.blockTimestamp).getTime() -
-              new Date(a.metadata.blockTimestamp).getTime(),
-          )
+    select: ({ open, history }) => {
+      return selectedIndex === 0 ? open : history
     },
   })
 

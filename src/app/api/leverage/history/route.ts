@@ -37,8 +37,14 @@ export async function POST(req: NextRequest) {
       'metrics.tokenAddress',
     )
 
+    const history = positions.data.sort(
+      (a, b) =>
+        new Date(b.metadata.blockTimestamp).getTime() -
+        new Date(a.metadata.blockTimestamp).getTime(),
+    )
+
     return NextResponse.json(
-      { open, history: positions.data },
+      { open, history },
       {
         status: 200,
         headers: {
