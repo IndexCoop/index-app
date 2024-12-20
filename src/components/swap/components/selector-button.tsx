@@ -26,6 +26,7 @@ export const SelectorButton = ({
     cursor='pointer'
     onClick={onClick}
     p='10px'
+    h='44px'
     shrink={0}
     visibility={visible ? 'visible' : 'hidden'}
   >
