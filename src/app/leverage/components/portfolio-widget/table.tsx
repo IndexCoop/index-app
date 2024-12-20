@@ -1,4 +1,5 @@
 import { flexRender } from '@tanstack/react-table'
+import { Fragment } from 'react'
 
 import { EnrichedToken } from '@/app/leverage/types'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
@@ -24,7 +25,12 @@ export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
               header.isPlaceholder ? (
                 <></>
               ) : (
-                flexRender(header.column.columnDef.header, header.getContext())
+                <Fragment key={header.id}>
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+                </Fragment>
               ),
             )}
           </div>
@@ -47,11 +53,11 @@ export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
               className='text-ic-white flex w-full items-center rounded-lg bg-[#1A2A2B] px-4 py-3 text-left text-xs'
               key={row.id}
             >
-              {row
-                .getVisibleCells()
-                .map((cell) =>
-                  flexRender(cell.column.columnDef.cell, cell.getContext()),
-                )}
+              {row.getVisibleCells().map((cell) => (
+                <Fragment key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </Fragment>
+              ))}
             </div>
           ))
         )}

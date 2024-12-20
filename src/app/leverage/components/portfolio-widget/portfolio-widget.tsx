@@ -23,7 +23,7 @@ const OpenPositions = () => {
   const { address } = useWallet()
   const { chainId } = useNetwork()
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const { updateQueryParams } = useQueryParams()
+  const { queryParams, updateQueryParams } = useQueryParams()
 
   const { balances } = useLeverageToken()
 
@@ -41,6 +41,7 @@ const OpenPositions = () => {
           : { inputToken: token, outputToken: leverageBaseToken }),
         leverageType: getLeverageType(token) ?? undefined,
         baseToken: leverageBaseToken,
+        network: queryParams.queryNetwork,
       })
 
       const scrollDiv = document.getElementById('close-position-scroll')
@@ -51,7 +52,7 @@ const OpenPositions = () => {
         })
       }
     },
-    [updateQueryParams],
+    [queryParams, updateQueryParams],
   )
 
   const { data: tokens } = useQuery({
