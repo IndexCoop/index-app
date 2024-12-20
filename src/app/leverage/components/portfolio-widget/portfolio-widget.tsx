@@ -94,7 +94,7 @@ const OpenPositions = () => {
 
       return data
     },
-    select: ({ open, history}) => {
+    select: ({ open, history }) => {
       return selectedIndex === 0 ? open : history
     },
   })
