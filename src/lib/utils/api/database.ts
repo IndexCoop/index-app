@@ -63,7 +63,6 @@ const getUnderlyingAssetUnitPriceDenominator = (quote: Quote) => {
 
   if (symbol.endsWith('ETH')) return 'ETH'
   if (symbol.endsWith('BTC')) return 'BTC'
-  if (symbol.endsWith('USDC')) return 'USD'
 
-  return ''
+  return 'USD'
 }
