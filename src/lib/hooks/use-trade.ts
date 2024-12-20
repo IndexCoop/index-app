@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { Address, Hex, PublicClient } from 'viem'
+import { Hex, PublicClient } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
@@ -94,7 +94,7 @@ export const useTrade = () => {
           account: address,
           chainId: Number(quote.chainId),
           gas: gasLimit,
-          to: quote.tx.to as Address,
+          to: quote.tx.to,
           data: quote.tx.data as Hex,
           value: BigInt(quote.tx.value?.toString() ?? '0'),
         })
