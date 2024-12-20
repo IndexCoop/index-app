@@ -327,8 +327,8 @@ export function EarnProvider(props: { children: any }) {
         {
           address,
           chainId,
-          indexToken,
           inputToken,
+          outputToken,
           inputTokenAmount: inputTokenAmount.toString(),
           publicClient,
         },
@@ -337,7 +337,8 @@ export function EarnProvider(props: { children: any }) {
       enabled:
         !!address &&
         !!chainId &&
-        !!indexToken &&
+        !!inputToken &&
+        !!outputToken &&
         !!publicClient &&
         inputTokenAmount > 0, // Condition to trigger
     })
@@ -370,8 +371,8 @@ export function EarnProvider(props: { children: any }) {
       {
         address,
         chainId,
-        indexToken,
         inputToken,
+        outputToken,
         inputTokenAmount: inputTokenAmount.toString(),
         publicClient,
       },
@@ -381,7 +382,8 @@ export function EarnProvider(props: { children: any }) {
       !!address &&
       !!chainId &&
       !!publicClient &&
-      !!indexToken &&
+      !!inputToken &&
+      !!outputToken &&
       inputTokenAmount > 0,
   })
 

@@ -21,7 +21,7 @@ export function useNativeTokenPrice(chainId?: number): number {
   return nativeTokenPrice
 }
 
-const navTokenOverrides = ['icusd', 'eth2xbtc', 'btc2xeth']
+const navTokenOverrides = ['hyeth', 'icusd', 'eth2xbtc', 'btc2xeth']
 
 /**
  * Returns price of given token.

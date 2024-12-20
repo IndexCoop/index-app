@@ -327,7 +327,7 @@ export function LeverageProvider(props: { children: any }) {
         isMinting,
         inputToken: token,
         outputToken,
-        network: token.chainId,
+        network: chainId,
       })
     },
     [chainId, indexTokens, outputToken, isMinting, updateQueryParams],
@@ -342,7 +342,7 @@ export function LeverageProvider(props: { children: any }) {
         isMinting,
         inputToken,
         outputToken: token,
-        network: token.chainId,
+        network: chainId,
       })
     },
     [chainId, indexTokens, inputToken, isMinting, updateQueryParams],
@@ -390,8 +390,8 @@ export function LeverageProvider(props: { children: any }) {
         {
           address,
           chainId,
-          indexToken,
           inputToken,
+          outputToken,
           inputTokenAmount: inputTokenAmount.toString(),
           publicClient,
         },
@@ -400,7 +400,8 @@ export function LeverageProvider(props: { children: any }) {
       enabled:
         !!address &&
         !!chainId &&
-        !!indexToken &&
+        !!inputToken &&
+        !!outputToken &&
         !!publicClient &&
         inputTokenAmount > 0, // Condition to trigger
     })
@@ -435,8 +436,8 @@ export function LeverageProvider(props: { children: any }) {
       {
         address,
         chainId,
-        indexToken,
         inputToken,
+        outputToken,
         inputTokenAmount: inputTokenAmount.toString(),
         publicClient,
       },
@@ -446,7 +447,8 @@ export function LeverageProvider(props: { children: any }) {
       !!address &&
       !!chainId &&
       !!publicClient &&
-      !!indexToken &&
+      !!inputToken &&
+      !!outputToken &&
       inputTokenAmount > 0,
   })
 
