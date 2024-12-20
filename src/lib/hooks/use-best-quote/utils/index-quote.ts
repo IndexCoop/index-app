@@ -130,6 +130,14 @@ export async function getIndexQuote(
       outputTokenPrice,
       slippage,
       tx,
+      fees: {
+        mint: 0,
+        mintUsd: 0,
+        redeem: 0,
+        redeemUsd: 0,
+        streaming: 0,
+        streamingUsd: 0,
+      },
       // 0x type specific properties (will change with interface changes to the quote API)
       minOutput: isLifiQuote ? BigInt(estimate.toAmountMin) : outputTokenAmount,
       sources: isLifiQuote
