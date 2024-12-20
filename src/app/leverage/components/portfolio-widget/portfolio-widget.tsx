@@ -14,10 +14,11 @@ import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
-import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
+
+import { GetApiV2UserAddressPositions200 } from '@/gen'
 
 const OpenPositions = () => {
   const { address } = useWallet()
