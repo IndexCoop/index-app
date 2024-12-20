@@ -9,9 +9,9 @@ import { createColumnHelper } from '@tanstack/react-table'
 import Image from 'next/image'
 import * as chains from 'viem/chains'
 
+import { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
 import { cn } from '@/lib/utils/tailwind'
 
-import { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
 
 const columnsHelper =
   createColumnHelper<GetApiV2UserAddressPositionsQueryResponse[number]>()

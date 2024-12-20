@@ -12,8 +12,8 @@
     "hardhat:fund": "npx hardhat accounts --network custom",
     "generate": "kubb --config kubb.config.ts",
     "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "npx prettier --write ./src && npx eslint ./src --fix",
+    "lint": "next lint --no-cache",
+    "lint:fix": "npx prettier --write ./src && npx eslint --no-cache ./src --fix",
     "test": "jest",
     "test:watch": "jest --watch"
   },
