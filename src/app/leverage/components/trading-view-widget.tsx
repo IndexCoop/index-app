@@ -1,26 +1,29 @@
 import { memo, useEffect, useRef } from 'react'
 
+import {
+  btcLeverageTokenSymbols,
+  ethLeverageTokenSymbols,
+} from '@/app/leverage/constants'
 import { Token } from '@/constants/tokens'
 
 type Props = {
-  baseToken: Token
-  symbol: string
+  chartSymbol: string
+  indexToken: Token
 }
 
-const getScriptInnerHtml = (symbol: string) => {
+const getScriptInnerHtml = (chartSymbol: string) => {
   return `
   {
     "autosize": true,
-    "symbol": "INDEX:${symbol}USD",
+    "symbol": "${chartSymbol}",
     "timezone": "Etc/UTC",
     "theme": "dark",
     "style": "1",
     "locale": "en",
     "enable_publishing": false,
-    "backgroundColor": "rgba(28, 44, 46, 1)",
+    "backgroundColor": "rgba(15, 23, 23, 1)",
     "withdateranges": true,
-    "range": "3M",
-    "hide_side_toolbar": false,
+    "range": "1D",
     "allow_symbol_change": false,
     "calendar": false,
     "hide_volume": true,
@@ -28,7 +31,39 @@ const getScriptInnerHtml = (symbol: string) => {
   }`
 }
 
-function TradingViewWidget({ baseToken, symbol }: Props) {
+const getDisplayStyle = (
+  chartSymbol: string,
+  indexSymbol: string,
+): 'block' | 'none' => {
+  const lowercaseIndexSymbol = indexSymbol.toLowerCase()
+
+  switch (chartSymbol) {
+    case 'BINANCE:ETHBTC':
+      return lowercaseIndexSymbol === 'eth2xbtc' ? 'block' : 'none'
+    case 'VANTAGE:BTCETH':
+      return lowercaseIndexSymbol === 'btc2xeth' ? 'block' : 'none'
+    case 'INDEX:ETHUSD':
+      return lowercaseIndexSymbol !== 'eth2xbtc' &&
+        ethLeverageTokenSymbols.some(
+          (ethTokenSymbol) =>
+            ethTokenSymbol.toLowerCase() === lowercaseIndexSymbol,
+        )
+        ? 'block'
+        : 'none'
+    case 'INDEX:BTCUSD':
+      return lowercaseIndexSymbol !== 'btc2xeth' &&
+        btcLeverageTokenSymbols.some(
+          (btcTokenSymbol) =>
+            btcTokenSymbol.toLowerCase() === lowercaseIndexSymbol,
+        )
+        ? 'block'
+        : 'none'
+    default:
+      return 'none'
+  }
+}
+
+function TradingViewWidget({ chartSymbol, indexToken }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const initialized = useRef(false)
 
@@ -42,10 +77,10 @@ function TradingViewWidget({ baseToken, symbol }: Props) {
       'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js'
     script.type = 'text/javascript'
     script.async = true
-    script.innerHTML = getScriptInnerHtml(symbol)
+    script.innerHTML = getScriptInnerHtml(chartSymbol)
 
     container.current?.appendChild(script)
-  }, [symbol])
+  }, [chartSymbol, indexToken])
 
   return (
     <div
@@ -54,7 +89,7 @@ function TradingViewWidget({ baseToken, symbol }: Props) {
       style={{
         height: '100%',
         width: '100%',
-        display: symbol === baseToken.symbol ? 'block' : 'none',
+        display: getDisplayStyle(chartSymbol, indexToken.symbol),
       }}
     >
       <div

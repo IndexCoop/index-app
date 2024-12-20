@@ -4,41 +4,44 @@ import { useQuery } from '@tanstack/react-query'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { useCallback, useState } from 'react'
 
-import { EnrichedToken } from '@/app/earn/types'
 import {
   historyColumns,
   openPositionsColumns,
 } from '@/app/leverage/components/portfolio-widget/columns'
 import { TableRenderer } from '@/app/leverage/components/portfolio-widget/table'
 import { useLeverageToken } from '@/app/leverage/provider'
+import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
+import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 const OpenPositions = () => {
   const { address } = useWallet()
   const { chainId } = useNetwork()
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const { updateQueryParams } = useQueryParams()
 
-  const { balances, setIsMinting, onSelectBaseToken, onSelectLeverageType } =
-    useLeverageToken()
+  const { balances } = useLeverageToken()
 
   const adjustPosition = useCallback(
-    (mint: boolean, token: EnrichedToken) => {
-      setIsMinting(mint)
+    (isMinting: boolean, token: EnrichedToken) => {
+      if (!isLeverageToken(token)) return
 
       const leverageBaseToken = getLeverageBaseToken(token.symbol)
       if (leverageBaseToken === null) return
-      onSelectBaseToken(leverageBaseToken.symbol)
 
-      if (!isLeverageToken(token)) return
-
-      const leverageType = getLeverageType(token)
-      if (leverageType === null) return
-      onSelectLeverageType(leverageType)
+      updateQueryParams({
+        isMinting,
+        ...(isMinting
+          ? { outputToken: token, inputToken: leverageBaseToken }
+          : { inputToken: token, outputToken: leverageBaseToken }),
+        leverageType: getLeverageType(token) ?? undefined,
+        baseToken: leverageBaseToken,
+      })
 
       const scrollDiv = document.getElementById('close-position-scroll')
       if (scrollDiv) {
@@ -48,7 +51,7 @@ const OpenPositions = () => {
         })
       }
     },
-    [onSelectBaseToken, onSelectLeverageType, setIsMinting],
+    [updateQueryParams],
   )
 
   const { data: tokens } = useQuery({

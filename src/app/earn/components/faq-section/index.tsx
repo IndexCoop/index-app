@@ -104,7 +104,7 @@ export function FaqSection() {
           </li>
         </ul>
       </FaqItem>
-      <FaqItem question='How does each product determine which protocols are included?'>
+      <FaqItem question='Are Index Coop yield products rebasing tokens or repricing tokens?'>
         <p>
           All Index Coop yield tokens are repricing tokens, meaning they adjust
           in price to reflect changes in value or yield without altering the

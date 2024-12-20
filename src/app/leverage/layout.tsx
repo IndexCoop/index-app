@@ -15,7 +15,7 @@ export const metadata = {
 export default function Layout({ children }: LayoutProps) {
   return (
     <Providers>
-      <div className='bg-ic-dark dark flex flex-col'>
+      <div className='bg-ic-black dark flex flex-col'>
         <Header />
         <LeverageProvider>
           <main>{children}</main>
