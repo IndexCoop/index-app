@@ -1,17 +1,37 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { base, mainnet } from 'viem/chains'
+import { arbitrum, base, mainnet } from 'viem/chains'
 
-import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
+import { ETH, Token } from '@/constants/tokens'
 
-// TODO: Use new tokenlists
+function createToken(chainId: number, symbol: string): Token {
+  const token = getTokenByChainAndSymbol(chainId, symbol)!
+  return { ...token, image: token.logoURI }
+}
+
 export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
-    case MAINNET.chainId:
-    case ARBITRUM.chainId:
-      return [ETH, WETH, WBTC, USDC, USDT]
-    case BASE.chainId:
-      return [ETH, WETH, USDC]
+    case mainnet.id:
+      return [
+        { ...ETH, chainId: mainnet.id },
+        createToken(mainnet.id, 'WETH'),
+        createToken(mainnet.id, 'WBTC'),
+        createToken(mainnet.id, 'USDC'),
+        createToken(mainnet.id, 'USDT'),
+      ]
+    case arbitrum.id:
+      return [
+        { ...ETH, chainId: arbitrum.id },
+        createToken(arbitrum.id, 'WETH'),
+        createToken(arbitrum.id, 'WBTC'),
+        createToken(arbitrum.id, 'USDC'),
+        createToken(arbitrum.id, 'USDT'),
+      ]
+    case base.id:
+      return [
+        { ...ETH, chainId: base.id },
+        createToken(base.id, 'WETH'),
+        createToken(base.id, 'USDC'),
+      ]
     default:
       return []
   }
@@ -44,7 +64,6 @@ const yieldTokens = [
   // getTokenByChainAndSymbol(base.id, 'dsETH'),
 ]
 
-// TODO: Use new tokenlists
 export function getYieldTokens(): Token[] {
   const tokens: Token[] = yieldTokens.map((token) => {
     return {
@@ -55,8 +74,4 @@ export function getYieldTokens(): Token[] {
   return tokens
 }
 
-export const supportedNetworks = [
-  MAINNET.chainId,
-  BASE.chainId,
-  ARBITRUM.chainId,
-]
+export const supportedNetworks = [mainnet.id, base.id]
