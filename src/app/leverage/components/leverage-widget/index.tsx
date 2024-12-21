@@ -43,7 +43,6 @@ export function LeverageWidget() {
     leverageType,
     market,
     outputTokens,
-    stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
@@ -66,7 +65,7 @@ export function LeverageWidget() {
     ouputAmount,
     outputAmountUsd,
     resetData,
-  } = useFormattedLeverageData(stats)
+  } = useFormattedLeverageData()
 
   const {
     isOpen: isSelectInputTokenOpen,

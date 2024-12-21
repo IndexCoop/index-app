@@ -1,5 +1,6 @@
 import Image from 'next/image'
 
+import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { formatAmount } from '@/lib/utils'
 
@@ -107,7 +108,8 @@ export function TokenSelector({ selectedToken }: TokenSelectProps) {
 }
 
 export function LeverageSelectorContainer() {
-  const { indexToken, isFetchingStats, navchange } = useLeverageToken()
+  const { indexToken, market, navchange } = useLeverageToken()
+  const { isFetchingQuickStats } = useQuickStats(market, indexToken.symbol)
   return (
     <div className='border-ic-black xs:justify-end flex h-full w-2/3 items-center gap-8 border-l px-16 py-0'>
       {/* <Popover className='flex'>
@@ -146,7 +148,7 @@ export function LeverageSelectorContainer() {
       <TokenSelector selectedToken={indexToken} />
       <StatsMetric
         className='hidden w-20 sm:flex'
-        isLoading={isFetchingStats}
+        isLoading={isFetchingQuickStats}
         label='24h Change'
         value={`${formatAmount(navchange, 2)}%`}
         overrideLabelColor={navchange >= 0 ? 'text-ic-green' : 'text-ic-red'}

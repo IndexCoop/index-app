@@ -28,7 +28,6 @@ import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
-import { IndexApi } from '@/lib/utils/api/index-api'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 import {
@@ -36,7 +35,7 @@ import {
   getLeverageTokens,
   supportedLeverageTypes,
 } from './constants'
-import { BaseTokenStats, LeverageToken, LeverageType } from './types'
+import { LeverageToken, LeverageType } from './types'
 
 const eth2x = getTokenByChainAndSymbol(1, 'ETH2X')
 
@@ -57,9 +56,7 @@ export interface TokenContext {
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
-  isFetchingStats: boolean
   quoteResult: QuoteResult | null
-  stats: BaseTokenStats | null
   supportedLeverageTypes: LeverageType[]
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
@@ -87,9 +84,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
-  isFetchingStats: false,
   quoteResult: null,
-  stats: null,
   supportedLeverageTypes: [],
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
@@ -133,8 +128,6 @@ export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient({ chainId: chainIdRaw })
 
   const [inputValue, setInputValue] = useState('')
-  const [isFetchingStats, setFetchingStats] = useState(true)
-  const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
     isAvailable: true,
@@ -238,21 +231,6 @@ export function LeverageProvider(props: { children: any }) {
       network: chainId,
     })
   }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setFetchingStats(true)
-        const indexApi = new IndexApi()
-        const res = await indexApi.get(`/token/${baseToken.symbol}`)
-        setStats(res.data)
-      } catch (err) {
-        console.warn('Error fetching token stats', err)
-      }
-      setFetchingStats(false)
-    }
-    fetchStats()
-  }, [baseToken])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -508,9 +486,7 @@ export function LeverageProvider(props: { children: any }) {
         inputTokens,
         outputTokens,
         isFetchingQuote,
-        isFetchingStats,
         quoteResult,
-        stats,
         supportedLeverageTypes: isRatioToken
           ? [LeverageType.Long2x]
           : supportedLeverageTypes[chainId],
