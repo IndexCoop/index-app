@@ -122,22 +122,24 @@ export function EarnWidget() {
       <SelectTokenModal
         isOpen={isSelectInputTokenOpen}
         onClose={onCloseSelectInputToken}
-        onSelectedToken={(tokenSymbol) => {
-          onSelectInputToken(tokenSymbol)
+        onSelectedToken={(tokenSymbol, chainId) => {
+          onSelectInputToken(tokenSymbol, chainId)
           onCloseSelectInputToken()
         }}
         address={address}
         tokens={inputTokens}
+        showNetworks={!isMinting}
       />
       <SelectTokenModal
         isOpen={isSelectOutputTokenOpen}
         onClose={onCloseSelectOutputToken}
-        onSelectedToken={(tokenSymbol) => {
-          onSelectOutputToken(tokenSymbol)
+        onSelectedToken={(tokenSymbol, chainId) => {
+          onSelectOutputToken(tokenSymbol, chainId)
           onCloseSelectOutputToken()
         }}
         address={address}
         tokens={outputTokens}
+        showNetworks={isMinting}
       />
       {transactionReview && (
         <TransactionReviewModal

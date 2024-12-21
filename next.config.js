@@ -36,6 +36,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'ethereum-optimism.github.io',
+      },
+      {
+        protocol: 'https',
         hostname: 'index-app.vercel.app',
       },
       {
