@@ -3,19 +3,31 @@ import { useQuery } from '@tanstack/react-query'
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
 interface QuickStats {
-  symbol: string
-  price: string
-  change24h: number
-  low24h: string
-  high24h: string
+  base: {
+    symbol: string
+    price: string
+    change24h: number
+    low24h: string
+    high24h: string
+  }
+  token: {
+    symbol: string
+    costOfCarry: number
+  }
 }
 
 interface QuickStatsApiResponse {
-  symbol: string
-  price: number
-  change24h: number
-  low24h: number
-  high24h: number
+  base: {
+    symbol: string
+    price: number
+    change24h: number
+    low24h: number
+    high24h: number
+  }
+  token: {
+    symbol: string
+    costOfCarry: number
+  }
 }
 
 function formatStatsAmount(amount: number, baseCurrency: string): string {
@@ -24,34 +36,47 @@ function formatStatsAmount(amount: number, baseCurrency: string): string {
   return formatDollarAmount(amount, true, 2)
 }
 
-export function useQuickStats(market: string) {
+export function useQuickStats(market: string, indexToken: string) {
   async function fetchStats(): Promise<QuickStats> {
     const m = market.split(' / ')
-    const symbol = m[0]
+    const symbol = indexToken
+    const baseToken = m[0]
     const baseCurrency = m[1].toLowerCase()
     try {
       const response = await fetch(
-        `/api/stats?symbol=${symbol}&baseCurrency=${baseCurrency}`,
+        `/api/stats?symbol=${symbol}&base=${baseToken}&baseCurrency=${baseCurrency}`,
         {
           method: 'GET',
         },
       )
-      const json: QuickStatsApiResponse = await response.json()
+      const { base, token }: QuickStatsApiResponse = await response.json()
       return {
-        symbol: json.symbol,
-        price: formatStatsAmount(json.price, baseCurrency),
-        change24h: json.change24h,
-        low24h: formatStatsAmount(json.low24h, baseCurrency),
-        high24h: formatStatsAmount(json.high24h, baseCurrency),
+        base: {
+          symbol: base.symbol,
+          price: formatStatsAmount(base.price, baseCurrency),
+          change24h: base.change24h,
+          low24h: formatStatsAmount(base.low24h, baseCurrency),
+          high24h: formatStatsAmount(base.high24h, baseCurrency),
+        },
+        token: {
+          symbol: token.symbol,
+          costOfCarry: token.costOfCarry,
+        },
       }
     } catch (error) {
       console.warn('Error fetching quick stats:', error)
       return {
-        symbol,
-        price: '',
-        change24h: 0,
-        low24h: '',
-        high24h: '',
+        base: {
+          symbol,
+          price: '',
+          change24h: 0,
+          low24h: '',
+          high24h: '',
+        },
+        token: {
+          symbol: '',
+          costOfCarry: 0,
+        },
       }
     }
   }
@@ -68,11 +93,17 @@ export function useQuickStats(market: string) {
 
   return {
     data: data ?? {
-      symbol: '',
-      price: '',
-      change24h: 0,
-      low24h: '',
-      high24h: '',
+      base: {
+        symbol: '',
+        price: '',
+        change24h: 0,
+        low24h: '',
+        high24h: '',
+      },
+      token: {
+        symbol: '',
+        costOfCarry: 0,
+      },
     },
     isFetchingQuickStats: isFetching,
   }
