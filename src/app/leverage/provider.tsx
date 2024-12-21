@@ -30,7 +30,6 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import { IndexApi } from '@/lib/utils/api/index-api'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
-import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 import {
   getCurrencyTokens,
@@ -55,7 +54,6 @@ export interface TokenContext {
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
-  costOfCarry: number | null
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
@@ -86,7 +84,6 @@ export const LeverageTokenContext = createContext<TokenContext>({
   inputToken: ETH,
   outputToken: { ...eth2x, image: eth2x.logoURI },
   inputTokenAmount: BigInt(0),
-  costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
@@ -136,10 +133,6 @@ export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient({ chainId: chainIdRaw })
 
   const [inputValue, setInputValue] = useState('')
-  const [carryCosts, setCarryCosts] = useState<Record<string, number> | null>(
-    null,
-  )
-  const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
   const [isFetchingStats, setFetchingStats] = useState(true)
   const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
@@ -260,22 +253,6 @@ export function LeverageProvider(props: { children: any }) {
     }
     fetchStats()
   }, [baseToken])
-
-  useEffect(() => {
-    async function fetchCosts() {
-      const carryCosts = await fetchCarryCosts()
-      setCarryCosts(carryCosts)
-    }
-
-    fetchCosts()
-  }, [])
-
-  useEffect(() => {
-    const inputOutputToken = isMinting ? outputToken : inputToken
-    if (!inputOutputToken) return
-    if (carryCosts)
-      setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
-  }, [isMinting, inputToken, outputToken, carryCosts])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -528,7 +505,6 @@ export function LeverageProvider(props: { children: any }) {
         market,
         nav,
         navchange,
-        costOfCarry,
         inputTokens,
         outputTokens,
         isFetchingQuote,
