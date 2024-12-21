@@ -3,6 +3,7 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
+import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Receive } from '@/components/receive'
@@ -33,13 +34,14 @@ export function LeverageWidget() {
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
+    indexToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
     inputValue,
     isMinting,
-    costOfCarry,
     leverageType,
+    market,
     outputTokens,
     stats,
     transactionReview,
@@ -52,6 +54,7 @@ export function LeverageWidget() {
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
+  const { data } = useQuickStats(market, indexToken.symbol)
 
   const {
     contract,
@@ -116,7 +119,7 @@ export function LeverageWidget() {
         onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
-      <Fees costOfCarry={costOfCarry} leverageType={leverageType} />
+      <Fees costOfCarry={data.token.costOfCarry} leverageType={leverageType} />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={false}
