@@ -10,11 +10,11 @@ import {
   useState,
 } from 'react'
 import { isAddress } from 'viem'
+import { base } from 'viem/chains'
 import { usePublicClient } from 'wagmi'
 
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { MAINNET } from '@/constants/chains'
 import { ETH, ICUSD, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -106,17 +106,21 @@ export function EarnProvider(props: { children: any }) {
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
-  const [chainId, setChainId] = useState(chainIdRaw ?? MAINNET.chainId)
   const [inputValue, setInputValue] = useState('')
-  const [isMinting, setMinting] = useState<boolean>(queryIsMinting)
-  const [inputToken, setInputToken] = useState<Token>(queryInputToken)
-  const [outputToken, setOutputToken] = useState<Token>(queryOutputToken)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
     isAvailable: true,
     quote: null,
     error: null,
   })
+
+  const isMinting = queryIsMinting
+  const inputToken = queryInputToken
+  const outputToken = queryOutputToken
+
+  const chainId = useMemo(() => {
+    return chainIdRaw ?? base.id
+  }, [chainIdRaw])
 
   const indexToken = useMemo(() => {
     if (isMinting) return outputToken
@@ -222,10 +226,13 @@ export function EarnProvider(props: { children: any }) {
   }, [chainId, indexTokens, isMinting])
 
   const toggleIsMinting = useCallback(() => {
-    setMinting(!isMinting)
-    setInputToken(outputToken)
-    setOutputToken(inputToken)
-  }, [inputToken, isMinting, outputToken])
+    updateQueryParams({
+      isMinting,
+      inputToken: outputToken,
+      outputToken: inputToken,
+      network: chainId,
+    })
+  }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -245,8 +252,6 @@ export function EarnProvider(props: { children: any }) {
         (token) => token.symbol === tokenSymbol && token.chainId === chainId,
       )
       if (!token) return
-      setChainId(chainId)
-      setInputToken(token)
       updateQueryParams({
         isMinting,
         inputToken: token,
@@ -263,8 +268,6 @@ export function EarnProvider(props: { children: any }) {
         (token) => token.symbol === tokenSymbol && token.chainId === chainId,
       )
       if (!token) return
-      setChainId(chainId)
-      setOutputToken(token)
       updateQueryParams({
         isMinting,
         inputToken,
@@ -386,10 +389,7 @@ export function EarnProvider(props: { children: any }) {
       inputTokenAmount > 0,
   })
 
-  const isFetchingQuote = useMemo(
-    () => isFetchingFlashMintQuote || isFetchingSwapQuote,
-    [isFetchingFlashMintQuote, isFetchingSwapQuote],
-  )
+  const isFetchingQuote = isFetchingFlashMintQuote || isFetchingSwapQuote
 
   useEffect(() => {
     const bestQuote = getBestYieldQuote(
@@ -429,9 +429,6 @@ export function EarnProvider(props: { children: any }) {
 
   useEffect(() => {
     // Reset quotes
-    setMinting(queryIsMinting)
-    setInputToken(queryInputToken)
-    setOutputToken(queryOutputToken)
     setQuoteResult({
       type: QuoteType.flashmint,
       isAvailable: true,
