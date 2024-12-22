@@ -6,9 +6,12 @@ import { useLeverageToken } from '@/app/leverage/provider'
 import { formatAmount } from '@/lib/utils'
 
 export function QuickStats() {
-  const { market } = useLeverageToken()
-  const { data: quickStats, isFetchingQuickStats } = useQuickStats(market)
-  const { price, change24h, low24h, high24h } = quickStats
+  const { indexToken, market } = useLeverageToken()
+  const { data: quickStats, isFetchingQuickStats } = useQuickStats(
+    market,
+    indexToken.symbol,
+  )
+  const { price, change24h, low24h, high24h } = quickStats.base
   return (
     <div
       className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
