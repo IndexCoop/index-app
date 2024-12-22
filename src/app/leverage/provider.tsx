@@ -10,7 +10,6 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { isAddress } from 'viem'
 import { arbitrum } from 'viem/chains'
 import { usePublicClient } from 'wagmi'
 
@@ -28,7 +27,6 @@ import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
-import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 import {
   getCurrencyTokens,
@@ -48,8 +46,6 @@ export interface TokenContext {
   indexToken: Token
   indexTokens: Token[]
   market: string
-  nav: number
-  navchange: number
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
@@ -76,8 +72,6 @@ export const LeverageTokenContext = createContext<TokenContext>({
   indexToken: { ...eth2x, image: eth2x.logoURI },
   indexTokens: [],
   market: 'ETH / USD',
-  nav: 0,
-  navchange: 0,
   inputToken: ETH,
   outputToken: { ...eth2x, image: eth2x.logoURI },
   inputTokenAmount: BigInt(0),
@@ -149,10 +143,6 @@ export function LeverageProvider(props: { children: any }) {
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
-  const indexTokenAddress = useMemo(() => {
-    return getTokenByChainAndSymbol(chainId, indexToken.symbol)?.address ?? ''
-  }, [chainId, indexToken.symbol])
-
   const indexTokens = useMemo(() => {
     return getLeverageTokens(chainId)
   }, [chainId])
@@ -165,25 +155,6 @@ export function LeverageProvider(props: { children: any }) {
     address,
     indexTokenAddresses,
   )
-
-  const {
-    data: { nav, navchange },
-  } = useQuery({
-    enabled: isAddress(indexTokenAddress),
-    initialData: { nav: 0, navchange: 0 },
-    queryKey: ['token-nav', indexTokenAddress],
-    queryFn: async () => {
-      const data = await fetchTokenMetrics({
-        tokenAddress: indexTokenAddress!,
-        metrics: ['nav', 'navchange'],
-      })
-
-      return {
-        nav: data?.NetAssetValue ?? 0,
-        navchange: (data?.NavChange24Hr ?? 0) * 100,
-      }
-    },
-  })
 
   const inputTokenAmount = useMemo(
     () =>
@@ -481,8 +452,6 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         inputTokenAmount,
         market,
-        nav,
-        navchange,
         inputTokens,
         outputTokens,
         isFetchingQuote,

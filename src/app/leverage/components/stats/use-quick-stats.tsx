@@ -13,6 +13,8 @@ interface QuickStats {
   token: {
     symbol: string
     costOfCarry: number
+    nav: number
+    navchange: number
   }
 }
 
@@ -27,6 +29,8 @@ interface QuickStatsApiResponse {
   token: {
     symbol: string
     costOfCarry: number
+    nav: number
+    navchange: number
   }
 }
 
@@ -36,15 +40,17 @@ function formatStatsAmount(amount: number, baseCurrency: string): string {
   return formatDollarAmount(amount, true, 2)
 }
 
-export function useQuickStats(market: string, indexToken: string) {
+export function useQuickStats(
+  market: string,
+  indexToken: { address: string | undefined; symbol: string },
+) {
   async function fetchStats(): Promise<QuickStats> {
     const m = market.split(' / ')
-    const symbol = indexToken
     const baseToken = m[0]
     const baseCurrency = m[1].toLowerCase()
     try {
       const response = await fetch(
-        `/api/stats?symbol=${symbol}&base=${baseToken}&baseCurrency=${baseCurrency}`,
+        `/api/stats?address=${indexToken.address}&symbol=${indexToken.symbol}&base=${baseToken}&baseCurrency=${baseCurrency}`,
         {
           method: 'GET',
         },
@@ -58,16 +64,13 @@ export function useQuickStats(market: string, indexToken: string) {
           low24h: formatStatsAmount(base.low24h, baseCurrency),
           high24h: formatStatsAmount(base.high24h, baseCurrency),
         },
-        token: {
-          symbol: token.symbol,
-          costOfCarry: token.costOfCarry,
-        },
+        token: { ...token },
       }
     } catch (error) {
       console.warn('Error fetching quick stats:', error)
       return {
         base: {
-          symbol,
+          symbol: baseToken,
           price: '',
           change24h: 0,
           low24h: '',
@@ -76,6 +79,8 @@ export function useQuickStats(market: string, indexToken: string) {
         token: {
           symbol: '',
           costOfCarry: 0,
+          nav: 0,
+          navchange: 0,
         },
       }
     }
@@ -85,6 +90,7 @@ export function useQuickStats(market: string, indexToken: string) {
     queryKey: [
       'fetch-quick-stats',
       {
+        indexToken,
         market,
       },
     ],
@@ -103,6 +109,8 @@ export function useQuickStats(market: string, indexToken: string) {
       token: {
         symbol: '',
         costOfCarry: 0,
+        nav: 0,
+        navchange: 0,
       },
     },
     isFetchingQuickStats: isFetching,
