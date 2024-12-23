@@ -32,7 +32,7 @@
     "@indexcoop/tokenlists": "3.5.0",
     "@rainbow-me/rainbowkit": "^2.0.7",
     "@safe-global/api-kit": "2.5.4",
-    "@safe-global/protocol-kit": "4.0.4",
+    "@safe-global/protocol-kit": "5.1.1",
     "@safe-global/safe-core-sdk-types": "5.0.3",
     "@sentry/nextjs": "8.37.1",
     "@tanstack/react-query": "5.36.2",
