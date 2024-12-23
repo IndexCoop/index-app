@@ -21,6 +21,7 @@
 
 # debug
 npm-debug.log*
+
 yarn-debug.log*
 yarn-error.log*
 
@@ -37,3 +38,6 @@ next-env.d.ts
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Generated
+src/gen

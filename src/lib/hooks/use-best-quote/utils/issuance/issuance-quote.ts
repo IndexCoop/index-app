@@ -160,6 +160,14 @@ export async function getEnhancedIssuanceQuote(
       inputTokenPrice,
       outputTokenPrice,
       slippage: request.slippage,
+      fees: {
+        mint: 0,
+        mintUsd: 0,
+        redeem: 0,
+        redeemUsd: 0,
+        streaming: 0,
+        streamingUsd: 0,
+      },
       tx: transaction,
     }
   } catch (e) {

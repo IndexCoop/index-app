@@ -13,7 +13,7 @@ import { PriceChart } from '@/components/charts/price-chart'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
-import { YourTokens } from './components/your-tokens'
+import PortfolioWidget from './components/portfolio-widget/portfolio-widget'
 
 const surveyTracking = { utm_source: 'app' }
 
@@ -88,7 +88,7 @@ export default function Page() {
           </div>
           <div className='flex flex-col gap-6 lg:flex-row'>
             <div className='h-full w-full lg:min-w-[67%] lg:max-w-[67%]'>
-              <YourTokens />
+              <PortfolioWidget />
             </div>
             <PopupButton
               id='Ns10DhMF'
