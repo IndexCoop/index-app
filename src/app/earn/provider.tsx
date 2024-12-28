@@ -311,7 +311,7 @@ export function EarnProvider(props: { children: any }) {
     const outputTokenPrice = await getTokenPrice(outputToken, chainId)
     const isIcEth = isAddressEqual(
       indexToken.address,
-      getTokenByChainAndSymbol(chainId, 'icETH'),
+      getTokenByChainAndSymbol(chainId, 'icETH')?.address,
     )
     return await getFlashMintQuote({
       isMinting,
