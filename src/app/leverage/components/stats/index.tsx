@@ -9,7 +9,7 @@ export function QuickStats() {
   const { indexToken, market } = useLeverageToken()
   const { data: quickStats, isFetchingQuickStats } = useQuickStats(
     market,
-    indexToken.symbol,
+    indexToken,
   )
   const { price, change24h, low24h, high24h } = quickStats.base
   return (

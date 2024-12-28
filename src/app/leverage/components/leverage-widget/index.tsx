@@ -53,7 +53,7 @@ export function LeverageWidget() {
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
-  const { data } = useQuickStats(market, indexToken.symbol)
+  const { data } = useQuickStats(market, indexToken)
 
   const {
     contract,
