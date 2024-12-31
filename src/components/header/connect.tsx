@@ -1,7 +1,7 @@
 'use client'
 
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useMemo } from 'react'
 import { useAccount, useAccountEffect, useBalance } from 'wagmi'
@@ -66,7 +66,7 @@ export const Connect = () => {
               {avatar?.emoji}
             </div>
             <p className='hidden md:block'>{shortenAddress(address)}</p>
-            <ChevronDownIcon className='h-5 w-5' />
+            <ChevronDownIcon className='dark:text-ic-white text-ic-black size-5' />
           </Button>
         </div>
       ) : (

@@ -1,8 +1,9 @@
-import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import { Spinner } from '@chakra-ui/react'
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+} from '@heroicons/react/20/solid'
 import clsx from 'clsx'
-
-import { colors } from '@/lib/styles/colors'
 
 export enum TransactionReviewSimulationState {
   default,
@@ -44,7 +45,6 @@ const SimulationDefaultView = ({ isLoading }: { isLoading: boolean }) => {
 }
 
 const SimulationStateView = ({ success }: { success: boolean }) => {
-  const color = success ? colors.ic.green : colors.ic.red
   const title = success ? 'Success' : 'Failed'
   const text = success
     ? 'The transaction was successfully simulated.'
@@ -59,9 +59,9 @@ const SimulationStateView = ({ success }: { success: boolean }) => {
       <div className='flex flex-row'>
         <div className='mr-3 flex p-1'>
           {success ? (
-            <CheckCircleIcon boxSize='4' color={color} />
+            <CheckCircleIcon className='text-ic-green size-4' />
           ) : (
-            <WarningIcon boxSize='4' color={color} />
+            <ExclamationCircleIcon className='text-ic-red size-4' />
           )}
         </div>
         <div className='flex flex-col'>
