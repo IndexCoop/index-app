@@ -13,6 +13,7 @@ import { ChartTooltip } from '@/components/charts/chart-tooltip'
 import { LinearGradientFill } from '@/components/charts/linear-gradient-fill'
 import { darkTheme, lightTheme } from '@/components/charts/themes'
 import { ChartPeriod } from '@/components/charts/types'
+import { tooltipTimestampFormat } from '@/constants/charts'
 import { formatDollarAmount } from '@/lib/utils'
 import { IndexData } from '@/lib/utils/api/index-data-provider'
 
@@ -25,14 +26,6 @@ type Props = {
   parentWidth: number
   parentHeight: number
   selectedPeriod: ChartPeriod
-}
-
-const tooltipTimestampFormatByPeriod: { [k in ChartPeriod]: string } = {
-  [ChartPeriod.Hour]: 'DD MMM YYYY HH:mm',
-  [ChartPeriod.Day]: 'DD MMM YYYY HH:mm',
-  [ChartPeriod.Week]: 'DD MMM YYYY HH:mm',
-  [ChartPeriod.Month]: 'DD MMM YYYY HH:mm',
-  [ChartPeriod.Year]: 'DD MMM YYYY',
 }
 
 function PriceXYChart({
@@ -61,9 +54,7 @@ function PriceXYChart({
 
   const tooltipAccessors = {
     xAccessor: (d: PriceChartIndexData) =>
-      dayjs(d.CreatedTimestamp).format(
-        tooltipTimestampFormatByPeriod[selectedPeriod],
-      ),
+      dayjs(d.CreatedTimestamp).format(tooltipTimestampFormat[selectedPeriod]),
     yAccessor: (d: PriceChartIndexData) =>
       formatDollarAmount(d.NetAssetValue, undefined, digits),
   }
