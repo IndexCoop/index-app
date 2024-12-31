@@ -1,6 +1,7 @@
 import { getChainTokenList } from '@indexcoop/tokenlists'
 import { useEffect, useState } from 'react'
 
+import { PolygonLegacyTokenList } from '@/app/legacy/config'
 import { DATA, ETH, GmiIndex, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
@@ -20,6 +21,8 @@ export function useNativeTokenPrice(chainId?: number): number {
   return nativeTokenPrice
 }
 
+const navTokenOverrides = ['hyeth', 'icusd', 'eth2xbtc', 'btc2xeth']
+
 /**
  * Returns price of given token.
  * @returns price of token in USD
@@ -34,11 +37,17 @@ export const getTokenPrice = async (
   let isIndexToken = productTokensList.some(
     ({ address }) => address === tokenAddress,
   )
-  if (token.symbol === DATA.symbol || token.symbol === GmiIndex.symbol) {
+  if (
+    token.symbol === DATA.symbol ||
+    token.symbol === GmiIndex.symbol ||
+    PolygonLegacyTokenList.some(
+      (polygonIndex) => token.symbol === polygonIndex.symbol,
+    )
+  ) {
     // Force using Coingecko for this deprecated indices
     isIndexToken = false
   }
-  if (token.symbol.toLowerCase() === 'icusd') {
+  if (navTokenOverrides.includes(token.symbol.toLowerCase())) {
     const dataResponse = await fetchTokenMetrics({
       tokenAddress,
       metrics: ['nav'],

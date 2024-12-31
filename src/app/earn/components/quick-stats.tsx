@@ -80,12 +80,13 @@ export function QuickStats() {
       <SelectTokenModal
         isOpen={isSelectIndexTokenOpen}
         onClose={onCloseSelectIndexToken}
-        onSelectedToken={(tokenSymbol) => {
-          onSelectIndexToken(tokenSymbol)
+        onSelectedToken={(tokenSymbol, chainId) => {
+          onSelectIndexToken(tokenSymbol, chainId)
           onCloseSelectIndexToken()
         }}
         address={address}
         tokens={indexTokens}
+        showNetworks={true}
       />
     </div>
   )

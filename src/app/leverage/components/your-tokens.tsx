@@ -5,7 +5,9 @@ import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 
 import { formatPrice } from '@/app/products/utils/formatters'
+import { ETH } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
+import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useTokenHistory } from '@/lib/hooks/use-token-history'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { shortenAddress } from '@/lib/utils'
@@ -17,8 +19,6 @@ import { chains } from '@/lib/utils/wagmi'
 import { useLeverageToken } from '../provider'
 import { EnrichedToken, LeverageType } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
-import { getLeverageBaseToken } from '../utils/get-leverage-base-token'
-import { getLeverageType } from '../utils/get-leverage-type'
 
 const leverageTypeLabels = {
   [LeverageType.Long2x]: '2x LONG',
@@ -28,19 +28,12 @@ const leverageTypeLabels = {
 
 export function YourTokens() {
   const { chainId } = useNetwork()
-
   const chain = useMemo(
     () => chains.find((chain) => chain.id === chainId),
     [chainId],
   )
-  const {
-    balances,
-    indexTokens,
-    onSelectBaseToken,
-    isMinting,
-    toggleIsMinting,
-    onSelectLeverageType,
-  } = useLeverageToken()
+  const { balances, indexTokens } = useLeverageToken()
+  const { queryParams, updateQueryParams } = useQueryParams()
   const { address: user } = useWallet()
   const [tokens, setTokens] = useState<EnrichedToken[]>([])
 
@@ -55,15 +48,12 @@ export function YourTokens() {
   )
 
   const handleCloseClick = (token: EnrichedToken) => {
-    if (isMinting) toggleIsMinting()
-
-    const leverageBaseToken = getLeverageBaseToken(token.symbol)
-    if (leverageBaseToken === null) return
-    onSelectBaseToken(leverageBaseToken.symbol)
-
-    const leverageType = getLeverageType(token.symbol)
-    if (leverageType === null) return
-    onSelectLeverageType(leverageType)
+    updateQueryParams({
+      isMinting: false,
+      inputToken: token,
+      outputToken: ETH,
+      network: queryParams.queryNetwork,
+    })
 
     const scrollDiv = document.getElementById('close-position-scroll')
     if (scrollDiv) {
@@ -94,7 +84,7 @@ export function YourTokens() {
   return (
     <TabGroup
       as='div'
-      className='border-ic-gray-600 w-full rounded-3xl border bg-[#1C2C2E]'
+      className='border-ic-gray-600 w-full rounded-lg border bg-[#1C2C2E] text-sm'
     >
       <TabList className='flex gap-8 px-6 py-8'>
         <Tab className='outline-none'>
@@ -102,7 +92,7 @@ export function YourTokens() {
             <div className='flex flex-col gap-[2px]'>
               <p
                 className={cn(
-                  'text-ic-gray-400 font-bold',
+                  'text-ic-gray-500 font-medium',
                   (selected || hover) && 'text-ic-white',
                 )}
               >
@@ -122,7 +112,7 @@ export function YourTokens() {
             <div className='flex flex-col gap-[2px]'>
               <p
                 className={cn(
-                  'text-ic-gray-400 font-bold',
+                  'text-ic-gray-500 font-medium',
                   (selected || hover) && 'text-ic-white',
                 )}
               >
