@@ -1,6 +1,7 @@
 import { formatPercentage } from '@/app/products/utils/formatters'
 import ApyXyChart from '@/components/charts/apy-xy-chart'
 import { PeriodSelector } from '@/components/charts/period-selector'
+import { ChartPeriod } from '@/components/charts/types'
 import { useChartData } from '@/components/charts/use-chart-data'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -9,6 +10,8 @@ type Props = {
   isFetchingStats?: boolean
   apy: number | null
 }
+
+const periods = [ChartPeriod.Week, ChartPeriod.Month, ChartPeriod.Year]
 
 export function ApyChart({
   indexTokenAddress,
@@ -34,6 +37,7 @@ export function ApyChart({
           {formatPercentage(apy)}
         </div>
         <PeriodSelector
+          periods={periods}
           selectedPeriod={selectedPeriod}
           setSelectedPeriod={setSelectedPeriod}
         />
