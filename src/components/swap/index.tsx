@@ -1,5 +1,5 @@
-import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -227,7 +227,7 @@ export const Swap = (props: SwapProps) => {
             className='bg-ic-white text-ic-gray-400'
             margin={'-16px 0 0 0'}
             aria-label='switch input/output tokens'
-            icon={<UpDownIcon />}
+            icon={<ChevronUpDownIcon />}
             onClick={onSwitchTokens}
           />
         </Box>

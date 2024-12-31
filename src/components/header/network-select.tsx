@@ -1,8 +1,7 @@
 'use client'
 
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { watchAccount } from '@wagmi/core'
 import { NetworkUtil } from '@web3modal/common'
 import { AssetUtil, NetworkController } from '@web3modal/core'

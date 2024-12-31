@@ -1,4 +1,3 @@
-import { SettingsIcon } from '@chakra-ui/icons'
 import {
   Flex,
   IconButton,
@@ -9,6 +8,7 @@ import {
   PopoverTrigger,
   Text,
 } from '@chakra-ui/react'
+import { Cog6ToothIcon } from '@heroicons/react/20/solid'
 import { useMemo, useRef, useState } from 'react'
 
 import { Toggle, ToggleState } from '@/components/toggle'
@@ -74,7 +74,7 @@ export const Settings = (props: SettingsProps) => {
       <PopoverTrigger>
         <IconButton
           aria-label='Trade Settings'
-          icon={<SettingsIcon />}
+          icon={<Cog6ToothIcon />}
           size='lg'
           style={{ border: 0 }}
           variant='unstyled'
