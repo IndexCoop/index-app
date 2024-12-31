@@ -1,7 +1,7 @@
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
-} from '@heroicons/react/20/solid'
+} from '@heroicons/react/24/solid'
 
 import { TradeButton } from '@/components/trade-button'
 
