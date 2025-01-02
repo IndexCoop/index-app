@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { QueryFunctionContext, useQuery } from '@tanstack/react-query'
 
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
@@ -34,6 +34,11 @@ interface QuickStatsApiResponse {
   }
 }
 
+type QuickStatsQueryKey = [
+  string,
+  { address: string | undefined; symbol: string; market: string },
+]
+
 function formatStatsAmount(amount: number, baseCurrency: string): string {
   if (baseCurrency === 'btc') return `${formatAmount(amount, 4)} BTC`
   if (baseCurrency === 'eth') return `${formatAmount(amount, 4)} ETH`
@@ -44,13 +49,16 @@ export function useQuickStats(
   market: string,
   indexToken: { address: string | undefined; symbol: string },
 ) {
-  async function fetchStats(): Promise<QuickStats> {
+  async function fetchStats(
+    context: QueryFunctionContext<QuickStatsQueryKey>,
+  ): Promise<QuickStats> {
+    const [, { address, symbol, market }] = context.queryKey
     const m = market.split(' / ')
     const baseToken = m[0]
     const baseCurrency = m[1].toLowerCase()
     try {
       const response = await fetch(
-        `/api/stats?address=${indexToken.address}&symbol=${indexToken.symbol}&base=${baseToken}&baseCurrency=${baseCurrency}`,
+        `/api/stats?address=${address}&symbol=${symbol}&base=${baseToken}&baseCurrency=${baseCurrency}`,
         {
           method: 'GET',
         },
@@ -90,11 +98,13 @@ export function useQuickStats(
     queryKey: [
       'fetch-quick-stats',
       {
-        indexToken,
+        symbol: indexToken.symbol,
+        address: indexToken.address,
         market,
       },
     ],
     queryFn: fetchStats,
+    enabled: !!indexToken.address,
   })
 
   return {
