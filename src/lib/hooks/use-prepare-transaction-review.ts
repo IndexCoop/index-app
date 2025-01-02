@@ -1,6 +1,6 @@
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 
-export function useTransactionReview(
+export function usePrepareTransactionReview(
   isFetchingQuote: boolean,
   quoteResult: QuoteResult | null,
 ) {

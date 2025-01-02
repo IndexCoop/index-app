@@ -17,8 +17,8 @@ import { ETH, ICUSD, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
+import { usePrepareTransactionReview } from '@/lib/hooks/use-prepare-transaction-review'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
-import { useTransactionReview } from '@/lib/hooks/use-transaction-review'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import {
@@ -157,7 +157,10 @@ export function EarnProvider(props: { children: any }) {
     inputTokenAmount,
     inputValue,
   })
-  const transactionReview = useTransactionReview(isFetchingQuote, quoteResult)
+  const transactionReview = usePrepareTransactionReview(
+    isFetchingQuote,
+    quoteResult,
+  )
 
   const {
     data: { apy, nav, tvl },
