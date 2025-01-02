@@ -1,5 +1,6 @@
 'use client'
 
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -308,6 +309,10 @@ export function EarnProvider(props: { children: any }) {
     if (!indexToken) return null
     const inputTokenPrice = await getTokenPrice(inputToken, chainId)
     const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+    const isIcEth = isAddressEqual(
+      indexToken.address,
+      getTokenByChainAndSymbol(chainId, 'icETH')?.address,
+    )
     return await getFlashMintQuote({
       isMinting,
       account: address,
@@ -318,7 +323,7 @@ export function EarnProvider(props: { children: any }) {
       inputTokenPrice,
       outputToken,
       outputTokenPrice,
-      slippage: 0.1,
+      slippage: isIcEth ? 0.5 : 0.1,
     })
   }
 
