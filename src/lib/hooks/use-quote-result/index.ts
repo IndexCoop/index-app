@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
-import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
+import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
+import { getBestYieldQuote } from '@/lib/hooks/use-quote-result/best-quote'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 
 type QuoteRequest = {
@@ -156,37 +156,4 @@ export function useQuoteResult(request: QuoteRequest) {
     isFetchingQuote: isFetchingFlashMintQuote || isFetchingSwapQuote,
     quoteResult,
   }
-}
-
-function getBestYieldQuote(
-  flashmintQuote: Quote | null,
-  swapQuote: Quote | null,
-  chainId: number,
-): Quote | null {
-  if (!flashmintQuote && swapQuote) return swapQuote
-  if (flashmintQuote && !swapQuote) return flashmintQuote
-  if (
-    flashmintQuote &&
-    flashmintQuote.chainId !== chainId &&
-    swapQuote &&
-    swapQuote.chainId === chainId
-  )
-    return swapQuote
-  if (
-    flashmintQuote &&
-    flashmintQuote.chainId === chainId &&
-    swapQuote &&
-    swapQuote.chainId !== chainId
-  )
-    return flashmintQuote
-  if (flashmintQuote && swapQuote) {
-    const bestQuoteType = getBestQuote(
-      swapQuote.fullCostsInUsd,
-      flashmintQuote.fullCostsInUsd,
-      swapQuote.outputTokenAmountUsdAfterFees,
-      flashmintQuote.outputTokenAmountUsdAfterFees,
-    )
-    return bestQuoteType === QuoteType.index ? swapQuote : flashmintQuote
-  }
-  return null
 }
