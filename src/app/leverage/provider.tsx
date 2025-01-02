@@ -10,7 +10,6 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { isAddress } from 'viem'
 import { arbitrum } from 'viem/chains'
 import { usePublicClient } from 'wagmi'
 
@@ -28,16 +27,13 @@ import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
-import { IndexApi } from '@/lib/utils/api/index-api'
-import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
-import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 import {
   getCurrencyTokens,
   getLeverageTokens,
   supportedLeverageTypes,
 } from './constants'
-import { BaseTokenStats, LeverageToken, LeverageType } from './types'
+import { LeverageToken, LeverageType } from './types'
 
 const eth2x = getTokenByChainAndSymbol(1, 'ETH2X')
 
@@ -50,18 +46,13 @@ export interface TokenContext {
   indexToken: Token
   indexTokens: Token[]
   market: string
-  nav: number
-  navchange: number
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
-  costOfCarry: number | null
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
-  isFetchingStats: boolean
   quoteResult: QuoteResult | null
-  stats: BaseTokenStats | null
   supportedLeverageTypes: LeverageType[]
   transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
@@ -81,18 +72,13 @@ export const LeverageTokenContext = createContext<TokenContext>({
   indexToken: { ...eth2x, image: eth2x.logoURI },
   indexTokens: [],
   market: 'ETH / USD',
-  nav: 0,
-  navchange: 0,
   inputToken: ETH,
   outputToken: { ...eth2x, image: eth2x.logoURI },
   inputTokenAmount: BigInt(0),
-  costOfCarry: null,
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
-  isFetchingStats: false,
   quoteResult: null,
-  stats: null,
   supportedLeverageTypes: [],
   transactionReview: null,
   onChangeInputTokenAmount: () => {},
@@ -136,12 +122,6 @@ export function LeverageProvider(props: { children: any }) {
   const publicClient = usePublicClient({ chainId: chainIdRaw })
 
   const [inputValue, setInputValue] = useState('')
-  const [carryCosts, setCarryCosts] = useState<Record<string, number> | null>(
-    null,
-  )
-  const [costOfCarry, setCostOfCarry] = useState<number | null>(null)
-  const [isFetchingStats, setFetchingStats] = useState(true)
-  const [stats, setStats] = useState<BaseTokenStats | null>(null)
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
     isAvailable: true,
@@ -163,10 +143,6 @@ export function LeverageProvider(props: { children: any }) {
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
-  const indexTokenAddress = useMemo(() => {
-    return getTokenByChainAndSymbol(chainId, indexToken.symbol)?.address ?? ''
-  }, [chainId, indexToken.symbol])
-
   const indexTokens = useMemo(() => {
     return getLeverageTokens(chainId)
   }, [chainId])
@@ -179,25 +155,6 @@ export function LeverageProvider(props: { children: any }) {
     address,
     indexTokenAddresses,
   )
-
-  const {
-    data: { nav, navchange },
-  } = useQuery({
-    enabled: isAddress(indexTokenAddress),
-    initialData: { nav: 0, navchange: 0 },
-    queryKey: ['token-nav', indexTokenAddress],
-    queryFn: async () => {
-      const data = await fetchTokenMetrics({
-        tokenAddress: indexTokenAddress!,
-        metrics: ['nav', 'navchange'],
-      })
-
-      return {
-        nav: data?.NetAssetValue ?? 0,
-        navchange: (data?.NavChange24Hr ?? 0) * 100,
-      }
-    },
-  })
 
   const inputTokenAmount = useMemo(
     () =>
@@ -245,37 +202,6 @@ export function LeverageProvider(props: { children: any }) {
       network: chainId,
     })
   }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setFetchingStats(true)
-        const indexApi = new IndexApi()
-        const res = await indexApi.get(`/token/${baseToken.symbol}`)
-        setStats(res.data)
-      } catch (err) {
-        console.warn('Error fetching token stats', err)
-      }
-      setFetchingStats(false)
-    }
-    fetchStats()
-  }, [baseToken])
-
-  useEffect(() => {
-    async function fetchCosts() {
-      const carryCosts = await fetchCarryCosts()
-      setCarryCosts(carryCosts)
-    }
-
-    fetchCosts()
-  }, [])
-
-  useEffect(() => {
-    const inputOutputToken = isMinting ? outputToken : inputToken
-    if (!inputOutputToken) return
-    if (carryCosts)
-      setCostOfCarry(carryCosts[inputOutputToken.symbol.toLowerCase()] ?? null)
-  }, [isMinting, inputToken, outputToken, carryCosts])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -526,15 +452,10 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         inputTokenAmount,
         market,
-        nav,
-        navchange,
-        costOfCarry,
         inputTokens,
         outputTokens,
         isFetchingQuote,
-        isFetchingStats,
         quoteResult,
-        stats,
         supportedLeverageTypes: isRatioToken
           ? [LeverageType.Long2x]
           : supportedLeverageTypes[chainId],
