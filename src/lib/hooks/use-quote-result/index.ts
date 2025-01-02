@@ -93,6 +93,15 @@ export function useQuoteResult(request: QuoteRequest) {
     })
   }
 
+  const resetQuote = () => {
+    setQuoteResult({
+      type: QuoteType.flashmint,
+      isAvailable: true,
+      quote: null,
+      error: null,
+    })
+  }
+
   const { data: flashmintQuote, isFetching: isFetchingFlashMintQuote } =
     useQuery({
       queryKey: [
@@ -155,5 +164,6 @@ export function useQuoteResult(request: QuoteRequest) {
   return {
     isFetchingQuote: isFetchingFlashMintQuote || isFetchingSwapQuote,
     quoteResult,
+    resetQuote,
   }
 }
