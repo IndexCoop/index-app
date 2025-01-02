@@ -15,9 +15,10 @@ import { useQueryParams } from '@/app/earn/use-query-params'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ETH, ICUSD, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
+import { useTransactionReview } from '@/lib/hooks/use-transaction-review'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import {
@@ -129,6 +130,16 @@ export function EarnProvider(props: { children: any }) {
     indexTokenAddresses,
   )
 
+  const inputTokens = useMemo(() => {
+    if (isMinting) return getCurrencyTokens(chainId)
+    return indexTokens
+  }, [chainId, indexTokens, isMinting])
+
+  const outputTokens = useMemo(() => {
+    if (!isMinting) return getCurrencyTokens(chainId)
+    return indexTokens
+  }, [chainId, indexTokens, isMinting])
+
   const inputTokenAmount = useMemo(
     () =>
       inputValue === ''
@@ -146,6 +157,7 @@ export function EarnProvider(props: { children: any }) {
     inputTokenAmount,
     inputValue,
   })
+  const transactionReview = useTransactionReview(isFetchingQuote, quoteResult)
 
   const {
     data: { apy, nav, tvl },
@@ -212,25 +224,6 @@ export function EarnProvider(props: { children: any }) {
     },
   })
 
-  const inputTokens = useMemo(() => {
-    if (isMinting) return getCurrencyTokens(chainId)
-    return indexTokens
-  }, [chainId, indexTokens, isMinting])
-
-  const outputTokens = useMemo(() => {
-    if (!isMinting) return getCurrencyTokens(chainId)
-    return indexTokens
-  }, [chainId, indexTokens, isMinting])
-
-  const toggleIsMinting = useCallback(() => {
-    updateQueryParams({
-      isMinting,
-      inputToken: outputToken,
-      outputToken: inputToken,
-      network: chainId,
-    })
-  }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
-
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
       if (input === '') {
@@ -292,27 +285,14 @@ export function EarnProvider(props: { children: any }) {
     forceRefetchBalances()
   }
 
-  const transactionReview = useMemo((): TransactionReview | null => {
-    if (isFetchingQuote || quoteResult === null) return null
-    const quote = quoteResult.quote
-    if (quote) {
-      return {
-        ...quote,
-        contractAddress: quote.contract,
-        quoteResults: {
-          bestQuote: QuoteType.flashmint,
-          results: {
-            flashmint: quoteResult,
-            index: null,
-            issuance: null,
-            redemption: null,
-          },
-        },
-        selectedQuote: QuoteType.flashmint,
-      }
-    }
-    return null
-  }, [isFetchingQuote, quoteResult])
+  const toggleIsMinting = useCallback(() => {
+    updateQueryParams({
+      isMinting,
+      inputToken: outputToken,
+      outputToken: inputToken,
+      network: chainId,
+    })
+  }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
 
   return (
     <EarnContext.Provider

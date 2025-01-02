@@ -15,10 +15,11 @@ import { TransactionReview } from '@/components/swap/components/transaction-revi
 import { ARBITRUM } from '@/constants/chains'
 import { ETH, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
+import { useTransactionReview } from '@/lib/hooks/use-transaction-review'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
@@ -158,6 +159,7 @@ export function LeverageProvider(props: { children: any }) {
     inputTokenAmount,
     inputValue,
   })
+  const transactionReview = useTransactionReview(isFetchingQuote, quoteResult)
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
@@ -189,14 +191,14 @@ export function LeverageProvider(props: { children: any }) {
     return baseToken.symbol === ETH.symbol ? 'ETH / USD' : 'BTC / USD'
   }, [baseToken, indexToken])
 
-  const toggleIsMinting = useCallback(() => {
-    updateQueryParams({
-      isMinting,
-      inputToken: outputToken,
-      outputToken: inputToken,
-      network: chainId,
-    })
-  }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
+  const isRatioToken = useMemo(() => {
+    const eth2xBtc = getTokenByChainAndSymbol(chainId, 'ETH2xBTC')
+    const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
+    return (
+      indexToken.symbol === eth2xBtc?.symbol ||
+      indexToken.symbol === btc2xEth?.symbol
+    )
+  }, [chainId, indexToken])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -272,36 +274,14 @@ export function LeverageProvider(props: { children: any }) {
     forceRefetchBalances()
   }
 
-  const transactionReview = useMemo((): TransactionReview | null => {
-    if (isFetchingQuote || quoteResult === null) return null
-    const quote = quoteResult.quote
-    if (quote) {
-      return {
-        ...quote,
-        contractAddress: quote.contract,
-        quoteResults: {
-          bestQuote: QuoteType.flashmint,
-          results: {
-            flashmint: quoteResult,
-            index: null,
-            issuance: null,
-            redemption: null,
-          },
-        },
-        selectedQuote: QuoteType.flashmint,
-      }
-    }
-    return null
-  }, [isFetchingQuote, quoteResult])
-
-  const isRatioToken = useMemo(() => {
-    const eth2xBtc = getTokenByChainAndSymbol(chainId, 'ETH2xBTC')
-    const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
-    return (
-      indexToken.symbol === eth2xBtc?.symbol ||
-      indexToken.symbol === btc2xEth?.symbol
-    )
-  }, [chainId, indexToken])
+  const toggleIsMinting = useCallback(() => {
+    updateQueryParams({
+      isMinting,
+      inputToken: outputToken,
+      outputToken: inputToken,
+      network: chainId,
+    })
+  }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
 
   return (
     <LeverageTokenContext.Provider
