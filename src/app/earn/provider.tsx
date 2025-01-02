@@ -1,29 +1,23 @@
 'use client'
 
-import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react'
 import { isAddress } from 'viem'
 import { base } from 'viem/chains'
-import { usePublicClient } from 'wagmi'
 
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ETH, ICUSD, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
-import { Quote, QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { getBestQuote } from '@/lib/hooks/use-best-quote/utils/best-quote'
-import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
-import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
+import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
+import { useQuoteResult } from '@/lib/hooks/use-quote-result'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import {
@@ -98,9 +92,7 @@ const defaultParams = {
 }
 
 export function EarnProvider(props: { children: any }) {
-  const publicClient = usePublicClient()
   const { chainId: chainIdRaw } = useNetwork()
-  const nativeTokenPrice = useNativeTokenPrice(chainIdRaw)
   const { address } = useWallet()
   const {
     queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
@@ -108,12 +100,6 @@ export function EarnProvider(props: { children: any }) {
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
 
   const [inputValue, setInputValue] = useState('')
-  const [quoteResult, setQuoteResult] = useState<QuoteResult>({
-    type: QuoteType.flashmint,
-    isAvailable: true,
-    quote: null,
-    error: null,
-  })
 
   const isMinting = queryIsMinting
   const inputToken = queryInputToken
@@ -142,6 +128,24 @@ export function EarnProvider(props: { children: any }) {
     address,
     indexTokenAddresses,
   )
+
+  const inputTokenAmount = useMemo(
+    () =>
+      inputValue === ''
+        ? BigInt(0)
+        : parseUnits(inputValue, inputToken.decimals),
+    [inputToken, inputValue],
+  )
+
+  const { isFetchingQuote, quoteResult, resetQuote } = useQuoteResult({
+    address,
+    chainId,
+    isMinting,
+    inputToken,
+    outputToken,
+    inputTokenAmount,
+    inputValue,
+  })
 
   const {
     data: { apy, nav, tvl },
@@ -207,14 +211,6 @@ export function EarnProvider(props: { children: any }) {
       }
     },
   })
-
-  const inputTokenAmount = useMemo(
-    () =>
-      inputValue === ''
-        ? BigInt(0)
-        : parseUnits(inputValue, inputToken.decimals),
-    [inputToken, inputValue],
-  )
 
   const inputTokens = useMemo(() => {
     if (isMinting) return getCurrencyTokens(chainId)
@@ -292,123 +288,9 @@ export function EarnProvider(props: { children: any }) {
 
   const reset = () => {
     setInputValue('')
-    setQuoteResult({
-      type: QuoteType.flashmint,
-      isAvailable: true,
-      quote: null,
-      error: null,
-    })
+    resetQuote()
     forceRefetchBalances()
   }
-
-  const fetchFlashMintQuote = async () => {
-    if (!address) return null
-    if (!chainId) return null
-    if (!publicClient) return null
-    if (inputTokenAmount <= 0) return null
-    if (!indexToken) return null
-    const inputTokenPrice = await getTokenPrice(inputToken, chainId)
-    const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-    const isIcEth = isAddressEqual(
-      indexToken.address,
-      getTokenByChainAndSymbol(chainId, 'icETH')?.address,
-    )
-    return await getFlashMintQuote({
-      isMinting,
-      account: address,
-      chainId,
-      inputToken,
-      inputTokenAmount: inputValue,
-      inputTokenAmountWei: inputTokenAmount,
-      inputTokenPrice,
-      outputToken,
-      outputTokenPrice,
-      slippage: isIcEth ? 0.5 : 0.1,
-    })
-  }
-
-  const { data: flashmintQuote, isFetching: isFetchingFlashMintQuote } =
-    useQuery({
-      queryKey: [
-        'flashmint-quote',
-        {
-          address,
-          chainId,
-          inputToken,
-          outputToken,
-          inputTokenAmount: inputTokenAmount.toString(),
-          publicClient,
-        },
-      ],
-      queryFn: fetchFlashMintQuote,
-      enabled:
-        !!address &&
-        !!chainId &&
-        !!inputToken &&
-        !!outputToken &&
-        !!publicClient &&
-        inputTokenAmount > 0, // Condition to trigger
-    })
-
-  const fetchSwapQuote = async () => {
-    if (!address) return null
-    if (!chainId) return null
-    if (!publicClient) return null
-    if (inputTokenAmount <= 0) return null
-    if (!indexToken) return null
-    const inputTokenPrice = await getTokenPrice(inputToken, chainId)
-    const outputTokenPrice = await getTokenPrice(outputToken, chainId)
-    return await getIndexQuote({
-      isMinting,
-      chainId,
-      address,
-      inputToken,
-      inputTokenAmount: inputValue,
-      inputTokenPrice,
-      outputToken,
-      outputTokenPrice,
-      nativeTokenPrice,
-      slippage: 0.1,
-    })
-  }
-
-  const { data: swapQuote, isFetching: isFetchingSwapQuote } = useQuery({
-    queryKey: [
-      'swap-quote',
-      {
-        address,
-        chainId,
-        inputToken,
-        outputToken,
-        inputTokenAmount: inputTokenAmount.toString(),
-        publicClient,
-      },
-    ],
-    queryFn: fetchSwapQuote,
-    enabled:
-      !!address &&
-      !!chainId &&
-      !!publicClient &&
-      !!inputToken &&
-      !!outputToken &&
-      inputTokenAmount > 0,
-  })
-
-  const isFetchingQuote = isFetchingFlashMintQuote || isFetchingSwapQuote
-
-  useEffect(() => {
-    const bestQuote = getBestYieldQuote(
-      flashmintQuote ?? null,
-      swapQuote ?? null,
-      chainId ?? -1,
-    )
-    setQuoteResult({
-      type: bestQuote?.type ?? QuoteType.flashmint,
-      isAvailable: true,
-      quote: bestQuote,
-      error: null,
-    })
-  }, [chainId, flashmintQuote, swapQuote])
 
   const transactionReview = useMemo((): TransactionReview | null => {
     if (isFetchingQuote || quoteResult === null) return null
@@ -431,16 +313,6 @@ export function EarnProvider(props: { children: any }) {
     }
     return null
   }, [isFetchingQuote, quoteResult])
-
-  useEffect(() => {
-    // Reset quotes
-    setQuoteResult({
-      type: QuoteType.flashmint,
-      isAvailable: true,
-      quote: null,
-      error: null,
-    })
-  }, [chainId, queryIsMinting, queryInputToken, queryOutputToken])
 
   return (
     <EarnContext.Provider
@@ -475,37 +347,4 @@ export function EarnProvider(props: { children: any }) {
       {props.children}
     </EarnContext.Provider>
   )
-}
-
-function getBestYieldQuote(
-  flashmintQuote: Quote | null,
-  swapQuote: Quote | null,
-  chainId: number,
-): Quote | null {
-  if (!flashmintQuote && swapQuote) return swapQuote
-  if (flashmintQuote && !swapQuote) return flashmintQuote
-  if (
-    flashmintQuote &&
-    flashmintQuote.chainId !== chainId &&
-    swapQuote &&
-    swapQuote.chainId === chainId
-  )
-    return swapQuote
-  if (
-    flashmintQuote &&
-    flashmintQuote.chainId === chainId &&
-    swapQuote &&
-    swapQuote.chainId !== chainId
-  )
-    return flashmintQuote
-  if (flashmintQuote && swapQuote) {
-    const bestQuoteType = getBestQuote(
-      swapQuote.fullCostsInUsd,
-      flashmintQuote.fullCostsInUsd,
-      swapQuote.outputTokenAmountUsdAfterFees,
-      flashmintQuote.outputTokenAmountUsdAfterFees,
-    )
-    return bestQuoteType === QuoteType.index ? swapQuote : flashmintQuote
-  }
-  return null
 }
