@@ -9,54 +9,51 @@ import {
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 
+import { formatPercentage } from '@/app/products/utils/formatters'
 import { ChartTooltip } from '@/components/charts/chart-tooltip'
 import { LinearGradientFill } from '@/components/charts/linear-gradient-fill'
 import { darkTheme, lightTheme } from '@/components/charts/themes'
 import { ChartPeriod } from '@/components/charts/types'
 import { tooltipTimestampFormat } from '@/constants/charts'
-import { formatDollarAmount } from '@/lib/utils'
 import { IndexData } from '@/lib/utils/api/index-data-provider'
 
-type PriceChartIndexData = Pick<IndexData, 'NetAssetValue' | 'CreatedTimestamp'>
+type ApyChartIndexData = Pick<IndexData, 'APY' | 'CreatedTimestamp'>
 
 type Props = {
-  data: PriceChartIndexData[]
-  digits?: number
+  data: ApyChartIndexData[]
   isDark?: boolean
   parentWidth: number
   parentHeight: number
   selectedPeriod: ChartPeriod
 }
 
-function PriceXYChart({
+function TvlXYChart({
   data,
-  digits = 2,
   isDark = false,
   parentWidth,
   parentHeight,
   selectedPeriod,
 }: Props) {
   const { minDomainY, maxDomainY } = useMemo(() => {
-    const prices = data.map(({ NetAssetValue }) => NetAssetValue!)
-    const minPrice = Math.min(...prices)
-    const maxPrice = Math.max(...prices)
-    const diff = maxPrice - minPrice
+    const apys = data.map(({ APY }) => APY!)
+    const minApy = Math.min(...apys)
+    const maxApy = Math.max(...apys)
+    const diff = maxApy - minApy
     return {
-      minDomainY: minPrice - diff * 0.05,
-      maxDomainY: maxPrice + diff * 0.05,
+      minDomainY: minApy - diff * 0.05,
+      maxDomainY: maxApy + diff * 0.05,
     }
   }, [data])
 
   const seriesAccessors = {
-    xAccessor: (d: PriceChartIndexData) => new Date(d.CreatedTimestamp),
-    yAccessor: (d: PriceChartIndexData) => d.NetAssetValue,
+    xAccessor: (d: ApyChartIndexData) => new Date(d.CreatedTimestamp),
+    yAccessor: (d: ApyChartIndexData) => d.APY,
   }
 
   const tooltipAccessors = {
-    xAccessor: (d: PriceChartIndexData) =>
+    xAccessor: (d: ApyChartIndexData) =>
       dayjs(d.CreatedTimestamp).format(tooltipTimestampFormat[selectedPeriod]),
-    yAccessor: (d: PriceChartIndexData) =>
-      formatDollarAmount(d.NetAssetValue, undefined, digits),
+    yAccessor: (d: ApyChartIndexData) => formatPercentage(d.APY),
   }
 
   if (parentHeight === 0 || parentWidth === 0) return null
@@ -78,16 +75,14 @@ function PriceXYChart({
       <Axis
         orientation='left'
         numTicks={5}
-        tickFormat={(d) =>
-          formatDollarAmount(d, undefined, maxDomainY >= 1000 ? 0 : digits)
-        }
+        tickFormat={(d) => formatPercentage(d)}
       />
-      <Axis orientation='bottom' numTicks={parentWidth > 500 ? 5 : 3} />
-      <AnimatedLineSeries {...seriesAccessors} dataKey='prices' data={data} />
+      <Axis orientation='bottom' numTicks={5} />
+      <AnimatedLineSeries {...seriesAccessors} dataKey='tvls' data={data} />
       <AnimatedAreaSeries
         {...seriesAccessors}
         fill='url(#gradient)'
-        dataKey='prices'
+        dataKey='tvls'
         data={data}
       />
       <LinearGradientFill isDark={isDark} />
@@ -100,10 +95,10 @@ function PriceXYChart({
           <ChartTooltip
             isDark={isDark}
             line1={tooltipAccessors.yAccessor(
-              tooltipData?.nearestDatum?.datum as PriceChartIndexData,
+              tooltipData?.nearestDatum?.datum as ApyChartIndexData,
             )}
             line2={tooltipAccessors.xAccessor(
-              tooltipData?.nearestDatum?.datum as PriceChartIndexData,
+              tooltipData?.nearestDatum?.datum as ApyChartIndexData,
             )}
           />
         )}
@@ -112,4 +107,4 @@ function PriceXYChart({
   )
 }
 
-export default withParentSize(PriceXYChart)
+export default withParentSize(TvlXYChart)

@@ -6,6 +6,7 @@ import { ChartTabs } from '@/app/earn/components/chart-tabs'
 import { FaqSection } from '@/app/earn/components/faq-section'
 import { useEarnContext } from '@/app/earn/provider'
 import { ChartTab } from '@/app/earn/types'
+import { ApyChart } from '@/components/charts/apy-chart'
 import { PriceChart } from '@/components/charts/price-chart'
 import { TvlChart } from '@/components/charts/tvl-chart'
 
@@ -13,7 +14,7 @@ import { EarnWidget } from './components/earn-widget'
 import { QuickStats } from './components/quick-stats'
 
 export default function Page() {
-  const { indexToken, isFetchingStats, nav, tvl } = useEarnContext()
+  const { indexToken, isFetchingStats, apy, nav, tvl } = useEarnContext()
   const [currentTab, setCurrentTab] = useState<ChartTab>('price')
 
   return (
@@ -29,6 +30,13 @@ export default function Page() {
                     indexTokenAddress={indexToken.address ?? ''}
                     isFetchingStats={isFetchingStats}
                     nav={nav}
+                  />
+                )}
+                {currentTab === 'apy' && (
+                  <ApyChart
+                    indexTokenAddress={indexToken.address ?? ''}
+                    isFetchingStats={isFetchingStats}
+                    apy={apy}
                   />
                 )}
                 {currentTab === 'tvl' && (
