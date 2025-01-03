@@ -7,8 +7,8 @@ import { cn } from '@/lib/utils/tailwind'
 type Tab = { name: ChartTab; label: string }
 
 const tabs: Tab[] = [
-  { name: 'price', label: 'Token Price' },
-  { name: 'apy', label: 'APY' },
+  // { name: 'apy', label: 'APY' },
+  { name: 'price', label: 'NAV' },
   { name: 'tvl', label: 'TVL' },
 ]
 
