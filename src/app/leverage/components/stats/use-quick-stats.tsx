@@ -72,7 +72,7 @@ export function useQuickStats(
           low24h: formatStatsAmount(base.low24h, baseCurrency),
           high24h: formatStatsAmount(base.high24h, baseCurrency),
         },
-        token: { ...token },
+        token,
       }
     } catch (error) {
       console.warn('Error fetching quick stats:', error)
