@@ -20,14 +20,17 @@ export function formatPercentage(
   return `${percentage.toFixed(2)}%`
 }
 
-export function formatPrice(price?: number | bigint | null) {
+export function formatPrice(
+  price?: number | bigint | null,
+  digits: number = 2,
+) {
   if (price === undefined || price === null) return ''
 
   return Intl.NumberFormat('en', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
   })
     .format(price)
     .toString()

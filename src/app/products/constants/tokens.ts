@@ -86,6 +86,7 @@ export const productTokens: ProductRow[] = [
     hasApy: true,
     listType: 'Earn',
     tradeHref: buildEarnTradePath('icUSD', 'USDC', base.id),
+    digits: 4,
   },
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'cdETI'),
