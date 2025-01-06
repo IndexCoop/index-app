@@ -24,20 +24,17 @@ export function ChartTabs({ currentTab, setCurrentTab }: Props) {
   }
 
   return (
-    <nav
-      className='divide-ic-blue-700 mt-2 flex divide-x rounded-t-lg'
-      aria-label='Tabs'
-    >
+    <nav className='bg-ic-blue-950 mt-2 flex rounded-md' aria-label='Tabs'>
       {tabs.map((tab, tabIdx) => (
         <button
           key={tab.name}
           className={cn(
             tab.name === currentTab
               ? 'text-ic-white'
-              : 'text-ic-gray-300 hover:text-ic-gray-100',
+              : 'text-ic-gray-500 hover:text-ic-gray-100',
             tabIdx === 0 ? 'rounded-l-lg' : '',
             tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
-            'bg-ic-blue-900 hover:bg-ic-blue-700 group group relative min-w-0 flex-1 overflow-hidden px-4 py-5 text-center text-sm font-bold focus:z-10',
+            'bg-ic-blue-950 hover:bg-ic-blue-700 group group relative min-w-0 flex-1 overflow-hidden px-4 py-5 text-center text-sm font-bold focus:z-10',
           )}
           onClick={() => handleClick(tab)}
         >
@@ -51,7 +48,7 @@ export function ChartTabs({ currentTab, setCurrentTab }: Props) {
             className={cn(
               tab.name === currentTab
                 ? 'bg-ic-blue-500'
-                : 'bg-ic-blue-900 group-hover:bg-ic-blue-700',
+                : 'bg-ic-gray-800 group-hover:bg-ic-blue-700',
               'absolute inset-x-0 bottom-0 h-1',
             )}
           />
