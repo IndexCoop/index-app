@@ -10,7 +10,11 @@ import Image from 'next/image'
 import { checksumAddress } from 'viem'
 import * as chains from 'viem/chains'
 
-import { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
+import { EnrichedToken } from '@/app/earn/types'
+import {
+  GetApiV2UserAddressPositions200,
+  GetApiV2UserAddressPositionsQueryResponse,
+} from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -21,6 +25,24 @@ const map: Record<LeverageType, string> = {
   Short1x: '-1x',
   Long2x: '2x',
   Long3x: '3x',
+}
+
+const getTransferedTotal = (
+  user?: string,
+  token?: EnrichedToken,
+  transfers: Omit<GetApiV2UserAddressPositions200, 'trade' | 'metrics'> = [],
+) => {
+  return (
+    transfers.reduce((acc, curr) => {
+      if (curr.from.toLowerCase() === user?.toLowerCase()) {
+        return acc - (curr.value ?? 0)
+      } else if (curr.to === user) {
+        return acc + (curr.value ?? 0)
+      }
+
+      return acc
+    }, 0) * (token?.unitPriceUsd ?? 0)
+  )
 }
 
 export const openPositionsColumns = [
@@ -72,13 +94,24 @@ export const openPositionsColumns = [
     header: () => <div className='flex-1 text-left'>Net Balance</div>,
     cell: (row) => {
       const data = row.getValue()
+      const user = row.table.options.meta?.user
 
       const token =
         row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
 
+      const transferAmount = getTransferedTotal(
+        user,
+        token,
+        row.table.options.meta?.transfers,
+      )
+
       if (!isLeverageToken(token)) return <></>
 
-      return <div className='flex-1 text-left'>${token.usd?.toFixed(2)}</div>
+      return (
+        <div className='flex-1 text-left'>
+          ${((token.usd ?? 0) + transferAmount).toFixed(2)}
+        </div>
+      )
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -94,16 +127,11 @@ export const openPositionsColumns = [
       if (!isLeverageToken(token) || !data.trade || !data.metrics)
         return <div className='flex-1 text-right'>-</div>
 
-      const transferAmount =
-        (row.table.options.meta?.transfers ?? []).reduce((acc, curr) => {
-          if (curr.from.toLowerCase() === user?.toLowerCase()) {
-            return acc - (curr.value ?? 0)
-          } else if (curr.to === user) {
-            return acc + (curr.value ?? 0)
-          }
-
-          return acc
-        }, 0) * (token?.unitPriceUsd ?? 0)
+      const transferAmount = getTransferedTotal(
+        user,
+        token,
+        row.table.options.meta?.transfers,
+      )
 
       const balance = token.usd ?? 0
       const cost = data.metrics.endingPositionCost ?? 0
