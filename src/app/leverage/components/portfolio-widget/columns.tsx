@@ -10,7 +10,6 @@ import Image from 'next/image'
 import { checksumAddress } from 'viem'
 import * as chains from 'viem/chains'
 
-import { EnrichedToken } from '@/app/earn/types'
 import {
   GetApiV2UserAddressPositions200,
   GetApiV2UserAddressPositionsQueryResponse,
@@ -29,7 +28,7 @@ const map: Record<LeverageType, string> = {
 
 const getTransferedTotal = (
   user?: string,
-  token?: EnrichedToken,
+  unitPriceUsd: number = 0,
   transfers: Omit<GetApiV2UserAddressPositions200, 'trade' | 'metrics'> = [],
 ) => {
   return (
@@ -41,8 +40,44 @@ const getTransferedTotal = (
       }
 
       return acc
-    }, 0) * (token?.unitPriceUsd ?? 0)
+    }, 0) * unitPriceUsd
   )
+}
+
+const getAction = (data: GetApiV2UserAddressPositionsQueryResponse[number]) => {
+  if (!data.trade || !data.metrics) return 'Transfer'
+
+  if (data.trade.transactionType === 'buy') {
+    if (data.metrics.beginningUnits === 0) {
+      return 'Open'
+    } else {
+      return 'Increase'
+    }
+  }
+
+  if (data.trade.transactionType === 'sell' && data.metrics.endingUnits === 0) {
+    return 'Close'
+  }
+
+  return 'Decrease'
+}
+
+const getLastBuy = (
+  data: GetApiV2UserAddressPositionsQueryResponse[number],
+  history: GetApiV2UserAddressPositionsQueryResponse = [],
+) => {
+  const txIndex = history.findIndex((h) => h.hash === data.hash)
+
+  const lastBuy = history.slice(txIndex, history.length).find((h) => {
+    const action = getAction(h)
+
+    return (
+      h.rawContract.address === data.rawContract?.address &&
+      (action === 'Open' || action === 'Increase')
+    )
+  })
+
+  return lastBuy
 }
 
 export const openPositionsColumns = [
@@ -116,9 +151,11 @@ export const openPositionsColumns = [
       if (!isLeverageToken(token) || !data.trade || !data.metrics)
         return <div className='flex-1 text-right'>-</div>
 
+      const lastBuy = getLastBuy(data, row.table.options.meta?.history)
+
       const transferAmount = getTransferedTotal(
         user,
-        token,
+        lastBuy?.trade?.outputTokenPriceUsd,
         row.table.options.meta?.transfers,
       )
 
@@ -219,42 +256,6 @@ export const openPositionsColumns = [
     },
   }),
 ]
-
-const getAction = (data: GetApiV2UserAddressPositionsQueryResponse[number]) => {
-  if (!data.trade || !data.metrics) return 'Transfer'
-
-  if (data.trade.transactionType === 'buy') {
-    if (data.metrics.beginningUnits === 0) {
-      return 'Open'
-    } else {
-      return 'Increase'
-    }
-  }
-
-  if (data.trade.transactionType === 'sell' && data.metrics.endingUnits === 0) {
-    return 'Close'
-  }
-
-  return 'Decrease'
-}
-
-const getLastBuy = (
-  data: GetApiV2UserAddressPositionsQueryResponse[number],
-  history: GetApiV2UserAddressPositionsQueryResponse = [],
-) => {
-  const indexOfTransfer = history.indexOf(data)
-
-  const lastBuy = history.slice(indexOfTransfer, history.length).find((h) => {
-    const action = getAction(h)
-
-    return (
-      h.rawContract.address === data.rawContract?.address &&
-      (action === 'Open' || action === 'Increase')
-    )
-  })
-
-  return lastBuy
-}
 
 export const historyColumns = [
   columnsHelper.accessor((row) => row, {
