@@ -4,7 +4,7 @@ import { ChartPeriod } from '@/components/charts/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
-const periods = [
+const defaultPeriods = [
   ChartPeriod.Hour,
   ChartPeriod.Day,
   ChartPeriod.Week,
@@ -13,11 +13,16 @@ const periods = [
 ]
 
 type Props = {
+  periods?: ChartPeriod[]
   selectedPeriod: ChartPeriod
   setSelectedPeriod: Dispatch<SetStateAction<ChartPeriod>>
 }
 
-export function PeriodSelector({ selectedPeriod, setSelectedPeriod }: Props) {
+export function PeriodSelector({
+  periods = defaultPeriods,
+  selectedPeriod,
+  setSelectedPeriod,
+}: Props) {
   const { logEvent } = useAnalytics()
 
   const handleClick = (period: ChartPeriod) => {
