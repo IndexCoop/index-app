@@ -94,24 +94,13 @@ export const openPositionsColumns = [
     header: () => <div className='flex-1 text-left'>Net Balance</div>,
     cell: (row) => {
       const data = row.getValue()
-      const user = row.table.options.meta?.user
 
       const token =
         row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
 
-      const transferAmount = getTransferedTotal(
-        user,
-        token,
-        row.table.options.meta?.transfers,
-      )
-
       if (!isLeverageToken(token)) return <></>
 
-      return (
-        <div className='flex-1 text-left'>
-          ${((token.usd ?? 0) + transferAmount).toFixed(2)}
-        </div>
-      )
+      return <div className='flex-1 text-left'>${token.usd?.toFixed(2)}</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -136,6 +125,7 @@ export const openPositionsColumns = [
       const balance = token.usd ?? 0
       const cost = data.metrics.endingPositionCost ?? 0
 
+      // Here we subtract the total transfer amount, because it has to be inversely corrected to exclude it from profit and loss
       const pnl = balance - transferAmount - cost
       const pnlPercentage = (pnl / cost) * 100
       const sign = Math.sign(pnl)
