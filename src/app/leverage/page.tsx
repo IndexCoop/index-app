@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from 'react'
 
 import { ChartTabs } from '@/app/leverage/components/chart-tabs'
 import { QuickStats } from '@/app/leverage/components/stats/index'
+import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { ChartTab } from '@/app/leverage/types'
@@ -18,7 +19,11 @@ import PortfolioWidget from './components/portfolio-widget/portfolio-widget'
 const surveyTracking = { utm_source: 'app' }
 
 export default function Page() {
-  const { indexToken, nav } = useLeverageToken()
+  const { indexToken, market } = useLeverageToken()
+  const { data } = useQuickStats(market, {
+    address: indexToken.address!,
+    symbol: indexToken.symbol,
+  })
   const [currentTab, setCurrentTab] = useState<ChartTab>('indexcoop-chart')
   const { colorMode, toggleColorMode } = useColorMode()
 
@@ -53,7 +58,7 @@ export default function Page() {
                   <PriceChart
                     indexToken={indexToken}
                     indexTokenAddress={indexToken.address ?? ''}
-                    nav={nav}
+                    nav={data.token.nav}
                   />
                 ) : (
                   <>
