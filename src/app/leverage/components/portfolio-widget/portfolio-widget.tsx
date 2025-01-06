@@ -19,7 +19,6 @@ import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
-
 const OpenPositions = () => {
   const { address } = useWallet()
   const { chainId } = useNetwork()
@@ -95,15 +94,15 @@ const OpenPositions = () => {
 
       return data
     },
-    select: ({ open, history }) => {
-      return selectedIndex === 0 ? open : history
-    },
   })
 
   const table = useReactTable({
     columns: selectedIndex === 0 ? openPositionsColumns : historyColumns,
-    data,
+    data: selectedIndex === 0 ? data.open : data.history,
     meta: {
+      user: address ?? '',
+      history: data.history,
+      transfers: data.history.filter((row) => !row.trade && !row.metrics),
       tokens: tokens as Record<string, EnrichedToken>,
       adjustPosition,
     },

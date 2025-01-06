@@ -2,6 +2,7 @@ import { flexRender } from '@tanstack/react-table'
 import { Fragment } from 'react'
 
 import { EnrichedToken } from '@/app/leverage/types'
+import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 
 import type { RowData, Table } from '@tanstack/react-table'
@@ -69,7 +70,10 @@ export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
 declare module '@tanstack/table-core' {
   interface TableMeta<TData extends RowData> {
     _?: TData & never // to ignore unused error for now
+    user: string
     tokens: Record<string, EnrichedToken>
+    history: GetApiV2UserAddressPositions200
+    transfers: Omit<GetApiV2UserAddressPositions200, 'trade' | 'metrics'>
     adjustPosition: (mint: boolean, token: EnrichedToken) => void
   }
 }
