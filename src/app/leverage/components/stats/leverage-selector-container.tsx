@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { useLeverageToken } from '@/app/leverage/provider'
-import { formatAmount } from '@/lib/utils'
+import { formatPercentage } from '@/app/products/utils/formatters'
 
 import { StatsMetric } from './stats-metric'
 
@@ -150,7 +150,7 @@ export function LeverageSelectorContainer() {
         className='hidden w-20 sm:flex'
         isLoading={isFetchingQuickStats}
         label='24h Change'
-        value={`${formatAmount(data.token.navchange, 2)}%`}
+        value={`${formatPercentage(data.token.navchange)}%`}
         overrideLabelColor={
           data.token.navchange >= 0 ? 'text-ic-green' : 'text-ic-red'
         }
