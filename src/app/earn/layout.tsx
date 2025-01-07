@@ -1,6 +1,7 @@
 import { Providers } from '@/app/providers'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
+import { SlippageProvider } from '@/lib/providers/slippage'
 
 import { EarnProvider } from './provider'
 
@@ -17,9 +18,11 @@ export default function Layout({ children }: LayoutProps) {
     <Providers>
       <div className='flex flex-col'>
         <Header />
-        <EarnProvider>
-          <main>{children}</main>
-        </EarnProvider>
+        <SlippageProvider>
+          <EarnProvider>
+            <main>{children}</main>
+          </EarnProvider>
+        </SlippageProvider>
         <Footer />
       </div>
     </Providers>
