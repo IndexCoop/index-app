@@ -102,16 +102,16 @@ export function LeverageWidget() {
       className='leverage-widget flex flex-col gap-3 rounded-lg p-6'
       id='close-position-scroll'
     >
-      <div className='flex justify-between'>
-        <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
+      <div className='flex justify-end'>
         <Settings
           isAuto={isAutoSlippage}
-          isDarkMode={false}
+          isDarkMode={true}
           slippage={slippage}
           onChangeSlippage={setSlippage}
           onClickAuto={autoSlippage}
         />
       </div>
+      <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
         supportedTypes={supportedLeverageTypes}
