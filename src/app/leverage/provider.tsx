@@ -21,6 +21,7 @@ import { usePrepareTransactionReview } from '@/lib/hooks/use-prepare-transaction
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
 import {
@@ -112,6 +113,7 @@ export function LeverageProvider(props: { children: any }) {
     },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
+  const { slippage } = useSlippage()
 
   const [inputValue, setInputValue] = useState('')
 
@@ -158,6 +160,7 @@ export function LeverageProvider(props: { children: any }) {
     outputToken,
     inputTokenAmount,
     inputValue,
+    slippage,
   })
   const transactionReview = usePrepareTransactionReview(
     isFetchingQuote,
