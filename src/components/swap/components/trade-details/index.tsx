@@ -83,7 +83,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                     <>
                       <Flex>
                         {showWarning && (
-                          <ExclamationTriangleIcon className='text-ic-black dark:text-ic-white mr-2' />
+                          <ExclamationTriangleIcon className='text-ic-gray-600 dark:text-ic-gray-400 mr-2 size-5' />
                         )}
                         {!showWarning && (
                           <Image

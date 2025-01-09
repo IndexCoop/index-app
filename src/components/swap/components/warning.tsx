@@ -72,7 +72,7 @@ type WarningProps = {
 
 export const WarningComp = (props: WarningProps) => (
   <div className='mx-4 mb-2 mt-5 flex flex-row items-start gap-3'>
-    <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400' />
+    <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5' />
     <div className='flex flex-col gap-2'>
       <span className='text-ic-gray-600 dark:text-ic-gray-400 text-sm font-semibold'>
         {props.warning.title}
@@ -96,8 +96,13 @@ export const WarningCompProtection = () => {
   return (
     <Flex direction={'column'} m='20px 16px 8px'>
       <Flex align={'center'} direction={'row'}>
-        <ExclamationCircleIcon className='text-ic-gray-600 mr-2' />
-        <Text fontSize={'sm'} fontWeight={600} textColor={colors.ic.gray[600]}>
+        <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5' />
+        <Text
+          fontSize={'sm'}
+          fontWeight={600}
+          ml={2}
+          textColor={colors.ic.gray[600]}
+        >
           MEV Protection
         </Text>
       </Flex>

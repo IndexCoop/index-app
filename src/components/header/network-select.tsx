@@ -85,7 +85,7 @@ export const NetworkSelect = () => {
         )}
 
         <p className='hidden md:block'>{chain?.name}</p>
-        <ChevronDownIcon className='h-5 w-5' />
+        <ChevronDownIcon className='text-ic-white size-4' />
       </PopoverButton>
       <AnimatePresence>
         {chainId !== walletChainId && !isNetworkWarningClosed && (

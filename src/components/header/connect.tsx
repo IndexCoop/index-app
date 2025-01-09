@@ -66,7 +66,7 @@ export const Connect = () => {
               {avatar?.emoji}
             </div>
             <p className='hidden md:block'>{shortenAddress(address)}</p>
-            <ChevronDownIcon className='dark:text-ic-white text-ic-black size-5' />
+            <ChevronDownIcon className='text-ic-white size-4' />
           </Button>
         </div>
       ) : (

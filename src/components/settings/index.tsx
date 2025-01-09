@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
   Text,
 } from '@chakra-ui/react'
-import { Cog6ToothIcon } from '@heroicons/react/20/solid'
+import { Cog8ToothIcon } from '@heroicons/react/20/solid'
 import { useMemo, useRef, useState } from 'react'
 
 import { Toggle, ToggleState } from '@/components/toggle'
@@ -74,7 +74,9 @@ export const Settings = (props: SettingsProps) => {
       <PopoverTrigger>
         <IconButton
           aria-label='Trade Settings'
-          icon={<Cog6ToothIcon />}
+          icon={
+            <Cog8ToothIcon className='dark:text-ic-white text-ic-black m-3.5 size-5' />
+          }
           size='lg'
           style={{ border: 0 }}
           variant='unstyled'

@@ -18,9 +18,9 @@ export function SubmissionResult({
     <div className='flex flex-col items-center'>
       <div className='flex flex-col items-center p-4'>
         {success ? (
-          <CheckCircleIcon className='dark:text-ic-white text-ic-black size-6' />
+          <CheckCircleIcon className='dark:text-ic-white text-ic-black size-7' />
         ) : (
-          <ExclamationCircleIcon className='dark:text-ic-white text-ic-black size-6' />
+          <ExclamationCircleIcon className='dark:text-ic-white text-ic-black size-7' />
         )}
         <div className='text-ic-black dark:text-ic-white p-4 text-center text-xl'>
           {success
