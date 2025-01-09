@@ -20,6 +20,7 @@ import { useNetwork } from '@/lib/hooks/use-network'
 import { usePrepareTransactionReview } from '@/lib/hooks/use-prepare-transaction-review'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import {
   fetchTokenHistoricalData,
@@ -99,6 +100,7 @@ export function EarnProvider(props: { children: any }) {
     queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
+  const { slippage } = useSlippage()
 
   const [inputValue, setInputValue] = useState('')
 
@@ -156,6 +158,7 @@ export function EarnProvider(props: { children: any }) {
     outputToken,
     inputTokenAmount,
     inputValue,
+    slippage,
   })
   const transactionReview = usePrepareTransactionReview(
     isFetchingQuote,
