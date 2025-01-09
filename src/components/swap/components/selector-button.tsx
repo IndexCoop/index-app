@@ -35,7 +35,7 @@ export const SelectorButton = ({
       {symbol}
     </Text>
     {showChevron !== false && (
-      <ChevronDownIcon className='text-ic-gray-900 dark:text-ic-gray-50 m-1 size-4 stroke-current stroke-[1.5]' />
+      <ChevronDownIcon className='text-ic-gray-900 m-1 size-4 stroke-current stroke-[1.5]' />
     )}
   </Flex>
 )

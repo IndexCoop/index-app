@@ -71,8 +71,8 @@ type WarningProps = {
 }
 
 export const WarningComp = (props: WarningProps) => (
-  <div className='mx-4 mb-2 mt-5 flex flex-row items-start gap-3'>
-    <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5' />
+  <div className='mx-4 mb-2 mt-5 flex items-start gap-3'>
+    <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5 flex-none' />
     <div className='flex flex-col gap-2'>
       <span className='text-ic-gray-600 dark:text-ic-gray-400 text-sm font-semibold'>
         {props.warning.title}
