@@ -15,7 +15,7 @@ type TableProps = {
 
 export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
   return (
-    <div className='flex w-full flex-col gap-1'>
+    <div className='relative flex w-full flex-col gap-1'>
       <div className='w-full'>
         {table.getHeaderGroups().map((headerGroup) => (
           <div
@@ -37,7 +37,7 @@ export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
           </div>
         ))}
       </div>
-      <div className='flex w-full flex-col gap-1'>
+      <div className='flex max-h-[300px] w-full flex-col gap-1 overflow-y-scroll rounded-md pb-12'>
         {isFetching ? (
           <div className='flex w-full flex-col gap-3 px-4 py-2'>
             {[1, 2, 3].map((n) => (
@@ -63,6 +63,7 @@ export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
           ))
         )}
       </div>
+      <div className='pointer-events-none absolute bottom-0 left-0 z-10 h-12 w-full rounded-md px-4 bg-blend-multiply backdrop-blur-[1px]'></div>
     </div>
   )
 }

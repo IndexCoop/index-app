@@ -8,6 +8,9 @@ export default {
   darkMode: 'selector',
   theme: {
     extend: {
+      boxShadow: {
+        blur: '0 0 20px 10px rgba(0, 0, 0, 0.4)', // Custom blurred edge
+      },
       colors: {
         ic: {
           black: '#0F1717',
