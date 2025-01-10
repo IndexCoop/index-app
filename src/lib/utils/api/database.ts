@@ -8,6 +8,7 @@ export const mapQuoteToTrade = (
   address: string,
   transactionHash: string,
   quote: Quote,
+  refId: string | null,
 ): PostApiV2TradeMutationRequest => ({
   transactionHash,
   userAddress: address,
@@ -42,7 +43,7 @@ export const mapQuoteToTrade = (
   transactionType: quote.isMinting ? 'buy' : 'sell',
   mintFee: quote.fees?.mintUsd.toString() ?? '',
   redeemFee: quote.fees?.redeemUsd.toString() ?? '',
-  refId: 'indexcoop', // TODO: if we have a refId as a queryParam or any other way, set it here.
+  refId,
   createdAt: new Date(),
   underlyingAssetSymbol: getUnderlyingAssetSymbol(quote),
   underlyingAssetUnitPriceDenominator:

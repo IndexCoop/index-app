@@ -8,11 +8,11 @@ import { ChartTabs } from '@/app/leverage/components/chart-tabs'
 import { QuickStats } from '@/app/leverage/components/stats/index'
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
+import { YourTokens } from '@/app/leverage/components/your-tokents'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { ChartTab } from '@/app/leverage/types'
 import { PriceChart } from '@/components/charts/price-chart'
 
-import { YourTokens } from '@/app/leverage/components/your-tokents'
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
 

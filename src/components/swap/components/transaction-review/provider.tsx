@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { useRefId } from '@/lib/hooks/use-ref-id'
 import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
 import { TradeCallback, useTrade } from '@/lib/hooks/use-trade'
 import { formatAmountFromWei } from '@/lib/utils'
@@ -98,14 +99,16 @@ export function useTransactionReview(props: ReviewProps) {
 
   const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
 
+  const refId = useRefId()
+
   const saveUserTrade: TradeCallback = useCallback(
     async ({ address, hash, quote }) => {
       fetch(`/api/user/trade`, {
         method: 'POST',
-        body: JSON.stringify(mapQuoteToTrade(address, hash, quote)),
+        body: JSON.stringify(mapQuoteToTrade(address, hash, quote, refId)),
       })
     },
-    [],
+    [refId],
   )
 
   const makeTrade = async (override: boolean) => {
