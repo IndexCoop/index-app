@@ -8,7 +8,7 @@ export const mapQuoteToTrade = (
   address: string,
   transactionHash: string,
   quote: Quote,
-  refId: string | null,
+  refId?: string,
 ): PostApiV2TradeMutationRequest => ({
   transactionHash,
   userAddress: address,

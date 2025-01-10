@@ -10,7 +10,10 @@ export const useRefId = () => {
     () => searchParams.get('utm_source'),
     [searchParams],
   )
-  const storedRefId = useMemo(() => sessionStorage.getItem('refId'), [])
+  const storedRefId = useMemo(
+    () => sessionStorage.getItem('refId') ?? undefined,
+    [],
+  )
 
   if (queryRefId) {
     sessionStorage.setItem('refId', queryRefId)
