@@ -4,7 +4,6 @@ import {
 } from '@ethersproject/units'
 import { ListedToken } from '@indexcoop/tokenlists'
 import {
-  Address,
   isAddress as isAddressViem,
   parseUnits as parseUnitsViem,
   PublicClient,
@@ -113,7 +112,7 @@ export const isValidTokenInput = (
 }
 
 export const isContract = async (client: PublicClient, address: string) => {
-  const bytes = await getCode(client, { address: address as Address })
+  const bytes = await getCode(client, { address })
 
   return bytes !== undefined
 }
