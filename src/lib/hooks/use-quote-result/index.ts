@@ -1,4 +1,3 @@
-import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { usePublicClient } from 'wagmi'
@@ -18,6 +17,7 @@ type QuoteRequest = {
   outputToken: Token
   inputTokenAmount: bigint
   inputValue: string
+  slippage: number
 }
 
 export function useQuoteResult(request: QuoteRequest) {
@@ -29,6 +29,7 @@ export function useQuoteResult(request: QuoteRequest) {
     inputValue,
     isMinting,
     outputToken,
+    slippage,
   } = request
   const indexToken = isMinting ? outputToken : inputToken
   const nativeTokenPrice = useNativeTokenPrice(chainId)
@@ -51,10 +52,6 @@ export function useQuoteResult(request: QuoteRequest) {
       getTokenPrice(inputToken, chainId),
       getTokenPrice(outputToken, chainId),
     ])
-    const isIcEth = isAddressEqual(
-      indexToken.address,
-      getTokenByChainAndSymbol(chainId, 'icETH')?.address,
-    )
     return await getFlashMintQuote({
       isMinting,
       account: address,
@@ -65,7 +62,7 @@ export function useQuoteResult(request: QuoteRequest) {
       inputTokenPrice,
       outputToken,
       outputTokenPrice,
-      slippage: isIcEth ? 0.5 : 0.1,
+      slippage,
     })
   }
 

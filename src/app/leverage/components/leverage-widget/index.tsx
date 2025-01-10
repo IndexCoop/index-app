@@ -7,6 +7,7 @@ import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Receive } from '@/components/receive'
+import { Settings } from '@/components/settings'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
@@ -16,6 +17,7 @@ import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
@@ -83,6 +85,13 @@ export function LeverageWidget() {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
+  const {
+    auto: autoSlippage,
+    isAuto: isAutoSlippage,
+    set: setSlippage,
+    slippage,
+  } = useSlippage()
+
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
@@ -93,6 +102,15 @@ export function LeverageWidget() {
       className='leverage-widget flex flex-col gap-3 rounded-lg p-6'
       id='close-position-scroll'
     >
+      <div className='flex justify-end'>
+        <Settings
+          isAuto={isAutoSlippage}
+          isDarkMode={true}
+          slippage={slippage}
+          onChangeSlippage={setSlippage}
+          onClickAuto={autoSlippage}
+        />
+      </div>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
