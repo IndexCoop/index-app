@@ -1,5 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react'
-import { ChevronDownIcon } from '@heroicons/react/24/solid'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 
 import { colors } from '@/lib/styles/colors'
@@ -35,7 +35,7 @@ export const SelectorButton = ({
       {symbol}
     </Text>
     {showChevron !== false && (
-      <ChevronDownIcon className='text-ic-gray-900 m-1 size-4 stroke-current stroke-[1.5]' />
+      <ChevronDownIcon className='text-ic-gray-900 size-6' />
     )}
   </Flex>
 )
