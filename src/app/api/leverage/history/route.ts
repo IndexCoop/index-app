@@ -21,26 +21,20 @@ export async function POST(req: NextRequest) {
       { chainId: chainId.toString() as ApiChainId },
     )
 
-    const open = uniqBy(
-      positions.data
-        .filter(
-          (position) =>
-            position.trade &&
-            position.metrics &&
-            position.metrics.positionStatus === 'open',
-        )
-        .sort(
-          (a, b) =>
-            new Date(b.metadata.blockTimestamp).getTime() -
-            new Date(a.metadata.blockTimestamp).getTime(),
-        ),
-      'metrics.tokenAddress',
-    )
-
     const history = positions.data.sort(
       (a, b) =>
         new Date(b.metadata.blockTimestamp).getTime() -
         new Date(a.metadata.blockTimestamp).getTime(),
+    )
+
+    const open = uniqBy(
+      history.filter(
+        (position) =>
+          position.trade &&
+          position.metrics &&
+          position.metrics.positionStatus === 'open',
+      ),
+      'metrics.tokenAddress',
     )
 
     return NextResponse.json(
