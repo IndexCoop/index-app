@@ -9,6 +9,7 @@ import { useEarnContext } from '@/app/earn/provider'
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { Receive } from '@/components/receive'
 import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
+import { Settings } from '@/components/settings'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
@@ -18,6 +19,7 @@ import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state
 import { TokenDisplay } from '@/components/token-display'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
 
 import { useFormattedEarnData } from '../../use-formatted-data'
@@ -74,6 +76,13 @@ export function EarnWidget() {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
+  const {
+    auto: autoSlippage,
+    isAuto: isAutoSlippage,
+    set: setSlippage,
+    slippage,
+  } = useSlippage()
+
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
@@ -81,7 +90,16 @@ export function EarnWidget() {
 
   return (
     <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6 lg:ml-auto'>
-      <TokenDisplay mini token={indexToken} />
+      <div className='flex justify-between'>
+        <TokenDisplay mini token={indexToken} />
+        <Settings
+          isAuto={isAutoSlippage}
+          isDarkMode={false}
+          slippage={slippage}
+          onChangeSlippage={setSlippage}
+          onClickAuto={autoSlippage}
+        />
+      </div>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector
         config={{ isReadOnly: false }}
