@@ -7,7 +7,7 @@ import {
 } from '@indexcoop/tokenlists'
 import { createColumnHelper } from '@tanstack/react-table'
 import Image from 'next/image'
-import { checksumAddress } from 'viem'
+import { checksumAddress, formatUnits } from 'viem'
 import * as chains from 'viem/chains'
 
 import {
@@ -208,7 +208,9 @@ export const openPositionsColumns = [
       )
 
       const balance = token.usd ?? 0
-      const cost = data.metrics.endingPositionCost ?? 0
+      const cost =
+        (data.metrics.endingAvgCostPerUnit ?? 0) *
+        Number(formatUnits(token.balance, token.decimals))
 
       // Here we subtract the total transfer amount, because it has to be inversely corrected to exclude it from profit and loss
       const pnl = balance - transferAmount - cost
