@@ -131,11 +131,11 @@ const getLastBuy = (
 export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.market',
-    header: () => <div className='flex-1 text-left'>Market</div>,
+    header: () => <div className='flex-[0.75] text-left'>Market</div>,
     cell: (row) => {
       const data = row.getValue()
       return (
-        <div className='flex flex-1 items-center gap-2 text-left'>
+        <div className='flex flex-[0.75] items-center gap-2 text-left'>
           <Image
             src={
               getTokenByChainAndAddress(
@@ -154,7 +154,7 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.strategy',
-    header: () => <div className='flex-1 text-center'>Strategy</div>,
+    header: () => <div className='flex-[0.5] text-center'>Strategy</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -163,7 +163,7 @@ export const openPositionsColumns = [
 
       if (isLeverageToken(token)) {
         return (
-          <div className={cn('text-ic-blue-300 flex-1 text-center')}>
+          <div className={cn('text-ic-blue-300 flex-[0.5] text-center')}>
             {map[token.extensions.leverage.type]}
           </div>
         )
@@ -174,7 +174,7 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.netBalance',
-    header: () => <div className='flex-1 text-left'>Net Balance</div>,
+    header: () => <div className='flex-1 text-right'>Net Balance</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -183,7 +183,7 @@ export const openPositionsColumns = [
 
       if (!isLeverageToken(token)) return <></>
 
-      return <div className='flex-1 text-left'>{formatAmount(token.usd)}</div>
+      return <div className='flex-1 text-right'>{formatAmount(token.usd)}</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -233,11 +233,11 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.entryPrice',
-    header: () => <div className='flex-1 text-right'>Entry Price</div>,
+    header: () => <div className='flex-[0.5] text-right'>Entry Price</div>,
     cell: (row) => {
       const data = row.getValue()
       return (
-        <div className='flex-1 text-right'>
+        <div className='flex-[0.5] text-right'>
           {formatAmount(data.metrics?.endingAvgCostPerUnit ?? 0)}
         </div>
       )
@@ -245,7 +245,7 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.currentPrice',
-    header: () => <div className='flex-1 text-right'>Current Price</div>,
+    header: () => <div className='flex-[0.5] text-right'>Current Price</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -254,7 +254,7 @@ export const openPositionsColumns = [
 
       if (isLeverageToken(token) && data.trade && data.metrics) {
         return (
-          <div className='flex-1 text-right'>
+          <div className='flex-[0.5] text-right'>
             {formatAmount(token.unitPriceUsd)}
           </div>
         )
@@ -266,7 +266,7 @@ export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.increase',
     header: () => (
-      <div className='flex flex-[2] items-center justify-end gap-4'>
+      <div className='flex flex-1 items-center justify-end gap-4'>
         <div className='w-[50px] text-right'>Increase</div>
         <div className='w-[50px]'>Close</div>
       </div>
@@ -280,7 +280,7 @@ export const openPositionsColumns = [
       if (!isLeverageToken(token)) return <></>
 
       return (
-        <div className='flex flex-[2] items-center justify-end gap-4'>
+        <div className='flex flex-1 items-center justify-end gap-4'>
           <div className='flex w-[50px] justify-end'>
             <Button
               className='hover:bg-ic-dark flex size-[25px] items-center justify-center rounded-lg border border-white'
@@ -310,14 +310,14 @@ export const openPositionsColumns = [
 export const historyColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.market',
-    header: () => <div className='flex-1 text-left'>Market</div>,
+    header: () => <div className='flex-[0.75] text-left'>Market</div>,
     cell: (row) => {
       const data = row.getValue()
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { chainId: currentChainId } = useNetwork()
 
       return (
-        <div className='flex flex-1 items-center gap-2 text-left'>
+        <div className='flex flex-[0.75] items-center gap-2 text-left'>
           <Image
             src={
               getTokenByChainAndAddress(
@@ -338,7 +338,7 @@ export const historyColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.strategy',
-    header: () => <div className='flex-[0.75] text-center'>Strategy</div>,
+    header: () => <div className='flex-[0.5] text-center'>Strategy</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -350,22 +350,22 @@ export const historyColumns = [
 
       if (isLeverageToken(token)) {
         return (
-          <div className={cn('text-ic-blue-300 flex-[0.75] text-center')}>
+          <div className={cn('text-ic-blue-300 flex-[0.5] text-center')}>
             {map[token.extensions.leverage.type]}
           </div>
         )
       }
 
-      return <div className='flex-[0.75]' />
+      return <div className='flex-[0.5]' />
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.action',
-    header: () => <div className='flex-[0.75] text-left'>Action</div>,
+    header: () => <div className='flex-[0.5] text-center'>Action</div>,
     cell: (row) => {
       const data = row.getValue()
 
-      return <div className='flex-[0.75] text-left'>{getAction(data)}</div>
+      return <div className='flex-[0.5] text-center'>{getAction(data)}</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -456,15 +456,21 @@ export const historyColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.time',
-    header: () => <div className='ml-4 flex-1 text-left'>Time</div>,
+    header: () => <div className='ml-8 flex-[0.75] text-left'>Time</div>,
     cell: (row) => {
       const data = row.getValue()
 
       return (
-        <div className='ml-4 flex-1 text-left'>
+        <div className='ml-8 flex-[0.75] text-left'>
           {new Date(
             data.trade?.createdAt ?? data.metadata.blockTimestamp,
-          ).toLocaleDateString()}
+          ).toLocaleDateString(navigator.language, {
+            year: '2-digit',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
         </div>
       )
     },
