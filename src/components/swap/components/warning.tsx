@@ -1,5 +1,5 @@
-import { WarningIcon } from '@chakra-ui/icons'
 import { Flex, Link, Text } from '@chakra-ui/react'
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { ReactNode } from 'react'
 
 import { colors } from '@/lib/styles/colors'
@@ -99,8 +99,8 @@ type WarningProps = {
 }
 
 export const WarningComp = (props: WarningProps) => (
-  <div className='mx-4 mb-2 mt-5 flex flex-row items-start gap-3'>
-    <WarningIcon className='text-ic-gray-600 dark:text-ic-gray-400' />
+  <div className='mx-4 mb-2 mt-5 flex items-start gap-3'>
+    <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5 flex-none' />
     <div className='flex flex-col gap-2'>
       <span className='text-ic-gray-600 dark:text-ic-gray-400 text-sm font-semibold'>
         {props.warning.title}
@@ -124,8 +124,13 @@ export const WarningCompProtection = () => {
   return (
     <Flex direction={'column'} m='20px 16px 8px'>
       <Flex align={'center'} direction={'row'}>
-        <WarningIcon color={colors.ic.gray[600]} mr={'8px'} />
-        <Text fontSize={'sm'} fontWeight={600} textColor={colors.ic.gray[600]}>
+        <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5' />
+        <Text
+          fontSize={'sm'}
+          fontWeight={600}
+          ml={2}
+          textColor={colors.ic.gray[600]}
+        >
           MEV Protection
         </Text>
       </Flex>

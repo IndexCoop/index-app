@@ -91,7 +91,7 @@ export default function Page() {
               <LeverageWidget />
             </Suspense>
           </div>
-          <div className='flex flex-col gap-6 lg:flex-row'>
+          <div className='flex flex-col gap-4 lg:flex-row'>
             <div className='h-full w-full lg:min-w-[67%] lg:max-w-[67%]'>
               <YourTokens />
             </div>
