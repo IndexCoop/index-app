@@ -35,7 +35,7 @@ const config = defineConfig({
       dateType: 'date',
     }),
     pluginClient({
-      baseURL: 'https://api-pr-34-fce5.onrender.com/',
+      baseURL: 'https://api-pr-34-fce5.onrender.com',
       output: {
         path: './clients/axios',
         barrelType: 'propagate',
