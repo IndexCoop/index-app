@@ -33,8 +33,8 @@ const currencyConfig: Record<
   ETH: {
     symbol: 'Ξ',
     options: {
-      maximumFractionDigits: 3,
-      minimumFractionDigits: 3,
+      maximumFractionDigits: 4,
+      minimumFractionDigits: 4,
       currencyDisplay: 'symbol',
       currency: 'ETH',
       style: 'currency',
@@ -174,7 +174,7 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.netBalance',
-    header: () => <div className='flex-1 text-right'>Net Balance</div>,
+    header: () => <div className='flex-[0.75] text-right'>Net Balance</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -183,7 +183,9 @@ export const openPositionsColumns = [
 
       if (!isLeverageToken(token)) return <></>
 
-      return <div className='flex-1 text-right'>{formatAmount(token.usd)}</div>
+      return (
+        <div className='flex-[0.75] text-right'>{formatAmount(token.usd)}</div>
+      )
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -233,19 +235,22 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.entryPrice',
-    header: () => <div className='flex-[0.5] text-right'>Entry Price</div>,
+    header: () => <div className='flex-[0.75] text-right'>Entry Price</div>,
     cell: (row) => {
       const data = row.getValue()
       return (
-        <div className='flex-[0.5] text-right'>
-          {formatAmount(data.metrics?.endingAvgCostPerUnit ?? 0)}
+        <div className='flex-[0.75] text-right'>
+          {formatAmount(
+            data.trade?.underlyingAssetUnitPrice ?? 0,
+            data.trade?.underlyingAssetUnitPriceDenominator,
+          )}
         </div>
       )
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.currentPrice',
-    header: () => <div className='flex-[0.5] text-right'>Current Price</div>,
+    header: () => <div className='flex-[0.75] text-right'>Current Price</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -254,13 +259,16 @@ export const openPositionsColumns = [
 
       if (isLeverageToken(token) && data.trade && data.metrics) {
         return (
-          <div className='flex-[0.5] text-right'>
-            {formatAmount(token.unitPriceUsd)}
+          <div className='flex-[0.75] text-right'>
+            {formatAmount(
+              data.trade.underlyingAssetUnitPrice ?? 0,
+              data.trade.underlyingAssetUnitPriceDenominator,
+            )}
           </div>
         )
       }
 
-      return
+      return <div className='flex-[0.75] text-right'>-</div>
     },
   }),
   columnsHelper.accessor((row) => row, {

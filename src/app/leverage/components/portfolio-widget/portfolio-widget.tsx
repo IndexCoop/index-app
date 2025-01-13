@@ -85,7 +85,7 @@ const OpenPositions = () => {
       const response = await fetch('/api/leverage/history', {
         method: 'POST',
         body: JSON.stringify({
-          user: address,
+          user: address, // '0xaB8131FE3C0cB081630502ED26C89C51103E37ce',
           chainId,
         }),
       })
