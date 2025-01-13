@@ -140,7 +140,7 @@ export function LeverageProvider(props: { children: any }) {
   }, [indexTokens])
 
   const { balances, forceRefetchBalances } = useBalances(
-    address,
+    '0xb9610EA77d7EAfEa169896e123F0704B3F0F6F55',
     indexTokenAddresses,
   )
 

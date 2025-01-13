@@ -26,6 +26,54 @@ const map: Record<LeverageType, string> = {
   Long3x: '3x',
 }
 
+const currencyConfig: Record<
+  string,
+  { symbol: string; options: Intl.NumberFormatOptions }
+> = {
+  ETH: {
+    symbol: 'Ξ',
+    options: {
+      maximumFractionDigits: 3,
+      minimumFractionDigits: 3,
+      currencyDisplay: 'symbol',
+      currency: 'ETH',
+      style: 'currency',
+    },
+  },
+  BTC: {
+    symbol: '₿',
+    options: {
+      maximumFractionDigits: 4,
+      minimumFractionDigits: 4,
+      currencyDisplay: 'symbol',
+      currency: 'BTC',
+      style: 'currency',
+    },
+  },
+  USD: {
+    symbol: '$',
+    options: {
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+      currencyDisplay: 'symbol',
+      currency: 'USD',
+      style: 'currency',
+    },
+  },
+}
+
+const formatAmount = (amount: number = 0, denominator?: unknown) => {
+  if (!denominator || typeof denominator !== 'string') {
+    return amount.toLocaleString(navigator.language, currencyConfig.USD.options)
+  }
+
+  const config = currencyConfig[denominator] ?? currencyConfig.USD
+
+  return amount
+    .toLocaleString(navigator.language, config.options)
+    .replace(config.options.currency!, config.symbol)
+}
+
 const getTransferedTotal = (
   user?: string,
   unitPriceUsd: number = 0,
@@ -135,7 +183,7 @@ export const openPositionsColumns = [
 
       if (!isLeverageToken(token)) return <></>
 
-      return <div className='flex-1 text-left'>${token.usd?.toFixed(2)}</div>
+      return <div className='flex-1 text-left'>{formatAmount(token.usd)}</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -176,7 +224,7 @@ export const openPositionsColumns = [
             sign === 0 && 'text-ic-white',
           )}
         >
-          {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} $${Math.abs(pnl).toFixed(2)} (${pnlPercentage.toFixed(2)}%)`}
+          {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} ${formatAmount(Math.abs(pnl))} (${pnlPercentage.toFixed(2)}%)`}
         </div>
       )
     },
@@ -188,7 +236,7 @@ export const openPositionsColumns = [
       const data = row.getValue()
       return (
         <div className='flex-1 text-right'>
-          ${data.metrics?.endingAvgCostPerUnit?.toFixed(2)}
+          {formatAmount(data.metrics?.endingAvgCostPerUnit!)}
         </div>
       )
     },
@@ -205,7 +253,7 @@ export const openPositionsColumns = [
       if (isLeverageToken(token) && data.trade && data.metrics) {
         return (
           <div className='flex-1 text-right'>
-            ${token.unitPriceUsd?.toFixed(2)}
+            {formatAmount(token.unitPriceUsd)}
           </div>
         )
       }
@@ -332,7 +380,7 @@ export const historyColumns = [
 
         return (
           <div className='text-ic-blue-300 flex-1 text-right'>
-            ${value.toFixed(2)}
+            {formatAmount(value)}
           </div>
         )
       }
@@ -341,10 +389,9 @@ export const historyColumns = [
 
       return (
         <div className='text-ic-blue-300 flex-1 text-right'>
-          $
-          {(
-            (data.value ?? 0) * (lastBuy?.trade?.underlyingAssetUnitPrice ?? 0)
-          ).toFixed(2)}
+          {formatAmount(
+            (data.value ?? 0) * (lastBuy?.trade?.underlyingAssetUnitPrice ?? 0),
+          )}
         </div>
       )
     },
@@ -359,10 +406,10 @@ export const historyColumns = [
 
       return (
         <div className='flex-1 text-right'>
-          $
-          {data.trade
-            ? data.trade?.underlyingAssetUnitPrice?.toFixed(2)
-            : lastBuy?.trade?.underlyingAssetUnitPrice?.toFixed(2)}
+          {formatAmount(
+            (data ?? lastBuy).trade?.underlyingAssetUnitPrice!,
+            (data ?? lastBuy).trade?.underlyingAssetUnitPriceDenominator,
+          )}
         </div>
       )
     },
@@ -384,8 +431,8 @@ export const historyColumns = [
         const _return = data.metrics.totalReturnOfUnitsSold ?? 0
         const cost = data.metrics.totalCostOfUnitsSold ?? 0
 
-        const pnl = data.metrics.endingPnL ?? 0
-        const pnlPercentage = ((_return - cost) / cost) * 100
+        const pnl = _return - cost
+        const pnlPercentage = (pnl / cost) * 100
         const sign = Math.sign(pnl)
 
         return (
@@ -397,7 +444,7 @@ export const historyColumns = [
               sign === 0 && 'text-ic-white',
             )}
           >
-            {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} $${Math.abs(pnl).toFixed(2)} (${pnlPercentage.toFixed(2)}%)`}
+            {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} ${formatAmount(Math.abs(pnl))} (${pnlPercentage.toFixed(2)}%)`}
           </div>
         )
       }
