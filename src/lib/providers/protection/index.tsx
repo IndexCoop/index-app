@@ -1,34 +1,43 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+'use client'
 
-export const ProtectionContext = createContext<boolean>(false)
+import { useQuery } from '@tanstack/react-query'
+import { createContext, useContext } from 'react'
 
-export const useProtection = () => useContext(ProtectionContext)
+interface Context {
+  isRestrictedCountry: boolean
+  isUsingVpn: boolean
+}
+
+export const ProtectionContext = createContext<Context>({
+  isRestrictedCountry: false,
+  isUsingVpn: false,
+})
+
+export const useProtectionContext = () => useContext(ProtectionContext)
 
 export const ProtectionProvider = (props: { children: any }) => {
-  const [isProtectable, setIsProtectable] = useState<boolean>(false)
+  const {
+    data: { isRestrictedCountry, isUsingVpn },
+  } = useQuery({
+    gcTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    initialData: { isRestrictedCountry: false, isUsingVpn: false },
+    queryKey: ['protection'],
+    queryFn: async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_INDEX_COOP_API_V2}/protection`,
+      )
+      const { isRestrictedCountry, isUsingVpn } = await res.json()
 
-  const checkIfProtectable = async () => {
-    const API_KEY =
-      process.env.NEXT_PUBLIC_IP_LOOKUP_KEY ?? 'vN8S4cMfz4KPoq5eLx3X'
-    fetch('https://extreme-ip-lookup.com/json/?key=' + API_KEY)
-      .then((res) => res.json())
-      .then((response) => {
-        if (response.country === 'United States') setIsProtectable(true)
-      })
-      .catch((error) => {
-        console.error(
-          'Cant determine whether or not we should protect the user because of this error: ',
-          error,
-        )
-      })
-  }
-
-  useEffect(() => {
-    checkIfProtectable()
-  }, [])
+      return {
+        isRestrictedCountry,
+        isUsingVpn,
+      }
+    },
+  })
 
   return (
-    <ProtectionContext.Provider value={isProtectable}>
+    <ProtectionContext.Provider value={{ isRestrictedCountry, isUsingVpn }}>
       {props.children}
     </ProtectionContext.Provider>
   )

@@ -11,7 +11,7 @@ import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { useProtection } from '@/lib/providers/protection'
+import { useProtectionContext } from '@/lib/providers/protection'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { getNativeToken, isTokenPairTradable } from '@/lib/utils/tokens'
@@ -52,7 +52,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
   const { chainId } = useNetwork()
   const { open } = useWeb3Modal()
-  const requiresProtection = useProtection()
+  const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
   const { signTermsOfService } = useSignTerms()
   const { slippage } = useSlippage()
 
@@ -65,12 +65,18 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   const isTradablePair = useMemo(
     () =>
       isTokenPairTradable(
-        requiresProtection,
+        isRestrictedCountry || isUsingVpn,
         inputToken.symbol,
         outputToken.symbol,
         chainId ?? 1,
       ),
-    [chainId, requiresProtection, inputToken, outputToken],
+    [
+      isRestrictedCountry,
+      isUsingVpn,
+      inputToken.symbol,
+      outputToken.symbol,
+      chainId,
+    ],
   )
 
   const shouldApprove = useMemo(() => {
@@ -97,8 +103,20 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   const [warnings, setWarnings] = useState<WarningType[]>([])
 
   useEffect(() => {
-    if (!isTradablePair && !hiddenWarnings?.includes(WarningType.restricted)) {
+    if (
+      !isTradablePair &&
+      isRestrictedCountry &&
+      !hiddenWarnings?.includes(WarningType.restricted)
+    ) {
       setWarnings([WarningType.restricted])
+      return
+    }
+    if (
+      !isTradablePair &&
+      isUsingVpn &&
+      !hiddenWarnings?.includes(WarningType.vpn)
+    ) {
+      setWarnings([WarningType.vpn])
       return
     }
     if (
@@ -117,7 +135,14 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
       return
     }
     setWarnings([])
-  }, [buttonState, hiddenWarnings, isTradablePair, slippage])
+  }, [
+    buttonState,
+    hiddenWarnings,
+    isRestrictedCountry,
+    isTradablePair,
+    isUsingVpn,
+    slippage,
+  ])
 
   const onClick = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
