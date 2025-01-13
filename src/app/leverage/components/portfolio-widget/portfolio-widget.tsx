@@ -27,8 +27,6 @@ const OpenPositions = () => {
 
   const { balances } = useLeverageToken()
 
-  console.log(balances)
-
   const adjustPosition = useCallback(
     (isMinting: boolean, token: EnrichedToken) => {
       if (!isLeverageToken(token)) return
@@ -87,7 +85,7 @@ const OpenPositions = () => {
       const response = await fetch('/api/leverage/history', {
         method: 'POST',
         body: JSON.stringify({
-          user: '0xb9610EA77d7EAfEa169896e123F0704B3F0F6F55',
+          user: address,
           chainId,
         }),
       })
