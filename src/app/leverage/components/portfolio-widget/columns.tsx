@@ -236,7 +236,7 @@ export const openPositionsColumns = [
       const data = row.getValue()
       return (
         <div className='flex-1 text-right'>
-          {formatAmount(data.metrics?.endingAvgCostPerUnit!)}
+          {formatAmount(data.metrics?.endingAvgCostPerUnit ?? 0)}
         </div>
       )
     },
@@ -407,7 +407,7 @@ export const historyColumns = [
       return (
         <div className='flex-1 text-right'>
           {formatAmount(
-            (data ?? lastBuy).trade?.underlyingAssetUnitPrice!,
+            (data ?? lastBuy).trade?.underlyingAssetUnitPrice ?? 0,
             (data ?? lastBuy).trade?.underlyingAssetUnitPriceDenominator,
           )}
         </div>
