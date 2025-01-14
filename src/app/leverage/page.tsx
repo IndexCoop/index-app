@@ -14,7 +14,10 @@ import { PriceChart } from '@/components/charts/price-chart'
 
 import { FaqSection } from './components/faq-section'
 import { LeverageWidget } from './components/leverage-widget'
+<<<<<<< HEAD
 import PortfolioWidget from './components/portfolio-widget/portfolio-widget'
+=======
+>>>>>>> 6b263d0f0c07d2838486f30fc43c34ff3d30a07b
 
 const surveyTracking = { utm_source: 'app' }
 
@@ -91,7 +94,7 @@ export default function Page() {
               <LeverageWidget />
             </Suspense>
           </div>
-          <div className='flex flex-col gap-6 lg:flex-row'>
+          <div className='flex flex-col gap-4 lg:flex-row'>
             <div className='h-full w-full lg:min-w-[67%] lg:max-w-[67%]'>
               <PortfolioWidget />
             </div>
