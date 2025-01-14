@@ -1,5 +1,5 @@
-import { WarningIcon } from '@chakra-ui/icons'
 import { Flex, Text } from '@chakra-ui/react'
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 
 import { colors } from '@/lib/styles/colors'
 
@@ -16,8 +16,13 @@ function getTexts(lowSlippage: boolean) {
 export const Warning = (props: WarningProps) => (
   <Flex direction={'column'}>
     <Flex align={'center'} direction={'row'}>
-      <WarningIcon color={colors.ic.yellow} mr={'6px'} />
-      <Text fontSize={'md'} fontWeight={500} textColor={colors.ic.gray[600]}>
+      <ExclamationCircleIcon className='text-ic-yellow size-4' />
+      <Text
+        fontSize={'md'}
+        fontWeight={500}
+        ml='6px'
+        textColor={colors.ic.gray[600]}
+      >
         Slippage warning
       </Text>
     </Flex>

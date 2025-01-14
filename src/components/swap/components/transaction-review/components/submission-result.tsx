@@ -1,4 +1,7 @@
-import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+} from '@heroicons/react/24/solid'
 
 import { TradeButton } from '@/components/trade-button'
 
@@ -15,17 +18,9 @@ export function SubmissionResult({
     <div className='flex flex-col items-center'>
       <div className='flex flex-col items-center p-4'>
         {success ? (
-          <CheckCircleIcon
-            w='24px'
-            h='24px'
-            className='dark:text-ic-white text-ic-black'
-          />
+          <CheckCircleIcon className='dark:text-ic-white text-ic-black size-7' />
         ) : (
-          <WarningIcon
-            w='24px'
-            h='24px'
-            className='dark:text-ic-white text-ic-black'
-          />
+          <ExclamationCircleIcon className='dark:text-ic-white text-ic-black size-7' />
         )}
         <div className='text-ic-black dark:text-ic-white p-4 text-center text-xl'>
           {success
