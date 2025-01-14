@@ -56,6 +56,14 @@ const mockQuote: Quote = {
   inputTokenPrice: 0,
   outputTokenPrice: 0,
   slippage: 0,
+  fees: {
+    mint: 0,
+    mintUsd: 0,
+    redeem: 0,
+    redeemUsd: 0,
+    streaming: 0,
+    streamingUsd: 0,
+  },
   tx: {
     account: '0x0',
     chainId: 1,

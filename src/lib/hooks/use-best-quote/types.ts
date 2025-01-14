@@ -51,6 +51,14 @@ export interface Quote {
   outputTokenAmountUsdAfterFees: number
   inputTokenPrice: number
   outputTokenPrice: number
+  fees: {
+    mint: number
+    mintUsd: number
+    redeem: number
+    redeemUsd: number
+    streaming: number
+    streamingUsd: number
+  } | null
   slippage: number
   tx: QuoteTransaction
 }

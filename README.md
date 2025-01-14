@@ -22,7 +22,13 @@ cp .env.default .env.local
 npm install
 ```
 
-3. Start dev mode
+3. Generate kubb files
+
+```bash
+npm run generate
+```
+
+4. Start dev mode
 
 ```bash
 npm run dev

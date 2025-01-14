@@ -26,7 +26,7 @@ export function QuickStats() {
           className='hidden w-20 sm:flex'
           isLoading={isFetchingQuickStats}
           label='24h Change'
-          value={`${formatAmount(change24h, 2)} %`}
+          value={`${formatAmount(change24h ?? 0, 2)} %`}
           overrideLabelColor={change24h >= 0 ? 'text-ic-green' : 'text-ic-red'}
         />
         <StatsMetric
