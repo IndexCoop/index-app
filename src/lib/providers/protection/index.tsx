@@ -24,10 +24,7 @@ export const ProtectionProvider = (props: { children: any }) => {
     initialData: { isRestrictedCountry: false, isUsingVpn: false },
     queryKey: ['protections'],
     queryFn: async () => {
-      // FIXME: Update hostname
-      const res = await fetch(
-        'https://api-pr-29-80wy.onrender.com/api/v2/protections',
-      )
+      const res = await fetch('/api/protections')
       const { isRestrictedCountry, isUsingVpn } = await res.json()
 
       return {
