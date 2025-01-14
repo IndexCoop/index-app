@@ -6,7 +6,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 const config = defineConfig({
   root: '.',
   input: {
-    path: 'https://api-pr-34-fce5.onrender.com/documentation/json',
+    path: 'https://api.indexcoop.com/v2/docs/json',
   },
   output: {
     path: './src/gen',
@@ -35,7 +35,7 @@ const config = defineConfig({
       dateType: 'date',
     }),
     pluginClient({
-      baseURL: 'https://api-pr-34-fce5.onrender.com',
+      baseURL: 'https://api-q513.onrender.com',
       output: {
         path: './clients/axios',
         barrelType: 'propagate',
