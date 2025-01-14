@@ -13,7 +13,7 @@
     "generate": "kubb --config kubb.config.ts",
     "start": "next start",
     "lint": "next lint --no-cache",
-    "lint:fix": "npx prettier --write ./src && npx eslint --no-cache ./src --fix",
+    "lint:fix": "npx prettier --write ./src && next lint --fix",
     "test": "jest",
     "test:watch": "jest --watch"
   },
