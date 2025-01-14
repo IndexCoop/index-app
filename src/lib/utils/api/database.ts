@@ -46,8 +46,6 @@ export const mapQuoteToTrade = (
   refId,
   createdAt: new Date(),
   underlyingAssetSymbol: getUnderlyingAssetSymbol(quote),
-  underlyingAssetUnitPriceDenominator:
-    getUnderlyingAssetUnitPriceDenominator(quote),
 })
 
 const getUnderlyingAssetSymbol = (quote: Quote) => {
