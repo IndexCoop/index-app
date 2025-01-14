@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { PublicClient } from 'viem'
+import { Address, PublicClient } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { ETH } from '@/constants/tokens'
@@ -11,16 +11,16 @@ export class BalanceProvider {
 
   async getErc20Balance(address: string, token: string): Promise<bigint> {
     return await this.publicClient.readContract({
-      address: token,
+      address: token as Address,
       abi: ERC20_ABI,
       functionName: 'balanceOf',
-      args: [address],
+      args: [address as Address],
     })
   }
 
   async getNativeBalance(address: string) {
     return this.publicClient.getBalance({
-      address: address,
+      address: address as Address,
     })
   }
 }
