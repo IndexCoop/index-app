@@ -56,12 +56,3 @@ const getUnderlyingAssetSymbol = (quote: Quote) => {
 
   return ''
 }
-
-const getUnderlyingAssetUnitPriceDenominator = (quote: Quote) => {
-  const symbol = (quote.isMinting ? quote.outputToken : quote.inputToken).symbol
-
-  if (symbol.endsWith('ETH')) return 'ETH'
-  if (symbol.endsWith('BTC')) return 'BTC'
-
-  return 'USD'
-}
