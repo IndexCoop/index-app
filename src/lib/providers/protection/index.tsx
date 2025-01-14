@@ -22,10 +22,11 @@ export const ProtectionProvider = (props: { children: any }) => {
     gcTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
     initialData: { isRestrictedCountry: false, isUsingVpn: false },
-    queryKey: ['protection'],
+    queryKey: ['protections'],
     queryFn: async () => {
+      // FIXME: Update hostname
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_INDEX_COOP_API_V2}/protection`,
+        'https://api-pr-29-80wy.onrender.com/api/v2/protections',
       )
       const { isRestrictedCountry, isUsingVpn } = await res.json()
 
