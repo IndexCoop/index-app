@@ -83,7 +83,7 @@ const getTransferedTotal = (
     transfers.reduce((acc, curr) => {
       if (curr.from.toLowerCase() === user?.toLowerCase()) {
         return acc - (curr.value ?? 0)
-      } else if (curr.to === user) {
+      } else if (curr.to?.toLowerCase === user) {
         return acc + (curr.value ?? 0)
       }
 
@@ -103,7 +103,10 @@ const getAction = (data: GetApiV2UserAddressPositionsQueryResponse[number]) => {
     }
   }
 
-  if (data.trade.transactionType === 'sell' && data.metrics.endingUnits === 0) {
+  if (
+    data.trade.transactionType === 'sell' &&
+    (data.metrics.endingUnits ?? 0) <= 0
+  ) {
     return 'Close'
   }
 
@@ -134,6 +137,7 @@ export const openPositionsColumns = [
     header: () => <div className='flex-[0.75] text-left'>Market</div>,
     cell: (row) => {
       const data = row.getValue()
+
       return (
         <div className='flex flex-[0.75] items-center gap-2 text-left'>
           <Image
@@ -209,13 +213,13 @@ export const openPositionsColumns = [
         row.table.options.meta?.transfers,
       )
 
-      const balance = token.usd ?? 0
+      const _return = token.usd ?? 0
       const cost =
         (data.metrics.endingAvgCostPerUnit ?? 0) *
         (data.metrics.endingUnits ?? 0)
 
       // Here we subtract the total transfer amount, because it has to be inversely corrected to exclude it from profit and loss
-      const pnl = balance - transferAmount - cost
+      const pnl = _return - transferAmount - cost
       const pnlPercentage = (pnl / cost) * 100
       const sign = Math.sign(pnl)
 
@@ -241,7 +245,7 @@ export const openPositionsColumns = [
 
       return (
         <div className='flex-[0.75] text-right'>
-          {formatAmount(data.trade?.outputTokenPriceUsd ?? 0)}
+          {formatAmount(data.metrics?.endingAvgCostPerUnit ?? 0)}
         </div>
       )
     },
