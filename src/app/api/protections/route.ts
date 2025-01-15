@@ -4,6 +4,12 @@ export async function GET(req: NextRequest) {
   // FIXME: Update hostname
   try {
     console.log(req.headers)
+    console.log(
+      'cfipcountry',
+      req.headers.get('cf-ipcountry') ??
+        req.headers.get('X-Vercel-IP-Country') ??
+        undefined,
+    )
     const res = await fetch(
       'https://api-pr-29-80wy.onrender.com/api/v2/protections',
       {
@@ -11,7 +17,7 @@ export async function GET(req: NextRequest) {
           ...req.headers,
           'cf-ipcountry':
             req.headers.get('cf-ipcountry') ??
-            req.headers.get('x-vercel-ip-country') ??
+            req.headers.get('X-Vercel-IP-Country') ??
             undefined,
         },
       },
