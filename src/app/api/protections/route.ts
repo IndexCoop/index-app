@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(req: NextRequest) {
   // FIXME: Update hostname
   try {
+    console.log(req.headers)
     const res = await fetch(
       'https://api-pr-29-80wy.onrender.com/api/v2/protections',
       {
