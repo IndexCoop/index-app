@@ -7,14 +7,11 @@ export async function GET(req: NextRequest) {
       'https://api-pr-29-80wy.onrender.com/api/v2/protections',
       {
         headers: {
+          ...req.headers,
           'cf-ipcountry':
             req.headers.get('cf-ipcountry') ??
             req.headers.get('x-vercel-ip-country') ??
-            '',
-          'cf-connecting-ip':
-            req.headers.get('cf-connecting-ip') ??
-            req.headers.get('x-forwarded-for') ??
-            '',
+            undefined,
         },
       },
     )
@@ -27,7 +24,7 @@ export async function GET(req: NextRequest) {
   } catch (e) {
     console.error('Caught protections error', e)
     return NextResponse.json({
-      isRstrictedCountry: false,
+      isRestrictedCountry: false,
       isUsingVpn: false,
     })
   }
