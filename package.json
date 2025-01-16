@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@0xarc-io/analytics": "2.2.3",
-    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.0",
@@ -58,7 +57,7 @@
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
     "viem": "2.21.55",
-    "wagmi": "2.14.3"
+    "wagmi": "2.12.13"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
