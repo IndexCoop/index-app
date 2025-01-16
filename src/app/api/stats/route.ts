@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     const data = await provider.getTokenStats(base, baseCurrency)
     const carryCosts = await fetchCarryCosts()
     const costOfCarry = carryCosts
-      ? carryCosts[symbol.toLowerCase()] ?? null
+      ? (carryCosts[symbol.toLowerCase()] ?? null)
       : null
     const metrics = await fetchTokenMetrics({
       tokenAddress: tokenAddress,

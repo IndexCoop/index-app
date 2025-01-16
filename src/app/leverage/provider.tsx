@@ -56,7 +56,7 @@ export interface TokenContext {
   onSelectLeverageType: (type: LeverageType) => void
   onSelectOutputToken: (tokenSymbol: string) => void
   reset: () => void
-  toggleIsMinting: () => void
+  toggleIsMinting: (force?: boolean) => void
 }
 
 export const LeverageTokenContext = createContext<TokenContext>({

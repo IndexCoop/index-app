@@ -1,5 +1,4 @@
 import { getTokenByChainAndAddress, LeverageToken } from '@indexcoop/tokenlists'
-import { Dispatch, SetStateAction } from 'react'
 
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { formatPrice } from '@/app/products/utils/formatters'
@@ -12,7 +11,6 @@ import { EnrichedToken } from '../types'
 
 export async function fetchLeverageTokenPrices(
   balances: TokenBalance[],
-  setTokens: Dispatch<SetStateAction<EnrichedToken[]>>,
   chainId: number,
 ) {
   const tokenBalances = balances.reduce((acc, current) => {
@@ -80,7 +78,7 @@ export async function fetchLeverageTokenPrices(
       return 0
     })
 
-    setTokens(enrichedTokens)
+    return enrichedTokens
   } catch (e) {
     console.error('Caught error in fetchTokenPrices', e)
   }
