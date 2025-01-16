@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     const path = address
       ? `/api/v2/protections?${new URLSearchParams({ address }).toString()}`
       : '/api/v2/protections'
-    const res = await fetch(`https://api-pr-29-80wy.onrender.com/${path}`, {
+    const res = await fetch(`https://api-pr-29-80wy.onrender.com${path}`, {
       headers: {
         ...req.headers,
         'ic-ip-address':
