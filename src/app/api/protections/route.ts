@@ -1,23 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
-  // FIXME: Update hostname
   try {
     console.log(req.headers)
-    console.log(
-      'cfipcountry',
-      req.headers.get('cf-ipcountry') ??
-        req.headers.get('X-Vercel-IP-Country') ??
-        undefined,
-    )
+    // FIXME: Update hostname
     const res = await fetch(
       'https://api-pr-29-80wy.onrender.com/api/v2/protections',
       {
         headers: {
           ...req.headers,
-          'cf-ipcountry':
+          'ic-ip-address':
+            req.headers.get('cf-connecting-ip') ??
+            req.headers.get('x-forwarded-for') ??
+            undefined,
+          'ic-ip-country':
             req.headers.get('cf-ipcountry') ??
-            req.headers.get('X-Vercel-IP-Country') ??
+            req.headers.get('x-vercel-ip-country') ??
             undefined,
         },
       },
