@@ -57,7 +57,7 @@
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
     "viem": "2.21.55",
-    "wagmi": "2.14.3"
+    "wagmi": "2.12.13"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
