@@ -2,12 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
   try {
-    console.log(req.headers)
-    // FIXME: Update hostname
     const address = req.nextUrl.searchParams.get('address')
     const path = address
       ? `/api/v2/protections?${new URLSearchParams({ address }).toString()}`
       : '/api/v2/protections'
+    // FIXME: Update hostname
     const res = await fetch(`https://api-pr-29-80wy.onrender.com${path}`, {
       headers: {
         ...req.headers,
