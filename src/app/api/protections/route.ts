@@ -4,10 +4,9 @@ export async function GET(req: NextRequest) {
   try {
     const address = req.nextUrl.searchParams.get('address')
     const path = address
-      ? `/api/v2/protections?${new URLSearchParams({ address }).toString()}`
-      : '/api/v2/protections'
-    // FIXME: Update hostname
-    const res = await fetch(`https://api-pr-29-80wy.onrender.com${path}`, {
+      ? `/v2/protections?${new URLSearchParams({ address }).toString()}`
+      : '/v2/protections'
+    const res = await fetch(`https://api.indexcoop.com${path}`, {
       headers: {
         ...req.headers,
         'ic-ip-address':
