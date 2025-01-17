@@ -13,6 +13,14 @@ type TableProps = {
   isFetching?: boolean
 }
 
+export type Stats = {
+  symbol: string
+  price: number
+  change24h: number
+  low24h: number
+  high24h: number
+}
+
 export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
   return (
     <div className='relative flex w-full flex-col gap-1'>
@@ -75,13 +83,7 @@ declare module '@tanstack/table-core' {
     tokens: Record<string, EnrichedToken>
     history: GetApiV2UserAddressPositions200
     transfers: Omit<GetApiV2UserAddressPositions200, 'trade' | 'metrics'>
-    markets: {
-      icon: string
-      market: string
-      priceRatio: string
-      collateral: string
-      debt: string
-    }[]
+    stats: Stats[]
     adjustPosition: (mint: boolean, token: EnrichedToken) => void
   }
 }

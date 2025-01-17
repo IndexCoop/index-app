@@ -1,3 +1,4 @@
+import { CoingeckoProvider, CoinGeckoService } from '@indexcoop/analytics-sdk'
 import { uniqBy } from 'lodash'
 import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
@@ -7,7 +8,6 @@ import {
   getApiV2UserAddressPositions,
 } from '@/gen'
 
-import { GET as getApiStats } from '../../stats/route'
 
 type TokenTransferRequest = {
   user: Address
@@ -17,9 +17,6 @@ type TokenTransferRequest = {
 export async function POST(req: NextRequest) {
   try {
     const { user, chainId } = (await req.json()) as TokenTransferRequest
-
-    const host = req.headers.get('host')
-    const protocol = host?.startsWith('localhost') ? 'http' : 'https'
 
     const positions = await getApiV2UserAddressPositions(
       { address: user },
@@ -42,28 +39,23 @@ export async function POST(req: NextRequest) {
       'metrics.tokenAddress',
     )
 
-    const marketStats = await Promise.all(
-      open.map(async (position) => {
-        const url = `${protocol}://${host}/api/stats?address=${position.rawContract.address}&symbol=${position.metrics?.market}&base=${position.trade?.underlyingAssetSymbol}&baseCurrency=${position.trade?.underlyingAssetUnitPriceDenominator}`
-        const response = await getApiStats(
-          new NextRequest({
-            ...req,
-            url,
-          }),
-        )
+    const coingeckoService = new CoinGeckoService(
+      process.env.COINGECKO_API_KEY!,
+    )
+    const provider = new CoingeckoProvider(coingeckoService)
 
-        console.log(response)
-
-        const data = await response.json()
-
-        return data
-      }),
+    const stats = await Promise.all(
+      open.map(async (position) =>
+        provider.getTokenStats(
+          position.trade?.underlyingAssetSymbol ?? '',
+          position.trade?.underlyingAssetUnitPriceDenominator?.toLowerCase() ??
+            'usd',
+        ),
+      ),
     )
 
-    console.log({ marketStats })
-
     return NextResponse.json(
-      { open, history },
+      { open, history, stats },
       {
         status: 200,
         headers: {

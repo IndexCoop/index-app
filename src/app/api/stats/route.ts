@@ -6,11 +6,11 @@ import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
+
   const tokenAddress = searchParams.get('address')
   const symbol = searchParams.get('symbol')
   const base = searchParams.get('base')
   const baseCurrency = searchParams.get('baseCurrency')
-
   if (!tokenAddress || !symbol || !base || !baseCurrency) {
     return NextResponse.json('Bad Request', { status: 400 })
   }
@@ -29,7 +29,6 @@ export async function GET(req: NextRequest) {
       metrics: ['nav', 'navchange'],
     })
 
-    console.log({ data, baseCurrency, url: req.url })
     return NextResponse.json({
       base: { ...data, baseCurrency },
       token: {

@@ -245,7 +245,10 @@ export const openPositionsColumns = [
 
       return (
         <div className='flex-[0.75] text-right'>
-          {formatAmount(data.metrics?.endingAvgCostPerUnit ?? 0)}
+          {formatAmount(
+            data.trade?.underlyingAssetUnitPrice ?? 0,
+            data.trade?.underlyingAssetUnitPriceDenominator,
+          )}
         </div>
       )
     },
@@ -259,20 +262,16 @@ export const openPositionsColumns = [
       const token =
         row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
 
-      // const { market } = row.table.options.meta?.markets.find(
-      //   (m) =>
-      //     m.collateral === data.trade?.underlyingAssetSymbol &&
-      //     m.debt.includes(
-      //       data.trade?.underlyingAssetUnitPriceDenominator ??
-      //         '<fail-if-missing>',
-      //     ),
-      // ) ?? { market: '' }
-
       if (isLeverageToken(token) && data.trade && data.metrics) {
+        const price =
+          row.table.options.meta?.stats.find(
+            ({ symbol }) => symbol === data.trade?.underlyingAssetSymbol,
+          )?.price ?? 0
+
         return (
           <div className='flex-[0.75] text-right'>
             {formatAmount(
-              token.usd,
+              price,
               data.trade.underlyingAssetUnitPriceDenominator,
             )}
           </div>

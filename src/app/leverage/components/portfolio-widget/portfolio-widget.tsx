@@ -8,8 +8,10 @@ import {
   historyColumns,
   openPositionsColumns,
 } from '@/app/leverage/components/portfolio-widget/columns'
-import { TableRenderer } from '@/app/leverage/components/portfolio-widget/table'
-import { getMarketsForChain } from '@/app/leverage/constants'
+import {
+  TableRenderer,
+  type Stats,
+} from '@/app/leverage/components/portfolio-widget/table'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
@@ -25,7 +27,6 @@ const OpenPositions = () => {
   const { chainId } = useNetwork()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const { queryParams, updateQueryParams } = useQueryParams()
-  const markets = getMarketsForChain(chainId ?? 1)
 
   const { balances } = useLeverageToken()
 
@@ -80,14 +81,14 @@ const OpenPositions = () => {
   })
 
   const { data, isFetching } = useQuery({
-    initialData: { open: [], history: [] },
+    initialData: { open: [], history: [], stats: [] },
     enabled: Boolean(address && chainId),
     queryKey: ['leverage-token-history', address, chainId, selectedIndex],
     queryFn: async () => {
       const response = await fetch('/api/leverage/history', {
         method: 'POST',
         body: JSON.stringify({
-          user: '0xaB8131FE3C0cB081630502ED26C89C51103E37ce',
+          user: address,
           chainId,
         }),
       })
@@ -95,6 +96,7 @@ const OpenPositions = () => {
       const data = (await response.json()) as {
         open: GetApiV2UserAddressPositions200
         history: GetApiV2UserAddressPositions200
+        stats: Stats[]
       }
 
       return data
@@ -111,7 +113,7 @@ const OpenPositions = () => {
         (row) => !row.trade && !row.metrics,
       ),
       tokens: tokens as Record<string, EnrichedToken>,
-      markets,
+      stats: data.stats,
       adjustPosition,
     },
     getCoreRowModel: getCoreRowModel(),
