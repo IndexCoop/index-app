@@ -5,6 +5,7 @@ import {
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import {
   BedIndex,
@@ -13,7 +14,6 @@ import {
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   GmiIndex,
-  ic21,
   LeveragedRethStakingYield,
 } from '@/constants/tokens'
 
@@ -25,6 +25,8 @@ import {
   InverseMATICFlexibleLeverageIndexPolygon,
   Matic2xFlexibleLeverageIndexPolygon,
 } from './polygon'
+
+const ic21 = getTokenByChainAndSymbol(1, 'ic21')
 
 export const Issuance = {
   [BedIndex.symbol]: IndexDebtIssuanceModuleV2Address_v2,

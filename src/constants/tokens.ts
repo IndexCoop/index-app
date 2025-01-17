@@ -6,7 +6,6 @@ import {
   dsethLogo,
   gmiLogo,
   gtcEthLogo,
-  ic21Logo,
   icethLogo,
   icrethLogo,
   indexLogo,
@@ -127,14 +126,6 @@ export const GitcoinStakedETHIndex: Token = {
   image: gtcEthLogo,
   address: '0x36c833Eed0D376f75D1ff9dFDeE260191336065e',
   decimals: 18,
-}
-
-export const ic21: Token = {
-  name: 'Index Coop Large Cap Index',
-  symbol: 'ic21',
-  address: '0x1B5E16C5b20Fb5EE87C61fE9Afe735Cca3B21A65',
-  decimals: 18,
-  image: ic21Logo,
 }
 
 export const icETHIndex: Token = {

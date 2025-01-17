@@ -75,8 +75,8 @@ describe('PathResolver', () => {
     expect(resolvedPath.outputToken.symbol).toBe(indicesTokenList[0].symbol)
   })
 
-  it('returns default for wrong path with two indices: /swap/ic21/mvi', async () => {
-    const pathComponents = ['ic21', 'mvi']
+  it('returns default for wrong path with two indices: /swap/dpi/mvi', async () => {
+    const pathComponents = ['dpi', 'mvi']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
     expect(resolvedPath.isMinting).toBe(true)
