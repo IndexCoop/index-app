@@ -7,6 +7,8 @@ import {
   getApiV2UserAddressPositions,
 } from '@/gen'
 
+import { GET as getApiStats } from '../../stats/route'
+
 type TokenTransferRequest = {
   user: Address
   chainId: number
@@ -15,6 +17,9 @@ type TokenTransferRequest = {
 export async function POST(req: NextRequest) {
   try {
     const { user, chainId } = (await req.json()) as TokenTransferRequest
+
+    const host = req.headers.get('host')
+    const protocol = host?.startsWith('localhost') ? 'http' : 'https'
 
     const positions = await getApiV2UserAddressPositions(
       { address: user },
@@ -36,6 +41,26 @@ export async function POST(req: NextRequest) {
       ),
       'metrics.tokenAddress',
     )
+
+    const marketStats = await Promise.all(
+      open.map(async (position) => {
+        const url = `${protocol}://${host}/api/stats?address=${position.rawContract.address}&symbol=${position.metrics?.market}&base=${position.trade?.underlyingAssetSymbol}&baseCurrency=${position.trade?.underlyingAssetUnitPriceDenominator}`
+        const response = await getApiStats(
+          new NextRequest({
+            ...req,
+            url,
+          }),
+        )
+
+        console.log(response)
+
+        const data = await response.json()
+
+        return data
+      }),
+    )
+
+    console.log({ marketStats })
 
     return NextResponse.json(
       { open, history },

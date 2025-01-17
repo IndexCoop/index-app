@@ -75,6 +75,13 @@ declare module '@tanstack/table-core' {
     tokens: Record<string, EnrichedToken>
     history: GetApiV2UserAddressPositions200
     transfers: Omit<GetApiV2UserAddressPositions200, 'trade' | 'metrics'>
+    markets: {
+      icon: string
+      market: string
+      priceRatio: string
+      collateral: string
+      debt: string
+    }[]
     adjustPosition: (mint: boolean, token: EnrichedToken) => void
   }
 }

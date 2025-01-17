@@ -259,10 +259,22 @@ export const openPositionsColumns = [
       const token =
         row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
 
+      // const { market } = row.table.options.meta?.markets.find(
+      //   (m) =>
+      //     m.collateral === data.trade?.underlyingAssetSymbol &&
+      //     m.debt.includes(
+      //       data.trade?.underlyingAssetUnitPriceDenominator ??
+      //         '<fail-if-missing>',
+      //     ),
+      // ) ?? { market: '' }
+
       if (isLeverageToken(token) && data.trade && data.metrics) {
         return (
           <div className='flex-[0.75] text-right'>
-            {formatAmount(token.unitPriceUsd ?? 0)}
+            {formatAmount(
+              token.usd,
+              data.trade.underlyingAssetUnitPriceDenominator,
+            )}
           </div>
         )
       }

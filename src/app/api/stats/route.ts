@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
   const symbol = searchParams.get('symbol')
   const base = searchParams.get('base')
   const baseCurrency = searchParams.get('baseCurrency')
+
   if (!tokenAddress || !symbol || !base || !baseCurrency) {
     return NextResponse.json('Bad Request', { status: 400 })
   }
@@ -27,6 +28,8 @@ export async function GET(req: NextRequest) {
       tokenAddress: tokenAddress,
       metrics: ['nav', 'navchange'],
     })
+
+    console.log({ data, baseCurrency, url: req.url })
     return NextResponse.json({
       base: { ...data, baseCurrency },
       token: {
