@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { Warnings, WarningType } from '@/components/swap/components/warning'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
@@ -100,41 +100,34 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     buttonLabelOverrides,
   )
 
-  const [warnings, setWarnings] = useState<WarningType[]>([])
-
-  useEffect(() => {
+  const warnings: WarningType[] = useMemo(() => {
     if (
       !isTradablePair &&
       isRestrictedCountry &&
       !hiddenWarnings?.includes(WarningType.restricted)
     ) {
-      setWarnings([WarningType.restricted])
-      return
+      return [WarningType.restricted]
     }
     if (
       !isTradablePair &&
       isUsingVpn &&
       !hiddenWarnings?.includes(WarningType.vpn)
     ) {
-      setWarnings([WarningType.vpn])
-      return
+      return [WarningType.vpn]
     }
     if (
       buttonState === TradeButtonState.signTerms &&
       !hiddenWarnings?.includes(WarningType.signTerms)
     ) {
-      setWarnings([WarningType.signTerms])
-      return
+      return [WarningType.signTerms]
     }
     if (slippage > 9 && !hiddenWarnings?.includes(WarningType.priceImpact)) {
-      setWarnings([WarningType.priceImpact])
-      return
+      return [WarningType.priceImpact]
     }
     if (!hiddenWarnings?.includes(WarningType.flashbots)) {
-      setWarnings([WarningType.flashbots])
-      return
+      return [WarningType.flashbots]
     }
-    setWarnings([])
+    return []
   }, [
     buttonState,
     hiddenWarnings,
