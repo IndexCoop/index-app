@@ -6,12 +6,44 @@ import { Address } from 'viem'
 import {
   GetApiV2UserAddressPositionsQueryParamsChainIdEnum as ApiChainId,
   getApiV2UserAddressPositions,
+  GetApiV2UserAddressPositions200,
 } from '@/gen'
-
 
 type TokenTransferRequest = {
   user: Address
   chainId: number
+}
+
+const calculateAverageEntryPrice = (
+  positions: GetApiV2UserAddressPositions200,
+) => {
+  const grouped = positions.reduce(
+    (acc, position) => {
+      if (position.trade && position.metrics) {
+        const tokenAddress = position.metrics.tokenAddress
+
+        if (!acc[tokenAddress]) {
+          acc[tokenAddress] = { sum: 0, count: 0 }
+        }
+
+        acc[tokenAddress].sum += position.trade.underlyingAssetUnitPrice ?? 0
+        acc[tokenAddress].count += 1
+      }
+      return acc
+    },
+    {} as Record<string, { sum: number; count: number }>,
+  )
+
+  const averages = Object.keys(grouped).reduce(
+    (acc, tokenAddress) => {
+      acc[tokenAddress] =
+        grouped[tokenAddress].sum / grouped[tokenAddress].count
+      return acc
+    },
+    {} as Record<string, number>,
+  )
+
+  return averages
 }
 
 export async function POST(req: NextRequest) {
@@ -29,13 +61,23 @@ export async function POST(req: NextRequest) {
         new Date(a.metadata.blockTimestamp).getTime(),
     )
 
+    const openPositions = history.filter(
+      (position) =>
+        position.trade &&
+        position.metrics &&
+        position.metrics.positionStatus === 'open',
+    )
+
+    const averages = calculateAverageEntryPrice(openPositions)
+
     const open = uniqBy(
-      history.filter(
-        (position) =>
-          position.trade &&
-          position.metrics &&
-          position.metrics.positionStatus === 'open',
-      ),
+      openPositions.map((position) => ({
+        ...position,
+        trade: {
+          ...position.trade,
+          underlyingAssetUnitPrice: averages[position.metrics!.tokenAddress],
+        },
+      })),
       'metrics.tokenAddress',
     )
 
