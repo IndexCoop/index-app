@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { Warnings, WarningType } from '@/components/swap/components/warning'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
@@ -11,7 +11,7 @@ import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { useProtection } from '@/lib/providers/protection'
+import { useProtectionContext } from '@/lib/providers/protection'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { getNativeToken, isTokenPairTradable } from '@/lib/utils/tokens'
@@ -52,7 +52,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
   const { chainId } = useNetwork()
   const { open } = useWeb3Modal()
-  const requiresProtection = useProtection()
+  const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
   const { signTermsOfService } = useSignTerms()
   const { slippage } = useSlippage()
 
@@ -65,12 +65,18 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   const isTradablePair = useMemo(
     () =>
       isTokenPairTradable(
-        requiresProtection,
+        isRestrictedCountry || isUsingVpn,
         inputToken.symbol,
         outputToken.symbol,
         chainId ?? 1,
       ),
-    [chainId, requiresProtection, inputToken, outputToken],
+    [
+      isRestrictedCountry,
+      isUsingVpn,
+      inputToken.symbol,
+      outputToken.symbol,
+      chainId,
+    ],
   )
 
   const shouldApprove = useMemo(() => {
@@ -94,30 +100,42 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     buttonLabelOverrides,
   )
 
-  const [warnings, setWarnings] = useState<WarningType[]>([])
-
-  useEffect(() => {
-    if (!isTradablePair && !hiddenWarnings?.includes(WarningType.restricted)) {
-      setWarnings([WarningType.restricted])
-      return
+  const warnings: WarningType[] = useMemo(() => {
+    if (
+      !isTradablePair &&
+      isRestrictedCountry &&
+      !hiddenWarnings?.includes(WarningType.restricted)
+    ) {
+      return [WarningType.restricted]
+    }
+    if (
+      !isTradablePair &&
+      isUsingVpn &&
+      !hiddenWarnings?.includes(WarningType.vpn)
+    ) {
+      return [WarningType.vpn]
     }
     if (
       buttonState === TradeButtonState.signTerms &&
       !hiddenWarnings?.includes(WarningType.signTerms)
     ) {
-      setWarnings([WarningType.signTerms])
-      return
+      return [WarningType.signTerms]
     }
     if (slippage > 9 && !hiddenWarnings?.includes(WarningType.priceImpact)) {
-      setWarnings([WarningType.priceImpact])
-      return
+      return [WarningType.priceImpact]
     }
     if (!hiddenWarnings?.includes(WarningType.flashbots)) {
-      setWarnings([WarningType.flashbots])
-      return
+      return [WarningType.flashbots]
     }
-    setWarnings([])
-  }, [buttonState, hiddenWarnings, isTradablePair, slippage])
+    return []
+  }, [
+    buttonState,
+    hiddenWarnings,
+    isRestrictedCountry,
+    isTradablePair,
+    isUsingVpn,
+    slippage,
+  ])
 
   const onClick = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
