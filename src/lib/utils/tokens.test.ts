@@ -5,15 +5,14 @@ import {
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH,
-  GitcoinStakedETHIndex,
   GUSD,
-  ic21,
-  icETHIndex,
+  GitcoinStakedETHIndex,
   LeveragedRethStakingYield,
   MATIC,
   STETH,
   USDC,
   WETH,
+  icETHIndex,
 } from '@/constants/tokens'
 
 import {
@@ -75,14 +74,6 @@ describe('getCurrencyTokensForIndex()', () => {
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(5)
     expect(currencyTokens).toEqual([ETH, WETH, USDC, DAI, GUSD])
-  })
-
-  test('returns correct currency tokens for ic21', async () => {
-    const chainId = 1
-    const token = ic21
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(currencies.length)
-    expect(currencyTokens).toEqual(currencies)
   })
 
   test('returns correct currency tokens for icETH', async () => {
