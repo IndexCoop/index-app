@@ -5,7 +5,6 @@ import {
   bedBorderLogo,
   dsethLogo,
   gmiLogo,
-  gtcEthLogo,
   icethLogo,
   icrethLogo,
   indexLogo,
@@ -118,14 +117,6 @@ export const GmiIndex: Token = {
   address: '0x47110d43175f7f2C2425E7d15792acC5817EB44f',
   decimals: 18,
   image: gmiLogo,
-}
-
-export const GitcoinStakedETHIndex: Token = {
-  name: 'Gitcoin Staked ETH Index',
-  symbol: 'gtcETH',
-  image: gtcEthLogo,
-  address: '0x36c833Eed0D376f75D1ff9dFDeE260191336065e',
-  decimals: 18,
 }
 
 export const icETHIndex: Token = {

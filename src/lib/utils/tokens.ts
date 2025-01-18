@@ -13,9 +13,7 @@ import {
   DAI,
   DiversifiedStakedETHIndex,
   ETH,
-  GitcoinStakedETHIndex,
   GUSD,
-  icETHIndex,
   LeveragedRethStakingYield,
   MATIC,
   RETH,
@@ -27,6 +25,7 @@ import {
   WBTC,
   WETH,
   WSTETH,
+  icETHIndex,
 } from '@/constants/tokens'
 
 export function getAddressForToken(
@@ -70,10 +69,7 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI, GUSD]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
-  if (
-    index.symbol === DiversifiedStakedETHIndex.symbol ||
-    index.symbol === GitcoinStakedETHIndex.symbol
-  )
+  if (index.symbol === DiversifiedStakedETHIndex.symbol)
     return [ETH, WETH, USDC, GUSD, RETH, STETH, SETH2, WSTETH]
   if (index.symbol === LeveragedRethStakingYield.symbol)
     return [ETH, WETH, USDC, GUSD, RETH]

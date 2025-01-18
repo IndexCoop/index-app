@@ -12,7 +12,6 @@ import {
   Bitcoin2xFlexibleLeverageIndex,
   DATA,
   Ethereum2xFlexibleLeverageIndex,
-  GitcoinStakedETHIndex,
   GmiIndex,
   LeveragedRethStakingYield,
 } from '@/constants/tokens'
@@ -26,6 +25,7 @@ import {
   Matic2xFlexibleLeverageIndexPolygon,
 } from './polygon'
 
+const GitcoinStakedETHIndex = getTokenByChainAndSymbol(1, 'gtcETH')
 const ic21 = getTokenByChainAndSymbol(1, 'ic21')
 
 export const Issuance = {
