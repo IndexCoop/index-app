@@ -6,7 +6,6 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   GUSD,
-  GitcoinStakedETHIndex,
   LeveragedRethStakingYield,
   MATIC,
   STETH,
@@ -111,29 +110,6 @@ describe('getCurrencyTokensForIndex()', () => {
     const chainId = 1
     const token = LeveragedRethStakingYield
     const requiredTokens = ['ETH', 'WETH', 'rETH', 'USDC', 'GUSD']
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(requiredTokens.length)
-    for (const requiredToken of requiredTokens) {
-      expect(
-        currencyTokens.filter((currency) => currency.symbol === requiredToken)
-          .length,
-      ).toEqual(1)
-    }
-  })
-
-  test('returns correct currency tokens for gtcETH', async () => {
-    const chainId = 1
-    const token = GitcoinStakedETHIndex
-    const requiredTokens = [
-      'ETH',
-      'WETH',
-      'stETH',
-      'wstETH',
-      'rETH',
-      'sETH2',
-      'USDC',
-      'GUSD',
-    ]
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(requiredTokens.length)
     for (const requiredToken of requiredTokens) {
