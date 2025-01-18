@@ -26,6 +26,54 @@ const map: Record<LeverageType, string> = {
   Long3x: '3x',
 }
 
+const currencyConfig: Record<
+  string,
+  { symbol: string; options: Intl.NumberFormatOptions }
+> = {
+  ETH: {
+    symbol: 'Ξ',
+    options: {
+      maximumFractionDigits: 4,
+      minimumFractionDigits: 4,
+      currencyDisplay: 'symbol',
+      currency: 'ETH',
+      style: 'currency',
+    },
+  },
+  BTC: {
+    symbol: '₿',
+    options: {
+      maximumFractionDigits: 4,
+      minimumFractionDigits: 4,
+      currencyDisplay: 'symbol',
+      currency: 'BTC',
+      style: 'currency',
+    },
+  },
+  USD: {
+    symbol: '$',
+    options: {
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+      currencyDisplay: 'symbol',
+      currency: 'USD',
+      style: 'currency',
+    },
+  },
+}
+
+const formatAmount = (amount: number = 0, denominator?: unknown) => {
+  if (!denominator || typeof denominator !== 'string') {
+    return amount.toLocaleString(navigator.language, currencyConfig.USD.options)
+  }
+
+  const config = currencyConfig[denominator] ?? currencyConfig.USD
+
+  return amount
+    .toLocaleString(navigator.language, config.options)
+    .replace(config.options.currency!, config.symbol)
+}
+
 const getTransferedTotal = (
   user?: string,
   unitPriceUsd: number = 0,
@@ -35,7 +83,7 @@ const getTransferedTotal = (
     transfers.reduce((acc, curr) => {
       if (curr.from.toLowerCase() === user?.toLowerCase()) {
         return acc - (curr.value ?? 0)
-      } else if (curr.to === user) {
+      } else if (curr.to?.toLowerCase === user) {
         return acc + (curr.value ?? 0)
       }
 
@@ -55,7 +103,10 @@ const getAction = (data: GetApiV2UserAddressPositionsQueryResponse[number]) => {
     }
   }
 
-  if (data.trade.transactionType === 'sell' && data.metrics.endingUnits === 0) {
+  if (
+    data.trade.transactionType === 'sell' &&
+    (data.metrics.endingUnits ?? 0) <= 0
+  ) {
     return 'Close'
   }
 
@@ -83,11 +134,12 @@ const getLastBuy = (
 export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.market',
-    header: () => <div className='flex-1 text-left'>Market</div>,
+    header: () => <div className='flex-[0.75] text-left'>Market</div>,
     cell: (row) => {
       const data = row.getValue()
+
       return (
-        <div className='flex flex-1 items-center gap-2 text-left'>
+        <div className='flex flex-[0.75] items-center gap-2 text-left'>
           <Image
             src={
               getTokenByChainAndAddress(
@@ -106,7 +158,7 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.strategy',
-    header: () => <div className='flex-1 text-center'>Strategy</div>,
+    header: () => <div className='flex-[0.5] text-center'>Strategy</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -115,7 +167,7 @@ export const openPositionsColumns = [
 
       if (isLeverageToken(token)) {
         return (
-          <div className={cn('text-ic-blue-300 flex-1 text-center')}>
+          <div className={cn('text-ic-blue-300 flex-[0.5] text-center')}>
             {map[token.extensions.leverage.type]}
           </div>
         )
@@ -126,7 +178,7 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.netBalance',
-    header: () => <div className='flex-1 text-left'>Net Balance</div>,
+    header: () => <div className='flex-[0.75] text-right'>Net Balance</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -135,7 +187,9 @@ export const openPositionsColumns = [
 
       if (!isLeverageToken(token)) return <></>
 
-      return <div className='flex-1 text-left'>${token.usd?.toFixed(2)}</div>
+      return (
+        <div className='flex-[0.75] text-right'>{formatAmount(token.usd)}</div>
+      )
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -159,11 +213,13 @@ export const openPositionsColumns = [
         row.table.options.meta?.transfers,
       )
 
-      const balance = token.usd ?? 0
-      const cost = data.metrics.endingPositionCost ?? 0
+      const _return = token.usd ?? 0
+      const cost =
+        (data.metrics.endingAvgCostPerUnit ?? 0) *
+        (data.metrics.endingUnits ?? 0)
 
       // Here we subtract the total transfer amount, because it has to be inversely corrected to exclude it from profit and loss
-      const pnl = balance - transferAmount - cost
+      const pnl = _return - transferAmount - cost
       const pnlPercentage = (pnl / cost) * 100
       const sign = Math.sign(pnl)
 
@@ -176,26 +232,30 @@ export const openPositionsColumns = [
             sign === 0 && 'text-ic-white',
           )}
         >
-          {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} $${Math.abs(pnl).toFixed(2)} (${pnlPercentage.toFixed(2)}%)`}
+          {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} ${formatAmount(Math.abs(pnl))} (${pnlPercentage.toFixed(2)}%)`}
         </div>
       )
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.entryPrice',
-    header: () => <div className='flex-1 text-right'>Entry Price</div>,
+    header: () => <div className='flex-[0.75] text-right'>Entry Price</div>,
     cell: (row) => {
       const data = row.getValue()
+
       return (
-        <div className='flex-1 text-right'>
-          ${data.metrics?.endingAvgCostPerUnit?.toFixed(2)}
+        <div className='flex-[0.75] text-right'>
+          {formatAmount(
+            data.trade?.underlyingAssetUnitPrice ?? 0,
+            data.trade?.underlyingAssetUnitPriceDenominator,
+          )}
         </div>
       )
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.currentPrice',
-    header: () => <div className='flex-1 text-right'>Current Price</div>,
+    header: () => <div className='flex-[0.75] text-right'>Current Price</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -203,20 +263,28 @@ export const openPositionsColumns = [
         row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
 
       if (isLeverageToken(token) && data.trade && data.metrics) {
+        const price =
+          row.table.options.meta?.stats.find(
+            ({ symbol }) => symbol === data.trade?.underlyingAssetSymbol,
+          )?.price ?? 0
+
         return (
-          <div className='flex-1 text-right'>
-            ${token.unitPriceUsd?.toFixed(2)}
+          <div className='flex-[0.75] text-right'>
+            {formatAmount(
+              price,
+              data.trade.underlyingAssetUnitPriceDenominator,
+            )}
           </div>
         )
       }
 
-      return
+      return <div className='flex-[0.75] text-right'>-</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.increase',
     header: () => (
-      <div className='flex flex-[2] items-center justify-end gap-4'>
+      <div className='flex flex-1 items-center justify-end gap-4'>
         <div className='w-[50px] text-right'>Increase</div>
         <div className='w-[50px]'>Close</div>
       </div>
@@ -230,7 +298,7 @@ export const openPositionsColumns = [
       if (!isLeverageToken(token)) return <></>
 
       return (
-        <div className='flex flex-[2] items-center justify-end gap-4'>
+        <div className='flex flex-1 items-center justify-end gap-4'>
           <div className='flex w-[50px] justify-end'>
             <Button
               className='hover:bg-ic-dark flex size-[25px] items-center justify-center rounded-lg border border-white'
@@ -260,14 +328,14 @@ export const openPositionsColumns = [
 export const historyColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.market',
-    header: () => <div className='flex-1 text-left'>Market</div>,
+    header: () => <div className='flex-[0.75] text-left'>Market</div>,
     cell: (row) => {
       const data = row.getValue()
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { chainId: currentChainId } = useNetwork()
 
       return (
-        <div className='flex flex-1 items-center gap-2 text-left'>
+        <div className='flex flex-[0.75] items-center gap-2 text-left'>
           <Image
             src={
               getTokenByChainAndAddress(
@@ -288,7 +356,7 @@ export const historyColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.strategy',
-    header: () => <div className='flex-[0.75] text-center'>Strategy</div>,
+    header: () => <div className='flex-[0.5] text-center'>Strategy</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -300,22 +368,22 @@ export const historyColumns = [
 
       if (isLeverageToken(token)) {
         return (
-          <div className={cn('text-ic-blue-300 flex-[0.75] text-center')}>
+          <div className={cn('text-ic-blue-300 flex-[0.5] text-center')}>
             {map[token.extensions.leverage.type]}
           </div>
         )
       }
 
-      return <div className='flex-[0.75]' />
+      return <div className='flex-[0.5]' />
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.action',
-    header: () => <div className='flex-[0.75] text-left'>Action</div>,
+    header: () => <div className='flex-[0.5] text-center'>Action</div>,
     cell: (row) => {
       const data = row.getValue()
 
-      return <div className='flex-[0.75] text-left'>{getAction(data)}</div>
+      return <div className='flex-[0.5] text-center'>{getAction(data)}</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -332,7 +400,7 @@ export const historyColumns = [
 
         return (
           <div className='text-ic-blue-300 flex-1 text-right'>
-            ${value.toFixed(2)}
+            {formatAmount(value)}
           </div>
         )
       }
@@ -341,10 +409,9 @@ export const historyColumns = [
 
       return (
         <div className='text-ic-blue-300 flex-1 text-right'>
-          $
-          {(
-            (data.value ?? 0) * (lastBuy?.trade?.underlyingAssetUnitPrice ?? 0)
-          ).toFixed(2)}
+          {formatAmount(
+            (data.value ?? 0) * (lastBuy?.trade?.underlyingAssetUnitPrice ?? 0),
+          )}
         </div>
       )
     },
@@ -359,10 +426,10 @@ export const historyColumns = [
 
       return (
         <div className='flex-1 text-right'>
-          $
-          {data.trade
-            ? data.trade?.underlyingAssetUnitPrice?.toFixed(2)
-            : lastBuy?.trade?.underlyingAssetUnitPrice?.toFixed(2)}
+          {formatAmount(
+            (data ?? lastBuy).trade?.underlyingAssetUnitPrice ?? 0,
+            (data ?? lastBuy).trade?.underlyingAssetUnitPriceDenominator,
+          )}
         </div>
       )
     },
@@ -384,8 +451,8 @@ export const historyColumns = [
         const _return = data.metrics.totalReturnOfUnitsSold ?? 0
         const cost = data.metrics.totalCostOfUnitsSold ?? 0
 
-        const pnl = data.metrics.endingPnL ?? 0
-        const pnlPercentage = ((_return - cost) / cost) * 100
+        const pnl = _return - cost
+        const pnlPercentage = (pnl / cost) * 100
         const sign = Math.sign(pnl)
 
         return (
@@ -397,7 +464,7 @@ export const historyColumns = [
               sign === 0 && 'text-ic-white',
             )}
           >
-            {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} $${Math.abs(pnl).toFixed(2)} (${pnlPercentage.toFixed(2)}%)`}
+            {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} ${formatAmount(Math.abs(pnl))} (${pnlPercentage.toFixed(2)}%)`}
           </div>
         )
       }
@@ -407,15 +474,21 @@ export const historyColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.time',
-    header: () => <div className='ml-4 flex-1 text-left'>Time</div>,
+    header: () => <div className='ml-8 flex-[0.75] text-left'>Time</div>,
     cell: (row) => {
       const data = row.getValue()
 
       return (
-        <div className='ml-4 flex-1 text-left'>
+        <div className='ml-8 flex-[0.75] text-left'>
           {new Date(
             data.trade?.createdAt ?? data.metadata.blockTimestamp,
-          ).toLocaleDateString()}
+          ).toLocaleDateString(navigator.language, {
+            year: '2-digit',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
         </div>
       )
     },

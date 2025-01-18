@@ -8,7 +8,10 @@ import {
   historyColumns,
   openPositionsColumns,
 } from '@/app/leverage/components/portfolio-widget/columns'
-import { TableRenderer } from '@/app/leverage/components/portfolio-widget/table'
+import {
+  TableRenderer,
+  type Stats,
+} from '@/app/leverage/components/portfolio-widget/table'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
@@ -78,18 +81,22 @@ const OpenPositions = () => {
   })
 
   const { data, isFetching } = useQuery({
-    initialData: { open: [], history: [] },
+    initialData: { open: [], history: [], stats: [] },
     enabled: Boolean(address && chainId),
     queryKey: ['leverage-token-history', address, chainId, selectedIndex],
     queryFn: async () => {
       const response = await fetch('/api/leverage/history', {
         method: 'POST',
-        body: JSON.stringify({ user: address, chainId }),
+        body: JSON.stringify({
+          user: address,
+          chainId,
+        }),
       })
 
       const data = (await response.json()) as {
         open: GetApiV2UserAddressPositions200
         history: GetApiV2UserAddressPositions200
+        stats: Stats[]
       }
 
       return data
@@ -102,8 +109,11 @@ const OpenPositions = () => {
     meta: {
       user: address ?? '',
       history: data.history,
-      transfers: data.history.filter((row) => !row.trade && !row.metrics),
+      transfers: (data.history ?? []).filter(
+        (row) => !row.trade && !row.metrics,
+      ),
       tokens: tokens as Record<string, EnrichedToken>,
+      stats: data.stats,
       adjustPosition,
     },
     getCoreRowModel: getCoreRowModel(),
