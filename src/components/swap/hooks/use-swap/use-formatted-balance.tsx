@@ -13,7 +13,7 @@ export function useFormattedBalance(token: Token, address?: string) {
   const tokenAddress = getAddressForToken(token, publicClient?.chain.id)
   const { balance, forceRefetch } = useBalance(address ?? '', tokenAddress)
   const balanceFormatted = useMemo(
-    () => formattedBalance(token, balance),
+    () => formattedBalance(token.decimals, balance),
     [token, balance],
   )
   const balanceWei = useMemo(

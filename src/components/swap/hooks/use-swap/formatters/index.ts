@@ -1,4 +1,3 @@
-import { Token } from '@/constants/tokens'
 import { formatAmount, formatWei } from '@/lib/utils'
 
 import { TradeDetailTokenPrices } from '../../../components/trade-details'
@@ -7,12 +6,12 @@ import { TradeDetailTokenPrices } from '../../../components/trade-details'
  * Rounds to 2 decimal places. NOT precise, should only be used for display
  */
 export function formattedBalance(
-  token: Token,
+  tokenDecimals: number,
   tokenBalance: bigint | undefined,
 ) {
   const zero = '0.00'
   if (!tokenBalance) return zero
-  const formattedBalance = Number(formatWei(tokenBalance, token.decimals))
+  const formattedBalance = Number(formatWei(tokenBalance, tokenDecimals))
   const formatted = formatAmount(formattedBalance, 3)
   return formatted
 }
