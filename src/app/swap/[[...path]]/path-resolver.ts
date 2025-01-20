@@ -31,8 +31,8 @@ export class PathResolver {
         outputToken: ETH,
       }
 
-    let inputToken = this.resolveToken(symbols.inputToken ?? ETH.symbol)
-    let outputToken = this.resolveToken(
+    const inputToken = this.resolveToken(symbols.inputToken ?? ETH.symbol)
+    const outputToken = this.resolveToken(
       symbols.outputToken ?? defaultIndex.symbol,
     )
 
