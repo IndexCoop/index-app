@@ -36,9 +36,6 @@ export class PathResolver {
       symbols.outputToken ?? defaultIndex.symbol,
     )
 
-    // TODO: if token is not INDEX do not allow minting
-    // TODO: if token is INDEX; return immediately?
-
     if (inputToken.symbol === IndexToken.symbol) {
       return {
         isMinting: false,
@@ -49,7 +46,7 @@ export class PathResolver {
 
     if (outputToken.symbol === IndexToken.symbol) {
       return {
-        isMinting: false,
+        isMinting: true,
         inputToken: ETH,
         outputToken: IndexToken,
       }

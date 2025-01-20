@@ -73,8 +73,9 @@ export const SelectedTokenProvider = (props: { children: any }) => {
   )
 
   const toggleIsMinting = useCallback(() => {
-    // TODO: if not INDEX token do not allow minting
-    routeSwap(outputToken.symbol, inputToken.symbol)
+    if (inputToken.symbol === 'INDEX' || outputToken.symbol === 'INDEX') {
+      routeSwap(outputToken.symbol, inputToken.symbol)
+    }
   }, [inputToken, outputToken, routeSwap])
 
   return (
