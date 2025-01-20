@@ -1,5 +1,5 @@
 import { indicesTokenList } from '@/constants/tokenlists'
-import { ETH, Token } from '@/constants/tokens'
+import { ETH, IndexToken, Token } from '@/constants/tokens'
 import {
   getCurrencyTokens,
   getCurrencyTokensForIndex,
@@ -26,15 +26,34 @@ export class PathResolver {
 
     if (symbols.inputToken === null && symbols.outputToken === null)
       return {
-        isMinting: true,
-        inputToken: ETH,
-        outputToken: defaultIndex,
+        isMinting: false,
+        inputToken: defaultIndex,
+        outputToken: ETH,
       }
 
     let inputToken = this.resolveToken(symbols.inputToken ?? ETH.symbol)
     let outputToken = this.resolveToken(
       symbols.outputToken ?? defaultIndex.symbol,
     )
+
+    // TODO: if token is not INDEX do not allow minting
+    // TODO: if token is INDEX; return immediately?
+
+    if (inputToken.symbol === IndexToken.symbol) {
+      return {
+        isMinting: false,
+        inputToken: IndexToken,
+        outputToken: ETH,
+      }
+    }
+
+    if (outputToken.symbol === IndexToken.symbol) {
+      return {
+        isMinting: false,
+        inputToken: ETH,
+        outputToken: IndexToken,
+      }
+    }
 
     const inputTokenIsIndex = indicesTokenList.some(
       (token) => token.symbol === inputToken.symbol,
@@ -45,23 +64,23 @@ export class PathResolver {
 
     if (!inputTokenIsIndex && !outputTokenIsIndex)
       return {
-        isMinting: true,
-        inputToken: ETH,
-        outputToken: defaultIndex,
+        isMinting: false,
+        inputToken: defaultIndex,
+        outputToken: ETH,
       }
 
-    if (outputTokenIsIndex || (inputTokenIsIndex && outputTokenIsIndex)) {
-      inputToken = this.getCurrency(outputToken, inputToken)
-    }
-
-    if (inputTokenIsIndex && !outputTokenIsIndex) {
-      outputToken = this.getCurrency(inputToken, outputToken)
+    if (outputTokenIsIndex) {
+      return {
+        isMinting: false,
+        inputToken: outputToken,
+        outputToken: this.getCurrency(outputToken, inputToken),
+      }
     }
 
     return {
-      isMinting: outputTokenIsIndex,
+      isMinting: false,
       inputToken,
-      outputToken,
+      outputToken: this.getCurrency(inputToken, outputToken),
     }
   }
 
