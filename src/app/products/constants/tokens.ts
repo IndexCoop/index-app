@@ -4,6 +4,7 @@ import { arbitrum, base, mainnet } from 'viem/chains'
 import { ProductRow } from '@/app/products/types/product'
 import {
   buildEarnTradePath,
+  buildLegacyPath,
   buildLeverageTradePath,
   buildSwapTradePath,
 } from '@/app/products/utils/trade-path'
@@ -79,7 +80,7 @@ export const productTokens: ProductRow[] = [
     ...getTokenByChainAndSymbol(mainnet.id, 'BED'),
     hasApy: false,
     listType: 'Strategies',
-    tradeHref: buildSwapTradePath('bed'),
+    tradeHref: buildLegacyPath(),
   },
   {
     ...getTokenByChainAndSymbol(base.id, 'icUSD'),

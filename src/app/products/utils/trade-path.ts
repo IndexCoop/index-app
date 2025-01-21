@@ -4,6 +4,8 @@ export const buildEarnTradePath = (
   network: number | string = 1,
 ) => `/earn?buy=${buySymbol}&sell=${sellSymbol}&network=${network}`
 
+export const buildLegacyPath = () => `/legacy`
+
 export const buildLeverageTradePath = (
   buySymbol: string,
   sellSymbol: string = 'ETH',
