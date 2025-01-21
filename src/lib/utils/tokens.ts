@@ -130,7 +130,7 @@ export function isTokenPairTradable(
     outputToken?.tags.some((tag) => tag === 'dangerous') ?? false
 
   if (!inputTokenIsDangerous && !outputTokenIsDangerous) return true
-  return requiresProtection
+  return !requiresProtection
 }
 
 export function digitsByAddress(address: string): number {
