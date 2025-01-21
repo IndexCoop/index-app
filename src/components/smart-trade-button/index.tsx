@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useCallback, useMemo } from 'react'
 
-import { Warnings, WarningType } from '@/components/swap/components/warning'
+import { WarningType, Warnings } from '@/components/swap/components/warning'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
 import {
   TradeButtonState,

@@ -119,16 +119,18 @@ export function isTokenPairTradable(
   outputTokenSymbol: string,
   chainId: number,
 ): boolean {
-  if (!requiresProtection) return true
   // When tokenlists is used everywhere, we can just pass these objects as function
   // arguments instead of the token symbol
   const inputToken = getTokenByChainAndSymbol(chainId, inputTokenSymbol)
   const outputToken = getTokenByChainAndSymbol(chainId, outputTokenSymbol)
+
   const inputTokenIsDangerous =
-    inputToken?.tags.some((tag) => tag === 'dangerous') ?? true
+    inputToken?.tags.some((tag) => tag === 'dangerous') ?? false
   const outputTokenIsDangerous =
-    outputToken?.tags.some((tag) => tag === 'dangerous') ?? true
-  return !inputTokenIsDangerous && !outputTokenIsDangerous
+    outputToken?.tags.some((tag) => tag === 'dangerous') ?? false
+
+  if (!inputTokenIsDangerous && !outputTokenIsDangerous) return true
+  return requiresProtection
 }
 
 export function digitsByAddress(address: string): number {
