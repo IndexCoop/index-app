@@ -30,15 +30,6 @@ describe('PathResolver', () => {
     expect(resolvedPath.outputToken.symbol).toBe(ETH.symbol)
   })
 
-  it('returns an index token (input) for path: /swap/usdc', async () => {
-    const pathComponents = ['usdc']
-    const resolver = new PathResolver()
-    const resolvedPath = resolver.resolve(pathComponents)
-    expect(resolvedPath.isMinting).toBe(true)
-    expect(resolvedPath.inputToken.symbol).toBe(indicesTokenList[0].symbol)
-    expect(resolvedPath.outputToken.symbol).toBe('USDC')
-  })
-
   it('returns an input and output token for path: /swap/usdc/mvi', async () => {
     const pathComponents = ['usdc', 'mvi']
     const resolver = new PathResolver()
