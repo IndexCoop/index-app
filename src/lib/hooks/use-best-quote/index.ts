@@ -82,8 +82,8 @@ export const useBestQuote = (
         return
       }
 
-      const inputTokenAddress = getAddressForToken(inputToken, chainId)
-      const outputTokenAddress = getAddressForToken(outputToken, chainId)
+      const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
+      const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
 
       if (!inputTokenAddress || !outputTokenAddress) {
         console.error(
