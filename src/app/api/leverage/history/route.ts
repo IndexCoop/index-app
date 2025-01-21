@@ -1,4 +1,8 @@
 import { CoingeckoProvider, CoinGeckoService } from '@indexcoop/analytics-sdk'
+import {
+  getTokenByChainAndAddress,
+  isLeverageToken,
+} from '@indexcoop/tokenlists'
 import { uniqBy } from 'lodash'
 import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
@@ -8,10 +12,6 @@ import {
   getApiV2UserAddressPositions,
   GetApiV2UserAddressPositions200,
 } from '@/gen'
-import {
-  getTokenByChainAndAddress,
-  isLeverageToken,
-} from '@indexcoop/tokenlists'
 
 type TokenTransferRequest = {
   user: Address
@@ -114,8 +114,7 @@ export async function POST(req: NextRequest) {
       {
         status: 200,
         headers: {
-          // Response will be cached for 5 seconds, and will serve stale content while revalidating for 10 seconds
-          'Cache-Control': 'public, max-age=5, stale-while-revalidate=10',
+          'Cache-Control': 'public, max-age=1, stale-while-revalidate=1',
         },
       },
     )

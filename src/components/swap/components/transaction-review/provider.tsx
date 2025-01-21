@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
@@ -101,20 +102,25 @@ export function useTransactionReview(props: ReviewProps) {
 
   const refId = useRefId()
 
-  const saveUserTrade: TradeCallback = useCallback(
+  const queryClient = useQueryClient()
+  const saveTrade: TradeCallback = useCallback(
     async ({ address, hash, quote }) => {
-      fetch(`/api/user/trade`, {
+      await fetch(`/api/user/trade`, {
         method: 'POST',
         body: JSON.stringify(mapQuoteToTrade(address, hash, quote, refId)),
       })
+
+      queryClient.refetchQueries({
+        queryKey: ['leverage-token-history'],
+      })
     },
-    [refId],
+    [refId, queryClient],
   )
 
   const makeTrade = async (override: boolean) => {
     if (!quote) return null
     try {
-      await executeTrade(quote, override, saveUserTrade)
+      await executeTrade(quote, override, saveTrade)
       return true
     } catch {
       return false

@@ -2,7 +2,7 @@ import { Tab, TabGroup, TabList } from '@headlessui/react'
 import { isLeverageToken } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import {
   historyColumns,
@@ -103,9 +103,14 @@ const OpenPositions = () => {
     },
   })
 
+  const tableData = useMemo(
+    () => (selectedIndex === 0 ? data.open : data.history),
+    [data, selectedIndex],
+  )
+
   const table = useReactTable({
     columns: selectedIndex === 0 ? openPositionsColumns : historyColumns,
-    data: selectedIndex === 0 ? data.open : data.history,
+    data: tableData,
     meta: {
       user: address ?? '',
       history: data.history,

@@ -264,7 +264,7 @@ export const openPositionsColumns = [
 
       if (isLeverageToken(token) && data.trade && data.metrics) {
         const price =
-          row.table.options.meta?.stats.find(
+          (row.table.options.meta?.stats ?? []).find(
             ({ symbol }) => symbol === data.trade?.underlyingAssetSymbol,
           )?.price ?? 0
 
