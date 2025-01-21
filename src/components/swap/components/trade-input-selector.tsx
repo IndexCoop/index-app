@@ -1,29 +1,33 @@
 import { Flex, Input, Text } from '@chakra-ui/react'
 
-import { Token } from '@/constants/tokens'
 import { colors } from '@/lib/styles/colors'
 
 import { Caption } from './caption'
 import { SelectorButton } from './selector-button'
+
+export type InputSelectorToken = {
+  decimals: number
+  image: string
+  symbol: string
+}
 
 interface TradeInputSelectorConfig {
   isInputDisabled?: boolean
   isReadOnly?: boolean
   isSelectorDisabled?: boolean
 }
-
 interface TradeInputSelectorProps {
   config: TradeInputSelectorConfig
   caption: string
   balance: string
   formattedFiat: string
-  selectedToken: Token
+  selectedToken: InputSelectorToken
   selectedTokenAmount: string
   priceImpact?: { colorCoding: string; value: string }
   showSelectorButtonChevron?: boolean
   showSelectorButton?: boolean
   onSelectToken: () => void
-  onChangeInput?: (token: Token, amount: string) => void
+  onChangeInput?: (token: InputSelectorToken, amount: string) => void
   onClickBalance?: () => void
 }
 

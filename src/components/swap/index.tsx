@@ -23,7 +23,10 @@ import { getTokenBySymbol, isTokenPairTradable } from '@/lib/utils/tokens'
 
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
-import { TradeInputSelector } from './components/trade-input-selector'
+import {
+  InputSelectorToken,
+  TradeInputSelector,
+} from './components/trade-input-selector'
 import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
 import { useSwap } from './hooks/use-swap'
@@ -177,7 +180,10 @@ export const Swap = (props: SwapProps) => {
     fetchOptions()
   }, [fetchOptions])
 
-  const onChangeInputTokenAmount = (token: Token, input: string) => {
+  const onChangeInputTokenAmount = (
+    token: InputSelectorToken,
+    input: string,
+  ) => {
     if (input === '') {
       resetTradeData()
     }

@@ -13,7 +13,7 @@ import {
   LegacyTokenList,
   PolygonLegacyTokenList,
 } from '@/app/legacy/config'
-import { LegacyRedemptionQuoteResult } from '@/app/legacy/types'
+import { LegacyRedemptionQuoteResult, LegacyToken } from '@/app/legacy/types'
 import { POLYGON } from '@/constants/chains'
 import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -23,7 +23,7 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
 interface RedeemContextProps {
-  inputTokenList: Token[]
+  inputTokenList: LegacyToken[]
   inputValue: string
   isDepositing: boolean
   isFetchingQuote: boolean
