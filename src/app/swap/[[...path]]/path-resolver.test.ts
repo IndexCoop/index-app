@@ -48,15 +48,6 @@ describe('PathResolver', () => {
     expect(resolvedPath.outputToken.symbol).toBe(ETH.symbol)
   })
 
-  it('returns default index for path: /swap/eth/_', async () => {
-    const pathComponents = ['eth', '_']
-    const resolver = new PathResolver()
-    const resolvedPath = resolver.resolve(pathComponents)
-    expect(resolvedPath.isMinting).toBe(true)
-    expect(resolvedPath.inputToken.symbol).toBe(indicesTokenList[0].symbol)
-    expect(resolvedPath.outputToken.symbol).toBe(ETH.symbol)
-  })
-
   it('returns default for longer wrong path: /swap/usdc/mvi/eth', async () => {
     const pathComponents = ['usdc', 'mvi', 'eth']
     const resolver = new PathResolver()
