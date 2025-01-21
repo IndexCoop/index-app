@@ -2,7 +2,6 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { base, mainnet } from 'viem/chains'
 
 import {
-  bedBorderLogo,
   dsethLogo,
   gmiLogo,
   icethLogo,
@@ -93,14 +92,6 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
   address: '0x0B498ff89709d3838a063f1dFA463091F9801c2b',
   decimals: 18,
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
-}
-
-export const BedIndex: Token = {
-  name: 'Bankless BED Index',
-  symbol: 'BED',
-  address: '0x2aF1dF3AB0ab157e1E2Ad8F88A7D04fbea0c7dc6',
-  decimals: 18,
-  image: bedBorderLogo,
 }
 
 export const DATA: Token = {

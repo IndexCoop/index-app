@@ -7,7 +7,6 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { LegacyToken } from '@/app/legacy/types'
 import {
-  BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   DATA,
   Ethereum2xFlexibleLeverageIndex,
@@ -28,6 +27,7 @@ const DebtIssuanceModuleAddress = '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
 const DebtIssuanceModuleV2PolygonAddress =
   '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
 
+const BedIndex = getTokenByChainAndSymbol(1, 'BED')
 const GitcoinStakedETHIndex = getTokenByChainAndSymbol(1, 'gtcETH')
 const ic21 = getTokenByChainAndSymbol(1, 'ic21')
 
@@ -62,7 +62,7 @@ export const LegacyTokenList: LegacyToken[] = [
   GmiIndex,
   DATA,
   LeveragedRethStakingYield,
-  BedIndex,
+  { ...BedIndex, image: BedIndex.logoURI },
 ]
 
 export const PolygonLegacyTokenList = [

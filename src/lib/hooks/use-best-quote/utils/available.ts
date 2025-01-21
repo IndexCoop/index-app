@@ -1,5 +1,4 @@
 import {
-  BedIndex,
   CoinDeskEthTrendIndex,
   IndexToken,
   LeveragedRethStakingYield,
@@ -22,7 +21,6 @@ export function isAvailableForIssuance(
   outputToken: Token,
 ): boolean {
   return (
-    inputToken.symbol === BedIndex.symbol ||
     inputToken.symbol === LeveragedRethStakingYield.symbol ||
     inputToken.symbol === RealWorldAssetIndex.symbol ||
     outputToken.symbol === RealWorldAssetIndex.symbol
