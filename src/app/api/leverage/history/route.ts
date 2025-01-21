@@ -8,6 +8,10 @@ import {
   getApiV2UserAddressPositions,
   GetApiV2UserAddressPositions200,
 } from '@/gen'
+import {
+  getTokenByChainAndAddress,
+  isLeverageToken,
+} from '@indexcoop/tokenlists'
 
 type TokenTransferRequest = {
   user: Address
@@ -58,11 +62,17 @@ export async function POST(req: NextRequest) {
       { chainId: chainId.toString() as ApiChainId },
     )
 
-    const history = positions.data.sort(
-      (a, b) =>
-        new Date(b.metadata.blockTimestamp).getTime() -
-        new Date(a.metadata.blockTimestamp).getTime(),
-    )
+    const history = positions.data
+      .filter(({ rawContract }) => {
+        const token = getTokenByChainAndAddress(chainId, rawContract.address)
+
+        return isLeverageToken(token)
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.metadata.blockTimestamp).getTime() -
+          new Date(a.metadata.blockTimestamp).getTime(),
+      )
 
     const openPositions = history.filter(
       (position) =>
