@@ -119,6 +119,7 @@ export function isTokenPairTradable(
   outputTokenSymbol: string,
   chainId: number,
 ): boolean {
+  if (!requiresProtection) return true
   // When tokenlists is used everywhere, we can just pass these objects as function
   // arguments instead of the token symbol
   const inputToken = getTokenByChainAndSymbol(chainId, inputTokenSymbol)
