@@ -1,6 +1,7 @@
 import { Providers } from '@/app/providers'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
+import { SlippageProvider } from '@/lib/providers/slippage'
 
 import { LeverageProvider } from './provider'
 
@@ -17,9 +18,11 @@ export default function Layout({ children }: LayoutProps) {
     <Providers>
       <div className='bg-ic-black dark flex flex-col'>
         <Header />
-        <LeverageProvider>
-          <main>{children}</main>
-        </LeverageProvider>
+        <SlippageProvider>
+          <LeverageProvider>
+            <main>{children}</main>
+          </LeverageProvider>
+        </SlippageProvider>
         <Footer />
       </div>
     </Providers>

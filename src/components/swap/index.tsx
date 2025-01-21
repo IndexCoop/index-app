@@ -1,5 +1,5 @@
-import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -13,7 +13,7 @@ import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useProtection } from '@/lib/providers/protection'
+import { useProtectionContext } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
@@ -44,7 +44,7 @@ export const Swap = (props: SwapProps) => {
     BASE.chainId,
   ])
   const { logEvent } = useAnalytics()
-  const requiresProtection = useProtection()
+  const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
   const { address } = useWallet()
@@ -52,12 +52,18 @@ export const Swap = (props: SwapProps) => {
   const isTradablePair = useMemo(
     () =>
       isTokenPairTradable(
-        requiresProtection,
+        isRestrictedCountry || isUsingVpn,
         inputToken.symbol,
         outputToken.symbol,
         chainId ?? 1,
       ),
-    [chainId, requiresProtection, inputToken, outputToken],
+    [
+      isRestrictedCountry,
+      isUsingVpn,
+      inputToken.symbol,
+      outputToken.symbol,
+      chainId,
+    ],
   )
 
   const {
@@ -227,7 +233,7 @@ export const Swap = (props: SwapProps) => {
             className='bg-ic-white text-ic-gray-400'
             margin={'-16px 0 0 0'}
             aria-label='switch input/output tokens'
-            icon={<UpDownIcon />}
+            icon={<ChevronUpDownIcon className='h-7 w-5 text-gray-500' />}
             onClick={onSwitchTokens}
           />
         </Box>

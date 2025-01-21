@@ -3,9 +3,11 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
+import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Receive } from '@/components/receive'
+import { Settings } from '@/components/settings'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
@@ -15,6 +17,7 @@ import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
@@ -33,15 +36,15 @@ export function LeverageWidget() {
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
+    indexToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
     inputValue,
     isMinting,
-    costOfCarry,
     leverageType,
+    market,
     outputTokens,
-    stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
@@ -52,6 +55,7 @@ export function LeverageWidget() {
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
+  const { data } = useQuickStats(market, indexToken)
 
   const {
     contract,
@@ -63,7 +67,7 @@ export function LeverageWidget() {
     ouputAmount,
     outputAmountUsd,
     resetData,
-  } = useFormattedLeverageData(stats)
+  } = useFormattedLeverageData()
 
   const {
     isOpen: isSelectInputTokenOpen,
@@ -81,6 +85,13 @@ export function LeverageWidget() {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
+  const {
+    auto: autoSlippage,
+    isAuto: isAutoSlippage,
+    set: setSlippage,
+    slippage,
+  } = useSlippage()
+
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
@@ -91,6 +102,15 @@ export function LeverageWidget() {
       className='leverage-widget flex flex-col gap-3 rounded-lg p-6'
       id='close-position-scroll'
     >
+      <div className='flex justify-end'>
+        <Settings
+          isAuto={isAutoSlippage}
+          isDarkMode={true}
+          slippage={slippage}
+          onChangeSlippage={setSlippage}
+          onClickAuto={autoSlippage}
+        />
+      </div>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
@@ -116,7 +136,7 @@ export function LeverageWidget() {
         onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
-      <Fees costOfCarry={costOfCarry} leverageType={leverageType} />
+      <Fees costOfCarry={data.token.costOfCarry} leverageType={leverageType} />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={false}

@@ -76,12 +76,14 @@ async function getEnhancedFlashMintQuote(
       method: 'POST',
       body: JSON.stringify(request),
     })
+
     const quoteFM = await response.json()
     if (quoteFM) {
       const {
         inputAmount: quoteInputAmount,
         outputAmount: quoteOutputAmount,
         transaction: tx,
+        fees,
       } = quoteFM
 
       const inputAmount = BigInt(quoteInputAmount)
@@ -148,6 +150,7 @@ async function getEnhancedFlashMintQuote(
         outputTokenAmountUsdAfterFees,
         inputTokenPrice,
         outputTokenPrice,
+        fees,
         slippage,
         tx: transaction,
       }

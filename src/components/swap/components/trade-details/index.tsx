@@ -1,4 +1,3 @@
-import { WarningTwoIcon } from '@chakra-ui/icons'
 import {
   Accordion,
   AccordionButton,
@@ -8,6 +7,7 @@ import {
   Box,
   Flex,
 } from '@chakra-ui/react'
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { useState } from 'react'
 
@@ -83,7 +83,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                     <>
                       <Flex>
                         {showWarning && (
-                          <WarningTwoIcon color={styles.text} mr='8px' />
+                          <ExclamationTriangleIcon className='text-ic-gray-600 dark:text-ic-gray-400 mr-2 size-5' />
                         )}
                         {!showWarning && (
                           <Image

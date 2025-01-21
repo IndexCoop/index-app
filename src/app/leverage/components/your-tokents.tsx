@@ -1,8 +1,9 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
+import { useQuery } from '@tanstack/react-query'
 import capitalize from 'lodash/capitalize'
 import Image from 'next/image'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { formatPrice } from '@/app/products/utils/formatters'
 import { ETH } from '@/constants/tokens'
@@ -35,13 +36,19 @@ export function YourTokens() {
   const { balances, indexTokens } = useLeverageToken()
   const { queryParams, updateQueryParams } = useQueryParams()
   const { address: user } = useWallet()
-  const [tokens, setTokens] = useState<EnrichedToken[]>([])
 
-  useEffect(() => {
-    if (!chainId || balances.length === 0) return
+  const { data: tokens } = useQuery({
+    initialData: [],
+    queryKey: ['leverage-token-prices', chainId, balances.toString()],
+    enabled: Boolean(chainId),
+    queryFn: async () => {
+      if (chainId) {
+        return fetchLeverageTokenPrices(balances, chainId)
+      }
 
-    fetchLeverageTokenPrices(balances, setTokens, chainId)
-  }, [balances, chainId])
+      return []
+    },
+  })
 
   const { tokenHistory, isFetching } = useTokenHistory(
     ...indexTokens.map((token) => getAddressForToken(token, chainId)!),
@@ -66,7 +73,7 @@ export function YourTokens() {
 
   const indexTokensBySymbol = useMemo(
     () =>
-      tokens.reduce<Record<string, EnrichedToken>>(
+      tokens?.reduce<Record<string, EnrichedToken>>(
         (acc, token) => ({
           ...acc,
           [token.symbol]: token,
@@ -77,7 +84,7 @@ export function YourTokens() {
   )
 
   const openPositions = useMemo(
-    () => tokens.filter((token) => token.balance > BigInt(0)),
+    () => tokens?.filter((token) => token.balance > BigInt(0)),
     [tokens],
   )
 
@@ -146,12 +153,12 @@ export function YourTokens() {
             </div>
           </div>
           <div className='divide-ic-gray-900/20 divide-y-4 py-2'>
-            {openPositions.length === 0 ? (
+            {openPositions?.length === 0 ? (
               <div className='text-ic-white px-2 py-4 text-center'>
                 You are currently not holding any Leverage Suite tokens
               </div>
             ) : (
-              openPositions.map((token) => (
+              openPositions?.map((token) => (
                 <div
                   key={token.symbol}
                   className='text-ic-white flex h-14 w-full px-6'
@@ -218,7 +225,7 @@ export function YourTokens() {
             ) : (
               tokenHistory.map(
                 ({ from, metadata, hash, asset, value, action }) => {
-                  const token = indexTokensBySymbol[asset!]
+                  const token = indexTokensBySymbol?.[asset!]
                   const at = new Date(metadata.blockTimestamp)
 
                   if (!token) return null

@@ -21,7 +21,7 @@ export const useTokenHistory = (...tokens: (string | Address)[]) => {
     enabled: Boolean(user && chainId && client),
     queryKey: ['leverage-token-history', client, user, tokens, chainId],
     queryFn: async () => {
-      const response = await fetch('/api/leverage/history', {
+      const response = await fetch('/api/leverage/legacy-history', {
         method: 'POST',
         body: JSON.stringify({
           user,
