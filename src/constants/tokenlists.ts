@@ -50,10 +50,10 @@ export const indicesTokenListBase = [
 ].map((token) => ({ ...token, image: token?.logoURI })) as Token[]
 
 export const indicesTokenList = [
+  IndexToken,
   DefiPulseIndex,
   MetaverseIndex,
   CoinDeskEthTrendIndex,
   HighYieldETHIndex,
   DiversifiedStakedETHIndex,
-  IndexToken,
 ] as Token[]
