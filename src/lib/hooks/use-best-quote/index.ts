@@ -5,10 +5,8 @@ import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import {
   isAvailableForFlashMint,
-  isAvailableForIssuance,
   isAvailableForSwap,
 } from '@/lib/hooks/use-best-quote/utils/available'
-import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { parseUnits } from '@/lib/utils'
@@ -103,10 +101,7 @@ export const useBestQuote = (
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
       const fetchFlashMintQuote = async () => {
-        if (
-          canFlashmintIndexToken &&
-          !isAvailableForIssuance(inputToken, outputToken)
-        ) {
+        if (canFlashmintIndexToken) {
           setIsFetchingFlashMint(true)
           const quoteFlashMint = await getFlashMintQuote({
             ...request,
@@ -127,34 +122,8 @@ export const useBestQuote = (
         }
       }
 
-      const fetchIssuanceQuote = async () => {
-        if (isAvailableForIssuance(inputToken, outputToken)) {
-          setIsFetchingIssuance(true)
-          const quoteIssuance = await getEnhancedIssuanceQuote(
-            {
-              ...request,
-              account: address,
-              isIssuance: isMinting,
-              inputTokenAmount: inputTokenAmountWei,
-              inputToken,
-              inputTokenPrice,
-              outputToken,
-              outputTokenPrice,
-            },
-            publicClient,
-          )
-          setIsFetchingIssuance(false)
-          setQuoteIssuance(quoteIssuance)
-        } else {
-          setQuoteIssuance(null)
-        }
-      }
-
       const fetchIndexSwapQuote = async () => {
-        if (
-          canSwapIndexToken &&
-          !isAvailableForIssuance(inputToken, outputToken)
-        ) {
+        if (canSwapIndexToken) {
           setIsFetching0x(true)
           try {
             const quote0x = await getIndexQuote({
@@ -186,7 +155,6 @@ export const useBestQuote = (
         fetchIndexSwapQuote()
       } else {
         fetchIndexSwapQuote()
-        fetchIssuanceQuote()
         fetchFlashMintQuote()
       }
     },
