@@ -3,12 +3,10 @@ import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
-import { OnrampModal } from '@/components/onramp'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
-import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
@@ -46,7 +44,6 @@ export const Swap = (props: SwapProps) => {
     ARBITRUM.chainId,
     BASE.chainId,
   ])
-  const { logEvent } = useAnalytics()
   const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
@@ -69,11 +66,6 @@ export const Swap = (props: SwapProps) => {
     ],
   )
 
-  const {
-    isOpen: isBuyModalOpen,
-    onOpen: onOpenBuyModal,
-    onClose: onCloseBuyModal,
-  } = useDisclosure()
   const {
     isOpen: isSelectInputTokenOpen,
     onOpen: onOpenSelectInputToken,
@@ -192,11 +184,6 @@ export const Swap = (props: SwapProps) => {
     setSellTokenAmount(input || '')
   }
 
-  const onClickBuyButton = () => {
-    onOpenBuyModal()
-    logEvent('Buy Onramp CTA Clicked')
-  }
-
   const onClickInputBalance = useCallback(() => {
     if (!inputTokenBalance) return
     setInputTokenAmountFormatted(inputTokenBalance)
@@ -219,7 +206,7 @@ export const Swap = (props: SwapProps) => {
       p='8px 16px 16px'
       height={'100%'}
     >
-      <SwapNavigation onClickBuy={onClickBuyButton} />
+      <SwapNavigation />
       <Flex direction='column' m='4px 0 6px'>
         <TradeInputSelector
           config={{ isReadOnly: false }}
@@ -304,7 +291,6 @@ export const Swap = (props: SwapProps) => {
         address={address}
         tokens={outputTokenslist}
       />
-      <OnrampModal isOpen={isBuyModalOpen} onClose={onCloseBuyModal} />
       {transactionReview && (
         <TransactionReviewModal
           isOpen={isTransactionReviewOpen}
