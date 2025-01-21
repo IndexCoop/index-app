@@ -163,17 +163,29 @@ export const openPositionsColumns = [
       const data = row.getValue()
 
       const token =
-        row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
+        row.table.options.meta?.tokens[
+          data.metrics?.tokenAddress ??
+            checksumAddress(data.rawContract.address ?? '')
+        ]
 
       if (isLeverageToken(token)) {
+        const leverageType = token.extensions.leverage.type
+
         return (
-          <div className={cn('text-ic-blue-300 flex-[0.5] text-center')}>
-            {map[token.extensions.leverage.type]}
+          <div
+            className={cn(
+              'flex-[0.5] text-center',
+              ['Short1x'].includes(leverageType)
+                ? 'text-red-400'
+                : 'text-ic-blue-300',
+            )}
+          >
+            {map[leverageType]}
           </div>
         )
       }
 
-      return <></>
+      return <div className='flex-[0.5]' />
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -228,7 +240,7 @@ export const openPositionsColumns = [
           className={cn(
             'flex-1 text-right',
             sign === 1 && 'text-ic-blue-300',
-            sign === -1 && 'text-red-500',
+            sign === -1 && 'text-red-400',
             sign === 0 && 'text-ic-white',
           )}
         >
@@ -367,9 +379,18 @@ export const historyColumns = [
         ]
 
       if (isLeverageToken(token)) {
+        const leverageType = token.extensions.leverage.type
+
         return (
-          <div className={cn('text-ic-blue-300 flex-[0.5] text-center')}>
-            {map[token.extensions.leverage.type]}
+          <div
+            className={cn(
+              'flex-[0.5] text-center',
+              ['Short1x'].includes(leverageType)
+                ? 'text-red-400'
+                : 'text-ic-blue-300',
+            )}
+          >
+            {map[leverageType]}
           </div>
         )
       }
@@ -460,7 +481,7 @@ export const historyColumns = [
             className={cn(
               'flex-1 text-right',
               sign === 1 && 'text-ic-blue-300',
-              sign === -1 && 'text-red-500',
+              sign === -1 && 'text-red-400',
               sign === 0 && 'text-ic-white',
             )}
           >
