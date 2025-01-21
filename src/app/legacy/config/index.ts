@@ -10,10 +10,14 @@ import {
   DATA,
   Ethereum2xFlexibleLeverageIndex,
   GmiIndex,
-  LeveragedRethStakingYield,
 } from '@/constants/tokens'
 
-import { BedIndex, GitcoinStakedETHIndex, ic21 } from './tokens/mainnet'
+import {
+  BedIndex,
+  GitcoinStakedETHIndex,
+  LeveragedRethStakingYield,
+  ic21,
+} from './tokens/mainnet'
 import {
   Bitcoin2xFlexibleLeverageIndexPolygon,
   ETH2xFlexibleLeverageIndexPolygon,
@@ -57,7 +61,7 @@ export const LegacyTokenList: LegacyToken[] = [
   { ...GitcoinStakedETHIndex, image: GitcoinStakedETHIndex.logoURI },
   GmiIndex,
   DATA,
-  LeveragedRethStakingYield,
+  { ...LeveragedRethStakingYield, image: LeveragedRethStakingYield.logoURI },
   { ...BedIndex, image: BedIndex.logoURI },
 ]
 

@@ -5,7 +5,6 @@ import {
   dsethLogo,
   gmiLogo,
   icethLogo,
-  icrethLogo,
   indexLogo,
   wseth2Logo,
 } from '@/lib/utils/assets'
@@ -68,14 +67,6 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   address: '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
   decimals: 18,
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
-}
-
-export const LeveragedRethStakingYield: Token = {
-  name: 'Leveraged rETH Staking Yield',
-  symbol: 'icRETH',
-  address: '0xcCdAE12162566E3f29fEfA7Bf7F5b24C644493b5',
-  decimals: 18,
-  image: icrethLogo,
 }
 
 export const MetaverseIndex: Token = {

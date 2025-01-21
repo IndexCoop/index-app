@@ -48,12 +48,10 @@ export const useBestQuote = (
 
   const [isFetching0x, setIsFetching0x] = useState<boolean>(false)
   const [isFetchingFlashmint, setIsFetchingFlashMint] = useState<boolean>(false)
-  const [isFetchingIssuance, setIsFetchingIssuance] = useState<boolean>(false)
 
   const [quote0x, setQuote0x] = useState<ZeroExQuote | null>(null)
   const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
   const [quoteIssuance, setQuoteIssuance] = useState<Quote | null>(null)
-  const [quoteRedemption, setQuoteRedemption] = useState<Quote | null>(null)
   const [quoteResults, setQuoteResults] = useState<QuoteResults>(defaultResults)
 
   const indexToken = useMemo(
@@ -163,7 +161,6 @@ export const useBestQuote = (
       chainId,
       indexToken,
       inputToken,
-      isMinting,
       logEvent,
       outputToken,
       nativeTokenPrice,
@@ -219,7 +216,6 @@ export const useBestQuote = (
     quote0x,
     quoteFlashMint,
     quoteIssuance,
-    quoteRedemption,
   ])
 
   useEffect(() => {
@@ -227,7 +223,6 @@ export const useBestQuote = (
     setQuote0x(null)
     setQuoteFlashmint(null)
     setQuoteIssuance(null)
-    setQuoteRedemption(null)
     setQuoteResults(defaultResults)
   }, [chainId])
 
@@ -240,7 +235,6 @@ export const useBestQuote = (
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
-    isFetchingIssuance,
     quoteResults,
   }
 }

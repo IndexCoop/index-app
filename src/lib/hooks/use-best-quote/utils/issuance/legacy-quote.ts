@@ -1,10 +1,11 @@
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
-import { Address, encodeFunctionData, PublicClient } from 'viem'
+import { Address, PublicClient, encodeFunctionData } from 'viem'
 
 import { Issuance } from '@/app/legacy/config'
+import { LeveragedRethStakingYield } from '@/app/legacy/config/tokens/mainnet'
 import { LegacyQuote } from '@/app/legacy/types'
 import { POLYGON } from '@/constants/chains'
-import { LeveragedRethStakingYield, RETH, Token } from '@/constants/tokens'
+import { RETH, Token } from '@/constants/tokens'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 import { formatWei, isSameAddress } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'

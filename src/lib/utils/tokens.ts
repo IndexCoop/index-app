@@ -14,7 +14,6 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   GUSD,
-  LeveragedRethStakingYield,
   MATIC,
   RETH,
   SETH2,
@@ -71,8 +70,6 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
   if (index.symbol === DiversifiedStakedETHIndex.symbol)
     return [ETH, WETH, USDC, GUSD, RETH, STETH, SETH2, WSTETH]
-  if (index.symbol === LeveragedRethStakingYield.symbol)
-    return [ETH, WETH, USDC, GUSD, RETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
