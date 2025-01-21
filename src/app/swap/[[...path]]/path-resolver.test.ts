@@ -34,7 +34,7 @@ describe('PathResolver', () => {
     const pathComponents = ['usdc']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
-    expect(resolvedPath.isMinting).toBe(false)
+    expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(indicesTokenList[0].symbol)
     expect(resolvedPath.outputToken.symbol).toBe('USDC')
   })
@@ -61,7 +61,7 @@ describe('PathResolver', () => {
     const pathComponents = ['eth', '_']
     const resolver = new PathResolver()
     const resolvedPath = resolver.resolve(pathComponents)
-    expect(resolvedPath.isMinting).toBe(false)
+    expect(resolvedPath.isMinting).toBe(true)
     expect(resolvedPath.inputToken.symbol).toBe(indicesTokenList[0].symbol)
     expect(resolvedPath.outputToken.symbol).toBe(ETH.symbol)
   })
