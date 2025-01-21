@@ -101,4 +101,22 @@ describe('PathResolver', () => {
     expect(resolvedPath.inputToken.symbol).toBe('MVI')
     expect(resolvedPath.outputToken.symbol).toBe('USDC')
   })
+
+  it('returns minting state correctly for redeeming: /swap/eth/dseth', async () => {
+    const pathComponents = ['eth', 'dseth']
+    const resolver = new PathResolver()
+    const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
+    expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
+    expect(resolvedPath.outputToken.symbol).toBe('dsETH')
+  })
+
+  it('returns minting state correctly for redeeming: /swap/eth/hyeth', async () => {
+    const pathComponents = ['eth', 'hyeth']
+    const resolver = new PathResolver()
+    const resolvedPath = resolver.resolve(pathComponents)
+    expect(resolvedPath.isMinting).toBe(true)
+    expect(resolvedPath.inputToken.symbol).toBe(ETH.symbol)
+    expect(resolvedPath.outputToken.symbol).toBe('hyETH')
+  })
 })

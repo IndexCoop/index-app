@@ -73,7 +73,14 @@ export const SelectedTokenProvider = (props: { children: any }) => {
   )
 
   const toggleIsMinting = useCallback(() => {
-    if (inputToken.symbol === 'INDEX' || outputToken.symbol === 'INDEX') {
+    if (
+      inputToken.symbol === 'INDEX' ||
+      outputToken.symbol === 'INDEX' ||
+      inputToken.symbol === 'dsETH' ||
+      outputToken.symbol === 'dsETH' ||
+      inputToken.symbol === 'hyETH' ||
+      outputToken.symbol === 'hyETH'
+    ) {
       routeSwap(outputToken.symbol, inputToken.symbol)
     }
   }, [inputToken, outputToken, routeSwap])
