@@ -13,7 +13,7 @@ import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useProtection } from '@/lib/providers/protection'
+import { useProtectionContext } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
@@ -44,7 +44,7 @@ export const Swap = (props: SwapProps) => {
     BASE.chainId,
   ])
   const { logEvent } = useAnalytics()
-  const requiresProtection = useProtection()
+  const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
   const { address } = useWallet()
@@ -52,12 +52,18 @@ export const Swap = (props: SwapProps) => {
   const isTradablePair = useMemo(
     () =>
       isTokenPairTradable(
-        requiresProtection,
+        isRestrictedCountry || isUsingVpn,
         inputToken.symbol,
         outputToken.symbol,
         chainId ?? 1,
       ),
-    [chainId, requiresProtection, inputToken, outputToken],
+    [
+      isRestrictedCountry,
+      isUsingVpn,
+      inputToken.symbol,
+      outputToken.symbol,
+      chainId,
+    ],
   )
 
   const {
