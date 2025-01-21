@@ -1,7 +1,5 @@
 import {
-  DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
-  DebtIssuanceModuleV2PolygonAddress,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
@@ -25,6 +23,10 @@ import {
   InverseMATICFlexibleLeverageIndexPolygon,
   Matic2xFlexibleLeverageIndexPolygon,
 } from './polygon'
+
+const DebtIssuanceModuleAddress = '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
+const DebtIssuanceModuleV2PolygonAddress =
+  '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
 
 const GitcoinStakedETHIndex = getTokenByChainAndSymbol(1, 'gtcETH')
 const ic21 = getTokenByChainAndSymbol(1, 'ic21')
