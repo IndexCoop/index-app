@@ -51,7 +51,7 @@ export function YourTokens() {
   })
 
   const { tokenHistory, isFetching } = useTokenHistory(
-    ...indexTokens.map((token) => getAddressForToken(token, chainId)!),
+    ...indexTokens.map((token) => getAddressForToken(token.symbol, chainId)!),
   )
 
   const handleCloseClick = (token: EnrichedToken) => {

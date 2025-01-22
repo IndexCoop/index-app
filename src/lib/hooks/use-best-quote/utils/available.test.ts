@@ -2,7 +2,6 @@ import {
   CoinDeskEthTrendIndex,
   DefiPulseIndex,
   IndexToken,
-  LeveragedRethStakingYield,
 } from '@/constants/tokens'
 
 import { isAvailableForFlashMint, isAvailableForSwap } from './available'
@@ -27,11 +26,6 @@ describe('isAvailableForSwap()', () => {
 
   test('should return false for cdETI swap availability', async () => {
     const isAvailable = isAvailableForSwap(CoinDeskEthTrendIndex)
-    expect(isAvailable).toBe(false)
-  })
-
-  test('should return false for icRETH swap availability', async () => {
-    const isAvailable = isAvailableForSwap(LeveragedRethStakingYield)
     expect(isAvailable).toBe(false)
   })
 })

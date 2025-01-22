@@ -1,8 +1,6 @@
 import {
-  BedIndex,
   CoinDeskEthTrendIndex,
   IndexToken,
-  LeveragedRethStakingYield,
   RealWorldAssetIndex,
   Token,
 } from '@/constants/tokens'
@@ -16,14 +14,11 @@ export function isAvailableForFlashMint(token: Token): boolean {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function isAvailableForIssuance(
   inputToken: Token,
   outputToken: Token,
 ): boolean {
   return (
-    inputToken.symbol === BedIndex.symbol ||
-    inputToken.symbol === LeveragedRethStakingYield.symbol ||
     inputToken.symbol === RealWorldAssetIndex.symbol ||
     outputToken.symbol === RealWorldAssetIndex.symbol
   )
@@ -32,7 +27,6 @@ export function isAvailableForIssuance(
 export function isAvailableForSwap(token: Token): boolean {
   switch (token.symbol) {
     case CoinDeskEthTrendIndex.symbol:
-    case LeveragedRethStakingYield.symbol:
       return false
     default:
       return true

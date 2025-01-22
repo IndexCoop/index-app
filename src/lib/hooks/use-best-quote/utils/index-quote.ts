@@ -55,8 +55,8 @@ export async function getIndexQuote(
   } = request
   try {
     const inputAmount = parseUnits(inputTokenAmount, inputToken.decimals)
-    const inputTokenAddress = getAddressForToken(inputToken, chainId)
-    const outputTokenAddress = getAddressForToken(outputToken, chainId)
+    const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
+    const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
     const path = `/quote?takerAddress=${address}&inputToken=${inputTokenAddress}&outputToken=${outputTokenAddress}&inputAmount=${inputAmount.toString()}&chainId=${chainId}`
     const indexApi = new IndexApi()
     const res: QuoteResponse = await indexApi.get(path)
