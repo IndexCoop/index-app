@@ -289,7 +289,9 @@ export const openPositionsColumns = [
         const price =
           (row.table.options.meta?.stats ?? []).find(
             ({ symbol }) => symbol === data.trade?.underlyingAssetSymbol,
-          )?.price ?? 0
+          )?.price ??
+          token.unitPriceUsd ??
+          0
 
         return (
           <div className='hidden flex-[0.75] text-right sm:block'>
