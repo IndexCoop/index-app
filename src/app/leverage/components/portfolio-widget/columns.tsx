@@ -446,13 +446,15 @@ export const historyColumns = [
         )
       }
 
-      const lastBuy = getLastBuy(data, row.table.options.meta?.history)
+      const token =
+        row.table.options.meta?.tokens[
+          data.metrics?.tokenAddress ??
+            checksumAddress(data.rawContract.address ?? '')
+        ]
 
       return (
         <div className='text-ic-blue-300 hidden flex-1 text-right md:block'>
-          {formatAmount(
-            (data.value ?? 0) * (lastBuy?.trade?.underlyingAssetUnitPrice ?? 0),
-          )}
+          {formatAmount((data.value ?? 0) * (token?.unitPriceUsd ?? 0))}
         </div>
       )
     },
@@ -465,16 +467,31 @@ export const historyColumns = [
     cell: (row) => {
       const data = row.getValue()
 
+      if (data.trade) {
+        return (
+          <div className='hidden flex-1 text-right md:block'>
+            {formatAmount(
+              data.trade?.underlyingAssetUnitPrice ?? 0,
+              data.trade?.underlyingAssetUnitPriceDenominator,
+            )}
+          </div>
+        )
+      }
+
       const lastBuy = getLastBuy(data, row.table.options.meta?.history)
 
-      return (
-        <div className='hidden flex-1 text-right md:block'>
-          {formatAmount(
-            (data ?? lastBuy).trade?.underlyingAssetUnitPrice ?? 0,
-            (data ?? lastBuy).trade?.underlyingAssetUnitPriceDenominator,
-          )}
-        </div>
-      )
+      if (lastBuy) {
+        return (
+          <div className='hidden flex-1 text-right md:block'>
+            {formatAmount(
+              lastBuy?.trade?.underlyingAssetUnitPrice ?? 0,
+              lastBuy?.trade?.underlyingAssetUnitPriceDenominator,
+            )}
+          </div>
+        )
+      }
+
+      return <div className='hidden flex-1 text-right md:block'>-</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
