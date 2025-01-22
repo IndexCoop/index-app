@@ -305,7 +305,7 @@ export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.increase',
     header: () => (
-      <div className='hidden flex-1 items-center justify-end gap-4 md:flex'>
+      <div className='lgn:flex ml-2 hidden flex-1 items-center justify-end gap-4'>
         <div className='w-[50px] text-right'>Increase</div>
         <div className='w-[50px]'>Close</div>
       </div>
@@ -316,10 +316,15 @@ export const openPositionsColumns = [
       const token =
         row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
 
-      if (!isLeverageToken(token)) return <></>
+      if (!isLeverageToken(token))
+        return (
+          <div className='lgn:flex ml-2 hidden  flex-1 items-center justify-end gap-4'>
+            -
+          </div>
+        )
 
       return (
-        <div className='hidden flex-1  items-center justify-end gap-4 md:flex'>
+        <div className='lgn:flex ml-2 hidden  flex-1 items-center justify-end gap-4'>
           <div className='flex w-[50px] justify-end'>
             <Button
               className='hover:bg-ic-dark flex size-[25px] items-center justify-center rounded-lg border border-white'
