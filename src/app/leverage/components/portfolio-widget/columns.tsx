@@ -247,7 +247,9 @@ export const openPositionsColumns = [
           <p>
             {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} ${formatAmount(Math.abs(pnl))}`}
           </p>
-          <p className='hidden sm:block'>{`(${pnlPercentage.toFixed(2)}%)`}</p>
+          {cost > 0 && (
+            <p className='hidden sm:block'>{`(${pnlPercentage.toFixed(2)}%)`}</p>
+          )}
         </div>
       )
     },
@@ -501,13 +503,16 @@ export const historyColumns = [
         return (
           <div
             className={cn(
-              'hidden flex-1 text-right sm:block',
+              'hidden flex-1 justify-end gap-1 sm:flex',
               sign === 1 && 'text-ic-blue-300',
               sign === -1 && 'text-red-400',
               sign === 0 && 'text-ic-white',
             )}
           >
-            {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} ${formatAmount(Math.abs(pnl))} (${pnlPercentage.toFixed(2)}%)`}
+            <p>
+              {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} ${formatAmount(Math.abs(pnl))}`}
+            </p>
+            {cost > 0 && <p>{`(${pnlPercentage.toFixed(2)}%)`}</p>}
           </div>
         )
       }
