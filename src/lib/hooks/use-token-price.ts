@@ -1,5 +1,6 @@
 import { getChainTokenList } from '@indexcoop/tokenlists'
 import { useEffect, useState } from 'react'
+import { base } from 'viem/chains'
 
 import { PolygonLegacyTokenList } from '@/app/legacy/config'
 import { DATA, ETH, GmiIndex, Token } from '@/constants/tokens'
@@ -21,7 +22,13 @@ export function useNativeTokenPrice(chainId?: number): number {
   return nativeTokenPrice
 }
 
-const navTokenOverrides = ['hyeth', 'icusd', 'eth2xbtc', 'btc2xeth']
+function shouldOverrideNav(symbol: string, chainId?: number) {
+  const navTokenOverrides = ['hyeth', 'icusd', 'eth2xbtc', 'btc2xeth']
+  if (navTokenOverrides.includes(symbol.toLowerCase())) return true
+  if (chainId === base.id && (symbol === 'BTC2X' || symbol === 'BTC3X'))
+    return true
+  return false
+}
 
 /**
  * Returns price of given token.
@@ -47,7 +54,7 @@ export const getTokenPrice = async (
     // Force using Coingecko for this deprecated indices
     isIndexToken = false
   }
-  if (navTokenOverrides.includes(token.symbol.toLowerCase())) {
+  if (shouldOverrideNav(token.symbol, chainId)) {
     const dataResponse = await fetchTokenMetrics({
       tokenAddress,
       metrics: ['nav'],
