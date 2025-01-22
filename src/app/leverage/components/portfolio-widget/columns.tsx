@@ -190,7 +190,7 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.netBalance',
-    header: () => <div className='flex-[0.75] text-right'>Net Balance</div>,
+    header: () => <div className='flex-[0.5] text-right'>Net Balance</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -200,7 +200,7 @@ export const openPositionsColumns = [
       if (!isLeverageToken(token)) return <></>
 
       return (
-        <div className='flex-[0.75] text-right'>{formatAmount(token.usd)}</div>
+        <div className='flex-[0.5] text-right'>{formatAmount(token.usd)}</div>
       )
     },
   }),
@@ -238,7 +238,7 @@ export const openPositionsColumns = [
       return (
         <div
           className={cn(
-            'flex flex-1 justify-end gap-1',
+            'flex flex-1 flex-wrap justify-end gap-1',
             sign === 1 && 'text-ic-blue-300',
             sign === -1 && 'text-red-400',
             sign === 0 && 'text-ic-white',
@@ -257,13 +257,13 @@ export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.entryPrice',
     header: () => (
-      <div className='hidden flex-[0.75] text-right md:block'>Entry Price</div>
+      <div className='hidden flex-[0.65] text-right md:block'>Entry Price</div>
     ),
     cell: (row) => {
       const data = row.getValue()
 
       return (
-        <div className='hidden flex-[0.75] text-right md:block'>
+        <div className='hidden flex-[0.65] text-right md:block'>
           {formatAmount(
             data.trade?.underlyingAssetUnitPrice ?? 0,
             data.trade?.underlyingAssetUnitPriceDenominator,
@@ -275,7 +275,7 @@ export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.currentPrice',
     header: () => (
-      <div className='hidden flex-[0.75] text-right sm:block'>
+      <div className='hidden flex-[0.65] text-right sm:block'>
         Current Price
       </div>
     ),
@@ -292,7 +292,7 @@ export const openPositionsColumns = [
           ]?.price
 
         return (
-          <div className='hidden flex-[0.75] text-right sm:block'>
+          <div className='hidden flex-[0.65] text-right sm:block'>
             {formatAmount(
               price,
               data.trade.underlyingAssetUnitPriceDenominator,
@@ -307,7 +307,7 @@ export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.increase',
     header: () => (
-      <div className='lgn:flex ml-2 hidden flex-1 items-center justify-end gap-4 md:flex lg:hidden'>
+      <div className='lgn:flex ml-2 hidden flex-1 justify-end gap-4 md:flex lg:hidden'>
         <div className='w-[50px] text-right'>Increase</div>
         <div className='w-[50px]'>Close</div>
       </div>
