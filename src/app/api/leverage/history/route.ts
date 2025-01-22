@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
             )
 
             return {
-              asset: position.trade.underlyingAssetUnitPriceDenominator ?? '',
+              asset: `${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`,
               stats,
             }
           }

@@ -286,9 +286,13 @@ export const openPositionsColumns = [
         row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
 
       if (isLeverageToken(token) && data.trade && data.metrics) {
+        console.log(
+          row.table.options.meta?.stats,
+          data.trade.underlyingAssetUnitPriceDenominator,
+        )
         const price =
           row.table.options.meta?.stats[
-            data.trade.underlyingAssetUnitPriceDenominator ?? ''
+            `${data.trade.underlyingAssetSymbol}-${data.trade.underlyingAssetUnitPriceDenominator}`
           ]?.price
 
         return (
