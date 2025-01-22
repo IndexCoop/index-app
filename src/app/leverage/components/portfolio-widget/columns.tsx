@@ -190,7 +190,7 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.netBalance',
-    header: () => <div className='flex-[0.5] text-right'>Net Balance</div>,
+    header: () => <div className='flex-[0.75] text-right'>Net Balance</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -200,7 +200,7 @@ export const openPositionsColumns = [
       if (!isLeverageToken(token)) return <></>
 
       return (
-        <div className='flex-[0.5] text-right'>{formatAmount(token.usd)}</div>
+        <div className='flex-[0.75] text-right'>{formatAmount(token.usd)}</div>
       )
     },
   }),
