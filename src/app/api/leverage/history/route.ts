@@ -24,7 +24,11 @@ const calculateAverageEntryPrice = (
   // TODO: should probably throw out the type === 'sell' transactions.
   const grouped = positions.reduce(
     (acc, position) => {
-      if (position.trade && position.metrics) {
+      if (
+        position.trade &&
+        position.metrics &&
+        position.trade.transactionType === 'buy'
+      ) {
         const tokenAddress = position.metrics.tokenAddress
 
         if (!acc[tokenAddress]) {
