@@ -143,8 +143,8 @@ const OpenPositions = () => {
         isFetching={isFetching}
         emptyText={
           selectedIndex === 0
-            ? 'You are currently not holding any Leverage Suite tokens.'
-            : 'You have not executed any transactions with leverage tokens yet.'
+            ? 'You are currently not holding any leverage suite tokens on this network.'
+            : 'You have not executed any transactions with leverage tokens on this network yet.'
         }
       />
     </TabGroup>
