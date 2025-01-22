@@ -35,7 +35,7 @@ const currencyConfig: Record<
     options: {
       maximumFractionDigits: 4,
       minimumFractionDigits: 4,
-      currencyDisplay: 'symbol',
+      currencyDisplay: 'narrowSymbol',
       currency: 'ETH',
       style: 'currency',
     },
@@ -45,7 +45,7 @@ const currencyConfig: Record<
     options: {
       maximumFractionDigits: 4,
       minimumFractionDigits: 4,
-      currencyDisplay: 'symbol',
+      currencyDisplay: 'narrowSymbol',
       currency: 'BTC',
       style: 'currency',
     },
@@ -55,9 +55,9 @@ const currencyConfig: Record<
     options: {
       maximumFractionDigits: 2,
       minimumFractionDigits: 2,
-      currencyDisplay: 'symbol',
       currency: 'USD',
       style: 'currency',
+      currencyDisplay: 'narrowSymbol',
     },
   },
 }
