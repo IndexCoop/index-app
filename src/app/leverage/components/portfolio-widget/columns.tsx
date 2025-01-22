@@ -225,11 +225,6 @@ export const openPositionsColumns = [
         row.table.options.meta?.transfers,
       )
 
-      const price =
-        row.table.options.meta?.stats[
-          `${data.trade.underlyingAssetSymbol}-${data.trade.underlyingAssetUnitPriceDenominator}`
-        ]?.price
-
       const _return = token.usd ?? 0
       const cost =
         (data.metrics.endingAvgCostPerUnit ?? 0) *
