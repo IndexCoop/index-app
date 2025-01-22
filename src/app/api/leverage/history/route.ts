@@ -4,6 +4,7 @@ import {
   isLeverageToken,
 } from '@indexcoop/tokenlists'
 import { uniqBy } from 'lodash'
+import { UnwrapPromise } from 'next/dist/lib/coalesced-function'
 import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
 
@@ -103,14 +104,34 @@ export async function POST(req: NextRequest) {
     )
     const provider = new CoingeckoProvider(coingeckoService)
 
-    const stats = await Promise.all(
-      open.map(async (position) =>
-        provider.getTokenStats(
-          position.trade?.underlyingAssetSymbol ?? '',
-          position.trade?.underlyingAssetUnitPriceDenominator?.toLowerCase() ??
-            'usd',
-        ),
-      ),
+    const stats = (
+      await Promise.all(
+        open.map(async (position) => {
+          if (position.trade) {
+            const stats = await provider.getTokenStats(
+              position.trade.underlyingAssetSymbol ?? '',
+              position.trade.underlyingAssetUnitPriceDenominator?.toLowerCase() ??
+                'usd',
+            )
+
+            return {
+              asset: position.trade.underlyingAssetUnitPriceDenominator ?? '',
+              stats,
+            }
+          }
+        }),
+      )
+    ).reduce(
+      (acc, curr) => {
+        if (curr?.asset) {
+          acc[curr.asset] = curr.stats
+        }
+        return acc
+      },
+      {} as Record<
+        string,
+        UnwrapPromise<ReturnType<typeof provider.getTokenStats>>
+      >,
     )
 
     return NextResponse.json(

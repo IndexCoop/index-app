@@ -81,7 +81,7 @@ const OpenPositions = () => {
   })
 
   const { data, isFetching } = useQuery({
-    initialData: { open: [], history: [], stats: [] },
+    initialData: { open: [], history: [], stats: {} },
     enabled: Boolean(address && chainId),
     queryKey: ['leverage-token-history', address, chainId, selectedIndex],
     queryFn: async () => {
@@ -96,7 +96,7 @@ const OpenPositions = () => {
       const data = (await response.json()) as {
         open: GetApiV2UserAddressPositions200
         history: GetApiV2UserAddressPositions200
-        stats: Stats[]
+        stats: Stats
       }
 
       return data

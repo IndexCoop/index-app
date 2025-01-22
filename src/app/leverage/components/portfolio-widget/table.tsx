@@ -14,11 +14,13 @@ type TableProps = {
 }
 
 export type Stats = {
-  symbol: string
-  price: number
-  change24h: number
-  low24h: number
-  high24h: number
+  [key: string]: {
+    symbol: string
+    price: number
+    change24h: number
+    low24h: number
+    high24h: number
+  }
 }
 
 export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
@@ -83,7 +85,7 @@ declare module '@tanstack/table-core' {
     tokens: Record<string, EnrichedToken>
     history: GetApiV2UserAddressPositions200
     transfers: Omit<GetApiV2UserAddressPositions200, 'trade' | 'metrics'>
-    stats: Stats[]
+    stats: Stats
     adjustPosition: (mint: boolean, token: EnrichedToken) => void
   }
 }
