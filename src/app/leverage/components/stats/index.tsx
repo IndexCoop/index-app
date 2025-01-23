@@ -33,12 +33,12 @@ export function QuickStats() {
         />
         <StatsMetric
           isLoading={isFetchingQuickStats}
-          className='hidden w-20 sm:flex'
+          className='hidden w-24 sm:flex'
           label='24h High'
           value={high24h}
         />
         <StatsMetric
-          className='hidden w-20 sm:flex'
+          className='hidden w-24 sm:flex'
           isLoading={isFetchingQuickStats}
           label='24h Low'
           value={low24h}

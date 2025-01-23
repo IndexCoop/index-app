@@ -28,6 +28,7 @@ function MarketSelectorItem({
             alt={item.market}
             height={20}
             width={20}
+            priority
             className='flex-none'
           />
           <span>{item.market}</span>
