@@ -1,3 +1,5 @@
+import { Chain } from 'viem'
+
 import { Token } from '@/constants/tokens'
 
 export enum LeverageType {
@@ -31,9 +33,9 @@ export interface LeverageToken extends Token {
 export interface Market {
   icon: string
   market: string
-  priceRatio: string
-  collateral: string
-  debt: string
+  networks: Chain[]
+  price?: string
+  change24h?: number
 }
 
 export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'

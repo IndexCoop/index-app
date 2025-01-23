@@ -1,8 +1,9 @@
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import Image from 'next/image'
 
+import { LeverageSelector } from '@/app/leverage/components/stats/leverage-selector'
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { useLeverageToken } from '@/app/leverage/provider'
-import { formatPercentage } from '@/app/products/utils/formatters'
 
 import { StatsMetric } from './stats-metric'
 
@@ -112,7 +113,7 @@ export function LeverageSelectorContainer() {
   const { data, isFetchingQuickStats } = useQuickStats(market, indexToken)
   return (
     <div className='border-ic-black xs:justify-end flex h-full w-2/3 items-center gap-8 border-l px-16 py-0'>
-      {/* <Popover className='flex'>
+      <Popover className='flex'>
         <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 focus:outline-none data-[focus]:outline-1'>
           <LeverageSelector
             leverage={'2x'}
@@ -132,28 +133,19 @@ export function LeverageSelectorContainer() {
               <span>Current Leverage</span>
             </div>
             <div className='w-full rounded-lg bg-[#1A2A2B]'>
-              {ratios.map((item, index) => (
+              <div>PH</div>
+              {/* {ratios.map((item, index) => (
                 <LeverageRatioItem item={item} key={index} />
-              ))}
+              ))} */}
             </div>
           </div>
         </PopoverPanel>
-      </Popover> */}
-      {/* <StatsMetric
-        className='hidden w-16 md:flex'
-        isLoading={isFetchingStats}
-        label='Net Rate'
-        value={'0.03%'}
-      /> */}
-      <TokenSelector selectedToken={indexToken} />
+      </Popover>
       <StatsMetric
-        className='hidden w-20 sm:flex'
+        className='hidden w-16 md:flex'
         isLoading={isFetchingQuickStats}
-        label='24h Change'
-        value={`${formatPercentage(data.token.navchange)}`}
-        overrideLabelColor={
-          data.token.navchange >= 0 ? 'text-ic-green' : 'text-ic-red'
-        }
+        label='Net Rate'
+        value='0.03%'
       />
     </div>
   )

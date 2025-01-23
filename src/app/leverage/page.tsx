@@ -49,7 +49,7 @@ export default function Page() {
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
-        <div className='mx-auto flex w-full flex-col gap-4 px-4 py-4 sm:py-12'>
+        <div className='mx-auto flex w-full flex-col gap-6 px-4 py-4 sm:py-12'>
           <QuickStats />
           <div className='flex flex-col gap-4 lg:flex-row'>
             <div className='flex w-full flex-col gap-6 lg:min-w-[67%] lg:max-w-[67%]'>

@@ -27,16 +27,18 @@ export function QuickStats() {
           isLoading={isFetchingQuickStats}
           label='24h Change'
           value={`${formatAmount(change24h ?? 0, 2)} %`}
-          overrideLabelColor={change24h >= 0 ? 'text-ic-green' : 'text-ic-red'}
+          overrideLabelColor={
+            change24h >= 0 ? 'text-[#65D993]' : 'text-[#F36060]'
+          }
         />
         <StatsMetric
           isLoading={isFetchingQuickStats}
-          className='hidden lg:flex'
+          className='hidden w-20 sm:flex'
           label='24h High'
           value={high24h}
         />
         <StatsMetric
-          className='hidden lg:flex'
+          className='hidden w-20 sm:flex'
           isLoading={isFetchingQuickStats}
           label='24h Low'
           value={low24h}

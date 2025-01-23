@@ -16,11 +16,11 @@ export function StatsMetric({
   value,
 }: Props) {
   return (
-    <div className={cn('flex-col items-center gap-1', className)}>
+    <div className={cn('flex-col gap-1', className)}>
       <div className='text-ic-gray-300 text-xs'>{label}</div>
       <div
         className={cn(
-          'text-ic-gray-100 text-sm font-medium',
+          'text-ic-gray-50 h-5 w-full text-sm font-medium',
           isLoading && 'bg-ic-gray-700 animate-pulse rounded-md text-opacity-0',
           overrideLabelColor,
         )}

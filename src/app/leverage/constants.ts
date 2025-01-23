@@ -2,14 +2,14 @@ import {
   getTokenByChainAndSymbol,
   isLeverageToken,
 } from '@indexcoop/tokenlists'
-import { arbitrum, base } from 'viem/chains'
+import { arbitrum, base, mainnet } from 'viem/chains'
 
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
-import { LeverageToken, LeverageType } from './types'
+import { LeverageToken, LeverageType, Market } from './types'
 
 export const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X', 'ETH2xBTC']
 
@@ -78,7 +78,6 @@ function getDefaultMarketAsset(market: string) {
 }
 
 export function getDefaultPathForMarket(market: string, chainId: number) {
-  const markets = getMarketsForChain(chainId)
   const existingMarket = markets.find(
     (m) => m.market.toLowerCase() === market.toLowerCase(),
   )
@@ -87,39 +86,33 @@ export function getDefaultPathForMarket(market: string, chainId: number) {
   return `/leverage?sell=ETH&buy=${defaultAsset}&network=${chainId}`
 }
 
+export const markets: Market[] = [
+  {
+    icon: '/assets/selector-base-asset-eth.svg',
+    market: 'ETH / USD',
+    networks: [mainnet, arbitrum, base],
+  },
+  {
+    icon: BTC.image,
+    market: 'BTC / USD',
+    networks: [mainnet, arbitrum, base],
+  },
+  {
+    icon: '/assets/selector-base-asset-eth.svg',
+    market: 'ETH / BTC',
+    networks: [arbitrum],
+  },
+  {
+    icon: BTC.image,
+    market: 'BTC / ETH',
+    networks: [arbitrum],
+  },
+]
+
 export function getMarketsForChain(chainId: number) {
   switch (chainId) {
     case arbitrum.id:
-      return [
-        {
-          icon: '/assets/selector-base-asset-eth.svg',
-          market: 'ETH / USD',
-          priceRatio: '$3,712.23',
-          collateral: 'ETH',
-          debt: 'USDC',
-        },
-        {
-          icon: BTC.image,
-          market: 'BTC / USD',
-          priceRatio: '$94,712.40',
-          collateral: 'BTC',
-          debt: 'USDC',
-        },
-        {
-          icon: '/assets/selector-base-asset-eth.svg',
-          market: 'ETH / BTC',
-          priceRatio: '0.14',
-          collateral: 'ETH, USDC',
-          debt: '',
-        },
-        {
-          icon: BTC.image,
-          market: 'BTC / ETH',
-          priceRatio: '0.14',
-          collateral: 'BTC, USDC',
-          debt: '',
-        },
-      ]
+      return
     case base.id:
       return [
         {
