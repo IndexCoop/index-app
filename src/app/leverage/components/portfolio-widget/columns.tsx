@@ -520,7 +520,7 @@ export const historyColumns = [
         return (
           <div
             className={cn(
-              'hidden flex-1 justify-end gap-1 sm:flex',
+              'hidden flex-1 flex-wrap justify-end gap-1 sm:flex',
               sign === 1 && 'text-ic-blue-300',
               sign === -1 && 'text-red-400',
               sign === 0 && 'text-ic-white',
