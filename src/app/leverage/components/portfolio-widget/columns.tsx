@@ -536,7 +536,9 @@ export const historyColumns = [
             <p>
               {`${sign === 1 ? '+' : sign === -1 ? '-' : ''} ${formatAmount(Math.abs(pnl))}`}
             </p>
-            {cost > 0 && <p>{`(${pnlPercentage.toFixed(2)}%)`}</p>}
+            {cost > 0 && (
+              <p className='hidden md:block'>{`(${pnlPercentage.toFixed(2)}%)`}</p>
+            )}
           </div>
         )
       }
@@ -546,11 +548,7 @@ export const historyColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.time',
-    header: () => (
-      <div className='xs:block ml-4 hidden flex-[0.5] text-left md:flex-[0.75]'>
-        Time
-      </div>
-    ),
+    header: () => <div className='ml-4 flex-[0.75] text-left'>Time</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -567,7 +565,7 @@ export const historyColumns = [
               minute: '2-digit',
             })}
           </div>
-          <div className='xs:block ml-4 hidden flex-[0.5] text-left md:hidden'>
+          <div className='ml-4 flex-[0.75] text-left md:hidden'>
             {new Date(
               data.trade?.createdAt ?? data.metadata.blockTimestamp,
             ).toLocaleDateString(navigator.language, {
