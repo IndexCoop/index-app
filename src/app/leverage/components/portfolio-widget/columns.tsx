@@ -190,23 +190,28 @@ export const openPositionsColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.netBalance',
-    header: () => <div className='flex-[0.75] text-right'>Net Balance</div>,
+    header: () => (
+      <div className='ml-2 flex-[0.75] text-right'>Net Balance</div>
+    ),
     cell: (row) => {
       const data = row.getValue()
 
       const token =
         row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
 
-      if (!isLeverageToken(token)) return <></>
+      if (!isLeverageToken(token))
+        return <div className='ml-2 flex-[0.75] text-right'>-</div>
 
       return (
-        <div className='flex-[0.75] text-right'>{formatAmount(token.usd)}</div>
+        <div className='ml-2 flex-[0.75] text-right'>
+          {formatAmount(token.usd)}
+        </div>
       )
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.unrealisedPnL',
-    header: () => <div className='flex-1 text-right'>Unrealised PnL</div>,
+    header: () => <div className='ml-2 flex-1 text-right'>Unrealised PnL</div>,
     cell: (row) => {
       const data = row.getValue()
       const user = row.table.options.meta?.user
@@ -215,7 +220,7 @@ export const openPositionsColumns = [
         row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
 
       if (!isLeverageToken(token) || !data.trade || !data.metrics)
-        return <div className='flex-1 text-right'>-</div>
+        return <div className='ml-2 flex-1 text-right'>-</div>
 
       const lastBuy = getLastBuy(data, row.table.options.meta?.history)
 
@@ -238,7 +243,7 @@ export const openPositionsColumns = [
       return (
         <div
           className={cn(
-            'flex flex-1 flex-wrap justify-end gap-1',
+            'ml-2 flex flex-1 flex-wrap justify-end gap-1',
             sign === 1 && 'text-ic-blue-300',
             sign === -1 && 'text-red-400',
             sign === 0 && 'text-ic-white',
@@ -257,13 +262,15 @@ export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.entryPrice',
     header: () => (
-      <div className='hidden flex-[0.65] text-right md:block'>Entry Price</div>
+      <div className='ml-2 hidden flex-[0.65] text-right md:block'>
+        Entry Price
+      </div>
     ),
     cell: (row) => {
       const data = row.getValue()
 
       return (
-        <div className='hidden flex-[0.65] text-right md:block'>
+        <div className='ml-2 hidden flex-[0.65] text-right md:block'>
           {formatAmount(
             data.trade?.underlyingAssetUnitPrice ?? 0,
             data.trade?.underlyingAssetUnitPriceDenominator,
@@ -275,7 +282,7 @@ export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.currentPrice',
     header: () => (
-      <div className='hidden flex-[0.65] text-right sm:block'>
+      <div className='ml-2 hidden flex-[0.65] text-right sm:block'>
         Current Price
       </div>
     ),
@@ -292,7 +299,7 @@ export const openPositionsColumns = [
           ]?.price
 
         return (
-          <div className='hidden flex-[0.65] text-right sm:block'>
+          <div className='ml-2 hidden flex-[0.65] text-right sm:block'>
             {formatAmount(
               price,
               data.trade.underlyingAssetUnitPriceDenominator,
@@ -301,7 +308,7 @@ export const openPositionsColumns = [
         )
       }
 
-      return <div className='flex-[0.75] text-right'>-</div>
+      return <div className='ml-2 flex-[0.75] text-right'>-</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -418,17 +425,19 @@ export const historyColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.action',
-    header: () => <div className='flex-[0.5] text-center'>Action</div>,
+    header: () => <div className='ml-2 flex-[0.5] text-center'>Action</div>,
     cell: (row) => {
       const data = row.getValue()
 
-      return <div className='flex-[0.5] text-center'>{getAction(data)}</div>
+      return (
+        <div className='ml-2 flex-[0.5] text-center'>{getAction(data)}</div>
+      )
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.value',
     header: () => (
-      <div className='hidden flex-1 text-right md:block'>Value</div>
+      <div className='ml-2 hidden flex-1 text-right md:block'>Value</div>
     ),
     cell: (row) => {
       const data = row.getValue()
@@ -440,7 +449,7 @@ export const historyColumns = [
             : data.trade.outputTokenAmountUsd
 
         return (
-          <div className='text-ic-blue-300 hidden flex-1 text-right md:block'>
+          <div className='text-ic-blue-300 ml-2 hidden flex-1 text-right md:block'>
             {formatAmount(value)}
           </div>
         )
@@ -453,7 +462,7 @@ export const historyColumns = [
         ]
 
       return (
-        <div className='text-ic-blue-300 hidden flex-1 text-right md:block'>
+        <div className='text-ic-blue-300 ml-2 hidden flex-1 text-right md:block'>
           {formatAmount((data.value ?? 0) * (token?.unitPriceUsd ?? 0))}
         </div>
       )
@@ -462,14 +471,14 @@ export const historyColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.price',
     header: () => (
-      <div className='hidden flex-1 text-right md:block'>Price</div>
+      <div className='ml-2 hidden flex-1 text-right md:block'>Price</div>
     ),
     cell: (row) => {
       const data = row.getValue()
 
       if (data.trade) {
         return (
-          <div className='hidden flex-1 text-right md:block'>
+          <div className='ml-2 hidden flex-1 text-right md:block'>
             {formatAmount(
               data.trade?.underlyingAssetUnitPrice ?? 0,
               data.trade?.underlyingAssetUnitPriceDenominator,
@@ -482,7 +491,7 @@ export const historyColumns = [
 
       if (lastBuy) {
         return (
-          <div className='hidden flex-1 text-right md:block'>
+          <div className='ml-2 hidden flex-1 text-right md:block'>
             {formatAmount(
               lastBuy?.trade?.underlyingAssetUnitPrice ?? 0,
               lastBuy?.trade?.underlyingAssetUnitPriceDenominator,
@@ -491,13 +500,13 @@ export const historyColumns = [
         )
       }
 
-      return <div className='hidden flex-1 text-right md:block'>-</div>
+      return <div className='ml-2 hidden flex-1 text-right md:block'>-</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.realisedPnL',
     header: () => (
-      <div className='hidden flex-1 text-right sm:block'>Realised PnL</div>
+      <div className='ml-2 hidden flex-1 text-right sm:block'>Realised PnL</div>
     ),
     cell: (row) => {
       const data = row.getValue()
@@ -520,7 +529,7 @@ export const historyColumns = [
         return (
           <div
             className={cn(
-              'hidden flex-1 flex-wrap justify-end gap-1 sm:flex',
+              'ml-2 hidden flex-1 flex-wrap justify-end gap-1 sm:flex',
               sign === 1 && 'text-ic-blue-300',
               sign === -1 && 'text-red-400',
               sign === 0 && 'text-ic-white',
@@ -534,7 +543,7 @@ export const historyColumns = [
         )
       }
 
-      return <div className='hidden flex-1 text-right sm:block'>-</div>
+      return <div className='ml-2 hidden flex-1 text-right sm:block'>-</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
