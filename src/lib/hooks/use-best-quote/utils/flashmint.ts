@@ -10,6 +10,7 @@ import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import {
   getAddressForToken,
   getCurrencyTokensForIndex,
+  isTokenBtcOnBase,
 } from '@/lib/utils/tokens'
 
 import { IndexQuoteRequest, Quote, QuoteTransaction, QuoteType } from '../types'
@@ -67,9 +68,10 @@ async function getEnhancedFlashMintQuote(
 
     if (
       (isMinting && isAddressEqual(outputToken.address, ICUSD.address)) ||
-      (!isMinting && isAddressEqual(inputToken.address, ICUSD.address))
+      (!isMinting && isAddressEqual(inputToken.address, ICUSD.address)) ||
+      isTokenBtcOnBase(chainId, inputTokenAddress, outputTokenAddress)
     ) {
-      // icUSD routing requires to set the input amount as well.
+      // These tokens require to set the input amount as well for quotes
       request.inputAmount = inputTokenAmount.toString()
     }
     const response = await fetch('/api/quote', {

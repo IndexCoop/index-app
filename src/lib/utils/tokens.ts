@@ -1,4 +1,5 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
+import { Address } from 'viem'
 import { base } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
@@ -108,6 +109,22 @@ export function getTokenBySymbol(symbol: string): Token | null {
     (token) => token.symbol.toLowerCase() === symbol.toLowerCase(),
   )
   return currencyToken ?? null
+}
+
+export function isTokenBtcOnBase(
+  chainId: number,
+  inputToken: Address,
+  outputToken: Address,
+): boolean {
+  if (chainId !== base.id) return false
+  const btc2x = getTokenByChainAndSymbol(base.id, 'BTC2X')
+  const btc3x = getTokenByChainAndSymbol(base.id, 'BTC3X')
+  return (
+    isAddressEqual(inputToken, btc2x.address) ||
+    isAddressEqual(inputToken, btc3x.address) ||
+    isAddressEqual(outputToken, btc2x.address) ||
+    isAddressEqual(outputToken, btc3x.address)
+  )
 }
 
 export function isTokenPairTradable(
