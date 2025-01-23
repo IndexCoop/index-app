@@ -505,9 +505,7 @@ export const historyColumns = [
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.realisedPnL',
-    header: () => (
-      <div className='ml-2 hidden flex-1 text-right sm:block'>Realised PnL</div>
-    ),
+    header: () => <div className='ml-4 flex-1 text-right'>Realised PnL</div>,
     cell: (row) => {
       const data = row.getValue()
 
@@ -529,7 +527,7 @@ export const historyColumns = [
         return (
           <div
             className={cn(
-              'ml-2 hidden flex-1 flex-wrap justify-end gap-1 sm:flex',
+              'ml-4 flex flex-1 flex-wrap justify-end gap-1',
               sign === 1 && 'text-ic-blue-300',
               sign === -1 && 'text-red-400',
               sign === 0 && 'text-ic-white',
@@ -543,29 +541,42 @@ export const historyColumns = [
         )
       }
 
-      return <div className='ml-2 hidden flex-1 text-right sm:block'>-</div>
+      return <div className='ml-4 flex-1 text-right'>-</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:history.time',
     header: () => (
-      <div className='ml-2 flex-[0.75] text-left sm:ml-8'>Time</div>
+      <div className='xs:block ml-4 hidden flex-[0.5] text-left md:flex-[0.75]'>
+        Time
+      </div>
     ),
     cell: (row) => {
       const data = row.getValue()
 
       return (
-        <div className='ml-2 flex-[0.75] text-left sm:ml-8'>
-          {new Date(
-            data.trade?.createdAt ?? data.metadata.blockTimestamp,
-          ).toLocaleDateString(navigator.language, {
-            year: '2-digit',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </div>
+        <>
+          <div className='ml-4 hidden flex-[0.75] text-left md:block'>
+            {new Date(
+              data.trade?.createdAt ?? data.metadata.blockTimestamp,
+            ).toLocaleDateString(navigator.language, {
+              year: '2-digit',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </div>
+          <div className='xs:block ml-4 hidden flex-[0.5] text-left md:hidden'>
+            {new Date(
+              data.trade?.createdAt ?? data.metadata.blockTimestamp,
+            ).toLocaleDateString(navigator.language, {
+              year: '2-digit',
+              month: '2-digit',
+              day: '2-digit',
+            })}
+          </div>
+        </>
       )
     },
   }),
