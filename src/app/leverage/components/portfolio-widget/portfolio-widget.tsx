@@ -15,8 +15,8 @@ import {
 import { useLeverageToken } from '@/app/leverage/provider'
 import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
-import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
+import { ETH } from '@/constants/tokens'
 import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
@@ -34,16 +34,12 @@ const OpenPositions = () => {
     (isMinting: boolean, token: EnrichedToken) => {
       if (!isLeverageToken(token)) return
 
-      const leverageBaseToken = getLeverageBaseToken(token.symbol)
-      if (leverageBaseToken === null) return
-
       updateQueryParams({
         isMinting,
         ...(isMinting
-          ? { outputToken: token, inputToken: leverageBaseToken }
-          : { inputToken: token, outputToken: leverageBaseToken }),
+          ? { outputToken: token, inputToken: ETH }
+          : { inputToken: token, outputToken: ETH }),
         leverageType: getLeverageType(token) ?? undefined,
-        baseToken: leverageBaseToken,
         network: queryParams.queryNetwork,
       })
 
