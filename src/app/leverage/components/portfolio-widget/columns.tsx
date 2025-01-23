@@ -1,4 +1,5 @@
 import { Button } from '@headlessui/react'
+import { InformationCircleIcon } from '@heroicons/react/24/outline'
 import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
 import {
   getTokenByChainAndAddress,
@@ -10,6 +11,7 @@ import Image from 'next/image'
 import { checksumAddress } from 'viem'
 import * as chains from 'viem/chains'
 
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import {
   GetApiV2UserAddressPositions200,
   GetApiV2UserAddressPositionsQueryResponse,
@@ -240,6 +242,18 @@ export const openPositionsColumns = [
       const pnlPercentage = (pnl / cost) * 100
       const sign = Math.sign(pnl)
 
+      const entryPrice = data.trade.underlyingAssetUnitPrice ?? 0
+      const currentPrice =
+        row.table.options.meta?.stats[
+          `${data.trade.underlyingAssetSymbol}-${data.trade.underlyingAssetUnitPriceDenominator}`
+        ]?.price ?? 0
+
+      const shouldShowTooltip =
+        pnl < 0 &&
+        (token.extensions.leverage.type === 'Short1x'
+          ? currentPrice < entryPrice
+          : currentPrice > entryPrice)
+
       return (
         <div
           className={cn(
@@ -254,6 +268,16 @@ export const openPositionsColumns = [
           </p>
           {cost > 0 && (
             <p className='hidden sm:block'>{`(${pnlPercentage.toFixed(2)}%)`}</p>
+          )}
+          {shouldShowTooltip && (
+            <Tooltip>
+              <TooltipContent className='bg-ic-black text-ic-white rounded-md border-[0.5px] border-gray-300 p-1 text-sm'>
+                VolatilityDecay Hurr Durr Text coming soon
+              </TooltipContent>
+              <TooltipTrigger asChild>
+                <InformationCircleIcon className='h-4 w-4' />
+              </TooltipTrigger>
+            </Tooltip>
           )}
         </div>
       )
