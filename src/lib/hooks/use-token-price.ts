@@ -25,7 +25,10 @@ export function useNativeTokenPrice(chainId?: number): number {
 function shouldOverrideNav(symbol: string, chainId?: number) {
   const navTokenOverrides = ['hyeth', 'icusd', 'eth2xbtc', 'btc2xeth']
   if (navTokenOverrides.includes(symbol.toLowerCase())) return true
-  if (chainId === base.id && (symbol === 'BTC2X' || symbol === 'BTC3X'))
+  if (
+    chainId === base.id &&
+    (symbol.toLowerCase() === 'btc2x' || symbol.toLowerCase() === 'btc3x')
+  )
     return true
   return false
 }
