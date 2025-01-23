@@ -51,8 +51,8 @@ export const mapQuoteToTrade = (
 const getUnderlyingAssetSymbol = (quote: Quote) => {
   const symbol = (quote.isMinting ? quote.outputToken : quote.inputToken).symbol
 
-  if (symbol.startsWith('ETH') || symbol.startsWith('iBTC')) return 'ETH'
-  if (symbol.startsWith('BTC') || symbol.startsWith('iETH')) return 'BTC'
+  if (symbol.startsWith('ETH') || symbol.startsWith('iETH')) return 'ETH'
+  if (symbol.startsWith('BTC') || symbol.startsWith('iBTC')) return 'BTC'
 
   return ''
 }
