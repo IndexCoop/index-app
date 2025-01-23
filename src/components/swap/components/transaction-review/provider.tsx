@@ -110,9 +110,12 @@ export function useTransactionReview(props: ReviewProps) {
         body: JSON.stringify(mapQuoteToTrade(address, hash, quote, refId)),
       })
 
-      queryClient.refetchQueries({
-        queryKey: ['leverage-token-history'],
-      })
+      setTimeout(() => {
+        queryClient.refetchQueries({
+          predicate: (query) =>
+            (query.queryKey[0] as string)?.includes('leverage-token'),
+        })
+      }, 1000)
     },
     [refId, queryClient],
   )
