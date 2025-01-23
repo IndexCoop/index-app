@@ -307,7 +307,7 @@ export const openPositionsColumns = [
   columnsHelper.accessor((row) => row, {
     id: 'portfolio-widget:open-positions.increase',
     header: () => (
-      <div className='lgn:flex ml-2 hidden flex-1 justify-end gap-4 md:flex lg:hidden'>
+      <div className='lgn:flex ml-2 hidden flex-[0.75] justify-end gap-4 md:flex lg:hidden'>
         <div className='w-[50px] text-right'>Increase</div>
         <div className='w-[50px]'>Close</div>
       </div>
@@ -326,7 +326,7 @@ export const openPositionsColumns = [
         )
 
       return (
-        <div className='lgn:flex ml-2 hidden  flex-1 items-center justify-end gap-4 md:flex lg:hidden'>
+        <div className='lgn:flex ml-2 hidden  flex-[0.75] items-center justify-end gap-4 md:flex lg:hidden'>
           <div className='flex w-[50px] justify-end'>
             <Button
               className='hover:bg-ic-dark flex size-[25px] items-center justify-center rounded-lg border border-white'
