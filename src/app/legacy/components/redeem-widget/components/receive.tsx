@@ -1,14 +1,14 @@
 import Image from 'next/image'
 
+import { LegacyToken } from '@/app/legacy/types'
 import { StyledSkeleton } from '@/components/skeleton'
 import { Caption } from '@/components/swap/components/caption'
-import { Token } from '@/constants/tokens'
 
 type ReceiveProps = {
   isLoading: boolean
   outputAmounts: string[]
   outputAmountsUsd: string[]
-  ouputTokens: Token[]
+  ouputTokens: LegacyToken[]
   totalOutputAmountUsd: string
   onSelectToken: () => void
 }

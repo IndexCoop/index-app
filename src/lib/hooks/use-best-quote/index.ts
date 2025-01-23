@@ -5,10 +5,8 @@ import { ARBITRUM } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import {
   isAvailableForFlashMint,
-  isAvailableForIssuance,
   isAvailableForSwap,
 } from '@/lib/hooks/use-best-quote/utils/available'
-import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { parseUnits } from '@/lib/utils'
@@ -50,12 +48,10 @@ export const useBestQuote = (
 
   const [isFetching0x, setIsFetching0x] = useState<boolean>(false)
   const [isFetchingFlashmint, setIsFetchingFlashMint] = useState<boolean>(false)
-  const [isFetchingIssuance, setIsFetchingIssuance] = useState<boolean>(false)
 
   const [quote0x, setQuote0x] = useState<ZeroExQuote | null>(null)
   const [quoteFlashMint, setQuoteFlashmint] = useState<Quote | null>(null)
   const [quoteIssuance, setQuoteIssuance] = useState<Quote | null>(null)
-  const [quoteRedemption, setQuoteRedemption] = useState<Quote | null>(null)
   const [quoteResults, setQuoteResults] = useState<QuoteResults>(defaultResults)
 
   const indexToken = useMemo(
@@ -86,8 +82,8 @@ export const useBestQuote = (
         return
       }
 
-      const inputTokenAddress = getAddressForToken(inputToken, chainId)
-      const outputTokenAddress = getAddressForToken(outputToken, chainId)
+      const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
+      const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
 
       if (!inputTokenAddress || !outputTokenAddress) {
         console.error(
@@ -103,10 +99,7 @@ export const useBestQuote = (
       const canSwapIndexToken = isAvailableForSwap(indexToken)
 
       const fetchFlashMintQuote = async () => {
-        if (
-          canFlashmintIndexToken &&
-          !isAvailableForIssuance(inputToken, outputToken)
-        ) {
+        if (canFlashmintIndexToken) {
           setIsFetchingFlashMint(true)
           const quoteFlashMint = await getFlashMintQuote({
             ...request,
@@ -127,34 +120,8 @@ export const useBestQuote = (
         }
       }
 
-      const fetchIssuanceQuote = async () => {
-        if (isAvailableForIssuance(inputToken, outputToken)) {
-          setIsFetchingIssuance(true)
-          const quoteIssuance = await getEnhancedIssuanceQuote(
-            {
-              ...request,
-              account: address,
-              isIssuance: isMinting,
-              inputTokenAmount: inputTokenAmountWei,
-              inputToken,
-              inputTokenPrice,
-              outputToken,
-              outputTokenPrice,
-            },
-            publicClient,
-          )
-          setIsFetchingIssuance(false)
-          setQuoteIssuance(quoteIssuance)
-        } else {
-          setQuoteIssuance(null)
-        }
-      }
-
       const fetchIndexSwapQuote = async () => {
-        if (
-          canSwapIndexToken &&
-          !isAvailableForIssuance(inputToken, outputToken)
-        ) {
+        if (canSwapIndexToken) {
           setIsFetching0x(true)
           try {
             const quote0x = await getIndexQuote({
@@ -186,7 +153,6 @@ export const useBestQuote = (
         fetchIndexSwapQuote()
       } else {
         fetchIndexSwapQuote()
-        fetchIssuanceQuote()
         fetchFlashMintQuote()
       }
     },
@@ -195,7 +161,6 @@ export const useBestQuote = (
       chainId,
       indexToken,
       inputToken,
-      isMinting,
       logEvent,
       outputToken,
       nativeTokenPrice,
@@ -251,7 +216,6 @@ export const useBestQuote = (
     quote0x,
     quoteFlashMint,
     quoteIssuance,
-    quoteRedemption,
   ])
 
   useEffect(() => {
@@ -259,7 +223,6 @@ export const useBestQuote = (
     setQuote0x(null)
     setQuoteFlashmint(null)
     setQuoteIssuance(null)
-    setQuoteRedemption(null)
     setQuoteResults(defaultResults)
   }, [chainId])
 
@@ -272,7 +235,6 @@ export const useBestQuote = (
     isFetchingAnyQuote,
     isFetching0x,
     isFetchingFlashmint,
-    isFetchingIssuance,
     quoteResults,
   }
 }
