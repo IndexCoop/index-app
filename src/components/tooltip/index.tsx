@@ -23,6 +23,7 @@ import {
 } from 'react'
 
 import { cn } from '@/lib/utils/tailwind'
+
 import type { Placement } from '@floating-ui/react'
 
 interface TooltipOptions {
