@@ -3,7 +3,7 @@ import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
 import { StatsMetric } from '@/app/leverage/components/stats/stats-metric'
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { useLeverageToken } from '@/app/leverage/provider'
-import { formatAmount } from '@/lib/utils'
+import { formatPercentage } from '@/app/products/utils/formatters'
 
 export function QuickStats() {
   const { indexToken, market } = useLeverageToken()
@@ -29,7 +29,7 @@ export function QuickStats() {
           className='hidden w-20 md:flex'
           isLoading={isFetchingQuickStats}
           label='24h Change'
-          value={`${formatAmount(change24h ?? 0, 2)} %`}
+          value={formatPercentage(change24h / 100)}
           overrideValueClassName={
             change24h >= 0 ? 'text-[#65D993]' : 'text-[#F36060]'
           }

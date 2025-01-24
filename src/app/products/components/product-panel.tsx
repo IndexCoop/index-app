@@ -48,7 +48,7 @@ export function ProductPanel() {
           price: data[idx]?.NetAssetValue,
           delta:
             typeof data[idx]?.NavChange24Hr === 'number'
-              ? data[idx].NavChange24Hr * 100
+              ? data[idx].NavChange24Hr
               : undefined,
           tvl: data[idx]?.ProductAssetValue,
           apy: data[idx]?.APY,

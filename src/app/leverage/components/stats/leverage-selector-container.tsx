@@ -122,7 +122,7 @@ export function LeverageSelectorContainer() {
   }, [token])
 
   return (
-    <div className='border-ic-black xs:justify-end flex h-full w-2/3 items-center gap-8 border-l px-16 py-0'>
+    <div className='border-ic-black xs:justify-end flex h-full w-2/3 items-center gap-8 border-l px-8 py-0 md:px-16'>
       <Popover className='flex'>
         <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 focus:outline-none data-[focus]:outline-1'>
           <LeverageSelector

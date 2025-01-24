@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
         symbol,
         costOfCarry,
         nav: metrics?.NetAssetValue ?? 0,
-        navchange: (metrics?.NavChange24Hr ?? 0) * 100,
+        navchange: metrics?.NavChange24Hr ?? 0,
         streamingFee: metrics?.StreamingFee ?? 0,
       },
     })

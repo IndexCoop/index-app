@@ -39,7 +39,7 @@ function MarketSelectorItem({
           ))}
         </span>
         <span className='w-20'>{item.price}</span>
-        <span className='w-20'>{item.change24h}</span>
+        <span className='hidden sm:w-20'>{item.change24h}</span>
       </div>
     </div>
   )
@@ -95,7 +95,7 @@ export function MarketSelector() {
               <span className='w-28'>Market</span>
               <span className='w-24'>Networks</span>
               <span className='w-20'>Price</span>
-              <span className='w-20'>24h</span>
+              <span className='hidden w-20'>24h</span>
             </div>
             <div className='w-full bg-[#1A2A2B]'>
               {markets.map((item) => (
