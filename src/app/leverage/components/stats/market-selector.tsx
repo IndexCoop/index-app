@@ -49,13 +49,40 @@ export function MarketSelector() {
   const router = useRouter()
   const { chainId } = useNetwork()
   const { market } = useLeverageToken()
+
+  const marketMetadata = markets.find((item) => item.market === market)
   return (
     <Popover className='flex'>
       <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 flex items-center gap-1 focus:outline-none data-[focus]:outline-1'>
-        <div className='text-ic-white text-sm font-bold sm:text-base'>
-          {market}
+        <div className='flex flex-col gap-y-1.5'>
+          <div className='flex items-center gap-1'>
+            {marketMetadata && (
+              <Image
+                src={marketMetadata.icon}
+                alt={marketMetadata.market}
+                height={24}
+                width={24}
+                priority
+                className='hidden flex-none sm:flex'
+              />
+            )}
+            <div className='text-ic-white text-sm font-bold sm:text-base'>
+              {market}
+            </div>
+            <ChevronDownIcon className='dark:text-ic-white text-ic-black size-5' />
+          </div>
+          <div className='hidden sm:flex'>
+            <span className='text-ic-gray-300 mr-1 text-xs'>Powered by</span>
+            <Image
+              src='/assets/powered-by-aave.svg'
+              alt='Powered by AAVE'
+              height={17}
+              width={64}
+              priority
+              className='flex-none'
+            />
+          </div>
         </div>
-        <ChevronDownIcon className='dark:text-ic-white text-ic-black size-5' />
       </PopoverButton>
       <PopoverPanel
         transition

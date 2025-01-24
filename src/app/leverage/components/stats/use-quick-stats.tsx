@@ -15,6 +15,7 @@ interface QuickStats {
     costOfCarry: number
     nav: number
     navchange: number
+    streamingFee: number
   }
 }
 
@@ -31,6 +32,7 @@ interface QuickStatsApiResponse {
     costOfCarry: number
     nav: number
     navchange: number
+    streamingFee: number
   }
 }
 
@@ -89,6 +91,7 @@ export function useQuickStats(
           costOfCarry: 0,
           nav: 0,
           navchange: 0,
+          streamingFee: 0,
         },
       }
     }
@@ -121,6 +124,7 @@ export function useQuickStats(
         costOfCarry: 0,
         nav: 0,
         navchange: 0,
+        streamingFee: 0,
       },
     },
     isFetchingQuickStats: isFetching,

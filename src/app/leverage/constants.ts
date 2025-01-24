@@ -88,22 +88,22 @@ export function getDefaultPathForMarket(market: string, chainId: number) {
 
 export const markets: Market[] = [
   {
-    icon: '/assets/selector-base-asset-eth.svg',
+    icon: '/assets/eth-usd-market.svg',
     market: 'ETH / USD',
     networks: [mainnet, arbitrum, base],
   },
   {
-    icon: BTC.image,
+    icon: '/assets/btc-usd-market.svg',
     market: 'BTC / USD',
     networks: [mainnet, arbitrum, base],
   },
   {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC').logoURI,
+    icon: '/assets/eth-btc-market.svg',
     market: 'ETH / BTC',
     networks: [arbitrum],
   },
   {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH').logoURI,
+    icon: '/assets/btc-eth-market.svg',
     market: 'BTC / ETH',
     networks: [arbitrum],
   },

@@ -21,11 +21,11 @@ export async function GET(req: NextRequest) {
     const data = await provider.getTokenStats(base, baseCurrency)
     const carryCosts = await fetchCarryCosts()
     const costOfCarry = carryCosts
-      ? (carryCosts[symbol.toLowerCase()] ?? null)
+      ? carryCosts[symbol.toLowerCase()] ?? null
       : null
     const metrics = await fetchTokenMetrics({
       tokenAddress: tokenAddress,
-      metrics: ['nav', 'navchange'],
+      metrics: ['fees', 'nav', 'navchange'],
     })
     return NextResponse.json({
       base: { ...data, baseCurrency },
@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
         costOfCarry,
         nav: metrics?.NetAssetValue ?? 0,
         navchange: (metrics?.NavChange24Hr ?? 0) * 100,
+        streamingFee: metrics?.StreamingFee ?? 0,
       },
     })
   } catch (error) {

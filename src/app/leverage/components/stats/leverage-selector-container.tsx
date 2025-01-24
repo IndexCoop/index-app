@@ -1,9 +1,11 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import Image from 'next/image'
+import { useMemo } from 'react'
 
 import { LeverageSelector } from '@/app/leverage/components/stats/leverage-selector'
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { useLeverageToken } from '@/app/leverage/provider'
+import { formatPercentage } from '@/app/products/utils/formatters'
 
 import { StatsMetric } from './stats-metric'
 
@@ -110,7 +112,15 @@ export function TokenSelector({ selectedToken }: TokenSelectProps) {
 
 export function LeverageSelectorContainer() {
   const { indexToken, market } = useLeverageToken()
-  const { isFetchingQuickStats } = useQuickStats(market, indexToken)
+  const {
+    data: { token },
+    isFetchingQuickStats,
+  } = useQuickStats(market, indexToken)
+
+  const netRate = useMemo(() => {
+    return (token.costOfCarry + token.streamingFee) / 365
+  }, [token])
+
   return (
     <div className='border-ic-black xs:justify-end flex h-full w-2/3 items-center gap-8 border-l px-16 py-0'>
       <Popover className='flex'>
@@ -145,7 +155,7 @@ export function LeverageSelectorContainer() {
         className='hidden w-16 md:flex'
         isLoading={isFetchingQuickStats}
         label='Net Rate'
-        value='0.03%'
+        value={formatPercentage(netRate, true, 3)}
       />
     </div>
   )
