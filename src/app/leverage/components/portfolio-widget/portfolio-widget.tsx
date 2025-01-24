@@ -56,7 +56,7 @@ const OpenPositions = () => {
 
   const { data: tokens } = useQuery({
     initialData: [],
-    queryKey: ['leverage-token-prices', chainId, balances.toString()],
+    queryKey: ['leverage-token-prices', address, chainId, balances.toString()],
     enabled: Boolean(chainId),
     queryFn: async () => {
       if (chainId) {

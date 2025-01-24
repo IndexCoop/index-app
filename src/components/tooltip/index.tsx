@@ -22,6 +22,7 @@ import {
   useState,
 } from 'react'
 
+import { cn } from '@/lib/utils/tailwind'
 import type { Placement } from '@floating-ui/react'
 
 interface TooltipOptions {
@@ -147,7 +148,7 @@ export const TooltipTrigger = forwardRef<
 export const TooltipContent = forwardRef<
   HTMLDivElement,
   React.HTMLProps<HTMLDivElement>
->(function TooltipContent({ style, ...props }, propRef) {
+>(function TooltipContent({ style, className, ...props }, propRef) {
   const context = useTooltipContext()
   const ref = useMergeRefs([context.refs.setFloating, propRef])
 
@@ -156,7 +157,10 @@ export const TooltipContent = forwardRef<
   return (
     <FloatingPortal>
       <div
-        className='text-ic-white z-[2000] box-border max-w-sm rounded-md bg-gray-800 px-2 py-1 text-center text-xs'
+        className={cn(
+          'text-ic-white z-[2000] box-border max-w-sm rounded-md bg-gray-800 px-2 py-1 text-center text-xs',
+          className,
+        )}
         ref={ref}
         style={{
           ...context.floatingStyles,
