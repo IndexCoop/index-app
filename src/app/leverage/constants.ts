@@ -98,12 +98,12 @@ export const markets: Market[] = [
     networks: [mainnet, arbitrum, base],
   },
   {
-    icon: '/assets/selector-base-asset-eth.svg',
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC').logoURI,
     market: 'ETH / BTC',
     networks: [arbitrum],
   },
   {
-    icon: BTC.image,
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH').logoURI,
     market: 'BTC / ETH',
     networks: [arbitrum],
   },

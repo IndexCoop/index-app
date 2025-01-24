@@ -110,7 +110,7 @@ export function TokenSelector({ selectedToken }: TokenSelectProps) {
 
 export function LeverageSelectorContainer() {
   const { indexToken, market } = useLeverageToken()
-  const { data, isFetchingQuickStats } = useQuickStats(market, indexToken)
+  const { isFetchingQuickStats } = useQuickStats(market, indexToken)
   return (
     <div className='border-ic-black xs:justify-end flex h-full w-2/3 items-center gap-8 border-l px-16 py-0'>
       <Popover className='flex'>
