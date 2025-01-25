@@ -34,8 +34,10 @@ export interface Market {
   icon: string
   market: string
   networks: Chain[]
-  price?: string
-  change24h?: number
+  price: number
+  change24h: number
+  symbol: 'ETH' | 'BTC'
+  currency: 'USD' | 'BTC' | 'ETH'
 }
 
 export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'

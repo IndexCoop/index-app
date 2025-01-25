@@ -67,45 +67,68 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
 function getDefaultMarketAsset(market: string) {
   switch (market) {
     case 'BTC / USD':
-      return 'BTC2x'
+      return { symbol: 'BTC2x', chainId: mainnet.id }
+    case 'ETH / USD':
+      return { symbol: 'ETH2x', chainId: mainnet.id }
     case 'ETH / BTC':
-      return 'ETH2xBTC'
+      return { symbol: 'ETH2xBTC', chainId: arbitrum.id }
     case 'BTC / ETH':
-      return 'BTC2xETH'
+      return { symbol: 'BTC2xETH', chainId: arbitrum.id }
     default:
-      return 'ETH2x'
+      return null
   }
 }
 
-export function getDefaultPathForMarket(market: string, chainId: number) {
-  const existingMarket = markets.find(
-    (m) => m.market.toLowerCase() === market.toLowerCase(),
-  )
+export function getPathForMarket(market: string, chainId?: number) {
+  const existingMarket = markets.find((m) => m.market === market)
   if (!existingMarket) return null
+
   const defaultAsset = getDefaultMarketAsset(market)
-  return `/leverage?sell=ETH&buy=${defaultAsset}&network=${chainId}`
+  if (!defaultAsset) return null
+
+  const queryChainId =
+    chainId && existingMarket.networks.some((network) => network.id === chainId)
+      ? chainId
+      : defaultAsset.chainId
+  return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
 }
 
 export const markets: Market[] = [
   {
     icon: '/assets/eth-usd-market.svg',
     market: 'ETH / USD',
+    symbol: 'ETH',
+    currency: 'USD',
     networks: [mainnet, arbitrum, base],
+    price: 0,
+    change24h: 0,
   },
   {
     icon: '/assets/btc-usd-market.svg',
     market: 'BTC / USD',
+    symbol: 'BTC',
+    currency: 'USD',
     networks: [mainnet, arbitrum, base],
+    price: 0,
+    change24h: 0,
   },
   {
     icon: '/assets/eth-btc-market.svg',
     market: 'ETH / BTC',
+    symbol: 'ETH',
+    currency: 'BTC',
     networks: [arbitrum],
+    price: 0,
+    change24h: 0,
   },
   {
     icon: '/assets/btc-eth-market.svg',
     market: 'BTC / ETH',
+    symbol: 'BTC',
+    currency: 'ETH',
     networks: [arbitrum],
+    price: 0,
+    change24h: 0,
   },
 ]
 

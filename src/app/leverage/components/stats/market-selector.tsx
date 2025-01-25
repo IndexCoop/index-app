@@ -1,13 +1,17 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 import { MarketNetworkImage } from '@/app/leverage/components/stats/market-network-image'
-import { getDefaultPathForMarket, markets } from '@/app/leverage/constants'
+import { formatStatsAmount } from '@/app/leverage/components/stats/use-quick-stats'
+import { getPathForMarket, markets } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Market } from '@/app/leverage/types'
+import { formatPercentage } from '@/app/products/utils/formatters'
 import { useNetwork } from '@/lib/hooks/use-network'
+import { cn } from '@/lib/utils/tailwind'
 
 function MarketSelectorItem({
   item,
@@ -18,7 +22,7 @@ function MarketSelectorItem({
 }) {
   return (
     <div
-      className='border-ic-gray-600 text-ic-white flex cursor-pointer items-center justify-between border-t px-4 py-3 text-xs font-medium first:border-t-0'
+      className='border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 flex cursor-pointer items-center justify-between border-t px-4 py-3 text-xs font-medium first:border-t-0'
       onClick={onClick}
     >
       <div className='flex'>
@@ -38,8 +42,17 @@ function MarketSelectorItem({
             <MarketNetworkImage key={chain.id} chain={chain} />
           ))}
         </span>
-        <span className='w-20'>{item.price}</span>
-        <span className='hidden sm:w-20'>{item.change24h}</span>
+        <span className='w-20 text-right'>
+          {formatStatsAmount(item.price, item.currency)}
+        </span>
+        <span
+          className={cn(
+            'hidden w-20 text-right md:block',
+            item.change24h >= 0 ? 'text-[#65D993]' : 'text-[#F36060]',
+          )}
+        >
+          {formatPercentage(item.change24h / 100)}
+        </span>
       </div>
     </div>
   )
@@ -50,7 +63,31 @@ export function MarketSelector() {
   const { chainId } = useNetwork()
   const { market } = useLeverageToken()
 
+  const { data } = useQuery({
+    gcTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    initialData: [],
+    queryKey: ['market-selector'],
+    queryFn: async () => {
+      const marketResponses = await Promise.all(
+        markets.map((item) => {
+          return fetch(
+            `/api/markets?symbol=${item.symbol}&currency=${item.currency}`,
+          )
+        }),
+      )
+      const marketData: Market[] = await Promise.all(
+        marketResponses.map((response) => response.json()),
+      )
+      return markets.map((market, idx) => ({
+        ...market,
+        ...marketData[idx],
+      }))
+    },
+  })
+
   const marketMetadata = markets.find((item) => item.market === market)
+
   return (
     <Popover className='flex'>
       <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 flex items-center gap-1 focus:outline-none data-[focus]:outline-1'>
@@ -94,19 +131,16 @@ export function MarketSelector() {
             <div className='text-ic-gray-400 space-between mt-2 flex px-4 py-1 text-[11px]'>
               <span className='w-28'>Market</span>
               <span className='w-24'>Networks</span>
-              <span className='w-20'>Price</span>
-              <span className='hidden w-20'>24h</span>
+              <span className='w-20 text-right'>Price</span>
+              <span className='hidden w-20 text-right md:block'>24h</span>
             </div>
             <div className='w-full bg-[#1A2A2B]'>
-              {markets.map((item) => (
+              {data.map((item) => (
                 <MarketSelectorItem
                   key={item.market}
                   item={item}
                   onClick={() => {
-                    const path = getDefaultPathForMarket(
-                      item.market,
-                      chainId ?? 1,
-                    )
+                    const path = getPathForMarket(item.market, chainId)
                     close()
                     if (!path) return
                     router.replace(path)

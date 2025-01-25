@@ -41,9 +41,14 @@ type QuickStatsQueryKey = [
   { address: string | undefined; symbol: string; market: string },
 ]
 
-function formatStatsAmount(amount: number, baseCurrency: string): string {
-  if (baseCurrency === 'btc') return `${formatAmount(amount, 4)} BTC`
-  if (baseCurrency === 'eth') return `${formatAmount(amount, 4)} ETH`
+export function formatStatsAmount(
+  amount: number,
+  baseCurrency: string,
+): string {
+  if (baseCurrency.toLowerCase() === 'btc')
+    return `${formatAmount(amount, 4)} BTC`
+  if (baseCurrency.toLowerCase() === 'eth')
+    return `${formatAmount(amount, 4)} ETH`
   return formatDollarAmount(amount, true, 2)
 }
 
