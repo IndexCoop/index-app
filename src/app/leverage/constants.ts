@@ -4,6 +4,7 @@ import {
 } from '@indexcoop/tokenlists'
 import { arbitrum, base, mainnet } from 'viem/chains'
 
+import { LeverageRatio } from '@/app/leverage/components/stats/leverage-selector-container'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
@@ -93,6 +94,36 @@ export function getPathForMarket(market: string, chainId?: number) {
   return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
 }
 
+export function getDefaultRatioAsset(ratio: string) {
+  switch (ratio.toLowerCase()) {
+    case '2x':
+      return { symbol: 'ETH2x', chainId: mainnet.id }
+    case '3x':
+      return { symbol: 'ETH3x', chainId: mainnet.id }
+    case '-1x':
+      return { symbol: 'iETH1x', chainId: arbitrum.id }
+    default:
+      return null
+  }
+}
+
+export const getPathForRatio = (
+  ratio: string,
+  chainId?: number,
+): string | null => {
+  const existingRatio = ratios.find((r) => r.ratio === ratio)
+  if (!existingRatio) return null
+
+  const defaultAsset = getDefaultRatioAsset(ratio)
+  if (!defaultAsset) return null
+
+  const queryChainId =
+    chainId && existingRatio?.networks.some((network) => network.id === chainId)
+      ? chainId
+      : defaultAsset.chainId
+  return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
+}
+
 export const markets: Market[] = [
   {
     icon: '/assets/eth-usd-market.svg',
@@ -132,39 +163,26 @@ export const markets: Market[] = [
   },
 ]
 
-export function getMarketsForChain(chainId: number) {
-  switch (chainId) {
-    case arbitrum.id:
-      return
-    case base.id:
-      return [
-        {
-          icon: '/assets/selector-base-asset-eth.svg',
-          market: 'ETH / USD',
-          priceRatio: '$3,712.23',
-          collateral: 'ETH',
-          debt: 'USDC',
-        },
-      ]
-    default:
-      return [
-        {
-          icon: '/assets/selector-base-asset-eth.svg',
-          market: 'ETH / USD',
-          priceRatio: '$3,712.23',
-          collateral: 'ETH',
-          debt: 'USDC',
-        },
-        {
-          icon: BTC.image,
-          market: 'BTC / USD',
-          priceRatio: '$94,712.40',
-          collateral: 'BTC',
-          debt: 'USDC',
-        },
-      ]
-  }
-}
+export const ratios: LeverageRatio[] = [
+  {
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
+    ratio: '2x',
+    networks: [arbitrum, base, mainnet],
+    currentLeverage: 0,
+  },
+  {
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
+    ratio: '3x',
+    networks: [arbitrum, base],
+    currentLeverage: 0,
+  },
+  {
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X').logoURI,
+    ratio: '-1x',
+    networks: [arbitrum],
+    currentLeverage: 0,
+  },
+]
 
 export const supportedLeverageTypes = {
   [ARBITRUM.chainId]: [

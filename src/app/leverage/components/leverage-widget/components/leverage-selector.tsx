@@ -56,7 +56,7 @@ export function LeverageSelectorButton({
   )
 }
 
-function getLabelForLeverageType(type: LeverageType): string {
+export function getLabelForLeverageType(type: LeverageType): string {
   switch (type) {
     case LeverageType.Long2x:
       return '2x'
