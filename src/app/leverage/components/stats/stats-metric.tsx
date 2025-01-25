@@ -21,7 +21,7 @@ export function StatsMetric({
       <div
         className={cn(
           'text-ic-gray-50 h-5 w-full text-sm font-medium',
-          isLoading && 'bg-ic-gray-700 animate-pulse rounded-md text-opacity-0',
+          isLoading && 'bg-ic-gray-800 animate-pulse rounded-md text-opacity-0',
           overrideValueClassName,
         )}
       >

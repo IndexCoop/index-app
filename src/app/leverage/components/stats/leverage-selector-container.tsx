@@ -154,6 +154,11 @@ export function LeverageSelectorContainer() {
       <StatsMetric
         className='hidden w-16 md:flex'
         isLoading={isFetchingQuickStats}
+        overrideValueClassName={
+          netRate
+            ? 'border-b border-ic-gray-200 border-dashed w-fit cursor-default'
+            : undefined
+        }
         label='Net Rate'
         value={formatPercentage(netRate, true, 3)}
       />
