@@ -96,22 +96,18 @@ export function useBalances(address?: string, tokens?: string[]) {
     return balances as TokenBalance[]
   }, [address, tokens, publicClient])
 
-  const { data: balances } = useQuery({
+  const { data: balances, refetch } = useQuery({
     initialData: [],
     queryKey: ['balances', address, tokens?.toString()],
     enabled: Boolean(address && tokens),
     queryFn: fetchBalances,
+    select: (data) => data ?? [],
   })
 
-  const memoizedBalances = useMemo(() => {
-    if (address && tokens && balances) return balances
-    return []
-  }, [address, balances, tokens])
-
-  const forceRefetchBalances = fetchBalances
+  const forceRefetchBalances = refetch
 
   return {
-    balances: memoizedBalances,
+    balances,
     forceRefetchBalances,
   }
 }
