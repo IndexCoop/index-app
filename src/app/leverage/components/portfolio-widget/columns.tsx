@@ -271,10 +271,37 @@ export const openPositionsColumns = [
           )}
           {shouldShowTooltip && (
             <Tooltip>
-              <TooltipContent className='bg-ic-black text-ic-white rounded-md border-[0.5px] border-gray-300 p-1 text-sm'>
-                VolatilityDecay Hurr Durr Text coming soon
+              <TooltipContent className='bg-ic-black text-ic-white rounded-md border-[0.5px] border-gray-800 p-2 text-xs'>
+                <div>
+                  Even if the current price is above your entry, you may still
+                  incur a loss due to{' '}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      document
+                        .getElementById('faq-volatility-drift')
+                        ?.scrollIntoView({ behavior: 'smooth' })
+                    }}
+                    className='font-bold text-blue-500 underline'
+                  >
+                    volatility drift
+                  </button>{' '}
+                  and{' '}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      document
+                        .getElementById('faq-leverage-costs-and-fees')
+                        ?.scrollIntoView({ behavior: 'smooth' })
+                    }}
+                    className='font-bold text-blue-500 underline'
+                  >
+                    cost of carry
+                  </button>
+                  —factors inherent in all leveraged products.
+                </div>
               </TooltipContent>
-              <TooltipTrigger asChild>
+              <TooltipTrigger>
                 <InformationCircleIcon className='h-4 w-4' />
               </TooltipTrigger>
             </Tooltip>
