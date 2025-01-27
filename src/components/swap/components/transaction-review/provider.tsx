@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { usePublicClient } from 'wagmi'
 
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -10,7 +11,6 @@ import { formatAmountFromWei } from '@/lib/utils'
 import { mapQuoteToTrade } from '@/lib/utils/api/database'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
-import { usePublicClient } from 'wagmi'
 import { ReviewProps } from './components/review'
 import { TransactionReviewSimulationState } from './components/simulation'
 
@@ -123,7 +123,7 @@ export function useTransactionReview(props: ReviewProps) {
           query.queryKey[0] === 'balances',
       })
     },
-    [refId, queryClient],
+    [refId, client, queryClient],
   )
 
   const makeTrade = async (override: boolean) => {
