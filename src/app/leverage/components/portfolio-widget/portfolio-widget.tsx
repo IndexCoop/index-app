@@ -23,7 +23,7 @@ import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 const OpenPositions = () => {
-  const { address } = useWallet()
+  const { address, isConnected } = useWallet()
   const { chainId } = useNetwork()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const { queryParams, updateQueryParams } = useQueryParams()
@@ -138,9 +138,11 @@ const OpenPositions = () => {
         table={table}
         isFetching={isFetching}
         emptyText={
-          selectedIndex === 0
-            ? 'You are currently not holding any leverage suite tokens on this network.'
-            : 'You have not executed any transactions with leverage tokens on this network yet.'
+          !isConnected
+            ? 'Please connect your wallet to view your positions.'
+            : selectedIndex === 0
+              ? 'You are currently not holding any leverage suite tokens on this network.'
+              : 'You have not executed any transactions with leverage tokens on this network yet.'
         }
       />
     </TabGroup>
