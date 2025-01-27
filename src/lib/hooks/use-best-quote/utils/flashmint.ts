@@ -29,8 +29,8 @@ async function getEnhancedFlashMintQuote(
   slippage: number,
   chainId: number,
 ): Promise<Quote | null> {
-  const inputTokenAddress = getAddressForToken(inputToken, chainId)
-  const outputTokenAddress = getAddressForToken(outputToken, chainId)
+  const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
+  const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
 
   if (!inputTokenAddress || !outputTokenAddress) {
     console.warn('Error unkown input/output token')

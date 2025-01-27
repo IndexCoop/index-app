@@ -31,7 +31,7 @@ export const getTokenPrice = async (
   token: Token,
   chainId: number | undefined,
 ): Promise<number> => {
-  const tokenAddress = getAddressForToken(token, chainId)
+  const tokenAddress = getAddressForToken(token.symbol, chainId)
   if (!tokenAddress || !chainId) return 0
   const productTokensList = getChainTokenList(chainId, ['product'])
   let isIndexToken = productTokensList.some(

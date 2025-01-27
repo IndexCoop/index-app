@@ -1,22 +1,23 @@
 import {
-  DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
-  DebtIssuanceModuleV2PolygonAddress,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
 
+import { LegacyToken } from '@/app/legacy/types'
 import {
-  BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   DATA,
   Ethereum2xFlexibleLeverageIndex,
-  GitcoinStakedETHIndex,
   GmiIndex,
-  ic21,
-  LeveragedRethStakingYield,
 } from '@/constants/tokens'
 
+import {
+  BedIndex,
+  GitcoinStakedETHIndex,
+  LeveragedRethStakingYield,
+  ic21,
+} from './tokens/mainnet'
 import {
   Bitcoin2xFlexibleLeverageIndexPolygon,
   ETH2xFlexibleLeverageIndexPolygon,
@@ -24,10 +25,14 @@ import {
   InverseETHFlexibleLeverageIndexPolygon,
   InverseMATICFlexibleLeverageIndexPolygon,
   Matic2xFlexibleLeverageIndexPolygon,
-} from './polygon'
+} from './tokens/polygon'
+
+const DebtIssuanceModuleAddress = '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
+const DebtIssuanceModuleV2PolygonAddress =
+  '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
 
 export const Issuance = {
-  [BedIndex.symbol]: IndexDebtIssuanceModuleV2Address_v2,
+  [BedIndex.symbol]: DebtIssuanceModuleAddress,
   [Bitcoin2xFlexibleLeverageIndex.symbol]: DebtIssuanceModuleV2Address,
   [Bitcoin2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
@@ -49,15 +54,15 @@ export const Issuance = {
     DebtIssuanceModuleV2PolygonAddress,
 }
 
-export const LegacyTokenList = [
+export const LegacyTokenList: LegacyToken[] = [
   Bitcoin2xFlexibleLeverageIndex,
   Ethereum2xFlexibleLeverageIndex,
-  ic21,
-  GitcoinStakedETHIndex,
+  { ...ic21, image: ic21.logoURI },
+  { ...GitcoinStakedETHIndex, image: GitcoinStakedETHIndex.logoURI },
   GmiIndex,
   DATA,
-  LeveragedRethStakingYield,
-  BedIndex,
+  { ...LeveragedRethStakingYield, image: LeveragedRethStakingYield.logoURI },
+  { ...BedIndex, image: BedIndex.logoURI },
 ]
 
 export const PolygonLegacyTokenList = [

@@ -13,9 +13,9 @@ import {
   LegacyTokenList,
   PolygonLegacyTokenList,
 } from '@/app/legacy/config'
-import { LegacyRedemptionQuoteResult } from '@/app/legacy/types'
+import { LegacyRedemptionQuoteResult, LegacyToken } from '@/app/legacy/types'
 import { POLYGON } from '@/constants/chains'
-import { LeveragedRethStakingYield, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getLegacyRedemptionQuote } from '@/lib/hooks/use-best-quote/utils/issuance/legacy-quote'
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -23,7 +23,7 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
 interface RedeemContextProps {
-  inputTokenList: Token[]
+  inputTokenList: LegacyToken[]
   inputValue: string
   isDepositing: boolean
   isFetchingQuote: boolean
@@ -42,10 +42,10 @@ const RedeemContext = createContext<RedeemContextProps>({
   inputValue: '',
   isDepositing: false,
   isFetchingQuote: false,
-  inputToken: LeveragedRethStakingYield,
+  inputToken: LegacyTokenList[0],
   outputTokens: [],
   inputTokenAmount: BigInt(0),
-  issuance: Issuance[LeveragedRethStakingYield.symbol],
+  issuance: Issuance[LegacyTokenList[0].symbol],
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
   onSelectInputToken: () => {},

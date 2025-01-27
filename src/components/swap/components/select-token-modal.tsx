@@ -34,7 +34,8 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
   const isDarkMode = props.isDarkMode ?? false
   const showBalances = props.showBalances ?? true
   const tokenAddresses = useMemo(
-    () => tokens.map((token) => getAddressForToken(token, chainId) ?? ''),
+    () =>
+      tokens.map((token) => getAddressForToken(token.symbol, chainId) ?? ''),
     [chainId, tokens],
   )
 
@@ -68,7 +69,7 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
               const tokenBalance = balances.find((bal) =>
                 isSameAddress(
                   bal.token,
-                  getAddressForToken(token, chainId) ?? '',
+                  getAddressForToken(token.symbol, chainId) ?? '',
                 ),
               )
               const balanceDisplay = formatAmountFromWei(

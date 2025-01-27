@@ -11,3 +11,13 @@ export interface LegacyQuote {
 export interface LegacyRedemptionQuoteResult extends QuoteResult {
   legacy: LegacyQuote | null
 }
+
+export interface LegacyToken {
+  name: string
+  symbol: string
+  address: string | undefined
+  decimals: number
+  image: string
+  chainId?: number
+  logoURI?: string
+}

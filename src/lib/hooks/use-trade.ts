@@ -34,7 +34,7 @@ async function getInputTokenBalance(
 ): Promise<bigint> {
   const chainId = publicClient.chain?.id
   if (!chainId) return BigInt(0)
-  const inputTokenAddress = getAddressForToken(inputToken, chainId)
+  const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
   if (!inputTokenAddress) return BigInt(0)
   const balanceProvider = new BalanceProvider(publicClient)
   return isNativeCurrency(inputToken.symbol, chainId)
@@ -63,8 +63,8 @@ export const useTrade = () => {
       const { inputToken, inputTokenAmount, outputToken } = quote
 
       // Check that input/ouput token are known
-      const inputTokenAddress = getAddressForToken(inputToken, chainId)
-      const outputTokenAddress = getAddressForToken(outputToken, chainId)
+      const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
+      const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
       if (!outputTokenAddress || !inputTokenAddress) return
 
       // Check is user has sufficient funds
