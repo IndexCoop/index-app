@@ -435,7 +435,7 @@ export const historyColumns = [
             src={
               getTokenByChainAndAddress(
                 data.metrics?.chainId ?? currentChainId,
-                data.metrics?.tokenAddress ?? data.rawContract.address,
+                checksumAddress(data.rawContract.address ?? ''),
               )?.logoURI ?? ''
             }
             width={16}
@@ -457,8 +457,7 @@ export const historyColumns = [
 
       const token =
         row.table.options.meta?.tokens[
-          data.metrics?.tokenAddress ??
-            checksumAddress(data.rawContract.address ?? '')
+          checksumAddress(data.rawContract.address ?? '')
         ]
 
       if (isLeverageToken(token)) {
@@ -568,7 +567,9 @@ export const historyColumns = [
       const data = row.getValue()
 
       const token =
-        row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
+        row.table.options.meta?.tokens[
+          checksumAddress(data.rawContract.address ?? '') ?? ''
+        ]
 
       if (
         isLeverageToken(token) &&

@@ -98,7 +98,7 @@ export function useBalances(address?: string, tokens?: string[]) {
 
   const { data: balances, refetch } = useQuery({
     initialData: [],
-    queryKey: ['balances', address, tokens?.toString()],
+    queryKey: ['balances', chainId, address, tokens?.toString()],
     enabled: Boolean(address && tokens),
     queryFn: fetchBalances,
     select: (data) => data ?? [],
