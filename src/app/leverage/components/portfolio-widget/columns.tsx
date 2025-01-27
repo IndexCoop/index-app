@@ -187,7 +187,7 @@ export const openPositionsColumns = [
         )
       }
 
-      return <div className='flex-[0.5]' />
+      return <div className='flex-[0.5] text-center'>-</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -359,7 +359,7 @@ export const openPositionsColumns = [
         )
       }
 
-      return <div className='ml-2 flex-[0.75] text-right'>-</div>
+      return <div className='ml-2 flex-[0.65] text-right'>-</div>
     },
   }),
   columnsHelper.accessor((row) => row, {
@@ -378,7 +378,7 @@ export const openPositionsColumns = [
 
       if (!isLeverageToken(token))
         return (
-          <div className='lgn:flex ml-2 hidden  flex-1 items-center justify-end gap-4 md:flex lg:hidden'>
+          <div className='lgn:flex ml-2 hidden  flex-[0.75] items-center justify-end gap-4 md:flex lg:hidden'>
             -
           </div>
         )
