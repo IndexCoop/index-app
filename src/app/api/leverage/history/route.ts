@@ -108,15 +108,26 @@ export async function POST(req: NextRequest) {
       await Promise.all(
         open.map(async (position) => {
           if (position.trade) {
-            const stats = await provider.getTokenStats(
-              position.trade.underlyingAssetSymbol ?? '',
-              position.trade.underlyingAssetUnitPriceDenominator?.toLowerCase() ??
-                'usd',
-            )
+            try {
+              const stats = await provider.getTokenStats(
+                position.trade.underlyingAssetSymbol ?? '',
+                position.trade.underlyingAssetUnitPriceDenominator?.toLowerCase() ??
+                  'usd',
+              )
 
-            return {
-              asset: `${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`,
-              stats,
+              return {
+                asset: `${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`,
+                stats,
+              }
+            } catch (error) {
+              console.log(JSON.stringify({ error, stats }, null, 2))
+
+              return {
+                asset: `${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`,
+                stats: {} as UnwrapPromise<
+                  ReturnType<typeof provider.getTokenStats>
+                >,
+              }
             }
           }
         }),
@@ -144,6 +155,7 @@ export async function POST(req: NextRequest) {
       },
     )
   } catch (error) {
+    console.log(JSON.stringify(error, null, 2))
     return NextResponse.json(error, { status: 500 })
   }
 }
