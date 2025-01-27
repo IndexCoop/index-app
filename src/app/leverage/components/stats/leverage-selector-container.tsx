@@ -2,6 +2,7 @@
 
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 import { arbitrum, base, Chain, mainnet } from 'viem/chains'
 
@@ -9,14 +10,13 @@ import { getLabelForLeverageType } from '@/app/leverage/components/leverage-widg
 import { LeverageRatioItem } from '@/app/leverage/components/stats/leverage-ratio-item'
 import { LeverageSelector } from '@/app/leverage/components/stats/leverage-selector'
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
+import { getPathForRatio } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { LeverageType } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-
-import { getPathForRatio } from '@/app/leverage/constants'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { useRouter } from 'next/navigation'
+
 import { StatsMetric } from './stats-metric'
 
 export type LeverageRatio = {
