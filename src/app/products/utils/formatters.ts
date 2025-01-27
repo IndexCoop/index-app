@@ -22,7 +22,7 @@ export function formatPercentage(
     style: 'percent',
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
-  }).format(percentage)
+  }).format(percentage / 100)
 }
 
 export function formatPrice(

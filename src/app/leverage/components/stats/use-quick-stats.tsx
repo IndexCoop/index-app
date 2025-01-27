@@ -46,9 +46,9 @@ export function formatStatsAmount(
   baseCurrency: string,
 ): string {
   if (baseCurrency.toLowerCase() === 'btc')
-    return `${formatAmount(amount, 4)} BTC`
+    return `₿ ${formatAmount(amount, 4)}`
   if (baseCurrency.toLowerCase() === 'eth')
-    return `${formatAmount(amount, 4)} ETH`
+    return `Ξ ${formatAmount(amount, 4)}`
   return formatDollarAmount(amount, true, 2)
 }
 
