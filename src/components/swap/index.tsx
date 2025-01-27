@@ -53,17 +53,10 @@ export const Swap = (props: SwapProps) => {
     () =>
       isTokenPairTradable(
         isRestrictedCountry || isUsingVpn,
-        inputToken.symbol,
         outputToken.symbol,
         chainId ?? 1,
       ),
-    [
-      isRestrictedCountry,
-      isUsingVpn,
-      inputToken.symbol,
-      outputToken.symbol,
-      chainId,
-    ],
+    [isRestrictedCountry, isUsingVpn, outputToken.symbol, chainId],
   )
 
   const {
