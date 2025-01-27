@@ -249,7 +249,7 @@ export const openPositionsColumns = [
         ]?.price ?? 0
 
       const shouldShowTooltip =
-        pnl < 0 &&
+        Math.round(pnl) < 0 &&
         (token.extensions.leverage.type === 'Short1x'
           ? currentPrice < entryPrice
           : currentPrice > entryPrice)

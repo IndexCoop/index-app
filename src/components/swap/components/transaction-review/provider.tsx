@@ -10,6 +10,7 @@ import { formatAmountFromWei } from '@/lib/utils'
 import { mapQuoteToTrade } from '@/lib/utils/api/database'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
+import { usePublicClient } from 'wagmi'
 import { ReviewProps } from './components/review'
 import { TransactionReviewSimulationState } from './components/simulation'
 
@@ -102,6 +103,7 @@ export function useTransactionReview(props: ReviewProps) {
 
   const refId = useRefId()
 
+  const client = usePublicClient()
   const queryClient = useQueryClient()
   const saveTrade: TradeCallback = useCallback(
     async ({ address, hash, quote }) => {
@@ -110,12 +112,16 @@ export function useTransactionReview(props: ReviewProps) {
         body: JSON.stringify(mapQuoteToTrade(address, hash, quote, refId)),
       })
 
-      setTimeout(() => {
-        queryClient.refetchQueries({
-          predicate: (query) =>
-            (query.queryKey[0] as string)?.includes('leverage-token'),
-        })
-      }, 1000)
+      await client?.waitForTransactionReceipt({
+        hash: hash as `0x${string}`,
+        confirmations: 3,
+      })
+
+      queryClient.refetchQueries({
+        predicate: (query) =>
+          (query.queryKey[0] as string)?.includes('leverage-token') ||
+          query.queryKey[0] === 'balances',
+      })
     },
     [refId, queryClient],
   )
