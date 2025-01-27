@@ -146,7 +146,7 @@ export const openPositionsColumns = [
             src={
               getTokenByChainAndAddress(
                 data.metrics?.chainId,
-                data.metrics?.tokenAddress,
+                checksumAddress(data.rawContract.address ?? ''),
               )?.logoURI ?? ''
             }
             width={16}
@@ -166,8 +166,7 @@ export const openPositionsColumns = [
 
       const token =
         row.table.options.meta?.tokens[
-          data.metrics?.tokenAddress ??
-            checksumAddress(data.rawContract.address ?? '')
+          checksumAddress(data.rawContract.address ?? '')
         ]
 
       if (isLeverageToken(token)) {
@@ -199,7 +198,9 @@ export const openPositionsColumns = [
       const data = row.getValue()
 
       const token =
-        row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
+        row.table.options.meta?.tokens[
+          checksumAddress(data.rawContract.address ?? '')
+        ]
 
       if (!isLeverageToken(token))
         return <div className='ml-2 flex-[0.75] text-right'>-</div>
@@ -219,7 +220,9 @@ export const openPositionsColumns = [
       const user = row.table.options.meta?.user
 
       const token =
-        row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
+        row.table.options.meta?.tokens[
+          checksumAddress(data.rawContract.address ?? '')
+        ]
 
       if (!isLeverageToken(token) || !data.trade || !data.metrics)
         return <div className='ml-2 flex-1 text-right'>-</div>
@@ -341,7 +344,9 @@ export const openPositionsColumns = [
       const data = row.getValue()
 
       const token =
-        row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
+        row.table.options.meta?.tokens[
+          checksumAddress(data.rawContract.address ?? '')
+        ]
 
       if (isLeverageToken(token) && data.trade && data.metrics) {
         const price =
@@ -374,7 +379,9 @@ export const openPositionsColumns = [
       const data = row.getValue()
 
       const token =
-        row.table.options.meta?.tokens[data.metrics?.tokenAddress ?? '']
+        row.table.options.meta?.tokens[
+          checksumAddress(data.rawContract.address ?? '')
+        ]
 
       if (!isLeverageToken(token))
         return (
