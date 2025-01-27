@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PublicClient } from 'viem'
 import { usePublicClient } from 'wagmi'
@@ -70,7 +71,6 @@ export interface TokenBalance {
 }
 
 export function useBalances(address?: string, tokens?: string[]) {
-  const [balances, setBalances] = useState<TokenBalance[]>([])
   const { chainId } = useNetwork()
   const publicClient = usePublicClient({
     chainId,
@@ -92,21 +92,23 @@ export function useBalances(address?: string, tokens?: string[]) {
     const balances = tokens.map((token, index) => {
       return { token: token, value: results[index] }
     })
-    setBalances(balances)
+
+    return balances as TokenBalance[]
   }, [address, tokens, publicClient])
 
-  useEffect(() => {
-    fetchBalances()
-  }, [fetchBalances])
+  const { data: balances } = useQuery({
+    initialData: [],
+    queryKey: ['balances', address, tokens?.toString()],
+    enabled: Boolean(address && tokens),
+    queryFn: fetchBalances,
+  })
 
   const memoizedBalances = useMemo(() => {
-    if (address && tokens) return balances
+    if (address && tokens && balances) return balances
     return []
   }, [address, balances, tokens])
 
-  const forceRefetchBalances = () => {
-    fetchBalances()
-  }
+  const forceRefetchBalances = fetchBalances
 
   return {
     balances: memoizedBalances,

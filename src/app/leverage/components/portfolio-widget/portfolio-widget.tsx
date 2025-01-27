@@ -28,7 +28,7 @@ const OpenPositions = () => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const { queryParams, updateQueryParams } = useQueryParams()
 
-  const { balances } = useLeverageToken()
+  const { balances, reset } = useLeverageToken()
 
   const adjustPosition = useCallback(
     (isMinting: boolean, token: EnrichedToken) => {
@@ -57,9 +57,11 @@ const OpenPositions = () => {
   const { data: tokens } = useQuery({
     initialData: [],
     queryKey: ['leverage-token-prices', address, chainId, balances.toString()],
-    enabled: Boolean(chainId),
+    enabled: Boolean(address),
+
     queryFn: async () => {
       if (chainId) {
+        reset()
         return fetchLeverageTokenPrices(balances, chainId)
       }
 
