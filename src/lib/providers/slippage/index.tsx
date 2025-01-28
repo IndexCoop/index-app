@@ -2,13 +2,14 @@
 
 import { createContext, useContext, useState } from 'react'
 
-import { slippageDefault } from '@/constants/slippage'
+import { slippageDefault, slippageMap } from '@/constants/slippage'
 
 interface Context {
   isAuto: boolean
   slippage: number
   auto: () => void
   set: (slippage: number) => void
+  setSlippageForToken: (tokenSymbol: string) => void
 }
 
 export const SlippageContext = createContext<Context>({
@@ -16,6 +17,7 @@ export const SlippageContext = createContext<Context>({
   slippage: slippageDefault,
   auto: () => {},
   set: () => {},
+  setSlippageForToken: () => {},
 })
 
 export const useSlippage = () => useContext(SlippageContext)
@@ -34,6 +36,13 @@ export const SlippageProvider = (props: { children: any }) => {
     setSlippage(slippage)
   }
 
+  const setSlippageForToken = (tokenSymbol: string) => {
+    const slippageTokenDefault = slippageMap.get(tokenSymbol)
+    if (!slippageTokenDefault) return
+    setIsAuto(false)
+    setSlippage(slippageTokenDefault)
+  }
+
   return (
     <SlippageContext.Provider
       value={{
@@ -41,6 +50,7 @@ export const SlippageProvider = (props: { children: any }) => {
         slippage,
         auto,
         set,
+        setSlippageForToken,
       }}
     >
       {props.children}
