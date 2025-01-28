@@ -8,14 +8,11 @@ import {
 } from '@indexcoop/tokenlists'
 import { createColumnHelper } from '@tanstack/react-table'
 import Image from 'next/image'
-import { checksumAddress } from 'viem'
+import { checksumAddress, formatUnits } from 'viem'
 import * as chains from 'viem/chains'
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-import {
-  GetApiV2UserAddressPositions200,
-  GetApiV2UserAddressPositionsQueryResponse,
-} from '@/gen'
+import { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -74,24 +71,6 @@ const formatAmount = (amount: number = 0, denominator?: unknown) => {
   return amount
     .toLocaleString(navigator.language, config.options)
     .replace(config.options.currency!, config.symbol)
-}
-
-const getTransferedTotal = (
-  user?: string,
-  unitPriceUsd: number = 0,
-  transfers: Omit<GetApiV2UserAddressPositions200, 'trade' | 'metrics'> = [],
-) => {
-  return (
-    transfers.reduce((acc, curr) => {
-      if (curr.from.toLowerCase() === user?.toLowerCase()) {
-        return acc - (curr.value ?? 0)
-      } else if (curr.to?.toLowerCase === user) {
-        return acc + (curr.value ?? 0)
-      }
-
-      return acc
-    }, 0) * unitPriceUsd
-  )
 }
 
 const getAction = (data: GetApiV2UserAddressPositionsQueryResponse[number]) => {
@@ -217,7 +196,6 @@ export const openPositionsColumns = [
     header: () => <div className='ml-2 flex-1 text-right'>Unrealised PnL</div>,
     cell: (row) => {
       const data = row.getValue()
-      const user = row.table.options.meta?.user
 
       const token =
         row.table.options.meta?.tokens[
@@ -227,21 +205,13 @@ export const openPositionsColumns = [
       if (!isLeverageToken(token) || !data.trade || !data.metrics)
         return <div className='ml-2 flex-1 text-right'>-</div>
 
-      const lastBuy = getLastBuy(data, row.table.options.meta?.history)
-
-      const transferAmount = getTransferedTotal(
-        user,
-        lastBuy?.trade?.outputTokenPriceUsd,
-        row.table.options.meta?.transfers,
-      )
-
       const _return = token.usd ?? 0
       const cost =
-        (data.metrics.endingAvgCostPerUnit ?? 0) *
-        (data.metrics.endingUnits ?? 0)
+        Number(formatUnits(token.balance, token.decimals)) *
+        (data.metrics.endingAvgCostPerUnit ?? 0)
 
       // Here we subtract the total transfer amount, because it has to be inversely corrected to exclude it from profit and loss
-      const pnl = _return - transferAmount - cost
+      const pnl = _return - cost
       const pnlPercentage = (pnl / cost) * 100
       const sign = Math.sign(pnl)
 
