@@ -151,8 +151,6 @@ export async function POST(req: NextRequest) {
       {},
     )
 
-    console.log(stats)
-
     return NextResponse.json(
       { open, history, stats },
       {
