@@ -73,25 +73,49 @@ const formatAmount = (amount: number = 0, denominator?: unknown) => {
     .replace(config.options.currency!, config.symbol)
 }
 
-const getAction = (data: GetApiV2UserAddressPositionsQueryResponse[number]) => {
-  if (!data.trade || !data.metrics) return 'Transfer'
+const getAction = (
+  data: GetApiV2UserAddressPositionsQueryResponse[number],
+  chainId?: number,
+  user?: string,
+) => {
+  const token = getTokenByChainAndAddress(
+    chainId ?? data.metrics?.chainId,
+    checksumAddress(data.rawContract.address ?? ''),
+  )
 
-  if (data.trade.transactionType === 'buy') {
-    if (data.metrics.beginningUnits === 0) {
+  if (!isLeverageToken(token)) return '-'
+
+  if (data.trade && data.metrics) {
+    if (data.trade.transactionType === 'buy') {
+      if (data.metrics.beginningUnits === 0) {
+        return 'Open'
+      } else {
+        return 'Increase'
+      }
+    }
+
+    if (data.trade.transactionType === 'sell') {
+      if (data.metrics.endingUnits === 0) {
+        return 'Close'
+      } else {
+        return 'Decrease'
+      }
+    }
+  } else {
+    if (
+      data.to?.toLowerCase() === user?.toLowerCase() &&
+      data.rawContract.address
+    ) {
       return 'Open'
-    } else {
-      return 'Increase'
+    } else if (
+      data.from.toLowerCase() === user?.toLowerCase() &&
+      data.rawContract.address
+    ) {
+      return 'Close'
     }
   }
 
-  if (
-    data.trade.transactionType === 'sell' &&
-    (data.metrics.endingUnits ?? 0) <= 0
-  ) {
-    return 'Close'
-  }
-
-  return 'Decrease'
+  return 'Transfer'
 }
 
 const getLastBuy = (
@@ -456,8 +480,15 @@ export const historyColumns = [
     cell: (row) => {
       const data = row.getValue()
 
+      const user = row.table.options.meta?.user
+
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { chainId } = useNetwork()
+
       return (
-        <div className='ml-2 flex-[0.5] text-center'>{getAction(data)}</div>
+        <div className='ml-2 flex-[0.5] text-center'>
+          {getAction(data, chainId, user)}
+        </div>
       )
     },
   }),

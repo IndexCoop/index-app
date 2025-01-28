@@ -21,6 +21,7 @@ import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { cn } from '@/lib/utils/tailwind'
 
 const OpenPositions = () => {
   const { address, isConnected } = useWallet()
@@ -138,11 +139,27 @@ const OpenPositions = () => {
       onChange={setSelectedIndex}
     >
       <TabList className='text-ic-gray-600 flex gap-6 text-sm font-bold'>
-        <Tab className='data-[selected]:text-ic-gray-50 outline-none'>
+        <Tab className='data-[selected]:text-ic-gray-50 flex items-center gap-2 outline-none'>
           Open Positions
+          <span
+            className={cn(
+              'text-ic-gray-300 flex h-3.5 items-center justify-center rounded-[4px] bg-purple-500/30 px-1.5 py-0.5 text-[8px]',
+              selectedIndex === 0 && 'text-ic-white bg-purple-500',
+            )}
+          >
+            BETA
+          </span>
         </Tab>
-        <Tab className='data-[selected]:text-ic-gray-50 outline-none'>
+        <Tab className='data-[selected]:text-ic-gray-50 flex items-center gap-2 outline-none'>
           History
+          <span
+            className={cn(
+              'text-ic-gray-300 flex h-3.5 items-center justify-center rounded-[4px] bg-purple-500/30 px-1.5 py-0.5 text-[8px]',
+              selectedIndex === 1 && 'text-ic-white bg-purple-500',
+            )}
+          >
+            BETA
+          </span>
         </Tab>
       </TabList>
       <TableRenderer
