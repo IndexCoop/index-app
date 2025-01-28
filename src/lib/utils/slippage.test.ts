@@ -92,7 +92,7 @@ describe('selectSlippage()', () => {
   })
 
   it('returns correct slippage for hyETH', () => {
-    const expectedSlippage = 0.1
+    const expectedSlippage = 0.05
     const index = HighYieldETHIndex.symbol
     const inputOutputToken = ETH.symbol
     const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
