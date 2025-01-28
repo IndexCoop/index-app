@@ -116,7 +116,7 @@ const OpenPositions = () => {
         (row) => !row.trade && !row.metrics,
       ),
       tokens: tokens as Record<string, EnrichedToken>,
-      stats: data.stats,
+      stats: data.stats ?? {},
       adjustPosition,
     },
     getCoreRowModel: getCoreRowModel(),

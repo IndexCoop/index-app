@@ -643,9 +643,11 @@ export const historyColumns = [
     cell: (row) => {
       const data = row.getValue()
 
-      const chain = Object.values(chains).find(
-        (chain) => chain.id === data.trade?.chainId,
-      )
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { chainId } = useNetwork()
+      console.log(chainId)
+
+      const chain = Object.values(chains).find((chain) => chain.id === chainId)
 
       return (
         <Button

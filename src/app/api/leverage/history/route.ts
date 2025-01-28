@@ -104,11 +104,13 @@ export async function POST(req: NextRequest) {
     )
     const provider = new CoingeckoProvider(coingeckoService)
 
-    const stats = (
-      await Promise.all(
-        open.map(async (position) => {
-          if (position.trade) {
-            try {
+    let stats = {}
+
+    try {
+      stats = (
+        await Promise.all(
+          open.map(async (position) => {
+            if (position.trade) {
               const stats = await provider.getTokenStats(
                 position.trade.underlyingAssetSymbol ?? '',
                 position.trade.underlyingAssetUnitPriceDenominator?.toLowerCase() ??
@@ -119,31 +121,28 @@ export async function POST(req: NextRequest) {
                 asset: `${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`,
                 stats,
               }
-            } catch (error) {
-              console.log(JSON.stringify({ error, stats }, null, 2))
-
-              return {
-                asset: `${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`,
-                stats: {} as UnwrapPromise<
-                  ReturnType<typeof provider.getTokenStats>
-                >,
-              }
             }
+          }),
+        )
+      ).reduce(
+        (acc, curr) => {
+          if (curr?.asset) {
+            acc[curr.asset] = curr.stats
           }
+          return acc
+        },
+        {} as Record<
+          string,
+          UnwrapPromise<ReturnType<typeof provider.getTokenStats>>
+        >,
+      )
+    } catch (error) {
+      console.error(
+        new Error('Failed to fetch token stats', {
+          cause: JSON.stringify(error, null, 2),
         }),
       )
-    ).reduce(
-      (acc, curr) => {
-        if (curr?.asset) {
-          acc[curr.asset] = curr.stats
-        }
-        return acc
-      },
-      {} as Record<
-        string,
-        UnwrapPromise<ReturnType<typeof provider.getTokenStats>>
-      >,
-    )
+    }
 
     return NextResponse.json(
       { open, history, stats },
