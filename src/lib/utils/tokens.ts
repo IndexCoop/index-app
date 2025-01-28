@@ -28,6 +28,8 @@ import {
   icETHIndex,
 } from '@/constants/tokens'
 
+const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
+
 export function getAddressForToken(
   tokenSymbol: string,
   chainId: number | undefined,
@@ -64,7 +66,7 @@ export function getCurrencyTokensForIndex(
     return [ETH, WETH, WBTC, USDC, USDT]
   }
   if (chainId === BASE.chainId) {
-    return [ETH, WETH, USDC]
+    return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
   }
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI, GUSD]
