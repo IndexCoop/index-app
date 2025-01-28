@@ -249,7 +249,7 @@ export const openPositionsColumns = [
       const currentPrice =
         row.table.options.meta?.stats[
           `${data.trade.underlyingAssetSymbol}-${data.trade.underlyingAssetUnitPriceDenominator}`
-        ]?.price ?? 0
+        ] ?? 0
 
       const shouldShowTooltip =
         Math.round(pnl) < 0 &&
@@ -352,7 +352,7 @@ export const openPositionsColumns = [
         const price =
           row.table.options.meta?.stats[
             `${data.trade.underlyingAssetSymbol}-${data.trade.underlyingAssetUnitPriceDenominator}`
-          ]?.price
+          ] ?? 0
 
         return (
           <div className='ml-2 hidden flex-[0.65] text-right sm:block'>

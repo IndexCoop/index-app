@@ -102,8 +102,17 @@ const OpenPositions = () => {
   })
 
   const tableData = useMemo(
-    () => (selectedIndex === 0 ? data.open : data.history),
-    [data, selectedIndex],
+    () =>
+      selectedIndex === 0
+        ? data.open.filter((p) => {
+            const balance = balances.find(
+              (b) => b.token === p.metrics?.tokenAddress,
+            )
+
+            return (balance?.value ?? 0) > 0
+          })
+        : data.history,
+    [data, balances, selectedIndex],
   )
 
   const table = useReactTable({

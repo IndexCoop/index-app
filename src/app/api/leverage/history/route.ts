@@ -1,10 +1,9 @@
-import { CoingeckoProvider, CoinGeckoService } from '@indexcoop/analytics-sdk'
 import {
   getTokenByChainAndAddress,
   isLeverageToken,
 } from '@indexcoop/tokenlists'
 import { uniqBy } from 'lodash'
-import { UnwrapPromise } from 'next/dist/lib/coalesced-function'
+import mapKeys from 'lodash/mapKeys'
 import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
 
@@ -17,6 +16,36 @@ import {
 type TokenTransferRequest = {
   user: Address
   chainId: number
+}
+
+const fetchCoingeckoPrices = async (
+  ids: string[],
+  vs_currencies: string[],
+): Promise<Record<string, { [key: string]: number }>> => {
+  const url = `https://pro-api.coingecko.com/api/v3/simple/price?ids=${ids.join(',')}&vs_currencies=${vs_currencies.join(',')}`
+  const options = {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+      'x-cg-pro-api-key': process.env.COINGECKO_API_KEY!,
+    },
+  }
+
+  const response = await fetch(url, options)
+  const result = await response.json()
+
+  return result
+}
+
+const mapCoingeckoIdToSymbol = (id: string) => {
+  switch (id) {
+    case 'ethereum':
+      return 'eth'
+    case 'bitcoin':
+      return 'btc'
+    default:
+      return id
+  }
 }
 
 const calculateAverageEntryPrice = (
@@ -99,50 +128,31 @@ export async function POST(req: NextRequest) {
       'metrics.tokenAddress',
     )
 
-    const coingeckoService = new CoinGeckoService(
-      process.env.COINGECKO_API_KEY!,
-    )
-    const provider = new CoingeckoProvider(coingeckoService)
-
-    let stats = {}
-
+    let prices: Record<string, { [key: string]: number }> = {}
     try {
-      stats = (
-        await Promise.all(
-          open.map(async (position) => {
-            if (position.trade) {
-              const stats = await provider.getTokenStats(
-                position.trade.underlyingAssetSymbol ?? '',
-                position.trade.underlyingAssetUnitPriceDenominator?.toLowerCase() ??
-                  'usd',
-              )
-
-              return {
-                asset: `${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`,
-                stats,
-              }
-            }
-          }),
-        )
-      ).reduce(
-        (acc, curr) => {
-          if (curr?.asset) {
-            acc[curr.asset] = curr.stats
-          }
-          return acc
-        },
-        {} as Record<
-          string,
-          UnwrapPromise<ReturnType<typeof provider.getTokenStats>>
-        >,
+      prices = mapKeys(
+        await fetchCoingeckoPrices(
+          ['ethereum', 'bitcoin'],
+          ['btc', 'eth', 'usd'],
+        ),
+        (_, key) => mapCoingeckoIdToSymbol(key),
       )
     } catch (error) {
-      console.error(
-        new Error('Failed to fetch token stats', {
-          cause: JSON.stringify(error, null, 2),
-        }),
-      )
+      console.error('Failed to fetch coingecko prices', error)
     }
+
+    const stats = open.reduce(
+      (acc, position) => ({
+        ...acc,
+        [`${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`]:
+          prices[position.trade.underlyingAssetSymbol!.toLowerCase()][
+            position.trade.underlyingAssetUnitPriceDenominator!.toLowerCase()
+          ] ?? 0,
+      }),
+      {},
+    )
+
+    console.log(stats)
 
     return NextResponse.json(
       { open, history, stats },

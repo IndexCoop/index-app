@@ -14,13 +14,7 @@ type TableProps = {
 }
 
 export type Stats = {
-  [key: string]: {
-    symbol: string
-    price: number
-    change24h: number
-    low24h: number
-    high24h: number
-  }
+  [key: string]: number
 }
 
 export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
