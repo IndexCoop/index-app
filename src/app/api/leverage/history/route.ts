@@ -51,7 +51,6 @@ const mapCoingeckoIdToSymbol = (id: string) => {
 const calculateAverageEntryPrice = (
   positions: GetApiV2UserAddressPositions200,
 ) => {
-  // TODO: should probably throw out the type === 'sell' transactions.
   const grouped = positions.reduce(
     (acc, position) => {
       if (

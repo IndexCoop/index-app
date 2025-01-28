@@ -645,7 +645,6 @@ export const historyColumns = [
 
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { chainId } = useNetwork()
-      console.log(chainId)
 
       const chain = Object.values(chains).find((chain) => chain.id === chainId)
 
