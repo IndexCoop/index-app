@@ -26,7 +26,7 @@ export function getBaseTokens(chainId: number): Token[] {
     case ARBITRUM.chainId:
       return [ETH, BTC]
     case BASE.chainId:
-      return [ETH]
+      return [ETH, BTC]
     default:
       return []
   }
@@ -127,6 +127,13 @@ export function getMarketsForChain(chainId: number) {
           market: 'ETH / USD',
           priceRatio: '$3,712.23',
           collateral: 'ETH',
+          debt: 'USDC',
+        },
+        {
+          icon: BTC.image,
+          market: 'BTC / USD',
+          priceRatio: '$94,712.40',
+          collateral: 'BTC',
           debt: 'USDC',
         },
       ]
