@@ -51,7 +51,7 @@ export function ProductPanel() {
               ? data[idx].NavChange24Hr
               : undefined,
           tvl: data[idx]?.ProductAssetValue,
-          apy: data[idx]?.APY,
+          apy: data[idx]?.APY ? data[idx].APY / 100 : undefined,
         })) as ProductRow[],
         sortBy ?? 'tvl',
         sortDirection,
