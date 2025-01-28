@@ -2,13 +2,9 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { base, mainnet } from 'viem/chains'
 
 import {
-  bedBorderLogo,
   dsethLogo,
   gmiLogo,
-  gtcEthLogo,
-  ic21Logo,
   icethLogo,
-  icrethLogo,
   indexLogo,
   wseth2Logo,
 } from '@/lib/utils/assets'
@@ -73,14 +69,6 @@ export const Ethereum2xFlexibleLeverageIndex: Token = {
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
 }
 
-export const LeveragedRethStakingYield: Token = {
-  name: 'Leveraged rETH Staking Yield',
-  symbol: 'icRETH',
-  address: '0xcCdAE12162566E3f29fEfA7Bf7F5b24C644493b5',
-  decimals: 18,
-  image: icrethLogo,
-}
-
 export const MetaverseIndex: Token = {
   name: 'Metaverse Index',
   symbol: 'MVI',
@@ -97,14 +85,6 @@ export const Bitcoin2xFlexibleLeverageIndex: Token = {
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
 }
 
-export const BedIndex: Token = {
-  name: 'Bankless BED Index',
-  symbol: 'BED',
-  address: '0x2aF1dF3AB0ab157e1E2Ad8F88A7D04fbea0c7dc6',
-  decimals: 18,
-  image: bedBorderLogo,
-}
-
 export const DATA: Token = {
   name: 'DATA Economy Index',
   symbol: 'DATA',
@@ -119,22 +99,6 @@ export const GmiIndex: Token = {
   address: '0x47110d43175f7f2C2425E7d15792acC5817EB44f',
   decimals: 18,
   image: gmiLogo,
-}
-
-export const GitcoinStakedETHIndex: Token = {
-  name: 'Gitcoin Staked ETH Index',
-  symbol: 'gtcETH',
-  image: gtcEthLogo,
-  address: '0x36c833Eed0D376f75D1ff9dFDeE260191336065e',
-  decimals: 18,
-}
-
-export const ic21: Token = {
-  name: 'Index Coop Large Cap Index',
-  symbol: 'ic21',
-  address: '0x1B5E16C5b20Fb5EE87C61fE9Afe735Cca3B21A65',
-  decimals: 18,
-  image: ic21Logo,
 }
 
 export const icETHIndex: Token = {

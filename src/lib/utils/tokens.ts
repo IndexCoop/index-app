@@ -13,10 +13,7 @@ import {
   DAI,
   DiversifiedStakedETHIndex,
   ETH,
-  GitcoinStakedETHIndex,
   GUSD,
-  icETHIndex,
-  LeveragedRethStakingYield,
   MATIC,
   RETH,
   SETH2,
@@ -27,16 +24,17 @@ import {
   WBTC,
   WETH,
   WSTETH,
+  icETHIndex,
 } from '@/constants/tokens'
 
 export function getAddressForToken(
-  token: Token,
+  tokenSymbol: string,
   chainId: number | undefined,
 ): string | undefined {
   const nativeToken = getNativeToken(chainId)
-  if (token.symbol.toLowerCase() === nativeToken?.symbol.toLowerCase())
+  if (tokenSymbol.toLowerCase() === nativeToken?.symbol.toLowerCase())
     return nativeToken.address
-  const listedToken = getTokenByChainAndSymbol(chainId, token.symbol)
+  const listedToken = getTokenByChainAndSymbol(chainId, tokenSymbol)
   return listedToken?.address
 }
 
@@ -70,13 +68,8 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI, GUSD]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
-  if (
-    index.symbol === DiversifiedStakedETHIndex.symbol ||
-    index.symbol === GitcoinStakedETHIndex.symbol
-  )
+  if (index.symbol === DiversifiedStakedETHIndex.symbol)
     return [ETH, WETH, USDC, GUSD, RETH, STETH, SETH2, WSTETH]
-  if (index.symbol === LeveragedRethStakingYield.symbol)
-    return [ETH, WETH, USDC, GUSD, RETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
@@ -119,20 +112,18 @@ export function getTokenBySymbol(symbol: string): Token | null {
 
 export function isTokenPairTradable(
   requiresProtection: boolean,
-  inputTokenSymbol: string,
   outputTokenSymbol: string,
   chainId: number,
 ): boolean {
   if (!requiresProtection) return true
   // When tokenlists is used everywhere, we can just pass these objects as function
   // arguments instead of the token symbol
-  const inputToken = getTokenByChainAndSymbol(chainId, inputTokenSymbol)
   const outputToken = getTokenByChainAndSymbol(chainId, outputTokenSymbol)
-  const inputTokenIsDangerous =
-    inputToken?.tags.some((tag) => tag === 'dangerous') ?? true
+
   const outputTokenIsDangerous =
-    outputToken?.tags.some((tag) => tag === 'dangerous') ?? true
-  return !inputTokenIsDangerous && !outputTokenIsDangerous
+    outputToken?.tags.some((tag) => tag === 'dangerous') ?? false
+
+  return !outputTokenIsDangerous
 }
 
 export function digitsByAddress(address: string): number {

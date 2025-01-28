@@ -22,7 +22,7 @@ export const useApproval = (
   const tokenAddress = useMemo(() => {
     if (!publicClient) return null
     const chainId = publicClient?.chain.id
-    return getAddressForToken(token, chainId) ?? null
+    return getAddressForToken(token.symbol, chainId) ?? null
   }, [publicClient, token])
 
   const { data, refetch } = useReadContract({

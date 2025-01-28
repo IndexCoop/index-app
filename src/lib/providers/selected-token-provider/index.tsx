@@ -22,7 +22,7 @@ export interface TokenContext {
 }
 
 export const SelectedTokenContext = createContext<TokenContext>({
-  isMinting: true,
+  isMinting: false,
   inputToken: ETH,
   outputToken: getDefaultIndex(),
   selectInputToken: () => {},
@@ -33,7 +33,7 @@ export const SelectedTokenContext = createContext<TokenContext>({
 export const useSelectedToken = () => useContext(SelectedTokenContext)
 
 export const SelectedTokenProvider = (props: { children: any }) => {
-  const [isMinting, setMinting] = useState<boolean>(true)
+  const [isMinting, setMinting] = useState<boolean>(false)
   const [inputToken, setInputToken] = useState<Token>(ETH)
   const [outputToken, setOutputToken] = useState<Token>(getDefaultIndex())
 
@@ -73,7 +73,16 @@ export const SelectedTokenProvider = (props: { children: any }) => {
   )
 
   const toggleIsMinting = useCallback(() => {
-    routeSwap(outputToken.symbol, inputToken.symbol)
+    if (
+      inputToken.symbol === 'INDEX' ||
+      outputToken.symbol === 'INDEX' ||
+      inputToken.symbol === 'dsETH' ||
+      outputToken.symbol === 'dsETH' ||
+      inputToken.symbol === 'hyETH' ||
+      outputToken.symbol === 'hyETH'
+    ) {
+      routeSwap(outputToken.symbol, inputToken.symbol)
+    }
   }, [inputToken, outputToken, routeSwap])
 
   return (
