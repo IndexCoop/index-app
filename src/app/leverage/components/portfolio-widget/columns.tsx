@@ -8,7 +8,7 @@ import {
 } from '@indexcoop/tokenlists'
 import { createColumnHelper } from '@tanstack/react-table'
 import Image from 'next/image'
-import { checksumAddress, formatUnits } from 'viem'
+import { checksumAddress, formatUnits, zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
@@ -104,12 +104,12 @@ const getAction = (
   } else {
     if (
       data.to?.toLowerCase() === user?.toLowerCase() &&
-      data.rawContract.address
+      data.from === zeroAddress
     ) {
       return 'Open'
     } else if (
       data.from.toLowerCase() === user?.toLowerCase() &&
-      data.rawContract.address
+      data.to === zeroAddress
     ) {
       return 'Close'
     }
