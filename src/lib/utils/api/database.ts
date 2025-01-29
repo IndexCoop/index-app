@@ -22,7 +22,7 @@ export const mapQuoteToTrade = (
   gasCostInUsd: quote.gasCostsInUsd,
   priceImpact: quote.priceImpact ?? null,
   inputTokenAddress: quote.inputToken.address!,
-  inputTokenSymbol: quote.inputToken.symbol,
+  inputTokenSymbol: quote.inputToken.symbol.toUpperCase(),
   inputTokenUnits: formatUnits(
     quote.inputTokenAmount,
     quote.inputToken.decimals,
@@ -31,7 +31,7 @@ export const mapQuoteToTrade = (
   inputTokenAmountUsd: quote.inputTokenAmountUsd,
   inputTokenPriceUsd: quote.inputTokenPrice,
   outputTokenAddress: quote.outputToken.address!,
-  outputTokenSymbol: quote.outputToken.symbol,
+  outputTokenSymbol: quote.outputToken.symbol.toUpperCase(),
   outputTokenUnits: formatUnits(
     quote.outputTokenAmount,
     quote.outputToken.decimals,
@@ -45,14 +45,14 @@ export const mapQuoteToTrade = (
   redeemFee: quote.fees?.redeemUsd.toString() ?? '',
   refId,
   createdAt: new Date(),
-  underlyingAssetSymbol: getUnderlyingAssetSymbol(quote),
+  underlyingAssetSymbol: getUnderlyingAssetSymbol(quote).toUpperCase(),
 })
 
 const getUnderlyingAssetSymbol = (quote: Quote) => {
   const symbol = (quote.isMinting ? quote.outputToken : quote.inputToken).symbol
 
-  if (symbol.startsWith('ETH')) return 'ETH'
-  if (symbol.startsWith('BTC')) return 'BTC'
+  if (symbol.startsWith('ETH') || symbol.startsWith('iETH')) return 'ETH'
+  if (symbol.startsWith('BTC') || symbol.startsWith('iBTC')) return 'BTC'
 
   return ''
 }

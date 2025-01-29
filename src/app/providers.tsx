@@ -7,7 +7,6 @@ import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { WagmiProvider } from 'wagmi'
 
 import { UserMetadataProvider } from '@/app/user-metadata-provider'
-import { useRefId } from '@/lib/hooks/use-ref-id'
 import { useUpsertUser } from '@/lib/hooks/use-upsert-user'
 import { ProtectionProvider } from '@/lib/providers/protection'
 import { SignTermsProvider } from '@/lib/providers/sign-terms-provider'
@@ -36,7 +35,6 @@ createWeb3Modal({
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const persistentUserData = useUpsertUser()
-  useRefId()
 
   return (
     <CacheProvider prepend={true}>

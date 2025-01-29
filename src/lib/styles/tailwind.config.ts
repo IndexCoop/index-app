@@ -8,6 +8,10 @@ export default {
   darkMode: 'selector',
   theme: {
     extend: {
+      screens: {
+        xs: '475px',
+        lgn: '1080px',
+      },
       colors: {
         ic: {
           black: '#0F1717',

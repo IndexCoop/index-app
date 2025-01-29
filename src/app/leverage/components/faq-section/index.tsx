@@ -1,9 +1,14 @@
+import Image from 'next/image'
+
 import { FaqItem, FaqList } from '@/components/faq'
 
 export function FaqSection() {
   return (
     <FaqList className='mx-auto my-12 w-full !max-w-7xl px-4 sm:px-6 md:mx-8'>
-      <FaqItem question='How does the Leverage interface work?'>
+      <FaqItem
+        question='How does the Leverage interface work?'
+        id='faq-leverage-interface'
+      >
         <p>
           The Index Coop Leverage Interface provides streamlined access to
           leverage, featuring built-in liquidation protection and low,
@@ -25,7 +30,7 @@ export function FaqSection() {
           .
         </p>
       </FaqItem>
-      <FaqItem question='How do the tokens work?'>
+      <FaqItem question='How do the tokens work?' id='faq-tokens'>
         <p>
           Both leverage tokens and perps offer a way for users to amplify their
           exposure to an asset. However, leverage tokens differ from perps in
@@ -57,7 +62,7 @@ export function FaqSection() {
           typical funding rates on perp platforms.
         </p>
       </FaqItem>
-      <FaqItem question='Is there liquidation risk?'>
+      <FaqItem question='Is there liquidation risk?' id='faq-liquidation-risk'>
         <p>
           Every token in the Index Coop Leverage Suite automatically rebalances
           the underlying collateralized debt positions on Aave v3 to avoid
@@ -72,7 +77,10 @@ export function FaqSection() {
           reward for anyone who triggers a ripcord rebalance.
         </p>
       </FaqItem>
-      <FaqItem question='How do I buy leverage tokens?'>
+      <FaqItem
+        question='How do I buy leverage tokens?'
+        id='faq-buy-leverage-tokens'
+      >
         <p>
           Start by selecting a market via the dropdown in the quickstats widget
           or in the trade widget, then select your desired Leverage amount using
@@ -89,7 +97,10 @@ export function FaqSection() {
           under the input asset dropdown.
         </p>
       </FaqItem>
-      <FaqItem question='How do I sell leverage tokens?'>
+      <FaqItem
+        question='How do I sell leverage tokens?'
+        id='faq-sell-leverage-tokens'
+      >
         <p>
           You can sell your leverage tokens by first selecting ETH or BTC,
           selecting “Sell” at the top of the trade widget, and then selecting
@@ -98,7 +109,10 @@ export function FaqSection() {
           tokens you want to sell.
         </p>
       </FaqItem>
-      <FaqItem question='How long should I hold leverage tokens?'>
+      <FaqItem
+        question='How long should I hold leverage tokens?'
+        id='how-long-should-i-hold-leverage-tokens'
+      >
         <p>
           There is no specific amount of time users should or should not hold
           our leverage tokens. However, typically speaking, leverage products
@@ -125,7 +139,10 @@ export function FaqSection() {
           different market environments.
         </p>
       </FaqItem>
-      <FaqItem question='I’m having trouble buying or selling my tokens. What can I do?'>
+      <FaqItem
+        question='I’m having trouble buying or selling my tokens. What can I do?'
+        id='faq-trouble-trading-leverage-tokens'
+      >
         <p>
           If you are having difficulty trading your leverage tokens via that
           Index Coop app, double check the following:
@@ -149,42 +166,118 @@ export function FaqSection() {
           interface to receive more support from our team.
         </p>
       </FaqItem>
-      <FaqItem question='What are the costs and fees for Index Coop leverage tokens?'>
+      <FaqItem
+        question='What are the costs and fees for Index Coop leverage tokens?'
+        id='faq-leverage-costs-and-fees'
+      >
+        <Image
+          alt=''
+          src='/leverage-costs-and-fees.png'
+          width={375}
+          height={375}
+        />
         <p>
-          Index Coop charges annual fees based on the type of product: 1x and 2x
-          products incur a 3.65% fee, while 3x products carry a 5.48% fee.
-          Additionally, all products are subject to issuance and redemption fees
-          of 0.10%.
+          The Leverage Suite offers a significant cost advantage over{' '}
+          <a
+            target='_blank'
+            href='https://dune.com/index_coop/indexcoop-perps-vs-leverage-tokens'
+          >
+            perps and CEXs on fees
+          </a>
+          , often being{' '}
+          <a
+            target='_blank'
+            href='https://thedefiant.io/education/tokens/stop-throwing-away-your-gains-index-coop-leverage-tokens-can-be-5x-cheaper-than-perps'
+          >
+            5-6x more cost-effective than comparable alternatives
+          </a>
+          . However, it is important to understand where costs and fees arise
+          within a given strategy, and there are a few different types to be
+          aware of.
         </p>
+        <ul className='list-inside list-disc space-y-4'>
+          <li>
+            <b>Index Coop fees</b>: These are fixed fees charged by Index Coop
+            based on the type of product.
+            <ul className='ml-4 list-inside list-[circle] space-y-1'>
+              <li>1x and 2x products incur an annual fee of 3.65%.</li>
+              <li>3x products incur an annual fee of 5.48%.</li>
+              <li>
+                All products are subject to issuance and redemption fees of
+                0.10%.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Cost of carry</b>: This is a dynamic cost incurred from borrowing
+            on a lending market
+            <div className='ml-4 mt-2 space-y-4'>
+              <p>
+                The underlying mechanism of the Leverage suite tokens uses DeFi
+                lending platform deposits and borrows. Assets deposited accrue
+                interest from borrows, while borrowed assets incur interest
+                expenses. The difference between these rates is your “cost of
+                carry,” which can vary over time—sometimes favorably (if earned
+                interest exceeds borrowing costs) and sometimes unfavorably (if
+                borrowing costs outpace earned interest), as the underlying
+                lending platform&apos;s borrow and earn rates vary.
+              </p>
+              <p>
+                For example, if ETH2x deposits $1,000 of WETH and borrows $500
+                of USDC, where ETH deposits earn +2% and borrowing USDC costs
+                -5%, the resulting net Cost of Carry is -1%.
+              </p>
+            </div>
+          </li>
+          <li>
+            <b>Rebalancing costs</b>: This is a cost incurred when swapping
+            <div className='ml-4 mt-2'>
+              While Index Coop doesn&apos;t impose charges, swapping assets
+              through DEX pools incurs small fees paid to liquidity providers,
+              such as the 0.05% swap fee in Uni v3 WETH/USDC pools. Moreover,
+              swaps also entail &quot;price impact,&quot; wherein larger swaps
+              lead to higher overall prices paid for buys or lower overall
+              prices received for sells, thus gradually reducing the net value
+              of the position over time.
+            </div>
+          </li>
+        </ul>
         <p>
-          Costs associated with utilising assets within Aave involve the concept
-          of “Cost of Carry,” wherein assets deposited accrue interest from
-          borrowers. This results in a spread between the interest earned from
-          deposits and the interest paid for the debt. For example, if ETH2x
-          deposits $1,000 of WETH and borrows $500 of USDC, where ETH deposits
-          earn +2% APY and borrowing USDC costs -5% APY, the resulting net Cost
-          of Carry is -1% APY, leading to a slight reduction in the position’s
-          value over time. This Cost of Carry may vary, sometimes favourably and
-          sometimes unfavourably for users, depending on fluctuating borrowing
-          and deposit rates, necessitating regular monitoring via the app.
-        </p>
-        <p>
-          Regarding rebalancing costs, while Index Coop itself doesn’t impose
-          charges, swapping assets through DEX pools incur small fees paid to
-          liquidity providers, such as the 0.05% swap fee in Uni v3 WETH/USDC
-          pools. Moreover, swaps also entail “price impact,” wherein larger
-          swaps lead to higher overall prices paid for buys or lower overall
-          prices received for sells, thus gradually reducing the net value of
-          the position over time.
+          Index Coop pays for all gas costs associated with each strategy and
+          these costs are not passed along to the user. No front-end fees are
+          charged for trading using the Leverage Interface.
         </p>
       </FaqItem>
-      <FaqItem question='Are there any front-end fees for trading leverage tokens at app.indexcoop.com?'>
+      <FaqItem question='What is volatility drift?' id='faq-volatility-drift'>
+        Volatility drift (sometimes called &quot;volatility decay&quot;) is the
+        compounding effect on leveraged products that causes their returns to
+        deviate from the underlying asset&apos;s performance—beyond what a
+        simple multiplication by the leverage factor would suggest. In the
+        context of our tokens, periodic adjustments to maintain the respective
+        token&apos;s target leverage ratio can magnify price swings, leading to
+        drift. For a deeper look, check out our deep{' '}
+        <a
+          target='_blank'
+          href='https://indexcoop.com/blog/fli-volatility-drift'
+        >
+          {' '}
+          dive on volatility drift
+        </a>
+        .
+      </FaqItem>
+      <FaqItem
+        question='Are there any front-end fees for trading leverage tokens at app.indexcoop.com?'
+        id='faq-additional-fees'
+      >
         <p>
           No, the Index Coop App does not currently charge any fees. All fees
           are charged at the smart contract level.
         </p>
       </FaqItem>
-      <FaqItem question='Is the Leverage Suite available to US Persons?'>
+      <FaqItem
+        question='Is the Leverage Suite available to US Persons?'
+        id='faq-leverage-us-availability'
+      >
         <p>
           No, Index Coop products are not suitable for any Restricted Persons
           outlined{' '}
@@ -198,7 +291,10 @@ export function FaqSection() {
           .
         </p>
       </FaqItem>
-      <FaqItem question='Why do I see a “Not available for Restricted Persons” message?'>
+      <FaqItem
+        question='Why do I see a “Not available for Restricted Persons” message?'
+        id='restricted-persons'
+      >
         <p>
           The Leverage Suite is unavailable to Restricted Persons as defined in
           our{' '}

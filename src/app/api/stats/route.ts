@@ -6,6 +6,7 @@ import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
+
   const tokenAddress = searchParams.get('address')
   const symbol = searchParams.get('symbol')
   const base = searchParams.get('base')
@@ -21,12 +22,13 @@ export async function GET(req: NextRequest) {
     const data = await provider.getTokenStats(base, baseCurrency)
     const carryCosts = await fetchCarryCosts()
     const costOfCarry = carryCosts
-      ? (carryCosts[symbol.toLowerCase()] ?? null)
+      ? carryCosts[symbol.toLowerCase()] ?? null
       : null
     const metrics = await fetchTokenMetrics({
       tokenAddress: tokenAddress,
       metrics: ['nav', 'navchange'],
     })
+
     return NextResponse.json({
       base: { ...data, baseCurrency },
       token: {

@@ -1,4 +1,6 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { usePublicClient } from 'wagmi'
 
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -101,20 +103,34 @@ export function useTransactionReview(props: ReviewProps) {
 
   const refId = useRefId()
 
-  const saveUserTrade: TradeCallback = useCallback(
+  const client = usePublicClient()
+  const queryClient = useQueryClient()
+  const saveTrade: TradeCallback = useCallback(
     async ({ address, hash, quote }) => {
-      fetch(`/api/user/trade`, {
+      await fetch(`/api/user/trade`, {
         method: 'POST',
         body: JSON.stringify(mapQuoteToTrade(address, hash, quote, refId)),
       })
+
+      await client?.waitForTransactionReceipt({
+        hash: hash as `0x${string}`,
+        confirmations: 3,
+      })
+
+      queryClient.refetchQueries({
+        predicate: (query) =>
+          (query.queryKey[0] as string)?.includes('leverage-token') ||
+          (query.queryKey[0] === 'balances' &&
+            query.queryKey[1] === quote.chainId),
+      })
     },
-    [refId],
+    [refId, client, queryClient],
   )
 
   const makeTrade = async (override: boolean) => {
     if (!quote) return null
     try {
-      await executeTrade(quote, override, saveUserTrade)
+      await executeTrade(quote, override, saveTrade)
       return true
     } catch {
       return false
