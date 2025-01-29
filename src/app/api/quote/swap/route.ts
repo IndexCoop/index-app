@@ -1,29 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-type IndexQuoteRequest = {
-  chainId: string
-  account: string
-  inputToken: string
-  outputToken: string
-  inputAmount: string
-  slippage: string
-}
+import { GetApiV2QuoteSwapQueryParams, getApiV2QuoteSwap } from '@/gen'
 
 export async function POST(req: NextRequest) {
   try {
-    const request: IndexQuoteRequest = await req.json()
-    const query = new URLSearchParams(request).toString()
-    const url = `https://api.indexcoop.com/v2/quote/swap?${query}`
-    console.log(url)
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.INDEX_COOP_API_V2_KEY,
-      } as HeadersInit,
-    })
-
-    const quote = await response.json()
+    const params: GetApiV2QuoteSwapQueryParams = await req.json()
+    const quote = await getApiV2QuoteSwap(params, {})
 
     if (!quote) {
       return NextResponse.json(
@@ -32,7 +14,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    return NextResponse.json(quote)
+    return NextResponse.json(quote.data)
   } catch (error) {
     console.error(error)
     return NextResponse.json(error, { status: 500 })

@@ -34,11 +34,12 @@ export async function getIndexQuote(
     const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
     const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
     const swapQuoteRequest = {
-      ...request,
+      chainId: chainId.toString(),
       account: address,
       inputToken: inputTokenAddress,
       outputToken: outputTokenAddress,
       inputAmount: inputAmount.toString(),
+      slippage: slippage.toString(),
     }
     const response = await fetch('/api/quote/swap', {
       method: 'POST',
