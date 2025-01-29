@@ -12,7 +12,7 @@ type Props = {
 
 export function LeveragePanelMobile({ indexToken }: Props) {
   return (
-    <div className='flex gap-4 lg:hidden'>
+    <div className='flex flex-col gap-4 lg:hidden'>
       <div className='h-[400px] w-full'>
         <TradingViewChart indexToken={indexToken} />
       </div>
