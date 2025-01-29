@@ -11,6 +11,8 @@ import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 import { LeverageToken, LeverageType } from './types'
 
+const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
+
 export const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X', 'ETH2xBTC']
 
 export const btcLeverageTokenSymbols = ['BTC2X', 'BTC3X', 'iBTC1X', 'BTC2xETH']
@@ -26,7 +28,7 @@ export function getBaseTokens(chainId: number): Token[] {
     case ARBITRUM.chainId:
       return [ETH, BTC]
     case BASE.chainId:
-      return [ETH]
+      return [ETH, BTC]
     default:
       return []
   }
@@ -38,7 +40,7 @@ export function getCurrencyTokens(chainId: number): Token[] {
     case ARBITRUM.chainId:
       return [ETH, WETH, WBTC, USDC, USDT]
     case BASE.chainId:
-      return [ETH, WETH, USDC]
+      return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
     default:
       return []
   }
@@ -127,6 +129,13 @@ export function getMarketsForChain(chainId: number) {
           market: 'ETH / USD',
           priceRatio: '$3,712.23',
           collateral: 'ETH',
+          debt: 'USDC',
+        },
+        {
+          icon: BTC.image,
+          market: 'BTC / USD',
+          priceRatio: '$94,712.40',
+          collateral: 'BTC',
           debt: 'USDC',
         },
       ]
