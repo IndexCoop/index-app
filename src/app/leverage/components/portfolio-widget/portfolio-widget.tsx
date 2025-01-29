@@ -105,7 +105,7 @@ const OpenPositions = () => {
   const tableData = useMemo(
     () =>
       selectedIndex === 0
-        ? data.open.filter((p) => {
+        ? (data.open ?? []).filter((p) => {
             const balance = balances.find(
               (b) => b.token === p.metrics?.tokenAddress,
             )
