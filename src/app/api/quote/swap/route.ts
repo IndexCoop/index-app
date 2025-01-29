@@ -5,7 +5,7 @@ import { GetApiV2QuoteSwapQueryParams, getApiV2QuoteSwap } from '@/gen'
 export async function POST(req: NextRequest) {
   try {
     const params: GetApiV2QuoteSwapQueryParams = await req.json()
-    const quote = await getApiV2QuoteSwap(params, {})
+    const quote = await getApiV2QuoteSwap(params)
 
     if (!quote) {
       return NextResponse.json(
