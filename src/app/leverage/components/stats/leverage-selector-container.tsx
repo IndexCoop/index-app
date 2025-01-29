@@ -126,17 +126,21 @@ export function LeverageSelectorContainer() {
                 </div>
               </div>
               <div className='flex py-2'>
-                <div className='text-ic-gray-600'>Cost of Carry</div>
-                <div className='text-ic-gray-900 ml-auto'>
-                  {`${formatPercentage(token.costOfCarry / 365, true, 3)} / day`}
-                </div>
-              </div>
-              <div className='flex py-2'>
                 <div className='text-ic-gray-600'>Streaming Fee</div>
                 <div className='text-ic-gray-900 ml-auto'>
                   {`${formatPercentage(token.streamingFee / 365, true, 3)} / day`}
                 </div>
               </div>
+              <div className='flex py-2'>
+                <div className='text-ic-gray-600'>Cost of Carry</div>
+                <div className='text-ic-gray-900 ml-auto'>
+                  {`${formatPercentage(token.costOfCarry / 365, true, 3)} / day`}
+                </div>
+              </div>
+              <p className='text-ic-gray-700 text-[10px] font-normal leading-tight'>
+                This is a dynamic cost incurred from borrowing on a lending
+                market, which can be positive or negative.
+              </p>
             </div>
           }
         </TooltipContent>
