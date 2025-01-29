@@ -1,11 +1,11 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
+import { formatPercentage } from '@/app/products/utils/formatters'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 
-import { formatPercentage } from '@/app/products/utils/formatters'
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
 type SummaryQuoteProps = {
