@@ -35,7 +35,7 @@ const config = defineConfig({
       dateType: 'date',
     }),
     pluginClient({
-      baseURL: 'https://api-q513.onrender.com',
+      baseURL: 'https://api-pr-40-1kut.onrender.com',
       output: {
         path: './clients/axios',
         barrelType: 'propagate',
