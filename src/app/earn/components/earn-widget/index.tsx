@@ -1,7 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { Summary } from '@/app/earn/components/earn-widget/components/summary'
 import { supportedNetworks } from '@/app/earn/constants'
@@ -80,6 +80,7 @@ export function EarnWidget() {
     auto: autoSlippage,
     isAuto: isAutoSlippage,
     set: setSlippage,
+    setSlippageForToken,
     slippage,
   } = useSlippage()
 
@@ -87,6 +88,10 @@ export function EarnWidget() {
     if (!inputBalance) return
     onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
+
+  useEffect(() => {
+    setSlippageForToken(isMinting ? outputToken.symbol : inputToken.symbol)
+  }, [inputToken, isMinting, outputToken, setSlippageForToken])
 
   return (
     <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6 lg:ml-auto'>
