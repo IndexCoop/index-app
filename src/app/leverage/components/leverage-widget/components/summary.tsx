@@ -3,7 +3,9 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 
+import { formatPercentage } from '@/app/products/utils/formatters'
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
 type SummaryQuoteProps = {
@@ -86,6 +88,39 @@ export function Summary() {
                   <div>
                     <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
                   </div>
+                </div>
+                <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
+                  <Tooltip placement='bottom'>
+                    <TooltipTrigger>
+                      <div className='border-ic-gray-200 cursor-default border-b border-dashed font-normal'>
+                        Fees
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className='bg-ic-white mt-2 w-60 rounded px-5 py-2 text-xs font-medium drop-shadow'>
+                      {
+                        <div className='flex flex-col'>
+                          <div className='flex border-b border-[#CDDFDF] py-2'>
+                            <div className='text-ic-gray-600'>Fees</div>
+                          </div>
+                          <div className='flex py-2'>
+                            <div className='text-ic-gray-600'>
+                              Open / close fee
+                            </div>
+                            <div className='text-ic-gray-900 ml-auto'>
+                              {formatPercentage(0.0001)}
+                            </div>
+                          </div>
+                          <div className='flex py-2'>
+                            <div className='text-ic-gray-600'>Price Impact</div>
+                            <div className='text-ic-gray-900 ml-auto'>
+                              {formatPercentage(-0.003)}
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </TooltipContent>
+                  </Tooltip>
+                  <div>$2.35</div>
                 </div>
               </>
             )}
