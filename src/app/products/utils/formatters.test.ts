@@ -17,9 +17,9 @@ describe('formatters tests', () => {
   it('formatPercentage', () => {
     expect(formatPercentage(undefined)).toBe('')
     expect(formatPercentage(null)).toBe('')
-    expect(formatPercentage(10)).toBe('10.00%')
-    expect(formatPercentage(54.123)).toBe('54.12%')
-    expect(formatPercentage(-4)).toBe('-4.00%')
+    expect(formatPercentage(0.1)).toBe('10.00%')
+    expect(formatPercentage(0.54123)).toBe('54.12%')
+    expect(formatPercentage(-0.04)).toBe('-4.00%')
   })
   it('formatPrice', () => {
     expect(formatPrice(undefined)).toBe('')
