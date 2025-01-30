@@ -2,8 +2,8 @@ import { Suspense } from 'react'
 
 import { LeverageFeedbackButton } from '@/app/leverage/components/leverage-feedback-button'
 import { LeverageWidget } from '@/app/leverage/components/leverage-widget'
+import PortfolioWidget from '@/app/leverage/components/portfolio-widget/portfolio-widget'
 import { TradingViewChart } from '@/app/leverage/components/trading-view-chart'
-import { YourTokens } from '@/app/leverage/components/your-tokents'
 import { Token } from '@/constants/tokens'
 
 type Props = {
@@ -22,7 +22,7 @@ export function LeveragePanelMobile({ indexToken }: Props) {
         </Suspense>
       </div>
       <div className='w-full'>
-        <YourTokens />
+        <PortfolioWidget />
       </div>
       <div className='w-full'>
         <LeverageFeedbackButton />

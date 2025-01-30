@@ -6,6 +6,7 @@ import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
+
   const tokenAddress = searchParams.get('address')
   const symbol = searchParams.get('symbol')
   const base = searchParams.get('base')
@@ -27,6 +28,7 @@ export async function GET(req: NextRequest) {
       tokenAddress: tokenAddress,
       metrics: ['fees', 'nav', 'navchange'],
     })
+
     return NextResponse.json({
       base: { ...data, baseCurrency },
       token: {

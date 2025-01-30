@@ -7,11 +7,12 @@ import { ReactNode } from 'react'
 type Props = {
   children: ReactNode
   question: string
+  id?: string
 }
 
-export function FaqItem({ children, question }: Props) {
+export function FaqItem({ children, question, id }: Props) {
   return (
-    <Disclosure as='div' key={question} className='pt-6'>
+    <Disclosure id={id} as='div' key={question} className='pt-6'>
       {({ open }) => (
         <>
           <dt>

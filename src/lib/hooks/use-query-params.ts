@@ -43,7 +43,7 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
     const sell = searchParams.get('sell') || ''
 
     const queryNetwork =
-      chains.find((chain) => chain.id === network)?.id ?? chainId ?? 1
+      chains.find((chain) => chain.id === network)?.id ?? chainId
 
     const currencyTokens = getCurrencyTokens(queryNetwork ?? chainId ?? 1)
     const leverageTokens = getLeverageTokens(queryNetwork ?? chainId ?? 1)

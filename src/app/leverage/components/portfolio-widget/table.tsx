@@ -13,6 +13,10 @@ type TableProps = {
   isFetching?: boolean
 }
 
+export type Stats = {
+  [key: string]: number
+}
+
 export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
   return (
     <div className='relative flex w-full flex-col gap-1'>
@@ -75,6 +79,7 @@ declare module '@tanstack/table-core' {
     tokens: Record<string, EnrichedToken>
     history: GetApiV2UserAddressPositions200
     transfers: Omit<GetApiV2UserAddressPositions200, 'trade' | 'metrics'>
+    stats: Stats
     adjustPosition: (mint: boolean, token: EnrichedToken) => void
   }
 }
