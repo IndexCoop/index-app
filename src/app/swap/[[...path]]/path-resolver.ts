@@ -1,11 +1,5 @@
 import { indicesTokenList } from '@/constants/tokenlists'
-import {
-  DiversifiedStakedETHIndex,
-  ETH,
-  HighYieldETHIndex,
-  IndexToken,
-  Token,
-} from '@/constants/tokens'
+import { ETH, IndexToken, Token } from '@/constants/tokens'
 import {
   getCurrencyTokens,
   getCurrencyTokensForIndex,
@@ -47,22 +41,6 @@ export class PathResolver {
         isMinting: false,
         inputToken: IndexToken,
         outputToken: ETH,
-      }
-    }
-
-    if (outputToken.symbol === 'dsETH') {
-      return {
-        isMinting: true,
-        inputToken: ETH,
-        outputToken: DiversifiedStakedETHIndex,
-      }
-    }
-
-    if (outputToken.symbol === 'hyETH') {
-      return {
-        isMinting: true,
-        inputToken: ETH,
-        outputToken: HighYieldETHIndex,
       }
     }
 
