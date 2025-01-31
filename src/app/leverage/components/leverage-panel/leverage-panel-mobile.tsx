@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
 
-import { LeverageFeedbackButton } from '@/app/leverage/components/leverage-feedback-button'
 import { LeverageWidget } from '@/app/leverage/components/leverage-widget'
 import PortfolioWidget from '@/app/leverage/components/portfolio-widget/portfolio-widget'
 import { TradingViewChart } from '@/app/leverage/components/trading-view-chart'
@@ -23,9 +22,6 @@ export function LeveragePanelMobile({ indexToken }: Props) {
       </div>
       <div className='w-full'>
         <PortfolioWidget />
-      </div>
-      <div className='w-full'>
-        <LeverageFeedbackButton />
       </div>
     </div>
   )
