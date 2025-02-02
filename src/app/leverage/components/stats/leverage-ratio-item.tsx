@@ -5,6 +5,7 @@ import { MarketNetworkImage } from '@/app/leverage/components/stats/market-netwo
 
 type Props = {
   item: LeverageRatio
+  ratio?: number
   onClick: () => void
 }
 
@@ -17,7 +18,7 @@ export function LeverageRatioItem({ item, onClick }: Props) {
       <div className='flex w-24 items-center gap-2'>
         <Image
           src={item.icon}
-          alt={`${item.ratio} leverage`}
+          alt={`${item.strategy} leverage`}
           height={16}
           width={16}
         />
@@ -29,7 +30,7 @@ export function LeverageRatioItem({ item, onClick }: Props) {
         ))}
       </span>
       <span className='text-ic-white w-24 text-right text-xs font-medium'>
-        {item.currentLeverage}
+        {item.ratio ? `${item.ratio.toFixed(2)}x` : ''}
       </span>
     </div>
   )

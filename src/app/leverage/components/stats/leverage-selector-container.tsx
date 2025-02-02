@@ -2,6 +2,7 @@
 
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 import { arbitrum, base, Chain, mainnet } from 'viem/chains'
@@ -21,31 +22,33 @@ import { StatsMetric } from './stats-metric'
 
 export type LeverageRatio = {
   icon: string
-  ratio: string
+  strategy: string
   networks: Chain[]
-  currentLeverage: number
+  ratio?: number
 }
 
 const ratios: LeverageRatio[] = [
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-    ratio: '2x',
+    strategy: '2x',
     networks: [arbitrum, base, mainnet],
-    currentLeverage: 0,
   },
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
-    ratio: '3x',
+    strategy: '3x',
     networks: [arbitrum, base],
-    currentLeverage: 0,
   },
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X').logoURI,
-    ratio: '-1x',
+    strategy: '-1x',
     networks: [arbitrum],
-    currentLeverage: 0,
   },
 ]
+
+type LeverageRatioResponse = {
+  ratio: number
+  strategy: string
+}
 
 export function LeverageSelectorContainer() {
   const router = useRouter()
@@ -56,9 +59,32 @@ export function LeverageSelectorContainer() {
     isFetchingQuickStats,
   } = useQuickStats(market, indexToken)
 
+  const { data } = useQuery({
+    enabled: typeof chainId === 'number',
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    initialData: [],
+    queryKey: ['leverage-ratio', market, chainId],
+    queryFn: async () => {
+      const res = await fetch(
+        `https://api-pr-41-vgqa.onrender.com/api/v2/leverage-ratios?${new URLSearchParams({ chainId: chainId!.toString(), market }).toString()}`,
+      )
+      const json = await res.json()
+      return json
+    },
+  })
+
   const netRate = useMemo(() => {
     return (token.costOfCarry + token.streamingFee) / 365
   }, [token])
+
+  const currentRatio = useMemo(() => {
+    const strategyLabel = getLabelForLeverageType(leverageType)
+    const item = data?.find(
+      (item: LeverageRatioResponse) => item.strategy === strategyLabel,
+    )
+    return item?.ratio
+  }, [data, leverageType])
 
   return (
     <div className='border-ic-black xs:justify-end flex h-full w-2/3 items-center gap-8 border-l px-8 py-0 md:px-16'>
@@ -69,7 +95,7 @@ export function LeverageSelectorContainer() {
             leverageType={
               leverageType === LeverageType.Short ? 'Short' : 'Long'
             }
-            onClick={() => console.log('select long')}
+            ratio={currentRatio}
           />
         </PopoverButton>
         <PopoverPanel
@@ -85,18 +111,26 @@ export function LeverageSelectorContainer() {
                 <span className='w-24 text-right'>Current Leverage</span>
               </div>
               <div className='w-full bg-[#1A2A2B]'>
-                {ratios.map((item) => (
-                  <LeverageRatioItem
-                    key={item.ratio}
-                    item={item}
-                    onClick={() => {
-                      const path = getPathForRatio(item.ratio, chainId)
-                      close()
-                      if (!path) return
-                      router.replace(path)
-                    }}
-                  />
-                ))}
+                {ratios.map((item) => {
+                  const strategyLabel = getLabelForLeverageType(leverageType)
+                  const ratio = data?.find(
+                    (item: LeverageRatioResponse) =>
+                      item.strategy === strategyLabel,
+                  )?.ratio
+                  return (
+                    <LeverageRatioItem
+                      key={item.strategy}
+                      item={item}
+                      ratio={ratio}
+                      onClick={() => {
+                        const path = getPathForRatio(item.strategy, chainId)
+                        close()
+                        if (!path) return
+                        router.replace(path)
+                      }}
+                    />
+                  )
+                })}
               </div>
             </div>
           )}
