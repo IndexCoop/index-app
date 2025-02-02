@@ -96,8 +96,8 @@ export function getPathForMarket(market: string, chainId?: number) {
   return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
 }
 
-export function getDefaultRatioAsset(ratio: string) {
-  switch (ratio.toLowerCase()) {
+export function getDefaultRatioAsset(strategy: string) {
+  switch (strategy.toLowerCase()) {
     case '2x':
       return { symbol: 'ETH2x', chainId: mainnet.id }
     case '3x':
@@ -110,20 +110,20 @@ export function getDefaultRatioAsset(ratio: string) {
 }
 
 export const getPathForRatio = (
-  ratio: string,
+  strategy: string,
   chainId?: number,
 ): string | null => {
-  const existingRatio = ratios.find((r) => r.ratio === ratio)
+  const existingRatio = ratios.find((r) => r.strategy === strategy)
   if (!existingRatio) return null
 
-  const defaultAsset = getDefaultRatioAsset(ratio)
+  const defaultAsset = getDefaultRatioAsset(strategy)
   if (!defaultAsset) return null
 
-  const queryChainId =
-    chainId && existingRatio?.networks.some((network) => network.id === chainId)
-      ? chainId
-      : defaultAsset.chainId
-  return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
+  if (!existingRatio.networks.some((network) => network.id === chainId)) {
+    return null
+  }
+
+  return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${chainId}`
 }
 
 export const markets: Market[] = [
@@ -168,21 +168,18 @@ export const markets: Market[] = [
 export const ratios: LeverageRatio[] = [
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-    ratio: '2x',
+    strategy: '2x',
     networks: [arbitrum, base, mainnet],
-    currentLeverage: 0,
   },
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
-    ratio: '3x',
+    strategy: '3x',
     networks: [arbitrum, base],
-    currentLeverage: 0,
   },
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X').logoURI,
-    ratio: '-1x',
+    strategy: '-1x',
     networks: [arbitrum],
-    currentLeverage: 0,
   },
 ]
 

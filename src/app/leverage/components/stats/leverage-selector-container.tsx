@@ -117,17 +117,14 @@ export function LeverageSelectorContainer() {
                     (item: LeverageRatioResponse) =>
                       item.strategy === strategyLabel,
                   )?.ratio
+                  const path = getPathForRatio(item.strategy, chainId)
+
                   return (
                     <LeverageRatioItem
                       key={item.strategy}
                       item={item}
+                      path={path}
                       ratio={ratio}
-                      onClick={() => {
-                        const path = getPathForRatio(item.strategy, chainId)
-                        close()
-                        if (!path) return
-                        router.replace(path)
-                      }}
                     />
                   )
                 })}
