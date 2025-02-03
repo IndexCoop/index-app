@@ -3,7 +3,6 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 import { arbitrum, base, Chain, mainnet } from 'viem/chains'
 
@@ -51,7 +50,6 @@ type LeverageRatioResponse = {
 }
 
 export function LeverageSelectorContainer() {
-  const router = useRouter()
   const { chainId } = useNetwork()
   const { indexToken, leverageType, market } = useLeverageToken()
   const {
@@ -103,34 +101,32 @@ export function LeverageSelectorContainer() {
           anchor='bottom'
           className='bg-ic-gray-950 z-10 ml-4 mt-4 rounded-lg shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
         >
-          {({ close }) => (
-            <div className='w-full min-w-36 max-w-xl'>
-              <div className='text-ic-gray-400 space-between mt-2 flex px-4 py-1 text-[11px]'>
-                <span className='w-24'>Strategy</span>
-                <span className='w-24'>Networks</span>
-                <span className='w-24 text-right'>Current Leverage</span>
-              </div>
-              <div className='w-full bg-[#1A2A2B]'>
-                {ratios.map((item) => {
-                  const strategyLabel = getLabelForLeverageType(leverageType)
-                  const ratio = data?.find(
-                    (item: LeverageRatioResponse) =>
-                      item.strategy === strategyLabel,
-                  )?.ratio
-                  const path = getPathForRatio(item.strategy, chainId)
-
-                  return (
-                    <LeverageRatioItem
-                      key={item.strategy}
-                      item={item}
-                      path={path}
-                      ratio={ratio}
-                    />
-                  )
-                })}
-              </div>
+          <div className='w-full min-w-36 max-w-xl'>
+            <div className='text-ic-gray-400 space-between mt-2 flex px-4 py-1 text-[11px]'>
+              <span className='w-24'>Strategy</span>
+              <span className='w-24'>Networks</span>
+              <span className='w-24 text-right'>Current Leverage</span>
             </div>
-          )}
+            <div className='w-full bg-[#1A2A2B]'>
+              {ratios.map((item) => {
+                const strategyLabel = getLabelForLeverageType(leverageType)
+                const ratio = data?.find(
+                  (item: LeverageRatioResponse) =>
+                    item.strategy === strategyLabel,
+                )?.ratio
+                const path = getPathForRatio(item.strategy, chainId)
+
+                return (
+                  <LeverageRatioItem
+                    key={item.strategy}
+                    item={item}
+                    path={path}
+                    ratio={ratio}
+                  />
+                )
+              })}
+            </div>
+          </div>
         </PopoverPanel>
       </Popover>
       <Tooltip placement='bottom'>
