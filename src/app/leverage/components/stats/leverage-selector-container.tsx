@@ -15,6 +15,11 @@ import { useLeverageToken } from '@/app/leverage/provider'
 import { LeverageType } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
+import {
+  getApiV2LeverageRatios,
+  GetApiV2LeverageRatiosQueryParamsChainIdEnum,
+  GetApiV2LeverageRatiosQueryParamsMarketEnum,
+} from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 
 import { StatsMetric } from './stats-metric'
@@ -61,14 +66,14 @@ export function LeverageSelectorContainer() {
     enabled: typeof chainId === 'number',
     gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
-    initialData: [],
     queryKey: ['leverage-ratio', market, chainId],
     queryFn: async () => {
-      const res = await fetch(
-        `https://api-pr-41-vgqa.onrender.com/api/v2/leverage-ratios?${new URLSearchParams({ chainId: chainId!.toString(), market }).toString()}`,
-      )
-      const json = await res.json()
-      return json
+      const res = await getApiV2LeverageRatios({
+        chainId:
+          chainId?.toString() as GetApiV2LeverageRatiosQueryParamsChainIdEnum,
+        market: market as GetApiV2LeverageRatiosQueryParamsMarketEnum,
+      })
+      return res.data
     },
   })
 
