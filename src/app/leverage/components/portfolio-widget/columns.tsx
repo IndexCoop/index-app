@@ -311,7 +311,7 @@ export const openPositionsColumns = [
     id: 'portfolio-widget:open-positions.entryPrice',
     header: () => (
       <div className='ml-2 hidden flex-[0.65] text-right md:block'>
-        Entry Price
+        Avg. Entry Price
       </div>
     ),
     cell: (row) => {
