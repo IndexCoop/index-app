@@ -114,7 +114,7 @@ export function Summary() {
                       }
                     </TooltipContent>
                   </Tooltip>
-                  <div>$2.35</div>
+                  <div>$TODO</div>
                 </div>
               </>
             )}
