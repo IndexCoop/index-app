@@ -110,12 +110,6 @@ export function Summary() {
                               {formatPercentage(0.0001)}
                             </div>
                           </div>
-                          <div className='flex py-2'>
-                            <div className='text-ic-gray-600'>Price Impact</div>
-                            <div className='text-ic-gray-900 ml-auto'>
-                              {formatPercentage(-0.003)}
-                            </div>
-                          </div>
                         </div>
                       }
                     </TooltipContent>
