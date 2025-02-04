@@ -1,7 +1,7 @@
 import { watchAccount } from '@wagmi/core'
 import { useEffect, useState } from 'react'
 
-import { config } from '@/lib/utils/wagmi'
+import { wagmiAdapter } from '@/lib/utils/wagmi'
 
 import type { GetApiV2UserAddress200 } from '@/gen'
 
@@ -10,7 +10,7 @@ export const useUpsertUser = () => {
     useState<GetApiV2UserAddress200 | null>(null)
 
   useEffect(() => {
-    const unwatch = watchAccount(config, {
+    const unwatch = watchAccount(wagmiAdapter.wagmiConfig, {
       async onChange(account, prevAccount) {
         try {
           if (account.address && prevAccount.address !== account.address) {

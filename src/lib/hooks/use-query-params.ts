@@ -45,8 +45,12 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
     const queryNetwork =
       chains.find((chain) => chain.id === network)?.id ?? chainId
 
-    const currencyTokens = getCurrencyTokens(queryNetwork ?? chainId ?? 1)
-    const leverageTokens = getLeverageTokens(queryNetwork ?? chainId ?? 1)
+    const currencyTokens = getCurrencyTokens(
+      Number(queryNetwork ?? chainId ?? 1),
+    )
+    const leverageTokens = getLeverageTokens(
+      Number(queryNetwork ?? chainId ?? 1),
+    )
 
     let queryOutputToken: Token | undefined = currencyTokens.find(
       (token) => token.symbol.toLowerCase() === buy.toLowerCase(),
