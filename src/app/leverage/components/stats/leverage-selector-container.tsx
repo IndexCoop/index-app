@@ -15,11 +15,6 @@ import { useLeverageToken } from '@/app/leverage/provider'
 import { LeverageType } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-import {
-  getApiV2LeverageRatios,
-  GetApiV2LeverageRatiosQueryParamsChainIdEnum,
-  GetApiV2LeverageRatiosQueryParamsMarketEnum,
-} from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 
 import { StatsMetric } from './stats-metric'
@@ -68,12 +63,11 @@ export function LeverageSelectorContainer() {
     refetchOnWindowFocus: false,
     queryKey: ['leverage-ratio', market, chainId],
     queryFn: async () => {
-      const res = await getApiV2LeverageRatios({
-        chainId:
-          chainId?.toString() as GetApiV2LeverageRatiosQueryParamsChainIdEnum,
-        market: market as GetApiV2LeverageRatiosQueryParamsMarketEnum,
-      })
-      return res.data
+      const res = await fetch(
+        `/api/leverage/ratios?${new URLSearchParams({ chainId: chainId!.toString(), market })}`,
+      )
+      const json = await res.json()
+      return json
     },
   })
 
@@ -114,12 +108,11 @@ export function LeverageSelectorContainer() {
             </div>
             <div className='w-full bg-[#1A2A2B]'>
               {ratios.map((item) => {
-                const strategyLabel = getLabelForLeverageType(leverageType)
-                const ratio = data?.find(
-                  (item: LeverageRatioResponse) =>
-                    item.strategy === strategyLabel,
-                )?.ratio
                 const path = getPathForRatio(item.strategy, chainId)
+
+                const ratio = data?.find(
+                  (d: LeverageRatioResponse) => d.strategy === item.strategy,
+                )?.ratio
 
                 return (
                   <LeverageRatioItem
@@ -140,7 +133,7 @@ export function LeverageSelectorContainer() {
             className='hidden w-16 md:flex'
             isLoading={isFetchingQuickStats}
             overrideValueClassName={
-              netRate
+              netRate && !isFetchingQuickStats
                 ? 'border-b border-ic-gray-200 border-dashed w-fit cursor-default mx-auto'
                 : undefined
             }

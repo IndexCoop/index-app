@@ -11,7 +11,7 @@ type Props = {
   path: string | null
 }
 
-export function LeverageRatioItem({ item, path }: Props) {
+export function LeverageRatioItem({ item, path, ratio }: Props) {
   const router = useRouter()
 
   const handleClick = () => {
@@ -45,7 +45,7 @@ export function LeverageRatioItem({ item, path }: Props) {
         ))}
       </span>
       <span className='text-ic-white w-24 text-right text-xs font-medium'>
-        {item.ratio ? `${item.ratio.toFixed(2)}x` : ''}
+        {ratio ? `${ratio.toFixed(2)}x` : ''}
       </span>
     </div>
   )

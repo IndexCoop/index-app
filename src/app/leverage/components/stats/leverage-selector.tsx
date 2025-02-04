@@ -1,7 +1,5 @@
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
-import { formatPercentage } from '@/app/products/utils/formatters'
-
 type Props = {
   leverage: string
   leverageType: string
@@ -19,7 +17,7 @@ export function LeverageSelector({ leverage, leverageType, ratio }: Props) {
       <div className='text-ic-gray-300 flex items-center gap-1.5 text-xs font-normal'>
         <span>Current Leverage</span>
         <span className='bg-ic-blue-300 text-ic-gray-950 rounded px-1.5 py-px text-[9px] font-semibold'>
-          {formatPercentage(ratio)}
+          {ratio ? `${ratio.toFixed(2)}x` : ''}
         </span>
       </div>
     </div>
