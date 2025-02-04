@@ -1,7 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { useAppKit } from '@reown/appkit/react'
 import { useCallback, useMemo } from 'react'
 
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -36,7 +36,7 @@ export function RedeemWidget() {
     MAINNET.chainId,
     POLYGON.chainId,
   ])
-  const { open } = useWeb3Modal()
+  const { open } = useAppKit()
   const { signTermsOfService } = useSignTerms()
   const { address } = useWallet()
   const {

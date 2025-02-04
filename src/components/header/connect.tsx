@@ -2,7 +2,7 @@
 
 import { Button } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { useAppKit } from '@reown/appkit/react'
 import { useMemo } from 'react'
 import { useAccount, useAccountEffect, useBalance } from 'wagmi'
 
@@ -15,7 +15,7 @@ import { emojiAvatarForAddress } from '@/lib/utils/emoji-address-avatar'
 export const Connect = () => {
   const { address, isConnected, chainId: walletChainId } = useAccount()
   const { chainId } = useNetwork()
-  const { open } = useWeb3Modal()
+  const { open } = useAppKit()
   const { logConnectWallet } = useAnalytics()
 
   const { data: balance } = useBalance({
