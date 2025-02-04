@@ -30,7 +30,6 @@
     "@indexcoop/analytics-sdk": "0.28.0",
     "@indexcoop/flash-mint-sdk": "3.21.0",
     "@indexcoop/tokenlists": "3.10.0",
-    "@rainbow-me/rainbowkit": "^2.0.7",
     "@reown/appkit": "1.6.5",
     "@reown/appkit-adapter-wagmi": "1.6.5",
     "@safe-global/api-kit": "2.5.4",
@@ -56,7 +55,9 @@
     "react-ga4": "2.1.0",
     "react-loading-skeleton": "3.5.0",
     "tailwind-merge": "2.5.2",
-    "use-debounce": "^10.0.1"
+    "use-debounce": "^10.0.1",
+    "viem": "2.22.21",
+    "wagmi": "2.14.9"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
