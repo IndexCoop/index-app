@@ -1,3 +1,4 @@
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import {
   AppKitNetwork,
   arbitrum,
@@ -7,7 +8,6 @@ import {
   polygon,
 } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { cookieStorage, createStorage, http } from 'wagmi'
 import { safe } from 'wagmi/connectors'
 
@@ -76,6 +76,8 @@ export const initAppkit = () => {
       email: false,
       onramp: false,
       socials: false,
+      swaps: false,
+      send: false,
     },
     featuredWalletIds: [
       'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
