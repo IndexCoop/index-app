@@ -17,6 +17,7 @@ import { formatPercentage } from '@/app/products/utils/formatters'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { useNetwork } from '@/lib/hooks/use-network'
 
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { StatsMetric } from './stats-metric'
 
 export type LeverageRatio = {
@@ -51,6 +52,7 @@ type LeverageRatioResponse = {
 
 export function LeverageSelectorContainer() {
   const { chainId } = useNetwork()
+  const { isConnected } = useWallet()
   const { indexToken, leverageType, market } = useLeverageToken()
   const {
     data: { token },
@@ -64,7 +66,7 @@ export function LeverageSelectorContainer() {
     queryKey: ['leverage-ratio', market, chainId],
     queryFn: async () => {
       const res = await fetch(
-        `/api/leverage/ratios?${new URLSearchParams({ chainId: chainId!.toString(), market })}`,
+        `/api/leverage/ratios?${new URLSearchParams({ chainId: isConnected ? chainId!.toString() : arbitrum.id.toString(), market })}`,
       )
       const json = await res.json()
       return json
@@ -84,7 +86,7 @@ export function LeverageSelectorContainer() {
   }, [data, leverageType])
 
   return (
-    <div className='border-ic-black xs:justify-end flex h-full w-2/3 items-center gap-8 border-l px-8 py-0 md:px-16'>
+    <div className='border-ic-black xs:justify-start flex h-full w-2/3 items-center gap-8 border-l px-6 py-0'>
       <Popover className='flex'>
         <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 focus:outline-none data-[focus]:outline-1'>
           <LeverageSelector
@@ -100,31 +102,38 @@ export function LeverageSelectorContainer() {
           anchor='bottom'
           className='bg-ic-gray-950 z-10 ml-4 mt-4 rounded-lg shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
         >
-          <div className='w-full min-w-36 max-w-xl'>
-            <div className='text-ic-gray-400 space-between mt-2 flex px-4 py-1 text-[11px]'>
-              <span className='w-24'>Strategy</span>
-              <span className='w-24'>Networks</span>
-              <span className='w-24 text-right'>Current Leverage</span>
-            </div>
-            <div className='w-full bg-[#1A2A2B]'>
-              {ratios.map((item) => {
-                const path = getPathForRatio(item.strategy, chainId)
+          {({ close }) => (
+            <div className='w-full min-w-36 max-w-xl'>
+              <div className='text-ic-gray-400 space-between mt-2 flex px-4 py-1 text-[11px]'>
+                <span className='w-24'>Strategy</span>
+                <span className='w-24'>Networks</span>
+                <span className='w-24 text-right'>Current Leverage</span>
+              </div>
+              <div className='w-full bg-[#1A2A2B]'>
+                {ratios.map((item) => {
+                  const path = getPathForRatio(
+                    item.strategy,
+                    isConnected,
+                    chainId,
+                  )
 
-                const ratio = data?.find(
-                  (d: LeverageRatioResponse) => d.strategy === item.strategy,
-                )?.ratio
+                  const ratio = data?.find(
+                    (d: LeverageRatioResponse) => d.strategy === item.strategy,
+                  )?.ratio
 
-                return (
-                  <LeverageRatioItem
-                    key={item.strategy}
-                    item={item}
-                    path={path}
-                    ratio={ratio}
-                  />
-                )
-              })}
+                  return (
+                    <LeverageRatioItem
+                      key={item.strategy}
+                      closePopover={close}
+                      item={item}
+                      path={path}
+                      ratio={ratio}
+                    />
+                  )
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </PopoverPanel>
       </Popover>
       <Tooltip placement='bottom'>
@@ -162,7 +171,7 @@ export function LeverageSelectorContainer() {
                   {`${formatPercentage(token.costOfCarry / 365, true, 3)} / day`}
                 </div>
               </div>
-              <p className='text-ic-gray-700 text-[10px] font-normal leading-tight'>
+              <p className='text-ic-gray-700 text-left text-[10px] font-normal leading-tight'>
                 This is a dynamic cost incurred from borrowing on a lending
                 market, which can be positive or negative.
               </p>

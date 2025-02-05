@@ -99,9 +99,9 @@ export function getPathForMarket(market: string, chainId?: number) {
 export function getDefaultRatioAsset(strategy: string) {
   switch (strategy.toLowerCase()) {
     case '2x':
-      return { symbol: 'ETH2x', chainId: mainnet.id }
+      return { symbol: 'ETH2x', chainId: base.id }
     case '3x':
-      return { symbol: 'ETH3x', chainId: mainnet.id }
+      return { symbol: 'ETH3x', chainId: base.id }
     case '-1x':
       return { symbol: 'iETH1x', chainId: arbitrum.id }
     default:
@@ -111,6 +111,7 @@ export function getDefaultRatioAsset(strategy: string) {
 
 export const getPathForRatio = (
   strategy: string,
+  isConnected: boolean,
   chainId?: number,
 ): string | null => {
   const existingRatio = ratios.find((r) => r.strategy === strategy)
@@ -118,6 +119,10 @@ export const getPathForRatio = (
 
   const defaultAsset = getDefaultRatioAsset(strategy)
   if (!defaultAsset) return null
+
+  if (!isConnected) {
+    return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${defaultAsset.chainId}`
+  }
 
   if (!existingRatio.networks.some((network) => network.id === chainId)) {
     return null

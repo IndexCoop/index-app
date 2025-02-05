@@ -6,18 +6,19 @@ import { MarketNetworkImage } from '@/app/leverage/components/stats/market-netwo
 import { cn } from '@/lib/utils/tailwind'
 
 type Props = {
+  closePopover: () => void
   item: LeverageRatio
   ratio?: number
   path: string | null
 }
 
-export function LeverageRatioItem({ item, path, ratio }: Props) {
+export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
   const router = useRouter()
 
   const handleClick = () => {
     if (!path) return
-    close()
     router.replace(path)
+    closePopover()
   }
 
   return (
