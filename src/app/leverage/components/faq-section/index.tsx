@@ -236,6 +236,7 @@ export function FaqSection() {
         <a
           target='_blank'
           href='https://indexcoop.com/blog/fli-volatility-drift'
+          className='underline'
         >
           deep dive on volatility drift
         </a>
