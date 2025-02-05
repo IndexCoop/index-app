@@ -16,8 +16,8 @@ import { LeverageType } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { useNetwork } from '@/lib/hooks/use-network'
-
 import { useWallet } from '@/lib/hooks/use-wallet'
+
 import { StatsMetric } from './stats-metric'
 
 export type LeverageRatio = {

@@ -5,8 +5,8 @@ import { formatPercentage } from '@/app/products/utils/formatters'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-
 import { formatDollarAmount } from '@/lib/utils'
+
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
 type SummaryQuoteProps = {
