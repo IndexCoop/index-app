@@ -2,7 +2,6 @@ import { IndexApiBaseUrl } from '@/constants/server'
 
 const metricToIndexDataKey = {
   apy: 'APY',
-  // FIXME: Support multiple keys for `fees`
   fees: 'StreamingFee',
   marketcap: 'MarketCap',
   nav: 'NetAssetValue',

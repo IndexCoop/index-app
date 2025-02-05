@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import {
-  getApiV2LeverageRatios,
   GetApiV2LeverageRatiosQueryParamsChainIdEnum,
   GetApiV2LeverageRatiosQueryParamsMarketEnum,
+  getApiV2LeverageRatios,
 } from '@/gen'
 
 export async function GET(req: NextRequest) {
@@ -18,6 +18,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(res.data)
   } catch (e) {
     console.error('Caught leverage ratios error', e)
-    return NextResponse.json([])
+    return NextResponse.json([], { status: 500 })
   }
 }
