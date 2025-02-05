@@ -20,7 +20,7 @@
   "dependencies": {
     "@0xarc-io/analytics": "2.2.3",
     "@chakra-ui/next-js": "^2.2.0",
-    "@chakra-ui/react": "^2.8.2",
+    "@chakra-ui/react": "2.8.2",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@floating-ui/react": "0.26.25",
@@ -30,7 +30,8 @@
     "@indexcoop/analytics-sdk": "0.28.0",
     "@indexcoop/flash-mint-sdk": "3.21.0",
     "@indexcoop/tokenlists": "3.10.0",
-    "@rainbow-me/rainbowkit": "^2.0.7",
+    "@reown/appkit": "1.6.5",
+    "@reown/appkit-adapter-wagmi": "1.6.5",
     "@safe-global/api-kit": "2.5.4",
     "@safe-global/protocol-kit": "4.0.4",
     "@safe-global/safe-core-sdk-types": "5.0.3",
@@ -41,7 +42,6 @@
     "@visx/gradient": "3.3.0",
     "@visx/responsive": "3.10.2",
     "@visx/xychart": "3.11.0",
-    "@web3modal/wagmi": "5.1.11",
     "alchemy-sdk": "3.4.1",
     "dayjs": "1.11.11",
     "eslint": "8.57.1",
@@ -56,8 +56,8 @@
     "react-loading-skeleton": "3.5.0",
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
-    "viem": "2.21.55",
-    "wagmi": "2.12.13"
+    "viem": "2.22.21",
+    "wagmi": "2.14.9"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

@@ -1,5 +1,5 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/16/solid'
-import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { useAppKit } from '@reown/appkit/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Image from 'next/image'
@@ -29,7 +29,7 @@ export function PrtCard({ onClick }: Props) {
     poolStakedBalanceFormatted,
     userStakedBalanceFormatted,
   } = usePrtStakingContext()
-  const { open } = useWeb3Modal()
+  const { open } = useAppKit()
   const isSupportedNetwork = useMainnetOnly()
 
   const buttonLabel = useMemo(() => {

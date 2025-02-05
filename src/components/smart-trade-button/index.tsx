@@ -1,4 +1,4 @@
-import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { useAppKit } from '@reown/appkit/react'
 import { useCallback, useMemo } from 'react'
 
 import { WarningType, Warnings } from '@/components/swap/components/warning'
@@ -51,7 +51,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   } = props
 
   const { chainId } = useNetwork()
-  const { open } = useWeb3Modal()
+  const { open } = useAppKit()
   const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
   const { signTermsOfService } = useSignTerms()
   const { slippage } = useSlippage()

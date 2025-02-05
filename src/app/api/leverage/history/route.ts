@@ -66,8 +66,8 @@ const calculateAverageEntryPrice = (
 
         acc[tokenAddress].sum +=
           (position.trade.underlyingAssetUnitPrice ?? 0) *
-          (position.metrics.endingUnits ?? 0)
-        acc[tokenAddress].count += position.metrics.endingUnits ?? 0
+          (position.metrics.totalPurchaseSize ?? 0)
+        acc[tokenAddress].count += position.metrics.totalPurchaseSize ?? 0
       }
       return acc
     },

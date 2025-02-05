@@ -2,10 +2,10 @@
 
 import { Button, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import { useAppKit } from '@reown/appkit/react'
+import { NetworkUtil } from '@reown/appkit-common'
+import { AssetUtil, ChainController } from '@reown/appkit-core'
 import { watchAccount } from '@wagmi/core'
-import { NetworkUtil } from '@web3modal/common'
-import { AssetUtil, NetworkController } from '@web3modal/core'
-import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
@@ -15,11 +15,11 @@ import { useAccount } from 'wagmi'
 import { Path } from '@/constants/paths'
 import { getNetworkName, useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
-import { chains, config } from '@/lib/utils/wagmi'
+import { chains, wagmiAdapter } from '@/lib/utils/wagmi'
 
 export const NetworkSelect = () => {
   const { chainId: walletChainId } = useAccount()
-  const { open } = useWeb3Modal()
+  const { open } = useAppKit()
   const { chainId, switchChain } = useNetwork()
   const { queryParams, searchParams, updateQueryParams } = useQueryParams()
   const [isNetworkWarningClosed, setIsNetworkWarningClosed] = useState(false)
@@ -28,18 +28,16 @@ export const NetworkSelect = () => {
 
   const chain = useMemo(() => chains.find((c) => c.id === chainId), [chainId])
 
-  const networks = NetworkController.getRequestedCaipNetworks()
-
   const imageSrc = useMemo(() => {
-    const currentNetwork = networks.find(
-      (n) => NetworkUtil.caipNetworkIdToNumber(n.id) === chainId,
+    const currentNetwork = ChainController.getAllRequestedCaipNetworks().find(
+      (n) => NetworkUtil.caipNetworkIdToNumber(n.caipNetworkId) === chainId,
     )
 
-    return AssetUtil.getNetworkImageById(currentNetwork?.imageId) ?? ''
-  }, [networks, chainId])
+    return AssetUtil.getNetworkImage(currentNetwork)
+  }, [chainId])
 
   useEffect(() => {
-    const unwatch = watchAccount(config, {
+    const unwatch = watchAccount(wagmiAdapter.wagmiConfig, {
       onChange(account, prevAccount) {
         const {
           queryNetwork,
