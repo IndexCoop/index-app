@@ -6,6 +6,7 @@ import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 
+import { formatDollarAmount } from '@/lib/utils'
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
 type SummaryQuoteProps = {
@@ -114,7 +115,9 @@ export function Summary() {
                       }
                     </TooltipContent>
                   </Tooltip>
-                  <div>$TODO</div>
+                  <div>
+                    {formatDollarAmount(Number(inputAmoutUsd ?? 0) * 0.001)}
+                  </div>
                 </div>
               </>
             )}
