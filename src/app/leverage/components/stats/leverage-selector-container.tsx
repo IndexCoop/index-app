@@ -23,6 +23,7 @@ import { StatsMetric } from './stats-metric'
 export type LeverageRatio = {
   icon: string
   strategy: string
+  markets: string[]
   networks: Chain[]
   ratio?: number
 }
@@ -31,16 +32,19 @@ const ratios: LeverageRatio[] = [
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
     strategy: '2x',
+    markets: ['BTC / USD', 'ETH / USD', 'ETH / BTC', 'BTC / ETH'],
     networks: [arbitrum, base, mainnet],
   },
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
     strategy: '3x',
+    markets: ['BTC / USD', 'ETH / USD'],
     networks: [arbitrum, base],
   },
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X').logoURI,
     strategy: '-1x',
+    markets: ['BTC / USD', 'ETH / USD'],
     networks: [arbitrum],
   },
 ]
@@ -85,6 +89,12 @@ export function LeverageSelectorContainer() {
     return item?.ratio
   }, [data, leverageType])
 
+  const filteredRatios = useMemo(() => {
+    return ratios.filter((ratio) => {
+      return ratio.markets.some((ratioMarket) => ratioMarket === market)
+    })
+  }, [market])
+
   return (
     <div className='border-ic-black xs:justify-start flex h-full w-2/3 items-center gap-8 border-l px-6 py-0'>
       <Popover className='flex'>
@@ -110,7 +120,7 @@ export function LeverageSelectorContainer() {
                 <span className='w-24 text-right'>Current Leverage</span>
               </div>
               <div className='w-full bg-[#1A2A2B]'>
-                {ratios.map((item) => {
+                {filteredRatios.map((item) => {
                   const path = getPathForRatio(
                     item.strategy,
                     isConnected,

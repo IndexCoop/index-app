@@ -120,12 +120,11 @@ export const getPathForRatio = (
   const defaultAsset = getDefaultRatioAsset(strategy)
   if (!defaultAsset) return null
 
-  if (!isConnected) {
+  if (
+    !isConnected ||
+    !existingRatio.networks.some((network) => network.id === chainId)
+  ) {
     return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${defaultAsset.chainId}`
-  }
-
-  if (!existingRatio.networks.some((network) => network.id === chainId)) {
-    return null
   }
 
   return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${chainId}`

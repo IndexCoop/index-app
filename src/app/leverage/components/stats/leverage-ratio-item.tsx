@@ -9,14 +9,13 @@ type Props = {
   closePopover: () => void
   item: LeverageRatio
   ratio?: number
-  path: string | null
+  path: string
 }
 
 export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
   const router = useRouter()
 
   const handleClick = () => {
-    if (!path) return
     router.replace(path)
     closePopover()
   }
@@ -24,8 +23,8 @@ export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
   return (
     <div
       className={cn(
-        'border-ic-gray-600 text-ic-white flex items-center justify-between border-t px-4 py-3 first:border-t-0',
-        path ? 'hover:bg-ic-gray-900 cursor-pointer' : 'cursor-auto opacity-50',
+        'border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 flex cursor-pointer items-center justify-between border-t px-4 py-3 first:border-t-0',
+        !ratio && 'opacity-50',
       )}
       onClick={handleClick}
     >
