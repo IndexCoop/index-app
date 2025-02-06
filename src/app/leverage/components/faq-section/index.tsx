@@ -142,7 +142,7 @@ export function FaqSection() {
       </FaqItem>
       <FaqItem
         question='What are the costs and fees for Index Coop leverage tokens?'
-        id='faq-costs-fees'
+        id='faq-leverage-costs-and-fees'
       >
         <div className='my-4'>
           <Image
@@ -155,16 +155,16 @@ export function FaqSection() {
         <p>
           The Leverage Suite offers a significant cost advantage over{' '}
           <a
-            href='https://dune.com/index_coop/indexcoop-perps-vs-leverage-tokens'
             target='_blank'
+            href='https://dune.com/index_coop/indexcoop-perps-vs-leverage-tokens'
             className='underline'
           >
             perps and CEXs on fees
           </a>
           , often being{' '}
           <a
-            href='https://thedefiant.io/education/tokens/stop-throwing-away-your-gains-index-coop-leverage-tokens-can-be-5x-cheaper-than-perps'
             target='_blank'
+            href='https://thedefiant.io/education/tokens/stop-throwing-away-your-gains-index-coop-leverage-tokens-can-be-5x-cheaper-than-perps'
             className='underline'
           >
             5-6x more cost-effective than comparable alternatives

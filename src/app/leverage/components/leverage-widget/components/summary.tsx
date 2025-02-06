@@ -1,6 +1,7 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
+import { useLeverageToken } from '@/app/leverage/provider'
 import { formatPercentage } from '@/app/products/utils/formatters'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
@@ -38,6 +39,10 @@ export function Summary() {
     outputAmountUsd,
     shouldShowSummaryDetails,
   } = useFormattedLeverageData()
+  const { quoteResult } = useLeverageToken()
+
+  const inputTokenAmountUsd = quoteResult?.quote?.inputTokenAmountUsd
+
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
@@ -116,7 +121,9 @@ export function Summary() {
                     </TooltipContent>
                   </Tooltip>
                   <div>
-                    {formatDollarAmount(Number(inputAmoutUsd ?? 0) * 0.001)}
+                    {inputTokenAmountUsd
+                      ? formatDollarAmount(Number(inputTokenAmountUsd) * 0.001)
+                      : ''}
                   </div>
                 </div>
               </>

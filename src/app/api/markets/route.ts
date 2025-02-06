@@ -1,4 +1,4 @@
-import { CoingeckoProvider, CoinGeckoService } from '@indexcoop/analytics-sdk'
+import { CoinGeckoService, CoingeckoProvider } from '@indexcoop/analytics-sdk'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
@@ -13,11 +13,7 @@ export async function GET(req: NextRequest) {
       process.env.COINGECKO_API_KEY!,
     )
     const provider = new CoingeckoProvider(coingeckoService)
-    console.log(
-      'symbol, currency.toLowerCase()',
-      symbol,
-      currency.toLowerCase(),
-    )
+
     const data = await provider.getTokenStats(symbol, currency.toLowerCase())
     return NextResponse.json({
       symbol,
