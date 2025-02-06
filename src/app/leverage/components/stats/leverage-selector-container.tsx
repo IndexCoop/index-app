@@ -74,7 +74,7 @@ export function LeverageSelectorContainer() {
   }, [market])
 
   return (
-    <div className='border-ic-black xs:justify-start flex h-full w-2/3 items-center gap-8 border-l px-6 py-0'>
+    <div className='border-ic-black xs:justify-start flex h-full items-center gap-8 border-l px-6 py-0 xl:w-1/2'>
       <Popover className='flex'>
         <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 focus:outline-none data-[focus]:outline-1'>
           <LeverageSelector

@@ -76,7 +76,6 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
                 height={24}
                 width={24}
                 priority
-                className='hidden flex-none sm:flex'
               />
             )}
             <div className='text-ic-white text-sm font-bold sm:text-base'>
@@ -84,7 +83,7 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
             </div>
             <ChevronDownIcon className='dark:text-ic-white text-ic-black size-5' />
           </div>
-          <div className='hidden sm:flex'>
+          <div className='flex'>
             <span className='text-ic-gray-300 mr-1 text-xs'>Powered by</span>
             <Image
               src='/assets/powered-by-aave.svg'
