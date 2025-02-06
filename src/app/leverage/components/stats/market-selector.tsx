@@ -1,6 +1,5 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
@@ -58,33 +57,10 @@ function MarketSelectorItem({
   )
 }
 
-export function MarketSelector() {
+export function MarketSelector({ marketData }: { marketData: Market[] }) {
   const router = useRouter()
   const { chainId } = useNetwork()
   const { market } = useLeverageToken()
-
-  const { data } = useQuery({
-    gcTime: 2 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    initialData: [],
-    queryKey: ['market-selector'],
-    queryFn: async () => {
-      const marketResponses = await Promise.all(
-        markets.map((item) => {
-          return fetch(
-            `/api/markets?symbol=${item.symbol}&currency=${item.currency}`,
-          )
-        }),
-      )
-      const marketData: Market[] = await Promise.all(
-        marketResponses.map((response) => response.json()),
-      )
-      return markets.map((market, idx) => ({
-        ...market,
-        ...marketData[idx],
-      }))
-    },
-  })
 
   const marketMetadata = markets.find((item) => item.market === market)
 
@@ -135,7 +111,7 @@ export function MarketSelector() {
               <span className='hidden w-20 text-right md:block'>24h</span>
             </div>
             <div className='w-full bg-[#1A2A2B]'>
-              {data.map((item) => (
+              {marketData.map((item) => (
                 <MarketSelectorItem
                   key={item.market}
                   item={item}

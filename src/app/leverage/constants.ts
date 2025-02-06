@@ -169,20 +169,23 @@ export const markets: Market[] = [
   },
 ]
 
-export const ratios: LeverageRatio[] = [
+const ratios: LeverageRatio[] = [
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
     strategy: '2x',
+    markets: ['BTC / USD', 'ETH / USD', 'ETH / BTC', 'BTC / ETH'],
     networks: [arbitrum, base, mainnet],
   },
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
     strategy: '3x',
+    markets: ['BTC / USD', 'ETH / USD'],
     networks: [arbitrum, base],
   },
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X').logoURI,
     strategy: '-1x',
+    markets: ['BTC / USD', 'ETH / USD'],
     networks: [arbitrum],
   },
 ]

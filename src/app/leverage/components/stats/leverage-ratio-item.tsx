@@ -9,13 +9,14 @@ type Props = {
   closePopover: () => void
   item: LeverageRatio
   ratio?: number
-  path: string
+  path: string | null
 }
 
 export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
   const router = useRouter()
 
   const handleClick = () => {
+    if (!path) return
     router.replace(path)
     closePopover()
   }

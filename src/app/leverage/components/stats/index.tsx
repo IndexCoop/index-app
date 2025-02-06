@@ -1,8 +1,12 @@
+import { useQuery } from '@tanstack/react-query'
+
 import { LeverageSelectorContainer } from '@/app/leverage/components/stats/leverage-selector-container'
 import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
 import { StatsMetric } from '@/app/leverage/components/stats/stats-metric'
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
+import { markets } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
+import { Market } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
 
 export function QuickStats() {
@@ -11,6 +15,30 @@ export function QuickStats() {
     market,
     indexToken,
   )
+
+  const { data: marketData } = useQuery({
+    gcTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    initialData: [],
+    queryKey: ['market-selector'],
+    queryFn: async () => {
+      const marketResponses = await Promise.all(
+        markets.map((item) => {
+          return fetch(
+            `/api/markets?symbol=${item.symbol}&currency=${item.currency}`,
+          )
+        }),
+      )
+      const marketData: Market[] = await Promise.all(
+        marketResponses.map((response) => response.json()),
+      )
+      return markets.map((market, idx) => ({
+        ...market,
+        ...marketData[idx],
+      }))
+    },
+  })
+
   const { price, change24h, low24h, high24h } = quickStats.base
   return (
     <div
@@ -18,7 +46,7 @@ export function QuickStats() {
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
       <div className='flex w-full items-center justify-center px-2 py-4 sm:justify-between sm:px-4 lg:px-6'>
-        <MarketSelector />
+        <MarketSelector marketData={marketData} />
         <StatsMetric
           isLoading={isFetchingQuickStats}
           className='hidden w-28 sm:flex'
