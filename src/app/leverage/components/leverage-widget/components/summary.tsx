@@ -108,7 +108,7 @@ export function Summary() {
                               Open / close fee
                             </div>
                             <div className='text-ic-gray-900 ml-auto'>
-                              {formatPercentage(0.0001)}
+                              {formatPercentage(0.001)}
                             </div>
                           </div>
                         </div>
