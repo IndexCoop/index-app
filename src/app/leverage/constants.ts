@@ -169,7 +169,7 @@ export const markets: Market[] = [
   },
 ]
 
-const ratios: LeverageRatio[] = [
+export const ratios: LeverageRatio[] = [
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
     strategy: '2x',

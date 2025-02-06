@@ -1,16 +1,15 @@
 'use client'
 
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { arbitrum, base, Chain, mainnet } from 'viem/chains'
+import { arbitrum, Chain } from 'viem/chains'
 
 import { getLabelForLeverageType } from '@/app/leverage/components/leverage-widget/components/leverage-selector'
 import { LeverageRatioItem } from '@/app/leverage/components/stats/leverage-ratio-item'
 import { LeverageSelector } from '@/app/leverage/components/stats/leverage-selector'
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
-import { getPathForRatio } from '@/app/leverage/constants'
+import { getPathForRatio, ratios } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { LeverageType } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
@@ -27,27 +26,6 @@ export type LeverageRatio = {
   networks: Chain[]
   ratio?: number
 }
-
-const ratios: LeverageRatio[] = [
-  {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-    strategy: '2x',
-    markets: ['BTC / USD', 'ETH / USD', 'ETH / BTC', 'BTC / ETH'],
-    networks: [arbitrum, base, mainnet],
-  },
-  {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
-    strategy: '3x',
-    markets: ['BTC / USD', 'ETH / USD'],
-    networks: [arbitrum, base],
-  },
-  {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X').logoURI,
-    strategy: '-1x',
-    markets: ['BTC / USD', 'ETH / USD'],
-    networks: [arbitrum],
-  },
-]
 
 type LeverageRatioResponse = {
   ratio: number
