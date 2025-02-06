@@ -15,7 +15,7 @@ export function LeverageSelector({ leverage, leverageType, ratio }: Props) {
         <ChevronDownIcon className='dark:text-ic-white text-ic-black size-4' />
       </div>
       <div className='text-ic-gray-300 flex items-center gap-1.5 text-xs font-normal'>
-        <span>Current Leverage</span>
+        <span className='xs:flex hidden'>Current</span> Leverage
         <span className='bg-ic-blue-300 text-ic-gray-950 rounded px-1.5 py-px text-[9px] font-semibold'>
           {ratio ? `${ratio.toFixed(2)}x` : ''}
         </span>
