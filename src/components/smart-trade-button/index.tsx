@@ -10,11 +10,12 @@ import {
 import { TradeButton } from '@/components/trade-button'
 import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
+import { useIsTokenPairTradable } from '@/lib/hooks/use-is-token-pair-tradable'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useProtectionContext } from '@/lib/providers/protection'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { useSlippage } from '@/lib/providers/slippage'
-import { getNativeToken, useIsTokenPairTradable } from '@/lib/utils/tokens'
+import { getNativeToken } from '@/lib/utils/tokens'
 
 type SmartTradeButtonProps = {
   inputToken: Token
