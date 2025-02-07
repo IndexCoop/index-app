@@ -14,7 +14,7 @@ import { useNetwork } from '@/lib/hooks/use-network'
 import { useProtectionContext } from '@/lib/providers/protection'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { useSlippage } from '@/lib/providers/slippage'
-import { getNativeToken, isTokenPairTradable } from '@/lib/utils/tokens'
+import { getNativeToken, useIsTokenPairTradable } from '@/lib/utils/tokens'
 
 type SmartTradeButtonProps = {
   inputToken: Token
@@ -62,14 +62,9 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     approve: onApproveForSwap,
   } = useApproval(inputToken, contract, inputTokenAmount)
 
-  const isTradablePair = useMemo(
-    () =>
-      isTokenPairTradable(
-        isRestrictedCountry || isUsingVpn,
-        outputToken.symbol,
-        chainId ?? 1,
-      ),
-    [isRestrictedCountry, isUsingVpn, outputToken.symbol, chainId],
+  const isTradablePair = useIsTokenPairTradable(
+    outputToken.symbol,
+    chainId ?? 1,
   )
 
   const shouldApprove = useMemo(() => {

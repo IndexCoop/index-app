@@ -27,6 +27,7 @@ import {
   WSTETH,
   icETHIndex,
 } from '@/constants/tokens'
+import { useProtectionContext } from '@/lib/providers/protection'
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
 
@@ -129,12 +130,14 @@ export function isTokenBtcOnBase(
   )
 }
 
-export function isTokenPairTradable(
-  requiresProtection: boolean,
+export function useIsTokenPairTradable(
   outputTokenSymbol: string,
   chainId: number,
 ): boolean {
-  if (!requiresProtection) return true
+  const { isForbiddenAddress, isRestrictedCountry, isUsingVpn } =
+    useProtectionContext()
+  if (isForbiddenAddress) return false
+  if (!isRestrictedCountry && !isUsingVpn) return true
   // When tokenlists is used everywhere, we can just pass these objects as function
   // arguments instead of the token symbol
   const outputToken = getTokenByChainAndSymbol(chainId, outputTokenSymbol)
