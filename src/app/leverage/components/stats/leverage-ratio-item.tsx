@@ -1,8 +1,10 @@
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useMemo } from 'react'
 
-import { LeverageRatio } from '@/app/leverage/components/stats/leverage-selector-container'
 import { MarketNetworkImage } from '@/app/leverage/components/stats/market-network-image'
+import { ratios } from '@/app/leverage/constants'
+import { LeverageRatio } from '@/app/leverage/types'
 import { cn } from '@/lib/utils/tailwind'
 
 type Props = {
@@ -20,6 +22,13 @@ export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
     router.replace(path)
     closePopover()
   }
+
+  const networks = useMemo(() => {
+    const filteredRatios = ratios.filter(
+      (r) => r.strategy === item.strategy && r.market === item.market,
+    )
+    return filteredRatios.map(({ chain }) => chain)
+  }, [item.market, item.strategy])
 
   return (
     <div
@@ -41,7 +50,7 @@ export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
         </span>
       </div>
       <span className='flex w-24 space-x-1'>
-        {item.networks.map((chain) => (
+        {networks.map((chain) => (
           <MarketNetworkImage key={chain.id} chain={chain} />
         ))}
       </span>

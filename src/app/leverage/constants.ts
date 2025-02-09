@@ -4,13 +4,19 @@ import {
 } from '@indexcoop/tokenlists'
 import { arbitrum, base, mainnet } from 'viem/chains'
 
-import { LeverageRatio } from '@/app/leverage/components/stats/leverage-selector-container'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
-import { LeverageToken, LeverageType, Market } from './types'
+import {
+  LeverageMarket,
+  LeverageRatio,
+  LeverageStrategy,
+  LeverageToken,
+  LeverageType,
+  Market,
+} from './types'
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
 
@@ -96,8 +102,8 @@ export function getPathForMarket(market: string, chainId?: number) {
   return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
 }
 
-export function getDefaultRatioAsset(strategy: string) {
-  switch (strategy.toLowerCase()) {
+export function getDefaultRatioAsset(strategy: LeverageStrategy) {
+  switch (strategy) {
     case '2x':
       return { symbol: 'ETH2x', chainId: base.id }
     case '3x':
@@ -110,19 +116,19 @@ export function getDefaultRatioAsset(strategy: string) {
 }
 
 export const getPathForRatio = (
-  strategy: string,
+  strategy: LeverageStrategy,
   isConnected: boolean,
   chainId?: number,
 ): string | null => {
-  const existingRatio = ratios.find((r) => r.strategy === strategy)
-  if (!existingRatio) return null
+  const strategyRatios = ratios.filter((r) => r.strategy === strategy)
+  if (strategyRatios.length === 0) return null
 
   const defaultAsset = getDefaultRatioAsset(strategy)
   if (!defaultAsset) return null
 
   if (
     !isConnected ||
-    !existingRatio.networks.some((network) => network.id === chainId)
+    !strategyRatios.some((ratio) => ratio.chain.id === chainId)
   ) {
     return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${defaultAsset.chainId}`
   }
@@ -171,22 +177,88 @@ export const markets: Market[] = [
 
 export const ratios: LeverageRatio[] = [
   {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
-    strategy: '2x',
-    markets: ['BTC / USD', 'ETH / USD', 'ETH / BTC', 'BTC / ETH'],
-    networks: [arbitrum, base, mainnet],
+    icon: getTokenByChainAndSymbol(mainnet.id, 'BTC2X').logoURI,
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: mainnet,
   },
   {
-    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
-    strategy: '3x',
-    markets: ['BTC / USD', 'ETH / USD'],
-    networks: [arbitrum, base],
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'BTC2X').logoURI,
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: arbitrum,
+  },
+  {
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'BTC3X').logoURI,
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Long3x,
+    chain: arbitrum,
   },
   {
     icon: getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X').logoURI,
-    strategy: '-1x',
-    markets: ['BTC / USD', 'ETH / USD'],
-    networks: [arbitrum],
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Short1x,
+    chain: arbitrum,
+  },
+  {
+    icon: getTokenByChainAndSymbol(base.id, 'BTC2X').logoURI,
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: base,
+  },
+  {
+    icon: getTokenByChainAndSymbol(base.id, 'BTC3X').logoURI,
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Long3x,
+    chain: base,
+  },
+  {
+    icon: getTokenByChainAndSymbol(mainnet.id, 'ETH2X').logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: mainnet,
+  },
+  {
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2X').logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: arbitrum,
+  },
+  {
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH3X').logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Long3x,
+    chain: arbitrum,
+  },
+  {
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'iETH1X').logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Short1x,
+    chain: arbitrum,
+  },
+  {
+    icon: getTokenByChainAndSymbol(base.id, 'ETH2X').logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: base,
+  },
+  {
+    icon: getTokenByChainAndSymbol(base.id, 'ETH3X').logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Long3x,
+    chain: base,
+  },
+  {
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH').logoURI,
+    market: LeverageMarket.BTCETH,
+    strategy: LeverageStrategy.Long2x,
+    chain: arbitrum,
+  },
+  {
+    icon: getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC').logoURI,
+    market: LeverageMarket.ETHBTC,
+    strategy: LeverageStrategy.Long2x,
+    chain: arbitrum,
   },
 ]
 

@@ -3,7 +3,7 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { arbitrum, Chain } from 'viem/chains'
+import { arbitrum } from 'viem/chains'
 
 import { getLabelForLeverageType } from '@/app/leverage/components/leverage-widget/components/leverage-selector'
 import { LeverageRatioItem } from '@/app/leverage/components/stats/leverage-ratio-item'
@@ -11,21 +11,13 @@ import { LeverageSelector } from '@/app/leverage/components/stats/leverage-selec
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { getPathForRatio, ratios } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
-import { LeverageType } from '@/app/leverage/types'
+import { LeverageRatio, LeverageType } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { StatsMetric } from './stats-metric'
-
-export type LeverageRatio = {
-  icon: string
-  strategy: string
-  markets: string[]
-  networks: Chain[]
-  ratio?: number
-}
 
 type LeverageRatioResponse = {
   ratio: number
@@ -67,11 +59,19 @@ export function LeverageSelectorContainer() {
     return item?.ratio
   }, [data, leverageType])
 
-  const filteredRatios = useMemo(() => {
-    return ratios.filter((ratio) => {
-      return ratio.markets.some((ratioMarket) => ratioMarket === market)
-    })
-  }, [market])
+  const filteredRatios = useMemo(
+    () =>
+      ratios.reduce((acc, current) => {
+        if (
+          current.market === market &&
+          !acc.some((item) => item.strategy === current.strategy)
+        ) {
+          acc.push(current)
+        }
+        return acc
+      }, [] as LeverageRatio[]),
+    [market],
+  )
 
   return (
     <div className='border-ic-black xs:justify-start flex h-full items-center gap-8 border-l px-6 py-0 xl:w-1/2'>

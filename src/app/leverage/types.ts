@@ -8,6 +8,27 @@ export enum LeverageType {
   Short,
 }
 
+export enum LeverageMarket {
+  BTCUSD = 'BTC / USD',
+  ETHUSD = 'ETH / USD',
+  BTCETH = 'BTC / ETH',
+  ETHBTC = 'ETH / BTC',
+}
+
+export type LeverageRatio = {
+  icon: string
+  chain: Chain
+  market: LeverageMarket
+  strategy: LeverageStrategy
+  ratio?: number
+}
+
+export enum LeverageStrategy {
+  Long2x = '2x',
+  Long3x = '3x',
+  Short1x = '-1x',
+}
+
 export interface BaseTokenStats {
   symbol: string
   price: number
