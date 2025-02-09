@@ -76,9 +76,9 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
 function getDefaultMarketAsset(market: string) {
   switch (market) {
     case 'BTC / USD':
-      return { symbol: 'BTC2x', chainId: mainnet.id }
+      return { symbol: 'BTC3X', chainId: mainnet.id }
     case 'ETH / USD':
-      return { symbol: 'ETH2x', chainId: mainnet.id }
+      return { symbol: 'ETH3X', chainId: mainnet.id }
     case 'ETH / BTC':
       return { symbol: 'ETH2xBTC', chainId: arbitrum.id }
     case 'BTC / ETH':
