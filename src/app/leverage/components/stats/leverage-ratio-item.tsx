@@ -49,7 +49,7 @@ export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
           {item.strategy}
         </span>
       </div>
-      <span className='flex w-24 space-x-1'>
+      <span className='hidden w-24 space-x-1 md:flex'>
         {networks.map((chain) => (
           <MarketNetworkImage key={chain.id} chain={chain} />
         ))}
