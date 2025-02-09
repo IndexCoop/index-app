@@ -128,7 +128,8 @@ export function LeverageWidget() {
         outputAmount={ouputAmount}
         outputAmountUsd={outputAmountUsd}
         selectedOutputToken={outputToken}
-        onSelectToken={onOpenSelectOutputToken}
+        showSelectorButtonChevron={false}
+        onSelectToken={() => {}}
       />
       <Summary />
       <SmartTradeButton
