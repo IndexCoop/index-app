@@ -76,9 +76,9 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
 function getDefaultMarketAsset(market: string) {
   switch (market) {
     case 'BTC / USD':
-      return { symbol: 'BTC3X', chainId: mainnet.id }
+      return { symbol: 'BTC3X', chainId: base.id }
     case 'ETH / USD':
-      return { symbol: 'ETH3X', chainId: mainnet.id }
+      return { symbol: 'ETH3X', chainId: base.id }
     case 'ETH / BTC':
       return { symbol: 'ETH2xBTC', chainId: arbitrum.id }
     case 'BTC / ETH':
@@ -102,32 +102,32 @@ export function getPathForMarket(market: string, chainId?: number) {
   return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
 }
 
+const defaultAssets = {
+  [LeverageMarket.BTCUSD]: {
+    [LeverageStrategy.Long2x]: { symbol: 'BTC2X', chainId: base.id },
+    [LeverageStrategy.Long3x]: { symbol: 'BTC3X', chainId: base.id },
+    [LeverageStrategy.Short1x]: { symbol: 'iBTC1X', chainId: arbitrum.id },
+  },
+  [LeverageMarket.ETHUSD]: {
+    [LeverageStrategy.Long2x]: { symbol: 'ETH2X', chainId: base.id },
+    [LeverageStrategy.Long3x]: { symbol: 'ETH3X', chainId: base.id },
+    [LeverageStrategy.Short1x]: { symbol: 'iETH1X', chainId: arbitrum.id },
+  },
+  [LeverageMarket.BTCETH]: {
+    [LeverageStrategy.Long2x]: { symbol: 'BTC2xETH', chainId: arbitrum.id },
+  },
+  [LeverageMarket.ETHBTC]: {
+    [LeverageStrategy.Long2x]: { symbol: 'ETH2xBTC', chainId: arbitrum.id },
+  },
+} as Record<
+  LeverageMarket,
+  Record<LeverageStrategy, { symbol: string; chainId: number }>
+>
+
 export function getDefaultRatioAsset(
   strategy: LeverageStrategy,
   market: LeverageMarket,
 ) {
-  const defaultAssets = {
-    [LeverageMarket.BTCUSD]: {
-      [LeverageStrategy.Long2x]: { symbol: 'BTC2X', chainId: base.id },
-      [LeverageStrategy.Long3x]: { symbol: 'BTC3X', chainId: base.id },
-      [LeverageStrategy.Short1x]: { symbol: 'iBTC1X', chainId: arbitrum.id },
-    },
-    [LeverageMarket.ETHUSD]: {
-      [LeverageStrategy.Long2x]: { symbol: 'ETH2X', chainId: base.id },
-      [LeverageStrategy.Long3x]: { symbol: 'ETH3X', chainId: base.id },
-      [LeverageStrategy.Short1x]: { symbol: 'iETH1X', chainId: arbitrum.id },
-    },
-    [LeverageMarket.BTCETH]: {
-      [LeverageStrategy.Long2x]: { symbol: 'BTC2xETH', chainId: arbitrum.id },
-    },
-    [LeverageMarket.ETHBTC]: {
-      [LeverageStrategy.Long2x]: { symbol: 'ETH2xBTC', chainId: arbitrum.id },
-    },
-  } as Record<
-    LeverageMarket,
-    Record<LeverageStrategy, { symbol: string; chainId: number }>
-  >
-
   const defaultAsset = defaultAssets[market][strategy]
   return defaultAsset ?? null
 }
