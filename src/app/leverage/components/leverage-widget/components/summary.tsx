@@ -1,8 +1,12 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
+import { useLeverageToken } from '@/app/leverage/provider'
+import { formatPercentage } from '@/app/products/utils/formatters'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
+import { formatDollarAmount } from '@/lib/utils'
 
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
@@ -35,6 +39,10 @@ export function Summary() {
     outputAmountUsd,
     shouldShowSummaryDetails,
   } = useFormattedLeverageData()
+  const { quoteResult } = useLeverageToken()
+
+  const inputTokenAmountUsd = quoteResult?.quote?.inputTokenAmountUsd
+
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
     <Disclosure as='div' className='rounded-xl border border-[#3A6060]'>
@@ -85,6 +93,37 @@ export function Summary() {
                   <div className='font-normal'>Network Fee</div>
                   <div>
                     <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
+                  </div>
+                </div>
+                <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
+                  <Tooltip placement='bottom'>
+                    <TooltipTrigger>
+                      <div className='border-ic-gray-200 cursor-default border-b border-dashed font-normal'>
+                        Fees
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className='bg-ic-white mt-2 w-60 rounded px-5 py-2 text-xs font-medium drop-shadow'>
+                      {
+                        <div className='flex flex-col'>
+                          <div className='flex border-b border-[#CDDFDF] py-2'>
+                            <div className='text-ic-gray-600'>Fees</div>
+                          </div>
+                          <div className='flex py-2'>
+                            <div className='text-ic-gray-600'>
+                              Open / close fee
+                            </div>
+                            <div className='text-ic-gray-900 ml-auto'>
+                              {formatPercentage(0.001)}
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </TooltipContent>
+                  </Tooltip>
+                  <div>
+                    {inputTokenAmountUsd
+                      ? formatDollarAmount(Number(inputTokenAmountUsd) * 0.001)
+                      : ''}
                   </div>
                 </div>
               </>

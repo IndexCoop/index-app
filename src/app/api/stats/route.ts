@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
       : null
     const metrics = await fetchTokenMetrics({
       tokenAddress: tokenAddress,
-      metrics: ['nav', 'navchange'],
+      metrics: ['fees', 'nav', 'navchange'],
     })
 
     return NextResponse.json({
@@ -35,7 +35,8 @@ export async function GET(req: NextRequest) {
         symbol,
         costOfCarry,
         nav: metrics?.NetAssetValue ?? 0,
-        navchange: (metrics?.NavChange24Hr ?? 0) * 100,
+        navchange: metrics?.NavChange24Hr ?? 0,
+        streamingFee: metrics?.StreamingFee ?? 0,
       },
     })
   } catch (error) {

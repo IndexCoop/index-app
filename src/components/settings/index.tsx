@@ -75,9 +75,9 @@ export const Settings = (props: SettingsProps) => {
         <IconButton
           aria-label='Trade Settings'
           icon={
-            <Cog8ToothIcon className='dark:text-ic-gray-200 text-ic-black m-3.5 size-5' />
+            <Cog8ToothIcon className='dark:text-ic-gray-200 text-ic-black m-1.5 size-5' />
           }
-          size='lg'
+          size='sm'
           style={{ border: 0 }}
           variant='unstyled'
         />

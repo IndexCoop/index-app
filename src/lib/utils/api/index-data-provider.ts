@@ -2,6 +2,7 @@ import { IndexApiBaseUrl } from '@/constants/server'
 
 const metricToIndexDataKey = {
   apy: 'APY',
+  fees: 'StreamingFee',
   marketcap: 'MarketCap',
   nav: 'NetAssetValue',
   navchange: 'NavChange24Hr',
