@@ -1,6 +1,7 @@
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+
 import { LeverageStrategy } from '@/app/leverage/types'
 import { cn } from '@/lib/utils/tailwind'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 type Props = {
   leverage: string

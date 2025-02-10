@@ -69,11 +69,8 @@ export function LeverageWidget() {
     onOpen: onOpenSelectInputToken,
     onClose: onCloseSelectInputToken,
   } = useDisclosure()
-  const {
-    isOpen: isSelectOutputTokenOpen,
-    onOpen: onOpenSelectOutputToken,
-    onClose: onCloseSelectOutputToken,
-  } = useDisclosure()
+  const { isOpen: isSelectOutputTokenOpen, onClose: onCloseSelectOutputToken } =
+    useDisclosure()
   const {
     isOpen: isTransactionReviewOpen,
     onOpen: onOpenTransactionReview,
