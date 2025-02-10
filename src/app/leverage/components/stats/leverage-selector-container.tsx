@@ -99,11 +99,7 @@ export function LeverageSelectorContainer() {
               </div>
               <div className='w-full bg-[#1A2A2B]'>
                 {filteredRatios.map((item) => {
-                  const path = getPathForRatio(
-                    item.strategy,
-                    isConnected,
-                    chainId,
-                  )
+                  const path = getPathForRatio(item, isConnected, chainId)
 
                   const ratio = data?.find(
                     (d: LeverageRatioResponse) => d.strategy === item.strategy,

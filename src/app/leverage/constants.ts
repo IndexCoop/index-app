@@ -102,28 +102,47 @@ export function getPathForMarket(market: string, chainId?: number) {
   return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
 }
 
-export function getDefaultRatioAsset(strategy: LeverageStrategy) {
-  switch (strategy) {
-    case '2x':
-      return { symbol: 'ETH2x', chainId: base.id }
-    case '3x':
-      return { symbol: 'ETH3x', chainId: base.id }
-    case '-1x':
-      return { symbol: 'iETH1x', chainId: arbitrum.id }
-    default:
-      return null
-  }
+export function getDefaultRatioAsset(
+  strategy: LeverageStrategy,
+  market: LeverageMarket,
+) {
+  const defaultAssets = {
+    [LeverageMarket.BTCUSD]: {
+      [LeverageStrategy.Long2x]: { symbol: 'BTC2X', chainId: base.id },
+      [LeverageStrategy.Long3x]: { symbol: 'BTC3X', chainId: base.id },
+      [LeverageStrategy.Short1x]: { symbol: 'iBTC1X', chainId: arbitrum.id },
+    },
+    [LeverageMarket.ETHUSD]: {
+      [LeverageStrategy.Long2x]: { symbol: 'ETH2X', chainId: base.id },
+      [LeverageStrategy.Long3x]: { symbol: 'ETH3X', chainId: base.id },
+      [LeverageStrategy.Short1x]: { symbol: 'iETH1X', chainId: arbitrum.id },
+    },
+    [LeverageMarket.BTCETH]: {
+      [LeverageStrategy.Long2x]: { symbol: 'BTC2xETH', chainId: arbitrum.id },
+    },
+    [LeverageMarket.ETHBTC]: {
+      [LeverageStrategy.Long2x]: { symbol: 'ETH2xBTC', chainId: arbitrum.id },
+    },
+  } as Record<
+    LeverageMarket,
+    Record<LeverageStrategy, { symbol: string; chainId: number }>
+  >
+
+  const defaultAsset = defaultAssets[market][strategy]
+  return defaultAsset ?? null
 }
 
 export const getPathForRatio = (
-  strategy: LeverageStrategy,
+  ratioItem: LeverageRatio,
   isConnected: boolean,
   chainId?: number,
 ): string | null => {
+  const { market, strategy } = ratioItem
+
   const strategyRatios = ratios.filter((r) => r.strategy === strategy)
   if (strategyRatios.length === 0) return null
 
-  const defaultAsset = getDefaultRatioAsset(strategy)
+  const defaultAsset = getDefaultRatioAsset(strategy, market)
   if (!defaultAsset) return null
 
   if (

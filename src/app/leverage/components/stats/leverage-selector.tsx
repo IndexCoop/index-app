@@ -10,7 +10,6 @@ type Props = {
 }
 
 export function LeverageSelector({ leverage, leverageType, ratio }: Props) {
-  console.log('leverageType', leverageType)
   return (
     <div className='flex flex-col gap-0.5 py-2'>
       <div className='flex cursor-pointer flex-row items-center gap-1 text-sm'>
