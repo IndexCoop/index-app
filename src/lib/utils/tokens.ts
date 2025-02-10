@@ -129,22 +129,6 @@ export function isTokenBtcOnBase(
   )
 }
 
-export function isTokenPairTradable(
-  requiresProtection: boolean,
-  outputTokenSymbol: string,
-  chainId: number,
-): boolean {
-  if (!requiresProtection) return true
-  // When tokenlists is used everywhere, we can just pass these objects as function
-  // arguments instead of the token symbol
-  const outputToken = getTokenByChainAndSymbol(chainId, outputTokenSymbol)
-
-  const outputTokenIsDangerous =
-    outputToken?.tags.some((tag) => tag === 'dangerous') ?? false
-
-  return !outputTokenIsDangerous
-}
-
 export function digitsByAddress(address: string): number {
   if (address === getTokenByChainAndSymbol(base.id, 'icUSD').address) return 4
   return 2
