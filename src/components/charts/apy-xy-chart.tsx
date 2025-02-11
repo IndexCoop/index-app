@@ -27,7 +27,7 @@ type Props = {
   selectedPeriod: ChartPeriod
 }
 
-function TvlXYChart({
+function ApyXYChart({
   data,
   isDark = false,
   parentWidth,
@@ -107,4 +107,4 @@ function TvlXYChart({
   )
 }
 
-export default withParentSize(TvlXYChart)
+export default withParentSize(ApyXYChart)
