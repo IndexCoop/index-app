@@ -57,7 +57,11 @@ type PartialIndexData = Partial<IndexData> & {
   CreatedTimestamp: string
 }
 
-function formatData(data: PartialIndexData[], metric: IndexDataMetric, digits: number = 2) {
+function formatData(
+  data: PartialIndexData[],
+  metric: IndexDataMetric,
+  digits: number = 2,
+) {
   if (metric === 'nav') {
     return data.map((datum) => ({
       ...datum,
@@ -72,6 +76,13 @@ function formatData(data: PartialIndexData[], metric: IndexDataMetric, digits: n
     }))
   }
 
+  if (metric === 'apy') {
+    return data.map((datum) => ({
+      ...datum,
+      APY: Number(datum.APY?.toFixed(4)),
+    }))
+  }
+
   return []
 }
 
@@ -79,7 +90,9 @@ export function useChartData(
   indexTokenAddress?: string,
   metric: IndexDataMetric = 'nav',
 ) {
-  const [selectedPeriod, setSelectedPeriod] = useState(ChartPeriod.Week)
+  const [selectedPeriod, setSelectedPeriod] = useState(
+    metric === 'apy' ? ChartPeriod.Week : ChartPeriod.Day,
+  )
   const [historicalData, setHistoricalData] = useState<HistoricalData>([])
   useQuery({
     enabled: isAddress(indexTokenAddress ?? ''),

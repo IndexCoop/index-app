@@ -1,4 +1,4 @@
-import { createPublicClient, http, parseUnits } from 'viem'
+import { Address, createPublicClient, http, parseUnits } from 'viem'
 
 import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
 
@@ -27,9 +27,9 @@ describe('GasEstimatooor', () => {
     const defaultGasEstimate = BigInt(DefaultGasLimitFlashMintZeroEx)
     const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const failingTx = {
-      account: '0xundefined',
+      account: '0xundefined' as Address,
       chainId: 1,
-      from: signer,
+      from: signer as Address,
       // to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigInt(21_000),
       value: parseUnits('1', 18),
@@ -46,9 +46,9 @@ describe('GasEstimatooor', () => {
     const defaultGasEstimate = BigInt(DefaultGasLimitFlashMintZeroEx)
     const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const failingTx = {
-      account: '0xundefined',
+      account: '0xundefined' as Address,
       chainId: 1,
-      from: signer,
+      from: signer as Address,
       //   to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       gasLimit: BigInt(21_000),
       value: parseUnits('1', 18),
@@ -62,10 +62,10 @@ describe('GasEstimatooor', () => {
     // const defaultGasMargin = 20
     const estimatooor = new GasEstimatooor(publicClient, defaultGasEstimate)
     const tx = {
-      account: signer,
+      account: signer as Address,
       chainId: 1,
-      from: signer,
-      to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      from: signer as Address,
+      to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' as Address,
       gasLimit: BigInt(21_000),
       value: parseUnits('1', 18),
     }

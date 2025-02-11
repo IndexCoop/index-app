@@ -1,5 +1,6 @@
+import { useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Address, PublicClient } from 'viem'
+import { PublicClient } from 'viem'
 import { usePublicClient } from 'wagmi'
 
 import { ETH } from '@/constants/tokens'
@@ -11,16 +12,16 @@ export class BalanceProvider {
 
   async getErc20Balance(address: string, token: string): Promise<bigint> {
     return await this.publicClient.readContract({
-      address: token as Address,
+      address: token,
       abi: ERC20_ABI,
       functionName: 'balanceOf',
-      args: [address as Address],
+      args: [address],
     })
   }
 
   async getNativeBalance(address: string) {
     return this.publicClient.getBalance({
-      address: address as Address,
+      address: address,
     })
   }
 }
@@ -70,7 +71,6 @@ export interface TokenBalance {
 }
 
 export function useBalances(address?: string, tokens?: string[]) {
-  const [balances, setBalances] = useState<TokenBalance[]>([])
   const { chainId } = useNetwork()
   const publicClient = usePublicClient({
     chainId,
@@ -92,24 +92,22 @@ export function useBalances(address?: string, tokens?: string[]) {
     const balances = tokens.map((token, index) => {
       return { token: token, value: results[index] }
     })
-    setBalances(balances)
+
+    return balances as TokenBalance[]
   }, [address, tokens, publicClient])
 
-  useEffect(() => {
-    fetchBalances()
-  }, [fetchBalances])
+  const { data: balances, refetch } = useQuery({
+    initialData: [],
+    queryKey: ['balances', chainId, address, tokens?.toString()],
+    enabled: Boolean(address && tokens),
+    queryFn: fetchBalances,
+    select: (data) => data ?? [],
+  })
 
-  const memoizedBalances = useMemo(() => {
-    if (address && tokens) return balances
-    return []
-  }, [address, balances, tokens])
-
-  const forceRefetchBalances = () => {
-    fetchBalances()
-  }
+  const forceRefetchBalances = refetch
 
   return {
-    balances: memoizedBalances,
+    balances,
     forceRefetchBalances,
   }
 }

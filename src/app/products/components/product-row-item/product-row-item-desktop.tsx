@@ -17,7 +17,7 @@ const cellClassName = 'text-ic-gray-600 text-sm font-medium min-w-[120px]'
 export function ProductRowItemDesktop({
   isLoading,
   hideApyColumn,
-  product: { logoURI, symbol, name, tradeHref, price, delta, apy, tvl },
+  product: { logoURI, symbol, name, tradeHref, price, delta, apy, tvl, digits },
 }: ProductRowItemProps) {
   return (
     <Link
@@ -52,7 +52,7 @@ export function ProductRowItemDesktop({
         )}
       </div>
       <div className={clsx(cellClassName, '!min-w-[130px] px-2 text-right')}>
-        {isLoading ? <LoadingSkeleton /> : formatPrice(price)}
+        {isLoading ? <LoadingSkeleton /> : formatPrice(price, digits)}
       </div>
       <div
         className={clsx(cellClassName, 'px-2 text-right', {

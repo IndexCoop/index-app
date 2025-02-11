@@ -7,6 +7,8 @@ import {
 import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
 
+import { isTokenBtcOnBase } from '@/lib/utils/tokens'
+
 export interface IndexQuoteRequest {
   chainId: number
   account: string
@@ -32,11 +34,12 @@ export async function POST(req: NextRequest) {
 
     const inputToken = getQuoteToken(inputTokenAddress, chainId)
     const outputToken = getQuoteToken(outputTokenAddress, chainId)
+    const isBtcOnBase = isTokenBtcOnBase(
+      chainId,
+      inputTokenAddress,
+      outputTokenAddress,
+    )
     const isMintingIcUsd = outputToken?.quoteToken.symbol === 'icUSD'
-
-    if (!isMintingIcUsd && inputAmount && outputAmount) {
-      return BadRequest('You can only set `inputAmount` or outputAmount`.')
-    }
 
     if (
       !inputToken ||
@@ -67,7 +70,7 @@ export async function POST(req: NextRequest) {
     } else {
       quoteRequest.inputAmount = inputAmount
     }
-    if (isMintingIcUsd) {
+    if (isMintingIcUsd || isBtcOnBase) {
       quoteRequest.inputAmount = inputAmount ?? '0'
     }
 

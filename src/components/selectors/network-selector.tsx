@@ -1,4 +1,4 @@
-import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { useAppKit } from '@reown/appkit/react'
 import { useCallback } from 'react'
 import { useWalletClient } from 'wagmi'
 
@@ -6,7 +6,7 @@ import { NetworkSelectorButton } from '@/components/selectors/network-selector-b
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 
 export function NetworkSelector() {
-  const { open } = useWeb3Modal()
+  const { open } = useAppKit()
   const { data: walletClient } = useWalletClient()
   const handleClick = useCallback(
     (chainId: number) => {

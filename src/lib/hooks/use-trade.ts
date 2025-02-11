@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { Address, Hex, PublicClient } from 'viem'
+import { Hex, PublicClient } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
@@ -15,6 +15,12 @@ import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
 import { formatQuoteAnalytics, useAnalytics } from './use-analytics'
 import { BalanceProvider } from './use-balance'
 
+export type TradeCallback = (args: {
+  address: string
+  hash: string
+  quote: Quote
+}) => Promise<void>
+
 const isNativeCurrency = (tokenSymbol: string, chainId: number): boolean => {
   const nativeCurrency = getNativeToken(chainId)
   if (!nativeCurrency) return false
@@ -28,7 +34,7 @@ async function getInputTokenBalance(
 ): Promise<bigint> {
   const chainId = publicClient.chain?.id
   if (!chainId) return BigInt(0)
-  const inputTokenAddress = getAddressForToken(inputToken, chainId)
+  const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
   if (!inputTokenAddress) return BigInt(0)
   const balanceProvider = new BalanceProvider(publicClient)
   return isNativeCurrency(inputToken.symbol, chainId)
@@ -47,14 +53,18 @@ export const useTrade = () => {
   const [txWouldFail, setTxWouldFail] = useState(false)
 
   const executeTrade = useCallback(
-    async (quote: Quote | null, override: boolean = false) => {
+    async (
+      quote: Quote | null,
+      override: boolean = false,
+      callback?: TradeCallback,
+    ) => {
       if (!address || !chainId || !publicClient || !walletClient || !quote)
         return
       const { inputToken, inputTokenAmount, outputToken } = quote
 
       // Check that input/ouput token are known
-      const inputTokenAddress = getAddressForToken(inputToken, chainId)
-      const outputTokenAddress = getAddressForToken(outputToken, chainId)
+      const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
+      const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
       if (!outputTokenAddress || !inputTokenAddress) return
 
       // Check is user has sufficient funds
@@ -84,12 +94,13 @@ export const useTrade = () => {
           account: address,
           chainId: Number(quote.chainId),
           gas: gasLimit,
-          to: quote.tx.to as Address,
+          to: quote.tx.to,
           data: quote.tx.data as Hex,
           value: BigInt(quote.tx.value?.toString() ?? '0'),
         })
         logTransaction(chainId ?? -1, hash, formatQuoteAnalytics(quote))
         setIsTransacting(false)
+        callback?.({ address, hash, quote })
       } catch (error) {
         console.info('Override?', override)
         console.warn('Error sending transaction', error)

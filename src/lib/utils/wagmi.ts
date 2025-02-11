@@ -1,6 +1,14 @@
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import {
+  AppKitNetwork,
+  arbitrum,
+  base,
+  localhost,
+  mainnet,
+  polygon,
+} from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { cookieStorage, createStorage, http } from 'wagmi'
-import { arbitrum, base, localhost, mainnet } from 'wagmi/chains'
 import { safe } from 'wagmi/connectors'
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
@@ -31,22 +39,18 @@ export const chains = [
   arbitrum,
   mainnet,
   base,
+  polygon,
   ...(shouldShowLocalHost ? [localhostHH] : []),
-] as const
+] as [AppKitNetwork, ...AppKitNetwork[]]
 
-export const config = defaultWagmiConfig({
-  chains,
+export const wagmiAdapter = new WagmiAdapter({
   projectId,
-  metadata,
+  networks: chains,
   ssr: true,
-  auth: {
-    email: false,
-    socials: [],
-  },
+  connectors: [safe()],
   storage: createStorage({
     storage: cookieStorage,
   }),
-  connectors: [safe()],
   transports: {
     [mainnet.id]: http(
       `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
@@ -57,5 +61,30 @@ export const config = defaultWagmiConfig({
     [base.id]: http(
       `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
     ),
+    [polygon.id]: http(
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+    ),
   },
 })
+
+export const initAppkit = () => {
+  createAppKit({
+    adapters: [wagmiAdapter],
+    projectId,
+    networks: chains,
+    features: {
+      email: false,
+      onramp: false,
+      socials: false,
+      swaps: false,
+      send: false,
+    },
+    featuredWalletIds: [
+      'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
+      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
+    ],
+    termsConditionsUrl: 'https://indexcoop.com/terms-of-service',
+    privacyPolicyUrl: 'https://indexcoop.com/privacy-policy',
+    metadata,
+  })
+}

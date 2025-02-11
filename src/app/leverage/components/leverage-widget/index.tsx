@@ -3,10 +3,11 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
+import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Receive } from '@/components/receive'
-import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
+import { Settings } from '@/components/settings'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
@@ -16,11 +17,12 @@ import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
-import { BaseTokenSelector } from './components/base-token-selector'
+import { BuySellSelector } from './components/buy-sell-selector'
 import { Fees } from './components/fees'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
@@ -29,25 +31,20 @@ import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
-type LeverageWidgetProps = {
-  onClickBaseTokenSelector: () => void
-}
-
-export function LeverageWidget(props: LeverageWidgetProps) {
+export function LeverageWidget() {
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
-    baseToken,
+    indexToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
     inputValue,
     isMinting,
-    costOfCarry,
     leverageType,
+    market,
     outputTokens,
-    stats,
     transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
@@ -58,6 +55,7 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
+  const { data } = useQuickStats(market, indexToken)
 
   const {
     contract,
@@ -67,8 +65,9 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     inputBalanceFormatted,
     isFetchingQuote,
     ouputAmount,
+    outputAmountUsd,
     resetData,
-  } = useFormattedLeverageData(stats)
+  } = useFormattedLeverageData()
 
   const {
     isOpen: isSelectInputTokenOpen,
@@ -86,6 +85,13 @@ export function LeverageWidget(props: LeverageWidgetProps) {
     onClose: onCloseTransactionReview,
   } = useDisclosure()
 
+  const {
+    auto: autoSlippage,
+    isAuto: isAutoSlippage,
+    set: setSlippage,
+    slippage,
+  } = useSlippage()
+
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
@@ -93,13 +99,18 @@ export function LeverageWidget(props: LeverageWidgetProps) {
 
   return (
     <div
-      className='leverage-widget flex flex-col gap-3 rounded-3xl p-6'
+      className='leverage-widget flex flex-col gap-3 rounded-lg p-6'
       id='close-position-scroll'
     >
-      <BaseTokenSelector
-        baseToken={baseToken}
-        onClick={props.onClickBaseTokenSelector}
-      />
+      <div className='flex justify-end'>
+        <Settings
+          isAuto={isAutoSlippage}
+          isDarkMode={true}
+          slippage={slippage}
+          onChangeSlippage={setSlippage}
+          onClickAuto={autoSlippage}
+        />
+      </div>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
@@ -120,11 +131,12 @@ export function LeverageWidget(props: LeverageWidgetProps) {
       <Receive
         isLoading={isFetchingQuote}
         outputAmount={ouputAmount}
+        outputAmountUsd={outputAmountUsd}
         selectedOutputToken={outputToken}
         onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
-      <Fees costOfCarry={costOfCarry} leverageType={leverageType} />
+      <Fees costOfCarry={data.token.costOfCarry} leverageType={leverageType} />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={false}

@@ -25,7 +25,7 @@ type LayoutProps = {
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang='en'>
-      <body className='dark:bg-ic-dark'>
+      <body className='bg-ic-white dark:bg-ic-black'>
         {children}
         <SafaryScript />
         <MavaScript />

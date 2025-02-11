@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 
-import { ARBITRUM } from '@/constants/chains'
+import { ARBITRUM, BASE } from '@/constants/chains'
 import {
   indicesTokenList,
   indicesTokenListArbitrum,
+  indicesTokenListBase,
 } from '@/constants/tokenlists'
 import { Token } from '@/constants/tokens'
 import { getCurrencyTokensForIndex } from '@/lib/utils/tokens'
@@ -22,13 +23,12 @@ export function useTokenlists(
     () => getCurrencyTokensForIndex(indexToken, chainId),
     [chainId, indexToken],
   )
-  const tokenList = useMemo(
-    () =>
-      chainId === ARBITRUM.chainId
-        ? indicesTokenListArbitrum
-        : indicesTokenList,
-    [chainId],
-  )
+  const tokenList = useMemo(() => {
+    if (chainId === ARBITRUM.chainId) return indicesTokenListArbitrum
+    if (chainId === BASE.chainId) return indicesTokenListBase
+
+    return indicesTokenList
+  }, [chainId])
 
   const inputTokenslist = useMemo(
     () => (isMinting ? currenciesList : tokenList),

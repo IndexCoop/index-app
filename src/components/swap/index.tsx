@@ -1,29 +1,30 @@
-import { UpDownIcon } from '@chakra-ui/icons'
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
-import { OnrampModal } from '@/components/onramp'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
-import { ARBITRUM, MAINNET } from '@/constants/chains'
+import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
-import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { useIsTokenPairTradable } from '@/lib/hooks/use-is-token-pair-tradable'
 import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useProtection } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
 import { selectSlippage } from '@/lib/utils/slippage'
-import { getTokenBySymbol, isTokenPairTradable } from '@/lib/utils/tokens'
+import { getTokenBySymbol } from '@/lib/utils/tokens'
 
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
-import { TradeInputSelector } from './components/trade-input-selector'
+import {
+  InputSelectorToken,
+  TradeInputSelector,
+} from './components/trade-input-selector'
 import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
 import { useSwap } from './hooks/use-swap'
@@ -41,29 +42,17 @@ export const Swap = (props: SwapProps) => {
   const isSupportedNetwork = useSupportedNetworks([
     MAINNET.chainId,
     ARBITRUM.chainId,
+    BASE.chainId,
   ])
-  const { logEvent } = useAnalytics()
-  const requiresProtection = useProtection()
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
   const { address } = useWallet()
 
-  const isTradablePair = useMemo(
-    () =>
-      isTokenPairTradable(
-        requiresProtection,
-        inputToken.symbol,
-        outputToken.symbol,
-        chainId ?? 1,
-      ),
-    [chainId, requiresProtection, inputToken, outputToken],
+  const isTradablePair = useIsTokenPairTradable(
+    outputToken.symbol,
+    chainId ?? 1,
   )
 
-  const {
-    isOpen: isBuyModalOpen,
-    onOpen: onOpenBuyModal,
-    onClose: onCloseBuyModal,
-  } = useDisclosure()
   const {
     isOpen: isSelectInputTokenOpen,
     onOpen: onOpenSelectInputToken,
@@ -170,18 +159,16 @@ export const Swap = (props: SwapProps) => {
     fetchOptions()
   }, [fetchOptions])
 
-  const onChangeInputTokenAmount = (token: Token, input: string) => {
+  const onChangeInputTokenAmount = (
+    token: InputSelectorToken,
+    input: string,
+  ) => {
     if (input === '') {
       resetTradeData()
     }
     setInputTokenAmountFormatted(input || '')
     if (!isValidTokenInput(input, token.decimals)) return
     setSellTokenAmount(input || '')
-  }
-
-  const onClickBuyButton = () => {
-    onOpenBuyModal()
-    logEvent('Buy Onramp CTA Clicked')
   }
 
   const onClickInputBalance = useCallback(() => {
@@ -206,7 +193,7 @@ export const Swap = (props: SwapProps) => {
       p='8px 16px 16px'
       height={'100%'}
     >
-      <SwapNavigation onClickBuy={onClickBuyButton} />
+      <SwapNavigation />
       <Flex direction='column' m='4px 0 6px'>
         <TradeInputSelector
           config={{ isReadOnly: false }}
@@ -226,7 +213,7 @@ export const Swap = (props: SwapProps) => {
             className='bg-ic-white text-ic-gray-400'
             margin={'-16px 0 0 0'}
             aria-label='switch input/output tokens'
-            icon={<UpDownIcon />}
+            icon={<ChevronUpDownIcon className='h-7 w-5 text-gray-500' />}
             onClick={onSwitchTokens}
           />
         </Box>
@@ -291,7 +278,6 @@ export const Swap = (props: SwapProps) => {
         address={address}
         tokens={outputTokenslist}
       />
-      <OnrampModal isOpen={isBuyModalOpen} onClose={onCloseBuyModal} />
       {transactionReview && (
         <TransactionReviewModal
           isOpen={isTransactionReviewOpen}

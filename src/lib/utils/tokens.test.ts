@@ -5,15 +5,12 @@ import {
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH,
-  GitcoinStakedETHIndex,
   GUSD,
-  ic21,
-  icETHIndex,
-  LeveragedRethStakingYield,
   MATIC,
   STETH,
   USDC,
   WETH,
+  icETHIndex,
 } from '@/constants/tokens'
 
 import {
@@ -25,23 +22,23 @@ import {
 
 describe('getAddressForToken()', () => {
   test('should return undefined for undefined chain', async () => {
-    const address = getAddressForToken(WETH, undefined)
+    const address = getAddressForToken('WETH', undefined)
     expect(address).toBeUndefined()
   })
 
   test('should return undefined for unsupported chain', async () => {
-    const address = getAddressForToken(ETH, 56)
+    const address = getAddressForToken('ETH', 56)
     expect(address).toBeUndefined()
   })
 
   test('should return correct token address for ETH on Ethereum', async () => {
-    const address = getAddressForToken(ETH, 1)
+    const address = getAddressForToken('ETH', 1)
     expect(address).toBeDefined()
     expect(address).toEqual(ETH.address)
   })
 
   test('should return correct token address for WETH on Ethereum', async () => {
-    const address = getAddressForToken(WETH, 1)
+    const address = getAddressForToken('WETH', 1)
     expect(address).toBeDefined()
     expect(address).toEqual(WETH.address)
   })
@@ -77,14 +74,6 @@ describe('getCurrencyTokensForIndex()', () => {
     expect(currencyTokens).toEqual([ETH, WETH, USDC, DAI, GUSD])
   })
 
-  test('returns correct currency tokens for ic21', async () => {
-    const chainId = 1
-    const token = ic21
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(currencies.length)
-    expect(currencyTokens).toEqual(currencies)
-  })
-
   test('returns correct currency tokens for icETH', async () => {
     const chainId = 1
     const token = icETHIndex
@@ -96,43 +85,6 @@ describe('getCurrencyTokensForIndex()', () => {
   test('returns correct currency tokens for dsETH', async () => {
     const chainId = 1
     const token = DiversifiedStakedETHIndex
-    const requiredTokens = [
-      'ETH',
-      'WETH',
-      'stETH',
-      'wstETH',
-      'rETH',
-      'sETH2',
-      'USDC',
-      'GUSD',
-    ]
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(requiredTokens.length)
-    for (const requiredToken of requiredTokens) {
-      expect(
-        currencyTokens.filter((currency) => currency.symbol === requiredToken)
-          .length,
-      ).toEqual(1)
-    }
-  })
-
-  test('returns correct currency tokens for icRETH', async () => {
-    const chainId = 1
-    const token = LeveragedRethStakingYield
-    const requiredTokens = ['ETH', 'WETH', 'rETH', 'USDC', 'GUSD']
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(requiredTokens.length)
-    for (const requiredToken of requiredTokens) {
-      expect(
-        currencyTokens.filter((currency) => currency.symbol === requiredToken)
-          .length,
-      ).toEqual(1)
-    }
-  })
-
-  test('returns correct currency tokens for gtcETH', async () => {
-    const chainId = 1
-    const token = GitcoinStakedETHIndex
     const requiredTokens = [
       'ETH',
       'WETH',

@@ -1,6 +1,8 @@
 import { getChainTokenList } from '@indexcoop/tokenlists'
 import { useEffect, useState } from 'react'
+import { base } from 'viem/chains'
 
+import { PolygonLegacyTokenList } from '@/app/legacy/config'
 import { DATA, ETH, GmiIndex, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
@@ -20,6 +22,17 @@ export function useNativeTokenPrice(chainId?: number): number {
   return nativeTokenPrice
 }
 
+function shouldOverrideNav(symbol: string, chainId?: number) {
+  const navTokenOverrides = ['hyeth', 'icusd', 'eth2xbtc', 'btc2xeth']
+  if (navTokenOverrides.includes(symbol.toLowerCase())) return true
+  if (
+    chainId === base.id &&
+    (symbol.toLowerCase() === 'btc2x' || symbol.toLowerCase() === 'btc3x')
+  )
+    return true
+  return false
+}
+
 /**
  * Returns price of given token.
  * @returns price of token in USD
@@ -28,17 +41,23 @@ export const getTokenPrice = async (
   token: Token,
   chainId: number | undefined,
 ): Promise<number> => {
-  const tokenAddress = getAddressForToken(token, chainId)
+  const tokenAddress = getAddressForToken(token.symbol, chainId)
   if (!tokenAddress || !chainId) return 0
   const productTokensList = getChainTokenList(chainId, ['product'])
   let isIndexToken = productTokensList.some(
     ({ address }) => address === tokenAddress,
   )
-  if (token.symbol === DATA.symbol || token.symbol === GmiIndex.symbol) {
+  if (
+    token.symbol === DATA.symbol ||
+    token.symbol === GmiIndex.symbol ||
+    PolygonLegacyTokenList.some(
+      (polygonIndex) => token.symbol === polygonIndex.symbol,
+    )
+  ) {
     // Force using Coingecko for this deprecated indices
     isIndexToken = false
   }
-  if (token.symbol.toLowerCase() === 'icusd') {
+  if (shouldOverrideNav(token.symbol, chainId)) {
     const dataResponse = await fetchTokenMetrics({
       tokenAddress,
       metrics: ['nav'],

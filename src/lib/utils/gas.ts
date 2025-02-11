@@ -5,7 +5,7 @@ import { getTokenPrice } from '@/lib/hooks/use-token-price'
 import { getGasCostsInUsd } from '@/lib/utils/costs'
 import { GasEstimatooor } from '@/lib/utils/gas-estimatooor'
 import { getNativeToken } from '@/lib/utils/tokens'
-import { config } from '@/lib/utils/wagmi'
+import { wagmiAdapter } from '@/lib/utils/wagmi'
 
 interface GasLimitResponse {
   gas: {
@@ -23,7 +23,7 @@ export async function getGasLimit(
 ): Promise<GasLimitResponse> {
   const { chainId } = transaction
   const eth = getNativeToken(chainId)
-  const publicClient = getPublicClient(config, { chainId })
+  const publicClient = getPublicClient(wagmiAdapter.wagmiConfig, { chainId })
   if (!eth) {
     throw new Error(
       `Error determining gas limit: no native token for chainId: ${chainId}`,

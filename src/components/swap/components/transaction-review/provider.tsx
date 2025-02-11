@@ -1,10 +1,14 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { usePublicClient } from 'wagmi'
 
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { useRefId } from '@/lib/hooks/use-ref-id'
 import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
-import { useTrade } from '@/lib/hooks/use-trade'
+import { TradeCallback, useTrade } from '@/lib/hooks/use-trade'
 import { formatAmountFromWei } from '@/lib/utils'
+import { mapQuoteToTrade } from '@/lib/utils/api/database'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
 import { ReviewProps } from './components/review'
@@ -100,10 +104,36 @@ export function useTransactionReview({
 
   const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
 
+  const refId = useRefId()
+
+  const client = usePublicClient()
+  const queryClient = useQueryClient()
+  const saveTrade: TradeCallback = useCallback(
+    async ({ address, hash, quote }) => {
+      await fetch(`/api/user/trade`, {
+        method: 'POST',
+        body: JSON.stringify(mapQuoteToTrade(address, hash, quote, refId)),
+      })
+
+      await client?.waitForTransactionReceipt({
+        hash: hash as `0x${string}`,
+        confirmations: 3,
+      })
+
+      queryClient.refetchQueries({
+        predicate: (query) =>
+          (query.queryKey[0] as string)?.includes('leverage-token') ||
+          (query.queryKey[0] === 'balances' &&
+            query.queryKey[1] === quote.chainId),
+      })
+    },
+    [refId, client, queryClient],
+  )
+
   const makeTrade = async (override: boolean) => {
     if (!quote) return null
     try {
-      await executeTrade(quote, override)
+      await executeTrade(quote, override, saveTrade)
       return true
     } catch {
       return false
@@ -127,6 +157,7 @@ export function useTransactionReview({
     const success = await makeTrade(override)
     setOverride(false)
     if (success === null) return
+
     onSubmitWithSuccess(success)
   }
 

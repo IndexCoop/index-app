@@ -1,16 +1,20 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { arbitrum, base } from 'viem/chains'
+
 import {
-  BedIndex,
   CoinDeskEthTrendIndex,
   DAI,
   DefiPulseIndex,
+  DiversifiedStakedETHIndex,
   ETH,
   GUSD,
-  ic21,
+  HighYieldETHIndex,
   IndexToken,
   MetaverseIndex,
   RETH,
   SETH2,
   STETH,
+  Token,
   USDC,
   USDT,
   WBTC,
@@ -33,13 +37,23 @@ export const currencies = [
   WSTETH,
 ]
 
-export const indicesTokenListArbitrum = [DefiPulseIndex, MetaverseIndex]
+export const indicesTokenListArbitrum = [
+  getTokenByChainAndSymbol(arbitrum.id, DefiPulseIndex.symbol),
+  getTokenByChainAndSymbol(arbitrum.id, MetaverseIndex.symbol),
+  getTokenByChainAndSymbol(arbitrum.id, HighYieldETHIndex.symbol),
+  getTokenByChainAndSymbol(arbitrum.id, DiversifiedStakedETHIndex.symbol),
+].map((token) => ({ ...token, image: token?.logoURI })) as Token[]
+
+export const indicesTokenListBase = [
+  getTokenByChainAndSymbol(base.id, HighYieldETHIndex.symbol),
+  getTokenByChainAndSymbol(base.id, DiversifiedStakedETHIndex.symbol),
+].map((token) => ({ ...token, image: token?.logoURI })) as Token[]
 
 export const indicesTokenList = [
+  IndexToken,
   DefiPulseIndex,
   MetaverseIndex,
-  BedIndex,
   CoinDeskEthTrendIndex,
-  ic21,
-  IndexToken,
-]
+  HighYieldETHIndex,
+  DiversifiedStakedETHIndex,
+] as Token[]

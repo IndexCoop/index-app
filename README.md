@@ -22,7 +22,13 @@ cp .env.default .env.local
 npm install
 ```
 
-3. Start dev mode
+3. Generate kubb files
+
+```bash
+npm run generate
+```
+
+4. Start dev mode
 
 ```bash
 npm run dev
@@ -32,11 +38,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## New Token Release
 
-- Add logo in [assets](public/assets)
-- Make sure tokenlists is up2date (and has the new token added)
-- Add token in [tokens.ts](src/constants/tokens.ts) - using tokenlists (check ETH2X for reference)
-- Add that token object to [tokenslist](src/constants/tokenlists.ts)
-- If the token is only available for either Swap or FlashMint, add an entry to `isAvailableForFlashMint` or `isAvailableForSwap` in [token utils](src/lib/utils/tokens.ts). Write a test too!
+- Make sure the token data was added to [tokenlists](https://github.com/IndexCoop/tokenlists)
+- If possible avoid and use tokenlists utils directly: add token in [tokens.ts](src/constants/tokens.ts) - using tokenlists (check ETH2X for reference)
 
 ## New Presale
 

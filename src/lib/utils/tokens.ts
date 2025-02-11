@@ -1,4 +1,5 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
+import { Address } from 'viem'
 import { base } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
@@ -6,16 +7,14 @@ import {
   currencies,
   indicesTokenList,
   indicesTokenListArbitrum,
+  indicesTokenListBase,
 } from '@/constants/tokenlists'
 import {
   CoinDeskEthTrendIndex,
   DAI,
   DiversifiedStakedETHIndex,
   ETH,
-  GitcoinStakedETHIndex,
   GUSD,
-  icETHIndex,
-  LeveragedRethStakingYield,
   MATIC,
   RETH,
   SETH2,
@@ -26,16 +25,19 @@ import {
   WBTC,
   WETH,
   WSTETH,
+  icETHIndex,
 } from '@/constants/tokens'
 
+const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
+
 export function getAddressForToken(
-  token: Token,
+  tokenSymbol: string,
   chainId: number | undefined,
 ): string | undefined {
   const nativeToken = getNativeToken(chainId)
-  if (token.symbol.toLowerCase() === nativeToken?.symbol.toLowerCase())
+  if (tokenSymbol.toLowerCase() === nativeToken?.symbol.toLowerCase())
     return nativeToken.address
-  const listedToken = getTokenByChainAndSymbol(chainId, token.symbol)
+  const listedToken = getTokenByChainAndSymbol(chainId, tokenSymbol)
   return listedToken?.address
 }
 
@@ -64,24 +66,20 @@ export function getCurrencyTokensForIndex(
     return [ETH, WETH, WBTC, USDC, USDT]
   }
   if (chainId === BASE.chainId) {
-    return [ETH, WETH, USDC]
+    return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
   }
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI, GUSD]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
-  if (
-    index.symbol === DiversifiedStakedETHIndex.symbol ||
-    index.symbol === GitcoinStakedETHIndex.symbol
-  )
+  if (index.symbol === DiversifiedStakedETHIndex.symbol)
     return [ETH, WETH, USDC, GUSD, RETH, STETH, SETH2, WSTETH]
-  if (index.symbol === LeveragedRethStakingYield.symbol)
-    return [ETH, WETH, USDC, GUSD, RETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
 
 export function getDefaultIndex(chainId: number = 1): Token {
   if (chainId === ARBITRUM.chainId) return indicesTokenListArbitrum[0]
+  if (chainId === BASE.chainId) return indicesTokenListBase[0]
   return indicesTokenList[0]
 }
 
@@ -115,22 +113,20 @@ export function getTokenBySymbol(symbol: string): Token | null {
   return currencyToken ?? null
 }
 
-export function isTokenPairTradable(
-  requiresProtection: boolean,
-  inputTokenSymbol: string,
-  outputTokenSymbol: string,
+export function isTokenBtcOnBase(
   chainId: number,
+  inputToken: Address,
+  outputToken: Address,
 ): boolean {
-  if (!requiresProtection) return true
-  // When tokenlists is used everywhere, we can just pass these objects as function
-  // arguments instead of the token symbol
-  const inputToken = getTokenByChainAndSymbol(chainId, inputTokenSymbol)
-  const outputToken = getTokenByChainAndSymbol(chainId, outputTokenSymbol)
-  const inputTokenIsDangerous =
-    inputToken?.tags.some((tag) => tag === 'dangerous') ?? true
-  const outputTokenIsDangerous =
-    outputToken?.tags.some((tag) => tag === 'dangerous') ?? true
-  return !inputTokenIsDangerous && !outputTokenIsDangerous
+  if (chainId !== base.id) return false
+  const btc2x = getTokenByChainAndSymbol(base.id, 'BTC2X')
+  const btc3x = getTokenByChainAndSymbol(base.id, 'BTC3X')
+  return (
+    isAddressEqual(inputToken, btc2x.address) ||
+    isAddressEqual(inputToken, btc3x.address) ||
+    isAddressEqual(outputToken, btc2x.address) ||
+    isAddressEqual(outputToken, btc3x.address)
+  )
 }
 
 export function digitsByAddress(address: string): number {

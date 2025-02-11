@@ -10,6 +10,7 @@ import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import {
   getAddressForToken,
   getCurrencyTokensForIndex,
+  isTokenBtcOnBase,
 } from '@/lib/utils/tokens'
 
 import { IndexQuoteRequest, Quote, QuoteTransaction, QuoteType } from '../types'
@@ -29,8 +30,8 @@ async function getEnhancedFlashMintQuote(
   slippage: number,
   chainId: number,
 ): Promise<Quote | null> {
-  const inputTokenAddress = getAddressForToken(inputToken, chainId)
-  const outputTokenAddress = getAddressForToken(outputToken, chainId)
+  const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
+  const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
 
   if (!inputTokenAddress || !outputTokenAddress) {
     console.warn('Error unkown input/output token')
@@ -67,21 +68,24 @@ async function getEnhancedFlashMintQuote(
 
     if (
       (isMinting && isAddressEqual(outputToken.address, ICUSD.address)) ||
-      (!isMinting && isAddressEqual(inputToken.address, ICUSD.address))
+      (!isMinting && isAddressEqual(inputToken.address, ICUSD.address)) ||
+      isTokenBtcOnBase(chainId, inputTokenAddress, outputTokenAddress)
     ) {
-      // icUSD routing requires to set the input amount as well.
+      // These tokens require to set the input amount as well for quotes
       request.inputAmount = inputTokenAmount.toString()
     }
     const response = await fetch('/api/quote', {
       method: 'POST',
       body: JSON.stringify(request),
     })
+
     const quoteFM = await response.json()
     if (quoteFM) {
       const {
         inputAmount: quoteInputAmount,
         outputAmount: quoteOutputAmount,
         transaction: tx,
+        fees,
       } = quoteFM
 
       const inputAmount = BigInt(quoteInputAmount)
@@ -148,6 +152,7 @@ async function getEnhancedFlashMintQuote(
         outputTokenAmountUsdAfterFees,
         inputTokenPrice,
         outputTokenPrice,
+        fees,
         slippage,
         tx: transaction,
       }

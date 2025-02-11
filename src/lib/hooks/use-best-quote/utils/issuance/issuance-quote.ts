@@ -1,15 +1,10 @@
 import {
-  getIssuanceModule,
   IndexDebtIssuanceModuleV2Address_v2,
+  getIssuanceModule,
 } from '@indexcoop/flash-mint-sdk'
-import { Address, encodeFunctionData, PublicClient } from 'viem'
+import { Address, PublicClient, encodeFunctionData } from 'viem'
 
-import {
-  BedIndex,
-  LeveragedRethStakingYield,
-  RealWorldAssetIndex,
-  Token,
-} from '@/constants/tokens'
+import { RealWorldAssetIndex, Token } from '@/constants/tokens'
 import { isAvailableForIssuance } from '@/lib/hooks/use-best-quote/utils/available'
 import { formatWei } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
@@ -63,8 +58,6 @@ export async function getEnhancedIssuanceQuote(
   let contract = getIssuanceModule(inputToken.symbol, chainId)
     .address as Address
   if (
-    BedIndex.symbol === inputToken.symbol ||
-    LeveragedRethStakingYield.symbol === inputToken.symbol ||
     RealWorldAssetIndex.symbol === inputToken.symbol ||
     RealWorldAssetIndex.symbol === outputToken.symbol
   ) {
@@ -160,6 +153,14 @@ export async function getEnhancedIssuanceQuote(
       inputTokenPrice,
       outputTokenPrice,
       slippage: request.slippage,
+      fees: {
+        mint: 0,
+        mintUsd: 0,
+        redeem: 0,
+        redeemUsd: 0,
+        streaming: 0,
+        streamingUsd: 0,
+      },
       tx: transaction,
     }
   } catch (e) {

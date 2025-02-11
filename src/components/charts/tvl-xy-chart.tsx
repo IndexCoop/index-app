@@ -14,6 +14,7 @@ import { ChartTooltip } from '@/components/charts/chart-tooltip'
 import { LinearGradientFill } from '@/components/charts/linear-gradient-fill'
 import { darkTheme, lightTheme } from '@/components/charts/themes'
 import { ChartPeriod } from '@/components/charts/types'
+import { tooltipTimestampFormat } from '@/constants/charts'
 import { IndexData } from '@/lib/utils/api/index-data-provider'
 
 type TvlChartIndexData = Pick<
@@ -27,14 +28,6 @@ type Props = {
   parentWidth: number
   parentHeight: number
   selectedPeriod: ChartPeriod
-}
-
-const tooltipTimestampFormatByPeriod: { [k in ChartPeriod]: string } = {
-  [ChartPeriod.Hour]: 'DD MMM YYYY HH:mm',
-  [ChartPeriod.Day]: 'DD MMM YYYY HH:mm',
-  [ChartPeriod.Week]: 'DD MMM YYYY HH:mm',
-  [ChartPeriod.Month]: 'DD MMM YYYY HH:mm',
-  [ChartPeriod.Year]: 'DD MMM YYYY',
 }
 
 function TvlXYChart({
@@ -62,9 +55,7 @@ function TvlXYChart({
 
   const tooltipAccessors = {
     xAccessor: (d: TvlChartIndexData) =>
-      dayjs(d.CreatedTimestamp).format(
-        tooltipTimestampFormatByPeriod[selectedPeriod],
-      ),
+      dayjs(d.CreatedTimestamp).format(tooltipTimestampFormat[selectedPeriod]),
     yAccessor: (d: TvlChartIndexData) => formatTvl(d.ProductAssetValue),
   }
 
@@ -84,11 +75,7 @@ function TvlXYChart({
         zero: false,
       }}
     >
-      <Axis
-        orientation='left'
-        numTicks={5}
-        tickFormat={(d) => formatTvl(d)}
-      />
+      <Axis orientation='left' numTicks={5} tickFormat={(d) => formatTvl(d)} />
       <Axis orientation='bottom' numTicks={5} />
       <AnimatedLineSeries {...seriesAccessors} dataKey='tvls' data={data} />
       <AnimatedAreaSeries

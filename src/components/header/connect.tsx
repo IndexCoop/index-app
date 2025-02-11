@@ -1,8 +1,8 @@
 'use client'
 
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import { Button } from '@headlessui/react'
-import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { useAppKit } from '@reown/appkit/react'
 import { useMemo } from 'react'
 import { useAccount, useAccountEffect, useBalance } from 'wagmi'
 
@@ -15,7 +15,7 @@ import { emojiAvatarForAddress } from '@/lib/utils/emoji-address-avatar'
 export const Connect = () => {
   const { address, isConnected, chainId: walletChainId } = useAccount()
   const { chainId } = useNetwork()
-  const { open } = useWeb3Modal()
+  const { open } = useAppKit()
   const { logConnectWallet } = useAnalytics()
 
   const { data: balance } = useBalance({
@@ -43,13 +43,13 @@ export const Connect = () => {
   }, [address])
 
   return (
-    <div className='text-ic-white  font-bold'>
+    <div className='text-ic-white font-bold'>
       {isConnected && address ? (
-        <div className='relative flex gap-4'>
+        <div className='relative flex items-center gap-4'>
           {chainId !== walletChainId && <div className='absolute'></div>}
           <NetworkSelect />
           <Button
-            className='bg-ic-black flex items-center gap-2 rounded-md px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
+            className='bg-ic-black flex items-center gap-2 rounded-md px-4 py-1 text-sm transition-all duration-300 hover:scale-[1.04]'
             onClick={() => open({ view: 'Account' })}
           >
             <div className='flex gap-1'>
@@ -60,18 +60,18 @@ export const Connect = () => {
             </div>
 
             <div
-              className='flex h-6 w-6 items-center justify-center rounded-full'
+              className='flex h-5 w-5 items-center justify-center rounded-full'
               style={{ backgroundColor: avatar?.color }}
             >
               {avatar?.emoji}
             </div>
             <p className='hidden md:block'>{shortenAddress(address)}</p>
-            <ChevronDownIcon className='h-6 w-6' />
+            <ChevronDownIcon className='text-ic-white size-4' />
           </Button>
         </div>
       ) : (
         <Button
-          className='bg-ic-blue-500 hover:bg-ic-blue-500/90 rounded-md px-4 py-2 transition-all duration-300 hover:scale-[1.04]'
+          className='bg-ic-blue-500 hover:bg-ic-blue-500/90 text-ic-gray-50 block rounded-md px-8 py-1 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-[1.04]'
           onClick={() => open({ view: 'Connect' })}
         >
           Connect

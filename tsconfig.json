@@ -6,6 +6,7 @@
     "skipLibCheck": true,
     "strict": true,
     "allowUnreachableCode": false,
+    "allowImportingTsExtensions": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
