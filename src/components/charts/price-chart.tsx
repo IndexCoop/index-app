@@ -16,6 +16,7 @@ type Props = {
   nav: number | null
 }
 
+// Branch created for data support
 export function PriceChart({
   indexToken,
   indexTokenAddress,
