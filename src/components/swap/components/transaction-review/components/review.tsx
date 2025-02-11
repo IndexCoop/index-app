@@ -8,7 +8,6 @@ import { ContractSection } from './contract-section'
 import { FromTo } from './from-to'
 import { NetworkBadge } from './network-badge'
 import { Override } from './override'
-import { TransactionReviewSimulation } from './simulation'
 
 export type ReviewProps = {
   onSubmitWithSuccess: (success: boolean) => void
@@ -24,7 +23,6 @@ export function Review(props: ReviewProps) {
     isButtonDisabled,
     isLoading,
     shouldShowOverride,
-    simulationState,
     onChangeOverride,
     onSubmit,
     override,
@@ -51,7 +49,7 @@ export function Review(props: ReviewProps) {
             explorerUrl={contractBlockExplorerUrl}
           />
         </div>
-        <TransactionReviewSimulation state={simulationState} />
+        {/* <TransactionReviewSimulation state={simulationState} /> */}
       </div>
       {shouldShowOverride ? (
         <div className='my-2'>
