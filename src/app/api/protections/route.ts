@@ -19,15 +19,18 @@ export async function GET(req: NextRequest) {
           undefined,
       },
     })
-    const { isRestrictedCountry, isUsingVpn } = await res.json()
+    const { isForbiddenAddress, isRestrictedCountry, isUsingVpn } =
+      await res.json()
 
     return NextResponse.json({
+      isForbiddenAddress,
       isRestrictedCountry,
       isUsingVpn,
     })
   } catch (e) {
     console.error('Caught protections error', e)
     return NextResponse.json({
+      isForbiddenAddress: false,
       isRestrictedCountry: false,
       isUsingVpn: false,
     })

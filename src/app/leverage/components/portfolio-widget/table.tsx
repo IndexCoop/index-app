@@ -41,7 +41,7 @@ export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
           </div>
         ))}
       </div>
-      <div className='flex max-h-[300px] w-full flex-col gap-1 overflow-y-scroll rounded-md pb-12'>
+      <div className='flex max-h-[300px] w-full flex-col gap-1 overflow-y-auto rounded-md pb-12'>
         {isFetching ? (
           <div className='flex w-full flex-col gap-3 px-4 py-2'>
             {[1, 2, 3].map((n) => (
