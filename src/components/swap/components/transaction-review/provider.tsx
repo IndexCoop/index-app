@@ -142,19 +142,18 @@ export function useTransactionReview(props: ReviewProps) {
   }
 
   const onSubmit = async () => {
-    if (!override) {
-      setSimulationState(TransactionReviewSimulationState.loading)
-      const isSuccess = await simulateTrade()
-      const state = isSuccess
-        ? TransactionReviewSimulationState.success
-        : TransactionReviewSimulationState.failure
-      setSimulationState(state)
-      if (!isSuccess) return
-    }
+    // if (!override) {
+    //   setSimulationState(TransactionReviewSimulationState.loading)
+    //   const isSuccess = await simulateTrade()
+    //   const state = isSuccess
+    //     ? TransactionReviewSimulationState.success
+    //     : TransactionReviewSimulationState.failure
+    //   setSimulationState(state)
+    //   if (!isSuccess) return
+    // }
     const success = await makeTrade(override)
     setOverride(false)
     if (success === null) return
-
     onSubmitWithSuccess(success)
   }
 
