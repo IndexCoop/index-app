@@ -5,7 +5,6 @@ import { usePublicClient } from 'wagmi'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useRefId } from '@/lib/hooks/use-ref-id'
-import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
 import { TradeCallback, useTrade } from '@/lib/hooks/use-trade'
 import { formatAmountFromWei } from '@/lib/utils'
 import { mapQuoteToTrade } from '@/lib/utils/api/database'
@@ -102,7 +101,7 @@ export function useTransactionReview({
     [simulationState],
   )
 
-  const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
+  // const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
 
   const refId = useRefId()
 
