@@ -242,12 +242,3 @@ export const WSTETH: Token = {
   address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
   decimals: 18,
 }
-
-export const AUSDC: Token = {
-  name: 'aUSDC',
-  symbol: 'aUSDC',
-  image:
-    'https://assets.coingecko.com/coins/images/14318/large/aUSDC.e260d492.png',
-  address: '0xBcca60bB61934080951369a648Fb03DF4F96263C',
-  decimals: 18,
-}
