@@ -1,5 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { base, mainnet } from 'viem/chains'
+import { mainnet } from 'viem/chains'
 
 import {
   dsethLogo,
@@ -113,12 +113,6 @@ const rwa = getTokenByChainAndSymbol(mainnet.id, 'RWA')
 export const RealWorldAssetIndex: Token = {
   ...rwa,
   image: rwa.logoURI,
-}
-
-const icUSDTokenData = getTokenByChainAndSymbol(base.id, 'icUSD')
-export const ICUSD: Token = {
-  ...icUSDTokenData,
-  image: icUSDTokenData.logoURI,
 }
 
 /**
