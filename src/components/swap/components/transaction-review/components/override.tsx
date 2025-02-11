@@ -10,7 +10,7 @@ export const Override = ({ onChange, override }: OverrideProps) => {
   return (
     <div className='bg-ic-gray-100 flex flex-col items-start gap-2 rounded-xl p-4'>
       <div className='items-top flex'>
-        <ExclamationTriangleIcon className='fill-ic-black size-6 flex-none' />
+        <ExclamationTriangleIcon className='fill-ic-black mt-1 size-6 flex-none' />
         <p className='text-ic-black mx-4 text-sm'>
           This tx will likely fail. Check &apos;Override&apos; below and click
           the submit button again to execute anyway.
