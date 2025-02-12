@@ -9,6 +9,7 @@ export const mapQuoteToTrade = (
   transactionHash: string,
   quote: Quote,
   refId?: string,
+  medium?: string,
 ): PostApiV2TradeMutationRequest => ({
   transactionHash,
   userAddress: address,
@@ -44,6 +45,7 @@ export const mapQuoteToTrade = (
   mintFee: quote.fees?.mintUsd.toString() ?? '',
   redeemFee: quote.fees?.redeemUsd.toString() ?? '',
   refId,
+  medium,
   createdAt: new Date(),
   underlyingAssetSymbol: getUnderlyingAssetSymbol(quote).toUpperCase(),
 })

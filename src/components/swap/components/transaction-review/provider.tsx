@@ -4,9 +4,9 @@ import { usePublicClient } from 'wagmi'
 
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { useRefId } from '@/lib/hooks/use-ref-id'
 import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
 import { TradeCallback, useTrade } from '@/lib/hooks/use-trade'
+import { useUtmParams } from '@/lib/hooks/use-utm-params'
 import { formatAmountFromWei } from '@/lib/utils'
 import { mapQuoteToTrade } from '@/lib/utils/api/database'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
@@ -101,7 +101,7 @@ export function useTransactionReview(props: ReviewProps) {
 
   const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
 
-  const refId = useRefId()
+  const { source, medium } = useUtmParams()
 
   const client = usePublicClient()
   const queryClient = useQueryClient()
@@ -109,7 +109,9 @@ export function useTransactionReview(props: ReviewProps) {
     async ({ address, hash, quote }) => {
       await fetch(`/api/user/trade`, {
         method: 'POST',
-        body: JSON.stringify(mapQuoteToTrade(address, hash, quote, refId)),
+        body: JSON.stringify(
+          mapQuoteToTrade(address, hash, quote, source, medium),
+        ),
       })
 
       await client?.waitForTransactionReceipt({
@@ -124,7 +126,7 @@ export function useTransactionReview(props: ReviewProps) {
             query.queryKey[1] === quote.chainId),
       })
     },
-    [refId, client, queryClient],
+    [source, medium, client, queryClient],
   )
 
   const makeTrade = async (override: boolean) => {

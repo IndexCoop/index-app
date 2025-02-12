@@ -15,6 +15,7 @@ import { useProtectionContext } from '@/lib/providers/protection'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { getNativeToken, isTokenPairTradable } from '@/lib/utils/tokens'
+import { isSupportedNetwork } from '@/lib/utils/wagmi'
 
 type SmartTradeButtonProps = {
   inputToken: Token
@@ -26,7 +27,6 @@ type SmartTradeButtonProps = {
   hasInsufficientFunds: boolean
   hiddenWarnings?: WarningType[]
   isFetchingQuote: boolean
-  isSupportedNetwork: boolean
   queryNetwork?: number
   buttonLabelOverrides: { [key: number]: string }
   onOpenTransactionReview: () => void
@@ -44,7 +44,6 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     inputToken,
     inputValue,
     isFetchingQuote,
-    isSupportedNetwork,
     outputToken,
     onOpenTransactionReview,
     onRefetchQuote,
@@ -79,7 +78,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   }, [chainId, inputToken])
 
   const buttonState = useTradeButtonState(
-    isSupportedNetwork,
+    isSupportedNetwork(chainId),
     hasFetchingError,
     hasInsufficientFunds,
     shouldApprove,

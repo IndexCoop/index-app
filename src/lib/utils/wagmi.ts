@@ -29,19 +29,68 @@ export const metadata = {
   icons: ['/index-logo-black.png'],
 }
 
-// default wagmi localhost uses 1_337 as the chain id
-const localhostHH = {
-  ...localhost,
-  id: 31_337,
+export const supportedNetworks = {
+  [mainnet.id]: {
+    ...mainnet,
+    rpcUrls: {
+      default: {
+        http: [
+          `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+        ],
+      },
+    },
+  },
+  [arbitrum.id]: {
+    ...arbitrum,
+    rpcUrls: {
+      default: {
+        http: [
+          `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+        ],
+      },
+    },
+  },
+  [base.id]: {
+    ...base,
+    rpcUrls: {
+      default: {
+        http: [
+          `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+        ],
+      },
+    },
+  },
+  [polygon.id]: {
+    ...polygon,
+    rpcUrls: {
+      default: {
+        http: [
+          `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+        ],
+      },
+    },
+  },
+  ...(shouldShowLocalHost
+    ? {
+        [31_337]: {
+          ...localhost,
+          id: 31_337,
+        },
+      }
+    : {}),
 }
 
-export const chains = [
-  arbitrum,
-  mainnet,
-  base,
-  polygon,
-  ...(shouldShowLocalHost ? [localhostHH] : []),
-] as [AppKitNetwork, ...AppKitNetwork[]]
+export type SupportedNetwork = keyof typeof supportedNetworks
+
+export const isSupportedNetwork = (
+  chainId: unknown,
+): chainId is SupportedNetwork => {
+  if (typeof chainId !== 'number' && typeof chainId !== 'string') return false
+
+  return Object.hasOwnProperty.call(supportedNetworks, chainId)
+}
+
+export const chains = Object.values(supportedNetworks) as AppKitNetwork[]
 
 export const wagmiAdapter = new WagmiAdapter({
   projectId,
@@ -71,7 +120,7 @@ export const initAppkit = () => {
   createAppKit({
     adapters: [wagmiAdapter],
     projectId,
-    networks: chains,
+    networks: chains as [AppKitNetwork, ...AppKitNetwork[]],
     features: {
       email: false,
       onramp: false,
