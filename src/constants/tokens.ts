@@ -1,7 +1,7 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { mainnet } from 'viem/chains'
 
-import { gmiLogo, icethLogo, indexLogo, wseth2Logo } from '@/lib/utils/assets'
+import { icethLogo, indexLogo } from '@/lib/utils/assets'
 
 export interface Token {
   name: string
@@ -47,44 +47,12 @@ export const IndexToken: Token = {
   image: indexLogo,
 }
 
-export const Ethereum2xFlexibleLeverageIndex: Token = {
-  name: 'Ethereum 2x Flexible Leverage Index',
-  symbol: 'ETH2x-FLI',
-  address: '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
-  decimals: 18,
-  image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
-}
-
 export const MetaverseIndex: Token = {
   name: 'Metaverse Index',
   symbol: 'MVI',
   address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
   decimals: 18,
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
-}
-
-export const Bitcoin2xFlexibleLeverageIndex: Token = {
-  name: 'Bitcoin 2x Flexible Leverage Index',
-  symbol: 'BTC2x-FLI',
-  address: '0x0B498ff89709d3838a063f1dFA463091F9801c2b',
-  decimals: 18,
-  image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
-}
-
-export const DATA: Token = {
-  name: 'DATA Economy Index',
-  symbol: 'DATA',
-  address: '0x33d63Ba1E57E54779F7dDAeaA7109349344cf5F1',
-  decimals: 18,
-  image: indexLogo,
-}
-
-export const GmiIndex: Token = {
-  name: 'Bankless DeFi Innovation Index',
-  symbol: 'GMI',
-  address: '0x47110d43175f7f2C2425E7d15792acC5817EB44f',
-  decimals: 18,
-  image: gmiLogo,
 }
 
 export const icETHIndex: Token = {
@@ -99,18 +67,6 @@ const rwa = getTokenByChainAndSymbol(mainnet.id, 'RWA')
 export const RealWorldAssetIndex: Token = {
   ...rwa,
   image: rwa.logoURI,
-}
-
-/**
- * Other - IndexCoop
- */
-
-export const WSETH2: Token = {
-  name: 'wsETH2',
-  symbol: 'wsETH2',
-  image: wseth2Logo,
-  address: '0x5dA21D9e63F1EA13D34e48B7223bcc97e3ecD687',
-  decimals: 18,
 }
 
 /**

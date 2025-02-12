@@ -5,15 +5,13 @@ import {
 } from '@indexcoop/flash-mint-sdk'
 
 import { LegacyToken } from '@/app/legacy/types'
-import {
-  Bitcoin2xFlexibleLeverageIndex,
-  DATA,
-  Ethereum2xFlexibleLeverageIndex,
-  GmiIndex,
-} from '@/constants/tokens'
 
 import {
   BedIndex,
+  Bitcoin2xFlexibleLeverageIndex,
+  DATA,
+  Ethereum2xFlexibleLeverageIndex,
+  GMI,
   GitcoinStakedETHIndex,
   LeveragedRethStakingYield,
   dsETH,
@@ -32,7 +30,7 @@ const DebtIssuanceModuleAddress = '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
 const DebtIssuanceModuleV2PolygonAddress =
   '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
 
-export const Issuance = {
+export const Issuance: { [key: string]: string } = {
   [BedIndex.symbol]: DebtIssuanceModuleAddress,
   [Bitcoin2xFlexibleLeverageIndex.symbol]: DebtIssuanceModuleV2Address,
   [Bitcoin2xFlexibleLeverageIndexPolygon.symbol]:
@@ -43,7 +41,7 @@ export const Issuance = {
   [ETH2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
   [GitcoinStakedETHIndex.symbol]: IndexDebtIssuanceModuleV2Address,
-  [GmiIndex.symbol]: DebtIssuanceModuleAddress,
+  [GMI.symbol]: DebtIssuanceModuleAddress,
   [ic21.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [InverseBTCFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
@@ -57,13 +55,19 @@ export const Issuance = {
 }
 
 export const LegacyTokenList: LegacyToken[] = [
-  Bitcoin2xFlexibleLeverageIndex,
-  Ethereum2xFlexibleLeverageIndex,
+  {
+    ...Bitcoin2xFlexibleLeverageIndex,
+    image: Bitcoin2xFlexibleLeverageIndex.logoURI,
+  },
+  {
+    ...Ethereum2xFlexibleLeverageIndex,
+    image: Ethereum2xFlexibleLeverageIndex.logoURI,
+  },
   { ...dsETH, image: dsETH.logoURI },
   { ...ic21, image: ic21.logoURI },
   { ...GitcoinStakedETHIndex, image: GitcoinStakedETHIndex.logoURI },
-  GmiIndex,
-  DATA,
+  { ...GMI, image: GMI.logoURI },
+  { ...DATA, image: DATA.logoURI },
   { ...LeveragedRethStakingYield, image: LeveragedRethStakingYield.logoURI },
   { ...BedIndex, image: BedIndex.logoURI },
 ]
