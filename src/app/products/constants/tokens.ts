@@ -71,12 +71,6 @@ export const productTokens: ProductRow[] = [
     tradeHref: buildLeverageTradePath('BTC3X', undefined, arbitrum.id),
   },
   {
-    ...getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
-    hasApy: true,
-    listType: 'Earn',
-    tradeHref: buildEarnTradePath('dsETH'),
-  },
-  {
     ...getTokenByChainAndSymbol(mainnet.id, 'BED'),
     hasApy: false,
     listType: 'Strategies',
