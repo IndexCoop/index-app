@@ -20,6 +20,8 @@ export async function GET(req: NextRequest) {
       currency,
       market: `${symbol} / ${currency}`,
       change24h: data.change24h,
+      low24h: data.low24h,
+      high24h: data.high24h,
       price: data.price,
     })
   } catch (error) {

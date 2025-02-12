@@ -165,6 +165,8 @@ export const markets: Market[] = [
     networks: [mainnet, arbitrum, base],
     price: 0,
     change24h: 0,
+    low24h: 0,
+    high24h: 0,
   },
   {
     icon: '/assets/btc-usd-market.svg',
@@ -174,6 +176,8 @@ export const markets: Market[] = [
     networks: [mainnet, arbitrum, base],
     price: 0,
     change24h: 0,
+    low24h: 0,
+    high24h: 0,
   },
   {
     icon: '/assets/eth-btc-market.svg',
@@ -183,6 +187,8 @@ export const markets: Market[] = [
     networks: [arbitrum],
     price: 0,
     change24h: 0,
+    low24h: 0,
+    high24h: 0,
   },
   {
     icon: '/assets/btc-eth-market.svg',
@@ -192,6 +198,8 @@ export const markets: Market[] = [
     networks: [arbitrum],
     price: 0,
     change24h: 0,
+    low24h: 0,
+    high24h: 0,
   },
 ]
 

@@ -57,6 +57,8 @@ export interface Market {
   networks: Chain[]
   price: number
   change24h: number
+  low24h: number
+  high24h: number
   symbol: 'ETH' | 'BTC'
   currency: 'USD' | 'BTC' | 'ETH'
 }
