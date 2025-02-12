@@ -1,7 +1,7 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { mainnet } from 'viem/chains'
 
-import { icethLogo, indexLogo, wseth2Logo } from '@/lib/utils/assets'
+import { icethLogo, indexLogo } from '@/lib/utils/assets'
 
 export interface Token {
   name: string
@@ -67,18 +67,6 @@ const rwa = getTokenByChainAndSymbol(mainnet.id, 'RWA')
 export const RealWorldAssetIndex: Token = {
   ...rwa,
   image: rwa.logoURI,
-}
-
-/**
- * Other - IndexCoop
- */
-
-export const WSETH2: Token = {
-  name: 'wsETH2',
-  symbol: 'wsETH2',
-  image: wseth2Logo,
-  address: '0x5dA21D9e63F1EA13D34e48B7223bcc97e3ecD687',
-  decimals: 18,
 }
 
 /**

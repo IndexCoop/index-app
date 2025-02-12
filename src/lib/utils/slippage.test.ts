@@ -2,7 +2,6 @@ import { slippageMap } from '@/constants/slippage'
 import {
   CoinDeskEthTrendIndex,
   HighYieldETHIndex,
-  WSETH2,
   icETHIndex,
 } from '@/constants/tokens'
 
@@ -26,12 +25,6 @@ describe('getSlippageOverrideOrNull()', () => {
     const slippageOverride = getSlippageOverrideOrNull(symbol)
     expect(slippageOverride).toBe(slippageMap.get(symbol))
   })
-
-  it('returns correct slippage for wsETH2', () => {
-    const symbol = WSETH2.symbol
-    const slippageOverride = getSlippageOverrideOrNull(symbol)
-    expect(slippageOverride).toBe(slippageMap.get(symbol))
-  })
 })
 
 describe('selectSlippage()', () => {
@@ -50,22 +43,6 @@ describe('selectSlippage()', () => {
     const result = selectSlippage(0.1, symbol)
     expect(slippageModified).toBe(expectedSlippage)
     expect(result).toBe(expectedSlippage)
-  })
-
-  it('returns correct slippage for token in mapping (smaller value)', () => {
-    const symbol = WSETH2.symbol
-    const expectedSlippage = slippageMap.get(symbol)
-    const slippageModified = getSlippageOverrideOrNull(symbol)
-    const result = selectSlippage(0.01, symbol)
-    expect(slippageModified).toBe(expectedSlippage)
-    expect(result).toBe(expectedSlippage)
-  })
-
-  it('returns correct slippage when default was modified by user', () => {
-    const expectedSlippaged = 2
-    const symbol = WSETH2.symbol
-    const result = selectSlippage(expectedSlippaged, symbol)
-    expect(result).toBe(expectedSlippaged)
   })
 
   it('returns correct slippage for hyETH', () => {
