@@ -135,15 +135,12 @@ export const Swap = (props: SwapProps) => {
   const fetchOptions = useCallback(() => {
     if (!isTradablePair) return
     const indexSymbol = isBuying ? outputToken.symbol : inputToken.symbol
-    const inputOutputTokenSymbol = isBuying
-      ? inputToken.symbol
-      : outputToken.symbol
     fetchQuote({
       isMinting: isBuying,
       inputToken,
       inputTokenAmount: sellTokenAmount,
       outputToken,
-      slippage: selectSlippage(slippage, indexSymbol, inputOutputTokenSymbol),
+      slippage: selectSlippage(slippage, indexSymbol),
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

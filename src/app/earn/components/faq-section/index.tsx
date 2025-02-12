@@ -91,15 +91,6 @@ export function FaqSection() {
                   icETH
                 </a>
               </li>
-              <li>
-                <a
-                  href='https://indexcoop.com/products/diversified-staked-ethereum-index'
-                  target='_blank'
-                  className='underline'
-                >
-                  dsETH
-                </a>
-              </li>
             </ul>
           </li>
         </ul>
@@ -148,12 +139,6 @@ export function FaqSection() {
             icETH
             <ul className='list-disc pl-6'>
               <li>Annual Fee: 0.75%</li>
-            </ul>
-          </li>
-          <li>
-            dsETH
-            <ul className='list-disc pl-6'>
-              <li>No fees are charged on dsETH</li>
             </ul>
           </li>
         </ul>
@@ -256,41 +241,6 @@ export function FaqSection() {
                   className='underline'
                 >
                   Introducing icETH
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            dsETH
-            <ul className='list-disc pl-6'>
-              <li>
-                <a
-                  href='https://dune.com/index_coop/dseth'
-                  target='_blank'
-                  className='underline'
-                >
-                  Dune Dashboards
-                </a>{' '}
-                for more detailed product data and analytics
-              </li>
-              <li>
-                <a
-                  href='https://docs.indexcoop.com/index-coop-community-handbook/products/yield/diversified-staked-eth-index-dseth'
-                  target='_blank'
-                  className='underline'
-                >
-                  Gitbook
-                </a>{' '}
-                for product documentation
-              </li>
-              <li>
-                Article |{' '}
-                <a
-                  href='https://indexcoop.com/blog/introducing-the-diversified-staked-eth-index'
-                  target='_blank'
-                  className='underline'
-                >
-                  Introducing dsETH
                 </a>
               </li>
             </ul>

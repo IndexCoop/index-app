@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { base } from 'viem/chains'
 
 import { PolygonLegacyTokenList } from '@/app/legacy/config'
-import { DATA, ETH, GmiIndex, Token } from '@/constants/tokens'
+import { ETH, Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
@@ -48,8 +48,8 @@ export const getTokenPrice = async (
     ({ address }) => address === tokenAddress,
   )
   if (
-    token.symbol === DATA.symbol ||
-    token.symbol === GmiIndex.symbol ||
+    token.symbol === 'DATA' ||
+    token.symbol === 'GMI' ||
     PolygonLegacyTokenList.some(
       (polygonIndex) => token.symbol === polygonIndex.symbol,
     )

@@ -39,8 +39,6 @@ export function getCurrencyTokens(chainId: number): Token[] {
 
 export function getTagline(indexTokenSymbol: string): string {
   switch (indexTokenSymbol.toLowerCase()) {
-    case 'dseth':
-      return 'The leading Ethereum liquid staking tokens on Ethereum.'
     case 'hyeth':
       return 'The highest ETH-denominated yields on Ethereum Mainnet.'
     case 'iceth':
@@ -56,9 +54,6 @@ const yieldTokens = [
   // getTokenByChainAndSymbol(arbitrum.id, 'hyETH'),
   // getTokenByChainAndSymbol(base.id, 'hyETH'),
   getTokenByChainAndSymbol(mainnet.id, 'icETH'),
-  getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
-  // getTokenByChainAndSymbol(arbitrum.id, 'dsETH'),
-  // getTokenByChainAndSymbol(base.id, 'dsETH'),
 ]
 
 export function getYieldTokens(): Token[] {

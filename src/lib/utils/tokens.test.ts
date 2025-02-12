@@ -3,7 +3,6 @@ import {
   CoinDeskEthTrendIndex,
   DAI,
   DefiPulseIndex,
-  DiversifiedStakedETHIndex,
   ETH,
   GUSD,
   MATIC,
@@ -80,29 +79,6 @@ describe('getCurrencyTokensForIndex()', () => {
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(3)
     expect(currencyTokens).toEqual([ETH, WETH, STETH])
-  })
-
-  test('returns correct currency tokens for dsETH', async () => {
-    const chainId = 1
-    const token = DiversifiedStakedETHIndex
-    const requiredTokens = [
-      'ETH',
-      'WETH',
-      'stETH',
-      'wstETH',
-      'rETH',
-      'sETH2',
-      'USDC',
-      'GUSD',
-    ]
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(requiredTokens.length)
-    for (const requiredToken of requiredTokens) {
-      expect(
-        currencyTokens.filter((currency) => currency.symbol === requiredToken)
-          .length,
-      ).toEqual(1)
-    }
   })
 })
 
