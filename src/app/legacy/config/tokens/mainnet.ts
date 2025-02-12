@@ -5,6 +5,7 @@ export const Bitcoin2xFlexibleLeverageIndex = getTokenByChainAndSymbol(
   1,
   'BTC2x-FLI',
 )
+export const DATA = getTokenByChainAndSymbol(1, 'DATA')
 export const dsETH = getTokenByChainAndSymbol(1, 'dsETH')
 export const Ethereum2xFlexibleLeverageIndex = getTokenByChainAndSymbol(
   1,

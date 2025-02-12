@@ -55,14 +55,6 @@ export const MetaverseIndex: Token = {
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
 }
 
-export const DATA: Token = {
-  name: 'DATA Economy Index',
-  symbol: 'DATA',
-  address: '0x33d63Ba1E57E54779F7dDAeaA7109349344cf5F1',
-  decimals: 18,
-  image: indexLogo,
-}
-
 export const icETHIndex: Token = {
   name: 'Interest Compounding ETH Index',
   symbol: 'icETH',
