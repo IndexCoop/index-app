@@ -4,7 +4,6 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useCallback, useEffect } from 'react'
 
 import { Summary } from '@/app/earn/components/earn-widget/components/summary'
-import { supportedNetworks } from '@/app/earn/constants'
 import { useEarnContext } from '@/app/earn/provider'
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { Receive } from '@/components/receive'
@@ -17,7 +16,6 @@ import { TransactionReviewModal } from '@/components/swap/components/transaction
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { TokenDisplay } from '@/components/token-display'
-import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
@@ -29,7 +27,6 @@ import './styles.css'
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 export function EarnWidget() {
-  const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
