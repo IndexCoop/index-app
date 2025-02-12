@@ -1,7 +1,7 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { mainnet } from 'viem/chains'
 
-import { gmiLogo, icethLogo, indexLogo, wseth2Logo } from '@/lib/utils/assets'
+import { icethLogo, indexLogo, wseth2Logo } from '@/lib/utils/assets'
 
 export interface Token {
   name: string
@@ -61,14 +61,6 @@ export const DATA: Token = {
   address: '0x33d63Ba1E57E54779F7dDAeaA7109349344cf5F1',
   decimals: 18,
   image: indexLogo,
-}
-
-export const GmiIndex: Token = {
-  name: 'Bankless DeFi Innovation Index',
-  symbol: 'GMI',
-  address: '0x47110d43175f7f2C2425E7d15792acC5817EB44f',
-  decimals: 18,
-  image: gmiLogo,
 }
 
 export const icETHIndex: Token = {

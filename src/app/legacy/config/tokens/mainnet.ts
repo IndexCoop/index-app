@@ -11,5 +11,6 @@ export const Ethereum2xFlexibleLeverageIndex = getTokenByChainAndSymbol(
   'ETH2x-FLI',
 )
 export const GitcoinStakedETHIndex = getTokenByChainAndSymbol(1, 'gtcETH')
+export const GMI = getTokenByChainAndSymbol(1, 'GMI')
 export const ic21 = getTokenByChainAndSymbol(1, 'ic21')
 export const LeveragedRethStakingYield = getTokenByChainAndSymbol(1, 'icRETH')
