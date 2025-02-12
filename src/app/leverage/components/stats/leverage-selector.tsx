@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils/tailwind'
 type Props = {
   leverage: string
   leverageType: string
-  ratio?: number
+  ratio: string
 }
 
 export function LeverageSelector({ leverage, leverageType, ratio }: Props) {
@@ -36,7 +36,7 @@ export function LeverageSelector({ leverage, leverageType, ratio }: Props) {
               : 'bg-ic-blue-300',
           )}
         >
-          {ratio ? `${ratio.toFixed(2)}x` : ''}
+          {ratio}
         </span>
       </div>
     </div>

@@ -82,7 +82,7 @@ export function LeverageSelectorContainer() {
             leverageType={
               leverageType === LeverageType.Short ? 'Short' : 'Long'
             }
-            ratio={currentRatio}
+            ratio={currentRatio ? `${currentRatio.toFixed(2)}x` : ''}
           />
         </PopoverButton>
         <PopoverPanel
