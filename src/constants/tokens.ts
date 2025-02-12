@@ -47,14 +47,6 @@ export const IndexToken: Token = {
   image: indexLogo,
 }
 
-export const Ethereum2xFlexibleLeverageIndex: Token = {
-  name: 'Ethereum 2x Flexible Leverage Index',
-  symbol: 'ETH2x-FLI',
-  address: '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
-  decimals: 18,
-  image: 'https://set-core.s3.amazonaws.com/img/portfolios/eth2x_fli.svg',
-}
-
 export const MetaverseIndex: Token = {
   name: 'Metaverse Index',
   symbol: 'MVI',

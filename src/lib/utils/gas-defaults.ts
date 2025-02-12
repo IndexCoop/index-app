@@ -2,7 +2,6 @@ import {
   Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
   DefiPulseIndex,
-  Ethereum2xFlexibleLeverageIndex,
   HighYieldETHIndex,
   MetaverseIndex,
   RealWorldAssetIndex,
@@ -18,8 +17,6 @@ export function getFlashMintGasDefault(symbol: string) {
       return 500_000
     case DefiPulseIndex.symbol:
       return 2_000_000
-    case Ethereum2xFlexibleLeverageIndex.symbol:
-      return 500_000
     case HighYieldETHIndex.symbol:
       return 250_000
     case icETHIndex.symbol:

@@ -8,12 +8,12 @@ import { LegacyToken } from '@/app/legacy/types'
 import {
   Bitcoin2xFlexibleLeverageIndex,
   DATA,
-  Ethereum2xFlexibleLeverageIndex,
   GmiIndex,
 } from '@/constants/tokens'
 
 import {
   BedIndex,
+  Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   LeveragedRethStakingYield,
   dsETH,
@@ -58,7 +58,10 @@ export const Issuance = {
 
 export const LegacyTokenList: LegacyToken[] = [
   Bitcoin2xFlexibleLeverageIndex,
-  Ethereum2xFlexibleLeverageIndex,
+  {
+    ...Ethereum2xFlexibleLeverageIndex,
+    image: Ethereum2xFlexibleLeverageIndex.logoURI,
+  },
   { ...dsETH, image: dsETH.logoURI },
   { ...ic21, image: ic21.logoURI },
   { ...GitcoinStakedETHIndex, image: GitcoinStakedETHIndex.logoURI },
