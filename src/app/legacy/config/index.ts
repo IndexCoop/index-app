@@ -30,7 +30,7 @@ const DebtIssuanceModuleAddress = '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
 const DebtIssuanceModuleV2PolygonAddress =
   '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
 
-export const Issuance = {
+export const Issuance: { [key: string]: string } = {
   [BedIndex.symbol]: DebtIssuanceModuleAddress,
   [Bitcoin2xFlexibleLeverageIndex.symbol]: DebtIssuanceModuleV2Address,
   [Bitcoin2xFlexibleLeverageIndexPolygon.symbol]:
