@@ -133,7 +133,6 @@ export function EarnWidget() {
         inputToken={inputToken}
         inputValue={inputValue}
         isFetchingQuote={isFetchingQuote}
-        isSupportedNetwork={isSupportedNetwork}
         queryNetwork={queryParams.queryNetwork}
         outputToken={outputToken}
         buttonLabelOverrides={{

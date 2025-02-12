@@ -248,7 +248,6 @@ export const Swap = (props: SwapProps) => {
           inputToken={inputToken}
           inputValue={sellTokenAmount}
           isFetchingQuote={isFetchingAnyQuote}
-          isSupportedNetwork={isSupportedNetwork}
           outputToken={outputToken}
           buttonLabelOverrides={{}}
           onOpenTransactionReview={onOpenTransactionReview}
