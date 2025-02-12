@@ -93,7 +93,7 @@ export function LeverageSelectorContainer() {
             <div className='w-full min-w-36 max-w-xl'>
               <div className='text-ic-gray-400 space-between mt-2 flex px-4 py-1 text-[11px]'>
                 <span className='w-24'>Strategy</span>
-                <span className='hidden md:w-24'>Networks</span>
+                <span className='hidden w-24 md:flex'>Networks</span>
                 <span className='w-24 text-right'>Current Leverage</span>
               </div>
               <div className='w-full bg-[#1A2A2B]'>
