@@ -3,7 +3,6 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
-import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Receive } from '@/components/receive'
 import { Settings } from '@/components/settings'
@@ -21,7 +20,6 @@ import { formatWei } from '@/lib/utils'
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
 import { BuySellSelector } from './components/buy-sell-selector'
-import { Fees } from './components/fees'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
 
@@ -33,14 +31,12 @@ export function LeverageWidget() {
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
-    indexToken,
     inputToken,
     inputTokenAmount,
     inputTokens,
     inputValue,
     isMinting,
     leverageType,
-    market,
     outputTokens,
     transactionReview,
     onChangeInputTokenAmount,
@@ -52,7 +48,6 @@ export function LeverageWidget() {
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
-  const { data } = useQuickStats(market, indexToken)
 
   const {
     contract,
@@ -133,7 +128,6 @@ export function LeverageWidget() {
         onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
-      <Fees costOfCarry={data.token.costOfCarry} leverageType={leverageType} />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={false}

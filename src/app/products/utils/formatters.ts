@@ -13,11 +13,16 @@ export function formatTvl(tvl?: number | null) {
 export function formatPercentage(
   percentage?: number | null,
   hideZeroPercentage: boolean = false,
+  decimals: number = 2,
 ) {
   if (percentage === undefined || percentage === null) return ''
   if (percentage === 0 && hideZeroPercentage) return ''
 
-  return `${percentage.toFixed(2)}%`
+  return new Intl.NumberFormat('en-us', {
+    style: 'percent',
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(percentage)
 }
 
 export function formatPrice(

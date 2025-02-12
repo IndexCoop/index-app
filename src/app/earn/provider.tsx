@@ -185,7 +185,7 @@ export function EarnProvider(props: { children: any }) {
       })
 
       return {
-        apy: data?.APY ?? null,
+        apy: data?.APY ? data.APY / 100 : null,
         nav: data?.NetAssetValue ?? null,
         tvl: data?.ProductAssetValue ?? null,
       }
@@ -228,8 +228,8 @@ export function EarnProvider(props: { children: any }) {
         }, 0)
 
       return {
-        apy7d: apy7d || null,
-        apy30d: apy30d || null,
+        apy7d: apy7d ? apy7d / 100 : null,
+        apy30d: apy30d ? apy30d / 100 : null,
       }
     },
   })

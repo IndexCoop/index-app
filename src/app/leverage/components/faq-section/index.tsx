@@ -6,17 +6,16 @@ export function FaqSection() {
   return (
     <FaqList className='mx-auto my-12 w-full !max-w-7xl px-4 sm:px-6 md:mx-8'>
       <FaqItem
-        question='How does the Leverage interface work?'
+        question='How does the Leverage Suite work?'
         id='faq-leverage-interface'
       >
         <p>
-          The Index Coop Leverage Interface provides streamlined access to
-          leverage, featuring built-in liquidation protection and low,
-          transparent fees. Built on Index Protocol, our suite of automated
-          tokens simplifies leverage trading by utilising Aave V3 to offer users
-          six distinct strategies on ETH and BTC. The leverage products users
-          trade via the Leverage interface are not perps, but fully
-          collateralized tokens.
+          The Leverage Suite automates your leveraged trading through DeFi
+          lending platforms like Aave V3—no perps, no margin calls, and no
+          hidden fees. Each token is fully collateralized, with built-in
+          liquidation protection and transparent costs, so you can enjoy
+          leverage without worrying about managing constant rebalances or
+          liquidation risk.
         </p>
         <p>
           To learn more about The Index Coop Leverage Suite, see our article:{' '}
@@ -30,7 +29,10 @@ export function FaqSection() {
           .
         </p>
       </FaqItem>
-      <FaqItem question='How do the tokens work?' id='faq-tokens'>
+      <FaqItem
+        question='How do leverage tokens work vs perps?'
+        id='faq-tokens-work'
+      >
         <p>
           Both leverage tokens and perps offer a way for users to amplify their
           exposure to an asset. However, leverage tokens differ from perps in
@@ -64,8 +66,8 @@ export function FaqSection() {
       </FaqItem>
       <FaqItem question='Is there liquidation risk?' id='faq-liquidation-risk'>
         <p>
-          Every token in the Index Coop Leverage Suite automatically rebalances
-          the underlying collateralized debt positions on Aave v3 to avoid
+          Every token in the Leverage Suite automatically rebalances the
+          underlying collateralized debt positions on Aave v3 to avoid
           liquidation during volatile periods. Redundant keeper systems monitor
           the current leverage ratio for each token at all times and trigger a
           rebalance if it exceeds the maximum leverage ratio.
@@ -75,38 +77,6 @@ export function FaqSection() {
           allows anyone to trigger a rebalance if the current leverage ratio
           exceeds a predefined ripcord leverage ratio; there is also a 0.25 ETH
           reward for anyone who triggers a ripcord rebalance.
-        </p>
-      </FaqItem>
-      <FaqItem
-        question='How do I buy leverage tokens?'
-        id='faq-buy-leverage-tokens'
-      >
-        <p>
-          Start by selecting a market via the dropdown in the quickstats widget
-          or in the trade widget, then select your desired Leverage amount using
-          the Leverage buttons. Now select your input token from the ‘you pay’
-          dropdown menu. You will have to connect your wallet and sign our terms
-          and conditions before your first action. Make sure you are connected
-          to the correct chain and that you have sufficient funds in your
-          wallet. Now you can input the desired amount of tokens to trade and
-          click ‘Review Transaction’ which will open a transaction review popup.
-          Click “Submit Transaction”. This will run a transaction simulation and
-          in case of a successful simulation send it to your wallet. Use your
-          wallet to sign the transaction. If you want to see your new balance,
-          click “Sell” in the transaction window and your balance will show
-          under the input asset dropdown.
-        </p>
-      </FaqItem>
-      <FaqItem
-        question='How do I sell leverage tokens?'
-        id='faq-sell-leverage-tokens'
-      >
-        <p>
-          You can sell your leverage tokens by first selecting ETH or BTC,
-          selecting “Sell” at the top of the trade widget, and then selecting
-          the corresponding leverage ratio of your current token holdings. You
-          should see your total balance and be able to input the amount of
-          tokens you want to sell.
         </p>
       </FaqItem>
       <FaqItem
@@ -144,10 +114,14 @@ export function FaqSection() {
         id='faq-trouble-trading-leverage-tokens'
       >
         <p>
-          If you are having difficulty trading your leverage tokens via that
+          If you are having difficulty trading your leverage tokens via the
           Index Coop app, double check the following:
         </p>
         <ul className='list-disc pl-6'>
+          <li>
+            If you are attempting to sell a leverage token on Arbitrum or Base,
+            ensure that you are connected to the correct network.
+          </li>
           <li>
             Are you a restricted person? Keep in mind that restricted persons
             are not permitted to buy or sell Index Coop restricted tokens for
@@ -170,17 +144,20 @@ export function FaqSection() {
         question='What are the costs and fees for Index Coop leverage tokens?'
         id='faq-leverage-costs-and-fees'
       >
-        <Image
-          alt=''
-          src='/leverage-costs-and-fees.png'
-          width={375}
-          height={375}
-        />
+        <div className='my-4'>
+          <Image
+            src='/assets/leverage-suite-fees.png'
+            width={500}
+            height={500}
+            alt='Leverage Suite Fees'
+          />
+        </div>
         <p>
           The Leverage Suite offers a significant cost advantage over{' '}
           <a
             target='_blank'
             href='https://dune.com/index_coop/indexcoop-perps-vs-leverage-tokens'
+            className='underline'
           >
             perps and CEXs on fees
           </a>
@@ -188,6 +165,7 @@ export function FaqSection() {
           <a
             target='_blank'
             href='https://thedefiant.io/education/tokens/stop-throwing-away-your-gains-index-coop-leverage-tokens-can-be-5x-cheaper-than-perps'
+            className='underline'
           >
             5-6x more cost-effective than comparable alternatives
           </a>
@@ -195,11 +173,11 @@ export function FaqSection() {
           within a given strategy, and there are a few different types to be
           aware of.
         </p>
-        <ul className='list-inside list-disc space-y-4'>
+        <ul className='list-disc space-y-6 pl-6'>
           <li>
-            <b>Index Coop fees</b>: These are fixed fees charged by Index Coop
-            based on the type of product.
-            <ul className='ml-4 list-inside list-[circle] space-y-1'>
+            <span className='font-bold'>Index Coop fees:</span> These are fixed
+            fees charged by Index Coop based on the type of product.
+            <ul className='list-disc pl-6'>
               <li>1x and 2x products incur an annual fee of 3.65%.</li>
               <li>3x products incur an annual fee of 5.48%.</li>
               <li>
@@ -209,37 +187,36 @@ export function FaqSection() {
             </ul>
           </li>
           <li>
-            <b>Cost of carry</b>: This is a dynamic cost incurred from borrowing
-            on a lending market
-            <div className='ml-4 mt-2 space-y-4'>
-              <p>
-                The underlying mechanism of the Leverage suite tokens uses DeFi
-                lending platform deposits and borrows. Assets deposited accrue
-                interest from borrows, while borrowed assets incur interest
-                expenses. The difference between these rates is your “cost of
-                carry,” which can vary over time—sometimes favorably (if earned
-                interest exceeds borrowing costs) and sometimes unfavorably (if
-                borrowing costs outpace earned interest), as the underlying
-                lending platform&apos;s borrow and earn rates vary.
-              </p>
-              <p>
-                For example, if ETH2x deposits $1,000 of WETH and borrows $500
-                of USDC, where ETH deposits earn +2% and borrowing USDC costs
-                -5%, the resulting net Cost of Carry is -1%.
-              </p>
-            </div>
+            <span className='font-bold'>Cost of carry:</span> This is a dynamic
+            cost incurred from borrowing on a lending market.
+            <p className='mt-2'>
+              The underlying mechanism of the Leverage suite tokens uses DeFi
+              lending platform deposits and borrows. Assets deposited accrue
+              interest from borrows, while borrowed assets incur interest
+              expenses. The difference between these rates is your “cost of
+              carry,” which can vary over time—sometimes favorably (if earned
+              interest exceeds borrowing costs) and sometimes unfavorably (if
+              borrowing costs outpace earned interest), as the underlying
+              lending platform&apos;s borrow and earn rates vary.
+            </p>
+            <p className='mt-2'>
+              For example, if ETH2x deposits $1,000 of WETH and borrows $500 of
+              USDC, where ETH deposits earn +2% and borrowing USDC costs -5%,
+              the resulting net Cost of Carry is -1%.
+            </p>
           </li>
           <li>
-            <b>Rebalancing costs</b>: This is a cost incurred when swapping
-            <div className='ml-4 mt-2'>
-              While Index Coop doesn&apos;t impose charges, swapping assets
+            <span className='font-bold'>Rebalancing costs:</span> This is a cost
+            incurred when swapping borrowed assets to create leverage.
+            <p className='mt-2'>
+              While Index Coop doesn&pos;t impose charges, swapping assets
               through DEX pools incurs small fees paid to liquidity providers,
               such as the 0.05% swap fee in Uni v3 WETH/USDC pools. Moreover,
               swaps also entail &quot;price impact,&quot; wherein larger swaps
               lead to higher overall prices paid for buys or lower overall
               prices received for sells, thus gradually reducing the net value
               of the position over time.
-            </div>
+            </p>
           </li>
         </ul>
         <p>
@@ -255,41 +232,15 @@ export function FaqSection() {
         simple multiplication by the leverage factor would suggest. In the
         context of our tokens, periodic adjustments to maintain the respective
         token&apos;s target leverage ratio can magnify price swings, leading to
-        drift. For a deeper look, check out our deep{' '}
+        drift. For a deeper look, check out our{' '}
         <a
           target='_blank'
           href='https://indexcoop.com/blog/fli-volatility-drift'
+          className='underline'
         >
-          {' '}
-          dive on volatility drift
+          deep dive on volatility drift
         </a>
         .
-      </FaqItem>
-      <FaqItem
-        question='Are there any front-end fees for trading leverage tokens at app.indexcoop.com?'
-        id='faq-additional-fees'
-      >
-        <p>
-          No, the Index Coop App does not currently charge any fees. All fees
-          are charged at the smart contract level.
-        </p>
-      </FaqItem>
-      <FaqItem
-        question='Is the Leverage Suite available to US Persons?'
-        id='faq-leverage-us-availability'
-      >
-        <p>
-          No, Index Coop products are not suitable for any Restricted Persons
-          outlined{' '}
-          <a
-            href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
-            target='_blank'
-            className='underline'
-          >
-            here
-          </a>
-          .
-        </p>
       </FaqItem>
       <FaqItem
         question='Why do I see a “Not available for Restricted Persons” message?'
