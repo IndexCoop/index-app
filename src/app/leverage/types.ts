@@ -1,9 +1,32 @@
+import { Chain } from 'viem'
+
 import { Token } from '@/constants/tokens'
 
 export enum LeverageType {
   Long2x,
   Long3x,
   Short,
+}
+
+export enum LeverageMarket {
+  BTCUSD = 'BTC / USD',
+  ETHUSD = 'ETH / USD',
+  BTCETH = 'BTC / ETH',
+  ETHBTC = 'ETH / BTC',
+}
+
+export type LeverageRatio = {
+  icon: string
+  chain: Chain
+  market: LeverageMarket
+  strategy: LeverageStrategy
+  ratio?: number
+}
+
+export enum LeverageStrategy {
+  Long2x = '2x',
+  Long3x = '3x',
+  Short1x = '-1x',
 }
 
 export interface BaseTokenStats {
@@ -31,9 +54,13 @@ export interface LeverageToken extends Token {
 export interface Market {
   icon: string
   market: string
-  priceRatio: string
-  collateral: string
-  debt: string
+  networks: Chain[]
+  price: number
+  change24h: number
+  low24h: number
+  high24h: number
+  symbol: 'ETH' | 'BTC'
+  currency: 'USD' | 'BTC' | 'ETH'
 }
 
 export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'

@@ -15,6 +15,7 @@ interface QuickStats {
     costOfCarry: number
     nav: number
     navchange: number
+    streamingFee: number
   }
 }
 
@@ -31,6 +32,7 @@ interface QuickStatsApiResponse {
     costOfCarry: number
     nav: number
     navchange: number
+    streamingFee: number
   }
 }
 
@@ -39,9 +41,14 @@ type QuickStatsQueryKey = [
   { address: string | undefined; symbol: string; market: string },
 ]
 
-function formatStatsAmount(amount: number, baseCurrency: string): string {
-  if (baseCurrency === 'btc') return `${formatAmount(amount, 4)} BTC`
-  if (baseCurrency === 'eth') return `${formatAmount(amount, 4)} ETH`
+export function formatStatsAmount(
+  amount: number,
+  baseCurrency: string,
+): string {
+  if (baseCurrency.toLowerCase() === 'btc')
+    return `₿ ${formatAmount(amount, 4)}`
+  if (baseCurrency.toLowerCase() === 'eth')
+    return `Ξ ${formatAmount(amount, 4)}`
   return formatDollarAmount(amount, true, 2)
 }
 
@@ -89,6 +96,7 @@ export function useQuickStats(
           costOfCarry: 0,
           nav: 0,
           navchange: 0,
+          streamingFee: 0,
         },
       }
     }
@@ -121,6 +129,7 @@ export function useQuickStats(
         costOfCarry: 0,
         nav: 0,
         navchange: 0,
+        streamingFee: 0,
       },
     },
     isFetchingQuickStats: isFetching,
