@@ -5,7 +5,6 @@ import { usePublicClient } from 'wagmi'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useRefId } from '@/lib/hooks/use-ref-id'
-import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
 import { TradeCallback, useTrade } from '@/lib/hooks/use-trade'
 import { formatAmountFromWei } from '@/lib/utils'
 import { mapQuoteToTrade } from '@/lib/utils/api/database'
@@ -99,7 +98,7 @@ export function useTransactionReview(props: ReviewProps) {
     [simulationState],
   )
 
-  const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
+  // const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
 
   const refId = useRefId()
 
@@ -142,19 +141,18 @@ export function useTransactionReview(props: ReviewProps) {
   }
 
   const onSubmit = async () => {
-    if (!override) {
-      setSimulationState(TransactionReviewSimulationState.loading)
-      const isSuccess = await simulateTrade()
-      const state = isSuccess
-        ? TransactionReviewSimulationState.success
-        : TransactionReviewSimulationState.failure
-      setSimulationState(state)
-      if (!isSuccess) return
-    }
+    // if (!override) {
+    //   setSimulationState(TransactionReviewSimulationState.loading)
+    //   const isSuccess = await simulateTrade()
+    //   const state = isSuccess
+    //     ? TransactionReviewSimulationState.success
+    //     : TransactionReviewSimulationState.failure
+    //   setSimulationState(state)
+    //   if (!isSuccess) return
+    // }
     const success = await makeTrade(override)
     setOverride(false)
     if (success === null) return
-
     onSubmitWithSuccess(success)
   }
 

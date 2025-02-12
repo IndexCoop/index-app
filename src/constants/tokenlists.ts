@@ -37,6 +37,8 @@ export const currencies = [
   WSTETH,
 ]
 
+const icUSD = getTokenByChainAndSymbol(base.id, 'icUSD')
+
 export const indicesTokenListArbitrum = [
   getTokenByChainAndSymbol(arbitrum.id, DefiPulseIndex.symbol),
   getTokenByChainAndSymbol(arbitrum.id, MetaverseIndex.symbol),
@@ -47,6 +49,7 @@ export const indicesTokenListArbitrum = [
 export const indicesTokenListBase = [
   getTokenByChainAndSymbol(base.id, HighYieldETHIndex.symbol),
   getTokenByChainAndSymbol(base.id, DiversifiedStakedETHIndex.symbol),
+  icUSD,
 ].map((token) => ({ ...token, image: token?.logoURI })) as Token[]
 
 export const indicesTokenList = [
@@ -56,4 +59,5 @@ export const indicesTokenList = [
   CoinDeskEthTrendIndex,
   HighYieldETHIndex,
   DiversifiedStakedETHIndex,
+  { ...icUSD, image: icUSD.logoURI },
 ] as Token[]
