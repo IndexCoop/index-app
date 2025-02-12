@@ -84,15 +84,6 @@ describe('PathResolver', () => {
     expect(resolvedPath.outputToken.symbol).toBe('USDC')
   })
 
-  it('returns minting state correctly for minting: /swap/eth/dseth (disallowed; redeem only)', async () => {
-    const pathComponents = ['eth', 'dseth']
-    const resolver = new PathResolver()
-    const resolvedPath = resolver.resolve(pathComponents)
-    expect(resolvedPath.isMinting).toBe(false)
-    expect(resolvedPath.inputToken.symbol).toBe('dsETH')
-    expect(resolvedPath.outputToken.symbol).toBe(ETH.symbol)
-  })
-
   it('returns minting state correctly for minting: /swap/eth/hyeth (disallowed; redeem only)', async () => {
     const pathComponents = ['eth', 'hyeth']
     const resolver = new PathResolver()

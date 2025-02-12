@@ -12,19 +12,15 @@ import {
 import {
   CoinDeskEthTrendIndex,
   DAI,
-  DiversifiedStakedETHIndex,
   ETH,
   GUSD,
   MATIC,
-  RETH,
-  SETH2,
   STETH,
   Token,
   USDC,
   USDT,
   WBTC,
   WETH,
-  WSTETH,
   icETHIndex,
 } from '@/constants/tokens'
 
@@ -71,8 +67,6 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI, GUSD]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
-  if (index.symbol === DiversifiedStakedETHIndex.symbol)
-    return [ETH, WETH, USDC, GUSD, RETH, STETH, SETH2, WSTETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
@@ -127,22 +121,6 @@ export function isTokenBtcOnBase(
     isAddressEqual(outputToken, btc2x.address) ||
     isAddressEqual(outputToken, btc3x.address)
   )
-}
-
-export function isTokenPairTradable(
-  requiresProtection: boolean,
-  outputTokenSymbol: string,
-  chainId: number,
-): boolean {
-  if (!requiresProtection) return true
-  // When tokenlists is used everywhere, we can just pass these objects as function
-  // arguments instead of the token symbol
-  const outputToken = getTokenByChainAndSymbol(chainId, outputTokenSymbol)
-
-  const outputTokenIsDangerous =
-    outputToken?.tags.some((tag) => tag === 'dangerous') ?? false
-
-  return !outputTokenIsDangerous
 }
 
 export function digitsByAddress(address: string): number {

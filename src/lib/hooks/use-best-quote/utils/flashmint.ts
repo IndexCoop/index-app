@@ -1,8 +1,9 @@
-import { isAddressEqual } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { Hex } from 'viem'
+import { base } from 'viem/chains'
 
 import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
-import { ICUSD, Token } from '@/constants/tokens'
+import { Token } from '@/constants/tokens'
 import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
@@ -17,6 +18,8 @@ import { IndexQuoteRequest, Quote, QuoteTransaction, QuoteType } from '../types'
 
 import { getIndexTokenAmount } from './index-token-amount'
 import { getPriceImpact } from './price-impact'
+
+const icUSD = getTokenByChainAndSymbol(base.id, 'icUSD')
 
 async function getEnhancedFlashMintQuote(
   account: string,
@@ -67,8 +70,8 @@ async function getEnhancedFlashMintQuote(
     }
 
     if (
-      (isMinting && isAddressEqual(outputToken.address, ICUSD.address)) ||
-      (!isMinting && isAddressEqual(inputToken.address, ICUSD.address)) ||
+      (isMinting && isAddressEqual(outputToken.address, icUSD.address)) ||
+      (!isMinting && isAddressEqual(inputToken.address, icUSD.address)) ||
       isTokenBtcOnBase(chainId, inputTokenAddress, outputTokenAddress)
     ) {
       // These tokens require to set the input amount as well for quotes

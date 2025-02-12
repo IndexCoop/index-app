@@ -39,14 +39,10 @@ export function getCurrencyTokens(chainId: number): Token[] {
 
 export function getTagline(indexTokenSymbol: string): string {
   switch (indexTokenSymbol.toLowerCase()) {
-    case 'dseth':
-      return 'The leading Ethereum liquid staking tokens on Ethereum.'
     case 'hyeth':
       return 'The highest ETH-denominated yields on Ethereum Mainnet.'
     case 'iceth':
       return 'ETH staking returns using a leveraged liquid staking strategy.'
-    case 'icusd':
-      return 'The largest USDC lending opportunities on Base.'
     default:
       return ''
   }
@@ -54,14 +50,10 @@ export function getTagline(indexTokenSymbol: string): string {
 
 // Uncomment bridged L2 tokens only when price feeds are available
 const yieldTokens = [
-  getTokenByChainAndSymbol(base.id, 'icUSD'),
   getTokenByChainAndSymbol(mainnet.id, 'hyETH'),
   // getTokenByChainAndSymbol(arbitrum.id, 'hyETH'),
   // getTokenByChainAndSymbol(base.id, 'hyETH'),
   getTokenByChainAndSymbol(mainnet.id, 'icETH'),
-  getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
-  // getTokenByChainAndSymbol(arbitrum.id, 'dsETH'),
-  // getTokenByChainAndSymbol(base.id, 'dsETH'),
 ]
 
 export function getYieldTokens(): Token[] {
@@ -74,4 +66,4 @@ export function getYieldTokens(): Token[] {
   return tokens
 }
 
-export const supportedNetworks = [mainnet.id, base.id]
+export const supportedNetworks = [mainnet.id]

@@ -1,5 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { arbitrum, base, mainnet } from 'viem/chains'
+import { arbitrum, mainnet } from 'viem/chains'
 
 import { ProductRow } from '@/app/products/types/product'
 import {
@@ -71,23 +71,10 @@ export const productTokens: ProductRow[] = [
     tradeHref: buildLeverageTradePath('BTC3X', undefined, arbitrum.id),
   },
   {
-    ...getTokenByChainAndSymbol(mainnet.id, 'dsETH'),
-    hasApy: true,
-    listType: 'Earn',
-    tradeHref: buildEarnTradePath('dsETH'),
-  },
-  {
     ...getTokenByChainAndSymbol(mainnet.id, 'BED'),
     hasApy: false,
     listType: 'Strategies',
     tradeHref: buildLegacyPath(),
-  },
-  {
-    ...getTokenByChainAndSymbol(base.id, 'icUSD'),
-    hasApy: true,
-    listType: 'Earn',
-    tradeHref: buildEarnTradePath('icUSD', 'USDC', base.id),
-    digits: 4,
   },
   {
     ...getTokenByChainAndSymbol(mainnet.id, 'cdETI'),

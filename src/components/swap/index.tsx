@@ -1,6 +1,6 @@
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
 import { SmartTradeButton } from '@/components/smart-trade-button'
@@ -9,15 +9,15 @@ import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { useIsTokenPairTradable } from '@/lib/hooks/use-is-token-pair-tradable'
 import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useProtectionContext } from '@/lib/providers/protection'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
 import { isValidTokenInput } from '@/lib/utils'
 import { selectSlippage } from '@/lib/utils/slippage'
-import { getTokenBySymbol, isTokenPairTradable } from '@/lib/utils/tokens'
+import { getTokenBySymbol } from '@/lib/utils/tokens'
 
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
@@ -44,19 +44,13 @@ export const Swap = (props: SwapProps) => {
     ARBITRUM.chainId,
     BASE.chainId,
   ])
-  const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
   const { address } = useWallet()
 
-  const isTradablePair = useMemo(
-    () =>
-      isTokenPairTradable(
-        isRestrictedCountry || isUsingVpn,
-        outputToken.symbol,
-        chainId ?? 1,
-      ),
-    [isRestrictedCountry, isUsingVpn, outputToken.symbol, chainId],
+  const isTradablePair = useIsTokenPairTradable(
+    outputToken.symbol,
+    chainId ?? 1,
   )
 
   const {
@@ -141,15 +135,12 @@ export const Swap = (props: SwapProps) => {
   const fetchOptions = useCallback(() => {
     if (!isTradablePair) return
     const indexSymbol = isBuying ? outputToken.symbol : inputToken.symbol
-    const inputOutputTokenSymbol = isBuying
-      ? inputToken.symbol
-      : outputToken.symbol
     fetchQuote({
       isMinting: isBuying,
       inputToken,
       inputTokenAmount: sellTokenAmount,
       outputToken,
-      slippage: selectSlippage(slippage, indexSymbol, inputOutputTokenSymbol),
+      slippage: selectSlippage(slippage, indexSymbol),
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
