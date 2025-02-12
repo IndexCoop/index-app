@@ -69,8 +69,11 @@ export function LeverageWidget() {
     onOpen: onOpenSelectInputToken,
     onClose: onCloseSelectInputToken,
   } = useDisclosure()
-  const { isOpen: isSelectOutputTokenOpen, onClose: onCloseSelectOutputToken } =
-    useDisclosure()
+  const {
+    isOpen: isSelectOutputTokenOpen,
+    onOpen: onOpenSelectOutputToken,
+    onClose: onCloseSelectOutputToken,
+  } = useDisclosure()
   const {
     isOpen: isTransactionReviewOpen,
     onOpen: onOpenTransactionReview,
@@ -125,8 +128,7 @@ export function LeverageWidget() {
         outputAmount={ouputAmount}
         outputAmountUsd={outputAmountUsd}
         selectedOutputToken={outputToken}
-        showSelectorButtonChevron={false}
-        onSelectToken={() => {}}
+        onSelectToken={onOpenSelectOutputToken}
       />
       <Summary />
       <SmartTradeButton
