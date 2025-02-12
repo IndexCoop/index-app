@@ -1,5 +1,6 @@
 'use client'
 
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -13,7 +14,7 @@ import { base } from 'viem/chains'
 
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { ETH, ICUSD, Token } from '@/constants/tokens'
+import { ETH, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -28,6 +29,9 @@ import {
 } from '@/lib/utils/api/index-data-provider'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
+
+const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
+const hyETH = { ...hyEthTokenlist, image: hyEthTokenlist.logoURI }
 
 interface Context {
   inputValue: string
@@ -61,7 +65,7 @@ export const EarnContext = createContext<Context>({
   inputValue: '',
   isMinting: true,
   balances: [],
-  indexToken: ICUSD,
+  indexToken: hyETH,
   indexTokens: [],
   apy: null,
   apy7d: null,
@@ -69,7 +73,7 @@ export const EarnContext = createContext<Context>({
   nav: null,
   tvl: null,
   inputToken: ETH,
-  outputToken: ICUSD,
+  outputToken: hyETH,
   inputTokenAmount: BigInt(0),
   inputTokens: [],
   outputTokens: [],
@@ -90,7 +94,7 @@ export const useEarnContext = () => useContext(EarnContext)
 const defaultParams = {
   isMinting: true,
   inputToken: ETH,
-  outputToken: ICUSD,
+  outputToken: hyETH,
 }
 
 export function EarnProvider(props: { children: any }) {

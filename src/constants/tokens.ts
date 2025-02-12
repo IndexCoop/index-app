@@ -1,5 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { base, mainnet } from 'viem/chains'
+import { mainnet } from 'viem/chains'
 
 import {
   dsethLogo,
@@ -113,12 +113,6 @@ const rwa = getTokenByChainAndSymbol(mainnet.id, 'RWA')
 export const RealWorldAssetIndex: Token = {
   ...rwa,
   image: rwa.logoURI,
-}
-
-const icUSDTokenData = getTokenByChainAndSymbol(base.id, 'icUSD')
-export const ICUSD: Token = {
-  ...icUSDTokenData,
-  image: icUSDTokenData.logoURI,
 }
 
 /**
@@ -246,14 +240,5 @@ export const WSTETH: Token = {
   symbol: 'wstETH',
   image: 'https://assets.coingecko.com/coins/images/18834/large/wstETH.png',
   address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
-  decimals: 18,
-}
-
-export const AUSDC: Token = {
-  name: 'aUSDC',
-  symbol: 'aUSDC',
-  image:
-    'https://assets.coingecko.com/coins/images/14318/large/aUSDC.e260d492.png',
-  address: '0xBcca60bB61934080951369a648Fb03DF4F96263C',
   decimals: 18,
 }
