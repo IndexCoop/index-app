@@ -3,7 +3,7 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { arbitrum } from 'viem/chains'
+import { base } from 'viem/chains'
 
 import { getLabelForLeverageType } from '@/app/leverage/components/leverage-widget/components/leverage-selector'
 import { LeverageRatioItem } from '@/app/leverage/components/stats/leverage-ratio-item'
@@ -34,13 +34,12 @@ export function LeverageSelectorContainer() {
   } = useQuickStats(market, indexToken)
 
   const { data } = useQuery({
-    enabled: typeof chainId === 'number',
     gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
     queryKey: ['leverage-ratio', market, chainId],
     queryFn: async () => {
       const res = await fetch(
-        `/api/leverage/ratios?${new URLSearchParams({ chainId: isConnected ? chainId!.toString() : arbitrum.id.toString(), market })}`,
+        `/api/leverage/ratios?${new URLSearchParams({ chainId: isConnected ? chainId!.toString() : base.id.toString(), market })}`,
       )
       const json = await res.json()
       return json
