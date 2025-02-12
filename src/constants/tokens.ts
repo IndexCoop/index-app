@@ -55,14 +55,6 @@ export const MetaverseIndex: Token = {
   image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
 }
 
-export const Bitcoin2xFlexibleLeverageIndex: Token = {
-  name: 'Bitcoin 2x Flexible Leverage Index',
-  symbol: 'BTC2x-FLI',
-  address: '0x0B498ff89709d3838a063f1dFA463091F9801c2b',
-  decimals: 18,
-  image: 'https://set-core.s3.amazonaws.com/img/portfolios/fli_btc.svg',
-}
-
 export const DATA: Token = {
   name: 'DATA Economy Index',
   symbol: 'DATA',

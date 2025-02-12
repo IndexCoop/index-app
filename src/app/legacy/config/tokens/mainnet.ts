@@ -1,6 +1,10 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 export const BedIndex = getTokenByChainAndSymbol(1, 'BED')
+export const Bitcoin2xFlexibleLeverageIndex = getTokenByChainAndSymbol(
+  1,
+  'BTC2x-FLI',
+)
 export const dsETH = getTokenByChainAndSymbol(1, 'dsETH')
 export const Ethereum2xFlexibleLeverageIndex = getTokenByChainAndSymbol(
   1,

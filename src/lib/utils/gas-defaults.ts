@@ -1,5 +1,4 @@
 import {
-  Bitcoin2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
   DefiPulseIndex,
   HighYieldETHIndex,
@@ -11,8 +10,6 @@ import {
 export function getFlashMintGasDefault(symbol: string) {
   // INDEX are not available for flash mint
   switch (symbol) {
-    case Bitcoin2xFlexibleLeverageIndex.symbol:
-      return 500_000
     case CoinDeskEthTrendIndex.symbol:
       return 500_000
     case DefiPulseIndex.symbol:

@@ -5,14 +5,11 @@ import {
 } from '@indexcoop/flash-mint-sdk'
 
 import { LegacyToken } from '@/app/legacy/types'
-import {
-  Bitcoin2xFlexibleLeverageIndex,
-  DATA,
-  GmiIndex,
-} from '@/constants/tokens'
+import { DATA, GmiIndex } from '@/constants/tokens'
 
 import {
   BedIndex,
+  Bitcoin2xFlexibleLeverageIndex,
   Ethereum2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   LeveragedRethStakingYield,
@@ -57,7 +54,10 @@ export const Issuance = {
 }
 
 export const LegacyTokenList: LegacyToken[] = [
-  Bitcoin2xFlexibleLeverageIndex,
+  {
+    ...Bitcoin2xFlexibleLeverageIndex,
+    image: Bitcoin2xFlexibleLeverageIndex.logoURI,
+  },
   {
     ...Ethereum2xFlexibleLeverageIndex,
     image: Ethereum2xFlexibleLeverageIndex.logoURI,
