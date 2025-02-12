@@ -73,15 +73,16 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
   return tokens.filter((token): token is LeverageToken => token !== null)
 }
 
+// TODO: Move to `markets` constant
 function getDefaultMarketAsset(market: string) {
   switch (market) {
-    case 'BTC / USD':
+    case LeverageMarket.BTCUSD:
       return { symbol: 'BTC3X', chainId: base.id }
-    case 'ETH / USD':
+    case LeverageMarket.ETHUSD:
       return { symbol: 'ETH3X', chainId: base.id }
-    case 'ETH / BTC':
+    case LeverageMarket.ETHBTC:
       return { symbol: 'ETH2xBTC', chainId: arbitrum.id }
-    case 'BTC / ETH':
+    case LeverageMarket.BTCETH:
       return { symbol: 'BTC2xETH', chainId: arbitrum.id }
     default:
       return null
@@ -158,7 +159,7 @@ export const getPathForRatio = (
 export const markets: Market[] = [
   {
     icon: '/assets/eth-usd-market.svg',
-    market: 'ETH / USD',
+    market: LeverageMarket.ETHUSD,
     symbol: 'ETH',
     currency: 'USD',
     networks: [mainnet, arbitrum, base],
@@ -167,7 +168,7 @@ export const markets: Market[] = [
   },
   {
     icon: '/assets/btc-usd-market.svg',
-    market: 'BTC / USD',
+    market: LeverageMarket.BTCUSD,
     symbol: 'BTC',
     currency: 'USD',
     networks: [mainnet, arbitrum, base],
@@ -176,7 +177,7 @@ export const markets: Market[] = [
   },
   {
     icon: '/assets/eth-btc-market.svg',
-    market: 'ETH / BTC',
+    market: LeverageMarket.ETHBTC,
     symbol: 'ETH',
     currency: 'BTC',
     networks: [arbitrum],
@@ -185,7 +186,7 @@ export const markets: Market[] = [
   },
   {
     icon: '/assets/btc-eth-market.svg',
-    market: 'BTC / ETH',
+    market: LeverageMarket.BTCETH,
     symbol: 'BTC',
     currency: 'ETH',
     networks: [arbitrum],
