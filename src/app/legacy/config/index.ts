@@ -16,6 +16,7 @@ import {
   BedIndex,
   GitcoinStakedETHIndex,
   LeveragedRethStakingYield,
+  dsETH,
   ic21,
 } from './tokens/mainnet'
 import {
@@ -37,6 +38,7 @@ export const Issuance = {
   [Bitcoin2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
   [DATA.symbol]: DebtIssuanceModuleAddress,
+  [dsETH.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [Ethereum2xFlexibleLeverageIndex.symbol]: DebtIssuanceModuleV2Address,
   [ETH2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
@@ -57,6 +59,7 @@ export const Issuance = {
 export const LegacyTokenList: LegacyToken[] = [
   Bitcoin2xFlexibleLeverageIndex,
   Ethereum2xFlexibleLeverageIndex,
+  { ...dsETH, image: dsETH.logoURI },
   { ...ic21, image: ic21.logoURI },
   { ...GitcoinStakedETHIndex, image: GitcoinStakedETHIndex.logoURI },
   GmiIndex,
