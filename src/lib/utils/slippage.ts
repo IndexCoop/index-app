@@ -1,16 +1,9 @@
 import { slippageDefault, slippageMap } from '@/constants/slippage'
-import { DiversifiedStakedETHIndex, USDC } from '@/constants/tokens'
 
 export function getSlippageOverrideOrNull(
   tokenSymbol: string,
   inputOutputTokenSymbol: string,
 ): number | null {
-  if (
-    tokenSymbol === DiversifiedStakedETHIndex.symbol &&
-    inputOutputTokenSymbol === USDC.symbol
-  ) {
-    return 0.1
-  }
   return slippageMap.get(tokenSymbol) ?? null
 }
 

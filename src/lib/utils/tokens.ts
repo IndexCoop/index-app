@@ -12,19 +12,15 @@ import {
 import {
   CoinDeskEthTrendIndex,
   DAI,
-  DiversifiedStakedETHIndex,
   ETH,
   GUSD,
   MATIC,
-  RETH,
-  SETH2,
   STETH,
   Token,
   USDC,
   USDT,
   WBTC,
   WETH,
-  WSTETH,
   icETHIndex,
 } from '@/constants/tokens'
 
@@ -71,8 +67,6 @@ export function getCurrencyTokensForIndex(
   if (index.symbol === CoinDeskEthTrendIndex.symbol)
     return [ETH, WETH, USDC, DAI, GUSD]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
-  if (index.symbol === DiversifiedStakedETHIndex.symbol)
-    return [ETH, WETH, USDC, GUSD, RETH, STETH, SETH2, WSTETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }

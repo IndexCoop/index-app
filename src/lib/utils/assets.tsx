@@ -1,4 +1,3 @@
-const dsethLogo = '/assets/dseth_logo.svg'
 const gmiLogo = '/assets/gmi_logo.webp'
 const icethLogo = '/assets/icethlogo.png'
 const IndexLogoBlack = '/assets/index-logo-black.svg'
@@ -17,4 +16,4 @@ export {
 }
 
 // Indices logos
-export { dsethLogo, gmiLogo, icethLogo, indexLogo, wseth2Logo }
+export { gmiLogo, icethLogo, indexLogo, wseth2Logo }

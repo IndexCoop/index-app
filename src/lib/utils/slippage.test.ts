@@ -1,10 +1,8 @@
 import { slippageMap } from '@/constants/slippage'
 import {
   CoinDeskEthTrendIndex,
-  DiversifiedStakedETHIndex,
   ETH,
   HighYieldETHIndex,
-  USDC,
   WSETH2,
   icETHIndex,
 } from '@/constants/tokens'
@@ -69,26 +67,6 @@ describe('selectSlippage()', () => {
     const symbol = WSETH2.symbol
     const result = selectSlippage(expectedSlippaged, symbol, '')
     expect(result).toBe(expectedSlippaged)
-  })
-
-  it('returns correct slippage for dsETH-ETH', () => {
-    const expectedSlippage = 0.0001
-    const index = DiversifiedStakedETHIndex.symbol
-    const inputOutputToken = ETH.symbol
-    const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
-    const result = selectSlippage(slippageModified!, index, inputOutputToken)
-    expect(slippageModified).toBe(slippageMap.get(index))
-    expect(result).toBe(expectedSlippage)
-  })
-
-  it('returns correct slippage for dsETH-USDC', () => {
-    const expectedSlippage = 0.1
-    const index = DiversifiedStakedETHIndex.symbol
-    const inputOutputToken = USDC.symbol
-    const slippageModified = getSlippageOverrideOrNull(index, inputOutputToken)
-    const result = selectSlippage(slippageModified!, index, inputOutputToken)
-    expect(slippageModified).toBe(expectedSlippage)
-    expect(result).toBe(expectedSlippage)
   })
 
   it('returns correct slippage for hyETH', () => {

@@ -1,13 +1,7 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { mainnet } from 'viem/chains'
 
-import {
-  dsethLogo,
-  gmiLogo,
-  icethLogo,
-  indexLogo,
-  wseth2Logo,
-} from '@/lib/utils/assets'
+import { gmiLogo, icethLogo, indexLogo, wseth2Logo } from '@/lib/utils/assets'
 
 export interface Token {
   name: string
@@ -36,14 +30,6 @@ export const DefiPulseIndex: Token = {
   symbol: 'DPI',
   image: 'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg',
   address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
-  decimals: 18,
-}
-
-export const DiversifiedStakedETHIndex: Token = {
-  name: 'Diversified Staked ETH Index',
-  symbol: 'dsETH',
-  image: dsethLogo,
-  address: '0x341c05c0E9b33C0E38d64de76516b2Ce970bB3BE',
   decimals: 18,
 }
 
