@@ -3,6 +3,7 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { useCallback } from 'react'
 
+import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Receive } from '@/components/receive'
 import { Settings } from '@/components/settings'
@@ -12,6 +13,7 @@ import { TradeInputSelector } from '@/components/swap/components/trade-input-sel
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
+import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
@@ -28,6 +30,7 @@ import './styles.css'
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 export function LeverageWidget() {
+  const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
   const {
@@ -137,6 +140,7 @@ export function LeverageWidget() {
         inputToken={inputToken}
         inputValue={inputValue}
         isFetchingQuote={isFetchingQuote}
+        isSupportedNetwork={isSupportedNetwork}
         queryNetwork={queryParams.queryNetwork}
         outputToken={outputToken}
         buttonLabelOverrides={{

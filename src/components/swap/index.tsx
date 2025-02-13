@@ -5,11 +5,12 @@ import { useDebounce } from 'use-debounce'
 
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
+import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useIsTokenPairTradable } from '@/lib/hooks/use-is-token-pair-tradable'
-import { useNetwork } from '@/lib/hooks/use-network'
+import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
@@ -38,6 +39,11 @@ type SwapProps = {
 
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
+  const isSupportedNetwork = useSupportedNetworks([
+    MAINNET.chainId,
+    ARBITRUM.chainId,
+    BASE.chainId,
+  ])
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
   const { address } = useWallet()
@@ -242,6 +248,7 @@ export const Swap = (props: SwapProps) => {
           inputToken={inputToken}
           inputValue={sellTokenAmount}
           isFetchingQuote={isFetchingAnyQuote}
+          isSupportedNetwork={isSupportedNetwork}
           outputToken={outputToken}
           buttonLabelOverrides={{}}
           onOpenTransactionReview={onOpenTransactionReview}
