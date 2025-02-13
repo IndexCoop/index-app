@@ -15,7 +15,7 @@ import { HeaderLink } from './link'
 import { Logo } from './logo'
 
 const navigation = [
-  { name: 'Products', href: Path.PRODUCTS },
+  // { name: 'Products', href: Path.PRODUCTS },
   { name: 'Leverage', href: Path.LEVERAGE },
   { name: 'Earn', href: Path.EARN },
   { name: 'Swap', href: Path.SWAP, isMoreNavLink: true },
