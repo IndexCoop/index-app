@@ -94,7 +94,7 @@ export function LeverageWidget() {
 
   return (
     <div
-      className='leverage-widget flex flex-col gap-3 rounded-lg p-6'
+      className='leverage-widget flex flex-col gap-4 rounded-lg px-4 pb-5 pt-4'
       id='close-position-scroll'
     >
       <div className='flex justify-end'>
