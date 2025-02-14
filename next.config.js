@@ -57,7 +57,7 @@ const nextConfig = {
       },
       {
         source: '/',
-        destination: '/products',
+        destination: '/leverage',
         permanent: true,
       },
       {

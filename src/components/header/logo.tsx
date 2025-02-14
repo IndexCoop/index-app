@@ -6,7 +6,7 @@ import { IndexLogoBlack, IndexLogoWhite } from '@/lib/utils/assets'
 
 export const Logo = () => {
   return (
-    <Link href={Path.PRODUCTS}>
+    <Link href={Path.LEVERAGE}>
       <Image
         className='block dark:hidden'
         alt='Index Coop Logo'
