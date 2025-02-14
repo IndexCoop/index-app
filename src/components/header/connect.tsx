@@ -71,7 +71,7 @@ export const Connect = () => {
         </div>
       ) : (
         <Button
-          className='bg-ic-blue-500 hover:bg-ic-blue-500/90 text-ic-gray-50 block rounded-md px-8 py-1 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-[1.04]'
+          className='bg-ic-blue-500 dark:ic-blue-300 dark:hover:bg-ic-blue-300/90 hover:bg-ic-blue-500/90 text-ic-gray-50 dark:text-ic-black block rounded-md px-8 py-1 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-[1.04]'
           onClick={() => open({ view: 'Connect' })}
         >
           Connect

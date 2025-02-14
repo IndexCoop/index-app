@@ -52,7 +52,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
   }
 
   return (
-    <div className='bg-ic-white dark:bg-ic-blue-950 border-ic-gray-100 dark:border-ic-gray-200 flex flex-col rounded-xl border px-4 py-5'>
+    <div className='bg-ic-white dark:bg-ic-gray-975 border-ic-gray-100 dark:border-ic-gray-700 flex flex-col rounded-lg border px-4 py-5'>
       <Caption caption={props.caption} />
       <Flex align='center' direction='row' justify='space-between' mt='6px'>
         {config.isReadOnly ? (

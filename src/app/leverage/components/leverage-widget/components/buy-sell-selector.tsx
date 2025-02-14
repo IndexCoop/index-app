@@ -7,7 +7,7 @@ type BuySellSelectorProps = {
 
 export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
   return (
-    <div className='bg-ic-gray-50 dark:bg-ic-blue-950 flex flex-row rounded-md'>
+    <div className='bg-ic-gray-50 dark:bg-ic-gray-975 flex flex-row rounded-lg'>
       <BuySellSelectorButton
         isSelected={isMinting}
         label='Open'
