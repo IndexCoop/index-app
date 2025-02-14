@@ -115,7 +115,7 @@ export function LeverageWidget() {
       <TradeInputSelector
         config={{ isReadOnly: false }}
         balance={inputBalanceFormatted}
-        caption='You pay'
+        caption='Pay'
         formattedFiat={inputAmoutUsd}
         selectedToken={inputToken}
         selectedTokenAmount={inputValue}

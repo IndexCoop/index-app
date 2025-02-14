@@ -11,7 +11,7 @@ type LeverageSelectorProps = {
 export function LeverageSelector(props: LeverageSelectorProps) {
   const { onSelectType, selectedTye, supportedTypes } = props
   return (
-    <div className='flex flex-row items-center justify-between rounded-xl border border-[#3A6060] p-4'>
+    <div className='dark:border-ic-gray-700 flex flex-row items-center justify-between rounded-lg border border-[#3A6060] p-4'>
       <div className='text-ic-gray-300 text-xs font-medium'>Leverage</div>
       <div className='flex flex-row gap-2'>
         {supportedTypes?.length > 0 &&
@@ -46,7 +46,7 @@ export function LeverageSelectorButton({
   return (
     <div
       className={clsx(
-        'text-ic-gray-300 bg-ic-blue-950 border-ic-blue-600 w-14 cursor-pointer rounded-full px-3 py-2 text-center text-sm font-bold',
+        'text-ic-gray-300 bg-ic-gray-975 border-ic-blue-600 w-14 cursor-pointer rounded-full px-3 py-2 text-center text-sm font-bold',
         border,
       )}
       onClick={onClick}

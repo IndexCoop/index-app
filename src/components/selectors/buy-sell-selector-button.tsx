@@ -16,7 +16,7 @@ export function BuySellSelectorButton({
   return (
     <div
       className={cn(
-        'dark:bg-ic-blue-950 flex-grow cursor-pointer select-none rounded-md',
+        'dark:bg-ic-gray-975 flex-grow cursor-pointer select-none rounded-md',
         isSelected && 'bg-[#F0FEFF]',
       )}
       onClick={onClick}
