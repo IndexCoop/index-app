@@ -100,7 +100,7 @@ export function useTransactionReview(props: ReviewProps) {
 
   // const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
 
-  const { source, medium } = useUtmParams()
+  const utm = useUtmParams()
 
   const client = usePublicClient()
   const queryClient = useQueryClient()
@@ -108,9 +108,7 @@ export function useTransactionReview(props: ReviewProps) {
     async ({ address, hash, quote }) => {
       await fetch(`/api/user/trade`, {
         method: 'POST',
-        body: JSON.stringify(
-          mapQuoteToTrade(address, hash, quote, source, medium),
-        ),
+        body: JSON.stringify(mapQuoteToTrade(address, hash, quote, utm)),
       })
 
       await client?.waitForTransactionReceipt({
@@ -125,7 +123,7 @@ export function useTransactionReview(props: ReviewProps) {
             query.queryKey[1] === quote.chainId),
       })
     },
-    [source, medium, client, queryClient],
+    [utm, client, queryClient],
   )
 
   const makeTrade = async (override: boolean) => {

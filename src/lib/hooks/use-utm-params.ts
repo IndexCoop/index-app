@@ -21,7 +21,7 @@ export const useUtmParams = () => {
           'utm_content',
         ].includes(key)
       ) {
-        newParams[key.replace('utm_', '') as UtmParam] = value
+        newParams[key as UtmParam] = value
       }
     })
 

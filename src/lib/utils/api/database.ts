@@ -2,14 +2,14 @@ import { formatUnits } from 'viem'
 
 import { Quote } from '@/lib/hooks/use-best-quote/types'
 
+import { UtmParam } from '@/app/store/utm-atoms'
 import type { PostApiV2TradeMutationRequest } from '@/gen'
 
 export const mapQuoteToTrade = (
   address: string,
   transactionHash: string,
   quote: Quote,
-  refId?: string,
-  medium?: string,
+  utm: Partial<Record<UtmParam, string>>,
 ): PostApiV2TradeMutationRequest => ({
   transactionHash,
   userAddress: address,
@@ -44,8 +44,9 @@ export const mapQuoteToTrade = (
   transactionType: quote.isMinting ? 'buy' : 'sell',
   mintFee: quote.fees?.mintUsd.toString() ?? '',
   redeemFee: quote.fees?.redeemUsd.toString() ?? '',
-  refId,
-  medium,
+  utm: utm.utm_source
+    ? (utm as PostApiV2TradeMutationRequest['utm'])
+    : undefined,
   createdAt: new Date(),
   underlyingAssetSymbol: getUnderlyingAssetSymbol(quote).toUpperCase(),
 })
