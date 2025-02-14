@@ -1,8 +1,8 @@
 import { formatUnits } from 'viem'
 
+import { UtmParam } from '@/app/store/utm-atoms'
 import { Quote } from '@/lib/hooks/use-best-quote/types'
 
-import { UtmParam } from '@/app/store/utm-atoms'
 import type { PostApiV2TradeMutationRequest } from '@/gen'
 
 export const mapQuoteToTrade = (
