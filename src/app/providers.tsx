@@ -5,8 +5,7 @@ import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
-import { UserMetadataProvider } from '@/app/user-metadata-provider'
-import { useUpsertUser } from '@/lib/hooks/use-upsert-user'
+import { useInitialize } from '@/lib/hooks/use-initialize'
 import { ProtectionProvider } from '@/lib/providers/protection'
 import { SignTermsProvider } from '@/lib/providers/sign-terms-provider'
 import theme from '@/lib/styles/theme'
@@ -20,7 +19,7 @@ const queryClient = new QueryClient()
 initAppkit()
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const persistentUserData = useUpsertUser()
+  useInitialize()
 
   return (
     <CacheProvider prepend={true}>
@@ -30,11 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <QueryClientProvider client={queryClient}>
             <AnalyticsProvider>
               <ProtectionProvider>
-                <SignTermsProvider>
-                  <UserMetadataProvider value={persistentUserData}>
-                    {children}
-                  </UserMetadataProvider>
-                </SignTermsProvider>
+                <SignTermsProvider>{children}</SignTermsProvider>
               </ProtectionProvider>
             </AnalyticsProvider>
           </QueryClientProvider>

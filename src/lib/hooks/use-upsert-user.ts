@@ -1,35 +1,30 @@
-import { watchAccount } from '@wagmi/core'
-import { useEffect, useState } from 'react'
+'use client' // Required for Next.js App Router
 
+import { watchAccount } from '@wagmi/core'
+import { useAtom, useSetAtom } from 'jotai'
+import { useEffect } from 'react'
+
+import {
+  fetchUserAtom,
+  userMetadataAtom,
+} from '@/app/store/user-metadata-atoms'
 import { wagmiAdapter } from '@/lib/utils/wagmi'
 
-import type { GetApiV2UserAddress200 } from '@/gen'
-
 export const useUpsertUser = () => {
-  const [persistentUserData, setPersistentUserData] =
-    useState<GetApiV2UserAddress200 | null>(null)
+  const [userMetadata] = useAtom(userMetadataAtom)
+  const fetchUser = useSetAtom(fetchUserAtom)
 
   useEffect(() => {
     const unwatch = watchAccount(wagmiAdapter.wagmiConfig, {
       async onChange(account, prevAccount) {
-        try {
-          if (account.address && prevAccount.address !== account.address) {
-            const user = await (
-              await fetch(`/api/user/${account.address}`, {
-                method: 'GET',
-              })
-            ).json()
-
-            setPersistentUserData(user)
-          }
-        } catch (e) {
-          console.error(e)
+        if (account.address && prevAccount.address !== account.address) {
+          fetchUser(account.address)
         }
       },
     })
 
     return () => unwatch()
-  }, [])
+  }, [fetchUser])
 
-  return persistentUserData
+  return userMetadata
 }
