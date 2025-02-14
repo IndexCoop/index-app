@@ -59,6 +59,8 @@ export interface Quote {
     streaming: number
     streamingUsd: number
   } | null
+  priceImpactUsd?: number
+  priceImpactPercent?: number
   slippage: number
   tx: QuoteTransaction
 }
