@@ -1,22 +1,21 @@
 import { IndexApiBaseUrl } from '@/constants/server'
 
 const metricToIndexDataKey = {
-  apy: 'APY',
-  fees: 'StreamingFee',
-  marketcap: 'MarketCap',
-  nav: 'NetAssetValue',
-  navchange: 'NavChange24Hr',
-  pav: 'ProductAssetValue',
-  price: 'Price',
-  pricechange: 'PriceChange24Hr',
-  supply: 'Supply',
+  apy: ['APY'],
+  fees: ['IssueFee', 'RedeemFee', 'StreamingFee'],
+  marketcap: ['MarketCap'],
+  nav: ['NetAssetValue'],
+  navchange: ['NavChange24Hr'],
+  pav: ['ProductAssetValue'],
+  price: ['Price'],
+  pricechange: ['PriceChange24Hr'],
+  supply: ['Supply'],
 } as const
 
-type FromValues<T extends Record<keyof T, string>> = {
-  [K in T[keyof T]]: number
-}
+type MetricKeys = typeof metricToIndexDataKey
+type MetricValues = MetricKeys[keyof MetricKeys][number]
 
-export type IndexData = Partial<FromValues<typeof metricToIndexDataKey>> & {
+export type IndexData = Partial<Record<MetricValues, number>> & {
   CreatedTimestamp: string
 }
 
@@ -70,10 +69,13 @@ export async function fetchTokenMetrics({
     const json = await res.json()
     const latest = json[0]
     return metrics.reduce<IndexData>(
-      (acc, metric) =>
-        Object.assign(acc, {
-          [metricToIndexDataKey[metric]]: latest[metricToIndexDataKey[metric]],
-        }),
+      (acc, metric) => {
+        const keys = metricToIndexDataKey[metric]
+        keys.forEach((key) => {
+          acc[key] = latest[key]
+        })
+        return acc
+      },
       { CreatedTimestamp: latest.CreatedTimestamp },
     )
   } catch (error) {
