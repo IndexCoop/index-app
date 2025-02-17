@@ -30,6 +30,7 @@
     "@indexcoop/analytics-sdk": "0.28.0",
     "@indexcoop/flash-mint-sdk": "3.21.0",
     "@indexcoop/tokenlists": "3.10.0",
+    "@next/third-parties": "15.1.7",
     "@reown/appkit": "1.6.5",
     "@reown/appkit-adapter-wagmi": "1.6.5",
     "@safe-global/api-kit": "2.5.4",
