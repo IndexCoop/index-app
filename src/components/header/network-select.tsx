@@ -93,7 +93,7 @@ export const NetworkSelect = () => {
             anchor='bottom'
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1, transition: { delay: 1 } }}
-            className='dark:bg-ic-black dark:border-ic-gray-800 z-50 mt-8 w-80 !overflow-visible rounded-md border border-gray-300 bg-white p-4 shadow-md dark:text-white'
+            className='dark:bg-ic-black dark:border-ic-gray-800 dark:text-ic-white text-ic-black z-50 mt-8 w-80 !overflow-visible rounded-md border border-gray-300 bg-white p-4 shadow-md'
             exit={{ opacity: 0, scale: 0.95 }}
           >
             {!pathname.startsWith(Path.EARN) && (
