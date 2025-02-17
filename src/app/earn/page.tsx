@@ -15,7 +15,7 @@ import { QuickStats } from './components/quick-stats'
 
 export default function Page() {
   const { indexToken, isFetchingStats, apy, nav, tvl } = useEarnContext()
-  const [currentTab, setCurrentTab] = useState<ChartTab>('price')
+  const [currentTab, setCurrentTab] = useState<ChartTab>('apy')
 
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
