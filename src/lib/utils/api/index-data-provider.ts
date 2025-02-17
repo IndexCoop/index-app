@@ -1,7 +1,7 @@
 import { IndexApiBaseUrl } from '@/constants/server'
 
 const metricToIndexDataKey = {
-  apy: ['APY'],
+  apy: ['APY', 'ApyBase', 'ApyRewards', 'Rate', 'StreamingFee'],
   fees: ['IssueFee', 'RedeemFee', 'StreamingFee'],
   marketcap: ['MarketCap'],
   nav: ['NetAssetValue'],

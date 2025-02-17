@@ -28,6 +28,7 @@ import {
   fetchTokenMetrics,
 } from '@/lib/utils/api/index-data-provider'
 
+import { calculateApy } from '@/lib/utils/apy'
 import { getCurrencyTokens, getYieldTokens } from './constants'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
@@ -185,7 +186,7 @@ export function EarnProvider(props: { children: any }) {
       })
 
       return {
-        apy: data?.APY ? data.APY / 100 : null,
+        apy: data?.APY ? calculateApy(data) : null,
         nav: data?.NetAssetValue ?? null,
         tvl: data?.ProductAssetValue ?? null,
       }
@@ -218,18 +219,18 @@ export function EarnProvider(props: { children: any }) {
       const apy7d = historicalData
         .slice(0, 7)
         .reduce((acc, current, _, { length }) => {
-          return acc + (current.APY ?? 0) / length
+          return acc + calculateApy(current) / length
         }, 0)
 
       const apy30d = historicalData
         .slice(0, 30)
         .reduce((acc, current, _, { length }) => {
-          return acc + (current.APY ?? 0) / length
+          return acc + calculateApy(current) / length
         }, 0)
 
       return {
-        apy7d: apy7d ? apy7d / 100 : null,
-        apy30d: apy30d ? apy30d / 100 : null,
+        apy7d: apy7d ? apy7d : null,
+        apy30d: apy30d ? apy30d : null,
       }
     },
   })

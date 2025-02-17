@@ -11,6 +11,7 @@ import {
   IndexDataMetric,
   IndexDataPeriod,
 } from '@/lib/utils/api/index-data-provider'
+import { calculateApy } from '@/lib/utils/apy'
 import { digitsByAddress } from '@/lib/utils/tokens'
 
 type HistoricalData = {
@@ -79,7 +80,7 @@ function formatData(
   if (metric === 'apy') {
     return data.map((datum) => ({
       ...datum,
-      APY: Number((datum.APY! / 100).toFixed(4)),
+      APY: Number(calculateApy(datum).toFixed(4)),
     }))
   }
 

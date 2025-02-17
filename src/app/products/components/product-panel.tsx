@@ -10,6 +10,7 @@ import { ProductRow } from '@/app/products/types/product'
 import { SortBy, SortDirection } from '@/app/products/types/sort'
 import { sortProducts } from '@/app/products/utils/sort'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
+import { calculateApy } from '@/lib/utils/apy'
 
 export function ProductPanel() {
   const router = useRouter()
@@ -51,7 +52,7 @@ export function ProductPanel() {
               ? data[idx].NavChange24Hr
               : undefined,
           tvl: data[idx]?.ProductAssetValue,
-          apy: data[idx]?.APY ? data[idx].APY / 100 : undefined,
+          apy: data[idx]?.APY ? calculateApy(data[idx]) : undefined,
         })) as ProductRow[],
         sortBy ?? 'tvl',
         sortDirection,
