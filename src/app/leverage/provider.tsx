@@ -31,7 +31,7 @@ import {
 } from './constants'
 import { LeverageToken, LeverageType } from './types'
 
-const eth2x = getTokenByChainAndSymbol(1, 'ETH2X')
+const eth3x = getTokenByChainAndSymbol(42161, 'ETH3X')
 
 export interface TokenContext {
   inputValue: string
@@ -62,14 +62,14 @@ export interface TokenContext {
 export const LeverageTokenContext = createContext<TokenContext>({
   inputValue: '',
   isMinting: true,
-  leverageType: LeverageType.Long2x,
+  leverageType: LeverageType.Long3x,
   balances: [],
   baseToken: ETH,
-  indexToken: { ...eth2x, image: eth2x.logoURI },
+  indexToken: { ...eth3x, image: eth3x.logoURI },
   indexTokens: [],
   market: 'ETH / USD',
   inputToken: ETH,
-  outputToken: { ...eth2x, image: eth2x.logoURI },
+  outputToken: { ...eth3x, image: eth3x.logoURI },
   inputTokenAmount: BigInt(0),
   inputTokens: [],
   outputTokens: [],
@@ -90,12 +90,12 @@ export const useLeverageToken = () => useContext(LeverageTokenContext)
 const defaultParams = {
   baseToken: ETH,
   isMinting: true,
-  leverageType: LeverageType.Long2x,
+  leverageType: LeverageType.Long3x,
   inputToken: ETH,
   outputToken: {
-    ...eth2x,
-    image: eth2x.logoURI,
-    leverageType: LeverageType.Long2x,
+    ...eth3x,
+    image: eth3x.logoURI,
+    leverageType: LeverageType.Long3x,
     baseToken: ETH.symbol,
   } as LeverageToken,
 }
