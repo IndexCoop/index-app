@@ -27,8 +27,8 @@ import {
   fetchTokenHistoricalData,
   fetchTokenMetrics,
 } from '@/lib/utils/api/index-data-provider'
-
 import { calculateApy } from '@/lib/utils/apy'
+
 import { getCurrencyTokens, getYieldTokens } from './constants'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
