@@ -7,7 +7,7 @@ import { useAccount } from 'wagmi'
 
 import { Quote } from './use-best-quote/types'
 
-const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-prod'
+const isProduction = process.env.NODE_ENV === 'production'
 
 export const formatQuoteAnalytics = (quote: Quote | null) => {
   if (quote === null) return {}
