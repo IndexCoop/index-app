@@ -8,16 +8,25 @@ type Props = {
   children: ReactNode
 }
 
-const arcxApiKey = process.env.NEXT_PUBLIC_ARCX_ANALYTICS_API_KEY ?? ''
+const arcxApiKey = process.env.NEXT_PUBLIC_ARCX_ANALYTICS_API_KEY
 const gaId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
 const gtmId = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_CONTAINER_ID
 
 export function AnalyticsProvider({ children }: Props) {
-  return (
-    <ArcxAnalyticsProvider apiKey={arcxApiKey}>
+  const enhancedChildren = (
+    <>
       {gaId && <GoogleAnalytics gaId={gaId} />}
       {gtmId && <GoogleTagManager gtmId={gtmId} />}
       {children}
+    </>
+  )
+
+  // ArcxAnalyticsProvider requires an API key
+  if (!arcxApiKey) return enhancedChildren
+
+  return (
+    <ArcxAnalyticsProvider apiKey={arcxApiKey}>
+      {enhancedChildren}
     </ArcxAnalyticsProvider>
   )
 }
