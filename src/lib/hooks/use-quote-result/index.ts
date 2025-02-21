@@ -152,7 +152,10 @@ export function useQuoteResult(request: QuoteRequest) {
       swapQuote ?? null,
       chainId ?? -1,
     )
-    logEvent('Quote Received', formatQuoteAnalytics(bestQuote))
+    if (bestQuote) {
+      logEvent('Quote Received', formatQuoteAnalytics(bestQuote))
+    }
+
     setQuoteResult({
       type: bestQuote?.type ?? QuoteType.flashmint,
       isAvailable: true,
