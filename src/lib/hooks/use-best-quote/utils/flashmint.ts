@@ -136,8 +136,9 @@ async function getEnhancedFlashMintQuote(
 
       // includes swap fee (which we can't distinguish for now)
       const mintRedeemFees = isMinting ? fees.mint : fees.redeem
+      const mintRedeemFeesUsd = inputTokenAmountUsd * mintRedeemFees * 100
       const priceImpactUsd =
-        outputTokenAmountUsd + mintRedeemFees - inputTokenAmountUsd
+        inputTokenAmountUsd - outputTokenAmountUsd - mintRedeemFeesUsd
       const priceImpactPercent = (priceImpactUsd / inputTokenAmountUsd) * 100
       console.log(priceImpactUsd, '$', priceImpactPercent, '%')
       console.log(inputTokenAmountUsd, outputTokenAmountUsd, mintRedeemFees)

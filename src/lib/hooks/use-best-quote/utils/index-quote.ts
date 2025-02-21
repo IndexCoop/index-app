@@ -97,7 +97,7 @@ export async function getIndexQuote(
       )
 
       // includes swap fee (which we can't distinguish for now)
-      const priceImpactUsd = outputTokenAmountUsd - inputTokenAmountUsd
+      const priceImpactUsd = inputTokenAmountUsd - outputTokenAmountUsd
       const priceImpactPercent = (priceImpactUsd / inputTokenAmountUsd) * 100
       console.log(priceImpactUsd, '$', priceImpactPercent, '%')
       console.log(inputTokenAmountUsd, outputTokenAmountUsd)
