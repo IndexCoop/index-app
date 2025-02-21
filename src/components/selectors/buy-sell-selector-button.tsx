@@ -1,3 +1,4 @@
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
 type Props = {
@@ -13,13 +14,20 @@ export function BuySellSelectorButton({
   roundedLeft,
   onClick,
 }: Props) {
+  const { logEvent } = useAnalytics()
+  const handleClick = () => {
+    logEvent('Open/Close Selector Clicked', {
+      label,
+    })
+    onClick()
+  }
   return (
     <div
       className={cn(
         'dark:bg-ic-gray-975 flex-grow cursor-pointer select-none rounded-md',
         isSelected && 'bg-[#F0FEFF]',
       )}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <div
         className={cn(
