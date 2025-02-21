@@ -21,7 +21,7 @@ function MarketSelectorItem({
 }) {
   return (
     <div
-      className='border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 flex cursor-pointer items-center justify-between border-t px-4 py-3 text-xs font-medium first:border-t-0'
+      className='border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 hover:text-ic-blue-200 flex cursor-pointer items-center justify-between border-t px-4 py-3 text-xs font-medium transition duration-150 first:border-t-0'
       onClick={onClick}
     >
       <div className='flex'>
@@ -41,7 +41,7 @@ function MarketSelectorItem({
             <MarketNetworkImage key={chain.id} chain={chain} />
           ))}
         </span>
-        <span className='w-20 text-right'>
+        <span className='text-ic-white w-20 text-right'>
           {formatStatsAmount(item.price, item.currency)}
         </span>
         <span

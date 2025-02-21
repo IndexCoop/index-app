@@ -33,8 +33,8 @@ export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
   return (
     <div
       className={cn(
-        'border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 flex cursor-pointer items-center justify-between border-t px-4 py-3 first:border-t-0',
-        !ratio && 'opacity-50',
+        'border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 flex cursor-pointer items-center justify-between border-t px-4 py-3 transition duration-150 first:border-t-0',
+        ratio ? 'hover:text-ic-blue-200' : 'opacity-50',
       )}
       onClick={handleClick}
     >
@@ -45,9 +45,7 @@ export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
           height={16}
           width={16}
         />
-        <span className='text-ic-white text-xs font-medium'>
-          {item.strategy}
-        </span>
+        <span className='text-xs font-medium'>{item.strategy}</span>
       </div>
       <div className='hidden w-24 space-x-1 md:flex'>
         {networks.map((chain) => (
