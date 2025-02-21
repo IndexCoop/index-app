@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { Token } from '@/constants/tokens'
+import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
@@ -34,6 +35,7 @@ export function useQuoteResult(request: QuoteRequest) {
   const indexToken = isMinting ? outputToken : inputToken
   const nativeTokenPrice = useNativeTokenPrice(chainId)
   const publicClient = usePublicClient({ chainId })
+  const { logEvent } = useAnalytics()
 
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
@@ -150,13 +152,14 @@ export function useQuoteResult(request: QuoteRequest) {
       swapQuote ?? null,
       chainId ?? -1,
     )
+    logEvent('Quote Received', formatQuoteAnalytics(bestQuote))
     setQuoteResult({
       type: bestQuote?.type ?? QuoteType.flashmint,
       isAvailable: true,
       quote: bestQuote,
       error: null,
     })
-  }, [chainId, flashmintQuote, swapQuote])
+  }, [chainId, flashmintQuote, logEvent, swapQuote])
 
   return {
     isFetchingQuote: isFetchingFlashMintQuote || isFetchingSwapQuote,

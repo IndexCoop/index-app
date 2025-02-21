@@ -9,6 +9,7 @@ import { getPathForMarket, markets } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Market } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -61,6 +62,7 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
   const router = useRouter()
   const { chainId } = useNetwork()
   const { market } = useLeverageToken()
+  const { logEvent } = useAnalytics()
 
   const marketMetadata = markets.find((item) => item.market === market)
 
@@ -118,6 +120,11 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
                     const path = getPathForMarket(item.market, chainId)
                     close()
                     if (!path) return
+
+                    logEvent('Market Selected', {
+                      market: item.market,
+                    })
+
                     router.replace(path)
                   }}
                 />
