@@ -16,7 +16,7 @@ import { Logo } from './logo'
 
 const navigation = [
   // { name: 'Products', href: Path.PRODUCTS },
-  { name: 'Leverage', href: Path.LEVERAGE },
+  { name: 'Trade', href: Path.TRADE },
   { name: 'Earn', href: Path.EARN },
   { name: 'Swap', href: Path.SWAP, isMoreNavLink: true },
   { name: 'PRT Staking', href: Path.PRT_STAKING, isMoreNavLink: true },
@@ -61,7 +61,7 @@ export function Header() {
       </nav>
       <Dialog
         as='div'
-        className={clsx('lg:hidden', pathname === Path.LEVERAGE && 'dark')}
+        className={clsx('lg:hidden', pathname === Path.TRADE && 'dark')}
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
       >

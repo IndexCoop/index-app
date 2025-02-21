@@ -32,7 +32,7 @@ export function LeverageBanner() {
         hyETH
       </a>{' '}
       and our{' '}
-      <Link className='underline' href={Path.LEVERAGE}>
+      <Link className='underline' href={Path.TRADE}>
         Leverage Tokens
       </Link>{' '}
       on <b>Arbitrum.</b> FAQ and rewards tracking{' '}
