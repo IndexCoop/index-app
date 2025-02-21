@@ -1,6 +1,7 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
+import { useEarnContext } from '@/app/earn/provider'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 
@@ -27,6 +28,7 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
+  const { quoteResult } = useEarnContext()
   const {
     gasFeesEth,
     gasFeesUsd,
@@ -37,7 +39,24 @@ export function Summary() {
     outputAmountUsd,
     shouldShowSummaryDetails,
   } = useFormattedEarnData()
+
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
+
+  const quote = quoteResult?.quote
+
+  const orderFee =
+    !quote || quote.fees === null
+      ? ''
+      : (quote.isMinting ? quote.fees.mintUsd : quote.fees.redeemUsd).toFixed(2)
+  const orderFeePercent =
+    !quote || quote.fees === null
+      ? ''
+      : (
+          (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
+        ).toString()
+
+  console.log(orderFee, orderFeePercent, 'orderFee')
+
   return (
     <Disclosure
       as='div'
@@ -88,6 +107,16 @@ export function Summary() {
                   label='Receive'
                   value={ouputAmount}
                   valueUsd={`(${outputAmountUsd})`}
+                />
+                <SummaryQuote
+                  label='Swap Execution Cost'
+                  value={`$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`}
+                  valueUsd={`(${quote?.priceImpactPercent?.toFixed(2) ?? ''}%)`}
+                />
+                <SummaryQuote
+                  label='Order Fee'
+                  value={orderFee}
+                  valueUsd={`(${orderFeePercent}%)`}
                 />
                 <div className='text-ic-gray-600 dark:text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
                   <div className='font-normal'>Network Fee</div>
