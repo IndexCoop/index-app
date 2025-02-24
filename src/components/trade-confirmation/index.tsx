@@ -150,7 +150,6 @@ export const TradeConfirmation = () => {
                         )}
                       >
                         <span>{`You ${positionCloseData.pnl.sign > 0 ? 'made' : 'lost'}`}</span>
-
                         <span
                           className={cn(
                             'rounded-md transition-colors duration-300',
@@ -158,6 +157,9 @@ export const TradeConfirmation = () => {
                           )}
                         >{`${formatAmount(positionCloseData.pnl.value, recentTrade.underlyingAssetUnitPriceDenominator)} `}</span>
                         <span>{`(${positionCloseData.pnl.percentage.toFixed(2)}%)`}</span>
+                        <span>
+                          {positionCloseData.pnl.sign > 0 ? '💯🔥' : '😅💀'}
+                        </span>
                       </h1>
                     )}
                   </div>
