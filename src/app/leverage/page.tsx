@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import { LeveragePanel } from '@/app/leverage/components/leverage-panel'
 import { QuickStats } from '@/app/leverage/components/stats/index'
 import { useLeverageToken } from '@/app/leverage/provider'
-import { TradeSuccess } from '@/components/trade-success'
+import { TradeConfirmation } from '@/components/trade-confirmation'
 
 import { FaqSection } from './components/faq-section'
 
@@ -40,7 +40,7 @@ export default function Page() {
           <QuickStats />
           <LeveragePanel indexToken={indexToken} />
           <FaqSection />
-          <TradeSuccess />
+          <TradeConfirmation />
         </div>
       </div>
     </div>

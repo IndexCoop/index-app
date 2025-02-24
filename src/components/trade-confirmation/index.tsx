@@ -13,7 +13,7 @@ import { tradeAtom } from '@/app/store/trade-atom'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 
-const usePositionCloseData = (transactionHash: string) => {
+const usePositionData = (transactionHash: string, onlyClose = true) => {
   const [positions] = useAtom(positionsAtom)
 
   const position = useMemo(
@@ -21,8 +21,9 @@ const usePositionCloseData = (transactionHash: string) => {
     [positions, transactionHash],
   )
 
-  const positionCloseData = useMemo(() => {
-    if (!position) return null
+  const positionData = useMemo(() => {
+    if (!position || (onlyClose && position.trade?.transactionType === 'buy'))
+      return null
 
     const _return = position.metrics?.totalReturnOfUnitsSold ?? 0
     const cost = position.metrics?.totalCostOfUnitsSold ?? 0
@@ -39,9 +40,9 @@ const usePositionCloseData = (transactionHash: string) => {
       },
       avgEntryPrice: position.trade?.underlyingAssetUnitPrice,
     }
-  }, [position])
+  }, [position, onlyClose])
 
-  return positionCloseData
+  return positionData
 }
 
 const WaitingForConfirmation = ({ type }: { type: string }) => {
@@ -82,7 +83,7 @@ const WaitingForConfirmation = ({ type }: { type: string }) => {
   )
 }
 
-export const TradeSuccess = () => {
+export const TradeConfirmation = () => {
   const [recentTrade, setRecentTrade] = useAtom(tradeAtom)
   const [isPrivacyOn, setIsPrivacyOn] = useState(false)
 
@@ -105,9 +106,7 @@ export const TradeSuccess = () => {
     ) as LeverageToken
   }, [recentTrade])
 
-  const positionCloseData = usePositionCloseData(
-    recentTrade?.transactionHash ?? '',
-  )
+  const positionCloseData = usePositionData(recentTrade?.transactionHash ?? '')
 
   if (!recentTrade || !token) return null
 
@@ -282,10 +281,11 @@ export const TradeSuccess = () => {
                 </div>
                 <div className='m-4 space-y-2'>
                   <Button
+                    onClick={onClose}
                     className={cn(
                       'text-ic-white dark:text-ic-black w-full rounded-[10px] px-4 py-2 text-sm font-bold',
                       'shadow-[0.5px_1px_2px_0_rgba(0,0,0,0.3)]',
-                      'bg-ic-blue-600 dark:bg-ic-blue-300',
+                      'bg-ic-blue-600 dark:bg-ic-blue-300 hover:bg-ic-blue-700 dark:hover:bg-ic-blue-400',
                     )}
                   >
                     Done

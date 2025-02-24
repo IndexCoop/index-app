@@ -1,4 +1,3 @@
-import { captureException, captureMessage } from '@sentry/nextjs'
 import { useQueryClient } from '@tanstack/react-query'
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -114,46 +113,36 @@ export function useTransactionReview(props: ReviewProps) {
     async ({ address, hash, quote }) => {
       const trade = mapQuoteToTrade(address, hash, quote, utm)
 
-      const response = await fetch(`/api/user/trade`, {
+      setLatestTrade({
+        ...(trade as PostApiV2Trade200),
+        status: 'pending',
+      })
+
+      const postTrade = fetch(`/api/user/trade`, {
         method: 'POST',
         body: JSON.stringify(trade),
       })
 
-      const data = await response.json()
+      const waitForRc = client?.waitForTransactionReceipt({
+        hash: hash as `0x${string}`,
+        confirmations: 3,
+      })
 
-      if (response.ok && response.status === 200) {
-        const saveTradeResponse = data as PostApiV2Trade200
+      const [rc, response] = await Promise.all([waitForRc, postTrade])
 
-        setLatestTrade({
-          ...saveTradeResponse,
-          status: 'pending',
-        })
+      const saveTradeResponse = (await response.json()) as PostApiV2Trade200
 
-        const rc = await client?.waitForTransactionReceipt({
-          hash: hash as `0x${string}`,
-          confirmations: 3,
-        })
+      setLatestTrade({
+        ...saveTradeResponse,
+        status: rc?.status ?? 'unknown',
+      })
 
-        setLatestTrade({
-          ...saveTradeResponse,
-          status: rc?.status ?? 'unknown',
-        })
-
-        queryClient.refetchQueries({
-          predicate: (query) =>
-            (query.queryKey[0] as string)?.includes('leverage-token') ||
-            (query.queryKey[0] === 'balances' &&
-              query.queryKey[1] === quote.chainId),
-        })
-      } else if (response.ok && response.status === 204) {
-        captureMessage(
-          `The ${trade.transactionHash} trade was not saved, as it reverted onchain.`,
-        )
-      } else {
-        captureException(new Error(data.message), {
-          extra: { trade, message: 'Failed to save trade into the database.' },
-        })
-      }
+      queryClient.refetchQueries({
+        predicate: (query) =>
+          (query.queryKey[0] as string)?.includes('leverage-token') ||
+          (query.queryKey[0] === 'balances' &&
+            query.queryKey[1] === quote.chainId),
+      })
     },
     [utm, client, queryClient, setLatestTrade],
   )
