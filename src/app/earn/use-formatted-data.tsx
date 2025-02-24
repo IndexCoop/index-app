@@ -90,19 +90,25 @@ export function useFormattedEarnData(): FormattedEarnData {
     [inputValue, quote],
   )
 
-  let orderFee = ''
-  let orderFeePercent = ''
-  if (quote && quote.fees !== null) {
+  let { orderFee, orderFeePercent } = useMemo(() => {
+    if (!quote || quote.fees === null)
+      return { orderFee: '', orderFeePercent: '' }
     const mintRedeemFees = quote.isMinting ? quote.fees.mint : quote.fees.redeem
     const mintRedeemFeesUsd = quote.inputTokenAmountUsd * mintRedeemFees
-    orderFee = `$${mintRedeemFeesUsd.toFixed(2)}`
-    orderFeePercent = (
+    const orderFeePercent = (
       (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
     ).toFixed(2)
-  }
+    return { orderFee: `$${mintRedeemFeesUsd.toFixed(2)}`, orderFeePercent }
+  }, [quote])
 
-  const priceImpactUsd = `$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`
-  const priceImpactPercent = `(${quote?.priceImpactPercent?.toFixed(2) ?? ''}%)`
+  const priceImpactUsd = useMemo(
+    () => `$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`,
+    [quote],
+  )
+  const priceImpactPercent = useMemo(
+    () => `(${quote?.priceImpactPercent?.toFixed(2) ?? ''}%)`,
+    [quote],
+  )
 
   return {
     hasInsufficientFunds,
