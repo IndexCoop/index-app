@@ -18,6 +18,10 @@ export interface FormattedEarnData {
   isFetchingQuote: boolean
   ouputAmount: string
   outputAmountUsd: string
+  orderFee: string
+  orderFeePercent: string
+  priceImpactUsd: string
+  priceImpactPercent: string
   resetData: () => void
   shouldShowSummaryDetails: boolean
 }
@@ -86,6 +90,22 @@ export function useFormattedEarnData(): FormattedEarnData {
     [inputValue, quote],
   )
 
+  const orderFee =
+    !quote || quote.fees === null
+      ? ''
+      : (quote.isMinting ? quote.fees.mintUsd : quote.fees.redeemUsd).toFixed(2)
+  const orderFeePercent =
+    !quote || quote.fees === null
+      ? ''
+      : (
+          (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
+        ).toString()
+
+  console.log(orderFee, orderFeePercent, 'orderFee')
+
+  const priceImpactUsd = `$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`
+  const priceImpactPercent = `(${quote?.priceImpactPercent?.toFixed(2) ?? ''}%)`
+
   return {
     hasInsufficientFunds,
     gasFeesEth,
@@ -100,6 +120,10 @@ export function useFormattedEarnData(): FormattedEarnData {
     isFetchingQuote,
     ouputAmount,
     outputAmountUsd,
+    orderFee,
+    orderFeePercent,
+    priceImpactUsd,
+    priceImpactPercent,
     resetData,
     shouldShowSummaryDetails,
   }
