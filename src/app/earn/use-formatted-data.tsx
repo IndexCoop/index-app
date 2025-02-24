@@ -90,18 +90,16 @@ export function useFormattedEarnData(): FormattedEarnData {
     [inputValue, quote],
   )
 
-  const orderFee =
-    !quote || quote.fees === null
-      ? ''
-      : (quote.isMinting ? quote.fees.mintUsd : quote.fees.redeemUsd).toFixed(2)
-  const orderFeePercent =
-    !quote || quote.fees === null
-      ? ''
-      : (
-          (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
-        ).toString()
-
-  console.log(orderFee, orderFeePercent, 'orderFee')
+  let orderFee = ''
+  let orderFeePercent = ''
+  if (quote && quote.fees !== null) {
+    const mintRedeemFees = quote.isMinting ? quote.fees.mint : quote.fees.redeem
+    const mintRedeemFeesUsd = quote.inputTokenAmountUsd * mintRedeemFees
+    orderFee = `$${mintRedeemFeesUsd.toFixed(2)}`
+    orderFeePercent = (
+      (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
+    ).toFixed(2)
+  }
 
   const priceImpactUsd = `$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`
   const priceImpactPercent = `(${quote?.priceImpactPercent?.toFixed(2) ?? ''}%)`

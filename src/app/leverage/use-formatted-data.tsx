@@ -18,6 +18,10 @@ export interface FormattedLeverageData {
   isFetchingQuote: boolean
   ouputAmount: string
   outputAmountUsd: string
+  orderFee: string
+  orderFeePercent: string
+  priceImpactUsd: string
+  priceImpactPercent: string
   resetData: () => void
   shouldShowSummaryDetails: boolean
 }
@@ -86,6 +90,20 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     [inputValue, quote],
   )
 
+  let orderFee = ''
+  let orderFeePercent = ''
+  if (quote && quote.fees !== null) {
+    const mintRedeemFees = quote.isMinting ? quote.fees.mint : quote.fees.redeem
+    const mintRedeemFeesUsd = quote.inputTokenAmountUsd * mintRedeemFees
+    orderFee = `$${mintRedeemFeesUsd.toFixed(2)}`
+    orderFeePercent = (
+      (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
+    ).toFixed(2)
+  }
+
+  const priceImpactUsd = `$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`
+  const priceImpactPercent = `(${quote?.priceImpactPercent?.toFixed(2) ?? ''}%)`
+
   return {
     hasInsufficientFunds,
     gasFeesEth,
@@ -100,6 +118,10 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     isFetchingQuote,
     ouputAmount,
     outputAmountUsd,
+    orderFee,
+    orderFeePercent,
+    priceImpactUsd,
+    priceImpactPercent,
     resetData,
     shouldShowSummaryDetails,
   }

@@ -1,7 +1,6 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
-import { useLeverageToken } from '@/app/leverage/provider'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 
@@ -34,23 +33,12 @@ export function Summary() {
     isFetchingQuote,
     ouputAmount,
     outputAmountUsd,
+    orderFee,
+    orderFeePercent,
+    priceImpactPercent,
+    priceImpactUsd,
     shouldShowSummaryDetails,
   } = useFormattedLeverageData()
-  const { quoteResult } = useLeverageToken()
-  const quote = quoteResult?.quote
-
-  const orderFee =
-    !quote || quote.fees === null
-      ? ''
-      : (quote.isMinting ? quote.fees.mintUsd : quote.fees.redeemUsd).toString()
-  const orderFeePercent =
-    !quote || quote.fees === null
-      ? ''
-      : (
-          (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
-        ).toString()
-
-  console.log(orderFee, orderFeePercent, 'orderFee')
 
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
@@ -100,8 +88,8 @@ export function Summary() {
                 />
                 <SummaryQuote
                   label='Swap Execution'
-                  value={`$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`}
-                  valueUsd={`(${quote?.priceImpactPercent?.toFixed(2) ?? ''}%)`}
+                  value={priceImpactUsd}
+                  valueUsd={priceImpactPercent}
                 />
                 <SummaryQuote
                   label='Order Fee'
