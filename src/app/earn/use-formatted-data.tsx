@@ -90,7 +90,7 @@ export function useFormattedEarnData(): FormattedEarnData {
     [inputValue, quote],
   )
 
-  let { orderFee, orderFeePercent } = useMemo(() => {
+  const { orderFee, orderFeePercent } = useMemo(() => {
     if (!quote || quote.fees === null)
       return { orderFee: '', orderFeePercent: '' }
     const mintRedeemFees = quote.isMinting ? quote.fees.mint : quote.fees.redeem
