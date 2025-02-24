@@ -8,26 +8,25 @@ import {
   historyColumns,
   openPositionsColumns,
 } from '@/app/leverage/components/portfolio-widget/columns'
-import {
-  TableRenderer,
-  type Stats,
-} from '@/app/leverage/components/portfolio-widget/table'
+import { TableRenderer } from '@/app/leverage/components/portfolio-widget/table'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
+import { fetchPositionsAtom } from '@/app/store/positions-atom'
 import { ETH } from '@/constants/tokens'
-import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { cn } from '@/lib/utils/tailwind'
+import { useSetAtom } from 'jotai'
 
 const OpenPositions = () => {
   const { address, isConnected } = useWallet()
   const { chainId } = useNetwork()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const { queryParams, updateQueryParams } = useQueryParams()
+  const fetchPositions = useSetAtom(fetchPositionsAtom)
 
   const { balances, reset } = useLeverageToken()
 
@@ -83,23 +82,7 @@ const OpenPositions = () => {
     initialData: { open: [], history: [], stats: {} },
     enabled: Boolean(address && chainId),
     queryKey: ['leverage-token-history', address, chainId, selectedIndex],
-    queryFn: async () => {
-      const response = await fetch('/api/leverage/history', {
-        method: 'POST',
-        body: JSON.stringify({
-          user: address,
-          chainId,
-        }),
-      })
-
-      const data = (await response.json()) as {
-        open: GetApiV2UserAddressPositions200
-        history: GetApiV2UserAddressPositions200
-        stats: Stats
-      }
-
-      return data
-    },
+    queryFn: () => fetchPositions(address ?? '', chainId ?? 0),
   })
 
   const tableData = useMemo(

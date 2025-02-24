@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const res = await postApiV2Trade(trade)
+
     return NextResponse.json(res.data, { status: res.status })
   } catch (e) {
     return NextResponse.json(

@@ -10,6 +10,10 @@ import { formatAmountFromWei } from '@/lib/utils'
 import { mapQuoteToTrade } from '@/lib/utils/api/database'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
+import { tradeAtom } from '@/app/store/trade-atom'
+import { PostApiV2Trade200 } from '@/gen'
+import { captureException, captureMessage } from '@sentry/nextjs'
+import { useSetAtom } from 'jotai'
 import { ReviewProps } from './components/review'
 import { TransactionReviewSimulationState } from './components/simulation'
 
@@ -100,28 +104,56 @@ export function useTransactionReview(props: ReviewProps) {
 
   // const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
 
+  const setLatestTrade = useSetAtom(tradeAtom)
+
   const utm = useUtmParams()
 
   const client = usePublicClient()
   const queryClient = useQueryClient()
   const saveTrade: TradeCallback = useCallback(
     async ({ address, hash, quote }) => {
-      await fetch(`/api/user/trade`, {
+      const trade = mapQuoteToTrade(address, hash, quote, utm)
+
+      const response = await fetch(`/api/user/trade`, {
         method: 'POST',
-        body: JSON.stringify(mapQuoteToTrade(address, hash, quote, utm)),
+        body: JSON.stringify(trade),
       })
 
-      await client?.waitForTransactionReceipt({
-        hash: hash as `0x${string}`,
-        confirmations: 3,
-      })
+      const data = await response.json()
 
-      queryClient.refetchQueries({
-        predicate: (query) =>
-          (query.queryKey[0] as string)?.includes('leverage-token') ||
-          (query.queryKey[0] === 'balances' &&
-            query.queryKey[1] === quote.chainId),
-      })
+      if (response.ok && response.status === 200) {
+        const saveTradeResponse = data as PostApiV2Trade200
+
+        setLatestTrade({
+          ...saveTradeResponse,
+          status: 'pending',
+        })
+
+        const rc = await client?.waitForTransactionReceipt({
+          hash: hash as `0x${string}`,
+          confirmations: 3,
+        })
+
+        setLatestTrade({
+          ...saveTradeResponse,
+          status: rc?.status ?? 'unknown',
+        })
+
+        queryClient.refetchQueries({
+          predicate: (query) =>
+            (query.queryKey[0] as string)?.includes('leverage-token') ||
+            (query.queryKey[0] === 'balances' &&
+              query.queryKey[1] === quote.chainId),
+        })
+      } else if (response.ok && response.status === 204) {
+        captureMessage(
+          `The ${trade.transactionHash} trade was not saved, as it reverted onchain.`,
+        )
+      } else {
+        captureException(new Error(data.message), {
+          extra: { trade, message: 'Failed to save trade into the database.' },
+        })
+      }
     },
     [utm, client, queryClient],
   )
