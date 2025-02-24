@@ -1,7 +1,11 @@
+import { captureException, captureMessage } from '@sentry/nextjs'
 import { useQueryClient } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
+import { tradeAtom } from '@/app/store/trade-atom'
+import { PostApiV2Trade200 } from '@/gen'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { TradeCallback, useTrade } from '@/lib/hooks/use-trade'
@@ -10,10 +14,6 @@ import { formatAmountFromWei } from '@/lib/utils'
 import { mapQuoteToTrade } from '@/lib/utils/api/database'
 import { getBlockExplorerContractUrl } from '@/lib/utils/block-explorer'
 
-import { tradeAtom } from '@/app/store/trade-atom'
-import { PostApiV2Trade200 } from '@/gen'
-import { captureException, captureMessage } from '@sentry/nextjs'
-import { useSetAtom } from 'jotai'
 import { ReviewProps } from './components/review'
 import { TransactionReviewSimulationState } from './components/simulation'
 
@@ -155,7 +155,7 @@ export function useTransactionReview(props: ReviewProps) {
         })
       }
     },
-    [utm, client, queryClient],
+    [utm, client, queryClient, setLatestTrade],
   )
 
   const makeTrade = async (override: boolean) => {

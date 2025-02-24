@@ -2,6 +2,7 @@ import { Tab, TabGroup, TabList } from '@headlessui/react'
 import { isLeverageToken } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useState } from 'react'
 
 import {
@@ -19,7 +20,6 @@ import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { cn } from '@/lib/utils/tailwind'
-import { useSetAtom } from 'jotai'
 
 const OpenPositions = () => {
   const { address, isConnected } = useWallet()

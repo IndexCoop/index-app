@@ -1,9 +1,10 @@
-import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { atomWithReset } from 'jotai/utils'
 import { TransactionReceipt } from 'viem'
 
+import { PostApiV2Trade200 } from '@/gen'
+
 export const tradeAtom = atomWithReset<
-  | (GetApiV2UserAddressPositions200[number]['trade'] & {
+  | (PostApiV2Trade200 & {
       status: 'unknown' | 'pending' | TransactionReceipt['status']
     })
   | null

@@ -1,5 +1,6 @@
-import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { atom } from 'jotai'
+
+import { GetApiV2UserAddressPositions200 } from '@/gen'
 
 export type Positions = {
   open: GetApiV2UserAddressPositions200

@@ -1,10 +1,3 @@
-import { formatAmount } from '@/app/leverage/utils/currency'
-import { leverageShortTypeMap } from '@/app/leverage/utils/get-leverage-type'
-import { positionsAtom } from '@/app/store/positions-atom'
-import { tradeAtom } from '@/app/store/trade-atom'
-import { useNetwork } from '@/lib/hooks/use-network'
-import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
-import { cn } from '@/lib/utils/tailwind'
 import { Button, Dialog, DialogPanel } from '@headlessui/react'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid'
 import { getTokenByChainAndAddress, LeverageToken } from '@indexcoop/tokenlists'
@@ -12,6 +5,14 @@ import { useAtom } from 'jotai'
 import Image from 'next/image'
 import { useCallback, useMemo, useState } from 'react'
 import { checksumAddress } from 'viem'
+
+import { formatAmount } from '@/app/leverage/utils/currency'
+import { leverageShortTypeMap } from '@/app/leverage/utils/get-leverage-type'
+import { positionsAtom } from '@/app/store/positions-atom'
+import { tradeAtom } from '@/app/store/trade-atom'
+import { useNetwork } from '@/lib/hooks/use-network'
+import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
+import { cn } from '@/lib/utils/tailwind'
 
 const usePositionCloseData = (transactionHash: string) => {
   const [positions] = useAtom(positionsAtom)
@@ -104,7 +105,7 @@ export const TradeSuccess = () => {
           : recentTrade.inputTokenAddress,
       ),
     ) as LeverageToken
-  }, [chainId, recentTrade])
+  }, [recentTrade])
 
   const positionCloseData = usePositionCloseData(
     recentTrade?.transactionHash ?? '',

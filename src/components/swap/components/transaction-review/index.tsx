@@ -30,7 +30,7 @@ type TransactionReviewModalProps = {
 }
 
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
-  const { isOpen, onClose, transactionReview } = props
+  const { onClose, transactionReview } = props
   const isDarkMode = props.isDarkMode === true
 
   const [state, setState] = useState<TransactionReviewModalState>(
@@ -41,17 +41,6 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     // Make sure to reset state, so that reopening popup doesn't show wrong state
     setState(TransactionReviewModalState.submit)
     onClose()
-  }
-
-  const onDone = () => {
-    onCloseModal()
-  }
-
-  const onSubmitWithSuccess = (success: boolean) => {
-    const modalState = success
-      ? TransactionReviewModalState.success
-      : TransactionReviewModalState.failed
-    setState(modalState)
   }
 
   const modalTitle =
@@ -79,7 +68,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
         >
           {state === TransactionReviewModalState.submit && (
             <Review
-              onSubmitWithSuccess={onSubmitWithSuccess}
+              onSubmitWithSuccess={onCloseModal}
               transactionReview={transactionReview}
             />
           )}
