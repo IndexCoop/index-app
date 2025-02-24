@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 
 import {
   postApiV2Trade,
@@ -10,8 +10,8 @@ export async function POST(req: NextRequest) {
   const trade: PostApiV2TradeMutationRequest = await req.json()
 
   if (!trade) {
-    return NextResponse.json(
-      { error: 'Bad Request: Missing Parameters.' },
+    return new Response(
+      JSON.stringify({ error: 'Bad Request: Missing Parameters.' }),
       { status: 400 },
     )
   }
@@ -19,10 +19,12 @@ export async function POST(req: NextRequest) {
   try {
     const res = await postApiV2Trade(trade)
 
-    return NextResponse.json(res.data, { status: res.status })
+    return new Response(JSON.stringify(res.data), { status: res.status })
   } catch (e) {
-    return NextResponse.json(
-      { error: (e as PostApiV2TradeMutation['Errors']).message },
+    return new Response(
+      JSON.stringify({
+        error: (e as PostApiV2TradeMutation['Errors']).message,
+      }),
       { status: 500 },
     )
   }
