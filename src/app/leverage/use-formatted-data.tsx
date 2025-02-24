@@ -78,7 +78,7 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     gasFeesEth =
       gasCosts < BigInt(1000000000000000)
         ? '(<0.001 ETH)'
-        : `(${formatWei(gasCosts, 18)} ETH)`
+        : `(${Number(formatWei(gasCosts, 18)).toFixed(2)} ETH)`
   }
 
   const shouldShowSummaryDetails = useMemo(
