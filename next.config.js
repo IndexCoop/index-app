@@ -57,7 +57,12 @@ const nextConfig = {
       },
       {
         source: '/',
-        destination: '/leverage',
+        destination: '/trade',
+        permanent: true,
+      },
+      {
+        source: '/leverage',
+        destination: '/trade',
         permanent: true,
       },
       {
@@ -122,6 +127,10 @@ const nextConfig = {
       {
         source: '/swap/manifest.json',
         destination: '/manifest.json',
+      },
+      {
+        source: '/trade',
+        destination: '/leverage',
       },
     ]
   },

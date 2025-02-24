@@ -288,7 +288,14 @@ export const ratios: LeverageRatio[] = [
     strategy: LeverageStrategy.Long2x,
     chain: arbitrum,
   },
-]
+].sort((a, b) => {
+  const strategyOrder = {
+    [LeverageStrategy.Long3x]: 1,
+    [LeverageStrategy.Long2x]: 2,
+    [LeverageStrategy.Short1x]: 3,
+  }
+  return strategyOrder[a.strategy] - strategyOrder[b.strategy]
+})
 
 export const supportedLeverageTypes = {
   [ARBITRUM.chainId]: [

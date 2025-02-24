@@ -1,7 +1,7 @@
 export enum Path {
   EARN = '/earn',
   LEGACY = '/legacy',
-  LEVERAGE = '/leverage',
+  TRADE = '/trade',
   PRESALES = '/presales',
   PRODUCTS = '/products',
   PRT_STAKING = '/prt-staking',
