@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { MarketNetworkImage } from '@/app/leverage/components/stats/market-network-image'
 import { ratios } from '@/app/leverage/constants'
 import { LeverageRatio } from '@/app/leverage/types'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
 type Props = {
@@ -16,9 +17,16 @@ type Props = {
 
 export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
   const router = useRouter()
+  const { logEvent } = useAnalytics()
 
   const handleClick = () => {
     if (!path) return
+
+    logEvent('Leverage Ratio Selected', {
+      context: 'dropdown',
+      strategy: item.strategy,
+    })
+
     router.replace(path)
     closePopover()
   }
