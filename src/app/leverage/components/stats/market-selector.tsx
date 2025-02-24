@@ -66,7 +66,7 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
 
   return (
     <Popover className='flex'>
-      <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-blue-200 data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-blue-200 text-ic-gray-500 dark:text-ic-gray-300 flex items-center gap-1 transition duration-150 focus:outline-none data-[focus]:outline-1'>
+      <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-blue-200 data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-blue-200 text-ic-gray-500 dark:text-ic-white flex items-center gap-1 transition duration-150 focus:outline-none data-[focus]:outline-1'>
         <div className='flex flex-col gap-y-1.5'>
           <div className='flex items-center gap-1'>
             {marketMetadata && (
