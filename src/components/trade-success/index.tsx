@@ -10,7 +10,6 @@ import { formatAmount } from '@/app/leverage/utils/currency'
 import { leverageShortTypeMap } from '@/app/leverage/utils/get-leverage-type'
 import { positionsAtom } from '@/app/store/positions-atom'
 import { tradeAtom } from '@/app/store/trade-atom'
-import { useNetwork } from '@/lib/hooks/use-network'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -86,7 +85,6 @@ const WaitingForConfirmation = ({ type }: { type: string }) => {
 export const TradeSuccess = () => {
   const [recentTrade, setRecentTrade] = useAtom(tradeAtom)
   const [isPrivacyOn, setIsPrivacyOn] = useState(false)
-  const { chainId } = useNetwork()
 
   const onClose = useCallback(() => {
     if (recentTrade?.status === 'pending') return
