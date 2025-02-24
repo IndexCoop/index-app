@@ -99,7 +99,7 @@ export function Summary() {
                   valueUsd={`(${outputAmountUsd})`}
                 />
                 <SummaryQuote
-                  label='Swap Execution Cost'
+                  label='Swap Execution'
                   value={`$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`}
                   valueUsd={`(${quote?.priceImpactPercent?.toFixed(2) ?? ''}%)`}
                 />
