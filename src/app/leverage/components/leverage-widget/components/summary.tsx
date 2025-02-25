@@ -1,12 +1,8 @@
 import { Disclosure } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
-import { useLeverageToken } from '@/app/leverage/provider'
-import { formatPercentage } from '@/app/products/utils/formatters'
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-import { formatDollarAmount } from '@/lib/utils'
 
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
@@ -37,11 +33,12 @@ export function Summary() {
     isFetchingQuote,
     ouputAmount,
     outputAmountUsd,
+    orderFee,
+    orderFeePercent,
+    priceImpactPercent,
+    priceImpactUsd,
     shouldShowSummaryDetails,
   } = useFormattedLeverageData()
-  const { quoteResult } = useLeverageToken()
-
-  const inputTokenAmountUsd = quoteResult?.quote?.inputTokenAmountUsd
 
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
   return (
@@ -89,13 +86,23 @@ export function Summary() {
                   value={ouputAmount}
                   valueUsd={`(${outputAmountUsd})`}
                 />
+                <SummaryQuote
+                  label='Swap Execution'
+                  value={priceImpactUsd}
+                  valueUsd={priceImpactPercent}
+                />
+                <SummaryQuote
+                  label='Order Fee'
+                  value={orderFee}
+                  valueUsd={`(${orderFeePercent}%)`}
+                />
                 <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
                   <div className='font-normal'>Network Fee</div>
                   <div>
                     <GasFees valueUsd={gasFeesUsd} value={gasFeesEth} />
                   </div>
                 </div>
-                <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
+                {/* <div className='text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
                   <Tooltip placement='bottom'>
                     <TooltipTrigger>
                       <div className='border-ic-gray-200 cursor-default border-b border-dashed font-normal'>
@@ -125,7 +132,7 @@ export function Summary() {
                       ? formatDollarAmount(Number(inputTokenAmountUsd) * 0.001)
                       : ''}
                   </div>
-                </div>
+                </div> */}
               </>
             )}
           </Disclosure.Panel>

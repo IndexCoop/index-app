@@ -95,6 +95,11 @@ export async function getIndexQuote(
         inputTokenPrice,
         nativeTokenPrice,
       )
+
+      // includes swap fee (which we can't distinguish for now)
+      const priceImpactUsd = inputTokenAmountUsd - outputTokenAmountUsd
+      const priceImpactPercent = (priceImpactUsd / inputTokenAmountUsd) * 100
+
       return {
         type: QuoteType.index,
         chainId,
@@ -119,6 +124,8 @@ export async function getIndexQuote(
         outputTokenAmountUsdAfterFees,
         inputTokenPrice,
         outputTokenPrice,
+        priceImpactUsd,
+        priceImpactPercent,
         slippage,
         tx,
         fees: {
