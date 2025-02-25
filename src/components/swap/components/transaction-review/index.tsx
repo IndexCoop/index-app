@@ -27,12 +27,11 @@ type TransactionReviewModalProps = {
   isDarkMode?: boolean
   isOpen: boolean
   transactionReview: TransactionReview
-  showConfirmation?: boolean
   onClose: () => void
 }
 
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
-  const { isOpen, onClose, transactionReview, showConfirmation = true } = props
+  const { isOpen, onClose, transactionReview } = props
   const isDarkMode = props.isDarkMode === true
 
   const [state, setState] = useState<TransactionReviewModalState>(
@@ -45,10 +44,6 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
     onClose()
   }
 
-  const onDone = () => {
-    onCloseModal()
-  }
-
   const onSubmitWithSuccess = (success: boolean) => {
     const modalState = success
       ? TransactionReviewModalState.success
@@ -59,16 +54,10 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const modalTitle =
     state === TransactionReviewModalState.submit ? 'Review Transaction' : ''
 
+  console.log(modalTitle, state)
+
   return (
-    <Modal
-      onClose={onCloseModal}
-      isOpen={
-        state === TransactionReviewModalState.submit
-          ? isOpen
-          : showConfirmation && isOpen
-      }
-      isCentered
-    >
+    <Modal onClose={onCloseModal} isOpen={isOpen} isCentered>
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
       <ModalContent
         backgroundColor={isDarkMode ? '#1C2C2E' : '#FCFFFF'}
@@ -89,10 +78,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
         >
           {(state === TransactionReviewModalState.failed ||
             state === TransactionReviewModalState.success) && (
-            <SubmissionResult
-              onClick={onDone}
-              success={state === TransactionReviewModalState.success}
-            />
+            <SubmissionResult onClose={onCloseModal} />
           )}
           {state === TransactionReviewModalState.submit && (
             <Review

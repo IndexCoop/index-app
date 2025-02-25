@@ -10,12 +10,13 @@ import {
   openPositionsColumns,
 } from '@/app/leverage/components/portfolio-widget/columns'
 import { TableRenderer } from '@/app/leverage/components/portfolio-widget/table'
-import { useLeverageToken } from '@/app/leverage/provider'
+import { getLeverageTokens } from '@/app/leverage/constants'
 import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { fetchPositionsAtom } from '@/app/store/positions-atom'
 import { ETH } from '@/constants/tokens'
+import { useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -28,7 +29,18 @@ const OpenPositions = () => {
   const { queryParams, updateQueryParams } = useQueryParams()
   const fetchPositions = useSetAtom(fetchPositionsAtom)
 
-  const { balances, reset } = useLeverageToken()
+  const indexTokenAddresses = useMemo(() => {
+    if (chainId) {
+      return getLeverageTokens(chainId).map((token) => token.address!)
+    }
+
+    return []
+  }, [chainId])
+
+  const { balances, forceRefetchBalances } = useBalances(
+    address,
+    indexTokenAddresses,
+  )
 
   const adjustPosition = useCallback(
     (isMinting: boolean, token: EnrichedToken) => {
@@ -56,12 +68,13 @@ const OpenPositions = () => {
 
   const { data: tokens } = useQuery({
     initialData: [],
-    queryKey: ['leverage-token-prices', address, chainId, balances.toString()],
-    enabled: Boolean(address),
+    queryKey: ['leverage-token-prices', address, chainId],
+    enabled: Boolean(address && chainId),
 
     queryFn: async () => {
       if (chainId) {
-        reset()
+        const { data: balances = [] } = await forceRefetchBalances()
+
         return fetchLeverageTokenPrices(balances, chainId)
       }
 

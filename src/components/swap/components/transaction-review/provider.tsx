@@ -140,8 +140,7 @@ export function useTransactionReview(props: ReviewProps) {
       queryClient.refetchQueries({
         predicate: (query) =>
           (query.queryKey[0] as string)?.includes('leverage-token') ||
-          (query.queryKey[0] === 'balances' &&
-            query.queryKey[1] === quote.chainId),
+          query.queryKey[0] === 'balances',
       })
     },
     [utm, client, queryClient, setLatestTrade],
