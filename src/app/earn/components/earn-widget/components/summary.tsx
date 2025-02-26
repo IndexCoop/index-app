@@ -35,9 +35,15 @@ export function Summary() {
     isFetchingQuote,
     ouputAmount,
     outputAmountUsd,
+    orderFee,
+    orderFeePercent,
+    priceImpactPercent,
+    priceImpactUsd,
     shouldShowSummaryDetails,
   } = useFormattedEarnData()
+
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
+
   return (
     <Disclosure
       as='div'
@@ -88,6 +94,16 @@ export function Summary() {
                   label='Receive'
                   value={ouputAmount}
                   valueUsd={`(${outputAmountUsd})`}
+                />
+                <SummaryQuote
+                  label='Swap Execution'
+                  value={priceImpactUsd}
+                  valueUsd={priceImpactPercent}
+                />
+                <SummaryQuote
+                  label='Order Fee'
+                  value={orderFee}
+                  valueUsd={`(${orderFeePercent}%)`}
                 />
                 <div className='text-ic-gray-600 dark:text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
                   <div className='font-normal'>Network Fee</div>

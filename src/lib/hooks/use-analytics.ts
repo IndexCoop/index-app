@@ -1,13 +1,13 @@
 'use client'
 
 import { useArcxAnalytics } from '@0xarc-io/analytics'
+import { sendGAEvent } from '@next/third-parties/google'
 import { useCallback } from 'react'
-import ReactGA from 'react-ga4'
 import { useAccount } from 'wagmi'
 
 import { Quote } from './use-best-quote/types'
 
-const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'index-app-prod'
+const isProduction = process.env.NODE_ENV === 'production'
 
 export const formatQuoteAnalytics = (quote: Quote | null) => {
   if (quote === null) return {}
@@ -44,7 +44,7 @@ export const useAnalytics = () => {
       try {
         const enhancedData = { ...data, walletAddress }
         arcxSdk?.event(name, enhancedData)
-        ReactGA.event(name, enhancedData)
+        sendGAEvent('event', name, enhancedData)
         window.safary?.track({
           eventType: 'Generic',
           eventName: name,
@@ -76,7 +76,7 @@ export const useAnalytics = () => {
             walletAddress,
           },
         })
-        ReactGA.event('Transaction Submitted', {
+        sendGAEvent('event', 'Transaction Submitted', {
           ...metadata,
           chainId,
           transactionHash,
@@ -106,7 +106,7 @@ export const useAnalytics = () => {
             account: address ?? '',
             chainId: chainId ?? '',
           })
-          ReactGA.event('Wallet Connected', { address, chainId })
+          sendGAEvent('event', 'Wallet Connected', { address, chainId })
           window.safary?.track({
             eventType: 'Wallet',
             eventName: 'Wallet Connected',

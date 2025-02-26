@@ -16,6 +16,7 @@ import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-to
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { fetchPositionsAtom } from '@/app/store/positions-atom'
 import { ETH } from '@/constants/tokens'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
@@ -28,6 +29,7 @@ const OpenPositions = () => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const { queryParams, updateQueryParams } = useQueryParams()
   const fetchPositions = useSetAtom(fetchPositionsAtom)
+  const { logEvent } = useAnalytics()
 
   const indexTokenAddresses = useMemo(() => {
     if (chainId) {
@@ -135,7 +137,10 @@ const OpenPositions = () => {
       onChange={setSelectedIndex}
     >
       <TabList className='text-ic-gray-600 flex gap-6 text-sm font-bold'>
-        <Tab className='data-[selected]:text-ic-gray-50 flex items-center gap-2 outline-none'>
+        <Tab
+          className='data-[selected]:text-ic-gray-50 flex items-center gap-2 outline-none'
+          onClick={() => logEvent('Open Positions Tab Clicked')}
+        >
           Open Positions
           <span
             className={cn(
@@ -146,7 +151,10 @@ const OpenPositions = () => {
             BETA
           </span>
         </Tab>
-        <Tab className='data-[selected]:text-ic-gray-50 flex items-center gap-2 outline-none'>
+        <Tab
+          className='data-[selected]:text-ic-gray-50 flex items-center gap-2 outline-none'
+          onClick={() => logEvent('History Tab Clicked')}
+        >
           History
           <span
             className={cn(

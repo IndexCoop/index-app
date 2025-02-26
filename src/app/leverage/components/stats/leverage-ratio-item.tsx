@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { MarketNetworkImage } from '@/app/leverage/components/stats/market-network-image'
 import { ratios } from '@/app/leverage/constants'
 import { LeverageRatio } from '@/app/leverage/types'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
 type Props = {
@@ -16,9 +17,16 @@ type Props = {
 
 export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
   const router = useRouter()
+  const { logEvent } = useAnalytics()
 
   const handleClick = () => {
     if (!path) return
+
+    logEvent('Leverage Ratio Selected', {
+      context: 'dropdown',
+      strategy: item.strategy,
+    })
+
     router.replace(path)
     closePopover()
   }
@@ -33,8 +41,8 @@ export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
   return (
     <div
       className={cn(
-        'border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 flex cursor-pointer items-center justify-between border-t px-4 py-3 first:border-t-0',
-        !ratio && 'opacity-50',
+        'border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 flex cursor-pointer items-center justify-between border-t px-4 py-3 transition duration-150 first:border-t-0',
+        ratio ? 'hover:text-ic-blue-200' : 'opacity-50',
       )}
       onClick={handleClick}
     >
@@ -45,9 +53,7 @@ export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
           height={16}
           width={16}
         />
-        <span className='text-ic-white text-xs font-medium'>
-          {item.strategy}
-        </span>
+        <span className='text-xs font-medium'>{item.strategy}</span>
       </div>
       <div className='hidden w-24 space-x-1 md:flex'>
         {networks.map((chain) => (

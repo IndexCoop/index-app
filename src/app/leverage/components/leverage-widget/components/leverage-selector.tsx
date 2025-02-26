@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 
 import { LeverageType } from '@/app/leverage/types'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 
 type LeverageSelectorProps = {
   selectedTye: LeverageType
@@ -10,6 +11,16 @@ type LeverageSelectorProps = {
 
 export function LeverageSelector(props: LeverageSelectorProps) {
   const { onSelectType, selectedTye, supportedTypes } = props
+  const { logEvent } = useAnalytics()
+
+  const handleClick = (leverageType: LeverageType) => {
+    logEvent('Leverage Ratio Selected', {
+      context: 'button',
+      strategy: getLabelForLeverageType(leverageType),
+    })
+    onSelectType(leverageType)
+  }
+
   return (
     <div className='dark:border-ic-gray-700 flex flex-row items-center justify-between rounded-lg border border-[#3A6060] p-4'>
       <div className='text-ic-gray-300 text-xs font-medium'>Leverage</div>
@@ -22,7 +33,7 @@ export function LeverageSelector(props: LeverageSelectorProps) {
                 key={`leverage-type-${label}`}
                 isSelected={selectedTye === leverageType}
                 label={label}
-                onClick={() => onSelectType(leverageType)}
+                onClick={() => handleClick(leverageType)}
               />
             )
           })}
@@ -42,12 +53,13 @@ export function LeverageSelectorButton({
   label,
   onClick,
 }: LeverageSelectorButtonProps) {
-  const border = isSelected ? 'border-[1px]' : 'border-0'
   return (
     <div
       className={clsx(
-        'text-ic-gray-300 bg-ic-gray-975 border-ic-blue-600 w-14 cursor-pointer rounded-full px-3 py-2 text-center text-sm font-bold',
-        border,
+        'text-ic-gray-300 bg-ic-gray-975 w-14 cursor-pointer rounded-full border px-3 py-2 text-center text-sm font-bold transition duration-150',
+        isSelected
+          ? 'border-ic-blue-600'
+          : 'border-ic-gray-975 hover:text-ic-blue-300',
       )}
       onClick={onClick}
     >

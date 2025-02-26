@@ -4,6 +4,7 @@ import { base } from 'viem/chains'
 
 import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import { Token } from '@/constants/tokens'
+import { GetApiV2Quote200 } from '@/gen'
 import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
@@ -82,7 +83,7 @@ async function getEnhancedFlashMintQuote(
       body: JSON.stringify(request),
     })
 
-    const quoteFM = await response.json()
+    const quoteFM: GetApiV2Quote200 = await response.json()
     if (quoteFM) {
       const {
         inputAmount: quoteInputAmount,
@@ -133,6 +134,13 @@ async function getEnhancedFlashMintQuote(
         ethPrice,
       )
 
+      // includes swap fee (which we can't distinguish for now)
+      const mintRedeemFees = isMinting ? fees.mint : fees.redeem
+      const mintRedeemFeesUsd = inputTokenAmountUsd * mintRedeemFees
+      const priceImpactUsd =
+        inputTokenAmountUsd - outputTokenAmountUsd - mintRedeemFeesUsd
+      const priceImpactPercent = (priceImpactUsd / inputTokenAmountUsd) * 100
+
       return {
         type: QuoteType.flashmint,
         chainId,
@@ -156,6 +164,8 @@ async function getEnhancedFlashMintQuote(
         inputTokenPrice,
         outputTokenPrice,
         fees,
+        priceImpactUsd,
+        priceImpactPercent,
         slippage,
         tx: transaction,
       }

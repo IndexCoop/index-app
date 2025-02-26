@@ -9,6 +9,7 @@ import { getPathForMarket, markets } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Market } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -21,7 +22,7 @@ function MarketSelectorItem({
 }) {
   return (
     <div
-      className='border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 flex cursor-pointer items-center justify-between border-t px-4 py-3 text-xs font-medium first:border-t-0'
+      className='border-ic-gray-600 text-ic-white hover:bg-ic-gray-900 hover:text-ic-blue-200 flex cursor-pointer items-center justify-between border-t px-4 py-3 text-xs font-medium transition duration-150 first:border-t-0'
       onClick={onClick}
     >
       <div className='flex'>
@@ -41,7 +42,7 @@ function MarketSelectorItem({
             <MarketNetworkImage key={chain.id} chain={chain} />
           ))}
         </span>
-        <span className='w-20 text-right'>
+        <span className='text-ic-white w-20 text-right'>
           {formatStatsAmount(item.price, item.currency)}
         </span>
         <span
@@ -61,12 +62,13 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
   const router = useRouter()
   const { chainId } = useNetwork()
   const { market } = useLeverageToken()
+  const { logEvent } = useAnalytics()
 
   const marketMetadata = markets.find((item) => item.market === market)
 
   return (
     <Popover className='flex'>
-      <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 flex items-center gap-1 focus:outline-none data-[focus]:outline-1'>
+      <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-blue-200 data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-blue-200 text-ic-gray-500 dark:text-ic-white flex items-center gap-1 transition duration-150 focus:outline-none data-[focus]:outline-1'>
         <div className='flex flex-col gap-y-1.5'>
           <div className='flex items-center gap-1'>
             {marketMetadata && (
@@ -78,10 +80,8 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
                 priority
               />
             )}
-            <div className='text-ic-white text-sm font-bold sm:text-base'>
-              {market}
-            </div>
-            <ChevronDownIcon className='dark:text-ic-white text-ic-black size-5' />
+            <div className='text-sm font-bold sm:text-base'>{market}</div>
+            <ChevronDownIcon className='size-5' />
           </div>
           <div className='flex'>
             <span className='text-ic-gray-300 mr-1 text-xs'>Powered by</span>
@@ -118,6 +118,11 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
                     const path = getPathForMarket(item.market, chainId)
                     close()
                     if (!path) return
+
+                    logEvent('Market Selected', {
+                      market: item.market,
+                    })
+
                     router.replace(path)
                   }}
                 />

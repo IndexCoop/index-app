@@ -18,6 +18,10 @@ export interface FormattedEarnData {
   isFetchingQuote: boolean
   ouputAmount: string
   outputAmountUsd: string
+  orderFee: string
+  orderFeePercent: string
+  priceImpactUsd: string
+  priceImpactPercent: string
   resetData: () => void
   shouldShowSummaryDetails: boolean
 }
@@ -78,12 +82,32 @@ export function useFormattedEarnData(): FormattedEarnData {
     gasFeesEth =
       gasCosts < BigInt(1000000000000000)
         ? '(<0.001 ETH)'
-        : `(${formatWei(gasCosts, 18)} ETH)`
+        : `(${Number(formatWei(gasCosts, 18)).toFixed(2)} ETH)`
   }
 
   const shouldShowSummaryDetails = useMemo(
     () => quote !== null && inputValue !== '',
     [inputValue, quote],
+  )
+
+  const { orderFee, orderFeePercent } = useMemo(() => {
+    if (!quote || quote.fees === null)
+      return { orderFee: '', orderFeePercent: '' }
+    const mintRedeemFees = quote.isMinting ? quote.fees.mint : quote.fees.redeem
+    const mintRedeemFeesUsd = quote.inputTokenAmountUsd * mintRedeemFees
+    const orderFeePercent = (
+      (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
+    ).toFixed(2)
+    return { orderFee: `$${mintRedeemFeesUsd.toFixed(2)}`, orderFeePercent }
+  }, [quote])
+
+  const priceImpactUsd = useMemo(
+    () => `$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`,
+    [quote],
+  )
+  const priceImpactPercent = useMemo(
+    () => `(${quote?.priceImpactPercent?.toFixed(2) ?? ''}%)`,
+    [quote],
   )
 
   return {
@@ -100,6 +124,10 @@ export function useFormattedEarnData(): FormattedEarnData {
     isFetchingQuote,
     ouputAmount,
     outputAmountUsd,
+    orderFee,
+    orderFeePercent,
+    priceImpactUsd,
+    priceImpactPercent,
     resetData,
     shouldShowSummaryDetails,
   }
