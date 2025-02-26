@@ -15,6 +15,8 @@ import { Review } from './components/review'
 import { SubmissionResult } from './components/submission-result'
 import { TransactionReview } from './types'
 
+import { TradeButton } from '@/components/trade-button'
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import './styles.css'
 
 enum TransactionReviewModalState {
@@ -81,10 +83,27 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
           className={clsx(isDarkMode ? 'dark' : '')}
           p='0 16px 16px 16px'
         >
-          {(state === TransactionReviewModalState.failed ||
-            state === TransactionReviewModalState.success) && (
+          {state === TransactionReviewModalState.success && (
             <SubmissionResult onClose={onCloseModal} />
           )}
+
+          {state === TransactionReviewModalState.failed && (
+            <div className='flex flex-col items-center'>
+              <div className='flex flex-col items-center p-4'>
+                <ExclamationCircleIcon className='dark:text-ic-white text-ic-black size-7' />
+                <div className='text-ic-black dark:text-ic-white p-4 text-center text-xl'>
+                  'Submitting the transaction was cancelled or failed.'
+                </div>
+              </div>
+              <TradeButton
+                isDisabled={false}
+                isLoading={false}
+                label={'Done'}
+                onClick={onClose}
+              />
+            </div>
+          )}
+
           {state === TransactionReviewModalState.submit && (
             <Review
               onSubmitWithSuccess={onSubmitWithSuccess}
