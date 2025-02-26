@@ -16,7 +16,7 @@ const usePositionData = (transactionHash: string, onlyClose = true) => {
   const [positions] = useAtom(positionsAtom)
 
   const position = useMemo(
-    () => positions.history.find((p) => p.hash === transactionHash),
+    () => positions?.history.find((p) => p.hash === transactionHash),
     [positions, transactionHash],
   )
 
@@ -37,7 +37,7 @@ const usePositionData = (transactionHash: string, onlyClose = true) => {
         percentage,
         sign,
       },
-      avgEntryPrice: position.trade?.underlyingAssetUnitPrice,
+      avgEntryPrice: position.metrics?.endingAvgCostPerUnit,
     }
   }, [position, onlyClose])
 
@@ -111,11 +111,21 @@ export function SubmissionResult({
 
   const positionCloseData = usePositionData(recentTrade?.transactionHash ?? '')
 
+  const isLoading = useMemo(() => {
+    if (recentTrade) {
+      return recentTrade.transactionType === 'buy'
+        ? recentTrade.status === 'pending'
+        : recentTrade.status === 'pending' || !positionCloseData
+    }
+
+    return false
+  }, [recentTrade, positionCloseData])
+
   if (!recentTrade || !token) return null
 
   const leverageType = token.extensions.leverage.type
 
-  return recentTrade.status === 'pending' ? (
+  return isLoading ? (
     <WaitingForConfirmation type={recentTrade.transactionType} />
   ) : (
     <>

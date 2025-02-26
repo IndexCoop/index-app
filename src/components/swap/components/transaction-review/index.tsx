@@ -66,9 +66,14 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
           isDarkMode ? 'review' : '',
         )}
       >
-        <ModalHeader className={clsx(isDarkMode ? 'dark' : '')}>
-          <span className='text-ic-black dark:text-ic-white'>{modalTitle}</span>
-        </ModalHeader>
+        {modalTitle && (
+          <ModalHeader className={clsx(isDarkMode ? 'dark' : '')}>
+            <span className='text-ic-black dark:text-ic-white'>
+              {modalTitle}
+            </span>
+          </ModalHeader>
+        )}
+
         <ModalCloseButton
           color={isDarkMode ? colors.ic.white : colors.ic.black}
         />
