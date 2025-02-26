@@ -7,10 +7,10 @@ import mapKeys from 'lodash/mapKeys'
 import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
 
+import { calculateAverageEntryPrice } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import {
   GetApiV2UserAddressPositionsQueryParamsChainIdEnum as ApiChainId,
   getApiV2UserAddressPositions,
-  GetApiV2UserAddressPositions200,
 } from '@/gen'
 
 type TokenTransferRequest = {
@@ -46,44 +46,6 @@ const mapCoingeckoIdToSymbol = (id: string) => {
     default:
       return id
   }
-}
-
-const calculateAverageEntryPrice = (
-  positions: GetApiV2UserAddressPositions200,
-) => {
-  const grouped = positions.reduce(
-    (acc, position) => {
-      if (
-        position.trade &&
-        position.metrics &&
-        position.trade.transactionType === 'buy'
-      ) {
-        const tokenAddress = position.metrics.tokenAddress
-
-        if (!acc[tokenAddress]) {
-          acc[tokenAddress] = { sum: 0, count: 0 }
-        }
-
-        acc[tokenAddress].sum +=
-          (position.trade.underlyingAssetUnitPrice ?? 0) *
-          (position.metrics.totalPurchaseSize ?? 0)
-        acc[tokenAddress].count += position.metrics.totalPurchaseSize ?? 0
-      }
-      return acc
-    },
-    {} as Record<string, { sum: number; count: number }>,
-  )
-
-  const averages = Object.keys(grouped).reduce(
-    (acc, tokenAddress) => {
-      acc[tokenAddress] =
-        grouped[tokenAddress].sum / grouped[tokenAddress].count
-      return acc
-    },
-    {} as Record<string, number>,
-  )
-
-  return averages
 }
 
 export async function POST(req: NextRequest) {
