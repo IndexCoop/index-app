@@ -6,7 +6,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 const config = defineConfig({
   root: '.',
   input: {
-    path: 'https://api.indexcoop.com/v2/docs/json',
+    path: 'https://api-q513.onrender.com/documentation/json',
   },
   output: {
     path: './src/gen',
