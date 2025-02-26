@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useCallback, useMemo, useState } from 'react'
 
 import { formatAmount } from '@/app/leverage/utils/currency'
+import { calculateAverageEntryPrice } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import { leverageShortTypeMap } from '@/app/leverage/utils/get-leverage-type'
 import { positionsAtom } from '@/app/store/positions-atom'
 import { tradeAtom } from '@/app/store/trade-atom'
@@ -13,11 +14,11 @@ import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 
 const usePositionData = (transactionHash: string, onlyClose = true) => {
-  const [positions] = useAtom(positionsAtom)
+  const [{ history }] = useAtom(positionsAtom)
 
   const position = useMemo(
-    () => positions?.history.find((p) => p.hash === transactionHash),
-    [positions, transactionHash],
+    () => history?.find((p) => p.hash === transactionHash),
+    [history, transactionHash],
   )
 
   const positionData = useMemo(() => {
@@ -31,15 +32,21 @@ const usePositionData = (transactionHash: string, onlyClose = true) => {
     const percentage = (value / cost) * 100
     const sign = Math.sign(value)
 
+    const avgEntryPrices = calculateAverageEntryPrice(
+      history.filter(
+        (p) => p.metrics?.positionId === position.metrics?.positionId,
+      ),
+    )
+
     return {
       pnl: {
         value,
         percentage,
         sign,
       },
-      avgEntryPrice: position.metrics?.endingAvgCostPerUnit,
+      avgEntryPrice: avgEntryPrices[position.metrics?.tokenAddress ?? ''] ?? 0,
     }
-  }, [position, onlyClose])
+  }, [position, history, onlyClose])
 
   return positionData
 }

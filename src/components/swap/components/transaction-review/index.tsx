@@ -62,7 +62,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
       <ModalContent
         backgroundColor={isDarkMode ? '#1C2C2E' : '#FCFFFF'}
         className={clsx(
-          'border-ic-gray-100  mx-4 my-0 rounded-xl border-[2px]',
+          'border-ic-gray-100  mx-4 my-0 rounded-xl',
           isDarkMode ? 'review' : '',
         )}
       >
