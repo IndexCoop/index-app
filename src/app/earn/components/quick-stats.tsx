@@ -1,9 +1,8 @@
-import { useDisclosure } from '@chakra-ui/react'
-
 import { TokenSelector } from '@/app/earn/components/earn-widget/components/base-token-selector'
 import { StatMetric } from '@/app/earn/components/stat-metric'
 import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
+import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatDollarAmount } from '@/lib/utils'
 import { digitsByAddress } from '@/lib/utils/tokens'

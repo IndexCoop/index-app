@@ -1,8 +1,9 @@
 'use client'
 
-import { useDisclosure } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+
+import { useDisclosure } from '@/lib/hooks/use-disclosure'
 
 import { preSaleTokens } from '../../constants'
 import { PreSaleStatus, PreSaleToken } from '../../types'
