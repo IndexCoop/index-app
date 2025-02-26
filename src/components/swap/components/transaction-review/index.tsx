@@ -6,17 +6,17 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react'
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { useState } from 'react'
 
+import { TradeButton } from '@/components/trade-button'
 import { colors } from '@/lib/styles/colors'
 
 import { Review } from './components/review'
 import { SubmissionResult } from './components/submission-result'
 import { TransactionReview } from './types'
 
-import { TradeButton } from '@/components/trade-button'
-import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import './styles.css'
 
 enum TransactionReviewModalState {
@@ -56,8 +56,6 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const modalTitle =
     state === TransactionReviewModalState.submit ? 'Review Transaction' : ''
 
-  console.log(modalTitle, state)
-
   return (
     <Modal onClose={onCloseModal} isOpen={isOpen} isCentered>
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
@@ -92,7 +90,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
               <div className='flex flex-col items-center p-4'>
                 <ExclamationCircleIcon className='dark:text-ic-white text-ic-black size-7' />
                 <div className='text-ic-black dark:text-ic-white p-4 text-center text-xl'>
-                  'Submitting the transaction was cancelled or failed.'
+                  Submitting the transaction was cancelled or failed.
                 </div>
               </div>
               <TradeButton
