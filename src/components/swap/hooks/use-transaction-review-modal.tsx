@@ -26,6 +26,7 @@ export function useTransactionReviewModal(
         selectedQuote,
       }
     }
+
     return null
   }, [isFetchingQuote, quoteResults, selectedQuote])
   return { transactionReview }
