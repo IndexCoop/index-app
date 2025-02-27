@@ -28,6 +28,8 @@ const usePositionData = (transactionHash: string, onlyClose = true) => {
     const _return = position.metrics?.totalReturnOfUnitsSold ?? 0
     const cost = position.metrics?.totalCostOfUnitsSold ?? 0
 
+    if (cost <= 0 || _return === undefined) return null
+
     const value = _return - cost
     const percentage = (value / cost) * 100
     const sign = Math.sign(value)
@@ -38,13 +40,18 @@ const usePositionData = (transactionHash: string, onlyClose = true) => {
       ),
     )
 
+    const avgEntryPrice =
+      avgEntryPrices[position.metrics?.tokenAddress ?? ''] ?? 0
+
+    if (avgEntryPrice <= 0) return null
+
     return {
       pnl: {
         value,
         percentage,
         sign,
       },
-      avgEntryPrice: avgEntryPrices[position.metrics?.tokenAddress ?? ''] ?? 0,
+      avgEntryPrice,
     }
   }, [position, history, onlyClose])
 
@@ -121,10 +128,13 @@ export function SubmissionResult({
   const positionCloseData = usePositionData(recentTrade?.transactionHash ?? '')
 
   const isLoading = useMemo(() => {
+    console.log({ recentTrade, positionCloseData })
     if (recentTrade) {
-      return recentTrade.transactionType === 'buy'
-        ? recentTrade.status === 'pending'
-        : recentTrade.status === 'pending' || !positionCloseData
+      if (recentTrade.transactionType === 'buy') {
+        return recentTrade.status === 'pending'
+      }
+
+      return recentTrade.status === 'pending' || !positionCloseData
     }
 
     return false
