@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react'
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
-import { useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useState } from 'react'
 
 import { tradeAtom } from '@/app/store/trade-atom'
@@ -37,13 +37,17 @@ type TransactionReviewModalProps = {
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const { isOpen, onClose, transactionReview } = props
   const isDarkMode = props.isDarkMode === true
-  const setRecentTrade = useSetAtom(tradeAtom)
+  const [recentTrade, setRecentTrade] = useAtom(tradeAtom)
 
   const [state, setState] = useState<TransactionReviewModalState>(
     TransactionReviewModalState.submit,
   )
 
   const onCloseModal = () => {
+    if (recentTrade?.status === 'pending') {
+      return
+    }
+
     setState(TransactionReviewModalState.submit)
     setRecentTrade(null)
     onClose()
