@@ -98,7 +98,9 @@ export function SubmissionResult({
   const [isPrivacyOn, setIsPrivacyOn] = useState(false)
 
   const onClose = useCallback(() => {
-    if (recentTrade?.status === 'pending') return
+    if (recentTrade?.status === 'pending') {
+      return
+    }
 
     onModalClose()
     setRecentTrade(null)
