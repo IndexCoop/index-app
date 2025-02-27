@@ -77,7 +77,7 @@ export function useBalances(address?: string, tokens?: string[]) {
   })
 
   const fetchBalances = useCallback(async () => {
-    if (!address || !publicClient || !tokens || tokens.length === 0) return []
+    if (!address || !publicClient || !tokens || tokens.length === 0) return
     const balanceProvider = new BalanceProvider(publicClient)
     const promises = tokens.map((token) => {
       if (token.length === 0) return BigInt(0)
