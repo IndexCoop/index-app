@@ -8,8 +8,10 @@ import {
 } from '@chakra-ui/react'
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
+import { useSetAtom } from 'jotai'
+import { useState } from 'react'
 
+import { tradeAtom } from '@/app/store/trade-atom'
 import { TradeButton } from '@/components/trade-button'
 import { colors } from '@/lib/styles/colors'
 
@@ -17,8 +19,6 @@ import { Review } from './components/review'
 import { SubmissionResult } from './components/submission-result'
 import { TransactionReview } from './types'
 
-import { tradeAtom } from '@/app/store/trade-atom'
-import { useAtom } from 'jotai'
 import './styles.css'
 
 enum TransactionReviewModalState {
@@ -37,27 +37,15 @@ type TransactionReviewModalProps = {
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const { isOpen, onClose, transactionReview } = props
   const isDarkMode = props.isDarkMode === true
-  const [recentTrade] = useAtom(tradeAtom)
+  const setRecentTrade = useSetAtom(tradeAtom)
 
   const [state, setState] = useState<TransactionReviewModalState>(
     TransactionReviewModalState.submit,
   )
 
-  useEffect(() => {
-    if (recentTrade?.status === 'pending') {
-      setState(TransactionReviewModalState.success)
-    } else if (recentTrade?.status === 'success') {
-      setState(TransactionReviewModalState.success)
-    } else if (
-      recentTrade?.status === 'reverted' ||
-      recentTrade?.status === 'unknown'
-    ) {
-      setState(TransactionReviewModalState.failed)
-    }
-  }, [recentTrade])
-
   const onCloseModal = () => {
     setState(TransactionReviewModalState.submit)
+    setRecentTrade(null)
     onClose()
   }
 

@@ -1,16 +1,20 @@
 'use client'
 
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { useAtom } from 'jotai'
 import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import { arbitrum } from 'viem/chains'
 
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
+import { tradeAtom } from '@/app/store/trade-atom'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM } from '@/constants/chains'
 import { ETH, Token } from '@/constants/tokens'
@@ -114,6 +118,8 @@ export function LeverageProvider(props: { children: any }) {
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
   const { slippage } = useSlippage()
+  const [recentTrade] = useAtom(tradeAtom)
+  const pendingTransactionReview = useRef<TransactionReview | null>(null)
 
   const [inputValue, setInputValue] = useState('')
 
@@ -162,10 +168,24 @@ export function LeverageProvider(props: { children: any }) {
     inputValue,
     slippage,
   })
-  const transactionReview = usePrepareTransactionReview(
+
+  const normalTransactionReview = usePrepareTransactionReview(
     isFetchingQuote,
     quoteResult,
   )
+
+  useEffect(() => {
+    if (normalTransactionReview) {
+      pendingTransactionReview.current = normalTransactionReview
+    }
+  }, [normalTransactionReview])
+
+  const transactionReview = useMemo(() => {
+    if (recentTrade) {
+      return pendingTransactionReview.current
+    }
+    return normalTransactionReview
+  }, [normalTransactionReview, recentTrade])
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
