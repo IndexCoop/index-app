@@ -103,6 +103,12 @@ const defaultAssets = {
   [LeverageMarket.ETHBTC]: {
     [LeverageStrategy.Long2x]: { symbol: 'ETH2xBTC', chainId: arbitrum.id },
   },
+  [LeverageMarket.SOLUSD]: {
+    [LeverageStrategy.Long2x]: { symbol: 'uSOL2x', chainId: base.id },
+  },
+  [LeverageMarket.SUIUSD]: {
+    [LeverageStrategy.Long2x]: { symbol: 'uSUI2x', chainId: base.id },
+  },
 } as Record<
   LeverageMarket,
   Record<LeverageStrategy, { symbol: string; chainId: number }>
