@@ -185,7 +185,7 @@ export const markets: Market[] = [
     defaultAsset: { symbol: 'BTC2xETH', chainId: arbitrum.id },
   },
   {
-    icon: '/assets/eth-usd-market.svg',
+    icon: '/assets/sol-usd-market.svg',
     market: LeverageMarket.SOLUSD,
     symbol: 'SOL',
     currency: 'USD',
@@ -197,7 +197,7 @@ export const markets: Market[] = [
     defaultAsset: { symbol: 'uSOL2x', chainId: base.id },
   },
   {
-    icon: '/assets/eth-usd-market.svg',
+    icon: '/assets/sui-usd-market.svg',
     market: LeverageMarket.SUIUSD,
     symbol: 'SUI',
     currency: 'USD',
