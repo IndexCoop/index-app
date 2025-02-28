@@ -201,6 +201,28 @@ export const markets: Market[] = [
     low24h: 0,
     high24h: 0,
   },
+  {
+    icon: '/assets/eth-usd-market.svg',
+    market: LeverageMarket.SOLUSD,
+    symbol: 'SOL',
+    currency: 'USD',
+    networks: [base],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+  },
+  {
+    icon: '/assets/eth-usd-market.svg',
+    market: LeverageMarket.SUIUSD,
+    symbol: 'SUI',
+    currency: 'USD',
+    networks: [base],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+  },
 ]
 
 export const ratios: LeverageRatio[] = [
