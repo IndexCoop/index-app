@@ -77,7 +77,7 @@ export function getPathForMarket(market: string, chainId?: number) {
   const existingMarket = markets.find((m) => m.market === market)
   if (!existingMarket) return null
 
-  const defaultAsset = existingMarket.defaultAsset
+  const { defaultAsset } = existingMarket
 
   const queryChainId =
     chainId && existingMarket.networks.some((network) => network.id === chainId)
