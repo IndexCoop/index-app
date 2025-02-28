@@ -8,7 +8,7 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { arbitrum } from 'viem/chains'
+import { arbitrum, base } from 'viem/chains'
 
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { TransactionReview } from '@/components/swap/components/transaction-review/types'
@@ -184,6 +184,16 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const market = useMemo(() => {
+    if (
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol
+    ) {
+      return 'SOL / USD'
+    }
+    if (
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSUI2x').symbol
+    ) {
+      return 'SUI / USD'
+    }
     if (
       indexToken.symbol ===
       getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC').symbol
