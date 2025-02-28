@@ -310,6 +310,18 @@ export const ratios: LeverageRatio[] = [
     strategy: LeverageStrategy.Long2x,
     chain: arbitrum,
   },
+  {
+    icon: getTokenByChainAndSymbol(base.id, 'uSOL2x').logoURI,
+    market: LeverageMarket.SOLUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: base,
+  },
+  {
+    icon: getTokenByChainAndSymbol(base.id, 'uSUI2x').logoURI,
+    market: LeverageMarket.SUIUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: base,
+  },
 ].sort((a, b) => {
   const strategyOrder = {
     [LeverageStrategy.Long3x]: 1,
