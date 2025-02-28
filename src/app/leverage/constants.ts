@@ -27,6 +27,8 @@ export const btcLeverageTokenSymbols = ['BTC2X', 'BTC3X', 'iBTC1X', 'BTC2xETH']
 export const leverageTokens = [
   ...ethLeverageTokenSymbols,
   ...btcLeverageTokenSymbols,
+  'uSOL2x',
+  'uSUI2x',
 ]
 
 export function getCurrencyTokens(chainId: number): Token[] {
