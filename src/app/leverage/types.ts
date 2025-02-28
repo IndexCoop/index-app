@@ -63,6 +63,7 @@ export interface Market {
   high24h: number
   symbol: 'ETH' | 'BTC' | 'SOL' | 'SUI'
   currency: 'USD' | 'BTC' | 'ETH'
+  defaultAsset: { symbol: string; chainId: number }
 }
 
 export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'
