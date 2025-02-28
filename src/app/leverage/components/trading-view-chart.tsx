@@ -12,6 +12,14 @@ export function TradingViewChart({ indexToken }: Props) {
       <TradingViewWidget chartSymbol='INDEX:BTCUSD' indexToken={indexToken} />
       <TradingViewWidget chartSymbol='BINANCE:ETHBTC' indexToken={indexToken} />
       <TradingViewWidget chartSymbol='VANTAGE:BTCETH' indexToken={indexToken} />
+      <TradingViewWidget
+        chartSymbol='COINBASE:SOLUSD'
+        indexToken={indexToken}
+      />
+      <TradingViewWidget
+        chartSymbol='COINBASE:SUIUSD'
+        indexToken={indexToken}
+      />
     </>
   )
 }
