@@ -207,13 +207,19 @@ export function LeverageProvider(props: { children: any }) {
     return baseToken.symbol === ETH.symbol ? 'ETH / USD' : 'BTC / USD'
   }, [baseToken, indexToken])
 
-  const isRatioToken = useMemo(() => {
+  const getSupportedLeverageTypes = useMemo(() => {
     const eth2xBtc = getTokenByChainAndSymbol(chainId, 'ETH2xBTC')
     const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
-    return (
+    const uSol2x = getTokenByChainAndSymbol(base.id, 'uSOL2x')
+    const uSui2x = getTokenByChainAndSymbol(base.id, 'uSUI2x')
+    const isRatioToken =
       indexToken.symbol === eth2xBtc?.symbol ||
       indexToken.symbol === btc2xEth?.symbol
-    )
+    const isSol = indexToken.symbol === uSol2x?.symbol
+    const isSui = indexToken.symbol === uSui2x?.symbol
+    return isRatioToken || isSol || isSui
+      ? [LeverageType.Long2x]
+      : supportedLeverageTypes[chainId]
   }, [chainId, indexToken])
 
   const onChangeInputTokenAmount = useCallback(
@@ -317,9 +323,7 @@ export function LeverageProvider(props: { children: any }) {
         outputTokens,
         isFetchingQuote,
         quoteResult,
-        supportedLeverageTypes: isRatioToken
-          ? [LeverageType.Long2x]
-          : supportedLeverageTypes[chainId],
+        supportedLeverageTypes: getSupportedLeverageTypes,
         transactionReview,
         onChangeInputTokenAmount,
         onSelectInputToken,
