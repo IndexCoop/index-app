@@ -2,9 +2,9 @@ import { Button } from '@headlessui/react'
 import { InformationCircleIcon } from '@heroicons/react/24/outline'
 import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
 import {
+  LeverageType,
   getTokenByChainAndAddress,
   isLeverageToken,
-  LeverageType,
 } from '@indexcoop/tokenlists'
 import { createColumnHelper } from '@tanstack/react-table'
 import Image from 'next/image'
@@ -23,6 +23,7 @@ const map: Record<LeverageType, string> = {
   Short1x: '-1x',
   Long2x: '2x',
   Long3x: '3x',
+  Long15x: '15x',
 }
 
 const currencyConfig: Record<

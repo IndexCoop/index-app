@@ -1,7 +1,9 @@
 'use client'
 
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
+import { base } from 'viem/chains'
 import { useAccount } from 'wagmi'
 
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
@@ -88,7 +90,15 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
     const baseTokenSymbol = queryIsMinting
       ? (queryOutputToken as LeverageToken)?.baseToken
       : (queryInputToken as LeverageToken)?.baseToken
-    const queryBaseToken = baseTokenSymbol === 'ETH' ? ETH : BTC
+    let queryBaseToken = baseTokenSymbol === 'ETH' ? ETH : BTC
+    if (baseTokenSymbol === 'uSOL') {
+      const sol = getTokenByChainAndSymbol(base.id, 'uSOL')
+      queryBaseToken = { ...sol, image: sol.logoURI }
+    }
+    if (baseTokenSymbol === 'uSUI') {
+      const sui = getTokenByChainAndSymbol(base.id, 'uSUI')
+      queryBaseToken = { ...sui, image: sui.logoURI }
+    }
 
     return {
       queryBaseToken: queryBaseToken ?? defaultParams.baseToken,

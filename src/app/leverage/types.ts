@@ -13,6 +13,8 @@ export enum LeverageMarket {
   ETHUSD = 'ETH / USD',
   BTCETH = 'BTC / ETH',
   ETHBTC = 'ETH / BTC',
+  SOLUSD = 'SOL / USD',
+  SUIUSD = 'SUI / USD',
 }
 
 export type LeverageRatio = {
@@ -59,8 +61,9 @@ export interface Market {
   change24h: number
   low24h: number
   high24h: number
-  symbol: 'ETH' | 'BTC'
+  symbol: 'ETH' | 'BTC' | 'SOL' | 'SUI'
   currency: 'USD' | 'BTC' | 'ETH'
+  defaultAsset: { symbol: string; chainId: number }
 }
 
 export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'

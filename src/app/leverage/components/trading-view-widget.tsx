@@ -40,6 +40,10 @@ const getDisplayStyle = (
   switch (chartSymbol) {
     case 'BINANCE:ETHBTC':
       return lowercaseIndexSymbol === 'eth2xbtc' ? 'block' : 'none'
+    case 'COINBASE:SOLUSD':
+      return lowercaseIndexSymbol === 'usol2x' ? 'block' : 'none'
+    case 'COINBASE:SUIUSD':
+      return lowercaseIndexSymbol === 'usui2x' ? 'block' : 'none'
     case 'VANTAGE:BTCETH':
       return lowercaseIndexSymbol === 'btc2xeth' ? 'block' : 'none'
     case 'INDEX:ETHUSD':

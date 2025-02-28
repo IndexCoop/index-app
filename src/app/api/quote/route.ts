@@ -7,7 +7,7 @@ import {
 import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
 
-import { isTokenBtcOnBase } from '@/lib/utils/tokens'
+import { isBaseToken } from '@/lib/utils/tokens'
 
 export interface IndexQuoteRequest {
   chainId: number
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     const inputToken = getQuoteToken(inputTokenAddress, chainId)
     const outputToken = getQuoteToken(outputTokenAddress, chainId)
-    const isBtcOnBase = isTokenBtcOnBase(
+    const isBtcOnBase = isBaseToken(
       chainId,
       inputTokenAddress,
       outputTokenAddress,
