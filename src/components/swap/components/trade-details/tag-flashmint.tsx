@@ -2,7 +2,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 
 export const FlashMintTag = () => (
   <Tooltip placement='bottom-end'>
-    <TooltipTrigger className='bg-ic-gray-50 border-ic-gray-300 text-ic-gray-500 flex w-full rounded-xl border px-3 py-5 text-xs font-medium'>
+    <TooltipTrigger className='text-ic-gray-500 flex w-full border px-3 py-1 text-xs font-medium'>
       <p className='text-ic-gray-600 text-xs font-semibold'>Flash Mint</p>
     </TooltipTrigger>
     <TooltipContent className='bg-ic-white text-ic-gray-600 max-w-xs rounded-md border-[0.5px] border-gray-300 px-4 py-3 text-left text-[11px] font-medium'>
