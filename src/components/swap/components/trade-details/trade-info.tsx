@@ -16,11 +16,11 @@ const TradeInfoItemRow = ({ isLoading, item }: TradeInfoItemRowProps) => {
     <Tooltip placement='bottom-end'>
       <TooltipTrigger
         className={cn(
-          'text-ic-gray-600 flex justify-between px-4 py-3 text-[11px] font-medium',
+          'text-ic-gray-600 flex w-full justify-between text-[11px] font-medium',
           tooltip && tooltip.length > 0 ? 'cursor-pointer' : 'cursor-default',
         )}
       >
-        <div className='flex'>
+        <div className='flex w-full'>
           <div className='flex flex-1 items-center'>
             <p className='text-ic-gray-400 text-xs font-medium'>{title}</p>
           </div>
