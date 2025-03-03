@@ -14,7 +14,7 @@ const TradeInfoItemRow = ({ isLoading, item }: TradeInfoItemRowProps) => {
   const { title, values, tooltip, isLink } = item
   return (
     <Tooltip placement='right-end'>
-      <TooltipTrigger>{tooltip}</TooltipTrigger>
+      {tooltip && <TooltipTrigger>{tooltip}</TooltipTrigger>}
       <TooltipContent
         className={cn(
           'bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-[11px] font-medium',
