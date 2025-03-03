@@ -13,33 +13,35 @@ type TradeInfoItemRowProps = {
 const TradeInfoItemRow = ({ isLoading, item }: TradeInfoItemRowProps) => {
   const { title, values, tooltip, isLink } = item
   return (
-    <Tooltip placement='right-end'>
+    <Tooltip placement='bottom-end'>
       <TooltipTrigger
         className={cn(
-          'bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-[11px] font-medium',
+          'text-ic-gray-600 flex justify-between px-4 py-3 text-[11px] font-medium',
           tooltip && tooltip.length > 0 ? 'cursor-pointer' : 'cursor-default',
         )}
       >
-        <div className='flex items-center'>
-          <p className='text-ic-gray-400 text-xs font-medium'>{title}</p>
-        </div>
-        {isLoading && <StyledSkeleton width={60} />}
-        {!isLoading && isLink === true && (
-          <a target='_blank' href={values[1]}>
-            <p className='text-ic-gray-600 text-xs font-bold'>
-              {shortenAddress(values[0])}
-            </p>
-          </a>
-        )}
-        {!isLoading && (isLink === undefined || isLink === false) && (
-          <div className='flex'>
-            {values.map((value, index) => (
-              <div className='flex' key={index}>
-                <p className='text-ic-gray-600 text-xs font-bold'>{value}</p>
-              </div>
-            ))}
+        <div className='flex'>
+          <div className='flex flex-1 items-center'>
+            <p className='text-ic-gray-400 text-xs font-medium'>{title}</p>
           </div>
-        )}
+          {isLoading && <StyledSkeleton width={60} />}
+          {!isLoading && isLink === true && (
+            <a target='_blank' href={values[1]}>
+              <p className='text-ic-gray-600 text-xs font-bold'>
+                {shortenAddress(values[0])}
+              </p>
+            </a>
+          )}
+          {!isLoading && (isLink === undefined || isLink === false) && (
+            <div className='flex'>
+              {values.map((value, index) => (
+                <div className='flex' key={index}>
+                  <p className='text-ic-gray-600 text-xs font-bold'>{value}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </TooltipTrigger>
       {tooltip && (
         <TooltipContent
