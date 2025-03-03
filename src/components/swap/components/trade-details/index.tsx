@@ -17,7 +17,6 @@ import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { TradeInfoItem } from '../../types'
 
-import { Tag } from './tag'
 import { FlashMintTag } from './tag-flashmint'
 import { TradeInfoItemsContainer } from './trade-info'
 import { TradePrice } from './trade-price'
@@ -108,7 +107,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                       <Flex opacity={isExpanded ? 0 : 1} gap={4}>
                         {!isLoading &&
                           props.selectedQuoteType === QuoteType.index && (
-                            <Tag label={'LI.FI'} />
+                            <FlashMintTag />
                           )}
                         {!isLoading &&
                           props.selectedQuoteType === QuoteType.flashmint && (
