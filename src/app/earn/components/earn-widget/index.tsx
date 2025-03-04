@@ -1,6 +1,5 @@
 'use client'
 
-import { useDisclosure } from '@chakra-ui/react'
 import { useAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
@@ -19,6 +18,7 @@ import { TransactionReviewModal } from '@/components/swap/components/transaction
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { TokenDisplay } from '@/components/token-display'
+import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'

@@ -1,5 +1,6 @@
 import {
   getTokenByChainAndAddress,
+  getTokenByChainAndSymbol,
   isLeverageToken,
 } from '@indexcoop/tokenlists'
 import { uniqBy } from 'lodash'
@@ -43,6 +44,10 @@ const mapCoingeckoIdToSymbol = (id: string) => {
       return 'eth'
     case 'bitcoin':
       return 'btc'
+    case 'wrapped-solana-universal':
+      return 'sol'
+    case 'wrapped-sui-universal':
+      return 'sui'
     default:
       return id
   }
@@ -51,6 +56,9 @@ const mapCoingeckoIdToSymbol = (id: string) => {
 export async function POST(req: NextRequest) {
   try {
     const { user, chainId } = (await req.json()) as TokenTransferRequest
+
+    const USUI = getTokenByChainAndSymbol(chainId, 'uSUI')
+    const USOL = getTokenByChainAndSymbol(chainId, 'uSOL')
 
     const positions = await getApiV2UserAddressPositions(
       { address: user },
@@ -93,7 +101,12 @@ export async function POST(req: NextRequest) {
     try {
       prices = mapKeys(
         await fetchCoingeckoPrices(
-          ['ethereum', 'bitcoin'],
+          [
+            'ethereum',
+            'bitcoin',
+            USUI?.extensions.coingeckoId,
+            USOL?.extensions.coingeckoId,
+          ].filter((str) => str !== undefined),
           ['btc', 'eth', 'usd'],
         ),
         (_, key) => mapCoingeckoIdToSymbol(key),

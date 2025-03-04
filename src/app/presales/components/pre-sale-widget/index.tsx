@@ -1,6 +1,5 @@
 'use client'
 
-import { useDisclosure } from '@chakra-ui/react'
 import { useAppKit } from '@reown/appkit/react'
 import { useSetAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
@@ -17,6 +16,7 @@ import {
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
 import { useApproval } from '@/lib/hooks/use-approval'
+import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useMainnetOnly } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSignTerms } from '@/lib/providers/sign-terms-provider'
