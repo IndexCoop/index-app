@@ -14,7 +14,6 @@ export interface TradeMachineContext {
   quoteResult: QuoteResult | null
   transactionReview: TransactionReview | null
   transactionStatus: TransactionReceipt['status'] | null
-  error: Error | null
 }
 
 export type TradeMachineEvent =
@@ -44,7 +43,6 @@ const createTradeMachine = () =>
       trade: null,
       transactionReview: null,
       transactionStatus: null,
-      error: null,
     },
     states: {
       idle: {
@@ -103,7 +101,6 @@ const createTradeMachine = () =>
           },
           CLOSE: {
             target: 'reset',
-            actions: 'resetContext',
           },
         },
       },
@@ -126,7 +123,6 @@ const createTradeMachine = () =>
           },
           CLOSE: {
             target: 'reset',
-            actions: 'resetContext',
           },
         },
       },
@@ -134,7 +130,6 @@ const createTradeMachine = () =>
         on: {
           CLOSE: {
             target: 'reset',
-            actions: 'resetContext',
           },
         },
       },
@@ -158,10 +153,10 @@ const createTradeMachine = () =>
     actions: {
       resetContext: assign({
         isModalOpen: false,
+        quoteResult: null,
         trade: null,
         transactionReview: null,
         transactionStatus: null,
-        error: null,
       }),
     },
   })
