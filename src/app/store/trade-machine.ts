@@ -25,6 +25,7 @@ export type TradeMachineEvent =
   | { type: 'TRADE_FAILED' }
   | { type: 'TRADE_SUCCESS'; trade: PostApiV2Trade200 }
   | { type: 'CLOSE' }
+  | { type: 'RESET_DONE' }
 
 export type TradeMachineAction = { type: 'resetContext' }
 
@@ -101,7 +102,7 @@ const createTradeMachine = () =>
             target: 'pending',
           },
           CLOSE: {
-            target: 'idle',
+            target: 'reset',
             actions: 'resetContext',
           },
         },
@@ -124,7 +125,7 @@ const createTradeMachine = () =>
             }),
           },
           CLOSE: {
-            target: 'idle',
+            target: 'reset',
             actions: 'resetContext',
           },
         },
@@ -132,7 +133,7 @@ const createTradeMachine = () =>
       success: {
         on: {
           CLOSE: {
-            target: 'idle',
+            target: 'reset',
             actions: 'resetContext',
           },
         },
@@ -140,6 +141,13 @@ const createTradeMachine = () =>
       failed: {
         on: {
           CLOSE: {
+            target: 'reset',
+          },
+        },
+      },
+      reset: {
+        on: {
+          RESET_DONE: {
             target: 'idle',
             actions: 'resetContext',
           },

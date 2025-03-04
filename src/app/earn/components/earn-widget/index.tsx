@@ -92,11 +92,12 @@ export function EarnWidget() {
   }, [inputToken, isMinting, outputToken, setSlippageForToken])
 
   useEffect(() => {
-    if (tradeState.matches('idle')) {
+    if (tradeState.matches('reset')) {
       reset()
       resetData()
+      sendTradeEvent({ type: 'RESET_DONE' })
     }
-  }, [tradeState, reset, resetData])
+  }, [tradeState, reset, resetData, sendTradeEvent])
 
   return (
     <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6 lg:ml-auto'>

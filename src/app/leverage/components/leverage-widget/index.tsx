@@ -90,11 +90,12 @@ export function LeverageWidget() {
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
 
   useEffect(() => {
-    if (tradeState.matches('idle')) {
+    if (tradeState.matches('reset')) {
       reset()
       resetData()
+      sendTradeEvent({ type: 'RESET_DONE' })
     }
-  }, [tradeState, reset, resetData])
+  }, [tradeState, reset, resetData, sendTradeEvent])
 
   return (
     <div

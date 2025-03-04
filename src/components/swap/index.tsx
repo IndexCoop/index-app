@@ -125,10 +125,11 @@ export const Swap = (props: SwapProps) => {
   }, [chainId, resetTradeData])
 
   useEffect(() => {
-    if (tradeState.matches('idle')) {
+    if (tradeState.matches('reset')) {
       resetTradeData()
+      sendTradeEvent({ type: 'RESET_DONE' })
     }
-  }, [tradeState, resetTradeData])
+  }, [tradeState, resetTradeData, sendTradeEvent])
 
   const fetchOptions = useCallback(() => {
     if (!isTradablePair) return
