@@ -10,13 +10,13 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
     <div className='bg-ic-gray-50 dark:bg-ic-gray-975 flex flex-row rounded-lg'>
       <BuySellSelectorButton
         isSelected={isMinting}
-        label='Open'
+        label='Buy'
         roundedLeft={true}
         onClick={onClick}
       />
       <BuySellSelectorButton
         isSelected={!isMinting}
-        label='Close'
+        label='Sell'
         roundedLeft={false}
         onClick={onClick}
       />
