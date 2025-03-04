@@ -21,7 +21,7 @@ export function MoreNav({ navigation }: Props) {
       <PopoverPanel
         transition
         anchor='bottom'
-        className='bg-ic-white dark:bg-ic-gray-950 ring-ic-gray-950/10 dark:ring-ic-gray-50/10 z-10 mt-4 rounded-lg shadow-md ring-1 transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
+        className='bg-ic-white dark:bg-ic-black ring-ic-gray-950/10 dark:ring-ic-gray-50/10 z-10 mt-4 rounded-lg shadow-md ring-1 transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
       >
         <div className='flex flex-col gap-6 p-6'>
           {navigation

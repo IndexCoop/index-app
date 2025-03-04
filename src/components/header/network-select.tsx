@@ -2,9 +2,9 @@
 
 import { Button, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/20/solid'
-import { useAppKit } from '@reown/appkit/react'
 import { NetworkUtil } from '@reown/appkit-common'
 import { AssetUtil, ChainController } from '@reown/appkit-core'
+import { useAppKit } from '@reown/appkit/react'
 import { watchAccount } from '@wagmi/core'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
@@ -69,7 +69,7 @@ export const NetworkSelect = () => {
   return (
     <Popover as='div' className='relative'>
       <PopoverButton
-        className='bg-ic-black text-ic-white flex items-center gap-2 rounded-md border-none px-4 py-1 text-sm transition-all duration-300 hover:scale-[1.04]'
+        className='bg-ic-gray-900 text-ic-white flex items-center gap-2 rounded-md border-none px-4 py-1 text-sm transition-all duration-300 hover:scale-[1.04]'
         onClick={() => open({ view: 'Networks' })}
       >
         {imageSrc && (
