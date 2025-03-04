@@ -1,6 +1,6 @@
 import { Box, Flex, IconButton, Text, useDisclosure } from '@chakra-ui/react'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -78,7 +78,7 @@ export const Swap = (props: SwapProps) => {
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [selectedQuote, setSelectedQuote] = useState<QuoteType | null>(null)
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
-  const sendTradeEvent = useSetAtom(tradeMachineAtom)
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
@@ -123,6 +123,12 @@ export const Swap = (props: SwapProps) => {
   useEffect(() => {
     resetTradeData()
   }, [chainId, resetTradeData])
+
+  useEffect(() => {
+    if (tradeState.matches('idle')) {
+      resetTradeData()
+    }
+  }, [tradeState, resetTradeData])
 
   const fetchOptions = useCallback(() => {
     if (!isTradablePair) return

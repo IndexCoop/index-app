@@ -123,6 +123,10 @@ const createTradeMachine = () =>
               transactionStatus: 'reverted',
             }),
           },
+          CLOSE: {
+            target: 'idle',
+            actions: 'resetContext',
+          },
         },
       },
       success: {

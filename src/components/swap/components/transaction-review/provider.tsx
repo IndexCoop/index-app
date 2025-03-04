@@ -135,8 +135,10 @@ export function useTransactionReview(props: ReviewProps) {
     if (!quote) return null
     try {
       await executeTrade(quote, override, saveTrade)
+
       return true
     } catch {
+      sendTradeEvent({ type: 'CLOSE' })
       return false
     }
   }

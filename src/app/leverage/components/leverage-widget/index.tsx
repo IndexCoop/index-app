@@ -1,8 +1,8 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { useAtom } from 'jotai'
+import { useCallback, useEffect } from 'react'
 
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -52,7 +52,7 @@ export function LeverageWidget() {
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
-  const sendTradeEvent = useSetAtom(tradeMachineAtom)
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const {
     contract,
@@ -88,6 +88,13 @@ export function LeverageWidget() {
     if (!inputBalance) return
     onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
   }, [inputBalance, inputToken, onChangeInputTokenAmount])
+
+  useEffect(() => {
+    if (tradeState.matches('idle')) {
+      reset()
+      resetData()
+    }
+  }, [tradeState, reset, resetData])
 
   return (
     <div

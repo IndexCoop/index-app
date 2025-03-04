@@ -1,7 +1,7 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
-import { useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import { Summary } from '@/app/earn/components/earn-widget/components/summary'
@@ -72,7 +72,7 @@ export function EarnWidget() {
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
-  const sendTradeEvent = useSetAtom(tradeMachineAtom)
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const {
     auto: autoSlippage,
@@ -90,6 +90,13 @@ export function EarnWidget() {
   useEffect(() => {
     setSlippageForToken(isMinting ? outputToken.symbol : inputToken.symbol)
   }, [inputToken, isMinting, outputToken, setSlippageForToken])
+
+  useEffect(() => {
+    if (tradeState.matches('idle')) {
+      reset()
+      resetData()
+    }
+  }, [tradeState, reset, resetData])
 
   return (
     <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6 lg:ml-auto'>
