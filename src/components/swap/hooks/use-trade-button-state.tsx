@@ -14,7 +14,6 @@ export enum TradeButtonState {
   insufficientFunds,
   loading,
   notAvailable,
-  signTerms,
   wrongNetwork,
 }
 

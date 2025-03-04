@@ -102,12 +102,6 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     ) {
       return [WarningType.vpn]
     }
-    if (
-      buttonState === TradeButtonState.signTerms &&
-      !hiddenWarnings?.includes(WarningType.signTerms)
-    ) {
-      return [WarningType.signTerms]
-    }
     if (slippage > 9 && !hiddenWarnings?.includes(WarningType.priceImpact)) {
       return [WarningType.priceImpact]
     }
@@ -116,7 +110,6 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     }
     return []
   }, [
-    buttonState,
     hiddenWarnings,
     isRestrictedCountry,
     isTradablePair,
