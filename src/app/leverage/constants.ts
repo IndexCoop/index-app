@@ -7,7 +7,7 @@ import { arbitrum, base, mainnet } from 'viem/chains'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { BTC, ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
+import { ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 import {
   LeverageMarket,
@@ -27,19 +27,9 @@ export const btcLeverageTokenSymbols = ['BTC2X', 'BTC3X', 'iBTC1X', 'BTC2xETH']
 export const leverageTokens = [
   ...ethLeverageTokenSymbols,
   ...btcLeverageTokenSymbols,
+  'uSOL2x',
+  'uSUI2x',
 ]
-
-export function getBaseTokens(chainId: number): Token[] {
-  switch (chainId) {
-    case MAINNET.chainId:
-    case ARBITRUM.chainId:
-      return [ETH, BTC]
-    case BASE.chainId:
-      return [ETH, BTC]
-    default:
-      return []
-  }
-}
 
 export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
@@ -73,28 +63,11 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
   return tokens.filter((token): token is LeverageToken => token !== null)
 }
 
-// TODO: Move to `markets` constant
-function getDefaultMarketAsset(market: string) {
-  switch (market) {
-    case LeverageMarket.BTCUSD:
-      return { symbol: 'BTC3X', chainId: base.id }
-    case LeverageMarket.ETHUSD:
-      return { symbol: 'ETH3X', chainId: base.id }
-    case LeverageMarket.ETHBTC:
-      return { symbol: 'ETH2xBTC', chainId: arbitrum.id }
-    case LeverageMarket.BTCETH:
-      return { symbol: 'BTC2xETH', chainId: arbitrum.id }
-    default:
-      return null
-  }
-}
-
 export function getPathForMarket(market: string, chainId?: number) {
   const existingMarket = markets.find((m) => m.market === market)
   if (!existingMarket) return null
 
-  const defaultAsset = getDefaultMarketAsset(market)
-  if (!defaultAsset) return null
+  const { defaultAsset } = existingMarket
 
   const queryChainId =
     chainId && existingMarket.networks.some((network) => network.id === chainId)
@@ -119,6 +92,12 @@ const defaultAssets = {
   },
   [LeverageMarket.ETHBTC]: {
     [LeverageStrategy.Long2x]: { symbol: 'ETH2xBTC', chainId: arbitrum.id },
+  },
+  [LeverageMarket.SOLUSD]: {
+    [LeverageStrategy.Long2x]: { symbol: 'uSOL2x', chainId: base.id },
+  },
+  [LeverageMarket.SUIUSD]: {
+    [LeverageStrategy.Long2x]: { symbol: 'uSUI2x', chainId: base.id },
   },
 } as Record<
   LeverageMarket,
@@ -167,6 +146,7 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
+    defaultAsset: { symbol: 'ETH3X', chainId: base.id },
   },
   {
     icon: '/assets/btc-usd-market.svg',
@@ -178,6 +158,31 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
+    defaultAsset: { symbol: 'BTC3X', chainId: base.id },
+  },
+  {
+    icon: '/assets/sol-usd-market.svg',
+    market: LeverageMarket.SOLUSD,
+    symbol: 'SOL',
+    currency: 'USD',
+    networks: [base],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+    defaultAsset: { symbol: 'uSOL2x', chainId: base.id },
+  },
+  {
+    icon: '/assets/sui-usd-market.svg',
+    market: LeverageMarket.SUIUSD,
+    symbol: 'SUI',
+    currency: 'USD',
+    networks: [base],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+    defaultAsset: { symbol: 'uSUI2x', chainId: base.id },
   },
   {
     icon: '/assets/eth-btc-market.svg',
@@ -189,6 +194,7 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
+    defaultAsset: { symbol: 'ETH2xBTC', chainId: arbitrum.id },
   },
   {
     icon: '/assets/btc-eth-market.svg',
@@ -200,6 +206,7 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
+    defaultAsset: { symbol: 'BTC2xETH', chainId: arbitrum.id },
   },
 ]
 
@@ -287,6 +294,18 @@ export const ratios: LeverageRatio[] = [
     market: LeverageMarket.ETHBTC,
     strategy: LeverageStrategy.Long2x,
     chain: arbitrum,
+  },
+  {
+    icon: getTokenByChainAndSymbol(base.id, 'uSOL2x').logoURI,
+    market: LeverageMarket.SOLUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: base,
+  },
+  {
+    icon: getTokenByChainAndSymbol(base.id, 'uSUI2x').logoURI,
+    market: LeverageMarket.SUIUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: base,
   },
 ].sort((a, b) => {
   const strategyOrder = {
