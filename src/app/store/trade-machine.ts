@@ -27,13 +27,6 @@ export type TradeMachineEvent =
 
 export type TradeMachineAction = { type: 'resetContext' }
 
-export type TradeMachineState =
-  | 'idle'
-  | 'review'
-  | 'pending'
-  | 'success'
-  | 'failed'
-
 const createTradeMachine = () =>
   createMachine({
     types: {} as {
