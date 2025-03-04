@@ -107,20 +107,21 @@ export function getTokenBySymbol(symbol: string): Token | null {
   return currencyToken ?? null
 }
 
-export function isTokenBtcOnBase(
+export function isBaseToken(
   chainId: number,
   inputToken: Address,
   outputToken: Address,
 ): boolean {
   if (chainId !== base.id) return false
-  const btc2x = getTokenByChainAndSymbol(base.id, 'BTC2X')
-  const btc3x = getTokenByChainAndSymbol(base.id, 'BTC3X')
-  return (
-    isAddressEqual(inputToken, btc2x.address) ||
-    isAddressEqual(inputToken, btc3x.address) ||
-    isAddressEqual(outputToken, btc2x.address) ||
-    isAddressEqual(outputToken, btc3x.address)
-  )
+  const eth2x = getTokenByChainAndSymbol(base.id, 'ETH2X')
+  const eth3x = getTokenByChainAndSymbol(base.id, 'ETH3X')
+  const isEth2x =
+    isAddressEqual(inputToken, eth2x.symbol) ||
+    isAddressEqual(outputToken, eth2x.symbol)
+  const isEth3x =
+    isAddressEqual(inputToken, eth3x.symbol) ||
+    isAddressEqual(outputToken, eth3x.symbol)
+  return chainId === base.id && !isEth2x && !isEth3x
 }
 
 export function digitsByAddress(address: string): number {
