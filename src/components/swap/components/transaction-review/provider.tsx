@@ -123,7 +123,7 @@ export function useTransactionReview(props: ReviewProps) {
       })
 
       if (response.status === 200) {
-        sendTradeEvent({ type: 'TRADE_PERSISTED', trade })
+        sendTradeEvent({ type: 'TRADE_SUCCESS', trade })
       } else {
         sendTradeEvent({ type: 'TRADE_FAILED' })
       }

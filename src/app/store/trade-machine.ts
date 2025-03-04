@@ -18,11 +18,11 @@ export interface TradeMachineContext {
 
 export type TradeMachineEvent =
   | { type: 'FETCHING_QUOTE' }
-  | { type: 'QUOTE'; quoteResult: QuoteResult; quote: QuoteType }
+  | { type: 'QUOTE'; quoteResult: QuoteResult; quoteType: QuoteType }
   | { type: 'REVIEW' }
   | { type: 'SUBMIT' }
   | { type: 'TRADE_FAILED' }
-  | { type: 'TRADE_PERSISTED'; trade: PostApiV2Trade200 }
+  | { type: 'TRADE_SUCCESS'; trade: PostApiV2Trade200 }
   | { type: 'CLOSE' }
 
 export type TradeMachineAction = { type: 'resetContext' }
@@ -69,16 +69,16 @@ const createTradeMachine = () =>
                   contractAddress: quote.contract,
                   chainId: quote.chainId ?? 1,
                   quoteResults: {
-                    bestQuote: event.quote,
+                    bestQuote: event.quoteType,
                     results: {
                       flashmint: null,
                       index: null,
                       issuance: null,
                       redemption: null,
-                      [event.quote]: quoteResult,
+                      [event.quoteType]: quoteResult,
                     },
                   },
-                  selectedQuote: QuoteType.flashmint,
+                  selectedQuote: event.quoteType,
                 }
 
                 return transactionReview
@@ -112,7 +112,7 @@ const createTradeMachine = () =>
       },
       pending: {
         on: {
-          TRADE_PERSISTED: {
+          TRADE_SUCCESS: {
             target: 'success',
             actions: assign({
               trade: ({ event }) => {

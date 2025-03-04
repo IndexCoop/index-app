@@ -171,7 +171,7 @@ export function useQuoteResult(request: QuoteRequest) {
     sendTradeEvent({
       type: 'QUOTE',
       quoteResult,
-      quote: bestQuote?.type ?? QuoteType.flashmint,
+      quoteType: bestQuote?.type ?? QuoteType.flashmint,
     })
   }, [chainId, flashmintQuote, logEvent, swapQuote, sendTradeEvent])
 

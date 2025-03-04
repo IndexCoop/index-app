@@ -126,7 +126,11 @@ export function RedeemProvider(props: { children: any }) {
         error: null,
       }
 
-      sendTradeEvent({ type: 'QUOTE', quoteResult, quote: QuoteType.issuance })
+      sendTradeEvent({
+        type: 'QUOTE',
+        quoteResult,
+        quoteType: QuoteType.issuance,
+      })
 
       return quoteResult
     },

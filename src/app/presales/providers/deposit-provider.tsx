@@ -183,8 +183,7 @@ export function DepositProvider(props: {
           type: QuoteType.issuance,
           error: null,
         },
-
-        quote: QuoteType.issuance,
+        quoteType: QuoteType.issuance,
       })
     }
     fetchQuote()
