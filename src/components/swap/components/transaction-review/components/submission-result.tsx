@@ -71,8 +71,10 @@ const WaitingForConfirmation = () => {
     <>
       <div className='border-ic-gray-700 border-b'>
         <div className='my-4 text-center'>
-          <h1 className='font-bold capitalize'>Tx Pending...</h1>
-          <h3 className='text-ic-gray-400 text-xs'>
+          <h1 className='text-ic-black dark:text-ic-white font-bold capitalize'>
+            Tx Pending...
+          </h1>
+          <h3 className='text-ic-gray-600 dark:text-ic-gray-400 text-xs'>
             Waiting for onchain confirmation.
           </h3>
         </div>

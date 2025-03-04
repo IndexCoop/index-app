@@ -14,7 +14,7 @@ export const SkeletonLoader: FC<SkeletonLoaderProps> = ({
   return (
     <div
       className={cn(
-        'relative w-full overflow-hidden rounded-lg bg-black bg-opacity-30 shadow-xl',
+        'relative w-full overflow-hidden rounded-lg bg-black bg-opacity-50 shadow-xl dark:bg-opacity-30',
         'transition-all duration-500',
         className,
       )}
