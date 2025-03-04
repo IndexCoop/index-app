@@ -13,7 +13,6 @@ import { useApproval } from '@/lib/hooks/use-approval'
 import { useIsTokenPairTradable } from '@/lib/hooks/use-is-token-pair-tradable'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useProtectionContext } from '@/lib/providers/protection'
-import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { getNativeToken } from '@/lib/utils/tokens'
 
@@ -54,7 +53,6 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   const { chainId } = useNetwork()
   const { open } = useAppKit()
   const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
-  const { signTermsOfService } = useSignTerms()
   const { slippage } = useSlippage()
 
   const {
@@ -132,11 +130,6 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
       return
     }
 
-    if (buttonState === TradeButtonState.signTerms) {
-      await signTermsOfService()
-      return
-    }
-
     if (buttonState === TradeButtonState.wrongNetwork) {
       open({ view: 'Networks' })
       return
@@ -164,7 +157,6 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     onOpenTransactionReview,
     onRefetchQuote,
     open,
-    signTermsOfService,
     shouldApprove,
   ])
 

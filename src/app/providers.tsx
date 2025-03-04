@@ -7,7 +7,6 @@ import { WagmiProvider } from 'wagmi'
 
 import { useInitialize } from '@/lib/hooks/use-initialize'
 import { ProtectionProvider } from '@/lib/providers/protection'
-import { SignTermsProvider } from '@/lib/providers/sign-terms-provider'
 import theme from '@/lib/styles/theme'
 import { initAppkit, wagmiAdapter } from '@/lib/utils/wagmi'
 
@@ -28,9 +27,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <WagmiProvider config={wagmiAdapter.wagmiConfig}>
           <QueryClientProvider client={queryClient}>
             <AnalyticsProvider>
-              <ProtectionProvider>
-                <SignTermsProvider>{children}</SignTermsProvider>
-              </ProtectionProvider>
+              <ProtectionProvider>{children}</ProtectionProvider>
             </AnalyticsProvider>
           </QueryClientProvider>
         </WagmiProvider>
