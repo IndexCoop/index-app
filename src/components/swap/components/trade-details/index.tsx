@@ -14,10 +14,10 @@ import { useState } from 'react'
 import { StyledSkeleton } from '@/components/skeleton'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { colors, useColorStyles } from '@/lib/styles/colors'
+import { cn } from '@/lib/utils/tailwind'
 
 import { TradeInfoItem } from '../../types'
 
-import { cn } from '@/lib/utils/tailwind'
 import { FlashMintTag } from './tag-flashmint'
 import { TradeInfoItemsContainer } from './trade-info'
 import { TradePrice } from './trade-price'
