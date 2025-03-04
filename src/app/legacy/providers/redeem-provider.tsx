@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import {
   createContext,
   useCallback,
@@ -14,6 +15,7 @@ import {
   PolygonLegacyTokenList,
 } from '@/app/legacy/config'
 import { LegacyRedemptionQuoteResult, LegacyToken } from '@/app/legacy/types'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { POLYGON } from '@/constants/chains'
 import { Token } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -59,6 +61,7 @@ export function RedeemProvider(props: { children: any }) {
   const publicClient = usePublicClient()
   const queryClient = useQueryClient()
   const { address } = useWallet()
+  const sendTradeEvent = useSetAtom(tradeMachineAtom)
 
   const inputTokenList = useMemo(
     () =>
@@ -114,13 +117,18 @@ export function RedeemProvider(props: { children: any }) {
         },
         publicClient,
       )
-      return {
+
+      const quoteResult = {
         type: QuoteType.issuance,
         isAvailable: true,
         quote: legacyQuote?.quote ?? null,
         legacy: legacyQuote?.extended ?? null,
         error: null,
       }
+
+      sendTradeEvent({ type: 'QUOTE', quoteResult, quote: QuoteType.issuance })
+
+      return quoteResult
     },
   })
 

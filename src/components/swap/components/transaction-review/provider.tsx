@@ -1,9 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { usePublicClient } from 'wagmi'
 
-import { tradeAtom } from '@/app/store/trade-atom'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { PostApiV2Trade200 } from '@/gen'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -103,47 +102,33 @@ export function useTransactionReview(props: ReviewProps) {
 
   // const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
 
-  const setLatestTrade = useSetAtom(tradeAtom)
+  const sendTradeEvent = useSetAtom(tradeMachineAtom)
 
   const utm = useUtmParams()
 
-  const client = usePublicClient()
   const queryClient = useQueryClient()
   const saveTrade: TradeCallback = useCallback(
     async ({ address, hash, quote }) => {
-      const trade = mapQuoteToTrade(address, hash, quote, utm)
-
-      setLatestTrade({
-        ...(trade as PostApiV2Trade200),
-        status: 'pending',
-      })
-
-      const postTrade = fetch(`/api/user/trade`, {
+      const response = await fetch(`/api/user/trade`, {
         method: 'POST',
-        body: JSON.stringify(trade),
+        body: JSON.stringify(mapQuoteToTrade(address, hash, quote, utm)),
       })
 
-      const waitForRc = client?.waitForTransactionReceipt({
-        hash: hash as `0x${string}`,
-        confirmations: 3,
-      })
+      const trade = (await response.json()) as PostApiV2Trade200
 
-      const [rc, response] = await Promise.all([waitForRc, postTrade])
-
-      const saveTradeResponse = (await response.json()) as PostApiV2Trade200
-
-      setLatestTrade({
-        ...saveTradeResponse,
-        status: rc?.status ?? 'unknown',
-      })
-
-      queryClient.refetchQueries({
+      await queryClient.refetchQueries({
         predicate: (query) =>
           (query.queryKey[0] as string)?.includes('leverage-token') ||
           query.queryKey[0] === 'balances',
       })
+
+      if (response.status === 200) {
+        sendTradeEvent({ type: 'TRADE_PERSISTED', trade })
+      } else {
+        sendTradeEvent({ type: 'TRADE_FAILED' })
+      }
     },
-    [utm, client, queryClient, setLatestTrade],
+    [utm, queryClient, sendTradeEvent],
   )
 
   const makeTrade = async (override: boolean) => {

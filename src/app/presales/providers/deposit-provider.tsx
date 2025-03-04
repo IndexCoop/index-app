@@ -1,3 +1,4 @@
+import { useSetAtom } from 'jotai'
 import {
   createContext,
   useCallback,
@@ -9,6 +10,7 @@ import {
 import { usePublicClient } from 'wagmi'
 
 import { PreSaleStatus } from '@/app/presales/types'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import {
   ETH,
   HighYieldETHIndex,
@@ -18,7 +20,7 @@ import {
   WETH,
   WSTETH,
 } from '@/constants/tokens'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getEnhancedIssuanceQuote } from '@/lib/hooks/use-best-quote/utils/issuance'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
@@ -35,7 +37,6 @@ interface DepositContextProps {
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
-  quoteResult: QuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectInputToken: (symbol: string) => void
   reset: () => void
@@ -54,7 +55,6 @@ const DepositContext = createContext<DepositContextProps>({
   inputToken: WSTETH,
   outputToken: HighYieldETHIndex,
   inputTokenAmount: BigInt(0),
-  quoteResult: null,
   onChangeInputTokenAmount: () => {},
   onSelectInputToken: () => {},
   reset: () => {},
@@ -81,12 +81,7 @@ export function DepositProvider(props: {
     props.preSaleStatus !== PreSaleStatus.CLOSED_TARGET_NOT_MET,
   )
   const [isFetchingQuote, setFetchingQuote] = useState(false)
-  const [quoteResult, setQuoteResult] = useState<QuoteResult>({
-    type: QuoteType.issuance,
-    isAvailable: true,
-    quote: null,
-    error: null,
-  })
+  const sendTradeEvent = useSetAtom(tradeMachineAtom)
 
   useEffect(() => {
     if (isDepositing) {
@@ -133,12 +128,7 @@ export function DepositProvider(props: {
 
   const reset = () => {
     setInputValue('')
-    setQuoteResult({
-      type: QuoteType.issuance,
-      isAvailable: true,
-      quote: null,
-      error: null,
-    })
+    sendTradeEvent({ type: 'CLOSE' })
   }
 
   const toggleIsDepositing = useCallback(() => {
@@ -184,11 +174,17 @@ export function DepositProvider(props: {
         )
       }
       setFetchingQuote(false)
-      setQuoteResult({
-        type: QuoteType.issuance,
-        isAvailable: true,
-        quote: quoteIssuance,
-        error: null,
+
+      sendTradeEvent({
+        type: 'QUOTE',
+        quoteResult: {
+          isAvailable: true,
+          quote: quoteIssuance,
+          type: QuoteType.issuance,
+          error: null,
+        },
+
+        quote: QuoteType.issuance,
       })
     }
     fetchQuote()
@@ -204,6 +200,7 @@ export function DepositProvider(props: {
     preSaleToken,
     provider,
     publicClient,
+    sendTradeEvent,
     rpcUrl,
   ])
 
@@ -219,7 +216,6 @@ export function DepositProvider(props: {
         inputToken,
         outputToken,
         inputTokenAmount,
-        quoteResult,
         onChangeInputTokenAmount,
         onSelectInputToken,
         reset,

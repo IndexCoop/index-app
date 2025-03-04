@@ -51,6 +51,7 @@
     "framer-motion": "11.2.6",
     "jotai": "2.12.0",
     "jotai-utils": "0.0.0",
+    "jotai-xstate": "0.6.1",
     "lodash": "4.17.21",
     "next": "14.2.13",
     "react": "^18.2.0",
@@ -59,7 +60,8 @@
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
     "viem": "2.22.21",
-    "wagmi": "2.14.9"
+    "wagmi": "2.14.9",
+    "xstate": "5.19.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

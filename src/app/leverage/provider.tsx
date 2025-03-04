@@ -1,27 +1,21 @@
 'use client'
 
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { useAtom } from 'jotai'
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react'
 import { arbitrum } from 'viem/chains'
 
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
-import { tradeAtom } from '@/app/store/trade-atom'
-import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM } from '@/constants/chains'
 import { ETH, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { usePrepareTransactionReview } from '@/lib/hooks/use-prepare-transaction-review'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -54,7 +48,6 @@ export interface TokenContext {
   isFetchingQuote: boolean
   quoteResult: QuoteResult | null
   supportedLeverageTypes: LeverageType[]
-  transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
@@ -80,7 +73,6 @@ export const LeverageTokenContext = createContext<TokenContext>({
   isFetchingQuote: false,
   quoteResult: null,
   supportedLeverageTypes: [],
-  transactionReview: null,
   onChangeInputTokenAmount: () => {},
   onSelectInputToken: () => {},
   onSelectLeverageType: () => {},
@@ -118,8 +110,6 @@ export function LeverageProvider(props: { children: any }) {
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
   const { slippage } = useSlippage()
-  const [recentTrade] = useAtom(tradeAtom)
-  const pendingTransactionReview = useRef<TransactionReview | null>(null)
 
   const [inputValue, setInputValue] = useState('')
 
@@ -168,24 +158,6 @@ export function LeverageProvider(props: { children: any }) {
     inputValue,
     slippage,
   })
-
-  const normalTransactionReview = usePrepareTransactionReview(
-    isFetchingQuote,
-    quoteResult,
-  )
-
-  useEffect(() => {
-    if (normalTransactionReview) {
-      pendingTransactionReview.current = normalTransactionReview
-    }
-  }, [normalTransactionReview])
-
-  const transactionReview = useMemo(() => {
-    if (recentTrade) {
-      return pendingTransactionReview.current
-    }
-    return normalTransactionReview
-  }, [normalTransactionReview, recentTrade])
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
@@ -330,7 +302,6 @@ export function LeverageProvider(props: { children: any }) {
         supportedLeverageTypes: isRatioToken
           ? [LeverageType.Long2x]
           : supportedLeverageTypes[chainId],
-        transactionReview,
         onChangeInputTokenAmount,
         onSelectInputToken,
         onSelectLeverageType,

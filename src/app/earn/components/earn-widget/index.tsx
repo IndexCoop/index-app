@@ -1,12 +1,14 @@
 'use client'
 
 import { useDisclosure } from '@chakra-ui/react'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import { Summary } from '@/app/earn/components/earn-widget/components/summary'
 import { supportedNetworks } from '@/app/earn/constants'
 import { useEarnContext } from '@/app/earn/provider'
 import { useQueryParams } from '@/app/earn/use-query-params'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { Receive } from '@/components/receive'
 import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
 import { Settings } from '@/components/settings'
@@ -40,7 +42,6 @@ export function EarnWidget() {
     inputValue,
     isMinting,
     outputTokens,
-    transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
     onSelectOutputToken,
@@ -70,11 +71,8 @@ export function EarnWidget() {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const {
-    isOpen: isTransactionReviewOpen,
-    onOpen: onOpenTransactionReview,
-    onClose: onCloseTransactionReview,
-  } = useDisclosure()
+
+  const sendTradeEvent = useSetAtom(tradeMachineAtom)
 
   const {
     auto: autoSlippage,
@@ -139,7 +137,7 @@ export function EarnWidget() {
         buttonLabelOverrides={{
           [TradeButtonState.default]: 'Review Transaction',
         }}
-        onOpenTransactionReview={onOpenTransactionReview}
+        onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
         onRefetchQuote={() => {}}
       />
       <SelectTokenModal
@@ -164,17 +162,13 @@ export function EarnWidget() {
         tokens={outputTokens}
         showNetworks={isMinting}
       />
-      {transactionReview && (
-        <TransactionReviewModal
-          isOpen={isTransactionReviewOpen}
-          onClose={() => {
-            reset()
-            resetData()
-            onCloseTransactionReview()
-          }}
-          transactionReview={transactionReview}
-        />
-      )}
+      <TransactionReviewModal
+        onClose={() => {
+          reset()
+          resetData()
+          sendTradeEvent({ type: 'CLOSE' })
+        }}
+      />
     </div>
   )
 }

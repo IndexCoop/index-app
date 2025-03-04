@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { Token } from '@/constants/tokens'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -36,6 +38,7 @@ export function useQuoteResult(request: QuoteRequest) {
   const nativeTokenPrice = useNativeTokenPrice(chainId)
   const publicClient = usePublicClient({ chainId })
   const { logEvent } = useAnalytics()
+  const sendTradeEvent = useSetAtom(tradeMachineAtom)
 
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
@@ -122,6 +125,7 @@ export function useQuoteResult(request: QuoteRequest) {
         !!outputToken &&
         !!publicClient &&
         inputTokenAmount > 0,
+      refetchOnWindowFocus: false,
     })
 
   const { data: swapQuote, isFetching: isFetchingSwapQuote } = useQuery({
@@ -156,13 +160,20 @@ export function useQuoteResult(request: QuoteRequest) {
       logEvent('Quote Received', formatQuoteAnalytics(bestQuote))
     }
 
-    setQuoteResult({
+    const quoteResult = {
       type: bestQuote?.type ?? QuoteType.flashmint,
       isAvailable: true,
       quote: bestQuote,
       error: null,
+    }
+
+    setQuoteResult(quoteResult)
+    sendTradeEvent({
+      type: 'QUOTE',
+      quoteResult,
+      quote: bestQuote?.type ?? QuoteType.flashmint,
     })
-  }, [chainId, flashmintQuote, logEvent, swapQuote])
+  }, [chainId, flashmintQuote, logEvent, swapQuote, sendTradeEvent])
 
   return {
     isFetchingQuote: isFetchingFlashMintQuote || isFetchingSwapQuote,

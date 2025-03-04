@@ -6,65 +6,40 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react'
-import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { useAtom } from 'jotai'
-import { useState } from 'react'
 
-import { tradeAtom } from '@/app/store/trade-atom'
-import { TradeButton } from '@/components/trade-button'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { colors } from '@/lib/styles/colors'
 
 import { Review } from './components/review'
 import { SubmissionResult } from './components/submission-result'
-import { TransactionReview } from './types'
 
 import './styles.css'
 
-enum TransactionReviewModalState {
-  failed,
-  submit,
-  success,
-}
-
 type TransactionReviewModalProps = {
   isDarkMode?: boolean
-  isOpen: boolean
-  transactionReview: TransactionReview
   onClose: () => void
 }
 
 export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
-  const { isOpen, onClose, transactionReview } = props
+  const { onClose } = props
   const isDarkMode = props.isDarkMode === true
-  const [recentTrade, setRecentTrade] = useAtom(tradeAtom)
-
-  const [state, setState] = useState<TransactionReviewModalState>(
-    TransactionReviewModalState.submit,
-  )
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const onCloseModal = () => {
-    if (recentTrade?.status === 'pending') {
-      return
-    }
-
-    setState(TransactionReviewModalState.submit)
-    setRecentTrade(null)
+    sendTradeEvent({ type: 'CLOSE' })
     onClose()
   }
 
-  const onSubmitWithSuccess = (success: boolean) => {
-    const modalState = success
-      ? TransactionReviewModalState.success
-      : TransactionReviewModalState.failed
-    setState(modalState)
-  }
-
-  const modalTitle =
-    state === TransactionReviewModalState.submit ? 'Review Transaction' : ''
+  const modalTitle = tradeState.matches('review') ? 'Review Transaction' : ''
 
   return (
-    <Modal onClose={onCloseModal} isOpen={isOpen} isCentered>
+    <Modal
+      onClose={onCloseModal}
+      isOpen={tradeState.context.isModalOpen}
+      isCentered
+    >
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
       <ModalContent
         backgroundColor={isDarkMode ? '#1C2C2E' : '#FCFFFF'}
@@ -88,33 +63,15 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
           className={clsx(isDarkMode ? 'dark' : '')}
           p='0 16px 16px 16px'
         >
-          {state === TransactionReviewModalState.success && (
-            <SubmissionResult onClose={onCloseModal} />
-          )}
+          <SubmissionResult onClose={onCloseModal} />
 
-          {state === TransactionReviewModalState.failed && (
-            <div className='flex flex-col items-center'>
-              <div className='flex flex-col items-center p-4'>
-                <ExclamationCircleIcon className='dark:text-ic-white text-ic-black size-7' />
-                <div className='text-ic-black dark:text-ic-white p-4 text-center text-xl'>
-                  Submitting the transaction was cancelled or failed.
-                </div>
-              </div>
-              <TradeButton
-                isDisabled={false}
-                isLoading={false}
-                label={'Done'}
-                onClick={onClose}
+          {tradeState.context.transactionReview &&
+            tradeState.matches('review') && (
+              <Review
+                transactionReview={tradeState.context.transactionReview}
+                onSubmitWithSuccess={() => sendTradeEvent({ type: 'SUBMIT' })}
               />
-            </div>
-          )}
-
-          {state === TransactionReviewModalState.submit && (
-            <Review
-              onSubmitWithSuccess={onSubmitWithSuccess}
-              transactionReview={transactionReview}
-            />
-          )}
+            )}
         </ModalBody>
       </ModalContent>
     </Modal>
