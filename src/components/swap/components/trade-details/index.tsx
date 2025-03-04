@@ -12,6 +12,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 
 import { StyledSkeleton } from '@/components/skeleton'
+import { Tag } from '@/components/swap/components/trade-details/tag'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { colors, useColorStyles } from '@/lib/styles/colors'
 import { cn } from '@/lib/utils/tailwind'
@@ -108,7 +109,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                       <div className={cn('flex gap-4', isExpanded && 'hidden')}>
                         {!isLoading &&
                           props.selectedQuoteType === QuoteType.index && (
-                            <FlashMintTag />
+                            <Tag label={'LI.FI'} />
                           )}
                         {!isLoading &&
                           props.selectedQuoteType === QuoteType.flashmint && (
