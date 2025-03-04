@@ -11,6 +11,7 @@ import type { PostApiV2Trade200 } from '@/gen'
 export interface TradeMachineContext {
   isModalOpen: boolean
   trade: PostApiV2Trade200 | null
+  quoteResult: QuoteResult | null
   transactionReview: TransactionReview | null
   transactionStatus: TransactionReceipt['status'] | null
   error: Error | null
@@ -38,6 +39,7 @@ const createTradeMachine = () =>
     initial: 'idle',
     context: {
       isModalOpen: false,
+      quoteResult: null,
       trade: null,
       transactionReview: null,
       transactionStatus: null,
@@ -49,6 +51,7 @@ const createTradeMachine = () =>
           QUOTE: {
             target: 'quote',
             actions: assign({
+              quoteResult: ({ event }) => event.quoteResult,
               transactionReview: ({ event }) => {
                 assertEvent(event, 'QUOTE')
 
