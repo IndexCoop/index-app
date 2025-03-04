@@ -13,7 +13,7 @@ type TradeInfoItemRowProps = {
 const TradeInfoItemRow = ({ isLoading, item }: TradeInfoItemRowProps) => {
   const { title, values, tooltip, isLink } = item
   return (
-    <Tooltip placement='bottom-end'>
+    <Tooltip placement='bottom'>
       <TooltipTrigger
         className={cn(
           'text-ic-gray-600 flex w-full justify-between text-[11px] font-medium',

@@ -17,6 +17,7 @@ import { colors, useColorStyles } from '@/lib/styles/colors'
 
 import { TradeInfoItem } from '../../types'
 
+import { cn } from '@/lib/utils/tailwind'
 import { FlashMintTag } from './tag-flashmint'
 import { TradeInfoItemsContainer } from './trade-info'
 import { TradePrice } from './trade-price'
@@ -104,7 +105,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                           )}
                         </Box>
                       </Flex>
-                      <Flex opacity={isExpanded ? 0 : 1} gap={4}>
+                      <div className={cn('flex gap-4', isExpanded && 'hidden')}>
                         {!isLoading &&
                           props.selectedQuoteType === QuoteType.index && (
                             <FlashMintTag />
@@ -114,7 +115,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                             <FlashMintTag />
                           )}
                         {isLoading && <StyledSkeleton width={70} />}
-                      </Flex>
+                      </div>
                     </>
                   </Flex>
                   <AccordionIcon />
