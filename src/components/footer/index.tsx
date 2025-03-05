@@ -44,8 +44,8 @@ const navigation = {
 
 export function Footer() {
   return (
-    <footer className='z-50 flex w-full justify-center px-8 py-12 leading-4 backdrop-blur lg:px-12 lg:py-20 dark:bg-black dark:bg-opacity-50'>
-      <div className='max-w-7xl'>
+    <footer className='z-50 flex w-full justify-center backdrop-blur dark:bg-black dark:bg-opacity-50'>
+      <div className='max-w-7xl px-8 py-12 leading-4 lg:px-12 lg:py-20'>
         <div className='mb-8 sm:mb-12 lg:mb-16'>
           <div className='lg:grid lg:grid-cols-4 lg:gap-8'>
             <LogoFull />
