@@ -32,7 +32,7 @@
     "@indexcoop/tokenlists": "3.11.0",
     "@next/third-parties": "15.1.7",
     "@reown/appkit": "1.6.9",
-    "@reown/appkit-adapter-wagmi": "1.6.5",
+    "@reown/appkit-adapter-wagmi": "1.6.9",
     "@safe-global/api-kit": "2.5.4",
     "@safe-global/protocol-kit": "4.0.4",
     "@safe-global/safe-core-sdk-types": "5.0.3",
@@ -58,8 +58,8 @@
     "react-loading-skeleton": "3.5.0",
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
-    "viem": "2.22.21",
-    "wagmi": "2.14.9"
+    "viem": "2.23.6",
+    "wagmi": "2.14.12"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

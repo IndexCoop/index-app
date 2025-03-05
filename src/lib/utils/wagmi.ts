@@ -1,3 +1,4 @@
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import {
   AppKitNetwork,
   arbitrum,
@@ -7,7 +8,6 @@ import {
   polygon,
 } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { cookieStorage, createStorage, http } from 'wagmi'
 import { safe } from 'wagmi/connectors'
 
