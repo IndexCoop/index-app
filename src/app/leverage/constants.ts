@@ -29,7 +29,6 @@ export const leverageTokens = [
   ...btcLeverageTokenSymbols,
   'uSOL2x',
   'uSUI2x',
-  'wstETH15x',
 ]
 
 export function getCurrencyTokens(chainId: number): Token[] {
