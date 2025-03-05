@@ -5,12 +5,21 @@
 @tailwind utilities;
 
 @keyframes smoothBg {
-  from {
+  0% {
+    transform: rotate(0deg);
     background-position:
       50% 50%,
       50% 50%;
+    background-size: 150%, 150%;
   }
-  to {
+  50% {
+    transform: rotate(180deg);
+
+    background-size: 350%, 350%;
+  }
+  100% {
+    transform: rotate(360deg);
+    background-size: 150%, 150%;
     background-position:
       350% 50%,
       350% 50%;
@@ -18,12 +27,12 @@
 }
 
 .light-effect {
-  width: 100%;
+  width: 200%;
   height: 100%;
   min-height: 100vh;
   position: fixed;
   top: 0;
-  left: 0;
+  left: -50%;
   display: flex;
   place-content: center;
   place-items: center;
@@ -38,17 +47,17 @@
 
   --rainbow: repeating-linear-gradient(
     100deg,
+    #006a71 25%,
     #60a5fa 10%,
-    #60a5fa 15%,
-    #5eead4 15%,
-    #60a5fa 20%
+    #09aa74 15%,
+    #84e9e9 15%
   );
   background-image: var(--stripes), var(--rainbow);
-  background-size: 300%, 200%;
+  background-size: 400%, 00%;
   background-position:
     50% 50%,
     50% 50%;
-  filter: blur(20px);
+  filter: blur(50px);
   mix-blend-mode: difference;
   mask-image: radial-gradient(ellipse at 100% 0%, black 40%, transparent 70%);
 }
@@ -58,8 +67,8 @@
   position: absolute;
   inset: 0;
   background-image: var(--stripes), var(--rainbow);
-  background-size: 200%, 100%;
-  animation: smoothBg 60s linear infinite;
+  background-size: 350%, 350%;
+  animation: smoothBg 300s alternate infinite;
   background-attachment: fixed;
   mix-blend-mode: difference;
   filter: blur(10px) opacity(50%) saturate(200%);
