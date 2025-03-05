@@ -1,10 +1,9 @@
-import { Tooltip } from '@chakra-ui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { useMemo } from 'react'
 
 import { usePresaleData } from '@/app/presales/providers/presale-provider'
-import { colors } from '@/lib/styles/colors'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 
 import { presaleButtonLabels } from '../../constants'
 import { PreSaleStatus, PreSaleToken } from '../../types'
@@ -85,40 +84,34 @@ export function PreSaleTokenCard({ token, onClick }: Props) {
       <p className='text-ic-gray-400 mb-6 text-xs font-medium md:min-h-8 lg:min-h-0'>
         Components from {token.componentsFrom.join(', ')}
       </p>
-      <Tooltip
-        className='bg-ic-white'
-        borderRadius='6px'
-        fontSize={'11px'}
-        fontWeight={500}
-        label='This shows the total number of PRTs distributed between presale participants. Individual rewards will be shown in the deposit widget.'
-        p='12px 16px'
-        placement='bottom-start'
-        textColor={colors.ic.gray[600]}
-      >
-        <div className='bg-ic-gray-50 border-ic-gray-300 text-ic-gray-500 w-full rounded-xl border px-3 py-5 text-xs font-medium'>
-          <div className='flex'>
-            <div
-              className={clsx('flex-1', isStatusClosed && 'text-ic-gray-400')}
-            >
-              Total PRT Rewards
-            </div>
-            <div
-              className={
-                isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-800'
-              }
-            >
-              <span
-                className={clsx(
-                  'font-bold',
-                  isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-950',
-                )}
-              >
-                {token.prtRewards}
-              </span>{' '}
-              PRTs
-            </div>
+      <Tooltip placement='bottom-start'>
+        <TooltipTrigger className='bg-ic-gray-50 border-ic-gray-300 text-ic-gray-500 flex w-full rounded-xl border px-3 py-5 text-xs font-medium'>
+          <div
+            className={clsx(
+              'flex flex-1',
+              isStatusClosed && 'text-ic-gray-400',
+            )}
+          >
+            Total PRT Rewards
           </div>
-        </div>
+          <div
+            className={isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-800'}
+          >
+            <span
+              className={clsx(
+                'font-bold',
+                isStatusClosed ? 'text-ic-gray-500' : 'text-ic-gray-950',
+              )}
+            >
+              {token.prtRewards}
+            </span>{' '}
+            PRTs
+          </div>
+        </TooltipTrigger>
+        <TooltipContent className='bg-ic-white text-ic-gray-600 max-w-xs rounded-md border-[0.5px] border-gray-300 px-1.5 py-3 text-left text-[11px] font-medium'>
+          This shows the total number of PRTs distributed between presale
+          participants. Individual rewards will be shown in the deposit widget.
+        </TooltipContent>
       </Tooltip>
       <div className='text-ic-gray-600 w-full px-3 py-5 text-xs font-medium'>
         <div className='mb-2 flex'>
