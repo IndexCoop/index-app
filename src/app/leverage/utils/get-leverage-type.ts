@@ -30,6 +30,8 @@ export function getLeverageType(token: LeverageToken): LeverageType | null {
       return LeverageType.Long2x
     case 'Long3x':
       return LeverageType.Long3x
+    case 'Long15x':
+      return LeverageType.Long15x
     case 'Short1x':
       return LeverageType.Short
     default:
