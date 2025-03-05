@@ -161,9 +161,7 @@ export function SubmissionResult({
                     )}
                   >{`${formatAmount(positionCloseData.pnl.value, trade.underlyingAssetUnitPriceDenominator)} `}</span>
                   <span>{`(${positionCloseData.pnl.percentage.toFixed(2)}%)`}</span>
-                  <span>
-                    {positionCloseData.pnl.sign > 0 ? '💯🔥' : '😅💀'}
-                  </span>
+                  <span>{positionCloseData.pnl.sign > 0 ? '💯🔥' : ''}</span>
                 </h1>
               )}
             </div>
