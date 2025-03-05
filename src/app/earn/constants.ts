@@ -45,8 +45,7 @@ export function getTagline(indexTokenSymbol: string): string {
     case 'iceth':
       return 'ETH staking returns using a leveraged liquid staking strategy.'
     case 'wsteth15x':
-      // TODO:
-      return ''
+      return '15x ETH Smart Loop using a delta-neutral leveraged yield strategy.'
     default:
       return ''
   }
