@@ -93,7 +93,7 @@ const WaitingForConfirmation = () => {
           className={cn(
             'text-ic-black dark:text-ic-black w-full rounded-[10px] px-4 py-2 text-sm font-bold',
             'shadow-[0.5px_1px_2px_0_rgba(0,0,0,0.3)]',
-            'bg-ic-gray-600 dark:bg-ic-gray-600',
+            'bg-ic-gray-400 dark:bg-ic-gray-600',
           )}
         >
           Done
