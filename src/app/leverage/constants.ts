@@ -51,13 +51,17 @@ export function getCurrencyTokens(chainId: number): Token[] {
 export function getLeverageTokens(chainId: number): LeverageToken[] {
   const tokens: (LeverageToken | null)[] = leverageTokens.map((tokenSymbol) => {
     const token = getTokenByChainAndSymbol(chainId, tokenSymbol)
+
     if (!token) return null
     if (!isLeverageToken(token)) return null
+
     const baseToken = getLeverageBaseToken(token.symbol)
     const leverageType = getLeverageType(token)
+
     if (!baseToken || !token.address || leverageType === null) {
       return null
     }
+
     return {
       ...token,
       image: token.logoURI,
