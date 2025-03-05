@@ -3,3 +3,63 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes smoothBg {
+  from {
+    background-position:
+      50% 50%,
+      50% 50%;
+  }
+  to {
+    background-position:
+      350% 50%,
+      350% 50%;
+  }
+}
+
+.light-effect {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  place-content: center;
+  place-items: center;
+  --stripes: repeating-linear-gradient(
+    100deg,
+    #0f1717 0%,
+    #0f1717 7%,
+    transparent 10%,
+    transparent 12%,
+    #0f1717 16%
+  );
+
+  --rainbow: repeating-linear-gradient(
+    100deg,
+    #60a5fa 10%,
+    #60a5fa 15%,
+    #5eead4 15%,
+    #60a5fa 20%
+  );
+  background-image: var(--stripes), var(--rainbow);
+  background-size: 300%, 200%;
+  background-position:
+    50% 50%,
+    50% 50%;
+  filter: blur(10px);
+  mask-image: radial-gradient(ellipse at 100% 0%, black 40%, transparent 70%);
+}
+
+.light-effect::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--stripes), var(--rainbow);
+  background-size: 200%, 100%;
+  animation: smoothBg 60s linear infinite;
+  background-attachment: fixed;
+  mix-blend-mode: difference;
+  filter: blur(10px) opacity(50%) saturate(200%);
+}
