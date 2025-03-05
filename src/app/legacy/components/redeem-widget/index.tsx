@@ -19,7 +19,6 @@ import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
 
 import { useRedeem } from '../../providers/redeem-provider'
@@ -37,7 +36,6 @@ export function RedeemWidget() {
     POLYGON.chainId,
   ])
   const { open } = useAppKit()
-  const { signTermsOfService } = useSignTerms()
   const { address } = useWallet()
   const {
     inputTokenList,
@@ -129,11 +127,6 @@ export function RedeemWidget() {
       return
     }
 
-    if (buttonState === TradeButtonState.signTerms) {
-      await signTermsOfService()
-      return
-    }
-
     if (buttonState === TradeButtonState.wrongNetwork) {
       open({ view: 'Networks' })
 
@@ -159,7 +152,6 @@ export function RedeemWidget() {
     buttonState,
     isApproved,
     onApprove,
-    signTermsOfService,
     onOpenTransactionReview,
     open,
 

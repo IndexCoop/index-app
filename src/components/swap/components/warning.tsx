@@ -9,7 +9,6 @@ export enum WarningType {
   flashbots,
   priceImpact,
   restricted,
-  signTerms,
   vpn,
 }
 
@@ -19,10 +18,7 @@ export interface Warning {
 }
 
 const warningsData: Record<
-  | WarningType.priceImpact
-  | WarningType.restricted
-  | WarningType.signTerms
-  | WarningType.vpn,
+  WarningType.priceImpact | WarningType.restricted | WarningType.vpn,
   Warning
 > = {
   [WarningType.priceImpact]: {
@@ -73,22 +69,6 @@ const warningsData: Record<
           Tokens Restricted for Restricted Persons
         </Link>{' '}
         page.
-      </>
-    ),
-  },
-  [WarningType.signTerms]: {
-    title: 'Please sign the Terms and Conditions',
-    node: (
-      <>
-        I confirm that I have read the{' '}
-        <Link
-          href='https://indexcoop.com/terms-of-service'
-          style={{ textDecoration: 'underline' }}
-        >
-          Terms of Service
-        </Link>
-        , am not a restricted person - including US person - as described in the
-        terms, and use the Website in compliance with the terms.
       </>
     ),
   },
