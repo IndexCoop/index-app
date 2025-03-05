@@ -48,8 +48,6 @@ const mapCoingeckoIdToSymbol = (id: string) => {
       return 'sol'
     case 'wrapped-sui-universal':
       return 'sui'
-    case 'superbridge-bridged-wsteth-base':
-      return 'wsteth'
     default:
       return id
   }
@@ -99,7 +97,6 @@ export async function POST(req: NextRequest) {
 
     const USUI = getTokenByChainAndSymbol(chainId, 'uSUI')
     const USOL = getTokenByChainAndSymbol(chainId, 'uSOL')
-    const WSTETH = getTokenByChainAndSymbol(chainId, 'wstETH')
 
     const positions = await getApiV2UserAddressPositions(
       { address: user },
@@ -147,7 +144,6 @@ export async function POST(req: NextRequest) {
             'bitcoin',
             USUI?.extensions.coingeckoId,
             USOL?.extensions.coingeckoId,
-            WSTETH?.extensions.coingeckoId,
           ].filter((str) => str !== undefined),
           ['btc', 'eth', 'usd'],
         ),

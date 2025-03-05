@@ -6,7 +6,6 @@ export enum LeverageType {
   Long2x,
   Long3x,
   Short,
-  Long15x,
 }
 
 export enum LeverageMarket {
