@@ -18,7 +18,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@0xarc-io/analytics": "2.2.3",
+    "@0xarc-io/analytics": "2.4.1",
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "2.8.2",
     "@emotion/react": "^11.11.0",
