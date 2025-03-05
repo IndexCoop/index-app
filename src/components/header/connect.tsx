@@ -49,7 +49,7 @@ export const Connect = () => {
           {chainId !== walletChainId && <div className='absolute'></div>}
           <NetworkSelect />
           <Button
-            className='bg-ic-black flex items-center gap-2 rounded-md px-4 py-1 text-sm transition-all duration-300 hover:scale-[1.04]'
+            className='bg-ic-gray-900 flex items-center gap-2 rounded-md px-4 py-1 text-sm transition-all duration-300 hover:scale-[1.04]'
             onClick={() => open({ view: 'Account' })}
           >
             <div className='flex gap-1'>
