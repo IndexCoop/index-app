@@ -64,6 +64,7 @@ export interface Market {
   symbol: 'ETH' | 'BTC' | 'SOL' | 'SUI'
   currency: 'USD' | 'BTC' | 'ETH'
   defaultAsset: { symbol: string; chainId: number }
+  lendingProtocol: string
 }
 
 export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'
