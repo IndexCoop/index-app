@@ -48,7 +48,8 @@
   background-position:
     50% 50%,
     50% 50%;
-  filter: blur(10px);
+  filter: blur(20px);
+  mix-blend-mode: difference;
   mask-image: radial-gradient(ellipse at 100% 0%, black 40%, transparent 70%);
 }
 
