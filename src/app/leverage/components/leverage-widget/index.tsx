@@ -115,7 +115,7 @@ export function LeverageWidget() {
           onClickBalance={onClickBalance}
           onSelectToken={onOpenSelectInputToken}
         />
-        <div className='absolute right-0 top-0'>
+        <div className='absolute right-2 top-2'>
           <Settings
             isAuto={isAutoSlippage}
             isDarkMode={true}
