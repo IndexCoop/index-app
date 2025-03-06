@@ -43,10 +43,10 @@
 
   --rainbow: repeating-linear-gradient(
     100deg,
-    #006a71 25%,
-    #60a5fa 10%,
-    #09aa74 15%,
-    #84e9e9 15%
+    rgba(0, 74, 80, 1) 25%,
+    rgba(58, 122, 192, 0.7) 10%,
+    rgba(7, 122, 82, 0.7) 15%,
+    rgba(92, 179, 179, 0.7) 15%
   );
   background-image: var(--stripes), var(--rainbow);
   background-size: 400%, 00%;
@@ -65,7 +65,7 @@
   inset: 0;
   background-image: var(--stripes), var(--rainbow);
   background-size: 250%, 250%;
-  animation: smoothBg 300s alternate infinite;
+  animation: smoothBg 420s alternate infinite;
   background-attachment: fixed;
   mix-blend-mode: difference;
   filter: blur(10px) opacity(50%) saturate(200%);

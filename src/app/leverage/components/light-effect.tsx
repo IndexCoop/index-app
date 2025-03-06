@@ -1,5 +1,5 @@
 export const LightEffect = () => (
-  <div className='relative h-auto w-full'>
+  <div className='relative hidden h-auto w-full md:block'>
     <div className='light-effect' />
   </div>
 )
