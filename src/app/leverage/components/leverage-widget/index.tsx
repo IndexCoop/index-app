@@ -97,32 +97,35 @@ export function LeverageWidget() {
       className='leverage-widget flex flex-col gap-4 rounded-lg px-4 pb-5 pt-4'
       id='close-position-scroll'
     >
-      <div className='flex justify-end'>
-        <Settings
-          isAuto={isAutoSlippage}
-          isDarkMode={true}
-          slippage={slippage}
-          onChangeSlippage={setSlippage}
-          onClickAuto={autoSlippage}
-        />
-      </div>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
         supportedTypes={supportedLeverageTypes}
         onSelectType={onSelectLeverageType}
       />
-      <TradeInputSelector
-        config={{ isReadOnly: false }}
-        balance={inputBalanceFormatted}
-        caption='Pay'
-        formattedFiat={inputAmoutUsd}
-        selectedToken={inputToken}
-        selectedTokenAmount={inputValue}
-        onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
-        onClickBalance={onClickBalance}
-        onSelectToken={onOpenSelectInputToken}
-      />
+      <div className='relative'>
+        <TradeInputSelector
+          config={{ isReadOnly: false }}
+          balance={inputBalanceFormatted}
+          caption='Pay'
+          formattedFiat={inputAmoutUsd}
+          selectedToken={inputToken}
+          selectedTokenAmount={inputValue}
+          onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
+          onClickBalance={onClickBalance}
+          onSelectToken={onOpenSelectInputToken}
+        />
+        <div className='absolute right-0 top-0'>
+          <Settings
+            isAuto={isAutoSlippage}
+            isDarkMode={true}
+            slippage={slippage}
+            onChangeSlippage={setSlippage}
+            onClickAuto={autoSlippage}
+          />
+        </div>
+      </div>
+
       <Receive
         isLoading={isFetchingQuote}
         outputAmount={ouputAmount}
