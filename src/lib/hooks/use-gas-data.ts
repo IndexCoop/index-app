@@ -8,17 +8,19 @@ let baseFeePerGasFallback = BigInt(15e9)
 // Max Priority Fee (tip): 2 GWei (fallback)
 let maxPriorityFeePerGasFallback = BigInt(2e9)
 
+const fallbackData = {
+  baseFeePerGas: baseFeePerGasFallback,
+  maxFeePerGas: baseFeePerGasFallback + maxPriorityFeePerGasFallback,
+  maxPriorityFeePerGas: maxPriorityFeePerGasFallback,
+}
+
 export function useGasData() {
   const { chainId } = useNetwork()
   const publicClient = usePublicClient()
 
   const { data } = useQuery({
     enabled: Boolean(chainId),
-    initialData: {
-      baseFeePerGas: baseFeePerGasFallback,
-      maxFeePerGas: baseFeePerGasFallback + maxPriorityFeePerGasFallback,
-      maxPriorityFeePerGas: maxPriorityFeePerGasFallback,
-    },
+    initialData: fallbackData,
     queryKey: [
       'use-gas-data',
       {
@@ -27,7 +29,7 @@ export function useGasData() {
       },
     ],
     queryFn: async () => {
-      if (!chainId) return null
+      if (!chainId) return fallbackData
       if (!publicClient) return null
 
       const feeHistory = await publicClient.getFeeHistory({
