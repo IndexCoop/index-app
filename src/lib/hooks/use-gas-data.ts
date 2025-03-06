@@ -10,9 +10,9 @@ export interface GasData {
 }
 
 // Base fee: 15 GWei (fallback)
-let baseFeePerGasFallback = BigInt(15e9)
+const baseFeePerGasFallback = BigInt(15e9)
 // Max Priority Fee (tip): 2 GWei (fallback)
-let maxPriorityFeePerGasFallback = BigInt(2e9)
+const maxPriorityFeePerGasFallback = BigInt(2e9)
 
 const fallbackData: GasData = {
   baseFeePerGas: baseFeePerGasFallback,
