@@ -43,8 +43,6 @@ export function useGasData(): GasData {
         rewardPercentiles: [50],
       })
 
-      console.log(feeHistory)
-
       let baseFeePerGas = baseFeePerGasFallback
       let maxPriorityFeePerGas = maxPriorityFeePerGasFallback
 
