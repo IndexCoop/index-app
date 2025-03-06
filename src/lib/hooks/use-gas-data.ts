@@ -3,18 +3,24 @@ import { usePublicClient } from 'wagmi'
 
 import { useNetwork } from '@/lib/hooks/use-network'
 
+export interface GasData {
+  baseFeePerGas: bigint
+  maxFeePerGas: bigint
+  maxPriorityFeePerGas: bigint
+}
+
 // Base fee: 15 GWei (fallback)
 let baseFeePerGasFallback = BigInt(15e9)
 // Max Priority Fee (tip): 2 GWei (fallback)
 let maxPriorityFeePerGasFallback = BigInt(2e9)
 
-const fallbackData = {
+const fallbackData: GasData = {
   baseFeePerGas: baseFeePerGasFallback,
   maxFeePerGas: baseFeePerGasFallback + maxPriorityFeePerGasFallback,
   maxPriorityFeePerGas: maxPriorityFeePerGasFallback,
 }
 
-export function useGasData() {
+export function useGasData(): GasData {
   const { chainId } = useNetwork()
   const publicClient = usePublicClient()
 
@@ -30,7 +36,7 @@ export function useGasData() {
     ],
     queryFn: async () => {
       if (!chainId) return fallbackData
-      if (!publicClient) return null
+      if (!publicClient) return fallbackData
 
       const feeHistory = await publicClient.getFeeHistory({
         blockCount: 10,
