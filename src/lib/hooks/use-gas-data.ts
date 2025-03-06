@@ -49,6 +49,7 @@ export function useGasData(): GasData {
       let maxPriorityFeePerGas = maxPriorityFeePerGasFallback
 
       if (feeHistory && feeHistory.reward) {
+        // Get median of baseFeePerGas
         baseFeePerGas =
           feeHistory.baseFeePerGas.sort()[
             Math.floor(feeHistory.baseFeePerGas.length / 2)
