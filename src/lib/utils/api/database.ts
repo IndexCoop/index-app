@@ -56,6 +56,7 @@ const getUnderlyingAssetSymbol = (quote: Quote) => {
 
   if (symbol.startsWith('ETH') || symbol.startsWith('iETH')) return 'ETH'
   if (symbol.startsWith('BTC') || symbol.startsWith('iBTC')) return 'BTC'
+  if (symbol.startsWith('WSTETH')) return 'WSTETH'
   if (symbol.startsWith('USUI')) return 'SUI'
   if (symbol.startsWith('USOL')) return 'SOL'
 

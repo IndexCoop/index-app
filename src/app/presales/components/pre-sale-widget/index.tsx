@@ -19,7 +19,6 @@ import { useApproval } from '@/lib/hooks/use-approval'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useMainnetOnly } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
 
 import { useDeposit } from '../../providers/deposit-provider'
@@ -36,7 +35,6 @@ import './styles.css'
 export function PreSaleWidget({ token }: { token: PreSaleToken }) {
   const isSupportedNetwork = useMainnetOnly()
   const { open } = useAppKit()
-  const { signTermsOfService } = useSignTerms()
   const { address } = useWallet()
   const {
     inputValue,
@@ -113,11 +111,6 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
       return
     }
 
-    if (buttonState === TradeButtonState.signTerms) {
-      await signTermsOfService()
-      return
-    }
-
     if (buttonState === TradeButtonState.wrongNetwork) {
       open({ view: 'Networks' })
 
@@ -139,15 +132,7 @@ export function PreSaleWidget({ token }: { token: PreSaleToken }) {
     if (buttonState === TradeButtonState.default) {
       sendTradeEvent({ type: 'REVIEW' })
     }
-  }, [
-    buttonState,
-    isApproved,
-    onApprove,
-    open,
-    signTermsOfService,
-    sendTradeEvent,
-    shouldApprove,
-  ])
+  }, [buttonState, isApproved, onApprove, open, sendTradeEvent, shouldApprove])
 
   const onSelectToken = () => {
     if (!isDepositing) return

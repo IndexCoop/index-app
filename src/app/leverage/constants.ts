@@ -18,6 +18,11 @@ import {
   Market,
 } from './types'
 
+export enum LendingProtocol {
+  aave = 'aave',
+  morpho = 'morpho',
+}
+
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
 
 export const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X', 'ETH2xBTC']
@@ -46,13 +51,17 @@ export function getCurrencyTokens(chainId: number): Token[] {
 export function getLeverageTokens(chainId: number): LeverageToken[] {
   const tokens: (LeverageToken | null)[] = leverageTokens.map((tokenSymbol) => {
     const token = getTokenByChainAndSymbol(chainId, tokenSymbol)
+
     if (!token) return null
     if (!isLeverageToken(token)) return null
+
     const baseToken = getLeverageBaseToken(token.symbol)
     const leverageType = getLeverageType(token)
+
     if (!baseToken || !token.address || leverageType === null) {
       return null
     }
+
     return {
       ...token,
       image: token.logoURI,
@@ -147,6 +156,7 @@ export const markets: Market[] = [
     low24h: 0,
     high24h: 0,
     defaultAsset: { symbol: 'ETH3X', chainId: base.id },
+    lendingProtocol: LendingProtocol.aave,
   },
   {
     icon: '/assets/btc-usd-market.svg',
@@ -159,6 +169,7 @@ export const markets: Market[] = [
     low24h: 0,
     high24h: 0,
     defaultAsset: { symbol: 'BTC3X', chainId: base.id },
+    lendingProtocol: LendingProtocol.aave,
   },
   {
     icon: '/assets/sol-usd-market.svg',
@@ -171,6 +182,7 @@ export const markets: Market[] = [
     low24h: 0,
     high24h: 0,
     defaultAsset: { symbol: 'uSOL2x', chainId: base.id },
+    lendingProtocol: LendingProtocol.morpho,
   },
   {
     icon: '/assets/sui-usd-market.svg',
@@ -183,6 +195,7 @@ export const markets: Market[] = [
     low24h: 0,
     high24h: 0,
     defaultAsset: { symbol: 'uSUI2x', chainId: base.id },
+    lendingProtocol: LendingProtocol.morpho,
   },
   {
     icon: '/assets/eth-btc-market.svg',
@@ -195,6 +208,7 @@ export const markets: Market[] = [
     low24h: 0,
     high24h: 0,
     defaultAsset: { symbol: 'ETH2xBTC', chainId: arbitrum.id },
+    lendingProtocol: LendingProtocol.aave,
   },
   {
     icon: '/assets/btc-eth-market.svg',
@@ -207,6 +221,7 @@ export const markets: Market[] = [
     low24h: 0,
     high24h: 0,
     defaultAsset: { symbol: 'BTC2xETH', chainId: arbitrum.id },
+    lendingProtocol: LendingProtocol.aave,
   },
 ]
 

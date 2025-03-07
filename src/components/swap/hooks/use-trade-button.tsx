@@ -18,8 +18,6 @@ export function useTradeButton(
         return 'Approving...'
       case TradeButtonState.connectWallet:
         return 'Connect Wallet'
-      case TradeButtonState.signTerms:
-        return 'Sign Terms and Conditions'
       case TradeButtonState.enterAmount:
         return 'Enter an amount'
       case TradeButtonState.fetchingError:
@@ -41,7 +39,6 @@ export function useTradeButton(
     switch (buttonState) {
       case TradeButtonState.approve:
       case TradeButtonState.connectWallet:
-      case TradeButtonState.signTerms:
       case TradeButtonState.fetchingError:
       case TradeButtonState.wrongNetwork:
         return false

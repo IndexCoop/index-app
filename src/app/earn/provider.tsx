@@ -1,6 +1,6 @@
 'use client'
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -31,6 +31,7 @@ import { getCurrencyTokens, getYieldTokens } from './constants'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
 const hyETH = { ...hyEthTokenlist, image: hyEthTokenlist.logoURI }
+const icETH = getTokenByChainAndSymbol(1, 'icETH')
 
 interface Context {
   inputValue: string
@@ -134,14 +135,16 @@ export function EarnProvider(props: { children: any }) {
   )
 
   const inputTokens = useMemo(() => {
-    if (isMinting) return getCurrencyTokens(chainId)
+    const isIcEth = isAddressEqual(indexToken.address, icETH.address)
+    if (isMinting) return getCurrencyTokens(chainId, isIcEth)
     return indexTokens
-  }, [chainId, indexTokens, isMinting])
+  }, [chainId, indexTokens, indexToken, isMinting])
 
   const outputTokens = useMemo(() => {
-    if (!isMinting) return getCurrencyTokens(chainId)
+    const isIcEth = isAddressEqual(indexToken.address, icETH.address)
+    if (!isMinting) return getCurrencyTokens(chainId, isIcEth)
     return indexTokens
-  }, [chainId, indexTokens, isMinting])
+  }, [chainId, indexTokens, indexToken, isMinting])
 
   const inputTokenAmount = useMemo(
     () =>

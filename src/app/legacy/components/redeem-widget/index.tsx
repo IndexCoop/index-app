@@ -19,7 +19,6 @@ import { useApproval } from '@/lib/hooks/use-approval'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useSignTerms } from '@/lib/providers/sign-terms-provider'
 import { formatWei } from '@/lib/utils'
 
 import { useRedeem } from '../../providers/redeem-provider'
@@ -37,7 +36,6 @@ export function RedeemWidget() {
     POLYGON.chainId,
   ])
   const { open } = useAppKit()
-  const { signTermsOfService } = useSignTerms()
   const { address } = useWallet()
   const {
     inputTokenList,
@@ -103,11 +101,6 @@ export function RedeemWidget() {
       return
     }
 
-    if (buttonState === TradeButtonState.signTerms) {
-      await signTermsOfService()
-      return
-    }
-
     if (buttonState === TradeButtonState.wrongNetwork) {
       open({ view: 'Networks' })
 
@@ -129,16 +122,7 @@ export function RedeemWidget() {
     if (buttonState === TradeButtonState.default) {
       sendTradeEvent({ type: 'REVIEW' })
     }
-  }, [
-    buttonState,
-    isApproved,
-    onApprove,
-    signTermsOfService,
-    sendTradeEvent,
-    open,
-
-    shouldApprove,
-  ])
+  }, [buttonState, isApproved, onApprove, sendTradeEvent, open, shouldApprove])
 
   return (
     <div className='widget w-full min-w-80 max-w-xl flex-1 flex-col space-y-4 self-center rounded-3xl p-6'>
