@@ -1,16 +1,15 @@
-import {
-  type LeverageToken,
-  getTokenByChainAndAddress,
-} from '@indexcoop/tokenlists'
+import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { formatPrice } from '@/app/products/utils/formatters'
-import type { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatWei } from '@/lib/utils'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 import { leverageTokens } from '../constants'
-import type { EnrichedToken } from '../types'
+
+import type { EnrichedToken } from '@/app/leverage/types'
+import type { TokenBalance } from '@/lib/hooks/use-balance'
+import type { LeverageToken } from '@indexcoop/tokenlists'
 
 export async function fetchLeverageTokenPrices(
   balances: TokenBalance[],

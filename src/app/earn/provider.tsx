@@ -13,10 +13,8 @@ import { isAddress } from 'viem'
 import { base } from 'viem/chains'
 
 import { useQueryParams } from '@/app/earn/use-query-params'
-import type { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ETH, type Token } from '@/constants/tokens'
 import { type TokenBalance, useBalances } from '@/lib/hooks/use-balance'
-import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { usePrepareTransactionReview } from '@/lib/hooks/use-prepare-transaction-review'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
@@ -30,6 +28,9 @@ import {
 import { calculateApy } from '@/lib/utils/apy'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
+
+import type { TransactionReview } from '@/components/swap/components/transaction-review/types'
+import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
 const hyETH = { ...hyEthTokenlist, image: hyEthTokenlist.logoURI }

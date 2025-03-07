@@ -6,12 +6,13 @@ import { Suspense } from 'react'
 
 import { ProductList } from '@/app/products/components/product-list'
 import { productTokens } from '@/app/products/constants/tokens'
-import type { ProductRow } from '@/app/products/types/product'
 import { type SortBy, SortDirection } from '@/app/products/types/sort'
 import { sortProducts } from '@/app/products/utils/sort'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { calculateApy } from '@/lib/utils/apy'
+
+import type { ProductRow } from '@/app/products/types/product'
 
 export function ProductPanel() {
   const { chainId } = useNetwork()
