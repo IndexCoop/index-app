@@ -33,10 +33,9 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
         label='Buy'
         roundedLeft={true}
         onClick={() => {
-          if (isMinting) return
-
-          onClick(true)
           scrollToWidget()
+          if (isMinting) return
+          onClick(true)
         }}
       />
       <BuySellSelectorButton
@@ -44,10 +43,9 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
         label='Sell'
         roundedLeft={false}
         onClick={() => {
-          if (!isMinting) return
-
-          onClick()
           scrollToWidget()
+          if (!isMinting) return
+          onClick()
         }}
       />
     </div>
