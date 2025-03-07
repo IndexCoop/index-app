@@ -6,11 +6,10 @@ export function getMaxBalance(
   inputBalance: bigint,
   gasData: GasData,
 ): bigint {
-  console.log(inputToken.symbol, inputToken.address, 'max')
   if (inputToken.symbol === 'ETH') {
     const gasLimit = BigInt(1_500_000)
     const gasCosts = gasLimit * gasData.maxFeePerGas
-    const maxEthBalance = inputBalance - gasCosts * BigInt(2)
+    const maxEthBalance = inputBalance - gasCosts * BigInt(5)
     return maxEthBalance
   }
   // If no ETH, we can always just use the full balance
