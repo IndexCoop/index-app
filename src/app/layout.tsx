@@ -1,6 +1,7 @@
+import { Viewport } from 'next'
+
 import { MavaScript } from '@/components/external/mava-script'
 import { SafaryScript } from '@/components/external/safary-script'
-import { Viewport } from 'next'
 import './globals.css'
 
 export const metadata = {
