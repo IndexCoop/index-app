@@ -7,15 +7,15 @@ import { arbitrum, base, mainnet } from 'viem/chains'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
+import { ETH, type Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 import {
   LeverageMarket,
-  LeverageRatio,
+  type LeverageRatio,
   LeverageStrategy,
-  LeverageToken,
+  type LeverageToken,
   LeverageType,
-  Market,
+  type Market,
 } from './types'
 
 export enum LendingProtocol {

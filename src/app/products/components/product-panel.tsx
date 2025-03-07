@@ -6,13 +6,15 @@ import { Suspense } from 'react'
 
 import { ProductList } from '@/app/products/components/product-list'
 import { productTokens } from '@/app/products/constants/tokens'
-import { ProductRow } from '@/app/products/types/product'
-import { SortBy, SortDirection } from '@/app/products/types/sort'
+import type { ProductRow } from '@/app/products/types/product'
+import { type SortBy, SortDirection } from '@/app/products/types/sort'
 import { sortProducts } from '@/app/products/utils/sort'
+import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { calculateApy } from '@/lib/utils/apy'
 
 export function ProductPanel() {
+  const { chainId } = useNetwork()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -26,10 +28,12 @@ export function ProductPanel() {
     initialData: [] as any[],
     queryKey: ['product-list', sortBy, sortDirection],
     queryFn: async () => {
+      console.log('product pangel')
       return Promise.all(
         productTokens.map((token) =>
           token.address
             ? fetchTokenMetrics({
+                chainId: chainId ?? 1,
                 tokenAddress: token.address,
                 metrics: [
                   'nav',

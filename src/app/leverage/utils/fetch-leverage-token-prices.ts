@@ -1,13 +1,16 @@
-import { getTokenByChainAndAddress, LeverageToken } from '@indexcoop/tokenlists'
+import {
+  type LeverageToken,
+  getTokenByChainAndAddress,
+} from '@indexcoop/tokenlists'
 
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { formatPrice } from '@/app/products/utils/formatters'
-import { TokenBalance } from '@/lib/hooks/use-balance'
+import type { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatWei } from '@/lib/utils'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 import { leverageTokens } from '../constants'
-import { EnrichedToken } from '../types'
+import type { EnrichedToken } from '../types'
 
 export async function fetchLeverageTokenPrices(
   balances: TokenBalance[],
@@ -47,9 +50,11 @@ export async function fetchLeverageTokenPrices(
   if (tokenBalances.some((token) => token.balance === null)) return
 
   try {
+    console.log('leverage')
     const navResponses = await Promise.all(
       tokenBalances.map((token) =>
         fetchTokenMetrics({
+          chainId,
           tokenAddress: token.address ?? '',
           metrics: ['nav'],
         }),
@@ -64,7 +69,8 @@ export async function fetchLeverageTokenPrices(
 
     const enrichedTokens = tokenBalances.map((token, idx) => {
       const usd =
-        parseFloat(formatWei(token.balance, token.decimals)) * tokenPrices[idx]
+        Number.parseFloat(formatWei(token.balance, token.decimals)) *
+        tokenPrices[idx]
       return {
         ...token,
         size: formatPrice(usd),
