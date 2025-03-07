@@ -8,16 +8,21 @@ function createToken(chainId: number, symbol: string): Token {
   return { ...token, image: token.logoURI }
 }
 
-export function getCurrencyTokens(chainId: number): Token[] {
+export function getCurrencyTokens(
+  chainId: number,
+  isIcETh: boolean = false,
+): Token[] {
   switch (chainId) {
     case mainnet.id:
-      return [
-        { ...ETH, chainId: mainnet.id },
-        createToken(mainnet.id, 'WETH'),
-        createToken(mainnet.id, 'WBTC'),
-        createToken(mainnet.id, 'USDC'),
-        createToken(mainnet.id, 'USDT'),
-      ]
+      return isIcETh
+        ? [{ ...ETH, chainId: mainnet.id }, createToken(mainnet.id, 'WETH')]
+        : [
+            { ...ETH, chainId: mainnet.id },
+            createToken(mainnet.id, 'WETH'),
+            createToken(mainnet.id, 'WBTC'),
+            createToken(mainnet.id, 'USDC'),
+            createToken(mainnet.id, 'USDT'),
+          ]
     case arbitrum.id:
       return [
         { ...ETH, chainId: arbitrum.id },
