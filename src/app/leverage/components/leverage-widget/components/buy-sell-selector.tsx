@@ -13,9 +13,11 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
 
   const scrollToWidget = useCallback(() => {
     if (wrapperRef.current && isMobile) {
-      const y = wrapperRef.current.getBoundingClientRect().y
+      const y =
+        wrapperRef.current.getBoundingClientRect().top + window.scrollY + -28
+
       window.scrollTo({
-        top: y - 28,
+        top: y,
         behavior: 'smooth',
       })
     }
