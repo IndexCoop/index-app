@@ -5,7 +5,7 @@ import { BuySellSelectorButton } from '@/components/selectors/buy-sell-selector-
 
 type BuySellSelectorProps = {
   isMinting: boolean
-  onClick: () => void
+  onClick: (args?: any) => void
 }
 
 export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
@@ -13,7 +13,9 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
 
   const scrollToWidget = useCallback(() => {
     if (wrapperRef.current && isMobile) {
-      wrapperRef.current.scrollIntoView({
+      const y = wrapperRef.current.getBoundingClientRect().y
+      window.scrollTo({
+        top: y - 28,
         behavior: 'smooth',
       })
     }
@@ -29,7 +31,9 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
         label='Buy'
         roundedLeft={true}
         onClick={() => {
-          onClick()
+          if (isMinting) return
+
+          onClick(true)
           scrollToWidget()
         }}
       />
@@ -38,6 +42,8 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
         label='Sell'
         roundedLeft={false}
         onClick={() => {
+          if (!isMinting) return
+
           onClick()
           scrollToWidget()
         }}
