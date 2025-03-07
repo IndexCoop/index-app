@@ -1,5 +1,7 @@
-import { BuySellSelectorButton } from '@/components/selectors/buy-sell-selector-button'
 import { useCallback, useRef } from 'react'
+import { isMobile } from 'react-device-detect'
+
+import { BuySellSelectorButton } from '@/components/selectors/buy-sell-selector-button'
 
 type BuySellSelectorProps = {
   isMinting: boolean
@@ -9,12 +11,13 @@ type BuySellSelectorProps = {
 export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
 
-  const onClickBuySell = useCallback(() => {
-    if (wrapperRef.current) {
-      wrapperRef.current.scrollIntoView({ behavior: 'smooth' })
+  const scrollToWidget = useCallback(() => {
+    if (wrapperRef.current && isMobile) {
+      wrapperRef.current.scrollIntoView({
+        behavior: 'smooth',
+      })
     }
-    onClick()
-  }, [onClick])
+  }, [])
 
   return (
     <div
@@ -25,13 +28,19 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
         isSelected={isMinting}
         label='Buy'
         roundedLeft={true}
-        onClick={onClickBuySell}
+        onClick={() => {
+          onClick()
+          scrollToWidget()
+        }}
       />
       <BuySellSelectorButton
         isSelected={!isMinting}
         label='Sell'
         roundedLeft={false}
-        onClick={onClickBuySell}
+        onClick={() => {
+          onClick()
+          scrollToWidget()
+        }}
       />
     </div>
   )
