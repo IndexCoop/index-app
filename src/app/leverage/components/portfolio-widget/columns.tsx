@@ -2,7 +2,7 @@ import { Button } from '@headlessui/react'
 import { InformationCircleIcon } from '@heroicons/react/24/outline'
 import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
 import {
-  LeverageType,
+  type LeverageType,
   getTokenByChainAndAddress,
   isLeverageToken,
 } from '@indexcoop/tokenlists'
@@ -12,9 +12,10 @@ import { checksumAddress, formatUnits, zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-import { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
+
+import type { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
 
 const columnsHelper =
   createColumnHelper<GetApiV2UserAddressPositionsQueryResponse[number]>()
@@ -23,6 +24,7 @@ const map: Record<LeverageType, string> = {
   Short1x: '-1x',
   Long2x: '2x',
   Long3x: '3x',
+  Long15x: '15x',
 }
 
 const currencyConfig: Record<
@@ -61,7 +63,7 @@ const currencyConfig: Record<
   },
 }
 
-const formatAmount = (amount: number = 0, denominator?: unknown) => {
+const formatAmount = (amount = 0, denominator?: unknown) => {
   if (!denominator || typeof denominator !== 'string') {
     return amount.toLocaleString(navigator.language, currencyConfig.USD.options)
   }
