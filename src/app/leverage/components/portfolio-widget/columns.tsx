@@ -24,7 +24,6 @@ const map: Record<LeverageType, string> = {
   Short1x: '-1x',
   Long2x: '2x',
   Long3x: '3x',
-  Long15x: '15x',
 }
 
 const currencyConfig: Record<
