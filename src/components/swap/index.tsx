@@ -1,8 +1,10 @@
 import { Box, Flex, IconButton, Text } from '@chakra-ui/react'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { useAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
@@ -30,7 +32,6 @@ import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
 import { useSwap } from './hooks/use-swap'
 import { useTokenlists } from './hooks/use-tokenlists'
-import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
 
 type SwapProps = {
   isBuying: boolean
@@ -64,11 +65,6 @@ export const Swap = (props: SwapProps) => {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const {
-    isOpen: isTransactionReviewOpen,
-    onOpen: onOpenTransactionReview,
-    onClose: onCloseTransactionReview,
-  } = useDisclosure()
 
   const {
     fetchQuote,
@@ -83,6 +79,7 @@ export const Swap = (props: SwapProps) => {
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [selectedQuote, setSelectedQuote] = useState<QuoteType | null>(null)
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
@@ -91,11 +88,6 @@ export const Swap = (props: SwapProps) => {
     isBuying,
     inputToken,
     outputToken,
-  )
-  const { transactionReview } = useTransactionReviewModal(
-    quoteResults,
-    selectedQuote,
-    isFetchingAnyQuote,
   )
 
   const {
@@ -132,6 +124,13 @@ export const Swap = (props: SwapProps) => {
   useEffect(() => {
     resetTradeData()
   }, [chainId, resetTradeData])
+
+  useEffect(() => {
+    if (tradeState.matches('reset')) {
+      resetTradeData()
+      sendTradeEvent({ type: 'RESET_DONE' })
+    }
+  }, [tradeState, resetTradeData, sendTradeEvent])
 
   const fetchOptions = useCallback(() => {
     if (!isTradablePair) return
@@ -252,7 +251,7 @@ export const Swap = (props: SwapProps) => {
           isSupportedNetwork={isSupportedNetwork}
           outputToken={outputToken}
           buttonLabelOverrides={{}}
-          onOpenTransactionReview={onOpenTransactionReview}
+          onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
           onRefetchQuote={fetchOptions}
         />
       </>
@@ -276,13 +275,9 @@ export const Swap = (props: SwapProps) => {
         address={address}
         tokens={outputTokenslist}
       />
-      {transactionReview && (
-        <TransactionReviewModal
-          isOpen={isTransactionReviewOpen}
-          onClose={onCloseTransactionReview}
-          transactionReview={transactionReview}
-        />
-      )}
+      <TransactionReviewModal
+        onClose={() => sendTradeEvent({ type: 'CLOSE' })}
+      />
     </Flex>
   )
 }

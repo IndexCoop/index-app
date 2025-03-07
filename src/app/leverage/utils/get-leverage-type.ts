@@ -1,4 +1,7 @@
-import { LeverageToken } from '@indexcoop/tokenlists'
+import {
+  LeverageToken,
+  LeverageType as LeverageTypeS,
+} from '@indexcoop/tokenlists'
 
 import { LeverageType } from '../types'
 
@@ -35,4 +38,10 @@ export function getLeverageType(token: LeverageToken): LeverageType | null {
     default:
       return null
   }
+}
+
+export const leverageShortTypeMap: Record<LeverageTypeS, string> = {
+  Short1x: '-1x',
+  Long2x: '2x',
+  Long3x: '3x',
 }

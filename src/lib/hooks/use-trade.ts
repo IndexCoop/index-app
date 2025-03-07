@@ -56,7 +56,7 @@ export const useTrade = () => {
     async (
       quote: Quote | null,
       override: boolean = false,
-      callback?: TradeCallback,
+      successCallback?: TradeCallback,
     ) => {
       if (!address || !chainId || !publicClient || !walletClient || !quote)
         return
@@ -100,7 +100,7 @@ export const useTrade = () => {
         })
         logTransaction(chainId ?? -1, hash, formatQuoteAnalytics(quote))
         setIsTransacting(false)
-        callback?.({ address, hash, quote })
+        successCallback?.({ address, hash, quote })
       } catch (error) {
         console.info('Override?', override)
         console.warn('Error sending transaction', error)
