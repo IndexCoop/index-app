@@ -19,10 +19,12 @@ import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { TokenDisplay } from '@/components/token-display'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
+import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
+import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedEarnData } from '../../use-formatted-data'
 
@@ -31,6 +33,7 @@ import './styles.css'
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 export function EarnWidget() {
+  const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
@@ -84,8 +87,9 @@ export function EarnWidget() {
 
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
-    onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
-  }, [inputBalance, inputToken, onChangeInputTokenAmount])
+    const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)
+    onChangeInputTokenAmount(formatWei(maxBalance, inputToken.decimals))
+  }, [gasData, inputBalance, inputToken, onChangeInputTokenAmount])
 
   useEffect(() => {
     setSlippageForToken(isMinting ? outputToken.symbol : inputToken.symbol)
