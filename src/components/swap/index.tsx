@@ -10,13 +10,15 @@ import { Token } from '@/constants/tokens'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
+import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useIsTokenPairTradable } from '@/lib/hooks/use-is-token-pair-tradable'
 import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
 import { colors } from '@/lib/styles/colors'
-import { isValidTokenInput } from '@/lib/utils'
+import { formatWei, isValidTokenInput, parseUnits } from '@/lib/utils'
+import { getMaxBalance } from '@/lib/utils/max-balance'
 import { selectSlippage } from '@/lib/utils/slippage'
 import { getTokenBySymbol } from '@/lib/utils/tokens'
 
@@ -40,6 +42,7 @@ type SwapProps = {
 
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
+  const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks([
     MAINNET.chainId,
     ARBITRUM.chainId,
@@ -171,9 +174,15 @@ export const Swap = (props: SwapProps) => {
 
   const onClickInputBalance = useCallback(() => {
     if (!inputTokenBalance) return
-    setInputTokenAmountFormatted(inputTokenBalance)
-    setSellTokenAmount(inputTokenBalance)
-  }, [inputTokenBalance, setSellTokenAmount])
+    const maxBalanceBigNumber = getMaxBalance(
+      inputToken,
+      parseUnits(inputTokenBalance, inputToken.decimals),
+      gasData,
+    )
+    const maxBalance = formatWei(maxBalanceBigNumber, inputToken.decimals)
+    setInputTokenAmountFormatted(maxBalance)
+    setSellTokenAmount(maxBalance)
+  }, [gasData, inputToken, inputTokenBalance, setSellTokenAmount])
 
   const onSwitchTokens = () => {
     toggleIsMinting()
