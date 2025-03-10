@@ -1,5 +1,7 @@
+import { useAtom } from 'jotai'
 import { useMemo } from 'react'
 
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { useFormattedBalance } from '@/components/swap/hooks/use-swap/use-formatted-balance'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatAmount, formatWei } from '@/lib/utils'
@@ -18,7 +20,6 @@ export function useFormattedData() {
     isFetchingQuote,
     preSaleCurrencyToken,
     preSaleToken,
-    quoteResult,
   } = useDeposit()
   const {
     balance,
@@ -35,8 +36,12 @@ export function useFormattedData() {
     address,
     preSaleToken.address,
   )
+  const [tradeState] = useAtom(tradeMachineAtom)
 
-  const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
+  const quote = useMemo(
+    () => tradeState.context.quoteResult?.quote ?? null,
+    [tradeState],
+  )
 
   const inputAmount = quote?.inputTokenAmount
     ? `${formatAmount(Number(formatWei(quote?.inputTokenAmount, quote?.inputToken.decimals)))} ${quote?.inputToken.symbol}`

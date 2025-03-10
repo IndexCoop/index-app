@@ -13,12 +13,10 @@ import { isAddress } from 'viem'
 import { base } from 'viem/chains'
 
 import { useQueryParams } from '@/app/earn/use-query-params'
-import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ETH, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { usePrepareTransactionReview } from '@/lib/hooks/use-prepare-transaction-review'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
@@ -54,7 +52,6 @@ interface Context {
   isFetchingQuote: boolean
   isFetchingStats: boolean
   quoteResult: QuoteResult | null
-  transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectIndexToken: (tokenSymbol: string, chainId: number) => void
   onSelectInputToken: (tokenSymbol: string, chainId: number) => void
@@ -82,7 +79,6 @@ export const EarnContext = createContext<Context>({
   isFetchingQuote: false,
   isFetchingStats: true,
   quoteResult: null,
-  transactionReview: null,
   onChangeInputTokenAmount: () => {},
   onSelectIndexToken: () => {},
   onSelectInputToken: () => {},
@@ -168,10 +164,6 @@ export function EarnProvider(props: { children: any }) {
     inputValue,
     slippage,
   })
-  const transactionReview = usePrepareTransactionReview(
-    isFetchingQuote,
-    quoteResult,
-  )
 
   const {
     data: { apy, nav, tvl },
@@ -329,7 +321,6 @@ export function EarnProvider(props: { children: any }) {
         isFetchingQuote,
         isFetchingStats: isFetchingLatestStats || isFetchingApyStats,
         quoteResult,
-        transactionReview,
         onChangeInputTokenAmount,
         onSelectIndexToken,
         onSelectInputToken,

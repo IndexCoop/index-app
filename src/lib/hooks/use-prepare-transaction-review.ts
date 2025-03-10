@@ -7,7 +7,8 @@ export function usePrepareTransactionReview(
   if (isFetchingQuote || quoteResult === null) return null
   const quote = quoteResult.quote
   if (!quote) return null
-  return {
+
+  const review = {
     ...quote,
     contractAddress: quote.contract,
     quoteResults: {
@@ -21,4 +22,6 @@ export function usePrepareTransactionReview(
     },
     selectedQuote: QuoteType.flashmint,
   }
+
+  return review
 }
