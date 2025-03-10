@@ -10,8 +10,9 @@ import type { PostApiV2Trade200 } from '@/gen'
 // Define the context type for our state machine
 export interface TradeMachineContext {
   isModalOpen: boolean
-  trade: PostApiV2Trade200 | null
   quoteResult: QuoteResult | null
+  trade: PostApiV2Trade200['trade'] | null
+  position: PostApiV2Trade200['position'] | null
   transactionReview: TransactionReview | null
   transactionStatus: TransactionReceipt['status'] | null
 }
@@ -22,7 +23,7 @@ export type TradeMachineEvent =
   | { type: 'REVIEW' }
   | { type: 'SUBMIT' }
   | { type: 'TRADE_FAILED' }
-  | { type: 'TRADE_SUCCESS'; trade: PostApiV2Trade200 }
+  | { type: 'TRADE_SUCCESS'; result: PostApiV2Trade200 }
   | { type: 'CLOSE' }
   | { type: 'RESET_DONE' }
 
@@ -41,6 +42,7 @@ const createTradeMachine = () =>
       isModalOpen: false,
       quoteResult: null,
       trade: null,
+      position: null,
       transactionReview: null,
       transactionStatus: null,
     },
@@ -109,8 +111,11 @@ const createTradeMachine = () =>
           TRADE_SUCCESS: {
             target: 'success',
             actions: assign({
+              position: ({ event }) => {
+                return event.result.position
+              },
               trade: ({ event }) => {
-                return event.trade
+                return event.result.trade
               },
               transactionStatus: 'success',
             }),

@@ -22,19 +22,17 @@ import { TradeButton } from '@/components/trade-button'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 
-const usePositionData = (transactionHash: string) => {
+const usePositionData = () => {
   const [{ history }] = useAtom(positionsAtom)
+  const [tradeState] = useAtom(tradeMachineAtom)
 
-  const position = useMemo(
-    () => history?.find((p) => p.hash === transactionHash),
-    [history, transactionHash],
-  )
+  const position = tradeState.context.position
 
   const positionData = useMemo(() => {
     if (!position) return null
 
-    const _return = position.metrics?.totalReturnOfUnitsSold ?? 0
-    const cost = position.metrics?.totalCostOfUnitsSold ?? 0
+    const _return = position.totalReturnOfUnitsSold ?? 0
+    const cost = position.totalCostOfUnitsSold ?? 0
 
     if (cost <= 0 || _return === undefined) return null
 
@@ -43,13 +41,10 @@ const usePositionData = (transactionHash: string) => {
     const sign = Math.sign(value)
 
     const avgEntryPrices = calculateAverageEntryPrice(
-      history.filter(
-        (p) => p.metrics?.positionId === position.metrics?.positionId,
-      ),
+      history.filter((p) => p.metrics?.positionId === position.positionId),
     )
 
-    const avgEntryPrice =
-      avgEntryPrices[position.metrics?.tokenAddress ?? ''] ?? 0
+    const avgEntryPrice = avgEntryPrices[position.tokenAddress]
 
     if (avgEntryPrice <= 0) return null
 
@@ -125,9 +120,7 @@ export function SubmissionResult({
     )
   }, [trade])
 
-  const positionCloseData = usePositionData(
-    tradeState.context.trade?.transactionHash ?? '',
-  )
+  const positionCloseData = usePositionData()
 
   switch (tradeState.value) {
     case 'pending':

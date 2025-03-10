@@ -114,7 +114,7 @@ export function useTransactionReview(props: ReviewProps) {
         body: JSON.stringify(mapQuoteToTrade(address, hash, quote, utm)),
       })
 
-      const trade = (await response.json()) as PostApiV2Trade200
+      const result = (await response.json()) as PostApiV2Trade200
 
       await queryClient.refetchQueries({
         predicate: (query) =>
@@ -123,7 +123,7 @@ export function useTransactionReview(props: ReviewProps) {
       })
 
       if (response.status === 200) {
-        sendTradeEvent({ type: 'TRADE_SUCCESS', trade })
+        sendTradeEvent({ type: 'TRADE_SUCCESS', result })
       } else {
         sendTradeEvent({ type: 'TRADE_FAILED' })
       }

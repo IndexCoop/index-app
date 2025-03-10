@@ -6,7 +6,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 const config = defineConfig({
   root: '.',
   input: {
-    path: 'https://api-q513.onrender.com/documentation/json',
+    path: 'https://api-pr-66-quln.onrender.com/documentation/json',
   },
   output: {
     path: './src/gen',
@@ -35,7 +35,7 @@ const config = defineConfig({
       dateType: 'date',
     }),
     pluginClient({
-      baseURL: 'https://api-q513.onrender.com',
+      baseURL: 'https://api-pr-66-quln.onrender.com',
       output: {
         path: './clients/axios',
         barrelType: 'propagate',
