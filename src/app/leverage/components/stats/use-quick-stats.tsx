@@ -1,4 +1,4 @@
-import { QueryFunctionContext, useQuery } from '@tanstack/react-query'
+import { type QueryFunctionContext, useQuery } from '@tanstack/react-query'
 
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
@@ -38,7 +38,12 @@ interface QuickStatsApiResponse {
 
 type QuickStatsQueryKey = [
   string,
-  { address: string | undefined; symbol: string; market: string },
+  {
+    chainId: number
+    address: string | undefined
+    symbol: string
+    market: string
+  },
 ]
 
 export function formatStatsAmount(
@@ -54,18 +59,18 @@ export function formatStatsAmount(
 
 export function useQuickStats(
   market: string,
-  indexToken: { address: string | undefined; symbol: string },
+  indexToken: { address: string | undefined; chainId: number; symbol: string },
 ) {
   async function fetchStats(
     context: QueryFunctionContext<QuickStatsQueryKey>,
   ): Promise<QuickStats> {
-    const [, { address, symbol, market }] = context.queryKey
+    const [, { address, chainId, symbol, market }] = context.queryKey
     const m = market.split(' / ')
     const baseToken = m[0]
     const baseCurrency = m[1].toLowerCase()
     try {
       const response = await fetch(
-        `/api/stats?address=${address}&symbol=${symbol}&base=${baseToken}&baseCurrency=${baseCurrency}`,
+        `/api/stats?address=${address}&chainId=${chainId}&symbol=${symbol}&base=${baseToken}&baseCurrency=${baseCurrency}`,
         {
           method: 'GET',
         },
@@ -106,6 +111,7 @@ export function useQuickStats(
     queryKey: [
       'fetch-quick-stats',
       {
+        chainId: indexToken.chainId,
         symbol: indexToken.symbol,
         address: indexToken.address,
         market,
