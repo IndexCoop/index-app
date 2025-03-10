@@ -7,16 +7,21 @@ import { arbitrum, base, mainnet } from 'viem/chains'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { ETH, Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
+import { ETH, type Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 import {
   LeverageMarket,
-  LeverageRatio,
+  type LeverageRatio,
   LeverageStrategy,
-  LeverageToken,
+  type LeverageToken,
   LeverageType,
-  Market,
+  type Market,
 } from './types'
+
+export enum LendingProtocol {
+  aave = 'aave',
+  morpho = 'morpho',
+}
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
 
@@ -46,13 +51,17 @@ export function getCurrencyTokens(chainId: number): Token[] {
 export function getLeverageTokens(chainId: number): LeverageToken[] {
   const tokens: (LeverageToken | null)[] = leverageTokens.map((tokenSymbol) => {
     const token = getTokenByChainAndSymbol(chainId, tokenSymbol)
+
     if (!token) return null
     if (!isLeverageToken(token)) return null
+
     const baseToken = getLeverageBaseToken(token.symbol)
     const leverageType = getLeverageType(token)
+
     if (!baseToken || !token.address || leverageType === null) {
       return null
     }
+
     return {
       ...token,
       image: token.logoURI,
@@ -67,13 +76,14 @@ export function getPathForMarket(market: string, chainId?: number) {
   const existingMarket = markets.find((m) => m.market === market)
   if (!existingMarket) return null
 
-  const { defaultAsset } = existingMarket
+  const { defaultAsset, defaultChainId } = existingMarket
 
   const queryChainId =
     chainId && existingMarket.networks.some((network) => network.id === chainId)
       ? chainId
-      : defaultAsset.chainId
-  return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
+      : defaultChainId
+  console.log(queryChainId, defaultAsset, existingMarket)
+  return `/leverage?sell=ETH&buy=${defaultAsset[queryChainId]}&network=${queryChainId}`
 }
 
 const defaultAssets = {
@@ -146,7 +156,13 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'ETH3X', chainId: base.id },
+    defaultAsset: {
+      [arbitrum.id]: 'ETH3X',
+      [base.id]: 'ETH3X',
+      [mainnet.id]: 'ETH2X',
+    },
+    defaultChainId: base.id,
+    lendingProtocol: LendingProtocol.aave,
   },
   {
     icon: '/assets/btc-usd-market.svg',
@@ -158,7 +174,13 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'BTC3X', chainId: base.id },
+    defaultAsset: {
+      [arbitrum.id]: 'BTC3X',
+      [base.id]: 'BTC3X',
+      [mainnet.id]: 'BTC2X',
+    },
+    defaultChainId: base.id,
+    lendingProtocol: LendingProtocol.aave,
   },
   {
     icon: '/assets/sol-usd-market.svg',
@@ -170,7 +192,11 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'uSOL2x', chainId: base.id },
+    defaultAsset: {
+      [base.id]: 'uSOL2x',
+    },
+    defaultChainId: base.id,
+    lendingProtocol: LendingProtocol.morpho,
   },
   {
     icon: '/assets/sui-usd-market.svg',
@@ -182,7 +208,11 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'uSUI2x', chainId: base.id },
+    defaultAsset: {
+      [base.id]: 'uSUI2x',
+    },
+    defaultChainId: base.id,
+    lendingProtocol: LendingProtocol.morpho,
   },
   {
     icon: '/assets/eth-btc-market.svg',
@@ -194,7 +224,11 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'ETH2xBTC', chainId: arbitrum.id },
+    defaultAsset: {
+      [arbitrum.id]: 'ETH2xBTC',
+    },
+    defaultChainId: arbitrum.id,
+    lendingProtocol: LendingProtocol.aave,
   },
   {
     icon: '/assets/btc-eth-market.svg',
@@ -206,7 +240,11 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'BTC2xETH', chainId: arbitrum.id },
+    defaultAsset: {
+      [arbitrum.id]: 'BTC2xETH',
+    },
+    defaultChainId: arbitrum.id,
+    lendingProtocol: LendingProtocol.aave,
   },
 ]
 

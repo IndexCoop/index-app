@@ -5,7 +5,11 @@ import { useRouter } from 'next/navigation'
 
 import { MarketNetworkImage } from '@/app/leverage/components/stats/market-network-image'
 import { formatStatsAmount } from '@/app/leverage/components/stats/use-quick-stats'
-import { getPathForMarket, markets } from '@/app/leverage/constants'
+import {
+  LendingProtocol,
+  getPathForMarket,
+  markets,
+} from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Market } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
@@ -86,7 +90,11 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
           <div className='flex'>
             <span className='text-ic-gray-300 mr-1 text-xs'>Powered by</span>
             <Image
-              src='/assets/powered-by-aave.svg'
+              src={
+                marketMetadata?.lendingProtocol === LendingProtocol.aave
+                  ? '/assets/powered-by-aave.svg'
+                  : '/assets/powered-by-morpho.png'
+              }
               alt='Powered by AAVE'
               height={17}
               width={64}

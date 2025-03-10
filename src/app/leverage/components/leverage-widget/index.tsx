@@ -13,11 +13,13 @@ import { TransactionReviewModal } from '@/components/swap/components/transaction
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
+import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
+import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
@@ -30,6 +32,7 @@ import './styles.css'
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 export function LeverageWidget() {
+  const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
@@ -89,40 +92,44 @@ export function LeverageWidget() {
 
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
-    onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
-  }, [inputBalance, inputToken, onChangeInputTokenAmount])
+    const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)
+    onChangeInputTokenAmount(formatWei(maxBalance, inputToken.decimals))
+  }, [gasData, inputBalance, inputToken, onChangeInputTokenAmount])
 
   return (
     <div
       className='leverage-widget flex flex-col gap-4 rounded-lg px-4 pb-5 pt-4'
       id='close-position-scroll'
     >
-      <div className='flex justify-end'>
-        <Settings
-          isAuto={isAutoSlippage}
-          isDarkMode={true}
-          slippage={slippage}
-          onChangeSlippage={setSlippage}
-          onClickAuto={autoSlippage}
-        />
-      </div>
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
         supportedTypes={supportedLeverageTypes}
         onSelectType={onSelectLeverageType}
       />
-      <TradeInputSelector
-        config={{ isReadOnly: false }}
-        balance={inputBalanceFormatted}
-        caption='Pay'
-        formattedFiat={inputAmoutUsd}
-        selectedToken={inputToken}
-        selectedTokenAmount={inputValue}
-        onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
-        onClickBalance={onClickBalance}
-        onSelectToken={onOpenSelectInputToken}
-      />
+      <div className='relative'>
+        <TradeInputSelector
+          config={{ isReadOnly: false }}
+          balance={inputBalanceFormatted}
+          caption='Pay'
+          formattedFiat={inputAmoutUsd}
+          selectedToken={inputToken}
+          selectedTokenAmount={inputValue}
+          onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
+          onClickBalance={onClickBalance}
+          onSelectToken={onOpenSelectInputToken}
+        />
+        <div className='absolute right-2 top-2'>
+          <Settings
+            isAuto={isAutoSlippage}
+            isDarkMode={true}
+            slippage={slippage}
+            onChangeSlippage={setSlippage}
+            onClickAuto={autoSlippage}
+          />
+        </div>
+      </div>
+
       <Receive
         isLoading={isFetchingQuote}
         outputAmount={ouputAmount}

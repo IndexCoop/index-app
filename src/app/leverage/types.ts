@@ -1,11 +1,10 @@
-import { Chain } from 'viem'
-
-import { Token } from '@/constants/tokens'
+import type { Token } from '@/constants/tokens'
+import type { Chain } from 'viem'
 
 export enum LeverageType {
-  Long2x,
-  Long3x,
-  Short,
+  Long2x = 0,
+  Long3x = 1,
+  Short = 2,
 }
 
 export enum LeverageMarket {
@@ -63,7 +62,9 @@ export interface Market {
   high24h: number
   symbol: 'ETH' | 'BTC' | 'SOL' | 'SUI'
   currency: 'USD' | 'BTC' | 'ETH'
-  defaultAsset: { symbol: string; chainId: number }
+  defaultAsset: { [key: number]: string }
+  defaultChainId: number
+  lendingProtocol: string
 }
 
 export type ChartTab = 'indexcoop-chart' | 'tradingview-chart'

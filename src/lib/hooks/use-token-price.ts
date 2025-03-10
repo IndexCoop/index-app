@@ -30,6 +30,7 @@ function shouldOverrideNav(symbol: string, chainId?: number) {
     'btc2xeth',
     'usol2x',
     'usui2x',
+    'wsteth15x',
   ]
   if (navTokenOverrides.includes(symbol.toLowerCase())) return true
   if (

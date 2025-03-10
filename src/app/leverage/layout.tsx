@@ -1,3 +1,4 @@
+import { LightEffect } from '@/app/leverage/components/light-effect'
 import { Providers } from '@/app/providers'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
@@ -16,11 +17,12 @@ export const metadata = {
 export default function Layout({ children }: LayoutProps) {
   return (
     <Providers>
-      <div className='bg-ic-black dark flex flex-col'>
+      <div className='bg-ic-black dark flex flex-col overflow-x-hidden'>
         <Header />
         <SlippageProvider>
           <LeverageProvider>
-            <main>{children}</main>
+            <LightEffect />
+            <main className='z-10'>{children}</main>
           </LeverageProvider>
         </SlippageProvider>
         <Footer />

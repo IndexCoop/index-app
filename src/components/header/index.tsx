@@ -29,7 +29,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className='bg-ic-white dark:bg-ic-gray-950 shadow-ic-black/15 opacity-[.96] shadow-md backdrop-blur'>
+    <header className='bg-ic-white dark:bg-ic-black dark:border-ic-gray-600 shadow-ic-black/15 z-50 border-b-0 opacity-[.96] shadow-md backdrop-blur dark:border-b'>
       <nav
         className='mx-auto flex items-center justify-between px-6 py-3.5 lg:px-8'
         aria-label='Global'
@@ -66,7 +66,7 @@ export function Header() {
         onClose={setMobileMenuOpen}
       >
         <div className='fixed inset-0 z-10' />
-        <Dialog.Panel className='bg-ic-white dark:bg-ic-blue-950 fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:sm:ring-gray-100/10'>
+        <Dialog.Panel className='bg-ic-white dark:bg-ic-black fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:sm:ring-gray-100/10'>
           <div className='flex items-center justify-between'>
             <Logo />
             <button
@@ -85,7 +85,7 @@ export function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className='text-ic-gray-900 hover:bg-ic-gray-50 dark:text-ic-gray-50 dark:hover:bg-ic-blue-900 -mx-3 block rounded-lg px-3 py-2 text-sm font-semibold leading-7'
+                    className='text-ic-gray-900 hover:bg-ic-gray-50 dark:text-ic-gray-50 dark:hover:bg-ic-gray-900 -mx-3 block rounded-lg px-3 py-2 text-sm font-semibold leading-7'
                   >
                     {item.name}
                   </Link>
