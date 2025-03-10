@@ -1,8 +1,7 @@
-import { Box, Flex, Link, Text, Tooltip } from '@chakra-ui/react'
-
 import { StyledSkeleton } from '@/components/skeleton'
-import { colors } from '@/lib/styles/colors'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { shortenAddress } from '@/lib/utils'
+import { cn } from '@/lib/utils/tailwind'
 
 import { TradeInfoItem } from '../../types'
 
@@ -11,57 +10,49 @@ type TradeInfoItemRowProps = {
   isLoading: boolean
 }
 
-const TradeInfoItemRow = (props: TradeInfoItemRowProps) => {
-  const { isLoading, item } = props
+const TradeInfoItemRow = ({ isLoading, item }: TradeInfoItemRowProps) => {
   const { title, values, tooltip, isLink } = item
-  const cursor = tooltip && tooltip.length > 0 ? 'pointer' : 'default'
   return (
-    <Tooltip
-      // need to set bg color here, as otherwise the arrow won't display correctly
-      bgColor={colors.ic.white}
-      className='bg-ic-white text-ic-gray-600 rounded-md px-4 py-3 text-[11px] font-medium'
-      hasArrow
-      label={tooltip}
-      placement='right-end'
-    >
-      <Flex cursor={cursor} direction='row' justifyContent={'space-between'}>
-        <Flex align='center'>
-          <Text
-            fontSize='12px'
-            fontWeight='500'
-            textColor={colors.ic.gray[400]}
-          >
-            {title}
-          </Text>
-        </Flex>
-        {isLoading && <StyledSkeleton width={60} />}
-        {!isLoading && isLink === true && (
-          <Link isExternal href={values[1]}>
-            <Text
-              fontSize='12px'
-              fontWeight='700'
-              textColor={colors.ic.gray[600]}
-            >
-              {shortenAddress(values[0])}
-            </Text>
-          </Link>
+    <Tooltip placement='bottom'>
+      <TooltipTrigger
+        className={cn(
+          'text-ic-gray-600 flex w-full justify-between text-[11px] font-medium',
+          tooltip && tooltip.length > 0 ? 'cursor-pointer' : 'cursor-default',
         )}
-        {!isLoading && (isLink === undefined || isLink === false) && (
-          <Flex>
-            {values.map((value, index) => (
-              <Flex key={index} flexDir={'row'}>
-                <Text
-                  fontSize='12px'
-                  fontWeight='700'
-                  textColor={colors.ic.gray[600]}
-                >
-                  {value}
-                </Text>
-              </Flex>
-            ))}
-          </Flex>
-        )}
-      </Flex>
+      >
+        <div className='flex w-full'>
+          <div className='flex flex-1 items-center'>
+            <p className='text-ic-gray-400 text-xs font-medium'>{title}</p>
+          </div>
+          {isLoading && <StyledSkeleton width={60} />}
+          {!isLoading && isLink === true && (
+            <a target='_blank' href={values[1]}>
+              <p className='text-ic-gray-600 text-xs font-bold'>
+                {shortenAddress(values[0])}
+              </p>
+            </a>
+          )}
+          {!isLoading && (isLink === undefined || isLink === false) && (
+            <div className='flex'>
+              {values.map((value, index) => (
+                <div className='flex' key={index}>
+                  <p className='text-ic-gray-600 text-xs font-bold'>{value}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </TooltipTrigger>
+      {tooltip && (
+        <TooltipContent
+          className={cn(
+            'bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-[11px] font-medium',
+            tooltip && tooltip.length > 0 ? 'cursor-pointer' : 'cursor-default',
+          )}
+        >
+          {tooltip}
+        </TooltipContent>
+      )}
     </Tooltip>
   )
 }
@@ -76,12 +67,12 @@ export const TradeInfoItemsContainer = ({
   items,
 }: TradeInfoItemsContainerProps) => {
   return (
-    <Flex direction='column'>
+    <div className='flex flex-col'>
       {items.map((item, index) => (
-        <Box key={index} mb={'0'} paddingTop={index === 0 ? '0' : '16px'}>
+        <div key={index} className={cn('mb-0', index !== 0 && 'pt-4')}>
           <TradeInfoItemRow item={item} isLoading={isLoading} />
-        </Box>
+        </div>
       ))}
-    </Flex>
+    </div>
   )
 }
