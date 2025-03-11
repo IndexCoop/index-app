@@ -4,7 +4,6 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Box,
   Flex,
 } from '@chakra-ui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
@@ -95,7 +94,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                             height={16}
                           />
                         )}
-                        <Box onClick={onToggleTokenPrice}>
+                        <div onClick={onToggleTokenPrice}>
                           {isLoading ? (
                             <StyledSkeleton width={200} />
                           ) : (
@@ -104,7 +103,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                               usdLabel={usdLabel}
                             />
                           )}
-                        </Box>
+                        </div>
                       </Flex>
                       <div className={cn('flex gap-4', isExpanded && 'hidden')}>
                         {!isLoading &&
