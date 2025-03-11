@@ -1,6 +1,7 @@
-import { Flex, Input, Text } from '@chakra-ui/react'
+import { Flex, Input } from '@chakra-ui/react'
 
 import { colors } from '@/lib/styles/colors'
+import { cn } from '@/lib/utils/tailwind'
 
 import { Caption } from './caption'
 import { SelectorButton } from './selector-button'
@@ -56,20 +57,16 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
       <Caption caption={props.caption} />
       <Flex align='center' direction='row' justify='space-between' mt='6px'>
         {config.isReadOnly ? (
-          <Text
-            color={
+          <p
+            className={cn(
+              'text-ellipsis whitespace-nowrap pr-1 text-[25px] font-medium',
               props.selectedTokenAmount === '0'
-                ? colors.ic.gray[400]
-                : colors.ic.black
-            }
-            fontSize='25px'
-            fontWeight={500}
-            pr='4px'
-            textOverflow='ellipsis'
-            whiteSpace='nowrap'
+                ? 'text-ic-gray-400'
+                : 'text-ic-black',
+            )}
           >
             {props.selectedTokenAmount}
-          </Text>
+          </p>
         ) : (
           <Input
             className='text-ic-black dark:text-ic-white bg-transparent pr-1 text-3xl'
@@ -153,7 +150,7 @@ const PriceUsd = (props: PriceUsdProps) => (
   <Flex>
     <p className='text-ic-gray-400 text-xs font-medium'>{props.fiat}</p>
     {props.priceImpact && (
-      <p className='text-xs' textColor={props.priceImpact.colorCoding}>
+      <p className={cn('text-xs', props.priceImpact.colorCoding)}>
         &nbsp;{props.priceImpact.value}
       </p>
     )}
