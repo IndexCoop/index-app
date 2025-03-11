@@ -51,10 +51,10 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
     >
       <Flex align='space-between' direction='column' justify={'flex-start'}>
         <Flex justify={'space-between'}>
-          <Text className='text-ic-gray-500' fontSize={'xs'} fontWeight={500}>
+          <p className='text-ic-gray-500 text-xs font-medium'>
             {isLoading && <StyledSkeleton width={50} />}
             {!isLoading && quote && quote.inputAmount}
-          </Text>
+          </p>
           <Flex direction={'row'} gap={1}>
             {quote?.isBestQuote && (
               <Flex opacity={isSelected ? 1 : 0.2}>
@@ -66,9 +66,9 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
                 />
               </Flex>
             )}
-            <Text fontSize={'sm'} fontWeight={600} textColor={highlight}>
+            <p className='text-sm font-semibold' textColor={highlight}>
               {type.toUpperCase()}
-            </Text>
+            </p>
           </Flex>
         </Flex>
       </Flex>

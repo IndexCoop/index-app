@@ -1,4 +1,4 @@
-import { Box, Flex, IconButton, Text } from '@chakra-ui/react'
+import { Box, Flex, IconButton } from '@chakra-ui/react'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
@@ -246,9 +246,9 @@ export const Swap = (props: SwapProps) => {
           />
         )}
         {hasFetchingError && (
-          <Text align='center' color={colors.ic.red} p='16px'>
+          <p className='text-ic-red p-4 text-center'>
             {'Error fetching quote'}
-          </Text>
+          </p>
         )}
         <SmartTradeButton
           contract={contract ?? ''}

@@ -6,7 +6,6 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  Text,
 } from '@chakra-ui/react'
 import { Cog8ToothIcon } from '@heroicons/react/20/solid'
 import { useMemo, useRef, useState } from 'react'
@@ -94,9 +93,7 @@ export const Settings = (props: SettingsProps) => {
         w='320px'
       >
         <PopoverBody>
-          <Text fontSize='md' fontWeight='500' textColor={colors.ic.gray[600]}>
-            Max Slippage
-          </Text>
+          <p className='text-ic-gray-600 font-medium'>Max Slippage</p>
           <Flex align='center' my='4'>
             <Toggle
               toggleState={toggleState}
@@ -132,13 +129,7 @@ export const Settings = (props: SettingsProps) => {
                   onChangeInput(value)
                 }}
               />
-              <Text
-                fontSize={'sm'}
-                fontWeight={500}
-                textColor={colors.ic.gray[900]}
-              >
-                %
-              </Text>
+              <p className='text-ic-gray-900 text-sm font-medium'>%</p>
             </Flex>
           </Flex>
           {showWarning && <Warning lowSlippage={lowSlippage} />}

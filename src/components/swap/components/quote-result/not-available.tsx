@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 
 type QuoteNotAvailableProps = {
   type: string
@@ -18,16 +18,14 @@ export const QuoteNotAvailable = ({ type }: QuoteNotAvailableProps) => {
       h='110px'
     >
       <Flex justify='flex-end' direction='row'>
-        <Text className='text-ic-gray-400' fontSize={'sm'} fontWeight={600}>
+        <p className='text-ic-gray-400 text-sm font-semibold'>
           {type.toUpperCase()}
-        </Text>
+        </p>
       </Flex>
-      <Text className='text-ic-gray-300' fontSize={'md'} fontWeight={500}>
-        {type} unavailable
-      </Text>
-      <Text className='text-ic-gray-300' fontSize={'sm'} fontWeight={400}>
+      <p className='text-ic-gray-300 font-medium'>{type} unavailable</p>
+      <p className='text-ic-gray-300 text-sm'>
         {`This token is not available for ${text}.`}
-      </Text>
+      </p>
     </Flex>
   )
 }

@@ -151,13 +151,11 @@ interface PriceUsdProps {
 
 const PriceUsd = (props: PriceUsdProps) => (
   <Flex>
-    <Text fontSize='12px' fontWeight={500} textColor={colors.ic.gray[400]}>
-      {props.fiat}
-    </Text>
+    <p className='text-ic-gray-400 text-xs font-medium'>{props.fiat}</p>
     {props.priceImpact && (
-      <Text fontSize='12px' textColor={props.priceImpact.colorCoding}>
+      <p className='text-xs' textColor={props.priceImpact.colorCoding}>
         &nbsp;{props.priceImpact.value}
-      </Text>
+      </p>
     )}
   </Flex>
 )

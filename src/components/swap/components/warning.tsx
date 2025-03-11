@@ -1,8 +1,7 @@
-import { Flex, Link, Text } from '@chakra-ui/react'
+import { Flex, Link } from '@chakra-ui/react'
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { ReactNode } from 'react'
 
-import { colors } from '@/lib/styles/colors'
 import { addMEVProtectionChain } from '@/lib/utils/chains'
 
 export enum WarningType {
@@ -105,21 +104,11 @@ export const WarningCompProtection = () => {
     <Flex direction={'column'} m='20px 16px 8px'>
       <Flex align={'center'} direction={'row'}>
         <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5' />
-        <Text
-          fontSize={'sm'}
-          fontWeight={600}
-          ml={2}
-          textColor={colors.ic.gray[600]}
-        >
+        <p className='text-ic-gray-600 ml-2 text-sm font-semibold'>
           MEV Protection
-        </Text>
+        </p>
       </Flex>
-      <Text
-        fontSize={'xs'}
-        fontWeight={400}
-        mt='8px'
-        textColor={colors.ic.gray[600]}
-      >
+      <p className='text-ic-gray-600 mt-2 text-xs'>
         It is highly recommended to use an MEV protected RPC.{' '}
         <Link onClick={onClick} style={{ textDecoration: 'underline' }}>
           Click here
@@ -132,7 +121,7 @@ export const WarningCompProtection = () => {
         >
           Learn More about MEV protection
         </Link>
-      </Text>
+      </p>
     </Flex>
   )
 }
