@@ -1,5 +1,4 @@
 import {
-  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -8,6 +7,7 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react'
 import clsx from 'clsx'
+import Image from 'next/image'
 import { useMemo } from 'react'
 import { arbitrum, base } from 'viem/chains'
 
@@ -121,19 +121,18 @@ const TokenItem = ({
       <div className='flex items-center'>
         <div className='relative inline-block h-11 w-11'>
           <Image
-            className='h-10 w-10'
             alt={`${item.symbol} logo`}
             src={item.image}
-            w='40px'
-            h='40px'
+            width={40}
+            height={40}
           />
           {networkAsset && (
             <div className='bg-ic-gray-100 absolute bottom-0 right-0 h-5 w-5 rounded-full'>
               <Image
                 alt={`${item.symbol} logo`}
                 src={networkAsset}
-                w='20px'
-                h='20px'
+                width={20}
+                height={20}
               />
             </div>
           )}

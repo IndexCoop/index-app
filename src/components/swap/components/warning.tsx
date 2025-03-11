@@ -1,4 +1,4 @@
-import { Flex, Link, Text } from '@chakra-ui/react'
+import { Flex, Text } from '@chakra-ui/react'
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { ReactNode } from 'react'
 
@@ -31,19 +31,21 @@ const warningsData: Record<
       <>
         Some of our tokens are not available to Restricted Persons - including
         US persons - as defined in our{' '}
-        <Link
+        <a
           href='https://indexcoop.com/terms-of-service'
-          style={{ textDecoration: 'underline' }}
+          className='underline'
+          target='_blank'
         >
           Terms of Service
-        </Link>
+        </a>
         . Please also see our{' '}
-        <Link
+        <a
           href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
-          style={{ textDecoration: 'underline' }}
+          className='underline'
+          target='_blank'
         >
           Tokens Restricted for Restricted Persons
-        </Link>{' '}
+        </a>{' '}
         page.
       </>
     ),
@@ -55,19 +57,21 @@ const warningsData: Record<
         It appears you may be using a VPN and, because some of our tokens are
         not available to Restricted Persons - including US persons - as defined
         in our{' '}
-        <Link
+        <a
           href='https://indexcoop.com/terms-of-service'
-          style={{ textDecoration: 'underline' }}
+          className='underline'
+          target='_blank'
         >
           Terms of Service
-        </Link>
+        </a>
         , we are required to restrict access to VPN users. Please also see our{' '}
-        <Link
+        <a
           href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
-          style={{ textDecoration: 'underline' }}
+          className='underline'
+          target='_blank'
         >
           Tokens Restricted for Restricted Persons
-        </Link>{' '}
+        </a>{' '}
         page.
       </>
     ),
@@ -121,17 +125,13 @@ export const WarningCompProtection = () => {
         textColor={colors.ic.gray[600]}
       >
         It is highly recommended to use an MEV protected RPC.{' '}
-        <Link onClick={onClick} style={{ textDecoration: 'underline' }}>
+        <span onClick={onClick} className='cursor-pointer underline'>
           Click here
-        </Link>{' '}
+        </span>{' '}
         to add the MEV Blocker network to your wallet.{' '}
-        <Link
-          href='https://mevblocker.io/'
-          isExternal
-          style={{ textDecoration: 'underline' }}
-        >
+        <a href='https://mevblocker.io/' target='_blank' className='underline'>
           Learn More about MEV protection
-        </Link>
+        </a>
       </Text>
     </Flex>
   )
