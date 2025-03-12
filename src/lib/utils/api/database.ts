@@ -52,10 +52,12 @@ export const mapQuoteToTrade = (
 })
 
 const getUnderlyingAssetSymbol = (quote: Quote) => {
-  const symbol = (quote.isMinting ? quote.outputToken : quote.inputToken).symbol
+  const symbol = (
+    quote.isMinting ? quote.outputToken : quote.inputToken
+  ).symbol.toUpperCase()
 
-  if (symbol.startsWith('ETH') || symbol.startsWith('iETH')) return 'ETH'
-  if (symbol.startsWith('BTC') || symbol.startsWith('iBTC')) return 'BTC'
+  if (symbol.startsWith('ETH') || symbol.startsWith('IETH')) return 'ETH'
+  if (symbol.startsWith('BTC') || symbol.startsWith('IBTC')) return 'BTC'
   if (symbol.startsWith('WSTETH')) return 'WSTETH'
   if (symbol.startsWith('USUI')) return 'SUI'
   if (symbol.startsWith('USOL')) return 'SOL'
