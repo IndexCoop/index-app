@@ -1,3 +1,8 @@
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -5,16 +10,10 @@ import { useState } from 'react'
 import { StyledSkeleton } from '@/components/skeleton'
 import { Tag } from '@/components/swap/components/trade-details/tag'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { useColorStyles } from '@/lib/styles/colors'
 import { cn } from '@/lib/utils/tailwind'
 
 import { TradeInfoItem } from '../../types'
 
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from '@headlessui/react'
 import { FlashMintTag } from './tag-flashmint'
 import { TradeInfoItemsContainer } from './trade-info'
 import { TradePrice } from './trade-price'
@@ -36,7 +35,6 @@ interface TradeDetailsProps {
 
 export const TradeDetails = (props: TradeDetailsProps) => {
   const { data, isLoading, prices, showWarning } = props
-  const { styles } = useColorStyles()
 
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
 
