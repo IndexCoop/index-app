@@ -67,7 +67,7 @@ const getUnderlyingAssetSymbol = (quote: Quote) => {
     const possible = ['ETH', 'BTC', 'SUI', 'SOL', 'MATIC']
     const { symbol } = getUnderlyingToken(token)
 
-    return possible.find((p) => symbol.startsWith(p)) ?? ''
+    return possible.find((p) => symbol.includes(p)) ?? ''
   }
 
   return ''
