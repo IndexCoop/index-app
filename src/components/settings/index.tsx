@@ -93,7 +93,7 @@ export const Settings = (props: SettingsProps) => {
         w='320px'
       >
         <PopoverBody>
-          <p className='text-ic-gray-600 font-medium'>Max Slippage</p>
+          <p className='text-ic-gray-600 text-base font-medium'>Max Slippage</p>
           <Flex align='center' my='4'>
             <Toggle
               toggleState={toggleState}

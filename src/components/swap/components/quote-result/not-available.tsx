@@ -22,8 +22,10 @@ export const QuoteNotAvailable = ({ type }: QuoteNotAvailableProps) => {
           {type.toUpperCase()}
         </p>
       </Flex>
-      <p className='text-ic-gray-300 font-medium'>{type} unavailable</p>
-      <p className='text-ic-gray-300 text-sm'>
+      <p className='text-ic-gray-300 text-base font-medium'>
+        {type} unavailable
+      </p>
+      <p className='text-ic-gray-300 text-sm font-normal'>
         {`This token is not available for ${text}.`}
       </p>
     </Flex>

@@ -15,9 +15,11 @@ export const Warning = (props: WarningProps) => (
   <Flex direction={'column'}>
     <Flex align={'center'} direction={'row'}>
       <ExclamationCircleIcon className='text-ic-yellow size-4' />
-      <p className='text-ic-gray-600 ml-1.5 font-medium'>Slippage warning</p>
+      <p className='text-ic-gray-600 ml-1.5 text-base font-medium'>
+        Slippage warning
+      </p>
     </Flex>
-    <p className='text-ic-gray-600 mt-0.5 text-sm'>
+    <p className='text-ic-gray-600 mt-0.5 text-sm font-normal'>
       {getTexts(props.lowSlippage)}
     </p>
   </Flex>
