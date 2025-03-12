@@ -1,4 +1,4 @@
-import { Box, Flex, IconButton } from '@chakra-ui/react'
+import { Flex, IconButton } from '@chakra-ui/react'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
@@ -215,7 +215,7 @@ export const Swap = (props: SwapProps) => {
             if (inputTokenslist.length > 1) onOpenSelectInputToken()
           }}
         />
-        <Box h='6px' alignSelf={'center'}>
+        <div className='flex h-1.5 self-center'>
           <IconButton
             className='bg-ic-white text-ic-gray-400'
             margin={'-16px 0 0 0'}
@@ -223,7 +223,7 @@ export const Swap = (props: SwapProps) => {
             icon={<ChevronUpDownIcon className='h-7 w-5 text-gray-500' />}
             onClick={onSwitchTokens}
           />
-        </Box>
+        </div>
         <TradeOutput
           caption={'You receive'}
           selectedToken={outputToken}
