@@ -1,14 +1,14 @@
+import {
+  getTokenByChainAndAddress,
+  getUnderlyingToken,
+  isLeverageToken,
+} from '@indexcoop/tokenlists'
 import { formatUnits } from 'viem'
 
 import { UtmParam } from '@/app/store/utm-atoms'
 import { Quote } from '@/lib/hooks/use-best-quote/types'
 
 import type { PostApiV2TradeMutationRequest } from '@/gen'
-import {
-  getTokenByChainAndAddress,
-  getUnderlyingToken,
-  isLeverageToken,
-} from '@indexcoop/tokenlists'
 
 export const mapQuoteToTrade = (
   address: string,
