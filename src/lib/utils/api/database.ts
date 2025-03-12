@@ -4,6 +4,11 @@ import { UtmParam } from '@/app/store/utm-atoms'
 import { Quote } from '@/lib/hooks/use-best-quote/types'
 
 import type { PostApiV2TradeMutationRequest } from '@/gen'
+import {
+  getTokenByChainAndAddress,
+  getUnderlyingToken,
+  isLeverageToken,
+} from '@indexcoop/tokenlists'
 
 export const mapQuoteToTrade = (
   address: string,
@@ -52,15 +57,18 @@ export const mapQuoteToTrade = (
 })
 
 const getUnderlyingAssetSymbol = (quote: Quote) => {
-  const symbol = (
-    quote.isMinting ? quote.outputToken : quote.inputToken
-  ).symbol.toUpperCase()
+  const address = quote.isMinting
+    ? quote.outputToken.address
+    : quote.inputToken.address
 
-  if (symbol.startsWith('ETH') || symbol.startsWith('IETH')) return 'ETH'
-  if (symbol.startsWith('BTC') || symbol.startsWith('IBTC')) return 'BTC'
-  if (symbol.startsWith('WSTETH')) return 'WSTETH'
-  if (symbol.startsWith('USUI')) return 'SUI'
-  if (symbol.startsWith('USOL')) return 'SOL'
+  const token = getTokenByChainAndAddress(quote.chainId, address)
+
+  if (isLeverageToken(token)) {
+    const possible = ['ETH', 'BTC', 'SUI', 'SOL', 'MATIC']
+    const { symbol } = getUnderlyingToken(token)
+
+    return possible.find((p) => symbol.startsWith(p)) ?? ''
+  }
 
   return ''
 }
