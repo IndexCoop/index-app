@@ -160,6 +160,7 @@ const createTradeMachine = () =>
         isModalOpen: false,
         quoteResult: null,
         trade: null,
+        position: null,
         transactionReview: null,
         transactionStatus: null,
       }),
