@@ -41,7 +41,7 @@ const usePositionData = () => {
     const sign = Math.sign(value)
 
     const avgEntryPrices = calculateAverageEntryPrice(
-      history.filter((p) => p.metrics?.positionId === position.positionId),
+      history?.filter((p) => p.metrics?.positionId === position.positionId),
     )
 
     const avgEntryPrice = avgEntryPrices[position.tokenAddress]

@@ -11,7 +11,7 @@ import { leverageTokens } from '../constants'
 import { EnrichedToken } from '../types'
 
 export const calculateAverageEntryPrice = (
-  positions: GetApiV2UserAddressPositions200,
+  positions: GetApiV2UserAddressPositions200 = [],
 ) => {
   const grouped = positions.reduce(
     (acc, position) => {
