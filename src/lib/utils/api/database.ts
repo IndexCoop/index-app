@@ -57,6 +57,8 @@ export const mapQuoteToTrade = (
 })
 
 const getUnderlyingAssetSymbol = (quote: Quote) => {
+  const possible = ['ETH', 'BTC', 'SUI', 'SOL', 'MATIC']
+
   const address = quote.isMinting
     ? quote.outputToken.address
     : quote.inputToken.address
@@ -64,11 +66,10 @@ const getUnderlyingAssetSymbol = (quote: Quote) => {
   const token = getTokenByChainAndAddress(quote.chainId, address)
 
   if (isLeverageToken(token)) {
-    const possible = ['ETH', 'BTC', 'SUI', 'SOL', 'MATIC']
     const { symbol } = getUnderlyingToken(token)
 
     return possible.find((p) => symbol.includes(p)) ?? ''
   }
 
-  return ''
+  return possible.find((p) => token?.symbol.includes(p)) ?? ''
 }
