@@ -118,10 +118,15 @@ export async function POST(req: NextRequest) {
     const stats = open.reduce(
       (acc, position) => ({
         ...acc,
-        [`${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`]:
-          prices[position.trade.underlyingAssetSymbol!.toLowerCase()][
-            position.trade.underlyingAssetUnitPriceDenominator!.toLowerCase()
-          ] ?? 0,
+        ...(position.trade.underlyingAssetSymbol &&
+        position.trade.underlyingAssetUnitPriceDenominator
+          ? {
+              [`${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`]:
+                prices[position.trade.underlyingAssetSymbol.toLowerCase()][
+                  position.trade.underlyingAssetUnitPriceDenominator.toLowerCase()
+                ],
+            }
+          : {}),
       }),
       {},
     )

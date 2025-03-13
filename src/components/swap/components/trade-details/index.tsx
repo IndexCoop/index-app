@@ -4,7 +4,6 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Box,
   Flex,
 } from '@chakra-ui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
@@ -12,12 +11,13 @@ import Image from 'next/image'
 import { useState } from 'react'
 
 import { StyledSkeleton } from '@/components/skeleton'
+import { Tag } from '@/components/swap/components/trade-details/tag'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { colors, useColorStyles } from '@/lib/styles/colors'
+import { cn } from '@/lib/utils/tailwind'
 
 import { TradeInfoItem } from '../../types'
 
-import { Tag } from './tag'
 import { FlashMintTag } from './tag-flashmint'
 import { TradeInfoItemsContainer } from './trade-info'
 import { TradePrice } from './trade-price'
@@ -94,7 +94,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                             height={16}
                           />
                         )}
-                        <Box onClick={onToggleTokenPrice}>
+                        <div onClick={onToggleTokenPrice}>
                           {isLoading ? (
                             <StyledSkeleton width={200} />
                           ) : (
@@ -103,9 +103,9 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                               usdLabel={usdLabel}
                             />
                           )}
-                        </Box>
+                        </div>
                       </Flex>
-                      <Flex opacity={isExpanded ? 0 : 1} gap={4}>
+                      <div className={cn('flex gap-4', isExpanded && 'hidden')}>
                         {!isLoading &&
                           props.selectedQuoteType === QuoteType.index && (
                             <Tag label={'LI.FI'} />
@@ -115,7 +115,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                             <FlashMintTag />
                           )}
                         {isLoading && <StyledSkeleton width={70} />}
-                      </Flex>
+                      </div>
                     </>
                   </Flex>
                   <AccordionIcon />
