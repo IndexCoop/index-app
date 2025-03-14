@@ -1,5 +1,5 @@
 import { CoinGeckoService, CoingeckoProvider } from '@indexcoop/analytics-sdk'
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 import { fetchCarryCosts } from '@/lib/utils/fetch'
@@ -7,11 +7,12 @@ import { fetchCarryCosts } from '@/lib/utils/fetch'
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
 
+  const chainId = Number(searchParams.get('chainId'))
   const tokenAddress = searchParams.get('address')
   const symbol = searchParams.get('symbol')
   const base = searchParams.get('base')
   const baseCurrency = searchParams.get('baseCurrency')
-  if (!tokenAddress || !symbol || !base || !baseCurrency) {
+  if (!chainId || !tokenAddress || !symbol || !base || !baseCurrency) {
     return NextResponse.json('Bad Request', { status: 400 })
   }
   try {
@@ -27,7 +28,9 @@ export async function GET(req: NextRequest) {
     const costOfCarry = carryCosts
       ? (carryCosts[formattedSymbol] ?? null)
       : null
+    console.log('stats')
     const metrics = await fetchTokenMetrics({
+      chainId,
       tokenAddress: tokenAddress,
       metrics: ['fees', 'nav', 'navchange'],
     })

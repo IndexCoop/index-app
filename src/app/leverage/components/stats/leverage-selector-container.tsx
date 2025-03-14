@@ -11,7 +11,7 @@ import { LeverageSelector } from '@/app/leverage/components/stats/leverage-selec
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { getPathForRatio, ratios } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
-import { LeverageRatio, LeverageType } from '@/app/leverage/types'
+import { type LeverageRatio, LeverageType } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -31,7 +31,7 @@ export function LeverageSelectorContainer() {
   const {
     data: { token },
     isFetchingQuickStats,
-  } = useQuickStats(market, indexToken)
+  } = useQuickStats(market, { ...indexToken, chainId: chainId ?? 1 })
 
   const { data } = useQuery({
     gcTime: 5 * 60 * 1000,

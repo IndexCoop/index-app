@@ -13,10 +13,8 @@ import { isAddress } from 'viem'
 import { base } from 'viem/chains'
 
 import { useQueryParams } from '@/app/earn/use-query-params'
-import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { ETH, Token } from '@/constants/tokens'
-import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
-import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
+import { ETH, type Token } from '@/constants/tokens'
+import { type TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { usePrepareTransactionReview } from '@/lib/hooks/use-prepare-transaction-review'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
@@ -30,6 +28,9 @@ import {
 import { calculateApy } from '@/lib/utils/apy'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
+
+import type { TransactionReview } from '@/components/swap/components/transaction-review/types'
+import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
 const hyETH = { ...hyEthTokenlist, image: hyEthTokenlist.logoURI }
@@ -183,7 +184,9 @@ export function EarnProvider(props: { children: any }) {
     initialData: { apy: null, nav: null, tvl: null },
     queryKey: ['token-latest-stats', indexTokenAddress],
     queryFn: async () => {
+      console.log('earn')
       const data = await fetchTokenMetrics({
+        chainId: indexToken.chainId!,
         tokenAddress: indexTokenAddress!,
         metrics: ['nav', 'apy', 'pav'],
       })
@@ -207,6 +210,7 @@ export function EarnProvider(props: { children: any }) {
     queryKey: ['token-apy-stats', indexTokenAddress],
     queryFn: async () => {
       const data = await fetchTokenHistoricalData({
+        chainId,
         tokenAddress: indexTokenAddress!,
         metrics: ['apy'],
         interval: 'daily',
