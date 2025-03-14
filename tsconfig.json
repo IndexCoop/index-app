@@ -7,6 +7,7 @@
     "strict": true,
     "allowUnreachableCode": false,
     "allowImportingTsExtensions": true,
+    "downlevelIteration": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
@@ -31,7 +32,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "env.d.ts"
+    "env.d.ts",
+    "src/app/leverage/utils/datafeed.js",
+    "src/app/leverage/utils/datafeed.js"
   ],
   "exclude": ["node_modules"]
 }
