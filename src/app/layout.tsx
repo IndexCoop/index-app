@@ -1,3 +1,5 @@
+import { Viewport } from 'next'
+
 import { MavaScript } from '@/components/external/mava-script'
 import { SafaryScript } from '@/components/external/safary-script'
 import './globals.css'
@@ -14,7 +16,8 @@ export const metadata = {
   type: 'website',
 }
 
-export const viewport = {
+export const viewport: Viewport = {
+  userScalable: false,
   themeColor: '#000000',
 }
 

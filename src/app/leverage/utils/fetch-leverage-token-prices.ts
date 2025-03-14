@@ -2,12 +2,51 @@ import { getTokenByChainAndAddress, LeverageToken } from '@indexcoop/tokenlists'
 
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { formatPrice } from '@/app/products/utils/formatters'
+import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatWei } from '@/lib/utils'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 import { leverageTokens } from '../constants'
 import { EnrichedToken } from '../types'
+
+export const calculateAverageEntryPrice = (
+  positions: GetApiV2UserAddressPositions200 = [],
+) => {
+  const grouped = positions.reduce(
+    (acc, position) => {
+      if (
+        position.trade &&
+        position.metrics &&
+        position.trade.transactionType === 'buy'
+      ) {
+        const tokenAddress = position.metrics.tokenAddress
+
+        if (!acc[tokenAddress]) {
+          acc[tokenAddress] = { sum: 0, count: 0 }
+        }
+
+        acc[tokenAddress].sum +=
+          (position.trade.underlyingAssetUnitPrice ?? 0) *
+          (position.metrics.totalPurchaseSize ?? 0)
+        acc[tokenAddress].count += position.metrics.totalPurchaseSize ?? 0
+      }
+      return acc
+    },
+    {} as Record<string, { sum: number; count: number }>,
+  )
+
+  const averages = Object.keys(grouped).reduce(
+    (acc, tokenAddress) => {
+      acc[tokenAddress] =
+        grouped[tokenAddress].sum / grouped[tokenAddress].count
+      return acc
+    },
+    {} as Record<string, number>,
+  )
+
+  return averages
+}
 
 export async function fetchLeverageTokenPrices(
   balances: TokenBalance[],
