@@ -53,8 +53,7 @@ function formatUrl({
   for (const metric of metrics) {
     searchParams.append('metrics', metric)
   }
-  console.log(searchParams)
-  return `https://api.indexcoop.com/v2/data/${tokenAddress}?${searchParams.toString()}`
+  return `/api/data/${tokenAddress}?${searchParams.toString()}`
 }
 
 export async function fetchTokenMetrics({
@@ -70,7 +69,7 @@ export async function fetchTokenMetrics({
   try {
     const res = await fetch(url)
     const json = await res.json()
-    const latest = json[0]
+    const latest = json.metrics[0]
     console.log(latest)
     return metrics.reduce<IndexData>(
       (acc, metric) => {
@@ -110,11 +109,11 @@ export async function fetchTokenHistoricalData({
   })
   try {
     const res = await fetch(url)
-    const json = (await res.json()) as (IndexData & {
+    const json = await res.json()
+    const data = json.metrics as (IndexData & {
       CreatedTimestamp: string
     })[]
-
-    return json
+    return data
   } catch (error) {
     console.error(`Error fetching token historical data: ${url}`, error)
     return null
