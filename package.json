@@ -43,7 +43,7 @@
     "@visx/gradient": "3.3.0",
     "@visx/responsive": "3.10.2",
     "@visx/xychart": "3.11.0",
-    "alchemy-sdk": "3.4.1",
+    "alchemy-sdk": "3.5.4",
     "dayjs": "1.11.11",
     "eslint": "8.57.1",
     "eslint-config-next": "14.2.13",
