@@ -4,6 +4,7 @@ import Image from 'next/image'
 
 import { StyledSkeleton } from '@/components/skeleton'
 import { colors } from '@/lib/styles/colors'
+import { cn } from '@/lib/utils/tailwind'
 
 import { QuoteDisplay } from './types'
 
@@ -23,12 +24,22 @@ function getBackgroundColor(isSelected: boolean, isBestQuote: boolean) {
 }
 
 function useHighlightColor(isSelected: boolean, isBestQuote: boolean) {
-  if (isBestQuote && isSelected) return colors.ic.blue[600]
-  if (isBestQuote && !isSelected) return '#CFF5F6'
-  if (!isBestQuote && isSelected) {
-    return '#F178B6'
+  if (isBestQuote && isSelected) {
+    return { border: colors.ic.blue[600], text: 'text-ic-blue-600' }
   }
-  return colors.ic.gray[400]
+  if (isBestQuote && !isSelected) {
+    return { border: '#CFF5F6', text: 'text-[#CFF5F6]' }
+  }
+  if (!isBestQuote && isSelected) {
+    return {
+      border: '#F178B6',
+      text: 'text-[#F178B6]',
+    }
+  }
+  return {
+    border: colors.ic.gray[400],
+    text: 'text-ic-gray-400',
+  }
 }
 
 export const QuoteAvailable = (props: QuoteAvailableProps) => {
@@ -39,7 +50,7 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
   return (
     <Flex
       bg={background}
-      borderColor={highlight}
+      borderColor={highlight.border}
       borderRadius='12'
       borderWidth={borderWidth}
       cursor='pointer'
@@ -51,10 +62,10 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
     >
       <Flex align='space-between' direction='column' justify={'flex-start'}>
         <Flex justify={'space-between'}>
-          <Text className='text-ic-gray-500' fontSize={'xs'} fontWeight={500}>
+          <p className='text-ic-gray-500 text-xs font-medium'>
             {isLoading && <StyledSkeleton width={50} />}
             {!isLoading && quote && quote.inputAmount}
-          </Text>
+          </p>
           <Flex direction={'row'} gap={1}>
             {quote?.isBestQuote && (
               <Flex opacity={isSelected ? 1 : 0.2}>
@@ -66,9 +77,9 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
                 />
               </Flex>
             )}
-            <Text fontSize={'sm'} fontWeight={600} textColor={highlight}>
+            <p className={cn('text-sm font-semibold', highlight.text)}>
               {type.toUpperCase()}
-            </Text>
+            </p>
           </Flex>
         </Flex>
       </Flex>
