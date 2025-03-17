@@ -3,7 +3,6 @@ import { type Address, type PublicClient, encodeFunctionData } from 'viem'
 
 import { Issuance } from '@/app/legacy/config'
 import { LeveragedRethStakingYield } from '@/app/legacy/config/tokens/mainnet'
-import type { LegacyQuote } from '@/app/legacy/types'
 import { POLYGON } from '@/constants/chains'
 import { RETH, type Token } from '@/constants/tokens'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
@@ -15,6 +14,8 @@ import { type Quote, type QuoteTransaction, QuoteType } from '../../types'
 
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 import { DebtIssuanceProvider } from './provider'
+
+import type { LegacyQuote } from '@/app/legacy/types'
 
 interface IssuanceQuoteRequest {
   chainId: number

@@ -1,6 +1,6 @@
-import type { Address, PublicClient } from 'viem'
-
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
+
+import type { Address, PublicClient } from 'viem'
 
 export class DebtIssuanceProvider {
   constructor(
