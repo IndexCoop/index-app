@@ -6,16 +6,13 @@ import datafeed from '@/app/leverage/utils/datafeed'
 import {
   ChartingLibraryWidgetOptions,
   IChartingLibraryWidget,
-  LanguageCode,
   ResolutionString,
   widget,
 } from '../../../../public/tradingview/charting_library'
 
-type Props = {
-  options: Partial<ChartingLibraryWidgetOptions>
-}
+const WIDGET_INTERVAL = '1D' as ResolutionString
 
-export const TradingViewChartContainer = ({ options }: Props) => {
+export const TradingViewChartContainer = () => {
   const { market } = useLeverageToken()
   const chartContainerRef =
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>
@@ -23,22 +20,21 @@ export const TradingViewChartContainer = ({ options }: Props) => {
 
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      symbol: options.symbol,
-      // BEWARE: no trailing slash is expected in feed URL
       datafeed,
-      interval: options.interval as ResolutionString,
+      symbol: 'ETHUSD',
+      interval: WIDGET_INTERVAL,
       container: chartContainerRef.current,
-      library_path: options.library_path,
-      locale: options.locale as LanguageCode,
-      disabled_features: ['use_localstorage_for_settings'],
+      library_path: '/tradingview/charting_library/',
+      locale: 'en',
+      disabled_features: ['header_widget', 'left_toolbar'],
+
       enabled_features: ['study_templates'],
-      charts_storage_url: options.charts_storage_url,
-      charts_storage_api_version: options.charts_storage_api_version,
-      client_id: options.client_id,
-      user_id: options.user_id,
-      fullscreen: options.fullscreen,
-      autosize: options.autosize,
-      ////
+      charts_storage_url: 'https://saveload.tradingview.com',
+      charts_storage_api_version: '1.1',
+      client_id: 'tradingview.com',
+      user_id: 'public_user_id',
+      fullscreen: true,
+      autosize: true,
       theme: 'dark',
       timezone: 'Etc/UTC',
     }
@@ -51,7 +47,7 @@ export const TradingViewChartContainer = ({ options }: Props) => {
     return () => {
       tvWidget.remove()
     }
-  }, [options])
+  }, [])
 
   useEffect(() => {
     if (!tvWidget) return
@@ -79,9 +75,9 @@ export const TradingViewChartContainer = ({ options }: Props) => {
     }
 
     if (symbol && tvWidget) {
-      tvWidget.setSymbol(symbol, options.interval as ResolutionString, () => {})
+      tvWidget.setSymbol(symbol, WIDGET_INTERVAL, () => {})
     }
-  }, [market, options.interval, tvWidget])
+  }, [market, tvWidget])
 
   return <div ref={chartContainerRef} className='h-full w-full' />
 }
