@@ -1,8 +1,7 @@
 import {
   CoinDeskEthTrendIndex,
   IndexToken,
-  RealWorldAssetIndex,
-  Token,
+  type Token,
 } from '@/constants/tokens'
 
 export function isAvailableForFlashMint(token: Token): boolean {
@@ -12,16 +11,6 @@ export function isAvailableForFlashMint(token: Token): boolean {
     default:
       return true
   }
-}
-
-export function isAvailableForIssuance(
-  inputToken: Token,
-  outputToken: Token,
-): boolean {
-  return (
-    inputToken.symbol === RealWorldAssetIndex.symbol ||
-    outputToken.symbol === RealWorldAssetIndex.symbol
-  )
 }
 
 export function isAvailableForSwap(token: Token): boolean {

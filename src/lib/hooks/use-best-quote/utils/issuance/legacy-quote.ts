@@ -1,17 +1,17 @@
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
-import { Address, PublicClient, encodeFunctionData } from 'viem'
+import { type Address, type PublicClient, encodeFunctionData } from 'viem'
 
 import { Issuance } from '@/app/legacy/config'
 import { LeveragedRethStakingYield } from '@/app/legacy/config/tokens/mainnet'
-import { LegacyQuote } from '@/app/legacy/types'
+import type { LegacyQuote } from '@/app/legacy/types'
 import { POLYGON } from '@/constants/chains'
-import { RETH, Token } from '@/constants/tokens'
+import { RETH, type Token } from '@/constants/tokens'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 import { formatWei, isSameAddress } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
 
-import { Quote, QuoteTransaction, QuoteType } from '../../types'
+import { type Quote, type QuoteTransaction, QuoteType } from '../../types'
 
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
 import { DebtIssuanceProvider } from './provider'
@@ -100,7 +100,7 @@ export async function getLegacyRedemptionQuote(
     transaction.gas = gas.limit
 
     const inputTokenAmountUsd =
-      parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *
+      Number.parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *
       inputTokenPrice
     const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
 
