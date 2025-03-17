@@ -8,7 +8,7 @@ import {
   IChartingLibraryWidget,
   ResolutionString,
   widget,
-} from '../../../../public/tradingview/charting_library'
+} from '~/tradingview-chart/charting_library'
 
 const WIDGET_INTERVAL = '1D' as ResolutionString
 
