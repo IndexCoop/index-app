@@ -3,7 +3,6 @@ import {
   DefiPulseIndex,
   HighYieldETHIndex,
   MetaverseIndex,
-  RealWorldAssetIndex,
   icETHIndex,
 } from '@/constants/tokens'
 
@@ -20,8 +19,6 @@ export function getFlashMintGasDefault(symbol: string) {
       return 1_500_000
     case MetaverseIndex.symbol:
       return 2_000_000
-    case RealWorldAssetIndex.symbol:
-      return 250_000
     default:
       return 2_000_000
   }

@@ -52,11 +52,6 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/pre-sales',
-        destination: '/presales',
-        permanent: true,
-      },
-      {
         source: '/',
         destination: '/trade',
         permanent: true,
