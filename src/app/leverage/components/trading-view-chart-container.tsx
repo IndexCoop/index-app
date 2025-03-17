@@ -24,7 +24,7 @@ export const TradingViewChartContainer = () => {
       symbol: 'ETHUSD',
       interval: WIDGET_INTERVAL,
       container: chartContainerRef.current,
-      library_path: '/tradingview/charting_library/',
+      library_path: '/tradingview-chart/charting_library/',
       locale: 'en',
       disabled_features: ['header_widget', 'left_toolbar'],
 

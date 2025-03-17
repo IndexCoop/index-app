@@ -8,7 +8,7 @@ export function TradingViewChart() {
   return (
     <>
       <Script
-        src='/tradingview/datafeeds/udf/dist/bundle.js'
+        src='/tradingview-chart/datafeeds/udf/dist/bundle.js'
         onReady={() => {
           setIsScriptReady(true)
         }}
