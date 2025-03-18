@@ -28,7 +28,6 @@ export async function GET(req: NextRequest) {
     const costOfCarry = carryCosts
       ? (carryCosts[formattedSymbol] ?? null)
       : null
-    console.log('stats')
     const metrics = await fetchTokenMetrics({
       chainId,
       tokenAddress: tokenAddress,

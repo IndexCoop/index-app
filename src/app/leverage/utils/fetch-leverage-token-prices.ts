@@ -49,7 +49,6 @@ export async function fetchLeverageTokenPrices(
   if (tokenBalances.some((token) => token.balance === null)) return
 
   try {
-    console.log('leverage')
     const navResponses = await Promise.all(
       tokenBalances.map((token) =>
         fetchTokenMetrics({

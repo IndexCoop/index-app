@@ -29,7 +29,6 @@ export function ProductPanel() {
     initialData: [] as any[],
     queryKey: ['product-list', sortBy, sortDirection],
     queryFn: async () => {
-      console.log('product pangel')
       return Promise.all(
         productTokens.map((token) =>
           token.address

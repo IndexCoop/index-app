@@ -70,7 +70,6 @@ export async function fetchTokenMetrics({
     const res = await fetch(url)
     const json = await res.json()
     const latest = json.metrics[0]
-    console.log(latest)
     return metrics.reduce<IndexData>(
       (acc, metric) => {
         const keys = metricToIndexDataKey[metric]

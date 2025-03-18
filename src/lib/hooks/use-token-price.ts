@@ -66,7 +66,6 @@ export const getTokenPrice = async (
     isIndexToken = false
   }
   if (shouldOverrideNav(token.symbol, chainId)) {
-    console.log('token price')
     const dataResponse = await fetchTokenMetrics({
       chainId,
       tokenAddress,

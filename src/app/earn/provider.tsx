@@ -184,7 +184,6 @@ export function EarnProvider(props: { children: any }) {
     initialData: { apy: null, nav: null, tvl: null },
     queryKey: ['token-latest-stats', indexTokenAddress],
     queryFn: async () => {
-      console.log('earn')
       const data = await fetchTokenMetrics({
         chainId: indexToken.chainId!,
         tokenAddress: indexTokenAddress!,
