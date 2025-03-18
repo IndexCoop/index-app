@@ -35,7 +35,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "env.d.ts",
-    "src/app/leverage/utils/datafeed.js",
     "src/app/leverage/utils/datafeed.js"
   ],
   "exclude": ["node_modules"]
