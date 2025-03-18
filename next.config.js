@@ -45,16 +45,12 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'raw.githubusercontent.com',
+        pathname: '/trustwallet/assets/master/blockchains/ethereum/assets/**',
       },
     ],
   },
   async redirects() {
     return [
-      {
-        source: '/pre-sales',
-        destination: '/presales',
-        permanent: true,
-      },
       {
         source: '/',
         destination: '/trade',

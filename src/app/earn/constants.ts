@@ -5,7 +5,12 @@ import { ETH, Token } from '@/constants/tokens'
 
 function createToken(chainId: number, symbol: string): Token {
   const token = getTokenByChainAndSymbol(chainId, symbol)!
-  return { ...token, image: token.logoURI }
+
+  return {
+    ...token,
+    symbol: token.symbol.replace('₮0', 'T'), // handle special case of USD₮0 on arbitrum
+    image: token.logoURI,
+  }
 }
 
 export function getCurrencyTokens(
@@ -29,7 +34,7 @@ export function getCurrencyTokens(
         createToken(arbitrum.id, 'WETH'),
         createToken(arbitrum.id, 'WBTC'),
         createToken(arbitrum.id, 'USDC'),
-        createToken(arbitrum.id, 'USDT'),
+        createToken(arbitrum.id, 'USD₮0'),
       ]
     case base.id:
       return [

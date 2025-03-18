@@ -104,6 +104,29 @@ export function FaqSection() {
           costs and fees compounding over time.
         </p>
         <p>
+          What is volatility Drift?
+          <ul className='list-disc pl-6'>
+            <li>
+              Volatility drift (sometimes called &quot;volatility decay&quot;)
+              is the compounding effect on leveraged products that causes their
+              returns to deviate from the underlying asset&apos;s
+              performance—beyond what a simple multiplication by the leverage
+              factor would suggest. In the context of our tokens, periodic
+              adjustments to maintain the respective token&apos;s target
+              leverage ratio can magnify price swings, leading to drift. For a
+              deeper look, check out our deep dive on{' '}
+              <a
+                target='_blank'
+                href='https://indexcoop.com/blog/fli-volatility-drift'
+                className='underline'
+              >
+                volatility drift
+              </a>
+              .
+            </li>
+          </ul>
+        </p>
+        <p>
           Users should frequently monitor their token holdings and take time to
           fully understand how the products work and are expected to behave in
           different market environments.
@@ -225,22 +248,30 @@ export function FaqSection() {
           charged for trading using the Leverage Interface.
         </p>
       </FaqItem>
-      <FaqItem question='What is volatility drift?' id='faq-volatility-drift'>
-        Volatility drift (sometimes called &quot;volatility decay&quot;) is the
-        compounding effect on leveraged products that causes their returns to
-        deviate from the underlying asset&apos;s performance—beyond what a
-        simple multiplication by the leverage factor would suggest. In the
-        context of our tokens, periodic adjustments to maintain the respective
-        token&apos;s target leverage ratio can magnify price swings, leading to
-        drift. For a deeper look, check out our{' '}
-        <a
-          target='_blank'
-          href='https://indexcoop.com/blog/fli-volatility-drift'
-          className='underline'
-        >
-          deep dive on volatility drift
-        </a>
-        .
+      <FaqItem
+        question='How can I trade SOL or SUI if I’m on an EVM chain?'
+        id='trade-sol-sui-evm'
+      >
+        <p>
+          Our new SOL and SUI tokens make it possible to trade these tokens on
+          Base with no bridging required. We do this by partnering with&nbsp;
+          <a
+            href='https://www.universal.xyz/reserves'
+            target='_blank'
+            className='underline'
+          >
+            Universal
+          </a>
+          , which wraps native SOL or SUI into an EVM-friendly token (uSOL /
+          uSUI).
+        </p>
+        <p>
+          These wrapped tokens are fully backed by the underlying assets, so you
+          can hold them just like any other ERC-20 token. From there, we create
+          the leveraged version with the same process we use for all Index Coop
+          leverage tokens. The result? Real SOL and SUI exposure from the
+          comfort of your favorite L2.
+        </p>
       </FaqItem>
       <FaqItem
         question='Why do I see a “Not available for Restricted Persons” message?'

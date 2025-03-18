@@ -1,9 +1,11 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useAtom } from 'jotai'
+import { useCallback, useEffect } from 'react'
 
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { Receive } from '@/components/receive'
 import { Settings } from '@/components/settings'
 import { SmartTradeButton } from '@/components/smart-trade-button'
@@ -13,11 +15,13 @@ import { TransactionReviewModal } from '@/components/swap/components/transaction
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
+import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
+import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
@@ -30,6 +34,7 @@ import './styles.css'
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 export function LeverageWidget() {
+  const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
@@ -41,7 +46,6 @@ export function LeverageWidget() {
     isMinting,
     leverageType,
     outputTokens,
-    transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
     onSelectLeverageType,
@@ -51,6 +55,7 @@ export function LeverageWidget() {
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const {
     contract,
@@ -74,11 +79,6 @@ export function LeverageWidget() {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const {
-    isOpen: isTransactionReviewOpen,
-    onOpen: onOpenTransactionReview,
-    onClose: onCloseTransactionReview,
-  } = useDisclosure()
 
   const {
     auto: autoSlippage,
@@ -89,8 +89,17 @@ export function LeverageWidget() {
 
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
-    onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
-  }, [inputBalance, inputToken, onChangeInputTokenAmount])
+    const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)
+    onChangeInputTokenAmount(formatWei(maxBalance, inputToken.decimals))
+  }, [gasData, inputBalance, inputToken, onChangeInputTokenAmount])
+
+  useEffect(() => {
+    if (tradeState.matches('reset')) {
+      reset()
+      resetData()
+      sendTradeEvent({ type: 'RESET_DONE' })
+    }
+  }, [tradeState, reset, resetData, sendTradeEvent])
 
   return (
     <div
@@ -149,7 +158,7 @@ export function LeverageWidget() {
         buttonLabelOverrides={{
           [TradeButtonState.default]: 'Review Transaction',
         }}
-        onOpenTransactionReview={onOpenTransactionReview}
+        onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
         onRefetchQuote={() => {}}
       />
       <SelectTokenModal
@@ -175,18 +184,14 @@ export function LeverageWidget() {
         address={address}
         tokens={outputTokens}
       />
-      {transactionReview && (
-        <TransactionReviewModal
-          isDarkMode={true}
-          isOpen={isTransactionReviewOpen}
-          onClose={() => {
-            reset()
-            resetData()
-            onCloseTransactionReview()
-          }}
-          transactionReview={transactionReview}
-        />
-      )}
+      <TransactionReviewModal
+        isDarkMode={true}
+        onClose={() => {
+          reset()
+          resetData()
+          sendTradeEvent({ type: 'CLOSE' })
+        }}
+      />
     </div>
   )
 }

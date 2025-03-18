@@ -76,13 +76,14 @@ export function getPathForMarket(market: string, chainId?: number) {
   const existingMarket = markets.find((m) => m.market === market)
   if (!existingMarket) return null
 
-  const { defaultAsset } = existingMarket
+  const { defaultAsset, defaultChainId } = existingMarket
 
   const queryChainId =
     chainId && existingMarket.networks.some((network) => network.id === chainId)
       ? chainId
-      : defaultAsset.chainId
-  return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${queryChainId}`
+      : defaultChainId
+  console.log(queryChainId, defaultAsset, existingMarket)
+  return `/leverage?sell=ETH&buy=${defaultAsset[queryChainId]}&network=${queryChainId}`
 }
 
 const defaultAssets = {
@@ -155,7 +156,12 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'ETH3X', chainId: base.id },
+    defaultAsset: {
+      [arbitrum.id]: 'ETH3X',
+      [base.id]: 'ETH3X',
+      [mainnet.id]: 'ETH2X',
+    },
+    defaultChainId: base.id,
     lendingProtocol: LendingProtocol.aave,
   },
   {
@@ -168,7 +174,12 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'BTC3X', chainId: base.id },
+    defaultAsset: {
+      [arbitrum.id]: 'BTC3X',
+      [base.id]: 'BTC3X',
+      [mainnet.id]: 'BTC2X',
+    },
+    defaultChainId: base.id,
     lendingProtocol: LendingProtocol.aave,
   },
   {
@@ -181,7 +192,10 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'uSOL2x', chainId: base.id },
+    defaultAsset: {
+      [base.id]: 'uSOL2x',
+    },
+    defaultChainId: base.id,
     lendingProtocol: LendingProtocol.morpho,
   },
   {
@@ -194,7 +208,10 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'uSUI2x', chainId: base.id },
+    defaultAsset: {
+      [base.id]: 'uSUI2x',
+    },
+    defaultChainId: base.id,
     lendingProtocol: LendingProtocol.morpho,
   },
   {
@@ -207,7 +224,10 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'ETH2xBTC', chainId: arbitrum.id },
+    defaultAsset: {
+      [arbitrum.id]: 'ETH2xBTC',
+    },
+    defaultChainId: arbitrum.id,
     lendingProtocol: LendingProtocol.aave,
   },
   {
@@ -220,7 +240,10 @@ export const markets: Market[] = [
     change24h: 0,
     low24h: 0,
     high24h: 0,
-    defaultAsset: { symbol: 'BTC2xETH', chainId: arbitrum.id },
+    defaultAsset: {
+      [arbitrum.id]: 'BTC2xETH',
+    },
+    defaultChainId: arbitrum.id,
     lendingProtocol: LendingProtocol.aave,
   },
 ]

@@ -11,13 +11,11 @@ import {
 import { arbitrum, base } from 'viem/chains'
 
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
-import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM } from '@/constants/chains'
 import { ETH, Token } from '@/constants/tokens'
 import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { usePrepareTransactionReview } from '@/lib/hooks/use-prepare-transaction-review'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -50,7 +48,6 @@ export interface TokenContext {
   isFetchingQuote: boolean
   quoteResult: QuoteResult | null
   supportedLeverageTypes: LeverageType[]
-  transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
@@ -76,7 +73,6 @@ export const LeverageTokenContext = createContext<TokenContext>({
   isFetchingQuote: false,
   quoteResult: null,
   supportedLeverageTypes: [],
-  transactionReview: null,
   onChangeInputTokenAmount: () => {},
   onSelectInputToken: () => {},
   onSelectLeverageType: () => {},
@@ -162,10 +158,6 @@ export function LeverageProvider(props: { children: any }) {
     inputValue,
     slippage,
   })
-  const transactionReview = usePrepareTransactionReview(
-    isFetchingQuote,
-    quoteResult,
-  )
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
@@ -324,7 +316,6 @@ export function LeverageProvider(props: { children: any }) {
         isFetchingQuote,
         quoteResult,
         supportedLeverageTypes: getSupportedLeverageTypes,
-        transactionReview,
         onChangeInputTokenAmount,
         onSelectInputToken,
         onSelectLeverageType,

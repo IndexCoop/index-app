@@ -20,7 +20,6 @@ const navigation = [
   { name: 'Earn', href: Path.EARN },
   { name: 'Swap', href: Path.SWAP, isMoreNavLink: true },
   { name: 'PRT Staking', href: Path.PRT_STAKING, isMoreNavLink: true },
-  { name: 'Presales', href: Path.PRESALES, isMoreNavLink: true },
   { name: 'Legacy Products', href: Path.LEGACY, isMoreNavLink: true },
 ]
 
