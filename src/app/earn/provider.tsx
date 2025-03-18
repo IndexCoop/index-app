@@ -28,7 +28,6 @@ import { calculateApy } from '@/lib/utils/apy'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
 
-import type { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
