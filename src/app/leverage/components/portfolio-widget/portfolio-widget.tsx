@@ -2,23 +2,22 @@ import { Tab, TabGroup, TabList } from '@headlessui/react'
 import { isLeverageToken } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useState } from 'react'
 
 import {
   historyColumns,
   openPositionsColumns,
 } from '@/app/leverage/components/portfolio-widget/columns'
-import {
-  TableRenderer,
-  type Stats,
-} from '@/app/leverage/components/portfolio-widget/table'
-import { useLeverageToken } from '@/app/leverage/provider'
+import { TableRenderer } from '@/app/leverage/components/portfolio-widget/table'
+import { getLeverageTokens } from '@/app/leverage/constants'
 import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
+import { fetchPositionsAtom } from '@/app/store/positions-atom'
 import { ETH } from '@/constants/tokens'
-import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
+import { useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -29,9 +28,21 @@ const OpenPositions = () => {
   const { chainId } = useNetwork()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const { queryParams, updateQueryParams } = useQueryParams()
+  const fetchPositions = useSetAtom(fetchPositionsAtom)
   const { logEvent } = useAnalytics()
 
-  const { balances, reset } = useLeverageToken()
+  const indexTokenAddresses = useMemo(() => {
+    if (chainId) {
+      return getLeverageTokens(chainId).map((token) => token.address!)
+    }
+
+    return []
+  }, [chainId])
+
+  const { balances, forceRefetchBalances } = useBalances(
+    address,
+    indexTokenAddresses,
+  )
 
   const adjustPosition = useCallback(
     (isMinting: boolean, token: EnrichedToken) => {
@@ -59,12 +70,13 @@ const OpenPositions = () => {
 
   const { data: tokens } = useQuery({
     initialData: [],
-    queryKey: ['leverage-token-prices', address, chainId, balances.toString()],
-    enabled: Boolean(address),
+    queryKey: ['leverage-token-prices', address, chainId],
+    enabled: Boolean(address && chainId),
 
     queryFn: async () => {
       if (chainId) {
-        reset()
+        const { data: balances = [] } = await forceRefetchBalances()
+
         return fetchLeverageTokenPrices(balances, chainId)
       }
 
@@ -85,23 +97,7 @@ const OpenPositions = () => {
     initialData: { open: [], history: [], stats: {} },
     enabled: Boolean(address && chainId),
     queryKey: ['leverage-token-history', address, chainId, selectedIndex],
-    queryFn: async () => {
-      const response = await fetch('/api/leverage/history', {
-        method: 'POST',
-        body: JSON.stringify({
-          user: address,
-          chainId,
-        }),
-      })
-
-      const data = (await response.json()) as {
-        open: GetApiV2UserAddressPositions200
-        history: GetApiV2UserAddressPositions200
-        stats: Stats
-      }
-
-      return data
-    },
+    queryFn: () => fetchPositions(address ?? '', chainId ?? 0),
   })
 
   const tableData = useMemo(

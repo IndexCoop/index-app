@@ -41,15 +41,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Make sure the token data was added to [tokenlists](https://github.com/IndexCoop/tokenlists)
 - If possible avoid and use tokenlists utils directly: add token in [tokens.ts](src/constants/tokens.ts) - using tokenlists (check ETH2X for reference)
 
-## New Presale
-
-- Make sure the token data was added to [tokenlists](https://github.com/IndexCoop/tokenlists)
-- Add logo in [assets](public/assets) - as defined in tokenlists
-- Update tokenlists dependency
-- Add token in [tokens.ts](src/constants/tokens.ts)
-- Add presale config in [src/app/presales/constants.ts](src/app/presales/constants.ts) and update `getTokenForPresaleToken`
-- Test locally w/ hardhat
-
 ## Testing
 
 ### Unit tests

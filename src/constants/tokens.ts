@@ -63,12 +63,6 @@ export const icETHIndex: Token = {
   image: icethLogo,
 }
 
-const rwa = getTokenByChainAndSymbol(mainnet.id, 'RWA')
-export const RealWorldAssetIndex: Token = {
-  ...rwa,
-  image: rwa.logoURI,
-}
-
 /**
  * Other
  */

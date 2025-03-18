@@ -1,9 +1,11 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useAtom } from 'jotai'
+import { useCallback, useEffect } from 'react'
 
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { Receive } from '@/components/receive'
 import { Settings } from '@/components/settings'
 import { SmartTradeButton } from '@/components/smart-trade-button'
@@ -44,7 +46,6 @@ export function LeverageWidget() {
     isMinting,
     leverageType,
     outputTokens,
-    transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
     onSelectLeverageType,
@@ -54,6 +55,7 @@ export function LeverageWidget() {
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const {
     contract,
@@ -77,11 +79,6 @@ export function LeverageWidget() {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const {
-    isOpen: isTransactionReviewOpen,
-    onOpen: onOpenTransactionReview,
-    onClose: onCloseTransactionReview,
-  } = useDisclosure()
 
   const {
     auto: autoSlippage,
@@ -95,6 +92,14 @@ export function LeverageWidget() {
     const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)
     onChangeInputTokenAmount(formatWei(maxBalance, inputToken.decimals))
   }, [gasData, inputBalance, inputToken, onChangeInputTokenAmount])
+
+  useEffect(() => {
+    if (tradeState.matches('reset')) {
+      reset()
+      resetData()
+      sendTradeEvent({ type: 'RESET_DONE' })
+    }
+  }, [tradeState, reset, resetData, sendTradeEvent])
 
   return (
     <div
@@ -153,7 +158,7 @@ export function LeverageWidget() {
         buttonLabelOverrides={{
           [TradeButtonState.default]: 'Review Transaction',
         }}
-        onOpenTransactionReview={onOpenTransactionReview}
+        onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
         onRefetchQuote={() => {}}
       />
       <SelectTokenModal
@@ -179,18 +184,14 @@ export function LeverageWidget() {
         address={address}
         tokens={outputTokens}
       />
-      {transactionReview && (
-        <TransactionReviewModal
-          isDarkMode={true}
-          isOpen={isTransactionReviewOpen}
-          onClose={() => {
-            reset()
-            resetData()
-            onCloseTransactionReview()
-          }}
-          transactionReview={transactionReview}
-        />
-      )}
+      <TransactionReviewModal
+        isDarkMode={true}
+        onClose={() => {
+          reset()
+          resetData()
+          sendTradeEvent({ type: 'CLOSE' })
+        }}
+      />
     </div>
   )
 }
