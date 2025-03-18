@@ -2,14 +2,13 @@ import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { formatPrice } from '@/app/products/utils/formatters'
-import { GetApiV2UserAddressPositions200 } from '@/gen'
-import { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatWei } from '@/lib/utils'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
 import { leverageTokens } from '../constants'
 
 import type { EnrichedToken } from '@/app/leverage/types'
+import type { GetApiV2UserAddressPositions200 } from '@/gen'
 import type { TokenBalance } from '@/lib/hooks/use-balance'
 import type { LeverageToken } from '@indexcoop/tokenlists'
 
