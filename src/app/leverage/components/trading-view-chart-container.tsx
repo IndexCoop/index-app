@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import datafeed from '@/app/leverage/utils/datafeed'
+
 import {
-  ChartingLibraryWidgetOptions,
-  IChartingLibraryWidget,
-  ResolutionString,
+  type ChartingLibraryWidgetOptions,
+  type IChartingLibraryWidget,
+  type ResolutionString,
   widget,
 } from '~/tradingview-chart/charting_library'
 
