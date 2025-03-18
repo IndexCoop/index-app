@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 import datafeed from '@/app/leverage/utils/datafeed'
-
 import {
   type ChartingLibraryWidgetOptions,
   type IChartingLibraryWidget,
