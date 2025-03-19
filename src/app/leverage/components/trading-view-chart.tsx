@@ -1,8 +1,9 @@
+import { Button } from '@headlessui/react'
+import { useAppKit } from '@reown/appkit/react'
+
 import TradingViewWidget from '@/app/leverage/components/trading-view-widget'
 import { Token } from '@/constants/tokens'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { Button } from '@headlessui/react'
-import { useAppKit } from '@reown/appkit/react'
 
 type Props = {
   indexToken: Token
