@@ -28,20 +28,22 @@ export async function GET(req: NextRequest) {
     const costOfCarry = carryCosts
       ? (carryCosts[formattedSymbol] ?? null)
       : null
-    const metrics = await fetchTokenMetrics({
-      chainId,
-      tokenAddress: tokenAddress,
-      metrics: ['fees', 'nav', 'navchange'],
-    })
+    try {
+      const metrics = await fetchTokenMetrics({
+        chainId,
+        tokenAddress: tokenAddress,
+        metrics: ['fees', 'nav', 'navchange'],
+      })
+      console.error('foobar success', metrics)
+    } catch (error) {
+      console.error('foobar error', error)
+    }
 
     return NextResponse.json({
       base: { ...data, baseCurrency },
       token: {
         symbol,
         costOfCarry,
-        nav: metrics?.NetAssetValue ?? 0,
-        navchange: metrics?.NavChange24Hr ?? 0,
-        streamingFee: metrics?.StreamingFee ?? 0,
       },
     })
   } catch (error) {
