@@ -1,4 +1,5 @@
 import { CoinGeckoService, CoingeckoProvider } from '@indexcoop/analytics-sdk'
+import { headers } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
@@ -28,7 +29,14 @@ export async function GET(req: NextRequest) {
     const costOfCarry = carryCosts
       ? (carryCosts[formattedSymbol] ?? null)
       : null
+
+    const headersList = await headers()
+    const host = headersList.get('host')
     const metrics = await fetchTokenMetrics({
+      hostname:
+        process.env.NODE_ENV === 'development'
+          ? `http://${host}`
+          : `https://${host}`,
       chainId,
       tokenAddress: tokenAddress,
       metrics: ['fees', 'nav', 'navchange'],
