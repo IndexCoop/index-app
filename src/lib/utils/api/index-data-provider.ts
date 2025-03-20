@@ -31,7 +31,7 @@ export type IndexDataPeriod =
 export type IndexDataInterval = 'latest' | 'minute' | 'hour' | 'daily'
 
 type FormatUrlArgs = {
-  hostname: string
+  hostname?: string
   chainId: number
   tokenAddress: string
   metrics?: IndexDataMetric[]
@@ -40,7 +40,7 @@ type FormatUrlArgs = {
 }
 
 function formatUrl({
-  hostname,
+  hostname = '',
   chainId,
   tokenAddress,
   metrics = [],
@@ -59,7 +59,7 @@ function formatUrl({
 }
 
 export async function fetchTokenMetrics({
-  hostname = '',
+  hostname,
   chainId,
   tokenAddress,
   metrics,

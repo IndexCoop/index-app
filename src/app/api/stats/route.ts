@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
       ? (carryCosts[formattedSymbol] ?? null)
       : null
 
-    const headesrList = await headers()
+    const headersList = await headers()
     const host = headersList.get('host')
     const metrics = await fetchTokenMetrics({
       hostname:
