@@ -7,7 +7,7 @@ import { useDebounce } from 'use-debounce'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
-import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
@@ -48,7 +48,6 @@ export const Swap = (props: SwapProps) => {
   const isSupportedNetwork = useSupportedNetworks([
     MAINNET.chainId,
     ARBITRUM.chainId,
-    BASE.chainId,
   ])
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
