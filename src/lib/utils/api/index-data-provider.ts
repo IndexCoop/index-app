@@ -31,6 +31,7 @@ export type IndexDataPeriod =
 export type IndexDataInterval = 'latest' | 'minute' | 'hour' | 'daily'
 
 type FormatUrlArgs = {
+  hostname: string
   chainId: number
   tokenAddress: string
   metrics?: IndexDataMetric[]
@@ -39,6 +40,7 @@ type FormatUrlArgs = {
 }
 
 function formatUrl({
+  hostname,
   chainId,
   tokenAddress,
   metrics = [],
@@ -53,19 +55,21 @@ function formatUrl({
   for (const metric of metrics) {
     searchParams.append('metrics', metric)
   }
-  return `/api/data/${tokenAddress}?${searchParams.toString()}`
+  return `${hostname}/api/data/${tokenAddress}?${searchParams.toString()}`
 }
 
 export async function fetchTokenMetrics({
+  hostname = '',
   chainId,
   tokenAddress,
   metrics,
 }: {
+  hostname?: string
   chainId: number
   tokenAddress: string
   metrics: IndexDataMetric[]
 }) {
-  const url = formatUrl({ chainId, tokenAddress, metrics })
+  const url = formatUrl({ hostname, chainId, tokenAddress, metrics })
   try {
     const res = await fetch(url)
     const json = await res.json()

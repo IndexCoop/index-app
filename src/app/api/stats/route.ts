@@ -1,4 +1,5 @@
 import { CoinGeckoService, CoingeckoProvider } from '@indexcoop/analytics-sdk'
+import { headers } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
@@ -28,22 +29,27 @@ export async function GET(req: NextRequest) {
     const costOfCarry = carryCosts
       ? (carryCosts[formattedSymbol] ?? null)
       : null
-    try {
-      const metrics = await fetchTokenMetrics({
-        chainId,
-        tokenAddress: tokenAddress,
-        metrics: ['fees', 'nav', 'navchange'],
-      })
-      console.error('foobar success', metrics)
-    } catch (error) {
-      console.error('foobar error', error)
-    }
+
+    const headesrList = await headers()
+    const host = headersList.get('host')
+    const metrics = await fetchTokenMetrics({
+      hostname:
+        process.env.NODE_ENV === 'development'
+          ? `http://${host}`
+          : `https://${host}`,
+      chainId,
+      tokenAddress: tokenAddress,
+      metrics: ['fees', 'nav', 'navchange'],
+    })
 
     return NextResponse.json({
       base: { ...data, baseCurrency },
       token: {
         symbol,
         costOfCarry,
+        nav: metrics?.NetAssetValue ?? 0,
+        navchange: metrics?.NavChange24Hr ?? 0,
+        streamingFee: metrics?.StreamingFee ?? 0,
       },
     })
   } catch (error) {
