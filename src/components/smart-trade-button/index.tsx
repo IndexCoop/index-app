@@ -8,13 +8,14 @@ import {
   useTradeButtonState,
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
-import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
 import { useIsTokenPairTradable } from '@/lib/hooks/use-is-token-pair-tradable'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useProtectionContext } from '@/lib/providers/protection'
 import { useSlippage } from '@/lib/providers/slippage'
 import { getNativeToken } from '@/lib/utils/tokens'
+
+import type { Token } from '@/constants/tokens'
 
 type SmartTradeButtonProps = {
   inputToken: Token

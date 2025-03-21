@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { tradeMachineAtom } from '@/app/store/trade-machine'
-import { Token } from '@/constants/tokens'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { type QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
 import { getBestYieldQuote } from '@/lib/hooks/use-quote-result/best-quote'
 import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
+
+import type { Token } from '@/constants/tokens'
 
 type QuoteRequest = {
   address: string | undefined

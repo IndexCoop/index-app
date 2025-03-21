@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { ARBITRUM } from '@/constants/chains'
-import { Token } from '@/constants/tokens'
 import {
   isAvailableForFlashMint,
   isAvailableForSwap,
@@ -15,10 +14,17 @@ import { getAddressForToken } from '@/lib/utils/tokens'
 import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 
-import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
+import {
+  type Quote,
+  type QuoteResults,
+  QuoteType,
+  type ZeroExQuote,
+} from './types'
 import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { getIndexQuote } from './utils/index-quote'
+
+import type { Token } from '@/constants/tokens'
 
 export interface FetchQuoteRequest {
   isMinting: boolean

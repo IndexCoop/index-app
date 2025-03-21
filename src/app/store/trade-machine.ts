@@ -1,11 +1,10 @@
 import { atomWithMachine } from 'jotai-xstate'
-import { TransactionReceipt } from 'viem'
 import { assertEvent, assign, createMachine } from 'xstate'
 
-import { TransactionReview } from '@/components/swap/components/transaction-review/types'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
-
+import type { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import type { PostApiV2Trade200 } from '@/gen'
+import type { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import type { TransactionReceipt } from 'viem'
 
 // Define the context type for our state machine
 export interface TradeMachineContext {
