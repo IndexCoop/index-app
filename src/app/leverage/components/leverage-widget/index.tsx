@@ -103,7 +103,7 @@ export function LeverageWidget() {
 
   return (
     <div
-      className='leverage-widget flex flex-col gap-4 rounded-lg px-4 pb-5 pt-4'
+      className='leverage-widget flex w-full flex-col gap-4 rounded-lg px-4 pb-5 pt-4'
       id='close-position-scroll'
     >
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
