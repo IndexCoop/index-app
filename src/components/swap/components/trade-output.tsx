@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 
 import { Token } from '@/constants/tokens'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -40,9 +40,9 @@ export const TradeOutput = (props: TradeOutputProps) => {
       </Flex>
       <Flex direction='column' gap='8px' mt='20px'>
         {props.quotes.length > 0 && (
-          <Text className='text-ic-gray-600' fontSize='xs' fontWeight={500}>
+          <p className='text-ic-gray-600 text-xs font-medium'>
             Select your preferred route
-          </Text>
+          </p>
         )}
         {props.quotes.map((formattedQuote) => (
           <QuoteResult
