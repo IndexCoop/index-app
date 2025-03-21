@@ -13,9 +13,10 @@ import * as chains from 'viem/chains'
 import { formatAmount } from '@/app/leverage/utils/currency'
 import { leverageShortTypeMap } from '@/app/leverage/utils/get-leverage-type'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-import { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
+
+import type { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
 
 const columnsHelper =
   createColumnHelper<GetApiV2UserAddressPositionsQueryResponse[number]>()
