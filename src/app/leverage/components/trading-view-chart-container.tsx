@@ -26,8 +26,15 @@ export const TradingViewChartContainer = () => {
       container: chartContainerRef.current,
       library_path: '/tradingview-chart/charting_library/',
       locale: 'en',
-      disabled_features: ['header_widget', 'left_toolbar'],
-
+      disabled_features: [
+        'compare_symbol_search_spread_operators',
+        'header_widget',
+        'left_toolbar',
+        'use_localstorage_for_settings',
+        'header_symbol_search',
+        'header_quick_search',
+        'symbol_search_hot_key',
+      ],
       enabled_features: ['study_templates'],
       charts_storage_url: 'https://saveload.tradingview.com',
       charts_storage_api_version: '1.1',

@@ -1,5 +1,3 @@
-import { subscribeOnStream, unsubscribeFromStream } from './streaming'
-
 const API_ENDPOINT = 'https://benchmarks.pyth.network/v1/shims/tradingview'
 
 // Use it to keep a record of the most recent bar on the chart
@@ -28,16 +26,29 @@ const datafeed = {
     })
   },
   resolveSymbol: (
-    symbolName: any,
+    symbolNameParam: any,
     onSymbolResolvedCallback: any,
     onResolveErrorCallback: any,
   ) => {
-    console.log('[resolveSymbol]: Method call', symbolName)
+    console.log('[resolveSymbol]: Method call', symbolNameParam)
+    const symbolName = symbolNameParam === 'BTCETH' ? 'ETHBTC' : symbolNameParam
     fetch(`${API_ENDPOINT}/symbols?symbol=${symbolName}`).then((response) => {
       response
         .json()
-        .then((symbolInfo) => {
-          console.log('[resolveSymbol]: Symbol resolved', symbolInfo)
+        .then((symbolInfoParam) => {
+          const symbolInfo =
+            symbolNameParam === 'BTCETH'
+              ? {
+                  ...symbolInfoParam,
+                  // base_name: ['BTCETH'],
+                  description: 'BITCOIN / ETHEREUM',
+                  // name: 'BTCETH',
+                  // full_name: 'Crypto.BTC/ETH',
+                  // legs: ['BTCETH'],
+                  // pro_name: 'Crypto.BTC/ETH',
+                  // ticker: 'Crypto.BTC/ETH',
+                }
+              : symbolInfoParam
           onSymbolResolvedCallback(symbolInfo)
         })
         .catch(() => {
@@ -63,6 +74,7 @@ const datafeed = {
     let currentFrom = from
     let currentTo
 
+    const isBTCETH = symbolInfo.description === 'BITCOIN / ETHEREUM'
     while (currentFrom < to) {
       currentTo = Math.min(to, currentFrom + maxRangeInSeconds)
       const url = `${API_ENDPOINT}/history?symbol=${symbolInfo.ticker}&from=${currentFrom}&to=${currentTo}&resolution=${resolution}`
@@ -78,10 +90,10 @@ const datafeed = {
             data.t.forEach((time: any, index: number) => {
               bars.push({
                 time: time * 1000,
-                low: data.l[index],
-                high: data.h[index],
-                open: data.o[index],
-                close: data.c[index],
+                low: isBTCETH ? 1 / data.l[index] : data.l[index],
+                high: isBTCETH ? 1 / data.h[index] : data.h[index],
+                open: isBTCETH ? 1 / data.o[index] : data.o[index],
+                close: isBTCETH ? 1 / data.c[index] : data.c[index],
               })
             })
           }
@@ -105,27 +117,27 @@ const datafeed = {
     resolution: any,
     onRealtimeCallback: any,
     subscriberUID: any,
-    onResetCacheNeededCallback: any,
+    // onResetCacheNeededCallback: any,
   ) => {
     console.log(
       '[subscribeBars]: Method call with subscriberUID:',
       subscriberUID,
     )
-    subscribeOnStream(
-      symbolInfo,
-      resolution,
-      onRealtimeCallback,
-      subscriberUID,
-      onResetCacheNeededCallback,
-      lastBarsCache.get(symbolInfo.ticker),
-    )
+    // subscribeOnStream(
+    //   symbolInfo,
+    //   resolution,
+    //   onRealtimeCallback,
+    //   subscriberUID,
+    //   onResetCacheNeededCallback,
+    //   lastBarsCache.get(symbolInfo.ticker),
+    // )
   },
   unsubscribeBars: (subscriberUID: any) => {
     console.log(
       '[unsubscribeBars]: Method call with subscriberUID:',
       subscriberUID,
     )
-    unsubscribeFromStream(subscriberUID)
+    // unsubscribeFromStream(subscriberUID)
   },
 }
 
