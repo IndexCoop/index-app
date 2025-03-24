@@ -7,8 +7,7 @@ import { useDebounce } from 'use-debounce'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
-import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { Token } from '@/constants/tokens'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
@@ -27,13 +26,15 @@ import { getTokenBySymbol } from '@/lib/utils/tokens'
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import {
-  InputSelectorToken,
+  type InputSelectorToken,
   TradeInputSelector,
 } from './components/trade-input-selector'
 import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
 import { useSwap } from './hooks/use-swap'
 import { useTokenlists } from './hooks/use-tokenlists'
+
+import type { Token } from '@/constants/tokens'
 
 type SwapProps = {
   isBuying: boolean
@@ -47,7 +48,6 @@ export const Swap = (props: SwapProps) => {
   const isSupportedNetwork = useSupportedNetworks([
     MAINNET.chainId,
     ARBITRUM.chainId,
-    BASE.chainId,
   ])
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
@@ -118,6 +118,16 @@ export const Swap = (props: SwapProps) => {
   useEffect(() => {
     setSelectedQuote(quoteResults?.bestQuote)
   }, [quoteResults])
+
+  useEffect(() => {
+    const quote = quoteResults?.results[selectedQuote ?? QuoteType.index]
+    if (!quote) return
+    sendTradeEvent({
+      type: 'QUOTE',
+      quoteResult: quote,
+      quoteType: quote.type,
+    })
+  }, [quoteResults, selectedQuote, sendTradeEvent])
 
   const resetTradeData = useCallback(() => {
     setInputTokenAmountFormatted('')
