@@ -27,7 +27,6 @@ export const TradingViewChartContainer = () => {
       library_path: '/tradingview-chart/charting_library/',
       locale: 'en',
       disabled_features: ['left_toolbar', 'header_symbol_search'],
-      enabled_features: ['study_templates'],
       charts_storage_url: 'https://saveload.tradingview.com',
       charts_storage_api_version: '1.1',
       client_id: 'tradingview.com',
@@ -36,6 +35,11 @@ export const TradingViewChartContainer = () => {
       autosize: true,
       theme: 'dark',
       timezone: 'Etc/UTC',
+      overrides: {
+        // TODO: background doesn't appear to work
+        'paneProperties.background': '#1c2929',
+        'paneProperties.backgroundType': 'solid',
+      },
     }
 
     const tvWidget = new widget(widgetOptions)
