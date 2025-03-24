@@ -3,11 +3,17 @@ const API_ENDPOINT = 'https://benchmarks.pyth.network/v1/shims/tradingview'
 // Use it to keep a record of the most recent bar on the chart
 const lastBarsCache = new Map()
 
+const symbolToPriceScale: Record<string, number> = {
+  BTCUSD: 100,
+  ETHUSD: 100,
+  SOLUSD: 100,
+  SUIUSD: 10000,
+  BTCETH: 10000,
+  ETHBTC: 10000,
+}
+
 const getPriceScale = (symbol: string) => {
-  if (symbol === 'BTCETH' || symbol === 'ETHBTC') {
-    return 10000
-  }
-  return 100
+  return symbolToPriceScale[symbol] ?? 100
 }
 
 const datafeed = {
