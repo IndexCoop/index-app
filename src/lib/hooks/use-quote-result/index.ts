@@ -7,9 +7,7 @@ import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { type QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
-import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
-import { getBestYieldQuote } from '@/lib/hooks/use-quote-result/best-quote'
-import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
+import { getTokenPrice } from '@/lib/hooks/use-token-price'
 
 import type { Token } from '@/constants/tokens'
 
@@ -36,7 +34,6 @@ export function useQuoteResult(request: QuoteRequest) {
     slippage,
   } = request
   const indexToken = isMinting ? outputToken : inputToken
-  const nativeTokenPrice = useNativeTokenPrice(chainId)
   const publicClient = usePublicClient({ chainId })
   const { logEvent } = useAnalytics()
   const sendTradeEvent = useSetAtom(tradeMachineAtom)
@@ -69,30 +66,6 @@ export function useQuoteResult(request: QuoteRequest) {
       outputToken,
       outputTokenPrice,
       slippage,
-    })
-  }
-
-  const fetchSwapQuote = async () => {
-    if (!address) return null
-    if (!chainId) return null
-    if (!publicClient) return null
-    if (inputTokenAmount <= 0) return null
-    if (!indexToken) return null
-    const [inputTokenPrice, outputTokenPrice] = await Promise.all([
-      getTokenPrice(inputToken, chainId),
-      getTokenPrice(outputToken, chainId),
-    ])
-    return await getIndexQuote({
-      isMinting,
-      chainId,
-      address,
-      inputToken,
-      inputTokenAmount: inputValue,
-      inputTokenPrice,
-      outputToken,
-      outputTokenPrice,
-      nativeTokenPrice,
-      slippage: 0.1,
     })
   }
 
@@ -129,42 +102,17 @@ export function useQuoteResult(request: QuoteRequest) {
       refetchOnWindowFocus: false,
     })
 
-  const { data: swapQuote, isFetching: isFetchingSwapQuote } = useQuery({
-    queryKey: [
-      'swap-quote',
-      {
-        address,
-        chainId,
-        inputToken,
-        outputToken,
-        inputTokenAmount: inputTokenAmount.toString(),
-        publicClient,
-      },
-    ],
-    queryFn: fetchSwapQuote,
-    enabled:
-      !!address &&
-      !!chainId &&
-      !!publicClient &&
-      !!inputToken &&
-      !!outputToken &&
-      inputTokenAmount > 0,
-  })
-
   useEffect(() => {
-    const bestQuote = getBestYieldQuote(
-      flashmintQuote ?? null,
-      swapQuote ?? null,
-      chainId ?? -1,
-    )
-    if (bestQuote) {
-      logEvent('Quote Received', formatQuoteAnalytics(bestQuote))
+    if (flashmintQuote) {
+      logEvent('Quote Received', formatQuoteAnalytics(flashmintQuote))
     }
 
+    if (flashmintQuote === undefined) return
+
     const quoteResult = {
-      type: bestQuote?.type ?? QuoteType.flashmint,
+      type: flashmintQuote?.type ?? QuoteType.flashmint,
       isAvailable: true,
-      quote: bestQuote,
+      quote: flashmintQuote,
       error: null,
     }
 
@@ -172,12 +120,12 @@ export function useQuoteResult(request: QuoteRequest) {
     sendTradeEvent({
       type: 'QUOTE',
       quoteResult,
-      quoteType: bestQuote?.type ?? QuoteType.flashmint,
+      quoteType: flashmintQuote?.type ?? QuoteType.flashmint,
     })
-  }, [chainId, flashmintQuote, logEvent, swapQuote, sendTradeEvent])
+  }, [chainId, flashmintQuote, logEvent, sendTradeEvent])
 
   return {
-    isFetchingQuote: isFetchingFlashMintQuote || isFetchingSwapQuote,
+    isFetchingQuote: isFetchingFlashMintQuote,
     quoteResult,
     resetQuote,
   }
