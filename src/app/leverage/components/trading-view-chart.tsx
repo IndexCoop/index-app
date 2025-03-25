@@ -14,7 +14,7 @@ export function TradingViewChart() {
     <div className='relative h-full w-full'>
       <Script
         src='/tradingview-chart/datafeeds/udf/dist/bundle.js'
-        onReady={() => {
+        onLoad={() => {
           setIsScriptReady(true)
         }}
       />

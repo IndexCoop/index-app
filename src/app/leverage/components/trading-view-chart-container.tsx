@@ -21,23 +21,25 @@ export const TradingViewChartContainer = () => {
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       datafeed,
+      debug: false,
       symbol: 'ETHUSD',
       interval: WIDGET_INTERVAL,
       container: chartContainerRef.current,
       library_path: '/tradingview-chart/charting_library/',
       locale: 'en',
-      disabled_features: ['left_toolbar', 'header_symbol_search'],
-      charts_storage_url: 'https://saveload.tradingview.com',
-      charts_storage_api_version: '1.1',
-      client_id: 'tradingview.com',
-      user_id: 'public_user_id',
+      disabled_features: [
+        'left_toolbar',
+        'header_saveload',
+        'header_symbol_search',
+      ],
+      client_id: 'indexcoop',
       fullscreen: false,
       autosize: true,
       theme: 'dark',
       timezone: 'Etc/UTC',
       overrides: {
         // TODO: background doesn't appear to work
-        'paneProperties.background': '#1c2929',
+        'paneProperties.background': '#0F1717',
         'paneProperties.backgroundType': 'solid',
       },
     }

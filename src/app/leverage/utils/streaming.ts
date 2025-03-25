@@ -28,7 +28,6 @@ function handleStreamingData(data: any) {
       low: tradePrice,
       close: tradePrice,
     }
-    console.log('[stream] Generate new bar', bar)
   } else {
     bar = {
       ...lastDailyBar,
@@ -68,13 +67,20 @@ function startStreaming(retries = 3, delay = 3000) {
                 try {
                   const jsonData = JSON.parse(trimmedDataString)
                   handleStreamingData(jsonData)
+                  if (jsonData.id === 'Crypto.ETH/BTC') {
+                    handleStreamingData({
+                      ...jsonData,
+                      id: 'Crypto.BTC/ETH',
+                      p: 1 / jsonData.p,
+                    })
+                  }
                 } catch (e: any) {
                   console.error('Error parsing JSON:', e.message)
                 }
               }
             })
 
-            streamData() // Continue processing the stream
+            setTimeout(streamData, 5000) // Continue processing the stream
           })
           .catch((error) => {
             console.error('[stream] Error reading from stream:', error)

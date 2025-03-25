@@ -1,3 +1,8 @@
+import {
+  subscribeOnStream,
+  unsubscribeFromStream,
+} from '@/app/leverage/utils/streaming'
+
 const API_ENDPOINT = 'https://benchmarks.pyth.network/v1/shims/tradingview'
 
 // Use it to keep a record of the most recent bar on the chart
@@ -43,7 +48,6 @@ const datafeed = {
     onSymbolResolvedCallback: any,
     onResolveErrorCallback: any,
   ) => {
-    console.log('[resolveSymbol]: Method call', symbolNameParam)
     const symbolName = symbolNameParam === 'BTCETH' ? 'ETHBTC' : symbolNameParam
     fetch(`${API_ENDPOINT}/symbols?symbol=${symbolName}`).then((response) => {
       response
@@ -134,27 +138,27 @@ const datafeed = {
     resolution: any,
     onRealtimeCallback: any,
     subscriberUID: any,
-    // onResetCacheNeededCallback: any,
+    onResetCacheNeededCallback: any,
   ) => {
     console.log(
       '[subscribeBars]: Method call with subscriberUID:',
       subscriberUID,
     )
-    // subscribeOnStream(
-    //   symbolInfo,
-    //   resolution,
-    //   onRealtimeCallback,
-    //   subscriberUID,
-    //   onResetCacheNeededCallback,
-    //   lastBarsCache.get(symbolInfo.ticker),
-    // )
+    subscribeOnStream(
+      symbolInfo,
+      resolution,
+      onRealtimeCallback,
+      subscriberUID,
+      onResetCacheNeededCallback,
+      lastBarsCache.get(symbolInfo.ticker),
+    )
   },
   unsubscribeBars: (subscriberUID: any) => {
     console.log(
       '[unsubscribeBars]: Method call with subscriberUID:',
       subscriberUID,
     )
-    // unsubscribeFromStream(subscriberUID)
+    unsubscribeFromStream(subscriberUID)
   },
 }
 
