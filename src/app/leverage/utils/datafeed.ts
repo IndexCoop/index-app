@@ -57,14 +57,14 @@ const datafeed = {
             symbolNameParam === 'BTCETH'
               ? {
                   ...symbolInfoParam,
-                  // base_name: ['BTCETH'],
+                  base_name: ['BTCETH'],
                   description: 'BITCOIN / ETHEREUM',
+                  full_name: 'Crypto.BTC/ETH',
+                  legs: ['BTCETH'],
+                  name: 'BTCETH',
                   pricescale: getPriceScale(symbolNameParam),
-                  // name: 'BTCETH',
-                  // full_name: 'Crypto.BTC/ETH',
-                  // legs: ['BTCETH'],
-                  // pro_name: 'Crypto.BTC/ETH',
-                  // ticker: 'Crypto.BTC/ETH',
+                  pro_name: 'Crypto.BTC/ETH',
+                  ticker: 'Crypto.BTC/ETH',
                 }
               : {
                   ...symbolInfoParam,
@@ -95,10 +95,10 @@ const datafeed = {
     let currentFrom = from
     let currentTo
 
-    const isBTCETH = symbolInfo.description === 'BITCOIN / ETHEREUM'
+    const isBTCETH = symbolInfo.ticker === 'Crypto.BTC/ETH'
     while (currentFrom < to) {
       currentTo = Math.min(to, currentFrom + maxRangeInSeconds)
-      const url = `${API_ENDPOINT}/history?symbol=${symbolInfo.ticker}&from=${currentFrom}&to=${currentTo}&resolution=${resolution}`
+      const url = `${API_ENDPOINT}/history?symbol=${isBTCETH ? 'Crypto.ETH/BTC' : symbolInfo.ticker}&from=${currentFrom}&to=${currentTo}&resolution=${resolution}`
       promises.push(fetch(url).then((response) => response.json()))
       currentFrom = currentTo
     }

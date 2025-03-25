@@ -80,7 +80,7 @@ function startStreaming(retries = 3, delay = 3000) {
               }
             })
 
-            setTimeout(streamData, 5000) // Continue processing the stream
+            setTimeout(streamData, 3000) // Continue processing the stream
           })
           .catch((error) => {
             console.error('[stream] Error reading from stream:', error)
