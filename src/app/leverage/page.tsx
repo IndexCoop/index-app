@@ -36,6 +36,8 @@ export default function Page() {
         <div className='mx-auto flex w-full flex-col gap-4 px-4 py-4 md:gap-6 md:py-6'>
           <QuickStats />
           <LeveragePanel />
+        </div>
+        <div className='mx-auto w-full px-4 py-4 md:py-6'>
           <FaqSection />
         </div>
       </div>
