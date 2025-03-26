@@ -33,16 +33,10 @@ export const TradingViewChartContainer = () => {
         'header_saveload',
         'header_symbol_search',
       ],
-      client_id: 'indexcoop',
       fullscreen: false,
       autosize: true,
       theme: 'dark',
       timezone: 'Etc/UTC',
-      overrides: {
-        // TODO: background doesn't appear to work
-        'paneProperties.background': '#0F1717',
-        'paneProperties.backgroundType': 'solid',
-      },
     }
 
     const tvWidget = new widget(widgetOptions)
@@ -90,8 +84,8 @@ export const TradingViewChartContainer = () => {
       ref={chartContainerRef}
       // className='h-full w-full overflow-hidden rounded-lg'
       style={{
-        height: '300px',
-        width: '300px',
+        height: '100%',
+        width: '100%',
       }}
     />
   )
