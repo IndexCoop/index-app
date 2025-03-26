@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { useLeverageToken } from '@/app/leverage/provider'
 // eslint-disable-next-line import/order
-// import datafeed from '@/app/leverage/utils/datafeed'
+import { useLeverageToken } from '@/app/leverage/provider'
 import {
   type ChartingLibraryWidgetOptions,
   type IChartingLibraryWidget,
@@ -89,7 +88,11 @@ export const TradingViewChartContainer = () => {
   return (
     <div
       ref={chartContainerRef}
-      className='h-full w-full overflow-hidden rounded-lg'
+      // className='h-full w-full overflow-hidden rounded-lg'
+      style={{
+        height: '300px',
+        width: '300px',
+      }}
     />
   )
 }
