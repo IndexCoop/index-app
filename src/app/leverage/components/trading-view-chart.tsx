@@ -9,6 +9,7 @@ export function TradingViewChart() {
     <div className='xs:h-[422px] relative aspect-square h-full w-full lg:aspect-auto'>
       <Script
         src='/tradingview-chart/datafeeds/udf/dist/bundle.js'
+        strategy='lazyOnload'
         onReady={() => {
           setIsScriptReady(true)
         }}

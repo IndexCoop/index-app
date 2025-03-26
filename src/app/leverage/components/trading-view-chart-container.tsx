@@ -19,24 +19,27 @@ export const TradingViewChartContainer = () => {
 
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      datafeed: new window.Datafeeds.UDFCompatibleDatafeed(
-        'https://demo-feed-data.tradingview.com',
+      datafeed: new (window as any).Datafeeds.UDFCompatibleDatafeed(
+        'https://demo_feed.tradingview.com',
+        undefined,
+        {
+          maxResponseLength: 1000,
+          expectedOrder: 'latestFirst',
+        },
       ),
-      debug: false,
       symbol: 'AAPL',
-      interval: WIDGET_INTERVAL,
-      container: chartContainerRef.current,
+      interval: '1D' as ResolutionString,
       library_path: '/tradingview-chart/charting_library/',
+      container: chartContainerRef.current,
+      disabled_features: ['use_localstorage_for_settings'],
+      enabled_features: ['study_templates'],
       locale: 'en',
-      disabled_features: [
-        'left_toolbar',
-        'header_saveload',
-        'header_symbol_search',
-      ],
+      charts_storage_url: 'https://saveload.tradingview.com',
+      charts_storage_api_version: '1.1',
+      client_id: 'tradingview.com',
+      user_id: 'public_user_id',
       fullscreen: false,
       autosize: true,
-      theme: 'dark',
-      timezone: 'Etc/UTC',
     }
 
     const tvWidget = new widget(widgetOptions)
@@ -84,7 +87,7 @@ export const TradingViewChartContainer = () => {
       ref={chartContainerRef}
       // className='h-full w-full overflow-hidden rounded-lg'
       style={{
-        height: '100%',
+        height: 'calc(100vh - 60px)',
         width: '100%',
       }}
     />
