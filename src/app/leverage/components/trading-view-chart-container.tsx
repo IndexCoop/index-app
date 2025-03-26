@@ -7,7 +7,7 @@ import {
   type IChartingLibraryWidget,
   type ResolutionString,
   widget,
-} from '~/tradingview-chart/charting_library'
+} from '~/tradingview-chart/charting_library/'
 
 const WIDGET_INTERVAL = '1D' as ResolutionString
 
@@ -27,7 +27,8 @@ export const TradingViewChartContainer = () => {
       ),
       symbol: 'AAPL',
       interval: '1D' as ResolutionString,
-      library_path: '/tradingview-chart/charting_library/',
+      library_path:
+        'https://app.indexcoop.com/tradingview-chart/charting_library/',
       container: 'tv_chart_container',
       disabled_features: ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
