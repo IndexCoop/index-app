@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body,
+:root {
+  height: 100%;
+}
+
 @keyframes smoothBg {
   0% {
     transform: scale(1) rotate(0deg);
