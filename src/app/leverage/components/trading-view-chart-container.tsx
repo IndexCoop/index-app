@@ -31,7 +31,10 @@ export const TradingViewChartContainer = () => {
       library_path: '/tradingview-chart/charting_library/',
       container: 'tv_chart_container',
       disabled_features: ['use_localstorage_for_settings'],
-      enabled_features: ['study_templates'],
+      enabled_features: [
+        'iframe_loading_compatibility_mode',
+        'study_templates',
+      ],
       locale: 'en',
       charts_storage_api_version: '1.1',
       client_id: 'tradingview.com',
