@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useLeverageToken } from '@/app/leverage/provider'
 // eslint-disable-next-line import/order
-import datafeed from '@/app/leverage/utils/datafeed'
+// import datafeed from '@/app/leverage/utils/datafeed'
 import {
   type ChartingLibraryWidgetOptions,
   type IChartingLibraryWidget,
@@ -20,9 +20,11 @@ export const TradingViewChartContainer = () => {
 
   useEffect(() => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
-      datafeed,
+      datafeed: new window.Datafeeds.UDFCompatibleDatafeed(
+        'https://demo-feed-data.tradingview.com',
+      ),
       debug: false,
-      symbol: 'ETHUSD',
+      symbol: 'AAPL',
       interval: WIDGET_INTERVAL,
       container: chartContainerRef.current,
       library_path: '/tradingview-chart/charting_library/',
@@ -63,7 +65,7 @@ export const TradingViewChartContainer = () => {
         symbol = 'BTCUSD'
         break
       case 'ETH / USD':
-        symbol = 'ETHUSD'
+        symbol = 'AAPL'
         break
       case 'SOL / USD':
         symbol = 'SOLUSD'
@@ -84,5 +86,10 @@ export const TradingViewChartContainer = () => {
     }
   }, [market, tvWidget])
 
-  return <div ref={chartContainerRef} className='h-full w-full' />
+  return (
+    <div
+      ref={chartContainerRef}
+      className='h-full w-full overflow-hidden rounded-lg'
+    />
+  )
 }
