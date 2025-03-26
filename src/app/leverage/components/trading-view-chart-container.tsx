@@ -33,7 +33,6 @@ export const TradingViewChartContainer = () => {
       disabled_features: ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
       locale: 'en',
-      charts_storage_url: 'https://saveload.tradingview.com',
       charts_storage_api_version: '1.1',
       client_id: 'tradingview.com',
       user_id: 'public_user_id',
@@ -50,8 +49,8 @@ export const TradingViewChartContainer = () => {
         JSON.stringify(tvWidget, null, 2),
       )
       tvWidget.onChartReady(() => {
-        console.log('onChartReady tvWidget')
         setTvWidget(tvWidget)
+        console.log('onChartReady tvWidget')
       })
       console.log('finished widget init')
     } catch (e) {
