@@ -42,14 +42,19 @@ export const TradingViewChartContainer = () => {
     }
 
     console.log('Creating widget')
-    const tvWidget = new widget(widgetOptions)
-    tvWidget.onChartReady(() => {
-      console.log('onChartReady tvWidget')
-      setTvWidget(tvWidget)
-    })
+    let tvWidget: IChartingLibraryWidget | null = null
+    try {
+      tvWidget = new widget(widgetOptions)
+      tvWidget.onChartReady(() => {
+        console.log('onChartReady tvWidget')
+        setTvWidget(tvWidget)
+      })
+    } catch (e) {
+      console.log('Error creating widget', e)
+    }
 
     return () => {
-      tvWidget.remove()
+      tvWidget?.remove()
     }
   }, [])
 
