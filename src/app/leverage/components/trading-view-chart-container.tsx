@@ -27,8 +27,7 @@ export const TradingViewChartContainer = () => {
       ),
       symbol: 'AAPL',
       interval: '1D' as ResolutionString,
-      library_path:
-        'https://app.indexcoop.com/tradingview-chart/charting_library/',
+      library_path: '/tradingview-chart/charting_library/',
       container: 'tv_chart_container',
       disabled_features: ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
@@ -45,10 +44,12 @@ export const TradingViewChartContainer = () => {
     let tvWidget: IChartingLibraryWidget | null = null
     try {
       tvWidget = new widget(widgetOptions)
+      console.log('created widget, setting onChartReady', tvWidget)
       tvWidget.onChartReady(() => {
         console.log('onChartReady tvWidget')
         setTvWidget(tvWidget)
       })
+      console.log('finished widget init')
     } catch (e) {
       console.log('Error creating widget', e)
     }
