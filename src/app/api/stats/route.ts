@@ -3,7 +3,6 @@ import { headers } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
-import { fetchCarryCosts } from '@/lib/utils/fetch'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -22,13 +21,6 @@ export async function GET(req: NextRequest) {
     )
     const provider = new CoingeckoProvider(coingeckoService)
     const data = await provider.getTokenStats(base, baseCurrency)
-    const carryCosts = await fetchCarryCosts()
-    const formattedSymbol = (
-      symbol.startsWith('u') ? symbol.slice(1) : symbol
-    ).toLowerCase()
-    const costOfCarry = carryCosts
-      ? (carryCosts[formattedSymbol] ?? null)
-      : null
 
     const headersList = await headers()
     const host = headersList.get('host')
@@ -39,14 +31,14 @@ export async function GET(req: NextRequest) {
           : `https://${host}`,
       chainId,
       tokenAddress: tokenAddress,
-      metrics: ['fees', 'nav', 'navchange'],
+      metrics: ['carrycost', 'fees', 'nav', 'navchange'],
     })
 
     return NextResponse.json({
       base: { ...data, baseCurrency },
       token: {
         symbol,
-        costOfCarry,
+        costOfCarry: metrics?.Rate ?? 0,
         nav: metrics?.NetAssetValue ?? 0,
         navchange: metrics?.NavChange24Hr ?? 0,
         streamingFee: metrics?.StreamingFee ?? 0,
