@@ -44,7 +44,10 @@ export const TradingViewChartContainer = () => {
     let tvWidget: IChartingLibraryWidget | null = null
     try {
       tvWidget = new widget(widgetOptions)
-      console.log('created widget, setting onChartReady', tvWidget)
+      console.log(
+        'created widget, setting onChartReady',
+        JSON.stringify(tvWidget, null, 2),
+      )
       tvWidget.onChartReady(() => {
         console.log('onChartReady tvWidget')
         setTvWidget(tvWidget)
