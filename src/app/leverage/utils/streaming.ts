@@ -1,4 +1,4 @@
-// Assuming you're working in a browser environment that supports fetch and ReadableStream
+// Template pulled from https://github.com/cctdaniel/pyth-tv-charting-lib/blob/6adfdfcd0c4cf9c503ab154d4d4570a634a0ddbe/src/utils/streaming.js
 const streamingUrl =
   'https://benchmarks.pyth.network/v1/shims/tradingview/streaming'
 const channelToSubscription = new Map()
@@ -35,7 +35,6 @@ function handleStreamingData(data: any) {
       low: Math.min(lastDailyBar.low, tradePrice),
       close: tradePrice,
     }
-    console.log('[stream] Update the latest bar by price', tradePrice)
   }
 
   subscriptionItem.lastDailyBar = bar
@@ -98,7 +97,6 @@ function startStreaming(retries = 3, delay = 3000) {
     })
   function attemptReconnect(retriesLeft: any, delay: any) {
     if (retriesLeft > 0) {
-      console.log(`[stream] Attempting to reconnect in ${delay}ms...`)
       setTimeout(() => {
         startStreaming(retriesLeft - 1, delay)
       }, delay)
@@ -135,10 +133,6 @@ export function subscribeOnStream(
     handlers: [handler],
   }
   channelToSubscription.set(channelString, subscriptionItem)
-  console.log(
-    '[subscribeBars]: Subscribe to streaming. Channel:',
-    channelString,
-  )
 
   // Start streaming when the first subscription is made
   startStreaming()
@@ -154,10 +148,6 @@ export function unsubscribeFromStream(subscriberUID: any) {
 
     if (handlerIndex !== -1) {
       // Unsubscribe from the channel if it is the last handler
-      console.log(
-        '[unsubscribeBars]: Unsubscribe from streaming. Channel:',
-        channelString,
-      )
       channelToSubscription.delete(channelString)
       break
     }

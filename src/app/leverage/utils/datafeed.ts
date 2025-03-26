@@ -1,3 +1,4 @@
+// Template pulled from https://github.com/cctdaniel/pyth-tv-charting-lib/blob/6adfdfcd0c4cf9c503ab154d4d4570a634a0ddbe/src/utils/datafeed.js
 import {
   subscribeOnStream,
   unsubscribeFromStream,
@@ -23,7 +24,6 @@ const getPriceScale = (symbol: string) => {
 
 const datafeed = {
   onReady: (callback: any) => {
-    console.log('[onReady]: Method call')
     fetch(`${API_ENDPOINT}/config`).then((response) => {
       response.json().then((configurationData) => {
         setTimeout(() => callback(configurationData))
@@ -36,7 +36,6 @@ const datafeed = {
     symbolType: any,
     onResultReadyCallback: any,
   ) => {
-    console.log('[searchSymbols]: Method call')
     fetch(`${API_ENDPOINT}/search?query=${userInput}`).then((response) => {
       response.json().then((data) => {
         onResultReadyCallback(data)
@@ -87,7 +86,6 @@ const datafeed = {
     onErrorCallback: any,
   ) => {
     const { from, to, firstDataRequest } = periodParams
-    console.log('[getBars]: Method call', symbolInfo, resolution, from, to)
 
     const maxRangeInSeconds = 365 * 24 * 60 * 60 // 1 year in seconds
 
@@ -140,10 +138,6 @@ const datafeed = {
     subscriberUID: any,
     onResetCacheNeededCallback: any,
   ) => {
-    console.log(
-      '[subscribeBars]: Method call with subscriberUID:',
-      subscriberUID,
-    )
     subscribeOnStream(
       symbolInfo,
       resolution,
@@ -154,10 +148,6 @@ const datafeed = {
     )
   },
   unsubscribeBars: (subscriberUID: any) => {
-    console.log(
-      '[unsubscribeBars]: Method call with subscriberUID:',
-      subscriberUID,
-    )
     unsubscribeFromStream(subscriberUID)
   },
 }
