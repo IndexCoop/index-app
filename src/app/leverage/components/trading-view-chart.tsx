@@ -11,7 +11,7 @@ export function TradingViewChart() {
   const { isConnected } = useWallet()
   const { open } = useAppKit()
   return (
-    <div className='relative h-full w-full'>
+    <div className='xs:h-[422px] relative aspect-square w-full lg:aspect-auto'>
       <Script
         src='/tradingview-chart/datafeeds/udf/dist/bundle.js'
         onLoad={() => {

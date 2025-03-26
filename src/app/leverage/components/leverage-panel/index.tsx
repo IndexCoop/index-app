@@ -7,13 +7,11 @@ import { TradingViewChart } from '@/app/leverage/components/trading-view-chart'
 
 export function LeveragePanel() {
   return (
-    <div className='flex flex-col gap-4 lg:h-[630px] lg:flex-row'>
-      <div className='xs:h-[442px] aspect-square w-full lg:flex lg:aspect-auto lg:basis-2/3 lg:flex-col lg:gap-4'>
-        <div className='relative h-full w-full'>
-          <TradingViewChart />
-          <div className='hidden lg:block lg:pt-4'>
-            <PortfolioWidget />
-          </div>
+    <div className='flex flex-col gap-4 lg:flex-row'>
+      <div className='w-full lg:flex lg:aspect-auto lg:basis-2/3 lg:flex-col lg:gap-4'>
+        <TradingViewChart />
+        <div className='hidden lg:block lg:pt-4'>
+          <PortfolioWidget />
         </div>
       </div>
       <div className='flex w-full lg:w-auto lg:basis-1/3 lg:flex-col lg:gap-4'>
