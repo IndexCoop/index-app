@@ -6,6 +6,7 @@ export default {
   mode: 'jit',
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   darkMode: 'selector',
+  safelist: [{ pattern: /^bg-/ }, { pattern: /^text-/ }],
   theme: {
     extend: {
       screens: {

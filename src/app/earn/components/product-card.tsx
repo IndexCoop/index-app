@@ -1,3 +1,5 @@
+import { GetApiV2ProductsEarn200 } from '@/gen'
+import { formatAmount } from '@/lib/utils'
 import { cn } from '@/lib/utils/tailwind'
 import { ArrowRightIcon } from '@heroicons/react/20/solid'
 import { FC, ReactNode } from 'react'
@@ -18,34 +20,20 @@ const ProductTitlePill = ({
 )
 
 export type ProductCardProps = {
-  title: string
-  description: string
-  tokenAddress: string
-  tags?: {
-    text: string
-    className?: string
-  }[]
   pill?: {
     text: string
     icon: ReactNode
   }
-  data: {
-    apy: number
-  }
+  product: GetApiV2ProductsEarn200[number]
 }
 
-export const ProductCard: FC<ProductCardProps> = ({
-  title,
-  description,
-  pill,
-  data = { apy: 0 },
-  tags = [],
-}) => {
+export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
+  const { name, description, tags, tokenAddress, metrics } = product
   return (
     <div className='flex w-full max-w-[360px] flex-col gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6'>
       <div className='flex items-start justify-between gap-2'>
         <p className='text-xl font-semibold capitalize text-neutral-50'>
-          {title}
+          {name}
         </p>
         {pill && <ProductTitlePill text={pill.text} icon={pill.icon} />}
       </div>
@@ -67,7 +55,7 @@ export const ProductCard: FC<ProductCardProps> = ({
         </div>
         <div className='flex flex-col items-end'>
           <p className='text-3xl font-semibold tracking-tight text-neutral-50'>
-            {data.apy}%
+            {metrics ? `${formatAmount(metrics.apy)}%` : '--'}
           </p>
           <p className='text-xs text-neutral-400'>APY</p>
         </div>
