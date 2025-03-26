@@ -6,8 +6,8 @@ import {
   type ChartingLibraryWidgetOptions,
   type IChartingLibraryWidget,
   type ResolutionString,
-  widget,
 } from '~/tradingview-chart/charting_library/'
+import { widget } from '~/tradingview-chart/charting_library/charting_library.esm'
 
 const WIDGET_INTERVAL = '1D' as ResolutionString
 
@@ -26,6 +26,7 @@ export const TradingViewChartContainer = () => {
         },
       ),
       symbol: 'AAPL',
+      debug: true,
       interval: '1D' as ResolutionString,
       library_path: '/tradingview-chart/charting_library/',
       container: 'tv_chart_container',
