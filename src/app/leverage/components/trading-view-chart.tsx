@@ -6,7 +6,7 @@ import { TradingViewChartContainer } from '@/app/leverage/components/trading-vie
 export function TradingViewChart() {
   const [isScriptReady, setIsScriptReady] = useState(false)
   return (
-    <div className='xs:h-[422px] relative aspect-square w-full lg:aspect-auto'>
+    <div className='xs:h-[422px] relative aspect-square h-full w-full lg:aspect-auto'>
       <Script
         src='/tradingview-chart/datafeeds/udf/dist/bundle.js'
         onReady={() => {

@@ -84,10 +84,5 @@ export const TradingViewChartContainer = () => {
     }
   }, [market, tvWidget])
 
-  return (
-    <div
-      ref={chartContainerRef}
-      className='h-full w-full overflow-hidden rounded-lg'
-    />
-  )
+  return <div ref={chartContainerRef} className='h-full w-full' />
 }
