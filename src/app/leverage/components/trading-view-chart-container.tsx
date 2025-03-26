@@ -41,8 +41,10 @@ export const TradingViewChartContainer = () => {
       autosize: true,
     }
 
+    console.log('Creating widget')
     const tvWidget = new widget(widgetOptions)
     tvWidget.onChartReady(() => {
+      console.log('onChartReady tvWidget')
       setTvWidget(tvWidget)
     })
 
@@ -52,6 +54,7 @@ export const TradingViewChartContainer = () => {
   }, [])
 
   useEffect(() => {
+    console.log('tvWidget: ' + !!tvWidget)
     if (!tvWidget) return
 
     let symbol = null
@@ -77,6 +80,7 @@ export const TradingViewChartContainer = () => {
     }
 
     if (symbol && tvWidget) {
+      console.log('Setting symbol:', symbol)
       tvWidget.setSymbol(symbol, WIDGET_INTERVAL, () => {})
     }
   }, [market, tvWidget])
