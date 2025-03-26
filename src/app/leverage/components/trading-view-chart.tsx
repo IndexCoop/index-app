@@ -10,7 +10,6 @@ export function TradingViewChart() {
   const [isScriptReady, setIsScriptReady] = useState(false)
   const { isConnected } = useWallet()
   const { open } = useAppKit()
-  console.log('isConnected', isConnected)
   return (
     <div className='xs:h-[422px] relative aspect-square w-full lg:aspect-auto'>
       <Script
@@ -19,7 +18,7 @@ export function TradingViewChart() {
           setIsScriptReady(true)
         }}
       />
-      {isScriptReady ? (
+      {isScriptReady && isConnected ? (
         <TradingViewChartContainer />
       ) : (
         <div className='bg-ic-black/95 absolute inset-0 z-20 flex items-center justify-center'>
