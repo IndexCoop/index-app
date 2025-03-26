@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // eslint-disable-next-line import/order
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -13,8 +13,6 @@ const WIDGET_INTERVAL = '1D' as ResolutionString
 
 export const TradingViewChartContainer = () => {
   const { market } = useLeverageToken()
-  const chartContainerRef =
-    useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>
   const [tvWidget, setTvWidget] = useState<IChartingLibraryWidget | null>(null)
 
   useEffect(() => {
@@ -30,7 +28,7 @@ export const TradingViewChartContainer = () => {
       symbol: 'AAPL',
       interval: '1D' as ResolutionString,
       library_path: '/tradingview-chart/charting_library/',
-      container: chartContainerRef.current,
+      container: 'tv_chart_container',
       disabled_features: ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
       locale: 'en',
@@ -84,7 +82,7 @@ export const TradingViewChartContainer = () => {
 
   return (
     <div
-      ref={chartContainerRef}
+      id='tv_chart_container'
       // className='h-full w-full overflow-hidden rounded-lg'
       style={{
         height: 'calc(100vh - 60px)',
