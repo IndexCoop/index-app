@@ -4,9 +4,6 @@ import { useColorMode } from '@chakra-ui/react'
 import { useEffect } from 'react'
 
 import { LeveragePanel } from '@/app/leverage/components/leverage-panel'
-import { QuickStats } from '@/app/leverage/components/stats/index'
-
-import { FaqSection } from './components/faq-section'
 
 export default function Page() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -33,11 +30,7 @@ export default function Page() {
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
-        <div className='mx-auto flex w-full flex-col gap-4 px-4 py-4 md:gap-6 md:py-6'>
-          <QuickStats />
-          <LeveragePanel />
-          <FaqSection />
-        </div>
+        <LeveragePanel />
       </div>
     </div>
   )
