@@ -25,7 +25,7 @@ type LeverageRatioResponse = {
 }
 
 const formatCostOfCarry = (token: { costOfCarry: number }) =>
-  token.costOfCarry / 100
+  (-1 * token.costOfCarry) / 100
 
 export function LeverageSelectorContainer() {
   const { chainId } = useNetwork()
