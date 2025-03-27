@@ -1,9 +1,5 @@
 import { slippageMap } from '@/constants/slippage'
-import {
-  CoinDeskEthTrendIndex,
-  HighYieldETHIndex,
-  icETHIndex,
-} from '@/constants/tokens'
+import { HighYieldETHIndex, icETHIndex } from '@/constants/tokens'
 
 import { getSlippageOverrideOrNull, selectSlippage } from './slippage'
 
@@ -12,12 +8,6 @@ describe('getSlippageOverrideOrNull()', () => {
     const symbol = 'MVI'
     const slippageOverride = getSlippageOverrideOrNull(symbol)
     expect(slippageOverride).toBe(null)
-  })
-
-  it('returns correct slippage for cdETI', () => {
-    const symbol = CoinDeskEthTrendIndex.symbol
-    const slippageOverride = getSlippageOverrideOrNull(symbol)
-    expect(slippageOverride).toBe(0.5)
   })
 
   it('returns correct slippage for icETH', () => {
