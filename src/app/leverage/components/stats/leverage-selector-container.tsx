@@ -24,6 +24,9 @@ type LeverageRatioResponse = {
   strategy: string
 }
 
+const formatCostOfCarry = (token: { costOfCarry: number }) =>
+  (-1 * token.costOfCarry) / 100
+
 export function LeverageSelectorContainer() {
   const { chainId } = useNetwork()
   const { isConnected } = useWallet()
@@ -47,7 +50,7 @@ export function LeverageSelectorContainer() {
   })
 
   const netRate = useMemo(() => {
-    return (token.costOfCarry + token.streamingFee) / 365
+    return (formatCostOfCarry(token) + token.streamingFee) / 365
   }, [token])
 
   const currentRatio = useMemo(() => {
@@ -151,7 +154,7 @@ export function LeverageSelectorContainer() {
               <div className='flex py-2'>
                 <div className='text-ic-gray-600'>Cost of Carry</div>
                 <div className='text-ic-gray-900 ml-auto'>
-                  {`${formatPercentage(token.costOfCarry / 365, true, 3)} / day`}
+                  {`${formatPercentage(formatCostOfCarry(token) / 365, true, 3)} / day`}
                 </div>
               </div>
               <p className='text-ic-gray-700 text-left text-[10px] font-normal leading-tight'>

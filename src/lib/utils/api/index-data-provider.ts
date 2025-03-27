@@ -1,5 +1,6 @@
 const metricToIndexDataKey = {
   apy: ['APY', 'ApyBase', 'ApyRewards', 'Rate', 'StreamingFee'],
+  carrycost: ['Rate'],
   fees: ['IssueFee', 'RedeemFee', 'StreamingFee'],
   marketcap: ['MarketCap'],
   nav: ['NetAssetValue'],
