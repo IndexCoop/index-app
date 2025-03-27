@@ -1,5 +1,4 @@
 import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
-import { Address } from 'viem'
 import { base } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
@@ -10,19 +9,18 @@ import {
   indicesTokenListBase,
 } from '@/constants/tokenlists'
 import {
-  CoinDeskEthTrendIndex,
-  DAI,
   ETH,
-  GUSD,
   MATIC,
   STETH,
-  Token,
+  type Token,
   USDC,
   USDT,
   WBTC,
   WETH,
   icETHIndex,
 } from '@/constants/tokens'
+
+import type { Address } from 'viem'
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
 
@@ -64,14 +62,12 @@ export function getCurrencyTokensForIndex(
   if (chainId === BASE.chainId) {
     return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
   }
-  if (index.symbol === CoinDeskEthTrendIndex.symbol)
-    return [ETH, WETH, USDC, DAI, GUSD]
   if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
 
-export function getDefaultIndex(chainId: number = 1): Token {
+export function getDefaultIndex(chainId = 1): Token {
   if (chainId === ARBITRUM.chainId) return indicesTokenListArbitrum[0]
   if (chainId === BASE.chainId) return indicesTokenListBase[0]
   return indicesTokenList[0]

@@ -16,15 +16,6 @@ export interface Token {
  * Indices
  */
 
-export const CoinDeskEthTrendIndex: Token = {
-  name: 'CoinDesk ETH Trend Index',
-  symbol: 'cdETI',
-  image:
-    'https://uploads-ssl.webflow.com/62e3ff7a08cb1968bf057388/651f04818f458f918171c84d_cdETI-logo.svg',
-  address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
-  decimals: 18,
-}
-
 export const DefiPulseIndex: Token = {
   name: 'DeFi Pulse Index',
   symbol: 'DPI',
