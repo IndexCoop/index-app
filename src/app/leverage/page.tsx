@@ -5,12 +5,10 @@ import { useEffect } from 'react'
 
 import { LeveragePanel } from '@/app/leverage/components/leverage-panel'
 import { QuickStats } from '@/app/leverage/components/stats/index'
-import { useLeverageToken } from '@/app/leverage/provider'
 
 import { FaqSection } from './components/faq-section'
 
 export default function Page() {
-  const { indexToken } = useLeverageToken()
   const { colorMode, toggleColorMode } = useColorMode()
 
   useEffect(() => {
@@ -37,7 +35,7 @@ export default function Page() {
       <div className='flex w-full flex-col items-center'>
         <div className='mx-auto flex w-full flex-col gap-4 px-4 py-4 md:gap-6 md:py-6'>
           <QuickStats />
-          <LeveragePanel indexToken={indexToken} />
+          <LeveragePanel />
           <FaqSection />
         </div>
       </div>
