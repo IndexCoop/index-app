@@ -33,6 +33,7 @@ const Position = ({
 
   return product && token ? (
     <motion.a
+      href={`/earnv2/products/${product.tokenAddress}`}
       whileHover={{
         scale: 1.01,
       }}
