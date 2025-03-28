@@ -61,6 +61,35 @@ export type BalanceCardProps = {
 }
 
 export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
+  const { deposits, cumulativeAPY } = useMemo(
+    () =>
+      balances.reduce(
+        (acc, curr) => {
+          const product = products.find((p) =>
+            isAddressEqual(p.tokenAddress, curr.token),
+          )
+
+          const token = getTokenByChainAndAddress(
+            product?.chainId,
+            product?.tokenAddress,
+          )
+
+          if (product && product.metrics?.nav && token) {
+            return {
+              deposits:
+                acc.deposits +
+                Number(formatUnits(curr.value, token.decimals)) *
+                  product.metrics?.nav,
+              cumulativeAPY: acc.cumulativeAPY + (product.metrics?.apy ?? 0),
+            }
+          }
+          return acc
+        },
+        { deposits: 0, cumulativeAPY: 0 },
+      ),
+    [products, balances],
+  )
+
   return (
     <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 sm:flex-nowrap'>
       <div className='w-full'>
@@ -83,13 +112,18 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
           </div>
         </div>
       </div>
-      <div className='flex flex-col justify-between gap-6'>
+      <div className='flex min-w-52 flex-col justify-between gap-6'>
         <div className='space-y-4 text-right'>
           <p className='text-xs text-neutral-200'>Total Deposits</p>
-          <p className='text-5xl font-bold text-neutral-50'>$10,420</p>
+          <p className='text-5xl font-bold text-neutral-50'>
+            ${formatAmount(deposits)}
+          </p>
         </div>
-        <div className='flex flex-col gap-2'>
-          <BoxedData label='Net APY' value='12.34%' />
+        <div className='flex flex-col gap-1 '>
+          <BoxedData
+            label='Net APY'
+            value={`${formatAmount(cumulativeAPY)}%`}
+          />
           <BoxedData label='Lifetime Earnings' value='$420.69' />
         </div>
       </div>
