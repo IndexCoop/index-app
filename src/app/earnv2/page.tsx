@@ -1,13 +1,14 @@
 'use client'
 
-import { ProductCard } from '@/app/earn/components/product-card'
-import { useEarnContext } from '@/app/earnv2/provider'
+import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
-import { useAccount } from 'wagmi'
+
+import { BalanceCard } from './components/balance-card'
+import { ProductCard } from './components/product-card'
+import { useEarnContext } from './provider'
 
 export default function Page() {
-  const { isConnected } = useAccount()
-  const { indexToken, products } = useEarnContext()
+  const { products, balances } = useEarnContext()
 
   useEffect(() => {
     document.body.classList.add('dark', 'bg-ic-black')
@@ -18,14 +19,22 @@ export default function Page() {
 
   return (
     <div className='mt-40 flex w-full flex-col items-center'>
-      <div className='mx-auto max-w-7xl '>
-        <h3 className='my-5 hidden w-full text-lg font-semibold text-neutral-50 md:block'>
-          Strategies
-        </h3>
-        <div className='flex flex-wrap gap-4'>
-          {products.map((p) => (
-            <ProductCard product={p} />
-          ))}
+      <div className='mx-auto flex max-w-7xl flex-col gap-4'>
+        <AnimatePresence>
+          {balances.length > 0 && (
+            <BalanceCard products={products} balances={balances} />
+          )}
+        </AnimatePresence>
+
+        <div>
+          <h3 className='my-5 hidden w-full text-lg font-semibold text-neutral-50 md:block'>
+            Strategies
+          </h3>
+          <div className='flex flex-wrap gap-4'>
+            {products.map((p) => (
+              <ProductCard key={`product-item-${p.tokenAddress}`} product={p} />
+            ))}
+          </div>
         </div>
       </div>
     </div>

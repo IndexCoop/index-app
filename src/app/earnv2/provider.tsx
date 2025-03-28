@@ -8,11 +8,13 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { base } from 'viem/chains'
+import * as chains from 'viem/chains'
 
 import { useQueryParams } from '@/app/earn/use-query-params'
 import { ETH, type Token } from '@/constants/tokens'
-import { type TokenBalance, useBalances } from '@/lib/hooks/use-balance'
+import { GetApiV2ProductsEarn200 } from '@/gen'
+import { type TokenBalance } from '@/lib/hooks/use-balance'
+import { useMultiChainBalances } from '@/lib/hooks/use-multichain-balances'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -21,8 +23,8 @@ import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
 
-import { GetApiV2ProductsEarn200 } from '@/gen'
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
+
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
 const hyETH = { ...hyEthTokenlist, image: hyEthTokenlist.logoURI }
@@ -99,7 +101,7 @@ export function EarnProvider(props: {
   const outputToken = queryOutputToken
 
   const chainId = useMemo(() => {
-    return chainIdRaw ?? base.id
+    return chainIdRaw ?? chains.base.id
   }, [chainIdRaw])
 
   const indexToken = useMemo(() => {
@@ -107,20 +109,11 @@ export function EarnProvider(props: {
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
-  const indexTokenAddress = indexToken.address ?? ''
-
   const indexTokens = useMemo(() => {
     return getYieldTokens()
   }, [])
 
-  const indexTokenAddresses = useMemo(() => {
-    return indexTokens.map((token) => token.address!)
-  }, [indexTokens])
-
-  const { balances, forceRefetchBalances } = useBalances(
-    address,
-    indexTokenAddresses,
-  )
+  const { data: balances } = useMultiChainBalances(props.products)
 
   const inputTokens = useMemo(() => {
     const isIcEth = isAddressEqual(indexToken.address, icETH.address)
@@ -211,7 +204,6 @@ export function EarnProvider(props: {
   const reset = () => {
     setInputValue('')
     resetQuote()
-    forceRefetchBalances()
   }
 
   const toggleIsMinting = useCallback(() => {

@@ -1,10 +1,13 @@
-import { Providers } from '@/app/providers'
-import { Header } from '@/components/header'
-import { SlippageProvider } from '@/lib/providers/slippage'
+import React from 'react'
 
 import { LightEffect } from '@/app/leverage/components/light-effect'
+import { Providers } from '@/app/providers'
+import { Header } from '@/components/header'
 import { getApiV2ProductsEarn } from '@/gen'
-import React from 'react'
+import { SlippageProvider } from '@/lib/providers/slippage'
+
+
+
 import { EarnProvider } from './provider'
 
 type LayoutProps = {
@@ -26,7 +29,7 @@ export default async function Layout({ children }: LayoutProps) {
         <Header />
         <SlippageProvider>
           <EarnProvider products={products}>
-            <main className='z-10'>{children}</main>
+            <main className='z-10 p-4'>{children}</main>
           </EarnProvider>
         </SlippageProvider>
       </div>
