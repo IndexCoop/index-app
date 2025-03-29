@@ -14,7 +14,7 @@ const config = defineConfig({
   input: {
     path: isLocal
       ? 'http://127.0.0.1:4000/documentation/json' // Requires the indexcoop-api to be running locally
-      : 'https://api.indexcoop.com/v2/docs/json',
+      : 'https://api-pr-72-3cxv.onrender.com/documentation/json',
   },
   output: {
     path: './src/gen',
@@ -45,7 +45,7 @@ const config = defineConfig({
     pluginClient({
       baseURL: isLocal
         ? 'http://127.0.0.1:4000' // Requires the indexcoop-api to be running locally
-        : 'https://api-q513.onrender.com',
+        : 'https://api-pr-72-3cxv.onrender.com',
       output: {
         path: './clients/axios',
         barrelType: 'propagate',
