@@ -40,15 +40,15 @@ const Position = ({
       className='flex cursor-pointer items-center justify-between rounded-[4px] bg-zinc-800 p-4 hover:bg-zinc-700 hover:text-neutral-900'
     >
       <p className='text-xs text-neutral-200'>{product.name}</p>
-      {product.metrics?.nav && (
+      {
         <p className='text-xs text-neutral-200'>
           $
           {formatAmount(
             Number(formatUnits(balance.value, token.decimals)) *
-              product.metrics?.nav,
+              product.metrics.nav,
           )}
         </p>
-      )}
+      }
     </motion.a>
   ) : (
     <></>
@@ -74,13 +74,13 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
             product?.tokenAddress,
           )
 
-          if (product && product.metrics?.nav && token) {
+          if (product && token) {
             return {
               deposits:
                 acc.deposits +
                 Number(formatUnits(curr.value, token.decimals)) *
-                  product.metrics?.nav,
-              cumulativeAPY: acc.cumulativeAPY + (product.metrics?.apy ?? 0),
+                  product.metrics.nav,
+              cumulativeAPY: acc.cumulativeAPY + product.metrics.apy,
             }
           }
           return acc

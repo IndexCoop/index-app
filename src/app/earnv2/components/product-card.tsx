@@ -2,24 +2,10 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid'
 import { motion } from 'framer-motion'
 import { FC, ReactNode } from 'react'
 
+import { ProductTitlePill } from '@/app/earnv2/components/product-pill'
+import { ProductTag } from '@/app/earnv2/components/product-tag'
 import { GetApiV2ProductsEarn200 } from '@/gen'
 import { formatAmount } from '@/lib/utils'
-import { cn } from '@/lib/utils/tailwind'
-
-const ProductTitlePill = ({
-  text,
-  icon,
-}: {
-  text: string
-  icon: ReactNode
-}) => (
-  <div className='bg-ic-pill-teal flex items-center rounded-[4px] border-[0.5px] border-black border-opacity-20 px-2'>
-    {icon}
-    <p className='ml-2 w-full text-[8px] uppercase tracking-tight text-white'>
-      {text}
-    </p>
-  </div>
-)
 
 export type ProductCardProps = {
   pill?: {
@@ -33,7 +19,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
   const { name, description, tags, tokenAddress, metrics } = product
   return (
     <motion.a
-      href={`/earnv2/products/${tokenAddress}`}
+      href={`/earnv2/product/${tokenAddress}`}
       whileHover={{
         scale: 1.05,
       }}
@@ -50,12 +36,11 @@ export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
       </div>
       <div className='flex gap-2'>
         {tags.map(({ text, className }) => (
-          <div
-            key={`tag-${product.tokenAddress}-${text}`}
-            className={cn('rounded-[4px] bg-neutral-700 px-2 py-1', className)}
-          >
-            <p className='text-[8px]'>{text}</p>
-          </div>
+          <ProductTag
+            key={`tag-${className}`}
+            text={text}
+            className={className}
+          />
         ))}
       </div>
       <div className='flex items-center justify-between'>
