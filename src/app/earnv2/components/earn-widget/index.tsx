@@ -14,7 +14,6 @@ import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
-import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
 import { getMaxBalance } from '@/lib/utils/max-balance'
@@ -32,18 +31,14 @@ export function EarnWidget() {
   const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
-  const { address } = useWallet()
+
   const {
     indexToken,
     inputToken,
     inputTokenAmount,
-    inputTokens,
     inputValue,
     isMinting,
-    outputTokens,
     onChangeInputTokenAmount,
-    onSelectInputToken,
-    onSelectOutputToken,
     balances,
     products,
     outputToken,
@@ -65,16 +60,7 @@ export function EarnWidget() {
     isAddressEqual(p.tokenAddress, indexToken?.address ?? ''),
   )
 
-  const {
-    isOpen: isSelectInputTokenOpen,
-    onOpen: onOpenSelectInputToken,
-    onClose: onCloseSelectInputToken,
-  } = useDisclosure()
-  const {
-    isOpen: isSelectOutputTokenOpen,
-    // onOpen: onOpenSelectOutputToken,
-    onClose: onCloseSelectOutputToken,
-  } = useDisclosure()
+  const { onOpen: onOpenSelectInputToken } = useDisclosure()
 
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 

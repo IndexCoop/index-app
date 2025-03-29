@@ -1,9 +1,9 @@
 import { Flex, Input, Text } from '@chakra-ui/react'
+import { useState } from 'react'
 
 import { colors } from '@/lib/styles/colors'
-
 import { cn } from '@/lib/utils/tailwind'
-import { useState } from 'react'
+
 import { Caption } from './caption'
 import { SelectorButton } from './selector-button'
 

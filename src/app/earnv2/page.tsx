@@ -1,9 +1,9 @@
 'use client'
 
+import { useColorMode } from '@chakra-ui/react'
 import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
 
-import { useColorMode } from '@chakra-ui/react'
 import { BalanceCard } from './components/balance-card'
 import { ProductCard } from './components/product-card'
 import { useEarnContext } from './provider'
