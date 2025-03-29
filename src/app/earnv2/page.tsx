@@ -32,6 +32,8 @@ export default function Page() {
     }
   }, [])
 
+  console.log(balances)
+
   return (
     <div className='mt-40 flex w-full flex-col items-center'>
       <div className='mx-auto flex max-w-7xl flex-col gap-4'>
