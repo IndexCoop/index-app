@@ -2,6 +2,8 @@ import { Flex, Input, Text } from '@chakra-ui/react'
 
 import { colors } from '@/lib/styles/colors'
 
+import { cn } from '@/lib/utils/tailwind'
+import { useState } from 'react'
 import { Caption } from './caption'
 import { SelectorButton } from './selector-button'
 
@@ -40,6 +42,8 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
     showSelectorButton = true,
   } = props
 
+  const [isFocused, setIsFocused] = useState(false)
+
   const onChangeInput = (amount: string) => {
     if (
       props.onChangeInput === undefined ||
@@ -52,7 +56,12 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
   }
 
   return (
-    <div className='flex flex-col rounded-lg border border-gray-600 border-opacity-[0.8]  bg-zinc-800 px-4 py-5'>
+    <div
+      className={cn(
+        'flex flex-col rounded-lg border border-gray-600 border-opacity-[0.8] bg-zinc-800 px-4 py-5 transition-all duration-300',
+        isFocused && 'bg-zinc-700/60',
+      )}
+    >
       <Caption caption={props.caption} />
       <Flex align='center' direction='row' justify='space-between' mt='6px'>
         {config.isReadOnly ? (
@@ -90,6 +99,8 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
             onChange={(event) => {
               onChangeInput(event.target.value)
             }}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           />
         )}
         <SelectorButton
