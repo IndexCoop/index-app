@@ -2,10 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { ARBITRUM } from '@/constants/chains'
-import {
-  isAvailableForFlashMint,
-  isAvailableForSwap,
-} from '@/lib/hooks/use-best-quote/utils/available'
+import { isAvailableForFlashMint } from '@/lib/hooks/use-best-quote/utils/available'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { parseUnits } from '@/lib/utils'
@@ -102,7 +99,7 @@ export const useBestQuote = (
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
-      const canSwapIndexToken = isAvailableForSwap(indexToken)
+      const canSwapIndexToken = true
 
       const fetchFlashMintQuote = async () => {
         if (canFlashmintIndexToken) {
@@ -184,7 +181,7 @@ export const useBestQuote = (
       quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null,
     )
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
-    const canSwapIndexToken = isAvailableForSwap(indexToken)
+    const canSwapIndexToken = true
     const results = {
       bestQuote,
       results: {
