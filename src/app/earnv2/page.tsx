@@ -45,7 +45,7 @@ export default function Page() {
           <h3 className='my-5 hidden w-full text-lg font-semibold text-neutral-50 md:block'>
             Strategies
           </h3>
-          <div className='flex flex-wrap gap-4'>
+          <div className='flex flex-wrap gap-4 pb-12'>
             {products.map((p) => (
               <ProductCard key={`product-item-${p.tokenAddress}`} product={p} />
             ))}
