@@ -26,11 +26,11 @@ export default async function Layout({ children }: LayoutProps) {
   return (
     <Providers>
       <div className='dark flex flex-col overflow-x-hidden'>
-        <LightEffect />
         <Header />
         <SlippageProvider>
           <EarnProvider products={products}>
-            <main className='z-10 p-4'>{children}</main>
+            <LightEffect />
+            <main className='z-10'>{children}</main>
           </EarnProvider>
         </SlippageProvider>
       </div>

@@ -8,7 +8,6 @@ import { useQueryParams } from '@/app/earn/use-query-params'
 import { supportedNetworks } from '@/app/earnv2/constants'
 import { useEarnContext } from '@/app/earnv2/provider'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
-import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
@@ -112,6 +111,7 @@ export function EarnWidget() {
         toggleIsMinting={toggleIsMinting}
       />
       <TradeInputSelector
+        showSelectorButtonChevron={isMinting}
         config={{ isReadOnly: false }}
         balance={inputBalanceFormatted}
         caption={isMinting ? 'Deposit' : 'Withdraw'}
@@ -149,28 +149,6 @@ export function EarnWidget() {
         }}
         onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
         onRefetchQuote={() => {}}
-      />
-      <SelectTokenModal
-        isOpen={isSelectInputTokenOpen}
-        onClose={onCloseSelectInputToken}
-        onSelectedToken={(tokenSymbol, chainId) => {
-          onSelectInputToken(tokenSymbol, chainId)
-          onCloseSelectInputToken()
-        }}
-        address={address}
-        tokens={inputTokens}
-        showNetworks={!isMinting}
-      />
-      <SelectTokenModal
-        isOpen={isSelectOutputTokenOpen}
-        onClose={onCloseSelectOutputToken}
-        onSelectedToken={(tokenSymbol, chainId) => {
-          onSelectOutputToken(tokenSymbol, chainId)
-          onCloseSelectOutputToken()
-        }}
-        address={address}
-        tokens={outputTokens}
-        showNetworks={isMinting}
       />
       <TransactionReviewModal
         onClose={() => {

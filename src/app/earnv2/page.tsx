@@ -3,12 +3,27 @@
 import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
 
+import { useColorMode } from '@chakra-ui/react'
 import { BalanceCard } from './components/balance-card'
 import { ProductCard } from './components/product-card'
 import { useEarnContext } from './provider'
 
 export default function Page() {
   const { products, balances } = useEarnContext()
+
+  const { colorMode, toggleColorMode } = useColorMode()
+
+  useEffect(() => {
+    if (colorMode === 'light') {
+      toggleColorMode()
+    }
+
+    return () => {
+      if (colorMode === 'dark') {
+        toggleColorMode()
+      }
+    }
+  }, [colorMode, toggleColorMode])
 
   useEffect(() => {
     document.body.classList.add('dark', 'bg-ic-black')

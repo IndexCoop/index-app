@@ -142,10 +142,8 @@ const Balance = ({ balance, onClick }: BalanceProps) => {
         Balance: {balance}
       </div>
       {showMaxLabel && (
-        <div className='bg-ic-blue-500 dark:bg-ic-blue-600 align-center justify-center rounded-xl px-2 py-[2px]'>
-          <div className='text-ic-white dark:text-ic-black text-[9px] font-medium'>
-            MAX
-          </div>
+        <div className='align-center justify-center rounded-xl bg-blue-300 px-2 py-[2px]'>
+          <div className=' text-[9px] font-medium text-zinc-700'>MAX</div>
         </div>
       )}
     </div>
