@@ -59,6 +59,7 @@ export const formatDollarAmount = (
   amount: number | null | undefined,
   hideZeroAmount: boolean = false,
   digits: number = 2,
+  options: Intl.NumberFormatOptions = {},
 ) => {
   if (amount === null || amount === undefined) return ''
   if (amount === 0 && hideZeroAmount) return ''
@@ -68,6 +69,7 @@ export const formatDollarAmount = (
     currency: 'USD',
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
+    ...options,
   }).format(amount)
 }
 
