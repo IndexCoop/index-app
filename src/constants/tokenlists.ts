@@ -2,7 +2,6 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { arbitrum, base } from 'viem/chains'
 
 import {
-  CoinDeskEthTrendIndex,
   DAI,
   DefiPulseIndex,
   ETH,
@@ -13,7 +12,7 @@ import {
   RETH,
   SETH2,
   STETH,
-  Token,
+  type Token,
   USDC,
   USDT,
   WBTC,
@@ -53,7 +52,6 @@ export const indicesTokenList = [
   IndexToken,
   DefiPulseIndex,
   MetaverseIndex,
-  CoinDeskEthTrendIndex,
   HighYieldETHIndex,
   { ...icUSD, image: icUSD.logoURI },
 ] as Token[]

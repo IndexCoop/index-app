@@ -1,13 +1,9 @@
 import { currencies } from '@/constants/tokenlists'
 import {
-  CoinDeskEthTrendIndex,
-  DAI,
   DefiPulseIndex,
   ETH,
-  GUSD,
   MATIC,
   STETH,
-  USDC,
   WETH,
   icETHIndex,
 } from '@/constants/tokens'
@@ -63,14 +59,6 @@ describe('getCurrencyTokensForIndex()', () => {
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(defaultTokens.length)
     expect(currencyTokens).toEqual(defaultTokens)
-  })
-
-  test('returns correct tokens for cdETI', async () => {
-    const chainId = 1
-    const token = CoinDeskEthTrendIndex
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(5)
-    expect(currencyTokens).toEqual([ETH, WETH, USDC, DAI, GUSD])
   })
 
   test('returns correct currency tokens for icETH', async () => {
