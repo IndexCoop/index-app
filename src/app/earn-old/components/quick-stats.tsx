@@ -10,7 +10,6 @@ import { digitsByAddress } from '@/lib/utils/tokens'
 import { getTagline } from '../constants'
 import { useEarnContext } from '../provider'
 
-
 export function QuickStats() {
   const {
     isOpen: isSelectIndexTokenOpen,

@@ -19,7 +19,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
   const { name, description, tags, tokenAddress, metrics } = product
   return (
     <motion.a
-      href={`/earnv2/product/${tokenAddress}`}
+      href={`/earn/product/${tokenAddress}`}
       whileHover={{
         scale: 1.05,
       }}

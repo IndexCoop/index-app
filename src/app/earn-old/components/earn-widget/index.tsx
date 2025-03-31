@@ -28,7 +28,6 @@ import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedEarnData } from '../../use-formatted-data'
 
-
 import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]

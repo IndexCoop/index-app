@@ -1,6 +1,7 @@
 'use client'
 
 import { useAtom } from 'jotai'
+import range from 'lodash/range'
 import { useCallback, useEffect } from 'react'
 import { isAddressEqual } from 'viem'
 
@@ -130,9 +131,20 @@ export function EarnWidget() {
         isSupportedNetwork={isSupportedNetwork}
         queryNetwork={queryParams.queryNetwork}
         outputToken={outputToken}
-        buttonLabelOverrides={{
-          [TradeButtonState.default]: 'Review Transaction',
-        }}
+        disabled={outputToken.symbol === 'icETH'}
+        buttonLabelOverrides={
+          outputToken.symbol === 'icETH'
+            ? range(0, 10).reduce(
+                (acc, s) =>
+                  Object.assign(acc, {
+                    [s as TradeButtonState]: `Deposit Unavailable`,
+                  }),
+                {} as Record<TradeButtonState, string>,
+              )
+            : {
+                [TradeButtonState.default]: 'Review Transaction',
+              }
+        }
         onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
         onRefetchQuote={() => {}}
       />

@@ -13,7 +13,6 @@ import { TvlChart } from '@/components/charts/tvl-chart'
 import { EarnWidget } from './components/earn-widget'
 import { QuickStats } from './components/quick-stats'
 
-
 export default function Page() {
   const { indexToken, isFetchingStats, apy, nav, tvl } = useEarnContext()
   const [currentTab, setCurrentTab] = useState<ChartTab>('apy')

@@ -19,6 +19,7 @@ import { TradeButton } from './trade-button'
 import type { Token } from '@/constants/tokens'
 
 type SmartTradeButtonProps = {
+  disabled?: boolean
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
@@ -37,6 +38,7 @@ type SmartTradeButtonProps = {
 
 export function SmartTradeButton(props: SmartTradeButtonProps) {
   const {
+    disabled = false,
     buttonLabelOverrides,
     contract,
     hasFetchingError,
@@ -160,7 +162,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
       {isTradablePair && (
         <TradeButton
           label={buttonLabel}
-          isDisabled={isDisabled}
+          isDisabled={isDisabled || disabled}
           isLoading={isApprovingForSwap || isFetchingQuote}
           onClick={onClick}
         />

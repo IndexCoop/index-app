@@ -4,7 +4,6 @@ import { ChartTab } from '@/app/earn-old/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
-
 type Tab = { name: ChartTab; label: string }
 
 const tabs: Tab[] = [
