@@ -1,6 +1,7 @@
 'use client'
 
 import { useColorMode } from '@chakra-ui/react'
+import { ArrowPathIcon } from '@heroicons/react/20/solid'
 import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
 
@@ -47,7 +48,20 @@ export default function Page() {
           </h3>
           <div className='flex flex-wrap justify-center gap-4 pb-12'>
             {products.map((p) => (
-              <ProductCard key={`product-item-${p.tokenAddress}`} product={p} />
+              <ProductCard
+                key={`product-item-${p.tokenAddress}`}
+                product={p}
+                pill={
+                  ['wsteth15x', 'iceth'].includes(p.id)
+                    ? {
+                        text: 'Smart Loop',
+                        icon: (
+                          <ArrowPathIcon className='h-2 w-2 fill-zinc-900' />
+                        ),
+                      }
+                    : undefined
+                }
+              />
             ))}
           </div>
         </div>
