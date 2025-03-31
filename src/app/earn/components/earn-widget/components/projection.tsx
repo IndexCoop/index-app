@@ -85,7 +85,7 @@ export const Projection: FC<ProjectionProps> = ({
   return (
     <div className='flex flex-col gap-3 rounded-lg bg-zinc-800 p-4'>
       <div className='flex items-center justify-between gap-2'>
-        <p className='text-xs text-neutral-400'>My Position ({product.name})</p>
+        <p className='text-xs text-neutral-400'>My Position</p>
         <div className='flex items-center gap-2 text-xs font-semibold text-neutral-50'>
           <p className='text-neutral-400'>
             {hasZeroBalance ? '0' : formattedBalance}
@@ -117,9 +117,7 @@ export const Projection: FC<ProjectionProps> = ({
         </div>
       </div>
       <div className='flex items-center justify-between gap-2'>
-        <p className='text-xs text-neutral-400'>
-          Projected Earnings / Year (USD)
-        </p>
+        <p className='text-xs text-neutral-400'>Projected Earnings / Year</p>
         <div className='flex items-center gap-2 text-xs font-semibold text-neutral-50'>
           <p className='text-neutral-400'>
             {hasZeroBalance ? '0' : formatDollarAmount(yearlyYield, true, 2)}
