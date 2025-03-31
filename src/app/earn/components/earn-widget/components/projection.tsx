@@ -20,11 +20,14 @@ const calculateProjection = (
   if (!amount || amount === '0') return balance
 
   try {
-    // Convert to ethers unit (handle decimal strings by parsing as float and scaling to wei)
     const amountFloat = parseFloat(amount)
     if (isNaN(amountFloat)) return balance
 
     const amountWei = BigInt(Math.floor(amountFloat * 10 ** 18))
+
+    if (!isMinting && amountWei > balance) {
+      return BigInt(0)
+    }
 
     return isMinting ? balance + amountWei : balance - amountWei
   } catch (error) {
@@ -36,8 +39,9 @@ const calculateProjection = (
 const calculateYield = (balance: bigint, nav: number, apy: number) => {
   const balanceNum = Number(formatUnits(balance, 18))
   const valueUSD = balanceNum * nav
-  const monthlyYield = (valueUSD * apy) / 12 / 100
-  const yearlyYield = (valueUSD * apy) / 100
+  // Ensure yields can't go negative
+  const monthlyYield = Math.max(0, (valueUSD * apy) / 12 / 100)
+  const yearlyYield = Math.max(0, (valueUSD * apy) / 100)
   return { monthlyYield, yearlyYield }
 }
 
@@ -61,7 +65,6 @@ export const Projection: FC<ProjectionProps> = ({
   const projectedBalance = calculateProjection(amount, balance, isMinting)
   const showSameValue = !amount || amount === '0'
 
-  // Calculate yield based on projected balance
   const {
     monthlyYield: projectedMonthlyYield,
     yearlyYield: projectedYearlyYield,
@@ -88,15 +91,17 @@ export const Projection: FC<ProjectionProps> = ({
         <p className='text-xs text-neutral-400'>My Position</p>
         <div className='flex items-center gap-2 text-xs font-semibold text-neutral-50'>
           <p className='text-neutral-400'>
-            {hasZeroBalance ? '0' : formattedBalance}
+            {hasZeroBalance ? '$0' : formattedBalance}
           </p>
           <ArrowLongRightIcon className='w-3' />
           <p className='text-neutral-50'>
             {showSameValue
               ? hasZeroBalance
-                ? '0'
+                ? '$0'
                 : formattedBalance
-              : formattedProjectedBalance}
+              : projectedBalance === BigInt(0)
+                ? '$0'
+                : formattedProjectedBalance}
           </p>
         </div>
       </div>
@@ -104,15 +109,17 @@ export const Projection: FC<ProjectionProps> = ({
         <p className='text-xs text-neutral-400'>Projected Earnings / Month</p>
         <div className='flex items-center gap-2 text-xs font-semibold text-neutral-50'>
           <p className='text-neutral-400'>
-            {hasZeroBalance ? '0' : formatDollarAmount(monthlyYield, true, 2)}
+            {hasZeroBalance ? '$0' : formatDollarAmount(monthlyYield, true, 2)}
           </p>
           <ArrowLongRightIcon className='w-3' />
           <p className='text-neutral-50'>
             {showSameValue
               ? hasZeroBalance
-                ? '0'
+                ? '$0'
                 : formatDollarAmount(monthlyYield, true, 2)
-              : formatDollarAmount(projectedMonthlyYield, true, 2)}
+              : projectedMonthlyYield === 0
+                ? '$0'
+                : formatDollarAmount(projectedMonthlyYield, true, 2)}
           </p>
         </div>
       </div>
@@ -126,9 +133,11 @@ export const Projection: FC<ProjectionProps> = ({
           <p className='text-neutral-50'>
             {showSameValue
               ? hasZeroBalance
-                ? '0'
+                ? '$0'
                 : formatDollarAmount(yearlyYield, true, 2)
-              : formatDollarAmount(projectedYearlyYield, true, 2)}
+              : projectedYearlyYield === 0
+                ? '$0'
+                : formatDollarAmount(projectedYearlyYield, true, 2)}
           </p>
         </div>
       </div>
