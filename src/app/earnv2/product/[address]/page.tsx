@@ -54,12 +54,15 @@ export default function Page() {
                     {selectedProduct.description}
                   </p>
                   <div className='flex gap-2'>
-                    <ProductTitlePill
-                      text='Smart Loop'
-                      icon={
-                        <ArrowPathIcon className='h-2.5 w-2.5 fill-zinc-900' />
-                      }
-                    />
+                    {['wsteth15x', 'iceth'].includes(selectedProduct.id) && (
+                      <ProductTitlePill
+                        text='Smart Loop'
+                        icon={
+                          <ArrowPathIcon className='h-2.5 w-2.5 fill-zinc-900' />
+                        }
+                      />
+                    )}
+
                     {selectedProduct.tags.map((tag) => (
                       <ProductTag
                         key={`tag-${tag.text}`}
