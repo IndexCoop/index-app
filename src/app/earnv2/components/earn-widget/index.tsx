@@ -137,6 +137,7 @@ export function EarnWidget() {
         onRefetchQuote={() => {}}
       />
       <TransactionReviewModal
+        isDarkMode
         onClose={() => {
           reset()
           resetData()
