@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { formatUnits } from 'viem'
 
 import { GetApiV2ProductsEarn200 } from '@/gen'
-import { formatAmount } from '@/lib/utils'
+import { formatDollarAmount } from '@/lib/utils'
 
 export type ProjectionProps = {
   amount: string
@@ -71,10 +71,15 @@ export const Projection: FC<ProjectionProps> = ({
     product.metrics.apy30d,
   )
 
-  const formattedBalance = formatAmount(Number(formatUnits(balance, 18)), 4)
-  const formattedProjectedBalance = formatAmount(
-    Number(formatUnits(projectedBalance, 18)),
-    4,
+  const formattedBalance = formatDollarAmount(
+    Number(formatUnits(balance, 18)) * product.metrics.nav,
+    true,
+    2,
+  )
+  const formattedProjectedBalance = formatDollarAmount(
+    Number(formatUnits(projectedBalance, 18)) * product.metrics.nav,
+    true,
+    2,
   )
 
   return (
@@ -96,20 +101,18 @@ export const Projection: FC<ProjectionProps> = ({
         </div>
       </div>
       <div className='flex items-center justify-between gap-2'>
-        <p className='text-xs text-neutral-400'>
-          Projected Earnings / Month (USD)
-        </p>
+        <p className='text-xs text-neutral-400'>Projected Earnings / Month</p>
         <div className='flex items-center gap-2 text-xs font-semibold text-neutral-50'>
           <p className='text-neutral-400'>
-            {hasZeroBalance ? '0' : formatAmount(monthlyYield)}
+            {hasZeroBalance ? '0' : formatDollarAmount(monthlyYield, true, 2)}
           </p>
           <ArrowLongRightIcon className='w-3' />
           <p className='text-neutral-50'>
             {showSameValue
               ? hasZeroBalance
                 ? '0'
-                : formatAmount(monthlyYield)
-              : formatAmount(projectedMonthlyYield)}
+                : formatDollarAmount(monthlyYield, true, 2)
+              : formatDollarAmount(projectedMonthlyYield, true, 2)}
           </p>
         </div>
       </div>
@@ -119,15 +122,15 @@ export const Projection: FC<ProjectionProps> = ({
         </p>
         <div className='flex items-center gap-2 text-xs font-semibold text-neutral-50'>
           <p className='text-neutral-400'>
-            {hasZeroBalance ? '0' : formatAmount(yearlyYield)}
+            {hasZeroBalance ? '0' : formatDollarAmount(yearlyYield, true, 2)}
           </p>
           <ArrowLongRightIcon className='w-3' />
           <p className='text-neutral-50'>
             {showSameValue
               ? hasZeroBalance
                 ? '0'
-                : formatAmount(yearlyYield)
-              : formatAmount(projectedYearlyYield)}
+                : formatDollarAmount(yearlyYield, true, 2)
+              : formatDollarAmount(projectedYearlyYield, true, 2)}
           </p>
         </div>
       </div>

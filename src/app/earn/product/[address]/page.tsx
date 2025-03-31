@@ -65,7 +65,7 @@ export default function Page() {
 
                     {selectedProduct.tags.map((tag) => (
                       <ProductTag
-                        key={`tag-${tag.text}`}
+                        key={`tag-item-${tag.text}`}
                         text={tag.text}
                         className={tag.className}
                       />

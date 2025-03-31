@@ -16,17 +16,19 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <Providers>
-      <div className='dark flex flex-col overflow-x-hidden'>
-        <Header />
-        <SlippageProvider>
-          <LeverageProvider>
-            <LightEffect page='leverage' />
-            <main className='z-10'>{children}</main>
-          </LeverageProvider>
-        </SlippageProvider>
-        <Footer />
-      </div>
-    </Providers>
+    <div className='bg-ic-black h-full w-full'>
+      <Providers>
+        <div className='dark flex flex-col overflow-x-hidden'>
+          <Header />
+          <SlippageProvider>
+            <LeverageProvider>
+              <LightEffect page='leverage' />
+              <main className='z-10'>{children}</main>
+            </LeverageProvider>
+          </SlippageProvider>
+          <Footer />
+        </div>
+      </Providers>
+    </div>
   )
 }

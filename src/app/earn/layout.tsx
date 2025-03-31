@@ -24,16 +24,18 @@ export default async function Layout({ children }: LayoutProps) {
       : []
 
   return (
-    <Providers>
-      <div className='dark flex flex-col overflow-x-hidden'>
-        <Header />
-        <SlippageProvider>
-          <EarnProvider products={products}>
-            <LightEffect page='earn' />
-            <main className='z-10 p-4'>{children}</main>
-          </EarnProvider>
-        </SlippageProvider>
-      </div>
-    </Providers>
+    <div className='bg-ic-black h-full w-full'>
+      <Providers>
+        <div className='dark flex flex-col overflow-x-hidden'>
+          <Header />
+          <SlippageProvider>
+            <EarnProvider products={products}>
+              <LightEffect page='earn' />
+              <main className='z-10 p-4'>{children}</main>
+            </EarnProvider>
+          </SlippageProvider>
+        </div>
+      </Providers>
+    </div>
   )
 }

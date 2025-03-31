@@ -8,7 +8,7 @@ export const ProductTag = ({
   className?: string
 }) => (
   <div
-    key={`tag-${text}`}
+    key={`tag-item-${text}`}
     className={cn('rounded-[4px] bg-neutral-700 px-2 py-1', className)}
   >
     <p className='text-[8px]'>{text}</p>

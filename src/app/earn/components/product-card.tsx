@@ -37,7 +37,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
       <div className='flex gap-2'>
         {tags.map(({ text, className }) => (
           <ProductTag
-            key={`tag-${className}`}
+            key={`tag-card-${text}`}
             text={text}
             className={className}
           />
