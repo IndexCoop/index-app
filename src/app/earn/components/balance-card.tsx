@@ -72,22 +72,15 @@ const calculateEffectiveAPY = (
     )
 
     if (product && token) {
-      // Calculate USD value of this position
       const positionValue =
         Number(formatUnits(balance.value, token.decimals)) * product.metrics.nav
-
-      // Add to total value
       totalValue += positionValue
-
-      // Add weighted APY contribution
       weightedAPYsum += positionValue * product.metrics.apy
     }
   })
 
-  // If no value, return 0
   if (totalValue === 0) return 0
 
-  // Return weighted average APY
   return weightedAPYsum / totalValue
 }
 
