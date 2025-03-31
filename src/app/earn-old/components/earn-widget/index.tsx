@@ -3,9 +3,10 @@
 import { useAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
-import { Summary } from '@/app/earn/components/earn-widget/components/summary'
-import { supportedNetworks } from '@/app/earn/constants'
-import { useEarnContext } from '@/app/earn/provider'
+import { Summary } from '@/app/earn-old/components/earn-widget/components/summary'
+import { supportedNetworks } from '@/app/earn-old/constants'
+import { useEarnContext } from '@/app/earn-old/provider'
+import { useQueryParams } from '@/app/earn-old/use-query-params'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { Receive } from '@/components/receive'
 import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
@@ -27,7 +28,6 @@ import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedEarnData } from '../../use-formatted-data'
 
-import { useQueryParams } from '@/app/earn/use-query-params'
 
 import './styles.css'
 

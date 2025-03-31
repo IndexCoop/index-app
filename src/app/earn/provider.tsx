@@ -25,7 +25,6 @@ import { getCurrencyTokens, getYieldTokens } from './constants'
 
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
-
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
 const hyETH = { ...hyEthTokenlist, image: hyEthTokenlist.logoURI }
 const icETH = getTokenByChainAndSymbol(1, 'icETH')

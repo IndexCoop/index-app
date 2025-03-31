@@ -2,7 +2,10 @@
 
 import { Suspense, useState } from 'react'
 
-import { useEarnContext } from '@/app/earn/provider'
+import { ChartTabs } from '@/app/earn-old/components/chart-tabs'
+import { FaqSection } from '@/app/earn-old/components/faq-section'
+import { useEarnContext } from '@/app/earn-old/provider'
+import { ChartTab } from '@/app/earn-old/types'
 import { ApyChart } from '@/components/charts/apy-chart'
 import { PriceChart } from '@/components/charts/price-chart'
 import { TvlChart } from '@/components/charts/tvl-chart'
@@ -10,9 +13,6 @@ import { TvlChart } from '@/components/charts/tvl-chart'
 import { EarnWidget } from './components/earn-widget'
 import { QuickStats } from './components/quick-stats'
 
-import { ChartTabs } from '@/app/earn/components/chart-tabs'
-import { FaqSection } from '@/app/earn/components/faq-section'
-import { ChartTab } from '@/app/earn/types'
 
 export default function Page() {
   const { indexToken, isFetchingStats, apy, nav, tvl } = useEarnContext()
