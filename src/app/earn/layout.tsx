@@ -1,6 +1,9 @@
+import React from 'react'
+
+import { LightEffect } from '@/app/leverage/components/light-effect'
 import { Providers } from '@/app/providers'
-import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
+import { getApiV2ProductsEarn } from '@/gen'
 import { SlippageProvider } from '@/lib/providers/slippage'
 
 import { EarnProvider } from './provider'
@@ -13,17 +16,23 @@ export const metadata = {
   title: 'Earn',
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default async function Layout({ children }: LayoutProps) {
+  const productsResponse = await getApiV2ProductsEarn()
+  const products =
+    productsResponse.status === 200
+      ? productsResponse.data.sort((a, b) => a.order - b.order)
+      : []
+
   return (
     <Providers>
-      <div className='flex flex-col'>
+      <div className='dark flex flex-col overflow-x-hidden'>
         <Header />
         <SlippageProvider>
-          <EarnProvider>
-            <main>{children}</main>
+          <EarnProvider products={products}>
+            <LightEffect page='earn' />
+            <main className='z-10 p-4'>{children}</main>
           </EarnProvider>
         </SlippageProvider>
-        <Footer />
       </div>
     </Providers>
   )

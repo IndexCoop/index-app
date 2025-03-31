@@ -6,11 +6,11 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useParams } from 'next/navigation'
 import { useEffect } from 'react'
 
-import { EarnWidget } from '@/app/earnv2/components/earn-widget'
-import { ProductTitlePill } from '@/app/earnv2/components/product-pill'
-import { ProductTag } from '@/app/earnv2/components/product-tag'
-import { StatBox } from '@/app/earnv2/components/stat-box'
-import { useEarnContext } from '@/app/earnv2/provider'
+import { EarnWidget } from '@/app/earn/components/earn-widget'
+import { ProductTitlePill } from '@/app/earn/components/product-pill'
+import { ProductTag } from '@/app/earn/components/product-tag'
+import { StatBox } from '@/app/earn/components/stat-box'
+import { useEarnContext } from '@/app/earn/provider'
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
 export default function Page() {

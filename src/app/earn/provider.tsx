@@ -1,7 +1,6 @@
 'use client'
 
 import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
-import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
   useCallback,
@@ -9,26 +8,23 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { isAddress } from 'viem'
-import { base } from 'viem/chains'
+import * as chains from 'viem/chains'
 
-import { useQueryParams } from '@/app/earn/use-query-params'
 import { ETH, type Token } from '@/constants/tokens'
-import { type TokenBalance, useBalances } from '@/lib/hooks/use-balance'
+import { GetApiV2ProductsEarn200 } from '@/gen'
+import { type TokenBalance } from '@/lib/hooks/use-balance'
+import { useMultiChainBalances } from '@/lib/hooks/use-multichain-balances'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
-import {
-  fetchTokenHistoricalData,
-  fetchTokenMetrics,
-} from '@/lib/utils/api/index-data-provider'
-import { calculateApy } from '@/lib/utils/apy'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
 
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
+
+import { useQueryParams } from '@/app/earn/use-query-params'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
 const hyETH = { ...hyEthTokenlist, image: hyEthTokenlist.logoURI }
@@ -40,18 +36,13 @@ interface Context {
   balances: TokenBalance[]
   indexToken: Token
   indexTokens: Token[]
-  apy: number | null
-  apy7d: number | null
-  apy30d: number | null
-  nav: number | null
-  tvl: number | null
+  products: GetApiV2ProductsEarn200
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
   inputTokens: Token[]
   outputTokens: Token[]
   isFetchingQuote: boolean
-  isFetchingStats: boolean
   quoteResult: QuoteResult | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectIndexToken: (tokenSymbol: string, chainId: number) => void
@@ -67,18 +58,13 @@ export const EarnContext = createContext<Context>({
   balances: [],
   indexToken: hyETH,
   indexTokens: [],
-  apy: null,
-  apy7d: null,
-  apy30d: null,
-  nav: null,
-  tvl: null,
+  products: [],
   inputToken: ETH,
   outputToken: hyETH,
   inputTokenAmount: BigInt(0),
   inputTokens: [],
   outputTokens: [],
   isFetchingQuote: false,
-  isFetchingStats: true,
   quoteResult: null,
   onChangeInputTokenAmount: () => {},
   onSelectIndexToken: () => {},
@@ -96,7 +82,10 @@ const defaultParams = {
   outputToken: hyETH,
 }
 
-export function EarnProvider(props: { children: any }) {
+export function EarnProvider(props: {
+  children: any
+  products: GetApiV2ProductsEarn200
+}) {
   const { chainId: chainIdRaw } = useNetwork()
   const { address } = useWallet()
   const {
@@ -112,7 +101,7 @@ export function EarnProvider(props: { children: any }) {
   const outputToken = queryOutputToken
 
   const chainId = useMemo(() => {
-    return chainIdRaw ?? base.id
+    return chainIdRaw ?? chains.base.id
   }, [chainIdRaw])
 
   const indexToken = useMemo(() => {
@@ -120,20 +109,11 @@ export function EarnProvider(props: { children: any }) {
     return inputToken
   }, [inputToken, isMinting, outputToken])
 
-  const indexTokenAddress = indexToken.address ?? ''
-
   const indexTokens = useMemo(() => {
     return getYieldTokens()
   }, [])
 
-  const indexTokenAddresses = useMemo(() => {
-    return indexTokens.map((token) => token.address!)
-  }, [indexTokens])
-
-  const { balances, forceRefetchBalances } = useBalances(
-    address,
-    indexTokenAddresses,
-  )
+  const { data: balances } = useMultiChainBalances(props.products)
 
   const inputTokens = useMemo(() => {
     const isIcEth = isAddressEqual(indexToken.address, icETH.address)
@@ -164,73 +144,6 @@ export function EarnProvider(props: { children: any }) {
     inputTokenAmount,
     inputValue,
     slippage,
-  })
-
-  const {
-    data: { apy, nav, tvl },
-    isFetching: isFetchingLatestStats,
-  } = useQuery({
-    enabled: isAddress(indexTokenAddress),
-    gcTime: 2 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    initialData: { apy: null, nav: null, tvl: null },
-    queryKey: ['token-latest-stats', indexTokenAddress],
-    queryFn: async () => {
-      const data = await fetchTokenMetrics({
-        chainId: indexToken.chainId!,
-        tokenAddress: indexTokenAddress!,
-        metrics: ['nav', 'apy', 'pav'],
-      })
-
-      return {
-        apy: data?.APY ? calculateApy(data) : null,
-        nav: data?.NetAssetValue ?? null,
-        tvl: data?.ProductAssetValue ?? null,
-      }
-    },
-  })
-
-  const {
-    data: { apy7d, apy30d },
-    isFetching: isFetchingApyStats,
-  } = useQuery({
-    enabled: isAddress(indexTokenAddress),
-    gcTime: 2 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    initialData: { apy7d: null, apy30d: null },
-    queryKey: ['token-apy-stats', indexTokenAddress],
-    queryFn: async () => {
-      const data = await fetchTokenHistoricalData({
-        chainId,
-        tokenAddress: indexTokenAddress!,
-        metrics: ['apy'],
-        interval: 'daily',
-        period: 'month',
-      })
-
-      const historicalData = (data ?? []).sort(
-        (a, b) =>
-          new Date(b.CreatedTimestamp).getTime() -
-          new Date(a.CreatedTimestamp).getTime(),
-      )
-
-      const apy7d = historicalData
-        .slice(0, 7)
-        .reduce((acc, current, _, { length }) => {
-          return acc + calculateApy(current) / length
-        }, 0)
-
-      const apy30d = historicalData
-        .slice(0, 30)
-        .reduce((acc, current, _, { length }) => {
-          return acc + calculateApy(current) / length
-        }, 0)
-
-      return {
-        apy7d: apy7d ? apy7d : null,
-        apy30d: apy30d ? apy30d : null,
-      }
-    },
   })
 
   const onChangeInputTokenAmount = useCallback(
@@ -291,7 +204,6 @@ export function EarnProvider(props: { children: any }) {
   const reset = () => {
     setInputValue('')
     resetQuote()
-    forceRefetchBalances()
   }
 
   const toggleIsMinting = useCallback(() => {
@@ -314,15 +226,10 @@ export function EarnProvider(props: { children: any }) {
         inputToken,
         outputToken,
         inputTokenAmount,
-        apy,
-        apy7d,
-        apy30d,
-        nav,
-        tvl,
+        products: props.products,
         inputTokens,
         outputTokens,
         isFetchingQuote,
-        isFetchingStats: isFetchingLatestStats || isFetchingApyStats,
         quoteResult,
         onChangeInputTokenAmount,
         onSelectIndexToken,

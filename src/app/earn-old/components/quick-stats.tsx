@@ -1,5 +1,4 @@
 import { TokenSelector } from '@/app/earn/components/earn-widget/components/base-token-selector'
-import { StatMetric } from '@/app/earn/components/stat-metric'
 import { formatPercentage, formatTvl } from '@/app/products/utils/formatters'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
@@ -9,6 +8,8 @@ import { digitsByAddress } from '@/lib/utils/tokens'
 
 import { getTagline } from '../constants'
 import { useEarnContext } from '../provider'
+
+import { StatMetric } from '@/app/earn/components/stat-metric'
 
 export function QuickStats() {
   const {

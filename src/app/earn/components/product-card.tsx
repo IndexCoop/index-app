@@ -2,8 +2,8 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid'
 import { motion } from 'framer-motion'
 import { FC, ReactNode } from 'react'
 
-import { ProductTitlePill } from '@/app/earnv2/components/product-pill'
-import { ProductTag } from '@/app/earnv2/components/product-tag'
+import { ProductTitlePill } from '@/app/earn/components/product-pill'
+import { ProductTag } from '@/app/earn/components/product-tag'
 import { GetApiV2ProductsEarn200 } from '@/gen'
 import { formatAmount } from '@/lib/utils'
 
@@ -19,7 +19,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
   const { name, description, tags, tokenAddress, metrics } = product
   return (
     <motion.a
-      href={`/earnv2/product/${tokenAddress}`}
+      href={`/earn/product/${tokenAddress}`}
       whileHover={{
         scale: 1.05,
       }}
