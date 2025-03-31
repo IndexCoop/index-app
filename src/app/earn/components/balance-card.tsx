@@ -33,7 +33,7 @@ const Position = ({
 
   return product && token ? (
     <motion.a
-      href={`/earnv2/product/${product.tokenAddress}`}
+      href={`/earn/product/${product.tokenAddress}`}
       whileHover={{
         scale: 1.01,
       }}
@@ -55,38 +55,69 @@ const Position = ({
   )
 }
 
+const calculateEffectiveAPY = (
+  products: GetApiV2ProductsEarn200,
+  balances: TokenBalance[],
+) => {
+  let totalValue = 0
+  let weightedAPYsum = 0
+
+  balances.forEach((balance) => {
+    const product = products.find((p) =>
+      isAddressEqual(p.tokenAddress, balance.token),
+    )
+    const token = getTokenByChainAndAddress(
+      product?.chainId,
+      product?.tokenAddress,
+    )
+
+    if (product && token) {
+      // Calculate USD value of this position
+      const positionValue =
+        Number(formatUnits(balance.value, token.decimals)) * product.metrics.nav
+
+      // Add to total value
+      totalValue += positionValue
+
+      // Add weighted APY contribution
+      weightedAPYsum += positionValue * product.metrics.apy
+    }
+  })
+
+  // If no value, return 0
+  if (totalValue === 0) return 0
+
+  // Return weighted average APY
+  return weightedAPYsum / totalValue
+}
+
 export type BalanceCardProps = {
   products: GetApiV2ProductsEarn200
   balances: TokenBalance[]
 }
 
 export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
-  const { deposits, cumulativeAPY } = useMemo(
+  const deposits = useMemo(
     () =>
-      balances.reduce(
-        (acc, curr) => {
-          const product = products.find((p) =>
-            isAddressEqual(p.tokenAddress, curr.token),
-          )
+      balances.reduce((acc, curr) => {
+        const product = products.find((p) =>
+          isAddressEqual(p.tokenAddress, curr.token),
+        )
 
-          const token = getTokenByChainAndAddress(
-            product?.chainId,
-            product?.tokenAddress,
-          )
+        const token = getTokenByChainAndAddress(
+          product?.chainId,
+          product?.tokenAddress,
+        )
 
-          if (product && token) {
-            return {
-              deposits:
-                acc.deposits +
-                Number(formatUnits(curr.value, token.decimals)) *
-                  product.metrics.nav,
-              cumulativeAPY: acc.cumulativeAPY + product.metrics.apy,
-            }
-          }
-          return acc
-        },
-        { deposits: 0, cumulativeAPY: 0 },
-      ),
+        if (product && token) {
+          return (
+            acc +
+            Number(formatUnits(curr.value, token.decimals)) *
+              product.metrics.nav
+          )
+        }
+        return acc
+      }, 0),
     [products, balances],
   )
 
@@ -122,7 +153,7 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
         <div className='flex flex-col gap-1 '>
           <BoxedData
             label='Net APY'
-            value={`${formatAmount(cumulativeAPY)}%`}
+            value={`${formatAmount(calculateEffectiveAPY(products, balances))}%`}
           />
           {/* <BoxedData label='Lifetime Earnings' value='$420.69' /> */}
         </div>
