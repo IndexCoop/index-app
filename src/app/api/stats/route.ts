@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
       base: { ...data, baseCurrency },
       token: {
         symbol,
-        costOfCarry: metrics?.Rate ?? 0,
+        costOfCarry: metrics?.CarryCost ?? 0,
         nav: metrics?.NetAssetValue ?? 0,
         navchange: metrics?.NavChange24Hr ?? 0,
         streamingFee: metrics?.StreamingFee ?? 0,
