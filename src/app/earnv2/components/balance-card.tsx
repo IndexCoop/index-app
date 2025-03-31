@@ -124,7 +124,7 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
             label='Net APY'
             value={`${formatAmount(cumulativeAPY)}%`}
           />
-          <BoxedData label='Lifetime Earnings' value='$420.69' />
+          {/* <BoxedData label='Lifetime Earnings' value='$420.69' /> */}
         </div>
       </div>
     </motion.div>

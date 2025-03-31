@@ -2,13 +2,12 @@
 
 import { Popover, PopoverButton } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { useAppKit } from '@reown/appkit/react'
 import { NetworkUtil } from '@reown/appkit-common'
 import { AssetUtil, ChainController } from '@reown/appkit-core'
-import { useAppKit } from '@reown/appkit/react'
 import { watchAccount } from '@wagmi/core'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo } from 'react'
 import { useAccount } from 'wagmi'
 
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -19,10 +18,7 @@ export const NetworkSelect = () => {
   const { chainId: walletChainId } = useAccount()
   const { open } = useAppKit()
   const { chainId, switchChain } = useNetwork()
-  const { queryParams, searchParams, updateQueryParams } = useQueryParams()
-  const [isNetworkWarningClosed, setIsNetworkWarningClosed] = useState(false)
-  const router = useRouter()
-  const pathname = usePathname()
+  const { queryParams, updateQueryParams } = useQueryParams()
 
   const chain = useMemo(() => chains.find((c) => c.id === chainId), [chainId])
 

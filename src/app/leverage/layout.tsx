@@ -21,7 +21,7 @@ export default function Layout({ children }: LayoutProps) {
         <Header />
         <SlippageProvider>
           <LeverageProvider>
-            <LightEffect />
+            <LightEffect page='leverage' />
             <main className='z-10'>{children}</main>
           </LeverageProvider>
         </SlippageProvider>
