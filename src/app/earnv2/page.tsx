@@ -33,7 +33,7 @@ export default function Page() {
   }, [])
 
   return (
-    <div className='mt-40 flex w-full flex-col items-center'>
+    <div className='mt-8 flex w-full flex-col items-center'>
       <div className='mx-auto flex max-w-7xl flex-col gap-4'>
         <AnimatePresence>
           {balances.length > 0 && (
@@ -45,7 +45,7 @@ export default function Page() {
           <h3 className='my-5 hidden w-full text-lg font-semibold text-neutral-50 md:block'>
             Strategies
           </h3>
-          <div className='flex flex-wrap gap-4 pb-12'>
+          <div className='flex flex-wrap justify-center gap-4 pb-12'>
             {products.map((p) => (
               <ProductCard key={`product-item-${p.tokenAddress}`} product={p} />
             ))}

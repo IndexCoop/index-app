@@ -42,7 +42,7 @@ export default function Page() {
   return (
     <AnimatePresence>
       {selectedProduct && (
-        <motion.div className='mt-40 flex w-full flex-col items-center'>
+        <motion.div className='mt-8 flex w-full flex-col items-center'>
           <div className='flex w-full max-w-7xl flex-col gap-4'>
             <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 md:flex-nowrap'>
               <div className='flex w-full flex-col gap-8'>
@@ -101,7 +101,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className='w-[360px] min-w-[360px]'>
+              <div className='w-[360px] min-w-[320px]'>
                 <EarnWidget />
               </div>
             </motion.div>

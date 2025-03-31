@@ -30,7 +30,7 @@ export default async function Layout({ children }: LayoutProps) {
         <SlippageProvider>
           <EarnProvider products={products}>
             <LightEffect page='earn' />
-            <main className='z-10'>{children}</main>
+            <main className='z-10 p-4'>{children}</main>
           </EarnProvider>
         </SlippageProvider>
       </div>
