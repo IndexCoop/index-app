@@ -10,6 +10,7 @@ import {
 } from 'react'
 import * as chains from 'viem/chains'
 
+import { useQueryParams } from '@/app/earn-old/use-query-params'
 import { ETH, type Token } from '@/constants/tokens'
 import { GetApiV2ProductsEarn200 } from '@/gen'
 import { type TokenBalance } from '@/lib/hooks/use-balance'
@@ -24,7 +25,6 @@ import { getCurrencyTokens, getYieldTokens } from './constants'
 
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
-import { useQueryParams } from '@/app/earn/use-query-params'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
 const hyETH = { ...hyEthTokenlist, image: hyEthTokenlist.logoURI }
