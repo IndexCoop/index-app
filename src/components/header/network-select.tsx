@@ -1,16 +1,19 @@
 'use client'
 
-import { Popover, PopoverButton } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { useAppKit } from '@reown/appkit/react'
+import { Button, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
+import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { NetworkUtil } from '@reown/appkit-common'
 import { AssetUtil, ChainController } from '@reown/appkit-core'
+import { useAppKit } from '@reown/appkit/react'
 import { watchAccount } from '@wagmi/core'
+import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
-import { useEffect, useLayoutEffect, useMemo } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
 import { useAccount } from 'wagmi'
 
-import { useNetwork } from '@/lib/hooks/use-network'
+import { Path } from '@/constants/paths'
+import { getNetworkName, useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { chains, wagmiAdapter } from '@/lib/utils/wagmi'
 
@@ -18,7 +21,10 @@ export const NetworkSelect = () => {
   const { chainId: walletChainId } = useAccount()
   const { open } = useAppKit()
   const { chainId, switchChain } = useNetwork()
-  const { queryParams, updateQueryParams } = useQueryParams()
+  const { queryParams, searchParams, updateQueryParams } = useQueryParams()
+  const [isNetworkWarningClosed, setIsNetworkWarningClosed] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
 
   const chain = useMemo(() => chains.find((c) => c.id === chainId), [chainId])
 
@@ -60,12 +66,6 @@ export const NetworkSelect = () => {
     return () => unwatch()
   }, [queryParams, updateQueryParams])
 
-  useLayoutEffect(() => {
-    if (chainId && chainId !== walletChainId) {
-      switchChain({ chainId })
-    }
-  }, [chainId, walletChainId, switchChain])
-
   return (
     <Popover as='div' className='relative'>
       <PopoverButton
@@ -85,6 +85,60 @@ export const NetworkSelect = () => {
         <p className='hidden md:block'>{chain?.name}</p>
         <ChevronDownIcon className='text-ic-white size-4' />
       </PopoverButton>
+      <AnimatePresence>
+        {chainId !== walletChainId && !isNetworkWarningClosed && (
+          <PopoverPanel
+            as={motion.div}
+            static
+            anchor='bottom'
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1, transition: { delay: 1 } }}
+            className='dark:bg-ic-black dark:border-ic-gray-800 dark:text-ic-white text-ic-black z-50 mt-8 w-80 !overflow-visible rounded-md border border-gray-300 bg-white p-4 shadow-md'
+            exit={{ opacity: 0, scale: 0.95 }}
+          >
+            {!pathname.startsWith(Path.EARN) && (
+              <Button
+                className='hover:bg-ic-gray-600 group absolute right-2 top-2 w-5 rounded-md '
+                onClick={() => {
+                  setIsNetworkWarningClosed(true)
+
+                  if (walletChainId) {
+                    const queryParams = new URLSearchParams(searchParams)
+
+                    queryParams.set('network', walletChainId.toString())
+
+                    router.replace(`?${queryParams.toString()}`, {
+                      scroll: false,
+                    })
+                  }
+                }}
+              >
+                <XMarkIcon className='dark:fill-ic-white group-hover:fill-ic-white' />
+              </Button>
+            )}
+            <div className='border-b-ic-gray-300 dark:border-b-ic-gray-800 absolute -top-[18px] left-1/2 h-0 w-0 -translate-x-1/2 border-b-[18px] border-l-[13px] border-r-[13px] border-l-transparent border-r-transparent'></div>
+            <div className='border-b-ic-white dark:border-b-ic-black absolute -top-4 left-1/2 h-0 w-0 -translate-x-1/2 border-b-[16px] border-l-[12px] border-r-[12px] border-l-transparent border-r-transparent'></div>
+
+            <p className='text-md mb-6 mt-2 font-bold'>
+              You have followed a link that requires your wallet to switch to{' '}
+              <b className='text-ic-blue-500'>{getNetworkName(chainId)}</b>.
+            </p>
+            <p className='text-sm'>
+              Your wallet is currently connected to{' '}
+              <b className='text-ic-blue-500'>
+                {getNetworkName(walletChainId)}
+              </b>
+              .
+            </p>
+            <Button
+              className='bg-ic-blue-500 hover:bg-ic-blue-500/90 active:bg-ic-blue-500/80 mt-4 w-full rounded-md p-2 font-bold text-white'
+              onClick={() => chainId && switchChain({ chainId })}
+            >
+              Switch to {getNetworkName(chainId)}
+            </Button>
+          </PopoverPanel>
+        )}
+      </AnimatePresence>
     </Popover>
   )
 }
