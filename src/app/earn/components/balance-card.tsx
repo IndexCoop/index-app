@@ -3,6 +3,7 @@ import {
   isAddressEqual,
 } from '@indexcoop/tokenlists'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 
@@ -32,24 +33,25 @@ const Position = ({
   )
 
   return product && token ? (
-    <motion.a
-      href={`/earn/product/${product.tokenAddress}`}
-      whileHover={{
-        scale: 1.01,
-      }}
-      className='flex cursor-pointer items-center justify-between rounded-[4px] bg-zinc-800 p-4 hover:bg-zinc-700 hover:text-neutral-900'
-    >
-      <p className='text-xs font-medium text-neutral-200'>{product.name}</p>
-      {
-        <p className='text-xs font-medium text-neutral-200'>
-          $
-          {formatAmount(
-            Number(formatUnits(balance.value, token.decimals)) *
-              product.metrics.nav,
-          )}
-        </p>
-      }
-    </motion.a>
+    <Link prefetch href={`/earn/product/${product.tokenAddress}`}>
+      <motion.div
+        whileHover={{
+          scale: 1.01,
+        }}
+        className='flex cursor-pointer items-center justify-between rounded-[4px] bg-zinc-800 p-4 hover:bg-zinc-700 hover:text-neutral-900'
+      >
+        <p className='text-xs font-medium text-neutral-200'>{product.name}</p>
+        {
+          <p className='text-xs font-medium text-neutral-200'>
+            $
+            {formatAmount(
+              Number(formatUnits(balance.value, token.decimals)) *
+                product.metrics.nav,
+            )}
+          </p>
+        }
+      </motion.div>
+    </Link>
   ) : (
     <></>
   )
