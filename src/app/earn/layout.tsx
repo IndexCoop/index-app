@@ -17,7 +17,9 @@ export const metadata = {
 }
 
 export default async function Layout({ children }: LayoutProps) {
-  const productsResponse = await getApiV2ProductsEarn()
+  const productsResponse = await getApiV2ProductsEarn({
+    headers: { 'Cache-Control': 'no-cache' },
+  })
   const products =
     productsResponse.status === 200
       ? productsResponse.data.sort((a, b) => a.order - b.order)
@@ -54,3 +56,5 @@ export default async function Layout({ children }: LayoutProps) {
     </div>
   )
 }
+
+export const dynamic = 'force-dynamic'
