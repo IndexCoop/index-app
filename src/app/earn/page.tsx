@@ -43,7 +43,7 @@ export default function Page() {
         </AnimatePresence>
 
         <div>
-          <h3 className='my-5 hidden w-full text-lg font-semibold text-neutral-50 md:block'>
+          <h3 className='my-5 hidden w-full text-lg font-medium text-neutral-50 md:block'>
             Strategies
           </h3>
           <div className='flex flex-wrap justify-center gap-4 pb-12'>

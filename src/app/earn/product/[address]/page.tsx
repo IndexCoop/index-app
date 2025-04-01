@@ -47,13 +47,13 @@ export default function Page() {
             <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 md:flex-nowrap'>
               <div className='flex w-full flex-col gap-8'>
                 <div className='flex flex-col gap-6'>
-                  <h3 className='text-xl font-semibold'>
+                  <h3 className='text-xl font-medium'>
                     {selectedProduct.name}
                   </h3>
-                  <p className='text-xs text-neutral-400'>
+                  <p className='text-xs font-medium leading-5 text-neutral-400'>
                     {selectedProduct.description}
                   </p>
-                  <div className='flex gap-2'>
+                  <div className='flex flex-wrap gap-2'>
                     {['wsteth15x', 'iceth'].includes(selectedProduct.id) && (
                       <ProductTitlePill
                         text='Smart Loop'
@@ -73,7 +73,9 @@ export default function Page() {
                   </div>
                 </div>
                 <div className='mt-auto'>
-                  <h5 className='text-xs text-neutral-400'>Stats</h5>
+                  <h5 className='text-xs font-medium text-neutral-400'>
+                    Stats
+                  </h5>
                   <div className='flex flex-wrap gap-2 pt-2'>
                     <StatBox
                       label='Current APY'

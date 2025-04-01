@@ -26,11 +26,13 @@ export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
       className='max-w-[360px]cursor-pointer group flex w-full min-w-[320px] flex-col gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 md:max-w-[360px]'
     >
       <div className='flex items-start justify-between gap-2'>
-        <p className='text-xl font-semibold text-neutral-50'>{name}</p>
+        <p className='text-xl font-medium text-neutral-50'>{name}</p>
         {pill && <ProductTitlePill text={pill.text} icon={pill.icon} />}
       </div>
       <div className='flex items-center justify-between gap-2'>
-        <p className='text-xs text-neutral-400'>{description}</p>
+        <p className='text-xs font-medium leading-5 text-neutral-400'>
+          {description}
+        </p>
       </div>
       <div className='flex gap-2'>
         {tags.map(({ text, className }) => (
@@ -47,7 +49,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
           <ArrowRightIcon className='absolute h-8 w-8 -translate-x-12 transition-transform duration-300 group-hover:translate-x-0' />
         </div>
         <div className='flex flex-col items-end'>
-          <p className='text-3xl font-semibold tracking-tight text-neutral-50'>
+          <p className='text-3xl font-medium tracking-tight text-neutral-50'>
             {metrics ? `${formatAmount(metrics.apy)}%` : '--'}
           </p>
           <p className='text-xs text-neutral-400'>APY</p>
