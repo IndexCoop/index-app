@@ -9,17 +9,20 @@ import { supportedNetworks } from '@/app/earn/constants'
 import { useEarnContext } from '@/app/earn/provider'
 import { useQueryParams } from '@/app/earn-old/use-query-params'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
+import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
+import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
 import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedEarnData } from '../../use-formatted-data'
+
 
 import { DepositWithdraw } from './components/deposit-withdraw'
 import { Projection } from './components/projection'
@@ -31,15 +34,18 @@ const hiddenLeverageWarnings = [WarningType.flashbots]
 export function EarnWidget() {
   const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
+  const { address } = useWallet()
   const { queryParams } = useQueryParams()
 
   const {
     indexToken,
     inputToken,
+    inputTokens,
     inputTokenAmount,
     inputValue,
     isMinting,
     onChangeInputTokenAmount,
+    onSelectInputToken,
     balances,
     products,
     outputToken,
@@ -62,7 +68,11 @@ export function EarnWidget() {
     isAddressEqual(p.tokenAddress, indexToken?.address ?? ''),
   )
 
-  const { onOpen: onOpenSelectInputToken } = useDisclosure()
+  const {
+    isOpen: isSelectInputTokenOpen,
+    onOpen: onOpenSelectInputToken,
+    onClose: onCloseSelectInputToken,
+  } = useDisclosure()
 
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
@@ -108,7 +118,7 @@ export function EarnWidget() {
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
-        onSelectToken={onOpenSelectInputToken}
+        onSelectToken={() => isMinting && onOpenSelectInputToken()}
       />
       <Projection
         isQuoteLoading={isFetchingQuote}
@@ -150,6 +160,18 @@ export function EarnWidget() {
         }
         onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
         onRefetchQuote={() => {}}
+      />
+      <SelectTokenModal
+        isDarkMode={true}
+        isOpen={isSelectInputTokenOpen}
+        showBalances={true}
+        onClose={onCloseSelectInputToken}
+        onSelectedToken={(tokenSymbol, chainId) => {
+          onSelectInputToken(tokenSymbol, chainId)
+          onCloseSelectInputToken()
+        }}
+        address={address}
+        tokens={inputTokens}
       />
       <TransactionReviewModal
         isDarkMode
