@@ -45,6 +45,7 @@ export function EarnWidget() {
     outputToken,
     reset,
     toggleIsMinting,
+    quoteResult,
   } = useEarnContext()
 
   const {
@@ -110,7 +111,9 @@ export function EarnWidget() {
         onSelectToken={onOpenSelectInputToken}
       />
       <Projection
+        isQuoteLoading={isFetchingQuote}
         amount={inputValue}
+        inputAmountUsd={quoteResult?.quote?.inputTokenAmountUsd ?? 0}
         balance={
           balances.find((b) => b.token === indexToken.address)?.value ??
           BigInt(0)

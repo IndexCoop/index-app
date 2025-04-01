@@ -4,84 +4,77 @@ import { formatUnits } from 'viem'
 
 import { GetApiV2ProductsEarn200 } from '@/gen'
 import { formatDollarAmount } from '@/lib/utils'
+import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 
 export type ProjectionProps = {
   amount: string
+  inputAmountUsd: number
   balance: bigint
   product?: GetApiV2ProductsEarn200[number]
+  isQuoteLoading: boolean
   isMinting: boolean
 }
 
 const calculateProjection = (
-  amount: string,
-  balance: bigint,
+  inputAmountUsd: number,
+  balanceUsd: number,
   isMinting: boolean,
 ) => {
-  if (!amount || amount === '0') return balance
+  if (!inputAmountUsd || inputAmountUsd === 0) return balanceUsd
 
   try {
-    const amountFloat = parseFloat(amount)
-    if (isNaN(amountFloat)) return balance
-
-    const amountWei = BigInt(Math.floor(amountFloat * 10 ** 18))
-
-    if (!isMinting && amountWei > balance) {
-      return BigInt(0)
+    if (!isMinting && inputAmountUsd > balanceUsd) {
+      return 0
     }
 
-    return isMinting ? balance + amountWei : balance - amountWei
+    return isMinting ? balanceUsd + inputAmountUsd : balanceUsd - inputAmountUsd
   } catch (error) {
-    console.error('Error converting amount to BigInt:', error)
-    return balance
+    console.error('Error in calculation:', error)
+    return balanceUsd
   }
 }
 
-const calculateYield = (balance: bigint, nav: number, apy: number) => {
-  const balanceNum = Number(formatUnits(balance, 18))
-  const valueUSD = balanceNum * nav
-  // Ensure yields can't go negative
-  const monthlyYield = Math.max(0, (valueUSD * apy) / 12 / 100)
-  const yearlyYield = Math.max(0, (valueUSD * apy) / 100)
+const calculateYield = (balanceUsd: number, apy: number) => {
+  const monthlyYield = Math.max(0, (balanceUsd * apy) / 12 / 100)
+  const yearlyYield = Math.max(0, (balanceUsd * apy) / 100)
   return { monthlyYield, yearlyYield }
 }
 
 export const Projection: FC<ProjectionProps> = ({
   amount = '0',
+  inputAmountUsd = 0,
   isMinting,
   balance,
   product,
+  isQuoteLoading,
 }) => {
   if (!product) return null
 
-  const hasZeroBalance = balance === BigInt(0)
+  const balanceUsd = Number(formatUnits(balance, 18)) * product.metrics.nav
+  const hasZeroBalance = balanceUsd === 0
 
-  // Calculate yield based on current balance
   const { monthlyYield, yearlyYield } = calculateYield(
-    balance,
-    product.metrics.nav,
+    balanceUsd,
     product.metrics.apy30d,
   )
 
-  const projectedBalance = calculateProjection(amount, balance, isMinting)
+  const projectedBalanceUsd = calculateProjection(
+    inputAmountUsd,
+    balanceUsd,
+    isMinting,
+  )
+
   const showSameValue = !amount || amount === '0'
 
   const {
     monthlyYield: projectedMonthlyYield,
     yearlyYield: projectedYearlyYield,
-  } = calculateYield(
-    projectedBalance,
-    product.metrics.nav,
-    product.metrics.apy30d,
-  )
+  } = calculateYield(projectedBalanceUsd, product.metrics.apy30d)
 
-  const formattedBalance = formatDollarAmount(
-    Number(formatUnits(balance, 18)) * product.metrics.nav,
-    true,
-    2,
-  )
+  const formattedBalance = formatDollarAmount(balanceUsd, true, 2)
   const formattedProjectedBalance = formatDollarAmount(
-    Number(formatUnits(projectedBalance, 18)) * product.metrics.nav,
+    projectedBalanceUsd,
     true,
     2,
   )
@@ -104,13 +97,19 @@ export const Projection: FC<ProjectionProps> = ({
             <>
               <ArrowLongRightIcon className='w-3' />
               <p className='text-neutral-50'>
-                {showSameValue
-                  ? hasZeroBalance
-                    ? '$0'
-                    : formattedBalance
-                  : projectedBalance === BigInt(0)
-                    ? '$0'
-                    : formattedProjectedBalance}
+                {isQuoteLoading ? (
+                  <SkeletonLoader className='h-4 w-8 rounded-sm' />
+                ) : showSameValue ? (
+                  hasZeroBalance ? (
+                    '$0'
+                  ) : (
+                    formattedBalance
+                  )
+                ) : projectedBalanceUsd === 0 ? (
+                  '$0'
+                ) : (
+                  formattedProjectedBalance
+                )}
               </p>
             </>
           )}
@@ -132,13 +131,19 @@ export const Projection: FC<ProjectionProps> = ({
             <>
               <ArrowLongRightIcon className='w-3' />
               <p className='text-neutral-50'>
-                {showSameValue
-                  ? hasZeroBalance
-                    ? '$0'
-                    : formatDollarAmount(monthlyYield, true, 2)
-                  : projectedMonthlyYield === 0
-                    ? '$0'
-                    : formatDollarAmount(projectedMonthlyYield, true, 2)}
+                {isQuoteLoading ? (
+                  <SkeletonLoader className='h-4 w-8 rounded-sm' />
+                ) : showSameValue ? (
+                  hasZeroBalance ? (
+                    '$0'
+                  ) : (
+                    formatDollarAmount(monthlyYield, true, 2)
+                  )
+                ) : projectedMonthlyYield === 0 ? (
+                  '$0'
+                ) : (
+                  formatDollarAmount(projectedMonthlyYield, true, 2)
+                )}
               </p>
             </>
           )}
@@ -160,13 +165,19 @@ export const Projection: FC<ProjectionProps> = ({
             <>
               <ArrowLongRightIcon className='w-3' />
               <p className='text-neutral-50'>
-                {showSameValue
-                  ? hasZeroBalance
-                    ? '$0'
-                    : formatDollarAmount(yearlyYield, true, 2)
-                  : projectedYearlyYield === 0
-                    ? '$0'
-                    : formatDollarAmount(projectedYearlyYield, true, 2)}
+                {isQuoteLoading ? (
+                  <SkeletonLoader className='h-4 w-8 rounded-sm' />
+                ) : showSameValue ? (
+                  hasZeroBalance ? (
+                    '$0'
+                  ) : (
+                    formatDollarAmount(yearlyYield, true, 2)
+                  )
+                ) : projectedYearlyYield === 0 ? (
+                  '$0'
+                ) : (
+                  formatDollarAmount(projectedYearlyYield, true, 2)
+                )}
               </p>
             </>
           )}
