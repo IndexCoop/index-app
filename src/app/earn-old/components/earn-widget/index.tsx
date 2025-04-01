@@ -1,18 +1,23 @@
 'use client'
 
 import { useAtom } from 'jotai'
-import range from 'lodash/range'
 import { useCallback, useEffect } from 'react'
-import { isAddressEqual } from 'viem'
 
-import { supportedNetworks } from '@/app/earn/constants'
-import { useEarnContext } from '@/app/earn/provider'
+import { Summary } from '@/app/earn-old/components/earn-widget/components/summary'
+import { supportedNetworks } from '@/app/earn-old/constants'
+import { useEarnContext } from '@/app/earn-old/provider'
 import { useQueryParams } from '@/app/earn-old/use-query-params'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
+import { Receive } from '@/components/receive'
+import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
+import { Settings } from '@/components/settings'
+import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
+import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
+import { TokenDisplay } from '@/components/token-display'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
@@ -23,35 +28,29 @@ import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedEarnData } from '../../use-formatted-data'
 
-
-import { DepositWithdraw } from './components/deposit-withdraw'
-import { Projection } from './components/projection'
-import { SmartTradeButton } from './components/smart-trade-button'
-import { TradeInputSelector } from './components/trade-input-selector'
+import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 export function EarnWidget() {
   const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
-  const { address } = useWallet()
   const { queryParams } = useQueryParams()
-
+  const { address } = useWallet()
   const {
     indexToken,
     inputToken,
-    inputTokens,
     inputTokenAmount,
+    inputTokens,
     inputValue,
     isMinting,
+    outputTokens,
     onChangeInputTokenAmount,
     onSelectInputToken,
-    balances,
-    products,
+    onSelectOutputToken,
     outputToken,
     reset,
     toggleIsMinting,
-    quoteResult,
   } = useEarnContext()
 
   const {
@@ -61,27 +60,29 @@ export function EarnWidget() {
     inputBalance,
     inputBalanceFormatted,
     isFetchingQuote,
+    ouputAmount,
     resetData,
   } = useFormattedEarnData()
-
-  const selectedProduct = products.find((p) =>
-    isAddressEqual(p.tokenAddress, indexToken?.address ?? ''),
-  )
 
   const {
     isOpen: isSelectInputTokenOpen,
     onOpen: onOpenSelectInputToken,
     onClose: onCloseSelectInputToken,
   } = useDisclosure()
+  const {
+    isOpen: isSelectOutputTokenOpen,
+    onOpen: onOpenSelectOutputToken,
+    onClose: onCloseSelectOutputToken,
+  } = useDisclosure()
 
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const {
-    // auto: autoSlippage,
-    // isAuto: isAutoSlippage,
-    // set: setSlippage,
+    auto: autoSlippage,
+    isAuto: isAutoSlippage,
+    set: setSlippage,
     setSlippageForToken,
-    // slippage,
+    slippage,
   } = useSlippage()
 
   const onClickBalance = useCallback(() => {
@@ -103,35 +104,36 @@ export function EarnWidget() {
   }, [tradeState, reset, resetData, sendTradeEvent])
 
   return (
-    <div className='earn-widget flex h-fit flex-col gap-6'>
-      <DepositWithdraw
-        isMinting={isMinting}
-        toggleIsMinting={toggleIsMinting}
-      />
+    <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6 lg:ml-auto'>
+      <div className='flex justify-between'>
+        <TokenDisplay mini token={indexToken} />
+        <Settings
+          isAuto={isAutoSlippage}
+          isDarkMode={false}
+          slippage={slippage}
+          onChangeSlippage={setSlippage}
+          onClickAuto={autoSlippage}
+        />
+      </div>
+      <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <TradeInputSelector
-        showSelectorButtonChevron={isMinting}
         config={{ isReadOnly: false }}
         balance={inputBalanceFormatted}
-        caption={isMinting ? 'Deposit' : 'Withdraw'}
+        caption='You pay'
         formattedFiat={inputAmoutUsd}
         selectedToken={inputToken}
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
-        onSelectToken={() => isMinting && onOpenSelectInputToken()}
+        onSelectToken={onOpenSelectInputToken}
       />
-      <Projection
-        isQuoteLoading={isFetchingQuote}
-        amount={inputValue}
-        inputAmountUsd={quoteResult?.quote?.inputTokenAmountUsd ?? 0}
-        balance={
-          balances.find((b) => b.token === indexToken.address)?.value ??
-          BigInt(0)
-        }
-        product={selectedProduct}
-        isMinting={isMinting}
+      <Receive
+        isLoading={isFetchingQuote}
+        outputAmount={ouputAmount}
+        selectedOutputToken={outputToken}
+        onSelectToken={onOpenSelectOutputToken}
       />
-
+      <Summary />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={false}
@@ -144,27 +146,14 @@ export function EarnWidget() {
         isSupportedNetwork={isSupportedNetwork}
         queryNetwork={queryParams.queryNetwork}
         outputToken={outputToken}
-        disabled={outputToken.symbol === 'icETH'}
-        buttonLabelOverrides={
-          outputToken.symbol === 'icETH'
-            ? range(0, 10).reduce(
-                (acc, s) =>
-                  Object.assign(acc, {
-                    [s as TradeButtonState]: `Deposit Unavailable`,
-                  }),
-                {} as Record<TradeButtonState, string>,
-              )
-            : {
-                [TradeButtonState.default]: 'Review Transaction',
-              }
-        }
+        buttonLabelOverrides={{
+          [TradeButtonState.default]: 'Review Transaction',
+        }}
         onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
         onRefetchQuote={() => {}}
       />
       <SelectTokenModal
-        isDarkMode={true}
         isOpen={isSelectInputTokenOpen}
-        showBalances={true}
         onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol, chainId) => {
           onSelectInputToken(tokenSymbol, chainId)
@@ -172,9 +161,20 @@ export function EarnWidget() {
         }}
         address={address}
         tokens={inputTokens}
+        showNetworks={!isMinting}
+      />
+      <SelectTokenModal
+        isOpen={isSelectOutputTokenOpen}
+        onClose={onCloseSelectOutputToken}
+        onSelectedToken={(tokenSymbol, chainId) => {
+          onSelectOutputToken(tokenSymbol, chainId)
+          onCloseSelectOutputToken()
+        }}
+        address={address}
+        tokens={outputTokens}
+        showNetworks={isMinting}
       />
       <TransactionReviewModal
-        isDarkMode
         onClose={() => {
           reset()
           resetData()

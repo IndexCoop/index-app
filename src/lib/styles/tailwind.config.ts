@@ -6,6 +6,7 @@ export default {
   mode: 'jit',
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   darkMode: 'selector',
+  safelist: [{ pattern: /^bg-/ }, { pattern: /^text-/ }],
   theme: {
     extend: {
       screens: {
@@ -19,6 +20,9 @@ export default {
           red: '#C32238',
           yellow: '#ECB424',
           white: '#FCFFFF',
+          pill: {
+            teal: '#3C6073',
+          },
           blue: {
             50: '#f1fffd',
             100: '#d1f9f6',

@@ -28,7 +28,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className='bg-ic-white dark:bg-ic-black dark:border-ic-gray-600 shadow-ic-black/15 z-50 border-b-0 opacity-[.96] shadow-md backdrop-blur dark:border-b'>
+    <header className='shadow-ic-black/15 z-50 border-b-0 bg-opacity-80 shadow-md backdrop-blur-xl dark:border-b dark:border-neutral-600 dark:border-opacity-30'>
       <nav
         className='mx-auto flex items-center justify-between px-6 py-3.5 lg:px-8'
         aria-label='Global'
