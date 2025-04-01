@@ -11,14 +11,16 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <Providers>
-      <Header />
-      <Flex direction='column' mb='50px'>
-        <Flex maxWidth='1024px' m={['0 auto']} p='60px 16px 0px 16px'>
-          {children}
+    <div className='bg-ic-white dark:bg-ic-black h-full w-full'>
+      <Providers>
+        <Header />
+        <Flex direction='column' mb='50px'>
+          <Flex maxWidth='1024px' m={['0 auto']} p='60px 16px 0px 16px'>
+            {children}
+          </Flex>
         </Flex>
-      </Flex>
-      <Footer />
-    </Providers>
+        <Footer />
+      </Providers>
+    </div>
   )
 }

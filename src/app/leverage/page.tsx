@@ -28,7 +28,7 @@ export default function Page() {
     return () => {
       document.body.classList.remove('dark', 'bg-ic-black')
     }
-  })
+  }, [])
 
   return (
     <div className='mx-auto flex max-w-screen-2xl justify-center'>

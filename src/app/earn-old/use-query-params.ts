@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 
-import { getCurrencyTokens, getYieldTokens } from '@/app/earn/constants'
+import { getCurrencyTokens, getYieldTokens } from '@/app/earn-old/constants'
 import { Token } from '@/constants/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
