@@ -125,15 +125,17 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
             My positions
           </h4>
 
-          <div className='mt-2 w-full space-y-2'>
+          <div className='mt-2 flex w-full flex-col gap-2'>
             {balances.map((balance) => (
-              <Position
-                key={balance.token}
-                product={products.find((p) =>
-                  isAddressEqual(p.tokenAddress, balance.token),
-                )}
-                balance={balance}
-              />
+              <div>
+                <Position
+                  key={balance.token}
+                  product={products.find((p) =>
+                    isAddressEqual(p.tokenAddress, balance.token),
+                  )}
+                  balance={balance}
+                />
+              </div>
             ))}
           </div>
         </div>
