@@ -36,11 +36,11 @@ export default async function Layout({ children }: LayoutProps) {
             className='-top-[30%] left-[10%]'
           />
           <BackgroundLight
-            background='radial-gradient(circle at center, rgba(32, 214, 240, 0.4) 40%, transparent 70%)'
+            background='radial-gradient(circle at center, rgba(32, 214, 240, 0.35) 40%, transparent 70%)'
             className='-right-[10%] top-[10%]'
           />
           <BackgroundLight
-            background='radial-gradient(circle at center, rgba(30, 206, 162, 0.5) 40%, transparent 70%)'
+            background='radial-gradient(circle at center, rgba(30, 206, 162, 0.35) 40%, transparent 70%)'
             className='-left-[10%] bottom-0'
           />
           <Header />
