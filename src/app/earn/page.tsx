@@ -34,7 +34,7 @@ export default function Page() {
   }, [])
 
   return (
-    <div className='mt-8 flex w-full flex-col items-center'>
+    <div className='mt-8 flex w-full flex-col items-center p-4'>
       <div className='mx-auto flex max-w-7xl flex-col gap-4'>
         <AnimatePresence>
           {balances.length > 0 && (
