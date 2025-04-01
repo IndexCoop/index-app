@@ -56,3 +56,5 @@ export default async function Layout({ children }: LayoutProps) {
     </div>
   )
 }
+
+export const dynamic = 'force-dynamic'
