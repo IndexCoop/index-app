@@ -127,9 +127,8 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
 
           <div className='mt-2 flex w-full flex-col gap-2'>
             {balances.map((balance) => (
-              <div>
+              <div key={balance.token}>
                 <Position
-                  key={balance.token}
                   product={products.find((p) =>
                     isAddressEqual(p.tokenAddress, balance.token),
                   )}
