@@ -136,7 +136,7 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
           </div>
         </div>
       </div>
-      <div className='flex min-w-52 flex-col justify-between gap-6'>
+      <div className='flex w-full min-w-52 flex-col justify-between gap-6 md:w-52'>
         <div className='space-y-4 text-right'>
           <p className='text-xs text-neutral-200'>Total Deposits</p>
           <p className='text-5xl font-bold text-neutral-50'>

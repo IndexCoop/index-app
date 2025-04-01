@@ -104,7 +104,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className='w-[360px] min-w-[320px]'>
+              <div className='min-w-[320px] max-w-[460px]'>
                 <EarnWidget />
               </div>
             </motion.div>
