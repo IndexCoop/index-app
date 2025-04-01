@@ -41,15 +41,13 @@ const Position = ({
         className='flex cursor-pointer items-center justify-between rounded-[4px] bg-zinc-800 p-4 hover:bg-zinc-700 hover:text-neutral-900'
       >
         <p className='text-xs font-medium text-neutral-200'>{product.name}</p>
-        {
-          <p className='text-xs font-medium text-neutral-200'>
-            $
-            {formatAmount(
-              Number(formatUnits(balance.value, token.decimals)) *
-                product.metrics.nav,
-            )}
-          </p>
-        }
+        <p className='text-xs font-medium text-neutral-200'>
+          $
+          {formatAmount(
+            Number(formatUnits(balance.value, token.decimals)) *
+              product.metrics.nav,
+          )}
+        </p>
       </motion.div>
     </Link>
   ) : (
