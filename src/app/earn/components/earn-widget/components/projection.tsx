@@ -4,6 +4,7 @@ import { formatUnits } from 'viem'
 
 import { GetApiV2ProductsEarn200 } from '@/gen'
 import { formatDollarAmount } from '@/lib/utils'
+import { cn } from '@/lib/utils/tailwind'
 
 export type ProjectionProps = {
   amount: string
@@ -90,55 +91,85 @@ export const Projection: FC<ProjectionProps> = ({
       <div className='flex items-center justify-between gap-2'>
         <p className='text-xs text-neutral-400'>My Position</p>
         <div className='flex items-center gap-2 text-xs font-semibold text-neutral-50'>
-          <p className='text-neutral-400'>
+          <p
+            className={cn(
+              !amount || amount === '0'
+                ? 'text-neutral-50'
+                : 'text-neutral-400',
+            )}
+          >
             {hasZeroBalance ? '$0' : formattedBalance}
           </p>
-          <ArrowLongRightIcon className='w-3' />
-          <p className='text-neutral-50'>
-            {showSameValue
-              ? hasZeroBalance
-                ? '$0'
-                : formattedBalance
-              : projectedBalance === BigInt(0)
-                ? '$0'
-                : formattedProjectedBalance}
-          </p>
+          {amount && amount !== '0' && (
+            <>
+              <ArrowLongRightIcon className='w-3' />
+              <p className='text-neutral-50'>
+                {showSameValue
+                  ? hasZeroBalance
+                    ? '$0'
+                    : formattedBalance
+                  : projectedBalance === BigInt(0)
+                    ? '$0'
+                    : formattedProjectedBalance}
+              </p>
+            </>
+          )}
         </div>
       </div>
       <div className='flex items-center justify-between gap-2'>
         <p className='text-xs text-neutral-400'>Projected Earnings / Month</p>
         <div className='flex items-center gap-2 text-xs font-semibold text-neutral-50'>
-          <p className='text-neutral-400'>
+          <p
+            className={cn(
+              !amount || amount === '0'
+                ? 'text-neutral-50'
+                : 'text-neutral-400',
+            )}
+          >
             {hasZeroBalance ? '$0' : formatDollarAmount(monthlyYield, true, 2)}
           </p>
-          <ArrowLongRightIcon className='w-3' />
-          <p className='text-neutral-50'>
-            {showSameValue
-              ? hasZeroBalance
-                ? '$0'
-                : formatDollarAmount(monthlyYield, true, 2)
-              : projectedMonthlyYield === 0
-                ? '$0'
-                : formatDollarAmount(projectedMonthlyYield, true, 2)}
-          </p>
+          {amount && amount !== '0' && (
+            <>
+              <ArrowLongRightIcon className='w-3' />
+              <p className='text-neutral-50'>
+                {showSameValue
+                  ? hasZeroBalance
+                    ? '$0'
+                    : formatDollarAmount(monthlyYield, true, 2)
+                  : projectedMonthlyYield === 0
+                    ? '$0'
+                    : formatDollarAmount(projectedMonthlyYield, true, 2)}
+              </p>
+            </>
+          )}
         </div>
       </div>
       <div className='flex items-center justify-between gap-2'>
         <p className='text-xs text-neutral-400'>Projected Earnings / Year</p>
         <div className='flex items-center gap-2 text-xs font-semibold text-neutral-50'>
-          <p className='text-neutral-400'>
+          <p
+            className={cn(
+              !amount || amount === '0'
+                ? 'text-neutral-50'
+                : 'text-neutral-400',
+            )}
+          >
             {hasZeroBalance ? '0' : formatDollarAmount(yearlyYield, true, 2)}
           </p>
-          <ArrowLongRightIcon className='w-3' />
-          <p className='text-neutral-50'>
-            {showSameValue
-              ? hasZeroBalance
-                ? '$0'
-                : formatDollarAmount(yearlyYield, true, 2)
-              : projectedYearlyYield === 0
-                ? '$0'
-                : formatDollarAmount(projectedYearlyYield, true, 2)}
-          </p>
+          {amount && amount !== '0' && (
+            <>
+              <ArrowLongRightIcon className='w-3' />
+              <p className='text-neutral-50'>
+                {showSameValue
+                  ? hasZeroBalance
+                    ? '$0'
+                    : formatDollarAmount(yearlyYield, true, 2)
+                  : projectedYearlyYield === 0
+                    ? '$0'
+                    : formatDollarAmount(projectedYearlyYield, true, 2)}
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>
