@@ -14,7 +14,7 @@ const config = defineConfig({
   input: {
     path: isLocal
       ? 'http://127.0.0.1:4000/documentation/json' // Requires the indexcoop-api to be running locally
-      : 'https://api-q513.onrender.com/documentation/json',
+      : 'https://api.indexcoop.com/v2/docs/json',
   },
   output: {
     path: './src/gen',
