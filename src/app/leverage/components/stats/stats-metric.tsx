@@ -17,7 +17,9 @@ export function StatsMetric({
 }: Props) {
   return (
     <div className={cn('flex-col gap-1', className)}>
-      {label && <div className='text-ic-gray-300 text-xs'>{label}</div>}
+      {label && (
+        <div className='text-ic-gray-300 text-left text-xs'>{label}</div>
+      )}
       <div
         className={cn(
           'text-ic-gray-50 h-5 w-full text-sm font-medium',

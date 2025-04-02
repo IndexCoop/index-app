@@ -123,7 +123,7 @@ export function LeverageSelectorContainer() {
             isLoading={isFetchingQuickStats}
             overrideValueClassName={
               netRate && !isFetchingQuickStats
-                ? 'border-b border-ic-gray-200 border-dashed w-fit cursor-default mx-auto'
+                ? 'border-b border-ic-gray-200 border-dashed w-fit cursor-default text-left'
                 : undefined
             }
             label='Net Rate Daily'
