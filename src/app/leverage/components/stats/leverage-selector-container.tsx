@@ -132,7 +132,7 @@ export function LeverageSelectorContainer() {
                 ? 'border-b border-ic-gray-200 border-dashed w-fit cursor-default mx-auto'
                 : undefined
             }
-            label='Net Rate'
+            label='Net Rate Daily'
             value={formatPercentage(netRate, true, 3)}
           />
         </TooltipTrigger>
@@ -140,7 +140,7 @@ export function LeverageSelectorContainer() {
           {
             <div className='flex flex-col'>
               <div className='flex border-b border-[#CDDFDF] py-2'>
-                <div className='text-ic-gray-600'>Net Rate</div>
+                <div className='text-ic-gray-600'>Net Rate Daily</div>
                 <div className='text-ic-gray-900 ml-auto'>
                   {`${formatPercentage(netRate, true, 3)} / day`}
                 </div>
