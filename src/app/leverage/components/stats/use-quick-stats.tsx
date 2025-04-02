@@ -119,6 +119,7 @@ export function useQuickStats(
     ],
     queryFn: fetchStats,
     enabled: !!indexToken.address,
+    refetchOnWindowFocus: false,
   })
 
   return {

@@ -5,11 +5,7 @@ import { useRouter } from 'next/navigation'
 
 import { MarketNetworkImage } from '@/app/leverage/components/stats/market-network-image'
 import { formatStatsAmount } from '@/app/leverage/components/stats/use-quick-stats'
-import {
-  LendingProtocol,
-  getPathForMarket,
-  markets,
-} from '@/app/leverage/constants'
+import { getPathForMarket } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Market } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
@@ -68,39 +64,16 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
   const { market } = useLeverageToken()
   const { logEvent } = useAnalytics()
 
-  const marketMetadata = markets.find((item) => item.market === market)
-
   return (
     <Popover className='flex'>
       <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-blue-200 data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-blue-200 text-ic-gray-500 dark:text-ic-white flex items-center gap-1 transition duration-150 focus:outline-none data-[focus]:outline-1'>
-        <div className='flex flex-col gap-y-1.5'>
-          <div className='flex items-center gap-1'>
-            {marketMetadata && (
-              <Image
-                src={marketMetadata.icon}
-                alt={marketMetadata.market}
-                height={24}
-                width={24}
-                priority
-              />
-            )}
-            <div className='text-sm font-bold sm:text-base'>{market}</div>
+        <div className='flex flex-col gap-y-1'>
+          <p className='pl-1 text-left text-xs text-neutral-400'>
+            Select Market
+          </p>
+          <div className='flex items-center gap-1 rounded-3xl bg-zinc-700 py-2 pl-4 pr-3 text-white'>
+            <div className='text-sm font-semibold'>{market}</div>
             <ChevronDownIcon className='size-5' />
-          </div>
-          <div className='flex'>
-            <span className='text-ic-gray-300 mr-1 text-xs'>Powered by</span>
-            <Image
-              src={
-                marketMetadata?.lendingProtocol === LendingProtocol.aave
-                  ? '/assets/powered-by-aave.svg'
-                  : '/assets/powered-by-morpho.png'
-              }
-              alt='Powered by AAVE'
-              height={17}
-              width={64}
-              priority
-              className='flex-none'
-            />
           </div>
         </div>
       </PopoverButton>

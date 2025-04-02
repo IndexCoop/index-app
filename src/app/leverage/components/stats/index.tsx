@@ -75,6 +75,7 @@ export function QuickStats() {
         <StatsMetric
           className='hidden w-20 md:flex'
           isLoading={isFetchingStats}
+          label='24h Change'
           value={formatPercentage(change24h / 100)}
           overrideValueClassName={
             change24h >= 0 ? 'text-[#65D993]' : 'text-[#F36060]'

@@ -1,13 +1,13 @@
 'use client'
 
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { base } from 'viem/chains'
 
 import { getLabelForLeverageType } from '@/app/leverage/components/leverage-widget/components/leverage-selector'
 import { LeverageRatioItem } from '@/app/leverage/components/stats/leverage-ratio-item'
-import { LeverageSelector } from '@/app/leverage/components/stats/leverage-selector'
 import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { getPathForRatio, ratios } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
@@ -53,14 +53,6 @@ export function LeverageSelectorContainer() {
     return (formatCostOfCarry(token) + token.streamingFee) / 365
   }, [token])
 
-  const currentRatio = useMemo(() => {
-    const strategyLabel = getLabelForLeverageType(leverageType)
-    const item = data?.find(
-      (item: LeverageRatioResponse) => item.strategy === strategyLabel,
-    )
-    return item?.ratio
-  }, [data, leverageType])
-
   const filteredRatios = useMemo(
     () =>
       ratios.reduce((acc, current) => {
@@ -77,15 +69,17 @@ export function LeverageSelectorContainer() {
 
   return (
     <div className='border-ic-black xs:justify-start flex h-full items-center gap-8 border-l px-6 py-0 xl:w-1/2'>
-      <Popover className='flex'>
-        <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-white data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-gray-100 text-ic-gray-500 dark:text-ic-gray-300 focus:outline-none data-[focus]:outline-1'>
-          <LeverageSelector
-            leverage={getLabelForLeverageType(leverageType)}
-            leverageType={
-              leverageType === LeverageType.Short ? 'Short' : 'Long'
-            }
-            ratio={currentRatio ? `${currentRatio.toFixed(2)}x` : ''}
-          />
+      <Popover className='flex w-32'>
+        <PopoverButton className='data-[active]:text-ic-gray-950 data-[active]:dark:text-ic-blue-200 data-[hover]:text-ic-gray-700 data-[hover]:dark:text-ic-blue-200 text-ic-gray-500 dark:text-ic-white flex items-center gap-1 transition duration-150 focus:outline-none data-[focus]:outline-1'>
+          <div className='flex flex-col gap-y-1'>
+            <p className='pl-1 text-left text-xs text-neutral-400'>
+              Select Leverage
+            </p>
+            <div className='flex items-center gap-1 rounded-3xl bg-zinc-700 py-2 pl-4 pr-3 text-white'>
+              <div className='text-sm font-semibold'>{`${getLabelForLeverageType(leverageType)} ${leverageType === LeverageType.Short ? 'Short' : 'Long'}`}</div>
+              <ChevronDownIcon className='size-5' />
+            </div>
+          </div>
         </PopoverButton>
         <PopoverPanel
           transition
@@ -125,7 +119,7 @@ export function LeverageSelectorContainer() {
       <Tooltip placement='bottom'>
         <TooltipTrigger>
           <StatsMetric
-            className='hidden w-16 md:flex'
+            className='hidden w-24 md:flex'
             isLoading={isFetchingQuickStats}
             overrideValueClassName={
               netRate && !isFetchingQuickStats

@@ -10,7 +10,7 @@ type Props = {
 export function StatMetric({ className, isLoading, label, value }: Props) {
   return (
     <div className={cn('flex-col gap-1', className)}>
-      <div className='text-ic-gray-500 text-xs'>{label}</div>
+      <div className='text-xs text-neutral-400'>{label}</div>
       <div
         className={cn(
           'text-ic-gray-700 text-sm font-semibold',
