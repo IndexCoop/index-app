@@ -65,7 +65,8 @@ export async function POST(req: NextRequest) {
     console.log(quoteRequest)
 
     const query = new URLSearchParams(quoteRequest).toString()
-    const url = `https://api.indexcoop.com/v2/quote?${query}`
+    const url = `https://api-pr-74-jrj6.onrender.com/api/v2/quote?${query}`
+    console.log(url)
     const response = await fetch(url, {
       method: 'GET',
       headers: {
