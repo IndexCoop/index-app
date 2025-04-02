@@ -51,6 +51,9 @@ export function useQuoteResult(request: QuoteRequest) {
     if (!publicClient) return null
     if (inputTokenAmount <= 0) return null
     if (!indexToken) return null
+
+    sendTradeEvent({ type: 'FETCHING_QUOTE' })
+
     const [inputTokenPrice, outputTokenPrice] = await Promise.all([
       getTokenPrice(inputToken, chainId),
       getTokenPrice(outputToken, chainId),
