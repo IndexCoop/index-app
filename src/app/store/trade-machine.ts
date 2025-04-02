@@ -87,6 +87,13 @@ const createTradeMachine = () =>
       },
       quote: {
         on: {
+          FETCHING_QUOTE: {
+            target: 'idle',
+            actions: assign({
+              quoteResult: null,
+              transactionReview: null,
+            }),
+          },
           REVIEW: {
             target: 'review',
             actions: assign({
