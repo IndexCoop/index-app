@@ -43,22 +43,18 @@ export function QuickStats() {
     [market],
   )
 
-  const { price, change24h, low24h, high24h } = useMemo(() => {
+  const { price, change24h } = useMemo(() => {
     const data = marketData.find((m) => m.market === market)
     if (!data) {
       return {
         price: 0,
         change24h: 0,
-        low24h: 0,
-        high24h: 0,
       }
     }
 
     return {
       price: data.price,
       change24h: data.change24h,
-      low24h: data.low24h,
-      high24h: data.high24h,
     }
   }, [marketData, market])
 
@@ -71,6 +67,7 @@ export function QuickStats() {
         <MarketSelector marketData={marketData} />
         <StatsMetric
           isLoading={isFetchingStats}
+          label='Current Price'
           className='hidden w-28 sm:flex'
           overrideValueClassName='text-base font-semibold h-6'
           value={formatStatsAmount(price, baseCurrency)}
@@ -78,23 +75,10 @@ export function QuickStats() {
         <StatsMetric
           className='hidden w-20 md:flex'
           isLoading={isFetchingStats}
-          label='24h Change'
           value={formatPercentage(change24h / 100)}
           overrideValueClassName={
             change24h >= 0 ? 'text-[#65D993]' : 'text-[#F36060]'
           }
-        />
-        <StatsMetric
-          isLoading={isFetchingStats}
-          className='hidden w-24 lg:flex'
-          label='24h High'
-          value={formatStatsAmount(high24h, baseCurrency)}
-        />
-        <StatsMetric
-          className='hidden w-24 lg:flex'
-          isLoading={isFetchingStats}
-          label='24h Low'
-          value={formatStatsAmount(low24h, baseCurrency)}
         />
       </div>
       <LeverageSelectorContainer />
