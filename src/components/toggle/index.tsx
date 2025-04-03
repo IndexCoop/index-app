@@ -1,6 +1,7 @@
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 
 import { colors } from '@/lib/styles/colors'
+import { cn } from '@/lib/utils/tailwind'
 
 export enum ToggleState {
   auto,
@@ -24,13 +25,14 @@ const ToggleButton = (props: ToggleButtonProps) => (
     onClick={props.onClick}
     p={'10px 16px'}
   >
-    <Text
-      fontSize={'sm'}
-      fontWeight={500}
-      textColor={props.isDisabled ? colors.ic.gray[100] : colors.ic.gray[900]}
+    <p
+      className={cn(
+        'text-sm font-medium',
+        props.isDisabled ? 'text-ic-gray-100' : 'text-ic-gray-900',
+      )}
     >
       {props.label}
-    </Text>
+    </p>
   </Flex>
 )
 

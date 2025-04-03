@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 
@@ -31,9 +31,7 @@ export const SelectorButton = ({
     visibility={visible ? 'visible' : 'hidden'}
   >
     <Image alt={`${symbol} logo`} src={image} width={20} height={20} />
-    <Text color={colors.ic.black} fontSize={'14px'} fontWeight={500} mx='8px'>
-      {symbol}
-    </Text>
+    <p className='text-ic-black mx-2 text-sm font-medium'>{symbol}</p>
     {showChevron !== false && (
       <ChevronDownIcon className='text-ic-gray-900 size-6' />
     )}
