@@ -1,7 +1,7 @@
 import { Button } from '@headlessui/react'
 import { useAppKit } from '@reown/appkit/react'
 import Script from 'next/script'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { TradingViewChartContainer } from '@/app/leverage/components/trading-view-chart-container'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -10,6 +10,17 @@ export function TradingViewChart() {
   const [isScriptReady, setIsScriptReady] = useState(false)
   const { isConnected } = useWallet()
   const { open } = useAppKit()
+
+  useEffect(() => {
+    const scriptAlreadyLoaded = document.querySelector(
+      'script[src="/tradingview-chart/datafeeds/udf/dist/bundle.js"]',
+    )
+
+    if (scriptAlreadyLoaded) {
+      setIsScriptReady(true)
+    }
+  }, [])
+
   return (
     <div className='xs:h-[422px] relative aspect-square w-full lg:aspect-auto'>
       <Script
