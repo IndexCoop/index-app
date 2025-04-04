@@ -65,7 +65,7 @@ export function LeverageSelectorContainer() {
           <PopoverPanel
             transition
             anchor='bottom end'
-            className='bg-ic-gray-950 z-10 ml-4 mt-4 rounded-lg shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
+            className='z-10 ml-4 mt-4 rounded-lg bg-zinc-900 shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
           >
             {({ close }) => (
               <div className='w-full min-w-36 max-w-xl'>
@@ -74,7 +74,7 @@ export function LeverageSelectorContainer() {
                   <span className='hidden w-24 md:flex'>Networks</span>
                   <span className='w-24 text-right'>Current Leverage</span>
                 </div>
-                <div className='w-full bg-[#1A2A2B]'>
+                <div className='w-full bg-zinc-900'>
                   {filteredRatios.map((item) => {
                     const path = getPathForRatio(item, isConnected, chainId)
 
