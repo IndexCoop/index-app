@@ -1,8 +1,7 @@
-import { Flex, Text } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 
-import { colors } from '@/lib/styles/colors'
+import { cn } from '@/lib/utils/tailwind'
 
 type SelectorProps = {
   onClick: () => void
@@ -19,23 +18,19 @@ export const SelectorButton = ({
   showChevron,
   visible = true,
 }: SelectorProps) => (
-  <Flex
-    align='center'
-    bg={colors.ic.gray[100]}
-    borderRadius='32'
-    cursor='pointer'
+  <div
+    className={cn(
+      'bg-ic-gray-100 flex h-11 shrink-0 cursor-pointer items-center rounded-3xl p-[10px] shadow-lg dark:bg-zinc-700',
+      visible ? 'visible' : 'hidden',
+    )}
     onClick={onClick}
-    p='10px'
-    h='44px'
-    shrink={0}
-    visibility={visible ? 'visible' : 'hidden'}
   >
     <Image alt={`${symbol} logo`} src={image} width={20} height={20} />
-    <Text color={colors.ic.black} fontSize={'14px'} fontWeight={500} mx='8px'>
+    <p className='text-ic-black mx-2 text-sm font-medium dark:text-neutral-50'>
       {symbol}
-    </Text>
+    </p>
     {showChevron !== false && (
-      <ChevronDownIcon className='text-ic-gray-900 size-6' />
+      <ChevronDownIcon className='text-ic-gray-900 size-6 dark:text-neutral-50' />
     )}
-  </Flex>
+  </div>
 )
