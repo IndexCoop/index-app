@@ -48,7 +48,7 @@ function MarketSelectorItem({
         <span
           className={cn(
             'hidden w-20 text-right md:block',
-            item.change24h >= 0 ? 'text-[#65D993]' : 'text-[#F36060]',
+            item.change24h >= 0 ? 'text-[#6CF29A]' : 'text-[#F36060]',
           )}
         >
           {formatPercentage(item.change24h / 100)}
@@ -77,7 +77,7 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
         <PopoverPanel
           transition
           anchor='bottom'
-          className='bg-zinc-900 z-10 ml-4 mt-4 rounded-lg shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
+          className='z-10 ml-4 mt-4 rounded-lg bg-zinc-900 shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
         >
           {({ close }) => (
             <div className='w-full min-w-36 max-w-xl'>

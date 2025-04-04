@@ -91,7 +91,7 @@ export function QuickStats() {
           label='24h Change'
           value={formatPercentage(marketChange24h / 100)}
           overrideValueClassName={
-            marketChange24h >= 0 ? 'text-[#65D993]' : 'text-[#F36060]'
+            marketChange24h >= 0 ? 'text-[#6CF29A]' : 'text-[#F36060]'
           }
         />
       </div>
@@ -103,7 +103,7 @@ export function QuickStats() {
           label='24h Change'
           value={formatPercentage(token.navchange)}
           overrideValueClassName={
-            token.navchange >= 0 ? 'text-[#65D993]' : 'text-[#F36060]'
+            token.navchange >= 0 ? 'text-[#6CF29A]' : 'text-[#F36060]'
           }
         />
         <NetRateTooltip token={token} isFetching={isFetching} />

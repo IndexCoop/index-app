@@ -29,8 +29,6 @@ import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
 
-import './styles.css'
-
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 export function LeverageWidget() {
@@ -103,7 +101,7 @@ export function LeverageWidget() {
 
   return (
     <div
-      className='leverage-widget flex w-full flex-col gap-4 rounded-lg px-4 pb-5 pt-4'
+      className='flex w-full flex-col gap-4 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4'
       id='close-position-scroll'
     >
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
