@@ -2,26 +2,23 @@
 
 import { useMemo } from 'react'
 
-import { useQuickStats } from '@/app/leverage/components/stats/use-quick-stats'
-import { useLeverageToken } from '@/app/leverage/provider'
+import { QuickStats } from '@/app/leverage/components/stats/use-quick-stats'
 import { formatPercentage } from '@/app/products/utils/formatters'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-import { useNetwork } from '@/lib/hooks/use-network'
 
 import { StatsMetric } from './stats-metric'
 
 const formatCostOfCarry = (token: { costOfCarry: number }) =>
   (-1 * token.costOfCarry) / 100
 
-export function NetRateTooltip() {
-  const { chainId } = useNetwork()
-  const { indexToken, market } = useLeverageToken()
-  const {
-    data: { token },
-    isFetchingQuickStats,
-  } = useQuickStats(market, { ...indexToken, chainId: chainId ?? 1 })
+type Props = {
+  isFetching: boolean
+  token: QuickStats['token']
+}
 
+export function NetRateTooltip({ isFetching, token }: Props) {
   const netRate = useMemo(() => {
+    if (!token) return 0
     return (formatCostOfCarry(token) + token.streamingFee) / 365
   }, [token])
 
@@ -29,10 +26,10 @@ export function NetRateTooltip() {
     <Tooltip placement='bottom'>
       <TooltipTrigger>
         <StatsMetric
-          className='hidden w-24 md:flex'
-          isLoading={isFetchingQuickStats}
+          className='hidden w-28 sm:flex'
+          isLoading={isFetching}
           overrideValueClassName={
-            netRate && !isFetchingQuickStats
+            netRate && !isFetching
               ? 'border-b border-ic-gray-200 border-dashed w-fit cursor-default text-left'
               : undefined
           }

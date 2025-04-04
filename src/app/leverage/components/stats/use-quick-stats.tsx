@@ -2,7 +2,7 @@ import { type QueryFunctionContext, useQuery } from '@tanstack/react-query'
 
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
-interface QuickStats {
+export interface QuickStats {
   base: {
     symbol: string
     price: string
