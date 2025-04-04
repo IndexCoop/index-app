@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 
 import { LeverageSelectorContainer } from '@/app/leverage/components/stats/leverage-selector-container'
 import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
+import { NetRateTooltip } from '@/app/leverage/components/stats/net-rate-tooltip'
 import { StatsMetric } from '@/app/leverage/components/stats/stats-metric'
 import { formatStatsAmount } from '@/app/leverage/components/stats/use-quick-stats'
 import { markets } from '@/app/leverage/constants'
@@ -60,7 +61,7 @@ export function QuickStats() {
 
   return (
     <div
-      className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
+      className='flex w-full items-center justify-between rounded-lg bg-zinc-900'
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
       <div className='flex w-full items-center justify-center px-2 py-4 sm:justify-between sm:px-4 lg:px-6'>
@@ -73,7 +74,7 @@ export function QuickStats() {
           value={formatStatsAmount(price, baseCurrency)}
         />
         <StatsMetric
-          className='hidden w-20 md:flex'
+          className='hidden w-20 xl:flex'
           isLoading={isFetchingStats}
           label='24h Change'
           value={formatPercentage(change24h / 100)}
@@ -82,7 +83,10 @@ export function QuickStats() {
           }
         />
       </div>
-      <LeverageSelectorContainer />
+      <div className='flex h-full w-full'>
+        <LeverageSelectorContainer />
+        <NetRateTooltip />
+      </div>
     </div>
   )
 }
