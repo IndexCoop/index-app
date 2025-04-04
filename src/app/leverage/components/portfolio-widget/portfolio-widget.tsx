@@ -136,16 +136,16 @@ const OpenPositions = () => {
       selectedIndex={selectedIndex}
       onChange={setSelectedIndex}
     >
-      <TabList className='text-ic-gray-600 flex gap-6 text-sm font-bold'>
+      <TabList className='flex gap-6 text-sm font-bold text-neutral-400'>
         <Tab
-          className='data-[selected]:text-ic-gray-50 flex items-center gap-2 outline-none'
+          className='flex items-center gap-2 outline-none data-[selected]:text-neutral-50'
           onClick={() => logEvent('Open Positions Tab Clicked')}
         >
           Open Positions
           <span
             className={cn(
               'text-ic-gray-300 flex h-3.5 items-center justify-center rounded-[4px] bg-purple-500/30 px-1.5 py-0.5 text-[8px]',
-              selectedIndex === 0 && 'text-ic-white bg-purple-500',
+              selectedIndex === 0 && 'bg-purple-500 text-neutral-50',
             )}
           >
             BETA
