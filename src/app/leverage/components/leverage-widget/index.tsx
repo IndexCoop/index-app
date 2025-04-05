@@ -3,6 +3,7 @@
 import { useAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
+import { TradeInputSelector } from '@/app/leverage/components/leverage-widget/trade-input-selector'
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
@@ -10,7 +11,6 @@ import { Receive } from '@/components/receive'
 import { Settings } from '@/components/settings'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
@@ -28,8 +28,6 @@ import { useFormattedLeverageData } from '../../use-formatted-data'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
-
-import './styles.css'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
@@ -103,7 +101,7 @@ export function LeverageWidget() {
 
   return (
     <div
-      className='leverage-widget flex w-full flex-col gap-4 rounded-lg px-4 pb-5 pt-4'
+      className='flex w-full flex-col gap-4 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4'
       id='close-position-scroll'
     >
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />

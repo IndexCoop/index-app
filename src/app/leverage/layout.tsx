@@ -16,7 +16,7 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className='bg-ic-black h-full w-full'>
+    <div className='h-full w-full bg-zinc-950'>
       <Providers>
         <div className='dark flex flex-col overflow-x-hidden'>
           <Header />
