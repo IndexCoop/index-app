@@ -1,16 +1,19 @@
 import { Button } from '@headlessui/react'
 import { motion } from 'framer-motion'
-import { FC } from 'react'
 
 import { cn } from '@/lib/utils/tailwind'
 
+import type { FC } from 'react'
+
 type DepositWithdrawProps = {
   isMinting: boolean
+  isMintingDisabled?: boolean
   toggleIsMinting: () => void
 }
 
 export const DepositWithdraw: FC<DepositWithdrawProps> = ({
   isMinting,
+  isMintingDisabled,
   toggleIsMinting,
 }) => {
   return (
@@ -26,7 +29,9 @@ export const DepositWithdraw: FC<DepositWithdrawProps> = ({
         className={cn(
           'relative z-10 h-11 w-full transition-all duration-500',
           isMinting && 'text-zinc-800',
+          isMintingDisabled && 'cursor-not-allowed',
         )}
+        disabled={isMintingDisabled}
         onClick={toggleIsMinting}
       >
         Deposit

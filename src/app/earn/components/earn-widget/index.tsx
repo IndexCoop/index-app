@@ -5,8 +5,6 @@ import range from 'lodash/range'
 import { useCallback, useEffect } from 'react'
 import { isAddressEqual } from 'viem'
 
-import { supportedNetworks } from '@/app/earn/constants'
-import { useEarnContext } from '@/app/earn/provider'
 import { useQueryParams } from '@/app/earn-old/use-query-params'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -21,8 +19,9 @@ import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
 import { getMaxBalance } from '@/lib/utils/max-balance'
 
+import { supportedNetworks } from '../../constants'
+import { useEarnContext } from '../../provider'
 import { useFormattedEarnData } from '../../use-formatted-data'
-
 
 import { DepositWithdraw } from './components/deposit-withdraw'
 import { Projection } from './components/projection'
@@ -106,6 +105,7 @@ export function EarnWidget() {
     <div className='earn-widget flex h-fit flex-col gap-6'>
       <DepositWithdraw
         isMinting={isMinting}
+        isMintingDisabled={indexToken.symbol === 'icETH'}
         toggleIsMinting={toggleIsMinting}
       />
       <TradeInputSelector

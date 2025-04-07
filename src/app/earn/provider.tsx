@@ -12,8 +12,6 @@ import * as chains from 'viem/chains'
 
 import { useQueryParams } from '@/app/earn-old/use-query-params'
 import { ETH, type Token } from '@/constants/tokens'
-import { GetApiV2ProductsEarn200 } from '@/gen'
-import { type TokenBalance } from '@/lib/hooks/use-balance'
 import { useMultiChainBalances } from '@/lib/hooks/use-multichain-balances'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
@@ -23,6 +21,8 @@ import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
 
+import type { GetApiV2ProductsEarn200 } from '@/gen'
+import type { TokenBalance } from '@/lib/hooks/use-balance'
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
@@ -95,7 +95,6 @@ export function EarnProvider(props: {
 
   const [inputValue, setInputValue] = useState('')
 
-  const isMinting = queryIsMinting
   const inputToken = queryInputToken
   const outputToken = queryOutputToken
 
@@ -104,13 +103,18 @@ export function EarnProvider(props: {
   }, [chainIdRaw])
 
   const indexToken = useMemo(() => {
-    if (isMinting) return outputToken
+    if (queryIsMinting) return outputToken
     return inputToken
-  }, [inputToken, isMinting, outputToken])
+  }, [inputToken, queryIsMinting, outputToken])
 
   const indexTokens = useMemo(() => {
     return getYieldTokens()
   }, [])
+
+  const isMinting: boolean = useMemo(() => {
+    if (indexToken.address === icETH.address) return false
+    return queryIsMinting
+  }, [queryIsMinting, indexToken])
 
   const { data: balances } = useMultiChainBalances(props.products)
 
