@@ -115,7 +115,7 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
   )
 
   return (
-    <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 sm:flex-nowrap'>
+    <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 md:flex-nowrap'>
       <div className='min-w-0 flex-1'>
         <h3 className='text-lg font-medium text-neutral-50'>My Earn</h3>
         <div className='mt-6'>
