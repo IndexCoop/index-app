@@ -38,7 +38,7 @@ type FromToItemProps = {
 
 const FromToItem = ({ amount, icon, symbol }: FromToItemProps) => {
   return (
-    <div className='text-ic-black my-2  flex w-full flex-row items-center justify-between rounded-2xl border px-3 py-4 dark:border-neutral-700 dark:text-zinc-800'>
+    <div className='text-ic-black my-2 flex w-full flex-row items-center justify-between rounded-3xl border px-3 py-4 dark:border-neutral-700 dark:text-zinc-800'>
       <div className='flex items-center'>
         <div className='mx-2 flex'>
           <Image src={icon} alt={'token icon'} width={32} height={32} />
