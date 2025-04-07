@@ -2,9 +2,9 @@
 
 import { Button, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/20/solid'
-import { useAppKit } from '@reown/appkit/react'
 import { NetworkUtil } from '@reown/appkit-common'
 import { AssetUtil, ChainController } from '@reown/appkit-core'
+import { useAppKit } from '@reown/appkit/react'
 import { watchAccount } from '@wagmi/core'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
@@ -129,7 +129,7 @@ export const NetworkSelect = () => {
               .
             </p>
             <Button
-              className='mt-4 w-full rounded-md bg-neutral-50 p-2 font-bold text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200'
+              className='mt-4 w-full rounded-3xl bg-neutral-50 p-2 font-bold text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200'
               onClick={() => chainId && switchChain({ chainId })}
             >
               Switch to {getNetworkName(chainId)}
