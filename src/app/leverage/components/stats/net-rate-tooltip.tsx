@@ -31,7 +31,7 @@ export function NetRateTooltip({ isFetching, token }: Props) {
           overrideValueClassName={
             netRate && !isFetching
               ? 'border-b border-ic-gray-200 border-dashed w-fit cursor-default text-left'
-              : undefined
+              : 'h-[21px] w-20'
           }
           label='Net Rate Daily'
           value={formatPercentage(netRate, true, 3)}
