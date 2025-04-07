@@ -69,7 +69,7 @@ export const NetworkSelect = () => {
   return (
     <Popover as='div' className='relative'>
       <PopoverButton
-        className='bg-ic-gray-900 text-ic-white flex items-center gap-2 rounded-md border-none px-4 py-1 text-sm transition-all duration-300 hover:scale-[1.04]'
+        className='text-ic-white flex items-center gap-2 rounded-md border-none bg-zinc-900 px-4 py-1 text-sm transition-all duration-300 hover:scale-[1.04]'
         onClick={() => open({ view: 'Networks' })}
       >
         {imageSrc && (
@@ -93,7 +93,7 @@ export const NetworkSelect = () => {
             anchor='bottom'
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1, transition: { delay: 1 } }}
-            className='dark:bg-ic-black dark:border-ic-gray-800 dark:text-ic-white text-ic-black z-50 mt-8 w-80 !overflow-visible rounded-md border border-gray-300 bg-white p-4 shadow-md'
+            className='text-ic-black z-50 mt-8 w-80 !overflow-visible rounded-md border border-gray-300 bg-white p-4 shadow-md dark:border-neutral-600 dark:bg-zinc-900 dark:text-neutral-50'
             exit={{ opacity: 0, scale: 0.95 }}
           >
             {!pathname.startsWith(Path.EARN) && (
@@ -116,22 +116,20 @@ export const NetworkSelect = () => {
                 <XMarkIcon className='dark:fill-ic-white group-hover:fill-ic-white' />
               </Button>
             )}
-            <div className='border-b-ic-gray-300 dark:border-b-ic-gray-800 absolute -top-[18px] left-1/2 h-0 w-0 -translate-x-1/2 border-b-[18px] border-l-[13px] border-r-[13px] border-l-transparent border-r-transparent'></div>
-            <div className='border-b-ic-white dark:border-b-ic-black absolute -top-4 left-1/2 h-0 w-0 -translate-x-1/2 border-b-[16px] border-l-[12px] border-r-[12px] border-l-transparent border-r-transparent'></div>
+            <div className='border-b-ic-gray-300 absolute -top-[18px] left-1/2 h-0 w-0 -translate-x-1/2 border-b-[18px] border-l-[13px] border-r-[13px] border-l-transparent border-r-transparent dark:border-b-neutral-600'></div>
+            <div className='border-b-ic-white absolute -top-4 left-1/2 h-0 w-0 -translate-x-1/2 border-b-[16px] border-l-[12px] border-r-[12px] border-l-transparent border-r-transparent dark:border-b-zinc-900'></div>
 
-            <p className='text-md mb-6 mt-2 font-bold'>
+            <p className='text-md mb-6 mt-2 text-neutral-400'>
               You have followed a link that requires your wallet to switch to{' '}
-              <b className='text-ic-blue-500'>{getNetworkName(chainId)}</b>.
+              <b className='text-neutral-50'>{getNetworkName(chainId)}</b>.
             </p>
-            <p className='text-sm'>
+            <p className='text-sm text-neutral-400'>
               Your wallet is currently connected to{' '}
-              <b className='text-ic-blue-500'>
-                {getNetworkName(walletChainId)}
-              </b>
+              <b className='text-neutral-50'>{getNetworkName(walletChainId)}</b>
               .
             </p>
             <Button
-              className='bg-ic-blue-500 hover:bg-ic-blue-500/90 active:bg-ic-blue-500/80 mt-4 w-full rounded-md p-2 font-bold text-white'
+              className='mt-4 w-full rounded-md bg-neutral-50 p-2 font-bold text-neutral-900 hover:bg-neutral-100 active:bg-neutral-200'
               onClick={() => chainId && switchChain({ chainId })}
             >
               Switch to {getNetworkName(chainId)}
