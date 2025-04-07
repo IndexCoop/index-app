@@ -121,13 +121,13 @@ export function EarnProvider(props: {
 
   const inputTokens = useMemo(() => {
     const isIcEth = isAddressEqual(indexToken.address, icETH.address)
-    if (isMinting) return getCurrencyTokens(chainId, isIcEth)
+    if (isMinting && !isIcEth) return getCurrencyTokens(chainId, isIcEth)
     return indexTokens
   }, [chainId, indexTokens, indexToken, isMinting])
 
   const outputTokens = useMemo(() => {
     const isIcEth = isAddressEqual(indexToken.address, icETH.address)
-    if (!isMinting) return getCurrencyTokens(chainId, isIcEth)
+    if (!isMinting || isIcEth) return getCurrencyTokens(chainId, isIcEth)
     return indexTokens
   }, [chainId, indexTokens, indexToken, isMinting])
 
@@ -164,10 +164,26 @@ export function EarnProvider(props: {
 
   const onSelectInputToken = useCallback(
     (tokenSymbol: string, chainId: number) => {
+      const isIcEth = icETH.symbol === tokenSymbol
+      if (icETH) {
+        const inputToken = getYieldTokens().find(
+          (token) => token.symbol === icETH.symbol && token.chainId === chainId,
+        )
+        const outputTokens = getCurrencyTokens(1, isIcEth)
+        updateQueryParams({
+          isMinting,
+          inputToken,
+          outputToken: outputTokens[0],
+          network: chainId,
+        })
+        return
+      }
+
       const token = inputTokens.find(
         (token) => token.symbol === tokenSymbol && token.chainId === chainId,
       )
       if (!token) return
+
       updateQueryParams({
         isMinting,
         inputToken: token,
@@ -196,7 +212,8 @@ export function EarnProvider(props: {
 
   const onSelectIndexToken = useCallback(
     (tokenSymbol: string, chainId: number) => {
-      if (isMinting) {
+      const isIcEth = icETH.symbol === tokenSymbol
+      if (isMinting && !isIcEth) {
         onSelectOutputToken(tokenSymbol, chainId)
       } else {
         onSelectInputToken(tokenSymbol, chainId)
