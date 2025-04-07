@@ -26,7 +26,7 @@ export function NetRateTooltip({ isFetching, token }: Props) {
     <Tooltip placement='bottom'>
       <TooltipTrigger>
         <StatsMetric
-          className='hidden w-28 sm:flex'
+          className='hidden w-24 sm:flex'
           isLoading={isFetching}
           overrideValueClassName={
             netRate && !isFetching

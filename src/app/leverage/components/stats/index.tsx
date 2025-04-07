@@ -76,7 +76,7 @@ export function QuickStats() {
       className='flex w-full items-center justify-between rounded-lg bg-zinc-900'
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
-      <div className='flex w-full items-center justify-center px-2 py-4 sm:justify-between sm:px-4 lg:px-6'>
+      <div className='flex w-full items-center justify-center px-2 py-4 sm:justify-start sm:gap-x-10 sm:px-4 lg:px-6'>
         <MarketSelector marketData={marketData} />
         <StatsMetric
           isLoading={isFetching}
@@ -95,7 +95,7 @@ export function QuickStats() {
           }
         />
       </div>
-      <div className='flex h-full w-full items-center justify-center pr-2 sm:justify-between sm:pr-4 lg:pr-6'>
+      <div className='flex h-full w-full items-center justify-center pr-2 sm:justify-start sm:gap-x-10 sm:pr-4 lg:pr-6 xl:gap-x-6 2xl:gap-x-12'>
         <LeverageSelectorContainer />
         <StatsMetric
           className='hidden w-20 xl:flex'
