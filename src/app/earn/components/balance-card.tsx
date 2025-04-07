@@ -116,7 +116,7 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
 
   return (
     <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 sm:flex-nowrap'>
-      <div className='w-full'>
+      <div className='min-w-0 flex-1'>
         <h3 className='text-lg font-medium text-neutral-50'>My Earn</h3>
         <div className='mt-6'>
           <h4 className='ml-4 text-xs font-medium text-neutral-400'>
@@ -137,10 +137,10 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
           </div>
         </div>
       </div>
-      <div className='flex w-full min-w-52 flex-col justify-between gap-6 md:w-52'>
+      <div className='flex w-full min-w-[200px] flex-col justify-between gap-6 md:w-auto'>
         <div className='space-y-4 text-right'>
           <p className='text-xs font-medium text-neutral-200'>Total Deposits</p>
-          <p className='text-5xl font-bold text-neutral-50'>
+          <p className='break-all text-5xl font-bold text-neutral-50'>
             ${formatAmount(deposits)}
           </p>
         </div>
