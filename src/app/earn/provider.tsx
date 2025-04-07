@@ -112,7 +112,8 @@ export function EarnProvider(props: {
   }, [])
 
   const isMinting: boolean = useMemo(() => {
-    if (indexToken.address === icETH.address) return false
+    const isIcEth = isAddressEqual(indexToken.address, icETH.address)
+    if (isIcEth) return false
     return queryIsMinting
   }, [queryIsMinting, indexToken])
 
