@@ -52,7 +52,7 @@ export function LeverageSelectorContainer() {
   )
 
   return (
-    <div className='border-ic-gray-800 flex w-full items-center justify-center border-l py-4 pl-2 sm:justify-start sm:pl-4 md:w-auto lg:pl-6'>
+    <div className='flex w-full items-center justify-center border-l border-zinc-700 py-4 pl-2 sm:justify-start sm:pl-4 md:w-auto lg:pl-6'>
       <div className='flex flex-col'>
         <p className='mb-1 pl-1 text-left text-xs leading-[14px] text-neutral-400'>
           Select Leverage

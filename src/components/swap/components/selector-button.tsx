@@ -20,7 +20,7 @@ export const SelectorButton = ({
 }: SelectorProps) => (
   <div
     className={cn(
-      'bg-ic-gray-100 flex h-11 shrink-0 cursor-pointer items-center rounded-3xl p-[10px] shadow-lg dark:bg-zinc-700',
+      'bg-ic-gray-100 flex h-11 shrink-0 cursor-pointer items-center rounded-3xl p-[10px] dark:bg-zinc-700',
       visible ? 'visible' : 'hidden',
     )}
     onClick={onClick}
