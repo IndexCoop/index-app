@@ -6,6 +6,8 @@ import {
 } from '@indexcoop/tokenlists'
 import { NextResponse } from 'next/server'
 
+import { getQuote } from '@/app/api/quote/utils'
+
 import type { NextRequest } from 'next/server'
 import type { Address } from 'viem'
 
@@ -64,18 +66,7 @@ export async function POST(req: NextRequest) {
 
     console.log(quoteRequest)
 
-    const query = new URLSearchParams(quoteRequest).toString()
-    const url = `https://api-pr-74-jrj6.onrender.com/api/v2/quote?${query}`
-    console.log(url)
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.INDEX_COOP_API_V2_KEY,
-      } as HeadersInit,
-    })
-
-    const quote = await response.json()
+    const quote = await getQuote(quoteRequest)
 
     if (!quote) {
       return NextResponse.json({ message: 'No quote found.' }, { status: 404 })
