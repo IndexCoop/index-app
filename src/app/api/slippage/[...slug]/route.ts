@@ -7,9 +7,9 @@ import { NextResponse } from 'next/server'
 import { isAddress, parseUnits } from 'viem'
 
 import { getQuote } from '@/app/api/quote/utils'
+import { formatWei } from '@/lib/utils'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
 
-import { formatWei } from '@/lib/utils'
 import type { NextRequest } from 'next/server'
 
 const slippageDefault = 0.5
