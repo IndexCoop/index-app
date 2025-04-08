@@ -17,11 +17,15 @@ export function StatsMetric({
 }: Props) {
   return (
     <div className={cn('flex-col gap-1', className)}>
-      {label && <div className='text-ic-gray-300 text-xs'>{label}</div>}
+      {label && (
+        <div className='mb-1 text-left text-xs leading-[14px] text-neutral-400'>
+          {label}
+        </div>
+      )}
       <div
         className={cn(
-          'text-ic-gray-50 h-5 w-full text-sm font-medium',
-          isLoading && 'bg-ic-gray-800 animate-pulse rounded-md text-opacity-0',
+          'text-ic-white w-full text-sm font-medium',
+          isLoading && 'animate-pulse rounded-md bg-zinc-800 text-opacity-0',
           overrideValueClassName,
         )}
       >

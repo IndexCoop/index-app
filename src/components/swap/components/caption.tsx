@@ -1,5 +1,5 @@
 export const Caption = ({ caption }: { caption: string }) => (
-  <div className='text-ic-gray-400 dark:text-ic-gray-300 text-xs font-medium'>
+  <div className='text-ic-gray-400 text-xs font-medium dark:text-neutral-400'>
     {caption}
   </div>
 )

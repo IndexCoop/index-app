@@ -26,7 +26,7 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
   return (
     <div
       ref={wrapperRef}
-      className='bg-ic-gray-50 dark:bg-ic-gray-975 flex flex-row rounded-lg'
+      className='bg-ic-gray-50 flex flex-row rounded-full dark:bg-zinc-800'
     >
       <BuySellSelectorButton
         isSelected={isMinting}
