@@ -23,7 +23,6 @@ import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedEarnData } from '../../use-formatted-data'
 
-
 import { DepositWithdraw } from './components/deposit-withdraw'
 import { Projection } from './components/projection'
 import { SmartTradeButton } from './components/smart-trade-button'

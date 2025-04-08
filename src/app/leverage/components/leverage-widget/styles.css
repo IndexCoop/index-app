@@ -1,0 +1,9 @@
+.leverage-widget {
+  background:
+    radial-gradient(
+      78.46% 76.27% at 41.41% 30.41%,
+      rgba(243, 255, 239, 0.08) 0%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    linear-gradient(199deg, #1c2929 -20.98%, #143438 222.11%);
+}
