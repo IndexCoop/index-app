@@ -83,7 +83,9 @@ export async function GET(
       formatWei(quote.inputAmount, usdc.decimals),
     )
 
-    const slippage = (quoteUsd - nav) / nav
+    const buffer = 1.2 // +20% on top of calc slippage
+    const slippage = ((quoteUsd - nav) / nav) * buffer
+
     const slippagePercentage = slippage * 100
     const slippageOrMax =
       slippagePercentage > slippageMax ? slippageMax : slippagePercentage
