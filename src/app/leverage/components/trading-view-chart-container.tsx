@@ -39,13 +39,18 @@ export const TradingViewChartContainer = () => {
       theme: 'dark',
       timezone: 'Etc/UTC',
       overrides: {
-        // TODO: background doesn't appear to work
-        'paneProperties.background': '#0F1717',
+        // TODO: background overrides not working
+        'paneProperties.background': '#181A1B',
         'paneProperties.backgroundType': 'solid',
       },
     }
 
     const tvWidget = new widget(widgetOptions)
+    tvWidget.applyOverrides({
+      // TODO: background applyOverrides not working
+      'paneProperties.background': '#181A1B',
+      'paneProperties.backgroundType': 'solid',
+    })
     tvWidget.onChartReady(() => {
       setTvWidget(tvWidget)
     })

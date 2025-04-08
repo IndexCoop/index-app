@@ -19,7 +19,7 @@ export function Receive(props: ReceiveProps) {
   return (
     <div
       className={cn(
-        'border-ic-gray-100 dark:border-ic-gray-700 flex flex-row items-center justify-between rounded-lg border p-4',
+        'border-ic-gray-100 flex flex-row items-center justify-between rounded-lg border p-4 dark:border-neutral-700',
         typeof outputAmountUsd === 'string' && 'h-[98px]',
       )}
     >

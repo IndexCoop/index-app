@@ -3,15 +3,21 @@ import { useMemo, useState } from 'react'
 
 import { LeverageSelectorContainer } from '@/app/leverage/components/stats/leverage-selector-container'
 import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
+import { NetRateTooltip } from '@/app/leverage/components/stats/net-rate-tooltip'
 import { StatsMetric } from '@/app/leverage/components/stats/stats-metric'
-import { formatStatsAmount } from '@/app/leverage/components/stats/use-quick-stats'
+import {
+  formatStatsAmount,
+  useQuickStats,
+} from '@/app/leverage/components/stats/use-quick-stats'
 import { markets } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Market } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
+import { useNetwork } from '@/lib/hooks/use-network'
 
 export function QuickStats() {
-  const { market } = useLeverageToken()
+  const { chainId } = useNetwork()
+  const { indexToken, market } = useLeverageToken()
   const [isFetchingStats, setIsFetchingStats] = useState(true)
 
   const { data: marketData } = useQuery({
@@ -38,66 +44,70 @@ export function QuickStats() {
     },
   })
 
+  const {
+    data: { token },
+    isFetchingQuickStats,
+  } = useQuickStats(market, { ...indexToken, chainId: chainId ?? 1 })
+
   const baseCurrency = useMemo(
     () => market.split(' / ')[1].toLowerCase(),
     [market],
   )
 
-  const { price, change24h, low24h, high24h } = useMemo(() => {
+  const { marketPrice, marketChange24h } = useMemo(() => {
     const data = marketData.find((m) => m.market === market)
     if (!data) {
       return {
-        price: 0,
-        change24h: 0,
-        low24h: 0,
-        high24h: 0,
+        marketPrice: 0,
+        marketChange24h: 0,
       }
     }
 
     return {
-      price: data.price,
-      change24h: data.change24h,
-      low24h: data.low24h,
-      high24h: data.high24h,
+      marketPrice: data.price,
+      marketChange24h: data.change24h,
     }
   }, [marketData, market])
 
+  const isFetching = isFetchingQuickStats || isFetchingStats
+
   return (
     <div
-      className='bg-ic-gray-950 flex w-full items-center justify-between rounded-lg'
+      className='flex w-full items-center justify-between rounded-lg bg-zinc-900'
       style={{ boxShadow: '2px 2px 30px 0px rgba(0, 0, 0, 0.06)' }}
     >
-      <div className='flex w-full items-center justify-center px-2 py-4 sm:justify-between sm:px-4 lg:px-6'>
+      <div className='flex w-full items-center justify-center px-2 py-4 sm:justify-start sm:gap-x-10 sm:px-4 lg:px-6'>
         <MarketSelector marketData={marketData} />
         <StatsMetric
-          isLoading={isFetchingStats}
+          isLoading={isFetching}
+          label='Current Price'
           className='hidden w-28 sm:flex'
           overrideValueClassName='text-base font-semibold h-6'
-          value={formatStatsAmount(price, baseCurrency)}
+          value={formatStatsAmount(marketPrice, baseCurrency)}
         />
         <StatsMetric
-          className='hidden w-20 md:flex'
-          isLoading={isFetchingStats}
+          className='hidden w-20 xl:flex'
+          isLoading={isFetching}
           label='24h Change'
-          value={formatPercentage(change24h / 100)}
+          value={formatPercentage(marketChange24h / 100)}
           overrideValueClassName={
-            change24h >= 0 ? 'text-[#65D993]' : 'text-[#F36060]'
+            marketChange24h >= 0 ? 'text-[#6CF29A]' : 'text-[#F36060]'
           }
         />
-        <StatsMetric
-          isLoading={isFetchingStats}
-          className='hidden w-24 lg:flex'
-          label='24h High'
-          value={formatStatsAmount(high24h, baseCurrency)}
-        />
-        <StatsMetric
-          className='hidden w-24 lg:flex'
-          isLoading={isFetchingStats}
-          label='24h Low'
-          value={formatStatsAmount(low24h, baseCurrency)}
-        />
       </div>
-      <LeverageSelectorContainer />
+      <div className='flex h-full w-full items-center justify-center pr-2 sm:justify-start sm:gap-x-10 sm:pr-4 lg:pr-6 xl:gap-x-6 2xl:gap-x-12'>
+        <LeverageSelectorContainer />
+        <StatsMetric
+          className='hidden w-20 xl:flex'
+          isLoading={isFetching}
+          label='24h Change'
+          value={formatPercentage(token.navchange)}
+          overrideValueClassName={
+            token.navchange >= 0 ? 'text-[#6CF29A]' : 'text-[#F36060]'
+          }
+        />
+        <NetRateTooltip token={token} isFetching={isFetching} />
+      </div>
     </div>
   )
 }
