@@ -15,8 +15,6 @@ import { colors } from '@/lib/styles/colors'
 import { Review } from './components/review'
 import { SubmissionResult } from './components/submission-result'
 
-import './styles.css'
-
 type TransactionReviewModalProps = {
   isDarkMode?: boolean
   onClose: () => void
