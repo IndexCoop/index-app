@@ -18,7 +18,7 @@ const slippageMax = 5.5
 export async function GET(
   _: NextRequest,
   { params }: { params: { slug: string[] } },
-) {
+): Promise<Response> {
   try {
     const { slug } = params
     const chainId = Number(slug[0])
@@ -51,11 +51,14 @@ export async function GET(
     const inputAmount = nav === undefined ? '1000' : (nav * 1.1).toString()
 
     if (!nav) {
-      return {
-        chainId,
-        address,
-        slippage: slippageDefault,
-      }
+      return NextResponse.json(
+        {
+          chainId,
+          address,
+          slippage: slippageDefault,
+        },
+        { status: 200 },
+      )
     }
 
     const quoteRequest: {
