@@ -44,7 +44,7 @@ export const TradeButton = ({
     <Tooltip>
       <TooltipTrigger
         className={cn(
-          'w-full rounded-full bg-neutral-100 px-6 py-4 font-bold text-neutral-900 transition duration-300 ease-in-out hover:bg-neutral-300',
+          'w-full rounded-3xl bg-neutral-100 px-6 py-4 font-semibold text-zinc-800 transition duration-300 ease-in-out hover:bg-neutral-300',
           disabled && 'pointer-events-none bg-zinc-800 text-neutral-400',
         )}
         disabled={disabled}

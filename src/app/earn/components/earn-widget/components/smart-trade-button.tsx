@@ -56,7 +56,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
   const { chainId } = useNetwork()
   const { open } = useAppKit()
-  const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
+  const { isRestrictedCountry } = useProtectionContext()
   const { slippage } = useSlippage()
 
   const {
@@ -99,13 +99,13 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     ) {
       return [WarningType.restricted]
     }
-    if (
-      !isTradablePair &&
-      isUsingVpn &&
-      !hiddenWarnings?.includes(WarningType.vpn)
-    ) {
-      return [WarningType.vpn]
-    }
+    // if (
+    //   !isTradablePair &&
+    //   isUsingVpn &&
+    //   !hiddenWarnings?.includes(WarningType.vpn)
+    // ) {
+    //   return [WarningType.vpn]
+    // }
     if (slippage > 9 && !hiddenWarnings?.includes(WarningType.priceImpact)) {
       return [WarningType.priceImpact]
     }
@@ -113,13 +113,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
       return [WarningType.flashbots]
     }
     return []
-  }, [
-    hiddenWarnings,
-    isRestrictedCountry,
-    isTradablePair,
-    isUsingVpn,
-    slippage,
-  ])
+  }, [hiddenWarnings, isRestrictedCountry, isTradablePair, slippage])
 
   const onClick = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {

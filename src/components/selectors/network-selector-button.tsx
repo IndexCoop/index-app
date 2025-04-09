@@ -20,7 +20,7 @@ export function NetworkSelectorButton({ chain, imagePath, onClick }: Props) {
         'h-11 w-11 cursor-pointer rounded-full border p-2 sm:h-14 sm:w-14 sm:p-3.5',
         isActive
           ? 'border-ic-gray-800 dark:border-ic-gray-50 dark:bg-ic-gray-700 bg-[#D1EAEA]'
-          : 'border-ic-gray-500 bg-ic-gray-50 dark:border-ic-gray-600 dark:bg-ic-gray-950',
+          : 'border-ic-gray-500 bg-ic-gray-50 dark:border-ic-gray-600 dark:bg-zinc-900',
       )}
       onClick={() => onClick(chain.chainId)}
     >

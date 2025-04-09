@@ -75,7 +75,7 @@ const WaitingForConfirmation = () => {
         </div>
       </div>
       <div className='flex flex-col gap-4 p-4'>
-        {[1, 2, 3, 4, 5].map((_, i) => (
+        {[1, 2, 3, 4].map((_, i) => (
           <SkeletonLoader
             key={`tx-confirm-skeleton-${i}`}
             className='h-6 w-full rounded-md'
