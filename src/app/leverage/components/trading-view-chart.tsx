@@ -31,9 +31,9 @@ export function TradingViewChart() {
       />
       {isScriptReady && <TradingViewChartContainer />}
       {!isConnected && (
-        <div className='bg-ic-black/95 absolute inset-0 z-20 flex items-center justify-center'>
+        <div className='absolute inset-0 z-20 flex items-center justify-center bg-zinc-900/95'>
           <Button
-            className='bg-ic-blue-500 dark:bg-ic-blue-300 dark:hover:bg-ic-blue-200 hover:bg-ic-blue-500/90 text-ic-gray-50 dark:text-ic-black block rounded-md px-8 py-1 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-[1.04]'
+            className='bg-ic-blue-500 hover:bg-ic-blue-500/90 text-ic-gray-50 dark:text-ic-black block rounded-full px-8 py-1 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-[1.04] dark:bg-neutral-50 dark:hover:bg-neutral-200'
             onClick={() => openConnectView('TradingView Chart')}
           >
             Start Trading
