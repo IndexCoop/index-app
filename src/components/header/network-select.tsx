@@ -2,7 +2,6 @@
 
 import { Button, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon, XMarkIcon } from '@heroicons/react/20/solid'
-import { useAppKit } from '@reown/appkit/react'
 import { NetworkUtil } from '@reown/appkit-common'
 import { AssetUtil, ChainController } from '@reown/appkit-core'
 import { watchAccount } from '@wagmi/core'
@@ -13,13 +12,14 @@ import { useEffect, useMemo, useState } from 'react'
 import { useAccount } from 'wagmi'
 
 import { Path } from '@/constants/paths'
+import { useCustomAppKit } from '@/lib/hooks/use-custom-app-kit'
 import { getNetworkName, useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { chains, wagmiAdapter } from '@/lib/utils/wagmi'
 
 export const NetworkSelect = () => {
   const { chainId: walletChainId } = useAccount()
-  const { open } = useAppKit()
+  const { openNetworksView } = useCustomAppKit()
   const { chainId, switchChain } = useNetwork()
   const { queryParams, searchParams, updateQueryParams } = useQueryParams()
   const [isNetworkWarningClosed, setIsNetworkWarningClosed] = useState(false)
@@ -70,7 +70,7 @@ export const NetworkSelect = () => {
     <Popover as='div' className='relative'>
       <PopoverButton
         className='text-ic-white flex items-center gap-2 rounded-md border-none bg-zinc-900 px-4 py-1 text-sm transition-all duration-300 hover:scale-[1.04]'
-        onClick={() => open({ view: 'Networks' })}
+        onClick={() => openNetworksView('Header')}
       >
         {imageSrc && (
           <Image

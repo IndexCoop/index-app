@@ -1,6 +1,5 @@
 'use client'
 
-import { useAppKit } from '@reown/appkit/react'
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
@@ -16,6 +15,7 @@ import {
 import { TradeButton } from '@/components/trade-button'
 import { MAINNET, POLYGON } from '@/constants/chains'
 import { useApproval } from '@/lib/hooks/use-approval'
+import { useCustomAppKit } from '@/lib/hooks/use-custom-app-kit'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -35,7 +35,7 @@ export function RedeemWidget() {
     MAINNET.chainId,
     POLYGON.chainId,
   ])
-  const { open } = useAppKit()
+  const { openConnectView, openNetworksView } = useCustomAppKit()
   const { address } = useWallet()
   const {
     inputTokenList,
@@ -96,13 +96,12 @@ export function RedeemWidget() {
 
   const onClickButton = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
-      open({ view: 'Connect' })
-
+      openConnectView('Redeem Widget')
       return
     }
 
     if (buttonState === TradeButtonState.wrongNetwork) {
-      open({ view: 'Networks' })
+      openNetworksView('Redeem Widget')
 
       return
     }
@@ -122,7 +121,15 @@ export function RedeemWidget() {
     if (buttonState === TradeButtonState.default) {
       sendTradeEvent({ type: 'REVIEW' })
     }
-  }, [buttonState, isApproved, onApprove, sendTradeEvent, open, shouldApprove])
+  }, [
+    buttonState,
+    isApproved,
+    shouldApprove,
+    openConnectView,
+    openNetworksView,
+    onApprove,
+    sendTradeEvent,
+  ])
 
   return (
     <div className='widget w-full min-w-80 max-w-xl flex-1 flex-col space-y-4 self-center rounded-3xl p-6'>
