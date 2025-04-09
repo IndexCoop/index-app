@@ -59,8 +59,10 @@ export const SlippageProvider = (props: { children: any }) => {
 
   useQuery({
     enabled:
-      selectedProduct?.address != null && isAddress(selectedProduct?.address),
-    queryKey: ['auto-slippage', selectedProduct?.address],
+      selectedProduct?.address != null &&
+      isAddress(selectedProduct?.address) &&
+      isAuto,
+    queryKey: ['auto-slippage', selectedProduct?.address, isAuto],
     queryFn: async () => {
       const res = await fetch(
         `/api/slippage/${selectedProduct?.chainId}/${selectedProduct?.address}`,
