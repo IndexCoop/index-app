@@ -1,17 +1,15 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { useState } from 'react'
 
 import { ChartTabs } from '@/app/earn-old/components/chart-tabs'
 import { FaqSection } from '@/app/earn-old/components/faq-section'
 import { useEarnContext } from '@/app/earn-old/provider'
-import { ChartTab } from '@/app/earn-old/types'
 import { ApyChart } from '@/components/charts/apy-chart'
 import { PriceChart } from '@/components/charts/price-chart'
 import { TvlChart } from '@/components/charts/tvl-chart'
 
-import { EarnWidget } from './components/earn-widget'
-import { QuickStats } from './components/quick-stats'
+import type { ChartTab } from '@/app/earn-old/types'
 
 export default function Page() {
   const { indexToken, isFetchingStats, apy, nav, tvl } = useEarnContext()
@@ -21,7 +19,6 @@ export default function Page() {
     <div className='mx-auto flex max-w-screen-2xl justify-center'>
       <div className='flex w-full flex-col items-center'>
         <div className='mx-auto flex w-full flex-col gap-4 px-1 py-4 sm:gap-5 sm:px-4'>
-          <QuickStats />
           <div className='flex flex-col-reverse gap-4 lg:flex-row'>
             <div className='flex w-full flex-col gap-4 lg:min-w-[67%] lg:max-w-[67%] lg:gap-5'>
               <div className='flex h-[350px]'>
@@ -52,9 +49,6 @@ export default function Page() {
                 setCurrentTab={setCurrentTab}
               />
             </div>
-            <Suspense>
-              <EarnWidget />
-            </Suspense>
           </div>
         </div>
         <FaqSection />
