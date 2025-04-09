@@ -69,7 +69,7 @@ export const SlippageProvider = (props: { children: any }) => {
       console.log(json)
       let slippage = json?.slippage as number
       if (slippage) {
-        slippage = Number.parseFloat(slippage.toFixed(2))
+        slippage = Math.round(slippage * 10) / 10
       } else {
         slippage = slippageDefault
       }
