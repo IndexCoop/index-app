@@ -32,7 +32,7 @@ export const TradingViewChartContainer = () => {
         'header_saveload',
         'header_symbol_search',
       ],
-      // enabled_features: ['iframe_loading_compatibility_mode'],
+      enabled_features: ['iframe_loading_compatibility_mode'],
       client_id: 'indexcoop',
       fullscreen: false,
       autosize: true,
