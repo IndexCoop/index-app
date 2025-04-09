@@ -29,9 +29,8 @@ export function TradingViewChart() {
           setIsScriptReady(true)
         }}
       />
-      {isScriptReady && isConnected ? (
-        <TradingViewChartContainer />
-      ) : (
+      {isScriptReady && <TradingViewChartContainer />}
+      {!isConnected && (
         <div className='bg-ic-black/95 absolute inset-0 z-20 flex items-center justify-center'>
           <Button
             className='bg-ic-blue-500 dark:bg-ic-blue-300 dark:hover:bg-ic-blue-200 hover:bg-ic-blue-500/90 text-ic-gray-50 dark:text-ic-black block rounded-md px-8 py-1 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-[1.04]'
