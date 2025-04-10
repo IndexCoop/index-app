@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
 
-import { LeverageFeedbackButton } from '@/app/leverage/components/leverage-feedback-button'
 import { LeverageWidget } from '@/app/leverage/components/leverage-widget'
 import PortfolioWidget from '@/app/leverage/components/portfolio-widget/portfolio-widget'
 import { QuickStats } from '@/app/leverage/components/stats'
@@ -16,11 +15,10 @@ export function LeveragePanel() {
           <PortfolioWidget />
         </div>
       </div>
-      <div className='flex w-full lg:w-1/3 lg:flex-col lg:gap-4'>
+      <div className='w-full lg:w-1/3'>
         <Suspense>
           <LeverageWidget />
         </Suspense>
-        <LeverageFeedbackButton />
       </div>
       <div className='w-full lg:hidden'>
         <PortfolioWidget />
