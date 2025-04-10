@@ -10,8 +10,7 @@ export interface FlashMintQuoteRequest {
 
 export async function getQuote(quoteRequest: Record<string, string>) {
   const query = new URLSearchParams(quoteRequest).toString()
-  const url = `https://api-pr-74-jrj6.onrender.com/api/v2/quote?${query}`
-  console.log(url)
+  const url = `https://api.indexcoop.com/v2/quote?${query}`
   const response = await fetch(url, {
     method: 'GET',
     headers: {
