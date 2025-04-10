@@ -5,8 +5,6 @@ import range from 'lodash/range'
 import { useCallback, useEffect } from 'react'
 import { isAddressEqual } from 'viem'
 
-import { supportedNetworks } from '@/app/earn/constants'
-import { useEarnContext } from '@/app/earn/provider'
 import { useQueryParams } from '@/app/earn-old/use-query-params'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -17,10 +15,11 @@ import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
 import { getMaxBalance } from '@/lib/utils/max-balance'
 
+import { supportedNetworks } from '../../constants'
+import { useEarnContext } from '../../provider'
 import { useFormattedEarnData } from '../../use-formatted-data'
 
 import { DepositWithdraw } from './components/deposit-withdraw'
@@ -75,23 +74,11 @@ export function EarnWidget() {
 
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
-  const {
-    // auto: autoSlippage,
-    // isAuto: isAutoSlippage,
-    // set: setSlippage,
-    setSlippageForToken,
-    // slippage,
-  } = useSlippage()
-
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)
     onChangeInputTokenAmount(formatWei(maxBalance, inputToken.decimals))
   }, [gasData, inputBalance, inputToken, onChangeInputTokenAmount])
-
-  useEffect(() => {
-    setSlippageForToken(isMinting ? outputToken.symbol : inputToken.symbol)
-  }, [inputToken, isMinting, outputToken, setSlippageForToken])
 
   useEffect(() => {
     if (tradeState.matches('reset')) {

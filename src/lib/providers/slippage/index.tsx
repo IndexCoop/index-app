@@ -1,15 +1,24 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { createContext, useContext, useMemo, useState } from 'react'
+import { isAddress } from 'viem'
 
-import { slippageDefault, slippageMap } from '@/constants/slippage'
+import { slippageDefault } from '@/constants/slippage'
+
+import type { Address } from 'viem'
 
 interface Context {
   isAuto: boolean
   slippage: number
   auto: () => void
   set: (slippage: number) => void
-  setSlippageForToken: (tokenSymbol: string) => void
+  setProductToken: (token: ProductToken) => void
+}
+
+type ProductToken = {
+  address: Address
+  chainId: number
 }
 
 export const SlippageContext = createContext<Context>({
@@ -17,31 +26,57 @@ export const SlippageContext = createContext<Context>({
   slippage: slippageDefault,
   auto: () => {},
   set: () => {},
-  setSlippageForToken: () => {},
+  setProductToken: () => {},
 })
 
 export const useSlippage = () => useContext(SlippageContext)
 
 export const SlippageProvider = (props: { children: any }) => {
+  const [autoSlippage, setAutoSlippage] = useState(slippageDefault)
+  const [customSlippage, setCustomSlippage] = useState(slippageDefault)
   const [isAuto, setIsAuto] = useState(true)
-  const [slippage, setSlippage] = useState(slippageDefault)
+  const [selectedProduct, setSelectedProduct] = useState<ProductToken | null>(
+    null,
+  )
 
   const auto = () => {
     setIsAuto(true)
-    setSlippage(slippageDefault)
   }
 
   const set = (slippage: number) => {
+    setCustomSlippage(slippage)
     setIsAuto(false)
-    setSlippage(slippage)
   }
 
-  const setSlippageForToken = (tokenSymbol: string) => {
-    const slippageTokenDefault = slippageMap.get(tokenSymbol)
-    if (!slippageTokenDefault) return
-    setIsAuto(false)
-    setSlippage(slippageTokenDefault)
+  const slippage = useMemo(() => {
+    return isAuto ? autoSlippage : customSlippage
+  }, [isAuto, autoSlippage, customSlippage])
+
+  const setProductToken = (token: ProductToken) => {
+    setSelectedProduct(token)
   }
+
+  useQuery({
+    enabled:
+      selectedProduct?.address != null &&
+      isAddress(selectedProduct?.address) &&
+      isAuto,
+    queryKey: ['auto-slippage', selectedProduct?.address, isAuto],
+    queryFn: async () => {
+      const res = await fetch(
+        `/api/slippage/${selectedProduct?.chainId}/${selectedProduct?.address}`,
+      )
+      const json = await res.json()
+      let slippage = json?.slippage as number
+      if (slippage) {
+        slippage = Math.round(slippage * 10) / 10
+      } else {
+        slippage = slippageDefault
+      }
+      setAutoSlippage(slippage)
+      return slippage
+    },
+  })
 
   return (
     <SlippageContext.Provider
@@ -50,7 +85,7 @@ export const SlippageProvider = (props: { children: any }) => {
         slippage,
         auto,
         set,
-        setSlippageForToken,
+        setProductToken,
       }}
     >
       {props.children}

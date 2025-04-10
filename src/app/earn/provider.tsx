@@ -5,6 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -12,8 +13,6 @@ import * as chains from 'viem/chains'
 
 import { useQueryParams } from '@/app/earn-old/use-query-params'
 import { ETH, type Token } from '@/constants/tokens'
-import { GetApiV2ProductsEarn200 } from '@/gen'
-import { type TokenBalance } from '@/lib/hooks/use-balance'
 import { useMultiChainBalances } from '@/lib/hooks/use-multichain-balances'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
@@ -23,6 +22,8 @@ import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
 import { getCurrencyTokens, getYieldTokens } from './constants'
 
+import type { GetApiV2ProductsEarn200 } from '@/gen'
+import type { TokenBalance } from '@/lib/hooks/use-balance'
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
 const hyEthTokenlist = getTokenByChainAndSymbol(1, 'hyETH')
@@ -91,7 +92,7 @@ export function EarnProvider(props: {
     queryParams: { queryInputToken, queryOutputToken, queryIsMinting },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
-  const { slippage } = useSlippage()
+  const { slippage, setProductToken } = useSlippage()
 
   const [inputValue, setInputValue] = useState('')
 
@@ -104,9 +105,17 @@ export function EarnProvider(props: {
   }, [chainIdRaw])
 
   const indexToken = useMemo(() => {
-    if (isMinting) return outputToken
-    return inputToken
+    return isMinting ? outputToken : inputToken
   }, [inputToken, isMinting, outputToken])
+
+  useEffect(() => {
+    if (!indexToken.address || !indexToken.chainId) return
+    setProductToken({
+      address: indexToken.address,
+      chainId: indexToken.chainId,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indexToken])
 
   const indexTokens = useMemo(() => {
     return getYieldTokens()

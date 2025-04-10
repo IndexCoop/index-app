@@ -5,6 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -12,9 +13,8 @@ import { arbitrum, base } from 'viem/chains'
 
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { ARBITRUM } from '@/constants/chains'
-import { ETH, Token } from '@/constants/tokens'
-import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
-import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
+import { ETH, type Token } from '@/constants/tokens'
+import { type TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
@@ -27,7 +27,9 @@ import {
   getLeverageTokens,
   supportedLeverageTypes,
 } from './constants'
-import { LeverageToken, LeverageType } from './types'
+import { type LeverageToken, LeverageType } from './types'
+
+import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
 const eth2x = getTokenByChainAndSymbol(1, 'ETH2X')
 
@@ -109,7 +111,7 @@ export function LeverageProvider(props: { children: any }) {
     },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
-  const { slippage } = useSlippage()
+  const { slippage, setProductToken } = useSlippage()
 
   const [inputValue, setInputValue] = useState('')
 
@@ -123,9 +125,17 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainIdRaw])
 
   const indexToken = useMemo(() => {
-    if (isMinting) return outputToken
-    return inputToken
+    return isMinting ? outputToken : inputToken
   }, [inputToken, isMinting, outputToken])
+
+  useEffect(() => {
+    if (!indexToken.address || !indexToken.chainId) return
+    setProductToken({
+      address: indexToken.address,
+      chainId: indexToken.chainId,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indexToken])
 
   const indexTokens = useMemo(() => {
     return getLeverageTokens(chainId)

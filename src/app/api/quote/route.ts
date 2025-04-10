@@ -1,21 +1,23 @@
-import { EthAddress, QuoteToken } from '@indexcoop/flash-mint-sdk'
+import { EthAddress, type QuoteToken } from '@indexcoop/flash-mint-sdk'
 import {
   getTokenByChainAndAddress,
   isAddressEqual,
   isProductToken,
 } from '@indexcoop/tokenlists'
-import { NextRequest, NextResponse } from 'next/server'
-import { Address } from 'viem'
+import { NextResponse } from 'next/server'
 
-import { isBaseToken } from '@/lib/utils/tokens'
+import { getQuote } from '@/app/api/quote/utils'
+
+import type { NextRequest } from 'next/server'
+import type { Address } from 'viem'
 
 export interface IndexQuoteRequest {
   chainId: number
   account: string
   inputToken: string
   outputToken: string
-  inputAmount?: string
-  outputAmount?: string
+  inputAmount: string
+  outputAmount: string
   slippage: number
 }
 
@@ -34,12 +36,6 @@ export async function POST(req: NextRequest) {
 
     const inputToken = getQuoteToken(inputTokenAddress, chainId)
     const outputToken = getQuoteToken(outputTokenAddress, chainId)
-    const isBtcOnBase = isBaseToken(
-      chainId,
-      inputTokenAddress,
-      outputTokenAddress,
-    )
-    const isMintingIcUsd = outputToken?.quoteToken.symbol === 'icUSD'
 
     if (
       !inputToken ||
@@ -49,42 +45,26 @@ export async function POST(req: NextRequest) {
       return BadRequest('Bad Request')
     }
 
-    const isMinting = outputToken.isIndex
     const quoteRequest: {
       account: string
       chainId: string
       inputToken: string
       outputToken: string
-      inputAmount?: string
-      outputAmount?: string
+      inputAmount: string
+      outputAmount: string
       slippage: string
     } = {
       account,
       chainId: String(chainId),
       inputToken: inputToken.quoteToken.address,
       outputToken: outputToken.quoteToken.address,
+      // At the moment, we always wanna set both (inputAmount and indexTokenAmount)
+      inputAmount,
+      outputAmount,
       slippage: String(slippage),
     }
-    if (isMinting) {
-      quoteRequest.outputAmount = outputAmount
-    } else {
-      quoteRequest.inputAmount = inputAmount
-    }
-    if (isMintingIcUsd || isBtcOnBase) {
-      quoteRequest.inputAmount = inputAmount ?? '0'
-    }
 
-    const query = new URLSearchParams(quoteRequest).toString()
-    const url = `https://api.indexcoop.com/v2/quote?${query}`
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.INDEX_COOP_API_V2_KEY,
-      } as HeadersInit,
-    })
-
-    const quote = await response.json()
+    const quote = await getQuote(quoteRequest)
 
     if (!quote) {
       return NextResponse.json({ message: 'No quote found.' }, { status: 404 })
