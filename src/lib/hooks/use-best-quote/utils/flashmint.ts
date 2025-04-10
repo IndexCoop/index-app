@@ -57,7 +57,6 @@ async function getEnhancedFlashMintQuote(
   }
 
   try {
-    console.log(isMinting, inputTokenAmount, indexTokenAmount)
     const request: ApiIndexQuoteRequest = {
       chainId,
       account,
@@ -76,7 +75,6 @@ async function getEnhancedFlashMintQuote(
     })
 
     const quoteFM: GetApiV2Quote200 = await response.json()
-    console.log(quoteFM)
     if (quoteFM) {
       const {
         inputAmount: quoteInputAmount,
