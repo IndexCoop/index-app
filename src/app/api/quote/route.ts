@@ -64,8 +64,6 @@ export async function POST(req: NextRequest) {
       slippage: String(slippage),
     }
 
-    console.log(quoteRequest)
-
     const quote = await getQuote(quoteRequest)
 
     if (!quote) {

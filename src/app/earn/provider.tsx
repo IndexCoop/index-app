@@ -109,7 +109,6 @@ export function EarnProvider(props: {
   }, [inputToken, isMinting, outputToken])
 
   useEffect(() => {
-    console.log('indexToken (earn):', indexToken)
     if (!indexToken.address || !indexToken.chainId) return
     setProductToken({
       address: indexToken.address,

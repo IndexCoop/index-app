@@ -49,7 +49,6 @@ export const SlippageProvider = (props: { children: any }) => {
   }
 
   const slippage = useMemo(() => {
-    console.log('slippage', isAuto, autoSlippage, customSlippage)
     return isAuto ? autoSlippage : customSlippage
   }, [isAuto, autoSlippage, customSlippage])
 
@@ -68,7 +67,6 @@ export const SlippageProvider = (props: { children: any }) => {
         `/api/slippage/${selectedProduct?.chainId}/${selectedProduct?.address}`,
       )
       const json = await res.json()
-      console.log(json)
       let slippage = json?.slippage as number
       if (slippage) {
         slippage = Math.round(slippage * 10) / 10

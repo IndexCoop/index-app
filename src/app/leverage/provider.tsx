@@ -129,7 +129,6 @@ export function LeverageProvider(props: { children: any }) {
   }, [inputToken, isMinting, outputToken])
 
   useEffect(() => {
-    console.log('indexToken (lev):', indexToken)
     if (!indexToken.address || !indexToken.chainId) return
     setProductToken({
       address: indexToken.address,
