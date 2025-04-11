@@ -25,6 +25,7 @@ import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
@@ -147,9 +148,13 @@ export function LeverageWidget() {
         onSelectToken={onOpenSelectOutputToken}
       />
       {hasFetchingError && (
-        <div className='flex justify-center gap-2 text-sm text-red-400'>
-          <p className='font-semibold'>Error fetching quote:</p>
-          {tradeState.context.quoteError}
+        <div className='flex items-center justify-center gap-2 text-sm text-red-400'>
+          <div className='flex items-center gap-1'>
+            <ExclamationCircleIcon className='size-5' />
+            <h3 className='font-semibold'>Quote Error</h3>
+            {':'}
+          </div>
+          <p> {tradeState.context.quoteError}</p>
         </div>
       )}
       <Summary />
