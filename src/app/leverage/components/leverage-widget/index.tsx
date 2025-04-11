@@ -1,5 +1,6 @@
 'use client'
 
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { useAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
@@ -25,7 +26,6 @@ import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
-import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
