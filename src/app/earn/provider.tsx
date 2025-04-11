@@ -49,6 +49,7 @@ interface Context {
   onSelectInputToken: (tokenSymbol: string, chainId: number) => void
   onSelectOutputToken: (tokenSymbol: string, chainId: number) => void
   reset: () => void
+  refetchQuote: ReturnType<typeof useQuoteResult>['refetchQuote'] | (() => void)
   toggleIsMinting: () => void
 }
 
@@ -71,6 +72,7 @@ export const EarnContext = createContext<Context>({
   onSelectInputToken: () => {},
   onSelectOutputToken: () => {},
   reset: () => {},
+  refetchQuote: () => {},
   toggleIsMinting: () => {},
 })
 
@@ -143,16 +145,17 @@ export function EarnProvider(props: {
     [inputToken, inputValue],
   )
 
-  const { isFetchingQuote, quoteResult, resetQuote } = useQuoteResult({
-    address,
-    chainId,
-    isMinting,
-    inputToken,
-    outputToken,
-    inputTokenAmount,
-    inputValue,
-    slippage,
-  })
+  const { isFetchingQuote, quoteResult, resetQuote, refetchQuote } =
+    useQuoteResult({
+      address,
+      chainId,
+      isMinting,
+      inputToken,
+      outputToken,
+      inputTokenAmount,
+      inputValue,
+      slippage,
+    })
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -244,6 +247,7 @@ export function EarnProvider(props: {
         onSelectInputToken,
         onSelectOutputToken,
         reset,
+        refetchQuote,
         toggleIsMinting,
       }}
     >

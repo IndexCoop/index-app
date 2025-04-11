@@ -83,7 +83,7 @@ export async function GET(
     const quote = await getQuote(quoteRequest)
 
     const quoteUsd = Number.parseFloat(
-      formatWei(quote.inputAmount, usdc.decimals),
+      formatWei(BigInt(quote.inputAmount), usdc.decimals),
     )
 
     const buffer = 1.2 // +20% on top of calc slippage

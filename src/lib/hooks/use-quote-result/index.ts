@@ -81,36 +81,39 @@ export function useQuoteResult(request: QuoteRequest) {
     })
   }
 
-  const { data: flashmintQuote, isFetching: isFetchingFlashMintQuote } =
-    useQuery({
-      queryKey: [
-        'flashmint-quote',
-        {
-          address,
-          chainId,
-          inputToken,
-          outputToken,
-          inputTokenAmount: inputTokenAmount.toString(),
-          publicClient,
-        },
-      ],
-      queryFn: fetchFlashMintQuote,
-      enabled:
-        !!address &&
-        !!chainId &&
-        !!inputToken &&
-        !!outputToken &&
-        !!publicClient &&
-        inputTokenAmount > 0,
-      refetchOnWindowFocus: false,
-    })
+  const {
+    data: flashmintQuote,
+    isFetching: isFetchingFlashMintQuote,
+    refetch: refetchQuote,
+  } = useQuery({
+    queryKey: [
+      'flashmint-quote',
+      {
+        address,
+        chainId,
+        inputToken,
+        outputToken,
+        inputTokenAmount: inputTokenAmount.toString(),
+        publicClient,
+      },
+    ],
+    queryFn: fetchFlashMintQuote,
+    enabled:
+      !!address &&
+      !!chainId &&
+      !!inputToken &&
+      !!outputToken &&
+      !!publicClient &&
+      inputTokenAmount > 0,
+    refetchOnWindowFocus: false,
+  })
 
   useEffect(() => {
+    if (flashmintQuote === undefined || isFetchingFlashMintQuote) return
+
     if (flashmintQuote) {
       logEvent('Quote Received', formatQuoteAnalytics(flashmintQuote))
     }
-
-    if (flashmintQuote === undefined) return
 
     const quoteResult = {
       type: flashmintQuote?.type ?? QuoteType.flashmint,
@@ -120,16 +123,32 @@ export function useQuoteResult(request: QuoteRequest) {
     }
 
     setQuoteResult(quoteResult)
-    sendTradeEvent({
-      type: 'QUOTE',
-      quoteResult,
-      quoteType: flashmintQuote?.type ?? QuoteType.flashmint,
-    })
-  }, [chainId, flashmintQuote, logEvent, sendTradeEvent])
+
+    if (quoteResult.quote) {
+      sendTradeEvent({
+        type: 'QUOTE',
+        quoteResult,
+        quoteType: flashmintQuote?.type ?? QuoteType.flashmint,
+      })
+    } else {
+      sendTradeEvent({
+        type: 'QUOTE_NOT_FOUND',
+        reason: 'Insufficient liquidity', // This could come from the quote api.
+      })
+    }
+  }, [
+    chainId,
+    flashmintQuote,
+    isFetchingFlashMintQuote,
+    logEvent,
+    sendTradeEvent,
+  ])
 
   return {
     isFetchingQuote: isFetchingFlashMintQuote,
     quoteResult,
+    isFetchingFlashMintQuote,
     resetQuote,
+    refetchQuote,
   }
 }

@@ -2,7 +2,7 @@
 
 import { useAtom } from 'jotai'
 import range from 'lodash/range'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 
 import { useQueryParams } from '@/app/earn-old/use-query-params'
@@ -48,6 +48,7 @@ export function EarnWidget() {
     products,
     outputToken,
     reset,
+    refetchQuote,
     toggleIsMinting,
     quoteResult,
   } = useEarnContext()
@@ -88,6 +89,11 @@ export function EarnWidget() {
     }
   }, [tradeState, reset, resetData, sendTradeEvent])
 
+  const hasFetchingError = useMemo(
+    () => tradeState.matches('quoteNotFound'),
+    [tradeState],
+  )
+
   return (
     <div className='earn-widget flex h-fit flex-col gap-6'>
       <DepositWithdraw
@@ -117,10 +123,15 @@ export function EarnWidget() {
         product={selectedProduct}
         isMinting={isMinting}
       />
-
+      {hasFetchingError && (
+        <div className='flex justify-center gap-2 text-sm text-red-400'>
+          <p className='font-semibold'>Error fetching quote:</p>
+          {tradeState.context.quoteError}
+        </div>
+      )}
       <SmartTradeButton
         contract={contract ?? ''}
-        hasFetchingError={false}
+        hasFetchingError={hasFetchingError}
         hasInsufficientFunds={hasInsufficientFunds}
         hiddenWarnings={hiddenLeverageWarnings}
         inputTokenAmount={inputTokenAmount}
@@ -145,7 +156,7 @@ export function EarnWidget() {
               }
         }
         onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
-        onRefetchQuote={() => {}}
+        onRefetchQuote={refetchQuote}
       />
       <SelectTokenModal
         isDarkMode={true}
