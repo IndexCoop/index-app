@@ -27,7 +27,7 @@ export default async function Layout({ children }: LayoutProps) {
       : []
 
   return (
-    <div className='relative h-[100dvh] w-full overflow-x-hidden bg-zinc-950'>
+    <div className='relative h-[100dvh] w-full overflow-hidden bg-zinc-950'>
       <Providers>
         <div className='dark flex h-[100dvh] flex-col overflow-hidden'>
           <BackgroundLight
@@ -49,11 +49,13 @@ export default async function Layout({ children }: LayoutProps) {
           <Header />
           <SlippageProvider>
             <EarnProvider products={products}>
-              <main className='z-10 flex-1 overflow-y-auto'>{children}</main>
+              <div className='z-10 flex-1 overflow-y-auto'>
+                <main>{children}</main>
+                <Footer />
+              </div>
             </EarnProvider>
           </SlippageProvider>
         </div>
-        <Footer />
       </Providers>
     </div>
   )
