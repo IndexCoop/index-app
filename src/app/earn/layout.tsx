@@ -6,6 +6,7 @@ import { Header } from '@/components/header'
 import { getApiV2ProductsEarn } from '@/gen'
 import { SlippageProvider } from '@/lib/providers/slippage'
 
+import { Footer } from '@/components/footer'
 import { EarnProvider } from './provider'
 
 type LayoutProps = {
@@ -26,7 +27,7 @@ export default async function Layout({ children }: LayoutProps) {
       : []
 
   return (
-    <div className='relative h-[100dvh] w-full overflow-hidden bg-zinc-950'>
+    <div className='relative h-[100dvh] w-full bg-zinc-950'>
       <Providers>
         <div className='dark flex h-[100dvh] flex-col overflow-hidden'>
           <BackgroundLight
@@ -52,6 +53,7 @@ export default async function Layout({ children }: LayoutProps) {
             </EarnProvider>
           </SlippageProvider>
         </div>
+        <Footer />
       </Providers>
     </div>
   )
