@@ -47,6 +47,7 @@ export function EarnWidget() {
     isMinting,
     onChangeInputTokenAmount,
     onSelectInputToken,
+    onSelectOutputToken,
     balances,
     products,
     outputToken,
@@ -209,8 +210,8 @@ export function EarnWidget() {
         isDarkMode={true}
         isOpen={isSelectOutputTokenOpen}
         onClose={onCloseSelectOutputToken}
-        onSelectedToken={() => {
-          onOpenSelectOutputToken()
+        onSelectedToken={(tokenSymbol, chainId) => {
+          onSelectOutputToken(tokenSymbol, chainId)
           onCloseSelectOutputToken()
         }}
         address={address}
