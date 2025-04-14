@@ -2,11 +2,11 @@ import React from 'react'
 
 import { Providers } from '@/app/providers'
 import BackgroundLight from '@/components/background-light'
+import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { getApiV2ProductsEarn } from '@/gen'
 import { SlippageProvider } from '@/lib/providers/slippage'
 
-import { Footer } from '@/components/footer'
 import { EarnProvider } from './provider'
 
 type LayoutProps = {
