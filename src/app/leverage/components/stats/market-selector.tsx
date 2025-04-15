@@ -16,11 +16,9 @@ import { cn } from '@/lib/utils/tailwind'
 function MarketSelectorItem({
   item,
   onClick,
-  widget,
 }: {
   item: Market
   onClick: () => void
-  widget?: boolean
 }) {
   return (
     <div
@@ -39,19 +37,18 @@ function MarketSelectorItem({
           />
           <span>{item.market}</span>
         </div>
-        {!widget && (
-          <span className='flex w-24 space-x-1'>
-            {item.networks.map((chain) => (
-              <MarketNetworkImage key={chain.id} chain={chain} />
-            ))}
-          </span>
-        )}
+
+        <span className='flex w-16 space-x-1'>
+          {item.networks.map((chain) => (
+            <MarketNetworkImage key={chain.id} chain={chain} />
+          ))}
+        </span>
         <span className='text-ic-white w-20 text-right'>
           {formatStatsAmount(item.price, item.currency)}
         </span>
         <span
           className={cn(
-            'hidden w-20 text-right md:block',
+            'hidden w-20 text-right xl:block',
             item.change24h >= 0 ? 'text-[#6CF29A]' : 'text-[#F36060]',
           )}
         >
@@ -65,10 +62,10 @@ function MarketSelectorItem({
 type Props = {
   marketData: Market[]
   label?: string
-  widget?: boolean
+  showLogo?: boolean
 }
 
-export function MarketSelector({ marketData, label, widget }: Props) {
+export function MarketSelector({ marketData, label, showLogo }: Props) {
   const router = useRouter()
   const { chainId } = useNetwork()
   const { market } = useLeverageToken()
@@ -85,7 +82,7 @@ export function MarketSelector({ marketData, label, widget }: Props) {
       )}
       <Popover className='flex w-full min-w-32'>
         <PopoverButton className='flex w-full items-center gap-1 rounded-3xl bg-zinc-700 py-2 pl-4 pr-3 text-white transition focus:outline-none data-[active]:bg-zinc-600 data-[hover]:bg-zinc-600 data-[focus]:outline-1'>
-          {widget && marketMetadata && (
+          {showLogo && marketMetadata && (
             <Image
               src={marketMetadata.icon}
               alt={marketMetadata.market}
@@ -106,9 +103,9 @@ export function MarketSelector({ marketData, label, widget }: Props) {
             <div className='w-full min-w-36 max-w-xl'>
               <div className='text-ic-gray-400 space-between mt-2 flex px-4 py-1 text-[11px]'>
                 <span className='w-28'>Market</span>
-                {!widget && <span className='w-24'>Networks</span>}
+                <span className='w-16'>Networks</span>
                 <span className='w-20 text-right'>Price</span>
-                <span className='hidden w-20 text-right md:block'>24h</span>
+                <span className='hidden w-20 text-right xl:block'>24h</span>
               </div>
               <div className='w-full bg-zinc-900'>
                 {marketData.map((item) => (
@@ -126,7 +123,6 @@ export function MarketSelector({ marketData, label, widget }: Props) {
 
                       router.replace(path)
                     }}
-                    widget={widget}
                   />
                 ))}
               </div>

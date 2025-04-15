@@ -106,7 +106,7 @@ export function LeverageWidget() {
       className='flex w-full flex-col gap-3 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4 sm:gap-4'
       id='close-position-scroll'
     >
-      <MarketSelector marketData={marketData} widget />
+      <MarketSelector marketData={marketData} showLogo />
       <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
       <LeverageSelector
         selectedTye={leverageType}
