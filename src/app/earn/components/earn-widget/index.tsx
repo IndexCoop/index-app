@@ -1,12 +1,14 @@
 'use client'
 
+import { AnimatePresence, motion } from 'framer-motion'
 import { useAtom } from 'jotai'
 import range from 'lodash/range'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 
 import { useQueryParams } from '@/app/earn-old/use-query-params'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
+import { Receive } from '@/components/receive'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
@@ -39,15 +41,18 @@ export function EarnWidget() {
     indexToken,
     inputToken,
     inputTokens,
+    outputTokens,
     inputTokenAmount,
     inputValue,
     isMinting,
     onChangeInputTokenAmount,
     onSelectInputToken,
+    onSelectOutputToken,
     balances,
     products,
     outputToken,
     reset,
+    refetchQuote,
     toggleIsMinting,
     quoteResult,
   } = useEarnContext()
@@ -59,6 +64,8 @@ export function EarnWidget() {
     inputBalance,
     inputBalanceFormatted,
     isFetchingQuote,
+    ouputAmount,
+    outputAmountUsd,
     resetData,
   } = useFormattedEarnData()
 
@@ -70,6 +77,12 @@ export function EarnWidget() {
     isOpen: isSelectInputTokenOpen,
     onOpen: onOpenSelectInputToken,
     onClose: onCloseSelectInputToken,
+  } = useDisclosure()
+
+  const {
+    isOpen: isSelectOutputTokenOpen,
+    onOpen: onOpenSelectOutputToken,
+    onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
@@ -87,6 +100,11 @@ export function EarnWidget() {
       sendTradeEvent({ type: 'RESET_DONE' })
     }
   }, [tradeState, reset, resetData, sendTradeEvent])
+
+  const hasFetchingError = useMemo(
+    () => tradeState.matches('quoteNotFound'),
+    [tradeState],
+  )
 
   return (
     <div className='earn-widget flex h-fit flex-col gap-6'>
@@ -106,6 +124,30 @@ export function EarnWidget() {
         onClickBalance={onClickBalance}
         onSelectToken={() => isMinting && onOpenSelectInputToken()}
       />
+      <AnimatePresence mode='wait'>
+        {!isMinting && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              duration: 0.3,
+              height: { duration: 0.2 },
+              opacity: { duration: 0.2 },
+            }}
+            className='overflow-hidden'
+          >
+            <Receive
+              isLoading={isFetchingQuote}
+              outputAmount={ouputAmount}
+              outputAmountUsd={outputAmountUsd}
+              selectedOutputToken={outputToken}
+              onSelectToken={onOpenSelectOutputToken}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Projection
         isQuoteLoading={isFetchingQuote}
         amount={inputValue}
@@ -117,10 +159,15 @@ export function EarnWidget() {
         product={selectedProduct}
         isMinting={isMinting}
       />
-
+      {hasFetchingError && (
+        <div className='flex justify-center gap-2 text-sm text-red-400'>
+          <p className='font-semibold'>Error fetching quote:</p>
+          {tradeState.context.quoteError}
+        </div>
+      )}
       <SmartTradeButton
         contract={contract ?? ''}
-        hasFetchingError={false}
+        hasFetchingError={hasFetchingError}
         hasInsufficientFunds={hasInsufficientFunds}
         hiddenWarnings={hiddenLeverageWarnings}
         inputTokenAmount={inputTokenAmount}
@@ -145,7 +192,7 @@ export function EarnWidget() {
               }
         }
         onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
-        onRefetchQuote={() => {}}
+        onRefetchQuote={refetchQuote}
       />
       <SelectTokenModal
         isDarkMode={true}
@@ -158,6 +205,17 @@ export function EarnWidget() {
         }}
         address={address}
         tokens={inputTokens}
+      />
+      <SelectTokenModal
+        isDarkMode={true}
+        isOpen={isSelectOutputTokenOpen}
+        onClose={onCloseSelectOutputToken}
+        onSelectedToken={(tokenSymbol, chainId) => {
+          onSelectOutputToken(tokenSymbol, chainId)
+          onCloseSelectOutputToken()
+        }}
+        address={address}
+        tokens={outputTokens}
       />
       <TransactionReviewModal
         isDarkMode

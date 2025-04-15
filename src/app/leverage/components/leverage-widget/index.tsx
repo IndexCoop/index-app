@@ -1,7 +1,8 @@
 'use client'
 
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { useAtom } from 'jotai'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { TradeInputSelector } from '@/app/leverage/components/leverage-widget/trade-input-selector'
 import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
@@ -52,6 +53,7 @@ export function LeverageWidget() {
     onSelectOutputToken,
     outputToken,
     reset,
+    refetchQuote,
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
@@ -101,6 +103,11 @@ export function LeverageWidget() {
     }
   }, [tradeState, reset, resetData, sendTradeEvent])
 
+  const hasFetchingError = useMemo(
+    () => tradeState.matches('quoteNotFound'),
+    [tradeState],
+  )
+
   return (
     <div
       className='flex w-full flex-col gap-3 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4 sm:gap-4'
@@ -143,10 +150,20 @@ export function LeverageWidget() {
         selectedOutputToken={outputToken}
         onSelectToken={onOpenSelectOutputToken}
       />
+      {hasFetchingError && (
+        <div className='flex items-center justify-center gap-2 text-sm text-red-400'>
+          <div className='flex items-center gap-1'>
+            <ExclamationCircleIcon className='size-5' />
+            <h3 className='font-semibold'>Quote Error</h3>
+            {':'}
+          </div>
+          <p> {tradeState.context.quoteError}</p>
+        </div>
+      )}
       <Summary />
       <SmartTradeButton
         contract={contract ?? ''}
-        hasFetchingError={false}
+        hasFetchingError={hasFetchingError}
         hasInsufficientFunds={hasInsufficientFunds}
         hiddenWarnings={hiddenLeverageWarnings}
         inputTokenAmount={inputTokenAmount}
@@ -160,7 +177,7 @@ export function LeverageWidget() {
           [TradeButtonState.default]: 'Review Transaction',
         }}
         onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
-        onRefetchQuote={() => {}}
+        onRefetchQuote={refetchQuote}
       />
       <SelectTokenModal
         isDarkMode={true}

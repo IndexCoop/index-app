@@ -58,6 +58,9 @@ export interface TokenContext {
   onSelectLeverageType: (type: LeverageType) => void
   onSelectOutputToken: (tokenSymbol: string) => void
   reset: () => void
+  refetchQuote:
+    | ReturnType<typeof useQuoteResult>['refetchQuote']
+    | (() => Promise<void>)
   toggleIsMinting: (force?: boolean) => void
 }
 
@@ -84,6 +87,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   onSelectLeverageType: () => {},
   onSelectOutputToken: () => {},
   reset: () => {},
+  refetchQuote: async () => {},
   toggleIsMinting: () => {},
 })
 
@@ -162,16 +166,17 @@ export function LeverageProvider(props: { children: any }) {
     [inputToken, inputValue],
   )
 
-  const { isFetchingQuote, quoteResult, resetQuote } = useQuoteResult({
-    address,
-    chainId,
-    isMinting,
-    inputToken,
-    outputToken,
-    inputTokenAmount,
-    inputValue,
-    slippage,
-  })
+  const { isFetchingQuote, quoteResult, resetQuote, refetchQuote } =
+    useQuoteResult({
+      address,
+      chainId,
+      isMinting,
+      inputToken,
+      outputToken,
+      inputTokenAmount,
+      inputValue,
+      slippage,
+    })
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
@@ -359,6 +364,7 @@ export function LeverageProvider(props: { children: any }) {
         onSelectLeverageType,
         onSelectOutputToken,
         reset,
+        refetchQuote,
         toggleIsMinting,
       }}
     >
