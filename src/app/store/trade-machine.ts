@@ -10,6 +10,7 @@ import type { TransactionReceipt } from 'viem'
 export interface TradeMachineContext {
   isModalOpen: boolean
   quoteResult: QuoteResult | null
+  quoteError: string
   trade: PostApiV2Trade200['trade'] | null
   position: PostApiV2Trade200['position'] | null
   transactionReview: TransactionReview | null
@@ -19,6 +20,7 @@ export interface TradeMachineContext {
 export type TradeMachineEvent =
   | { type: 'FETCHING_QUOTE' }
   | { type: 'QUOTE'; quoteResult: QuoteResult; quoteType: QuoteType }
+  | { type: 'QUOTE_NOT_FOUND'; reason: string }
   | { type: 'REVIEW' }
   | { type: 'SUBMIT' }
   | { type: 'TRADE_FAILED' }
@@ -44,6 +46,7 @@ const createTradeMachine = () =>
       position: null,
       transactionReview: null,
       transactionStatus: null,
+      quoteError: '',
     },
     states: {
       idle: {
@@ -83,22 +86,31 @@ const createTradeMachine = () =>
             guard: ({ event }) =>
               Boolean(event.quoteResult && event.quoteResult.quote),
           },
+          QUOTE_NOT_FOUND: {
+            target: 'quoteNotFound',
+            actions: assign({
+              quoteError: ({ event }) => event.reason,
+            }),
+          },
         },
       },
       quote: {
         on: {
           FETCHING_QUOTE: {
             target: 'idle',
-            actions: assign({
-              quoteResult: null,
-              transactionReview: null,
-            }),
           },
           REVIEW: {
             target: 'review',
             actions: assign({
               isModalOpen: true,
             }),
+          },
+        },
+      },
+      quoteNotFound: {
+        on: {
+          FETCHING_QUOTE: {
+            target: 'idle',
           },
         },
       },
@@ -169,6 +181,7 @@ const createTradeMachine = () =>
         position: null,
         transactionReview: null,
         transactionStatus: null,
+        quoteError: '',
       }),
     },
   })
