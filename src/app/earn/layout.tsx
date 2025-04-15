@@ -50,7 +50,7 @@ export default async function Layout({ children }: LayoutProps) {
           <SlippageProvider>
             <EarnProvider products={products}>
               <div className='z-10 flex-1 overflow-y-auto'>
-                <main>{children}</main>
+                <main className='mb-32 md:mb-52'>{children}</main>
                 <Footer />
               </div>
             </EarnProvider>
