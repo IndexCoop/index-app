@@ -1,6 +1,7 @@
 'use client'
 
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
   useCallback,
@@ -25,9 +26,10 @@ import { isValidTokenInput, parseUnits } from '@/lib/utils'
 import {
   getCurrencyTokens,
   getLeverageTokens,
+  markets,
   supportedLeverageTypes,
 } from './constants'
-import { type LeverageToken, LeverageType } from './types'
+import { type LeverageToken, LeverageType, Market } from './types'
 
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
@@ -42,6 +44,7 @@ export interface TokenContext {
   indexToken: Token
   indexTokens: Token[]
   market: string
+  marketData: Market[]
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
@@ -67,6 +70,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   indexToken: { ...eth2x, image: eth2x.logoURI },
   indexTokens: [],
   market: 'ETH / USD',
+  marketData: [],
   inputToken: ETH,
   outputToken: { ...eth2x, image: eth2x.logoURI },
   inputTokenAmount: BigInt(0),
@@ -307,6 +311,29 @@ export function LeverageProvider(props: { children: any }) {
     })
   }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
 
+  const { data: marketData } = useQuery({
+    refetchInterval: 60 * 1000,
+    refetchOnWindowFocus: false,
+    initialData: [],
+    queryKey: ['market-selector'],
+    queryFn: async () => {
+      const marketResponses = await Promise.all(
+        markets.map((item) => {
+          return fetch(
+            `/api/markets?symbol=${item.symbol}&currency=${item.currency}`,
+          )
+        }),
+      )
+      const marketData: Market[] = await Promise.all(
+        marketResponses.map((response) => response.json()),
+      )
+      return markets.map((market, idx) => ({
+        ...market,
+        ...marketData[idx],
+      }))
+    },
+  })
+
   return (
     <LeverageTokenContext.Provider
       value={{
@@ -321,6 +348,7 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         inputTokenAmount,
         market,
+        marketData,
         inputTokens,
         outputTokens,
         isFetchingQuote,

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 
 import { MarketNetworkImage } from '@/app/leverage/components/stats/market-network-image'
 import { formatStatsAmount } from '@/app/leverage/components/stats/use-quick-stats'
-import { getPathForMarket } from '@/app/leverage/constants'
+import { getPathForMarket, markets } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { Market } from '@/app/leverage/types'
 import { formatPercentage } from '@/app/products/utils/formatters'
@@ -16,9 +16,11 @@ import { cn } from '@/lib/utils/tailwind'
 function MarketSelectorItem({
   item,
   onClick,
+  widget,
 }: {
   item: Market
   onClick: () => void
+  widget?: boolean
 }) {
   return (
     <div
@@ -37,11 +39,13 @@ function MarketSelectorItem({
           />
           <span>{item.market}</span>
         </div>
-        <span className='flex w-24 space-x-1'>
-          {item.networks.map((chain) => (
-            <MarketNetworkImage key={chain.id} chain={chain} />
-          ))}
-        </span>
+        {!widget && (
+          <span className='flex w-24 space-x-1'>
+            {item.networks.map((chain) => (
+              <MarketNetworkImage key={chain.id} chain={chain} />
+            ))}
+          </span>
+        )}
         <span className='text-ic-white w-20 text-right'>
           {formatStatsAmount(item.price, item.currency)}
         </span>
@@ -58,32 +62,51 @@ function MarketSelectorItem({
   )
 }
 
-export function MarketSelector({ marketData }: { marketData: Market[] }) {
+type Props = {
+  marketData: Market[]
+  label?: string
+  widget?: boolean
+}
+
+export function MarketSelector({ marketData, label, widget }: Props) {
   const router = useRouter()
   const { chainId } = useNetwork()
   const { market } = useLeverageToken()
   const { logEvent } = useAnalytics()
 
+  const marketMetadata = markets.find((item) => item.market === market)
+
   return (
     <div className='flex flex-col'>
-      <p className='mb-1 pl-1 text-left text-xs leading-[14px] text-neutral-400'>
-        Select Market
-      </p>
-      <Popover className='flex min-w-32'>
-        <PopoverButton className='flex items-center gap-1 rounded-3xl bg-zinc-700 py-2 pl-4 pr-3 text-white transition focus:outline-none data-[active]:bg-zinc-600 data-[hover]:bg-zinc-600 data-[focus]:outline-1'>
-          <div className='text-sm font-semibold'>{market}</div>
+      {label && (
+        <p className='mb-1 pl-1 text-left text-xs leading-[14px] text-neutral-400'>
+          {label}
+        </p>
+      )}
+      <Popover className='flex w-full min-w-32'>
+        <PopoverButton className='flex w-full items-center gap-1 rounded-3xl bg-zinc-700 py-2 pl-4 pr-3 text-white transition focus:outline-none data-[active]:bg-zinc-600 data-[hover]:bg-zinc-600 data-[focus]:outline-1'>
+          {widget && marketMetadata && (
+            <Image
+              src={marketMetadata.icon}
+              alt={marketMetadata.market}
+              height={24}
+              width={24}
+              priority
+            />
+          )}
+          <div className='flex-1 text-left text-sm font-semibold'>{market}</div>
           <ChevronDownIcon className='size-5' />
         </PopoverButton>
         <PopoverPanel
           transition
-          anchor='bottom'
-          className='z-10 ml-4 mt-4 rounded-lg bg-zinc-900 shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
+          anchor='bottom start'
+          className='z-10 mt-4 rounded-lg bg-zinc-900 shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
         >
           {({ close }) => (
             <div className='w-full min-w-36 max-w-xl'>
               <div className='text-ic-gray-400 space-between mt-2 flex px-4 py-1 text-[11px]'>
                 <span className='w-28'>Market</span>
-                <span className='w-24'>Networks</span>
+                {!widget && <span className='w-24'>Networks</span>}
                 <span className='w-20 text-right'>Price</span>
                 <span className='hidden w-20 text-right md:block'>24h</span>
               </div>
@@ -103,6 +126,7 @@ export function MarketSelector({ marketData }: { marketData: Market[] }) {
 
                       router.replace(path)
                     }}
+                    widget={widget}
                   />
                 ))}
               </div>
