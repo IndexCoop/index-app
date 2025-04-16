@@ -138,7 +138,7 @@ const OpenPositions = () => {
       className='flex flex-col gap-6'
       selectedIndex={selectedIndex}
       onChange={(idx) =>
-        setSelectedIndex(idx === selectedIndex ? undefined : selectedIndex)
+        setSelectedIndex(idx === selectedIndex ? undefined : idx)
       }
     >
       <TabList className='flex gap-6 text-sm font-bold text-neutral-400'>
