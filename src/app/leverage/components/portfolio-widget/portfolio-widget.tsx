@@ -1,5 +1,5 @@
 import { Tab, TabGroup, TabList } from '@headlessui/react'
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
+import { ChevronUpIcon } from '@heroicons/react/20/solid'
 import { isLeverageToken } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
@@ -134,20 +134,17 @@ const OpenPositions = () => {
   })
 
   return (
-    <TabGroup
-      className='flex flex-col gap-6'
-      selectedIndex={selectedIndex}
-      onChange={(idx) =>
-        setSelectedIndex(idx === selectedIndex ? undefined : idx)
-      }
-    >
+    <TabGroup className='flex flex-col gap-6' selectedIndex={selectedIndex}>
       <TabList className='flex gap-6 text-sm font-bold text-neutral-400'>
         <Tab
           className={cn(
             'flex items-center gap-1.5 outline-none',
             selectedIndex === 0 && 'text-neutral-50',
           )}
-          onClick={() => logEvent('Open Positions Tab Clicked')}
+          onClick={() => {
+            setSelectedIndex((idx) => (idx === 0 ? undefined : 0))
+            logEvent('Open Positions Tab Clicked')
+          }}
         >
           Open Positions
           <span
@@ -158,18 +155,22 @@ const OpenPositions = () => {
           >
             BETA
           </span>
-          {selectedIndex === 0 ? (
-            <ChevronDownIcon className='size-5' />
-          ) : (
-            <ChevronUpIcon className='size-5' />
-          )}
+          <ChevronUpIcon
+            className={cn(
+              'size-5',
+              selectedIndex === 0 && 'rotate-180 transform transition',
+            )}
+          />
         </Tab>
         <Tab
           className={cn(
             'flex items-center gap-1.5 outline-none',
             selectedIndex === 1 && 'text-neutral-50',
           )}
-          onClick={() => logEvent('History Tab Clicked')}
+          onClick={() => {
+            setSelectedIndex((idx) => (idx === 1 ? undefined : 1))
+            logEvent('History Tab Clicked')
+          }}
         >
           History
           <span
@@ -180,11 +181,12 @@ const OpenPositions = () => {
           >
             BETA
           </span>
-          {selectedIndex === 1 ? (
-            <ChevronDownIcon className='size-5' />
-          ) : (
-            <ChevronUpIcon className='size-5' />
-          )}
+          <ChevronUpIcon
+            className={cn(
+              'size-5',
+              selectedIndex === 1 && 'rotate-180 transform transition',
+            )}
+          />
         </Tab>
       </TabList>
       {typeof selectedIndex === 'number' && (
