@@ -60,12 +60,18 @@ function MarketSelectorItem({
 }
 
 type Props = {
+  className?: string
   marketData: Market[]
   label?: string
   showLogo?: boolean
 }
 
-export function MarketSelector({ marketData, label, showLogo }: Props) {
+export function MarketSelector({
+  className,
+  marketData,
+  label,
+  showLogo,
+}: Props) {
   const router = useRouter()
   const { chainId } = useNetwork()
   const { market } = useLeverageToken()
@@ -74,14 +80,14 @@ export function MarketSelector({ marketData, label, showLogo }: Props) {
   const marketMetadata = markets.find((item) => item.market === market)
 
   return (
-    <div className='flex flex-col'>
+    <div className={cn('flex-col', className)}>
       {label && (
         <p className='mb-1 pl-1 text-left text-xs leading-[14px] text-neutral-400'>
           {label}
         </p>
       )}
       <Popover className='flex w-full min-w-32'>
-        <PopoverButton className='flex w-full items-center gap-1 rounded-3xl bg-zinc-700 py-2 pl-4 pr-3 text-white transition focus:outline-none data-[active]:bg-zinc-600 data-[hover]:bg-zinc-600 data-[focus]:outline-1'>
+        <PopoverButton className='flex w-full items-center gap-1 rounded-3xl bg-zinc-800 py-2 pl-4 pr-3 text-white transition focus:outline-none data-[active]:bg-zinc-600 data-[hover]:bg-zinc-600 data-[focus]:outline-1'>
           {showLogo && marketMetadata && (
             <Image
               src={marketMetadata.icon}
@@ -96,7 +102,7 @@ export function MarketSelector({ marketData, label, showLogo }: Props) {
         </PopoverButton>
         <PopoverPanel
           transition
-          anchor='bottom start'
+          anchor='bottom'
           className='z-10 mt-4 rounded-lg bg-zinc-900 shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
         >
           {({ close }) => (
