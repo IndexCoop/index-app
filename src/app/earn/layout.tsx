@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Providers } from '@/app/providers'
 import BackgroundLight from '@/components/background-light'
+import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { getApiV2ProductsEarn } from '@/gen'
 import { SlippageProvider } from '@/lib/providers/slippage'
@@ -48,7 +49,10 @@ export default async function Layout({ children }: LayoutProps) {
           <Header />
           <SlippageProvider>
             <EarnProvider products={products}>
-              <main className='z-10 flex-1 overflow-y-auto'>{children}</main>
+              <div className='z-10 flex-1 overflow-y-auto'>
+                <main className='mb-32 md:mb-52'>{children}</main>
+                <Footer />
+              </div>
             </EarnProvider>
           </SlippageProvider>
         </div>
