@@ -18,12 +18,13 @@ export async function GET(
       return NextResponse.json('Bad Request', { status: 400 })
     }
 
-    const { data, status } = await getApiV2QuoteSlippageChainidAddress({
-      chainId,
-      address,
-    })
+    const { data, status, statusText } =
+      await getApiV2QuoteSlippageChainidAddress({
+        chainId,
+        address,
+      })
 
-    return NextResponse.json(data, { status })
+    return NextResponse.json(data, { status, statusText })
   } catch (error) {
     console.log(error)
     return NextResponse.json(
