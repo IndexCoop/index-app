@@ -44,7 +44,8 @@ export function QuickStats() {
   return (
     <>
       <MarketSelector
-        className='flex w-full flex-row rounded-3xl bg-zinc-800 sm:hidden'
+        className='flex h-14 w-full flex-row rounded-3xl bg-zinc-800 sm:hidden'
+        innerLabel='Select Market'
         marketData={marketData}
         showLogo
       />

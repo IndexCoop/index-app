@@ -62,6 +62,7 @@ function MarketSelectorItem({
 type Props = {
   className?: string
   marketData: Market[]
+  innerLabel?: string
   label?: string
   showLogo?: boolean
 }
@@ -69,6 +70,7 @@ type Props = {
 export function MarketSelector({
   className,
   marketData,
+  innerLabel,
   label,
   showLogo,
 }: Props) {
@@ -88,6 +90,11 @@ export function MarketSelector({
       )}
       <Popover className='flex w-full min-w-32'>
         <PopoverButton className='flex w-full items-center gap-1 rounded-3xl bg-zinc-800 py-2 pl-4 pr-3 text-white transition focus:outline-none data-[active]:bg-zinc-600 data-[hover]:bg-zinc-600 data-[focus]:outline-1'>
+          {innerLabel && (
+            <span className='mr-auto flex flex-1 text-xs text-neutral-50'>
+              {innerLabel}
+            </span>
+          )}
           {showLogo && marketMetadata && (
             <Image
               src={marketMetadata.icon}
@@ -97,7 +104,14 @@ export function MarketSelector({
               priority
             />
           )}
-          <div className='flex-1 text-left text-sm font-semibold'>{market}</div>
+          <div
+            className={cn(
+              'text-left text-sm font-semibold',
+              !innerLabel && 'flex-1',
+            )}
+          >
+            {market}
+          </div>
           <ChevronDownIcon className='size-5' />
         </PopoverButton>
         <PopoverPanel
