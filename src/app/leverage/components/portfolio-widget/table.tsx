@@ -41,7 +41,7 @@ export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
           </div>
         ))}
       </div>
-      <div className='flex max-h-[300px] w-full flex-col gap-1 overflow-y-auto rounded-md pb-12'>
+      <div className='flex max-h-[300px] min-h-[232px] w-full flex-col gap-1 overflow-y-auto rounded-md pb-12'>
         {isFetching ? (
           <div className='flex w-full flex-col gap-3 px-4 py-2'>
             {[1, 2, 3].map((n) => (
@@ -49,13 +49,13 @@ export const TableRenderer = ({ table, emptyText, isFetching }: TableProps) => {
             ))}
           </div>
         ) : table.getRowModel().rows.length === 0 ? (
-          <div className='text-ic-white t text-md flex w-full items-center justify-center rounded-lg bg-[#1A2A2B] px-4 py-3 text-sm font-semibold'>
+          <div className='text-ic-white t text-md flex w-full items-center justify-center rounded-lg bg-zinc-900 px-4 py-3 text-sm font-semibold'>
             {emptyText}
           </div>
         ) : (
           table.getRowModel().rows.map((row) => (
             <div
-              className='text-ic-white flex w-full items-center rounded-lg bg-[#1A2A2B] px-4 py-3 text-left text-xs'
+              className='text-ic-white flex w-full items-center rounded-lg bg-zinc-900 px-4 py-3 text-left text-xs'
               key={row.id}
             >
               {row.getVisibleCells().map((cell) => (

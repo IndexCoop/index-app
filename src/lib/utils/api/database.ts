@@ -1,3 +1,8 @@
+import {
+  getTokenByChainAndAddress,
+  getUnderlyingToken,
+  isLeverageToken,
+} from '@indexcoop/tokenlists'
 import { formatUnits } from 'viem'
 
 import { UtmParam } from '@/app/store/utm-atoms'
@@ -52,13 +57,19 @@ export const mapQuoteToTrade = (
 })
 
 const getUnderlyingAssetSymbol = (quote: Quote) => {
-  const symbol = (quote.isMinting ? quote.outputToken : quote.inputToken).symbol
+  const possible = ['ETH', 'BTC', 'SUI', 'SOL', 'MATIC']
 
-  if (symbol.startsWith('ETH') || symbol.startsWith('iETH')) return 'ETH'
-  if (symbol.startsWith('BTC') || symbol.startsWith('iBTC')) return 'BTC'
-  if (symbol.startsWith('WSTETH')) return 'WSTETH'
-  if (symbol.startsWith('USUI')) return 'SUI'
-  if (symbol.startsWith('USOL')) return 'SOL'
+  const address = quote.isMinting
+    ? quote.outputToken.address
+    : quote.inputToken.address
 
-  return ''
+  const token = getTokenByChainAndAddress(quote.chainId, address)
+
+  if (isLeverageToken(token)) {
+    const { symbol } = getUnderlyingToken(token)
+
+    return possible.find((p) => symbol.includes(p)) ?? ''
+  }
+
+  return possible.find((p) => token?.symbol.includes(p)) ?? ''
 }

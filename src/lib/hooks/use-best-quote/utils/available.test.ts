@@ -1,31 +1,10 @@
-import {
-  CoinDeskEthTrendIndex,
-  DefiPulseIndex,
-  IndexToken,
-} from '@/constants/tokens'
+import { IndexToken } from '@/constants/tokens'
 
-import { isAvailableForFlashMint, isAvailableForSwap } from './available'
+import { isAvailableForFlashMint } from './available'
 
 describe('isAvailableForFlashMint()', () => {
-  test('returns true by default', async () => {
-    const isAvailable = isAvailableForFlashMint(CoinDeskEthTrendIndex)
-    expect(isAvailable).toBe(true)
-  })
-
   test('should return false for INDEX swap availability', async () => {
     const isAvailable = isAvailableForFlashMint(IndexToken)
-    expect(isAvailable).toBe(false)
-  })
-})
-
-describe('isAvailableForSwap()', () => {
-  test('returns true by default', async () => {
-    const isAvailable = isAvailableForFlashMint(DefiPulseIndex)
-    expect(isAvailable).toBe(true)
-  })
-
-  test('should return false for cdETI swap availability', async () => {
-    const isAvailable = isAvailableForSwap(CoinDeskEthTrendIndex)
     expect(isAvailable).toBe(false)
   })
 })

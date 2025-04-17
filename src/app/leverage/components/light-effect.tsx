@@ -1,5 +1,5 @@
-export const LightEffect = () => (
-  <div className='relative hidden h-auto w-full md:block'>
-    <div className='light-effect' />
+export const LightEffect = ({ page }: { page: 'leverage' | 'earn' }) => (
+  <div className='relative hidden h-auto w-full overflow-hidden md:block'>
+    <div className={`light-effect-${page}`} />
   </div>
 )

@@ -1,10 +1,3 @@
-import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
-import { Hex } from 'viem'
-import { base } from 'viem/chains'
-
-import { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
-import { Token } from '@/constants/tokens'
-import { GetApiV2Quote200 } from '@/gen'
 import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
@@ -12,15 +5,22 @@ import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
 import {
   getAddressForToken,
   getCurrencyTokensForIndex,
-  isBaseToken,
 } from '@/lib/utils/tokens'
 
-import { IndexQuoteRequest, Quote, QuoteTransaction, QuoteType } from '../types'
+import {
+  type IndexQuoteRequest,
+  type Quote,
+  type QuoteTransaction,
+  QuoteType,
+} from '../types'
 
 import { getIndexTokenAmount } from './index-token-amount'
 import { getPriceImpact } from './price-impact'
 
-const icUSD = getTokenByChainAndSymbol(base.id, 'icUSD')
+import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
+import type { Token } from '@/constants/tokens'
+import type { GetApiV2Quote200 } from '@/gen'
+import type { Hex } from 'viem'
 
 async function getEnhancedFlashMintQuote(
   account: string,
@@ -45,11 +45,12 @@ async function getEnhancedFlashMintQuote(
   const indexToken = isMinting ? outputToken : inputToken
   const inputOutputToken = isMinting ? inputToken : outputToken
 
-  const currencies = getCurrencyTokensForIndex(indexToken, chainId)
   // Allow only supported currencies
+  const currencies = getCurrencyTokensForIndex(indexToken, chainId)
   const isAllowedCurrency =
     currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)
       .length > 0
+
   if (!isAllowedCurrency) {
     console.warn('Currency not allowed:', inputOutputToken.symbol)
     return null
@@ -61,23 +62,13 @@ async function getEnhancedFlashMintQuote(
       account,
       inputToken: inputTokenAddress,
       outputToken: outputTokenAddress,
+      inputAmount: inputTokenAmount.toString(),
+      // Since for redeeming input and index token amount are the same, this is
+      // basically only relevant for minting.
+      outputAmount: indexTokenAmount.toString(),
       slippage,
     }
 
-    if (isMinting) {
-      request.outputAmount = indexTokenAmount.toString()
-    } else {
-      request.inputAmount = indexTokenAmount.toString()
-    }
-
-    if (
-      (isMinting && isAddressEqual(outputToken.address, icUSD.address)) ||
-      (!isMinting && isAddressEqual(inputToken.address, icUSD.address)) ||
-      isBaseToken(chainId, inputTokenAddress, outputTokenAddress)
-    ) {
-      // These tokens require to set the input amount as well for quotes
-      request.inputAmount = inputTokenAmount.toString()
-    }
     const response = await fetch('/api/quote', {
       method: 'POST',
       body: JSON.stringify(request),
@@ -114,10 +105,10 @@ async function getEnhancedFlashMintQuote(
       transaction.gas = gas.limit
 
       const inputTokenAmountUsd =
-        parseFloat(formatWei(inputAmount, inputToken.decimals)) *
+        Number.parseFloat(formatWei(inputAmount, inputToken.decimals)) *
         inputTokenPrice
       const outputTokenAmountUsd =
-        parseFloat(formatWei(outputAmount, outputToken.decimals)) *
+        Number.parseFloat(formatWei(outputAmount, outputToken.decimals)) *
         outputTokenPrice
       const priceImpact = getPriceImpact(
         inputTokenAmountUsd,

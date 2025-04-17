@@ -1,13 +1,14 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { arbitrum, mainnet } from 'viem/chains'
 
-import { ProductRow } from '@/app/products/types/product'
 import {
   buildEarnTradePath,
   buildLegacyPath,
   buildLeverageTradePath,
   buildSwapTradePath,
 } from '@/app/products/utils/trade-path'
+
+import type { ProductRow } from '@/app/products/types/product'
 
 export const productTokens: ProductRow[] = [
   {
@@ -75,12 +76,6 @@ export const productTokens: ProductRow[] = [
     hasApy: false,
     listType: 'Strategies',
     tradeHref: buildLegacyPath(),
-  },
-  {
-    ...getTokenByChainAndSymbol(mainnet.id, 'cdETI'),
-    hasApy: false,
-    listType: 'Strategies',
-    tradeHref: buildSwapTradePath('cdeti'),
   },
   {
     ...getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC'),

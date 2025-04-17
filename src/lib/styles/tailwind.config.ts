@@ -6,6 +6,7 @@ export default {
   mode: 'jit',
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   darkMode: 'selector',
+  safelist: [{ pattern: /^bg-/ }, { pattern: /^text-/ }],
   theme: {
     extend: {
       screens: {
@@ -19,6 +20,9 @@ export default {
           red: '#C32238',
           yellow: '#ECB424',
           white: '#FCFFFF',
+          pill: {
+            teal: '#3C6073',
+          },
           blue: {
             50: '#f1fffd',
             100: '#d1f9f6',
@@ -51,13 +55,20 @@ export default {
       fontFamily: {
         sans: ['Open Sauce Sans', ...defaultTheme.fontFamily.sans],
       },
+
       keyframes: {
+        grow: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.05)' },
+          '100%': { transform: 'scale(1)' },
+        },
         shine: {
           '0%': { left: '-100%' },
           '100%': { left: '100%' },
         },
       },
       animation: {
+        grow: 'grow 3s ease-in-out infinite',
         shine: 'shine 3s ease-in-out infinite',
       },
     },
