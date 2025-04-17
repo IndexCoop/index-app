@@ -1,15 +1,22 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 
 import { BuySellSelectorButton } from '@/components/selectors/buy-sell-selector-button'
+import { cn } from '@/lib/utils/tailwind'
 
 type BuySellSelectorProps = {
   isMinting: boolean
   onClick: (args?: any) => void
+  animate?: boolean
 }
 
-export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
+export function BuySellSelector({
+  isMinting,
+  animate,
+  onClick,
+}: BuySellSelectorProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const [scrollingDone, setScrollingDone] = useState(false)
 
   const scrollToWidget = useCallback(() => {
     if (wrapperRef.current && isMobile) {
@@ -20,6 +27,8 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
         top: y,
         behavior: 'smooth',
       })
+
+      setScrollingDone(true)
     }
   }, [])
 
@@ -37,6 +46,12 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
           if (isMinting) return
           onClick(true)
         }}
+        className={cn(
+          animate &&
+            isMinting &&
+            !scrollingDone &&
+            'animate-grow md:animate-none',
+        )}
       />
       <BuySellSelectorButton
         isSelected={!isMinting}
@@ -47,6 +62,12 @@ export function BuySellSelector({ isMinting, onClick }: BuySellSelectorProps) {
           if (!isMinting) return
           onClick()
         }}
+        className={cn(
+          animate &&
+            !isMinting &&
+            !scrollingDone &&
+            'animate-grow md:animate-none',
+        )}
       />
     </div>
   )

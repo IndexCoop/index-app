@@ -63,18 +63,18 @@ export const SlippageProvider = (props: { children: any }) => {
       isAuto,
     queryKey: ['auto-slippage', selectedProduct?.address, isAuto],
     queryFn: async () => {
-      const res = await fetch(
-        `/api/slippage/${selectedProduct?.chainId}/${selectedProduct?.address}`,
-      )
-      const json = await res.json()
-      let slippage = json?.slippage as number
-      if (slippage) {
-        slippage = Math.round(slippage * 10) / 10
-      } else {
-        slippage = slippageDefault
-      }
-      setAutoSlippage(slippage)
-      return slippage
+      // const res = await fetch(
+      //   `/api/slippage/${selectedProduct?.chainId}/${selectedProduct?.address}`,
+      // )
+      // const json = await res.json()
+      // let slippage = json?.slippage as number
+      // if (slippage) {
+      //   slippage = Math.round(slippage * 10) / 10
+      // } else {
+      //   slippage = slippageDefault
+      // }
+      setAutoSlippage(slippageDefault)
+      return slippageDefault
     },
   })
 

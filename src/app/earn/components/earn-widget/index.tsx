@@ -87,6 +87,12 @@ export function EarnWidget() {
 
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
+  useEffect(() => {
+    sendTradeEvent({ type: 'INITIALIZE' })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)

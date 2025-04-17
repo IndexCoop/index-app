@@ -59,6 +59,11 @@ export function LeverageWidget() {
   } = useLeverageToken()
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
+  useEffect(() => {
+    sendTradeEvent({ type: 'INITIALIZE' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const {
     contract,
     hasInsufficientFunds,
@@ -119,7 +124,11 @@ export function LeverageWidget() {
         marketData={marketData}
         showLogo
       />
-      <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
+      <BuySellSelector
+        isMinting={isMinting}
+        animate
+        onClick={toggleIsMinting}
+      />
       <LeverageSelector
         selectedTye={leverageType}
         supportedTypes={supportedLeverageTypes}
