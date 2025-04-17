@@ -5,10 +5,16 @@ type Props = {
   isSelected: boolean
   label: string
   roundedLeft: boolean
+  className?: string
   onClick: () => void
 }
 
-export function BuySellSelectorButton({ isSelected, label, onClick }: Props) {
+export function BuySellSelectorButton({
+  isSelected,
+  label,
+  className,
+  onClick,
+}: Props) {
   const { logEvent } = useAnalytics()
   const handleClick = () => {
     logEvent('Open/Close Selector Clicked', {
@@ -21,6 +27,7 @@ export function BuySellSelectorButton({ isSelected, label, onClick }: Props) {
       className={cn(
         'group flex-grow cursor-pointer select-none rounded-full transition duration-150 dark:bg-zinc-800',
         isSelected && 'bg-[#F0FEFF] dark:bg-zinc-700',
+        className,
       )}
       onClick={handleClick}
     >

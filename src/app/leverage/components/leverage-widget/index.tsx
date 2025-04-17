@@ -59,6 +59,7 @@ export function LeverageWidget() {
 
   useEffect(() => {
     sendTradeEvent({ type: 'INITIALIZE' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const {
@@ -115,7 +116,11 @@ export function LeverageWidget() {
       className='flex w-full flex-col gap-4 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4'
       id='close-position-scroll'
     >
-      <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
+      <BuySellSelector
+        isMinting={isMinting}
+        animateBuy
+        onClick={toggleIsMinting}
+      />
       <LeverageSelector
         selectedTye={leverageType}
         supportedTypes={supportedLeverageTypes}

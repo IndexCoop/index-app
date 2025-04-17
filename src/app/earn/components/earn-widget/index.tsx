@@ -89,6 +89,8 @@ export function EarnWidget() {
 
   useEffect(() => {
     sendTradeEvent({ type: 'INITIALIZE' })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onClickBalance = useCallback(() => {
