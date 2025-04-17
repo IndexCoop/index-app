@@ -26,7 +26,7 @@ export function NetRateTooltip({ isFetching, token }: Props) {
     <Tooltip placement='bottom'>
       <TooltipTrigger>
         <StatsMetric
-          className='hidden w-24 sm:flex'
+          className='hidden w-24 cursor-default sm:flex'
           isLoading={isFetching}
           overrideValueClassName={
             netRate && !isFetching
@@ -37,8 +37,8 @@ export function NetRateTooltip({ isFetching, token }: Props) {
           value={formatPercentage(netRate, true, 3)}
         />
       </TooltipTrigger>
-      <TooltipContent className='bg-ic-white mt-2 w-60 rounded px-5 py-2 text-xs font-medium drop-shadow'>
-        {
+      {!isFetching && (
+        <TooltipContent className='bg-ic-white mt-2 w-60 rounded px-5 py-2 text-xs font-medium drop-shadow'>
           <div className='flex flex-col'>
             <div className='flex border-b border-[#CDDFDF] py-2'>
               <div className='text-ic-gray-600'>Net Rate Daily</div>
@@ -63,8 +63,8 @@ export function NetRateTooltip({ isFetching, token }: Props) {
               market, which can be positive or negative.
             </p>
           </div>
-        }
-      </TooltipContent>
+        </TooltipContent>
+      )}
     </Tooltip>
   )
 }

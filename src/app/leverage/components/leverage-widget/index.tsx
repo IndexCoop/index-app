@@ -5,6 +5,7 @@ import { useAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { TradeInputSelector } from '@/app/leverage/components/leverage-widget/trade-input-selector'
+import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
@@ -43,6 +44,7 @@ export function LeverageWidget() {
     inputTokens,
     inputValue,
     isMinting,
+    marketData,
     leverageType,
     outputTokens,
     onChangeInputTokenAmount,
@@ -113,9 +115,15 @@ export function LeverageWidget() {
 
   return (
     <div
-      className='flex w-full flex-col gap-4 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4'
+      className='flex w-full flex-col gap-3 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4 sm:gap-4'
       id='close-position-scroll'
     >
+      <MarketSelector
+        buttonClassName='bg-zinc-800 data-[active]:bg-zinc-700 data-[hover]:bg-zinc-700'
+        className='hidden lg:flex'
+        marketData={marketData}
+        showLogo
+      />
       <BuySellSelector
         isMinting={isMinting}
         animate
