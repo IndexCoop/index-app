@@ -55,13 +55,20 @@ export default {
       fontFamily: {
         sans: ['Open Sauce Sans', ...defaultTheme.fontFamily.sans],
       },
+
       keyframes: {
+        grow: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.05)' },
+          '100%': { transform: 'scale(1)' },
+        },
         shine: {
           '0%': { left: '-100%' },
           '100%': { left: '100%' },
         },
       },
       animation: {
+        grow: 'grow 3s ease-in-out infinite',
         shine: 'shine 3s ease-in-out infinite',
       },
     },
