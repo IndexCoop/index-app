@@ -7,12 +7,12 @@ import { cn } from '@/lib/utils/tailwind'
 type BuySellSelectorProps = {
   isMinting: boolean
   onClick: (args?: any) => void
-  animateBuy?: boolean
+  animate?: boolean
 }
 
 export function BuySellSelector({
   isMinting,
-  animateBuy,
+  animate,
   onClick,
 }: BuySellSelectorProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -47,7 +47,10 @@ export function BuySellSelector({
           onClick(true)
         }}
         className={cn(
-          animateBuy && !scrollingDone && 'animate-grow md:animate-none',
+          animate &&
+            isMinting &&
+            !scrollingDone &&
+            'animate-grow md:animate-none',
         )}
       />
       <BuySellSelectorButton
@@ -59,6 +62,12 @@ export function BuySellSelector({
           if (!isMinting) return
           onClick()
         }}
+        className={cn(
+          animate &&
+            !isMinting &&
+            !scrollingDone &&
+            'animate-grow md:animate-none',
+        )}
       />
     </div>
   )

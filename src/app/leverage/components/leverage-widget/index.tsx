@@ -118,7 +118,7 @@ export function LeverageWidget() {
     >
       <BuySellSelector
         isMinting={isMinting}
-        animateBuy
+        animate
         onClick={toggleIsMinting}
       />
       <LeverageSelector
