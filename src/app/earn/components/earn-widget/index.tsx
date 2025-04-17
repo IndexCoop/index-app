@@ -87,6 +87,10 @@ export function EarnWidget() {
 
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
+  useEffect(() => {
+    sendTradeEvent({ type: 'INITIALIZE' })
+  }, [])
+
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)

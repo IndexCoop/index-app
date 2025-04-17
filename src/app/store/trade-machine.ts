@@ -18,6 +18,7 @@ export interface TradeMachineContext {
 }
 
 export type TradeMachineEvent =
+  | { type: 'INITIALIZE' }
   | { type: 'FETCHING_QUOTE' }
   | { type: 'QUOTE'; quoteResult: QuoteResult; quoteType: QuoteType }
   | { type: 'QUOTE_NOT_FOUND'; reason: string }
@@ -47,6 +48,12 @@ const createTradeMachine = () =>
       transactionReview: null,
       transactionStatus: null,
       quoteError: '',
+    },
+    on: {
+      INITIALIZE: {
+        target: '.idle',
+        actions: 'resetContext',
+      },
     },
     states: {
       idle: {

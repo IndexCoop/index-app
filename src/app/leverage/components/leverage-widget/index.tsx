@@ -57,6 +57,10 @@ export function LeverageWidget() {
   } = useLeverageToken()
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
+  useEffect(() => {
+    sendTradeEvent({ type: 'INITIALIZE' })
+  }, [])
+
   const {
     contract,
     hasInsufficientFunds,
