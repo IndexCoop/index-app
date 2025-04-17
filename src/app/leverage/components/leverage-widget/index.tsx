@@ -114,6 +114,7 @@ export function LeverageWidget() {
       id='close-position-scroll'
     >
       <MarketSelector
+        buttonClassName='bg-zinc-800 data-[active]:bg-zinc-700 data-[hover]:bg-zinc-700'
         className='hidden lg:flex'
         marketData={marketData}
         showLogo

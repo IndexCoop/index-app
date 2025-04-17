@@ -10,7 +10,7 @@ import {
   widget,
 } from '~/tradingview-chart/charting_library'
 
-const WIDGET_INTERVAL = '1D' as ResolutionString
+const WIDGET_INTERVAL = '1H' as ResolutionString
 
 export const TradingViewChartContainer = () => {
   const { market } = useLeverageToken()

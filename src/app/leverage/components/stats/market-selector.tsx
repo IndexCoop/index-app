@@ -60,6 +60,7 @@ function MarketSelectorItem({
 }
 
 type Props = {
+  buttonClassName?: string
   className?: string
   marketData: Market[]
   innerLabel?: string
@@ -68,6 +69,7 @@ type Props = {
 }
 
 export function MarketSelector({
+  buttonClassName,
   className,
   marketData,
   innerLabel,
@@ -89,7 +91,12 @@ export function MarketSelector({
         </p>
       )}
       <Popover className='flex w-full min-w-32'>
-        <PopoverButton className='flex w-full items-center gap-1 rounded-3xl bg-zinc-800 py-2 pl-4 pr-3 text-white transition focus:outline-none data-[active]:bg-zinc-600 data-[hover]:bg-zinc-600 data-[focus]:outline-1'>
+        <PopoverButton
+          className={cn(
+            'flex w-full items-center gap-1 rounded-3xl bg-zinc-700 py-2 pl-4 pr-3 text-white transition focus:outline-none data-[active]:bg-zinc-600 data-[hover]:bg-zinc-600 data-[focus]:outline-1',
+            buttonClassName,
+          )}
+        >
           {innerLabel && (
             <span className='mr-auto flex flex-1 text-xs text-neutral-50'>
               {innerLabel}
@@ -117,7 +124,7 @@ export function MarketSelector({
         <PopoverPanel
           transition
           anchor='bottom'
-          className='z-10 mt-4 rounded-lg bg-zinc-900 shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.60)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
+          className='z-10 mt-4 rounded-lg bg-zinc-900 shadow-[4px_4px_8px_0px_rgba(0,_0,_0,_0.90)] transition duration-200 ease-in-out data-[closed]:-translate-y-1 data-[closed]:opacity-0'
         >
           {({ close }) => (
             <div className='w-full min-w-36 max-w-xl'>
