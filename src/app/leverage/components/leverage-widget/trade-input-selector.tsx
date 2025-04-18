@@ -1,4 +1,4 @@
-import { Flex, Input, Text } from '@chakra-ui/react'
+import { Flex, Input } from '@chakra-ui/react'
 
 import { Caption } from '@/components/swap/components/caption'
 import { SelectorButton } from '@/components/swap/components/selector-button'
@@ -149,9 +149,9 @@ const PriceUsd = (props: PriceUsdProps) => (
   <Flex>
     <p className='text-xs font-medium text-neutral-400'>{props.fiat}</p>
     {props.priceImpact && (
-      <Text fontSize='12px' textColor={props.priceImpact.colorCoding}>
+      <p className={cn('text-xs', props.priceImpact.colorCoding)}>
         &nbsp;{props.priceImpact.value}
-      </Text>
+      </p>
     )}
   </Flex>
 )
