@@ -112,7 +112,7 @@ export const WarningCompProtection = () => {
           MEV Protection
         </p>
       </Flex>
-      <p className='text-ic-gray-600 mt-2 text-xs font-normal'>
+      <p className='text-ic-gray-600 mt-2 text-xs font-normal leading-[18px]'>
         It is highly recommended to use an MEV protected RPC.{' '}
         <span onClick={onClick} className='cursor-pointer underline'>
           Click here
