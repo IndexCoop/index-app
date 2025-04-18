@@ -25,6 +25,7 @@ export function Review(props: ReviewProps) {
     shouldShowOverride,
     onChangeOverride,
     onSubmit,
+    override,
   } = useTransactionReview(props)
   return (
     <div className='flex h-full w-full flex-col'>
@@ -52,7 +53,7 @@ export function Review(props: ReviewProps) {
       </div>
       {shouldShowOverride ? (
         <div className='my-2'>
-          <Override onChange={onChangeOverride} />
+          <Override onChange={onChangeOverride} override={override} />
         </div>
       ) : (
         <BottomMessage />
