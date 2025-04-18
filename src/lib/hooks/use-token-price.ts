@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { base } from 'viem/chains'
 
 import { PolygonLegacyTokenList } from '@/app/legacy/config'
-import { ETH, Token } from '@/constants/tokens'
+import { ETH, type Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { fetchCoingeckoTokenPrice } from '@/lib/utils/api/coingecko'
 import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
@@ -67,6 +67,7 @@ export const getTokenPrice = async (
   }
   if (shouldOverrideNav(token.symbol, chainId)) {
     const dataResponse = await fetchTokenMetrics({
+      chainId,
       tokenAddress,
       metrics: ['nav'],
     })

@@ -2,11 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { ARBITRUM } from '@/constants/chains'
-import { Token } from '@/constants/tokens'
-import {
-  isAvailableForFlashMint,
-  isAvailableForSwap,
-} from '@/lib/hooks/use-best-quote/utils/available'
+import { isAvailableForFlashMint } from '@/lib/hooks/use-best-quote/utils/available'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { parseUnits } from '@/lib/utils'
@@ -15,10 +11,17 @@ import { getAddressForToken } from '@/lib/utils/tokens'
 import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
 import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
 
-import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
+import {
+  type Quote,
+  type QuoteResults,
+  QuoteType,
+  type ZeroExQuote,
+} from './types'
 import { getBestQuote } from './utils/best-quote'
 import { getFlashMintQuote } from './utils/flashmint'
 import { getIndexQuote } from './utils/index-quote'
+
+import type { Token } from '@/constants/tokens'
 
 export interface FetchQuoteRequest {
   isMinting: boolean
@@ -96,7 +99,7 @@ export const useBestQuote = (
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
       const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
-      const canSwapIndexToken = isAvailableForSwap(indexToken)
+      const canSwapIndexToken = true
 
       const fetchFlashMintQuote = async () => {
         if (canFlashmintIndexToken) {
@@ -178,7 +181,7 @@ export const useBestQuote = (
       quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null,
     )
     const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
-    const canSwapIndexToken = isAvailableForSwap(indexToken)
+    const canSwapIndexToken = true
     const results = {
       bestQuote,
       results: {

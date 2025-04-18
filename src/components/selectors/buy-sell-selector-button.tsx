@@ -5,13 +5,14 @@ type Props = {
   isSelected: boolean
   label: string
   roundedLeft: boolean
+  className?: string
   onClick: () => void
 }
 
 export function BuySellSelectorButton({
   isSelected,
   label,
-  roundedLeft,
+  className,
   onClick,
 }: Props) {
   const { logEvent } = useAnalytics()
@@ -24,30 +25,22 @@ export function BuySellSelectorButton({
   return (
     <div
       className={cn(
-        'dark:bg-ic-gray-975 group flex-grow cursor-pointer select-none rounded-md transition duration-150',
-        isSelected && 'bg-[#F0FEFF]',
+        'group flex-grow cursor-pointer select-none rounded-full transition duration-150 dark:bg-zinc-800',
+        isSelected && 'bg-[#F0FEFF] dark:bg-zinc-700',
+        className,
       )}
       onClick={handleClick}
     >
       <div
         className={cn(
-          'py-4 text-center text-sm font-medium',
+          'py-3 text-center text-sm font-medium',
           isSelected
             ? 'text-ic-gray-700 dark:text-ic-white'
-            : 'text-ic-gray-500 dark:group-hover:text-ic-gray-300',
+            : 'text-ic-gray-500 dark:text-neutral-400',
         )}
       >
         {label}
       </div>
-      <div
-        className={cn(
-          'h-1 w-full',
-          isSelected
-            ? 'dark:bg-ic-blue-600 bg-[#A5D6D6]'
-            : 'bg-ic-gray-100 dark:bg-ic-gray-800 dark:group-hover:bg-ic-gray-700',
-          roundedLeft ? 'rounded-bl-md' : 'rounded-br-md',
-        )}
-      />
     </div>
   )
 }

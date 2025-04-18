@@ -4,12 +4,13 @@ import { useState } from 'react'
 import { isAddress } from 'viem'
 
 import { ChartPeriod } from '@/components/charts/types'
+import { useNetwork } from '@/lib/hooks/use-network'
 import {
+  type IndexData,
+  type IndexDataInterval,
+  type IndexDataMetric,
+  type IndexDataPeriod,
   fetchTokenHistoricalData,
-  IndexData,
-  IndexDataInterval,
-  IndexDataMetric,
-  IndexDataPeriod,
 } from '@/lib/utils/api/index-data-provider'
 import { calculateApy } from '@/lib/utils/apy'
 import { digitsByAddress } from '@/lib/utils/tokens'
@@ -61,7 +62,7 @@ type PartialIndexData = Partial<IndexData> & {
 function formatData(
   data: PartialIndexData[],
   metric: IndexDataMetric,
-  digits: number = 2,
+  digits = 2,
 ) {
   if (metric === 'nav') {
     return data.map((datum) => ({
@@ -91,6 +92,7 @@ export function useChartData(
   indexTokenAddress?: string,
   metric: IndexDataMetric = 'nav',
 ) {
+  const { chainId } = useNetwork()
   const [selectedPeriod, setSelectedPeriod] = useState(
     metric === 'apy' ? ChartPeriod.Week : ChartPeriod.Day,
   )
@@ -106,6 +108,7 @@ export function useChartData(
     queryFn: async () => {
       const { sample, ...fetchSettings } = fetchSettingsByPeriod[selectedPeriod]
       const data = await fetchTokenHistoricalData({
+        chainId: chainId ?? 1,
         metrics: [metric],
         tokenAddress: indexTokenAddress!,
         ...fetchSettings,

@@ -45,10 +45,10 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
       <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
       <ModalContent
         style={{
-          backgroundColor: isDarkMode ? '#1C2C2E' : '#FCFFFF',
+          backgroundColor: isDarkMode ? '#18181b' : '#FCFFFF',
         }}
         className={clsx(
-          'border-ic-gray-100 dark:border-ic-gray-950 bg-ic-white text-ic-black dark:text-ic-white  mx-0 my-4 max-h-[50%] rounded-xl border-2 p-0 dark:bg-[#1C2C2E]',
+          'border-ic-gray-100 dark:border-ic-gray-950 bg-ic-white text-ic-black dark:text-ic-white  mx-0 my-4 max-h-[50%] rounded-xl border-2 p-0 dark:bg-[#18181b]',
           isDarkMode ? 'dark' : '',
         )}
       >

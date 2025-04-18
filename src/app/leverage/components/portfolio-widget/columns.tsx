@@ -2,7 +2,6 @@ import { Button } from '@headlessui/react'
 import { InformationCircleIcon } from '@heroicons/react/24/outline'
 import ExternalLinkIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
 import {
-  LeverageType,
   getTokenByChainAndAddress,
   isLeverageToken,
 } from '@indexcoop/tokenlists'
@@ -11,67 +10,16 @@ import Image from 'next/image'
 import { checksumAddress, formatUnits, zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
 
+import { formatAmount } from '@/app/leverage/utils/currency'
+import { leverageShortTypeMap } from '@/app/leverage/utils/get-leverage-type'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-import { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
 
+import type { GetApiV2UserAddressPositionsQueryResponse } from '@/gen'
+
 const columnsHelper =
   createColumnHelper<GetApiV2UserAddressPositionsQueryResponse[number]>()
-
-const map: Record<LeverageType, string> = {
-  Short1x: '-1x',
-  Long2x: '2x',
-  Long3x: '3x',
-}
-
-const currencyConfig: Record<
-  string,
-  { symbol: string; options: Intl.NumberFormatOptions }
-> = {
-  ETH: {
-    symbol: 'Ξ',
-    options: {
-      maximumFractionDigits: 4,
-      minimumFractionDigits: 4,
-      currencyDisplay: 'narrowSymbol',
-      currency: 'ETH',
-      style: 'currency',
-    },
-  },
-  BTC: {
-    symbol: '₿',
-    options: {
-      maximumFractionDigits: 4,
-      minimumFractionDigits: 4,
-      currencyDisplay: 'narrowSymbol',
-      currency: 'BTC',
-      style: 'currency',
-    },
-  },
-  USD: {
-    symbol: '$',
-    options: {
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-      currency: 'USD',
-      style: 'currency',
-      currencyDisplay: 'narrowSymbol',
-    },
-  },
-}
-
-const formatAmount = (amount: number = 0, denominator?: unknown) => {
-  if (!denominator || typeof denominator !== 'string') {
-    return amount.toLocaleString(navigator.language, currencyConfig.USD.options)
-  }
-
-  const config = currencyConfig[denominator] ?? currencyConfig.USD
-
-  return amount
-    .toLocaleString(navigator.language, config.options)
-    .replace(config.options.currency!, config.symbol)
-}
 
 const getAction = (
   data: GetApiV2UserAddressPositionsQueryResponse[number],
@@ -184,7 +132,7 @@ export const openPositionsColumns = [
                 : 'text-ic-blue-300',
             )}
           >
-            {map[leverageType]}
+            {leverageShortTypeMap[leverageType]}
           </div>
         )
       }
@@ -466,7 +414,7 @@ export const historyColumns = [
                 : 'text-ic-blue-300',
             )}
           >
-            {map[leverageType]}
+            {leverageShortTypeMap[leverageType]}
           </div>
         )
       }

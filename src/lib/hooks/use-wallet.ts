@@ -1,4 +1,5 @@
-import { useAccount, usePublicClient } from 'wagmi'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { usePublicClient } from 'wagmi'
 
 import { useNetwork } from '@/lib/hooks/use-network'
 
@@ -16,7 +17,7 @@ type Account = {
 
 // A wrapper to be able to easily exchange how we retrieve the account
 export const useWallet = (): Account => {
-  const { address } = useAccount()
+  const { address } = useAppKitAccount()
   const { chainId } = useNetwork()
   const publicClient = usePublicClient({ chainId })
   const isConnected = !!address

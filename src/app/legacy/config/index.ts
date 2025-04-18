@@ -4,8 +4,6 @@ import {
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
 
-import { LegacyToken } from '@/app/legacy/types'
-
 import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
@@ -14,6 +12,7 @@ import {
   GMI,
   GitcoinStakedETHIndex,
   LeveragedRethStakingYield,
+  cdETI,
   dsETH,
   ic21,
 } from './tokens/mainnet'
@@ -26,6 +25,8 @@ import {
   Matic2xFlexibleLeverageIndexPolygon,
 } from './tokens/polygon'
 
+import type { LegacyToken } from '@/app/legacy/types'
+
 const DebtIssuanceModuleAddress = '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
 const DebtIssuanceModuleV2PolygonAddress =
   '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
@@ -35,6 +36,7 @@ export const Issuance: { [key: string]: string } = {
   [Bitcoin2xFlexibleLeverageIndex.symbol]: DebtIssuanceModuleV2Address,
   [Bitcoin2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
+  [cdETI.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [DATA.symbol]: DebtIssuanceModuleAddress,
   [dsETH.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [Ethereum2xFlexibleLeverageIndex.symbol]: DebtIssuanceModuleV2Address,
@@ -63,6 +65,7 @@ export const LegacyTokenList: LegacyToken[] = [
     ...Ethereum2xFlexibleLeverageIndex,
     image: Ethereum2xFlexibleLeverageIndex.logoURI,
   },
+  { ...cdETI, image: cdETI.logoURI },
   { ...dsETH, image: dsETH.logoURI },
   { ...ic21, image: ic21.logoURI },
   { ...GitcoinStakedETHIndex, image: GitcoinStakedETHIndex.logoURI },

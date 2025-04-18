@@ -10,7 +10,7 @@ export function FaqList({ children, className }: Props) {
   return (
     <div
       className={clsx(
-        'dark:bg-ic-black dark:border-ic-gray-950 max-w-5xl rounded-xl p-8 dark:border-[0.5px] dark:bg-opacity-5 dark:backdrop-blur-2xl',
+        'dark:border-ic-gray-950 max-w-5xl rounded-xl p-8 dark:border-[0.5px] dark:bg-zinc-950 dark:bg-opacity-5 dark:backdrop-blur-2xl',
         className,
       )}
     >

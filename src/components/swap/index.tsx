@@ -1,12 +1,13 @@
 import { Flex, IconButton, Text } from '@chakra-ui/react'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { useAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
-import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { Token } from '@/constants/tokens'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
@@ -25,14 +26,15 @@ import { getTokenBySymbol } from '@/lib/utils/tokens'
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import {
-  InputSelectorToken,
+  type InputSelectorToken,
   TradeInputSelector,
 } from './components/trade-input-selector'
 import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
 import { useSwap } from './hooks/use-swap'
 import { useTokenlists } from './hooks/use-tokenlists'
-import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
+
+import type { Token } from '@/constants/tokens'
 
 type SwapProps = {
   isBuying: boolean
@@ -46,7 +48,6 @@ export const Swap = (props: SwapProps) => {
   const isSupportedNetwork = useSupportedNetworks([
     MAINNET.chainId,
     ARBITRUM.chainId,
-    BASE.chainId,
   ])
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
@@ -67,11 +68,6 @@ export const Swap = (props: SwapProps) => {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const {
-    isOpen: isTransactionReviewOpen,
-    onOpen: onOpenTransactionReview,
-    onClose: onCloseTransactionReview,
-  } = useDisclosure()
 
   const {
     fetchQuote,
@@ -86,6 +82,7 @@ export const Swap = (props: SwapProps) => {
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [selectedQuote, setSelectedQuote] = useState<QuoteType | null>(null)
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const { selectInputToken, selectOutputToken, toggleIsMinting } =
     useSelectedToken()
@@ -94,11 +91,6 @@ export const Swap = (props: SwapProps) => {
     isBuying,
     inputToken,
     outputToken,
-  )
-  const { transactionReview } = useTransactionReviewModal(
-    quoteResults,
-    selectedQuote,
-    isFetchingAnyQuote,
   )
 
   const {
@@ -127,6 +119,16 @@ export const Swap = (props: SwapProps) => {
     setSelectedQuote(quoteResults?.bestQuote)
   }, [quoteResults])
 
+  useEffect(() => {
+    const quote = quoteResults?.results[selectedQuote ?? QuoteType.index]
+    if (!quote) return
+    sendTradeEvent({
+      type: 'QUOTE',
+      quoteResult: quote,
+      quoteType: quote.type,
+    })
+  }, [quoteResults, selectedQuote, sendTradeEvent])
+
   const resetTradeData = useCallback(() => {
     setInputTokenAmountFormatted('')
     setSellTokenAmount('0')
@@ -135,6 +137,13 @@ export const Swap = (props: SwapProps) => {
   useEffect(() => {
     resetTradeData()
   }, [chainId, resetTradeData])
+
+  useEffect(() => {
+    if (tradeState.matches('reset')) {
+      resetTradeData()
+      sendTradeEvent({ type: 'RESET_DONE' })
+    }
+  }, [tradeState, resetTradeData, sendTradeEvent])
 
   const fetchOptions = useCallback(() => {
     if (!isTradablePair) return
@@ -261,7 +270,7 @@ export const Swap = (props: SwapProps) => {
           isSupportedNetwork={isSupportedNetwork}
           outputToken={outputToken}
           buttonLabelOverrides={{}}
-          onOpenTransactionReview={onOpenTransactionReview}
+          onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
           onRefetchQuote={fetchOptions}
         />
       </>
@@ -285,13 +294,9 @@ export const Swap = (props: SwapProps) => {
         address={address}
         tokens={outputTokenslist}
       />
-      {transactionReview && (
-        <TransactionReviewModal
-          isOpen={isTransactionReviewOpen}
-          onClose={onCloseTransactionReview}
-          transactionReview={transactionReview}
-        />
-      )}
+      <TransactionReviewModal
+        onClose={() => sendTradeEvent({ type: 'CLOSE' })}
+      />
     </Flex>
   )
 }

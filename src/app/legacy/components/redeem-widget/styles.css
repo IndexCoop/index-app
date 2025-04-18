@@ -1,6 +1,7 @@
 .widget {
   border: 1px solid var(--Coop-Brand-Colors-IC-Gray-1, #ebf2f2);
-  background: linear-gradient(
+  background:
+    linear-gradient(
       33deg,
       rgba(0, 189, 192, 0.05) -9.23%,
       rgba(0, 249, 228, 0.05) 48.82%,

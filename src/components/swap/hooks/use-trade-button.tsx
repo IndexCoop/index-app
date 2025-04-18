@@ -13,23 +13,28 @@ export function useTradeButton(
   const buttonLabel = useMemo(() => {
     switch (buttonState) {
       case TradeButtonState.approve:
-        return 'Approve'
+        return labelOverrides[TradeButtonState.approve] ?? 'Approve'
       case TradeButtonState.approving:
-        return 'Approving...'
+        return labelOverrides[TradeButtonState.approving] ?? 'Approving...'
       case TradeButtonState.connectWallet:
-        return 'Connect Wallet'
+        return (
+          labelOverrides[TradeButtonState.connectWallet] ?? 'Connect Wallet'
+        )
       case TradeButtonState.enterAmount:
-        return 'Enter an amount'
+        return labelOverrides[TradeButtonState.enterAmount] ?? 'Enter an amount'
       case TradeButtonState.fetchingError:
-        return 'Try again'
+        return labelOverrides[TradeButtonState.fetchingError] ?? 'Try again'
       case TradeButtonState.insufficientFunds:
-        return 'Insufficient funds'
+        return (
+          labelOverrides[TradeButtonState.insufficientFunds] ??
+          'Insufficient funds'
+        )
       case TradeButtonState.loading:
-        return 'Swapping...'
+        return labelOverrides[TradeButtonState.loading] ?? 'Swapping...'
       case TradeButtonState.notAvailable:
-        return 'Not available'
+        return labelOverrides[TradeButtonState.notAvailable] ?? 'Not available'
       case TradeButtonState.wrongNetwork:
-        return 'Wrong Network'
+        return labelOverrides[TradeButtonState.wrongNetwork] ?? 'Wrong Network'
       default:
         return labelOverrides[TradeButtonState.default] ?? 'Swap'
     }
