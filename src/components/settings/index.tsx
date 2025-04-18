@@ -1,6 +1,5 @@
 import {
   Flex,
-  IconButton,
   Input,
   Popover,
   PopoverBody,
@@ -72,15 +71,9 @@ export const Settings = (props: SettingsProps) => {
   return (
     <Popover placement='bottom-end'>
       <PopoverTrigger>
-        <IconButton
-          aria-label='Trade Settings'
-          icon={
-            <Cog8ToothIcon className='dark:text-ic-gray-400 text-ic-black m-1.5 size-4' />
-          }
-          size='sm'
-          style={{ border: 0 }}
-          variant='unstyled'
-        />
+        <button aria-label='Trade Settings' className='my-0.5 mr-1'>
+          <Cog8ToothIcon className='dark:text-ic-gray-400 text-ic-black m-1.5 size-4' />
+        </button>
       </PopoverTrigger>
       <PopoverContent
         bg={'linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'}
