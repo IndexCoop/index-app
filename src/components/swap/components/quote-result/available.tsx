@@ -1,5 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react'
-import clsx from 'clsx'
+import { Flex } from '@chakra-ui/react'
 import Image from 'next/image'
 
 import { StyledSkeleton } from '@/components/skeleton'
@@ -83,22 +82,23 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
           </Flex>
         </Flex>
       </Flex>
-      <Text
-        className={clsx(isSelected ? 'text-ic-gray-800' : 'text-ic-gray-500')}
-        fontSize={'2xl'}
-        fontWeight={500}
+      <p
+        className={cn(
+          'text-2xl font-medium',
+          isSelected ? 'text-ic-gray-800' : 'text-ic-gray-500',
+        )}
       >
         {isLoading && <StyledSkeleton width={200} />}
         {!isLoading && quote && quote.outputAmount}
-      </Text>
+      </p>
       <Flex
         direction={['column', 'row']}
         justify={['flex-start', 'space-between']}
       >
-        <Text className='text-ic-gray-500' fontSize={'xs'} fontWeight={500}>
+        <p className='text-ic-gray-500 text-xs font-medium'>
           {isLoading && <StyledSkeleton width={80} />}
           {!isLoading && quote && quote.feesTotal}
-        </Text>
+        </p>
         {quote && (
           <Flex direction='row' gap='6px'>
             <Image
@@ -108,9 +108,9 @@ export const QuoteAvailable = (props: QuoteAvailableProps) => {
               height={10}
               width={10}
             />
-            <Text className='text-ic-gray-500' fontSize={'xs'} fontWeight={500}>
+            <p className='text-ic-gray-500 text-xs font-medium'>
               {quote.feesGas}
-            </Text>
+            </p>
           </Flex>
         )}
       </Flex>
