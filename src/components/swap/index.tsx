@@ -1,4 +1,5 @@
 import { Flex } from '@chakra-ui/react'
+import { Button } from '@headlessui/react'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
@@ -225,13 +226,13 @@ export const Swap = (props: SwapProps) => {
           }}
         />
         <div className='flex h-1.5 self-center'>
-          <button
+          <Button
             className='text-ic-gray-400 border-ic-gray-400 bg-ic-white hover:bg-ic-gray-100 relative z-50 flex self-center rounded-lg border px-2 py-1'
             aria-label='switch input/output tokens'
             onClick={onSwitchTokens}
           >
             <ChevronUpDownIcon className='h-7 w-5 text-gray-500' />
-          </button>
+          </Button>
         </div>
         <TradeOutput
           caption={'You receive'}
