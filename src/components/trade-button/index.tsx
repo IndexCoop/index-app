@@ -1,8 +1,7 @@
 import clsx from 'clsx'
 
+import { Spinner } from '@/components/spinner'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-
-import { Spinner } from './spinner'
 
 interface TradeButtonProps {
   label: string
