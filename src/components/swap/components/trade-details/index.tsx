@@ -35,7 +35,6 @@ interface TradeDetailsProps {
 
 export const TradeDetails = (props: TradeDetailsProps) => {
   const { data, isLoading, prices, showWarning } = props
-  console.log('props', props)
 
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
 
