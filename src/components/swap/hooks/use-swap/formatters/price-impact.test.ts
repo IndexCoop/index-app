@@ -1,7 +1,6 @@
 import { getPriceImpact } from '@/lib/hooks/use-best-quote/utils/price-impact'
-import { colors } from '@/lib/styles/colors'
 
-import { getPriceImpactColorCoding } from './price-impact'
+import { getPriceImpactTextColor } from './price-impact'
 
 describe('getPriceImpact()', () => {
   test('should return null if input/output token amount smaller or equal 0', async () => {
@@ -42,19 +41,18 @@ describe('getPriceImpact()', () => {
 
 describe('getPriceImpaceColorCoding()', () => {
   test('should return correct color for > 5% price impact', async () => {
-    const colorCoding = getPriceImpactColorCoding(-5.1, true)
-    expect(colorCoding).toEqual(colors.ic.red)
+    const colorCoding = getPriceImpactTextColor(-5.1)
+    expect(colorCoding).toEqual('text-ic-red')
   })
 
   test('should return correct color for price impact > 3% < 5%', async () => {
-    const colorCoding = getPriceImpactColorCoding(-3.1, true)
-    expect(colorCoding).toEqual(colors.ic.blue[500])
+    const colorCoding = getPriceImpactTextColor(-3.1)
+    expect(colorCoding).toEqual('text-ic-blue-500')
   })
 
   test('should return correct color for price impact < 3%', async () => {
-    const colorCodingDarkMode = getPriceImpactColorCoding(2, true)
-    expect(colorCodingDarkMode).toEqual(colors.icGrayDarkMode)
-    const colorCodingLightMode = getPriceImpactColorCoding(2, false)
-    expect(colorCodingLightMode).toEqual(colors.icGrayLightMode)
+    const colorCodingFallback = getPriceImpactTextColor(2)
+    expect(colorCodingFallback).toContain('text-[#aaa]')
+    expect(colorCodingFallback).toContain('dark:text-[#777]')
   })
 })
