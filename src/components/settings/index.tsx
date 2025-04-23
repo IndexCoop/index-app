@@ -1,12 +1,12 @@
 import {
   Flex,
-  IconButton,
   Input,
   Popover,
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
 } from '@chakra-ui/react'
+import { Button } from '@headlessui/react'
 import { Cog8ToothIcon } from '@heroicons/react/20/solid'
 import { useMemo, useRef, useState } from 'react'
 
@@ -71,15 +71,9 @@ export const Settings = (props: SettingsProps) => {
   return (
     <Popover placement='bottom-end'>
       <PopoverTrigger>
-        <IconButton
-          aria-label='Trade Settings'
-          icon={
-            <Cog8ToothIcon className='dark:text-ic-gray-400 text-ic-black m-1.5 size-4' />
-          }
-          size='sm'
-          style={{ border: 0 }}
-          variant='unstyled'
-        />
+        <Button aria-label='Trade Settings' className='my-0.5 mr-1'>
+          <Cog8ToothIcon className='dark:text-ic-gray-400 text-ic-black m-1.5 size-4' />
+        </Button>
       </PopoverTrigger>
       <PopoverContent
         bg={'linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'}
