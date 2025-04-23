@@ -135,7 +135,6 @@ export function RedeemWidget() {
     <div className='widget w-full min-w-80 max-w-xl flex-1 flex-col space-y-4 self-center rounded-3xl p-6'>
       <Title />
       <TradeInputSelector
-        config={{ isReadOnly: false }}
         balance={inputTokenBalanceFormatted}
         caption='You redeem'
         formattedFiat={inputAmoutUsd}
