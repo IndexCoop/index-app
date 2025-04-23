@@ -146,7 +146,7 @@ export const Swap = (props: SwapProps) => {
   }, [tradeState, resetTradeData, sendTradeEvent])
 
   const fetchOptions = useCallback(() => {
-    if (!isTradablePair) return
+    // if (!isTradablePair) return
     const indexSymbol = isBuying ? outputToken.symbol : inputToken.symbol
     fetchQuote({
       isMinting: isBuying,
