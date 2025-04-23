@@ -52,7 +52,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
     : prices.outputTokenPriceUsd
 
   return (
-    <div className='mb-[6px] flex'>
+    <div className='mb-1.5 flex'>
       <Disclosure>
         {({ open }) => (
           <>
@@ -95,7 +95,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                 </div>
               </div>
             </DisclosureButton>
-            <DisclosurePanel>
+            <DisclosurePanel className='px-5 pb-4 pt-1'>
               <TradeInfoItemsContainer items={data} isLoading={isLoading} />
             </DisclosurePanel>
           </>
