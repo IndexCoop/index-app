@@ -120,7 +120,6 @@ export function EarnWidget() {
       />
       <TradeInputSelector
         showSelectorButtonChevron={isMinting}
-        config={{ isReadOnly: false }}
         balance={inputBalanceFormatted}
         caption={isMinting ? 'Deposit' : 'Withdraw'}
         formattedFiat={inputAmoutUsd}
