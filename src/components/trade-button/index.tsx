@@ -24,7 +24,7 @@ export const TradeButton = ({
     <Tooltip>
       <TooltipTrigger
         className={clsx(
-          'text-ic-white w-full rounded-3xl px-6 py-4 font-bold transition duration-300 ease-in-out',
+          'text-ic-white w-full rounded-md px-6 py-4 font-bold transition duration-300 ease-in-out',
           disabled ? 'shadow-none' : 'shadow-[0.5px_1px_2px_0_rgba(0,0,0,0.3)]',
           disabled
             ? 'bg-ic-gray-500 dark:bg-zinc-800 dark:text-neutral-400'

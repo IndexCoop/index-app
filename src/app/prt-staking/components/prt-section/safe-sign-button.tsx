@@ -35,7 +35,7 @@ export function SafeSignButton() {
   return (
     <>
       <button
-        className='text-ic-white bg-ic-blue-600 h-14 w-full rounded-[10px] font-bold shadow-[0.5px_1px_2px_0_rgba(0,0,0,0.3)]'
+        className='text-ic-white bg-ic-blue-600 h-14 w-full rounded-md font-bold shadow-[0.5px_1px_2px_0_rgba(0,0,0,0.3)]'
         onClick={onClick}
       >
         {safeAddress ? 'Sign SafeMessage' : 'Select Safe'}
