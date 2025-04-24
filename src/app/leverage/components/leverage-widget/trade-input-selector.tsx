@@ -47,7 +47,7 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
   }
 
   return (
-    <div className='bg-ic-white border-ic-gray-100 flex flex-col rounded-lg border px-4 py-5 dark:border-[#D4D4D4] dark:bg-zinc-800'>
+    <div className='bg-ic-white border-ic-gray-100 flex flex-col rounded-lg border px-4 py-4 dark:border-[#D4D4D4] dark:bg-zinc-800'>
       <div className='flex justify-between'>
         <Caption caption={props.caption} />
         <Settings
