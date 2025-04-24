@@ -39,13 +39,13 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
       <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
         <DialogPanel
           className={cn(
-            'bg-ic-white mx-4 my-0 rounded-3xl border border-zinc-700 dark:bg-[#18181b]',
+            'bg-ic-white mx-4 my-0 max-w-md rounded-3xl border border-zinc-700 dark:bg-[#18181b]',
             isDarkMode ? 'review' : '',
           )}
         >
           {modalTitle && (
             <DialogTitle className={cn(isDarkMode ? 'dark' : '')}>
-              <span className='text-ic-black dark:text-neutral-50'>
+              <span className='text-ic-black px-6 py-4 text-xl font-semibold dark:text-neutral-50'>
                 {modalTitle}
               </span>
             </DialogTitle>

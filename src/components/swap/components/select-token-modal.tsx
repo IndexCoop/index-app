@@ -40,7 +40,7 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
   const { balances } = useBalances(props.address, tokenAddresses)
   return (
     <Dialog onClose={onClose} open={isOpen} className='relative z-50'>
-      <DialogBackdrop className='fixed inset-0 bg-black/30' />
+      <DialogBackdrop className='bg-ic-black fixed inset-0 bg-opacity-60 backdrop-blur' />
       <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
         <DialogPanel
           className={clsx(
