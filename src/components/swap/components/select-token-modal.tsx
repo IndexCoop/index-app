@@ -1,3 +1,9 @@
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from '@headlessui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { useMemo } from 'react'
@@ -8,12 +14,6 @@ import { useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { formatAmountFromWei, isSameAddress } from '@/lib/utils'
 import { getAddressForToken } from '@/lib/utils/tokens'
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from '@headlessui/react'
 
 type SelectTokenModalProps = {
   address?: string

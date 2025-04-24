@@ -1,5 +1,4 @@
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
-
 import { Dispatch, SetStateAction } from 'react'
 
 import { shortenAddress } from '@/lib/utils'
