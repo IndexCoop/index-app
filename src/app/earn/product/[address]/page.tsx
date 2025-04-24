@@ -1,6 +1,5 @@
 'use client'
 
-import { useColorMode } from '@chakra-ui/react'
 import { ArrowPathIcon } from '@heroicons/react/20/solid'
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -17,7 +16,6 @@ import { formatAmount, formatDollarAmount } from '@/lib/utils'
 export default function Page() {
   const { address: queryProductAddress } = useParams()
   const { products, onSelectIndexToken } = useEarnContext()
-  const { colorMode, toggleColorMode } = useColorMode()
 
   const selectedProduct = products.find(
     (p) => p.tokenAddress === queryProductAddress,
@@ -33,18 +31,6 @@ export default function Page() {
       onSelectIndexToken(indexToken.symbol, indexToken.chainId)
     }
   }, [selectedProduct, onSelectIndexToken])
-
-  useEffect(() => {
-    if (colorMode === 'light') {
-      toggleColorMode()
-    }
-
-    return () => {
-      if (colorMode === 'dark') {
-        toggleColorMode()
-      }
-    }
-  }, [colorMode, toggleColorMode])
 
   useEffect(() => {
     document.body.classList.add('dark', 'bg-ic-black')

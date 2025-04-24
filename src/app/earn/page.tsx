@@ -1,6 +1,5 @@
 'use client'
 
-import { useColorMode } from '@chakra-ui/react'
 import { ArrowPathIcon } from '@heroicons/react/20/solid'
 import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
@@ -11,20 +10,6 @@ import { useEarnContext } from './provider'
 
 export default function Page() {
   const { products, balances } = useEarnContext()
-
-  const { colorMode, toggleColorMode } = useColorMode()
-
-  useEffect(() => {
-    if (colorMode === 'light') {
-      toggleColorMode()
-    }
-
-    return () => {
-      if (colorMode === 'dark') {
-        toggleColorMode()
-      }
-    }
-  }, [colorMode, toggleColorMode])
 
   useEffect(() => {
     document.body.classList.add('dark', 'bg-ic-black')
