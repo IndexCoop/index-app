@@ -30,34 +30,40 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const modalTitle = tradeState.matches('review') ? 'Review Transaction' : ''
 
   return (
-    <Dialog onClose={onCloseModal} open={tradeState.context.isModalOpen}>
+    <Dialog
+      onClose={onCloseModal}
+      open={tradeState.context.isModalOpen}
+      className='relative z-50'
+    >
       <DialogBackdrop className='fixed inset-0 bg-black/30' />
-      <DialogPanel
-        className={cn(
-          'bg-ic-white mx-4 my-0 rounded-3xl border border-zinc-700 dark:bg-[#18181b]',
-          isDarkMode ? 'review' : '',
-        )}
-      >
-        {modalTitle && (
-          <DialogTitle className={cn(isDarkMode ? 'dark' : '')}>
-            <span className='text-ic-black dark:text-neutral-50'>
-              {modalTitle}
-            </span>
-          </DialogTitle>
-        )}
+      <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
+        <DialogPanel
+          className={cn(
+            'bg-ic-white mx-4 my-0 rounded-3xl border border-zinc-700 dark:bg-[#18181b]',
+            isDarkMode ? 'review' : '',
+          )}
+        >
+          {modalTitle && (
+            <DialogTitle className={cn(isDarkMode ? 'dark' : '')}>
+              <span className='text-ic-black dark:text-neutral-50'>
+                {modalTitle}
+              </span>
+            </DialogTitle>
+          )}
 
-        <div className={cn('px-4 pb-4', isDarkMode ? 'dark' : '')}>
-          <SubmissionResult onClose={onCloseModal} />
+          <div className={cn('px-4 pb-4', isDarkMode ? 'dark' : '')}>
+            <SubmissionResult onClose={onCloseModal} />
 
-          {tradeState.context.transactionReview &&
-            tradeState.matches('review') && (
-              <Review
-                transactionReview={tradeState.context.transactionReview}
-                onSubmitWithSuccess={() => sendTradeEvent({ type: 'SUBMIT' })}
-              />
-            )}
-        </div>
-      </DialogPanel>
+            {tradeState.context.transactionReview &&
+              tradeState.matches('review') && (
+                <Review
+                  transactionReview={tradeState.context.transactionReview}
+                  onSubmitWithSuccess={() => sendTradeEvent({ type: 'SUBMIT' })}
+                />
+              )}
+          </div>
+        </DialogPanel>
+      </div>
     </Dialog>
   )
 }
