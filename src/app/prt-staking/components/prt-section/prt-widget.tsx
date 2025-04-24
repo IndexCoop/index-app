@@ -188,7 +188,6 @@ export function PrtWidget({ token, onClose }: Props) {
       <WidgetTabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
       {currentTab === WidgetTab.CLAIM ? <ClaimablePanel /> : <StakedPanel />}
       <TradeInputSelector
-        config={{ isReadOnly: false }}
         balance={balance.toString()}
         caption={inputSelectorCaption}
         formattedFiat=''

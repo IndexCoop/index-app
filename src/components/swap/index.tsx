@@ -213,7 +213,6 @@ export const Swap = (props: SwapProps) => {
       <SwapNavigation />
       <Flex direction='column' m='4px 0 6px'>
         <TradeInputSelector
-          config={{ isReadOnly: false }}
           balance={inputTokenBalanceFormatted}
           caption='You pay'
           formattedFiat={inputTokenAmountUsd}
