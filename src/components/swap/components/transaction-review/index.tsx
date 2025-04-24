@@ -35,7 +35,7 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
       open={tradeState.context.isModalOpen}
       className='relative z-50'
     >
-      <DialogBackdrop className='fixed inset-0 bg-black/30' />
+      <DialogBackdrop className='bg-ic-black fixed inset-0 bg-opacity-60 backdrop-blur' />
       <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
         <DialogPanel
           className={cn(
@@ -44,10 +44,13 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
           )}
         >
           {modalTitle && (
-            <DialogTitle className={cn(isDarkMode ? 'dark' : '')}>
-              <span className='text-ic-black px-6 py-4 text-xl font-semibold dark:text-neutral-50'>
-                {modalTitle}
-              </span>
+            <DialogTitle
+              className={cn(
+                'text-ic-black px-6 py-4 text-xl font-semibold dark:text-neutral-50',
+                isDarkMode ? 'dark' : '',
+              )}
+            >
+              {modalTitle}
             </DialogTitle>
           )}
 
