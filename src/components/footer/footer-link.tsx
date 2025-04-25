@@ -16,6 +16,7 @@ export function FooterLink({ children, href, target }: Props) {
   return (
     <li>
       <Link
+        prefetch={true}
         target={target ?? '_blank'}
         href={href}
         className='text-ic-gray-600 hover:text-ic-gray-900 dark:hover:text-ic-gray-400 dark:text-ic-gray-200 text-sm leading-6'
