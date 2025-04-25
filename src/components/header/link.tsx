@@ -19,6 +19,7 @@ export function HeaderLink({ href, label }: Props) {
     href === Path.SWAP ? pathname.startsWith(href) : pathname === href
   return (
     <Link
+      prefetch={true}
       className={clsx(
         'text-sm font-medium',
         isActive
