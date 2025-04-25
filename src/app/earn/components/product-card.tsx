@@ -19,7 +19,7 @@ export type ProductCardProps = {
 export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
   const { name, description, tags, tokenAddress, metrics } = product
   return (
-    <Link prefetch href={`/earn/product/${tokenAddress}`}>
+    <Link prefetch={true} href={`/earn/product/${tokenAddress}`}>
       <motion.div
         whileHover={{
           scale: 1.05,
