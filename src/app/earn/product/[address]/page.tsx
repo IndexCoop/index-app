@@ -47,7 +47,7 @@ export default function Page() {
             <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 md:flex-nowrap'>
               <div className='flex w-full flex-col gap-8'>
                 <div className='flex flex-col gap-6'>
-                  <h3 className='text-xl font-medium'>
+                  <h3 className='text-xl font-medium text-neutral-50'>
                     {selectedProduct.name}
                   </h3>
                   <p className='text-xs font-medium leading-5 text-neutral-400'>
