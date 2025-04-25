@@ -152,7 +152,7 @@ export function SubmissionResult({
                       'rounded-md transition-colors duration-300',
                       isPrivacyOn && 'bg-ic-gray-700 text-ic-gray-700',
                     )}
-                  >{`${formatAmount(positionCloseData.pnl.value, trade.underlyingAssetUnitPriceDenominator)} `}</span>
+                  >{`${formatAmount(positionCloseData.pnl.value)} `}</span>
                   <span>{`(${positionCloseData.pnl.percentage.toFixed(2)}%)`}</span>
                   <span>{positionCloseData.pnl.sign > 0 ? '💯🔥' : ''}</span>
                 </h1>
