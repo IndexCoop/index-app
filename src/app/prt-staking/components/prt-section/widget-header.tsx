@@ -20,7 +20,7 @@ export function WidgetHeader({ tokenData, onClose }: Props) {
           width={28}
         />
       </div>
-      <div className='flex-1 self-center'>{`${tokenData.symbol} PRTs`}</div>
+      <div className='text-ic-black flex-1 self-center'>{`${tokenData.symbol} PRTs`}</div>
       <button type='button' onClick={onClose}>
         <XMarkIcon className='text-ic-gray-600 size-4' aria-hidden='true' />
       </button>

@@ -1,11 +1,9 @@
 import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '@chakra-ui/react'
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from '@headlessui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { useMemo } from 'react'
@@ -41,58 +39,56 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
 
   const { balances } = useBalances(props.address, tokenAddresses)
   return (
-    <Modal onClose={onClose} isOpen={isOpen} isCentered scrollBehavior='inside'>
-      <ModalOverlay className='bg-ic-black bg-opacity-60 backdrop-blur' />
-      <ModalContent
-        style={{
-          backgroundColor: isDarkMode ? '#18181b' : '#FCFFFF',
-        }}
-        className={clsx(
-          'border-ic-gray-100 dark:border-ic-gray-950 bg-ic-white text-ic-black dark:text-ic-white  mx-0 my-4 max-h-[50%] rounded-xl border-2 p-0 dark:bg-[#18181b]',
-          isDarkMode ? 'dark' : '',
-        )}
-      >
-        <ModalHeader className='text-ic-black dark:text-ic-white'>
-          Select a token
-        </ModalHeader>
-        <ModalCloseButton className='text-ic-black dark:text-ic-white' />
-        <ModalBody className='px-0 py-4'>
-          {showBalances && (
-            <div className='flex w-full justify-end pr-4'>
-              <span className='text-ic-black dark:text-ic-white text-sm font-medium'>
-                Quantity Owned
-              </span>
-            </div>
+    <Dialog onClose={onClose} open={isOpen} className='relative z-50'>
+      <DialogBackdrop className='bg-ic-black fixed inset-0 bg-opacity-60 backdrop-blur' />
+      <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
+        <DialogPanel
+          className={clsx(
+            'border-ic-gray-100 dark:border-ic-gray-950 bg-ic-white text-ic-black dark:text-ic-white  mx-0 my-4 w-full max-w-sm rounded-xl border-2 p-0 dark:bg-[#18181b]',
+            isDarkMode ? 'dark' : '',
           )}
-          {tokens.length > 0 &&
-            tokens.map((token) => {
-              const tokenBalance = balances.find((bal) =>
-                isSameAddress(
-                  bal.token,
-                  getAddressForToken(token.symbol, chainId) ?? '',
-                ),
-              )
-              const balanceDisplay = formatAmountFromWei(
-                tokenBalance?.value ?? BigInt(0),
-                token.decimals,
-                3,
-              )
-              return (
-                <TokenItem
-                  balance={showBalances ? balanceDisplay : ''}
-                  key={token.symbol}
-                  extraTitle={undefined}
-                  item={token}
-                  showNetwork={props.showNetworks}
-                  onClick={() =>
-                    onSelectedToken(token.symbol, token.chainId ?? 1)
-                  }
-                />
-              )
-            })}
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+        >
+          <DialogTitle className='text-ic-black dark:text-ic-white px-6 py-4 text-xl font-semibold'>
+            Select a token
+          </DialogTitle>
+          <div className='px-0 py-4'>
+            {showBalances && (
+              <div className='flex w-full justify-end pr-4'>
+                <span className='text-ic-black dark:text-ic-white text-sm font-medium'>
+                  Quantity Owned
+                </span>
+              </div>
+            )}
+            {tokens.length > 0 &&
+              tokens.map((token) => {
+                const tokenBalance = balances.find((bal) =>
+                  isSameAddress(
+                    bal.token,
+                    getAddressForToken(token.symbol, chainId) ?? '',
+                  ),
+                )
+                const balanceDisplay = formatAmountFromWei(
+                  tokenBalance?.value ?? BigInt(0),
+                  token.decimals,
+                  3,
+                )
+                return (
+                  <TokenItem
+                    balance={showBalances ? balanceDisplay : ''}
+                    key={token.symbol}
+                    extraTitle={undefined}
+                    item={token}
+                    showNetwork={props.showNetworks}
+                    onClick={() =>
+                      onSelectedToken(token.symbol, token.chainId ?? 1)
+                    }
+                  />
+                )
+              })}
+          </div>
+        </DialogPanel>
+      </div>
+    </Dialog>
   )
 }
 
