@@ -130,6 +130,7 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
 
     if (buttonState === TradeButtonState.insufficientFunds) return
 
+    console.log({ isApprovedForSwap, shouldApprove })
     if (!isApprovedForSwap && shouldApprove) {
       await onApproveForSwap()
       return

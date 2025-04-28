@@ -45,6 +45,7 @@ export const useApproval = (
   }, [amount, data, isApproving, token])
 
   const approve = useCallback(async () => {
+    console.log('inside approve')
     if (!publicClient || !walletClient) return false
     setIsApproving(true)
     try {
@@ -61,7 +62,8 @@ export const useApproval = (
       await refetch()
       setIsApproving(false)
       return true
-    } catch {
+    } catch (e) {
+      console.log('caught approve errror', e)
       setIsApproving(false)
       return false
     }
