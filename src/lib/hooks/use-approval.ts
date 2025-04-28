@@ -23,6 +23,7 @@ export const useApproval = (
     if (!publicClient) return null
     const chainId = publicClient?.chain.id
     console.log('chainId', chainId)
+    console.log('token', token)
     return getAddressForToken(token.symbol, chainId) ?? null
   }, [publicClient, token])
 
