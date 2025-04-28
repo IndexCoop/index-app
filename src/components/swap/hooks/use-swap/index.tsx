@@ -73,6 +73,9 @@ export function useSwap(
     [selectedQuote],
   )
 
+  console.log('selectedQuote', selectedQuote)
+  console.log('quoteResults', quoteResults)
+
   const contract = useMemo(
     () => selectedQuote?.contract ?? null,
     [selectedQuote],

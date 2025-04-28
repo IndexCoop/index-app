@@ -22,12 +22,10 @@ export const useApproval = (
   const tokenAddress = useMemo(() => {
     if (!publicClient) return null
     const chainId = publicClient?.chain.id
-    console.log('chainId', chainId)
-    console.log('token', token)
     return getAddressForToken(token.symbol, chainId) ?? null
   }, [publicClient, token])
 
-  console.log('tokenAddress', tokenAddress)
+  console.log('spenderAddress', spenderAddress)
 
   const { data, refetch } = useReadContract({
     address: tokenAddress as Address,
