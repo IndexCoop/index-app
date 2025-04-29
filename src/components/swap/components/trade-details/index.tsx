@@ -85,7 +85,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                     )}
                   </div>
                 </div>
-                <div className={cn('flex gap-4', open && 'hidden')}>
+                <div className={cn('flex', open && 'hidden')}>
                   {!isLoading &&
                     props.selectedQuoteType === QuoteType.index && (
                       <Tag label={'LI.FI'} />
@@ -97,7 +97,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                   {!isLoading && (
                     <ChevronDownIcon
                       className={cn(
-                        'ml-2 size-5',
+                        'size-5',
                         open && 'rotate-180 transform transition',
                       )}
                     />
