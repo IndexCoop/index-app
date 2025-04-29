@@ -41,10 +41,10 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
   return (
     <Dialog onClose={onClose} open={isOpen} className='relative z-50'>
       <DialogBackdrop className='bg-ic-black fixed inset-0 bg-opacity-60 backdrop-blur' />
-      <div className='fixed inset-0 flex w-screen justify-center p-4'>
+      <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
         <DialogPanel
           className={clsx(
-            'border-ic-gray-100 dark:border-ic-gray-950 bg-ic-white text-ic-black dark:text-ic-white  mx-0 my-4 w-full max-w-sm overflow-hidden rounded-xl border-2 p-0 dark:bg-[#18181b]',
+            'border-ic-gray-100 dark:border-ic-gray-950 bg-ic-white text-ic-black dark:text-ic-white  mx-0 my-4 w-full max-w-sm overflow-scroll rounded-xl border-2 p-0 dark:bg-[#18181b]',
             isDarkMode ? 'dark' : '',
           )}
         >
