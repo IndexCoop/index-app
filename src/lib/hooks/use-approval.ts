@@ -25,8 +25,6 @@ export const useApproval = (
     return getAddressForToken(token.symbol, chainId) ?? null
   }, [publicClient, token])
 
-  console.log('spenderAddress', spenderAddress)
-
   const { data, refetch } = useReadContract({
     address: tokenAddress as Address,
     abi: ERC20_ABI,
@@ -47,7 +45,6 @@ export const useApproval = (
   }, [amount, data, isApproving, token])
 
   const approve = useCallback(async () => {
-    console.log('inside approve')
     if (!publicClient || !walletClient) return false
     setIsApproving(true)
     try {
@@ -64,8 +61,7 @@ export const useApproval = (
       await refetch()
       setIsApproving(false)
       return true
-    } catch (e) {
-      console.log('caught approve errror', e)
+    } catch {
       setIsApproving(false)
       return false
     }
