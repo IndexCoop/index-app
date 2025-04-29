@@ -59,7 +59,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
       <Disclosure>
         {({ open }) => (
           <>
-            <DisclosureButton className='border-ic-gray-200 w-full border px-5 py-4'>
+            <DisclosureButton className='w-full px-5 py-4'>
               <div className='flex flex-1 items-center justify-between pr-1'>
                 <div className='flex'>
                   {showWarning && (
@@ -85,7 +85,7 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                     )}
                   </div>
                 </div>
-                <div className={cn('flex', open && 'hidden')}>
+                <div className={cn('flex items-center', open && 'hidden')}>
                   {!isLoading &&
                     props.selectedQuoteType === QuoteType.index && (
                       <Tag label={'LI.FI'} />
