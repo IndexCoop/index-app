@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { usePublicClient } from 'wagmi'
 
 import { ARBITRUM } from '@/constants/chains'
 import { isAvailableForFlashMint } from '@/lib/hooks/use-best-quote/utils/available'
@@ -41,7 +40,6 @@ export const useBestQuote = (
   inputToken: Token,
   outputToken: Token,
 ) => {
-  const publicClient = usePublicClient()
   const { address, provider } = useWallet()
   const { chainId: networkChainId } = useNetwork()
   const { logEvent } = useAnalytics()
@@ -80,8 +78,10 @@ export const useBestQuote = (
         return
       }
 
-      if (!provider || !publicClient || !chainId || !address) {
-        console.error('Error fetching quotes - no provider or chain id present')
+      if (!provider || !chainId || !address) {
+        console.error(
+          'Error fetching quotes - no provider | chain id | address present',
+        )
         return
       }
 
@@ -168,7 +168,6 @@ export const useBestQuote = (
       outputToken,
       nativeTokenPrice,
       provider,
-      publicClient,
     ],
   )
 
