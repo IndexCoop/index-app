@@ -3,7 +3,10 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from '@headlessui/react'
-import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
+import {
+  ChevronDownIcon,
+  ExclamationTriangleIcon,
+} from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { useState } from 'react'
 
@@ -52,11 +55,11 @@ export const TradeDetails = (props: TradeDetailsProps) => {
     : prices.outputTokenPriceUsd
 
   return (
-    <div className='mb-1.5 flex'>
+    <div className='mb-1.5 flex flex-col'>
       <Disclosure>
         {({ open }) => (
           <>
-            <DisclosureButton className='py-2'>
+            <DisclosureButton className='border-ic-gray-200 w-full border px-5 py-4'>
               <div className='flex flex-1 items-center justify-between pr-1'>
                 <div className='flex'>
                   {showWarning && (
@@ -91,6 +94,14 @@ export const TradeDetails = (props: TradeDetailsProps) => {
                     props.selectedQuoteType === QuoteType.flashmint && (
                       <FlashMintTag />
                     )}
+                  {!isLoading && (
+                    <ChevronDownIcon
+                      className={cn(
+                        'ml-2 size-5',
+                        open && 'rotate-180 transform transition',
+                      )}
+                    />
+                  )}
                   {isLoading && <StyledSkeleton width={70} />}
                 </div>
               </div>
