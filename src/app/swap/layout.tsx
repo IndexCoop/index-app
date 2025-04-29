@@ -1,5 +1,3 @@
-import { Flex } from '@chakra-ui/react'
-
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 
@@ -14,11 +12,11 @@ export default function Layout({ children }: LayoutProps) {
     <div className='bg-ic-white dark:bg-ic-black h-full w-full'>
       <Providers>
         <Header />
-        <Flex direction='column' mb='50px'>
-          <Flex maxWidth='1024px' m={['0 auto']} p='60px 16px 0px 16px'>
+        <div className='mb-[50px] flex flex-col'>
+          <div className='mx-auto my-0 flex max-w-5xl px-4 pt-[60px]'>
             {children}
-          </Flex>
-        </Flex>
+          </div>
+        </div>
         <Footer />
       </Providers>
     </div>

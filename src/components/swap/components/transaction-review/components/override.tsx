@@ -1,5 +1,4 @@
-import { Checkbox } from '@chakra-ui/react'
-import { Field, Label } from '@headlessui/react'
+import { Checkbox, Field, Label } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 
 type OverrideProps = {

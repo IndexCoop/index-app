@@ -1,4 +1,3 @@
-import { Flex } from '@chakra-ui/react'
 import { Button } from '@headlessui/react'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useAtom } from 'jotai'
@@ -18,7 +17,6 @@ import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
-import { colors } from '@/lib/styles/colors'
 import { formatWei, isValidTokenInput, parseUnits } from '@/lib/utils'
 import { getMaxBalance } from '@/lib/utils/max-balance'
 import { selectSlippage } from '@/lib/utils/slippage'
@@ -200,18 +198,9 @@ export const Swap = (props: SwapProps) => {
   }
 
   return (
-    <Flex
-      background='linear-gradient(33deg, rgba(0, 189, 192, 0.05) -9.23%, rgba(0, 249, 228, 0.05) 48.82%, rgba(212, 0, 216, 0.05) 131.54%), linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'
-      border='1px solid'
-      borderColor={colors.ic.gray[100]}
-      borderRadius='24px'
-      boxShadow='0.5px 1px 2px 0px rgba(44, 51, 51, 0.25), 2px 2px 1px 0px #FCFFFF inset'
-      direction='column'
-      p='8px 16px 16px'
-      height={'100%'}
-    >
+    <div className='border-ic-gray-100 swap-widget flex h-full flex-col rounded-3xl border px-4 pb-4 pt-2'>
       <SwapNavigation />
-      <Flex direction='column' m='4px 0 6px'>
+      <div className='mx-0 mb-1.5 mt-1 flex flex-col'>
         <TradeInputSelector
           balance={inputTokenBalanceFormatted}
           caption='You pay'
@@ -243,7 +232,7 @@ export const Swap = (props: SwapProps) => {
             if (outputTokenslist.length > 1) onOpenSelectOutputToken()
           }}
         />
-      </Flex>
+      </div>
       <>
         {tradeData.length > 0 && (
           <TradeDetails
@@ -297,6 +286,6 @@ export const Swap = (props: SwapProps) => {
       <TransactionReviewModal
         onClose={() => sendTradeEvent({ type: 'CLOSE' })}
       />
-    </Flex>
+    </div>
   )
 }

@@ -1,4 +1,3 @@
-import { Flex } from '@chakra-ui/react'
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { ReactNode } from 'react'
 
@@ -105,13 +104,13 @@ export const WarningCompProtection = () => {
   if (!ethereum) return null
 
   return (
-    <Flex direction={'column'} m='20px 16px 8px'>
-      <Flex align={'center'} direction={'row'}>
+    <div className='mx-4 mb-2 mt-5 flex flex-col'>
+      <div className='flex items-center'>
         <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5' />
         <p className='text-ic-gray-600 ml-2 text-sm font-semibold'>
           MEV Protection
         </p>
-      </Flex>
+      </div>
       <p className='text-ic-gray-600 mt-2 text-xs font-normal leading-[18px]'>
         It is highly recommended to use an MEV protected RPC.{' '}
         <span onClick={onClick} className='cursor-pointer underline'>
@@ -122,7 +121,7 @@ export const WarningCompProtection = () => {
           Learn More about MEV protection
         </a>
       </p>
-    </Flex>
+    </div>
   )
 }
 

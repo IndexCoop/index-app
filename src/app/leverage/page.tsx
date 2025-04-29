@@ -1,6 +1,5 @@
 'use client'
 
-import { useColorMode } from '@chakra-ui/react'
 import { useEffect } from 'react'
 
 import { LeveragePanel } from '@/app/leverage/components/leverage-panel'
@@ -8,20 +7,6 @@ import { LeveragePanel } from '@/app/leverage/components/leverage-panel'
 import { FaqSection } from './components/faq-section'
 
 export default function Page() {
-  const { colorMode, toggleColorMode } = useColorMode()
-
-  useEffect(() => {
-    if (colorMode === 'light') {
-      toggleColorMode()
-    }
-
-    return () => {
-      if (colorMode === 'dark') {
-        toggleColorMode()
-      }
-    }
-  }, [colorMode, toggleColorMode])
-
   useEffect(() => {
     document.body.classList.add('dark', 'bg-zinc-950')
     return () => {
