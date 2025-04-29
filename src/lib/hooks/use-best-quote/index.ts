@@ -42,7 +42,7 @@ export const useBestQuote = (
   outputToken: Token,
 ) => {
   const publicClient = usePublicClient()
-  const { address, provider, rpcUrl } = useWallet()
+  const { address, provider } = useWallet()
   const { chainId: networkChainId } = useNetwork()
   const { logEvent } = useAnalytics()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
@@ -85,9 +85,8 @@ export const useBestQuote = (
         publicClient: !!publicClient,
         chainId,
         address,
-        rpcUrl,
       })
-      if (!provider || !publicClient || !chainId || !address || !rpcUrl) {
+      if (!provider || !publicClient || !chainId || !address) {
         console.error('Error fetching quotes - no provider or chain id present')
         return
       }
@@ -176,7 +175,6 @@ export const useBestQuote = (
       nativeTokenPrice,
       provider,
       publicClient,
-      rpcUrl,
     ],
   )
 
