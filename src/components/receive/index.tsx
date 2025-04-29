@@ -1,8 +1,9 @@
 import { StyledSkeleton } from '@/components/skeleton'
 import { Caption } from '@/components/swap/components/caption'
 import { SelectorButton } from '@/components/swap/components/selector-button'
-import { Token } from '@/constants/tokens'
 import { cn } from '@/lib/utils/tailwind'
+
+import type { Token } from '@/constants/tokens'
 
 type ReceiveProps = {
   isLoading: boolean

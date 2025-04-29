@@ -29,7 +29,7 @@ import {
   markets,
   supportedLeverageTypes,
 } from './constants'
-import { type LeverageToken, LeverageType, Market } from './types'
+import { type LeverageToken, LeverageType, type Market } from './types'
 
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
@@ -237,12 +237,13 @@ export function LeverageProvider(props: { children: any }) {
     (input: string) => {
       if (input === '') {
         setInputValue('')
+        resetQuote()
         return
       }
       if (!isValidTokenInput(input, inputToken.decimals)) return
       setInputValue(input || '')
     },
-    [inputToken],
+    [inputToken, resetQuote],
   )
 
   const onSelectLeverageType = useCallback(

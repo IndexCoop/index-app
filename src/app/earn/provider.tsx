@@ -161,12 +161,13 @@ export function EarnProvider(props: {
     (input: string) => {
       if (input === '') {
         setInputValue('')
+        resetQuote()
         return
       }
       if (!isValidTokenInput(input, inputToken.decimals)) return
       setInputValue(input || '')
     },
-    [inputToken],
+    [inputToken, resetQuote],
   )
 
   const onSelectInputToken = useCallback(
