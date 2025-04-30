@@ -6,6 +6,7 @@ import { Caption } from '@/components/swap/components/caption'
 
 type ReceiveProps = {
   isLoading: boolean
+  showOutputAmount?: boolean
   outputAmounts: string[]
   outputAmountsUsd: string[]
   ouputTokens: LegacyToken[]
@@ -16,6 +17,7 @@ type ReceiveProps = {
 export function Receive(props: ReceiveProps) {
   const {
     isLoading,
+    showOutputAmount,
     outputAmounts,
     outputAmountsUsd,
     ouputTokens,
@@ -26,12 +28,12 @@ export function Receive(props: ReceiveProps) {
       <div className='flex flex-col'>
         <Caption caption='Receive' />
         {isLoading && <StyledSkeleton width={120} />}
-        {!isLoading && ouputTokens.length === 1 && (
+        {!isLoading && showOutputAmount && ouputTokens.length === 1 && (
           <span className='dark:text-ic-white text-ic-gray-600'>
             {outputAmounts[0]}
           </span>
         )}
-        {!isLoading && (
+        {!isLoading && showOutputAmount && (
           <span className='dark:text-ic-white text-ic-gray-400 text-xs'>
             {totalOutputAmountUsd}
           </span>

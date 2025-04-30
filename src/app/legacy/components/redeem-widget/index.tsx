@@ -147,6 +147,7 @@ export function RedeemWidget() {
       <Receive
         isLoading={isFetchingQuote}
         outputAmounts={outputAmounts}
+        showOutputAmount={inputTokenAmount > BigInt(0)}
         outputAmountsUsd={outputAmountsUsd}
         ouputTokens={outputTokens}
         totalOutputAmountUsd={outputAmountUsd}

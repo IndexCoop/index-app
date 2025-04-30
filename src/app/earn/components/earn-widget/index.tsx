@@ -144,6 +144,7 @@ export function EarnWidget() {
           >
             <Receive
               isLoading={isFetchingQuote}
+              showOutputAmount={inputTokenAmount > BigInt(0)}
               outputAmount={ouputAmount}
               outputAmountUsd={outputAmountUsd}
               selectedOutputToken={outputToken}
