@@ -57,6 +57,7 @@ const createTradeMachine = () =>
     },
     states: {
       idle: {
+        entry: 'resetContext',
         on: {
           QUOTE: {
             target: 'quote',

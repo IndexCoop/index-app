@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 import { usePublicClient } from 'wagmi'
 
@@ -38,6 +38,9 @@ export function useQuoteResult(request: QuoteRequest) {
   const { logEvent } = useAnalytics()
   const sendTradeEvent = useSetAtom(tradeMachineAtom)
 
+  const tradeState = useAtomValue(tradeMachineAtom)
+  console.log({ tradeState })
+
   const [quoteResult, setQuoteResult] = useState<QuoteResult>({
     type: QuoteType.flashmint,
     isAvailable: true,
@@ -46,13 +49,13 @@ export function useQuoteResult(request: QuoteRequest) {
   })
 
   const fetchFlashMintQuote = async () => {
+    sendTradeEvent({ type: 'FETCHING_QUOTE' })
+
     if (!address) return null
     if (!chainId) return null
     if (!publicClient) return null
     if (inputTokenAmount <= 0) return null
     if (!indexToken) return null
-
-    sendTradeEvent({ type: 'FETCHING_QUOTE' })
 
     const [inputTokenPrice, outputTokenPrice] = await Promise.all([
       getTokenPrice(inputToken, chainId),
