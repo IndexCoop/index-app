@@ -145,17 +145,16 @@ export function EarnProvider(props: {
     [inputToken, inputValue],
   )
 
-  const { isFetchingQuote, quoteResult, resetQuote, refetchQuote } =
-    useQuoteResult({
-      address,
-      chainId,
-      isMinting,
-      inputToken,
-      outputToken,
-      inputTokenAmount,
-      inputValue,
-      slippage,
-    })
+  const { isFetchingQuote, quoteResult, refetchQuote } = useQuoteResult({
+    address,
+    chainId,
+    isMinting,
+    inputToken,
+    outputToken,
+    inputTokenAmount,
+    inputValue,
+    slippage,
+  })
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -214,7 +213,6 @@ export function EarnProvider(props: {
 
   const reset = () => {
     setInputValue('')
-    resetQuote()
   }
 
   const toggleIsMinting = useCallback(() => {

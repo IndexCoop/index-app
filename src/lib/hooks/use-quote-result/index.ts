@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import { useEffect } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
-import { type QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 
@@ -36,17 +36,9 @@ export function useQuoteResult(request: QuoteRequest) {
   const indexToken = isMinting ? outputToken : inputToken
   const publicClient = usePublicClient({ chainId })
   const { logEvent } = useAnalytics()
-  const sendTradeEvent = useSetAtom(tradeMachineAtom)
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
-  const tradeState = useAtomValue(tradeMachineAtom)
   console.log({ tradeState })
-
-  const [quoteResult, setQuoteResult] = useState<QuoteResult>({
-    type: QuoteType.flashmint,
-    isAvailable: true,
-    quote: null,
-    error: null,
-  })
 
   const fetchFlashMintQuote = async () => {
     sendTradeEvent({ type: 'FETCHING_QUOTE' })
@@ -72,15 +64,6 @@ export function useQuoteResult(request: QuoteRequest) {
       outputToken,
       outputTokenPrice,
       slippage,
-    })
-  }
-
-  const resetQuote = () => {
-    setQuoteResult({
-      type: QuoteType.flashmint,
-      isAvailable: true,
-      quote: null,
-      error: null,
     })
   }
 
@@ -125,8 +108,6 @@ export function useQuoteResult(request: QuoteRequest) {
       error: null,
     }
 
-    setQuoteResult(quoteResult)
-
     if (quoteResult.quote) {
       sendTradeEvent({
         type: 'QUOTE',
@@ -149,9 +130,8 @@ export function useQuoteResult(request: QuoteRequest) {
 
   return {
     isFetchingQuote: isFetchingFlashMintQuote,
-    quoteResult,
+    quoteResult: tradeState.context.quoteResult,
     isFetchingFlashMintQuote,
-    resetQuote,
     refetchQuote,
   }
 }
