@@ -52,7 +52,6 @@ const createTradeMachine = () =>
     on: {
       INITIALIZE: {
         target: '.idle',
-        actions: 'resetContext',
       },
     },
     states: {
@@ -175,7 +174,6 @@ const createTradeMachine = () =>
         on: {
           RESET_DONE: {
             target: 'idle',
-            actions: 'resetContext',
           },
         },
       },
