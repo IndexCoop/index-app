@@ -79,7 +79,10 @@ export const TradeInputSelector = (props: TradeInputSelectorProps) => {
         />
       </div>
       <div className='mt-3 flex items-start justify-between'>
-        <PriceUsd fiat={formattedFiat} priceImpact={props.priceImpact} />
+        <PriceUsd
+          fiat={Number(props.selectedTokenAmount) > 0 ? formattedFiat : ''}
+          priceImpact={props.priceImpact}
+        />
         {showSelectorButton ? (
           <Balance balance={balance} onClick={props.onClickBalance} />
         ) : null}

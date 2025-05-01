@@ -130,7 +130,7 @@ export function SubmissionResult({
         <>
           <div className='border-ic-gray-700 border-b'>
             <div className='my-4 text-center'>
-              <h1 className='font-bold capitalize'>
+              <h1 className='font-bold capitalize text-neutral-50'>
                 {tradeState.context.transactionStatus}
               </h1>
               <h3 className='text-ic-gray-400 text-xs'>
