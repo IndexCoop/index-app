@@ -38,8 +38,6 @@ export function useQuoteResult(request: QuoteRequest) {
   const { logEvent } = useAnalytics()
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
-  console.log({ tradeState })
-
   const fetchFlashMintQuote = async () => {
     sendTradeEvent({ type: 'FETCHING_QUOTE' })
 
