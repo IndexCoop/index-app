@@ -4,6 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number'] {
+    -webkit-appearance: none;
+    margin: 0;
+    -moz-appearance: textfield !important;
+  }
+}
+
 html,
 body,
 :root {
@@ -126,4 +136,22 @@ body,
   animation: rotate 180s alternate infinite;
   background-attachment: fixed;
   filter: blur(20px) opacity(20%) saturate(100%);
+}
+
+.swap-widget {
+  background:
+    linear-gradient(
+      33deg,
+      rgba(0, 189, 192, 0.05) -9.23%,
+      rgba(0, 249, 228, 0.05) 48.82%,
+      rgba(212, 0, 216, 0.05) 131.54%
+    ),
+    linear-gradient(
+      187deg,
+      rgb(252, 255, 255) -184.07%,
+      rgb(247, 248, 248) 171.05%
+    );
+  box-shadow:
+    rgba(44, 51, 51, 0.25) 0.5px 1px 2px 0px,
+    rgb(252, 255, 255) 2px 2px 1px 0px inset;
 }

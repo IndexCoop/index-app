@@ -33,7 +33,7 @@ const Position = ({
   )
 
   return product && token ? (
-    <Link prefetch href={`/earn/product/${product.tokenAddress}`}>
+    <Link prefetch={true} href={`/earn/product/${product.tokenAddress}`}>
       <motion.div
         whileHover={{
           scale: 1.01,

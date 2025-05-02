@@ -155,7 +155,7 @@ export function EarnProvider(props: { children: any }) {
     [inputToken, inputValue],
   )
 
-  const { isFetchingQuote, quoteResult, resetQuote } = useQuoteResult({
+  const { isFetchingQuote, quoteResult } = useQuoteResult({
     address,
     chainId,
     isMinting,
@@ -290,7 +290,6 @@ export function EarnProvider(props: { children: any }) {
 
   const reset = () => {
     setInputValue('')
-    resetQuote()
     forceRefetchBalances()
   }
 

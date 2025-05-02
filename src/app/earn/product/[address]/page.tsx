@@ -1,6 +1,5 @@
 'use client'
 
-import { useColorMode } from '@chakra-ui/react'
 import { ArrowPathIcon } from '@heroicons/react/20/solid'
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -17,7 +16,6 @@ import { formatAmount, formatDollarAmount } from '@/lib/utils'
 export default function Page() {
   const { address: queryProductAddress } = useParams()
   const { products, onSelectIndexToken } = useEarnContext()
-  const { colorMode, toggleColorMode } = useColorMode()
 
   const selectedProduct = products.find(
     (p) => p.tokenAddress === queryProductAddress,
@@ -35,18 +33,6 @@ export default function Page() {
   }, [selectedProduct, onSelectIndexToken])
 
   useEffect(() => {
-    if (colorMode === 'light') {
-      toggleColorMode()
-    }
-
-    return () => {
-      if (colorMode === 'dark') {
-        toggleColorMode()
-      }
-    }
-  }, [colorMode, toggleColorMode])
-
-  useEffect(() => {
     document.body.classList.add('dark', 'bg-ic-black')
     return () => {
       document.body.classList.remove('dark', 'bg-ic-black')
@@ -61,7 +47,7 @@ export default function Page() {
             <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 md:flex-nowrap'>
               <div className='flex w-full flex-col gap-8'>
                 <div className='flex flex-col gap-6'>
-                  <h3 className='text-xl font-medium'>
+                  <h3 className='text-xl font-medium text-neutral-50'>
                     {selectedProduct.name}
                   </h3>
                   <p className='text-xs font-medium leading-5 text-neutral-400'>

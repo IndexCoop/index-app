@@ -166,17 +166,16 @@ export function LeverageProvider(props: { children: any }) {
     [inputToken, inputValue],
   )
 
-  const { isFetchingQuote, quoteResult, resetQuote, refetchQuote } =
-    useQuoteResult({
-      address,
-      chainId,
-      isMinting,
-      inputToken,
-      outputToken,
-      inputTokenAmount,
-      inputValue,
-      slippage,
-    })
+  const { isFetchingQuote, quoteResult, refetchQuote } = useQuoteResult({
+    address,
+    chainId,
+    isMinting,
+    inputToken,
+    outputToken,
+    inputTokenAmount,
+    inputValue,
+    slippage,
+  })
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
@@ -304,7 +303,6 @@ export function LeverageProvider(props: { children: any }) {
 
   const reset = () => {
     setInputValue('')
-    resetQuote()
     forceRefetchBalances()
   }
 

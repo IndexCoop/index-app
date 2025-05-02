@@ -7,6 +7,7 @@ import type { Token } from '@/constants/tokens'
 
 type ReceiveProps = {
   isLoading: boolean
+  showOutputAmount?: boolean
   outputAmount: string
   outputAmountUsd?: string
   selectedOutputToken: Token
@@ -15,8 +16,14 @@ type ReceiveProps = {
 }
 
 export function Receive(props: ReceiveProps) {
-  const { isLoading, outputAmount, outputAmountUsd, selectedOutputToken } =
-    props
+  const {
+    isLoading,
+    showOutputAmount,
+    outputAmount,
+    outputAmountUsd,
+    selectedOutputToken,
+  } = props
+
   return (
     <div
       className={cn(
@@ -27,7 +34,7 @@ export function Receive(props: ReceiveProps) {
       <div className='flex flex-col'>
         <Caption caption='Receive' />
         {isLoading && <StyledSkeleton width={120} />}
-        {!isLoading && (
+        {!isLoading && showOutputAmount && (
           <span className='dark:text-ic-white text-ic-gray-600 mt-1'>
             {outputAmount}
           </span>
@@ -35,7 +42,7 @@ export function Receive(props: ReceiveProps) {
         {isLoading && typeof outputAmountUsd === 'string' && (
           <StyledSkeleton width={80} />
         )}
-        {!isLoading && outputAmountUsd && (
+        {!isLoading && showOutputAmount && outputAmountUsd && (
           <span className='dark:text-ic-gray-300 text-ic-gray-400 mt-1 text-xs'>
             {outputAmountUsd}
           </span>

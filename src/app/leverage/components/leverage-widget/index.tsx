@@ -10,7 +10,6 @@ import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { Receive } from '@/components/receive'
-import { Settings } from '@/components/settings'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
@@ -21,7 +20,6 @@ import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
 import { getMaxBalance } from '@/lib/utils/max-balance'
 
@@ -87,13 +85,6 @@ export function LeverageWidget() {
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
 
-  const {
-    auto: autoSlippage,
-    isAuto: isAutoSlippage,
-    set: setSlippage,
-    slippage,
-  } = useSlippage()
-
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
     const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)
@@ -136,7 +127,6 @@ export function LeverageWidget() {
       />
       <div className='relative'>
         <TradeInputSelector
-          config={{ isReadOnly: false }}
           balance={inputBalanceFormatted}
           caption='Pay'
           formattedFiat={inputAmoutUsd}
@@ -146,19 +136,11 @@ export function LeverageWidget() {
           onClickBalance={onClickBalance}
           onSelectToken={onOpenSelectInputToken}
         />
-        <div className='absolute right-2 top-2'>
-          <Settings
-            isAuto={isAutoSlippage}
-            isDarkMode={true}
-            slippage={slippage}
-            onChangeSlippage={setSlippage}
-            onClickAuto={autoSlippage}
-          />
-        </div>
       </div>
 
       <Receive
         isLoading={isFetchingQuote}
+        showOutputAmount={inputTokenAmount > BigInt(0)}
         outputAmount={ouputAmount}
         outputAmountUsd={outputAmountUsd}
         selectedOutputToken={outputToken}
