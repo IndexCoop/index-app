@@ -236,13 +236,12 @@ export function LeverageProvider(props: { children: any }) {
     (input: string) => {
       if (input === '') {
         setInputValue('')
-        resetQuote()
         return
       }
       if (!isValidTokenInput(input, inputToken.decimals)) return
       setInputValue(input || '')
     },
-    [inputToken, resetQuote],
+    [inputToken],
   )
 
   const onSelectLeverageType = useCallback(
