@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
+import get from 'lodash/get'
 import { useEffect } from 'react'
 import { usePublicClient } from 'wagmi'
 
@@ -13,7 +14,6 @@ import {
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 
 import type { Token } from '@/constants/tokens'
-import get from 'lodash/get'
 
 // Ideally this could come from Flashmint SDK
 const quoteErrorCode = {

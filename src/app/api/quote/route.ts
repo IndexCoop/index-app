@@ -1,4 +1,3 @@
-import { getApiV2Quote } from '@/gen'
 import { EthAddress, type QuoteToken } from '@indexcoop/flash-mint-sdk'
 import {
   getTokenByChainAndAddress,
@@ -7,6 +6,8 @@ import {
 } from '@indexcoop/tokenlists'
 import { isAxiosError } from 'axios'
 import { NextResponse } from 'next/server'
+
+import { getApiV2Quote } from '@/gen'
 
 import type { NextRequest } from 'next/server'
 import type { Address } from 'viem'

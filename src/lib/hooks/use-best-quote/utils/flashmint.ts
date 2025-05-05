@@ -1,3 +1,4 @@
+import { GetApiV2QuoteQuery } from '@/gen'
 import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
@@ -19,7 +20,6 @@ import { getPriceImpact } from './price-impact'
 
 import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import type { Token } from '@/constants/tokens'
-import { GetApiV2QuoteQuery } from '@/gen'
 import type { Hex } from 'viem'
 
 type QuoteError = {
