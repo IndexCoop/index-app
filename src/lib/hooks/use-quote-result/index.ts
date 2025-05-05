@@ -1,15 +1,36 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
+import get from 'lodash/get'
 import { useEffect } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
+import {
+  getFlashMintQuote,
+  isQuoteError,
+} from '@/lib/hooks/use-best-quote/utils/flashmint'
 import { getTokenPrice } from '@/lib/hooks/use-token-price'
 
 import type { Token } from '@/constants/tokens'
+
+// Ideally this could come from Flashmint SDK
+const quoteErrorCode = {
+  ComponentsSwapDataError: 'Component Swap Error',
+  ComponentQuotesError: 'Component Quote Error',
+  IS_AAVE_NULL: 'Aave',
+  LEVERAGED_TOKEN_DATA_NULL: 'Leveraged Token Data Error',
+  DEBT_COLLATERAL_SWAP_DATA_NULL: 'Debt - Collateral Swap Error',
+  INPUT_OUTPUT_SWAP_DATA_NULL: 'Input - Output Swap Error',
+  MintingNotSupported: 'Minting Not Supported',
+  WETHAddressNotDefined: 'Weth Address Not Defined',
+  QuoteResultNull: 'Quote Not Found',
+  CONFIGURATION_ERROR: 'Configuration Error',
+  ENCODING_ERROR: 'Encoding Error',
+  INDEX_TOKEN_NOT_SUPPORTED: 'Token Not Supported',
+  QUOTE_FAILED: 'Quote Failed',
+}
 
 type QuoteRequest = {
   address: string | undefined
@@ -51,7 +72,8 @@ export function useQuoteResult(request: QuoteRequest) {
       getTokenPrice(inputToken, chainId),
       getTokenPrice(outputToken, chainId),
     ])
-    return await getFlashMintQuote({
+
+    return getFlashMintQuote({
       isMinting,
       account: address,
       chainId,
@@ -95,6 +117,18 @@ export function useQuoteResult(request: QuoteRequest) {
   useEffect(() => {
     if (flashmintQuote === undefined || isFetchingFlashMintQuote) return
 
+    if (isQuoteError(flashmintQuote)) {
+      logEvent('Quote Failed', flashmintQuote)
+
+      sendTradeEvent({
+        type: 'QUOTE_NOT_FOUND',
+        reason:
+          get(quoteErrorCode, `${flashmintQuote.type}`) ?? 'Unknown Reason',
+      })
+
+      return
+    }
+
     if (flashmintQuote) {
       logEvent('Quote Received', formatQuoteAnalytics(flashmintQuote))
     }
@@ -111,11 +145,6 @@ export function useQuoteResult(request: QuoteRequest) {
         type: 'QUOTE',
         quoteResult,
         quoteType: flashmintQuote?.type ?? QuoteType.flashmint,
-      })
-    } else {
-      sendTradeEvent({
-        type: 'QUOTE_NOT_FOUND',
-        reason: 'Insufficient liquidity', // This could come from the quote api.
       })
     }
   }, [
