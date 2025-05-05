@@ -2,10 +2,7 @@ import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
-import {
-  getAddressForToken,
-  getCurrencyTokensForIndex,
-} from '@/lib/utils/tokens'
+import { getAddressForToken } from '@/lib/utils/tokens'
 
 import {
   type IndexQuoteRequest,
