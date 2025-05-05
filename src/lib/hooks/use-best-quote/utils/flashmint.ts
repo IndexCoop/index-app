@@ -1,3 +1,4 @@
+import { GetApiV2QuoteQuery } from '@/gen'
 import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
@@ -19,8 +20,16 @@ import { getPriceImpact } from './price-impact'
 
 import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import type { Token } from '@/constants/tokens'
-import type { GetApiV2Quote200 } from '@/gen'
 import type { Hex } from 'viem'
+
+type QuoteError = {
+  type?: string
+  message: string
+}
+
+export const isQuoteError = (quote: unknown): quote is QuoteError => {
+  return typeof quote === 'object' && quote !== null && 'message' in quote
+}
 
 async function getEnhancedFlashMintQuote(
   account: string,
@@ -33,13 +42,15 @@ async function getEnhancedFlashMintQuote(
   outputTokenPrice: number,
   slippage: number,
   chainId: number,
-): Promise<Quote | null> {
+): Promise<Quote | QuoteError> {
   const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
   const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
 
   if (!inputTokenAddress || !outputTokenAddress) {
-    console.warn('Error unkown input/output token')
-    return null
+    return {
+      type: 'UnknownToken',
+      message: 'Unknown input/output token',
+    }
   }
 
   const indexToken = isMinting ? outputToken : inputToken
@@ -52,8 +63,10 @@ async function getEnhancedFlashMintQuote(
       .length > 0
 
   if (!isAllowedCurrency) {
-    console.warn('Currency not allowed:', inputOutputToken.symbol)
-    return null
+    return {
+      type: 'CurrencyNotAllowed',
+      message: 'Currency not allowed',
+    }
   }
 
   try {
@@ -74,8 +87,11 @@ async function getEnhancedFlashMintQuote(
       body: JSON.stringify(request),
     })
 
-    const quoteFM: GetApiV2Quote200 = await response.json()
-    if (quoteFM) {
+    const result = await response.json()
+
+    if (response.status === 200) {
+      const quoteFM = result as GetApiV2QuoteQuery['Response']
+
       const {
         inputAmount: quoteInputAmount,
         outputAmount: quoteOutputAmount,
@@ -160,11 +176,17 @@ async function getEnhancedFlashMintQuote(
         slippage,
         tx: transaction,
       }
+    } else {
+      return result as GetApiV2QuoteQuery['Errors']
     }
   } catch (e) {
     console.warn('Error fetching FlashMintQuote', e)
   }
-  return null
+
+  return {
+    type: 'QuoteNotFound',
+    message: 'Unknown error',
+  }
 }
 
 interface FlashMintQuoteRequest extends IndexQuoteRequest {
@@ -200,7 +222,7 @@ export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
   let savedQuote: Quote | null = null
 
   for (let t = 2; t > 0; t--) {
-    const flashMintQuote = await getEnhancedFlashMintQuote(
+    const flashmintQuoteResult = await getEnhancedFlashMintQuote(
       account,
       isMinting,
       inputToken,
@@ -212,13 +234,14 @@ export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
       slippage,
       chainId,
     )
-    // If there is no FlashMint quote, return immediately
-    if (flashMintQuote === null) return savedQuote
-    // For redeeming return quote immdediately
-    if (!isMinting) return flashMintQuote
-    savedQuote = flashMintQuote
 
-    const diff = inputTokenAmountWei - flashMintQuote.inputTokenAmount
+    // If there is no FlashMint quote, return immediately
+    if (isQuoteError(flashmintQuoteResult)) return flashmintQuoteResult
+    // For redeeming return quote immdediately
+    if (!isMinting) return flashmintQuoteResult
+    savedQuote = flashmintQuoteResult
+
+    const diff = inputTokenAmountWei - flashmintQuoteResult.inputTokenAmount
     const factor = determineFactor(diff, inputTokenAmountWei)
 
     indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)

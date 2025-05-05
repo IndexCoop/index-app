@@ -17,7 +17,7 @@ import {
   type ZeroExQuote,
 } from './types'
 import { getBestQuote } from './utils/best-quote'
-import { getFlashMintQuote } from './utils/flashmint'
+import { getFlashMintQuote, isQuoteError } from './utils/flashmint'
 import { getIndexQuote } from './utils/index-quote'
 
 import type { Token } from '@/constants/tokens'
@@ -115,12 +115,18 @@ export const useBestQuote = (
             outputTokenPrice,
           })
 
-          logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
-          setIsFetchingFlashMint(false)
-          setQuoteFlashmint(quoteFlashMint)
+          if (isQuoteError(quoteFlashMint)) {
+            logEvent('Quote Failed', quoteFlashMint)
+            setQuoteFlashmint(null)
+          } else {
+            logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
+            setQuoteFlashmint(quoteFlashMint)
+          }
         } else {
           setQuoteFlashmint(null)
         }
+
+        setIsFetchingFlashMint(false)
       }
 
       const fetchIndexSwapQuote = async () => {
