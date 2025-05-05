@@ -27,9 +27,9 @@ const quoteErrorCode = {
   WETHAddressNotDefined: 'Weth Address Not Defined',
   QuoteResultNull: 'Quote Not Found',
   CONFIGURATION_ERROR: 'Configuration Error',
-  ENCODING_ERROR: 'msg',
-  INDEX_TOKEN_NOT_SUPPORTED: 'msg',
-  QUOTE_FAILED: 'msg',
+  ENCODING_ERROR: 'Encoding Error',
+  INDEX_TOKEN_NOT_SUPPORTED: 'Token Not Supported',
+  QUOTE_FAILED: 'Quote Failed',
 }
 
 type QuoteRequest = {
