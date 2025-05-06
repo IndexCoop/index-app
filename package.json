@@ -18,7 +18,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@0xarc-io/analytics": "2.2.3",
+    "@0xarc-io/analytics": "2.4.2",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@floating-ui/react": "0.26.25",
