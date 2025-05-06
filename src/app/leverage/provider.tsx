@@ -29,7 +29,7 @@ import {
   markets,
   supportedLeverageTypes,
 } from './constants'
-import { type LeverageToken, LeverageType, Market } from './types'
+import { type LeverageToken, LeverageType, type Market } from './types'
 
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 

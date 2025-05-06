@@ -4,9 +4,10 @@ import {
   isAddressEqual,
   isProductToken,
 } from '@indexcoop/tokenlists'
+import { isAxiosError } from 'axios'
 import { NextResponse } from 'next/server'
 
-import { getQuote } from '@/app/api/quote/utils'
+import { getApiV2Quote } from '@/gen'
 
 import type { NextRequest } from 'next/server'
 import type { Address } from 'viem'
@@ -64,15 +65,20 @@ export async function POST(req: NextRequest) {
       slippage: String(slippage),
     }
 
-    const quote = await getQuote(quoteRequest)
+    const { data: quote } = await getApiV2Quote(quoteRequest)
 
     if (!quote) {
       return NextResponse.json({ message: 'No quote found.' }, { status: 404 })
     }
 
-    return NextResponse.json(quote)
+    return NextResponse.json(quote, { status: 200 })
   } catch (error) {
-    console.error(error)
+    if (isAxiosError(error) && error.response) {
+      return NextResponse.json(error.response.data, {
+        status: error.response.status,
+      })
+    }
+
     return NextResponse.json(error, { status: 500 })
   }
 }

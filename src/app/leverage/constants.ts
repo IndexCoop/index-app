@@ -7,7 +7,7 @@ import { arbitrum, base, mainnet } from 'viem/chains'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { ETH, type Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
+import { ETH, type Token, USDC, WBTC, WETH } from '@/constants/tokens'
 
 import {
   LeverageMarket,
@@ -40,7 +40,7 @@ export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
     case ARBITRUM.chainId:
-      return [ETH, WETH, WBTC, USDC, USDT]
+      return [ETH, WETH, WBTC, USDC]
     case BASE.chainId:
       return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
     default:
@@ -82,7 +82,6 @@ export function getPathForMarket(market: string, chainId?: number) {
     chainId && existingMarket.networks.some((network) => network.id === chainId)
       ? chainId
       : defaultChainId
-  console.log(queryChainId, defaultAsset, existingMarket)
   return `/leverage?sell=ETH&buy=${defaultAsset[queryChainId]}&network=${queryChainId}`
 }
 
