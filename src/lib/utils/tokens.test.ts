@@ -1,7 +1,8 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { currencies } from '@/constants/tokenlists'
 import { ETH, MATIC, STETH, WETH } from '@/constants/tokens'
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   getAddressForToken,
   getCurrencyTokens,
