@@ -1,12 +1,9 @@
 'use client'
 
-import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
 import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
-import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { useTradeButton } from '@/components/swap/hooks/use-trade-button'
 import {
   TradeButtonState,
@@ -18,6 +15,7 @@ import { useApproval } from '@/lib/hooks/use-approval'
 import { useCustomAppKit } from '@/lib/hooks/use-custom-app-kit'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
+import { useTrade } from '@/lib/hooks/use-trade'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { formatWei } from '@/lib/utils'
 
@@ -47,6 +45,7 @@ export function RedeemWidget() {
     onSelectInputToken,
     outputTokens,
     issuance,
+    quoteResult,
     reset,
   } = useRedeem()
   const {
@@ -59,6 +58,8 @@ export function RedeemWidget() {
     outputAmountUsd,
     forceRefetch,
   } = useFormattedData()
+
+  const { executeTrade, isTransacting } = useTrade()
 
   const {
     isApproved,
@@ -83,7 +84,6 @@ export function RedeemWidget() {
     outputTokens[0],
     inputValue,
   )
-  const sendTradeEvent = useSetAtom(tradeMachineAtom)
 
   const { buttonLabel, isDisabled } = useTradeButton(buttonState, {
     [TradeButtonState.default]: 'Redeem',
@@ -119,16 +119,26 @@ export function RedeemWidget() {
     }
 
     if (buttonState === TradeButtonState.default) {
-      sendTradeEvent({ type: 'REVIEW' })
+      if (!quoteResult || quoteResult.quote === null) return
+      try {
+        await executeTrade(quoteResult.quote)
+        reset()
+        forceRefetch()
+      } catch (error) {
+        console.error('Error executing legacy redeem trade')
+      }
     }
   }, [
     buttonState,
+    executeTrade,
+    forceRefetch,
     isApproved,
     shouldApprove,
     openConnectView,
     openNetworksView,
     onApprove,
-    sendTradeEvent,
+    quoteResult,
+    reset,
   ])
 
   return (
@@ -157,7 +167,7 @@ export function RedeemWidget() {
       <TradeButton
         label={buttonLabel}
         isDisabled={isDisabled}
-        isLoading={isFetchingQuote}
+        isLoading={isFetchingQuote || isTransacting}
         onClick={onClickButton}
       />
       <SelectTokenModal
@@ -171,13 +181,6 @@ export function RedeemWidget() {
         }}
         address={address}
         tokens={inputTokenList}
-      />
-      <TransactionReviewModal
-        onClose={() => {
-          reset()
-          forceRefetch()
-          sendTradeEvent({ type: 'CLOSE' })
-        }}
       />
     </div>
   )
