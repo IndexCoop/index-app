@@ -1,4 +1,4 @@
-import { icethLogo, indexLogo } from '@/lib/utils/assets'
+import { indexLogo } from '@/lib/utils/assets'
 
 export interface Token {
   name: string
@@ -13,36 +13,12 @@ export interface Token {
  * Indices
  */
 
-export const DefiPulseIndex: Token = {
-  name: 'DeFi Pulse Index',
-  symbol: 'DPI',
-  image: 'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg',
-  address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
-  decimals: 18,
-}
-
 export const IndexToken: Token = {
   name: 'Index Token',
   symbol: 'INDEX',
   address: '0x0954906da0Bf32d5479e25f46056d22f08464cab',
   decimals: 18,
   image: indexLogo,
-}
-
-export const MetaverseIndex: Token = {
-  name: 'Metaverse Index',
-  symbol: 'MVI',
-  address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
-  decimals: 18,
-  image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
-}
-
-export const icETHIndex: Token = {
-  name: 'Interest Compounding ETH Index',
-  symbol: 'icETH',
-  address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
-  decimals: 18,
-  image: icethLogo,
 }
 
 /**

@@ -16,7 +16,6 @@ import {
   USDT,
   WBTC,
   WETH,
-  icETHIndex,
 } from '@/constants/tokens'
 
 import type { Address } from 'viem'
@@ -61,7 +60,7 @@ export function getCurrencyTokensForIndex(
   if (chainId === BASE.chainId) {
     return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
   }
-  if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
+  if (index.symbol === 'INDEX') return [ETH, WETH, STETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
