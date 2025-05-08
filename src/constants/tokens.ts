@@ -1,5 +1,3 @@
-import { indexLogo } from '@/lib/utils/assets'
-
 export interface Token {
   name: string
   symbol: string
@@ -7,18 +5,6 @@ export interface Token {
   decimals: number
   image: string
   chainId?: number
-}
-
-/**
- * Indices
- */
-
-export const IndexToken: Token = {
-  name: 'Index Token',
-  symbol: 'INDEX',
-  address: '0x0954906da0Bf32d5479e25f46056d22f08464cab',
-  decimals: 18,
-  image: indexLogo,
 }
 
 /**

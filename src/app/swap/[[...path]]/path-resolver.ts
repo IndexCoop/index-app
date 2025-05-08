@@ -1,10 +1,15 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { indicesTokenList } from '@/constants/tokenlists'
-import { ETH, IndexToken, Token } from '@/constants/tokens'
+import { ETH, type Token } from '@/constants/tokens'
 import {
   getCurrencyTokens,
   getCurrencyTokensForIndex,
   getDefaultIndex,
 } from '@/lib/utils/tokens'
+
+const IndexTokenlist = getTokenByChainAndSymbol(1, 'INDEX')
+const IndexToken = { ...IndexTokenlist, image: IndexTokenlist.logoURI } as Token
 
 interface ResolvedPath {
   inputToken: string | null
@@ -20,7 +25,7 @@ interface ResolvedTokenPath {
 export class PathResolver {
   // Returns resolved token path - always.
   // If the path shouldn't be resolvable - a default will be returned.
-  resolve(path: string[], chainId: number = 1): ResolvedTokenPath {
+  resolve(path: string[], chainId = 1): ResolvedTokenPath {
     const defaultIndex = getDefaultIndex(chainId)
     const symbols = this.convertPathToSymbols(path)
 
