@@ -1,6 +1,3 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { mainnet } from 'viem/chains'
-
 import { icethLogo, indexLogo } from '@/lib/utils/assets'
 
 export interface Token {
@@ -22,12 +19,6 @@ export const DefiPulseIndex: Token = {
   image: 'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg',
   address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
   decimals: 18,
-}
-
-const hyeth = getTokenByChainAndSymbol(mainnet.id, 'hyETH')
-export const HighYieldETHIndex: Token = {
-  ...hyeth,
-  image: hyeth.logoURI,
 }
 
 export const IndexToken: Token = {
