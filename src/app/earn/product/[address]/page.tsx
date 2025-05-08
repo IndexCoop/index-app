@@ -4,22 +4,27 @@ import { ArrowPathIcon } from '@heroicons/react/20/solid'
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { EarnWidget } from '@/app/earn/components/earn-widget'
 import { ProductTitlePill } from '@/app/earn/components/product-pill'
 import { ProductTag } from '@/app/earn/components/product-tag'
 import { StatBox } from '@/app/earn/components/stat-box'
+import { WstEthBanner } from '@/app/earn/components/wsteth-banner'
 import { useEarnContext } from '@/app/earn/provider'
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
 export default function Page() {
   const { address: queryProductAddress } = useParams()
-  const { products, onSelectIndexToken } = useEarnContext()
+  const { indexToken, products, onSelectIndexToken } = useEarnContext()
 
   const selectedProduct = products.find(
     (p) => p.tokenAddress === queryProductAddress,
   )
+
+  const shouldShowWstethBanner = useMemo(() => {
+    return indexToken.symbol === 'icETH'
+  }, [indexToken])
 
   useEffect(() => {
     const indexToken = getTokenByChainAndAddress(
@@ -44,6 +49,11 @@ export default function Page() {
       {selectedProduct && (
         <motion.div className='mt-8 flex w-full flex-col items-center'>
           <div className='flex w-full max-w-7xl flex-col gap-4'>
+            {shouldShowWstethBanner && (
+              <div className='w-full py-6'>
+                <WstEthBanner />
+              </div>
+            )}
             <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 md:flex-nowrap'>
               <div className='flex w-full flex-col gap-8'>
                 <div className='flex flex-col gap-6'>
