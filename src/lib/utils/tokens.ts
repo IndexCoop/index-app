@@ -6,7 +6,6 @@ import {
   currencies,
   indicesTokenList,
   indicesTokenListArbitrum,
-  indicesTokenListBase,
 } from '@/constants/tokenlists'
 import {
   ETH,
@@ -69,7 +68,6 @@ export function getCurrencyTokensForIndex(
 
 export function getDefaultIndex(chainId = 1): Token {
   if (chainId === ARBITRUM.chainId) return indicesTokenListArbitrum[0]
-  if (chainId === BASE.chainId) return indicesTokenListBase[0]
   return indicesTokenList[0]
 }
 
