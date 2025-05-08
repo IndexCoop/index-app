@@ -83,8 +83,12 @@ export const Swap = (props: SwapProps) => {
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
-  const { selectInputToken, selectOutputToken, toggleIsMinting } =
-    useSelectedToken()
+  const {
+    selectInputToken,
+    selectOutputToken,
+    shouldShowToggle,
+    toggleIsMinting,
+  } = useSelectedToken()
   const { inputTokenslist, outputTokenslist } = useTokenlists(
     chainId ?? 1,
     isBuying,
@@ -213,15 +217,17 @@ export const Swap = (props: SwapProps) => {
             if (inputTokenslist.length > 1) onOpenSelectInputToken()
           }}
         />
-        <div className='flex h-1.5 self-center'>
-          <Button
-            className='text-ic-gray-400 border-ic-gray-400 bg-ic-white hover:bg-ic-gray-100 relative z-50 flex self-center rounded-lg border px-2 py-1'
-            aria-label='switch input/output tokens'
-            onClick={onSwitchTokens}
-          >
-            <ChevronUpDownIcon className='h-7 w-5 text-gray-500' />
-          </Button>
-        </div>
+        {shouldShowToggle && (
+          <div className='flex h-1.5 self-center'>
+            <Button
+              className='text-ic-gray-400 border-ic-gray-400 bg-ic-white hover:bg-ic-gray-100 relative z-50 flex self-center rounded-lg border px-2 py-1'
+              aria-label='switch input/output tokens'
+              onClick={onSwitchTokens}
+            >
+              <ChevronUpDownIcon className='h-7 w-5 text-gray-500' />
+            </Button>
+          </div>
+        )}
         <TradeOutput
           caption={'You receive'}
           selectedToken={outputToken}
