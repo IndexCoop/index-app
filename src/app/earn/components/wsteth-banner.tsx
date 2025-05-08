@@ -1,13 +1,11 @@
 import Link from 'next/link'
 
-import { cn } from '@/lib/utils/tailwind'
-
 export function WstEthBanner() {
   return (
     <div
-      className={cn(
-        'xs:flex-row mx-4 flex flex-col items-center gap-4 rounded-lg bg-gradient-to-r from-[#3C6073] to-[#1D2041] p-4',
-      )}
+      className={
+        'xs:flex-row mx-4 flex flex-col items-center gap-4 rounded-lg bg-gradient-to-r from-[#3C6073] to-[#1D2041] p-4'
+      }
     >
       <div className='flex flex-col items-center'>
         <p className='text-ic-white text-xs font-normal'>
