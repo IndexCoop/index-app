@@ -9,7 +9,7 @@ export function WstEthBanner() {
         'xs:flex-row mx-4 flex flex-col items-center gap-4 rounded-lg bg-gradient-to-r from-[#3C6073] to-[#1D2041] p-4',
       )}
     >
-      <div className='flex flex-col items-center gap-1 text-center'>
+      <div className='flex flex-col items-center'>
         <p className='text-ic-white text-xs font-normal'>
           Due to new borrowing being disabled on Aave V2,{' '}
           <span className='underline'>
