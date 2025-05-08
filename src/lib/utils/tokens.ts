@@ -6,7 +6,6 @@ import {
   currencies,
   indicesTokenList,
   indicesTokenListArbitrum,
-  indicesTokenListBase,
 } from '@/constants/tokenlists'
 import {
   ETH,
@@ -17,7 +16,6 @@ import {
   USDT,
   WBTC,
   WETH,
-  icETHIndex,
 } from '@/constants/tokens'
 
 import type { Address } from 'viem'
@@ -62,14 +60,13 @@ export function getCurrencyTokensForIndex(
   if (chainId === BASE.chainId) {
     return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
   }
-  if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
+  if (index.symbol === 'icETH') return [ETH, WETH, STETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
 
 export function getDefaultIndex(chainId = 1): Token {
   if (chainId === ARBITRUM.chainId) return indicesTokenListArbitrum[0]
-  if (chainId === BASE.chainId) return indicesTokenListBase[0]
   return indicesTokenList[0]
 }
 

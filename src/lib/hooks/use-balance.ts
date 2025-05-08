@@ -1,11 +1,13 @@
+import { isAddressEqual } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { PublicClient } from 'viem'
+import { useCallback } from 'react'
 import { usePublicClient } from 'wagmi'
 
 import { ETH } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { ERC20_ABI } from '@/lib/utils/abi/interfaces'
+
+import type { PublicClient } from 'viem'
 
 export class BalanceProvider {
   constructor(readonly publicClient: PublicClient) {}
@@ -27,41 +29,33 @@ export class BalanceProvider {
 }
 
 export function useBalance(address?: string, token?: string) {
-  const [balance, setBalance] = useState<bigint>(BigInt(0))
   const { chainId } = useNetwork()
-
   const publicClient = usePublicClient({
     chainId,
   })
 
-  const fetchBalance = useCallback(async () => {
+  const fetchBalance = async () => {
     if (!address || !token || !publicClient) {
-      setBalance(BigInt(0))
-      return
+      return BigInt(0)
     }
 
     const balanceProvider = new BalanceProvider(publicClient)
-    const isETH = token.toLowerCase() === ETH.address!.toLowerCase()
-    const balance = isETH
+    const isETH = isAddressEqual(token.toLowerCase(), ETH.address)
+
+    return isETH
       ? await balanceProvider.getNativeBalance(address)
       : await balanceProvider.getErc20Balance(address, token)
-    setBalance(balance)
-  }, [address, token, publicClient])
-
-  const forceRefetch = () => {
-    fetchBalance()
   }
 
-  useEffect(() => {
-    fetchBalance()
-  }, [fetchBalance])
+  const { data: balance = BigInt(0), refetch } = useQuery({
+    queryKey: ['balance', address, token, publicClient?.chain.id],
+    queryFn: fetchBalance,
+    enabled: Boolean(address && token && publicClient),
+  })
 
   return {
-    balance: useMemo(() => {
-      if (address && token) return balance
-      return BigInt(0)
-    }, [address, balance, token]),
-    forceRefetch,
+    balance: address && token ? balance : BigInt(0),
+    forceRefetch: refetch,
   }
 }
 

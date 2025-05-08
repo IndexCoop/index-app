@@ -98,7 +98,7 @@ export const useBestQuote = (
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
-      const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
+      const canFlashmintIndexToken = isAvailableForFlashMint(indexToken.symbol)
       const canSwapIndexToken = true
 
       const fetchFlashMintQuote = async () => {
@@ -184,7 +184,7 @@ export const useBestQuote = (
       quote0x?.outputTokenAmountUsdAfterFees ?? null,
       quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null,
     )
-    const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
+    const canFlashmintIndexToken = isAvailableForFlashMint(indexToken.symbol)
     const canSwapIndexToken = true
     const results = {
       bestQuote,

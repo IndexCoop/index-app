@@ -1,12 +1,15 @@
 'use client'
 
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import { createContext, useContext, useMemo, useState } from 'react'
 import { isAddress } from 'viem'
 
-import { slippageDefault } from '@/constants/slippage'
+import { slippageDefault, slippageMap } from '@/constants/slippage'
 
 import type { Address } from 'viem'
+
+const icETH = getTokenByChainAndSymbol(1, 'icETH')
 
 interface Context {
   isAuto: boolean
@@ -73,8 +76,12 @@ export const SlippageProvider = (props: { children: any }) => {
       // } else {
       //   slippage = slippageDefault
       // }
-      setAutoSlippage(slippageDefault)
-      return slippageDefault
+      const isIcEth = isAddressEqual(selectedProduct?.address, icETH.address)
+      const autoSlippage = isIcEth
+        ? (slippageMap.get(icETH.address) ?? slippageDefault)
+        : slippageDefault
+      setAutoSlippage(autoSlippage)
+      return autoSlippage
     },
   })
 
