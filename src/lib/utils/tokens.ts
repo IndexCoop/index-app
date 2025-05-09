@@ -1,4 +1,4 @@
-import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
@@ -17,8 +17,6 @@ import {
   WBTC,
   WETH,
 } from '@/constants/tokens'
-
-import type { Address } from 'viem'
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
 
@@ -98,23 +96,6 @@ export function getTokenBySymbol(symbol: string): Token | null {
     (token) => token.symbol.toLowerCase() === symbol.toLowerCase(),
   )
   return currencyToken ?? null
-}
-
-export function isBaseToken(
-  chainId: number,
-  inputToken: Address,
-  outputToken: Address,
-): boolean {
-  if (chainId !== base.id) return false
-  const eth2x = getTokenByChainAndSymbol(base.id, 'ETH2X')
-  const eth3x = getTokenByChainAndSymbol(base.id, 'ETH3X')
-  const isEth2x =
-    isAddressEqual(inputToken, eth2x.symbol) ||
-    isAddressEqual(outputToken, eth2x.symbol)
-  const isEth3x =
-    isAddressEqual(inputToken, eth3x.symbol) ||
-    isAddressEqual(outputToken, eth3x.symbol)
-  return chainId === base.id && !isEth2x && !isEth3x
 }
 
 export function digitsByAddress(address: string): number {
