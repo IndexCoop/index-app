@@ -33,7 +33,9 @@ export const leverageTokens = [
   ...ethLeverageTokenSymbols,
   ...btcLeverageTokenSymbols,
   'uSOL2x',
+  'uSOL3x',
   'uSUI2x',
+  'uSUI3x',
 ]
 
 export function getCurrencyTokens(chainId: number): Token[] {
@@ -104,9 +106,11 @@ const defaultAssets = {
   },
   [LeverageMarket.SOLUSD]: {
     [LeverageStrategy.Long2x]: { symbol: 'uSOL2x', chainId: base.id },
+    [LeverageStrategy.Long3x]: { symbol: 'uSOL3x', chainId: base.id },
   },
   [LeverageMarket.SUIUSD]: {
-    [LeverageStrategy.Long2x]: { symbol: 'uSUI2x', chainId: base.id },
+    [LeverageStrategy.Long2x]: { symbol: 'uSOL2x', chainId: base.id },
+    [LeverageStrategy.Long3x]: { symbol: 'uSOL3x', chainId: base.id },
   },
 } as Record<
   LeverageMarket,
@@ -339,9 +343,21 @@ export const ratios: LeverageRatio[] = [
     chain: base,
   },
   {
+    icon: getTokenByChainAndSymbol(base.id, 'uSOL3x').logoURI,
+    market: LeverageMarket.SOLUSD,
+    strategy: LeverageStrategy.Long3x,
+    chain: base,
+  },
+  {
     icon: getTokenByChainAndSymbol(base.id, 'uSUI2x').logoURI,
     market: LeverageMarket.SUIUSD,
     strategy: LeverageStrategy.Long2x,
+    chain: base,
+  },
+  {
+    icon: getTokenByChainAndSymbol(base.id, 'uSUI3x').logoURI,
+    market: LeverageMarket.SUIUSD,
+    strategy: LeverageStrategy.Long3x,
     chain: base,
   },
 ].sort((a, b) => {

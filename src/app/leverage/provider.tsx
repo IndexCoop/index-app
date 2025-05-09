@@ -195,12 +195,16 @@ export function LeverageProvider(props: { children: any }) {
 
   const market = useMemo(() => {
     if (
-      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol
+      indexToken.symbol ===
+        getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol ||
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSOL3x').symbol
     ) {
       return 'SOL / USD'
     }
     if (
-      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSUI2x').symbol
+      indexToken.symbol ===
+        getTokenByChainAndSymbol(base.id, 'uSUI2x').symbol ||
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSUI3x').symbol
     ) {
       return 'SUI / USD'
     }
@@ -220,14 +224,12 @@ export function LeverageProvider(props: { children: any }) {
   const getSupportedLeverageTypes = useMemo(() => {
     const eth2xBtc = getTokenByChainAndSymbol(chainId, 'ETH2xBTC')
     const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
-    const uSol2x = getTokenByChainAndSymbol(base.id, 'uSOL2x')
-    const uSui2x = getTokenByChainAndSymbol(base.id, 'uSUI2x')
+
     const isRatioToken =
       indexToken.symbol === eth2xBtc?.symbol ||
       indexToken.symbol === btc2xEth?.symbol
-    const isSol = indexToken.symbol === uSol2x?.symbol
-    const isSui = indexToken.symbol === uSui2x?.symbol
-    return isRatioToken || isSol || isSui
+
+    return isRatioToken
       ? [LeverageType.Long2x]
       : supportedLeverageTypes[chainId]
   }, [chainId, indexToken])
