@@ -195,12 +195,16 @@ export function LeverageProvider(props: { children: any }) {
 
   const market = useMemo(() => {
     if (
-      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol
+      indexToken.symbol ===
+        getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol ||
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSOL3x').symbol
     ) {
       return 'SOL / USD'
     }
     if (
-      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSUI2x').symbol
+      indexToken.symbol ===
+        getTokenByChainAndSymbol(base.id, 'uSUI2x').symbol ||
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSUI3x').symbol
     ) {
       return 'SUI / USD'
     }
