@@ -8,7 +8,9 @@ const uSui = getTokenByChainAndSymbol(base.id, 'uSUI')
 
 export function getLeverageBaseToken(symbol: string) {
   if (symbol.toLowerCase() === 'uSOL2x'.toLowerCase()) return uSol
+  if (symbol.toLowerCase() === 'uSOL3x'.toLowerCase()) return uSol
   if (symbol.toLowerCase() === 'uSUI2x'.toLowerCase()) return uSui
+  if (symbol.toLowerCase() === 'uSUI3x'.toLowerCase()) return uSui
   if (symbol.toLowerCase() === 'BTC2xETH'.toLowerCase()) return BTC
   if (symbol.toLowerCase() === 'ETH2xBTC'.toLowerCase()) return ETH
   if (symbol.includes('BTC')) {
