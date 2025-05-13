@@ -2,16 +2,14 @@ import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { TxSimulator } from '@/lib/utils/simulator'
 
-import { QuoteTransaction } from './use-best-quote/types'
+import type { QuoteTransaction } from './use-best-quote/types'
 
 export const useSimulateQuote = (tx: QuoteTransaction | null) => {
   const { chainId } = useNetwork()
   const { provider } = useWallet()
 
   async function simulateTrade(): Promise<boolean> {
-    if (!chainId) return false
-    if (!provider) return false
-    if (!tx) return false
+    if (!chainId || !provider || !tx) return false
     const accessKey = process.env.NEXT_PUBLIC_TENDERLY_ACCESS_KEY ?? ''
     const project = process.env.NEXT_PUBLIC_TENDERLY_PROJECT ?? ''
     const user = process.env.NEXT_PUBLIC_TENDERLY_USER ?? ''

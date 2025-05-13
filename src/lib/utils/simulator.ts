@@ -1,4 +1,4 @@
-import { QuoteTransaction } from '@/lib/hooks/use-best-quote/types'
+import type { QuoteTransaction } from '@/lib/hooks/use-best-quote/types'
 
 export class TxSimulator {
   /**
@@ -63,8 +63,6 @@ export class TxSimulator {
       // simulation config (tenderly specific)
       save_if_fails: true,
       save: true,
-      shared: true,
-      // simulation_type: 'quick',
     }
 
     const requestOptions = {
@@ -78,7 +76,6 @@ export class TxSimulator {
       throw Error('Tenderly simulation quota reached')
     }
     const data = await res.json()
-    this.share(data.simulation.id)
     return data.simulation.status === true
   }
 }
