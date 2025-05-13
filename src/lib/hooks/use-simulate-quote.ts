@@ -13,7 +13,7 @@ export const useSimulateQuote = (tx: QuoteTransaction | null) => {
     if (!provider) return false
     if (!tx) return false
     const accessKey = process.env.NEXT_PUBLIC_TENDERLY_ACCESS_KEY ?? ''
-    const project = 'project'
+    const project = process.env.NEXT_PUBLIC_TENDERLY_PROJECT ?? ''
     const user = process.env.NEXT_PUBLIC_TENDERLY_USER ?? ''
     let success = false
     try {
