@@ -145,6 +145,8 @@ async function getEnhancedFlashMintQuote(
         inputTokenAmountUsd - outputTokenAmountUsd - mintRedeemFeesUsd
       const priceImpactPercent = (priceImpactUsd / inputTokenAmountUsd) * 100
 
+      const isHighPriceImpact = priceImpactPercent > 2
+
       return {
         type: QuoteType.flashmint,
         chainId,
@@ -171,6 +173,7 @@ async function getEnhancedFlashMintQuote(
         priceImpactUsd,
         priceImpactPercent,
         slippage,
+        warning: isHighPriceImpact ? 'Price impact is high.' : undefined,
         tx: transaction,
       }
     } else {
