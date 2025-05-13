@@ -24,6 +24,7 @@ export interface FormattedLeverageData {
   priceImpactPercent: string
   resetData: () => void
   shouldShowSummaryDetails: boolean
+  shouldShowWarning: boolean
 }
 
 export function useFormattedLeverageData(): FormattedLeverageData {
@@ -85,6 +86,11 @@ export function useFormattedLeverageData(): FormattedLeverageData {
         : `(${Number(formatWei(gasCosts, 18)).toFixed(2)} ETH)`
   }
 
+  const shouldShowWarning = useMemo(() => {
+    if (quote?.warning) return true
+    return false
+  }, [quote])
+
   const shouldShowSummaryDetails = useMemo(
     () => quote !== null && inputValue !== '',
     [inputValue, quote],
@@ -130,5 +136,6 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     priceImpactPercent,
     resetData,
     shouldShowSummaryDetails,
+    shouldShowWarning,
   }
 }

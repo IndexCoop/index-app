@@ -1,6 +1,5 @@
-import { TransactionRequest } from 'viem'
-
-import { Token } from '@/constants/tokens'
+import type { Token } from '@/constants/tokens'
+import type { TransactionRequest } from 'viem'
 
 /**
  * @param slippage The max acceptable slippage, e.g. 3 for 3 %
@@ -62,6 +61,7 @@ export interface Quote {
   priceImpactUsd?: number
   priceImpactPercent?: number
   slippage: number
+  warning?: string
   tx: QuoteTransaction
 }
 
