@@ -15,10 +15,12 @@ import { arbitrum, base } from 'viem/chains'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { ARBITRUM } from '@/constants/chains'
 import { ETH, type Token } from '@/constants/tokens'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { type TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
+import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
@@ -107,6 +109,7 @@ const defaultParams = {
 }
 
 export function LeverageProvider(props: { children: any }) {
+  const { logEvent } = useAnalytics()
   const { chainId: chainIdRaw } = useNetwork()
   const { address } = useWallet()
   const {
@@ -176,6 +179,31 @@ export function LeverageProvider(props: { children: any }) {
     inputValue,
     slippage,
   })
+
+  const { simulateTrade } = useSimulateQuote(quoteResult?.quote?.tx ?? null)
+
+  useEffect(() => {
+    const simulate = async () => {
+      const quote = quoteResult?.quote
+      if (!quote) return
+      const result = await simulateTrade()
+      console.log('SIM:', result)
+      logEvent('simulate_trade', {
+        result,
+        chainId: quote.chainId,
+        inputToken: quote.inputToken.symbol,
+        outputToken: quote.outputToken.symbol,
+        inputTokenAmount: quote.inputTokenAmount.toString(),
+        outputTokenAmount: quote.outputTokenAmount.toString(),
+        inputTokenAmountUsd: quote.inputTokenAmountUsd,
+        outputTokenAmountUsd: quote.outputTokenAmountUsd,
+        priceImpactUsd: quote.priceImpactUsd,
+        priceImpactPercent: quote.priceImpactPercent,
+        slippage: quote.slippage,
+      })
+    }
+    simulate()
+  }, [logEvent, quoteResult, simulateTrade])
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
