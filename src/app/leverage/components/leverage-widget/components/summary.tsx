@@ -3,6 +3,7 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
+import { cn } from '@/lib/utils/tailwind'
 
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
@@ -10,6 +11,7 @@ type SummaryQuoteProps = {
   label: string
   value: string
   valueUsd: string
+  showWarning?: boolean
 }
 
 function SummaryQuote(props: SummaryQuoteProps) {
@@ -18,7 +20,14 @@ function SummaryQuote(props: SummaryQuoteProps) {
       <div className='font-medium'>{props.label}</div>
       <div className='flex flex-row gap-1'>
         <div className='text-ic-white font-bold'>{props.value}</div>
-        <div className='font-normal'>{props.valueUsd}</div>
+        <div
+          className={cn(
+            ' font-normal',
+            props.showWarning === true ? 'text-ic-yellow' : '',
+          )}
+        >
+          {props.valueUsd}
+        </div>
       </div>
     </div>
   )
@@ -38,6 +47,7 @@ export function Summary() {
     priceImpactPercent,
     priceImpactUsd,
     shouldShowSummaryDetails,
+    shouldShowWarning,
   } = useFormattedLeverageData()
 
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
@@ -90,6 +100,7 @@ export function Summary() {
                   label='Swap Execution'
                   value={priceImpactUsd}
                   valueUsd={priceImpactPercent}
+                  showWarning={shouldShowWarning}
                 />
                 <SummaryQuote
                   label='Order Fee'
