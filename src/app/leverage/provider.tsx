@@ -189,7 +189,6 @@ export function LeverageProvider(props: { children: any }) {
       const quote = quoteResult?.quote
       if (!quote) return
       const result = await simulateTrade()
-      console.log('SIM:', result)
       logEvent('simulate_trade', {
         result: result.success,
         reason: result.simulation.errorMessage ?? '',
