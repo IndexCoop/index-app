@@ -21,10 +21,7 @@ function SummaryQuote(props: SummaryQuoteProps) {
       <div className='flex flex-row gap-1'>
         <div className='text-ic-white font-bold'>{props.value}</div>
         <div
-          className={cn(
-            ' font-normal',
-            props.showWarning === true ? 'text-ic-yellow' : '',
-          )}
+          className={cn('font-normal', props.showWarning && 'text-ic-yellow')}
         >
           {props.valueUsd}
         </div>
