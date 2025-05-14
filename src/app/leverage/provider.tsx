@@ -21,6 +21,7 @@ import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
 import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
+import { useUtmParams } from '@/lib/hooks/use-utm-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
@@ -123,6 +124,7 @@ export function LeverageProvider(props: { children: any }) {
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
   const { slippage, setProductToken } = useSlippage()
+  const utm = useUtmParams()
 
   const [inputValue, setInputValue] = useState('')
 
@@ -189,7 +191,9 @@ export function LeverageProvider(props: { children: any }) {
       const result = await simulateTrade()
       console.log('SIM:', result)
       logEvent('simulate_trade', {
-        result,
+        result: result.success,
+        reason: result.simulation.errorMessage ?? '',
+        account: address,
         chainId: quote.chainId,
         inputToken: quote.inputToken.symbol,
         outputToken: quote.outputToken.symbol,
@@ -200,10 +204,11 @@ export function LeverageProvider(props: { children: any }) {
         priceImpactUsd: quote.priceImpactUsd,
         priceImpactPercent: quote.priceImpactPercent,
         slippage: quote.slippage,
+        utmSource: utm.utm_source ?? '',
       })
     }
     simulate()
-  }, [logEvent, quoteResult, simulateTrade])
+  }, [address, logEvent, quoteResult, simulateTrade, utm.utm_source])
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
