@@ -1,12 +1,15 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
+import { LeverageOnboardingPopup } from '@/app/leverage/components/leverage-onboarding-popup'
 import { LeveragePanel } from '@/app/leverage/components/leverage-panel'
 
 import { FaqSection } from './components/faq-section'
 
 export default function Page() {
+  const [isPopupOpen, setIsPopupOpen] = useState(true)
+
   useEffect(() => {
     document.body.classList.add('dark', 'bg-zinc-950')
     return () => {
@@ -22,6 +25,13 @@ export default function Page() {
           <FaqSection />
         </div>
       </div>
+      <LeverageOnboardingPopup
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onGetStarted={() => {
+          setIsPopupOpen(false)
+        }}
+      />
     </div>
   )
 }
