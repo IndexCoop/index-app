@@ -101,6 +101,7 @@ export function useQuoteResult(request: QuoteRequest) {
         outputToken,
         inputTokenAmount: inputTokenAmount.toString(),
         publicClient,
+        slippage,
       },
     ],
     queryFn: fetchFlashMintQuote,

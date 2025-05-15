@@ -47,7 +47,6 @@ export const SlippageProvider = (props: { children: any }) => {
     setCustomSlippage(slippage)
     setIsAuto(false)
   }
-
   const slippage = useMemo(() => {
     return isAuto ? autoSlippage : customSlippage
   }, [isAuto, autoSlippage, customSlippage])
