@@ -1,13 +1,13 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
 import { createContext, useContext, useMemo, useState } from 'react'
 import { isAddress } from 'viem'
 
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { slippageDefault, slippageMap } from '@/constants/slippage'
 
-import { tradeMachineAtom } from '@/app/store/trade-machine'
-import { useSetAtom } from 'jotai'
 import type { Address } from 'viem'
 
 interface Context {
