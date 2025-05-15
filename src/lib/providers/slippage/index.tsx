@@ -6,6 +6,8 @@ import { isAddress } from 'viem'
 
 import { slippageDefault, slippageMap } from '@/constants/slippage'
 
+import { tradeMachineAtom } from '@/app/store/trade-machine'
+import { useSetAtom } from 'jotai'
 import type { Address } from 'viem'
 
 interface Context {
@@ -38,6 +40,7 @@ export const SlippageProvider = (props: { children: any }) => {
   const [selectedProduct, setSelectedProduct] = useState<ProductToken | null>(
     null,
   )
+  const sendTradeEvent = useSetAtom(tradeMachineAtom)
 
   const auto = () => {
     setIsAuto(true)
@@ -46,8 +49,8 @@ export const SlippageProvider = (props: { children: any }) => {
   const set = (slippage: number) => {
     setCustomSlippage(slippage)
     setIsAuto(false)
+    sendTradeEvent({ type: 'INITIALIZE' })
   }
-
   const slippage = useMemo(() => {
     return isAuto ? autoSlippage : customSlippage
   }, [isAuto, autoSlippage, customSlippage])
