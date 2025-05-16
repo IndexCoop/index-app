@@ -5,6 +5,7 @@ import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 import { cn } from '@/lib/utils/tailwind'
 
+import { useLeverageToken } from '../../../provider'
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
 type SummaryQuoteProps = {
@@ -31,14 +32,17 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
+  const { isMinting } = useLeverageToken()
   const {
     gasFeesEth,
     gasFeesUsd,
     inputAmount,
     inputAmoutUsd,
     isFetchingQuote,
-    ouputAmount,
+    outputAmount,
     outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     orderFee,
     orderFeePercent,
     priceImpactPercent,
@@ -60,7 +64,7 @@ export function Summary() {
                 {!open &&
                   !isFetchingQuote &&
                   shouldShowSummaryDetails &&
-                  `Receive ${ouputAmount}`}
+                  `Receive ${quoteAmount}`}
               </span>
               <div className='flex flex-row items-center gap-1'>
                 {!open && !isFetchingQuote ? (
@@ -85,13 +89,18 @@ export function Summary() {
               <>
                 <SummaryQuote
                   label='Pay'
-                  value={inputAmount}
-                  valueUsd={`(${inputAmoutUsd})`}
+                  value={isMinting ? quoteAmount : inputAmount}
+                  valueUsd={`(${isMinting ? quoteAmountUsd : inputAmoutUsd})`}
                 />
                 <SummaryQuote
                   label='Receive'
-                  value={ouputAmount}
-                  valueUsd={`(${outputAmountUsd})`}
+                  value={isMinting ? outputAmount : quoteAmount}
+                  valueUsd={`(${isMinting ? outputAmountUsd : quoteAmountUsd})`}
+                />
+                <SummaryQuote
+                  label={isMinting ? 'Max amount spent' : 'Min amount received'}
+                  value={isMinting ? inputAmount : outputAmount}
+                  valueUsd={`(${isMinting ? inputAmoutUsd : outputAmountUsd})`}
                 />
                 <SummaryQuote
                   label='Swap Execution'

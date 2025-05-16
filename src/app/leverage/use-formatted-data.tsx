@@ -78,7 +78,7 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     : ''
 
   const quoteAmount = useMemo(() => {
-    if (!quote || quote?.quoteAmount) return ''
+    if (!quote) return ''
     const amount = Number(
       formatWei(
         quote.quoteAmount,
