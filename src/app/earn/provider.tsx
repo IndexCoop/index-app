@@ -112,12 +112,15 @@ export function EarnProvider(props: {
 
   useEffect(() => {
     if (!indexToken.address || !indexToken.chainId) return
-    setProductToken({
-      address: indexToken.address,
-      chainId: indexToken.chainId,
-    })
+    setProductToken(
+      {
+        address: indexToken.address,
+        chainId: indexToken.chainId,
+      },
+      isMinting,
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [indexToken])
+  }, [indexToken, isMinting])
 
   const indexTokens = useMemo(() => {
     return getYieldTokens()
