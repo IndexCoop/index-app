@@ -92,12 +92,14 @@ async function getEnhancedFlashMintQuote(
       const {
         inputAmount: quoteInputAmount,
         outputAmount: quoteOutputAmount,
+        quoteAmount: quoteQuoteAmount,
         transaction: tx,
         fees,
       } = quoteFM
 
       const inputAmount = BigInt(quoteInputAmount)
       const outputAmount = BigInt(quoteOutputAmount)
+      const quoteAmount = BigInt(quoteQuoteAmount)
       const inputOutputAmount = isMinting ? inputAmount : outputAmount
 
       const transaction: QuoteTransaction = {
@@ -123,6 +125,14 @@ async function getEnhancedFlashMintQuote(
       const outputTokenAmountUsd =
         Number.parseFloat(formatWei(outputAmount, outputToken.decimals)) *
         outputTokenPrice
+      const quoteAmountUsd =
+        Number.parseFloat(
+          formatWei(
+            quoteAmount,
+            isMinting ? inputToken.decimals : outputToken.decimals,
+          ),
+        ) * (isMinting ? inputTokenPrice : outputTokenPrice)
+
       const priceImpact = getPriceImpact(
         inputTokenAmountUsd,
         outputTokenAmountUsd,
@@ -162,6 +172,8 @@ async function getEnhancedFlashMintQuote(
         priceImpact,
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,
+        quoteAmount,
+        quoteAmountUsd,
         inputTokenAmount: inputAmount,
         inputTokenAmountUsd,
         outputTokenAmount: outputAmount,
