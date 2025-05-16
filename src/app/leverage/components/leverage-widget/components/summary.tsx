@@ -64,7 +64,7 @@ export function Summary() {
                 {!open &&
                   !isFetchingQuote &&
                   shouldShowSummaryDetails &&
-                  `Receive ${quoteAmount}`}
+                  `Receive ${isMinting ? outputAmount : quoteAmount}`}
               </span>
               <div className='flex flex-row items-center gap-1'>
                 {!open && !isFetchingQuote ? (
