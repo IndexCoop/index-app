@@ -16,8 +16,10 @@ export interface FormattedLeverageData {
   inputBalance: bigint
   inputBalanceFormatted: string
   isFetchingQuote: boolean
-  ouputAmount: string
+  outputAmount: string
   outputAmountUsd: string
+  quoteAmount: string
+  quoteAmountUsd: string
   orderFee: string
   orderFeePercent: string
   priceImpactUsd: string
@@ -45,6 +47,8 @@ export function useFormattedLeverageData(): FormattedLeverageData {
 
   const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
 
+  console.log('quote', quote)
+
   const contract = useMemo(() => quote?.contract ?? null, [quote])
 
   const inputAmount = quote?.inputTokenAmount
@@ -59,7 +63,7 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     [inputTokenAmount, balance],
   )
 
-  const ouputAmount = useMemo(() => {
+  const outputAmount = useMemo(() => {
     if (inputValue === '') return ''
     if (!quote?.outputTokenAmount) return ''
     const amount = Number(
@@ -72,6 +76,26 @@ export function useFormattedLeverageData(): FormattedLeverageData {
   const outputAmountUsd = quote?.outputTokenAmountUsd
     ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
     : ''
+
+  const quoteAmount = useMemo(() => {
+    if (!quote || quote?.quoteAmount) return ''
+    const amount = Number(
+      formatWei(
+        quote.quoteAmount,
+        quote.isMinting
+          ? quote.inputToken.decimals
+          : quote.outputToken.decimals,
+      ),
+    )
+    const symbol = quote.isMinting
+      ? quote.inputToken.symbol
+      : quote.outputToken.symbol
+    return `${formatAmount(amount)} ${symbol}`
+  }, [quote])
+  const quoteAmountUsd = useMemo(() => {
+    if (!quote?.quoteAmountUsd) return ''
+    return `$${formatAmount(quote?.quoteAmountUsd)}`
+  }, [quote])
 
   const resetData = () => {
     forceRefetchInputBalance()
@@ -128,8 +152,10 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     inputBalance: balance,
     inputBalanceFormatted: balanceFormatted,
     isFetchingQuote,
-    ouputAmount,
+    outputAmount,
     outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     orderFee,
     orderFeePercent,
     priceImpactUsd,
