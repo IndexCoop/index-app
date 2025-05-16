@@ -134,8 +134,8 @@ async function getEnhancedFlashMintQuote(
         ) * (isMinting ? inputTokenPrice : outputTokenPrice)
 
       const priceImpact = getPriceImpact(
-        inputTokenAmountUsd,
-        outputTokenAmountUsd,
+        isMinting ? quoteAmountUsd : outputTokenAmountUsd,
+        isMinting ? outputTokenAmountUsd : quoteAmountUsd,
       )
 
       const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
@@ -152,7 +152,9 @@ async function getEnhancedFlashMintQuote(
       const mintRedeemFees = isMinting ? fees.mint : fees.redeem
       const mintRedeemFeesUsd = inputTokenAmountUsd * mintRedeemFees
       const priceImpactUsd =
-        inputTokenAmountUsd - outputTokenAmountUsd - mintRedeemFeesUsd
+        (isMinting ? quoteAmountUsd : inputTokenAmountUsd) -
+        (isMinting ? outputTokenAmountUsd : quoteAmountUsd) -
+        mintRedeemFeesUsd
       const priceImpactPercent = (priceImpactUsd / inputTokenAmountUsd) * 100
 
       const isHighPriceImpact = priceImpactPercent > 2
