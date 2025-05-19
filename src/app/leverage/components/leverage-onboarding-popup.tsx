@@ -14,8 +14,8 @@ export function LeverageOnboardingPopup({
   onGetStarted,
 }: LeverageOnboardingPopupProps) {
   return (
-    <Dialog open={isOpen} onClose={onClose} className='relative z-50'>
-      <DialogBackdrop className='fixed inset-0 bg-black/70' />
+    <Dialog open={isOpen} onClose={onClose} className='relative z-10'>
+      <DialogBackdrop className='fixed inset-0 bg-black/60 backdrop-blur-sm' />
 
       <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
         <DialogPanel className='w-full max-w-[480px] rounded-2xl bg-[#1C1C1E] p-6 text-white'>
