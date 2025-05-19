@@ -11,7 +11,7 @@ import {
   getFlashMintQuote,
   isQuoteError,
 } from '@/lib/hooks/use-best-quote/utils/flashmint'
-import { getTokenPrice } from '@/lib/hooks/use-token-price'
+import { getTokenPrice } from '@/lib/utils/token-price'
 
 import type { Token } from '@/constants/tokens'
 
@@ -73,18 +73,21 @@ export function useQuoteResult(request: QuoteRequest) {
       getTokenPrice(outputToken, chainId),
     ])
 
-    return getFlashMintQuote({
-      isMinting,
-      account: address,
-      chainId,
-      inputToken,
-      inputTokenAmount: inputValue,
-      inputTokenAmountWei: inputTokenAmount,
-      inputTokenPrice,
-      outputToken,
-      outputTokenPrice,
-      slippage,
-    })
+    return getFlashMintQuote(
+      {
+        isMinting,
+        account: address,
+        chainId,
+        inputToken,
+        inputTokenAmount: inputValue,
+        inputTokenAmountWei: inputTokenAmount,
+        inputTokenPrice,
+        outputToken,
+        outputTokenPrice,
+        slippage,
+      },
+      publicClient,
+    )
   }
 
   const {
