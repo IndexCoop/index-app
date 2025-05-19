@@ -13,14 +13,25 @@ type SummaryQuoteProps = {
   value: string
   valueUsd: string
   showWarning?: boolean
+  italic?: boolean
 }
 
 function SummaryQuote(props: SummaryQuoteProps) {
+  const { italic } = props
   return (
-    <div className='flex flex-row items-center justify-between text-xs text-neutral-400'>
-      <div className='font-medium'>{props.label}</div>
+    <div
+      className={cn(
+        'flex flex-row items-center justify-between text-xs',
+        italic ? 'italic text-neutral-500' : 'text-neutral-400',
+      )}
+    >
+      <div className={cn(italic ? 'font-medium' : 'font-bold')}>
+        {props.label}
+      </div>
       <div className='flex flex-row gap-1'>
-        <div className='text-ic-white font-bold'>{props.value}</div>
+        <div className={cn(italic ? 'font-normal' : 'text-ic-white font-bold')}>
+          {props.value}
+        </div>
         <div
           className={cn('font-normal', props.showWarning && 'text-ic-yellow')}
         >
@@ -101,6 +112,7 @@ export function Summary() {
                   label={isMinting ? 'Max amount spent' : 'Min amount received'}
                   value={isMinting ? inputAmount : outputAmount}
                   valueUsd={`(${isMinting ? inputAmoutUsd : outputAmountUsd})`}
+                  italic
                 />
                 <SummaryQuote
                   label='Swap Execution'
