@@ -18,7 +18,7 @@ export function LeverageOnboardingPopup({
       <DialogBackdrop className='fixed inset-0 bg-black/60 backdrop-blur-sm' />
 
       <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
-        <DialogPanel className='w-full max-w-[480px] rounded-2xl bg-[#1C1C1E] p-6 text-white'>
+        <DialogPanel className='w-full max-w-[480px] rounded-3xl border border-[rgba(255,255,255,0.1)] bg-zinc-900 p-6 text-neutral-50 shadow-[0px_20px_40px_0px_rgba(0,0,0,0.10),1px_1px_4.4px_0px_rgba(255,255,255,0.06)_inset]'>
           <div className='space-y-6'>
             <h2 className='text-center text-2xl font-bold'>
               Leverage without Liquidations
