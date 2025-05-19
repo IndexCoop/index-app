@@ -20,15 +20,15 @@ export function LeverageOnboardingPopup({
       <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
         <DialogPanel className='w-full max-w-[480px] rounded-3xl border border-[rgba(255,255,255,0.1)] bg-zinc-900 p-6 text-neutral-50 shadow-[0px_20px_40px_0px_rgba(0,0,0,0.10),1px_1px_4.4px_0px_rgba(255,255,255,0.06)_inset]'>
           <div className='space-y-6'>
-            <h2 className='text-center text-2xl font-bold'>
-              Leverage without Liquidations
-            </h2>
-
-            <p className='text-center text-gray-300'>
-              Amplify your crypto exposure with automated rebalancing and
-              built-in liquidation protection.
-            </p>
-
+            <div className='flex-col space-y-6'>
+              <h2 className='text-1xl font-semibold'>
+                Leverage without Liquidations
+              </h2>
+              <p className='text-ic-gray-200 text-sm'>
+                Amplify your crypto exposure with automated rebalancing and
+                built-in liquidation protection.
+              </p>
+            </div>
             <div className='space-y-8'>
               <div className='space-y-2'>
                 <h3 className='font-semibold'>
