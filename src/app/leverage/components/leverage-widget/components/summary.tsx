@@ -103,17 +103,27 @@ export function Summary() {
                   value={isMinting ? quoteAmount : inputAmount}
                   valueUsd={`(${isMinting ? quoteAmountUsd : inputAmoutUsd})`}
                 />
+                {isMinting && (
+                  <SummaryQuote
+                    label={'Max amount spent'}
+                    value={inputAmount}
+                    valueUsd={`(${inputAmoutUsd})`}
+                    italic
+                  />
+                )}
                 <SummaryQuote
                   label='Receive'
                   value={isMinting ? outputAmount : quoteAmount}
                   valueUsd={`(${isMinting ? outputAmountUsd : quoteAmountUsd})`}
                 />
-                <SummaryQuote
-                  label={isMinting ? 'Max amount spent' : 'Min amount received'}
-                  value={isMinting ? inputAmount : outputAmount}
-                  valueUsd={`(${isMinting ? inputAmoutUsd : outputAmountUsd})`}
-                  italic
-                />
+                {!isMinting && (
+                  <SummaryQuote
+                    label={'Min amount received'}
+                    value={outputAmount}
+                    valueUsd={`(${outputAmountUsd})`}
+                    italic
+                  />
+                )}
                 <SummaryQuote
                   label='Swap Execution'
                   value={priceImpactUsd}
