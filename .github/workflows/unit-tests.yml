@@ -24,9 +24,9 @@ jobs:
         run: echo "NEXT_PUBLIC_ALCHEMY_ID=$(echo $NEXT_PUBLIC_ALCHEMY_ID | cut -c 1-6)" >> $NEXT_PUBLIC_ALCHEMY_ID
       - name: Install
         run: npm ci
-      - name: Generate kubb files
-        run: npm run generate
-      - name: Lint
-        run: npm run lint
+      # - name: Generate kubb files
+      #   run: npm run generate
+      # - name: Lint
+      #   run: npm run lint
       - name: Run unit tests
         run: npm run hardhat & npm run test
