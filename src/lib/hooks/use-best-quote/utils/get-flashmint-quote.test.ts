@@ -1,5 +1,3 @@
-import { formatWei, parseUnits } from '@/lib/utils'
-
 import { getFlashmintQuote } from './flashmint'
 
 describe('getFlashmintQuote - redeeming', () => {
@@ -7,6 +5,7 @@ describe('getFlashmintQuote - redeeming', () => {
 })
 
 describe('getFlashmintQuote - minting', () => {
+    // TODO: Set correct quote request
     let flashMintQuoteRequest = {}
     it('returns approx. index token amount', async () => {
         let result = await getFlashmintQuote(flashMintQuoteRequest)
