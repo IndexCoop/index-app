@@ -18,7 +18,7 @@ export function LeverageOnboardingPopup({
       <DialogBackdrop className='fixed inset-0 bg-black/60 backdrop-blur-sm' />
 
       <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
-        <DialogPanel className='w-full max-w-[480px] rounded-3xl border border-[rgba(255,255,255,0.1)] bg-zinc-900 p-6 text-neutral-50 shadow-[0px_20px_40px_0px_rgba(0,0,0,0.10),1px_1px_4.4px_0px_rgba(255,255,255,0.06)_inset]'>
+        <DialogPanel className='w-full max-w-[480px] rounded-3xl border border-[rgba(255,255,255,0.1)] bg-zinc-900 p-6 pb-3 text-neutral-50 shadow-[0px_20px_40px_0px_rgba(0,0,0,0.10),1px_1px_4.4px_0px_rgba(255,255,255,0.06)_inset]'>
           <div className='space-y-6'>
             <div className='flex-col space-y-6'>
               <h2 className='text-1xl font-semibold'>
@@ -74,16 +74,16 @@ export function LeverageOnboardingPopup({
             </div>
 
             {/* Buttons */}
-            <div className='space-y-4 pt-4'>
+            <div>
               <button
                 onClick={onGetStarted}
-                className='w-full rounded-lg bg-[#6366F1] px-4 py-3 font-semibold transition-colors hover:bg-[#5558E6]'
+                className='w-full rounded-full bg-[#252628] px-6 py-4 font-semibold text-neutral-400 transition-colors hover:bg-[#252628]'
               >
                 Get Started
               </button>
               <button
                 onClick={onClose}
-                className='w-full px-4 py-3 text-sm text-gray-400 transition-colors hover:text-gray-300'
+                className='h-5 w-full px-6 text-xs font-medium text-neutral-600 underline transition-colors hover:text-gray-300'
               >
                 Skip for now
               </button>
