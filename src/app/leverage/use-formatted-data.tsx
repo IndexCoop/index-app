@@ -69,8 +69,7 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     const amount = Number(
       formatWei(quote?.outputTokenAmount, quote?.outputToken.decimals),
     )
-    const digits =
-      amount < 0.01 ? Math.min(6, Math.ceil(-Math.log10(amount)) + 1) : 2
+    const digits = getFormatWithDigits(amount)
     return `${formatAmount(amount, digits)} ${quote?.outputToken.symbol}`
   }, [inputValue, quote])
   const outputAmountUsd = quote?.outputTokenAmountUsd
@@ -90,7 +89,8 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     const symbol = quote.isMinting
       ? quote.inputToken.symbol
       : quote.outputToken.symbol
-    return `${formatAmount(amount)} ${symbol}`
+    const digits = getFormatWithDigits(amount)
+    return `${formatAmount(amount, digits)} ${symbol}`
   }, [quote])
   const quoteAmountUsd = useMemo(() => {
     if (!quote?.quoteAmountUsd) return ''
@@ -164,4 +164,8 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     shouldShowSummaryDetails,
     shouldShowWarning,
   }
+}
+
+function getFormatWithDigits(amount: number) {
+  return amount < 0.01 ? Math.min(6, Math.ceil(-Math.log10(amount)) + 1) : 2
 }
