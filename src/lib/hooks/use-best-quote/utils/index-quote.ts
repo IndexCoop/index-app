@@ -122,6 +122,8 @@ export async function getIndexQuote(
         outputTokenAmount,
         outputTokenAmountUsd,
         outputTokenAmountUsdAfterFees,
+        quoteAmount: BigInt(0), // unused for swap quotes
+        quoteAmountUsd: 0, // unused for swap quotes
         inputTokenPrice,
         outputTokenPrice,
         priceImpactUsd,
