@@ -123,6 +123,7 @@ export function Summary() {
                     italic
                   />
                 )}
+                <div className='my-1 border-t border-neutral-700' />
                 <SummaryQuote
                   label='Swap Execution'
                   value={priceImpactUsd}
