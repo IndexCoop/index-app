@@ -20,11 +20,13 @@ import type { GetApiV2QuoteQuery } from '@/gen'
 import type { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import type { Hex } from 'viem'
 
-const MAX_ITERATIONS_FIXED_INPUT = 3
+const MAX_ITERATIONS_FIXED_INPUT = 5
 // Exit approximation algorithm after getting this close to the target
-const TARGET_DEVIATIION_FIXED_INPUT = BigInt(100)
+const TARGET_DEVIATIION_FIXED_INPUT = BigInt(50)
 // Maximum deviation from target fixed input to allow
 const MAX_DEVIATIION_FIXED_INPUT = BigInt(200)
+// Basispoints to deduct from best estimate for next iteration if the current estimated input amount is higher than target
+const UNDERESTIMATION_FACTOR = BigInt(5);
 
 type QuoteError = {
   type?: string
@@ -235,11 +237,13 @@ export async function getFlashMintQuote(
 
   let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
   let factor = BigInt(0)
+  let currentInputAmount = inputTokenAmountWei;
 
   while (
     remainingIterations > 0 &&
     factor != null &&
-    Math.abs(Number(factor) - 10000) > TARGET_DEVIATIION_FIXED_INPUT
+    currentInputAmount != null &&
+    (Math.abs(Number(factor) - 10000) > TARGET_DEVIATIION_FIXED_INPUT || currentInputAmount > inputTokenAmountWei)
   ) {
     const flashmintQuoteResult = await getEnhancedFlashMintQuote(
       account,
@@ -260,12 +264,19 @@ export async function getFlashMintQuote(
     // For redeeming return quote immdediately
     if (!isMinting) return flashmintQuoteResult
     savedQuote = flashmintQuoteResult
+    currentInputAmount = flashmintQuoteResult.inputTokenAmount;
 
     factor =
         (BigInt(10000) * inputTokenAmountWei) /
-        flashmintQuoteResult.inputTokenAmount
+        currentInputAmount
+
+    // Subtract small amount of   to make it more likely that we will be end up below the target
+    if(currentInputAmount > inputTokenAmountWei) {
+        factor = factor - UNDERESTIMATION_FACTOR;
+    }
 
     if(factor < 1) { factor = BigInt(1) }
+    console.log("factor", factor);
 
     indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
     remainingIterations--
