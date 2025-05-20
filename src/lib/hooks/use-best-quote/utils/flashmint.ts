@@ -261,10 +261,13 @@ export async function getFlashMintQuote(
     if (!isMinting) return flashmintQuoteResult
     savedQuote = flashmintQuoteResult
 
-    const diff = flashmintQuoteResult.inputTokenAmount - inputTokenAmountWei;
-    factor = determineFactor(diff, inputTokenAmountWei)
+    factor =
+        (BigInt(10000) * inputTokenAmountWei) /
+        flashmintQuoteResult.inputTokenAmount
 
-    indexTokenAmount = (indexTokenAmount * BigInt(10000)) / factor
+    if(factor < 1) { factor = BigInt(1) }
+
+    indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
     remainingIterations--
   }
 
@@ -275,13 +278,4 @@ export async function getFlashMintQuote(
   }
 
   return savedQuote
-}
-
-const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
-  let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
-  if (Math.abs(ratio) < 0.0001) {
-    // This is currently needed to avoid infinite loops
-    ratio = diff < 0 ? -0.0001 : 0.0001
-  }
-  return BigInt(Math.round((1 + ratio) * 10000))
 }
