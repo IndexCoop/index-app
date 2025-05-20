@@ -147,6 +147,8 @@ export async function getLegacyRedemptionQuote(
         outputTokenAmount,
         outputTokenAmountUsd,
         outputTokenAmountUsdAfterFees,
+        quoteAmount: BigInt(0), // unused for legacy redemption quotes
+        quoteAmountUsd: 0, // unused for legacy redemption quotes
         inputTokenPrice,
         outputTokenPrice: outputTokenPrices[0],
         slippage: request.slippage,

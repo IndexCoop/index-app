@@ -5,24 +5,34 @@ import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 import { cn } from '@/lib/utils/tailwind'
 
+import { useLeverageToken } from '../../../provider'
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
 type SummaryQuoteProps = {
   label: string
   value: string
   valueUsd: string
-  showWarning?: boolean
+  percentageColor?: string
+  italic?: boolean
 }
 
 function SummaryQuote(props: SummaryQuoteProps) {
+  const { italic } = props
   return (
-    <div className='flex flex-row items-center justify-between text-xs text-neutral-400'>
-      <div className='font-medium'>{props.label}</div>
+    <div
+      className={cn(
+        'flex flex-row items-center justify-between text-xs',
+        italic ? 'italic text-neutral-500' : 'text-neutral-400',
+      )}
+    >
+      <div className={cn(italic ? 'font-medium' : 'font-bold')}>
+        {props.label}
+      </div>
       <div className='flex flex-row gap-1'>
-        <div className='text-ic-white font-bold'>{props.value}</div>
-        <div
-          className={cn('font-normal', props.showWarning && 'text-ic-yellow')}
-        >
+        <div className={cn(italic ? 'font-normal' : 'text-ic-white font-bold')}>
+          {props.value}
+        </div>
+        <div className={cn('font-normal', props.percentageColor ?? '')}>
           {props.valueUsd}
         </div>
       </div>
@@ -31,14 +41,18 @@ function SummaryQuote(props: SummaryQuoteProps) {
 }
 
 export function Summary() {
+  const { isMinting } = useLeverageToken()
   const {
     gasFeesEth,
     gasFeesUsd,
     inputAmount,
     inputAmoutUsd,
     isFetchingQuote,
-    ouputAmount,
+    isFavourableQuote,
+    outputAmount,
     outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     orderFee,
     orderFeePercent,
     priceImpactPercent,
@@ -60,7 +74,7 @@ export function Summary() {
                 {!open &&
                   !isFetchingQuote &&
                   shouldShowSummaryDetails &&
-                  `Receive ${ouputAmount}`}
+                  `Receive ${isMinting ? outputAmount : quoteAmount}`}
               </span>
               <div className='flex flex-row items-center gap-1'>
                 {!open && !isFetchingQuote ? (
@@ -85,19 +99,42 @@ export function Summary() {
               <>
                 <SummaryQuote
                   label='Pay'
-                  value={inputAmount}
-                  valueUsd={`(${inputAmoutUsd})`}
+                  value={isMinting ? quoteAmount : inputAmount}
+                  valueUsd={`(${isMinting ? quoteAmountUsd : inputAmoutUsd})`}
                 />
+                {isMinting && (
+                  <SummaryQuote
+                    label={'Max amount paid'}
+                    value={inputAmount}
+                    valueUsd={`(${inputAmoutUsd})`}
+                    italic
+                  />
+                )}
                 <SummaryQuote
                   label='Receive'
-                  value={ouputAmount}
-                  valueUsd={`(${outputAmountUsd})`}
+                  value={isMinting ? outputAmount : quoteAmount}
+                  valueUsd={`(${isMinting ? outputAmountUsd : quoteAmountUsd})`}
                 />
+                {!isMinting && (
+                  <SummaryQuote
+                    label={'Min amount received'}
+                    value={outputAmount}
+                    valueUsd={`(${outputAmountUsd})`}
+                    italic
+                  />
+                )}
+                <div className='my-1 border-t border-neutral-700' />
                 <SummaryQuote
                   label='Swap Execution'
                   value={priceImpactUsd}
                   valueUsd={priceImpactPercent}
-                  showWarning={shouldShowWarning}
+                  percentageColor={
+                    shouldShowWarning
+                      ? 'text-ic-yellow'
+                      : isFavourableQuote
+                        ? 'text-ic-green'
+                        : undefined
+                  }
                 />
                 <SummaryQuote
                   label='Order Fee'

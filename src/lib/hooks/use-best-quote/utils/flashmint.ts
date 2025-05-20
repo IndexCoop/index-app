@@ -102,12 +102,14 @@ async function getEnhancedFlashMintQuote(
       const {
         inputAmount: quoteInputAmount,
         outputAmount: quoteOutputAmount,
+        quoteAmount: quoteQuoteAmount,
         transaction: tx,
         fees,
       } = quoteFM
 
       const inputAmount = BigInt(quoteInputAmount)
       const outputAmount = BigInt(quoteOutputAmount)
+      const quoteAmount = BigInt(quoteQuoteAmount)
       const inputOutputAmount = isMinting ? inputAmount : outputAmount
 
       const transaction: QuoteTransaction = {
@@ -134,9 +136,17 @@ async function getEnhancedFlashMintQuote(
       const outputTokenAmountUsd =
         Number.parseFloat(formatWei(outputAmount, outputToken.decimals)) *
         outputTokenPrice
+      const quoteAmountUsd =
+        Number.parseFloat(
+          formatWei(
+            quoteAmount,
+            isMinting ? inputToken.decimals : outputToken.decimals,
+          ),
+        ) * (isMinting ? inputTokenPrice : outputTokenPrice)
+
       const priceImpact = getPriceImpact(
-        inputTokenAmountUsd,
-        outputTokenAmountUsd,
+        isMinting ? quoteAmountUsd : outputTokenAmountUsd,
+        isMinting ? outputTokenAmountUsd : quoteAmountUsd,
       )
 
       const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
@@ -153,7 +163,9 @@ async function getEnhancedFlashMintQuote(
       const mintRedeemFees = isMinting ? fees.mint : fees.redeem
       const mintRedeemFeesUsd = inputTokenAmountUsd * mintRedeemFees
       const priceImpactUsd =
-        inputTokenAmountUsd - outputTokenAmountUsd - mintRedeemFeesUsd
+        (isMinting ? quoteAmountUsd : inputTokenAmountUsd) -
+        (isMinting ? outputTokenAmountUsd : quoteAmountUsd) -
+        mintRedeemFeesUsd
       const priceImpactPercent = (priceImpactUsd / inputTokenAmountUsd) * 100
 
       const isHighPriceImpact = priceImpactPercent > 2
@@ -173,6 +185,8 @@ async function getEnhancedFlashMintQuote(
         priceImpact,
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,
+        quoteAmount,
+        quoteAmountUsd,
         inputTokenAmount: inputAmount,
         inputTokenAmountUsd,
         outputTokenAmount: outputAmount,

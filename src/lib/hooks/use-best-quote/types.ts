@@ -41,6 +41,9 @@ export interface Quote {
   priceImpact: number | null
   indexTokenAmount: bigint
   inputOutputTokenAmount: bigint
+  // quote amount with no slippage applied
+  quoteAmount: bigint
+  quoteAmountUsd: number
   // Return additionally for convenience to avoid
   // having to determine based on isMinting
   inputTokenAmount: bigint
