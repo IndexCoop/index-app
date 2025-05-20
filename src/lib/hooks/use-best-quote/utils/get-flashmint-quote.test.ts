@@ -6,66 +6,69 @@ import { getAlchemyBaseUrl } from '@/lib/utils/urls'
 
 import { getFlashMintQuote } from './flashmint'
 
+import type { Quote } from '@/lib/hooks/use-best-quote/types'
+
 describe('getFlashmintQuote - redeeming', () => {
-    it('returns input token amount directly', async () => {})
+  it('returns input token amount directly', async () => {})
 })
 
 describe('getFlashmintQuote - minting', () => {
-    let originalFetch: any
-    beforeAll(() => {
-        originalFetch = global.fetch
-        global.fetch = jest.fn()
-    })
+  let originalFetch: any
+  beforeAll(() => {
+    originalFetch = global.fetch
+    global.fetch = jest.fn()
+  })
 
-    // TODO: Set correct quote request
-    const inputToken = getTokenByChainAndSymbol(1, 'WETH')
-    const outputToken = getTokenByChainAndSymbol(1, 'ETH2X')
-    const flashMintQuoteRequest = {
-        account: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96040',
-        chainId: 1,
-        inputTokenAmountWei: BigInt("1000000000000000000"),
-        isMinting: true,
-        inputToken: { ...inputToken, image: inputToken.logoURI },
-        outputToken: { ...outputToken, image: outputToken.logoURI },
-        inputTokenAmount: '1',
-        inputTokenPrice: 1000,
-        outputTokenPrice: 1000,
-        slippage: 0.05,
-    }
+  const inputToken = getTokenByChainAndSymbol(1, 'WETH')
+  const outputToken = getTokenByChainAndSymbol(1, 'ETH2X')
+  const flashMintQuoteRequest = {
+    account: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96040',
+    chainId: 1,
+    inputTokenAmountWei: BigInt('1000000000000000000'),
+    isMinting: true,
+    inputToken: { ...inputToken, image: inputToken.logoURI },
+    outputToken: { ...outputToken, image: outputToken.logoURI },
+    inputTokenAmount: '1',
+    inputTokenPrice: 1000,
+    outputTokenPrice: 1000,
+    slippage: 0.05,
+  }
 
-    const publicClient = createPublicClient({
-        chain: mainnet,
-        transport: http(
-            `${getAlchemyBaseUrl(1)}${process.env.NEXT_PUBLIC_ALCHEMY_ID}`
-        ),
-    })
+  const publicClient = createPublicClient({
+    chain: mainnet,
+    transport: http(
+      `${getAlchemyBaseUrl(1)}${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
+    ),
+  })
 
-    it('returns approx. index token amount', async () => {
-        (global.fetch as jest.Mock).mockImplementation(
-            async (originalUrl, request) => {
-                // console.log('originalUrl', originalUrl)
-                // console.log('request', request)
-                if(request.body) {
-                    // console.log('body', JSON.parse(request.body))
-                }
-                const url = originalUrl.startsWith('http')
-                    ? originalUrl
-                    : `https://app.indexcoop.com${originalUrl}`
-                // console.log('url', url)
-                const response = await originalFetch(url, request)
-                // console.log('response', response)
-                return response
-            }
-        )
-        const result = await getFlashMintQuote(
-            flashMintQuoteRequest,
-            publicClient
-        )
+  it('returns approx. index token amount', async () => {
+    // eslint-disable-next-line no-extra-semi
+    ;(global.fetch as jest.Mock).mockImplementation(
+      async (originalUrl, request) => {
+        // console.log('originalUrl', originalUrl)
+        // console.log('request', request)
+        if (request.body) {
+          // console.log('body', JSON.parse(request.body))
+        }
+        const url = originalUrl.startsWith('http')
+          ? originalUrl
+          : `https://app.indexcoop.com${originalUrl}`
+        // console.log('url', url)
+        const response = await originalFetch(url, request)
+        // console.log('response', response)
+        return response
+      },
+    )
+    const result = await getFlashMintQuote(flashMintQuoteRequest, publicClient)
 
-        // @ts-ignore
-        const inputAmount: bigint = result.inputTokenAmount;
-        console.log('result', inputAmount)
-        expect(inputAmount < flashMintQuoteRequest.inputTokenAmountWei);
-        expect(inputAmount > (flashMintQuoteRequest.inputTokenAmountWei * BigInt(99) / BigInt(100)));
-    }, 50000)
+    if (!result) fail()
+
+    const inputAmount: bigint = (result as Quote).inputTokenAmount
+    console.log('result', inputAmount)
+    expect(inputAmount < flashMintQuoteRequest.inputTokenAmountWei)
+    expect(
+      inputAmount >
+        (flashMintQuoteRequest.inputTokenAmountWei * BigInt(99)) / BigInt(100),
+    )
+  }, 50000)
 })
