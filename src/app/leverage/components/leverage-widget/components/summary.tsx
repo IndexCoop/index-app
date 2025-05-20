@@ -105,7 +105,7 @@ export function Summary() {
                 />
                 {isMinting && (
                   <SummaryQuote
-                    label={'Max amount spent'}
+                    label={'Max amount paid'}
                     value={inputAmount}
                     valueUsd={`(${inputAmoutUsd})`}
                     italic
