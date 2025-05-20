@@ -17,13 +17,14 @@ import { getPriceImpact } from './price-impact'
 import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import type { Token } from '@/constants/tokens'
 import type { GetApiV2QuoteQuery } from '@/gen'
+import type { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import type { Hex } from 'viem'
 
-const MAX_ITERATIONS_FIXED_INPUT = 3;
+const MAX_ITERATIONS_FIXED_INPUT = 3
 // Exit approximation algorithm after getting this close to the target
-const TARGET_DEVIATIION_FIXED_INPUT = BigInt(100);
+const TARGET_DEVIATIION_FIXED_INPUT = BigInt(100)
 // Maximum deviation from target fixed input to allow
-const MAX_DEVIATIION_FIXED_INPUT = BigInt(200);
+const MAX_DEVIATIION_FIXED_INPUT = BigInt(200)
 
 type QuoteError = {
   type?: string
@@ -45,6 +46,7 @@ async function getEnhancedFlashMintQuote(
   outputTokenPrice: number,
   slippage: number,
   chainId: number,
+  publicClient: IndexRpcProvider,
 ): Promise<Quote | QuoteError> {
   const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
   const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
@@ -120,6 +122,7 @@ async function getEnhancedFlashMintQuote(
       const { ethPrice, gas } = await getGasLimit(
         transaction,
         defaultGasEstimate,
+        publicClient,
       )
       transaction.gas = gas.limit
 
@@ -201,7 +204,10 @@ interface FlashMintQuoteRequest extends IndexQuoteRequest {
   inputTokenAmountWei: bigint
 }
 
-export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
+export async function getFlashMintQuote(
+  request: FlashMintQuoteRequest,
+  publicClient: IndexRpcProvider,
+) {
   const {
     chainId,
     account,
@@ -227,10 +233,14 @@ export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
 
   let savedQuote: Quote | null = null
 
-  let remainingIterations = MAX_ITERATIONS_FIXED_INPUT;
-  let factor = BigInt(0);
+  let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
+  let factor = BigInt(0)
 
-  while(remainingIterations > 0 && (factor != null && Math.abs(Number(factor) - 10000) > TARGET_DEVIATIION_FIXED_INPUT)) {
+  while (
+    remainingIterations > 0 &&
+    factor != null &&
+    Math.abs(Number(factor) - 10000) > TARGET_DEVIATIION_FIXED_INPUT
+  ) {
     const flashmintQuoteResult = await getEnhancedFlashMintQuote(
       account,
       isMinting,
@@ -242,6 +252,7 @@ export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
       outputTokenPrice,
       slippage,
       chainId,
+      publicClient,
     )
 
     // If there is no FlashMint quote, return immediately
@@ -254,13 +265,13 @@ export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
     factor = determineFactor(diff, inputTokenAmountWei)
 
     indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
-    remainingIterations--;
+    remainingIterations--
   }
 
   if (Math.abs(Number(factor) - 10000) > MAX_DEVIATIION_FIXED_INPUT) {
-      throw new Error(
-          `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given fixed input, final factor ${factor}`
-      )
+    throw new Error(
+      `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given fixed input, final factor ${factor}`,
+    )
   }
 
   return savedQuote
