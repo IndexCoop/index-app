@@ -261,10 +261,10 @@ export async function getFlashMintQuote(
     if (!isMinting) return flashmintQuoteResult
     savedQuote = flashmintQuoteResult
 
-    const diff = inputTokenAmountWei - flashmintQuoteResult.inputTokenAmount
+    const diff = flashmintQuoteResult.inputTokenAmount - inputTokenAmountWei;
     factor = determineFactor(diff, inputTokenAmountWei)
 
-    indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
+    indexTokenAmount = (indexTokenAmount * BigInt(10000)) / factor
     remainingIterations--
   }
 
