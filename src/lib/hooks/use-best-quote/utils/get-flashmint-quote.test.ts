@@ -61,6 +61,11 @@ describe('getFlashmintQuote - minting', () => {
             flashMintQuoteRequest,
             publicClient
         )
-        console.log('result', result)
+
+        // @ts-ignore
+        const inputAmount: bigint = result.inputTokenAmount;
+        console.log('result', inputAmount)
+        expect(inputAmount < flashMintQuoteRequest.inputTokenAmountWei);
+        expect(inputAmount > (flashMintQuoteRequest.inputTokenAmountWei * BigInt(99) / BigInt(100)));
     }, 50000)
 })
