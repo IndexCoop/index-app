@@ -12,7 +12,7 @@ type SummaryQuoteProps = {
   label: string
   value: string
   valueUsd: string
-  showWarning?: boolean
+  percentageColor?: string
   italic?: boolean
 }
 
@@ -32,9 +32,7 @@ function SummaryQuote(props: SummaryQuoteProps) {
         <div className={cn(italic ? 'font-normal' : 'text-ic-white font-bold')}>
           {props.value}
         </div>
-        <div
-          className={cn('font-normal', props.showWarning && 'text-ic-yellow')}
-        >
+        <div className={cn('font-normal', props.percentageColor ?? '')}>
           {props.valueUsd}
         </div>
       </div>
@@ -50,6 +48,7 @@ export function Summary() {
     inputAmount,
     inputAmoutUsd,
     isFetchingQuote,
+    isFavourableQuote,
     outputAmount,
     outputAmountUsd,
     quoteAmount,
@@ -128,7 +127,13 @@ export function Summary() {
                   label='Swap Execution'
                   value={priceImpactUsd}
                   valueUsd={priceImpactPercent}
-                  showWarning={shouldShowWarning}
+                  percentageColor={
+                    shouldShowWarning
+                      ? 'text-ic-yellow'
+                      : isFavourableQuote
+                        ? 'text-ic-green'
+                        : undefined
+                  }
                 />
                 <SummaryQuote
                   label='Order Fee'

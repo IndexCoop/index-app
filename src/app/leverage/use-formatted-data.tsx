@@ -16,6 +16,7 @@ export interface FormattedLeverageData {
   inputBalance: bigint
   inputBalanceFormatted: string
   isFetchingQuote: boolean
+  isFavourableQuote: boolean
   outputAmount: string
   outputAmountUsd: string
   quoteAmount: string
@@ -110,6 +111,11 @@ export function useFormattedLeverageData(): FormattedLeverageData {
         : `(${Number(formatWei(gasCosts, 18)).toFixed(2)} ETH)`
   }
 
+  const isFavourableQuote = useMemo(() => {
+    if (!quote?.priceImpactPercent) return false
+    return quote.priceImpactPercent <= 0
+  }, [quote])
+
   const shouldShowWarning = useMemo(() => {
     if (quote?.warning) return true
     return false
@@ -152,6 +158,7 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     inputBalance: balance,
     inputBalanceFormatted: balanceFormatted,
     isFetchingQuote,
+    isFavourableQuote,
     outputAmount,
     outputAmountUsd,
     quoteAmount,
