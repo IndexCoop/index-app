@@ -245,17 +245,20 @@ export async function getFlashMintQuote(
 
   let savedQuote: Quote | null = null
 
-  const slippageBasisPoints = BigInt(Math.max(Math.round(slippage * 100), 1));
+  const slippageBasisPoints = BigInt(Math.max(Math.round(slippage * 100), 1))
   let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
   let factor = BigInt(0)
-  let currentInputAmount = inputTokenAmountWei;
-  const targetInputAmount = inputTokenAmountWei * (BigInt(10000) - slippageBasisPoints) / BigInt(10000);
+  let currentInputAmount = inputTokenAmountWei
+  const targetInputAmount =
+    (inputTokenAmountWei * (BigInt(10000) - slippageBasisPoints)) /
+    BigInt(10000)
 
   while (
     remainingIterations > 0 &&
     factor != null &&
     currentInputAmount != null &&
-    (Math.abs(Number(factor) - 10000) > MAX_DEVIATIION_FIXED_INPUT || currentInputAmount > inputTokenAmountWei)
+    (Math.abs(Number(factor) - 10000) > MAX_DEVIATIION_FIXED_INPUT ||
+      currentInputAmount > inputTokenAmountWei)
   ) {
     const flashmintQuoteResult = await getEnhancedFlashMintQuote(
       account,
@@ -276,14 +279,14 @@ export async function getFlashMintQuote(
     // For redeeming return quote immdediately
     if (!isMinting) return flashmintQuoteResult
     savedQuote = flashmintQuoteResult
-    currentInputAmount = flashmintQuoteResult.inputTokenAmount;
+    currentInputAmount = flashmintQuoteResult.inputTokenAmount
 
-    factor =
-        (BigInt(10000) * targetInputAmount) /
-        currentInputAmount
+    factor = (BigInt(10000) * targetInputAmount) / currentInputAmount
 
-    if(factor < 1) { factor = BigInt(1) }
-    console.log("factor", factor);
+    if (factor < 1) {
+      factor = BigInt(1)
+    }
+    console.log('factor', factor)
 
     indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
     remainingIterations--
