@@ -21,10 +21,8 @@ import type { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import type { Hex } from 'viem'
 
 const MAX_ITERATIONS_FIXED_INPUT = 10
-// Exit approximation algorithm after getting this close to the target
-const TARGET_DEVIATIION_FIXED_INPUT = BigInt(20)
 // Maximum deviation from target fixed input to allow
-const MAX_DEVIATIION_FIXED_INPUT = BigInt(50)
+const MAX_DEVIATIION_FIXED_INPUT = BigInt(5)
 
 type QuoteError = {
   type?: string
@@ -257,7 +255,7 @@ export async function getFlashMintQuote(
     remainingIterations > 0 &&
     factor != null &&
     currentInputAmount != null &&
-    (Math.abs(Number(factor) - 10000) > TARGET_DEVIATIION_FIXED_INPUT || currentInputAmount > inputTokenAmountWei)
+    (Math.abs(Number(factor) - 10000) > MAX_DEVIATIION_FIXED_INPUT || currentInputAmount > inputTokenAmountWei)
   ) {
     const flashmintQuoteResult = await getEnhancedFlashMintQuote(
       account,
