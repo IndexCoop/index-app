@@ -25,8 +25,6 @@ const MAX_ITERATIONS_FIXED_INPUT = 10
 const TARGET_DEVIATIION_FIXED_INPUT = BigInt(20)
 // Maximum deviation from target fixed input to allow
 const MAX_DEVIATIION_FIXED_INPUT = BigInt(50)
-// Basispoints to deduct from best estimate for next iteration if the current estimated input amount is higher than target
-const UNDERESTIMATION_FACTOR = BigInt(5);
 
 type QuoteError = {
   type?: string
@@ -249,9 +247,11 @@ export async function getFlashMintQuote(
 
   let savedQuote: Quote | null = null
 
+  const slippageBasisPoints = BigInt(Math.max(Math.round(slippage * 100), 1));
   let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
   let factor = BigInt(0)
   let currentInputAmount = inputTokenAmountWei;
+  const targetInputAmount = inputTokenAmountWei * (BigInt(10000) - slippageBasisPoints) / BigInt(10000);
 
   while (
     remainingIterations > 0 &&
@@ -281,13 +281,8 @@ export async function getFlashMintQuote(
     currentInputAmount = flashmintQuoteResult.inputTokenAmount;
 
     factor =
-        (BigInt(10000) * inputTokenAmountWei) /
+        (BigInt(10000) * targetInputAmount) /
         currentInputAmount
-
-    // Subtract small amount of   to make it more likely that we will be end up below the target
-    if(currentInputAmount > inputTokenAmountWei) {
-        factor = factor - UNDERESTIMATION_FACTOR;
-    }
 
     if(factor < 1) { factor = BigInt(1) }
     console.log("factor", factor);
@@ -296,9 +291,15 @@ export async function getFlashMintQuote(
     remainingIterations--
   }
 
+  if (currentInputAmount > inputTokenAmountWei) {
+    throw new Error(
+      `Optimization result ${currentInputAmount} is higher than user input ${inputTokenAmountWei}`,
+    )
+  }
+
   if (Math.abs(Number(factor) - 10000) > MAX_DEVIATIION_FIXED_INPUT) {
     throw new Error(
-      `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given fixed input, final factor ${factor}`,
+      `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given target input, final factor ${factor}`,
     )
   }
 
