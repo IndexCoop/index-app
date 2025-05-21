@@ -31,7 +31,7 @@ describe('getFlashmintQuote - minting', () => {
     inputTokenAmount: '1',
     inputTokenPrice: 1000,
     outputTokenPrice: 1000,
-    slippage: 0.05,
+    slippage: 0.5,
   }
 
   const publicClient = createPublicClient({
@@ -65,10 +65,14 @@ describe('getFlashmintQuote - minting', () => {
 
     const inputAmount: bigint = (result as Quote).inputTokenAmount
     console.log('result', inputAmount)
-    expect(inputAmount < flashMintQuoteRequest.inputTokenAmountWei)
-    expect(
-      inputAmount >
-        (flashMintQuoteRequest.inputTokenAmountWei * BigInt(99)) / BigInt(100),
-    )
+    const targetInputAmount: bigint = flashMintQuoteRequest.inputTokenAmountWei * (BigInt(10000) - BigInt(flashMintQuoteRequest.slippage * 100)) / BigInt(10000)
+    const toleranceBP =  5;
+    console.log('targetInputAmount', targetInputAmount);
+    const lowerBound = targetInputAmount * (BigInt(10000 - toleranceBP)) / BigInt(10000);
+    console.log('lowerBound', lowerBound);
+    const upperBound = targetInputAmount * (BigInt(10000 + toleranceBP)) / BigInt(10000);
+    console.log('upperBound', upperBound);
+    expect(inputAmount < upperBound);
+    expect(inputAmount > lowerBound);
   }, 50000)
 })
