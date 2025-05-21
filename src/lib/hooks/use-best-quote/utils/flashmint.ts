@@ -20,11 +20,11 @@ import type { GetApiV2QuoteQuery } from '@/gen'
 import type { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import type { Hex } from 'viem'
 
-const MAX_ITERATIONS_FIXED_INPUT = 5
+const MAX_ITERATIONS_FIXED_INPUT = 10
 // Exit approximation algorithm after getting this close to the target
-const TARGET_DEVIATIION_FIXED_INPUT = BigInt(50)
+const TARGET_DEVIATIION_FIXED_INPUT = BigInt(20)
 // Maximum deviation from target fixed input to allow
-const MAX_DEVIATIION_FIXED_INPUT = BigInt(200)
+const MAX_DEVIATIION_FIXED_INPUT = BigInt(50)
 // Basispoints to deduct from best estimate for next iteration if the current estimated input amount is higher than target
 const UNDERESTIMATION_FACTOR = BigInt(5);
 
