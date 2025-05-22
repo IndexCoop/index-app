@@ -21,6 +21,7 @@ export type TradeMachineEvent =
   | { type: 'INITIALIZE' }
   | { type: 'FETCHING_QUOTE' }
   | { type: 'QUOTE'; quoteResult: QuoteResult; quoteType: QuoteType }
+  | { type: 'QUOTE_OVERRIDE'; quoteResult: QuoteResult; quoteType: QuoteType }
   | { type: 'QUOTE_NOT_FOUND'; reason: string }
   | { type: 'REVIEW' }
   | { type: 'SUBMIT' }
@@ -29,7 +30,9 @@ export type TradeMachineEvent =
   | { type: 'CLOSE' }
   | { type: 'RESET_DONE' }
 
-export type TradeMachineAction = { type: 'resetContext' }
+export type TradeMachineAction =
+  | { type: 'resetContext' }
+  | { type: 'assignQuoteResult' }
 
 const createTradeMachine = () =>
   createMachine({
@@ -60,36 +63,7 @@ const createTradeMachine = () =>
         on: {
           QUOTE: {
             target: 'quote',
-            actions: assign({
-              quoteResult: ({ event }) => event.quoteResult,
-              transactionReview: ({ event }) => {
-                assertEvent(event, 'QUOTE')
-
-                const quoteResult = event.quoteResult
-                const quote = quoteResult.quote
-
-                if (!quote) return null
-
-                const transactionReview: TransactionReview = {
-                  ...quote,
-                  contractAddress: quote.contract,
-                  chainId: quote.chainId ?? 1,
-                  quoteResults: {
-                    bestQuote: event.quoteType,
-                    results: {
-                      flashmint: null,
-                      index: null,
-                      issuance: null,
-                      redemption: null,
-                      [event.quoteType]: quoteResult,
-                    },
-                  },
-                  selectedQuote: event.quoteType,
-                }
-
-                return transactionReview
-              },
-            }),
+            actions: 'assignQuoteResult',
             guard: ({ event }) =>
               Boolean(event.quoteResult && event.quoteResult.quote),
           },
@@ -105,6 +79,10 @@ const createTradeMachine = () =>
         on: {
           FETCHING_QUOTE: {
             target: 'idle',
+          },
+          QUOTE_OVERRIDE: {
+            target: 'quote',
+            actions: 'assignQuoteResult',
           },
           REVIEW: {
             target: 'review',
@@ -180,6 +158,40 @@ const createTradeMachine = () =>
     },
   }).provide({
     actions: {
+      assignQuoteResult: assign({
+        quoteResult: ({ event }) => {
+          assertEvent(event, ['QUOTE', 'QUOTE_OVERRIDE'])
+
+          return event.quoteResult
+        },
+        transactionReview: ({ event }) => {
+          assertEvent(event, ['QUOTE', 'QUOTE_OVERRIDE'])
+
+          const quoteResult = event.quoteResult
+          const quote = quoteResult.quote
+
+          if (!quote) return null
+
+          const transactionReview: TransactionReview = {
+            ...quote,
+            contractAddress: quote.contract,
+            chainId: quote.chainId ?? 1,
+            quoteResults: {
+              bestQuote: event.quoteType,
+              results: {
+                flashmint: null,
+                index: null,
+                issuance: null,
+                redemption: null,
+                [event.quoteType]: quoteResult,
+              },
+            },
+            selectedQuote: event.quoteType,
+          }
+
+          return transactionReview
+        },
+      }),
       resetContext: assign({
         isModalOpen: false,
         quoteResult: null,

@@ -83,6 +83,8 @@ export const Swap = (props: SwapProps) => {
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
+  console.log('tradeState', tradeState)
+
   const {
     selectInputToken,
     selectOutputToken,
@@ -126,7 +128,7 @@ export const Swap = (props: SwapProps) => {
     const quote = quoteResults?.results[selectedQuote ?? QuoteType.index]
     if (!quote) return
     sendTradeEvent({
-      type: 'QUOTE',
+      type: 'QUOTE_OVERRIDE',
       quoteResult: quote,
       quoteType: quote.type,
     })
