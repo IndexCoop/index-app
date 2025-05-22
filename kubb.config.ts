@@ -10,7 +10,7 @@ dotenv.config()
 const KUBB_ENV = process.env.KUBB_ENV
 
 const baseURL = !KUBB_ENV
-  ? 'https://api.indexcoop.com'
+  ? 'https://api-q513.onrender.com'
   : KUBB_ENV === 'local'
     ? 'http://127.0.0.1:4000'
     : KUBB_ENV
@@ -18,11 +18,7 @@ const baseURL = !KUBB_ENV
 const config = defineConfig({
   root: '.',
   input: {
-    path: !KUBB_ENV
-      ? `${baseURL}/v2/docs/json`
-      : KUBB_ENV === 'local'
-        ? `${baseURL}/documentation/json`
-        : `${baseURL}/documentation/json`,
+    path: `${baseURL}/documentation/json`,
   },
   output: {
     path: './src/gen',
