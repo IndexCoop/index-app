@@ -245,7 +245,6 @@ export async function getFlashMintQuote(
 
   let savedQuote: Quote | null = null
 
-  const slippageBasisPoints = BigInt(Math.max(Math.round(slippage * 100), 1))
   let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
   let factor = BigInt(0)
   let currentInputAmount = inputTokenAmountWei
