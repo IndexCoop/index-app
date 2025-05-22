@@ -53,6 +53,12 @@ const createTradeMachine = () =>
       quoteError: '',
     },
     on: {
+      // This will intercept all actions, and show the event type and event data
+      // '*': {
+      //   actions: ({ event }) => {
+      //     console.log(`Event received: ${event.type}`, event)
+      //   },
+      // },
       INITIALIZE: {
         target: '.idle',
       },
