@@ -9,14 +9,20 @@ dotenv.config()
 
 const KUBB_ENV = process.env.KUBB_ENV
 
+const baseURL = !KUBB_ENV
+  ? 'https://api.indexcoop.com'
+  : KUBB_ENV === 'local'
+    ? 'http://127.0.0.1:4000'
+    : KUBB_ENV
+
 const config = defineConfig({
   root: '.',
   input: {
     path: !KUBB_ENV
-      ? 'https://api.indexcoop.com/v2/docs/json'
+      ? `${baseURL}/v2/docs/json`
       : KUBB_ENV === 'local'
-        ? 'http://127.0.0.1:4000/documentation/json'
-        : KUBB_ENV,
+        ? `${baseURL}/documentation/json`
+        : `${baseURL}/documentation/json`,
   },
   output: {
     path: './src/gen',
@@ -45,9 +51,7 @@ const config = defineConfig({
       dateType: 'date',
     }),
     pluginClient({
-      baseURL: isLocal
-        ? 'http://127.0.0.1:4000' // Requires the indexcoop-api to be running locally
-        : 'https://api-q513.onrender.com',
+      baseURL,
       output: {
         path: './clients/axios',
         barrelType: 'propagate',
