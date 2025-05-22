@@ -83,8 +83,6 @@ export const Swap = (props: SwapProps) => {
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
-  console.log('tradeState', tradeState)
-
   const {
     selectInputToken,
     selectOutputToken,
