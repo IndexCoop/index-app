@@ -73,6 +73,10 @@ const createTradeMachine = () =>
             guard: ({ event }) =>
               Boolean(event.quoteResult && event.quoteResult.quote),
           },
+          QUOTE_OVERRIDE: {
+            target: 'quote',
+            actions: 'assignQuoteResult',
+          },
           QUOTE_NOT_FOUND: {
             target: 'quoteNotFound',
             actions: assign({
