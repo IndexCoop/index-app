@@ -249,9 +249,7 @@ export async function getFlashMintQuote(
   let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
   let factor = BigInt(0)
   let currentInputAmount = inputTokenAmountWei
-  const targetInputAmount =
-    (inputTokenAmountWei * (BigInt(10000) - slippageBasisPoints)) /
-    BigInt(10000)
+  const targetInputAmount = currentInputAmount
 
   while (
     remainingIterations > 0 &&
