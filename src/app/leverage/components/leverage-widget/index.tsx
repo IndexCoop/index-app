@@ -65,7 +65,6 @@ export function LeverageWidget() {
   const {
     contract,
     hasInsufficientFunds,
-    inputAmoutUsd,
     inputBalance,
     inputBalanceFormatted,
     inputValueFormattedUsd,
