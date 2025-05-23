@@ -78,7 +78,7 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     const inputTokenPrice = quote.inputTokenPrice
     const inputValueAmount = Number(inputValue)
     const digits = getFormatWithDigits(inputValueAmount)
-    return `${formatAmount(inputValueAmount * inputTokenPrice, digits)} ${inputToken.symbol}`
+    return `$${formatAmount(inputValueAmount * inputTokenPrice, digits)}`
   }, [inputValue, inputToken, quote])
 
   const outputAmount = useMemo(() => {
