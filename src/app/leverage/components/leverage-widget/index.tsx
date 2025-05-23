@@ -68,6 +68,7 @@ export function LeverageWidget() {
     inputAmoutUsd,
     inputBalance,
     inputBalanceFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
     outputAmount,
     outputAmountUsd,
@@ -131,7 +132,7 @@ export function LeverageWidget() {
         <TradeInputSelector
           balance={inputBalanceFormatted}
           caption='Pay'
-          formattedFiat={inputAmoutUsd}
+          formattedFiat={inputValueFormattedUsd}
           selectedToken={inputToken}
           selectedTokenAmount={inputValue}
           onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
