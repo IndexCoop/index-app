@@ -47,6 +47,8 @@ export function Summary() {
     gasFeesUsd,
     inputAmount,
     inputAmoutUsd,
+    inputValueFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
     isFavourableQuote,
     outputAmount,
@@ -105,8 +107,8 @@ export function Summary() {
                 {isMinting && (
                   <SummaryQuote
                     label={'Max amount paid'}
-                    value={inputAmount}
-                    valueUsd={`(${inputAmoutUsd})`}
+                    value={inputValueFormatted}
+                    valueUsd={`(${inputValueFormattedUsd})`}
                     italic
                   />
                 )}

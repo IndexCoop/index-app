@@ -68,7 +68,6 @@ export const SlippageProvider = (props: { children: any }) => {
         `/api/slippage/${selectedProduct?.chainId}/${selectedProduct?.address}?isMinting=${isMinting}`,
       )
       const json = await res.json()
-      console.log('json', json)
       let slippage = json?.slippage as number
       if (slippage) {
         slippage = Math.round(slippage * 10) / 10
