@@ -151,11 +151,11 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     const orderFeePercent = (
       (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
     ).toFixed(2)
-    return { orderFee: `$${mintRedeemFeesUsd.toFixed(2)}`, orderFeePercent }
+    return { orderFee: `$${formatAmount(mintRedeemFeesUsd)}`, orderFeePercent }
   }, [quote])
 
   const priceImpactUsd = useMemo(
-    () => `$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`,
+    () => `$${formatAmount(quote?.priceImpactUsd ?? 0)}`,
     [quote],
   )
   const priceImpactPercent = useMemo(
