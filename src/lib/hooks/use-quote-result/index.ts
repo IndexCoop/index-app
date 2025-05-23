@@ -147,6 +147,7 @@ export function useQuoteResult(request: QuoteRequest) {
     if (quoteResult.quote) {
       sendTradeEvent({
         type: 'QUOTE',
+        inputValue,
         quoteResult,
         quoteType: flashmintQuote?.type ?? QuoteType.flashmint,
       })
@@ -154,6 +155,7 @@ export function useQuoteResult(request: QuoteRequest) {
   }, [
     chainId,
     flashmintQuote,
+    inputValue,
     isFetchingFlashMintQuote,
     logEvent,
     sendTradeEvent,

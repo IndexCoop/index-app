@@ -1,10 +1,10 @@
 import { atomWithMachine } from 'jotai-xstate'
+import { parseUnits, type TransactionReceipt } from 'viem'
 import { assertEvent, assign, createMachine } from 'xstate'
 
 import type { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import type { PostApiV2Trade200 } from '@/gen'
 import type { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
-import type { TransactionReceipt } from 'viem'
 
 // Define the context type for our state machine
 export interface TradeMachineContext {
@@ -20,7 +20,12 @@ export interface TradeMachineContext {
 export type TradeMachineEvent =
   | { type: 'INITIALIZE' }
   | { type: 'FETCHING_QUOTE' }
-  | { type: 'QUOTE'; quoteResult: QuoteResult; quoteType: QuoteType }
+  | {
+      type: 'QUOTE'
+      quoteResult: QuoteResult
+      quoteType: QuoteType
+      inputValue?: string
+    }
   | { type: 'QUOTE_NOT_FOUND'; reason: string }
   | { type: 'REVIEW' }
   | { type: 'SUBMIT' }
@@ -74,6 +79,9 @@ const createTradeMachine = () =>
                   ...quote,
                   contractAddress: quote.contract,
                   chainId: quote.chainId ?? 1,
+                  inputTokenAmount: event.inputValue
+                    ? parseUnits(event.inputValue, quote.inputToken.decimals)
+                    : quote.inputTokenAmount,
                   quoteResults: {
                     bestQuote: event.quoteType,
                     results: {
