@@ -70,8 +70,9 @@ export function LeverageOnboardingPopup({
                   <span className='text-neutral-50'>
                     3. Monitor your positions
                   </span>
-                  - Check the 'Your Positions' widget to monitor your profits
-                  and losses, and keep track of your actions in the history tab.
+                  - Check the &apos;Your Positions&apos; widget to monitor your
+                  profits and losses, and keep track of your actions in the
+                  history tab.
                 </p>
                 <div className='hidden w-[170px] shrink-0 md:block'>
                   <Image
