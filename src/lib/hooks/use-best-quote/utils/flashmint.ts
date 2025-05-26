@@ -17,7 +17,12 @@ import { getPriceImpact } from './price-impact'
 import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import type { Token } from '@/constants/tokens'
 import type { GetApiV2QuoteQuery } from '@/gen'
+import type { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import type { Hex } from 'viem'
+
+const MAX_ITERATIONS_FIXED_INPUT = 10
+// Maximum deviation from target fixed input to allow
+const MAX_DEVIATIION_FIXED_INPUT = BigInt(5)
 
 type QuoteError = {
   type?: string
@@ -39,6 +44,7 @@ async function getEnhancedFlashMintQuote(
   outputTokenPrice: number,
   slippage: number,
   chainId: number,
+  publicClient: IndexRpcProvider,
 ): Promise<Quote | QuoteError> {
   const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
   const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
@@ -92,12 +98,14 @@ async function getEnhancedFlashMintQuote(
       const {
         inputAmount: quoteInputAmount,
         outputAmount: quoteOutputAmount,
+        quoteAmount: quoteQuoteAmount,
         transaction: tx,
         fees,
       } = quoteFM
 
       const inputAmount = BigInt(quoteInputAmount)
       const outputAmount = BigInt(quoteOutputAmount)
+      const quoteAmount = BigInt(quoteQuoteAmount)
       const inputOutputAmount = isMinting ? inputAmount : outputAmount
 
       const transaction: QuoteTransaction = {
@@ -114,6 +122,7 @@ async function getEnhancedFlashMintQuote(
       const { ethPrice, gas } = await getGasLimit(
         transaction,
         defaultGasEstimate,
+        publicClient,
       )
       transaction.gas = gas.limit
 
@@ -123,9 +132,17 @@ async function getEnhancedFlashMintQuote(
       const outputTokenAmountUsd =
         Number.parseFloat(formatWei(outputAmount, outputToken.decimals)) *
         outputTokenPrice
+      const quoteAmountUsd =
+        Number.parseFloat(
+          formatWei(
+            quoteAmount,
+            isMinting ? inputToken.decimals : outputToken.decimals,
+          ),
+        ) * (isMinting ? inputTokenPrice : outputTokenPrice)
+
       const priceImpact = getPriceImpact(
-        inputTokenAmountUsd,
-        outputTokenAmountUsd,
+        isMinting ? quoteAmountUsd : outputTokenAmountUsd,
+        isMinting ? outputTokenAmountUsd : quoteAmountUsd,
       )
 
       const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
@@ -142,7 +159,9 @@ async function getEnhancedFlashMintQuote(
       const mintRedeemFees = isMinting ? fees.mint : fees.redeem
       const mintRedeemFeesUsd = inputTokenAmountUsd * mintRedeemFees
       const priceImpactUsd =
-        inputTokenAmountUsd - outputTokenAmountUsd - mintRedeemFeesUsd
+        (isMinting ? quoteAmountUsd : inputTokenAmountUsd) -
+        (isMinting ? outputTokenAmountUsd : quoteAmountUsd) -
+        mintRedeemFeesUsd
       const priceImpactPercent = (priceImpactUsd / inputTokenAmountUsd) * 100
 
       const isHighPriceImpact = priceImpactPercent > 2
@@ -162,6 +181,8 @@ async function getEnhancedFlashMintQuote(
         priceImpact,
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputAmount,
+        quoteAmount,
+        quoteAmountUsd,
         inputTokenAmount: inputAmount,
         inputTokenAmountUsd,
         outputTokenAmount: outputAmount,
@@ -195,7 +216,10 @@ interface FlashMintQuoteRequest extends IndexQuoteRequest {
   inputTokenAmountWei: bigint
 }
 
-export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
+export async function getFlashMintQuote(
+  request: FlashMintQuoteRequest,
+  publicClient: IndexRpcProvider,
+) {
   const {
     chainId,
     account,
@@ -221,7 +245,18 @@ export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
 
   let savedQuote: Quote | null = null
 
-  for (let t = 2; t > 0; t--) {
+  let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
+  let factor = BigInt(0)
+  let currentInputAmount = inputTokenAmountWei
+  const targetInputAmount = currentInputAmount
+
+  while (
+    remainingIterations > 0 &&
+    factor != null &&
+    currentInputAmount != null &&
+    (Math.abs(Number(factor) - 10000) > MAX_DEVIATIION_FIXED_INPUT ||
+      currentInputAmount > inputTokenAmountWei)
+  ) {
     const flashmintQuoteResult = await getEnhancedFlashMintQuote(
       account,
       isMinting,
@@ -233,6 +268,7 @@ export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
       outputTokenPrice,
       slippage,
       chainId,
+      publicClient,
     )
 
     // If there is no FlashMint quote, return immediately
@@ -240,25 +276,30 @@ export async function getFlashMintQuote(request: FlashMintQuoteRequest) {
     // For redeeming return quote immdediately
     if (!isMinting) return flashmintQuoteResult
     savedQuote = flashmintQuoteResult
+    currentInputAmount = flashmintQuoteResult.inputTokenAmount
 
-    const diff = inputTokenAmountWei - flashmintQuoteResult.inputTokenAmount
-    const factor = determineFactor(diff, inputTokenAmountWei)
+    factor = (BigInt(10000) * targetInputAmount) / currentInputAmount
+
+    if (factor < 1) {
+      factor = BigInt(1)
+    }
+    console.log('factor', factor)
 
     indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
+    remainingIterations--
+  }
 
-    if (diff < 0 && t === 1) {
-      t++ // loop one more time to stay under the input amount
-    }
+  if (currentInputAmount > inputTokenAmountWei) {
+    throw new Error(
+      `Optimization result ${currentInputAmount} is higher than user input ${inputTokenAmountWei}`,
+    )
+  }
+
+  if (Math.abs(Number(factor) - 10000) > MAX_DEVIATIION_FIXED_INPUT) {
+    throw new Error(
+      `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given target input, final factor ${factor}`,
+    )
   }
 
   return savedQuote
-}
-
-const determineFactor = (diff: bigint, inputTokenAmount: bigint): bigint => {
-  let ratio = Number(diff.toString()) / Number(inputTokenAmount.toString())
-  if (Math.abs(ratio) < 0.0001) {
-    // This is currently needed to avoid infinite loops
-    ratio = diff < 0 ? -0.0001 : 0.0001
-  }
-  return BigInt(Math.round((1 + ratio) * 10000))
 }

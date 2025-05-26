@@ -65,12 +65,14 @@ export function LeverageWidget() {
   const {
     contract,
     hasInsufficientFunds,
-    inputAmoutUsd,
     inputBalance,
     inputBalanceFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
-    ouputAmount,
+    outputAmount,
     outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     resetData,
   } = useFormattedLeverageData()
 
@@ -129,7 +131,7 @@ export function LeverageWidget() {
         <TradeInputSelector
           balance={inputBalanceFormatted}
           caption='Pay'
-          formattedFiat={inputAmoutUsd}
+          formattedFiat={inputValueFormattedUsd}
           selectedToken={inputToken}
           selectedTokenAmount={inputValue}
           onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
@@ -141,8 +143,8 @@ export function LeverageWidget() {
       <Receive
         isLoading={isFetchingQuote}
         showOutputAmount={inputTokenAmount > BigInt(0)}
-        outputAmount={ouputAmount}
-        outputAmountUsd={outputAmountUsd}
+        outputAmount={isMinting ? outputAmount : quoteAmount}
+        outputAmountUsd={isMinting ? outputAmountUsd : quoteAmountUsd}
         selectedOutputToken={outputToken}
         onSelectToken={onOpenSelectOutputToken}
       />
