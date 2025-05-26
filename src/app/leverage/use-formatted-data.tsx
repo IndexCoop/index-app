@@ -15,6 +15,8 @@ export interface FormattedLeverageData {
   inputAmoutUsd: string
   inputBalance: bigint
   inputBalanceFormatted: string
+  inputValueFormatted: string
+  inputValueFormattedUsd: string
   isFetchingQuote: boolean
   isFavourableQuote: boolean
   outputAmount: string
@@ -63,6 +65,21 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     () => balance < inputTokenAmount,
     [inputTokenAmount, balance],
   )
+
+  const inputValueFormatted = useMemo(() => {
+    if (inputValue === '') return ''
+    const inputValueAmount = Number(inputValue)
+    const digits = getFormatWithDigits(inputValueAmount)
+    return `${formatAmount(inputValueAmount, digits)} ${inputToken.symbol}`
+  }, [inputValue, inputToken])
+
+  const inputValueFormattedUsd = useMemo(() => {
+    if (inputValue === '' || !quote?.inputTokenPrice) return ''
+    const inputTokenPrice = quote.inputTokenPrice
+    const inputValueAmount = Number(inputValue)
+    const digits = getFormatWithDigits(inputValueAmount)
+    return `$${formatAmount(inputValueAmount * inputTokenPrice, digits)}`
+  }, [inputValue, quote])
 
   const outputAmount = useMemo(() => {
     if (inputValue === '') return ''
@@ -134,11 +151,11 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     const orderFeePercent = (
       (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
     ).toFixed(2)
-    return { orderFee: `$${mintRedeemFeesUsd.toFixed(2)}`, orderFeePercent }
+    return { orderFee: `$${formatAmount(mintRedeemFeesUsd)}`, orderFeePercent }
   }, [quote])
 
   const priceImpactUsd = useMemo(
-    () => `$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`,
+    () => `$${formatAmount(quote?.priceImpactUsd ?? 0)}`,
     [quote],
   )
   const priceImpactPercent = useMemo(
@@ -157,6 +174,8 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     inputAmoutUsd,
     inputBalance: balance,
     inputBalanceFormatted: balanceFormatted,
+    inputValueFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
     isFavourableQuote,
     outputAmount,

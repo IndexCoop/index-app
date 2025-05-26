@@ -5,10 +5,11 @@ import { isAvailableForFlashMint } from '@/lib/hooks/use-best-quote/utils/availa
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { parseUnits } from '@/lib/utils'
+import { getTokenPrice } from '@/lib/utils/token-price'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
-import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
+import { useNativeTokenPrice } from '../use-token-price'
 
 import {
   type Quote,
@@ -104,16 +105,19 @@ export const useBestQuote = (
       const fetchFlashMintQuote = async () => {
         if (canFlashmintIndexToken) {
           setIsFetchingFlashMint(true)
-          const quoteFlashMint = await getFlashMintQuote({
-            ...request,
-            account: address,
-            chainId,
-            inputToken,
-            inputTokenAmountWei,
-            inputTokenPrice,
-            outputToken,
-            outputTokenPrice,
-          })
+          const quoteFlashMint = await getFlashMintQuote(
+            {
+              ...request,
+              account: address,
+              chainId,
+              inputToken,
+              inputTokenAmountWei,
+              inputTokenPrice,
+              outputToken,
+              outputTokenPrice,
+            },
+            provider,
+          )
 
           if (isQuoteError(quoteFlashMint)) {
             logEvent('Quote Failed', quoteFlashMint)
