@@ -1,6 +1,7 @@
 'use client'
 
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
+import Image from 'next/image'
 
 interface LeverageOnboardingPopupProps {
   isOpen: boolean
@@ -30,15 +31,19 @@ export function LeverageOnboardingPopup({
               </p>
             </div>
             <div className='space-y-8'>
-              <div className='space-y-2'>
-                <h3 className='font-semibold'>
-                  <span className='text-[#6366F1]'>1.</span> Set up your trade
-                </h3>
-                <p className='text-sm text-gray-400'>
+              <div className='flex items-center justify-between'>
+                <p className='text-xs font-medium text-gray-400'>
+                  <span className='text-neutral-50'>1. Set up your trade</span>-
                   Select your market, target leverage and input amount.
                 </p>
                 <div className='hidden md:block'>
-                  {/* Trading interface preview image would go here */}
+                  <Image
+                    src='/assets/onboarding-setup-trade.png'
+                    alt='Setup your trade interface'
+                    width={170}
+                    height={86}
+                    className='rounded-[4px]'
+                  />
                 </div>
               </div>
 
@@ -46,18 +51,24 @@ export function LeverageOnboardingPopup({
                 <h3 className='font-semibold'>
                   <span className='text-[#6366F1]'>2.</span> Under the hood
                 </h3>
-                <p className='text-sm text-gray-400'>
+                <p className='flex text-sm text-gray-400'>
                   When you use an Index Coop product, Index automatically
                   creates a leveraged position using collateral and debt
                   positions on a DeFi lending market. Liquidation protection and
                   low costs gives your trade time to win.
                 </p>
                 <div className='hidden md:block'>
-                  {/* Under the hood illustration would go here */}
+                  <Image
+                    src='/assets/onboarding-under-the-hood.png'
+                    alt='Under the hood illustration'
+                    width={400}
+                    height={225}
+                    className='w-full rounded-lg'
+                  />
                 </div>
               </div>
 
-              <div className='space-y-2'>
+              <div className='flex space-y-2'>
                 <h3 className='font-semibold'>
                   <span className='text-[#6366F1]'>3.</span> Monitor your
                   positions
@@ -68,7 +79,13 @@ export function LeverageOnboardingPopup({
                   history tab.
                 </p>
                 <div className='hidden md:block'>
-                  {/* Positions monitoring interface preview would go here */}
+                  <Image
+                    src='/assets/onboarding-monitor-your-positions.png'
+                    alt='Positions monitoring interface'
+                    width={400}
+                    height={225}
+                    className='w-full rounded-lg'
+                  />
                 </div>
               </div>
             </div>
