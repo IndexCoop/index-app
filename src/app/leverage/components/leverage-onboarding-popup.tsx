@@ -44,6 +44,7 @@ export function LeverageOnboardingPopup({
                     height={86}
                     className='!w-full rounded-[4px]'
                     style={{ width: '170px' }}
+                    priority={true}
                   />
                 </div>
               </div>
@@ -62,6 +63,7 @@ export function LeverageOnboardingPopup({
                     height={86}
                     className='!w-full rounded-[4px]'
                     style={{ width: '170px' }}
+                    priority={true}
                   />
                 </div>
               </div>
@@ -82,6 +84,7 @@ export function LeverageOnboardingPopup({
                     height={86}
                     className='!w-full rounded-[4px]'
                     style={{ width: '170px' }}
+                    priority={true}
                   />
                 </div>
               </div>
