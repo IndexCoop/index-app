@@ -37,14 +37,14 @@ function LeverageOnboardingPopup({
                   <span className='text-neutral-50'>1. Set up your trade</span>-
                   Select your market, target leverage and input amount.
                 </p>
-                <div className='hidden w-[170px] shrink-0 md:block'>
+                <div className='hidden h-[86px] w-[170px] shrink-0 md:block'>
                   <Image
                     src='/assets/onboarding-setup-trade.png'
                     alt='Setup your trade interface'
                     width={170}
                     height={86}
                     className='!w-full rounded-[4px]'
-                    style={{ width: '170px' }}
+                    style={{ width: '170px', height: '86px' }}
                     priority={true}
                   />
                 </div>
@@ -56,14 +56,14 @@ function LeverageOnboardingPopup({
                   creates a leveraged position using collateral and debt
                   positions on a DeFi lending market.
                 </p>
-                <div className='hidden w-[170px] shrink-0 md:block'>
+                <div className='hidden h-[86px] w-[170px] shrink-0 md:block'>
                   <Image
                     src='/assets/onboarding-under-the-hood.png'
                     alt='Under the hood illustration'
                     width={170}
                     height={86}
                     className='!w-full rounded-[4px]'
-                    style={{ width: '170px' }}
+                    style={{ width: '170px', height: '86px' }}
                     priority={true}
                   />
                 </div>
@@ -77,14 +77,14 @@ function LeverageOnboardingPopup({
                   profits and losses, and keep track of your actions in the
                   history tab.
                 </p>
-                <div className='hidden w-[170px] shrink-0 md:block'>
+                <div className='hidden h-[86px] w-[170px] shrink-0 md:block'>
                   <Image
                     src='/assets/onboarding-monitor-your-positions.png'
                     alt='Positions monitoring interface'
                     width={170}
                     height={86}
                     className='!w-full rounded-[4px]'
-                    style={{ width: '170px' }}
+                    style={{ width: '170px', height: '86px' }}
                     priority={true}
                   />
                 </div>
