@@ -1,10 +1,8 @@
 export async function getProtection(headers: Headers, address?: string) {
-  console.log(headers, address)
   const path = address
     ? `/v2/protections?${new URLSearchParams({ address }).toString()}`
     : '/v2/protections'
   const url = `https://api.indexcoop.com${path}`
-  console.log(url)
   const res = await fetch(url, {
     headers: {
       ...headers,
