@@ -2,6 +2,7 @@
 
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
 import Image from 'next/image'
+import { useState } from 'react'
 
 interface LeverageOnboardingPopupProps {
   isOpen: boolean
@@ -9,7 +10,7 @@ interface LeverageOnboardingPopupProps {
   onGetStarted: () => void
 }
 
-export function LeverageOnboardingPopup({
+function LeverageOnboardingPopup({
   isOpen,
   onClose,
   onGetStarted,
@@ -109,5 +110,21 @@ export function LeverageOnboardingPopup({
         </DialogPanel>
       </div>
     </Dialog>
+  )
+}
+
+export function LeverageOnboardingPopupWrapper({
+  showPopup,
+}: {
+  showPopup: boolean
+}) {
+  const [isPopupOpen, setIsPopupOpen] = useState(showPopup)
+
+  return (
+    <LeverageOnboardingPopup
+      isOpen={isPopupOpen}
+      onClose={() => setIsPopupOpen(false)}
+      onGetStarted={() => setIsPopupOpen(false)}
+    />
   )
 }
