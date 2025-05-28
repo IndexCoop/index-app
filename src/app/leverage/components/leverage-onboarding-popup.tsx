@@ -2,7 +2,7 @@
 
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useCustomAppKit } from '@/lib/hooks/use-custom-app-kit'
@@ -126,9 +126,16 @@ export function LeverageOnboardingPopupWrapper({
 }: {
   showPopup: boolean
 }) {
+  const { logEvent } = useAnalytics()
   const { openConnectView } = useCustomAppKit()
   const [isPopupOpen, setIsPopupOpen] = useState(showPopup)
   const { isConnected } = useWallet()
+
+  useEffect(() => {
+    if (isPopupOpen) {
+      logEvent('Leverage_Onboarding_Popup_Show')
+    }
+  }, [isPopupOpen, logEvent])
 
   return (
     <LeverageOnboardingPopup
