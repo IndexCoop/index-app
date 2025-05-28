@@ -4,6 +4,7 @@ import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
 import Image from 'next/image'
 import { useState } from 'react'
 
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useCustomAppKit } from '@/lib/hooks/use-custom-app-kit'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
@@ -18,6 +19,7 @@ function LeverageOnboardingPopup({
   onClose,
   onGetStarted,
 }: LeverageOnboardingPopupProps) {
+  const { logEvent } = useAnalytics()
   return (
     <Dialog open={isOpen} onClose={onClose} className='relative z-10'>
       <DialogBackdrop className='fixed inset-0 bg-black/60 backdrop-blur-sm' />
@@ -103,7 +105,10 @@ function LeverageOnboardingPopup({
                 Get Started
               </button>
               <button
-                onClick={onClose}
+                onClick={() => {
+                  logEvent('Leverage_Onboarding_Popup_Skip')
+                  onClose()
+                }}
                 className='h-5 w-full px-6 text-xs font-medium text-neutral-600 underline transition-colors hover:text-gray-300'
               >
                 Skip for now
@@ -133,7 +138,7 @@ export function LeverageOnboardingPopupWrapper({
         if (isConnected) {
           setIsPopupOpen(false)
         } else {
-          openConnectView('Leverage Onboarding Popup')
+          openConnectView('Leverage_Onboarding_Popup_Get_Started')
         }
       }}
     />
