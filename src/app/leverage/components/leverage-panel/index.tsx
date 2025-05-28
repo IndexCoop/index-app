@@ -1,3 +1,5 @@
+'use client'
+
 import { Suspense } from 'react'
 
 import { LeverageWidget } from '@/app/leverage/components/leverage-widget'
