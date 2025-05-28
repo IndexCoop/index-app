@@ -12,8 +12,6 @@ export default async function Page() {
   const headersObj = new Headers(hdrs)
   const { isNewUser } = await getProtection(headersObj)
 
-  console.log(isNewUser, 'isNewUser')
-
   return (
     <>
       <BodyClassEffect />

@@ -283,7 +283,6 @@ export async function getFlashMintQuote(
     if (factor < 1) {
       factor = BigInt(1)
     }
-    console.log('factor', factor)
 
     indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
     remainingIterations--

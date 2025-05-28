@@ -50,8 +50,6 @@ export function useFormattedLeverageData(): FormattedLeverageData {
 
   const quote = useMemo(() => quoteResult?.quote ?? null, [quoteResult])
 
-  console.log('quote', quote)
-
   const contract = useMemo(() => quote?.contract ?? null, [quote])
 
   const inputAmount = quote?.inputTokenAmount
