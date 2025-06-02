@@ -38,7 +38,6 @@ export interface Quote {
   gasCosts: bigint
   gasCostsInUsd: number
   fullCostsInUsd: number | null
-  priceImpact: number | null
   indexTokenAmount: bigint
   inputOutputTokenAmount: bigint
   // quote amount with no slippage applied

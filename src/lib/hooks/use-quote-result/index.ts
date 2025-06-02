@@ -11,7 +11,6 @@ import {
   getFlashMintQuote,
   isQuoteError,
 } from '@/lib/hooks/use-best-quote/utils/flashmint'
-import { getTokenPrice } from '@/lib/utils/token-price'
 
 import type { Token } from '@/constants/tokens'
 
@@ -68,11 +67,6 @@ export function useQuoteResult(request: QuoteRequest) {
     if (inputTokenAmount <= 0) return null
     if (!indexToken) return null
 
-    const [inputTokenPrice, outputTokenPrice] = await Promise.all([
-      getTokenPrice(inputToken, chainId),
-      getTokenPrice(outputToken, chainId),
-    ])
-
     return getFlashMintQuote(
       {
         isMinting,
@@ -81,9 +75,9 @@ export function useQuoteResult(request: QuoteRequest) {
         inputToken,
         inputTokenAmount: inputValue,
         inputTokenAmountWei: inputTokenAmount,
-        inputTokenPrice,
+        inputTokenPrice: 0, // unused
         outputToken,
-        outputTokenPrice,
+        outputTokenPrice: 0, // unused
         slippage,
       },
       publicClient,

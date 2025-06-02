@@ -1,4 +1,4 @@
-import { formatWei, parseUnits } from '@/lib/utils'
+import { parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
 import { getFlashMintGasDefault } from '@/lib/utils/gas-defaults'
@@ -10,8 +10,6 @@ import {
   type QuoteTransaction,
   QuoteType,
 } from '../types'
-
-import { getPriceImpact } from './price-impact'
 
 import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import type { Token } from '@/constants/tokens'
@@ -34,8 +32,6 @@ async function getEnhancedFlashMintQuote(
   inputToken: Token,
   outputToken: Token,
   inputTokenAmount: bigint,
-  inputTokenPrice: number,
-  outputTokenPrice: number,
   slippage: number,
   chainId: number,
   publicClient: IndexRpcProvider,
@@ -77,7 +73,6 @@ async function getEnhancedFlashMintQuote(
         outputAmount: quoteOutputAmount,
         quoteAmount: quoteQuoteAmount,
         transaction: tx,
-        fees,
       } = quoteFM
 
       const inputAmount = BigInt(quoteInputAmount)
@@ -103,51 +98,24 @@ async function getEnhancedFlashMintQuote(
       )
       transaction.gas = gas.limit
 
-      const inputTokenAmountUsd =
-        Number.parseFloat(formatWei(inputAmount, inputToken.decimals)) *
-        inputTokenPrice
-      const outputTokenAmountUsd =
-        Number.parseFloat(formatWei(outputAmount, outputToken.decimals)) *
-        outputTokenPrice
-      const quoteAmountUsd =
-        Number.parseFloat(
-          formatWei(
-            quoteAmount,
-            isMinting ? inputToken.decimals : outputToken.decimals,
-          ),
-        ) * (isMinting ? inputTokenPrice : outputTokenPrice)
-
-      const priceImpact = getPriceImpact(
-        isMinting ? quoteAmountUsd : outputTokenAmountUsd,
-        isMinting ? outputTokenAmountUsd : quoteAmountUsd,
-      )
-
-      const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
-
       const fullCostsInUsd = getFullCostsInUsd(
         inputAmount,
         gas.limit * gas.price,
         inputToken.decimals,
-        inputTokenPrice,
+        quoteFM.inputTokenPrice,
         ethPrice,
       )
 
-      // includes swap fee (which we can't distinguish for now)
-      const mintRedeemFees = isMinting ? fees.mint : fees.redeem
-      const mintRedeemFeesUsd = inputTokenAmountUsd * mintRedeemFees
-      const priceImpactUsd =
-        (isMinting ? quoteAmountUsd : inputTokenAmountUsd) -
-        (isMinting ? outputTokenAmountUsd : quoteAmountUsd) -
-        mintRedeemFeesUsd
-      const priceImpactPercent = (priceImpactUsd / inputTokenAmountUsd) * 100
+      const isHighPriceImpact = quoteFM.priceImpactPercent > 2
 
-      const isHighPriceImpact = priceImpactPercent > 2
+      const outputTokenAmountUsdAfterFees =
+        quoteFM.outputAmountUsd - gas.costsUsd
+
+      console.log(quoteFM)
 
       return {
+        ...quoteFM,
         type: QuoteType.flashmint,
-        chainId,
-        contract: quoteFM.contract,
-        isMinting,
         inputToken,
         outputToken,
         gas: gas.limit,
@@ -155,21 +123,14 @@ async function getEnhancedFlashMintQuote(
         gasCosts: gas.costs,
         gasCostsInUsd: gas.costsUsd,
         fullCostsInUsd,
-        priceImpact,
         indexTokenAmount: BigInt(quoteFM.indexTokenAmount),
         inputOutputTokenAmount: inputOutputAmount,
         quoteAmount,
-        quoteAmountUsd,
         inputTokenAmount: inputAmount,
-        inputTokenAmountUsd,
+        inputTokenAmountUsd: quoteFM.inputAmountUsd,
         outputTokenAmount: outputAmount,
-        outputTokenAmountUsd,
+        outputTokenAmountUsd: quoteFM.outputAmountUsd,
         outputTokenAmountUsdAfterFees,
-        inputTokenPrice,
-        outputTokenPrice,
-        fees,
-        priceImpactUsd,
-        priceImpactPercent,
         slippage,
         warning: isHighPriceImpact ? 'Price impact is high.' : undefined,
         tx: transaction,
@@ -202,10 +163,8 @@ export async function getFlashMintQuote(
     account,
     inputToken,
     inputTokenAmount,
-    inputTokenPrice,
     isMinting,
     outputToken,
-    outputTokenPrice,
     slippage,
   } = request
 
@@ -215,8 +174,6 @@ export async function getFlashMintQuote(
     inputToken,
     outputToken,
     parseUnits(inputTokenAmount, inputToken.decimals),
-    inputTokenPrice,
-    outputTokenPrice,
     slippage,
     chainId,
     publicClient,
