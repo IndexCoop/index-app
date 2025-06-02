@@ -100,7 +100,7 @@ function LeverageOnboardingPopup({
             <div>
               <button
                 onClick={onGetStarted}
-                className='w-full rounded-full bg-[#252628] px-6 py-4 font-semibold text-neutral-400 transition-colors hover:bg-[#252628]'
+                className='w-full rounded-full bg-neutral-100 px-6 py-4 font-semibold text-zinc-800 transition duration-300 ease-in-out hover:bg-neutral-300'
               >
                 Get Started
               </button>
