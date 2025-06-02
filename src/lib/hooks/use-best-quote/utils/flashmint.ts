@@ -11,7 +11,6 @@ import {
   QuoteType,
 } from '../types'
 
-import { getIndexTokenAmount } from './index-token-amount'
 import { getPriceImpact } from './price-impact'
 
 import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
@@ -19,10 +18,6 @@ import type { Token } from '@/constants/tokens'
 import type { GetApiV2QuoteQuery } from '@/gen'
 import type { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import type { Hex } from 'viem'
-
-const MAX_ITERATIONS_FIXED_INPUT = 10
-// Maximum deviation from target fixed input to allow
-const MAX_DEVIATIION_FIXED_INPUT = BigInt(5)
 
 type QuoteError = {
   type?: string
@@ -38,7 +33,6 @@ async function getEnhancedFlashMintQuote(
   isMinting: boolean,
   inputToken: Token,
   outputToken: Token,
-  indexTokenAmount: bigint,
   inputTokenAmount: bigint,
   inputTokenPrice: number,
   outputTokenPrice: number,
@@ -57,20 +51,6 @@ async function getEnhancedFlashMintQuote(
   }
 
   const indexToken = isMinting ? outputToken : inputToken
-  // const inputOutputToken = isMinting ? inputToken : outputToken
-
-  // // Allow only supported currencies
-  // const currencies = getCurrencyTokensForIndex(indexToken, chainId)
-  // const isAllowedCurrency =
-  //   currencies.filter((curr) => curr.symbol === inputOutputToken.symbol)
-  //     .length > 0
-
-  // if (!isAllowedCurrency) {
-  //   return {
-  //     type: 'CurrencyNotAllowed',
-  //     message: 'Currency not allowed',
-  //   }
-  // }
 
   try {
     const request: ApiIndexQuoteRequest = {
@@ -79,9 +59,6 @@ async function getEnhancedFlashMintQuote(
       inputToken: inputTokenAddress,
       outputToken: outputTokenAddress,
       inputAmount: inputTokenAmount.toString(),
-      // Since for redeeming input and index token amount are the same, this is
-      // basically only relevant for minting.
-      outputAmount: indexTokenAmount.toString(),
       slippage,
     }
 
@@ -179,7 +156,7 @@ async function getEnhancedFlashMintQuote(
         gasCostsInUsd: gas.costsUsd,
         fullCostsInUsd,
         priceImpact,
-        indexTokenAmount,
+        indexTokenAmount: BigInt(quoteFM.indexTokenAmount),
         inputOutputTokenAmount: inputOutputAmount,
         quoteAmount,
         quoteAmountUsd,
@@ -225,7 +202,6 @@ export async function getFlashMintQuote(
     account,
     inputToken,
     inputTokenAmount,
-    inputTokenAmountWei,
     inputTokenPrice,
     isMinting,
     outputToken,
@@ -233,72 +209,18 @@ export async function getFlashMintQuote(
     slippage,
   } = request
 
-  /* Determine initial index token amount based on different factors */
-  let indexTokenAmount = getIndexTokenAmount(
+  const flashmintQuoteResult = await getEnhancedFlashMintQuote(
+    account,
     isMinting,
-    inputTokenAmount,
-    inputToken.decimals,
-    outputToken.decimals,
+    inputToken,
+    outputToken,
+    parseUnits(inputTokenAmount, inputToken.decimals),
     inputTokenPrice,
     outputTokenPrice,
+    slippage,
+    chainId,
+    publicClient,
   )
 
-  let savedQuote: Quote | null = null
-
-  let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
-  let factor = BigInt(0)
-  let currentInputAmount = inputTokenAmountWei
-  const targetInputAmount = currentInputAmount
-
-  while (
-    remainingIterations > 0 &&
-    factor != null &&
-    currentInputAmount != null &&
-    (Math.abs(Number(factor) - 10000) > MAX_DEVIATIION_FIXED_INPUT ||
-      currentInputAmount > inputTokenAmountWei)
-  ) {
-    const flashmintQuoteResult = await getEnhancedFlashMintQuote(
-      account,
-      isMinting,
-      inputToken,
-      outputToken,
-      indexTokenAmount,
-      parseUnits(inputTokenAmount, inputToken.decimals),
-      inputTokenPrice,
-      outputTokenPrice,
-      slippage,
-      chainId,
-      publicClient,
-    )
-
-    // If there is no FlashMint quote, return immediately
-    if (isQuoteError(flashmintQuoteResult)) return flashmintQuoteResult
-    // For redeeming return quote immdediately
-    if (!isMinting) return flashmintQuoteResult
-    savedQuote = flashmintQuoteResult
-    currentInputAmount = flashmintQuoteResult.inputTokenAmount
-
-    factor = (BigInt(10000) * targetInputAmount) / currentInputAmount
-
-    if (factor < 1) {
-      factor = BigInt(1)
-    }
-
-    indexTokenAmount = (indexTokenAmount * factor) / BigInt(10000)
-    remainingIterations--
-  }
-
-  if (currentInputAmount > inputTokenAmountWei) {
-    throw new Error(
-      `Optimization result ${currentInputAmount} is higher than user input ${inputTokenAmountWei}`,
-    )
-  }
-
-  if (Math.abs(Number(factor) - 10000) > MAX_DEVIATIION_FIXED_INPUT) {
-    throw new Error(
-      `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given target input, final factor ${factor}`,
-    )
-  }
-
-  return savedQuote
+  return flashmintQuoteResult
 }
