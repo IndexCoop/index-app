@@ -45,17 +45,10 @@ describe('getFlashmintQuote - minting', () => {
     // eslint-disable-next-line no-extra-semi
     ;(global.fetch as jest.Mock).mockImplementation(
       async (originalUrl, request) => {
-        // console.log('originalUrl', originalUrl)
-        // console.log('request', request)
-        if (request.body) {
-          // console.log('body', JSON.parse(request.body))
-        }
         const url = originalUrl.startsWith('http')
           ? originalUrl
           : `https://app.indexcoop.com${originalUrl}`
-        // console.log('url', url)
         const response = await originalFetch(url, request)
-        // console.log('response', response)
         return response
       },
     )
@@ -64,15 +57,16 @@ describe('getFlashmintQuote - minting', () => {
     if (!result) fail()
 
     const inputAmount: bigint = (result as Quote).inputTokenAmount
-    console.log('result', inputAmount)
-    const targetInputAmount: bigint = flashMintQuoteRequest.inputTokenAmountWei * (BigInt(10000) - BigInt(flashMintQuoteRequest.slippage * 100)) / BigInt(10000)
-    const toleranceBP =  5;
-    console.log('targetInputAmount', targetInputAmount);
-    const lowerBound = targetInputAmount * (BigInt(10000 - toleranceBP)) / BigInt(10000);
-    console.log('lowerBound', lowerBound);
-    const upperBound = targetInputAmount * (BigInt(10000 + toleranceBP)) / BigInt(10000);
-    console.log('upperBound', upperBound);
-    expect(inputAmount < upperBound);
-    expect(inputAmount > lowerBound);
+    const targetInputAmount: bigint =
+      (flashMintQuoteRequest.inputTokenAmountWei *
+        (BigInt(10000) - BigInt(flashMintQuoteRequest.slippage * 100))) /
+      BigInt(10000)
+    const toleranceBP = 5
+    const lowerBound =
+      (targetInputAmount * BigInt(10000 - toleranceBP)) / BigInt(10000)
+    const upperBound =
+      (targetInputAmount * BigInt(10000 + toleranceBP)) / BigInt(10000)
+    expect(inputAmount < upperBound)
+    expect(inputAmount > lowerBound)
   }, 50000)
 })
