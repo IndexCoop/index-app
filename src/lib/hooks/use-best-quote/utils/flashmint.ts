@@ -84,7 +84,6 @@ export async function getFlashMintQuote(
       const inputAmount = BigInt(quoteInputAmount)
       const outputAmount = BigInt(quoteOutputAmount)
       const quoteAmount = BigInt(quoteQuoteAmount)
-      const inputOutputAmount = isMinting ? inputAmount : outputAmount
 
       const transaction: QuoteTransaction = {
         account,
@@ -117,8 +116,6 @@ export async function getFlashMintQuote(
       const outputTokenAmountUsdAfterFees =
         quoteFM.outputAmountUsd - gas.costsUsd
 
-      console.log(quoteFM)
-
       return {
         ...quoteFM,
         type: QuoteType.flashmint,
@@ -130,7 +127,7 @@ export async function getFlashMintQuote(
         gasCostsInUsd: gas.costsUsd,
         fullCostsInUsd,
         indexTokenAmount: BigInt(quoteFM.indexTokenAmount),
-        inputOutputTokenAmount: inputOutputAmount,
+        inputOutputTokenAmount: isMinting ? inputAmount : outputAmount,
         quoteAmount,
         inputTokenAmount: inputAmount,
         inputTokenAmountUsd: quoteFM.inputAmountUsd,
