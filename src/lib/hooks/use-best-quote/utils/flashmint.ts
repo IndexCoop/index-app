@@ -12,7 +12,6 @@ import {
 } from '../types'
 
 import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
-import type { Token } from '@/constants/tokens'
 import type { GetApiV2QuoteQuery } from '@/gen'
 import type { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import type { Hex } from 'viem'
@@ -26,16 +25,19 @@ export const isQuoteError = (quote: unknown): quote is QuoteError => {
   return typeof quote === 'object' && quote !== null && 'message' in quote
 }
 
-async function getEnhancedFlashMintQuote(
-  account: string,
-  isMinting: boolean,
-  inputToken: Token,
-  outputToken: Token,
-  inputTokenAmount: bigint,
-  slippage: number,
-  chainId: number,
+interface FlashMintQuoteRequest extends IndexQuoteRequest {
+  account: string
+  chainId: number
+  inputTokenAmountWei: bigint
+}
+
+export async function getFlashMintQuote(
+  request: FlashMintQuoteRequest,
   publicClient: IndexRpcProvider,
 ): Promise<Quote | QuoteError> {
+  const { chainId, account, inputToken, isMinting, outputToken, slippage } =
+    request
+
   const inputTokenAddress = getAddressForToken(inputToken.symbol, chainId)
   const outputTokenAddress = getAddressForToken(outputToken.symbol, chainId)
 
@@ -47,6 +49,10 @@ async function getEnhancedFlashMintQuote(
   }
 
   const indexToken = isMinting ? outputToken : inputToken
+  const inputTokenAmount = parseUnits(
+    request.inputTokenAmount,
+    inputToken.decimals,
+  )
 
   try {
     const request: ApiIndexQuoteRequest = {
@@ -146,38 +152,4 @@ async function getEnhancedFlashMintQuote(
     type: 'QuoteNotFound',
     message: 'Unknown error',
   }
-}
-
-interface FlashMintQuoteRequest extends IndexQuoteRequest {
-  account: string
-  chainId: number
-  inputTokenAmountWei: bigint
-}
-
-export async function getFlashMintQuote(
-  request: FlashMintQuoteRequest,
-  publicClient: IndexRpcProvider,
-) {
-  const {
-    chainId,
-    account,
-    inputToken,
-    inputTokenAmount,
-    isMinting,
-    outputToken,
-    slippage,
-  } = request
-
-  const flashmintQuoteResult = await getEnhancedFlashMintQuote(
-    account,
-    isMinting,
-    inputToken,
-    outputToken,
-    parseUnits(inputTokenAmount, inputToken.decimals),
-    slippage,
-    chainId,
-    publicClient,
-  )
-
-  return flashmintQuoteResult
 }
