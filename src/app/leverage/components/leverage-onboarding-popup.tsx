@@ -3,6 +3,7 @@
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { useAccountEffect } from 'wagmi'
 
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useCustomAppKit } from '@/lib/hooks/use-custom-app-kit'
@@ -136,6 +137,12 @@ export function LeverageOnboardingPopupWrapper({
       logEvent('Leverage_Onboarding_Popup_Show')
     }
   }, [isPopupOpen, logEvent])
+
+  useAccountEffect({
+    onConnect: () => {
+      setIsPopupOpen(false)
+    },
+  })
 
   return (
     <LeverageOnboardingPopup
