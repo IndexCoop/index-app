@@ -17,7 +17,7 @@ export function useNativeTokenPrice(chainId?: number): number {
   return nativeTokenPrice
 }
 
-export function useTokenPrice(token: Token): number {
+function useTokenPrice(token: Token): number {
   const { chainId, isSupportedNetwork } = useNetwork()
   const [tokenPrice, setTokenPrice] = useState<number>(0)
 

@@ -2,12 +2,13 @@ import { getChainTokenList } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
 import { PolygonLegacyTokenList } from '@/app/legacy/config'
-import { Token } from '@/constants/tokens'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { fetchCoingeckoTokenPrice } from './api/coingecko'
 import { fetchTokenMetrics } from './api/index-data-provider'
 import { NavProvider } from './api/nav'
+
+import type { Token } from '@/constants/tokens'
 /**
  * Returns price of given token.
  * @returns price of token in USD
@@ -29,7 +30,7 @@ export const getTokenPrice = async (
       (polygonIndex) => token.symbol === polygonIndex.symbol,
     )
   ) {
-    // Force using Coingecko for this deprecated indices
+    // Force using Coingecko for these deprecated indices
     isIndexToken = false
   }
   if (shouldOverrideNav(token.symbol, chainId)) {

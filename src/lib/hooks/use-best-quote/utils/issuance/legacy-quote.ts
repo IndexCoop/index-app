@@ -139,7 +139,6 @@ export async function getLegacyRedemptionQuote(
         gasCosts: gas.costs,
         gasCostsInUsd: gas.costsUsd,
         fullCostsInUsd,
-        priceImpact: 0,
         indexTokenAmount: inputTokenAmount,
         inputOutputTokenAmount: outputTokenAmount,
         inputTokenAmount,
