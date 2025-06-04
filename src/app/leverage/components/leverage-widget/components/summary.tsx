@@ -116,7 +116,11 @@ export function Summary() {
                             Max amount paid
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent>
+                        <TooltipContent
+                          className={
+                            'bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-left text-[11px] font-medium'
+                          }
+                        >
                           This is the maximum amount you are going to spend. If
                           the price slips any further, your transaction will
                           revert.
@@ -142,7 +146,11 @@ export function Summary() {
                             Min amount received
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent>
+                        <TooltipContent
+                          className={
+                            'bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-left text-[11px] font-medium'
+                          }
+                        >
                           This is the minimum amount you are guaranteed to
                           receive. If the price slips any further, your
                           transaction will revert.
@@ -163,7 +171,11 @@ export function Summary() {
                           Swap Execution
                         </span>
                       </TooltipTrigger>
-                      <TooltipContent>
+                      <TooltipContent
+                        className={
+                          'bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-left text-[11px] font-medium'
+                        }
+                      >
                         Swap execution cost includes liquidity pool fees and
                         price impact. This value can be negative, resulting in a
                         more favorable trade.
@@ -188,7 +200,11 @@ export function Summary() {
                           Order Fee
                         </span>
                       </TooltipTrigger>
-                      <TooltipContent>
+                      <TooltipContent
+                        className={
+                          'bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-left text-[11px] font-medium'
+                        }
+                      >
                         The fee Index Coop is charging for your transaction.
                       </TooltipContent>
                     </Tooltip>
