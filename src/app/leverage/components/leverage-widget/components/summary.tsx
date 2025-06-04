@@ -3,13 +3,15 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { cn } from '@/lib/utils/tailwind'
+import type { ReactNode } from 'react'
 
 import { useLeverageToken } from '../../../provider'
 import { useFormattedLeverageData } from '../../../use-formatted-data'
 
 type SummaryQuoteProps = {
-  label: string
+  label: ReactNode
   value: string
   valueUsd: string
   percentageColor?: string
@@ -106,7 +108,20 @@ export function Summary() {
                 />
                 {isMinting && (
                   <SummaryQuote
-                    label={'Max amount paid'}
+                    label={
+                      <Tooltip placement='top'>
+                        <TooltipTrigger asChild>
+                          <span className='cursor-default border-b border-dashed border-neutral-500'>
+                            Max amount paid
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          This is the maximum amount you are going to spend. If
+                          the price slips any further, your transaction will
+                          revert.
+                        </TooltipContent>
+                      </Tooltip>
+                    }
                     value={inputValueFormatted}
                     valueUsd={`(${inputValueFormattedUsd})`}
                     italic
@@ -119,7 +134,20 @@ export function Summary() {
                 />
                 {!isMinting && (
                   <SummaryQuote
-                    label={'Min amount received'}
+                    label={
+                      <Tooltip placement='top'>
+                        <TooltipTrigger asChild>
+                          <span className='cursor-default border-b border-dashed border-neutral-500'>
+                            Min amount received
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          This is the minimum amount you are guaranteed to
+                          receive. If the price slips any further, your
+                          transaction will revert.
+                        </TooltipContent>
+                      </Tooltip>
+                    }
                     value={outputAmount}
                     valueUsd={`(${outputAmountUsd})`}
                     italic
@@ -127,7 +155,20 @@ export function Summary() {
                 )}
                 <div className='my-1 border-t border-neutral-700' />
                 <SummaryQuote
-                  label='Swap Execution'
+                  label={
+                    <Tooltip placement='top'>
+                      <TooltipTrigger asChild>
+                        <span className='cursor-default border-b border-dashed border-neutral-400'>
+                          Swap Execution
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Swap execution cost includes liquidity pool fees and
+                        price impact. This value can be negative, resulting in a
+                        more favorable trade.
+                      </TooltipContent>
+                    </Tooltip>
+                  }
                   value={priceImpactUsd}
                   valueUsd={priceImpactPercent}
                   percentageColor={
@@ -139,7 +180,18 @@ export function Summary() {
                   }
                 />
                 <SummaryQuote
-                  label='Order Fee'
+                  label={
+                    <Tooltip placement='top'>
+                      <TooltipTrigger asChild>
+                        <span className='cursor-default border-b border-dashed border-neutral-400'>
+                          Order Fee
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        The fee Index Coop is charging for your transaction.
+                      </TooltipContent>
+                    </Tooltip>
+                  }
                   value={orderFee}
                   valueUsd={`(${orderFeePercent}%)`}
                 />
