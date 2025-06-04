@@ -5,10 +5,11 @@ import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { cn } from '@/lib/utils/tailwind'
-import type { ReactNode } from 'react'
 
 import { useLeverageToken } from '../../../provider'
 import { useFormattedLeverageData } from '../../../use-formatted-data'
+
+import type { ReactNode } from 'react'
 
 type SummaryQuoteProps = {
   label: ReactNode
