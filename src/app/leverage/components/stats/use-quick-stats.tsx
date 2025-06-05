@@ -65,13 +65,13 @@ export function useQuickStats(
   async function fetchStats(
     context: QueryFunctionContext<QuickStatsQueryKey>,
   ): Promise<QuickStats> {
-    const [, { address, chainId, symbol, market }] = context.queryKey
+    const [, { address, chainId, market }] = context.queryKey
     const m = market.split(' / ')
     const baseToken = m[0]
     const baseCurrency = m[1].toLowerCase()
     try {
       const response = await fetch(
-        `/api/stats?address=${address}&chainId=${chainId}&symbol=${symbol}&base=${baseToken}&baseCurrency=${baseCurrency}`,
+        `/api/stats?address=${address}&chainId=${chainId}&base=${baseToken}&baseCurrency=${baseCurrency}`,
         { method: 'GET' },
       )
 
