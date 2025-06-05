@@ -1,5 +1,6 @@
-import { getApiV2DataMarkets } from '@/gen'
 import { NextRequest, NextResponse } from 'next/server'
+
+import { getApiV2DataMarkets } from '@/gen'
 
 import type { GetApiV2DataMarketsQueryParamsCurrencyEnum } from '@/gen'
 
