@@ -23,6 +23,7 @@ import { getMaxBalance } from '@/lib/utils/max-balance'
 import { supportedNetworks } from '../../constants'
 import { useEarnContext } from '../../provider'
 import { useFormattedEarnData } from '../../use-formatted-data'
+import { Summary } from './components/summary'
 
 import { DepositWithdraw } from './components/deposit-withdraw'
 import { Projection } from './components/projection'
@@ -63,9 +64,12 @@ export function EarnWidget() {
     inputAmoutUsd,
     inputBalance,
     inputBalanceFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
-    ouputAmount,
+    outputAmount,
     outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     resetData,
   } = useFormattedEarnData()
 
@@ -122,7 +126,7 @@ export function EarnWidget() {
         showSelectorButtonChevron={isMinting}
         balance={inputBalanceFormatted}
         caption={isMinting ? 'Deposit' : 'Withdraw'}
-        formattedFiat={inputAmoutUsd}
+        formattedFiat={inputValueFormattedUsd}
         selectedToken={inputToken}
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
@@ -145,8 +149,8 @@ export function EarnWidget() {
             <Receive
               isLoading={isFetchingQuote}
               showOutputAmount={inputTokenAmount > BigInt(0)}
-              outputAmount={ouputAmount}
-              outputAmountUsd={outputAmountUsd}
+              outputAmount={isMinting ? outputAmount : quoteAmount}
+              outputAmountUsd={isMinting ? outputAmountUsd : quoteAmountUsd}
               selectedOutputToken={outputToken}
               onSelectToken={onOpenSelectOutputToken}
             />
@@ -171,6 +175,7 @@ export function EarnWidget() {
           {tradeState.context.quoteError}
         </div>
       )}
+      <Summary />
       <SmartTradeButton
         contract={contract ?? ''}
         hasFetchingError={hasFetchingError}
