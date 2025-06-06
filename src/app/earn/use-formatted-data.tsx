@@ -15,15 +15,21 @@ export interface FormattedEarnData {
   inputAmoutUsd: string
   inputBalance: bigint
   inputBalanceFormatted: string
+  inputValueFormatted: string
+  inputValueFormattedUsd: string
   isFetchingQuote: boolean
+  isFavourableQuote: boolean
   ouputAmount: string
   outputAmountUsd: string
+  quoteAmount: string
+  quoteAmountUsd: string
   orderFee: string
   orderFeePercent: string
   priceImpactUsd: string
   priceImpactPercent: string
   resetData: () => void
   shouldShowSummaryDetails: boolean
+  shouldShowWarning: boolean
 }
 
 export function useFormattedEarnData(): FormattedEarnData {
@@ -90,6 +96,46 @@ export function useFormattedEarnData(): FormattedEarnData {
     [inputValue, quote],
   )
 
+  const getFormatWithDigits = (amount: number) =>
+    amount < 0.01 ? Math.min(6, Math.ceil(-Math.log10(amount)) + 1) : 2
+
+  const inputValueFormatted = useMemo(() => {
+    if (inputValue === '') return ''
+    const inputValueAmount = Number(inputValue)
+    const digits = getFormatWithDigits(inputValueAmount)
+    return `${formatAmount(inputValueAmount, digits)} ${inputToken.symbol}`
+  }, [inputValue, inputToken])
+
+  const inputValueFormattedUsd = useMemo(() => {
+    if (inputValue === '' || !quote?.inputTokenPrice) return ''
+    const price = quote.inputTokenPrice
+    const inputValueAmount = Number(inputValue)
+    const digits = getFormatWithDigits(inputValueAmount)
+    return `$${formatAmount(inputValueAmount * price, digits)}`
+  }, [inputValue, quote])
+
+  const quoteAmount = useMemo(() => {
+    if (!quote) return ''
+    const amt = Number(
+      formatWei(
+        quote.quoteAmount,
+        quote.isMinting
+          ? quote.inputToken.decimals
+          : quote.outputToken.decimals,
+      ),
+    )
+    const symbol = quote.isMinting
+      ? quote.inputToken.symbol
+      : quote.outputToken.symbol
+    const digits = getFormatWithDigits(amt)
+    return `${formatAmount(amt, digits)} ${symbol}`
+  }, [quote])
+
+  const quoteAmountUsd = useMemo(() => {
+    if (!quote?.quoteAmountUsd) return ''
+    return `$${formatAmount(quote.quoteAmountUsd)}`
+  }, [quote])
+
   const { orderFee, orderFeePercent } = useMemo(() => {
     if (!quote || quote.fees === null)
       return { orderFee: '', orderFeePercent: '' }
@@ -99,6 +145,16 @@ export function useFormattedEarnData(): FormattedEarnData {
       (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
     ).toFixed(2)
     return { orderFee: `$${mintRedeemFeesUsd.toFixed(2)}`, orderFeePercent }
+  }, [quote])
+
+  const isFavourableQuote = useMemo(() => {
+    if (!quote?.priceImpactPercent) return false
+    return quote.priceImpactPercent <= 0
+  }, [quote])
+
+  const shouldShowWarning = useMemo(() => {
+    if (quote?.warning) return true
+    return false
   }, [quote])
 
   const priceImpactUsd = useMemo(
@@ -121,14 +177,20 @@ export function useFormattedEarnData(): FormattedEarnData {
     inputAmoutUsd,
     inputBalance: balance,
     inputBalanceFormatted: balanceFormatted,
+    inputValueFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
+    isFavourableQuote,
     ouputAmount,
     outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     orderFee,
     orderFeePercent,
     priceImpactUsd,
     priceImpactPercent,
     resetData,
     shouldShowSummaryDetails,
+    shouldShowWarning,
   }
 }
