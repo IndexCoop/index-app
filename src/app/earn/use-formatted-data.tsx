@@ -19,7 +19,7 @@ export interface FormattedEarnData {
   inputValueFormattedUsd: string
   isFetchingQuote: boolean
   isFavourableQuote: boolean
-  ouputAmount: string
+  outputAmount: string
   outputAmountUsd: string
   quoteAmount: string
   quoteAmountUsd: string
@@ -64,7 +64,7 @@ export function useFormattedEarnData(): FormattedEarnData {
     [inputTokenAmount, balance],
   )
 
-  const ouputAmount = useMemo(() => {
+  const outputAmount = useMemo(() => {
     if (inputValue === '') return ''
     if (!quote?.outputTokenAmount) return ''
     const amount = Number(
@@ -181,7 +181,7 @@ export function useFormattedEarnData(): FormattedEarnData {
     inputValueFormattedUsd,
     isFetchingQuote,
     isFavourableQuote,
-    ouputAmount,
+    outputAmount,
     outputAmountUsd,
     quoteAmount,
     quoteAmountUsd,
