@@ -1,12 +1,10 @@
 import { getChainTokenList } from '@indexcoop/tokenlists'
-import { base } from 'viem/chains'
 
 import { PolygonLegacyTokenList } from '@/app/legacy/config'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { fetchCoingeckoTokenPrice } from './api/coingecko'
 import { fetchTokenMetrics } from './api/index-data-provider'
-import { NavProvider } from './api/nav'
 
 import type { Token } from '@/constants/tokens'
 /**
@@ -33,7 +31,7 @@ export const getTokenPrice = async (
     // Force using Coingecko for these deprecated indices
     isIndexToken = false
   }
-  if (shouldOverrideNav(token.symbol, chainId)) {
+  if (isIndexToken) {
     const dataResponse = await fetchTokenMetrics({
       chainId,
       tokenAddress,
@@ -41,33 +39,7 @@ export const getTokenPrice = async (
     })
     return dataResponse?.NetAssetValue ?? 0
   }
-  if (isIndexToken) {
-    const navProvider = new NavProvider()
-    const price = await navProvider.getNavPrice(token.symbol, chainId)
-    return price
-  }
   const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
   // Token price can return undefined
   return tokenPrice ?? 0
-}
-
-function shouldOverrideNav(symbol: string, chainId?: number) {
-  const navTokenOverrides = [
-    'hyeth',
-    'icusd',
-    'eth2xbtc',
-    'btc2xeth',
-    'usol2x',
-    'usui2x',
-    'usol3x',
-    'usui3x',
-    'wsteth15x',
-  ]
-  if (navTokenOverrides.includes(symbol.toLowerCase())) return true
-  if (
-    chainId === base.id &&
-    (symbol.toLowerCase() === 'btc2x' || symbol.toLowerCase() === 'btc3x')
-  )
-    return true
-  return false
 }
