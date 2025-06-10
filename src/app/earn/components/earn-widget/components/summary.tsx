@@ -3,13 +3,13 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
-import { cn } from '@/lib/utils/tailwind'
-
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
-import type { ReactNode } from 'react'
+import { cn } from '@/lib/utils/tailwind'
 
 import { useEarnContext } from '../../../provider'
 import { useFormattedEarnData } from '../../../use-formatted-data'
+
+import type { ReactNode } from 'react'
 
 type SummaryQuoteProps = {
   label: ReactNode

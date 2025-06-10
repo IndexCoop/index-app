@@ -23,11 +23,11 @@ import { getMaxBalance } from '@/lib/utils/max-balance'
 import { supportedNetworks } from '../../constants'
 import { useEarnContext } from '../../provider'
 import { useFormattedEarnData } from '../../use-formatted-data'
-import { Summary } from './components/summary'
 
 import { DepositWithdraw } from './components/deposit-withdraw'
 import { Projection } from './components/projection'
 import { SmartTradeButton } from './components/smart-trade-button'
+import { Summary } from './components/summary'
 import { TradeInputSelector } from './components/trade-input-selector'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
@@ -61,7 +61,6 @@ export function EarnWidget() {
   const {
     contract,
     hasInsufficientFunds,
-    inputAmoutUsd,
     inputBalance,
     inputBalanceFormatted,
     inputValueFormattedUsd,
