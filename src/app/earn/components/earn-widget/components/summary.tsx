@@ -111,7 +111,7 @@ export function Summary() {
                   value={inputValueFormatted}
                   valueUsd={`(${inputValueFormattedUsd})`}
                 />
-                {isMinting ? (
+                {isMinting && (
                   <SummaryQuote
                     label={
                       <Tooltip placement='top'>
@@ -131,7 +131,13 @@ export function Summary() {
                     valueUsd={`(${inputAmoutUsd})`}
                     italic
                   />
-                ) : (
+                )}
+                <SummaryQuote
+                  label='Receive'
+                  value={isMinting ? outputAmount : quoteAmount}
+                  valueUsd={`(${isMinting ? outputAmountUsd : quoteAmountUsd})`}
+                />
+                {!isMinting && (
                   <SummaryQuote
                     label={
                       <Tooltip placement='top'>
@@ -152,11 +158,6 @@ export function Summary() {
                     italic
                   />
                 )}
-                <SummaryQuote
-                  label='Receive'
-                  value={isMinting ? outputAmount : quoteAmount}
-                  valueUsd={`(${isMinting ? outputAmountUsd : quoteAmountUsd})`}
-                />
                 <div className='my-1 border-t border-neutral-700' />
                 <SummaryQuote
                   label={
