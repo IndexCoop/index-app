@@ -3,52 +3,73 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 import { GasFees } from '@/components/gas-fees'
 import { StyledSkeleton } from '@/components/skeleton'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
+import { cn } from '@/lib/utils/tailwind'
 
+import { useEarnContext } from '../../../provider'
 import { useFormattedEarnData } from '../../../use-formatted-data'
 
+import type { ReactNode } from 'react'
+
 type SummaryQuoteProps = {
-  label: string
+  label: ReactNode
   value: string
   valueUsd: string
+  percentageColor?: string
+  italic?: boolean
 }
 
 function SummaryQuote(props: SummaryQuoteProps) {
+  const { italic } = props
   return (
-    <div className='text-ic-gray-600 dark:text-ic-gray-300 flex flex-row items-center justify-between text-xs'>
-      <div className='font-medium'>{props.label}</div>
+    <div
+      className={cn(
+        'flex flex-row items-center justify-between text-xs',
+        italic ? 'italic text-neutral-500' : 'text-neutral-400',
+      )}
+    >
+      <div className={cn(italic ? 'font-medium' : 'font-bold')}>
+        {props.label}
+      </div>
       <div className='flex flex-row gap-1'>
-        <div className='text-ic-black dark:text-ic-white font-bold'>
+        <div className={cn(italic ? 'font-normal' : 'text-ic-white font-bold')}>
           {props.value}
         </div>
-        <div className='font-normal'>{props.valueUsd}</div>
+        <div className={cn('font-normal', props.percentageColor ?? '')}>
+          {props.valueUsd}
+        </div>
       </div>
     </div>
   )
 }
 
 export function Summary() {
+  const { isMinting } = useEarnContext()
   const {
     gasFeesEth,
     gasFeesUsd,
     inputAmount,
     inputAmoutUsd,
+    inputValueFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
-    ouputAmount,
+    isFavourableQuote,
+    outputAmount,
     outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     orderFee,
     orderFeePercent,
     priceImpactPercent,
     priceImpactUsd,
     shouldShowSummaryDetails,
+    shouldShowWarning,
   } = useFormattedEarnData()
 
   if (!shouldShowSummaryDetails && !isFetchingQuote) return null
 
   return (
-    <Disclosure
-      as='div'
-      className='border-ic-gray-100 rounded-lg border dark:border-[#3A6060]'
-    >
+    <Disclosure as='div' className='rounded-lg border border-neutral-700'>
       {({ open }) => (
         <div className='p-4'>
           <dt>
@@ -59,7 +80,7 @@ export function Summary() {
                 {!open &&
                   !isFetchingQuote &&
                   shouldShowSummaryDetails &&
-                  `Receive ${ouputAmount}`}
+                  `Receive ${isMinting ? outputAmount : quoteAmount}`}
               </span>
               <div className='flex flex-row items-center gap-1'>
                 {!open && !isFetchingQuote ? (
@@ -86,22 +107,104 @@ export function Summary() {
             {shouldShowSummaryDetails && (
               <>
                 <SummaryQuote
-                  label='Pay'
-                  value={inputAmount}
-                  valueUsd={`(${inputAmoutUsd})`}
+                  label={isMinting ? 'Deposit' : 'Withdraw'}
+                  value={inputValueFormatted}
+                  valueUsd={`(${inputValueFormattedUsd})`}
                 />
+                {isMinting && (
+                  <SummaryQuote
+                    label={
+                      <Tooltip placement='top'>
+                        <TooltipTrigger asChild>
+                          <span className='border-ic-gray-400 cursor-default border-b border-dashed'>
+                            Max amount spent
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent className='bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-left text-[11px] font-medium'>
+                          This is the maximum amount you are going to spend. If
+                          the price slips any further, your transaction will
+                          revert.
+                        </TooltipContent>
+                      </Tooltip>
+                    }
+                    value={inputAmount}
+                    valueUsd={`(${inputAmoutUsd})`}
+                    italic
+                  />
+                )}
                 <SummaryQuote
                   label='Receive'
-                  value={ouputAmount}
-                  valueUsd={`(${outputAmountUsd})`}
+                  value={isMinting ? outputAmount : quoteAmount}
+                  valueUsd={`(${isMinting ? outputAmountUsd : quoteAmountUsd})`}
                 />
+                {!isMinting && (
+                  <SummaryQuote
+                    label={
+                      <Tooltip placement='top'>
+                        <TooltipTrigger asChild>
+                          <span className='border-ic-gray-400 cursor-default border-b border-dashed'>
+                            Min amount received
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent className='bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-left text-[11px] font-medium'>
+                          This is the minimum amount you are guaranteed to
+                          receive. If the price slips any further, your
+                          transaction will revert.
+                        </TooltipContent>
+                      </Tooltip>
+                    }
+                    value={outputAmount}
+                    valueUsd={`(${outputAmountUsd})`}
+                    italic
+                  />
+                )}
+                <div className='my-1 border-t border-neutral-700' />
                 <SummaryQuote
-                  label='Swap Execution'
+                  label={
+                    <Tooltip placement='top'>
+                      <TooltipTrigger asChild>
+                        <span className='cursor-default border-b border-dashed border-neutral-400'>
+                          Swap Execution
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        className={
+                          'bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-left text-[11px] font-medium'
+                        }
+                      >
+                        Swap execution cost includes liquidity pool fees and
+                        price impact. This value can be negative, resulting in a
+                        more favorable trade.
+                      </TooltipContent>
+                    </Tooltip>
+                  }
                   value={priceImpactUsd}
                   valueUsd={priceImpactPercent}
+                  percentageColor={
+                    shouldShowWarning
+                      ? 'text-ic-yellow'
+                      : isFavourableQuote
+                        ? 'text-ic-green'
+                        : undefined
+                  }
                 />
                 <SummaryQuote
-                  label='Order Fee'
+                  label={
+                    <Tooltip placement='top'>
+                      <TooltipTrigger asChild>
+                        <span className='cursor-default border-b border-dashed border-neutral-400'>
+                          Order Fee
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        className={
+                          'bg-ic-white text-ic-gray-600 flex justify-between rounded-md px-4 py-3 text-left text-[11px] font-medium'
+                        }
+                      >
+                        The fee Index Coop is charging for your transaction.
+                      </TooltipContent>
+                    </Tooltip>
+                  }
                   value={orderFee}
                   valueUsd={`(${orderFeePercent}%)`}
                 />
