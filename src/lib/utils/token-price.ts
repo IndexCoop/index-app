@@ -39,6 +39,7 @@ export const getTokenPrice = async (
     })
     return dataResponse?.NetAssetValue ?? 0
   }
+  // TODO: refactor: use from API v2
   const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
   // Token price can return undefined
   return tokenPrice ?? 0
