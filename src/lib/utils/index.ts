@@ -31,9 +31,6 @@ export const formatTokenDataToToken = (tokenData: ListedToken): Token => {
   }
 }
 
-export const selectLatestMarketData = (marketData?: number[][]) =>
-  marketData?.[marketData.length - 1]?.[1] || 0
-
 export function shortenAddress(
   address: string,
   startLength: number = 6,
