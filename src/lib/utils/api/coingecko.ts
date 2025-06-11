@@ -27,12 +27,12 @@ export const fetchCoingeckoTokenPrice = async (
   baseCurrency = 'usd',
 ): Promise<number> => {
   if (address.toLowerCase() === ETH.address!.toLowerCase()) {
-    const priceUrl =
-      baseURL + `/simple/price/?ids=ethereum&vs_currencies=${baseCurrency}`
+    const priceUrl = `/api/price/coingecko/simple/price/?ids=ethereum&vs_currencies=${baseCurrency}`
 
-    const data = await indexApi.get(priceUrl).catch(() => {
-      return 0
-    })
+    const res = await fetch(priceUrl)
+    const data = await res.json()
+
+    console.log(data)
 
     if (data === 0 || !data['ethereum']) return 0
 
