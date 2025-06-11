@@ -11,6 +11,7 @@ import { Address } from 'viem'
 import { calculateAverageEntryPrice } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import {
   GetApiV2UserAddressPositionsQueryParamsChainIdEnum as ApiChainId,
+  getApiV2PriceCoingeckoSimplePrice,
   getApiV2UserAddressPositions,
 } from '@/gen'
 
@@ -23,19 +24,11 @@ const fetchCoingeckoPrices = async (
   ids: string[],
   vs_currencies: string[],
 ): Promise<Record<string, { [key: string]: number }>> => {
-  const url = `https://pro-api.coingecko.com/api/v3/simple/price?ids=${ids.join(',')}&vs_currencies=${vs_currencies.join(',')}`
-  const options = {
-    method: 'GET',
-    headers: {
-      'accept': 'application/json',
-      'x-cg-pro-api-key': process.env.COINGECKO_API_KEY!,
-    },
-  }
-
-  const response = await fetch(url, options)
-  const result = await response.json()
-
-  return result
+  const response = await getApiV2PriceCoingeckoSimplePrice({
+    ids: ids.join(','),
+    vs_currencies: vs_currencies.join(','),
+  })
+  return response.data
 }
 
 const mapCoingeckoIdToSymbol = (id: string) => {

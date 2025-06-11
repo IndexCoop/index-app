@@ -20,8 +20,6 @@ export async function GET(req: NextRequest) {
         currency.toLowerCase() as GetApiV2DataMarketsQueryParamsCurrencyEnum,
     })
 
-    console.log(market)
-
     return NextResponse.json({
       ...market,
     })
