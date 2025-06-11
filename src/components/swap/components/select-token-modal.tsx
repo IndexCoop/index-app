@@ -119,6 +119,7 @@ const TokenItem = ({
       <div className='flex items-center'>
         <div className='relative inline-block h-11 w-11'>
           <Image
+            className='rounded-full'
             alt={`${item.symbol} logo`}
             src={item.image}
             width={40}
