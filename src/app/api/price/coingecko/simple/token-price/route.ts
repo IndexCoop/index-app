@@ -12,8 +12,6 @@ export async function GET(request: NextRequest) {
       vs_currencies: searchParams.get('vs_currencies') ?? '',
     })
 
-    console.log(res.data)
-
     return NextResponse.json({
       ...res.data,
     })
