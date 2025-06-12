@@ -19,7 +19,7 @@ export const fetchCoingeckoTokenPrice = async (
   const res = await fetch(priceUrl)
   const data = await res.json()
 
-  if (!data) return 0
+  if (!data || !data[address]) return 0
 
-  return data.price
+  return data[address][baseCurrency]
 }
