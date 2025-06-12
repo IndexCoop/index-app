@@ -12,9 +12,7 @@ export async function GET(request: NextRequest) {
       vs_currencies: searchParams.get('vs_currencies') ?? '',
     })
 
-    return NextResponse.json({
-      ...res.data,
-    })
+    return NextResponse.json(res.data)
   } catch (error) {
     console.error('Error fetching coingecko simple token price:', error)
     return NextResponse.json(
