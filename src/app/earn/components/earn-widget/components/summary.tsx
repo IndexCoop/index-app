@@ -48,8 +48,6 @@ export function Summary() {
   const {
     gasFeesEth,
     gasFeesUsd,
-    inputAmount,
-    inputAmoutUsd,
     inputValueFormatted,
     inputValueFormattedUsd,
     isFetchingQuote,
