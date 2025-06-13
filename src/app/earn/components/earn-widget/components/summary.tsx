@@ -48,8 +48,6 @@ export function Summary() {
   const {
     gasFeesEth,
     gasFeesUsd,
-    inputAmount,
-    inputAmoutUsd,
     inputValueFormatted,
     inputValueFormattedUsd,
     isFetchingQuote,
@@ -108,8 +106,8 @@ export function Summary() {
               <>
                 <SummaryQuote
                   label={isMinting ? 'Deposit' : 'Withdraw'}
-                  value={inputValueFormatted}
-                  valueUsd={`(${inputValueFormattedUsd})`}
+                  value={isMinting ? quoteAmount : inputValueFormatted}
+                  valueUsd={`(${isMinting ? quoteAmountUsd : inputValueFormattedUsd})`}
                 />
                 {isMinting && (
                   <SummaryQuote
@@ -127,8 +125,8 @@ export function Summary() {
                         </TooltipContent>
                       </Tooltip>
                     }
-                    value={inputAmount}
-                    valueUsd={`(${inputAmoutUsd})`}
+                    value={inputValueFormatted}
+                    valueUsd={`(${inputValueFormattedUsd})`}
                     italic
                   />
                 )}
