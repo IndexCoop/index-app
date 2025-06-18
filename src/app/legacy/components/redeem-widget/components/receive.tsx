@@ -62,7 +62,7 @@ type OutputTokenViewProps = {
   symbol: string
 }
 
-export const OutputTokenView = ({
+const OutputTokenView = ({
   image,
   outputAmount,
   outputAmountUsd,

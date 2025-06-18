@@ -48,19 +48,6 @@ export function getCurrencyTokens(
   }
 }
 
-export function getTagline(indexTokenSymbol: string): string {
-  switch (indexTokenSymbol.toLowerCase()) {
-    case 'hyeth':
-      return 'The highest ETH-denominated yields on Ethereum Mainnet.'
-    case 'iceth':
-      return 'ETH staking returns using a leveraged liquid staking strategy.'
-    case 'wsteth15x':
-      return '15x ETH Smart Loop using a delta-neutral leveraged yield strategy.'
-    default:
-      return ''
-  }
-}
-
 // Uncomment bridged L2 tokens only when price feeds are available
 const yieldTokens = [
   getTokenByChainAndSymbol(mainnet.id, 'hyETH'),

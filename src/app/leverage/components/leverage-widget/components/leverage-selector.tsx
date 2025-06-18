@@ -47,7 +47,7 @@ type LeverageSelectorButtonProps = {
   onClick: () => void
 }
 
-export function LeverageSelectorButton({
+function LeverageSelectorButton({
   isSelected,
   label,
   onClick,

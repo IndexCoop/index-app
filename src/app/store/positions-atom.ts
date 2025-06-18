@@ -10,7 +10,7 @@ export type Positions = {
   }
 }
 
-export const positionsAtomDefaultValue: Positions = {
+const positionsAtomDefaultValue: Positions = {
   open: [],
   history: [],
   stats: {},
