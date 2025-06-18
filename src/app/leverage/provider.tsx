@@ -67,7 +67,7 @@ export interface TokenContext {
   toggleIsMinting: (force?: boolean) => void
 }
 
-export const LeverageTokenContext = createContext<TokenContext>({
+const LeverageTokenContext = createContext<TokenContext>({
   inputValue: '',
   isMinting: true,
   leverageType: LeverageType.Long2x,

@@ -10,7 +10,7 @@ interface Context {
   isUsingVpn: boolean
 }
 
-export const ProtectionContext = createContext<Context>({
+const ProtectionContext = createContext<Context>({
   isForbiddenAddress: false,
   isRestrictedCountry: false,
   isUsingVpn: false,

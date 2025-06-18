@@ -25,9 +25,9 @@ export enum LendingProtocol {
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
 
-export const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X', 'ETH2xBTC']
+const ethLeverageTokenSymbols = ['ETH2X', 'ETH3X', 'iETH1X', 'ETH2xBTC']
 
-export const btcLeverageTokenSymbols = ['BTC2X', 'BTC3X', 'iBTC1X', 'BTC2xETH']
+const btcLeverageTokenSymbols = ['BTC2X', 'BTC3X', 'iBTC1X', 'BTC2xETH']
 
 export const leverageTokens = [
   ...ethLeverageTokenSymbols,
@@ -117,7 +117,7 @@ const defaultAssets = {
   Record<LeverageStrategy, { symbol: string; chainId: number }>
 >
 
-export function getDefaultRatioAsset(
+function getDefaultRatioAsset(
   strategy: LeverageStrategy,
   market: LeverageMarket,
 ) {

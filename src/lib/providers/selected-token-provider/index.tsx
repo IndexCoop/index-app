@@ -23,7 +23,7 @@ export interface TokenContext {
   toggleIsMinting: () => void
 }
 
-export const SelectedTokenContext = createContext<TokenContext>({
+const SelectedTokenContext = createContext<TokenContext>({
   isMinting: false,
   inputToken: ETH,
   outputToken: getDefaultIndex(),
