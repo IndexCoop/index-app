@@ -56,7 +56,7 @@ const getAction = (
     ) {
       return 'Open'
     } else if (
-      data.from.toLowerCase() === user?.toLowerCase() &&
+      data.from?.toLowerCase() === user?.toLowerCase() &&
       data.to === zeroAddress
     ) {
       return 'Close'

@@ -1,9 +1,11 @@
+import { Button } from '@headlessui/react'
 import {
   getTokenByChainAndAddress,
   isAddressEqual,
 } from '@indexcoop/tokenlists'
+import Image from 'next/image'
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { formatUnits } from 'viem'
 
 import { GetApiV2ProductsEarn200, GetApiV2UserAddressPositions200 } from '@/gen'
@@ -12,17 +14,38 @@ import { formatAmount } from '@/lib/utils'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 
-const Position = ({
-  balance,
-  product,
-  position,
-  isLoading,
-}: {
+const DenominatorSwitch: FC<{
+  selected: 'fiat' | 'eth'
+  onSelect: (denominator: 'fiat' | 'eth') => void
+}> = ({ selected, onSelect }) => {
+  return (
+    <Button
+      className='relative flex items-center gap-1 rounded-2xl bg-zinc-800 px-1 py-0.5'
+      onClick={() => onSelect(selected === 'fiat' ? 'eth' : 'fiat')}
+    >
+      <div
+        className={cn(
+          'absolute inset-0 z-10 h-5 w-6 translate-x-1 translate-y-0.5 rounded-2xl bg-zinc-600 transition-all duration-300 ease-in-out',
+          selected === 'eth' && 'translate-x-8',
+        )}
+      />
+      <div className='z-20 cursor-pointer rounded-2xl px-2 py-0.5 '>
+        <Image src='/assets/fiat.svg' width={8} alt='' />
+      </div>
+      <div className='z-20 cursor-pointer rounded-2xl px-2 py-0.5'>
+        <Image src='/assets/ethereum-network-logo.svg' width={8} alt='' />
+      </div>
+    </Button>
+  )
+}
+
+const Position: FC<{
   balance: TokenBalance
   product?: GetApiV2ProductsEarn200[number]
   position?: GetApiV2UserAddressPositions200[number]
   isLoading?: boolean
-}) => {
+  denominator: 'fiat' | 'eth'
+}> = ({ balance, product, position, isLoading, denominator }) => {
   const token = useMemo(
     () => getTokenByChainAndAddress(product?.chainId, product?.tokenAddress),
     [product],
@@ -32,13 +55,15 @@ const Position = ({
     if (!product || !token) return 0
 
     if (position && position.metrics) {
-      return (
-        (position.metrics.endingUnits ?? 0) * product.metrics.nav -
-        (position.metrics.endingPositionCost ?? 0)
-      )
+      return denominator === 'fiat'
+        ? (position.metrics.endingUnits ?? 0) * product.metrics.nav -
+            (position.metrics.endingPositionCost ?? 0)
+        : ((position.metrics.endingUnits ?? 0) * product.metrics.nav -
+            (position.metrics.endingPositionCost ?? 0)) /
+            product.metrics.nav
     }
     return 0
-  }, [product, token, position])
+  }, [product, token, position, denominator])
 
   return product && token ? (
     <Link prefetch={true} href={`/earn/product/${product.tokenAddress}`}>
@@ -57,7 +82,8 @@ const Position = ({
           <SkeletonLoader className='ml-auto h-4 w-12' />
         ) : (
           <span className='text-right text-xs font-medium text-neutral-400'>
-            ${formatAmount(accruedYield)}
+            {denominator === 'fiat' ? '$' : 'Ξ'}
+            {formatAmount(accruedYield, denominator === 'fiat' ? 2 : 6)}
           </span>
         )}
       </div>
@@ -109,6 +135,7 @@ export const BalanceCard = ({
   balances,
   isLoading,
 }: BalanceCardProps) => {
+  const [denominator, setDenominator] = useState<'fiat' | 'eth'>('fiat')
   const deposits = useMemo(
     () =>
       balances.reduce((acc, curr) => {
@@ -142,14 +169,18 @@ export const BalanceCard = ({
         if (position && position.metrics) {
           return (
             acc +
-            (position.metrics.endingUnits ?? 0) * curr.metrics.nav -
-            (position.metrics.endingPositionCost ?? 0)
+            (denominator === 'fiat'
+              ? (position.metrics.endingUnits ?? 0) * curr.metrics.nav -
+                (position.metrics.endingPositionCost ?? 0)
+              : ((position.metrics.endingUnits ?? 0) * curr.metrics.nav -
+                  (position.metrics.endingPositionCost ?? 0)) /
+                curr.metrics.nav)
           )
         }
 
         return acc
       }, 0),
-    [products, positions],
+    [products, positions, denominator],
   )
 
   return (
@@ -181,6 +212,7 @@ export const BalanceCard = ({
                     isAddressEqual(p.metrics?.tokenAddress, balance.token),
                   )}
                   isLoading={isLoading}
+                  denominator={denominator}
                 />
               </div>
             ))}
@@ -189,7 +221,15 @@ export const BalanceCard = ({
       </div>
       <div className='flex w-full min-w-[320px] flex-col justify-between gap-6 md:w-auto'>
         <div className='space-y-4'>
-          <p className='text-xs font-medium text-neutral-400'>Total Deposits</p>
+          <div className='flex items-center justify-between'>
+            <p className='text-xs font-medium text-neutral-400'>
+              Total Deposits
+            </p>
+            <DenominatorSwitch
+              selected={denominator}
+              onSelect={setDenominator}
+            />
+          </div>
           <p className='break-all text-5xl font-bold text-neutral-50'>
             ${formatAmount(deposits)}
           </p>
@@ -226,7 +266,8 @@ export const BalanceCard = ({
                 )}
               >
                 <p className='text-center text-xs font-bold text-neutral-50'>
-                  ${formatAmount(accruedYield)}
+                  {denominator === 'fiat' ? '$' : 'Ξ'}
+                  {formatAmount(accruedYield, denominator === 'fiat' ? 2 : 6)}
                 </p>
               </div>
             )}
