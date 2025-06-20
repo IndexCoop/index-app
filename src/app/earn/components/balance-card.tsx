@@ -30,10 +30,15 @@ const DenominatorSwitch: FC<{
         )}
       />
       <div className='z-20 cursor-pointer rounded-2xl px-2 py-0.5 '>
-        <Image src='/assets/fiat.svg' width={8} alt='' />
+        <Image src='/assets/fiat.svg' width={8} height={8} alt='' />
       </div>
       <div className='z-20 cursor-pointer rounded-2xl px-2 py-0.5'>
-        <Image src='/assets/ethereum-network-logo.svg' width={8} alt='' />
+        <Image
+          src='/assets/ethereum-network-logo.svg'
+          width={8}
+          height={8}
+          alt=''
+        />
       </div>
     </Button>
   )
@@ -72,10 +77,15 @@ const Position: FC<{
           {product.name}
         </span>
         <span className='text-right text-xs font-medium text-neutral-200'>
-          $
+          {denominator === 'fiat' ? '$' : 'Ξ'}
           {formatAmount(
-            Number(formatUnits(balance.value, token.decimals)) *
-              product.metrics.nav,
+            denominator === 'fiat'
+              ? Number(formatUnits(balance.value, token.decimals)) *
+                  product.metrics.nav
+              : (Number(formatUnits(balance.value, token.decimals)) *
+                  product.metrics.nav) /
+                  product.metrics.nav,
+            denominator === 'fiat' ? 2 : 6,
           )}
         </span>
         {isLoading ? (
@@ -151,13 +161,17 @@ export const BalanceCard = ({
         if (product && token) {
           return (
             acc +
-            Number(formatUnits(curr.value, token.decimals)) *
-              product.metrics.nav
+            (denominator === 'fiat'
+              ? Number(formatUnits(curr.value, token.decimals)) *
+                product.metrics.nav
+              : (Number(formatUnits(curr.value, token.decimals)) *
+                  product.metrics.nav) /
+                product.metrics.nav)
           )
         }
         return acc
       }, 0),
-    [products, balances],
+    [products, balances, denominator],
   )
 
   const accruedYield = useMemo(
@@ -219,7 +233,7 @@ export const BalanceCard = ({
           </div>
         </div>
       </div>
-      <div className='flex w-full min-w-[320px] flex-col justify-between gap-6 md:w-auto'>
+      <div className='flex w-full min-w-[200px] flex-col justify-between gap-6 md:w-auto'>
         <div className='space-y-4'>
           <div className='flex items-center justify-between'>
             <p className='text-xs font-medium text-neutral-400'>
@@ -231,7 +245,8 @@ export const BalanceCard = ({
             />
           </div>
           <p className='break-all text-5xl font-bold text-neutral-50'>
-            ${formatAmount(deposits)}
+            {denominator === 'fiat' ? '$' : 'Ξ'}
+            {formatAmount(deposits, denominator === 'fiat' ? 2 : 6)}
           </p>
         </div>
         <div className='flex gap-2'>
