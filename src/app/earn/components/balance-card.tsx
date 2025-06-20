@@ -273,14 +273,14 @@ export const BalanceCard = ({
             </p>
 
             {isLoading ? (
-              <SkeletonLoader className='w-full rounded-[4px] px-8 py-6' />
+              <SkeletonLoader className='w-full rounded-[4px] px-4 py-6' />
             ) : (
               <div
                 className={cn(
-                  'w-full rounded-[4px] bg-[linear-gradient(89deg,_#27272A_6.94%,_#2C3A3D_78.56%,_#75ABB2_147.99%)] px-8 py-4',
+                  'w-full rounded-[4px] bg-[linear-gradient(89deg,_#27272A_6.94%,_#2C3A3D_78.56%,_#75ABB2_147.99%)] p-4',
                 )}
               >
-                <p className='text-center text-xs font-bold text-neutral-50'>
+                <p className='text-right text-xs font-bold text-neutral-50'>
                   {denominator === 'fiat' ? '$' : 'Ξ'}
                   {formatAmount(accruedYield, denominator === 'fiat' ? 2 : 6)}
                 </p>
