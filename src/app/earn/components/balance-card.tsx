@@ -233,7 +233,7 @@ export const BalanceCard = ({
           </div>
         </div>
       </div>
-      <div className='flex w-full min-w-[200px] flex-col justify-between gap-6 md:w-auto'>
+      <div className='flex w-full min-w-[200px] flex-col justify-between gap-6 md:w-auto md:min-w-[320px]'>
         <div className='space-y-4'>
           <div className='flex items-center justify-between'>
             <p className='text-xs font-medium text-neutral-400'>
