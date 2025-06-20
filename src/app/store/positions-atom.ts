@@ -18,7 +18,7 @@ const positionsAtomDefaultValue: Positions = {
 
 export const positionsAtom = atom<Positions>(positionsAtomDefaultValue)
 
-export const fetchPositionsAtom = atom(
+export const fetchLeveragePositionsAtom = atom(
   null,
   async (_, set, address: string, chainId: number) => {
     try {

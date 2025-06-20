@@ -15,7 +15,7 @@ import { getLeverageTokens } from '@/app/leverage/constants'
 import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
-import { fetchPositionsAtom } from '@/app/store/positions-atom'
+import { fetchLeveragePositionsAtom } from '@/app/store/positions-atom'
 import { ETH } from '@/constants/tokens'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useBalances } from '@/lib/hooks/use-balance'
@@ -31,7 +31,7 @@ const OpenPositions = () => {
     undefined,
   )
   const { queryParams, updateQueryParams } = useQueryParams()
-  const fetchPositions = useSetAtom(fetchPositionsAtom)
+  const fetchPositions = useSetAtom(fetchLeveragePositionsAtom)
   const { logEvent } = useAnalytics()
 
   const indexTokenAddresses = useMemo(() => {

@@ -2,53 +2,65 @@ import {
   getTokenByChainAndAddress,
   isAddressEqual,
 } from '@indexcoop/tokenlists'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 
-import { GetApiV2ProductsEarn200 } from '@/gen'
+import { GetApiV2ProductsEarn200, GetApiV2UserAddressPositions200 } from '@/gen'
 import { TokenBalance } from '@/lib/hooks/use-balance'
 import { formatAmount } from '@/lib/utils'
-
-const BoxedData = ({ label, value }: { label: string; value: string }) => (
-  <div className='flex items-center justify-end gap-2'>
-    <p className='text-xs font-medium text-neutral-400'>{label}</p>
-    <div className='w-20 rounded-[4px] bg-neutral-600 px-3 py-1'>
-      <p className='text-center text-xs font-bold text-neutral-50'>{value}</p>
-    </div>
-  </div>
-)
+import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
+import { cn } from '@/lib/utils/tailwind'
 
 const Position = ({
   balance,
   product,
+  position,
+  isLoading,
 }: {
   balance: TokenBalance
   product?: GetApiV2ProductsEarn200[number]
+  position?: GetApiV2UserAddressPositions200[number]
+  isLoading?: boolean
 }) => {
   const token = useMemo(
     () => getTokenByChainAndAddress(product?.chainId, product?.tokenAddress),
     [product],
   )
 
+  const accruedYield = useMemo(() => {
+    if (!product || !token) return 0
+
+    if (position && position.metrics) {
+      return (
+        (position.metrics.endingUnits ?? 0) * product.metrics.nav -
+        (position.metrics.endingPositionCost ?? 0)
+      )
+    }
+    return 0
+  }, [product, token, position])
+
   return product && token ? (
     <Link prefetch={true} href={`/earn/product/${product.tokenAddress}`}>
-      <motion.div
-        whileHover={{
-          scale: 1.01,
-        }}
-        className='flex cursor-pointer items-center justify-between rounded-[4px] bg-zinc-800 p-4 hover:bg-zinc-700 hover:text-neutral-900'
-      >
-        <p className='text-xs font-medium text-neutral-200'>{product.name}</p>
-        <p className='text-xs font-medium text-neutral-200'>
+      <div className='grid cursor-pointer grid-cols-[1fr_0.3fr_0.3fr] items-center gap-4 rounded-[4px] bg-zinc-800 p-4 hover:bg-zinc-700 hover:text-neutral-900'>
+        <span className='text-left text-xs font-medium text-neutral-200'>
+          {product.name}
+        </span>
+        <span className='text-right text-xs font-medium text-neutral-200'>
           $
           {formatAmount(
             Number(formatUnits(balance.value, token.decimals)) *
               product.metrics.nav,
           )}
-        </p>
-      </motion.div>
+        </span>
+        {isLoading ? (
+          <SkeletonLoader className='ml-auto h-4 w-12' />
+        ) : (
+          <span className='text-right text-xs font-medium text-neutral-400'>
+            ${formatAmount(accruedYield)}
+          </span>
+        )}
+      </div>
     </Link>
   ) : (
     <></>
@@ -86,10 +98,17 @@ const calculateEffectiveAPY = (
 
 export type BalanceCardProps = {
   products: GetApiV2ProductsEarn200
+  positions: GetApiV2UserAddressPositions200
   balances: TokenBalance[]
+  isLoading: boolean
 }
 
-export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
+export const BalanceCard = ({
+  products,
+  positions,
+  balances,
+  isLoading,
+}: BalanceCardProps) => {
   const deposits = useMemo(
     () =>
       balances.reduce((acc, curr) => {
@@ -114,14 +133,41 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
     [products, balances],
   )
 
+  const accruedYield = useMemo(
+    () =>
+      products.reduce((acc, curr) => {
+        const position = positions.find((p) =>
+          isAddressEqual(p.metrics?.tokenAddress, curr.tokenAddress),
+        )
+        if (position && position.metrics) {
+          return (
+            acc +
+            (position.metrics.endingUnits ?? 0) * curr.metrics.nav -
+            (position.metrics.endingPositionCost ?? 0)
+          )
+        }
+
+        return acc
+      }, 0),
+    [products, positions],
+  )
+
   return (
-    <motion.div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 md:flex-nowrap'>
+    <div className='flex w-full flex-wrap gap-6 rounded-3xl border border-gray-600 border-opacity-[0.8] bg-zinc-900 p-6 md:flex-nowrap'>
       <div className='min-w-0 flex-1'>
         <h3 className='text-lg font-medium text-neutral-50'>My Earn</h3>
         <div className='mt-6'>
-          <h4 className='ml-4 text-xs font-medium text-neutral-400'>
-            My positions
-          </h4>
+          <div className='grid grid-cols-[1fr_0.3fr_0.3fr] items-center gap-4 px-4'>
+            <h4 className='text-left text-xs font-medium text-neutral-400'>
+              My positions
+            </h4>
+            <p className='text-right text-xs font-medium text-neutral-200'>
+              Total deposited
+            </p>
+            <p className='text-right text-xs font-medium text-neutral-400'>
+              Accrued yield
+            </p>
+          </div>
 
           <div className='mt-2 flex w-full flex-col gap-2'>
             {balances.map((balance) => (
@@ -131,27 +177,62 @@ export const BalanceCard = ({ products, balances }: BalanceCardProps) => {
                     isAddressEqual(p.tokenAddress, balance.token),
                   )}
                   balance={balance}
+                  position={positions.find((p) =>
+                    isAddressEqual(p.metrics?.tokenAddress, balance.token),
+                  )}
+                  isLoading={isLoading}
                 />
               </div>
             ))}
           </div>
         </div>
       </div>
-      <div className='flex w-full min-w-[200px] flex-col justify-between gap-6 md:w-auto'>
-        <div className='space-y-4 text-right'>
-          <p className='text-xs font-medium text-neutral-200'>Total Deposits</p>
+      <div className='flex w-full min-w-[320px] flex-col justify-between gap-6 md:w-auto'>
+        <div className='space-y-4'>
+          <p className='text-xs font-medium text-neutral-400'>Total Deposits</p>
           <p className='break-all text-5xl font-bold text-neutral-50'>
             ${formatAmount(deposits)}
           </p>
         </div>
-        <div className='flex flex-col gap-1 '>
-          <BoxedData
-            label='Net APY'
-            value={`${formatAmount(calculateEffectiveAPY(products, balances))}%`}
-          />
-          {/* <BoxedData label='Lifetime Earnings' value='$420.69' /> */}
+        <div className='flex gap-2'>
+          <div
+            className={cn('flex w-full flex-1 flex-col justify-center gap-2')}
+          >
+            <p className='text-center text-xs font-medium text-neutral-400'>
+              Net APY
+            </p>
+            <div className={cn('w-full rounded-[4px] bg-zinc-800 px-8 py-4')}>
+              <p className='text-center text-xs font-bold text-neutral-50'>
+                {formatAmount(calculateEffectiveAPY(products, balances))}%
+              </p>
+            </div>
+          </div>
+          <div
+            className={cn(
+              'flex w-full flex-col justify-center gap-2',
+              `flex-2`,
+            )}
+          >
+            <p className='text-center text-xs font-medium text-neutral-400 md:text-right'>
+              Accrued Yield
+            </p>
+
+            {isLoading ? (
+              <SkeletonLoader className='w-full rounded-[4px] px-8 py-6' />
+            ) : (
+              <div
+                className={cn(
+                  'w-full rounded-[4px] bg-[linear-gradient(89deg,_#27272A_6.94%,_#2C3A3D_78.56%,_#75ABB2_147.99%)] px-8 py-4',
+                )}
+              >
+                <p className='text-center text-xs font-bold text-neutral-50'>
+                  ${formatAmount(accruedYield)}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
