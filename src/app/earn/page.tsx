@@ -1,8 +1,11 @@
 'use client'
 
 import { ArrowPathIcon } from '@heroicons/react/20/solid'
-import { AnimatePresence } from 'framer-motion'
+import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
+import { useAccount } from 'wagmi'
+
+import { Positions } from '@/app/store/positions-atom'
 
 import { BalanceCard } from './components/balance-card'
 import { ProductCard } from './components/product-card'
@@ -11,6 +14,8 @@ import { useEarnContext } from './provider'
 export default function Page() {
   const { products, balances } = useEarnContext()
 
+  const { address: user } = useAccount()
+
   useEffect(() => {
     document.body.classList.add('dark', 'bg-ic-black')
     return () => {
@@ -18,15 +23,42 @@ export default function Page() {
     }
   }, [])
 
+  const {
+    data: { open },
+    isFetching,
+  } = useQuery({
+    initialData: {
+      open: [],
+      history: [],
+      stats: {},
+    },
+    enabled: Boolean(user),
+    queryKey: ['earn-history', user],
+    queryFn: async () => {
+      const response = await fetch('/api/earn/history', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user,
+        }),
+      })
+      return response.json() as Promise<Positions>
+    },
+  })
+
   return (
     <div className='mt-8 flex w-full flex-col items-center p-4'>
       <div className='mx-auto flex max-w-7xl flex-col gap-4'>
-        <AnimatePresence>
-          {balances.length > 0 && (
-            <BalanceCard products={products} balances={balances} />
-          )}
-        </AnimatePresence>
-
+        {balances.length > 0 && (
+          <BalanceCard
+            products={products}
+            balances={balances}
+            positions={open}
+            isLoading={isFetching}
+          />
+        )}
         <div>
           <h3 className='my-5 hidden w-full text-lg font-medium text-neutral-50 md:block'>
             Strategies
@@ -36,6 +68,10 @@ export default function Page() {
               <ProductCard
                 key={`product-item-${p.tokenAddress}`}
                 product={p}
+                position={open.find(
+                  (position) =>
+                    position.metrics?.tokenAddress === p.tokenAddress,
+                )}
                 pill={
                   ['wsteth15x', 'iceth'].includes(p.id)
                     ? {

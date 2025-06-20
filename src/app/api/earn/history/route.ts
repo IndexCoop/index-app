@@ -1,7 +1,7 @@
 import {
   getTokenByChainAndAddress,
   getTokenByChainAndSymbol,
-  isLeverageToken,
+  isYieldToken,
 } from '@indexcoop/tokenlists'
 import { uniqBy } from 'lodash'
 import mapKeys from 'lodash/mapKeys'
@@ -10,15 +10,12 @@ import { Address } from 'viem'
 
 import { calculateAverageEntryPrice } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import {
-  GetApiV2UserAddressPositionsQueryParamsChainIdEnum as ApiChainId,
   getApiV2PriceCoingeckoSimplePrice,
   getApiV2UserAddressPositions,
-  GetApiV2UserAddressPositions200,
 } from '@/gen'
 
 type TokenTransferRequest = {
   user: Address
-  chainId: number
 }
 
 const fetchCoingeckoPrices = async (
@@ -47,23 +44,27 @@ const mapCoingeckoIdToSymbol = (id: string) => {
   }
 }
 
+const wsteth = getTokenByChainAndSymbol(8453, 'wstETH')
+
 export async function POST(req: NextRequest) {
   try {
-    const { user, chainId } = (await req.json()) as TokenTransferRequest
+    const { user } = (await req.json()) as TokenTransferRequest
 
-    const USUI = getTokenByChainAndSymbol(chainId, 'uSUI')
-    const USOL = getTokenByChainAndSymbol(chainId, 'uSOL')
-
-    const { data: positions } = await getApiV2UserAddressPositions(
-      { address: user },
-      { chainId: chainId.toString() as ApiChainId },
-    )
+    const { data: positions } = await getApiV2UserAddressPositions({
+      address: user,
+    })
 
     const history = positions
       .filter(({ rawContract }) => {
-        const token = getTokenByChainAndAddress(chainId, rawContract.address)
+        const token1 = getTokenByChainAndAddress(1, rawContract.address)
+        const token8453 = getTokenByChainAndAddress(8453, rawContract.address)
+        const token42161 = getTokenByChainAndAddress(42161, rawContract.address)
 
-        return isLeverageToken(token)
+        return (
+          isYieldToken(token1) ||
+          isYieldToken(token8453) ||
+          isYieldToken(token42161)
+        )
       })
       .sort(
         (a, b) =>
@@ -71,11 +72,24 @@ export async function POST(req: NextRequest) {
           new Date(a.metadata.blockTimestamp).getTime(),
       )
 
+    let prices: Record<string, { [key: string]: number }> = {}
+    try {
+      prices = mapKeys(
+        await fetchCoingeckoPrices(
+          ['ethereum', 'bitcoin', wsteth?.extensions.coingeckoId].filter(
+            (str) => str !== undefined,
+          ),
+          ['btc', 'eth', 'usd'],
+        ),
+        (_, key) => mapCoingeckoIdToSymbol(key),
+      )
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 2))
+      console.error('Failed to fetch coingecko prices', error)
+    }
+
     const openPositions = history.filter(
-      (position) =>
-        position.trade &&
-        position.metrics &&
-        position.metrics.positionStatus === 'open',
+      (position) => position.metrics?.positionStatus === 'open',
     )
 
     const averages = calculateAverageEntryPrice(openPositions)
@@ -86,48 +100,13 @@ export async function POST(req: NextRequest) {
         trade: {
           ...position.trade,
           underlyingAssetUnitPrice: averages[position.metrics!.tokenAddress],
-        } as GetApiV2UserAddressPositions200[number]['trade'],
+        },
       })),
       'metrics.tokenAddress',
     )
 
-    let prices: Record<string, { [key: string]: number }> = {}
-    try {
-      prices = mapKeys(
-        await fetchCoingeckoPrices(
-          [
-            'ethereum',
-            'bitcoin',
-            USUI?.extensions.coingeckoId,
-            USOL?.extensions.coingeckoId,
-          ].filter((str) => str !== undefined),
-          ['btc', 'eth', 'usd'],
-        ),
-        (_, key) => mapCoingeckoIdToSymbol(key),
-      )
-    } catch (error) {
-      console.error('Failed to fetch coingecko prices', error)
-    }
-
-    const stats = open.reduce(
-      (acc, position) => ({
-        ...acc,
-        ...(position.trade?.underlyingAssetUnitPrice &&
-        position.trade?.underlyingAssetUnitPriceDenominator &&
-        position.trade?.underlyingAssetSymbol
-          ? {
-              [`${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`]:
-                prices[position.trade.underlyingAssetSymbol.toLowerCase()][
-                  position.trade.underlyingAssetUnitPriceDenominator.toLowerCase()
-                ],
-            }
-          : {}),
-      }),
-      {},
-    )
-
     return NextResponse.json(
-      { open, history, stats },
+      { open, history, stats: prices },
       {
         status: 200,
         headers: {

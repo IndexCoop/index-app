@@ -5,6 +5,7 @@ import { FC, ReactNode } from 'react'
 
 import { ProductTitlePill } from '@/app/earn/components/product-pill'
 import { ProductTag } from '@/app/earn/components/product-tag'
+import { Positions } from '@/app/store/positions-atom'
 import { GetApiV2ProductsEarn200 } from '@/gen'
 import { formatAmount } from '@/lib/utils'
 
@@ -14,6 +15,7 @@ export type ProductCardProps = {
     icon: ReactNode
   }
   product: GetApiV2ProductsEarn200[number]
+  position?: Positions['open'][number]
 }
 
 export const ProductCard: FC<ProductCardProps> = ({ product, pill }) => {
