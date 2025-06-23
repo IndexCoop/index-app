@@ -13,6 +13,7 @@ import {
   GetApiV2UserAddressPositionsQueryParamsChainIdEnum as ApiChainId,
   getApiV2PriceCoingeckoSimplePrice,
   getApiV2UserAddressPositions,
+  GetApiV2UserAddressPositions200,
 } from '@/gen'
 
 type TokenTransferRequest = {
@@ -53,12 +54,12 @@ export async function POST(req: NextRequest) {
     const USUI = getTokenByChainAndSymbol(chainId, 'uSUI')
     const USOL = getTokenByChainAndSymbol(chainId, 'uSOL')
 
-    const positions = await getApiV2UserAddressPositions(
+    const { data: positions } = await getApiV2UserAddressPositions(
       { address: user },
       { chainId: chainId.toString() as ApiChainId },
     )
 
-    const history = positions.data
+    const history = positions
       .filter(({ rawContract }) => {
         const token = getTokenByChainAndAddress(chainId, rawContract.address)
 
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest) {
         trade: {
           ...position.trade,
           underlyingAssetUnitPrice: averages[position.metrics!.tokenAddress],
-        },
+        } as GetApiV2UserAddressPositions200[number]['trade'],
       })),
       'metrics.tokenAddress',
     )
@@ -111,8 +112,9 @@ export async function POST(req: NextRequest) {
     const stats = open.reduce(
       (acc, position) => ({
         ...acc,
-        ...(position.trade.underlyingAssetSymbol &&
-        position.trade.underlyingAssetUnitPriceDenominator
+        ...(position.trade?.underlyingAssetUnitPrice &&
+        position.trade?.underlyingAssetUnitPriceDenominator &&
+        position.trade?.underlyingAssetSymbol
           ? {
               [`${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`]:
                 prices[position.trade.underlyingAssetSymbol.toLowerCase()][
