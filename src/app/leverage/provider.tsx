@@ -371,6 +371,7 @@ export function LeverageProvider(props: { children: any }) {
           )
         }),
       )
+
       const marketData: Market[] = await Promise.all(
         marketResponses.map((response) => response.json()),
       )
