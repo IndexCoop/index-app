@@ -99,6 +99,10 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
       const sui = getTokenByChainAndSymbol(base.id, 'uSUI')
       queryBaseToken = { ...sui, image: sui.logoURI }
     }
+    if (baseTokenSymbol === 'uXRP') {
+      const xrp = getTokenByChainAndSymbol(base.id, 'uXRP')
+      queryBaseToken = { ...xrp, image: xrp.logoURI }
+    }
 
     return {
       queryBaseToken: queryBaseToken ?? defaultParams.baseToken,

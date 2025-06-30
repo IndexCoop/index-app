@@ -42,6 +42,8 @@ const mapCoingeckoIdToSymbol = (id: string) => {
       return 'sol'
     case 'wrapped-sui-universal':
       return 'sui'
+    case 'ripple':
+      return 'xrp'
     default:
       return id
   }
