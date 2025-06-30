@@ -14,6 +14,7 @@ export enum LeverageMarket {
   ETHBTC = 'ETH / BTC',
   SOLUSD = 'SOL / USD',
   SUIUSD = 'SUI / USD',
+  XRPUSD = 'XRP / USD',
 }
 
 export type LeverageRatio = {
@@ -60,7 +61,7 @@ export interface Market {
   change24h: number
   low24h: number
   high24h: number
-  symbol: 'ETH' | 'BTC' | 'SOL' | 'SUI'
+  symbol: 'ETH' | 'BTC' | 'SOL' | 'SUI' | 'XRP'
   currency: 'USD' | 'BTC' | 'ETH'
   defaultAsset: { [key: number]: string }
   defaultChainId: number

@@ -83,6 +83,9 @@ export const TradingViewChartContainer = () => {
       case 'ETH / BTC':
         symbol = 'ETHBTC'
         break
+      case 'XRP / USD':
+        symbol = 'XRPUSD'
+        break
     }
 
     if (symbol && tvWidget) {
