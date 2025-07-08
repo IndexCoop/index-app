@@ -18,10 +18,10 @@ const calculateAccruedYield = ({
   product,
   position,
   denominator,
-  stats = {},
+  prices = {},
 }: {
   product: GetApiV2ProductsEarn200[number]
-  stats: Record<string, Record<string, number>>
+  prices: Record<string, Record<string, number>>
   position: GetApiV2UserAddressPositions200[number]
   denominator: 'fiat' | 'eth'
 }) => {
@@ -29,12 +29,12 @@ const calculateAccruedYield = ({
     getTokenByChainAndAddress(product.chainId, product.tokenAddress)?.extensions
       .coingeckoId ?? 'eth'
   const currentRatio =
-    product.metrics.nav / (stats[underlyingTokenId]?.usd ?? 1)
+    product.metrics.nav / (prices[underlyingTokenId]?.usd ?? 1)
 
   const yieldETH =
     (position.metrics?.endingUnits ?? 0) *
     (currentRatio - (position.metrics?.avgEntryUnderlyingPerToken ?? 0))
-  const yieldUSD = yieldETH * (stats.eth?.usd ?? 0)
+  const yieldUSD = yieldETH * (prices.eth?.usd ?? 0)
 
   return denominator === 'fiat' ? yieldUSD : yieldETH
 }
@@ -75,8 +75,8 @@ const Position: FC<{
   position?: GetApiV2UserAddressPositions200[number]
   isLoading?: boolean
   denominator: 'fiat' | 'eth'
-  stats: Record<string, Record<string, number>>
-}> = ({ balance, product, position, isLoading, denominator, stats = {} }) => {
+  prices: Record<string, Record<string, number>>
+}> = ({ balance, product, position, isLoading, denominator, prices = {} }) => {
   const token = useMemo(
     () => getTokenByChainAndAddress(product?.chainId, product?.tokenAddress),
     [product],
@@ -90,7 +90,7 @@ const Position: FC<{
         product,
         position,
         denominator,
-        stats,
+        prices,
       })
     }
     return 0
@@ -162,7 +162,7 @@ export type BalanceCardProps = {
   products: GetApiV2ProductsEarn200
   positions: GetApiV2UserAddressPositions200
   balances: TokenBalance[]
-  stats: Record<string, Record<string, number>>
+  prices: Record<string, Record<string, number>>
   isLoading: boolean
 }
 
@@ -170,7 +170,7 @@ export const BalanceCard = ({
   products,
   positions,
   balances,
-  stats,
+  prices,
   isLoading,
 }: BalanceCardProps) => {
   const [denominator, setDenominator] = useState<'fiat' | 'eth'>('fiat')
@@ -199,7 +199,7 @@ export const BalanceCard = ({
         }
         return acc
       }, 0),
-    [products, balances, denominator, stats],
+    [products, balances, denominator, prices],
   )
 
   const accruedYield = useMemo(
@@ -214,13 +214,13 @@ export const BalanceCard = ({
             product: curr,
             position,
             denominator,
-            stats,
+            prices,
           })
         }
 
         return acc
       }, 0),
-    [products, positions, denominator, stats],
+    [products, positions, denominator, prices],
   )
 
   return (
@@ -244,7 +244,7 @@ export const BalanceCard = ({
             {balances.map((balance) => (
               <div key={balance.token}>
                 <Position
-                  stats={stats}
+                  prices={prices}
                   product={products.find((p) =>
                     isAddressEqual(p.tokenAddress, balance.token),
                   )}

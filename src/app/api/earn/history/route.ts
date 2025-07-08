@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
     )
 
     return NextResponse.json(
-      { open, history, stats: prices },
+      { open, history, prices },
       {
         status: 200,
         headers: {

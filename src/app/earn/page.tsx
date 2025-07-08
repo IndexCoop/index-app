@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useAccount } from 'wagmi'
 
-import { Positions } from '@/app/store/positions-atom'
+import { EarnPositions } from '@/app/store/positions-atom'
 
 import { BalanceCard } from './components/balance-card'
 import { ProductCard } from './components/product-card'
@@ -24,13 +24,13 @@ export default function Page() {
   }, [])
 
   const {
-    data: { open, stats },
+    data: { open, prices },
     isFetching,
   } = useQuery({
     initialData: {
       open: [],
       history: [],
-      stats: {},
+      prices: {},
     },
     enabled: Boolean(user),
     queryKey: ['earn-history', user],
@@ -44,7 +44,7 @@ export default function Page() {
           user,
         }),
       })
-      return response.json() as Promise<Positions>
+      return response.json() as Promise<EarnPositions>
     },
   })
 
@@ -56,7 +56,7 @@ export default function Page() {
             products={products}
             balances={balances}
             positions={open}
-            stats={stats}
+            prices={prices}
             isLoading={isFetching}
           />
         )}
