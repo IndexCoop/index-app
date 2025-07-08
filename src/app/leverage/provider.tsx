@@ -245,6 +245,13 @@ export function LeverageProvider(props: { children: any }) {
     }
     if (
       indexToken.symbol ===
+        getTokenByChainAndSymbol(base.id, 'uXRP2x').symbol ||
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uXRP3x').symbol
+    ) {
+      return 'XRP / USD'
+    }
+    if (
+      indexToken.symbol ===
       getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC').symbol
     )
       return 'ETH / BTC'
@@ -364,6 +371,7 @@ export function LeverageProvider(props: { children: any }) {
           )
         }),
       )
+
       const marketData: Market[] = await Promise.all(
         marketResponses.map((response) => response.json()),
       )

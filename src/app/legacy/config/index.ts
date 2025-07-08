@@ -1,6 +1,5 @@
 import {
   DebtIssuanceModuleV2Address,
-  IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '@indexcoop/flash-mint-sdk'
 
@@ -42,7 +41,6 @@ export const Issuance: { [key: string]: string } = {
   [Ethereum2xFlexibleLeverageIndex.symbol]: DebtIssuanceModuleV2Address,
   [ETH2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
-  [GitcoinStakedETHIndex.symbol]: IndexDebtIssuanceModuleV2Address,
   [GMI.symbol]: DebtIssuanceModuleAddress,
   [ic21.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [InverseBTCFlexibleLeverageIndexPolygon.symbol]:
