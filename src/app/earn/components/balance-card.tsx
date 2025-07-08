@@ -136,6 +136,7 @@ export type BalanceCardProps = {
   products: GetApiV2ProductsEarn200
   positions: GetApiV2UserAddressPositions200
   balances: TokenBalance[]
+  stats: Record<string, Record<string, number>>
   isLoading: boolean
 }
 
@@ -143,6 +144,7 @@ export const BalanceCard = ({
   products,
   positions,
   balances,
+  stats,
   isLoading,
 }: BalanceCardProps) => {
   const [denominator, setDenominator] = useState<'fiat' | 'eth'>('fiat')
@@ -171,7 +173,7 @@ export const BalanceCard = ({
         }
         return acc
       }, 0),
-    [products, balances, denominator],
+    [products, balances, denominator, stats],
   )
 
   const accruedYield = useMemo(
@@ -181,15 +183,18 @@ export const BalanceCard = ({
           isAddressEqual(p.metrics?.tokenAddress, curr.tokenAddress),
         )
         if (position && position.metrics) {
-          return (
-            acc +
-            (denominator === 'fiat'
-              ? (position.metrics.endingUnits ?? 0) * curr.metrics.nav -
-                (position.metrics.endingPositionCost ?? 0)
-              : ((position.metrics.endingUnits ?? 0) * curr.metrics.nav -
-                  (position.metrics.endingPositionCost ?? 0)) /
-                curr.metrics.nav)
-          )
+          const underlyingTokenId =
+            getTokenByChainAndAddress(curr.chainId, curr.tokenAddress)
+              ?.extensions.coingeckoId ?? 'eth'
+          const currentRatio =
+            curr.metrics.nav / (stats[underlyingTokenId]?.usd ?? 1)
+
+          const yieldETH =
+            (position.metrics.endingUnits ?? 0) *
+            (currentRatio - (position.metrics.avgEntryUnderlyingPerToken ?? 0))
+          const yieldUSD = yieldETH * (stats.eth?.usd ?? 0)
+
+          return acc + (denominator === 'fiat' ? yieldUSD : yieldETH)
         }
 
         return acc

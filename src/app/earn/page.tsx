@@ -24,7 +24,7 @@ export default function Page() {
   }, [])
 
   const {
-    data: { open },
+    data: { open, stats },
     isFetching,
   } = useQuery({
     initialData: {
@@ -56,6 +56,7 @@ export default function Page() {
             products={products}
             balances={balances}
             positions={open}
+            stats={stats}
             isLoading={isFetching}
           />
         )}

@@ -5,9 +5,7 @@ import { GetApiV2UserAddressPositions200 } from '@/gen'
 export type Positions = {
   open: GetApiV2UserAddressPositions200
   history: GetApiV2UserAddressPositions200
-  stats: {
-    [key: string]: number
-  }
+  stats: Record<string, Record<string, number>>
 }
 
 const positionsAtomDefaultValue: Positions = {
