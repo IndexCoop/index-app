@@ -14,6 +14,31 @@ import { formatAmount } from '@/lib/utils'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 
+const calculateAccruedYield = ({
+  product,
+  position,
+  denominator,
+  stats = {},
+}: {
+  product: GetApiV2ProductsEarn200[number]
+  stats: Record<string, Record<string, number>>
+  position: GetApiV2UserAddressPositions200[number]
+  denominator: 'fiat' | 'eth'
+}) => {
+  const underlyingTokenId =
+    getTokenByChainAndAddress(product.chainId, product.tokenAddress)?.extensions
+      .coingeckoId ?? 'eth'
+  const currentRatio =
+    product.metrics.nav / (stats[underlyingTokenId]?.usd ?? 1)
+
+  const yieldETH =
+    (position.metrics?.endingUnits ?? 0) *
+    (currentRatio - (position.metrics?.avgEntryUnderlyingPerToken ?? 0))
+  const yieldUSD = yieldETH * (stats.eth?.usd ?? 0)
+
+  return denominator === 'fiat' ? yieldUSD : yieldETH
+}
+
 const DenominatorSwitch: FC<{
   selected: 'fiat' | 'eth'
   onSelect: (denominator: 'fiat' | 'eth') => void
@@ -50,7 +75,8 @@ const Position: FC<{
   position?: GetApiV2UserAddressPositions200[number]
   isLoading?: boolean
   denominator: 'fiat' | 'eth'
-}> = ({ balance, product, position, isLoading, denominator }) => {
+  stats: Record<string, Record<string, number>>
+}> = ({ balance, product, position, isLoading, denominator, stats = {} }) => {
   const token = useMemo(
     () => getTokenByChainAndAddress(product?.chainId, product?.tokenAddress),
     [product],
@@ -60,12 +86,12 @@ const Position: FC<{
     if (!product || !token) return 0
 
     if (position && position.metrics) {
-      return denominator === 'fiat'
-        ? (position.metrics.endingUnits ?? 0) * product.metrics.nav -
-            (position.metrics.endingPositionCost ?? 0)
-        : ((position.metrics.endingUnits ?? 0) * product.metrics.nav -
-            (position.metrics.endingPositionCost ?? 0)) /
-            product.metrics.nav
+      return calculateAccruedYield({
+        product,
+        position,
+        denominator,
+        stats,
+      })
     }
     return 0
   }, [product, token, position, denominator])
@@ -182,24 +208,19 @@ export const BalanceCard = ({
         const position = positions.find((p) =>
           isAddressEqual(p.metrics?.tokenAddress, curr.tokenAddress),
         )
+
         if (position && position.metrics) {
-          const underlyingTokenId =
-            getTokenByChainAndAddress(curr.chainId, curr.tokenAddress)
-              ?.extensions.coingeckoId ?? 'eth'
-          const currentRatio =
-            curr.metrics.nav / (stats[underlyingTokenId]?.usd ?? 1)
-
-          const yieldETH =
-            (position.metrics.endingUnits ?? 0) *
-            (currentRatio - (position.metrics.avgEntryUnderlyingPerToken ?? 0))
-          const yieldUSD = yieldETH * (stats.eth?.usd ?? 0)
-
-          return acc + (denominator === 'fiat' ? yieldUSD : yieldETH)
+          return calculateAccruedYield({
+            product: curr,
+            position,
+            denominator,
+            stats,
+          })
         }
 
         return acc
       }, 0),
-    [products, positions, denominator],
+    [products, positions, denominator, stats],
   )
 
   return (
@@ -223,6 +244,7 @@ export const BalanceCard = ({
             {balances.map((balance) => (
               <div key={balance.token}>
                 <Position
+                  stats={stats}
                   product={products.find((p) =>
                     isAddressEqual(p.tokenAddress, balance.token),
                   )}
