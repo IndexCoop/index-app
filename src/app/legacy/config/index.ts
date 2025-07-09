@@ -7,10 +7,12 @@ import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   DATA,
+  DPI,
   Ethereum2xFlexibleLeverageIndex,
   GMI,
   GitcoinStakedETHIndex,
   LeveragedRethStakingYield,
+  MVI,
   cdETI,
   dsETH,
   ic21,
@@ -71,6 +73,14 @@ export const LegacyTokenList: LegacyToken[] = [
   { ...DATA, image: DATA.logoURI },
   { ...LeveragedRethStakingYield, image: LeveragedRethStakingYield.logoURI },
   { ...BedIndex, image: BedIndex.logoURI },
+  {
+    ...DPI,
+    image: DPI.logoURI,
+  },
+  {
+    ...MVI,
+    image: MVI.logoURI,
+  },
 ]
 
 export const PolygonLegacyTokenList = [
