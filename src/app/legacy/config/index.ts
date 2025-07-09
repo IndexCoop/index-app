@@ -29,8 +29,7 @@ import {
 import type { LegacyToken } from '@/app/legacy/types'
 
 const DebtIssuanceModuleAddress = '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
-const BasicDebtIssuanceModuleAddress2 =
-  '0xd8EF3cACe8b4907117a45B0b125c68560532F94D'
+
 const DebtIssuanceModuleV2PolygonAddress =
   '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
 
@@ -56,8 +55,8 @@ export const Issuance: { [key: string]: string } = {
   [LeveragedRethStakingYield.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [Matic2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
-  [MVI.symbol]: BasicDebtIssuanceModuleAddress2,
-  [DPI.symbol]: BasicDebtIssuanceModuleAddress2,
+  [MVI.symbol]: DebtIssuanceModuleAddress,
+  [DPI.symbol]: DebtIssuanceModuleAddress,
 }
 
 export const LegacyTokenList: LegacyToken[] = [
