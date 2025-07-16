@@ -47,16 +47,6 @@ describe('getCurrencyTokens()', () => {
 })
 
 describe('getCurrencyTokensForIndex()', () => {
-  test('returns default currency tokens', async () => {
-    const chainId = 1
-    const dpi = getTokenByChainAndSymbol(chainId, 'DPI')
-    const token = { ...dpi, image: dpi.logoURI }
-    const defaultTokens = getCurrencyTokens(chainId)
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(defaultTokens.length)
-    expect(currencyTokens).toEqual(defaultTokens)
-  })
-
   test('returns correct currency tokens for icETH', async () => {
     const chainId = 1
     const indexToken = getTokenByChainAndSymbol(chainId, 'icETH')

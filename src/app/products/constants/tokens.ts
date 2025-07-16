@@ -5,7 +5,6 @@ import {
   buildEarnTradePath,
   buildLegacyPath,
   buildLeverageTradePath,
-  buildSwapTradePath,
 } from '@/app/products/utils/trade-path'
 
 import type { ProductRow } from '@/app/products/types/product'
@@ -30,12 +29,6 @@ export const productTokens: ProductRow[] = [
     tradeHref: buildLeverageTradePath('ETH3X', undefined, arbitrum.id),
   },
   {
-    ...getTokenByChainAndSymbol(mainnet.id, 'DPI'),
-    hasApy: false,
-    listType: 'Strategies',
-    tradeHref: buildSwapTradePath('dpi'),
-  },
-  {
     ...getTokenByChainAndSymbol(mainnet.id, 'hyETH'),
     hasApy: true,
     listType: 'Earn',
@@ -46,12 +39,6 @@ export const productTokens: ProductRow[] = [
     hasApy: true,
     listType: 'Earn',
     tradeHref: buildEarnTradePath('icETH'),
-  },
-  {
-    ...getTokenByChainAndSymbol(mainnet.id, 'MVI'),
-    hasApy: false,
-    listType: 'Strategies',
-    tradeHref: buildSwapTradePath('mvi'),
   },
   {
     ...getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X'),

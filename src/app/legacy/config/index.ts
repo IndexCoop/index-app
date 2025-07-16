@@ -7,10 +7,12 @@ import {
   BedIndex,
   Bitcoin2xFlexibleLeverageIndex,
   DATA,
+  DPI,
   Ethereum2xFlexibleLeverageIndex,
   GMI,
   GitcoinStakedETHIndex,
   LeveragedRethStakingYield,
+  MVI,
   cdETI,
   dsETH,
   ic21,
@@ -27,6 +29,7 @@ import {
 import type { LegacyToken } from '@/app/legacy/types'
 
 const DebtIssuanceModuleAddress = '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
+
 const DebtIssuanceModuleV2PolygonAddress =
   '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
 
@@ -42,6 +45,7 @@ export const Issuance: { [key: string]: string } = {
   [ETH2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
   [GMI.symbol]: DebtIssuanceModuleAddress,
+  [GitcoinStakedETHIndex.symbol]: DebtIssuanceModuleV2Address,
   [ic21.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [InverseBTCFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
@@ -52,6 +56,8 @@ export const Issuance: { [key: string]: string } = {
   [LeveragedRethStakingYield.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [Matic2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
+  [MVI.symbol]: DebtIssuanceModuleAddress,
+  [DPI.symbol]: DebtIssuanceModuleAddress,
 }
 
 export const LegacyTokenList: LegacyToken[] = [
@@ -71,6 +77,14 @@ export const LegacyTokenList: LegacyToken[] = [
   { ...DATA, image: DATA.logoURI },
   { ...LeveragedRethStakingYield, image: LeveragedRethStakingYield.logoURI },
   { ...BedIndex, image: BedIndex.logoURI },
+  {
+    ...DPI,
+    image: DPI.logoURI,
+  },
+  {
+    ...MVI,
+    image: MVI.logoURI,
+  },
 ]
 
 export const PolygonLegacyTokenList = [
