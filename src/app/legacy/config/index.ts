@@ -45,6 +45,7 @@ export const Issuance: { [key: string]: string } = {
   [ETH2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
   [GMI.symbol]: DebtIssuanceModuleAddress,
+  [GitcoinStakedETHIndex.symbol]: DebtIssuanceModuleAddress,
   [ic21.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [InverseBTCFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
