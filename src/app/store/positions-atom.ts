@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 
 import { GetApiV2UserAddressPositions200 } from '@/gen'
 
-export type Positions = {
+export type LeveragePositions = {
   open: GetApiV2UserAddressPositions200
   history: GetApiV2UserAddressPositions200
   stats: {
@@ -10,15 +10,21 @@ export type Positions = {
   }
 }
 
-const positionsAtomDefaultValue: Positions = {
+export type EarnPositions = {
+  open: GetApiV2UserAddressPositions200
+  history: GetApiV2UserAddressPositions200
+  prices: Record<string, Record<string, number>>
+}
+
+const positionsAtomDefaultValue: LeveragePositions = {
   open: [],
   history: [],
   stats: {},
 }
 
-export const positionsAtom = atom<Positions>(positionsAtomDefaultValue)
+export const positionsAtom = atom<LeveragePositions>(positionsAtomDefaultValue)
 
-export const fetchPositionsAtom = atom(
+export const fetchLeveragePositionsAtom = atom(
   null,
   async (_, set, address: string, chainId: number) => {
     try {
@@ -30,7 +36,7 @@ export const fetchPositionsAtom = atom(
             chainId,
           }),
         })
-      ).json()) as Positions
+      ).json()) as LeveragePositions
 
       set(positionsAtom, positions)
 
