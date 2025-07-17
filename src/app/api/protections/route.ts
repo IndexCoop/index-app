@@ -19,12 +19,13 @@ export async function GET(req: NextRequest) {
           undefined,
       },
     })
-    const { isForbiddenAddress, isRestrictedCountry, isUsingVpn } =
+    const { isForbiddenAddress, isRestrictedCountry, isNewUser, isUsingVpn } =
       await res.json()
 
     return NextResponse.json({
       isForbiddenAddress,
       isRestrictedCountry,
+      isNewUser,
       isUsingVpn,
     })
   } catch (e) {
@@ -32,6 +33,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       isForbiddenAddress: false,
       isRestrictedCountry: false,
+      isNewUser: false,
       isUsingVpn: false,
     })
   }
