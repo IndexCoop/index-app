@@ -19,6 +19,13 @@ export async function getProtection(headers: Headers, address?: string) {
   const { isForbiddenAddress, isNewUser, isRestrictedCountry, isUsingVpn } =
     await res.json()
 
+  console.log({
+    isForbiddenAddress,
+    isNewUser,
+    isRestrictedCountry,
+    isUsingVpn,
+  })
+
   return {
     isForbiddenAddress,
     isNewUser,
