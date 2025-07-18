@@ -129,14 +129,15 @@ export function LeverageOnboardingPopupWrapper({
 }) {
   const { logEvent } = useAnalytics()
   const { openConnectView } = useCustomAppKit()
-  const [isPopupOpen, setIsPopupOpen] = useState(showPopup)
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
   const { isConnected } = useWallet()
 
   useEffect(() => {
-    if (isPopupOpen) {
+    if (showPopup && !isConnected) {
       logEvent('Leverage_Onboarding_Popup_Show')
+      setIsPopupOpen(true)
     }
-  }, [isPopupOpen, logEvent])
+  }, [showPopup, isConnected, logEvent])
 
   useAccountEffect({
     onConnect: () => {
