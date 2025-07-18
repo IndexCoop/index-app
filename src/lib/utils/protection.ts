@@ -1,23 +1,25 @@
+import { getApiV2Protections } from '@/gen'
+
 export async function getProtection(headers: Headers, address?: string) {
-  const path = address
-    ? `/v2/protections?${new URLSearchParams({ address }).toString()}`
-    : '/v2/protections'
-  const url = `https://api.indexcoop.com${path}`
-  const res = await fetch(url, {
-    headers: {
-      ...headers,
-      'ic-ip-address':
-        headers.get('cf-connecting-ip') ??
-        headers.get('x-forwarded-for') ??
-        undefined,
-      'ic-ip-country':
-        headers.get('cf-ipcountry') ??
-        headers.get('x-vercel-ip-country') ??
-        undefined,
+  const { data } = await getApiV2Protections(
+    { address: address ?? undefined },
+    {
+      headers: {
+        ...Object.fromEntries(headers.entries()),
+        'ic-ip-address':
+          headers.get('cf-connecting-ip') ??
+          headers.get('x-forwarded-for') ??
+          undefined,
+        'ic-ip-country':
+          headers.get('cf-ipcountry') ??
+          headers.get('x-vercel-ip-country') ??
+          undefined,
+      },
     },
-  })
+  )
+
   const { isForbiddenAddress, isNewUser, isRestrictedCountry, isUsingVpn } =
-    await res.json()
+    data
 
   console.log({
     isForbiddenAddress,
