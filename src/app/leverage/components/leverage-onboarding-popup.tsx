@@ -5,9 +5,11 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useAccountEffect } from 'wagmi'
 
+import { onboardingAtom } from '@/app/store/onboarding.atom'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { useCustomAppKit } from '@/lib/hooks/use-custom-app-kit'
 import { useWallet } from '@/lib/hooks/use-wallet'
+import { useAtom } from 'jotai'
 
 interface LeverageOnboardingPopupProps {
   isOpen: boolean
@@ -131,11 +133,13 @@ export function LeverageOnboardingPopupWrapper({
   const { openConnectView } = useCustomAppKit()
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const { isConnected } = useWallet()
+  const [onboarding, setOnboarding] = useAtom(onboardingAtom)
 
   useEffect(() => {
-    if (showPopup && !isConnected) {
+    if (showPopup && !isConnected && !onboarding.shown) {
       logEvent('Leverage_Onboarding_Popup_Show')
       setIsPopupOpen(true)
+      setOnboarding({ shown: true })
     }
   }, [showPopup, isConnected, logEvent])
 
