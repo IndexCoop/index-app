@@ -33,12 +33,15 @@ export const currencies = [
 
 const IndexToken = getTokenByChainAndSymbol(mainnet.id, 'INDEX')
 const hyETH = getTokenByChainAndSymbol(mainnet.id, 'hyETH')
+const DPI = getTokenByChainAndSymbol(mainnet.id, 'DPI')
+const MVI = getTokenByChainAndSymbol(mainnet.id, 'MVI')
 
 export const indicesTokenListArbitrum = [
+  getTokenByChainAndSymbol(arbitrum.id, MVI.symbol),
   getTokenByChainAndSymbol(arbitrum.id, hyETH.symbol),
 ].map((token) => ({ ...token, image: token?.logoURI })) as Token[]
 
-export const indicesTokenList = [IndexToken, hyETH].map((token) => ({
+export const indicesTokenList = [IndexToken, DPI, MVI, hyETH].map((token) => ({
   ...token,
   image: token.logoURI,
 })) as Token[]

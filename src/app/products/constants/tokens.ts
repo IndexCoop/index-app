@@ -5,6 +5,7 @@ import {
   buildEarnTradePath,
   buildLegacyPath,
   buildLeverageTradePath,
+  buildSwapTradePath,
 } from '@/app/products/utils/trade-path'
 
 import type { ProductRow } from '@/app/products/types/product'
@@ -75,5 +76,18 @@ export const productTokens: ProductRow[] = [
     hasApy: false,
     listType: 'Leverage',
     tradeHref: buildLeverageTradePath('BTC2xETH', undefined, arbitrum.id),
+  },
+  // Readd DPI and MVI for now for users.
+  {
+    ...getTokenByChainAndSymbol(mainnet.id, 'DPI'),
+    hasApy: false,
+    listType: 'Strategies',
+    tradeHref: buildSwapTradePath('dpi'),
+  },
+  {
+    ...getTokenByChainAndSymbol(mainnet.id, 'MVI'),
+    hasApy: false,
+    listType: 'Strategies',
+    tradeHref: buildSwapTradePath('mvi'),
   },
 ]
