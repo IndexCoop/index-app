@@ -45,7 +45,7 @@ export const Issuance: { [key: string]: string } = {
   [ETH2xFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
   [GMI.symbol]: DebtIssuanceModuleAddress,
-  [GitcoinStakedETHIndex.symbol]: DebtIssuanceModuleV2Address,
+  [GitcoinStakedETHIndex.symbol]: '0x04b59F9F09750C044D7CfbC177561E409085f0f3', // unique DIM for gtcETH
   [ic21.symbol]: IndexDebtIssuanceModuleV2Address_v2,
   [InverseBTCFlexibleLeverageIndexPolygon.symbol]:
     DebtIssuanceModuleV2PolygonAddress,
