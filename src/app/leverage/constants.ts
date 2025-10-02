@@ -24,12 +24,17 @@ export enum LendingProtocol {
 }
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
+const GOLD3x = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
 
 // Lets get these here, the chain doesnt matter at this point.
 const BTC2x = getTokenByChainAndSymbol(base.id, 'BTC2X')
 const BTC3x = getTokenByChainAndSymbol(base.id, 'BTC3X')
 const BTC2xETH = getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH')
 const iBTC1X = getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X')
+
+const AAVE2x = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
+const ARB2x = getTokenByChainAndSymbol(arbitrum.id, 'ARB2x')
+const LINK2x = getTokenByChainAndSymbol(arbitrum.id, 'LINK2x')
 
 const ETH2x = getTokenByChainAndSymbol(base.id, 'ETH2X')
 const ETH3x = getTokenByChainAndSymbol(base.id, 'ETH3X')
@@ -62,6 +67,7 @@ export const leverageTokens = ([] as string[]).concat(
   solLeverageTokenSymbols,
   suiLeverageTokenSymbols,
   xrpLeverageTokenSymbols,
+  [AAVE2x.symbol, ARB2x.symbol, GOLD3x.symbol, LINK2x.symbol],
 )
 
 export function getCurrencyTokens(chainId: number): Token[] {
@@ -114,6 +120,12 @@ export function getPathForMarket(market: string, chainId?: number) {
 }
 
 const defaultAssets = {
+  [LeverageMarket.AAVEUSD]: {
+    [LeverageStrategy.Long2x]: { symbol: AAVE2x.symbol, chainId: arbitrum.id },
+  },
+  [LeverageMarket.ARBUSD]: {
+    [LeverageStrategy.Long2x]: { symbol: ARB2x.symbol, chainId: arbitrum.id },
+  },
   [LeverageMarket.BTCUSD]: {
     [LeverageStrategy.Long2x]: { symbol: BTC2x.symbol, chainId: base.id },
     [LeverageStrategy.Long3x]: { symbol: BTC3x.symbol, chainId: base.id },
@@ -135,6 +147,12 @@ const defaultAssets = {
       symbol: ETH2xBTC.symbol,
       chainId: arbitrum.id,
     },
+  },
+  [LeverageMarket.XAUTUSD]: {
+    [LeverageStrategy.Long3x]: { symbol: GOLD3x.symbol, chainId: mainnet.id },
+  },
+  [LeverageMarket.LINKUSD]: {
+    [LeverageStrategy.Long2x]: { symbol: LINK2x.symbol, chainId: arbitrum.id },
   },
   [LeverageMarket.SOLUSD]: {
     [LeverageStrategy.Long2x]: { symbol: uSOL2x.symbol, chainId: base.id },
@@ -186,6 +204,38 @@ export const getPathForRatio = (
 
 export const markets: Market[] = [
   {
+    icon: '/assets/aave-usd-market.svg',
+    market: LeverageMarket.AAVEUSD,
+    symbol: 'AAVE',
+    currency: 'USD',
+    networks: [mainnet, arbitrum],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+    defaultAsset: {
+      [arbitrum.id]: 'AAVE2X',
+    },
+    defaultChainId: arbitrum.id,
+    lendingProtocol: LendingProtocol.aave,
+  },
+  {
+    icon: '/assets/arb-usd-market.svg',
+    market: LeverageMarket.ARBUSD,
+    symbol: 'ARB',
+    currency: 'USD',
+    networks: [mainnet, arbitrum],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+    defaultAsset: {
+      [arbitrum.id]: 'ARB2X',
+    },
+    defaultChainId: arbitrum.id,
+    lendingProtocol: LendingProtocol.aave,
+  },
+  {
     icon: '/assets/eth-usd-market.svg',
     market: LeverageMarket.ETHUSD,
     symbol: 'ETH',
@@ -201,6 +251,22 @@ export const markets: Market[] = [
       [mainnet.id]: 'ETH2X',
     },
     defaultChainId: base.id,
+    lendingProtocol: LendingProtocol.aave,
+  },
+  {
+    icon: '/assets/xaut-usd-market.svg',
+    market: LeverageMarket.XAUTUSD,
+    symbol: 'XAUt',
+    currency: 'USD',
+    networks: [mainnet],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+    defaultAsset: {
+      [mainnet.id]: 'GOLD3X',
+    },
+    defaultChainId: mainnet.id,
     lendingProtocol: LendingProtocol.aave,
   },
   {
@@ -236,6 +302,22 @@ export const markets: Market[] = [
     },
     defaultChainId: base.id,
     lendingProtocol: LendingProtocol.morpho,
+  },
+  {
+    icon: '/assets/link-usd-market.svg',
+    market: LeverageMarket.LINKUSD,
+    symbol: 'LINK',
+    currency: 'USD',
+    networks: [arbitrum],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+    defaultAsset: {
+      [arbitrum.id]: 'LINK2X',
+    },
+    defaultChainId: arbitrum.id,
+    lendingProtocol: LendingProtocol.aave,
   },
   {
     icon: '/assets/sui-usd-market.svg',
@@ -305,9 +387,27 @@ export const markets: Market[] = [
 
 export const ratios: LeverageRatio[] = [
   {
+    icon: AAVE2x.logoURI,
+    market: LeverageMarket.AAVEUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: arbitrum,
+  },
+  {
+    icon: ARB2x.logoURI,
+    market: LeverageMarket.ARBUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: arbitrum,
+  },
+  {
     icon: BTC2x.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Long2x,
+    chain: mainnet,
+  },
+  {
+    icon: BTC3x.logoURI,
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Long3x,
     chain: mainnet,
   },
   {
@@ -344,6 +444,12 @@ export const ratios: LeverageRatio[] = [
     icon: ETH2x.logoURI,
     market: LeverageMarket.ETHUSD,
     strategy: LeverageStrategy.Long2x,
+    chain: mainnet,
+  },
+  {
+    icon: ETH3x.logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Long3x,
     chain: mainnet,
   },
   {
@@ -385,6 +491,18 @@ export const ratios: LeverageRatio[] = [
   {
     icon: ETH2xBTC.logoURI,
     market: LeverageMarket.ETHBTC,
+    strategy: LeverageStrategy.Long2x,
+    chain: arbitrum,
+  },
+  {
+    icon: GOLD3x.logoURI,
+    market: LeverageMarket.XAUTUSD,
+    strategy: LeverageStrategy.Long2x,
+    chain: arbitrum,
+  },
+  {
+    icon: LINK2x.logoURI,
+    market: LeverageMarket.LINKUSD,
     strategy: LeverageStrategy.Long2x,
     chain: arbitrum,
   },

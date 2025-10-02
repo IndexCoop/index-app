@@ -229,6 +229,10 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const market = useMemo(() => {
+    if (indexToken.symbol === 'AAVE2x') return 'AAVE / USD'
+    if (indexToken.symbol === 'ARB2x') return 'ARB / USD'
+    if (indexToken.symbol === 'LINK2x') return 'LINK / USD'
+    if (indexToken.symbol === 'GOLD3x') return 'XAUt / USD'
     if (
       indexToken.symbol ===
         getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol ||
