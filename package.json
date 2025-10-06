@@ -57,8 +57,8 @@
     "react-loading-skeleton": "3.5.0",
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
-    "viem": "2.25.0",
-    "wagmi": "2.14.15",
+    "viem": "2.37.13",
+    "wagmi": "2.17.5",
     "xstate": "5.19.2"
   },
   "devDependencies": {
