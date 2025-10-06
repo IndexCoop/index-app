@@ -88,7 +88,7 @@ export async function getFlashMintQuote(
       const transaction: QuoteTransaction = {
         account,
         chainId,
-        from: account,
+        from: account as `0x${string}`,
         to: tx.to,
         data: tx.data as Hex,
         value: tx.value ? BigInt(tx.value.hex) : undefined,

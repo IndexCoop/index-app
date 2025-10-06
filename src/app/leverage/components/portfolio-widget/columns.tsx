@@ -28,7 +28,7 @@ const getAction = (
 ) => {
   const token = getTokenByChainAndAddress(
     chainId ?? data.metrics?.chainId,
-    checksumAddress(data.rawContract.address ?? ''),
+    checksumAddress((data.rawContract.address ?? '') as `0x${string}`),
   )
 
   if (!isLeverageToken(token)) return '-'
@@ -97,7 +97,9 @@ export const openPositionsColumns = [
             src={
               getTokenByChainAndAddress(
                 data.metrics?.chainId,
-                checksumAddress(data.rawContract.address ?? ''),
+                checksumAddress(
+                  (data.rawContract.address ?? '') as `0x${string}`,
+                ),
               )?.logoURI ?? ''
             }
             width={16}
@@ -117,7 +119,7 @@ export const openPositionsColumns = [
 
       const token =
         row.table.options.meta?.tokens[
-          checksumAddress(data.rawContract.address ?? '')
+          checksumAddress((data.rawContract.address ?? '') as `0x${string}`)
         ]
 
       if (isLeverageToken(token)) {
@@ -150,7 +152,7 @@ export const openPositionsColumns = [
 
       const token =
         row.table.options.meta?.tokens[
-          checksumAddress(data.rawContract.address ?? '')
+          checksumAddress((data.rawContract.address ?? '') as `0x${string}`)
         ]
 
       if (!isLeverageToken(token))
@@ -171,7 +173,7 @@ export const openPositionsColumns = [
 
       const token =
         row.table.options.meta?.tokens[
-          checksumAddress(data.rawContract.address ?? '')
+          checksumAddress((data.rawContract.address ?? '') as `0x${string}`)
         ]
 
       if (!isLeverageToken(token) || !data.trade || !data.metrics)
@@ -287,7 +289,7 @@ export const openPositionsColumns = [
 
       const token =
         row.table.options.meta?.tokens[
-          checksumAddress(data.rawContract.address ?? '')
+          checksumAddress((data.rawContract.address ?? '') as `0x${string}`)
         ]
 
       if (isLeverageToken(token) && data.trade && data.metrics) {
@@ -322,7 +324,7 @@ export const openPositionsColumns = [
 
       const token =
         row.table.options.meta?.tokens[
-          checksumAddress(data.rawContract.address ?? '')
+          checksumAddress((data.rawContract.address ?? '') as `0x${string}`)
         ]
 
       if (!isLeverageToken(token))
@@ -377,7 +379,9 @@ export const historyColumns = [
             src={
               getTokenByChainAndAddress(
                 data.metrics?.chainId ?? currentChainId,
-                checksumAddress(data.rawContract.address ?? ''),
+                checksumAddress(
+                  (data.rawContract.address ?? '') as `0x${string}`,
+                ),
               )?.logoURI ?? ''
             }
             width={16}
@@ -399,7 +403,7 @@ export const historyColumns = [
 
       const token =
         row.table.options.meta?.tokens[
-          checksumAddress(data.rawContract.address ?? '')
+          checksumAddress((data.rawContract.address ?? '') as `0x${string}`)
         ]
 
       if (isLeverageToken(token)) {
@@ -464,7 +468,7 @@ export const historyColumns = [
       const token =
         row.table.options.meta?.tokens[
           data.metrics?.tokenAddress ??
-            checksumAddress(data.rawContract.address ?? '')
+            checksumAddress((data.rawContract.address ?? '') as `0x${string}`)
         ]
 
       return (
@@ -517,7 +521,7 @@ export const historyColumns = [
 
       const token =
         row.table.options.meta?.tokens[
-          checksumAddress(data.rawContract.address ?? '') ?? ''
+          checksumAddress((data.rawContract.address ?? '') as `0x${string}`)
         ]
 
       if (

@@ -145,7 +145,7 @@ export function LeverageProvider(props: { children: any }) {
     if (!indexToken.address || !indexToken.chainId) return
     setProductToken(
       {
-        address: indexToken.address,
+        address: indexToken.address as `0x${string}`,
         chainId: indexToken.chainId,
       },
       isMinting,

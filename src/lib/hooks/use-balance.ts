@@ -14,16 +14,16 @@ export class BalanceProvider {
 
   async getErc20Balance(address: string, token: string): Promise<bigint> {
     return await this.publicClient.readContract({
-      address: token,
+      address: token as `0x${string}`,
       abi: ERC20_ABI,
       functionName: 'balanceOf',
-      args: [address],
+      args: [address as `0x${string}`],
     })
   }
 
   async getNativeBalance(address: string) {
     return this.publicClient.getBalance({
-      address: address,
+      address: address as `0x${string}`,
     })
   }
 }

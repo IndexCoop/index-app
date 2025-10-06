@@ -90,7 +90,7 @@ export async function getLegacyRedemptionQuote(
     const transaction: QuoteTransaction = {
       account,
       chainId,
-      from: account,
+      from: account as `0x${string}`,
       to: contract,
       data: callData,
       value: undefined,
