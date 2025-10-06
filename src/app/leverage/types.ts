@@ -14,7 +14,7 @@ export enum LeverageMarket {
   ETHUSD = 'ETH / USD',
   BTCETH = 'BTC / ETH',
   ETHBTC = 'ETH / BTC',
-  XAUTUSD = 'XAUt / USD',
+  XAUTUSD = 'XAUT / USD',
   LINKUSD = 'LINK / USD',
   SOLUSD = 'SOL / USD',
   SUIUSD = 'SUI / USD',
