@@ -77,7 +77,7 @@ export const TradingViewChartContainer = () => {
       case 'ETH / USD':
         symbol = 'ETHUSD'
         break
-      case 'XAUt / USD':
+      case 'XAUT / USD':
         symbol = 'XAUTUSD'
         break
       case 'LINK / USD':
