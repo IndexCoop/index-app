@@ -56,7 +56,18 @@ export const mapQuoteToTrade = (
 })
 
 const getUnderlyingAssetSymbol = (quote: Quote) => {
-  const possible = ['ETH', 'BTC', 'SUI', 'SOL', 'XRP', 'MATIC']
+  const possible = [
+    'ETH',
+    'BTC',
+    'SUI',
+    'SOL',
+    'XRP',
+    'AAVE',
+    'ARB',
+    'LINK',
+    'XAUt',
+    'MATIC',
+  ]
 
   const address = quote.isMinting
     ? quote.outputToken.address

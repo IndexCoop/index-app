@@ -157,6 +157,8 @@ export function LeverageProvider(props: { children: any }) {
     return getLeverageTokens(chainId)
   }, [chainId])
 
+  console.log(indexTokens)
+
   const indexTokenAddresses = useMemo(() => {
     return indexTokens.map((token) => token.address!)
   }, [indexTokens])
@@ -379,6 +381,7 @@ export function LeverageProvider(props: { children: any }) {
       const marketData: Market[] = await Promise.all(
         marketResponses.map((response) => response.json()),
       )
+
       return markets.map((market, idx) => ({
         ...market,
         ...marketData[idx],

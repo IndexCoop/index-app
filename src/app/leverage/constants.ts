@@ -108,6 +108,7 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
 
 export function getPathForMarket(market: string, chainId?: number) {
   const existingMarket = markets.find((m) => m.market === market)
+
   if (!existingMarket) return null
 
   const { defaultAsset, defaultChainId } = existingMarket
@@ -116,7 +117,15 @@ export function getPathForMarket(market: string, chainId?: number) {
     chainId && existingMarket.networks.some((network) => network.id === chainId)
       ? chainId
       : defaultChainId
-  return `/leverage?sell=ETH&buy=${defaultAsset[queryChainId]}&network=${queryChainId}`
+  const path = `/leverage?sell=ETH&buy=${defaultAsset[queryChainId]}&network=${queryChainId}`
+  console.log('getPathForMarket:', {
+    market,
+    chainId,
+    queryChainId,
+    defaultAsset,
+    path,
+  })
+  return path
 }
 
 const defaultAssets = {
@@ -264,7 +273,7 @@ export const markets: Market[] = [
     low24h: 0,
     high24h: 0,
     defaultAsset: {
-      [mainnet.id]: 'GOLD3X',
+      [mainnet.id]: 'GOLD3x',
     },
     defaultChainId: mainnet.id,
     lendingProtocol: LendingProtocol.aave,
@@ -497,8 +506,8 @@ export const ratios: LeverageRatio[] = [
   {
     icon: GOLD3x.logoURI,
     market: LeverageMarket.XAUTUSD,
-    strategy: LeverageStrategy.Long2x,
-    chain: arbitrum,
+    strategy: LeverageStrategy.Long3x,
+    chain: mainnet,
   },
   {
     icon: LINK2x.logoURI,
