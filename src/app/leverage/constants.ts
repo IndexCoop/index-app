@@ -117,15 +117,7 @@ export function getPathForMarket(market: string, chainId?: number) {
     chainId && existingMarket.networks.some((network) => network.id === chainId)
       ? chainId
       : defaultChainId
-  const path = `/leverage?sell=ETH&buy=${defaultAsset[queryChainId]}&network=${queryChainId}`
-  console.log('getPathForMarket:', {
-    market,
-    chainId,
-    queryChainId,
-    defaultAsset,
-    path,
-  })
-  return path
+  return `/leverage?sell=ETH&buy=${defaultAsset[queryChainId]}&network=${queryChainId}`
 }
 
 const defaultAssets = {
