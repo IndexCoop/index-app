@@ -27,8 +27,9 @@ const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
 const GOLD3x = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
 
 // Lets get these here, the chain doesnt matter at this point.
-const BTC2x = getTokenByChainAndSymbol(base.id, 'BTC2X')
-const BTC3x = getTokenByChainAndSymbol(base.id, 'BTC3X')
+const BTC3x = getTokenByChainAndSymbol(mainnet.id, 'BTC3x') // Since mainnet symbols are inconsistent, we have to do this.
+const BTC2X = getTokenByChainAndSymbol(base.id, 'BTC2X')
+const BTC3X = getTokenByChainAndSymbol(base.id, 'BTC3X')
 const BTC2xETH = getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH')
 const iBTC1X = getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X')
 
@@ -36,8 +37,9 @@ const AAVE2x = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
 const ARB2x = getTokenByChainAndSymbol(arbitrum.id, 'ARB2x')
 const LINK2x = getTokenByChainAndSymbol(arbitrum.id, 'LINK2x')
 
-const ETH2x = getTokenByChainAndSymbol(base.id, 'ETH2X')
-const ETH3x = getTokenByChainAndSymbol(base.id, 'ETH3X')
+const ETH2X = getTokenByChainAndSymbol(base.id, 'ETH2X')
+const ETH3X = getTokenByChainAndSymbol(base.id, 'ETH3X')
+const ETH3x = getTokenByChainAndSymbol(mainnet.id, 'ETH3x')
 const ETH2xBTC = getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC')
 const iETH1X = getTokenByChainAndSymbol(arbitrum.id, 'iETH1X')
 
@@ -49,11 +51,11 @@ const uSUI3x = getTokenByChainAndSymbol(base.id, 'uSUI3x')
 const uXRP2x = getTokenByChainAndSymbol(base.id, 'uXRP2x')
 const uXRP3x = getTokenByChainAndSymbol(base.id, 'uXRP3x')
 
-const btcLeverageTokenSymbols = [BTC2x, BTC3x, iBTC1X, BTC2xETH].map(
+const btcLeverageTokenSymbols = [BTC2X, BTC3X, BTC3x, iBTC1X, BTC2xETH].map(
   (token) => token.symbol,
 )
 
-const ethLeverageTokenSymbols = [ETH2x, ETH3x, iETH1X, ETH2xBTC].map(
+const ethLeverageTokenSymbols = [ETH2X, ETH3X, ETH3x, iETH1X, ETH2xBTC].map(
   (token) => token.symbol,
 )
 
@@ -128,12 +130,12 @@ const defaultAssets = {
     [LeverageStrategy.Long2x]: { symbol: ARB2x.symbol, chainId: arbitrum.id },
   },
   [LeverageMarket.BTCUSD]: {
-    [LeverageStrategy.Long2x]: { symbol: BTC2x.symbol, chainId: base.id },
+    [LeverageStrategy.Long2x]: { symbol: BTC2X.symbol, chainId: base.id },
     [LeverageStrategy.Long3x]: { symbol: BTC3x.symbol, chainId: base.id },
     [LeverageStrategy.Short1x]: { symbol: iBTC1X.symbol, chainId: arbitrum.id },
   },
   [LeverageMarket.ETHUSD]: {
-    [LeverageStrategy.Long2x]: { symbol: ETH2x.symbol, chainId: base.id },
+    [LeverageStrategy.Long2x]: { symbol: BTC2X.symbol, chainId: base.id },
     [LeverageStrategy.Long3x]: { symbol: ETH3x.symbol, chainId: base.id },
     [LeverageStrategy.Short1x]: { symbol: iETH1X.symbol, chainId: arbitrum.id },
   },
@@ -400,7 +402,7 @@ export const ratios: LeverageRatio[] = [
     chain: arbitrum,
   },
   {
-    icon: BTC2x.logoURI,
+    icon: BTC2X.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Long2x,
     chain: mainnet,
@@ -412,7 +414,7 @@ export const ratios: LeverageRatio[] = [
     chain: mainnet,
   },
   {
-    icon: BTC2x.logoURI,
+    icon: BTC2X.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Long2x,
     chain: arbitrum,
@@ -430,7 +432,7 @@ export const ratios: LeverageRatio[] = [
     chain: arbitrum,
   },
   {
-    icon: BTC2x.logoURI,
+    icon: BTC2X.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Long2x,
     chain: base,
@@ -442,7 +444,7 @@ export const ratios: LeverageRatio[] = [
     chain: base,
   },
   {
-    icon: ETH2x.logoURI,
+    icon: ETH2X.logoURI,
     market: LeverageMarket.ETHUSD,
     strategy: LeverageStrategy.Long2x,
     chain: mainnet,
@@ -454,7 +456,7 @@ export const ratios: LeverageRatio[] = [
     chain: mainnet,
   },
   {
-    icon: ETH2x.logoURI,
+    icon: ETH2X.logoURI,
     market: LeverageMarket.ETHUSD,
     strategy: LeverageStrategy.Long2x,
     chain: arbitrum,
@@ -472,7 +474,7 @@ export const ratios: LeverageRatio[] = [
     chain: arbitrum,
   },
   {
-    icon: ETH2x.logoURI,
+    icon: ETH2X.logoURI,
     market: LeverageMarket.ETHUSD,
     strategy: LeverageStrategy.Long2x,
     chain: base,

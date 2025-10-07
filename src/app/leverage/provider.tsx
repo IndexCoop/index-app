@@ -157,6 +157,7 @@ export function LeverageProvider(props: { children: any }) {
     return getLeverageTokens(chainId)
   }, [chainId])
 
+  console.log(indexTokens)
   const indexTokenAddresses = useMemo(() => {
     return indexTokens.map((token) => token.address!)
   }, [indexTokens])
