@@ -205,6 +205,38 @@ export const getPathForRatio = (
   return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${chainId}`
 }
 
+export const marketLeverageTypes = {
+  [arbitrum.id]: {
+    [LeverageMarket.BTCUSD]: [
+      LeverageType.Short,
+      LeverageType.Long2x,
+      LeverageType.Long3x,
+    ],
+    [LeverageMarket.ETHUSD]: [
+      LeverageType.Short,
+      LeverageType.Long2x,
+      LeverageType.Long3x,
+    ],
+    [LeverageMarket.BTCETH]: [LeverageType.Long2x],
+    [LeverageMarket.ETHBTC]: [LeverageType.Long2x],
+    [LeverageMarket.AAVEUSD]: [LeverageType.Long2x],
+    [LeverageMarket.ARBUSD]: [LeverageType.Long2x],
+    [LeverageMarket.LINKUSD]: [LeverageType.Long2x],
+  },
+  [base.id]: {
+    [LeverageMarket.BTCUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.ETHUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.SOLUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.SUIUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.XRPUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+  },
+  [mainnet.id]: {
+    [LeverageMarket.BTCUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.ETHUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.XAUTUSD]: [LeverageType.Long3x],
+  },
+}
+
 export const markets: Market[] = [
   {
     icon: '/assets/btc-usd-market.svg',
@@ -561,7 +593,7 @@ export const supportedLeverageTypes = {
     LeverageType.Long3x,
   ],
   [BASE.chainId]: [LeverageType.Long2x, LeverageType.Long3x],
-  [MAINNET.chainId]: [LeverageType.Long2x],
+  [MAINNET.chainId]: [LeverageType.Long2x, LeverageType.Long3x],
 }
 
 export const supportedNetworks = [

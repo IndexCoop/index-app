@@ -25,12 +25,13 @@ import { useUtmParams } from '@/lib/hooks/use-utm-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
+import { isSupportedNetwork } from '@/lib/utils/wagmi'
 
 import {
   getCurrencyTokens,
   getLeverageTokens,
+  marketLeverageTypes,
   markets,
-  supportedLeverageTypes,
 } from './constants'
 import { type LeverageToken, LeverageType, type Market } from './types'
 
@@ -157,7 +158,6 @@ export function LeverageProvider(props: { children: any }) {
     return getLeverageTokens(chainId)
   }, [chainId])
 
-  console.log(indexTokens)
   const indexTokenAddresses = useMemo(() => {
     return indexTokens.map((token) => token.address!)
   }, [indexTokens])
@@ -269,17 +269,12 @@ export function LeverageProvider(props: { children: any }) {
   }, [baseToken, indexToken])
 
   const getSupportedLeverageTypes = useMemo(() => {
-    const eth2xBtc = getTokenByChainAndSymbol(chainId, 'ETH2xBTC')
-    const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
-
-    const isRatioToken =
-      indexToken.symbol === eth2xBtc?.symbol ||
-      indexToken.symbol === btc2xEth?.symbol
-
-    return isRatioToken
-      ? [LeverageType.Long2x]
-      : supportedLeverageTypes[chainId]
-  }, [chainId, indexToken])
+    if (isSupportedNetwork(chainId)) {
+      const chainMarkets =
+        marketLeverageTypes[chainId as keyof typeof marketLeverageTypes]
+      return chainMarkets[market as keyof typeof chainMarkets]
+    }
+  }, [chainId, market])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {

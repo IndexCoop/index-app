@@ -3,13 +3,13 @@ import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
 type LeverageSelectorProps = {
-  selectedTye: LeverageType
+  selectedType: LeverageType
   supportedTypes: LeverageType[]
   onSelectType: (type: LeverageType) => void
 }
 
 export function LeverageSelector(props: LeverageSelectorProps) {
-  const { onSelectType, selectedTye, supportedTypes } = props
+  const { onSelectType, selectedType, supportedTypes } = props
   const { logEvent } = useAnalytics()
 
   const handleClick = (leverageType: LeverageType) => {
@@ -30,7 +30,7 @@ export function LeverageSelector(props: LeverageSelectorProps) {
             return (
               <LeverageSelectorButton
                 key={`leverage-type-${label}`}
-                isSelected={selectedTye === leverageType}
+                isSelected={selectedType === leverageType}
                 label={label}
                 onClick={() => handleClick(leverageType)}
               />
