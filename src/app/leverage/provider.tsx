@@ -274,6 +274,8 @@ export function LeverageProvider(props: { children: any }) {
         marketLeverageTypes[chainId as keyof typeof marketLeverageTypes]
       return chainMarkets[market as keyof typeof chainMarkets]
     }
+
+    return []
   }, [chainId, market])
 
   const onChangeInputTokenAmount = useCallback(
