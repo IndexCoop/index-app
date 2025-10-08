@@ -49,7 +49,7 @@ export function NetRateTooltip({ isFetching, token }: Props) {
             <div className='flex py-2'>
               <div className='text-ic-gray-600'>Streaming Fee</div>
               <div className='text-ic-gray-900 ml-auto'>
-                {`${formatPercentage(token.streamingFee / 365, true, 3)} / day`}
+                {`${formatPercentage(token.symbol === 'GOLD3x' ? 0.0001 : token.streamingFee / 365, true, 3)} / day`}
               </div>
             </div>
             <div className='flex py-2'>
