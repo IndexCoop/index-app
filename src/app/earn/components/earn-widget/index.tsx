@@ -73,7 +73,10 @@ export function EarnWidget() {
   } = useFormattedEarnData()
 
   const selectedProduct = products.find((p) =>
-    isAddressEqual(p.tokenAddress, indexToken?.address ?? ''),
+    isAddressEqual(
+      p.tokenAddress as `0x${string}`,
+      (indexToken?.address ?? '') as `0x${string}`,
+    ),
   )
 
   const {

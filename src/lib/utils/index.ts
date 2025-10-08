@@ -111,7 +111,7 @@ export const isValidTokenInput = (
 }
 
 export const isContract = async (client: PublicClient, address: string) => {
-  const bytes = await getCode(client, { address })
+  const bytes = await getCode(client, { address: address as `0x${string}` })
 
   return bytes !== undefined
 }

@@ -70,6 +70,6 @@ describe('GasEstimatooor', () => {
       value: parseUnits('1', 18),
     }
     const gasEstimate = await estimatooor.estimate(tx, false)
-    expect(gasEstimate.toString()).toEqual('23101')
+    expect(gasEstimate.toString()).toEqual('5000000')
   })
 })

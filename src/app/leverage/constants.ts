@@ -24,15 +24,22 @@ export enum LendingProtocol {
 }
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
+const GOLD3x = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
 
 // Lets get these here, the chain doesnt matter at this point.
-const BTC2x = getTokenByChainAndSymbol(base.id, 'BTC2X')
-const BTC3x = getTokenByChainAndSymbol(base.id, 'BTC3X')
+const BTC3x = getTokenByChainAndSymbol(mainnet.id, 'BTC3x') // Since mainnet symbols are inconsistent, we have to do this.
+const BTC2X = getTokenByChainAndSymbol(base.id, 'BTC2X')
+const BTC3X = getTokenByChainAndSymbol(base.id, 'BTC3X')
 const BTC2xETH = getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH')
 const iBTC1X = getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X')
 
-const ETH2x = getTokenByChainAndSymbol(base.id, 'ETH2X')
-const ETH3x = getTokenByChainAndSymbol(base.id, 'ETH3X')
+// const AAVE2x = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
+// const ARB2x = getTokenByChainAndSymbol(arbitrum.id, 'ARB2x')
+// const LINK2x = getTokenByChainAndSymbol(arbitrum.id, 'LINK2x')
+
+const ETH2X = getTokenByChainAndSymbol(base.id, 'ETH2X')
+const ETH3X = getTokenByChainAndSymbol(base.id, 'ETH3X')
+const ETH3x = getTokenByChainAndSymbol(mainnet.id, 'ETH3x')
 const ETH2xBTC = getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC')
 const iETH1X = getTokenByChainAndSymbol(arbitrum.id, 'iETH1X')
 
@@ -44,11 +51,11 @@ const uSUI3x = getTokenByChainAndSymbol(base.id, 'uSUI3x')
 const uXRP2x = getTokenByChainAndSymbol(base.id, 'uXRP2x')
 const uXRP3x = getTokenByChainAndSymbol(base.id, 'uXRP3x')
 
-const btcLeverageTokenSymbols = [BTC2x, BTC3x, iBTC1X, BTC2xETH].map(
+const btcLeverageTokenSymbols = [BTC2X, BTC3X, /*BTC3x,*/ iBTC1X, BTC2xETH].map(
   (token) => token.symbol,
 )
 
-const ethLeverageTokenSymbols = [ETH2x, ETH3x, iETH1X, ETH2xBTC].map(
+const ethLeverageTokenSymbols = [ETH2X, ETH3X, /*ETH3x,*/ iETH1X, ETH2xBTC].map(
   (token) => token.symbol,
 )
 
@@ -62,6 +69,7 @@ export const leverageTokens = ([] as string[]).concat(
   solLeverageTokenSymbols,
   suiLeverageTokenSymbols,
   xrpLeverageTokenSymbols,
+  [/*AAVE2x.symbol, ARB2x.symbol,*/ GOLD3x.symbol /*, LINK2x.symbol*/],
 )
 
 export function getCurrencyTokens(chainId: number): Token[] {
@@ -102,6 +110,7 @@ export function getLeverageTokens(chainId: number): LeverageToken[] {
 
 export function getPathForMarket(market: string, chainId?: number) {
   const existingMarket = markets.find((m) => m.market === market)
+
   if (!existingMarket) return null
 
   const { defaultAsset, defaultChainId } = existingMarket
@@ -114,14 +123,20 @@ export function getPathForMarket(market: string, chainId?: number) {
 }
 
 const defaultAssets = {
+  // [LeverageMarket.AAVEUSD]: {
+  //   [LeverageStrategy.Long2x]: { symbol: AAVE2x.symbol, chainId: arbitrum.id },
+  // },
+  // [LeverageMarket.ARBUSD]: {
+  //   [LeverageStrategy.Long2x]: { symbol: ARB2x.symbol, chainId: arbitrum.id },
+  // },
   [LeverageMarket.BTCUSD]: {
-    [LeverageStrategy.Long2x]: { symbol: BTC2x.symbol, chainId: base.id },
-    [LeverageStrategy.Long3x]: { symbol: BTC3x.symbol, chainId: base.id },
+    [LeverageStrategy.Long2x]: { symbol: BTC2X.symbol, chainId: base.id },
+    // [LeverageStrategy.Long3x]: { symbol: BTC3x.symbol, chainId: base.id },
     [LeverageStrategy.Short1x]: { symbol: iBTC1X.symbol, chainId: arbitrum.id },
   },
   [LeverageMarket.ETHUSD]: {
-    [LeverageStrategy.Long2x]: { symbol: ETH2x.symbol, chainId: base.id },
-    [LeverageStrategy.Long3x]: { symbol: ETH3x.symbol, chainId: base.id },
+    [LeverageStrategy.Long2x]: { symbol: BTC2X.symbol, chainId: base.id },
+    // [LeverageStrategy.Long3x]: { symbol: ETH3x.symbol, chainId: base.id },
     [LeverageStrategy.Short1x]: { symbol: iETH1X.symbol, chainId: arbitrum.id },
   },
   [LeverageMarket.BTCETH]: {
@@ -136,6 +151,12 @@ const defaultAssets = {
       chainId: arbitrum.id,
     },
   },
+  [LeverageMarket.XAUTUSD]: {
+    [LeverageStrategy.Long3x]: { symbol: GOLD3x.symbol, chainId: mainnet.id },
+  },
+  // [LeverageMarket.LINKUSD]: {
+  //   [LeverageStrategy.Long2x]: { symbol: LINK2x.symbol, chainId: arbitrum.id },
+  // },
   [LeverageMarket.SOLUSD]: {
     [LeverageStrategy.Long2x]: { symbol: uSOL2x.symbol, chainId: base.id },
     [LeverageStrategy.Long3x]: { symbol: uSOL3x.symbol, chainId: base.id },
@@ -184,25 +205,39 @@ export const getPathForRatio = (
   return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${chainId}`
 }
 
-export const markets: Market[] = [
-  {
-    icon: '/assets/eth-usd-market.svg',
-    market: LeverageMarket.ETHUSD,
-    symbol: 'ETH',
-    currency: 'USD',
-    networks: [mainnet, arbitrum, base],
-    price: 0,
-    change24h: 0,
-    low24h: 0,
-    high24h: 0,
-    defaultAsset: {
-      [arbitrum.id]: 'ETH3X',
-      [base.id]: 'ETH3X',
-      [mainnet.id]: 'ETH2X',
-    },
-    defaultChainId: base.id,
-    lendingProtocol: LendingProtocol.aave,
+export const marketLeverageTypes = {
+  [arbitrum.id]: {
+    [LeverageMarket.BTCUSD]: [
+      LeverageType.Short,
+      LeverageType.Long2x,
+      LeverageType.Long3x,
+    ],
+    [LeverageMarket.ETHUSD]: [
+      LeverageType.Short,
+      LeverageType.Long2x,
+      LeverageType.Long3x,
+    ],
+    [LeverageMarket.BTCETH]: [LeverageType.Long2x],
+    [LeverageMarket.ETHBTC]: [LeverageType.Long2x],
+    // [LeverageMarket.AAVEUSD]: [LeverageType.Long2x],
+    // [LeverageMarket.ARBUSD]: [LeverageType.Long2x],
+    // [LeverageMarket.LINKUSD]: [LeverageType.Long2x],
   },
+  [base.id]: {
+    [LeverageMarket.BTCUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.ETHUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.SOLUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.SUIUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.XRPUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+  },
+  [mainnet.id]: {
+    [LeverageMarket.BTCUSD]: [LeverageType.Long2x /*, LeverageType.Long3x*/],
+    [LeverageMarket.ETHUSD]: [LeverageType.Long2x /*, LeverageType.Long3x*/],
+    [LeverageMarket.XAUTUSD]: [LeverageType.Long3x],
+  },
+}
+
+export const markets: Market[] = [
   {
     icon: '/assets/btc-usd-market.svg',
     market: LeverageMarket.BTCUSD,
@@ -217,6 +252,24 @@ export const markets: Market[] = [
       [arbitrum.id]: 'BTC3X',
       [base.id]: 'BTC3X',
       [mainnet.id]: 'BTC2X',
+    },
+    defaultChainId: base.id,
+    lendingProtocol: LendingProtocol.aave,
+  },
+  {
+    icon: '/assets/eth-usd-market.svg',
+    market: LeverageMarket.ETHUSD,
+    symbol: 'ETH',
+    currency: 'USD',
+    networks: [mainnet, arbitrum, base],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+    defaultAsset: {
+      [arbitrum.id]: 'ETH3X',
+      [base.id]: 'ETH3X',
+      [mainnet.id]: 'ETH2X',
     },
     defaultChainId: base.id,
     lendingProtocol: LendingProtocol.aave,
@@ -238,6 +291,22 @@ export const markets: Market[] = [
     lendingProtocol: LendingProtocol.morpho,
   },
   {
+    icon: '/assets/xrp-usd-market.svg',
+    market: LeverageMarket.XRPUSD,
+    symbol: 'XRP',
+    currency: 'USD',
+    networks: [base],
+    price: 0,
+    change24h: 0,
+    low24h: 0,
+    high24h: 0,
+    defaultAsset: {
+      [base.id]: 'uXRP2x',
+    },
+    defaultChainId: base.id,
+    lendingProtocol: LendingProtocol.morpho,
+  },
+  {
     icon: '/assets/sui-usd-market.svg',
     market: LeverageMarket.SUIUSD,
     symbol: 'SUI',
@@ -254,21 +323,70 @@ export const markets: Market[] = [
     lendingProtocol: LendingProtocol.morpho,
   },
   {
-    icon: '/assets/xrp-usd-market.svg',
-    market: LeverageMarket.XRPUSD,
-    symbol: 'XRP',
+    icon: '/assets/xaut-usd-market.svg',
+    market: LeverageMarket.XAUTUSD,
+    displayLabel: 'GOLD / USD',
+    symbol: 'XAUt',
     currency: 'USD',
-    networks: [base],
+    networks: [mainnet],
     price: 0,
     change24h: 0,
     low24h: 0,
     high24h: 0,
     defaultAsset: {
-      [base.id]: 'uXRP2x',
+      [mainnet.id]: 'GOLD3x',
     },
-    defaultChainId: base.id,
-    lendingProtocol: LendingProtocol.morpho,
+    defaultChainId: mainnet.id,
+    lendingProtocol: LendingProtocol.aave,
   },
+  // {
+  //   icon: '/assets/link-usd-market.svg',
+  //   market: LeverageMarket.LINKUSD,
+  //   symbol: 'LINK',
+  //   currency: 'USD',
+  //   networks: [arbitrum],
+  //   price: 0,
+  //   change24h: 0,
+  //   low24h: 0,
+  //   high24h: 0,
+  //   defaultAsset: {
+  //     [arbitrum.id]: 'LINK2X',
+  //   },
+  //   defaultChainId: arbitrum.id,
+  //   lendingProtocol: LendingProtocol.aave,
+  // },
+  // {
+  //   icon: '/assets/aave-usd-market.svg',
+  //   market: LeverageMarket.AAVEUSD,
+  //   symbol: 'AAVE',
+  //   currency: 'USD',
+  //   networks: [arbitrum],
+  //   price: 0,
+  //   change24h: 0,
+  //   low24h: 0,
+  //   high24h: 0,
+  //   defaultAsset: {
+  //     [arbitrum.id]: 'AAVE2X',
+  //   },
+  //   defaultChainId: arbitrum.id,
+  //   lendingProtocol: LendingProtocol.aave,
+  // },
+  // {
+  //   icon: '/assets/arb-usd-market.svg',
+  //   market: LeverageMarket.ARBUSD,
+  //   symbol: 'ARB',
+  //   currency: 'USD',
+  //   networks: [arbitrum],
+  //   price: 0,
+  //   change24h: 0,
+  //   low24h: 0,
+  //   high24h: 0,
+  //   defaultAsset: {
+  //     [arbitrum.id]: 'ARB2X',
+  //   },
+  //   defaultChainId: arbitrum.id,
+  //   lendingProtocol: LendingProtocol.aave,
+  // },
   {
     icon: '/assets/eth-btc-market.svg',
     market: LeverageMarket.ETHBTC,
@@ -304,14 +422,32 @@ export const markets: Market[] = [
 ]
 
 export const ratios: LeverageRatio[] = [
+  // {
+  //   icon: AAVE2x.logoURI,
+  //   market: LeverageMarket.AAVEUSD,
+  //   strategy: LeverageStrategy.Long2x,
+  //   chain: arbitrum,
+  // },
+  // {
+  //   icon: ARB2x.logoURI,
+  //   market: LeverageMarket.ARBUSD,
+  //   strategy: LeverageStrategy.Long2x,
+  //   chain: arbitrum,
+  // },
+  // {
+  //   icon: BTC2X.logoURI,
+  //   market: LeverageMarket.BTCUSD,
+  //   strategy: LeverageStrategy.Long2x,
+  //   chain: mainnet,
+  // },
+  // {
+  //   icon: BTC3x.logoURI,
+  //   market: LeverageMarket.BTCUSD,
+  //   strategy: LeverageStrategy.Long3x,
+  //   chain: mainnet,
+  // },
   {
-    icon: BTC2x.logoURI,
-    market: LeverageMarket.BTCUSD,
-    strategy: LeverageStrategy.Long2x,
-    chain: mainnet,
-  },
-  {
-    icon: BTC2x.logoURI,
+    icon: BTC2X.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Long2x,
     chain: arbitrum,
@@ -329,7 +465,7 @@ export const ratios: LeverageRatio[] = [
     chain: arbitrum,
   },
   {
-    icon: BTC2x.logoURI,
+    icon: BTC2X.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Long2x,
     chain: base,
@@ -340,14 +476,20 @@ export const ratios: LeverageRatio[] = [
     strategy: LeverageStrategy.Long3x,
     chain: base,
   },
+  // {
+  //   icon: ETH2X.logoURI,
+  //   market: LeverageMarket.ETHUSD,
+  //   strategy: LeverageStrategy.Long2x,
+  //   chain: mainnet,
+  // },
+  // {
+  //   icon: ETH3x.logoURI,
+  //   market: LeverageMarket.ETHUSD,
+  //   strategy: LeverageStrategy.Long3x,
+  //   chain: mainnet,
+  // },
   {
-    icon: ETH2x.logoURI,
-    market: LeverageMarket.ETHUSD,
-    strategy: LeverageStrategy.Long2x,
-    chain: mainnet,
-  },
-  {
-    icon: ETH2x.logoURI,
+    icon: ETH2X.logoURI,
     market: LeverageMarket.ETHUSD,
     strategy: LeverageStrategy.Long2x,
     chain: arbitrum,
@@ -365,7 +507,7 @@ export const ratios: LeverageRatio[] = [
     chain: arbitrum,
   },
   {
-    icon: ETH2x.logoURI,
+    icon: ETH2X.logoURI,
     market: LeverageMarket.ETHUSD,
     strategy: LeverageStrategy.Long2x,
     chain: base,
@@ -388,6 +530,18 @@ export const ratios: LeverageRatio[] = [
     strategy: LeverageStrategy.Long2x,
     chain: arbitrum,
   },
+  {
+    icon: GOLD3x.logoURI,
+    market: LeverageMarket.XAUTUSD,
+    strategy: LeverageStrategy.Long3x,
+    chain: mainnet,
+  },
+  // {
+  //   icon: LINK2x.logoURI,
+  //   market: LeverageMarket.LINKUSD,
+  //   strategy: LeverageStrategy.Long2x,
+  //   chain: arbitrum,
+  // },
   {
     icon: uSOL2x.logoURI,
     market: LeverageMarket.SOLUSD,
@@ -440,7 +594,7 @@ export const supportedLeverageTypes = {
     LeverageType.Long3x,
   ],
   [BASE.chainId]: [LeverageType.Long2x, LeverageType.Long3x],
-  [MAINNET.chainId]: [LeverageType.Long2x],
+  [MAINNET.chainId]: [LeverageType.Long2x, LeverageType.Long3x],
 }
 
 export const supportedNetworks = [

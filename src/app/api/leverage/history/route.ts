@@ -34,10 +34,18 @@ const fetchCoingeckoPrices = async (
 
 const mapCoingeckoIdToSymbol = (id: string) => {
   switch (id) {
+    case 'aave':
+      return 'aave'
+    case 'arbitrum':
+      return 'arb'
     case 'ethereum':
       return 'eth'
     case 'bitcoin':
       return 'btc'
+    case 'tether-gold':
+      return 'xaut'
+    case 'link':
+      return 'LINK'
     case 'wrapped-solana-universal':
       return 'sol'
     case 'wrapped-sui-universal':
@@ -56,6 +64,10 @@ export async function POST(req: NextRequest) {
     const USUI = getTokenByChainAndSymbol(chainId, 'uSUI')
     const USOL = getTokenByChainAndSymbol(chainId, 'uSOL')
     const UXRP = getTokenByChainAndSymbol(chainId, 'uXRP')
+    const AAVE = getTokenByChainAndSymbol(chainId, 'AAVE')
+    const ARB = getTokenByChainAndSymbol(chainId, 'ARB')
+    const XAUT = getTokenByChainAndSymbol(chainId, 'XAUt')
+    const LINK = getTokenByChainAndSymbol(chainId, 'LINK')
 
     const { data: positions } = await getApiV2UserAddressPositions(
       { address: user },
@@ -104,6 +116,10 @@ export async function POST(req: NextRequest) {
             USUI?.extensions.coingeckoId,
             USOL?.extensions.coingeckoId,
             UXRP?.extensions.coingeckoId,
+            AAVE?.extensions.coingeckoId,
+            ARB?.extensions.coingeckoId,
+            XAUT?.extensions.coingeckoId,
+            LINK?.extensions.coingeckoId,
           ].filter((str) => str !== undefined),
           ['btc', 'eth', 'usd'],
         ),

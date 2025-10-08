@@ -3,7 +3,7 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
-import { base } from 'viem/chains'
+import { arbitrum, base, mainnet } from 'viem/chains'
 import { useAccount } from 'wagmi'
 
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
@@ -91,6 +91,22 @@ export const useQueryParams = <T extends Partial<UseQueryParamsArgs>>(
       ? (queryOutputToken as LeverageToken)?.baseToken
       : (queryInputToken as LeverageToken)?.baseToken
     let queryBaseToken = baseTokenSymbol === 'ETH' ? ETH : BTC
+    if (baseTokenSymbol === 'AAVE') {
+      const aave = getTokenByChainAndSymbol(arbitrum.id, 'AAVE')
+      queryBaseToken = { ...aave, image: aave.logoURI }
+    }
+    if (baseTokenSymbol === 'ARB') {
+      const arb = getTokenByChainAndSymbol(arbitrum.id, 'ARB')
+      queryBaseToken = { ...arb, image: arb.logoURI }
+    }
+    if (baseTokenSymbol === 'XAUt') {
+      const xaut = getTokenByChainAndSymbol(mainnet.id, 'XAUt')
+      queryBaseToken = { ...xaut, image: xaut.logoURI }
+    }
+    if (baseTokenSymbol === 'LINK') {
+      const link = getTokenByChainAndSymbol(arbitrum.id, 'LINK')
+      queryBaseToken = { ...link, image: link.logoURI }
+    }
     if (baseTokenSymbol === 'uSOL') {
       const sol = getTokenByChainAndSymbol(base.id, 'uSOL')
       queryBaseToken = { ...sol, image: sol.logoURI }

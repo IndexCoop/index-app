@@ -25,12 +25,13 @@ import { useUtmParams } from '@/lib/hooks/use-utm-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
+import { isSupportedNetwork } from '@/lib/utils/wagmi'
 
 import {
   getCurrencyTokens,
   getLeverageTokens,
+  marketLeverageTypes,
   markets,
-  supportedLeverageTypes,
 } from './constants'
 import { type LeverageToken, LeverageType, type Market } from './types'
 
@@ -145,7 +146,7 @@ export function LeverageProvider(props: { children: any }) {
     if (!indexToken.address || !indexToken.chainId) return
     setProductToken(
       {
-        address: indexToken.address,
+        address: indexToken.address as `0x${string}`,
         chainId: indexToken.chainId,
       },
       isMinting,
@@ -229,6 +230,10 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const market = useMemo(() => {
+    // if (indexToken.symbol === 'AAVE2x') return 'AAVE / USD'
+    // if (indexToken.symbol === 'ARB2x') return 'ARB / USD'
+    // if (indexToken.symbol === 'LINK2x') return 'LINK / USD'
+    if (indexToken.symbol === 'GOLD3x') return 'XAUT / USD'
     if (
       indexToken.symbol ===
         getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol ||
@@ -264,17 +269,14 @@ export function LeverageProvider(props: { children: any }) {
   }, [baseToken, indexToken])
 
   const getSupportedLeverageTypes = useMemo(() => {
-    const eth2xBtc = getTokenByChainAndSymbol(chainId, 'ETH2xBTC')
-    const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
+    if (isSupportedNetwork(chainId)) {
+      const chainMarkets =
+        marketLeverageTypes[chainId as keyof typeof marketLeverageTypes]
+      return chainMarkets[market as keyof typeof chainMarkets]
+    }
 
-    const isRatioToken =
-      indexToken.symbol === eth2xBtc?.symbol ||
-      indexToken.symbol === btc2xEth?.symbol
-
-    return isRatioToken
-      ? [LeverageType.Long2x]
-      : supportedLeverageTypes[chainId]
-  }, [chainId, indexToken])
+    return []
+  }, [chainId, market])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -375,6 +377,7 @@ export function LeverageProvider(props: { children: any }) {
       const marketData: Market[] = await Promise.all(
         marketResponses.map((response) => response.json()),
       )
+
       return markets.map((market, idx) => ({
         ...market,
         ...marketData[idx],

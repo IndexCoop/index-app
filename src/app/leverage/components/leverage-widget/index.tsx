@@ -123,7 +123,7 @@ export function LeverageWidget() {
         onClick={toggleIsMinting}
       />
       <LeverageSelector
-        selectedTye={leverageType}
+        selectedType={leverageType}
         supportedTypes={supportedLeverageTypes}
         onSelectType={onSelectLeverageType}
       />

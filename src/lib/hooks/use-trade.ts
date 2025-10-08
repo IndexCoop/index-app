@@ -91,7 +91,7 @@ export const useTrade = () => {
         const canFail = override
         const gasLimit = await gasEstimatooor.estimate(tx, canFail)
         const hash = await walletClient.sendTransaction({
-          account: address,
+          account: address as `0x${string}`,
           chainId: Number(quote.chainId),
           gas: gasLimit,
           to: quote.tx.to,

@@ -33,8 +33,8 @@ export async function POST(req: NextRequest) {
       slippage,
     } = request
 
-    const inputToken = getQuoteToken(inputTokenAddress, chainId)
-    const outputToken = getQuoteToken(outputTokenAddress, chainId)
+    const inputToken = getQuoteToken(inputTokenAddress as Address, chainId)
+    const outputToken = getQuoteToken(outputTokenAddress as Address, chainId)
 
     if (
       !inputToken ||

@@ -8,10 +8,14 @@ export enum LeverageType {
 }
 
 export enum LeverageMarket {
+  AAVEUSD = 'AAVE / USD',
+  ARBUSD = 'ARB / USD',
   BTCUSD = 'BTC / USD',
   ETHUSD = 'ETH / USD',
   BTCETH = 'BTC / ETH',
   ETHBTC = 'ETH / BTC',
+  XAUTUSD = 'XAUT / USD',
+  LINKUSD = 'LINK / USD',
   SOLUSD = 'SOL / USD',
   SUIUSD = 'SUI / USD',
   XRPUSD = 'XRP / USD',
@@ -56,12 +60,22 @@ export interface LeverageToken extends Token {
 export interface Market {
   icon: string
   market: string
+  displayLabel?: string
   networks: Chain[]
   price: number
   change24h: number
   low24h: number
   high24h: number
-  symbol: 'ETH' | 'BTC' | 'SOL' | 'SUI' | 'XRP'
+  symbol:
+    | 'ETH'
+    | 'BTC'
+    | 'SOL'
+    | 'SUI'
+    | 'XRP'
+    | 'AAVE'
+    | 'ARB'
+    | 'LINK'
+    | 'XAUt'
   currency: 'USD' | 'BTC' | 'ETH'
   defaultAsset: { [key: number]: string }
   defaultChainId: number

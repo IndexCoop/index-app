@@ -248,7 +248,7 @@ export const PrtStakingContextProvider = ({ children, token }: Props) => {
             abi: PrtStakingAbi,
             address: stakedTokenAddress,
             functionName: 'stake',
-            args: [amount, validSignature],
+            args: [amount, validSignature as `0x${string}`],
           })
           await refetchIsApprovedStaker()
         } else {
