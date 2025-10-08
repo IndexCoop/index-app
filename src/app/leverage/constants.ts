@@ -325,6 +325,7 @@ export const markets: Market[] = [
   {
     icon: '/assets/xaut-usd-market.svg',
     market: LeverageMarket.XAUTUSD,
+    displayLabel: 'GOLD / USD',
     symbol: 'XAUt',
     currency: 'USD',
     networks: [mainnet],

@@ -60,6 +60,7 @@ export interface LeverageToken extends Token {
 export interface Market {
   icon: string
   market: string
+  displayLabel?: string
   networks: Chain[]
   price: number
   change24h: number
