@@ -33,9 +33,9 @@ const BTC3X = getTokenByChainAndSymbol(base.id, 'BTC3X')
 const BTC2xETH = getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH')
 const iBTC1X = getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X')
 
-const AAVE2x = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
-const ARB2x = getTokenByChainAndSymbol(arbitrum.id, 'ARB2x')
-const LINK2x = getTokenByChainAndSymbol(arbitrum.id, 'LINK2x')
+// const AAVE2x = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
+// const ARB2x = getTokenByChainAndSymbol(arbitrum.id, 'ARB2x')
+// const LINK2x = getTokenByChainAndSymbol(arbitrum.id, 'LINK2x')
 
 const ETH2X = getTokenByChainAndSymbol(base.id, 'ETH2X')
 const ETH3X = getTokenByChainAndSymbol(base.id, 'ETH3X')

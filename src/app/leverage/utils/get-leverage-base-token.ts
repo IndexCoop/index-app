@@ -1,5 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { arbitrum, base, mainnet } from 'viem/chains'
+import { base, mainnet } from 'viem/chains'
 
 import { BTC, ETH } from '@/constants/tokens'
 
@@ -7,9 +7,9 @@ const uSol = getTokenByChainAndSymbol(base.id, 'uSOL')
 const uSui = getTokenByChainAndSymbol(base.id, 'uSUI')
 const uXrp = getTokenByChainAndSymbol(base.id, 'uXRP')
 const xAut = getTokenByChainAndSymbol(mainnet.id, 'XAUt')
-const aave = getTokenByChainAndSymbol(arbitrum.id, 'AAVE')
-const arb = getTokenByChainAndSymbol(arbitrum.id, 'ARB')
-const link = getTokenByChainAndSymbol(arbitrum.id, 'LINK')
+// const aave = getTokenByChainAndSymbol(arbitrum.id, 'AAVE')
+// const arb = getTokenByChainAndSymbol(arbitrum.id, 'ARB')
+// const link = getTokenByChainAndSymbol(arbitrum.id, 'LINK')
 
 export function getLeverageBaseToken(symbol: string) {
   switch (symbol.toLowerCase()) {
