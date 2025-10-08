@@ -13,14 +13,14 @@ const link = getTokenByChainAndSymbol(arbitrum.id, 'LINK')
 
 export function getLeverageBaseToken(symbol: string) {
   switch (symbol.toLowerCase()) {
-    case 'AAVE2x'.toLowerCase():
-      return aave
-    case 'ARB2x'.toLowerCase():
-      return arb
+    // case 'AAVE2x'.toLowerCase():
+    //   return aave
+    // case 'ARB2x'.toLowerCase():
+    //   return arb
     case 'GOLD3x'.toLowerCase():
       return xAut
-    case 'LINK2x'.toLowerCase():
-      return link
+    // case 'LINK2x'.toLowerCase():
+    //   return link
     case 'uSOL2x'.toLowerCase():
       return uSol
     case 'uSOL3x'.toLowerCase():
