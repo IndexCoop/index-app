@@ -8,7 +8,7 @@ import {
 } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { cookieStorage, createStorage, http } from 'wagmi'
+import { cookieStorage, createStorage, http } from '@wagmi/core'
 import { safe } from 'wagmi/connectors'
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
