@@ -48,6 +48,7 @@
     "ethers": "^5.7.2",
     "framer-motion": "11.2.6",
     "jotai": "2.12.0",
+    "jotai-tanstack-query": "0.11.0",
     "jotai-utils": "0.0.0",
     "jotai-xstate": "0.6.1",
     "lodash": "4.17.21",

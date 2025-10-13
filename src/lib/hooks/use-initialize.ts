@@ -1,5 +1,6 @@
 'use client'
 
+import { useRaffleEpoch } from '@/lib/hooks/use-raffle-epoch'
 import { useUpsertUser } from '@/lib/hooks/use-upsert-user'
 import { useUtmParams } from '@/lib/hooks/use-utm-params'
 
@@ -9,4 +10,5 @@ import { useUtmParams } from '@/lib/hooks/use-utm-params'
 export const useInitialize = () => {
   useUpsertUser()
   useUtmParams()
+  useRaffleEpoch()
 }

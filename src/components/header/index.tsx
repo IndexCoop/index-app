@@ -8,7 +8,10 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 import { MoreNav } from '@/components/header/more-nav'
+import { TicketChip } from '@/components/raffle/ticket-chip'
 import { Path } from '@/constants/paths'
+import { useRaffleTickets } from '@/lib/hooks/use-raffle-tickets'
+import { useWallet } from '@/lib/hooks/use-wallet'
 
 import { Connect } from './connect'
 import { HeaderLink } from './link'
@@ -24,8 +27,10 @@ const navigation = [
 ]
 
 export function Header() {
+  const { address } = useWallet()
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { data, isLoading: isTicketsLoading } = useRaffleTickets(address)
 
   return (
     <header className='shadow-ic-black/15 z-50 border-b-0 bg-opacity-80 shadow-md backdrop-blur-xl dark:border-b dark:border-neutral-600 dark:border-opacity-30'>
@@ -44,7 +49,14 @@ export function Header() {
             ))}
           <MoreNav navigation={navigation} />
         </div>
-        <div className='flex md:mr-6 md:flex-grow md:justify-end lg:mr-0'>
+        <div className='flex gap-4 md:mr-6 md:flex-grow md:justify-end lg:mr-0'>
+          {address && pathname === Path.TRADE && (
+            <TicketChip
+              isLoading={isTicketsLoading}
+              tickets={data?.tickets}
+              maturing={data?.maturingTickets}
+            />
+          )}
           <Connect />
         </div>
         <div className='flex lg:hidden'>
