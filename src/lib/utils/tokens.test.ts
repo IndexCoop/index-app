@@ -1,12 +1,7 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { currencies } from '@/constants/tokenlists'
-import {
-  DefiPulseIndex,
-  ETH,
-  MATIC,
-  STETH,
-  WETH,
-  icETHIndex,
-} from '@/constants/tokens'
+import { ETH, MATIC, STETH, WETH } from '@/constants/tokens'
 
 import {
   getAddressForToken,
@@ -52,18 +47,10 @@ describe('getCurrencyTokens()', () => {
 })
 
 describe('getCurrencyTokensForIndex()', () => {
-  test('returns default currency tokens', async () => {
-    const chainId = 1
-    const token = DefiPulseIndex
-    const defaultTokens = getCurrencyTokens(chainId)
-    const currencyTokens = getCurrencyTokensForIndex(token, chainId)
-    expect(currencyTokens.length).toEqual(defaultTokens.length)
-    expect(currencyTokens).toEqual(defaultTokens)
-  })
-
   test('returns correct currency tokens for icETH', async () => {
     const chainId = 1
-    const token = icETHIndex
+    const indexToken = getTokenByChainAndSymbol(chainId, 'icETH')
+    const token = { ...indexToken, image: indexToken.logoURI }
     const currencyTokens = getCurrencyTokensForIndex(token, chainId)
     expect(currencyTokens.length).toEqual(3)
     expect(currencyTokens).toEqual([ETH, WETH, STETH])

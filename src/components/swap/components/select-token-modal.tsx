@@ -41,52 +41,54 @@ export const SelectTokenModal = (props: SelectTokenModalProps) => {
   return (
     <Dialog onClose={onClose} open={isOpen} className='relative z-50'>
       <DialogBackdrop className='bg-ic-black fixed inset-0 bg-opacity-60 backdrop-blur' />
-      <div className='fixed inset-0 flex w-screen items-center justify-center p-4'>
-        <DialogPanel
-          className={clsx(
-            'border-ic-gray-100 dark:border-ic-gray-950 bg-ic-white text-ic-black dark:text-ic-white  mx-0 my-4 w-full max-w-sm rounded-xl border-2 p-0 dark:bg-[#18181b]',
-            isDarkMode ? 'dark' : '',
-          )}
-        >
-          <DialogTitle className='text-ic-black dark:text-ic-white px-6 py-4 text-xl font-semibold'>
-            Select a token
-          </DialogTitle>
-          <div className='px-0 py-4'>
-            {showBalances && (
-              <div className='flex w-full justify-end pr-4'>
-                <span className='text-ic-black dark:text-ic-white text-sm font-medium'>
-                  Quantity Owned
-                </span>
-              </div>
+      <div className='fixed inset-0 w-screen overflow-y-auto p-4'>
+        <div className='flex min-h-full items-center justify-center'>
+          <DialogPanel
+            className={clsx(
+              'border-ic-gray-100 dark:border-ic-gray-950 bg-ic-white text-ic-black dark:text-ic-white  mx-0 my-4 w-full max-w-sm overflow-scroll rounded-xl border-2 p-0 dark:bg-[#18181b]',
+              isDarkMode ? 'dark' : '',
             )}
-            {tokens.length > 0 &&
-              tokens.map((token) => {
-                const tokenBalance = balances.find((bal) =>
-                  isSameAddress(
-                    bal.token,
-                    getAddressForToken(token.symbol, chainId) ?? '',
-                  ),
-                )
-                const balanceDisplay = formatAmountFromWei(
-                  tokenBalance?.value ?? BigInt(0),
-                  token.decimals,
-                  3,
-                )
-                return (
-                  <TokenItem
-                    balance={showBalances ? balanceDisplay : ''}
-                    key={token.symbol}
-                    extraTitle={undefined}
-                    item={token}
-                    showNetwork={props.showNetworks}
-                    onClick={() =>
-                      onSelectedToken(token.symbol, token.chainId ?? 1)
-                    }
-                  />
-                )
-              })}
-          </div>
-        </DialogPanel>
+          >
+            <DialogTitle className='text-ic-black dark:text-ic-white px-6 py-4 text-xl font-semibold'>
+              Select a token
+            </DialogTitle>
+            <div className='px-0 py-4'>
+              {showBalances && (
+                <div className='flex w-full justify-end pr-4'>
+                  <span className='text-ic-black dark:text-ic-white text-sm font-medium'>
+                    Quantity Owned
+                  </span>
+                </div>
+              )}
+              {tokens.length > 0 &&
+                tokens.map((token) => {
+                  const tokenBalance = balances.find((bal) =>
+                    isSameAddress(
+                      bal.token,
+                      getAddressForToken(token.symbol, chainId) ?? '',
+                    ),
+                  )
+                  const balanceDisplay = formatAmountFromWei(
+                    tokenBalance?.value ?? BigInt(0),
+                    token.decimals,
+                    3,
+                  )
+                  return (
+                    <TokenItem
+                      balance={showBalances ? balanceDisplay : ''}
+                      key={token.symbol}
+                      extraTitle={undefined}
+                      item={token}
+                      showNetwork={props.showNetworks}
+                      onClick={() =>
+                        onSelectedToken(token.symbol, token.chainId ?? 1)
+                      }
+                    />
+                  )
+                })}
+            </div>
+          </DialogPanel>
+        </div>
       </div>
     </Dialog>
   )
@@ -117,6 +119,7 @@ const TokenItem = ({
       <div className='flex items-center'>
         <div className='relative inline-block h-11 w-11'>
           <Image
+            className='rounded-full'
             alt={`${item.symbol} logo`}
             src={item.image}
             width={40}

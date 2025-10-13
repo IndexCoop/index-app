@@ -35,7 +35,7 @@ function MarketSelectorItem({
             priority
             className='flex-none'
           />
-          <span>{item.market}</span>
+          <span>{item.displayLabel || item.market}</span>
         </div>
 
         <span className='flex w-16 space-x-1'>
@@ -117,7 +117,7 @@ export function MarketSelector({
               !innerLabel && 'flex-1',
             )}
           >
-            {market}
+            {marketMetadata?.displayLabel || market}
           </div>
           <ChevronDownIcon className='size-5' />
         </PopoverButton>

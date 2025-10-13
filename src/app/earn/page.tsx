@@ -1,6 +1,5 @@
 'use client'
 
-import { useColorMode } from '@chakra-ui/react'
 import { ArrowPathIcon } from '@heroicons/react/20/solid'
 import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
@@ -11,20 +10,6 @@ import { useEarnContext } from './provider'
 
 export default function Page() {
   const { products, balances } = useEarnContext()
-
-  const { colorMode, toggleColorMode } = useColorMode()
-
-  useEffect(() => {
-    if (colorMode === 'light') {
-      toggleColorMode()
-    }
-
-    return () => {
-      if (colorMode === 'dark') {
-        toggleColorMode()
-      }
-    }
-  }, [colorMode, toggleColorMode])
 
   useEffect(() => {
     document.body.classList.add('dark', 'bg-ic-black')
@@ -47,22 +32,24 @@ export default function Page() {
             Strategies
           </h3>
           <div className='flex flex-wrap justify-start gap-4 pb-12 xl:justify-center'>
-            {products.map((p) => (
-              <ProductCard
-                key={`product-item-${p.tokenAddress}`}
-                product={p}
-                pill={
-                  ['wsteth15x', 'iceth'].includes(p.id)
-                    ? {
-                        text: 'Smart Loop',
-                        icon: (
-                          <ArrowPathIcon className='h-2 w-2 fill-zinc-900' />
-                        ),
-                      }
-                    : undefined
-                }
-              />
-            ))}
+            {products
+              .filter((p) => p.active)
+              .map((p) => (
+                <ProductCard
+                  key={`product-item-${p.tokenAddress}`}
+                  product={p}
+                  pill={
+                    ['wsteth15x', 'iceth'].includes(p.id)
+                      ? {
+                          text: 'Smart Loop',
+                          icon: (
+                            <ArrowPathIcon className='h-2 w-2 fill-zinc-900' />
+                          ),
+                        }
+                      : undefined
+                  }
+                />
+              ))}
           </div>
         </div>
       </div>

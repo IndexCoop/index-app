@@ -6,7 +6,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run generate && next dev",
     "build": "npm run generate && next build",
     "hardhat": "npx hardhat node",
     "hardhat:fund": "npx hardhat accounts --network custom",
@@ -19,17 +19,14 @@
   },
   "dependencies": {
     "@0xarc-io/analytics": "2.2.3",
-    "@chakra-ui/next-js": "^2.2.0",
-    "@chakra-ui/react": "2.8.2",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@floating-ui/react": "0.26.25",
     "@fontsource/open-sauce-sans": "^5.1.0",
     "@headlessui/react": "2.1.6",
     "@heroicons/react": "^2.1.3",
-    "@indexcoop/analytics-sdk": "0.29.0",
-    "@indexcoop/flash-mint-sdk": "3.24.0",
-    "@indexcoop/tokenlists": "4.0.0",
+    "@indexcoop/flash-mint-sdk": "3.37.1",
+    "@indexcoop/tokenlists": "4.7.1",
     "@next/third-parties": "15.1.7",
     "@reown/appkit": "1.7.2",
     "@reown/appkit-adapter-wagmi": "1.7.2",
@@ -60,8 +57,8 @@
     "react-loading-skeleton": "3.5.0",
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
-    "viem": "2.25.0",
-    "wagmi": "2.14.15",
+    "viem": "2.37.13",
+    "wagmi": "2.17.5",
     "xstate": "5.19.2"
   },
   "devDependencies": {

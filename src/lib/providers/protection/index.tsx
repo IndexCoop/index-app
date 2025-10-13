@@ -5,12 +5,14 @@ import { createContext, useContext } from 'react'
 import { useAccount } from 'wagmi'
 
 interface Context {
+  isNewUser: boolean
   isForbiddenAddress: boolean
   isRestrictedCountry: boolean
   isUsingVpn: boolean
 }
 
-export const ProtectionContext = createContext<Context>({
+const ProtectionContext = createContext<Context>({
+  isNewUser: false,
   isForbiddenAddress: false,
   isRestrictedCountry: false,
   isUsingVpn: false,
@@ -21,11 +23,12 @@ export const useProtectionContext = () => useContext(ProtectionContext)
 export const ProtectionProvider = (props: { children: any }) => {
   const { address } = useAccount()
   const {
-    data: { isForbiddenAddress, isRestrictedCountry, isUsingVpn },
+    data: { isForbiddenAddress, isRestrictedCountry, isNewUser, isUsingVpn },
   } = useQuery({
     gcTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
     initialData: {
+      isNewUser: false,
       isForbiddenAddress: false,
       isRestrictedCountry: false,
       isUsingVpn: false,
@@ -36,12 +39,13 @@ export const ProtectionProvider = (props: { children: any }) => {
         ? `/api/protections?${new URLSearchParams({ address }).toString()}`
         : '/api/protections'
       const res = await fetch(url)
-      const { isForbiddenAddress, isRestrictedCountry, isUsingVpn } =
+      const { isForbiddenAddress, isRestrictedCountry, isNewUser, isUsingVpn } =
         await res.json()
 
       return {
         isForbiddenAddress,
         isRestrictedCountry,
+        isNewUser,
         isUsingVpn,
       }
     },
@@ -49,7 +53,7 @@ export const ProtectionProvider = (props: { children: any }) => {
 
   return (
     <ProtectionContext.Provider
-      value={{ isForbiddenAddress, isRestrictedCountry, isUsingVpn }}
+      value={{ isForbiddenAddress, isRestrictedCountry, isNewUser, isUsingVpn }}
     >
       {props.children}
     </ProtectionContext.Provider>
