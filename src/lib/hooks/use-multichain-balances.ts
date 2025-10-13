@@ -40,10 +40,10 @@ export function useMultiChainBalances(products: GetApiV2ProductsEarn200) {
           const client = publicClients[chainId]
 
           const value = await client.readContract({
-            address: tokenAddress,
+            address: tokenAddress as `0x${string}`,
             abi: erc20Abi,
             functionName: 'balanceOf',
-            args: [address],
+            args: [address as `0x${string}`],
           })
 
           return {

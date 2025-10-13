@@ -21,17 +21,3 @@ export const colorStyles = (isDarkMode: boolean) => {
     textInverted: isDarkMode ? colors.ic.black : colors.ic.white,
   }
 }
-
-export const useColorStyles = () => {
-  const { isDarkMode } = useICColorMode()
-  return {
-    isDarkMode,
-    styles: colorStyles(isDarkMode),
-  }
-}
-
-export const useICColorMode = () => {
-  // const { colorMode } = useColorMode()
-  const isDarkMode = false
-  return { isDarkMode }
-}

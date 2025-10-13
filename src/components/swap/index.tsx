@@ -126,7 +126,7 @@ export const Swap = (props: SwapProps) => {
     const quote = quoteResults?.results[selectedQuote ?? QuoteType.index]
     if (!quote) return
     sendTradeEvent({
-      type: 'QUOTE',
+      type: 'QUOTE_OVERRIDE',
       quoteResult: quote,
       quoteType: quote.type,
     })

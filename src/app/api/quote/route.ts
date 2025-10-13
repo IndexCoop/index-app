@@ -18,7 +18,6 @@ export interface IndexQuoteRequest {
   inputToken: string
   outputToken: string
   inputAmount: string
-  outputAmount: string
   slippage: number
 }
 
@@ -31,12 +30,11 @@ export async function POST(req: NextRequest) {
       inputToken: inputTokenAddress,
       inputAmount,
       outputToken: outputTokenAddress,
-      outputAmount,
       slippage,
     } = request
 
-    const inputToken = getQuoteToken(inputTokenAddress, chainId)
-    const outputToken = getQuoteToken(outputTokenAddress, chainId)
+    const inputToken = getQuoteToken(inputTokenAddress as Address, chainId)
+    const outputToken = getQuoteToken(outputTokenAddress as Address, chainId)
 
     if (
       !inputToken ||
@@ -52,16 +50,13 @@ export async function POST(req: NextRequest) {
       inputToken: string
       outputToken: string
       inputAmount: string
-      outputAmount: string
       slippage: string
     } = {
       account,
       chainId: String(chainId),
       inputToken: inputToken.quoteToken.address,
       outputToken: outputToken.quoteToken.address,
-      // At the moment, we always wanna set both (inputAmount and indexTokenAmount)
       inputAmount,
-      outputAmount,
       slippage: String(slippage),
     }
 

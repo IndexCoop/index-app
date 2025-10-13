@@ -11,7 +11,6 @@ import {
   getFlashMintQuote,
   isQuoteError,
 } from '@/lib/hooks/use-best-quote/utils/flashmint'
-import { getTokenPrice } from '@/lib/hooks/use-token-price'
 
 import type { Token } from '@/constants/tokens'
 
@@ -68,23 +67,21 @@ export function useQuoteResult(request: QuoteRequest) {
     if (inputTokenAmount <= 0) return null
     if (!indexToken) return null
 
-    const [inputTokenPrice, outputTokenPrice] = await Promise.all([
-      getTokenPrice(inputToken, chainId),
-      getTokenPrice(outputToken, chainId),
-    ])
-
-    return getFlashMintQuote({
-      isMinting,
-      account: address,
-      chainId,
-      inputToken,
-      inputTokenAmount: inputValue,
-      inputTokenAmountWei: inputTokenAmount,
-      inputTokenPrice,
-      outputToken,
-      outputTokenPrice,
-      slippage,
-    })
+    return getFlashMintQuote(
+      {
+        isMinting,
+        account: address,
+        chainId,
+        inputToken,
+        inputTokenAmount: inputValue,
+        inputTokenAmountWei: inputTokenAmount,
+        inputTokenPrice: 0, // unused
+        outputToken,
+        outputTokenPrice: 0, // unused
+        slippage,
+      },
+      publicClient,
+    )
   }
 
   const {
@@ -101,6 +98,7 @@ export function useQuoteResult(request: QuoteRequest) {
         outputToken,
         inputTokenAmount: inputTokenAmount.toString(),
         publicClient,
+        slippage,
       },
     ],
     queryFn: fetchFlashMintQuote,
@@ -143,6 +141,7 @@ export function useQuoteResult(request: QuoteRequest) {
     if (quoteResult.quote) {
       sendTradeEvent({
         type: 'QUOTE',
+        inputValue,
         quoteResult,
         quoteType: flashmintQuote?.type ?? QuoteType.flashmint,
       })
@@ -150,6 +149,7 @@ export function useQuoteResult(request: QuoteRequest) {
   }, [
     chainId,
     flashmintQuote,
+    inputValue,
     isFetchingFlashMintQuote,
     logEvent,
     sendTradeEvent,

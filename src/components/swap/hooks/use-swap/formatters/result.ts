@@ -94,39 +94,6 @@ function formatNotAvailable(type: string): FormattedQuoteDisplay {
   }
 }
 
-export function getFormattedQuoteRedemptionResult(
-  quoteResult: QuoteResults | null,
-  isFetching: boolean,
-): FormattedQuoteDisplay[] {
-  if (!quoteResult) return []
-
-  const redemptionResults = quoteResult.results.redemption
-  let formattedQuote: FormattedQuoteDisplay | null = null
-
-  if (redemptionResults) {
-    if (redemptionResults.isAvailable && isFetching) {
-      formattedQuote = formatLoadingQuoteForDisplay(QuoteType.redemption)
-    }
-    if (
-      redemptionResults.isAvailable &&
-      !isFetching &&
-      redemptionResults.quote
-    ) {
-      const quote = redemptionResults.quote
-      formattedQuote = formatQuoteForDisplay(quote, true, 'Redemption')
-    }
-    if (!redemptionResults.isAvailable && !isFetching) {
-      formattedQuote = formatNotAvailable('Swap')
-    }
-  }
-
-  const formattedQuotes: FormattedQuoteDisplay[] = []
-  if (formattedQuote) {
-    formattedQuotes.push(formattedQuote)
-  }
-  return formattedQuotes
-}
-
 export function getFormattedQuoteResults(
   quoteResult: QuoteResults | null,
   isFetching0x: boolean,

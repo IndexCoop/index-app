@@ -1,12 +1,10 @@
-import { Hex } from 'viem'
-
 import { formatWei, parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd, getGasCostsInUsd } from '@/lib/utils/costs'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
-import { IndexQuoteRequest, QuoteType, ZeroExQuote } from '../types'
+import { type IndexQuoteRequest, QuoteType, type ZeroExQuote } from '../types'
 
-import { getPriceImpact } from './price-impact'
+import type { Hex } from 'viem'
 
 interface ExtendedIndexQuoteRequest extends IndexQuoteRequest {
   chainId: number
@@ -77,14 +75,11 @@ export async function getIndexQuote(
       )
       const outputTokenAmount = BigInt(outputAmount)
 
-      const inputTokenAmountUsd = parseFloat(inputTokenAmount) * inputTokenPrice
+      const inputTokenAmountUsd =
+        Number.parseFloat(inputTokenAmount) * inputTokenPrice
       const outputTokenAmountUsd =
-        parseFloat(formatWei(outputTokenAmount, outputToken.decimals)) *
+        Number.parseFloat(formatWei(outputTokenAmount, outputToken.decimals)) *
         outputTokenPrice
-      const priceImpact = getPriceImpact(
-        inputTokenAmountUsd,
-        outputTokenAmountUsd,
-      )
 
       const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gasCostsInUsd
 
@@ -112,7 +107,6 @@ export async function getIndexQuote(
         gasCosts,
         gasCostsInUsd,
         fullCostsInUsd,
-        priceImpact,
         indexTokenAmount: isMinting ? outputTokenAmount : inputTokenAmountBn,
         inputOutputTokenAmount: isMinting
           ? inputTokenAmountBn
@@ -122,6 +116,8 @@ export async function getIndexQuote(
         outputTokenAmount,
         outputTokenAmountUsd,
         outputTokenAmountUsdAfterFees,
+        quoteAmount: BigInt(0), // unused for swap quotes
+        quoteAmountUsd: 0, // unused for swap quotes
         inputTokenPrice,
         outputTokenPrice,
         priceImpactUsd,
