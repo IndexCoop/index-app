@@ -5,7 +5,7 @@ import { FC } from 'react'
 
 import { cn } from '@/lib/utils/tailwind'
 
-export const BackgroundLight: FC<{
+const BackgroundLight: FC<{
   background: string
   className?: string
 }> = ({ background, className }) => {

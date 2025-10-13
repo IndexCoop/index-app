@@ -5,10 +5,10 @@ import { Issuance } from '@/app/legacy/config'
 import { LeveragedRethStakingYield } from '@/app/legacy/config/tokens/mainnet'
 import { POLYGON } from '@/constants/chains'
 import { RETH, type Token } from '@/constants/tokens'
-import { getTokenPrice } from '@/lib/hooks/use-token-price'
 import { formatWei, isSameAddress } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
+import { getTokenPrice } from '@/lib/utils/token-price'
 
 import { type Quote, type QuoteTransaction, QuoteType } from '../../types'
 
@@ -90,14 +90,18 @@ export async function getLegacyRedemptionQuote(
     const transaction: QuoteTransaction = {
       account,
       chainId,
-      from: account,
+      from: account as `0x${string}`,
       to: contract,
       data: callData,
       value: undefined,
     }
 
     const defaultGasEstimate = BigInt(200_000)
-    const { ethPrice, gas } = await getGasLimit(transaction, defaultGasEstimate)
+    const { ethPrice, gas } = await getGasLimit(
+      transaction,
+      defaultGasEstimate,
+      publicClient,
+    )
     transaction.gas = gas.limit
 
     const inputTokenAmountUsd =
@@ -135,7 +139,6 @@ export async function getLegacyRedemptionQuote(
         gasCosts: gas.costs,
         gasCostsInUsd: gas.costsUsd,
         fullCostsInUsd,
-        priceImpact: 0,
         indexTokenAmount: inputTokenAmount,
         inputOutputTokenAmount: outputTokenAmount,
         inputTokenAmount,
@@ -143,6 +146,8 @@ export async function getLegacyRedemptionQuote(
         outputTokenAmount,
         outputTokenAmountUsd,
         outputTokenAmountUsdAfterFees,
+        quoteAmount: BigInt(0), // unused for legacy redemption quotes
+        quoteAmountUsd: 0, // unused for legacy redemption quotes
         inputTokenPrice,
         outputTokenPrice: outputTokenPrices[0],
         slippage: request.slippage,

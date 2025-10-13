@@ -15,15 +15,21 @@ export interface FormattedLeverageData {
   inputAmoutUsd: string
   inputBalance: bigint
   inputBalanceFormatted: string
+  inputValueFormatted: string
+  inputValueFormattedUsd: string
   isFetchingQuote: boolean
-  ouputAmount: string
+  isFavourableQuote: boolean
+  outputAmount: string
   outputAmountUsd: string
+  quoteAmount: string
+  quoteAmountUsd: string
   orderFee: string
   orderFeePercent: string
   priceImpactUsd: string
   priceImpactPercent: string
   resetData: () => void
   shouldShowSummaryDetails: boolean
+  shouldShowWarning: boolean
 }
 
 export function useFormattedLeverageData(): FormattedLeverageData {
@@ -58,19 +64,54 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     [inputTokenAmount, balance],
   )
 
-  const ouputAmount = useMemo(() => {
+  const inputValueFormatted = useMemo(() => {
+    if (inputValue === '') return ''
+    const inputValueAmount = Number(inputValue)
+    const digits = getFormatWithDigits(inputValueAmount)
+    return `${formatAmount(inputValueAmount, digits)} ${inputToken.symbol}`
+  }, [inputValue, inputToken])
+
+  const inputValueFormattedUsd = useMemo(() => {
+    if (inputValue === '' || !quote?.inputTokenPrice) return ''
+    const inputTokenPrice = quote.inputTokenPrice
+    const inputValueAmount = Number(inputValue)
+    const digits = getFormatWithDigits(inputValueAmount)
+    return `$${formatAmount(inputValueAmount * inputTokenPrice, digits)}`
+  }, [inputValue, quote])
+
+  const outputAmount = useMemo(() => {
     if (inputValue === '') return ''
     if (!quote?.outputTokenAmount) return ''
     const amount = Number(
       formatWei(quote?.outputTokenAmount, quote?.outputToken.decimals),
     )
-    const digits =
-      amount < 0.01 ? Math.min(6, Math.ceil(-Math.log10(amount)) + 1) : 2
+    const digits = getFormatWithDigits(amount)
     return `${formatAmount(amount, digits)} ${quote?.outputToken.symbol}`
   }, [inputValue, quote])
   const outputAmountUsd = quote?.outputTokenAmountUsd
     ? `$${formatAmount(quote?.outputTokenAmountUsd)}`
     : ''
+
+  const quoteAmount = useMemo(() => {
+    if (!quote) return ''
+    const amount = Number(
+      formatWei(
+        quote.quoteAmount,
+        quote.isMinting
+          ? quote.inputToken.decimals
+          : quote.outputToken.decimals,
+      ),
+    )
+    const symbol = quote.isMinting
+      ? quote.inputToken.symbol
+      : quote.outputToken.symbol
+    const digits = getFormatWithDigits(amount)
+    return `${formatAmount(amount, digits)} ${symbol}`
+  }, [quote])
+  const quoteAmountUsd = useMemo(() => {
+    if (!quote?.quoteAmountUsd) return ''
+    return `$${formatAmount(quote?.quoteAmountUsd)}`
+  }, [quote])
 
   const resetData = () => {
     forceRefetchInputBalance()
@@ -85,6 +126,16 @@ export function useFormattedLeverageData(): FormattedLeverageData {
         : `(${Number(formatWei(gasCosts, 18)).toFixed(2)} ETH)`
   }
 
+  const isFavourableQuote = useMemo(() => {
+    if (!quote?.priceImpactPercent) return false
+    return quote.priceImpactPercent <= 0
+  }, [quote])
+
+  const shouldShowWarning = useMemo(() => {
+    if (quote?.warning) return true
+    return false
+  }, [quote])
+
   const shouldShowSummaryDetails = useMemo(
     () => quote !== null && inputValue !== '',
     [inputValue, quote],
@@ -98,11 +149,11 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     const orderFeePercent = (
       (quote.isMinting ? quote.fees.mint : quote.fees.redeem) * 100
     ).toFixed(2)
-    return { orderFee: `$${mintRedeemFeesUsd.toFixed(2)}`, orderFeePercent }
+    return { orderFee: `$${formatAmount(mintRedeemFeesUsd)}`, orderFeePercent }
   }, [quote])
 
   const priceImpactUsd = useMemo(
-    () => `$${quote?.priceImpactUsd?.toFixed(2) ?? ''}`,
+    () => `$${formatAmount(quote?.priceImpactUsd ?? 0)}`,
     [quote],
   )
   const priceImpactPercent = useMemo(
@@ -121,14 +172,24 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     inputAmoutUsd,
     inputBalance: balance,
     inputBalanceFormatted: balanceFormatted,
+    inputValueFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
-    ouputAmount,
+    isFavourableQuote,
+    outputAmount,
     outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     orderFee,
     orderFeePercent,
     priceImpactUsd,
     priceImpactPercent,
     resetData,
     shouldShowSummaryDetails,
+    shouldShowWarning,
   }
+}
+
+function getFormatWithDigits(amount: number) {
+  return amount < 0.01 ? Math.min(6, Math.ceil(-Math.log10(amount)) + 1) : 2
 }

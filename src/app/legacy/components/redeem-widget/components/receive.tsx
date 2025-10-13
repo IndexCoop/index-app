@@ -21,7 +21,6 @@ export function Receive(props: ReceiveProps) {
     outputAmounts,
     outputAmountsUsd,
     ouputTokens,
-    totalOutputAmountUsd,
   } = props
   return (
     <div className='border-ic-gray-100 flex flex-col gap-4 rounded-xl border p-4 dark:border-[#3A6060]'>
@@ -31,11 +30,6 @@ export function Receive(props: ReceiveProps) {
         {!isLoading && showOutputAmount && ouputTokens.length === 1 && (
           <span className='dark:text-ic-white text-ic-gray-600'>
             {outputAmounts[0]}
-          </span>
-        )}
-        {!isLoading && showOutputAmount && (
-          <span className='dark:text-ic-white text-ic-gray-400 text-xs'>
-            {totalOutputAmountUsd}
           </span>
         )}
       </div>
@@ -62,16 +56,14 @@ type OutputTokenViewProps = {
   symbol: string
 }
 
-export const OutputTokenView = ({
+const OutputTokenView = ({
   image,
   outputAmount,
-  outputAmountUsd,
   symbol,
 }: OutputTokenViewProps) => (
   <div className='flex w-full flex-row items-center justify-between gap-4 text-sm'>
     <div className='flex flex-row items-center gap-2'>
       <span>{outputAmount}</span>
-      <span className='text-ic-gray-400 text-xs'>{`(${outputAmountUsd})`}</span>
     </div>
     <div className='flex flex-row'>
       <Image alt={`${symbol} logo`} src={image} width={20} height={20} />

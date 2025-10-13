@@ -11,7 +11,9 @@ import { Address } from 'viem'
 import { calculateAverageEntryPrice } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import {
   GetApiV2UserAddressPositionsQueryParamsChainIdEnum as ApiChainId,
+  getApiV2PriceCoingeckoSimplePrice,
   getApiV2UserAddressPositions,
+  GetApiV2UserAddressPositions200,
 } from '@/gen'
 
 type TokenTransferRequest = {
@@ -23,31 +25,33 @@ const fetchCoingeckoPrices = async (
   ids: string[],
   vs_currencies: string[],
 ): Promise<Record<string, { [key: string]: number }>> => {
-  const url = `https://pro-api.coingecko.com/api/v3/simple/price?ids=${ids.join(',')}&vs_currencies=${vs_currencies.join(',')}`
-  const options = {
-    method: 'GET',
-    headers: {
-      'accept': 'application/json',
-      'x-cg-pro-api-key': process.env.COINGECKO_API_KEY!,
-    },
-  }
-
-  const response = await fetch(url, options)
-  const result = await response.json()
-
-  return result
+  const response = await getApiV2PriceCoingeckoSimplePrice({
+    ids: ids.join(','),
+    vs_currencies: vs_currencies.join(','),
+  })
+  return response.data
 }
 
 const mapCoingeckoIdToSymbol = (id: string) => {
   switch (id) {
+    case 'aave':
+      return 'aave'
+    case 'arbitrum':
+      return 'arb'
     case 'ethereum':
       return 'eth'
     case 'bitcoin':
       return 'btc'
+    case 'tether-gold':
+      return 'xaut'
+    case 'link':
+      return 'LINK'
     case 'wrapped-solana-universal':
       return 'sol'
     case 'wrapped-sui-universal':
       return 'sui'
+    case 'wrapped-xrp-universal':
+      return 'xrp'
     default:
       return id
   }
@@ -59,13 +63,18 @@ export async function POST(req: NextRequest) {
 
     const USUI = getTokenByChainAndSymbol(chainId, 'uSUI')
     const USOL = getTokenByChainAndSymbol(chainId, 'uSOL')
+    const UXRP = getTokenByChainAndSymbol(chainId, 'uXRP')
+    const AAVE = getTokenByChainAndSymbol(chainId, 'AAVE')
+    const ARB = getTokenByChainAndSymbol(chainId, 'ARB')
+    const XAUT = getTokenByChainAndSymbol(chainId, 'XAUt')
+    const LINK = getTokenByChainAndSymbol(chainId, 'LINK')
 
-    const positions = await getApiV2UserAddressPositions(
+    const { data: positions } = await getApiV2UserAddressPositions(
       { address: user },
       { chainId: chainId.toString() as ApiChainId },
     )
 
-    const history = positions.data
+    const history = positions
       .filter(({ rawContract }) => {
         const token = getTokenByChainAndAddress(chainId, rawContract.address)
 
@@ -92,7 +101,7 @@ export async function POST(req: NextRequest) {
         trade: {
           ...position.trade,
           underlyingAssetUnitPrice: averages[position.metrics!.tokenAddress],
-        },
+        } as GetApiV2UserAddressPositions200[number]['trade'],
       })),
       'metrics.tokenAddress',
     )
@@ -106,6 +115,11 @@ export async function POST(req: NextRequest) {
             'bitcoin',
             USUI?.extensions.coingeckoId,
             USOL?.extensions.coingeckoId,
+            UXRP?.extensions.coingeckoId,
+            AAVE?.extensions.coingeckoId,
+            ARB?.extensions.coingeckoId,
+            XAUT?.extensions.coingeckoId,
+            LINK?.extensions.coingeckoId,
           ].filter((str) => str !== undefined),
           ['btc', 'eth', 'usd'],
         ),
@@ -118,8 +132,9 @@ export async function POST(req: NextRequest) {
     const stats = open.reduce(
       (acc, position) => ({
         ...acc,
-        ...(position.trade.underlyingAssetSymbol &&
-        position.trade.underlyingAssetUnitPriceDenominator
+        ...(position.trade?.underlyingAssetUnitPrice &&
+        position.trade?.underlyingAssetUnitPriceDenominator &&
+        position.trade?.underlyingAssetSymbol
           ? {
               [`${position.trade.underlyingAssetSymbol}-${position.trade.underlyingAssetUnitPriceDenominator}`]:
                 prices[position.trade.underlyingAssetSymbol.toLowerCase()][

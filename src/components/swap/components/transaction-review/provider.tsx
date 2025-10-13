@@ -100,8 +100,6 @@ export function useTransactionReview(props: ReviewProps) {
     [simulationState],
   )
 
-  // const { simulateTrade } = useSimulateQuote(quote?.tx ?? null)
-
   const sendTradeEvent = useSetAtom(tradeMachineAtom)
 
   const utm = useUtmParams()

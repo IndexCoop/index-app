@@ -15,19 +15,23 @@ import { arbitrum, base } from 'viem/chains'
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
 import { ARBITRUM } from '@/constants/chains'
 import { ETH, type Token } from '@/constants/tokens'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { type TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
+import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
+import { useUtmParams } from '@/lib/hooks/use-utm-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
+import { isSupportedNetwork } from '@/lib/utils/wagmi'
 
 import {
   getCurrencyTokens,
   getLeverageTokens,
+  marketLeverageTypes,
   markets,
-  supportedLeverageTypes,
 } from './constants'
 import { type LeverageToken, LeverageType, type Market } from './types'
 
@@ -64,7 +68,7 @@ export interface TokenContext {
   toggleIsMinting: (force?: boolean) => void
 }
 
-export const LeverageTokenContext = createContext<TokenContext>({
+const LeverageTokenContext = createContext<TokenContext>({
   inputValue: '',
   isMinting: true,
   leverageType: LeverageType.Long2x,
@@ -107,6 +111,7 @@ const defaultParams = {
 }
 
 export function LeverageProvider(props: { children: any }) {
+  const { logEvent } = useAnalytics()
   const { chainId: chainIdRaw } = useNetwork()
   const { address } = useWallet()
   const {
@@ -120,6 +125,7 @@ export function LeverageProvider(props: { children: any }) {
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
   const { slippage, setProductToken } = useSlippage()
+  const utm = useUtmParams()
 
   const [inputValue, setInputValue] = useState('')
 
@@ -138,12 +144,15 @@ export function LeverageProvider(props: { children: any }) {
 
   useEffect(() => {
     if (!indexToken.address || !indexToken.chainId) return
-    setProductToken({
-      address: indexToken.address,
-      chainId: indexToken.chainId,
-    })
+    setProductToken(
+      {
+        address: indexToken.address as `0x${string}`,
+        chainId: indexToken.chainId,
+      },
+      isMinting,
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [indexToken])
+  }, [indexToken, isMinting])
 
   const indexTokens = useMemo(() => {
     return getLeverageTokens(chainId)
@@ -177,6 +186,33 @@ export function LeverageProvider(props: { children: any }) {
     slippage,
   })
 
+  const { simulateTrade } = useSimulateQuote(quoteResult?.quote?.tx ?? null)
+
+  useEffect(() => {
+    const simulate = async () => {
+      const quote = quoteResult?.quote
+      if (!quote) return
+      const result = await simulateTrade()
+      logEvent('simulate_trade', {
+        result: result.success,
+        reason: result.simulation.errorMessage ?? '',
+        account: address,
+        chainId: quote.chainId,
+        inputToken: quote.inputToken.symbol,
+        outputToken: quote.outputToken.symbol,
+        inputTokenAmount: quote.inputTokenAmount.toString(),
+        outputTokenAmount: quote.outputTokenAmount.toString(),
+        inputTokenAmountUsd: quote.inputTokenAmountUsd,
+        outputTokenAmountUsd: quote.outputTokenAmountUsd,
+        priceImpactUsd: quote.priceImpactUsd,
+        priceImpactPercent: quote.priceImpactPercent,
+        slippage: quote.slippage,
+        utmSource: utm.utm_source ?? '',
+      })
+    }
+    simulate()
+  }, [address, logEvent, quoteResult, simulateTrade, utm.utm_source])
+
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
       return token.baseToken === baseToken.symbol
@@ -194,6 +230,10 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const market = useMemo(() => {
+    // if (indexToken.symbol === 'AAVE2x') return 'AAVE / USD'
+    // if (indexToken.symbol === 'ARB2x') return 'ARB / USD'
+    // if (indexToken.symbol === 'LINK2x') return 'LINK / USD'
+    if (indexToken.symbol === 'GOLD3x') return 'XAUT / USD'
     if (
       indexToken.symbol ===
         getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol ||
@@ -210,6 +250,13 @@ export function LeverageProvider(props: { children: any }) {
     }
     if (
       indexToken.symbol ===
+        getTokenByChainAndSymbol(base.id, 'uXRP2x').symbol ||
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uXRP3x').symbol
+    ) {
+      return 'XRP / USD'
+    }
+    if (
+      indexToken.symbol ===
       getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC').symbol
     )
       return 'ETH / BTC'
@@ -222,17 +269,14 @@ export function LeverageProvider(props: { children: any }) {
   }, [baseToken, indexToken])
 
   const getSupportedLeverageTypes = useMemo(() => {
-    const eth2xBtc = getTokenByChainAndSymbol(chainId, 'ETH2xBTC')
-    const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
+    if (isSupportedNetwork(chainId)) {
+      const chainMarkets =
+        marketLeverageTypes[chainId as keyof typeof marketLeverageTypes]
+      return chainMarkets[market as keyof typeof chainMarkets]
+    }
 
-    const isRatioToken =
-      indexToken.symbol === eth2xBtc?.symbol ||
-      indexToken.symbol === btc2xEth?.symbol
-
-    return isRatioToken
-      ? [LeverageType.Long2x]
-      : supportedLeverageTypes[chainId]
-  }, [chainId, indexToken])
+    return []
+  }, [chainId, market])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -329,9 +373,11 @@ export function LeverageProvider(props: { children: any }) {
           )
         }),
       )
+
       const marketData: Market[] = await Promise.all(
         marketResponses.map((response) => response.json()),
       )
+
       return markets.map((market, idx) => ({
         ...market,
         ...marketData[idx],

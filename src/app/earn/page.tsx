@@ -32,22 +32,24 @@ export default function Page() {
             Strategies
           </h3>
           <div className='flex flex-wrap justify-start gap-4 pb-12 xl:justify-center'>
-            {products.map((p) => (
-              <ProductCard
-                key={`product-item-${p.tokenAddress}`}
-                product={p}
-                pill={
-                  ['wsteth15x', 'iceth'].includes(p.id)
-                    ? {
-                        text: 'Smart Loop',
-                        icon: (
-                          <ArrowPathIcon className='h-2 w-2 fill-zinc-900' />
-                        ),
-                      }
-                    : undefined
-                }
-              />
-            ))}
+            {products
+              .filter((p) => p.active)
+              .map((p) => (
+                <ProductCard
+                  key={`product-item-${p.tokenAddress}`}
+                  product={p}
+                  pill={
+                    ['wsteth15x', 'iceth'].includes(p.id)
+                      ? {
+                          text: 'Smart Loop',
+                          icon: (
+                            <ArrowPathIcon className='h-2 w-2 fill-zinc-900' />
+                          ),
+                        }
+                      : undefined
+                  }
+                />
+              ))}
           </div>
         </div>
       </div>

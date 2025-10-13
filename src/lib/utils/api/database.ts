@@ -5,10 +5,9 @@ import {
 } from '@indexcoop/tokenlists'
 import { formatUnits } from 'viem'
 
-import { UtmParam } from '@/app/store/utm-atoms'
-import { Quote } from '@/lib/hooks/use-best-quote/types'
-
+import type { UtmParam } from '@/app/store/utm-atoms'
 import type { PostApiV2TradeMutationRequest } from '@/gen'
+import type { Quote } from '@/lib/hooks/use-best-quote/types'
 
 export const mapQuoteToTrade = (
   address: string,
@@ -26,7 +25,7 @@ export const mapQuoteToTrade = (
   gasPrice: quote.gasPrice.toString(),
   gasCost: quote.gasCosts.toString(),
   gasCostInUsd: quote.gasCostsInUsd,
-  priceImpact: quote.priceImpact ?? null,
+  priceImpact: null,
   inputTokenAddress: quote.inputToken.address!,
   inputTokenSymbol: quote.inputToken.symbol.toUpperCase(),
   inputTokenUnits: formatUnits(
@@ -57,7 +56,18 @@ export const mapQuoteToTrade = (
 })
 
 const getUnderlyingAssetSymbol = (quote: Quote) => {
-  const possible = ['ETH', 'BTC', 'SUI', 'SOL', 'MATIC']
+  const possible = [
+    'ETH',
+    'BTC',
+    'SUI',
+    'SOL',
+    'XRP',
+    'AAVE',
+    'ARB',
+    'LINK',
+    'XAUt',
+    'MATIC',
+  ]
 
   const address = quote.isMinting
     ? quote.outputToken.address

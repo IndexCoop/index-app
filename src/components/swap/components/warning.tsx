@@ -80,7 +80,7 @@ type WarningProps = {
   warning: Warning
 }
 
-export const WarningComp = (props: WarningProps) => (
+const WarningComp = (props: WarningProps) => (
   <div className='mx-4 mb-2 mt-5 flex items-start gap-3'>
     <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5 flex-none' />
     <div className='flex flex-col gap-2'>
@@ -94,7 +94,7 @@ export const WarningComp = (props: WarningProps) => (
   </div>
 )
 
-export const WarningCompProtection = () => {
+const WarningCompProtection = () => {
   const ethereum = window.ethereum
 
   const onClick = async () => {
