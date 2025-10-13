@@ -1,8 +1,6 @@
-import { Flex, Link, Text } from '@chakra-ui/react'
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { ReactNode } from 'react'
 
-import { colors } from '@/lib/styles/colors'
 import { addMEVProtectionChain } from '@/lib/utils/chains'
 
 export enum WarningType {
@@ -31,19 +29,21 @@ const warningsData: Record<
       <>
         Some of our tokens are not available to Restricted Persons - including
         US persons - as defined in our{' '}
-        <Link
+        <a
           href='https://indexcoop.com/terms-of-service'
-          style={{ textDecoration: 'underline' }}
+          className='underline'
+          target='_blank'
         >
           Terms of Service
-        </Link>
+        </a>
         . Please also see our{' '}
-        <Link
+        <a
           href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
-          style={{ textDecoration: 'underline' }}
+          className='underline'
+          target='_blank'
         >
           Tokens Restricted for Restricted Persons
-        </Link>{' '}
+        </a>{' '}
         page.
       </>
     ),
@@ -55,19 +55,21 @@ const warningsData: Record<
         It appears you may be using a VPN and, because some of our tokens are
         not available to Restricted Persons - including US persons - as defined
         in our{' '}
-        <Link
+        <a
           href='https://indexcoop.com/terms-of-service'
-          style={{ textDecoration: 'underline' }}
+          className='underline'
+          target='_blank'
         >
           Terms of Service
-        </Link>
+        </a>
         , we are required to restrict access to VPN users. Please also see our{' '}
-        <Link
+        <a
           href='https://indexcoop.com/tokens-restricted-for-restricted-persons'
-          style={{ textDecoration: 'underline' }}
+          className='underline'
+          target='_blank'
         >
           Tokens Restricted for Restricted Persons
-        </Link>{' '}
+        </a>{' '}
         page.
       </>
     ),
@@ -78,7 +80,7 @@ type WarningProps = {
   warning: Warning
 }
 
-export const WarningComp = (props: WarningProps) => (
+const WarningComp = (props: WarningProps) => (
   <div className='mx-4 mb-2 mt-5 flex items-start gap-3'>
     <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5 flex-none' />
     <div className='flex flex-col gap-2'>
@@ -92,7 +94,7 @@ export const WarningComp = (props: WarningProps) => (
   </div>
 )
 
-export const WarningCompProtection = () => {
+const WarningCompProtection = () => {
   const ethereum = window.ethereum
 
   const onClick = async () => {
@@ -102,38 +104,24 @@ export const WarningCompProtection = () => {
   if (!ethereum) return null
 
   return (
-    <Flex direction={'column'} m='20px 16px 8px'>
-      <Flex align={'center'} direction={'row'}>
+    <div className='mx-4 mb-2 mt-5 flex flex-col'>
+      <div className='flex items-center'>
         <ExclamationCircleIcon className='text-ic-gray-600 dark:text-ic-gray-400 size-5' />
-        <Text
-          fontSize={'sm'}
-          fontWeight={600}
-          ml={2}
-          textColor={colors.ic.gray[600]}
-        >
+        <p className='text-ic-gray-600 ml-2 text-sm font-semibold'>
           MEV Protection
-        </Text>
-      </Flex>
-      <Text
-        fontSize={'xs'}
-        fontWeight={400}
-        mt='8px'
-        textColor={colors.ic.gray[600]}
-      >
+        </p>
+      </div>
+      <p className='text-ic-gray-600 mt-2 text-xs font-normal leading-[18px]'>
         It is highly recommended to use an MEV protected RPC.{' '}
-        <Link onClick={onClick} style={{ textDecoration: 'underline' }}>
+        <span onClick={onClick} className='cursor-pointer underline'>
           Click here
-        </Link>{' '}
+        </span>{' '}
         to add the MEV Blocker network to your wallet.{' '}
-        <Link
-          href='https://mevblocker.io/'
-          isExternal
-          style={{ textDecoration: 'underline' }}
-        >
+        <a href='https://mevblocker.io/' target='_blank' className='underline'>
           Learn More about MEV protection
-        </Link>
-      </Text>
-    </Flex>
+        </a>
+      </p>
+    </div>
   )
 }
 

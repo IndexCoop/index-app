@@ -1,6 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react'
-
-import { colors } from '@/lib/styles/colors'
+import { cn } from '@/lib/utils/tailwind'
 
 export enum ToggleState {
   auto,
@@ -15,23 +13,22 @@ type ToggleButtonProps = {
 }
 
 const ToggleButton = (props: ToggleButtonProps) => (
-  <Flex
-    bg={props.selected ? colors.ic.gray[100] : colors.ic.white}
-    borderRadius={'10px'}
-    cursor={'pointer'}
-    flex={1}
-    justify={'center'}
+  <div
     onClick={props.onClick}
-    p={'10px 16px'}
+    className={cn(
+      'flex flex-1 cursor-pointer justify-center rounded-[10px] px-4 py-2.5',
+      props.selected ? 'bg-ic-gray-100' : 'bg-ic-white',
+    )}
   >
-    <Text
-      fontSize={'sm'}
-      fontWeight={500}
-      textColor={props.isDisabled ? colors.ic.gray[100] : colors.ic.gray[900]}
+    <p
+      className={cn(
+        'text-sm font-medium',
+        props.isDisabled ? 'text-ic-gray-100' : 'text-ic-gray-900',
+      )}
     >
       {props.label}
-    </Text>
-  </Flex>
+    </p>
+  </div>
 )
 
 type ToggleProps = {
@@ -43,14 +40,7 @@ type ToggleProps = {
 }
 
 export const Toggle = (props: ToggleProps) => (
-  <Flex
-    className='bg-ic-white'
-    borderColor={colors.ic.gray[100]}
-    borderRadius={'12px'}
-    borderWidth={1}
-    justify={'center'}
-    p={'4px'}
-  >
+  <div className='bg-ic-white border-ic-gray-100 flex justify-center rounded-xl border p-1'>
     <ToggleButton
       isDisabled={props.isDisabled && props.toggleState === ToggleState.custom}
       label={props.labelLeft}
@@ -63,5 +53,5 @@ export const Toggle = (props: ToggleProps) => (
       onClick={() => props.onClick(ToggleState.custom)}
       selected={props.toggleState === ToggleState.custom}
     />
-  </Flex>
+  </div>
 )

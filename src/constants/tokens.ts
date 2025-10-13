@@ -1,8 +1,3 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { mainnet } from 'viem/chains'
-
-import { icethLogo, indexLogo } from '@/lib/utils/assets'
-
 export interface Token {
   name: string
   symbol: string
@@ -10,63 +5,6 @@ export interface Token {
   decimals: number
   image: string
   chainId?: number
-}
-
-/**
- * Indices
- */
-
-export const CoinDeskEthTrendIndex: Token = {
-  name: 'CoinDesk ETH Trend Index',
-  symbol: 'cdETI',
-  image:
-    'https://uploads-ssl.webflow.com/62e3ff7a08cb1968bf057388/651f04818f458f918171c84d_cdETI-logo.svg',
-  address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
-  decimals: 18,
-}
-
-export const DefiPulseIndex: Token = {
-  name: 'DeFi Pulse Index',
-  symbol: 'DPI',
-  image: 'https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg',
-  address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
-  decimals: 18,
-}
-
-const hyeth = getTokenByChainAndSymbol(mainnet.id, 'hyETH')
-export const HighYieldETHIndex: Token = {
-  ...hyeth,
-  image: hyeth.logoURI,
-}
-
-export const IndexToken: Token = {
-  name: 'Index Token',
-  symbol: 'INDEX',
-  address: '0x0954906da0Bf32d5479e25f46056d22f08464cab',
-  decimals: 18,
-  image: indexLogo,
-}
-
-export const MetaverseIndex: Token = {
-  name: 'Metaverse Index',
-  symbol: 'MVI',
-  address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
-  decimals: 18,
-  image: 'https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg',
-}
-
-export const icETHIndex: Token = {
-  name: 'Interest Compounding ETH Index',
-  symbol: 'icETH',
-  address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
-  decimals: 18,
-  image: icethLogo,
-}
-
-const rwa = getTokenByChainAndSymbol(mainnet.id, 'RWA')
-export const RealWorldAssetIndex: Token = {
-  ...rwa,
-  image: rwa.logoURI,
 }
 
 /**

@@ -31,9 +31,6 @@ export const formatTokenDataToToken = (tokenData: ListedToken): Token => {
   }
 }
 
-export const selectLatestMarketData = (marketData?: number[][]) =>
-  marketData?.[marketData.length - 1]?.[1] || 0
-
 export function shortenAddress(
   address: string,
   startLength: number = 6,
@@ -59,6 +56,7 @@ export const formatDollarAmount = (
   amount: number | null | undefined,
   hideZeroAmount: boolean = false,
   digits: number = 2,
+  options: Intl.NumberFormatOptions = {},
 ) => {
   if (amount === null || amount === undefined) return ''
   if (amount === 0 && hideZeroAmount) return ''
@@ -68,6 +66,7 @@ export const formatDollarAmount = (
     currency: 'USD',
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
+    ...options,
   }).format(amount)
 }
 
@@ -112,7 +111,7 @@ export const isValidTokenInput = (
 }
 
 export const isContract = async (client: PublicClient, address: string) => {
-  const bytes = await getCode(client, { address })
+  const bytes = await getCode(client, { address: address as `0x${string}` })
 
   return bytes !== undefined
 }

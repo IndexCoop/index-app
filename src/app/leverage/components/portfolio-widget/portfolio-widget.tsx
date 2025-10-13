@@ -1,24 +1,24 @@
 import { Tab, TabGroup, TabList } from '@headlessui/react'
+import { ChevronUpIcon } from '@heroicons/react/20/solid'
 import { isLeverageToken } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { useSetAtom } from 'jotai'
 import { useCallback, useMemo, useState } from 'react'
 
 import {
   historyColumns,
   openPositionsColumns,
 } from '@/app/leverage/components/portfolio-widget/columns'
-import {
-  TableRenderer,
-  type Stats,
-} from '@/app/leverage/components/portfolio-widget/table'
-import { useLeverageToken } from '@/app/leverage/provider'
+import { TableRenderer } from '@/app/leverage/components/portfolio-widget/table'
+import { getLeverageTokens } from '@/app/leverage/constants'
 import { EnrichedToken } from '@/app/leverage/types'
 import { fetchLeverageTokenPrices } from '@/app/leverage/utils/fetch-leverage-token-prices'
 import { getLeverageType } from '@/app/leverage/utils/get-leverage-type'
+import { fetchPositionsAtom } from '@/app/store/positions-atom'
 import { ETH } from '@/constants/tokens'
-import { GetApiV2UserAddressPositions200 } from '@/gen'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
+import { useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
@@ -27,11 +27,25 @@ import { cn } from '@/lib/utils/tailwind'
 const OpenPositions = () => {
   const { address, isConnected } = useWallet()
   const { chainId } = useNetwork()
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [selectedIndex, setSelectedIndex] = useState<undefined | number>(
+    undefined,
+  )
   const { queryParams, updateQueryParams } = useQueryParams()
+  const fetchPositions = useSetAtom(fetchPositionsAtom)
   const { logEvent } = useAnalytics()
 
-  const { balances, reset } = useLeverageToken()
+  const indexTokenAddresses = useMemo(() => {
+    if (chainId) {
+      return getLeverageTokens(chainId).map((token) => token.address!)
+    }
+
+    return []
+  }, [chainId])
+
+  const { balances, forceRefetchBalances } = useBalances(
+    address,
+    indexTokenAddresses,
+  )
 
   const adjustPosition = useCallback(
     (isMinting: boolean, token: EnrichedToken) => {
@@ -59,12 +73,13 @@ const OpenPositions = () => {
 
   const { data: tokens } = useQuery({
     initialData: [],
-    queryKey: ['leverage-token-prices', address, chainId, balances.toString()],
-    enabled: Boolean(address),
+    queryKey: ['leverage-token-prices', address, chainId],
+    enabled: Boolean(address && chainId),
 
     queryFn: async () => {
       if (chainId) {
-        reset()
+        const { data: balances = [] } = await forceRefetchBalances()
+
         return fetchLeverageTokenPrices(balances, chainId)
       }
 
@@ -85,23 +100,7 @@ const OpenPositions = () => {
     initialData: { open: [], history: [], stats: {} },
     enabled: Boolean(address && chainId),
     queryKey: ['leverage-token-history', address, chainId, selectedIndex],
-    queryFn: async () => {
-      const response = await fetch('/api/leverage/history', {
-        method: 'POST',
-        body: JSON.stringify({
-          user: address,
-          chainId,
-        }),
-      })
-
-      const data = (await response.json()) as {
-        open: GetApiV2UserAddressPositions200
-        history: GetApiV2UserAddressPositions200
-        stats: Stats
-      }
-
-      return data
-    },
+    queryFn: () => fetchPositions(address ?? '', chainId ?? 0),
   })
 
   const tableData = useMemo(
@@ -135,52 +134,74 @@ const OpenPositions = () => {
   })
 
   return (
-    <TabGroup
-      className='flex flex-col gap-6'
-      selectedIndex={selectedIndex}
-      onChange={setSelectedIndex}
-    >
-      <TabList className='text-ic-gray-600 flex gap-6 text-sm font-bold'>
+    <TabGroup className='flex flex-col gap-6' selectedIndex={selectedIndex}>
+      <TabList className='flex gap-6 text-sm font-bold text-neutral-400'>
         <Tab
-          className='data-[selected]:text-ic-gray-50 flex items-center gap-2 outline-none'
-          onClick={() => logEvent('Open Positions Tab Clicked')}
+          className={cn(
+            'flex items-center gap-1.5 outline-none',
+            selectedIndex === 0 && 'text-neutral-50',
+          )}
+          onClick={() => {
+            setSelectedIndex((idx) => (idx === 0 ? undefined : 0))
+            logEvent('Open Positions Tab Clicked')
+          }}
         >
           Open Positions
           <span
             className={cn(
-              'text-ic-gray-300 flex h-3.5 items-center justify-center rounded-[4px] bg-purple-500/30 px-1.5 py-0.5 text-[8px]',
-              selectedIndex === 0 && 'text-ic-white bg-purple-500',
+              'flex h-3.5 items-center justify-center rounded-[4px] bg-purple-500/30 px-1.5 py-0.5 text-[8px] text-neutral-400',
+              selectedIndex === 0 && 'bg-purple-500 text-neutral-50',
             )}
           >
             BETA
           </span>
+          <ChevronUpIcon
+            className={cn(
+              'size-5',
+              selectedIndex === 0 && 'rotate-180 transform transition',
+            )}
+          />
         </Tab>
         <Tab
-          className='data-[selected]:text-ic-gray-50 flex items-center gap-2 outline-none'
-          onClick={() => logEvent('History Tab Clicked')}
+          className={cn(
+            'flex items-center gap-1.5 outline-none',
+            selectedIndex === 1 && 'text-neutral-50',
+          )}
+          onClick={() => {
+            setSelectedIndex((idx) => (idx === 1 ? undefined : 1))
+            logEvent('History Tab Clicked')
+          }}
         >
           History
           <span
             className={cn(
-              'text-ic-gray-300 flex h-3.5 items-center justify-center rounded-[4px] bg-purple-500/30 px-1.5 py-0.5 text-[8px]',
-              selectedIndex === 1 && 'text-ic-white bg-purple-500',
+              'flex h-3.5 items-center justify-center rounded-[4px] bg-purple-500/30 px-1.5 py-0.5 text-[8px] text-neutral-400',
+              selectedIndex === 1 && 'bg-purple-500 text-neutral-50',
             )}
           >
             BETA
           </span>
+          <ChevronUpIcon
+            className={cn(
+              'size-5',
+              selectedIndex === 1 && 'rotate-180 transform transition',
+            )}
+          />
         </Tab>
       </TabList>
-      <TableRenderer
-        table={table}
-        isFetching={isFetching}
-        emptyText={
-          !isConnected
-            ? 'Please connect your wallet to view your positions.'
-            : selectedIndex === 0
-              ? 'You are currently not holding any leverage suite tokens on this network.'
-              : 'You have not executed any transactions with leverage tokens on this network yet.'
-        }
-      />
+      {typeof selectedIndex === 'number' && (
+        <TableRenderer
+          table={table}
+          isFetching={isFetching}
+          emptyText={
+            !isConnected
+              ? 'Please connect your wallet to view your positions.'
+              : selectedIndex === 0
+                ? 'You are currently not holding any leverage suite tokens on this network.'
+                : 'You have not executed any transactions with leverage tokens on this network yet.'
+          }
+        />
+      )}
     </TabGroup>
   )
 }

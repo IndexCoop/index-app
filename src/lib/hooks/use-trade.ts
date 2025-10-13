@@ -56,7 +56,7 @@ export const useTrade = () => {
     async (
       quote: Quote | null,
       override: boolean = false,
-      callback?: TradeCallback,
+      successCallback?: TradeCallback,
     ) => {
       if (!address || !chainId || !publicClient || !walletClient || !quote)
         return
@@ -91,7 +91,7 @@ export const useTrade = () => {
         const canFail = override
         const gasLimit = await gasEstimatooor.estimate(tx, canFail)
         const hash = await walletClient.sendTransaction({
-          account: address,
+          account: address as `0x${string}`,
           chainId: Number(quote.chainId),
           gas: gasLimit,
           to: quote.tx.to,
@@ -100,7 +100,7 @@ export const useTrade = () => {
         })
         logTransaction(chainId ?? -1, hash, formatQuoteAnalytics(quote))
         setIsTransacting(false)
-        callback?.({ address, hash, quote })
+        successCallback?.({ address, hash, quote })
       } catch (error) {
         console.info('Override?', override)
         console.warn('Error sending transaction', error)

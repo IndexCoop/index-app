@@ -1,16 +1,30 @@
-import { LeveragePanelDesktop } from '@/app/leverage/components/leverage-panel/leverage-panel-desktop'
-import { LeveragePanelMobile } from '@/app/leverage/components/leverage-panel/leverage-panel-mobile'
-import { Token } from '@/constants/tokens'
+'use client'
 
-type Props = {
-  indexToken: Token
-}
+import { Suspense } from 'react'
 
-export function LeveragePanel({ indexToken }: Props) {
+import { LeverageWidget } from '@/app/leverage/components/leverage-widget'
+import PortfolioWidget from '@/app/leverage/components/portfolio-widget/portfolio-widget'
+import { QuickStats } from '@/app/leverage/components/stats'
+import { TradingViewChart } from '@/app/leverage/components/trading-view-chart'
+
+export function LeveragePanel() {
   return (
-    <>
-      <LeveragePanelMobile indexToken={indexToken} />
-      <LeveragePanelDesktop indexToken={indexToken} />
-    </>
+    <div className='flex flex-col gap-4 lg:flex-row'>
+      <div className='flex w-full flex-col gap-4 lg:w-2/3'>
+        <QuickStats />
+        <TradingViewChart />
+        <div className='hidden lg:block lg:pt-4'>
+          <PortfolioWidget />
+        </div>
+      </div>
+      <div className='w-full lg:w-1/3'>
+        <Suspense>
+          <LeverageWidget />
+        </Suspense>
+      </div>
+      <div className='w-full lg:hidden'>
+        <PortfolioWidget />
+      </div>
+    </div>
   )
 }

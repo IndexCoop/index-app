@@ -1,8 +1,9 @@
-import { QueryFunctionContext, useQuery } from '@tanstack/react-query'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { type QueryFunctionContext, useQuery } from '@tanstack/react-query'
 
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
-interface QuickStats {
+export interface QuickStats {
   base: {
     symbol: string
     price: string
@@ -38,7 +39,12 @@ interface QuickStatsApiResponse {
 
 type QuickStatsQueryKey = [
   string,
-  { address: string | undefined; symbol: string; market: string },
+  {
+    chainId: number
+    address: string | undefined
+    symbol: string
+    market: string
+  },
 ]
 
 export function formatStatsAmount(
@@ -54,22 +60,21 @@ export function formatStatsAmount(
 
 export function useQuickStats(
   market: string,
-  indexToken: { address: string | undefined; symbol: string },
+  indexToken: { address: string | undefined; chainId: number; symbol: string },
 ) {
   async function fetchStats(
     context: QueryFunctionContext<QuickStatsQueryKey>,
   ): Promise<QuickStats> {
-    const [, { address, symbol, market }] = context.queryKey
+    const [, { address, chainId, market }] = context.queryKey
     const m = market.split(' / ')
     const baseToken = m[0]
     const baseCurrency = m[1].toLowerCase()
     try {
       const response = await fetch(
-        `/api/stats?address=${address}&symbol=${symbol}&base=${baseToken}&baseCurrency=${baseCurrency}`,
-        {
-          method: 'GET',
-        },
+        `/api/stats?address=${address}&chainId=${chainId}&base=${baseToken}&baseCurrency=${baseCurrency}`,
+        { method: 'GET' },
       )
+
       const { base, token }: QuickStatsApiResponse = await response.json()
       return {
         base: {
@@ -102,28 +107,27 @@ export function useQuickStats(
     }
   }
 
+  const address =
+    getTokenByChainAndSymbol(indexToken.chainId, indexToken.symbol)?.address ??
+    ''
   const { data, isFetching } = useQuery({
     queryKey: [
       'fetch-quick-stats',
       {
+        chainId: indexToken.chainId,
         symbol: indexToken.symbol,
-        address: indexToken.address,
+        address,
         market,
       },
     ],
     queryFn: fetchStats,
-    enabled: !!indexToken.address,
+    enabled: !!address,
+    refetchOnWindowFocus: false,
   })
 
   return {
     data: data ?? {
-      base: {
-        symbol: '',
-        price: '',
-        change24h: 0,
-        low24h: '',
-        high24h: '',
-      },
+      base: { symbol: '', price: '', change24h: 0, low24h: '', high24h: '' },
       token: {
         symbol: '',
         costOfCarry: 0,

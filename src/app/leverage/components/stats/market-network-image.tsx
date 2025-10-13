@@ -6,7 +6,7 @@ type Props = {
   chain: Chain
 }
 
-export const chainLogos: { [key: number]: string } = {
+const chainLogos: { [key: number]: string } = {
   [base.id]: '/assets/network-base-dark.svg',
   [arbitrum.id]: '/assets/network-arbitrum-dark.svg',
   [mainnet.id]: '/assets/network-ethereum-dark.svg',

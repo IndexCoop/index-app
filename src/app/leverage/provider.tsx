@@ -1,35 +1,41 @@
 'use client'
 
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
 import { arbitrum, base } from 'viem/chains'
 
 import { getLeverageBaseToken } from '@/app/leverage/utils/get-leverage-base-token'
-import { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import { ARBITRUM } from '@/constants/chains'
-import { ETH, Token } from '@/constants/tokens'
-import { TokenBalance, useBalances } from '@/lib/hooks/use-balance'
-import { QuoteResult } from '@/lib/hooks/use-best-quote/types'
+import { ETH, type Token } from '@/constants/tokens'
+import { useAnalytics } from '@/lib/hooks/use-analytics'
+import { type TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
-import { usePrepareTransactionReview } from '@/lib/hooks/use-prepare-transaction-review'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
+import { useSimulateQuote } from '@/lib/hooks/use-simulate-quote'
+import { useUtmParams } from '@/lib/hooks/use-utm-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
+import { isSupportedNetwork } from '@/lib/utils/wagmi'
 
 import {
   getCurrencyTokens,
   getLeverageTokens,
-  supportedLeverageTypes,
+  marketLeverageTypes,
+  markets,
 } from './constants'
-import { LeverageToken, LeverageType } from './types'
+import { type LeverageToken, LeverageType, type Market } from './types'
+
+import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
 const eth2x = getTokenByChainAndSymbol(1, 'ETH2X')
 
@@ -42,6 +48,7 @@ export interface TokenContext {
   indexToken: Token
   indexTokens: Token[]
   market: string
+  marketData: Market[]
   inputToken: Token
   outputToken: Token
   inputTokenAmount: bigint
@@ -50,16 +57,18 @@ export interface TokenContext {
   isFetchingQuote: boolean
   quoteResult: QuoteResult | null
   supportedLeverageTypes: LeverageType[]
-  transactionReview: TransactionReview | null
   onChangeInputTokenAmount: (input: string) => void
   onSelectInputToken: (tokenSymbol: string) => void
   onSelectLeverageType: (type: LeverageType) => void
   onSelectOutputToken: (tokenSymbol: string) => void
   reset: () => void
+  refetchQuote:
+    | ReturnType<typeof useQuoteResult>['refetchQuote']
+    | (() => Promise<void>)
   toggleIsMinting: (force?: boolean) => void
 }
 
-export const LeverageTokenContext = createContext<TokenContext>({
+const LeverageTokenContext = createContext<TokenContext>({
   inputValue: '',
   isMinting: true,
   leverageType: LeverageType.Long2x,
@@ -68,6 +77,7 @@ export const LeverageTokenContext = createContext<TokenContext>({
   indexToken: { ...eth2x, image: eth2x.logoURI },
   indexTokens: [],
   market: 'ETH / USD',
+  marketData: [],
   inputToken: ETH,
   outputToken: { ...eth2x, image: eth2x.logoURI },
   inputTokenAmount: BigInt(0),
@@ -76,12 +86,12 @@ export const LeverageTokenContext = createContext<TokenContext>({
   isFetchingQuote: false,
   quoteResult: null,
   supportedLeverageTypes: [],
-  transactionReview: null,
   onChangeInputTokenAmount: () => {},
   onSelectInputToken: () => {},
   onSelectLeverageType: () => {},
   onSelectOutputToken: () => {},
   reset: () => {},
+  refetchQuote: async () => {},
   toggleIsMinting: () => {},
 })
 
@@ -101,6 +111,7 @@ const defaultParams = {
 }
 
 export function LeverageProvider(props: { children: any }) {
+  const { logEvent } = useAnalytics()
   const { chainId: chainIdRaw } = useNetwork()
   const { address } = useWallet()
   const {
@@ -113,7 +124,8 @@ export function LeverageProvider(props: { children: any }) {
     },
     updateQueryParams,
   } = useQueryParams({ ...defaultParams, network: chainIdRaw })
-  const { slippage } = useSlippage()
+  const { slippage, setProductToken } = useSlippage()
+  const utm = useUtmParams()
 
   const [inputValue, setInputValue] = useState('')
 
@@ -127,9 +139,20 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainIdRaw])
 
   const indexToken = useMemo(() => {
-    if (isMinting) return outputToken
-    return inputToken
+    return isMinting ? outputToken : inputToken
   }, [inputToken, isMinting, outputToken])
+
+  useEffect(() => {
+    if (!indexToken.address || !indexToken.chainId) return
+    setProductToken(
+      {
+        address: indexToken.address as `0x${string}`,
+        chainId: indexToken.chainId,
+      },
+      isMinting,
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indexToken, isMinting])
 
   const indexTokens = useMemo(() => {
     return getLeverageTokens(chainId)
@@ -152,7 +175,7 @@ export function LeverageProvider(props: { children: any }) {
     [inputToken, inputValue],
   )
 
-  const { isFetchingQuote, quoteResult, resetQuote } = useQuoteResult({
+  const { isFetchingQuote, quoteResult, refetchQuote } = useQuoteResult({
     address,
     chainId,
     isMinting,
@@ -162,10 +185,33 @@ export function LeverageProvider(props: { children: any }) {
     inputValue,
     slippage,
   })
-  const transactionReview = usePrepareTransactionReview(
-    isFetchingQuote,
-    quoteResult,
-  )
+
+  const { simulateTrade } = useSimulateQuote(quoteResult?.quote?.tx ?? null)
+
+  useEffect(() => {
+    const simulate = async () => {
+      const quote = quoteResult?.quote
+      if (!quote) return
+      const result = await simulateTrade()
+      logEvent('simulate_trade', {
+        result: result.success,
+        reason: result.simulation.errorMessage ?? '',
+        account: address,
+        chainId: quote.chainId,
+        inputToken: quote.inputToken.symbol,
+        outputToken: quote.outputToken.symbol,
+        inputTokenAmount: quote.inputTokenAmount.toString(),
+        outputTokenAmount: quote.outputTokenAmount.toString(),
+        inputTokenAmountUsd: quote.inputTokenAmountUsd,
+        outputTokenAmountUsd: quote.outputTokenAmountUsd,
+        priceImpactUsd: quote.priceImpactUsd,
+        priceImpactPercent: quote.priceImpactPercent,
+        slippage: quote.slippage,
+        utmSource: utm.utm_source ?? '',
+      })
+    }
+    simulate()
+  }, [address, logEvent, quoteResult, simulateTrade, utm.utm_source])
 
   const indexTokensBasedOnSymbol = useMemo(() => {
     return indexTokens.filter((token) => {
@@ -184,15 +230,30 @@ export function LeverageProvider(props: { children: any }) {
   }, [chainId, indexTokensBasedOnSymbol, isMinting])
 
   const market = useMemo(() => {
+    // if (indexToken.symbol === 'AAVE2x') return 'AAVE / USD'
+    // if (indexToken.symbol === 'ARB2x') return 'ARB / USD'
+    // if (indexToken.symbol === 'LINK2x') return 'LINK / USD'
+    if (indexToken.symbol === 'GOLD3x') return 'XAUT / USD'
     if (
-      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol
+      indexToken.symbol ===
+        getTokenByChainAndSymbol(base.id, 'uSOL2x').symbol ||
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSOL3x').symbol
     ) {
       return 'SOL / USD'
     }
     if (
-      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSUI2x').symbol
+      indexToken.symbol ===
+        getTokenByChainAndSymbol(base.id, 'uSUI2x').symbol ||
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uSUI3x').symbol
     ) {
       return 'SUI / USD'
+    }
+    if (
+      indexToken.symbol ===
+        getTokenByChainAndSymbol(base.id, 'uXRP2x').symbol ||
+      indexToken.symbol === getTokenByChainAndSymbol(base.id, 'uXRP3x').symbol
+    ) {
+      return 'XRP / USD'
     }
     if (
       indexToken.symbol ===
@@ -208,19 +269,14 @@ export function LeverageProvider(props: { children: any }) {
   }, [baseToken, indexToken])
 
   const getSupportedLeverageTypes = useMemo(() => {
-    const eth2xBtc = getTokenByChainAndSymbol(chainId, 'ETH2xBTC')
-    const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
-    const uSol2x = getTokenByChainAndSymbol(base.id, 'uSOL2x')
-    const uSui2x = getTokenByChainAndSymbol(base.id, 'uSUI2x')
-    const isRatioToken =
-      indexToken.symbol === eth2xBtc?.symbol ||
-      indexToken.symbol === btc2xEth?.symbol
-    const isSol = indexToken.symbol === uSol2x?.symbol
-    const isSui = indexToken.symbol === uSui2x?.symbol
-    return isRatioToken || isSol || isSui
-      ? [LeverageType.Long2x]
-      : supportedLeverageTypes[chainId]
-  }, [chainId, indexToken])
+    if (isSupportedNetwork(chainId)) {
+      const chainMarkets =
+        marketLeverageTypes[chainId as keyof typeof marketLeverageTypes]
+      return chainMarkets[market as keyof typeof chainMarkets]
+    }
+
+    return []
+  }, [chainId, market])
 
   const onChangeInputTokenAmount = useCallback(
     (input: string) => {
@@ -292,7 +348,6 @@ export function LeverageProvider(props: { children: any }) {
 
   const reset = () => {
     setInputValue('')
-    resetQuote()
     forceRefetchBalances()
   }
 
@@ -304,6 +359,31 @@ export function LeverageProvider(props: { children: any }) {
       network: chainId,
     })
   }, [chainId, isMinting, inputToken, outputToken, updateQueryParams])
+
+  const { data: marketData } = useQuery({
+    refetchInterval: 60 * 1000,
+    refetchOnWindowFocus: false,
+    initialData: [],
+    queryKey: ['market-selector'],
+    queryFn: async () => {
+      const marketResponses = await Promise.all(
+        markets.map((item) => {
+          return fetch(
+            `/api/markets?symbol=${item.symbol}&currency=${item.currency}`,
+          )
+        }),
+      )
+
+      const marketData: Market[] = await Promise.all(
+        marketResponses.map((response) => response.json()),
+      )
+
+      return markets.map((market, idx) => ({
+        ...market,
+        ...marketData[idx],
+      }))
+    },
+  })
 
   return (
     <LeverageTokenContext.Provider
@@ -319,17 +399,18 @@ export function LeverageProvider(props: { children: any }) {
         outputToken,
         inputTokenAmount,
         market,
+        marketData,
         inputTokens,
         outputTokens,
         isFetchingQuote,
         quoteResult,
         supportedLeverageTypes: getSupportedLeverageTypes,
-        transactionReview,
         onChangeInputTokenAmount,
         onSelectInputToken,
         onSelectLeverageType,
         onSelectOutputToken,
         reset,
+        refetchQuote,
         toggleIsMinting,
       }}
     >

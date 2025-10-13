@@ -1,23 +1,22 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Flex,
-} from '@chakra-ui/react'
-import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from '@headlessui/react'
+import {
+  ChevronDownIcon,
+  ExclamationTriangleIcon,
+} from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { useState } from 'react'
 
 import { StyledSkeleton } from '@/components/skeleton'
+import { Tag } from '@/components/swap/components/trade-details/tag'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { colors, useColorStyles } from '@/lib/styles/colors'
+import { cn } from '@/lib/utils/tailwind'
 
 import { TradeInfoItem } from '../../types'
 
-import { Tag } from './tag'
 import { FlashMintTag } from './tag-flashmint'
 import { TradeInfoItemsContainer } from './trade-info'
 import { TradePrice } from './trade-price'
@@ -39,7 +38,6 @@ interface TradeDetailsProps {
 
 export const TradeDetails = (props: TradeDetailsProps) => {
   const { data, isLoading, prices, showWarning } = props
-  const { styles } = useColorStyles()
 
   const [showInputTokenPrice, setShowInputTokenPrice] = useState(true)
 
@@ -57,83 +55,63 @@ export const TradeDetails = (props: TradeDetailsProps) => {
     : prices.outputTokenPriceUsd
 
   return (
-    <Flex mb={'6px'}>
-      <Accordion allowToggle border={0} borderColor='transparent' w='100%'>
-        <AccordionItem isDisabled={isLoading}>
-          {({ isExpanded }) => (
-            <>
-              <h4>
-                <AccordionButton
-                  border='1px solid'
-                  borderColor={styles.border}
-                  borderRadius={12}
-                  color={colors.ic.gray[400]}
-                  _expanded={{
-                    borderBottomColor: 'transparent',
-                    borderBottomRadius: 0,
-                  }}
-                  p={'16px 20px'}
-                >
-                  <Flex
-                    align='center'
-                    flex='1'
-                    justify='space-between'
-                    pr='4px'
-                  >
-                    <>
-                      <Flex>
-                        {showWarning && (
-                          <ExclamationTriangleIcon className='text-ic-gray-600 dark:text-ic-gray-400 mr-2 size-5' />
-                        )}
-                        {!showWarning && (
-                          <Image
-                            className='text-ic-gray-600 mr-1'
-                            alt='Swap icon'
-                            src='/assets/swap-icon.svg'
-                            width={16}
-                            height={16}
-                          />
-                        )}
-                        <Box onClick={onToggleTokenPrice}>
-                          {isLoading ? (
-                            <StyledSkeleton width={200} />
-                          ) : (
-                            <TradePrice
-                              comparisonLabel={comparisonLabel}
-                              usdLabel={usdLabel}
-                            />
-                          )}
-                        </Box>
-                      </Flex>
-                      <Flex opacity={isExpanded ? 0 : 1} gap={4}>
-                        {!isLoading &&
-                          props.selectedQuoteType === QuoteType.index && (
-                            <Tag label={'LI.FI'} />
-                          )}
-                        {!isLoading &&
-                          props.selectedQuoteType === QuoteType.flashmint && (
-                            <FlashMintTag />
-                          )}
-                        {isLoading && <StyledSkeleton width={70} />}
-                      </Flex>
-                    </>
-                  </Flex>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h4>
-              <AccordionPanel
-                border='1px solid'
-                borderColor={styles.border}
-                borderRadius='0 0 12px 12px'
-                borderTopColor={'transparent'}
-                p={'4px 20px 16px'}
-              >
-                <TradeInfoItemsContainer items={data} isLoading={isLoading} />
-              </AccordionPanel>
-            </>
-          )}
-        </AccordionItem>
-      </Accordion>
-    </Flex>
+    <div className='mb-1.5 flex flex-col'>
+      <Disclosure>
+        {({ open }) => (
+          <>
+            <DisclosureButton className='w-full px-5 py-4'>
+              <div className='flex flex-1 items-center justify-between pr-1'>
+                <div className='flex'>
+                  {showWarning && (
+                    <ExclamationTriangleIcon className='text-ic-gray-600 dark:text-ic-gray-400 mr-2 size-5' />
+                  )}
+                  {!showWarning && (
+                    <Image
+                      className='text-ic-gray-600 mr-1'
+                      alt='Swap icon'
+                      src='/assets/swap-icon.svg'
+                      width={16}
+                      height={16}
+                    />
+                  )}
+                  <div onClick={onToggleTokenPrice}>
+                    {isLoading ? (
+                      <StyledSkeleton width={200} />
+                    ) : (
+                      <TradePrice
+                        comparisonLabel={comparisonLabel}
+                        usdLabel={usdLabel}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className={cn('flex items-center', open && 'hidden')}>
+                  {!isLoading &&
+                    props.selectedQuoteType === QuoteType.index && (
+                      <Tag label={'LI.FI'} />
+                    )}
+                  {!isLoading &&
+                    props.selectedQuoteType === QuoteType.flashmint && (
+                      <FlashMintTag />
+                    )}
+                  {!isLoading && (
+                    <ChevronDownIcon
+                      className={cn(
+                        'size-5',
+                        open && 'rotate-180 transform transition',
+                      )}
+                    />
+                  )}
+                  {isLoading && <StyledSkeleton width={70} />}
+                </div>
+              </div>
+            </DisclosureButton>
+            <DisclosurePanel className='px-5 pb-4 pt-1'>
+              <TradeInfoItemsContainer items={data} isLoading={isLoading} />
+            </DisclosurePanel>
+          </>
+        )}
+      </Disclosure>
+    </div>
   )
 }

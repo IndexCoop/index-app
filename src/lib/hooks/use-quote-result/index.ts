@@ -1,14 +1,35 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import get from 'lodash/get'
+import { useEffect } from 'react'
 import { usePublicClient } from 'wagmi'
 
-import { Token } from '@/constants/tokens'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
-import { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
-import { getFlashMintQuote } from '@/lib/hooks/use-best-quote/utils/flashmint'
-import { getIndexQuote } from '@/lib/hooks/use-best-quote/utils/index-quote'
-import { getBestYieldQuote } from '@/lib/hooks/use-quote-result/best-quote'
-import { getTokenPrice, useNativeTokenPrice } from '@/lib/hooks/use-token-price'
+import { QuoteType } from '@/lib/hooks/use-best-quote/types'
+import {
+  getFlashMintQuote,
+  isQuoteError,
+} from '@/lib/hooks/use-best-quote/utils/flashmint'
+
+import type { Token } from '@/constants/tokens'
+
+// Ideally this could come from Flashmint SDK
+const quoteErrorCode = {
+  ComponentsSwapDataError: 'Component Swap Error',
+  ComponentQuotesError: 'Component Quote Error',
+  IS_AAVE_NULL: 'Aave',
+  LEVERAGED_TOKEN_DATA_NULL: 'Leveraged Token Data Error',
+  DEBT_COLLATERAL_SWAP_DATA_NULL: 'Debt - Collateral Swap Error',
+  INPUT_OUTPUT_SWAP_DATA_NULL: 'Input - Output Swap Error',
+  MintingNotSupported: 'Minting Not Supported',
+  WETHAddressNotDefined: 'Weth Address Not Defined',
+  QuoteResultNull: 'Quote Not Found',
+  CONFIGURATION_ERROR: 'Configuration Error',
+  ENCODING_ERROR: 'Encoding Error',
+  INDEX_TOKEN_NOT_SUPPORTED: 'Token Not Supported',
+  QUOTE_FAILED: 'Quote Failed',
+}
 
 type QuoteRequest = {
   address: string | undefined
@@ -33,100 +54,43 @@ export function useQuoteResult(request: QuoteRequest) {
     slippage,
   } = request
   const indexToken = isMinting ? outputToken : inputToken
-  const nativeTokenPrice = useNativeTokenPrice(chainId)
   const publicClient = usePublicClient({ chainId })
   const { logEvent } = useAnalytics()
-
-  const [quoteResult, setQuoteResult] = useState<QuoteResult>({
-    type: QuoteType.flashmint,
-    isAvailable: true,
-    quote: null,
-    error: null,
-  })
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
   const fetchFlashMintQuote = async () => {
+    sendTradeEvent({ type: 'FETCHING_QUOTE' })
+
     if (!address) return null
     if (!chainId) return null
     if (!publicClient) return null
     if (inputTokenAmount <= 0) return null
     if (!indexToken) return null
-    const [inputTokenPrice, outputTokenPrice] = await Promise.all([
-      getTokenPrice(inputToken, chainId),
-      getTokenPrice(outputToken, chainId),
-    ])
-    return await getFlashMintQuote({
-      isMinting,
-      account: address,
-      chainId,
-      inputToken,
-      inputTokenAmount: inputValue,
-      inputTokenAmountWei: inputTokenAmount,
-      inputTokenPrice,
-      outputToken,
-      outputTokenPrice,
-      slippage,
-    })
+
+    return getFlashMintQuote(
+      {
+        isMinting,
+        account: address,
+        chainId,
+        inputToken,
+        inputTokenAmount: inputValue,
+        inputTokenAmountWei: inputTokenAmount,
+        inputTokenPrice: 0, // unused
+        outputToken,
+        outputTokenPrice: 0, // unused
+        slippage,
+      },
+      publicClient,
+    )
   }
 
-  const fetchSwapQuote = async () => {
-    if (!address) return null
-    if (!chainId) return null
-    if (!publicClient) return null
-    if (inputTokenAmount <= 0) return null
-    if (!indexToken) return null
-    const [inputTokenPrice, outputTokenPrice] = await Promise.all([
-      getTokenPrice(inputToken, chainId),
-      getTokenPrice(outputToken, chainId),
-    ])
-    return await getIndexQuote({
-      isMinting,
-      chainId,
-      address,
-      inputToken,
-      inputTokenAmount: inputValue,
-      inputTokenPrice,
-      outputToken,
-      outputTokenPrice,
-      nativeTokenPrice,
-      slippage: 0.1,
-    })
-  }
-
-  const resetQuote = () => {
-    setQuoteResult({
-      type: QuoteType.flashmint,
-      isAvailable: true,
-      quote: null,
-      error: null,
-    })
-  }
-
-  const { data: flashmintQuote, isFetching: isFetchingFlashMintQuote } =
-    useQuery({
-      queryKey: [
-        'flashmint-quote',
-        {
-          address,
-          chainId,
-          inputToken,
-          outputToken,
-          inputTokenAmount: inputTokenAmount.toString(),
-          publicClient,
-        },
-      ],
-      queryFn: fetchFlashMintQuote,
-      enabled:
-        !!address &&
-        !!chainId &&
-        !!inputToken &&
-        !!outputToken &&
-        !!publicClient &&
-        inputTokenAmount > 0,
-    })
-
-  const { data: swapQuote, isFetching: isFetchingSwapQuote } = useQuery({
+  const {
+    data: flashmintQuote,
+    isFetching: isFetchingFlashMintQuote,
+    refetch: refetchQuote,
+  } = useQuery({
     queryKey: [
-      'swap-quote',
+      'flashmint-quote',
       {
         address,
         chainId,
@@ -134,39 +98,67 @@ export function useQuoteResult(request: QuoteRequest) {
         outputToken,
         inputTokenAmount: inputTokenAmount.toString(),
         publicClient,
+        slippage,
       },
     ],
-    queryFn: fetchSwapQuote,
+    queryFn: fetchFlashMintQuote,
     enabled:
       !!address &&
       !!chainId &&
-      !!publicClient &&
       !!inputToken &&
       !!outputToken &&
+      !!publicClient &&
       inputTokenAmount > 0,
+    refetchOnWindowFocus: false,
   })
 
   useEffect(() => {
-    const bestQuote = getBestYieldQuote(
-      flashmintQuote ?? null,
-      swapQuote ?? null,
-      chainId ?? -1,
-    )
-    if (bestQuote) {
-      logEvent('Quote Received', formatQuoteAnalytics(bestQuote))
+    if (flashmintQuote === undefined || isFetchingFlashMintQuote) return
+
+    if (isQuoteError(flashmintQuote)) {
+      logEvent('Quote Failed', flashmintQuote)
+
+      sendTradeEvent({
+        type: 'QUOTE_NOT_FOUND',
+        reason:
+          get(quoteErrorCode, `${flashmintQuote.type}`) ?? 'Unknown Reason',
+      })
+
+      return
     }
 
-    setQuoteResult({
-      type: bestQuote?.type ?? QuoteType.flashmint,
+    if (flashmintQuote) {
+      logEvent('Quote Received', formatQuoteAnalytics(flashmintQuote))
+    }
+
+    const quoteResult = {
+      type: flashmintQuote?.type ?? QuoteType.flashmint,
       isAvailable: true,
-      quote: bestQuote,
+      quote: flashmintQuote,
       error: null,
-    })
-  }, [chainId, flashmintQuote, logEvent, swapQuote])
+    }
+
+    if (quoteResult.quote) {
+      sendTradeEvent({
+        type: 'QUOTE',
+        inputValue,
+        quoteResult,
+        quoteType: flashmintQuote?.type ?? QuoteType.flashmint,
+      })
+    }
+  }, [
+    chainId,
+    flashmintQuote,
+    inputValue,
+    isFetchingFlashMintQuote,
+    logEvent,
+    sendTradeEvent,
+  ])
 
   return {
-    isFetchingQuote: isFetchingFlashMintQuote || isFetchingSwapQuote,
-    quoteResult,
-    resetQuote,
+    isFetchingQuote: isFetchingFlashMintQuote,
+    quoteResult: tradeState.context.quoteResult,
+    isFetchingFlashMintQuote,
+    refetchQuote,
   }
 }

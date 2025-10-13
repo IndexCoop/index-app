@@ -1,13 +1,14 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { arbitrum, mainnet } from 'viem/chains'
 
-import { ProductRow } from '@/app/products/types/product'
 import {
   buildEarnTradePath,
   buildLegacyPath,
   buildLeverageTradePath,
   buildSwapTradePath,
 } from '@/app/products/utils/trade-path'
+
+import type { ProductRow } from '@/app/products/types/product'
 
 export const productTokens: ProductRow[] = [
   {
@@ -29,12 +30,6 @@ export const productTokens: ProductRow[] = [
     tradeHref: buildLeverageTradePath('ETH3X', undefined, arbitrum.id),
   },
   {
-    ...getTokenByChainAndSymbol(mainnet.id, 'DPI'),
-    hasApy: false,
-    listType: 'Strategies',
-    tradeHref: buildSwapTradePath('dpi'),
-  },
-  {
     ...getTokenByChainAndSymbol(mainnet.id, 'hyETH'),
     hasApy: true,
     listType: 'Earn',
@@ -45,12 +40,6 @@ export const productTokens: ProductRow[] = [
     hasApy: true,
     listType: 'Earn',
     tradeHref: buildEarnTradePath('icETH'),
-  },
-  {
-    ...getTokenByChainAndSymbol(mainnet.id, 'MVI'),
-    hasApy: false,
-    listType: 'Strategies',
-    tradeHref: buildSwapTradePath('mvi'),
   },
   {
     ...getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X'),
@@ -77,12 +66,6 @@ export const productTokens: ProductRow[] = [
     tradeHref: buildLegacyPath(),
   },
   {
-    ...getTokenByChainAndSymbol(mainnet.id, 'cdETI'),
-    hasApy: false,
-    listType: 'Strategies',
-    tradeHref: buildSwapTradePath('cdeti'),
-  },
-  {
     ...getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC'),
     hasApy: false,
     listType: 'Leverage',
@@ -93,5 +76,18 @@ export const productTokens: ProductRow[] = [
     hasApy: false,
     listType: 'Leverage',
     tradeHref: buildLeverageTradePath('BTC2xETH', undefined, arbitrum.id),
+  },
+  // Readd DPI and MVI for now for users.
+  {
+    ...getTokenByChainAndSymbol(mainnet.id, 'DPI'),
+    hasApy: false,
+    listType: 'Strategies',
+    tradeHref: buildSwapTradePath('dpi'),
+  },
+  {
+    ...getTokenByChainAndSymbol(mainnet.id, 'MVI'),
+    hasApy: false,
+    listType: 'Strategies',
+    tradeHref: buildSwapTradePath('mvi'),
   },
 ]

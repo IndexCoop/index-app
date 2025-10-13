@@ -1,20 +1,24 @@
-import { Chain } from 'viem'
-
-import { Token } from '@/constants/tokens'
+import type { Token } from '@/constants/tokens'
+import type { Chain } from 'viem'
 
 export enum LeverageType {
-  Long2x,
-  Long3x,
-  Short,
+  Long2x = 0,
+  Long3x = 1,
+  Short = 2,
 }
 
 export enum LeverageMarket {
+  AAVEUSD = 'AAVE / USD',
+  ARBUSD = 'ARB / USD',
   BTCUSD = 'BTC / USD',
   ETHUSD = 'ETH / USD',
   BTCETH = 'BTC / ETH',
   ETHBTC = 'ETH / BTC',
+  XAUTUSD = 'XAUT / USD',
+  LINKUSD = 'LINK / USD',
   SOLUSD = 'SOL / USD',
   SUIUSD = 'SUI / USD',
+  XRPUSD = 'XRP / USD',
 }
 
 export type LeverageRatio = {
@@ -56,14 +60,25 @@ export interface LeverageToken extends Token {
 export interface Market {
   icon: string
   market: string
+  displayLabel?: string
   networks: Chain[]
   price: number
   change24h: number
   low24h: number
   high24h: number
-  symbol: 'ETH' | 'BTC' | 'SOL' | 'SUI'
+  symbol:
+    | 'ETH'
+    | 'BTC'
+    | 'SOL'
+    | 'SUI'
+    | 'XRP'
+    | 'AAVE'
+    | 'ARB'
+    | 'LINK'
+    | 'XAUt'
   currency: 'USD' | 'BTC' | 'ETH'
-  defaultAsset: { symbol: string; chainId: number }
+  defaultAsset: { [key: number]: string }
+  defaultChainId: number
   lendingProtocol: string
 }
 

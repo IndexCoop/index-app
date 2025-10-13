@@ -1,19 +1,14 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { arbitrum, base } from 'viem/chains'
+import { arbitrum, mainnet } from 'viem/chains'
 
 import {
-  CoinDeskEthTrendIndex,
   DAI,
-  DefiPulseIndex,
   ETH,
   GUSD,
-  HighYieldETHIndex,
-  IndexToken,
-  MetaverseIndex,
   RETH,
   SETH2,
   STETH,
-  Token,
+  type Token,
   USDC,
   USDT,
   WBTC,
@@ -36,24 +31,17 @@ export const currencies = [
   WSTETH,
 ]
 
-const icUSD = getTokenByChainAndSymbol(base.id, 'icUSD')
+const IndexToken = getTokenByChainAndSymbol(mainnet.id, 'INDEX')
+const hyETH = getTokenByChainAndSymbol(mainnet.id, 'hyETH')
+const DPI = getTokenByChainAndSymbol(mainnet.id, 'DPI')
+const MVI = getTokenByChainAndSymbol(mainnet.id, 'MVI')
 
 export const indicesTokenListArbitrum = [
-  getTokenByChainAndSymbol(arbitrum.id, DefiPulseIndex.symbol),
-  getTokenByChainAndSymbol(arbitrum.id, MetaverseIndex.symbol),
-  getTokenByChainAndSymbol(arbitrum.id, HighYieldETHIndex.symbol),
+  getTokenByChainAndSymbol(arbitrum.id, MVI.symbol),
+  getTokenByChainAndSymbol(arbitrum.id, hyETH.symbol),
 ].map((token) => ({ ...token, image: token?.logoURI })) as Token[]
 
-export const indicesTokenListBase = [
-  getTokenByChainAndSymbol(base.id, HighYieldETHIndex.symbol),
-  icUSD,
-].map((token) => ({ ...token, image: token?.logoURI })) as Token[]
-
-export const indicesTokenList = [
-  IndexToken,
-  DefiPulseIndex,
-  MetaverseIndex,
-  CoinDeskEthTrendIndex,
-  HighYieldETHIndex,
-  { ...icUSD, image: icUSD.logoURI },
-] as Token[]
+export const indicesTokenList = [IndexToken, DPI, MVI, hyETH].map((token) => ({
+  ...token,
+  image: token.logoURI,
+})) as Token[]

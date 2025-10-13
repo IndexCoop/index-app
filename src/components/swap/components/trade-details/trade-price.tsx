@@ -1,7 +1,3 @@
-import { Flex, Text } from '@chakra-ui/react'
-
-import { colors } from '@/lib/styles/colors'
-
 interface TradePriceProps {
   comparisonLabel: string
   usdLabel: string
@@ -9,18 +5,11 @@ interface TradePriceProps {
 
 export const TradePrice = ({ comparisonLabel, usdLabel }: TradePriceProps) => {
   return (
-    <Flex align='flex-start' direction={['column', 'row']}>
-      <Text fontSize='12px' fontWeight={500} textColor={colors.ic.gray[600]}>
-        {comparisonLabel}
-      </Text>
-      <Text
-        fontSize='12px'
-        fontWeight={500}
-        textColor={colors.ic.gray[400]}
-        ml={[0, '4px']}
-      >
+    <div className='xs:flex-row flex flex-col items-start'>
+      <p className='text-ic-gray-600 text-xs font-medium'>{comparisonLabel}</p>
+      <p className='text-ic-gray-400 ml-0 text-xs font-medium sm:ml-1'>
         {usdLabel}
-      </Text>
-    </Flex>
+      </p>
+    </div>
   )
 }

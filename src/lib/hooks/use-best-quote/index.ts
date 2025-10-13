@@ -1,24 +1,27 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { usePublicClient } from 'wagmi'
 
 import { ARBITRUM } from '@/constants/chains'
-import { Token } from '@/constants/tokens'
-import {
-  isAvailableForFlashMint,
-  isAvailableForSwap,
-} from '@/lib/hooks/use-best-quote/utils/available'
+import { isAvailableForFlashMint } from '@/lib/hooks/use-best-quote/utils/available'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { parseUnits } from '@/lib/utils'
+import { getTokenPrice } from '@/lib/utils/token-price'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { formatQuoteAnalytics, useAnalytics } from '../use-analytics'
-import { getTokenPrice, useNativeTokenPrice } from '../use-token-price'
+import { useNativeTokenPrice } from '../use-token-price'
 
-import { Quote, QuoteResults, QuoteType, ZeroExQuote } from './types'
+import {
+  type Quote,
+  type QuoteResults,
+  QuoteType,
+  type ZeroExQuote,
+} from './types'
 import { getBestQuote } from './utils/best-quote'
-import { getFlashMintQuote } from './utils/flashmint'
+import { getFlashMintQuote, isQuoteError } from './utils/flashmint'
 import { getIndexQuote } from './utils/index-quote'
+
+import type { Token } from '@/constants/tokens'
 
 export interface FetchQuoteRequest {
   isMinting: boolean
@@ -38,8 +41,7 @@ export const useBestQuote = (
   inputToken: Token,
   outputToken: Token,
 ) => {
-  const publicClient = usePublicClient()
-  const { address, provider, rpcUrl } = useWallet()
+  const { address, provider } = useWallet()
   const { chainId: networkChainId } = useNetwork()
   const { logEvent } = useAnalytics()
   // Assume mainnet when no chain is connected (to be able to fetch quotes)
@@ -77,8 +79,10 @@ export const useBestQuote = (
         return
       }
 
-      if (!provider || !publicClient || !chainId || !address || !rpcUrl) {
-        console.error('Error fetching quotes - no provider or chain id present')
+      if (!provider || !chainId || !address) {
+        console.error(
+          'Error fetching quotes - no provider | chain id | address present',
+        )
         return
       }
 
@@ -95,29 +99,38 @@ export const useBestQuote = (
       const inputTokenPrice = await getTokenPrice(inputToken, 1)
       const outputTokenPrice = await getTokenPrice(outputToken, 1)
 
-      const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
-      const canSwapIndexToken = isAvailableForSwap(indexToken)
+      const canFlashmintIndexToken = isAvailableForFlashMint(indexToken.symbol)
+      const canSwapIndexToken = true
 
       const fetchFlashMintQuote = async () => {
         if (canFlashmintIndexToken) {
           setIsFetchingFlashMint(true)
-          const quoteFlashMint = await getFlashMintQuote({
-            ...request,
-            account: address,
-            chainId,
-            inputToken,
-            inputTokenAmountWei,
-            inputTokenPrice,
-            outputToken,
-            outputTokenPrice,
-          })
+          const quoteFlashMint = await getFlashMintQuote(
+            {
+              ...request,
+              account: address,
+              chainId,
+              inputToken,
+              inputTokenAmountWei,
+              inputTokenPrice,
+              outputToken,
+              outputTokenPrice,
+            },
+            provider,
+          )
 
-          logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
-          setIsFetchingFlashMint(false)
-          setQuoteFlashmint(quoteFlashMint)
+          if (isQuoteError(quoteFlashMint)) {
+            logEvent('Quote Failed', quoteFlashMint)
+            setQuoteFlashmint(null)
+          } else {
+            logEvent('Quote Received', formatQuoteAnalytics(quoteFlashMint))
+            setQuoteFlashmint(quoteFlashMint)
+          }
         } else {
           setQuoteFlashmint(null)
         }
+
+        setIsFetchingFlashMint(false)
       }
 
       const fetchIndexSwapQuote = async () => {
@@ -165,8 +178,6 @@ export const useBestQuote = (
       outputToken,
       nativeTokenPrice,
       provider,
-      publicClient,
-      rpcUrl,
     ],
   )
 
@@ -177,8 +188,8 @@ export const useBestQuote = (
       quote0x?.outputTokenAmountUsdAfterFees ?? null,
       quoteFlashMint?.outputTokenAmountUsdAfterFees ?? null,
     )
-    const canFlashmintIndexToken = isAvailableForFlashMint(indexToken)
-    const canSwapIndexToken = isAvailableForSwap(indexToken)
+    const canFlashmintIndexToken = isAvailableForFlashMint(indexToken.symbol)
+    const canSwapIndexToken = true
     const results = {
       bestQuote,
       results: {

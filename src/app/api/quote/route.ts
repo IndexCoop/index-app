@@ -1,21 +1,23 @@
-import { EthAddress, QuoteToken } from '@indexcoop/flash-mint-sdk'
+import { EthAddress, type QuoteToken } from '@indexcoop/flash-mint-sdk'
 import {
   getTokenByChainAndAddress,
   isAddressEqual,
   isProductToken,
 } from '@indexcoop/tokenlists'
-import { NextRequest, NextResponse } from 'next/server'
-import { Address } from 'viem'
+import { isAxiosError } from 'axios'
+import { NextResponse } from 'next/server'
 
-import { isBaseToken } from '@/lib/utils/tokens'
+import { getApiV2Quote } from '@/gen'
+
+import type { NextRequest } from 'next/server'
+import type { Address } from 'viem'
 
 export interface IndexQuoteRequest {
   chainId: number
   account: string
   inputToken: string
   outputToken: string
-  inputAmount?: string
-  outputAmount?: string
+  inputAmount: string
   slippage: number
 }
 
@@ -28,18 +30,11 @@ export async function POST(req: NextRequest) {
       inputToken: inputTokenAddress,
       inputAmount,
       outputToken: outputTokenAddress,
-      outputAmount,
       slippage,
     } = request
 
-    const inputToken = getQuoteToken(inputTokenAddress, chainId)
-    const outputToken = getQuoteToken(outputTokenAddress, chainId)
-    const isBtcOnBase = isBaseToken(
-      chainId,
-      inputTokenAddress,
-      outputTokenAddress,
-    )
-    const isMintingIcUsd = outputToken?.quoteToken.symbol === 'icUSD'
+    const inputToken = getQuoteToken(inputTokenAddress as Address, chainId)
+    const outputToken = getQuoteToken(outputTokenAddress as Address, chainId)
 
     if (
       !inputToken ||
@@ -49,50 +44,36 @@ export async function POST(req: NextRequest) {
       return BadRequest('Bad Request')
     }
 
-    const isMinting = outputToken.isIndex
     const quoteRequest: {
       account: string
       chainId: string
       inputToken: string
       outputToken: string
-      inputAmount?: string
-      outputAmount?: string
+      inputAmount: string
       slippage: string
     } = {
       account,
       chainId: String(chainId),
       inputToken: inputToken.quoteToken.address,
       outputToken: outputToken.quoteToken.address,
+      inputAmount,
       slippage: String(slippage),
     }
-    if (isMinting) {
-      quoteRequest.outputAmount = outputAmount
-    } else {
-      quoteRequest.inputAmount = inputAmount
-    }
-    if (isMintingIcUsd || isBtcOnBase) {
-      quoteRequest.inputAmount = inputAmount ?? '0'
-    }
 
-    const query = new URLSearchParams(quoteRequest).toString()
-    const url = `https://api.indexcoop.com/v2/quote?${query}`
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.INDEX_COOP_API_V2_KEY,
-      } as HeadersInit,
-    })
-
-    const quote = await response.json()
+    const { data: quote } = await getApiV2Quote(quoteRequest)
 
     if (!quote) {
       return NextResponse.json({ message: 'No quote found.' }, { status: 404 })
     }
 
-    return NextResponse.json(quote)
+    return NextResponse.json(quote, { status: 200 })
   } catch (error) {
-    console.error(error)
+    if (isAxiosError(error) && error.response) {
+      return NextResponse.json(error.response.data, {
+        status: error.response.status,
+      })
+    }
+
     return NextResponse.json(error, { status: 500 })
   }
 }

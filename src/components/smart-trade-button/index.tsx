@@ -1,4 +1,3 @@
-import { useAppKit } from '@reown/appkit/react'
 import { useCallback, useMemo } from 'react'
 
 import { WarningType, Warnings } from '@/components/swap/components/warning'
@@ -8,13 +7,15 @@ import {
   useTradeButtonState,
 } from '@/components/swap/hooks/use-trade-button-state'
 import { TradeButton } from '@/components/trade-button'
-import { Token } from '@/constants/tokens'
 import { useApproval } from '@/lib/hooks/use-approval'
+import { useCustomAppKit } from '@/lib/hooks/use-custom-app-kit'
 import { useIsTokenPairTradable } from '@/lib/hooks/use-is-token-pair-tradable'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useProtectionContext } from '@/lib/providers/protection'
 import { useSlippage } from '@/lib/providers/slippage'
 import { getNativeToken } from '@/lib/utils/tokens'
+
+import type { Token } from '@/constants/tokens'
 
 type SmartTradeButtonProps = {
   inputToken: Token
@@ -51,8 +52,8 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
   } = props
 
   const { chainId } = useNetwork()
-  const { open } = useAppKit()
-  const { isRestrictedCountry, isUsingVpn } = useProtectionContext()
+  const { openConnectView, openNetworksView } = useCustomAppKit()
+  const { isRestrictedCountry } = useProtectionContext()
   const { slippage } = useSlippage()
 
   const {
@@ -95,13 +96,13 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     ) {
       return [WarningType.restricted]
     }
-    if (
-      !isTradablePair &&
-      isUsingVpn &&
-      !hiddenWarnings?.includes(WarningType.vpn)
-    ) {
-      return [WarningType.vpn]
-    }
+    // if (
+    //   !isTradablePair &&
+    //   isUsingVpn &&
+    //   !hiddenWarnings?.includes(WarningType.vpn)
+    // ) {
+    //   return [WarningType.vpn]
+    // }
     if (slippage > 9 && !hiddenWarnings?.includes(WarningType.priceImpact)) {
       return [WarningType.priceImpact]
     }
@@ -109,22 +110,16 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
       return [WarningType.flashbots]
     }
     return []
-  }, [
-    hiddenWarnings,
-    isRestrictedCountry,
-    isTradablePair,
-    isUsingVpn,
-    slippage,
-  ])
+  }, [hiddenWarnings, isRestrictedCountry, isTradablePair, slippage])
 
   const onClick = useCallback(async () => {
     if (buttonState === TradeButtonState.connectWallet) {
-      open({ view: 'Connect' })
+      openConnectView('Smart Trade Button')
       return
     }
 
     if (buttonState === TradeButtonState.wrongNetwork) {
-      open({ view: 'Networks' })
+      openNetworksView('Smart Trade Button')
       return
     }
 
@@ -149,7 +144,8 @@ export function SmartTradeButton(props: SmartTradeButtonProps) {
     onApproveForSwap,
     onOpenTransactionReview,
     onRefetchQuote,
-    open,
+    openConnectView,
+    openNetworksView,
     shouldApprove,
   ])
 

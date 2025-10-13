@@ -1,63 +1,57 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { ArrowPathIcon } from '@heroicons/react/20/solid'
+import { AnimatePresence } from 'framer-motion'
+import { useEffect } from 'react'
 
-import { ChartTabs } from '@/app/earn/components/chart-tabs'
-import { FaqSection } from '@/app/earn/components/faq-section'
-import { useEarnContext } from '@/app/earn/provider'
-import { ChartTab } from '@/app/earn/types'
-import { ApyChart } from '@/components/charts/apy-chart'
-import { PriceChart } from '@/components/charts/price-chart'
-import { TvlChart } from '@/components/charts/tvl-chart'
-
-import { EarnWidget } from './components/earn-widget'
-import { QuickStats } from './components/quick-stats'
+import { BalanceCard } from './components/balance-card'
+import { ProductCard } from './components/product-card'
+import { useEarnContext } from './provider'
 
 export default function Page() {
-  const { indexToken, isFetchingStats, apy, nav, tvl } = useEarnContext()
-  const [currentTab, setCurrentTab] = useState<ChartTab>('apy')
+  const { products, balances } = useEarnContext()
+
+  useEffect(() => {
+    document.body.classList.add('dark', 'bg-ic-black')
+    return () => {
+      document.body.classList.remove('dark', 'bg-ic-black')
+    }
+  }, [])
 
   return (
-    <div className='mx-auto flex max-w-screen-2xl justify-center'>
-      <div className='flex w-full flex-col items-center'>
-        <div className='mx-auto flex w-full flex-col gap-4 px-1 py-4 sm:gap-5 sm:px-4'>
-          <QuickStats />
-          <div className='flex flex-col-reverse gap-4 lg:flex-row'>
-            <div className='flex w-full flex-col gap-4 lg:min-w-[67%] lg:max-w-[67%] lg:gap-5'>
-              <div className='flex h-[350px]'>
-                {currentTab === 'price' && (
-                  <PriceChart
-                    indexTokenAddress={indexToken.address ?? ''}
-                    isFetchingStats={isFetchingStats}
-                    nav={nav}
-                  />
-                )}
-                {currentTab === 'apy' && (
-                  <ApyChart
-                    indexTokenAddress={indexToken.address ?? ''}
-                    isFetchingStats={isFetchingStats}
-                    apy={apy}
-                  />
-                )}
-                {currentTab === 'tvl' && (
-                  <TvlChart
-                    indexTokenAddress={indexToken.address ?? ''}
-                    isFetchingStats={isFetchingStats}
-                    tvl={tvl}
-                  />
-                )}
-              </div>
-              <ChartTabs
-                currentTab={currentTab}
-                setCurrentTab={setCurrentTab}
-              />
-            </div>
-            <Suspense>
-              <EarnWidget />
-            </Suspense>
+    <div className='mt-8 flex w-full flex-col items-center p-4'>
+      <div className='mx-auto flex max-w-7xl flex-col gap-4'>
+        <AnimatePresence>
+          {balances.length > 0 && (
+            <BalanceCard products={products} balances={balances} />
+          )}
+        </AnimatePresence>
+
+        <div>
+          <h3 className='my-5 hidden w-full text-lg font-medium text-neutral-50 md:block'>
+            Strategies
+          </h3>
+          <div className='flex flex-wrap justify-start gap-4 pb-12 xl:justify-center'>
+            {products
+              .filter((p) => p.active)
+              .map((p) => (
+                <ProductCard
+                  key={`product-item-${p.tokenAddress}`}
+                  product={p}
+                  pill={
+                    ['wsteth15x', 'iceth'].includes(p.id)
+                      ? {
+                          text: 'Smart Loop',
+                          icon: (
+                            <ArrowPathIcon className='h-2 w-2 fill-zinc-900' />
+                          ),
+                        }
+                      : undefined
+                  }
+                />
+              ))}
           </div>
         </div>
-        <FaqSection />
       </div>
     </div>
   )

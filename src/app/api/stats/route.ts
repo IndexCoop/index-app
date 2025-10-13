@@ -1,46 +1,40 @@
-import { CoinGeckoService, CoingeckoProvider } from '@indexcoop/analytics-sdk'
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 
-import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
-import { fetchCarryCosts } from '@/lib/utils/fetch'
+import { getApiV2ProductsStatsChainidAddress } from '@/gen'
+
+import type {
+  GetApiV2ProductsStatsChainidAddressPathParamsChainIdEnum,
+  GetApiV2ProductsStatsChainidAddressQueryParamsBaseCurrencyEnum,
+} from '@/gen'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
 
-  const tokenAddress = searchParams.get('address')
-  const symbol = searchParams.get('symbol')
+  const chainId = searchParams.get('chainId')
+  const address = searchParams.get('address')
   const base = searchParams.get('base')
   const baseCurrency = searchParams.get('baseCurrency')
-  if (!tokenAddress || !symbol || !base || !baseCurrency) {
+
+  if (!chainId || !address || !base || !baseCurrency) {
     return NextResponse.json('Bad Request', { status: 400 })
   }
+
   try {
-    const coingeckoService = new CoinGeckoService(
-      process.env.COINGECKO_API_KEY!,
+    const { data: stats } = await getApiV2ProductsStatsChainidAddress(
+      {
+        chainId:
+          chainId as GetApiV2ProductsStatsChainidAddressPathParamsChainIdEnum,
+        address,
+      },
+      {
+        base,
+        baseCurrency:
+          baseCurrency as GetApiV2ProductsStatsChainidAddressQueryParamsBaseCurrencyEnum,
+      },
     )
-    const provider = new CoingeckoProvider(coingeckoService)
-    const data = await provider.getTokenStats(base, baseCurrency)
-    const carryCosts = await fetchCarryCosts()
-    const formattedSymbol = (
-      symbol.startsWith('u') ? symbol.slice(1) : symbol
-    ).toLowerCase()
-    const costOfCarry = carryCosts
-      ? (carryCosts[formattedSymbol] ?? null)
-      : null
-    const metrics = await fetchTokenMetrics({
-      tokenAddress: tokenAddress,
-      metrics: ['fees', 'nav', 'navchange'],
-    })
 
     return NextResponse.json({
-      base: { ...data, baseCurrency },
-      token: {
-        symbol,
-        costOfCarry,
-        nav: metrics?.NetAssetValue ?? 0,
-        navchange: metrics?.NavChange24Hr ?? 0,
-        streamingFee: metrics?.StreamingFee ?? 0,
-      },
+      ...stats,
     })
   } catch (error) {
     return NextResponse.json(error, { status: 500 })

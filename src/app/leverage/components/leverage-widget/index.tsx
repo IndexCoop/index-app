@@ -1,23 +1,27 @@
 'use client'
 
-import { useCallback } from 'react'
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
+import { useAtom } from 'jotai'
+import { useCallback, useEffect, useMemo } from 'react'
 
+import { TradeInputSelector } from '@/app/leverage/components/leverage-widget/trade-input-selector'
+import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { Receive } from '@/components/receive'
-import { Settings } from '@/components/settings'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
+import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
+import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
@@ -25,11 +29,10 @@ import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
 
-import './styles.css'
-
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 export function LeverageWidget() {
+  const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
   const { queryParams } = useQueryParams()
   const { address } = useWallet()
@@ -39,28 +42,37 @@ export function LeverageWidget() {
     inputTokens,
     inputValue,
     isMinting,
+    marketData,
     leverageType,
     outputTokens,
-    transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
     onSelectLeverageType,
     onSelectOutputToken,
     outputToken,
     reset,
+    refetchQuote,
     supportedLeverageTypes,
     toggleIsMinting,
   } = useLeverageToken()
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
+
+  useEffect(() => {
+    sendTradeEvent({ type: 'INITIALIZE' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const {
     contract,
     hasInsufficientFunds,
-    inputAmoutUsd,
     inputBalance,
     inputBalanceFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
-    ouputAmount,
+    outputAmount,
     outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     resetData,
   } = useFormattedLeverageData()
 
@@ -74,66 +86,82 @@ export function LeverageWidget() {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const {
-    isOpen: isTransactionReviewOpen,
-    onOpen: onOpenTransactionReview,
-    onClose: onCloseTransactionReview,
-  } = useDisclosure()
-
-  const {
-    auto: autoSlippage,
-    isAuto: isAutoSlippage,
-    set: setSlippage,
-    slippage,
-  } = useSlippage()
 
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
-    onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
-  }, [inputBalance, inputToken, onChangeInputTokenAmount])
+    const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)
+    onChangeInputTokenAmount(formatWei(maxBalance, inputToken.decimals))
+  }, [gasData, inputBalance, inputToken, onChangeInputTokenAmount])
+
+  useEffect(() => {
+    if (tradeState.matches('reset')) {
+      reset()
+      resetData()
+      sendTradeEvent({ type: 'RESET_DONE' })
+    }
+  }, [tradeState, reset, resetData, sendTradeEvent])
+
+  const hasFetchingError = useMemo(
+    () => tradeState.matches('quoteNotFound'),
+    [tradeState],
+  )
 
   return (
     <div
-      className='leverage-widget flex flex-col gap-4 rounded-lg px-4 pb-5 pt-4'
+      className='flex w-full flex-col gap-3 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4 sm:gap-4'
       id='close-position-scroll'
     >
-      <div className='flex justify-end'>
-        <Settings
-          isAuto={isAutoSlippage}
-          isDarkMode={true}
-          slippage={slippage}
-          onChangeSlippage={setSlippage}
-          onClickAuto={autoSlippage}
-        />
-      </div>
-      <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
+      <MarketSelector
+        buttonClassName='bg-zinc-800 data-[active]:bg-zinc-700 data-[hover]:bg-zinc-700'
+        className='hidden lg:flex'
+        marketData={marketData}
+        showLogo
+      />
+      <BuySellSelector
+        isMinting={isMinting}
+        animate
+        onClick={toggleIsMinting}
+      />
       <LeverageSelector
-        selectedTye={leverageType}
+        selectedType={leverageType}
         supportedTypes={supportedLeverageTypes}
         onSelectType={onSelectLeverageType}
       />
-      <TradeInputSelector
-        config={{ isReadOnly: false }}
-        balance={inputBalanceFormatted}
-        caption='Pay'
-        formattedFiat={inputAmoutUsd}
-        selectedToken={inputToken}
-        selectedTokenAmount={inputValue}
-        onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
-        onClickBalance={onClickBalance}
-        onSelectToken={onOpenSelectInputToken}
-      />
+      <div className='relative'>
+        <TradeInputSelector
+          balance={inputBalanceFormatted}
+          caption='Pay'
+          formattedFiat={inputValueFormattedUsd}
+          selectedToken={inputToken}
+          selectedTokenAmount={inputValue}
+          onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
+          onClickBalance={onClickBalance}
+          onSelectToken={onOpenSelectInputToken}
+        />
+      </div>
+
       <Receive
         isLoading={isFetchingQuote}
-        outputAmount={ouputAmount}
-        outputAmountUsd={outputAmountUsd}
+        showOutputAmount={inputTokenAmount > BigInt(0)}
+        outputAmount={isMinting ? outputAmount : quoteAmount}
+        outputAmountUsd={isMinting ? outputAmountUsd : quoteAmountUsd}
         selectedOutputToken={outputToken}
         onSelectToken={onOpenSelectOutputToken}
       />
+      {hasFetchingError && (
+        <div className='flex items-center justify-center gap-2 text-sm text-red-400'>
+          <div className='flex items-center gap-1'>
+            <ExclamationCircleIcon className='size-5' />
+            <h3 className='font-semibold'>Quote Error</h3>
+            {':'}
+          </div>
+          <p> {tradeState.context.quoteError}</p>
+        </div>
+      )}
       <Summary />
       <SmartTradeButton
         contract={contract ?? ''}
-        hasFetchingError={false}
+        hasFetchingError={hasFetchingError}
         hasInsufficientFunds={hasInsufficientFunds}
         hiddenWarnings={hiddenLeverageWarnings}
         inputTokenAmount={inputTokenAmount}
@@ -146,8 +174,8 @@ export function LeverageWidget() {
         buttonLabelOverrides={{
           [TradeButtonState.default]: 'Review Transaction',
         }}
-        onOpenTransactionReview={onOpenTransactionReview}
-        onRefetchQuote={() => {}}
+        onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
+        onRefetchQuote={refetchQuote}
       />
       <SelectTokenModal
         isDarkMode={true}
@@ -172,18 +200,14 @@ export function LeverageWidget() {
         address={address}
         tokens={outputTokens}
       />
-      {transactionReview && (
-        <TransactionReviewModal
-          isDarkMode={true}
-          isOpen={isTransactionReviewOpen}
-          onClose={() => {
-            reset()
-            resetData()
-            onCloseTransactionReview()
-          }}
-          transactionReview={transactionReview}
-        />
-      )}
+      <TransactionReviewModal
+        isDarkMode={true}
+        onClose={() => {
+          reset()
+          resetData()
+          sendTradeEvent({ type: 'CLOSE' })
+        }}
+      />
     </div>
   )
 }

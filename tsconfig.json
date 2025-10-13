@@ -5,8 +5,10 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "strictNullChecks": true,
     "allowUnreachableCode": false,
     "allowImportingTsExtensions": true,
+    "downlevelIteration": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
@@ -23,7 +25,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "~/*": ["./public/*"]
     }
   },
   "include": [
@@ -31,7 +34,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "env.d.ts"
+    "env.d.ts",
+    "src/app/leverage/utils/datafeed.js"
   ],
   "exclude": ["node_modules"]
 }

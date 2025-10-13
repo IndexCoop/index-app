@@ -1,132 +1,186 @@
 'use client'
 
-import { useCallback, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useAtom } from 'jotai'
+import range from 'lodash/range'
+import { useCallback, useEffect, useMemo } from 'react'
+import { isAddressEqual } from 'viem'
 
-import { Summary } from '@/app/earn/components/earn-widget/components/summary'
-import { supportedNetworks } from '@/app/earn/constants'
-import { useEarnContext } from '@/app/earn/provider'
-import { useQueryParams } from '@/app/earn/use-query-params'
+import { useQueryParams } from '@/app/earn-old/use-query-params'
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { Receive } from '@/components/receive'
-import { BuySellSelector } from '@/components/selectors/buy-sell-selector'
-import { Settings } from '@/components/settings'
-import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
-import { TradeInputSelector } from '@/components/swap/components/trade-input-selector'
 import { TransactionReviewModal } from '@/components/swap/components/transaction-review'
 import { WarningType } from '@/components/swap/components/warning'
 import { TradeButtonState } from '@/components/swap/hooks/use-trade-button-state'
-import { TokenDisplay } from '@/components/token-display'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
+import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei } from '@/lib/utils'
+import { getMaxBalance } from '@/lib/utils/max-balance'
 
+import { supportedNetworks } from '../../constants'
+import { useEarnContext } from '../../provider'
 import { useFormattedEarnData } from '../../use-formatted-data'
 
-import './styles.css'
+import { DepositWithdraw } from './components/deposit-withdraw'
+import { Projection } from './components/projection'
+import { SmartTradeButton } from './components/smart-trade-button'
+import { Summary } from './components/summary'
+import { TradeInputSelector } from './components/trade-input-selector'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 export function EarnWidget() {
+  const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
-  const { queryParams } = useQueryParams()
   const { address } = useWallet()
+  const { queryParams } = useQueryParams()
+
   const {
     indexToken,
     inputToken,
-    inputTokenAmount,
     inputTokens,
+    outputTokens,
+    inputTokenAmount,
     inputValue,
     isMinting,
-    outputTokens,
-    transactionReview,
     onChangeInputTokenAmount,
     onSelectInputToken,
     onSelectOutputToken,
+    balances,
+    products,
     outputToken,
     reset,
+    refetchQuote,
     toggleIsMinting,
+    quoteResult,
   } = useEarnContext()
 
   const {
     contract,
     hasInsufficientFunds,
-    inputAmoutUsd,
     inputBalance,
     inputBalanceFormatted,
+    inputValueFormattedUsd,
     isFetchingQuote,
-    ouputAmount,
+    outputAmount,
+    outputAmountUsd,
+    quoteAmount,
+    quoteAmountUsd,
     resetData,
   } = useFormattedEarnData()
+
+  const selectedProduct = products.find((p) =>
+    isAddressEqual(
+      p.tokenAddress as `0x${string}`,
+      (indexToken?.address ?? '') as `0x${string}`,
+    ),
+  )
 
   const {
     isOpen: isSelectInputTokenOpen,
     onOpen: onOpenSelectInputToken,
     onClose: onCloseSelectInputToken,
   } = useDisclosure()
+
   const {
     isOpen: isSelectOutputTokenOpen,
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const {
-    isOpen: isTransactionReviewOpen,
-    onOpen: onOpenTransactionReview,
-    onClose: onCloseTransactionReview,
-  } = useDisclosure()
 
-  const {
-    auto: autoSlippage,
-    isAuto: isAutoSlippage,
-    set: setSlippage,
-    setSlippageForToken,
-    slippage,
-  } = useSlippage()
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
+
+  useEffect(() => {
+    sendTradeEvent({ type: 'INITIALIZE' })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onClickBalance = useCallback(() => {
     if (!inputBalance) return
-    onChangeInputTokenAmount(formatWei(inputBalance, inputToken.decimals))
-  }, [inputBalance, inputToken, onChangeInputTokenAmount])
+    const maxBalance = getMaxBalance(inputToken, inputBalance, gasData)
+    onChangeInputTokenAmount(formatWei(maxBalance, inputToken.decimals))
+  }, [gasData, inputBalance, inputToken, onChangeInputTokenAmount])
 
   useEffect(() => {
-    setSlippageForToken(isMinting ? outputToken.symbol : inputToken.symbol)
-  }, [inputToken, isMinting, outputToken, setSlippageForToken])
+    if (tradeState.matches('reset')) {
+      reset()
+      resetData()
+      sendTradeEvent({ type: 'RESET_DONE' })
+    }
+  }, [tradeState, reset, resetData, sendTradeEvent])
+
+  const hasFetchingError = useMemo(
+    () => tradeState.matches('quoteNotFound'),
+    [tradeState],
+  )
 
   return (
-    <div className='earn-widget flex h-fit flex-col gap-3 rounded-lg px-4 py-6 lg:ml-auto'>
-      <div className='flex justify-between'>
-        <TokenDisplay mini token={indexToken} />
-        <Settings
-          isAuto={isAutoSlippage}
-          isDarkMode={false}
-          slippage={slippage}
-          onChangeSlippage={setSlippage}
-          onClickAuto={autoSlippage}
-        />
-      </div>
-      <BuySellSelector isMinting={isMinting} onClick={toggleIsMinting} />
+    <div className='earn-widget flex h-fit flex-col gap-6'>
+      <DepositWithdraw
+        isMinting={isMinting}
+        toggleIsMinting={toggleIsMinting}
+      />
       <TradeInputSelector
-        config={{ isReadOnly: false }}
+        showSelectorButtonChevron={isMinting}
         balance={inputBalanceFormatted}
-        caption='You pay'
-        formattedFiat={inputAmoutUsd}
+        caption={isMinting ? 'Deposit' : 'Withdraw'}
+        formattedFiat={inputValueFormattedUsd}
         selectedToken={inputToken}
         selectedTokenAmount={inputValue}
         onChangeInput={(_, amount) => onChangeInputTokenAmount(amount)}
         onClickBalance={onClickBalance}
-        onSelectToken={onOpenSelectInputToken}
+        onSelectToken={() => isMinting && onOpenSelectInputToken()}
       />
-      <Receive
-        isLoading={isFetchingQuote}
-        outputAmount={ouputAmount}
-        selectedOutputToken={outputToken}
-        onSelectToken={onOpenSelectOutputToken}
+      <AnimatePresence mode='wait'>
+        {!isMinting && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              duration: 0.3,
+              height: { duration: 0.2 },
+              opacity: { duration: 0.2 },
+            }}
+            className='overflow-hidden'
+          >
+            <Receive
+              isLoading={isFetchingQuote}
+              showOutputAmount={inputTokenAmount > BigInt(0)}
+              outputAmount={isMinting ? outputAmount : quoteAmount}
+              outputAmountUsd={isMinting ? outputAmountUsd : quoteAmountUsd}
+              selectedOutputToken={outputToken}
+              onSelectToken={onOpenSelectOutputToken}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <Projection
+        isQuoteLoading={isFetchingQuote}
+        amount={inputValue}
+        inputAmountUsd={quoteResult?.quote?.inputTokenAmountUsd ?? 0}
+        balance={
+          balances.find((b) => b.token === indexToken.address)?.value ??
+          BigInt(0)
+        }
+        product={selectedProduct}
+        isMinting={isMinting}
       />
+      {hasFetchingError && (
+        <div className='flex justify-center gap-2 text-sm text-red-400'>
+          <p className='font-semibold'>Error fetching quote:</p>
+          {tradeState.context.quoteError}
+        </div>
+      )}
       <Summary />
       <SmartTradeButton
         contract={contract ?? ''}
-        hasFetchingError={false}
+        hasFetchingError={hasFetchingError}
         hasInsufficientFunds={hasInsufficientFunds}
         hiddenWarnings={hiddenLeverageWarnings}
         inputTokenAmount={inputTokenAmount}
@@ -136,14 +190,27 @@ export function EarnWidget() {
         isSupportedNetwork={isSupportedNetwork}
         queryNetwork={queryParams.queryNetwork}
         outputToken={outputToken}
-        buttonLabelOverrides={{
-          [TradeButtonState.default]: 'Review Transaction',
-        }}
-        onOpenTransactionReview={onOpenTransactionReview}
-        onRefetchQuote={() => {}}
+        disabled={outputToken.symbol === 'icETH'}
+        buttonLabelOverrides={
+          outputToken.symbol === 'icETH'
+            ? range(0, 10).reduce(
+                (acc, s) =>
+                  Object.assign(acc, {
+                    [s as TradeButtonState]: `Deposit Unavailable`,
+                  }),
+                {} as Record<TradeButtonState, string>,
+              )
+            : {
+                [TradeButtonState.default]: 'Review Transaction',
+              }
+        }
+        onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
+        onRefetchQuote={refetchQuote}
       />
       <SelectTokenModal
+        isDarkMode={true}
         isOpen={isSelectInputTokenOpen}
+        showBalances={true}
         onClose={onCloseSelectInputToken}
         onSelectedToken={(tokenSymbol, chainId) => {
           onSelectInputToken(tokenSymbol, chainId)
@@ -151,9 +218,9 @@ export function EarnWidget() {
         }}
         address={address}
         tokens={inputTokens}
-        showNetworks={!isMinting}
       />
       <SelectTokenModal
+        isDarkMode={true}
         isOpen={isSelectOutputTokenOpen}
         onClose={onCloseSelectOutputToken}
         onSelectedToken={(tokenSymbol, chainId) => {
@@ -162,19 +229,15 @@ export function EarnWidget() {
         }}
         address={address}
         tokens={outputTokens}
-        showNetworks={isMinting}
       />
-      {transactionReview && (
-        <TransactionReviewModal
-          isOpen={isTransactionReviewOpen}
-          onClose={() => {
-            reset()
-            resetData()
-            onCloseTransactionReview()
-          }}
-          transactionReview={transactionReview}
-        />
-      )}
+      <TransactionReviewModal
+        isDarkMode
+        onClose={() => {
+          reset()
+          resetData()
+          sendTradeEvent({ type: 'CLOSE' })
+        }}
+      />
     </div>
   )
 }

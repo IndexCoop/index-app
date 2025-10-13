@@ -1,5 +1,4 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/16/solid'
-import { useAppKit } from '@reown/appkit/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Image from 'next/image'
@@ -8,6 +7,7 @@ import { useMemo } from 'react'
 
 import { usePrtStakingContext } from '@/app/prt-staking/provider'
 import { ProductRevenueToken } from '@/app/prt-staking/types'
+import { useCustomAppKit } from '@/lib/hooks/use-custom-app-kit'
 import { useMainnetOnly } from '@/lib/hooks/use-network'
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
@@ -29,7 +29,7 @@ export function PrtCard({ onClick }: Props) {
     poolStakedBalanceFormatted,
     userStakedBalanceFormatted,
   } = usePrtStakingContext()
-  const { open } = useAppKit()
+  const { openConnectView, openNetworksView } = useCustomAppKit()
   const isSupportedNetwork = useMainnetOnly()
 
   const buttonLabel = useMemo(() => {
@@ -42,13 +42,12 @@ export function PrtCard({ onClick }: Props) {
 
   const handleClick = () => {
     if (!accountAddress) {
-      open({ view: 'Connect' })
+      openConnectView('PRT Card')
       return
     }
 
     if (!isSupportedNetwork) {
-      open({ view: 'Networks' })
-
+      openNetworksView('PRT Card')
       return
     }
 
@@ -65,7 +64,7 @@ export function PrtCard({ onClick }: Props) {
   return (
     <div className='border-ic-gray-100 bg-ic-white min-w-80 flex-1 flex-col rounded-3xl border px-4 py-5'>
       <div className='mb-4 flex font-bold tracking-wider'>
-        <div className='flex flex-1 items-center'>
+        <div className='text-ic-black flex flex-1 items-center'>
           <div className='my-auto mr-2 overflow-hidden rounded-full'>
             <Image
               src={token.rewardTokenData.logoURI}

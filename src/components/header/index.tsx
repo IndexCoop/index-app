@@ -20,7 +20,6 @@ const navigation = [
   { name: 'Earn', href: Path.EARN },
   { name: 'Swap', href: Path.SWAP, isMoreNavLink: true },
   { name: 'PRT Staking', href: Path.PRT_STAKING, isMoreNavLink: true },
-  { name: 'Presales', href: Path.PRESALES, isMoreNavLink: true },
   { name: 'Legacy Products', href: Path.LEGACY, isMoreNavLink: true },
 ]
 
@@ -29,7 +28,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className='bg-ic-white dark:bg-ic-black dark:border-ic-gray-600 shadow-ic-black/15 border-b-0 opacity-[.96] shadow-md backdrop-blur dark:border-b'>
+    <header className='shadow-ic-black/15 z-50 border-b-0 bg-opacity-80 shadow-md backdrop-blur-xl dark:border-b dark:border-neutral-600 dark:border-opacity-30'>
       <nav
         className='mx-auto flex items-center justify-between px-6 py-3.5 lg:px-8'
         aria-label='Global'
@@ -66,7 +65,7 @@ export function Header() {
         onClose={setMobileMenuOpen}
       >
         <div className='fixed inset-0 z-10' />
-        <Dialog.Panel className='bg-ic-white dark:bg-ic-black fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:sm:ring-gray-100/10'>
+        <Dialog.Panel className='bg-ic-white fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-zinc-900 dark:sm:ring-gray-100/10'>
           <div className='flex items-center justify-between'>
             <Logo />
             <button
@@ -86,6 +85,7 @@ export function Header() {
                     key={item.name}
                     href={item.href}
                     className='text-ic-gray-900 hover:bg-ic-gray-50 dark:text-ic-gray-50 dark:hover:bg-ic-gray-900 -mx-3 block rounded-lg px-3 py-2 text-sm font-semibold leading-7'
+                    prefetch={true}
                   >
                     {item.name}
                   </Link>

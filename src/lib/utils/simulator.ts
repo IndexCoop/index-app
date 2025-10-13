@@ -1,4 +1,11 @@
-import { QuoteTransaction } from '@/lib/hooks/use-best-quote/types'
+import type { QuoteTransaction } from '@/lib/hooks/use-best-quote/types'
+
+export interface TxSimulationResult {
+  success: boolean
+  simulation: {
+    errorMessage?: string
+  }
+}
 
 export class TxSimulator {
   /**
@@ -47,9 +54,9 @@ export class TxSimulator {
   /**
    * Simulates a given transaction request on Tenderly.
    * @param tx A PopulatedTransaction to be simulated on the specified chain.
-   * @returns A boolean whether the simulation was successful.
+   * @returns A result object of the simulation incl. the success state.
    */
-  async simulate(tx: QuoteTransaction): Promise<boolean> {
+  async simulate(tx: QuoteTransaction): Promise<TxSimulationResult> {
     const apiUrl = `https://api.tenderly.co/api/v1/account/${this.user}/project/${this.project}/simulate`
     const body = {
       network_id: tx.chainId ?? 1,
@@ -63,8 +70,6 @@ export class TxSimulator {
       // simulation config (tenderly specific)
       save_if_fails: true,
       save: true,
-      shared: true,
-      // simulation_type: 'quick',
     }
 
     const requestOptions = {
@@ -78,7 +83,17 @@ export class TxSimulator {
       throw Error('Tenderly simulation quota reached')
     }
     const data = await res.json()
-    this.share(data.simulation.id)
-    return data.simulation.status === true
+    if (data.error) {
+      return {
+        success: false,
+        simulation: {
+          errorMessage: data.error.message,
+        },
+      }
+    }
+    return {
+      success: data.simulation.status === true,
+      simulation: {},
+    }
   }
 }

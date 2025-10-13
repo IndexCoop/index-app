@@ -1,9 +1,13 @@
+import {
+  getTokenByChainAndAddress,
+  getUnderlyingToken,
+  isLeverageToken,
+} from '@indexcoop/tokenlists'
 import { formatUnits } from 'viem'
 
-import { UtmParam } from '@/app/store/utm-atoms'
-import { Quote } from '@/lib/hooks/use-best-quote/types'
-
+import type { UtmParam } from '@/app/store/utm-atoms'
 import type { PostApiV2TradeMutationRequest } from '@/gen'
+import type { Quote } from '@/lib/hooks/use-best-quote/types'
 
 export const mapQuoteToTrade = (
   address: string,
@@ -21,7 +25,7 @@ export const mapQuoteToTrade = (
   gasPrice: quote.gasPrice.toString(),
   gasCost: quote.gasCosts.toString(),
   gasCostInUsd: quote.gasCostsInUsd,
-  priceImpact: quote.priceImpact ?? null,
+  priceImpact: null,
   inputTokenAddress: quote.inputToken.address!,
   inputTokenSymbol: quote.inputToken.symbol.toUpperCase(),
   inputTokenUnits: formatUnits(
@@ -52,13 +56,30 @@ export const mapQuoteToTrade = (
 })
 
 const getUnderlyingAssetSymbol = (quote: Quote) => {
-  const symbol = (quote.isMinting ? quote.outputToken : quote.inputToken).symbol
+  const possible = [
+    'ETH',
+    'BTC',
+    'SUI',
+    'SOL',
+    'XRP',
+    'AAVE',
+    'ARB',
+    'LINK',
+    'XAUt',
+    'MATIC',
+  ]
 
-  if (symbol.startsWith('ETH') || symbol.startsWith('iETH')) return 'ETH'
-  if (symbol.startsWith('BTC') || symbol.startsWith('iBTC')) return 'BTC'
-  if (symbol.startsWith('WSTETH')) return 'WSTETH'
-  if (symbol.startsWith('USUI')) return 'SUI'
-  if (symbol.startsWith('USOL')) return 'SOL'
+  const address = quote.isMinting
+    ? quote.outputToken.address
+    : quote.inputToken.address
 
-  return ''
+  const token = getTokenByChainAndAddress(quote.chainId, address)
+
+  if (isLeverageToken(token)) {
+    const { symbol } = getUnderlyingToken(token)
+
+    return possible.find((p) => symbol.includes(p)) ?? ''
+  }
+
+  return possible.find((p) => token?.symbol.includes(p)) ?? ''
 }

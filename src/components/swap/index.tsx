@@ -1,36 +1,39 @@
-import { Box, Flex, IconButton, Text } from '@chakra-ui/react'
+import { Button } from '@headlessui/react'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { useAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
+import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SwapNavigation } from '@/components/swap/components/navigation'
-import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { Token } from '@/constants/tokens'
+import { ARBITRUM, MAINNET } from '@/constants/chains'
 import { useBestQuote } from '@/lib/hooks/use-best-quote'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useDisclosure } from '@/lib/hooks/use-disclosure'
+import { useGasData } from '@/lib/hooks/use-gas-data'
 import { useIsTokenPairTradable } from '@/lib/hooks/use-is-token-pair-tradable'
 import { useNetwork, useSupportedNetworks } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSelectedToken } from '@/lib/providers/selected-token-provider'
 import { useSlippage } from '@/lib/providers/slippage'
-import { colors } from '@/lib/styles/colors'
-import { isValidTokenInput } from '@/lib/utils'
+import { formatWei, isValidTokenInput, parseUnits } from '@/lib/utils'
+import { getMaxBalance } from '@/lib/utils/max-balance'
 import { selectSlippage } from '@/lib/utils/slippage'
 import { getTokenBySymbol } from '@/lib/utils/tokens'
 
 import { SelectTokenModal } from './components/select-token-modal'
 import { TradeDetails } from './components/trade-details'
 import {
-  InputSelectorToken,
+  type InputSelectorToken,
   TradeInputSelector,
 } from './components/trade-input-selector'
 import { TradeOutput } from './components/trade-output'
 import { TransactionReviewModal } from './components/transaction-review'
 import { useSwap } from './hooks/use-swap'
 import { useTokenlists } from './hooks/use-tokenlists'
-import { useTransactionReviewModal } from './hooks/use-transaction-review-modal'
+
+import type { Token } from '@/constants/tokens'
 
 type SwapProps = {
   isBuying: boolean
@@ -40,10 +43,10 @@ type SwapProps = {
 
 export const Swap = (props: SwapProps) => {
   const { inputToken, isBuying, outputToken } = props
+  const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks([
     MAINNET.chainId,
     ARBITRUM.chainId,
-    BASE.chainId,
   ])
   const { chainId } = useNetwork()
   const { slippage } = useSlippage()
@@ -64,11 +67,6 @@ export const Swap = (props: SwapProps) => {
     onOpen: onOpenSelectOutputToken,
     onClose: onCloseSelectOutputToken,
   } = useDisclosure()
-  const {
-    isOpen: isTransactionReviewOpen,
-    onOpen: onOpenTransactionReview,
-    onClose: onCloseTransactionReview,
-  } = useDisclosure()
 
   const {
     fetchQuote,
@@ -83,19 +81,19 @@ export const Swap = (props: SwapProps) => {
   const [inputTokenAmountFormatted, setInputTokenAmountFormatted] = useState('')
   const [selectedQuote, setSelectedQuote] = useState<QuoteType | null>(null)
   const [sellTokenAmount, setSellTokenAmount] = useDebounce('0', 300)
+  const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
 
-  const { selectInputToken, selectOutputToken, toggleIsMinting } =
-    useSelectedToken()
+  const {
+    selectInputToken,
+    selectOutputToken,
+    shouldShowToggle,
+    toggleIsMinting,
+  } = useSelectedToken()
   const { inputTokenslist, outputTokenslist } = useTokenlists(
     chainId ?? 1,
     isBuying,
     inputToken,
     outputToken,
-  )
-  const { transactionReview } = useTransactionReviewModal(
-    quoteResults,
-    selectedQuote,
-    isFetchingAnyQuote,
   )
 
   const {
@@ -124,6 +122,16 @@ export const Swap = (props: SwapProps) => {
     setSelectedQuote(quoteResults?.bestQuote)
   }, [quoteResults])
 
+  useEffect(() => {
+    const quote = quoteResults?.results[selectedQuote ?? QuoteType.index]
+    if (!quote) return
+    sendTradeEvent({
+      type: 'QUOTE_OVERRIDE',
+      quoteResult: quote,
+      quoteType: quote.type,
+    })
+  }, [quoteResults, selectedQuote, sendTradeEvent])
+
   const resetTradeData = useCallback(() => {
     setInputTokenAmountFormatted('')
     setSellTokenAmount('0')
@@ -132,6 +140,13 @@ export const Swap = (props: SwapProps) => {
   useEffect(() => {
     resetTradeData()
   }, [chainId, resetTradeData])
+
+  useEffect(() => {
+    if (tradeState.matches('reset')) {
+      resetTradeData()
+      sendTradeEvent({ type: 'RESET_DONE' })
+    }
+  }, [tradeState, resetTradeData, sendTradeEvent])
 
   const fetchOptions = useCallback(() => {
     if (!isTradablePair) return
@@ -171,9 +186,15 @@ export const Swap = (props: SwapProps) => {
 
   const onClickInputBalance = useCallback(() => {
     if (!inputTokenBalance) return
-    setInputTokenAmountFormatted(inputTokenBalance)
-    setSellTokenAmount(inputTokenBalance)
-  }, [inputTokenBalance, setSellTokenAmount])
+    const maxBalanceBigNumber = getMaxBalance(
+      inputToken,
+      parseUnits(inputTokenBalance, inputToken.decimals),
+      gasData,
+    )
+    const maxBalance = formatWei(maxBalanceBigNumber, inputToken.decimals)
+    setInputTokenAmountFormatted(maxBalance)
+    setSellTokenAmount(maxBalance)
+  }, [gasData, inputToken, inputTokenBalance, setSellTokenAmount])
 
   const onSwitchTokens = () => {
     toggleIsMinting()
@@ -181,20 +202,10 @@ export const Swap = (props: SwapProps) => {
   }
 
   return (
-    <Flex
-      background='linear-gradient(33deg, rgba(0, 189, 192, 0.05) -9.23%, rgba(0, 249, 228, 0.05) 48.82%, rgba(212, 0, 216, 0.05) 131.54%), linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'
-      border='1px solid'
-      borderColor={colors.ic.gray[100]}
-      borderRadius='24px'
-      boxShadow='0.5px 1px 2px 0px rgba(44, 51, 51, 0.25), 2px 2px 1px 0px #FCFFFF inset'
-      direction='column'
-      p='8px 16px 16px'
-      height={'100%'}
-    >
+    <div className='border-ic-gray-100 swap-widget flex h-full flex-col rounded-3xl border px-4 pb-4 pt-2'>
       <SwapNavigation />
-      <Flex direction='column' m='4px 0 6px'>
+      <div className='mx-0 mb-1.5 mt-1 flex flex-col'>
         <TradeInputSelector
-          config={{ isReadOnly: false }}
           balance={inputTokenBalanceFormatted}
           caption='You pay'
           formattedFiat={inputTokenAmountUsd}
@@ -206,15 +217,17 @@ export const Swap = (props: SwapProps) => {
             if (inputTokenslist.length > 1) onOpenSelectInputToken()
           }}
         />
-        <Box h='6px' alignSelf={'center'}>
-          <IconButton
-            className='bg-ic-white text-ic-gray-400'
-            margin={'-16px 0 0 0'}
-            aria-label='switch input/output tokens'
-            icon={<ChevronUpDownIcon className='h-7 w-5 text-gray-500' />}
-            onClick={onSwitchTokens}
-          />
-        </Box>
+        {shouldShowToggle && (
+          <div className='flex h-1.5 self-center'>
+            <Button
+              className='text-ic-gray-400 border-ic-gray-400 bg-ic-white hover:bg-ic-gray-100 relative z-50 flex self-center rounded-lg border px-2 py-1'
+              aria-label='switch input/output tokens'
+              onClick={onSwitchTokens}
+            >
+              <ChevronUpDownIcon className='h-7 w-5 text-gray-500' />
+            </Button>
+          </div>
+        )}
         <TradeOutput
           caption={'You receive'}
           selectedToken={outputToken}
@@ -225,7 +238,7 @@ export const Swap = (props: SwapProps) => {
             if (outputTokenslist.length > 1) onOpenSelectOutputToken()
           }}
         />
-      </Flex>
+      </div>
       <>
         {tradeData.length > 0 && (
           <TradeDetails
@@ -237,9 +250,9 @@ export const Swap = (props: SwapProps) => {
           />
         )}
         {hasFetchingError && (
-          <Text align='center' color={colors.ic.red} p='16px'>
+          <p className='text-ic-red p-4 text-center'>
             {'Error fetching quote'}
-          </Text>
+          </p>
         )}
         <SmartTradeButton
           contract={contract ?? ''}
@@ -252,7 +265,7 @@ export const Swap = (props: SwapProps) => {
           isSupportedNetwork={isSupportedNetwork}
           outputToken={outputToken}
           buttonLabelOverrides={{}}
-          onOpenTransactionReview={onOpenTransactionReview}
+          onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
           onRefetchQuote={fetchOptions}
         />
       </>
@@ -276,13 +289,9 @@ export const Swap = (props: SwapProps) => {
         address={address}
         tokens={outputTokenslist}
       />
-      {transactionReview && (
-        <TransactionReviewModal
-          isOpen={isTransactionReviewOpen}
-          onClose={onCloseTransactionReview}
-          transactionReview={transactionReview}
-        />
-      )}
-    </Flex>
+      <TransactionReviewModal
+        onClose={() => sendTradeEvent({ type: 'CLOSE' })}
+      />
+    </div>
   )
 }

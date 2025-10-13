@@ -1,6 +1,5 @@
-import { TransactionRequest } from 'viem'
-
-import { Token } from '@/constants/tokens'
+import type { Token } from '@/constants/tokens'
+import type { TransactionRequest } from 'viem'
 
 /**
  * @param slippage The max acceptable slippage, e.g. 3 for 3 %
@@ -39,9 +38,11 @@ export interface Quote {
   gasCosts: bigint
   gasCostsInUsd: number
   fullCostsInUsd: number | null
-  priceImpact: number | null
   indexTokenAmount: bigint
   inputOutputTokenAmount: bigint
+  // quote amount with no slippage applied
+  quoteAmount: bigint
+  quoteAmountUsd: number
   // Return additionally for convenience to avoid
   // having to determine based on isMinting
   inputTokenAmount: bigint
@@ -62,6 +63,7 @@ export interface Quote {
   priceImpactUsd?: number
   priceImpactPercent?: number
   slippage: number
+  warning?: string
   tx: QuoteTransaction
 }
 

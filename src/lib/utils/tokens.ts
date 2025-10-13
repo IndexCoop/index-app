@@ -1,5 +1,4 @@
-import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
-import { Address } from 'viem'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
@@ -7,21 +6,16 @@ import {
   currencies,
   indicesTokenList,
   indicesTokenListArbitrum,
-  indicesTokenListBase,
 } from '@/constants/tokenlists'
 import {
-  CoinDeskEthTrendIndex,
-  DAI,
   ETH,
-  GUSD,
   MATIC,
   STETH,
-  Token,
+  type Token,
   USDC,
   USDT,
   WBTC,
   WETH,
-  icETHIndex,
 } from '@/constants/tokens'
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
@@ -64,16 +58,13 @@ export function getCurrencyTokensForIndex(
   if (chainId === BASE.chainId) {
     return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
   }
-  if (index.symbol === CoinDeskEthTrendIndex.symbol)
-    return [ETH, WETH, USDC, DAI, GUSD]
-  if (index.symbol === icETHIndex.symbol) return [ETH, WETH, STETH]
+  if (index.symbol === 'icETH') return [ETH, WETH, STETH]
   const currencyTokens = getCurrencyTokens(chainId)
   return currencyTokens
 }
 
-export function getDefaultIndex(chainId: number = 1): Token {
+export function getDefaultIndex(chainId = 1): Token {
   if (chainId === ARBITRUM.chainId) return indicesTokenListArbitrum[0]
-  if (chainId === BASE.chainId) return indicesTokenListBase[0]
   return indicesTokenList[0]
 }
 
@@ -105,23 +96,6 @@ export function getTokenBySymbol(symbol: string): Token | null {
     (token) => token.symbol.toLowerCase() === symbol.toLowerCase(),
   )
   return currencyToken ?? null
-}
-
-export function isBaseToken(
-  chainId: number,
-  inputToken: Address,
-  outputToken: Address,
-): boolean {
-  if (chainId !== base.id) return false
-  const eth2x = getTokenByChainAndSymbol(base.id, 'ETH2X')
-  const eth3x = getTokenByChainAndSymbol(base.id, 'ETH3X')
-  const isEth2x =
-    isAddressEqual(inputToken, eth2x.symbol) ||
-    isAddressEqual(outputToken, eth2x.symbol)
-  const isEth3x =
-    isAddressEqual(inputToken, eth3x.symbol) ||
-    isAddressEqual(outputToken, eth3x.symbol)
-  return chainId === base.id && !isEth2x && !isEth3x
 }
 
 export function digitsByAddress(address: string): number {

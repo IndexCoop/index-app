@@ -1,16 +1,15 @@
-import clsx from 'clsx'
-
 import { LeverageType } from '@/app/leverage/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
+import { cn } from '@/lib/utils/tailwind'
 
 type LeverageSelectorProps = {
-  selectedTye: LeverageType
+  selectedType: LeverageType
   supportedTypes: LeverageType[]
   onSelectType: (type: LeverageType) => void
 }
 
 export function LeverageSelector(props: LeverageSelectorProps) {
-  const { onSelectType, selectedTye, supportedTypes } = props
+  const { onSelectType, selectedType, supportedTypes } = props
   const { logEvent } = useAnalytics()
 
   const handleClick = (leverageType: LeverageType) => {
@@ -22,8 +21,8 @@ export function LeverageSelector(props: LeverageSelectorProps) {
   }
 
   return (
-    <div className='dark:border-ic-gray-700 flex flex-row items-center justify-between rounded-lg border border-[#3A6060] p-4'>
-      <div className='text-ic-gray-300 text-xs font-medium'>Leverage</div>
+    <div className='flex flex-row items-center justify-between rounded-lg border border-[#3A6060] p-4 dark:border-neutral-700'>
+      <div className='text-xs font-medium text-neutral-400'>Leverage</div>
       <div className='flex flex-row gap-2'>
         {supportedTypes?.length > 0 &&
           supportedTypes.map((leverageType) => {
@@ -31,7 +30,7 @@ export function LeverageSelector(props: LeverageSelectorProps) {
             return (
               <LeverageSelectorButton
                 key={`leverage-type-${label}`}
-                isSelected={selectedTye === leverageType}
+                isSelected={selectedType === leverageType}
                 label={label}
                 onClick={() => handleClick(leverageType)}
               />
@@ -48,18 +47,18 @@ type LeverageSelectorButtonProps = {
   onClick: () => void
 }
 
-export function LeverageSelectorButton({
+function LeverageSelectorButton({
   isSelected,
   label,
   onClick,
 }: LeverageSelectorButtonProps) {
   return (
     <div
-      className={clsx(
-        'text-ic-gray-300 bg-ic-gray-975 w-14 cursor-pointer rounded-full border px-3 py-2 text-center text-sm font-bold transition duration-150',
+      className={cn(
+        'w-14 cursor-pointer rounded-full border bg-zinc-800 px-3 py-2 text-center text-sm font-semibold text-neutral-400 transition duration-150',
         isSelected
-          ? 'border-ic-blue-600'
-          : 'border-ic-gray-975 hover:text-ic-blue-300',
+          ? 'border-ic-blue-300 text-ic-white bg-zinc-700'
+          : 'hover:text-ic-white border-zinc-900',
       )}
       onClick={onClick}
     >

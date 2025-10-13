@@ -1,9 +1,10 @@
-import { Spinner } from '@chakra-ui/react'
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
 } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
+
+import { Spinner } from '@/components/spinner'
 
 export enum TransactionReviewSimulationState {
   default,
@@ -35,11 +36,7 @@ const SimulationDefaultView = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <div className='border-ic-gray-100 text-ic-black dark:text-ic-gray-300 flex w-full flex-row  justify-between rounded-2xl border p-4 dark:border-[#3A6060]'>
       <span className='text-lg font-medium'>Transaction simulation</span>
-      {isLoading ? (
-        <Spinner className='text-ic-black dark:text-ic-white' />
-      ) : (
-        <span>Auto</span>
-      )}
+      {isLoading ? <Spinner /> : <span>Auto</span>}
     </div>
   )
 }

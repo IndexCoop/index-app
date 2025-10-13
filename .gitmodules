@@ -1,0 +1,3 @@
+[submodule "public/tradingview-chart"]
+	path = public/tradingview-chart
+	url = https://github.com/IndexCoop/tradingview-chart.git

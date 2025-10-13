@@ -1,5 +1,3 @@
-import { Flex, Text } from '@chakra-ui/react'
-
 type QuoteNotAvailableProps = {
   type: string
 }
@@ -8,26 +6,18 @@ export const QuoteNotAvailable = ({ type }: QuoteNotAvailableProps) => {
   const isFlashmint = type === 'Flash Mint'
   const text = isFlashmint ? 'flash minting' : 'swapping'
   return (
-    <Flex
-      className='bg-ic-gray-50'
-      borderRadius='12'
-      cursor='pointer'
-      direction={'column'}
-      p='16px'
-      w='100%'
-      h='110px'
-    >
-      <Flex justify='flex-end' direction='row'>
-        <Text className='text-ic-gray-400' fontSize={'sm'} fontWeight={600}>
+    <div className='bg-ic-gray-50 flex h-[110px] w-full cursor-pointer flex-col rounded-xl p-4'>
+      <div className='flex justify-end'>
+        <p className='text-ic-gray-400 text-sm font-semibold'>
           {type.toUpperCase()}
-        </Text>
-      </Flex>
-      <Text className='text-ic-gray-300' fontSize={'md'} fontWeight={500}>
+        </p>
+      </div>
+      <p className='text-ic-gray-300 text-base font-medium'>
         {type} unavailable
-      </Text>
-      <Text className='text-ic-gray-300' fontSize={'sm'} fontWeight={400}>
+      </p>
+      <p className='text-ic-gray-300 text-sm font-normal'>
         {`This token is not available for ${text}.`}
-      </Text>
-    </Flex>
+      </p>
+    </div>
   )
 }

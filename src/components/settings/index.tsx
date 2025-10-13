@@ -1,18 +1,9 @@
-import {
-  Flex,
-  IconButton,
-  Input,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
-  Text,
-} from '@chakra-ui/react'
+import { Input, Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { Cog8ToothIcon } from '@heroicons/react/20/solid'
 import { useMemo, useRef, useState } from 'react'
 
 import { Toggle, ToggleState } from '@/components/toggle'
-import { colors } from '@/lib/styles/colors'
+import { cn } from '@/lib/utils/tailwind'
 
 import { Warning } from './warning'
 
@@ -28,11 +19,6 @@ export const Settings = (props: SettingsProps) => {
   const { isAuto, slippage, onChangeSlippage, onClickAuto } = props
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [inputValue, setInputValue] = useState<string>('')
-
-  const inputTextColor = useMemo(
-    () => (parseFloat(inputValue) > 50 ? colors.ic.red : colors.ic.gray[900]),
-    [inputValue],
-  )
 
   const lowSlippage = useMemo(() => slippage < 0.05, [slippage])
 
@@ -70,34 +56,17 @@ export const Settings = (props: SettingsProps) => {
   }
 
   return (
-    <Popover placement='bottom-end'>
-      <PopoverTrigger>
-        <IconButton
-          aria-label='Trade Settings'
-          icon={
-            <Cog8ToothIcon className='dark:text-ic-gray-400 text-ic-black m-1.5 size-4' />
-          }
-          size='sm'
-          style={{ border: 0 }}
-          variant='unstyled'
-        />
-      </PopoverTrigger>
-      <PopoverContent
-        bg={'linear-gradient(187deg, #FCFFFF -184.07%, #F7F8F8 171.05%)'}
-        border='1px solid'
-        borderColor={colors.ic.gray[100]}
-        borderRadius={24}
-        boxShadow={
-          '0.5px 1px 10px 0px rgba(44, 51, 51, 0.10), 2px 2px 1px 0px #FCFFFF inset, 0.5px 0.5px 2px 0px rgba(0, 0, 0, 0.15)'
-        }
-        p='8px'
-        w='320px'
+    <Popover>
+      <PopoverButton aria-label='Trade Settings' className='outline-none'>
+        <Cog8ToothIcon className='dark:text-ic-gray-400 text-ic-black size-4' />
+      </PopoverButton>
+      <PopoverPanel
+        anchor='bottom end'
+        className='border-ic-gray-100 bg-ic-white z-10 w-[320px] rounded-3xl border p-4 shadow-inner'
       >
-        <PopoverBody>
-          <Text fontSize='md' fontWeight='500' textColor={colors.ic.gray[600]}>
-            Max Slippage
-          </Text>
-          <Flex align='center' my='4'>
+        <>
+          <p className='text-ic-gray-600 text-base font-medium'>Max Slippage</p>
+          <div className='my-4 flex items-center'>
             <Toggle
               toggleState={toggleState}
               labelLeft='Auto'
@@ -105,45 +74,29 @@ export const Settings = (props: SettingsProps) => {
               isDisabled={false}
               onClick={onClickToggle}
             />
-            <Flex
-              align='center'
-              borderColor={colors.ic.gray[100]}
-              borderRadius={'12px'}
-              borderWidth={1}
-              h='50px'
-              ml='10px'
-              px='8px'
-            >
+            <div className='border-ic-gray-100 ml-2.5 flex h-[50px] items-center rounded-xl border px-2'>
               <Input
-                fontSize='sm'
-                fontWeight={500}
+                className={cn(
+                  'placeholder:text-ic-gray-400 bg-ic-white w-full p-2 pr-1 text-right text-sm font-medium outline-none',
+                  parseFloat(inputValue) > 50
+                    ? 'text-ic-red'
+                    : 'text-ic-gray-900',
+                )}
                 placeholder={`${slippage}`}
-                _placeholder={{ color: colors.ic.gray[400] }}
-                p='8px'
-                pr='4px'
                 ref={inputRef}
-                textAlign='right'
-                textColor={inputTextColor}
                 type='number'
-                variant='unstyled'
                 value={inputValue}
                 onChange={(event) => {
                   const value = event.target.value
                   onChangeInput(value)
                 }}
               />
-              <Text
-                fontSize={'sm'}
-                fontWeight={500}
-                textColor={colors.ic.gray[900]}
-              >
-                %
-              </Text>
-            </Flex>
-          </Flex>
+              <p className='text-ic-gray-900 text-sm font-medium'>%</p>
+            </div>
+          </div>
           {showWarning && <Warning lowSlippage={lowSlippage} />}
-        </PopoverBody>
-      </PopoverContent>
+        </>
+      </PopoverPanel>
     </Popover>
   )
 }

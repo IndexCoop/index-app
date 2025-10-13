@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function Layout({ children }: Props) {
   return (
-    <div className="flex h-fit flex-col bg-[url('/presale-splash.jpg')] bg-cover">
+    <div className="bg-ic-white dark:bg-ic-black flex h-fit flex-col bg-[url('/presale-splash.jpg')] bg-cover">
       <Providers>
         <Header />
         <main>{children}</main>
