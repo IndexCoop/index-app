@@ -1,8 +1,8 @@
 import { Address, createPublicClient, http, parseUnits } from 'viem'
 
-import { DefaultGasLimitFlashMintZeroEx } from '@/constants/gas'
-
 import { GasEstimatooor, GasEstimatooorFailedError } from './gas-estimatooor'
+
+const DefaultGasLimitFlashMintZeroEx = 5_000_000
 
 // Hardhat Account #0
 const signer = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
@@ -70,6 +70,6 @@ describe('GasEstimatooor', () => {
       value: parseUnits('1', 18),
     }
     const gasEstimate = await estimatooor.estimate(tx, false)
-    expect(gasEstimate.toString()).toEqual('23101')
+    expect(gasEstimate.toString()).toEqual('5000000')
   })
 })

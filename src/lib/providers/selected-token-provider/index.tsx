@@ -4,11 +4,12 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 
 import { PathResolver } from '@/app/swap/[[...path]]/path-resolver'
-import { ETH, Token } from '@/constants/tokens'
+import { ETH, type Token } from '@/constants/tokens'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { getDefaultIndex } from '@/lib/utils/tokens'
 
@@ -16,15 +17,17 @@ export interface TokenContext {
   isMinting: boolean
   inputToken: Token
   outputToken: Token
+  shouldShowToggle: boolean
   selectInputToken: (inputToken: Token) => void
   selectOutputToken: (inputToken: Token) => void
   toggleIsMinting: () => void
 }
 
-export const SelectedTokenContext = createContext<TokenContext>({
+const SelectedTokenContext = createContext<TokenContext>({
   isMinting: false,
   inputToken: ETH,
   outputToken: getDefaultIndex(),
+  shouldShowToggle: true,
   selectInputToken: () => {},
   selectOutputToken: () => {},
   toggleIsMinting: () => {},
@@ -72,6 +75,10 @@ export const SelectedTokenProvider = (props: { children: any }) => {
     [inputToken, routeSwap],
   )
 
+  const shouldShowToggle = useMemo(() => {
+    return inputToken.symbol === 'INDEX' || outputToken.symbol === 'INDEX'
+  }, [inputToken.symbol, outputToken.symbol])
+
   const toggleIsMinting = useCallback(() => {
     if (inputToken.symbol === 'INDEX' || outputToken.symbol === 'INDEX') {
       routeSwap(outputToken.symbol, inputToken.symbol)
@@ -84,6 +91,7 @@ export const SelectedTokenProvider = (props: { children: any }) => {
         isMinting,
         inputToken,
         outputToken,
+        shouldShowToggle,
         selectInputToken,
         selectOutputToken,
         toggleIsMinting,

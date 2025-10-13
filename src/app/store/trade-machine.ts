@@ -1,6 +1,8 @@
 import { atomWithMachine } from 'jotai-xstate'
 import { assertEvent, assign, createMachine } from 'xstate'
 
+import { parseUnits } from '@/lib/utils'
+
 import type { TransactionReview } from '@/components/swap/components/transaction-review/types'
 import type { PostApiV2Trade200 } from '@/gen'
 import type { QuoteResult, QuoteType } from '@/lib/hooks/use-best-quote/types'
@@ -20,7 +22,18 @@ export interface TradeMachineContext {
 export type TradeMachineEvent =
   | { type: 'INITIALIZE' }
   | { type: 'FETCHING_QUOTE' }
-  | { type: 'QUOTE'; quoteResult: QuoteResult; quoteType: QuoteType }
+  | {
+      type: 'QUOTE'
+      quoteResult: QuoteResult
+      quoteType: QuoteType
+      inputValue?: string
+    }
+  | {
+      type: 'QUOTE_OVERRIDE'
+      quoteResult: QuoteResult
+      quoteType: QuoteType
+      inputValue?: string
+    }
   | { type: 'QUOTE_NOT_FOUND'; reason: string }
   | { type: 'REVIEW' }
   | { type: 'SUBMIT' }
@@ -29,7 +42,9 @@ export type TradeMachineEvent =
   | { type: 'CLOSE' }
   | { type: 'RESET_DONE' }
 
-export type TradeMachineAction = { type: 'resetContext' }
+export type TradeMachineAction =
+  | { type: 'resetContext' }
+  | { type: 'assignQuoteResult' }
 
 const createTradeMachine = () =>
   createMachine({
@@ -50,48 +65,29 @@ const createTradeMachine = () =>
       quoteError: '',
     },
     on: {
+      // This will intercept all actions, and show the event type and event data
+      // '*': {
+      //   actions: ({ event }) => {
+      //     console.log(`Event received: ${event.type}`, event)
+      //   },
+      // },
       INITIALIZE: {
         target: '.idle',
-        actions: 'resetContext',
       },
     },
     states: {
       idle: {
+        entry: 'resetContext',
         on: {
           QUOTE: {
             target: 'quote',
-            actions: assign({
-              quoteResult: ({ event }) => event.quoteResult,
-              transactionReview: ({ event }) => {
-                assertEvent(event, 'QUOTE')
-
-                const quoteResult = event.quoteResult
-                const quote = quoteResult.quote
-
-                if (!quote) return null
-
-                const transactionReview: TransactionReview = {
-                  ...quote,
-                  contractAddress: quote.contract,
-                  chainId: quote.chainId ?? 1,
-                  quoteResults: {
-                    bestQuote: event.quoteType,
-                    results: {
-                      flashmint: null,
-                      index: null,
-                      issuance: null,
-                      redemption: null,
-                      [event.quoteType]: quoteResult,
-                    },
-                  },
-                  selectedQuote: event.quoteType,
-                }
-
-                return transactionReview
-              },
-            }),
+            actions: 'assignQuoteResult',
             guard: ({ event }) =>
               Boolean(event.quoteResult && event.quoteResult.quote),
+          },
+          QUOTE_OVERRIDE: {
+            target: 'quote',
+            actions: 'assignQuoteResult',
           },
           QUOTE_NOT_FOUND: {
             target: 'quoteNotFound',
@@ -105,6 +101,10 @@ const createTradeMachine = () =>
         on: {
           FETCHING_QUOTE: {
             target: 'idle',
+          },
+          QUOTE_OVERRIDE: {
+            target: 'quote',
+            actions: 'assignQuoteResult',
           },
           REVIEW: {
             target: 'review',
@@ -174,13 +174,49 @@ const createTradeMachine = () =>
         on: {
           RESET_DONE: {
             target: 'idle',
-            actions: 'resetContext',
           },
         },
       },
     },
   }).provide({
     actions: {
+      assignQuoteResult: assign({
+        quoteResult: ({ event }) => {
+          assertEvent(event, ['QUOTE', 'QUOTE_OVERRIDE'])
+
+          return event.quoteResult
+        },
+        transactionReview: ({ event }) => {
+          assertEvent(event, ['QUOTE', 'QUOTE_OVERRIDE'])
+
+          const quoteResult = event.quoteResult
+          const quote = quoteResult.quote
+
+          if (!quote) return null
+
+          const transactionReview: TransactionReview = {
+            ...quote,
+            contractAddress: quote.contract,
+            chainId: quote.chainId ?? 1,
+            inputTokenAmount: event.inputValue
+              ? parseUnits(event.inputValue, quote.inputToken.decimals)
+              : quote.inputTokenAmount,
+            quoteResults: {
+              bestQuote: event.quoteType,
+              results: {
+                flashmint: null,
+                index: null,
+                issuance: null,
+                redemption: null,
+                [event.quoteType]: quoteResult,
+              },
+            },
+            selectedQuote: event.quoteType,
+          }
+
+          return transactionReview
+        },
+      }),
       resetContext: assign({
         isModalOpen: false,
         quoteResult: null,

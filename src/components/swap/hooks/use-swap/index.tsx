@@ -1,13 +1,9 @@
 import { useMemo } from 'react'
 
-import { Token } from '@/constants/tokens'
-import { QuoteResults, QuoteType } from '@/lib/hooks/use-best-quote/types'
+import { type QuoteResults, QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { formatWei, parseUnits } from '@/lib/utils'
-
-import { TradeDetailTokenPrices } from '../../components/trade-details'
-import { TradeInfoItem } from '../../types'
 
 import {
   formattedFiat,
@@ -16,11 +12,15 @@ import {
   shouldShowWarningSign,
 } from './formatters'
 import {
-  FormattedQuoteDisplay,
+  type FormattedQuoteDisplay,
   getFormattedQuoteResults,
 } from './formatters/result'
 import { buildTradeDetails } from './trade-details-builder'
 import { useFormattedBalance } from './use-formatted-balance'
+
+import type { Token } from '../../../../constants/tokens'
+import type { TradeDetailTokenPrices } from '../../components/trade-details'
+import type { TradeInfoItem } from '../../types'
 
 interface SwapData {
   contract: string | null

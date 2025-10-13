@@ -22,7 +22,7 @@ const isPreviewEnv = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
 const shouldShowLocalHost = isDevelopmentEnv || isPreviewEnv
 
 // Create a metadata object
-export const metadata = {
+const metadata = {
   name: 'indexcoop-app',
   description: 'IndexCoop App',
   url: 'https://app.indexcoop.com',

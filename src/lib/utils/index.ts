@@ -31,9 +31,6 @@ export const formatTokenDataToToken = (tokenData: ListedToken): Token => {
   }
 }
 
-export const selectLatestMarketData = (marketData?: number[][]) =>
-  marketData?.[marketData.length - 1]?.[1] || 0
-
 export function shortenAddress(
   address: string,
   startLength: number = 6,
@@ -114,7 +111,7 @@ export const isValidTokenInput = (
 }
 
 export const isContract = async (client: PublicClient, address: string) => {
-  const bytes = await getCode(client, { address })
+  const bytes = await getCode(client, { address: address as `0x${string}` })
 
   return bytes !== undefined
 }
