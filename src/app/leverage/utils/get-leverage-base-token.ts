@@ -1,5 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { base, mainnet } from 'viem/chains'
+import { arbitrum, base, mainnet } from 'viem/chains'
 
 import { BTC, ETH } from '@/constants/tokens'
 
@@ -7,20 +7,20 @@ const uSol = getTokenByChainAndSymbol(base.id, 'uSOL')
 const uSui = getTokenByChainAndSymbol(base.id, 'uSUI')
 const uXrp = getTokenByChainAndSymbol(base.id, 'uXRP')
 const xAut = getTokenByChainAndSymbol(mainnet.id, 'XAUt')
-// const aave = getTokenByChainAndSymbol(arbitrum.id, 'AAVE')
-// const arb = getTokenByChainAndSymbol(arbitrum.id, 'ARB')
-// const link = getTokenByChainAndSymbol(arbitrum.id, 'LINK')
+const aave = getTokenByChainAndSymbol(arbitrum.id, 'AAVE')
+const arb = getTokenByChainAndSymbol(arbitrum.id, 'ARB')
+const link = getTokenByChainAndSymbol(arbitrum.id, 'LINK')
 
 export function getLeverageBaseToken(symbol: string) {
   switch (symbol.toLowerCase()) {
-    // case 'AAVE2x'.toLowerCase():
-    //   return aave
-    // case 'ARB2x'.toLowerCase():
-    //   return arb
+    case 'AAVE2x'.toLowerCase():
+      return aave
+    case 'ARB2x'.toLowerCase():
+      return arb
     case 'GOLD3x'.toLowerCase():
       return xAut
-    // case 'LINK2x'.toLowerCase():
-    //   return link
+    case 'LINK2x'.toLowerCase():
+      return link
     case 'uSOL2x'.toLowerCase():
       return uSol
     case 'uSOL3x'.toLowerCase():
