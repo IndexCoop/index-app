@@ -44,8 +44,8 @@ const mapCoingeckoIdToSymbol = (id: string) => {
       return 'btc'
     case 'tether-gold':
       return 'xaut'
-    case 'link':
-      return 'LINK'
+    case 'chainlink':
+      return 'link'
     case 'wrapped-solana-universal':
       return 'sol'
     case 'wrapped-sui-universal':
