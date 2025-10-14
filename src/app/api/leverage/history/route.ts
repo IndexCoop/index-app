@@ -129,8 +129,6 @@ export async function POST(req: NextRequest) {
       console.error('Failed to fetch coingecko prices', error)
     }
 
-    console.log(prices)
-
     const stats = open.reduce(
       (acc, position) => ({
         ...acc,
