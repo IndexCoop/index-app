@@ -1,3 +1,4 @@
+import { Button } from '@headlessui/react'
 import Image from 'next/image'
 
 interface TicketChipProps {
@@ -20,7 +21,12 @@ export const TicketChip = ({
   maturing = 0,
 }: TicketChipProps) => {
   return (
-    <div className='flex items-center gap-1 rounded-2xl border border-[#496C72] bg-[#1A2B2F] px-2 py-1 shadow-[0_0_8.4px_0_rgba(255,255,255,0.29)] sm:px-3 sm:py-1.5'>
+    <Button
+      as='a'
+      href='https://indexcoop.com/trading-raffle'
+      target='_blank'
+      className='flex cursor-pointer items-center gap-1 rounded-2xl border border-[#496C72] bg-[#1A2B2F] px-2 py-1 shadow-[0_0_8.4px_0_rgba(255,255,255,0.29)] sm:px-3 sm:py-1.5'
+    >
       <Image
         src='/assets/ticket-icon.png'
         alt='Ticket'
@@ -37,6 +43,6 @@ export const TicketChip = ({
           • {maturing} Maturing
         </span>
       )}
-    </div>
+    </Button>
   )
 }
