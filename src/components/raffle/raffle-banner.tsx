@@ -16,7 +16,8 @@ export const RaffleBanner = () => {
       <Button
         className='ml-auto shrink-0 whitespace-nowrap rounded-full bg-teal-100 px-5 py-1 text-xs transition-colors duration-500 hover:bg-teal-200'
         as='a'
-        href='/raffle'
+        target='_blank'
+        href='https://indexcoop.com/blog/trading-raffle'
       >
         Learn more
       </Button>
