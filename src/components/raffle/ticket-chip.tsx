@@ -22,7 +22,7 @@ export const TicketChip = withEpoch(
     return (
       <Button
         as='a'
-        href='https://indexcoop.com/trading-raffle'
+        href='https://indexcoop.com/blog/trading-raffle'
         target='_blank'
         className='flex cursor-pointer items-center gap-1 rounded-2xl border border-[#496C72] bg-[#1A2B2F] px-2 py-1 shadow-[0_0_8.4px_0_rgba(255,255,255,0.29)] sm:px-3 sm:py-1.5'
       >
