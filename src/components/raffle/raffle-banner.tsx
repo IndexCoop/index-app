@@ -1,6 +1,8 @@
 import { Button } from '@headlessui/react'
 
-export const RaffleBanner = () => {
+import { withEpoch } from '@/components/raffle/with-epoch'
+
+export const RaffleBanner = withEpoch(() => {
   return (
     <div className='relative flex w-full items-center gap-3 rounded-lg border border-[#496C72] bg-[#1A2B2F] px-4 py-3 sm:gap-6'>
       <div className='hidden items-center gap-2 rounded-md bg-[#396C6D] px-2.5 py-0.5 md:flex'>
@@ -23,4 +25,4 @@ export const RaffleBanner = () => {
       </Button>
     </div>
   )
-}
+})

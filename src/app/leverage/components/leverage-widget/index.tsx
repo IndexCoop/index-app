@@ -27,7 +27,6 @@ import { getMaxBalance } from '@/lib/utils/max-balance'
 
 import { useFormattedLeverageData } from '../../use-formatted-data'
 
-
 import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'

@@ -5,7 +5,7 @@ import { raffleEpochAtom } from '@/app/store/raffle-epoch.atom'
 import { getApiV2RaffleEpochs } from '@/gen'
 
 export const useRaffleEpoch = () => {
-  const [raffleEpoch, setRaffleEpoch] = useAtom(raffleEpochAtom)
+  const [, setRaffleEpoch] = useAtom(raffleEpochAtom)
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['raffle-epoch', 'active'],
@@ -14,8 +14,9 @@ export const useRaffleEpoch = () => {
       const epoch = response.data[0]
       return epoch
     },
-    enabled:
-      !raffleEpoch || Date.now() > new Date(raffleEpoch.endDate).getTime(),
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes to detect silent/active changes
+    refetchOnWindowFocus: true, // Refetch when user returns to tab
+    staleTime: 4 * 60 * 1000, // Consider data stale after 4 minutes
   })
 
   if (data) {
