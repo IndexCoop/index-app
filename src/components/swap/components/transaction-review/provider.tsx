@@ -117,7 +117,8 @@ export function useTransactionReview(props: ReviewProps) {
       await queryClient.refetchQueries({
         predicate: (query) =>
           (query.queryKey[0] as string)?.includes('leverage-token') ||
-          (query.queryKey[0] as string)?.includes('balances'),
+          (query.queryKey[0] as string)?.includes('balances') ||
+          (query.queryKey[0] as string)?.includes('raffle-tickets'),
       })
 
       if (response.status === 200) {

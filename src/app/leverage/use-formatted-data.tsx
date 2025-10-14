@@ -16,6 +16,7 @@ export interface FormattedLeverageData {
   inputBalance: bigint
   inputBalanceFormatted: string
   inputValueFormatted: string
+  inputValueUsd: number
   inputValueFormattedUsd: string
   isFetchingQuote: boolean
   isFavourableQuote: boolean
@@ -71,13 +72,19 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     return `${formatAmount(inputValueAmount, digits)} ${inputToken.symbol}`
   }, [inputValue, inputToken])
 
-  const inputValueFormattedUsd = useMemo(() => {
-    if (inputValue === '' || !quote?.inputTokenPrice) return ''
+  const inputValueUsd = useMemo(() => {
+    if (inputValue === '' || !quote?.inputTokenPrice) return 0
     const inputTokenPrice = quote.inputTokenPrice
     const inputValueAmount = Number(inputValue)
-    const digits = getFormatWithDigits(inputValueAmount)
-    return `$${formatAmount(inputValueAmount * inputTokenPrice, digits)}`
+    return inputValueAmount * inputTokenPrice
   }, [inputValue, quote])
+
+  const inputValueFormattedUsd = useMemo(() => {
+    if (inputValueUsd === 0) return ''
+    const inputValueAmount = Number(inputValue)
+    const digits = getFormatWithDigits(inputValueAmount)
+    return `$${formatAmount(inputValueUsd, digits)}`
+  }, [inputValue, inputValueUsd])
 
   const outputAmount = useMemo(() => {
     if (inputValue === '') return ''
@@ -173,6 +180,7 @@ export function useFormattedLeverageData(): FormattedLeverageData {
     inputBalance: balance,
     inputBalanceFormatted: balanceFormatted,
     inputValueFormatted,
+    inputValueUsd,
     inputValueFormattedUsd,
     isFetchingQuote,
     isFavourableQuote,

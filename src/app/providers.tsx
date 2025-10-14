@@ -14,14 +14,19 @@ const queryClient = new QueryClient()
 
 initAppkit()
 
-export function Providers({ children }: { children: React.ReactNode }) {
+function InitializeWrapper({ children }: { children: React.ReactNode }) {
   useInitialize()
+  return <>{children}</>
+}
 
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AnalyticsProvider>
-          <ProtectionProvider>{children}</ProtectionProvider>
+          <ProtectionProvider>
+            <InitializeWrapper>{children}</InitializeWrapper>
+          </ProtectionProvider>
         </AnalyticsProvider>
       </QueryClientProvider>
     </WagmiProvider>

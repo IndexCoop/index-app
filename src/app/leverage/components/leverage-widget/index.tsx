@@ -1,14 +1,16 @@
 'use client'
 
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { TradeInputSelector } from '@/app/leverage/components/leverage-widget/trade-input-selector'
 import { MarketSelector } from '@/app/leverage/components/stats/market-selector'
 import { supportedNetworks } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
+import { raffleEpochAtom } from '@/app/store/raffle-epoch.atom'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
+import { RaffleWidgetExtension } from '@/components/raffle/raffle-widget-extension'
 import { Receive } from '@/components/receive'
 import { SmartTradeButton } from '@/components/smart-trade-button'
 import { SelectTokenModal } from '@/components/swap/components/select-token-modal'
@@ -56,6 +58,7 @@ export function LeverageWidget() {
     toggleIsMinting,
   } = useLeverageToken()
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
+  const raffleEpoch = useAtomValue(raffleEpochAtom)
 
   useEffect(() => {
     sendTradeEvent({ type: 'INITIALIZE' })
@@ -67,6 +70,7 @@ export function LeverageWidget() {
     hasInsufficientFunds,
     inputBalance,
     inputBalanceFormatted,
+    inputValueUsd,
     inputValueFormattedUsd,
     isFetchingQuote,
     outputAmount,
@@ -105,6 +109,8 @@ export function LeverageWidget() {
     () => tradeState.matches('quoteNotFound'),
     [tradeState],
   )
+
+  console.log(inputValueUsd)
 
   return (
     <div
@@ -147,6 +153,12 @@ export function LeverageWidget() {
         outputAmountUsd={isMinting ? outputAmountUsd : quoteAmountUsd}
         selectedOutputToken={outputToken}
         onSelectToken={onOpenSelectOutputToken}
+      />
+
+      <RaffleWidgetExtension
+        isLoading={isFetchingQuote}
+        usdAmount={inputValueUsd}
+        epochTicketPerUsd={raffleEpoch?.ticketsPerUsdAmount ?? 0}
       />
       {hasFetchingError && (
         <div className='flex items-center justify-center gap-2 text-sm text-red-400'>
