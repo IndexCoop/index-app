@@ -159,6 +159,7 @@ export function LeverageWidget() {
         isLoading={isFetchingQuote}
         usdAmount={inputValueUsd}
         epochTicketPerUsd={raffleEpoch?.ticketsPerUsdAmount ?? 0}
+        epochMaxTicketsPerUser={raffleEpoch?.maxTicketsPerUser ?? 50}
       />
       {hasFetchingError && (
         <div className='flex items-center justify-center gap-2 text-sm text-red-400'>
