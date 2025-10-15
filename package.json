@@ -60,7 +60,7 @@
     "tailwind-merge": "2.5.2",
     "use-debounce": "^10.0.1",
     "viem": "2.38.1",
-    "wagmi": "2.17.5",
+    "wagmi": "2.18.1",
     "xstate": "5.19.2"
   },
   "devDependencies": {
