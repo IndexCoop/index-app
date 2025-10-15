@@ -13,7 +13,7 @@ export const RaffleWidgetExtension = withEpoch(
       return null
     }
 
-    const tickets = Math.floor(usdAmount / epochTicketPerUsd)
+    const tickets = Math.min(Math.floor(usdAmount / epochTicketPerUsd), 50)
     return (
       <div className='flex flex-col gap-2 rounded-lg border border-[#496C72] bg-[#1A2B2F] px-4 py-3'>
         <div className='flex justify-between'>
