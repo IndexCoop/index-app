@@ -110,8 +110,6 @@ export function LeverageWidget() {
     [tradeState],
   )
 
-  console.log(inputValueUsd)
-
   return (
     <div
       className='flex w-full flex-col gap-3 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4 sm:gap-4'

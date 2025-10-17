@@ -62,6 +62,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/leverage/:path*',
+        destination: '/trade/:path*',
+        permanent: true,
+      },
+      {
         source: '/(B|b)(E|e)(D|d)',
         destination: '/swap',
         permanent: true,
@@ -127,6 +132,10 @@ const nextConfig = {
       {
         source: '/trade',
         destination: '/leverage',
+      },
+      {
+        source: '/trade/:path*',
+        destination: '/leverage/:path*',
       },
     ]
   },
