@@ -1,8 +1,11 @@
 import { Button } from '@headlessui/react'
 
 import { withEpoch } from '@/components/raffle/with-epoch'
+import { useRaffleEpoch } from '@/lib/hooks/use-raffle-epoch'
 
 export const RaffleBanner = withEpoch(() => {
+  const { data: epoch } = useRaffleEpoch()
+
   return (
     <div className='relative flex w-full items-center gap-3 rounded-lg border border-[#496C72] bg-[#1A2B2F] px-4 py-3 sm:gap-6'>
       <div className='hidden items-center gap-2 rounded-md bg-[#396C6D] px-2.5 py-0.5 md:flex'>
@@ -19,9 +22,9 @@ export const RaffleBanner = withEpoch(() => {
         className='ml-auto shrink-0 whitespace-nowrap rounded-full bg-teal-100 px-5 py-1 text-xs transition-colors duration-500 hover:bg-teal-200'
         as='a'
         target='_blank'
-        href='https://indexcoop.com/blog/trading-raffle'
+        href={`/trade/raffle/leaderboard/${epoch?.id}`}
       >
-        Learn more
+        View Leaderboard
       </Button>
     </div>
   )
