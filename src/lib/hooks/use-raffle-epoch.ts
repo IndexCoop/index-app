@@ -11,8 +11,9 @@ export const useRaffleEpoch = () => {
     queryKey: ['raffle-epoch', 'active'],
     queryFn: async () => {
       const response = await getApiV2RaffleEpochs({ active: true })
-      const epoch = response.data[0]
-      return epoch
+      // Filter out silent epochs and take the first (latest) non-silent active epoch
+      const epochs = response.data?.filter((e) => !e.silent) ?? []
+      return epochs[0] ?? null
     },
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes to detect silent/active changes
     refetchOnWindowFocus: true, // Refetch when user returns to tab

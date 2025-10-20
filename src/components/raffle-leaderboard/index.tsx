@@ -5,25 +5,38 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 
-import { leaderboardColumns } from './columns'
+import { getLeaderboardColumns } from './columns'
 import { type LeaderboardEntry } from './types'
 
 type RaffleLeaderboardTableProps = {
   data: LeaderboardEntry[]
   isLoading?: boolean
+  epoch: {
+    id: number
+    startDate: string
+    endDate: string
+    drawCompleted: boolean
+    rewardToken: string | null
+  }
 }
 
 export function RaffleLeaderboardTable({
   data,
   isLoading,
+  epoch,
 }: RaffleLeaderboardTableProps) {
+  const columns = useMemo(
+    () => getLeaderboardColumns({ epoch }),
+    [epoch],
+  )
+
   const table = useReactTable({
     data: data ?? [],
-    columns: leaderboardColumns,
+    columns,
     getCoreRowModel: getCoreRowModel(),
   })
 
