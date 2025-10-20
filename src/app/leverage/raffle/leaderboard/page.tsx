@@ -42,9 +42,7 @@ export default function LeaderboardPage() {
       )
   }, [epochsData])
 
-  const [selectedEpoch, setSelectedEpoch] = useState<EpochWithName | null>(
-    null,
-  )
+  const [selectedEpoch, setSelectedEpoch] = useState<EpochWithName | null>(null)
 
   // Set initial epoch when data loads
   useEffect(() => {
@@ -70,7 +68,10 @@ export default function LeaderboardPage() {
   // Update selected epoch name when leaderboard data loads
   useEffect(() => {
     if (leaderboardData?.epoch && selectedEpoch) {
-      const updatedEpoch = { ...selectedEpoch, name: leaderboardData.epoch.name }
+      const updatedEpoch = {
+        ...selectedEpoch,
+        name: leaderboardData.epoch.name,
+      }
       if (updatedEpoch.name !== selectedEpoch.name) {
         setSelectedEpoch(updatedEpoch)
       }
@@ -87,7 +88,9 @@ export default function LeaderboardPage() {
       return [...data].sort((a, b) => {
         if (!a.placement) return 1
         if (!b.placement) return -1
-        return a.placement.localeCompare(b.placement, undefined, { numeric: true })
+        return a.placement.localeCompare(b.placement, undefined, {
+          numeric: true,
+        })
       })
     }
     return data

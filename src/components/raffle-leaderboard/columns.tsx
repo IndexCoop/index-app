@@ -1,5 +1,5 @@
-import { createColumnHelper } from '@tanstack/react-table'
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
+import { createColumnHelper } from '@tanstack/react-table'
 import id from 'lodash/identity'
 import Image from 'next/image'
 import { formatUnits } from 'viem'
@@ -79,9 +79,7 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
 
       return (
         <div className='text-ic-gray-400 flex-[0.5] text-center text-xs'>
-          {options.epoch.drawCompleted
-            ? `${tokenSymbol} won`
-            : '# of tickets'}
+          {options.epoch.drawCompleted ? `${tokenSymbol} won` : '# of tickets'}
         </div>
       )
     },
@@ -96,9 +94,12 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
         const tokenDecimals = rewardToken?.decimals ?? 18
         const amountWei = entry.amount ?? '0'
         const amountFormatted = formatUnits(BigInt(amountWei), tokenDecimals)
-        const displayAmount = Number(amountFormatted).toLocaleString(undefined, {
-          maximumFractionDigits: 0,
-        })
+        const displayAmount = Number(amountFormatted).toLocaleString(
+          undefined,
+          {
+            maximumFractionDigits: 0,
+          },
+        )
 
         return (
           <div className='flex flex-[0.5] items-center justify-center gap-2'>

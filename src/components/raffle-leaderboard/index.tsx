@@ -29,10 +29,7 @@ export function RaffleLeaderboardTable({
   isLoading,
   epoch,
 }: RaffleLeaderboardTableProps) {
-  const columns = useMemo(
-    () => getLeaderboardColumns({ epoch }),
-    [epoch],
-  )
+  const columns = useMemo(() => getLeaderboardColumns({ epoch }), [epoch])
 
   const table = useReactTable({
     data: data ?? [],

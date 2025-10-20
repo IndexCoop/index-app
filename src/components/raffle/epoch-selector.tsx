@@ -3,8 +3,9 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
-import type { GetApiV2RaffleEpochs200 } from '@/gen'
 import { cn } from '@/lib/utils/tailwind'
+
+import type { GetApiV2RaffleEpochs200 } from '@/gen'
 
 type EpochWithName = GetApiV2RaffleEpochs200[number] & { name: string }
 
