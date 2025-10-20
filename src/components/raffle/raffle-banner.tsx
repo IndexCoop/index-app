@@ -19,9 +19,9 @@ export const RaffleBanner = withEpoch(() => {
         className='ml-auto shrink-0 whitespace-nowrap rounded-full bg-teal-100 px-5 py-1 text-xs transition-colors duration-500 hover:bg-teal-200'
         as='a'
         target='_blank'
-        href='https://indexcoop.com/blog/trading-raffle'
+        href='/trade/raffle/leaderboard'
       >
-        Learn more
+        View Leaderboard
       </Button>
     </div>
   )
