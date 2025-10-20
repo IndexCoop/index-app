@@ -27,14 +27,14 @@ export default function LeaderboardPage() {
     },
   })
 
-  // Filter out silent epochs, add placeholder names, and sort by date descending
+  // Filter out silent epochs and sort by date descending
   const selectableEpochs = useMemo<EpochWithName[]>(() => {
     if (!epochsData) return []
     return epochsData
       .filter((epoch) => !epoch.silent)
       .map((epoch) => ({
         ...epoch,
-        name: `Epoch ${epoch.epochNumber}`, // Placeholder until we fetch full data
+        name: epoch.name,
       }))
       .sort(
         (a, b) =>
@@ -64,19 +64,6 @@ export default function LeaderboardPage() {
     },
     enabled: !!selectedEpoch,
   })
-
-  // Update selected epoch name when leaderboard data loads
-  useEffect(() => {
-    if (leaderboardData?.epoch && selectedEpoch) {
-      const updatedEpoch = {
-        ...selectedEpoch,
-        name: leaderboardData.epoch.name,
-      }
-      if (updatedEpoch.name !== selectedEpoch.name) {
-        setSelectedEpoch(updatedEpoch)
-      }
-    }
-  }, [leaderboardData, selectedEpoch])
 
   const epoch = leaderboardData?.epoch
 
