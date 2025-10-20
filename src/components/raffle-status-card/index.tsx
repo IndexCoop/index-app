@@ -2,11 +2,12 @@
 
 import Image from 'next/image'
 
+import { GetApiV2RaffleLeaderboardEpochid200 } from '@/gen'
 import { useRaffleTickets } from '@/lib/hooks/use-raffle-tickets'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 type RaffleStatusCardProps = {
-  leaderboard: Array<{ userAddress: string; tickets: number }>
+  leaderboard: GetApiV2RaffleLeaderboardEpochid200['leaderboard']
 }
 
 const LoadingDots = () => (
@@ -27,7 +28,7 @@ export function RaffleStatusCard({ leaderboard }: RaffleStatusCardProps) {
   )
 
   const totalTickets = leaderboard.reduce(
-    (sum, entry) => sum + entry.tickets,
+    (sum, entry) => sum + (entry.tickets ?? 0),
     0,
   )
   const userTickets = userEntry?.tickets ?? 0

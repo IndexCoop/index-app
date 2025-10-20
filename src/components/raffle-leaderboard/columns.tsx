@@ -72,7 +72,7 @@ export const leaderboardColumns = [
             height={20}
           />
           <div className='text-ic-blue-300 text-xs'>
-            {tickets.toLocaleString()}
+            {tickets?.toLocaleString()}
           </div>
         </div>
       )
@@ -82,15 +82,15 @@ export const leaderboardColumns = [
     id: 'raffle-leaderboard:odds',
     header: () => (
       <div className='text-ic-gray-400 flex-[0.4] text-right text-xs'>
-        est. odds
+        First prize odds
       </div>
     ),
     cell: (row) => {
       const tickets = row.row.original.tickets
       const totalTickets = row.table
         .getRowModel()
-        .rows.reduce((sum, r) => sum + r.original.tickets, 0)
-      const odds = totalTickets > 0 ? (tickets / totalTickets) * 100 : 0
+        .rows.reduce((sum, r) => sum + (r.original?.tickets ?? 0), 0)
+      const odds = totalTickets > 0 ? (tickets ?? 0 / totalTickets) * 100 : 0
 
       return (
         <div className='text-ic-blue-300 flex-[0.4] text-right text-xs'>
