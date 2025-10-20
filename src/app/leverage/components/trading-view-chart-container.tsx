@@ -65,9 +65,9 @@ export const TradingViewChartContainer = () => {
 
     let symbol = null
     switch (market) {
-      // case 'AAVE / USD':
-      //   symbol = 'AAVEUSD'
-      //   break
+      case 'AAVE / USD':
+        symbol = 'AAVEUSD'
+        break
       // case 'ARB / USD':
       //   symbol = 'ARBUSD'
       //   break
