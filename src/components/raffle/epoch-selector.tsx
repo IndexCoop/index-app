@@ -52,10 +52,11 @@ export function EpochSelector({
                   onEpochChange(epoch)
                   close()
                 }}
+                disabled={epoch.id === selectedEpoch.id}
                 className={cn(
                   'flex items-center gap-2 px-4 py-2 text-left text-xs transition',
                   epoch.id === selectedEpoch.id
-                    ? 'bg-ic-blue-300 font-semibold text-black'
+                    ? 'pointer-events-none bg-zinc-800 font-semibold text-ic-gray-300'
                     : 'text-ic-gray-300 hover:bg-zinc-800',
                 )}
               >
