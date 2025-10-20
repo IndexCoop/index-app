@@ -27,6 +27,12 @@ export function EpochSelector({
           'hover:bg-zinc-600 focus:outline-none data-[active]:bg-zinc-600',
         )}
       >
+        <div
+          className={cn(
+            'h-2 w-2 rounded-full',
+            selectedEpoch.active ? 'bg-ic-blue-400' : 'bg-ic-gray-500',
+          )}
+        />
         <span>{selectedEpoch.name}</span>
         <ChevronDownIcon className='size-5' />
       </PopoverButton>
@@ -46,13 +52,19 @@ export function EpochSelector({
                   close()
                 }}
                 className={cn(
-                  'px-4 py-2 text-left text-xs transition',
+                  'flex items-center gap-2 px-4 py-2 text-left text-xs transition',
                   epoch.id === selectedEpoch.id
                     ? 'bg-ic-blue-300 font-semibold text-black'
                     : 'text-ic-gray-300 hover:bg-zinc-800',
                 )}
               >
-                {epoch.name}
+                <div
+                  className={cn(
+                    'h-2 w-2 rounded-full',
+                    epoch.active ? 'bg-ic-blue-400' : 'bg-ic-gray-500',
+                  )}
+                />
+                <span>{epoch.name}</span>
               </button>
             ))}
           </div>
