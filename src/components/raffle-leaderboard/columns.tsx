@@ -90,7 +90,8 @@ export const leaderboardColumns = [
       const totalTickets = row.table
         .getRowModel()
         .rows.reduce((sum, r) => sum + (r.original?.tickets ?? 0), 0)
-      const odds = totalTickets > 0 ? (tickets ?? 0 / totalTickets) * 100 : 0
+
+      const odds = totalTickets > 0 ? ((tickets ?? 0) / totalTickets) * 100 : 0
 
       return (
         <div className='text-ic-blue-300 flex-[0.4] text-right text-xs'>
