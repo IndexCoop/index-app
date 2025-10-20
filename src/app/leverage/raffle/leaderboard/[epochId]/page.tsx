@@ -28,7 +28,8 @@ export default async function LeaderboardPage({
       <div className='flex flex-wrap gap-6'>
         <div className='flex-1'>
           <h1 className='text-ic-gray-50 mb-7 text-sm font-bold'>
-            Live Leaderboard <span className='mx-4'>•</span> Epoch {epochId}
+            Live Leaderboard <span className='mx-4'>•</span>{' '}
+            {data.epoch.name}{' '}
           </h1>
           <RaffleLeaderboardTable data={leaderboard} />
         </div>
