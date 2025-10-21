@@ -2,11 +2,12 @@ import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 import { createColumnHelper } from '@tanstack/react-table'
 import id from 'lodash/identity'
 import Image from 'next/image'
-import { formatUnits } from 'viem'
+import { Address, formatUnits } from 'viem'
 
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { cn } from '@/lib/utils/tailwind'
 
+import { ClaimButton } from './claim-button'
 import type { LeaderboardEntry } from './types'
 
 const columnHelper = createColumnHelper<LeaderboardEntry>()
@@ -18,7 +19,6 @@ type ColumnOptions = {
     endDate: string
     drawCompleted: boolean
     rewardToken: string | null
-    // Add other epoch properties as needed
   }
 }
 
@@ -132,12 +132,12 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
     ),
     cell: (row) => {
       if (options.epoch.drawCompleted) {
+        const userAddress = row.row.original.userAddress
         return (
-          <div className='flex flex-[0.4] justify-end'>
-            <button className='bg-ic-blue-300 hover:bg-ic-blue-400 rounded-full px-4 py-1 text-xs font-medium text-black transition'>
-              Claim now
-            </button>
-          </div>
+          <ClaimButton
+            userAddress={userAddress as Address}
+            rewardToken={options.epoch.rewardToken as Address}
+          />
         )
       }
 

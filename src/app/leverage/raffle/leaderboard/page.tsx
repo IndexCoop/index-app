@@ -3,16 +3,17 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 
-import { EpochSelector } from '@/components/raffle/epoch-selector'
 import { RaffleHowToCard } from '@/components/raffle-how-to-card'
 import { RaffleLeaderboardTable } from '@/components/raffle-leaderboard'
 import { RafflePrizesCard } from '@/components/raffle-prizes-card'
 import { RaffleStatusCard } from '@/components/raffle-status-card'
+import { EpochSelector } from '@/components/raffle/epoch-selector'
 import {
   getApiV2RaffleEpochs,
   getApiV2RaffleLeaderboardEpochid,
   type GetApiV2RaffleEpochs200,
 } from '@/gen'
+import { useMerklRewards } from '@/lib/hooks/use-merkl-rewards'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 
 type EpochWithName = GetApiV2RaffleEpochs200[number] & { name: string }
@@ -66,22 +67,11 @@ export default function LeaderboardPage() {
   })
 
   const epoch = leaderboardData?.epoch
+  const leaderboard = leaderboardData?.leaderboard ?? []
 
-  // Sort leaderboard by placement when showing winners, otherwise use API order (by tickets/rank)
-  const leaderboard = useMemo(() => {
-    const data = leaderboardData?.leaderboard ?? []
-    if (epoch?.drawCompleted) {
-      // Sort by placement (1st, 2nd, 3rd...) - winners with placement come first
-      return [...data].sort((a, b) => {
-        if (!a.placement) return 1
-        if (!b.placement) return -1
-        return a.placement.localeCompare(b.placement, undefined, {
-          numeric: true,
-        })
-      })
-    }
-    return data
-  }, [leaderboardData, epoch?.drawCompleted])
+  const { data: rewards } = useMerklRewards(
+    '0x0954906da0Bf32d5479e25f46056d22f08464cab',
+  )
 
   if (isLoadingEpochs || !selectedEpoch) {
     return (
