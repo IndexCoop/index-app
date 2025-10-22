@@ -54,15 +54,18 @@ export const useClaimableRewards = (address?: string) => {
       }
     >()
 
-    // Add database winners
+    // Add database winners (only if they have unclaimed rewards)
     if (status?.tokens) {
       status.tokens.forEach((token) => {
-        tokenMap.set(token.rewardToken.toLowerCase(), {
-          rewardToken: token.rewardToken,
-          totalClaimable: token.totalClaimable,
-          hasUnclaimedRewards: token.hasUnclaimedRewards,
-          hasMerklRewards: false, // Will be updated below
-        })
+        // Skip if all rewards are claimed (totalClaimable is 0)
+        if (token.hasUnclaimedRewards && BigInt(token.totalClaimable) > 0) {
+          tokenMap.set(token.rewardToken.toLowerCase(), {
+            rewardToken: token.rewardToken,
+            totalClaimable: token.totalClaimable,
+            hasUnclaimedRewards: token.hasUnclaimedRewards,
+            hasMerklRewards: false, // Will be updated below
+          })
+        }
       })
     }
 
