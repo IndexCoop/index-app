@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react'
-import type { Address } from 'viem'
 import { useWriteContract } from 'wagmi'
 
 import { MERKL_DISTRIBUTOR_ABI } from '@/lib/utils/abi/MerklDistributor'
 
-import type { MerklRewardsData } from './use-merkl-rewards'
 import { useNetwork } from './use-network'
 import { useWallet } from './use-wallet'
+
+import type { MerklRewardsData } from './use-merkl-rewards'
+import type { Address } from 'viem'
 
 const DISTRIBUTOR_ADDRESSES: Record<number, Address> = {
   1: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',

@@ -3,17 +3,17 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 
+import { EpochSelector } from '@/components/raffle/epoch-selector'
 import { RaffleHowToCard } from '@/components/raffle-how-to-card'
 import { RaffleLeaderboardTable } from '@/components/raffle-leaderboard'
+import { UserWinnerRow } from '@/components/raffle-leaderboard/user-winner-row'
 import { RafflePrizesCard } from '@/components/raffle-prizes-card'
 import { RaffleStatusCard } from '@/components/raffle-status-card'
-import { EpochSelector } from '@/components/raffle/epoch-selector'
 import {
   getApiV2RaffleEpochs,
   getApiV2RaffleLeaderboardEpochid,
   type GetApiV2RaffleEpochs200,
 } from '@/gen'
-import { useMerklRewards } from '@/lib/hooks/use-merkl-rewards'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 
 type EpochWithName = GetApiV2RaffleEpochs200[number] & { name: string }
@@ -69,10 +69,6 @@ export default function LeaderboardPage() {
   const epoch = leaderboardData?.epoch
   const leaderboard = leaderboardData?.leaderboard ?? []
 
-  const { data: rewards } = useMerklRewards(
-    '0x0954906da0Bf32d5479e25f46056d22f08464cab',
-  )
-
   if (isLoadingEpochs || !selectedEpoch) {
     return (
       <div className='mx-auto max-w-7xl p-6 md:pt-20'>
@@ -109,11 +105,14 @@ export default function LeaderboardPage() {
             />
           </div>
           {epoch && (
-            <RaffleLeaderboardTable
-              data={leaderboard}
-              epoch={epoch}
-              isLoading={isLoadingLeaderboard}
-            />
+            <>
+              <UserWinnerRow data={leaderboard} epoch={epoch} />
+              <RaffleLeaderboardTable
+                data={leaderboard}
+                epoch={epoch}
+                isLoading={isLoadingLeaderboard}
+              />
+            </>
           )}
         </div>
         <div className='flex max-w-[400px] flex-col gap-6'>

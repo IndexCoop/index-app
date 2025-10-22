@@ -1,11 +1,12 @@
 'use client'
 
-import type { Address } from 'viem'
-
+import { postApiV2RaffleClaim } from '@/gen'
 import { useMerklClaim } from '@/lib/hooks/use-merkl-claim'
 import { useMerklRewards } from '@/lib/hooks/use-merkl-rewards'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { cn } from '@/lib/utils/tailwind'
+
+import type { Address } from 'viem'
 
 type ClaimButtonProps = {
   userAddress: Address
@@ -21,9 +22,23 @@ export function ClaimButton({ userAddress, rewardToken }: ClaimButtonProps) {
     try {
       const hash = await claim()
       console.log('Claim transaction hash:', hash)
+
+      // Fire-and-forget: Call backend to mark epochs as claimed
+      if (rewardToken) {
+        postApiV2RaffleClaim({
+          userAddress,
+          rewardToken,
+          txHash: hash,
+        }).catch((err) => {
+          // Silently fail - this is just for our internal tracking
+          console.warn('Failed to update claim status in backend:', err)
+        })
+      }
+
       await refetch()
     } catch (err) {
       console.error('Failed to claim rewards:', err)
+      // Error is already handled by useMerklClaim hook
     }
   }
 
@@ -35,6 +50,15 @@ export function ClaimButton({ userAddress, rewardToken }: ClaimButtonProps) {
       <div className='text-ic-gray-500 flex-[0.4] text-right text-xs'>-</div>
     )
   }
+
+  // Format error message to be user-friendly
+  const errorMessage = error
+    ? error.includes('User rejected')
+      ? 'Transaction cancelled'
+      : error.length > 50
+        ? 'Transaction failed'
+        : error
+    : null
 
   return (
     <div className='flex flex-[0.4] flex-col items-end gap-1'>
@@ -50,7 +74,11 @@ export function ClaimButton({ userAddress, rewardToken }: ClaimButtonProps) {
       >
         {isLoading ? 'Claiming...' : 'Claim now'}
       </button>
-      {error && <div className='text-xs text-red-400'>{error}</div>}
+      {errorMessage && (
+        <div className='max-w-[120px] truncate text-xs text-red-400'>
+          {errorMessage}
+        </div>
+      )}
     </div>
   )
 }

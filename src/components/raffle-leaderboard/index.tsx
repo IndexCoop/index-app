@@ -77,7 +77,7 @@ export function RaffleLeaderboardTable({
         ) : (
           table.getRowModel().rows.map((row) => (
             <div
-              className="text-ic-white flex h-[41px] w-full items-center justify-between rounded bg-[#061010] py-3 pl-4 pr-8 text-sm"
+              className='text-ic-white flex h-[41px] w-full items-center justify-between rounded bg-[#061010] py-3 pl-4 pr-8 text-sm'
               key={row.id}
             >
               {row.getVisibleCells().map((cell) => (
