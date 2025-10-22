@@ -72,7 +72,7 @@ export const useClaimableRewards = (address?: string) => {
 
       // Check if this epoch token has Merkl rewards
       const hasMerklRewards = allMerklRewards.some((reward) =>
-        isAddressEqual(reward.token.address, epochToken as Address),
+        isAddressEqual(reward.token.address as Address, epochToken as Address),
       )
 
       if (hasMerklRewards) {
