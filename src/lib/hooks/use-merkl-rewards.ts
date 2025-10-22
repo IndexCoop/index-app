@@ -10,7 +10,7 @@ import type { Address } from 'viem'
 const fetchMerklRewards = async (
   address: Address,
   chainId: number,
-  rewardToken: Address,
+  rewardTokens?: Address | Address[] | null,
 ) => {
   const { status, data } = await MerklApi('https://api.merkl.xyz')
     .v4.users({ address })
@@ -27,30 +27,52 @@ const fetchMerklRewards = async (
     return []
   }
 
-  return data
+  const allRewards = data
     .flatMap((r) => r.rewards)
-    .filter((r) => {
-      return (
-        BigInt(r.amount) > 0 && isAddressEqual(r.token.address, rewardToken)
-      )
-    })
+    .filter((r) => BigInt(r.amount) > 0)
+
+  // If no filter specified, return all rewards
+  if (!rewardTokens) {
+    return allRewards
+  }
+
+  // Convert to array for consistent handling
+  const tokensArray = Array.isArray(rewardTokens)
+    ? rewardTokens
+    : [rewardTokens]
+
+  // Filter by specified token(s)
+  return allRewards.filter((r) =>
+    tokensArray.some((token) => isAddressEqual(r.token.address, token)),
+  )
 }
 
 export type MerklRewardsData = Awaited<ReturnType<typeof fetchMerklRewards>>
 
-export const useMerklRewards = (rewardToken: Address | null) => {
+export const useMerklRewards = (rewardTokens?: Address | Address[] | null) => {
   const { address } = useWallet()
   const { chainId } = useNetwork()
+
+  // Normalize query key for consistent caching
+  const queryKey = [
+    'merkl-rewards',
+    address,
+    chainId,
+    Array.isArray(rewardTokens)
+      ? rewardTokens.sort().join(',')
+      : rewardTokens || 'all',
+  ]
+
   return useQuery({
-    queryKey: ['merkl-rewards', address, chainId, rewardToken],
+    queryKey,
     placeholderData: [],
     queryFn: () => {
-      if (!address || !chainId || !rewardToken) {
+      if (!address || !chainId) {
         return [] as MerklRewardsData
       }
-      return fetchMerklRewards(address as Address, chainId, rewardToken)
+      return fetchMerklRewards(address as Address, chainId, rewardTokens)
     },
-    enabled: !!address && !!chainId && !!rewardToken,
+    enabled: !!address && !!chainId,
     refetchInterval: 5000,
     staleTime: 30000,
   })

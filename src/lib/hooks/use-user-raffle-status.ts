@@ -7,8 +7,7 @@ const initialData = {
   statusText: 'OK',
   data: {
     hasUnclaimedRewards: false,
-    totalClaimable: '0',
-    epochs: [],
+    tokens: [],
   },
 }
 

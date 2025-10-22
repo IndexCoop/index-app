@@ -43,7 +43,7 @@ export function RaffleLeaderboardTable({
       <div className='w-full'>
         {table.getHeaderGroups().map((headerGroup) => (
           <div
-            className='text-ic-gray-400 flex w-full pl-4 pr-8 text-left text-xs font-normal'
+            className='text-ic-gray-400 flex w-full pl-2 pr-4 text-left text-xs font-normal sm:pl-4 sm:pr-8'
             key={headerGroup.id}
           >
             {headerGroup.headers.map((header) =>
@@ -63,9 +63,9 @@ export function RaffleLeaderboardTable({
       </div>
 
       {/* Body */}
-      <div className='flex max-h-[500px] min-h-[232px] w-full flex-col gap-[4px] overflow-y-auto pb-4'>
+      <div className='flex max-h-[500px] min-h-[232px] w-full flex-col gap-[4px] overflow-y-auto pb-2 sm:pb-4'>
         {isLoading ? (
-          <div className='flex w-full flex-col gap-3 px-4 py-2'>
+          <div className='flex w-full flex-col gap-3 px-2 py-1 sm:px-4 sm:py-2'>
             {[1, 2, 3, 4, 5].map((n) => (
               <SkeletonLoader key={n} className='h-12 w-full rounded-lg' />
             ))}
@@ -77,7 +77,7 @@ export function RaffleLeaderboardTable({
         ) : (
           table.getRowModel().rows.map((row) => (
             <div
-              className='text-ic-white flex h-[41px] w-full items-center justify-between rounded bg-[#061010] py-3 pl-4 pr-8 text-sm'
+              className='text-ic-white flex h-[41px] w-full items-center justify-between rounded bg-[#061010] py-2 pl-2 pr-4 text-sm sm:py-3 sm:pl-4 sm:pr-8'
               key={row.id}
             >
               {row.getVisibleCells().map((cell) => (

@@ -14,6 +14,7 @@ import {
   getApiV2RaffleLeaderboardEpochid,
   type GetApiV2RaffleEpochs200,
 } from '@/gen'
+import { useEpochCountdown } from '@/lib/hooks/use-epoch-countdown'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 
 type EpochWithName = GetApiV2RaffleEpochs200[number] & { name: string }
@@ -69,9 +70,14 @@ export default function LeaderboardPage() {
   const epoch = leaderboardData?.epoch
   const leaderboard = leaderboardData?.leaderboard ?? []
 
+  // Countdown timer for selected epoch (only for active epochs)
+  const timeLeft = useEpochCountdown(
+    epoch?.drawCompleted ? null : selectedEpoch?.endDate,
+  )
+
   if (isLoadingEpochs || !selectedEpoch) {
     return (
-      <div className='mx-auto max-w-7xl p-6 md:pt-20'>
+      <div className='mx-auto max-w-7xl px-3 py-6 sm:px-6 md:pt-20'>
         <div className='flex flex-wrap gap-6'>
           <div className='flex-1'>
             <div className='mb-7 flex items-center gap-4'>
@@ -91,22 +97,29 @@ export default function LeaderboardPage() {
   }
 
   return (
-    <div className='mx-auto max-w-7xl p-6 md:pt-20'>
+    <div className='mx-auto max-w-7xl px-3 py-6 sm:px-6 md:pt-20'>
       <div className='flex flex-wrap gap-6'>
         <div className='flex-1'>
-          <div className='mb-7 flex items-center gap-4'>
-            <h1 className='text-ic-gray-50 text-sm font-bold'>
-              {epoch?.drawCompleted ? 'Winners' : 'Live Leaderboard'}
-            </h1>
-            <EpochSelector
-              epochs={selectableEpochs}
-              selectedEpoch={selectedEpoch}
-              onEpochChange={setSelectedEpoch}
-            />
+          <div className='mb-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4'>
+            <div className='flex items-center gap-4'>
+              <h1 className='text-ic-gray-50 text-sm font-bold'>
+                {epoch?.drawCompleted ? 'Winners' : 'Live Leaderboard'}
+              </h1>
+              <EpochSelector
+                epochs={selectableEpochs}
+                selectedEpoch={selectedEpoch}
+                onEpochChange={setSelectedEpoch}
+              />
+            </div>
+            {!epoch?.drawCompleted && timeLeft && (
+              <p className='text-ic-blue-300 text-xs font-semibold sm:ml-auto'>
+                Ends in {timeLeft}
+              </p>
+            )}
           </div>
           {epoch && (
             <>
-              <UserWinnerRow data={leaderboard} epoch={epoch} />
+              <UserWinnerRow />
               <RaffleLeaderboardTable
                 data={leaderboard}
                 epoch={epoch}
