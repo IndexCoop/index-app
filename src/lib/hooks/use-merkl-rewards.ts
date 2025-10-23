@@ -29,7 +29,10 @@ const fetchMerklRewards = async (
 
   const allRewards = data
     .flatMap((r) => r.rewards)
-    .filter((r) => BigInt(r.amount) > 0)
+    .filter((r) => {
+      const unclaimed = BigInt(r.amount) - BigInt(r.claimed || 0)
+      return unclaimed > 0
+    })
 
   // If no filter specified, return all rewards
   if (!rewardTokens) {
