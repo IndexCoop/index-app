@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { getApiV2RaffleUserAddressStatus } from '@/gen'
 
-const initialData = {
+const placeholderData = {
   status: 200,
   statusText: 'OK',
   data: {
@@ -18,8 +18,7 @@ export const useUserRaffleStatus = (address?: string) => {
     enabled: !!address,
     refetchInterval: 30_000,
     staleTime: 10_000,
-    placeholderData: initialData,
-    select: ({ data }) => data,
+    placeholderData,
   })
 
   return {

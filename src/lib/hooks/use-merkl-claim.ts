@@ -1,21 +1,13 @@
 import { useCallback, useState } from 'react'
 import { useWriteContract } from 'wagmi'
 
+import { getMerklDistributorAddress } from '@/lib/constants/merkl'
 import { MERKL_DISTRIBUTOR_ABI } from '@/lib/utils/abi/MerklDistributor'
 
 import { useNetwork } from './use-network'
 import { useWallet } from './use-wallet'
 
 import type { MerklRewardsData } from './use-merkl-rewards'
-import type { Address } from 'viem'
-
-const DISTRIBUTOR_ADDRESSES: Record<number, Address> = {
-  1: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
-} as const
-
-const getDistributorAddress = (chainId: number) => {
-  return DISTRIBUTOR_ADDRESSES[chainId]
-}
 
 export const useMerklClaim = (rewards: MerklRewardsData) => {
   const { address } = useWallet()
@@ -30,9 +22,9 @@ export const useMerklClaim = (rewards: MerklRewardsData) => {
       return
     }
 
-    const distributorAddress = getDistributorAddress(chainId)
+    const distributorAddress = getMerklDistributorAddress(chainId)
     if (!distributorAddress) {
-      console.info('No distributor address configured for chain', chainId)
+      console.info('No distributor address configured')
       return
     }
 
@@ -40,8 +32,8 @@ export const useMerklClaim = (rewards: MerklRewardsData) => {
     setError(null)
 
     try {
-      const users = rewards.map(() => address) as Address[]
-      const tokens = rewards.map((r) => r.token.address as Address)
+      const users = rewards.map(() => address) as `0x${string}`[]
+      const tokens = rewards.map((r) => r.token.address as `0x${string}`)
       const amounts = rewards.map((r) => BigInt(r.amount))
       const proofs = rewards.map(
         (r) => r.proofs as unknown as readonly `0x${string}`[],

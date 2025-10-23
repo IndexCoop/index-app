@@ -55,8 +55,8 @@ export const useClaimableRewards = (address?: string) => {
     >()
 
     // Add database winners (only if they have unclaimed rewards)
-    if (status?.tokens) {
-      status.tokens.forEach((token) => {
+    if (status?.data?.tokens) {
+      status.data.tokens.forEach((token) => {
         // Skip if all rewards are claimed (totalClaimable is 0)
         if (token.hasUnclaimedRewards && BigInt(token.totalClaimable) > 0) {
           tokenMap.set(token.rewardToken.toLowerCase(), {

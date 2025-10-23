@@ -97,12 +97,10 @@ export function UserWinnerRow() {
   const tokensToShow = useClaimableRewards(address)
   const [claimError, setClaimError] = useState<string | null>(null)
 
-  // Check if any token is processing (has unclaimed but no Merkl yet)
   const hasProcessingRewards = tokensToShow.some(
     (token) => token.hasUnclaimedRewards && !token.hasMerklRewards,
   )
 
-  // Auto-dismiss error after 5 seconds
   useEffect(() => {
     if (claimError) {
       const timer = setTimeout(() => {
@@ -113,14 +111,12 @@ export function UserWinnerRow() {
     }
   }, [claimError])
 
-  // Show if user has any tokens (either in database or Merkl)
   if (!address || tokensToShow.length === 0) {
     return null
   }
 
   return (
     <div className='border-ic-gray-600 mb-4 flex w-full flex-col rounded-xl border bg-gradient-to-br from-[#061414] to-[#0a1f1f] p-3 shadow-2xl sm:mb-6 sm:p-5'>
-      {/* Header: Wallet Info */}
       <div className='border-ic-gray-700 mb-3 border-b pb-3 sm:mb-4 sm:pb-4'>
         <div className='flex items-center gap-3'>
           <div className='bg-ic-blue-300/10 flex h-10 w-10 items-center justify-center rounded-full'>
@@ -142,7 +138,6 @@ export function UserWinnerRow() {
             </div>
           </div>
         </div>
-        {/* Processing message if any token is waiting for Merkl */}
         {hasProcessingRewards && (
           <div className='text-ic-gray-400 mt-2 text-xs'>
             Rewards will be claimable within 24 hours
@@ -150,7 +145,6 @@ export function UserWinnerRow() {
         )}
       </div>
 
-      {/* Token Rows */}
       <div className='flex flex-col gap-3'>
         {tokensToShow.map((token) => (
           <TokenRow
@@ -162,7 +156,6 @@ export function UserWinnerRow() {
         ))}
       </div>
 
-      {/* Error Message */}
       {claimError && (
         <div className='mt-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-center text-sm text-red-400'>
           {claimError}

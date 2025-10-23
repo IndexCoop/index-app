@@ -92,7 +92,7 @@ export const isSupportedNetwork = (
 
 export const chains = Object.values(supportedNetworks) as AppKitNetwork[]
 
-export const wagmiAdapter = new WagmiAdapter({
+export const config = {
   projectId,
   networks: chains,
   ssr: true,
@@ -114,7 +114,9 @@ export const wagmiAdapter = new WagmiAdapter({
       `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`,
     ),
   },
-})
+}
+
+export const wagmiAdapter = new WagmiAdapter(config)
 
 export const initAppkit = () => {
   createAppKit({

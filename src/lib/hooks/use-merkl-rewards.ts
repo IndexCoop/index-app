@@ -1,6 +1,11 @@
 import { isAddressEqual } from '@indexcoop/tokenlists'
 import { MerklApi } from '@merkl/api'
 import { useQuery } from '@tanstack/react-query'
+import { readContract } from '@wagmi/core'
+
+import { getMerklDistributorAddress } from '@/lib/constants/merkl'
+import { MERKL_DISTRIBUTOR_ABI } from '@/lib/utils/abi/MerklDistributor'
+import { wagmiAdapter } from '@/lib/utils/wagmi'
 
 import { useNetwork } from './use-network'
 import { useWallet } from './use-wallet'
@@ -27,12 +32,48 @@ const fetchMerklRewards = async (
     return []
   }
 
-  const allRewards = data
-    .flatMap((r) => r.rewards)
-    .filter((r) => {
-      const unclaimed = BigInt(r.amount) - BigInt(r.claimed || 0)
-      return unclaimed > 0
-    })
+  const distributorAddress = getMerklDistributorAddress(chainId)
+  if (!distributorAddress) {
+    console.warn('No distributor address configured')
+    return []
+  }
+
+  const apiRewards = data.flatMap((r) => r.rewards)
+
+  const rewardsWithContractClaimed = await Promise.all(
+    apiRewards.map(async (reward) => {
+      try {
+        const result = await readContract(wagmiAdapter.wagmiConfig, {
+          address: distributorAddress,
+          abi: MERKL_DISTRIBUTOR_ABI,
+          functionName: 'claimed',
+          args: [address, reward.token.address as Address],
+        })
+
+        // Result is a tuple: [amount, timestamp, merkleRoot]
+        const claimedAmount = result[0]
+        const unclaimed = BigInt(reward.amount) - BigInt(claimedAmount)
+
+        return {
+          ...reward,
+          unclaimed: unclaimed.toString(),
+          hasUnclaimed: unclaimed > 0,
+        }
+      } catch (error) {
+        console.error('Error checking claimed amount:', error)
+        // Fallback to API claimed field if contract call fails
+        const unclaimed = BigInt(reward.amount) - BigInt(reward.claimed || 0)
+        return {
+          ...reward,
+          unclaimed: unclaimed.toString(),
+          hasUnclaimed: unclaimed > 0,
+        }
+      }
+    }),
+  )
+
+  // Filter to only unclaimed rewards
+  const allRewards = rewardsWithContractClaimed.filter((r) => r.hasUnclaimed)
 
   // If no filter specified, return all rewards
   if (!rewardTokens) {
@@ -76,7 +117,7 @@ export const useMerklRewards = (rewardTokens?: Address | Address[] | null) => {
       return fetchMerklRewards(address as Address, chainId, rewardTokens)
     },
     enabled: !!address && !!chainId,
-    refetchInterval: 5000,
-    staleTime: 30000,
+    refetchInterval: 30000,
+    staleTime: 60000,
   })
 }
