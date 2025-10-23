@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { EpochSelector } from '@/components/raffle/epoch-selector'
 import { RaffleHowToCard } from '@/components/raffle-how-to-card'
 import { RaffleLeaderboardTable } from '@/components/raffle-leaderboard'
+import { UserWinnerRow } from '@/components/raffle-leaderboard/user-winner-row'
 import { RafflePrizesCard } from '@/components/raffle-prizes-card'
 import { RaffleStatusCard } from '@/components/raffle-status-card'
 import {
@@ -13,6 +14,7 @@ import {
   getApiV2RaffleLeaderboardEpochid,
   type GetApiV2RaffleEpochs200,
 } from '@/gen'
+import { useEpochCountdown } from '@/lib/hooks/use-epoch-countdown'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 
 type EpochWithName = GetApiV2RaffleEpochs200[number] & { name: string }
@@ -66,26 +68,16 @@ export default function LeaderboardPage() {
   })
 
   const epoch = leaderboardData?.epoch
+  const leaderboard = leaderboardData?.leaderboard ?? []
 
-  // Sort leaderboard by placement when showing winners, otherwise use API order (by tickets/rank)
-  const leaderboard = useMemo(() => {
-    const data = leaderboardData?.leaderboard ?? []
-    if (epoch?.drawCompleted) {
-      // Sort by placement (1st, 2nd, 3rd...) - winners with placement come first
-      return [...data].sort((a, b) => {
-        if (!a.placement) return 1
-        if (!b.placement) return -1
-        return a.placement.localeCompare(b.placement, undefined, {
-          numeric: true,
-        })
-      })
-    }
-    return data
-  }, [leaderboardData, epoch?.drawCompleted])
+  // Countdown timer for selected epoch (only for active epochs)
+  const timeLeft = useEpochCountdown(
+    epoch?.drawCompleted ? null : selectedEpoch?.endDate,
+  )
 
   if (isLoadingEpochs || !selectedEpoch) {
     return (
-      <div className='mx-auto max-w-7xl p-6 md:pt-20'>
+      <div className='mx-auto max-w-7xl px-3 py-6 sm:px-6 md:pt-20'>
         <div className='flex flex-wrap gap-6'>
           <div className='flex-1'>
             <div className='mb-7 flex items-center gap-4'>
@@ -105,25 +97,35 @@ export default function LeaderboardPage() {
   }
 
   return (
-    <div className='mx-auto max-w-7xl p-6 md:pt-20'>
+    <div className='mx-auto max-w-7xl px-3 py-6 sm:px-6 md:pt-20'>
       <div className='flex flex-wrap gap-6'>
         <div className='flex-1'>
-          <div className='mb-7 flex items-center gap-4'>
-            <h1 className='text-ic-gray-50 text-sm font-bold'>
-              {epoch?.drawCompleted ? 'Winners' : 'Live Leaderboard'}
-            </h1>
-            <EpochSelector
-              epochs={selectableEpochs}
-              selectedEpoch={selectedEpoch}
-              onEpochChange={setSelectedEpoch}
-            />
+          <div className='mb-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4'>
+            <div className='flex items-center gap-4'>
+              <h1 className='text-ic-gray-50 text-sm font-bold'>
+                {epoch?.drawCompleted ? 'Winners' : 'Live Leaderboard'}
+              </h1>
+              <EpochSelector
+                epochs={selectableEpochs}
+                selectedEpoch={selectedEpoch}
+                onEpochChange={setSelectedEpoch}
+              />
+            </div>
+            {!epoch?.drawCompleted && timeLeft && (
+              <p className='text-ic-blue-300 text-xs font-semibold sm:ml-auto'>
+                Ends in {timeLeft}
+              </p>
+            )}
           </div>
           {epoch && (
-            <RaffleLeaderboardTable
-              data={leaderboard}
-              epoch={epoch}
-              isLoading={isLoadingLeaderboard}
-            />
+            <>
+              <UserWinnerRow />
+              <RaffleLeaderboardTable
+                data={leaderboard}
+                epoch={epoch}
+                isLoading={isLoadingLeaderboard}
+              />
+            </>
           )}
         </div>
         <div className='flex max-w-[400px] flex-col gap-6'>

@@ -18,7 +18,6 @@ type ColumnOptions = {
     endDate: string
     drawCompleted: boolean
     rewardToken: string | null
-    // Add other epoch properties as needed
   }
 }
 
@@ -70,43 +69,13 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
   }),
   columnHelper.accessor(id, {
     id: 'raffle-leaderboard:tickets',
-    header: () => {
-      // Get the reward token from tokenlist (assuming mainnet chainId = 1)
-      const rewardToken = options.epoch.rewardToken
-        ? getTokenByChainAndAddress(1, options.epoch.rewardToken)
-        : null
-      const tokenSymbol = rewardToken?.symbol ?? 'INDEX'
-
-      return (
-        <div className='text-ic-gray-400 flex-[0.5] text-center text-xs'>
-          {options.epoch.drawCompleted ? `${tokenSymbol} won` : '# of tickets'}
-        </div>
-      )
-    },
+    header: () => (
+      <div className='text-ic-gray-400 flex-[0.5] text-center text-xs'>
+        # of tickets
+      </div>
+    ),
     cell: (row) => {
       const entry = row.row.original
-
-      if (options.epoch.drawCompleted) {
-        // amount is a wei string from the API - format it to human readable
-        const rewardToken = options.epoch.rewardToken
-          ? getTokenByChainAndAddress(1, options.epoch.rewardToken)
-          : null
-        const tokenDecimals = rewardToken?.decimals ?? 18
-        const amountWei = entry.amount ?? '0'
-        const amountFormatted = formatUnits(BigInt(amountWei), tokenDecimals)
-        const displayAmount = Number(amountFormatted).toLocaleString(
-          undefined,
-          {
-            maximumFractionDigits: 0,
-          },
-        )
-
-        return (
-          <div className='flex flex-[0.5] items-center justify-center gap-2'>
-            <div className='text-xs'>{displayAmount}</div>
-          </div>
-        )
-      }
 
       return (
         <div className='flex flex-[0.5] items-center justify-center gap-2'>
@@ -125,18 +94,41 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
   }),
   columnHelper.display({
     id: 'raffle-leaderboard:odds',
-    header: () => (
-      <div className='text-ic-gray-400 flex-[0.4] text-right text-xs'>
-        {options.epoch.drawCompleted ? 'Claim via Merkl' : 'First prize odds'}
-      </div>
-    ),
+    header: () => {
+      // Get the reward token from tokenlist (assuming mainnet chainId = 1)
+      const rewardToken = options.epoch.rewardToken
+        ? getTokenByChainAndAddress(1, options.epoch.rewardToken)
+        : null
+      const tokenSymbol = rewardToken?.symbol ?? 'INDEX'
+
+      return (
+        <div className='text-ic-gray-400 flex-[0.4] text-right text-xs'>
+          {options.epoch.drawCompleted
+            ? `${tokenSymbol} won`
+            : 'First prize odds'}
+        </div>
+      )
+    },
     cell: (row) => {
       if (options.epoch.drawCompleted) {
+        const entry = row.row.original
+        // amount is a wei string from the API - format it to human readable
+        const rewardToken = options.epoch.rewardToken
+          ? getTokenByChainAndAddress(1, options.epoch.rewardToken)
+          : null
+        const tokenDecimals = rewardToken?.decimals ?? 18
+        const amountWei = entry.amount ?? '0'
+        const amountFormatted = formatUnits(BigInt(amountWei), tokenDecimals)
+        const displayAmount = Number(amountFormatted).toLocaleString(
+          undefined,
+          {
+            maximumFractionDigits: 0,
+          },
+        )
+
         return (
-          <div className='flex flex-[0.4] justify-end'>
-            <button className='bg-ic-blue-300 hover:bg-ic-blue-400 rounded-full px-4 py-1 text-xs font-medium text-black transition'>
-              Claim now
-            </button>
+          <div className='flex flex-[0.4] items-center justify-end text-xs'>
+            {displayAmount}
           </div>
         )
       }
