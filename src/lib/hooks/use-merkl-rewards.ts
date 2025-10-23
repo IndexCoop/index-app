@@ -26,8 +26,6 @@ const fetchMerklRewards = async (
       },
     })
 
-  console.log(data)
-
   if (status !== 200 || !data) {
     return []
   }
@@ -43,15 +41,13 @@ const fetchMerklRewards = async (
   const rewardsWithContractClaimed = await Promise.all(
     apiRewards.map(async (reward) => {
       try {
-        const result = await readContract(wagmiAdapter.wagmiConfig, {
+        const [claimedAmount] = await readContract(wagmiAdapter.wagmiConfig, {
           address: distributorAddress,
           abi: MERKL_DISTRIBUTOR_ABI,
           functionName: 'claimed',
           args: [address, reward.token.address as Address],
         })
 
-        // Result is a tuple: [amount, timestamp, merkleRoot]
-        const claimedAmount = result[0]
         const unclaimed = BigInt(reward.amount) - BigInt(claimedAmount)
 
         return {
@@ -61,7 +57,6 @@ const fetchMerklRewards = async (
         }
       } catch (error) {
         console.error('Error checking claimed amount:', error)
-        // Fallback to API claimed field if contract call fails
         const unclaimed = BigInt(reward.amount) - BigInt(reward.claimed || 0)
         return {
           ...reward,
@@ -72,20 +67,16 @@ const fetchMerklRewards = async (
     }),
   )
 
-  // Filter to only unclaimed rewards
   const allRewards = rewardsWithContractClaimed.filter((r) => r.hasUnclaimed)
 
-  // If no filter specified, return all rewards
   if (!rewardTokens) {
     return allRewards
   }
 
-  // Convert to array for consistent handling
   const tokensArray = Array.isArray(rewardTokens)
     ? rewardTokens
     : [rewardTokens]
 
-  // Filter by specified token(s)
   return allRewards.filter((r) =>
     tokensArray.some((token) => isAddressEqual(r.token.address, token)),
   )
