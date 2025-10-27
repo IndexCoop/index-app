@@ -56,7 +56,7 @@ export function EpochSelector({
                 className={cn(
                   'flex items-center gap-2 px-4 py-2 text-left text-xs transition',
                   epoch.id === selectedEpoch.id
-                    ? 'pointer-events-none bg-zinc-800 font-semibold text-ic-gray-300'
+                    ? 'text-ic-gray-300 pointer-events-none bg-zinc-800 font-semibold'
                     : 'text-ic-gray-300 hover:bg-zinc-800',
                 )}
               >
