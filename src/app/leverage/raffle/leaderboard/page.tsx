@@ -46,10 +46,26 @@ export default function LeaderboardPage() {
 
   const [selectedEpoch, setSelectedEpoch] = useState<EpochWithName | null>(null)
 
-  // Set initial epoch when data loads
   useEffect(() => {
     if (selectableEpochs.length > 0 && !selectedEpoch) {
-      setSelectedEpoch(selectableEpochs[0])
+      const now = new Date()
+
+      const activeEpoch = selectableEpochs.find((epoch) => {
+        const start = new Date(epoch.startDate)
+        const end = new Date(epoch.endDate)
+        return now >= start && now < end && !epoch.drawCompleted
+      })
+
+      if (activeEpoch) {
+        setSelectedEpoch(activeEpoch)
+      } else {
+        const upcomingEpochs = selectableEpochs.filter((epoch) => {
+          const start = new Date(epoch.startDate)
+          return now < start
+        })
+
+        setSelectedEpoch(upcomingEpochs[0] || selectableEpochs[0])
+      }
     }
   }, [selectableEpochs, selectedEpoch])
 
@@ -70,9 +86,14 @@ export default function LeaderboardPage() {
   const epoch = leaderboardData?.epoch
   const leaderboard = leaderboardData?.leaderboard ?? []
 
-  // Countdown timer for selected epoch (only for active epochs)
+  const isUpcoming =
+    selectedEpoch && new Date() < new Date(selectedEpoch.startDate)
+  const countdownDate = isUpcoming
+    ? selectedEpoch?.startDate
+    : selectedEpoch?.endDate
+
   const timeLeft = useEpochCountdown(
-    epoch?.drawCompleted ? null : selectedEpoch?.endDate,
+    epoch?.drawCompleted ? null : countdownDate,
   )
 
   if (isLoadingEpochs || !selectedEpoch) {
@@ -113,7 +134,7 @@ export default function LeaderboardPage() {
             </div>
             {!epoch?.drawCompleted && timeLeft && (
               <p className='text-ic-blue-300 text-xs font-semibold sm:ml-auto'>
-                Ends in {timeLeft}
+                {isUpcoming ? 'Starts' : 'Ends'} in {timeLeft}
               </p>
             )}
           </div>
