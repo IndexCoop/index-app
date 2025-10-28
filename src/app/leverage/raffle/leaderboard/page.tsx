@@ -15,6 +15,7 @@ import {
   type GetApiV2RaffleEpochs200,
 } from '@/gen'
 import { useEpochCountdown } from '@/lib/hooks/use-epoch-countdown'
+import { selectDefaultEpoch } from '@/lib/utils/raffle'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 
 type EpochWithName = GetApiV2RaffleEpochs200[number] & { name: string }
@@ -48,23 +49,9 @@ export default function LeaderboardPage() {
 
   useEffect(() => {
     if (selectableEpochs.length > 0 && !selectedEpoch) {
-      const now = new Date()
-
-      const activeEpoch = selectableEpochs.find((epoch) => {
-        const start = new Date(epoch.startDate)
-        const end = new Date(epoch.endDate)
-        return now >= start && now < end && !epoch.drawCompleted
-      })
-
-      if (activeEpoch) {
-        setSelectedEpoch(activeEpoch)
-      } else {
-        const upcomingEpochs = selectableEpochs.filter((epoch) => {
-          const start = new Date(epoch.startDate)
-          return now < start
-        })
-
-        setSelectedEpoch(upcomingEpochs[0] || selectableEpochs[0])
+      const defaultEpoch = selectDefaultEpoch(selectableEpochs)
+      if (defaultEpoch) {
+        setSelectedEpoch(defaultEpoch)
       }
     }
   }, [selectableEpochs, selectedEpoch])
