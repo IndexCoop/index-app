@@ -137,7 +137,7 @@ export default function LeaderboardPage() {
           )}
         </div>
         <div className='flex max-w-[400px] flex-col gap-6'>
-          <RaffleStatusCard leaderboard={leaderboard} />
+          <RaffleStatusCard leaderboard={leaderboard} epoch={epoch} />
           {epoch && <RafflePrizesCard epoch={epoch} />}
           <RaffleHowToCard />
         </div>

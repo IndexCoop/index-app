@@ -8,6 +8,7 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 
 type RaffleStatusCardProps = {
   leaderboard: GetApiV2RaffleLeaderboardEpochid200['leaderboard']
+  epoch?: GetApiV2RaffleLeaderboardEpochid200['epoch']
 }
 
 const LoadingDots = () => (
@@ -18,7 +19,10 @@ const LoadingDots = () => (
   </span>
 )
 
-export function RaffleStatusCard({ leaderboard }: RaffleStatusCardProps) {
+export function RaffleStatusCard({
+  leaderboard,
+  epoch,
+}: RaffleStatusCardProps) {
   const { address } = useWallet()
 
   const { data: userRaffleData, isLoading } = useRaffleTickets(address)
@@ -34,6 +38,38 @@ export function RaffleStatusCard({ leaderboard }: RaffleStatusCardProps) {
   const userTickets = userEntry?.tickets ?? 0
   const userOdds =
     totalTickets > 0 ? ((userTickets / totalTickets) * 100).toFixed(2) : '0.00'
+
+  // Show "Raffle Ended" state when draw is completed
+  if (epoch?.drawCompleted) {
+    return (
+      <div className='flex w-full flex-col gap-4 self-stretch rounded-lg border border-[#77A7A7] bg-[#061010] p-6'>
+        <h2 className='text-ic-gray-50 text-sm font-bold'>Raffle status</h2>
+
+        <div
+          className='flex flex-col items-center justify-center gap-3 rounded-2xl border border-[#659A9A] p-8'
+          style={{
+            background:
+              'linear-gradient(275deg, #132023 -16.13%, #1C3C44 102.73%)',
+          }}
+        >
+          <div className='flex items-center gap-2'>
+            <div className='h-2 w-2 rounded-full bg-[#77A7A7]' />
+            <span className='text-ic-gray-400 text-sm font-semibold'>
+              DRAW COMPLETED
+            </span>
+          </div>
+
+          <h3 className='text-ic-blue-300 text-center text-2xl font-bold'>
+            Raffle Ended
+          </h3>
+
+          <p className='text-ic-gray-400 text-center text-xs'>
+            Winners have been drawn. Check the leaderboard to see if you won!
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className='flex w-full flex-col gap-3 self-stretch rounded-lg border border-[#77A7A7] bg-[#061010] p-6'>
