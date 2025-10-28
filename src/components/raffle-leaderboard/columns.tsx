@@ -30,7 +30,11 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
       </div>
     ),
     cell: (row) => {
-      const rank = row.row.original.rank
+      // For winners mode, use the row index (sorted by prize amount)
+      // For leaderboard mode, use the rank from API
+      const rank = options.epoch.drawCompleted
+        ? row.row.index + 1
+        : row.row.original.rank
       return (
         <div className={cn('flex-[0.5] pl-4 text-left text-xs')}>{rank}</div>
       )
@@ -86,7 +90,7 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
             height={20}
           />
           <div className='text-ic-blue-300 text-xs'>
-            {entry.tickets?.toLocaleString()}
+            {entry.tickets?.toLocaleString() || '0'}
           </div>
         </div>
       )
@@ -127,7 +131,7 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
         )
 
         return (
-          <div className='flex flex-[0.4] items-center justify-end text-xs'>
+          <div className='text-ic-blue-300 flex flex-[0.4] items-center justify-end text-sm font-semibold'>
             {displayAmount}
           </div>
         )

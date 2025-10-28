@@ -31,8 +31,24 @@ export function RaffleLeaderboardTable({
 }: RaffleLeaderboardTableProps) {
   const columns = useMemo(() => getLeaderboardColumns({ epoch }), [epoch])
 
+  // Sort winners by prize amount when draw is completed
+  const sortedData = useMemo(() => {
+    if (!data) return []
+
+    if (epoch.drawCompleted) {
+      return [...data].sort((a, b) => {
+        const amountA = BigInt(a.amount ?? '0')
+        const amountB = BigInt(b.amount ?? '0')
+        // Sort descending (highest prize first)
+        return amountB > amountA ? 1 : amountB < amountA ? -1 : 0
+      })
+    }
+
+    return data
+  }, [data, epoch.drawCompleted])
+
   const table = useReactTable({
-    data: data ?? [],
+    data: sortedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
