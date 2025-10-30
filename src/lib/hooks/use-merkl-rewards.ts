@@ -5,23 +5,22 @@ import { readContract } from '@wagmi/core'
 
 import { getMerklDistributorAddress } from '@/lib/constants/merkl'
 import { MERKL_DISTRIBUTOR_ABI } from '@/lib/utils/abi/MerklDistributor'
-import { wagmiAdapter } from '@/lib/utils/wagmi'
+import { supportedNetworks, wagmiAdapter } from '@/lib/utils/wagmi'
 
-import { useNetwork } from './use-network'
 import { useWallet } from './use-wallet'
 
 import type { Address } from 'viem'
 
 const fetchMerklRewards = async (
   address: Address,
-  chainId: number,
+  chainIds: number[],
   rewardTokens?: Address | Address[] | null,
 ) => {
   const { status, data } = await MerklApi('https://api.merkl.xyz')
     .v4.users({ address })
     .rewards.get({
       query: {
-        chainId: [chainId.toString()],
+        chainId: chainIds.map((id) => id.toString()),
         breakdownPage: 0,
       },
     })
@@ -30,22 +29,32 @@ const fetchMerklRewards = async (
     return []
   }
 
-  const distributorAddress = getMerklDistributorAddress(chainId)
-  if (!distributorAddress) {
-    console.warn('No distributor address configured')
-    return []
-  }
-
   const apiRewards = data.flatMap((r) => r.rewards)
 
   const rewardsWithContractClaimed = await Promise.all(
     apiRewards.map(async (reward) => {
       try {
+        const distributorAddress = getMerklDistributorAddress(
+          reward.token.chainId,
+        )
+        if (!distributorAddress) {
+          console.warn(
+            `No distributor address configured for chain ${reward.token.chainId}`,
+          )
+          const unclaimed = BigInt(reward.amount) - BigInt(reward.claimed || 0)
+          return {
+            ...reward,
+            unclaimed: unclaimed.toString(),
+            hasUnclaimed: unclaimed > 0,
+          }
+        }
+
         const [claimedAmount] = await readContract(wagmiAdapter.wagmiConfig, {
           address: distributorAddress,
           abi: MERKL_DISTRIBUTOR_ABI,
           functionName: 'claimed',
           args: [address, reward.token.address as Address],
+          chainId: reward.token.chainId,
         })
 
         const unclaimed = BigInt(reward.amount) - BigInt(claimedAmount)
@@ -86,13 +95,17 @@ export type MerklRewardsData = Awaited<ReturnType<typeof fetchMerklRewards>>
 
 export const useMerklRewards = (rewardTokens?: Address | Address[] | null) => {
   const { address } = useWallet()
-  const { chainId } = useNetwork()
+
+  // Get all supported chain IDs from wagmi config
+  const supportedChainIds = Object.keys(supportedNetworks)
+    .map(Number)
+    .filter((id) => id !== 31337) // Exclude localhost
 
   // Normalize query key for consistent caching
   const queryKey = [
     'merkl-rewards',
     address,
-    chainId,
+    'all-chains',
     Array.isArray(rewardTokens)
       ? rewardTokens.sort().join(',')
       : rewardTokens || 'all',
@@ -102,12 +115,16 @@ export const useMerklRewards = (rewardTokens?: Address | Address[] | null) => {
     queryKey,
     placeholderData: [],
     queryFn: () => {
-      if (!address || !chainId) {
+      if (!address) {
         return [] as MerklRewardsData
       }
-      return fetchMerklRewards(address as Address, chainId, rewardTokens)
+      return fetchMerklRewards(
+        address as Address,
+        supportedChainIds,
+        rewardTokens,
+      )
     },
-    enabled: !!address && !!chainId,
+    enabled: !!address,
     refetchInterval: 30000,
     staleTime: 60000,
   })
