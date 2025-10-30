@@ -272,6 +272,7 @@ export function LeverageProvider(props: { children: any }) {
     if (isSupportedNetwork(chainId)) {
       const chainMarkets =
         marketLeverageTypes[chainId as keyof typeof marketLeverageTypes]
+      if (!chainMarkets) return []
       return chainMarkets[market as keyof typeof chainMarkets]
     }
 
