@@ -27,9 +27,7 @@ import { cn } from '@/lib/utils/tailwind'
 const OpenPositions = () => {
   const { address, isConnected } = useWallet()
   const { chainId } = useNetwork()
-  const [selectedIndex, setSelectedIndex] = useState<undefined | number>(
-    undefined,
-  )
+  const [selectedIndex, setSelectedIndex] = useState<undefined | number>(0)
   const { queryParams, updateQueryParams } = useQueryParams()
   const fetchPositions = useSetAtom(fetchPositionsAtom)
   const { logEvent } = useAnalytics()
@@ -147,14 +145,6 @@ const OpenPositions = () => {
           }}
         >
           Open Positions
-          <span
-            className={cn(
-              'flex h-3.5 items-center justify-center rounded-[4px] bg-purple-500/30 px-1.5 py-0.5 text-[8px] text-neutral-400',
-              selectedIndex === 0 && 'bg-purple-500 text-neutral-50',
-            )}
-          >
-            BETA
-          </span>
           <ChevronUpIcon
             className={cn(
               'size-5',
@@ -173,14 +163,6 @@ const OpenPositions = () => {
           }}
         >
           History
-          <span
-            className={cn(
-              'flex h-3.5 items-center justify-center rounded-[4px] bg-purple-500/30 px-1.5 py-0.5 text-[8px] text-neutral-400',
-              selectedIndex === 1 && 'bg-purple-500 text-neutral-50',
-            )}
-          >
-            BETA
-          </span>
           <ChevronUpIcon
             className={cn(
               'size-5',

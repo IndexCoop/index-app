@@ -1,9 +1,12 @@
+import { CheckIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 import { createColumnHelper } from '@tanstack/react-table'
 import id from 'lodash/identity'
 import Image from 'next/image'
+import { useState } from 'react'
 import { formatUnits } from 'viem'
 
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { useWallet } from '@/lib/hooks/use-wallet'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -49,8 +52,24 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
       const address = row.row.original.userAddress
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { address: walletAddress } = useWallet()
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [copiedAddress, setCopiedAddress] = useState<string | null>(null)
       const isCurrentUser =
         walletAddress?.toLowerCase() === address.toLowerCase()
+
+      const handleCopy = async (addr: string) => {
+        try {
+          await navigator.clipboard.writeText(addr)
+          setCopiedAddress(addr)
+          setTimeout(() => {
+            setCopiedAddress(null)
+          }, 2000)
+        } catch (err) {
+          console.error('Failed to copy address:', err)
+        }
+      }
+
+      const isCopied = copiedAddress === address
 
       return (
         <div className='flex flex-1 items-center gap-2 text-left'>
@@ -67,6 +86,26 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
               You
             </span>
           )}
+          <Tooltip open={isCopied}>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => handleCopy(address)}
+                className='text-ic-gray-400 hover:text-ic-gray-200 transition-colors'
+              >
+                {isCopied ? (
+                  <CheckIcon className='text-ic-blue-300 animate-in zoom-in-50 h-4 w-4 duration-200' />
+                ) : (
+                  <ClipboardDocumentIcon className='h-4 w-4' />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent
+              side='top'
+              className='bg-ic-black rounded-md border-[0.5px] border-gray-800 px-2 py-1 text-xs text-white'
+            >
+              Copied!
+            </TooltipContent>
+          </Tooltip>
         </div>
       )
     },
