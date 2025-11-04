@@ -99,10 +99,7 @@ export const getLeaderboardColumns = (options: ColumnOptions) => [
                 )}
               </button>
             </TooltipTrigger>
-            <TooltipContent
-              side='top'
-              className='bg-ic-black rounded-md border-[0.5px] border-gray-800 px-2 py-1 text-xs text-white'
-            >
+            <TooltipContent className='bg-ic-black rounded-md border-[0.5px] border-gray-800 px-2 py-1 text-xs text-white'>
               Copied!
             </TooltipContent>
           </Tooltip>
