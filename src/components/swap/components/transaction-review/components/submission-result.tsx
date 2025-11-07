@@ -100,8 +100,10 @@ const WaitingForConfirmation = () => {
 
 export function SubmissionResult({
   onClose: onModalClose,
+  onShareReferral,
 }: {
   onClose: () => void
+  onShareReferral: () => void
 }) {
   const [tradeState] = useAtom(tradeMachineAtom)
   const [isPrivacyOn, setIsPrivacyOn] = useState(false)
@@ -271,12 +273,24 @@ export function SubmissionResult({
             <Button
               onClick={onModalClose}
               className={cn(
-                'text-ic-white dark:text-ic-black w-full rounded-[10px] px-4 py-2 text-sm font-bold',
-                'shadow-[0.5px_1px_2px_0_rgba(0,0,0,0.3)]',
-                'bg-ic-blue-600 dark:bg-ic-blue-300 hover:bg-ic-blue-700 dark:hover:bg-ic-blue-400',
+                'w-full rounded-[10px] border px-4 py-2 text-sm font-bold',
+                'border-ic-gray-500 text-ic-gray-50',
+                'transition-opacity hover:opacity-80',
               )}
             >
               Done
+            </Button>
+            <Button
+              onClick={onShareReferral}
+              className={cn(
+                'w-full rounded-[10px] px-4 py-2 text-sm font-bold',
+                'bg-ic-blue-300 text-black',
+                'transition hover:bg-ic-blue-400',
+              )}
+            >
+              {trade.transactionType === 'buy'
+                ? 'Share to boost'
+                : 'Share to stay in the game'}
             </Button>
           </div>
         </>

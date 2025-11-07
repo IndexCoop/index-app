@@ -42,6 +42,7 @@
     "@visx/gradient": "3.3.0",
     "@visx/responsive": "3.10.2",
     "@visx/xychart": "3.12.0",
+    "@wagmi/connectors": "6.1.3",
     "alchemy-sdk": "3.5.8",
     "dayjs": "1.11.11",
     "eslint": "8.57.1",
