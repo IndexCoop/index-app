@@ -18,7 +18,7 @@ export const useInitialize = () => {
   useUtmParams()
   useRaffleEpoch()
 
-  // Store referral code in sessionStorage for later use
+  // Store referral code in sessionStorage for later use if the user was not yet wallet connected
   useEffect(() => {
     if (referralCode) {
       sessionStorage.setItem('referralCode', referralCode)

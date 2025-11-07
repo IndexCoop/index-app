@@ -23,6 +23,7 @@ export const useUpsertUser = (referralCode: string | null = null) => {
   useEffect(() => {
     const unwatch = watchAccount(wagmiAdapter.wagmiConfig, {
       async onChange(account, prevAccount) {
+        // Only if the user just connected or changed account
         if (account.address && prevAccount.address !== account.address) {
           // Get referral code from ref or sessionStorage
           const storedReferral = sessionStorage.getItem('referralCode')
