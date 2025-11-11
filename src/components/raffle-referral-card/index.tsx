@@ -4,6 +4,7 @@ import { CheckIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import { useState } from 'react'
 
+import { QUERY_PARAM_REFERRAL } from '@/constants'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 export function RaffleReferralCard() {
@@ -13,7 +14,7 @@ export function RaffleReferralCard() {
   // Don't show component if user is not connected
   if (!address) return null
 
-  const referralLink = `${window.location.origin}?referral=${address}`
+  const referralLink = `${window.location.origin}?${QUERY_PARAM_REFERRAL}=${address}`
 
   const handleCopy = async () => {
     try {

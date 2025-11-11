@@ -1,15 +1,12 @@
 'use client'
 
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-} from '@headlessui/react'
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
 import { CheckIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
+import { QUERY_PARAM_REFERRAL } from '@/constants'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
 type RaffleReferralModalProps = {
@@ -26,7 +23,7 @@ export function RaffleReferralModal({
 
   if (!address) return null
 
-  const referralLink = `${window.location.origin}?referral=${address}`
+  const referralLink = `${window.location.origin}?${QUERY_PARAM_REFERRAL}=${address}`
 
   const handleCopy = async () => {
     try {
@@ -62,7 +59,7 @@ export function RaffleReferralModal({
                     onClick={onClose}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-ic-gray-300 underline decoration-dotted underline-offset-4 hover:text-ic-gray-200'
+                    className='text-ic-gray-300 hover:text-ic-gray-200 underline decoration-dotted underline-offset-4'
                   >
                     climb the leaderboard
                   </Link>
@@ -89,7 +86,7 @@ export function RaffleReferralModal({
 
                 <button
                   onClick={handleShare}
-                  className='flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#09090B] px-6 py-3 text-sm font-semibold text-ic-gray-50 transition-opacity hover:opacity-80'
+                  className='text-ic-gray-50 flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#09090B] px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-80'
                 >
                   <span>Share</span>
                   <Image
