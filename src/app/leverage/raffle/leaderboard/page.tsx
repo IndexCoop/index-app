@@ -8,7 +8,9 @@ import { RaffleHowToCard } from '@/components/raffle-how-to-card'
 import { RaffleLeaderboardTable } from '@/components/raffle-leaderboard'
 import { UserWinnerRow } from '@/components/raffle-leaderboard/user-winner-row'
 import { RafflePrizesCard } from '@/components/raffle-prizes-card'
+import { RaffleReferralCard } from '@/components/raffle-referral-card'
 import { RaffleStatusCard } from '@/components/raffle-status-card'
+import { RaffleStatusWrapper } from '@/components/raffle-status-wrapper'
 import {
   getApiV2RaffleEpochs,
   getApiV2RaffleLeaderboardEpochid,
@@ -137,7 +139,10 @@ export default function LeaderboardPage() {
           )}
         </div>
         <div className='flex max-w-[400px] flex-col gap-6'>
-          <RaffleStatusCard leaderboard={leaderboard} epoch={epoch} />
+          <RaffleStatusWrapper>
+            <RaffleStatusCard leaderboard={leaderboard} epoch={epoch} />
+            <RaffleReferralCard />
+          </RaffleStatusWrapper>
           {epoch && <RafflePrizesCard epoch={epoch} />}
           <RaffleHowToCard />
         </div>

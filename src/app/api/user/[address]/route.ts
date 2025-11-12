@@ -3,13 +3,19 @@ import { NextResponse } from 'next/server'
 import { postApiV2UserAddress, PostApiV2UserAddressMutation } from '@/gen'
 
 export async function GET(
-  _: Request,
+  request: Request,
   { params }: { params: Promise<{ address: string }> },
 ) {
   const { address } = await params
+  const { searchParams } = new URL(request.url)
+  const referredBy = searchParams.get('referred_by')
 
   try {
-    const { data: user, status } = await postApiV2UserAddress({ address }, {})
+    const body = referredBy ? { referred_by: referredBy } : {}
+    const { data: user, status } = await postApiV2UserAddress(
+      { address },
+      body,
+    )
 
     return NextResponse.json(user, { status })
   } catch (e) {
