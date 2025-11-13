@@ -3,6 +3,7 @@
 import { CheckIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { useRaffleReferral } from '@/lib/hooks/use-raffle-referral'
 
 export function RaffleReferralCard() {
@@ -19,9 +20,52 @@ export function RaffleReferralCard() {
         </h2>
         <p className='text-ic-gray-400 text-xs'>
           Every referral helps you{' '}
-          <span className='cursor-help underline decoration-dotted underline-offset-4'>
-            climb the leaderboard
-          </span>
+          <Tooltip placement='bottom'>
+            <TooltipTrigger asChild>
+              <span className='cursor-help underline decoration-dotted underline-offset-4'>
+                climb the leaderboard
+              </span>
+            </TooltipTrigger>
+            <TooltipContent className='bg-ic-gray-900 border-ic-gray-700 max-w-xs rounded-lg border p-4 text-left shadow-lg'>
+              <div className='space-y-4'>
+                <div>
+                  <h3 className='text-ic-gray-50 mb-2 text-sm font-bold'>
+                    Referrer
+                  </h3>
+                  <ul className='text-ic-gray-300 space-y-1 text-xs'>
+                    <li className='flex gap-2'>
+                      <span className='mt-1 shrink-0'>•</span>
+                      <span>
+                        +1 extra ticket on every referee&apos;s first qualifying
+                        trade
+                      </span>
+                    </li>
+                    <li className='flex gap-2'>
+                      <span className='mt-1 shrink-0'>•</span>
+                      <span>
+                        Earn 50% of tickets your referees generate, up to an
+                        extra 25 tickets per epoch.
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className='text-ic-gray-50 mb-2 text-sm font-bold'>
+                    Referee
+                  </h3>
+                  <ul className='text-ic-gray-300 space-y-1 text-xs'>
+                    <li className='flex gap-2'>
+                      <span className='mt-1 shrink-0'>•</span>
+                      <span>
+                        Gets double tickets on their first qualifying
+                        transaction
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </TooltipContent>
+          </Tooltip>
           .
         </p>
       </div>
