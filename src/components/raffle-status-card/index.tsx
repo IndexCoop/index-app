@@ -130,7 +130,7 @@ export function RaffleStatusCard({
         </div>
 
         {/* Bottom left - Breakdown */}
-        <div className='flex w-52 flex-col gap-1.5 rounded-b-2xl border-b border-l border-r border-[#4E6060] py-2'>
+        <div className='flex w-52 flex-col gap-1.5 rounded-b-2xl border-b border-l border-r border-[#4E6060] px-1.5 py-3'>
           <div className='text-ic-gray-700 px-3 text-left text-[10px]'>
             Breakdown
           </div>
