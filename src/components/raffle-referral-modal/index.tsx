@@ -4,10 +4,8 @@ import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
 import { CheckIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
 
-import { QUERY_PARAM_REFERRAL } from '@/constants'
-import { useWallet } from '@/lib/hooks/use-wallet'
+import { useRaffleReferral } from '@/lib/hooks/use-raffle-referral'
 
 type RaffleReferralModalProps = {
   isOpen: boolean
@@ -18,28 +16,10 @@ export function RaffleReferralModal({
   isOpen,
   onClose,
 }: RaffleReferralModalProps) {
-  const { address } = useWallet()
-  const [copied, setCopied] = useState(false)
+  const { hasReferralCode, referralLink, copied, handleCopy, handleShare } =
+    useRaffleReferral()
 
-  if (!address) return null
-
-  const referralLink = `${window.location.origin}?${QUERY_PARAM_REFERRAL}=${address}`
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(referralLink)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error('Failed to copy:', err)
-    }
-  }
-
-  const handleShare = () => {
-    const linkWithoutProtocol = referralLink.replace(/^https?:\/\//, '')
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I'm participating in @indexcoop Leverage RUSH\n\nJoin the campaign with my code:\n${linkWithoutProtocol}`)}`
-    window.open(twitterUrl, '_blank')
-  }
+  if (!hasReferralCode) return null
 
   return (
     <Dialog onClose={onClose} open={isOpen} className='relative z-50'>

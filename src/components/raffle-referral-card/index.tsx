@@ -2,36 +2,14 @@
 
 import { CheckIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
-import { useState } from 'react'
 
-import { QUERY_PARAM_REFERRAL } from '@/constants'
-import { useWallet } from '@/lib/hooks/use-wallet'
+import { useRaffleReferral } from '@/lib/hooks/use-raffle-referral'
 
 export function RaffleReferralCard() {
-  const { address } = useWallet()
-  const [copied, setCopied] = useState(false)
+  const { hasReferralCode, referralLink, copied, handleCopy, handleShare } =
+    useRaffleReferral()
 
-  // Don't show component if user is not connected
-  if (!address) return null
-
-  const referralLink = `${window.location.origin}?${QUERY_PARAM_REFERRAL}=${address}`
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(referralLink)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error('Failed to copy:', err)
-    }
-  }
-
-  const handleShare = () => {
-    // Twitter share functionality
-    const linkWithoutProtocol = referralLink.replace(/^https?:\/\//, '')
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I'm participating in @indexcoop Leverage RUSH\n\nJoin the campaign with my code:\n${linkWithoutProtocol}`)}`
-    window.open(twitterUrl, '_blank')
-  }
+  if (!hasReferralCode) return null
 
   return (
     <div className='border-ic-gray-500 bg-ic-gray-950 flex w-full flex-col gap-6 self-stretch rounded-lg border p-6'>
