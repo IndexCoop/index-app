@@ -9,6 +9,7 @@ const initialData = {
     epochId: 0,
     epochNumber: 0,
     tickets: 0,
+    referralTickets: 0,
     maturingTickets: 0,
     startDate: '',
     endDate: '',
