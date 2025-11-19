@@ -33,13 +33,27 @@ export function useRaffleReferral() {
       const twitterAppUrl = `twitter://post?message=${encodeURIComponent(tweetText)}`
       const xWebUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}`
 
+      let appOpened = false
+
+      // Track if app opened successfully by detecting page blur
+      const onBlur = () => {
+        appOpened = true
+      }
+
+      window.addEventListener('blur', onBlur)
+
       // Attempt to open the app
       window.location.href = twitterAppUrl
 
-      // Fallback to web if app not installed (after a brief delay)
+      // Fallback to web if app not installed
       setTimeout(() => {
-        window.location.href = xWebUrl
-      }, 500)
+        window.removeEventListener('blur', onBlur)
+
+        // Only open web URL if app didn't open
+        if (!appOpened) {
+          window.open(xWebUrl, '_blank')
+        }
+      }, 1000)
     } else {
       // Desktop: use web URL
       const xUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}`
