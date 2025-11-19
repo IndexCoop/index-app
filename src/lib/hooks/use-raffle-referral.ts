@@ -3,14 +3,12 @@ import { useState } from 'react'
 
 import { userMetadataAtom } from '@/app/store/user-metadata-atoms'
 import { QUERY_PARAM_REFERRAL } from '@/constants'
-import { useWallet } from '@/lib/hooks/use-wallet'
 
 export function useRaffleReferral() {
-  const { address } = useWallet()
   const [copied, setCopied] = useState(false)
   const [userMetadata] = useAtom(userMetadataAtom)
 
-  const hasReferralCode = !!address && !!userMetadata?.referralCode
+  const hasReferralCode = !!userMetadata?.referralCode
   const referralLink = hasReferralCode
     ? `${window.location.origin}?${QUERY_PARAM_REFERRAL}=${userMetadata.referralCode}`
     : ''
