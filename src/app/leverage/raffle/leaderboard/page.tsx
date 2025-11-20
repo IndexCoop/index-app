@@ -138,7 +138,7 @@ export default function LeaderboardPage() {
             </>
           )}
         </div>
-        <div className='flex max-w-[400px] flex-col gap-6'>
+        <div className='flex max-w-[95vw] flex-col gap-6 md:max-w-[400px]'>
           <RaffleStatusWrapper>
             <RaffleStatusCard leaderboard={leaderboard} epoch={epoch} />
             <RaffleReferralCard />

@@ -75,47 +75,52 @@ export function RaffleStatusCard({
     <div className='flex w-full flex-col gap-3 self-stretch rounded-lg border border-[#77A7A7] bg-[#061010] p-6'>
       <h2 className='text-ic-gray-50 text-sm font-bold'>Your raffle status</h2>
 
-      <div className='flex gap-3'>
+      <div className='grid grid-cols-[auto_1fr] gap-x-3'>
+        {/* Top left - Your tickets & odds */}
         <div
-          className='flex shrink-0 gap-6 rounded-2xl border border-[#659A9A] p-4 md:gap-12'
+          className='flex w-52 flex-col gap-1.5 space-y-1 rounded-t-2xl border border-[#659A9A] px-4 py-3'
           style={{
             background:
               'linear-gradient(275deg, #132023 -16.13%, #1C3C44 102.73%)',
           }}
         >
-          <div className='flex flex-1 flex-col justify-center gap-1'>
-            <div className='text-ic-gray-400 whitespace-nowrap text-xs'>
+          <div className='flex items-center justify-between'>
+            <div className='text-ic-gray-400 text-xs font-medium'>
               Your tickets
             </div>
-            <div className='flex items-center gap-1'>
+            <div className='text-ic-gray-500 text-xs font-medium'>
+              Your odds
+            </div>
+          </div>
+          <div className='flex items-end justify-between'>
+            <div className='flex items-center gap-2'>
               <Image
                 src='/assets/ticket-icon.png'
                 alt='tickets'
-                width={20}
+                width={24}
                 height={20}
               />
-              <span className='text-ic-gray-50 text-lg font-bold'>
+              <span className='text-ic-gray-50 text-xl font-bold'>
                 {isLoading ? <LoadingDots /> : userRaffleData?.tickets}
               </span>
             </div>
-          </div>
-
-          <div className='flex flex-1 flex-col justify-center gap-1'>
-            <div className='text-ic-gray-400 text-xs'>Your odds</div>
-            <div className='text-ic-gray-400 text-xl'>
+            <div className='text-ic-gray-400 text-lg font-light'>
               {isLoading ? <LoadingDots /> : `${userOdds}%`}
             </div>
           </div>
         </div>
 
-        <div className='flex flex-1 shrink-0 flex-col justify-center gap-1 rounded-2xl bg-[#132023] p-4'>
-          <div className='text-ic-gray-600 text-xs'>Maturing tickets</div>
-          <div className='flex items-center gap-1 text-lg font-bold'>
+        {/* Top right - Maturing tickets */}
+        <div className='flex flex-col justify-center gap-3 rounded-2xl bg-[#132023] px-4 py-3'>
+          <div className='text-ic-gray-600 text-xs font-medium'>
+            Maturing tickets
+          </div>
+          <div className='flex items-center gap-2'>
             <Image
               className='opacity-50'
               src='/assets/ticket-icon.png'
               alt='tickets'
-              width={20}
+              width={24}
               height={20}
             />
             <span className='text-ic-gray-500 text-xl font-bold'>
@@ -123,11 +128,64 @@ export function RaffleStatusCard({
             </span>
           </div>
         </div>
-      </div>
 
-      <p className='text-ic-gray-500 text-xs'>
-        Tickets mature after a position has been held for at least 24 hours.
-      </p>
+        {/* Bottom left - Breakdown */}
+        <div className='flex w-52 flex-col gap-1.5 rounded-b-2xl border-b border-l border-r border-[#4E6060] px-1.5 py-3'>
+          <div className='text-ic-gray-700 px-3 text-left text-[10px]'>
+            Breakdown
+          </div>
+          <div className='flex flex-col gap-1'>
+            <div className='flex items-center justify-between px-3'>
+              <span className='text-ic-gray-400 text-xs font-medium'>
+                From trading
+              </span>
+              <div className='flex items-center gap-1'>
+                <Image
+                  src='/assets/ticket-icon.png'
+                  alt='tickets'
+                  width={15}
+                  height={12}
+                />
+                <span className='text-ic-gray-50 text-xs font-bold'>
+                  {isLoading ? (
+                    <LoadingDots />
+                  ) : (
+                    (userRaffleData?.tickets ?? 0) -
+                    (userRaffleData?.referralTickets ?? 0)
+                  )}
+                </span>
+              </div>
+            </div>
+            <div className='flex items-center justify-between px-3'>
+              <span className='text-ic-gray-400 text-xs font-medium'>
+                From referrals
+              </span>
+              <div className='flex items-center gap-1'>
+                <Image
+                  src='/assets/ticket-icon.png'
+                  alt='tickets'
+                  width={15}
+                  height={12}
+                />
+                <span className='text-ic-gray-50 text-xs font-bold'>
+                  {isLoading ? (
+                    <LoadingDots />
+                  ) : (
+                    (userRaffleData?.referralTickets ?? 0)
+                  )}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom right - Info text */}
+        <div className='px-2 pt-4'>
+          <p className='text-ic-gray-500 text-[10px] leading-relaxed'>
+            Tickets mature after a position has been held for at least 24 hours.
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
