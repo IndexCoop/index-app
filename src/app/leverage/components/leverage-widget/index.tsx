@@ -33,6 +33,9 @@ import { Summary } from './components/summary'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
+// Tokens temporarily disabled for buying (minting)
+const TEMPORARILY_DISABLED_BUY_TOKENS = ['GOLD3x']
+
 export function LeverageWidget() {
   const gasData = useGasData()
   const isSupportedNetwork = useSupportedNetworks(supportedNetworks)
@@ -110,6 +113,12 @@ export function LeverageWidget() {
     [tradeState],
   )
 
+  const isBuyTemporarilyDisabled = useMemo(
+    () =>
+      isMinting && TEMPORARILY_DISABLED_BUY_TOKENS.includes(outputToken.symbol),
+    [isMinting, outputToken.symbol],
+  )
+
   return (
     <div
       className='flex w-full flex-col gap-3 rounded-lg border border-white/15 bg-zinc-900 px-4 pb-5 pt-4 sm:gap-4'
@@ -173,24 +182,37 @@ export function LeverageWidget() {
         </div>
       )}
       <Summary />
-      <SmartTradeButton
-        contract={contract ?? ''}
-        hasFetchingError={hasFetchingError}
-        hasInsufficientFunds={hasInsufficientFunds}
-        hiddenWarnings={hiddenLeverageWarnings}
-        inputTokenAmount={inputTokenAmount}
-        inputToken={inputToken}
-        inputValue={inputValue}
-        isFetchingQuote={isFetchingQuote}
-        isSupportedNetwork={isSupportedNetwork}
-        queryNetwork={queryParams.queryNetwork}
-        outputToken={outputToken}
-        buttonLabelOverrides={{
-          [TradeButtonState.default]: 'Review Transaction',
-        }}
-        onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
-        onRefetchQuote={refetchQuote}
-      />
+      {isBuyTemporarilyDisabled ? (
+        <div className='flex flex-col items-center justify-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-center'>
+          <div className='flex items-center gap-2 text-amber-400'>
+            <ExclamationCircleIcon className='size-5' />
+            <span className='font-semibold'>Temporarily Unavailable</span>
+          </div>
+          <p className='text-sm text-zinc-400'>
+            Buying {outputToken.symbol} is temporarily disabled. Please check
+            back later.
+          </p>
+        </div>
+      ) : (
+        <SmartTradeButton
+          contract={contract ?? ''}
+          hasFetchingError={hasFetchingError}
+          hasInsufficientFunds={hasInsufficientFunds}
+          hiddenWarnings={hiddenLeverageWarnings}
+          inputTokenAmount={inputTokenAmount}
+          inputToken={inputToken}
+          inputValue={inputValue}
+          isFetchingQuote={isFetchingQuote}
+          isSupportedNetwork={isSupportedNetwork}
+          queryNetwork={queryParams.queryNetwork}
+          outputToken={outputToken}
+          buttonLabelOverrides={{
+            [TradeButtonState.default]: 'Review Transaction',
+          }}
+          onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
+          onRefetchQuote={refetchQuote}
+        />
+      )}
       <SelectTokenModal
         isDarkMode={true}
         isOpen={isSelectInputTokenOpen}
