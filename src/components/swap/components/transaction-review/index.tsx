@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from '@headlessui/react'
 import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { RaffleReferralModal } from '@/components/raffle-referral-modal'
@@ -24,6 +24,9 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   const isDarkMode = props.isDarkMode === true
   const [tradeState, sendTradeEvent] = useAtom(tradeMachineAtom)
   const [isReferralModalOpen, setIsReferralModalOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   const onCloseModal = () => {
     sendTradeEvent({ type: 'CLOSE' })
@@ -36,6 +39,8 @@ export const TransactionReviewModal = (props: TransactionReviewModalProps) => {
   }
 
   const modalTitle = tradeState.matches('review') ? 'Review Transaction' : ''
+
+  if (!mounted) return null
 
   return (
     <>
