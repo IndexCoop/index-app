@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 import { MoreNav } from '@/components/header/more-nav'
+import { ReferralChip } from '@/components/raffle/referral-chip'
 import { TicketChip } from '@/components/raffle/ticket-chip'
 import { Path } from '@/constants/paths'
 import { useRaffleTickets } from '@/lib/hooks/use-raffle-tickets'
@@ -51,11 +52,14 @@ export function Header() {
         </div>
         <div className='flex gap-4 md:mr-6 md:flex-grow md:justify-end lg:mr-0'>
           {address && pathname === Path.TRADE && (
-            <TicketChip
-              isLoading={isTicketsLoading}
-              tickets={data?.tickets}
-              maturing={data?.maturingTickets}
-            />
+            <>
+              <ReferralChip />
+              <TicketChip
+                isLoading={isTicketsLoading}
+                tickets={data?.tickets}
+                maturing={data?.maturingTickets}
+              />
+            </>
           )}
           <Connect />
         </div>
