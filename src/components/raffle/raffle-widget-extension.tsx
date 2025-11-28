@@ -1,5 +1,10 @@
+import { useAtom } from 'jotai'
+
+import { userMetadataAtom } from '@/app/store/user-metadata-atoms'
 import { TicketChip } from '@/components/raffle/ticket-chip'
 import { withEpoch } from '@/components/raffle/with-epoch'
+
+import { ReferralChip } from './referral-chip'
 
 export interface WidgetExtensionProps {
   isLoading: boolean
@@ -15,6 +20,9 @@ export const RaffleWidgetExtension = withEpoch(
     epochTicketPerUsd,
     epochMaxTicketsPerUser,
   }: WidgetExtensionProps) => {
+    const [userMetadata] = useAtom(userMetadataAtom)
+    const referrerCode = userMetadata?.referrerCode
+
     if (usdAmount === 0 || epochTicketPerUsd === 0) {
       return null
     }
@@ -34,6 +42,14 @@ export const RaffleWidgetExtension = withEpoch(
             {'Tickets are awarded after holding your position for >24 hours.'}
           </p>
         </div>
+        {referrerCode && (
+          <div className='flex items-center gap-3'>
+            <ReferralChip className='flex shrink-0 py-1' />
+            <p className='text-ic-gray-400 text-xs'>
+              Referees get double tickets on their first qualifying transaction.
+            </p>
+          </div>
+        )}
       </div>
     )
   },
