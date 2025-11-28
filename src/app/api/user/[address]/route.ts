@@ -12,10 +12,7 @@ export async function GET(
 
   try {
     const body = referredBy ? { referred_by: referredBy } : {}
-    const { data: user, status } = await postApiV2UserAddress(
-      { address },
-      body,
-    )
+    const { data: user, status } = await postApiV2UserAddress({ address }, body)
 
     return NextResponse.json(user, { status })
   } catch (e) {

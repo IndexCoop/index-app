@@ -10,11 +10,7 @@ export const userMetadataAtom = atomWithStorage<GetApiV2UserAddress200 | null>(
 
 export const fetchUserAtom = atom(
   null,
-  async (
-    _,
-    set,
-    params: { address: string; referredBy?: string | null },
-  ) => {
+  async (_, set, params: { address: string; referredBy?: string | null }) => {
     try {
       const { address, referredBy } = params
       const url = referredBy

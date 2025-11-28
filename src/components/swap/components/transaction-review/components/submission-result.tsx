@@ -285,7 +285,7 @@ export function SubmissionResult({
               className={cn(
                 'w-full rounded-[10px] px-4 py-2 text-sm font-bold',
                 'bg-ic-blue-300 text-black',
-                'transition hover:bg-ic-blue-400',
+                'hover:bg-ic-blue-400 transition',
               )}
             >
               {trade.transactionType === 'buy'
