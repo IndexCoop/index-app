@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
+import { useEffect } from 'react'
 
 import { raffleEpochAtom } from '@/app/store/raffle-epoch.atom'
 import { getApiV2RaffleEpochs } from '@/gen'
@@ -20,9 +21,11 @@ export const useRaffleEpoch = () => {
     staleTime: 4 * 60 * 1000, // Consider data stale after 4 minutes
   })
 
-  if (data) {
-    setRaffleEpoch(data)
-  }
+  useEffect(() => {
+    if (data) {
+      setRaffleEpoch(data)
+    }
+  }, [data, setRaffleEpoch])
 
   return { data, isLoading, error }
 }
