@@ -8,7 +8,7 @@ import { ProductTag } from '@/app/earn/components/product-tag'
 import { GetApiV2ProductsEarn200 } from '@/gen'
 import { formatAmount } from '@/lib/utils'
 
-export type ProductCardProps = {
+type ProductCardProps = {
   pill?: {
     text: string
     icon: ReactNode

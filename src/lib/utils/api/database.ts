@@ -5,9 +5,9 @@ import {
 } from '@indexcoop/tokenlists'
 import { formatUnits } from 'viem'
 
-import type { UtmParam } from '@/app/store/utm-atoms'
 import type { PostApiV2TradeMutationRequest } from '@/gen'
 import type { Quote } from '@/lib/hooks/use-best-quote/types'
+import type { UtmParam } from '@/lib/store/utm-atoms'
 
 export const mapQuoteToTrade = (
   address: string,

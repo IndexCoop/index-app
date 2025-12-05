@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { raffleEpochAtom } from '@/app/store/raffle-epoch.atom'
 import { getApiV2RaffleEpochs } from '@/gen'
+import { raffleEpochAtom } from '@/lib/store/raffle-epoch.atom'
 
 export const useRaffleEpoch = () => {
   const [, setRaffleEpoch] = useAtom(raffleEpochAtom)

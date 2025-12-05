@@ -6,7 +6,7 @@ import { formatAmount, formatDollarAmount, formatWei } from '@/lib/utils'
 
 import { useEarnContext } from './provider'
 
-export interface FormattedEarnData {
+interface FormattedEarnData {
   hasInsufficientFunds: boolean
   gasFeesEth: string
   gasFeesUsd: string

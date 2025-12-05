@@ -67,11 +67,6 @@ export interface Quote {
   tx: QuoteTransaction
 }
 
-export interface ZeroExQuote extends Quote {
-  minOutput: bigint
-  sources: { name: string; proportion: string }[]
-}
-
 export interface QuoteResult {
   type: QuoteType
   isAvailable: boolean

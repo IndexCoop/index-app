@@ -11,8 +11,9 @@ import {
 } from 'react'
 import * as chains from 'viem/chains'
 
-import { useQueryParams } from '@/app/earn-old/use-query-params'
-import { ETH, type Token } from '@/constants/tokens'
+import { getCurrencyTokens, getYieldTokens } from '@/app/earn/constants'
+import { useQueryParams } from '@/app/earn/use-query-params'
+import { ETH } from '@/constants/tokens'
 import { useMultiChainBalances } from '@/lib/hooks/use-multichain-balances'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useQuoteResult } from '@/lib/hooks/use-quote-result'
@@ -20,8 +21,7 @@ import { useWallet } from '@/lib/hooks/use-wallet'
 import { useSlippage } from '@/lib/providers/slippage'
 import { isValidTokenInput, parseUnits } from '@/lib/utils'
 
-import { getCurrencyTokens, getYieldTokens } from './constants'
-
+import type { Token } from '@/constants/tokens'
 import type { GetApiV2ProductsEarn200 } from '@/gen'
 import type { TokenBalance } from '@/lib/hooks/use-balance'
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
@@ -53,7 +53,7 @@ interface Context {
   toggleIsMinting: () => void
 }
 
-export const EarnContext = createContext<Context>({
+const EarnContext = createContext<Context>({
   inputValue: '',
   isMinting: true,
   balances: [],
