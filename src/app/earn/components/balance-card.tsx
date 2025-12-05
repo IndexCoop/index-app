@@ -84,7 +84,7 @@ const calculateEffectiveAPY = (
   return weightedAPYsum / totalValue
 }
 
-export type BalanceCardProps = {
+type BalanceCardProps = {
   products: GetApiV2ProductsEarn200
   balances: TokenBalance[]
 }

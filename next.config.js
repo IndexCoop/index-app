@@ -67,75 +67,79 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/swap',
+        destination: '/trade',
+        permanent: true,
+      },
+      {
+        source: '/swap/:path*',
+        destination: '/trade',
+        permanent: true,
+      },
+      {
+        source: '/products',
+        destination: '/trade',
+        permanent: true,
+      },
+      {
+        source: '/prt-staking',
+        destination: '/trade',
+        permanent: true,
+      },
+      {
         source: '/(B|b)(E|e)(D|d)',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(B|b)(T|t)(C|c)(F|f)(L|l)(I|i)',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(D|d)(P|p)(I|i)',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(D|d)(S|s)(E|e)(T|t)(H|h)',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(E|e)(T|t)(H|h)(F|f)(L|l)(I|i)',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(G|g)(T|t)(C|c)(E|e)(T|t)(H|h)',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(I|i)(C|c)(E|e)(T|t)(H|h)',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(I|i)(C|c)(S|s)(M|m)(M|m)(T|t) ',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(M|m)(V|v)(I|i)',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(I|i)(C|c)21',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
       },
       {
         source: '/(C|c)(D|d)(E|e)(T|t)(I|i)',
-        destination: '/swap',
+        destination: '/trade',
         permanent: true,
-      },
-    ]
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/swap/manifest.json',
-        destination: '/manifest.json',
-      },
-      {
-        source: '/trade',
-        destination: '/leverage',
-      },
-      {
-        source: '/trade/:path*',
-        destination: '/leverage/:path*',
       },
     ]
   },

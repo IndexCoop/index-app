@@ -10,3 +10,6 @@ pre-commit:
     typecheck:
       glob: "*.{ts,tsx}"
       run: npx tsc --noEmit
+    knip:
+      glob: "*.{ts,tsx}"
+      run: npx knip

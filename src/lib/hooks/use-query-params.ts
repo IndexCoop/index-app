@@ -6,8 +6,8 @@ import { useCallback, useMemo } from 'react'
 import { arbitrum, base, mainnet } from 'viem/chains'
 import { useAccount } from 'wagmi'
 
-import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
-import { LeverageToken, LeverageType } from '@/app/leverage/types'
+import { getCurrencyTokens, getLeverageTokens } from '@/app/trade/constants'
+import { LeverageToken, LeverageType } from '@/app/trade/types'
 import { BTC, ETH, Token } from '@/constants/tokens'
 import { chains } from '@/lib/utils/wagmi'
 

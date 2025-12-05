@@ -55,31 +55,3 @@ export function getFormattedTokenPrices(
     outputTokenPriceUsd,
   }
 }
-
-export function formattedFiat(tokenPrice: number): string {
-  const price = tokenPrice.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-  return price
-}
-
-export const getHasInsufficientFunds = (
-  bestOptionUnavailable: boolean,
-  sellAmount: bigint,
-  sellTokenBalance: bigint | undefined,
-): boolean => {
-  if (
-    bestOptionUnavailable ||
-    sellAmount <= BigInt(0) ||
-    sellTokenBalance === undefined
-  )
-    return false
-  return sellAmount > sellTokenBalance
-}
-
-export function shouldShowWarningSign(slippage: number): boolean {
-  return slippage > 1
-}
