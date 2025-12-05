@@ -21,7 +21,7 @@ type ProductToken = {
   chainId: number
 }
 
-export const SlippageContext = createContext<Context>({
+const SlippageContext = createContext<Context>({
   isAuto: true,
   slippage: slippageDefault,
   auto: () => {},

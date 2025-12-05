@@ -1,6 +1,3 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { arbitrum, mainnet } from 'viem/chains'
-
 import {
   DAI,
   ETH,
@@ -8,7 +5,6 @@ import {
   RETH,
   SETH2,
   STETH,
-  type Token,
   USDC,
   USDT,
   WBTC,
@@ -30,18 +26,3 @@ export const currencies = [
   STETH,
   WSTETH,
 ]
-
-const IndexToken = getTokenByChainAndSymbol(mainnet.id, 'INDEX')
-const hyETH = getTokenByChainAndSymbol(mainnet.id, 'hyETH')
-const DPI = getTokenByChainAndSymbol(mainnet.id, 'DPI')
-const MVI = getTokenByChainAndSymbol(mainnet.id, 'MVI')
-
-export const indicesTokenListArbitrum = [
-  getTokenByChainAndSymbol(arbitrum.id, MVI.symbol),
-  getTokenByChainAndSymbol(arbitrum.id, hyETH.symbol),
-].map((token) => ({ ...token, image: token?.logoURI })) as Token[]
-
-export const indicesTokenList = [IndexToken, DPI, MVI, hyETH].map((token) => ({
-  ...token,
-  image: token.logoURI,
-})) as Token[]

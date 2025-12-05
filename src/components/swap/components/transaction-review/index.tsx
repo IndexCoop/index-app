@@ -7,8 +7,8 @@ import {
 import { useAtom } from 'jotai'
 import { useEffect, useState } from 'react'
 
-import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { RaffleReferralModal } from '@/components/raffle-referral-modal'
+import { tradeMachineAtom } from '@/lib/store/trade-machine'
 import { cn } from '@/lib/utils/tailwind'
 
 import { Review } from './components/review'

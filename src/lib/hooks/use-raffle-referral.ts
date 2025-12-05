@@ -1,8 +1,8 @@
 import { useAtom } from 'jotai'
 import { useState } from 'react'
 
-import { userMetadataAtom } from '@/app/store/user-metadata-atoms'
 import { QUERY_PARAM_REFERRAL } from '@/constants'
+import { userMetadataAtom } from '@/lib/store/user-metadata-atoms'
 
 export function useRaffleReferral() {
   const [copied, setCopied] = useState(false)

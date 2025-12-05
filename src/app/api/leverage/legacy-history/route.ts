@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Address, createPublicClient, http, zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
 
-import { getLeverageAction } from '@/app/leverage/utils/get-leverage-type'
+import { getLeverageAction } from '@/app/trade/utils/get-leverage-type'
 import { isContract } from '@/lib/utils'
 import { fetchTokenTransfers } from '@/lib/utils/api/alchemy'
 import { getAlchemyBaseUrl } from '@/lib/utils/urls'

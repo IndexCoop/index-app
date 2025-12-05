@@ -14,30 +14,17 @@ const metricToIndexDataKey = {
 type MetricKeys = typeof metricToIndexDataKey
 type MetricValues = MetricKeys[keyof MetricKeys][number]
 
-export type IndexData = Partial<Record<MetricValues, number>> & {
+type IndexData = Partial<Record<MetricValues, number>> & {
   CreatedTimestamp: string
 }
 
-export type IndexDataMetric = keyof typeof metricToIndexDataKey
-
-export type IndexDataPeriod =
-  | 'latest'
-  | 'hour'
-  | 'day'
-  | 'week'
-  | 'month'
-  | 'quarter'
-  | 'year'
-
-export type IndexDataInterval = 'latest' | 'minute' | 'hour' | 'daily'
+type IndexDataMetric = keyof typeof metricToIndexDataKey
 
 type FormatUrlArgs = {
   hostname?: string
   chainId: number
   tokenAddress: string
   metrics?: IndexDataMetric[]
-  period?: IndexDataPeriod
-  interval?: IndexDataInterval
 }
 
 function formatUrl({
@@ -45,13 +32,11 @@ function formatUrl({
   chainId,
   tokenAddress,
   metrics = [],
-  period = 'latest',
-  interval = 'latest',
 }: FormatUrlArgs) {
   const searchParams = new URLSearchParams({
     chainId: chainId.toString(),
-    period,
-    interval,
+    period: 'latest',
+    interval: 'latest',
   })
   for (const metric of metrics) {
     searchParams.append('metrics', metric)
@@ -87,39 +72,6 @@ export async function fetchTokenMetrics({
     )
   } catch (error) {
     console.error(`Error fetching token metrics: ${url}`, error)
-    return null
-  }
-}
-
-export async function fetchTokenHistoricalData({
-  chainId,
-  tokenAddress,
-  metrics = ['nav'],
-  interval = 'minute',
-  period = 'day',
-}: {
-  chainId: number
-  tokenAddress: string
-  metrics?: IndexDataMetric[]
-  interval?: IndexDataInterval
-  period?: IndexDataPeriod
-}) {
-  const url = formatUrl({
-    chainId,
-    tokenAddress,
-    metrics,
-    interval,
-    period,
-  })
-  try {
-    const res = await fetch(url)
-    const json = await res.json()
-    const data = json.metrics as (IndexData & {
-      CreatedTimestamp: string
-    })[]
-    return data
-  } catch (error) {
-    console.error(`Error fetching token historical data: ${url}`, error)
     return null
   }
 }

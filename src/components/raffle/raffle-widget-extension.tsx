@@ -6,7 +6,7 @@ import { withEpoch } from '@/components/raffle/with-epoch'
 
 import { ReferralChip } from './referral-chip'
 
-export interface WidgetExtensionProps {
+interface WidgetExtensionProps {
   isLoading: boolean
   usdAmount: number
   epochTicketPerUsd: number

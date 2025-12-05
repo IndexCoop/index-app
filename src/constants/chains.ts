@@ -1,6 +1,6 @@
 import { arbitrum, base } from 'viem/chains'
 
-export type ChainData = {
+type ChainData = {
   name: string
   chainId: number
   chainId0x: string
