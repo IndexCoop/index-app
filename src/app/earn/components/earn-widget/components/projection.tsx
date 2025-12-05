@@ -7,7 +7,7 @@ import { formatDollarAmount } from '@/lib/utils'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 
-export type ProjectionProps = {
+type ProjectionProps = {
   amount: string
   inputAmountUsd: number
   balance: bigint

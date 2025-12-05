@@ -2,7 +2,6 @@ import {
   formatUnits,
   parseUnits as parseUnitsEthers,
 } from '@ethersproject/units'
-import { ListedToken } from '@indexcoop/tokenlists'
 import {
   isAddress as isAddressViem,
   parseUnits as parseUnitsViem,
@@ -10,25 +9,12 @@ import {
 } from 'viem'
 import { getCode } from 'viem/actions'
 
-import { Token } from '@/constants/tokens'
-
 export function isAddress(address: string) {
   return isAddressViem(address)
 }
 
 export function isSameAddress(address1: string, address2: string): boolean {
   return address1.toLowerCase() === address2.toLowerCase()
-}
-
-// TODO: Settle on one token typing approach?
-export const formatTokenDataToToken = (tokenData: ListedToken): Token => {
-  return {
-    address: tokenData.address,
-    name: tokenData.name,
-    decimals: tokenData.decimals,
-    symbol: tokenData.symbol,
-    image: tokenData.logoURI,
-  }
 }
 
 export function shortenAddress(
@@ -83,7 +69,7 @@ export function formatWei(wei: bigint, units: number = 18): string {
   return formatUnits(wei, units)
 }
 
-export function formatWeiAsNumber(
+function formatWeiAsNumber(
   wei: bigint | undefined,
   units: number = 18,
 ): number {

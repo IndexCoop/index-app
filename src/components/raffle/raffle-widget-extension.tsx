@@ -1,7 +1,7 @@
 import { TicketChip } from '@/components/raffle/ticket-chip'
 import { withEpoch } from '@/components/raffle/with-epoch'
 
-export interface WidgetExtensionProps {
+interface WidgetExtensionProps {
   isLoading: boolean
   usdAmount: number
   epochTicketPerUsd: number

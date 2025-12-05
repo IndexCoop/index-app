@@ -8,7 +8,7 @@ import mapKeys from 'lodash/mapKeys'
 import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
 
-import { calculateAverageEntryPrice } from '@/app/leverage/utils/fetch-leverage-token-prices'
+import { calculateAverageEntryPrice } from '@/app/trade/utils/fetch-leverage-token-prices'
 import {
   GetApiV2UserAddressPositionsQueryParamsChainIdEnum as ApiChainId,
   getApiV2PriceCoingeckoSimplePrice,
