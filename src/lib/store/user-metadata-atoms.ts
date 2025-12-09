@@ -2,6 +2,7 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { GetApiV2UserAddress200 } from '@/gen'
+import { getOrCreateUser } from '@/lib/actions/user'
 
 export const userMetadataAtom = atomWithStorage<GetApiV2UserAddress200 | null>(
   'userMetadata',
@@ -13,12 +14,10 @@ export const fetchUserAtom = atom(
   async (_, set, params: { address: string; referredBy?: string | null }) => {
     try {
       const { address, referredBy } = params
-      const url = referredBy
-        ? `/api/user/${address}?referred_by=${encodeURIComponent(referredBy)}`
-        : `/api/user/${address}`
-
-      const user = await (await fetch(url)).json()
-      set(userMetadataAtom, user)
+      const { data, status } = await getOrCreateUser(address, referredBy)
+      if (status === 200 && !('error' in data)) {
+        set(userMetadataAtom, data)
+      }
     } catch (e) {
       console.error('Failed to fetch user:', e)
     }

@@ -15,6 +15,7 @@ import { arbitrum, base } from 'viem/chains'
 import { getLeverageBaseToken } from '@/app/trade/utils/get-leverage-base-token'
 import { ARBITRUM } from '@/constants/chains'
 import { ETH, type Token } from '@/constants/tokens'
+import { getMarkets } from '@/lib/actions/markets'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { type TokenBalance, useBalances } from '@/lib/hooks/use-balance'
 import { useNetwork } from '@/lib/hooks/use-network'
@@ -367,22 +368,20 @@ export function LeverageProvider(props: { children: any }) {
     initialData: [],
     queryKey: ['market-selector'],
     queryFn: async () => {
-      const marketResponses = await Promise.all(
-        markets.map((item) => {
-          return fetch(
-            `/api/markets?symbol=${item.symbol}&currency=${item.currency}`,
-          )
-        }),
+      const marketResults = await Promise.all(
+        markets.map((item) => getMarkets(item.symbol, item.currency)),
       )
 
-      const marketData: Market[] = await Promise.all(
-        marketResponses.map((response) => response.json()),
-      )
-
-      return markets.map((market, idx) => ({
-        ...market,
-        ...marketData[idx],
-      }))
+      return markets.map((market, idx) => {
+        const apiData = marketResults[idx].data
+        return {
+          ...market,
+          price: apiData?.price ?? market.price,
+          change24h: apiData?.change24h ?? market.change24h,
+          low24h: apiData?.low24h ?? market.low24h,
+          high24h: apiData?.high24h ?? market.high24h,
+        }
+      })
     },
   })
 

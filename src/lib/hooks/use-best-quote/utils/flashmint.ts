@@ -1,3 +1,7 @@
+import {
+  getQuote,
+  IndexQuoteRequest as ApiIndexQuoteRequest,
+} from '@/lib/actions/quote'
 import { parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
@@ -11,7 +15,6 @@ import {
   QuoteType,
 } from '../types'
 
-import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import type { GetApiV2QuoteQuery } from '@/gen'
 import type { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import type { Hex } from 'viem'
@@ -64,14 +67,9 @@ export async function getFlashMintQuote(
       slippage,
     }
 
-    const response = await fetch('/api/quote', {
-      method: 'POST',
-      body: JSON.stringify(request),
-    })
+    const { data: result, status } = await getQuote(request)
 
-    const result = await response.json()
-
-    if (response.status === 200) {
+    if (status === 200) {
       const quoteFM = result as GetApiV2QuoteQuery['Response']
 
       const {

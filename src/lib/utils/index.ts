@@ -2,12 +2,7 @@ import {
   formatUnits,
   parseUnits as parseUnitsEthers,
 } from '@ethersproject/units'
-import {
-  isAddress as isAddressViem,
-  parseUnits as parseUnitsViem,
-  PublicClient,
-} from 'viem'
-import { getCode } from 'viem/actions'
+import { isAddress as isAddressViem, parseUnits as parseUnitsViem } from 'viem'
 
 export function isAddress(address: string) {
   return isAddressViem(address)
@@ -94,10 +89,4 @@ export const isValidTokenInput = (
   } catch {
     return false
   }
-}
-
-export const isContract = async (client: PublicClient, address: string) => {
-  const bytes = await getCode(client, { address: address as `0x${string}` })
-
-  return bytes !== undefined
 }

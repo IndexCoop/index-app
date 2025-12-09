@@ -1,36 +1,21 @@
 import { atom } from 'jotai'
+import { Address } from 'viem'
 
-import { GetApiV2UserAddressPositions200 } from '@/gen'
+import { getLeverageHistory, LeveragePositions } from '@/lib/actions/leverage'
 
-type Positions = {
-  open: GetApiV2UserAddressPositions200
-  history: GetApiV2UserAddressPositions200
-  stats: {
-    [key: string]: number
-  }
-}
-
-const positionsAtomDefaultValue: Positions = {
+const positionsAtomDefaultValue: LeveragePositions = {
   open: [],
   history: [],
   stats: {},
 }
 
-export const positionsAtom = atom<Positions>(positionsAtomDefaultValue)
+export const positionsAtom = atom<LeveragePositions>(positionsAtomDefaultValue)
 
 export const fetchPositionsAtom = atom(
   null,
   async (_, set, address: string, chainId: number) => {
     try {
-      const positions = (await (
-        await fetch('/api/leverage/history', {
-          method: 'POST',
-          body: JSON.stringify({
-            user: address,
-            chainId,
-          }),
-        })
-      ).json()) as Positions
+      const positions = await getLeverageHistory(address as Address, chainId)
 
       set(positionsAtom, positions)
 

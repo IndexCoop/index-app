@@ -5,6 +5,7 @@ import { createContext, useContext, useMemo, useState } from 'react'
 import { isAddress } from 'viem'
 
 import { slippageDefault } from '@/constants/slippage'
+import { getSlippage } from '@/lib/actions/slippage'
 
 import type { Address } from 'viem'
 
@@ -64,11 +65,15 @@ export const SlippageProvider = (props: { children: any }) => {
       isAuto,
     queryKey: ['auto-slippage', selectedProduct?.address, isAuto, isMinting],
     queryFn: async () => {
-      const res = await fetch(
-        `/api/slippage/${selectedProduct?.chainId}/${selectedProduct?.address}?isMinting=${isMinting}`,
+      const { data, status } = await getSlippage(
+        selectedProduct!.chainId.toString(),
+        selectedProduct!.address,
       )
-      const json = await res.json()
-      let slippage = json?.slippage as number
+      if (status !== 200 || typeof data === 'string' || 'message' in data) {
+        setAutoSlippage(slippageDefault)
+        return slippageDefault
+      }
+      let slippage = data.slippage as number
       if (slippage) {
         slippage = Math.round(slippage * 10) / 10
       } else {
@@ -76,11 +81,6 @@ export const SlippageProvider = (props: { children: any }) => {
       }
       setAutoSlippage(slippage)
       return slippage
-      // keep in case we wanna revert
-      // const customSlippage = slippageMap.get(selectedProduct?.address ?? '')
-      // const autoSlippage = customSlippage ?? slippageDefault
-      // setAutoSlippage(autoSlippage)
-      // return autoSlippage
     },
   })
 

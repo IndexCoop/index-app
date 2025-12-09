@@ -1,3 +1,5 @@
+import { getTokenData } from '@/lib/actions/data'
+
 const metricToIndexDataKey = {
   apy: ['APY', 'ApyBase', 'ApyRewards', 'ApyCost', 'ApyStreamingFee'],
   carrycost: ['CarryCost', 'CarryCostStreamingFee'],
@@ -20,32 +22,7 @@ type IndexData = Partial<Record<MetricValues, number>> & {
 
 type IndexDataMetric = keyof typeof metricToIndexDataKey
 
-type FormatUrlArgs = {
-  hostname?: string
-  chainId: number
-  tokenAddress: string
-  metrics?: IndexDataMetric[]
-}
-
-function formatUrl({
-  hostname = '',
-  chainId,
-  tokenAddress,
-  metrics = [],
-}: FormatUrlArgs) {
-  const searchParams = new URLSearchParams({
-    chainId: chainId.toString(),
-    period: 'latest',
-    interval: 'latest',
-  })
-  for (const metric of metrics) {
-    searchParams.append('metrics', metric)
-  }
-  return `${hostname}/api/data/${tokenAddress}?${searchParams.toString()}`
-}
-
 export async function fetchTokenMetrics({
-  hostname,
   chainId,
   tokenAddress,
   metrics,
@@ -55,23 +32,33 @@ export async function fetchTokenMetrics({
   tokenAddress: string
   metrics: IndexDataMetric[]
 }) {
-  const url = formatUrl({ hostname, chainId, tokenAddress, metrics })
   try {
-    const res = await fetch(url)
-    const json = await res.json()
+    const { data, error } = await getTokenData(tokenAddress, {
+      chainId,
+      period: 'latest',
+      interval: 'latest',
+      metrics,
+    })
+
+    if (error || !data) {
+      console.error(`Error fetching token metrics: ${error}`)
+      return null
+    }
+
+    const json = data as { metrics: Record<string, unknown>[] }
     const latest = json.metrics[0]
     return metrics.reduce<IndexData>(
       (acc, metric) => {
         const keys = metricToIndexDataKey[metric]
         keys.forEach((key) => {
-          acc[key] = latest[key]
+          acc[key] = latest[key] as number
         })
         return acc
       },
-      { CreatedTimestamp: latest.CreatedTimestamp },
+      { CreatedTimestamp: latest.CreatedTimestamp as string },
     )
   } catch (error) {
-    console.error(`Error fetching token metrics: ${url}`, error)
+    console.error(`Error fetching token metrics`, error)
     return null
   }
 }

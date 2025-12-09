@@ -1,6 +1,7 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { type QueryFunctionContext, useQuery } from '@tanstack/react-query'
 
+import { getProductStats } from '@/lib/actions/stats'
 import { formatAmount, formatDollarAmount } from '@/lib/utils'
 
 export interface QuickStats {
@@ -10,23 +11,6 @@ export interface QuickStats {
     change24h: number
     low24h: string
     high24h: string
-  }
-  token: {
-    symbol: string
-    costOfCarry: number
-    nav: number
-    navchange: number
-    streamingFee: number
-  }
-}
-
-interface QuickStatsApiResponse {
-  base: {
-    symbol: string
-    price: number
-    change24h: number
-    low24h: number
-    high24h: number
   }
   token: {
     symbol: string
@@ -70,12 +54,18 @@ export function useQuickStats(
     const baseToken = m[0]
     const baseCurrency = m[1].toLowerCase()
     try {
-      const response = await fetch(
-        `/api/stats?address=${address}&chainId=${chainId}&base=${baseToken}&baseCurrency=${baseCurrency}`,
-        { method: 'GET' },
+      const { data, error } = await getProductStats(
+        chainId.toString(),
+        address ?? '',
+        baseToken,
+        baseCurrency,
       )
 
-      const { base, token }: QuickStatsApiResponse = await response.json()
+      if (error || !data) {
+        throw new Error(error ?? 'Failed to fetch stats')
+      }
+
+      const { base, token } = data
       return {
         base: {
           symbol: base.symbol,

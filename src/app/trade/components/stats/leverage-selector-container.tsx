@@ -11,6 +11,7 @@ import { LeverageRatioItem } from '@/app/trade/components/stats/leverage-ratio-i
 import { getPathForRatio, ratios } from '@/app/trade/constants'
 import { useLeverageToken } from '@/app/trade/provider'
 import { type LeverageRatio, LeverageType } from '@/app/trade/types'
+import { getLeverageRatios } from '@/lib/actions/leverage'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
@@ -29,11 +30,10 @@ export function LeverageSelectorContainer() {
     refetchOnWindowFocus: false,
     queryKey: ['leverage-ratio', market, chainId],
     queryFn: async () => {
-      const res = await fetch(
-        `/api/leverage/ratios?${new URLSearchParams({ chainId: isConnected ? chainId!.toString() : base.id.toString(), market })}`,
-      )
-      const json = await res.json()
-      return json
+      const chainIdToUse = isConnected
+        ? chainId!.toString()
+        : base.id.toString()
+      return getLeverageRatios(chainIdToUse, market)
     },
   })
 

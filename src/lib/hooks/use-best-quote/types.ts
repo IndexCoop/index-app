@@ -54,11 +54,8 @@ export interface Quote {
   outputTokenPrice: number
   fees: {
     mint: number
-    mintUsd: number
     redeem: number
-    redeemUsd: number
     streaming: number
-    streamingUsd: number
   } | null
   priceImpactUsd?: number
   priceImpactPercent?: number
