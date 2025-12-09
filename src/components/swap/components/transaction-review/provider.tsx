@@ -3,6 +3,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { PostApiV2Trade200 } from '@/gen'
+import { saveTrade } from '@/lib/actions/trade'
 import { formatQuoteAnalytics, useAnalytics } from '@/lib/hooks/use-analytics'
 import { QuoteType } from '@/lib/hooks/use-best-quote/types'
 import { TradeCallback, useTrade } from '@/lib/hooks/use-trade'
@@ -105,14 +106,11 @@ export function useTransactionReview(props: ReviewProps) {
   const utm = useUtmParams()
 
   const queryClient = useQueryClient()
-  const saveTrade: TradeCallback = useCallback(
+  const saveTradeCallback: TradeCallback = useCallback(
     async ({ address, hash, quote }) => {
-      const response = await fetch(`/api/user/trade`, {
-        method: 'POST',
-        body: JSON.stringify(mapQuoteToTrade(address, hash, quote, utm)),
-      })
-
-      const result = (await response.json()) as PostApiV2Trade200
+      const { data: result, status } = await saveTrade(
+        mapQuoteToTrade(address, hash, quote, utm),
+      )
 
       await queryClient.refetchQueries({
         predicate: (query) =>
@@ -121,8 +119,11 @@ export function useTransactionReview(props: ReviewProps) {
           (query.queryKey[0] as string)?.includes('raffle-tickets'),
       })
 
-      if (response.status === 200) {
-        sendTradeEvent({ type: 'TRADE_SUCCESS', result })
+      if (status === 200 && result) {
+        sendTradeEvent({
+          type: 'TRADE_SUCCESS',
+          result: result as PostApiV2Trade200,
+        })
       } else {
         sendTradeEvent({ type: 'TRADE_FAILED' })
       }
@@ -133,7 +134,7 @@ export function useTransactionReview(props: ReviewProps) {
   const makeTrade = async (override: boolean) => {
     if (!quote) return null
     try {
-      await executeTrade(quote, override, saveTrade)
+      await executeTrade(quote, override, saveTradeCallback)
 
       return true
     } catch {

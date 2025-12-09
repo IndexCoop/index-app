@@ -1,14 +1,14 @@
 {
   "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "entry": [
-    "src/app/**/page.tsx",
-    "src/app/**/layout.tsx",
-    "src/app/**/route.ts",
-    "src/app/global-error.jsx",
-    "src/lib/axios.ts"
-  ],
+  "next": true,
   "project": ["src/**/*.{ts,tsx}"],
-  "ignore": ["src/gen/**", "**/*.test.ts", "**/*.d.ts"],
+  "ignore": [
+    "src/gen/**",
+    "src/lib/axios.ts",
+    "src/app/global-error.jsx",
+    "**/*.test.ts",
+    "**/*.d.ts"
+  ],
   "ignoreDependencies": [
     "@kubb/*",
     "@wagmi/core",

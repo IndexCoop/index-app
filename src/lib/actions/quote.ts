@@ -1,3 +1,5 @@
+'use server'
+
 import { EthAddress, type QuoteToken } from '@indexcoop/flash-mint-sdk'
 import {
   getTokenByChainAndAddress,
@@ -5,11 +7,9 @@ import {
   isProductToken,
 } from '@indexcoop/tokenlists'
 import { isAxiosError } from 'axios'
-import { NextResponse } from 'next/server'
 
-import { getApiV2Quote } from '@/gen'
+import { getApiV2Quote, GetApiV2QuoteQuery } from '@/gen'
 
-import type { NextRequest } from 'next/server'
 import type { Address } from 'viem'
 
 export interface IndexQuoteRequest {
@@ -21,9 +21,14 @@ export interface IndexQuoteRequest {
   slippage: number
 }
 
-export async function POST(req: NextRequest) {
+type QuoteResult =
+  | { data: GetApiV2QuoteQuery['Response']; status: 200 }
+  | { data: { message: string }; status: 400 | 404 | 500 }
+
+export async function getQuote(
+  request: IndexQuoteRequest,
+): Promise<QuoteResult> {
   try {
-    const request: IndexQuoteRequest = await req.json()
     const {
       account,
       chainId,
@@ -41,7 +46,7 @@ export async function POST(req: NextRequest) {
       !outputToken ||
       (inputToken.isIndex && outputToken.isIndex)
     ) {
-      return BadRequest('Bad Request')
+      return { data: { message: 'Bad Request' }, status: 400 }
     }
 
     const quoteRequest: {
@@ -63,23 +68,20 @@ export async function POST(req: NextRequest) {
     const { data: quote } = await getApiV2Quote(quoteRequest)
 
     if (!quote) {
-      return NextResponse.json({ message: 'No quote found.' }, { status: 404 })
+      return { data: { message: 'No quote found.' }, status: 404 }
     }
 
-    return NextResponse.json(quote, { status: 200 })
+    return { data: quote, status: 200 }
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
-      })
+      return {
+        data: error.response.data,
+        status: error.response.status as 400 | 404 | 500,
+      }
     }
 
-    return NextResponse.json(error, { status: 500 })
+    return { data: { message: 'Unknown error' }, status: 500 }
   }
-}
-
-function BadRequest(errorMessage: string) {
-  return NextResponse.json({ message: errorMessage }, { status: 400 })
 }
 
 function getQuoteToken(

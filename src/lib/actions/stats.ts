@@ -1,22 +1,24 @@
-import { type NextRequest, NextResponse } from 'next/server'
+'use server'
 
-import { getApiV2ProductsStatsChainidAddress } from '@/gen'
-
-import type {
+import {
+  getApiV2ProductsStatsChainidAddress,
+  GetApiV2ProductsStatsChainidAddress200,
   GetApiV2ProductsStatsChainidAddressPathParamsChainIdEnum,
   GetApiV2ProductsStatsChainidAddressQueryParamsBaseCurrencyEnum,
 } from '@/gen'
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
+type StatsResult =
+  | { data: GetApiV2ProductsStatsChainidAddress200; error?: undefined }
+  | { data?: undefined; error: string }
 
-  const chainId = searchParams.get('chainId')
-  const address = searchParams.get('address')
-  const base = searchParams.get('base')
-  const baseCurrency = searchParams.get('baseCurrency')
-
+export async function getProductStats(
+  chainId: string,
+  address: string,
+  base: string,
+  baseCurrency: string,
+): Promise<StatsResult> {
   if (!chainId || !address || !base || !baseCurrency) {
-    return NextResponse.json('Bad Request', { status: 400 })
+    return { error: 'Bad Request' }
   }
 
   try {
@@ -33,10 +35,9 @@ export async function GET(req: NextRequest) {
       },
     )
 
-    return NextResponse.json({
-      ...stats,
-    })
+    return { data: stats }
   } catch (error) {
-    return NextResponse.json(error, { status: 500 })
+    console.error('Error fetching product stats:', error)
+    return { error: 'Internal server error' }
   }
 }

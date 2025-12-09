@@ -1,16 +1,12 @@
-import { headers } from 'next/headers'
-
 import { LeverageOnboardingPopupWrapper } from '@/app/trade/components/leverage-onboarding-popup'
 import { LeveragePanel } from '@/app/trade/components/leverage-panel'
-import { getProtection } from '@/lib/utils/protection'
+import { getProtections } from '@/lib/actions/protections'
 
 import { BodyClassEffect } from './components/body-class-effect'
 import { FaqSection } from './components/faq-section'
 
 export default async function Page() {
-  const hdrs = headers()
-  const headersObj = new Headers(hdrs)
-  const { isNewUser } = await getProtection(headersObj)
+  const { isNewUser } = await getProtections()
 
   return (
     <>
