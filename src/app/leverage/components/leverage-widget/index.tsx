@@ -34,7 +34,7 @@ import { Summary } from './components/summary'
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
 // Tokens temporarily disabled for buying (minting)
-const TEMPORARILY_DISABLED_BUY_TOKENS = ['GOLD3x']
+const TEMPORARILY_DISABLED_BUY_TOKENS: string[] = []
 
 export function LeverageWidget() {
   const gasData = useGasData()
