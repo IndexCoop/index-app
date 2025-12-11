@@ -6,7 +6,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "npm run generate && next dev",
+    "dev": "node scripts/wait-for-api.js && npm run generate && next dev",
     "build": "npm run generate && next build",
     "hardhat": "npx hardhat node",
     "hardhat:fund": "npx hardhat accounts --network custom",
