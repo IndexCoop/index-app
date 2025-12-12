@@ -2,7 +2,7 @@ import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
 
 import { getLeverageType } from '@/app/trade/utils/get-leverage-type'
 import { formatWei } from '@/lib/utils'
-import { fetchTokenMetrics } from '@/lib/utils/api/index-data-provider'
+import { fetchTokenNAV } from '@/lib/utils/api/index-data-provider'
 import { formatPrice } from '@/lib/utils/formatters'
 
 import { leverageTokens } from '../constants'
@@ -90,16 +90,13 @@ export async function fetchLeverageTokenPrices(
   try {
     const navResponses = await Promise.all(
       tokenBalances.map((token) =>
-        fetchTokenMetrics({
+        fetchTokenNAV({
           chainId,
           tokenAddress: token.address ?? '',
-          metrics: ['nav'],
         }),
       ),
     )
-    const tokenPrices = navResponses.map(
-      (response) => response?.NetAssetValue ?? 0,
-    )
+    const tokenPrices = navResponses.map((nav) => nav ?? 0)
 
     // Avoid showing a $0 position if nav call fails
     if (tokenPrices.some((tokenPrice) => tokenPrice === 0)) return
