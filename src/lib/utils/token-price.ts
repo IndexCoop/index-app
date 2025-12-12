@@ -4,7 +4,7 @@ import { PolygonLegacyTokenList } from '@/app/legacy/config'
 import { getAddressForToken } from '@/lib/utils/tokens'
 
 import { fetchCoingeckoTokenPrice } from './api/coingecko'
-import { fetchTokenMetrics } from './api/index-data-provider'
+import { fetchTokenNAV } from './api/index-data-provider'
 
 import type { Token } from '@/constants/tokens'
 /**
@@ -32,12 +32,11 @@ export const getTokenPrice = async (
     isIndexToken = false
   }
   if (isIndexToken) {
-    const dataResponse = await fetchTokenMetrics({
+    const dataResponse = await fetchTokenNAV({
       chainId,
       tokenAddress,
-      metrics: ['nav'],
     })
-    return dataResponse?.NetAssetValue ?? 0
+    return dataResponse ?? 0
   }
   const tokenPrice = await fetchCoingeckoTokenPrice(tokenAddress, chainId)
   // Token price can return undefined
