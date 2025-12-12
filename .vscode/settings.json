@@ -1,8 +1,5 @@
 {
-  "editor.codeActionsOnSave": [
-    "source.organizeImports",
-    "source.fixAll"
-  ],
+  "editor.codeActionsOnSave": ["source.organizeImports", "source.fixAll"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "typescript.preferences.importModuleSpecifier": "non-relative",
@@ -11,5 +8,12 @@
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.colorCustomizations": {
+    "editorIndentGuide.activeBackground1": "#e54141",
+    "editorUnnecessaryCode.border": "#e54141",
+    "activityBar.background": "#591504",
+    "titleBar.activeBackground": "#7D1E06",
+    "titleBar.activeForeground": "#FFFBFA"
   }
 }

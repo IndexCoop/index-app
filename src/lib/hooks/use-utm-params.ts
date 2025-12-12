@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
-import { UtmParam, utmParamsAtom } from '@/app/store/utm-atoms'
+import { UtmParam, utmParamsAtom } from '@/lib/store/utm-atoms'
 
 export const useUtmParams = () => {
   const searchParams = useSearchParams()

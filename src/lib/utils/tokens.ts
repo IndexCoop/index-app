@@ -2,11 +2,7 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
 import { ARBITRUM, BASE, MAINNET, OPTIMISM, POLYGON } from '@/constants/chains'
-import {
-  currencies,
-  indicesTokenList,
-  indicesTokenListArbitrum,
-} from '@/constants/tokenlists'
+import { currencies } from '@/constants/tokenlists'
 import {
   ETH,
   MATIC,
@@ -63,11 +59,6 @@ export function getCurrencyTokensForIndex(
   return currencyTokens
 }
 
-export function getDefaultIndex(chainId = 1): Token {
-  if (chainId === ARBITRUM.chainId) return indicesTokenListArbitrum[0]
-  return indicesTokenList[0]
-}
-
 export function getNativeToken(chainId: number | undefined): Token | null {
   switch (chainId) {
     case ARBITRUM.chainId:
@@ -83,22 +74,4 @@ export function getNativeToken(chainId: number | undefined): Token | null {
     default:
       return null
   }
-}
-
-export function getTokenBySymbol(symbol: string): Token | null {
-  const indexToken = indicesTokenList.find(
-    (index) => index.symbol.toLowerCase() === symbol.toLowerCase(),
-  )
-  if (indexToken) {
-    return indexToken
-  }
-  const currencyToken = currencies.find(
-    (token) => token.symbol.toLowerCase() === symbol.toLowerCase(),
-  )
-  return currencyToken ?? null
-}
-
-export function digitsByAddress(address: string): number {
-  if (address === getTokenByChainAndSymbol(base.id, 'icUSD').address) return 4
-  return 2
 }

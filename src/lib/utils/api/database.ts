@@ -5,9 +5,9 @@ import {
 } from '@indexcoop/tokenlists'
 import { formatUnits } from 'viem'
 
-import type { UtmParam } from '@/app/store/utm-atoms'
 import type { PostApiV2TradeMutationRequest } from '@/gen'
 import type { Quote } from '@/lib/hooks/use-best-quote/types'
+import type { UtmParam } from '@/lib/store/utm-atoms'
 
 export const mapQuoteToTrade = (
   address: string,
@@ -46,8 +46,12 @@ export const mapQuoteToTrade = (
   outputTokenPriceUsd: quote.outputTokenPrice,
   slippage: quote.slippage,
   transactionType: quote.isMinting ? 'buy' : 'sell',
-  mintFee: quote.fees?.mintUsd.toString() ?? '',
-  redeemFee: quote.fees?.redeemUsd.toString() ?? '',
+  mintFee: quote.fees
+    ? (quote.inputTokenAmountUsd * quote.fees.mint).toString()
+    : '',
+  redeemFee: quote.fees
+    ? (quote.inputTokenAmountUsd * quote.fees.redeem).toString()
+    : '',
   utm: utm.utm_source
     ? (utm as PostApiV2TradeMutationRequest['utm'])
     : undefined,
