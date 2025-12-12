@@ -1,10 +1,10 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { GetApiV2UserAddress200 } from '@/gen'
+import { PostApiV2UserAddress200 } from '@/gen'
 import { getOrCreateUser } from '@/lib/actions/user'
 
-export const userMetadataAtom = atomWithStorage<GetApiV2UserAddress200 | null>(
+export const userMetadataAtom = atomWithStorage<PostApiV2UserAddress200 | null>(
   'userMetadata',
   null,
 )

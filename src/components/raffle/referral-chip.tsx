@@ -1,7 +1,7 @@
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import { useAtom } from 'jotai'
 
-import { userMetadataAtom } from '@/app/store/user-metadata-atoms'
+import { userMetadataAtom } from '@/lib/store/user-metadata-atoms'
 import { cn } from '@/lib/utils/tailwind'
 
 export const ReferralChip = ({ className }: { className?: string }) => {
