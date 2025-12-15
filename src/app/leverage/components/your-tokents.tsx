@@ -20,10 +20,7 @@ import { chains } from '@/lib/utils/wagmi'
 import { useLeverageToken } from '../provider'
 import { EnrichedToken } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
-import { leverageTypeToLabel } from '../utils/get-leverage-type'
-
-const isShortType = (type: string | null) =>
-  type === 'Short1x' || type === 'Short2x'
+import { isShortType, leverageTypeToLabel } from '../utils/get-leverage-type'
 
 const getLeverageTypeLabel = (type: string | null) => {
   if (!type) return ''

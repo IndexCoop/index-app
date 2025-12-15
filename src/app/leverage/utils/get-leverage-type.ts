@@ -30,6 +30,9 @@ export function getLeverageType(token: ListedToken): LeverageType | null {
   return token.extensions.leverage.type
 }
 
+export const isShortType = (type: string | null) =>
+  ['Short1x', 'Short2x'].includes(type ?? '')
+
 export const leverageTypeToLabel: Record<LeverageType, string> = {
   Long2x: '2x',
   Long3x: '3x',

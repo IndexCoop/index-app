@@ -11,10 +11,9 @@ import { LeverageRatioItem } from '@/app/leverage/components/stats/leverage-rati
 import { getPathForRatio, ratios } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
 import { type LeverageRatio } from '@/app/leverage/types'
+import { isShortType } from '@/app/leverage/utils/get-leverage-type'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
-
-const isShortType = (type: string) => type === 'Short1x' || type === 'Short2x'
 
 type LeverageRatioResponse = {
   ratio: number

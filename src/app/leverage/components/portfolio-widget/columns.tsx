@@ -197,7 +197,7 @@ export const openPositionsColumns = [
 
       const shouldShowTooltip =
         Math.round(pnl) < 0 &&
-        (token.extensions.leverage.type === 'Short1x'
+        (['Short1x', 'Short2x'].includes(token.extensions.leverage.type ?? '')
           ? currentPrice < entryPrice
           : currentPrice > entryPrice)
 

@@ -193,8 +193,8 @@ export const marketLeverageTypes: Record<
   Partial<Record<LeverageMarket, LeverageType[]>>
 > = {
   [arbitrum.id]: {
-    [LeverageMarket.BTCUSD]: ['Short1x', 'Short2x', 'Long2x', 'Long3x'],
-    [LeverageMarket.ETHUSD]: ['Short1x', 'Short2x', 'Long2x', 'Long3x'],
+    [LeverageMarket.BTCUSD]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
+    [LeverageMarket.ETHUSD]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
     [LeverageMarket.BTCETH]: ['Long2x'],
     [LeverageMarket.ETHBTC]: ['Long2x'],
     [LeverageMarket.AAVEUSD]: ['Long2x'],
@@ -202,8 +202,8 @@ export const marketLeverageTypes: Record<
     [LeverageMarket.LINKUSD]: ['Long2x'],
   },
   [base.id]: {
-    [LeverageMarket.BTCUSD]: ['Short1x', 'Short2x', 'Long2x', 'Long3x'],
-    [LeverageMarket.ETHUSD]: ['Short1x', 'Short2x', 'Long2x', 'Long3x'],
+    [LeverageMarket.BTCUSD]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
+    [LeverageMarket.ETHUSD]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
     [LeverageMarket.SOLUSD]: ['Long2x', 'Long3x'],
     [LeverageMarket.SUIUSD]: ['Long2x', 'Long3x'],
     [LeverageMarket.XRPUSD]: ['Long2x', 'Long3x'],
@@ -603,8 +603,8 @@ export const ratios: LeverageRatio[] = [
 })
 
 export const supportedLeverageTypes: Record<number, LeverageType[]> = {
-  [ARBITRUM.chainId]: ['Short1x', 'Short2x', 'Long2x', 'Long3x'],
-  [BASE.chainId]: ['Short1x', 'Short2x', 'Long2x', 'Long3x'],
+  [ARBITRUM.chainId]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
+  [BASE.chainId]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
   [MAINNET.chainId]: ['Long2x', 'Long3x'],
 }
 
