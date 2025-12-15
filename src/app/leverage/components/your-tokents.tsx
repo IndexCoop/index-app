@@ -18,13 +18,18 @@ import { getAddressForToken } from '@/lib/utils/tokens'
 import { chains } from '@/lib/utils/wagmi'
 
 import { useLeverageToken } from '../provider'
-import { EnrichedToken, LeverageType } from '../types'
+import { EnrichedToken } from '../types'
 import { fetchLeverageTokenPrices } from '../utils/fetch-leverage-token-prices'
+import { leverageTypeToLabel } from '../utils/get-leverage-type'
 
-const leverageTypeLabels = {
-  [LeverageType.Long2x]: '2x LONG',
-  [LeverageType.Long3x]: '3x LONG',
-  [LeverageType.Short]: '1x SHORT',
+const isShortType = (type: string | null) =>
+  type === 'Short1x' || type === 'Short2x'
+
+const getLeverageTypeLabel = (type: string | null) => {
+  if (!type) return ''
+  const label = leverageTypeToLabel[type as keyof typeof leverageTypeToLabel]
+  const direction = isShortType(type) ? 'SHORT' : 'LONG'
+  return `${label} ${direction}`
 }
 
 export function YourTokens() {
@@ -181,14 +186,12 @@ export function YourTokens() {
                     className={cn(
                       'hidden items-center font-medium md:flex md:w-3/12',
                       {
-                        'text-ic-blue-700':
-                          token.leverageType !== LeverageType.Short,
-                        'text-ic-red':
-                          token.leverageType === LeverageType.Short,
+                        'text-ic-blue-700': !isShortType(token.leverageType),
+                        'text-ic-red': isShortType(token.leverageType),
                       },
                     )}
                   >
-                    {leverageTypeLabels[token.leverageType!]}
+                    {getLeverageTypeLabel(token.leverageType)}
                   </div>
                   <div className='hidden sm:flex sm:w-1/3 md:w-2/12'>
                     <button

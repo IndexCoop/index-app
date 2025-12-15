@@ -15,7 +15,7 @@ import { useMemo, useState } from 'react'
 
 import { formatAmount } from '@/app/leverage/utils/currency'
 import { calculateAverageEntryPrice } from '@/app/leverage/utils/fetch-leverage-token-prices'
-import { leverageShortTypeMap } from '@/app/leverage/utils/get-leverage-type'
+import { leverageTypeToLabel } from '@/app/leverage/utils/get-leverage-type'
 import { positionsAtom } from '@/app/store/positions-atom'
 import { tradeMachineAtom } from '@/app/store/trade-machine'
 import { TradeButton } from '@/components/trade-button'
@@ -180,12 +180,14 @@ export function SubmissionResult({
               <div
                 className={cn(
                   'text-right',
-                  ['Short1x'].includes(token.extensions.leverage.type)
+                  ['Short1x', 'Short2x'].includes(
+                    token.extensions.leverage.type,
+                  )
                     ? 'text-red-400'
                     : 'text-ic-blue-300',
                 )}
               >
-                {leverageShortTypeMap[token.extensions.leverage.type]}
+                {leverageTypeToLabel[token.extensions.leverage.type]}
               </div>
             </div>
 

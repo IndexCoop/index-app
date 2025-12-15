@@ -1,13 +1,13 @@
 'use client'
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, LeverageType } from '@indexcoop/tokenlists'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 import { arbitrum, base, mainnet } from 'viem/chains'
 import { useAccount } from 'wagmi'
 
 import { getCurrencyTokens, getLeverageTokens } from '@/app/leverage/constants'
-import { LeverageToken, LeverageType } from '@/app/leverage/types'
+import { LeverageToken } from '@/app/leverage/types'
 import { BTC, ETH, Token } from '@/constants/tokens'
 import { chains } from '@/lib/utils/wagmi'
 

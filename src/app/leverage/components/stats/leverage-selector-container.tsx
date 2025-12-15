@@ -10,9 +10,11 @@ import { getLabelForLeverageType } from '@/app/leverage/components/leverage-widg
 import { LeverageRatioItem } from '@/app/leverage/components/stats/leverage-ratio-item'
 import { getPathForRatio, ratios } from '@/app/leverage/constants'
 import { useLeverageToken } from '@/app/leverage/provider'
-import { type LeverageRatio, LeverageType } from '@/app/leverage/types'
+import { type LeverageRatio } from '@/app/leverage/types'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
+
+const isShortType = (type: string) => type === 'Short1x' || type === 'Short2x'
 
 type LeverageRatioResponse = {
   ratio: number
@@ -59,7 +61,7 @@ export function LeverageSelectorContainer() {
         </p>
         <Popover className='flex min-w-32'>
           <PopoverButton className='flex items-center gap-1 rounded-3xl bg-zinc-700 py-2 pl-4 pr-3 text-white transition focus:outline-none data-[active]:bg-zinc-600 data-[hover]:bg-zinc-600 data-[focus]:outline-1'>
-            <div className='text-sm font-semibold'>{`${getLabelForLeverageType(leverageType)} ${leverageType === LeverageType.Short ? 'Short' : 'Long'}`}</div>
+            <div className='text-sm font-semibold'>{`${getLabelForLeverageType(leverageType)} ${isShortType(leverageType) ? 'Short' : 'Long'}`}</div>
             <ChevronDownIcon className='size-5' />
           </PopoverButton>
           <PopoverPanel

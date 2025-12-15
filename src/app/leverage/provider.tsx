@@ -1,6 +1,6 @@
 'use client'
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, LeverageType } from '@indexcoop/tokenlists'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -33,7 +33,7 @@ import {
   marketLeverageTypes,
   markets,
 } from './constants'
-import { type LeverageToken, LeverageType, type Market } from './types'
+import { type LeverageToken, type Market } from './types'
 
 import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
@@ -71,7 +71,7 @@ export interface TokenContext {
 const LeverageTokenContext = createContext<TokenContext>({
   inputValue: '',
   isMinting: true,
-  leverageType: LeverageType.Long2x,
+  leverageType: 'Long2x',
   balances: [],
   baseToken: ETH,
   indexToken: { ...eth2x, image: eth2x.logoURI },
@@ -100,12 +100,12 @@ export const useLeverageToken = () => useContext(LeverageTokenContext)
 const defaultParams = {
   baseToken: ETH,
   isMinting: true,
-  leverageType: LeverageType.Long2x,
+  leverageType: 'Long2x' as LeverageType,
   inputToken: ETH,
   outputToken: {
     ...eth2x,
     image: eth2x.logoURI,
-    leverageType: LeverageType.Long2x,
+    leverageType: 'Long2x' as LeverageType,
     baseToken: ETH.symbol,
   } as LeverageToken,
 }
@@ -273,7 +273,7 @@ export function LeverageProvider(props: { children: any }) {
       const chainMarkets =
         marketLeverageTypes[chainId as keyof typeof marketLeverageTypes]
       if (!chainMarkets) return []
-      return chainMarkets[market as keyof typeof chainMarkets]
+      return chainMarkets[market as keyof typeof chainMarkets] ?? []
     }
 
     return []

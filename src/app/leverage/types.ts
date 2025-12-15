@@ -1,11 +1,8 @@
 import type { Token } from '@/constants/tokens'
+import type { LeverageType } from '@indexcoop/tokenlists'
 import type { Chain } from 'viem'
 
-export enum LeverageType {
-  Long2x = 0,
-  Long3x = 1,
-  Short = 2,
-}
+export type { LeverageType }
 
 export enum LeverageMarket {
   AAVEUSD = 'AAVE / USD',
@@ -33,6 +30,7 @@ export enum LeverageStrategy {
   Long2x = '2x',
   Long3x = '3x',
   Short1x = '-1x',
+  Short2x = '-2x',
 }
 
 export interface BaseTokenStats {

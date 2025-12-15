@@ -1,9 +1,8 @@
 import {
-  LeverageToken,
-  LeverageType as LeverageTypeS,
+  isLeverageToken,
+  LeverageType,
+  ListedToken,
 } from '@indexcoop/tokenlists'
-
-import { LeverageType } from '../types'
 
 export const getLeverageAction = ({
   isMint,
@@ -26,22 +25,14 @@ export const getLeverageAction = ({
   return 'transfer'
 }
 
-export function getLeverageType(token: LeverageToken): LeverageType | null {
-  const { leverage } = token.extensions
-  switch (leverage.type) {
-    case 'Long2x':
-      return LeverageType.Long2x
-    case 'Long3x':
-      return LeverageType.Long3x
-    case 'Short1x':
-      return LeverageType.Short
-    default:
-      return null
-  }
+export function getLeverageType(token: ListedToken): LeverageType | null {
+  if (!isLeverageToken(token)) return null
+  return token.extensions.leverage.type
 }
 
-export const leverageShortTypeMap: Record<LeverageTypeS, string> = {
-  Short1x: '-1x',
+export const leverageTypeToLabel: Record<LeverageType, string> = {
   Long2x: '2x',
   Long3x: '3x',
+  Short1x: '-1x',
+  Short2x: '-2x',
 }

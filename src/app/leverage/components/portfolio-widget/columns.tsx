@@ -11,7 +11,7 @@ import { checksumAddress, formatUnits, zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
 
 import { formatAmount } from '@/app/leverage/utils/currency'
-import { leverageShortTypeMap } from '@/app/leverage/utils/get-leverage-type'
+import { leverageTypeToLabel } from '@/app/leverage/utils/get-leverage-type'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
@@ -129,12 +129,12 @@ export const openPositionsColumns = [
           <div
             className={cn(
               'flex-[0.5] text-center',
-              ['Short1x'].includes(leverageType)
+              ['Short1x', 'Short2x'].includes(leverageType)
                 ? 'text-red-400'
                 : 'text-ic-blue-300',
             )}
           >
-            {leverageShortTypeMap[leverageType]}
+            {leverageTypeToLabel[leverageType]}
           </div>
         )
       }
@@ -413,12 +413,12 @@ export const historyColumns = [
           <div
             className={cn(
               'flex-[0.5] text-center',
-              ['Short1x'].includes(leverageType)
+              ['Short1x', 'Short2x'].includes(leverageType)
                 ? 'text-red-400'
                 : 'text-ic-blue-300',
             )}
           >
-            {leverageShortTypeMap[leverageType]}
+            {leverageTypeToLabel[leverageType]}
           </div>
         )
       }
