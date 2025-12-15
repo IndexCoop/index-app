@@ -42,6 +42,7 @@ export function getLeverageType(token: LeverageToken): LeverageType | null {
 
 export const leverageShortTypeMap: Record<LeverageTypeS, string> = {
   Short1x: '-1x',
+  Short2x: '-2x',
   Long2x: '2x',
   Long3x: '3x',
 }
