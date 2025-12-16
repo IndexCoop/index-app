@@ -1,18 +1,8 @@
-'use server'
+'use client'
 
-import { EthAddress, type QuoteToken } from '@indexcoop/flash-mint-sdk'
-import {
-  getTokenByChainAndAddress,
-  isAddressEqual,
-  isProductToken,
-} from '@indexcoop/tokenlists'
-import { isAxiosError } from 'axios'
+import { GetApiV2QuoteQuery } from '@/gen'
 
-import { getApiV2Quote, GetApiV2QuoteQuery } from '@/gen'
-
-import type { Address } from 'viem'
-
-export interface IndexQuoteRequest {
+interface IndexQuoteRequest {
   chainId: number
   account: string
   inputToken: string
@@ -21,91 +11,29 @@ export interface IndexQuoteRequest {
   slippage: number
 }
 
-type QuoteResult =
-  | { data: GetApiV2QuoteQuery['Response']; status: 200 }
-  | { data: { message: string }; status: 400 | 404 | 500 }
+type QuoteResult = {
+  data: GetApiV2QuoteQuery['Response'] | null
+  status: number
+  error?: string
+}
 
 export async function getQuote(
   request: IndexQuoteRequest,
 ): Promise<QuoteResult> {
-  try {
-    const {
-      account,
-      chainId,
-      inputToken: inputTokenAddress,
-      inputAmount,
-      outputToken: outputTokenAddress,
-      slippage,
-    } = request
+  const res = await fetch('/api/quote', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  })
+  const data = await res.json()
 
-    const inputToken = getQuoteToken(inputTokenAddress as Address, chainId)
-    const outputToken = getQuoteToken(outputTokenAddress as Address, chainId)
-
-    if (
-      !inputToken ||
-      !outputToken ||
-      (inputToken.isIndex && outputToken.isIndex)
-    ) {
-      return { data: { message: 'Bad Request' }, status: 400 }
-    }
-
-    const quoteRequest: {
-      account: string
-      chainId: string
-      inputToken: string
-      outputToken: string
-      inputAmount: string
-      slippage: string
-    } = {
-      account,
-      chainId: String(chainId),
-      inputToken: inputToken.quoteToken.address,
-      outputToken: outputToken.quoteToken.address,
-      inputAmount,
-      slippage: String(slippage),
-    }
-
-    const { data: quote } = await getApiV2Quote(quoteRequest)
-
-    if (!quote) {
-      return { data: { message: 'No quote found.' }, status: 404 }
-    }
-
-    return { data: quote, status: 200 }
-  } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      return {
-        data: error.response.data,
-        status: error.response.status as 400 | 404 | 500,
-      }
-    }
-
-    return { data: { message: 'Unknown error' }, status: 500 }
-  }
-}
-
-function getQuoteToken(
-  token: Address,
-  chainId: number,
-): { quoteToken: QuoteToken; isIndex: boolean } | null {
-  if (isAddressEqual(token, EthAddress)) {
+  if (!res.ok) {
     return {
-      quoteToken: {
-        symbol: 'ETH',
-        decimals: 18,
-        address: EthAddress,
-      },
-      isIndex: false,
+      data: null,
+      status: res.status,
+      error: data?.message ?? data?.error,
     }
   }
-  const listedToken = getTokenByChainAndAddress(chainId, token)
-  if (!listedToken) return null
-  return {
-    quoteToken: {
-      symbol: listedToken.symbol,
-      decimals: listedToken.decimals,
-      address: listedToken.address,
-    },
-    isIndex: isProductToken(listedToken),
-  }
+
+  return { data, status: res.status }
 }

@@ -10,23 +10,20 @@ export const fetchCoingeckoTokenPrice = async (
   baseCurrency = 'usd',
 ): Promise<number> => {
   if (address.toLowerCase() === ETH.address!.toLowerCase()) {
-    const { data, error } = await getCoingeckoSimplePrice(
-      'ethereum',
-      baseCurrency,
-    )
+    const result = await getCoingeckoSimplePrice('ethereum', baseCurrency)
+    if (result.error) return 0
+    const data = result.data
 
-    if (error || !data || !data['ethereum']) return 0
+    if (!data || !data['ethereum']) return 0
 
     return data['ethereum'][baseCurrency]
   }
 
-  const { data, error } = await getCoingeckoTokenPrice(
-    chainId,
-    address,
-    baseCurrency,
-  )
+  const result = await getCoingeckoTokenPrice(chainId, address, baseCurrency)
+  if (result.error) return 0
+  const data = result.data
 
-  if (error || !data || !data[address]) return 0
+  if (!data || !data[address]) return 0
 
   return data[address][baseCurrency]
 }

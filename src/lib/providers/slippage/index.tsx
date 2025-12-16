@@ -69,7 +69,7 @@ export const SlippageProvider = (props: { children: any }) => {
         selectedProduct!.chainId.toString(),
         selectedProduct!.address,
       )
-      if (status !== 200 || typeof data === 'string' || 'message' in data) {
+      if (status !== 200 || !data) {
         setAutoSlippage(slippageDefault)
         return slippageDefault
       }

@@ -1,15 +1,12 @@
-'use server'
+'use client'
 
-import {
-  getApiV2ProductsStatsChainidAddress,
-  GetApiV2ProductsStatsChainidAddress200,
-  GetApiV2ProductsStatsChainidAddressPathParamsChainIdEnum,
-  GetApiV2ProductsStatsChainidAddressQueryParamsBaseCurrencyEnum,
-} from '@/gen'
+import { GetApiV2ProductsStatsChainidAddress200 } from '@/gen'
 
-type StatsResult =
-  | { data: GetApiV2ProductsStatsChainidAddress200; error?: undefined }
-  | { data?: undefined; error: string }
+type StatsResult = {
+  data: GetApiV2ProductsStatsChainidAddress200 | null
+  status: number
+  error?: string
+}
 
 export async function getProductStats(
   chainId: string,
@@ -18,26 +15,20 @@ export async function getProductStats(
   baseCurrency: string,
 ): Promise<StatsResult> {
   if (!chainId || !address || !base || !baseCurrency) {
-    return { error: 'Bad Request' }
+    return { data: null, status: 400, error: 'Bad Request' }
   }
 
-  try {
-    const { data: stats } = await getApiV2ProductsStatsChainidAddress(
-      {
-        chainId:
-          chainId as GetApiV2ProductsStatsChainidAddressPathParamsChainIdEnum,
-        address,
-      },
-      {
-        base,
-        baseCurrency:
-          baseCurrency as GetApiV2ProductsStatsChainidAddressQueryParamsBaseCurrencyEnum,
-      },
-    )
+  const params = new URLSearchParams({ chainId, address, base, baseCurrency })
+  const res = await fetch(`/api/stats?${params}`)
+  const data = await res.json()
 
-    return { data: stats }
-  } catch (error) {
-    console.error('Error fetching product stats:', error)
-    return { error: 'Internal server error' }
+  if (!res.ok) {
+    return {
+      data: null,
+      status: res.status,
+      error: data?.error ?? data?.message,
+    }
   }
+
+  return { data, status: res.status }
 }

@@ -1,33 +1,32 @@
-'use server'
+'use client'
 
-import {
-  getApiV2DataMarkets,
-  GetApiV2DataMarkets200,
-  GetApiV2DataMarketsQueryParamsCurrencyEnum,
-} from '@/gen'
+import { GetApiV2DataMarkets200 } from '@/gen'
 
-type MarketsResult =
-  | { data: GetApiV2DataMarkets200; error?: undefined }
-  | { data?: undefined; error: string }
+type MarketsResult = {
+  data: GetApiV2DataMarkets200 | null
+  status: number
+  error?: string
+}
 
 export async function getMarkets(
   symbol: string,
   currency: string,
 ): Promise<MarketsResult> {
   if (!symbol || !currency) {
-    return { error: 'Bad Request' }
+    return { data: null, status: 400, error: 'Bad Request' }
   }
 
-  try {
-    const { data: market } = await getApiV2DataMarkets({
-      symbol,
-      currency:
-        currency.toLowerCase() as GetApiV2DataMarketsQueryParamsCurrencyEnum,
-    })
+  const params = new URLSearchParams({ symbol, currency })
+  const res = await fetch(`/api/markets?${params}`)
+  const data = await res.json()
 
-    return { data: market }
-  } catch (error) {
-    console.error('Error fetching market stats:', error)
-    return { error: 'Internal server error' }
+  if (!res.ok) {
+    return {
+      data: null,
+      status: res.status,
+      error: data?.error ?? data?.message,
+    }
   }
+
+  return { data, status: res.status }
 }

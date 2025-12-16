@@ -1,8 +1,6 @@
-'use server'
+'use client'
 
 import {
-  postApiV2Trade,
-  PostApiV2TradeMutation,
   PostApiV2TradeMutationRequest,
   PostApiV2TradeMutationResponse,
 } from '@/gen'
@@ -24,14 +22,21 @@ export async function saveTrade(
     }
   }
 
-  try {
-    const res = await postApiV2Trade(trade)
-    return { data: res.data, status: res.status }
-  } catch (e) {
+  const res = await fetch('/api/trade', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(trade),
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
     return {
       data: null,
-      status: 500,
-      error: (e as PostApiV2TradeMutation['Errors']).message,
+      status: res.status,
+      error: data?.error ?? data?.message,
     }
   }
+
+  return { data, status: res.status }
 }

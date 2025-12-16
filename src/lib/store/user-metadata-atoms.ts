@@ -15,7 +15,7 @@ export const fetchUserAtom = atom(
     try {
       const { address, referredBy } = params
       const { data, status } = await getOrCreateUser(address, referredBy)
-      if (status === 200 && !('error' in data)) {
+      if (status === 200 && data) {
         set(userMetadataAtom, data)
       }
     } catch (e) {

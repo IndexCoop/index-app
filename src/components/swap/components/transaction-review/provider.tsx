@@ -108,9 +108,8 @@ export function useTransactionReview(props: ReviewProps) {
   const queryClient = useQueryClient()
   const saveTradeCallback: TradeCallback = useCallback(
     async ({ address, hash, quote }) => {
-      const { data: result, status } = await saveTrade(
-        mapQuoteToTrade(address, hash, quote, utm),
-      )
+      const tradeData = mapQuoteToTrade(address, hash, quote, utm)
+      const { data: result, status } = await saveTrade(tradeData)
 
       await queryClient.refetchQueries({
         predicate: (query) =>

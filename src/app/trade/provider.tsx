@@ -369,7 +369,9 @@ export function LeverageProvider(props: { children: any }) {
     queryKey: ['market-selector'],
     queryFn: async () => {
       const marketResults = await Promise.all(
-        markets.map((item) => getMarkets(item.symbol, item.currency)),
+        markets.map(async (item) => {
+          return getMarkets(item.symbol, item.currency)
+        }),
       )
 
       return markets.map((market, idx) => {

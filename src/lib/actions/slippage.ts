@@ -1,33 +1,34 @@
-'use server'
+'use client'
 
 import { isAddress } from 'viem'
 
-import {
-  getApiV2QuoteSlippageChainidAddress,
-  GetApiV2QuoteSlippageChainidAddress200,
-} from '@/gen'
+import { GetApiV2QuoteSlippageChainidAddress200 } from '@/gen'
 
-type SlippageResult =
-  | { data: GetApiV2QuoteSlippageChainidAddress200; status: number }
-  | { data: string | { message: string }; status: 400 | 500 }
+type SlippageResult = {
+  data: GetApiV2QuoteSlippageChainidAddress200 | null
+  status: number
+  error?: string
+}
 
 export async function getSlippage(
   chainId: string,
   address: string,
 ): Promise<SlippageResult> {
-  try {
-    if (!address || !isAddress(address)) {
-      return { data: 'Bad Request', status: 400 }
-    }
-
-    const { data, status } = await getApiV2QuoteSlippageChainidAddress({
-      chainId,
-      address,
-    })
-
-    return { data, status }
-  } catch (error) {
-    console.log(error)
-    return { data: { message: 'Internal Server Error' }, status: 500 }
+  if (!address || !isAddress(address)) {
+    return { data: null, status: 400, error: 'Bad Request' }
   }
+
+  const params = new URLSearchParams({ chainId, address })
+  const res = await fetch(`/api/slippage?${params}`)
+  const data = await res.json()
+
+  if (!res.ok) {
+    return {
+      data: null,
+      status: res.status,
+      error: data?.message ?? data?.error,
+    }
+  }
+
+  return { data, status: res.status }
 }

@@ -54,18 +54,17 @@ export function useQuickStats(
     const baseToken = m[0]
     const baseCurrency = m[1].toLowerCase()
     try {
-      const { data, error } = await getProductStats(
+      const result = await getProductStats(
         chainId.toString(),
         address ?? '',
         baseToken,
         baseCurrency,
       )
-
-      if (error || !data) {
-        throw new Error(error ?? 'Failed to fetch stats')
+      if (result.error || !result.data) {
+        throw new Error(result.error ?? 'Failed to fetch stats')
       }
 
-      const { base, token } = data
+      const { base, token } = result.data
       return {
         base: {
           symbol: base.symbol,

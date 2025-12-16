@@ -8,17 +8,17 @@ export async function fetchTokenNAV({
   tokenAddress: string
 }) {
   try {
-    const { data, error } = await getTokenData(tokenAddress, {
+    const result = await getTokenData(tokenAddress, {
       chainId,
       metrics: ['nav'],
     })
 
-    if (error || !data) {
-      console.error(`Error fetching token metrics: ${error}`)
+    if (result.error) {
+      console.error(`Error fetching token metrics`)
       return null
     }
 
-    const json = data as { metrics: Record<string, unknown>[] }
+    const json = result.data as { metrics: Record<string, unknown>[] }
     const latest = json.metrics[0]
     return latest?.NetAssetValue as number | null
   } catch (error) {

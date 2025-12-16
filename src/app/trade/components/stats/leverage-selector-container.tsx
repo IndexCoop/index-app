@@ -25,7 +25,7 @@ export function LeverageSelectorContainer() {
   const { isConnected } = useWallet()
   const { leverageType, market } = useLeverageToken()
 
-  const { data } = useQuery({
+  const { data: ratiosResult } = useQuery({
     gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
     queryKey: ['leverage-ratio', market, chainId],
@@ -78,7 +78,7 @@ export function LeverageSelectorContainer() {
                   {filteredRatios.map((item) => {
                     const path = getPathForRatio(item, isConnected, chainId)
 
-                    const ratio = data?.find(
+                    const ratio = ratiosResult?.data?.find(
                       (d: LeverageRatioResponse) =>
                         d.strategy === item.strategy,
                     )?.ratio

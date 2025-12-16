@@ -1,5 +1,4 @@
 import { atom } from 'jotai'
-import { Address } from 'viem'
 
 import { getLeverageHistory, LeveragePositions } from '@/lib/actions/leverage'
 
@@ -15,11 +14,15 @@ export const fetchPositionsAtom = atom(
   null,
   async (_, set, address: string, chainId: number) => {
     try {
-      const positions = await getLeverageHistory(address as Address, chainId)
+      const { data } = await getLeverageHistory(address, chainId)
 
-      set(positionsAtom, positions)
+      if (!data) {
+        return positionsAtomDefaultValue
+      }
 
-      return positions
+      set(positionsAtom, data)
+
+      return data
     } catch (e) {
       console.error('Failed to fetch user:', e)
 

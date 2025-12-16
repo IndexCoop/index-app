@@ -1,41 +1,27 @@
-'use server'
+'use client'
 
-import { headers } from 'next/headers'
+import { GetApiV2Protections200 } from '@/gen'
 
-import { getApiV2Protections, GetApiV2Protections200 } from '@/gen'
-
-type ProtectionsResponse = GetApiV2Protections200
+type ProtectionsResult = {
+  data: GetApiV2Protections200 | null
+  status: number
+  error?: string
+}
 
 export async function getProtections(
   address?: string,
-): Promise<ProtectionsResponse> {
-  try {
-    const headersList = headers()
+): Promise<ProtectionsResult> {
+  const params = address ? `?address=${address}` : ''
+  const res = await fetch(`/api/protections${params}`)
+  const data = await res.json()
 
-    const { data } = await getApiV2Protections(
-      address ? { address } : undefined,
-      {
-        headers: {
-          'ic-ip-address':
-            headersList.get('cf-connecting-ip') ??
-            headersList.get('x-forwarded-for') ??
-            '',
-          'ic-ip-country':
-            headersList.get('cf-ipcountry') ??
-            headersList.get('x-vercel-ip-country') ??
-            '',
-        },
-      },
-    )
-
-    return data
-  } catch (e) {
-    console.error('Caught protections error', e)
+  if (!res.ok) {
     return {
-      isForbiddenAddress: false,
-      isRestrictedCountry: false,
-      isUsingVpn: false,
-      isNewUser: false,
+      data: null,
+      status: res.status,
+      error: data?.error ?? data?.message,
     }
   }
+
+  return { data, status: res.status }
 }

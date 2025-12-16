@@ -1,12 +1,18 @@
 import { LeverageOnboardingPopupWrapper } from '@/app/trade/components/leverage-onboarding-popup'
 import { LeveragePanel } from '@/app/trade/components/leverage-panel'
-import { getProtections } from '@/lib/actions/protections'
+import { getApiV2Protections } from '@/gen'
 
 import { BodyClassEffect } from './components/body-class-effect'
 import { FaqSection } from './components/faq-section'
 
 export default async function Page() {
-  const { isNewUser } = await getProtections()
+  let isNewUser = false
+  try {
+    const { data } = await getApiV2Protections()
+    isNewUser = data?.isNewUser ?? false
+  } catch {
+    // ignore
+  }
 
   return (
     <>

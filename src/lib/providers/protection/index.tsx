@@ -37,14 +37,13 @@ export const ProtectionProvider = (props: { children: any }) => {
     },
     queryKey: ['protections', address],
     queryFn: async () => {
-      const { isForbiddenAddress, isRestrictedCountry, isNewUser, isUsingVpn } =
-        await getProtections(address)
+      const { data } = await getProtections(address)
 
       return {
-        isForbiddenAddress,
-        isRestrictedCountry,
-        isNewUser: isNewUser ?? false,
-        isUsingVpn,
+        isForbiddenAddress: data?.isForbiddenAddress ?? false,
+        isRestrictedCountry: data?.isRestrictedCountry ?? false,
+        isNewUser: data?.isNewUser ?? false,
+        isUsingVpn: data?.isUsingVpn ?? false,
       }
     },
   })
