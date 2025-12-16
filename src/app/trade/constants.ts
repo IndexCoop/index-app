@@ -1,4 +1,5 @@
 import {
+  getChainTokenList,
   getTokenByChainAndSymbol,
   isLeverageToken,
 } from '@indexcoop/tokenlists'
@@ -57,37 +58,6 @@ const uSUI3x = getTokenByChainAndSymbol(base.id, 'uSUI3x')
 const uXRP2x = getTokenByChainAndSymbol(base.id, 'uXRP2x')
 const uXRP3x = getTokenByChainAndSymbol(base.id, 'uXRP3x')
 
-const btcLeverageTokenSymbols = [
-  BTC2X,
-  BTC3X,
-  BTC3x,
-  iBTC1X,
-  iBTC2x,
-  BTC2xETH,
-].map((token) => token.symbol)
-
-const ethLeverageTokenSymbols = [
-  ETH2X,
-  ETH3X,
-  ETH3x,
-  iETH1X,
-  iETH2x,
-  ETH2xBTC,
-].map((token) => token.symbol)
-
-const solLeverageTokenSymbols = [uSOL2x, uSOL3x].map((token) => token.symbol)
-const suiLeverageTokenSymbols = [uSUI2x, uSUI3x].map((token) => token.symbol)
-const xrpLeverageTokenSymbols = [uXRP2x, uXRP3x].map((token) => token.symbol)
-
-const leverageTokens = ([] as string[]).concat(
-  btcLeverageTokenSymbols,
-  ethLeverageTokenSymbols,
-  solLeverageTokenSymbols,
-  suiLeverageTokenSymbols,
-  xrpLeverageTokenSymbols,
-  [AAVE2x.symbol, /* ARB2x.symbol, */ GOLD3x.symbol, LINK2x.symbol],
-)
-
 export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
@@ -101,11 +71,11 @@ export function getCurrencyTokens(chainId: number): Token[] {
 }
 
 export function getLeverageTokens(chainId: number): LeverageToken[] {
-  const tokens: (LeverageToken | null)[] = leverageTokens.map((tokenSymbol) => {
-    const token = getTokenByChainAndSymbol(chainId, tokenSymbol)
+  const chainTokens = getChainTokenList(chainId)
 
-    if (!token) return null
+  const tokens: (LeverageToken | null)[] = chainTokens.map((token) => {
     if (!isLeverageToken(token)) return null
+    if (token.extensions.status === 'Deprecated') return null
 
     const baseToken = getLeverageBaseToken(token.symbol)
     const leverageType = getLeverageType(token)
@@ -490,7 +460,7 @@ export const ratios: LeverageRatio[] = [
     chain: base,
   },
   {
-    icon: BTC3x.logoURI,
+    icon: BTC3X.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Long3x,
     chain: base,
@@ -550,7 +520,7 @@ export const ratios: LeverageRatio[] = [
     chain: base,
   },
   {
-    icon: ETH3x.logoURI,
+    icon: ETH3X.logoURI,
     market: LeverageMarket.ETHUSD,
     strategy: LeverageStrategy.Long3x,
     chain: base,
