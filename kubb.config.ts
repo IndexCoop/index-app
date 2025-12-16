@@ -6,13 +6,8 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const KUBB_ENV = process.env.KUBB_ENV
-
-const baseURL = !KUBB_ENV
-  ? 'https://api-q513.onrender.com'
-  : KUBB_ENV === 'local'
-    ? 'http://127.0.0.1:4000'
-    : KUBB_ENV
+// DO NOT MERGE THIS PR, IT IS ONLY FOR TESTING PURPOSES
+const baseURL = 'https://api-pr-113-8owu.onrender.com'
 
 const config = defineConfig({
   root: '.',
