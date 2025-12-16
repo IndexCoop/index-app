@@ -1,4 +1,5 @@
 import {
+  getChainTokenList,
   getTokenByChainAndSymbol,
   isLeverageToken,
 } from '@indexcoop/tokenlists'
@@ -14,7 +15,7 @@ import {
   type LeverageRatio,
   LeverageStrategy,
   type LeverageToken,
-  LeverageType,
+  type LeverageType,
   type Market,
 } from './types'
 
@@ -24,6 +25,8 @@ enum LendingProtocol {
 }
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
+const USDT_mainnet = getTokenByChainAndSymbol(mainnet.id, 'USDT')
+const USDT_base = getTokenByChainAndSymbol(base.id, 'USDT')
 const GOLD3x = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
 
 // Lets get these here, the chain doesnt matter at this point.
@@ -32,6 +35,9 @@ const BTC2X = getTokenByChainAndSymbol(base.id, 'BTC2X')
 const BTC3X = getTokenByChainAndSymbol(base.id, 'BTC3X')
 const BTC2xETH = getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH')
 const iBTC1X = getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X')
+const iBTC2x = getTokenByChainAndSymbol(arbitrum.id, 'iBTC2x')
+const iBTC1x_base = getTokenByChainAndSymbol(base.id, 'iBTC1x')
+const iBTC2x_base = getTokenByChainAndSymbol(base.id, 'iBTC2x')
 
 const AAVE2x = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
 // const ARB2x = getTokenByChainAndSymbol(arbitrum.id, 'ARB2x')
@@ -42,6 +48,9 @@ const ETH3X = getTokenByChainAndSymbol(base.id, 'ETH3X')
 const ETH3x = getTokenByChainAndSymbol(mainnet.id, 'ETH3x')
 const ETH2xBTC = getTokenByChainAndSymbol(arbitrum.id, 'ETH2xBTC')
 const iETH1X = getTokenByChainAndSymbol(arbitrum.id, 'iETH1X')
+const iETH2x = getTokenByChainAndSymbol(arbitrum.id, 'iETH2x')
+const iETH1x_base = getTokenByChainAndSymbol(base.id, 'iETH1x')
+const iETH2x_base = getTokenByChainAndSymbol(base.id, 'iETH2x')
 
 const uSOL2x = getTokenByChainAndSymbol(base.id, 'uSOL2x')
 const uSOL3x = getTokenByChainAndSymbol(base.id, 'uSOL3x')
@@ -51,45 +60,37 @@ const uSUI3x = getTokenByChainAndSymbol(base.id, 'uSUI3x')
 const uXRP2x = getTokenByChainAndSymbol(base.id, 'uXRP2x')
 const uXRP3x = getTokenByChainAndSymbol(base.id, 'uXRP3x')
 
-const btcLeverageTokenSymbols = [BTC2X, BTC3X, BTC3x, iBTC1X, BTC2xETH].map(
-  (token) => token.symbol,
-)
-
-const ethLeverageTokenSymbols = [ETH2X, ETH3X, ETH3x, iETH1X, ETH2xBTC].map(
-  (token) => token.symbol,
-)
-
-const solLeverageTokenSymbols = [uSOL2x, uSOL3x].map((token) => token.symbol)
-const suiLeverageTokenSymbols = [uSUI2x, uSUI3x].map((token) => token.symbol)
-const xrpLeverageTokenSymbols = [uXRP2x, uXRP3x].map((token) => token.symbol)
-
-export const leverageTokens = ([] as string[]).concat(
-  btcLeverageTokenSymbols,
-  ethLeverageTokenSymbols,
-  solLeverageTokenSymbols,
-  suiLeverageTokenSymbols,
-  xrpLeverageTokenSymbols,
-  [AAVE2x.symbol, /* ARB2x.symbol, */ GOLD3x.symbol, LINK2x.symbol],
-)
-
 export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
+      return [
+        ETH,
+        WETH,
+        WBTC,
+        USDC,
+        { ...USDT_mainnet, image: USDT_mainnet.logoURI },
+      ]
     case ARBITRUM.chainId:
       return [ETH, WETH, WBTC, USDC]
     case BASE.chainId:
-      return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
+      return [
+        ETH,
+        WETH,
+        USDC,
+        { ...USDT_base, image: USDT_base.logoURI },
+        { ...cbBTC, image: cbBTC.logoURI },
+      ]
     default:
       return []
   }
 }
 
 export function getLeverageTokens(chainId: number): LeverageToken[] {
-  const tokens: (LeverageToken | null)[] = leverageTokens.map((tokenSymbol) => {
-    const token = getTokenByChainAndSymbol(chainId, tokenSymbol)
+  const chainTokens = getChainTokenList(chainId)
 
-    if (!token) return null
+  const tokens: (LeverageToken | null)[] = chainTokens.map((token) => {
     if (!isLeverageToken(token)) return null
+    if (token.extensions.status === 'Deprecated') return null
 
     const baseToken = getLeverageBaseToken(token.symbol)
     const leverageType = getLeverageType(token)
@@ -133,11 +134,13 @@ const defaultAssets = {
     [LeverageStrategy.Long2x]: { symbol: BTC2X.symbol, chainId: base.id },
     [LeverageStrategy.Long3x]: { symbol: BTC3x.symbol, chainId: mainnet.id },
     [LeverageStrategy.Short1x]: { symbol: iBTC1X.symbol, chainId: arbitrum.id },
+    [LeverageStrategy.Short2x]: { symbol: iBTC2x.symbol, chainId: arbitrum.id },
   },
   [LeverageMarket.ETHUSD]: {
     [LeverageStrategy.Long2x]: { symbol: ETH2X.symbol, chainId: base.id },
     [LeverageStrategy.Long3x]: { symbol: ETH3x.symbol, chainId: mainnet.id },
     [LeverageStrategy.Short1x]: { symbol: iETH1X.symbol, chainId: arbitrum.id },
+    [LeverageStrategy.Short2x]: { symbol: iETH2x.symbol, chainId: arbitrum.id },
   },
   [LeverageMarket.BTCETH]: {
     [LeverageStrategy.Long2x]: {
@@ -205,35 +208,30 @@ export const getPathForRatio = (
   return `/leverage?sell=ETH&buy=${defaultAsset.symbol}&network=${chainId}`
 }
 
-export const marketLeverageTypes = {
+export const marketLeverageTypes: Record<
+  number,
+  Partial<Record<LeverageMarket, LeverageType[]>>
+> = {
   [arbitrum.id]: {
-    [LeverageMarket.BTCUSD]: [
-      LeverageType.Short,
-      LeverageType.Long2x,
-      LeverageType.Long3x,
-    ],
-    [LeverageMarket.ETHUSD]: [
-      LeverageType.Short,
-      LeverageType.Long2x,
-      LeverageType.Long3x,
-    ],
-    [LeverageMarket.BTCETH]: [LeverageType.Long2x],
-    [LeverageMarket.ETHBTC]: [LeverageType.Long2x],
-    [LeverageMarket.AAVEUSD]: [LeverageType.Long2x],
-    // [LeverageMarket.ARBUSD]: [LeverageType.Long2x],
-    [LeverageMarket.LINKUSD]: [LeverageType.Long2x],
+    [LeverageMarket.BTCUSD]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
+    [LeverageMarket.ETHUSD]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
+    [LeverageMarket.BTCETH]: ['Long2x'],
+    [LeverageMarket.ETHBTC]: ['Long2x'],
+    [LeverageMarket.AAVEUSD]: ['Long2x'],
+    // [LeverageMarket.ARBUSD]: ['Long2x'],
+    [LeverageMarket.LINKUSD]: ['Long2x'],
   },
   [base.id]: {
-    [LeverageMarket.BTCUSD]: [LeverageType.Long2x, LeverageType.Long3x],
-    [LeverageMarket.ETHUSD]: [LeverageType.Long2x, LeverageType.Long3x],
-    [LeverageMarket.SOLUSD]: [LeverageType.Long2x, LeverageType.Long3x],
-    [LeverageMarket.SUIUSD]: [LeverageType.Long2x, LeverageType.Long3x],
-    [LeverageMarket.XRPUSD]: [LeverageType.Long2x, LeverageType.Long3x],
+    [LeverageMarket.BTCUSD]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
+    [LeverageMarket.ETHUSD]: ['Short2x', 'Short1x', 'Long2x', 'Long3x'],
+    [LeverageMarket.SOLUSD]: ['Long2x', 'Long3x'],
+    [LeverageMarket.SUIUSD]: ['Long2x', 'Long3x'],
+    [LeverageMarket.XRPUSD]: ['Long2x', 'Long3x'],
   },
   [mainnet.id]: {
-    [LeverageMarket.BTCUSD]: [LeverageType.Long2x, LeverageType.Long3x],
-    [LeverageMarket.ETHUSD]: [LeverageType.Long2x, LeverageType.Long3x],
-    [LeverageMarket.XAUTUSD]: [LeverageType.Long3x],
+    [LeverageMarket.BTCUSD]: ['Long2x', 'Long3x'],
+    [LeverageMarket.ETHUSD]: ['Long2x', 'Long3x'],
+    [LeverageMarket.XAUTUSD]: ['Long3x'],
   },
 }
 
@@ -465,15 +463,33 @@ export const ratios: LeverageRatio[] = [
     chain: arbitrum,
   },
   {
+    icon: iBTC2x.logoURI,
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Short2x,
+    chain: arbitrum,
+  },
+  {
     icon: BTC2X.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Long2x,
     chain: base,
   },
   {
-    icon: BTC3x.logoURI,
+    icon: BTC3X.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Long3x,
+    chain: base,
+  },
+  {
+    icon: iBTC1x_base.logoURI,
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Short1x,
+    chain: base,
+  },
+  {
+    icon: iBTC2x_base.logoURI,
+    market: LeverageMarket.BTCUSD,
+    strategy: LeverageStrategy.Short2x,
     chain: base,
   },
   {
@@ -507,15 +523,33 @@ export const ratios: LeverageRatio[] = [
     chain: arbitrum,
   },
   {
+    icon: iETH2x.logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Short2x,
+    chain: arbitrum,
+  },
+  {
     icon: ETH2X.logoURI,
     market: LeverageMarket.ETHUSD,
     strategy: LeverageStrategy.Long2x,
     chain: base,
   },
   {
-    icon: ETH3x.logoURI,
+    icon: ETH3X.logoURI,
     market: LeverageMarket.ETHUSD,
     strategy: LeverageStrategy.Long3x,
+    chain: base,
+  },
+  {
+    icon: iETH1x_base.logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Short1x,
+    chain: base,
+  },
+  {
+    icon: iETH2x_base.logoURI,
+    market: LeverageMarket.ETHUSD,
+    strategy: LeverageStrategy.Short2x,
     chain: base,
   },
   {
@@ -580,9 +614,10 @@ export const ratios: LeverageRatio[] = [
   },
 ].sort((a, b) => {
   const strategyOrder = {
-    [LeverageStrategy.Long3x]: 1,
-    [LeverageStrategy.Long2x]: 2,
-    [LeverageStrategy.Short1x]: 3,
+    [LeverageStrategy.Short2x]: 1,
+    [LeverageStrategy.Short1x]: 2,
+    [LeverageStrategy.Long2x]: 3,
+    [LeverageStrategy.Long3x]: 4,
   }
   return strategyOrder[a.strategy] - strategyOrder[b.strategy]
 })

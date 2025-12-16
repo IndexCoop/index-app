@@ -1,4 +1,5 @@
 import { LeverageType } from '@/app/trade/types'
+import { leverageTypeToLabel } from '@/app/trade/utils/get-leverage-type'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -68,12 +69,5 @@ function LeverageSelectorButton({
 }
 
 export function getLabelForLeverageType(type: LeverageType): string {
-  switch (type) {
-    case LeverageType.Long2x:
-      return '2x'
-    case LeverageType.Long3x:
-      return '3x'
-    case LeverageType.Short:
-      return '-1x'
-  }
+  return leverageTypeToLabel[type]
 }

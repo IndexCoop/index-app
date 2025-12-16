@@ -1,11 +1,12 @@
-import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
+import {
+  getTokenByChainAndAddress,
+  isLeverageToken,
+} from '@indexcoop/tokenlists'
 
 import { getLeverageType } from '@/app/trade/utils/get-leverage-type'
 import { formatWei } from '@/lib/utils'
 import { fetchTokenNAV } from '@/lib/utils/api/index-data-provider'
 import { formatPrice } from '@/lib/utils/formatters'
-
-import { leverageTokens } from '../constants'
 
 import type { EnrichedToken } from '@/app/trade/types'
 import type { GetApiV2UserAddressPositions200 } from '@/gen'
@@ -58,12 +59,10 @@ export async function fetchLeverageTokenPrices(
     const token = getTokenByChainAndAddress(chainId, current.token)
 
     if (!token) return acc
+    if (!isLeverageToken(token)) return acc
 
-    const isLeverageToken = leverageTokens.some(
-      (leverageTokenSymbol) => leverageTokenSymbol === token.symbol,
-    )
-
-    if (!isLeverageToken) return acc
+    // Skip deprecated tokens
+    if (token.extensions.status === 'Deprecated') return acc
 
     const tokenIdx = acc.findIndex(
       (accToken) => accToken.symbol === token.symbol,
