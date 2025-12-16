@@ -63,8 +63,6 @@ const btcLeverageTokenSymbols = [
   BTC3x,
   iBTC1X,
   iBTC2x,
-  iBTC1x_base,
-  iBTC2x_base,
   BTC2xETH,
 ].map((token) => token.symbol)
 
@@ -74,8 +72,6 @@ const ethLeverageTokenSymbols = [
   ETH3x,
   iETH1X,
   iETH2x,
-  iETH1x_base,
-  iETH2x_base,
   ETH2xBTC,
 ].map((token) => token.symbol)
 
