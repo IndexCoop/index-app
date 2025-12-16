@@ -414,9 +414,7 @@ export const historyColumns = [
           <div
             className={cn(
               'flex-[0.5] text-center',
-              ['Short1x'].includes(leverageType)
-                ? 'text-red-400'
-                : 'text-ic-blue-300',
+              isShortType(leverageType) ? 'text-red-400' : 'text-ic-blue-300',
             )}
           >
             {leverageTypeToLabel[leverageType]}

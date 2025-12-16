@@ -8,7 +8,7 @@ import { arbitrum, base, mainnet } from 'viem/chains'
 import { getLeverageBaseToken } from '@/app/trade/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/trade/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { ETH, type Token, USDC, WBTC, WETH } from '@/constants/tokens'
+import { ETH, type Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
 
 import {
   LeverageMarket,
@@ -62,9 +62,9 @@ export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
     case ARBITRUM.chainId:
-      return [ETH, WETH, WBTC, USDC]
+      return [ETH, WETH, WBTC, USDC, USDT]
     case BASE.chainId:
-      return [ETH, WETH, USDC, { ...cbBTC, image: cbBTC.logoURI }]
+      return [ETH, WETH, USDC, USDT, { ...cbBTC, image: cbBTC.logoURI }]
     default:
       return []
   }
