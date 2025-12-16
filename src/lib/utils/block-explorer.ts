@@ -17,18 +17,3 @@ export function getBlockExplorerContractUrl(
       return MAINNET.blockExplorerUrl + 'address/' + contractAddress
   }
 }
-
-export function getBlockExplorerUrl(txHash: string, chainId?: number): string {
-  switch (chainId) {
-    case ARBITRUM.chainId:
-      return ARBITRUM.blockExplorerUrl + 'tx/' + txHash
-    case BASE.chainId:
-      return BASE.blockExplorerUrl + 'tx/' + txHash
-    case OPTIMISM.chainId:
-      return OPTIMISM.blockExplorerUrl + 'tx/' + txHash
-    case POLYGON.chainId:
-      return POLYGON.blockExplorerUrl + 'tx/' + txHash
-    default:
-      return MAINNET.blockExplorerUrl + 'tx/' + txHash
-  }
-}

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getApiV2DataMarkets } from '@/gen'
-
-import type { GetApiV2DataMarketsQueryParamsCurrencyEnum } from '@/gen'
+import {
+  getApiV2DataMarkets,
+  GetApiV2DataMarketsQueryParamsCurrencyEnum,
+} from '@/gen'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -20,9 +21,7 @@ export async function GET(req: NextRequest) {
         currency.toLowerCase() as GetApiV2DataMarketsQueryParamsCurrencyEnum,
     })
 
-    return NextResponse.json({
-      ...market,
-    })
+    return NextResponse.json(market)
   } catch (error) {
     console.error('Error fetching market stats:', error)
     return NextResponse.json(

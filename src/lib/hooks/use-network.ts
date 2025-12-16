@@ -4,10 +4,6 @@ import { useAccount, useSwitchChain } from 'wagmi'
 import { useQueryParams } from '@/lib/hooks/use-query-params'
 import { chains } from '@/lib/utils/wagmi'
 
-export function useMainnetOnly() {
-  return useSupportedNetworks([mainnet.id])
-}
-
 export const useNetwork = () => {
   const { chain } = useAccount()
   const { queryParams } = useQueryParams()

@@ -7,7 +7,7 @@ import { useEffect, useRef } from 'react'
 import {
   fetchUserAtom,
   userMetadataAtom,
-} from '@/app/store/user-metadata-atoms'
+} from '@/lib/store/user-metadata-atoms'
 import { wagmiAdapter } from '@/lib/utils/wagmi'
 
 export const useUpsertUser = (referralCode: string | null = null) => {

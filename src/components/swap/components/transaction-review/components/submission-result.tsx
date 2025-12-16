@@ -13,12 +13,12 @@ import { useAtom } from 'jotai'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
 
-import { formatAmount } from '@/app/leverage/utils/currency'
-import { calculateAverageEntryPrice } from '@/app/leverage/utils/fetch-leverage-token-prices'
-import { leverageTypeToLabel } from '@/app/leverage/utils/get-leverage-type'
-import { positionsAtom } from '@/app/store/positions-atom'
-import { tradeMachineAtom } from '@/app/store/trade-machine'
+import { formatAmount } from '@/app/trade/utils/currency'
+import { calculateAverageEntryPrice } from '@/app/trade/utils/fetch-leverage-token-prices'
+import { leverageTypeToLabel } from '@/app/trade/utils/get-leverage-type'
 import { TradeButton } from '@/components/trade-button'
+import { positionsAtom } from '@/lib/store/positions-atom'
+import { tradeMachineAtom } from '@/lib/store/trade-machine'
 import { SkeletonLoader } from '@/lib/utils/skeleton-loader'
 import { cn } from '@/lib/utils/tailwind'
 
@@ -180,9 +180,7 @@ export function SubmissionResult({
               <div
                 className={cn(
                   'text-right',
-                  ['Short1x', 'Short2x'].includes(
-                    token.extensions.leverage.type,
-                  )
+                  ['Short1x'].includes(token.extensions.leverage.type)
                     ? 'text-red-400'
                     : 'text-ic-blue-300',
                 )}

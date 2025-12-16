@@ -4,7 +4,6 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { Path } from '@/constants/paths'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 
 type Props = {
@@ -15,8 +14,7 @@ type Props = {
 export function HeaderLink({ href, label }: Props) {
   const pathname = usePathname()
   const { logEvent } = useAnalytics()
-  const isActive =
-    href === Path.SWAP ? pathname.startsWith(href) : pathname === href
+  const isActive = pathname === href
   return (
     <Link
       prefetch={true}

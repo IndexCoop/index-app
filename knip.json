@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "next": true,
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": [
+    "src/gen/**",
+    "src/lib/axios.ts",
+    "src/app/global-error.jsx",
+    "**/*.test.ts",
+    "**/*.d.ts"
+  ],
+  "ignoreDependencies": [
+    "@kubb/*",
+    "@wagmi/core",
+    "@reown/appkit-common",
+    "@ethersproject/units"
+  ]
+}

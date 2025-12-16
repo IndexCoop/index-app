@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils/tailwind'
 import { Caption } from './caption'
 import { SelectorButton } from './selector-button'
 
-export type InputSelectorToken = {
+type InputSelectorToken = {
   decimals: number
   image: string
   symbol: string

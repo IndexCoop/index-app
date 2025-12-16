@@ -9,13 +9,6 @@ import { useUserRaffleStatus } from './use-user-raffle-status'
 
 import type { Address } from 'viem'
 
-export type ClaimableToken = {
-  rewardToken: string
-  totalClaimable: string
-  hasUnclaimedRewards: boolean
-  hasMerklRewards: boolean
-}
-
 export const useClaimableRewards = (address?: string) => {
   const { data: status } = useUserRaffleStatus(address)
 

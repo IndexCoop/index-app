@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query'
 import { createContext, useContext } from 'react'
 import { useAccount } from 'wagmi'
 
+import { getProtections } from '@/lib/actions/protections'
+
 interface Context {
   isNewUser: boolean
   isForbiddenAddress: boolean
@@ -35,18 +37,13 @@ export const ProtectionProvider = (props: { children: any }) => {
     },
     queryKey: ['protections', address],
     queryFn: async () => {
-      const url = address
-        ? `/api/protections?${new URLSearchParams({ address }).toString()}`
-        : '/api/protections'
-      const res = await fetch(url)
-      const { isForbiddenAddress, isRestrictedCountry, isNewUser, isUsingVpn } =
-        await res.json()
+      const { data } = await getProtections(address)
 
       return {
-        isForbiddenAddress,
-        isRestrictedCountry,
-        isNewUser,
-        isUsingVpn,
+        isForbiddenAddress: data?.isForbiddenAddress ?? false,
+        isRestrictedCountry: data?.isRestrictedCountry ?? false,
+        isNewUser: data?.isNewUser ?? false,
+        isUsingVpn: data?.isUsingVpn ?? false,
       }
     },
   })

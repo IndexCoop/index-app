@@ -1,12 +1,12 @@
 import { useAtom } from 'jotai'
 
-import { userMetadataAtom } from '@/app/store/user-metadata-atoms'
 import { TicketChip } from '@/components/raffle/ticket-chip'
 import { withEpoch } from '@/components/raffle/with-epoch'
+import { userMetadataAtom } from '@/lib/store/user-metadata-atoms'
 
 import { ReferralChip } from './referral-chip'
 
-export interface WidgetExtensionProps {
+interface WidgetExtensionProps {
   isLoading: boolean
   usdAmount: number
   epochTicketPerUsd: number
