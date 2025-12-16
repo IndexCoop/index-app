@@ -10,7 +10,10 @@
       "Bash(npm run build:*)",
       "Bash(node:*)",
       "Bash(npx tsc:*)",
-      "Bash(npx knip:*)"
+      "Bash(npx knip:*)",
+      "Bash(npm ls:*)",
+      "Bash(git stash:*)",
+      "Bash(npm ci)"
     ],
     "deny": [],
     "ask": []
