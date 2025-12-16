@@ -11,7 +11,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { cookieStorage, createStorage, http } from '@wagmi/core'
 import { safe } from 'wagmi/connectors'
 
-export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
 if (!projectId) {
   throw new Error('Project ID is not defined')
 }
@@ -91,7 +91,7 @@ export const isSupportedNetwork = (
 
 export const chains = Object.values(supportedNetworks) as AppKitNetwork[]
 
-export const config = {
+const config = {
   projectId,
   networks: chains,
   ssr: true,

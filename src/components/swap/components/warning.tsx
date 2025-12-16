@@ -10,7 +10,7 @@ export enum WarningType {
   vpn,
 }
 
-export interface Warning {
+interface Warning {
   title: string
   node: ReactNode
 }

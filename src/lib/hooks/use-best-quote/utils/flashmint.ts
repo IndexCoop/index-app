@@ -1,3 +1,4 @@
+import { getQuote } from '@/lib/actions/quote'
 import { parseUnits } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
 import { getGasLimit } from '@/lib/utils/gas'
@@ -11,7 +12,6 @@ import {
   QuoteType,
 } from '../types'
 
-import type { IndexQuoteRequest as ApiIndexQuoteRequest } from '@/app/api/quote/route'
 import type { GetApiV2QuoteQuery } from '@/gen'
 import type { IndexRpcProvider } from '@/lib/hooks/use-wallet'
 import type { Hex } from 'viem'
@@ -55,7 +55,7 @@ export async function getFlashMintQuote(
   )
 
   try {
-    const request: ApiIndexQuoteRequest = {
+    const quoteRequest = {
       chainId,
       account,
       inputToken: inputTokenAddress,
@@ -64,14 +64,9 @@ export async function getFlashMintQuote(
       slippage,
     }
 
-    const response = await fetch('/api/quote', {
-      method: 'POST',
-      body: JSON.stringify(request),
-    })
+    const { data: result, status } = await getQuote(quoteRequest)
 
-    const result = await response.json()
-
-    if (response.status === 200) {
+    if (status === 200) {
       const quoteFM = result as GetApiV2QuoteQuery['Response']
 
       const {
@@ -139,7 +134,7 @@ export async function getFlashMintQuote(
         tx: transaction,
       }
     } else {
-      return result as GetApiV2QuoteQuery['Errors']
+      return result as unknown as GetApiV2QuoteQuery['Errors']
     }
   } catch (e) {
     console.warn('Error fetching FlashMintQuote', e)

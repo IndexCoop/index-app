@@ -1,22 +1,20 @@
-import { type NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-import { getApiV2ProductsStatsChainidAddress } from '@/gen'
-
-import type {
+import {
+  getApiV2ProductsStatsChainidAddress,
   GetApiV2ProductsStatsChainidAddressPathParamsChainIdEnum,
   GetApiV2ProductsStatsChainidAddressQueryParamsBaseCurrencyEnum,
 } from '@/gen'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-
   const chainId = searchParams.get('chainId')
   const address = searchParams.get('address')
   const base = searchParams.get('base')
   const baseCurrency = searchParams.get('baseCurrency')
 
   if (!chainId || !address || !base || !baseCurrency) {
-    return NextResponse.json('Bad Request', { status: 400 })
+    return NextResponse.json({ error: 'Bad Request' }, { status: 400 })
   }
 
   try {
@@ -33,10 +31,12 @@ export async function GET(req: NextRequest) {
       },
     )
 
-    return NextResponse.json({
-      ...stats,
-    })
+    return NextResponse.json(stats)
   } catch (error) {
-    return NextResponse.json(error, { status: 500 })
+    console.error('Error fetching product stats:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    )
   }
 }

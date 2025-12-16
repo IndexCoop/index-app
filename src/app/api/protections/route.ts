@@ -1,38 +1,39 @@
+import { headers } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(req: NextRequest) {
-  try {
-    const address = req.nextUrl.searchParams.get('address')
-    const path = address
-      ? `/v2/protections?${new URLSearchParams({ address }).toString()}`
-      : '/v2/protections'
-    const res = await fetch(`https://api.indexcoop.com${path}`, {
-      headers: {
-        ...req.headers,
-        'ic-ip-address':
-          req.headers.get('cf-connecting-ip') ??
-          req.headers.get('x-forwarded-for') ??
-          undefined,
-        'ic-ip-country':
-          req.headers.get('cf-ipcountry') ??
-          req.headers.get('x-vercel-ip-country') ??
-          undefined,
-      },
-    })
-    const { isForbiddenAddress, isRestrictedCountry, isUsingVpn } =
-      await res.json()
+import { getApiV2Protections } from '@/gen'
 
-    return NextResponse.json({
-      isForbiddenAddress,
-      isRestrictedCountry,
-      isUsingVpn,
-    })
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const address = searchParams.get('address') ?? undefined
+
+  try {
+    const headersList = headers()
+
+    const { data } = await getApiV2Protections(
+      address ? { address } : undefined,
+      {
+        headers: {
+          'ic-ip-address':
+            headersList.get('cf-connecting-ip') ??
+            headersList.get('x-forwarded-for') ??
+            '',
+          'ic-ip-country':
+            headersList.get('cf-ipcountry') ??
+            headersList.get('x-vercel-ip-country') ??
+            '',
+        },
+      },
+    )
+
+    return NextResponse.json(data)
   } catch (e) {
     console.error('Caught protections error', e)
     return NextResponse.json({
       isForbiddenAddress: false,
       isRestrictedCountry: false,
       isUsingVpn: false,
+      isNewUser: false,
     })
   }
 }

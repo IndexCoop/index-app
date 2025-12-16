@@ -54,22 +54,14 @@ export interface Quote {
   outputTokenPrice: number
   fees: {
     mint: number
-    mintUsd: number
     redeem: number
-    redeemUsd: number
     streaming: number
-    streamingUsd: number
   } | null
   priceImpactUsd?: number
   priceImpactPercent?: number
   slippage: number
   warning?: string
   tx: QuoteTransaction
-}
-
-export interface ZeroExQuote extends Quote {
-  minOutput: bigint
-  sources: { name: string; proportion: string }[]
 }
 
 export interface QuoteResult {

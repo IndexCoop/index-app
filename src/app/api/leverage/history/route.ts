@@ -8,7 +8,7 @@ import mapKeys from 'lodash/mapKeys'
 import { NextRequest, NextResponse } from 'next/server'
 import { Address } from 'viem'
 
-import { calculateAverageEntryPrice } from '@/app/leverage/utils/fetch-leverage-token-prices'
+import { calculateAverageEntryPrice } from '@/app/trade/utils/fetch-leverage-token-prices'
 import {
   GetApiV2UserAddressPositionsQueryParamsChainIdEnum as ApiChainId,
   getApiV2PriceCoingeckoSimplePrice,
@@ -69,9 +69,33 @@ export async function POST(req: NextRequest) {
     const XAUT = getTokenByChainAndSymbol(chainId, 'XAUt')
     const LINK = getTokenByChainAndSymbol(chainId, 'LINK')
 
-    const { data: positions } = await getApiV2UserAddressPositions(
-      { address: user },
-      { chainId: chainId.toString() as ApiChainId },
+    // Fetch positions and prices in parallel
+    const [{ data: positions }, pricesResult] = await Promise.all([
+      getApiV2UserAddressPositions(
+        { address: user },
+        { chainId: chainId.toString() as ApiChainId },
+      ),
+      fetchCoingeckoPrices(
+        [
+          'ethereum',
+          'bitcoin',
+          USUI?.extensions.coingeckoId,
+          USOL?.extensions.coingeckoId,
+          UXRP?.extensions.coingeckoId,
+          AAVE?.extensions.coingeckoId,
+          ARB?.extensions.coingeckoId,
+          XAUT?.extensions.coingeckoId,
+          LINK?.extensions.coingeckoId,
+        ].filter((str) => str !== undefined),
+        ['btc', 'eth', 'usd'],
+      ).catch((error) => {
+        console.error('Failed to fetch coingecko prices', error)
+        return {} as Record<string, { [key: string]: number }>
+      }),
+    ])
+
+    const prices = mapKeys(pricesResult, (_, key) =>
+      mapCoingeckoIdToSymbol(key),
     )
 
     const history = positions
@@ -105,29 +129,6 @@ export async function POST(req: NextRequest) {
       })),
       'metrics.tokenAddress',
     )
-
-    let prices: Record<string, { [key: string]: number }> = {}
-    try {
-      prices = mapKeys(
-        await fetchCoingeckoPrices(
-          [
-            'ethereum',
-            'bitcoin',
-            USUI?.extensions.coingeckoId,
-            USOL?.extensions.coingeckoId,
-            UXRP?.extensions.coingeckoId,
-            AAVE?.extensions.coingeckoId,
-            ARB?.extensions.coingeckoId,
-            XAUT?.extensions.coingeckoId,
-            LINK?.extensions.coingeckoId,
-          ].filter((str) => str !== undefined),
-          ['btc', 'eth', 'usd'],
-        ),
-        (_, key) => mapCoingeckoIdToSymbol(key),
-      )
-    } catch (error) {
-      console.error('Failed to fetch coingecko prices', error)
-    }
 
     const stats = open.reduce(
       (acc, position) => ({

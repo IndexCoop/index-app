@@ -19,11 +19,8 @@ import { HeaderLink } from './link'
 import { Logo } from './logo'
 
 const navigation = [
-  // { name: 'Products', href: Path.PRODUCTS },
   { name: 'Trade', href: Path.TRADE },
   { name: 'Earn', href: Path.EARN },
-  { name: 'Swap', href: Path.SWAP, isMoreNavLink: true },
-  { name: 'PRT Staking', href: Path.PRT_STAKING, isMoreNavLink: true },
   { name: 'Legacy Products', href: Path.LEGACY, isMoreNavLink: true },
 ]
 
