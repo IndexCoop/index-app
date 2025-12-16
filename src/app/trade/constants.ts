@@ -26,7 +26,6 @@ enum LendingProtocol {
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
 const USDT_mainnet = getTokenByChainAndSymbol(mainnet.id, 'USDT')
-const USDT_arbitrum = getTokenByChainAndSymbol(arbitrum.id, 'USD₮0') // Arbitrum uses different symbol
 const USDT_base = getTokenByChainAndSymbol(base.id, 'USDT')
 const GOLD3x = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
 
@@ -72,13 +71,7 @@ export function getCurrencyTokens(chainId: number): Token[] {
         { ...USDT_mainnet, image: USDT_mainnet.logoURI },
       ]
     case ARBITRUM.chainId:
-      return [
-        ETH,
-        WETH,
-        WBTC,
-        USDC,
-        { ...USDT_arbitrum, image: USDT_arbitrum.logoURI },
-      ]
+      return [ETH, WETH, WBTC, USDC]
     case BASE.chainId:
       return [
         ETH,
