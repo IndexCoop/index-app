@@ -8,7 +8,7 @@ import { arbitrum, base, mainnet } from 'viem/chains'
 import { getLeverageBaseToken } from '@/app/trade/utils/get-leverage-base-token'
 import { getLeverageType } from '@/app/trade/utils/get-leverage-type'
 import { ARBITRUM, BASE, MAINNET } from '@/constants/chains'
-import { ETH, type Token, USDC, USDT, WBTC, WETH } from '@/constants/tokens'
+import { ETH, type Token, USDC, WBTC, WETH } from '@/constants/tokens'
 
 import {
   LeverageMarket,
@@ -25,6 +25,9 @@ enum LendingProtocol {
 }
 
 const cbBTC = getTokenByChainAndSymbol(base.id, 'cbBTC')
+const USDT_mainnet = getTokenByChainAndSymbol(mainnet.id, 'USDT')
+const USDT_arbitrum = getTokenByChainAndSymbol(arbitrum.id, 'USD₮0') // Arbitrum uses different symbol
+const USDT_base = getTokenByChainAndSymbol(base.id, 'USDT')
 const GOLD3x = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
 
 // Lets get these here, the chain doesnt matter at this point.
@@ -61,10 +64,29 @@ const uXRP3x = getTokenByChainAndSymbol(base.id, 'uXRP3x')
 export function getCurrencyTokens(chainId: number): Token[] {
   switch (chainId) {
     case MAINNET.chainId:
+      return [
+        ETH,
+        WETH,
+        WBTC,
+        USDC,
+        { ...USDT_mainnet, image: USDT_mainnet.logoURI },
+      ]
     case ARBITRUM.chainId:
-      return [ETH, WETH, WBTC, USDC, USDT]
+      return [
+        ETH,
+        WETH,
+        WBTC,
+        USDC,
+        { ...USDT_arbitrum, image: USDT_arbitrum.logoURI },
+      ]
     case BASE.chainId:
-      return [ETH, WETH, USDC, USDT, { ...cbBTC, image: cbBTC.logoURI }]
+      return [
+        ETH,
+        WETH,
+        USDC,
+        { ...USDT_base, image: USDT_base.logoURI },
+        { ...cbBTC, image: cbBTC.logoURI },
+      ]
     default:
       return []
   }
