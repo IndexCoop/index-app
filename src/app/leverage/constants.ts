@@ -31,8 +31,8 @@ const GOLD3x = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
 const BTC3x = getTokenByChainAndSymbol(mainnet.id, 'BTC3x')
 const BTC2X = getTokenByChainAndSymbol(base.id, 'BTC2X')
 const BTC2xETH = getTokenByChainAndSymbol(arbitrum.id, 'BTC2xETH')
-const iBTC1X = getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X')
-const iBTC2x = getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X')
+const iBTC1X_arb = getTokenByChainAndSymbol(arbitrum.id, 'iBTC1X')
+const iBTC2x_arb = getTokenByChainAndSymbol(arbitrum.id, 'iBTC2x')
 const iBTC1x_base = getTokenByChainAndSymbol(base.id, 'iBTC1x')
 const iBTC2x_base = getTokenByChainAndSymbol(base.id, 'iBTC2x')
 const AAVE2x = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
@@ -113,8 +113,14 @@ const defaultAssets = {
   [LeverageMarket.BTCUSD]: {
     [LeverageStrategy.Long2x]: { symbol: BTC2X.symbol, chainId: base.id },
     [LeverageStrategy.Long3x]: { symbol: BTC3x.symbol, chainId: mainnet.id },
-    [LeverageStrategy.Short1x]: { symbol: iBTC1X.symbol, chainId: arbitrum.id },
-    [LeverageStrategy.Short2x]: { symbol: iBTC2x.symbol, chainId: arbitrum.id },
+    [LeverageStrategy.Short1x]: {
+      symbol: iBTC1X_arb.symbol,
+      chainId: arbitrum.id,
+    },
+    [LeverageStrategy.Short2x]: {
+      symbol: iBTC2x_arb.symbol,
+      chainId: arbitrum.id,
+    },
   },
   [LeverageMarket.ETHUSD]: {
     [LeverageStrategy.Long2x]: { symbol: ETH2X.symbol, chainId: base.id },
@@ -437,13 +443,13 @@ export const ratios: LeverageRatio[] = [
     chain: arbitrum,
   },
   {
-    icon: iBTC1X.logoURI,
+    icon: iBTC1X_arb.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Short1x,
     chain: arbitrum,
   },
   {
-    icon: iBTC2x.logoURI,
+    icon: iBTC2x_arb.logoURI,
     market: LeverageMarket.BTCUSD,
     strategy: LeverageStrategy.Short2x,
     chain: arbitrum,
