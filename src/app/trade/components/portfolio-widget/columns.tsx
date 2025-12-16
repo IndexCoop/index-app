@@ -11,7 +11,10 @@ import { checksumAddress, formatUnits, zeroAddress } from 'viem'
 import * as chains from 'viem/chains'
 
 import { formatAmount } from '@/app/trade/utils/currency'
-import { leverageTypeToLabel } from '@/app/trade/utils/get-leverage-type'
+import {
+  isShortType,
+  leverageTypeToLabel,
+} from '@/app/trade/utils/get-leverage-type'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { cn } from '@/lib/utils/tailwind'
@@ -129,9 +132,7 @@ export const openPositionsColumns = [
           <div
             className={cn(
               'flex-[0.5] text-center',
-              ['Short1x'].includes(leverageType)
-                ? 'text-red-400'
-                : 'text-ic-blue-300',
+              isShortType(leverageType) ? 'text-red-400' : 'text-ic-blue-300',
             )}
           >
             {leverageTypeToLabel[leverageType]}
