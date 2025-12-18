@@ -18,9 +18,10 @@ export async function fetchTokenNAV({
       return null
     }
 
-    const json = result.data as { metrics: Record<string, unknown>[] }
-    const latest = json.metrics[0]
-    return latest?.NetAssetValue as number | null
+    const json = result.data
+    const latest = json?.metrics[0]
+    // Different APIs return different field names
+    return latest?.NAV ?? (latest as any)?.NetAssetValue ?? null
   } catch (error) {
     console.error(`Error fetching token metrics`, error)
     return null

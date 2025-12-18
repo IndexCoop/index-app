@@ -73,7 +73,7 @@ export const SlippageProvider = (props: { children: any }) => {
         setAutoSlippage(slippageDefault)
         return slippageDefault
       }
-      let slippage = data.slippage as number
+      let slippage = data.slippage
       if (slippage) {
         slippage = Math.round(slippage * 10) / 10
       } else {

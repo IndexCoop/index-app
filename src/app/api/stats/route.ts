@@ -34,8 +34,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(stats)
   } catch (error) {
     console.error('Error fetching product stats:', error)
+    const message = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', message },
       { status: 500 },
     )
   }
