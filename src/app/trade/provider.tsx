@@ -295,9 +295,18 @@ export function LeverageProvider(props: { children: any }) {
   const onSelectLeverageType = useCallback(
     (type: LeverageType) => {
       const currentBase = getLeverageBaseToken(indexToken.symbol)?.symbol
-      const leverageTokens = getLeverageTokens(chainId).filter(
-        (leverageToken) => leverageToken.baseToken === currentBase,
-      )
+      const isCrossMarket = (symbol: string) =>
+        symbol.includes('BTC') && symbol.includes('ETH')
+      // Sort USD market tokens before cross-market tokens so .find() returns the correct one.
+      // Without sorting, BTC2xETH (cross-market) may be found before BTC2X (USD market)
+      // due to tokenlist order, causing wrong market selection when clicking leverage buttons.
+      const leverageTokens = getLeverageTokens(chainId)
+        .filter((leverageToken) => leverageToken.baseToken === currentBase)
+        .sort((a, b) => {
+          const aCross = isCrossMarket(a.symbol) ? 1 : 0
+          const bCross = isCrossMarket(b.symbol) ? 1 : 0
+          return aCross - bCross
+        })
       const selectedLeverageToken = leverageTokens.find(
         (token) => token.leverageType === type,
       )
