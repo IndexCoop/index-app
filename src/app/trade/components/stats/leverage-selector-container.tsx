@@ -16,11 +16,6 @@ import { getLeverageRatios } from '@/lib/actions/leverage'
 import { useNetwork } from '@/lib/hooks/use-network'
 import { useWallet } from '@/lib/hooks/use-wallet'
 
-type LeverageRatioResponse = {
-  ratio: number
-  strategy: string
-}
-
 export function LeverageSelectorContainer() {
   const { chainId } = useNetwork()
   const { isConnected } = useWallet()
@@ -80,8 +75,7 @@ export function LeverageSelectorContainer() {
                     const path = getPathForRatio(item, isConnected, chainId)
 
                     const ratio = ratiosResult?.data?.find(
-                      (d: LeverageRatioResponse) =>
-                        d.strategy === item.strategy,
+                      (d) => d.strategy === item.strategy,
                     )?.ratio
 
                     return (

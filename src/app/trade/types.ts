@@ -27,10 +27,10 @@ export type LeverageRatio = {
 }
 
 export enum LeverageStrategy {
-  Long2x = '2x',
-  Long3x = '3x',
-  Short1x = '-1x',
-  Short2x = '-2x',
+  Long2x = 'Long2x',
+  Long3x = 'Long3x',
+  Short1x = 'Short1x',
+  Short2x = 'Short2x',
 }
 
 export type EnrichedToken = Token & {
