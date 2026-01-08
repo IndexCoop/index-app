@@ -8,6 +8,8 @@ import { LeverageRatio } from '@/app/trade/types'
 import { useAnalytics } from '@/lib/hooks/use-analytics'
 import { cn } from '@/lib/utils/tailwind'
 
+import { leverageTypeToLabel } from '../../utils/get-leverage-type'
+
 type Props = {
   closePopover: () => void
   item: LeverageRatio
@@ -53,7 +55,9 @@ export function LeverageRatioItem({ closePopover, item, path, ratio }: Props) {
           height={16}
           width={16}
         />
-        <span className='text-xs font-medium'>{item.strategy}</span>
+        <span className='text-xs font-medium'>
+          {leverageTypeToLabel[item.strategy]}
+        </span>
       </div>
       <div className='hidden w-24 space-x-1 md:flex'>
         {networks.map((chain) => (
