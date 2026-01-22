@@ -1,9 +1,12 @@
-import { getTokenByChainAndAddress } from '@indexcoop/tokenlists'
+import {
+  getTokenByChainAndAddress,
+  getTokenByChainAndSymbol,
+} from '@indexcoop/tokenlists'
 import { type Address, type PublicClient, encodeFunctionData } from 'viem'
 
 import { Issuance } from '@/app/legacy/config'
 import { LeveragedRethStakingYield } from '@/app/legacy/config/tokens/mainnet'
-import { POLYGON } from '@/constants/chains'
+import { MAINNET, POLYGON } from '@/constants/chains'
 import { RETH, type Token } from '@/constants/tokens'
 import { formatWei, isSameAddress } from '@/lib/utils'
 import { getFullCostsInUsd } from '@/lib/utils/costs'
@@ -13,9 +16,24 @@ import { getTokenPrice } from '@/lib/utils/token-price'
 import { type Quote, type QuoteTransaction, QuoteType } from '../../types'
 
 import { DebtIssuanceModuleV2Abi } from './debt-issuance-module-v2-abi'
+import { FliRedemptionHelperAbi } from './fli-redemption-helper-abi'
 import { DebtIssuanceProvider } from './provider'
 
 import type { LegacyQuote } from '@/app/legacy/types'
+
+const FLI_REDEMPTION_CONFIG: Record<
+  string,
+  { helper: Address; outputSymbol: string }
+> = {
+  'ETH2x-FLI': {
+    helper: '0x5Efda1DBD6ADcEe04CF8Bd6599af3D9b2c8Fc85f',
+    outputSymbol: 'ETH2X',
+  },
+  'BTC2x-FLI': {
+    helper: '0xD7937c7cbE8BE535d536f8BEF0c301651E400852',
+    outputSymbol: 'BTC2X',
+  },
+}
 
 interface IssuanceQuoteRequest {
   chainId: number
@@ -33,8 +51,12 @@ export async function getLegacyRedemptionQuote(
 
   if (inputTokenAmount <= 0) return null
 
+  const fliConfig = FLI_REDEMPTION_CONFIG[inputToken.symbol]
+  if (fliConfig && chainId === MAINNET.chainId) {
+    return getFliRedemptionQuote(request, publicClient, fliConfig)
+  }
+
   try {
-    // Get issuance module contract
     const contract = Issuance[inputToken.symbol] as Address
     const debtIssuanceProvider = new DebtIssuanceProvider(
       contract,
@@ -161,6 +183,120 @@ export async function getLegacyRedemptionQuote(
     }
   } catch (e) {
     console.warn('Error fetching legacy redemption quote', e)
+    return null
+  }
+}
+
+async function getFliRedemptionQuote(
+  request: IssuanceQuoteRequest,
+  publicClient: PublicClient,
+  fliConfig: { helper: Address; outputSymbol: string },
+): Promise<{ extended: LegacyQuote; quote: Quote } | null> {
+  const { account, chainId, inputToken, inputTokenAmount } = request
+
+  try {
+    const outputTokenData = getTokenByChainAndSymbol(
+      chainId,
+      fliConfig.outputSymbol,
+    )
+    if (!outputTokenData) return null
+
+    const outputToken = {
+      ...outputTokenData,
+      image: outputTokenData.logoURI,
+    }
+
+    const outputAmount = await publicClient.readContract({
+      address: fliConfig.helper,
+      abi: FliRedemptionHelperAbi,
+      functionName: 'getNestedTokenReceivedOnRedemption',
+      args: [inputTokenAmount],
+    })
+
+    const inputTokenPrice = await getTokenPrice(inputToken, chainId)
+    const outputTokenPrice = await getTokenPrice(outputToken, chainId)
+
+    const inputTokenAmountUsd =
+      Number.parseFloat(formatWei(inputTokenAmount, inputToken.decimals)) *
+      inputTokenPrice
+    const outputTokenAmountUsd =
+      Number.parseFloat(formatWei(outputAmount, outputToken.decimals)) *
+      outputTokenPrice
+
+    const callData = encodeFunctionData({
+      abi: FliRedemptionHelperAbi,
+      functionName: 'redeem',
+      args: [inputTokenAmount, account as Address],
+    })
+
+    const transaction: QuoteTransaction = {
+      account,
+      chainId,
+      from: account as `0x${string}`,
+      to: fliConfig.helper,
+      data: callData,
+      value: undefined,
+    }
+
+    const defaultGasEstimate = BigInt(500_000)
+    const { ethPrice, gas } = await getGasLimit(
+      transaction,
+      defaultGasEstimate,
+      publicClient,
+    )
+    transaction.gas = gas.limit
+
+    const outputTokenAmountUsdAfterFees = outputTokenAmountUsd - gas.costsUsd
+
+    const fullCostsInUsd = getFullCostsInUsd(
+      inputTokenAmount,
+      gas.limit * gas.price,
+      inputToken.decimals,
+      inputTokenPrice,
+      ethPrice,
+    )
+
+    return {
+      extended: {
+        components: [outputToken.address as Address],
+        outputTokens: [outputToken],
+        outputTokenPricesUsd: [outputTokenAmountUsd],
+        units: [outputAmount],
+      },
+      quote: {
+        type: QuoteType.issuance,
+        chainId,
+        contract: fliConfig.helper,
+        isMinting: false,
+        inputToken,
+        outputToken,
+        gas: gas.limit,
+        gasPrice: gas.price,
+        gasCosts: gas.costs,
+        gasCostsInUsd: gas.costsUsd,
+        fullCostsInUsd,
+        indexTokenAmount: inputTokenAmount,
+        inputOutputTokenAmount: outputAmount,
+        inputTokenAmount,
+        inputTokenAmountUsd,
+        outputTokenAmount: outputAmount,
+        outputTokenAmountUsd,
+        outputTokenAmountUsdAfterFees,
+        quoteAmount: outputAmount,
+        quoteAmountUsd: outputTokenAmountUsd,
+        inputTokenPrice,
+        outputTokenPrice,
+        slippage: request.slippage,
+        fees: {
+          mint: 0,
+          redeem: 0,
+          streaming: 0,
+        },
+        tx: transaction,
+      },
+    }
+  } catch (e) {
+    console.warn('Error fetching FLI redemption quote', e)
     return null
   }
 }
