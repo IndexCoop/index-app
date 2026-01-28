@@ -61,7 +61,7 @@
     "@kubb/plugin-oas": "3.0.13",
     "@kubb/plugin-react-query": "4.1.2",
     "@kubb/plugin-ts": "3.0.13",
-    "@kubb/react": "3.0.13",
+    "@kubb/react": "4.3.1",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "1.0.12",
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
