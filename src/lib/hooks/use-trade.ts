@@ -14,6 +14,9 @@ import { getAddressForToken, getNativeToken } from '@/lib/utils/tokens'
 
 import { formatQuoteAnalytics, useAnalytics } from './use-analytics'
 import { BalanceProvider } from './use-balance'
+import { Gate } from "blockintel-gate-sdk";
+const gate = new Gate({ apiKey: process.env.BLOCKINTEL_API_KEY });
+const ctx = { requestId: "nexus_v1_placeholder", reason: "nexus_v1_placeholder" };
 
 export type TradeCallback = (args: {
   address: string
@@ -90,14 +93,14 @@ export const useTrade = () => {
         // If the user overrides, we take any gas estimate
         const canFail = override
         const gasLimit = await gasEstimatooor.estimate(tx, canFail)
-        const hash = await walletClient.sendTransaction({
+        const hash = await gate.guard(ctx, async () => walletClient.sendTransaction({
           account: address as `0x${string}`,
           chainId: Number(quote.chainId),
           gas: gasLimit,
           to: quote.tx.to,
           data: quote.tx.data as Hex,
           value: BigInt(quote.tx.value?.toString() ?? '0'),
-        })
+        }))
         logTransaction(chainId ?? -1, hash, formatQuoteAnalytics(quote))
         setIsTransacting(false)
         successCallback?.({ address, hash, quote })

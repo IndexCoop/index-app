@@ -45,3 +45,4 @@ src/gen
 # Misc
 .serena
 .claude
+*.nexus.backup
