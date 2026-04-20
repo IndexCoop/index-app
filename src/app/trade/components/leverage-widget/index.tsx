@@ -3,6 +3,7 @@
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
 import { useAtom, useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
+import { arbitrum, base, mainnet } from 'viem/chains'
 
 import { TradeInputSelector } from '@/app/trade/components/leverage-widget/trade-input-selector'
 import { MarketSelector } from '@/app/trade/components/stats/market-selector'
@@ -31,16 +32,45 @@ import { BuySellSelector } from './components/buy-sell-selector'
 import { LeverageSelector } from './components/leverage-selector'
 import { Summary } from './components/summary'
 
+import type { SymbolsByChain } from '@indexcoop/tokenlists'
+
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
-// Tokens temporarily disabled for buying (minting)
+// Tokens temporarily disabled for trading, per chain. Symbols are typed
+// against the tokenlist so a typo or wrong-chain entry is a compile error.
+// Set `mintReason` and/or `redeemReason` to disable the corresponding
+// direction; omit a field to leave that direction enabled.
+type DisableEntry<
+  C extends typeof mainnet.id | typeof arbitrum.id | typeof base.id,
+> = {
+  symbols: readonly SymbolsByChain<C>[]
+  mintReason?: string
+  redeemReason?: string
+}
 
-const TEMPORARILY_DISABLED_BUY_TOKENS: string[] = [
-  'uSOL2x',
-  'uSOL3x',
-  'uSUI2x',
-  'uSUI3x',
-]
+const ETH_MINT_PAUSED_REASON =
+  'Redemptions for ETH2x and ETH3x on Ethereum and Arbitrum are temporarily paused. Minting is disabled to prevent users from being trapped in positions they cannot exit.'
+
+const ETH_REDEEM_PAUSED_REASON =
+  'Redemptions for ETH2x and ETH3x on Ethereum and Arbitrum are temporarily paused due to ongoing issues with Aave. Please check back later.'
+
+const TEMPORARILY_DISABLED_TOKENS_BY_CHAIN = {
+  [mainnet.id]: {
+    symbols: ['ETH2X', 'ETH3x'],
+    mintReason: ETH_MINT_PAUSED_REASON,
+    redeemReason: ETH_REDEEM_PAUSED_REASON,
+  } satisfies DisableEntry<typeof mainnet.id>,
+  [arbitrum.id]: {
+    symbols: ['ETH2X', 'ETH3X'],
+    mintReason: ETH_MINT_PAUSED_REASON,
+    redeemReason: ETH_REDEEM_PAUSED_REASON,
+  } satisfies DisableEntry<typeof arbitrum.id>,
+  [base.id]: {
+    symbols: ['uSOL2x', 'uSOL3x', 'uSUI2x', 'uSUI3x'],
+    mintReason:
+      'Minting for this product is temporarily paused. Please check back later.',
+  } satisfies DisableEntry<typeof base.id>,
+} as const
 
 export function LeverageWidget() {
   const gasData = useGasData()
@@ -119,11 +149,22 @@ export function LeverageWidget() {
     [tradeState],
   )
 
-  const isBuyTemporarilyDisabled = useMemo(
-    () =>
-      isMinting && TEMPORARILY_DISABLED_BUY_TOKENS.includes(outputToken.symbol),
-    [isMinting, outputToken.symbol],
-  )
+  const tradeDisabledReason = useMemo(() => {
+    const leverageToken = isMinting ? outputToken : inputToken
+    if (!leverageToken.chainId) return null
+    const entry = TEMPORARILY_DISABLED_TOKENS_BY_CHAIN[
+      leverageToken.chainId as keyof typeof TEMPORARILY_DISABLED_TOKENS_BY_CHAIN
+    ] as
+      | {
+          symbols: readonly string[]
+          mintReason?: string
+          redeemReason?: string
+        }
+      | undefined
+    if (!entry) return null
+    if (!entry.symbols.includes(leverageToken.symbol)) return null
+    return (isMinting ? entry.mintReason : entry.redeemReason) ?? null
+  }, [isMinting, inputToken, outputToken])
 
   return (
     <div
@@ -188,16 +229,13 @@ export function LeverageWidget() {
         </div>
       )}
       <Summary />
-      {isBuyTemporarilyDisabled ? (
+      {tradeDisabledReason ? (
         <div className='flex flex-col items-center justify-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-center'>
           <div className='flex items-center gap-2 text-amber-400'>
             <ExclamationCircleIcon className='size-5' />
             <span className='font-semibold'>Temporarily Unavailable</span>
           </div>
-          <p className='text-sm text-zinc-400'>
-            Buying {outputToken.symbol} is temporarily disabled. Please check
-            back later.
-          </p>
+          <p className='text-sm text-zinc-400'>{tradeDisabledReason}</p>
         </div>
       ) : (
         <SmartTradeButton
