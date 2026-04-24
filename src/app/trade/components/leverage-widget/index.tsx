@@ -36,34 +36,35 @@ import type { SymbolsByChain } from '@indexcoop/tokenlists'
 
 const hiddenLeverageWarnings = [WarningType.flashbots]
 
-// Tokens temporarily disabled for trading, per chain. Symbols are typed
-// against the tokenlist so a typo or wrong-chain entry is a compile error.
-// Set `mintReason` and/or `redeemReason` to disable the corresponding
-// direction; omit a field to leave that direction enabled.
+// Tokens flagged for paused markets, per chain. Symbols are typed against
+// the tokenlist so a typo or wrong-chain entry is a compile error.
+// - `mintReason` blocks the trade button when minting and renders the reason.
+// - `redeemWarning` shows an informational banner when redeeming but leaves
+//   the trade button active (users can still attempt to exit).
 type DisableEntry<
   C extends typeof mainnet.id | typeof arbitrum.id | typeof base.id,
 > = {
   symbols: readonly SymbolsByChain<C>[]
   mintReason?: string
-  redeemReason?: string
+  redeemWarning?: string
 }
 
 const ETH_MINT_PAUSED_REASON =
   'Redemptions for ETH2x and ETH3x on Ethereum and Arbitrum are temporarily paused. Minting is disabled to prevent users from being trapped in positions they cannot exit.'
 
-const ETH_REDEEM_PAUSED_REASON =
-  'Redemptions for ETH2x and ETH3x on Ethereum and Arbitrum are temporarily paused due to ongoing issues with Aave. Please check back later.'
+const ETH_REDEEM_WARNING =
+  'Redemptions for ETH2x and ETH3x on Ethereum and Arbitrum are affected by ongoing issues with Aave and may fail. Please try again later if your transaction does not go through.'
 
 const TEMPORARILY_DISABLED_TOKENS_BY_CHAIN = {
   [mainnet.id]: {
     symbols: ['ETH2X', 'ETH3x'],
     mintReason: ETH_MINT_PAUSED_REASON,
-    redeemReason: ETH_REDEEM_PAUSED_REASON,
+    redeemWarning: ETH_REDEEM_WARNING,
   } satisfies DisableEntry<typeof mainnet.id>,
   [arbitrum.id]: {
     symbols: ['ETH2X', 'ETH3X'],
     mintReason: ETH_MINT_PAUSED_REASON,
-    redeemReason: ETH_REDEEM_PAUSED_REASON,
+    redeemWarning: ETH_REDEEM_WARNING,
   } satisfies DisableEntry<typeof arbitrum.id>,
   [base.id]: {
     symbols: ['uSOL2x', 'uSOL3x', 'uSUI2x', 'uSUI3x'],
@@ -149,7 +150,7 @@ export function LeverageWidget() {
     [tradeState],
   )
 
-  const tradeDisabledReason = useMemo(() => {
+  const pausedEntry = useMemo(() => {
     const leverageToken = isMinting ? outputToken : inputToken
     if (!leverageToken.chainId) return null
     const entry = TEMPORARILY_DISABLED_TOKENS_BY_CHAIN[
@@ -158,13 +159,17 @@ export function LeverageWidget() {
       | {
           symbols: readonly string[]
           mintReason?: string
-          redeemReason?: string
+          redeemWarning?: string
         }
       | undefined
     if (!entry) return null
-    if (!entry.symbols.includes(leverageToken.symbol)) return null
-    return (isMinting ? entry.mintReason : entry.redeemReason) ?? null
+    return entry.symbols.includes(leverageToken.symbol) ? entry : null
   }, [isMinting, inputToken, outputToken])
+
+  const mintDisabledReason = isMinting
+    ? (pausedEntry?.mintReason ?? null)
+    : null
+  const redeemWarning = !isMinting ? (pausedEntry?.redeemWarning ?? null) : null
 
   return (
     <div
@@ -229,33 +234,41 @@ export function LeverageWidget() {
         </div>
       )}
       <Summary />
-      {tradeDisabledReason ? (
+      {mintDisabledReason ? (
         <div className='flex flex-col items-center justify-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-center'>
           <div className='flex items-center gap-2 text-amber-400'>
             <ExclamationCircleIcon className='size-5' />
             <span className='font-semibold'>Temporarily Unavailable</span>
           </div>
-          <p className='text-sm text-zinc-400'>{tradeDisabledReason}</p>
+          <p className='text-sm text-zinc-400'>{mintDisabledReason}</p>
         </div>
       ) : (
-        <SmartTradeButton
-          contract={contract ?? ''}
-          hasFetchingError={hasFetchingError}
-          hasInsufficientFunds={hasInsufficientFunds}
-          hiddenWarnings={hiddenLeverageWarnings}
-          inputTokenAmount={inputTokenAmount}
-          inputToken={inputToken}
-          inputValue={inputValue}
-          isFetchingQuote={isFetchingQuote}
-          isSupportedNetwork={isSupportedNetwork}
-          queryNetwork={queryParams.queryNetwork}
-          outputToken={outputToken}
-          buttonLabelOverrides={{
-            [TradeButtonState.default]: 'Review Transaction',
-          }}
-          onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
-          onRefetchQuote={refetchQuote}
-        />
+        <>
+          {redeemWarning && (
+            <div className='flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-zinc-300'>
+              <ExclamationCircleIcon className='mt-0.5 size-4 shrink-0 text-amber-400' />
+              <p>{redeemWarning}</p>
+            </div>
+          )}
+          <SmartTradeButton
+            contract={contract ?? ''}
+            hasFetchingError={hasFetchingError}
+            hasInsufficientFunds={hasInsufficientFunds}
+            hiddenWarnings={hiddenLeverageWarnings}
+            inputTokenAmount={inputTokenAmount}
+            inputToken={inputToken}
+            inputValue={inputValue}
+            isFetchingQuote={isFetchingQuote}
+            isSupportedNetwork={isSupportedNetwork}
+            queryNetwork={queryParams.queryNetwork}
+            outputToken={outputToken}
+            buttonLabelOverrides={{
+              [TradeButtonState.default]: 'Review Transaction',
+            }}
+            onOpenTransactionReview={() => sendTradeEvent({ type: 'REVIEW' })}
+            onRefetchQuote={refetchQuote}
+          />
+        </>
       )}
       <SelectTokenModal
         isDarkMode={true}

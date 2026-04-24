@@ -86,6 +86,7 @@ export function useQuoteResult(request: QuoteRequest) {
 
   const {
     data: flashmintQuote,
+    error: flashmintQuoteError,
     isFetching: isFetchingFlashMintQuote,
     refetch: refetchQuote,
   } = useQuery({
@@ -113,7 +114,18 @@ export function useQuoteResult(request: QuoteRequest) {
   })
 
   useEffect(() => {
-    if (flashmintQuote === undefined || isFetchingFlashMintQuote) return
+    if (isFetchingFlashMintQuote) return
+
+    if (flashmintQuoteError) {
+      logEvent('Quote Failed', { message: flashmintQuoteError.message })
+      sendTradeEvent({
+        type: 'QUOTE_NOT_FOUND',
+        reason: flashmintQuoteError.message || 'Unknown Reason',
+      })
+      return
+    }
+
+    if (flashmintQuote === undefined) return
 
     if (isQuoteError(flashmintQuote)) {
       logEvent('Quote Failed', flashmintQuote)
@@ -121,34 +133,38 @@ export function useQuoteResult(request: QuoteRequest) {
       sendTradeEvent({
         type: 'QUOTE_NOT_FOUND',
         reason:
-          get(quoteErrorCode, `${flashmintQuote.type}`) ?? 'Unknown Reason',
+          get(quoteErrorCode, `${flashmintQuote.type}`) ??
+          (flashmintQuote.message || 'Unknown Reason'),
       })
 
       return
     }
 
-    if (flashmintQuote) {
-      logEvent('Quote Received', formatQuoteAnalytics(flashmintQuote))
-    }
-
-    const quoteResult = {
-      type: flashmintQuote?.type ?? QuoteType.flashmint,
-      isAvailable: true,
-      quote: flashmintQuote,
-      error: null,
-    }
-
-    if (quoteResult.quote) {
+    if (!flashmintQuote) {
       sendTradeEvent({
-        type: 'QUOTE',
-        inputValue,
-        quoteResult,
-        quoteType: flashmintQuote?.type ?? QuoteType.flashmint,
+        type: 'QUOTE_NOT_FOUND',
+        reason: 'Quote Not Found',
       })
+      return
     }
+
+    logEvent('Quote Received', formatQuoteAnalytics(flashmintQuote))
+
+    sendTradeEvent({
+      type: 'QUOTE',
+      inputValue,
+      quoteResult: {
+        type: flashmintQuote.type ?? QuoteType.flashmint,
+        isAvailable: true,
+        quote: flashmintQuote,
+        error: null,
+      },
+      quoteType: flashmintQuote.type ?? QuoteType.flashmint,
+    })
   }, [
     chainId,
     flashmintQuote,
+    flashmintQuoteError,
     inputValue,
     isFetchingFlashMintQuote,
     logEvent,
