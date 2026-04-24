@@ -4,6 +4,7 @@
   "project": ["src/**/*.{ts,tsx}"],
   "ignore": [
     "src/gen/**",
+    "src/components/**",
     "src/lib/axios.ts",
     "src/app/global-error.jsx",
     "**/*.test.ts",
