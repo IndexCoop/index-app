@@ -64,9 +64,9 @@ export async function getFlashMintQuote(
       slippage,
     }
 
-    const { data: result, status } = await getQuote(quoteRequest)
+    const { data: result, status, error } = await getQuote(quoteRequest)
 
-    if (status === 200) {
+    if (status === 200 && result) {
       const quoteFM = result as GetApiV2QuoteQuery['Response']
 
       const {
@@ -133,8 +133,13 @@ export async function getFlashMintQuote(
         warning: isHighPriceImpact ? 'Price impact is high.' : undefined,
         tx: transaction,
       }
-    } else {
-      return result as unknown as GetApiV2QuoteQuery['Errors']
+    }
+
+    if (isQuoteError(result)) return result
+
+    return {
+      type: 'QuoteNotFound',
+      message: error ?? `Quote request failed (status ${status})`,
     }
   } catch (e) {
     console.warn('Error fetching FlashMintQuote', e)
