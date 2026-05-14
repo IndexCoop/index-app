@@ -51,25 +51,26 @@ type DisableEntry<
 const ETH_MINT_PAUSED_REASON =
   'Redemptions for ETH2x and ETH3x on Ethereum and Arbitrum are temporarily paused. Minting is disabled to prevent users from being trapped in positions they cannot exit.'
 
-const ETH_REDEEM_PAUSED_REASON =
-  'Redemptions for ETH2x and ETH3x on Ethereum and Arbitrum are temporarily paused due to ongoing issues with Aave. Please check back later.'
+const AAVE_LINK_MINT_DEPRECATED_REASON =
+  'Minting is deprecated for this product. The contract is redeem-only.'
 
 const TEMPORARILY_DISABLED_TOKENS_BY_CHAIN = {
-  [mainnet.id]: {
-    symbols: ['ETH2X', 'ETH3x'],
-    mintReason: ETH_MINT_PAUSED_REASON,
-    redeemReason: ETH_REDEEM_PAUSED_REASON,
-  } satisfies DisableEntry<typeof mainnet.id>,
-  [arbitrum.id]: {
-    symbols: ['ETH2X', 'ETH3X'],
-    mintReason: ETH_MINT_PAUSED_REASON,
-    redeemReason: ETH_REDEEM_PAUSED_REASON,
-  } satisfies DisableEntry<typeof arbitrum.id>,
-  [base.id]: {
-    symbols: ['uSOL2x', 'uSOL3x', 'uSUI2x', 'uSUI3x'],
-    mintReason:
-      'Minting for this product is temporarily paused. Please check back later.',
-  } satisfies DisableEntry<typeof base.id>,
+  [mainnet.id]: [
+    {
+      symbols: ['ETH2X', 'ETH3x'],
+      mintReason: ETH_MINT_PAUSED_REASON,
+    },
+  ] as const satisfies readonly DisableEntry<typeof mainnet.id>[],
+  [arbitrum.id]: [
+    {
+      symbols: ['ETH2X', 'ETH3X'],
+      mintReason: ETH_MINT_PAUSED_REASON,
+    },
+    {
+      symbols: ['AAVE2x', 'LINK2x'],
+      mintReason: AAVE_LINK_MINT_DEPRECATED_REASON,
+    },
+  ] as const satisfies readonly DisableEntry<typeof arbitrum.id>[],
 } as const
 
 export function LeverageWidget() {
@@ -152,17 +153,18 @@ export function LeverageWidget() {
   const tradeDisabledReason = useMemo(() => {
     const leverageToken = isMinting ? outputToken : inputToken
     if (!leverageToken.chainId) return null
-    const entry = TEMPORARILY_DISABLED_TOKENS_BY_CHAIN[
+    const entries = TEMPORARILY_DISABLED_TOKENS_BY_CHAIN[
       leverageToken.chainId as keyof typeof TEMPORARILY_DISABLED_TOKENS_BY_CHAIN
     ] as
-      | {
+      | readonly {
           symbols: readonly string[]
           mintReason?: string
           redeemReason?: string
-        }
+        }[]
       | undefined
+    if (!entries) return null
+    const entry = entries.find((e) => e.symbols.includes(leverageToken.symbol))
     if (!entry) return null
-    if (!entry.symbols.includes(leverageToken.symbol)) return null
     return (isMinting ? entry.mintReason : entry.redeemReason) ?? null
   }, [isMinting, inputToken, outputToken])
 
