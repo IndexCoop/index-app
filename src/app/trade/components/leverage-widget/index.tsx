@@ -49,7 +49,7 @@ type DisableEntry<
 }
 
 const ETH_MINT_PAUSED_REASON =
-  'Redemptions for ETH2x and ETH3x on Ethereum and Arbitrum are temporarily paused. Minting is disabled to prevent users from being trapped in positions they cannot exit.'
+  'Minting for ETH2x and ETH3x on Ethereum and Arbitrum is temporarily disabled due to Aave-related issues. Redemptions remain available.'
 
 const AAVE_LINK_MINT_DEPRECATED_REASON =
   'Minting is deprecated for this product. The contract is redeem-only.'
