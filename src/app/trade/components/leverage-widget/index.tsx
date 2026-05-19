@@ -48,24 +48,11 @@ type DisableEntry<
   redeemReason?: string
 }
 
-const ETH_MINT_PAUSED_REASON =
-  'Minting for ETH2x and ETH3x on Ethereum and Arbitrum is temporarily disabled due to Aave-related issues. Redemptions remain available.'
-
 const AAVE_LINK_MINT_DEPRECATED_REASON =
   'Minting is deprecated for this product. The contract is redeem-only.'
 
 const TEMPORARILY_DISABLED_TOKENS_BY_CHAIN = {
-  [mainnet.id]: [
-    {
-      symbols: ['ETH2X', 'ETH3x'],
-      mintReason: ETH_MINT_PAUSED_REASON,
-    },
-  ] as const satisfies readonly DisableEntry<typeof mainnet.id>[],
   [arbitrum.id]: [
-    {
-      symbols: ['ETH2X', 'ETH3X'],
-      mintReason: ETH_MINT_PAUSED_REASON,
-    },
     {
       symbols: ['AAVE2x', 'LINK2x'],
       mintReason: AAVE_LINK_MINT_DEPRECATED_REASON,
