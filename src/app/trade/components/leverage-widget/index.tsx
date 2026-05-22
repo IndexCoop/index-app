@@ -51,6 +51,8 @@ type DisableEntry<
 const AAVE_LINK_MINT_DEPRECATED_REASON =
   'Minting is deprecated for this product. The contract is redeem-only.'
 
+const MINT_DISABLED_REASON = 'Minting is disabled for this product.'
+
 const TEMPORARILY_DISABLED_TOKENS_BY_CHAIN = {
   [arbitrum.id]: [
     {
@@ -58,6 +60,12 @@ const TEMPORARILY_DISABLED_TOKENS_BY_CHAIN = {
       mintReason: AAVE_LINK_MINT_DEPRECATED_REASON,
     },
   ] as const satisfies readonly DisableEntry<typeof arbitrum.id>[],
+  [base.id]: [
+    {
+      symbols: ['uSUI2x', 'uSUI3x', 'uSOL2x', 'uSOL3x', 'uXRP2x', 'uXRP3x'],
+      mintReason: MINT_DISABLED_REASON,
+    },
+  ] as const satisfies readonly DisableEntry<typeof base.id>[],
 } as const
 
 export function LeverageWidget() {
