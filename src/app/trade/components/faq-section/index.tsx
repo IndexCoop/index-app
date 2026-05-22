@@ -30,7 +30,7 @@ export function FaqSection() {
         </p>
       </FaqItem>
       <FaqItem
-        question='How do leverage tokens work vs perps?'
+        question='How do leverage tokens work vs test?'
         id='faq-tokens-work'
       >
         <p>
