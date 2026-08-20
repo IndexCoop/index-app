@@ -40,6 +40,24 @@ import type { QuoteResult } from '@/lib/hooks/use-best-quote/types'
 
 const eth2x = getTokenByChainAndSymbol(1, 'ETH2X')
 
+/**
+ * Re-matches a token object by symbol against the connected chain's token lists.
+ * useQueryParams only re-resolves tokens when the URL changes and, for a bare URL,
+ * hands back the hard-coded defaults (mainnet ETH2X). Without this, that mainnet
+ * object would be used on Arbitrum/Base until the user touches a selector.
+ */
+function resolveTokenForChain<T extends Token>(token: T, chainId: number): T {
+  const match = [
+    ...getLeverageTokens(chainId),
+    ...getCurrencyTokens(chainId),
+  ].find(
+    (candidate) =>
+      candidate.symbol.toLowerCase() === token.symbol.toLowerCase(),
+  )
+
+  return (match as T | undefined) ?? token
+}
+
 interface TokenContext {
   inputValue: string
   isMinting: boolean
@@ -131,13 +149,20 @@ export function LeverageProvider(props: { children: any }) {
   const [inputValue, setInputValue] = useState('')
 
   const isMinting = queryIsMinting
-  const inputToken = queryInputToken
-  const outputToken = queryOutputToken
   const baseToken = queryBaseToken
 
   const chainId = useMemo(() => {
     return chainIdRaw ?? ARBITRUM.chainId
   }, [chainIdRaw])
+
+  const inputToken = useMemo(
+    () => resolveTokenForChain(queryInputToken, chainId),
+    [queryInputToken, chainId],
+  )
+  const outputToken = useMemo(
+    () => resolveTokenForChain(queryOutputToken, chainId),
+    [queryOutputToken, chainId],
+  )
 
   const indexToken = useMemo(() => {
     return isMinting ? outputToken : inputToken
