@@ -1,9 +1,6 @@
-import {
-  getTokenByChainAndAddress,
-  getUnderlyingToken,
-  isLeverageToken,
-} from '@indexcoop/tokenlists'
 import { formatUnits } from 'viem'
+
+import { getUnderlyingAssetSymbol } from '@/app/trade/utils/get-underlying-asset-symbol'
 
 import type { PostApiV2TradeMutationRequest } from '@/gen'
 import type { Quote } from '@/lib/hooks/use-best-quote/types'
@@ -56,34 +53,8 @@ export const mapQuoteToTrade = (
     ? (utm as PostApiV2TradeMutationRequest['utm'])
     : undefined,
   createdAt: new Date(),
-  underlyingAssetSymbol: getUnderlyingAssetSymbol(quote).toUpperCase(),
+  underlyingAssetSymbol: getUnderlyingAssetSymbol(
+    Number(quote.chainId),
+    quote.isMinting ? quote.outputToken : quote.inputToken,
+  ),
 })
-
-const getUnderlyingAssetSymbol = (quote: Quote) => {
-  const possible = [
-    'ETH',
-    'BTC',
-    'SUI',
-    'SOL',
-    'XRP',
-    'AAVE',
-    'ARB',
-    'LINK',
-    'XAUt',
-    'MATIC',
-  ]
-
-  const address = quote.isMinting
-    ? quote.outputToken.address
-    : quote.inputToken.address
-
-  const token = getTokenByChainAndAddress(quote.chainId, address)
-
-  if (isLeverageToken(token)) {
-    const { symbol } = getUnderlyingToken(token)
-
-    return possible.find((p) => symbol.includes(p)) ?? ''
-  }
-
-  return possible.find((p) => token?.symbol.includes(p)) ?? ''
-}
