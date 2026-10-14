@@ -13,6 +13,7 @@
   "ignoreDependencies": [
     "@kubb/*",
     "@wagmi/core",
+    "@tanstack/query-core",
     "@reown/appkit-common",
     "@ethersproject/units"
   ]

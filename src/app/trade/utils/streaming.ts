@@ -1,155 +1,155 @@
-// Template pulled from https://github.com/cctdaniel/pyth-tv-charting-lib/blob/6adfdfcd0c4cf9c503ab154d4d4570a634a0ddbe/src/utils/streaming.js
-const streamingUrl =
-  'https://benchmarks.pyth.network/v1/shims/tradingview/streaming'
-const channelToSubscription = new Map()
+import { type Bar, resolutionToGranularity } from '@/app/trade/utils/datafeed'
 
-function handleStreamingData(data: any) {
-  const { id, p, t } = data
+const STREAMING_URL = 'wss://ws-feed.exchange.coinbase.com'
 
-  const tradePrice = p
-  const tradeTime = t * 1000 // Multiplying by 1000 to get milliseconds
+type Subscription = {
+  subscriberUID: string
+  product: string
+  inverted: boolean
+  granularity: number
+  lastBar?: Bar
+  handlers: { id: string; callback: (bar: Bar) => void }[]
+}
 
-  const channelString = id
-  const subscriptionItem = channelToSubscription.get(channelString)
+// Keyed by TradingView ticker.
+const channelToSubscription = new Map<string, Subscription>()
 
-  if (!subscriptionItem) {
+let socket: WebSocket | null = null
+let reconnectAttempts = 0
+
+// Bucket a trade time (ms) into the open time of its candle.
+export const barTimeFor = (timeMs: number, granularity: number) =>
+  Math.floor(timeMs / 1000 / granularity) * granularity * 1000
+
+// Fold a trade price into the current bar, or open the next one.
+export const nextBar = (
+  lastBar: Bar | undefined,
+  price: number,
+  timeMs: number,
+  granularity: number,
+): Bar => {
+  const time = barTimeFor(timeMs, granularity)
+  if (!lastBar || time > lastBar.time) {
+    return { time, open: price, high: price, low: price, close: price }
+  }
+  return {
+    ...lastBar,
+    high: Math.max(lastBar.high, price),
+    low: Math.min(lastBar.low, price),
+    close: price,
+  }
+}
+
+function handleTicker(productId: string, rawPrice: string, isoTime: string) {
+  const price = Number(rawPrice)
+  if (!Number.isFinite(price) || price === 0) return
+  const timeMs = new Date(isoTime).getTime()
+
+  for (const subscription of channelToSubscription.values()) {
+    if (subscription.product !== productId) continue
+    const bar = nextBar(
+      subscription.lastBar,
+      subscription.inverted ? 1 / price : price,
+      timeMs,
+      subscription.granularity,
+    )
+    subscription.lastBar = bar
+    subscription.handlers.forEach((handler) => handler.callback(bar))
+  }
+}
+
+function subscribedProducts() {
+  return [
+    ...new Set(
+      [...channelToSubscription.values()].map(
+        (subscription) => subscription.product,
+      ),
+    ),
+  ]
+}
+
+function sendSubscribe() {
+  const productIds = subscribedProducts()
+  if (socket?.readyState !== WebSocket.OPEN || productIds.length === 0) return
+  socket.send(
+    JSON.stringify({
+      type: 'subscribe',
+      product_ids: productIds,
+      channels: ['ticker'],
+    }),
+  )
+}
+
+function connect() {
+  if (socket && socket.readyState !== WebSocket.CLOSED) {
+    sendSubscribe()
     return
   }
 
-  const lastDailyBar = subscriptionItem.lastDailyBar
-  const nextDailyBarTime = getNextDailyBarTime(lastDailyBar.time)
+  socket = new WebSocket(STREAMING_URL)
 
-  let bar
-  if (tradeTime >= nextDailyBarTime) {
-    bar = {
-      time: nextDailyBarTime,
-      open: tradePrice,
-      high: tradePrice,
-      low: tradePrice,
-      close: tradePrice,
-    }
-  } else {
-    bar = {
-      ...lastDailyBar,
-      high: Math.max(lastDailyBar.high, tradePrice),
-      low: Math.min(lastDailyBar.low, tradePrice),
-      close: tradePrice,
-    }
+  socket.onopen = () => {
+    reconnectAttempts = 0
+    sendSubscribe()
   }
 
-  subscriptionItem.lastDailyBar = bar
-
-  // Send data to every subscriber of that symbol
-  subscriptionItem.handlers.forEach((handler: any) => handler.callback(bar))
-  channelToSubscription.set(channelString, subscriptionItem)
-}
-
-function startStreaming(retries = 3, delay = 3000) {
-  fetch(streamingUrl)
-    .then((response) => {
-      const reader = response.body!.getReader()
-
-      function streamData() {
-        reader
-          .read()
-          .then(({ value, done }) => {
-            if (done) {
-              console.error('[stream] Streaming ended.')
-              return
-            }
-
-            // Assuming the streaming data is separated by line breaks
-            const dataStrings = new TextDecoder().decode(value).split('\n')
-            dataStrings.forEach((dataString) => {
-              const trimmedDataString = dataString.trim()
-              if (trimmedDataString) {
-                try {
-                  const jsonData = JSON.parse(trimmedDataString)
-                  handleStreamingData(jsonData)
-                  if (jsonData.id === 'Crypto.ETH/BTC') {
-                    handleStreamingData({
-                      ...jsonData,
-                      id: 'Crypto.BTC/ETH',
-                      p: 1 / jsonData.p,
-                    })
-                  }
-                } catch (e: any) {
-                  console.error('Error parsing JSON:', e.message)
-                }
-              }
-            })
-
-            setTimeout(streamData, 3000) // Continue processing the stream
-          })
-          .catch((error) => {
-            console.error('[stream] Error reading from stream:', error)
-            attemptReconnect(retries, delay)
-          })
+  socket.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data)
+      if (data.type === 'ticker' && data.price) {
+        handleTicker(data.product_id, data.price, data.time)
       }
-
-      streamData()
-    })
-    .catch((error) => {
-      console.error(
-        '[stream] Error fetching from the streaming endpoint:',
-        error,
-      )
-    })
-  function attemptReconnect(retriesLeft: any, delay: any) {
-    if (retriesLeft > 0) {
-      setTimeout(() => {
-        startStreaming(retriesLeft - 1, delay)
-      }, delay)
-    } else {
-      console.error('[stream] Maximum reconnection attempts reached.')
+    } catch (error) {
+      console.error('[stream] Error parsing message:', error)
     }
   }
-}
 
-function getNextDailyBarTime(barTime: any) {
-  const date = new Date(barTime * 1000)
-  date.setDate(date.getDate() + 1)
-  return date.getTime() / 1000
+  socket.onclose = () => {
+    socket = null
+    // Only reconnect while something is still subscribed.
+    if (channelToSubscription.size === 0 || reconnectAttempts >= 5) return
+    const delay = 1000 * 2 ** reconnectAttempts
+    reconnectAttempts++
+    setTimeout(connect, delay)
+  }
+
+  socket.onerror = (error) => {
+    console.error('[stream] Socket error:', error)
+  }
 }
 
 export function subscribeOnStream(
   symbolInfo: any,
-  resolution: any,
+  resolution: string,
   onRealtimeCallback: any,
-  subscriberUID: any,
-  onResetCacheNeededCallback: any,
-  lastDailyBar: any,
+  subscriberUID: string,
+  _onResetCacheNeededCallback: any,
+  lastBar: Bar | undefined,
+  mapping: { product: string; inverted?: boolean },
 ) {
-  const channelString = symbolInfo.ticker
-  const handler = {
-    id: subscriberUID,
-    callback: onRealtimeCallback,
-  }
-  let subscriptionItem = channelToSubscription.get(channelString)
-  subscriptionItem = {
+  channelToSubscription.set(symbolInfo.ticker, {
     subscriberUID,
-    resolution,
-    lastDailyBar,
-    handlers: [handler],
-  }
-  channelToSubscription.set(channelString, subscriptionItem)
-
-  // Start streaming when the first subscription is made
-  startStreaming()
+    product: mapping.product,
+    inverted: mapping.inverted ?? false,
+    granularity: resolutionToGranularity(resolution),
+    lastBar,
+    handlers: [{ id: subscriberUID, callback: onRealtimeCallback }],
+  })
+  connect()
 }
 
-export function unsubscribeFromStream(subscriberUID: any) {
-  // Find a subscription with id === subscriberUID
-  for (const channelString of channelToSubscription.keys()) {
-    const subscriptionItem = channelToSubscription.get(channelString)
-    const handlerIndex = subscriptionItem.handlers.findIndex(
-      (handler: any) => handler.id === subscriberUID,
-    )
-
-    if (handlerIndex !== -1) {
-      // Unsubscribe from the channel if it is the last handler
-      channelToSubscription.delete(channelString)
+export function unsubscribeFromStream(subscriberUID: string) {
+  for (const [ticker, subscription] of channelToSubscription) {
+    if (subscription.handlers.some((handler) => handler.id === subscriberUID)) {
+      channelToSubscription.delete(ticker)
       break
     }
+  }
+
+  if (channelToSubscription.size === 0) {
+    socket?.close()
+    socket = null
+  } else {
+    sendSubscribe()
   }
 }
